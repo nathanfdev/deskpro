@@ -1,3 +1,5 @@
+import '@deskpro/apps-components-style'; // eslint-disable-line import/extensions
+
 import PropTypes from 'prop-types';
 import React from 'react';
 
@@ -20,10 +22,6 @@ export class WidgetContainerList extends React.PureComponent {
   />);
 
   render()  {
-    return (
-      <div>
-        {this.props.widgets.map(this.renderWidget)}
-      </div>
-    );
+    return this.props.widgets.map(this.renderWidget);
   }
 }

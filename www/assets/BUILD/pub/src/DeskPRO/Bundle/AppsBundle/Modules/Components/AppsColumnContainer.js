@@ -2,88 +2,118 @@ import PropTypes from 'prop-types';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { AppsViewFull } from './AppsViewFull';
 import { AppsViewIcons } from './AppsViewIcons';
-
-import { LegacyAppSidebar } from './LegacyAppSidebar';
+import { receiveMessage } from '../WidgetMessage';
+import { ContainerEvents } from './ContainerEvents';
+import { setWidgetState } from '../Services/appsState';
 
 class AppsColumnContainer extends React.Component {
 
   static propTypes = {
-    widgetsConfigList:              PropTypes.array.isRequired,
-    context:                        PropTypes.object.isRequired,
-    dispatchIncomingWidgetMessage:  PropTypes.func.isRequired,
-    addWidgetEventListener:         PropTypes.func.isRequired,
-    parseIncomingWidgetMessageJS:   PropTypes.func.isRequired,
+    widgetsConfigList: PropTypes.array.isRequired,
+    context:           PropTypes.object.isRequired,
+
+
     // own properties
-    configuration:                  PropTypes.object.isRequired,
+    getSidebarState:                PropTypes.func.isRequired,
     sendMessageLegacyMessageBroker: PropTypes.func.isRequired
   };
 
   state = {
-    visibility: 'collapsed'
+    appsState:    {},
+    sidebarState: null
   };
 
   /**
    * @param {SyntheticEvent} e
    */
   expand = (e) => { // eslint-disable-line no-unused-vars
-    const { configuration } = this.props;
-    const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
-    if (sidebar.isLocked()) {
-      return;
+    if (this.props.getSidebarState() !== 'pinned') {
+      const { pageId } = this.props.context;
+      this.props.sendMessageLegacyMessageBroker(`apps-column.expand.${pageId}`);
+      this.setState({
+        sidebarState: this.props.getSidebarState()
+      });
     }
-
-    this.props.sendMessageLegacyMessageBroker('apps.column.expand');
   };
 
   collapse = () => {
-    const { configuration } = this.props;
-    const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
-    if (sidebar.isLocked()) {
-      return;
+    if (this.props.getSidebarState() !== 'pinned') {
+      const { pageId } = this.props.context;
+      this.props.sendMessageLegacyMessageBroker(`apps-column.collapse.${pageId}`);
+      this.setState({
+        sidebarState: this.props.getSidebarState()
+      });
     }
-
-    this.props.sendMessageLegacyMessageBroker('apps.column.collapse');
   };
 
   pin = () => {
-    const { configuration } = this.props;
-    const sidebar = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer);
-    if (sidebar.isLocked()) {
-      return;
+    if (this.props.getSidebarState() !== 'pinned') {
+      const { pageId } = this.props.context;
+      this.props.sendMessageLegacyMessageBroker(`apps-column.togglePin.${pageId}`);
+      this.setState({
+        sidebarState: this.props.getSidebarState()
+      });
     }
-
-    this.props.sendMessageLegacyMessageBroker('apps.column.toggle');
   };
 
   togglePin = (e) =>  { // eslint-disable-line no-unused-vars
-    this.props.sendMessageLegacyMessageBroker('apps.column.toggle');
+    const { pageId } = this.props.context;
+    this.props.sendMessageLegacyMessageBroker(`apps-column.togglePin.${pageId}`);
+    console.log('toggled pin ', {
+      sidebarState: this.props.getSidebarState()
+    });
+    this.setState({
+      sidebarState: this.props.getSidebarState()
+    });
   };
 
-  timeout = null;
+  /**
+   * We're intercepting widget communications to capture ui changes from the apps and update the container accordingly
+   *
+   * @param {Widget} widget
+   * @param {Object} event
+   */
+  receiveMessage = (widget, event) =>  {
+    const { eventName } = event.data;
+    // intercept the EVENT_UI_CHANGED event and update the apps state
+    if (eventName === ContainerEvents.EVENT_UI_CHANGED) {
+      const { widgetId, body } = event.data;
+      this.setState({
+        appsState: setWidgetState(widgetId, body, this.state.appsState)
+      });
+    } else {
+      receiveMessage(widget, event);
+    }
+  };
 
   render()  {
-    return [
+    const sidebarState = this.state.sidebarState || this.props.getSidebarState();
 
-      <AppsViewIcons
-        togglePin={this.togglePin}
-        expand={this.expand}
+    return (
+      <div className={'layout-sidebar__views'} onMouseLeave={this.collapse} onMouseOver={this.expand} onClick={this.pin}>
 
-        widgetsConfigList={this.props.widgetsConfigList}
-      />,
+        <AppsViewIcons
+          appsState={this.state.appsState}
+          sidebarState={sidebarState}
 
-      <AppsViewFull
-        togglePin={this.togglePin}
-        pin={this.pin}
-        collapse={this.collapse}
-        widgetsConfigList={this.props.widgetsConfigList}
+          togglePin={this.togglePin}
+          widgetsConfigList={this.props.widgetsConfigList}
+        />
 
-        context={this.props.context}
-        addWidgetEventListener={this.props.addWidgetEventListener}
-        dispatchIncomingWidgetMessage={this.props.dispatchIncomingWidgetMessage}
-        parseIncomingWidgetMessageJS={this.props.parseIncomingWidgetMessageJS}
+        <AppsViewFull
+          appsState={this.state.appsState}
+          sidebarState={sidebarState}
 
-      />
-    ];
+          togglePin={this.togglePin}
+          pin={this.pin}
+
+          widgetsConfigList={this.props.widgetsConfigList}
+          context={this.props.context}
+          receiveMessage={this.receiveMessage}
+
+        />
+      </div>
+    );
   }
 }
 

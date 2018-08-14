@@ -54,18 +54,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.updateWindowUrlFragment = _.debounce(this.updateWindowUrlFragmentNow.bind(this), 100);
 
 		this.appsSidebar = {
-			visible: false,
+      expanded: false,
 			width: 240
 		};
 
 		if (Modernizr.localstorage) {
-			if (localStorage['apps_sidebar_state'] && localStorage['apps_sidebar_state'] == 'open') {
-				this.appsSidebar.visible = true;
-			}
-      // disable reading from local storage in favor of the new 240 px width soon to be read from a config file
-			// if (localStorage['apps_sidebar_width']) {
-			// 	this.appsSidebar.width = localStorage['apps_sidebar_width'];
-			// }
+		  try {
+        this.appsSidebar = localStorage['apps_sidebar_state'] ? JSON.parse(localStorage['apps_sidebar_state']) : {}
+      } catch (e) {
+        this.appsSidebar = {}
+      }
 		}
 
 		this.agentNotifyListShown = false;

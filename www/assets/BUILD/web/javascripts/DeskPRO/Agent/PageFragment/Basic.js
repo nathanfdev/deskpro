@@ -66,6 +66,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       times: []
     };
 
+    this._hasInitAppsSidebar = false;
+
     this.resizerInterval = window.setInterval(function() {
       if (self.IS_ACTIVE) self.updateUi();
     }, 1100);
@@ -112,13 +114,13 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       }
 
       DeskPRO_Window.TabBar.rescanTitles();
-
       DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
-    }, this);
 
-    DeskPRO_Window.getMessageBroker().addMessageListener('apps.column.toggle', this.togglePinAppsColumn, this);
-    DeskPRO_Window.getMessageBroker().addMessageListener('apps.column.expand', this.expandAppsSidebar, this);
-    DeskPRO_Window.getMessageBroker().addMessageListener('apps.column.collapse', this.collapseAppsSidebar, this);
+      DeskPRO_Window.getMessageBroker().addMessageListener(['apps-column.togglePin', this.pageUid].join('.'), this.togglePinAppsColumn, this);
+      DeskPRO_Window.getMessageBroker().addMessageListener(['apps-column.expand', this.pageUid].join('.'),  this.expandAppsSidebar, this);
+      DeskPRO_Window.getMessageBroker().addMessageListener(['apps-column.collapse', this.pageUid].join('.'), this.collapseAppsSidebar, this);
+
+    }, this);
 
     // Standard hook methods
     this.addEvent('activate', this.activate);
@@ -130,6 +132,11 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       if (self.wrapper) {
         $('.tipped', self.wrapper).remove();
       }
+
+      DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.togglePin', this.pageUid].join('.'), this.togglePinAppsColumn, this);
+      DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.expand', this.pageUid].join('.'),  this.expandAppsSidebar, this);
+      DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.collapse', this.pageUid].join('.'), this.collapseAppsSidebar, this);
+
     });
     this.addEvent('destroy', this.destroyPage);
 
@@ -495,34 +502,18 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     platform.onFragmentEnded(this);
   },
 
-  // we're doing this because _togglePin is dynamically defined :(
   togglePinAppsColumn: function()
   {
-    this._togglePin()
+    if (DeskPRO_Window.appsSidebar.pinned) {
+      self.unpinAppsSidebar();
+      self.collapseAppsSidebar();
+    } else {
+      self.pinAppsSidebar();
+      self.expandAppsSidebar();
+    }
   },
 
-  _togglePin: function() {
-    // is overriden in _initAppsSidebar
-  },
-
-  // updateAppsSidebar: function() {
-  //   var el = this.getEl('layout_sidebar_icons');
-  //   if (!el[0] || el.find('li.is-enabled').length == 0) {
-  //     this.anyAppsSidebar = false;
-  //     this.wrapper.removeClass('with-apps-sidebar');
-  //     this.wrapper.triggerHandler('onNoAppsSidebar');
-  //     if (this.updateAppSidebarUi) {
-  //       this.updateAppSidebarUi();
-  //     }
-  //   } else {
-  //     this.anyAppsSidebar = true;
-  //     this.wrapper.addClass('with-apps-sidebar');
-  //     this.wrapper.triggerHandler('onAppsSidebar');
-  //     this._initAppsSidebar();
-  //   }
-  // },
   updateAppsSidebar: function() {
-      this.anyAppsSidebar = true;
       this.wrapper.addClass('with-apps-sidebar');
       this.wrapper.triggerHandler('onAppsSidebar');
       this._initAppsSidebar();
@@ -532,16 +523,30 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
   {
     this.wrapper.removeClass('with-apps-sidebar-collapsed');
     this.wrapper.addClass('with-apps-sidebar-expanded');
+    DeskPRO_Window.appsSidebar.expanded = true;
+    if (Modernizr.localstorage) {
+      localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
+    }
   },
 
   collapseAppsSidebar: function()
   {
     self.wrapper.removeClass('with-apps-sidebar-expanded');
     self.wrapper.addClass('with-apps-sidebar-collapsed');
+    DeskPRO_Window.appsSidebar.expanded = false;
+    if (Modernizr.localstorage) {
+      localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
+    }
   },
 
   pinAppsSidebar: function()
   {
+    DeskPRO_Window.appsSidebar.pinned = true;
+    DeskPRO_Window.appsSidebar.expanded = true;
+    if (Modernizr.localstorage) {
+      localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
+    }
+
     self.wrapper.addClass('with-apps-sidebar-pinned');
 
     var sidebarEl   = this.getEl('layout_sidebar');
@@ -550,6 +555,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
   unpinAppsSidebar: function()
   {
+    DeskPRO_Window.appsSidebar.pinned = false;
+    DeskPRO_Window.appsSidebar.expanded = false;
+    if (Modernizr.localstorage) {
+      localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
+    }
+
     self.wrapper.removeClass('with-apps-sidebar-pinned');
 
     var sidebarEl   = this.getEl('layout_sidebar');
@@ -558,129 +569,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
   _initAppsSidebar: function() {
     if (this._hasInitAppsSidebar) return;
+    this._hasInitAppsSidebar = true;
 
     var self = this;
 
-    var sidebarEl   = this.getEl('layout_sidebar');
-    var layoutEl    = this.getEl('layout_content');
-    var iconsEl     = this.getEl('layout_sidebar_icons');
-    var sizer       = this.getEl('layout_sidebar_sizer');
-    var isOver      = false;
-    var isPlaceOver = false;
-    var isSizerOver = false;
-    var isSizing     = false;
-    var isClosing   = false;
-    var openTimeout = null;
-    var outTimeout  = null;
-    var initialUpdateDone = false;
-
-    var sizerCalcLeft = function() {
-      var l = parseInt(self.wrapper.width()) - parseInt(DeskPRO_Window.appsSidebar.width);
-      return l;
-    };
-
-    var open = function(openNow) {
-      if (DeskPRO_Window.appsSidebar.visible || !self.anyAppsSidebar) return;
-
-      if (openNow) {
-        self.expandAppsSidebar();
-//        sizer.css('left', sizerCalcLeft()).show();
-      } else {
-        self.collapseAppsSidebar();
-        // sizer.css('left', sizerCalcLeft()).show();
-      }
-    };
-
-    var close = function() {
-      if (DeskPRO_Window.appsSidebar.visible || !self.anyAppsSidebar) return;
-      isClosing = true;
-
-      self.wrapper.removeClass('with-apps-sidebar-expanded');
-      self.wrapper.addClass('with-apps-sidebar-collapsed');
-
-      outTimeout = window.setTimeout(function() {
-        outTimeout = null;
-        isClosing = false;
-      }, 380);
-
-    };
-
-    var startCloseTimeout = function() {
-      if (!outTimeout) {
-        outTimeout = window.setTimeout(function() {
-          outTimeout = null;
-
-          if (!isOver && !isPlaceOver && !isSizerOver && !isSizing && !self.wrapper.hasClass('with-apps-sidebar-pinned')) {
-            close();
-          }
-        }, 380);
-      }
-    };
-
-    var cancelCloseTimeout = function() {
-      if (outTimeout) {
-        window.clearTimeout(outTimeout);
-        outTimeout = null;
-      }
-      if (isClosing) {
-        isClosing = false;
-        //sidebarEl.stop().animate({right: 0}, {duration: 150});
-        sizer.css('left', sizerCalcLeft()).show();
-      }
-    };
-
-    this._togglePin = function() {
-      if (DeskPRO_Window.appsSidebar.visible) {
-        closePin();
-      } else {
-        openPin();
-      }
-    };
-
-    var openPin = function() {
-      if (outTimeout) {
-        window.clearTimeout(outTimeout);
-        outTimeout = null;
-      }
-      if (openTimeout) {
-        window.clearTimeout(openTimeout);
-        openTimeout = null;
-      }
-
-      self.pinAppsSidebar();
-      self.expandAppsSidebar();
-
-      DeskPRO_Window.appsSidebar.visible = true;
-      sizer.css('left', sizerCalcLeft()).show();
-
-      if (Modernizr.localstorage) {
-        localStorage['apps_sidebar_state'] = 'open';
-      }
-    };
-
-    var closePin = function() {
-      if (outTimeout) {
-        window.clearTimeout(outTimeout);
-        outTimeout = null;
-      }
-      if (openTimeout) {
-        window.clearTimeout(openTimeout);
-        openTimeout = null;
-      }
-
-      DeskPRO_Window.appsSidebar.visible = false;
-
-      if (Modernizr.localstorage) {
-        localStorage['apps_sidebar_state'] = 'closed';
-      }
-
-      self.unpinAppsSidebar();
-      self.collapseAppsSidebar();
-    };
-
     var updateUi = function() {
-      if (DeskPRO_Window.appsSidebar.visible && self.anyAppsSidebar) {
-        // sizer.css('left', sizerCalcLeft()).show();
+      if (DeskPRO_Window.appsSidebar.expanded) {
         self.pinAppsSidebar();
         self.expandAppsSidebar();
       } else {
@@ -689,82 +583,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       }
     };
 
+    // updateAppSidebarUi apparently is required some place
     this.updateAppSidebarUi = updateUi;
     this.addEvent('activate', function(){
       updateUi();
     });
     updateUi();
-
-
-    sidebarEl.on('mouseover', function() {
-      isOver = true;
-      cancelCloseTimeout();
-    }).on('mouseout', function() {
-      isOver = false;
-      startCloseTimeout();
-    }).on('mousedown', function(ev) {
-      ev.stopPropagation();
-      ev.stopImmediatePropagation();
-      ev.preventDefault();
-      self._togglePin();
-    });
-
-    iconsEl.on('click', function(ev) {
-      if (!isPlaceOver) {
-        ev.stopPropagation();
-        ev.stopImmediatePropagation();
-        ev.preventDefault();
-        open(true);
-      }
-    });
-
-    sidebarEl.find('.pin-btn').on('click', function(ev) {
-      ev.stopPropagation();
-      ev.stopImmediatePropagation();
-      ev.preventDefault();
-      self._togglePin();
-    });
-
-    iconsEl.on('mouseover', function() {
-      isPlaceOver = true;
-      openTimeout = window.setTimeout(function() {
-        openTimeout = null;
-        if (isPlaceOver) {
-          open();
-        }
-      }, 250);
-    }).on('mouseout', function() {
-      isPlaceOver = false;
-      if (openTimeout) {
-        window.clearTimeout(openTimeout);
-        openTimeout = null;
-      }
-    });
-
-    sizer.on('mouseover', function() {
-      isSizerOver = true;
-    }).on('mouseout', function() {
-      isSizerOver = false;
-      startCloseTimeout();
-    }).draggable({
-      axis: 'x'
-    }).on('dragstart', function() {
-      sizer.addClass('dragging');
-      isSizing = true;
-    }).on('dragstop', function() {
-      sizer.removeClass('dragging');
-      isSizing = false;
-      var w = self.wrapper.width() - sizer.position().left;
-      DeskPRO_Window.appsSidebar.width = w;
-      sidebarEl.css('width', w);
-      if (DeskPRO_Window.appsSidebar.visible) {
-        layoutEl.css('right', w);
-      }
-
-      if (Modernizr.localstorage) {
-        localStorage['apps_sidebar_width'] = w;
-      }
-    });
   },
 
   destroy: function() {

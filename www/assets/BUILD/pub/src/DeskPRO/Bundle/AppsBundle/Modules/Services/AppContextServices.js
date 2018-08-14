@@ -9,7 +9,7 @@ const extractContextPropsFromPage = (page, location) => {
   // extract page props
   const { TYPENAME: type } = page;
   const metadata = page.getMetaData(type);
-  const pageProps = { type, entityId: metadata.id };
+  const pageProps = { type, entityId: metadata.id, pageId: page.pageUid };
 
   // extract tab props
   let tabProps = {};

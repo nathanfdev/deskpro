@@ -1,32 +1,27 @@
 import PropTypes from 'prop-types';
 import React from 'react'; // eslint-disable-line no-unused-vars
 import { DeskproAppContainer } from './DeskproAppContainer';
-import { BtnPin } from './BtnPin';
+import { SidebarControlBtn } from './SidebarControlBtn';
 import { NavigationGroups } from './NavigationGroups';
+import { getWidgetBadgeTotalCount } from '../Services/appsState';
+
 
 export class AppsViewFull extends React.PureComponent {
   static propTypes = {
-    togglePin: PropTypes.func.isRequired,
-    pin:       PropTypes.func.isRequired,
-    collapse:  PropTypes.func.isRequired,
+    appsState:    PropTypes.object.isRequired,
+    sidebarState: PropTypes.string.isRequired,
+    togglePin:    PropTypes.func.isRequired,
+    pin:          PropTypes.func.isRequired,
 
-    widgetsConfigList:             PropTypes.array.isRequired,
-    context:                       PropTypes.object.isRequired,
-    dispatchIncomingWidgetMessage: PropTypes.func.isRequired,
-    addWidgetEventListener:        PropTypes.func.isRequired,
-    parseIncomingWidgetMessageJS:  PropTypes.func.isRequired
+    widgetsConfigList: PropTypes.array.isRequired,
+    context:           PropTypes.object.isRequired,
+    receiveMessage:    PropTypes.func.isRequired
   };
 
   static defaultProps = {
     active: false
   };
 
-  /**
-   * @param {SyntheticEvent} e
-   */
-  onMouseLeave = (e) =>  { // eslint-disable-line no-unused-vars
-    this.props.collapse();
-  };
 
   /**
    * @param {SyntheticEvent} e
@@ -37,19 +32,26 @@ export class AppsViewFull extends React.PureComponent {
 
   render()  {
     return (
-      <div className={'layout-sidebar__apps'} onMouseLeave={this.onMouseLeave} onClick={this.onClick}>
-        <div className={'layout-sidebar__header'} >
-          <NavigationGroups />
-          <BtnPin toggle={this.props.togglePin} />
-        </div>
+      <div className={'layout-sidebar__apps'} onClick={this.onClick}>
+        <div className={'dp-Root'}>
+          <div className={'dp-AppPanel'} >
+            <div className={'dp-AppTabs is-horizontal'}>
+              <NavigationGroups
+                className={'dp-ButtonTabs--wrap'}
+                notificationsCount={getWidgetBadgeTotalCount(this.props.appsState)}
+              />
 
-        <DeskproAppContainer
-          context={this.props.context}
-          addWidgetEventListener={this.props.addWidgetEventListener}
-          dispatchIncomingWidgetMessage={this.props.dispatchIncomingWidgetMessage}
-          parseIncomingWidgetMessageJS={this.props.parseIncomingWidgetMessageJS}
-          widgetsConfigList={this.props.widgetsConfigList}
-        />
+              <SidebarControlBtn sidebarState={this.props.sidebarState} onActivate={this.props.togglePin} />
+            </div>
+
+            <DeskproAppContainer
+              context={this.props.context}
+              receiveMessage={this.props.receiveMessage}
+              widgetsConfigList={this.props.widgetsConfigList}
+            />
+          </div>
+
+        </div>
       </div>
     );
   }

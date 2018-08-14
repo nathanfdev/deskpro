@@ -26,15 +26,12 @@
   pageMeta.url_child_remove = '{{ path('agent_org_child_remove', {id: org.id}) }}';
 </script>
 <div
-      class="layout-sidebar layout-sidebar__visible-area dp-app-v2-sidebar"
+      class="layout-sidebar dp-app-v2-sidebar dp-app-context"
       id="{{ baseId }}_layout_sidebar"
       data-deskproapp="org-sidebar"
       data-deskproapp-render="apps-column"
-      data-deskproapp-render-sidebar="#{{ baseId }}_layout_sidebar"
-      data-deskproapp-render-icons="#{{ baseId }}_layout_sidebar_icons > ul:first-child"
 >
-    <span class="pin-btn"><i class="fa fa-lock"></i><i class="fa fa-chevron-right"></i></span>
-    <div class="dp-app-context dp-app-v2-container" data-deskproapp-marker></div>
+
 </div>
 
 {# the sidebar sizer is disabled for at the moment and the plan is to completely remove it #}

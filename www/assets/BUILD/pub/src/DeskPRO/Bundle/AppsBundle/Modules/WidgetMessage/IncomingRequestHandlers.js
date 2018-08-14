@@ -384,17 +384,16 @@ export const EVENT_ME_GET = (response, widget, widgetMessage, services) => {
  */
 export const EVENT_RESET_SIZE = (response, widget, message, services) => {
   const { size } = message.body;
-  const height = size.outerHeight + 20;
+  const height = size.outerHeight;
+
+  // this event is a fire-and-forget event, no response is expected on the other side
 
   try {
     const { widgetDOM, $ } = services;
     const iframe = widgetDOM.findIframe(widget);
     $(iframe).height(height);
-
-    response(null, { height });
   } catch (e) {
     console.error('app reset size failed', e);
-    response(e);
   }
 };
 
