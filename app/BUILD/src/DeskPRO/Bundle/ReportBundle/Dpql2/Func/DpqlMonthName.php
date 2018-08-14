@@ -47,7 +47,9 @@ class DpqlMonthName extends AbstractDpqlFunc
         $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($format) {
             $format = $format === 'short' ? 'M' : 'F';
 
-            return \DateTime::createFromFormat('!m', $value)->format($format);
+            $dateTime = \DateTime::createFromFormat('!m', $value);
+
+            return $dateTime instanceof \DateTime ? $dateTime->format($format) : 'none';
         };
         $res = new Prepared($sql, 'DPQL_MONTHNAME('.$prepped->name().')', false, $renderer);
 
