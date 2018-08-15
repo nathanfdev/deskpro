@@ -9,16 +9,21 @@ import { allAccountsSelector, isAccountsLoadedSelector } from '../../../Selector
 import NewAccountContainer from '../Form/NewAccountContainer';
 import EditAccountContainer from '../Form/EditAccountContainer';
 import AccountForm from '../Form/AccountForm';
+import { settingsLoadedSelector, settingsSelector } from '../../../Selectors/settings';
+import { loadSettings, updateSettings } from '../../../Actions/settingActions';
 
 @connect(state => ({
-  accounts: allAccountsSelector(state),
-  loaded:   isAccountsLoadedSelector(state)
+  accounts:       allAccountsSelector(state),
+  accountsLoaded: isAccountsLoadedSelector(state),
+  settings:       settingsSelector(state),
+  settingsLoaded: settingsLoadedSelector(state)
 }))
 class AccountListContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    loaded:   PropTypes.bool
+    dispatch:       PropTypes.func,
+    accountsLoaded: PropTypes.bool,
+    settingsLoaded: PropTypes.bool,
   };
 
   constructor(props) {
@@ -30,43 +35,53 @@ class AccountListContainer extends React.Component {
   }
 
   componentDidMount() {
-    this.props.dispatch(loadAccounts());
+    const { dispatch } = this.props;
+
+    dispatch(loadAccounts());
+    dispatch(loadSettings());
   }
 
-  onNewAccount = () => {
+  onNewAccountClick = () => {
     this.setState({
       formOpened: true
     });
   };
 
-  onEditAccount = (account) => {
+  onEditAccountClick = (account) => {
     this.setState({
       formOpened:  true,
       editAccount: account
     });
   };
 
-  onClose = () => {
+  onCloseClick = () => {
     this.setState({
       formOpened:  false,
       editAccount: null
     });
   };
 
+  saveSettings = data => this.props.dispatch(updateSettings(data));
+
   render() {
-    const { loaded } = this.props;
+    const { accountsLoaded, settingsLoaded } = this.props;
     const FormContainer = this.state.editAccount ? EditAccountContainer : NewAccountContainer;
     const title = this.state.editAccount ? 'Edit account' : 'New account';
 
-    if (!loaded) {
+    if (!accountsLoaded || !settingsLoaded) {
       return <LoadingPage />;
     }
 
     return (
       <div>
-        <AccountList {...this.props} onNewAccount={this.onNewAccount} onEditAccount={this.onEditAccount} />
+        <AccountList
+          {...this.props}
+          onNewAccount={this.onNewAccountClick}
+          onEditAccount={this.onEditAccountClick}
+          saveSettings={this.saveSettings}
+        />
         <Modal isOpen={this.state.formOpened} onClose={this.onClose} title={title}>
-          <FormContainer account={this.state.editAccount} onClose={this.onClose}>
+          <FormContainer account={this.state.editAccount} onClose={this.onCloseClick}>
             <AccountForm />
           </FormContainer>
         </Modal>

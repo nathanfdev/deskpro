@@ -17,7 +17,9 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
+use Doctrine\ORM\Query\Expr\Join;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -1165,6 +1167,33 @@ class Ticket extends AbstractEntityRepository
             "SELECT COUNT(DISTINCT id) FROM ($parts_union) AS t",
             $params
         );
+    }
+
+    /**
+     * @param $number
+     *
+     * @return TicketEntity|null
+     */
+    public function getLastTicketForNumber($number)
+    {
+        $qb = $this
+            ->createQueryBuilder('t')
+            ->join('t.messages', 'm')
+            ->join(TicketMessageVoicePhoneCall::class, 'a', Join::WITH, 'a.message = m.id')
+            ->join('a.phoneCall', 'p')
+            ->where(
+                'p.externalNumber = :number',
+                't.status IN (:statuses)'
+            )
+            ->setParameter('number', $number)
+            ->setParameter('statuses', [
+                TicketEntity::STATUS_AWAITING_USER,
+                TicketEntity::STATUS_AWAITING_AGENT,
+            ])
+            ->setMaxResults(1)
+        ;
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
     protected function getQueryPartsForPerson(Entity\Person $person)

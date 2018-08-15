@@ -60,12 +60,14 @@ class VoiceSettingsController extends BaseController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function updateSettingsAction(Request $request)
     {
         $form = $this->createForm(VoiceSettingsType::class);
-        $form->submit($request->request->all());
+        $form->submit($request->request->all(), false);
 
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
@@ -74,6 +76,8 @@ class VoiceSettingsController extends BaseController
         /** @var \Application\DeskPRO\EntityRepository\Setting $settingsRepo */
         $settingsRepo = $this->getManager()->getRepository(Setting::class);
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_AGENT_VOICEMAIL_TIMEOUT, $form->get('agent_voicemail_timeout')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_GROUP_MISSED_CALL_TICKETS, $form->get('group_missed_call_tickets')->getData());
+        $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT, $form->get('group_missed_call_tickets_timeout')->getData());
 
         $this->getManager()->getConnection()->executeUpdate(
             'UPDATE voice_accounts SET date_sync = :date_sync',

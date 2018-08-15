@@ -2,13 +2,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
+import GeneralSettingsForm from './GeneralSettingsForm';
 
 class AccountList extends React.Component {
 
   static propTypes = {
     accounts:      PropTypes.object,
+    settings:      PropTypes.object,
     onNewAccount:  PropTypes.func,
-    onEditAccount: PropTypes.func
+    onEditAccount: PropTypes.func,
+    saveSettings:  PropTypes.func,
   };
 
   renderEmpty() {
@@ -29,7 +32,7 @@ class AccountList extends React.Component {
   }
 
   renderTable() {
-    const { accounts = [], onEditAccount } = this.props;
+    const { accounts = [], onEditAccount, settings, saveSettings } = this.props;
 
     return (
       <div className="page">
@@ -70,6 +73,12 @@ class AccountList extends React.Component {
               </div>
             </div>
           )}
+        </div>
+
+        <div className="admin-list-options">
+          <div className="agent-settings-form">
+            <GeneralSettingsForm settings={settings} onSubmit={saveSettings} />
+          </div>
         </div>
       </div>
     );

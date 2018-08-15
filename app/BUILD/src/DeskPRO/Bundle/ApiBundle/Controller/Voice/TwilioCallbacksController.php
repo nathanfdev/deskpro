@@ -210,10 +210,31 @@ class TwilioCallbacksController extends AbstractVoiceController
                         $ticketMessage->setMessage('Missed call from '.$phoneCall->getExternalNumber());
                         $ticketMessage->setAsAgentNote(true);
 
-                        $ticket = new Ticket();
+                        // try to get last ticket
+                        $ticket = null;
+                        if ($this->container->get('voice_settings_resolver')->isGroupMissedCallTickets()) {
+                            /** @var Ticket $lastTicket */
+                            $lastTicket = $this->getManager()->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
+                            if ($lastTicket) {
+                                $now    = new \DateTime();
+                                $hours  = $this->container->get('voice_settings_resolver')->getGroupMissedCallTicketsTimeout();
+                                $offset = clone $lastTicket->getDateCreated();
+                                $offset->modify("+{$hours} hours");
+
+                                if ($offset > $now) {
+                                    $ticket = $lastTicket;
+                                }
+                            }
+                        }
+
+                        // if no last ticket, create a new one
+                        if (!$ticket) {
+                            $ticket = new Ticket();
+                            $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
+                            $ticket->setPerson($phoneCall->getPerson());
+                        }
+
                         $ticket->disableAutoTicketProcess();
-                        $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
-                        $ticket->setPerson($phoneCall->getPerson());
                         $ticket->addMessage($ticketMessage);
 
                         $this->saveTicket($ticket);

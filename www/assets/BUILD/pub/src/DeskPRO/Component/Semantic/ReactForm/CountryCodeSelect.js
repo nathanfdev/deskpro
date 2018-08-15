@@ -26,13 +26,13 @@ class CountryCodeSelect extends React.Component {
 
   render() {
     const { allowedCountryCodes, multiple, value } = this.props;
-    const countryCodes = allowedCountryCodes || Object.keys(countries.countries);
 
     delete countries.countries.XK;
 
+    const countryCodes = allowedCountryCodes || Object.keys(countries.countries);
     const choices = countryCodes.map(countryCode => ({
       value: countryCode,
-      label: countries.countries[countryCode].name
+      label: countries.countries[countryCode] ? countries.countries[countryCode].name : ''
     }));
 
     let selectValue;
