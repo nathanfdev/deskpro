@@ -343,7 +343,12 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
             self::EMPTY_NUMBER,
         ];
 
-        return in_array($this->externalNumber, $strangeNumbers);
+        $formattedExternalNumber = preg_replace('/[^0-9]/', '', $this->externalNumber);
+        foreach ($strangeNumbers as &$strangeNumber) {
+            $strangeNumber = preg_replace('/[^0-9]/', '', $strangeNumber);
+        }
+
+        return in_array($formattedExternalNumber, $strangeNumbers);
     }
 
     /**
