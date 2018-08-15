@@ -54,6 +54,19 @@ class BlobContext extends BaseContext
     }
 
     /**
+     * @Given I mark blob :blobRef as not temp
+     *
+     * @param string $blobRef
+     */
+    public function iMarkBlobAsNotTemp($blobRef)
+    {
+        $blob          = DataContext::getReference($blobRef);
+        $blob->is_temp = false;
+        $this->em()->persist($blob);
+        $this->em()->flush();
+    }
+
+    /**
      * @Given I create an image blob with auth code :authCode
      *
      * @param string $authCode
