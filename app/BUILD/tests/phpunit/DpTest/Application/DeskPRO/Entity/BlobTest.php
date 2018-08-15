@@ -101,15 +101,16 @@ class BlobTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @testWith    ["1307DHDCQBHHWNCHKBD0T", true, true]
-     *              ["1307DHDCQBHHWNCHKBD0T", false, false]
-     *              ["1307DHDCQBHHWNCHKBD0",  true, false]
-     *              ["1307DHDCQBHHWNCHKBD0",  false, false]
+     * @testWith [true,  "1307DHDCQBHHWNCHKBD0T", "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1&access_token=abc"]
+     *           [true,  "1307DHDCQBHHWNCHKBD0T", "/file.php/somecode/index.jpg",                 "/file.php/somecode/index.jpg?access_token=abc"]
+     *           [false, "1307DHDCQBHHWNCHKBD0T", "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
+     *           [true,  "1307DHDCQBHHWNCHKBD0",  "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
+     *           [false, "1307DHDCQBHHWNCHKBD0",  "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
      *
      * @param string $authcode
      * @param bool   $shouldHaveAccessToken
      */
-    public function testGetThumbnailUrl($authcode, $isAttachmentAuthEnabled, $shouldHaveAccessToken)
+    public function testGetThumbnailUrl($isAttachmentAuthEnabled, $authcode, $routerGeneratedUrl, $expectedUrl)
     {
         // GIVEN
         App::$container = ContainerMock::create()
@@ -118,9 +119,9 @@ class BlobTest extends \PHPUnit_Framework_TestCase
 
         $mockRouter = m::mock('Symfony\\Component\\Routing\\Router');
         $mockRouter->shouldIgnoreMissing();
-        $mockRouter->shouldReceive('generate')->andReturn('/file.php/somecode/index.jpg');
+        $mockRouter->shouldReceive('generate')->andReturn($routerGeneratedUrl);
         App::$container->shouldReceive('get')->with('router')->andReturn($mockRouter);
-        App::$container->shouldReceive('generateStaticSecurityToken')->andReturn('abcd');
+        App::$container->shouldReceive('generateStaticSecurityToken')->andReturn('abc');
 
         $blob = new Blob();
         $blob->setContentType('image/jpg');
@@ -132,19 +133,7 @@ class BlobTest extends \PHPUnit_Framework_TestCase
         $urlAbsolute = $blob->getThumbnailUrl(50, UrlGeneratorInterface::ABSOLUTE_PATH);
 
         // THEN
-        $urlQueryParams         = [];
-        $urlAbsoluteQueryParams = [];
-        parse_str(parse_url($url, PHP_URL_QUERY), $urlQueryParams);
-        parse_str(parse_url($urlAbsolute, PHP_URL_QUERY), $urlAbsoluteQueryParams);
-
-        if ($shouldHaveAccessToken) {
-            $this->assertArrayHasKey('access_token', $urlQueryParams);
-            $this->assertArrayHasKey('access_token', $urlAbsoluteQueryParams);
-            $this->assertEquals('abcd', $urlQueryParams['access_token']);
-            $this->assertEquals('abcd', $urlAbsoluteQueryParams['access_token']);
-        } else {
-            $this->assertArrayNotHasKey('access_token', $urlQueryParams);
-            $this->assertArrayNotHasKey('access_token', $urlAbsoluteQueryParams);
-        }
+        $this->assertEquals($expectedUrl, $url);
+        $this->assertEquals($expectedUrl, $urlAbsolute);
     }
 }

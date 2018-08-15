@@ -146,6 +146,7 @@ portal:
                 - DpBehat\Data\TicketLayoutContext
                 - DpBehat\PermissionContext
                 - DpBehat\BrandSettingContext
+                - DpBehat\Data\BlobContext
     extensions:
         Behatch\Extension: ~
         Behat\MinkExtension:

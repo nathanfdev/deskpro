@@ -1436,7 +1436,6 @@ class ServeFileScript extends LowScriptAbstract
     }
 
     /**
-     *
      * @param string $blobAuth
      */
     private function checkTicketAttachmentAccessTokenOrRedirect($blobAuth)
@@ -1447,7 +1446,7 @@ class ServeFileScript extends LowScriptAbstract
 
         $isValid = false;
         if (!empty($_GET['access_token'])) {
-            $secret  = $this->_getSetting('core.app_secret', 'secret');
+            $secret = $this->_getSetting('core.app_secret', 'secret');
 
             // recreate logic from DeskproContainer::generateStaticSecurityToken
             $secret  = md5($secret.$blobAuth);

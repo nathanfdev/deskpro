@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\LowLevel;
 
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalModeTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -124,5 +126,46 @@ class BlobController extends BaseController
         $response->setPublic();
 
         return $response;
+    }
+
+    /**
+     * @Route(
+     *     "/ticket-attachment/{authcode}",
+     *     name="view_ticket_protected_attachment"
+     * )
+     * @Method("GET")
+     *
+     * @return Response
+     */
+    public function viewTicketProtectedAttachmentAction($authcode)
+    {
+        $user = $this->getUser();
+        if (!$user instanceof Person || !$user->getId()) {
+            return $this->redirectToRoute('user_login');
+        }
+
+        $em = $this->get('doctrine')->getManager();
+
+        $blob = $em->getRepository('DeskPRO:Blob')->getByAuthCode($authcode);
+        if (!$blob) {
+            throw $this->createNotFoundException('Blob not found');
+        }
+
+        $ticketAttachment = $em->getRepository('DeskPRO:TicketAttachment')->findOneByBlob($blob);
+        if (!$ticketAttachment) {
+            throw $this->createNotFoundException('Ticket Attachment not found for the Blob');
+        }
+
+        if ($user->isAgent()) {
+            if (!$user->PermissionsManager->TicketChecker->canView($ticketAttachment->getTicket())) {
+                throw $this->createAccessDeniedException();
+            }
+        } else {
+            if (!$this->isGranted(TicketsVoter::TICKET_VIEW, $ticketAttachment->getTicket())) {
+                throw $this->createAccessDeniedException();
+            }
+        }
+
+        return $this->redirect($blob->getDownloadUrl());
     }
 }

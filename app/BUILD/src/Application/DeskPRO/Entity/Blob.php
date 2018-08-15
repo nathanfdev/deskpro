@@ -429,7 +429,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             ->getGlobalSettings()
             ->get('core_tickets.attachment_require_auth');
         if ($this->isTicketAttachment() && $isAttachmentRequireAuth) {
-            $url .= '?access_token='.App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
+            $accessToken = App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
+            if (strpos($url, '?') === false) {
+                $url .= '?access_token='.$accessToken;
+            } else {
+                $url .= '&access_token='.$accessToken;
+            }
         }
 
         return $url;
@@ -481,7 +486,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             ->getGlobalSettings()
             ->get('core_tickets.attachment_require_auth');
         if ($this->isTicketAttachment() && $isAttachmentRequireAuth) {
-            $url .= '?access_token='.App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
+            $accessToken = App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
+            if (strpos($url, '?') === false) {
+                $url .= '?access_token='.$accessToken;
+            } else {
+                $url .= '&access_token='.$accessToken;
+            }
         }
 
         return $url;

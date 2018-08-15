@@ -3487,7 +3487,7 @@ return [
     'adm.ticket_settings.title'                                          => 'Ticket Settings',
     'adm.ticket_settings.attachment_auth_title'                          => 'Attachments Authorisation',
     'adm.ticket_settings.attachment_auth_description'                    => 'Perform permission check on ticket attachment views',
-    'adm.ticket_settings.attachment_auth_help'                           => 'When enabled, ticket attachments will only be visible by people who can view the ticket. Even if the user has the full coded URL to a file, the system will check permissions and ask the user to log-in if necessary.',
+    'adm.ticket_settings.attachment_auth_help'                           => 'When enabled, ticket attachments will only be visible by people who can view the ticket. Even if the user has the full coded URL to a file, the system will check permissions and ask the user to log-in if necessary. Doesn\'t work with `Amazon S3` storage yet.',
     'adm.ticket_slas.count_slas'                                         => '{{count}} SLA|{{count}} SLAs',
     'adm.ticket_slas.delete_confirm'                                     => 'Are you sure you want to delete this SLA? All data associated with the SLA (such as reports based on this SLA) will be deleted too.',
     'adm.ticket_slas.no_slas'                                            => 'You have not created any SLAs yet.',
