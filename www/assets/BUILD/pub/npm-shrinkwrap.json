@@ -26562,9 +26562,9 @@
       }
     },
     "intl-tel-input": {
-      "version": "6.4.4",
-      "resolved": "https://registry.npmjs.org/intl-tel-input/-/intl-tel-input-6.4.4.tgz",
-      "integrity": "sha1-qfoqJWEpnkHEkJcJVlHGa1o6aFI="
+      "version": "13.0.2",
+      "resolved": "https://registry.npmjs.org/intl-tel-input/-/intl-tel-input-13.0.2.tgz",
+      "integrity": "sha512-XuW3VBBmQy9wcUB57qrswT++bUfHqG84sitQhNXWATEsEc0M7Gq4/Id41/i3QlGFoXu5p/23J8SUSsot37lhfA=="
     },
     "invariant": {
       "version": "2.2.1",

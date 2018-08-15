@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import $ from 'jquery';
 import 'intl-tel-input';
-import 'intl-tel-input/lib/libphonenumber/build/utils';
+import 'intl-tel-input/build/js/utils';
 import Checkbox from './Checkbox';
 
 class PhoneInput extends React.Component {
@@ -63,7 +63,6 @@ class PhoneInput extends React.Component {
     } else {
       $input.intlTelInput({
         autoPlaceholder: true,
-        autoFormat:      true,
         allowExtensions: true,
         nationalMode:    true
       });
