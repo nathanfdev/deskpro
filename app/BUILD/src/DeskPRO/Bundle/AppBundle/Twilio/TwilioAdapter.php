@@ -38,6 +38,7 @@ use Twilio\Values;
 class TwilioAdapter
 {
     const VOICEMAIL_WAITING_TIMEOUT = 30;
+    const WORKFLOW_NAME             = 'DeskPRO Queue Routing Workflow';
 
     /**
      * @var EntityManager
@@ -733,6 +734,8 @@ class TwilioAdapter
      * @param VoiceAccount $account
      * @param string       $assignmentCallbackUrl
      *
+     * @throws \Exception
+     *
      * @return WorkflowInstance
      */
     public function clearWorkflow(VoiceAccount $account, $assignmentCallbackUrl)
@@ -740,7 +743,23 @@ class TwilioAdapter
         // force delete old workflow to avoid twilio FK errors
         // just cleaning workflow still keeps task queue sids for some reason
         $workspace = $this->getWorkspace($account);
-        $workspace->workflows($account->getQueueWorkflowSid())->delete();
+        try {
+            $workspace->workflows($account->getQueueWorkflowSid())->delete();
+        } catch (RestException $e) {
+            // unexpected response exception, bubble the exception and stop syncing
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                // try to delete by name
+                $existWorkflows = $workspace->workflows->read([
+                    'FriendlyName' => self::WORKFLOW_NAME,
+                ]);
+
+                foreach ($existWorkflows as $existWorkflow) {
+                    $existWorkflow->delete();
+                }
+            } else {
+                throw $e;
+            }
+        }
 
         $configuration = json_encode([
             'task_routing' => [
@@ -748,17 +767,19 @@ class TwilioAdapter
                     [
                         'targets' => [
                             [
-                                'queue' => $account->getVoicemailQueueSid(),
+                                'queue'      => $account->getVoicemailQueueSid(),
+                                'expression' => '1 = 1',
                             ],
                         ],
                         'filter_friendly_name' => 'Voicemail',
+                        'expression'           => '1 = 1',
                     ],
                 ],
             ],
         ]);
 
         // create a new empty workflow
-        return $workspace->workflows->create('DeskPRO Queue Routing Workflow', $configuration, [
+        return $workspace->workflows->create(self::WORKFLOW_NAME, $configuration, [
             'assignmentCallbackUrl' => $assignmentCallbackUrl,
         ]);
     }
@@ -782,7 +803,7 @@ class TwilioAdapter
                 'targets' => [
                     [
                         'queue'      => $queue->getTaskQueueSid(),
-                        'expression' => 'worker.agent_id > 0',
+                        'expression' => 'worker.agent_id NOT IN task.rejected_workers',
                         'priority'   => 1,
                         'timeout'    => $queue->getVoicemailTimeout() ?: self::VOICEMAIL_WAITING_TIMEOUT,
                     ],
@@ -805,7 +826,7 @@ class TwilioAdapter
                 'targets' => [
                     [
                         'queue'      => $agent->getVoiceTaskQueueSid(),
-                        'expression' => 'worker.agent_id > 0',
+                        'expression' => 'worker.agent_id NOT IN task.rejected_workers',
                         'priority'   => 1,
                         'timeout'    => $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout(),
                     ],
@@ -833,7 +854,7 @@ class TwilioAdapter
                 ]);
             } catch (RestException $e) {
                 if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
-                    $workflow = $workspace->workflows->create('DeskPRO Queue Routing Workflow', $configuration, [
+                    $workflow = $workspace->workflows->create(self::WORKFLOW_NAME, $configuration, [
                         'assignmentCallbackUrl' => $assignmentCallbackUrl,
                     ]);
                 } else {
@@ -841,7 +862,7 @@ class TwilioAdapter
                 }
             }
         } else {
-            $workflow = $workspace->workflows->create('DeskPRO Queue Routing Workflow', $configuration, [
+            $workflow = $workspace->workflows->create(self::WORKFLOW_NAME, $configuration, [
                 'assignmentCallbackUrl' => $assignmentCallbackUrl,
             ]);
         }
