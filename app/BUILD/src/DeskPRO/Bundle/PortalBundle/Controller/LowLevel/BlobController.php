@@ -152,6 +152,12 @@ class BlobController extends BaseController
             throw $this->createNotFoundException('Blob not found');
         }
 
+        // During ticket message creation blob could stay in temp status while user typing a message
+        // if user press on attachment - just return it
+        if ($blob->isTemp()) {
+            return $this->redirect($blob->getDownloadUrl());
+        }
+
         try {
             $ticketAttachment = $em->getRepository('DeskPRO:TicketAttachment')->findOneByBlob($blob);
         } catch (NonUniqueResultException $ex) {
