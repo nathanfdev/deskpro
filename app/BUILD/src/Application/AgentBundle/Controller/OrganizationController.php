@@ -373,7 +373,7 @@ class OrganizationController extends AbstractController
             ]);
         }
 
-        $manager->flush();
+        $manager->flush($form);
         $customFields = $fieldManager->getDisplayArrayForObject($org);
 
         return $this->render('AgentBundle:Organization:view-customfields-rendered-rows.html.twig', [

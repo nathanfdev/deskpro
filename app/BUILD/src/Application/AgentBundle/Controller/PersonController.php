@@ -805,7 +805,7 @@ class PersonController extends AbstractController
                 'invalid_custom_fields' => $form->getErrors(true, true)->current(),
             ]);
         }
-        $manager->flush();
+        $manager->flush($form);
 
         $field_manager->saveFormToObject($custom_fields, $person);
 
@@ -1657,7 +1657,7 @@ class PersonController extends AbstractController
                 $request->request->set($custom_fields_definitions->getName(), []);
             }
             if ($custom_fields_definitions->handleRequest($request)->isValid()) {
-                $manager->flush();
+                $manager->flush($custom_fields_definitions);
             }
 
             $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);

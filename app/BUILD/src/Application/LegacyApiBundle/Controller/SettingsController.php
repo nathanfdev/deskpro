@@ -488,7 +488,6 @@ class SettingsController extends AbstractController implements ProtectedControll
             $p->setPassword($data['password']);
 
             $this->em->flush();
-            $this->em->flush();
             $remove_label = true;
         }
 
