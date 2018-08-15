@@ -38,7 +38,7 @@ class Dialpad extends React.Component {
       formData: createValue({
         value: {
           call_from: callFrom,
-          call_to:   null,
+          call_to:   '',
           ticket:    null
         },
         errorList: {},

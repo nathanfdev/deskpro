@@ -325,6 +325,9 @@ $voice-green-border-color: #47BF61;
             margin: 0;
             padding: 0;
           }
+          td:focus {
+            background-color: blue;
+          }
         }
 
         .call-button {
@@ -1107,11 +1110,14 @@ $voice-green-border-color: #47BF61;
     border: 1px solid $dp-greyscale-250;
   }
 
-  button {
+  a, button {
     width: 105px;
     height: 40px;
     font-weight: 600;
     font-size: 18px;
+    display: block;
+    text-align: center;
+    line-height: 40px;
     color: $dp-greyscale-850;
     background-color: $dp-greyscale-250;
     background: -webkit-linear-gradient(180deg, rgba(255, 255, 255, 1) 14.79%, rgba(253, 253, 253, 0.48) 64.28%, rgba(246, 246, 246, 0.29) 82.1%, rgba(235, 235, 235, 0.16) 94.77%, rgba(227, 227, 227, 0.1) 100%);
