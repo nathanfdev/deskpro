@@ -302,3 +302,18 @@ Feature: /tickets/{id}/messages endpoint
     Then the response status code should be 200
     And the JSON node "data" should have 1 elements
     And the JSON node "data[0].blob.blob_auth" should contain "m2blob_CCCCCCCCCCC"
+
+  Scenario: I create a message with attachment not tagged as TicketAttachment
+    Given I create blob with auth code "AAAAAAAA12"
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "Test message",
+  "attachments": [
+    { "blob_auth": "AAAAAAAA12" }
+  ]
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.attachments" should have 1 elements
+    And the "{lastCreatedId}" message should have "1" attachments properly tagged

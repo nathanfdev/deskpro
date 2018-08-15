@@ -9,7 +9,9 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TicketAttachmentBlobCheckerListener;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -252,6 +254,7 @@ class TicketAttachment extends DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
         $metadata->addLifecycleCallback('prePersist', 'prePersist');
+        $metadata->addEntityListener(Events::prePersist, TicketAttachmentBlobCheckerListener::class, 'prePersist');
 
         $metadata->mapField(
             [

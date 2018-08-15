@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalModeTrait;
+use Doctrine\ORM\NonUniqueResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
@@ -151,7 +152,11 @@ class BlobController extends BaseController
             throw $this->createNotFoundException('Blob not found');
         }
 
-        $ticketAttachment = $em->getRepository('DeskPRO:TicketAttachment')->findOneByBlob($blob);
+        try {
+            $ticketAttachment = $em->getRepository('DeskPRO:TicketAttachment')->findOneByBlob($blob);
+        } catch (NonUniqueResultException $ex) {
+            throw $this->createNotFoundException('More than one Ticket Attachments found for the Blob');
+        }
         if (!$ticketAttachment) {
             throw $this->createNotFoundException('Ticket Attachment not found for the Blob');
         }

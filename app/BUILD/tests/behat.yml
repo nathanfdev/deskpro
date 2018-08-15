@@ -18,6 +18,7 @@ api:
                 - Behat\MinkExtension\Context\MinkContext
                 - DpBehat\Api\JsonContext
                 - DpBehat\HooksContext
+                - DpBehat\TicketMessageContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\Api\BrandContext

@@ -115,6 +115,12 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.doctrine.ticket_attachment_blob_checker:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TicketAttachmentBlobCheckerListener
+    arguments: ["@doctrine.orm.default_entity_manager", "@deskpro.blob_storage", "@logger"]
+    tags:
+      - { name: doctrine.entity_listener }
+
   event_listener.doctrine.custom_data_ticket:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener
     tags:
