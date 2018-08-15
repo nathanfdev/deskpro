@@ -191,10 +191,16 @@ class TwilioCallbacksController extends AbstractVoiceController
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
 
                     // user ends call
-                    // check the call is not answered and voicemail wasn't reached
                     // create a ticket for missed calls
-                    // create a ticket just it was assigned to any target
-                    if (!$phoneCall->hasAgentParticipants() && !$phoneCall->getVoicemailRecord() && $phoneCall->getTaskSid()) {
+                    if (!$phoneCall->hasAgentParticipants()
+                        // check the call is not answered and voicemail wasn't reached
+                        // otherwise we got a voicemail record and agent will see it in a separate interface
+                        && !$phoneCall->getVoicemailRecord()
+                        // create a ticket just it was assigned to any target
+                        && $phoneCall->getTaskSid()
+                        // don't create missed tickets for strange numbers
+                        && !$phoneCall->isStrangeNumber()
+                    ) {
                         $ticketMessageCall = new TicketMessageVoicePhoneCall();
                         $ticketMessageCall->setPhoneCall($phoneCall);
 
