@@ -198,7 +198,7 @@ class ReportWidgetsController extends CrudController
             ->setData('content_length', strlen($actualResults));
 
         $this->getContainer()->getEm()->persist($tmpData);
-        $this->getContainer()->getEm()->flush($tmpData);
+        $this->getContainer()->getEm()->flush();
 
         return new View($this->wrap(['auth' => $tmpData->getAuth()]));
     }

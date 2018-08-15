@@ -28,7 +28,7 @@ class ApiLogListener extends AbstractLogListener
             // the priority doesn't make sense because we are using DP_START_TIME, that defined
             // at the very beginning of request handling
             // so you have to be sure, that it will run AFTER Auth and RequestIdListener
-            KernelEvents::REQUEST => ['onRequest', -32],
+            KernelEvents::REQUEST => ['onRequest', 6],
         ];
     }
 
@@ -59,6 +59,8 @@ class ApiLogListener extends AbstractLogListener
                 throw new ConflictHttpException('Error saving log entry, possibly request with given ID already processed');
             }
         }
+
+        return;
     }
 
     /**

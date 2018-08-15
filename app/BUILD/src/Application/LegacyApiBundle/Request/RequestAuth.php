@@ -224,7 +224,7 @@ class RequestAuth
         ]);
 
         $this->em->persist($log);
-        $this->em->flush($log);
+        $this->em->flush(); // flushing only one entity leads to losing changesets and sync status in UoW
         $this->log_entry = $log;
     }
 

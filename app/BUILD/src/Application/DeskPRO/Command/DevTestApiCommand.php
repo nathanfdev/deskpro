@@ -131,7 +131,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                     $keyAction->setKey($key)->setAction('*');
                     App::getOrm()->persist($key);
                     App::getOrm()->persist($keyAction);
-                    App::getOrm()->flush($key);
+                    App::getOrm()->flush();
                 }
             }
 

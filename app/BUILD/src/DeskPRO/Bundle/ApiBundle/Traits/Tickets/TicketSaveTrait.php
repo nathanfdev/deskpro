@@ -45,9 +45,9 @@ trait TicketSaveTrait
         $person = $this->getPersonForExecutorContext($ticket, $options);
 
         if ($person->isAgent()) {
-            $context = $manager->createAgentExecutorContext($person, $event, $eventMethod);
+            $context = $manager->createAgentExecutorContext($person, $event, $eventMethod, ['api_v2' => true]);
         } else {
-            $context = $manager->createUserExecutorContext($person, $event, $eventMethod);
+            $context = $manager->createUserExecutorContext($person, $event, $eventMethod, ['api_v2' => true]);
         }
 
         if (isset($options['suppress_user_notify']) && $options['suppress_user_notify']) {
