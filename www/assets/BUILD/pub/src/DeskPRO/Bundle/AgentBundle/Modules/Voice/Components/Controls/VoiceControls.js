@@ -34,6 +34,11 @@ class VoiceControls extends React.Component {
   };
 
   componentWillUnmount = () => {
+    const baseId = this.props.baseId;
+    const content = window.document.getElementById(`${baseId}_page_header`);
+    if (content) {
+      content.style.paddingTop = '10px';
+    }
     window.removeEventListener('resize', this.updateWindowDimensions);
   };
 
