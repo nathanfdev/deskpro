@@ -50,7 +50,6 @@ class MediaControls extends React.Component {
       });
     } else {
       this.audio.pause();
-      this.audio.currentTime = 0;
       this.setState({
         playing: false
       });
@@ -63,11 +62,13 @@ class MediaControls extends React.Component {
       return;
     }
 
-    this.audio.currentTime = (value / 100) * duration;
-    this.audio.play();
+    const currentTime = parseInt(value, 10);
+
     this.setState({
-      playing: true
+      currentTime
     });
+
+    this.audio.currentTime = currentTime;
   };
 
   onStepBackward = () => {
@@ -77,7 +78,6 @@ class MediaControls extends React.Component {
   render() {
     const { recording } = this.props;
     const { playing, duration, currentTime } = this.state;
-    const rangeValue = duration ? (currentTime / duration) * 100 : 0;
 
     return (
       <div className="media-controls">
@@ -87,10 +87,10 @@ class MediaControls extends React.Component {
           <i className="icon step backward" />
         </Button>
         <Button className={classNames('basic icon', { disabled: !duration })} onClick={this.onPlay}>
-          <i className={classNames(playing ? 'stop' : 'play', 'icon')} />
+          <i className={classNames(playing ? 'pause' : 'play', 'icon')} />
         </Button>
         <div className="media-timeline">
-          <Range value={rangeValue} onChange={this.onMove} />
+          <Range value={currentTime} onChange={this.onMove} min={0} max={duration} />
         </div>
         <span className="media-time">
           <Duration value={currentTime} /> / { duration ? <Duration value={duration} /> : '??' }
