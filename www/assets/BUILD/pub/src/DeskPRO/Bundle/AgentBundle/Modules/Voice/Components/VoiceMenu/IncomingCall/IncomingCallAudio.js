@@ -7,7 +7,7 @@ import '../../../../../Resources/sounds/incoming-call.wav';
 class IncomingCallAudio extends React.Component {
 
   static propTypes = {
-    ringingVolume: PropTypes.string,
+    ringingVolume: PropTypes.number,
     onSoundEnded:  PropTypes.func
   };
 

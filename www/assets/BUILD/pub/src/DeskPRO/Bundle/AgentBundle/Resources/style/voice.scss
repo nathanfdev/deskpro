@@ -306,6 +306,10 @@ $voice-green-border-color: #47BF61;
             background-color: $dp-greyscale-150;
             border: 1px solid $dp-greyscale-250;
           }
+
+          .country-list {
+            max-width: 350px;
+          }
         }
 
         .voice-sip-number-mode {

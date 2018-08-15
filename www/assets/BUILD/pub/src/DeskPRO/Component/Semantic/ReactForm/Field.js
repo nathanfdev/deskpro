@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Field as BaseField, ErrorList as BaseErrorList } from '@deskpro/react-forms';
+import { objectKeyFilter } from '@deskpro/js-utils/dist/objects';
 import { getErrorsByPropertyPath } from 'DeskPRO/Component/Form/FormErrors';
 import classNames from 'classnames';
 
@@ -39,7 +40,7 @@ class SemanticErrorList extends BaseErrorList {
     const error = errors.length > 0 && errors.pop();
 
     return (
-      <Root {...this.props}>
+      <Root {...objectKeyFilter(this.props, BaseErrorList.propTypes)}>
         {error && <Error error={error} />}
       </Root>
     );
