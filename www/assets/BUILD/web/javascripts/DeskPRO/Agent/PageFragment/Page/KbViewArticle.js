@@ -1034,9 +1034,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var titleInput   = row.find('.title-row').find('input');
 			var contentInput = row.find('.editor-row').find('textarea');
 
+			var titleName = titleInput.attr('name');
 			var postData = [];
-			postData.push({name: titleInput.attr('name'), value: titleInput.val() });
-			postData.push({name: contentInput.attr('name'), value: contentInput.val() });
+			postData.push({name: titleName, value: titleInput.val() });
+			postData.push({name: titleName.replace(/title/, 'content'), value: contentInput.val() });
 			postData.push({name: 'action', value: 'trans' });
 
 			row.addClass('dp-loading-on');
