@@ -73,6 +73,7 @@ class PersonDump
             'can_billing',
             'can_reports',
             'timezone',
+            'primary_email_id',
         ];
 
         return $this->em->getConnection()->fetchAssoc(
