@@ -79,7 +79,7 @@ const config = {
   output: {
     path:              path.resolve(__dirname, 'build/'),
     pathinfo:          true,
-    publicPath:        'http://localhost:9666/pub/build/',
+    publicPath:        'http://deskpro5.local:9666/pub/build/',
     filename:          '[name].js',
     sourceMapFilename: '[name].map'
   },

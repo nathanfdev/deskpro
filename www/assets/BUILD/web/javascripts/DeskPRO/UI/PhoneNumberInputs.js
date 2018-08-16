@@ -48,7 +48,7 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 				autoPlaceholder: true,
 				allowExtensions: true,
 				nationalMode: true,
-				utilsScript: window.DP_ASSET_URL + '/bower_components/intl-tel-input/build/js/utils.js',
+				utilsScript: window.DP_ASSET_URL.replace(/web\//, 'pub/') + 'build/phonenumber_utils.js',
 				geoIpLookup: that.lookupGeoIp
 			});
 

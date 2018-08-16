@@ -52,7 +52,6 @@
   "intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
   "redactor":                        "vendor/redactor/redactor.min",
   "cutstring":                       "vendor/cuthtmlstring/cutstring",
-  "intl-tel-input-utils":            "bower_components/intl-tel-input/lib/libphonenumber/build/utils",
   "perfect-scrollbar":               "bower_components/perfect-scrollbar/src/perfect-scrollbar",
 
   "json3":                           "bower_components/json3/lib/json3.min",

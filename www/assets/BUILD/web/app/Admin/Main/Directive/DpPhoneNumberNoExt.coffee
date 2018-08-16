@@ -1,4 +1,4 @@
-define ["jquery", "intl-tel-input", "intl-tel-input-utils"], ($, intlTelInput, utils) ->
+define ["jquery", "intl-tel-input"], ($, intlTelInput) ->
   ###
     # Description
     # -----------
@@ -40,7 +40,7 @@ define ["jquery", "intl-tel-input", "intl-tel-input-utils"], ($, intlTelInput, u
         element.intlTelInput({
           defaultCountry: reg.toLowerCase(),
           autoPlaceholder: true,
-          autoFormat: true,
+          utilsScript: window.DP_ASSET_URL.replace(/web\//, 'pub/') + 'build/phonenumber_utils.js',
           nationalMode: true
         })
 
