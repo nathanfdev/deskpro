@@ -493,10 +493,12 @@
       height: 100%;
       vertical-align: middle;
     }
-    .fa {
+    .fas {
       display: inline-block;
-      vertical-align: middle;
       color: $dp-greyscale-500;
+      position: absolute;
+      top: calc(50% - 6px);
+      left: -2px;
     }
   }
   &.snippet_list_element_wrapper--focused,
