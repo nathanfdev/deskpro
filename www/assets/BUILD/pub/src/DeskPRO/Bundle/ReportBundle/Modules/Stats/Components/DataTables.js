@@ -6,25 +6,28 @@ import React from 'react';
 class DataTable extends React.Component {
 
   static propTypes = {
-    columns: PropTypes.array.isRequired,
-    data:    PropTypes.array.isRequired,
-    options: PropTypes.object
+    columns:   PropTypes.array.isRequired,
+    data:      PropTypes.array.isRequired,
+    rowsGroup: PropTypes.array,
+    options:   PropTypes.object
   };
 
   static defaultProps = {
     options: {
       height: 200
-    }
+    },
+    rowsGroup: []
   };
 
   componentDidMount() {
-    const { data, columns, options } = this.props;
+    const { data, columns, options, rowsGroup } = this.props;
     this.originalData = data;
     const $table = $(this.el);
 
     this.dt = $table.DataTable({
       data,
       columns,
+      rowsGroup,
       pagingType:     'first_last_numbers',
       searching:      false,
       bJQueryUI:      true,

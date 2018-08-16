@@ -214,16 +214,9 @@ class DashboardWidgetManager
     public function formatData($data, $widgetType)
     {
         if ($data && $widgetType == self::WIDGET_TYPE_TABLE) {
-            $aoColumns = [];
-            $columns   = [];
-
-            foreach ($data['columns'] as $column) {
-                $aoColumns[] = null;
-                $columns[]   = ['title' => $column];
+            foreach ($data['columns'] as &$column) {
+                $column = ['title' => $column];
             }
-
-            $data['aoColumns'] = $aoColumns;
-            $data['columns']   = $columns;
         }
 
         if (empty($data) || $data === '') {

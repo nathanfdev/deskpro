@@ -104,6 +104,7 @@ class Run extends React.Component {
           style={{ width: '100%', height: '500px' }}
           data={options.get('data').toJS()}
           columns={options.get('columns').toJS()}
+          rowsGroup={options.get('rowsGroup', Immutable.fromJS([])).toJS()}
           options={{
             scrollCollapse: true,
             autoWidth:      true,

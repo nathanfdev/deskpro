@@ -61,6 +61,8 @@ class JsonTableRenderer extends AbstractJsonRenderer
         $prepared = $this->prepareMatrixTable($resultHandler, $rows);
         $lookup   = $prepared['lookup'];
         $select   = $resultHandler->getSelectColumns();
+        $groupX   = $resultHandler->getGroupXColumns();
+        $groupY   = $resultHandler->getGroupYColumns();
         $first    = reset($select);
         if (count($select) == 1 && in_array($first['renderer'], ['number', 'numberraw'], true)) {
             $totalType = $first['renderer'];
@@ -68,8 +70,16 @@ class JsonTableRenderer extends AbstractJsonRenderer
             $totalType = false;
         }
 
-        $columnsHead = [''];
-        $rowsData    = [];
+        $columnsHead = [];
+        if ($groupY) {
+            foreach ($groupY as $column) {
+                $columnsHead[] = $column['title'];
+            }
+        } else {
+            $columnsHead[] = '';
+        }
+
+        $rowsData = [];
 
         $rowGroups = $this->getFinalMatrixPathsWithPrintable(['root'], $prepared['yDistinct']);
         if (!$rowGroups) {
@@ -78,10 +88,26 @@ class JsonTableRenderer extends AbstractJsonRenderer
         }
         $headerCols = $this->getFinalMatrixPathsWithPrintable(['root'], $prepared['xDistinct']);
         $totalRow   = ['Total'];
+        $rowsGroup  = [];
+        $totalData  = count(reset($rowGroups));
+
+        if ($totalData > 1) {
+            for ($i = 0; $i < $totalData - 1; ++$i) {
+                $rowsGroup[] = $i;
+            }
+        }
 
         // getting through rows
         foreach ($rowGroups as $yPath => $rowHead) {
-            $rowData  = [reset($rowHead) ?: 'None'];
+            if (count($rowHead) == 1) {
+                $rowData = [reset($rowHead) ?: 'None'];
+            } else {
+                $rowData = [];
+                foreach ($rowHead as $headData) {
+                    $rowData[] = $headData ?: 'None';
+                }
+            }
+
             $rowTotal = 0;
             foreach ($headerCols as $xPath => $printable) {
                 if (isset($lookup[$yPath][$xPath])) {
@@ -103,6 +129,7 @@ class JsonTableRenderer extends AbstractJsonRenderer
             }
             $rowsData[] = $rowData;
         }
+
         // URGH, need to be refactored ASAP
         foreach ($headerCols as $colName) {
             $h             = reset($colName);
@@ -111,7 +138,11 @@ class JsonTableRenderer extends AbstractJsonRenderer
         if ($totalType) {
             $columnsHead[] = 'Total';
             $totalRow[]    = '';
-            $rowsData[]    = array_values($totalRow);
+            if ($totalData > 1) {
+                $totalRow = array_pad($totalRow, -1 * (count($totalRow) + $totalData - 1), '');
+            }
+
+            $rowsData[] = array_values($totalRow);
         }
 
         $rows = [];
@@ -132,7 +163,7 @@ class JsonTableRenderer extends AbstractJsonRenderer
         }
 
         foreach ($cols as $index => $total) {
-            if ($total < 1 && $index > 0) {
+            if ($total < 1 && $index > $totalData - 1) {
                 foreach ($rows as &$rowData) {
                     unset($rowData[$index]);
                 }
@@ -144,10 +175,16 @@ class JsonTableRenderer extends AbstractJsonRenderer
             $finalRows[] = array_values($row);
         }
 
-        return [
-            'columns' => $columnsHead,
+        $result = [
+            'columns' => array_values($columnsHead),
             'data'    => $finalRows,
         ];
+
+        if ($rowsGroup) {
+            $result['rowsGroup'] = $rowsGroup;
+        }
+
+        return $result;
     }
 
     /**
