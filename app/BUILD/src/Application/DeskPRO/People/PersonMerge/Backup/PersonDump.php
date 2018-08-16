@@ -42,6 +42,7 @@ class PersonDump
         $data['simple_fields'] = $this->getSimpleFields($person);
         $data['custom_data']   = $this->getCustomData($person);
         $data['groups']        = $this->getUserGroups($person);
+        $data['brands']        = $this->getBrands($person);
         if ($person->isAgent()) {
             $data['agent_teams'] = $this->getAgentTeams($person);
         }
@@ -109,6 +110,22 @@ class PersonDump
     {
         $res = $this->em->getConnection()->fetchAll(
             'select usergroup_id from person2usergroups where person_id = :person_id',
+            ['person_id' => $person->getId()],
+            ['person_id' => \PDO::PARAM_INT]
+        );
+
+        return array_map('current', $res);
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return array
+     */
+    protected function getBrands(Person $person)
+    {
+        $res = $this->em->getConnection()->fetchAll(
+            'select brand_id from person_to_brand where person_id = :person_id',
             ['person_id' => $person->getId()],
             ['person_id' => \PDO::PARAM_INT]
         );

@@ -165,6 +165,7 @@ class PersonMerge implements PersonContextInterface
             'people_notes',
             'people_prefs',
             'person2usergroups',
+            'person_to_brand',
             'person_activity',
             'person_usersource_assoc',
         ];

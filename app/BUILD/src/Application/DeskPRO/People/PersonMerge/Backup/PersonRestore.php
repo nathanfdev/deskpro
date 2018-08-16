@@ -39,6 +39,7 @@ class PersonRestore
         $this->restoreSimpleFields($person, $data);
         $this->restoreCustomData($person, $data);
         $this->restoreGroups($person, $data);
+        $this->restoreBrands($person, $data);
 
         $this->em->refresh($person);
         if ($person->isAgent()) {
@@ -144,6 +145,34 @@ class PersonRestore
             $this->tableInsert('person2usergroups', [
                 'person_id'    => $person->getId(),
                 'usergroup_id' => (int) $group,
+            ]);
+        }
+    }
+
+    /**
+     * @param Person $person
+     * @param array  $data
+     */
+    protected function restoreBrands(Person $person, $data)
+    {
+        if (!array_key_exists('brands', $data)) {
+            return;
+        }
+
+        $this->em->getConnection()->executeUpdate(
+            'DELETE FROM person_to_brand WHERE person_id = :person_id',
+            ['person_id' => $person->getId()],
+            ['person_id' => \PDO::PARAM_INT]
+        );
+
+        if (empty($data['brands'])) {
+            return;
+        }
+
+        foreach ($data['brands'] as $brand) {
+            $this->tableInsert('person_to_brand', [
+                'person_id' => $person->getId(),
+                'brand_id'  => (int) $brand,
             ]);
         }
     }
