@@ -43,5 +43,6 @@
   "angularGridster":                 ["angular"],
   "datatables":                      {"exports": "DataTable"},
   "datatables.pageResize":           ["datatables"],
+  "datatables.rowsGroup":            ["datatables"],
   "handlebars":                      {"exports": "Handlebars"}
 }

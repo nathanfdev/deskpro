@@ -1,4 +1,4 @@
-define ['datatables', "datatables.pageResize"], () ->
+define ['datatables', "datatables.pageResize", "datatables.rowsGroup"], () ->
   Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', '$timeout', ($sce, DashboardWidgetService, $timeout) ->
     return {
       restrict: 'E'
@@ -45,6 +45,7 @@ define ['datatables', "datatables.pageResize"], () ->
           defaultOptions = {
             data:           widget.data,
             columns:        widget.columns,
+            rowsGroup:      widget.rowsGroup || [],
             pagingType:     "first_last_numbers",
             pageResize:     true,
             searching:      false,
@@ -58,9 +59,9 @@ define ['datatables', "datatables.pageResize"], () ->
             order:          []
             fnDrawCallback: (settings) ->
               if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
-                $(settings.nTableWrapper).find('.dataTables_paginate').hide();
+                $(settings.nTableWrapper).find('.dataTables_paginate').hide()
               else
-                $(settings.nTableWrapper).find('.dataTables_paginate').show();
+                $(settings.nTableWrapper).find('.dataTables_paginate').show()
               if !drawn
                 $timeout(
                   ->
@@ -99,7 +100,7 @@ define ['datatables', "datatables.pageResize"], () ->
               if response and response.data
                 initTable response
         else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
-          DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+          DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) ->
             scope.loaded = true
             scope.noData = true
 
@@ -107,7 +108,7 @@ define ['datatables', "datatables.pageResize"], () ->
               initTable renderedResult
         else
           DashboardWidgetService
-            .getWidget(conf).then (widget) =>
+            .getWidget(conf).then (widget) ->
               scope.loaded = true
               scope.noData = true
 
