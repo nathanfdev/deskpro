@@ -102,7 +102,11 @@ class PersonMergeUndo
      */
     protected function createMergeUndoneActivity(Person $person, Person $otherPerson)
     {
-        $action = new ActivityLogger\ActionType\MergeUndone($person, $otherPerson);
+        // save Action for both persons
+        $action = new ActivityLogger\ActionType\MergeUndone($person, $person, $otherPerson);
+        $this->activityLogger->saveAction($action);
+
+        $action = new ActivityLogger\ActionType\MergeUndone($otherPerson, $person, $otherPerson);
         $this->activityLogger->saveAction($action);
 
         // call flush directly to execute it inside of transaction

@@ -507,11 +507,19 @@
                                               </button>
                                             {% endif %}
                                         {% elseif action.action_type == 'merge_undone' %}
-                                            {{ phrase('agent.people.act_merge_undone') }}
+                                          {% if action.details.side == 'base' %}
+                                            {{ phrase('agent.people.act_merge_undone_base_side') }}
                                             <a class="with-route"
                                                data-route="person:{{ path('agent_people_view', {'person_id': action.details.other_person_id }) }}">
-                                              {{ action.details.other_person_name }}
+                                              #{{ action.details.other_person_id }} {{ action.details.other_person_name }}
                                             </a>
+                                          {% else %}
+                                            {{ phrase('agent.people.act_merge_undone_other_side') }}
+                                            <a class="with-route"
+                                               data-route="person:{{ path('agent_people_view', {'person_id': action.details.base_person_id }) }}">
+                                              #{{ action.details.base_person_id }} {{ action.details.base_person_name }}
+                                            </a>
+                                          {% endif %}
                                         {% endif %}
 									</span>
                                     </div>
