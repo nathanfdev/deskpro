@@ -2808,7 +2808,7 @@ return [
 
     'agent.voice.incoming_call_title'                       => 'Inbound call record',
     'agent.voice.outgoing_call_title'                       => 'Outbound call record',
-    'agent.voice.call_new_incoming'                         => 'Incoming call by {{number}} {{person_name}}',
+    'agent.voice.call_new_incoming'                         => 'Incoming call from {{number}} {{person_name}} to {{to_number}}',
     'agent.voice.call_new_outgoing'                         => 'Outgoing call to {{number}} {{person_name}}',
     'agent.voice.call_auto_attendant_press_key'             => 'Pressed "{{key}}" for "{{target_name}}"',
     'agent.voice.call_auto_attendant_press_unsupported_key' => 'Pressed unsupported "{{key}}" key',
