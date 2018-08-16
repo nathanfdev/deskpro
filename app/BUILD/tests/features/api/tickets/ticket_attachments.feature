@@ -20,24 +20,24 @@ Feature: /tickets/{id}/attachments endpoint
     And the JSON node "data" should have 0 element
 
   Scenario: I retrieve a ticket attachments
-    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
-    And I create blob with auth code "BBBBBBBBBBBBBBBBBB"
+    Given I create blob with auth code "AAAAAAAAAAAAAAAAAAT"
+    And I create blob with auth code "BBBBBBBBBBBBBBBBBBT"
     And only the following TicketAttachment records exist:
       | Ticket | Person  | Message | Blob                      |
-      | {t1}   | {admin} | {m1}    | {blob_AAAAAAAAAAAAAAAAAA} |
-      | {t1}   | {admin} | {m1}    | {blob_BBBBBBBBBBBBBBBBBB} |
+      | {t1}   | {admin} | {m1}    | {blob_AAAAAAAAAAAAAAAAAAT} |
+      | {t1}   | {admin} | {m1}    | {blob_BBBBBBBBBBBBBBBBBBT} |
     When I send a GET request to "/api/v2/tickets/{t1}/attachments"
     Then the response status code should be 200
     And the JSON node "data" should have 2 elements
-    And the JSON node "data[0].blob.blob_auth" should contain "AAAAAAAAAAAAAAAAAA"
-    And the JSON node "data[1].blob.blob_auth" should contain "BBBBBBBBBBBBBBBBBB"
+    And the JSON node "data[0].blob.blob_auth" should contain "AAAAAAAAAAAAAAAAAAT"
+    And the JSON node "data[1].blob.blob_auth" should contain "BBBBBBBBBBBBBBBBBBT"
 
   Scenario: I retrieve a ticket attachments list by ticket ref
-    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
+    Given I create blob with auth code "AAAAAAAAAAAAAAAAAAT"
     And only the following TicketAttachment records exist:
       | Ticket | Person  | Message | Blob                      |
-      | {t1}   | {admin} | {m1}    | {blob_AAAAAAAAAAAAAAAAAA} |
+      | {t1}   | {admin} | {m1}    | {blob_AAAAAAAAAAAAAAAAAAT} |
     When I send a GET request to "/api/v2/tickets/ref:{t1:ref}/attachments"
     Then the response status code should be 200
     And the JSON node "data" should have 1 elements
-    And the JSON node "data[0].blob.blob_auth" should contain "AAAAAAAAAAAAAAAAAA"
+    And the JSON node "data[0].blob.blob_auth" should contain "AAAAAAAAAAAAAAAAAAT"
