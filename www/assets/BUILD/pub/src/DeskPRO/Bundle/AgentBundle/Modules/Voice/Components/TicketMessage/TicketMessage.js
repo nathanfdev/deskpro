@@ -155,10 +155,9 @@ class TicketMessage extends React.Component {
                         values={{
                           number:           phoneCall.get('external_number'),
                           to_number:        number.get('nickname') || number.get('number'),
-                          person_name:      person.get('first_name') || '',
-                          person_email:     person.get('primary_email') || '',
+                          person:           `${person.get('name')} ${person.get('primary_email')}` || '',
                           key:              log.getIn(['details', 'Digits']) || '',
-                          target_name:      log.getIn(['details', 'target_name']) || 'Unknown',
+                          target:           log.getIn(['details', 'target_name']) || 'Unknown',
                           forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
                         }}
                       />

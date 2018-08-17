@@ -20,7 +20,7 @@ export const loadAdminPhraseTranslations = createAction(
       setPhrases(cachedData);
     } else {
       api
-        .sendGet(`DP_API/languages/admin_phrases?language=${language}`)
+        .sendGet(`DP_API/languages/admin_phrases?format=icu&language=${language}`)
         .success((response) => {
           setPhrases(response);
           lscache.set(cacheKey, response, 60);
