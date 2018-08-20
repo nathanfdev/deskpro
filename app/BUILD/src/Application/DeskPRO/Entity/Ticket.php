@@ -1354,19 +1354,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         $got_agent_ids = [];
         $remove_ks     = [];
+        $participants  = [];
 
-        /*
-         * Bug in Doctrine: $this->participants only ever has 1 record,
-         * so we're fetching them manually
-         */
+        if ($this->getId()) {
+            /*
+             * Bug in Doctrine: $this->participants only ever has 1 record,
+             * so we're fetching them manually
+             */
 
-        $participants = App::getOrm()->createQuery(
+            $participants = App::getOrm()->createQuery(
+                '
+                SELECT p
+                FROM DeskPRO:TicketParticipant p
+                WHERE p.ticket = ?1
             '
-            SELECT p
-            FROM DeskPRO:TicketParticipant p
-            WHERE p.ticket = ?1
-        '
-        )->setParameter(1, $this)->execute();
+            )->setParameter(1, $this)->execute();
+        }
 
         foreach ($participants as $k => $part) {
             if (!$part->person['is_agent']) {
