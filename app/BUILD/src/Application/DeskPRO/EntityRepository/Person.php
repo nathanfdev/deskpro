@@ -25,9 +25,14 @@ class Person extends AbstractEntityRepository
     /** @var IdentityHelper */
     protected $identity_helper;
 
-    public function findOneByPhoneNumber($from_number)
+    /**
+     * @param string $number
+     *
+     * @return mixed|null
+     */
+    public function findOneByPhoneNumber($number)
     {
-        $phone_number = $this->getEntityManager()->getRepository('DeskPRO:PhoneNumber')->findByNumber($from_number);
+        $phone_number = $this->getEntityManager()->getRepository('DeskPRO:PhoneNumber')->findByNumber($number);
 
         if (!$phone_number) {
             return; // didnt find the number in the db
@@ -44,6 +49,25 @@ class Person extends AbstractEntityRepository
         $query->setMaxResults(1)->setParameter('found_phone_number', $phone_number);
 
         return $query->getOneOrNullResult();
+    }
+
+    /**
+     * @param $number
+     *
+     * @return array
+     */
+    public function findByPhoneNumber($number)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('p')
+            ->from(PersonEntity::class, 'p')
+            ->join('p.phone_numbers', 'n')
+            ->where('n.number = :number')
+            ->setParameter('number', $number)
+        ;
+
+        return $qb->getQuery()->getResult();
     }
 
     /**

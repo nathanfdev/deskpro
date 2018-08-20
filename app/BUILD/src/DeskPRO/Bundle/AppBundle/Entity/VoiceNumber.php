@@ -125,6 +125,36 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     private $outboundCallsEnabled = false;
 
     /**
+     * @ORM\Column(name="outbound_calls_default", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $outboundCallsDefault = false;
+
+    /**
+     * @ORM\Column(name="outbound_calls_default_global", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $outboundCallsDefaultGlobal = false;
+
+    /**
+     * @ORM\Column(name="outbound_calls_default_countries", type="json_array")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @var array
+     */
+    private $outboundCallsDefaultCountries = [];
+
+    /**
      * @return int
      */
     public function getId()
@@ -268,6 +298,66 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     public function setOutboundCallsEnabled($outboundCallsEnabled)
     {
         $this->setModelField('outboundCallsEnabled', $outboundCallsEnabled);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutboundCallsDefault()
+    {
+        return $this->outboundCallsDefault;
+    }
+
+    /**
+     * @param bool $outboundCallsDefault
+     *
+     * @return $this
+     */
+    public function setOutboundCallsDefault($outboundCallsDefault)
+    {
+        $this->setModelField('outboundCallsDefault', $outboundCallsDefault);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutboundCallsDefaultGlobal()
+    {
+        return $this->outboundCallsDefaultGlobal;
+    }
+
+    /**
+     * @param bool $outboundCallsDefaultGlobal
+     *
+     * @return $this
+     */
+    public function setOutboundCallsDefaultGlobal($outboundCallsDefaultGlobal)
+    {
+        $this->setModelField('outboundCallsDefaultGlobal', $outboundCallsDefaultGlobal);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOutboundCallsDefaultCountries()
+    {
+        return $this->outboundCallsDefaultCountries ?: [];
+    }
+
+    /**
+     * @param array $outboundCallsDefaultCountries
+     *
+     * @return $this
+     */
+    public function setOutboundCallsDefaultCountries(array $outboundCallsDefaultCountries)
+    {
+        $this->setModelField('outboundCallsDefaultCountries', $outboundCallsDefaultCountries);
 
         return $this;
     }

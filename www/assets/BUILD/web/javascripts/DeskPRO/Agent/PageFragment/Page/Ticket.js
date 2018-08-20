@@ -146,6 +146,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     this._initProblems();
 		this._initVoice();
 		this._initForward();
+		this._initSelectUser();
 
 		// Change email menu
 		var emailChangeTrig = this.getEl('user_email_menu_trigger');
@@ -1506,10 +1507,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       var node = document.getElementById(this.meta.baseId + '_controls_react_container');
       window.AgentLegacyBundle.unmountVoiceControls(node);
 		}
-		if (this.confirmCloseOverlay) {
-      this.confirmCloseOverlay.destroy();
-      this.confirmCloseOverlay = null;
-		}
 		if (this.closeTicketOnFail) {
     	window.clearTimeout(this.closeTicketOnFailTimeout);
     	this.closeTicketOnFail = null;
@@ -1762,7 +1759,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var $rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter($el);
 
 			$el.hide();
-			window.AgentLegacyBundle.renderVoiceMessage($rElement.get(0), $el.data('message'));
+			window.AgentLegacyBundle.renderVoiceMessage(
+				$rElement.get(0),
+				$el.data('message'),
+				$el.data('message-date-created-fulltime')
+			);
 		};
 
 		messageEl.find('.react-voice-component').each(function() {
@@ -1985,6 +1986,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 			o.open();
 		});
+
+		if (window.DP_HAS_VOICE) {
+			this.detectPhoneNumbers(messageEl);
+		}
+	},
+
+	detectPhoneNumbers: function(messageEl) {
+    window.AgentLegacyBundle.detectPhoneNumbers(messageEl);
 	},
 
 	refreshMessageTranslation: function(messageEl) {
@@ -2464,58 +2473,107 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
-    var onEndCall = (function() {
+		var self = this;
+    var onEndCall = function() {
       console.debug('Restoring poller interval: %d', DP_POLLER_INTERVAL);
       DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL);
-    })();
-    var self = this;
+      DeskPRO_Window.TabBar.unlockTab(DeskPRO_Window.TabBar.getTab(self.meta.tabId));
+    };
 		var node = document.getElementById(this.meta.baseId + '_controls_react_container');
-		this.controls = window.AgentLegacyBundle.renderVoiceControls(node, parseInt(this.meta.ticket_id, 10), onEndCall);
+		this.controls = window.AgentLegacyBundle.renderVoiceControls(
+			node,
+			parseInt(this.meta.ticket_id, 10),
+			onEndCall,
+			this.meta.baseId
+		);
 
 		if (this.controls.isCallActive()) {
 			console.debug('Enabling fast poller interval: %d', DP_POLLER_INTERVAL_FAST);
 			DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL_FAST);
+      DeskPRO_Window.TabBar.lockTab(DeskPRO_Window.TabBar.getTab(this.meta.tabId));
 		}
-
-		var confirmCloseOverlay = this.confirmCloseOverlay = new DeskPRO.UI.Overlay({
-			contentElement: this.getEl('closetab_prompt'),
-			addClassname: 'normal-size',
-			onPosition: function(evData) {
-				var tabId = self.getTabId();
-				if (!tabId) return;
-
-				var tabEl = $('#tabbtn_' + tabId);
-				if (!tabEl[0]) {
-					return;
-				}
-				var tabW = tabEl.width();
-
-				evData.left = (tabEl.offset().left + (tabW / 2)) - (evData.w / 2);
-				evData.top = tabEl.offset().top;
-
-				if ((evData.left + evData.w) > evData.pageW) {
-					evData.left = evData.pageW - evData.w - 15;
-				}
-			},
-			onContentSet: function() {
-				$('.end-trigger').on('click', function() {
-					confirmCloseOverlay.close();
-					self.controls.endCall();
-					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
-				});
-			}
-		});
 
 		this.addEvent('closeTab', function(event) {
 			if (this.controls.isCallActive()) {
 				event.deskpro.cancelClose = true;
-				confirmCloseOverlay.open();
 			}
 		}, this);
 	},
 
 	_initForward: function() {
 
+	},
+
+  _initSelectUser: function() {
+    var self = this;
+    $('.select-user-item-options', this.wrapper).hide();
+
+		var $type = $('input[name=select_user]', this.wrapper);
+    $type.first().attr('checked', true);
+    $type.first().parent().find('.select-user-item-options').show();
+
+    $type.on('click', function () {
+			var $selected = $(this);
+      $('.select-user-item-options', this.wrapper).hide();
+      $selected.parent().find('.select-user-item-options').show();
+    });
+
+    var searchbox = this.getEl('user_searchbox');
+    searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+      $.ajax({
+        type: 'GET',
+        url: BASE_URL + 'agent/tickets/new/get-person-row/' + personId,
+        dataType: 'html',
+        context: this,
+        success: function() {
+          $('input.person-id', searchbox).val(personId);
+          $('input.select-user', searchbox).val(name);
+        }
+      });
+      sb.close();
+      sb.reset();
+    });
+
+    var reloadPersonView = function() {
+      $.ajax({
+        url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/person_view',
+        type: 'GET',
+        success: function (response) {
+          $('.ticket-person-holder', self.wrapper).html(response);
+        }
+      });
+		};
+
+		$('.select-user-button', this.wrapper).on('click', function () {
+      var value = $('input[name=select_user]:checked', self.wrapper).val();
+      if (value === 'find_person') {
+        var personId = $('input[name=select_user_find_id]', self.wrapper).val();
+        if (personId) {
+          $.ajax({
+            url: BASE_URL + 'agent/people/' + personId + '/merge/' + self.meta.person_id,
+            type: 'POST',
+            success: reloadPersonView
+          });
+				}
+			} else if (value === 'new_person') {
+        $.ajax({
+          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+          type: 'PUT',
+					data: {
+          	name: $('input[name=select_user_name]', self.wrapper).val(),
+          	primary_email: $('input[name=select_user_email]', self.wrapper).val(),
+          	language: $('select[name=select_user_language]', self.wrapper).val(),
+					},
+          success: reloadPersonView
+        });
+			} else if (value) {
+        $.ajax({
+          url: BASE_URL + 'agent/people/' + value + '/merge/' + self.meta.person_id,
+          type: 'POST',
+          success: reloadPersonView
+        });
+			}
+    });
 	},
 
 	handleFwd: function(info) {

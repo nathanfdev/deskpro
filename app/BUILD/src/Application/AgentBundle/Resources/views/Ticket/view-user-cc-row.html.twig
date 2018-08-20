@@ -2,7 +2,7 @@
 	<a class="as-popover {% if preload %}preload{% endif %} dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">
 		<span class="text" style="background-image: url({{ person.getPictureUrl(15) }});">
 			{{ person.getNameWithTitle() }}
-			({{ person.primary_email_address }})
+			{% if person.primary_email_address %}({{ person.primary_email_address }}){% endif %}
 		</span>
 		{% if ticket_perms.modify_cc %}<span class="remove-row-trigger nohide-edit"><i class="fas fa-times"></i></span>{% endif %}
 	</a>

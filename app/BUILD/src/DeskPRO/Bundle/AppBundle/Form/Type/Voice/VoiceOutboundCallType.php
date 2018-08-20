@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
@@ -48,6 +49,11 @@ class VoiceOutboundCallType extends AbstractType
                 'property_path' => 'externalNumber',
                 'required'      => true,
             ])
+            ->add('ticket', EntityType::class, [
+                'mapped'   => false,
+                'required' => false,
+                'class'    => Ticket::class,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
@@ -70,13 +76,22 @@ class VoiceOutboundCallType extends AbstractType
      */
     public function onPostSubmit(FormEvent $event)
     {
+        $form = $event->getForm();
         $data = $event->getData();
         if (!$data instanceof VoicePhoneCall) {
             return;
         }
 
+        $options = [];
+
+        // set related ticket
+        $ticket = $form->get('ticket')->getData();
+        if ($ticket instanceof Ticket) {
+            $options['outgoing_ticket_id'] = $ticket->getId();
+        }
+
         $data->setType(VoicePhoneCall::DIRECTION_OUTBOUND);
-        $data->setData([]);
+        $data->setData($options);
 
         if ($data->getExternalNumber()) {
             $person = $this->personRepo->getOrCreateUserByPhoneNumber($data->getExternalNumber());

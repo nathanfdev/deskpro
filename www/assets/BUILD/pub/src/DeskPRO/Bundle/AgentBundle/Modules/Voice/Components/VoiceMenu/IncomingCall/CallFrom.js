@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import Timer from 'DeskPRO/Component/Timer';
 import { voiceAgentsSelector } from '../../../Selectors/agents';
 import Avatar from '../../Common/Avatar';
@@ -12,8 +13,21 @@ class CallFrom extends React.Component {
     incomingCall: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedPerson: null
+    };
+  }
+
+  selectPerson = (selectedPerson) => {
+    this.setState({ selectedPerson });
+  };
+
   render() {
     const { incomingCall, people } = this.props;
+    let { selectedPerson } = this.state;
+    const possibleCallerPeople = [];
 
     let person;
     let number;
@@ -23,8 +37,13 @@ class CallFrom extends React.Component {
       const attributes = incomingCall && incomingCall.task ? incomingCall.task.attributes : {};
       number = attributes.from;
 
-      if (attributes.deskpro_person_id) {
+      if (attributes.deskpro_related_people_ids) {
+        attributes.deskpro_related_people_ids.forEach((id) => {
+          possibleCallerPeople.push(people.get(id));
+        });
+      } else if (attributes.deskpro_person_id) {
         person = people.get(attributes.deskpro_person_id);
+        possibleCallerPeople.push(person);
       }
     } else {
       // participant invite props
@@ -32,7 +51,12 @@ class CallFrom extends React.Component {
 
       if (incomingCall.get('caller_person_id')) {
         person = people.get(incomingCall.get('caller_person_id'));
+        possibleCallerPeople.push(person);
       }
+    }
+
+    if (!selectedPerson && possibleCallerPeople.length) {
+      selectedPerson = possibleCallerPeople[possibleCallerPeople.length - 1];
     }
 
     return (
@@ -40,17 +64,27 @@ class CallFrom extends React.Component {
         <div className="call-from-number">
           {number || 'Unknown number'}
         </div>
-        <Avatar person={person} size={60} />
-        {person &&
+        <div className="call-from-avatars">
+          {possibleCallerPeople.map((possiblePerson, key) =>
+            <a
+              onClick={() => this.selectPerson(possiblePerson)}
+              className={classNames('call-from-avatar', { selected: possiblePerson === selectedPerson })}
+              style={{ marginLeft: -possibleCallerPeople.length * 30 / 4 + 30 * key }}
+            >
+              <Avatar key={key} person={possiblePerson} size={60} />
+            </a>
+          )}
+        </div>
+        {selectedPerson &&
           <div className="call-from-name">
-            {person.get('name')}
+            {selectedPerson.get('name')}
           </div>}
         <div className="call-waiting-time">
           waiting <Timer format="waiting_time" />
         </div>
         {person &&
           <div className="call-from-email">
-            {person.get('primary_email')}
+            {selectedPerson.get('primary_email')}
           </div>}
       </div>
     );

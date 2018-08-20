@@ -39,6 +39,12 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const DIRECTION_INBOUND  = 'inbound';
     const DIRECTION_OUTBOUND = 'outbound';
 
+    const RESTRICTED_NUMBER = '737 874-2833';
+    const BLOCKED_NUMBER    = '256-2533';
+    const UNKNOWN_NUMBER    = '865-6696';
+    const ANONYMOUS_NUMBER  = '266696687';
+    const EMPTY_NUMBER      = '';
+
     /**
      * The unique ID.
      *
@@ -322,6 +328,27 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('externalNumber', $number);
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStrangeNumber()
+    {
+        $strangeNumbers = [
+            self::RESTRICTED_NUMBER,
+            self::BLOCKED_NUMBER,
+            self::UNKNOWN_NUMBER,
+            self::ANONYMOUS_NUMBER,
+            self::EMPTY_NUMBER,
+        ];
+
+        $formattedExternalNumber = preg_replace('/[^0-9]/', '', $this->externalNumber);
+        foreach ($strangeNumbers as &$strangeNumber) {
+            $strangeNumber = preg_replace('/[^0-9]/', '', $strangeNumber);
+        }
+
+        return in_array($formattedExternalNumber, $strangeNumbers);
     }
 
     /**

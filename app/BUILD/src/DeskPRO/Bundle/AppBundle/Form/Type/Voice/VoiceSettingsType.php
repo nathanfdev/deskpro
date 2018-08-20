@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,12 +18,20 @@ class VoiceSettingsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('agent_voicemail_timeout', IntegerType::class, [
-            'required'    => false,
-            'constraints' => [
-                new Assert\NotBlank(),
-                new Assert\GreaterThanOrEqual(10),
-            ],
-        ]);
+        $builder
+            ->add('agent_voicemail_timeout', IntegerType::class, [
+                'required'    => false,
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\GreaterThanOrEqual(10),
+                ],
+            ])
+            ->add('group_missed_call_tickets', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('group_missed_call_tickets_timeout', IntegerType::class, [
+                'required' => false,
+            ])
+        ;
     }
 }

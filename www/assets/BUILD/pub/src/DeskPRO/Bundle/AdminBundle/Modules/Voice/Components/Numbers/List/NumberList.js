@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
+import $ from 'jquery';
+import 'intl-tel-input';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import NumberTarget from '../../Common/NumberTarget/NumberTarget';
 import VoiceTargetNameContainer from '../../Common/NumberTarget/VoiceTargetNameContainer';
@@ -34,6 +36,24 @@ class NumberRow extends React.Component {
 
   render() {
     const { number } = this.props;
+    const getCountryDialCode = (countryCode) => {
+      const intlCountries = $.fn.intlTelInput.getCountryData();
+      for (const i in intlCountries) {
+        if (Object.hasOwnProperty.call(intlCountries, i)) {
+          const intlCountry = intlCountries[i];
+          if (intlCountry.iso2 === countryCode.toLowerCase()) {
+            return ` (+${intlCountry.dialCode})`;
+          }
+        }
+      }
+
+      return '';
+    };
+
+    const countryCodes = number.get('outbound_calls_default_countries')
+      .toArray()
+      .map(countryCode => countryCode.toUpperCase() + getCountryDialCode(countryCode))
+      .join(', ');
 
     return (
       <div className="row" key={number.get('id')}>
@@ -56,6 +76,14 @@ class NumberRow extends React.Component {
             {number.get('outbound_calls_enabled') &&
             <span className="press-option">
               Allow outbound calls from this number <i className="icon checkmark" />
+            </span>}
+          </div>
+          <div className="column press-options">
+            {number.get('outbound_calls_default') &&
+            <span className="press-option">
+              {number.get('outbound_calls_default_global') ? 'Default phone number for all outbound calls' : ''}
+              {!number.get('outbound_calls_default_global') && countryCodes
+                ? `Default phone number for outbound calls to: ${countryCodes}` : ''}
             </span>}
           </div>
           <div className="column options-button">

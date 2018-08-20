@@ -66,23 +66,6 @@
   }|json_encode|raw }};
 </script>
 
-<div id="{{ baseId }}_closetab_prompt" style="display:none;">
-    <div class="confirm-overlay mass-actions-overlay">
-        <div class="overlay-title">
-            <h4>Leave call?</h4>
-        </div>
-        <div class="overlay-content">
-            Are you sure you want to end this call?
-        </div>
-    </div>
-    <div class="overlay-footer prop-footer">
-        <button class="clean-white end-trigger">
-            End call
-        </button>
-    </div>
-</div>
-
-
 <div
       class="layout-sidebar dp-app-v2-sidebar"
       id="{{ baseId }}_layout_sidebar"
@@ -98,10 +81,10 @@
 {# the sidebar sizer is disabled for at the moment and the plan is to completely remove it #}
 {#<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>#}
 
+<div id="{{ baseId }}_controls_react_container"></div>
 <div id="{{ baseId }}_layout_content" class="layout-content page-ticket {% if ticket.hasLock() %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
 
     <div class="dp-page-content">
-        <div id="{{ baseId }}_controls_react_container"></div>
         {% set locked_self = ticket.hasLock() and not ticket.isLocked(app.user) %}
         <div class="locked-overlay"
              id="{{ baseId }}_locked_overlay"{% if not ticket.isLocked() %} style="display: none;"{% endif %}></div>
@@ -134,119 +117,174 @@
             {{ dp_app_loc(baseId, 'header.top') }}
             <div data-deskproapp="ticket-header-top"></div>
 
-	<div id="{{baseId}}_locked_message" {% if not ticket.hasLock() %}style="display: none"{% endif %} data-locked-self="{% if locked_self %}1{% else %}0{% endif %}">
-		<div class="locked-message">
-			<button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">{{ phrase('agent.tickets.unlock') }}</button>
-			<div style="margin-right: 100px;">
-				<div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
-                    {% if app.getSetting('core_tickets.lock_on_view') %}
-                        {{ phrase('agent.tickets.you_have_auto_lock') }}
-                    {% else %}
-                        {{ phrase('agent.tickets.you_have_locked') }}
-                    {% endif %}
-					{% if app.getSetting('core_tickets.unlock_on_close') %}
-                        <div class="auto-unlock-message">
-                            {{ phrase('agent.tickets.lock_auto_release') }}
-                        </div>
-                    {% endif %}
-				</div>
-				<div id="{{baseId}}_locked_message_other"{% if locked_self %} style="display:none;"{% endif %}>
-					{{ phrase('agent.tickets.agent_has_lock', {agent: '<span>' ~ ticket.locked_by_agent.display_name ~ '</span>'}, true) }}
-				</div>
-			</div>
-		</div>
-	</div>
-	<div id="{{baseId}}_hold_message" {% if not ticket.is_hold %}style="display: none"{% endif %}>
-		<div class="hold-message">
-			<button class="dp-btn set-hold unhold" id="{{baseId}}_unhold_btn" style="float:right">{{ phrase('agent.tickets.unhold_ticket') }}</button>
-			<div style="margin-right: 100px;">
-				{{ phrase('agent.tickets.currently_on_hold') }}
-			</div>
-		</div>
-	</div>
-	<div class="row title first" id="{{ baseId }}_layout_header_first">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				{% if brands|length > 1 %}
-					<td width="10">
-						<div class="id-number">
-					<span id="{{baseId}}_brandname" title="{{ phrase('agent.general.brand') }}">
-						{% if not ticket.brand.hasLogo() %}
-							{{ ticket.brand.name }}
-						{% else %}
-							<span id="{{ baseId }}_brand_icon" {% if not ticket.brand.hasLogo() %}style="display: none;"{% endif %} title="{{ ticket.brand.name }}"><img src="{{ ticket.brand.getLogoUrl(22) }}"/></span>
-						{% endif %}
-					</span>
-						</div>
-					</td>
-				{% endif %}
-				<td width="10" nowrap="nowrap">
-					<div class="id-number" id="{{ baseId }}_idref_switch">
-						<span id="{{ baseId }}_id_num" title="{{ phrase('agent.general.ticket_id') }}">
-							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="fas fa-paste"></i></span></span>
-                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="fas fa-link"></i></span></span>
-							{{ phrase('agent.general.id') }}: {{ ticket.id }}
-						</span>
-						<span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference">
-							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.ref }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="fas fa-paste"></i></span></span>
-                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="fas fa-link"></i></span></span>
-							{{ phrase('agent.general.id') }}: {{ ticket.ref }}
-						</span>
-
-					</div>
-				</td>
-				<td>
-					<h1>
-						<span id="{{baseId}}_showname">{{ ticket.subject }}</span>
-						<span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>
-						<a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
-					</h1>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<div class="row author last">
-		<div class="dp-btn-group dp-dropdown">
-			<a id="{{ baseId }}_profile_link" class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
-				<span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
-					{{ ticket.person.getNameWithTitle() }}
-                    {% if ticket.person.emails|length > 1 or ticket.person_email_address %}
-                        <span class="email" id="{{ baseId }}_user_email_text">
-                            ({{ ticket.person_email.email|default(ticket.person_email_address) }})
-                        </span>
-                    {% endif %}
-				</span>
-                    </a>
-                    {% if ticket.person.emails|length > 1 %}
-                        <a class="dp-btn dp-dropdown-toggle" style="padding: 7px;"
-                           id="{{ baseId }}_user_email_menu_trigger">
-                            <span class="dp-caret dp-caret-down"></span>
-                        </a>
-                        <div id="{{ baseId }}_user_email_menu" class="dp-menu" style="display: none;">
-                            <section>
-                                <div class="dp-menu-area">
-                                    <label>{{ phrase('agent.tickets.change_user_ticket_email') }}</label>
-                                    <ul>
-                                        {% for email in ticket.person.emails %}
-                                            <li data-email-id="{{ email.id }}">{{ email.email }}</li>
-                                        {% endfor %}
-                                    </ul>
+            <div id="{{baseId}}_locked_message" {% if not ticket.hasLock() %}style="display: none"{% endif %} data-locked-self="{% if locked_self %}1{% else %}0{% endif %}">
+                <div class="locked-message">
+                    <button class="dp-btn" id="{{baseId}}_unlock_ticket2" style="float:right">{{ phrase('agent.tickets.unlock') }}</button>
+                    <div style="margin-right: 100px;">
+                        <div id="{{baseId}}_locked_message_self" {% if not locked_self %}style="display: none"{% endif %}>
+                            {% if app.getSetting('core_tickets.lock_on_view') %}
+                                {{ phrase('agent.tickets.you_have_auto_lock') }}
+                            {% else %}
+                                {{ phrase('agent.tickets.you_have_locked') }}
+                            {% endif %}
+                            {% if app.getSetting('core_tickets.unlock_on_close') %}
+                                <div class="auto-unlock-message">
+                                    {{ phrase('agent.tickets.lock_auto_release') }}
                                 </div>
-                            </section>
+                            {% endif %}
                         </div>
-                    {% endif %}
+                        <div id="{{baseId}}_locked_message_other"{% if locked_self %} style="display:none;"{% endif %}>
+                            {{ phrase('agent.tickets.agent_has_lock', {agent: '<span>' ~ ticket.locked_by_agent.display_name ~ '</span>'}, true) }}
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <div id="{{baseId}}_hold_message" {% if not ticket.is_hold %}style="display: none"{% endif %}>
+                <div class="hold-message">
+                    <button class="dp-btn set-hold unhold" id="{{baseId}}_unhold_btn" style="float:right">{{ phrase('agent.tickets.unhold_ticket') }}</button>
+                    <div style="margin-right: 100px;">
+                        {{ phrase('agent.tickets.currently_on_hold') }}
+                    </div>
+                </div>
+            </div>
+            <div class="row title first" id="{{ baseId }}_layout_header_first">
+                <table cellspacing="0" cellpadding="0" width="100%">
+                    <tr>
+                        {% if brands|length > 1 %}
+                            <td width="10">
+                                <div class="id-number">
+                            <span id="{{baseId}}_brandname" title="{{ phrase('agent.general.brand') }}">
+                                {% if not ticket.brand.hasLogo() %}
+                                    {{ ticket.brand.name }}
+                                {% else %}
+                                    <span id="{{ baseId }}_brand_icon" {% if not ticket.brand.hasLogo() %}style="display: none;"{% endif %} title="{{ ticket.brand.name }}"><img src="{{ ticket.brand.getLogoUrl(22) }}"/></span>
+                                {% endif %}
+                            </span>
+                                </div>
+                            </td>
+                        {% endif %}
+                        <td width="10" nowrap="nowrap">
+                            <div class="id-number" id="{{ baseId }}_idref_switch">
+                                <span id="{{ baseId }}_id_num" title="{{ phrase('agent.general.ticket_id') }}">
+                                    <span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="fas fa-paste"></i></span></span>
+                                    <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="fas fa-link"></i></span></span>
+                                    {{ phrase('agent.general.id') }}: {{ ticket.id }}
+                                </span>
+                                <span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference">
+                                    <span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.ref }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="fas fa-paste"></i></span></span>
+                                    <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="fas fa-link"></i></span></span>
+                                    {{ phrase('agent.general.id') }}: {{ ticket.ref }}
+                                </span>
 
-                {% if ticket.person.organization %}
-                    &nbsp;&nbsp;
-                    <a id="{{ baseId }}_org_link" class="dp-btn as-popover"
-                       data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"><i
-                              class="fas fa-briefcase"></i>
-                        {{ ticket.person.organization }}
-                        {% if ticket.person.organization_position %}<span class="email">
-                            ({{ ticket.person.organization_position }})</span>{% endif %}
-                    </a>
-                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <h1>
+                                <span id="{{baseId}}_showname">{{ ticket.subject }}</span>
+                                <span id="{{baseId}}_editname" style="display: none"><input type="text" placeholder="Enter subject" name="name" value="{{ ticket.subject }}" /></span>
+                                <a id="{{baseId}}_editname_end" class="edit-name-save clean-white" style="display: none">{{ phrase('agent.general.done') }}</a>
+                            </h1>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row author last">
+                <span class="ticket-person-holder">
+                    {% if ticket.person.emails|length == 0 and not ticket.person.primary_email and ticket.person.phone_numbers|length > 0 %}
+                        <div class="select-user-menu">
+                            <label class="select-user-menu-header">Select the person who made this call:</label>
+                            <ul>
+                                {% for person in person_repo.findByPhoneNumber(ticket.person.phone_numbers[0].number) %}
+                                    {% if ticket.person.id != person.id %}
+                                        <li>
+                                            <input type="radio" name="select_user" value="{{ person.id }}">
+                                            <label>{{ person.getDisplayName() }}</label>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                <li>
+                                    <input type="radio" name="select_user" value="find_person">
+                                    <label>Find a different person</label>
+                                    <div class="select-user-item-options">
+                                        <section id="{{baseId}}_user_section" class="user-section">
+                                            <div id="{{baseId}}_choose_user" style="padding: 10px">
+                                                <div
+                                                        id="{{baseId}}_user_searchbox"
+                                                        data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+                                                        data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'with_agents': 1}) }}"
+                                                        data-highlight-term="1"
+                                                        data-touch-focus="1"
+                                                        data-search-param="term"
+                                                        data-position-bound="#{{baseId}}_userselect"
+                                                >
+                                                    <input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_a_person') }}" />
+                                                    <input type="hidden" name="select_user_find_id" class="person-id" id="{{baseId}}_person_id" />
+
+                                                    <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+                                                    <li>
+                                                        <a>
+                                                        <span class="user-name"></span>
+                                                        <address>&lt;<span class="user-email"></span>&gt;</address>
+                                                        <div class="bound-fade"></div>
+                                                    </a></li>
+                                                </script>
+                                                    <div class="person-search-box" style="display: none">
+                                                        <section>
+                                                            <ul class="results-list"></ul>
+                                                        </section>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="{{baseId}}_user_choice"></div>
+                                        </section>
+                                    </div>
+                                </li>
+                                <li>
+                                    <input type="radio" name="select_user" value="new_person">
+                                    <label>New person</label>
+
+                                    <div class="select-user-item-options">
+                                        <table cellspacing="0" cellpadding="0" class="">
+                                            <tbody>
+                                            <tr>
+                                                <th width="100">{{ phrase('agent.general.email_address') }}</th>
+                                                <td>
+                                                    <input type="text" name="select_user_email" class="email" value="" style="margin:0;" />
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                            <tbody>
+                                            <tr>
+                                                <th>{{ phrase('agent.general.name') }}</th>
+                                                <td>
+                                                    <input type="text" name="select_user_name" class="name" value="{{ person.name }}" style="margin:0;" />
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                            {% if not person.id and app.getLanguages().isLangSystemEnabled() %}
+                                                <tbody>
+                                                <tr>
+                                                    <th>{{ phrase('agent.general.language') }}</th>
+                                                    <td>
+                                                        <select name="select_user_language">
+                                                            {% for lang in app.getLanguages().getAll() %}
+                                                                <option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ phrase_object(lang, 'title') }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            {% endif %}
+                                        </table>
+                                    </div>
+                                </li>
+                            </ul>
+                            <button class="clean-white select-user-button">Set person</button>
+                        </div>
+                    {% else %}
+                        {% include 'AgentBundle:Ticket:view-ticket-person.html.twig' %}
+                    {% endif %}
+                </span>
 
                 {% if ticket_perms.modify_cc and not user_parts|length %}
                     <a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn2"><i class="fas fa-envelope"></i>
@@ -290,28 +328,26 @@
                                     </section>
                                 </div>
                                 <span class="is-not-loading">
-						<button
-                              class="clean-white small cc-saverow-trigger"
-                              data-msg-invalid-email="{{ phrase('agent.general.error_email_address') }}"
-                              data-msg-invalid-email-isaccount="{{ phrase('agent.tickets.email_is_ticket_account') }}"
-                              data-msg-is-dupe="{{ phrase('agent.tickets.email_is_dupe') }}"
-                              data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers')|e }}"
-                              data-msg-cc-limit="{{ phrase('agent.tickets.email_cc_limit_reached', {max: app.getSetting('core_tickets.email_cc_max_count')}) }}"
-                        >{{ phrase('agent.general.add') }}</button>
-					</span>
+                                    <button
+                                          class="clean-white small cc-saverow-trigger"
+                                          data-msg-invalid-email="{{ phrase('agent.general.error_email_address') }}"
+                                          data-msg-invalid-email-isaccount="{{ phrase('agent.tickets.email_is_ticket_account') }}"
+                                          data-msg-is-dupe="{{ phrase('agent.tickets.email_is_dupe') }}"
+                                          data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers')|e }}"
+                                          data-msg-cc-limit="{{ phrase('agent.tickets.email_cc_limit_reached', {max: app.getSetting('core_tickets.email_cc_max_count')}) }}"
+                                    >{{ phrase('agent.general.add') }}</button>
+                                </span>
                                 <span class="is-loading">{{ phrase('agent.general.saving') }}</span>
                             </div>
                         {% endif %}
                         <div style="clear:left;"></div>
                         <script type="text/x-deskpro-tmpl" class="user-row-tpl">
-				<li>
-					<a>
-					<span class="user-name"></span>
-					<address>&lt;<span class="user-email"></span>&gt;</address>
-					<div class="bound-fade"></div>
-				</a></li>
-
-
+                            <li>
+                                <a>
+                                <span class="user-name"></span>
+                                <address>&lt;<span class="user-email"></span>&gt;</address>
+                                <div class="bound-fade"></div>
+                            </a></li>
                         </script>
                     </div>
                 {% endif %}

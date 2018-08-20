@@ -25,6 +25,7 @@ class VoiceControlsContainer extends React.Component {
     onlineAgentIds:   PropTypes.object,
     connections:      PropTypes.object,
     ticketId:         PropTypes.number,
+    baseId:           PropTypes.string,
     tabRef:           PropTypes.func,
     onEndCall:        PropTypes.func,
     connectionStates: PropTypes.object,
@@ -64,13 +65,10 @@ class VoiceControlsContainer extends React.Component {
       endCall:      this.endCall
     });
 
-    const connection = this.getConnection();
-    if (!connection) {
-      return;
-    }
-
     this.interval = setInterval(() => {
-      const connectionStatus = connection.status();
+      const connection = this.getConnection();
+
+      const connectionStatus = connection ? connection.status() : 'closed';
       const connectionState = this.getConnectionState();
       const { me } = this.props;
       const { status } = this.state;
@@ -243,7 +241,7 @@ class VoiceControlsContainer extends React.Component {
   };
 
   render() {
-    const { agents, onlineAgentIds } = this.props;
+    const { agents, onlineAgentIds, baseId } = this.props;
     const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')));
     const connection = this.getConnection();
     const connectionState = this.getConnectionState();
@@ -266,6 +264,7 @@ class VoiceControlsContainer extends React.Component {
         onAddAgent={this.addAgent}
         onTransferCall={this.transferCall}
         onCancelInvite={this.cancelInvite}
+        baseId={baseId}
       />
     );
   }

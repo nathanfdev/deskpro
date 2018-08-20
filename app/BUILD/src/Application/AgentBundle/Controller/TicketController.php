@@ -520,6 +520,7 @@ class TicketController extends AbstractController
             'open_problems'  => $open_problems,
             'incidents'      => $incidents,
             'system_account' => $this->getAccount($ticket),
+            'person_repo'    => $this->em->getRepository(Person::class),
         ];
 
         // include api_v2_data
@@ -566,6 +567,21 @@ class TicketController extends AbstractController
         }
 
         return $this->render('AgentBundle:Ticket:view.html.twig', $vars);
+    }
+
+    /**
+     * @param int $ticket_id
+     *
+     * @return Response
+     */
+    public function viewTicketPersonAction($ticket_id)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+        $vars   = [
+            'ticket' => $ticket,
+        ];
+
+        return $this->render('AgentBundle:Ticket:view-ticket-person.html.twig', $vars);
     }
 
     /**

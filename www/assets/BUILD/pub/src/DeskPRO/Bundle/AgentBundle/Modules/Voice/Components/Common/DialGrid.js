@@ -11,9 +11,9 @@ class DialGrid extends React.Component {
     const { onClick } = this.props;
 
     return (
-      <button onClick={(event) => { event.preventDefault(); onClick(number); }}>
+      <a onClick={(event) => { event.preventDefault(); onClick(number); }}>
         {number}
-      </button>
+      </a>
     );
   }
 

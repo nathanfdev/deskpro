@@ -131,6 +131,8 @@ class VoiceClientController extends AbstractVoiceController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function prepareOutboundCallAction(Request $request)
@@ -151,6 +153,8 @@ class VoiceClientController extends AbstractVoiceController
     }
 
     /**
+     * @throws \Exception
+     *
      * @return VoiceAccount
      */
     private function getVoiceAccount()

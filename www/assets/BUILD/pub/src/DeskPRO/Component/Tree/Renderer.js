@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { objects } from '@deskpro/react-components/dist/utils';
+import { objectKeyFilter } from '@deskpro/js-utils/dist/objects';
 import { isDescendant } from 'react-sortable-tree';
 
 const propTypes = {
@@ -43,8 +43,6 @@ const NodeRendererDefault = ({
   isOver,
   canDrop,
   canDrag,
-  treeId, // we don't use this explicitly, but we need to extract this var from `otherProps`
-          // otherwise there will be an error in component
   node,
   draggedNode,
   path,
@@ -90,7 +88,7 @@ const NodeRendererDefault = ({
   return (
     <div
       style={{ height: '100%' }}
-      {...objects.objectKeyFilter(otherProps, propTypes)}
+      {...objectKeyFilter(otherProps, propTypes)}
     >
       {toggleChildrenVisibility && node.children && node.children.length > 0 && (
         <div>

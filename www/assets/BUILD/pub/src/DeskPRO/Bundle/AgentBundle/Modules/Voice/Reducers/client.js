@@ -17,7 +17,6 @@ const initialState = {
   outgoingCall:     null,
   connections:      [],
   connectionStates: [],
-  outboundNumber:   null,
   ringingVolume
 };
 
@@ -73,8 +72,6 @@ export default createReducer(initialState, {
   },
   [actions.addConnection]:         pushPayloadToCollection('connections'),
   [actions.removeConnection]:      deletePayloadFromCollection('connections'),
-  [actions.openDialpad]:           setFullPayload('outboundNumber'),
-  [actions.dialpadOpened]:         setValue('outboundNumber', null),
   [actions.setOutgoingCall]:       setFullPayload('outgoingCall'),
   [actions.resetOutgoingCall]:     setValue('outgoingCall', null),
   [actions.setRingingVolume]:      setFullPayload('ringingVolume'),

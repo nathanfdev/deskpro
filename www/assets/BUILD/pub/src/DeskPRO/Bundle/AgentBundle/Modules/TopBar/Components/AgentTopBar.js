@@ -461,6 +461,10 @@ export class AgentTopBar extends React.Component {
     this.props.updateVolume(newVal / 10);
   };
 
+  openUserMenu = () => {
+    setTimeout(() => this.userMenu.togglePopup(), 1);
+  };
+
   renderIM() {
     if (!window.DP_HAS_NEW_IM) return null;
 
@@ -627,7 +631,7 @@ export class AgentTopBar extends React.Component {
         </FormattedMessage>
         <TopBarItem>
           <AvatarResolver avatar={me && me.get('avatar')} size={56}>
-            <User />
+            <User ref={(c) => { this.userMenu = c; }} />
           </AvatarResolver>
           <Chat
             activeChat={userChatEnabled}
@@ -637,8 +641,9 @@ export class AgentTopBar extends React.Component {
             updateVolume={this.onChatVolumeUpdate}
             volume={8}
             onToggleChat={onToggleChat}
+            openUserMenu={this.openUserMenu}
           />
-          {window.DP_HAS_VOICE && voiceAvailable && <VoiceMenu />}
+          {window.DP_HAS_VOICE && voiceAvailable && <VoiceMenu openUserMenu={this.openUserMenu} />}
         </TopBarItem>
       </TopBarRightMenu>
     </TopBar>

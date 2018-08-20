@@ -12,7 +12,8 @@ import DialGrid from '../Common/DialGrid';
 class VoiceControls extends React.Component {
 
   static propTypes = {
-    status: PropTypes.string
+    status: PropTypes.string,
+    baseId: PropTypes.string,
   };
 
   static defaultProps = {
@@ -23,24 +24,72 @@ class VoiceControls extends React.Component {
     sendDigits: () => {}
   };
 
+  componentDidMount = () => {
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
+  };
+
+  componentDidUpdate = () => {
+    this.updateWindowDimensions();
+  };
+
+  componentWillUnmount = () => {
+    const baseId = this.props.baseId;
+    const content = window.document.getElementById(`${baseId}_page_header`);
+    if (content) {
+      content.style.paddingTop = '10px';
+    }
+    window.removeEventListener('resize', this.updateWindowDimensions);
+  };
+
+  updateWindowDimensions = () => {
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        const baseId = this.props.baseId;
+        const content = window.document.getElementById(`${baseId}_page_header`);
+        if (content) {
+          content.style.paddingTop = `${this.div.clientHeight + 20}px`;
+        }
+        this.ticking = false;
+      });
+    }
+    this.ticking = true;
+  };
+
   render() {
     const { status } = this.props;
 
     switch (status) {
       case 'dialing':
-        return <Connecting title="Dialing ..." />;
+        return (<Connecting
+          divRef={(c) => { this.div = c; }}
+          title="Dialing ..."
+        />);
       case 'connecting':
-        return <Connecting title="Connecting ..." />;
+        return (<Connecting
+          divRef={(c) => { this.div = c; }}
+          title="Connecting ..."
+        />);
       case 'ringing':
-        return <Connecting title="Ringing ..." />;
+        return (<Connecting
+          divRef={(c) => { this.div = c; }}
+          title="Ringing ..."
+        />);
       case 'connected':
-        return <Connecting title="Connected" className="active" />;
+        return (<Connecting
+          divRef={(c) => { this.div = c; }}
+          title="Connected" className="active"
+        />);
       case 'busy':
-        return <Busy {...this.props} />;
+        return (<Busy
+          divRef={(c) => { this.div = c; }}
+          {...this.props}
+        />);
       case 'active':
       case 'closed':
         return (
           <Active
+            divRef={(c) => { this.div = c; }}
             {...this.props}
             ended={status === 'closed'}
           />
@@ -55,14 +104,18 @@ class Connecting extends React.Component {
 
   static propTypes = {
     title:     PropTypes.string,
-    className: PropTypes.string
+    className: PropTypes.string,
+    divRef:    PropTypes.func
   };
 
   render() {
-    const { title, className } = this.props;
+    const { title, className, divRef } = this.props;
 
     return (
-      <div className={classNames('voice-controls', className)}>
+      <div
+        className={classNames('voice-controls', className)}
+        ref={divRef}
+      >
         <Title>
           {title}
         </Title>
@@ -74,6 +127,7 @@ class Connecting extends React.Component {
 class Busy extends React.Component {
 
   static propTypes = {
+    divRef: PropTypes.func,
     redial: PropTypes.func
   };
 
@@ -84,7 +138,10 @@ class Busy extends React.Component {
 
   render() {
     return (
-      <div className="voice-controls busy">
+      <div
+        className="voice-controls busy"
+        ref={this.props.divRef}
+      >
         <Title>
           Busy
         </Title>
@@ -107,7 +164,8 @@ class Active extends React.Component {
     toggleHold:   PropTypes.func,
     toggleMute:   PropTypes.func,
     endCall:      PropTypes.func,
-    sendDigits:   PropTypes.func
+    sendDigits:   PropTypes.func,
+    divRef:       PropTypes.func
   };
 
   constructor(props) {
@@ -174,12 +232,15 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, sendDigits } = this.props;
+    const { hold, mute, ended, onlineAgents, sendDigits, divRef } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
 
     return (
-      <div className={classNames('voice-controls active', { hold, ended })}>
+      <div
+        ref={divRef}
+        className={classNames('voice-controls active', { hold, ended })}
+      >
         <Title>
           Duration: <Timer paused={ended} />
         </Title>

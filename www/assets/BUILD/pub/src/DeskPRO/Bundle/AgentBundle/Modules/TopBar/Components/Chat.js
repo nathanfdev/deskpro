@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
-import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
+import { Range } from 'DeskPRO/Component/Semantic/Form';
 import { getDepartmentAgents } from '../../Application/Actions/departmentActions';
 
 class Chat extends React.Component {
@@ -17,7 +17,7 @@ class Chat extends React.Component {
     activeChat:      PropTypes.bool,
     volume:          PropTypes.number,
     updateVolume:    PropTypes.func,
-    onToggleChat:    PropTypes.func
+    openUserMenu:    PropTypes.func
   };
 
   static defaultProps = {
@@ -86,7 +86,7 @@ class Chat extends React.Component {
   }
 
   getPopupContent() {
-    const { chatDepartments, activeChat, onlineAgents, onToggleChat } = this.props;
+    const { chatDepartments, activeChat, onlineAgents } = this.props;
     const { departmentMode } = this.state;
     const volume = parseInt(this.state.volume, 10);
 
@@ -97,12 +97,11 @@ class Chat extends React.Component {
           <span className="count">
             (<FormattedMessage id="agent.tickets.count_agents" values={{ count: onlineAgents.size }} />)
           </span>
+          <a className="online-status" onClick={this.openUserMenu}>
+            {activeChat ? 'You are online' : 'You are offline'}
+          </a>
         </div>
         <div className="description">
-          <Toggle active={activeChat} onChange={onToggleChat} className="small">
-            <FormattedMessage id="agent.chat.online_for_chat" />
-          </Toggle>
-          <hr className="full" />
           <i
             onClick={this.toggleVolume}
             className={classNames(
@@ -127,6 +126,13 @@ class Chat extends React.Component {
       </div>
     );
   }
+
+  openUserMenu = (event) => {
+    event.preventDefault();
+
+    this.chatPopup.closePopup();
+    this.props.openUserMenu();
+  };
 
   toggleDepartmentMode = () => {
     this.setState({

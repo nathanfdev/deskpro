@@ -42,8 +42,16 @@ class NewNumberContainer extends React.Component {
 
   onSubmit = (data) => {
     const { location, dispatch } = this.props;
+    const query = location.query;
+    const queryParams = [];
 
-    const promise = dispatch(createNumber({ ...location.query, ...data }));
+    Object.keys(query).forEach((paramName) => {
+      if (paramName && query[paramName]) {
+        queryParams[paramName] = query[paramName];
+      }
+    });
+
+    const promise = dispatch(createNumber({ ...queryParams, ...data }));
     promise.success(() => {
       replaceRoute('/voice_channel/numbers');
     });

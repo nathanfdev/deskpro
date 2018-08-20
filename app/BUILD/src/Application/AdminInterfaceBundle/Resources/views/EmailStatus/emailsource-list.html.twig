@@ -146,7 +146,7 @@
 						<td class="overflow-ellipsis">{{ ng_var('result.header_subject') }}</td>
 						<td nowrap>
 							<div ng-if="result.object_info.ticket_id">
-								<i class="fa fa-envelope"></i> <a ng-href="../agent/#t:{{ ng_var('result.object_info.ticket_id') }}" target="_blank">{{ ng_var('result.object_info.ticket_id') }}</a>
+								<i class="fa fa-envelope"></i> <a ng-href="#/go_to_agent/#agent/tickets/{{ ng_var('result.object_info.ticket_id') }}" >{{ ng_var('result.object_info.ticket_id') }}</a>
 								<span ng-if="result.object_type == 'ticket_message'">(reply)</span>
 							</div>
 							<div ng-if="!result.object_info.ticket_id">

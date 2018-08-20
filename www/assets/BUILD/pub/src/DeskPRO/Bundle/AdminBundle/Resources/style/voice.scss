@@ -1,3 +1,24 @@
+.admin-list-options {
+  margin-top: 20px;
+  padding: 20px 0;
+  border-top: 1px solid #EFEFEF;
+  border-bottom: 1px solid #EFEFEF;
+
+  .missed-call-group-timeout {
+    padding-left: 20px;
+
+    .ui.input {
+      width: 50px !important;
+      display: inline-block;
+      margin: 0 10px;
+
+      input {
+        margin-top: -10px;
+      }
+    }
+  }
+}
+
 .admin-list-table {
   width: 100%;
 
@@ -412,6 +433,15 @@
 
   .allow-outbound-calls {
     padding-top: 10px;
+  }
+
+  .default-outbound-calls {
+    padding-left: 20px;
+    padding-bottom: 20px;
+
+    .flag-icon {
+      margin-right: 10px;
+    }
   }
 
   .cancel-button {

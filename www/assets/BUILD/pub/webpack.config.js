@@ -44,7 +44,7 @@ const config = {
     DeskPRO_EmbedHelpdeskBundle: './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedHelpdeskBundle',
 
     // Agent
-    phonenumber_utils: './node_modules/intl-tel-input/lib/libphonenumber/build/utils',
+    phonenumber_utils: './node_modules/intl-tel-input/build/js/utils',
     fontawesome: './node_modules/@fortawesome/fontawesome-free/css/all.css',
     // // DeskPRO_AgentBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle',
     // // DeskPRO_AgentBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss',
@@ -79,7 +79,7 @@ const config = {
   output: {
     path:              path.resolve(__dirname, 'build/'),
     pathinfo:          true,
-    publicPath:        'http://localhost:9666/pub/build/',
+    publicPath:        'http://deskpro5.local:9666/pub/build/',
     filename:          '[name].js',
     sourceMapFilename: '[name].map'
   },

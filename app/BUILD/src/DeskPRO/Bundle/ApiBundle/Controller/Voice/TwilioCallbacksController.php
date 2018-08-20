@@ -31,6 +31,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\AppBundle\Twilio\Twiml;
@@ -190,9 +191,16 @@ class TwilioCallbacksController extends AbstractVoiceController
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
 
                     // user ends call
-                    // check the call is not answered and voicemail wasn't reached
                     // create a ticket for missed calls
-                    if (!$phoneCall->hasAgentParticipants() && !$phoneCall->getVoicemailRecord()) {
+                    if (!$phoneCall->hasAgentParticipants()
+                        // check the call is not answered and voicemail wasn't reached
+                        // otherwise we got a voicemail record and agent will see it in a separate interface
+                        && !$phoneCall->getVoicemailRecord()
+                        // create a ticket just it was assigned to any target
+                        && $phoneCall->getTaskSid()
+                        // don't create missed tickets for strange numbers
+                        && !$phoneCall->isStrangeNumber()
+                    ) {
                         $ticketMessageCall = new TicketMessageVoicePhoneCall();
                         $ticketMessageCall->setPhoneCall($phoneCall);
 
@@ -202,10 +210,31 @@ class TwilioCallbacksController extends AbstractVoiceController
                         $ticketMessage->setMessage('Missed call from '.$phoneCall->getExternalNumber());
                         $ticketMessage->setAsAgentNote(true);
 
-                        $ticket = new Ticket();
+                        // try to get last ticket
+                        $ticket = null;
+                        if ($this->container->get('voice_settings_resolver')->isGroupMissedCallTickets()) {
+                            /** @var Ticket $lastTicket */
+                            $lastTicket = $this->getManager()->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
+                            if ($lastTicket) {
+                                $now    = new \DateTime();
+                                $hours  = $this->container->get('voice_settings_resolver')->getGroupMissedCallTicketsTimeout();
+                                $offset = clone $lastTicket->getDateCreated();
+                                $offset->modify("+{$hours} hours");
+
+                                if ($offset > $now) {
+                                    $ticket = $lastTicket;
+                                }
+                            }
+                        }
+
+                        // if no last ticket, create a new one
+                        if (!$ticket) {
+                            $ticket = new Ticket();
+                            $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
+                            $ticket->setPerson($phoneCall->getPerson());
+                        }
+
                         $ticket->disableAutoTicketProcess();
-                        $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
-                        $ticket->setPerson($phoneCall->getPerson());
                         $ticket->addMessage($ticketMessage);
 
                         $this->saveTicket($ticket);
@@ -920,17 +949,38 @@ class TwilioCallbacksController extends AbstractVoiceController
             throw $this->createBadRequestException('Phone call not found');
         }
 
+        $recordingEnabled = true;
+        if ($phoneCall->getQueue()) {
+            $recordingEnabled = $phoneCall->getQueue()->isRecordingEnabled();
+        }
+
         $phoneCall->setDuration($request->request->get('RecordingDuration'));
         $phoneCall->setData(array_merge($phoneCall->getData(), [
-            'RecordingUrl' => $request->request->get('RecordingUrl'),
+            'RecordingUrl'     => $request->request->get('RecordingUrl'),
+            'RecordingEnabled' => $recordingEnabled,
         ]));
 
         $em->persist($phoneCall);
         $em->flush();
 
-        $this->getContainer()->getJobQueue()->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
-            'call_id' => $phoneCall->getId(),
-        ]));
+        if ($recordingEnabled) {
+            $this->getContainer()->getJobQueue()->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+                'call_id' => $phoneCall->getId(),
+            ]));
+        }
+
+        $serializedData = $this->container->get('serializer')->toArray(
+            new ApiWrapper($phoneCall),
+            new SideloadSerializationContext()
+        );
+
+        $this->container->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent(
+                'agent.voice.recording_status',
+                ['data' => $serializedData]
+            )
+        );
     }
 
     /**
@@ -1031,6 +1081,8 @@ class TwilioCallbacksController extends AbstractVoiceController
     }
 
     /**
+     * User answered an incoming call.
+     *
      * @ApiDoc(
      *     description="Outgoing callback",
      *     statusCodes={
@@ -1078,13 +1130,27 @@ class TwilioCallbacksController extends AbstractVoiceController
         $ticketMessage->setMessage('Call to '.$phoneCall->getExternalNumber());
         $ticketMessage->setAsAgentNote(true);
 
-        $ticket = new Ticket();
-        $ticket->disableAutoTicketProcess();
-        $ticket->setSubject('Call to '.$phoneCall->getExternalNumber());
-        $ticket->setPerson($phoneCall->getPerson());
-        $ticket->setAgent($agent);
-        $ticket->addMessage($ticketMessage);
+        $ticket = null;
 
+        // try to get related ticket from phone call
+        $options = $phoneCall->getData();
+        if (!empty($options['outgoing_ticket_id'])) {
+            $ticket = $this->getManager()->getRepository(Ticket::class)->find($options['outgoing_ticket_id']);
+            if ($ticket) {
+                $ticket->disableAutoTicketProcess();
+            }
+        }
+
+        // no ticket found, create a new one
+        if (!$ticket) {
+            $ticket = new Ticket();
+            $ticket->disableAutoTicketProcess();
+            $ticket->setSubject('Call to '.$phoneCall->getExternalNumber());
+            $ticket->setPerson($phoneCall->getPerson());
+            $ticket->setAgent($agent);
+        }
+
+        $ticket->addMessage($ticketMessage);
         $this->saveTicket($ticket);
 
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
@@ -1281,6 +1347,9 @@ class TwilioCallbacksController extends AbstractVoiceController
     }
 
     /**
+     * User makes an incoming call.
+     * Callback after Twilio.connect.
+     *
      * @param VoiceAccount $account
      * @param Request      $request
      *
@@ -1368,6 +1437,9 @@ class TwilioCallbacksController extends AbstractVoiceController
     }
 
     /**
+     * Agent makes an outgoing call.
+     * Callback after Twilio.connect.
+     *
      * @param VoiceAccount $account
      * @param Request      $request
      *
@@ -1390,7 +1462,7 @@ class TwilioCallbacksController extends AbstractVoiceController
 
         $phoneCall
             ->setCallSid($callSid)
-            ->setData($query->all())
+            ->setData(array_merge($phoneCall->getData(), $query->all()))
         ;
 
         // create agent participant
@@ -1488,9 +1560,18 @@ class TwilioCallbacksController extends AbstractVoiceController
      */
     private function addTargetResponse(VoicePhoneCall $phoneCall, AbstractVoiceTarget $target, Twiml $twiml)
     {
-        $number  = $phoneCall->getNumber();
-        $account = $number->getAccount();
-        $person  = $phoneCall->getPerson();
+        $number        = $phoneCall->getNumber();
+        $account       = $number->getAccount();
+        $person        = $phoneCall->getPerson();
+        $relatedPeople = $this->getManager()->getRepository(Person::class)->findByPhoneNumber($phoneCall->getExternalNumber());
+        $taskOptions   = [
+            'rejected_workers'           => [],
+            'deskpro_call_id'            => $phoneCall->getId(),
+            'deskpro_person_id'          => $person ? $person->getId() : null,
+            'deskpro_related_people_ids' => array_map(function (Person $person) {
+                return $person->getId();
+            }, $relatedPeople),
+        ];
 
         if ($target instanceof VoiceQueueTarget) {
             $queue = $target->getQueue();
@@ -1499,23 +1580,17 @@ class TwilioCallbacksController extends AbstractVoiceController
             $twiml
                 ->enqueue([
                     'workflowSid' => $account->getQueueWorkflowSid(),
-                ])->task(json_encode([
-                    'deskpro_call_id'   => $phoneCall->getId(),
-                    'deskpro_queue_id'  => $queue->getId(),
-                    'deskpro_person_id' => $person ? $person->getId() : null,
-                    'rejected_workers'  => [],
-                ]))
+                ])->task(json_encode(array_merge($taskOptions, [
+                    'deskpro_queue_id' => $queue->getId(),
+                ])))
             ;
         } elseif ($target instanceof VoiceAgentTarget) {
             $twiml
                 ->enqueue([
                     'workflowSid' => $account->getQueueWorkflowSid(),
-                ])->task(json_encode([
-                    'deskpro_call_id'   => $phoneCall->getId(),
-                    'agent_id'          => $target->getAgent()->getId(),
-                    'deskpro_person_id' => $person ? $person->getId() : null,
-                    'rejected_workers'  => [],
-                ]))
+                ])->task(json_encode(array_merge($taskOptions, [
+                    'agent_id' => $target->getAgent()->getId(),
+                ])))
             ;
         } elseif ($target instanceof VoiceAutoAttendantTarget) {
             $autoAttendant = $target->getAutoAttendant();

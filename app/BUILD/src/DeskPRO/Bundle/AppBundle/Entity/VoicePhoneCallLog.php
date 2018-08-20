@@ -47,6 +47,8 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
     const ACTION_AGENT_HANGUP                         = 'call.agent_hangup';
     const ACTION_STARTED                              = 'call.started';
     const ACTION_ENDED                                = 'call.ended';
+    const ACTION_RECORDING_DOWNLOADED                 = 'call.recording_downloaded';
+    const ACTION_RECORDING_DELETED                    = 'call.recording_deleted';
 
     /**
      * The unique ID.

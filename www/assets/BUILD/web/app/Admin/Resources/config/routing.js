@@ -135,7 +135,7 @@ define(function() {
 
   routes.push({
     id: 'go_to_agent',
-    url: '/go_to_agent',
+    url: '/go_to_agent/',
     templateName: 'Index/blank.html',
     controller: 'Admin_Main_Ctrl_BackToAgent'
   });

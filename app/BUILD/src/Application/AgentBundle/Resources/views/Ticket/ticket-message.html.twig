@@ -2,11 +2,12 @@
 
 <article
 	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %} {% if isVoiceMessage %}react-voice-component{% endif %}"
-	data-message-id="{{message.id}}" {% if isVoiceMessage %}data-message="{{ message|serialize(['voice_phone_call']) }}"{% endif %}
+	data-message-id="{{message.id}}" {% if isVoiceMessage %}data-message="{{ message|serialize(['voice_phone_call', 'ticket']) }}"{% endif %}
 	data-message-ts="{{message.date_created.getTimestamp()}}"
 	data-message-author-name="{{message.person.getDisplayName()}}"
 	data-message-author-email="{{message.person.getEmailAddress()}}"
 	data-message-has-source="{{message.hasEmailSource()}}"
+	data-message-date-created-fulltime="{{message.date_created|date('fulltime')}}"
 >
 	{% if message.is_agent_note %}<div class="note-tag" title="{{ phrase('agent.general.note_tag_title') }}"><i>{{ phrase('agent.general.note') }}</i></div>{% endif %}
 	<div class="avatar"><img
@@ -25,16 +26,17 @@
 				<h4	class="agent-link" data-agent-id="{{ message.person.id }}">
 					{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span>
                     {% if message.getGeoCountry() %}
-						<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
+						<span class="message-flag dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
                     {% endif %}
 				</h4>
             {% elseif message.person %}
 				<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">
 					{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span>
                     {% if message.getGeoCountry() %}
-						<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
+						<span class="message-flag dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
                     {% endif %}
 				</h4>
+				<div style="display: none" class="person-phone-country">{{ message.person.primary_phone_number_region }}</div>
             {% endif %}
 			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
             {% set elid = el_uid() %}

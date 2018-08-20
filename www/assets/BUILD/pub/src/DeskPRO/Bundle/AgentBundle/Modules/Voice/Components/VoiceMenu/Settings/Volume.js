@@ -6,7 +6,7 @@ import IncomingCallAudio from '../IncomingCall/IncomingCallAudio';
 class Volume extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.string,
+    value:    PropTypes.number,
     onChange: PropTypes.func
   };
 

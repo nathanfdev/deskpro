@@ -1,16 +1,5 @@
 $voice-green-border-color: #47BF61;
 
-.voice-header {
-  background: #4696dc;
-  color: $dp-greyscale-50;
-  height: 26px;
-  padding: 4px 10px;
-  font-family: 'Open Sans';
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-}
-
 .voice-profile {
   width: 360px;
   font-family: 'Open Sans';
@@ -82,6 +71,13 @@ $voice-green-border-color: #47BF61;
           height: 24px;
           float: left;
           position: absolute;
+        }
+
+        span:not(.on) svg .chat-primary {
+          fill: $dp-greyscale-450;
+        }
+        span.on svg .chat-primary {
+          fill: $dp-emerald-primary;
         }
 
         .voice-profile-status-checkbox-title {
@@ -257,6 +253,13 @@ $voice-green-border-color: #47BF61;
           color: $dp-greyscale-850;
         }
 
+        .ui.checkbox {
+          label {
+            font-weight: normal;
+            font-size: 14px;
+          }
+        }
+
         .Select-control {
           border-radius: 0;
         }
@@ -303,6 +306,10 @@ $voice-green-border-color: #47BF61;
             background-color: $dp-greyscale-150;
             border: 1px solid $dp-greyscale-250;
           }
+
+          .country-list {
+            max-width: 350px;
+          }
         }
 
         .voice-sip-number-mode {
@@ -317,6 +324,9 @@ $voice-green-border-color: #47BF61;
           td {
             margin: 0;
             padding: 0;
+          }
+          td:focus {
+            background-color: blue;
           }
         }
 
@@ -379,6 +389,23 @@ $voice-green-border-color: #47BF61;
             font-weight: 600;
             font-size: 18px;
             color: $dp-greyscale-850;
+          }
+
+          .call-from-avatars {
+            position: relative;
+            height: 80px;
+
+            .call-from-avatar {
+              position: absolute;
+              top: 50%;
+              left: 50%; /* position the left edge of the element at the middle of the parent */
+              transform: translate(-50%, -50%);
+              z-index: 1;
+
+              &.selected {
+                z-index: 2;
+              }
+            }
           }
 
           .call-from-name {
@@ -637,6 +664,8 @@ $voice-green-border-color: #47BF61;
   background-color: #FFFFFF;
   border: 1px solid #CACECE;
   border-radius: 5px;
+  position: fixed;
+  z-index: 100;
 
   i.fa {
     font-size: 18px;
@@ -1081,11 +1110,14 @@ $voice-green-border-color: #47BF61;
     border: 1px solid $dp-greyscale-250;
   }
 
-  button {
+  a, button {
     width: 105px;
     height: 40px;
     font-weight: 600;
     font-size: 18px;
+    display: block;
+    text-align: center;
+    line-height: 40px;
     color: $dp-greyscale-850;
     background-color: $dp-greyscale-250;
     background: -webkit-linear-gradient(180deg, rgba(255, 255, 255, 1) 14.79%, rgba(253, 253, 253, 0.48) 64.28%, rgba(246, 246, 246, 0.29) 82.1%, rgba(235, 235, 235, 0.16) 94.77%, rgba(227, 227, 227, 0.1) 100%);
@@ -1274,6 +1306,12 @@ $voice-green-border-color: #47BF61;
         }
       }
     }
+  }
+}
+
+.dp-click-to-call {
+  .fa, .fas {
+    color: $dp-emerald-primary;
   }
 }
 

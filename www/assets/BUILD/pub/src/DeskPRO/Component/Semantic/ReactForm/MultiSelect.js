@@ -47,14 +47,14 @@ class SemanticMultiSelect extends React.Component {
   };
 
   render() {
-    const { choices, value, toggleAll } = this.props;
+    const { choices = [], value, toggleAll } = this.props;
 
     return (
       <div>
         { toggleAll ? <span onClick={this.onToggleAll} className="multi-select-toggle-all">Toggle all</span> : null }
         <ScrollArea className="multi-select" vertical>
           {choices.map((choice, index) => {
-            const checked = value.indexOf(choice.value) !== -1;
+            const checked = value && value.indexOf(choice.value) !== -1;
 
             return (
               <div

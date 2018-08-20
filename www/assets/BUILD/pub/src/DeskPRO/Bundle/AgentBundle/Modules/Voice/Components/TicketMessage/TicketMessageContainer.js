@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
-import { loadBatch, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { loadBatch, collectionSelectorFactory, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import TicketMessage from './TicketMessage';
 import { openDialpad } from '../../Actions/clientActions';
 import { loadNumbers } from '../../Actions/numberActions';
@@ -28,8 +28,27 @@ class TicketMessageContainer extends React.Component {
     phoneCalls:  PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: props.data
+    };
+  }
+
   componentDidMount() {
     this.loadParticipants();
+
+    const { dispatch } = this.props;
+    const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.voice.recording_status', ({ data }) => {
+      this.setState((state) => {
+        state.data.linked.voice_phone_call[data.data.id] = data.data;
+        return state;
+      });
+
+      dispatch(updateCollection('VoicePhoneCall', Immutable.List([Immutable.fromJS(data.data)])));
+    });
   }
 
   componentDidUpdate() {
@@ -38,7 +57,9 @@ class TicketMessageContainer extends React.Component {
 
   onCall = () => {
     const phoneCall = this.getPhoneCall();
-    this.props.dispatch(openDialpad(phoneCall.get('external_number')));
+    const ticket = this.getTicket();
+
+    this.props.dispatch(openDialpad(phoneCall.get('external_number'), ticket.get('id'), ticket.get('subject')));
   };
 
   onOpenSettings = () => {
@@ -46,7 +67,8 @@ class TicketMessageContainer extends React.Component {
   };
 
   getPhoneCall() {
-    const { phoneCalls, data } = this.props;
+    const { phoneCalls } = this.props;
+    const { data } = this.state;
     const message = data.data;
     const phoneCallId = message.attributes[0].phone_call;
 
@@ -58,6 +80,13 @@ class TicketMessageContainer extends React.Component {
 
     // get from message data attribute from template
     return Immutable.fromJS(data.linked.voice_phone_call[phoneCallId]);
+  }
+
+  getTicket() {
+    const { data } = this.state;
+    const message = data.data;
+
+    return Immutable.fromJS(data.linked.ticket[message.ticket]);
   }
 
   getConnection() {
@@ -87,12 +116,13 @@ class TicketMessageContainer extends React.Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { data } = this.state;
 
     return (
       <TicketMessage
         {...this.props}
         message={data.data}
+        ticket={this.getTicket()}
         phoneCall={this.getPhoneCall()}
         connection={this.getConnection()}
         onCall={this.onCall}

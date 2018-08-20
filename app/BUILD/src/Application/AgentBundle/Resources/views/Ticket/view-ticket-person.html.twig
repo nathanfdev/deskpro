@@ -1,0 +1,41 @@
+<div class="dp-btn-group dp-dropdown">
+    <a id="{{ baseId }}_profile_link" class="dp-btn as-popover user-btn" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+                                <span class="text" style="background-image: url({{ ticket.person.getPictureUrl(25) }});">
+                                    {{ ticket.person.getNameWithTitle() }}
+                                    {% if ticket.person.emails|length > 1 or ticket.person_email_address %}
+                                        <span class="email" id="{{ baseId }}_user_email_text">
+                                            ({{ ticket.person_email.email|default(ticket.person_email_address) }})
+                                        </span>
+                                    {% endif %}
+                                </span>
+    </a>
+    {% if ticket.person.emails|length > 1 %}
+        <a class="dp-btn dp-dropdown-toggle" style="padding: 7px;"
+           id="{{ baseId }}_user_email_menu_trigger">
+            <span class="dp-caret dp-caret-down"></span>
+        </a>
+        <div id="{{ baseId }}_user_email_menu" class="dp-menu" style="display: none;">
+            <section>
+                <div class="dp-menu-area">
+                    <label>{{ phrase('agent.tickets.change_user_ticket_email') }}</label>
+                    <ul>
+                        {% for email in ticket.person.emails %}
+                            <li data-email-id="{{ email.id }}">{{ email.email }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </section>
+        </div>
+    {% endif %}
+</div>
+
+{% if ticket.person.organization %}
+    &nbsp;&nbsp;
+    <a id="{{ baseId }}_org_link" class="dp-btn as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}">
+        <i class="fas fa-briefcase"></i>
+        {{ ticket.person.organization }}
+        {% if ticket.person.organization_position %}
+            <span class="email">({{ ticket.person.organization_position }})</span>
+        {% endif %}
+    </a>
+{% endif %}

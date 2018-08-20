@@ -8,19 +8,20 @@ import VoiceMenu from './VoiceMenu';
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
-    voiceSynced:    PropTypes.bool,
-    isSecure:       PropTypes.bool,
-    micEnabled:     PropTypes.bool,
-    incomingCall:   PropTypes.object,
-    outgoingCall:   PropTypes.object,
-    onlineAgents:   PropTypes.object,
-    voiceEnabled:   PropTypes.bool,
-    callsEnabled:   PropTypes.bool,
-    outboundNumber: PropTypes.string
+    voiceSynced:  PropTypes.bool,
+    isSecure:     PropTypes.bool,
+    micEnabled:   PropTypes.bool,
+    incomingCall: PropTypes.object,
+    outgoingCall: PropTypes.object,
+    onlineAgents: PropTypes.object,
+    voiceEnabled: PropTypes.bool,
+    callsEnabled: PropTypes.bool,
+    openUserMenu: PropTypes.func
   };
 
   componentDidMount() {
     const { incomingCall } = this.props;
+    window.AgentVoiceDropdown = this;
 
     if (incomingCall) {
       this.popup.openPopup();
@@ -28,9 +29,9 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { incomingCall, outboundNumber } = this.props;
+    const { incomingCall } = this.props;
 
-    if ((!incomingCall && newProps.incomingCall) || (!outboundNumber && newProps.outboundNumber)) {
+    if (!incomingCall && newProps.incomingCall) {
       this.popup.openPopup();
     }
   }
@@ -85,8 +86,28 @@ class VoiceMenuDropdown extends React.Component {
     return <i className="ui call icon red voice-menu-icon" />;
   }
 
+  openUserMenu = (event) => {
+    event.preventDefault();
+
+    this.closePopup();
+    this.props.openUserMenu();
+  };
+
   closePopup = () => {
     this.popup.closePopup();
+  };
+
+  openDialpad = (outgoingNumber, ticketId = null, ticketTitle = null) => {
+    this.popup.openPopup();
+    setTimeout(() => {
+      this.voiceMenu.changeTab('phone');
+      setTimeout(() => {
+        this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
+        if (ticketId) {
+          this.voiceMenu.dialpad.setTicket(ticketId, ticketTitle);
+        }
+      }, 1);
+    }, 1);
   };
 
   render() {
@@ -99,7 +120,13 @@ class VoiceMenuDropdown extends React.Component {
           positionMy="right top"
           positionAt="right bottom"
           zIndex={99999}
-          content={<VoiceMenu {...this.props} />}
+          content={
+            <VoiceMenu
+              {...this.props}
+              ref={(c) => { this.voiceMenu = c; }}
+              openUserMenu={this.openUserMenu}
+            />
+          }
           className={classNames('voice-menu-popup', { green: incomingCall })}
           allowCloseOnClickOut={!incomingCall && !outgoingCall}
         >

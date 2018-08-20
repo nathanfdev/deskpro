@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
 import SettingsContainer from './Settings/SettingsContainer';
+import Dialpad from './Dialpad/Dialpad';
 import DialpadContainer from './Dialpad/DialpadContainer';
 import IncomingCall from './IncomingCall/IncomingCall';
 import OutgoingCallContainer from './OutgoingCall/OutgoingCallContainer';
@@ -19,33 +20,32 @@ class VoiceMenu extends React.Component {
     onDeclineCall:         PropTypes.func,
     onHangup:              PropTypes.func,
     outboundCallsEnabled:  PropTypes.bool,
-    outboundNumber:        PropTypes.string,
     outgoingCall:          PropTypes.object,
     ringingVolume:         PropTypes.number,
     agentVoicemailTimeout: PropTypes.number,
-    voiceSynced:           PropTypes.bool
+    voiceSynced:           PropTypes.bool,
+    callsEnabled:          PropTypes.bool,
+    voiceEnabled:          PropTypes.bool,
+    micEnabled:            PropTypes.bool,
+    openUserMenu:          PropTypes.func
   };
 
   constructor(props) {
     super(props);
 
-    const { incomingCall, outgoingCall, outboundNumber } = this.props;
+    const { incomingCall, outgoingCall, outboundCallsEnabled } = this.props;
     this.state = {
-      tabName: incomingCall || outgoingCall || outboundNumber ? 'phone' : 'settings'
+      tabName: incomingCall || outgoingCall || outboundCallsEnabled ? 'phone' : 'settings'
     };
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.incomingCall || newProps.outgoingCall || newProps.outboundNumber) {
+    if (newProps.incomingCall || newProps.outgoingCall) {
       this.setState({
         tabName: 'phone'
       });
     }
   }
-
-  onChangeTab = (tabName) => {
-    this.setState({ tabName });
-  };
 
   getPhoneTabName() {
     const { incomingCall, outgoingCall } = this.props;
@@ -64,6 +64,10 @@ class VoiceMenu extends React.Component {
 
     return incomingCall || outgoingCall ? 'fa-phone' : 'fa-th';
   }
+
+  changeTab = (tabName) => {
+    this.setState({ tabName });
+  };
 
   renderPhoneTab() {
     const { me, agents, people, queues, incomingCall, ringingVolume, agentVoicemailTimeout } = this.props;
@@ -94,19 +98,27 @@ class VoiceMenu extends React.Component {
       );
     }
 
-    return <DialpadContainer />;
+    return (
+      <DialpadContainer>
+        <Dialpad ref={(c) => { this.dialpad = c; }} />
+      </DialpadContainer>
+    );
   }
 
   render() {
-    const { outboundCallsEnabled, incomingCall, outgoingCall, voiceSynced } = this.props;
+    const { outboundCallsEnabled, incomingCall, outgoingCall, openUserMenu } = this.props;
+    const { voiceSynced, voiceEnabled, micEnabled, callsEnabled } = this.props;
     const { tabName } = this.state;
     const hasPhoneTab = incomingCall || outboundCallsEnabled;
     const pendingCall = incomingCall || outgoingCall;
 
     return (
       <div className="voice-menu">
-        <div className="voice-header">
+        <div className="header">
           Calls
+          <a className="online-status" onClick={openUserMenu}>
+            {voiceEnabled && micEnabled && callsEnabled ? 'You are online' : 'You are offline'}
+          </a>
         </div>
         {!voiceSynced &&
         <div className="voice-menu-alert">
@@ -118,7 +130,7 @@ class VoiceMenu extends React.Component {
             tabName="voicemail"
             title="Voicemail"
             iconClass="fa-play-circle"
-            onClick={this.onChangeTab}
+            onClick={this.changeTab}
             active={tabName === 'voicemail'}
           />}
           {!pendingCall &&
@@ -126,7 +138,7 @@ class VoiceMenu extends React.Component {
             tabName="settings"
             title="Settings"
             iconClass="fa-cog"
-            onClick={this.onChangeTab}
+            onClick={this.changeTab}
             active={tabName === 'settings'}
           />}
           {hasPhoneTab &&
@@ -134,7 +146,7 @@ class VoiceMenu extends React.Component {
             tabName="phone"
             title={this.getPhoneTabName()}
             iconClass={this.getPhoneTabIcon()}
-            onClick={this.onChangeTab}
+            onClick={this.changeTab}
             active={tabName === 'phone'}
           />}
         </div>

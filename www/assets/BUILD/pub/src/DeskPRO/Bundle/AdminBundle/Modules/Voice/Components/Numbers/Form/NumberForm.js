@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { Fieldset } from '@deskpro/react-forms';
 import classNames from 'classnames';
-import { Input, Form, Field, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input, Form, Field, Checkbox, Radio, CountryCodeSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
@@ -31,10 +31,13 @@ class NumberForm extends BaseForm {
     const { number } = this.props;
 
     return {
-      number:                 number.get('number'),
-      nickname:               number.get('nickname') || '',
-      target:                 number.get('target') && number.get('target').toJS(),
-      outbound_calls_enabled: number.get('outbound_calls_enabled')
+      number:                           number.get('number'),
+      nickname:                         number.get('nickname') || '',
+      target:                           number.get('target') && number.get('target').toJS(),
+      outbound_calls_enabled:           number.get('outbound_calls_enabled'),
+      outbound_calls_default:           number.get('outbound_calls_default'),
+      outbound_calls_default_global:    number.get('outbound_calls_default_global') ? 1 : 0,
+      outbound_calls_default_countries: number.get('outbound_calls_default_countries') ? number.get('outbound_calls_default_countries').toJS() : [],
     };
   }
 
@@ -71,6 +74,20 @@ class NumberForm extends BaseForm {
               <Field select="outbound_calls_enabled" className="allow-outbound-calls">
                 <Checkbox label="Allow outbound calls from this number" />
               </Field>
+              {formData.value.outbound_calls_enabled &&
+              <div className="default-outbound-calls">
+                <Field select="outbound_calls_default">
+                  <Checkbox label="Make this number a default number for outgoing calls" />
+                </Field>
+                {formData.value.outbound_calls_default &&
+                <Field select="outbound_calls_default_global">
+                  <GlobalOutgoingNumber />
+                </Field>}
+                {formData.value.outbound_calls_default && !formData.value.outbound_calls_default_global &&
+                <Field select="outbound_calls_default_countries">
+                  <CountryCodeSelect multiple toggleAll={false} />
+                </Field>}
+              </div>}
 
               <button className={classNames('ui button', { loading: saving })}>
                 {number.get('id') ? 'Update' : 'Create' }
@@ -88,6 +105,35 @@ class NumberForm extends BaseForm {
             </Fieldset>
           </Form>
         </div>
+      </div>
+    );
+  }
+}
+
+class GlobalOutgoingNumber extends Component {
+
+  static propTypes = {
+    value:    PropTypes.number,
+    onChange: PropTypes.func
+  };
+
+  render() {
+    const { value, onChange } = this.props;
+
+    return (
+      <div>
+        <Radio
+          label="Make this the default for all outgoing calls"
+          choice={1}
+          value={value}
+          onChange={onChange}
+        />
+        <Radio
+          choice={0}
+          label="Make this the default for outgoing calls to specific countries"
+          value={value}
+          onChange={onChange}
+        />
       </div>
     );
   }

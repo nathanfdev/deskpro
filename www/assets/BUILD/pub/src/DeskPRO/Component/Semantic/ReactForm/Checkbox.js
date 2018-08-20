@@ -9,16 +9,22 @@ class Checkbox extends React.Component {
     disabled:  PropTypes.bool,
     value:     PropTypes.bool,
     label:     PropTypes.string,
-    onChange:  PropTypes.func
+    onChange:  PropTypes.func,
+    choice:    PropTypes.string
   };
 
   onClick = () => {
-    const { value, onChange } = this.props;
-    onChange(!value);
+    const { value, choice, onChange } = this.props;
+
+    if (choice) {
+      onChange(!value ? choice : null);
+    } else {
+      onChange(!value);
+    }
   };
 
   render() {
-    const { className, value, label, disabled } = this.props;
+    const { className, value, label, choice, disabled } = this.props;
 
     return (
       <div
@@ -27,6 +33,7 @@ class Checkbox extends React.Component {
       >
         <input
           type="checkbox"
+          value={choice}
           checked={value ? 'checked' : ''}
           className="hidden"
           disabled={disabled ? 'disabled' : ''}
