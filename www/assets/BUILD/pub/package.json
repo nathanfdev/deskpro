@@ -5,6 +5,7 @@
   "author": "DeskPRO <support@deskpro.com>",
   "dependencies": {
     "@amcharts/amcharts3-react": "^3.0.3",
+    "@deskpro/apps-components-style": "^0.7.1",
     "@deskpro/js-utils": "^1.0.4",
     "@deskpro/react-components": "^1.3.27",
     "@deskpro/react-forms": "^2.0.0-beta41",
@@ -194,8 +195,12 @@
     ],
     "cacheDirectory": "./.jest-cache",
     "transform": {
+      "^.+\\.css$": "<rootDir>/jest-cssTransform.js",
       ".*": "./jest-preprocessor"
     },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
+    ],
     "setupFiles": [
       "./jest-env"
     ],
@@ -221,6 +226,7 @@
     ],
     "moduleFileExtensions": [
       "js",
+      "css",
       "json",
       "es6"
     ],
