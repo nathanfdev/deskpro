@@ -11,6 +11,8 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -1109,6 +1111,23 @@ class TicketMessage extends DomainObject
         }
 
         return parent::__call($name, $arguments);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = [])
+    {
+        $values  = parent::toApiData($primary, $deep, $visited);
+        $context = new SideloadSerializationContext(['voice_phone_call']);
+        $context->setInlineSideloads(true);
+
+        foreach ($this->attributes as $attribute) {
+            $serialized             = App::$container->get('serializer')->toArray(new ApiWrapper($attribute), $context);
+            $values['attributes'][] = $serialized['data'];
+        }
+
+        return $values;
     }
 
     //###########################################################################
