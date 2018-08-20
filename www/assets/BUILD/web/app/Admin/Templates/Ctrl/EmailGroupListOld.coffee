@@ -9,7 +9,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         info: '/email-templates-info'
       }).then( (res) =>
         @templateInfo = res.data.info.list
-        console.log @templateInfo
       )
       return promise
 
