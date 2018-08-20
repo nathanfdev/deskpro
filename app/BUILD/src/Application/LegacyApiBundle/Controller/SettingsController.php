@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\CustomFields\Form\Type\PersonStartType;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
@@ -17,7 +18,6 @@ use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\ServerSettings;
 use Application\DeskPRO\Settings\TicketFwdSettings;
 use Application\DeskPRO\Settings\TicketSettings;
-use Application\DeskPRO\CustomFields\Form\Type\PersonStartType;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\License;
@@ -487,8 +487,7 @@ class SettingsController extends AbstractController implements ProtectedControll
             $p['last_name']  = $data['last_name'];
             $p->setPassword($data['password']);
 
-            $this->em->flush($email);
-            $this->em->flush($p);
+            $this->em->flush();
             $remove_label = true;
         }
 
@@ -509,7 +508,7 @@ class SettingsController extends AbstractController implements ProtectedControll
         $this->settings->setSetting('core.license', $license_code);
         if ($remove_label) {
             $p->getLabelManager()->removeLabel('not_user');
-            $this->em->flush($p);
+            $this->em->flush();
         }
 
         return $this->createApiSuccessResponse();
@@ -688,7 +687,7 @@ class SettingsController extends AbstractController implements ProtectedControll
         }
 
         $blob->is_temp = false;
-        $this->em->flush($blob);
+        $this->em->flush();
         $this->settings->setSetting('agent.login_logo_blob_id', $blob_id);
 
         return $this->getLogoBlobAction();

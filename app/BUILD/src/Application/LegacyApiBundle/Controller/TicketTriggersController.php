@@ -102,7 +102,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     $edit    = SpecialTriggerEdit::createWithDepartment($dep, $event);
                     $edit->applyToTrigger($trigger);
                     $this->em->persist($trigger);
-                    $this->em->flush($trigger);
+                    $this->em->flush();
                 }
                 break;
 
@@ -119,7 +119,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     $edit    = SpecialTriggerEdit::createWithEmailAccount($acc);
                     $edit->applyToTrigger($trigger);
                     $this->em->persist($trigger);
-                    $this->em->flush($trigger);
+                    $this->em->flush();
                 }
                 break;
 
@@ -143,7 +143,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     $edit                = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
                     $edit->applyToTrigger($trigger);
                     $this->em->persist($trigger);
-                    $this->em->flush($trigger);
+                    $this->em->flush();
                 }
                 break;
 
@@ -194,7 +194,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                         $edit                = SpecialTriggerEdit::createWithDepartment($dep, $event);
                         $edit->applyToTrigger($trigger);
                         $this->em->persist($trigger);
-                        $this->em->flush($trigger);
+                        $this->em->flush();
                     }
                     break;
 
@@ -218,7 +218,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                         $edit                = SpecialTriggerEdit::createWithSatisfaction($satisfactions[$id]);
                         $edit->applyToTrigger($trigger);
                         $this->em->persist($trigger);
-                        $this->em->flush($trigger);
+                        $this->em->flush();
                     }
                     break;
 
@@ -236,7 +236,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                         $edit                = SpecialTriggerEdit::createWithEmailAccount($acc);
                         $edit->applyToTrigger($trigger);
                         $this->em->persist($trigger);
-                        $this->em->flush($trigger);
+                        $this->em->flush();
                     }
                     break;
 

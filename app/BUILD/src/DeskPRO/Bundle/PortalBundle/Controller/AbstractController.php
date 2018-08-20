@@ -97,7 +97,7 @@ class AbstractController extends BaseController
     public function persistAndFlushEntity($object)
     {
         $this->getEm()->persist($object);
-        $this->getEm()->flush($object);
+        $this->getEm()->flush();
     }
 
     /**

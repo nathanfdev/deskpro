@@ -66,7 +66,7 @@ class UsersourceIdentitySaver
         ]);
 
         $this->em->persist($tmp);
-        $this->em->flush($tmp);
+        $this->em->flush();
 
         return $tmp->getAuth();
     }
@@ -74,7 +74,7 @@ class UsersourceIdentitySaver
     private function saveTmpData(TmpData $tmp)
     {
         $this->em->persist($tmp);
-        $this->em->flush($tmp);
+        $this->em->flush();
     }
 
     /**

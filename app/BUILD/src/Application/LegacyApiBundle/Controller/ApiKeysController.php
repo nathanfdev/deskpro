@@ -127,7 +127,7 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         $form->submit($data);
 
         if ($form->isValid()) {
-            $this->em->flush($key);
+            $this->em->flush();
 
             $limits_service = $this->get('api_limits.limits_service');
             $limits         = $limits_service->getKeyLimits($key);

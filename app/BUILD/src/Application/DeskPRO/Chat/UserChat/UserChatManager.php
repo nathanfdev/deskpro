@@ -689,7 +689,7 @@ class UserChatManager
         if ($email) {
             $convo->setShouldSendTranscript(true);
             App::getOrm()->persist($convo);
-            App::getOrm()->flush($convo);
+            App::getOrm()->flush();
 
             return true;
         }

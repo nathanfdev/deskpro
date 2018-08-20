@@ -176,7 +176,7 @@ class DbLimitAdapter implements LimitAdapterInterface
     protected function persistAndFlush(ApiKeyLimit $dbLimit)
     {
         $this->em->persist($dbLimit);
-        $this->em->flush($dbLimit);
+        $this->em->flush();
     }
 
     /**

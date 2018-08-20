@@ -168,7 +168,7 @@ class PhpCriticalErrorTriggerIntegrationTest extends BaseIntegrationTest
     {
         $event = new ErrorEvent(E_ERROR, $message, $file, $line, new \DateTime($date));
         $this->em->persist($event);
-        $this->em->flush($event);
+        $this->em->flush();
 
         return $event;
     }

@@ -87,7 +87,7 @@ class BlobContext extends BaseContext
             $blob->is_temp = true;
 
             $this->em()->persist($blob);
-            $this->em()->flush($blob);
+            $this->em()->flush();
         }
 
         DataContext::setReference("blob_$authCode", $blob);

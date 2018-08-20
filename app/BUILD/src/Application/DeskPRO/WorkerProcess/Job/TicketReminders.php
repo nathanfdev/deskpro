@@ -52,7 +52,7 @@ class TicketReminders extends AbstractJob
         try {
             $this->sendTicketReminder($saved_form);
             $saved_form->incrementSentReminders();
-            App::$container->getEm()->flush($saved_form);
+            App::$container->getEm()->flush();
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e, false);
         }

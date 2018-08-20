@@ -370,7 +370,7 @@ class TicketsController extends AbstractController
             $ticket->addParticipant($participant);
 
             $this->getEm()->persist($participant);
-            $this->getEm()->flush($ticket);
+            $this->getEm()->flush();
 
             // return success
             $this->addFlash('success', $this->phrase('portal.flashes.ticket_participant_add', [

@@ -83,7 +83,7 @@ class ChannelIncomingController extends AbstractController
                 $fromSmsAccount->is_tested  = true;
                 $fromSmsAccount->is_enabled = true;
                 $this->getContainer()->getEm()->persist($fromSmsAccount);
-                $this->getContainer()->getEm()->flush($fromSmsAccount);
+                $this->getContainer()->getEm()->flush();
             }
         }
 

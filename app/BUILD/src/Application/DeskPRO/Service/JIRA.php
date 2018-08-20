@@ -204,7 +204,7 @@ class JIRA
         }
 
         $app->setSetting(self::PARAM_TOKENS, $tokens);
-        $this->container->get('doctrine.orm.entity_manager')->flush($app);
+        $this->container->get('doctrine.orm.entity_manager')->flush();
     }
 
     /**
@@ -247,7 +247,7 @@ class JIRA
             $meta->setIssuetypes($api->get('/issuetype'));
 
             $app->setSetting(self::PARAM_META, $meta->toArray());
-            $this->container->get('doctrine.orm.entity_manager')->flush($app);
+            $this->container->get('doctrine.orm.entity_manager')->flush();
         } catch (\Exception $e) {
             $this->logException($e);
         }
@@ -441,7 +441,7 @@ class JIRA
         $em = $this->container->get('doctrine.orm.entity_manager');
 
         $em->persist($issue);
-        $em->flush($issue);
+        $em->flush();
 
         // trigger an update event
         $manager = $this->container->get('ticket_manager');
@@ -475,7 +475,7 @@ class JIRA
         $this->removeRemoteIssueLink($issue);
 
         $em->remove($issue);
-        $em->flush($issue);
+        $em->flush();
 
         return true;
     }

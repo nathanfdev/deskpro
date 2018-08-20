@@ -3385,7 +3385,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $del['reason']        = $reason;
 
         App::getOrm()->persist($del);
-        App::getOrm()->flush($del);
+        App::getOrm()->flush();
     }
 
     public function updateWorstSlaStatus()

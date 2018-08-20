@@ -71,7 +71,7 @@ class SetSlaReset extends AbstractContainerAwareAction implements ActionInterfac
                 $ticket_sla->setIsCompleted(false, $completed_date);
             }
             $this->getContainer()->getEm()->persist($ticket_sla);
-            $this->getContainer()->getEm()->flush($ticket_sla);
+            $this->getContainer()->getEm()->flush();
         }
     }
 

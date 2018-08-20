@@ -54,11 +54,12 @@ class ApiTokensController extends BaseController
      * @Rest\Get("/session")
      * @Rest\View(serializerGroups={"token"})
      *
-     *
      * @param Request $request
+     *
      * @return View
      */
-    public function newSessionTokenAction(Request $request) {
+    public function newSessionTokenAction(Request $request)
+    {
         $person = $this->getUser();
         if (!$person) {
             $this->throwUnauthorized();
@@ -387,7 +388,7 @@ class ApiTokensController extends BaseController
         $token->setScope(ApiToken::SCOPE_CLIENT);
 
         $this->getManager()->persist($token);
-        $this->getManager()->flush($token);
+        $this->getManager()->flush();
 
         return $token;
     }

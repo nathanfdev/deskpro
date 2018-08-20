@@ -806,7 +806,7 @@ BODY;
                         if (!$account->date_read_start) {
                             $account->date_read_start = new \DateTime('-10 days');
                             App::getOrm()->persist($account);
-                            App::getOrm()->flush($account);
+                            App::getOrm()->flush();
                         }
 
                         break;

@@ -46,7 +46,7 @@ class IncidentManager
     {
         $incident->setDismissed(true);
         $this->em->persist($incident);
-        $this->em->flush($incident);
+        $this->em->flush();
 
         $triggers = $this->triggeringProcess->getTriggers();
         foreach ($triggers as $trigger) {

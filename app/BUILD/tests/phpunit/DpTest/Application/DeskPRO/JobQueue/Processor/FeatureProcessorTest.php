@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\JobQueue\Processor\FeatureProcessor;
 use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
+use DpTest\AbstractKernelAwareTestCase;
 use DpTest\ApiTestCase;
 use DpTestSrc\TestBundle\Mock\Features\DisabledFeature;
 use DpTestSrc\TestBundle\Mock\Features\EnabledFeature;
@@ -23,6 +24,8 @@ class FeatureProcessorTest extends ApiTestCase
      */
     public function setUp()
     {
+        AbstractKernelAwareTestCase::$rebootKernel = true;
+
         $em = $this->getEntityManager();
         $em->getConnection()->executeQuery('DELETE FROM jobs');
 

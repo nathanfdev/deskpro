@@ -57,7 +57,7 @@ class VersionService
         }
         $version->setVersionId($this->generateVersionId());
         $this->em->persist($version);
-        $this->em->flush($version);
+        $this->em->flush();
 
         return $version->getVersionId();
     }

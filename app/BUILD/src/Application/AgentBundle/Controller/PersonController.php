@@ -58,15 +58,18 @@ class PersonController extends AbstractController
 {
     /**
      * @param Organization $entity
-     * @return array mixed
+     *
      * @throws \Exception
+     *
+     * @return array mixed
      */
-    protected function getAPIv2Data( $entity)
+    protected function getAPIv2Data($entity)
     {
         $context = new SideloadSerializationContext();
         $context->setIncludes(['brand', 'team']);
         $context->setInlineSideloads(true);
         $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+
         return $serialized;
     }
 

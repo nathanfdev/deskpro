@@ -272,7 +272,7 @@ class DownloadsController extends AbstractController
     public function downloadAction(Download $file)
     {
         $file->incrementDownloadCount();
-        $this->getEm()->flush($file);
+        $this->getEm()->flush();
 
         if ($file->getFileurl()) {
             return $this->redirect($file->getFileurl());

@@ -191,7 +191,7 @@ class TicketFieldManager extends FieldManager
             $field             = $this->em->find('DeskPRO:CustomDefTicket', $custom_field_id);
             $field->is_enabled = $enabled;
             $this->em->persist($field);
-            $this->em->flush($field);
+            $this->em->flush();
         } else {
             switch ($id) {
                 case 'product':  $this->setIsProductEnabled($enabled); break;

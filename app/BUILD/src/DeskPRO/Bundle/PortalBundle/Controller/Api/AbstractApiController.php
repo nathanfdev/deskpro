@@ -115,7 +115,7 @@ abstract class AbstractApiController extends FOSRestController
 
         $dataStore->setData($key, $value);
         $this->getManager()->persist($dataStore);
-        $this->getManager()->flush($dataStore);
+        $this->getManager()->flush();
     }
 
     /**

@@ -93,7 +93,7 @@ class WebhookHandler
                     // store new status if exists
                     if ('status' === $change['field'] && $issue['status_id'] != $change['to']) {
                         $issue['status_id'] = $change['to'];
-                        $em->flush($issue);
+                        $em->flush();
                     }
 
                     $state->recordData('jira.'.$change['field'], $change);
@@ -128,7 +128,7 @@ class WebhookHandler
             $manager->markAsManaged($issue->ticket);
 
             $em->remove($issue);
-            $em->flush($issue);
+            $em->flush();
 
             $context = $manager->createAppExecutorContext($app, 'issue_delete');
             $manager->saveTicket($ticket, $context);

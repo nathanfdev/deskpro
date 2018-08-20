@@ -143,7 +143,7 @@ class ContextualChoiceType extends ChoiceType
             }
 
             $form->get('value')->getConfig()->getOption('em')->persist($newDef);
-            $form->get('value')->getConfig()->getOption('em')->flush($newDef);
+            $form->get('value')->getConfig()->getOption('em')->flush();
             $newVal           = $newDef['id'];
             $choices[$newVal] = $newDef;
         }

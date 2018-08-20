@@ -123,7 +123,7 @@ class Draft extends AbstractEntityRepository
             }
 
             $this->getEntityManager()->persist($draft);
-            $this->getEntityManager()->flush($draft);
+            $this->getEntityManager()->flush();
         } catch (\PDOException $e) {
             return;
         }

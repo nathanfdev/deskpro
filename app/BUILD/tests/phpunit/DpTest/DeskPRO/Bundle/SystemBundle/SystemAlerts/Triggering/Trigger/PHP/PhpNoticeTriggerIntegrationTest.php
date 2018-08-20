@@ -174,7 +174,7 @@ class PhpNoticeTriggerIntegrationTest extends BaseIntegrationTest
     {
         $event = new ErrorEvent(E_NOTICE, $message, $file, $line, new \DateTime($date));
         $this->em->persist($event);
-        $this->em->flush($event);
+        $this->em->flush();
 
         return $event;
     }

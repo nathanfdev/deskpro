@@ -157,7 +157,7 @@ class ExceptionTriggerIntegrationTest extends BaseIntegrationTest
     {
         $event = new ExceptionEvent(new \Exception(), new \DateTime($date));
         $this->em->persist($event);
-        $this->em->flush($event);
+        $this->em->flush();
 
         return $event;
     }

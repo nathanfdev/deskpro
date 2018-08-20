@@ -270,7 +270,7 @@ class SavedFormController extends AbstractController
             $to_flush[] = $person_email;
         }
 
-        $em->flush($to_flush);
+        $em->flush();
     }
 
     private function maybeAuthenticateThisPerson(Person $person)

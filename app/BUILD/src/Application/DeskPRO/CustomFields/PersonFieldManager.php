@@ -36,7 +36,7 @@ class PersonFieldManager extends FieldManager
             $field->is_enabled = $enabled;
 
             $this->em->persist($field);
-            $this->em->flush($field);
+            $this->em->flush();
         }
     }
 

@@ -40,7 +40,7 @@ class EventLoggerTest extends DeskProTestCase
     {
         $em = $this->getMockBuilder(EntityManager::class)->disableOriginalConstructor()->getMock();
         $em->expects($this->once())->method('persist')->with($this->isInstanceOf(ExceptionEvent::class));
-        $em->expects($this->once())->method('flush')->with($this->isInstanceOf(ExceptionEvent::class));
+        $em->expects($this->once())->method('flush');
 
         $this->instance($em)->log(new ExceptionEvent(new \Exception()));
     }
@@ -52,7 +52,7 @@ class EventLoggerTest extends DeskProTestCase
     {
         $em = $this->getMockBuilder(EntityManager::class)->disableOriginalConstructor()->getMock();
         $em->expects($this->once())->method('persist')->with($this->isInstanceOf(ExceptionEvent::class));
-        $em->expects($this->once())->method('flush')->with($this->isInstanceOf(ExceptionEvent::class));
+        $em->expects($this->once())->method('flush')->with();
 
         $this->instance($em)->log(new \Exception());
     }

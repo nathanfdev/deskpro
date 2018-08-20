@@ -274,7 +274,7 @@ class ObjectTranslatable
                     $rec->setObject($this->entity);
 
                     $this->getEm()->persist($rec);
-                    $this->getEm()->flush($rec);
+                    $this->getEm()->flush();
                 }
             }
 
@@ -285,7 +285,7 @@ class ObjectTranslatable
             foreach ($this->getObjLangRepos()->getLoadedRecs($this->entity) as $prop_recs) {
                 foreach ($prop_recs as $rec) {
                     $this->getEm()->persist($rec);
-                    $this->getEm()->flush($rec);
+                    $this->getEm()->flush();
                 }
             }
         }

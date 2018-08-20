@@ -58,10 +58,12 @@ class OrganizationController extends AbstractController
 {
     /**
      * @param Organization $entity
-     * @return array mixed
+     *
      * @throws \Exception
+     *
+     * @return array mixed
      */
-    protected function getAPIv2Data( $entity)
+    protected function getAPIv2Data($entity)
     {
         $context = new SideloadSerializationContext();
 
@@ -69,6 +71,7 @@ class OrganizationController extends AbstractController
         // $context->setIncludes(['person']);
         // $context->setInlineSideloads(true);
         $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+
         return $serialized;
     }
 
@@ -80,9 +83,9 @@ class OrganizationController extends AbstractController
      * @param int $organization_id
      *
      * @throws DBALException
+     * @throws \Exception
      *
      * @return Response
-     * @throws \Exception
      */
     public function viewAction($organization_id)
     {
@@ -853,10 +856,11 @@ class OrganizationController extends AbstractController
      * @param $organization_id
      * @param $security_token
      *
-     * @return Response
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
      */
     public function deleteOrganizationAction($organization_id, $security_token)
     {
@@ -968,10 +972,11 @@ class OrganizationController extends AbstractController
     /**
      * @param int $organization_id
      *
-     * @return Organization
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Organization
      */
     protected function getOrgOr404($organization_id)
     {

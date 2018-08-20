@@ -48,7 +48,7 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
         $this->setupNewCacheEntry($cache, $key, $val);
 
         $this->em->persist($cache);
-        $this->em->flush($cache);
+        $this->em->flush();
 
         return;
     }
@@ -82,7 +82,7 @@ class ExpiringDoctrineCache implements CacheAdapterInterface
         if ($this->has($key)) {
             $cache = $this->getCacheRepo()->find($key);
             $this->em->remove($cache);
-            $this->em->flush($cache);
+            $this->em->flush();
         }
 
         return;
