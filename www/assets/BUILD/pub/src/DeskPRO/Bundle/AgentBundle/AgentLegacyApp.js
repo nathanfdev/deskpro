@@ -19,6 +19,7 @@ import { GuideTreeContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/C
 import { EditorContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/Editor/Editor';
 import VoiceControlsContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/TicketMessageContainer';
+import MessagePhoneNumber from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/MessagePhoneNumber';
 import { preloadData, postBoostrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/bootstrapActions';
 import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
@@ -294,6 +295,26 @@ class AgentLegacyApp {
             displayStatuses={displayStatuses}
             canDrag={canDrag}
           />
+        </Provider>
+      </AppContainer>,
+      node
+    );
+  }
+
+
+  detectPhoneNumbers(messages) { // eslint-disable-line
+    MessagePhoneNumber.detectPhoneNumbers(messages);
+  }
+
+  renderClickToCall(node, number, child) {
+    ReactDOM.render(
+      <AppContainer>
+        <Provider store={this.store}>
+          <MessagePhoneNumber
+            number={number}
+          >
+            {child}
+          </MessagePhoneNumber>
         </Provider>
       </AppContainer>,
       node

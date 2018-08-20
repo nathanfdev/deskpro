@@ -1986,6 +1986,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 			o.open();
 		});
+
+		if (window.DP_HAS_VOICE) {
+			this.detectPhoneNumbers(messageEl);
+		}
+	},
+
+	detectPhoneNumbers: function(messageEl) {
+    window.AgentLegacyBundle.detectPhoneNumbers(messageEl);
 	},
 
 	refreshMessageTranslation: function(messageEl) {

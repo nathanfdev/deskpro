@@ -26,16 +26,17 @@
 				<h4	class="agent-link" data-agent-id="{{ message.person.id }}">
 					{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span>
                     {% if message.getGeoCountry() %}
-						<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
+						<span class="message-flag dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
                     {% endif %}
 				</h4>
             {% elseif message.person %}
 				<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">
 					{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span>
                     {% if message.getGeoCountry() %}
-						<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
+						<span class="message-flag dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
                     {% endif %}
 				</h4>
+				<div style="display: none" class="person-phone-country">{{ message.person.primary_phone_number_region }}</div>
             {% endif %}
 			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
             {% set elid = el_uid() %}

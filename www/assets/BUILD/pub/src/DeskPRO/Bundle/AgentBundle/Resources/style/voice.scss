@@ -1309,6 +1309,12 @@ $voice-green-border-color: #47BF61;
   }
 }
 
+.dp-click-to-call {
+  .fa, .fas {
+    color: $dp-emerald-primary;
+  }
+}
+
 .voice-sip-number {
   position: relative;
 
