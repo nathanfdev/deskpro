@@ -24,7 +24,7 @@ import { preloadData, postBoostrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Ap
 import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { isVoiceEnabledSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
-import { outboundNumbersSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/numbers';
+import { canOpenDialpadSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/numbers';
 import { voiceBootstrap, openDialpad } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import LegacyStoreProvider from 'DeskPRO/Bundle/AgentBundle/Services/LegacyStoreProvider';
@@ -182,10 +182,7 @@ class AgentLegacyApp {
   }
 
   canOpenDialpad() {
-    const state = this.store.getState();
-    const outboundNumbers = outboundNumbersSelector(state);
-
-    return outboundNumbers.size > 0;
+    return canOpenDialpadSelector(this.store.getState());
   }
 
   openVoiceDialpad(number) {

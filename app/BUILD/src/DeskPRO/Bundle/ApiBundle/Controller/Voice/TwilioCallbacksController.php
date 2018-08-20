@@ -763,7 +763,7 @@ class TwilioCallbacksController extends AbstractVoiceController
                 $log = new VoicePhoneCallLog();
                 $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_PRESS_KEY);
                 $log->setDetails(array_merge($request->request->all(), [
-                    'target_name' => $dialNumber->getTarget()->getTargetName(),
+                    'target' => $dialNumber->getTarget()->getTargetDetails(),
                 ]));
                 $log->setPhoneCall($phoneCall);
 
@@ -1420,7 +1420,7 @@ class TwilioCallbacksController extends AbstractVoiceController
                 $log = new VoicePhoneCallLog();
                 $log->setActionType(VoicePhoneCallLog::ACTION_CALL_TARGET);
                 $log->setDetails(array_merge($request->request->all(), [
-                    'target_name' => $phoneCall->getNumber()->getTarget()->getTargetName(),
+                    'target' => $phoneCall->getNumber()->getTarget()->getTargetDetails(),
                 ]));
                 $log->setPhoneCall($phoneCall);
 
@@ -1617,7 +1617,7 @@ class TwilioCallbacksController extends AbstractVoiceController
                 foreach ($dialNumbers as $dialNumber) {
                     $gather->say(sprintf(
                         'For call %s, press %d',
-                        $dialNumber->getTarget()->getTargetName(), $dialNumber->getDialNum()
+                        $dialNumber->getTarget()->getTargetDetails(), $dialNumber->getDialNum()
                     ), [
                         'voice' => 'alice',
                     ]);

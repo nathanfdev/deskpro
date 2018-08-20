@@ -2,6 +2,7 @@ import deprecate from 'util-deprecate';
 import escape from 'lodash/escape';
 import mapValues from 'lodash/mapValues';
 import assign from 'lodash/assign';
+import reactStringReplace from 'react-string-replace';
 
 class AgentPhrases {
   static getCount(text, count) {
@@ -69,6 +70,22 @@ class AgentPhrases {
     // Special object representing HTML in react
     // https://facebook.github.io/react/tips/dangerously-set-inner-html.html
     return { __html: phrase };
+  }
+
+  getHtmlWithComponents(phraseId, vars) {
+    return reactStringReplace(this.get(phraseId), /({[\w\d]+})/g, (match) => {
+      if (vars) {
+        for (const id in vars) {
+          if ({}.hasOwnProperty.call(vars, id)) {
+            if (`{${id}}` === match) {
+              return vars[id];
+            }
+          }
+        }
+      }
+
+      return match;
+    });
   }
 }
 const agentPhrases = new AgentPhrases();

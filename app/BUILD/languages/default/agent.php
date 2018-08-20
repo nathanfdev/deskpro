@@ -2808,8 +2808,8 @@ return [
 
     'agent.voice.incoming_call_title'                       => 'Inbound call record',
     'agent.voice.outgoing_call_title'                       => 'Outbound call record',
-    'agent.voice.call_new_incoming'                         => 'Incoming call from {{number}} {{person}} to {{to_number}}',
-    'agent.voice.call_new_outgoing'                         => 'Outgoing call to {{number}} {{person}}',
+    'agent.voice.call_new_incoming'                         => 'Incoming call from {{person}} {{number}} to {{to_number}}',
+    'agent.voice.call_new_outgoing'                         => 'Outgoing call to {{person}} {{number}}',
     'agent.voice.call_auto_attendant_press_key'             => 'Pressed "{{key}}" for "{{target}}"',
     'agent.voice.call_auto_attendant_press_unsupported_key' => 'Pressed unsupported "{{key}}" key',
     'agent.voice.call_auto_attendant_press_repeat_key'      => 'Pressed repeat key',

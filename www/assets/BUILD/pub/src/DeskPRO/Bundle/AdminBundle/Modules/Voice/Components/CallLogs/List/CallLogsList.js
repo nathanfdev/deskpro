@@ -9,7 +9,7 @@ import SectionHeader from '../../../../Common/Components/SectionHeader';
 import PersonName from '../../../../Common/Components/PersonName';
 import CallStatus from '../Common/CallStatus';
 import CallDuration from '../Common/CallDuration';
-import { replaceRoute } from '../../../../../Services/history';
+import { openTicket, openPerson } from '../../../../../Services/history';
 
 class CallLogsList extends React.Component {
 
@@ -23,14 +23,6 @@ class CallLogsList extends React.Component {
     openDialpad:         PropTypes.func,
     onToggleLiveUpdates: PropTypes.func
   };
-
-  static openTicket(ticketId) {
-    if (window.parent || window.parent.DP_FRAME_OVERLAYS || window.parent.DP_FRAME_OVERLAYS.admin) {
-      replaceRoute(`/go_to_agent/#agent/tickets/${ticketId}`);
-    } else {
-      replaceRoute(`/go_to_agent/#agent/go/ticket/${ticketId}`);
-    }
-  }
 
   render() {
     const { calls, numbers, pageCount, liveUpdates } = this.props;
@@ -93,11 +85,15 @@ class CallLogsList extends React.Component {
                     {moment(call.get('date_created')).format('L LT')}
                   </td>
                   <td className="overflow-ellipsis">
-                    <PersonName id={call.get('person')} />
+                    <a onClick={() => openPerson(call.get('person'))}>
+                      <PersonName id={call.get('person')} />
+                    </a>
                   </td>
                   <td className="overflow-ellipsis">
                     {call.get('participants').toArray().map((participant, pindex) =>
-                      <PersonName id={participant.get('person')} className="list-item" key={pindex} />
+                      <a key={pindex} className="list-item" onClick={() => openPerson(participant.get('person'))}>
+                        <PersonName id={participant.get('person')} />
+                      </a>
                     )}
                   </td>
                   <td>
@@ -121,7 +117,7 @@ class CallLogsList extends React.Component {
                       ? <span>
                         <i className="fa fa-envelope" />
                         &nbsp;
-                        <a onClick={() => CallLogsList.openTicket(ticketId)}>
+                        <a onClick={() => openTicket(ticketId)}>
                           {ticketId}
                         </a>
                       </span>
