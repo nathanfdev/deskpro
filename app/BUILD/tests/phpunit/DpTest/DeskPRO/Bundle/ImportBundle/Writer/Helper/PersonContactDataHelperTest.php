@@ -3,7 +3,7 @@
 namespace DpTest\DeskPRO\Bundle\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use DeskPRO\Bundle\ImportBundle\Model\ContactData\Phone;
 use DeskPRO\Bundle\ImportBundle\Model\ContactData\Website;
 use DeskPRO\Bundle\ImportBundle\Model\Person as PersonModel;
@@ -79,7 +79,7 @@ class PersonContactDataHelperTest extends AbstractWriterTest
 
     public function test_add_phone_number()
     {
-        $phoneNumber = new PhoneNumber();
+        $phoneNumber = new PersonPhoneNumber();
         $phoneNumber->setNumber('+14157012310');
         $phoneNumber->setRegion('');
         $phoneNumber->setGuessedType('phone');
@@ -111,7 +111,7 @@ class PersonContactDataHelperTest extends AbstractWriterTest
 
     public function test_update_phone_number()
     {
-        $phoneNumber = new PhoneNumber();
+        $phoneNumber = new PersonPhoneNumber();
         $phoneNumber->setNumber('+14157012311');
         $phoneNumber->setRegion('');
         $phoneNumber->setGuessedType('phone');

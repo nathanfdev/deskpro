@@ -23,7 +23,7 @@ class PhoneNumberValidator extends AbstractNumberValidator
         if (!$value) {
             return;
         }
-        if ($value instanceof Entity\PhoneNumber) {
+        if ($value instanceof Entity\AbstractPhoneNumber) {
             $checkValue = $value->getNumberFormatted();
         } elseif (is_scalar($value)) {
             $checkValue = $value;

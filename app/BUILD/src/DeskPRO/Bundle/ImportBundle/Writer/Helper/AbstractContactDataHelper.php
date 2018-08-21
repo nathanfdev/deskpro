@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ImportBundle\Writer\Helper;
 
+use Application\DeskPRO\Entity\AbstractPhoneNumber;
 use Application\DeskPRO\Entity\ContactDataAbstract;
 use DeskPRO\Bundle\ImportBundle\Model\ContactData\AbstractContactData;
 use DeskPRO\Bundle\ImportBundle\Model\ContactData\Address;
@@ -15,8 +16,10 @@ use DeskPRO\Bundle\ImportBundle\Model\ContactData\Website;
 use DeskPRO\Bundle\ImportBundle\Model\ContactDataAwareModelInterface;
 use DeskPRO\Bundle\ImportBundle\Writer\EntityPersister;
 use DeskPRO\Bundle\ImportBundle\Writer\Mapper\MapperInterface;
+use DeskPRO\Bundle\ImportBundle\Writer\Mapper\MapperRegistry;
 use libphonenumber\PhoneNumber;
 use libphonenumber\PhoneNumberUtil;
+use Orb\Util\PhoneNumbers;
 use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
 
@@ -41,25 +44,25 @@ abstract class AbstractContactDataHelper
     protected $logger;
 
     /**
-     * @var MapperInterface
+     * @var MapperRegistry
      */
-    protected $contactDataMapper;
+    protected $mapperRegistry;
 
     /**
      * Constructor.
      *
-     * @param MapperInterface    $contactDataMapper
+     * @param MapperRegistry     $mapperRegistry
      * @param CreateEntityHelper $createEntityHelper
      * @param EntityPersister    $persister
      * @param LoggerInterface    $logger
      */
     public function __construct(
-        MapperInterface    $contactDataMapper,
+        MapperRegistry     $mapperRegistry,
         CreateEntityHelper $createEntityHelper,
         EntityPersister    $persister,
         LoggerInterface    $logger
     ) {
-        $this->contactDataMapper  = $contactDataMapper;
+        $this->mapperRegistry     = $mapperRegistry;
         $this->createEntityHelper = $createEntityHelper;
         $this->persister          = $persister;
         $this->logger             = $logger;
@@ -208,11 +211,39 @@ abstract class AbstractContactDataHelper
     }
 
     /**
-     * @param PhoneNumber $phoneNumber
-     * @param Phone       $contactModel
-     * @param mixed       $entity
+     * {@inheritdoc}
      */
-    abstract protected function createOrUpdatePhoneNumber(PhoneNumber $phoneNumber, Phone $contactModel, $entity);
+    protected function createOrUpdatePhoneNumber(PhoneNumber $phoneNumber, Phone $contactModel, $entity)
+    {
+        /** @var AbstractPhoneNumber $contactEntity */
+        $contactEntity = $this->createEntityHelper->findOrCreateEntity($this->getPhoneNumberMapper(), $contactModel);
+        $contactEntity
+            ->setNumber($contactModel->getNumber())
+            ->setRegion(PhoneNumberUtil::getInstance()->getRegionCodeForNumber($phoneNumber))
+            ->setLabel($contactModel->getType() ?: 'phone')
+            ->setGuessedType(PhoneNumbers::getTypeCode($contactModel->getNumber()))
+            ->setOwner($entity)
+        ;
+
+        // prevent dupes
+        foreach ($entity->getPhoneNumbers() as $existingPhone) {
+            if ($existingPhone->getNumber() === $contactEntity->getNumber()) {
+                return;
+            }
+        }
+
+        $this->persister->persistAndFlush($contactEntity, $contactModel);
+    }
+
+    /**
+     * @return MapperInterface
+     */
+    abstract protected function getContactDataMapper();
+
+    /**
+     * @return MapperInterface
+     */
+    abstract protected function getPhoneNumberMapper();
 
     /**
      * @param AbstractContactData $contactModel
@@ -222,7 +253,7 @@ abstract class AbstractContactDataHelper
     protected function findOrCreateContactEntity(AbstractContactData $contactModel)
     {
         /** @var ContactDataAbstract $entity */
-        $entity = $this->createEntityHelper->findOrCreateEntity($this->contactDataMapper, $contactModel);
+        $entity = $this->createEntityHelper->findOrCreateEntity($this->getContactDataMapper(), $contactModel);
         $entity->setContactType($contactModel->getContactType());
         $entity->setComment($contactModel->getComment());
 

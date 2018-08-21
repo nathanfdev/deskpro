@@ -2,7 +2,7 @@
 
 namespace Application\DeskPRO\Form\Type;
 
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Form\Transformer\PhoneNumberModelTransformer;
 use Orb\Util\PhoneNumbers;
 use Symfony\Component\Form\AbstractType;
@@ -76,7 +76,7 @@ class PhoneNumberType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class'       => PhoneNumber::class,
+            'data_class'       => PersonPhoneNumber::class,
             'show_phone_label' => false,
         ]);
     }

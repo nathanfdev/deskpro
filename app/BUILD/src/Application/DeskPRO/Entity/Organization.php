@@ -158,6 +158,11 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
     protected $tickets;
 
     /**
+     * @var OrganizationPhoneNumber[]
+     */
+    protected $phone_numbers;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -175,6 +180,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         $this->members       = new ArrayCollection();
         $this->tickets       = new ArrayCollection();
         $this->email_domains = new ArrayCollection();
+        $this->phone_numbers = new ArrayCollection();
     }
 
     /**
@@ -897,6 +903,14 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         return $this->tickets->count();
     }
 
+    /**
+     * @return OrganizationPhoneNumber[]|ArrayCollection
+     */
+    public function getPhoneNumbers()
+    {
+        return $this->phone_numbers;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -1120,6 +1134,15 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
                 'mappedBy'     => 'organization',
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'phone_numbers',
+                'targetEntity'  => OrganizationPhoneNumber::class,
+                'mappedBy'      => 'organization',
+                'cascade'       => ['persist', 'detach'],
+                'orphanRemoval' => true,
             ]
         );
     }

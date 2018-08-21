@@ -147,21 +147,3 @@ services:
     arguments: ["@doctrine.orm.entity_manager", "@brand_aware_settings_resolver"]
     tags:
       - { name: dp.importer.writer.mapper }
-
-  dp.importer.writer.mapper.person_contact_data:
-    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\PersonContactDataMapper
-    arguments: ["@doctrine.orm.entity_manager"]
-    tags:
-      - { name: dp.importer.writer.mapper }
-
-  dp.importer.writer.mapper.organization_contact_data:
-    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\OrganizationContactDataMapper
-    arguments: ["@doctrine.orm.entity_manager"]
-    tags:
-      - { name: dp.importer.writer.mapper }
-
-  dp.importer.writer.mapper.phone_number:
-    class: DeskPRO\Bundle\ImportBundle\Writer\Mapper\PhoneNumberMapper
-    arguments: ["@doctrine.orm.entity_manager"]
-    tags:
-      - { name: dp.importer.writer.mapper }

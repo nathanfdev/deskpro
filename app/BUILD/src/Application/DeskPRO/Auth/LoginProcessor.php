@@ -10,9 +10,9 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\SystemServices\AgentCheckerService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\PersonTwitterUser;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
-use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Actions\AbstractAction;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
@@ -410,7 +410,7 @@ class LoginProcessor
     private function updatePhone($mapped_fields, $em)
     {
         if ($mapped_fields->has('phone')) {
-            if ($number = PhoneNumber::createEntity($mapped_fields->get('phone'))) {
+            if ($number = PersonPhoneNumber::createEntity($mapped_fields->get('phone'))) {
                 $this->person->setPrimaryPhoneNumber($number);
 
                 $this->persist($em, $this->person);

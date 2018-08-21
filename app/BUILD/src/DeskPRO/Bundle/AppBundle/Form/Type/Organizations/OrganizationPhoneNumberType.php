@@ -1,9 +1,9 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Organizations;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\OrganizationPhoneNumber;
 use Orb\Util\PhoneNumbers;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -13,9 +13,9 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class PhoneNumberType.
+ * Class OrganizationPhoneNumberType.
  */
-class PhoneNumberType extends AbstractType
+class OrganizationPhoneNumberType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -49,10 +49,10 @@ class PhoneNumberType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => PhoneNumber::class,
+                'data_class' => OrganizationPhoneNumber::class,
             ])
-            ->setRequired('person')
-            ->setAllowedTypes('person', Person::class)
+            ->setRequired('organization')
+            ->setAllowedTypes('organization', Organization::class)
         ;
     }
 
@@ -72,10 +72,19 @@ class PhoneNumberType extends AbstractType
          * get the region code, and validate/format the number.
          */
 
-        if ($data instanceof PhoneNumber && $data->getNumber()) {
-            $data->setRegion(PhoneNumbers::getRegionForNumber($data->getNumber()));
-            $data->setGuessedType(PhoneNumbers::getTypeCode($data->getNumber()));
-            $data->setPerson($form->getConfig()->getOption('person'));
+        if ($data instanceof OrganizationPhoneNumber && $data->getNumber()) {
+            $region   = null;
+            $typeCode = null;
+
+            try {
+                $region   = PhoneNumbers::getRegionForNumber($data->getNumber());
+                $typeCode = PhoneNumbers::getTypeCode($data->getNumber());
+            } catch (\Exception $e) {
+            }
+
+            $data->setRegion($region);
+            $data->setGuessedType($typeCode);
+            $data->setOrganization($form->getConfig()->getOption('organization'));
         }
     }
 }

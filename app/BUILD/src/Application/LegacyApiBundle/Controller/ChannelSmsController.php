@@ -6,7 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\SmsAccount;
 use Application\DeskPRO\Sms\SmsProviderFactory;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
@@ -101,7 +101,7 @@ class ChannelSmsController extends AbstractController implements ProtectedContro
          * on an EditSmsAccount object
          */
         if (!$account->phone_number) {
-            $account->phone_number = new PhoneNumber();
+            $account->phone_number = new PersonPhoneNumber();
         }
         $account->type                 = $this->in->getValue('account.type');
         $account->params               = $this->in->getValue('account.params');

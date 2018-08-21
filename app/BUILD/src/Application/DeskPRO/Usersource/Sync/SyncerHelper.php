@@ -9,8 +9,8 @@ namespace Application\DeskPRO\Usersource\Sync;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
-use Application\DeskPRO\Entity\PhoneNumber;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepo;
 use Doctrine\ORM\EntityManager;
@@ -114,7 +114,7 @@ class SyncerHelper
         }
 
         if (!empty($user_info['phone'])) {
-            $newNumber = PhoneNumber::createEntity($user_info['phone']);
+            $newNumber = PersonPhoneNumber::createEntity($user_info['phone']);
             $oldNumber = $person->getPrimaryPhoneNumber();
 
             if ($newNumber && (!$oldNumber || $oldNumber->getFullFormatted() !== $newNumber->getFullFormatted())) {

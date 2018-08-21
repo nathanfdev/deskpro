@@ -26,7 +26,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonNote;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Setting;
@@ -389,7 +389,7 @@ return [
         ],
     ],
 
-    PhoneNumber::class => [
+    PersonPhoneNumber::class => [
         AuditListener::INSERT => true,
         AuditListener::REMOVE => true,
         AuditListener::UPDATE => [

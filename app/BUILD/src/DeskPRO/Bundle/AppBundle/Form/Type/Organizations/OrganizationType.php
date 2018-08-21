@@ -13,8 +13,10 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,16 +30,16 @@ class OrganizationType extends AbstractType
     /**
      * @var CustomFieldManager
      */
-    private $field_manager;
+    private $fieldManager;
 
     /**
      * PersonType constructor.
      *
-     * @param CustomFieldManager $field_manager
+     * @param CustomFieldManager $fieldManager
      */
-    public function __construct(CustomFieldManager $field_manager)
+    public function __construct(CustomFieldManager $fieldManager)
     {
-        $this->field_manager = $field_manager;
+        $this->fieldManager = $fieldManager;
     }
 
     /**
@@ -96,10 +98,23 @@ class OrganizationType extends AbstractType
                 'by_reference' => false,
                 'required'     => false,
             ])
+            ->add('phone_numbers', CollectionType::class, [
+                'required'      => false,
+                'allow_add'     => true,
+                'allow_delete'  => true,
+                'entry_type'    => OrganizationPhoneNumberType::class,
+                'entry_options' => [
+                    'error_bubbling' => false,
+                    'organization'   => $builder->getData(),
+                    'constraints'    => [
+                        new AppConstraints\PhoneNumber(),
+                    ],
+                ],
+            ])
         ;
 
         // resolve field name aliases
-        $fieldNameResolver = $this->field_manager->getFieldNameResolver(CustomDefOrganization::class);
+        $fieldNameResolver = $this->fieldManager->getFieldNameResolver(CustomDefOrganization::class);
         $builder->addEventSubscriber($fieldNameResolver);
     }
 
@@ -121,7 +136,7 @@ class OrganizationType extends AbstractType
      */
     private function getCustomDataFields(array $options)
     {
-        $defs   = $this->field_manager->getAvailableOrganizationDefs();
+        $defs   = $this->fieldManager->getAvailableOrganizationDefs();
         $fields = [];
 
         foreach ($defs as $def) {

@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\LabelOrganization;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\OrganizationContactData;
 use Application\DeskPRO\Entity\OrganizationEmailDomain;
+use Application\DeskPRO\Entity\OrganizationPhoneNumber;
 use DeskPRO\Bundle\AppBundle\DataService\Chat\ChatDataService;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Organization\Organization as OrganizationModel;
@@ -55,6 +56,11 @@ class OrganizationHandler extends AbstractEntityHandler
     private $emailDomains;
 
     /**
+     * @var array
+     */
+    private $phoneNumbers;
+
+    /**
      * Constructor.
      *
      * @param EntityManager   $em
@@ -88,6 +94,7 @@ class OrganizationHandler extends AbstractEntityHandler
         $model->setContactData(new CallbackDeferredProperty([$this, 'getContactData'], [$entity]));
         $model->setLabels(new CallbackDeferredProperty([$this, 'getLabels'], [$entity]));
         $model->setEmailDomains(new CallbackDeferredProperty([$this, 'getEmailDomains'], [$entity]));
+        $model->setPhoneNumbers(new CallbackDeferredProperty([$this, 'getPhoneNumbers'], [$entity]));
 
         return $model;
     }
@@ -190,5 +197,30 @@ class OrganizationHandler extends AbstractEntityHandler
         }
 
         return [];
+    }
+
+    /**
+     * @param OrganizationEntity $entity
+     *
+     * @return OrganizationPhoneNumber[]|ArrayCollection
+     */
+    public function getPhoneNumbers(OrganizationEntity $entity)
+    {
+        if (null === $this->phoneNumbers) {
+            $result = $this->em->getRepository(OrganizationPhoneNumber::class)->findBy([
+                'organization' => $this->organizationIds,
+            ]);
+
+            $this->phoneNumbers = [];
+            foreach ($result as $value) {
+                $this->phoneNumbers[$value->getOrganization()->getId()][] = $value;
+            }
+        }
+
+        if (isset($this->phoneNumbers[$entity->getId()])) {
+            return new ArrayCollection($this->phoneNumbers[$entity->getId()]);
+        }
+
+        return new ArrayCollection([]);
     }
 }

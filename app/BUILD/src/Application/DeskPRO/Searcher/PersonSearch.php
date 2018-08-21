@@ -1169,7 +1169,7 @@ class PersonSearch extends SearcherAbstract
                 case self::TERM_CONTACT_PHONE:
                     $any = false;
                     foreach ($person->phone_numbers as $pn) {
-                        /** @var $pn Entity\PhoneNumber */
+                        /** @var $pn Entity\PersonPhoneNumber */
                         if (substr($pn['number'], 0, 1) === preg_replace('/[^0-9]/', '', $choice)) {
                             $any = true;
                             if ($op == self::OP_NOTCONTAINS) {
