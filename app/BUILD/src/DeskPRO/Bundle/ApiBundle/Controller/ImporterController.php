@@ -51,7 +51,18 @@ class ImporterController extends BaseController
             throw $this->createBadRequestException('Import is already in progress');
         }
 
-        $job = new Job(ImporterJobDataService::JOB_TYPE, $this->getSourceConfig($request));
+        $data = $this->getSourceConfig($request);
+
+        try {
+            $scriptResolver = $this->container->get('dp.importer.source_script_resolver');
+            $sourceScript   = $scriptResolver->getSourceScript($data['type'], $data['options']);
+
+            $sourceScript->testConfig();
+        } catch (\Exception $e) {
+            throw $this->createBadRequestException($e->getMessage());
+        }
+
+        $job = new Job(ImporterJobDataService::JOB_TYPE, $data);
 
         $jobQueue = $this->getContainer()->getJobQueue();
         $jobQueue->addJob($job);
