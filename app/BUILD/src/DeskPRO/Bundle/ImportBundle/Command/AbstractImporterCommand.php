@@ -52,6 +52,12 @@ abstract class AbstractImporterCommand extends ContainerAwareCommand
             $this->doExecute($input, $output);
         } catch (\Exception $e) {
             $output->writeln("<error>{$e->getMessage()}</error>");
+
+            $this->getContainer()->get('dp.importer_logger')->error($e->getMessage());
+            $this->getContainer()->get('dp.importer.logger.job_progress')->flushLog();
+            $this->getContainer()->get('dp.importer.logger.storage_handler')->flushLog();
+
+            return 1;
         }
     }
 

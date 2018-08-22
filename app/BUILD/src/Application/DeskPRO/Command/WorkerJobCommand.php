@@ -348,9 +348,12 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
 
             if ($failed) {
-                $importerJob->setStatus(Job::STATUS_ERROR);
-                $em->persist($importerJob);
-                $em->flush();
+                $importerJob = $this->getContainer()->get('dp.importer.data_service.job')->getWaitingJob();
+                if ($importerJob) {
+                    $importerJob->setStatus(Job::STATUS_ERROR);
+                    $em->persist($importerJob);
+                    $em->flush();
+                }
             }
 
             App::getDb()->delete('settings', ['name' => 'core.croncheck.importer']);
