@@ -121,6 +121,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     box-sizing: border-box;
     &::before {
       font: normal normal normal 24px 'Font Awesome 5 Free';
+      font-weight: 900;
       float: left;
       margin-right: 10px;
     }
