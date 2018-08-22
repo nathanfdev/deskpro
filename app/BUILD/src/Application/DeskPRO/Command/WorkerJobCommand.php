@@ -310,13 +310,35 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $cmd     = $appEnv->getConsolePhpCommand("dp:import -j {$importerJob->getId()}");
             $process = new Process($cmd);
             $process->setTimeout(null);
-            $process->run();
+
+            if ($isVerbose) {
+                $process->run(function ($type, $dat) use ($output) {
+                    if ($type === Process::OUT) {
+                        $output->writeln($dat);
+                    } else {
+                        $output->writeln('ERR: '.$dat);
+                    }
+                });
+            } else {
+                $process->run();
+            }
 
             if ($process->isSuccessful()) {
                 $cmd     = $appEnv->getConsolePhpCommand("dp:import:apply -j {$importerJob->getId()}");
                 $process = new Process($cmd);
                 $process->setTimeout(null);
-                $process->run();
+
+                if ($isVerbose) {
+                    $process->run(function ($type, $dat) use ($output) {
+                        if ($type === Process::OUT) {
+                            $output->writeln($dat);
+                        } else {
+                            $output->writeln('ERR: '.$dat);
+                        }
+                    });
+                } else {
+                    $process->run();
+                }
 
                 if (!$process->isSuccessful()) {
                     $failed = true;
