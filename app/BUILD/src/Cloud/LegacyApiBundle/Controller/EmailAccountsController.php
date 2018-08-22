@@ -8,6 +8,7 @@ namespace Cloud\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\LegacyApiBundle\Controller\EmailAccountsController as BaseEmailAccountsController;
+use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
 use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
@@ -58,12 +59,20 @@ class EmailAccountsController extends BaseEmailAccountsController
 
             // All custom emails are also aliases
             if ($data['use_custom_email_address'] && !empty($data['custom_email_address'])) {
+                if (!$this->validateCustomEmailAddress($data['custom_email_address'])) {
+                    $invalidEmails[] = $data['custom_email_address'];
+                }
+                if (empty($invalidEmails) && (!$account || $account->getOption('custom_email_address') != $data['custom_email_address'])) {
+                    InterestingEvent::createAndDispatch(
+                        $this->get('event_dispatcher'),
+                        'emailAccount.customEmailAddress',
+                        ['email' => $data['custom_email_address']]
+                    );
+                }
+
                 array_unshift($data['other_addresses'], $data['custom_email_address']);
                 if ($account) {
                     $account->setOption('custom_email_address', $data['custom_email_address']);
-                }
-                if (!$this->validateCustomEmailAddress($data['custom_email_address'])) {
-                    $invalidEmails[] = $data['custom_email_address'];
                 }
             } else {
                 $data['use_custom_email_address'] = false;

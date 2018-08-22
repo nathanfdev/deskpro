@@ -27,6 +27,7 @@ use Application\DeskPRO\People\PermissionUtil;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
 use DpSys\License;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -600,6 +601,8 @@ class AgentsController extends AbstractController implements ProtectedController
         // Get agent
         //-------------------------
 
+        $active_agents = $this->em->getRepository(Person::class)->getActiveAgentsCount();
+
         if (!$agent) {
             if ($id) {
                 if (!$agent = $this->container->getAgentData()->get($id)) {
@@ -612,8 +615,6 @@ class AgentsController extends AbstractController implements ProtectedController
                 if (!defined('DPC_IS_CLOUD')) {
                     $max_agents = License::getLicense()->getMaxAgents();
                     if ($max_agents) {
-                        $active_agents = $this->em->getRepository(Person::class)->getActiveAgentsCount();
-
                         if ($active_agents >= $max_agents) {
                             return $this->createApiErrorInfoResponse(
                                 'license_exceeded', 'You have used all available agent seats that your license allows', [
@@ -633,6 +634,12 @@ class AgentsController extends AbstractController implements ProtectedController
             if ($r) {
                 return $r;
             }
+
+            InterestingEvent::createAndDispatch(
+                $this->get('event_dispatcher'),
+                'agent.created',
+                ['activeAgents' => $active_agents + 1]
+            );
         }
 
         // If the record isnt a user yet, then we need to set an initial password

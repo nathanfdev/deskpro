@@ -15,6 +15,7 @@ use Application\DeskPRO\Monolog\Logger;
 use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
+use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -361,6 +362,14 @@ class AppsController extends AbstractController
         $context->setUsersourceType($usersourceType);
 
         $app = $this->getAppManipulator()->installInstance($package, $context);
+
+        if ($package->isUsersource()) {
+            InterestingEvent::createAndDispatch(
+                $this->get('event_dispatcher'),
+                'usersource.created',
+                ['area' => $context->getUsersourceType(), 'type' => $package->getId()]
+            );
+        }
 
         return $this->createApiCreateResponse(
             ['id' => $app->id],
@@ -849,10 +858,12 @@ class AppsController extends AbstractController
 
     /**
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function uploadPackageAction( Request $request)
+    public function uploadPackageAction(Request $request)
     {
         /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
         $file = $request->files->get('file');
@@ -928,7 +939,7 @@ class AppsController extends AbstractController
 
         // detect apps v2
         /** @var BundleFileHandlingStrategyZip $bundleReader */
-        $bundleReader = $this->container->get(BundleFileHandlingStrategyZip::class);
+        $bundleReader    = $this->container->get(BundleFileHandlingStrategyZip::class);
         $appBundle       = $bundleReader->reader($file);
         $bundleValidator = $this->container->get(AppBundleValidator::class);
         if ($bundleValidator->validateBundle($appBundle)) {
@@ -1018,8 +1029,9 @@ class AppsController extends AbstractController
     /**
      * @param string $name
      *
-     * @return \DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle
      * @throws \Exception
+     *
+     * @return \DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle
      */
     private function getAppV2ArchiveBundle($name)
     {
@@ -1045,6 +1057,7 @@ class AppsController extends AbstractController
 
         /** @var BundleFileHandlingStrategyZip $bundleReader */
         $bundleReader = $this->container->get(BundleFileHandlingStrategyZip::class);
+
         return $bundleReader->reader($blobPath);
     }
 }

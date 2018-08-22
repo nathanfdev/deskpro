@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\BrandType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
+use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -141,6 +142,12 @@ class BrandsController extends CrudController
         if (defined('DPC_IS_CLOUD')) {
             CloudBrandHelper::flushBrandDomains();
         }
+
+        InterestingEvent::createAndDispatch(
+            $this->get('event_dispatcher'),
+            'brand.created',
+            ['brandName' => $brand->getName()]
+        );
 
         return $view;
     }

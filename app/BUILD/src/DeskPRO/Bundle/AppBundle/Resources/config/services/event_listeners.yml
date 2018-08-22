@@ -143,6 +143,11 @@ services:
     tags:
       - { name: 'kernel.cache_warmer' }
 
+  interesting_events_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\InterestingEventListener
+    tags:
+    - { name: kernel.event_subscriber }
+
   iface_url_corrector.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\InterfaceUrlCorrectorEventListener
     arguments: ["@deskpro.interface_info", "@language_manager", "@logger"]
