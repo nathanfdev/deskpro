@@ -78,3 +78,24 @@ foreach ($files as $f) {
 
 unset($f, $content, $newContent);
 echo ".. Done\n";
+
+
+// Symfony 2.8.44 Request class cause a PHP warning during call to substr_replace
+// This is known PHP bug that affects PHP versions 7.0.0 - 7.0.5
+// https://bugs.php.net/bug.php?id=71827
+//
+// We need to manually cast string parameters to (int) in substr_replace
+// When Symfony releases next update, we can remove the hack.
+echo "Patching Symfony 2.8.44 Request file";
+
+$f          = $DP_DIR.'/app/BUILD/vendor/symfony/symfony/src/Symfony/Component/HttpFoundation/Request.php';
+$content    = file_get_contents($f);
+$newContent = str_replace(
+    'substr_replace($v, \'0.0.0.0\', 0, strrpos($v, \':\'))',
+    'substr_replace($v, \'0.0.0.0\', 0, (int)strrpos($v, \':\'))',
+    $content
+);
+file_put_contents($f, $newContent);
+
+unset($f, $content, $newContent);
+echo ".. Done\n";
