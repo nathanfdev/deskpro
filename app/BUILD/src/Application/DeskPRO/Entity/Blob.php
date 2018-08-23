@@ -225,21 +225,38 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setFilename($filename)
     {
+        $filename = $filename ?: '';
+        $origExt  = strtolower(Strings::getExtension($filename));
+
         if ($filename[0] == '.') {
             $filename = '_.'.substr($filename, 1);
         }
 
-        $filename = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '_', $filename);
+        $filename = Strings::utf8_bad_strip($filename);
+        $filename = Strings::utf8_accents_to_ascii($filename);
+        $filename = trim(mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '_', $filename));
 
         // trim filename down to max length of 255 chars
         $pos = strrpos($filename, '.');
         if ($pos !== false) {
             $name      = substr($filename, 0, $pos);
-            $extension = substr($filename, $pos + 1);
+            $extension = strtolower(substr($filename, $pos + 1));
 
             $name = substr($name, 0, 255 - strlen($extension) - 1);
 
             $filename = $name.'.'.$extension;
+        }
+
+        if (empty($filename)) {
+            if ($origExt && strlen($origExt) < 50) {
+                $filename = "file.$origExt";
+            } elseif ($this->content_type) {
+                $filename = 'file.'.(ContentTypes::findExtensionForContentType($this->content_type) ?: '.bin');
+            } else {
+                $filename = 'file.bin';
+            }
+
+            return $this->setFilename($filename);
         }
 
         $this->setModelField('filename', $filename);
