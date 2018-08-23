@@ -299,7 +299,9 @@ class TicketMessageType extends AbstractType
         $form = $event->getForm();
 
         if ($form->get('format')->getData() === 'text') {
-            $data->setMessageText($data->getMessageHtml());
+            $data->setMessageText($data->convertEmbeddedImagesToInlineAttachInText($data->getMessageHtml()));
+        } else {
+            $data->setMessageHtml($data->convertEmbeddedImagesToInlineAttachInText($data->getMessageHtml()));
         }
     }
 
