@@ -16,6 +16,7 @@ use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\LimitInterface;
+use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -179,6 +180,13 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 
             foreach ($limits_data as $limit) {
                 $limits_service->saveLimit($key, $limit);
+            }
+
+            if (!$id) {
+                InterestingEvent::createAndDispatch(
+                    $this->get('event_dispatcher'),
+                    'apiKey.created'
+                );
             }
         } else {
             return $this->createApiErrorInfoResponse('validation_error', $this->getFormValidationErrorsString($form), []);

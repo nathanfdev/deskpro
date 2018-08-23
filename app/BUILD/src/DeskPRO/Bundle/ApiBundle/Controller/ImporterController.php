@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
 use DeskPRO\Bundle\ImportBundle\DataService\ImporterJobDataService;
 use DeskPRO\Bundle\ImportBundle\Form\Type\ImporterSourceType;
 use DeskPRO\Bundle\ImportBundle\Serializer\Model\ImportStatus;
@@ -55,6 +56,18 @@ class ImporterController extends BaseController
 
         $jobQueue = $this->getContainer()->getJobQueue();
         $jobQueue->addJob($job);
+
+        $evData = ['type' => $job->getDataKey('type')];
+        if ($evData['type'] === 'zendesk') {
+            $acc               = $job->getDataKey('options');
+            $evData['account'] = @$acc['account']['subdomain'].'.zendesk.com';
+        }
+
+        InterestingEvent::createAndDispatch(
+            $this->get('event_dispatcher'),
+            'importer.started',
+            $evData
+        );
 
         return new View($this->wrap(new ImportStatus($job)));
     }
