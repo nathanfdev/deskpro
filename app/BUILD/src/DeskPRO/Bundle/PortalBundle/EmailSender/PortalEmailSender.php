@@ -236,7 +236,7 @@ class PortalEmailSender
             $content = $comment->getObject();
 
             $contentUrl   = $this->container->get('object_router')->getPortalUrl($content);
-            $contentTitle = $content->getTitle();
+            $contentTitle = $content->getTranslatedTitle();
 
             $this->sendTo(
                 new EmailTo($person),
