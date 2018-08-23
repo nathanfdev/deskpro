@@ -24,12 +24,16 @@ define [
         lastLogin:   '/me/last-login',
         quickStats:  '/tickets/quick-stats',
         lic_info:    '/dp_license'
+        cronStatus:  '/server/cron-status',
+        errorStatus: '/server/error-status',
       }).then( (result) =>
         data = result.data
         @online_agents  = []
         @offline_agents = []
         @quick_stats    = result.data.quickStats
         @last_login     = result.data.lastLogin.last_login
+        @cron_status    = result.data.cronStatus
+        @error_status   = result.data.errorStatus
 
         if @last_login
           @last_login.date_created_d = new Date(@last_login.date_created_ts * 1000)
@@ -41,6 +45,16 @@ define [
             @online_agents.push(agent)
           else
             @offline_agents.push(agent)
+
+        problem_triggers = [
+          @cron_status?.is_problem,
+          @error_status?.error_count > 0,
+          @error_status?.error_log_size,
+          @error_status?.gateway_error_count > 0,
+          @error_status?.sendmail_error_count > 0,
+        ]
+
+        @is_server_problem = problem_triggers.filter((x) -> return !!x).length > 0
       )
 
       @Api2.sendGet('features').then( (res) =>
