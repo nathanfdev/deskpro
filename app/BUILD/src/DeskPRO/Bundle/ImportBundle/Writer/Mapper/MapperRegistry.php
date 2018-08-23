@@ -27,8 +27,10 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationContactData;
+use Application\DeskPRO\Entity\OrganizationPhoneNumber;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\Setting;
 use Application\DeskPRO\Entity\TextSnippet;
@@ -462,5 +464,21 @@ class MapperRegistry
     public function getSettingMapper()
     {
         return $this->getMapper(Setting::class);
+    }
+
+    /**
+     * @return MapperInterface
+     */
+    public function getPersonPhoneNumberMapper()
+    {
+        return $this->getMapper(PersonPhoneNumber::class);
+    }
+
+    /**
+     * @return MapperInterface
+     */
+    public function getOrganizationPhoneNumberMapper()
+    {
+        return $this->getMapper(OrganizationPhoneNumber::class);
     }
 }

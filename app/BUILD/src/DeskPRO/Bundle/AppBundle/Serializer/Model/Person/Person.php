@@ -262,7 +262,7 @@ class Person extends ExtendedPerson
     /**
      * Phone numbers belong to user.
      *
-     * @JMS\Type("deferred<collection<Application\DeskPRO\Entity\PhoneNumber>>")
+     * @JMS\Type("deferred<collection<Application\DeskPRO\Entity\PersonPhoneNumber>>")
      *
      * @var array
      */

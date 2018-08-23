@@ -82,7 +82,7 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @property string                              $salt
  * @property PersonEmail                         $primary_email
  * @property PersonEmail[]|ArrayCollection       $emails
- * @property PhoneNumber[]                       $phone_numbers
+ * @property ArrayCollection|PersonPhoneNumber[] $phone_numbers
  * @property ArrayCollection|LabelPerson[]       $labels
  * @property ArrayCollection|CustomDataPerson[]  $custom_data
  * @property ArrayCollection|PersonContactData[] $contact_data
@@ -388,7 +388,7 @@ class Person extends DomainObject implements
     protected $emails;
 
     /**
-     * @var PhoneNumber[]
+     * @var PersonPhoneNumber[]
      */
     protected $phone_numbers;
 
@@ -2226,7 +2226,7 @@ class Person extends DomainObject implements
     /**
      * returns the number that this person marked as his/her primary number.
      *
-     * @return PhoneNumber
+     * @return PersonPhoneNumber
      */
     public function getPrimaryPhoneNumber()
     {
@@ -2263,7 +2263,7 @@ class Person extends DomainObject implements
         return $region;
     }
 
-    public function setPrimaryPhoneNumber(PhoneNumber $number = null)
+    public function setPrimaryPhoneNumber(PersonPhoneNumber $number = null)
     {
         // note that while this is a 1-many relationship, we ensure in this method that we only have 1
         // or 0 PhoneNumber objects in the collection.
@@ -2276,7 +2276,7 @@ class Person extends DomainObject implements
         }
 
         // we have a number, make sure its the only one in our collection here
-        $number->person = $this;
+        $number->setPerson($this);
         if ($current_number = $this->getPrimaryPhoneNumber()) {
             if ($current_number->getId() == $number->getId()) {
                 $this->_onPropertyChanged('phone_numbers', $this->phone_numbers, $this->phone_numbers);
@@ -3900,7 +3900,7 @@ class Person extends DomainObject implements
     }
 
     /**
-     * @return PhoneNumber[]|ArrayCollection
+     * @return PersonPhoneNumber[]|ArrayCollection
      */
     public function getPhoneNumbers()
     {
@@ -4625,7 +4625,7 @@ class Person extends DomainObject implements
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'phone_numbers',
-                'targetEntity'  => PhoneNumber::class,
+                'targetEntity'  => PersonPhoneNumber::class,
                 'mappedBy'      => 'person',
                 'cascade'       => ['persist', 'detach'],
                 'orphanRemoval' => true,

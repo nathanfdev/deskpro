@@ -11,7 +11,7 @@ namespace Application\DeskPRO\People\Agents;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\ORM\CollectionHelper;
 use Application\DeskPRO\Validator\Constraints as DeskproConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -76,7 +76,7 @@ class EditAgent
         $this->agent         = $person;
         $this->name          = $person->name;
         $this->override_name = $person->override_display_name;
-        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PersonPhoneNumber();
 
         $this->zones = [];
         if ($person->can_admin) {

@@ -130,6 +130,15 @@ class Organization
     protected $ticketsCount;
 
     /**
+     * Phone numbers belong to organization.
+     *
+     * @JMS\Type("deferred<collection<Application\DeskPRO\Entity\OrganizationPhoneNumber>>")
+     *
+     * @var array
+     */
+    protected $phoneNumbers;
+
+    /**
      * Constructor.
      *
      * @param OrganizationEntity $organization
@@ -192,6 +201,18 @@ class Organization
     public function setEmailDomains($emailDomains = null)
     {
         $this->emailDomains = $emailDomains;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $phoneNumbers
+     *
+     * @return $this
+     */
+    public function setPhoneNumbers($phoneNumbers = null)
+    {
+        $this->phoneNumbers = $phoneNumbers;
 
         return $this;
     }

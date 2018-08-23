@@ -125,8 +125,7 @@ services:
   dp.importer.writer.helper.person_contact_data:
     class: DeskPRO\Bundle\ImportBundle\Writer\Helper\PersonContactDataHelper
     arguments:
-      - "@dp.importer.writer.mapper.phone_number"
-      - "@dp.importer.writer.mapper.person_contact_data"
+      - "@dp.importer.writer.mapper_registry"
       - "@dp.importer.writer.helper.create_entity"
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"
@@ -136,7 +135,7 @@ services:
   dp.importer.writer.helper.organization_contact_data:
     class: DeskPRO\Bundle\ImportBundle\Writer\Helper\OrganizationContactDataHelper
     arguments:
-      - "@dp.importer.writer.mapper.organization_contact_data"
+      - "@dp.importer.writer.mapper_registry"
       - "@dp.importer.writer.helper.create_entity"
       - "@dp.importer.entity_persister"
       - "@dp.importer_logger"

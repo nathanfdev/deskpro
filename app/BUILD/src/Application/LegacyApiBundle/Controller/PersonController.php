@@ -10,7 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
@@ -1768,15 +1768,15 @@ class PersonController extends AbstractController implements ProtectedController
         $person = $this->_getPersonOr404($person_id, 'edit');
 
         try {
-            if (!$number = PhoneNumber::parseNumber($this->in->getString('phone_number'))) {
+            if (!$number = PersonPhoneNumber::parseNumber($this->in->getString('phone_number'))) {
                 throw new \Exception('Invalid phone_number');
             }
         } catch (\Exception $e) {
             return $this->createApiErrorResponse('parse_error', $e->getMessage());
         }
 
-        $number->label  = $this->in->getString('label');
-        $number->person = $person;
+        $number->setLabel($this->in->getString('label'));
+        $number->setPerson($person);
         $this->em->persist($number);
         $this->em->flush();
 
@@ -1797,12 +1797,12 @@ class PersonController extends AbstractController implements ProtectedController
     public function getPersonPhoneNumberAction($person_id, $number_id)
     {
         $person = $this->_getPersonOr404($person_id);
-        /** @var $number PhoneNumber */
-        if (!$number = $this->em->find('DeskPRO:PhoneNumber', $number_id)) {
+        /** @var $number PersonPhoneNumber */
+        if (!$number = $this->em->find('DeskPRO:PersonPhoneNumber', $number_id)) {
             throw new NotFoundHttpException();
         }
 
-        if (!$number->person === $person) {
+        if (!$number->getPerson() === $person) {
             throw new NotFoundHttpException();
         }
 
@@ -1823,12 +1823,12 @@ class PersonController extends AbstractController implements ProtectedController
     public function postPersonPhoneNumberAction($person_id, $number_id)
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
-        /** @var $number PhoneNumber */
-        if (!$number = $this->em->find('DeskPRO:PhoneNumber', $number_id)) {
+        /** @var $number PersonPhoneNumber */
+        if (!$number = $this->em->find('DeskPRO:PersonPhoneNumber', $number_id)) {
             throw new NotFoundHttpException();
         }
 
-        if (!$number->person === $person) {
+        if (!$number->getPerson() === $person) {
             throw new NotFoundHttpException();
         }
 
@@ -1855,12 +1855,12 @@ class PersonController extends AbstractController implements ProtectedController
     public function deletePersonPhoneNumberAction($person_id, $number_id)
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
-        /** @var $number PhoneNumber */
-        if (!$number = $this->em->find('DeskPRO:PhoneNumber', $number_id)) {
+        /** @var $number PersonPhoneNumber */
+        if (!$number = $this->em->find('DeskPRO:PersonPhoneNumber', $number_id)) {
             throw new NotFoundHttpException();
         }
 
-        if (!$number->person === $person) {
+        if (!$number->getPerson() === $person) {
             throw new NotFoundHttpException();
         }
 

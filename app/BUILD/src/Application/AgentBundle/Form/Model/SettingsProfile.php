@@ -9,7 +9,7 @@ namespace Application\AgentBundle\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Orb\Util\PhoneNumbers;
 
 class SettingsProfile
@@ -80,7 +80,7 @@ class SettingsProfile
 
         // store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
         // this is acting like a DataTransformer.
-        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+        $this->primary_phone = $person->getPrimaryPhoneNumber() ?: new PersonPhoneNumber();
         if (!$this->primary_phone['region']) {
             $this->primary_phone['region'] = $defaultCountryCode;
         }

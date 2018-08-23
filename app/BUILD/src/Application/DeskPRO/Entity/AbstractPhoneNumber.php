@@ -23,7 +23,6 @@ use Orb\Util\PhoneNumbers;
  *                   it was validated in either way).
  *
  * @property int $id
- * @property Person $person
  * @property string $number
  * @property string $region
  * @property string $guessed_type
@@ -33,7 +32,7 @@ use Orb\Util\PhoneNumbers;
  *
  * @AppAssert\PhoneNumber()
  */
-class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
+abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * The unique ID.
@@ -41,11 +40,6 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
      * @var int
      */
     protected $id = null;
-
-    /**
-     * @var \Application\DeskPRO\Entity\Person
-     */
-    protected $person;
 
     /**
      * The number, stored in E.164 string format, ie. +19021111111.
@@ -114,12 +108,12 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @param $phone_number
      *
-     * @return PhoneNumber
+     * @return AbstractPhoneNumber
      */
     public static function createEntity($phone_number)
     {
         try {
-            return self::parseNumber($phone_number);
+            return static::parseNumber($phone_number);
         } catch (\Exception $e) {
             return;
         }
@@ -189,18 +183,6 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $number;
-    }
-
-    /**
-     * @param Person $person
-     *
-     * @return $this
-     */
-    public function setPerson(Person $person = null)
-    {
-        $this->setModelField('person', $person);
-
-        return $this;
     }
 
     /**
@@ -306,21 +288,28 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
-     * @return Person
+     * @param mixed $owner
      */
-    public function getPerson()
-    {
-        return $this->person;
-    }
+    abstract public function setOwner($owner);
 
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
 
+    /**
+     * {@inheritdoc}
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PhoneNumber';
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_SINGLE_TABLE);
+        $metadata->setDiscriminatorColumn([
+            'name'   => 'type',
+            'length' => 255,
+        ]);
+        $metadata->setDiscriminatorMap([
+            'person'       => PersonPhoneNumber::class,
+            'organization' => OrganizationPhoneNumber::class,
+        ]);
 
         $metadata->setPrimaryTable(
             [
@@ -413,23 +402,5 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(
-            [
-                'fieldName'    => 'person',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                'mappedBy'     => null,
-                'inversedBy'   => 'phone_numbers',
-                'cascade'      => ['persist'],
-                'joinColumns'  => [
-                    0 => [
-                        'name'                 => 'person_id',
-                        'referencedColumnName' => 'id',
-                        'nullable'             => true,
-                        'onDelete'             => 'cascade',
-                        'columnDefinition'     => null,
-                    ],
-                ],
-            ]
-        );
     }
 }

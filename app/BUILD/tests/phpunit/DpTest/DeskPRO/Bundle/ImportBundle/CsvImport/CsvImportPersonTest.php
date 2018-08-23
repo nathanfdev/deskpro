@@ -7,7 +7,7 @@ use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\EmailBundle\Entity\SendmailSource;
 use DeskPRO\Bundle\ImportBundle\CsvImport\CsvImporter;
 use DpTest\DeskPRO\Bundle\ImportBundle\Writer\AbstractWriterTest;
@@ -230,7 +230,7 @@ class CsvImportPersonTest extends AbstractWriterTest
             'ref'
         ));
 
-        /** @var PhoneNumber[] $contactData */
+        /** @var PersonPhoneNumber[] $contactData */
         $contactData = array_values($this->getPerson()->getPhoneNumbers()->toArray());
         $this->assertEquals('+14157012311', $contactData[0]->getNumber());
         $this->assertEquals('mobile', $contactData[0]->getLabel());

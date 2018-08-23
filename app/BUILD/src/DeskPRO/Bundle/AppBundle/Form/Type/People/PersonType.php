@@ -15,7 +15,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
-use DeskPRO\Bundle\AppBundle\Form\Type\PhoneNumberType;
 use DeskPRO\Bundle\AppBundle\Form\Type\UsergroupsType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -134,7 +133,7 @@ class PersonType extends AbstractType
                 'required'      => false,
                 'allow_add'     => true,
                 'allow_delete'  => true,
-                'entry_type'    => PhoneNumberType::class,
+                'entry_type'    => PersonPhoneNumberType::class,
                 'entry_options' => [
                     'error_bubbling' => false,
                     'person'         => $builder->getData(),

@@ -10,7 +10,7 @@ use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonEmail;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
@@ -373,12 +373,12 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return PhoneNumber[]|ArrayCollection
+     * @return PersonPhoneNumber[]|ArrayCollection
      */
     public function getPhoneNumbers(Person $entity)
     {
         if (null === $this->phoneNumbers) {
-            $result = $this->em->getRepository(PhoneNumber::class)->findBy([
+            $result = $this->em->getRepository(PersonPhoneNumber::class)->findBy([
                 'person' => array_keys($this->personIds),
             ]);
 

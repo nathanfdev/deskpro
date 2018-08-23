@@ -48,10 +48,12 @@ use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
+use Application\DeskPRO\Entity\OrganizationPhoneNumber;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Phrase;
@@ -310,6 +312,7 @@ class ObjectsManager
             'NewsCategory'                     => [Factory\SimpleFactory::class, 'create', NewsCategory::class],
             'Organization'                     => [Factory\SimpleFactory::class, 'create', Organization::class],
             'OrganizationNote'                 => [Factory\SimpleFactory::class, 'create', OrganizationNote::class],
+            'OrganizationPhoneNumber'          => [Factory\SimpleFactory::class, 'create', OrganizationPhoneNumber::class],
             'Product'                          => [Factory\CommonFactories::class, 'product'],
             'Task'                             => [Factory\SimpleFactory::class, 'create', Task::class],
             'TaskComment'                      => [Factory\CommonFactories::class, 'task_comment'],
@@ -348,6 +351,7 @@ class ObjectsManager
             'Usersource'                       => [Factory\SimpleFactory::class, 'create', Usersource::class],
             'UsersourceAssoc'                  => [Factory\SimpleFactory::class, 'create', PersonUsersourceAssoc::class],
             'PersonNote'                       => [Factory\SimpleFactory::class, 'create', PersonNote::class],
+            'PersonPhoneNumber'                => [Factory\SimpleFactory::class, 'create', PersonPhoneNumber::class],
             'VoiceAccount'                     => [Factory\SimpleFactory::class, 'create', VoiceAccount::class],
             'VoiceNumber'                      => [Factory\SimpleFactory::class, 'create', VoiceNumber::class],
             'VoiceQueue'                       => [Factory\SimpleFactory::class, 'create', VoiceQueue::class],
@@ -433,6 +437,7 @@ class ObjectsManager
             'SLA'                              => [$this, 'find', Sla::class],
             'Organization'                     => [$this, 'find', Organization::class],
             'OrganizationNote'                 => [$this, 'find', OrganizationNote::class],
+            'OrganizationPhoneNumber'          => [$this, 'find', OrganizationPhoneNumber::class],
             'Product'                          => [$this, 'find', Product::class],
             'Chat'                             => [$this, 'find', ChatConversation::class],
             'ChatMessage'                      => [$this, 'find', ChatMessage::class],
@@ -483,6 +488,7 @@ class ObjectsManager
             'Usersource'                       => [$this, 'find', Usersource::class],
             'UsersourceAssoc'                  => [$this, 'find', PersonUsersourceAssoc::class],
             'PersonNote'                       => [$this, 'find', PersonNote::class],
+            'PersonPhoneNumber'                => [$this, 'find', PersonPhoneNumber::class],
             'Permission'                       => [$this, 'find', Permission::class],
             'VoiceAccount'                     => [$this, 'find', VoiceAccount::class],
             'VoiceNumber'                      => [$this, 'find', VoiceNumber::class],

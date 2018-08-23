@@ -14,7 +14,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\DepartmentPermission as DepartmentPermissionEntity;
 use Application\DeskPRO\Entity\Organization as OrganizationEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
-use Application\DeskPRO\Entity\PhoneNumber as PhoneNumberEntity;
+use Application\DeskPRO\Entity\PersonPhoneNumber as PhoneNumberEntity;
 use Application\DeskPRO\Entity\Usergroup as UsergroupEntity;
 use Application\DeskPRO\EntityRepository\Helper\IdentityHelper;
 use Doctrine\DBAL\LockMode;

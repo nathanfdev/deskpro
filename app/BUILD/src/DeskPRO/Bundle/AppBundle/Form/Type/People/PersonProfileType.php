@@ -4,7 +4,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
-use DeskPRO\Bundle\AppBundle\Form\Type\PhoneNumberType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppConstraints;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -13,7 +12,6 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints;
 
 /**
  * Class PersonProfileType.
@@ -33,7 +31,7 @@ class PersonProfileType extends AbstractType
                 'required'      => false,
                 'property_path' => 'picture_blob',
             ])
-            ->add('phone', PhoneNumberType::class, [
+            ->add('phone', PersonPhoneNumberType::class, [
                 'property_path'  => 'primaryPhoneNumber',
                 'error_bubbling' => false,
                 'required'       => false,

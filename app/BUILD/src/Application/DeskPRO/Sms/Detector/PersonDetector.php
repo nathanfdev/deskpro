@@ -7,7 +7,7 @@
 namespace Application\DeskPRO\Sms\Detector;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PhoneNumber;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Doctrine\ORM\EntityManager;
 
 class PersonDetector
@@ -57,7 +57,7 @@ class PersonDetector
 
         $person                  = Person::newContactPerson();
         $person->creation_system = 'gateway.person';
-        $from_number             = new PhoneNumber($from_number);
+        $from_number             = new PersonPhoneNumber($from_number);
         $person->setPrimaryPhoneNumber($from_number);
 
         $this->em->persist($person);

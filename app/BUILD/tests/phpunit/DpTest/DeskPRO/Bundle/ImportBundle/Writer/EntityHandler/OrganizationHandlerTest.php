@@ -137,7 +137,7 @@ class OrganizationHandlerTest extends AbstractEntityHandlerTest
         $entity = $this->getBaseEntity();
 
         $this->assertNotNull($entity);
-        $this->assertCount(7, $entity->getContactData());
+        $this->assertCount(6, $entity->getContactData());
 
         /** @var Entity\ContactDataAbstract[] $contactData */
         $contactData = array_values($entity->getContactData()->toArray());
@@ -163,20 +163,18 @@ class OrganizationHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('comment', $contactData[3]->getComment());
         $this->assertEquals('http://url/in/', $contactData[3]->getField1());
 
-        $this->assertEquals('phone', $contactData[4]->getContactType());
+        $this->assertEquals('twitter', $contactData[4]->getContactType());
         $this->assertEquals('comment', $contactData[4]->getComment());
-        $this->assertEquals('1', $contactData[4]->getField1());
-        $this->assertEquals('4157012311', $contactData[4]->getField2());
-        $this->assertEquals('fax', $contactData[4]->getField3());
+        $this->assertEquals('username', $contactData[4]->getField1());
+        $this->assertEquals(1, $contactData[4]->getField2());
 
-        $this->assertEquals('twitter', $contactData[5]->getContactType());
+        $this->assertEquals('website', $contactData[5]->getContactType());
         $this->assertEquals('comment', $contactData[5]->getComment());
-        $this->assertEquals('username', $contactData[5]->getField1());
-        $this->assertEquals(1, $contactData[5]->getField2());
+        $this->assertEquals('http://url', $contactData[5]->getField1());
 
-        $this->assertEquals('website', $contactData[6]->getContactType());
-        $this->assertEquals('comment', $contactData[6]->getComment());
-        $this->assertEquals('http://url', $contactData[6]->getField1());
+        $this->assertCount(1, $entity->getPhoneNumbers());
+        $this->assertEquals('+14157012311', $entity->getPhoneNumbers()[0]->getNumber());
+        $this->assertEquals('fax', $entity->getPhoneNumbers()[0]->getLabel());
     }
 
     public function test_update_contact_data_by_oid()

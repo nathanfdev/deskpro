@@ -20,7 +20,7 @@ use Orb\Util\PhoneNumbers;
  * @property bool $is_connected
  * @property bool $is_tested
  * @property string $test_code
- * @property PhoneNumber|null $phone_number
+ * @property PersonPhoneNumber|null $phone_number
  */
 class SmsAccount extends DomainObject
 {
@@ -47,7 +47,7 @@ class SmsAccount extends DomainObject
     protected $identifier;
 
     /**
-     * @var PhoneNumber a stored phone number that is used
+     * @var PersonPhoneNumber a stored phone number that is used
      */
     protected $phone_number;
 
@@ -175,7 +175,7 @@ class SmsAccount extends DomainObject
         $metadata->mapOneToOne(
             [
                 'fieldName'     => 'phone_number',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PhoneNumber',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\PersonPhoneNumber',
                 'cascade'       => ['all'],
                 'orphanRemoval' => true,
                 'joinColumns'   => [
