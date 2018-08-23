@@ -33,6 +33,7 @@ import RteTextArea from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Services/Rte
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
 import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
 import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersContainer';
+import { allNumbersSelector } from './Modules/Voice/Selectors/numbers';
 
 class AgentLegacyApp {
 
@@ -303,7 +304,9 @@ class AgentLegacyApp {
 
 
   detectPhoneNumbers(messages) { // eslint-disable-line
-    MessagePhoneNumber.detectPhoneNumbers(messages);
+    const state = this.store.getState();
+    const numbers = allNumbersSelector(state);
+    MessagePhoneNumber.detectPhoneNumbers(messages, numbers);
   }
 
   renderClickToCall(node, number, child) {

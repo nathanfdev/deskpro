@@ -13,7 +13,11 @@ class MessagePhoneNumber extends React.PureComponent {
     children: PropTypes.node,
   };
 
-  static detectPhoneNumbers(messages) {
+  static detectPhoneNumbers(messages, numbers) {
+    let agentCountry = null;
+    if (numbers.size) {
+      agentCountry = numbers.first().get('country_code').toUpperCase();
+    }
     messages.find('.content-message').toArray().forEach((messageContent) => {
       let country = null;
       const personPhoneCountryEl = messageContent.getElementsByClassName('person-phone-country').item(0);
@@ -30,8 +34,7 @@ class MessagePhoneNumber extends React.PureComponent {
         }
       }
       if (!country) {
-        // TODO replace with agent country code from their phone number
-        country = 'US';
+        country = agentCountry;
       }
       const message = messageContent.getElementsByClassName('body-text-message').item(0);
       let diff = 0;
