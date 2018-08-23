@@ -8,3 +8,8 @@ export const outboundNumbersSelector = createSelector(
   allNumbersSelector,
   numbers => numbers.filter(number => number.get('outbound_calls_enabled'))
 );
+
+export const canOpenDialpadSelector = createSelector(
+  outboundNumbersSelector,
+  numbers => numbers.size > 0
+);

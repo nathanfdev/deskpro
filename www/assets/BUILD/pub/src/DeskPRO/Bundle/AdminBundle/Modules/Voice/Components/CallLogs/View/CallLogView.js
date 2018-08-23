@@ -1,15 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import Immutable from 'immutable';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
+import { Icon } from '@deskpro/react-components';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
 import PersonName from '../../../../Common/Components/PersonName';
 import CallStatus from '../Common/CallStatus';
 import CallDuration from '../Common/CallDuration';
+import { openTicket, openPerson, openTarget } from '../../../../../Services/history';
 
 class CallLogView extends React.Component {
 
@@ -21,8 +23,15 @@ class CallLogView extends React.Component {
     openDialpad:  PropTypes.func
   };
 
+  openDialpad = (event, number) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.props.openDialpad(number);
+  };
+
   render() {
-    const { onReturnBack, openDialpad, call, numbers, people } = this.props;
+    const { onReturnBack, call, numbers, people } = this.props;
     const number = numbers.get(call.get('number')) || Immutable.fromJS({});
     const fromNumber = call.getIn(['data', 'From']);
     const toNumber = call.getIn(['data', 'To']);
@@ -51,14 +60,18 @@ class CallLogView extends React.Component {
             <tr>
               <th>Caller</th>
               <td>
-                <PersonName id={call.get('person')} />
+                <a onClick={() => openPerson(call.get('person'))}>
+                  <PersonName id={call.get('person')} />
+                </a>
               </td>
             </tr>
             <tr>
               <th>Callee(s)</th>
               <td>
                 {call.get('participants').toArray().map((participant, index) =>
-                  <PersonName id={participant.get('person')} className="list-item" key={index} />
+                  <a key={index} className="list-item" onClick={() => openPerson(participant.get('person'))}>
+                    <PersonName id={participant.get('person')} />
+                  </a>
                 )}
               </td>
             </tr>
@@ -66,7 +79,7 @@ class CallLogView extends React.Component {
               <th>From Number</th>
               <td>
                 {isInbound
-                  ? <button onClick={() => openDialpad(fromNumber)}>
+                  ? <button onClick={event => this.openDialpad(event, fromNumber)}>
                     {fromNumber}
                   </button>
                   : number.get('number')
@@ -78,7 +91,7 @@ class CallLogView extends React.Component {
               <td>
                 {isInbound
                   ? number.get('number')
-                  : <button onClick={() => openDialpad(toNumber)}>
+                  : <button onClick={event => this.openDialpad(event, toNumber)}>
                     {toNumber}
                   </button>
                 }
@@ -101,7 +114,7 @@ class CallLogView extends React.Component {
               <td>
                 <i className="fa fa-envelope" />
                 &nbsp;
-                <a href={`../agent/#t:${call.get('ticket')}`} target="_blank" rel="noopener noreferrer">
+                <a onClick={() => openTicket(call.get('ticket'))}>
                   {call.get('ticket')}
                 </a>
               </td>
@@ -133,23 +146,40 @@ class CallLogView extends React.Component {
                       const callDate = moment(call.get('date_created'));
                       const duration = logDate.unix() - callDate.unix();
 
+                      let target = 'Unknown';
+                      if (log.getIn(['details', 'target'])) {
+                        target = (
+                          <a onClick={() => openTarget(log.getIn(['details', 'target']))}>
+                            {log.getIn(['details', 'target', 'name'])}
+                          </a>
+                        );
+                      }
+
                       return (
                         <tr key={index}>
                           <td width="80">
                             [<Duration value={duration} />]
                           </td>
                           <td>
-                            <FormattedMessage
-                              id={`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`}
-                              values={{
-                                number:           call.get('external_number'),
-                                to_number:        number.get('nickname') || number.get('number'),
-                                person:           `${person.get('name')} ${person.get('primary_email')}` || '',
-                                key:              log.getIn(['details', 'Digits']) || '',
-                                target:           log.getIn(['details', 'target_name']) || 'Unknown',
-                                forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
-                              }}
-                            />
+                            {agentPhrases.getHtmlWithComponents(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
+                              number: (
+                                <a
+                                  onClick={event => this.openDialpad(event, call.get('external_number'))}
+                                  href={`tel:${call.get('external_number')}`}
+                                >
+                                  {call.get('external_number')} <Icon name="phone" />
+                                </a>
+                              ),
+                              person: (
+                                <a data-route={`person:/agent/people/${person.get('id')}`}>
+                                  {person.get('name')} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
+                                </a>
+                              ),
+                              to_number:        number.get('nickname') || number.get('number'),
+                              key:              log.getIn(['details', 'Digits']) || '',
+                              target,
+                              forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
+                            })}
                           </td>
                         </tr>
                       );

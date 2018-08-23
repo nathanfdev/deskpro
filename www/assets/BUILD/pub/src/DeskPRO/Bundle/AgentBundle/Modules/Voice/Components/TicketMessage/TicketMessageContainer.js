@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { loadBatch, collectionSelectorFactory, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import TicketMessage from './TicketMessage';
 import { openDialpad } from '../../Actions/clientActions';
@@ -10,13 +11,15 @@ import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
 import { connectionsSelector } from '../../Selectors/client';
 import { outboundCallsEnabledSelector } from '../../Selectors/agents';
 import { allNumbersSelector } from '../../Selectors/numbers';
+import { closeIframes } from './../../../Application/Actions/bootstrapActions';
 
 @connect(state => ({
   people:               collectionSelectorFactory('Person', 'all')(state),
   phoneCalls:           allPhoneCallsSelector(state),
   connections:          connectionsSelector(state),
   numbers:              allNumbersSelector(state),
-  outboundCallsEnabled: outboundCallsEnabledSelector(state)
+  outboundCallsEnabled: outboundCallsEnabledSelector(state),
+  me:                   meSelector(state)
 }))
 class TicketMessageContainer extends React.Component {
 
@@ -96,6 +99,25 @@ class TicketMessageContainer extends React.Component {
     return connections.filter(connection => parseInt(connection.message.CallId, 10) === phoneCall.get('id')).first();
   }
 
+  openTarget = (target) => {
+    const type = target.get('type');
+    const id = target.get('id');
+
+    if (type === 'agent') {
+      window.DeskPRO_Window.runPageRoute(`person:/agent/people/${id}`);
+    } else if (type === 'queue') {
+      if (window.DP_FRAME_OVERLAYS.admin) {
+        closeIframes();
+        window.DP_FRAME_OVERLAYS.admin.open(`/voice_channel/queues/${id}`);
+      }
+    } else if (type === 'auto_attendant') {
+      if (window.DP_FRAME_OVERLAYS.admin) {
+        closeIframes();
+        window.DP_FRAME_OVERLAYS.admin.open(`/voice_channel/auto_attendants/${id}`);
+      }
+    }
+  };
+
   loadParticipants() {
     const { people, dispatch } = this.props;
     const phoneCall = this.getPhoneCall();
@@ -127,6 +149,7 @@ class TicketMessageContainer extends React.Component {
         connection={this.getConnection()}
         onCall={this.onCall}
         onOpenSettings={this.onOpenSettings}
+        openTarget={this.openTarget}
       />
     );
   }

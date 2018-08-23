@@ -4,13 +4,17 @@ import { findPhoneNumbers, getCountryCallingCode } from 'libphonenumber-js';
 import { connect } from 'react-redux';
 import { Icon } from '@deskpro/react-components';
 import { openDialpad } from '../../Actions/clientActions';
+import { canOpenDialpadSelector } from '../../Selectors/numbers';
 
-@connect()
+@connect(state => ({
+  canOpenDialpad: canOpenDialpadSelector(state)
+}))
 class MessagePhoneNumber extends React.PureComponent {
   static propTypes = {
-    dispatch: PropTypes.func,
-    number:   PropTypes.string,
-    children: PropTypes.node,
+    dispatch:       PropTypes.func,
+    number:         PropTypes.string,
+    children:       PropTypes.node,
+    canOpenDialpad: PropTypes.bool
   };
 
   static detectPhoneNumbers(messages, numbers) {
@@ -58,9 +62,12 @@ class MessagePhoneNumber extends React.PureComponent {
   openDialpad = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (window.AgentLegacyBundle.canOpenDialpad()) {
-      this.props.dispatch(openDialpad(this.props.number));
+
+    const { number, canOpenDialpad, dispatch } = this.props;
+    if (canOpenDialpad) {
+      dispatch(openDialpad(number));
     }
+
     return false;
   };
 

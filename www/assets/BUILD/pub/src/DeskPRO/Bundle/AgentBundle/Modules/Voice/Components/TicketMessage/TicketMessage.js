@@ -3,11 +3,13 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import Immutable from 'immutable';
 import moment from 'moment';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
 import classNames from 'classnames';
 import Avatar from '../Common/Avatar';
+import MessagePhoneNumber from './MessagePhoneNumber';
 
 class TicketMessage extends React.Component {
 
@@ -20,7 +22,9 @@ class TicketMessage extends React.Component {
     transcript:           PropTypes.string,
     onCall:               PropTypes.func,
     outboundCallsEnabled: PropTypes.bool,
-    dateCreatedFormatted: PropTypes.string
+    dateCreatedFormatted: PropTypes.string,
+    openTarget:           PropTypes.func,
+    me:                   PropTypes.object
   };
 
   static defaultProps = {
@@ -53,7 +57,7 @@ class TicketMessage extends React.Component {
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
     const { transcript, outboundCallsEnabled, dateCreatedFormatted } = this.props;
-    const { onCall } = this.props;
+    const { onCall, me, openTarget } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
     const recording = phoneCall.get('recording');
@@ -138,33 +142,53 @@ class TicketMessage extends React.Component {
             />
             {logExpanded &&
             <table>
-              {phoneCall.get('phone_call_logs').map((log, index) => {
-                const person   = people.get(log.get('person')) || Immutable.fromJS({});
-                const logDate  = moment(log.get('date_created'));
-                const callDate = moment(phoneCall.get('date_created'));
-                const duration = logDate.unix() - callDate.unix();
+              <tbody>
+                {phoneCall.get('phone_call_logs').map((log, index) => {
+                  const person   = people.get(log.get('person')) || Immutable.fromJS({});
+                  const logDate  = moment(log.get('date_created'));
+                  const callDate = moment(phoneCall.get('date_created'));
+                  const duration = logDate.unix() - callDate.unix();
 
-                return (
-                  <tr key={index}>
-                    <td>
-                      [<Duration value={duration} />]
-                    </td>
-                    <td>
-                      <FormattedMessage
-                        id={`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`}
-                        values={{
-                          number:           phoneCall.get('external_number'),
+                  let target = 'Unknown';
+                  if (log.getIn(['details', 'target'])) {
+                    if (me.get('can_admin')) {
+                      target = (
+                        <a onClick={() => openTarget(log.getIn(['details', 'target']))}>
+                          {log.getIn(['details', 'target', 'name'])}
+                        </a>
+                      );
+                    } else {
+                      target = log.getIn(['details', 'target', 'name']);
+                    }
+                  }
+
+                  return (
+                    <tr key={index}>
+                      <td>
+                        [<Duration value={duration} />]
+                      </td>
+                      <td>
+                        {agentPhrases.getHtmlWithComponents(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
+                          number: (
+                            <MessagePhoneNumber number={phoneCall.get('external_number')}>
+                              {phoneCall.get('external_number')}
+                            </MessagePhoneNumber>
+                          ),
+                          person: (
+                            <a data-route={`person:/agent/people/${person.get('id')}`}>
+                              {person.get('name')} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
+                            </a>
+                          ),
                           to_number:        number.get('nickname') || number.get('number'),
-                          person:           `${person.get('name')} ${person.get('primary_email')}` || '',
                           key:              log.getIn(['details', 'Digits']) || '',
-                          target:           log.getIn(['details', 'target_name']) || 'Unknown',
+                          target,
                           forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
-                        }}
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
+                        })}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
             </table>}
           </div>
         </div>

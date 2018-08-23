@@ -57,9 +57,9 @@ abstract class AbstractVoiceTarget implements EntityInterface, NotifyPropertyCha
     }
 
     /**
-     * @return string
+     * @return array
      */
-    abstract public function getTargetName();
+    abstract public function getTargetDetails();
 
     /**
      * @param string $type
