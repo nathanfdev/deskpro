@@ -21,6 +21,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessag
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -191,6 +192,7 @@ class TicketMessageType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat'], 100);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'ensureAttachments'], 99);
 
         if ($this->apiClientInfo && $this->apiClientInfo->isIos()) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPurifyIosMessage']);
@@ -272,6 +274,29 @@ class TicketMessageType extends AbstractType
         }
 
         $event->setData($data);
+    }
+
+    public function ensureAttachments(FormEvent $event)
+    {
+        $data = $event->getData();
+        /** @var TicketMessage $data */
+        foreach ($data->getAttachments() as $attachment) {
+            $blob = $attachment->getBlob();
+
+            $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
+            $matches = RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+
+            $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
+            $matches = $matches ?: RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+
+            $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
+            $matches = $matches ?: RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+
+            if (!$matches) {
+                $blob->setIsTemp(true);
+                $data->removeAttachment($attachment);
+            }
+        }
     }
 
     /**
