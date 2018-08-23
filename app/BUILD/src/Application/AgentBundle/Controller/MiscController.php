@@ -700,7 +700,7 @@ JS;
             $bs       = $this->container->getBlobStorage();
             $raw_file = $bs->copyBlobRecordToString($blob);
 
-            $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type);
+            $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type, ['is_temp' => true]);
             unset($raw_file);
         } else {
             /** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
@@ -733,7 +733,7 @@ JS;
 
                 return $this->createJsonResponse($error);
             } else {
-                $blob = $accept->accept($file);
+                $blob = $accept->accept($file, true);
             }
         }
 

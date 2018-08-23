@@ -1417,7 +1417,7 @@ class TicketController extends AbstractController
                 $attach           = new Entity\TicketAttachment();
                 $attach['blob']   = $blob;
                 $attach['person'] = $this->person;
-
+                $blob->setIsTemp(false);
                 $message->addAttachment($attach);
             }
         }
@@ -1429,7 +1429,7 @@ class TicketController extends AbstractController
                 $attach['blob']    = $blob;
                 $attach['person']  = $this->person;
                 $attach->is_inline = true;
-
+                $blob->setIsTemp(false);
                 $message->addAttachment($attach);
             }
         }
