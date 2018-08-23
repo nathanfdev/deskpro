@@ -1414,7 +1414,7 @@ class TicketController extends AbstractController
 
         foreach ($this->in->getCleanValueArray('attach') as $blobId) {
             $blob = $this->em->getRepository(Blob::class)->find($blobId);
-            if ($blob && $this->ensureAttachment($blob, $message)) {
+            if ($blob) {
                 $attach           = new Entity\TicketAttachment();
                 $attach['blob']   = $blob;
                 $attach['person'] = $this->person;
