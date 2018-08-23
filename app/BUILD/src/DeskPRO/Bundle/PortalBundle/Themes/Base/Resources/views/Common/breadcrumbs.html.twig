@@ -6,6 +6,8 @@
           {%- if loop.first -%}<i class="fa fa-home"></i>{%- endif -%}
           {%- if item.phrase -%}
             {{ phrase(item.phrase) }}
+          {%- elseif item.var.translated_title is defined -%}
+            {{ item.var.translated_title }}
           {%- elseif item.var.title is defined -%}
             {{ item.var.title }}
           {%- elseif item.var.name is defined -%}
