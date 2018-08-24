@@ -22,11 +22,13 @@
                                 ng-model="LogsCtrl.pagination.page"
                                 ui-select2
                                 style="width: 130px;"
-                                ng-options='page as ("Page " + page) for page in LogsCtrl.pagination.page_nums'
                                 >
+                            <option ng-repeat="page in LogsCtrl.pagination.page_nums" value="{{ ng_var('page') }}">
+                                Page {{ ng_var('page') }}
+                            </option>
                         </select>
                     </div>
-					<table dp-hide-spinning="loading" class="table table-hover" style="word-break: break-all; word-break: break-word;">
+					<table dp-hide-spinning="loading" class="table table-hover" style="word-break: break-word;">
 						<thead>
 						<tr>
 							<th> {{ phrase('adm.api_logs.request_id') }}</th>
@@ -55,9 +57,9 @@
                                 </select>
 
                             </th>
-                            <th> {{ phrase('adm.api_logs.response_status') }}</th>
+                            <th style="width: 75px;"> {{ phrase('adm.api_logs.response_status') }}</th>
                             <th> {{ phrase('adm.api_logs.start_time') }}</th>
-                            <th> {{ phrase('adm.api_logs.time_taken') }}</th>
+                            <th style="width: 50px;"> {{ phrase('adm.api_logs.time_taken') }}</th>
                         </tr>
 						</thead>
 						<tbody>
