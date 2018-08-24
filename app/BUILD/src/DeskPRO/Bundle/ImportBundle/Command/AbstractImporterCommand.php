@@ -95,7 +95,8 @@ abstract class AbstractImporterCommand extends ContainerAwareCommand
             $handler = $this->getContainer()->get('dp.importer.logger.job_progress');
             $handler->setJobId($job->getId());
             $logger->pushHandler($handler);
-        } elseif ($input->hasOption('verbose')) {
+        }
+        if ($input->hasOption('verbose')) {
             $formatter = new ConsoleFormatter();
             $formatter->ignoreEmptyContextAndExtra(true);
             $formatter->allowInlineLineBreaks(true);

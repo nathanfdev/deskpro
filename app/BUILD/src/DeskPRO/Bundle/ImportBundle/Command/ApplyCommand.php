@@ -92,9 +92,12 @@ class ApplyCommand extends AbstractImporterCommand
      */
     protected function executeUnattendedRun(InputInterface $input, OutputInterface $output)
     {
+        $argv = $_SERVER['argv'];
+        array_shift($argv); // shift off the script name
+
         $arguments = array_map(function ($argument) {
             return escapeshellarg($argument);
-        }, $_SERVER['argv']);
+        }, $argv);
         $arguments[] = '-b';
         $arguments[] = '-vvv';
 
@@ -102,7 +105,7 @@ class ApplyCommand extends AbstractImporterCommand
         $appEnv     = $container->get('deskpro.app_env');
         $importer   = $container->get('dp.importer');
         $dispatcher = $container->get('dp.importer.event_dispatcher');
-        $cmd        = sprintf('%s %s', $appEnv->getConfig('paths.php_path'), implode(' ', $arguments));
+        $cmd        = $appEnv->getConsolePhpCommand(implode(' ', $arguments));
 
         $currentModelClass = null;
 
@@ -117,6 +120,7 @@ class ApplyCommand extends AbstractImporterCommand
             }
 
             // process batch import
+            $output->writeln("Executing: $cmd");
             $process = new Process($cmd, realpath($appEnv->getDpRoot()));
             $process->setTimeout(18000);
             $process->run(function ($type, $data) use ($output) {

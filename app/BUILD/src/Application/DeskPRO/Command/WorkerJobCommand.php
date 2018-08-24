@@ -306,12 +306,14 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             ]);
 
             // run the job
-            $failed  = false;
-            $cmd     = $appEnv->getConsolePhpCommand("dp:import -j {$importerJob->getId()}");
-            $process = new Process($cmd);
+            $verboseFlag = $isVerbose ? '-vvv ' : '';
+            $failed      = false;
+            $cmd         = $appEnv->getConsolePhpCommand("dp:import {$verboseFlag}-j {$importerJob->getId()}");
+            $process     = new Process($cmd);
             $process->setTimeout(null);
 
             if ($isVerbose) {
+                $output->writeln("Executing: {$cmd}");
                 $process->run(function ($type, $dat) use ($output) {
                     if ($type === Process::OUT) {
                         $output->writeln($dat);
@@ -324,11 +326,12 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
 
             if ($process->isSuccessful()) {
-                $cmd     = $appEnv->getConsolePhpCommand("dp:import:apply -j {$importerJob->getId()}");
+                $cmd     = $appEnv->getConsolePhpCommand("dp:import:apply {$verboseFlag}-j {$importerJob->getId()}");
                 $process = new Process($cmd);
                 $process->setTimeout(null);
 
                 if ($isVerbose) {
+                    $output->writeln("Executing: {$cmd}");
                     $process->run(function ($type, $dat) use ($output) {
                         if ($type === Process::OUT) {
                             $output->writeln($dat);
