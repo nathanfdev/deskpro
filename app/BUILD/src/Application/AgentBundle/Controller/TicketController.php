@@ -5174,6 +5174,7 @@ class TicketController extends AbstractController
                 );
             } catch (\Exception $e) {
                 $this->db->rollback();
+                SystemErrorHandler::logException($e);
 
                 return $this->createJsonResponse(
                     [
