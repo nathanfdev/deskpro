@@ -223,7 +223,39 @@
 						</div>
 					</article>
 				</td>
-				<td></td>
+				<td class="dp-item" ng-class="{'with-error':Home.cron_status.is_problem}">
+					<header>
+						<h3>Status</h3>
+					</header>
+					<article>
+						<div class="dp-mpadded">
+							<div class="status-content" ng-show="!Home.is_server_problem">
+								<header>
+									<div class="icon okay"><i class="fa fa-check"></i></div>
+									<strong>Everything is running smoothly.</strong>
+								</header>
+							</div>
+							<div class="status-content" ng-show="Home.is_server_problem">
+								<header>
+									<div class="icon bad"><i class="fas fa-exclamation-triangle"></i></div>
+									<strong>We have detected problems you should look into</strong>
+								</header>
+								<article>
+									<p ng-show="Home.error_status.gateway_error_count > 0">
+										<i class="fa fa-envelope"></i>
+										There have been <a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">{{ ng_var('Home.error_status.gateway_error_count') }} email errors</a>.
+										These errors may have prevented the successful processing of tickets or ticket replies.
+									</p>
+									<p ng-show="Home.error_status.sendmail_error_count > 0">
+										<i class="fa fa-envelope"></i>
+										There have been <a href="{{ ng_href('emails.ticket_accounts.sendmailqueue') }}">{{ ng_var('Home.error_status.sendmail_error_count') }} outgoing email errors</a>.
+										These errors will have prevented your users from receiving messages from the helpdesk (such as reply notifications).
+									</p>
+								</article>
+							</div>
+						</div>
+					</article>
+				</td>
 			</tr>
 		</table>
 	</div>
