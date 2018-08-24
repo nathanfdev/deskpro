@@ -107,7 +107,7 @@ class LogsController extends BaseController
             $requestLengthSetting->setName('api_log.max_request_body_length');
         }
 
-        $requestLengthSetting->setValue($data->getRequestLength());
+        $requestLengthSetting->setValue($data->getRequestLength() ?: 0);
 
         // update response length setting
         if (!$responseLengthSetting = $repo->findOneBy(['name' => 'api_log.max_response_body_length'])) {
@@ -115,7 +115,7 @@ class LogsController extends BaseController
             $responseLengthSetting->setName('api_log.max_response_body_length');
         }
 
-        $responseLengthSetting->setValue($data->getResponseLength());
+        $responseLengthSetting->setValue($data->getResponseLength() ?: 0);
 
         $em->persist($enabledSetting);
         $em->persist($modesSetting);
