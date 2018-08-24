@@ -665,19 +665,27 @@ class EmailTemplatesEditor extends React.Component {
   };
 
   closeMediaMenu = () => {
-    this.mediaMenu.closeMenu();
+    if (this.mediaMenu) {
+      this.mediaMenu.closeMenu();
+    }
   };
 
   closePhrasesMenu = () => {
-    this.phrasesMenu.closeMenu();
+    if (this.phrasesMenu) {
+      this.phrasesMenu.closeMenu();
+    }
   };
 
   closeTemplateMenu = () => {
-    this.templateMenu.closeMenu();
+    if (this.templateMenu) {
+      this.templateMenu.closeMenu();
+    }
   };
 
   closeVariablesMenu = () => {
-    this.variablesMenu.closeMenu();
+    if (this.variablesMenu) {
+      this.variablesMenu.closeMenu();
+    }
   };
 
   openNewTemplateDialog = () => {

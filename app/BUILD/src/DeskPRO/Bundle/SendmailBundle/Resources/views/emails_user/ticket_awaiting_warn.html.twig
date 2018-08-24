@@ -14,7 +14,7 @@
 
         <br /><br />
 
-        {{ phrase('user.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: ticket_resolve_link})|raw }}
+        {{ phrase('user.emails.remind_unresolved', {helpdesk_name: brand_setting('core.deskpro_name'), resolve_url: ticket_resolve_link}) }}
     </container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
