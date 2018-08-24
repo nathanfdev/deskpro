@@ -5,6 +5,7 @@ import { AppContainer } from 'react-hot-loader';
 import $ from 'jquery';
 import DataTables from 'datatables.net';
 import '../../../../vendor/datatables/plugins/pageResize';
+import '../../../../vendor/datatables/plugins/dataTables.rowsGroup';
 
 import '../../../../vendor/amcharts3/amcharts';
 import '../../../../vendor/amcharts3/serial';
