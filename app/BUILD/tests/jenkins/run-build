@@ -20,6 +20,10 @@ if [ "$1" = "sequential-build" ] ; then
     rm -f $ROOT_DIR/www/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
     find $ROOT_DIR/var/ -type d -print0 | xargs -0 chmod 755
 
+    cd $ROOT_DIR
+    git submodule init
+    git submodule update
+
     cd $ROOT_DIR/app/BUILD
     composer install --ignore-platform-reqs -o
 

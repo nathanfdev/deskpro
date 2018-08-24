@@ -44,7 +44,7 @@ class JobProgressHandler extends AbstractProcessingHandler
         parent::__construct($level, $bubble);
 
         $this->em            = $em;
-        $this->lastFlushTime = time();
+        $this->lastFlushTime = null;
     }
 
     /**
@@ -91,7 +91,7 @@ class JobProgressHandler extends AbstractProcessingHandler
         }
 
         $this->buffer .= (string) $record['formatted']."\n";
-        if ((time() - $this->lastFlushTime) > 3) { // 3sec
+        if (!$this->lastFlushTime || (time() - $this->lastFlushTime) > 3) { // 3sec
             $this->flushLog();
         }
     }

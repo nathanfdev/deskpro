@@ -4,58 +4,64 @@ parameters:
 
 services:
 
-    test_faker:
-        class: Faker\Generator
-        factory: [Faker\Factory, create]
+  test_faker:
+    class: Faker\Generator
+    factory: [Faker\Factory, create]
 
-    test_factory.person:
-        class: DpTestSrc\TestBundle\Factory\PersonTestFactory
-        arguments:
-            - "@doctrine.orm.default_entity_manager"
-            - "@test_faker"
+  test_factory.person:
+    class: DpTestSrc\TestBundle\Factory\PersonTestFactory
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@test_faker"
 
+  dataset_manager:
+    class: DpTestSrc\TestBundle\DataSetManager
+    arguments:
+      sets:
+        - "@dbset.empty"
+        - "@dbset.fresh"
+        - "@dbset.api"
 
-    dataset_manager:
-        class: DpTestSrc\TestBundle\DataSetManager
-        arguments:
-            sets:
-                - "@dbset.empty"
-                - "@dbset.fresh"
-                - "@dbset.api"
+  dbset.empty:
+    class: DpTestSrc\TestBundle\DataSet\EmptyDb
+    arguments:
+      - "@service_container"
+      - "@doctrine.dbal.default_connection"
+      - %kernel.cache_dir%/dbset
 
-    dbset.empty:
-        class: DpTestSrc\TestBundle\DataSet\EmptyDb
-        arguments:
-            - "@service_container"
-            - "@doctrine.dbal.default_connection"
-            - %kernel.cache_dir%/dbset
+  dbset.fresh:
+    class: DpTestSrc\TestBundle\DataSet\FreshDb
+    arguments:
+      - "@service_container"
+      - "@doctrine.dbal.default_connection"
+      - %kernel.cache_dir%/dbset
 
-    dbset.fresh:
-        class: DpTestSrc\TestBundle\DataSet\FreshDb
-        arguments:
-            - "@service_container"
-            - "@doctrine.dbal.default_connection"
-            - %kernel.cache_dir%/dbset
+  dbset.api:
+    class: DpTestSrc\TestBundle\DataSet\ApiDb
+    arguments:
+      - "@service_container"
+      - "@doctrine.dbal.default_connection"
+      - %kernel.cache_dir%/dbset
 
-    dbset.api:
-        class: DpTestSrc\TestBundle\DataSet\ApiDb
-        arguments:
-            - "@service_container"
-            - "@doctrine.dbal.default_connection"
-            - %kernel.cache_dir%/dbset
+  user_details:
+    class: DpTestSrc\TestBundle\UserDetailsRepo
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
 
-    user_details:
-        class: DpTestSrc\TestBundle\UserDetailsRepo
-        arguments:
-            - "@doctrine.orm.default_entity_manager"
+  twilio_adapter:
+    class: DpTestSrc\TestBundle\Mock\TwilioNullAdapter
 
-    twilio_adapter:
-        class: DpTestSrc\TestBundle\Mock\TwilioNullAdapter
+  test.queries.counter_listener:
+    class: DpTestSrc\TestBundle\EventListener\DoctrineQueriesCounterListener
+    arguments:
+      - "@doctrine.dbal.default_connection"
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+      - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
 
-    test.queries.counter_listener:
-      class: DpTestSrc\TestBundle\EventListener\DoctrineQueriesCounterListener
-      arguments:
-        - "@doctrine.dbal.default_connection"
-      tags:
-        - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
-        - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+  dp.importer.source_script_resolver:
+    class: DpTestSrc\TestBundle\Mock\SourceScriptNullResolver
+    arguments:
+      - "@service_container"
+      - "@deskpro.app_env"
+      - "@monolog.logger"

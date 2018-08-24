@@ -38,7 +38,7 @@ class StorageHandler extends AbstractProcessingHandler
         parent::__construct($level, $bubble);
 
         $this->storage       = $storage;
-        $this->lastFlushTime = time();
+        $this->lastFlushTime = null;
     }
 
     /**
@@ -63,7 +63,7 @@ class StorageHandler extends AbstractProcessingHandler
         $flushMaxSize = 3 * 1024 * 1024; // 3mb
 
         $this->buffer .= (string) $record['formatted']."\n";
-        if ((time() - $this->lastFlushTime) > $flushTimeout && strlen($this->buffer) > $flushMaxSize) {
+        if (!$this->lastFlushTime || ((time() - $this->lastFlushTime) > $flushTimeout && strlen($this->buffer) > $flushMaxSize)) {
             $this->flushLog();
         }
     }

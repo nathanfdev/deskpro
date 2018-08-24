@@ -83,6 +83,8 @@ class SourceScriptResolver
      * @param string $filename
      * @param array  $config
      *
+     * @throws \Exception
+     *
      * @return ImporterInterface
      */
     public function getSourceScript($filename, array $config)

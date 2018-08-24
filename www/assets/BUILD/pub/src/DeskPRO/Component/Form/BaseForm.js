@@ -68,13 +68,22 @@ class BaseForm extends React.Component {
         });
       }
     });
-    promise.error((result) => {
+    promise.error(({ message, errors }) => {
       if (this.mounted) {
+        let errorList = errors;
+        if (message && !errors) {
+          errorList = {
+            errors: [
+              { message }
+            ]
+          };
+        }
+
         this.setState({
           formData: createValue({
-            value:     this.state.formData.value,
-            errorList: result.errors,
-            onChange:  this.onChange
+            value:    this.state.formData.value,
+            errorList,
+            onChange: this.onChange
           }),
           saving: false
         });
