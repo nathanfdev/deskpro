@@ -241,20 +241,6 @@
 									<strong>We have detected problems you should look into</strong>
 								</header>
 								<article>
-									<p ng-show="Home.cron_status.is_problem">
-										<i class="far fa-clock"></i>
-										Your <a href="{{ ng_href('server.cron') }}">scheduled task</a> is not running or has crashed.
-										This means important routines like email processing and escalations are not running.
-									</p>
-									<p ng-show="Home.error_status.error_count > 0">
-										<i class="fas fa-exclamation-triangle"></i>
-										There are <a href="{{ ng_href('server.error_logs') }}">{{ ng_var('Home.error_status.error_count') }} system errors</a> in the error log.
-									</p>
-									<p ng-show="Home.error_status.error_log_size">
-										<i class="fas fa-exclamation-triangle"></i>
-										Your <a href="{{ ng_href('server.error_logs') }}">error log</a> has reached {{ ng_var('Home.error_status.error_log_max_size | filesize_display') }} in size,
-										error logging has been disabled to conserve disk space. <a href="#" ng-click="Home.deleteLogFile();$event.preventDefault();">Delete log file.</a>
-									</p>
 									<p ng-show="Home.error_status.gateway_error_count > 0">
 										<i class="fa fa-envelope"></i>
 										There have been <a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">{{ ng_var('Home.error_status.gateway_error_count') }} email errors</a>.

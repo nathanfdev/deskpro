@@ -24,7 +24,6 @@ define [
         lastLogin:   '/me/last-login',
         quickStats:  '/tickets/quick-stats',
         lic_info:    '/dp_license'
-        cronStatus:  '/server/cron-status',
         errorStatus: '/server/error-status',
       }).then( (result) =>
         data = result.data
@@ -32,7 +31,6 @@ define [
         @offline_agents = []
         @quick_stats    = result.data.quickStats
         @last_login     = result.data.lastLogin.last_login
-        @cron_status    = result.data.cronStatus
         @error_status   = result.data.errorStatus
 
         if @last_login
@@ -47,9 +45,6 @@ define [
             @offline_agents.push(agent)
 
         problem_triggers = [
-          @cron_status?.is_problem,
-          @error_status?.error_count > 0,
-          @error_status?.error_log_size,
           @error_status?.gateway_error_count > 0,
           @error_status?.sendmail_error_count > 0,
         ]
