@@ -200,6 +200,8 @@ class TwilioCallbacksController extends AbstractVoiceController
                         && $phoneCall->getTaskSid()
                         // don't create missed tickets for strange numbers
                         && !$phoneCall->isStrangeNumber()
+                        // no ticket messages were created for this phone call yet
+                        && !$phoneCall->getTicketMessageAttributes()->count()
                     ) {
                         $ticketMessageCall = new TicketMessageVoicePhoneCall();
                         $ticketMessageCall->setPhoneCall($phoneCall);
@@ -216,6 +218,8 @@ class TwilioCallbacksController extends AbstractVoiceController
                             /** @var Ticket $lastTicket */
                             $lastTicket = $this->getManager()->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
                             if ($lastTicket) {
+                                $lastTicket->disableAutoTicketProcess();
+
                                 $now    = new \DateTime();
                                 $hours  = $this->container->get('voice_settings_resolver')->getGroupMissedCallTicketsTimeout();
                                 $offset = clone $lastTicket->getDateCreated();
@@ -230,11 +234,11 @@ class TwilioCallbacksController extends AbstractVoiceController
                         // if no last ticket, create a new one
                         if (!$ticket) {
                             $ticket = new Ticket();
+                            $ticket->disableAutoTicketProcess();
                             $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
                             $ticket->setPerson($phoneCall->getPerson());
                         }
 
-                        $ticket->disableAutoTicketProcess();
                         $ticket->addMessage($ticketMessage);
 
                         $this->saveTicket($ticket);
@@ -418,23 +422,44 @@ class TwilioCallbacksController extends AbstractVoiceController
                 $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
                 $ticketMessage->setAsAgentNote(true);
 
-                $ticket = new Ticket();
-                $ticket->disableAutoTicketProcess();
-                $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
-                $ticket->setPerson($phoneCall->getPerson());
+                // try to get last ticket
+                $ticket = null;
+                if ($this->container->get('voice_settings_resolver')->isGroupMissedCallTickets()) {
+                    /** @var Ticket $lastTicket */
+                    $lastTicket = $this->getManager()->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
+                    if ($lastTicket) {
+                        $lastTicket->disableAutoTicketProcess();
+
+                        $now    = new \DateTime();
+                        $hours  = $this->container->get('voice_settings_resolver')->getGroupMissedCallTicketsTimeout();
+                        $offset = clone $lastTicket->getDateCreated();
+                        $offset->modify("+{$hours} hours");
+
+                        if ($offset > $now) {
+                            $ticket = $lastTicket;
+                        }
+                    }
+                }
+
+                if (!$ticket) {
+                    $ticket = new Ticket();
+                    $ticket->disableAutoTicketProcess();
+                    $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
+                    $ticket->setPerson($phoneCall->getPerson());
+
+                    // set asset properties
+                    if ($queue->getVoicemailAgent()) {
+                        $ticket->setAgent($queue->getVoicemailAgent());
+                    }
+                    if ($queue->getVoicemailAgentTeam()) {
+                        $ticket->setAgentTeam($queue->getVoicemailAgentTeam());
+                    }
+                    if ($queue->getVoicemailDepartment()) {
+                        $ticket->setDepartment($queue->getVoicemailDepartment());
+                    }
+                }
+
                 $ticket->addMessage($ticketMessage);
-
-                // set asset properties
-                if ($queue->getVoicemailAgent()) {
-                    $ticket->setAgent($queue->getVoicemailAgent());
-                }
-                if ($queue->getVoicemailAgentTeam()) {
-                    $ticket->setAgentTeam($queue->getVoicemailAgentTeam());
-                }
-                if ($queue->getVoicemailDepartment()) {
-                    $ticket->setDepartment($queue->getVoicemailDepartment());
-                }
-
                 $this->saveTicket($ticket);
             } elseif ($agentId) {
                 $agent     = $this->getAgent($agentId);

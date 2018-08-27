@@ -207,13 +207,21 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $duration;
 
     /**
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall", mappedBy="phoneCall")
+     *
+     * @var ArrayCollection|TicketMessageVoicePhoneCall[]
+     */
+    private $ticketMessageAttributes;
+
+    /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->participants  = new ArrayCollection();
-        $this->phoneCallLogs = new ArrayCollection();
-        $this->dateCreated   = new \DateTime();
+        $this->participants            = new ArrayCollection();
+        $this->phoneCallLogs           = new ArrayCollection();
+        $this->ticketMessageAttributes = new ArrayCollection();
+        $this->dateCreated             = new \DateTime();
     }
 
     /**
@@ -753,5 +761,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('queue', $queue);
 
         return $this;
+    }
+
+    /**
+     * @return TicketMessageVoicePhoneCall[]|ArrayCollection
+     */
+    public function getTicketMessageAttributes()
+    {
+        return $this->ticketMessageAttributes;
     }
 }

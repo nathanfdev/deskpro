@@ -76,7 +76,7 @@ class AccountList extends React.Component {
         </div>
 
         <div className="admin-list-options">
-          <div className="agent-settings-form">
+          <div className="voice-general-settings-form">
             <GeneralSettingsForm settings={settings} onSubmit={saveSettings} />
           </div>
         </div>
