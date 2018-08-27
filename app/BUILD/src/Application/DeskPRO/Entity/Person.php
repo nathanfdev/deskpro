@@ -3948,6 +3948,9 @@ class Person extends DomainObject implements
     public function setAgentData(AgentData $agentData = null)
     {
         $this->setModelField('agentData', $agentData);
+        if ($agentData && $agentData->getPerson() !== $this) {
+            $agentData->setPerson($this);
+        }
 
         return $this;
     }

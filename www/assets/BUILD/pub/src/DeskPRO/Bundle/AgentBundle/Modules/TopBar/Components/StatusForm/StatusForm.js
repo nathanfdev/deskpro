@@ -102,7 +102,7 @@ class StatusForm extends React.Component {
             {voiceAvailable &&
               <div className="voice-profile-status-checkbox">
                 <Field select="calls">
-                  <Checkbox />
+                  <Checkbox disabled={formData.value.status === 'offline'} />
                 </Field>
                 <i className={classNames('ui call icon', formData.value.calls ? 'green' : 'disabled')} />
                 <span className="voice-profile-status-checkbox-title">

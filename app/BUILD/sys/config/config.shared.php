@@ -280,6 +280,19 @@ $container->loadFromExtension(
                     ],
                 ],
 
+                'voice' => [
+                    'metadata_cache_driver' => ['type' => 'service', 'cache_provider' => 'metadata_cache'],
+                    'connection'            => 'voice',
+                    'mappings'              => [
+                        'VoiceBundle' => [
+                            'type'      => 'annotation',
+                            'is_bundle' => false,
+                            'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/VoiceBundle/Entity',
+                            'prefix'    => 'DeskPRO\Bundle\VoiceBundle\Entity',
+                        ],
+                    ],
+                ],
+
             ],
         ],
 
@@ -290,6 +303,7 @@ $container->loadFromExtension(
                 'default'      => ['host' => 'see DbalConnectionPass'],
                 'system'       => ['host' => 'see DbalConnectionPass'],
                 'audit'        => ['host' => 'see DbalConnectionPass'],
+                'voice'        => ['host' => 'see DbalConnectionPass'],
                 'read'         => ['host' => 'see DbalConnectionPass'],
                 'read_reports' => ['host' => 'see DbalConnectionPass'],
                 'read_search'  => ['host' => 'see DbalConnectionPass'],

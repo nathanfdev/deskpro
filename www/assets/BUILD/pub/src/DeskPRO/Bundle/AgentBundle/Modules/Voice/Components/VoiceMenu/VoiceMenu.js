@@ -23,7 +23,6 @@ class VoiceMenu extends React.Component {
     outgoingCall:          PropTypes.object,
     ringingVolume:         PropTypes.number,
     agentVoicemailTimeout: PropTypes.number,
-    voiceSynced:           PropTypes.bool,
     callsEnabled:          PropTypes.bool,
     voiceEnabled:          PropTypes.bool,
     micEnabled:            PropTypes.bool,
@@ -107,7 +106,7 @@ class VoiceMenu extends React.Component {
 
   render() {
     const { outboundCallsEnabled, incomingCall, outgoingCall, openUserMenu } = this.props;
-    const { voiceSynced, voiceEnabled, micEnabled, callsEnabled } = this.props;
+    const { voiceEnabled, micEnabled, callsEnabled } = this.props;
     const { tabName } = this.state;
     const hasPhoneTab = incomingCall || outboundCallsEnabled;
     const pendingCall = incomingCall || outgoingCall;
@@ -120,10 +119,6 @@ class VoiceMenu extends React.Component {
             {voiceEnabled && micEnabled && callsEnabled ? 'You are online' : 'You are offline'}
           </a>
         </div>
-        {!voiceSynced &&
-        <div className="voice-menu-alert">
-           Changes to your Voice settings are still being applied. This may take a minute or two.
-        </div>}
         <div className="tab-menu">
           {!pendingCall &&
           <TabButton

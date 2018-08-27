@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Voice;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount as VoiceAccountEntity;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
+use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;

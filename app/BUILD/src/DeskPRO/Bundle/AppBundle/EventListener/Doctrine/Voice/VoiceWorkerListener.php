@@ -5,7 +5,8 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,13 +17,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class VoiceWorkerListener
 {
-    use VoiceAccountSyncTrait;
-
-    /**
-     * @var TwilioAdapter
-     */
-    private $twilioAdapter;
-
     /**
      * @var EntityManager
      */
@@ -34,17 +28,22 @@ class VoiceWorkerListener
     private $dispatcher;
 
     /**
+     * @var StorageAdapterInterface
+     */
+    private $voiceStorage;
+
+    /**
      * Constructor.
      *
-     * @param TwilioAdapter            $twilioAdapter
      * @param EntityManager            $em
      * @param EventDispatcherInterface $dispatcher
+     * @param StorageAdapterInterface  $voiceStorage
      */
-    public function __construct(TwilioAdapter $twilioAdapter, EntityManager $em, EventDispatcherInterface $dispatcher)
+    public function __construct(EntityManager $em, EventDispatcherInterface $dispatcher, StorageAdapterInterface $voiceStorage)
     {
-        $this->twilioAdapter = $twilioAdapter;
-        $this->em            = $em;
-        $this->dispatcher    = $dispatcher;
+        $this->em           = $em;
+        $this->dispatcher   = $dispatcher;
+        $this->voiceStorage = $voiceStorage;
     }
 
     /**
@@ -59,21 +58,26 @@ class VoiceWorkerListener
             return;
         }
 
-        // already created
-        if ($agentData->getVoiceWorkerSid()) {
-            return;
-        }
-
         $agentData->setAvailableStatus(AgentData::AVAILABLE_STATUS_OFFLINE);
-        $this->updateAccountDateSync($this->getVoiceAccount());
 
-        if ($agentData->getPerson()) {
+        $person = $agentData->getPerson();
+        if ($person) {
+            // create a voice worker for the agent
+            if (!$this->voiceStorage->getWorkerByType('agent', $person->getId())) {
+                $worker = new Worker();
+                $worker->setType('agent');
+                $worker->setTypeId($person->getId());
+                $worker->setActivity(Worker::ACTIVITY_OFFLINE);
+
+                $this->voiceStorage->saveWorker($worker);
+            }
+
             // force reload agent's interface to show voice UI components with a spinner before real sync
             $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
                 'type'        => 'admin',
                 'person_id'   => 0,
                 'person_name' => 'System',
-                'target'      => $agentData->getPerson()->getId(),
+                'target'      => $person->getId(),
             ]));
         }
     }
@@ -87,7 +91,9 @@ class VoiceWorkerListener
     public function updateWorker(AgentData $agentData, PreUpdateEventArgs $args)
     {
         $account = $this->getVoiceAccount();
-        if (!$account) {
+        $person  = $agentData->getPerson();
+
+        if (!$account || !$person) {
             return;
         }
 
@@ -98,20 +104,30 @@ class VoiceWorkerListener
             } else {
                 $this->deleteWorker($agentData);
             }
-        } elseif ($args->hasChangedField('availableStatus') || $args->hasChangedField('agentCallsEnabled')) {
-            // change activity
-            if ($agentData->getVoiceWorkerSid()) {
-                $activity = TwilioAdapter::getActivityStatus($agentData);
-                $this->twilioAdapter->updateAgentWorker($account, $agentData->getPerson(), $activity);
-            }
-        } elseif ($args->hasChangedField('outboundCallsEnabled') || $args->hasChangedField('canUseForwarding')) {
+        }
+        if ($args->hasChangedField('outboundCallsEnabled') || $args->hasChangedField('canUseForwarding')) {
             // force reload agent's interface to show/hide outbound dialpad
+
             $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
                 'type'        => 'admin',
                 'person_id'   => 0,
                 'person_name' => 'System',
-                'target'      => $agentData->getPerson()->getId(),
+                'target'      => $person->getId(),
             ]));
+        }
+
+        // enable or disable agent worker
+        if ($args->hasChangedField('agentCallsEnabled')) {
+            $worker = $this->voiceStorage->getWorkerByType('agent', $person->getId());
+            if ($worker) {
+                if ($agentData->isAgentCallsEnabled() && $worker->isOffline()) {
+                    $worker->setActivity(Worker::ACTIVITY_IDLE);
+                    $this->voiceStorage->saveWorker($worker);
+                } elseif (!$agentData->isAgentCallsEnabled() && $worker->isAvailable()) {
+                    $worker->setActivity(Worker::ACTIVITY_OFFLINE);
+                    $this->voiceStorage->saveWorker($worker);
+                }
+            }
         }
     }
 
@@ -122,40 +138,35 @@ class VoiceWorkerListener
      */
     public function deleteWorker(AgentData $agentData)
     {
-        // no worker
-        if (!$agentData->getVoiceWorkerSid()) {
-            return;
-        }
-
         $account = $this->getVoiceAccount();
-        if (!$account) {
+        $person  = $agentData->getPerson();
+        if (!$account || !$person) {
             return;
         }
 
         // unset voice data
-        $agentData->setVoiceWorkerSid(null);
-        $agentData->setVoiceTaskQueueSid(null);
         $agentData->setExtensionNumber(null);
 
         // remove agent from queues
         $this->em->getConnection()->executeQuery('DELETE FROM voice_queue_agents WHERE agent_id = :person_id', [
-            'person_id' => $agentData->getPerson()->getId(),
+            'person_id' => $person->getId(),
         ]);
 
         // remove specific agent targets
         $this->em->getConnection()->executeQuery('DELETE FROM voice_targets WHERE agent_id = :person_id', [
-            'person_id' => $agentData->getPerson()->getId(),
+            'person_id' => $person->getId(),
         ]);
+
+        // remove agent's voice worker
+        $this->voiceStorage->removeWorker('agent', $person->getId());
 
         // force reload agent's interface to hide voice UI components before real sync
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
             'type'        => 'admin',
             'person_id'   => 0,
             'person_name' => 'System',
-            'target'      => $agentData->getPerson()->getId(),
+            'target'      => $person->getId(),
         ]));
-
-        $this->updateAccountDateSync($this->getVoiceAccount());
     }
 
     /**

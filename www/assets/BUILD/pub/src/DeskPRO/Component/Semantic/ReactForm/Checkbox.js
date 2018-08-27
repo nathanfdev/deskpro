@@ -14,8 +14,11 @@ class Checkbox extends React.Component {
   };
 
   onClick = () => {
-    const { value, choice, onChange } = this.props;
+    const { value, choice, onChange, disabled } = this.props;
 
+    if (disabled) {
+      return;
+    }
     if (choice) {
       onChange(!value ? choice : null);
     } else {

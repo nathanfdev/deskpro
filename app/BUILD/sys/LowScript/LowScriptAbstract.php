@@ -8,6 +8,7 @@ namespace DpSys\LowScript;
 
 use DpRun\LowUtil;
 use DpSys\LowError\SystemErrorHandler;
+use Orb\Util\Util;
 
 abstract class LowScriptAbstract
 {
@@ -45,6 +46,11 @@ abstract class LowScriptAbstract
      * @var \PDO
      */
     protected $pdo_read;
+
+    /**
+     * @var \PDO
+     */
+    protected $pdoVoice;
 
     /**
      * @var array
@@ -172,6 +178,34 @@ abstract class LowScriptAbstract
         }
 
         return $this->pdo_read;
+    }
+
+    /**
+     * @return \PDO
+     */
+    protected function getVoicePdo()
+    {
+        if ($this->pdoVoice) {
+            return $this->pdoVoice;
+        }
+
+        $voiceConfig = $this->dpEnv->getConfig('database_advanced.voice');
+
+        // verify the config is actually set
+        if ($voiceConfig) {
+            $voiceConfig = LowUtil::getMysqlInfoFromConfigArray($voiceConfig);
+            if (empty($voiceConfig['host']) || empty($voiceConfig['dbname'])) {
+                $voiceConfig = null;
+            }
+        }
+
+        if ($voiceConfig) {
+            $this->pdoVoice = LowUtil::getPdoFromMysqlInfo($voiceConfig);
+        } else {
+            $this->pdoVoice = $this->getPdo();
+        }
+
+        return $this->pdoVoice;
     }
 
     /**
@@ -317,5 +351,43 @@ abstract class LowScriptAbstract
         }
 
         return str_replace("\n", '', var_export((string) $var, true));
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAgentSession()
+    {
+        $agentSessionId = isset($_COOKIE['dpsid-agent']) ? strval($_COOKIE['dpsid-agent']) : '';
+        if (!$agentSessionId) {
+            echo 'no session';
+            exit;
+        }
+
+        if (!strpos($agentSessionId, '-')) {
+            echo 'no session';
+            exit;
+        }
+        list($sessionId) = explode('-', $agentSessionId, 2);
+        $sessionId       = Util::baseDecode($sessionId, Util::BASE36_ALPHABET);
+
+        $agentSession = $this->getPdoRead()->query("
+                SELECT sessions.*, people.is_agent, people_prefs.value_str AS last_message_id
+                FROM sessions
+                INNER JOIN people ON (sessions.person_id = people.id)
+                LEFT JOIN people_prefs ON (people_prefs.person_id = people.id AND people_prefs.name = 'agent.ui.last_message_id')
+                WHERE sessions.id = ".$this->getPdoRead()->quote($sessionId)
+        )->fetch(\PDO::FETCH_ASSOC);
+        if (!$agentSession || $agentSessionId !== (Util::baseEncode($agentSession['id'], Util::BASE36_ALPHABET).'-'.$agentSession['auth'])) {
+            echo 'no/invalid session';
+            exit;
+        }
+
+        if (!$agentSession['is_agent']) {
+            echo 'invalid session';
+            exit;
+        }
+
+        return $agentSession;
     }
 }

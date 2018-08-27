@@ -36,6 +36,7 @@ class InstallProfile
         'db',
         'system_db',
         'audit_db',
+        'voice_db',
     ];
 
     /**

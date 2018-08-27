@@ -179,6 +179,8 @@ class NotificationController extends BaseController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function saveClientsCredentialsAction(Request $request)

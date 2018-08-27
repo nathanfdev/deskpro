@@ -28,7 +28,7 @@ class VoicemailList extends React.Component {
 
     return (
       <ScrollArea className="voice-menu-voicemail-list">
-        {records.map((record, index) =>
+        {records.toArray().map((record, index) =>
           <VoicemailRecord
             {...this.props}
             key={index}

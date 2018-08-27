@@ -16,8 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAccountRepository")
  * @ORM\Table(name="voice_accounts", uniqueConstraints={
- *   @ORM\UniqueConstraint(name="account_sid", columns={"account_sid"}),
- *   @ORM\UniqueConstraint(name="workspace_sid", columns={"workspace_sid"}),
+ *   @ORM\UniqueConstraint(name="account_sid", columns={"account_sid"})
  * })
  * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAccountListener"})
  *
@@ -25,7 +24,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @AppAssert\Voice\VoiceAccount()
  * @UniqueEntity("accountSid")
- * @UniqueEntity("workspaceSid")
  */
 class VoiceAccount implements EntityInterface, NotifyPropertyChanged
 {
@@ -70,34 +68,6 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
     private $accountSid;
 
     /**
-     * @ORM\Column(name="workspace_sid", type="string", length=100)
-     *
-     * @var string
-     */
-    private $workspaceSid;
-
-    /**
-     * @ORM\Column(name="queue_workflow_sid", type="string", length=100, nullable=true)
-     *
-     * @var string
-     */
-    private $queueWorkflowSid;
-
-    /**
-     * @ORM\Column(name="voicemail_queue_sid", type="string", length=100, nullable=true)
-     *
-     * @var string
-     */
-    private $voicemailQueueSid;
-
-    /**
-     * @ORM\Column(name="voicemail_worker_sid", type="string", length=100, nullable=true)
-     *
-     * @var string
-     */
-    private $voicemailWorkerSid;
-
-    /**
      * @ORM\Column(name="twiml_app_sid", type="string", length=100, nullable=true)
      *
      * @var string
@@ -132,26 +102,6 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
      * @var \DateTime
      */
     private $dateCreated;
-
-    /**
-     * @ORM\Column(name="date_sync", type="datetime", nullable=true)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
-     *
-     * @var \DateTime
-     */
-    private $dateSync;
-
-    /**
-     * @ORM\Column(name="date_last_sync", type="datetime", nullable=true)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
-     *
-     * @var \DateTime
-     */
-    private $dateLastSync;
 
     /**
      * @ORM\OneToMany(targetEntity="VoiceNumber", mappedBy="account", cascade={"persist", "remove"})
@@ -229,86 +179,6 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
     /**
      * @return string
      */
-    public function getQueueWorkflowSid()
-    {
-        return $this->queueWorkflowSid;
-    }
-
-    /**
-     * @param string $queueWorkflowSid
-     *
-     * @return $this
-     */
-    public function setQueueWorkflowSid($queueWorkflowSid)
-    {
-        $this->setModelField('queueWorkflowSid', $queueWorkflowSid);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVoicemailQueueSid()
-    {
-        return $this->voicemailQueueSid;
-    }
-
-    /**
-     * @param string $voicemailQueueSid
-     *
-     * @return $this
-     */
-    public function setVoicemailQueueSid($voicemailQueueSid)
-    {
-        $this->setModelField('voicemailQueueSid', $voicemailQueueSid);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVoicemailWorkerSid()
-    {
-        return $this->voicemailWorkerSid;
-    }
-
-    /**
-     * @param string $voicemailWorkerSid
-     *
-     * @return $this
-     */
-    public function setVoicemailWorkerSid($voicemailWorkerSid)
-    {
-        $this->setModelField('voicemailWorkerSid', $voicemailWorkerSid);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWorkspaceSid()
-    {
-        return $this->workspaceSid;
-    }
-
-    /**
-     * @param string $workspaceSid
-     *
-     * @return $this
-     */
-    public function setWorkspaceSid($workspaceSid)
-    {
-        $this->setModelField('workspaceSid', $workspaceSid);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getTwimlAppSid()
     {
         return $this->twimlAppSid;
@@ -370,46 +240,6 @@ class VoiceAccount implements EntityInterface, NotifyPropertyChanged
     public function setDateCreated(\DateTime $dateCreated = null)
     {
         $this->setModelField('dateCreated', $dateCreated);
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDateSync()
-    {
-        return $this->dateSync;
-    }
-
-    /**
-     * @param \DateTime $dateSync
-     *
-     * @return $this
-     */
-    public function setDateSync(\DateTime $dateSync = null)
-    {
-        $this->setModelField('dateSync', $dateSync);
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateLastSync()
-    {
-        return $this->dateLastSync;
-    }
-
-    /**
-     * @param \DateTime $dateLastSync
-     *
-     * @return $this
-     */
-    public function setDateLastSync(\DateTime $dateLastSync = null)
-    {
-        $this->setModelField('dateLastSync', $dateLastSync);
 
         return $this;
     }

@@ -26,13 +26,90 @@ use Symfony\Component\HttpFoundation\Response;
 class VoiceClientPhoneCallController extends AbstractVoiceController
 {
     /**
+     * Agent accepts a call.
+     *
+     * @ApiDoc(
+     *     description="Agent accepts a call",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true
+     * )
+     *
+     * @Rest\Put("/accept_call")
+     *
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function acceptCallAction(VoicePhoneCall $phoneCall)
+    {
+        if ($phoneCall->getDateEnded()) {
+            throw $this->createBadRequestException('Phone call is already ended');
+        }
+
+        $agent = $this->getVoiceAgent();
+        if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
+            throw $this->createBadRequestException('Agent does not have voice permissions');
+        }
+
+        if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Phone call is already accepted');
+        }
+
+        $this->cancelForwardingCalls($phoneCall, $this->getUser());
+        $ticket = $this->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+
+        return new View($this->wrap($ticket));
+    }
+
+    /**
+     * Agent rejects a call.
+     *
+     * @ApiDoc(
+     *     description="Agent rejects a call",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     noInput=true
+     * )
+     *
+     * @Rest\Put("/reject_call")
+     *
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function rejectCallAction(VoicePhoneCall $phoneCall)
+    {
+        if ($phoneCall->getDateEnded()) {
+            throw $this->createBadRequestException('Phone call is already ended');
+        }
+
+        $agent = $this->getVoiceAgent();
+        if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
+            throw $this->createBadRequestException('Agent does not have voice permissions');
+        }
+
+        if (!$this->get('dp.voice.task_router')->rejectTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Phone call is already accepted');
+        }
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Force agent assign to a ticket to open the created voice ticket asap.
-     * It works slowly via twilio callbacks.
+     * It works slowly in twilio callbacks.
      *
      * @ApiDoc(
      *     description="Assign agent to the ticket",
      *     statusCodes={
-     *         204="Returned if everything is ok"
+     *         200="Returned if everything is ok"
      *     },
      *     noInput=true
      * )
@@ -40,6 +117,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
      * @Rest\Put("/assign_agent")
      *
      * @param VoicePhoneCall $phoneCall
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -72,6 +151,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
      *
      * @param VoicePhoneCall $phoneCall
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function getPhoneCallTicketAction(VoicePhoneCall $phoneCall)
@@ -103,6 +184,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
      *
      * @param VoicePhoneCall $phoneCall
      * @param Request        $request
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -168,6 +251,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
      * @param VoicePhoneCall $phoneCall
      * @param Person         $person
      * @param string         $inviteType
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -244,6 +329,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
      * @param VoicePhoneCall $phoneCall
      * @param Person         $person
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function cancelInviteAction(VoicePhoneCall $phoneCall, Person $person)
@@ -291,6 +378,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
      *
      * @param VoicePhoneCall $phoneCall
      * @param Person         $person
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -368,6 +457,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
     }
 
     /**
+     * @throws \Exception
+     *
      * @return Person
      */
     private function getVoiceAgent()

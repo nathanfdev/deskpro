@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "20581e69561a9407da6bcd327555e073",
+    "content-hash": "f0cb5b040404bcea510b7a8347792920",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -7473,6 +7473,68 @@
             "time": "2015-12-28T13:12:39+00:00"
         },
         {
+            "name": "symfony/lock",
+            "version": "v3.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/lock.git",
+                "reference": "d7b8a52eed987bfa163aba175f3192dda07f120c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/d7b8a52eed987bfa163aba175f3192dda07f120c",
+                "reference": "d7b8a52eed987bfa163aba175f3192dda07f120c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5.9|>=7.0.8",
+                "psr/log": "~1.0",
+                "symfony/polyfill-php70": "~1.0"
+            },
+            "require-dev": {
+                "predis/predis": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Lock\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                },
+                {
+                    "name": "Jérémy Derussé",
+                    "email": "jeremy@derusse.com"
+                }
+            ],
+            "description": "Symfony Lock Component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "cas",
+                "flock",
+                "locking",
+                "mutex",
+                "redlock",
+                "semaphore"
+            ],
+            "time": "2017-11-22T12:18:49+00:00"
+        },
+        {
             "name": "symfony/monolog-bundle",
             "version": "v3.0.3",
             "source": {
@@ -13049,7 +13111,6 @@
                 "github",
                 "test"
             ],
-            "abandoned": "php-coveralls/php-coveralls",
             "time": "2015-12-17T18:04:18+00:00"
         },
         {

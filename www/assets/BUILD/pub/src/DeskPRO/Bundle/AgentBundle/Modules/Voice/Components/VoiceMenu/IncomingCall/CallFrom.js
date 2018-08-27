@@ -32,17 +32,16 @@ class CallFrom extends React.Component {
     let person;
     let number;
 
-    if (incomingCall && incomingCall.task) {
+    if (incomingCall && incomingCall.get('task')) {
       // twilio reservation props
-      const attributes = incomingCall && incomingCall.task ? incomingCall.task.attributes : {};
-      number = attributes.from;
+      number = incomingCall.get('number');
 
-      if (attributes.deskpro_related_people_ids) {
-        attributes.deskpro_related_people_ids.forEach((id) => {
+      if (incomingCall.get('related_people_ids')) {
+        incomingCall.get('related_people_ids').forEach((id) => {
           possibleCallerPeople.push(people.get(id));
         });
-      } else if (attributes.deskpro_person_id) {
-        person = people.get(attributes.deskpro_person_id);
+      } else if (incomingCall.get('caller_person_id')) {
+        person = people.get(incomingCall.get('caller_person_id'));
         possibleCallerPeople.push(person);
       }
     } else {

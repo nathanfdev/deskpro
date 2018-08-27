@@ -66,6 +66,8 @@ class ProfileController extends BaseController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function putAction(Request $request)

@@ -339,15 +339,6 @@ class WorkerJobsData extends AbstractDefaultData
         ];
 
         $jobs[] = [
-            'id'           => 'twilio_sync',
-            'worker_group' => 'twilio_sync',
-            'title'        => 'Twilio sync',
-            'description'  => 'Sync twilio account',
-            'job_class'    => Job\TwilioSync::class,
-            'run_interval' => Job\TwilioSync::DEFAULT_INTERVAL,
-        ];
-
-        $jobs[] = [
             'id'           => 'process_scheduled_reports',
             'worker_group' => 'scheduled_reports',
             'title'        => 'Process scheduled reports',

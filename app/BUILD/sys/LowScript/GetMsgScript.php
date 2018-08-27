@@ -18,35 +18,7 @@ class GetMsgScript extends LowScriptAbstract
         require_once DP_ROOT.'/src/Orb/Util/Strings.php';
 
         try {
-            $agent_session_id = isset($_COOKIE['dpsid-agent']) ? strval($_COOKIE['dpsid-agent']) : '';
-            if (!$agent_session_id) {
-                echo 'no session';
-                exit;
-            }
-
-            if (!strpos($agent_session_id, '-')) {
-                echo 'no session';
-                exit;
-            }
-            list($session_id) = explode('-', $agent_session_id, 2);
-            $session_id       = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
-
-            $agent_session = $this->getPdoRead()->query("
-                SELECT sessions.*, people.is_agent, people_prefs.value_str AS last_message_id
-                FROM sessions
-                INNER JOIN people ON (sessions.person_id = people.id)
-                LEFT JOIN people_prefs ON (people_prefs.person_id = people.id AND people_prefs.name = 'agent.ui.last_message_id')
-                WHERE sessions.id = ".$this->getPdoRead()->quote($session_id)
-            )->fetch(\PDO::FETCH_ASSOC);
-            if (!$agent_session || $agent_session_id !== (Util::baseEncode($agent_session['id'], Util::BASE36_ALPHABET).'-'.$agent_session['auth'])) {
-                echo 'no/invalid session';
-                exit;
-            }
-
-            if (!$agent_session['is_agent']) {
-                echo 'invalid session';
-                exit;
-            }
+            $agent_session = $this->getAgentSession();
 
             $this->_person_id  = $agent_session['person_id'];
             $this->_session_id = $agent_session['id'];
@@ -171,6 +143,8 @@ class GetMsgScript extends LowScriptAbstract
                 WHERE id = ?
             ');
             $q->execute([date('Y-m-d H:i:s', time()), $agent_session['id']]);
+
+            $this->updateVoiceWorker();
 
             if (!empty($_REQUEST['recent_tabs'])) {
                 $post_recent_tabs = $_REQUEST['recent_tabs'];
@@ -675,5 +649,27 @@ SQL;
         }
 
         return $data;
+    }
+
+    protected function updateVoiceWorker()
+    {
+        $q = $this->getPdoRead()->prepare('
+            SELECT is_voice_enabled, agent_calls_enabled
+            FROM agent_data a
+            JOIN people p ON p.agent_data_id = a.id
+            WHERE p.id = ?
+        ');
+        $q->execute([$this->_person_id]);
+        $result = $q->fetch();
+
+        // todo support other storages
+        if ($result['is_voice_enabled'] && $result['agent_calls_enabled']) {
+            $q = $this->getVoicePdo()->prepare('
+            UPDATE voice_workers
+            SET date_last_active = ?
+            WHERE type = ? AND type_id = ?
+        ');
+            $q->execute([date('Y-m-d H:i:s', time()), 'agent', $this->_person_id]);
+        }
     }
 }

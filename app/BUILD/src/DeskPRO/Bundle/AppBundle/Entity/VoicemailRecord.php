@@ -60,7 +60,7 @@ class VoicemailRecord implements EntityInterface, NotifyPropertyChanged
      *
      * @var array
      */
-    private $data;
+    private $data = [];
 
     /**
      * @ORM\Column(name="date_created", type="datetime")

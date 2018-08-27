@@ -182,7 +182,7 @@ class InstallTablesStep extends AbstractStep
             $paths,
             function ($carry, $path) use ($that) {
                 if (!$exists = file_exists($path)) {
-                    $that->failedCachePaths = $path;
+                    $that->failedCachePaths[] = $path;
                 }
 
                 return $carry && $exists;

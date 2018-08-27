@@ -28,6 +28,7 @@ class SchemaCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
             'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
             'sys' => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
             'audit' => $this->getContainer()->get('doctrine.orm.audit_entity_manager'),
+            'voice' => $this->getContainer()->get('doctrine.orm.voice_entity_manager'),
         ] as $dbId => $em) {
             $schemadiff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql($em);
             if ($schemadiff) {

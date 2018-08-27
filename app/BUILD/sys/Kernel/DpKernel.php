@@ -110,6 +110,7 @@ class DpKernel extends BaseKernel
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
             new \DeskPRO\Bundle\ImportBundle\ImportBundle(),
+            new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
 
             new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
             new \Application\AgentBundle\AgentBundle(),
