@@ -70,6 +70,9 @@ class ObjectLangRepository
                     $try_langs[$l->getId()] = $l;
                 }
             }
+            if ($l = App::getContainer()->get('language_stack')->getActive()) {
+                $try_langs[$l->getId()] = $l;
+            }
             if ($l = App::getTranslator()->getLanguage()) {
                 $try_langs[$l->getId()] = $l;
             }
