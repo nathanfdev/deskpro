@@ -46,6 +46,24 @@ class OptionsModel
     protected $modes = [];
 
     /**
+     * How many days keep logs for the key.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $keepDays;
+
+    /**
+     * How many log entries keep for the key.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $perKey;
+
+    /**
      * @return bool
      */
     public function isEnabled()
@@ -121,6 +139,46 @@ class OptionsModel
     public function setModes(array $modes)
     {
         $this->modes = $modes;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getKeepDays()
+    {
+        return $this->keepDays;
+    }
+
+    /**
+     * @param int $keepDays
+     *
+     * @return $this
+     */
+    public function setKeepDays($keepDays)
+    {
+        $this->keepDays = $keepDays;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPerKey()
+    {
+        return $this->perKey;
+    }
+
+    /**
+     * @param int $perKey
+     *
+     * @return $this
+     */
+    public function setPerKey($perKey)
+    {
+        $this->perKey = $perKey;
 
         return $this;
     }

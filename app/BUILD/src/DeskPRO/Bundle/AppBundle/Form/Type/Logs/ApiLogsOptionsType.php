@@ -42,6 +42,14 @@ class ApiLogsOptionsType extends AbstractType
                 'required'      => false,
                 'property_path' => 'responseLength',
             ])
+            ->add('keep_days', IntegerType::class, [
+                'required'      => false,
+                'property_path' => 'keepDays',
+            ])
+            ->add('per_key', IntegerType::class, [
+                'required'      => false,
+                'property_path' => 'perKey',
+            ])
         ;
     }
 

@@ -90,6 +90,22 @@ class LogHelper extends AbstractLogHelper
     }
 
     /**
+     * @return array
+     */
+    public function getKeepDays()
+    {
+        return $this->resolver->getGlobalSettings()->get('api_log.max_logs_keep_days', 1);
+    }
+
+    /**
+     * @return array
+     */
+    public function getPerKey()
+    {
+        return $this->resolver->getGlobalSettings()->get('api_log.max_logs_per_key', 50);
+    }
+
+    /**
      * @return bool
      */
     public function isClientRequestedLog()
