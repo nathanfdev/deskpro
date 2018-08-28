@@ -9,6 +9,9 @@ use JMS\Serializer\Annotation as JMS;
  */
 class OptionsModel
 {
+    const DEFAULT_MAX_KEEP_DAYS = 1;
+    const DEFAULT_MAX_PER_KEY   = 50;
+
     /**
      * Is log enabled.
      *

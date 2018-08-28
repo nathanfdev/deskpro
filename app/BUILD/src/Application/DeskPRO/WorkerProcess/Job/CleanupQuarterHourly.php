@@ -7,6 +7,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel;
 
 class CleanupQuarterHourly extends AbstractJob
 {
@@ -20,11 +21,7 @@ class CleanupQuarterHourly extends AbstractJob
 
     private function doRun()
     {
-        //------------------------------
-        // Old API logs
-        //------------------------------
-
-        App::$container->getEm()->getRepository('DeskPRO:ApiKeyLog')->cleanup();
+        $this->cleanupLogs();
 
         //------------------------------
         // Update table counts
@@ -120,6 +117,85 @@ class CleanupQuarterHourly extends AbstractJob
                     'name'  => 'enable_cached_sla_counts',
                     'value' => time(),
                 ]);
+            }
+        }
+    }
+
+    private function cleanupLogs()
+    {
+        // cleanup by time
+        $settingsBag = App::getContainer()->get('settings_resolver')->getGlobalSettings();
+        $keepDays    = $settingsBag->get('api_log.max_logs_keep_days', OptionsModel::DEFAULT_MAX_KEEP_DAYS);
+        $dateTime    = new \DateTime('now', new \DateTimeZone('UTC'));
+        $dateTime->modify(sprintf('-%d days', $keepDays));
+
+        App::getContainer()->getDb()->executeUpdate('
+            DELETE FROM `api_key_log`
+            WHERE `api_key_log`.`time` < ?',
+            [$dateTime->getTimestamp()]
+        );
+
+        App::getContainer()->getDb()->executeUpdate('
+            DELETE FROM `api_log`
+            WHERE `api_log`.`end_time` < ?',
+            [$dateTime->getTimestamp()]
+        );
+
+        // cleanup by max logs count (old logs)
+
+        $perKey = $settingsBag->get('api_log.max_logs_per_key', OptionsModel::DEFAULT_MAX_PER_KEY);
+
+        $keyIds = App::$container->getDb()->fetchAllCol('
+            SELECT `api_key_log`.`key_id`
+            FROM `api_key_log`
+            GROUP BY `api_key_log`.`key_id`
+            HAVING COUNT(*) > ?
+        ', [$perKey], [\PDO::PARAM_INT]);
+
+        foreach ($keyIds as $keyId) {
+            $lid = App::$container->getDb()->fetchColumn("
+                SELECT `id`
+                FROM `api_key_log`
+                WHERE `api_key_log`.`key_id` = ?
+                ORDER BY `api_key_log`.`id` DESC
+                LIMIT {$perKey}, 1
+            ", [$keyId]);
+
+            if ($lid) {
+                App::$container->getDb()->executeUpdate('
+                    DELETE FROM `api_key_log`
+                    WHERE `api_key_log`.`key_id` = ? AND `api_key_log`.`id` <= ?
+                ', [$keyId, $lid]);
+            }
+        }
+
+        unset($keyIds);
+        unset($keyId);
+        unset($lid);
+
+        // cleanup by max logs count (old logs)
+
+        $keyIds = App::$container->getDb()->fetchAllCol('
+            SELECT `api_log`.`api_key_id`
+            FROM `api_log`
+            GROUP BY `api_log`.`api_key_id`
+            HAVING COUNT(*) > ?
+        ', [$perKey], [\PDO::PARAM_INT]);
+
+        foreach ($keyIds as $keyId) {
+            $lid = App::$container->getDb()->fetchColumn("
+                SELECT `api_log`.`id`
+                FROM `api_log`
+                WHERE `api_log`.`api_key_id` = ?
+                ORDER BY `api_log`.`id` DESC
+                LIMIT {$perKey}, 1
+            ", [$keyId]);
+
+            if ($lid) {
+                App::$container->getDb()->executeUpdate('
+                    DELETE FROM `api_log`
+                    WHERE `api_log`.`api_key_id` = ? AND `api_log`.`id` <= ?
+                ', [$keyId, $lid]);
             }
         }
     }

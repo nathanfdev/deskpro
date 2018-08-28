@@ -143,8 +143,13 @@
                                     <h3> records for each key</h3>
                                 </div>
                                 <span class="help-block" ng-show="LogsCtrl.isCloud">
+                                    Note: non-key logs will be affected only by "max days to keep" setting
+                                </span>
+                                {% if app.isCloud() %}
+                                <span class="help-block" ng-show="LogsCtrl.isCloud">
                                     Note: you're using Cloud account and "max per key" logs count is bounded by number of 2500
                                 </span>
+                                {% endif %}
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-primary" ng-click="LogsCtrl.updateOptions()">Save</button>
