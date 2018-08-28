@@ -2038,6 +2038,16 @@ class TicketController extends AbstractController
         );
     }
 
+    /**
+     * @param $message_id
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     */
     public function deleteMessageAction($message_id)
     {
         /** @var $message \Application\DeskPRO\Entity\TicketMessage */
@@ -2093,6 +2103,10 @@ class TicketController extends AbstractController
             $log_data['is_agent_message'] = $m->person->is_agent;
             $log_data['old_message']      = $m->getMessageHtml();
 
+            foreach ($message->getAttachments() as $attachment) {
+                $this->deleteMessageAttachment($attachment);
+            }
+
             $log              = new TicketLog();
             $log->ticket      = $ticket;
             $log->person      = $this->person;
@@ -2139,6 +2153,17 @@ class TicketController extends AbstractController
         );
     }
 
+    /**
+     * @param $message_id
+     * @param $attachment_id
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     */
     public function deleteMessageAttachmentAction($message_id, $attachment_id)
     {
         /** @var $message \Application\DeskPRO\Entity\TicketMessage */
@@ -2186,7 +2211,8 @@ class TicketController extends AbstractController
         $ticket_log->details      = $log_data;
 
         $this->em->persist($ticket_log);
-        $this->em->remove($attachment);
+
+        $message->attachments->removeElement($attachment);
 
         $embed_code = str_replace(
             ':image:',
@@ -2195,12 +2221,9 @@ class TicketController extends AbstractController
         );
         $message->message = preg_replace("/$embed_code/i", '', $message->message);
         $this->em->persist($message);
+        $this->em->flush();
 
-        // need this to be removed, but don't want to trigger a change log for it as we're inserting it manually
-        $message->attachments->removeElement($attachment);
-
-        $this->container->getBlobStorage()->deleteBlobRecord($attachment->getBlob());
-        $this->db->delete('tickets_attachments', ['id' => $attachment->getId()]);
+        $this->deleteMessageAttachment($attachment);
 
         $ticket_attachments         = [];
         $ticket_message_attachments = [];
@@ -2208,11 +2231,6 @@ class TicketController extends AbstractController
             $ticket_attachments[$message_attach->getId()] = $message_attach;
             $ticket_message_attachments[$message->id][]   = $message_attach->getId();
         }
-
-        $this->em->flush();
-
-        // Delete the blob itself
-        $this->container->getBlobStorage()->deleteBlobRecord($blob);
 
         return $this->createJsonResponse(
             [
@@ -2228,6 +2246,36 @@ class TicketController extends AbstractController
                 ),
             ]
         );
+    }
+
+    /**
+     * @param TicketAttachment $attachment
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
+    protected function deleteMessageAttachment(TicketAttachment $attachment)
+    {
+        $this->em->remove($attachment);
+        $attachment->getMessage()->getAttachments()->removeElement($attachment);
+        $this->em->flush();
+
+        $blob           = $attachment->getBlob();
+        $originalBlob   = $blob->getOriginalBlob();
+        $blobRepository = $this->em->getRepository(Blob::class);
+        $blobs          = $blobRepository->findBy(['original_blob' => $originalBlob ?: $blob]);
+
+        if ($originalBlob) {
+            array_push($blobs, $originalBlob);
+        }
+        array_push($blobs, $blob);
+
+        foreach ($blobs as $foundBlob) {
+            $this->container->getBlobStorage()->deleteBlobRecord($foundBlob);
+        }
+
+        $this->db->delete('tickets_attachments', ['id' => $attachment->getId()]);
     }
 
     //###########################################################################

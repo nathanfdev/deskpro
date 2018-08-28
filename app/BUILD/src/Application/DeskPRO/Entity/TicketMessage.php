@@ -18,6 +18,7 @@ use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\PersistentCollection;
 use Orb\Html\Html2Text;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -843,7 +844,7 @@ class TicketMessage extends DomainObject
     }
 
     /**
-     * @return TicketAttachment[]
+     * @return TicketAttachment[]|PersistentCollection
      */
     public function getAttachments()
     {
