@@ -931,6 +931,9 @@ class ServeFileScript extends LowScriptAbstract
         if (strpos($blob['sys_name'], '-gzip') === strlen($blob['sys_name']) - 5) {
             header('Content-Encoding: gzip');
         }
+        if ($this->request->headers->get('range')) {
+            header('Accept-Ranges: bytes');
+        }
 
         $safeInlineContent = $this->alwaysForceDownloadOfHtmlFiles;
         if (!isset($_GET['dl']) && ContentTypes::isInlineContentType($blob['content_type'], $safeInlineContent, $blob['filename'])) {
