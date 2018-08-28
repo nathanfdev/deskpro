@@ -13,6 +13,9 @@ use Orb\Data\ContentTypes;
 use Orb\Util\Colors;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 if (!isset($DP_LOG_MESSAGES)) {
     $DP_LOG_MESSAGES = [];
@@ -833,8 +836,8 @@ class ServeFileScript extends LowScriptAbstract
                     $file = $this->createSizedImage($blob, $size, $isFit, false);
 
                     $blob['filesize'] = strlen($file);
-                    $this->sendHeaders($blob);
-                    echo $file;
+                    $headers          = $this->getHeaders($blob);
+                    echo new Response($file, 200, $headers);
 
                     return;
                 }
@@ -890,8 +893,8 @@ class ServeFileScript extends LowScriptAbstract
                 @fclose($fp);
 
                 if (!$fail) {
-                    $this->sendHeaders($blob);
-                    echo $buf;
+                    $headers = $this->getHeaders($blob);
+                    echo new Response($buf, 200, $headers);
                     exit;
                 }
 
@@ -910,10 +913,11 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         if ($blob['storage_loc'] == 'fs') {
-            $this->sendFromFilesystem($blob);
+            $response = $this->sendFromFilesystem($blob);
         } else {
-            $this->sendFromDatabase($blob);
+            $response = $this->sendFromDatabase($blob);
         }
+        $response->send();
     }
 
     /**
@@ -922,35 +926,41 @@ class ServeFileScript extends LowScriptAbstract
      * Blobs never change so we can enable aggresive cache control on files served.
      *
      * @param $blob
+     *
+     * @return array
      */
-    protected function sendHeaders($blob)
+    protected function getHeaders($blob)
     {
-        header('Content-Type: '.$blob['content_type'].'; filename="'.addslashes($blob['filename']).'"');
-        header('Content-Length: '.$blob['filesize']);
+        $headers                   = [];
+        $headers['Content-Type']   = $blob['content_type'].'; filename="'.addslashes($blob['filename']).'"';
+        $headers['Content-Length'] = $blob['filesize'];
 
         if (strpos($blob['sys_name'], '-gzip') === strlen($blob['sys_name']) - 5) {
-            header('Content-Encoding: gzip');
+            $headers['Content-Encoding'] = 'gzip';
         }
-        if ($this->request->headers->get('range')) {
-            header('Accept-Ranges: bytes');
+        if ($this->request->headers->has('range')) {
+            // Only accept ranges on safe HTTP methods
+            $headers['Accept-Ranges'] = $this->request->isMethodSafe(false) ? 'bytes' : 'none';
         }
 
         $safeInlineContent = $this->alwaysForceDownloadOfHtmlFiles;
         if (!isset($_GET['dl']) && ContentTypes::isInlineContentType($blob['content_type'], $safeInlineContent, $blob['filename'])) {
-            header('Content-Disposition: inline; filename="'.addslashes($blob['filename']).'"');
+            $headers['Content-Disposition'] = 'inline; filename="'.addslashes($blob['filename']).'"';
         } else {
-            header('Content-Disposition: attachment; filename="'.addslashes($blob['filename']).'"');
+            $headers['Content-Disposition'] = 'attachment; filename="'.addslashes($blob['filename']).'"';
         }
 
         $d = \DateTime::createFromFormat('Y-m-d H:i:s', $blob['date_created']);
         if (!$d) {
             $d = new \DateTime();
         }
-        header('Last-Modified: '.$d->format('D, d M Y H:i:s').' GMT');
-        header('Expires: '.date('D, d M Y H:i:s', strtotime('+1 year')).' GMT');
-        header('Cache-Control: max-age=31556926,private');
-        header('X-Robots-Tag: noindex, nofollow');
-        header('X-Content-Type-Options: nosniff');
+        $headers['Last-Modified']          = $d->format('D, d M Y H:i:s').' GMT';
+        $headers['Expires']                = date('D, d M Y H:i:s', strtotime('+1 year')).' GMT';
+        $headers['Cache-Control']          = 'max-age=31556926,private';
+        $headers['X-Robots-Tag']           = 'noindex, nofollow';
+        $headers['X-Content-Type-Options'] = 'nosniff';
+
+        return $headers;
     }
 
     /**
@@ -959,10 +969,12 @@ class ServeFileScript extends LowScriptAbstract
      * @param $blob
      *
      * @throws \Exception
+     *
+     * @return Response
      */
     protected function sendFromFilesystem($blob)
     {
-        $this->sendHeaders($blob);
+        $headers = $this->getHeaders($blob);
 
         // folder we store blobs in
         $basePath = $this->dpEnv->getUserFilesDir();
@@ -982,30 +994,83 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         if ($this->dpEnv->getConfig('settings.filestorage_use_xsendfile')) {
-            header("X-Sendfile: $filepath");
+            $headers['X-Sendfile'] = $filepath;
+
+            return new Response('', 200, $headers);
         } else {
-            readfile($filepath);
+            return new BinaryFileResponse($filepath, 200, $headers);
         }
     }
 
     /**
      * Send a file that is stored in the database.
      *
-     * @param $blob
+     * @param Blob $blob
+     *
+     * @return StreamedResponse
      */
     public function sendFromDatabase($blob)
     {
-        $this->sendHeaders($blob);
+        $headers = $this->getHeaders($blob);
 
         $sth = $this->getPdoRead()->prepare('SELECT data FROM blobs_storage WHERE blob_id = :blob_id ORDER BY id ASC');
         $sth->execute(['blob_id' => $blob['id']]);
 
-        while (($seg = $sth->fetchColumn(0)) !== false) {
-            echo $seg;
-            flush();
+        $response = new StreamedResponse(
+            function () use ($sth) {
+                while (($seg = $sth->fetchColumn(0)) !== false) {
+                    echo $seg;
+                    flush();
+                }
+                $sth->closeCursor();
+            },
+            200,
+            $headers
+        );
+        if ($this->request->headers->has('range')) {
+            $this->setRangeHeaders($response, $blob);
         }
 
-        $sth->closeCursor();
+        return $response;
+    }
+
+    /**
+     * @param Response $response
+     * @param Blob     $blob
+     *
+     * @return Response
+     */
+    public function setRangeHeaders($response, $blob)
+    {
+        // Process the range headers.
+        if (!$this->request->headers->has('If-Range')) {
+            $range    = $this->request->headers->get('Range');
+            $fileSize = $blob['filesize'];
+
+            list($start, $end) = explode('-', substr($range, 6), 2) + [0];
+
+            $end = ('' === $end) ? $fileSize - 1 : (int) $end;
+
+            if ('' === $start) {
+                $start = $fileSize - $end;
+                $end   = $fileSize - 1;
+            } else {
+                $start = (int) $start;
+            }
+
+            if ($start <= $end) {
+                if ($start < 0 || $end > $fileSize - 1) {
+                    $response->setStatusCode(416);
+                    $response->headers->set('Content-Range', sprintf('bytes */%s', $fileSize));
+                } elseif (0 !== $start || $end !== $fileSize - 1) {
+                    $response->setStatusCode(206);
+                    $response->headers->set('Content-Range', sprintf('bytes %s-%s/%s', $start, $end, $fileSize));
+                    $response->headers->set('Content-Length', $end - $start + 1);
+                }
+            }
+        }
+
+        return $response;
     }
 
     protected function getSizedBlobSysName($blob_id, $size, $is_fit)
@@ -1391,8 +1456,9 @@ class ServeFileScript extends LowScriptAbstract
             'storage_loc_specific' => 'db',
         ]);
 
-        $this->sendHeaders($blob);
+        $headers = $this->getHeaders($blob);
 
-        echo $file;
+        $response = new Response($file, 200, $headers);
+        $response->send();
     }
 }
