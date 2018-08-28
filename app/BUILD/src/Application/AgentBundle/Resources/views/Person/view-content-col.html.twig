@@ -481,6 +481,45 @@
                                             Agent logged in as this user:<br />
                                             <span style="font-size: 10px;">#{{ action.details.agent_id }} {{ action.details.agent_name }}
                                                 ({{ action.details.agent_email }})</span>
+                                        {% elseif action.action_type == 'merged' %}
+                                            {{ phrase('agent.people.act_merged', {'name': action.details.other_person_name, 'id': action.details.other_person_id}) }}
+
+                                            {% if action.details.datastore_merge_backup_id and not action.details.undone %}
+                                              <button class="clean-gray xxx-small merge_undo"
+                                                      data-activity-id="{{action.id}}"
+                                                      title="{{ phrase('agent.people.act_merged_undo_title') }}">
+                                                <i class="icon-undo"></i>
+                                                {{ phrase('agent.general.undo') }}
+                                              </button>
+                                            {% elseif not action.details.datastore_merge_backup_id and not action.details.undone %}
+                                              <button class="clean-gray xxx-small disabled"
+                                                      disabled
+                                                      title="{{ phrase('agent.people.act_merged_undo_title_not_possible') }}">
+                                                <i class="icon-undo"></i>
+                                                {{ phrase('agent.general.undo') }}
+                                              </button>
+                                            {% elseif action.details.undone %}
+                                              <button class="clean-gray xxx-small disabled"
+                                                      disabled
+                                                      title="{{ phrase('agent.people.act_merged_undo_title_undone') }}">
+                                                <i class="icon-undo"></i>
+                                                {{ phrase('agent.general.undo') }}
+                                              </button>
+                                            {% endif %}
+                                        {% elseif action.action_type == 'merge_undone' %}
+                                          {% if action.details.side == 'base' %}
+                                            {{ phrase('agent.people.act_merge_undone_base_side') }}
+                                            <a class="with-route"
+                                               data-route="person:{{ path('agent_people_view', {'person_id': action.details.other_person_id }) }}">
+                                              #{{ action.details.other_person_id }} {{ action.details.other_person_name }}
+                                            </a>
+                                          {% else %}
+                                            {{ phrase('agent.people.act_merge_undone_other_side') }}
+                                            <a class="with-route"
+                                               data-route="person:{{ path('agent_people_view', {'person_id': action.details.base_person_id }) }}">
+                                              #{{ action.details.base_person_id }} {{ action.details.base_person_name }}
+                                            </a>
+                                          {% endif %}
                                         {% endif %}
 									</span>
                                     </div>

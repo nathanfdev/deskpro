@@ -8,6 +8,7 @@ namespace Application\DeskPRO\People\PersonMerge;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\ActivityLogger;
 use Application\DeskPRO\People\PersonContextInterface;
 
 /**
@@ -31,6 +32,16 @@ class PersonMerge implements PersonContextInterface
     protected $other_person;
 
     /**
+     * @var MergeBackup
+     */
+    protected $mergeBackup;
+
+    /**
+     * @var ActivityLogger\ActivityLogger
+     */
+    protected $activityLogger;
+
+    /**
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
@@ -44,7 +55,9 @@ class PersonMerge implements PersonContextInterface
      */
     public function __construct(Person $person_performer, Person $person, Person $other_person)
     {
-        $this->em = App::getOrm();
+        $this->em             = App::getOrm();
+        $this->mergeBackup    = App::getContainer()->getSystemService('person_merge_backup');
+        $this->activityLogger = App::getContainer()->getPersonActivityLogger();
 
         $this->person       = $person;
         $this->other_person = $other_person;
@@ -65,6 +78,8 @@ class PersonMerge implements PersonContextInterface
         $this->em->beginTransaction();
 
         try {
+            $this->_logMergeAndBackup();
+
             // todo: organizations cc?
             $standard_prop_names = [
                 'language',
@@ -151,6 +166,7 @@ class PersonMerge implements PersonContextInterface
             'people_notes',
             'people_prefs',
             'person2usergroups',
+            'person_to_brand',
             'person_activity',
             'person_usersource_assoc',
         ];
@@ -320,11 +336,8 @@ class PersonMerge implements PersonContextInterface
 
                 'agent_team_members',
 
-                'filter_set_agents',
                 'ticket_filters',
                 'ticket_filter_subscriptions',
-                'ticket_filter_sets',
-                'ticket_filter_preferences',
 
                 'text_snippet_categories',
                 'text_snippets',
@@ -349,5 +362,18 @@ class PersonMerge implements PersonContextInterface
             SET $column = ?
             WHERE $column = ?
         ", [$this->person['id'], $this->other_person['id']]);
+    }
+
+    /**
+     * Save Person ActivityStream
+     * ActivityStream details includes backupId used to Undo merge if needed.
+     */
+    protected function _logMergeAndBackup()
+    {
+        $backupId = $this->mergeBackup->backup($this->person, $this->other_person);
+        $action   = new ActivityLogger\ActionType\Merged($this->person, $this->other_person, $backupId);
+        $this->activityLogger->saveAction($action);
+        // call flush directly to execute it inside of transaction
+        $this->activityLogger->flush();
     }
 }
