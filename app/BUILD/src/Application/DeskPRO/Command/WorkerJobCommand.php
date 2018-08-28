@@ -559,6 +559,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         });
 
         if ($verbose) {
+            // note that in code we check existense `DP_OUTPUT` as a mark that cli run in verbose mode
             $GLOBALS['DP_OUTPUT'] = $output;
             $runner->setVerbose();
         }

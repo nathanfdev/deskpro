@@ -60,6 +60,11 @@ class Exchange
      */
     protected $logger;
 
+    /**
+     * @var bool
+     */
+    protected $isVerbose = false;
+
     public function __construct($options = [])
     {
         if (!isset($options['host']) ||
@@ -71,6 +76,10 @@ class Exchange
 
         if (isset($options['logger'])) {
             $this->logger = $options['logger'];
+        }
+
+        if (isset($options['is_verbose'])) {
+            $this->isVerbose = (bool) $options['is_verbose'];
         }
 
         $this->service = new \ExchangeWebServices(
@@ -163,6 +172,8 @@ class Exchange
             throw new \EWS_Exception('FindItem failed');
         }
 
+        $this->logRequestAndResponse('FindItem');
+
         if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->FindItemResponseMessage->ResponseClass == 'Success'
         ) {
@@ -225,6 +236,8 @@ class Exchange
         if (!$response) {
             throw new \EWS_Exception('GetItem failed');
         }
+
+        $this->logRequestAndResponse('GetItem');
 
         if ($response && $response->ResponseMessages->GetItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->GetItemResponseMessage->ResponseClass == 'Success'
@@ -295,6 +308,8 @@ class Exchange
 
         $response = $this->service->CreateFolder($request);
 
+        $this->logRequestAndResponse('CreateFolder');
+
         if ($response->ResponseMessages->CreateFolderResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->CreateFolderResponseMessage->ResponseClass == 'Success'
         ) {
@@ -348,6 +363,8 @@ class Exchange
         // request
         $response = $this->service->FindFolder($request);
 
+        $this->logRequestAndResponse('FindFolder');
+
         if ($response && $response->ResponseMessages->FindFolderResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->FindFolderResponseMessage->ResponseClass == 'Success'
         ) {
@@ -375,6 +392,8 @@ class Exchange
         // Generic execution sample code
         $response = $this->service->MoveItem($request);
 
+        $this->logRequestAndResponse('MoveItem');
+
         if ($response && $response->ResponseMessages->MoveItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->MoveItemResponseMessage->ResponseClass == 'Success'
         ) {
@@ -400,6 +419,8 @@ class Exchange
         $request->DeleteType = EWSType_DisposalType::MOVE_TO_DELETED_ITEMS;
 
         $response = $this->service->DeleteItem($request);
+
+        $this->logRequestAndResponse('DeleteItem');
 
         if ($response && $response->ResponseMessages->DeleteItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->DeleteItemResponseMessage->ResponseClass == 'Success'
@@ -440,6 +461,8 @@ class Exchange
         $request->ItemChanges[] = $change;
 
         $response = $this->service->UpdateItem($request);
+
+        $this->logRequestAndResponse('UpdateItem');
 
         if ($response && $response->ResponseMessages->UpdateItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->UpdateItemResponseMessage->ResponseClass == 'Success'
@@ -486,6 +509,8 @@ class Exchange
 
         $response = $this->service->GetItem($request);
 
+        $this->logRequestAndResponse('GetItem');
+
         $reason       = 'unknown';
         $responseCode = isset($response->ResponseMessages->GetItemResponseMessage->ResponseCode)
             ? $response->ResponseMessages->GetItemResponseMessage->ResponseCode : null;
@@ -520,9 +545,27 @@ class Exchange
         return @$message->ItemId->ChangeKey;
     }
 
+    protected function logRequestAndResponse($operation)
+    {
+        if (!$this->logger || !$this->isVerbose) {
+            return;
+        }
+
+        $this->logger->logInfo(sprintf('Exchange request [%s]: ', $operation).$this->getLastRequest());
+        $this->logger->logInfo(sprintf('Exchange response [%s]: ', $operation).$this->getLastResponse());
+    }
+
     public function close()
     {
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastRequest()
+    {
+        return $this->service->getClient()->__getLastRequest() ?: '';
     }
 
     /**
