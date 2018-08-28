@@ -12,7 +12,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class ApiLog.
  *
  * @ORM\Entity()
- * @ORM\Table("api_log", uniqueConstraints={@ORM\UniqueConstraint(name="request_id_unique",columns={"request_id"})})
+ * @ORM\Table("api_log",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="request_id_unique",columns={"request_id"})},
+ *     indexes={
+ *         @ORM\Index(name="start_time_idx", columns={"start_time"}),
+ *         @ORM\Index(name="end_time_idx", columns={"end_time"}),
+ *     }
+ * )
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  * @ORM\InheritanceType("NONE")
  *

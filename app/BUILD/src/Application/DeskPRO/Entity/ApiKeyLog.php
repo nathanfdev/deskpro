@@ -161,7 +161,10 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ApiKeyLog';
 
         $metadata->setPrimaryTable([
-            'name' => 'api_key_log',
+            'name'    => 'api_key_log',
+            'indexes' => [
+                'time_idx' => ['columns' => ['time']],
+            ],
         ]);
 
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
