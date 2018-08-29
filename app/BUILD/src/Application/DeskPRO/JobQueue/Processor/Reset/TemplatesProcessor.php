@@ -20,8 +20,10 @@ class TemplatesProcessor extends Base
     {
         $this->connection->executeUpdate('DELETE FROM templates');
         $this->connection->executeUpdate('DELETE FROM theme_set_assets');
-        $this->connection->executeUpdate('DELETE FROM brands');
-        $this->connection->executeUpdate('DELETE FROM theme_sets');
+
+        // don't delete `brands` here
+        // if you delete the brand but not departments, then all the links between departments and brands go too (cascade).
+        // Suddenly the new ticket form doesn't show any departments.
 
         // Reset themes
         $standardTheme = new ThemeSet();
