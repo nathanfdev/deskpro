@@ -66,6 +66,7 @@ define ['datatables', "datatables.pageResize", "datatables.rowsGroup"], () ->
                 $timeout(
                   ->
                     drawn = true
+                    scope.noData = false
                     box.height(100)
                 , 100)
                 $timeout(
