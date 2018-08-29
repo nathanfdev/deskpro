@@ -23,7 +23,9 @@ class SnippetTranslationType extends AbstractType
             ->add('language', EntityType::class, [
                 'class' => Language::class,
             ])
-            ->add('content', TextType::class)
+            ->add('content', TextType::class, [
+                'filter_clean' => false,
+            ])
             ->add('blobs', EntityType::class, [
                 'class'    => Blob::class,
                 'multiple' => true,
