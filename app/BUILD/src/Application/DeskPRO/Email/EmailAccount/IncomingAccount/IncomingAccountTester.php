@@ -202,12 +202,13 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange([
-                'host'      => $account_config->host,
-                'user'      => $account_config->user,
-                'password'  => $account_config->password,
-                'port'      => $account_config->port,
-                'logger'    => $this->logger,
-                'test_mode' => true,
+                'host'       => $account_config->host,
+                'user'       => $account_config->user,
+                'password'   => $account_config->password,
+                'port'       => $account_config->port,
+                'logger'     => $this->logger,
+                'test_mode'  => true,
+                'is_verbose' => true,
             ]);
             if ($account_config->read_mailbox) {
                 $storage->ensureFolderExists($account_config->read_mailbox);
@@ -250,7 +251,8 @@ class IncomingAccountTester
                     $this->logger->logError('Unknown error. Details:');
             }
 
-            $this->logger->logError($storage->getLastResponse());
+            $this->logger->logError('Last request: '.$storage->getLastRequest());
+            $this->logger->logError('Last response: '.$storage->getLastResponse());
             $this->logger->logError(str_repeat('-', 35));
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));

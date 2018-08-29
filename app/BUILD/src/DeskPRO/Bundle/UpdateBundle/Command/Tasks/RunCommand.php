@@ -303,11 +303,15 @@ class RunCommand extends ContainerAwareCommand
 
         foreach ($entityManagers as $em) {
             if (!ORMUtil::isAllFKConstraintsExist($em)) {
-                $output->writeln('<error>WARNING: Your database schema is corrupt and is missing relationship mapping information (foreign keys).</error>');
-                $output->writeln('<error>This can lead to referential integrity issues that cause errors and unexpected behaviour.</error>');
-                $output->writeln('<error>Read this article for help resolving the problem:</error>');
-                $output->writeln('<error>https://support.deskpro.com/kb/articles/665</error>');
-                $output->writeln('The upgrade will continue in 10 secods...');
+                $output->writeln('<error>NOTICE</error>');
+                $output->writeln(
+                    'The system has detected that your database schema has one or more differences from the default.'
+                    .'These differences are most likely trivial and can usually be ignored. But in some rare cases,'
+                    .'this can be a sign of data corruption.'
+                );
+                $output->writeln('It is highly recommended you check your schema with the automated schema maintenance tool as described here:');
+                $output->writeln('https://support.deskpro.com/kb/articles/665');
+                $output->writeln('The upgrade will continue in 10 seconds... You can abort by interrupting this process (e.g. CTRL+C).');
                 sleep(10);
 
                 return 1;

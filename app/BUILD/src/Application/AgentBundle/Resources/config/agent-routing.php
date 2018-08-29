@@ -439,6 +439,12 @@ $collection->create('agent_people_merge', [
     'requirements' => ['person_id' => '\\d+', 'other_person_id' => '\\d+'],
 ]);
 
+$collection->create('agent_people_merge_undo', [
+    'path'         => '/people/{person_id}/merge-undo/{person_activity_id}',
+    'controller'   => 'AgentBundle:Person:mergeUndo',
+    'requirements' => ['person_id' => '\\d+', 'person_activity_id' => '\\d+'],
+]);
+
 $collection->create('agent_people_delete', [
     'path'       => '/people/{person_id}/delete/{security_token}',
     'controller' => 'AgentBundle:Person:deletePerson',

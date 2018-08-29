@@ -850,6 +850,34 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			ev.preventDefault();
 			self.getEl('org_box').find('.org_link').trigger('click');
 		});
+
+		self.getEl('activity_tab').find('.merge_undo').on('click', function(ev) {
+			if (!confirm("Are you sure you want to undo the merge?")) {
+				return;
+			}
+
+			var activityId = $(this).data('activity-id');
+
+			$.ajax({
+        url: BASE_URL + "agent/people/" + self.meta.person_id + "/merge-undo/" + activityId,
+				type: 'GET',
+				error: function() {
+					DeskPRO_Window.showAlert('Erro during merge revert');
+				},
+				success: function() {
+					// remove old tabs, theyre outdated
+          // @TODO: how to get Id of curent tab to avoid below foreach?
+					Array.each(DeskPRO_Window.getTabWatcher().findTabType('person'), function(tab) {
+						var id = tab.page.getMetaData('person_id');
+						if (id == self.meta.person_id) {
+							DeskPRO_Window.TabBar.removeTabById(tab.id);
+						}
+					});
+
+					DeskPRO_Window.runPageRoute('person:' + BASE_URL + 'agent/people/' + self.meta.person_id);
+				}
+			});
+		});
 	},
 
 	refreshPropBox: function() {

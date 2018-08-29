@@ -66,6 +66,14 @@ class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
     public function getPersonId()
     {
         return $this->person['id'];

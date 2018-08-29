@@ -2,12 +2,16 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
+use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -71,8 +75,44 @@ class TicketMessagesController extends AbstractTicketsCrudSubController
         $ticket = $entity->getTicket();
         $ticket->disableAutoTicketProcess();
         $ticket->removeMessage($entity);
-
+        foreach ($entity->getAttachments() as $attachment) {
+            $this->deleteAttachment($attachment);
+        }
         $this->saveTicket($ticket);
+    }
+
+    /**
+     * @param TicketAttachment $attachment
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
+    protected function deleteAttachment(TicketAttachment $attachment)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        $em->remove($attachment);
+        $attachment->getMessage()->getAttachments()->removeElement($attachment);
+        $em->flush();
+
+        $blob         = $attachment->getBlob();
+        $originalBlob = $blob->getOriginalBlob();
+        /** @var BlobRepository $blobRepository */
+        $blobRepository = $em->getRepository(Blob::class);
+        $blobs          = $blobRepository->findBy(['original_blob' => $originalBlob ?: $blob]);
+
+        if ($originalBlob) {
+            array_push($blobs, $originalBlob);
+        }
+        array_push($blobs, $blob);
+
+        foreach ($blobs as $foundBlob) {
+            $this->get('deskpro.blob_storage')->deleteBlobRecord($foundBlob);
+        }
+
+        $em->getConnection()->delete('tickets_attachments', ['id' => $attachment->getId()]);
     }
 
     /**
