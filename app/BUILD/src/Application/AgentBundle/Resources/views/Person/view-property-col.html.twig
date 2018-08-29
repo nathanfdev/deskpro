@@ -3,7 +3,7 @@
 {# Agent Box #}
 {% if person.is_agent %}
     {{ dp_app_loc(baseId, 'agent.before') }}
-    <div class="profile-box-container highlighted">
+    <div class="profile-box-container highlighted{% if person.is_deleted %} deleted{% endif %}">
         <header>
             {% if app.user.can_admin %}<a class="edit-gear"
                                           href="{{ app.request.getBaseUrl() }}/agent/#admin:/agents/agents/{{ person.id }}"
@@ -22,7 +22,11 @@
             {% endif %}
         </header>
         <section id="{{ baseId }}_agent_tab">
-            <p>{{ phrase('agent.people.user_is_agent', {'name': person.display_name}) }}</p>
+            {% if person.is_deleted %}
+                <p>{{ phrase('agent.people.user_was_agent', {'name': person.display_name}) }}</p>
+            {% else %}
+                <p>{{ phrase('agent.people.user_is_agent', {'name': person.display_name}) }}</p>
+            {% endif %}
             {% if person.Agent.getTeams() %}
                 <p>{{ phrase('agent.people.member_of_teams') }}</p>
                 <ul class="standard">
