@@ -115,6 +115,10 @@ class Exchange extends AbstractFetcher
         $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
         $options['logger'] = $this->logger;
 
+        if (isset($GLOBALS['DP_OUTPUT'])) {
+            $options['is_verbose'] = true;
+        }
+
         $this->storage = new Storage\Exchange($options);
 
         if ($this->mode == self::MODE_ARCHIVE) {
@@ -180,6 +184,7 @@ class Exchange extends AbstractFetcher
         } catch (\Exception $e) {
             $this->logger->logError(sprintf('Exchange error: <%s> [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
             $this->logger->logDebug($e->getTraceAsString());
+            $this->logger->logInfo('Last request: '.$this->storage->getLastRequest());
             $this->logger->logInfo('Last response: '.$this->storage->getLastResponse());
             throw $e;
         }
