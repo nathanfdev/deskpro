@@ -462,9 +462,8 @@
                                             {{ phrase('agent.people.act_submitted_ticket') }}
                                             <a class="with-route"
                                                data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
-												{{ action.details.subject }}
                                                 {{ action.details.subject }}
-											</a>
+                                            </a>
                                         {% elseif action.action_type == 'new_chat' and action.details.convo_id %}
                                             Created a chat:
                                             {% set chat = person_chats[action.details.convo_id] %}
