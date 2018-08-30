@@ -12,7 +12,7 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Event.
+ * Class ActionAlert.
  *
  * @ORM\Entity
  * @ORM\Table(name="notify_action_alerts", indexes={@ORM\Index(name="target_id", columns={"target_id"})})
