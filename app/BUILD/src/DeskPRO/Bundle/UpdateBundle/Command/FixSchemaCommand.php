@@ -163,6 +163,19 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                     }
                 }
 
+                $engineQueries = ORMUtil::getTablesEngineChecks($entityManagers);
+                foreach ($engineQueries as $dbId => $queries) {
+                    foreach ($queries as $query) {
+                        $output->writeln('');
+                        $output->writeln($query);
+                        $logger->error($query);
+
+                        if ($input->getOption('run')) {
+                            $this->executeQuery($dbId, $query, $output, $logger);
+                        }
+                    }
+                }
+
                 $output->writeln('');
                 $output->writeln('<info>Done fixing tables.</info>');
             }

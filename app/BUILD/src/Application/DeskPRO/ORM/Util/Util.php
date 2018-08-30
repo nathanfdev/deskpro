@@ -105,4 +105,33 @@ class Util
 
         return true;
     }
+
+    /**
+     * @param EntityManager[] $entityManagers
+     *
+     * @throws \Doctrine\ORM\ORMException
+     *
+     * @return array
+     */
+    public static function getTablesEngineChecks($entityManagers)
+    {
+        $queries = [];
+        foreach ($entityManagers as $dbId => $em) {
+            $metadata   = $em->getMetadataFactory()->getAllMetadata();
+            $schemaTool = new DPSchemaTool($em);
+            $schema     = $schemaTool->getSchemaFromMetadata($metadata);
+            $emTables   = $schema->getTables();
+            $connection = $em->getConnection();
+            $tables     = $connection->fetchAll('SHOW TABLE STATUS WHERE Engine <> \'InnoDB\'');
+            foreach ($tables as $table) {
+                foreach ($emTables as $emTable) {
+                    if ($emTable->getName() === $table['Name']) {
+                        $queries[$dbId][] = 'ALTER TABLE '.$table['Name'].' ENGINE=InnoDB';
+                    }
+                }
+            }
+        }
+
+        return $queries;
+    }
 }
