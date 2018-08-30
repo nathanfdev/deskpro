@@ -20,7 +20,7 @@ class UserProfile extends React.Component {
           <FormattedMessage id="agent.general.your_profile" />
         </div>
         <div>
-          {window.DP_HAS_VOICE && <StatusFormContainer />}
+          { (window.DP_HAS_VOICE || (window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use'])) && <StatusFormContainer />}
           <div className="voice-profile-menu">
             <div className="voice-profile-menu-item preferences" onClick={onClickPreferences}>
               <i className="fas fa-cog" />
