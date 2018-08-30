@@ -58,7 +58,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
     public function getDefaultDepartment(Brand $brand = null)
     {
         if ($brand) {
-            $defaultBrandDepartment = $brand->getDepartments()->first();
+            $defaultBrandDepartment = $brand->getTicketDepartments()->first();
             if ($defaultBrandDepartment) {
                 return $defaultBrandDepartment;
             }
@@ -66,7 +66,7 @@ class TicketDepartments extends LazyPreloadedHierarchy
 
         if (!$this->default_id || !$this->getById($this->default_id) || $this->hasChildren($this->default_id)) {
             foreach ($this->getAll() as $dep) {
-                if (!$this->hasChildren($dep)) {
+                if (!$this->hasChildren($dep) && $dep->isTicketsEnabled()) {
                     $this->default_id = $dep->getId();
                     break;
                 }
