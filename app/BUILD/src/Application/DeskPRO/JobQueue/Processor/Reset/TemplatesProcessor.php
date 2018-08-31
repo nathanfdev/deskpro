@@ -24,6 +24,7 @@ class TemplatesProcessor extends Base
         // don't delete `brands` here
         // if you delete the brand but not departments, then all the links between departments and brands go too (cascade).
         // Suddenly the new ticket form doesn't show any departments.
+        $this->connection->executeUpdate('UPDATE theme_sets set options = \'[]\'');
 
         // Reset themes
         $standardTheme = new ThemeSet();
