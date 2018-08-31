@@ -23,6 +23,7 @@ import MessagePhoneNumber from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Compone
 import { preloadData, postBoostrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/bootstrapActions';
 import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
+import { ExternalEventsContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/ExternalEvents/Components/ExternalEventsContainer';
 import { isVoiceEnabledSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
 import { canOpenDialpadSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/numbers';
 import { voiceBootstrap, openDialpad } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Actions/clientActions';
@@ -79,7 +80,8 @@ class AgentLegacyApp {
     this.renderPiece(SideBarContainer, SideBarContainer.getType());
     this.renderPiece(LeftDrawerContainer, LeftDrawerContainer.getType());
     this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
-    this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
+    this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType(), 1);
+    this.renderPiece(ExternalEventsContainer, ExternalEventsContainer.getType(), 1);
     if (window.DP_HAS_NEW_FILTERS) {
       this.renderPiece(AgentFiltersContainer, AgentFiltersContainer.getType());
     }
@@ -109,7 +111,7 @@ class AgentLegacyApp {
     DeskproAppStore.onAgentLegacyAppReady(this.store, window, api, messageBroker);
   }
 
-  renderPiece(piece, piecePlace) {
+  renderPiece(piece, piecePlace, timeout = 1000) {
     if (this.rendered[piecePlace]) {
       return;
     }
@@ -154,7 +156,7 @@ class AgentLegacyApp {
     // maybe we could use something like angular directive or so.
     // it's not good when there are elements for different pages.
     // Or, we may just call this method when it's needed.
-    this.renderWaits[piecePlace] = setTimeout(() => this.renderPiece(piece, piecePlace), 1000);
+    this.renderWaits[piecePlace] = setTimeout(() => this.renderPiece(piece, piecePlace), timeout);
   }
 
   renderVoiceControls(node, ticketId, onEndCall, baseId) {

@@ -44,7 +44,7 @@ class PopupController extends BaseController
      */
     public function raiseAction(Request $request)
     {
-        $event = new PopupEvent(PopupEvent::ACTION_TYPE_RAISE, ['test' => 'test']);
+        $event = new PopupEvent(PopupEvent::ACTION_TYPE_RAISE, $request->request->all());
         $this->getContainer()->get('event_dispatcher')->dispatch(
             PopupEvent::EVENT_NAME,
             $event
