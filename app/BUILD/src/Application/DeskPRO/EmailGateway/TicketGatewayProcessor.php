@@ -175,7 +175,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             if ($sourceRepos->isEmailAddressRateLimited($realFrom, $rateLocktime)) {
                 $isRateReject = true;
                 $this->logMessage('Rate limited -- currently locked out');
-            } elseif ($sourceRepos->countEmailsWithinTime($realFrom, $rateTime) >= $rateLimit) {
+            } elseif ($sourceRepos->countProcessedEmailsWithinTime($realFrom, $rateTime) >= $rateLimit) {
                 $isRateReject = true;
                 $this->logMessage('Rate limited -- this is the first message over the threshold');
 

@@ -97,12 +97,15 @@ class EmailSource extends AbstractEntityRepository
          * - find last accepted (A) within lock time
          * - find first rejected (R) after (A)
          *
+         * Considering only processed sources (status not in (inserted, processing)
+         *
          */
         $last_accepted_id = $db->fetchColumn(
             '
             SELECT id
             FROM email_sources
             WHERE date_created >= ? AND from_email = ? AND !(status = "rejected" AND error_code = "rate_limit")
+                  AND status NOT IN ("inserted", "processing")
             ORDER BY id DESC
             LIMIT 1
         ',
@@ -128,12 +131,14 @@ class EmailSource extends AbstractEntityRepository
      * Counts non-rejected messages within $time. If there was a ratelimit active, we count
      * from the last rate limit.
      *
+     * Considering only processed sources (status not in (inserted, processing)
+     *
      * @param string $email
      * @param int    $time
      *
      * @return int
      */
-    public function countEmailsWithinTime($email, $time)
+    public function countProcessedEmailsWithinTime($email, $time)
     {
         /** @var \Application\DeskPRO\DBAL\Connection $db */
         $db = $this->_em->getConnection();
@@ -155,12 +160,14 @@ class EmailSource extends AbstractEntityRepository
                 SELECT COUNT(*)
                 FROM email_sources
                 WHERE date_created >= ? AND from_email = ? AND !(status = 'rejected' AND error_code = 'rate_limit') AND id > ?
+                      AND status NOT IN ('inserted', 'processing')
             ", [date('Y-m-d H:i:s', time() - $time), $email, $reject_id]);
         } else {
             $count = $db->fetchColumn("
                 SELECT COUNT(*)
                 FROM email_sources
                 WHERE date_created >= ? AND from_email = ? AND !(status = 'rejected' AND error_code = 'rate_limit')
+                      AND status NOT IN ('inserted', 'processing')
             ", [date('Y-m-d H:i:s', time() - $time), $email]);
         }
 
