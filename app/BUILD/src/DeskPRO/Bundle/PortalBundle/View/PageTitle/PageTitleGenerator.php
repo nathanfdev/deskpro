@@ -157,7 +157,7 @@ class PageTitleGenerator
                     $section_title
                 )
             );
-            $builder->prependSection($content_or_cat->getTitle());
+            $builder->prependSection($content_or_cat->getTranslatedTitle());
         } else {
             $builder->prependSection($section_title);
         }
@@ -182,7 +182,7 @@ class PageTitleGenerator
                     $section_title
                 )
             );
-            $builder->prependSection($content_or_cat->getTitle());
+            $builder->prependSection($content_or_cat->getTranslatedTitle());
         } else {
             $builder->prependSection($section_title);
         }
@@ -207,7 +207,7 @@ class PageTitleGenerator
                     $section_title
                 )
             );
-            $builder->prependSection($content_or_cat->getTitle());
+            $builder->prependSection($content_or_cat->getTranslatedTitle());
         } else {
             $builder->prependSection($section_title);
         }
@@ -249,7 +249,7 @@ class PageTitleGenerator
                 $builder->prependSection([$sectionTitle]);
             }
 
-            $builder->prependSection($contentOrCat->getTitle());
+            $builder->prependSection($contentOrCat->getTranslatedTitle());
         } else {
             $builder->prependSection($sectionTitle);
         }
@@ -274,7 +274,7 @@ class PageTitleGenerator
                     $sectionTitle
                 )
             );
-            $builder->prependSection($topicOrGuide->getTitle());
+            $builder->prependSection($topicOrGuide->getTranslatedTitle());
         } else {
             $builder->prependSection($sectionTitle);
         }

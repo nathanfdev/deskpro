@@ -423,7 +423,7 @@ class ArticlesController extends AbstractController
             ]
         );
 
-        return $pdfRenderer->generateFile($contentHtml->getContent(), $article->getTitle().'.pdf');
+        return $pdfRenderer->generateFile($contentHtml->getContent(), $article->getTranslatedTitle().'.pdf');
     }
 
     /**
