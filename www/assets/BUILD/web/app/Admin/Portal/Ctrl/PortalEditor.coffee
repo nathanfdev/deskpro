@@ -51,17 +51,21 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @refreshPreviewUrl()
 
     save: =>
-      request = @$http({
-        method: 'PUT',
-        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
-        data: @advanced
-      })
-      promises = [@saveValues(), @editWelcomeBox(), request]
-      all = @$q.all(promises)
+      promises = [@saveValues(), @editWelcomeBox()]
       @savingMulti = true
+      all = @$q.all(promises)
       all.then( =>
-        @savingMulti = false
-        @refreshPreviewUrl()
+        @$http({
+          method: 'PUT',
+          url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
+          data: @advanced
+        }).then( =>
+          @savingMulti = false
+          @refreshPreviewUrl()
+        , =>
+          @serverError()
+          @savingMulti = false
+        )
       , =>
         @serverError()
         @savingMulti = false
