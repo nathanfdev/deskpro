@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 /**
  * Class PersonMessageGenerator.
  */
-class PopupEventGenerator extends AbstractGenerator
+class PopupMessageGenerator extends AbstractGenerator
 {
     /**
      * Constructor.

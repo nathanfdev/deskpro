@@ -3,13 +3,9 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Event\ExternalEvent;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
-use DeskPRO\Component\Util\RandUtils;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class PopupEvent.
- *
- * @JMS\ExclusionPolicy("all")
  */
 class PopupEvent extends AbstractSystemEvent
 {
@@ -21,9 +17,6 @@ class PopupEvent extends AbstractSystemEvent
     private $action = null;
 
     /**
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     private $uuid;
@@ -33,12 +26,13 @@ class PopupEvent extends AbstractSystemEvent
     /**
      * PopupEvent constructor.
      *
+     * @param string $uuid
      * @param string $action
      * @param array  $data
      */
-    public function __construct($action, array $data)
+    public function __construct($uuid, $action, array $data)
     {
-        $this->uuid   = RandUtils::uuidV4();
+        $this->uuid   = $uuid;
         $this->data   = $data;
         $this->action = $action;
     }

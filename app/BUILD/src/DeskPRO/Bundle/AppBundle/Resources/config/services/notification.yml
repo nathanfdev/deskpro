@@ -228,7 +228,7 @@ services:
         - { name: deskpro.notification.action_alert.generator }
 
   deskpro.notification.generator.action_alert.popup_event:
-    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\PopupEventGenerator
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\PopupMessageGenerator
     arguments:
     - "@doctrine.orm.default_entity_manager"
     - "@security.token_storage"

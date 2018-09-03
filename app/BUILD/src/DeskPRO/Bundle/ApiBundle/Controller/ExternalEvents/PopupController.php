@@ -6,6 +6,9 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\ExternalEvent\PopupType;
+use DeskPRO\Bundle\AppBundle\Model\PopupModel;
 use DeskPRO\Bundle\AppBundle\Notification\Event\ExternalEvent\PopupEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -24,8 +27,6 @@ use Symfony\Component\HttpFoundation\Response;
 class PopupController extends BaseController
 {
     /**
-     * This endpoint provide you an ability to authenticate pusher app.
-     *
      * @ApiDoc(
      *     section="External events",
      *     resourceDescription="Operations about external events",
@@ -44,18 +45,27 @@ class PopupController extends BaseController
      */
     public function raiseAction(Request $request)
     {
-        $event = new PopupEvent(PopupEvent::ACTION_TYPE_RAISE, $request->request->all());
-        $this->getContainer()->get('event_dispatcher')->dispatch(
-            PopupEvent::EVENT_NAME,
-            $event
-        );
+        $model = new PopupModel();
+        $form  = $this->container->get('form.factory')->create(PopupType::class, $model);
+        $form->submit($request->request->all());
+        if ($form->isValid()) {
+            $event = new PopupEvent(
+                $model->getUuid(),
+                PopupEvent::ACTION_TYPE_RAISE,
+                $model->getEventData()
+            );
+            $this->getContainer()->get('event_dispatcher')->dispatch(
+                PopupEvent::EVENT_NAME,
+                $event
+            );
+        } else {
+            throw new InvalidFormException($form);
+        }
 
-        return View::create($this->wrap(['uuid' => $event->getUuid()]), Response::HTTP_OK);
+        return View::create($this->wrap($model), Response::HTTP_OK);
     }
 
     /**
-     * This endpoint provide you an ability to authenticate pusher app.
-     *
      * @ApiDoc(
      *     section="External events",
      *     resourceDescription="Operations about external events",

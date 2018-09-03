@@ -16,6 +16,7 @@ export class PopupWindow extends React.Component {
       zIndex={99999}
       innerClassName={'external-event-popup'}
       opened
+      autoClose={false}
       content={(
         <span>{data.uuid}</span>
       )}
