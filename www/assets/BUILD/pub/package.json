@@ -5,7 +5,7 @@
   "author": "DeskPRO <support@deskpro.com>",
   "dependencies": {
     "@amcharts/amcharts3-react": "^3.0.3",
-    "@deskpro/apps-components-style": "^0.7.1",
+    "@deskpro/apps-components-style": "^0.8.0",
     "@deskpro/js-utils": "^1.0.4",
     "@deskpro/react-components": "^1.3.27",
     "@deskpro/react-forms": "^2.0.0-beta41",
@@ -77,6 +77,7 @@
     "randomstring": "1.1.5",
     "react": "^16.2.0",
     "react-addons-shallow-compare": "^15.6.2",
+    "react-custom-scrollbars": "^4.2.1",
     "react-dnd": "^2.5.4",
     "react-dnd-html5-backend": "^2.2.4",
     "react-dom": "^16.2.0",

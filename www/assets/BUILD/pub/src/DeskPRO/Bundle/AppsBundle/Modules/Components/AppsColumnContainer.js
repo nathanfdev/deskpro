@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react'; // eslint-disable-line no-unused-vars
+import { Scrollbars } from 'react-custom-scrollbars';
 import { AppsViewFull } from './AppsViewFull';
 import { AppsViewIcons } from './AppsViewIcons';
 import { receiveMessage } from '../WidgetMessage';
 import { ContainerEvents } from './ContainerEvents';
 import { setWidgetState } from '../Services/appsState';
+
 
 class AppsColumnContainer extends React.Component {
 
@@ -59,9 +61,6 @@ class AppsColumnContainer extends React.Component {
   togglePin = (e) =>  { // eslint-disable-line no-unused-vars
     const { pageId } = this.props.context;
     this.props.sendMessageLegacyMessageBroker(`apps-column.togglePin.${pageId}`);
-    console.log('toggled pin ', {
-      sidebarState: this.props.getSidebarState()
-    });
     this.setState({
       sidebarState: this.props.getSidebarState()
     });
@@ -90,29 +89,30 @@ class AppsColumnContainer extends React.Component {
     const sidebarState = this.state.sidebarState || this.props.getSidebarState();
 
     return (
-      <div className={'layout-sidebar__views'} onMouseLeave={this.collapse} onMouseOver={this.expand} onClick={this.pin}>
+      <Scrollbars autoHide>
+        <div className={'layout-sidebar__views'} onMouseLeave={this.collapse} onMouseOver={this.expand} onClick={this.pin}>
 
-        <AppsViewIcons
-          appsState={this.state.appsState}
-          sidebarState={sidebarState}
+          <AppsViewIcons
+            appsState={this.state.appsState}
+            sidebarState={sidebarState}
 
-          togglePin={this.togglePin}
-          widgetsConfigList={this.props.widgetsConfigList}
-        />
+            togglePin={this.togglePin}
+            widgetsConfigList={this.props.widgetsConfigList}
+          />
 
-        <AppsViewFull
-          appsState={this.state.appsState}
-          sidebarState={sidebarState}
+          <AppsViewFull
+            appsState={this.state.appsState}
+            sidebarState={sidebarState}
 
-          togglePin={this.togglePin}
-          pin={this.pin}
+            togglePin={this.togglePin}
+            pin={this.pin}
 
-          widgetsConfigList={this.props.widgetsConfigList}
-          context={this.props.context}
-          receiveMessage={this.receiveMessage}
-
-        />
-      </div>
+            widgetsConfigList={this.props.widgetsConfigList}
+            context={this.props.context}
+            receiveMessage={this.receiveMessage}
+          />
+        </div>
+      </Scrollbars>
     );
   }
 }
