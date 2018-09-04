@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\EntityRepository\Template as TemplateRepository;
 use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
 use Application\DeskPRO\Templating\Templates\TemplateCode;
+use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
 use Doctrine\ORM\EntityManager;
@@ -94,7 +95,7 @@ HTML;
      */
     public function needAgentReload()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -180,8 +181,14 @@ HTML;
                 }
                 $newTemplateName = $info['newTemplate'];
             }
-            /** @var Template $previousBlock */
-            $template = $set->createCustomTemplate($newTemplateName);
+
+            /** @var Template $template */
+            $templateEntity = $em->getRepository(Template::class)->findOneBy(['name' => $newTemplateName]);
+            if (!$templateEntity) {
+                $template = $set->createCustomTemplate($newTemplateName);
+            } else {
+                $template = TemplateCustom::createFromEntity($templateEntity);
+            }
 
             /** @var EmailTemplateCode $templateCode */
             $templateCode = $template->getTemplateCode();
@@ -294,21 +301,24 @@ CODE;
 {% endfor %}
 CODE
             ,
-          '{{ ticket.person.primary_email.email }}' => '{{ ticket.person.primary_email }}',
-          '{{ ticket.agent.primary_email.email }}'  => '{{ ticket.agent.primary_email }}',
-          '{{ article.person.display_name_user }}'  => '{{ article.person.display_name }}',
-          '{{ news.person.display_name_user }}'     => '{{ news.person.display_name }}',
-          '{{ download.person.display_name_user }}' => '{{ download.person.display_name }}',
-          '{{ download.content_desc }}'             => '{{ download.content }}',
-          '{{ download.filename }}'                 => '{{ download.blob.filename }}',
-          '{{ download.readable_filesize }}'        => '{{ download.blob.filesize_readable }}',
-          '{{ feedback.person.display_name_user }}' => '{{ feedback.person.display_name }}',
+          '{{ ticket.person.primary_email.email }}'                             => '{{ ticket.person.primary_email }}',
+          '{{ ticket.agent.primary_email.email }}'                              => '{{ ticket.agent.primary_email }}',
+          '{{ article.person.display_name_user }}'                              => '{{ article.person.display_name }}',
+          '{{ news.person.display_name_user }}'                                 => '{{ news.person.display_name }}',
+          '{{ download.person.display_name_user }}'                             => '{{ download.person.display_name }}',
+          '{{ download.content_desc }}'                                         => '{{ download.content }}',
+          '{{ download.filename }}'                                             => '{{ download.blob.filename }}',
+          '{{ download.readable_filesize }}'                                    => '{{ download.blob.filesize_readable }}',
+          '{{ feedback.person.display_name_user }}'                             => '{{ feedback.person.display_name }}',
+          '{{ portal_url(ticket) }}'                                            => '{{ ticket_link }}',
+          '{{ portal_url(article) }}'                                           => '{{ article_link }}',
+          '{{ url_full(\'portal_reset_password_process\', {\'code\': code}) }}' => '{{ reset_url }}',
         ];
     }
 
     private function getVariableWhiteList()
     {
-        return [
+        return array_merge(array_values($this->getTemplateUpgradePatterns()), [
             '{{ ticket.subject }}',
             '{{ ticket.department.title }}',
             '{{ ticket.product.title }}',
@@ -331,7 +341,8 @@ CODE
             '{{ download.slug }}',
             '{{ download.date_created|date(\'full\') }}',
             '{{ feedback.status }}',
-        ];
+            '{{ message }}',
+        ]);
     }
 
     private function replaceTriggers(EntityManager $em, ContainerInterface $container)
@@ -497,7 +508,7 @@ CODE
 
         /** @var DataStore $legacyTemplate */
         foreach ($legacyTemplates as $legacyTemplate) {
-            /** @var Template $previousBlock */
+            /** @var Template $template */
             $template = $set->createCustomTemplate($legacyTemplate->getData('name'));
 
             /** @var EmailTemplateCode $templateCode */
@@ -510,11 +521,6 @@ CODE
             $code = $legacyTemplate->getData('code');
             $templateCode->setCode($code);
 
-            $body = $this->convertTemplateCode($templateCode->getBody());
-            if (!$body) {
-                continue;
-            }
-            $templateCode->setBody($body);
             $set->saveTemplate($template);
             $em->remove($legacyTemplate);
         }
