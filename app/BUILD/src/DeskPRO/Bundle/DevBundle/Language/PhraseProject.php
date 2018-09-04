@@ -29,11 +29,13 @@ class PhraseProject
                     break;
 
                 case 'agent':
+                case 'admin':
+                case 'adm':
                     $files = Finder::create()->in($langDir)->files()->name('agent.php');
                     break;
 
                 case 'other':
-                    $files = Finder::create()->in($langDir)->files()->name('/(admin|api|general)\.php/');
+                    $files = Finder::create()->in($langDir)->files()->name('/(api|general)\.php/');
                     break;
 
                 default:
