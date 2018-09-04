@@ -12,8 +12,8 @@ class LangPhpFileCompiler
     private $oldStyleArray = false;
 
     private static $groupFileMap = [
-        'adm'     => 'admin.php',
-        'admin'   => 'admin.php',
+        'adm'     => 'agent.php',
+        'admin'   => 'agent.php',
         'api'     => 'api.php',
         'agent'   => 'agent.php',
         'general' => 'general.php',
