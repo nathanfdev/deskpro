@@ -21,18 +21,11 @@ const registerPostMessageListener = (windowObject, handler) => {
 };
 
 export const EVENT_SECURITY_SETTINGS_OAUTH = (response, widget, widgetMessage, services) => {
-  const { provider, protocolVersion } = widgetMessage.body;
-
   try {
-    const urlRedirect = services.oauthProxy.buildRedirectUrl({
-      provider,
-      protocolVersion,
-      applicationId: widget.instanceId
-    }).toString();
-    const settings = { urlRedirect };
+    const settings = services.oauthProxy.getWidgetSettings({ ...widgetMessage.body }, { applicationId: widget.instanceId });
     response(null, settings);
   } catch (e) {
-    response(new Error('failed to build redirect url'), serializeError(e));
+    response(new Error('failed to retrieve oauth settings for widget'), serializeError(e));
   }
 };
 
@@ -47,23 +40,23 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
   const { correlationId }  = widgetMessage;
   const { id } = widget;
 
-  const { provider, protocolVersion, query } = widgetMessage.body;
   try {
-    const authParams = {
+    const widgetParams = {
       applicationId:  widget.instanceId,
       correlationId,
       callbackMethod: 'postMessage',
       callbackUrl:    services.location.href
     };
 
-    const oauthProxyUrl = services.oauthProxy.buildAuthorizeUrl({ provider, protocolVersion, query })(authParams);
-    const listener = services.oauthProxy.buildReceiveTokenListener({ cb: response, protocolVersion, oauthProxyUrl })(authParams);
-
-    const windowName = `auth-${id}-${provider}`;
-    const windowFeatures = ['width=500,height=500,left=500,top=10', 'status=yes'].join(',');
+    const protocolParams = { ...widgetMessage.body };
+    const oauthProxyUrl = services.oauthProxy.buildAuthorizeUrl(protocolParams)(widgetParams);
+    const listener = services.oauthProxy.buildReceiveTokenListener(protocolParams)({ ...widgetParams, cb: response });
 
     registerPostMessageListener(services.window, listener);
-    services.window.open(oauthProxyUrl, windowName, windowFeatures);
+
+    const windowFeatures = ['width=500,height=500,left=500,top=10', 'status=yes'].join(',');
+    const { provider } = widgetMessage.body;
+    services.window.open(oauthProxyUrl, `auth-${id}-${provider}`, windowFeatures);
   } catch (e) {
     response(new Error('failed to authenticate'), serializeError(e));
   }

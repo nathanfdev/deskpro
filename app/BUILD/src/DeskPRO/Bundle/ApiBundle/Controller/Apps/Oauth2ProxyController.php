@@ -156,6 +156,23 @@ class Oauth2ProxyController extends BaseController
 
     /**
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     * @param AppInstance|null $application
+     *
+     * @Rest\Get("/{provider}/grant-access-implicit/{application}")
+     *
+     * @return Response
+     */
+    public function grantImplicitAccessAction(AppInstance $application = null)
+    {
+        if (is_null($application)) {
+            return new Response('application not found', 404);
+        }
+
+        return new OauthImplicitGrantResponse();
+    }
+
+    /**
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter")
      *
      * @Rest\Get("/{provider}/grant-access/{application}")
