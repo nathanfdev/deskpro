@@ -22,7 +22,7 @@ describe('oauth proxy generates oauth urls', () => {
   it('buildAuthorizeUrl should generate an oauth2.0 url by default', () => {
     const proxy = new OauthProxy({ appsConfig, username: 'joe', apiToken: 'token' });
 
-    const expectedUrl = 'https://deskpro-dev/api/v2/apps/proxy-oauth/jira/authorize?dp_verifyUrl=http%3A%2F%2Fjoe%3AdG9rZW4gdG9rZW4%3D%40deskpro-dev%2Fapi%2Fv2&dp_state=eyJjb3JyZWxhdGlvbklkIjoxMH0%3D&dp_callbackMethod=postMessage&dp_callbackUrl=https%3A%2F%2Fdeskpro-dev%2Fpage-url&dp_applicationId=1';
+    const expectedUrl = 'https://deskpro-dev/api/v2/apps/proxy-oauth/jira/authorize?dp_state=eyJjb3JyZWxhdGlvbklkIjoxMH0%3D&dp_callbackMethod=postMessage&dp_callbackUrl=https%3A%2F%2Fdeskpro-dev%2Fpage-url&dp_applicationId=1';
 
     const defaultUrl = proxy.buildAuthorizeUrl({  provider: 'jira' })(authParams);
     const oauth2Url = proxy.buildAuthorizeUrl({  provider: 'jira', protocolVersion: '2.0' })(authParams);
@@ -59,29 +59,29 @@ describe('oauth proxy generates oauth urls', () => {
     expect(() => proxy.buildRefreshAccessUrl({  provider: 'jira', protocolVersion: '3.0a' })).toThrow();
   });
 
-  it('buildRedirectUrl should generate an oauth2.0 url by default', () => {
+  it('getWidgetSettings should generate an oauth2.0 url by default', () => {
     const proxy = new OauthProxy({ appsConfig, username: 'joe', apiToken: 'token' });
 
     const expectedUrl = 'https://deskpro-dev/api/v2/apps/proxy-oauth/jira/grant-access/1';
 
-    const defaultUrl = proxy.buildRedirectUrl({  provider: 'jira', applicationId: 1 });
-    const oauth2Url = proxy.buildRedirectUrl({  provider: 'jira', protocolVersion: '2.0', applicationId: 1 });
+    const { urlRedirect: defaultUrl }   = proxy.getWidgetSettings({  provider: 'jira', }, { applicationId: 1 });
+    const { urlRedirect:oauth2Url } = proxy.getWidgetSettings({  provider: 'jira', protocolVersion: '2.0' }, { applicationId: 1 });
 
     expect(defaultUrl).toEqual(expectedUrl);
     expect(oauth2Url).toEqual(expectedUrl);
   });
 
-  it('buildRedirectUrl should generate an oauth 1.0 url ', () => {
+  it('getWidgetSettings should generate an oauth 1.0 url ', () => {
     const proxy = new OauthProxy({ appsConfig, username: 'joe', apiToken: 'token' });
 
-    const actualUrl = proxy.buildRedirectUrl({  provider: 'jira', protocolVersion: '1.0', applicationId: 1 });
+    const { urlRedirect: actualUrl } = proxy.getWidgetSettings({  provider: 'jira', protocolVersion: '1.0' }, { applicationId: 1 });
     expect(actualUrl).toEqual('https://deskpro-dev/api/v2/apps/proxy-oauth/1.0/jira/grant-access/1');
   });
 
-  it('buildRedirectUrl should generate an oauth 1.0a url ', () => {
+  it('getWidgetSettings should generate an oauth 1.0a url ', () => {
     const proxy = new OauthProxy({ appsConfig, username: 'joe', apiToken: 'token' });
 
-    const actualUrl = proxy.buildRedirectUrl({  provider: 'jira', protocolVersion: '1.0a', applicationId: 1 });
+    const { urlRedirect: actualUrl } = proxy.getWidgetSettings({  provider: 'jira', protocolVersion: '1.0a' }, { applicationId: 1 });
     expect(actualUrl).toEqual('https://deskpro-dev/api/v2/apps/proxy-oauth/1.0a/jira/grant-access/1');
   });
 });

@@ -54,13 +54,13 @@ function buildRedirectUrl(oauthProxy, { provider, protocolVersion, grant }, { ap
  * @param {String}    applicationId
  * @return {String}
  */
-function buildOauth1AuthorizeUrl({ protocolVersion, provider, query }, { callbackMethod, callbackUrl, applicationId }) {
+function buildOauth1AuthorizeUrl(oauthProxy, { protocolVersion, provider, query }, { callbackMethod, callbackUrl, applicationId }) {
   // prefix deskpro query param names
   const dpQuery = prefixDpQueryParams({ callbackMethod, callbackUrl, applicationId });
   // normalize extra query parameters
   const customQuery = query && typeof query === 'object' ? query : {};
 
-  const url = appendPathname(this.oauthProxyEndpoint, [protocolVersion, provider, 'authorize'].join('/'));
+  const url = appendPathname(oauthProxy.oauthProxyEndpoint, [protocolVersion, provider, 'authorize'].join('/'));
   return changeUrl(url, { query: { ...customQuery, ...dpQuery } });
 }
 
@@ -74,14 +74,14 @@ function buildOauth1AuthorizeUrl({ protocolVersion, provider, query }, { callbac
  * @param correlationId
  * @return {String}
  */
-function buildOauth2AuthorizeUrl({ protocolVersion, provider, query }, { callbackMethod, callbackUrl, applicationId, correlationId })  {
+function buildOauth2AuthorizeUrl(oauthProxy, { protocolVersion, provider, query }, { callbackMethod, callbackUrl, applicationId, correlationId })  {
   // prefix deskpro query param names
   const state = encodeJSON({ correlationId });
   const dpQuery = prefixDpQueryParams({ state, callbackMethod, callbackUrl, applicationId });
   // normalize extra query parameters
   const customQuery = query && typeof query === 'object' ? query : {};
 
-  const url = appendPathname(this.oauthProxyEndpoint, [provider, 'authorize'].join('/'));
+  const url = appendPathname(oauthProxy.oauthProxyEndpoint, [provider, 'authorize'].join('/'));
   return changeUrl(url, { query: { ...customQuery, ...dpQuery } });
 }
 
@@ -247,7 +247,7 @@ export class OauthProxy {
 
     if (protocolVersion === '2.0' || !protocolVersion) {
       const protocolParams = { protocolVersion, grant, ...others };
-      return buildOauth2AuthorizeUrl.bind(this, protocolParams);
+      return buildOauth2AuthorizeUrl.bind(null, this, protocolParams);
     }
 
     if (['1.0', '1.0a'].indexOf(protocolVersion) !== -1) {
