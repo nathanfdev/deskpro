@@ -201,7 +201,7 @@ class SettingsProfile
         );
         $primaryTeam = $person->getPrimaryTeam();
         if ($primaryTeam && $assign_team_setting) {
-            $person->setPreference('agent.ticket_default_team_id', (int) $primaryTeam['id']);
+            $person->setPreference('agent.ticket_default_team_id', $this->default_team_id ? (int) $this->default_team_id : (int) $primaryTeam['id']);
         }
 
         $person->setPreference('agent.ui.auto_dismiss_notification', intval($this->auto_dismiss_notifications));
