@@ -211,7 +211,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				<div class="dp-form-input">
 					<select name="settings_profile[default_team_id]">
 					{% for team in app.user.getAgent().getTeams() %}
-						<option value="{{ team.id }}" {% if form.default_team_id.get('value') == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
+						<option value="{{ team.id }}" {% if form.default_team_id.vars.value == team.id %}selected="selected"{% endif %}>{{ team.name }}</option>
 					{% endfor %}
 					</select>
 				</div>
