@@ -201,7 +201,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
       var itm = [type, id, title, url, ts];
       self.recentPendingSync.unshift(itm);
-      rows.push(self.renderRow(itm, true));
+      rows.unshift(self.renderRow(itm, true));
 		});
 
     var updateList = function() {
