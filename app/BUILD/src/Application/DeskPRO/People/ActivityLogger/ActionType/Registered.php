@@ -19,8 +19,16 @@ class Registered extends ActionTypeAbstract
 
     public function getDetails()
     {
-        return [
+        $name  = $this->person->getDisplayName(false);
+        $email = $this->person->getEmailAddress();
 
+        if (!$name || !$email) {
+            return [];
+        }
+
+        return [
+            'name'  => $name,
+            'email' => $email,
         ];
     }
 }
