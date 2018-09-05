@@ -54,7 +54,8 @@ class PopupDisplayType extends AbstractType
                     'required' => true,
                 ])
                 ->add('display', ChoiceType::class, [
-                    'choices' => [
+                    'choices_as_values' => true,
+                    'choices'           => [
                         PopupModel::DISPLAY_VIEW_TYPE_DETAIL,
                         PopupModel::DISPLAY_VIEW_TYPE_LIST,
                     ],

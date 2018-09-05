@@ -1,5 +1,24 @@
-.ui.poup.external-event-popup {
-    :before {
+.ui.popup.external-event-popup {
+    &:before {
         display: none;
     }
 }
+
+.external-event-popup-wrapper {
+    padding: 10px;
+    min-height: 100px;
+    min-width: 200px;
+
+    .external-event-popup-head {
+        font-size: 14px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .external-event-popup-body {
+        .external-event-popup-body-block {
+            padding: 5px;
+        }
+    }
+}
+

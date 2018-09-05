@@ -30,6 +30,10 @@ class PopupActionType extends AbstractType
                     PopupModel::ACTION_TYPE_WEBHOOK,
                 ],
             ])
+            ->add('title', TextType::class, [
+                'required' => true,
+
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'finishForm']);
@@ -48,9 +52,7 @@ class PopupActionType extends AbstractType
         } elseif (isset($data['type'])) {
             $form
                 // for now conditions to find target and additional info just arrays
-                ->add('title', TextType::class, [
-                    'required' => true,
-                ])
+
             ;
         }
     }

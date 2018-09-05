@@ -28,7 +28,7 @@ export class ExternalEventsContainer extends SeparateComponent {
   render() {
     const elements = [];
     if (this.props.popupOpen) {
-      elements.push(<PopupWindow data={this.props.popupData} />);
+      elements.push(<PopupWindow data={this.props.popupData} dispatch={this.props.dispatch} />);
     }
 
     return elements;

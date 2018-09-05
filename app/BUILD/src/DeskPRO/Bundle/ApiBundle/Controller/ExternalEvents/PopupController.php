@@ -8,10 +8,12 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\ExternalEvent\PopupType;
+use DeskPRO\Bundle\AppBundle\Form\Type\ExternalEvent\WebhookType;
 use DeskPRO\Bundle\AppBundle\Model\PopupModel;
 use DeskPRO\Bundle\AppBundle\Notification\Event\ExternalEvent\PopupEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Guzzle\Http\Client;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -63,6 +65,36 @@ class PopupController extends BaseController
         }
 
         return View::create($this->wrap($model), Response::HTTP_OK);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="External events",
+     *     resourceDescription="Webhook callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     *
+     * @Rest\Post("/webhook")
+     *
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function webhookAction(Request $request)
+    {
+        $form = $this->container->get('form.factory')->create(WebhookType::class);
+        $data = $request->request->all();
+        $form->submit($data);
+        if ($form->isValid()) {
+            $httpClient = new Client();
+            $httpClient->send([
+                $httpClient->createRequest($data['type'], $data['url'], ['X-Request-Performer: DeskPRO'], $data),
+            ]);
+        }
     }
 
     /**
