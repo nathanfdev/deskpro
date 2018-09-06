@@ -4,14 +4,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
     @CTRL_AS = 'LogsCtrl'
 
     init: ->
+      @isCloud = window.DP_IS_CLOUD;
       @service = @DataService.get 'ApiLogs'
       @list = []
       @filtration = @service.getFiltration()
-      @modes = ['session', 'key', 'token']
       @methods = ['GET', 'POST', 'PUT', 'DELETE'] # I know, I know, but we use only listed
       @options = {
-        enabled: false,
-        modes: ['key'],
+        enabled: false
       }
 
     ###
@@ -31,16 +30,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
     toggleLogs: ->
       @options.enabled = !@options.enabled
 
-    toggleMode: (mode) ->
-      if Arrays.findIndex(@options.modes, (v) -> v == mode) >= 0
-        Arrays.findAndRemove(@options.modes, (v) -> v == mode)
-      else
-        @options.modes.push(mode)
-
     updateOptions: ->
       @service.updateOptions(@options).then(
-        =>
-          @Growl.success 'Successfuly saved your new settings'
+        () =>
+          @Growl.success 'Successfully saved your new settings'
+          @service.getOptions().then((data) =>
+            @options = data
+          )
         =>
           @Growl.error 'Error while saving'
       )

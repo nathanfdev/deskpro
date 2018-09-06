@@ -59,7 +59,10 @@ class TriggerData extends AbstractDefaultData
     {
         $ignore = array_fill_keys($ignore, true);
 
-        $newEmailTemplates = App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates');
+        $features = App::getContainer()->get('deskpro.feature_flags');
+        $features->_setSettingsResolver(App::getContainer()->get('settings_resolver'));
+
+        $newEmailTemplates = $features->hasBeta('email_templates');
 
         //-----
         // Send agent notifications

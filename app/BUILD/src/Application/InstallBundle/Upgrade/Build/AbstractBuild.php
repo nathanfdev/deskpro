@@ -171,6 +171,26 @@ abstract class AbstractBuild
     }
 
     /**
+     * Delete all records in a table.
+     *
+     * @param $connName
+     * @param $t
+     *
+     * @throws \Exception
+     */
+    public function truncateTable($connName, $t)
+    {
+        // truncate on cloud seems to destabalise galera
+        // probably because truncate is actually a DDL that is the same as DROP/CREATE
+        // so we only do that if there are lotttts of rows
+        if ($this->getDbConnection($connName)->fetchColumn("SELECT COUNT(*) FROM $t") > 2500) {
+            $this->execDbQuery($connName, "TRUNCATE TABLE $t");
+        } else {
+            $this->execDbQuery($connName, "DELETE FROM $t");
+        }
+    }
+
+    /**
      * @param string $sql
      * @param bool   $ignore_err
      *

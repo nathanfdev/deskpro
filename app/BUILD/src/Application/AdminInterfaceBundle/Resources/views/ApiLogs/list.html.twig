@@ -22,11 +22,13 @@
                                 ng-model="LogsCtrl.pagination.page"
                                 ui-select2
                                 style="width: 130px;"
-                                ng-options='page as ("Page " + page) for page in LogsCtrl.pagination.page_nums'
                                 >
+                            <option ng-repeat="page in LogsCtrl.pagination.page_nums" value="{{ ng_var('page') }}">
+                                Page {{ ng_var('page') }}
+                            </option>
                         </select>
                     </div>
-					<table dp-hide-spinning="loading" class="table table-hover" style="word-break: break-all; word-break: break-word;">
+					<table dp-hide-spinning="loading" class="table table-hover" style="word-break: break-word;">
 						<thead>
 						<tr>
 							<th> {{ phrase('adm.api_logs.request_id') }}</th>
@@ -55,9 +57,9 @@
                                 </select>
 
                             </th>
-                            <th> {{ phrase('adm.api_logs.response_status') }}</th>
+                            <th style="width: 75px;"> {{ phrase('adm.api_logs.response_status') }}</th>
                             <th> {{ phrase('adm.api_logs.start_time') }}</th>
-                            <th> {{ phrase('adm.api_logs.time_taken') }}</th>
+                            <th style="width: 50px;"> {{ phrase('adm.api_logs.time_taken') }}</th>
                         </tr>
 						</thead>
 						<tbody>
@@ -96,27 +98,9 @@
                                 <div class="col-lg-9">
                                     <label>
                                         <input type="checkbox" ng-model="LogsCtrl.options.enabled"/>
-                                        <em>{{ ng_var('mode') }}</em>
                                     </label>
                                 </div>
                             </div>
-                            {% if not app.isCloud() %}
-                                <div class="form-group">
-                                    <div class="col-lg-3">
-                                        <h3>Modes</h3>
-                                    </div>
-                                    <div class="col-lg-9">
-                                        <ul class="checkbox-list" style="min-width: 250px">
-                                            <li ng-repeat="mode in LogsCtrl.modes">
-                                                <label>
-                                                    <input type="checkbox" ng-checked="LogsCtrl.options.modes.indexOf(mode) > -1" dp-change="LogsCtrl.toggleMode(mode)" />
-                                                    <em>{{ ng_var('mode') }}</em>
-                                                </label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            {% endif %}
                             <div class="form-group">
                                 <div class="col-lg-3">
                                     <h3>Max request body length (bytes)</h3>
@@ -132,6 +116,23 @@
                                 <div class="col-lg-9">
                                     <input type="input" ng-model="LogsCtrl.options.response_length"/>
                                 </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-lg-12 api-logs__max-logs-per-key">
+                                    <h3>Keep logs for max </h3>
+                                    <input type="number" step="1" min="1" ng-model="LogsCtrl.options.keep_days"/>
+                                    <h3 > days and keep at most </h3>
+                                    <input type="number" step="1" min="1" ng-model="LogsCtrl.options.per_key"/>
+                                    <h3> records for each key</h3>
+                                </div>
+                                <span class="help-block" ng-show="LogsCtrl.isCloud">
+                                    Note: non-key logs will be affected only by "max days to keep" setting
+                                </span>
+                                {% if app.isCloud() %}
+                                <span class="help-block" ng-show="LogsCtrl.isCloud">
+                                    Note: you're using Cloud account and "max per key" logs count is bounded by number of 2500
+                                </span>
+                                {% endif %}
                             </div>
                             <div class="form-group">
                                 <button class="btn btn-primary" ng-click="LogsCtrl.updateOptions()">Save</button>

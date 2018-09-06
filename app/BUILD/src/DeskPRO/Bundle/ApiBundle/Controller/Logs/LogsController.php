@@ -85,12 +85,13 @@ class LogsController extends BaseController
         $em   = $this->get('doctrine.orm.default_entity_manager');
         $repo = $em->getRepository(Setting::class);
 
+        $isCloud = $this->get('deskpro.app_env')->isCloud();
+
         // update enabled setting
         if (!$enabledSetting = $repo->findOneBy(['name' => 'api_log.enabled'])) {
             $enabledSetting = new Setting();
             $enabledSetting->setName('api_log.enabled');
         }
-
         $enabledSetting->setValue($data->isEnabled());
 
         // update modes setting
@@ -98,29 +99,41 @@ class LogsController extends BaseController
             $modesSetting = new Setting();
             $modesSetting->setName('api_log.modes');
         }
-
-        $modesSetting->setValue(serialize($data->getModes()));
+        // only key, if want others then override via config
+        $modesSetting->setValue(serialize(['key']));
 
         // update request length setting
         if (!$requestLengthSetting = $repo->findOneBy(['name' => 'api_log.max_request_body_length'])) {
             $requestLengthSetting = new Setting();
             $requestLengthSetting->setName('api_log.max_request_body_length');
         }
-
-        $requestLengthSetting->setValue($data->getRequestLength());
+        $requestLengthSetting->setValue(($data->getRequestLength() > 5000 && $isCloud ? 5000 : $data->getRequestLength()) ?: 0);
 
         // update response length setting
         if (!$responseLengthSetting = $repo->findOneBy(['name' => 'api_log.max_response_body_length'])) {
             $responseLengthSetting = new Setting();
             $responseLengthSetting->setName('api_log.max_response_body_length');
         }
+        $responseLengthSetting->setValue(($data->getResponseLength() > 5000 && $isCloud ? 5000 : $data->getResponseLength()) ?: 0);
 
-        $responseLengthSetting->setValue($data->getResponseLength());
+        if (!$keepDays = $repo->findOneBy(['name' => 'api_log.max_logs_keep_days'])) {
+            $keepDays = new Setting();
+            $keepDays->setName('api_log.max_logs_keep_days');
+        }
+        $keepDays->setValue($data->getKeepDays() ?: 1);
+
+        if (!$perKey = $repo->findOneBy(['name' => 'api_log.max_logs_per_key'])) {
+            $perKey = new Setting();
+            $perKey->setName('api_log.max_logs_per_key');
+        }
+        $perKey->setValue(($data->getPerKey() > 2500 && $isCloud ? 2500 : $data->getPerKey()) ?: 50);
 
         $em->persist($enabledSetting);
         $em->persist($modesSetting);
         $em->persist($requestLengthSetting);
         $em->persist($responseLengthSetting);
+        $em->persist($keepDays);
+        $em->persist($perKey);
         $em->flush();
 
         return View::create(null, Response::HTTP_NO_CONTENT, ['Location' => $this->generateUrl('api_logs_options')]);
@@ -200,12 +213,15 @@ class LogsController extends BaseController
      */
     private function getOptionsModel()
     {
-        $options = new OptionsModel();
+        $options   = new OptionsModel();
+        $logHelper = $this->container->get('api_log.helper');
         $options
-            ->setEnabled((bool) $this->container->get('api_log.helper')->isLoggingEnabled())
-            ->setRequestLength((int) $this->container->get('api_log.helper')->getMaxRequestBodyLength())
-            ->setResponseLength((int) $this->container->get('api_log.helper')->getMaxResponseBodyLength())
-            ->setModes($this->container->get('api_log.helper')->getModes())
+            ->setEnabled((bool) $logHelper->isLoggingEnabled())
+            ->setRequestLength((int) $logHelper->getMaxRequestBodyLength())
+            ->setResponseLength((int) $logHelper->getMaxResponseBodyLength())
+            ->setModes($logHelper->getModes())
+            ->setKeepDays((int) $logHelper->getKeepDays())
+            ->setPerKey((int) $logHelper->getPerKey())
         ;
 
         return $options;

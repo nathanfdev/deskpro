@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Log\Helper;
 
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel;
 use DeskPRO\Component\Util\RandUtils;
 use Symfony\Component\HttpFoundation\HeaderBag;
 
@@ -87,6 +88,22 @@ class LogHelper extends AbstractLogHelper
     public function getModes()
     {
         return $this->resolver->getGlobalSettings()->getSerializedArray('api_log.modes', []);
+    }
+
+    /**
+     * @return array
+     */
+    public function getKeepDays()
+    {
+        return $this->resolver->getGlobalSettings()->get('api_log.max_logs_keep_days', OptionsModel::DEFAULT_MAX_KEEP_DAYS);
+    }
+
+    /**
+     * @return array
+     */
+    public function getPerKey()
+    {
+        return $this->resolver->getGlobalSettings()->get('api_log.max_logs_per_key', OptionsModel::DEFAULT_MAX_PER_KEY);
     }
 
     /**

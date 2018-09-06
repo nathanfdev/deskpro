@@ -9,6 +9,9 @@ use JMS\Serializer\Annotation as JMS;
  */
 class OptionsModel
 {
+    const DEFAULT_MAX_KEEP_DAYS = 1;
+    const DEFAULT_MAX_PER_KEY   = 50;
+
     /**
      * Is log enabled.
      *
@@ -44,6 +47,24 @@ class OptionsModel
      * @var array
      */
     protected $modes = [];
+
+    /**
+     * How many days keep logs for the key.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $keepDays;
+
+    /**
+     * How many log entries keep for the key.
+     *
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    protected $perKey;
 
     /**
      * @return bool
@@ -121,6 +142,46 @@ class OptionsModel
     public function setModes(array $modes)
     {
         $this->modes = $modes;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getKeepDays()
+    {
+        return $this->keepDays;
+    }
+
+    /**
+     * @param int $keepDays
+     *
+     * @return $this
+     */
+    public function setKeepDays($keepDays)
+    {
+        $this->keepDays = $keepDays;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPerKey()
+    {
+        return $this->perKey;
+    }
+
+    /**
+     * @param int $perKey
+     *
+     * @return $this
+     */
+    public function setPerKey($perKey)
+    {
+        $this->perKey = $perKey;
 
         return $this;
     }
