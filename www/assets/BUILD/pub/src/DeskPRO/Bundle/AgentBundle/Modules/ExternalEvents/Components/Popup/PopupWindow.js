@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Immutable from 'immutable';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
-import { webhookAction } from '../../Actions/popupActions';
+import { webhookAction, dismissAction, createTicketAction } from '../../Actions/popupActions';
 import { PersonAvatar } from '../../../Common/Components/Avatar';
 
 export class PopupWindow extends React.Component {
@@ -81,11 +81,11 @@ export class PopupWindow extends React.Component {
   }
 
   dismissClick = () => {
-    console.log('dismiss');
+    this.props.dispatch(dismissAction());
   };
 
   createTicketClick = () => {
-    console.log('Creating ticket');
+    this.props.dispatch(createTicketAction());
   };
 
   webhookClick = (url, method, data) => {
@@ -173,9 +173,12 @@ TicketDetail.propTypes = {
 const OrganizationDetail = ({ data }) => (<div className="external-event-popup-body-block organization detail">
   <span className="header">{data.title}</span>
   <div className="detail-data">
-    Tickets: {data.tickets.length}<br />
+    Tickets: {data.tickets_count}, Chats: {data.chats_count}<br />
     Email Domains: {data.email_domains.join(',')}<br />
-    Phone Numbers: {data.phone_numbers.join(',')}<br />
+    Phone Numbers: {data.phone_numbers.join(',')}
+    <div>
+      { data.summary }
+    </div>
     {data.labels.length ? (<ul className="label-list">
       {data.labels.map((item, index) => (<li key={index}>
         <span className="item-label">{item}</span>

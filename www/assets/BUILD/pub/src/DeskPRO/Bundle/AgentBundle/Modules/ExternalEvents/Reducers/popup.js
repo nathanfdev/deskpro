@@ -1,5 +1,6 @@
 import { createReducer } from 'Ampliflux';
 import { newActionAlerts } from '../../Application/Actions/notificationActions';
+import { dismissAction, createTicketAction } from '../Actions/popupActions';
 
 const initialState = {
   me:        {},
@@ -18,5 +19,10 @@ export default createReducer(initialState, {
         break;
     }
     return newState;
+  },
+  [dismissAction]:      state => state.set('popupOpen', false),
+  [createTicketAction]: (state) => {
+    window.DeskPRO_Window.newTicketLoader.toggle();
+    return state.set('popupOpen', false);
   }
 });
