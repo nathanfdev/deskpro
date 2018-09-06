@@ -15,6 +15,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFeedback;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\Topic;
@@ -112,6 +113,9 @@ abstract class AbstractViewModelFactory
             case TicketMessage::class:
                 $handler = $this->container->get('api_serializer.handler.ticket_message');
                 break;
+            case TicketFeedback::class:
+                $handler = $this->container->get('api_serializer.handler.ticket_feedback');
+                break;
             case TicketParticipant::class:
                 $handler = $this->container->get('api_serializer.handler.ticket_participant');
                 break;
@@ -163,7 +167,8 @@ abstract class AbstractViewModelFactory
         $ticketPerson   = $ticket->getPerson();
         $ticketAgent    = $ticket->getAgent();
         $ticketMessages = iterator_to_array($ticket->getMessages());
+        $ticketFeedback = $this->container->getEm()->getRepository(TicketFeedback::class)->getFeedbackForTicket($ticket);
 
-        return [$ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages];
+        return [$ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketFeedback];
     }
 }

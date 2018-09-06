@@ -239,6 +239,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.ticket_feedback:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketFeedbackHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.ticket_charge:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketChargeHandler
     arguments:

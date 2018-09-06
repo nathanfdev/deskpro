@@ -18,9 +18,16 @@ class TicketAddCc extends TicketEmailType
 
     protected $templateFile = 'emails_user:ticket_add_cc.html.twig';
 
-    public function __construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $author)
-    {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
+    public function __construct(
+        $ticket,
+        $ticketPerson,
+        $ticketAgent,
+        $ticketLink,
+        $ticketMessages,
+        $ticketSatisfaction,
+        $author
+    ) {
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketSatisfaction);
 
         $this->author = $author;
     }
