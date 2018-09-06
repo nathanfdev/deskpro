@@ -358,7 +358,7 @@ class ServerReportFile
         $file = str_repeat('#', 72)."#\n fix-schema.log\n".str_repeat('#', 72)."\n\n";
 
         try {
-            $file .= $this->_readFile(dp_get_log_dir().'/fix-schema.txt');
+            $file .= $this->_readFile(dp_get_log_dir().'/fix-schema.log');
         } catch (IOException $e) {
             $file = '';
         }
