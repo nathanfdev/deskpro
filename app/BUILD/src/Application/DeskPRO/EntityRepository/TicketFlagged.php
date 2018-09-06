@@ -49,8 +49,8 @@ class TicketFlagged extends AbstractEntityRepository
         $person->loadHelper('PermissionsManager');
 
         $assigned_perm_part = "tickets.agent_id = {$person['id']}";
-        if ($person->getAgentTeamIds()) {
-            $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $person->getAgentTeamIds()).'))';
+        if ($person->getTeamIds()) {
+            $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $person->getTeamIds()).'))';
         }
 
         $where_perm = [];

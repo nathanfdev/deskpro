@@ -86,7 +86,10 @@ class PopupMessageGenerator extends AbstractGenerator
                         foreach ($displayData['query'] as $query) {
                             $search->addTerm($query['term'], $query['op'], $query['val']);
                         }
-                        $displayData['data'] = $this->getPeople($search->getMatches());
+                        $displayData['data'] = $this->getPeople(
+                            $search->getMatches(),
+                            $displayData['display'] === PopupModel::DISPLAY_VIEW_TYPE_DETAIL
+                        );
                         break;
                     case PopupModel::DISPLAY_BLOCK_TYPE_TICKET:
                         $search       = new TicketSearch();
@@ -98,7 +101,10 @@ class PopupMessageGenerator extends AbstractGenerator
                         foreach ($displayData['query'] as $query) {
                             $search->addTerm($query['term'], $query['op'], $query['val']);
                         }
-                        $displayData['data'] = $this->getTickets($search->getMatches());
+                        $displayData['data'] = $this->getTickets(
+                            $search->getMatches(),
+                            $displayData['display'] === PopupModel::DISPLAY_VIEW_TYPE_DETAIL
+                        );
                         break;
                     case PopupModel::DISPLAY_BLOCK_TYPE_ORG:
                         $search = new OrganizationSearch();
@@ -106,7 +112,10 @@ class PopupMessageGenerator extends AbstractGenerator
                         foreach ($displayData['query'] as $query) {
                             $search->addTerm($query['term'], $query['op'], $query['val']);
                         }
-                        $displayData['data'] = $this->getOrganizations($search->getMatches());
+                        $displayData['data'] = $this->getOrganizations(
+                            $search->getMatches(),
+                            $displayData['display'] === PopupModel::DISPLAY_VIEW_TYPE_DETAIL
+                        );
                         break;
                     default:
                         // no-op
@@ -127,18 +136,21 @@ class PopupMessageGenerator extends AbstractGenerator
     }
 
     /**
-     * @param $ids
+     * @param array $ids
+     * @param bool  $detailed
      *
      * @return Person[]|array
      */
-    protected function getPeople($ids)
+    protected function getPeople(array $ids, $detailed = false)
     {
         $data = [];
 
         foreach ($this->em->getRepository(Person::class)->findBy(['id' => $ids]) as $person) {
+            $context = new SideloadSerializationContext($detailed ? ['ticket', 'agent_team'] : []);
+            $context->setInlineSideloads($detailed);
             $data[] = $this->serializer->toArray(
                 new ApiWrapper($person),
-                new SideloadSerializationContext()
+                $context
             )['data'];
         }
 
@@ -146,32 +158,42 @@ class PopupMessageGenerator extends AbstractGenerator
     }
 
     /**
-     * @param $ids
+     * @param array $ids
+     * @param bool  $detailed
      *
      * @return array
      */
-    protected function getTickets($ids)
+    protected function getTickets(array $ids, $detailed = false)
     {
-        $data    = [];
-        $context = new SideloadSerializationContext();
+        $data = [];
         foreach ($this->em->getRepository(Ticket::class)->findBy(['id' => $ids]) as $ticket) {
-            $data[] = $this->serializer->toArray(new ApiWrapper($ticket), new SideloadSerializationContext());
+            $context = new SideloadSerializationContext();
+            $context->setInlineSideloads($detailed);
+            $data[] = $this->serializer->toArray(
+                new ApiWrapper($ticket),
+                $context
+            )['data'];
         }
 
         return $data;
     }
 
     /**
-     * @param $ids
+     * @param array $ids
+     * @param bool  $detailed
      *
      * @return array
      */
-    protected function getOrganizations($ids)
+    protected function getOrganizations(array $ids, $detailed = false)
     {
-        $data    = [];
-        $context = new SideloadSerializationContext();
+        $data = [];
         foreach ($this->em->getRepository(Organization::class)->findBy(['id' => $ids]) as $organization) {
-            $data[] = $this->serializer->toArray(new ApiWrapper($organization), $context);
+            $context = new SideloadSerializationContext($detailed ? [] : []);
+            $context->setInlineSideloads($detailed);
+            $data[] = $this->serializer->toArray(
+                new ApiWrapper($organization),
+                $context
+            )['data'];
         }
 
         return $data;

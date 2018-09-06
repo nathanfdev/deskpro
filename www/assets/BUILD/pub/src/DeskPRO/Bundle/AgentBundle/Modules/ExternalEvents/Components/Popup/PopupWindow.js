@@ -156,7 +156,7 @@ PersonDetail.propTypes = {
 };
 
 const TicketDetail = ({ data }) => (<div className="external-event-popup-body-block ticket detail">
-  <span className="header">{data.title} (#{data.id} / {data.ref})</span>
+  <span className="header">{data.subject} (#{data.id} | {data.ref})</span>
   <div className="detail-data">
     {data.labels.length ? (<ul className="label-list">
       {data.labels.map((item, index) => (<li key={index}>
@@ -172,6 +172,17 @@ TicketDetail.propTypes = {
 
 const OrganizationDetail = ({ data }) => (<div className="external-event-popup-body-block organization detail">
   <span className="header">{data.title}</span>
+  <div className="detail-data">
+    Tickets: {data.tickets.length}<br />
+    Email Domains: {data.email_domains.join(',')}<br />
+    Phone Numbers: {data.phone_numbers.join(',')}<br />
+    {data.labels.length ? (<ul className="label-list">
+      {data.labels.map((item, index) => (<li key={index}>
+        <span className="item-label">{item}</span>
+      </li>)
+      )}
+    </ul>) : null}
+  </div>
 </div>);
 OrganizationDetail.propTypes = {
   data: PropTypes.object.isRequired
@@ -187,16 +198,20 @@ PersonList.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-const TicketList = ({ data }) => (<ul className="external-event-popup-body-block person list">
+const TicketList = ({ data }) => (<ul className="external-event-popup-body-block ticket list">
   {data.map(ticket => <li>
-    #{ticket.id} - {ticket.title}
+    #{ticket.id} ({ticket.ref}) - {ticket.subject}
   </li>)}
 </ul>);
 TicketList.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-const OrganizationList = ({ data }) => (<div>{data.map(organization => <div>{organization.title}</div>)}</div>);
+const OrganizationList = ({ data }) => (<ul className="external-event-popup-body-block ticket list">
+  {data.map(organization => <li>
+    #{organization.id} - {organization.title}
+  </li>)}
+</ul>);
 OrganizationList.propTypes = {
   data: PropTypes.object.isRequired
 };
