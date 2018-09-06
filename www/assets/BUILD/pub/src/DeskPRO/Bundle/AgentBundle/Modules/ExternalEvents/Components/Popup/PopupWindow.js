@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import Immutable from 'immutable';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { webhookAction } from '../../Actions/popupActions';
+import { PersonAvatar } from '../../../Common/Components/Avatar';
 
 export class PopupWindow extends React.Component {
   static propTypes = {
@@ -36,7 +38,6 @@ export class PopupWindow extends React.Component {
   getContent() {
     return (
       <div className="external-event-popup-wrapper">
-        <div className="external-event-popup-head">PopupHead</div>
         <div className="external-event-popup-body">{this.getBody()}</div>
         <div className="external-event-popup-footer">
           {this.getActions()}
@@ -50,7 +51,7 @@ export class PopupWindow extends React.Component {
     return data.display.map((block) => {
       switch (block.type) {
         case 'html':
-          return <div>{block.content}</div>;
+          return <div className="external-event-popup-body-block">{block.content}</div>;
         case 'person':
           return PopupWindow.getPerson(block);
         case 'ticket':
@@ -133,28 +134,64 @@ WebhookButton.propTypes = {
   data:    PropTypes.object.isRequired
 };
 
-
-const PersonDetail = ({ data }) => (<div>{data.name}</div>);
+const PersonDetail = ({ data }) => (<div className="external-event-popup-body-block person detail">
+  <span className="header">{data.display_name}</span>
+  <div className="details">
+    <PersonAvatar size={40} person={Immutable.fromJS(data)} />
+    <div className="detail-data">
+      {`Emails: ${data.emails.join(',')}`}<br />
+      {data.phone_numbers.length ? `Phones: ${data.phone_numbers.join(',')} <br />` : null}
+      Tickets: {data.tickets_count}, Chats: {data.chats_count}<br />
+      {data.labels.length ? (<ul className="label-list">
+        {data.labels.map((item, index) => (<li key={index}>
+          <span className="item-label">{item}</span>
+        </li>)
+        )}
+      </ul>) : null}
+    </div>
+  </div>
+</div>);
 PersonDetail.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-const TicketDetail = ({ data }) => (<div>{data.title}</div>);
+const TicketDetail = ({ data }) => (<div className="external-event-popup-body-block ticket detail">
+  <span className="header">{data.title} (#{data.id} / {data.ref})</span>
+  <div className="detail-data">
+    {data.labels.length ? (<ul className="label-list">
+      {data.labels.map((item, index) => (<li key={index}>
+        <span className="item-label">{item}</span>
+      </li>)
+      )}
+    </ul>) : null}
+  </div>
+</div>);
 TicketDetail.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-const OrganizationDetail = ({ data }) => (<div>{data.title}</div>);
+const OrganizationDetail = ({ data }) => (<div className="external-event-popup-body-block organization detail">
+  <span className="header">{data.title}</span>
+</div>);
 OrganizationDetail.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-const PersonList = ({ data }) => (<div>{data.map(person => <div>{person.name}</div>)}</div>);
+const PersonList = ({ data }) => (<ul className="external-event-popup-body-block person list">
+  {data.map(person => <li>
+    <PersonAvatar person={Immutable.fromJS(person)} />{person.display_name} ({person.primary_email})
+    {person.phone_numbers.length ? `, phones: ${person.phone_numbers.join(';')}` : null}
+  </li>)}
+</ul>);
 PersonList.propTypes = {
   data: PropTypes.object.isRequired
 };
 
-const TicketList = ({ data }) => (<div>{data.map(ticket => <div>{ticket.title}</div>)}</div>);
+const TicketList = ({ data }) => (<ul className="external-event-popup-body-block person list">
+  {data.map(ticket => <li>
+    #{ticket.id} - {ticket.title}
+  </li>)}
+</ul>);
 TicketList.propTypes = {
   data: PropTypes.object.isRequired
 };

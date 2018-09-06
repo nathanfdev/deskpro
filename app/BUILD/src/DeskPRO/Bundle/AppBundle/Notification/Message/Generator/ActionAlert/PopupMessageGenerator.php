@@ -133,10 +133,13 @@ class PopupMessageGenerator extends AbstractGenerator
      */
     protected function getPeople($ids)
     {
-        $data    = [];
-        $context = new SideloadSerializationContext();
+        $data = [];
+
         foreach ($this->em->getRepository(Person::class)->findBy(['id' => $ids]) as $person) {
-            $data[] = $this->serializer->toArray(new ApiWrapper($person), $context)['data'];
+            $data[] = $this->serializer->toArray(
+                new ApiWrapper($person),
+                new SideloadSerializationContext()
+            )['data'];
         }
 
         return $data;
@@ -152,7 +155,7 @@ class PopupMessageGenerator extends AbstractGenerator
         $data    = [];
         $context = new SideloadSerializationContext();
         foreach ($this->em->getRepository(Ticket::class)->findBy(['id' => $ids]) as $ticket) {
-            $data[] = $this->serializer->toArray(new ApiWrapper($ticket), $context);
+            $data[] = $this->serializer->toArray(new ApiWrapper($ticket), new SideloadSerializationContext());
         }
 
         return $data;
