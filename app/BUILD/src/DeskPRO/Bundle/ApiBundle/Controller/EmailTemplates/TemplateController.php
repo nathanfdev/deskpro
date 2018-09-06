@@ -5,8 +5,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\EmailTemplates;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\Entity\TicketTrigger;
@@ -22,19 +20,14 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\EmailTemplateType;
-use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
 use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
-use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
-use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
-use DeskPRO\Bundle\SendmailBundle\Twig\TwigEngine;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Twig_Loader_Chain;
 
 /**
  * API access to person settings.
@@ -244,6 +237,8 @@ class TemplateController extends BaseController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function postRenderTemplateAction(Request $request)
@@ -268,7 +263,7 @@ class TemplateController extends BaseController
     /**
      * @ApiDoc(
      *     section="Email Templates",
-     *     description="Render a template to preview",
+     *     description="Send preview of a template",
      *     input="array",
      *     output="string"
      *)
@@ -276,6 +271,8 @@ class TemplateController extends BaseController
      * @Rest\Post("/send_preview")
      *
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -340,7 +337,7 @@ class TemplateController extends BaseController
      *
      * @param $id
      *
-     * @return View
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function getRevertLegacyTemplateAction($id)
     {
@@ -382,6 +379,8 @@ class TemplateController extends BaseController
      * @Rest\Delete("/legacy_template/{id}")
      *
      * @param $id
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function deleteLegacyTemplateAction($id)
     {
@@ -463,12 +462,16 @@ class TemplateController extends BaseController
      * @param string  $lang
      * @param array   $templates
      *
+     * @throws \Exception
+     *
      * @return EmailTemplateCode
      */
     private function renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $templates)
     {
-        /** @var Language $language */
-        $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $lang]);
+        $renderer = $this->get('email.email_renderer');
+
+        $dataFactory = $this->get('email.preview_fake_data_factory');
+
         /** @var AgentViewModelFactory|UserViewModelFactory $factory */
         $factory = $this->get('email.'.$group.'_viewmodel_factory');
         $action  = 'create'.$viewModel.'Model';
@@ -477,53 +480,15 @@ class TemplateController extends BaseController
             throw $this->createNotFoundException('Missing method '.$action.' in factory');
         }
 
-        $dataFactory = $this->get('email.preview_fake_data_factory');
-        $arguments   = $dataFactory->getArguments($factory, $action, $request);
+        $arguments = $dataFactory->getArguments($factory, $action, $request);
 
-        $recipient = new Person();
-        $recipient->setFirstName('FirstName');
-        $recipient->setLastName('LastName');
-        $email = new PersonEmail();
-        $email->setEmail('test@example.com');
-        $recipient->setPrimaryEmail($email);
-        $recipient->setPassword('Password1234');
         /** @var EmailBaseType $model */
         $model = call_user_func_array([$factory, $action], $arguments);
 
-        $recipient = $this->get('api_serializer.handler.person')->createModel($recipient, new SideloadSerializationContext());
-        $model->setRecipient($recipient);
-        $model->setSiteUrl($this->container->getBrandSetting('core.site_url'));
-        $model->setSiteName($this->container->getBrandSetting('core.site_name'));
-        $model->setDeskproUrl($this->container->getBrandSetting('core.deskpro_url'));
+        /** @var Language $language */
+        $language = $this->getRepository(Language::class)->findOneBy(['locale' => $lang]);
 
-        $preProcessor = new EmailPreProcessor();
-        $code         = $preProcessor->process($code, $tplName);
-
-        $twig = clone $this->get('templating.new_email.twig');
-        $twig->setCache(false);
-        $templates[$tplName] = $code;
-        $stringLoader        = new \Twig_Loader_Array($templates);
-        $hybridLoader        = $this->get('templating.new_email.twig.loader');
-        $loader              = new Twig_Loader_Chain([$stringLoader, $hybridLoader]);
-        $twig->setLoader($loader);
-
-        /** @var TwigEngine $twigEngine */
-        $twigEngine = $this->get('templating.new_email.twig.engine');
-        $twigEngine->setEnvironment($twig);
-
-        /** @var EmailRenderer $renderer */
-        $renderer = $this->get('email.email_renderer');
-        $renderer->setTemplateEngine($twigEngine);
-
-        $view = null;
-        $this->get('translator')->setTemporaryLanguage(
-            $language,
-            function () use ($tplName, $model, $renderer, &$view) {
-                $view = $renderer->render($tplName, $model);
-            }
-        );
-
-        return $view;
+        return $renderer->renderPreview($code, $tplName, $model, $language, $templates);
     }
 
     /**

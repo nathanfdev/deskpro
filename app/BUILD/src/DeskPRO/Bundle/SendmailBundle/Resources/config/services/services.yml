@@ -14,7 +14,11 @@ services:
 
   email.email_renderer:
     class: DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer
-    arguments: ["@serializer", "@templating.new_email.twig.engine", "@service_container"]
+    arguments:
+      - "@serializer"
+      - "@templating.new_email.twig.engine"
+      - "@service_container"
+      - "@doctrine.orm.entity_manager"
 
   email.email_sender:
     class: DeskPRO\Bundle\SendmailBundle\Sender\EmailSender

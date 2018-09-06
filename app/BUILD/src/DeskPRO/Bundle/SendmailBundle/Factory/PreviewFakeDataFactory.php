@@ -44,16 +44,16 @@ class PreviewFakeDataFactory
     }
 
     /**
-     * @param AgentViewModelFactory|UserViewModelFactory $factory
-     * @param string                                     $action
-     * @param Request                                    $request
+     * @param AgentViewModelFactory|UserViewModelFactory|CustomViewModelFactory $factory
+     * @param string                                                            $action
+     * @param Request                                                           $request
+     *
+     * @throws \ReflectionException
      *
      * @return array
      */
     public function getArguments($factory, $action, $request)
     {
-        $arguments = [];
-
         $reflection = new ReflectionClass($factory);
         $parameters = $reflection->getMethod($action)->getParameters();
         $arguments  = array_map(function ($parameter) use ($request) {
