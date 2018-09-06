@@ -81,7 +81,7 @@ class PreflightChecksListener implements EventSubscriberInterface
                 $event->setResponse($r);
                 $event->stopPropagation();
             } else {
-                $r = new Response("Can't connect to database.\nError: connection_error", 423, ['Content-Type' => 'text/plain']);
+                $r = new Response("Can't connect to database.\nError: connection_error", 500, ['Content-Type' => 'text/plain']);
                 $event->setResponse($r);
                 $event->stopPropagation();
             }
