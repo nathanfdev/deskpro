@@ -72,6 +72,23 @@ class PreflightChecksListener implements EventSubscriberInterface
             }
         }
 
+        if (!$this->container->get('doctrine')->getConnection()->isConnected()) {
+            /* @var \DpRun\DpEnv $DP_ENV */
+            global $DP_ENV;
+
+            if (!$DP_ENV->getConfig('database.host') && !$DP_ENV->getConfig('database.0.host')) {
+                $r = new Response("DeskPRO is not installed.\nError: missing_config", 423, ['Content-Type' => 'text/plain']);
+                $event->setResponse($r);
+                $event->stopPropagation();
+            } else {
+                $r = new Response("Can't connect to database.\nError: connection_error", 500, ['Content-Type' => 'text/plain']);
+                $event->setResponse($r);
+                $event->stopPropagation();
+            }
+
+            return;
+        }
+
         // Not installed yet
         if (!$settings->get('core.install_build')) {
             $r = new Response("DeskPRO is not installed.\nError: install_incomplete", 423, ['Content-Type' => 'text/plain']);

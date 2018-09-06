@@ -2550,19 +2550,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return window.location.reload();
 		}
 
-		if (DPC_IS_CLOUD) {
-			if (xhr && xhr.status && xhr.status == '500') {
-				this.showAlert($('<div>We detected a problem while trying to load the page you requested. Please try again.</div>'));
-				if (DpErrorLog) {
-					DpErrorLog.logError('AJAX Error ' + xhr.status + ' on ' + ajaxOptions.url);
-				}
-				return;
-			}
-			if (xhr && (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeoutec')) {
-				return;
-			}
-		}
-
 		if (xhr && xhr.status && xhr.status == '403') {
 
 			if (ajaxOptions.ignorePermError) {
@@ -2633,6 +2620,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.incNetworkError();
 			return;
 		}
+
+	  if (DPC_IS_CLOUD) {
+		if (xhr && xhr.status && (xhr.status == '500' || xhr.status == '503')) {
+		  this.showAlert($('<div>We detected a problem while trying to load the page you requested. Please try again.</div>'));
+		  return;
+		}
+		if (xhr && (xhr.status == 'timeout' || xhr.statusText == 'timeout' || xhr.responseText == 'timeout' || errorThrown == 'timeoutec')) {
+		  return;
+		}
+	  }
 
 		// We dont know if the request was JSON or HTML (eg the sn code might be embedded in html in json),
 		// so we have to sniff the raw responseText to see about any embedded SN code
