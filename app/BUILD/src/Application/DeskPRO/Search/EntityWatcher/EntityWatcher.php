@@ -23,6 +23,7 @@ use Application\DeskPRO\Entity\ObjectLang;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -46,6 +47,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         Topic::class                 => 1,
         Person::class                => 1,
         PersonEmail::class           => 1,
+        PersonPhoneNumber::class     => 1,
         Organization::class          => 1,
         ChatConversation::class      => 1,
         ChatMessage::class           => 1,
@@ -211,6 +213,8 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
         } elseif ($ent instanceof TicketMessage) {
             return $ent->ticket;
         } elseif ($ent instanceof PersonEmail) {
+            return $ent->person;
+        } elseif ($ent instanceof PersonPhoneNumber) {
             return $ent->person;
         } elseif ($ent instanceof ChatMessage) {
             return $ent->conversation;
