@@ -106,7 +106,10 @@ export class PopupWindow extends React.Component {
   }
 }
 
-const DismissButton = ({ onClick, title }) => (<button onClick={onClick}>{title}</button>);
+const DismissButton = ({ onClick, title }) => (
+  <button className="ui labeled icon red button" onClick={onClick}>
+    <i className="delete icon" />{title}
+  </button>);
 DismissButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   title:   PropTypes.string
@@ -115,7 +118,10 @@ DismissButton.defaultProps = {
   title: 'Dismiss'
 };
 
-const CreateTicketButton = ({ onClick, title }) => (<button onClick={onClick}>{title}</button>);
+const CreateTicketButton = ({ onClick, title }) => (
+  <button className="ui labeled icon green button" onClick={onClick}>
+    <i className="add icon" />{title}
+  </button>);
 CreateTicketButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   title:   PropTypes.string
@@ -123,9 +129,10 @@ CreateTicketButton.propTypes = {
 CreateTicketButton.defaultProps = {
   title: 'Create Ticket'
 };
-
 const WebhookButton = ({ onClick, url, method, data, title }) => (
-  <button onClick={() => onClick(url, method, data)}>{title}</button>);
+  <button className="ui labeled icon orange button" onClick={() => onClick(url, method, data)}>
+    <i className="undo icon" />{title}
+  </button>);
 WebhookButton.propTypes = {
   onClick: PropTypes.func.isRequired,
   url:     PropTypes.string.isRequired,
@@ -171,7 +178,7 @@ TicketDetail.propTypes = {
 };
 
 const OrganizationDetail = ({ data }) => (<div className="external-event-popup-body-block organization detail">
-  <span className="header">{data.title}</span>
+  <span className="header">{data.name}</span>
   <div className="detail-data">
     Tickets: {data.tickets_count}, Chats: {data.chats_count}<br />
     Email Domains: {data.email_domains.join(',')}<br />
