@@ -10,6 +10,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Orb\Util\Arrays;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -53,8 +54,9 @@ TXT
             ->addOption('fix-tables', null, InputOption::VALUE_NONE, 'Fix tables, columns, column types')
             ->addOption('fix-indexes', null, InputOption::VALUE_NONE, 'Fix indexes')
             ->addOption('fix-fks', null, InputOption::VALUE_NONE, 'Fix foreign key constraints')
-            ->addOption('fix-ref-integrity', null, InputOption::VALUE_NONE, 'Fix referential integrity. This will check all FKs to ensure referential integrity between tables. If there is a problem, columns will be set to NULL or rows may be deleted. Since integrity errors may sometimes involve deleting data, it\'s very highly recommend to make a backup first. Deleted records SHOULD be unrefernced or old (i.e. unused or invalid), but you should make a backup anyway just in case.')
-            ->addOption('fix-all', null, InputOption::VALUE_NONE, 'Shortcut to enable all --fix-XXX options.')
+            ->addOption('fix-all', null, InputOption::VALUE_NONE, 'Shortcut for: --fix-tables --fix-indexes --fix-fks')
+            ->addOption('ref-integrity', null, InputOption::VALUE_NONE, 'Fix referential integrity. This will check all FKs to ensure referential integrity between tables. If there is a problem, columns will be set to NULL or rows may be deleted. Since integrity errors may sometimes involve deleting data, it\'s very highly recommend to make a backup first. Deleted records SHOULD be unrefernced or old (i.e. unused or invalid), but you should make a backup anyway just in case.')
+            ->addOption('fix-ref-integrity', null, InputOption::VALUE_NONE, 'Alias for --ref-integrity. But note that this is NOT included in --fix-all. This exists just for backwards compt.')
         ;
     }
 
@@ -66,10 +68,16 @@ TXT
         $logger = new Logger('fix-schema');
         $logger->pushHandler(new StreamHandler($this->getContainer()->get('deskpro.app_env')->getUserLogsDir().'/fix-schema.log'));
 
+        if ($input->getOption('fix-ref-integrity')) {
+            $input->setOption('ref-integrity', true);
+        }
+
+        $didFkChanges = false;
+
         if (!$input->getOption('fix-tables')
             && !$input->getOption('fix-indexes')
             && !$input->getOption('fix-fks')
-            && !$input->getOption('fix-ref-integrity')
+            && !$input->getOption('ref-integrity')
             && !$input->getOption('fix-all')
         ) {
             $output->writeln('Specify at least one fix option. Check --help for usage info.');
@@ -81,20 +89,19 @@ TXT
             $input->setOption('fix-tables', true);
             $input->setOption('fix-indexes', true);
             $input->setOption('fix-fks', true);
-            $input->setOption('fix-ref-integrity', true);
         }
 
         if (!$input->getOption('run')) {
-            $output->writeln('<info>!!! NOTE !!!</info>');
-            $output->writeln('You have not specified the --run flag, so no changes are being applied. This is running in PREVIEW mode.');
+            $output->writeln('<info>--- !!! NOTE !!!</info>');
+            $output->writeln('--- You have not specified the --run flag, so no changes are being applied. This is running in PREVIEW mode.');
             $output->writeln('');
 
-            if ($input->getOption('fix-ref-integrity')) {
-                $output->writeln('<info>!!! NOTE !!!</info>');
-                $output->writeln('You have enabled --fix-ref-integrity, but this is preview mode. If your schema is missing
-FKs, then the preview here may not be accurate. For an accurate preview, fix FKs first 
-with --fix-fks and THEN run a preview of --fix-ref-integrity. (This is necessary because
-FKs must first be correct and accurate before the integrity can be validated.)');
+            if ($input->getOption('ref-integrity')) {
+                $output->writeln('<info>--- !!! NOTE !!!</info>');
+                $output->writeln('--- You have enabled --ref-integrity, but this is preview mode. If your schema is missing
+--- FKs, then the preview here may not be accurate. For an accurate preview, fix FKs first 
+--- with --fix-fks and THEN run a preview of --ref-integrity. (This is necessary because
+--- FKs must first be correct and accurate before the integrity can be validated.)');
                 $output->writeln('');
             }
         }
@@ -106,37 +113,63 @@ FKs must first be correct and accurate before the integrity can be validated.)')
             'audit'   => $this->getContainer()->get('doctrine.orm.audit_entity_manager'),
         ];
 
+        $logStatus = function ($message, $countParam = null) use ($output, $logger) {
+            if (is_array($countParam)) {
+                if (is_array(Arrays::getFirstItem($countParam))) {
+                    $count = 0;
+                    foreach ($countParam as $sub) {
+                        $count += count($sub);
+                    }
+                } else {
+                    $count = count($countParam);
+                }
+            } elseif ($countParam !== null) {
+                $count = (int) $countParam;
+            } else {
+                $count = null;
+            }
+
+            $logger->info($message.($count ? " ($count)" : ''));
+            $output->writeln('');
+            $output->writeln('<info>--- '.$message.'</info>');
+            if ($count !== null) {
+                $output->writeln('<info>--- '.$count.' operation'.($count == 1 ? '' : 's').'</info>');
+
+                if ($count === 0) {
+                    $output->writeln('--- Nothing to do');
+                    $output->writeln('');
+                }
+            }
+        };
+
         // update database schema
         if ($input->getOption('fix-tables') || $input->getOption('fix-indexes') || $input->getOption('fix-fks')) {
             $fixDiff = $this->getFixSchemaQueries($entityManagers);
 
             if ($input->getOption('fix-fks')) {
-                $output->writeln('<info>Drop outdated foreign keys ...</info>');
-                $logger->debug('Drop outdated foreign keys.');
+                $logStatus('Drop outdated foreign keys', $fixDiff['drop_fks']);
 
                 foreach ($fixDiff['drop_fks'] as $dbId => $queries) {
                     foreach ($queries as $query) {
                         $query = $this->correctDropForeignKeyQuery($dbId, $query, $output, $logger);
 
-                        $output->writeln('');
                         $output->writeln($query);
                         $logger->error($query);
 
                         if ($input->getOption('run')) {
                             $this->executeQuery($dbId, $query, $output, $logger);
+                            $didFkChanges = true;
                         }
                     }
                 }
             }
             if ($input->getOption('fix-indexes')) {
-                $output->writeln('<info>Drop outdated indexes ...</info>');
-                $logger->debug('Drop outdated indexes.');
+                $logStatus('Drop outdated indexes', $fixDiff['drop_indexes']);
 
                 foreach ($fixDiff['drop_indexes'] as $dbId => $queries) {
                     foreach ($queries as $query) {
                         $query = $this->correctDropIndexQuery($dbId, $query, $output, $logger);
 
-                        $output->writeln('');
                         $output->writeln($query);
                         $logger->error($query);
 
@@ -148,13 +181,11 @@ FKs must first be correct and accurate before the integrity can be validated.)')
             }
 
             if ($input->getOption('fix-tables')) {
-                $output->writeln('<info>Fixing database tables ...</info>');
-                $logger->debug('Fixing database tables.');
+                $logStatus('Fixing database tables', $fixDiff['tables']);
 
                 foreach ($fixDiff['tables'] as $dbId => $queries) {
                     foreach ($queries as $query) {
-                        $output->writeln('');
-                        $output->writeln($query);
+                        $output->writeln($query.';');
                         $logger->error($query);
 
                         if ($input->getOption('run')) {
@@ -163,17 +194,25 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                     }
                 }
 
-                $output->writeln('');
-                $output->writeln('<info>Done fixing tables.</info>');
+                $engineQueries = ORMUtil::getTablesEngineChecks($entityManagers);
+                $logStatus('Fixing database engines', $engineQueries);
+                foreach ($engineQueries as $dbId => $queries) {
+                    foreach ($queries as $query) {
+                        $output->writeln($query.';');
+                        $logger->error($query);
+
+                        if ($input->getOption('run')) {
+                            $this->executeQuery($dbId, $query, $output, $logger);
+                        }
+                    }
+                }
             }
             if ($input->getOption('fix-indexes')) {
-                $output->writeln('<info>Fixing indexes ...</info>');
-                $logger->debug('Fixing indexes.');
+                $logStatus('Fixing indexes', $fixDiff['add_indexes']);
 
                 foreach ($fixDiff['add_indexes'] as $dbId => $queries) {
                     foreach ($queries as $query) {
-                        $output->writeln('');
-                        $output->writeln($query);
+                        $output->writeln($query.';');
                         $logger->error($query);
 
                         if ($input->getOption('run')) {
@@ -181,53 +220,44 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                         }
                     }
                 }
-
-                $output->writeln('');
-                $output->writeln('<info>Done fixing indexes.</info>');
             }
             if ($input->getOption('fix-fks')) {
-                $output->writeln('<info>Add missing foreign keys ...</info>');
-                $logger->debug('Add missing foreign keys.');
+                $logStatus('Add missing foreign keys', $fixDiff['add_fks']);
 
                 foreach ($fixDiff['add_fks'] as $dbId => $queries) {
                     foreach ($queries as $query) {
-                        $output->writeln('');
-                        $output->writeln($query);
+                        $output->writeln($query.';');
                         $logger->error($query);
 
                         if ($input->getOption('run')) {
                             $this->executeQuery($dbId, $query, $output, $logger);
+                            $didFkChanges = true;
                         }
                     }
                 }
-
-                $output->writeln('');
-                $output->writeln('<info>Done fixing foreign keys.</info>');
             }
         }
 
         // update ref integrity
-        if ($input->getOption('fix-ref-integrity')) {
-            $output->writeln('<info>Checking integrity. This may take a while.</info>');
-            $logger->debug('Checking integrity.');
+        if ($input->getOption('ref-integrity')) {
+            $logStatus('Validating referential integrity');
+            $output->writeln('<info>--- This may take a while</info>');
 
             try {
                 foreach ($entityManagers as $dbId => $em) {
                     $checks = $this->getIntegrityChecks($em);
 
                     foreach ($checks as $tableName => $tableChecks) {
-                        $output->writeln('');
-                        $output->writeln("<comment>Table: $tableName</comment>");
+                        if (!$tableChecks) {
+                            continue;
+                        }
 
-                        $logger->debug("Table: $tableName");
+                        $output->write("<comment>--- Table: $tableName</comment>");
 
                         foreach ($tableChecks as $check) {
-                            $fkName = sprintf("\tCheck FK: {$check['name']} (%s)", implode(', ', $check['columns']));
+                            $fkName = sprintf("--- Check: {$check['name']} (%s) ", implode(', ', $check['columns']));
 
-                            $output->writeln('');
-                            $output->writeln($fkName);
-                            $output->write("\t");
-
+                            $output->write("\n".$fkName);
                             $logger->debug($fkName);
 
                             foreach ($this->getIntegrityDataIterator($dbId, $check, $output, $logger) as $rows) {
@@ -237,8 +267,8 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                                 $queries = $this->getIntegrityFixQueries($dbId, $check, $rows, $output, $logger);
                                 foreach ($queries as $query) {
                                     $output->writeln('');
-                                    $output->writeln("\t\t-> $query");
-                                    $logger->error("\t\t-> $query");
+                                    $output->writeln("$query;");
+                                    $logger->error("$query");
 
                                     if ($input->getOption('run')) {
                                         $this->executeQuery($dbId, $query, $output, $logger);
@@ -246,12 +276,14 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                                 }
                             }
                         }
+
+                        $output->writeln('');
+                        $output->writeln('');
                     }
                 }
-
-                $output->writeln('');
-                $output->writeln('<info>Done fixing integrity references.</info>');
             } catch (DBALException $e) {
+                $logger->debug('Unable to perform integrity fixes -- db error');
+                $logger->debug($e->getMessage());
                 $output->writeln('<comment>Unable to perform integrity fixes due to the database error.</comment>');
                 $output->writeln('<comment>Try to run the command with --fix-tables --fix-indexes --fix-fks first.</comment>');
             }
@@ -262,7 +294,12 @@ FKs must first be correct and accurate before the integrity can be validated.)')
             $this->getContainer()->get('database_connection')->delete('settings', ['name' => 'core.last_fk_check']);
         }
 
-        $output->writeln('<info>All done.</info>');
+        if (!$input->getOption('ref-integrity') && $didFkChanges) {
+            $output->writeln('<info>Foreign keys were updated</info>');
+            $output->writeln('You might want to run this command with --ref-integrity flag to scan for invalid references.');
+        }
+
+        $output->writeln('<info>--- All done.</info>');
     }
 
     /**
