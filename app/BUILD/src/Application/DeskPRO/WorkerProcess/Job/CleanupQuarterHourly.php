@@ -125,7 +125,7 @@ class CleanupQuarterHourly extends AbstractJob
     {
         // cleanup by time
         $settingsBag = App::getContainer()->get('settings_resolver')->getGlobalSettings();
-        $keepDays    = $settingsBag->get('api_log.max_logs_keep_days', OptionsModel::DEFAULT_MAX_KEEP_DAYS);
+        $keepDays    = (int) $settingsBag->get('api_log.max_logs_keep_days', OptionsModel::DEFAULT_MAX_KEEP_DAYS) ?: 1;
         $dateTime    = new \DateTime('now', new \DateTimeZone('UTC'));
         $dateTime->modify(sprintf('-%d days', $keepDays));
 

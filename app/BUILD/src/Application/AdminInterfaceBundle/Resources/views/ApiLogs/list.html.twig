@@ -101,23 +101,6 @@
                                     </label>
                                 </div>
                             </div>
-                            {% if not app.isCloud() %}
-                                <div class="form-group">
-                                    <div class="col-lg-3">
-                                        <h3>Modes</h3>
-                                    </div>
-                                    <div class="col-lg-9">
-                                        <ul class="checkbox-list" style="min-width: 250px">
-                                            <li ng-repeat="mode in LogsCtrl.modes">
-                                                <label>
-                                                    <input type="checkbox" ng-checked="LogsCtrl.options.modes.indexOf(mode) > -1" dp-change="LogsCtrl.toggleMode(mode)" />
-                                                    <em>{{ ng_var('mode') }}</em>
-                                                </label>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            {% endif %}
                             <div class="form-group">
                                 <div class="col-lg-3">
                                     <h3>Max request body length (bytes)</h3>

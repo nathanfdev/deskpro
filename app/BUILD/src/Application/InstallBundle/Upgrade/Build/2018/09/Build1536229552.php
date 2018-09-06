@@ -10,6 +10,9 @@ class Build1536229552 extends AbstractBuild implements OnlineBuildInterface
 
     public function runAlters()
     {
+        $this->out('Reset api log modes');
+        $this->execDbQuery('default', 'DELETE FROM `settings` WHERE `name` IN (\'api_log.modes\')');
+
         $this->out('Clearing key logs');
         $this->truncateTable('default', 'api_key_log');
         $this->truncateTable('default', 'api_log');

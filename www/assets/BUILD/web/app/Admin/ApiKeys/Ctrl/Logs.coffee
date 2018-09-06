@@ -8,11 +8,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
       @service = @DataService.get 'ApiLogs'
       @list = []
       @filtration = @service.getFiltration()
-      @modes = ['session', 'key', 'token']
       @methods = ['GET', 'POST', 'PUT', 'DELETE'] # I know, I know, but we use only listed
       @options = {
-        enabled: false,
-        modes: ['key'],
+        enabled: false
       }
 
     ###
@@ -31,12 +29,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
     toggleLogs: ->
       @options.enabled = !@options.enabled
-
-    toggleMode: (mode) ->
-      if Arrays.findIndex(@options.modes, (v) -> v == mode) >= 0
-        Arrays.findAndRemove(@options.modes, (v) -> v == mode)
-      else
-        @options.modes.push(mode)
 
     updateOptions: ->
       @service.updateOptions(@options).then(

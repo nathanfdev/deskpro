@@ -99,7 +99,8 @@ class LogsController extends BaseController
             $modesSetting = new Setting();
             $modesSetting->setName('api_log.modes');
         }
-        $modesSetting->setValue(serialize($data->getModes()));
+        // only key, if want others then override via config
+        $modesSetting->setValue(serialize(['key']));
 
         // update request length setting
         if (!$requestLengthSetting = $repo->findOneBy(['name' => 'api_log.max_request_body_length'])) {
