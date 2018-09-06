@@ -198,18 +198,16 @@ class Boot
         }
         Request::setTrustedProxies($proxies);
 
+        // SF has buggy handling of HEADER_FORWARDED
+        // But it's not really used (X-Forwarded-* are the de-facto)
+        // so we should just disable it.
+        Request::setTrustedHeaderName(Request::HEADER_FORWARDED, null);
+
         //------------------------------
         // JS boot tasks
         //------------------------------
 
         self::runBootTasks($env, ['HttpJs'], $res);
-
-        //-----------------------------
-        // Workaround for Chrome Data Saver issue (DP-1430)
-        //-----------------------------
-        if (!empty($_SERVER['HTTP_SAVE_DATA'])) {
-            Request::setTrustedHeaderName(Request::HEADER_FORWARDED, null);
-        }
 
         //------------------------------
         // Boot to a normal symfony request
