@@ -117,8 +117,8 @@ class PopupController extends BaseController
     public function dismissAction($uuid)
     {
         $this->getContainer()->get('event_dispatcher')->dispatch(
-            PopupEvent::ACTION_TYPE_DISMISS,
-            ['uuid' => $uuid]
+            PopupEvent::EVENT_NAME,
+            new PopupEvent($uuid, PopupEvent::ACTION_TYPE_DISMISS, [])
         );
 
         return View::create([], Response::HTTP_NO_CONTENT);

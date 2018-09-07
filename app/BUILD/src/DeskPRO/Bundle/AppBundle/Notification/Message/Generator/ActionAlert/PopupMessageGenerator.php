@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
+use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Model\PopupModel;
 use DeskPRO\Bundle\AppBundle\Notification\Event\ExternalEvent\PopupEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
@@ -30,19 +31,27 @@ class PopupMessageGenerator extends AbstractGenerator
     private $serializer;
 
     /**
+     * @var AgentDataService
+     */
+    private $agentDataService;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
      * @param TokenStorageInterface $tokenStorage
      * @param Serializer            $serializer
+     * @param AgentDataService      $agentDataService
      */
     public function __construct(
-        EntityManager $em,
+        EntityManager         $em,
         TokenStorageInterface $tokenStorage,
-        Serializer $serializer
+        Serializer            $serializer,
+        AgentDataService      $agentDataService
     ) {
         parent::__construct($em, $tokenStorage);
-        $this->serializer = $serializer;
+        $this->serializer       = $serializer;
+        $this->agentDataService = $agentDataService;
     }
 
     /**
@@ -76,6 +85,10 @@ class PopupMessageGenerator extends AbstractGenerator
     public function getData(SystemEventInterface $event)
     {
         if ($event instanceof PopupEvent) {
+            if ($event->getAction() === PopupEvent::ACTION_TYPE_DISMISS) {
+                return ['action' => PopupEvent::ACTION_TYPE_DISMISS, 'uuid' => $event->getUuid()];
+            }
+
             $data = $event->getData();
 
             foreach ($data['display'] as &$displayData) {
@@ -138,6 +151,10 @@ class PopupMessageGenerator extends AbstractGenerator
 
     protected function getTargets(PopupEvent $event)
     {
+        if ($event->getAction() === PopupEvent::ACTION_TYPE_DISMISS) {
+            return $this->agentDataService->getOnlineAgentIds();
+        }
+
         $data = $event->getData();
         if ($data['target']['type'] === PopupModel::TARGET_TYPE_LIST) {
             return $data['target']['list'];
