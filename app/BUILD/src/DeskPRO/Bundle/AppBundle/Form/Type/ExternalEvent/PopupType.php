@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ExternalEvent;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\JsonArrayType;
 use DeskPRO\Bundle\AppBundle\Model\PopupModel;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -27,8 +26,8 @@ class PopupType extends AbstractType
                 'property_path' => 'externalId',
             ])
             // for now conditions to find target and additional info just arrays
-            ->add('target', JsonArrayType::class, [
-                'required'    => false,
+            ->add('target', PopupTargetType::class, [
+                'required'    => true,
                 'constraints' => [
                     new Assert\NotBlank(),
                 ],

@@ -12,6 +12,9 @@ use JMS\Serializer\Annotation as JMS;
  */
 class PopupModel
 {
+    const TARGET_TYPE_LIST  = 'list';
+    const TARGET_TYPE_QUERY = 'query';
+
     const DISPLAY_BLOCK_TYPE_HTML   = 'html';
     const DISPLAY_BLOCK_TYPE_PERSON = 'person';
     const DISPLAY_BLOCK_TYPE_ORG    = 'organization';

@@ -50,9 +50,10 @@ class PopupMessageGenerator extends AbstractGenerator
      */
     public function createMessages(SystemEventInterface $event)
     {
+        /* @var $event PopupEvent */
         $event->getName();
         $messages = [];
-        foreach ([1] as $agent) {
+        foreach ($this->getTargets($event) as $agent) {
             $messages[] = new ActionAlert($agent, $this->getData($event), $event->getName());
         }
 
@@ -133,6 +134,25 @@ class PopupMessageGenerator extends AbstractGenerator
         }
 
         return [];
+    }
+
+    protected function getTargets(PopupEvent $event)
+    {
+        $data = $event->getData();
+        if ($data['target']['type'] === PopupModel::TARGET_TYPE_LIST) {
+            return $data['target']['list'];
+        } else {
+            $targetQuery = $event->getData()['target']['query'];
+
+            $search = new PersonSearch();
+            $search->setMode(PersonSearch::MODE_ANY);
+
+            foreach ($targetQuery as $query) {
+                $search->addTerm($query['term'], $query['op'], $query['val']);
+            }
+
+            return $search->getMatches();
+        }
     }
 
     /**

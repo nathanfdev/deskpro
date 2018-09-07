@@ -108,14 +108,13 @@ class PopupController extends BaseController
      *
      * @Rest\Delete("/dismiss/{uuid}")
      *
-     * @param Request $request
-     * @param string  $uuid
+     * @param string $uuid
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function dismissAction(Request $request, $uuid)
+    public function dismissAction($uuid)
     {
         $this->getContainer()->get('event_dispatcher')->dispatch(
             PopupEvent::ACTION_TYPE_DISMISS,

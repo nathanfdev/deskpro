@@ -49,11 +49,6 @@ class PopupActionType extends AbstractType
         if (isset($data['type']) && $data['type'] === PopupModel::ACTION_TYPE_WEBHOOK) {
             // for now conditions to find target and additional info just arrays
                 $form->add('webhook', WebhookType::class, ['required' => true]);
-        } elseif (isset($data['type'])) {
-            $form
-                // for now conditions to find target and additional info just arrays
-
-            ;
         }
     }
 }

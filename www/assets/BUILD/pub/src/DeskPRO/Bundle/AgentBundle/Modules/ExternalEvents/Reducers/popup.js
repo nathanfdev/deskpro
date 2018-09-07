@@ -14,8 +14,12 @@ export default createReducer(initialState, {
     switch (payload.type) { // eslint-disable-line default-case
       // that't it, we don't need default here at all, default is just no-op
       case 'external_event.popup':
-        newState = newState.set('popupOpen', payload.data.action === 'raise');
-        newState = newState.set('popupData', payload.data.action === 'raise' ? payload.data : {});
+        if (payload.data.action === 'raise') {
+          newState = newState.set('popupOpen', true);
+          newState = newState.set('popupData', payload.data);
+        } else if (payload.data.action === 'dismiss' && state.get('popupData').uuid === payload.data.uuid) {
+          newState = newState.merge({ popupOpen: false, popupData: [] });
+        }
         break;
     }
     return newState;
