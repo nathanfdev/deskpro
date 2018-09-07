@@ -465,7 +465,7 @@ class EmailRendererTest extends SendmailTestCase
                 'attribute'   => 'reply',
             ],
             'ticket_messages' => [
-                'description' => '',
+                'description' => 'Ticket messages.',
                 'type'        => 'array of objects (TicketMessage)',
                 'attribute'   => 'ticket_messages',
                 'properties'  => [
@@ -554,6 +554,33 @@ we detect that the user has replied to a message inline rather than above the cu
                         'description' => 'This is a preview of the message.',
                         'type'        => 'string',
                         'attribute'   => 'message_preview_text',
+                    ],
+                ],
+            ],
+            'ticket_satisfaction' => [
+                'description' => 'Ticket satisfactions.',
+                'type'        => 'array of objects (TicketFeedback)',
+                'attribute'   => 'ticket_satisfaction',
+                'properties'  => [
+                    'message' => [
+                        'description' => 'Satisfaction message.',
+                        'type'        => 'string',
+                        'attribute'   => 'message',
+                    ],
+                    'rating' => [
+                        'description' => 'Satisfaction rating (1, 0 or -1).',
+                        'type'        => 'string',
+                        'attribute'   => 'rating',
+                    ],
+                    'rating_type' => [
+                        'description' => 'Satisfaction rating type (\'positive\', \'neutral\' or \'negative\').',
+                        'type'        => 'string',
+                        'attribute'   => 'rating_type',
+                    ],
+                    'date_created' => [
+                        'description' => 'Date when satisfaction was submitted.',
+                        'type'        => 'DateTime',
+                        'attribute'   => 'date_created',
                     ],
                 ],
             ],
