@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\NewSearch\Manager;
 
+use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityRepository;
 use League\Url\Url;
 
@@ -35,7 +36,9 @@ trait SearchesTicketByUrlTrait
                 preg_match_all('/[a-zA-Z]\.o:(\d*)/', $fragment, $matches);
                 foreach (array_unique(array_filter($matches[1])) as $ticketId) {
                     $ticket = $repository->findTicketId((int) $ticketId);
-                    if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                    if ($ticket instanceof Ticket &&
+                        $this->person->PermissionsManager->TicketChecker->canView($ticket))
+                    {
                         $tickets[] = $ticket;
                     }
                 }
@@ -47,7 +50,9 @@ trait SearchesTicketByUrlTrait
             $index = array_search('ticket', $path);
             if (is_int($index) && array_key_exists($index + 1, $path)) {
                 $ticket = $repository->findTicketId((int)$path[$index + 1]);
-                if ($ticket && $this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                if ($ticket instanceof Ticket &&
+                    $this->person->PermissionsManager->TicketChecker->canView($ticket))
+                {
                     $tickets[] = $ticket;
                 }
             }
