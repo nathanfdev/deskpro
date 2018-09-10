@@ -29,9 +29,8 @@ Feature: /api_logs_options
     Then the JSON node "data.enabled" should be equal to 0
     And the JSON node "data.request_length" should be equal to 1000
     And the JSON node "data.response_length" should be equal to 2000
-    And the JSON node "data.modes" should have 2 elements
-    And the JSON node "data.modes[0]" should be equal to "token"
-    And the JSON node "data.modes[1]" should be equal to "key"
+    And the JSON node "data.modes" should have 1 element
+    And the JSON node "data.modes[0]" should be equal to "key"
 
   Scenario: I update all options
     When I send a PUT request to "/api/v2/api_logs_options" with body:
@@ -49,10 +48,8 @@ Feature: /api_logs_options
     Then the JSON node "data.enabled" should be equal to 1
     And the JSON node "data.request_length" should be equal to 3000
     And the JSON node "data.response_length" should be equal to 4000
-    And the JSON node "data.modes" should have 3 elements
-    And the JSON node "data.modes[0]" should be equal to "token"
-    And the JSON node "data.modes[1]" should be equal to "session"
-    And the JSON node "data.modes[2]" should be equal to "key"
+    And the JSON node "data.modes" should have 1 element
+    And the JSON node "data.modes[0]" should be equal to "key"
 
   Scenario Outline: I validate request and response body length options
     When I send a PUT request to "/api/v2/api_logs_options" with body:

@@ -56,7 +56,7 @@ class FixSchemaCommandTest extends AbstractKernelAwareTestCase
         ]);
 
         $output = $commandTester->getDisplay();
-        $this->assertContains('Checking integrity. This may take a while.', $output);
+        $this->assertContains('Validating referential integrity', $output);
     }
 
     public function test_integrity_preview()
