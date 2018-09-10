@@ -16,8 +16,9 @@ class VoiceMenu extends React.Component {
     people:                PropTypes.object,
     queues:                PropTypes.object,
     incomingCall:          PropTypes.object,
-    onAcceptCall:          PropTypes.func,
-    onDeclineCall:         PropTypes.func,
+    acceptCall:            PropTypes.func,
+    declineCall:           PropTypes.func,
+    hideCall:              PropTypes.func,
     onHangup:              PropTypes.func,
     outboundCallsEnabled:  PropTypes.bool,
     outgoingCall:          PropTypes.object,
@@ -70,7 +71,7 @@ class VoiceMenu extends React.Component {
 
   renderPhoneTab() {
     const { me, agents, people, queues, incomingCall, ringingVolume, agentVoicemailTimeout } = this.props;
-    const { outgoingCall, onAcceptCall, onDeclineCall, onHangup } = this.props;
+    const { outgoingCall, acceptCall, declineCall, hideCall, onHangup } = this.props;
 
     if (incomingCall) {
       return (
@@ -82,8 +83,9 @@ class VoiceMenu extends React.Component {
           incomingCall={incomingCall}
           ringingVolume={ringingVolume}
           agentVoicemailTimeout={agentVoicemailTimeout}
-          onAccept={onAcceptCall}
-          onDecline={onDeclineCall}
+          onAccept={acceptCall}
+          onDecline={declineCall}
+          hideCall={hideCall}
         />
       );
     } else if (outgoingCall) {

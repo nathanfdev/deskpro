@@ -16,6 +16,7 @@ class IncomingCall extends React.Component {
     incomingCall:          PropTypes.object,
     onAccept:              PropTypes.func,
     onDecline:             PropTypes.func,
+    hideCall:              PropTypes.func,
     ringingVolume:         PropTypes.number,
     agentVoicemailTimeout: PropTypes.number
   };
@@ -30,9 +31,9 @@ class IncomingCall extends React.Component {
       this.audio.playSound();
     }
 
-    const { onDecline, agentVoicemailTimeout } = this.props;
+    const { hideCall, agentVoicemailTimeout } = this.props;
     if (agentVoicemailTimeout) {
-      setTimeout(() => { onDecline(); }, agentVoicemailTimeout * 1000);
+      setTimeout(hideCall, agentVoicemailTimeout * 1000);
     }
   }
 

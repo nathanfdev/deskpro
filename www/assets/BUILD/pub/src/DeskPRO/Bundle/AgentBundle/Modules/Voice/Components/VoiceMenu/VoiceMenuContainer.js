@@ -41,17 +41,21 @@ class VoiceMenuContainer extends React.Component {
     }
   }
 
-  onAcceptCall = () => {
+  acceptCall = () => {
     const { incomingCall, dispatch } = this.props;
 
     dispatch(acceptPhoneCall(incomingCall));
     this.popup.closePopup();
   };
 
-  onDeclineCall = () => {
+  declineCall = () => {
     const { incomingCall, dispatch } = this.props;
 
     dispatch(declinePhoneCall(incomingCall));
+    this.popup.closePopup();
+  };
+
+  hideCall = () => {
     this.popup.closePopup();
   };
 
@@ -61,8 +65,9 @@ class VoiceMenuContainer extends React.Component {
         ref={(c) => { this.popup = c; }}
         {...this.props}
         isSecure={isSecure}
-        onAcceptCall={this.onAcceptCall}
-        onDeclineCall={this.onDeclineCall}
+        acceptCall={this.acceptCall}
+        declineCall={this.declineCall}
+        hideCall={this.hideCall}
       />
     );
   }
