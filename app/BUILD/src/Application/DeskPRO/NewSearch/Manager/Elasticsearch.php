@@ -6,6 +6,7 @@ use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\EntityRepository\Ticket;
 use Elastica\Response;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
+use League\Url\Url;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
@@ -17,7 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerAwareTrait;
  */
 class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
 {
-    use ContainerAwareTrait;
+    use ContainerAwareTrait,
+        SearchesTicketByUrlTrait;
 
     /**
      * The currently logged in person.
@@ -90,23 +92,33 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
                 $repository->setPersonContext($this->person);
             }
 
-            if ($model == 'DeskPRO:Ticket' && preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
-                /** @var Ticket $ent_repos */
-                if ($ticket = $ent_repos->findTicketRef(strtoupper($q))) {
-                    if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-                        $this->handleResult($object, $ticket);
-                    }
-                } elseif (strlen($q) >= 3) {
-                    $tickets = $ent_repos->searchTicketRef($q);
-                    $results = [];
-                    foreach ($tickets as $ticket) {
+            if ($model === 'DeskPRO:Ticket') {
+                // Try to parse an URL, in case it's provided as a search query
+                $foundTickets = $this->searchTicketByUrl($q, $ent_repos);
+                foreach ($foundTickets as $ticket) {
+                    $this->handleResult($object, $ticket);
+                }
+
+                if (preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
+                    /** @var Ticket $ent_repos */
+                    if ($ticket = $ent_repos->findTicketRef(strtoupper($q))) {
                         if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
-                            $results[] = $ticket;
+                            $this->handleResult($object, $ticket);
                         }
+                    } elseif (strlen($q) >= 3) {
+                        $tickets = $ent_repos->searchTicketRef($q);
+                        $results = [];
+                        foreach ($tickets as $ticket) {
+                            if ($this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+                                $results[] = $ticket;
+                            }
+                        }
+                        $this->handleResult($object, $results);
                     }
-                    $this->handleResult($object, $results);
                 }
             }
+
+
 
             if (Numbers::isInteger($q)) {
                 if ($model == 'DeskPRO:Ticket' && $this->person) {
