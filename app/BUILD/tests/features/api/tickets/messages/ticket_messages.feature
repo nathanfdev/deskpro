@@ -125,11 +125,11 @@ Feature: /tickets/{id}/messages endpoint
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.attachments" should have 2 elements
+    And the JSON node "data.attachments" should have 1 element
 
     When I send a GET request to "/api/v2/tickets/{t1}/messages/{lastCreatedId}?include=ticket_attachment"
     Then the response status code should be 200
-    And the JSON node "linked.ticket_attachment" should have 2 elements
+    And the JSON node "linked.ticket_attachment" should have 1 element
 
   Scenario: I reset ticket message attachments
     Given only the following TicketMessage records exist:

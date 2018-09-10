@@ -2,10 +2,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
 use Application\DeskPRO\Tickets\TicketActions\AbstractReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
@@ -23,6 +25,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayou
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -58,17 +61,28 @@ class TicketMessageType extends AbstractType
     private $apiClientInfo;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * Constructor.
      *
      * @param LanguageManager $languageManager
      * @param TokenStorage    $tokenStorage
+     * @param EntityManager   $em
      * @param ApiClientInfo   $apiClientInfo
      */
-    public function __construct(LanguageManager $languageManager, TokenStorage $tokenStorage, ApiClientInfo $apiClientInfo = null)
-    {
+    public function __construct(
+        LanguageManager $languageManager,
+        TokenStorage $tokenStorage,
+        EntityManager $em,
+        ApiClientInfo $apiClientInfo = null
+    ) {
         $this->languageManager = $languageManager;
         $this->tokenStorage    = $tokenStorage;
         $this->apiClientInfo   = $apiClientInfo;
+        $this->em              = $em;
     }
 
     /**
@@ -188,11 +202,11 @@ class TicketMessageType extends AbstractType
         }
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'ensureAttachments'], 99);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureMessageTextExists'], 100);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat'], 100);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'ensureAttachments'], 99);
 
         if ($this->apiClientInfo && $this->apiClientInfo->isIos()) {
             $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPurifyIosMessage']);
@@ -280,30 +294,33 @@ class TicketMessageType extends AbstractType
     {
         $data = $event->getData();
 
-        if (!$data || !($data instanceof TicketMessage)) {
+        if (!isset($data['attachments'])) {
             return;
         }
 
+        /** @var BlobRepository $blobRepository */
+        $blobRepository = $this->em->getRepository(Blob::class);
         /** @var TicketMessage $data */
-        foreach ($data->getAttachments() as $attachment) {
-            if ($attachment->isInline()) {
-                $blob = $attachment->getBlob();
+        foreach ($data['attachments'] as $index => $attachment) {
+            if (isset($attachment['is_inline']) && $attachment['is_inline'] === '1') {
+                $blob = $blobRepository->getByAuthCode($attachment['blob_auth']);
 
                 $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
-                $matches = RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+                $matches = RegexUtils::safePregMatch($regex, $data['message']);
 
                 $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
-                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data['message']);
 
                 $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
-                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data['message']);
 
                 if (!$matches) {
-                    $blob->setIsTemp(true);
-                    $data->removeAttachment($attachment);
+                    unset($data['attachments'][$index]);
                 }
             }
         }
+
+        $event->setData($data);
     }
 
     /**

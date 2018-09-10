@@ -277,7 +277,11 @@ services:
 
   form.ticket_message:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType
-    arguments: ["@language_manager", "@security.token_storage", "@?api_client_info"]
+    arguments:
+      - "@language_manager"
+      - "@security.token_storage"
+      - "@doctrine.orm.default_entity_manager"
+      - "@?api_client_info"
     tags:
       - { name: form.type }
 
