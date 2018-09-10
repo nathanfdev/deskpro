@@ -6,7 +6,6 @@ use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\EntityRepository\Ticket;
 use Elastica\Response;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
-use League\Url\Url;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
@@ -61,6 +60,15 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
      */
     protected $results = [];
 
+    /**
+     * @param $q
+     * @param null $sort
+     * @param array|null $limit_types
+     * @return array
+     * @throws \RuntimeException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     */
     public function quickSearch($q, $sort = null, array $limit_types = null)
     {
         $result_meta = [];
@@ -94,8 +102,7 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
 
             if ($model === 'DeskPRO:Ticket') {
                 // Try to parse an URL, in case it's provided as a search query
-                $foundTickets = $this->searchTicketByUrl($q, $ent_repos);
-                foreach ($foundTickets as $ticket) {
+                foreach ($this->searchTicketByUrl($q, $ent_repos) as $ticket) {
                     $this->handleResult($object, $ticket);
                 }
 
@@ -117,8 +124,6 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
                     }
                 }
             }
-
-
 
             if (Numbers::isInteger($q)) {
                 if ($model == 'DeskPRO:Ticket' && $this->person) {

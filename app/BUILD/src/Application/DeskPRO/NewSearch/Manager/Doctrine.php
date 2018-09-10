@@ -3,8 +3,6 @@
 namespace Application\DeskPRO\NewSearch\Manager;
 
 use Application\DeskPRO\App;
-use function is_int;
-use League\Url\Url;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -39,12 +37,13 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
     protected $settings;
 
     /**
-     * Search results.
-     *
-     * @var array
+     * @param $q
+     * @return bool|array
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\ORMInvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
-    protected $results = [];
-
     public function quickSearch($q)
     {
         $type_to_ent = [
