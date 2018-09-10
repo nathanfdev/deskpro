@@ -11,6 +11,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
       @presaveCallback = null
       @devUrl = '#'
+      @settings = {
+        showInOwnTab: false
+      }
+
       return
 
     initialLoad: ->
@@ -34,6 +38,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         catch e
           @showChangeSettings = false;
 
+        try
+          @settings.showInOwnTab = @app.app.settings.showInTab == "own-tab"
+        catch e
+          @settings.showInOwnTab = false
 
         @pack = @app.app
         @packageName = @pack.name
@@ -63,6 +71,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         }
       })
 
+
+    toggleShowInOwnTab: ->
+      @Api2.sendPutJson('/apps/' + @instanceId, {
+          settings: {
+            showInTab : if @settings.showInOwnTab then "own-tab" else "default"
+          }
+      })
 
     ###
     # SHow delete modal

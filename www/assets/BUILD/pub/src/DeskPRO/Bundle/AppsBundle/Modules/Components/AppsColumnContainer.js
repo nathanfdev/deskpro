@@ -19,11 +19,11 @@ function mapWidgetsToGroups(widgetList) {
    * @param {WidgetConfiguration} config
    */
   function reducer(acc, config) {
-    const { settings, id } = config;
+    const { appSettings, id } = config;
 
-    if (!settings || !settings.showInGroup || settings.showInGroup === 'default') {
+    if (!appSettings || !appSettings.showInTab || appSettings.showInTab === 'default') {
       defaultGroup.push(config);
-    } else if (settings.showInGroup === 'isolated') {
+    } else if (appSettings.showInTab === 'own-tab') {
       acc[id] = [config];
     }
 
