@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\People\Agents;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -143,7 +144,12 @@ class EditAgent
             $agent->setPrimaryPhoneNumber(null);
         }
 
-        $agent->can_admin   = in_array('admin', $this->zones);
+        if (App::getCurrentPerson() && (App::getCurrentPerson()->getId() === $agent->getId())) {
+            // Shouldn't be able to un-admin yourself
+            $agent->can_admin = App::getCurrentPerson()->can_admin;
+        } else {
+            $agent->can_admin = in_array('admin', $this->zones);
+        }
         $agent->can_reports = in_array('reports', $this->zones);
 
         //------------------------------

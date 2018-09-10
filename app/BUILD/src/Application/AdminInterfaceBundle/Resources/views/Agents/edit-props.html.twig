@@ -66,7 +66,7 @@
 				<ul class="checkbox-list" style="min-width: 250px">
 					<li>
 						<label>
-							<input type="checkbox" ng-model="EditCtrl.form.zones.admin" />
+							<input type="checkbox" ng-model="EditCtrl.form.zones.admin" ng-disabled="EditCtrl.isSelf()" />
 							<span>Admin Interface</span>
 						</label>
 					</li>
