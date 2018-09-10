@@ -4,6 +4,8 @@ namespace DeskPRO\Component\Pdf;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DpSys\LowError\SystemErrorHandler;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -53,7 +55,7 @@ class mPdfRenderer implements PdfRendererInterface
             // set two below options to properly set fonts for CJK languages
             // https://mpdf.github.io/fonts-languages/choosing-a-configuration-v7-x.html#3-languagesscripts-which-require-special-fonts
             'autoScriptToLang' => true,
-            'autoLangToFont'   => true
+            'autoLangToFont'   => true,
             ]
         );
 
@@ -74,9 +76,11 @@ class mPdfRenderer implements PdfRendererInterface
      */
     public function render($contentHtml)
     {
-        $this->object->WriteHTML($contentHtml);
+        return SystemErrorHandler::runWithoutErrorHandler(function () use ($contentHtml) {
+            $this->object->WriteHTML($contentHtml);
 
-        return $this->object->Output('', 'S');
+            return $this->object->Output('', 'S');
+        });
     }
 
     /**
@@ -84,8 +88,12 @@ class mPdfRenderer implements PdfRendererInterface
      */
     public function generateFile($contentHtml, $fileName)
     {
-        $this->object->WriteHTML($contentHtml);
+        $fileName = Strings::getFilenameSafe($fileName);
 
-        return new Response($this->object->Output($fileName, 'D'), 200, ['Content-Type' => 'application/pdf']);
+        return SystemErrorHandler::runWithoutErrorHandler(function () use ($contentHtml, $fileName) {
+            $this->object->WriteHTML($contentHtml);
+
+            return new Response($this->object->Output($fileName, 'D'), 200, ['Content-Type' => 'application/pdf']);
+        });
     }
 }
