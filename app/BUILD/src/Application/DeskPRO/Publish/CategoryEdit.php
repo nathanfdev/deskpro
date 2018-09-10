@@ -366,7 +366,7 @@ class CategoryEdit
                 $counts = App::getDb()->fetchColumn("
                     SELECT COUNT(*)
                     FROM topics
-                    WHERE guide_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted')
+                    WHERE guide_id = ? AND (hidden_status IS NULL OR hidden_status != 'deleted') AND parent_id IS NULL
                     LIMIT 1
                 ", [$categoryId]);
                 break;

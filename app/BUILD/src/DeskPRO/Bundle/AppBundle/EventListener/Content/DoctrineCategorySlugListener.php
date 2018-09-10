@@ -7,6 +7,7 @@
 namespace DeskPRO\Bundle\AppBundle\EventListener\Content;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Product;
 use DeskPRO\Bundle\AppBundle\Content\CategorySlugManager;
 use Doctrine\Common\EventSubscriber;
@@ -75,7 +76,7 @@ class DoctrineCategorySlugListener implements EventSubscriber
      */
     protected function ensureValidSlug($entity)
     {
-        if (!$entity instanceof CategoryAbstract) {
+        if (!$entity instanceof CategoryAbstract && !$entity instanceof Guide) {
             return false;
         }
 
