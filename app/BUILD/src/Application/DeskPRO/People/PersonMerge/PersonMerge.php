@@ -122,6 +122,7 @@ class PersonMerge implements PersonContextInterface
             $this->em->persist($this->person);
             $this->em->flush();
 
+            $this->em->refresh($this->other_person);
             $this->em->remove($this->other_person);
             $this->em->flush();
 
@@ -141,6 +142,7 @@ class PersonMerge implements PersonContextInterface
             'people_contact_data',
             'people_emails',
             'people_twitter_users',
+            'phone_numbers',
         ];
 
         foreach ($simple_tables as $table) {
