@@ -75,13 +75,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
-		<h4>{{ phrase('agent.general.title') }}</h4>
+		<h4 id="{{baseId}}_topic_title" style="display: none">{{ phrase('agent.general.title') }}</h4>
+		<h4 id="{{baseId}}_section_title">{{ phrase('agent.general.section_title') }}</h4>
 		<input type="text" name="newtopic[title]" id="{{baseId}}_title" value="{{ state.topic.title }}" style="width: 80%;" />
 		<div class="error-message title">{{ phrase('agent.publish.please_enter_title') }}</div>
 	</div>
 </div>
 
-<div class="section article-section" id="{{baseId}}_content_section">
+<div class="section article-section" id="{{baseId}}_content_section" style="display:none;">
 	<div class="content">
 		<h4>{{ phrase('agent.publish.post') }}</h4>
 		<textarea type="text" name="newtopic[content]" id="{{baseId}}_content">{{ state.topic.content }}</textarea>
@@ -121,7 +122,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_topic') }} <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
+		<button class="submit-trigger clean-white"><span id="{{baseId}}_topic_submit" style="display: none">{{ phrase('agent.general.create_topic') }}</span><span id="{{baseId}}_section_submit">{{ phrase('agent.general.create_section') }}</span> <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

@@ -3029,6 +3029,7 @@ agent.general.create_deal: 'Create Deal'
 agent.general.create_download: 'Create Download'
 agent.general.create_feedback: 'Create Feedback'
 agent.general.create_news: 'Create News Post'
+agent.general.create_section: 'Create Section'
 agent.general.create_status: 'Create Status'
 agent.general.create_task: 'Create Task'
 agent.general.create_ticket: 'Create Ticket'
@@ -3529,6 +3530,7 @@ agent.general.search: Search
 agent.general.search_results: 'Search results'
 agent.general.search_terms: 'Search Terms'
 agent.general.seconds: seconds
+agent.general.section_title: 'Section Title'
 agent.general.select: Select
 agent.general.select_a_brand: 'Select a brand'
 agent.general.select_a_department: 'Select a department'
