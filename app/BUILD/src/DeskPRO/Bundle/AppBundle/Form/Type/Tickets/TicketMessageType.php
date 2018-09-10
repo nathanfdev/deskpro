@@ -2,10 +2,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
 use Application\DeskPRO\Tickets\TicketActions\AbstractReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
@@ -21,7 +23,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessag
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -57,17 +61,28 @@ class TicketMessageType extends AbstractType
     private $apiClientInfo;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * Constructor.
      *
      * @param LanguageManager $languageManager
      * @param TokenStorage    $tokenStorage
+     * @param EntityManager   $em
      * @param ApiClientInfo   $apiClientInfo
      */
-    public function __construct(LanguageManager $languageManager, TokenStorage $tokenStorage, ApiClientInfo $apiClientInfo = null)
-    {
+    public function __construct(
+        LanguageManager $languageManager,
+        TokenStorage $tokenStorage,
+        EntityManager $em,
+        ApiClientInfo $apiClientInfo = null
+    ) {
         $this->languageManager = $languageManager;
         $this->tokenStorage    = $tokenStorage;
         $this->apiClientInfo   = $apiClientInfo;
+        $this->em              = $em;
     }
 
     /**
@@ -187,6 +202,7 @@ class TicketMessageType extends AbstractType
         }
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'ensureAttachments'], 99);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureMessageTextExists'], 100);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onChangeMessageFormat'], 100);
@@ -274,6 +290,39 @@ class TicketMessageType extends AbstractType
         $event->setData($data);
     }
 
+    public function ensureAttachments(FormEvent $event)
+    {
+        $data = $event->getData();
+
+        if (!isset($data['attachments'])) {
+            return;
+        }
+
+        /** @var BlobRepository $blobRepository */
+        $blobRepository = $this->em->getRepository(Blob::class);
+        /** @var TicketMessage $data */
+        foreach ($data['attachments'] as $index => $attachment) {
+            if (isset($attachment['is_inline']) && $attachment['is_inline'] === '1') {
+                $blob = $blobRepository->getByAuthCode($attachment['blob_auth']);
+
+                $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
+                $matches = RegexUtils::safePregMatch($regex, $data['message']);
+
+                $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
+                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data['message']);
+
+                $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
+                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data['message']);
+
+                if (!$matches) {
+                    unset($data['attachments'][$index]);
+                }
+            }
+        }
+
+        $event->setData($data);
+    }
+
     /**
      * @internal
      *
@@ -298,8 +347,14 @@ class TicketMessageType extends AbstractType
         $data = $event->getData();
         $form = $event->getForm();
 
+        if (!$data || !($data instanceof TicketMessage)) {
+            return;
+        }
+
         if ($form->get('format')->getData() === 'text') {
-            $data->setMessageText($data->getMessageHtml());
+            $data->setMessageText($data->convertEmbeddedImagesToInlineAttachInText($data->getMessageHtml()));
+        } else {
+            $data->setMessageHtml($data->convertEmbeddedImagesToInlineAttachInText($data->getMessageHtml()));
         }
     }
 
