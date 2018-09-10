@@ -286,20 +286,22 @@ class TicketMessageType extends AbstractType
 
         /** @var TicketMessage $data */
         foreach ($data->getAttachments() as $attachment) {
-            $blob = $attachment->getBlob();
+            if ($attachment->isInline()) {
+                $blob = $attachment->getBlob();
 
-            $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
-            $matches = RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+                $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
+                $matches = RegexUtils::safePregMatch($regex, $data->getMessageHtml());
 
-            $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
-            $matches = $matches ?: RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+                $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
+                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data->getMessageHtml());
 
-            $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
-            $matches = $matches ?: RegexUtils::safePregMatch($regex, $data->getMessageHtml());
+                $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
+                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data->getMessageHtml());
 
-            if (!$matches) {
-                $blob->setIsTemp(true);
-                $data->removeAttachment($attachment);
+                if (!$matches) {
+                    $blob->setIsTemp(true);
+                    $data->removeAttachment($attachment);
+                }
             }
         }
     }
