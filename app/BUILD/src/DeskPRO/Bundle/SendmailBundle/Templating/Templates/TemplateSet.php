@@ -105,7 +105,8 @@ class TemplateSet
     {
         $entity       = new TemplateEntity();
         $entity->name = $name;
-        $custom       = TemplateCustom::createFromEntity($entity, $customType);
+
+        $custom = TemplateCustom::createFromEntity($entity, $customType);
 
         return $custom;
     }

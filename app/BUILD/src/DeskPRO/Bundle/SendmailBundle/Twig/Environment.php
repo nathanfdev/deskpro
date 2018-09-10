@@ -111,7 +111,7 @@ class Environment extends \Twig_Environment
 
         if (!class_exists($cls, false)) {
             if (false === $cache = $this->getCacheFilename($name)) {
-                eval('?>'.$this->compileSource($this->loader->getSource($name), $name));
+                eval('?>'.$this->compileSource($this->loader->getSourceContext($name), $name));
             } else {
                 if (strpos($cache, 'dptpl://') === 0) {
                     $tplinfo = DbStreamWrapper::getTemplateInfo(str_replace('dptpl://load/', '', $cache));

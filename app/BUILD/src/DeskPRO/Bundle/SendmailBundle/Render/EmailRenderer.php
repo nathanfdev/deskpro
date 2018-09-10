@@ -4,14 +4,21 @@ namespace DeskPRO\Bundle\SendmailBundle\Render;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Parser\JmsMetadataParser;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
+use DeskPRO\Bundle\SendmailBundle\Twig\TwigEngine;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
+use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Templating\EngineInterface;
+use Twig_Loader_Chain;
 
 /**
  * Class EmailRenderer.
@@ -34,17 +41,24 @@ class EmailRenderer
     private $serviceContainer;
 
     /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    /**
      * EmailRenderer constructor.
      *
      * @param Serializer      $serializer
      * @param EngineInterface $templateEngine
      * @param Container       $serviceContainer
+     * @param EntityManager   $em
      */
-    public function __construct(Serializer $serializer, EngineInterface $templateEngine, Container $serviceContainer)
+    public function __construct(Serializer $serializer, EngineInterface $templateEngine, Container $serviceContainer, EntityManager $em)
     {
         $this->serializer       = $serializer;
         $this->templateEngine   = $templateEngine;
         $this->serviceContainer = $serviceContainer;
+        $this->em               = $em;
     }
 
     /**
@@ -148,6 +162,59 @@ class EmailRenderer
         }
 
         return $templateCode;
+    }
+
+    /**
+     * @param string        $code
+     * @param string        $tplName
+     * @param EmailBaseType $model
+     * @param Language      $language
+     * @param array         $templates
+     *
+     * @throws \Exception
+     */
+    public function renderPreview($code, $tplName, $model, $language, $templates, $string_only = false)
+    {
+        $recipient = new Person();
+        $recipient->setFirstName('FirstName');
+        $recipient->setLastName('LastName');
+        $email = new PersonEmail();
+        $email->setEmail('test@example.com');
+        $recipient->setPrimaryEmail($email);
+        $recipient->setPassword('Password1234');
+
+        $recipient = $this->serviceContainer->get('api_serializer.handler.person')->createModel($recipient, new SideloadSerializationContext());
+        $model->setRecipient($recipient);
+        $model->setSiteUrl($this->serviceContainer->getBrandSetting('core.site_url'));
+        $model->setSiteName($this->serviceContainer->getBrandSetting('core.site_name'));
+        $model->setDeskproUrl($this->serviceContainer->getBrandSetting('core.deskpro_url'));
+
+        $preProcessor = new EmailPreProcessor();
+        $code         = $preProcessor->process($code, $tplName);
+
+        $twig = clone $this->serviceContainer->get('templating.new_email.twig');
+        $twig->setCache(false);
+        $templates[$tplName] = $code;
+        $stringLoader        = new \Twig_Loader_Array($templates);
+        $hybridLoader        = $this->serviceContainer->get('templating.new_email.twig.loader');
+        $loader              = new Twig_Loader_Chain([$stringLoader, $hybridLoader]);
+        $twig->setLoader($loader);
+
+        /** @var TwigEngine $twigEngine */
+        $twigEngine = $this->serviceContainer->get('templating.new_email.twig.engine');
+        $twigEngine->setEnvironment($twig);
+
+        $this->setTemplateEngine($twigEngine);
+
+        $view = null;
+        $this->serviceContainer->get('translator')->setTemporaryLanguage(
+            $language,
+            function () use ($tplName, $model, &$view) {
+                $view = $this->render($tplName, $model);
+            }
+        );
+
+        return $view;
     }
 
     /**

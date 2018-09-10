@@ -7,8 +7,12 @@ use Application\DeskPRO\Entity\Template;
 use Application\DeskPRO\EntityRepository\Template as TemplateRepository;
 use Application\DeskPRO\Templating\Templates\EmailTemplateCode;
 use Application\DeskPRO\Templating\Templates\TemplateCode;
+use Application\DeskPRO\Templating\Templates\TemplateCustom;
 use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
+use DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory;
+use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use DeskPRO\Bundle\SendmailBundle\Templating\Templates\TemplateSet;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -94,7 +98,7 @@ HTML;
      */
     public function needAgentReload()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -164,6 +168,12 @@ HTML;
         $templatesDesc = new EmailTemplatesDesc();
         $manifest      = $templatesDesc->getManifest();
 
+        $renderer = $container->get('email.email_renderer');
+
+        $dataFactory = $container->get('email.preview_fake_data_factory');
+
+        $language = $container->get('language_manager')->getLanguageStack()->getDefaultLanguage();
+
         foreach ($templates as $previousTemplate) {
             /** @var Template $previousTemplate */
             if (strpos($previousTemplate->getName(), 'DeskPRO:emails_custom') === 0) {
@@ -180,8 +190,14 @@ HTML;
                 }
                 $newTemplateName = $info['newTemplate'];
             }
-            /** @var Template $previousBlock */
-            $template = $set->createCustomTemplate($newTemplateName);
+
+            /** @var Template $template */
+            $templateEntity = $em->getRepository(Template::class)->findOneBy(['name' => $newTemplateName]);
+            if (!$templateEntity) {
+                $template = $set->createCustomTemplate($newTemplateName);
+            } else {
+                $template = TemplateCustom::createFromEntity($templateEntity);
+            }
 
             /** @var EmailTemplateCode $templateCode */
             $templateCode = $template->getTemplateCode();
@@ -197,8 +213,57 @@ HTML;
             if (!$body) {
                 continue;
             }
-            $this->migratedCustomTemplates[$previousTemplate->getName()] = $newTemplateName;
             $templateCode->setBody($body);
+
+            $subject = $this->convertTemplateCode($templateCode->getSubject(), true);
+            if (!$subject) {
+                continue;
+            }
+            $templateCode->setSubject($subject);
+
+            // Loader issue cause this check to fail for all templates, I keep it commented until I sort it out.
+//            try {
+//                if (strpos($newTemplateName, 'SendmailBundle:emails_custom:') === 0) {
+//                    $factory   = $container->get('email.custom_viewmodel_factory');
+//                    $arguments = $dataFactory->getArguments($factory, 'createCustomTemplateModel', null);
+//                    $model = call_user_func_array([$factory, 'createCustomTemplateModel'], $arguments);
+//                } else {
+//                    /** @var EmailBaseType $model */
+//                    $templatesDesc = new EmailTemplatesDesc();
+//                    $manifest      = $templatesDesc->getManifest();
+//                    $viewModel     = false;
+//                    foreach ($manifest as $t) {
+//                        if (isset($t['newTemplate']) && $t['newTemplate'] === $newTemplateName) {
+//                            if ($t['viewModel']) {
+//                                $viewModel = $t['viewModel'];
+//                            }
+//                            break;
+//                        }
+//                    }
+
+//                    /** @var AgentViewModelFactory|UserViewModelFactory $factory */
+//                    $factory = strpos($newTemplateName, 'SendmailBundle:emails_agent:') === 0
+//                        ? $container->get('email.agent_viewmodel_factory')
+//                        : $container->get('email.user_viewmodel_factory');
+//                    $action  = 'create'.$viewModel.'Model';
+
+//                    $arguments = $dataFactory->getArguments($factory, $action, null);
+
+//                    if (!is_callable([$factory, $action])) {
+//                        return false;
+//                    }
+
+//                    $model = call_user_func_array([$factory, $action], $arguments);
+//                }
+
+//                $tplName = uniqid('SendmailBundle:emails_', true);
+
+//                $renderer->renderPreview($templateCode->getCode(), $tplName, $model, $language, $templates);
+//            } catch (\Throwable $e) {
+//                continue;
+//            }
+
+            $this->migratedCustomTemplates[$previousTemplate->getName()] = $newTemplateName;
             $set->saveTemplate($template);
             $this->saveLegacyTemplate($em, $previousTemplate);
             $em->remove($previousTemplate);
@@ -219,7 +284,13 @@ $code
 CODE;
     }
 
-    private function convertTemplateCode($code)
+    /**
+     * @param string $code
+     * @param bool   $subject
+     *
+     * @return bool|mixed|null|string|string[]
+     */
+    private function convertTemplateCode($code, $subject = false)
     {
         $code = $this->uniformiseVariableSyntax($code);
         $code = str_replace(
@@ -230,6 +301,7 @@ CODE;
         if (preg_match('/<dp:/', $code)) {
             return false;
         }
+        $code      = preg_replace('/{{\s*(phrase\s*\([^{]+\))\|\s*raw\s*}}/', '{{ $1 }}', $code);
         $whiteList = $this->getVariableWhiteList();
         if (preg_match_all('/{{[^}]+}}/', $code, $matches)) {
             foreach ($matches[0] as $match) {
@@ -244,6 +316,11 @@ CODE;
                 }
             }
         }
+
+        if ($subject) {
+            return $code;
+        }
+
         $code = preg_replace('/.+/', '    $0', $code);
 
         return <<<CODE
@@ -294,21 +371,24 @@ CODE;
 {% endfor %}
 CODE
             ,
-          '{{ ticket.person.primary_email.email }}' => '{{ ticket.person.primary_email }}',
-          '{{ ticket.agent.primary_email.email }}'  => '{{ ticket.agent.primary_email }}',
-          '{{ article.person.display_name_user }}'  => '{{ article.person.display_name }}',
-          '{{ news.person.display_name_user }}'     => '{{ news.person.display_name }}',
-          '{{ download.person.display_name_user }}' => '{{ download.person.display_name }}',
-          '{{ download.content_desc }}'             => '{{ download.content }}',
-          '{{ download.filename }}'                 => '{{ download.blob.filename }}',
-          '{{ download.readable_filesize }}'        => '{{ download.blob.filesize_readable }}',
-          '{{ feedback.person.display_name_user }}' => '{{ feedback.person.display_name }}',
+          '{{ ticket.person.primary_email.email }}'                             => '{{ ticket.person.primary_email }}',
+          '{{ ticket.agent.primary_email.email }}'                              => '{{ ticket.agent.primary_email }}',
+          '{{ article.person.display_name_user }}'                              => '{{ article.person.display_name }}',
+          '{{ news.person.display_name_user }}'                                 => '{{ news.person.display_name }}',
+          '{{ download.person.display_name_user }}'                             => '{{ download.person.display_name }}',
+          '{{ download.content_desc }}'                                         => '{{ download.content }}',
+          '{{ download.filename }}'                                             => '{{ download.blob.filename }}',
+          '{{ download.readable_filesize }}'                                    => '{{ download.blob.filesize_readable }}',
+          '{{ feedback.person.display_name_user }}'                             => '{{ feedback.person.display_name }}',
+          '{{ portal_url(ticket) }}'                                            => '{{ ticket_link }}',
+          '{{ portal_url(article) }}'                                           => '{{ article_link }}',
+          '{{ url_full(\'portal_reset_password_process\', {\'code\': code}) }}' => '{{ reset_url }}',
         ];
     }
 
     private function getVariableWhiteList()
     {
-        return [
+        return array_merge(array_values($this->getTemplateUpgradePatterns()), [
             '{{ ticket.subject }}',
             '{{ ticket.department.title }}',
             '{{ ticket.product.title }}',
@@ -331,7 +411,8 @@ CODE
             '{{ download.slug }}',
             '{{ download.date_created|date(\'full\') }}',
             '{{ feedback.status }}',
-        ];
+            '{{ message }}',
+        ]);
     }
 
     private function replaceTriggers(EntityManager $em, ContainerInterface $container)
@@ -497,7 +578,7 @@ CODE
 
         /** @var DataStore $legacyTemplate */
         foreach ($legacyTemplates as $legacyTemplate) {
-            /** @var Template $previousBlock */
+            /** @var Template $template */
             $template = $set->createCustomTemplate($legacyTemplate->getData('name'));
 
             /** @var EmailTemplateCode $templateCode */
@@ -510,11 +591,6 @@ CODE
             $code = $legacyTemplate->getData('code');
             $templateCode->setCode($code);
 
-            $body = $this->convertTemplateCode($templateCode->getBody());
-            if (!$body) {
-                continue;
-            }
-            $templateCode->setBody($body);
             $set->saveTemplate($template);
             $em->remove($legacyTemplate);
         }
