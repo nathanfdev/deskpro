@@ -279,6 +279,11 @@ class TicketMessageType extends AbstractType
     public function ensureAttachments(FormEvent $event)
     {
         $data = $event->getData();
+
+        if (!$data || !($data instanceof TicketMessage)) {
+            return;
+        }
+
         /** @var TicketMessage $data */
         foreach ($data->getAttachments() as $attachment) {
             $blob = $attachment->getBlob();
@@ -322,6 +327,10 @@ class TicketMessageType extends AbstractType
         /** @var TicketMessage $data */
         $data = $event->getData();
         $form = $event->getForm();
+
+        if (!$data || !($data instanceof TicketMessage)) {
+            return;
+        }
 
         if ($form->get('format')->getData() === 'text') {
             $data->setMessageText($data->convertEmbeddedImagesToInlineAttachInText($data->getMessageHtml()));
