@@ -58,6 +58,14 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     private $manifest;
 
     /**
+     * @ORM\Column(name="`settings`", type="json_array", nullable=true)
+     * @JMS\Expose()
+     *
+     * @return array
+     */
+    private $settings;
+
+    /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob", mappedBy="app", cascade={"persist", "remove"}, orphanRemoval=true)
      *
      * @JMS\Expose()
@@ -132,6 +140,26 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
         $this->setModelField('manifest', $manifest);
 
         return $this;
+    }
+
+    /**
+     * @param array $manifest
+     *
+     * @return $this
+     */
+    public function setSettings(array $settings)
+    {
+        $this->setModelField('settings', $settings);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSettings()
+    {
+        return $this->settings;
     }
 
     /**

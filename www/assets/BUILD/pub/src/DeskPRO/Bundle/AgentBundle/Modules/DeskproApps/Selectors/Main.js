@@ -14,7 +14,7 @@ export const filterAppstoreConfig =  ({ DeskproApps: { Main:state } }) => {
 };
 
 export const filterAppManifestsConfig = ({ DeskproApps: { Main:state } }) => {
-  const manifests = state.get('apps').get('manifests');
+  const manifests = state.get('apps').get('apps');
   return manifests.toJS();
 };
 

@@ -6,14 +6,43 @@ import { AppsViewIcons } from './AppsViewIcons';
 import { receiveMessage } from '../WidgetMessage';
 import { ContainerEvents } from './ContainerEvents';
 import { setWidgetState } from '../Services/appsState';
+import { WidgetConfiguration }  from '../Domain';
 
+/**
+ * @param {Array<WidgetConfiguration>} widgetList
+ */
+function mapWidgetsToGroups(widgetList) {
+  const defaultGroup = [];
+
+  /**
+   * @param {Object} acc
+   * @param {WidgetConfiguration} config
+   */
+  function reducer(acc, config) {
+    const { settings, id } = config;
+
+    if (!settings || !settings.showInGroup || settings.showInGroup === 'default') {
+      defaultGroup.push(config);
+    } else if (settings.showInGroup === 'isolated') {
+      acc[id] = [config];
+    }
+
+    return acc;
+  }
+
+  const namedGroups = widgetList.reduce(reducer, {});
+  if (defaultGroup.length === 0) {
+    return Object.keys(namedGroups).map(key => namedGroups[key]);
+  }
+
+  return [defaultGroup].concat(Object.keys(namedGroups).map(key => namedGroups[key]));
+}
 
 class AppsColumnContainer extends React.Component {
 
   static propTypes = {
-    widgetsConfigList: PropTypes.array.isRequired,
+    widgetsConfigList: PropTypes.arrayOf(PropTypes.instanceOf(WidgetConfiguration)).isRequired,
     context:           PropTypes.object.isRequired,
-
 
     // own properties
     getSidebarState:                PropTypes.func.isRequired,
@@ -21,8 +50,13 @@ class AppsColumnContainer extends React.Component {
   };
 
   state = {
-    appsState:    {},
-    sidebarState: null
+    appsState:          {},
+    sidebarState:       null,
+    widgetGroupVisible: 0
+  };
+
+  showWidgetGroup = (groupId) => {
+    this.setState({ widgetGroupVisible: groupId });
   };
 
   /**
@@ -103,11 +137,13 @@ class AppsColumnContainer extends React.Component {
           <AppsViewFull
             appsState={this.state.appsState}
             sidebarState={sidebarState}
+            showWidgetGroup={this.showWidgetGroup}
+            widgetGroupVisible={this.state.widgetGroupVisible}
 
             togglePin={this.togglePin}
             pin={this.pin}
+            widgetGroups={mapWidgetsToGroups(this.props.widgetsConfigList)}
 
-            widgetsConfigList={this.props.widgetsConfigList}
             context={this.props.context}
             receiveMessage={this.receiveMessage}
           />

@@ -63,8 +63,8 @@ export class ScreenInstallerBundled extends React.Component {
   render() {
     const { config, installerManifest } = this.props;
 
-    const installerConfiguration = AppsRegistry.appConfiguration(installerManifest, config);
-    const widgetsConfigList = [AppsRegistry.createWidget(TARGET_INSTALL, installerConfiguration)];
+    const registry = AppsRegistry.fromJS([{ manifest: installerManifest, settings: {} }], config);
+    const widgetsConfigList = registry.getWidgetConfigByTargetType(TARGET_INSTALL);
     const context = this.createRuntimeContext();
 
     return (<DeskproAppContainer

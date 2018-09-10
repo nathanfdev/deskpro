@@ -125,18 +125,12 @@ export class InstallerContainer extends React.Component {
     const { app, loadInstance, loadInstaller, createInstance } = this.props;
     const action = createInstanceFirst ? createInstance : loadInstance;
 
-    let appManifest;
     return action(app)
-      .then((manifest) => {
-        appManifest = manifest;
-        return loadInstaller(manifest);
-      })
-      .then(installerManifest => ({ installerManifest, appManifest }))
+      .then(({ manifest }) => loadInstaller(manifest).then(installerManifest => ({ installerManifest, appManifest: manifest })))
       .catch((error) => {
         if (typeof error === 'object') {
           error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_APP, app, createInstanceFirst };
         }
-
         return { route: 'error', error, errorType: InstallerErrors.LOAD_MANIFEST_FAIL_APP };
       })
     ;

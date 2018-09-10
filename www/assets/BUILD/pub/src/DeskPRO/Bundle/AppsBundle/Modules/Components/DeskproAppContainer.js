@@ -19,6 +19,28 @@ const find = (list, filter) => {
   return found.length === 1 ? found[0] : null;
 };
 
+
+function defaultRenderer({ widgets, getEvent, getEventProviders, unregister }) {
+  if (widgets && widgets.length > 0) {
+    return (
+      <WidgetContainerList
+        widgets={widgets}
+        getEvent={getEvent}
+        getEventProviders={getEventProviders}
+        unregister={unregister}
+      />
+    );
+  }
+  return (<WidgetContainerListEmpty />);
+}
+defaultRenderer.propTypes = {
+  widgets:           PropTypes.array.isRequired,
+  getEvent:          PropTypes.func.isRequired,
+  getEventProviders: PropTypes.func.isRequired,
+  unregister:        PropTypes.func.isRequired,
+};
+
+
 /* eslint class-methods-use-this: ["error", { "exceptMethods": ["onWidgetMouseEventMessage"] }] */
 
 /**
@@ -34,14 +56,14 @@ class DeskproAppContainer extends React.Component {
 
     registerOutgoingMessageListener: PropTypes.func,
     receiveMessage:                  PropTypes.func,
-    receiveSubscription:             PropTypes.func
+    receiveSubscription:             PropTypes.func,
+    children:                        PropTypes.func
   };
-
 
   static defaultProps = {
     registerOutgoingMessageListener,
     receiveMessage,
-    receiveSubscription
+    receiveSubscription,
   };
 
   state = {
@@ -223,18 +245,21 @@ class DeskproAppContainer extends React.Component {
    */
   render() {
     const { widgetsConfigList } = this.props;
-    if (widgetsConfigList && widgetsConfigList.length > 0) {
-      return (
-        <WidgetContainerList
-          widgets={this.props.widgetsConfigList}
-          getEvent={this.state.getEvent}
-          getEventProviders={this.getEventProviders}
-          unregister={this.unregisterWidget}
-        />
-      );
+
+    if (typeof this.props.children === 'function') {
+      return this.props.children({
+        getEvent:          this.state.getEvent,
+        getEventProviders: this.getEventProviders,
+        unregister:        this.unregisterWidget
+      });
     }
 
-    return (<WidgetContainerListEmpty />);
+    return defaultRenderer({
+      widgets:           widgetsConfigList,
+      getEvent:          this.state.getEvent,
+      getEventProviders: this.getEventProviders,
+      unregister:        this.unregisterWidget
+    });
   }
 
 

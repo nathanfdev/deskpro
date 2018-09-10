@@ -1,28 +1,50 @@
 import uuid from 'uuid';
 import { AppConfiguration, WidgetConfiguration }  from '../Domain';
 
-export class AppsRegistry {
-
+function filterByTargetType(targetType) {
   /**
-   * @param {{}} manifest
-   * @param {AppsConfig} config
-   * @return {AppConfiguration}
+   * @param {AppConfiguration} config
+   * @return {boolean}
    */
-  static appConfiguration(manifest, config)  {
-    // we need to process a bit the manifest before we can use it
-    let props;
-    if (config.environment === 'development') {
-      props = {
-        id:             config.instanceId,
-        application_id: config.applicationId,
-        baseUrl:        config.endpoint,
-        ...manifest
-      };
-    } else {
-      props = { baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}`, ...manifest };
-    }
-    return AppConfiguration.fromAppManifestJS(props);
+  function filter({ config }) {
+    return config.hasTarget(targetType);
   }
+
+  return filter;
+}
+
+function createWidget(targetType) {
+  function create({ config, settings }) {
+    /** @type {string} */ const id = uuid.v4();
+    return new WidgetConfiguration({ id, target: targetType, appConfig: config, appSettings: settings });
+  }
+
+  return create;
+}
+
+/**
+ * @param {{}} manifest
+ * @param {AppsConfig} config
+ * @return {AppConfiguration}
+ */
+function createAppConfiguration(manifest, config) {
+  // we need to process a bit the manifest before we can use it
+  let props;
+  if (config.environment === 'development') {
+    props = {
+      id:             config.instanceId,
+      application_id: config.applicationId,
+      baseUrl:        config.endpoint,
+      ...manifest
+    };
+  } else {
+    props = { baseUrl: `${config.endpoint}/file.php/apps/${manifest.application_id}`, ...manifest };
+  }
+  return AppConfiguration.fromAppManifestJS(props);
+}
+
+
+export class AppsRegistry {
 
   /**
    * @param {Array<Object>} rawManifests
@@ -30,12 +52,12 @@ export class AppsRegistry {
    * @return { AppsRegistry }
    */
   static fromJS(rawManifests, config) {
-    const appList = rawManifests.map(manifest => AppsRegistry.appConfiguration(manifest, config));
+    const appList = rawManifests.map(({ settings, manifest }) => ({ settings, config: createAppConfiguration(manifest, config) }));
     return new AppsRegistry(appList);
   }
 
   /**
-   * @param {Array<AppConfiguration>} appList
+   * @param {Array<{settings: Object, config: AppConfiguration}>} appList
    */
   constructor(appList) {
     this.appList = appList;
@@ -43,26 +65,8 @@ export class AppsRegistry {
 
   /**
    * @param {String} targetType
-   * @return {Array<AppConfiguration>}
-   */
-  getAppsConfigByTargetType = targetType => this.appList.filter(app => app.hasTarget(targetType));
-
-  /**
-   * @param {String} targetType
    * @return {Array<WidgetConfiguration>}
    */
-  getWidgetConfigByTargetType = (targetType) => {
-    const mapper = app => AppsRegistry.createWidget(targetType, app);
-    return this.getAppsConfigByTargetType(targetType).map(mapper);
-  };
+  getWidgetConfigByTargetType = targetType => this.appList.filter(filterByTargetType(targetType)).map(createWidget(targetType));
 
-  /**
-   * @param {String} target
-   * @param {AppConfiguration} appConfig
-   * @return {WidgetConfiguration}
-   */
-  static createWidget(target, appConfig)  {
-    /** @type {string} */ const id = uuid.v4();
-    return new WidgetConfiguration({ id, target, appConfig });
-  }
 }

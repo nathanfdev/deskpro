@@ -41,10 +41,10 @@ function loadAppsHandler(state, payload, action) {
   if (sequence !== 'done') { return state; }
 
   /** @var {AppsConfig} */
-  const { config, manifests } = payload;
+  const { config, apps } = payload;
   const { environment } = config;
 
-  const newState = Immutable.fromJS({ apps: { environment, manifests } });
+  const newState = Immutable.fromJS({ apps: { environment, apps } });
   return state.merge(newState);
 }
 
