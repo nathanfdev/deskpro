@@ -29,12 +29,18 @@ use Symfony\Component\HttpFoundation\Response;
 class PopupController extends BaseController
 {
     /**
+     * Raise a popup with given parameters.
+     *
      * @ApiDoc(
      *     section="External events",
      *     resourceDescription="Operations about external events",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\ExternalEvent\PopupType",
+     *     },
+     *     output="array"
      * )
      *
      * @Rest\Post("/raise")
@@ -68,12 +74,18 @@ class PopupController extends BaseController
     }
 
     /**
+     * Just a callback action for webhook in popup.
+     *
      * @ApiDoc(
      *     section="External events",
      *     resourceDescription="Webhook callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\ExternalEvent\WebhookType",
+     *     },
+     *     noOutput=true
      * )
      *
      * @Rest\Post("/webhook")
@@ -95,15 +107,21 @@ class PopupController extends BaseController
                 $httpClient->createRequest($data['type'], $data['url'], ['X-Request-Performer: DeskPRO'], $data),
             ]);
         }
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
+     * An endpoint to dismiss previously raised popup.
+     *
      * @ApiDoc(
      *     section="External events",
      *     resourceDescription="Operations about external events",
      *     statusCodes={
      *         200="Returned if everything is ok"
-     *     }
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      *
      * @Rest\Delete("/dismiss/{uuid}")

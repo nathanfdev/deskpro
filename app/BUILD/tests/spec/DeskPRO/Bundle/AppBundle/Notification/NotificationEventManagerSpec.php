@@ -5,6 +5,7 @@ namespace spec\DeskPRO\Bundle\AppBundle\Notification;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkAllMessagesEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\ExternalEvent\PopupEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Helpdesk\RefreshAgentInterfaceEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Organization\OrganizationCreatedEvent;
@@ -50,6 +51,7 @@ class NotificationEventManagerSpec extends ObjectBehavior
                 RefreshAgentInterfaceEvent::EVENT_NAME => 'handleEvent',
                 TicketFollowUpUpdatedEvent::EVENT_NAME => 'handleEvent',
                 SnippetsUpdatedEvent::EVENT_NAME       => 'handleEvent',
+                PopupEvent::EVENT_NAME                 => 'handleEvent',
             ]
         );
     }
