@@ -431,6 +431,35 @@
     }
   }
 
+  .multi-select {
+    height: 200px;
+
+    .flat-spinner {
+      width: 15px;
+      margin: 100px auto;
+    }
+
+    .disabled {
+      color: $dp-greyscale-250;
+    }
+  }
+
+  .multi-select-toggle-all {
+    font-size: 11px;
+    color: #888;
+    cursor: pointer;
+  }
+
+  .multi-select-count {
+    float: right;
+    font-size: 11px;
+    color: #888;
+  }
+
+  .multi-select-primary-options {
+    border-bottom: 1px solid #e3e3e3;
+  }
+
   .allow-outbound-calls {
     padding-top: 10px;
   }

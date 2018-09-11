@@ -27,6 +27,10 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    const OUTBOUND_CALLS_DEFAULT_TYPE_ALL      = 'all';
+    const OUTBOUND_CALLS_DEFAULT_TYPE_SPECIFIC = 'specific';
+    const OUTBOUND_CALLS_DEFAULT_TYPE_COUNTRY  = 'country';
+
     /**
      * The unique ID.
      *
@@ -135,14 +139,14 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     private $outboundCallsDefault = false;
 
     /**
-     * @ORM\Column(name="outbound_calls_default_global", type="boolean")
+     * @ORM\Column(name="outbound_calls_default_global", type="string")
      *
      * @JMS\Expose()
-     * @JMS\Type("boolean")
+     * @JMS\Type("string")
      *
      * @var bool
      */
-    private $outboundCallsDefaultGlobal = false;
+    private $outboundCallsDefaultType = false;
 
     /**
      * @ORM\Column(name="outbound_calls_default_countries", type="json_array")
@@ -323,21 +327,21 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return bool
+     * @return string
      */
-    public function isOutboundCallsDefaultGlobal()
+    public function getOutboundCallsDefaultType()
     {
-        return $this->outboundCallsDefaultGlobal;
+        return $this->outboundCallsDefaultType;
     }
 
     /**
-     * @param bool $outboundCallsDefaultGlobal
+     * @param string $outboundCallsDefaultType
      *
      * @return $this
      */
-    public function setOutboundCallsDefaultGlobal($outboundCallsDefaultGlobal)
+    public function setOutboundCallsDefaultType($outboundCallsDefaultType)
     {
-        $this->setModelField('outboundCallsDefaultGlobal', $outboundCallsDefaultGlobal);
+        $this->setModelField('outboundCallsDefaultType', $outboundCallsDefaultType);
 
         return $this;
     }

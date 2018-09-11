@@ -55,9 +55,16 @@ class VoiceNumberType extends AbstractType
                 'property_path' => 'outboundCallsDefault',
                 'required'      => false,
             ])
-            ->add('outbound_calls_default_global', ApiBooleanType::class, [
-                'property_path' => 'outboundCallsDefaultGlobal',
-                'required'      => false,
+            ->add('outbound_calls_default_type', ChoiceType::class, [
+                'property_path'     => 'outboundCallsDefaultType',
+                'required'          => false,
+                'multiple'          => false,
+                'choices_as_values' => true,
+                'choices'           => [
+                    VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_COUNTRY,
+                    VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_SPECIFIC,
+                    VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_ALL,
+                ],
             ])
             ->add('outbound_calls_default_countries', ChoiceType::class, [
                 'property_path'     => 'outboundCallsDefaultCountries',
