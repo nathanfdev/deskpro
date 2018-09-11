@@ -160,8 +160,8 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
 
     .scrollarea-content {
       >div {
-        margin-left: 17px;
-        margin-right: 17px;
+        padding-left: 17px;
+        padding-right: 17px;
 
         &:first-child {
           margin-top: 5px;

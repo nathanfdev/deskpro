@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset, createValue } from '@deskpro/react-forms';
 import { Form, Field, PhoneInput, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import { getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
@@ -112,18 +113,34 @@ class Dialpad extends React.Component {
 
       let selectedNumber;
 
+      // try to get from country code
+      if (!selectedNumber) {
+        numbers.forEach((number) => {
+          if (number.get('outbound_calls_default')
+            && number.get('outbound_calls_default_type') === 'country'
+            && countryCode && countryCode.toUpperCase() === getPhoneCountryCode(number.get('number'))
+          ) {
+            selectedNumber = number;
+          }
+        });
+      }
+
+      // try to get from specific countries
       numbers.forEach((number) => {
         if (number.get('outbound_calls_default')
+          && number.get('outbound_calls_default_type') === 'specific'
           && number.get('outbound_calls_default_countries').contains(countryCode)
         ) {
           selectedNumber = number;
         }
       });
 
+      // try to get global outgoing number
       if (!selectedNumber) {
-        // try to get global outgoing number
         numbers.forEach((number) => {
-          if (number.get('outbound_calls_default') && number.get('outbound_calls_default_global')) {
+          if (number.get('outbound_calls_default')
+            && number.get('outbound_calls_default_type') === 'all'
+          ) {
             selectedNumber = number;
           }
         });

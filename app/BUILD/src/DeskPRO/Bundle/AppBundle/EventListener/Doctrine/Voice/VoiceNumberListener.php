@@ -228,8 +228,11 @@ class VoiceNumberListener implements EventSubscriber
                 }
             }
 
-            if (!$this->processUpdates && $existNumber->isOutboundCallsDefaultGlobal() && $number->isOutboundCallsDefaultGlobal()) {
-                $existNumber->setOutboundCallsDefaultGlobal(false);
+            if (!$this->processUpdates
+                && $existNumber->getOutboundCallsDefaultType() === VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_ALL
+                && $number->getOutboundCallsDefaultType() === VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_ALL
+            ) {
+                $existNumber->setOutboundCallsDefaultType(VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_COUNTRY);
                 $changed = true;
             }
 
