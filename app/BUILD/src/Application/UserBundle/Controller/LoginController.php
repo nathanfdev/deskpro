@@ -28,6 +28,7 @@ use Application\DeskPRO\Translate\SystemLanguage;
 use Application\DeskPRO\Twig\AppVariable;
 use Application\DeskPRO\Usersource\Adapter\ActiveDirectory;
 use Application\DeskPRO\Usersource\Adapter\Ldap;
+use Application\DeskPRO\Usersource\Adapter\Saml;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
@@ -662,7 +663,24 @@ class LoginController extends AbstractController
         if (!$usersource) {
             throw $this->createNotFoundException();
         }
-        $adapter = $this->_initUserSourceAdapter($usersource, $this->in->getString('context'));
+
+        $context = $this->in->getString('context');
+        $adapter = $usersource->getAdapter();
+        if ($usersource_test && $adapter instanceof Saml) {
+            // workaround for Google (G suite) Saml authentication testing
+            // when we do `test settings` for SAML - context is usually `auth-to-iframe`
+            // but with this context AuthFactory will generate adapter with callback url (ACS in terms of SAML) = `agent_login_usersource_sso`
+            // something like: http://deskpro-dev/agent/login/usersource-sso/3
+            // but we configure Google saml app with ACS = `agent_login_callback`
+            // something like: http://deskpro-dev/agent/login/authenticate-callback/3
+            // Google see the difference between configured ACS and ACS generated during runtime and return an error
+            // we set $context to null to generate ACS same as configured for Google app
+            // when we do testing - there are no difference in results for those two endpoints
+
+            $context = null;
+        }
+
+        $adapter = $this->_initUserSourceAdapter($usersource, $context);
 
         //------------------------------
         // This needs to be an allowed adapter via settings
@@ -877,6 +895,18 @@ class LoginController extends AbstractController
                 $login_processor = new LoginProcessor($usersource, $result->getIdentity(), $usersource_test);
                 $person          = $login_processor->getPerson();
             } catch (\Exception $e) {
+                if ($usersource_test) {
+                    $log = $this->getAdapterLog($adapter);
+
+                    $log .= "\n\n".$e->getMessage();
+
+                    return $this->render('DeskPRO:Auth:_sso_test_failed.html.twig', [
+                            'log'            => $log,
+                            'display_errors' => $result->getMessages('display_errors'),
+                        ]
+                    );
+                }
+
                 return $this->createJsonResponse($e->getMessage(), Response::HTTP_BAD_REQUEST);
             }
 

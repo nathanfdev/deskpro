@@ -122,6 +122,13 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
         try {
             return $this->processAcs($callback_data);
         } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log(
+                    $e->getMessage(),
+                    Logger::DEBUG
+                );
+            }
+
             return new Result(
                 Result::FAILURE_EXCEPTION, null,
                 ['error_code' => 'exception', 'error_message' => 'An exception occurred', 'exception' => $e]
