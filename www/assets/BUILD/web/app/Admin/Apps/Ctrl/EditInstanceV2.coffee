@@ -39,7 +39,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
           @showChangeSettings = false;
 
         try
-          @settings.showInOwnTab = @app.app.settings.showInTab == "own-tab"
+          @settings.showInOwnTab = @app.settings.showInTab == "own-tab"
         catch e
           @settings.showInOwnTab = false
 

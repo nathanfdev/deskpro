@@ -178,7 +178,7 @@ class AppsController extends BaseController
         $properties = [
             'settings' => function (Entity\AppStore\AppInstance $app, $value) {
                 if (is_array($value)) {
-                    $app->getApp()->setSettings($value);
+                    $app->setSettings($value);
                     return true;
                 }
                 return false;
