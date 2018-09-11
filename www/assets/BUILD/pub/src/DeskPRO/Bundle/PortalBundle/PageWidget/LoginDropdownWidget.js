@@ -94,7 +94,7 @@ export class LoginDropdownWidget extends PageWidget {
               href="${portalUrlGenerator.path(`/login/authenticate/${us.id}?return=${window.location.href}`)}"
               class="${us.classes.join(' ')}"
             >
-              ${us.icon !== null ? `<i class="${us.icon}"></i>!!!` : ''}
+              ${us.icon !== null ? `<i class="${us.icon}"></i>` : ''}
               <span>${us.text}</span>
             </a>
           `;
