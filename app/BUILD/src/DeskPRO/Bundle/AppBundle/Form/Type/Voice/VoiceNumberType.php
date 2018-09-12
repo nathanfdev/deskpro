@@ -65,6 +65,7 @@ class VoiceNumberType extends AbstractType
                     VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_SPECIFIC,
                     VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_ALL,
                 ],
+                'empty_data' => VoiceNumber::OUTBOUND_CALLS_DEFAULT_TYPE_COUNTRY,
             ])
             ->add('outbound_calls_default_countries', ChoiceType::class, [
                 'property_path'     => 'outboundCallsDefaultCountries',

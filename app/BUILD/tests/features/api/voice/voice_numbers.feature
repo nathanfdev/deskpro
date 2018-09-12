@@ -171,7 +171,7 @@ Feature: /voice_numbers endpoint
     """
 {
   "outbound_calls_default": true,
-  "outbound_calls_default_global": false,
+  "outbound_calls_default_type": "specific",
   "outbound_calls_default_countries": ["us", "GB"]
 }
     """
@@ -180,7 +180,7 @@ Feature: /voice_numbers endpoint
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
     And the JSON node "data.outbound_calls_default" should be equal to 1
-    And the JSON node "data.outbound_calls_default_global" should be equal to 0
+    And the JSON node "data.outbound_calls_default_type" should be equal to "specific"
     And the JSON node "data.outbound_calls_default_countries" should have 2 elements
     And the JSON node "data.outbound_calls_default_countries[0]" should be equal to "us"
     And the JSON node "data.outbound_calls_default_countries[1]" should be equal to "gb"
@@ -193,7 +193,7 @@ Feature: /voice_numbers endpoint
     """
 {
   "outbound_calls_default": true,
-  "outbound_calls_default_global": true
+  "outbound_calls_default_type": "all"
 }
     """
     Then the response status code should be 204
@@ -201,7 +201,7 @@ Feature: /voice_numbers endpoint
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
     And the JSON node "data.outbound_calls_default" should be equal to 1
-    And the JSON node "data.outbound_calls_default_global" should be equal to 1
+    And the JSON node "data.outbound_calls_default_type" should be equal to "all"
     And the JSON node "data.outbound_calls_default_countries" should have 0 elements
 
   Scenario: I overwrite default country codes
@@ -239,28 +239,28 @@ Feature: /voice_numbers endpoint
 
   Scenario: I overwrite default number option
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code | Outbound Calls Default | Outbound Calls Default Global |
-      | n1 | Number 1 | sid1 | 111111 | gb           | 1                      | 1                             |
-      | n2 | Number 2 | sid2 | 222222 | gb           | 1                      | 0                             |
-      | n3 | Number 3 | sid3 | 333333 | gb           | 1                      | 0                             |
+      | #  | Nickname | Sid  | Number | Country Code | Outbound Calls Default | Outbound Calls Default Type |
+      | n1 | Number 1 | sid1 | 111111 | gb           | 1                      | all                         |
+      | n2 | Number 2 | sid2 | 222222 | gb           | 1                      | country                     |
+      | n3 | Number 3 | sid3 | 333333 | gb           | 1                      | specific                    |
 
     When I send a PUT request to "/api/v2/voice_numbers/{n2}" with body:
     """
 {
   "outbound_calls_default": true,
-  "outbound_calls_default_global": true
+  "outbound_calls_default_type": "all"
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/voice_numbers/{n2}"
     Then the JSON node "data.outbound_calls_default" should be equal to 1
-    And the JSON node "data.outbound_calls_default_global" should be equal to 1
+    And the JSON node "data.outbound_calls_default_type" should be equal to "all"
 
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the JSON node "data.outbound_calls_default" should be equal to 1
-    And the JSON node "data.outbound_calls_default_global" should be equal to 0
+    And the JSON node "data.outbound_calls_default_type" should be equal to "all"
 
     When I send a GET request to "/api/v2/voice_numbers/{n3}"
     Then the JSON node "data.outbound_calls_default" should be equal to 1
-    And the JSON node "data.outbound_calls_default_global" should be equal to 0
+    And the JSON node "data.outbound_calls_default_type" should be equal to "specific"

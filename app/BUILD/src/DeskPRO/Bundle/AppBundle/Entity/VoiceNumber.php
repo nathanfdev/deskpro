@@ -139,14 +139,16 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     private $outboundCallsDefault = false;
 
     /**
-     * @ORM\Column(name="outbound_calls_default_global", type="string")
+     * @ORM\Column(name="outbound_calls_default_type", type="string")
      *
      * @JMS\Expose()
      * @JMS\Type("string")
      *
+     * @Assert\NotBlank()
+     *
      * @var bool
      */
-    private $outboundCallsDefaultType = false;
+    private $outboundCallsDefaultType = self::OUTBOUND_CALLS_DEFAULT_TYPE_COUNTRY;
 
     /**
      * @ORM\Column(name="outbound_calls_default_countries", type="json_array")
