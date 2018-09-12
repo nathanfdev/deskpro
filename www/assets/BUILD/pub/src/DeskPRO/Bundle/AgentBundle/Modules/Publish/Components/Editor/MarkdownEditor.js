@@ -270,7 +270,22 @@ class MarkdownEditor extends React.Component {
 
   renderHtml = (markdown) => {
     let html = this.md.render(markdown)
-      .replace(/!\[([^\]]+)]\((\{\{.+}})\)/g, (m, alt, src) => (`<img src="${src}" alt="${alt}" />`))
+      .replace(/!\[([^\]]+)]\((\{\{.+})\s*(?:&quot;((?:(?!&quot;).)*)&quot;)?\s*(?:=(\d*)x(\d*))?\)/g,
+        (m, alt, src, title, width, height) => {
+          let img = `<img src="${src}" alt="${alt}"`;
+          if (title) {
+            img += ` title="${title}"`;
+          }
+          if (width) {
+            img += ` width="${width}"`;
+          }
+          if (height) {
+            img += ` height="${height}"`;
+          }
+          img += ' />';
+          return img;
+        }
+      )
       .replace(/\[([^\]]+)]\((\{\{.+}})\)/g, (m, content, href) => (`<a href="${href}">${content}</a>`));
     const container = document.createElement('div');
     container.innerHTML = html;
