@@ -97,6 +97,13 @@ class TaskRouter
                 if ($workflow->isTaskTimedOut($task)) {
                     $task->setStatus(Task::STATUS_TIMEOUT);
 
+                    // task is timed out, reset workers
+                    $workers = $this->storage->getWorkers($task->getWorkerIds());
+                    foreach ($workers as $worker) {
+                        $worker->setActivity(Worker::ACTIVITY_IDLE);
+                        $this->storage->saveWorker($worker);
+                    }
+
                     $this->dispatcher->dispatch(TaskRouterEvent::TIMEOUT, new TaskRouterEvent($task));
                     $this->storage->saveTask($task);
                 } elseif (!$task->getWorkerIds()) {
