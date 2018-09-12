@@ -1762,7 +1762,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			window.AgentLegacyBundle.renderVoiceMessage(
 				$rElement.get(0),
 				$el.data('message'),
-				$el.data('message-date-created-fulltime')
+				$el.data('message-date-created-fulltime'),
+				$el.data('elid')
 			);
 		};
 

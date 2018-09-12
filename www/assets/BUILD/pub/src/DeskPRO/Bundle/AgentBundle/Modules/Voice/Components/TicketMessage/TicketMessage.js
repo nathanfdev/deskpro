@@ -23,7 +23,8 @@ class TicketMessage extends React.Component {
     outboundCallsEnabled: PropTypes.bool,
     dateCreatedFormatted: PropTypes.string,
     openTarget:           PropTypes.func,
-    me:                   PropTypes.object
+    me:                   PropTypes.object,
+    elid:                 PropTypes.string
   };
 
   static defaultProps = {
@@ -90,7 +91,8 @@ class TicketMessage extends React.Component {
             </span>
             <span className="voice-ticket-message-date">
               <time
-                className="timeago with-stickytip timeago-auto-update with-timeago dp-stickytip-init"
+                data-stickytip-target={`#${this.props.elid}`}
+                className="timeago with-stickytip timeago-auto-update with-timeago"
                 dateTime={message.date_created}
                 title={dateCreatedFormatted}
               />

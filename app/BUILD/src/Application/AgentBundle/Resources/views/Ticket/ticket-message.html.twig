@@ -1,5 +1,5 @@
 {% set isVoiceMessage = message.getAttribute('voice_phone_call') %}
-
+{% set elid = el_uid() %}
 <article
 	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %} {% if isVoiceMessage %}react-voice-component{% endif %}"
 	data-message-id="{{message.id}}" {% if isVoiceMessage %}data-message="{{ message|serialize(['voice_phone_call', 'ticket']) }}"{% endif %}
@@ -7,6 +7,7 @@
 	data-message-author-name="{{message.person.getDisplayName()}}"
 	data-message-author-email="{{message.person.getEmailAddress()}}"
 	data-message-has-source="{{message.hasEmailSource()}}"
+	data-elid="{{ elid }}"
 	data-message-date-created-fulltime="{{message.date_created|date('fulltime')}}"
 >
 	{% if message.is_agent_note %}<div class="note-tag" title="{{ phrase('agent.general.note_tag_title') }}"><i>{{ phrase('agent.general.note') }}</i></div>{% endif %}
@@ -39,7 +40,6 @@
 				<div style="display: none" class="person-phone-country">{{ message.person.primary_phone_number_region }}</div>
             {% endif %}
 			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
-            {% set elid = el_uid() %}
 			<time
                     {% if not app.isRelativeTimesDisabled() %}
 						class="timeago with-stickytip"
