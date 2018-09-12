@@ -67,7 +67,7 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
             $formatter = new SnippetFormatter($this->getContainer()->getTwig());
             ActionVars::configureFormatter($formatter, $context);
 
-            $reply_text = $formatter->formatText($reply_text, $ticket);
+            $reply_text = $formatter->formatTemplate($reply_text, $ticket, $context);
         }
 
         $reply_text = $this->getContainer()->getInputCleaner()->clean($reply_text, 'html');
