@@ -12,4 +12,5 @@ export const quote = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle
 export const info = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/editor/info.svg`} />;
 export const warning = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/editor/warning.svg`} />;
 export const error = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/editor/error.svg`} />;
+export const image = <FontAwesomeIcon icon="image" />;
 export const table = <FontAwesomeIcon icon={faTable} />;

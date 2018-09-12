@@ -87,6 +87,7 @@ $button-gutter: 4px;
   text-transform: uppercase;
 }
 
+#markdown-add-image,
 #markdown-add-link {
   width: 300px;
   .description {
@@ -94,5 +95,17 @@ $button-gutter: 4px;
     .is-loading {
       display: block;
     }
+  }
+}
+#markdown-add-image {
+  .preview-image {
+    margin-top: 5px;
+  }
+  .upload_topic_image {
+    display: none;
+  }
+  .drop-info {
+    margin-top: 5px;
+    font-size: 12px;
   }
 }

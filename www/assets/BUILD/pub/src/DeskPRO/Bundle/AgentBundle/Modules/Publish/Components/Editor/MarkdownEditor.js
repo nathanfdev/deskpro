@@ -10,6 +10,7 @@ import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import 'codemirror/mode/gfm/gfm';
 import 'codemirror/addon/edit/continuelist';
 import LinkMenu from './LinkMenu';
+import ImageMenu from './ImageMenu';
 import MarkdownItTabs from './tabs';
 import { getCursorState, applyFormat } from './format';
 import * as Icons from './Icons';
@@ -255,6 +256,15 @@ class MarkdownEditor extends React.Component {
     this.linkMenu.closePopup();
   };
 
+  openImageDialog = () => {
+    this.imageMenu.togglePopup();
+  };
+
+  insertImage = (image) => {
+    this.codeMirror.replaceSelection(image);
+    this.imageMenu.closePopup();
+  };
+
   insertTable = () => {
     const table = '| First Header  | Second Header |\n| ------------- | ------------- |\n| Content Cell  | Content Cell  |\n| Content Cell  | Content Cell  |';
     this.codeMirror.replaceSelection(table);
@@ -349,6 +359,18 @@ class MarkdownEditor extends React.Component {
         {this.renderButton('oList', 'ol')}
         {this.renderButton('uList', 'ul')}
         {this.renderButton('quote', 'q')}
+        <PopUp
+          positionMy="right top"
+          positionAt="right bottom"
+          elementId="markdown-add-image"
+          style={{ display: 'inline-block' }}
+          zIndex={99999}
+          content={<ImageMenu insertImage={this.insertImage} />}
+          ref={(c) => { this.imageMenu = c; }}
+          autoOpen={false}
+        >
+          {this.renderButton('image', 'p', this.openImageDialog)}
+        </PopUp>
         {this.renderButton('table', 't', this.insertTable)}
         {this.renderButton('info', 'i')}
         {this.renderButton('warning', '!')}

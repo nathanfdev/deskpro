@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import Select from 'react-select-plus';
 import { connect } from 'react-redux';
 import invariant from 'invariant';
@@ -111,26 +112,35 @@ class LinkMenu extends React.Component {
       <div>
         <div className="header">Add Link</div>
         <div className="description">
-          <label htmlFor="content_link_title">Title: </label><br />
+          <label htmlFor="content_link_title"><FormattedMessage id="agent.general.title" />: </label><br />
           <Input type="text" id="content_link_title" value={this.state.title} onChange={this.setTitle} /><br />
-          <label htmlFor="content_link_title">Url: </label><br />
+          <label htmlFor="content_link_title"><FormattedMessage id="agent.general.url" />: </label><br />
           <Input type="text" id="content_link_title" value={this.state.url} onChange={this.setUrl} /><br />
           <br />
-          OR
+          <FormattedMessage id="agent.general.or_sep">
+            {or => (or.toUpperCase()) }
+          </FormattedMessage>
           <br />
           <br />
-          <label htmlFor="content_link_select">Content link :</label><br />
-          <Select.Async
-            id="content_link_select"
-            minimumInput={3}
-            onChange={this.onChange}
-            onFocus={LinkMenu.onFocus}
-            onBlur={LinkMenu.onBlur}
-            loadOptions={this.getOptions}
-            placeholder="Select a content"
-            value={this.state.content}
-          /><br />
-          <Button onClick={this.insert} disabled={!!(this.state.content && this.state.url)}>Insert</Button>
+          <label htmlFor="content_link_select"><FormattedMessage id="agent.guides.content_link" />:</label><br />
+          <FormattedMessage id="agent.guides.select_a_content">
+            {placeholder => (
+              <Select.Async
+                id="content_link_select"
+                minimumInput={3}
+                onChange={this.onChange}
+                onFocus={LinkMenu.onFocus}
+                onBlur={LinkMenu.onBlur}
+                loadOptions={this.getOptions}
+                placeholder={placeholder}
+                value={this.state.content}
+              />
+            ) }
+          </FormattedMessage>
+          <br />
+          <Button onClick={this.insert} disabled={!!(this.state.content && this.state.url)}>
+            <FormattedMessage id="agent.general.insert" />
+          </Button>
         </div>
       </div>
     );
