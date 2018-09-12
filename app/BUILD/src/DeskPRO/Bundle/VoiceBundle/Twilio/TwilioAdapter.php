@@ -302,7 +302,7 @@ class TwilioAdapter
         $capability->allowClientOutgoing($account->getTwimlAppSid());
         $capability->allowClientIncoming(self::getWorkerClientName($person));
 
-        $token = $capability->generateToken(28800);
+        $token = $capability->generateToken(604800);
 
         return $token;
     }
