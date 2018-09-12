@@ -4,13 +4,13 @@ import React from 'react';
 export class TicketMessageMenu  extends React.Component {
 
   static propTypes = {
-    message: PropTypes.object,
-    record:  PropTypes.object
+    phoneCall:    PropTypes.object,
+    deleteRecord: PropTypes.func.isRequired
   };
 
 
   deleteRecordings = () => {
-    console.log('delete recordings popup, message id = ', this.props.message.id, 'recording id = ', this.props.record.get('blob_id'));
+    this.props.deleteRecord(this.props.phoneCall.get('id'));
   };
 
   render() {

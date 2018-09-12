@@ -1,10 +1,13 @@
 $voice-green-border-color: #47BF61;
 
 .voice-ticket-message-edit-menu-popup {
-  border: none;
+  .popup.ui {
 
-  &:before {
-    display: none;
+    border: none;
+
+    &:before {
+      display: none;
+    }
   }
 }
 

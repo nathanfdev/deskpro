@@ -7,7 +7,12 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class VoicePhoneCallsController.
@@ -21,4 +26,53 @@ class VoicePhoneCallsController extends CrudController
 {
     public static $entity     = VoicePhoneCall::class;
     public static $exposeOnly = ['get', 'list', 'count'];
+
+    /**
+     * Delete a call record from blob storage.
+     *
+     * @ApiDoc(
+     *     description="Delete phone call record",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     noOutput=true
+     * )
+     *
+     * @Rest\Delete("/{phoneCallId}/record")
+     *
+     * @param int $phoneCallId
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function deletePhoneCallRecordAction($phoneCallId)
+    {
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($phoneCallId);
+        $recording = $phoneCall->getRecording();
+        if ($recording) {
+            $phoneCall->setRecording(null);
+            $em->persist($phoneCall);
+            $this->get('blob.storage')->deleteBlobRecord($recording);
+            $em->flush($phoneCall);
+        }
+
+        $serializedData = $this->get('serializer')->toArray(
+            new ApiWrapper($phoneCall),
+            new SideloadSerializationContext()
+        );
+
+        $this->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent(
+                'agent.voice.recording_status',
+                ['data' => $serializedData]
+            )
+        );
+
+        return View::create(null, Response::HTTP_NO_CONTENT);
+    }
 }

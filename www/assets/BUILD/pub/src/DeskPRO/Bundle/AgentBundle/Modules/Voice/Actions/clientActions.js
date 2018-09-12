@@ -553,3 +553,8 @@ export const openDialpad = createAction(
   }
 );
 
+export const deleteRecord = createAction(
+  'VOICE_AGENT_DELETE_RECORD',
+  phoneCallId => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`)
+);
+
