@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\VoiceBundle\Twilio;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
@@ -14,11 +13,8 @@ use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioPaginate;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\ClientProxy;
 use Doctrine\ORM\EntityManager;
-use Orb\Util\Strings;
 use Twilio\Exceptions\TwilioException;
-use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\ClientToken;
-use Twilio\Jwt\Grants\VoiceGrant;
 use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberInstance;
 use Twilio\Rest\Client;
 use Twilio\Values;
@@ -29,7 +25,6 @@ use Twilio\Values;
 class TwilioAdapter
 {
     const VOICEMAIL_WAITING_TIMEOUT = 30;
-    const WORKFLOW_NAME             = 'DeskPRO Queue Routing Workflow';
 
     /**
      * @var EntityManager
@@ -40,11 +35,6 @@ class TwilioAdapter
      * @var VoiceSettingsResolver
      */
     private $settingsResolver;
-
-    /**
-     * @var array
-     */
-    private $activities;
 
     /**
      * @var array
@@ -61,21 +51,6 @@ class TwilioAdapter
     {
         $this->em               = $em;
         $this->settingsResolver = $settingsResolver;
-    }
-
-    /**
-     * @param AgentData $agentData
-     *
-     * @return string
-     */
-    public static function getActivityStatus(AgentData $agentData)
-    {
-        $status = $agentData->getAvailableStatus();
-        if (!$agentData->isAgentCallsEnabled()) {
-            $status = AgentData::AVAILABLE_STATUS_OFFLINE;
-        }
-
-        return ucfirst(Strings::dashToCamelCase($status));
     }
 
     /**
@@ -242,16 +217,6 @@ class TwilioAdapter
     }
 
     /**
-     * @param Person $person
-     *
-     * @return string
-     */
-    public static function getWorkerContactUrl(Person $person)
-    {
-        return 'client:'.self::getWorkerClientName($person);
-    }
-
-    /**
      * @param string $caller
      *
      * @return bool
@@ -259,35 +224,6 @@ class TwilioAdapter
     public static function isWorkerContactUrl($caller)
     {
         return strpos($caller, 'client:') === 0;
-    }
-
-    /**
-     * @param VoiceAccount $account
-     * @param Person       $person
-     *
-     * @return string
-     */
-    public function createAccessToken(VoiceAccount $account, Person $person)
-    {
-        $client = $this->getClient($account);
-        $apiKey = $client->newKeys->create(['friendlyName' => "Agent {$person->getId()}"]);
-
-        // create access token, which we will serialize and send to the client
-        $token = new AccessToken(
-            $account->getAccountSid(),
-            $apiKey->sid,
-            $apiKey->secret,
-            3600,
-            self::getWorkerClientName($person)
-        );
-
-        // create Voice grant
-        $voiceGrant = new VoiceGrant();
-        $voiceGrant->setOutgoingApplicationSid($account->getTwimlAppSid());
-
-        $token->addGrant($voiceGrant);
-
-        return $token->toJWT();
     }
 
     /**

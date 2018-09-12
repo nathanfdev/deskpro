@@ -106,7 +106,7 @@ export const voiceBootstrap = createAction(
           const state = getState();
           const incomingCall = incomingCallSelector(state);
 
-          if (data.call_id === incomingCall.get('call_id')) {
+          if (incomingCall && data.call_id === incomingCall.get('call_id')) {
             dispatch(removeIncomingCall(incomingCall));
           }
         });

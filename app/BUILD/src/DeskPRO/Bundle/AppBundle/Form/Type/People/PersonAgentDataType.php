@@ -44,9 +44,6 @@ class PersonAgentDataType extends AbstractType
                 'choices_as_values' => true,
                 'choices'           => [
                     AgentData::AVAILABLE_STATUS_IDLE,
-                    AgentData::AVAILABLE_STATUS_IDLE_DISABLED,
-                    AgentData::AVAILABLE_STATUS_BUSY,
-                    AgentData::AVAILABLE_STATUS_RESERVED,
                     AgentData::AVAILABLE_STATUS_OFFLINE,
                 ],
             ])

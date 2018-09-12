@@ -31,11 +31,8 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const AVAILABLE_STATUS_IDLE          = 'idle';
-    const AVAILABLE_STATUS_IDLE_DISABLED = 'idle_disabled';
-    const AVAILABLE_STATUS_BUSY          = 'busy';
-    const AVAILABLE_STATUS_RESERVED      = 'reserved';
-    const AVAILABLE_STATUS_OFFLINE       = 'offline';
+    const AVAILABLE_STATUS_IDLE    = 'idle';
+    const AVAILABLE_STATUS_OFFLINE = 'offline';
 
     /**
      * The unique ID.
@@ -96,7 +93,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @JMS\Type("string")
      *
      * @Assert\NotBlank()
-     * @Assert\Choice(choices={"idle", "idle_disabled", "busy", "reserved", "offline"})
+     * @Assert\Choice(choices={"idle", "offline"})
      *
      * @var bool
      */
