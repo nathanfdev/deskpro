@@ -7,8 +7,10 @@ import { Button } from 'DeskPRO/Component/Semantic/Button';
 import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
 import classNames from 'classnames';
+import PopUp from 'DeskPRO/Component/Semantic/PopUp/PopUp';
 import Avatar from '../Common/Avatar';
 import MessagePhoneNumber from './MessagePhoneNumber';
+import { TicketMessageMenu } from './TicketMessageMenu';
 
 class TicketMessage extends React.Component {
 
@@ -54,6 +56,12 @@ class TicketMessage extends React.Component {
     });
   };
 
+  openMenu = () => {
+    if (this.popup) {
+      this.popup.openPopup();
+    }
+  };
+
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
     const { transcript, outboundCallsEnabled, dateCreatedFormatted } = this.props;
@@ -89,6 +97,22 @@ class TicketMessage extends React.Component {
                   : 'agent.voice.incoming_call_title'}
               />
             </span>
+            <span className="voice-ticket-message-edit-menu" onClick={this.openMenu}>
+              <i className="fas fa-cog" />
+              <PopUp
+                ref={(c) => { this.popup = c; }}
+                positionMy="right top"
+                positionAt="right bottom"
+                zIndex={99999}
+                className="voice-ticket-message-edit-menu-popup"
+                content={
+                  <TicketMessageMenu
+                    message={message}
+                    record={recording}
+                  />
+                }
+              />
+            </span>
             <span className="voice-ticket-message-date">
               <time
                 data-stickytip-target={`#${this.props.elid}`}
@@ -97,6 +121,7 @@ class TicketMessage extends React.Component {
                 title={dateCreatedFormatted}
               />
             </span>
+
           </div>
           {connection
             ? <div className="voice-ticket-message-controls">
