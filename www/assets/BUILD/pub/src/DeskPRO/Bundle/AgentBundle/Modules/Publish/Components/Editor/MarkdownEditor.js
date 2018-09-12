@@ -255,6 +255,11 @@ class MarkdownEditor extends React.Component {
     this.linkMenu.closePopup();
   };
 
+  insertTable = () => {
+    const table = '| First Header  | Second Header |\n| ------------- | ------------- |\n| Content Cell  | Content Cell  |\n| Content Cell  | Content Cell  |';
+    this.codeMirror.replaceSelection(table);
+  };
+
   codemirrorValueChanged = (doc) => {
     const newValue = doc.getValue();
     this.currentCodemirrorValue = newValue;
@@ -344,6 +349,7 @@ class MarkdownEditor extends React.Component {
         {this.renderButton('oList', 'ol')}
         {this.renderButton('uList', 'ul')}
         {this.renderButton('quote', 'q')}
+        {this.renderButton('table', 't', this.insertTable)}
         {this.renderButton('info', 'i')}
         {this.renderButton('warning', '!')}
         {this.renderButton('code', '>')}
