@@ -2540,6 +2540,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         type: 'GET',
         success: function (response) {
           $('.ticket-person-holder', self.wrapper).html(response);
+          self._initSelectUser();
         }
       });
 		};
@@ -2559,11 +2560,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         $.ajax({
           url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
           type: 'PUT',
-					data: {
-          	name: $('input[name=select_user_name]', self.wrapper).val(),
-          	primary_email: $('input[name=select_user_email]', self.wrapper).val(),
-          	language: $('select[name=select_user_language]', self.wrapper).val(),
-					},
+          data: {
+            name: $('input[name=select_user_name]', self.wrapper).val(),
+            primary_email: $('input[name=select_user_email]', self.wrapper).val(),
+            language: $('select[name=select_user_language]', self.wrapper).val(),
+          },
+          success: reloadPersonView
+        });
+      } else if (value === 'unknown_person') {
+        $.ajax({
+          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+          type: 'PUT',
+          data: {
+            preferences: {
+            	'voice.unknown_caller': 0
+						},
+          },
           success: reloadPersonView
         });
 			} else if (value) {
@@ -2573,6 +2585,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           success: reloadPersonView
         });
 			}
+    });
+
+    $('.change-user-button', this.wrapper).on('click', function () {
+      $.ajax({
+        url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/person_view?select_person=1',
+        type: 'GET',
+        success: function (response) {
+          $('.ticket-person-holder', self.wrapper).html(response);
+          self._initSelectUser();
+        }
+      });
     });
 	},
 

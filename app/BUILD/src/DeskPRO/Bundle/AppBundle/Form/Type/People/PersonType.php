@@ -151,6 +151,10 @@ class PersonType extends AbstractType
             ->add('is_disabled', ApiBooleanType::class, [
                 'required' => false,
             ])
+            ->add('preferences', PersonPreferencesType::class, [
+                'required' => false,
+                'person'   => $builder->getData(),
+            ])
         ;
 
         // resolve field name aliases
