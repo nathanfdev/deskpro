@@ -114,7 +114,9 @@
 					<tr>
 						<th>{{ phrase('agent.general.via') }}:</th>
 						<td>
-							{% if message.creation_system == 'web.agent.portal' %}
+                            {% if isVoiceMessage %}
+                            	{{ phrase('agent.voice.call') }}
+							{% elseif message.creation_system == 'web.agent.portal' %}
 								{{ phrase('agent.general.agent_interface') }}
 							{% elseif message.creation_system == 'web.person.portal' %}
 								{{ phrase('agent.general.user_interface') }}

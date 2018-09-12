@@ -2830,6 +2830,7 @@ return [
     'agent.general.brands'         => 'Brands',
     'agent.general.select_a_brand' => 'Select a brand',
 
+    'agent.voice.call'                                      => 'Call',
     'agent.voice.incoming_call_title'                       => 'Inbound call record',
     'agent.voice.outgoing_call_title'                       => 'Outbound call record',
     'agent.voice.call_new_incoming'                         => 'Incoming call from {{person}} {{number}} to {{to_number}}',
