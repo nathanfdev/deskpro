@@ -11,6 +11,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -827,6 +828,8 @@ class TicketMessage extends DomainObject
     /**
      * @param string|TicketMessageAttribute $attr
      *
+     * @throws \Exception
+     *
      * @return $this
      */
     public function removeAttribute($attr)
@@ -841,6 +844,16 @@ class TicketMessage extends DomainObject
         $this->attributes->removeElement($attr);
 
         return $this;
+    }
+
+    /**
+     * @return ArrayCollection|TicketMessageVoicePhoneCall[]
+     */
+    public function getPhoneCallAttributes()
+    {
+        return $this->attributes->filter(function (TicketMessageAttribute $attribute) {
+            return $attribute instanceof TicketMessageVoicePhoneCall;
+        });
     }
 
     /**

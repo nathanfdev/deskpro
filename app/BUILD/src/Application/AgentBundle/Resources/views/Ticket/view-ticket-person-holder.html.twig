@@ -1,0 +1,15 @@
+{% set showSelectUserMenu = ticket.person.emails|length == 0 and not ticket.person.primary_email and ticket.person.phone_numbers|length > 0 and ticket.person.getPref('voice.unknown_caller') %}
+{% set firstMessage = ticket.getFirstMessage() %}
+{% set voiceTicket = firstMessage and firstMessage.getPhoneCallAttributes|length > 0 %}
+
+{% if showSelectUserMenu %}
+    {% include 'AgentBundle:Ticket:select-user-menu.html.twig' %}
+{% else %}
+    {% include 'AgentBundle:Ticket:view-ticket-person.html.twig' %}
+{% endif %}
+
+{% if not showSelectUserMenu and voiceTicket %}
+    <a class="cc-btn cc-btn-main change-user-button">
+        <em>{{ phrase('agent.tickets.change_user') }}</em>
+    </a>
+{% endif %}

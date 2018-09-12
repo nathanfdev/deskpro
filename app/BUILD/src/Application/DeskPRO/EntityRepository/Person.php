@@ -760,6 +760,7 @@ class Person extends AbstractEntityRepository
             if (!$person) {
                 $person = new PersonEntity();
                 $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($phoneNumber));
+                $person->setPreference('voice.unknown_caller', 1);
 
                 $this->_em->persist($person);
                 $this->_em->flush();
