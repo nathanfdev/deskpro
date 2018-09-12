@@ -1021,12 +1021,6 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1535347111 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/08/Build1535347111.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1535347111',
-        'skipPostBuild' => false,
-        'isOnlineBuild' => true,
-    ],
     1535627068 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/08/Build1535627068.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1535627068',
@@ -1045,16 +1039,22 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1536244645 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/09/Build1536244645.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1536244645',
+    1536774803 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/09/Build1536774803.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1536774803',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1536686668 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/09/Build1536686668.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1536686668',
+    1536774804 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/09/Build1536774804.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1536774804',
         'skipPostBuild' => false,
-        'isOnlineBuild' => false,
+        'isOnlineBuild' => true,
+    ],
+    1536774805 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/09/Build1536774805.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1536774805',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
     ],
 ];
