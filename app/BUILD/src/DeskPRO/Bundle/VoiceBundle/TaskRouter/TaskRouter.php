@@ -240,12 +240,6 @@ class TaskRouter
         try {
             $task = $this->storage->getTask($taskId);
 
-            // if task is done then we can't reject it
-            if (!$task->isPending()) {
-                return false;
-            }
-
-            // task is done
             // reject all workers
             $workers = $this->storage->getWorkers($task->getWorkerIds());
             foreach ($workers as $worker) {
@@ -253,11 +247,14 @@ class TaskRouter
                 $this->storage->saveWorker($worker);
             }
 
-            $task->setStatus(Task::STATUS_CANCELED);
-            $task->setWorkersIds([]);
+            // if task is done then we can't reject it
+            if ($task->isPending()) {
+                $task->setStatus(Task::STATUS_CANCELED);
+                $task->setWorkersIds([]);
 
-            $this->dispatcher->dispatch(TaskRouterEvent::CANCELED, new TaskRouterEvent($task));
-            $this->storage->saveTask($task);
+                $this->dispatcher->dispatch(TaskRouterEvent::CANCELED, new TaskRouterEvent($task));
+                $this->storage->saveTask($task);
+            }
 
             return true;
         } finally {
