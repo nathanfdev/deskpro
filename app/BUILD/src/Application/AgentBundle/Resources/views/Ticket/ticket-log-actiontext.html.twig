@@ -725,6 +725,13 @@
 {% elseif log.action_type == 'task_created' %}
 	<span class="type">{{ phrase('agent.tasks.task_created') }}</span>
 	<span class="new-val">{{log.details.task_id}}: {{ log.details.task_title}}</span>
+{% elseif log.action_type == 'call.recording_downloaded' %}
+	<span class="type">
+		[{{ log.details.duration|date('H:i:s', '+00:00 GMT') }}] {{ phrase('agent.voice.recording_downloaded') }}
+        {% if ticket_perms.delete %}
+			({{ phrase('agent.voice.delete_record') }})
+		{% endif %}
+	</span>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
 {% endif %}

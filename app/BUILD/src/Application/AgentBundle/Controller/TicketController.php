@@ -762,6 +762,7 @@ class TicketController extends AbstractController
 
         $info                           = [];
         $info['ticket']                 = $ticket;
+        $info['ticket_perms']           = $this->_getTicketPerms($ticket);
         $info['num_pages']              = count($all_ticket_logs);
         $info['cur_page']               = $page;
         $info['ticket_logs']            = $ticket_logs;
@@ -904,6 +905,7 @@ class TicketController extends AbstractController
                 $tpl,
                 [
                     'ticket'                     => $ticket,
+                    'ticket_perms'               => $this->_getTicketPerms($ticket),
                     'ticket_messages'            => $ticket_messages,
                     'ticket_messages_translated' => $ticket_messages_translated,
                     'ticket_messages_num'        => $ticket_messages_num,

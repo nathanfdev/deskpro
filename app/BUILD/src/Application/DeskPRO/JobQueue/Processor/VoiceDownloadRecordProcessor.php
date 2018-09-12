@@ -3,6 +3,8 @@
 namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\TicketLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
@@ -121,6 +123,20 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
             $log = new VoicePhoneCallLog();
             $log->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DOWNLOADED);
             $log->setPhoneCall($phoneCall);
+
+            $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+                'phoneCall' => $phoneCall, ]
+            );
+
+            if ($messageAttribute) {
+                $ticketLog = new TicketLog();
+                $ticketLog
+                    ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DOWNLOADED)
+                    ->setTicket($messageAttribute->getMessage()->getTicket())
+                    ->setIdObject($phoneCall->getId())
+                    ->setDetails(['duration' => $phoneCall->getDuration()]);
+                $this->em->persist($ticketLog);
+            }
 
             $this->em->persist($phoneCall);
             $this->em->flush();
