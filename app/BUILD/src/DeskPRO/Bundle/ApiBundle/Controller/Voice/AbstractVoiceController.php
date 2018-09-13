@@ -12,7 +12,6 @@ use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
-use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
  * Class AbstractVoiceController.
@@ -77,15 +76,6 @@ abstract class AbstractVoiceController extends BaseController
             }
 
             $this->saveTicket($ticket);
-
-            // send notification that phone call was answered
-            $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-                'agent.voice.incoming-call-answered',
-                [
-                    'deskpro_call_id' => $phoneCall->getId(),
-                    'agent_id'        => $agent->getId(),
-                ]
-            ));
         } else {
             // ticket is already created, that means we are joining the existing conference
             $ticket = $messageAttribute->getMessage()->getTicket();
@@ -107,10 +97,7 @@ abstract class AbstractVoiceController extends BaseController
     protected function rejectIncomingPhoneCall(VoicePhoneCall $phoneCall, Person $agent)
     {
         // reject task worker
-        $adapter = $this->get('twilio_adapter');
-        $account = $phoneCall->getNumber()->getAccount();
-
-        $adapter->rejectTaskWorker($account, $phoneCall->getTaskSid(), $agent);
+        $this->get('dp.voice.task_router')->rejectTask($phoneCall->getTaskSid(), 'agent', $agent->getId());
 
         // log that agent rejected the incoming call
         $log = new VoicePhoneCallLog();

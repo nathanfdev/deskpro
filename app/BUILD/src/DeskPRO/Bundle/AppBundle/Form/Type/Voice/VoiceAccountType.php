@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
+use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;

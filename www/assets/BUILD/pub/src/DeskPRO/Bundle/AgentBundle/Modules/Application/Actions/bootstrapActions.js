@@ -11,7 +11,7 @@ import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Sh
 import { updateAgentStatus, setOnlineAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
-import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
+import { setVoiceTokens, setVoiceSettings } from '../../Voice/Actions/clientActions';
 import { increaseCount, decreaseCount } from '../../Filters/Actions/filterActions';
 
 export const loadAgentPhraseTranslations = createAction(
@@ -66,7 +66,6 @@ export const preloadData    = createAction(
 
       if (window.DP_HAS_VOICE) {
         batchComponents.voice_tokens     = { endpoint: 'voice_client/tokens' };
-        batchComponents.voice_activities = { endpoint: 'voice_client/activities' };
         batchComponents.voice_settings   = { endpoint: 'voice_settings' };
         batchComponents.voice_numbers    = { endpoint: 'voice_numbers' };
       }
@@ -133,7 +132,6 @@ export const preloadData    = createAction(
         }
         if (window.DP_HAS_VOICE) {
           dispatch(setVoiceTokens(data.voice_tokens));
-          dispatch(setVoiceActivities(data.voice_activities));
           dispatch(setVoiceSettings(data.voice_settings));
           dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
         }

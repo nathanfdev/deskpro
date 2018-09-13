@@ -6,6 +6,9 @@ use DeskPRO\Bundle\InstallBundle\InstallSession\Model\DbInfo;
 use DeskPRO\Bundle\InstallBundle\InstallSession\Model\Paths;
 use DeskPRO\Bundle\InstallBundle\InstallSession\Model\User;
 
+/**
+ * Class InstallSession.
+ */
 class InstallSession
 {
     const SOURCE_DEV            = 'dev';
@@ -57,6 +60,11 @@ class InstallSession
      * @var DbInfo
      */
     private $auditDbInfo;
+
+    /**
+     * @var DbInfo
+     */
+    private $voiceDbInfo;
 
     /**
      * @var string
@@ -199,6 +207,22 @@ class InstallSession
         $this->auditDbInfo = $auditDbInfo;
 
         return $this;
+    }
+
+    /**
+     * @return DbInfo
+     */
+    public function getVoiceDbInfo()
+    {
+        return $this->voiceDbInfo;
+    }
+
+    /**
+     * @param DbInfo $voiceDbInfo
+     */
+    public function setVoiceDbInfo(DbInfo $voiceDbInfo)
+    {
+        $this->voiceDbInfo = $voiceDbInfo;
     }
 
     /**

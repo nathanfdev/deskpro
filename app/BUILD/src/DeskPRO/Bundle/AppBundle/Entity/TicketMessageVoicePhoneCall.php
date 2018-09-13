@@ -14,7 +14,7 @@ class TicketMessageVoicePhoneCall extends TicketMessageAttribute
     const ATTR_NAME = 'voice_phone_call';
 
     /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall")
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall", inversedBy="ticketMessageAttributes")
      * @ORM\JoinColumn(name="phone_call_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()

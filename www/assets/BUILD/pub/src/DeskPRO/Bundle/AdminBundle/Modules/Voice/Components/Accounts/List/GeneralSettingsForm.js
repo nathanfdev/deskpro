@@ -27,7 +27,7 @@ class GeneralSettingsForm extends BaseForm {
       <Form onSubmit={this.onSubmit} formValue={formData}>
         <Fieldset>
           <Field select="group_missed_call_tickets">
-            <Checkbox label="Group missed calls in the same ticket" />
+            <Checkbox label="Group missed calls and voicemails in the same ticket" />
           </Field>
           {formData.value.group_missed_call_tickets &&
           <Field select="group_missed_call_tickets_timeout">

@@ -31,11 +31,8 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const AVAILABLE_STATUS_IDLE          = 'idle';
-    const AVAILABLE_STATUS_IDLE_DISABLED = 'idle_disabled';
-    const AVAILABLE_STATUS_BUSY          = 'busy';
-    const AVAILABLE_STATUS_RESERVED      = 'reserved';
-    const AVAILABLE_STATUS_OFFLINE       = 'offline';
+    const AVAILABLE_STATUS_IDLE    = 'idle';
+    const AVAILABLE_STATUS_OFFLINE = 'offline';
 
     /**
      * The unique ID.
@@ -90,27 +87,13 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $isVoiceEnabled = false;
 
     /**
-     * @ORM\Column(name="voice_worker_sid", type="string", length=100, nullable=true)
-     *
-     * @var string
-     */
-    private $voiceWorkerSid;
-
-    /**
-     * @ORM\Column(name="voice_task_queue_sid", type="string", length=100, nullable=true)
-     *
-     * @var string
-     */
-    private $voiceTaskQueueSid;
-
-    /**
      * @ORM\Column(name="available_status", type="string",length=100)
      *
      * @JMS\Expose()
      * @JMS\Type("string")
      *
      * @Assert\NotBlank()
-     * @Assert\Choice(choices={"idle", "idle_disabled", "busy", "reserved", "offline"})
+     * @Assert\Choice(choices={"idle", "offline"})
      *
      * @var bool
      */
@@ -265,46 +248,6 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     public function setIsVoiceEnabled($isVoiceEnabled)
     {
         $this->setModelField('isVoiceEnabled', $isVoiceEnabled);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVoiceWorkerSid()
-    {
-        return $this->voiceWorkerSid;
-    }
-
-    /**
-     * @param string $voiceWorkerSid
-     *
-     * @return $this
-     */
-    public function setVoiceWorkerSid($voiceWorkerSid)
-    {
-        $this->setModelField('voiceWorkerSid', $voiceWorkerSid);
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getVoiceTaskQueueSid()
-    {
-        return $this->voiceTaskQueueSid;
-    }
-
-    /**
-     * @param string $voiceTaskQueueSid
-     *
-     * @return $this
-     */
-    public function setVoiceTaskQueueSid($voiceTaskQueueSid)
-    {
-        $this->setModelField('voiceTaskQueueSid', $voiceTaskQueueSid);
 
         return $this;
     }

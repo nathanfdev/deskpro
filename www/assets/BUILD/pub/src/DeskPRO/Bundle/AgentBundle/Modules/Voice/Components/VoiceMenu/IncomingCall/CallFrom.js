@@ -13,37 +13,29 @@ class CallFrom extends React.Component {
     incomingCall: PropTypes.object
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedPerson: null
-    };
-  }
-
-  selectPerson = (selectedPerson) => {
-    this.setState({ selectedPerson });
-  };
-
   render() {
     const { incomingCall, people } = this.props;
-    let { selectedPerson } = this.state;
     const possibleCallerPeople = [];
 
     let person;
     let number;
 
-    if (incomingCall && incomingCall.task) {
+    if (incomingCall && incomingCall.get('task')) {
       // twilio reservation props
-      const attributes = incomingCall && incomingCall.task ? incomingCall.task.attributes : {};
-      number = attributes.from;
+      number = incomingCall.get('number');
 
-      if (attributes.deskpro_related_people_ids) {
-        attributes.deskpro_related_people_ids.forEach((id) => {
-          possibleCallerPeople.push(people.get(id));
+      if (incomingCall.get('related_people_ids')) {
+        incomingCall.get('related_people_ids').forEach((id) => {
+          person = people.get(id);
+          if (person) {
+            possibleCallerPeople.push(person);
+          }
         });
-      } else if (attributes.deskpro_person_id) {
-        person = people.get(attributes.deskpro_person_id);
-        possibleCallerPeople.push(person);
+      } else if (incomingCall.get('caller_person_id')) {
+        person = people.get(incomingCall.get('caller_person_id'));
+        if (person) {
+          possibleCallerPeople.push(person);
+        }
       }
     } else {
       // participant invite props
@@ -51,12 +43,10 @@ class CallFrom extends React.Component {
 
       if (incomingCall.get('caller_person_id')) {
         person = people.get(incomingCall.get('caller_person_id'));
-        possibleCallerPeople.push(person);
+        if (person) {
+          possibleCallerPeople.push(person);
+        }
       }
-    }
-
-    if (!selectedPerson && possibleCallerPeople.length) {
-      selectedPerson = possibleCallerPeople[possibleCallerPeople.length - 1];
     }
 
     return (
@@ -64,28 +54,25 @@ class CallFrom extends React.Component {
         <div className="call-from-number">
           {number || 'Unknown number'}
         </div>
-        <div className="call-from-avatars">
-          {possibleCallerPeople.map((possiblePerson, key) =>
-            <a
-              onClick={() => this.selectPerson(possiblePerson)}
-              className={classNames('call-from-avatar', { selected: possiblePerson === selectedPerson })}
-              style={{ marginLeft: -possibleCallerPeople.length * 30 / 4 + 30 * key }}
-            >
+        <div className={classNames({ 'call-from-avatars': possibleCallerPeople.length > 1 })}>
+          {possibleCallerPeople.slice(0, 5).map((possiblePerson, key) =>
+            <div className="call-from-avatar">
               <Avatar key={key} person={possiblePerson} size={60} />
-            </a>
+
+              <div className="call-from-details">
+                <div className="call-from-name">
+                  {possiblePerson.get('name')}
+                </div>
+                <div className="call-from-email">
+                  {possiblePerson.get('primary_email')}
+                </div>
+              </div>
+            </div>
           )}
         </div>
-        {selectedPerson &&
-          <div className="call-from-name">
-            {selectedPerson.get('name')}
-          </div>}
         <div className="call-waiting-time">
           waiting <Timer format="waiting_time" />
         </div>
-        {person &&
-          <div className="call-from-email">
-            {selectedPerson.get('primary_email')}
-          </div>}
       </div>
     );
   }

@@ -28,8 +28,8 @@ export default createReducer(initialState, {
   [actions.addIncomingCall]:    pushPayloadToCollection('incomingCalls'),
   [actions.updateIncomigCall]:  (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
-    if (payload && payload.sid) {
-      const existingCall = incomingCalls.filter(incomingCall => incomingCall.sid === payload.sid).first();
+    if (payload && payload.get('call_id')) {
+      const existingCall = incomingCalls.filter(incomingCall => incomingCall.get('call_id') === payload.get('call_id')).first();
       if (existingCall) {
         incomingCalls = incomingCalls.set(incomingCalls.indexOf(existingCall), payload);
       }
@@ -40,13 +40,10 @@ export default createReducer(initialState, {
   [actions.removeIncomingCall]: (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
     if (payload) {
-      if (payload.deskpro_call_id) {
+      if (payload.get('call_id')) {
         // remove calls by call id
         // e.g. declines calls if agent several tabs are opened
-        incomingCalls = incomingCalls.filter(incomingCall =>
-          !incomingCall.task
-          || incomingCall.task.attributes.deskpro_call_id !== payload.deskpro_call_id
-        );
+        incomingCalls = incomingCalls.filter(incomingCall => incomingCall.get('call_id') !== payload.get('call_id'));
       } else if (payload.sid) {
         // remove calls from connection
         incomingCalls = incomingCalls.filter(incomingCall => incomingCall.sid !== payload.sid);

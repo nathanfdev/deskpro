@@ -20,14 +20,14 @@ Feature: /api_logs_options
     When I send a PUT request to "/api/v2/api_logs_options" with body:
     """
 {
-  "modes": ["key", "token"]
+  "request_length": 2000
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/api_logs_options"
     Then the JSON node "data.enabled" should be equal to 0
-    And the JSON node "data.request_length" should be equal to 1000
+    And the JSON node "data.request_length" should be equal to 2000
     And the JSON node "data.response_length" should be equal to 2000
     And the JSON node "data.modes" should have 1 element
     And the JSON node "data.modes[0]" should be equal to "key"
@@ -38,8 +38,7 @@ Feature: /api_logs_options
 {
   "enabled": true,
   "request_length": 3000,
-  "response_length": 4000,
-  "modes": ["session", "key", "token"]
+  "response_length": 4000
 }
     """
     Then the response status code should be 204
@@ -65,13 +64,3 @@ Feature: /api_logs_options
       | field           |
       | request_length  |
       | response_length |
-
-  Scenario: I validate mode option
-    When I send a PUT request to "/api/v2/api_logs_options" with body:
-    """
-{
-  "modes": ["unknown mode"]
-}
-    """
-    Then the response status code should be 400
-    And the JSON node "errors.fields.modes.errors[0].code" should be equal to "bad_choice"

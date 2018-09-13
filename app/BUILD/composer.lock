@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "20581e69561a9407da6bcd327555e073",
+    "content-hash": "a202805013d0952bc7ce1aa466067501",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2624,12 +2624,12 @@
             "version": "v2.1.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client.git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
                 "reference": "360e656f48c3262a6f7fefc0207521efa66caedf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/360e656f48c3262a6f7fefc0207521efa66caedf",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/360e656f48c3262a6f7fefc0207521efa66caedf",
                 "reference": "360e656f48c3262a6f7fefc0207521efa66caedf",
                 "shasum": ""
             },
@@ -2683,12 +2683,12 @@
             "version": "v0.9",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client-services.git",
+                "url": "https://github.com/googleapis/google-api-php-client-services.git",
                 "reference": "c400c655d1b7ca412ad4dd344e569c6865e74a83"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client-services/zipball/c400c655d1b7ca412ad4dd344e569c6865e74a83",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client-services/zipball/c400c655d1b7ca412ad4dd344e569c6865e74a83",
                 "reference": "c400c655d1b7ca412ad4dd344e569c6865e74a83",
                 "shasum": ""
             },
@@ -2717,12 +2717,12 @@
             "version": "v0.11.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-auth-library-php.git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
                 "reference": "a240674b08a09949fd5597f7590b3ed83663a12d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/a240674b08a09949fd5597f7590b3ed83663a12d",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/a240674b08a09949fd5597f7590b3ed83663a12d",
                 "reference": "a240674b08a09949fd5597f7590b3ed83663a12d",
                 "shasum": ""
             },
@@ -7473,6 +7473,68 @@
             "time": "2015-12-28T13:12:39+00:00"
         },
         {
+            "name": "symfony/lock",
+            "version": "v3.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/lock.git",
+                "reference": "d7b8a52eed987bfa163aba175f3192dda07f120c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/d7b8a52eed987bfa163aba175f3192dda07f120c",
+                "reference": "d7b8a52eed987bfa163aba175f3192dda07f120c",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.5.9|>=7.0.8",
+                "psr/log": "~1.0",
+                "symfony/polyfill-php70": "~1.0"
+            },
+            "require-dev": {
+                "predis/predis": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Lock\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                },
+                {
+                    "name": "Jérémy Derussé",
+                    "email": "jeremy@derusse.com"
+                }
+            ],
+            "description": "Symfony Lock Component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "cas",
+                "flock",
+                "locking",
+                "mutex",
+                "redlock",
+                "semaphore"
+            ],
+            "time": "2017-11-22T12:18:49+00:00"
+        },
+        {
             "name": "symfony/monolog-bundle",
             "version": "v3.0.3",
             "source": {
@@ -8160,16 +8222,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.8.44",
+            "version": "v2.8.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "789dc7eb57579185a430e65c5efce4b2d6b6b7b1"
+                "reference": "289dc238c533476d0101d736816b408b02e51751"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/789dc7eb57579185a430e65c5efce4b2d6b6b7b1",
-                "reference": "789dc7eb57579185a430e65c5efce4b2d6b6b7b1",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/289dc238c533476d0101d736816b408b02e51751",
+                "reference": "289dc238c533476d0101d736816b408b02e51751",
                 "shasum": ""
             },
             "require": {
@@ -8296,7 +8358,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2018-08-01T14:12:49+00:00"
+            "time": "2018-08-27T17:33:57+00:00"
         },
         {
             "name": "tedivm/fetch",

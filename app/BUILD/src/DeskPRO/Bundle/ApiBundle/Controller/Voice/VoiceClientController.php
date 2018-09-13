@@ -10,13 +10,11 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType;
-use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
-use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioClientTokens;
+use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Twilio\Exceptions\RestException;
 
 /**
  * Handles client actions.
@@ -34,56 +32,24 @@ class VoiceClientController extends AbstractVoiceController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioClientTokens"
+     *     output="DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens"
      * )
      *
      * @Rest\Get("/tokens")
      *
      * @return View
      */
-    public function createWorkerTokenAction()
+    public function createClientTokensAction()
     {
         $adapter = $this->get('twilio_adapter');
         $account = $this->getVoiceAccount();
         $person  = $this->getUser();
 
         $clientTokens = new TwilioClientTokens(
-            $adapter->createWorkerToken($account, $person),
             $adapter->createPhoneToken($account, $person)
         );
 
         return new View($this->wrap($clientTokens));
-    }
-
-    /**
-     * @ApiDoc(
-     *     description="Returns voice worker activity sids",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     output="DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities"
-     * )
-     *
-     * @Rest\Get("/activities")
-     *
-     * @throws \Exception
-     *
-     * @return View
-     */
-    public function getActivitiesAction()
-    {
-        $adapter = $this->get('twilio_adapter');
-        $account = $this->getVoiceAccount();
-
-        try {
-            return new View($this->wrap($adapter->getActivities($account)));
-        } catch (RestException $e) {
-            if (in_array($e->getStatusCode(), [Response::HTTP_UNAUTHORIZED, Response::HTTP_NOT_FOUND])) {
-                return new TwilioActivities('', '', '', '', '');
-            }
-
-            throw $e;
-        }
     }
 
     /**

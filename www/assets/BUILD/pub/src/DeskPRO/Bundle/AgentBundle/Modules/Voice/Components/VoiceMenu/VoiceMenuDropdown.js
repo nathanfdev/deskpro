@@ -8,7 +8,6 @@ import VoiceMenu from './VoiceMenu';
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
-    voiceSynced:  PropTypes.bool,
     isSecure:     PropTypes.bool,
     micEnabled:   PropTypes.bool,
     incomingCall: PropTypes.object,
@@ -37,17 +36,8 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   getStatus() {
-    const { onlineAgents, callsEnabled, voiceSynced, isSecure, micEnabled } = this.props;
+    const { onlineAgents, callsEnabled, isSecure, micEnabled } = this.props;
     const status = callsEnabled ? 'agent.general.on' : 'agent.general.off';
-
-    if (!voiceSynced) {
-      return (
-        <div className="status">
-          Syncing
-          <i className="spinner-flat" />
-        </div>
-      );
-    }
 
     if (!isSecure) {
       return (

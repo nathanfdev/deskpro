@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
+use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -43,40 +43,6 @@ class VoiceAccountListener
         $this->twilioAdapter = $twilioAdapter;
         $this->em            = $em;
         $this->router        = $router;
-    }
-
-    /**
-     * @ORM\PrePersist()
-     *
-     * @param VoiceAccount $account
-     *
-     * @throws TwilioException
-     */
-    public function createWorkspace(VoiceAccount $account)
-    {
-        // create workspace
-        $workspace = $this->twilioAdapter->createWorkspace($account);
-        if (!$workspace) {
-            throw new TwilioException('Unable to create Twilio workspace');
-        }
-
-        $account->setWorkspaceSid($workspace->sid);
-
-        // create "voicemail" queue
-        $voicemailQueue = $this->twilioAdapter->createVoicemailTaskQueue($account);
-        if (!$voicemailQueue) {
-            throw new TwilioException('Unable to create Twilio voicemail queue');
-        }
-
-        $account->setVoicemailQueueSid($voicemailQueue->sid);
-
-        // create "voicemail" worker
-        $voicemailWorker = $this->twilioAdapter->createVoicemailWorker($account);
-        if (!$voicemailWorker) {
-            throw new TwilioException('Unable to create Twilio voicemail worker');
-        }
-
-        $account->setVoicemailWorkerSid($voicemailWorker->sid);
     }
 
     /**
@@ -122,16 +88,11 @@ class VoiceAccountListener
      */
     public function onRemove(VoiceAccount $account)
     {
-        // delete related workspace from Twilio
-        $this->twilioAdapter->deleteWorkspace($account);
-        $account->setWorkspaceSid(null);
-
         // disable agent voice flags cause all their workers were deleted as well
         $qb = $this->em->createQueryBuilder();
         $qb
             ->update(AgentData::class, 'a')
             ->set('a.isVoiceEnabled', 0)
-            ->set('a.voiceWorkerSid', 'NULL')
             ->getQuery()
             ->execute()
         ;

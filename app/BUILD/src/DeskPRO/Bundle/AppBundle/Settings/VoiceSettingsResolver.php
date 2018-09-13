@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\VoiceSettings;
-use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
+use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 
 /**
  * Class VoiceSettingsResolver.

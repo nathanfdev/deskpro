@@ -571,18 +571,23 @@ class TicketController extends AbstractController
     }
 
     /**
-     * @param int $ticket_id
+     * @param int     $ticket_id
+     * @param Request $request
      *
      * @return Response
      */
-    public function viewTicketPersonAction($ticket_id)
+    public function viewTicketPersonAction($ticket_id, Request $request)
     {
         $ticket = $this->getTicketOr404($ticket_id);
         $vars   = [
             'ticket' => $ticket,
         ];
 
-        return $this->render('AgentBundle:Ticket:view-ticket-person.html.twig', $vars);
+        if ($request->get('select_person')) {
+            return $this->render('AgentBundle:Ticket:select-user-menu.html.twig', $vars);
+        } else {
+            return $this->render('AgentBundle:Ticket:view-ticket-person-holder.html.twig', $vars);
+        }
     }
 
     /**

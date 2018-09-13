@@ -6,7 +6,7 @@ import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore
 import { voiceAgentsSelector, voiceOnlineAgentsSelector, outboundCallsEnabledSelector, callsEnabledSelector } from '../../Selectors/agents';
 import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
-import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector, isVoiceSyncedSelector, isSecure } from '../../Selectors/client';
+import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector, isSecure } from '../../Selectors/client';
 import { allQueuesSelector } from '../../Selectors/queue';
 
 @connect(state => ({
@@ -19,7 +19,6 @@ import { allQueuesSelector } from '../../Selectors/queue';
   outboundCallsEnabled:  outboundCallsEnabledSelector(state),
   outboundNumber:        outboundNumberSelector(state),
   voiceEnabled:          isVoiceEnabledSelector(state),
-  voiceSynced:           isVoiceSyncedSelector(state),
   callsEnabled:          callsEnabledSelector(state),
   outgoingCall:          outgoingCallSelector(state),
   ringingVolume:         ringingVolumeSelector(state),
@@ -42,17 +41,21 @@ class VoiceMenuContainer extends React.Component {
     }
   }
 
-  onAcceptCall = () => {
+  acceptCall = () => {
     const { incomingCall, dispatch } = this.props;
 
     dispatch(acceptPhoneCall(incomingCall));
     this.popup.closePopup();
   };
 
-  onDeclineCall = () => {
+  declineCall = () => {
     const { incomingCall, dispatch } = this.props;
 
     dispatch(declinePhoneCall(incomingCall));
+    this.popup.closePopup();
+  };
+
+  hideCall = () => {
     this.popup.closePopup();
   };
 
@@ -62,8 +65,9 @@ class VoiceMenuContainer extends React.Component {
         ref={(c) => { this.popup = c; }}
         {...this.props}
         isSecure={isSecure}
-        onAcceptCall={this.onAcceptCall}
-        onDeclineCall={this.onDeclineCall}
+        acceptCall={this.acceptCall}
+        declineCall={this.declineCall}
+        hideCall={this.hideCall}
       />
     );
   }

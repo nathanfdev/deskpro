@@ -1666,6 +1666,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketMessage
+     */
+    public function getFirstMessage()
+    {
+        $criteria = new Criteria();
+        $criteria->setMaxResults(1);
+        $criteria->orderBy(['id' => 'asc']);
+
+        return $this->messages->matching($criteria)->first();
+    }
+
+    /**
      * Reset the message collection.
      * todo add onPropertyChanged() if change tracking is needed.
      *

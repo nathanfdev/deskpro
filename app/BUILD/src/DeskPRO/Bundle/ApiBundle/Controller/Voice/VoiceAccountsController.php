@@ -10,7 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceBuyNumberType;
-use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
+use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Data\Countries;
@@ -52,9 +52,11 @@ class VoiceAccountsController extends AbstractVoiceCrudController
      *     noOutput=true
      * )
      *
+     * @Rest\Post("/test_credentials")
+     *
      * @param Request $request
      *
-     * @Rest\Post("/test_credentials")
+     * @throws \Exception
      *
      * @return View
      */
@@ -89,7 +91,7 @@ class VoiceAccountsController extends AbstractVoiceCrudController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="array<DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber>"
+     *     output="array<DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber>"
      * )
      *
      * @Rest\Get("/{account}/available_numbers")
@@ -147,7 +149,7 @@ class VoiceAccountsController extends AbstractVoiceCrudController
      *     filters={
      *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"}
      *     },
-     *     output="DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioPaginate"
+     *     output="DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioPaginate"
      * )
      *
      * @Rest\Get("/{account}/existing_numbers")
@@ -184,6 +186,8 @@ class VoiceAccountsController extends AbstractVoiceCrudController
      *
      * @param VoiceAccount $account
      * @param Request      $request
+     *
+     * @throws \Exception
      *
      * @return View
      */

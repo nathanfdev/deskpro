@@ -29,6 +29,7 @@ class GenSchemaFileCommand extends ContainerAwareCommand
         $this->generateSchemaForManager('default', $output, true);
         $this->generateSchemaForManager('system', $output);
         $this->generateSchemaForManager('audit', $output);
+        $this->generateSchemaForManager('voice', $output);
     }
 
     /**

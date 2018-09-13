@@ -170,17 +170,20 @@ class AgentsController extends AbstractPeopleController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function editProfileAction(Request $request)
     {
-        $form = $this->createForm(AgentProfileType::class, $this->getUser());
+        $user = $this->getUser();
+        $form = $this->createForm(AgentProfileType::class, $user);
         $form->submit($request->request->all(), false);
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
 
-        $this->persistModel($this->getUser());
+        $this->persistModel($user);
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }

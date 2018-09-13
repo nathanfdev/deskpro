@@ -67,15 +67,12 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.voice_queue:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceQueueListener
-    arguments: ["@doctrine.orm.default_entity_manager"]
-    tags:
-      - { name: doctrine.entity_listener }
-
   event_listener.doctrine.voice_worker:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener
-    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@event_dispatcher"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@event_dispatcher"
+      - "@dp.voice.task_router.storage"
     tags:
       - { name: doctrine.entity_listener }
 

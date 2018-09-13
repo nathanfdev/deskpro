@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React from 'react';
 import { Fieldset } from '@deskpro/react-forms';
 import classNames from 'classnames';
+import { getPhoneCountryName, getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import { Input, Form, Field, Checkbox, Radio, CountryCodeSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
@@ -36,7 +37,7 @@ class NumberForm extends BaseForm {
       target:                           number.get('target') && number.get('target').toJS(),
       outbound_calls_enabled:           number.get('outbound_calls_enabled'),
       outbound_calls_default:           number.get('outbound_calls_default'),
-      outbound_calls_default_global:    number.get('outbound_calls_default_global') ? 1 : 0,
+      outbound_calls_default_type:      number.get('outbound_calls_default_type') || 'country',
       outbound_calls_default_countries: number.get('outbound_calls_default_countries') ? number.get('outbound_calls_default_countries').toJS() : [],
     };
   }
@@ -49,6 +50,8 @@ class NumberForm extends BaseForm {
   render() {
     const { number, onReturnBack } = this.props;
     const { formData, saving } = this.state;
+    const countryName = getPhoneCountryName(number.get('number'));
+    const countryCode = getPhoneCountryCode(number.get('number'));
 
     return (
       <div className="page">
@@ -80,13 +83,37 @@ class NumberForm extends BaseForm {
                   <Checkbox label="Make this number a default number for outgoing calls" />
                 </Field>
                 {formData.value.outbound_calls_default &&
-                <Field select="outbound_calls_default_global">
-                  <GlobalOutgoingNumber />
-                </Field>}
-                {formData.value.outbound_calls_default && !formData.value.outbound_calls_default_global &&
-                <Field select="outbound_calls_default_countries">
-                  <CountryCodeSelect multiple toggleAll={false} />
-                </Field>}
+                <div>
+                  {countryName &&
+                  <Field select="outbound_calls_default_type">
+                    <Radio
+                      choice="country"
+                      label={`Make this the default for outgoing calls from ${countryName}`}
+                    />
+                  </Field>}
+                  <Field select="outbound_calls_default_type">
+                    <Radio
+                      choice="specific"
+                      label="Make this the default for outgoing calls to specific countries"
+                    />
+                  </Field>
+                  {formData.value.outbound_calls_default_type === 'specific' &&
+                  <Field select="outbound_calls_default_countries">
+                    <CountryCodeSelect
+                      multiple
+                      uncheckAll
+                      selectedCount
+                      toggleAll={false}
+                      primaryCountryCodes={[countryCode]}
+                    />
+                  </Field>}
+                  <Field select="outbound_calls_default_type">
+                    <Radio
+                      label="Make this the default for all outgoing calls"
+                      choice="all"
+                    />
+                  </Field>
+                </div>}
               </div>}
 
               <button className={classNames('ui button', { loading: saving })}>
@@ -105,35 +132,6 @@ class NumberForm extends BaseForm {
             </Fieldset>
           </Form>
         </div>
-      </div>
-    );
-  }
-}
-
-class GlobalOutgoingNumber extends Component {
-
-  static propTypes = {
-    value:    PropTypes.number,
-    onChange: PropTypes.func
-  };
-
-  render() {
-    const { value, onChange } = this.props;
-
-    return (
-      <div>
-        <Radio
-          label="Make this the default for all outgoing calls"
-          choice={1}
-          value={value}
-          onChange={onChange}
-        />
-        <Radio
-          choice={0}
-          label="Make this the default for outgoing calls to specific countries"
-          value={value}
-          onChange={onChange}
-        />
       </div>
     );
   }

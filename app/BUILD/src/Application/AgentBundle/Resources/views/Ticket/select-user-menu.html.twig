@@ -1,0 +1,94 @@
+<div class="select-user-menu">
+    <label class="select-user-menu-header">Select the person who made this call:</label>
+    <ul>
+        {% for person in person_repo.findByPhoneNumber(ticket.person.phone_numbers[0].number) %}
+            {% if ticket.person.id != person.id %}
+                <li>
+                    <input type="radio" name="select_user" value="{{ person.id }}">
+                    <label>{{ person.getDisplayName() }}</label>
+                </li>
+            {% endif %}
+        {% endfor %}
+        <li>
+            <input type="radio" name="select_user" value="unknown_person">
+            <label>Unknown Caller</label>
+        </li>
+        <li>
+            <input type="radio" name="select_user" value="find_person">
+            <label>Find a different person</label>
+            <div class="select-user-item-options">
+                <section id="{{baseId}}_user_section" class="user-section">
+                    <div id="{{baseId}}_choose_user" style="padding: 10px">
+                        <div
+                                id="{{baseId}}_user_searchbox"
+                                data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+                                data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'with_agents': 1}) }}"
+                                data-highlight-term="1"
+                                data-touch-focus="1"
+                                data-search-param="term"
+                                data-position-bound="#{{baseId}}_userselect"
+                        >
+                            <input type="text" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_a_person') }}" />
+                            <input type="hidden" name="select_user_find_id" class="person-id" id="{{baseId}}_person_id" />
+
+                            <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+                                                    <li>
+                                                        <a>
+                                                        <span class="user-name"></span>
+                                                        <address>&lt;<span class="user-email"></span>&gt;</address>
+                                                        <div class="bound-fade"></div>
+                                                    </a></li>
+                                                </script>
+                            <div class="person-search-box" style="display: none">
+                                <section>
+                                    <ul class="results-list"></ul>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="{{baseId}}_user_choice"></div>
+                </section>
+            </div>
+        </li>
+        <li>
+            <input type="radio" name="select_user" value="new_person">
+            <label>New person</label>
+
+            <div class="select-user-item-options">
+                <table cellspacing="0" cellpadding="0" class="">
+                    <tbody>
+                    <tr>
+                        <th width="100">{{ phrase('agent.general.email_address') }}</th>
+                        <td>
+                            <input type="text" name="select_user_email" class="email" value="" style="margin:0;" />
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tbody>
+                    <tr>
+                        <th>{{ phrase('agent.general.name') }}</th>
+                        <td>
+                            <input type="text" name="select_user_name" class="name" value="{{ person.name }}" style="margin:0;" />
+                        </td>
+                    </tr>
+                    </tbody>
+                    {% if not person.id and app.getLanguages().isLangSystemEnabled() %}
+                        <tbody>
+                        <tr>
+                            <th>{{ phrase('agent.general.language') }}</th>
+                            <td>
+                                <select name="select_user_language">
+                                    {% for lang in app.getLanguages().getAll() %}
+                                        <option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ phrase_object(lang, 'title') }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        </tbody>
+                    {% endif %}
+                </table>
+            </div>
+        </li>
+    </ul>
+    <button class="clean-white select-user-button">Set person</button>
+</div>

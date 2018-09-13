@@ -98,6 +98,14 @@ abstract class AbstractDbSet implements DataSetInterface
     }
 
     /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getVoiceEm()
+    {
+        return $this->getEm('voice');
+    }
+
+    /**
      * @return DeskproContainer
      */
     public function getContainer()
@@ -290,6 +298,7 @@ abstract class AbstractDbSet implements DataSetInterface
             $this->installDatabase('default', true);
             $this->installDatabase('system');
             $this->installDatabase('audit');
+            $this->installDatabase('voice');
 
             self::$isStructureCreated = true;
         } else {
@@ -317,7 +326,7 @@ abstract class AbstractDbSet implements DataSetInterface
         $purger = new ORMPurger();
         $purger->setPurgeMode(ORMPurger::PURGE_MODE_TRUNCATE);
 
-        foreach (['default', 'system', 'audit'] as $dbType) {
+        foreach (['default', 'system', 'audit', 'voice'] as $dbType) {
             $this->getDb($dbType)->exec('SET FOREIGN_KEY_CHECKS = 0;');
             $purger->setEntityManager($this->getEm($dbType));
             $purger->purge();

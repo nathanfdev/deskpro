@@ -1731,7 +1731,7 @@ class Person extends DomainObject implements
     public function getPref($name, $default = null)
     {
         foreach ($this->preferences as $pref) {
-            if ($pref->name == $name) {
+            if ($pref->getName() == $name) {
                 return $pref->getValue();
             }
         }
@@ -1741,6 +1741,22 @@ class Person extends DomainObject implements
         }
 
         return $default;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasPref($name)
+    {
+        foreach ($this->preferences as $pref) {
+            if ($pref->getName() == $name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -3948,6 +3964,9 @@ class Person extends DomainObject implements
     public function setAgentData(AgentData $agentData = null)
     {
         $this->setModelField('agentData', $agentData);
+        if ($agentData && $agentData->getPerson() !== $this) {
+            $agentData->setPerson($this);
+        }
 
         return $this;
     }

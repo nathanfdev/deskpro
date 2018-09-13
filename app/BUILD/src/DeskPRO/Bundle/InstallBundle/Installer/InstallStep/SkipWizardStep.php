@@ -80,6 +80,20 @@ class SkipWizardStep extends AbstractStep
             $auditDbInfo = $this->getSession()->getAuditDbInfo();
         }
 
+        // Try voice database, create if doesn't exist
+
+        if (!$this->getSession()->getVoiceDbInfo()) {
+            $env                   = $this->getContext()->getDpEnv();
+            $voiceDbInfo           = new DbInfo();
+            $voiceDbInfo->host     = $env->getConfig('database_advanced.voice.host') ?: $env->getConfig('database.host');
+            $voiceDbInfo->user     = $env->getConfig('database_advanced.voice.user') ?: $env->getConfig('database.user');
+            $voiceDbInfo->password = $env->getConfig('database_advanced.voice.password') ?: $env->getConfig('database.password');
+            $voiceDbInfo->dbname   = $env->getConfig('database_advanced.voice.dbname') ?: $env->getConfig('database.dbname');
+            $this->getSession()->setVoiceDbInfo($auditDbInfo);
+        } else {
+            $voiceDbInfo = $this->getSession()->getVoiceDbInfo();
+        }
+
         try {
             $this->getSession()->getSystemDbInfo()->getPdo();
         } catch (\Exception $e) {
@@ -91,11 +105,21 @@ class SkipWizardStep extends AbstractStep
         }
 
         try {
-            $this->getSession()->getSystemDbInfo()->getPdo();
+            $this->getSession()->getAuditDbInfo()->getPdo();
         } catch (\Exception $e) {
             try {
-                $pdo = $this->getSession()->getSystemDbInfo()->getPdo(true);
+                $pdo = $this->getSession()->getAuditDbInfo()->getPdo(true);
                 $pdo->exec('CREATE DATABASE `'.$auditDbInfo->dbname.'`');
+            } catch (\Exception $e) {
+            }
+        }
+
+        try {
+            $this->getSession()->getVoiceDbInfo()->getPdo();
+        } catch (\Exception $e) {
+            try {
+                $pdo = $this->getSession()->getVoiceDbInfo()->getPdo(true);
+                $pdo->exec('CREATE DATABASE `'.$voiceDbInfo->dbname.'`');
             } catch (\Exception $e) {
             }
         }

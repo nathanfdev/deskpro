@@ -1,13 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Immutable from 'immutable';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import Timer from 'DeskPRO/Component/Timer';
 import CallFrom from './CallFrom';
 import CallTarget from './CallTarget';
 import IncomingCallAudio from './IncomingCallAudio';
-
-const isAssigned = call => call && call.task && call.task.assignmentStatus === 'assigned';
 
 class IncomingCall extends React.Component {
 
@@ -19,6 +16,7 @@ class IncomingCall extends React.Component {
     incomingCall:          PropTypes.object,
     onAccept:              PropTypes.func,
     onDecline:             PropTypes.func,
+    hideCall:              PropTypes.func,
     ringingVolume:         PropTypes.number,
     agentVoicemailTimeout: PropTypes.number
   };
@@ -33,14 +31,14 @@ class IncomingCall extends React.Component {
       this.audio.playSound();
     }
 
-    const { onDecline, agentVoicemailTimeout } = this.props;
+    const { hideCall, agentVoicemailTimeout } = this.props;
     if (agentVoicemailTimeout) {
-      setTimeout(() => { onDecline(); }, agentVoicemailTimeout * 1000);
+      setTimeout(hideCall, agentVoicemailTimeout * 1000);
     }
   }
 
   componentWillReceiveProps(newProps) {
-    if (isAssigned(newProps.incomingCall)) {
+    if (newProps.incomingCall && newProps.incomingCall.get('assigned_agent')) {
       if (this.audio) {
         this.audio.stopSound();
       }
@@ -64,7 +62,7 @@ class IncomingCall extends React.Component {
     const { me, agents, people, queues, incomingCall, ringingVolume } = this.props;
 
     let callType = 'Direct';
-    if (incomingCall instanceof Immutable.Map && incomingCall.get('call_id')) {
+    if (incomingCall.get('call_type')) {
       callType = 'Invite';
 
       if (incomingCall.get('call_type') === 'transfer') {
@@ -77,8 +75,8 @@ class IncomingCall extends React.Component {
           callType += ` from ${agent.get('name')}`;
         }
       }
-    } else if (incomingCall.task && incomingCall.task.attributes.deskpro_queue_id) {
-      const queue = queues.get(incomingCall.task.attributes.deskpro_queue_id);
+    } else if (incomingCall.get('queue_id')) {
+      const queue = queues.get(incomingCall.get('queue_id'));
       if (queue) {
         callType = queue.get('name');
       }
@@ -125,7 +123,7 @@ class IncomingCall extends React.Component {
 
   renderAcceptedCall() {
     const { incomingCall, agents } = this.props;
-    const agentId = incomingCall.task.attributes.deskpro_assigned_agent;
+    const agentId = incomingCall.get('assigned_agent');
 
     let agent;
     if (agentId) {
@@ -159,8 +157,7 @@ class IncomingCall extends React.Component {
 
   render() {
     const { incomingCall } = this.props;
-
-    return isAssigned(incomingCall) ? this.renderAcceptedCall() : this.renderAcceptCall();
+    return incomingCall && incomingCall.get('assigned_agent') ? this.renderAcceptedCall() : this.renderAcceptCall();
   }
 }
 

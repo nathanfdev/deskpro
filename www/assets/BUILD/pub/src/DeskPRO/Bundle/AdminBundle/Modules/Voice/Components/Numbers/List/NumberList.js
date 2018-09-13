@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import $ from 'jquery';
 import 'intl-tel-input';
+import { getPhoneCountryName } from 'DeskPRO/Component/Util/PhoneNumber';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import NumberTarget from '../../Common/NumberTarget/NumberTarget';
 import VoiceTargetNameContainer from '../../Common/NumberTarget/VoiceTargetNameContainer';
@@ -50,6 +51,7 @@ class NumberRow extends React.Component {
       return '';
     };
 
+    const countryName = getPhoneCountryName(number.get('number'));
     const countryCodes = number.get('outbound_calls_default_countries')
       .toArray()
       .map(countryCode => countryCode.toUpperCase() + getCountryDialCode(countryCode))
@@ -81,8 +83,9 @@ class NumberRow extends React.Component {
           <div className="column press-options">
             {number.get('outbound_calls_default') &&
             <span className="press-option">
-              {number.get('outbound_calls_default_global') ? 'Default phone number for all outbound calls' : ''}
-              {!number.get('outbound_calls_default_global') && countryCodes
+              {number.get('outbound_calls_default_type') === 'all' ? 'Default phone number for all outbound calls' : ''}
+              {number.get('outbound_calls_default_type') === 'country' ? `Make this the default for outgoing calls from ${countryName}` : ''}
+              {number.get('outbound_calls_default_type') === 'specific' && countryCodes
                 ? `Default phone number for outbound calls to: ${countryCodes}` : ''}
             </span>}
           </div>

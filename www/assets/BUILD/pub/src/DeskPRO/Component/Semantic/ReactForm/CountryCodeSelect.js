@@ -10,11 +10,13 @@ class CountryCodeSelect extends React.Component {
   static propTypes = {
     value:               PropTypes.any, // eslint-disable-line react/forbid-prop-types
     multiple:            PropTypes.bool,
-    allowedCountryCodes: PropTypes.array
+    allowedCountryCodes: PropTypes.array,
+    primaryCountryCodes: PropTypes.array
   };
 
   static defaultProps = {
-    multiple: false
+    multiple:            false,
+    primaryCountryCodes: []
   };
 
   renderValue = option => (
@@ -25,15 +27,25 @@ class CountryCodeSelect extends React.Component {
   );
 
   render() {
-    const { allowedCountryCodes, multiple, value } = this.props;
+    const { allowedCountryCodes, primaryCountryCodes, multiple, value } = this.props;
 
     delete countries.countries.XK;
 
     const countryCodes = allowedCountryCodes || Object.keys(countries.countries);
-    const choices = countryCodes.map(countryCode => ({
-      value: countryCode,
-      label: countries.countries[countryCode] ? countries.countries[countryCode].name : ''
-    }));
+    const choices = Object.values(countryCodes.map(countryCode => ({
+      value:   countryCode,
+      label:   countries.countries[countryCode] ? countries.countries[countryCode].name : '',
+      primary: primaryCountryCodes.indexOf(countryCode) !== -1
+    }))).sort((a, b) => {
+      if (a.primary) {
+        return -1;
+      }
+      if (b.primary) {
+        return 1;
+      }
+
+      return a.label.localeCompare(b.label);
+    });
 
     let selectValue;
     if (Array.isArray(value)) {
@@ -43,10 +55,7 @@ class CountryCodeSelect extends React.Component {
     }
 
     if (multiple) {
-      const multiChoices = Object.values(choices.map(choice => ({
-        value: choice.value,
-        label: this.renderValue(choice)
-      })));
+      const multiChoices = Object.values(choices.map(choice => ({ ...choice, label: this.renderValue(choice) })));
 
       return (
         <MultiSelect

@@ -19,15 +19,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceQueueRepository")
  * @ORM\Table(name="voice_queues", uniqueConstraints={
- *   @ORM\UniqueConstraint(name="task_queue_sid", columns={"task_queue_sid"}),
  *   @ORM\UniqueConstraint(name="name", columns={"name"})
  * })
  *
- * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceQueueListener"})
- *
  * @JMS\ExclusionPolicy("all")
  *
- * @UniqueEntity("taskQueueSid")
  * @UniqueEntity("name")
  *
  * @AppAssert\Voice\VoiceQueueAgentPermissions()
@@ -78,13 +74,6 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $name;
-
-    /**
-     * @ORM\Column(name="task_queue_sid", type="string", length=100, nullable=true)
-     *
-     * @var string
-     */
-    private $taskQueueSid;
 
     /**
      * @ORM\JoinColumn(name="department_id")
@@ -284,26 +273,6 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return string
-     */
-    public function getTaskQueueSid()
-    {
-        return $this->taskQueueSid;
-    }
-
-    /**
-     * @param string $taskQueueSid
-     *
-     * @return $this
-     */
-    public function setTaskQueueSid($taskQueueSid)
-    {
-        $this->setModelField('taskQueueSid', $taskQueueSid);
-
-        return $this;
-    }
-
-    /**
      * @return Department
      */
     public function getDepartment()
@@ -329,6 +298,40 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function getAgents()
     {
         return $this->agents;
+    }
+
+    /**
+     * @return VoiceQueueAgent[]|ArrayCollection
+     */
+    public function getActiveAgents()
+    {
+        return $this->agents->filter(function (VoiceQueueAgent $voiceQueueAgent) {
+            return $voiceQueueAgent->isEnabled();
+        });
+    }
+
+    /**
+     * @return VoiceQueueAgent[]|ArrayCollection
+     */
+    public function getActiveAgentsPeople()
+    {
+        return $this->getActiveAgents()->map(function (VoiceQueueAgent $voiceQueueAgent) {
+            return $voiceQueueAgent->getAgent();
+        });
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getActiveAgentsPeopleIds()
+    {
+        return $this
+            ->getActiveAgentsPeople()
+            ->map(function (Person $person) {
+                return $person->getId();
+            })
+            ->toArray()
+        ;
     }
 
     /**

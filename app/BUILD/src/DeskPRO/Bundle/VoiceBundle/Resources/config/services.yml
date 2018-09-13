@@ -1,0 +1,51 @@
+services:
+
+  twilio_adapter:
+    class: DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@voice_settings_resolver"
+
+  dp.voice.task_builder:
+    class: DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskBuilder
+    arguments:
+      - "@dp.voice.task_router.storage"
+
+  dp.voice.task_router_lock:
+    class: Symfony\Component\Lock\Lock
+    factory: ['DeskPRO\Bundle\VoiceBundle\TaskRouter\LockFactory', createTaskRouterLock]
+
+  dp.voice.task_router:
+    class: DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskRouter
+    arguments:
+      - "@service_container"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.event_dispatcher"
+      - "@dp.voice.task_router_lock"
+
+  dp.voice.task_router.storage:
+    class: DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface
+    factory: ['DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterFactory', createAdapter]
+    arguments:
+      - "@service_container"
+
+  dp.voice.voice_task_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper
+    arguments:
+      - "@doctrine.orm.entity_manager"
+
+  dp.voice.worker_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\WorkerHelper
+    arguments:
+      - "@dp.voice.task_router.storage"
+      - "@doctrine.orm.entity_manager"
+
+  dp.voice.task_router.voice_workflow:
+    class: DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow
+    arguments:
+      - "@dp.voice.worker_helper"
+      - "@dp.voice.voice_task_helper"
+      - "@voice_settings_resolver"
+      - "@dp.voice.task_router.storage"
+    tags:
+      - { name: dp.voice.task_router_workflow }

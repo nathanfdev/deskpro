@@ -16,14 +16,14 @@ class VoiceMenu extends React.Component {
     people:                PropTypes.object,
     queues:                PropTypes.object,
     incomingCall:          PropTypes.object,
-    onAcceptCall:          PropTypes.func,
-    onDeclineCall:         PropTypes.func,
+    acceptCall:            PropTypes.func,
+    declineCall:           PropTypes.func,
+    hideCall:              PropTypes.func,
     onHangup:              PropTypes.func,
     outboundCallsEnabled:  PropTypes.bool,
     outgoingCall:          PropTypes.object,
     ringingVolume:         PropTypes.number,
     agentVoicemailTimeout: PropTypes.number,
-    voiceSynced:           PropTypes.bool,
     callsEnabled:          PropTypes.bool,
     voiceEnabled:          PropTypes.bool,
     micEnabled:            PropTypes.bool,
@@ -71,7 +71,7 @@ class VoiceMenu extends React.Component {
 
   renderPhoneTab() {
     const { me, agents, people, queues, incomingCall, ringingVolume, agentVoicemailTimeout } = this.props;
-    const { outgoingCall, onAcceptCall, onDeclineCall, onHangup } = this.props;
+    const { outgoingCall, acceptCall, declineCall, hideCall, onHangup } = this.props;
 
     if (incomingCall) {
       return (
@@ -83,8 +83,9 @@ class VoiceMenu extends React.Component {
           incomingCall={incomingCall}
           ringingVolume={ringingVolume}
           agentVoicemailTimeout={agentVoicemailTimeout}
-          onAccept={onAcceptCall}
-          onDecline={onDeclineCall}
+          onAccept={acceptCall}
+          onDecline={declineCall}
+          hideCall={hideCall}
         />
       );
     } else if (outgoingCall) {
@@ -107,7 +108,7 @@ class VoiceMenu extends React.Component {
 
   render() {
     const { outboundCallsEnabled, incomingCall, outgoingCall, openUserMenu } = this.props;
-    const { voiceSynced, voiceEnabled, micEnabled, callsEnabled } = this.props;
+    const { voiceEnabled, micEnabled, callsEnabled } = this.props;
     const { tabName } = this.state;
     const hasPhoneTab = incomingCall || outboundCallsEnabled;
     const pendingCall = incomingCall || outgoingCall;
@@ -120,10 +121,6 @@ class VoiceMenu extends React.Component {
             {voiceEnabled && micEnabled && callsEnabled ? 'You are online' : 'You are offline'}
           </a>
         </div>
-        {!voiceSynced &&
-        <div className="voice-menu-alert">
-           Changes to your Voice settings are still being applied. This may take a minute or two.
-        </div>}
         <div className="tab-menu">
           {!pendingCall &&
           <TabButton

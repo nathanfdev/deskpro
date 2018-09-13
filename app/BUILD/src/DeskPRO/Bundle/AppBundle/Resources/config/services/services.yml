@@ -137,14 +137,6 @@ services:
     class: Application\DeskPRO\Service\JIRA
     arguments: ["@service_container"]
 
-  twilio_adapter:
-    class: DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter
-    arguments: ["@doctrine.orm.entity_manager", "@voice_settings_resolver"]
-
-  twilio_sync_manager:
-    class: DeskPRO\Bundle\AppBundle\Twilio\TwilioSyncManager
-    arguments: ["@doctrine.orm.entity_manager", "@twilio_adapter", "@router", "@event_dispatcher"]
-
   url_corrector_factory:
     class: DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory
     arguments: ["@deskpro.app_env", "@brand_aware_settings_resolver"]

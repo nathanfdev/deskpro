@@ -44,9 +44,6 @@ class StatusForm extends React.Component {
       if (value.status === 'offline') {
         value.chats = false;
         value.calls = false;
-      } else {
-        value.chats = true;
-        value.calls = true;
       }
     }
 
@@ -94,7 +91,7 @@ class StatusForm extends React.Component {
             {window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use'] &&
               <div className="voice-profile-status-checkbox">
                 <Field select="chats">
-                  <Checkbox />
+                  <Checkbox disabled={formData.value.status === 'offline'} />
                 </Field>
                 <Isvg src={`${assetPath}/topbar/chat.svg`} className={classNames({ on: userChatEnabled })} />
                 <span className="voice-profile-status-checkbox-title">Chats</span>
@@ -102,7 +99,7 @@ class StatusForm extends React.Component {
             {voiceAvailable &&
               <div className="voice-profile-status-checkbox">
                 <Field select="calls">
-                  <Checkbox />
+                  <Checkbox disabled={formData.value.status === 'offline'} />
                 </Field>
                 <i className={classNames('ui call icon', formData.value.calls ? 'green' : 'disabled')} />
                 <span className="voice-profile-status-checkbox-title">
