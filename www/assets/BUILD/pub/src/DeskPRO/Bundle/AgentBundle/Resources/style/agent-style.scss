@@ -34,6 +34,7 @@ $mobile: new-breakpoint(max-width 640px 6);
 @import "list-view/table";
 @import "list-view/kanban";
 @import "raw/growl-notifications";
+@import "external-event/popup";
 //@import "raw/styles";
 
 @import "chrome/positioning";

@@ -678,8 +678,8 @@ class TicketSearch extends SearcherAbstract
 
         if ($this->person and $this->person['is_agent']) {
             $assigned_perm_part = "tickets.agent_id = {$this->person['id']}";
-            if ($this->person->getAgentTeamIds()) {
-                $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $this->person->getAgentTeamIds()).'))';
+            if ($this->person->getHelper('AgentTeam')->getAgentTeamIds()) {
+                $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $this->person->getHelper('AgentTeam')->getAgentTeamIds()).'))';
             }
 
             $where_perm = [];
@@ -917,8 +917,8 @@ class TicketSearch extends SearcherAbstract
 
         if ($this->person and $this->person['is_agent']) {
             $assigned_perm_part = "tickets.agent_id = {$this->person['id']}";
-            if ($this->person->getAgentTeamIds()) {
-                $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $this->person->getAgentTeamIds()).'))';
+            if ($this->person->getTeamIds()) {
+                $assigned_perm_part = "($assigned_perm_part OR tickets.agent_team_id IN (".implode(',', $this->person->getTeamIds()).'))';
             }
 
             $where_perm = [];

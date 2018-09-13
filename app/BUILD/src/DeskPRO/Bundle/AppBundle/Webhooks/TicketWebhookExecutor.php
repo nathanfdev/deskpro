@@ -4,7 +4,6 @@ namespace DeskPRO\Bundle\AppBundle\Webhooks;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
@@ -53,17 +52,18 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     {
         $this->container = $container;
         if ($container instanceof DeskproContainer) {
-            $entityManager = $container->getEm();
+            $entityManager                  = $container->getEm();
             $this->searchTermsAliasResolver = SearchTermsAliasResolver::create($entityManager);
         }
     }
 
     /**
-     * @param TicketWebhook $webhook
+     * @param TicketWebhook  $webhook
      * @param WebhookRequest $request
      *
-     * @return ExecutionStats
      * @throws WebhookException
+     *
+     * @return ExecutionStats
      */
     public function execute(TicketWebhook $webhook, WebhookRequest $request)
     {
@@ -100,6 +100,7 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         $ticketMapper = function (Ticket $ticket) {
             return $ticket->getId();
         };
+
         return new ExecutionStats(
             array_map($ticketMapper, $tickets),
             array_unique(array_map($ticketMapper, $matchedByTriggers))
@@ -107,22 +108,24 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     }
 
     /**
-     * @param TicketWebhook $webhook
+     * @param TicketWebhook  $webhook
      * @param WebhookRequest $request
-     * @return WebhookInvocation
+     *
      * @throws WebhookException
+     *
+     * @return WebhookInvocation
      */
     private function createWebhookInvocation(TicketWebhook $webhook, WebhookRequest $request)
     {
         $converterName = $webhook->getPayloadDecoder();
-        if (empty ($converterName) && !is_null($request->getContent())) {
+        if (empty($converterName) && !is_null($request->getContent())) {
             $e = WebhookException::payloadForbidden($webhook->getAuthId());
             throw $e;
         }
 
         $payload = null;
-        if (! empty($converterName)) {
-            $converter     = $this->convertersRegistry->lookupDecoderByName($converterName);
+        if (!empty($converterName)) {
+            $converter = $this->convertersRegistry->lookupDecoderByName($converterName);
             if (empty($converter)) {
                 $e = WebhookException::decoderNotFound($webhook->getAuthId(), $converterName);
                 throw $e;
@@ -148,8 +151,8 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     }
 
     /**
-     * @param TicketWebhook  $webhook
-     * @param WebhookRequest $request
+     * @param TicketWebhook     $webhook
+     * @param WebhookRequest    $request
      * @param WebhookInvocation $payload
      *
      * @return \Application\DeskPRO\Tickets\ExecutorContextInterface
@@ -166,8 +169,8 @@ class TicketWebhookExecutor implements ContainerAwareInterface
 
     private function buildTicketSearchCriteria(TicketWebhook $webhook, WebhookInvocation $webhookInvocation)
     {
-        $terms = $webhook->getSearchTerms();
-        $trans       = new LegacyTermsTransformer();
+        $terms     = $webhook->getSearchTerms();
+        $trans     = new LegacyTermsTransformer();
         $termsList = $trans->toLegacyTerms($terms);
 
         // filter and evaluate search terms
@@ -175,7 +178,7 @@ class TicketWebhookExecutor implements ContainerAwareInterface
             return $term['op'] != 'ignore';
         });
 
-        $evaluators = [ new TwigScriptEvaluator() ];
+        $evaluators  = [new TwigScriptEvaluator()];
         $searchTerms = array_map(function ($term) use ($evaluators, $webhookInvocation) {
             if (SearchTermVars::hasVars($term, $evaluators)) {
                 return SearchTermVars::evaluate($term, $evaluators, $webhookInvocation);
