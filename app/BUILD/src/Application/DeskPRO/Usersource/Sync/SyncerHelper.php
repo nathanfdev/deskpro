@@ -109,7 +109,11 @@ class SyncerHelper
             // ignoring for now
             if (!$person->hasEmailAddress($user_info['email']) && !$this->getPersonFromEmail($user_info['email'])) {
                 $this->log(Logger::DEBUG, 'person does not have email and no other person does either: "'.$user_info['email'].'" so we are adding it to person ID: "'.$person->getId().'"');
-                $person->addEmailAddressString($user_info['email']);
+                $newEmail = $person->addEmailAddressString($user_info['email']);
+                // email changed in usersource, make this new email as primary email
+                if ($newEmail) {
+                    $person->setPrimaryEmail($newEmail);
+                }
             }
         }
 
