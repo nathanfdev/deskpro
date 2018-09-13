@@ -7,10 +7,16 @@
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAccessCode;
+use Application\DeskPRO\Entity\TicketLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use Doctrine\DBAL\Driver\Connection;
+use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 
 class Util
@@ -160,5 +166,41 @@ SQL
             INNER JOIN tickets_messages ON (tickets_messages.email_source_id = email_sources.id)
             WHERE tickets_messages.ticket_id = ?
         ', [$ticket_id]);
+    }
+
+    public static function deletePersonCallRecords(Person $person, EntityManager $em, DeskproBlobStorage $blobStorage)
+    {
+        $tickets = $em->getRepository(Ticket::class)->findBy(['person' => $person]);
+        foreach ($tickets as $ticket) {
+            foreach ($ticket->getMessages() as $message) {
+                if ($ticketMessageVoicePhoneCall = $message->getAttribute('voice_phone_call')) {
+                    /** @var TicketMessageVoicePhoneCall $ticketMessageVoicePhoneCall */
+                    $voicePhoneCall = $ticketMessageVoicePhoneCall->getPhoneCall();
+                    /** @var VoicePhoneCall $voicePhoneCall */
+                    $recording = $voicePhoneCall->getRecording();
+                    if ($recording) {
+                        $voicePhoneCall->setRecording(null);
+                        $em->persist($voicePhoneCall);
+
+                        $ticketLog = new TicketLog();
+                        $ticketLog
+                            ->setTicket($ticket)
+                            ->setIdObject($voicePhoneCall->getId())
+                            ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED)
+                            ->setDetailItem('filesize', $recording->getFilesize() / 1024);
+                        $em->persist($ticketLog);
+
+                        $callLog = new VoicePhoneCallLog();
+                        $callLog
+                            ->setPhoneCall($voicePhoneCall)
+                            ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
+                        $em->persist($callLog);
+
+                        $blobStorage->deleteBlobRecord($recording);
+                        $em->flush();
+                    }
+                }
+            }
+        }
     }
 }
