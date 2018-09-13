@@ -71,11 +71,12 @@ class VoicePhoneCallsController extends CrudController
                 ->setTicket($ticket)
                 ->setPerson($this->getUser())
                 ->setIdObject($phoneCall->getId())
-                ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
+                ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED)
+                ->setDetailItem('filesize', sprintf('%.2f', $recording->getFilesize() / 1024));
             $em->persist($ticketLog);
 
             $this->get('blob.storage')->deleteBlobRecord($recording);
-            $em->flush($phoneCall);
+            $em->flush();
         }
 
         $serializedData = $this->get('serializer')->toArray(

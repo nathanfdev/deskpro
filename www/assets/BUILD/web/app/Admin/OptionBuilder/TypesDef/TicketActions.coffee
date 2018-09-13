@@ -169,6 +169,11 @@ define [
       })
 
       options.push({
+        title: 'Delete Voice Phone Call Records',
+        value: 'DeleteVoicePhoneCallRecords'
+      })
+
+      options.push({
         title: 'Add Agent Reply',
         value: 'AddAgentReply'
       })
@@ -1999,3 +2004,47 @@ define [
       options.propName = 'add_brand_to_person'
       def = @getStandardIs(options)
       return def
+
+
+    getDeleteVoicePhoneCallRecords: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-delete-voice-phone-call-records.html')
+
+        getData: ->
+          return {}
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              options = value.options || {}
+
+              if parseInt(options.at_least)
+                options.at_least = parseInt(options.at_least)
+              else
+                options.at_least = 0
+
+              if parseInt(options.shorter_than)
+                options.shorter_than = parseInt(options.shorter_than)
+              else
+                options.shorter_than = 0
+
+              if parseInt(options.longer_than)
+                options.longer_than = parseInt(options.longer_than)
+              else
+                options.longer_than = 0
+
+              return options
+
+            getValue: (model = {}, data) ->
+              value = {}
+              value.type = 'DeleteVoicePhoneCallRecords'
+              value.options = {
+                at_least: if model.at_least then parseInt(model.at_least) || 0 else 0
+                longer_than: if model.longer_than then parseInt(model.longer_than) || 0 else 0
+                shorter_than: if model.shorter_than then parseInt(model.shorter_than) || 0 else 0
+              }
+              return value
+          }
+      }

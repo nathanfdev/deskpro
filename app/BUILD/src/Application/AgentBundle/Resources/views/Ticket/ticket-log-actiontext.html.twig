@@ -734,7 +734,7 @@
 	</span>
 {% elseif log.action_type == 'call.recording_deleted' %}
 	<span class="type">
-		{{ phrase('agent.voice.record_deleted', {'phoneCallId': log.id_object}) }}
+		{{ phrase('agent.voice.record_deleted', {'phoneCallId': log.id_object}) }} ({{ log.details.filesize }} Kb)
 	</span>
 {% elseif not hide_unknow %}
 	{{ log.action_type }}
