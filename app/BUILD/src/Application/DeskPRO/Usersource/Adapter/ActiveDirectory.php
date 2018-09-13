@@ -7,7 +7,7 @@
 namespace Application\DeskPRO\Usersource\Adapter;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Ldap\Ldap;
+use Application\DeskPRO\Ldap\Ldap as LdapClass;
 use Application\DeskPRO\Ldap\LdapPagedSearcher;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Orb\Auth\Identity;
@@ -35,7 +35,7 @@ class ActiveDirectory extends AbstractAdapter
      */
     protected function _createAuthAdapterObject()
     {
-        $options = array_merge($this->usersource->options, ['ldapClass' => Ldap::class]);
+        $options = array_merge($this->usersource->options, ['ldapClass' => LdapClass::class]);
         $adapter = new \Orb\Auth\Adapter\ActiveDirectory($options);
         $appEnv  = App::$container->get('deskpro.app_env');
 
