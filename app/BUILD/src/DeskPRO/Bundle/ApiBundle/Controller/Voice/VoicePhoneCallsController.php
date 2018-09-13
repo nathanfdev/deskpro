@@ -2,14 +2,19 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketLog;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,7 +44,7 @@ class VoicePhoneCallsController extends CrudController
      *     noOutput=true
      * )
      *
-     * @Rest\Delete("/{phoneCallId}/record")
+     * @Rest\Delete("/{phoneCallId}/record", name="voice_phone_call_delete_record")
      *
      * @param int $phoneCallId
      *
@@ -49,6 +54,7 @@ class VoicePhoneCallsController extends CrudController
      */
     public function deletePhoneCallRecordAction($phoneCallId)
     {
+        /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($phoneCallId);
@@ -56,6 +62,18 @@ class VoicePhoneCallsController extends CrudController
         if ($recording) {
             $phoneCall->setRecording(null);
             $em->persist($phoneCall);
+
+            $attribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy(['phoneCall' => $phoneCall]);
+            /** @var Ticket $ticket */
+            $ticket    = $attribute->getMessage()->getTicket();
+            $ticketLog = new TicketLog();
+            $ticketLog
+                ->setTicket($ticket)
+                ->setPerson($this->getUser())
+                ->setIdObject($phoneCall->getId())
+                ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
+            $em->persist($ticketLog);
+
             $this->get('blob.storage')->deleteBlobRecord($recording);
             $em->flush($phoneCall);
         }

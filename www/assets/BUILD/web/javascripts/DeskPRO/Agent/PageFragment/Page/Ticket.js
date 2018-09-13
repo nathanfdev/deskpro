@@ -902,6 +902,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
+		logsWrap.on('click', '.delete-record', function(ev) {
+      ev.stopPropagation();
+			ev.preventDefault();
+
+			$.ajax({
+				url: $(this).attr('href'),
+				type: 'DELETE',
+				dataType: 'json',
+				context: this,
+				withActionAlerts: true,
+				success: function() {
+          self.refreshLogTypes();
+				}
+			});
+    });
+
 		this.closeTicketOnFail = function () {
       if (self.wrapper && self.wrapper.find('.with-handler-failed')[0]) {
         DeskPRO_Window.showConfirm("There was a problem loading some elements on this tab. The tab will re-load now.", function() {

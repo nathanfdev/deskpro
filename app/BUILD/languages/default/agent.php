@@ -2862,6 +2862,7 @@ return [
     'agent.voice.call_started'                              => 'Call started',
     'agent.voice.call_ended'                                => 'Call ended',
     'agent.voice.recording_downloaded'                      => 'Recording downloaded',
+    'agent.voice.record_deleted'                            => 'Call Record for Phone Call #{{ phoneCallId }} deleted',
     'agent.voice.delete_record'                             => 'Delete record',
     'agent.email_subjects.scheduled_report_ready'           => 'View your report: {{report_title}}',
     'agent.scheduled_report.accost'                         => 'Hello {{person_title}}!',
