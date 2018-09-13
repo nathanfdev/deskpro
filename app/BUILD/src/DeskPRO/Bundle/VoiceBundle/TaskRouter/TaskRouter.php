@@ -142,6 +142,10 @@ class TaskRouter
      */
     public function acceptTask($taskId, $workerType, $workerTypeId)
     {
+        if (!$taskId) {
+            return false;
+        }
+
         $this->lock->acquire(true);
 
         try {
@@ -196,6 +200,10 @@ class TaskRouter
      */
     public function rejectTask($taskId, $workerType, $workerTypeId)
     {
+        if (!$taskId) {
+            return false;
+        }
+
         $this->lock->acquire(true);
 
         try {
@@ -235,6 +243,10 @@ class TaskRouter
      */
     public function cancelTask($taskId)
     {
+        if (!$taskId) {
+            return false;
+        }
+
         $this->lock->acquire(true);
 
         try {

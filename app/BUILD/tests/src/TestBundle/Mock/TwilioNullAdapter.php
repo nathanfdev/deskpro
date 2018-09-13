@@ -3,7 +3,7 @@
 namespace DpTestSrc\TestBundle\Mock;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
@@ -27,7 +27,7 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function getAccount(VoiceAccount $account)
+    public function getAccount(TwilioVoiceAccount $account)
     {
         return true;
     }
@@ -35,21 +35,28 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function buyNumber(VoiceAccount $account, array $data)
+    public function buyNumber(TwilioVoiceAccount $account, array $data)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function updateNumber(VoiceNumber $number, array $options)
+    public function setTwimlAppId(VoiceNumber $number)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createTwimlApp(VoiceAccount $account, $requestUrl, $voiceMethod, $statusUrl, $statusMethod)
+    public function unsetTwimlAppId(VoiceNumber $number)
+    {
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createTwimlApp(TwilioVoiceAccount $account, $requestUrl, $voiceMethod, $statusUrl, $statusMethod)
     {
         $payload = [
             'sid'                     => 'sid',
@@ -80,14 +87,14 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function createPhoneToken(VoiceAccount $account, Person $person)
+    public function createPhoneToken(TwilioVoiceAccount $account, Person $person)
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getConference(VoiceAccount $account, $conferenceSid)
+    public function getConference(TwilioVoiceAccount $account, $conferenceSid)
     {
         $payload = [
             'account_sid'      => 'account_sid',

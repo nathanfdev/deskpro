@@ -65,6 +65,7 @@ class AgentNotifyListener implements EventSubscriberInterface
             TaskRouterEvent::ASSIGNED => 'onAssigned',
             TaskRouterEvent::ACCEPTED => 'onAccepted',
             TaskRouterEvent::CANCELED => 'onCanceled',
+            TaskRouterEvent::REJECTED => 'onCanceled',
         ];
     }
 
@@ -88,6 +89,7 @@ class AgentNotifyListener implements EventSubscriberInterface
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.incoming-call',
             [
+                'account_id'         => $phoneCall->getNumber()->getAccount()->getId(),
                 'number'             => $phoneCall->getExternalNumber(),
                 'caller_person_id'   => $phoneCall->getPerson() ? $phoneCall->getPerson()->getId() : null,
                 'call_id'            => $phoneCall->getId(),

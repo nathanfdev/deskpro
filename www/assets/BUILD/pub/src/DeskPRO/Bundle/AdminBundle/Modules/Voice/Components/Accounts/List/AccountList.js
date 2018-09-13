@@ -23,7 +23,7 @@ class AccountList extends React.Component {
         You currently have no accounts.
         <br /><br />
 
-        <button className="ui primary button" onClick={onNewAccount}>
+        <button className="ui primary button" onClick={() => onNewAccount('twilio')}>
           Add new Twilio account
         </button>
       </div>
@@ -52,7 +52,7 @@ class AccountList extends React.Component {
             <div className="row" key={index}>
               <div className="info">
                 <div className="column account-name">{account.get('account_name')}</div>
-                <div className="column sid">{account.get('account_sid')}</div>
+                <div className="column sid">{account.get('account_id')}</div>
                 <div className="column date">{account.get('date_created')}</div>
                 <div className="column options-button">
                   <a onClick={(event) => { event.preventDefault(); onEditAccount(account); }}>

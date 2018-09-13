@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
@@ -23,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel")
  */
-class VoiceClientPhoneCallController extends AbstractVoiceController
+class VoiceClientPhoneCallController extends BaseController
 {
     /**
      * Agent accepts a call.
@@ -59,8 +60,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
             throw $this->createBadRequestException('Phone call is already accepted');
         }
 
-        $this->cancelForwardingCalls($phoneCall, $this->getUser());
-        $ticket = $this->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+        $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
+        $ticket = $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
 
         return new View($this->wrap($ticket));
     }
@@ -99,12 +100,14 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
             throw $this->createBadRequestException('Phone call is already accepted');
         }
 
+        $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
+
         return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
      * Force agent assign to a ticket to open the created voice ticket asap.
-     * It works slowly in twilio callbacks.
+     * It works slowly in voice callbacks.
      *
      * @ApiDoc(
      *     description="Assign agent to the ticket",
@@ -132,8 +135,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
             throw $this->createBadRequestException('Phone call is already ended');
         }
 
-        $this->cancelForwardingCalls($phoneCall, $this->getUser());
-        $ticket = $this->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+        $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
+        $ticket = $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
 
         return new View($this->wrap($ticket));
     }
@@ -197,7 +200,26 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
             throw $this->createBadRequestException('Phone call participant not found');
         }
 
-        $this->get('twilio_adapter')->muteParticipant($phoneCall, $participant->getCallSid(), $mute);
+        $this->get('dp.voice.provider_helper')->muteParticipant($phoneCall, $participant->getCallSid(), $mute);
+
+        // log action
+        $log = new VoicePhoneCallLog();
+        $log->setPerson($this->getVoiceAgent());
+        $log->setDetails($request->request->all());
+        $log->setPhoneCall($phoneCall);
+
+        if ($mute) {
+            $log->setActionType(VoicePhoneCallLog::ACTION_MUTED);
+        } else {
+            $log->setActionType(VoicePhoneCallLog::ACTION_UNMUTED);
+        }
+
+        $em = $this->getManager();
+        $em->persist($log);
+        $em->flush();
+
+        // send conference status
+        $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -224,7 +246,7 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
     {
         $isHold = $request->request->get('hold');
 
-        $this->get('twilio_adapter')->holdConferenceEndUser($phoneCall, $isHold);
+        $this->get('dp.voice.provider_helper')->holdConferenceEndUser($phoneCall, $isHold);
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.hold',
             [
@@ -232,6 +254,25 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
                 'hold'    => $isHold,
             ]
         ));
+
+        // log action
+        $log = new VoicePhoneCallLog();
+        $log->setPerson($this->getVoiceAgent());
+        $log->setDetails($request->request->all());
+        $log->setPhoneCall($phoneCall);
+
+        if ($isHold) {
+            $log->setActionType(VoicePhoneCallLog::ACTION_HOLD);
+        } else {
+            $log->setActionType(VoicePhoneCallLog::ACTION_UNHOLD);
+        }
+
+        $em = $this->getManager();
+        $em->persist($log);
+        $em->flush();
+
+        // send conference status
+        $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -281,6 +322,7 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.participant-invite',
             [
+                'account_id'       => $phoneCall->getNumber()->getAccount()->getId(),
                 'number'           => $phoneCall->getExternalNumber(),
                 'caller_person_id' => $phoneCall->getPerson() ? $phoneCall->getPerson()->getId() : null,
                 'call_id'          => $phoneCall->getId(),
@@ -312,7 +354,7 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
         $em->persist($log);
         $em->flush();
 
-        return new View(null, Response::HTTP_NO_CONTENT);
+        return new View($this->wrap($phoneCall));
     }
 
     /**
@@ -362,7 +404,7 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
             ]
         ));
 
-        return new View(null, Response::HTTP_NO_CONTENT);
+        return new View($this->wrap($phoneCall));
     }
 
     /**
@@ -412,9 +454,9 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
         ));
 
         // try to end call for cold transfer
-        $this->get('twilio_adapter')->tryEndConference($phoneCall);
+        $this->get('dp.voice.provider_helper')->tryEndConference($phoneCall);
 
-        return new View(null, Response::HTTP_NO_CONTENT);
+        return new View($this->wrap($phoneCall));
     }
 
     /**
@@ -446,9 +488,8 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
         if ($phoneCall->getType() === VoicePhoneCall::DIRECTION_OUTBOUND) {
             // if agent hangup pending call then decline user's call as well
             if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
-                $adapter = $this->get('twilio_adapter');
                 foreach ($phoneCall->getUserParticipants() as $participant) {
-                    $adapter->cancelCall($phoneCall->getNumber()->getAccount(), $participant->getCallSid());
+                    $this->get('dp.voice.provider_helper')->cancelCall($phoneCall);
                 }
             }
         }

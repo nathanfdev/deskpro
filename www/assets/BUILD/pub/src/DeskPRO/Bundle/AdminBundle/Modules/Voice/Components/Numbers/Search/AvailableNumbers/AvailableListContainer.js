@@ -6,14 +6,14 @@ import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import AvailableList from './AvailableList';
 import { loadAvailableNumbers, addAvailableNumber, changeAvailableNumbersFilter } from '../../../../Actions/numberActions';
-import { isAccountsLoadedSelector, allAccountsSelector } from '../../../../Selectors/account';
+import { isAccountsLoadedSelector, allTwilioAccountsSelector } from '../../../../Selectors/account';
 import { isNumbersLoadedSelector, availableNumbersFilterSelector } from '../../../../Selectors/numbers';
 import BaseSearchContainer from '../BaseSearchContainer';
 import { replaceRoute } from '../../../../../../Services/history';
 
 @connect(state => ({
   accountsLoaded: isAccountsLoadedSelector(state),
-  accounts:       allAccountsSelector(state),
+  accounts:       allTwilioAccountsSelector(state),
   numbersLoaded:  isNumbersLoadedSelector(state),
   filter:         availableNumbersFilterSelector(state)
 }))
@@ -45,10 +45,9 @@ class AvailableListContainer extends BaseSearchContainer {
         loading: false
       }, () => {
         const params = {
-          sid:          data.sid,
-          account:      data.account,
-          number:       data.number,
-          country_code: data.country_code
+          sid:     data.sid,
+          account: data.account,
+          number:  data.number,
         };
 
         replaceRoute(`/voice_channel/numbers/new?${compileParams(params)}`);

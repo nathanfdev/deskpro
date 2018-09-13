@@ -47,7 +47,7 @@ class VoiceControls extends React.Component {
       window.requestAnimationFrame(() => {
         const baseId = this.props.baseId;
         const content = window.document.getElementById(`${baseId}_page_header`);
-        if (content) {
+        if (content && this.div) {
           content.style.paddingTop = `${this.div.clientHeight + 20}px`;
         }
         this.ticking = false;

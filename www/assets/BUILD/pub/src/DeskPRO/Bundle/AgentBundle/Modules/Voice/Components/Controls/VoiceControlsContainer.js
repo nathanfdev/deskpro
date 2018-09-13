@@ -66,16 +66,26 @@ class VoiceControlsContainer extends React.Component {
     });
 
     this.interval = setInterval(() => {
-      const connection = this.getConnection();
-
-      const connectionStatus = connection ? connection.status() : 'closed';
-      const connectionState = this.getConnectionState();
       const { me } = this.props;
       const { status } = this.state;
+      const connection = this.getConnection();
+      const connectionState = this.getConnectionState();
+
+      let connectionStatus;
+      if (!connection) {
+        connectionStatus = 'closed';
+      } else {
+        if (connection.status) {
+          connectionStatus = connection.status();
+        }
+        if (connection.getCallUUID && connection.getCallUUID()) {
+          connectionStatus = 'open';
+        }
+      }
 
       if (connectionStatus === 'open') {
         if (status !== 'active'
-          && (connectionState.participants.contains(me.get('id')) || connection.message.Outbound)
+          && (connectionState.participants.contains(me.get('id')) || connection.outbound)
         ) {
           this.setState({
             status: 'active'
@@ -128,7 +138,7 @@ class VoiceControlsContainer extends React.Component {
   getConnection() {
     const { connections, ticketId } = this.props;
     return connections
-      .filter(connection => parseInt(connection.message.TicketId, 10) === parseInt(ticketId, 10))
+      .filter(connection => parseInt(connection.ticketId, 10) === parseInt(ticketId, 10))
       .first();
   }
 
@@ -138,7 +148,7 @@ class VoiceControlsContainer extends React.Component {
 
     let connectionState;
     if (connection) {
-      connectionState = connectionStates.get(connection.message.CallId);
+      connectionState = connectionStates.get(connection.callId);
     }
     if (!connectionState) {
       connectionState = Immutable.fromJS({
@@ -168,7 +178,7 @@ class VoiceControlsContainer extends React.Component {
     const { dispatch } = this.props;
     const connection = this.getConnection();
 
-    const promise = dispatch(cancelInvite(connection.message.CallId, target, type));
+    const promise = dispatch(cancelInvite(connection.callId, target, type));
     promise.then(() => {
       this.setState({
         addTarget:          null,
@@ -191,7 +201,16 @@ class VoiceControlsContainer extends React.Component {
 
   sendDigits = (digit) => {
     const connection = this.getConnection();
-    connection.sendDigits(`${digit}`);
+
+    // twilio
+    if (connection.sendDigits) {
+      connection.sendDigits(`${digit}`);
+    }
+
+    // plivo
+    if (connection.sendDtmf) {
+      connection.sendDtmf(`${digit}`);
+    }
   };
 
   toggleMute = () => {

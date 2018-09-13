@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
@@ -57,6 +58,27 @@ class WorkerHelper
 
         $worker->setActivity($activity);
         $this->storage->saveWorker($worker);
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function updateWorkerActivityOnBootstrap(Person $person)
+    {
+        $agentData = $person->getAgentData();
+        if (!$agentData) {
+            return;
+        }
+
+        $worker = $this->storage->getWorkerByType('agent', $person->getId());
+        if (!$worker) {
+            return;
+        }
+
+        $isVoiceEnabled = $agentData->isVoiceEnabled() && $agentData->isAgentCallsEnabled();
+        if ($worker->isOffline() && $isVoiceEnabled) {
+            $this->setIdle('agent', $person->getId());
+        }
     }
 
     /**

@@ -45,7 +45,7 @@ class TransferStatus extends React.Component {
     }
 
     // call id does not match
-    if (parseInt(connection.message.CallId, 10) !== parseInt(event.call_id, 10)) {
+    if (parseInt(connection.callId, 10) !== parseInt(event.call_id, 10)) {
       return;
     }
 

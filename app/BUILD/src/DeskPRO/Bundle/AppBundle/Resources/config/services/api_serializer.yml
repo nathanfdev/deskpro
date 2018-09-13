@@ -326,13 +326,6 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
-  api_serializer.handler.voice_phone_call:
-    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Voice\VoicePhoneCallHandler
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }
-
   api_serializer.handler.oauth_client:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\OAuthClientHandler
     arguments:

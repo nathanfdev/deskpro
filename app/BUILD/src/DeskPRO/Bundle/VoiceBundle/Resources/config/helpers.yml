@@ -1,0 +1,37 @@
+services:
+
+  dp.voice.callbacks_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceCallbacksHelper
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@serializer"
+      - "@dp.voice.task_builder"
+      - "@dp.voice.task_router"
+      - "@voice_settings_resolver"
+      - "@ticket_manager"
+      - "@dp.voice.provider_helper"
+      - "@dp.voice.worker_helper"
+      - "@dp.voice.task_router.storage"
+      - "@event_dispatcher"
+
+  dp.voice.assets_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceAssetHelper
+    arguments:
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.voice_task_helper"
+      - "@router"
+      - "@assets.packages"
+
+  dp.voice.recording_download_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\RecordingDownloadHelper
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@serializer"
+      - "@event_dispatcher"
+      - "@job.queue"
+
+  dp.voice.provider_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceProviderHelper
+    arguments:
+      - "@twilio_adapter"
+      - "@plivo_adapter"

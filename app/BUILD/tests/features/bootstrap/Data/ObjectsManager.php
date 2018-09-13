@@ -100,6 +100,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomTicketFieldDefinitionAlias;
+use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
@@ -108,7 +109,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceRecordAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceTextAsset;
@@ -352,7 +353,8 @@ class ObjectsManager
             'UsersourceAssoc'                  => [Factory\SimpleFactory::class, 'create', PersonUsersourceAssoc::class],
             'PersonNote'                       => [Factory\SimpleFactory::class, 'create', PersonNote::class],
             'PersonPhoneNumber'                => [Factory\SimpleFactory::class, 'create', PersonPhoneNumber::class],
-            'VoiceAccount'                     => [Factory\SimpleFactory::class, 'create', VoiceAccount::class],
+            'TwilioVoiceAccount'               => [Factory\SimpleFactory::class, 'create', TwilioVoiceAccount::class],
+            'PlivoVoiceAccount'                => [Factory\SimpleFactory::class, 'create', PlivoVoiceAccount::class],
             'VoiceNumber'                      => [Factory\SimpleFactory::class, 'create', VoiceNumber::class],
             'VoiceQueue'                       => [Factory\SimpleFactory::class, 'create', VoiceQueue::class],
             'VoiceTextAsset'                   => [Factory\SimpleFactory::class, 'create', VoiceTextAsset::class],
@@ -490,7 +492,8 @@ class ObjectsManager
             'PersonNote'                       => [$this, 'find', PersonNote::class],
             'PersonPhoneNumber'                => [$this, 'find', PersonPhoneNumber::class],
             'Permission'                       => [$this, 'find', Permission::class],
-            'VoiceAccount'                     => [$this, 'find', VoiceAccount::class],
+            'TwilioVoiceAccount'               => [$this, 'find', TwilioVoiceAccount::class],
+            'PlivoVoiceAccount'                => [$this, 'find', PlivoVoiceAccount::class],
             'VoiceNumber'                      => [$this, 'find', VoiceNumber::class],
             'VoiceQueue'                       => [$this, 'find', VoiceQueue::class],
             'VoiceAsset'                       => [$this, 'find', AbstractVoiceAsset::class],

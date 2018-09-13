@@ -1,7 +1,18 @@
 services:
 
+  voice_settings_resolver:
+    class: DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver
+    arguments:
+      - "@settings_resolver"
+
   twilio_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@voice_settings_resolver"
+
+  plivo_adapter:
+    class: DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@voice_settings_resolver"

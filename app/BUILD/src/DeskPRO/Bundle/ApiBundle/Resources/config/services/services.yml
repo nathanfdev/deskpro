@@ -57,17 +57,6 @@ services:
     tags:
     - { name: 'kernel.event_subscriber' }
 
-  job.scheduler:
-    class: Application\DeskPRO\JobQueue\JobScheduler
-    arguments:
-      - "@doctrine.orm.entity_manager"
-
-  job.queue:
-    class: Application\DeskPRO\JobQueue\JobQueue
-    arguments:
-      - "@doctrine.orm.entity_manager"
-      - "@job.scheduler"
-
   api_client_info:
     class: DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo
     factory: [DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo, createFromRequestStack]

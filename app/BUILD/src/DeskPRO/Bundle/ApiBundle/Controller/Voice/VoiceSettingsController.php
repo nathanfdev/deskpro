@@ -9,8 +9,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceSettingsType;
-use DeskPRO\Bundle\AppBundle\Settings\VoiceSettingsResolver;
+use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceSettingsType;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,7 +52,7 @@ class VoiceSettingsController extends BaseController
      *     statusCodes={
      *         204="Returned if everything is ok"
      *     },
-     *     input="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceSettingsType",
+     *     input="DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceSettingsType",
      *     noOutput=true
      * )
      *
@@ -78,13 +78,6 @@ class VoiceSettingsController extends BaseController
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_AGENT_VOICEMAIL_TIMEOUT, $form->get('agent_voicemail_timeout')->getData());
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_GROUP_MISSED_CALL_TICKETS, $form->get('group_missed_call_tickets')->getData());
         $settingsRepo->updateSetting(VoiceSettingsResolver::VOICE_GROUP_MISSED_CALL_TICKETS_TIMEOUT, $form->get('group_missed_call_tickets_timeout')->getData());
-
-        $this->getManager()->getConnection()->executeUpdate(
-            'UPDATE voice_accounts SET date_sync = :date_sync',
-            [
-                'date_sync' => date('c'),
-            ]
-        );
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

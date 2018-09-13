@@ -10,11 +10,8 @@ Feature: /voice_queues endpoint
       | #  | Title               | Brands           | Is Tickets Enabled | Is Chat Enabled |
       | d1 | Ticket Department 1 | [{defaultBrand}] | 1                  | 0               |
       | d2 | Ticket Department 2 | [{defaultBrand}] | 1                  | 0               |
-    And only the following VoiceAccount records exist:
-      | #  | AccountName | AccountSid | AuthToken |
-      | a1 | Account 1   | Sid1       | Token1    |
 
-  Scenario: I retrieve a list of twilio queues
+  Scenario: I retrieve a list of voice queues
     Given only the following VoiceQueue records exist:
       | #  | Name    | Routing Model |
       | q1 | Queue 1 | round_robin   |
@@ -25,7 +22,7 @@ Feature: /voice_queues endpoint
     Then the response status code should be 200
     And the JSON node "data" should have 3 elements
 
-  Scenario: I get twilio queue
+  Scenario: I get voice queue
     Given only the following VoiceQueue records exist:
       | #  | Name    | Routing Model |
       | q1 | Queue 1 | round_robin   |
@@ -33,14 +30,13 @@ Feature: /voice_queues endpoint
     When I send a GET request to "/api/v2/voice_queues/{q1}"
     Then the response status code should be 200
 
-  Scenario: I create a new twilio queue
+  Scenario: I create a new voice queue
     Given "agent_1@example.com" admin exists
     And "agent_2@example.com" admin exists
     And "agent_3@example.com" admin exists
     When I send a POST request to "/api/v2/voice_queues" with body:
     """
 {
-  "account": ~a1~,
   "department": ~d1~,
   "name": "My Queue",
   "routing_model": "least_utilized",
@@ -62,7 +58,7 @@ Feature: /voice_queues endpoint
     And the JSON node "data.agents[2].agent" should be equal to "{agent_3@example.com}"
     And the JSON node "data.agents[2].is_enabled" should be equal to 0
 
-  Scenario: I update twilio queue
+  Scenario: I update voice queue
     Given only the following VoiceQueue records exist:
       | #  | Name    | Routing Model |
       | q1 | Queue 1 | round_robin   |
@@ -78,7 +74,7 @@ Feature: /voice_queues endpoint
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to the string "Updated name"
 
-  Scenario: I delete twilio queue
+  Scenario: I delete voice queue
     Given only the following VoiceQueue records exist:
       | #  | Name    | Routing Model |
       | q1 | Queue 1 | round_robin   |

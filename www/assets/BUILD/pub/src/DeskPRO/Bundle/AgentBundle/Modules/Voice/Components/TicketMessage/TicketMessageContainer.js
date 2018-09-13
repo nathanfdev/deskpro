@@ -96,7 +96,7 @@ class TicketMessageContainer extends React.Component {
     const { connections } = this.props;
     const phoneCall = this.getPhoneCall();
 
-    return connections.filter(connection => parseInt(connection.message.CallId, 10) === phoneCall.get('id')).first();
+    return connections.filter(connection => parseInt(connection.callId, 10) === phoneCall.get('id')).first();
   }
 
   openTarget = (target) => {

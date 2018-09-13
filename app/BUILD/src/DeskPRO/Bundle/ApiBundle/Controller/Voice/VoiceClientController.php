@@ -3,13 +3,13 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAccountRepository;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType;
+use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceOutboundCallType;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel")
  */
-class VoiceClientController extends AbstractVoiceController
+class VoiceClientController extends BaseController
 {
     /**
      * @ApiDoc(
@@ -35,14 +35,15 @@ class VoiceClientController extends AbstractVoiceController
      *     output="DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens"
      * )
      *
-     * @Rest\Get("/tokens")
+     * @Rest\Get("/twilio_tokens")
+     *
+     * @param TwilioVoiceAccount $account
      *
      * @return View
      */
-    public function createClientTokensAction()
+    public function createTwilioClientTokensAction(TwilioVoiceAccount $account)
     {
         $adapter = $this->get('twilio_adapter');
-        $account = $this->getVoiceAccount();
         $person  = $this->getUser();
 
         $clientTokens = new TwilioClientTokens(
@@ -74,8 +75,8 @@ class VoiceClientController extends AbstractVoiceController
         ]);
 
         if ($phoneCall) {
-            $this->rejectIncomingPhoneCall($phoneCall, $this->getUser());
-            $this->cancelForwardingCalls($phoneCall, $this->getUser());
+            $this->get('dp.voice.callbacks_helper')->rejectIncomingPhoneCall($phoneCall, $this->getUser());
+            $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);
@@ -88,7 +89,7 @@ class VoiceClientController extends AbstractVoiceController
      *         200="Returned if everything is ok"
      *     },
      *     input={
-     *       "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType"
+     *       "class"="DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceOutboundCallType"
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall"
      * )
@@ -116,23 +117,5 @@ class VoiceClientController extends AbstractVoiceController
         $em->flush();
 
         return new View($this->wrap($phoneCall));
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return VoiceAccount
-     */
-    private function getVoiceAccount()
-    {
-        /** @var VoiceAccountRepository $voiceAccountRepo */
-        $voiceAccountRepo = $this->getRepository(VoiceAccount::class);
-        $voiceAccount     = $voiceAccountRepo->getVoiceAccount();
-
-        if (!$voiceAccount) {
-            throw $this->createBadRequestException('Voice account not found');
-        }
-
-        return $voiceAccount;
     }
 }

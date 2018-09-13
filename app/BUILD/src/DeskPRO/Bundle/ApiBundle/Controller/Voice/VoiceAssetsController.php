@@ -8,7 +8,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType;
+use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAssetType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +32,7 @@ class VoiceAssetsController extends BaseController
      *     },
      *     output="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset",
      *     input={
-     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetType",
+     *      "class"="DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAssetType",
      *      "options"={
      *          "data"="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceUploadAsset"
      *      }

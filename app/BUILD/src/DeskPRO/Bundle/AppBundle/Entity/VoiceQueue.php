@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\VoiceBundle\Validator\Constraints as VoiceAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity("name")
  *
- * @AppAssert\Voice\VoiceQueueAgentPermissions()
+ * @VoiceAssert\VoiceQueueAgentPermissions()
  */
 class VoiceQueue implements EntityInterface, NotifyPropertyChanged
 {
@@ -49,19 +50,6 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @var int
      */
     private $id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount", inversedBy="queues")
-     * @ORM\JoinColumn(name="account_id", referencedColumnName="id", onDelete="CASCADE")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceAccount>")
-     *
-     * @Assert\NotNull()
-     *
-     * @var VoiceAccount
-     */
-    private $account;
 
     /**
      * @ORM\Column(name="name", type="string", length=255)
@@ -230,26 +218,6 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return VoiceAccount
-     */
-    public function getAccount()
-    {
-        return $this->account;
-    }
-
-    /**
-     * @param VoiceAccount $account
-     *
-     * @return $this
-     */
-    public function setAccount(VoiceAccount $account = null)
-    {
-        $this->setModelField('account', $account);
-
-        return $this;
     }
 
     /**

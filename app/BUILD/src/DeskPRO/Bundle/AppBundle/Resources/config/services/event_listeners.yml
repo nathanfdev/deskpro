@@ -61,42 +61,6 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.doctrine.voice_account:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAccountListener
-    arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@router"]
-    tags:
-      - { name: doctrine.entity_listener }
-
-  event_listener.doctrine.voice_worker:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@event_dispatcher"
-      - "@dp.voice.task_router.storage"
-    tags:
-      - { name: doctrine.entity_listener }
-
-  event_listener.doctrine.voice_number:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceNumberListener
-    arguments: ["@service_container", "@event_dispatcher"]
-    tags:
-      - { name: doctrine.entity_listener }
-      - { name: doctrine.event_subscriber, connection: default }
-
-  event_listener.doctrine.voice_settings:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceSettingsListener
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@event_dispatcher"
-    tags:
-      - { name: doctrine.entity_listener }
-
-  event_listener.doctrine.voice_agent_target:
-    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAgentTargetListener
-    arguments: ["@doctrine.orm.default_entity_manager"]
-    tags:
-      - { name: doctrine.entity_listener }
-
   event_listener.doctrine.person_email:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonEmailListener
     arguments: ["@email.email_account_manager", "@validator"]

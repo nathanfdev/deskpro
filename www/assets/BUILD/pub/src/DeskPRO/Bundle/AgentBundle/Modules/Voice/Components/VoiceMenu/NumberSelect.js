@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Select } from 'DeskPRO/Component/Semantic/ReactForm';
+import { getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import classNames from 'classnames';
 
 class NumberSelect extends React.Component {
@@ -24,7 +25,7 @@ class NumberSelect extends React.Component {
       choices.push({
         label:        number.get('number'),
         value:        number.get('id'),
-        country_code: number.get('country_code'),
+        country_code: getPhoneCountryCode(number.get('number')),
         nickname:     number.get('nickname')
       });
     });

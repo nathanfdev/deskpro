@@ -3,7 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import $ from 'jquery';
 import 'intl-tel-input';
-import { getPhoneCountryName } from 'DeskPRO/Component/Util/PhoneNumber';
+import { getPhoneCountryName, getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import NumberTarget from '../../Common/NumberTarget/NumberTarget';
 import VoiceTargetNameContainer from '../../Common/NumberTarget/VoiceTargetNameContainer';
@@ -61,7 +61,7 @@ class NumberRow extends React.Component {
       <div className="row" key={number.get('id')}>
         <div className="info">
           <div className="column location">
-            <div className={classNames('flag-icon', `flag-icon-${number.get('country_code')}`)} />
+            <div className={classNames('flag-icon', `flag-icon-${getPhoneCountryCode(number.get('number')).toLowerCase()}`)} />
           </div>
           <div className="column number">{number.get('number')}</div>
           <div className="column nickname">

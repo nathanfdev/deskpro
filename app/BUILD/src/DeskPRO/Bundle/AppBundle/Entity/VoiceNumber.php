@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -15,9 +14,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceNumberRepository")
  * @ORM\Table(name="voice_numbers", uniqueConstraints={
- *   @ORM\UniqueConstraint(name="number_sid", columns={"sid"})
+ *   @ORM\UniqueConstraint(name="number_sid", columns={"account_id", "sid"})
  * })
- * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceNumberListener"})
+ * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceNumberListener"})
  *
  * @JMS\ExclusionPolicy("all")
  *
@@ -46,15 +45,15 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAccount", inversedBy="numbers")
+     * @ORM\ManyToOne(targetEntity="AbstractVoiceAccount", inversedBy="numbers")
      * @ORM\JoinColumn(name="account_id", referencedColumnName="id", onDelete="CASCADE")
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoiceAccount>")
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceAccount>")
      *
      * @Assert\NotNull()
      *
-     * @var VoiceAccount
+     * @var AbstractVoiceAccount
      */
     private $account;
 
@@ -91,19 +90,6 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $nickname;
-
-    /**
-     * @ORM\Column(name="country_code", type="string", length=10)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
-     * @Assert\NotBlank()
-     * @AppAssert\CountryCode()
-     *
-     * @var string
-     */
-    private $countryCode;
 
     /**
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget", cascade={"persist"}, orphanRemoval=true)
@@ -169,7 +155,7 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoiceAccount
+     * @return AbstractVoiceAccount
      */
     public function getAccount()
     {
@@ -177,11 +163,11 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoiceAccount $account
+     * @param AbstractVoiceAccount $account
      *
      * @return $this
      */
-    public function setAccount($account)
+    public function setAccount(AbstractVoiceAccount $account = null)
     {
         $this->setModelField('account', $account);
 
@@ -244,26 +230,6 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
     public function setNickname($nickname)
     {
         $this->setModelField('nickname', $nickname);
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCountryCode()
-    {
-        return $this->countryCode;
-    }
-
-    /**
-     * @param mixed $countryCode
-     *
-     * @return $this
-     */
-    public function setCountryCode($countryCode)
-    {
-        $this->setModelField('countryCode', $countryCode);
 
         return $this;
     }

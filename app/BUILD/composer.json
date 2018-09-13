@@ -112,7 +112,8 @@
     "webonyx/graphql-php": "^0.11.5",
     "html2text/html2text": "^4.1",
     "gorhill/php-fine-diff": "^0.1.0",
-    "symfony/lock": "3.4"
+    "symfony/lock": "3.4",
+    "plivo/php-sdk": "^4.1"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

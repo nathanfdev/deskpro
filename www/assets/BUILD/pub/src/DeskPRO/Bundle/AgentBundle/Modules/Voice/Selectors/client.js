@@ -5,12 +5,6 @@ const stateSelector = state => state.Voice.client;
 
 export const isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
 
-// tokens
-export const tokensSelector = createSelector(
-  stateSelector,
-  state => state.get('tokens')
-);
-
 export const isVoiceMicEnabled = createSelector(
   stateSelector,
   state => state.get('micEnabled')
@@ -24,11 +18,6 @@ export const voiceSettingsSelector = createSelector(
 export const agentVoicemailTimeoutSelector = createSelector(
   voiceSettingsSelector,
   settings => settings && settings.get('agent_voicemail_timeout')
-);
-
-export const phoneTokenSelector = createSelector(
-  tokensSelector,
-  tokens => tokens && tokens.get('phone_token')
 );
 
 // connections

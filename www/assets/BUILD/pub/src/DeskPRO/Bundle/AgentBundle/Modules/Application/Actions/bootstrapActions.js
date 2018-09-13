@@ -11,7 +11,7 @@ import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Sh
 import { updateAgentStatus, setOnlineAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
-import { setVoiceTokens, setVoiceSettings } from '../../Voice/Actions/clientActions';
+import { setVoiceSettings } from '../../Voice/Actions/clientActions';
 import { increaseCount, decreaseCount } from '../../Filters/Actions/filterActions';
 
 export const loadAgentPhraseTranslations = createAction(
@@ -65,9 +65,9 @@ export const preloadData    = createAction(
       };
 
       if (window.DP_HAS_VOICE) {
-        batchComponents.voice_tokens     = { endpoint: 'voice_client/tokens' };
-        batchComponents.voice_settings   = { endpoint: 'voice_settings' };
-        batchComponents.voice_numbers    = { endpoint: 'voice_numbers' };
+        batchComponents.voice_accounts = { endpoint: 'voice_accounts?include=client_credentials' };
+        batchComponents.voice_settings = { endpoint: 'voice_settings' };
+        batchComponents.voice_numbers  = { endpoint: 'voice_numbers' };
       }
 
       if (window.DP_HAS_NEW_IM) {
@@ -131,8 +131,8 @@ export const preloadData    = createAction(
           dispatch(setCollection('Brand', 'default', [data.defaultBrand]));
         }
         if (window.DP_HAS_VOICE) {
-          dispatch(setVoiceTokens(data.voice_tokens));
           dispatch(setVoiceSettings(data.voice_settings));
+          dispatch(setCollection('VoiceAccount', 'all', data.voice_accounts));
           dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
         }
 

@@ -107,13 +107,6 @@ services:
     tags:
       - { name: validator.constraint_validator }
 
-  validator.voice_account:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Voice\VoiceAccountValidator
-    arguments:
-      - "@twilio_adapter"
-    tags:
-      - { name: validator.constraint_validator }
-
   validator.permission:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\PermissionValidator
     arguments:
