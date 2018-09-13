@@ -75,6 +75,13 @@ class VoicePhoneCallsController extends CrudController
                 ->setDetailItem('filesize', sprintf('%.2f', $recording->getFilesize() / 1024));
             $em->persist($ticketLog);
 
+            $callLog = new VoicePhoneCallLog();
+            $callLog
+                ->setPhoneCall($phoneCall)
+                ->setPerson($this->getUser())
+                ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
+            $em->persist($callLog);
+
             $this->get('blob.storage')->deleteBlobRecord($recording);
             $em->flush();
         }

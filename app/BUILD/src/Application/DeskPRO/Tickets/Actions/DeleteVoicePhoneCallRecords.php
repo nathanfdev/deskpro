@@ -77,6 +77,15 @@ class DeleteVoicePhoneCallRecords extends AbstractContainerAwareAction implement
                     }
                     $em->persist($ticketLog);
 
+                    $callLog = new VoicePhoneCallLog();
+                    $callLog
+                        ->setPhoneCall($voicePhoneCall)
+                        ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED);
+                    if ($context->getPersonContext()) {
+                        $callLog->setPerson($context->getPersonContext());
+                    }
+                    $em->persist($callLog);
+
                     $this->getContainer()->get('blob.storage')->deleteBlobRecord($recording);
                     $em->flush();
 

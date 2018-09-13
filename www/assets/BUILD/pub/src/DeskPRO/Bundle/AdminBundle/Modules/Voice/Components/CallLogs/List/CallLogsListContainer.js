@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import CallLogsList from './CallLogsList';
-import { loadPhoneCalls, openDialpad } from '../../../Actions/callActions';
+import { loadPhoneCalls, openDialpad, deleteRecord } from '../../../Actions/callActions';
 import { loadNumbers } from '../../../Actions/numberActions';
 import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/numbers';
 import { allTicketsSelector } from '../../../../Application/Selectors/tickets';
@@ -74,6 +74,10 @@ class CallLogsListContainer extends React.Component {
     });
   };
 
+  deleteRecord = (callId) => {
+    this.props.dispatch(deleteRecord(callId)).then(() => this.loadPageData());
+  };
+
   loadPageData() {
     const { dispatch } = this.props;
     const { currentPage } = this.state;
@@ -104,6 +108,7 @@ class CallLogsListContainer extends React.Component {
       <CallLogsList
         {...this.props}
         {...this.state}
+        onDeleteRecordClick={this.deleteRecord}
         onPageChange={this.onPageChange}
         onOpenCallLog={this.onOpenCallLog}
         openDialpad={this.openDialpad}

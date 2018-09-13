@@ -333,6 +333,7 @@ class LanguagesController extends CrudController
             'agent.voice.call_agent_hangup',
             'agent.voice.call_started',
             'agent.voice.call_ended',
+            'agent.voice.call_recording_deleted',
         ];
 
         return $this->getPhrasesResponse($request, $phrases);
@@ -385,6 +386,7 @@ class LanguagesController extends CrudController
             'agent.voice.call_agent_hangup',
             'agent.voice.call_started',
             'agent.voice.call_ended',
+            'agent.voice.call_recording_deleted',
         ];
 
         return $this->getPhrasesResponse($request, $phrases);
