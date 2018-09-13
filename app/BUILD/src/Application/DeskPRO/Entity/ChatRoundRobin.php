@@ -217,7 +217,7 @@ class ChatRoundRobin extends DomainObject
         $llAgents = [];
         /** @var ChatRoundRobinAgent $rra */
         foreach ($availableAgents as $rra) {
-            $lastActivity = $rra->getLastActivity()->format('U');
+            $lastActivity = $rra->getLastActivity() ? $rra->getLastActivity()->format('U') : null;
             if ($lastActivity < $min || ($lastActivity === null && $min !== null)) {
                 $min      = $lastActivity;
                 $llAgents = [$rra->getAgent()];
