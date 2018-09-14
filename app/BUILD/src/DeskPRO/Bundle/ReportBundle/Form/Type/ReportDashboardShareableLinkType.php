@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Form\Type;
 
 use Application\DeskPRO\Entity\ReportDashboard;
 use Application\DeskPRO\Entity\ReportDashboardReport;

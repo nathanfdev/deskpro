@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Form\Type;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;

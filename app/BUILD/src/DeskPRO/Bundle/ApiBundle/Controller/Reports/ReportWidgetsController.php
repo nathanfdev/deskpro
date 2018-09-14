@@ -9,11 +9,11 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
+use DeskPRO\Bundle\ReportBundle\Form\Type\ReportWidgetType;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
@@ -32,7 +32,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType",
+ *      "class"="DeskPRO\Bundle\ReportBundle\Form\Type\ReportWidgetType",
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\ReportWidget"
  *      }

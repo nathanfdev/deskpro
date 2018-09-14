@@ -10,7 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\ReportBundle\Validator\Constraints as ReportAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -45,7 +45,7 @@ class ReportWidget extends DomainObject
 
     /**
      * @Assert\NotBlank()
-     * @AppAssert\Reports\DpqlQuery()
+     * @ReportAssert\DpqlQuery()
      *
      * @var string
      */

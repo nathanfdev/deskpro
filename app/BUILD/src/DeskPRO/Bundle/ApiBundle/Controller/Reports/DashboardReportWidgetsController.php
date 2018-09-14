@@ -7,8 +7,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportDashboardWidgetType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\ReportBundle\Form\Type\ReportDashboardWidgetType;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportDashboardWidgetType",
+ *      "class"="DeskPRO\Bundle\ReportBundle\Form\Type\ReportDashboardWidgetType",
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\ReportDashboardWidget",
  *          "report"="Application\DeskPRO\Entity\ReportDashboardReport"

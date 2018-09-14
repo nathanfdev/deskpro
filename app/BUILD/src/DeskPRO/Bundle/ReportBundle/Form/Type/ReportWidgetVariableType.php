@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

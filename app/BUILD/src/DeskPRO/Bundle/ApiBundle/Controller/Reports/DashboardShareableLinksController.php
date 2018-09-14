@@ -8,8 +8,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportDashboardShareableLinkType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\ReportBundle\Form\Type\ReportDashboardShareableLinkType;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportDashboardShareableLinkType",
+ *      "class"="DeskPRO\Bundle\ReportBundle\Form\Type\ReportDashboardShareableLinkType",
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\ReportDashboardShareableLink"
  *      }

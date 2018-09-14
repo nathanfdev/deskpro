@@ -1,13 +1,13 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
-use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime\ScheduleBimonthlyType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime\ScheduleDailyType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime\ScheduleMonthlyType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime\ScheduleWeeklyType;
+use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleBimonthlyType;
+use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleDailyType;
+use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleMonthlyType;
+use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleWeeklyType;
 use DeskPRO\Bundle\ReportBundle\Service\ReportSaver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Form\Type;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;

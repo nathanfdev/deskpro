@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Validator\Constraints;
 
 use Application\DeskPRO\Entity\ReportDashboardPermission;
 use Symfony\Component\Validator\Constraint;

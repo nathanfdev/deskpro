@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\ReportBundle\Validator\Constraints as ReportAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -18,7 +19,7 @@ use JMS\Serializer\Annotation as JMS;
  * Stores who has access to departments.
  *
  * @JMS\ExclusionPolicy("ALL")
- * @AppAssert\Reports\DashboardPermission()
+ * @ReportAssert\DashboardPermission()
  */
 class ReportDashboardPermission extends DomainObject
 {

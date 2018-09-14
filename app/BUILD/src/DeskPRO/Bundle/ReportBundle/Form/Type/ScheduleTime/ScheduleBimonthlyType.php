@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime;
+namespace DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

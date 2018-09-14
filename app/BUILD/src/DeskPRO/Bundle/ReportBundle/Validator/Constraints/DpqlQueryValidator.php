@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Validator\Constraints;
 
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlParseException;

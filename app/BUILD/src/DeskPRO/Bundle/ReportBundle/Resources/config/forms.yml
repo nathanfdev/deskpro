@@ -1,0 +1,30 @@
+services:
+  form.report_dashboard_report_collection:
+    class: DeskPRO\Bundle\ReportBundle\Form\Type\ReportDashboardReportCollectionType
+    arguments:
+    - "@doctrine.orm.default_entity_manager"
+    - "@reports.dashboard_manager"
+    tags:
+    - { name: form.type }
+
+  form.report_widget:
+    class: DeskPRO\Bundle\ReportBundle\Form\Type\ReportWidgetType
+    arguments:
+    - "@deskpro.core.translate_loader"
+    - "@language_manager"
+    tags:
+    - { name: form.type }
+
+  form.dpql_parts:
+    class: DeskPRO\Bundle\ReportBundle\Form\Type\DpqlPartsType
+    arguments:
+    - "@dpql.compiler"
+    tags:
+    - { name: form.type }
+
+  form.scheduled_report:
+    class: DeskPRO\Bundle\ReportBundle\Form\Type\ScheduledReportType
+    arguments:
+    - "@reports.report_saver"
+    tags:
+    - { name: form.type }

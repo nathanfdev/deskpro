@@ -135,13 +135,6 @@ services:
     tags:
       - { name: validator.constraint_validator }
 
-  validator.dpql_query:
-    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Reports\DpqlQueryValidator
-    arguments:
-      - "@reports.dashboard_widget.service"
-    tags:
-      - { name: validator.constraint_validator }
-
   validator.object_alias:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\ObjectAliasValidator
     arguments:
