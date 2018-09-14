@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Widget } from '../Domain/Widget';
+import { Widget } from '../Domain';
 
 import { ContainerEvents } from './ContainerEvents';
 import { EventProvider } from './EventProvider';
-import { WidgetContainer } from './WidgetContainer';
+import { WidgetContainerListEmpty } from './WidgetContainerListEmpty';
+import { WidgetContainerList } from './WidgetContainerList';
 
 import { receiveMessage, receiveSubscription, registerOutgoingMessageListener } from '../WidgetMessage';
 
@@ -17,6 +18,28 @@ const find = (list, filter) => {
   const found = list.filter(filter);
   return found.length === 1 ? found[0] : null;
 };
+
+
+function defaultRenderer({ widgets, getEvent, getEventProviders, unregister }) {
+  if (widgets && widgets.length > 0) {
+    return (
+      <WidgetContainerList
+        widgets={widgets}
+        getEvent={getEvent}
+        getEventProviders={getEventProviders}
+        unregister={unregister}
+      />
+    );
+  }
+  return (<WidgetContainerListEmpty />);
+}
+defaultRenderer.propTypes = {
+  widgets:           PropTypes.array.isRequired,
+  getEvent:          PropTypes.func.isRequired,
+  getEventProviders: PropTypes.func.isRequired,
+  unregister:        PropTypes.func.isRequired,
+};
+
 
 /* eslint class-methods-use-this: ["error", { "exceptMethods": ["onWidgetMouseEventMessage"] }] */
 
@@ -33,14 +56,14 @@ class DeskproAppContainer extends React.Component {
 
     registerOutgoingMessageListener: PropTypes.func,
     receiveMessage:                  PropTypes.func,
-    receiveSubscription:             PropTypes.func
+    receiveSubscription:             PropTypes.func,
+    children:                        PropTypes.func
   };
-
 
   static defaultProps = {
     registerOutgoingMessageListener,
     receiveMessage,
-    receiveSubscription
+    receiveSubscription,
   };
 
   state = {
@@ -215,13 +238,6 @@ class DeskproAppContainer extends React.Component {
     );
   };
 
-  renderWidget = configuration =>  (<WidgetContainer
-    configuration={configuration}
-    getEvent={this.state.getEvent}
-    getEventProviders={this.getEventProviders}
-    unregister={this.unregisterWidget}
-  />);
-
   /**
    * Renders the container and all the apps
    *
@@ -229,13 +245,21 @@ class DeskproAppContainer extends React.Component {
    */
   render() {
     const { widgetsConfigList } = this.props;
-    if (widgetsConfigList && widgetsConfigList.length > 0) {
-      return (<div>
-        {this.props.widgetsConfigList.map(this.renderWidget)}
-      </div>);
+
+    if (typeof this.props.children === 'function') {
+      return this.props.children({
+        getEvent:          this.state.getEvent,
+        getEventProviders: this.getEventProviders,
+        unregister:        this.unregisterWidget
+      });
     }
 
-    return (<div />);
+    return defaultRenderer({
+      widgets:           widgetsConfigList,
+      getEvent:          this.state.getEvent,
+      getEventProviders: this.getEventProviders,
+      unregister:        this.unregisterWidget
+    });
   }
 
 

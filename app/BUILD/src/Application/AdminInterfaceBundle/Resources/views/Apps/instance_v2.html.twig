@@ -27,14 +27,20 @@
 			</div>
 		</article>
 
-		<footer ng-hide="has_own_footer" style="height: 60px;">
+		<footer ng-hide="has_own_footer" style="height: 100px;">
 			<div class="dp-content">
 				<a ng-if="Ctrl.showChangeSettings" class="btn btn-default" href="{{ ng_href('apps.apps.update-v2-reload', "{instanceId: Ctrl.instanceId}") }}" style="float:left">Change Settings</a>
 
 				<div class="dp-delete-control">
 					<button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>
 				</div>
+				<div style="clear:both"></div>
 			</div>
+
+			<div class="dp-content">
+				<input type="checkbox" ng-model="Ctrl.settings.showInOwnTab" ng-change="Ctrl.toggleShowInOwnTab();" /> Show this app in its own tab
+			</div>
+
 		</footer>
 	</section>
 

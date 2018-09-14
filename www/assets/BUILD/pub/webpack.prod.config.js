@@ -92,7 +92,8 @@ const config = {
           }
         ],
         include: [
-          path.resolve(__dirname, 'src/DeskPRO')
+          path.resolve(__dirname, 'src/DeskPRO'),
+          path.resolve(__dirname, 'node_modules/source-map')
         ]
       },
       {

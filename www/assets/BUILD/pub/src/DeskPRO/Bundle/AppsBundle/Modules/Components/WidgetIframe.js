@@ -18,7 +18,7 @@ class WidgetIframe extends React.PureComponent {
 
   render()  {
     return (
-      <div id={this.props.id}>
+      <div id={this.props.id} className={'apps-window'}>
         <iframe
           ref={this.onWindowReady}
           scrolling={'no'}

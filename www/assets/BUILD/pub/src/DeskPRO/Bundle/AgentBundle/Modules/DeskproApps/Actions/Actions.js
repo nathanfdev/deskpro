@@ -1,6 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { extractPageContextProps } from 'DeskPRO/Bundle/AppsBundle/Modules/Services';
-import { ManifestLoader } from 'DeskPRO/Bundle/AppsBundle/Modules/Manifest';
+import { ManifestLoader } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 
 export const DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_LOAD_PAGE_FRAGMENT_APPS';
 export const DESKPRO_APPSTORE_UNLOAD_PAGE_FRAGMENT_APPS = 'DESKPRO_APPSTORE_UNLOAD_PAGE_FRAGMENT_APPS';
@@ -37,10 +37,10 @@ const loadAppsHandler = ({ api, config }) => {
   const loader = new ManifestLoader(api);
 
   if (isDev) {
-    return loader.loadDev(config.endpoint).then(manifests => ({ config, manifests: [manifests] }));
+    return loader.loadDev(config.endpoint).then(manifest => ({ config, apps: [{ manifest, settings: {} }] }));
   }
 
-  return loader.loadAll().then(manifests => ({ config, manifests }));
+  return loader.loadAll().then(apps => ({ config, apps }));
 };
 /**
  * creates an action that will load the app configuration for the current security principal

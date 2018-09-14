@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
-import { ManifestLoader, ManifestParsers } from 'DeskPRO/Bundle/AppsBundle/Modules/Manifest';
+import { AppsConfigBuilder, ManifestLoader, ManifestParsers } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { InstallerContainer, ScreenInstallerBundled, ScreenInstallerDefault } from './Components';

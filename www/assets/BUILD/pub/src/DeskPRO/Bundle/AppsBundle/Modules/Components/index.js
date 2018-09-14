@@ -1,3 +1,2 @@
-export { LegacySidebarContainer } from './LegacySidebarContainer';
-export { LegacyAppSidebar } from './LegacyAppSidebar';
+export { AppsColumnContainer } from './AppsColumnContainer';
 export { DeskproAppContainer } from './DeskproAppContainer';

@@ -28,15 +28,11 @@
   {% if person.is_agent %}pageMeta.isAgent = true;{% endif %}
 </script>
 <div
-      class="layout-sidebar dp-app-v2-sidebar"
+      class="layout-sidebar dp-app-v2-sidebar dp-app-context"
       id="{{ baseId }}_layout_sidebar"
       data-deskproapp="person-sidebar"
-      data-deskproapp-render="legacy-sidebar"
-      data-deskproapp-render-sidebar="#{{ baseId }}_layout_sidebar"
-      data-deskproapp-render-icons="#{{ baseId }}_layout_sidebar_icons > ul:first-child"
+      data-deskproapp-render="apps-column"
 >
-    <span class="pin-btn"><i class="fa fa-lock"></i><i class="fa fa-chevron-right"></i></span>
-    <div class="dp-app-context dp-app-v2-container" data-deskproapp-marker></div>
 </div>
 
 {# the sidebar sizer is disabled for at the moment and the plan is to completely remove it #}

@@ -117,7 +117,7 @@ window.close();
 </html>
 
 EOT;
-        
+
         $headers = [ 'Content-Type' =>  'text/html; charset=UTF8' ];
         return new Response($content, $this->httpStatus, $headers);
     }

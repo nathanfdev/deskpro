@@ -5,7 +5,7 @@ import uuid from 'uuid';
 import { AppsRegistry } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 import { DeskproAppContainer } from 'DeskPRO/Bundle/AppsBundle/Modules/Components';
 import { Context } from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
-import { createInterceptor } from 'DeskPRO/Bundle/AppsBundle/Modules/Services/Interceptors';
+import { createInterceptor } from 'DeskPRO/Bundle/AppsBundle/Modules/Services/interceptors';
 import { receiveMessage } from 'DeskPRO/Bundle/AppsBundle/Modules/WidgetMessage';
 
 const TARGET_INSTALL = 'install';
@@ -63,8 +63,8 @@ export class ScreenInstallerBundled extends React.Component {
   render() {
     const { config, installerManifest } = this.props;
 
-    const installerConfiguration = AppsRegistry.appConfiguration(installerManifest, config);
-    const widgetsConfigList = [AppsRegistry.createWidget(TARGET_INSTALL, installerConfiguration)];
+    const registry = AppsRegistry.fromJS([{ manifest: installerManifest, settings: {} }], config);
+    const widgetsConfigList = registry.getWidgetConfigByTargetType(TARGET_INSTALL);
     const context = this.createRuntimeContext();
 
     return (<DeskproAppContainer

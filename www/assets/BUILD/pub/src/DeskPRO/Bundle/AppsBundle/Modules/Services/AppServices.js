@@ -2,7 +2,6 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 
 import { WidgetDOM } from '../WidgetDOM';
 import { InstanceProxyClient, DPAPIClient } from '../HttpClients';
-import { Base64Converter } from './base64';
 import { OauthProxy } from './OauthProxy';
 
 export class AppServices {
@@ -44,18 +43,10 @@ export class AppServices {
   }
 
   /**
-   * @return {Base64Converter}
-   */
-  get base64() {
-    return new Base64Converter(this.window);
-  }
-
-  /**
    * @type {OauthProxy}
    */
   get oauthProxy()  {
     return new OauthProxy({
-      base64:     this.base64,
       appsConfig: this.props.config,
       username:   this.window.DP_PERSON_ID,
       apiToken:   this.apiToken

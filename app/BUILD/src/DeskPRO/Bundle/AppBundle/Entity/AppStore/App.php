@@ -53,7 +53,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
      * @ORM\Column(name="`manifest`", type="json_array", nullable=false)
      * @JMS\Expose()
      *
-     * @return array
+     * @var array
      */
     private $manifest;
 

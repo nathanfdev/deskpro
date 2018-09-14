@@ -6,10 +6,11 @@ export class WidgetConfiguration extends PropertyBag {
    * @param {String} id
    * @param {String} target
    * @param {AppConfiguration} appConfig
+   * @param {Object} appSettings
    * @param [undeclaredProps]
    */
-  constructor({ id, target, appConfig, ...undeclaredProps }) {
-    super({ id, target, appConfig, ...undeclaredProps });
+  constructor({ id, target, appConfig, appSettings, ...undeclaredProps }) {
+    super({ id, target, appConfig, appSettings, ...undeclaredProps });
   }
 
   /**
@@ -57,6 +58,11 @@ export class WidgetConfiguration extends PropertyBag {
    * @type {AppConfiguration}
    */
   get appConfig() { return this.props.appConfig; }
+
+  /**
+   * @type {Object}
+   */
+  get appSettings() { return this.props.appSettings; }
 
   toJS() {
     const { appConfig, ...rest } = this.props;

@@ -2,8 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import { DeskproAppContainer, LegacySidebarContainer, LegacyAppSidebar } from '../Components';
+import { DeskproAppContainer, AppsColumnContainer } from '../Components';
 import { ContainerConfiguration } from './ContainerConfiguration';
+import getSidebarState from './sidebarState';
+
+/**
+ * @return {DeskPRO.MessageBroker}
+ */
+function sendMessageLegacyMessageBroker(name, data) {
+  return window.DeskPRO_Window.getMessageBroker().sendMessage(name, data);
+}
 
 /**
  * This class mounts the react container components
@@ -34,18 +42,10 @@ class ContainerMounter {
    * @param {Object} domNode
    */
   unmountAt(context, domNode) { // eslint-disable-line no-unused-vars, class-methods-use-this
-    const configuration = ContainerConfiguration.fromDOM(domNode);
-
-    let mountRoot = null;
-    const { renderType: renderStrategy } = configuration;
-    if (renderStrategy === 'inplace') {
-      mountRoot = domNode;
-    } else if (renderStrategy === 'legacy-sidebar') {
-      mountRoot = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer).getContentRoot();
-    }
-
-    if (mountRoot) {
-      ReactDOM.unmountComponentAtNode(mountRoot);
+    if (ReactDOM.unmountComponentAtNode(domNode)) {
+      console.info(`app container unmounted from location ${context.locationId}`);
+    } else {
+      console.warn(`failed to unmount app container from location ${context.locationId}`);
     }
   }
 
@@ -63,8 +63,8 @@ class ContainerMounter {
     const { renderType: renderStrategy } = configuration;
     if (renderStrategy === 'inplace') {
       reactElement = this.renderInplace(domNode, configuration, props);
-    } else if (renderStrategy === 'legacy-sidebar') {
-      reactElement = this.renderLegacySidebar(domNode, configuration, props);
+    } else if (renderStrategy === 'apps-column') {
+      reactElement = this.renderAppsColumn(domNode, configuration, props);
     }
 
     if (!reactElement) {
@@ -77,18 +77,16 @@ class ContainerMounter {
 
   /**
    * @param dom
-   * @param {ContainerConfiguration} config
+   * @param {ContainerConfiguration} configuration
    * @param {Object} props
    * @return {XML}
    */
-  renderInplace = (dom, config, props) => {
-    const reactContainer = dom;
+  renderInplace = (dom, configuration, props) => { // eslint-disable-line no-unused-vars
     const appContainer = React.createElement(DeskproAppContainer, props);
     const { reduxStore } = this;
 
     const reactElement = <Provider store={reduxStore}>{ appContainer }</Provider>;
-    ReactDOM.render(reactElement, reactContainer);
-
+    ReactDOM.render(reactElement, dom);
 
     return reactElement;
   };
@@ -99,14 +97,13 @@ class ContainerMounter {
    * @param {Object} props
    * @return {XML}
    */
-  renderLegacySidebar = (dom, configuration, props) => {
+  renderAppsColumn = (dom, configuration, props) => { // eslint-disable-line no-unused-vars
     const { reduxStore } = this;
-    const reactContainer = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer).getContentRoot();
 
-    const container = React.createElement(LegacySidebarContainer, { ...props, configuration });
+    const container = React.createElement(AppsColumnContainer, { ...props, getSidebarState, sendMessageLegacyMessageBroker });
     const reactElement = <Provider store={reduxStore}>{ container }</Provider>;
 
-    ReactDOM.render(reactElement, reactContainer);
+    ReactDOM.render(reactElement, dom);
     return reactElement;
   };
 }

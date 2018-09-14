@@ -1,10 +1,8 @@
 import { PropertyBag } from '../Domain';
 
 const configPropertiesToAttributesMap = {
-  type:                   'data-deskproapp',
-  renderType:             'data-deskproapp-render',
-  renderSidebarContainer: 'data-deskproapp-render-sidebar',
-  renderIconsContainer:   'data-deskproapp-render-icons',
+  type:       'data-deskproapp',
+  renderType: 'data-deskproapp-render'
 };
 
 const defaultValues = {

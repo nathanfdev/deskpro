@@ -163,6 +163,7 @@ class AppsController extends BaseController
      * @param Entity\AppStore\AppInstance $application
      *
      * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function updateAppAction(Entity\AppStore\AppInstance $application = null, Request $request)
     {
@@ -175,6 +176,13 @@ class AppsController extends BaseController
         $representation = json_decode($body, $associative = true);
 
         $properties = [
+            'settings' => function (Entity\AppStore\AppInstance $app, $value) {
+                if (is_array($value)) {
+                    $app->setSettings($value);
+                    return true;
+                }
+                return false;
+            },
             'is_installed' => function (Entity\AppStore\AppInstance $app, $value) {
                 if (is_bool($value)) {
                     $app->setIsInstalled($value);

@@ -4,7 +4,7 @@ import { ContextProps } from './WidgetProps';
 export class Context {
 
   /**
-   * @param {Object}props
+   * @param {Object} props
    * @return {Context}
    */
   static fromProps(props) { return new Context(props); }
@@ -14,12 +14,13 @@ export class Context {
    * @param {String} type
    * @param {String} entityId
    * @param {String} locationId
+   * @param {String} pageId
    * @param {String} tabId
    * @param {String} tabUrl
    * @param {Object} undeclaredProps
    */
-  constructor({ id, type, entityId, locationId, tabId, tabUrl, ...undeclaredProps }) {
-    const props = { id, type, entityId, locationId, tabId, tabUrl, ...undeclaredProps };
+  constructor({ id, type, entityId, locationId, pageId, tabId, tabUrl, ...undeclaredProps }) {
+    const props = { id, type, entityId, locationId, pageId, tabId, tabUrl, ...undeclaredProps };
     this.props = Immutable.fromJS(props);
   }
 
@@ -52,6 +53,13 @@ export class Context {
    *
    * @return {String}
    */
+  get pageId() { return this.props.get('pageId'); }
+
+  /**
+   * The id of the UI Tab that displays this context
+   *
+   * @return {String}
+   */
   get tabId() { return this.props.get('tabId'); }
 
   /**
@@ -60,6 +68,7 @@ export class Context {
    * @return {String}
    */
   get tabUrl() { return this.props.get('tabUrl'); }
+
 
   get widgetProps() {
     const propsJS = this.props.toJS();
