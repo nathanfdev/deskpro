@@ -1,0 +1,7 @@
+services:
+  validator.dpql_query:
+    class: DeskPRO\Bundle\ReportBundle\Validator\Constraints\DpqlQueryValidator
+    arguments:
+    - "@reports.dashboard_widget.service"
+    tags:
+    - { name: validator.constraint_validator }
