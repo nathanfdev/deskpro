@@ -1,0 +1,47 @@
+services:
+
+  api_serializer.handler.report_dashboard:
+    class: DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity\ReportDashboardHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.report_dashboard_report:
+    class: DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity\ReportDashboardReportHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.report_dashboard_widget:
+    class: DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity\ReportDashboardWidgetHandler
+    arguments:
+      - "@reports.dashboard_widget.service"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.report_dashboard_shareable_link:
+    class: DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity\ReportDashboardShareableLinkHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.report_dashboard_shareable_short_url:
+    class: DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity\ReportDashboardShareableShortUrlHandler
+    arguments:
+      - "@router"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.report_widget:
+    class: DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity\ReportWidgetHandler
+    arguments:
+      - "@dpql.compiler"
+      - "@reports.renderer_registry"
+      - "@deskpro.core.translate"
+      - "@reports.dashboard_widget.service"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
