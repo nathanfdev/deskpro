@@ -3,7 +3,7 @@
 return [
     'agent.emails.newagent-help'                              => 'Hvis du har brug for hjælp eller har spørgsmål, kan du søger yderligere på deskpro support side <a href="https://support.deskpro.com/"> https://support.deskpro.com/ </a> eller kontakt os direkte på <a href="mailto:support@deskpro.com"> support@deskpro.com </a>.',
     'agent.emails.newagent-login-your-password'               => 'Bemærk: Du har allerede en brugerkonto på denne helpdesk. Du kan logge ind som en agent ved hjælp af den samme adgangskode, du oprettet før.',
-    'agent.emails.newagent-welcome-to-deskpro'                => 'Velkommen til Deskpro!',
+    'agent.emails.newagent-welcome-to-deskpro'                => 'Velkommen til DeskPRO!',
     'agent.emails.notice.landing_page'                        => 'Side',
     'agent.emails.notice.referer_page'                        => 'Reference side',
     'agent.emails.notice.user_agent'                          => 'Sagsbehandler',
@@ -13,7 +13,7 @@ return [
     'agent.emails.subject_error_forwarded_email'              => 'Fejl med din videresendte email: {{subject}}',
     'agent.emails.subject_error_forwarded_email_dupe'         => 'Duplikat videresendt email: {{subject}}',
     'agent.emails.subject_error_with_reply'                   => 'Fejl med dit svar til: {{subject}}',
-    'agent.emails.subject_new_agent'                          => 'Din nye Deskpro helpdesk agentkonto',
+    'agent.emails.subject_new_agent'                          => 'Din nye DeskPRO helpdesk agentkonto',
     'agent.emails.task_assigned_team_due_today'               => 'Opgaven {{title}}, der er tildelt dit team, skal behandles i dag.',
     'agent.emails.task_assigned_to_you_by'                    => 'Opgave {{title}} tildelt til dig af {{agent}}',
     'agent.emails.task_assigned_to_your_team_by'              => 'Opgave {{title}} blev tildelt dit team af {{agent}}',

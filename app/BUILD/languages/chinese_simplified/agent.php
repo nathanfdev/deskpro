@@ -203,7 +203,7 @@ return [
     'agent.emails.fwd_resend_without_fwd'               => '如果您不想为用户创建新来单，您可以重发邮件在主题栏不带‘FW:’或者\'FWD:\'前缀。这样会由您创建一个新的帮助请求。',
     'agent.emails.invalid_fwd_email_address'            => '但是我们从用户的原始消息<b>无法验证邮箱地址</b>。你需要检查您的邮件客户端已添加邮箱地址到消息。一些客户端只显示名字，您可以手动添加邮箱地址纠正此错误。',
     'agent.emails.invalid_fwd_email_parse'              => '但是，我们<b>不能够解析初始消息</b>因此不能够将转发加入到新的帮助请求。',
-    'agent.emails.invalid_fwd_try_attach'               => '如果您的电子邮件客户端支持将原始电子邮件作为附件转发，您可以尝试，而不是在线转发邮件。这种转发任务的方法更好地与Deskpro。
+    'agent.emails.invalid_fwd_try_attach'               => '如果您的电子邮件客户端支持将原始电子邮件作为附件转发，您可以尝试，而不是在线转发邮件。这种转发任务的方法更好地与DeskPRO。
 ',
     'agent.emails.login_url'                          => '登录网址',
     'agent.emails.message-is-note'                    => '下面的消息是内部的处理人记录。',
@@ -213,18 +213,18 @@ return [
     'agent.emails.new_mention_ticket_subject'         => '[#{{ticket.id}} 提到] 回复: {{ticket.subject}}',
     'agent.emails.new_note_ticket_subject'            => '[#{{ticket.id}} 标注] 回复: {{ticket.subject}}',
     'agent.emails.new_user_reply_ticket_subject'      => '[#{{ticket.id}} 用户回复] 回复: {{ticket.subject}}',
-    'agent.emails.newagent-about'                     => 'Deskpro是您所在的组织正在使用的帮助系统软件。',
-    'agent.emails.newagent-about-cloud'               => '您所在的组织使用的Deskpro是一款云托管帮助系统软件。',
-    'agent.emails.newagent-about-cloud-demo'          => 'Deskpro是一款您所在的组织正在试用的云托管帮助系统软件。',
-    'agent.emails.newagent-about-demo'                => 'Deskpro是您所在的组织正在进行测试的帮助系统软件。',
-    'agent.emails.newagent-about-pdf'                 => '我们写了一本快速指南包括作为一名处理人你需要知道的重要的事情。找到附件，"Deskpro入门.pdf"。',
-    'agent.emails.newagent-created-account'           => '您的同事{{admin_name}}{{admin_email}}已经为您在<a href="{{helpdesk_url}}">{{helpdesk_url}}</a>创建了Deskpro账户。',
-    'agent.emails.newagent-help'                      => '如果您需要任何帮助或有任何问题，请访问Deskpro支持网站，网址为 <a href="https://support.deskpro.com/"> https://support.deskpro.com/ </a>或联系我们直接在<a href="mailto:support@deskpro.com"> support@deskpro.com </a> 。',
+    'agent.emails.newagent-about'                     => 'DeskPRO是您所在的组织正在使用的帮助系统软件。',
+    'agent.emails.newagent-about-cloud'               => '您所在的组织使用的DeskPRO是一款云托管帮助系统软件。',
+    'agent.emails.newagent-about-cloud-demo'          => 'DeskPRO是一款您所在的组织正在试用的云托管帮助系统软件。',
+    'agent.emails.newagent-about-demo'                => 'DeskPRO是您所在的组织正在进行测试的帮助系统软件。',
+    'agent.emails.newagent-about-pdf'                 => '我们写了一本快速指南包括作为一名处理人你需要知道的重要的事情。找到附件，"DeskPRO入门.pdf"。',
+    'agent.emails.newagent-created-account'           => '您的同事{{admin_name}}{{admin_email}}已经为您在<a href="{{helpdesk_url}}">{{helpdesk_url}}</a>创建了DeskPRO账户。',
+    'agent.emails.newagent-help'                      => '如果您需要任何帮助或有任何问题，请访问DeskPRO支持网站，网址为 <a href="https://support.deskpro.com/"> https://support.deskpro.com/ </a>或联系我们直接在<a href="mailto:support@deskpro.com"> support@deskpro.com </a> 。',
     'agent.emails.newagent-login-initial-password'    => '您的初始密码：{{password}}',
     'agent.emails.newagent-login-link'                => '您可以在这里登陆',
     'agent.emails.newagent-login-your-email'          => '您的电子邮件地址',
     'agent.emails.newagent-login-your-password'       => '注意：您已经在此帮助平台上有一个用户帐户。您可以使用之前设置的密码登录为代理。',
-    'agent.emails.newagent-welcome-to-deskpro'        => '欢迎来到Deskpro！',
+    'agent.emails.newagent-welcome-to-deskpro'        => '欢迎来到DeskPRO！',
     'agent.emails.notice.first_seen'                  => '首先看到',
     'agent.emails.notice.landing_page'                => '登录页面',
     'agent.emails.notice.referer_page'                => '引荐来源网页',
@@ -243,7 +243,7 @@ return [
     'agent.emails.subject_error_forwarded_email_dupe' => '重复的转寄电子邮件：{{subject}}',
     'agent.emails.subject_error_with_message'         => '您的讯息有误：{{subject}}',
     'agent.emails.subject_error_with_reply'           => '您的讯息有误：{{subject}}',
-    'agent.emails.subject_new_agent'                  => '您的新Deskpro帮助台帐户',
+    'agent.emails.subject_new_agent'                  => '您的新DeskPRO帮助台帐户',
     'agent.emails.subject_new_ticket'                 => '新来单',
     'agent.emails.subject_new_ticket_assigned'        => '[#{{ticket.id}} 新的来单 + 已指派] {{ticket.subject}}',
     'agent.emails.subject_new_ticket_assignedteam'    => '[#{{ticket.id}} 新来单 + 已指派的团队] {{ticket.subject}}',
@@ -548,7 +548,7 @@ return [
     'agent.general.department'                       => '部门',
     'agent.general.departments'                      => '部门',
     'agent.general.description'                      => '说明',
-    'agent.general.deskpro'                          => 'Deskpro',
+    'agent.general.deskpro'                          => 'DeskPRO',
     'agent.general.detail'                           => '细节',
     'agent.general.details'                          => '细节',
     'agent.general.dev_validating'                   => 'DEV: Validating',
@@ -572,7 +572,7 @@ return [
     'agent.general.download_pdf'                     => '下载PDF',
     'agent.general.download_url'                     => '下载网址',
     'agent.general.downloads'                        => '下载',
-    'agent.general.dp_updates'                       => 'Deskpro更新',
+    'agent.general.dp_updates'                       => 'DeskPRO更新',
     'agent.general.drop_here_to_attach'              => '将您的文件放到这里以添加到您的回复',
     'agent.general.drop_here_to_insert_image'        => '将您的<strong>图片</strong>放到这里插入您的回复',
     'agent.general.drop_here_to_upload'              => '将您的文件放到这里上传新的图片',
@@ -1270,7 +1270,7 @@ return [
 ',
     'agent.interface.create_ticket_person'    => '为人创建来单',
     'agent.interface.creation'                => '创造',
-    'agent.interface.deskpro_agent_interface' => 'Deskpro 代理界面',
+    'agent.interface.deskpro_agent_interface' => 'DeskPRO 代理界面',
     'agent.interface.deskpro_website_host'    => 'www.deskpro.com',
     'agent.interface.error_report_disclaimer' => '请注意，我们不会回复所有错误报告。如果您有关于此错误的问题或需要回复，请通过{{email}}与我们联系
 ',
@@ -1339,7 +1339,7 @@ return [
     'agent.interface.powered_by' => '技术支持
 ',
     'agent.interface.quick-search-placeholder'     => '搜索',
-    'agent.interface.report_this_error_to_deskpro' => '将此错误报告给Deskpro
+    'agent.interface.report_this_error_to_deskpro' => '将此错误报告给DeskPRO
 ',
     'agent.interface.search_for_text_or_a_phrase' => '搜索文本或短语
 ',
@@ -1409,13 +1409,13 @@ return [
 ',
     'agent.login.has_logged_out' => '您已成功注销。
 ',
-    'agent.login.ie_compat_mode_explain' => 'Some versions of IE have a feature called Compatibility Mode meant to make old websites work with the newest browser technology. Sometimes this feature can be turned on erroneously. If you are using IE8 or IE9 but you still see the browser requirements page, it is probable that Compatibility Mode is enabled. To use Deskpro you need to disable this feature:
+    'agent.login.ie_compat_mode_explain' => 'Some versions of IE have a feature called Compatibility Mode meant to make old websites work with the newest browser technology. Sometimes this feature can be turned on erroneously. If you are using IE8 or IE9 but you still see the browser requirements page, it is probable that Compatibility Mode is enabled. To use DeskPRO you need to disable this feature:
 ',
     'agent.login.ie_compat_mode_step1' => '如果“工具”菜单尚未显示，请按键盘上的Alt键显示主菜单
 ',
     'agent.login.ie_compat_mode_step2' => '从工具菜单中选择兼容性视图设置
 ',
-    'agent.login.ie_compat_mode_step3' => '确保您的帮助台URL不在列表中。如果是，单击它，然后单击删除按钮。还要确保“在兼容性视图中显示所有网站”已禁用。如果您在内部网中使用Deskpro，则还必须取消选中其他选项“在兼容性视图中显示内联网站点”。
+    'agent.login.ie_compat_mode_step3' => '确保您的帮助台URL不在列表中。如果是，单击它，然后单击删除按钮。还要确保“在兼容性视图中显示所有网站”已禁用。如果您在内部网中使用DeskPRO，则还必须取消选中其他选项“在兼容性视图中显示内联网站点”。
 ',
     'agent.login.ie_compat_mode_step4' => '关闭此窗口并刷新页面
 ',
@@ -1427,7 +1427,7 @@ return [
 ',
     'agent.login.mozilla_firefox' => '火狐浏览器
 ',
-    'agent.login.notice_outdated_browser' => '管理界面和代理界面需要一个新的浏览器。我们检测到您的浏览器太旧，无法使用Deskpro。将浏览器升级到最新版本，或尝试下载其他浏览器。
+    'agent.login.notice_outdated_browser' => '管理界面和代理界面需要一个新的浏览器。我们检测到您的浏览器太旧，无法使用DeskPRO。将浏览器升级到最新版本，或尝试下载其他浏览器。
 ',
     'agent.login.opera'              => '歌剧',
     'agent.login.password_was_reset' => '您的密码已成功重置。
@@ -1735,7 +1735,7 @@ return [
     'agent.settings.desktop_notifs_enable'            => '启用桌面通知',
     'agent.settings.desktop_notifs_explicit_disabled' => '已明确停用桌面通知。 必须通过浏览器本身为此域启用。',
     'agent.settings.desktop_notifs_test'              => '生成测试通知',
-    'agent.settings.done_start_using'                 => '完成后，开始使用Deskpro',
+    'agent.settings.done_start_using'                 => '完成后，开始使用DeskPRO',
     'agent.settings.drop_here_insert_signature'       => '请在此处拖出<strong>图片</ strong>，将其插入签名中',
     'agent.settings.edit_filter'                      => '编辑我的分类',
     'agent.settings.edit_macro'                       => '编辑宏大的',
@@ -1810,8 +1810,8 @@ return [
     'agent.settings.title_ticket_notifs'              => '来单通知',
     'agent.settings.twitter_signature'                => 'Twitter签名',
     'agent.settings.twitter_signature_desc'           => '您写的任何tweets将登出与此。 保持简短。',
-    'agent.settings.welcome_to_deskpro'               => '欢迎来到Deskpro',
-    'agent.settings.welcome_to_deskpro_name'          => '欢迎来到Deskpro{{name}}',
+    'agent.settings.welcome_to_deskpro'               => '欢迎来到DeskPRO',
+    'agent.settings.welcome_to_deskpro_name'          => '欢迎来到DeskPRO{{name}}',
     'agent.settings.your_current_picture'             => '您当前的图片',
     'agent.snippets.add_snippet'                      => '添加代码段',
     'agent.snippets.all_snippets'                     => '所有代码段',

@@ -197,7 +197,7 @@ return [
     'portal.downloads.download'                             => 'Télécharger',
     'portal.downloads.search-title'                         => 'Téléchargements',
     'portal.downloads.section-title'                        => 'Téléchargements',
-    'portal.downloads.view-as-agent'                        => 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs normaux ne peuvent pas voir cette page.',
+    'portal.downloads.view-as-agent'                        => 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs ne peuvent pas voir cette page.',
     'portal.email_subjects.chat_transcript'                 => 'Transcription du Chat',
     'portal.email_subjects.comment-approved'                => 'Votre commentaire a été approuvé',
     'portal.email_subjects.comment-confirmation'            => 'Merci pour votre commentaire',

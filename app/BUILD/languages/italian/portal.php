@@ -897,7 +897,7 @@ return [
     'user.error.permission-denied-title'                    => 'Non puoi fare questo',
     'user.error.server-error'                               => 'C\'è stato un errore del server che ha impedito il caricamento della pagina. Prova ancora.',
     'user.feedback.submit_feedback'                         => 'Invia feedback',
-    'user.general.deskpro'                                  => 'Deskpro',
+    'user.general.deskpro'                                  => 'DeskPRO',
     'user.general.helpdesk_by'                              => 'Helpdesk software di <strong>{{deskpro}}</strong>',
     'user.general.label_captcha'                            => 'Codice di Conferma',
     'user.general.page'                                     => 'Pagina',

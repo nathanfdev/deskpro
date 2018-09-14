@@ -897,7 +897,7 @@ return [
     'user.error.permission-denied-title'                    => 'Nie masz uprawnień do tego działania',
     'user.error.server-error'                               => 'Przepraszamy, ale wystąpił błąd serwera, który uniemożliwił załadowanie strony. Spróbuj ponownie.',
     'user.feedback.submit_feedback'                         => 'Wyślij opinię',
-    'user.general.deskpro'                                  => 'Deskpro',
+    'user.general.deskpro'                                  => 'DeskPRO',
     'user.general.helpdesk_by'                              => 'Oprogramowanie Helpdesk od <strong>{{deskpro}}</strong>',
     'user.general.label_captcha'                            => 'Kod potwierdzenia',
     'user.general.page'                                     => 'Strona',
