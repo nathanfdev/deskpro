@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\ReportDashboard as ReportDashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardPermission;

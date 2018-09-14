@@ -1,12 +1,11 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportWidget as ReportWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
@@ -14,6 +13,7 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
+use DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportWidget as ReportWidgetModel;
 use DpSys\LowError\SystemErrorHandler;
 
 /**

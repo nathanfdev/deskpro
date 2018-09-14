@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Entity\Report;
+namespace DeskPRO\Bundle\ReportBundle\Entity;
 
 use Application\Deskpro\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport;

@@ -1,12 +1,12 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboard as ReportDashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardReport as ReportDashboardReportEntity;
-use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
+use DeskPRO\Bundle\ReportBundle\Entity\ScheduledReport;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -52,7 +52,7 @@ class ReportDashboardReport
     private $variables;
 
     /**
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport")
+     * @JMS\Type("DeskPRO\Bundle\ReportBundle\Entity\ScheduledReport")
      *
      * @var ScheduledReport
      */

@@ -240,15 +240,24 @@ white_october_pagerfanta:
         not_valid_current_page:   to_http_not_found
 
 doctrine:
-     orm:
-         dql:
-             datetime_functions:
-                 date: DoctrineExtensions\Query\Mysql\Date
+  orm:
+    entity_managers:
+      default:
+        dql:
+          datetime_functions:
+            date: DoctrineExtensions\Query\Mysql\Date
 
-             string_functions:
-                 field: DoctrineExtensions\Query\Mysql\Field
-                 group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
-                 regexp: DoctrineExtensions\Query\Mysql\Regexp
+          string_functions:
+            field: DoctrineExtensions\Query\Mysql\Field
+            group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
+            regexp: DoctrineExtensions\Query\Mysql\Regexp
+
+        mappings:
+          ReportBundle:
+            type: 'annotation'
+            is_bundle: false
+            dir: '%kernel.root_dir%/../src/DeskPRO/Bundle/ReportBundle/Entity'
+            prefix: 'DeskPRO\Bundle\ReportBundle\Entity'
 
 
 #rms_push_notifications:

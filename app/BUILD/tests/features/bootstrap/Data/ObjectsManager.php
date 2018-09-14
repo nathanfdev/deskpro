@@ -101,7 +101,6 @@ use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomTicketFieldDefinitionAlias;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
@@ -121,6 +120,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
+use DeskPRO\Bundle\ReportBundle\Entity\ScheduledReport;
 use Doctrine\ORM\EntityManager;
 
 /**

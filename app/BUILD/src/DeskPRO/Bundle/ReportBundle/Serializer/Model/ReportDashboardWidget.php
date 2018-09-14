@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\ReportDashboardWidget as ReportDashboardWidgetEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;

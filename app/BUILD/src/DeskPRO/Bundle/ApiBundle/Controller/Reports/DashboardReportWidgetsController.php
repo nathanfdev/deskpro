@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *
  * @ApiModes("all")
  * @Rest\Route("/dashboard_report_widgets")
- * @ApiDoc(target="all", section="Reports", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardWidget")
+ * @ApiDoc(target="all", section="Reports", output="DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportDashboardWidget")
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={

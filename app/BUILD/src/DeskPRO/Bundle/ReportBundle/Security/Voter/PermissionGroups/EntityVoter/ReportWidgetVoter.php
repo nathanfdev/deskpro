@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Security\Voter\PermissionGroups\EntityVoter;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;

@@ -1,13 +1,13 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\ReportDashboardWidget as ReportDashboardWidgetEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardWidget as ReportDashboardWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
+use DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportDashboardWidget as ReportDashboardWidgetModel;
 
 /**
  * Class ReportDashboardWidgetHandler.

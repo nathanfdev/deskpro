@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
+use DeskPRO\Bundle\ReportBundle\Entity\ScheduledReport;
 use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleBimonthlyType;
 use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleDailyType;
 use DeskPRO\Bundle\ReportBundle\Form\Type\ScheduleTime\ScheduleMonthlyType;

@@ -1,0 +1,7 @@
+services:
+  deskpro.features.new_reports:
+    class: DeskPRO\Bundle\ReportBundle\Features\NewReportsFeature
+    arguments:
+    - "@settings_resolver"
+    tags:
+    - { name: deskpro.feature }

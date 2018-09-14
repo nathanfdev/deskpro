@@ -28,7 +28,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  *
  * @ApiModes("all")
  * @Rest\Route("/report_widgets")
- * @ApiDoc(target="all", section="Reports", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportWidget")
+ * @ApiDoc(target="all", section="Reports", output="DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportWidget")
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={

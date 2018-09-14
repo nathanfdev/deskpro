@@ -1,13 +1,13 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\ReportDashboardShareableLink as ReportDashboardShareableLinkEntity;
 use Application\DeskPRO\Entity\ReportDashboardShareableShortUrl;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardShareableLink as ReportDashboardShareableLinkModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportDashboardShareableLink as ReportDashboardShareableLinkModel;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;

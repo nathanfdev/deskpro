@@ -1,14 +1,14 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboard as ReportDashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardReport as ReportDashboardReportEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboard as ReportDashboardModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportDashboard as ReportDashboardModel;
 use Doctrine\ORM\EntityManager;
 
 /**

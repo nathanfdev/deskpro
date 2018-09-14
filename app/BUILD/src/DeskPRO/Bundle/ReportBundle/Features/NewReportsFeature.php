@@ -1,6 +1,8 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Features;
+namespace DeskPRO\Bundle\ReportBundle\Features;
+
+use DeskPRO\Bundle\AppBundle\Features\AbstractBetaFeature;
 
 class NewReportsFeature extends AbstractBetaFeature
 {
