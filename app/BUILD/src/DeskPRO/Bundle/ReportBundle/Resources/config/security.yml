@@ -1,0 +1,28 @@
+services:
+  security.voter.permission_groups.report_dashboard:
+    class: DeskPRO\Bundle\ReportBundle\Security\Voter\PermissionGroups\EntityVoter\ReportDashboardVoter
+    arguments:
+    - "@doctrine.orm.default_entity_manager"
+    tags:
+    - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.report_dashboard_report:
+    class: DeskPRO\Bundle\ReportBundle\Security\Voter\PermissionGroups\EntityVoter\ReportDashboardReportVoter
+    arguments:
+    - "@doctrine.orm.default_entity_manager"
+    tags:
+    - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.report_dashboard_widget:
+    class: DeskPRO\Bundle\ReportBundle\Security\Voter\PermissionGroups\EntityVoter\ReportDashboardWidgetVoter
+    arguments:
+    - "@doctrine.orm.default_entity_manager"
+    tags:
+    - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.report_widget:
+    class: DeskPRO\Bundle\ReportBundle\Security\Voter\PermissionGroups\EntityVoter\ReportWidgetVoter
+    arguments:
+    - "@doctrine.orm.default_entity_manager"
+    tags:
+    - { name: security.voter.permission_groups }
