@@ -897,7 +897,7 @@ return [
     'user.error.permission-denied-title'                    => 'Dit is niet toegestaan',
     'user.error.server-error'                               => 'Excuses, er is een serverfout opgetreden die heeft voorkomen dat de pagina wordt geladen. Probeer het opnieuw.',
     'user.feedback.submit_feedback'                         => 'Feedback verzenden',
-    'user.general.deskpro'                                  => 'Deskpro',
+    'user.general.deskpro'                                  => 'DeskPRO',
     'user.general.helpdesk_by'                              => 'Helpdesk software door <strong>{{deskpro}}</strong>',
     'user.general.label_captcha'                            => 'Bevestigingscode',
     'user.general.page'                                     => 'Pagina',

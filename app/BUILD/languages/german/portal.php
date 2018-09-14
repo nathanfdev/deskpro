@@ -897,7 +897,7 @@ return [
     'user.error.permission-denied-title'                    => 'Sie sind nicht berechtigt, dies zu tun',
     'user.error.server-error'                               => 'Es tut uns leid, aber durch einen Server-Fehler konnte die Seite nicht geladen werden. Bitte versuchen Sie es erneut.',
     'user.feedback.submit_feedback'                         => 'Feedback abgeben',
-    'user.general.deskpro'                                  => 'Deskpro',
+    'user.general.deskpro'                                  => 'DeskPRO',
     'user.general.helpdesk_by'                              => 'Helpdesk Software von <strong>{{deskpro}}</strong>',
     'user.general.label_captcha'                            => 'Bestätigungscode',
     'user.general.page'                                     => 'Seite',

@@ -897,7 +897,7 @@ return [
     'user.error.permission-denied-title'                    => 'Det er ikke tilladt, at gøre som du gør',
     'user.error.server-error'                               => 'Beklager, men der var en serverfejl, der forhindrede siden i at indlæse. Prøv igen.',
     'user.feedback.submit_feedback'                         => 'Send indlæg',
-    'user.general.deskpro'                                  => 'Deskpro',
+    'user.general.deskpro'                                  => 'DeskPRO',
     'user.general.helpdesk_by'                              => 'Helpdesk software fra <strong>{{deskpro}}</strong>',
     'user.general.label_captcha'                            => 'Kode til bekræftelse',
     'user.general.page'                                     => 'Side',

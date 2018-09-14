@@ -897,7 +897,7 @@ return [
     'user.error.permission-denied-title'                    => 'Bạn không được phép làm điều đó',
     'user.error.server-error'                               => 'Rất tiếc, đã xảy ra lỗi máy chủ khiến trang không tải. Vui lòng thử lại.',
     'user.feedback.submit_feedback'                         => 'Gửi phản hồi',
-    'user.general.deskpro'                                  => 'Deskpro',
+    'user.general.deskpro'                                  => 'DeskPRO',
     'user.general.helpdesk_by'                              => 'Phần mềm Helpdesk bởi <strong>{{deskpro}}</strong>',
     'user.general.label_captcha'                            => 'Mã xác nhận',
     'user.general.page'                                     => 'Trang',

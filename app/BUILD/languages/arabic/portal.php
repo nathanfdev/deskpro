@@ -181,7 +181,7 @@ return [
     'portal.chat.sent_validation_code'                      => 'ارسلنا لك بريداً برمز التحقق',
     'portal.chat.start'                                     => 'ابدأ محادثة جديدة',
     'portal.chat.start_conversation'                        => 'ابدأ حوارا جديداً',
-    'portal.chat.support_powered_by'                        => 'الدعم الفني مُقدم من {{Deskpro}}',
+    'portal.chat.support_powered_by'                        => 'الدعم الفني مُقدم من {{DeskPRO}}',
     'portal.chat.take_chat'                                 => 'استقبل محادثة',
     'portal.chat.taken_by'                                  => 'الذي أجرى المحادثة هو',
     'portal.chat.transcript_action'                         => 'ارسل لي كشف',

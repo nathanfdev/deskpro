@@ -897,7 +897,7 @@ return [
     'user.error.permission-denied-title'                    => 'Du är inte tillåten att göra detta',
     'user.error.server-error'                               => 'Ett serverfel förhindrade sidan att laddas. Var vänlig och försök igen.',
     'user.feedback.submit_feedback'                         => 'Posta feedback',
-    'user.general.deskpro'                                  => 'Deskpro',
+    'user.general.deskpro'                                  => 'DeskPRO',
     'user.general.helpdesk_by'                              => 'Mjukvara av <strong>{{deskpro}}</strong>',
     'user.general.label_captcha'                            => 'Bekräftelsekod',
     'user.general.page'                                     => 'Sida',
