@@ -245,7 +245,7 @@ END)
                         case 'datetime':
                             $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
 
-                            if ($section === 'where' && $stack[0]->rhs instanceof StringPart &&
+                            if ($section === 'where' && isset($stack[0]->rhs) && $stack[0]->rhs instanceof StringPart &&
                                 $statement->getDpqlContextStorage()->getMode() === DpqlContextStorage::MODE_RUN) {
                                 $date = new \DateTime($stack[0]->rhs->string);
                                 $date->modify(($tzOffsetSeconds >= 0 ? '-'.$tzOffsetSeconds : '+'.-$tzOffsetSeconds).' seconds');
