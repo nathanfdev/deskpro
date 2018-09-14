@@ -75,7 +75,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this.ownObject(this.miscContent);
 
 		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
-			triggerElement: '.who-voted-trigger',
+			triggerElement: $('.who-voted-trigger', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
 				url: BASE_URL + 'agent/publish/rating-who-voted/news/' + this.meta.news_id

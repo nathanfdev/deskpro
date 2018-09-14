@@ -74,7 +74,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.ownObject(this.relatedContent);
 
 		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
-			triggerElement: '.who-voted-trigger',
+			triggerElement: $('.who-voted-trigger', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
 				url: BASE_URL + 'agent/publish/rating-who-voted/article/' + this.meta.article_id
@@ -83,7 +83,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.ownObject(this.whoVotedOverlay);
 
 		this.whoViewedOverlay = new DeskPRO.UI.Overlay({
-			triggerElement: '.open-who-viewed',
+			triggerElement: $('.open-who-viewed', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
 				url: BASE_URL + 'agent/publish/who-viewed/1/' + this.meta.article_id

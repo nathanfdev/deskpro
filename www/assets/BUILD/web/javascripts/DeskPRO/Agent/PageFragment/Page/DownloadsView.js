@@ -76,7 +76,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.ownObject(this.miscContent);
 
 		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
-			triggerElement: '.who-voted-trigger',
+			triggerElement: $('.who-voted-trigger', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
 				url: BASE_URL + 'agent/publish/rating-who-voted/download/' + this.meta.download_id
@@ -85,7 +85,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.ownObject(this.whoVotedOverlay);
 
 		this.whoViewedOverlay = new DeskPRO.UI.Overlay({
-			triggerElement: '.open-who-viewed',
+			triggerElement: $('.open-who-viewed', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
 				url: BASE_URL + 'agent/publish/who-viewed/2/' + this.meta.download_id
@@ -94,7 +94,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		this.ownObject(this.whoViewedOverlay);
 
 		this.whoDownloadedOverlay = new DeskPRO.UI.Overlay({
-			triggerElement: '.open-who-downloaded',
+			triggerElement: $('.open-who-downloaded', this.wrapper),
 			contentMethod: 'ajax',
 			contentAjax: {
 				url: BASE_URL + 'agent/publish/who-viewed/2/' + this.meta.download_id + '/2'
