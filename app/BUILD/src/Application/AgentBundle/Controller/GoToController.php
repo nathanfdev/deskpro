@@ -46,9 +46,9 @@ class GoToController extends AbstractController
     {
         /** @var Ticket $ticket */
         $ticket = $this->getDoctrine()->getRepository(Ticket::class)->find($id);
-        if (!$ticket) {
+        if (! $ticket instanceof Ticket) {
             $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketRef($id);
-            if (!$ticket) {
+            if (! $ticket instanceof Ticket) {
                 throw $this->createNotFoundException();
             }
         }
@@ -65,7 +65,7 @@ class GoToController extends AbstractController
     {
         /** @var Ticket $ticket */
         $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketRef($ref);
-        if (!$ticket) {
+        if (! $ticket instanceof Ticket) {
             $this->createNotFoundException();
         }
 
