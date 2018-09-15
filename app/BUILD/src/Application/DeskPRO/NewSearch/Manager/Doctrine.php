@@ -3,60 +3,91 @@
 namespace Application\DeskPRO\NewSearch\Manager;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\NewSearch\Manager\Traits\ExtractsMatchersFromQuery;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
-use Symfony\Component\DependencyInjection\ContainerAware;
 
 /**
  * Doctrine Search Manager.
  */
-class Doctrine extends ContainerAware implements SearchManagerInterface
+class Doctrine extends AbstractSearchManager implements SearchManagerInterface
 {
-    use SearchesTicketByUrlTrait;
+    use ExtractsMatchersFromQuery;
 
     /**
-     * Entity Manager.
-     *
-     * @var \Doctrine\ORM\EntityManager
+     * @param null|string $query
+     * @param null|string $sort
+     * @param array       $limitTypes
+     * @return array|mixed
      */
-    protected $em;
-
-    /**
-     * The currently logged in person.
-     *
-     * @var \Application\DeskPRO\Entity\Person
-     */
-    protected $person;
-
-    /**
-     * DeskPRO settings.
-     *
-     * @var
-     */
-    protected $settings;
-
-    /**
-     * @param $q
-     * @return bool|array
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\ORMInvalidArgumentException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \Doctrine\ORM\TransactionRequiredException
-     */
-    public function quickSearch($q)
+    public function quickSearch($query = null, $sort = null, array $limitTypes = [])
     {
-        $type_to_ent = [
-            'article'           => 'DeskPRO:Article',
-            'download'          => 'DeskPRO:Download',
-            'feedback'          => 'DeskPRO:Feedback',
-            'news'              => 'DeskPRO:News',
-            'ticket'            => 'DeskPRO:Ticket',
-            'person'            => 'DeskPRO:Person',
-            'organization'      => 'DeskPRO:Organization',
-            'chat_conversation' => 'DeskPRO:ChatConversation',
-            'topic'             => 'DeskPRO:Topic',
-        ];
+        // check if we need to proceed
+        if (! $this->proceedWithSearch($query)) {
+            return array_map(function ($object) {
+                return [$object => []];
+            }, array_keys($this->objects));
+        }
+
+        // Check for an URL first as we don't event need elastica for it
+        $matchers = $this->extractMatchersFromQuery($query);
+        if (count($matchers) > 0) {
+            foreach ($this->extractMatchersFromQuery($query) as $matcher) {
+                // check if person has access to an object
+                if (!$this->isAllowed($matcher['object'])) {
+                    continue;
+                }
+
+                // as we operate only with ids, refs and slugs, we don't need elasticsearch here
+                $entityRepository = $this->getEntityManager()
+                    ->getRepository($this->objects[$matcher['object']]);
+
+                /**
+                 * For tickets search we use custom logic in order to utilize
+                 * findTicketRef(), SearchTicketRef() and findTicketId() methods,
+                 * and check ticket permissions for logged in user if any.
+                 *
+                 * @see AbstractSearchManager::getTicketByRefOrId()
+                 */
+                if ($matcher['object'] === 'ticket') {
+                    $this->getTicketByRefOrId($entityRepository, $matcher);
+                } else {
+                    /**
+                     * All other objects could simply found by id or slug,
+                     * so no specific logic needed here.
+                     */
+                    $entity = $entityRepository->findOneBy(
+                        [
+                            $matcher['field'] => $matcher['param']
+                        ]
+                    );
+
+                    /**
+                     * Add to results set if it's not null
+                     *
+                     * @todo: maybe better use instanceof, but this will
+                     *        require more complex workaround, so not sure
+                     *        it does matter that much to impact the timings.
+                     */
+                    if (!is_null($entity)) {
+                        $this->handleResult($matcher['object'], $entity);
+                    }
+                }
+            }
+
+            return [$this->prepareResults(), [], false];
+        }
+
+        // backward compatibility
+        // @fixme: remove after refactoring
+        $q           = $query;
+        $this->em    = $this->getEntityManager();
+        $type_to_ent = $this->objects;
+
+        // Old doctrine manager code manager
+        // @todo: badly requires rafactoring, as it's very buggy
 
         $results = [
             'article'           => [],
@@ -69,18 +100,13 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
             'chat_conversation' => [],
             'topic'             => [],
         ];
-
         if (!$this->person->hasPerm('agent_people.use')) {
             unset($type_to_ent['person']);
             unset($type_to_ent['organization']);
         }
-
         $result_meta = [];
         $people_top  = false;
 
-        if (!$q) {
-            return false;
-        }
 
         //------------------------------
         // ID based
@@ -91,9 +117,6 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
         if (preg_match('#^\[(.*?)\]$#', $q, $m)) {
             $is_label = $m[1];
         }
-
-        // Try to parse an URL, in case it's provided as a search query
-        $results['ticket'] = $this->searchTicketByUrl($q, $this->em->getRepository('DeskPRO:Ticket'));
 
         // We dont know about past ref formats, so just always try to find
         // a ref if its a valid form
@@ -415,20 +438,5 @@ class Doctrine extends ContainerAware implements SearchManagerInterface
         }
 
         return [$results, $result_meta, $people_top];
-    }
-
-    public function setPersonContext($person)
-    {
-        $this->person = $person;
-    }
-
-    public function setEntityManager($em)
-    {
-        $this->em = $em;
-    }
-
-    public function setSettings($settings)
-    {
-        $this->settings = $settings;
     }
 }
