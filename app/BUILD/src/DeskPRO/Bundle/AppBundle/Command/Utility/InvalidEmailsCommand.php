@@ -2,14 +2,13 @@
 
 namespace DeskPRO\Bundle\AppBundle\Command\Utility;
 
+use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Log\Event\EntityUpdated;
+use Application\DeskPRO\ORM\StateChange\ChangeSimple;
 use Application\DeskPRO\People\Purger;
-use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use Application\DeskPRO\EntityRepository\PersonEmail as PersonEmailRepository;
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\EntityManager;
 use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -37,6 +36,11 @@ class InvalidEmailsCommand extends ContainerAwareCommand
     private $fix = 'mark';
 
     /**
+     * @var bool
+     */
+    private $soft = false;
+
+    /**
      * Scan limit
      * @var int
      */
@@ -49,19 +53,29 @@ class InvalidEmailsCommand extends ContainerAwareCommand
     private $offset = 0;
 
     /**
+     * @var array
+     */
+    private $removedPeople = [];
+
+    /**
      * @var int
      */
     private $recordsFixed = 0;
 
     /**
-     * @var EntityManager
+     * @var \Doctrine\ORM\EntityManager
      */
     private $entityManager;
 
     /**
-     * @var Connection
+     * @var \Doctrine\DBAL\Connection
      */
     private $dbConnection;
+
+    /**
+     * @var \Application\DeskPRO\Monolog\Logger
+     */
+    private $logger;
 
     /**
      * {@inheritdoc}
@@ -98,6 +112,12 @@ class InvalidEmailsCommand extends ContainerAwareCommand
                 'How many records to process',
                 $this->limit
             )
+            ->addOption(
+                'soft',
+                'sf',
+                InputOption::VALUE_NONE,
+                'Use soft mode for person deletion'
+            )
 
             // Command --help text
             ->setHelp('Depending on the --fix option, either mark incorrect emails as invalid, or delete account')
@@ -113,12 +133,16 @@ class InvalidEmailsCommand extends ContainerAwareCommand
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
         // Get DBAL connection
-        // $this->dbConnection = $this->getContainer()->get('doctrine.dbal.default_connection');
         $this->dbConnection = $this->getContainer()->get('doctrine')->getConnection();
 
         // Get entity manager
-        //$this->entityManager = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
+
+        // Get logger
+        $this->logger = $this->getContainer()->get('deskpro.logger.changelog');
+
+        // Set soft mode
+        $this->soft = $input->getOption('soft');
     }
 
     /**
@@ -211,7 +235,10 @@ class InvalidEmailsCommand extends ContainerAwareCommand
         $io = new SymfonyStyle($input, $output);
         
         // display title
-        $io->title('Starting processing people emails');
+        $io->title(
+            'Starting processing people emails' .
+            ((true === $this->soft && $this->fix == self::FIX_DLT) ? ' (Soft Mode)' : '')
+        );
         
         // start timer
         $timerStart = microtime(true);
@@ -222,7 +249,7 @@ class InvalidEmailsCommand extends ContainerAwareCommand
         // command logic
         while (true) {
             $statement = $this->dbConnection->executeQuery('
-                SELECT e.id AS email_id, e.email, p.id AS person_id FROM people_emails e
+                SELECT e.id AS email_id, e.email, e.email_domain, p.id AS person_id FROM people_emails e
                 INNER JOIN people p ON e.person_id = p.id
                 ORDER BY p.id
                 LIMIT :limit OFFSET :offset
@@ -270,8 +297,8 @@ class InvalidEmailsCommand extends ContainerAwareCommand
         // print execution summary
         $io->newLine(2);
         $io->writeln(sprintf(
-            'Scanned %d records and %sed %d records in %.2f seconds.',
-            $recordsScanned, $this->fix, $this->recordsFixed, microtime(true) - $timerStart
+            'Scanned %d records and fixed %d records in %.2f seconds.',
+            $recordsScanned, $this->recordsFixed, microtime(true) - $timerStart
         ));
 
         return 0;
@@ -289,16 +316,19 @@ class InvalidEmailsCommand extends ContainerAwareCommand
         // get current iterator
         $record = $iterator->current();
 
-        // $output->writeln("Processing email ... {$record['email']}");
-
         // check if email is valid
         if (! StringEmail::isValueValid($record['email'])) {
-            // output info
-            $io->write("Person <info>{$record['person_id']}</info> ");
-            $io->write("-- Email <error><{$record['email']}></error> invalid ");
+            /** @var PersonEmail $personEmail */
+            $personEmail = $this->entityManager->find(
+                'DeskPRO:PersonEmail',
+                $record['email_id']
+            );
 
-            // apply fix according to command fix mode
-            $this->{$this->fix}($record, $io);
+            // check if records exists
+            if ($personEmail instanceof PersonEmail) {
+                // apply fix according to command fix mode
+                $this->{$this->fix}($personEmail, $io);
+            }
         }
 
         // return true in order to continue iterating
@@ -308,28 +338,45 @@ class InvalidEmailsCommand extends ContainerAwareCommand
     /**
      * Apply "mark: fix
      *
-     * @param array $record
+     * @param PersonEmail $personEmail
      * @param SymfonyStyle $io
      */
-    private function mark(array $record, SymfonyStyle $io)
+    private function mark(PersonEmail $personEmail, SymfonyStyle $io)
     {
+        /** @var Person $person */
+        $person = $personEmail->getPerson();
+
         // compile new email
-        $email = "person{$record['person_id']}-email{$record['email_id']}@email.invalid";
+        $email = "person{$person->getId()}-email{$personEmail->getId()}@email.invalid";
 
-        // get entity repository so we could retrieve email entity
-        /** @var PersonEmailRepository $entityRepository */
-        $entityRepository = $this->entityManager->getRepository('DeskPRO:PersonEmail');
+        // User raw query
+        $this->dbConnection->executeUpdate(
+            'UPDATE people_emails SET email = :email, email_domain = :tld WHERE id = :id',
+            [
+                'id'    => $personEmail->getId(),
+                'email' => $email,
+                'tld'   => 'email.invalid',
+            ],
+            [
+                'id'    => TYPE::INTEGER,
+                'email' => TYPE::STRING,
+                'tld'   => TYPE::STRING,
+            ]
+        );
 
-        // lookup person by it
-        /** @var PersonEmail $personEmail */
-        $personEmail = $entityRepository->find($record['email_id']);
-
-        // update email and TLD
-        $personEmail->setEmail($email);
-        $this->entityManager->persist($personEmail);
-        $this->entityManager->flush();
+        // log event
+        $logEvent = new LogEvent(
+            new EntityUpdated(
+                $person,
+                new ChangeSimple('email', $personEmail->getEmail(), $email)
+            ),
+            $person
+        );
+        $this->logger->info($logEvent);
 
         // output fix information
+        $io->write("Person <info>{$person->getId()}</info> ");
+        $io->write("-- Email <error><{$personEmail->getEmail()}></error> invalid ");
         $io->writeln("-- Updated to <comment><{$email}></comment>");
 
         // increase fixed counter
@@ -339,23 +386,92 @@ class InvalidEmailsCommand extends ContainerAwareCommand
     /**
      * Apply "delete" fix
      *
-     * @param array $record
+     * @param PersonEmail $personEmail
      * @param SymfonyStyle $io
      */
-    private function delete(array $record, SymfonyStyle $io)
+    private function delete(PersonEmail $personEmail, SymfonyStyle $io)
     {
-        // get entity repository so we could retrieve person entity
-        /** @var PersonRepository $entityRepository */
-        $entityRepository = $this->entityManager->getRepository('DeskPRO:Person');
-
-        // lookup person by it
         /** @var Person $person */
-        $person = $entityRepository->find($record['person_id']);
+        $person = $personEmail->getPerson();
 
-        // init the purger and delete the user
-        (new Purger($person, $this->entityManager))->purge();
+        // if not already removed
+        if (! in_array($person->getId(), $this->removedPeople)) {
+            // Soft or Hard delete mode
+            $method = (true === $this->soft) ? 'softDeletePerson' : 'hardDeletePerson';
+            $this->{$method}($personEmail, $io);
+        }
+    }
 
-        // output fix information// Person 1003 -- Email <foobar> invalid -- Updated to <person1003-email1055@email.invalid>
+    /**
+     * Advanced delete logic
+     *
+     * @param PersonEmail $personEmail
+     * @param SymfonyStyle $io
+     */
+    private function softDeletePerson(PersonEmail $personEmail, SymfonyStyle $io)
+    {
+        /** @var Person $person */
+        $person = $personEmail->getPerson();
+
+        if ($person->getPrimaryEmail()->getId() === $personEmail->getId()) {
+            $this->hardDeletePerson($personEmail, $io);
+
+            return;
+        }
+
+        // if this person has more than 1 email, check other
+        if ($person->emails->count() > 1) {
+            // show info
+            $io->write("Person <info>{$personEmail->getPerson()->getId()}</info> ");
+            $io->writeln("-- Primary Email <info><{$person->getPrimaryEmail()->getEmail()}></info> valid ");
+
+            $invalidEmails = $person->emails->filter(function (PersonEmail $email) {
+                return ! StringEmail::isValueValid($email->getEmail());
+            });
+
+            if (! $invalidEmails->isEmpty()) {
+                /** @var PersonEmail $invalidEmail */
+                foreach ($invalidEmails as $invalidEmail) {
+                    if ($person->getPrimaryEmail()->getId() === $invalidEmail->getId()) {
+                        $this->hardDeletePerson($personEmail, $io);
+
+                        return;
+                    }
+
+                    // delete email
+                    $this->dbConnection->delete('people_emails', ['id' => $invalidEmail->getId()]);
+
+                    // output fix information
+                    $io->write("Person <info>{$personEmail->getPerson()->getId()}</info> ");
+                    $io->write("-- Secondary Email <error><{$invalidEmail->getEmail()}></error> invalid ");
+                    $io->writeln("-- <comment>Email removed</comment>");
+
+                    $this->recordsFixed++;
+                }
+
+                return;
+            }
+        }
+    }
+
+    /**
+     * Simple delete person logic
+     *
+     * @param PersonEmail $personEmail
+     * @param SymfonyStyle $io
+     */
+    private function hardDeletePerson(PersonEmail $personEmail, SymfonyStyle $io)
+    {
+        // delete person
+        (new Purger($personEmail->getPerson(), $this->entityManager))->purge();
+
+        // add person to deleted cache
+        $this->removedPeople[] = $personEmail->getPerson()->getId();
+
+        // output fix information
+        // show info
+        $io->write("Person <info>{$personEmail->getPerson()->getId()}</info> ");
+        $io->write("-- Email <error><{$personEmail->getEmail()}></error> invalid ");
         $io->writeln("-- <error>Person deleted</error>");
 
         $this->recordsFixed++;
