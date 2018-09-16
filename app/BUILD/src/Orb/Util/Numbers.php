@@ -77,7 +77,7 @@ class Numbers
      */
     public static function inRange($what, $min = 0, $max = 10)
     {
-        if ($what >= $min and $what <= $max) {
+        if ($what >= $min && $what <= $max) {
             return true;
         }
 
