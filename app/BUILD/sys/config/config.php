@@ -193,24 +193,3 @@ $container->loadFromExtension('deskpro_core', []);
 if ($container->hasExtension('deskpro_api_core')) {
     $container->loadFromExtension('deskpro_api_core', []);
 }
-
-$container->loadFromExtension(
-    'doctrine',
-    [
-        'orm' => [
-            'entity_managers' => [
-                'default' => [
-                    'mappings' => [
-                        'ReportBundle' => [
-                            'type'      => 'annotation',
-                            'is_bundle' => false,
-                            'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/ReportBundle/Entity',
-                            'prefix'    => 'DeskPRO\Bundle\ReportBundle\Entity',
-                        ],
-                    ],
-                ],
-            ],
-        ],
-
-    ]
-);

@@ -256,6 +256,13 @@ $container->loadFromExtension(
                             'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/AppBundle/Entity',
                             'prefix'    => 'DeskPRO\Bundle\AppBundle\Entity',
                         ],
+
+                        'ReportBundle' => [
+                            'type'      => 'annotation',
+                            'is_bundle' => false,
+                            'dir'       => '%kernel.root_dir%/../src/DeskPRO/Bundle/ReportBundle/Entity',
+                            'prefix'    => 'DeskPRO\Bundle\ReportBundle\Entity',
+                        ],
                     ],
                 ],
 

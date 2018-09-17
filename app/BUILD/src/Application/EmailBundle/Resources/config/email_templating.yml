@@ -63,8 +63,8 @@ services:
     tags:
       - { name: email.templating.twig.extension  }
   templating.email.twig.extension.assets:
-    class: Symfony\Bundle\TwigBundle\Extension\AssetsExtension
-    arguments: ["@service_container", "@?router.request_context"]
+    class: Symfony\Bridge\Twig\Extension\AssetExtension
+    arguments: ["@assets.packages", "@?twig.extension.httpfoundation"]
     tags:
       - { name: email.templating.twig.extension  }
   templating.email.twig.extension.expression:
