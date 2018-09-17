@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\UserMessengerBundle\Controller;
+namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
