@@ -31,7 +31,6 @@ class MessengerKernel extends BaseKernel
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-            new \RMS\PushNotificationsBundle\RMSPushNotificationsBundle(),
             new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
@@ -40,7 +39,6 @@ class MessengerKernel extends BaseKernel
             new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
-            new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
             new \DeskPRO\Bundle\UserMessengerBundle\UserMessengerBundle(),
         ];
