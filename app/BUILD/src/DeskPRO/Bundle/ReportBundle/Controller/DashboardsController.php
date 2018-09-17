@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Controller;
 
 use Application\DeskPRO\Entity\ReportDashboard;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;

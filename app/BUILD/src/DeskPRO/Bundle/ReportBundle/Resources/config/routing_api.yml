@@ -1,0 +1,4 @@
+api_routes:
+  prefix: /api/v2
+  type: annotation
+  resource: "@ReportBundle/Controller"

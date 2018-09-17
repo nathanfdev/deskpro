@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Controller;
 
 use Application\DeskPRO\Entity\ReportDashboardShareableLink;
 use Application\DeskPRO\Entity\ReportDashboardShareableShortUrl;
@@ -54,7 +54,7 @@ class DashboardShareableLinksController extends CrudController
         $request = $masterRequest->duplicate(
             array_merge($params, $masterRequest->query->all()),
             null,
-            ['_controller' => 'ApiBundle:Reports\DashboardShareableLinks:list']
+            ['_controller' => 'ReportBundle:DashboardShareableLinks:list']
         );
         $request->query->add($params);
 

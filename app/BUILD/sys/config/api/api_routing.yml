@@ -4,6 +4,9 @@
 api_routes:
   resource: "@ApiBundle/Resources/config/routing_api.yml"
 
+api_reports_routes:
+  resource: "@ReportBundle/Resources/config/routing_api.yml"
+
 serve_blob:
     path: '/file.php/{blob_auth_id}/{filename}'
 

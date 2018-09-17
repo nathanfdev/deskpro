@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Reports;
+namespace DeskPRO\Bundle\ReportBundle\Controller;
 
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Entity\TmpData;
