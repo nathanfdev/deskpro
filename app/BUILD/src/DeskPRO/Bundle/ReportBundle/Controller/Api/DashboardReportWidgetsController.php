@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ReportBundle\Controller;
+namespace DeskPRO\Bundle\ReportBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\ReportDashboardWidget;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -103,7 +103,7 @@ class DashboardReportWidgetsController extends CrudController
         $request = $masterRequest->duplicate(
             array_merge($params, $masterRequest->query->all()),
             null,
-            ['_controller' => 'ReportBundle:DashboardReportWidgets:list']
+            ['_controller' => 'ReportBundle:Api\DashboardReportWidgets:list']
         );
         $request->query->add($params);
 

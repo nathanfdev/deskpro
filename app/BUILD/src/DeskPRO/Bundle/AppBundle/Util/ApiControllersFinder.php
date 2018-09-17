@@ -23,6 +23,7 @@ class ApiControllersFinder
             $finder = Finder::create()
                 ->in([
                     DP_ROOT.'/src/DeskPRO/Bundle/ApiBundle/Controller',
+                    DP_ROOT.'/src/DeskPRO/Bundle/ReportBundle/Controller/Api',
                     DP_ROOT.'/src/Application/LegacyApiBundle/Controller',
                 ])
                 ->name('*.php')
@@ -36,6 +37,8 @@ class ApiControllersFinder
                 if (0 === strpos($class, 'DeskPRO\\Bundle\\ApiBundle\\Controller')) {
                     $this->classes[] = $class;
                 } elseif (0 === strpos($class, 'Application\\LegacyApiBundle\\Controller')) {
+                    $this->classes[] = $class;
+                } elseif (0 === strpos($class, 'DeskPRO\\Bundle\\ReportBundle\\Controller\\Api')) {
                     $this->classes[] = $class;
                 }
             }

@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\ReportBundle\Controller;
+namespace DeskPRO\Bundle\ReportBundle\Controller\Api;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport;
@@ -62,7 +62,7 @@ class DashboardReportsController extends CrudController
         $request = $masterRequest->duplicate(
             array_merge($params, $masterRequest->query->all()),
             null,
-            ['_controller' => 'ReportBundle:DashboardReports:list']
+            ['_controller' => 'ReportBundle:Api\DashboardReports:list']
         );
         $request->query->add($params);
 
