@@ -1,0 +1,11 @@
+imports:
+  - { resource: messenger_config.yml }
+
+framework:
+    profiler: { only_exceptions: false }
+    router:
+        resource: "%kernel.root_dir%/config/messenger/messenger_routing_dev.yml"
+        strict_requirements: true
+
+debug:
+    max_items: 400
