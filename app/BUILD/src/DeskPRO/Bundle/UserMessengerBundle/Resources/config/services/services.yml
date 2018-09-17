@@ -1,0 +1,9 @@
+parameters:
+  json_body_listener.ignore_content_type_names:
+    - zip
+
+services:
+  user_messenger_authenticator:
+    class: DeskPRO\Bundle\UserMessengerBundle\Security\Authentication\UserMessengerAuthenticator
+    arguments:
+      - "@app_secret"
