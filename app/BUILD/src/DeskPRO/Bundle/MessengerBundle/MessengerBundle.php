@@ -1,14 +1,14 @@
 <?php
 
-namespace DeskPRO\Bundle\UserMessengerBundle;
+namespace DeskPRO\Bundle\MessengerBundle;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class UserMessengerBundle.
+ * Class MessengerBundle.
  */
-class UserMessengerBundle extends Bundle
+class MessengerBundle extends Bundle
 {
     /**
      * {@inheritdoc}

@@ -40,7 +40,7 @@ class MessengerKernel extends BaseKernel
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
-            new \DeskPRO\Bundle\UserMessengerBundle\UserMessengerBundle(),
+            new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
         ];
 
         if ('dev' === $this->getEnvironment()

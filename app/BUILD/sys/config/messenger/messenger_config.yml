@@ -76,7 +76,7 @@ fos_rest:
     inflector: api_url_inflector
   format_listener:
     rules:
-      - { path: '^/api/messenger/user', priorities: ['json', 'jsonp', 'zip'], fallback_format: json, prefer_extension: false }
+      - { path: '^/api/messenger', priorities: ['json', 'jsonp', 'zip'], fallback_format: json, prefer_extension: false }
   exception:
     enabled: true
     exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'
@@ -103,7 +103,7 @@ nelmio_cors:
     hosts: []
     origin_regex: false
   paths:
-    '^/api/user/messenger/':
+    '^/api/messenger/':
       allow_origin: ['*']
 
       # used in response to a preflight request to indicate which HTTP headers can be used when making the actual request
@@ -134,7 +134,6 @@ nelmio_cors:
 security:
   role_hierarchy:
     ROLE_AGENT: ROLE_USER
-    ROLE_ADMIN: ROLE_AGENT
 
   providers:
     dp_person_user_provider:
@@ -142,14 +141,14 @@ security:
 
   firewalls:
     api_anonymous_home:
-      pattern: ^/api/messenger/user/?$
+      pattern: ^/api/messenger/?$
       stateless: true
       anonymous: ~
     api:
-      pattern: ^/api/messenger/user
+      pattern: ^/api/messenger
       stateless: true
       simple_preauth:
-        authenticator: user_messenger_authenticator
+        authenticator: messenger_authenticator
 
 sensio_framework_extra:
   cache:    { annotations: true }

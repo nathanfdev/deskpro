@@ -1,15 +1,15 @@
 <?php
 
-namespace DeskPRO\Bundle\UserMessengerBundle\DependencyInjection;
+namespace DeskPRO\Bundle\MessengerBundle\DependencyInjection;
 
 use DeskPRO\Bundle\AppBundle\DependencyInjection\YamlDirectoryLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 
 /**
- * Class UserMessengerExtension.
+ * Class MessengerExtension.
  */
-class UserMessengerExtension extends Extension
+class MessengerExtension extends Extension
 {
     /**
      * {@inheritdoc}

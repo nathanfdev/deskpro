@@ -1,0 +1,4 @@
+messenger_api_routes:
+    prefix: /api/messenger
+    type: annotation
+    resource: "@MessengerBundle/Controller"

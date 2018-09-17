@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\UserMessengerBundle\Security\Authentication;
+namespace DeskPRO\Bundle\MessengerBundle\Security\Authentication;
 
 use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
-class UserMessengerAuthenticator implements SimplePreAuthenticatorInterface
+class MessengerAuthenticator implements SimplePreAuthenticatorInterface
 {
     const HTTP_REALM      = 'session,token,key realm="DeskPRO User Messenger API"';
     const APP_HEADER_NAME = 'X-DeskPRO-App-ID';
