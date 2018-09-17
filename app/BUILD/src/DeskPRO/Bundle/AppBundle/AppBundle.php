@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobsCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobStorageCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\ExportBlobCommand;
+use DeskPRO\Bundle\AppBundle\Command\Utility\InvalidEmailsCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\RecompileTemplatesCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\RefreshAgentInterfaceCommand;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
@@ -86,6 +87,7 @@ class AppBundle extends Bundle
         $application->add(new ExportBlobCommand());
         $application->add(new DanglingBlobsCommand());
         $application->add(new DanglingBlobStorageCommand());
+        $application->add(new InvalidEmailsCommand());
     }
 
     /**
