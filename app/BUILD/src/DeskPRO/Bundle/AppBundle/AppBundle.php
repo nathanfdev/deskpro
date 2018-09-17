@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
 use DeskPRO\Bundle\AppBundle\Command\Configure\ToggleFeatureCommand;
+use DeskPRO\Bundle\AppBundle\Command\ServerInfo\StatusSummaryCommand;
 use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobsCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobStorageCommand;
@@ -77,6 +78,7 @@ class AppBundle extends Bundle
     public function registerCommands(Application $application)
     {
         $application->add(new WebServerInfoCommand());
+        $application->add(new StatusSummaryCommand());
         $application->add(new ConfigElasticCommand());
         $application->add(new ToggleFeatureCommand());
         $application->add(new RecompileTemplatesCommand());
