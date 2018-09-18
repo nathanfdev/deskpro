@@ -53,6 +53,7 @@ class AnnotationsCacheWarmer implements CacheWarmerInterface
         $finder          = Finder::create()
             ->in($dirs)
             ->name('*.php')
+            ->notName('*.txt.php')
             ->notPath('/Dpql\/build.+/')
             ->notPath('/Resources/')
             ->notPath('/InstallBundle\/Data/')
