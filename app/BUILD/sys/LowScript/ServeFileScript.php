@@ -837,7 +837,9 @@ class ServeFileScript extends LowScriptAbstract
 
                     $blob['filesize'] = strlen($file);
                     $headers          = $this->getHeaders($blob);
-                    echo new Response($file, 200, $headers);
+                    $response         = new Response($file, 200, $headers);
+
+                    $response->send();
 
                     return;
                 }
@@ -893,8 +895,10 @@ class ServeFileScript extends LowScriptAbstract
                 @fclose($fp);
 
                 if (!$fail) {
-                    $headers = $this->getHeaders($blob);
-                    echo new Response($buf, 200, $headers);
+                    $headers  = $this->getHeaders($blob);
+                    $response = new Response($buf, 200, $headers);
+
+                    $response->send();
                     exit;
                 }
 
