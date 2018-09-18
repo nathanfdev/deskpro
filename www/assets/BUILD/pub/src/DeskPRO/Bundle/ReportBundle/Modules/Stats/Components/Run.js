@@ -224,7 +224,7 @@ class Run extends React.Component {
     />);
 
     const compileError = reportErrors.getIn(['errors', 'fields', 'query_parts', 'errors', 0, 'message']);
-    const content = report.get('rendered_result', Immutable.List()).filter(value => value).size > 0
+    const content = (report.get('rendered_result', Immutable.List()) || Immutable.List()).filter(value => value).size > 0
       ? (
         <div className="results-wrap">
           {this.renderReport()}
