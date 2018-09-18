@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -54,10 +55,10 @@ class ZapierController extends BaseController
         $serializationContext = new SideloadSerializationContext();
         $serializationContext->setInlineSideloads(true);
         switch ($action) {
-            case 'new_ticket':
-                $ticket = $this->getManager()->getRepository(Ticket::class)->findOneBy([], ['id' => 'DESC']);
+            case 'new_ticket_reply':
+                $ticketMessage = $this->getManager()->getRepository(TicketMessage::class)->findOneBy([], ['id' => 'DESC']);
 
-                $output = $this->get('serializer')->serialize($ticket, 'json', $serializationContext);
+                $output = $this->get('serializer')->serialize($ticketMessage, 'json', $serializationContext);
 
                 return new Response($output);
             case 'ticket_update':
