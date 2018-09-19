@@ -51,7 +51,8 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.attachments" should have 1 element
 
   Scenario: I create a ticket message with specific date
-    Given I'm authenticated as admin and my apiKey has super flag
+    Given "admin_for_messages@deskpro.dev" admin exists
+    And I'm authenticated as person with email "admin_for_messages@deskpro.dev" with super key
     When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
     """
 {
