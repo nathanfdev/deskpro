@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Traits\ApiKeyAwareTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -36,7 +37,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketMessagesController extends AbstractTicketsCrudSubController
 {
-    use TicketSaveTrait, TicketAwarePersistModelTrait;
+    use TicketSaveTrait, TicketAwarePersistModelTrait, ApiKeyAwareTrait;
 
     public static $entity         = TicketMessage::class;
     public static $type           = TicketMessageType::class;
@@ -60,6 +61,7 @@ class TicketMessagesController extends AbstractTicketsCrudSubController
             'with_ticket_validation' => $request->get('with_ticket_validation'),
             'allow_set_status'       => true,
             'allow_apply_macros'     => true,
+            'admin_api_key_request'  => $this->isAdminApiKeyRequest(),
         ]);
 
         return parent::handleForm($model, $request, $options);

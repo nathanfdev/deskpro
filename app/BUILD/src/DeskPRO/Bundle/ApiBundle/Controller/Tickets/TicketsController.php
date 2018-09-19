@@ -2,11 +2,10 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\Traits\TicketSearchTrait;
-use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
+use DeskPRO\Bundle\ApiBundle\Traits\ApiKeyAwareTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -41,7 +40,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TicketsController extends AbstractTicketsController
 {
-    use TicketsPagerTrait, TicketSaveTrait, TicketSearchTrait;
+    use TicketsPagerTrait, TicketSaveTrait, TicketSearchTrait, ApiKeyAwareTrait;
 
     public static $type = TicketType::class;
 
@@ -336,25 +335,6 @@ class TicketsController extends AbstractTicketsController
         ]);
 
         return parent::handleForm($model, $request, $options);
-    }
-
-    private function isAdminApiKeyRequest()
-    {
-        $token = $this->get('security.token_storage')->getToken();
-
-        if (
-            $token
-            && $token instanceof ApiKeySecurityToken
-            && $key = $this
-                ->get('doctrine.orm.default_entity_manager')
-                ->getRepository(ApiKey::class)
-                ->findByKeyString($token->getCredentials())
-        ) {
-            /* @var $key ApiKey */
-            return $key->isFlagSet(ApiKey::FLAG_SUPER_KEY);
-        }
-
-        return false;
     }
 
     /**
