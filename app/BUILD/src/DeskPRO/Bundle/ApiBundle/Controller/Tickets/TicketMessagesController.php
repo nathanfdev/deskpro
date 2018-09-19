@@ -30,7 +30,8 @@ use Symfony\Component\HttpFoundation\Request;
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\TicketMessage",
  *          "ticket"="Application\DeskPRO\Entity\Ticket",
- *          "person"="Application\DeskPRO\Entity\Person"
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "admin_api_key_request"=true
  *      }
  *     }
  * )
