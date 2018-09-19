@@ -33,7 +33,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType",
  *      "options"={
  *          "data"="Application\DeskPRO\Entity\Ticket",
- *          "person"="Application\DeskPRO\Entity\Person"
+ *          "person"="Application\DeskPRO\Entity\Person",
+ *          "admin_api_key_request"=true
  *      }
  *     }
  * )
