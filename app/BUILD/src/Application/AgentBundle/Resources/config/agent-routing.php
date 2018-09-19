@@ -245,6 +245,12 @@ $collection->create('agent_login_callback', [
     'requirements' => ['usersource_id' => '\\d+'],
 ]);
 
+$collection->create('agent_login_oauth2proxy', [
+    'path'         => '/login/authenticate-callback/{provider}/oauth2/end',
+    'controller'   => 'AgentBundle:Login:authenticateCallbackDPOAuth2',
+    'requirements' => ['provider' => '[^\\s]+'],
+]);
+
 $collection->create(
     'agent_login_usersource_sso', [
         'path'         => '/login/usersource-sso/{usersource_id}',

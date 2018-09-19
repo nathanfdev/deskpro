@@ -7,11 +7,15 @@ use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\ApiToken as ApiTokenRepository;
 use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepository;
+use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
+use Application\DeskPRO\Usersource\Adapter\DeskproOauth2Proxy;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
+use Orb\Auth\DPOAuth2Proxy;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -227,6 +231,54 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
     {
         return $this->render('AgentBundle:Login:min-ie-version.html.twig');
     }
+
+    /**
+     * @param Request $request
+     * @param $provider
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\Security\Core\Exception\AccessDeniedException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function authenticateCallbackDPOAuth2Action( Request $request, $provider)
+    {
+        // we lookup this usersource to see if it was installed. if it wasn't we return a 403
+        /** @var EntityRepository\Usersource $repository */
+        $repository = $this->em->getRepository('DeskPRO:Usersource');
+        $userSourceList = $repository->getBySpecification([
+            'type' =>           'agent',
+            'source_type' =>    DeskproOauth2Proxy::class,
+            'is_enabled' =>     true,
+        ], $multiple = false);
+
+        if (empty($userSourceList)) {
+            throw $this->createAccessDeniedException("Unauthorized access");
+        }
+        /** @var Usersource $usersource */
+        $usersource = array_pop($userSourceList);
+
+        // verify request comes from the actual dp-oauth2-proxy:
+        // the request contains an 'authentication token'parameter that can only be emitted by the dp-oauth2-proxy
+        // ask dp-oauth2-proxy to validate this token, and if error return 403, else continue
+        $proxyClient = DPOAuth2Proxy::fromContainer($this->container);
+        if (! $proxyClient->authenticateRequest($request)) {
+            throw $this->createAccessDeniedException("Unauthorized access");
+        }
+
+        //we receive the following information via headers:
+        // X-Forwarded-Access-Token
+        // X-Forwarded-Email
+        // X-Forwarded-User
+        // we don't need to use the X-Forwarded-Access-Token at the moment to retrieve more information
+        // we create an JWT token and we add the following information: X-Forwarded-Email
+        $tokenParams = $proxyClient->encodeToken($request);
+        $tokenQueryString = http_build_query($tokenParams);
+
+        // we response with a 302/303 to agent/login/authenticate-callback/{usersource_id}?jwt-token =  LoginController:authenticateCallbackAction
+        //authenticate-callback
+        $deskproUrl = rtrim($this->container->getSetting('core.deskpro_url'), '/');
+        $redirectUrl = $deskproUrl . sprintf('/agent/login/authenticate-callback/%s?%s', 4, $tokenQueryString);
+        return $this->redirect($redirectUrl, 302);
+    }
+
 
     public function authAdminLoginAction(Request $request, $code)
     {

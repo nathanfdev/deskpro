@@ -1154,4 +1154,10 @@ return [
     'auto_updater_next_check' => null,
 
     'api.disable_location_header_strip' => false,
+
+    /**
+     * The hostname of deskpro's own oauth2 proxy
+     */
+
+    'dpoauth2proxy.host' => '',
 ];

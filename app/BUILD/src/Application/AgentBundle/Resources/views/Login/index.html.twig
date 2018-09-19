@@ -352,7 +352,7 @@
           </ul>
           {% if authManager.hasLoginIconUsersources %}
             <ul class="dp-usersource-list">
-              <li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>
+              <li style="display: inline-block;">{{ phrase('user.profile.connect_with') }} ahahaha</li>
               {% for usersource in authManager.getLoginIconUsersources %}
                 <li style="display: inline-block;">
                   {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
@@ -363,7 +363,7 @@
         {% else %}
           {% if authManager.hasLoginIconUsersources %}
             <ul>
-              <li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>
+              <li style="display: inline-block;">{{ phrase('user.profile.connect_with') }} bahahah</li>
               {% for usersource in authManager.getLoginIconUsersources %}
                 <li style="display: inline-block;">
                   {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
