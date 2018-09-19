@@ -14,10 +14,12 @@ use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class TestController.
+ * Class UserController.
  *
  * @ApiModes("all")
  * @ApiUserContext("open")
+ *
+ * @Rest\Route("/user")
  */
 class UserController extends BaseController
 {
@@ -25,7 +27,7 @@ class UserController extends BaseController
      * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
      *
      * @ApiDoc(
-     *     section="Testing new Bundle and Kernel",
+     *     section="Messenger",
      *     resourceDescription="Testing new Bundle and Kernel",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -39,7 +41,7 @@ class UserController extends BaseController
      *          }
      *      }
      * )
-     * @Rest\Get("/user/{visitorId}")
+     * @Rest\Get("/{visitorId}")
      *
      * @param string $visitorId
      *

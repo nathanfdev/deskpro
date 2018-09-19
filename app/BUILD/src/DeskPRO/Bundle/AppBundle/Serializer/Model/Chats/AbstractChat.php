@@ -147,6 +147,15 @@ abstract class AbstractChat
     protected $needValidateEmail = null;
 
     /**
+     * Access token for this chat.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $accessToken = null;
+
+    /**
      * Constructor.
      *
      * @param ChatConversation $chat
@@ -154,6 +163,7 @@ abstract class AbstractChat
     public function __construct(ChatConversation $chat)
     {
         $this->id                   = $chat->getId();
+        $this->accessToken          = $chat->getAccessToken();
         $this->person               = $chat->getPerson();
         $this->personName           = $chat->getPersonName();
         $this->personEmail          = $chat->getPersonEmail();
