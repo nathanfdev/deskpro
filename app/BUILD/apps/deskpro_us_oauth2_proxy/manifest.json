@@ -1,0 +1,25 @@
+{
+	"package_name": "deskpro_us_oauth2_proxy",
+	"is_native": true,
+	"title": "Deskpro OAuth2",
+	"description": "Allows agents to log in using social account.",
+	"tags": ["usersources"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": false,
+	"author": {
+		"name": "Deskpro",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "enable_usersource",
+			"type": "checkbox",
+			"label": "Enable User Source",
+			"description": "Enable this usersource?",
+			"native_only": true
+		}
+	]
+}

@@ -275,7 +275,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         // we response with a 302/303 to agent/login/authenticate-callback/{usersource_id}?jwt-token =  LoginController:authenticateCallbackAction
         //authenticate-callback
         $deskproUrl = rtrim($this->container->getSetting('core.deskpro_url'), '/');
-        $redirectUrl = $deskproUrl . sprintf('/agent/login/authenticate-callback/%s?%s', 4, $tokenQueryString);
+        $redirectUrl = $deskproUrl . sprintf('/agent/login/authenticate-callback/%s?%s', $usersource->id, $tokenQueryString);
         return $this->redirect($redirectUrl, 302);
     }
 
