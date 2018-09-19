@@ -74,6 +74,46 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 204
 
+  Scenario: I modify a ticket`s dates
+    Given I'm authenticated as admin and my apiKey has super flag
+    When I send a PUT request to "/api/v2/tickets/{ticket1}" with body:
+    """
+{
+  "date_resolved": "2018-01-01 23:59:59",
+  "date_archived": "2018-01-01 23:59:59",
+  "date_feedback_rating": "2018-01-01 23:59:59",
+  "date_first_agent_assign": "2018-01-01 23:59:59",
+  "date_first_agent_reply": "2018-01-01 23:59:59",
+  "date_last_agent_reply": "2018-01-01 23:59:59",
+  "date_last_user_reply": "2018-01-01 23:59:59",
+  "date_agent_waiting": "2018-01-01 23:59:59",
+  "date_user_waiting": "2018-01-01 23:59:59",
+  "date_status": "2018-01-01 23:59:59",
+  "date_on_hold": "2018-01-01 23:59:59",
+  "date_locked": "2018-01-01 23:59:59",
+  "total_user_waiting": 100,
+  "total_to_first_reply": 200
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/{ticket1}"
+    Then the response status code should be 200
+    And print last JSON response
+    And the JSON node "data.date_resolved" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_archived" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_feedback_rating" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_first_agent_assign" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_first_agent_reply" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_last_agent_reply" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_last_user_reply" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_agent_waiting" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_status" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_on_hold" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_locked" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.total_user_waiting" should be equal to 100
+    And the JSON node "data.total_to_first_reply" should be equal to 200
+
   Scenario: I modify and retrieve a ticket
     Given I send a PUT request to "/api/v2/tickets/{ticket1}" with body:
     """

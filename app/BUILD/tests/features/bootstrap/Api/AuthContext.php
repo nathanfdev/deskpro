@@ -80,6 +80,26 @@ class AuthContext extends BaseContext
     }
 
     /**
+     * @Given I'm authenticated as :role and my apiKey has super flag
+     *
+     * @param string $role
+     */
+    public function iAmAuthenticatedWithSuperKeyAs($role)
+    {
+        // Log in ------------------------------------------------------------------------------------------------------
+        $person = $this->peopleDataContext->personByRoleExists($role);
+        DataContext::setReference($role, $person);
+        DataContext::setReference('me', $person);
+
+        $this->authenticateAs($person);
+        $apiKey = DataContext::getReference('apiKey', true);
+        $apiKey->addFlag(ApiKey::FLAG_SUPER_KEY);
+        $this->persistAndFlush($apiKey);
+
+        self::initOm();
+    }
+
+    /**
      * @Given I'm authenticated via session as :role
      *
      * @param string $role

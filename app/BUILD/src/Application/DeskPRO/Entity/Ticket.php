@@ -3214,13 +3214,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      *
      * @return $this
      */
-    public function setDateCreated(\DateTime $date_created = null)
+    public function setDateCreated(\DateTime $dateCreated = null)
     {
-        if (!$date_created) {
-            $date_created = new \DateTime();
+        if (!$dateCreated) {
+            $dateCreated = new \DateTime();
         }
 
-        $this->setModelField('date_created', $date_created);
+        $this->setModelField('date_created', $dateCreated);
 
         return $this;
     }
@@ -3228,13 +3228,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Set date created.
      *
-     * @param \DateTime $date_resolved
+     * @param \DateTime $dateResolved
      *
      * @return $this
      */
-    public function setDateResolved(\DateTime $date_resolved = null)
+    public function setDateResolved(\DateTime $dateResolved = null)
     {
-        $this->setModelField('date_resolved', $date_resolved);
+        if (!$dateResolved) {
+            $dateResolved = new \DateTime();
+        }
+
+        $this->setModelField('date_resolved', $dateResolved);
 
         return $this;
     }
