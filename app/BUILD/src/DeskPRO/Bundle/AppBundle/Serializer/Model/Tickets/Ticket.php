@@ -439,7 +439,7 @@ class Ticket
     private $dateLocked;
 
     /**
-     * Date time when ticket was set on hold.
+     * Datetime when ticket was set on hold.
      *
      * @JMS\Type("DateTime")
      *
