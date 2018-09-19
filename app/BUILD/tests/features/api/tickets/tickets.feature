@@ -432,13 +432,40 @@ Feature: /tickets endpoint
     And the JSON node "errors.fields.department.errors[0].code" should contain "bad_choice"
 
   Scenario: I create a ticket with specific date
+    # Note that date_status will be changed by TicketManager when it creates ticket
+    Given I'm authenticated as admin and my apiKey has super flag
     When I send a POST request to "/api/v2/tickets" with body:
     """
 {
   "subject": "Sample Ticket",
   "person": ~admin~,
-  "date_created": "2018-06-20"
+  "date_created": "2018-06-20",
+  "date_resolved": "2018-01-01 23:59:59",
+  "date_archived": "2018-01-01 23:59:59",
+  "date_feedback_rating": "2018-01-01 23:59:59",
+  "date_first_agent_assign": "2018-01-01 23:59:59",
+  "date_first_agent_reply": "2018-01-01 23:59:59",
+  "date_last_agent_reply": "2018-01-01 23:59:59",
+  "date_last_user_reply": "2018-01-01 23:59:59",
+  "date_agent_waiting": "2018-01-01 23:59:59",
+  "date_user_waiting": "2018-01-01 23:59:59",
+  "date_on_hold": "2018-01-01 23:59:59",
+  "date_locked": "2018-01-01 23:59:59",
+  "total_user_waiting": 100,
+  "total_to_first_reply": 200
 }
     """
     Then the response status code should be 201
     And the JSON node "data.date_created" should be equal to "2018-06-20T00:00:00+0000"
+    And the JSON node "data.date_resolved" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_archived" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_feedback_rating" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_first_agent_assign" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_first_agent_reply" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_last_agent_reply" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_last_user_reply" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_agent_waiting" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_on_hold" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_locked" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.total_user_waiting" should be equal to 100
+    And the JSON node "data.total_to_first_reply" should be equal to 200

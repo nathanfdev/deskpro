@@ -3226,7 +3226,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * Set date created.
+     * Set date resolved.
      *
      * @param \DateTime $dateResolved
      *
@@ -3239,6 +3239,24 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         $this->setModelField('date_resolved', $dateResolved);
+
+        return $this;
+    }
+
+    /**
+     * Set date when status was changed.
+     *
+     * @param \DateTime $dateStatus
+     *
+     * @return $this
+     */
+    public function setDateStatus(\DateTime $dateStatus = null)
+    {
+        if (!$dateStatus) {
+            $dateStatus = new \DateTime();
+        }
+
+        $this->setModelField('date_status', $dateStatus);
 
         return $this;
     }
