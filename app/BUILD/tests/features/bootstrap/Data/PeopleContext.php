@@ -117,15 +117,17 @@ class PeopleContext extends BaseContext
 
     /**
      * @Given :email admin exists
+     * @Given :email admin exists with :super key
      * @Given an admin with ":email" email exists
      *
      * @param string $email
+     * @param string $super
      *
      * @throws \Exception
      *
      * @return Person
      */
-    public function adminExists($email)
+    public function adminExists($email, $super = false)
     {
         $person = $this->findPersonByEmail($email);
         if ($person) {

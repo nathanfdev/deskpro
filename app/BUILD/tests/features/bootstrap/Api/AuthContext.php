@@ -49,7 +49,7 @@ class AuthContext extends BaseContext
     }
 
     /**
-     * @Given I'm authenticated as person with email :role
+     * @Given I'm authenticated as person with email :email
      *
      * @param string $email
      */
@@ -58,6 +58,24 @@ class AuthContext extends BaseContext
         // Log in ------------------------------------------------------------------------------------------------------
         $person = $this->peopleDataContext->findPersonByEmail($email);
         $this->authenticateAs($person);
+
+        self::initOm();
+    }
+
+    /**
+     * @Given I'm authenticated as person with email :email with super key
+     *
+     * @param string $email
+     */
+    public function iAmAuthenticatedAsPersonSuperWithEmail($email)
+    {
+        // Log in ------------------------------------------------------------------------------------------------------
+        $person = $this->peopleDataContext->findPersonByEmail($email);
+        $this->authenticateAs($person);
+
+        $apiKey = DataContext::getReference('apiKey', true);
+        $apiKey->addFlag(ApiKey::FLAG_SUPER_KEY);
+        $this->persistAndFlush($apiKey);
 
         self::initOm();
     }
