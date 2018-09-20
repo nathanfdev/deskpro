@@ -14,6 +14,7 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Class ReportWidgetHandler.
@@ -155,6 +156,8 @@ class ReportWidgetHandler extends AbstractEntityHandler
 
             return $result;
         } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+
             return;
         }
     }
