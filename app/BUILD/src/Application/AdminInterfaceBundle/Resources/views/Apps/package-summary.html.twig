@@ -14,7 +14,7 @@
 				</p>
 
 				<a ng-hide="Ctrl.pack.is_installed" class="btn btn-primary" href="{{ ng_href('apps.apps.install_package', "{name: Ctrl.pack.name+'.install'}") }}">
-					<i class="fa fa-dropbox"></i> Install App
+					<i class="fab fa-dropbox"></i> Install App
 				</a>
                 <a ng-if="!Ctrl.pack.native_name" class="btn btn-default"
                    href="{{ '{{ "' ~ path('admin_apps_download_package', {name: '0000'}) ~ '".replace("0000", Ctrl.pack.name) }}'}}"
@@ -58,7 +58,7 @@
 					This application can be installed multiple times. Do you want to install it again?
 				</p>
 				<a class="btn btn-primary" href="{{ ng_href('apps.apps.install_package', "{name: Ctrl.pack.name+'.install'}") }}">
-					<i class="fa fa-dropbox"></i> Install App Again
+					<i class="fab fa-dropbox"></i> Install App Again
 				</a>
 			</div>
 		</div>
