@@ -333,6 +333,9 @@ class AuthContext extends BaseContext
             $key         = new ApiKey();
             $key->code   = $code;
             $key->person = $person;
+            if ($person->isAdmin()) {
+                $key->addFlag(ApiKey::FLAG_SUPER_KEY);
+            }
 
             $key_action = new ApiKeyAction();
             $key_action->setAction('*');
@@ -354,6 +357,9 @@ class AuthContext extends BaseContext
         } else {
             if ($key->person !== $person) {
                 $key->person = $person;
+                if ($person->isAdmin()) {
+                    $key->addFlag(ApiKey::FLAG_SUPER_KEY);
+                }
                 $this->persistAndFlush($key);
             }
 

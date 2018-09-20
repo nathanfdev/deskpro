@@ -75,8 +75,7 @@ Feature: /tickets endpoint
     Then the response status code should be 204
 
   Scenario: I modify a ticket`s dates
-    Given "admin_for_tickets@deskpro.dev" admin exists
-    And I'm authenticated as person with email "admin_for_tickets@deskpro.dev" with super key
+    Given I'm authenticated as admin
     When I send a PUT request to "/api/v2/tickets/{ticket1}" with body:
     """
 {
@@ -434,8 +433,7 @@ Feature: /tickets endpoint
 
   Scenario: I create a ticket with specific date
     # Note that date_status will be changed by TicketManager when it creates ticket
-    Given "admin_for_tickets@deskpro.dev" admin exists
-    And I'm authenticated as person with email "admin_for_tickets@deskpro.dev" with super key
+    Given I'm authenticated as admin
     When I send a POST request to "/api/v2/tickets" with body:
     """
 {
