@@ -7,5 +7,11 @@ namespace Application\DeskPRO\NewSearch\Manager;
  */
 interface SearchManagerInterface
 {
-    public function quickSearch($q);
+    /**
+     * @param null $query
+     * @param null $sort
+     * @param array $limitTypes
+     * @return mixed
+     */
+    public function quickSearch($query = null, $sort = null, array $limitTypes = []);
 }
