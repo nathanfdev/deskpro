@@ -105,10 +105,7 @@ class AuthContext extends BaseContext
         DataContext::setReference($role, $person);
         DataContext::setReference('me', $person);
 
-        $this->authenticateAs($person);
-        $apiKey = DataContext::getReference('apiKey', true);
-        $apiKey->addFlag(ApiKey::FLAG_SUPER_KEY);
-        $this->persistAndFlush($apiKey);
+        $this->authenticateAs($person, true);
 
         self::initOm();
     }
@@ -307,7 +304,7 @@ class AuthContext extends BaseContext
      */
     private function authenticateAs(Person $person, $super = false)
     {
-        $key = $this->ensureApiKey($person, 'Testing', $super);
+        $key = $this->ensureApiKey($person, 'Testing'.($super ? 'super' : ''), $super);
         $this->restContext->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
     }
 
