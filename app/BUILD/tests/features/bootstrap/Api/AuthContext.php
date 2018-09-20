@@ -71,11 +71,7 @@ class AuthContext extends BaseContext
     {
         // Log in ------------------------------------------------------------------------------------------------------
         $person = $this->peopleDataContext->findPersonByEmail($email);
-        $this->authenticateAs($person);
-
-        $apiKey = DataContext::getReference('apiKey', true);
-        $apiKey->addFlag(ApiKey::FLAG_SUPER_KEY);
-        $this->persistAndFlush($apiKey);
+        $this->authenticateAs($person, true);
 
         self::initOm();
     }
@@ -307,10 +303,11 @@ class AuthContext extends BaseContext
 
     /**
      * @param Person $person
+     * @
      */
-    private function authenticateAs(Person $person)
+    private function authenticateAs(Person $person, $super = false)
     {
-        $key = $this->ensureApiKey($person, 'Testing');
+        $key = $this->ensureApiKey($person, 'Testing', $super);
         $this->restContext->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
     }
 
@@ -320,7 +317,7 @@ class AuthContext extends BaseContext
      *
      * @return ApiKey
      */
-    private function ensureApiKey(Person $person, $code)
+    private function ensureApiKey(Person $person, $code, $super = false)
     {
         // reset global rate limit settings
         $this->em()->getConnection()->executeUpdate(
@@ -333,7 +330,7 @@ class AuthContext extends BaseContext
             $key         = new ApiKey();
             $key->code   = $code;
             $key->person = $person;
-            if ($person->isAdmin()) {
+            if ($super) {
                 $key->addFlag(ApiKey::FLAG_SUPER_KEY);
             }
 
@@ -357,7 +354,7 @@ class AuthContext extends BaseContext
         } else {
             if ($key->person !== $person) {
                 $key->person = $person;
-                if ($person->isAdmin()) {
+                if ($super) {
                     $key->addFlag(ApiKey::FLAG_SUPER_KEY);
                 }
                 $this->persistAndFlush($key);
