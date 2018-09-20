@@ -111,6 +111,15 @@ class ApiKey extends DomainObject
         return in_array($flag, $this->flags);
     }
 
+    public function addFlag($flag)
+    {
+        if (!$this->isFlagSet($flag)) {
+            array_push($this->flags, $flag);
+        }
+
+        return $this;
+    }
+
     /**
      * @return Person
      */

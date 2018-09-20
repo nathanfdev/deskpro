@@ -49,7 +49,7 @@ class AuthContext extends BaseContext
     }
 
     /**
-     * @Given I'm authenticated as person with email :role
+     * @Given I'm authenticated as person with email :email
      *
      * @param string $email
      */
@@ -58,6 +58,20 @@ class AuthContext extends BaseContext
         // Log in ------------------------------------------------------------------------------------------------------
         $person = $this->peopleDataContext->findPersonByEmail($email);
         $this->authenticateAs($person);
+
+        self::initOm();
+    }
+
+    /**
+     * @Given I'm authenticated as person with email :email with super key
+     *
+     * @param string $email
+     */
+    public function iAmAuthenticatedAsPersonSuperWithEmail($email)
+    {
+        // Log in ------------------------------------------------------------------------------------------------------
+        $person = $this->peopleDataContext->findPersonByEmail($email);
+        $this->authenticateAs($person, true);
 
         self::initOm();
     }
@@ -75,6 +89,23 @@ class AuthContext extends BaseContext
         DataContext::setReference('me', $person);
 
         $this->authenticateAs($person);
+
+        self::initOm();
+    }
+
+    /**
+     * @Given I'm authenticated as :role and my apiKey has super flag
+     *
+     * @param string $role
+     */
+    public function iAmAuthenticatedWithSuperKeyAs($role)
+    {
+        // Log in ------------------------------------------------------------------------------------------------------
+        $person = $this->peopleDataContext->personByRoleExists($role);
+        DataContext::setReference($role, $person);
+        DataContext::setReference('me', $person);
+
+        $this->authenticateAs($person, true);
 
         self::initOm();
     }
@@ -269,10 +300,11 @@ class AuthContext extends BaseContext
 
     /**
      * @param Person $person
+     * @
      */
-    private function authenticateAs(Person $person)
+    private function authenticateAs(Person $person, $super = false)
     {
-        $key = $this->ensureApiKey($person, 'Testing');
+        $key = $this->ensureApiKey($person, 'Testing'.($super ? 'super' : ''), $super);
         $this->restContext->iAddHeaderEqualTo('Authorization', 'key '.$key->getKeyString());
     }
 
@@ -282,7 +314,7 @@ class AuthContext extends BaseContext
      *
      * @return ApiKey
      */
-    private function ensureApiKey(Person $person, $code)
+    private function ensureApiKey(Person $person, $code, $super = false)
     {
         // reset global rate limit settings
         $this->em()->getConnection()->executeUpdate(
@@ -295,6 +327,9 @@ class AuthContext extends BaseContext
             $key         = new ApiKey();
             $key->code   = $code;
             $key->person = $person;
+            if ($super) {
+                $key->addFlag(ApiKey::FLAG_SUPER_KEY);
+            }
 
             $key_action = new ApiKeyAction();
             $key_action->setAction('*');
@@ -316,6 +351,9 @@ class AuthContext extends BaseContext
         } else {
             if ($key->person !== $person) {
                 $key->person = $person;
+                if ($super) {
+                    $key->addFlag(ApiKey::FLAG_SUPER_KEY);
+                }
                 $this->persistAndFlush($key);
             }
 

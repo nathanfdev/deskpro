@@ -437,6 +437,11 @@ class EmailRendererTest extends SendmailTestCase
                         'type'        => 'string',
                         'attribute'   => 'star',
                     ],
+                    'date_on_hold' => [
+                        'description' => 'Datetime when ticket was set on hold.',
+                        'type'        => 'DateTime',
+                        'attribute'   => 'date_on_hold',
+                    ],
                 ],
             ],
             'ticket_person' => [

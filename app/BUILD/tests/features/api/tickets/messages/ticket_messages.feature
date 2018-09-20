@@ -50,6 +50,19 @@ Feature: /tickets/{id}/messages endpoint
     And the JSON node "data.message" should contain '<img'
     And the JSON node "data.attachments" should have 1 element
 
+  Scenario: I create a ticket message with specific date
+    Given "admin_for_messages@deskpro.dev" admin exists
+    And I'm authenticated as person with email "admin_for_messages@deskpro.dev" with super key
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "My Message",
+  "date_created": "2018-06-20"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.date_created" should be equal to "2018-06-20T00:00:00+0000"
+
   Scenario: I add html ticket message implicit way
     When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
     """

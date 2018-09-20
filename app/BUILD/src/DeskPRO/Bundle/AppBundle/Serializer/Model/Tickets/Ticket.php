@@ -439,6 +439,15 @@ class Ticket
     private $dateLocked;
 
     /**
+     * Datetime when ticket was set on hold.
+     *
+     * @JMS\Type("DateTime")
+     *
+     * @var \DateTime
+     */
+    private $dateOnHold;
+
+    /**
      * Does this ticked has attachments?
      *
      * @JMS\Type("boolean")
@@ -668,6 +677,7 @@ class Ticket
         $this->totalToFirstReply    = $ticket->getTotalToFirstReply();
         $this->lockedByAgent        = $ticket->getLockedByAgent();
         $this->dateLocked           = $ticket->getDateLocked();
+        $this->dateOnHold           = $ticket->getDateOnHold();
         $this->hasAttachments       = $ticket->hasAttachments();
         $this->subject              = $ticket->getSubject();
         $this->originalSubject      = $ticket->getOriginalSubject();
