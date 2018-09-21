@@ -2,7 +2,6 @@
 
 namespace DpSys\LowScript;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Blob;
 use DpSys\CodePlugin\DpPlugins;
@@ -13,7 +12,6 @@ use Orb\Data\ContentTypes;
 use Orb\Util\Colors;
 use Orb\Util\Strings;
 use Orb\Util\Util;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -1015,7 +1013,13 @@ class ServeFileScript extends LowScriptAbstract
 
             return new Response('', 200, $headers);
         } else {
-            return new BinaryFileResponse($filepath, 200, $headers);
+            return new StreamedResponse(
+                function () use ($filepath) {
+                    readfile($filepath);
+                },
+                200,
+                $headers
+            );
         }
     }
 
