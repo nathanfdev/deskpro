@@ -10,6 +10,14 @@ use JMS\Serializer\Annotation as JMS;
 class DiscoverSettings
 {
     /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
+     */
+    private $helpdeskUuid;
+
+    /**
      * @var bool
      *
      * @JMS\Type("boolean")
@@ -50,6 +58,20 @@ class DiscoverSettings
     private $build;
 
     /**
+     * @var int
+     * @JMS\Type("integer")
+     * @JMS\Groups({"discover"})
+     */
+    private $buildId;
+
+    /**
+     * @var string
+     * @JMS\Type("string")
+     * @JMS\Groups({"discover"})
+     */
+    private $buildName;
+
+    /**
      * @var string
      *
      * @JMS\Type("string")
@@ -64,6 +86,26 @@ class DiscoverSettings
      * @JMS\Groups({"discover"})
      */
     private $appsHttpProxyUrl = '';
+
+    /**
+     * @return string
+     */
+    public function getHelpdeskUuid()
+    {
+        return $this->helpdeskUuid;
+    }
+
+    /**
+     * @param string $helpdeskUuid
+     *
+     * @return DiscoverSettings
+     */
+    public function setHelpdeskUuid($helpdeskUuid)
+    {
+        $this->helpdeskUuid = $helpdeskUuid;
+
+        return $this;
+    }
 
     /**
      * @return bool
@@ -166,6 +208,46 @@ class DiscoverSettings
     }
 
     /**
+     * @return int
+     */
+    public function getBuildId()
+    {
+        return $this->buildId;
+    }
+
+    /**
+     * @param int $buildId
+     *
+     * @return DiscoverSettings
+     */
+    public function setBuildId($buildId)
+    {
+        $this->buildId = $buildId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBuildName()
+    {
+        return $this->buildName;
+    }
+
+    /**
+     * @param string $buildName
+     *
+     * @return DiscoverSettings
+     */
+    public function setBuildName($buildName)
+    {
+        $this->buildName = $buildName;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getAppsOauthProxyUrl()
@@ -175,11 +257,13 @@ class DiscoverSettings
 
     /**
      * @param string $appsOauthProxyUrl
+     *
      * @return DiscoverSettings
      */
     public function setAppsOauthProxyUrl($appsOauthProxyUrl)
     {
         $this->appsOauthProxyUrl = $appsOauthProxyUrl;
+
         return $this;
     }
 
@@ -193,11 +277,13 @@ class DiscoverSettings
 
     /**
      * @param string $appsHttpProxyUrl
+     *
      * @return DiscoverSettings
      */
     public function setAppsHttpProxyUrl($appsHttpProxyUrl)
     {
         $this->appsHttpProxyUrl = $appsHttpProxyUrl;
+
         return $this;
     }
 }

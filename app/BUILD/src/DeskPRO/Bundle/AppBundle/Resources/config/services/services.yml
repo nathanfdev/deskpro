@@ -39,7 +39,7 @@ services:
 
   discover_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\DiscoverSettingsResolver
-    arguments: ["@brand_aware_settings_resolver"]
+    arguments: ["@deskpro.app_env", "@brand_aware_settings_resolver"]
 
   agent_client_info_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\AgentClientInfoSettingsResolver

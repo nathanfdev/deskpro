@@ -59,8 +59,10 @@ export class AppsConfigBuilder {
     this.state.discoveryProps = {
       oauthProxyEndpoint: `${settings.apps_oauth_proxy_url}`,
       httpProxyEndpoint:  `${settings.apps_http_proxy_url}`,
+      helpdeskUuid:       `${settings.helpdesk_uuid}`,
       helpdeskUrl:        `${settings.helpdesk_url}`,
-      helpdeskBuild:      `${settings.build}`,
+      helpdeskBuild:      parseInt(settings.build, 10) || 0,
+      helpdeskBuildId:    parseInt(settings.build_id, 10) || 0,
       apiEndpoint:        `${settings.base_api_url}`
     };
 

@@ -28,10 +28,11 @@ export class ContextProps extends PropertyBag  {
    * @param {String} locationId
    * @param {String} tabId
    * @param {String} tabUrl
+   * @param {String} helpdeskUuid
    * @param undeclaredProps
    */
-  constructor({ type, entityId, locationId, tabId, tabUrl, ...undeclaredProps })  {
-    super({ type, entityId, locationId, tabId, tabUrl, ...undeclaredProps });
+  constructor({ type, entityId, locationId, tabId, tabUrl, helpdeskUuid, ...undeclaredProps })  {
+    super({ type, entityId, locationId, tabId, tabUrl, helpdeskUuid, ...undeclaredProps });
   }
 
   get type() { return this.props.type; }
@@ -43,4 +44,7 @@ export class ContextProps extends PropertyBag  {
   get tabId() { return this.props.tabId; }
 
   get tabUrl() { return this.props.tabUrl; }
+
+  // eslint-disable-line no-unused-vars
+  get helpdeskUuid() { return this.props.helpdeskUuid; }
 }
