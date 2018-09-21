@@ -584,7 +584,7 @@ JS;
             $bs       = $this->container->getBlobStorage();
             $raw_file = $bs->copyBlobRecordToString($blob);
 
-            $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type, $props);
+            $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type, array_merge($props, ['is_temp' => true]));
             unset($raw_file);
         } else {
             $file   = $this->request->files->get('file-upload');
@@ -604,7 +604,7 @@ JS;
                 return $this->createJsonResponse([$error]);
             }
 
-            $blob = $accept->accept($file, false, $props);
+            $blob = $accept->accept($file, true, $props);
         }
 
         if ($this->in->getString('attach_to_object')) {
