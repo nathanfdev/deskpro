@@ -218,6 +218,14 @@ class ChatMessage extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getPersonName()
+    {
+        return $this->person_name;
+    }
+
+    /**
      * Author id (legacy).
      *
      * @JMS\VirtualProperty()
@@ -257,6 +265,10 @@ class ChatMessage extends DomainObject
      */
     public function getConversationId()
     {
+        if (!$this->getConversation()) {
+            return 0;
+        }
+
         return $this->getConversation()->getId();
     }
 

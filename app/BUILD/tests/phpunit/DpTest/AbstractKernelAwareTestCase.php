@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\Template;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\EmailBundle\Templating\Templates\TemplateCustom;
 use DpSys\Kernel\ApiKernel;
+use DpSys\Kernel\MessengerKernel;
 use DpSys\Kernel\PortalKernel;
 
 abstract class AbstractKernelAwareTestCase extends DeskProTestCase
@@ -23,6 +24,11 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
      * @var PortalKernel|null
      */
     protected static $portal_kernel;
+
+    /**
+     * @var MessengerKernel|null
+     */
+    protected static $messengerKernel;
 
     /**
      * @var bool
@@ -104,13 +110,13 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             self::$rebootKernel = false;
         }
 
-        if (self::$portal_kernel && !$force_reboot) {
-            return self::$portal_kernel;
+        if (self::$messengerKernel && !$force_reboot) {
+            return self::$messengerKernel;
         }
 
-        if (self::$portal_kernel) {
-            self::$portal_kernel->shutdown();
-            $kernel = self::$portal_kernel;
+        if (self::$messengerKernel) {
+            self::$messengerKernel->shutdown();
+            $kernel = self::$messengerKernel;
         } else {
             require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
             $kernel = new PortalKernel($GLOBALS['DP_ENV']->getEnvId(), $GLOBALS['DP_ENV']->isDebug(), $GLOBALS['DP_ENV']);
@@ -118,9 +124,40 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
         $kernel->boot();
 
-        self::$portal_kernel = $kernel;
+        self::$messengerKernel = $kernel;
 
-        return self::$portal_kernel;
+        return self::$messengerKernel;
+    }
+
+    /**
+     * @param bool $force_reboot
+     *
+     * @return MessengerKernel
+     */
+    protected function getMessengerKernel($force_reboot = false)
+    {
+        if (self::$rebootKernel) {
+            $force_reboot       = true;
+            self::$rebootKernel = false;
+        }
+
+        if (self::$messengerKernel && !$force_reboot) {
+            return self::$messengerKernel;
+        }
+
+        if (self::$messengerKernel) {
+            self::$messengerKernel->shutdown();
+            $kernel = self::$messengerKernel;
+        } else {
+            require_once DP_ROOT.'/sys/Kernel/MessengerKernel.php';
+            $kernel = new MessengerKernel($GLOBALS['DP_ENV']->getEnvId(), $GLOBALS['DP_ENV']->isDebug(), $GLOBALS['DP_ENV']);
+        }
+
+        $kernel->boot();
+
+        self::$messengerKernel = $kernel;
+
+        return self::$messengerKernel;
     }
 
     /**

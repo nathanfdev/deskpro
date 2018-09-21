@@ -95,6 +95,46 @@ class ChatController extends BaseController
     }
 
     /**
+     * @param string  $idToken
+     * @param Request $request
+     *
+     * @ApiDoc(
+     *     section="Messenger",
+     *     resourceDescription="send chat message",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     requirements={
+     *          {
+     *              "name"="idToken",
+     *              "requirement"="[a-zA-Z0-9\\-]+",
+     *              "description"="id-accessToken to find a chat",
+     *              "dataType"="string"
+     *          }
+     *      }
+     * )
+     *
+     * @Rest\Post("/{idToken}/send", requirements={"idToken"="(\d+)\-([a-zA-Z0-9]{30})"})
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return View
+     */
+    public function sendMessageAction($idToken, Request $request)
+    {
+        $chat = $this->findChatByIdToken($idToken);
+
+        $chatMapper = $this->get('messenger.mappers.chat');
+        $message    = $chatMapper->createChatMessage($request->request->all());
+        $chat->addMessage($message);
+        $this->em()->persist($message);
+        $this->em()->persist($chat);
+        $this->em()->flush();
+
+        return View::create($chatMapper->mapMessageToArray($message), Response::HTTP_CREATED);
+    }
+
+    /**
      * @param $idToken
      *
      * @return ChatConversation|null|object
