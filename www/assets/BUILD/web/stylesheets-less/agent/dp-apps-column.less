@@ -74,8 +74,7 @@
 
 }
 
-.with-apps-sidebar-expanded
-{
+.with-apps-sidebar-expanded {
   .layout-sidebar {
     width: @apps-column-width-expanded;
     box-shadow: 0 0 19px 0 rgba(0,0,0,0.39);
@@ -86,8 +85,13 @@
   }
 }
 
-.with-apps-sidebar-collapsed
-{
+.with-apps-sidebar-expanded.with-apps-sidebar-pinned {
+  .layout-sidebar {
+    box-shadow: none;
+  }
+}
+
+.with-apps-sidebar-collapsed {
   .layout-sidebar {
     width: @apps-column-width-collapsed; // 240-40
   }
