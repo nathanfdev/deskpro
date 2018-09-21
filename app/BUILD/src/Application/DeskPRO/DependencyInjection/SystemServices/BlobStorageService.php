@@ -138,6 +138,7 @@ class BlobStorageService
         $bs->setAdapterForTag('brand_asset.main', 'db');
         $bs->setAdapterForTag('brand_asset.portal_css', 'db');
         $bs->setAdapterForTag('brand_asset.portal_rtl_css', 'db');
+        $bs->setAdapterForTag('apps.asset', 'db');
 
         return $bs;
     }
