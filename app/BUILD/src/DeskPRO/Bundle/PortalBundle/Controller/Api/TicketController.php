@@ -122,6 +122,11 @@ class TicketController extends AbstractApiController
                 if (!$this->getUser() || $this->getUser() instanceof PersonGuest) {
                     // if the user is not authorized then don't allow to change person entity
                     $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($ticket->getPerson()));
+                    // if the user is not authorized then don't allow to change person entity email
+                    // form configured to set email to `primary_email` field
+                    if ($person->getPrimaryEmail()) {
+                        $this->getManager()->getUnitOfWork()->clearEntityChangeSet(spl_object_hash($person->getPrimaryEmail()));
+                    }
                 }
 
                 $ticketService->acceptNewTicket($ticket, $request, 'widget');
