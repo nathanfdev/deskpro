@@ -275,6 +275,7 @@ abstract class AbstractFetcher
 
             $source->blob = $blob;
 
+            $this->fetchedSourcesCount++;
             $source->setEmailAccountLog($this->getEmailAccountLog());
 
             App::getOrm()->persist($source);

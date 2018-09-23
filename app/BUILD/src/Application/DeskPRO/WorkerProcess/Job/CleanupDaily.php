@@ -8,9 +8,11 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TmpData;
+use Carbon\Carbon;
 use DeskPRO\Bundle\UpdateBundle\Service\UpdateCleanup;
 use Exception;
 use Monolog\Logger;
+use const PHP_INT_MAX;
 use Symfony\Bridge\Monolog\Handler\DebugHandler;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -40,6 +42,7 @@ class CleanupDaily extends AbstractJob
         $this->_cleanupRateLimitLogs();
         $this->_cleanupOldBuilds();
         $this->_cleanHttpCache();
+        $this->_cleanupEmailAccountLogs();
     }
 
     private function _cleanupLogItems()
@@ -359,5 +362,32 @@ class CleanupDaily extends AbstractJob
             $fs->remove($maybeDeleteDirs);
         } catch (Exception $e) {
         }
+    }
+
+    /**
+     * Cluanup old email_account_logs
+     */
+    private function _cleanupEmailAccountLogs()
+    {
+        // removed logs
+        $removed = 0;
+
+        // settings and database services
+        $cf = $this->getContainer()->get('settings_resolver')->getGlobalSettings();
+        $db = $this->getContainer()->get('database_connection');
+
+        // Remove all logs with 0 emails and older than 24 hours
+        $removed += $db->executeUpdate(
+            'DELETE FROM `email_account_logs` WHERE `num_emails` = 0 AND `date_created` < ?',
+            [Carbon::now()->subHours(24)->toDateTimeString()]
+        );
+
+        // Remove all logs with more than 1 email older then X days (from settings)
+        $removed += $db->executeUpdate(
+            'DELETE FROM `email_account_logs` WHERE `num_emails` > 0 AND `date_created` < ?',
+            [Carbon::now()->subDays($cf->get('email_log.cleanup.delay_days', 7))->toDateTimeString()]
+        );
+
+        $this->logStatus("Removed {$removed} email account log items");
     }
 }

@@ -1162,8 +1162,12 @@ return [
     'api.disable_location_header_strip' => false,
 
     /**
+     * Email logs cleanup
+     */
+    'email_log.cleanup.delay_days' => 7,
+
+    /**
      * The hostname of deskpro's own oauth2 proxy
      */
-
     'dpoauth2proxy.host' => 'auth.deskpro.com',
 ];
