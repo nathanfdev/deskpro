@@ -12,7 +12,6 @@ use Carbon\Carbon;
 use DeskPRO\Bundle\UpdateBundle\Service\UpdateCleanup;
 use Exception;
 use Monolog\Logger;
-use const PHP_INT_MAX;
 use Symfony\Bridge\Monolog\Handler\DebugHandler;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
