@@ -90,14 +90,14 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 $options['password']                = $pop3Config->password;
                 $options['disable_cert_validation'] = $pop3Config->disable_cert_validation;
 
-                $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+                $this->addToSessionLog("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
                 if ($pop3Config->secure_mode == 'ssl') {
                     $options['ssl'] = 'SSL';
-                    $this->logger->log('SSL Enabled', 'debug');
+                    $this->addToSessionLog('SSL Enabled', 'debug');
                 } elseif ($pop3Config->secure_mode == 'tls') {
                     $options['ssl'] = 'TLS';
-                    $this->logger->log('TLS Enabled', 'debug');
+                    $this->addToSessionLog('TLS Enabled', 'debug');
                 }
                 break;
 
@@ -110,10 +110,10 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 $options['user']     = $gmailConfig->user;
                 $options['password'] = $gmailConfig->password;
 
-                $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+                $this->addToSessionLog("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
                 $options['ssl'] = 'SSL';
-                $this->logger->log('SSL Enabled', 'debug');
+                $this->addToSessionLog('SSL Enabled', 'debug');
                 break;
 
             case 'office365':
@@ -125,10 +125,10 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 $options['user']     = $config->user;
                 $options['password'] = $config->password;
 
-                $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+                $this->addToSessionLog("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
                 $options['ssl'] = 'SSL';
-                $this->logger->log('SSL Enabled', 'debug');
+                $this->addToSessionLog('SSL Enabled', 'debug');
                 break;
 
             default:
@@ -137,9 +137,14 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
 
         $options['logger'] = $this->logger;
 
-        $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3($options);
+        try {
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3($options);
+            $this->addToSessionLog("Successfully connected to {$options['host']}");
 
-        return $storage;
+            return $storage;
+        } catch (\Zend\Mail\Protocol\Exception\RuntimeException $exception) {
+            $this->addToSessionLog($exception->getMessage());
+        }
     }
 
     public function close()
@@ -194,12 +199,12 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 } catch (\Exception $e) {
                     $capas = '<unknown>';
                 }
-                $this->logger->log("Email account does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
+                $this->addToSessionLog("Email account does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
 
                 $e                      = new \InvalidArgumentException('Email account does not support uniqueid');
-                $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
+                $einfo                  = SystemErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
-                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
+                SystemErrorHandler::logErrorInfo($einfo);
 
                 $this->messageList = [];
 
@@ -208,16 +213,16 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
 
             $idToNum = array_flip($this->getStorage()->getUniqueId());
 
-            $this->logger->log('Server has '.count($idToNum).' messages', 'debug');
+            $this->addToSessionLog('Server has '.count($idToNum).' messages', 'debug');
 
             if (count($idToNum) > 2500) {
-                $this->logger->log('Server has >= 2500 messages, breaking', 'ERR');
+                $this->addToSessionLog('Server has >= 2500 messages, breaking', 'ERR');
                 $this->messageList = [];
 
                 $e                      = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
-                $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
+                $einfo                  = SystemErrorHandler::getExceptionInfo($e);
                 $einfo['no_send_error'] = true;
-                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
+                SystemErrorHandler::logErrorInfo($einfo);
 
                 return;
             }
@@ -228,11 +233,11 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 WHERE email_account_id = ?
             ', [$this->account->getId()]);
 
-            $this->logger->log('System has '.count($readIds).' tracked IDs', 'debug');
+            $this->addToSessionLog('System has '.count($readIds).' tracked IDs', 'debug');
 
             foreach ($readIds as $id) {
                 if (isset($idToNum[$id])) {
-                    $this->logger->log(sprintf('Skipping message #%s because UID %s', $idToNum[$id], $id), 'debug');
+                    $this->addToSessionLog(sprintf('Skipping message #%s because UID %s', $idToNum[$id], $id), 'debug');
                     unset($idToNum[$id]);
                 }
             }
@@ -248,7 +253,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 }
             }
 
-            $this->logger->log('Message list contains '.count($this->messageList).' new messages', 'debug');
+            $this->addToSessionLog('Message list contains '.count($this->messageList).' new messages', 'debug');
         } else {
             $list = $this->getStorage()->getSize();
 
@@ -257,7 +262,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 $this->messageList[] = ['num' => $num, 'size' => $size, 'uid' => null];
             }
 
-            $this->logger->log('Message list contains '.count($this->messageList).' messages', 'debug');
+            $this->addToSessionLog('Message list contains '.count($this->messageList).' messages', 'debug');
         }
     }
 
@@ -274,7 +279,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
         $this->_initMessageList();
 
         ++$this->readCount;
-        $this->logger->log("Trying to read next ({$this->readCount} call)", 'debug');
+        $this->addToSessionLog("Trying to read next ({$this->readCount} call)", 'debug');
 
         $next = array_shift($this->messageList);
         if (!$next) {
@@ -319,7 +324,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
 
         $startTime = microtime(true);
 
-        $this->logger->log("Fetching message #$messageNum", 'debug');
+        $this->addToSessionLog("Fetching message #$messageNum", 'debug');
 
         $rawMessage       = new RawMessage();
         $rawMessage->id   = $messageNum;
@@ -330,7 +335,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
             $rawMessage->content = $this->getStorage()->getProtocol()->top($messageNum)."\n\n";
         } else {
             if ($memoryProtection) {
-                $this->logger->logInfo('Memory protected enabled');
+                $this->addToSessionLog('Memory protected enabled', 'info');
                 $contentFile = dp_get_backup_dir().'/eml-'.uniqid('', true).'.eml';
                 $fp          = fopen($contentFile, 'w');
                 if ($fp) {
@@ -348,7 +353,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                     SystemErrorHandler::logException($e, false);
                 }
 
-                $this->logger->logInfo('Message source saved to: '.$contentFile);
+                $this->addToSessionLog('Message source saved to: '.$contentFile);
                 $rawMessage->content = file_get_contents($contentFile);
                 $this->backupFile    = $contentFile;
             }
@@ -359,10 +364,10 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
         }
         $headers = null;
 
-        $this->logger->log(sprintf('Message size: %s bytes', $messageSize), 'debug');
+        $this->addToSessionLog(sprintf('Message size: %s bytes', $messageSize), 'debug');
 
         if ($rawMessage->uid) {
-            $this->logger->log(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
+            $this->addToSessionLog(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
         }
 
         $EOL = "\n";
@@ -384,10 +389,10 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
 
         if ($this->maxSize && $rawMessage->size > $this->maxSize) {
             $rawMessage->too_big = true;
-            $this->logger->log('Setting too_big flag', 'debug');
+            $this->addToSessionLog('Setting too_big flag', 'debug');
         }
 
-        $this->logger->log(sprintf('Got message %d %s. Took %0.2f seconds.', $messageNum, $messageId, microtime(true) - $startTime), 'debug');
+        $this->addToSessionLog(sprintf('Got message %d %s. Took %0.2f seconds.', $messageNum, $messageId, microtime(true) - $startTime), 'debug');
 
         return $rawMessage;
     }
@@ -409,16 +414,16 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
         }
 
         if ($this->account->getOption('keep_read')) {
-            $this->logger->log(sprintf('Done read, but keep_read is enabled'), 'debug');
+            $this->addToSessionLog(sprintf('Done read, but keep_read is enabled'), 'debug');
 
             return;
         }
 
-        $this->logger->log("Marking message as deleted: $id", 'debug');
+        $this->addToSessionLog("Marking message as deleted: $id", 'debug');
         try {
             $this->getStorage()->removeMessage($id);
         } catch (\Exception $e) {
-            $this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
+            $this->addToSessionLog("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
             throw $e;
         }
     }

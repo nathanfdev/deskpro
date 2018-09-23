@@ -9,6 +9,8 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
+use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
+use Email;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 
@@ -41,6 +43,21 @@ abstract class AbstractFetcher
     protected $maxSize = 0;
 
     /**
+     * Account session log
+     * @var array
+     */
+    protected $sessionLog = [];
+
+    /** @var EmailAccountLog */
+    protected $emailAccountLog;
+
+    /**
+     *
+     * @var int
+     */
+    protected $fetchedSourcesCount = 0;
+
+    /**
      * @param \Application\DeskPRO\Entity\EmailAccount $account
      * @param int                                      $maxSize The max size in bytes to read. 0 to disable
      */
@@ -54,6 +71,7 @@ abstract class AbstractFetcher
 
     protected function init()
     {
+        $this->getEmailAccountLog();
     }
 
     public function __destruct()
@@ -178,7 +196,7 @@ abstract class AbstractFetcher
         try {
             $rawMessage = $this->_readNext();
         } catch (\Exception $exception) {
-            $this->logger->log(sprintf('_readNext exception: %s', $exception->getMessage()), 'debug');
+            $this->addToSessionLog(sprintf('_readNext exception: %s', $exception->getMessage()), 'debug');
             if ($this->storage) {
                 try {
                     $this->storage->close();
@@ -229,7 +247,7 @@ abstract class AbstractFetcher
                     SET id = ?, email_account_id = ?, date_created = ?
                 ', [$rawMessage->uid, $this->account->getId(), date('Y-m-d H:i:s')]);
 
-                $this->logger->log(sprintf('Saved UID: %s', $rawMessage->uid), 'debug');
+                $this->addToSessionLog(sprintf('Saved UID: %s', $rawMessage->uid), 'debug');
             }
 
             if ($rawMessage->too_big) {
@@ -257,12 +275,14 @@ abstract class AbstractFetcher
 
             $source->blob = $blob;
 
+            $source->setEmailAccountLog($this->getEmailAccountLog());
+
             App::getOrm()->persist($source);
             App::getOrm()->flush();
 
             App::getOrm()->commit();
 
-            $this->logger->log(sprintf('Committed message source: %s', $source->getId()), 'debug');
+            $this->addToSessionLog(sprintf('Committed message source: %s', $source->getId()), 'debug');
 
             //------------------------------
             // Delete message on the server
@@ -270,7 +290,7 @@ abstract class AbstractFetcher
 
             $this->_doneRead($rawMessage->id);
         } catch (\Exception $exception) {
-            $this->logger->log(sprintf('Save source error: %s', $exception->getMessage()), 'debug');
+            $this->addToSessionLog(sprintf('Save source error: %s', $exception->getMessage()), 'debug');
             App::getOrm()->rollback();
             if ($this->storage) {
                 try {
@@ -295,5 +315,64 @@ abstract class AbstractFetcher
     public function test()
     {
         return true;
+    }
+
+    /**
+     * Get count of fetched sources
+     *
+     * @return int
+     */
+    public function getFetchedSourcesCount()
+    {
+        return $this->fetchedSourcesCount;
+    }
+
+    /**
+     * Add record to account session log
+     *
+     * @param $message
+     * @param string $priority
+     */
+    public function addToSessionLog($message, $priority = 'info')
+    {
+        $this->sessionLog[] = $message;
+        $this->logger->log($message, $priority);
+    }
+
+    /**
+     * Get session log
+     *
+     * @return array
+     */
+    public function getSessionLog()
+    {
+        return $this->sessionLog;
+    }
+
+    /**
+     * @param EmailAccountLog $emailAccountLog
+     */
+    public function setEmailAccountLog(EmailAccountLog $emailAccountLog)
+    {
+        $this->emailAccountLog = $emailAccountLog;
+    }
+
+    /**
+     * @return EmailAccountLog
+     */
+    public function getEmailAccountLog()
+    {
+        if (is_null($this->emailAccountLog)) {
+            $emailAccountLog = new EmailAccountLog(
+                $this->account, $this->account->incoming_account->getType()
+            );
+
+            App::getOrm()->persist($emailAccountLog);
+            App::getOrm()->flush();
+
+            $this->setEmailAccountLog($emailAccountLog);
+        }
+
+        return $this->emailAccountLog;
     }
 }

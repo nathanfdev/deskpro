@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -183,6 +184,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      * @var \DateTime
      */
     protected $date_created;
+
+    /**
+     * @var \DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog
+     */
+    protected $email_account_log;
 
     /**
      * How many times the email has been processed.
@@ -421,6 +427,22 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         return $this->parsed_headers;
     }
 
+    /**
+     * @param EmailAccountLog $emailAccountLog
+     */
+    public function setEmailAccountLog(EmailAccountLog $emailAccountLog)
+    {
+        $this->setModelField('email_account_log', $emailAccountLog);
+    }
+
+    /**
+     * @return EmailAccountLog
+     */
+    public function getEmailAccountLog()
+    {
+        return $this->email_account_log;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -441,6 +463,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                 ],
                 'status_idx' => ['columns' => ['status']],
                 'from_idx'   => ['columns' => ['from_email']],
+                'IDX_6F9D0D3D15AC8F3C' => ['columns' => ['email_account_log_id']]
             ],
         ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -593,6 +616,20 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'joinColumns'  => [
                 [
                     'name'                 => 'log_blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'email_account_log',
+            'targetEntity' => EmailAccountLog::class,
+            'dpApi'        => true,
+            'dpApiDeep'    => true,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'email_account_log_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'set null',

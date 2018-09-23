@@ -14,6 +14,7 @@ use Application\DeskPRO\EmailGateway\Runner;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
@@ -262,6 +263,26 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         $info['source']     = $this->getApiData($source);
         $info['source_log'] = null;
+        $info['account_log'] = null;
+
+        if ($source->email_account_log instanceof EmailAccountLog) {
+            try {
+                $emailAccountLogBlob = $source->email_account_log->getBlob();
+
+                $accountLog =
+                    $this->getContainer()->get('blob.storage')->copyBlobRecordToString(
+                        $emailAccountLogBlob
+                    );
+
+                if ($emailAccountLogBlob->content_type === 'application/gzip') {
+                    $accountLog = gzdecode($accountLog);
+                }
+
+                $info['account_log'] = $accountLog;
+            } catch (\Exception $e) {
+                $info['source_log'] = "Failed to read log file ({$e->getMessage()})";
+            }
+        }
 
         if ($source->log_blob) {
             try {

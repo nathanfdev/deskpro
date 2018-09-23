@@ -78,7 +78,7 @@ class ImapSocket extends AbstractFetcher
 
         switch ($incomingAccount->getType()) {
             case 'gmail':
-                $this->logger->log('Trying to refresh gmail access token', 'debug');
+                $this->addToSessionLog('Trying to refresh gmail access token', 'debug');
                 $options = self::initOptions(
                     $incomingAccount,
                     App::$container->get('settings_resolver')->getGlobalSettings()
@@ -93,7 +93,7 @@ class ImapSocket extends AbstractFetcher
         $this->archiveMailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
         $this->readMailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
-        $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+        $this->addToSessionLog("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
         $options['logger'] = $this->logger;
 
@@ -127,7 +127,7 @@ class ImapSocket extends AbstractFetcher
             $this->messageUids = $this->protocol->search(['ALL']) ?: [];
         }
 
-        $this->logger->log('Read IDs: '.implode(', ', $this->messageUids), 'debug');
+        $this->addToSessionLog('Read IDs: '.implode(', ', $this->messageUids), 'debug');
 
         return $this->storage;
     }
@@ -187,14 +187,14 @@ class ImapSocket extends AbstractFetcher
         $rawMessage->uid  = $messageUid;
         $rawMessage->size = $this->storage->getSize($messageUid) ?: 0;
 
-        $this->logger->log(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
-        $this->logger->log(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
+        $this->addToSessionLog(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
+        $this->addToSessionLog(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
 
         if ($this->maxSize && $rawMessage->size && $rawMessage->size > $this->maxSize) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
             $rawMessage->content = $this->storage->getRawHeader($messageUid)."\n\n";
-            $this->logger->log('Message too big, only fetching headers', 'debug');
+            $this->addToSessionLog('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
             $rawMessage->content = $this->storage->getRawContent($messageUid);
@@ -230,17 +230,17 @@ class ImapSocket extends AbstractFetcher
             case self::MODE_READ:
                 // No need to mark message as read, its marked as read automatically by fetching the body
                 //$message->setFlag('seen', 1);
-                $this->logger->log("Marked $id as seen", 'debug');
+                $this->addToSessionLog("Marked $id as seen", 'debug');
                 break;
 
             case self::MODE_ARCHIVE:
                 $this->storage->moveMessage($id, $this->archiveMailbox);
-                $this->logger->log("Moved $id to {$this->archiveMailbox}", 'debug');
+                $this->addToSessionLog("Moved $id to {$this->archiveMailbox}", 'debug');
                 break;
 
             case self::MODE_DELETE:
                 $this->storage->removeMessage($id);
-                $this->logger->log("Deleted $id", 'debug');
+                $this->addToSessionLog("Deleted $id", 'debug');
                 break;
 
             default:

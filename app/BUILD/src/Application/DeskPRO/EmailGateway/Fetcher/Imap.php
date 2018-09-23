@@ -129,7 +129,7 @@ class Imap extends AbstractFetcher
         $this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
         $this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
-        $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+        $this->addToSessionLog("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
 
         $options['logger'] = $this->logger;
 
@@ -154,7 +154,7 @@ class Imap extends AbstractFetcher
             $this->message_uids = $this->storage->getAllMessageUids();
         }
 
-        $this->logger->log('Read IDs: '.implode(', ', $this->message_uids), 'debug');
+        $this->addToSessionLog('Read IDs: '.implode(', ', $this->message_uids), 'debug');
 
         return $this->storage;
     }
@@ -194,14 +194,14 @@ class Imap extends AbstractFetcher
         $raw_message->uid  = $message_uid;
         $raw_message->size = $this->storage->getMessageSize($message_uid) ?: 0;
 
-        $this->logger->log(sprintf('Message UID: %s', $raw_message->uid), 'debug');
-        $this->logger->log(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
+        $this->addToSessionLog(sprintf('Message UID: %s', $raw_message->uid), 'debug');
+        $this->addToSessionLog(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
 
         if ($this->maxSize && $raw_message->size && $raw_message->size > $this->maxSize) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
             $raw_message->content = $this->storage->getRawHeaders($message_uid)."\n\n";
-            $this->logger->log('Message too big, only fetching headers', 'debug');
+            $this->addToSessionLog('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
             $raw_message->content = $this->storage->getRawMessage($message_uid);
@@ -237,17 +237,17 @@ class Imap extends AbstractFetcher
             case self::MODE_READ:
                 // No need to mark message as read, its marked as read automatically by fetching the body
                 //$message->setFlag('seen', 1);
-                $this->logger->log("Marked $id as seen", 'debug');
+                $this->addToSessionLog("Marked $id as seen", 'debug');
                 break;
 
             case self::MODE_ARCHIVE:
                 $this->storage->moveMessageMailbox($id, $this->archive_mailbox);
-                $this->logger->log("Moved $id to {$this->archive_mailbox}", 'debug');
+                $this->addToSessionLog("Moved $id to {$this->archive_mailbox}", 'debug');
                 break;
 
             case self::MODE_DELETE:
                 $this->storage->deleteMessage($id);
-                $this->logger->log("Deleted $id", 'debug');
+                $this->addToSessionLog("Deleted $id", 'debug');
                 break;
 
             default:

@@ -44,12 +44,12 @@ class PlainMailDir extends AbstractFetcher
     {
         $this->maildir = $this->account['connection_options']['dir'];
 
-        $this->logger->logDebug("Reading from: {$this->maildir}");
+        $this->addToSessionLog("Reading from: {$this->maildir}", 'debug');
 
         if (is_dir($this->maildir)) {
             $this->dir = dir($this->maildir);
         } else {
-            $this->logger->logDebug('Directory does not exist');
+            $this->addToSessionLog('Directory does not exist', 'debug');
 
             // Dir doesnt exist, but that doesnt mean error
             // Just means no mail. Checking on dir should be a separate test at setup time
@@ -121,7 +121,7 @@ class PlainMailDir extends AbstractFetcher
         $this->_initMessageList();
 
         ++$this->readCount;
-        $this->logger->log("Trying to read next ({$this->readCount} call)", 'debug');
+        $this->addToSessionLog("Trying to read next ({$this->readCount} call)", 'debug');
 
         $next = array_shift($this->messageList);
         if (!$next) {
@@ -132,7 +132,7 @@ class PlainMailDir extends AbstractFetcher
 
         if (!is_writable($mailfile)) {
             error_log("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
-            $this->logger->logError("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
+            $this->addToSessionLog("Skipping mailfile $mailfile because it is not writable so we cant delete it after", 'error');
 
             return $this->_readNext();
         }
@@ -141,7 +141,7 @@ class PlainMailDir extends AbstractFetcher
 
         $startTime = microtime(true);
 
-        $this->logger->log("Fetching message $next", 'debug');
+        $this->addToSessionLog("Fetching message $next", 'debug');
 
         $rawMessage       = new RawMessage();
         $rawMessage->id   = $next;
@@ -167,7 +167,7 @@ class PlainMailDir extends AbstractFetcher
             $rawMessage->too_big = true;
         }
 
-        $this->logger->log(sprintf('Got message Took %0.2f seconds.', microtime(true) - $startTime), 'debug');
+        $this->addToSessionLog(sprintf('Got message Took %0.2f seconds.', microtime(true) - $startTime), 'debug');
 
         return $rawMessage;
     }
@@ -179,12 +179,12 @@ class PlainMailDir extends AbstractFetcher
      */
     protected function _doneRead($id)
     {
-        $this->logger->log("Marking message as deleted: $id", 'debug');
+        $this->addToSessionLog("Marking message as deleted: $id", 'debug');
 
         if (is_file($this->maildir.'/'.$id) && !@unlink($this->maildir.'/'.$id)) {
             sleep(1);
             if (is_file($this->maildir.'/'.$id) && !unlink($this->maildir.'/'.$id)) {
-                $this->logger->logError('Failed to delete source file: '.$this->maildir.'/'.$id);
+                $this->addToSessionLog('Failed to delete source file: '.$this->maildir.'/'.$id, 'error');
             }
         }
     }

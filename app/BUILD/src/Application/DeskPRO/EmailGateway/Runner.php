@@ -12,9 +12,11 @@ use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
 use Application\DeskPRO\EmailGateway\Fetcher\BatchFetcher;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
+use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Component\Util\MathUtils;
@@ -24,6 +26,7 @@ use Orb\Log\LogItem;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
+use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
@@ -951,6 +954,31 @@ BODY;
             memory_get_peak_usage() / 1024 / 1024,
             memory_get_usage() / 1024 / 1024
         ), 'info');
+
+        // Add account processing log
+        $dpBlobStorage = App::$container->getBlobStorage();
+        $entityManager = App::$container->getEm();
+        try {
+            $blob = $dpBlobStorage->createBlobRecordFromString(
+                implode(PHP_EOL, $fetcher->getSessionLog()),
+                'email-gateway-runner.'.date('Y-m-d.H-i-s').'.'.Strings::random(4, Strings::CHARS_ALPHA_IU).'.log',
+                'plain/text',
+                ['tag' => 'logs.email_gateway_runner_log', 'prefer_gzipped' => true]
+            );
+
+            if ($blob instanceof Blob) {
+                $emailAccountLog = $fetcher->getEmailAccountLog();
+
+                $emailAccountLog->setBlob($blob);
+                $emailAccountLog->setNumEmails($fetcher->getFetchedSourcesCount());
+
+                $entityManager->persist($emailAccountLog);
+                $entityManager->flush();
+            }
+
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        }
     }
 
     /**

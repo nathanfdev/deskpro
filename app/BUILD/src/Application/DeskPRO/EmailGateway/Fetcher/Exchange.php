@@ -112,7 +112,7 @@ class Exchange extends AbstractFetcher
         $this->archiveMailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
         $this->readMailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
-        $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+        $this->addToSessionLog("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
         $options['logger'] = $this->logger;
 
         if (isset($GLOBALS['DP_OUTPUT'])) {
@@ -144,7 +144,7 @@ class Exchange extends AbstractFetcher
             $this->messages = [];
         }
 
-        $this->logger->log(sprintf('Read %d messages', count($this->messages)), 'debug');
+        $this->addToSessionLog(sprintf('Read %d messages', count($this->messages)), 'debug');
 
         return $this->storage;
     }
@@ -182,10 +182,10 @@ class Exchange extends AbstractFetcher
         try {
             return $this->_doReadNext();
         } catch (\Exception $e) {
-            $this->logger->logError(sprintf('Exchange error: <%s> [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
-            $this->logger->logDebug($e->getTraceAsString());
-            $this->logger->logInfo('Last request: '.$this->storage->getLastRequest());
-            $this->logger->logInfo('Last response: '.$this->storage->getLastResponse());
+            $this->addToSessionLog(sprintf('Exchange error: <%s> [%s] %s', get_class($e), $e->getCode(), $e->getMessage()), 'error');
+            $this->addToSessionLog($e->getTraceAsString(), 'debug');
+            $this->addToSessionLog('Last request: '.$this->storage->getLastRequest());
+            $this->addToSessionLog('Last response: '.$this->storage->getLastResponse());
             throw $e;
         }
     }
@@ -225,7 +225,7 @@ class Exchange extends AbstractFetcher
             // So, we won't store the whole message, only the headers.
             $rawMessage->content = $this->storage->getRawHeaders($message);
             $rawMessage->too_big = true;
-            $this->logger->log('Setting too_big flag', 'debug');
+            $this->addToSessionLog('Setting too_big flag', 'debug');
         } else {
             // Otherwise store the whole message
             $rawMessage->content = $this->storage->getRawMessage($messageId);
@@ -233,10 +233,10 @@ class Exchange extends AbstractFetcher
 
         $headers = null;
 
-        $this->logger->log(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
+        $this->addToSessionLog(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
 
         if ($rawMessage->uid) {
-            $this->logger->log(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
+            $this->addToSessionLog(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
         }
 
         $EOL = "\n";
