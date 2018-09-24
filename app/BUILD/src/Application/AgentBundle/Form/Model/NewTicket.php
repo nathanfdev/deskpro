@@ -417,7 +417,8 @@ class NewTicket
         // Message Attachments
         foreach ($this->attach as $blob_id) {
             $blob = $this->_em->getRepository(Blob::class)->find($blob_id);
-
+            $blob->setIsTemp(false);
+            $this->_em->persist($blob);
             if ($this->_em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
                 $blob = clone $blob;
                 $this->_em->persist($blob);
