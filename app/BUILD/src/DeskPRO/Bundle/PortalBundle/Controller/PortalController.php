@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
@@ -459,14 +458,7 @@ class PortalController extends AbstractController
                 'size'      => $blob->getReadableFilesize(),
                 'icon_html' => $this->get('icon_factory')->makeFileIcon($blob),
                 'is_image'  => $blob->isImage(),
-                'url'       => $this->generateUrl(
-                    'serve_blob',
-                    [
-                        'blob_auth_id' => $blob->getAuthcode(),
-                        'filename'     => $blob->getFilenameSafe(),
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
+                'url'       => $blob->getDownloadUrl(true),
             ],
         ]);
     }
