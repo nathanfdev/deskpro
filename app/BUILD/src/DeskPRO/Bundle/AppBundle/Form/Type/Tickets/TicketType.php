@@ -306,6 +306,29 @@ class TicketType extends AbstractType
                 },
             ]);
         }
+
+        $adminFields = [
+            'date_feedback_rating',
+            'date_resolved',
+            'date_archived',
+            'date_first_agent_assign',
+            'date_first_agent_reply',
+            'date_last_agent_reply',
+            'date_last_user_reply',
+            'date_agent_waiting',
+            'date_user_waiting',
+            'date_status',
+            'date_on_hold',
+            'date_locked',
+            'total_user_waiting',
+            'total_to_first_reply',
+        ];
+
+        foreach ($adminFields as $adminField) {
+            if (!isset($data[$adminField]) && $form->has($adminField)) {
+                $form->remove($adminField);
+            }
+        }
     }
 
     /**
