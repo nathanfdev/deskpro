@@ -906,13 +906,17 @@ class TicketMessage extends DomainObject
     /**
      * Set date created.
      *
-     * @param \DateTime $dat_created
+     * @param \DateTime $dateCreated
      *
      * @return $this
      */
-    public function setDateCreated(\DateTime $dat_created)
+    public function setDateCreated(\DateTime $dateCreated = null)
     {
-        $this->setModelField('date_created', $dat_created);
+        if (!$dateCreated) {
+            $dateCreated = new \DateTime();
+        }
+
+        $this->setModelField('date_created', $dateCreated);
 
         return $this;
     }
