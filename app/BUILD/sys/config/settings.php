@@ -1159,5 +1159,5 @@ return [
      * The hostname of deskpro's own oauth2 proxy
      */
 
-    'dpoauth2proxy.host' => '',
+    'dpoauth2proxy.host' => 'auth.deskpro.com',
 ];
