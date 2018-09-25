@@ -7,7 +7,11 @@ use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\Settings\Settings;
+use function array_filter;
+use function array_intersect_key;
+use function array_key_exists;
 use Doctrine\ORM\EntityManager;
+use function in_array;
 use Orb\Util\Arrays;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -136,7 +140,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
     protected function getTicketByRefOrId(TicketRepository $entityRepository, array $matcher)
     {
         $ticketPermissionsChecker = null;
-        if ($this->person instanceof Person) {
+        if ($this->person instanceof Person && in_array($matcher['object'], $this->restrictedObjects)) {
             /** @var \Application\DeskPRO\People\PermissionChecker\TicketChecker $ticketPermissionsChecker */
             $ticketPermissionsChecker = $this->person->getPermissionsManager()->get('TicketChecker');
         }
@@ -204,6 +208,23 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
         }
 
         return $isAllowed;
+    }
+
+    /**
+     * Remove object we don't need to search for
+     *
+     * @param array $limitObjects
+     * @return void
+     */
+    protected function limitResultingObjects(array $limitObjects = [])
+    {
+        if (count($limitObjects) > 0) {
+            $objects = array_map(function ($object) {
+                return [$object => $this->objects[$object]];
+            }, $limitObjects);
+
+            $this->objects = Arrays::collapse($objects);
+        }
     }
 
     /**

@@ -2559,4 +2559,27 @@ class Arrays
 
         return $array;
     }
+
+    /**
+     * Collapse an array of arrays into a single array.
+     *
+     * @param  array  $array
+     * @return array
+     */
+    public static function collapse($array)
+    {
+        $results = [];
+
+        foreach ($array as $values) {
+            if ($values instanceof Collection) {
+                $values = $values->toArray();
+            } elseif (! is_array($values)) {
+                continue;
+            }
+
+            $results = array_merge($results, $values);
+        }
+
+        return $results;
+    }
 }
