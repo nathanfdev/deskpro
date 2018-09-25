@@ -114,7 +114,7 @@ class Result
      */
     public function getRedirectUrl()
     {
-        if (!$this->isRedirectRequired() or !isset($this->_messages['redirect_url'])) {
+        if (!$this->isRedirectRequired() or !isset($this->_messages[self::MSG_REDIRECT])) {
             throw new \UnexpectedValueException('The result does not specify redirection');
         }
 

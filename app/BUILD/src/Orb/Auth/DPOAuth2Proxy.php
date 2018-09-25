@@ -14,6 +14,8 @@ class DPOAuth2Proxy
 
     private $jwtSecret;
 
+    private $useHttps;
+
     /**
      * @param DeskproContainer $container
      * @return DPOAuth2Proxy
@@ -21,20 +23,39 @@ class DPOAuth2Proxy
     public static function fromContainer(DeskproContainer $container)
     {
         $host = $container->getSettingsResolver()->getGlobalSettings()->get('dpoauth2proxy.host', null);
+        $useHttps = $container->getSettingsResolver()->getGlobalSettings()->get('dpoauth2proxy.use_https', true);
         $secret = $container->getSettingsResolver()->getGlobalSettings()->get('core.app_secret', null);
 
-        return new DPOAuth2Proxy($host, $secret);
+        return new DPOAuth2Proxy($host, $secret, $useHttps);
     }
 
     /**
      * DPOAuth2ProxyClient constructor.
      * @param string $oauth2ProxyHost
      * @param string $jwtSecret
+     * @param bool $useHttps
      */
-    public function __construct( $oauth2ProxyHost, $jwtSecret )
+    public function __construct( $oauth2ProxyHost, $jwtSecret, $useHttps )
     {
         $this->oauth2ProxyHost = $oauth2ProxyHost;
         $this->jwtSecret = $jwtSecret;
+        $this->useHttps = $useHttps;
+    }
+
+    /**
+     * @param string $account
+     * @param string $provider
+     * @return string
+     */
+    public function buildEntrypointURL($account, $provider)
+    {
+        return sprintf(
+            "%s://%s/%s/%s/oauth2/start",
+            $this->useHttps ? 'https' : 'http',
+            $this->oauth2ProxyHost,
+            $account,
+            $provider
+        );
     }
 
     /**
@@ -57,7 +78,8 @@ class DPOAuth2Proxy
             ],
         ]);
 
-        $response = $httpClient->get("http://$this->oauth2ProxyHost/verify");
+        $url = sprintf("%s://%s/verify", $this->useHttps ? 'https' : 'http', $this->oauth2ProxyHost);
+        $response = $httpClient->get($url);
         if ($response->getStatusCode() === 200 ) {
             return true;
         }

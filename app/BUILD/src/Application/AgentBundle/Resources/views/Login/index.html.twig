@@ -336,9 +336,15 @@
           {% if authManager.hasLoginIconUsersources %}
             <div class="dp-usersource-list">
               {{ phrase('user.profile.or_connect_with') }}
-              {% for usersource in authManager.getLoginIconUsersources %}
-                {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
-              {% endfor %}
+
+                {% for usersource in authManager.getSocialLoginUsersources %}
+                    {{ render_usersource(usersource, 'social_login_btn', {return: return, type: 'agent'}) }}
+                {% endfor %}
+
+                {% for usersource in authManager.getLoginIconUsersources %}
+                    {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
+                {% endfor %}
+
             </div>
           {% endif %}
         </form>

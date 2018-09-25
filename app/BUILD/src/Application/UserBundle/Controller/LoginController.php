@@ -743,9 +743,21 @@ class LoginController extends AbstractController
 
                 $this->session->save();
 
-                $r = $this->redirect($result->getRedirectUrl());
-                $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
+                $redirectUrl = $result->getRedirectUrl();
+                $socialLogin = $this->request->query->get("social-login");
 
+                if ($socialLogin) {
+                    if (!defined("DPC_SITE_DOMAIN")) {
+                        $this->session->setFlash('login_failed', true);
+                        return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
+                    }
+
+                    $redirectUrl = str_replace("<provider>", $socialLogin, $redirectUrl);
+                    $redirectUrl = str_replace("<account>", DPC_SITE_DOMAIN, $redirectUrl);
+                }
+
+                $r = $this->redirect($redirectUrl);
+                $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
                 return $r;
 
                 // Otherwise its an error

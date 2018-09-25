@@ -171,6 +171,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         UsersourceAdapter\GooglePlus::class,
         UsersourceAdapter\Twitter::class,
         UsersourceAdapter\Saml::class,
+        UsersourceAdapter\DeskproOauth2Proxy::class,
     ];
 
     public function __construct()

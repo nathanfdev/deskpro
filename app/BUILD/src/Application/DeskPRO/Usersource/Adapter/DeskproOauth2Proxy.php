@@ -42,11 +42,8 @@ class DeskproOauth2Proxy extends AbstractAdapter implements ContainerAwareInterf
      */
     public function getCapabilities()
     {
-        return [];
-
         return [
-            UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,
-            UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
+            UsersourceInfo::CAPABILITY_SOCIAL_LOGIN,
         ];
     }
 

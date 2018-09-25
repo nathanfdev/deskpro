@@ -855,6 +855,53 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
      */
     public function renderUsersource(Usersource $usersource, $type, array $params = [])
     {
+        if ($type === 'social_login_btn') {
+            return $this->renderSocialLoginButton($usersource, $params);
+        }
+
+        return $this->renderDefaultUserSource($usersource, $type, $params);
+    }
+
+    private function renderSocialLoginButton(Usersource $usersource, array $params = [])
+    {
+        $providers = (array) $usersource->getOption('providers');
+        $enabledProviders = array_filter(
+            array_keys($providers),
+            function ($provider) use ($providers) {
+                return $providers[$provider];
+            }
+        );
+
+        if (empty($enabledProviders)) {
+            return "";
+        }
+
+        // add params
+        $params['usersource'] = $usersource;
+        if (!isset($params['type'])) {
+            $params['type'] = 'user';
+        }
+
+        $params['providers'] = [];
+        foreach ($enabledProviders as $provider) {
+            $params['providers'][] = [ "name" => $provider, "url" => "/" ];
+        }
+
+        $tpl  = 'DeskPRO:Auth:'.'social-login'.'.html.twig';
+        $html = $this->getTemplating()->render($tpl, $params);
+
+        return $html;
+    }
+
+    /**
+     * @param Usersource $usersource
+     * @param string     $type
+     * @param array      $params
+     *
+     * @return string
+     */
+    private function renderDefaultUserSource(Usersource $usersource, $type, array $params = [])
+    {
         // clean up params
         $params['usersource'] = $usersource;
         if (!isset($params['type'])) {
@@ -869,7 +916,6 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
         return $html;
     }
-
     /**
      * @param string $str
      *

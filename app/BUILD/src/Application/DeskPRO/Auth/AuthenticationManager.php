@@ -246,8 +246,23 @@ class AuthenticationManager
      */
     public function hasLoginIconUsersources()
     {
+        if (count($this->getSocialLoginUsersources()) > 0) {
+            return true;
+        }
+
         return count($this->getLoginIconUsersources()) > 0;
     }
+
+    /**
+     * Usersources that have an icon to display to login.
+     *
+     * @return \Application\DeskPRO\Usersource\UsersourceCollection
+     */
+    public function getSocialLoginUsersources()
+    {
+        return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_SOCIAL_LOGIN);
+    }
+
 
     /**
      * Usersources that have an icon to display to login.
