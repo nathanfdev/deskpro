@@ -78,7 +78,6 @@ class TicketAttachmentBlobCheckerListener
 
         if ($newBlob) {
             $entity->setBlob($newBlob);
-            // @TODO: remove here?
             $blob->setIsTemp(true);
             $this->em->persist($blob);
         }

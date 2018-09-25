@@ -23,9 +23,7 @@ class BlobTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        //$this->container       = ContainerMock::create()->get();
         $this->containerBefore = App::$container;
-        //App::$container        = $this->container;
     }
 
     public function tearDown()

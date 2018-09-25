@@ -33,11 +33,6 @@ class AcceptAttachmentType extends AbstractType
     private $acceptAttachment;
 
     /**
-     * @var FormError
-     */
-    private $fileFormError;
-
-    /**
      * Constructor.
      *
      * @param DeskproBlobStorage $blobStorage
@@ -89,12 +84,6 @@ class AcceptAttachmentType extends AbstractType
         }
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
-
-        // `file` validation done in `onPreSubmit`
-        // but we can't add error directly to `file` field in `onPreSubmit` for whole form
-        // https://stackoverflow.com/questions/32012510/symfony-2-adding-error-to-form-element-on-presubmit-event-subscriber
-        // in case of error we save formError to $this->fileFormError and then assign it in below event
-        $builder->get($options['field_name'])->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmitFileForm']);
     }
 
     /**
@@ -141,7 +130,7 @@ class AcceptAttachmentType extends AbstractType
                 if ($errorDetail) {
                     $params['detail'] = $errorDetail;
                 }
-                $this->fileFormError = new FormError($errorCode, $errorCode, $params);
+                $form->addError(new FormError($errorCode, $errorCode, $params));
             } else {
                 // set blob data
                 $props = [];
@@ -150,21 +139,6 @@ class AcceptAttachmentType extends AbstractType
                 }
                 $form->setData($this->acceptAttachment->accept($file, true, $props));
             }
-        }
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onPreSubmitFileForm(FormEvent $event)
-    {
-        $form = $event->getForm();
-        $data = $event->getData();
-
-        if ($this->fileFormError) {
-            $form->addError($this->fileFormError);
         }
     }
 
