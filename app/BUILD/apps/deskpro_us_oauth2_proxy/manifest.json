@@ -2,7 +2,7 @@
 	"package_name": "deskpro_us_oauth2_proxy",
 	"is_native": true,
 	"title": "Social Logins",
-	"description": "Allows agents to log in using social account.",
+	"description": "Allows agents to log in using social accounts.",
 	"tags": ["usersources"],
 	"api_version": 1,
 	"version": 1,
