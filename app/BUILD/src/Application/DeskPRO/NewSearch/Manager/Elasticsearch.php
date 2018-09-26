@@ -35,6 +35,9 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
             }, array_keys($this->objects));
         }
 
+        // limit searchable object
+        $this->limitResultingObjects($limitTypes);
+
         // Check for an URL first as we don't event need elastica for it
         $matchers = $this->extractMatchersFromQuery($query);
         if (count($matchers) > 0) {

@@ -136,7 +136,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
     protected function getTicketByRefOrId(TicketRepository $entityRepository, array $matcher)
     {
         $ticketPermissionsChecker = null;
-        if ($this->person instanceof Person) {
+        if ($this->person instanceof Person && in_array($matcher['object'], $this->restrictedObjects)) {
             /** @var \Application\DeskPRO\People\PermissionChecker\TicketChecker $ticketPermissionsChecker */
             $ticketPermissionsChecker = $this->person->getPermissionsManager()->get('TicketChecker');
         }
@@ -204,6 +204,23 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
         }
 
         return $isAllowed;
+    }
+
+    /**
+     * Remove object we don't need to search for
+     *
+     * @param array $limitObjects
+     * @return void
+     */
+    protected function limitResultingObjects(array $limitObjects = [])
+    {
+        if (count($limitObjects) > 0) {
+            $objects = array_map(function ($object) {
+                return [$object => $this->objects[$object]];
+            }, $limitObjects);
+
+            $this->objects = Arrays::collapse($objects);
+        }
     }
 
     /**
