@@ -587,7 +587,7 @@ class AgentHelper implements PersonContextInterface
                 'rev_table'    => 'feedback_revisions',
             ],
             'topics' => [
-                'content_type' => 'topic',
+                'content_type' => 'topics',
                 'entity'       => Topic::class,
                 'id_field'     => 'topic_id',
                 'rev_table'    => 'topic_revisions',
@@ -737,7 +737,7 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
-            'topic' => [
+            'topics' => [
                 'content_type' => 'topics',
                 'entity'       => Topic::class,
                 'id_field'     => 'topic_id',
