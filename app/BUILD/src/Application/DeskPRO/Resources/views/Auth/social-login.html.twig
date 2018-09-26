@@ -1,5 +1,7 @@
 {% for provider in providers %}
-    <a href="{{ path(type ~ '_login_authenticate', {'usersource_id': usersource.id, return: return, "social-login": provider.name}) }}"><img src="{{ asset("images/site-icons/" ~  provider.name ~ ".png" ) }}" /></a>
+    <a class="dp-sociallogin-btn dp-sociallogin-btn-{{ provider.name }}" href="{{ path(type ~ '_login_authenticate', {'usersource_id': usersource.id, return: return, "social-login": provider.name}) }}">
+        <span>{{ phrase('agent.general.log_in_with_' ~ provider.name) }}</span>
+    </a>
 {% endfor %}
 
 

@@ -246,11 +246,12 @@ class AuthenticationManager
      */
     public function hasLoginIconUsersources()
     {
-        if (count($this->getSocialLoginUsersources()) > 0) {
-            return true;
-        }
-
         return count($this->getLoginIconUsersources()) > 0;
+    }
+
+    public function hasSocialLoginUsersources()
+    {
+        return count($this->getSocialLoginUsersources()) > 0;
     }
 
     /**

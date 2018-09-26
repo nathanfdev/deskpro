@@ -264,15 +264,13 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         }
 
         //we receive the following information via headers:
-        // X-Forwarded-Access-Token
         // X-Forwarded-Email
         // X-Forwarded-User
-        // we don't need to use the X-Forwarded-Access-Token at the moment to retrieve more information
-        // we create an JWT token and we add the following information: X-Forwarded-Email
+        // and we create a JWT token with this information
         $tokenParams = $proxyClient->encodeToken($request);
         $tokenQueryString = http_build_query($tokenParams);
 
-        // we response with a 302/303 to agent/login/authenticate-callback/{usersource_id}?jwt-token =  LoginController:authenticateCallbackAction
+        // we respond with a 302/303 to agent/login/authenticate-callback/{usersource_id}?jwt-token =  LoginController:authenticateCallbackAction
         //authenticate-callback
         $deskproUrl = rtrim($this->container->getSetting('core.deskpro_url'), '/');
         $redirectUrl = $deskproUrl . sprintf('/agent/login/authenticate-callback/%s?%s', $usersource->id, $tokenQueryString);
