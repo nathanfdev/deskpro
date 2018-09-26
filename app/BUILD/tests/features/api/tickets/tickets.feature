@@ -432,7 +432,7 @@ Feature: /tickets endpoint
     Then the response status code should be 400
     And the JSON node "errors.fields.department.errors[0].code" should contain "bad_choice"
 
-  Scenario: I create a ticket with specific date
+  Scenario: I create a ticket with specific dates
     # Note that date_status will be changed by TicketManager when it creates ticket
     Given "admin_for_tickets@deskpro.dev" admin exists
     And I'm authenticated as person with email "admin_for_tickets@deskpro.dev" with super key
@@ -471,3 +471,63 @@ Feature: /tickets endpoint
     And the JSON node "data.date_locked" should be equal to "2018-01-01T23:59:59+0000"
     And the JSON node "data.total_user_waiting" should be equal to 100
     And the JSON node "data.total_to_first_reply" should be equal to 200
+
+  Scenario: I create a ticket with specific date_first_agent_assign and date_on_hold, this should not be an error
+    Given "admin_for_tickets@deskpro.dev" admin exists
+    And I'm authenticated as person with email "admin_for_tickets@deskpro.dev" with super key
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "date_first_agent_assign": "2018-01-01 23:59:59",
+  "date_on_hold": "2018-01-01 23:59:59"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.date_first_agent_assign" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_on_hold" should be equal to "2018-01-01T23:59:59+0000"
+
+  Scenario: I create a ticket with specific date_first_agent_assign and date_on_hold, this should not be an error
+    Given "admin_for_tickets@deskpro.dev" admin exists
+    And I'm authenticated as person with email "admin_for_tickets@deskpro.dev" with super key
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "date_first_agent_assign": "2018-01-01 23:59:59",
+  "date_on_hold": "2018-01-01 23:59:59"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.date_first_agent_assign" should be equal to "2018-01-01T23:59:59+0000"
+    And the JSON node "data.date_on_hold" should be equal to "2018-01-01T23:59:59+0000"
+
+  Scenario: I create a ticket with specific date_first_agent_assign and date_on_hold, this should not be an error
+    Given "admin_for_tickets@deskpro.dev" admin exists
+    And I'm authenticated as person with email "admin_for_tickets@deskpro.dev" with super key
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "person": ~admin~,
+  "subject": "Testing ticket created with message and date_created is not causing error",
+  "message": {
+    "person": ~admin~,
+    "message": "Some message",
+    "format": "text"
+  },
+  "cc": [],
+  "status": "awaiting_agent",
+  "date_created": "2018-01-01 23:59:59"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.date_created" should be equal to "2018-01-01T23:59:59+0000"
+
+    When I send a GET request to "/api/v2/tickets/{lastCreatedId}/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].ticket" should be equal to "{lastCreatedId}"
+    And the JSON node "data[0].message" should be equal to "Some message"
+    And the JSON node "data[0].date_created" should not be null
