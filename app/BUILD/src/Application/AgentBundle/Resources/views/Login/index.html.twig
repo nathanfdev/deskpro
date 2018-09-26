@@ -324,6 +324,14 @@
           <input class="full-width" type="submit" value="{{ phrase('agent.general.log_in') }}"
                  style="margin-bottom: 10px;" />
 
+          {% if authManager.hasSocialLoginUsersources %}
+            <div class="dp-usersource-list">
+                {% for usersource in authManager.getSocialLoginUsersources %}
+                    {{ render_usersource(usersource, 'social_login_btn', {return: return, type: 'agent'}) }}
+                {% endfor %}
+            </div>
+          {% endif %}
+
           {% if authManager.hasLoginTextButtonUsersources %}
             <div class="dp-usersource-list">
               <ul>
@@ -333,23 +341,36 @@
               </ul>
             </div>
           {% endif %}
+
+
           {% if authManager.hasLoginIconUsersources %}
             <div class="dp-usersource-list">
               {{ phrase('user.profile.or_connect_with') }}
-              {% for usersource in authManager.getLoginIconUsersources %}
-                {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
-              {% endfor %}
+
+                {% for usersource in authManager.getLoginIconUsersources %}
+                    {{ render_usersource(usersource, 'login_pull_btn', {return: return, type: 'agent'}) }}
+                {% endfor %}
+
             </div>
           {% endif %}
         </form>
         {# END FORM LOGIN #}
       {% else %}
+        {% if authManager.hasSocialLoginUsersources %}
+
+          {% for usersource in authManager.getSocialLoginUsersources %}
+              {{ render_usersource(usersource, 'social_login_btn', {return: return, type: 'agent'}) }}
+          {% endfor %}
+
+        {% endif %}
+
         {% if authManager.hasLoginTextButtonUsersources %}
           <ul>
             {% for usersource in authManager.getLoginTextButtonUsersources %}
               <li>{{ render_usersource(usersource, 'login_text_btn', {return: return, type: 'agent'}) }}</li>
             {% endfor %}
           </ul>
+
           {% if authManager.hasLoginIconUsersources %}
             <ul class="dp-usersource-list">
               <li style="display: inline-block;">{{ phrase('user.profile.connect_with') }}</li>

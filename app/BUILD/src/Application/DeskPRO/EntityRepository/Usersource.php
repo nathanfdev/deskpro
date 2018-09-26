@@ -10,6 +10,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Usersource\UsersourceCollection;
 use Application\DeskPRO\Usersource\UsersourceInfo;
+use Application\DeskPRO\Entity\Usersource as UsersourceEntity;
+
 
 class Usersource extends AbstractEntityRepository
 {
@@ -157,6 +159,7 @@ class Usersource extends AbstractEntityRepository
      * @param string $type
      *
      * @return \Application\DeskPRO\Entity\Usersource[]
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getByType($type, $multiple = false)
     {
@@ -168,6 +171,63 @@ class Usersource extends AbstractEntityRepository
             return $this->getEntityManager()->createQuery($dql)->setParameter(1, $type)->setMaxResults(1)->getOneOrNullResult();
         }
     }
+
+    /**
+     * @param array $specification
+     * @param bool $multiple
+     * @return array|UsersourceEntity[]
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getBySpecification( array $specification, $multiple = false)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb->select('e')->from(UsersourceEntity::class, 'e');
+
+        $criteriaCount = 0;
+        if (array_key_exists('type', $specification)) {
+            $criteriaCount++;
+            $qb->andWhere('e.type = :type')
+                ->setParameter('type', $specification['type'])
+            ;
+
+        }
+
+        if (array_key_exists('is_enabled', $specification)) {
+            $criteriaCount++;
+            $qb->andWhere('e.is_enabled = :isEnabled')
+                ->setParameter('isEnabled', $specification['is_enabled'])
+            ;
+        }
+
+        if (array_key_exists('source_type', $specification)) {
+            $criteriaCount++;
+            $value = $specification['source_type'];
+            if (is_array($value)) {
+                $qb->andWhere('e.source_type = IN (:callback_sources)');
+            } else {
+                $qb->andWhere('e.source_type = :callback_sources');
+            }
+
+            $qb->setParameter('callback_sources', $value);
+        }
+
+        if ($criteriaCount === 0) {
+            throw new \RuntimeException('no criteria found in query specification');
+        }
+
+        $query = $qb->getQuery();
+        if ($multiple) {
+            return $query->execute();
+        }
+
+        $result = $query->getOneOrNullResult();
+        if (empty($result)) {
+            return [];
+        }
+
+        return [$result];
+    }
+
 
     /**
      * Get a usersource by its ID.

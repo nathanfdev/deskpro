@@ -51,6 +51,12 @@ class UsersourceInfo
     const CAPABILITY_LOGIN_PULL_BTN = 'tpl_login_pull_btn';
 
     /**
+     * A logo appears on the login screen, allowing you to click and login with that source (google, linkedin, azure,etc).
+     * This is different than the existing usersources as it is using the oauth2 proxy
+     */
+    const CAPABILITY_SOCIAL_LOGIN = 'tpl_social_login_btn';
+
+    /**
      * Create a block size text button.
      */
     const CAPABILITY_LOGIN_TEXT_BTN = 'tpl_login_text_btn';

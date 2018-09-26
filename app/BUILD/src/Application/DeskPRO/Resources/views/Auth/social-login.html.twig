@@ -1,0 +1,8 @@
+{% for provider in providers %}
+    <a class="dp-sociallogin-btn dp-sociallogin-btn-{{ provider.name }}" href="{{ path(type ~ '_login_authenticate', {'usersource_id': usersource.id, return: return, "social-login": provider.name}) }}">
+        <span>{{ phrase('agent.general.log_in_with_' ~ provider.name) }}</span>
+    </a>
+{% endfor %}
+
+
+
