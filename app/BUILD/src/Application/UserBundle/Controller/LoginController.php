@@ -747,13 +747,14 @@ class LoginController extends AbstractController
                 $socialLogin = $this->request->query->get("social-login");
 
                 if ($socialLogin) {
-                    if (!defined("DPC_SITE_DOMAIN")) {
+                    $account = $this->resolveSiteDomain();
+                    if (empty($account)) {
                         $this->session->setFlash('login_failed', true);
                         return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
                     }
 
                     $redirectUrl = str_replace("<provider>", $socialLogin, $redirectUrl);
-                    $redirectUrl = str_replace("<account>", DPC_SITE_DOMAIN, $redirectUrl);
+                    $redirectUrl = str_replace("<account>", $account, $redirectUrl);
                 }
 
                 $r = $this->redirect($redirectUrl);
@@ -763,7 +764,6 @@ class LoginController extends AbstractController
                 // Otherwise its an error
             } else {
                 $this->session->setFlash('login_failed', true);
-
                 return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
 
@@ -794,6 +794,38 @@ class LoginController extends AbstractController
                 return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
         }
+    }
+
+    /**
+     * Resolve the site name for this instance. The site name is the leftmost segment of the instance hostname,
+     * for example given hostname `site35448.deskprodemo.com` the site name is `site35448`
+     *
+     * @return null|string
+     */
+    public function resolveSiteDomain()
+    {
+        if (defined("DPC_SITE_DOMAIN")) {
+            return DPC_SITE_DOMAIN;
+        }
+
+        return $this->resolveSiteDomainFromRequest('deskprodemo.com');
+    }
+
+    /**
+     * @param $hostSuffix
+     * @return bool|null|string
+     */
+    private function resolveSiteDomainFromRequest( $hostSuffix)
+    {
+        $suffix = '.' . $hostSuffix;
+        $suffixLength = strlen($suffix);
+
+        $host = $this->request->getHost();
+        if (substr($host, -1 * $suffixLength) === $suffix) {
+            return substr($host, 0, strlen($host) - $suffixLength);
+        }
+
+        return null;
     }
 
     /**

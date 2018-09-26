@@ -23,8 +23,9 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->title   = $app->title;
         $us->options = [
             "providers" => [
-                "google" => true,
-                "linkedin" => true
+                "google" => $app->getSetting("google"),
+                "linkedin" => $app->getSetting("linkedin"),
+                "azure" => $app->getSetting("azure")
             ]
         ];
         $us->is_enabled  = $app->getSetting('enable_usersource') ? 1 : 0;

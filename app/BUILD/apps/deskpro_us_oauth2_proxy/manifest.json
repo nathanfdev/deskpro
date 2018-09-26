@@ -20,6 +20,27 @@
 			"label": "Enable User Source",
 			"description": "Enable this usersource?",
 			"native_only": true
-		}
+		},
+    {
+      "name": "google",
+      "type": "checkbox",
+      "label": "Sign in with Google",
+      "description": "Enable integration?",
+      "native_only": true
+    },
+    {
+      "name": "linkedin",
+      "type": "checkbox",
+      "label": "Sign in with Linkedin",
+      "description": "Enable integration?",
+      "native_only": true
+    },
+    {
+      "name": "azure",
+      "type": "checkbox",
+      "label": "Sign in with Office365",
+      "description": "Enable integration?",
+      "native_only": true
+    }
 	]
 }

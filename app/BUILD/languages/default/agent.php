@@ -777,7 +777,7 @@ return [
     'agent.general.log_in'                                     => 'Log In',
     'agent.general.log_in_with_google'                         => 'Log In with Google',
     'agent.general.log_in_with_linkedin'                       => 'Log In with Linkedin',
-    'agent.general.log_in_with_office365'                      => 'Log In with Office365',
+    'agent.general.log_in_with_azure'                          => 'Log In with Office365',
     'agent.general.log_out'                                    => 'Log Out',
     'agent.general.logged_in_as'                               => 'Logged in as',
     'agent.general.lost'                                       => 'Lost',

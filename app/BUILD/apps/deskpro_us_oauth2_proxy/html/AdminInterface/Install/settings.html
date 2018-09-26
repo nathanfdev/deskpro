@@ -1,19 +1,6 @@
 <article class="form-horizontal dp-form">
 	<div class="panel panel-fill indent">
 		<div class="panel-body">
-			<div class="alert alert-info">
-				<strong>Important</strong><br>
-				<div ng-if="usersource_details.callback_url">
-					<p style="margin-bottom: 20px;">For security reasons, your Google OAuth Client ID will need to allow this Redirect URI:</p>
-					<p style="margin-bottom: 20px;">Callback URL: <input type="text" style="width: 75%" readonly="readonly"
-						value="{{ usersource_details.callback_url }}" id="callback_url" />
-						<button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#callback_url">Copy URL</button>
-					</p>
-					<p style="margin-bottom: 20px;">You can do this in your google developer console (https://console.developers.google.com/).
-						Once there, follow: APIs & Auth -> Credentials -> OAuth. Edit the "REDIRECT URIS" entry for the Client ID that this app is configured to use.</p>
-					<p>This might be helpful: <a href="https://developers.google.com/accounts/docs/OAuth2Login#setredirecturi">Instructions from Google</a></p>
-				</div>
-			</div>
 			<!--#include file="AdminInterface/Install/settings-list.html" -->
 		</div>
 	</div>
