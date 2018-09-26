@@ -3210,7 +3210,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Set date created.
      *
-     * @param \DateTime $date_created
+     * @param \DateTime $dateCreated
      *
      * @return $this
      */
