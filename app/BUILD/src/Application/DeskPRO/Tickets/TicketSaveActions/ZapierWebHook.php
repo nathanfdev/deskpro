@@ -73,6 +73,9 @@ class ZapierWebHook implements TicketSaveActionInterface
                     // Hooks needs to be unsubscribe
                     if ($e->getCode() === 410) {
                         $this->em->remove($zapierHook);
+                        $context->getLogger()->info('[Zapier] - Webhook does not exists anymore on Zapier we deleted it.');
+                    } else {
+                        $context->getLogger()->error(sprintf('[Zapier] Exception in webhook ticket_created #%d: [%s] %s', $zapierHook->getId(), $e->getCode(), $e->getMessage()), ['exception' => $e]);
                     }
                 }
             }
@@ -101,6 +104,9 @@ class ZapierWebHook implements TicketSaveActionInterface
                         // Hooks needs to be unsubscribe
                         if ($e->getCode() === 410) {
                             $this->em->remove($zapierHook);
+                            $context->getLogger()->info('[Zapier] - Webhook does not exists anymore on Zapier we deleted it.');
+                        } else {
+                            $context->getLogger()->error(sprintf('[Zapier] Exception in webhook new_ticket_reply #%d: [%s] %s', $zapierHook->getId(), $e->getCode(), $e->getMessage()), ['exception' => $e]);
                         }
                     }
                 }
@@ -144,6 +150,9 @@ class ZapierWebHook implements TicketSaveActionInterface
                     // Hooks needs to be unsubscribe
                     if ($e->getCode() === 410) {
                         $this->em->remove($zapierHook);
+                        $context->getLogger()->info('[Zapier] - Webhook does not exists anymore on Zapier we deleted it.');
+                    } else {
+                        $context->getLogger()->error(sprintf('[Zapier] Exception in webhook ticket_update #%d: [%s] %s', $zapierHook->getId(), $e->getCode(), $e->getMessage()), ['exception' => $e]);
                     }
                 }
             }
