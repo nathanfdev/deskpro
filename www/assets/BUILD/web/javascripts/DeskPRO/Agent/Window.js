@@ -444,7 +444,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				// drop could have an auth, which we handle manually (ie not fileupload jquery plugin)
 				$el.on('drop', function(event) {
-
+          var self = this;
+          
 					// handle already uploaded blob
 					var blobData = event.originalEvent.dataTransfer.getData('blobData');
 					if (blobData) {
@@ -477,7 +478,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 							success: function (data) {
 								var json = $.parseJSON(data);
 
-								$(this).trigger('fileuploaddone');
+								$(self).trigger('fileuploaddone');
 								if (typeof json.error == 'undefined') {
 									options.done.apply(plainEl, [event, { result: json}])
 								} else {
