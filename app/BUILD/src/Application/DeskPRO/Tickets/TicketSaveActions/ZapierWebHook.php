@@ -8,6 +8,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Bundle\AppBundle\Entity\Zapier\TicketUpdate;
 use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use Doctrine\ORM\EntityManager;
@@ -39,6 +40,12 @@ class ZapierWebHook implements TicketSaveActionInterface
     {
         $state = $ticket->getStateChangeRecorder();
 
+        $sideloadContext = new SideloadSerializationContext();
+        $sideloadContext->setInlineSideloads(true);
+        $sideloadContext->setIncludes(['person', 'brand', 'ticket']);
+
+        $httpClient = new HttpClient(['timeout' => 30]);
+
         if ($state->isNewTicket()) {
             $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'ticket_created']);
 
@@ -46,12 +53,7 @@ class ZapierWebHook implements TicketSaveActionInterface
                 return false;
             }
 
-            $httpClient = new HttpClient(['timeout' => 30]);
-
-            $serializationContext = new SideloadSerializationContext();
-            $serializationContext->setInlineSideloads(true);
-
-            $options['body'] = $this->serializer->serialize($ticket, 'json', $serializationContext);
+            $options['body'] = $this->serializer->toArray(new ApiWrapper($ticket), $sideloadContext);
 
             /** @var ZapierHook $zapierHook */
             foreach ($hooks as $zapierHook) {
@@ -86,15 +88,10 @@ class ZapierWebHook implements TicketSaveActionInterface
                 return false;
             }
 
-            $httpClient = new HttpClient(['timeout' => 30]);
-
-            $serializationContext = new SideloadSerializationContext();
-            $serializationContext->setInlineSideloads(true);
-
             $ticketMessage = $ticket->getLastReply();
 
             if ($ticketMessage) {
-                $options['body'] = $this->serializer->serialize($ticketMessage, 'json', $serializationContext);
+                $options['body'] = $this->serializer->toArray(new ApiWrapper($ticketMessage), $sideloadContext);
 
                 /** @var ZapierHook $zapierHook */
                 foreach ($hooks as $zapierHook) {
@@ -118,8 +115,6 @@ class ZapierWebHook implements TicketSaveActionInterface
                 return false;
             }
 
-            $httpClient = new HttpClient(['timeout' => 30]);
-
             $state   = $ticket->getStateChangeRecorder();
             $changes = $state->getChanges();
 
@@ -132,15 +127,12 @@ class ZapierWebHook implements TicketSaveActionInterface
                 }
             }
 
-            $serializationContext = new SideloadSerializationContext();
-            $serializationContext->setInlineSideloads(true);
-
             $ticketUpdate = new TicketUpdate();
             $ticketUpdate->setPerformer($context->getPersonContext());
             $ticketUpdate->setChanges($ticketLogs);
             $ticketUpdate->setTicket($ticket);
 
-            $options['body'] = $this->serializer->serialize($ticketUpdate, 'json', $serializationContext);
+            $options['body'] = $this->serializer->toArray(new ApiWrapper($ticketUpdate), $sideloadContext);
 
             /** @var ZapierHook $zapierHook */
             foreach ($hooks as $zapierHook) {
