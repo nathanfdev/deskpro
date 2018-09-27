@@ -42,11 +42,14 @@ class ZapierController extends BaseController
     /**
      * @ApiDoc(
      *     section="Apps",
-     *     description="Provide examples for Zapier webhooks"
+     *     description="Provide examples for Zapier webhooks",
+     *     output="array"
      * )
-     * @Rest\Get("/example/{action}")
+     * @Rest\Get("/example/{action}", requirements={
+     *     "action"="(new_ticket_reply|ticket_update)"
+     * })
      *
-     * @param $action
+     * @param string $action
      *
      * @return Response
      */

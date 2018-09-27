@@ -2,12 +2,17 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Zapier;
 
+use Application\DeskPRO\Entity\Person;
+
 class TicketUpdate
 {
     protected $ticket;
 
     protected $changes;
 
+    /**
+     * @var Person
+     */
     protected $performer;
 
     /**
@@ -51,7 +56,7 @@ class TicketUpdate
     }
 
     /**
-     * @return mixed
+     * @return Person
      */
     public function getPerformer()
     {
@@ -59,7 +64,7 @@ class TicketUpdate
     }
 
     /**
-     * @param mixed $performer
+     * @param Person $performer
      *
      * @return TicketUpdate
      */

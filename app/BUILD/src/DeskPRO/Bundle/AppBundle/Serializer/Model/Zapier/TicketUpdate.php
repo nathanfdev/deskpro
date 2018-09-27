@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Zapier;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Zapier\TicketUpdate as TicketUpdateEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket as TicketModel;
+use JMS\Serializer\Annotation as JMS;
 
 class TicketUpdate extends TicketModel
 {
@@ -15,6 +16,8 @@ class TicketUpdate extends TicketModel
 
     /**
      * @var Person
+     *
+     * @JMS\Type("Application\DeskPRO\Entity\Person")
      */
     private $performer;
 
