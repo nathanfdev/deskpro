@@ -8,10 +8,11 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\Zapier\TicketUpdate;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class ZapierController.
@@ -51,19 +52,20 @@ class ZapierController extends BaseController
      *
      * @param string $action
      *
-     * @return Response
+     * @return JsonResponse
      */
     public function exampleAction($action)
     {
-        $serializationContext = new SideloadSerializationContext();
-        $serializationContext->setInlineSideloads(true);
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['person', 'brand', 'ticket']);
+        $context->setInlineSideloads(true);
         switch ($action) {
             case 'new_ticket_reply':
                 $ticketMessage = $this->getManager()->getRepository(TicketMessage::class)->findOneBy([], ['id' => 'DESC']);
 
-                $output = $this->get('serializer')->serialize($ticketMessage, 'json', $serializationContext);
+                $output = $this->get('serializer')->toArray(new ApiWrapper($ticketMessage), $context);
 
-                return new Response($output);
+                return new JsonResponse($output);
             case 'ticket_update':
                 $ticketLog    = $this->getManager()->getRepository(TicketLog::class)->findOneBy([], ['id' => 'DESC']);
                 $ticket       = $ticketLog->getTicket();
@@ -74,9 +76,9 @@ class ZapierController extends BaseController
                 $ticketUpdate->setChanges([$details]);
                 $ticketUpdate->setPerformer($ticketLog->getPerson());
 
-                $output = $this->get('serializer')->serialize($ticketUpdate, 'json', $serializationContext);
+                $output = $this->get('serializer')->toArray(new ApiWrapper($ticketUpdate), $context);
 
-                return new Response($output);
+                return new JsonResponse($output);
             default:
         }
     }
