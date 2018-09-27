@@ -128,6 +128,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
         if res.data.error
           @$scope.ma_pending_message = null
+          @$scope.form_error = 'ma_error_message'
           @$scope.ma_error_message = res.data.message
           d.reject()
         else if !res.data.error && !res.data.domain_id
