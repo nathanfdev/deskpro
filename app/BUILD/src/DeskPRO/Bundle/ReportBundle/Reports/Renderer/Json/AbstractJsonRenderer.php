@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractRenderer;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 
 /**
  * Class AbstractJsonRenderer.
@@ -140,7 +141,11 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
         }
 
         foreach ($results as $resultIndex => $result) {
-            foreach ($result['dataProvider'] as $dataProviderItem) {
+            $actualResult = $result;
+            if ($result instanceof SplitResult) {
+                $actualResult = $result->getResults();
+            }
+            foreach ($actualResult['dataProvider'] as $dataProviderItem) {
                 if (isset($mainResults['dataProvider'][$dataProviderItem['category']])) {
                     foreach ($dataProviderItem as $itemKey => $value) {
                         if (strpos($itemKey, 'value') !== false) {
@@ -155,7 +160,7 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
                 }
             }
 
-            foreach ($result['graphs'] as &$graph) {
+            foreach ($actualResult['graphs'] as &$graph) {
                 $graph['valueField'] = $resultIndex.'_'.$graph['valueField'];
                 $graph['id']         = $resultIndex.'_'.$graph['id'];
                 $graph['clustered']  = false;
@@ -167,7 +172,7 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
                     );
                 }
             }
-            $mainResults['graphs'] = array_merge($mainResults['graphs'], $result['graphs']);
+            $mainResults['graphs'] = array_merge($mainResults['graphs'], $actualResult['graphs']);
         }
         $mainResults['graphs']       = array_reverse($mainResults['graphs']);
         $mainResults['dataProvider'] = array_values($mainResults['dataProvider']);
