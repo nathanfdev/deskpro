@@ -546,4 +546,18 @@ class Dates
 
         return $date;
     }
+
+    /**
+     * Check if array consists of datetime objects
+     *
+     * @param array $input
+     *
+     * @return bool
+     */
+    public static function isArrayOfDateObjects(array $input)
+    {
+        return count($input) === count(array_filter($input, function ($value) {
+            return $value instanceof \DateTime;
+        }));
+    }
 }

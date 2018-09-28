@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
@@ -20,6 +21,7 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MemoizeMethod;
+use Orb\Util\Dates;
 
 /**
  * Class CustomFieldsTermsHandler.
@@ -119,6 +121,10 @@ class CustomFieldsTermsHandler implements ValueTermHandlerInterface, SqlTermHand
             return $d->field == $field->field;
         });
 
+        /**
+         * @fixme: If custom field is "agent only" it does not show up
+         * in $dataCollection, thus fails to validate further
+         */
         if (empty($fieldDataRecs)) {
             return $this->checkCustomDataValue($field, new CustomData($field->field, null), $operator, $options);
         }
@@ -184,21 +190,43 @@ class CustomFieldsTermsHandler implements ValueTermHandlerInterface, SqlTermHand
         switch ($field->type) {
             case CustomDefAbstract::TYPE_DATE:
             case CustomDefAbstract::TYPE_DATETIME:
-                try {
-                    $fieldValue = new \DateTime('@'.$data->value);
-                } catch (\Exception $e) {
-                    $fieldValue = null;
-                }
-                if (!$fieldValue) {
-                    return SqlCondition::create()->setWhere('0');
-                }
+                $dateConvert = function($date) {
 
-                $checkValue = $optValue->getValue();
-                if (!$checkValue instanceof \DateTime) {
-                    $checkValue = @new \DateTime($checkValue);
-                    if (!$checkValue) {
-                        return SqlCondition::create()->setWhere('0');
+                    if (! is_null($date)) {
+                        if (is_string($date)) {
+                            $date = Carbon::parse($date);
+                        } elseif (is_int($date)) {
+                            $date = Carbon::parse("@$date");
+                        } elseif (is_array($date)) {
+                            $size = count($date);
+                            $date = array_filter(array_map(function ($value) {
+                                $value = (is_string($value))
+                                    ? Carbon::parse($value)
+                                    : (is_int($value))
+                                        ? Carbon::parse("@$value")
+                                        : $value;
+
+                                return ($value instanceof \DateTime)
+                                    ? $value->setTimezone(new \DateTimeZone('UTC'))
+                                    : null;
+                            }, $date));
+
+                            $date = ($size === count($date)) ? $date : null;
+                        } else {
+                            $date = null;
+                        }
                     }
+
+                    return ($date instanceof \DateTime)
+                        ? $date->setTimezone(new \DateTimeZone('UTC'))
+                        : $date;
+                };
+
+                $fieldValue = $dateConvert($fieldValue);
+                $checkValue = $dateConvert($checkValue->getValue());
+
+                if (is_null($fieldValue) || is_null($checkValue)) {
+                    return false;
                 }
 
                 break;

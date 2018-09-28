@@ -2,9 +2,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util;
 
+use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
+use Orb\Util\Dates;
 
 /**
  * Class CheckValueUtils.
@@ -64,28 +66,50 @@ class CheckValueUtils
 
             case Query::OP_BETWEEN:
             case Query::OP_NOT_BETWEEN:
-                if (empty($checkValue[0]) || empty($checkValue[1])) {
+                $result = function($flag) use ($operator) {
+                    return ($operator === Query::OP_NOT_BETWEEN) ? !$flag : $flag;
+                };
+
+                if (count($checkValue) !== count(array_filter($checkValue))) {
                     return false;
                 }
 
-                $res = $fieldValue >= $checkValue[0] and $fieldValue <= $checkValue[1];
-
-                if ($operator === Query::OP_NOT_BETWEEN) {
-                    $res = !$res;
+                if ($fieldValue instanceof \DateTime) {
+                    if (Dates::isArrayOfDateObjects($checkValue)) {
+                        return $result(Carbon::instance($fieldValue)->between(
+                            Carbon::instance($checkValue[0]),
+                            Carbon::instance($checkValue[1])
+                        ));
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return $result($fieldValue >= $checkValue[0] && $fieldValue <= $checkValue[1]);
                 }
-
-                return $res;
 
             case Query::OP_IS_NULL:
             case Query::OP_NOT_NULL:
-                $res = $fieldValue === null || $fieldValue === 0 || $fieldValue === '0';
+                $result = function ($flag) use ($operator) {
+                    return ($operator === Query::OP_NOT_NULL) ? !$flag : $flag;
+                };
 
-                if ($operator === Query::OP_NOT_NULL) {
-                    $res = !$res;
+                if (is_null($fieldValue)) {
+                    return $result(true);
                 }
 
-                return $res;
+                if (is_string($fieldValue)) {
+                    return $result(trim($fieldValue) === '');
+                }
 
+                if (is_numeric($fieldValue)) {
+                    return $result($fieldValue === 0 || $fieldValue === '0');
+                }
+
+                if ($fieldValue instanceof \Countable) {
+                    return $result(count($fieldValue) === 0);
+                }
+
+                break;
             case Query::OP_EMPTY:
             case Query::OP_NOT_EMPTY:
                 $res = empty($fieldValue);
