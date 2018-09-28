@@ -744,26 +744,29 @@ class LoginController extends AbstractController
                 $this->session->save();
 
                 $redirectUrl = $result->getRedirectUrl();
-                $socialLogin = $this->request->query->get("social-login");
+                $socialLogin = $this->request->query->get('social-login');
 
                 if ($socialLogin) {
                     $account = $this->resolveSiteDomain();
                     if (empty($account)) {
                         $this->session->setFlash('login_failed', true);
+
                         return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
                     }
 
-                    $redirectUrl = str_replace("<provider>", $socialLogin, $redirectUrl);
-                    $redirectUrl = str_replace("<account>", $account, $redirectUrl);
+                    $redirectUrl = str_replace('<provider>', $socialLogin, $redirectUrl);
+                    $redirectUrl = str_replace('<account>', $account, $redirectUrl);
                 }
 
                 $r = $this->redirect($redirectUrl);
                 $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
+
                 return $r;
 
                 // Otherwise its an error
             } else {
                 $this->session->setFlash('login_failed', true);
+
                 return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
 
@@ -798,14 +801,15 @@ class LoginController extends AbstractController
 
     /**
      * Resolve the site name for this instance. The site name is the leftmost segment of the instance hostname,
-     * for example given hostname `site35448.deskprodemo.com` the site name is `site35448`
+     * for example given hostname `site35448.deskprodemo.com` the site name is `site35448`.
      *
      * @return null|string
      */
     public function resolveSiteDomain()
     {
-        if (defined("DPC_SITE_DOMAIN")) {
-            return DPC_SITE_DOMAIN;
+        if (defined('DPC_SITE_DOMAIN')) {
+            // just the account name
+            return str_replace('.deskpro.com', '', DPC_SITE_DOMAIN);
         }
 
         return $this->resolveSiteDomainFromRequest('deskprodemo.com');
@@ -813,11 +817,12 @@ class LoginController extends AbstractController
 
     /**
      * @param $hostSuffix
+     *
      * @return bool|null|string
      */
-    private function resolveSiteDomainFromRequest( $hostSuffix)
+    private function resolveSiteDomainFromRequest($hostSuffix)
     {
-        $suffix = '.' . $hostSuffix;
+        $suffix       = '.'.$hostSuffix;
         $suffixLength = strlen($suffix);
 
         $host = $this->request->getHost();
