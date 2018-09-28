@@ -23,6 +23,11 @@ class TicketFeedbackFixture extends AbstractDpFixture implements OrderedFixtureI
     private $ticketIds;
 
     /**
+     * @var int[int[]]
+     */
+    private $ticketMessagesIds;
+
+    /**
      * {@inheritdoc}
      */
     public function getOrder()
@@ -45,6 +50,13 @@ class TicketFeedbackFixture extends AbstractDpFixture implements OrderedFixtureI
     {
         $this->personIds = $this->fetchIds(self::TABLE_PEOPLE, [['field' => 'is_agent', 'value' => 0]]);
         $this->ticketIds = $this->fetchIds(self::TABLE_TICKETS);
+        $messages        = $this->db->fetchAll('select id, ticket_id from tickets_messages');
+        foreach ($messages as $message) {
+            if (!isset($this->ticketMessagesIds[$message['ticket_id']])) {
+                $this->ticketMessagesIds[$message['ticket_id']] = [];
+            }
+            $this->ticketMessagesIds[$message['ticket_id']][] = $message['id'];
+        }
     }
 
     private function loadTicketFeedback()
@@ -54,6 +66,9 @@ class TicketFeedbackFixture extends AbstractDpFixture implements OrderedFixtureI
         shuffle($this->ticketIds);
 
         foreach ($this->ticketIds as $ticketId) {
+            if (!isset($this->ticketMessagesIds[$ticketId])) {
+                continue;
+            }
             $feedbackPerTicket = $this->faker->numberBetween(self::FEEDBACK_PER_TICKET_MIN, self::FEEDBACK_PER_TICKET_MAX);
 
             for ($i = 0; $i < $feedbackPerTicket; ++$i) {
@@ -61,6 +76,7 @@ class TicketFeedbackFixture extends AbstractDpFixture implements OrderedFixtureI
                     'ticket_id'    => $ticketId,
                     'rating'       => $this->faker->randomElement([TicketFeedback::RATE_NEGATIVE, TicketFeedback::RATE_POSITIVE, TicketFeedback::RATE_NEUTRAL]),
                     'person_id'    => $this->faker->randomElement($this->personIds),
+                    'message_id'   => $this->faker->randomElement($this->ticketMessagesIds[$ticketId]),
                     'message'      => $this->faker->realText(50),
                     'date_created' => $this->faker->boolean(30) ? $this->faker->dateTimeBetween('-1 month')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 ];
