@@ -1081,9 +1081,9 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1537361749 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/09/Build1537361749.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1537361749',
+    1538315728 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/09/Build1538315728.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1538315728',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
     ],
