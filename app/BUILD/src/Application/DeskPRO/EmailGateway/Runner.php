@@ -774,11 +774,12 @@ BODY;
         );
 
         // set loggers
-        $fetcher
+        $fetcher->setLogger($this->logger);
+
+        if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter) {
             // set gateway logger entity
-            ->setEmailGatewayLogWriter($emailGatewayLogWriter)
-            // set logger
-            ->setLogger($this->logger);
+            $fetcher->setEmailGatewayLogWriter($emailGatewayLogWriter);
+        }
 
         // Define max size
         $maxSize = $settings->has('core.gateway_max_email')
@@ -872,6 +873,13 @@ BODY;
                 $source = $nextReady;
             } else {
                 try {
+                    // add session writer if not added
+                    if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter &&
+                        ! $this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
+                    ) {
+                        $this->logger->addWriter($emailGatewayLogWriter);
+                    }
+
                     $ts = microtime(true);
                     if ($fetcher instanceof BatchFetcher) {
                         if ($doCheckNextBatch) {
@@ -927,7 +935,6 @@ BODY;
 
                     // Log success event
                     $dpEventLogger->log(new IncomingEmailSuccessEvent($account));
-
                 } catch (\Exception $e) {
                     // Log exception
                     $this->logger->log(
@@ -951,9 +958,10 @@ BODY;
 
             $this->logMessages->clear();
 
-            // remove session writer before processing routingm as
-            // we don't need it in the connection log
-            if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter) {
+            // remove session writer if added
+            if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter &&
+                $this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
+            ) {
                 $this->logger->removeWriter($emailGatewayLogWriter);
             }
 
@@ -1069,8 +1077,10 @@ BODY;
             }
         }
 
-        // add writer back after processing
-        if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter) {
+        // add session writer if not added
+        if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter &&
+            ! $this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
+        ) {
             $this->logger->addWriter($emailGatewayLogWriter);
         }
 
@@ -1090,9 +1100,6 @@ BODY;
             memory_get_peak_usage() / 1024 / 1024,
             memory_get_usage() / 1024 / 1024
         ), 'info');
-
-        // set total messages count
-        //$emailGatewayLogWriter->setTotalFetchedSources($this->messageCount);
     }
 
     /**

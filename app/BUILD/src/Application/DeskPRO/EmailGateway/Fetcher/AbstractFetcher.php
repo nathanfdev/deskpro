@@ -285,10 +285,12 @@ abstract class AbstractFetcher
             $source->blob = $blob;
 
             // write EmailAccountLog to EmailSource
-            $loggerEntity = $this->gatewayLogWriter->getLoggerEntity();
-            if ($loggerEntity instanceof EmailAccountLog) {
-                $source->setEmailAccountLog($loggerEntity);
-                $this->gatewayLogWriter->incrementTotalFetchedSources();
+            if ($this->gatewayLogWriter instanceof EmailGatewayLogWriter) {
+                $loggerEntity = $this->gatewayLogWriter->getLoggerEntity();
+                if ($loggerEntity instanceof EmailAccountLog) {
+                    $source->setEmailAccountLog($loggerEntity);
+                    $this->gatewayLogWriter->incrementTotalFetchedSources();
+                }
             }
 
             App::getOrm()->persist($source);
