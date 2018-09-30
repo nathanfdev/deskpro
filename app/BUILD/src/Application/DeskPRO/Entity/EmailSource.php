@@ -305,6 +305,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->_raw = null;
     }
 
+    public function getErrorCode()
+    {
+        return $this->error_code;
+    }
+
     /**
      * @return string
      */

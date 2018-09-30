@@ -10,9 +10,10 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
-use Email;
 use Orb\Log\Logger;
+use Orb\Log\Writer\EmailGatewayLogWriter;
 use Orb\Util\Strings;
+use Zend\Mail\Storage\AbstractStorage;
 
 /**
  * A fetcher takes makes a conenction to a resource described in
@@ -43,23 +44,14 @@ abstract class AbstractFetcher
     protected $maxSize = 0;
 
     /**
-     * Account session log
-     * @var array
+     * Email account log writer
+     * @var EmailGatewayLogWriter
      */
-    protected $sessionLog = [];
-
-    /** @var EmailAccountLog */
-    protected $emailAccountLog;
-
-    /**
-     *
-     * @var int
-     */
-    protected $fetchedSourcesCount = 0;
+    protected $gatewayLogWriter;
 
     /**
      * @param \Application\DeskPRO\Entity\EmailAccount $account
-     * @param int                                      $maxSize The max size in bytes to read. 0 to disable
+     * @param int $maxSize The max size in bytes to read. 0 to disable
      */
     public function __construct(EmailAccount $account, $maxSize = 0)
     {
@@ -69,19 +61,20 @@ abstract class AbstractFetcher
         $this->init();
     }
 
+    /**
+     * Init fetcher
+     * @return void
+     */
     protected function init()
     {
-        $this->getEmailAccountLog();
     }
 
+    /**
+     * Destructor
+     */
     public function __destruct()
     {
-        if ($this->storage) {
-            try {
-                $this->storage->close();
-            } catch (\Exception $exception) {
-            }
-        }
+        $this->_closeConnection();
     }
 
     /**
@@ -92,7 +85,12 @@ abstract class AbstractFetcher
         if ($this->storage) {
             try {
                 $this->storage->close();
+                $this->storage = null;
             } catch (\Exception $exception) {
+                $this->logger->log(
+                    'An error has occured while closing connection to storage:' . $exception->getMessage(),
+                    'error'
+                );
             }
         }
     }
@@ -104,10 +102,7 @@ abstract class AbstractFetcher
      */
     public function setMaxSize($maxSize)
     {
-        $this->maxSize = (int) $maxSize;
-        if ($this->maxSize < 0) {
-            $this->maxSize = 0;
-        }
+        $this->maxSize = ((int) $maxSize < 0) ? 0 : (int) $maxSize;
     }
 
     /**
@@ -123,16 +118,16 @@ abstract class AbstractFetcher
     /**
      * @param bool $reconnect
      *
-     * @return mixed
+     * @return AbstractStorage
      */
     public function getStorage($reconnect = false)
     {
-        if ($reconnect && $this->storage) {
-            $this->_closeConnection();
-            $this->storage = null;
-        }
-
-        if (!$this->storage) {
+        if ($this->storage instanceof AbstractStorage) {
+            if (true === $reconnect) {
+                $this->_closeConnection();
+                $this->storage = $this->_initConnection();
+            }
+        } else {
             $this->storage = $this->_initConnection();
         }
 
@@ -144,14 +139,18 @@ abstract class AbstractFetcher
      */
     public function close()
     {
+        $this->_closeConnection();
     }
 
     /**
      * @param Logger $logger
+     * @return AbstractFetcher
      */
     public function setLogger(Logger $logger)
     {
         $this->logger = $logger;
+
+        return $this;
     }
 
     /**
@@ -196,11 +195,18 @@ abstract class AbstractFetcher
         try {
             $rawMessage = $this->_readNext();
         } catch (\Exception $exception) {
-            $this->addToSessionLog(sprintf('_readNext exception: %s', $exception->getMessage()), 'debug');
+            $this->logger->log(
+                "An error has occured while reading next message: {$exception->getMessage()}",
+                'error'
+            );
             if ($this->storage) {
                 try {
                     $this->storage->close();
                 } catch (\Exception $exception) {
+                    $this->logger->log(
+                        "An error has occured while closing storage: {$exception->getMessage()}",
+                        'error'
+                    );
                 }
             }
             throw $exception;
@@ -247,7 +253,10 @@ abstract class AbstractFetcher
                     SET id = ?, email_account_id = ?, date_created = ?
                 ', [$rawMessage->uid, $this->account->getId(), date('Y-m-d H:i:s')]);
 
-                $this->addToSessionLog(sprintf('Saved UID: %s', $rawMessage->uid), 'debug');
+                $this->logger->log(
+                    sprintf('Saved UID: %s', $rawMessage->uid),
+                    'debug'
+                );
             }
 
             if ($rawMessage->too_big) {
@@ -275,15 +284,22 @@ abstract class AbstractFetcher
 
             $source->blob = $blob;
 
-            $this->fetchedSourcesCount++;
-            $source->setEmailAccountLog($this->getEmailAccountLog());
+            // write EmailAccountLog to EmailSource
+            $loggerEntity = $this->gatewayLogWriter->getLoggerEntity();
+            if ($loggerEntity instanceof EmailAccountLog) {
+                $source->setEmailAccountLog($loggerEntity);
+                $this->gatewayLogWriter->incrementTotalFetchedSources();
+            }
 
             App::getOrm()->persist($source);
             App::getOrm()->flush();
 
             App::getOrm()->commit();
 
-            $this->addToSessionLog(sprintf('Committed message source: %s', $source->getId()), 'debug');
+            $this->logger->log(
+                sprintf('Committed message source: %s', $source->getId()),
+                'debug'
+            );
 
             //------------------------------
             // Delete message on the server
@@ -291,12 +307,23 @@ abstract class AbstractFetcher
 
             $this->_doneRead($rawMessage->id);
         } catch (\Exception $exception) {
-            $this->addToSessionLog(sprintf('Save source error: %s', $exception->getMessage()), 'debug');
+            // Log exception
+            $this->logger->log(
+                sprintf('Save source error: %s', $exception->getMessage()),
+                'error'
+            );
+            // Rollback transaction
             App::getOrm()->rollback();
+
             if ($this->storage) {
                 try {
                     $this->storage->close();
                 } catch (\Exception $exception) {
+                    // Log exception
+                    $this->logger->log(
+                        "An error has occured while closing storage: {$exception->getMessage()}",
+                        'error'
+                    );
                 }
             }
             throw $exception;
@@ -319,61 +346,15 @@ abstract class AbstractFetcher
     }
 
     /**
-     * Get count of fetched sources
+     * Set logger writer
      *
-     * @return int
+     * @param EmailGatewayLogWriter $logWriter
+     * @return AbstractFetcher
      */
-    public function getFetchedSourcesCount()
+    public function setEmailGatewayLogWriter(EmailGatewayLogWriter $logWriter)
     {
-        return $this->fetchedSourcesCount;
-    }
+        $this->gatewayLogWriter = $logWriter;
 
-    /**
-     * Add record to account session log
-     *
-     * @param $message
-     * @param string $priority
-     */
-    public function addToSessionLog($message, $priority = 'info')
-    {
-        $this->sessionLog[] = $message;
-        $this->logger->log($message, $priority);
-    }
-
-    /**
-     * Get session log
-     *
-     * @return array
-     */
-    public function getSessionLog()
-    {
-        return $this->sessionLog;
-    }
-
-    /**
-     * @param EmailAccountLog $emailAccountLog
-     */
-    public function setEmailAccountLog(EmailAccountLog $emailAccountLog)
-    {
-        $this->emailAccountLog = $emailAccountLog;
-    }
-
-    /**
-     * @return EmailAccountLog
-     */
-    public function getEmailAccountLog()
-    {
-        if (is_null($this->emailAccountLog)) {
-            $emailAccountLog = new EmailAccountLog(
-                $this->account, $this->account->incoming_account->getType()
-            );
-
-            App::getOrm()->persist($emailAccountLog);
-            App::getOrm()->flush();
-
-            $this->setEmailAccountLog($emailAccountLog);
-        }
-
-        return $this->emailAccountLog;
+        return $this;
     }
 }

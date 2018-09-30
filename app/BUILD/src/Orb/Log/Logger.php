@@ -148,9 +148,9 @@ class Logger
     /**
      * Add a new writer to this logger.
      *
-     * @param \Orb\Log\Writer\AbstractWriter $writer
+     * @param Writer\AbstractWriter $writer
      */
-    public function addWriter(\Orb\Log\Writer\AbstractWriter $writer)
+    public function addWriter(Writer\AbstractWriter $writer)
     {
         // If its disabled because of default, we'll enable
         // it because this is the first writer
@@ -165,7 +165,7 @@ class Logger
     /**
      * @param Writer\AbstractWriter $writer
      */
-    public function removeWriter(\Orb\Log\Writer\AbstractWriter $writer)
+    public function removeWriter(Writer\AbstractWriter $writer)
     {
         $this->_writer_chain->removeWriter($writer);
     }

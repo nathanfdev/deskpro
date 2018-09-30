@@ -8,6 +8,9 @@ namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config;
 use Application\DeskPRO\EmailGateway\Storage;
 
 /**
@@ -15,6 +18,8 @@ use Application\DeskPRO\EmailGateway\Storage;
  */
 class Imap extends AbstractFetcher
 {
+    use NeedsIncomingAccountDecryptionTrait;
+
     /**
      * Just marks messages as read once they are processed.
      */
@@ -47,115 +52,205 @@ class Imap extends AbstractFetcher
      *
      * @var array An array of message ids
      */
-    private $message_uids;
+    private $messageUids;
 
     /**
      * Mailbox name to move messages after processing.
      *
      * @var string Mailbox name
      */
-    private $archive_mailbox;
+    private $archiveMailbox;
 
     /**
      * Mailbox name to read messages from.
      *
      * @var string Mailbox name
      */
-    private $read_mailbox;
+    private $readMailbox;
 
     /**
-     * Initiates the connection.
+     * Init connection
      *
-     * @return \Zend\Mail\Storage\Pop3
+     * @return Storage\Imap|\Zend\Mail\Storage\AbstractStorage
+     *
+     * @throws \CannotPerformOperationException
+     * @throws \InvalidArgumentException
+     * @throws \InvalidCiphertextException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \Exception
      */
     protected function _initConnection()
     {
+        // stubs
+        $properties = ['user', 'password'];
         $options = [];
 
-        $incoming_account = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+        // decrypt account config
+        $incomingAccount = $this->decryptIncomingAccount();
 
-        switch ($incoming_account->getType()) {
+        // setup connection options
+        switch ($incomingAccount->getType()) {
             case 'imap':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $imap_config */
-                $imap_config = $incoming_account;
+                /** @var ImapConfig $protocolConfig */
+                $protocolConfig = $incomingAccount;
 
-                $options['host']         = $imap_config->host;
-                $options['port']         = $imap_config->port;
-                $options['user']         = $imap_config->user;
-                $options['password']     = $imap_config->password;
-                $options['mode']         = $imap_config->mode;
-                $options['read_mailbox'] = $imap_config->read_mailbox;
-
-                if ($imap_config->secure_mode) {
-                    $options['secure']        = $imap_config->secure_mode;
-                    $options['no_validation'] = $imap_config->no_validation;
+                foreach (array_merge($properties, ['host', 'port', 'mode', 'read_mailbox']) as $property) {
+                    if (property_exists($protocolConfig, $property)) {
+                        $options[$property] = $protocolConfig->{$property};
+                    }
                 }
 
-                if ($imap_config->mode == self::MODE_ARCHIVE) {
-                    $options['archive_mailbox'] = $imap_config->archive_mailbox;
+                if ($protocolConfig->secure_mode) {
+                    $options['secure']        = $protocolConfig->secure_mode;
+                    $options['no_validation'] = $protocolConfig->no_validation;
+                }
+
+                if ($protocolConfig->mode === self::MODE_ARCHIVE) {
+                    $options['archive_mailbox'] = $protocolConfig->archive_mailbox;
                 }
 
                 break;
 
             case 'gmail':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmail_config */
-                $gmail_config = $incoming_account;
+                /** @var GmailConfig $protocolConfig */
+                $protocolConfig = $incomingAccount;
 
-                $options['host']     = 'imap.gmail.com';
-                $options['port']     = 993;
-                $options['user']     = $gmail_config->user;
-                $options['password'] = $gmail_config->password;
-                $options['mode']     = self::MODE_DELETE; // delete in gmail just means archive
-                $options['secure']   = 'ssl';
+                foreach ($properties as $property) {
+                    if (property_exists($protocolConfig, $property)) {
+                        $options[$property] = $protocolConfig->{$property};
+                    }
+                }
+
+                $options = array_merge(
+                    $options,
+                    [
+                        'host'   => 'imap.gmail.com',
+                        'port'   => 993,
+                        'secure' => 'ssl',
+                        'mode'   => self::MODE_DELETE,
+                    ]
+                );
+
                 break;
-
             case 'office365':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
-                $config = $incoming_account;
+                /** @var Office365Config $protocolConfig */
+                $protocolConfig = $incomingAccount;
 
-                $options['host']     = 'outlook.office365.com';
-                $options['port']     = 993;
-                $options['user']     = $config->user;
-                $options['password'] = $config->password;
-                $options['mode']     = self::MODE_DELETE; // delete in gmail just means archive
-                $options['secure']   = 'ssl';
+                foreach ($properties as $property) {
+                    if (property_exists($protocolConfig, $property)) {
+                        $options[$property] = $protocolConfig->{$property};
+                    }
+                }
+
+                $options = array_merge(
+                    $options,
+                    [
+                        'host'   => 'outlook.office365.com',
+                        'port'   => 993,
+                        'secure' => 'ssl',
+                        'mode'   => self::MODE_DELETE,
+                    ]
+                );
+
                 break;
-
             default:
-                throw new \InvalidArgumentException('Unknown account type: '.$incoming_account->getType());
+                throw new \InvalidArgumentException(
+                    "Unknown account type: {$incomingAccount->getType()}"
+                );
+                break;
         }
 
-        $this->mode            = $options['mode'];
-        $this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
-        $this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
+        // set mode
+        $this->mode = $options['mode'];
 
-        $this->addToSessionLog("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+        // set archive mailbox
+        $this->archiveMailbox =
+            (isset($options['archive_mailbox']) && ! is_null($options['archive_mailbox']))
+                ? $options['archive_mailbox']
+                : 'DP_Archive';
 
+        // set read mailbox
+        $this->readMailbox =
+            (isset($options['read_mailbox']) && ! is_null($options['read_mailbox']))
+                ? $options['read_mailbox']
+                : null;
+
+        // pass logger to the storage
         $options['logger'] = $this->logger;
 
-        $this->storage = new Storage\Imap($options);
+        try {
+            // log attempt
+            $this->logger->log(
+                "Connecting to {$options['user']}@{$options['host']}:{$options['port']}",
+                'debug'
+            );
 
-        if ($this->archive_mailbox === $this->storage->getMailbox()) {
-            throw new \Exception('The current mailbox is reserved for processed emails, it can not be used as the primary mailbox');
+            // attempt to connect
+            $this->storage = new Storage\Imap($options);
+
+            // log success
+            $this->logger->log(
+                "Connected to {$options['user']}@{$options['host']}:{$options['port']}",
+                'debug'
+            );
+        } catch (\Exception $exception) {
+            // log failure
+            $this->logger->log(
+                "An error has occured while setting up connection: {$exception->getMessage()}",
+                'error'
+            );
+
+            throw $exception;
         }
 
+        // check if storage mailbox is not the same as archive mailbox
+        if ($this->archiveMailbox === $this->storage->getMailbox()) {
+            $exception = new \Exception(
+                'The current mailbox is reserved for processed emails, it can not be used as the primary mailbox'
+            );
+
+            $this->logger->log(
+                "An error has occured while setting up connection: {$exception->getMessage()}",
+                'error'
+            );
+
+            throw $exception;
+        }
+
+        // ensure archive mailbox exists if mode is archive
         if ($this->mode === self::MODE_ARCHIVE) {
-            $this->storage->ensureMailboxExists($this->archive_mailbox);
+            $this->storage->ensureMailboxExists($this->archiveMailbox);
         }
 
-        if ($this->read_mailbox) {
-            $this->storage->ensureMailboxExists($this->read_mailbox);
-            $this->storage->setMailBox($this->read_mailbox);
+        // ensure read mailbox exists if provided
+        if (! is_null($this->readMailbox)) {
+            $this->storage->ensureMailboxExists($this->readMailbox);
+            $this->storage->setMailBox($this->readMailbox);
         }
 
-        if ($this->mode == self::MODE_READ) {
-            $this->message_uids = $this->storage->getAllUnseenMessageUids();
-        } else {
-            $this->message_uids = $this->storage->getAllMessageUids();
+        try {
+            // attempt to read messages uids
+            $this->messageUids = ($this->mode === self::MODE_READ)
+                ? $this->storage->getAllUnseenMessageUids()
+                : $this->storage->getAllMessageUids();
+
+            // log success
+            $this->logger->log(
+                'Read IDs: '.implode(', ', $this->messageUids),
+                'debug'
+            );
+        } catch (\Exception $exception) {
+            // log failure
+            $this->logger->log(
+                "Failed to read messages: {$exception->getMessage()}",
+                'debug'
+            );
+
+            throw $exception;
         }
 
-        $this->addToSessionLog('Read IDs: '.implode(', ', $this->message_uids), 'debug');
-
+        // return storage
         return $this->storage;
     }
 
@@ -169,13 +264,14 @@ class Imap extends AbstractFetcher
     {
         $this->getStorage();
 
-        return array_shift($this->message_uids);
+        return array_shift($this->messageUids);
     }
 
     /**
      * {@inheritdoc}
      *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
+     * @throws \Exception
      */
     public function _readNext()
     {
@@ -183,46 +279,46 @@ class Imap extends AbstractFetcher
             $this->storage->clearCaches();
         }
 
-        $message_uid = $this->getNextMessageUid();
+        $messageUid = $this->getNextMessageUid();
 
-        if ($message_uid === null) {
-            return;
+        if ($messageUid === null) {
+            return null;
         }
 
-        $raw_message       = new RawMessage();
-        $raw_message->id   = $message_uid;
-        $raw_message->uid  = $message_uid;
-        $raw_message->size = $this->storage->getMessageSize($message_uid) ?: 0;
+        $rawMessage       = new RawMessage();
+        $rawMessage->id   = $messageUid;
+        $rawMessage->uid  = $messageUid;
+        $rawMessage->size = $this->storage->getMessageSize($messageUid) ?: 0;
 
-        $this->addToSessionLog(sprintf('Message UID: %s', $raw_message->uid), 'debug');
-        $this->addToSessionLog(sprintf('Message size: %s bytes', $raw_message->size), 'debug');
+        $this->logger->log(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
 
-        if ($this->maxSize && $raw_message->size && $raw_message->size > $this->maxSize) {
+        if ($this->maxSize && $rawMessage->size && $rawMessage->size > $this->maxSize) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
-            $raw_message->content = $this->storage->getRawHeaders($message_uid)."\n\n";
-            $this->addToSessionLog('Message too big, only fetching headers', 'debug');
+            $rawMessage->content = $this->storage->getRawHeaders($messageUid)."\n\n";
+            $this->logger->log('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
-            $raw_message->content = $this->storage->getRawMessage($message_uid);
+            $rawMessage->content = $this->storage->getRawMessage($messageUid);
         }
 
         $headers = null;
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL.$EOL)) {
-            list($headers) = explode($EOL.$EOL, $raw_message->content, 2);
-        } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers) = explode("\r\n\r\n", $raw_message->content, 2);
-        } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers) = explode("\n\n", $raw_message->content, 2);
+        if (strpos($rawMessage->content, $EOL.$EOL)) {
+            list($headers) = explode($EOL.$EOL, $rawMessage->content, 2);
+        } elseif ($EOL != "\r\n" && strpos($rawMessage->content, "\r\n\r\n")) {
+            list($headers) = explode("\r\n\r\n", $rawMessage->content, 2);
+        } elseif ($EOL != "\n" && strpos($rawMessage->content, "\n\n")) {
+            list($headers) = explode("\n\n", $rawMessage->content, 2);
         } else {
-            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers) = @preg_split("%([\r\n]+)\\1%U", $rawMessage->content, 2);
         }
 
-        $raw_message->headers = $headers;
+        $rawMessage->headers = $headers;
 
-        return $raw_message;
+        return $rawMessage;
     }
 
     /**
@@ -230,6 +326,7 @@ class Imap extends AbstractFetcher
      * Moves it to the DP_Mailbox folder marking it "read".
      *
      * @param int $id ID of the message
+     * @throws \InvalidArgumentException
      */
     public function _doneRead($id)
     {
@@ -237,17 +334,17 @@ class Imap extends AbstractFetcher
             case self::MODE_READ:
                 // No need to mark message as read, its marked as read automatically by fetching the body
                 //$message->setFlag('seen', 1);
-                $this->addToSessionLog("Marked $id as seen", 'debug');
+                $this->logger->log("Marked $id as seen", 'debug');
                 break;
 
             case self::MODE_ARCHIVE:
-                $this->storage->moveMessageMailbox($id, $this->archive_mailbox);
-                $this->addToSessionLog("Moved $id to {$this->archive_mailbox}", 'debug');
+                $this->storage->moveMessageMailbox($id, $this->archiveMailbox);
+                $this->logger->log("Moved $id to {$this->archiveMailbox}", 'debug');
                 break;
 
             case self::MODE_DELETE:
                 $this->storage->deleteMessage($id);
-                $this->addToSessionLog("Deleted $id", 'debug');
+                $this->logger->log("Deleted $id", 'debug');
                 break;
 
             default:

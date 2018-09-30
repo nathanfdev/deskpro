@@ -23,9 +23,7 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
      */
     const PROTO_POP3      = 'pop3',
           PROTO_IMAP      = 'imap',
-          PROTO_EXCHANGE  = 'exchange',
-          PROTO_GMAIL     = 'gmail',
-          PROTO_OFFICE365 = 'office365';
+          PROTO_EXCHANGE  = 'exchange';
 
     /**
      * @ORM\Id()
@@ -92,6 +90,7 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
      * @param EmailAccount $emailAccount
      * @param $protocol
      * @param \DateTime|null $dateCreated
+     * @throws \InvalidArgumentException
      */
     public function __construct(EmailAccount $emailAccount, $protocol, \DateTime $dateCreated = null)
     {

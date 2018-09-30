@@ -13,6 +13,8 @@ use Zend\Stdlib\ErrorHandler;
 
 class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
 {
+    use LoggableTrait;
+
     /**
      * @var \Orb\Log\Logger
      */
@@ -159,22 +161,6 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
             $this->logger->logDebug('==> !!! cannot write - connection closed?');
             throw new Exception\RuntimeException('cannot write - connection closed?');
         }
-    }
-
-    /**
-     * @param Logger $logger
-     */
-    public function setLogger(Logger $logger = null)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * @return Logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
     }
 
     /**

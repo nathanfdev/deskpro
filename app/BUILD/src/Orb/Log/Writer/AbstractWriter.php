@@ -16,7 +16,7 @@ abstract class AbstractWriter
     /**
      * Filter chain applied to the writer.
      *
-     * @var Orb\Filter\FilterChain
+     * @var \Orb\Filter\FilterChain
      */
     protected $_filter_chain = null;
 

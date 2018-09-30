@@ -10,8 +10,14 @@ use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Zend\Mail\Protocol\Exception;
 
+/**
+ * Class Pop3
+ * @package Application\DeskPRO\EmailGateway\Protocol
+ */
 class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 {
+    use LoggableTrait;
+
     /**
      * @var \Orb\Log\Logger
      */
@@ -130,27 +136,13 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     }
 
     /**
-     * @param Logger $logger
-     */
-    public function setLogger(Logger $logger = null)
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * @return Logger
-     */
-    public function getLogger()
-    {
-        return $this->logger;
-    }
-
-    /**
      * Make a RETR call for retrieving a full message with headers and body.
      *
      * @param int $msgno message number
      *
+     * @param $stream
      * @return string message
+     * @throws Exception\RuntimeException
      */
     public function retrieveToStream($msgno, $stream)
     {
@@ -164,10 +156,11 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
      *
      * @see sendRequest(), readResponse()
      *
-     * @param string   $request request
-     * @param resource $stream  stream
+     * @param string $request request
+     * @param resource $stream stream
      *
      * @return int Number of bytes read to stream
+     * @throws Exception\RuntimeException
      */
     public function requestToStream($request, $stream)
     {
@@ -178,6 +171,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 
     /**
      * @param string $request
+     * @throws Exception\RuntimeException
      */
     public function sendRequest($request)
     {
@@ -189,7 +183,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
             }
         }
 
-        return parent::sendRequest($request);
+        parent::sendRequest($request);
     }
 
     /**

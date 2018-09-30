@@ -19,6 +19,8 @@ use Zend\Mail\Storage;
  */
 class ImapSocket extends AbstractFetcher
 {
+    use NeedsIncomingAccountDecryptionTrait;
+
     /**
      * Just marks messages as read once they are processed.
      */
@@ -45,6 +47,12 @@ class ImapSocket extends AbstractFetcher
      * @var Storage\Imap
      */
     protected $storage;
+
+    /**
+     * Protocol
+     * @var \Zend\Mail\Protocol\Imap
+     */
+    protected $protocol;
 
     /**
      * Messages retrieved in the current fetch.
@@ -74,37 +82,110 @@ class ImapSocket extends AbstractFetcher
      */
     protected function _initConnection()
     {
-        $incomingAccount = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+        // stubs
+        $options = [];
 
+        // decrypt account config
+        $incomingAccount = $this->decryptIncomingAccount();
+
+        // Setup options
         switch ($incomingAccount->getType()) {
             case 'gmail':
-                $this->addToSessionLog('Trying to refresh gmail access token', 'debug');
-                $options = self::initOptions(
-                    $incomingAccount,
-                    App::$container->get('settings_resolver')->getGlobalSettings()
+                /** @var GmailConfig $protocolConfig */
+                $protocolConfig = $incomingAccount;
+
+                // Log refresh attempt
+                $this->logger->log(
+                    'Trying to refresh gmail access token',
+                    'debug'
+                );
+
+                $options = array_merge(
+                    $options,
+                    self::initOptions(
+                        $protocolConfig,
+                        App::$container->get('settings_resolver')->getGlobalSettings()
+                    )
+                );
+                break;
+            default:
+                throw new \InvalidArgumentException(
+                    "Unknown account type: {$incomingAccount->getType()}"
                 );
                 break;
 
-            default:
-                throw new \InvalidArgumentException('Unknown account type: '.$incomingAccount->getType());
         }
 
-        $this->mode           = $options['mode'];
-        $this->archiveMailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
-        $this->readMailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
+        // set mode
+        $this->mode = $options['mode'];
 
-        $this->addToSessionLog("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+        // set archive mailbox
+        $this->archiveMailbox =
+            (isset($options['archive_mailbox']) && ! is_null($options['archive_mailbox']))
+                ? $options['archive_mailbox']
+                : 'DP_Archive';
 
+        // set read mailbox
+        $this->readMailbox =
+            (isset($options['read_mailbox']) && ! is_null($options['read_mailbox']))
+                ? $options['read_mailbox']
+                : null;
+
+        // pass logger to the storage
         $options['logger'] = $this->logger;
 
-        $protocol = new Protocol\Imap($options['host'], $options['port'], 'ssl');
-        self::oauth2Authenticate($options['user'], $options['token'], $protocol);
-        $this->storage = new Storage\Imap($protocol);
+        try {
+            // log attempt
+            $this->logger->log(
+                "Connecting to {$options['user']}@{$options['host']}:{$options['port']}",
+                'debug'
+            );
 
-        if ($this->archiveMailbox === $this->storage->getCurrentFolder()) {
-            throw new \Exception('The current mailbox is reserved for processed emails, it can not be used as the primary mailbox');
+            // init protocol
+            $protocol = new Protocol\Imap($options['host'], $options['port'], 'ssl');
+
+            // attempt to authenticate and connect
+            if (true === self::oauth2Authenticate($options['user'], $options['token'], $protocol)) {
+                $this->storage  = new Storage\Imap($protocol);
+                $this->protocol = $protocol;
+
+                // log success
+                $this->logger->log(
+                    "Connected to {$options['user']}@{$options['host']}:{$options['port']}",
+                    'debug'
+                );
+            } else {
+                // log failure
+                $this->logger->log(
+                    "Failed to authenticate {$options['user']}@{$options['host']}:{$options['port']}",
+                    'debug'
+                );
+            }
+        } catch (\Exception $exception) {
+            // log failure
+            $this->logger->log(
+                "An error has occured while setting up connection: {$exception->getMessage()}",
+                'error'
+            );
+
+            throw $exception;
         }
 
+        // check if storage mailbox is not the same as archive mailbox
+        if ($this->archiveMailbox === $this->storage->getCurrentFolder()) {
+            $exception = new \Exception(
+                'The current mailbox is reserved for processed emails, it can not be used as the primary mailbox'
+            );
+
+            $this->logger->log(
+                "An error has occured while setting up connection: {$exception->getMessage()}",
+                'error'
+            );
+
+            throw $exception;
+        }
+
+        // select or create archive folder
         if ($this->mode === self::MODE_ARCHIVE) {
             try {
                 $this->storage->selectFolder($this->archiveMailbox);
@@ -113,7 +194,8 @@ class ImapSocket extends AbstractFetcher
             }
         }
 
-        if ($this->readMailbox) {
+        // select or create mailbox folder
+        if (! is_null($this->readMailbox)) {
             try {
                 $this->storage->selectFolder($this->readMailbox);
             } catch (Storage\Exception\RuntimeException $e) {
@@ -121,17 +203,33 @@ class ImapSocket extends AbstractFetcher
             }
         }
 
+        // get messages
         if ($this->mode == self::MODE_READ) {
             $this->messageUids = $this->protocol->search([Storage::FLAG_UNSEEN]) ?: [];
         } else {
             $this->messageUids = $this->protocol->search(['ALL']) ?: [];
         }
 
-        $this->addToSessionLog('Read IDs: '.implode(', ', $this->messageUids), 'debug');
+        // log success
+        $this->logger->log(
+            'Read IDs: '.implode(', ', $this->messageUids),
+            'debug'
+        );
 
+        // return storage
         return $this->storage;
     }
 
+    /**
+     * Init options
+     *
+     * @param GmailConfig $config
+     * @param SettingsBag $settings
+     *
+     * @return array
+     *
+     * @throws \InvalidArgumentException
+     */
     public static function initOptions(GmailConfig $config, SettingsBag $settings)
     {
         $options         = [];
@@ -173,6 +271,8 @@ class ImapSocket extends AbstractFetcher
      * {@inheritdoc}
      *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
+     * @throws Protocol\Exception\RuntimeException
+     * @throws Storage\Exception\RuntimeException
      */
     public function _readNext()
     {
@@ -187,14 +287,14 @@ class ImapSocket extends AbstractFetcher
         $rawMessage->uid  = $messageUid;
         $rawMessage->size = $this->storage->getSize($messageUid) ?: 0;
 
-        $this->addToSessionLog(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
-        $this->addToSessionLog(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
+        $this->logger->log(sprintf('Message UID: %s', $rawMessage->uid), 'debug');
+        $this->logger->log(sprintf('Message size: %s bytes', $rawMessage->size), 'debug');
 
         if ($this->maxSize && $rawMessage->size && $rawMessage->size > $this->maxSize) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
             $rawMessage->content = $this->storage->getRawHeader($messageUid)."\n\n";
-            $this->addToSessionLog('Message too big, only fetching headers', 'debug');
+            $this->logger->log('Message too big, only fetching headers', 'debug');
         } else {
             // Otherwise store the whole message
             $rawMessage->content = $this->storage->getRawContent($messageUid);
@@ -223,6 +323,8 @@ class ImapSocket extends AbstractFetcher
      * Moves it to the DP_Mailbox folder marking it "read".
      *
      * @param int $id ID of the message
+     * @throws Storage\Exception\RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function _doneRead($id)
     {
@@ -230,51 +332,52 @@ class ImapSocket extends AbstractFetcher
             case self::MODE_READ:
                 // No need to mark message as read, its marked as read automatically by fetching the body
                 //$message->setFlag('seen', 1);
-                $this->addToSessionLog("Marked $id as seen", 'debug');
+                $this->logger->log("Marked $id as seen", 'debug');
                 break;
-
             case self::MODE_ARCHIVE:
                 $this->storage->moveMessage($id, $this->archiveMailbox);
-                $this->addToSessionLog("Moved $id to {$this->archiveMailbox}", 'debug');
+                $this->logger->log("Moved $id to {$this->archiveMailbox}", 'debug');
                 break;
-
             case self::MODE_DELETE:
                 $this->storage->removeMessage($id);
-                $this->addToSessionLog("Deleted $id", 'debug');
+                $this->logger->log("Deleted $id", 'debug');
                 break;
-
             default:
                 throw new \InvalidArgumentException('Unvalid mode: '.$this->mode);
+                break;
         }
     }
 
     /**
-     * @param $email
-     * @param $accessToken
+     * Authenticate
      *
-     * @return string
-     */
-    protected function constructAuthString($email, $accessToken)
-    {
-        return base64_encode("user=$email\1auth=Bearer $accessToken\1\1");
-    }
-
-    /**
-     * @param $email
-     * @param $accessToken
-     *
+     * @param string $email
+     * @param string $accessToken
+     * @param Protocol\Imap $protocol
      * @return bool
+     * @throws Protocol\Exception\RuntimeException
      */
     public static function oauth2Authenticate($email, $accessToken, Protocol\Imap $protocol)
     {
-        $authenticateParams = ['XOAUTH2', self::constructAuthString($email, $accessToken)];
-        $protocol->sendRequest('AUTHENTICATE', $authenticateParams);
+        // send authentication request
+        $protocol->sendRequest(
+            'AUTHENTICATE',
+            [
+                'XOAUTH2',
+                base64_encode("user=$email\1auth=Bearer $accessToken\1\1"),
+            ]
+        );
+
+        // read response
         while (true) {
-            $response = '';
-            $isPlus   = $this->protocol->readLine($response, '+', true);
+            $response = null;
+
+            // read response line
+            $isPlus = $protocol->readLine($response, '+', true);
+
+            // error_log("got an extra server challenge: $response");
+            // Send empty client response.
             if ($isPlus) {
-                // error_log("got an extra server challenge: $response");
-                // Send empty client response.
                 $protocol->sendRequest('');
                 continue;
             }
@@ -283,12 +386,15 @@ class ImapSocket extends AbstractFetcher
                 return true;
             }
 
-            if (preg_match('/^NO /i', $response) ||
-                preg_match('/^BAD /i', $response)) {
-                throw new Protocol\Exception\RuntimeException('Can\'t authenticate via OAuth. '.$response);
+            if (preg_match('/^NO /i', $response) || preg_match('/^BAD /i', $response)) {
+                throw new Protocol\Exception\RuntimeException(
+                    "Can't authenticate via OAuth: {$response}"
+                );
             }
 
             // Some untagged response, such as CAPABILITY
         }
+
+        return false;
     }
 }
