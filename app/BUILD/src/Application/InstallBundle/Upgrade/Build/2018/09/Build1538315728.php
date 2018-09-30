@@ -2,10 +2,10 @@
 namespace Application\InstallBundle\Upgrade\Build;
 
 /**
- * Class Build1537361749
+ * Class Build1538315728
  * @package Application\InstallBundle\Upgrade\Build
  */
-class Build1537361749 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1538315728 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     /**
      * Create tables required for this build
