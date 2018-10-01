@@ -659,7 +659,7 @@ class UserChatController extends AbstractController
             $filter       = [];
             $filter['id'] = $filterId;
 
-            $filter['count']      = $this->container->getDb()->fetchColumn($searcher->getSQL());
+            $filter['count']      = $this->container->getDbRead('search.filter.chat')->fetchColumn($searcher->getSQL());
             $filter['title']      = $tr->phrase('agent.chat.filter_title_'.$filterId);
             $filter['disallowed'] = implode(',', $this->getDisallowedGroupsForFilter($filterId));
             $filters[]            = $filter;
@@ -940,7 +940,7 @@ class UserChatController extends AbstractController
             }
         }
 
-        $total = $this->container->getDb()->fetchColumn($searcher->getSql());
+        $total = $this->container->getDbRead('search.filter.chat')->fetchColumn($searcher->getSql());
 
         $limit   = 50;
         $maxPage = ceil($total / $limit);
@@ -955,7 +955,7 @@ class UserChatController extends AbstractController
         $searcher->setColumns('id');
         $searcher->setLimit('start', $start);
         $searcher->setLimit('limit', $limit);
-        $chatIds = $this->container->getDb()->fetchAllCol($searcher->getSql());
+        $chatIds = $this->container->getDbRead('search.filter.chat')->fetchAllCol($searcher->getSql());
 
         $chats = $this->container->getEm()->getRepository('DeskPRO:ChatConversation')->getByIds($chatIds, true);
 

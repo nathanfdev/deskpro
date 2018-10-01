@@ -38,7 +38,7 @@ class GroupingCounter
         }
 
         $searcher->setGroupBy($this->group_by);
-        $db = App::getDb();
+        $db = App::getDbRead('search.filter.chat');
 
         switch ($this->group_by) {
             case 'agent_id':
