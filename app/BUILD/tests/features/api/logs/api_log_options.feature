@@ -64,3 +64,14 @@ Feature: /api_logs_options
       | field           |
       | request_length  |
       | response_length |
+
+  Scenario: I validate mode option
+    When I send a PUT request to "/api/v2/api_logs_options" with body:
+    """
+{
+  "modes": ["unknown mode"]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.modes.errors[0].code" should be equal to "bad_choice"
+
