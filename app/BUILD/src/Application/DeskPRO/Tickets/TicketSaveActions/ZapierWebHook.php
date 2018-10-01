@@ -5,7 +5,10 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
+use DeskPRO\Bundle\AppBundle\Entity\Zapier\TicketUpdate;
 use DeskPRO\Bundle\AppBundle\Entity\ZapierHook;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use Doctrine\ORM\EntityManager;
@@ -37,14 +40,20 @@ class ZapierWebHook implements TicketSaveActionInterface
     {
         $state = $ticket->getStateChangeRecorder();
 
+        $sideloadContext = new SideloadSerializationContext();
+        $sideloadContext->setInlineSideloads(true);
+        $sideloadContext->setIncludes(['person', 'brand', 'ticket']);
+
+        $httpClient = new HttpClient(['timeout' => 30]);
+
         if ($state->isNewTicket()) {
-            $httpClient = new HttpClient(['timeout' => 30]);
-
-            $serializationContext = new SideloadSerializationContext();
-
-            $options['body'] = $this->serializer->serialize($ticket, 'json', $serializationContext);
-
             $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'ticket_created']);
+
+            if (!$hooks) {
+                return false;
+            }
+
+            $options['body'] = $this->serializer->toArray(new ApiWrapper($ticket), $sideloadContext);
 
             /** @var ZapierHook $zapierHook */
             foreach ($hooks as $zapierHook) {
@@ -66,22 +75,23 @@ class ZapierWebHook implements TicketSaveActionInterface
                     // Hooks needs to be unsubscribe
                     if ($e->getCode() === 410) {
                         $this->em->remove($zapierHook);
+                        $context->getLogger()->info('[Zapier] - Webhook does not exists anymore on Zapier we deleted it.');
+                    } else {
+                        $context->getLogger()->error(sprintf('[Zapier] Exception in webhook ticket_created #%d: [%s] %s', $zapierHook->getId(), $e->getCode(), $e->getMessage()), ['exception' => $e]);
                     }
                 }
             }
-        }
+        } elseif ($state->hasNewUserReply() || $state->hasNewAgentReply()) {
+            $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'new_ticket_reply']);
 
-        if ($state->hasNewUserReply() || $state->hasNewAgentReply()) {
-            $httpClient = new HttpClient(['timeout' => 30]);
-
-            $serializationContext = new SideloadSerializationContext();
+            if (!$hooks) {
+                return false;
+            }
 
             $ticketMessage = $ticket->getLastReply();
 
             if ($ticketMessage) {
-                $options['body'] = $this->serializer->serialize($ticketMessage, 'json', $serializationContext);
-
-                $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'new_ticket_reply']);
+                $options['body'] = $this->serializer->toArray(new ApiWrapper($ticketMessage), $sideloadContext);
 
                 /** @var ZapierHook $zapierHook */
                 foreach ($hooks as $zapierHook) {
@@ -91,7 +101,50 @@ class ZapierWebHook implements TicketSaveActionInterface
                         // Hooks needs to be unsubscribe
                         if ($e->getCode() === 410) {
                             $this->em->remove($zapierHook);
+                            $context->getLogger()->info('[Zapier] - Webhook does not exists anymore on Zapier we deleted it.');
+                        } else {
+                            $context->getLogger()->error(sprintf('[Zapier] Exception in webhook new_ticket_reply #%d: [%s] %s', $zapierHook->getId(), $e->getCode(), $e->getMessage()), ['exception' => $e]);
                         }
+                    }
+                }
+            }
+        } elseif (!$state->isTrivialChangeSet()) {
+            $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'ticket_update']);
+
+            if (false && !$hooks) {
+                return false;
+            }
+
+            $state   = $ticket->getStateChangeRecorder();
+            $changes = $state->getChanges();
+
+            $ticketLogs   = [];
+            $logGenerator = new TicketLogGenerator($ticket, $context);
+            foreach ($changes as $change) {
+                $logData = $logGenerator->getLogDataForChange($change);
+                if ($logData) {
+                    $ticketLogs[] = $logData;
+                }
+            }
+
+            $ticketUpdate = new TicketUpdate();
+            $ticketUpdate->setPerformer($context->getPersonContext());
+            $ticketUpdate->setChanges($ticketLogs);
+            $ticketUpdate->setTicket($ticket);
+
+            $options['body'] = $this->serializer->toArray(new ApiWrapper($ticketUpdate), $sideloadContext);
+
+            /** @var ZapierHook $zapierHook */
+            foreach ($hooks as $zapierHook) {
+                try {
+                    $httpClient->request('POST', $zapierHook->getTargetUrl(), $options);
+                } catch (ClientException $e) {
+                    // Hooks needs to be unsubscribe
+                    if ($e->getCode() === 410) {
+                        $this->em->remove($zapierHook);
+                        $context->getLogger()->info('[Zapier] - Webhook does not exists anymore on Zapier we deleted it.');
+                    } else {
+                        $context->getLogger()->error(sprintf('[Zapier] Exception in webhook ticket_update #%d: [%s] %s', $zapierHook->getId(), $e->getCode(), $e->getMessage()), ['exception' => $e]);
                     }
                 }
             }
