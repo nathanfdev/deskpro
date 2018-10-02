@@ -10,18 +10,27 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Feedback attachments.
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
+     *
      * @var \Application\DeskPRO\Entity\Feedback
      */
     protected $feedback;
@@ -29,11 +38,17 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Who created the attachment.
      *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
      * @var \Application\DeskPRO\Entity\Blob
      */
     protected $blob;

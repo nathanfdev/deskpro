@@ -11,6 +11,7 @@ namespace Application\DeskPRO\Entity;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Numbers;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,15 +19,22 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Article attachments.
  *
  * @PortalLinkCustom(type="serve")
+ * @JMS\ExclusionPolicy("all")
  */
 class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Article>")
+     *
      * @var \Application\DeskPRO\Entity\ARticle
      */
     protected $article;
@@ -34,11 +42,17 @@ class ArticleAttachment extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Who created the attachment.
      *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
      * @var \Application\DeskPRO\Entity\Blob
      *
      * @Assert\Valid()

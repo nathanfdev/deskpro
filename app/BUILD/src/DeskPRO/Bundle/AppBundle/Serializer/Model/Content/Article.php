@@ -49,6 +49,15 @@ class Article extends ContentAbstract
     protected $contentTranslations;
 
     /**
+     * Items attached to the content.
+     *
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ArticleAttachment>>")
+     *
+     * @var TicketAttachment[]
+     */
+    protected $attachments;
+
+    /**
      * Constructor.
      *
      * @param ArticleEntity $entity
@@ -60,5 +69,6 @@ class Article extends ContentAbstract
         $this->categoryNames       = $entity->getCategoryNames();
         $this->titleTranslations   = $entity->getTitleTranslations();
         $this->contentTranslations = $entity->getContentTranslations();
+        $this->attachments         = $entity->getAttachments();
     }
 }
