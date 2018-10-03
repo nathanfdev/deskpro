@@ -2,8 +2,11 @@
 
 namespace DeskPRO\Bundle\ImportBundle\EventListener;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Job;
+use DeskPRO\Bundle\AppBundle\Entity\ImportLog;
 use DeskPRO\Bundle\ImportBundle\Event\ProgressEvent;
+use DeskPRO\Bundle\ImportBundle\Storage\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -24,6 +27,16 @@ class JobProgressEventListener implements EventSubscriberInterface
     private $entityHandlerRegistry;
 
     /**
+     * @var StorageAdapterInterface
+     */
+    private $storageAdapter;
+
+    /**
+     * @var DeskproBlobStorage
+     */
+    private $blobStorage;
+
+    /**
      * @var int
      */
     private $jobId;
@@ -36,13 +49,21 @@ class JobProgressEventListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param EntityManager         $em
-     * @param EntityHandlerRegistry $entityHandlerRegistry
+     * @param EntityManager           $em
+     * @param EntityHandlerRegistry   $entityHandlerRegistry
+     * @param StorageAdapterInterface $storageAdapter
+     * @param DeskproBlobStorage      $blobStorage
      */
-    public function __construct(EntityManager $em, EntityHandlerRegistry $entityHandlerRegistry)
-    {
+    public function __construct(
+        EntityManager           $em,
+        EntityHandlerRegistry   $entityHandlerRegistry,
+        StorageAdapterInterface $storageAdapter,
+        DeskproBlobStorage      $blobStorage
+    ) {
         $this->em                    = $em;
         $this->entityHandlerRegistry = $entityHandlerRegistry;
+        $this->storageAdapter        = $storageAdapter;
+        $this->blobStorage           = $blobStorage;
     }
 
     /**
@@ -174,9 +195,28 @@ class JobProgressEventListener implements EventSubscriberInterface
             return;
         }
 
+        // mark job as completed
         $job->setStatus(Job::STATUS_COMPLETE);
 
         $this->em->persist($job);
+        $this->em->flush();
+
+        // create import log record
+        $importLog = new ImportLog();
+        $importLog->setType($job->getDataKey('type'));
+        $importLog->setCounts($job->getDataKey('applied_counts'));
+
+        foreach ($this->storageAdapter->getLogFilenames() as $logFilename) {
+            $content = $this->storageAdapter->readLogFile($logFilename);
+            if ($content) {
+                $blob = $this->blobStorage->createBlobRecordFromString($content, $logFilename, 'text/plain');
+                if ($blob) {
+                    $importLog->addLogBlob($blob);
+                }
+            }
+        }
+
+        $this->em->persist($importLog);
         $this->em->flush();
     }
 

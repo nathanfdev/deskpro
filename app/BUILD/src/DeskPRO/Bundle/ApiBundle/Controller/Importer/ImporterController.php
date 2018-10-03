@@ -1,9 +1,10 @@
 <?php
 
-namespace DeskPRO\Bundle\ApiBundle\Controller;
+namespace DeskPRO\Bundle\ApiBundle\Controller\Importer;
 
 use Application\DeskPRO\Entity\Job;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;

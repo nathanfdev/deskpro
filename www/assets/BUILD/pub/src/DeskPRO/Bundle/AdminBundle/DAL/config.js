@@ -17,7 +17,8 @@ export const repositoriesConfig = {
   VoiceQueue:         { type: 'api', url: '/voice_queues', allowAll: true },
   VoiceAutoAttendant: { type: 'api', url: '/voice_auto_attendants', allowAll: true },
   VoicePhoneCall:     { type: 'api', url: '/voice_phone_calls', allowAll: false },
-  OAuthClient:        { type: 'api', url: '/oauth_clients', allowAll: true }
+  OAuthClient:        { type: 'api', url: '/oauth_clients', allowAll: true },
+  ImportLog:          { type: 'api', url: '/importer_logs', allowAll: true }
 };
 
 export default repositoriesConfig;

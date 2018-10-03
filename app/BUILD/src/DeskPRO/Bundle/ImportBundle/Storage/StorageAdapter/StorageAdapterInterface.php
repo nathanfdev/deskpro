@@ -84,6 +84,11 @@ interface StorageAdapterInterface
     public function getLastLogFile($maxSize);
 
     /**
+     * @return string[]
+     */
+    public function getLogFilenames();
+
+    /**
      * @param string $filename
      *
      * @return string

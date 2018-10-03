@@ -53,11 +53,6 @@ class Storage
     private $logger;
 
     /**
-     * @var bool
-     */
-    private $appendLog = true;
-
-    /**
      * Constructor.
      *
      * @param EntityHandlerRegistry    $entityHandlerRegistry
@@ -144,6 +139,8 @@ class Storage
     /**
      * @param PrimaryImportModelInterface $model
      * @param int                         $batchNum
+     *
+     * @throws \Exception
      */
     public function writeModel(PrimaryImportModelInterface $model, $batchNum)
     {
@@ -198,8 +195,8 @@ class Storage
     public function writeLogFile($data)
     {
         // get last log file to append data
-        $logMaxSize = 3 * 1024 * 1024;
-        if ($this->appendLog && $filename = $this->storageAdapter->getLastLogFile($logMaxSize)) {
+        $logMaxSize = 10 * 1024 * 1024; // 10mb
+        if ($filename = $this->storageAdapter->getLastLogFile($logMaxSize)) {
             $data = $this->storageAdapter->readLogFile($filename).$data;
         } else {
             $date     = new \DateTime();
@@ -207,6 +204,5 @@ class Storage
         }
 
         $this->storageAdapter->writeLogFile($filename, $data);
-        $this->appendLog = false;
     }
 }
