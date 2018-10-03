@@ -62,14 +62,24 @@ class GooglePlus extends AbstractCallbackAdatper implements ExtraDetailsInterfac
             if ($access_token = $client->getAccessToken()) {
                 $attrs = $client->verifyIdToken();
 
-                if ($this->domain && !Urls::verifyEmailDomain($attrs['email'], $this->domain)) {
-                    return new Result(
-                        Result::FAILURE, null,
-                        [
-                            'error_code'    => 'invalid_argument',
-                            'error_message' => 'email does not match specified domain',
-                        ]
-                    );
+                if ($this->domain) {
+                    $domains    = explode(',', $this->domain);
+                    $authorised = false;
+                    foreach ($domains as $domain) {
+                        if (Urls::verifyEmailDomain($attrs['email'], trim($domain))) {
+                            $authorised = true;
+                            break;
+                        }
+                    }
+                    if (!$authorised) {
+                        return new Result(
+                            Result::FAILURE, null,
+                            [
+                                'error_code'    => 'invalid_argument',
+                                'error_message' => 'email does not match specified domain',
+                            ]
+                        );
+                    }
                 }
 
                 if (empty($attrs['sub'])) {

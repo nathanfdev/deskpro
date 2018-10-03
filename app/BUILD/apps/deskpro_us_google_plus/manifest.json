@@ -38,8 +38,8 @@
 		{
 			"name": "google_apps_domain",
 			"type": "text",
-			"label": "Google Apps Domain",
-			"description": "Optionally enter your Google Apps domain (e.g. example.com - no www. or http://) to allow only users from within your organisation to log in. When enabled, normal Google users (e.g. example@gmail.com) will not be allowed.",
+			"label": "Google Apps Domains",
+			"description": "Optionally enter your Google Apps domain (e.g. example.com - no www. or http://) to allow only users from within your organisation to log in. When enabled, normal Google users (e.g. example@gmail.com) will not be allowed. You can add multiple domains separated by comma.",
 			"native_only": true
 		},
 		{
