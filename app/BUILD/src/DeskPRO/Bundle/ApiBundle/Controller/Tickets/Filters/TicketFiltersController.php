@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Filters;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
