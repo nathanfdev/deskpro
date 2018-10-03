@@ -875,7 +875,7 @@ class PublishController extends AbstractController
 
             if ($type === 'topics') {
                 $brandId = $this->in->getUInt('category.brand_id');
-                if ($cat->getBrand()->getId() !== $brandId) {
+                if ($brandId && $cat->getBrand()->getId() !== $brandId) {
                     $this->db->update($table, [
                         'brand_id' => $brandId,
                     ], ['id' => $cat->getId()]);
