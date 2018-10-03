@@ -148,15 +148,17 @@ class ArticleCategoryHandlerTest extends AbstractEntityHandlerTest
         $entity = $this->getArticleCategoryEntity();
 
         $this->assertNotNull($entity);
-        $this->assertCount(2, $entity->getUserGroups());
+        $this->assertCount(3, $entity->getUserGroups());
 
         $this->assertEquals('Group 1', $entity->getUserGroups()[0]->getTitle());
         $this->assertEmpty($entity->getUserGroups()[0]->getSysName());
-        $this->assertEquals('Group 3', $entity->getUserGroups()[1]->getTitle());
+        $this->assertEquals('Group 2', $entity->getUserGroups()[1]->getTitle());
         $this->assertEmpty($entity->getUserGroups()[1]->getSysName());
+        $this->assertEquals('Group 3', $entity->getUserGroups()[2]->getTitle());
+        $this->assertEmpty($entity->getUserGroups()[2]->getSysName());
 
         $this->assertEquals($ug1->getId(), $entity->getUserGroups()[0]->getId());
-        $this->assertNotEquals($ug2->getId(), $entity->getUserGroups()[1]->getId());
+        $this->assertEquals($ug2->getId(), $entity->getUserGroups()[1]->getId());
     }
 
     public function test_sub_categories()
