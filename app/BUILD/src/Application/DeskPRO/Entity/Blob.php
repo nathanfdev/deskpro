@@ -51,6 +51,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     const STORAGE_LOC_S3         = 's3';
 
     /**
+     * Timeout for valid access_token for ticket attachments.
+     */
+    const ACCESS_TOKEN_TIMEOUT = 300;
+
+    /**
      * @var int
      */
     protected $id = null;
@@ -419,6 +424,15 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $url = str_replace('/file.php/', '/file.php/local/', $url);
         }
 
+        if ($this->isRequireAuth()) {
+            $accessToken = App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
+            if (strpos($url, '?') === false) {
+                $url .= '?access_token='.$accessToken;
+            } else {
+                $url .= '&access_token='.$accessToken;
+            }
+        }
+
         return $url;
     }
 
@@ -461,7 +475,18 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $params['size-fit'] = 1;
         }
 
-        return App::get('router')->generate('serve_blob', $params, $absolute);
+        $url = App::get('router')->generate('serve_blob', $params, $absolute);
+
+        if ($this->isRequireAuth()) {
+            $accessToken = App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
+            if (strpos($url, '?') === false) {
+                $url .= '?access_token='.$accessToken;
+            } else {
+                $url .= '&access_token='.$accessToken;
+            }
+        }
+
+        return $url;
     }
 
     /**
@@ -1086,6 +1111,33 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'mappedBy'      => 'blob',
             'orphanRemoval' => true,
         ]);
+    }
+
+    /**
+     * Check if blob is TicketAttachment.
+     *
+     * @return bool
+     */
+    public function isTicketAttachment()
+    {
+        return $this->getAuthcode() && substr($this->getAuthcode(), -1) === 'T';
+    }
+
+    /**
+     * Check if this blob require authentication.
+     *
+     * @return bool
+     */
+    protected function isRequireAuth()
+    {
+        if (!$this->isTicketAttachment()) {
+            return false;
+        }
+
+        return (bool) App::getContainer()
+            ->getSettingsResolver()
+            ->getGlobalSettings()
+            ->get('core_tickets.attachment_require_auth');
     }
 
     public function __getPropValue__($k)

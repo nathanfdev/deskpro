@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Products\Products;
 use Application\DeskPRO\Tickets\TicketCategories;
 use Application\DeskPRO\Tickets\TicketPriorities;
@@ -245,6 +246,17 @@ class ContainerMock
         }
 
         $this->mock->shouldReceive('getInputCleaner')->andReturn($obj);
+
+        return $this;
+    }
+
+    public function withSettings($globalSettings = [])
+    {
+        $globalSettings = new SettingsBag($globalSettings);
+        $resolver       = m::mock('Application\\DeskPRO\\NewSettings\\SettingsResolver');
+        $resolver->shouldReceive('getGlobalSettings')->andReturn($globalSettings);
+
+        $this->mock->shouldReceive('getSettingsResolver')->andReturn($resolver);
 
         return $this;
     }

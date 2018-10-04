@@ -27,7 +27,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
@@ -438,8 +437,17 @@ class PortalController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        $props = [];
+        if ($request->query->get('tag', '')) {
+            switch (trim($request->query->get('tag', ''))) {
+                case 'ticket_attachment':
+                    $props['tag'] = 'ticket_attachment';
+                    break;
+            }
+        }
+
         /** @var Blob $blob */
-        $blob = $this->get('attachment_accepter')->accept($file, true);
+        $blob = $this->get('attachment_accepter')->accept($file, true, $props);
 
         return new JsonResponse([
             'success' => true,
@@ -450,14 +458,7 @@ class PortalController extends AbstractController
                 'size'      => $blob->getReadableFilesize(),
                 'icon_html' => $this->get('icon_factory')->makeFileIcon($blob),
                 'is_image'  => $blob->isImage(),
-                'url'       => $this->generateUrl(
-                    'serve_blob',
-                    [
-                        'blob_auth_id' => $blob->getAuthcode(),
-                        'filename'     => $blob->getFilenameSafe(),
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
+                'url'       => $blob->getDownloadUrl(true),
             ],
         ]);
     }

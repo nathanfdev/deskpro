@@ -18,6 +18,7 @@ api:
                 - Behat\MinkExtension\Context\MinkContext
                 - DpBehat\Api\JsonContext
                 - DpBehat\HooksContext
+                - DpBehat\TicketMessageContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\Api\BrandContext
@@ -146,6 +147,7 @@ portal:
                 - DpBehat\Data\TicketLayoutContext
                 - DpBehat\PermissionContext
                 - DpBehat\BrandSettingContext
+                - DpBehat\Data\BlobContext
     extensions:
         Behatch\Extension: ~
         Behat\MinkExtension:

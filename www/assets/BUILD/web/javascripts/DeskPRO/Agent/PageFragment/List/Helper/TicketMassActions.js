@@ -1046,7 +1046,10 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     DeskPRO_Window.util.fileupload(this.wrapper, {
       url:              this.wrapper.data('upload-url'),
       uploadTemplate:   $('.template-upload', this.replyBox),
-      downloadTemplate: $('.template-download', this.replyBox)
+      downloadTemplate: $('.template-download', this.replyBox),
+      uploadUrlParameters: {
+        tag: 'ticket_attachment'
+      }
     });
   },
 

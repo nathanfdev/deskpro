@@ -55,7 +55,16 @@ class BlobsController extends AbstractController
             return $this->createApiErrorResponse($error['error_code'], $message);
         }
 
-        $blob = $accept->accept($file, true);
+        $props = [];
+        if ($this->in->getString('tag')) {
+            switch (trim($this->in->getString('tag'))) {
+                case 'ticket_attachment':
+                    $props['tag'] = 'ticket_attachment';
+                    break;
+            }
+        }
+
+        $blob = $accept->accept($file, true, $props);
 
         return $this->createApiCreateResponse([
             'blob' => $blob->toApiData(),

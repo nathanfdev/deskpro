@@ -368,7 +368,7 @@
     {% endif %}
     <div class="attach-field">
        <div class="with-dpx">
-            <div class="dpx-attach" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}">
+            <div class="dpx-attach" data-max-file-size="{{ app.getSetting('core.attach_user_maxsize') | filesize_display }}" data-upload-url="dpblob?tag=ticket_attachment">
                 <div {{ block('widget_container_attributes') }}>
                     {%- if form.parent is empty -%}
                         {{ form_errors(form) }}

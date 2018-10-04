@@ -387,11 +387,7 @@ class DeskproBlobStorage implements Loggable
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromFile) Attempting adapter: $adapter_id");
 
             try {
-                if ($adapter_id == 'fs') {
-                    $authcode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blob_entity_tmp->getId().$blob_entity_tmp->getNameHash();
-                } else {
-                    $authcode = $blob_entity_tmp->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
-                }
+                $authcode = $this->generateAuthCode($adapter_id, $blob_entity_tmp, $props);
 
                 $blob->setMeta('authcode', $authcode);
                 $path = $adapter->makePathForBlob($blob);
@@ -566,11 +562,7 @@ class DeskproBlobStorage implements Loggable
             $this->logger->logDebug("[DeskproBlobStorage] (saveBlobRecordFromString) Attempting adapter: $adapter_id");
 
             try {
-                if ($adapter_id == 'fs') {
-                    $authcode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blob_entity_tmp->getId().$blob_entity_tmp->getNameHash();
-                } else {
-                    $authcode = $blob_entity_tmp->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
-                }
+                $authcode = $this->generateAuthCode($adapter_id, $blob_entity_tmp, $props);
 
                 $blob->setMeta('authcode', $authcode);
                 $path = $adapter->makePathForBlob($blob);
@@ -1048,11 +1040,12 @@ class DeskproBlobStorage implements Loggable
         $file_data = $this->copyBlobRecordToString($blob_entity);
 
         $batch = (int) (($blob_entity->id - 1) / 1000) + 1;
-        if ($adapter_id == 'fs') {
-            $authcode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blob_entity->getId().$blob_entity->getNameHash();
-        } else {
-            $authcode = $blob_entity->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
-        }
+
+        $authcode = $this->generateAuthCode(
+            $adapter_id,
+            $blob_entity,
+            $blob_entity->isTicketAttachment() ? ['tag' => 'ticket_attachment'] : null
+        );
 
         $blobauth_moved = [
             'old_authcode' => $blob_entity->getAuthcode(),
@@ -1088,6 +1081,25 @@ class DeskproBlobStorage implements Loggable
 
         // Delete the old one
         $this->deleteBlob($old_blob, $old_adapter_id);
+    }
+
+    public function generateAuthCode($adapterId, BlobEntity $blobEntity, array $props = null)
+    {
+        $authCode = null;
+        $batch    = (int) (($blobEntity->id - 1) / 1000) + 1;
+
+        if ($adapterId == 'fs') {
+            $authCode = $batch.DpStrings::random(10, Strings::CHARS_KEY_ALPHA).$blobEntity->getId().$blobEntity->getNameHash();
+        } else {
+            $authCode = $blobEntity->getId().DpStrings::random(15, Strings::CHARS_KEY_ALPHA).'0';
+        }
+
+        $props = $props ?: [];
+        if (isset($props['tag']) && $props['tag'] === 'ticket_attachment') {
+            $authCode .= 'T';
+        }
+
+        return $authCode;
     }
 
     /**

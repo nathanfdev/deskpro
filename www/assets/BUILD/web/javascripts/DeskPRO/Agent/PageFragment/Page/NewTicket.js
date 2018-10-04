@@ -115,7 +115,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		DeskPRO_Window.util.fileupload(this.wrapper, {
 			dropZone: $('.option-rows', this.wrapper),
 			uploadTemplate: $('.template-upload', this.wrapper),
-			downloadTemplate: $('.template-download', this.wrapper)
+			downloadTemplate: $('.template-download', this.wrapper),
+      uploadUrlParameters: {
+        tag: 'ticket_attachment'
+      }
 		});
 		this.wrapper.bind('fileuploaddone', function(e, data) {
       if ($(e.target).hasClass('customfield')) {

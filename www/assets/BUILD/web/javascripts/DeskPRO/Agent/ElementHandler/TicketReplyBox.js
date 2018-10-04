@@ -502,9 +502,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		DeskPRO_Window.util.fileupload(this.el, {
 			dropZone: this.getElById('file_drop_zone'),
 			uploadTemplate: $('.template-upload', this.el),
-
-
-			downloadTemplate: $('.template-download', this.el)
+			downloadTemplate: $('.template-download', this.el),
+      uploadUrlParameters: {
+        tag: 'ticket_attachment'
+      }
 		});
 
 		this.el.bind('fileuploaddone', function(attachInfo, data) {
