@@ -1,0 +1,10 @@
+id: turkish
+name: Turkish
+nameLocal: İngiliz
+locale: tr
+isRtl: false
+pluralForms:
+  count: 0
+  selectors:
+    php: null
+    js: ''

@@ -1,0 +1,350 @@
+agent.chat.added_as_participant: 'Adicionado como participante'
+agent.chat.agent_chats: 'Chat dos Agentes'
+agent.chat.between_members: 'Chat entre:'
+agent.chat.chat_history: 'História do Chat'
+agent.chat.chat_started_by: 'Chat iniciado por'
+agent.chat.chat_transcript: 'Cópia do Chat'
+agent.chat.chat_with_x: 'Chat com {{name}}'
+agent.chat.count_seconds: '{{count}} segund'
+agent.chat.count_seconds_plural: '{{count}} segundos'
+agent.chat.filter_title_assigned: 'Chat atribuido'
+agent.chat.filter_title_mine: 'Meus Chats'
+agent.chat.filter_title_missed: 'Chats Perdidas'
+agent.chat.in_department: 'em {{name}}'
+agent.chat.invite_agent: 'Convidar Agente'
+agent.chat.invite_another_agent: 'Convidar outro agente'
+agent.chat.invite_no_agents: 'Não há mais agentes para convidar.'
+agent.chat.invite_others: 'Convidar Outros'
+agent.chat.join_chat: 'Juntar ao Chat'
+agent.chat.label_assigned_others: 'Outros agentes noutro chat'
+agent.chat.leave_chat_confirm: 'Tem a certeza que quer deixar deste chat?'
+agent.chat.leave_end: 'Terminar chat e sair'
+agent.chat.leave_unassign: 'Não atribuir a mim e sair'
+agent.chat.list_title: '1 Conversa'
+agent.chat.list_title_plural: '{{count}} Conversas'
+agent.chat.msg_agent_timeout: '{{agent_name}}  expirou'
+agent.chat.msg_assigned_agent: 'Chat atribuído a {{agent_name}}'
+agent.chat.msg_part_joined: '{{person_name}} entrou'
+agent.chat.msg_part_left: '{{person_name}} saiu'
+agent.chat.msg_unassigned_agent: '{{agent_name}} não foi atribuído'
+agent.chat.my_open_chats: 'Minhas Conversas Abertas'
+agent.chat.new_agent_note_by: 'Nova nota de agente {{name}}'
+agent.chat.new_agent_reply_by: 'Nova resposta de agente {{name}}'
+agent.chat.new_chat: 'Nova Conversa'
+agent.chat.new_ticket_by: 'Novo bilhete de {{name}} ({{email}})'
+agent.chat.new_user_reply_by: 'Nova resposta de {{name}} ({{email}})'
+agent.chat.no_department: 'Sem Departamento'
+agent.chat.no_email: 'Sem Email'
+agent.chat.no_online_agents: 'Não existe nenhum agente online'
+agent.chat.no_open_chats: 'Não existe nenhuma chat em aberto'
+agent.chat.no_others: 'Nenhum outro'
+agent.chat.open_chat: 'Conversa Aberta'
+agent.chat.other_agents: 'Outros Agentes'
+agent.chat.show_offline: 'Mostrar Offline'
+agent.chat.take_chat: 'Responder Chat'
+agent.chat.team_chats: 'Conversas de Equipa'
+agent.chat.title_active_chats: 'Todas as Conversas Abertas'
+agent.chat.title_chat_id: 'Conversa {{chat_id}}'
+agent.chat.title_ended: 'Chats Terminados'
+agent.chat.title_leave_chat_prompt: 'Deixar Conversa?'
+agent.chat.title_new_chats: 'Nova Conversa'
+agent.chat.title_open: 'Conversas Abertas'
+agent.chat.user_is_viewing: 'Utilizador está a ver'
+agent.chat.user_typing: Escrevendo
+agent.chat.warning: Aviso
+agent.chat.warning_email_address_not_unique: 'O usuário não está nesse momento autenticado e sua identidade não pode ser confirmada. Seja cauteloso e não exponha informações importantes nesse atendimento.'
+agent.chat.x_by_anonymous: 'Conversa {{chat_id}} por Anónimo'
+agent.chat.x_by_anonymousymous: 'Conversa por Anónimo'
+agent.chat.you_have_been_invited: 'Você foi convidado para um Chat'
+agent.general.api_token: 'Token API'
+agent.login.account_locked_message: 'Devido a inúmeras tentativas falhadas de login, a sua conta foi bloqueada por razões de segurança. Não será capaz de entrar durante {{timeago}}'
+agent.people.act_reg: 'Registou uma conta'
+agent.people.act_replied_ticket: 'Responder a este ticket:'
+agent.people.act_submitted_ticket: 'Submeter um ticket:'
+agent.people.add_address: 'Adicionar um endereço'
+agent.people.add_an_email_address: 'Adicionar um email'
+agent.people.add_another: 'adicionar outro'
+agent.people.add_linkedin_profile: 'Adicionar um perfil Linkedin'
+agent.people.add_phone: 'Adicionar um número de telefone'
+agent.people.add_twitter_profile: 'Adicionar um perfil do Twitter'
+agent.people.no_picture: 'Sem fotografia'
+agent.people.on_page: 'na página'
+agent.people.online_now: 'Online Agora'
+agent.people.person_ban_confirm: 'Tem a certeza que quer banir este utilizador?'
+agent.people.person_delete_confirm: 'Tem a certeza que quer apagar este utilizador?'
+agent.people.person_reset_password_confirm: 'Isto vai enviar um link de reset da senha a esta pessoa.'
+agent.people.phone_country_placeholder: País
+agent.people.update_picture: 'Actualizar Fotografia'
+agent.people.upload_new_picture: 'Carregar nova fotografia'
+agent.people.upload_vcard: 'Carregar vCard'
+agent.people.use_pic_gravatar: 'Usar fotografia do gravatar'
+agent.people.use_uploaded_pic: 'Usar fotografia carregada'
+agent.people.user_awaiting_agent_validation: 'Utilizador está a aguardar validação do agente'
+agent.people.user_awaiting_email_and_agent_validation: 'Utilizador está a aguardar validação do agente e email'
+agent.people.user_awaiting_email_validation: 'Utilizador está a aguardar validação do email'
+agent.people.user_awaiting_validation: 'Utilizador está a aguardar validação'
+agent.people.user_is_agent: '{{name}} é um agente neste helpdesk.'
+agent.people.user_is_autoresponder: 'Utilizador é um auto-responder. Respostas automáticas não serão enviadas.'
+agent.people.user_not_autoresponder: 'Utilizador não é um auto-responder'
+agent.people.user_will_be_perm_deleted: 'O utilizador será apagado permanentemente.'
+agent.people.user_will_be_perm_deleted_banned: 'O utilizador será apagado permanentemente e o seu email banido.'
+agent.people.view_profile: 'Ver Perfil'
+agent.publish.add_new_search_word: 'Pressione enter para adicionar uma nova palavra de busca'
+agent.publish.slug_edit: 'Editar Slug'
+agent.report.agent_activity: 'Actividade do Agente'
+agent.report.agent_hours: 'Horas do Agente'
+agent.report.clone: Clonar
+agent.report.clone_bracket: '[Clonar]'
+agent.report.current: Actual
+agent.report.report_builder: 'Constructor de Report'
+agent.settings.add_additional_emails: 'Adicionar emails adicionais'
+agent.settings.add_another_email: 'Adicionar outro email'
+agent.settings.additional_emails: 'Adicionar Emails'
+agent.settings.auto_close_ticket_tabs: 'Automaticamente fechar tabelas de tickects quando:'
+agent.settings.no_macros: 'Ainda não definiu nenhum macro customizado.'
+agent.settings.no_slas: 'O seu administrador não definiu nenhum SLA.'
+agent.settings.notif_group_follow: 'Tickets Que Sigo'
+agent.settings.notif_group_my: 'Meus Tickets'
+agent.settings.notif_group_team: 'Tickets Das Minhas Equipas'''
+agent.settings.notif_group_unassigned: 'Tickets Não Atribuídos'
+agent.settings.notif_my_events: 'Meus Eventos'
+agent.settings.notif_my_own_actions: 'Minhas Acções'
+agent.settings.notif_new_comment: 'Um novo comentário foi submetido'
+agent.settings.notif_new_comment_validate: 'Um nome comentário foi submetido que requer validação'
+agent.settings.notif_new_user: 'Um novo utilizador foi registado'
+agent.settings.notif_notes_with_mentions: 'Notas com @menções'
+agent.settings.notif_notes_with_mentions_always: 'Enviar sempre um email e uma mensagem via IM do Agente'
+agent.settings.notif_type_agent: 'Mensagem Do Agente'
+agent.settings.notif_type_assign: Tarefa
+agent.settings.notif_type_new: 'Novo Ticket'
+agent.settings.notif_type_note: 'Nota do Agente'
+agent.settings.notif_type_user: 'Mensagem do Utilizador'
+agent.settings.signature: Assinatura
+agent.settings.sla_filter_results: 'Filtrar resultatdos SLA'
+agent.settings.ticket_signature_note: 'Nota: Qualquer rascunho de resposta será apagado quando actualizar a sua assinatura.'
+agent.tasks.add_another_task: 'Adicionar outra tarefa'
+agent.tasks.all_tasks: 'Todas as tarefas'
+agent.tasks.completed_tasks: 'Tarefas Completas'
+agent.tasks.count: Total
+agent.tasks.creator: Criador
+agent.tasks.delete_confirm: 'Tem a certeza que quer apagar esta tarefa?'
+agent.tasks.my_tasks: 'Minhas Tarefas'
+agent.tasks.my_teams: 'Minhas Equipas'''
+agent.tasks.my_teamstasks: 'Tarefas da Minhas Equipas'''
+agent.tasks.no_due_time: 'Sem tempo específico'
+agent.tasks.or: ou
+agent.tasks.overdue: Atrasado
+agent.tasks.task_description: 'Descrição da Tarefa'
+agent.tasks.task_due_today: 'Esta tarefa expira hoje'
+agent.tasks.tasks_i_delegated: 'Tarefas Que Deleguei'
+agent.tickets.active_tickets_term: 'Bilhete está activo'
+agent.tickets.add_attachments: 'Adicionar anexos'
+agent.tickets.add_cc: 'Adicionar CC'
+agent.tickets.add_follower: 'Adicionar um seguidor'
+agent.tickets.add_followers: 'Adicionar Seguidores'
+agent.tickets.add_labels_action: 'Adicionar labels: {{labels}}'
+agent.tickets.add_note: 'Adicionar Nota'
+agent.tickets.add_reply_action: 'Adicionar resposta'
+agent.tickets.add_reply_x_action: 'Adicionar resposta {{desc}}'
+agent.tickets.add_sla_action: 'Adicionar SLA: {{sla}}'
+agent.tickets.adding_your_note: 'Adicionando sua nota'
+agent.tickets.admin_trigger_notifications_explain: 'Um administrador criou estes accionadores que enviam-lhe notificações por email.'
+agent.tickets.agent_has_lock: '{{agent}} trancou este bilhete. Para editar este bilhete deve antes destranca-lo.'
+agent.tickets.agents_action: 'Agentes: {{agents}}'
+agent.tickets.always_notify_people: 'Notificar sempre {{parts}}'
+agent.tickets.any_of_my_teams: 'Qualquer da minha equipa'
+agent.tickets.api: API
+agent.tickets.assignments: Taregas
+agent.tickets.attachment: Anexo
+agent.tickets.attachment_deleted: 'Anexo apagado'
+agent.tickets.attachments: Anexos
+agent.tickets.billing: Cobrança
+agent.tickets.billing_add_charge: 'Adicionar Preço'
+agent.tickets.billing_amount: Montante
+agent.tickets.billing_and_timelog: 'Log de Tempo & Cobrança'
+agent.tickets.billing_charge: Preço
+agent.tickets.billing_chargetime: Preço/Tempo
+agent.tickets.billing_time: Tempo
+agent.tickets.billing_timelog: 'Log de Tempo'
+agent.tickets.change_status: 'Alterar estado de {{old}} para {{new}}'
+agent.tickets.change_status_to: 'Alterar estado para'
+agent.tickets.change_user: 'Mudar Utilizador'
+agent.tickets.change_user_btn: 'Alterar Utilizador'
+agent.tickets.change_user_ticket_email: 'Alterar o email do utilizador neste bilhete'
+agent.tickets.changed_from: 'alterado de'
+agent.tickets.changed_to: para
+agent.tickets.charge: Preço
+agent.tickets.charge_time: 'Preço Tempo'
+agent.tickets.discard_draft: 'Descartar Rascunho'
+agent.tickets.hidden_status: 'Estado Oculto'
+agent.tickets.hidden_status_deleted: Apagado
+agent.tickets.hidden_status_spam: Spam
+agent.tickets.hidden_tickets: 'Bilhetes Ocultos'
+agent.tickets.hold_btn: 'Pôr Bilhete em Espera'
+agent.tickets.html_body: 'Corpo HTML'
+agent.tickets.link_existing_ticket: 'Liguar Bilhete Existente'
+agent.tickets.log_selected_option: 'seleccionado: '
+agent.tickets.real_time_updates: 'Update em tempo real estão activados'
+agent.tickets.status_archived: Aqruivado
+agent.tickets.status_archived_deleted: Apagado
+agent.tickets.status_archived_temp: Temporário
+agent.tickets.status_archived_validating: 'Aguardando Validação'
+agent.time.group_6_to_7_days: '6 - 7 dias'
+agent.time.group_gt_6_months: '> 6 meses'
+agent.time.group_lt_5_mins: '< 5 minutos'
+agent.time.long-day_friday: Sexta-Feira
+agent.time.long-day_monday: Segunda-Feira
+agent.time.long-day_saturday: Sábado
+agent.time.long-day_sunday: Domingo
+agent.time.long-day_thursday: Quinta-Feira
+agent.time.long-day_tuesday: Terça-Feira
+agent.time.long-day_wednesday: Quarta-Feira
+agent.time.long-month_april: Abril
+agent.time.long-month_august: Agosto
+agent.time.long-month_december: Dezembro
+agent.time.long-month_february: Fevereiro
+agent.time.long-month_january: Janeiro
+agent.time.long-month_july: Julho
+agent.time.long-month_june: Junho
+agent.time.long-month_march: Março
+agent.time.long-month_may: Maio
+agent.time.long-month_november: Novembro
+agent.time.long-month_october: Outubro
+agent.time.long-month_september: Setembro
+agent.time.reltime_1_day: '1 dia'
+agent.time.reltime_1_hour: '1 hora'
+agent.time.reltime_1_minute: '1 minuto'
+agent.time.reltime_1_month: '1 mês'
+agent.time.reltime_1_second: '1 segundo'
+agent.time.reltime_1_week: '1 semana'
+agent.time.reltime_1_year: '1 ano'
+agent.time.reltime_less_minute: '1 minuto'
+agent.time.reltime_less_second: '1 segundo'
+agent.time.reltime_x_day: '{0} dias'
+agent.time.reltime_x_hour: '{0} horas'
+agent.time.reltime_x_minute: '{0} minutos'
+agent.time.reltime_x_month: '{0} meses'
+agent.time.reltime_x_second: '{0} segundos'
+agent.time.reltime_x_week: '{0} semanas'
+agent.time.reltime_x_year: '{0} anos'
+agent.time.reltimeago_1_day: '1 dia atrás'
+agent.time.reltimeago_1_hour: '1 hora atrás'
+agent.time.reltimeago_1_minute: '1 minuto atrás'
+agent.time.reltimeago_1_month: '1 mês atrás'
+agent.time.reltimeago_1_second: '1 segundo atrás'
+agent.time.reltimeago_1_week: '1 semana atrás'
+agent.time.reltimeago_1_year: '1 ano atrás'
+agent.time.reltimeago_less_minute: 'menos de 1 minuto atrás'
+agent.time.reltimeago_less_second: 'menos de 1 segundo atrás'
+agent.time.reltimeago_x_day: '{0} dias atrás'
+agent.time.reltimeago_x_hour: '{0} horas atrás'
+agent.time.reltimeago_x_minute: '{0} minutos atrás'
+agent.time.time_x_second: '{0} segundos'
+agent.time.time_x_week: '{0} semanas'
+agent.time.time_x_year: '{0} anos'
+agent.twitter.account_rec_new_dm_from: '{{account}} recebeu uma nova mensagem directa de {{name}}'
+agent.twitter.account_rec_tweet_from: '{{account}} recebeu um novo tweet de {{name}}'
+agent.twitter.account_retweeted_by: '{{account}} foi retweeted por {{name}}'
+agent.twitter.add_note: 'Adicionar Nota'
+agent.twitter.added_by_agent: 'Adicionado por agente {{name}}'
+agent.twitter.all_tweets: 'Todos os tweets'
+agent.twitter.assigned_to_by: 'Associado a tweet por {{name}}'
+agent.twitter.associated_orgs: 'Organizações associadas'
+agent.twitter.associated_people: 'Pessoas Associadas'
+agent.twitter.char_remaining: '{{num_chars}} restantes'
+agent.twitter.characters: carácter
+agent.twitter.corresponding_twitter_account: 'Conta do Twitter correspondente'
+agent.twitter.count_selected: '{{count}} seleccioando'
+agent.twitter.count_selected_plural: '{{count}} seleccioando'
+agent.twitter.delete-search-confirm: 'Tem a certeza que pretende apagar esta busca?'
+agent.twitter.direct: Directo
+agent.twitter.direct_messages: 'Mensagens Directas'
+agent.twitter.dm: DM
+agent.twitter.edit_long_tweet: 'Editar Tweet Longo'
+agent.twitter.example: '#exemplo'
+agent.twitter.find_person: 'Encontrar @pessoa...'
+agent.twitter.follow: Seguir
+agent.twitter.followers: Seguidores
+agent.twitter.following: Seguindo
+agent.twitter.from_account: 'De Conta'
+agent.twitter.geo: GEO
+agent.twitter.in_reply_to: 'Em resposta de'
+agent.twitter.interactions: Interacções
+agent.twitter.list_title: '1 Tweet'
+agent.twitter.list_title_plural: '{{count}} Tweets'
+agent.twitter.location: Localização
+agent.twitter.long: Longo
+agent.twitter.mentions: Menções
+agent.twitter.message_sent: 'Mensagem enviada'
+agent.twitter.my_tweets: 'Meus tweets'
+agent.twitter.new_followers: 'Novos Seguidores'
+agent.twitter.new_search: 'Nova Busca'
+agent.twitter.no_followers: 'Nenhum seguidor,'
+agent.twitter.no_mentions: 'Nenhuma menção para o utilizador'
+agent.twitter.no_messages: 'Nenhuma mensagem para o utilizador'
+agent.twitter.no_statuses: 'Nenhum estado para o utilizador'
+agent.twitter.people: Pessoas
+agent.twitter.perform_action: 'Realizar Acção'
+agent.twitter.previous_tweets: 'Tweets Anteriores'
+agent.twitter.protected: Protegido
+agent.twitter.replies: Respostas
+agent.twitter.retweet: Retweet
+agent.twitter.retweet_as_is: 'Retweetar como'
+agent.twitter.retweet_of: 'Retweet de'
+agent.twitter.retweet_with_edit: 'Retweetar com edição'
+agent.twitter.retweeted: Retweetado
+agent.twitter.retweeted_by: 'Retweetado por {{name}}'
+agent.twitter.retweets: ReTweets
+agent.twitter.searches: Buscas
+agent.twitter.selected: seleccionado
+agent.twitter.send_tweet: 'Enviar Tweet'
+agent.twitter.send_user_message_on_twitter: 'Enviar {{name}} uma mensagem no Twitter'
+agent.twitter.sent: Enviado
+agent.twitter.show_archived_tweets: 'Mostrar tweets arquivadoss'
+agent.twitter.tweet: Tweet
+agent.twitter.tweets: Tweets
+agent.twitter.unknown: desconhecido
+agent.userchat.agent_blocked_user_on: '{{name}} bloqueou em {{date}}'
+agent.userchat.assigned_to: 'Conversa atribuída a {{name}}'
+agent.userchat.block_ip_address: 'Bloquear endereço IP'
+agent.userchat.block_ip_address_info: 'Bloqueando o Endereço IP pode ser mais efetivo, mas poderá resultar em bloqueio de outros usuários legítimos, se os mesmo tiverem usando o mesmo Endereço IP.'
+agent.userchat.block_reason: 'Razão: {{reason}}'
+agent.userchat.block_title: 'Finalizar o Chat e bloquear esse usuário de iniciar novo Chat por pelo menos 24 horas.'
+agent.userchat.block_user: 'Bloquear Utilizador'
+agent.userchat.create_ticket: 'Criar bilhete'
+agent.userchat.ended_by: 'Conversa terminada por {{name}}'
+agent.userchat.ended_by_reason: 'Conversa terminada por {{name}}: {{reason}}'
+agent.userchat.ended_user: 'Conversa terminada por utilizador'
+agent.userchat.full_message: 'Mensagem Completa'
+agent.userchat.ident_unconfirmed: 'Identidade não confirmada, email ainda não foi validado'
+agent.userchat.list_title: '1 Conversa'
+agent.userchat.list_title_plural: '{{count}} Conversas'
+agent.userchat.message_agent-timeout: '{{name}} não está respondendo. Por favor aguarde enquanto tentamos encontrar outro Agente.'
+agent.userchat.message_assigned: 'Conversa atribuído a {{name}}'
+agent.userchat.message_ended: 'Conversa terminada'
+agent.userchat.message_ended-by: 'Conversa terminada por {{name}}'
+agent.userchat.message_ended-by-user: 'Conversa encerrada pelo utilizador'
+agent.userchat.message_set-department: '{{name}} alterar departamento para {{department}}'
+agent.userchat.message_set_department: '{{name}} alterar departamento para {{department}}'
+agent.userchat.message_started: 'Conversa iniciada'
+agent.userchat.message_unassigned: 'Conversa não atribuída'
+agent.userchat.message_uploading: Carregado...
+agent.userchat.message_user-joined: '{{name}} juntou-se a conversa'
+agent.userchat.message_user-left: '{{name}} deixou a conversa'
+agent.userchat.message_user-returned: 'Utilizador retornou'
+agent.userchat.message_user-timeout: 'Utilizador expirou'
+agent.userchat.message_user_joined: '{{name}} juntou-se a conversa'
+agent.userchat.message_user_left: '{{name}} deixou a conversa'
+agent.userchat.message_wait-timeout: 'Conversa terminou: Não foi possível encontrar uma agente'
+agent.userchat.msg_agent_timeout: '{{name}} não responde. Aguarde enquanto tentamos localizar outro agente.'
+agent.userchat.msg_new_user_track: 'Utilizador está a ver: {{label}}'
+agent.userchat.msg_user_timeout: 'Utilizador não responde'
+agent.userchat.new_chat: 'Nova Conversa'
+agent.userchat.take_chat: 'Responder Conversa'
+agent.userchat.taken_by: 'Conversa Respondida por'
+agent.userchat.transcript_sent: 'Cópia enviada para {{email}}'
+agent.userchat.unassigned: 'Conversa não atribuída'
+agent.userchat.unblock: Desbloquear
+agent.userchat.user_is_blocked: 'Utilizador está bloqueado'
+agent.userchat.visitor_info: 'Informação do Visitante'
+agent.userchat.you_have_been_invited: 'Foste convidado a juntares-te a uma conversa'

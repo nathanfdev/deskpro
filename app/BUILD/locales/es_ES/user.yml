@@ -1,0 +1,471 @@
+portal.account.change-password: 'Cambiar contraseña'
+portal.account.email-btn-resend-validation: 'Reenviar correo electrónico de validación'
+portal.account.login-register-btn: Registro
+portal.account.login-register-header: Registro
+portal.account.register-btn: Registro
+portal.account.reset-password-btn: 'Reinicializar contraseña'
+portal.account.section-title-profile: Perfil
+portal.account.section-title-register: Registro
+portal.account.section-title-reset-password: 'Reinicializar contraseña'
+portal.articles.search-title: 'Base de conocimiento'
+portal.articles.section-title: 'Base de conocimiento'
+portal.articles.view-as-agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
+portal.chat.assigned_to: 'Conversación asignada a {{name}}'
+portal.chat.chat_transcript: 'Transcripción de conversación'
+portal.chat.end_chat: 'Fin de conversación'
+portal.chat.ended_by: 'Conversación finalizada por {{name}}'
+portal.chat.ended_user: 'Conversación finalizada por usuario'
+portal.chat.feedback_action: 'Enviar comentario'
+portal.chat.helpful: 'De ayuda'
+portal.chat.label-name: 'Su nombre'
+portal.chat.list_agent: Agente
+portal.chat.log_department: Departamento
+portal.chat.message_assigned: 'Conversación asignada a {{name}}'
+portal.chat.message_ended: 'Conversación finalizada'
+portal.chat.message_ended-by: 'Conversación finalizada por {{name}}'
+portal.chat.message_ended-by-user: 'Conversación finalizada por usuario'
+portal.chat.message_set-department: '{{name}} ha asignado el departamento a {{department}}'
+portal.chat.message_set_department: '{{name}} ha asignado el departamento a {{department}}'
+portal.chat.message_started: 'Conversación iniciada'
+portal.chat.message_unassigned: 'Conversación no asignada'
+portal.chat.message_user-joined: '{{name}} se ha unido a la conversación'
+portal.chat.message_user-left: '{{name}} ha abandonado la conversación'
+portal.chat.message_user-returned: 'El usuario ha vuelto'
+portal.chat.message_user-timeout: 'Superada tiempo de espera de usuario'
+portal.chat.message_user_joined: '{{name}} se ha unido a la conversación'
+portal.chat.message_user_left: '{{name}} ha abandonado la conversación'
+portal.chat.not_helpful: 'No ha sido de ayuda'
+portal.chat.transcript_sent: 'Enviar copia a {{email}}'
+portal.chat.unassigned: 'Conversación no asignada'
+portal.chat.you: Usted
+portal.downloads.download: Descarga
+portal.downloads.search-title: Descargas
+portal.downloads.section-title: Descargas
+portal.downloads.view-as-agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
+portal.email_subjects.chat_transcript: 'Transcripción de conversación'
+portal.email_subjects.comment-approved: 'Su comentario se ha aprobado'
+portal.email_subjects.comment-confirmation: 'Gracias por su comentario'
+portal.email_subjects.comment-deleted: 'Su comentario se ha revisado por nuestros agentes'
+portal.email_subjects.email-too-big: 'Tu correo {{subject}} no fue aceptado'
+portal.email_subjects.email_new-confirm: 'Validar su dirección de correo electrónico'
+portal.email_subjects.email_primary-confirm: 'Validar su dirección de correo electrónico'
+portal.email_subjects.feedback_new: 'Gracias por enviar sus comentarios'
+portal.email_subjects.feedback_new-approved: 'Su comentario ha sido aprobado'
+portal.email_subjects.feedback_new-comment: 'Hay un nuevo comentario sobre "{{title}}"'
+portal.email_subjects.feedback_new-confirm: 'Gracias por enviar su comentario (Se requiere validación)'
+portal.email_subjects.feedback_new-disapproved: 'Su comentario se ha rechazado'
+portal.email_subjects.feedback_updated: 'Su comentario se ha actualizado. {{title}}'
+portal.email_subjects.kb_sub_new: 'Articulos Nuevos'
+portal.email_subjects.kb_sub_new_and_updated: 'Articulos nuevos y actualizados'
+portal.email_subjects.kb_sub_updated: 'Articulos actualizados'
+portal.email_subjects.password_agent-reset: 'Un agente ha reiniciado su contraseña'
+portal.email_subjects.password_reset: 'Reinicializar contraseña'
+portal.email_subjects.register-welcome: 'Gracias por Registrarse'
+portal.email_subjects.ticket-rate: 'Valore la experiencia del soporte en su ticket "{{ticket.subject}}"'
+portal.email_subjects.ticket_new-participant: 'Una nueva persona ha sido añadida a su ticket'
+portal.email_subjects.validate-email: 'Validar su dirección de correo electrónico'
+portal.emails.auto-close: 'Su ticket "{{ticket.subject}}" no cerrará automáticamente porque no lo ha actualizado recientemente. Si no quiere que su ticket sea cerrado, puede enviar una respuesta para que nuestros agentes continuen ayudándole.'
+portal.emails.chat_transcript: 'Gracias por conversar con nosotros. Aquí tiene su transcripción'
+portal.emails.comment_approved: 'Su comentario ha sido publicado.'
+portal.emails.comment_deleted: 'Su comentario se ha utilizado para mejorar la página.'
+portal.emails.comment_thank-you: 'Gracias por comentar sobre {{link}}'
+portal.emails.comment_validate-email: 'Valide su dirección de correo electrónico haciendo clic en el siguiente enlace:'
+portal.emails.do-not-reply: 'Por favor, no responda a este correo electrónico. Este es un mensaje automatizado y las respuestas no serán leídas por nuestro equipo.'
+portal.emails.email-too-big: 'Tu correo {{subject}} no fue aceptado porque es demasiado grande. El tamaño maximo del correo aceptado por es {{max_size}}. Remueve los documentos e intentalo de nuevo.'
+portal.emails.feedback_approved: 'Le estamos escribiendo para confirmarle que su comentario se ha a probado y ahora es público en nuestro sistema.'
+portal.emails.feedback_closed: 'Su comentario "{{title}}" se ha cerrado: {{status}}'
+portal.emails.feedback_disapproved: 'Le estamos enviando un correo electrónico para comunicarle que su comentario ha sido rechazado y no aparecerá publicado en nuestro servicio.'
+portal.emails.feedback_disapproved-reason: 'Le escribimos para confirmarle que no se ha aceptado su comentario y que no se hará público. {{name}} ha aducido la siguiente razón:'
+portal.emails.feedback_new-comment: '{{name}} ha enviado un nuevo comentario:'
+portal.emails.feedback_published: 'El comentario enviado "{{title}}" se ha aceptado y aparecerá en nuestro sistema.'
+portal.emails.feedback_thank-you: 'Hracias por enviarnos su comentario "{{title}}"'
+portal.emails.feedback_updated: 'Su comentario "{{title}}" ha sido actualizado. Su estado actual es "{{status}}"'
+portal.emails.feedback_validate-email: 'Valide su dirección de correo electrónico haciendo clic en el siguiente enlace:'
+portal.emails.feedback_votes: 'Su comentario tiene actualmente <strong>1</strong> voto. Vea su comentario en:'
+portal.emails.feedback_votes_plural: 'Su comentario tiene actualmente<strong>{{count}}</strong> votos. Vea su comentario en:'
+portal.emails.greeting: 'Apreciado/a {{to_name}}'
+portal.emails.kb-explain: 'Usted ha recibido este correo porque está suscrito a nuestra base de conocimiento en <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> No quiere estos correos otra vez?<a href="{{unsubscribe_url}}"> Click aquí para darse de baja.</a>'
+portal.emails.kb-new-articles: 'Un articulo nuevo'
+portal.emails.kb-new-articles_plural: ' {{count}} Articulos nuevos'
+portal.emails.kb-updated-articles: 'Un articulo actualizado'
+portal.emails.kb-updated-articles_plural: ' {{count}} Articulos actualizados'
+portal.emails.label_view-online: 'Ver en linea'
+portal.emails.message-clipped: '(El mensaje se ha recortado)'
+portal.emails.password_agent-reset: 'Un agente ha reinicializado su contraseña. Puede acceder con estas credenciales'
+portal.emails.password_reset: 'Ha solicitado la reinicialización de su contraseña. Para reinicializarla haga clic en el enlace:'
+portal.emails.profile_email-new-confirm: 'Para finalizar la incorporación de una nueva dirección a su cuenta, haga clic en el siguiente enlace de validación'
+portal.emails.profile_email_link-validate: 'Haga clic en el siguiente enlace para validar su dirección de correo electrónico'
+portal.emails.register-agent-validation: 'Nota: Antes de que su cuenta está en plenamente activida, nuestros agentes deben validar manualmente su cuenta. Los tickets y otros contenidos que usted envíe se llevará a cabo en una cola de validación hasta que un agente valida sus cuentas.'
+portal.emails.register-confirm: 'Gracias por registrar una cuenta.<br /><br />Antes de que pueda utilizarla, haga clic en el siguiente enlace para validar su dirección de correo electrónico'
+portal.emails.register-welcome: 'Gracias por su registro. Ahora puedes iniciar sesión con tu dirección de correo {{to_email}} en nuestra mesa de soporte:'
+portal.emails.registration_closed: 'Apreciado/a {{name}},<br /><br /><br /><br />los nuevos tickets solo se aceptan desde miembros de nuestro servicio. Si tiene una cuenta abierta en nuestro sistema, envíenos de nuevo el correo electrónico desde dicha cuenta.'
+portal.emails.reject_resolved: 'Tu respuesta no fue aceptada porque tu ticket ha sido marcado como resuelto. Nuestros agentes no han leido o respuesto este mensaje.'
+portal.emails.reject_resolved-new: 'Si desea crear un nuevo ticket, puede enviar un nuevo correo electrónico a <a href="mailto:{{email_to}}">{{email_to}}</a> o puede rellenar nuestro formulario en línea:<br /><a href="{{link}}">{{link}}</a>'
+portal.emails.ticket_access_ticket_online: 'Ver y gestionar este ticket:'
+portal.emails.ticket_cc-new: 'Ha sido incluido en un ticket abierto por {{name}}.'
+portal.emails.ticket_flood: 'Ha enviado recientemente un correo electrónico a nuestro servicio. Nuestro sistema automático ha detectado que ha enviado demasiados mensajes que probablememte son automáticos.<br /><br />Para proteger nuestro sistema de un bucle de auto-respuestas, no se le enviarán nuevas notificaciones por correo electrónico.'
+portal.emails.ticket_message_title: 'El día {{date}} a {{time}}, {{author}} escribió:'
+portal.emails.ticket_no-autoresponse: 'Alerta: Correos electrónicos de confirmación desactivados'
+portal.emails.ticket_rate-neutral: 'Ha ayudado'
+portal.emails.ticket_rate-positive: Si
+portal.emails.ticket_rate-question: '¿ Le ha ayudado este mensaje ?'
+portal.emails.ticket_received: 'Se ha recibido su ticket. Uno de nuestros agentes le responderán pronto.'
+portal.emails.ticket_reply-confirm: 'Gracias por su respuesta. Uno de nuestros agentes le responderá pronto.'
+portal.emails.ticket_validate: 'Gracias por contactar con nosotros.<br /><br />Antes de que nuestros agentes puedan responder su mensaje, debe validar su dirección de correo electrónico.'
+portal.emails.tickets_ommitted: '1 mensaje se ha omitido'
+portal.emails.tickets_ommitted_plural: '{{count}} mensajes se han omitido'
+portal.emails.view_full_history_online: 'Ver el ticket completo'
+portal.error.404-title: 'No encontrado'
+portal.feedback.attachments: Adjuntos
+portal.feedback.btn-closed: Cerrado
+portal.feedback.btn-vote: 'Estoy de acuerdo'
+portal.feedback.form_title: Título
+portal.feedback.search-title: Comentarios
+portal.feedback.section-desc: 'Estas sugerencias han sido enviadas por clientes como usted; le animamos a discutir y votar aquellas con las que esté de acuerdo y enviarnos sus sugerencias si no las encuentra en la lista.'
+portal.feedback.section-title: Comentarios
+portal.feedback.submit_feedback: 'Enviar comentario'
+portal.forms.error_password_forbid_reuse: 'No puedes usar una contraseña que ya utilizaste anteriormente.'
+portal.forms.error_password_min_length: 'Mínimo de {{count}} caracteres'
+portal.forms.error_password_min_length_plural: 'Mínimo de {{count}} caracteres'
+portal.forms.label_category: Categoría
+portal.forms.label_department: Departamento
+portal.forms.label_first_name: Nombre
+portal.forms.label_full_name: 'Su nombre'
+portal.forms.label_language: Idioma
+portal.forms.label_last_name: Apellidos
+portal.forms.label_message: Mensaje
+portal.forms.label_name: Nombre
+portal.forms.label_password: Contraseña
+portal.forms.label_priority: Prioridad
+portal.forms.label_save: Guardar
+portal.forms.label_subject: Asunto
+portal.forms.label_submit: Enviar
+portal.forms.label_timezone: 'Zona horaria'
+portal.forms.label_title: Título
+portal.general.add-comment: 'Nuevo comentario'
+portal.general.agent: Agente
+portal.general.attachments: Adjuntos
+portal.general.btn-cancel: Cancelar
+portal.general.btn-download-pdf: 'Descargar PDF'
+portal.general.btn-go: Ir
+portal.general.delete: Eliminar
+portal.general.everything: Todo
+portal.general.nav-downloads: Descargas
+portal.general.nav-downloads-desc: 'Revisar nuestras descargas'
+portal.general.nav-feedback: Comentarios
+portal.general.nav-kb: 'Base de conocimiento'
+portal.general.nav-kb-desc: 'Leer artículos de ayuda'
+portal.general.nav-news: Noticias
+portal.general.nav-news-desc: 'Noticias y actualizaciones'
+portal.general.nav-newticket: Contáctenos
+portal.general.nav-profile: Perfil
+portal.general.nav-register: Registro
+portal.general.nav-reset-password: 'Reinicializar contraseña'
+portal.general.rate-page-positive: 'Esta página ha sido útil'
+portal.general.rated-negative: 'Ha marcado esta página como no útil'
+portal.general.rated-positive: 'Ha marcado esta página como útil'
+portal.general.rating_x_of_y_found_helpful: '{{vote_up}} de {{vote_count}} personas han encontrado esta página útil'
+portal.general.related-downloads: 'Archivos relacionados'
+portal.general.related-feedback: 'Comentarios relacionados'
+portal.general.related-news: 'Noticias relacionadas'
+portal.general.search-labels-section-title: 'Etiquetas de búsqueda'
+portal.general.search-section-title: Buscar
+portal.general.search_btn: Buscar
+portal.general.share-this: Compartirlo
+portal.general.show: Mostrar
+portal.general.submit-feedback: 'Enviar comentario'
+portal.news.section-title: Noticias
+portal.news.view-as-agent: 'Puede ver esta página porque es un agente. Los usuarios normales no tienen autorización para ver esta página.'
+portal.sidebar.news_title: Noticias
+portal.tickets.feedback_message_leave_comment: 'Opcionalmente deje un comentario'
+portal.tickets.guest-thanks-section-title: Gracias
+portal.tickets.guest_thank_you_title: Gracias
+portal.tickets.list_agent: 'Agente asignado'
+portal.tickets.list_date_created: 'Fecha de creación'
+portal.tickets.list_department: Departamento
+portal.tickets.list_status_open: 'Tickets abiertos'
+portal.tickets.list_status_resolved: Resuelto
+portal.tickets.list_subject: Asunto
+portal.tickets.list_title: 'Sus tickets'
+portal.tickets.new-intro: 'Por favor, complete el formulario y uno de nuestros agentes le responderá por correo electrónico lo antes posible'
+portal.tickets.new-section-title: Contáctenos
+portal.tickets.rate-intro: '{{name}} le ha ayudado con su ticket "{{subject}}"'
+portal.tickets.rate-negative: 'No ha sido bueno'
+portal.tickets.rate-neutral: 'Ha ayudado'
+portal.tickets.rate-positive: 'Muy bueno'
+portal.tickets.rate-question: '¿Cómo calificaría el soporte que recibió?'
+portal.tickets.related_articles_title: 'Artículos relacionados'
+portal.tickets.resolve_my_ticket_btn: 'Resolver mi ticket'
+portal.tickets.resolve_ticket: 'Resolver ticket: {{subject}}'
+portal.tickets.resolve_ticket_explain: '¿Está seguro de que desea resolver su ticket? una vez que haya sido resuelto, nuestros agentes no volverán a responderle.'
+portal.tickets.timeline_marked_resolved: Resuelto
+portal.tickets.view_btn_edit: Modificar
+portal.tickets.view_label_your_name: 'Su nombre'
+portal.tickets.view_unassigned: 'No asignado'
+user.chat.email: 'Su dirección de correo electrónico'
+user.chat.ended-no-agent: 'Lo sentimos pero no hay nadie disponible para conversar en este momento. Envíenos un correo electrónico o inténtelo de nuevo más tarde.'
+user.chat.error: 'Error en chat'
+user.chat.form_chat_button-submit: Enviar
+user.chat.form_chat_send-file: 'Enviar un archivo'
+user.chat.form_create_button-submit: 'Comenzar conversación'
+user.chat.form_create_department: 'Elija un departamento'
+user.chat.form_create_title: 'Comenzar conversación con un agente'
+user.chat.form_feedback_button-submit: 'Enviar comentario y cerrar ventana'
+user.chat.form_feedback_comments: '¿Hay comentarios?'
+user.chat.form_feedback_rate-satisfaction: '¿Se ha quedado satisfecho con esta conversación?'
+user.chat.form_feedback_rate-satisfied: Si
+user.chat.form_feedback_rate-time: '¿Nuestro tiempo de respuesta ha sido bueno?'
+user.chat.form_feedback_title: 'Envíenos su comentario'
+user.chat.form_feedback_transcript-email: 'Enviar una transcripción de la conversación a'
+user.chat.log-title: 'Tus conversaciones'
+user.chat.log_chat-id: 'ID conversación'
+user.chat.log_created-date: 'Creado{{date}}'
+user.chat.log_fields_agent: Agente
+user.chat.log_fields_department: Departamento
+user.chat.log_message_author-you: Usted
+user.chat.log_nav-view-chats: 'Ver tu ultimo registro de conversación'
+user.chat.log_nav-view-chats_plural: 'Ver tu {{count}} historial de conversaciones.'
+user.chat.log_no_department: 'Sin departamento'
+user.chat.log_unassigned: 'No hay agente asignado aún'
+user.chat.message_agent-timeout: 'Lo sentimos; {{name}} está deconectado. Espere un momento e inténtelo de nuevo con otro agente'
+user.chat.message_assigned: 'Conversación asignada a {{name}}'
+user.chat.message_chatting-with: 'Está conversando con'
+user.chat.message_ended: 'Conversación finalizada'
+user.chat.message_ended-by: 'Conversación finalizada por {{name}}'
+user.chat.message_ended-by-user: 'Conversación finalizada por usuario'
+user.chat.message_finding-agent: 'Localizando un agente'
+user.chat.message_long-wait: 'Estamos intentando localizar un agente para comenzar su conversación; Esto normalmente tarda menos de un minuto. <br /><br />¿Tiene prisa? <a class="cancel-and-newticket-trigger">¿Déjenos un mensaje?</a>'
+user.chat.message_set-department: '{{name}} ha asignado el departamento a {{department}}'
+user.chat.message_started: 'Conversación iniciada'
+user.chat.message_unassigned: 'Conversación no asignada'
+user.chat.message_uploading: Cargando...
+user.chat.message_user-joined: '{{name}} se ha unido a la conversación'
+user.chat.message_user-left: '{{name}} ha abandonado la conversación'
+user.chat.message_user-returned: 'El usuario ha vuelto'
+user.chat.message_user-timeout: 'Superada tiempo de espera de usuario'
+user.chat.message_wait: 'Estamos localizando un agente para usted'
+user.chat.message_wait-timeout: 'No se pudo localizar a ningún agente por el momento.'
+user.chat.name: 'Su nombre'
+user.chat.submit-ticket-button: 'Envíenos un correo electrónico'
+user.chat.submit-ticket-title: 'Envíenos un correo electrónico mejor'
+user.chat.transcript_sent: 'Enviar copia a {{email}}'
+user.chat.window_cancel: Cancelar
+user.chat.window_cancel-confirm: '¿Está seguro de querer finalizar la conversación?'
+user.chat.window_close: 'No gracias, sólo cerrar la ventana'
+user.chat.window_close_only: 'Cerrar la ventana'
+user.chat.window_end-chat: 'Fin de conversación'
+user.chat.window_offline-button: 'Haz click aquí para contactarnos'
+user.chat.window_open-new: 'Abrir esta conversación en una nueva ventana'
+user.chat.window_resume-button: 'Abrir su conversación'
+user.chat.window_start-button: 'Haga clic aquí para conversar con nosotros'
+user.chat.window_upload-drag: 'Suelte aquí su archivo para cargarlo en la conversación'
+user.defaults.article_example_content: 'Este es un artículo de ejemplo de la base de conocimiento. Puede editarlo o eliminarlo desde la interfaz de agente.'
+user.defaults.article_example_title: 'Arítulo de ejemplo'
+user.defaults.department_sales: Ventas
+user.defaults.department_support: Soporte
+user.defaults.downloads_category_general: Documentos
+user.defaults.news_example_content: 'Este es un ejemplo de un nuevo envío de noticia. Puede editarla o eliminarla desde la interfaz de agente.'
+user.defaults.news_example_title: 'Ejemplo de nuevo envío de noticia'
+user.downloads.change_file: 'Cambia archivo'
+user.email_subjects.chat_transcript: 'Transcripción de conversación'
+user.email_subjects.comment-approved: 'Su comentario se ha aprobado'
+user.email_subjects.comment-deleted: 'Su comentario se ha revisado por nuestros agentes'
+user.email_subjects.email-too-big: 'Tu correo {{subject}} no fue aceptado'
+user.email_subjects.email_new-confirm: 'Validar su dirección de correo electrónico'
+user.email_subjects.email_primary-confirm: 'Validar su dirección de correo electrónico'
+user.email_subjects.feedback_new: 'Gracias por enviar sus comentarios'
+user.email_subjects.feedback_new-approved: 'Su comentario ha sido aprobado'
+user.email_subjects.feedback_new-comment: 'Hay un nuevo comentario sobre "{{title}}"'
+user.email_subjects.feedback_new-disapproved: 'Su comentario se ha rechazado'
+user.email_subjects.feedback_updated: 'Su comentario se ha actualizado. {{title}}'
+user.email_subjects.kb_sub_new: 'Articulos Nuevos'
+user.email_subjects.kb_sub_new_and_updated: 'Articulos nuevos y actualizados'
+user.email_subjects.kb_sub_updated: 'Articulos actualizados'
+user.email_subjects.password_agent-reset: 'Un agente ha reiniciado su contraseña'
+user.email_subjects.password_reset: 'Reinicializar contraseña'
+user.email_subjects.register-welcome: 'Gracias por Registrarse'
+user.email_subjects.ticket-rate: 'Valore la experiencia del soporte en su ticket "{{ticket.subject}}"'
+user.email_subjects.ticket_new-participant: 'Una nueva persona ha sido añadida a su ticket'
+user.emails.auto-close: 'Su ticket "{{ticket.subject}}" no cerrará automáticamente porque no lo ha actualizado recientemente. Si no quiere que su ticket sea cerrado, puede enviar una respuesta para que nuestros agentes continuen ayudándole.'
+user.emails.chat_transcript: 'Gracias por conversar con nosotros. Aquí tiene su transcripción'
+user.emails.comment_approved: 'Su comentario ha sido publicado.'
+user.emails.comment_deleted: 'Su comentario se ha utilizado para mejorar la página.'
+user.emails.comment_thank-you: 'Gracias por comentar sobre {{link}}'
+user.emails.email-too-big: 'Tu correo {{subject}} no fue aceptado porque es demasiado grande. El tamaño maximo del correo aceptado por es {{max_size}}. Remueve los documentos e intentalo de nuevo.'
+user.emails.feedback_agent-validation: 'Tenga en cuenta que su comentario no aparecerá públicamente hasta que uno de nuestros agentes no lo revise'
+user.emails.feedback_approved: 'Le estamos escribiendo para confirmarle que su comentario se ha a probado y ahora es público en nuestro sistema.'
+user.emails.feedback_closed: 'Su comentario "{{title}}" se ha cerrado: {{status}}'
+user.emails.feedback_disapproved: 'Le estamos enviando un correo electrónico para comunicarle que su comentario ha sido rechazado y no aparecerá publicado en nuestro servicio.'
+user.emails.feedback_disapproved-reason: 'Le escribimos para confirmarle que no se ha aceptado su comentario y que no se hará público. {{name}} ha aducido la siguiente razón:'
+user.emails.feedback_new-comment: '{{name}} ha enviado un nuevo comentario:'
+user.emails.feedback_published: 'El comentario enviado "{{title}}" se ha aceptado y aparecerá en nuestro sistema.'
+user.emails.feedback_thank-you: 'Hracias por enviarnos su comentario "{{title}}"'
+user.emails.feedback_updated: 'Su comentario "{{title}}" ha sido actualizado. Su estado actual es "{{status}}"'
+user.emails.feedback_votes: 'Su comentario tiene actualmente <strong>1</strong> voto. Vea su comentario en:'
+user.emails.feedback_votes_plural: 'Su comentario tiene actualmente<strong>{{count}}</strong> votos. Vea su comentario en:'
+user.emails.greeting: 'Apreciado/a {{to_name}}'
+user.emails.kb-explain: 'Usted ha recibido este correo porque está suscrito a nuestra base de conocimiento en <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> No quiere estos correos otra vez?<a href="{{unsubscribe_url}}"> Click aquí para darse de baja.</a>'
+user.emails.kb-new-articles: 'Un articulo nuevo'
+user.emails.kb-new-articles_plural: ' {{count}} Articulos nuevos'
+user.emails.kb-updated-articles: 'Un articulo actualizado'
+user.emails.kb-updated-articles_plural: ' {{count}} Articulos actualizados'
+user.emails.label_view-online: 'Ver en linea'
+user.emails.message-clipped: '(El mensaje se ha recortado)'
+user.emails.password_agent-reset: 'Un agente ha reinicializado su contraseña. Puede acceder con estas credenciales'
+user.emails.password_reset: 'Ha solicitado la reinicialización de su contraseña. Para reinicializarla haga clic en el enlace:'
+user.emails.profile_email_link-validate: 'Haga clic en el siguiente enlace para validar su dirección de correo electrónico'
+user.emails.register-confirm: 'Gracias por registrar una cuenta.<br /><br />Antes de que pueda utilizarla, haga clic en el siguiente enlace para validar su dirección de correo electrónico'
+user.emails.register-welcome: 'Gracias por su registro. Ahora puedes iniciar sesión con tu dirección de correo {{to_email}} en nuestra mesa de soporte:'
+user.emails.registration_closed: 'Apreciado/a {{name}},<br /><br /><br /><br />los nuevos tickets solo se aceptan desde miembros de nuestro servicio. Si tiene una cuenta abierta en nuestro sistema, envíenos de nuevo el correo electrónico desde dicha cuenta.'
+user.emails.reject_resolved: 'Tu respuesta no fue aceptada porque tu ticket ha sido marcado como resuelto. Nuestros agentes no han leido o respuesto este mensaje.'
+user.emails.reject_resolved-new: 'Si desea crear un nuevo ticket, puede enviar un nuevo correo electrónico a <a href="mailto:{{email_to}}">{{email_to}}</a> o puede rellenar nuestro formulario en línea:<br /><a href="{{link}}">{{link}}</a>'
+user.emails.ticket_access_ticket_online: 'Ver y gestionar este ticket:'
+user.emails.ticket_flood: 'Ha enviado recientemente un correo electrónico a nuestro servicio. Nuestro sistema automático ha detectado que ha enviado demasiados mensajes que probablememte son automáticos.<br /><br />Para proteger nuestro sistema de un bucle de auto-respuestas, no se le enviarán nuevas notificaciones por correo electrónico.'
+user.emails.ticket_message_title: 'El día {{date}} a {{time}}, {{author}} escribió:'
+user.emails.ticket_no-autoresponse: 'Alerta: Correos electrónicos de confirmación desactivados'
+user.emails.ticket_rate-neutral: 'Ha ayudado'
+user.emails.ticket_rate-positive: Si
+user.emails.ticket_rate-question: '¿ Le ha ayudado este mensaje ?'
+user.emails.ticket_received: 'Se ha recibido su ticket. Uno de nuestros agentes le responderán pronto.'
+user.emails.ticket_reply-confirm: 'Gracias por su respuesta. Uno de nuestros agentes le responderá pronto.'
+user.emails.ticket_validate: 'Gracias por contactar con nosotros.<br /><br />Antes de que nuestros agentes puedan responder su mensaje, debe validar su dirección de correo electrónico.'
+user.error.attach_ext-allowed: 'Solo los siguientes tipos de archivo pueden ser cargados: {{error_detail}}'
+user.error.attach_ext-not-allow: 'El tipo de archivo que quiere cargar no está permitido.'
+user.error.attach_failed: 'Su archivo adjunto no se ha podido cargar (¿Ha cancelado la operación). Debe intentarlo de nuevo.'
+user.error.attach_no-file: 'Por favor, seleccione un archivo para cargar'
+user.error.attach_size: 'Su archivo adjunto es demasiado grande. El tamaño máximo de archivo es {{error_detail}}'
+user.error.attach_unknown-error: 'Ha habido un problema en nuestro servidor que ha impedido que su archivo adjunto se cargue. Inténtelo de nuevo.'
+user.error.error_code: 'Código de error'
+user.error.expired-token: 'La página a la que está intentado acceder ha caducado. Vuelva hacia atrás e inténtelo de nuevo.'
+user.error.form_choice_invalid: 'Por favor, elija una opción de la lista'
+user.error.form_choice_max: 'Por favor, seleccione como máximo una opción'
+user.error.form_choice_max_plural: 'Por favor, seleccione como máximo {{count}} opciones'
+user.error.form_choice_min: 'Por favor, seleccione como mínimo una opción'
+user.error.form_choice_min_plural: 'Por favor, seleccione como mínimo {{count}} opciones'
+user.error.form_date_invalid: 'Introduzca una fecha válida'
+user.error.form_date_invalid_dow: 'El día de la semana que seleccionaste no está permitido.'
+user.error.form_date_invalid_range: 'La fecha que seleccionaste no contiene un rango permitido.'
+user.error.form_required: 'Campo obligatorio'
+user.error.form_text_max: 'Introduzca como máximo un caracter'
+user.error.form_text_max_plural: 'Introduzca como máximo {{count}} caracteres'
+user.error.form_text_min: 'Introduzca como mínimo un caracter'
+user.error.form_text_min_plural: 'Introduzca como mínimo {{count}} caracteres'
+user.error.form_text_regex: 'Introduzca un valor correcto'
+user.error.invalid_email: 'Dirección correo electrónico incorrecto'
+user.error.invalid_email-code: 'El enlace de validación no es válido.'
+user.error.invalid_email-explain: 'No se ha podido encontrar la dirección de correo electrónico en su cuenta.'
+user.error.not-found: 'La página que está buscando no se ha encontrado.'
+user.error.not-found-title: 'No encontrado'
+user.error.permission-denied: 'Lo sentimos, la acción que está intentando realizar no está permitida.'
+user.error.permission-denied-login: 'Actualmente está desconectado.<a href="{{login_url}}">Conecte</a> a inténtelo de nuevo.'
+user.error.permission-denied-title: 'No está permitido realizar la acción'
+user.error.server-error: 'Se ha producido un error en el servidor que ha impedido cargar la página. Inténtelo de nuevo.'
+user.feedback.submit_feedback: 'Enviar comentario'
+user.general.deskpro: Deskpro
+user.general.helpdesk_by: 'Helpdesk software por <strong>{{deskpro}}</strong>'
+user.general.label_captcha: 'Código de confirmación'
+user.general.page: Página
+user.knowledgebase.auto_action_on_date: 'Automaticamente {{action}} en {{date}}'
+user.knowledgebase.creating_pending_article: 'Creando artículo pendiente'
+user.lang.lang_title: Español
+user.lang.lang_title_arabic: Árabe
+user.lang.lang_title_danish: Dánes
+user.lang.lang_title_default: Inglés
+user.lang.lang_title_dutch: Holandés
+user.lang.lang_title_french: Francés
+user.lang.lang_title_german: Aleman
+user.lang.lang_title_hungarian: Hungaro
+user.lang.lang_title_italian: Italiano
+user.lang.lang_title_japanese: Japones
+user.lang.lang_title_norwegian: Noruego
+user.lang.lang_title_persian: Persa
+user.lang.lang_title_polish: Polaco
+user.lang.lang_title_portuguese: Portugues
+user.lang.lang_title_romanian: Rumano
+user.lang.lang_title_russian: Ruso
+user.lang.lang_title_spanish: Español
+user.lang.lang_title_swedish: Suizo
+user.lang.lang_title_turkish: Turco
+user.news.title: Noticias
+user.profile.account_disabled_message: 'Su cuenta está actualmente inactiva. No puede acceder ni interactuar con tickets y chats'
+user.profile.choose_email: 'Elija la dirección de correo electrónico que desee utilizar'
+user.profile.or_connect_with: 'O conectar con'
+user.profile.register: Registro
+user.profile.register_password_min_length: 'Mínimo de {{count}} caracteres'
+user.profile.register_password_min_length_plural: 'Mínimo de {{count}} caracteres'
+user.profile.register_password_unused: 'No puedes usar una contraseña que ya utilizaste anteriormente.'
+user.tickets.feedback_message_leave_comment: 'Opcionalmente deje un comentario'
+user.tickets.fields_category: Categoría
+user.tickets.fields_department: Departamento
+user.tickets.fields_priority: Prioridad
+user.tickets.fields_product: Producto
+user.tickets.form_error_captcha: 'Por favor, introduzca el código'
+user.tickets.form_error_captcha_invalid: 'El código introducido no es correcto.'
+user.tickets.from_x_at_y: 'De {{name}} en {{date}}'
+user.tickets.no_subject: '(Sin asunto)'
+user.tickets.rate-negative: 'No ha sido bueno'
+user.tickets.rate-neutral: Bueno
+user.tickets.rate-positive: 'Muy bueno'
+user.tickets.rate-thanks-vialink: 'Gracias por enviarnos su valoración. Puede opcionalmente dejarnos un comentario.'
+user.tickets.rate_support: 'Valore el servicio de soporte'
+user.time.long-day_friday: Viernes
+user.time.long-day_monday: Lunes
+user.time.long-day_saturday: Sábado
+user.time.long-day_sunday: Domingo
+user.time.long-day_thursday: Jueves
+user.time.long-day_tuesday: Martes
+user.time.long-day_wednesday: Miércoles
+user.time.long-month_april: Abril
+user.time.long-month_august: Agosto
+user.time.long-month_december: Diciembre
+user.time.long-month_february: Febrero
+user.time.long-month_january: Enero
+user.time.long-month_july: Julio
+user.time.long-month_june: Junio
+user.time.long-month_march: Marzo
+user.time.long-month_may: Mayo
+user.time.long-month_november: Noviembre
+user.time.long-month_october: Octubre
+user.time.long-month_september: Septiembre
+user.time.short-day_friday: Vie
+user.time.short-day_monday: Lun
+user.time.short-day_saturday: Sáb
+user.time.short-day_sunday: Dom
+user.time.short-day_thursday: Jue
+user.time.short-day_tuesday: Mar
+user.time.short-day_wednesday: Mie
+user.time.short-month_april: Abr
+user.time.short-month_august: Ago
+user.time.short-month_december: Dic
+user.time.short-month_january: Ene
+user.time.short-month_may: Mayo
+user.time.time-ago_1_day: 'Hace 1 día'
+user.time.time-ago_1_hour: 'Hace 1 hora'
+user.time.time-ago_1_minute: 'Hace 1 mimuto'
+user.time.time-ago_1_month: 'Hace 1 mes'
+user.time.time-ago_1_second: 'Hace 1 segundo'
+user.time.time-ago_1_week: 'Hace 1 semana'
+user.time.time-ago_1_year: 'Hace 1 año'
+user.time.time-ago_less_second: 'hace menos de un segundo'
+user.time.time-ago_x_day: 'hace {0} días'
+user.time.time-ago_x_hour: 'Hace {0} horas'
+user.time.time-ago_x_minute: 'Hace {0} minutos'
+user.time.time-ago_x_month: 'Hace {0} meses'
+user.time.time-ago_x_second: 'Hace {0} segundos'
+user.time.time-ago_x_week: 'Hace {0} semanas'
+user.time.time-ago_x_year: 'Hace {0} años'
+user.time.time_1_day: '1 día'
+user.time.time_1_hour: '1 hora'
+user.time.time_1_minute: '1 minuto'
+user.time.time_1_month: '1 mes'
+user.time.time_1_second: '1 segundo'
+user.time.time_1_week: '1 semana'
+user.time.time_1_year: '1 año'
+user.time.time_less_second: 'menos de un segundo'
+user.time.time_x_day: '{0} días'
+user.time.time_x_hour: '{0} horas'
+user.time.time_x_minute: '{0} minutos'
+user.time.time_x_month: '{0} meses'
+user.time.time_x_second: '{0} segundos'
+user.time.time_x_week: '{0} semanas'
+user.time.time_x_year: '{0} años'

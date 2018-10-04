@@ -1,0 +1,10 @@
+id: romanian
+name: Romanian
+nameLocal: Română
+locale: ro
+isRtl: false
+pluralForms:
+  count: 3
+  selectors:
+    php: '(1 == $n) ? 0 : (((0 == $n) || (($n % 100 > 0) && ($n % 100 < 20))) ? 1 : 2)'
+    js: '(1 == n) ? 0 : (((0 == n) || ((n % 100 > 0) && (n % 100 < 20))) ? 1 : 2)'

@@ -1,0 +1,10 @@
+id: welsh
+name: Welsh
+nameLocal: Welsh
+locale: cy_GB
+isRtl: false
+pluralForms:
+  count: 4
+  selectors:
+    php: '(1 == $n) ? 0 : ((2 == $n) ? 1 : (((8 == $n) || (11 == $n)) ? 2 : 3))'
+    js: '(1 == n) ? 0 : ((2 == n) ? 1 : (((8 == n) || (11 == n)) ? 2 : 3))'

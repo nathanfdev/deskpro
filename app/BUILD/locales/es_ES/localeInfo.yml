@@ -1,0 +1,10 @@
+id: spanish
+name: Spanish
+nameLocal: Español
+locale: es_ES
+isRtl: false
+pluralForms:
+  count: 2
+  selectors:
+    php: '(1 == $n) ? 0 : 1'
+    js: '(1 == n) ? 0 : 1'
