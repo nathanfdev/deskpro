@@ -26,6 +26,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             'client_secret'      => $app->getSetting('client_secret') ?: null,
             'google_apps_domain' => $app->getSetting('google_apps_domain') ?: null,
             'raw_info_filter'    => $app->getSetting('raw_info_filter') ?: null,
+            'login_custom_text'  => $app->getSetting('login_custom_text'),
         ];
         $us->is_enabled  = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type = 'Application\\DeskPRO\\Usersource\\Adapter\\GooglePlus';

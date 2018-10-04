@@ -38,8 +38,15 @@ class GooglePlus extends AbstractAdapter
      */
     public function getCapabilities()
     {
-        return [
-            UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN,        ];
+        $capabilities = [];
+
+        if (isset($this->usersource->options['login_custom_text']) && $customButtonText = $this->usersource->options['login_custom_text']) {
+            $capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN;
+        } else {
+            $capabilities[] = UsersourceInfo::CAPABILITY_LOGIN_PULL_BTN;
+        }
+
+        return $capabilities;
     }
 
     /**

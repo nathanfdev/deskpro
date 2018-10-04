@@ -110,9 +110,10 @@ class UsersourcesHelper
             $info['css_classes'][] = 'auth-facebook';
             $info['text']          = $this->usersourceBtnPhrase('Facebook');
         } elseif ('googleplus' === $type) {
-            $info['icon']          = 'fab fa-google-plus-g';
+            $text                  = $us->getOption('login_custom_text', $this->usersourceBtnPhrase('Google'));
+            $info['icon']          = 'fab fa-google';
             $info['css_classes'][] = 'auth-google';
-            $info['text']          = $this->usersourceBtnPhrase('Google Plus');
+            $info['text']          = $text ? $text : $this->usersourceBtnPhrase('Google');
         } elseif ('google' === $type) {
             $info['icon']          = 'fab fa-google';
             $info['css_classes'][] = 'auth-google';

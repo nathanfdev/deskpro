@@ -1,7 +1,7 @@
 {
 	"package_name": "deskpro_us_google_plus",
 	"is_native": true,
-	"title": "Google+ Sign-In",
+	"title": "Google",
 	"description": "Allows users/agents to log in using Google accounts.",
 	"tags": ["usersources"],
 	"api_version": 1,
@@ -49,6 +49,14 @@
 			"checkbox_label": "Automatically create agents if they do not already exist",
 			"usersource_display": "agent",
 			"default_value": true
+		},
+		{
+			"name": "login_custom_text",
+			"type": "text",
+			"label": "Login Button Text",
+			"description": "The text that appears on the button on the login page.",
+      "default_value": "Login with Google",
+			"native_only": true
 		},
 		{
 			"label": "Login Actions",
