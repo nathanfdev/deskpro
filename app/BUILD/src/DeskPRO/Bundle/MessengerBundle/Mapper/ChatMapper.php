@@ -30,7 +30,7 @@ class ChatMapper
         $message = new ChatMessage();
 
         if (isset($data['message'])) {
-            $message->setContent($this->cleaner->clean($data['message'], 'html'))->setIsHtml(true);
+            $message->setContent($this->cleanText($data['message']))->setIsHtml(true);
         }
         if (isset($data['author'])) {
             if ($author = $this->em->find(Person::class, (int) $data['author'])) {
@@ -43,8 +43,12 @@ class ChatMapper
         } elseif ($data['author_name']) {
             $message->setPersonName($data['author_name']);
         }
-        if (isset($data['is_user']) && $data['is_user'] === true) {
+        if (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_AGENT) {
+            $message->setIsUser(false);
+        } elseif (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_USER) {
             $message->setIsUser(true);
+        } else {
+            throw new \Exception('Wrong origin!');
         }
 
         if ($message->getAuthor()) {
@@ -64,9 +68,20 @@ class ChatMapper
             'author_name' => $message->getPersonName(),
             'author'      => $message->getAuthorId(),
             'message'     => $message->getContentHtml(),
+            'origin'      => $message->getOrigin(),
             'is_user'     => $message->getIsUser(),
             'is_sys'      => $message->getIsSys(),
             'is_html'     => $message->isHtml(),
         ];
+    }
+
+    /**
+     * @param string $text
+     *
+     * @return string
+     */
+    public function cleanText($text)
+    {
+        return $this->cleaner->clean($text, 'html');
     }
 }

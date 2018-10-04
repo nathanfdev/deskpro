@@ -58,43 +58,6 @@ class ChatController extends BaseController
     }
 
     /**
-     * @param $idToken
-     *
-     * @ApiDoc(
-     *     section="Messenger",
-     *     resourceDescription="ending chat",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     requirements={
-     *          {
-     *              "name"="idToken",
-     *              "requirement"="[a-zA-Z0-9\\-]+",
-     *              "description"="id-accessToken to find a chat",
-     *              "dataType"="string"
-     *          }
-     *      }
-     * )
-     *
-     * @Rest\Patch("/{idToken}/end", requirements={"idToken"="(\d+)\-([a-zA-Z0-9]{30})"})
-     *
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @return View
-     */
-    public function endChatAction($idToken)
-    {
-        $chat = $this->findChatByIdToken($idToken);
-
-        $chat->setEndedBy(ChatConversation::ENDED_USER)->setStatus(ChatConversation::STATUS_ENDED);
-
-        $this->em()->persist($chat);
-        $this->em()->flush();
-
-        return View::create(['success' => true]);
-    }
-
-    /**
      * @param string  $idToken
      * @param Request $request
      *
@@ -116,22 +79,13 @@ class ChatController extends BaseController
      *
      * @Rest\Post("/{idToken}/send", requirements={"idToken"="(\d+)\-([a-zA-Z0-9]{30})"})
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
-     *
      * @return View
      */
     public function sendMessageAction($idToken, Request $request)
     {
         $chat = $this->findChatByIdToken($idToken);
 
-        $chatMapper = $this->get('messenger.mappers.chat');
-        $message    = $chatMapper->createChatMessage($request->request->all());
-        $chat->addMessage($message);
-        $this->em()->persist($message);
-        $this->em()->persist($chat);
-        $this->em()->flush();
-
-        return View::create($chatMapper->mapMessageToArray($message), Response::HTTP_CREATED);
+        return View::create($this->get('messenger.handlers.chat')->handle($chat, $request->request->all()), Response::HTTP_OK);
     }
 
     /**
@@ -144,7 +98,9 @@ class ChatController extends BaseController
         list($id, $accessToken) = explode('-', $idToken);
         $chat                   = $this->getRepository(ChatConversation::class)->findOneBy(['id' => $id, 'accessToken' => $accessToken]);
         if (!$chat) {
-            throw $this->createEntityNotFoundExceptionMessage(ChatConversation::class, $idToken);
+            throw $this->createNotFoundException(
+                $this->createEntityNotFoundExceptionMessage(ChatConversation::class, $idToken)
+            );
         }
 
         return $chat;

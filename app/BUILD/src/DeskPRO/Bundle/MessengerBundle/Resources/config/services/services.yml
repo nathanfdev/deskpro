@@ -7,3 +7,9 @@ services:
     class: DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator
     arguments:
       - "@app_secret"
+
+  messenger.handlers.chat:
+    class: DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler
+    arguments:
+      - "@messenger.mappers.chat"
+      - "@doctrine.orm.default_entity_manager"
