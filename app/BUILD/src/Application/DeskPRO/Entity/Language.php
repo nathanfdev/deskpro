@@ -192,7 +192,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
          */
         public function getFlagImage()
         {
-            return $this->flag_image;
+            return $this->flag_image ?: 'locale_'.$this->locale.'.png';
         }
 
         /**

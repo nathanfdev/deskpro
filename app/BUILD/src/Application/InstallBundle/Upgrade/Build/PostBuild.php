@@ -35,25 +35,12 @@ class PostBuild extends AbstractBuild
                 UPDATE languages
                 SET
                     title = ?,
+                    flag_image = \'\',
                     has_user = 1,
                     has_agent = 1,
                     has_admin = 1,
                     base_filepath = ?
                 WHERE sys_name = ?', [$title, '%DP_ROOT%/locales/'.$info['locale'], $id]);
-        }
-
-        // Update flags if theyre blank
-        $blankFlags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
-        foreach ($blankFlags as $sysName) {
-            if (!$langPacks->hasLang($sysName)) {
-                continue;
-            }
-
-            $flag = $langPacks->getLangInfo($sysName, 'flag_image');
-            if ($flag) {
-                $this->out(sprintf('lang(%s).flag = %s', $flag, $sysName));
-                $this->container->getDb()->executeUpdate('UPDATE languages SET flag_image = ? WHERE sys_name = ?', [$flag, $sysName]);
-            }
         }
 
         // Auto-install any new langs

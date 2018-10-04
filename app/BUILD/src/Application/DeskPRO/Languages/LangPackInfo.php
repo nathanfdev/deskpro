@@ -190,7 +190,6 @@ class LangPackInfo
         $lang                = new \Application\DeskPRO\Entity\Language();
         $lang->sys_name      = $this->getLangInfo($id, 'id');
         $lang->title         = $this->getLangInfo($id, 'titleLocal');
-        $lang->flag_image    = $this->getLangInfo($id, 'locale') ?: '';
         $lang->locale        = $this->getLangInfo($id, 'locale');
         $lang->is_rtl        = $this->getLangInfo($id, 'isRtl');
         $lang->has_user      = true;

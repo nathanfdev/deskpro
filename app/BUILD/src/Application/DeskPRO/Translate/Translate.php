@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\PluralizationRules;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -82,13 +82,6 @@ class Translate implements PersonContextInterface, TranslatorInterface
      * @var \Application\DeskPRO\Entity\Language
      */
     protected $_language = null;
-
-    /**
-     * See getCountPhraseSelector().
-     *
-     * @var MessageSelector
-     */
-    protected $_phrase_selector = null;
 
     /**
      * @var ObjectPhraseNamer
@@ -700,31 +693,29 @@ class Translate implements PersonContextInterface, TranslatorInterface
      */
     public function getPhraseTextCount($phrase_name, $count, $language = null)
     {
-        $phraseText = $this->getPhraseText($phrase_name);
-        if (!$phraseText) {
-            return;
-        }
-
         if ($language === null) {
             $language = $this->_language;
         } elseif (Numbers::isInteger($language) && isset($this->_loaded_languages[$language])) {
             $language = $this->_loaded_languages[$language];
         }
 
-        try {
-            $phrase = $this->getCountPhraseSelector()->choose($phraseText, $count, $language->getLocale());
-        } catch (\InvalidArgumentException $e) {
-            try {
-                // Try again with en_US locale in case
-                // Could be an untranslated phrase (which defaults to eng), but then the locale would be passed as the lang,
-                // which could use different rules and cause the chooser to fail.
-                $phrase = $this->getCountPhraseSelector()->choose($phraseText, $count, 'en_US');
-            } catch (\InvalidArgumentException $e) {
-                $phrase = $e->getMessage();
+        $suffix = PluralizationRules::get($count, $language->getLocale());
+
+        $try = [$phrase_name.'_'.$suffix];
+        if ($suffix === 1) {
+            $try[] = $phrase_name.'_plural';
+        }
+        $try[] = $phrase_name;
+
+        foreach ($try as $tryPhraseId) {
+            $t = $this->getPhraseText($tryPhraseId, $language, true);
+            if ($t) {
+                return $t;
             }
         }
 
-        return $phrase;
+        // try fallback on English
+        return $this->getPhraseText($phrase_name, $this->_default_language);
     }
 
     /**
@@ -1175,20 +1166,6 @@ class Translate implements PersonContextInterface, TranslatorInterface
         }
 
         return false;
-    }
-
-    /**
-     * @return MessageSelector
-     */
-    public function getCountPhraseSelector()
-    {
-        if ($this->_phrase_selector !== null) {
-            return $this->_phrase_selector;
-        }
-
-        $this->_phrase_selector = new MessageSelector();
-
-        return $this->_phrase_selector;
     }
 
     /**

@@ -68,7 +68,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 'title'                 => $title,
                 'show_title'            => $lang ? $lang->title : $pack_local_titles[$id],
                 'local_title'           => $pack_local_titles[$id],
-                'flag'                  => $info['flag_image'],
+                'flag'                  => 'locale_'.$info['locale'].'.png',
                 'show_flag'             => $lang ? $lang->flag_image : $info['flag_image'],
                 'is_installed'          => $lang ? true : false,
                 'installed_language_id' => $lang ? $lang->id : null,

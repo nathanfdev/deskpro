@@ -27,7 +27,6 @@ class DevLangsFixture extends AbstractDpFixture implements OrderedFixtureInterfa
         $batch = [
             [
                 'sys_name'      => 'dev_blankout',
-                'lang_code'     => 'eng',
                 'title'         => 'Dev Blank Out',
                 'base_filepath' => '%DP_ROOT%/locales/dev_blankout',
                 'locale'        => 'en_T1',
@@ -39,7 +38,6 @@ class DevLangsFixture extends AbstractDpFixture implements OrderedFixtureInterfa
             ],
             [
                 'sys_name'      => 'dev_longstring',
-                'lang_code'     => 'eng',
                 'title'         => 'Dev Long String',
                 'base_filepath' => '%DP_ROOT%/locales/dev_longstring',
                 'locale'        => 'en_T2',
@@ -51,7 +49,6 @@ class DevLangsFixture extends AbstractDpFixture implements OrderedFixtureInterfa
             ],
             [
                 'sys_name'      => 'dev_rtl',
-                'lang_code'     => 'eng',
                 'title'         => 'Dev RTL',
                 'base_filepath' => '%DP_ROOT%/locales/dev_rtl',
                 'locale'        => 'en_T3',
@@ -63,7 +60,6 @@ class DevLangsFixture extends AbstractDpFixture implements OrderedFixtureInterfa
             ],
             [
                 'sys_name'      => 'arabic',
-                'lang_code'     => 'ara',
                 'title'         => 'العربية',
                 'base_filepath' => '%DP_ROOT%/locales/arabic',
                 'locale'        => 'ar',
@@ -75,7 +71,6 @@ class DevLangsFixture extends AbstractDpFixture implements OrderedFixtureInterfa
             ],
             [
                 'sys_name'      => 'french',
-                'lang_code'     => 'fre',
                 'title'         => 'Français',
                 'base_filepath' => '%DP_ROOT%/locales/french',
                 'locale'        => 'fr',
