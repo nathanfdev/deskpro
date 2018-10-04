@@ -79,6 +79,7 @@ class NewDownload
         if ($this->attach) {
             /** @var Blob $blob */
             $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+            $blob->setIsTemp(false);
             $download->setBlob($blob);
             $download->setFilename($blob->getFilename());
 

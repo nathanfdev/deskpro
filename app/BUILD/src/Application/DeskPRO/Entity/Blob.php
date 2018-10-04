@@ -801,7 +801,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @param bool $is_temp
      *
-     * @return $this
+     * @return Blob
      */
     public function setIsTemp($is_temp)
     {
