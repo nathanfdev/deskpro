@@ -9,6 +9,7 @@ namespace Application\DeskPRO\BlobStorage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter;
 use Application\DeskPRO\Entity\Blob as BlobEntity;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
 use GuzzleHttp;
@@ -896,7 +897,11 @@ class DeskproBlobStorage implements Loggable
             $adapter = $this->getAdapter($adapter_id);
             $adapter->deleteBlob($blob);
         } catch (\Exception $e) {
-            $this->logger->logDebug("[DeskproBlobStorage] (deleteBlob) Delete failed: {$e->getCode()} {$e->getMessage()}");
+            if ($e instanceof \PDOException) {
+                SystemErrorHandler::logException($e);
+            }
+
+            $this->logger->logError("[DeskproBlobStorage] (deleteBlob) Delete failed: {$e->getCode()} {$e->getMessage()}");
             if ($ex_on_error) {
                 throw $e;
             }
@@ -929,7 +934,11 @@ class DeskproBlobStorage implements Loggable
             $this->em->remove($blob_entity);
             $this->em->flush();
         } catch (\Exception $e) {
-            $this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRecord) Delete failed: {$e->getCode()} {$e->getMessage()}");
+            if ($e instanceof \PDOException || $e instanceof DBALException) {
+                SystemErrorHandler::logException($e);
+            }
+
+            $this->logger->logError("[DeskproBlobStorage] (deleteBlobRecord) Delete failed: {$e->getCode()} {$e->getMessage()}");
             if ($ex_on_error) {
                 throw $e;
             }
@@ -961,7 +970,11 @@ class DeskproBlobStorage implements Loggable
             $this->deleteBlob($blob, $blob_row['storage_loc']);
             $this->db->delete('blobs', ['id' => $blob_row['id']]);
         } catch (\Exception $e) {
-            $this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Delete failed: {$e->getCode()} {$e->getMessage()}");
+            if ($e instanceof \PDOException || $e instanceof DBALException) {
+                SystemErrorHandler::logException($e);
+            }
+
+            $this->logger->logError("[DeskproBlobStorage] (deleteBlobRow) Delete failed: {$e->getCode()} {$e->getMessage()}");
             if ($ex_on_error) {
                 throw $e;
             }
