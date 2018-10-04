@@ -78,10 +78,10 @@ class NewNews
         foreach ($this->attach as $blob_id) {
             $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
             if ($blob) {
-                $attach           = new NewsAttachment();
-                $attach['blob']   = $blob;
-                $attach['person'] = $this->_person_context;
+                $attach = new NewsAttachment();
+                $attach->setPerson($this->_person_context)->setBlob($blob->setIsTemp(false));
                 $this->_em->persist($attach);
+                $this->_em->persist($blob);
                 $news->addAttachment($attach);
             }
         }
