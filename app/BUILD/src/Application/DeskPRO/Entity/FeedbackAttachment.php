@@ -89,6 +89,18 @@ class FeedbackAttachment extends \Application\DeskPRO\Domain\DomainObject
         return $this->blob;
     }
 
+    /**
+     * @param Feedback $feedback
+     *
+     * @return $this
+     */
+    public function setFeedback(Feedback $feedback)
+    {
+        $this->setModelField('feedback', $feedback);
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

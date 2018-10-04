@@ -99,13 +99,11 @@ class NewFeedback
             foreach ($this->attach_ids as $aid) {
                 $blob = $this->em->getRepository('DeskPRO:Blob')->find($aid);
                 if ($blob) {
-                    $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
-                    $attach->person   = $feedback->person;
-                    $attach->feedback = $feedback;
-                    $attach->blob     = $blob;
-
+                    $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                    $attach->setPerson($feedback->getPerson())->setFeedback($feedback)->setBlob($blob->setIsTemp(false));
                     $feedback->addAttachment($attach);
                     $this->em->persist($attach);
+                    $this->em->persist($blob);
                 }
             }
             $this->em->flush();

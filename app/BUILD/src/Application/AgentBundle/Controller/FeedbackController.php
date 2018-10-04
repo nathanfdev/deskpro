@@ -599,7 +599,9 @@ class FeedbackController extends AbstractController
         }
 
         $this->em->persist($feedback);
-
+        foreach ($feedback->getAttachments() as $attachment) {
+            $this->em->persist($attachment->getBlob()->setIsTemp(true));
+        }
         if ($rev) {
             $this->em->persist($rev);
         }
