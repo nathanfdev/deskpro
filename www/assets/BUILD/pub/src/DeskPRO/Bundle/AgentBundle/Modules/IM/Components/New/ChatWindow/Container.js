@@ -110,6 +110,7 @@ class Container extends React.Component {
       expandGroupHeader: false,
       searching:         false,
       message:           '',
+      blobs:             [],
       linkDrawerOpened:  false,
       editorControls:    null
     };
@@ -248,9 +249,9 @@ class Container extends React.Component {
   handleSubmit = (event) => {
     if (!this.editor.core.isEmpty()) {
       event.preventDefault();
-      this.props.onSubmit(this.state.message);
+      this.props.onSubmit(this.state.message, this.state.blobs);
       this.props.saveDraft(this.props.current.get('id'), '');
-      this.setState({ message: '' });
+      this.setState({ message: '', blobs: [] });
     }
   };
 
@@ -265,6 +266,17 @@ class Container extends React.Component {
     if (document.activeElement.tagName.toLowerCase() === 'body') {
       window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
       editor.events.focus();
+    }
+  };
+
+  froalaUploaded = (e, editor, response) => {
+    try {
+      const json = JSON.parse(response);
+      const blobs = this.state.blobs;
+      blobs.push(json.blob_id);
+      this.setState({ blobs });
+    } catch (exception) {
+      console.error('Wasn\'t able to parse response from the server', response);
     }
   };
 
@@ -460,9 +472,12 @@ class Container extends React.Component {
       immediateReactModelUpdate: true,
       key:                       'MC1D2D1G2lG4J4A14A7D3D6F6C2C3F3gSXSE1LHAFJVCXCLS==',
       events:                    {
-        'froalaEditor.focus':       Container.onFocus,
-        'froalaEditor.blur':        () => { this.editor.selection.save(); Container.onBlur(); },
-        'froalaEditor.initialized': this.bindFroalaEvents
+        'froalaEditor.focus':          Container.onFocus,
+        'froalaEditor.blur':           () => { this.editor.selection.save(); Container.onBlur(); },
+        'froalaEditor.image.uploaded': this.froalaUploaded,
+        'froalaEditor.file.uploaded':  this.froalaUploaded,
+        'froalaEditor.video.uploaded': this.froalaUploaded,
+        'froalaEditor.initialized':    this.bindFroalaEvents
       }
     };
 

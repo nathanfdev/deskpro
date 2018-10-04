@@ -48,9 +48,9 @@ export const addMessageOptimistic = createAction(
 
 export const addMessage = createAction(
   'IM_CHAT_ADD_MESSAGE',
-  (chatId, message, uuid, me) => (dispatch) => {
+  (chatId, message, uuid, me, blobs) => (dispatch) => {
     dispatch(addMessageOptimistic(chatId, message, uuid, me));
-    repository('AgentChat').addMessage(chatId, message, uuid).then((response) => {
+    repository('AgentChat').addMessage(chatId, message, uuid, blobs).then((response) => {
       const responseMessage = response.data.data;
       return new Promise((resolve) => {
         resolve(responseMessage);

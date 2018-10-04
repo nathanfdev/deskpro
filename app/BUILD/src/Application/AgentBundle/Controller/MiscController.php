@@ -732,7 +732,7 @@ JS;
                     : ['gif', 'png', 'jpg', 'jpeg', // also allow images
                         'pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt',
                        'rar', 'zip', 'tar.gz', '7zip', 'gzip', 'bzip',
-                       'mp4', 'avi', 'wmv', 'mpeg', 'mov', '3gp', ];
+                       'mp4', 'avi', 'wmv', 'mpeg', 'mov', '3gp', 'flv', ];
                 $set->setAllowedExts($exts);
                 $accept->addRestrictionSet($fileUpload ? 'only_files' : 'only_images', $set);
                 $error = $accept->getError($file, $fileUpload ? 'only_files' : 'only_images');
@@ -761,7 +761,10 @@ JS;
         ];
 
         if ($this->in->getBool('json')) {
-            return $this->createJsonResponse(json_encode(['link' => $blob->getDownloadUrl(true)]));
+            return $this->createJsonResponse(json_encode([
+                'link'    => $blob->getDownloadUrl(true),
+                'blob_id' => $blob->getId(),
+            ]));
         }
 
         return $this->render('AgentBundle:Misc:redactor-image-upload.html.twig', ['blob' => $blobResponse]);

@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Component\Util;
 
+use Application\DeskPRO\Entity\Blob;
+
 /**
  * Utility methods working with strings.
  */
@@ -226,5 +228,25 @@ class StringUtils
         }, explode("\n", $string));
 
         return implode("\n", $lines);
+    }
+
+    /**
+     * @param Blob   $blob
+     * @param string $text
+     *
+     * @return int
+     */
+    public static function ensureAttachment(Blob $blob, $text)
+    {
+        $downloadUrl  = preg_quote($blob->getDownloadUrl(true), '#');
+        $embedBlobA   = preg_quote('dp-embed-blob-a-'.$blob->getAuthId());
+        $embedBlobImg = preg_quote('dp-embed-blob-img-'.$blob->getAuthId());
+
+        $matches = RegexUtils::safePregMatch('#(<(img|video)[^>]+src=")'.$downloadUrl.'("[^>]*>)#i', $text);
+        $matches = $matches ?: RegexUtils::safePregMatch('#(<a[^>]+href=")'.$downloadUrl.'("[^>]*>)#i', $text);
+        $matches = $matches ?: RegexUtils::safePregMatch('#<a[^>]+'.$embedBlobA.'[^>]*>.*?</a>#', $text);
+        $matches = $matches ?: RegexUtils::safePregMatch('#<img[^>]+'.$embedBlobImg.'[^>]>#', $text);
+
+        return $matches;
     }
 }

@@ -12,7 +12,7 @@ use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
 use DateTimeZone;
-use DeskPRO\Component\Util\RegexUtils;
+use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -185,9 +185,10 @@ class SettingsController extends AbstractController
             $signature_html = Strings::trimHtml($signature_html);
 
             foreach ($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard') as $blob_id) {
+                /** @var Entity\Blob|null $blob */
                 $blob = App::getEntityRepository(Entity\Blob::class)->find($blob_id);
                 if ($blob) {
-                    if ($this->ensureAttachment($blob, $signature_html)) {
+                    if (StringUtils::ensureAttachment($blob, $signature_html)) {
                         $this->em->persist($blob->setIsTemp(false));
                     }
                     $regex          = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
@@ -604,25 +605,5 @@ class SettingsController extends AbstractController
         }
 
         return $brands;
-    }
-
-    /**
-     * @param Entity\Blob $blob
-     * @param string      $text
-     *
-     * @return int
-     */
-    protected function ensureAttachment(Entity\Blob $blob, $text)
-    {
-        $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
-        $matches = RegexUtils::safePregMatch($regex, $text);
-
-        $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
-        $matches = $matches ?: RegexUtils::safePregMatch($regex, $text);
-
-        $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
-        $matches = $matches ?: RegexUtils::safePregMatch($regex, $text);
-
-        return $matches;
     }
 }
