@@ -87,18 +87,16 @@ class NewArticle
         foreach ($this->attach as $blob_id) {
             $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
             if ($blob) {
-                $attach           = new ArticleAttachment();
-                $attach['blob']   = $blob;
-                $attach['person'] = $this->_person_context;
+                $attach = new ArticleAttachment();
+                $attach->setPerson($this->_person_context)->setBlob($blob->setIsTemp(false));
                 $this->_em->persist($attach);
+                $this->_em->persist($blob);
                 $article->addAttachment($attach);
             }
         }
 
         $this->_em->flush();
-
         $this->_em->commit();
-
         $this->_article = $article;
     }
 

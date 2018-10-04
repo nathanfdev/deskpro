@@ -547,6 +547,12 @@ class KbController extends AbstractController
                 break;
         }
 
+        // check new attachments (they're attached via attach-to-object in uploadTempAction)
+
+        foreach ($article->getAttachments() as $attachment) {
+            $this->em->persist($attachment->getBlob()->setIsTemp(true));
+        }
+
         $this->em->persist($article);
         if ($rev) {
             $this->em->persist($rev);
