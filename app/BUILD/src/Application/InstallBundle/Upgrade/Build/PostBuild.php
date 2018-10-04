@@ -29,10 +29,17 @@ class PostBuild extends AbstractBuild
 
         foreach ($langPacks->getLangTitles(true) as $id => $title) {
             $this->out(sprintf('lang(%s).title = %s', $title, $id));
-            $this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", [$title, $id]);
 
             $info = $langPacks->getLangInfo($id);
-            $this->container->getDb()->executeUpdate('UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?', [$info['has_user'], $info['has_agent'], $info['has_admin'], $id]);
+            $this->container->getDb()->executeUpdate('
+                UPDATE languages
+                SET
+                    title = ?,
+                    has_user = 1,
+                    has_agent = 1,
+                    has_admin = 1,
+                    base_filepath = ?
+                WHERE sys_name = ?', [$title, '%DP_ROOT%/locales/'.$info['locale'], $id]);
         }
 
         // Update flags if theyre blank

@@ -112,7 +112,7 @@ class Language
         $this->sysName   = $language->getSystemName();
         $this->title     = $language->getTitle();
         $this->locale    = $language->getLocale();
-        $this->langCode  = $language->getLangCode();
+        $this->langCode  = $language->getLocale(); // backwards compat
         $this->isRtl     = $language->isRtl();
         $this->hasUser   = $language->hasUser();
         $this->hasAgent  = $language->hasAgent();

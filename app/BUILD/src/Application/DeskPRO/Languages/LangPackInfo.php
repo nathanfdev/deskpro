@@ -2,6 +2,11 @@
 
 namespace Application\DeskPRO\Languages;
 
+use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\MapUtils;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * Class LangPackInfo.
  */
@@ -10,7 +15,7 @@ class LangPackInfo
     /**
      * @var string
      */
-    protected $langs_dir;
+    private $langDir;
 
     /**
      * @var array
@@ -22,8 +27,61 @@ class LangPackInfo
      */
     public function __construct()
     {
-        $this->langs_dir = DP_ROOT.'/languages';
-        $this->manifest  = include $this->langs_dir.'/manifest.php';
+        $this->langDir = DP_ROOT.DIRECTORY_SEPARATOR.'/locales';
+
+        // in prod, manifest is compiled to fs
+        if (is_file($this->langDir.DIRECTORY_SEPARATOR.'manifest.php')) {
+            $this->manifest = require $this->langDir.DIRECTORY_SEPARATOR.'manifest.php';
+
+        // otherwise read from each dir
+        } else {
+            $locales = ListUtils::filterMap(
+                Finder::create()->directories()->in($this->langDir)->exclude(1),
+                function (\SplFileInfo $d) {
+                    if (
+                        file_exists($d->getPathname().DIRECTORY_SEPARATOR.'localeInfo.yml')
+                        || file_exists($d->getPathname().DIRECTORY_SEPARATOR.'localeInfo.php')
+                    ) {
+                        return $d->getFilename();
+                    } else {
+                        return null;
+                    }
+                }
+            );
+
+            $this->manifest = MapUtils::map($locales, function ($idx, $locale) {
+                $data = $this->readLocaleDataFile($locale, 'localeInfo');
+
+                return [$data['id'], $data];
+            });
+        }
+
+        // backwards compat
+        $this->manifest = MapUtils::mapValues($this->manifest, function ($id, $l) {
+            $l['title'] = $l['name'];
+            $l['lang_code'] = $l['locale'];
+
+            return $l;
+        });
+    }
+
+    /**
+     * @param string $locale
+     * @param string $name
+     *
+     * @return string
+     */
+    private function readLocaleDataFile($locale, $name)
+    {
+        $base = $this->langDir.DIRECTORY_SEPARATOR.$locale.DIRECTORY_SEPARATOR.$name;
+
+        if (is_file("$base.php")) {
+            return require "$base.php";
+        } elseif (is_file("$base.yml")) {
+            return Yaml::parse(file_get_contents("$base.yml"));
+        } else {
+            throw new \RuntimeException("Cant load file: $locale/$name");
+        }
     }
 
     /**
@@ -31,7 +89,7 @@ class LangPackInfo
      */
     public function getLangDir()
     {
-        return $this->langs_dir;
+        return $this->langDir;
     }
 
     /**
@@ -61,17 +119,24 @@ class LangPackInfo
     }
 
     /**
+     * Return a list of all lang packs.
+     *
+     * @return array
+     */
+    public function getLangPacks()
+    {
+        return array_values($this->manifest);
+    }
+
+    /**
      * Fetches info about a language.
      *
      * $key can be:
      * - null: Array of all info
      * - id: The lang id
-     * - lang_code: The three-letter language code (ISO 639-2)
      * - title: Readable English title of the language
+     * - titleLocal: The language name in the local language
      * - locale: The locale
-     * - has_user: Is the pack considered user interface complete?
-     * - has_agent: Is the pack considered agent interface complete?
-     * - has_admin: Is the pack considered admin interface complete?
      *
      * @param string      $id
      * @param string|null $key
@@ -106,57 +171,9 @@ class LangPackInfo
      */
     public function getLangTitles($local = false)
     {
-        $ret = [];
-
-        if ($local) {
-            foreach ($this->manifest as $id => $info) {
-                $lang_file = $this->langs_dir."/$id/user/lang.php";
-
-                $lang = [];
-                if (is_file($lang_file)) {
-                    $lang = require $lang_file;
-                }
-
-                if (isset($lang['user.lang.lang_title'])) {
-                    $ret[$id] = $lang['user.lang.lang_title'];
-                } else {
-                    $ret[$id] = $info['title'];
-                }
-            }
-        } else {
-            foreach ($this->manifest as $id => $info) {
-                $ret[$id] = $info['title'];
-            }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * @return array
-     */
-    public function getDefaultSections()
-    {
-        return ['user', 'agent'];
-    }
-
-    /**
-     * @param string $section
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return array
-     */
-    public function getDefaultCategories($section)
-    {
-        switch ($section) {
-            case 'user':   return ['chat', 'defaults', 'downloads', 'emails', 'email_subjects', 'error', 'feedback', 'general', 'knowledgebase', 'lang', 'news', 'portal', 'profile', 'tickets', 'time', 'widget'];
-            case 'portal': return ['account', 'articles', 'chat', 'downloads', 'email_subjects', 'emails', 'error', 'feedback', 'flashes', 'forms', 'general', 'news', 'sidebar', 'tickets'];
-            case 'agent':  return ['chat', 'chrome', 'deal', 'defaults', 'emails', 'feedback', 'general', 'interface', 'login', 'media', 'organizations', 'people', 'publish', 'report', 'search', 'settings', 'snippets', 'tasks', 'tickets', 'time', 'twitter', 'userchat', 'usertrack'];
-            case 'admin':  return ['agents', 'api', 'banning', 'billing', 'custom_fields', 'departments', 'designer', 'emailtpl_desc', 'feedback', 'gateway', 'general', 'languages', 'license', 'logs', 'menu', 'plugins', 'portal', 'products', 'server', 'settings', 'setup', 'templates', 'tickets', 'twitter', 'user_groups', 'user_registration', 'user_rules'];
-        }
-
-        throw new \InvalidArgumentException("Invalid section $section");
+        return MapUtils::mapValues($this->manifest, function ($id, $l) use ($local) {
+            return $local ? $l['nameLocal'] : $l['name'];
+        });
     }
 
     /**
@@ -172,24 +189,14 @@ class LangPackInfo
 
         $lang                = new \Application\DeskPRO\Entity\Language();
         $lang->sys_name      = $this->getLangInfo($id, 'id');
-        $lang->title         = $this->getLangInfo($id, 'title');
-        $lang->lang_code     = $this->getLangInfo($id, 'lang_code');
-        $lang->flag_image    = $this->getLangInfo($id, 'flag_image') ?: '';
+        $lang->title         = $this->getLangInfo($id, 'titleLocal');
+        $lang->flag_image    = $this->getLangInfo($id, 'locale') ?: '';
         $lang->locale        = $this->getLangInfo($id, 'locale');
-        $lang->is_rtl        = $this->getLangInfo($id, 'is_rtl');
-        $lang->has_user      = $this->getLangInfo($id, 'has_user');
-        $lang->has_agent     = $this->getLangInfo($id, 'has_agent');
-        $lang->has_admin     = $this->getLangInfo($id, 'has_admin');
-        $lang->base_filepath = '%DP_ROOT%/languages/'.$id;
-
-        // Get the title from the lang itself
-        $title_file = DP_ROOT.'/languages/'.$id.'/user/lang.php';
-        if (file_exists($title_file)) {
-            $tmp = require $title_file;
-            if (isset($tmp['user.lang.lang_title'])) {
-                $lang->title = $tmp['user.lang.lang_title'];
-            }
-        }
+        $lang->is_rtl        = $this->getLangInfo($id, 'isRtl');
+        $lang->has_user      = true;
+        $lang->has_agent     = true;
+        $lang->has_admin     = true;
+        $lang->base_filepath = '%DP_ROOT%/locales/'.$lang->getLocale();
 
         return $lang;
     }

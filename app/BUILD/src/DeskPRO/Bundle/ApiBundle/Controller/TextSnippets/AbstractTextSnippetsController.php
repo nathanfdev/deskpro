@@ -74,7 +74,7 @@ abstract class AbstractTextSnippetsController extends CrudController
                 $language = $this
                     ->getRepository('DeskPRO:Language')
                     ->createQueryBuilder('l')
-                    ->where('l.locale = :language OR l.lang_code = :language')
+                    ->where('l.locale = :language')
                     ->setParameter('language', $query->get('language'))
                     ->getQuery()
                     ->getOneOrNullResult()

@@ -60,9 +60,9 @@ class TranslationHelper
             ;
 
             if ($objectLang) {
-                $this->logger->debug("Found existing translation for {$language->getLangCode()}");
+                $this->logger->debug("Found existing translation for {$language->getLocale()}");
             } else {
-                $this->logger->debug("Creating a new translation for {$language->getLangCode()}");
+                $this->logger->debug("Creating a new translation for {$language->getLocale()}");
 
                 $objectLang = new ObjectLang();
                 $objectLang->setPropName($propertyName);

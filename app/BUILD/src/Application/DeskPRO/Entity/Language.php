@@ -38,13 +38,6 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         protected $sys_name = '';
 
         /**
-         * The three-letter ISO 639-2 code.
-         *
-         * @var string
-         */
-        protected $lang_code = '';
-
-        /**
          * Title of the language.
          *
          * @var string
@@ -116,14 +109,6 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
             } else {
                 return $this->locale;
             }
-        }
-
-        /**
-         * @return string
-         */
-        public function getLangCode()
-        {
-            return $this->lang_code;
         }
 
         /**
@@ -256,17 +241,6 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'scale'      => 0,
                     'nullable'   => false,
                     'columnName' => 'sys_name',
-                ]
-            );
-            $metadata->mapField(
-                [
-                    'fieldName'  => 'lang_code',
-                    'type'       => 'string',
-                    'length'     => 3,
-                    'precision'  => 0,
-                    'scale'      => 0,
-                    'nullable'   => false,
-                    'columnName' => 'lang_code',
                 ]
             );
             $metadata->mapField(

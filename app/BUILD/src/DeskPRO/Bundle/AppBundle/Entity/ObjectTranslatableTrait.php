@@ -67,7 +67,7 @@ trait ObjectTranslatableTrait
                 if (!$translation->getLanguage()) {
                     continue;
                 }
-                if ($translation->getLanguage()->getLangCode() === $language->getLangCode()) {
+                if ($translation->getLanguage()->getLocale() === $language->getLocale()) {
                     return $translation;
                 }
             }

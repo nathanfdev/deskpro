@@ -25,20 +25,20 @@ use DeskPRO\Component\Util\MapUtils;
 class PhraseData
 {
     private static $groupFileMap = [
-        'adm'     => 'agent.php',
-        'admin'   => 'agent.php',
-        'api'     => 'api.php',
-        'agent'   => 'agent.php',
-        'general' => 'general.php',
-        'portal'  => 'portal.php',
-        'user'    => 'portal.php',
+        'adm'     => 'backend.php',
+        'admin'   => 'backend.php',
+        'api'     => 'backend.php',
+        'agent'   => 'backend.php',
+        'general' => 'backend.php',
+        'portal'  => 'user.php',
+        'user'    => 'user.php',
     ];
 
     private static $reverseMap = [
-        'api'     => ['api'],
-        'agent'   => ['agent', 'adm', 'admin'],
-        'general' => ['general'],
-        'portal'  => ['portal', 'user'],
+        'api'     => ['backend'],
+        'agent'   => ['backend'],
+        'general' => ['backend'],
+        'portal'  => ['user'],
     ];
 
     /**
