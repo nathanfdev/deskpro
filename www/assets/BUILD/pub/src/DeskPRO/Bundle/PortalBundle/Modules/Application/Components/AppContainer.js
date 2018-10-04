@@ -12,16 +12,10 @@ class AppContainer extends React.Component {
   };
 
   render() {
-    let guidePath;
-    if (window.DESKPRO_ENABLED_LANGS.length > 1) {
-      guidePath = '/:locale/guides/**/:slug';
-    } else {
-      guidePath = '/guides/**/:slug';
-    }
     return (
       <Router history={browserHistory}>
         <Route path="/" component={Guides.ViewTopic}>
-          <Route path={guidePath} component={Guides.ViewTopic} />
+          <Route path={`${window.DESKPRO_BASE_URL}/guides/**/:slug`} component={Guides.ViewTopic} />
         </Route>
       </Router>
     );
