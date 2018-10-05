@@ -8,6 +8,7 @@ use Application\AgentBundle\Form\Type\NewNews as NewNewsType;
 use Application\AgentBundle\Validator\NewNewsValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
@@ -18,6 +19,7 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DateTime;
+use DeskPRO\Component\Util\StringUtils;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -203,6 +205,14 @@ class NewsController extends AbstractController
                 $news['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html');
+
+                $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
+                $inlineBlobs   = $blob   = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
+                foreach ($inlineBlobs as $blob) {
+                    if ($blob && StringUtils::ensureAttachment($blob, $news['content'])) {
+                        $this->em->persist($blob->setIsTemp(false));
+                    }
+                }
 
                 $data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', [
                     'news' => $news,

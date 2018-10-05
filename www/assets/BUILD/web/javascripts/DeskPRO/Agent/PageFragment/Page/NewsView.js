@@ -634,10 +634,15 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			ev.preventDefault();
 
 			var data = {
-				action: 'content',
-				content: $('.news-editor-wrap textarea:first', wrap).val(),
-				attach: $('.news-editor-wrap .edit-content-attach:first', wrap).val()
+        action:          'content',
+        content:         $('.news-editor-wrap textarea:first', wrap).val(),
+        attach:          $('.news-editor-wrap .edit-content-attach:first', wrap).val(),
+        blob_inline_ids: []
 			};
+
+      $('input[name="blob_inline_ids[]"]', wrap).each(function() {
+        data.blob_inline_ids.push($(this).val());
+      });
 
 			$.ajax({
 				url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/ajax-save',
@@ -684,7 +689,8 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			}
 
       window.LegacyRteTextarea.init(txt, {
-				height: h
+				height: h,
+        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
 			});
 
       txt.on('froalaEditor.keypress', function () {

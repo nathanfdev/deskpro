@@ -37,6 +37,13 @@ class NewNews extends AbstractType
             'allow_add'    => true,
             'allow_delete' => true,
         ]);
+
+        $builder->add('blob_inline_ids', 'collection', [
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
+        ]);
     }
 
     public function getDefaultOptions(array $options)
