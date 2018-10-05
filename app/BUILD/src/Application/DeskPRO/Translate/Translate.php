@@ -20,7 +20,6 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\PluralizationRules;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -699,11 +698,16 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $language = $this->_loaded_languages[$language];
         }
 
-        $suffix = PluralizationRules::get($count, $language->getLocale());
+        $cat = $language->selectPluralCategory($count);
 
-        $try = [$phrase_name.'_'.$suffix];
-        if ($suffix === 1) {
-            $try[] = $phrase_name.'_plural';
+        $try = [$phrase_name.'.'.$cat];
+        if ($count === 0 && $cat !== 'zero') {
+            // this tries 'zero' on langs that dont typically use it
+            // i.e. this allows for a unique phrase for 0 in english like "You haven't created any departments yet."
+            $try[] = $phrase_name.'.zero';
+        }
+        if ($cat !== 'other') {
+            $try[] = $phrase_name.'.other';
         }
         $try[] = $phrase_name;
 
@@ -715,7 +719,12 @@ class Translate implements PersonContextInterface, TranslatorInterface
         }
 
         // try fallback on English
-        return $this->getPhraseText($phrase_name, $this->_default_language);
+        if ($this->_default_language !== $language) {
+            return $this->getPhraseTextCount($phrase_name, $count, $this->_default_language);
+        }
+
+        // otherwise missing phrase
+        return $this->getPhraseText($try[0], $language);
     }
 
     /**

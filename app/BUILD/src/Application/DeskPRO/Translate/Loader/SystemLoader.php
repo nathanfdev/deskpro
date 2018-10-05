@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Translate\Loader;
 
+use DeskPRO\Component\Util\MapUtils;
 use DpSys\CodePlugin\DpPlugins;
 use Orb\Util\Arrays;
 use Symfony\Component\Yaml\Yaml;
@@ -102,6 +103,8 @@ class SystemLoader implements LoaderInterface
                 $filePhrases,
                 DpPlugins::getManager()->loadExtraLangFile($relFile)
             );
+
+            $filePhrases = MapUtils::flattenKeys($filePhrases);
 
             foreach ($filePhrases as $phraseName => $phraseTranslation) {
                 $groupParts = explode('.', $phraseName, 3);

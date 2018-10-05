@@ -115,10 +115,11 @@ class TypeUtils
      * Checks if a value is a list (aka numerically indexed array).
      *
      * @param mixed $value
+     * @param bool  $quick A quicker implementation that may not be perfect but faster for large arrays
      *
      * @return bool
      */
-    public static function isList($value)
+    public static function isList($value, $quick = false)
     {
         if (!self::isArrayLike($value) || !self::isTraversable($value)) {
             return false;
@@ -137,6 +138,9 @@ class TypeUtils
         foreach ($value as $k => $v) {
             if ($k !== $idx++) {
                 return false;
+            }
+            if ($quick && $idx > 3) {
+                break;
             }
         }
 

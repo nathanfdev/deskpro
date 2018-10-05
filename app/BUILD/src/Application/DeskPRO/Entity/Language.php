@@ -12,6 +12,7 @@ use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Translation\PluralizationRules;
 
 // This class_exists check is needed because when doing a schema check,
 // doctrine will try to load this source file. But the Language class
@@ -43,6 +44,13 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
          * @var string
          */
         protected $title = '';
+
+        /**
+         * Title of the language.
+         *
+         * @var string
+         */
+        protected $titleLocal = '';
 
         /**
          * The base filepath for default phrases for this lang.
@@ -94,6 +102,23 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         protected $has_admin = true;
 
         /**
+         * @var array
+         */
+        protected $pluralCategories = ['one', 'other'];
+
+        /**
+         * A formula using "n" being an integer. This formula should be compatible with most
+         * C-based languages that support ternary operators. Booleans should be cast to
+         * an integer (i.e. true = 1, false = 0).
+         *
+         * Given an integer n, this formular returns the plural form to use for that number.
+         * The plural form can be used as the index to find the category name.
+         *
+         * @var string
+         */
+        protected $pluralFormula = 'n != 1';
+
+        /**
          * @return int
          */
         public function getId()
@@ -117,6 +142,127 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         public function getTitle()
         {
             return $this->title;
+        }
+
+        /**
+         * @return string
+         */
+        public function getTitleLocal()
+        {
+            return $this->titleLocal ?: $this->title;
+        }
+
+        /**
+         * @param string $titleLocal
+         *
+         * @return Language
+         */
+        public function setTitleLocal($titleLocal)
+        {
+            $this->setModelField('titleLocal', $titleLocal);
+
+            return $this;
+        }
+
+        /**
+         * @return array
+         */
+        public function getPluralCategories()
+        {
+            return $this->pluralCategories;
+        }
+
+        /**
+         * @param array $pluralCategories
+         *
+         * @return Language
+         */
+        public function setPluralCategories(array $pluralCategories)
+        {
+            $this->setModelField('pluralCategories', $pluralCategories);
+
+            return $this;
+        }
+
+        /**
+         * @param int $pluralForm A plural form (0-6). This is the plural form
+         *                        returned from the formula. This formula is the same
+         *                        used by most PO-style libraries too
+         *
+         * @return mixed
+         */
+        public function getPluralCategoryForForm($pluralForm)
+        {
+            return isset($this->pluralCategories[$pluralForm]) ?
+                $this->pluralCategories[$pluralForm]
+                : $this->pluralCategories['other'];
+        }
+
+        /**
+         * @return string
+         */
+        public function getPluralFormula()
+        {
+            return $this->pluralFormula;
+        }
+
+        /**
+         * @param string $pluralFormula
+         *
+         * @return Language
+         */
+        public function setPluralFormula($pluralFormula)
+        {
+            $this->setModelField('pluralFormula', $pluralFormula);
+
+            return $this;
+        }
+
+        /**
+         * @return int
+         */
+        public function getNumPluralForms()
+        {
+            return count($this->pluralCategories);
+        }
+
+        /**
+         * Get the plural form to use for the given integer.
+         *
+         * @param int $int
+         *
+         * @return int
+         */
+        public function selectPluralForm($int)
+        {
+            // Using the symfony lib here; it's already PHP and will be faster than eval()'ing the formula
+            return PluralizationRules::get((int) $int, $this->getLocaleLanguage());
+        }
+
+        /**
+         * Get the plural category to use for the given integer.
+         *
+         * @param int $int
+         *
+         * @return string
+         */
+        public function selectPluralCategory($int)
+        {
+            $form = $this->selectPluralForm($int);
+
+            return $this->getPluralCategoryForForm($form);
+        }
+
+        /**
+         * Return the language part of the locale. E.g. en-US returns en.
+         *
+         * @return string
+         */
+        public function getLocaleLanguage()
+        {
+            $parts = explode('-', $this->locale);
+
+            return $parts[0];
         }
 
         /**
@@ -293,6 +439,18 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
             );
             $metadata->mapField(
                 [
+                    'fieldName'  => 'titleLocal',
+                    'type'       => 'string',
+                    'length'     => 255,
+                    'precision'  => 0,
+                    'scale'      => 0,
+                    'nullable'   => true,
+                    'columnName' => 'title_local',
+                    'options'    => ['default' => ''],
+                ]
+            );
+            $metadata->mapField(
+                [
                     'fieldName'  => 'base_filepath',
                     'type'       => 'string',
                     'length'     => 255,
@@ -358,6 +516,28 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'type'       => 'boolean',
                     'nullable'   => false,
                     'columnName' => 'has_admin',
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'pluralCategories',
+                    'type'       => 'simple_array',
+                    'length'     => 255,
+                    'nullable'   => false,
+                    'columnName' => 'plural_categories',
+                    'options'    => ['default' => 'one,other'],
+                ]
+            );
+
+            $metadata->mapField(
+                [
+                    'fieldName'  => 'pluralFormula',
+                    'type'       => 'string',
+                    'length'     => 255,
+                    'nullable'   => false,
+                    'columnName' => 'plural_formula',
+                    'options'    => ['default' => 'n != 1'],
                 ]
             );
 
