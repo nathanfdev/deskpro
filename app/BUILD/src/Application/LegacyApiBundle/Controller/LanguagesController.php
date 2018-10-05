@@ -556,9 +556,8 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createJsonResponse([
             'phrase_groups' => [
                 'object' => $object_groups,
-                'user'   => $phrase_groups['portal'],
-                'agent'  => $phrase_groups['agent'],
-                'admin'  => $phrase_groups['admin'],
+                'user'   => $phrase_groups['user'],
+                'agent'  => $phrase_groups['backend'],
             ],
         ]);
     }
@@ -598,7 +597,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
         /** @var \Application\DeskPRO\EntityRepository\Phrase $repos */
         $repos = $this->em->getRepository(Phrase::class);
 
-        $phrase_data = new PhraseData($repos, DP_ROOT.'/languages');
+        $phrase_data = new PhraseData($repos, DP_ROOT.'/locales');
 
         switch ($group_id) {
             case 'ticket_departments':

@@ -30,9 +30,9 @@ class SystemLanguage extends \Application\DeskPRO\Entity\Language
     {
         $this->id            = 0;
         $this->sys_name      = 'default';
-        $this->locale        = 'en_US';
+        $this->locale        = 'en-US';
         $this->title         = 'English';
-        $this->base_filepath = DP_ROOT.'/languages/default';
+        $this->base_filepath = DP_ROOT.'/locales/en-US';
         $this->has_user      = true;
         $this->has_admin     = true;
         $this->has_agent     = true;

@@ -74,7 +74,7 @@ class CheckUsesCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $env      = $this->getContainer()->get('deskpro.app_env');
-        $lang_dir = $env->getAppDir().'/languages/default';
+        $lang_dir = $env->getAppDir().'/locales/en-US';
 
         $report = $input->getArgument('report');
         if ($report !== 'context' && $report !== 'missing') {

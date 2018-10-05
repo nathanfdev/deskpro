@@ -8,6 +8,9 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
+use DeskPRO\Component\Util\MapUtils;
+use Symfony\Component\Yaml\Yaml;
+
 class LanguagePhrases
 {
     /**
@@ -18,7 +21,7 @@ class LanguagePhrases
     public function __construct($lang_root = null)
     {
         if ($lang_root === null) {
-            $lang_root = DP_ROOT.'/languages/default';
+            $lang_root = DP_ROOT.'/locales/en-US';
         }
 
         $this->lang_root = $lang_root;
@@ -29,15 +32,15 @@ class LanguagePhrases
         $groups = [];
 
         $groupToReal = [
-            'adm'     => 'admin',
-            'admin'   => 'admin',
-            'reports' => 'admin',
-            'api'     => 'api',
-            'agent'   => 'agent',
-            'general' => 'general',
-            'portal'  => 'portal',
-            'user'    => 'portal',
-            'reports' => 'reports',
+            'adm'     => 'backend',
+            'admin'   => 'backend',
+            'reports' => 'backend',
+            'api'     => 'backend',
+            'agent'   => 'backend',
+            'general' => 'backend',
+            'portal'  => 'user',
+            'user'    => 'user',
+            'reports' => 'backend',
         ];
 
         $lang_dir = dir($this->lang_root);
@@ -46,7 +49,13 @@ class LanguagePhrases
                 continue;
             }
 
-            $phrases = require $lang_dir->path.'/'.$file;
+            if (strpos($file, '.php')) {
+                $phrases = require $lang_dir->path.'/'.$file;
+            } elseif (strpos($file, '.yml')) {
+                $phrases = MapUtils::flattenKeys(Yaml::parse(file_get_contents($lang_dir->path.'/'.$file)));
+            } else {
+                continue;
+            }
 
             foreach ($phrases as $phraseId => $x) {
                 $parts = explode('.', $phraseId);

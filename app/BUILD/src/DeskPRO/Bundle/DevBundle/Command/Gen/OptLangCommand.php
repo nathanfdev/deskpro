@@ -7,6 +7,7 @@
 namespace DeskPRO\Bundle\DevBundle\Command\Gen;
 
 use Application\DeskPRO\Languages\LangPackInfo;
+use DeskPRO\Component\Util\MapUtils;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -56,7 +57,7 @@ class OptLangCommand extends ContainerAwareCommand
             ) {
                 /* @var $f \SplFileInfo */
                 $output->writeln("Dumping {$f->getPathname()}...");
-                $fileData = Yaml::parse(file_get_contents($f->getPathname()));
+                $fileData = MapUtils::flattenKeys(Yaml::parse(file_get_contents($f->getPathname())));
                 file_put_contents(str_replace('.yml', '.php', $f->getPathname()), '<?php return '.var_export($fileData, true).';'."\n");
             }
         }

@@ -101,8 +101,8 @@ class ApiDb extends AbstractDbSet
                  `has_agent`, `has_admin`)
             VALUES
                 (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1),
-                (2, 'french', 'fre', 'Français', '%DP_ROOT%/languages/french', 'fr', 'fr.png', '0', '1', '1', '0'),
-                (3, 'russian', 'rus', 'Pусский', '%DP_ROOT%/languages/russian', 'ru', 'ru.png', '0', '1', '1', '0')
+                (2, 'french', 'fre', 'Français', '%DP_ROOT%/locales/fr', 'fr', 'fr.png', '0', '1', '1', '0'),
+                (3, 'russian', 'rus', 'Pусский', '%DP_ROOT%/locales/ru', 'ru', 'ru.png', '0', '1', '1', '0')
 
             ;
 SQL

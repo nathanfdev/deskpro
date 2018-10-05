@@ -7,7 +7,7 @@ services:
 
   deskpro.core.translate_loader_system:
     class: Application\DeskPRO\Translate\Loader\SystemLoader
-    arguments: [ [ %kernel.root_dir% ~ '/../languages' ] ]
+    arguments: [ [ %kernel.root_dir% ~ '/../locales' ] ]
 
   deskpro.core.translate_loader_db:
     class: Application\DeskPRO\Translate\Loader\DbLoader
