@@ -59,7 +59,7 @@ class RteTextarea {
       imageUploadParams: { _rt: window.DP_REQUEST_TOKEN, json: true },
       imageUploadURL:    `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
       imageEditButtons:  ['imageReplace', 'imageAlign', 'imageVAlign', 'imageCaption', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit', 'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize'],
-      imageDefaultWidth: 0
+      imageDefaultWidth: 0,
     };
 
     localOptions = Object.merge(defaultOptions, localOptions || {});
@@ -71,6 +71,17 @@ class RteTextarea {
     });
     rte.on('froalaEditor.blur', () => {
       window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
+    });
+    rte.on('froalaEditor.image.uploaded', (e, editor, response) => {
+      if (localOptions.inlineHiddenPosition && localOptions.formname) {
+        try {
+          const json = JSON.parse(response);
+          const input = `<input type="hidden" name="${localOptions.formname}[blob_inline_ids][]" />`;
+          localOptions.inlineHiddenPosition.after($(input).val(json.blob_id));
+        } catch (exception) {
+          console.error('Wasn\'t able to parse response from the server', response);
+        }
+      }
     });
 
     return rte;
