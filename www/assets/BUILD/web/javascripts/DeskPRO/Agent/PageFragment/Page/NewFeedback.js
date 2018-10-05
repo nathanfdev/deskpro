@@ -228,7 +228,9 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
     }
 
     window.LegacyRteTextarea.init(txt, {
-			height: Math.max(h - contentHeight, 150)
+			height: Math.max(h - contentHeight, 150),
+      inlineHiddenPosition: $('button.submit-trigger', this.wrapper),
+      formname:							'newfeedback'
 		});
 
     txt.on('froalaEditor.keypress', function () {

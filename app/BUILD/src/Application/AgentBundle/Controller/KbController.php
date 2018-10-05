@@ -452,13 +452,12 @@ class KbController extends AbstractController
                 break;
 
             case 'content':
-                $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
-
                 $content = $this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html');
 
-                $inlineBlobs = $blob = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
+                $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
+                $inlineBlobs   = $blob   = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
                 foreach ($inlineBlobs as $blob) {
                     if ($blob && StringUtils::ensureAttachment($blob, $content)) {
                         $this->em->persist($blob->setIsTemp(false));

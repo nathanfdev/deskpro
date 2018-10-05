@@ -7,6 +7,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -25,25 +26,37 @@ class NewFeedback
 
     /** @var string */
     public $title;
+
     /** @var int */
     public $category_id;
+
     /** @var string */
     public $status_code;
+
     /** @var string */
     public $content;
 
     /** @var string */
     public $slug;
+
     /** @var array */
     public $labels = [];
+
     /** @var array */
     public $attach_ids;
+
+    /** @var array */
+    public $blob_inline_ids;
+
     /** @var Ticket */
     public $person;
+
     /** @var Ticket */
     public $linked_ticket;
+
     /** @var bool */
     public $is_subscribe_ticket_owner = false;
+
     /** @var bool */
     public $is_subscribe_ticket_participants = false;
 
@@ -96,18 +109,24 @@ class NewFeedback
         }
 
         if ($this->attach_ids) {
-            foreach ($this->attach_ids as $aid) {
-                $blob = $this->em->getRepository('DeskPRO:Blob')->find($aid);
-                if ($blob) {
-                    $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
-                    $attach->setPerson($feedback->getPerson())->setFeedback($feedback)->setBlob($blob->setIsTemp(false));
-                    $feedback->addAttachment($attach);
-                    $this->em->persist($attach);
-                    $this->em->persist($blob);
-                }
+            $attachBlobs = $this->em->getRepository(Blob::class)->findBy(['id' => $this->attach_ids]);
+            foreach ($attachBlobs as $blob) {
+                $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                $attach->setPerson($feedback->getPerson())->setFeedback($feedback)->setBlob($blob->setIsTemp(false));
+                $feedback->addAttachment($attach);
+                $this->em->persist($attach);
+                $this->em->persist($blob);
             }
-            $this->em->flush();
         }
+
+        if ($this->blob_inline_ids) {
+            $inlineBlobs = $this->em->getRepository(Blob::class)->findBy(['id' => $this->blob_inline_ids]);
+            foreach ($inlineBlobs as $blob) {
+                $this->em->persist($blob->setIsTemp(false));
+            }
+        }
+
+        $this->em->flush();
 
         $this->_feedback = $feedback;
 
