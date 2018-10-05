@@ -120,11 +120,48 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
         }
 
         /**
+         * Get the locale code in standard IETF format (xx-XX).
+         * This is the standard format to use most of the time (e.g. browser headers).
+         *
          * @return string
          */
         public function getLocale()
         {
             return $this->locale;
+        }
+
+        /**
+         * Gets the locale code in POSIX (ISO 15897) format (xx_XX).
+         * This is the format used in Unix and some tools might use it (e.g. gettext).
+         *
+         * @return string
+         */
+        public function getPosixLocale()
+        {
+            if (strlen($this->locale) > 2) {
+                return preg_replace('/^([a-z]{2,3})-([A-Z]{2})/', '$1_$2', $this->locale);
+            }
+
+            return $this->locale;
+        }
+
+        /**
+         * Sets the locale code. The locale is expected to be 'xx' or 'xx-XX'.
+         *
+         * This will auto-correct 'xx_XX' to 'xx-XX'.
+         *
+         * @param string $locale
+         *
+         * @return $this
+         */
+        public function setLocale($locale)
+        {
+            if (strlen($locale) > 2) {
+                $locale = preg_replace('/^([a-z]{2})_([A-Z]{2})/', '$1-$2', $locale);
+            }
+            $this->setModelField('locale', $locale);
+
+            return $this;
         }
 
         /**

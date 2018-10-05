@@ -1,7 +1,7 @@
 id: chinese_simplified
 name: 'Chinese (Simplified)'
 nameLocal: 英语（美国）
-locale: zh_CN
+locale: zh-CN
 isRtl: false
 pluralForms:
   count: 0

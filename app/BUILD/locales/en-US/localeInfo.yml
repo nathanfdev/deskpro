@@ -1,7 +1,7 @@
-id: spanish
-name: Spanish
-nameLocal: Español
-locale: es_ES
+id: default
+name: English
+nameLocal: English
+locale: en-US
 isRtl: false
 pluralForms:
   count: 2

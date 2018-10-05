@@ -61,16 +61,11 @@ class LegacyToNewCommand extends ContainerAwareCommand
                 }
             }
 
-            $oldLangDir = $langDir.'/'.$id;
-            $targetDir  = $localeDir.'/'.$langInfo['locale'];
-
-            $phraseGroups = ['user' => [], 'backend' => []];
-
             $localeInfo = [
                 'id'          => $langInfo['id'],
                 'name'        => $langInfo['title'],
                 'nameLocal'   => $langInfo['title'],
-                'locale'      => $langInfo['locale'],
+                'locale'      => str_replace('_', '-', $langInfo['locale']),
                 'isRtl'       => $langInfo['is_rtl'],
                 'pluralForms' => [
                     'count'     => $pluralInfo[0],
@@ -80,6 +75,11 @@ class LegacyToNewCommand extends ContainerAwareCommand
                     ],
                 ],
             ];
+
+            $oldLangDir = $langDir.'/'.$id;
+            $targetDir  = $localeDir.'/'.$localeInfo['locale'];
+
+            $phraseGroups = ['user' => [], 'backend' => []];
 
             /** @var \SplFileInfo[] $files */
             $files = Finder::create()->in($oldLangDir)->files()->name('*.php');

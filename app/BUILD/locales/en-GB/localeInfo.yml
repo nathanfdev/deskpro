@@ -1,7 +1,7 @@
 id: english_gb
 name: 'English (UK)'
 nameLocal: 'English (UK)'
-locale: en_GB
+locale: en-GB
 isRtl: false
 pluralForms:
   count: 2

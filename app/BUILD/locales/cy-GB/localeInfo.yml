@@ -1,7 +1,7 @@
 id: welsh
 name: Welsh
 nameLocal: Welsh
-locale: cy_GB
+locale: cy-GB
 isRtl: false
 pluralForms:
   count: 4

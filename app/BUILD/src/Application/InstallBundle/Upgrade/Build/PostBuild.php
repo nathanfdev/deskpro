@@ -36,11 +36,12 @@ class PostBuild extends AbstractBuild
                 SET
                     title = ?,
                     flag_image = \'\',
+                    locale = ?,
                     has_user = 1,
                     has_agent = 1,
                     has_admin = 1,
                     base_filepath = ?
-                WHERE sys_name = ?', [$title, '%DP_ROOT%/locales/'.$info['locale'], $id]);
+                WHERE sys_name = ?', [$title, $info['locale'], '%DP_ROOT%/locales/'.$info['locale'], $id]);
         }
 
         // Auto-install any new langs
