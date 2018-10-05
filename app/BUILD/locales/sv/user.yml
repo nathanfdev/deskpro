@@ -83,10 +83,12 @@ portal.articles.section-desc: 'Vår kunskapsbas innehåller artiklar skrivna av 
 portal.articles.section-title: Kunskapsbas
 portal.articles.share-by-email: 'Dela denna artikel via mail:'
 portal.articles.view-as-agent: 'Du kan se denna sida för att du är en agent. Användare kommer inte att kunna se denna sida.'
-portal.articles.view-x-articles: 'Visa 1 artikel'
-portal.articles.view-x-articles_plural: 'Visa {{count}} artiklar'
-portal.articles.x-articles: '1 artikel'
-portal.articles.x-articles_plural: '{{count}} artiklar'
+portal.articles.view-x-articles:
+  one: 'Visa 1 artikel'
+  other: 'Visa {{count}} artiklar'
+portal.articles.x-articles:
+  one: '1 artikel'
+  other: '{{count}} artiklar'
 portal.chat.agent_blocked_user_on: '{{name}} satte en block den {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} verkar ha blivit nedkopplad'
 portal.chat.agent_typing_message: '{{agentName}} skriver ett meddelande'
@@ -131,8 +133,9 @@ portal.chat.list_chat: Chatt
 portal.chat.list_date: Datum
 portal.chat.list_switch_to_my_chats: 'Växla till mina chattar'
 portal.chat.list_switch_to_organization: 'Växla till organisation'
-portal.chat.list_title: '1 Chatt'
-portal.chat.list_title_plural: '{{count}} Chattar'
+portal.chat.list_title:
+  one: '1 Chatt'
+  other: '{{count}} Chattar'
 portal.chat.list_user: Användare
 portal.chat.log_agents: Agenter
 portal.chat.log_chat_time: 'Total chattid'
@@ -205,8 +208,9 @@ portal.downloads.section-desc: 'Bläddra i vår katalog med nedladdningar'
 portal.downloads.section-title: Nedladdningar
 portal.downloads.uploaded-on: Uppladdad
 portal.downloads.view-as-agent: 'Du kan se denna sida för att du är en agent. Användare kommer inte att kunna visa denna sida.'
-portal.downloads.view-x-files: 'Visa 1 nedladdning'
-portal.downloads.view-x-files_plural: 'Visa {{count}} nedladdningar'
+portal.downloads.view-x-files:
+  one: 'Visa 1 nedladdning'
+  other: 'Visa {{count}} nedladdningar'
 portal.email_subjects.chat_transcript: Chatlogg
 portal.email_subjects.comment-approved: 'Din kommentar har godkänts'
 portal.email_subjects.comment-confirmation: 'Tack för din kommentar'
@@ -254,16 +258,19 @@ portal.emails.comment_deleted: 'Din kommentar användes för att förbättra sid
 portal.emails.comment_thank-you: 'Tack för din kommentar på {{link}}.'
 portal.emails.comment_validate-email: 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:'
 portal.emails.do-not-reply: 'Svara inte på detta mail. Detta mail har genererats automatiskt av en dator och eventuella svar kommer inte att läsas av någon agent.'
-portal.emails.download-new-downloads: '1 ny nedladdning'
-portal.emails.download-new-downloads_plural: '{{count}} nya nedladdningar'
-portal.emails.download-updated-downloads: '1 uppdaterad nedladdning'
-portal.emails.download-updated-downloads_plural: '{{count}} uppdaterade nedladdningar'
+portal.emails.download-new-downloads:
+  one: '1 ny nedladdning'
+  other: '{{count}} nya nedladdningar'
+portal.emails.download-updated-downloads:
+  one: '1 uppdaterad nedladdning'
+  other: '{{count}} uppdaterade nedladdningar'
 portal.emails.downloads-explain: 'Du får det här mailet eftersom att du prenumererar på uppdateringar kring nedladdningar som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nedladdningsnotiser.</a>'
 portal.emails.email-too-big: 'Ditt mail "{{subject}}" blev inte accepterat för att det är för stort. Den max tillåtna filstorleken som den här helpdesken accepterar är {{max_size}}. Ta bort stora bifogade filer och försök igen.'
 portal.emails.end_greeting: 'Hälsningar,<br /><br />{{site_name}}'
 portal.emails.feedback-explain: 'Du får det här mailet eftersom att du prenumererar på uppdateringar kring feedbacks som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla feedbacknotiser.</a>'
-portal.emails.feedback-updated-items: '1 uppdaterad feedback'
-portal.emails.feedback-updated-items_plural: '{{count}} uppdaterade feedbacks'
+portal.emails.feedback-updated-items:
+  one: '1 uppdaterad feedback'
+  other: '{{count}} uppdaterade feedbacks'
 portal.emails.feedback_agent-validation: 'Notera att din feedback inte kommer att visas publikt på vår portal innan en av våra agenter godkänner den.'
 portal.emails.feedback_approved: 'Vi mailar till dig för att meddela att din feedback har blivit godkänd och att den nu visas publikt på vår sida.'
 portal.emails.feedback_closed: 'Din inskickade feedback "{{title}}" stängdes: {{status}}'
@@ -274,22 +281,27 @@ portal.emails.feedback_published: 'Din feedback "{{title}}" har blivit granskad 
 portal.emails.feedback_thank-you: 'Tack för att du skickade in din feedback "{{title}}"'
 portal.emails.feedback_updated: 'Din inskickade feedback "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"'
 portal.emails.feedback_validate-email: 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:'
-portal.emails.feedback_votes: 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:'
-portal.emails.feedback_votes_plural: 'Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:'
+portal.emails.feedback_votes:
+  one: 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:'
+  other: 'Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:'
 portal.emails.greeting: 'Hej {{to_name}},'
 portal.emails.kb-explain: 'Du får det här mailet eftersom att du prenumererar på uppdateringar kring kunskapsbasartiklar som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla kunskapsbasnotiser.</a>'
-portal.emails.kb-new-articles: '1 Ny kunskapsbasartikel'
-portal.emails.kb-new-articles_plural: '{{count}} Nya kunskapsbasartiklar'
-portal.emails.kb-updated-articles: '1 Uppdaterad kunskapsbasartikel'
-portal.emails.kb-updated-articles_plural: '{{count}} Nya kunskapsbasartiklar'
+portal.emails.kb-new-articles:
+  one: '1 Ny kunskapsbasartikel'
+  other: '{{count}} Nya kunskapsbasartiklar'
+portal.emails.kb-updated-articles:
+  one: '1 Uppdaterad kunskapsbasartikel'
+  other: '{{count}} Nya kunskapsbasartiklar'
 portal.emails.label_view-online: 'Visa Online'
 portal.emails.message-clipped: '(Meddelandet har klippts)'
 portal.emails.new-ticket-guest-link: 'Tack för att du kontaktar oss. Du kan se statusen på ditt ärende online:'
 portal.emails.news-explain: 'Du får det här mailet eftersom att du prenumererar på uppdateringar kring nyheter som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nyhetsnotiser.</a>'
-portal.emails.news-new-articles: '1 Nytt nyhetsinlägg'
-portal.emails.news-new-articles_plural: '{{count}} Nya nyhetsinlägg'
-portal.emails.news-updated-articles: '1 Uppdaterat nyhetsinlägg'
-portal.emails.news-updated-articles_plural: '{{count}} Uppdaterade nyhetsinlägg'
+portal.emails.news-new-articles:
+  one: '1 Nytt nyhetsinlägg'
+  other: '{{count}} Nya nyhetsinlägg'
+portal.emails.news-updated-articles:
+  one: '1 Uppdaterat nyhetsinlägg'
+  other: '{{count}} Uppdaterade nyhetsinlägg'
 portal.emails.password_agent-reset: 'En tekniker har återställt ditt lösenord. Du kan logga in med följande uppgifter:'
 portal.emails.password_reset: 'Du har begärt en återställning av ditt lösenord. För att återställa ditt lösenord klickar du på länken nedan:'
 portal.emails.password_set: 'Klicka på länken nedan för att välja ett lösenord:'
@@ -326,8 +338,9 @@ portal.emails.ticket_rate-request: 'Hur skulle du betygsätta supporten som du m
 portal.emails.ticket_received: 'Ditt ärende har registrerats. En av våra agenter kommer att kontakta dig inom kort.'
 portal.emails.ticket_reply-confirm: 'Tack för ditt svar. En av våra agenter kommer att kontakta dig inom kort.'
 portal.emails.ticket_validate: 'Tack för att du kontaktar oss.<br /><br />Innan en agent kan läsa ditt meddelande så måste du bekräfta din e-postadress.'
-portal.emails.tickets_ommitted: '1 meddelande har utelämnats'
-portal.emails.tickets_ommitted_plural: '{{count}} meddelanden har utelämnats'
+portal.emails.tickets_ommitted:
+  one: '1 meddelande har utelämnats'
+  other: '{{count}} meddelanden har utelämnats'
 portal.emails.validate-email: 'Vänligen bekräfta att den här e-postadressen tillhör dig genom att klicka på länken nedan.'
 portal.emails.view_full_history_online: 'Visa hela ärendet online'
 portal.error.403-desc: 'Tyvärr, du har inte behörighet att se denna sida.'
@@ -372,8 +385,9 @@ portal.feedback.status_active: 'Öppna objekt'
 portal.feedback.status_all: 'All objekt'
 portal.feedback.status_closed: 'Stängda objekt'
 portal.feedback.submit_feedback: 'Posta feedback'
-portal.feedback.view-x-feedback: 'Visa 1 feedback'
-portal.feedback.view-x-feedback_plural: 'View {{count}} feedbacks'
+portal.feedback.view-x-feedback:
+  one: 'Visa 1 feedback'
+  other: 'View {{count}} feedbacks'
 portal.flashes.article_cat_subscribe: 'Du prenumererar nu på denna kategori. Du kommer att få en notis när nytt innehåll postas.'
 portal.flashes.article_cat_unsubscribe: 'Du har sagt upp prenumerationen på denna kategori.'
 portal.flashes.article_subscribe: 'Du prenumererar nu på denna artikel. Du kommer att få en notis när innehållet uppdateras eller när en ny kommentar postas.'
@@ -442,14 +456,18 @@ portal.forms.error_not_checked: 'Det här fältet är inte markerat.'
 portal.forms.error_password_current: 'Det här måste vara ditt nuvarande lösenord'
 portal.forms.error_password_forbid_reuse: 'Du kan inte använda ett lösenord som du har använt tidigare'
 portal.forms.error_password_min_length: 'Var vänlig och skriv ett lösenord på minst fem bokstäver.'
-portal.forms.error_password_require_num_lowercase: 'Minst {{count}} liten bokstav'
-portal.forms.error_password_require_num_lowercase_plural: 'Minst {{count}} små bokstäver'
-portal.forms.error_password_require_num_number: 'Minst {{count}} siffra'
-portal.forms.error_password_require_num_number_plural: 'Minst {{count}} siffror'
-portal.forms.error_password_require_num_symbol: 'Minst {{count}} symbol'
-portal.forms.error_password_require_num_symbol_plural: 'Minst {{count}} symboler'
-portal.forms.error_password_require_num_uppercase: 'Minst {{count}} stor bokstav'
-portal.forms.error_password_require_num_uppercase_plural: 'Minst {{count}} stora bokstäver'
+portal.forms.error_password_require_num_lowercase:
+  one: 'Minst {{count}} liten bokstav'
+  other: 'Minst {{count}} små bokstäver'
+portal.forms.error_password_require_num_number:
+  one: 'Minst {{count}} siffra'
+  other: 'Minst {{count}} siffror'
+portal.forms.error_password_require_num_symbol:
+  one: 'Minst {{count}} symbol'
+  other: 'Minst {{count}} symboler'
+portal.forms.error_password_require_num_uppercase:
+  one: 'Minst {{count}} stor bokstav'
+  other: 'Minst {{count}} stora bokstäver'
 portal.forms.error_person_not_agent: 'Personen med identifieraren {{value}} är inte en agent.'
 portal.forms.error_person_not_found: 'Personen med identifieraren "{{value}}" kunde inte hittas.'
 portal.forms.error_person_not_user: 'Personen med identifieraren {{value}} är inte en användare.'
@@ -529,11 +547,13 @@ portal.general.btn-unsubscribe: Avprenumerera
 portal.general.by: av
 portal.general.by_2: Av
 portal.general.comment_btn_save: 'Spara kommentar'
-portal.general.comments-count: '1 kommentar'
-portal.general.comments-count_plural: '{{count}} kommentarer'
+portal.general.comments-count:
+  one: '1 kommentar'
+  other: '{{count}} kommentarer'
 portal.general.comments-pending-validation: 'Den här kommentaren granskas. Den kommer snart att visas.'
-portal.general.comments-title: 'Kommentarer (1)'
-portal.general.comments-title_plural: 'Kommentarer ({{count}})'
+portal.general.comments-title:
+  one: 'Kommentarer (1)'
+  other: 'Kommentarer ({{count}})'
 portal.general.delete: Radera
 portal.general.everything: Allt
 portal.general.get-in-touch: 'Kom i kontakt'
@@ -622,12 +642,14 @@ portal.news.recent-title: 'Senaste nyheterna'
 portal.news.search-title: Nyhetsartiklar
 portal.news.section-title: Nyheter
 portal.news.view-as-agent: 'Du kan se denna sida för att du är en agent. Normala användare kommer inte att kunna visa denna sida.'
-portal.news.view-x-news: 'Visa 1 artikel'
-portal.news.view-x-news_plural: 'Visa {{count}} artiklar'
+portal.news.view-x-news:
+  one: 'Visa 1 artikel'
+  other: 'Visa {{count}} artiklar'
 portal.sidebar.agents_available: 'Tillgängliga agenter'
 portal.sidebar.agents_none: 'Inga av våra agenter är online just nu. Du kan ändå <a href="{{new_ticket_url}}">öppna ett ärende</a>.'
-portal.sidebar.agents_x_online: '{{count}} online'
-portal.sidebar.agents_x_online_plural: '{{count}} online'
+portal.sidebar.agents_x_online:
+  one: '{{count}} online'
+  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Postad av {{name}}'
 portal.sidebar.news_title: Nyheter
 portal.sidebar.satisfied_customers: 'nöjda kunder'
@@ -653,8 +675,9 @@ portal.tickets.list_no_tickets: 'Det finns inga ärenden att visa under denna fl
 portal.tickets.list_search: 'Sök i ärenden:'
 portal.tickets.list_status_agent: 'Vår agent kommet att svara'
 portal.tickets.list_status_open: 'Öppna ärenden'
-portal.tickets.list_status_open_count: '{{count}} väntar på svar'
-portal.tickets.list_status_open_count_plural: '{{count}} väntar på svar'
+portal.tickets.list_status_open_count:
+  one: '{{count}} väntar på svar'
+  other: '{{count}} väntar på svar'
 portal.tickets.list_status_resolved: Löst
 portal.tickets.list_status_user: 'Du måste besvara'
 portal.tickets.list_subject: Ämne
@@ -750,8 +773,9 @@ user.chat.log_created-date: 'Skapad {{date}}'
 user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Avdelning
 user.chat.log_message_author-you: Du
-user.chat.log_nav-view-chats: 'Visa din senaste chattlogg'
-user.chat.log_nav-view-chats_plural: 'Visa dina {{count}} chatloggar'
+user.chat.log_nav-view-chats:
+  one: 'Visa din senaste chattlogg'
+  other: 'Visa dina {{count}} chatloggar'
 user.chat.log_no_department: 'Ingen avdelning'
 user.chat.log_unassigned: 'Ingen agent tilldelades'
 user.chat.message_agent-timeout: 'Vi ber om ursäkt; {{name}} verkar ha blivit frånkopplad. Var god vänta medan vi försöker hitta en annan agent.'
@@ -837,15 +861,18 @@ user.emails.chat_validate_email: 'Vänligen bekräfta din e-postadress genom att
 user.emails.comment_approved: 'Din kommentar har blivit publicerad.'
 user.emails.comment_deleted: 'Din kommentar användes för att förbättra sidan.'
 user.emails.comment_thank-you: 'Tack för din kommentar på {{link}}.'
-user.emails.download-new-downloads: '1 Ny nedladdning'
-user.emails.download-new-downloads_plural: '{{count}} Nya nedladdningar'
-user.emails.download-updated-downloads: '1 Uppdaterad nedladdning'
-user.emails.download-updated-downloads_plural: '{{count}} Uppdaterade nedladdningar'
+user.emails.download-new-downloads:
+  one: '1 Ny nedladdning'
+  other: '{{count}} Nya nedladdningar'
+user.emails.download-updated-downloads:
+  one: '1 Uppdaterad nedladdning'
+  other: '{{count}} Uppdaterade nedladdningar'
 user.emails.downloads-explain: 'Du får det här mailet eftersom att du prenumererar på nedladdningar som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nedladdningsnotiser.</a>'
 user.emails.email-too-big: 'Ditt mail "{{subject}}" blev inte accepterat för att det är för stort. Den max tillåtna filstorleken är {{max_size}}. Ta bort dina bifogade filer och försök igen.'
 user.emails.feedback-explain: 'Du får det här mailet eftersom att du prenumererar på nyheter som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nyhetsnotiser.</a>'
-user.emails.feedback-updated-items: '1 uppdaterad feedback'
-user.emails.feedback-updated-items_plural: '{{count}} uppdaterade feedbacks'
+user.emails.feedback-updated-items:
+  one: '1 uppdaterad feedback'
+  other: '{{count}} uppdaterade feedbacks'
 user.emails.feedback_agent-validation: 'Notera att din feedback inte kommer att visas på sidan innan den har blivit granskad av en agent'
 user.emails.feedback_approved: 'Vi mailar till dig för att meddela att din feedback har blivit godkänd och att den nu visas publikt på vår sida.'
 user.emails.feedback_closed: 'Din inskickade feedback "{{title}}" stängdes: {{status}}'
@@ -855,22 +882,27 @@ user.emails.feedback_new-comment: '{{name}} postade en ny kommentar:'
 user.emails.feedback_published: 'Din feedback "{{title}}" har blivit granskad och kommer nu att visas på vår sida.'
 user.emails.feedback_thank-you: 'Tack för att du skickade in din feedback "{{title}}"'
 user.emails.feedback_updated: 'Din inskickade feedback "{{title}}" har blivit uppdaterad. Den är nu sorterad under den nya statusen "{{status}}"'
-user.emails.feedback_votes: 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:'
-user.emails.feedback_votes_plural: 'Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:'
+user.emails.feedback_votes:
+  one: 'Din feedback har <strong>1</strong> röst. Hantera din feedback online:'
+  other: 'Din feedback har <strong>{{count}}</strong> röster. Hantera din feedback online:'
 user.emails.greeting: 'Hej {{to_name}},'
 user.emails.kb-explain: 'Du får det här mailet eftersom att du prenumererar på vår kunskapsbas på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla kunskapsbasnotiser.</a>'
-user.emails.kb-new-articles: '1 Ny artikel'
-user.emails.kb-new-articles_plural: '{{count}} Nya artiklar'
-user.emails.kb-updated-articles: '1 Uppdaterad artikel'
-user.emails.kb-updated-articles_plural: '{{count}} Uppdaterade artiklar'
+user.emails.kb-new-articles:
+  one: '1 Ny artikel'
+  other: '{{count}} Nya artiklar'
+user.emails.kb-updated-articles:
+  one: '1 Uppdaterad artikel'
+  other: '{{count}} Uppdaterade artiklar'
 user.emails.label_view-online: 'Visa Online'
 user.emails.message-clipped: '(Meddelandet har klippts)'
 user.emails.new-ticket-guest-link: 'Tack för att du kontaktar oss. Du kan se statusen på ditt ärende här:'
 user.emails.news-explain: 'Du får det här mailet eftersom att du prenumererar på nyheter som finns tillgängliga på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vill du inte längre ha dessa mail? <a href="{{unsubscribe_url}}">Klicka här för att avregistrera dig från alla nyhetsnotiser.</a>'
-user.emails.news-new-articles: '1 Ny nyhetsartikel'
-user.emails.news-new-articles_plural: '{{count}} Nya nyhetsartiklar'
-user.emails.news-updated-articles: '1 Uppdaterad nyhetsartikel'
-user.emails.news-updated-articles_plural: '{{count}} Uppdaterade nyhetsartiklar'
+user.emails.news-new-articles:
+  one: '1 Ny nyhetsartikel'
+  other: '{{count}} Nya nyhetsartiklar'
+user.emails.news-updated-articles:
+  one: '1 Uppdaterad nyhetsartikel'
+  other: '{{count}} Uppdaterade nyhetsartiklar'
 user.emails.password_agent-reset: 'En tekniker har återställt ditt lösenord. Du kan logga in med följande uppgifter:'
 user.emails.password_reset: 'Du har begärt en återställning av ditt lösenord. För att återställa ditt lösenord klickar du på länken nedan:'
 user.emails.password_set: 'Klicka på länken nedan för att välja ett lösenord:'
@@ -907,18 +939,22 @@ user.error.error_code: Felkod
 user.error.error_title: Fel
 user.error.expired-token: 'Sidan du försöker nå finns inte längre. Var vänlig och gå tillbaka och försök igen.'
 user.error.form_choice_invalid: 'Var vänlig och välj ett alternativ från listan'
-user.error.form_choice_max: 'Var vänlig och välj max 1 alternativ'
-user.error.form_choice_max_plural: 'Var vänlig och välj max {{count}} alternativ'
-user.error.form_choice_min: 'Var vänlig och välj minst 1 alternativ'
-user.error.form_choice_min_plural: 'Var vänlig och välj minst {{count}} alternativ'
+user.error.form_choice_max:
+  one: 'Var vänlig och välj max 1 alternativ'
+  other: 'Var vänlig och välj max {{count}} alternativ'
+user.error.form_choice_min:
+  one: 'Var vänlig och välj minst 1 alternativ'
+  other: 'Var vänlig och välj minst {{count}} alternativ'
 user.error.form_date_invalid: 'Var vänlig och ange ett giltigt datum'
 user.error.form_date_invalid_dow: 'Veckodagen som du valde är inte tillåten'
 user.error.form_date_invalid_range: 'Datumet som du har valt är inte inom det tillåtna intervallet.'
 user.error.form_required: 'Detta fält är obligatoriskt'
-user.error.form_text_max: 'Var vänlig och fyll i max 1 bokstav'
-user.error.form_text_max_plural: 'Var vänlig och fyll i max {{count}} bokstäver'
-user.error.form_text_min: 'Var vänlig och fyll i minst 1 bokstav'
-user.error.form_text_min_plural: 'Var vänlig och fyll i minst {{count}} bokstäver'
+user.error.form_text_max:
+  one: 'Var vänlig och fyll i max 1 bokstav'
+  other: 'Var vänlig och fyll i max {{count}} bokstäver'
+user.error.form_text_min:
+  one: 'Var vänlig och fyll i minst 1 bokstav'
+  other: 'Var vänlig och fyll i minst {{count}} bokstäver'
 user.error.form_text_regex: 'Var vänlig och ange ett giltigt värde'
 user.error.invalid_email: 'Ogiltig e-postadress'
 user.error.invalid_email-code: 'Valideringslänken verkar vara ogiltig'
@@ -963,16 +999,21 @@ user.profile.choose_email: 'Välj den e-postadress som du vill använda'
 user.profile.connect_with: 'Anslut med'
 user.profile.or_connect_with: 'Eller anslut med'
 user.profile.register: Registrera
-user.profile.register_password_min_length: 'Minst {{count}} bokstav'
-user.profile.register_password_min_length_plural: 'Minst {{count}} bokstäver'
-user.profile.register_password_require_num_lowercase: 'Minst {{count}} liten bokstav'
-user.profile.register_password_require_num_lowercase_plural: 'Minst {{count}} små bokstäver'
-user.profile.register_password_require_num_number: 'Minst {{count}} siffra'
-user.profile.register_password_require_num_number_plural: 'Minst {{count}} siffror'
-user.profile.register_password_require_num_symbol: 'Minst {{count}} symbol'
-user.profile.register_password_require_num_symbol_plural: 'Minst {{count}} symboler'
-user.profile.register_password_require_num_uppercase: 'Minst {{count}} stor bokstav'
-user.profile.register_password_require_num_uppercase_plural: 'Minst {{count}} stora bokstäver'
+user.profile.register_password_min_length:
+  one: 'Minst {{count}} bokstav'
+  other: 'Minst {{count}} bokstäver'
+user.profile.register_password_require_num_lowercase:
+  one: 'Minst {{count}} liten bokstav'
+  other: 'Minst {{count}} små bokstäver'
+user.profile.register_password_require_num_number:
+  one: 'Minst {{count}} siffra'
+  other: 'Minst {{count}} siffror'
+user.profile.register_password_require_num_symbol:
+  one: 'Minst {{count}} symbol'
+  other: 'Minst {{count}} symboler'
+user.profile.register_password_require_num_uppercase:
+  one: 'Minst {{count}} stor bokstav'
+  other: 'Minst {{count}} stora bokstäver'
 user.profile.register_password_unused: 'Du kan inte använda ett lösenord som du har använt tidigare'
 user.tickets.feedback_message_leave_comment: 'Lämna en kommentar (frivilligt)'
 user.tickets.fields_category: Kategori

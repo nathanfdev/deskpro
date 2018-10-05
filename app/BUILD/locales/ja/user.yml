@@ -69,6 +69,8 @@ portal.emails.feedback_published: '送信されたフィードバック"{{title}
 portal.emails.feedback_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
 portal.emails.feedback_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
 portal.emails.feedback_validate-email: 次のリンクをクリックして、メールアドレスを有効にしてください。
+portal.emails.feedback_votes:
+  other: 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:'
 portal.emails.greeting: '{{to_name}}様'
 portal.emails.label_view-online: オンラインで確認
 portal.emails.password_agent-reset: アカウントのパスワードがリセットされました。こちらの情報を使ってログインしてください。
@@ -87,6 +89,8 @@ portal.emails.ticket_rate-positive: はい
 portal.emails.ticket_received: リクエストを受け付けました。エージェントにより折り返しいたしますのでしばらくお待ちください。
 portal.emails.ticket_reply-confirm: 返信を頂きありがとうございます。エージェントが折り返しいたしますのでしばらくお待ちください。
 portal.emails.ticket_validate: 'ご連絡をいただきありがとうございます。<br /><br />エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。'
+portal.emails.tickets_ommitted:
+  other: メッセージが1つ削除されました
 portal.emails.view_full_history_online: リクエストの全文をオンラインにて表示
 portal.error.404-title: 見つかりません。
 portal.feedback.attachments: 添付
@@ -186,6 +190,8 @@ user.chat.log_created-date: '作成日 {{date}}'
 user.chat.log_fields_agent: エージェント
 user.chat.log_fields_department: 部門
 user.chat.log_message_author-you: あなた
+user.chat.log_nav-view-chats:
+  other: 最新のチャットログを確認
 user.chat.log_no_department: 部門がありません
 user.chat.log_unassigned: アサインなし
 user.chat.message_agent-timeout: '申し訳ございません; {{name}} との接続が予期せぬ理由で切断されました。次のエージェントを見つける間しばらくお待ちください。'
@@ -268,6 +274,8 @@ user.emails.feedback_new-comment: '{{name}}からの新しいコメント:'
 user.emails.feedback_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
 user.emails.feedback_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
 user.emails.feedback_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
+user.emails.feedback_votes:
+  other: 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:'
 user.emails.greeting: '{{to_name}}様'
 user.emails.label_view-online: オンラインで確認
 user.emails.password_agent-reset: アカウントのパスワードがリセットされました。こちらの情報を使ってログインしてください。
@@ -298,8 +306,16 @@ user.error.error_code: エラーコード
 user.error.error_title: エラー
 user.error.expired-token: アクセスされたページは無効です。戻って再度やり直してください。
 user.error.form_choice_invalid: リストからオプションを選択してください。
+user.error.form_choice_max:
+  other: 1つオプションを選択してください。
+user.error.form_choice_min:
+  other: 1つ以上オプションを選択してください。
 user.error.form_date_invalid: 有効な日付を入力してください。
 user.error.form_required: 必ず入力してください。
+user.error.form_text_max:
+  other: 1文字入力してください。
+user.error.form_text_min:
+  other: 1文字以上は入力してください。
 user.error.form_text_regex: 正しい数値を入力してください。
 user.error.invalid_email: メールアドレスが正しくありません。
 user.error.invalid_email-code: 承認のリンクが無効です。

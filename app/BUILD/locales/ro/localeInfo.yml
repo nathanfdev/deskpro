@@ -3,8 +3,10 @@ name: Romanian
 nameLocal: Română
 locale: ro
 isRtl: false
-pluralForms:
-  count: 3
-  selectors:
-    php: '(1 == $n) ? 0 : (((0 == $n) || (($n % 100 > 0) && ($n % 100 < 20))) ? 1 : 2)'
-    js: '(1 == n) ? 0 : (((0 == n) || ((n % 100 > 0) && (n % 100 < 20))) ? 1 : 2)'
+pluralRules:
+  plurals: 3
+  formula: '(n == 1) ? 0 : ((n == 0 || n != 1 && n % 100 >= 1 && n % 100 <= 19) ? 1 : 2)'
+  categories:
+    - one
+    - few
+    - other

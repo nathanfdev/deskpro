@@ -1,0 +1,1 @@
+Generated via https://github.com/mlocati/cldr-to-gettext-plural-rules

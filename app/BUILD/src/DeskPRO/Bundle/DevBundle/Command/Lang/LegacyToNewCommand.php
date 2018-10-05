@@ -31,9 +31,10 @@ class LegacyToNewCommand extends ContainerAwareCommand
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
 
-        $langDir   = $DP_ENV->getAppDir().'/languages';
-        $localeDir = $DP_ENV->getAppDir().'/locales';
-        $manifest  = require($langDir).'/manifest.php';
+        $langDir     = $DP_ENV->getAppDir().'/languages';
+        $localeDir   = $DP_ENV->getAppDir().'/locales';
+        $manifest    = require($langDir).'/manifest.php';
+        $pluralRules = json_decode(file_get_contents(__DIR__.'/data/plural-rules.json'), true);
 
         $fs = new Filesystem();
         if (file_exists($localeDir)) {
@@ -49,11 +50,11 @@ class LegacyToNewCommand extends ContainerAwareCommand
 
             $output->writeln("<info>Processing $id</info>");
 
-            $pluralInfo = $this->getPluralFormInfo($langInfo['locale']);
+            $pluralInfo = @$pluralRules[$langInfo['locale']] ?: null;
             if ($pluralInfo === null) {
                 if (strpos($langInfo['locale'], '_')) {
                     list($localeLang) = explode('_', $langInfo['locale']);
-                    $pluralInfo       = $this->getPluralFormInfo($localeLang);
+                    $pluralInfo       = @$pluralRules[$localeLang] ?: null;
                 }
 
                 if ($pluralInfo === null) {
@@ -67,12 +68,10 @@ class LegacyToNewCommand extends ContainerAwareCommand
                 'nameLocal'   => $langInfo['title'],
                 'locale'      => str_replace('_', '-', $langInfo['locale']),
                 'isRtl'       => $langInfo['is_rtl'],
-                'pluralForms' => [
-                    'count'     => $pluralInfo[0],
-                    'selectors' => [
-                        'php' => $pluralInfo[1],
-                        'js'  => str_replace('$n', 'n', $pluralInfo[1]),
-                    ],
+                'pluralRules' => [
+                    'plurals'    => $pluralInfo['plurals'],
+                    'formula'    => $pluralInfo['formula'],
+                    'categories' => $pluralInfo['cases'],
                 ],
             ];
 
@@ -139,152 +138,11 @@ class LegacyToNewCommand extends ContainerAwareCommand
 
         $phrases = [];
 
-        if ($pluralInfo[0] == 2) {
-            $phrases[$phraseId]            = $parts[0];
-            $phrases["{$phraseId}_plural"] = @$parts[1] ?: $parts[0];
-        } else {
-            for ($i = 0; $i < $pluralInfo[0]; ++$i) {
-                $phrases["{$phraseId}_$i"] = @$parts[$i] ?: @$parts[1] ?: $parts[0];
-            }
+        for ($i = 0; $i < $pluralInfo['plurals']; ++$i) {
+            $cat           = $pluralInfo['cases'][$i];
+            $phrases[$cat] = @$parts[$i] ?: @$parts[1] ?: $parts[0];
         }
 
-        return $phrases;
-    }
-
-    // returns array of [numPluralForms, formSelectorExpression]
-    private function getPluralFormInfo($locale)
-    {
-        switch ($locale) {
-            case 'az':
-            case 'bo':
-            case 'dz':
-            case 'id':
-            case 'ja':
-            case 'jv':
-            case 'ka':
-            case 'km':
-            case 'kn':
-            case 'ko':
-            case 'ms':
-            case 'th':
-            case 'tr':
-            case 'vi':
-            case 'zh':
-                return [0, null];
-
-            case 'af':
-            case 'bn':
-            case 'bg':
-            case 'ca':
-            case 'da':
-            case 'de':
-            case 'el':
-            case 'en':
-            case 'eo':
-            case 'es':
-            case 'et':
-            case 'eu':
-            case 'fa':
-            case 'fi':
-            case 'fo':
-            case 'fur':
-            case 'fy':
-            case 'gl':
-            case 'gu':
-            case 'ha':
-            case 'he':
-            case 'hu':
-            case 'is':
-            case 'it':
-            case 'ku':
-            case 'lb':
-            case 'ml':
-            case 'mn':
-            case 'mr':
-            case 'nah':
-            case 'nb':
-            case 'ne':
-            case 'nl':
-            case 'nn':
-            case 'no':
-            case 'oc':
-            case 'om':
-            case 'or':
-            case 'pa':
-            case 'pap':
-            case 'ps':
-            case 'pt':
-            case 'so':
-            case 'sq':
-            case 'sv':
-            case 'sw':
-            case 'ta':
-            case 'te':
-            case 'tk':
-            case 'ur':
-            case 'zu':
-                return [2, '(1 == $n) ? 0 : 1'];
-
-            case 'am':
-            case 'bh':
-            case 'fil':
-            case 'fr':
-            case 'gun':
-            case 'hi':
-            case 'hy':
-            case 'ln':
-            case 'mg':
-            case 'nso':
-            case 'xbr':
-            case 'ti':
-            case 'wa':
-                return [2, '((0 == $n) || (1 == $n)) ? 0 : 1'];
-
-            case 'be':
-            case 'bs':
-            case 'hr':
-            case 'ru':
-            case 'sh':
-            case 'sr':
-            case 'uk':
-                return [3, '((1 == $n % 10) && (11 != $n % 100)) ? 0 : ((($n % 10 >= 2) && ($n % 10 <= 4) && (($n % 100 < 10) || ($n % 100 >= 20))) ? 1 : 2)'];
-
-            case 'cs':
-            case 'sk':
-                return [3, '(1 == $n) ? 0 : ((($n >= 2) && ($n <= 4)) ? 1 : 2)'];
-
-            case 'ga':
-                return [3, '(1 == $n) ? 0 : ((2 == $n) ? 1 : 2)'];
-
-            case 'lt':
-                return [3, '((1 == $n % 10) && (11 != $n % 100)) ? 0 : ((($n % 10 >= 2) && (($n % 100 < 10) || ($n % 100 >= 20))) ? 1 : 2)'];
-
-            case 'sl':
-                return [4, '(1 == $n % 100) ? 0 : ((2 == $n % 100) ? 1 : (((3 == $n % 100) || (4 == $n % 100)) ? 2 : 3))'];
-
-            case 'mk':
-                return [2, '(1 == $n % 10) ? 0 : 1'];
-
-            case 'mt':
-                return [4, '(1 == $n) ? 0 : (((0 == $n) || (($n % 100 > 1) && ($n % 100 < 11))) ? 1 : ((($n % 100 > 10) && ($n % 100 < 20)) ? 2 : 3))'];
-
-            case 'lv':
-                return [3, '(0 == $n) ? 0 : (((1 == $n % 10) && (11 != $n % 100)) ? 1 : 2)'];
-
-            case 'pl':
-                return [3, '(1 == $n) ? 0 : ((($n % 10 >= 2) && ($n % 10 <= 4) && (($n % 100 < 12) || ($n % 100 > 14))) ? 1 : 2)'];
-
-            case 'cy':
-                return [4, '(1 == $n) ? 0 : ((2 == $n) ? 1 : (((8 == $n) || (11 == $n)) ? 2 : 3))'];
-
-            case 'ro':
-                return [3, '(1 == $n) ? 0 : (((0 == $n) || (($n % 100 > 0) && ($n % 100 < 20))) ? 1 : 2)'];
-
-            case 'ar':
-                return [6, '(0 == $n) ? 0 : ((1 == $n) ? 1 : ((2 == $n) ? 2 : ((($n % 100 >= 3) && ($n % 100 <= 10)) ? 3 : ((($n % 100 >= 11) && ($n % 100 <= 99)) ? 4 : 5))))'];
-
-            default:
-                return null;
-        }
+        return [$phraseId => $phrases];
     }
 }

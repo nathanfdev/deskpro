@@ -83,10 +83,12 @@ portal.articles.section-desc: 'La nostra knowledgebase contiene articoli scritti
 portal.articles.section-title: Knowledgebase
 portal.articles.share-by-email: 'Condividi questo articolo tramite email:'
 portal.articles.view-as-agent: 'Puoi visualizzare questa pagina perchè sei un agente. Gli utenti normali non sono in grado di vedere questa pagina.'
-portal.articles.view-x-articles: 'Visualizza 1 articolo '
-portal.articles.view-x-articles_plural: ' Visualizza {{count}} articoli'
-portal.articles.x-articles: '1 articolo '
-portal.articles.x-articles_plural: ' {{count}} articoli'
+portal.articles.view-x-articles:
+  one: 'Visualizza 1 articolo '
+  other: ' Visualizza {{count}} articoli'
+portal.articles.x-articles:
+  one: '1 articolo '
+  other: ' {{count}} articoli'
 portal.chat.agent_blocked_user_on: '{{name}} ha impostato un blocco il {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} sembra esser stato disconnesso'
 portal.chat.agent_typing_message: '{{agentName}} sta digitando un messaggio'
@@ -131,8 +133,9 @@ portal.chat.list_chat: Chat
 portal.chat.list_date: Data
 portal.chat.list_switch_to_my_chats: 'Passa alle Mie Chat'
 portal.chat.list_switch_to_organization: 'Passa a Organizazzione'
-portal.chat.list_title: '1 Chat'
-portal.chat.list_title_plural: '{{count}} Chat'
+portal.chat.list_title:
+  one: '1 Chat'
+  other: '{{count}} Chat'
 portal.chat.list_user: Utente
 portal.chat.log_agents: Agenti
 portal.chat.log_chat_time: 'Tempo di chat totale'
@@ -205,8 +208,9 @@ portal.downloads.section-desc: 'Guarda i nostri download'
 portal.downloads.section-title: Download
 portal.downloads.uploaded-on: Caricato
 portal.downloads.view-as-agent: 'Puoi vedere questa pagina perchè sei un agente. Gli utenti normali non possono vedere questa pagina.'
-portal.downloads.view-x-files: 'Visualizza 1 download'
-portal.downloads.view-x-files_plural: 'Visualizza {{count}} download'
+portal.downloads.view-x-files:
+  one: 'Visualizza 1 download'
+  other: 'Visualizza {{count}} download'
 portal.email_subjects.chat_transcript: 'Trascrittura della chat'
 portal.email_subjects.comment-approved: 'Il tuo commento è stato approvato'
 portal.email_subjects.comment-confirmation: 'Grazie per il tuo commento'
@@ -254,16 +258,19 @@ portal.emails.comment_deleted: 'Il tuo commento è stato usato per migliorare qu
 portal.emails.comment_thank-you: 'Grazie per il tuo commento su {{link}}.'
 portal.emails.comment_validate-email: 'Per favore convalida il tuo indirizzo email facendo click sul seguente link:'
 portal.emails.do-not-reply: 'Per favore non rispondere a questa email. Questo è un messaggio generato automaticamente e le risposte non saranno lette dai nostri agenti.'
-portal.emails.download-new-downloads: '1 Nuovo Download'
-portal.emails.download-new-downloads_plural: '{{count}} Nuovi download'
-portal.emails.download-updated-downloads: '1 Download Aggiornato'
-portal.emails.download-updated-downloads_plural: '{{count}} Download Aggiornati'
+portal.emails.download-new-downloads:
+  one: '1 Nuovo Download'
+  other: '{{count}} Nuovi download'
+portal.emails.download-updated-downloads:
+  one: '1 Download Aggiornato'
+  other: '{{count}} Download Aggiornati'
 portal.emails.downloads-explain: 'Stai ricevendo questa email perchè sei registrato agli aggiornamenti sui download disponibili in <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi ulteriori email come questa?  <a href="{{unsubscribe_url}}"> Clicca qui per togliere l''iscrizione da tutte le notifiche sui download disponibili.</a>'
 portal.emails.email-too-big: 'La tua email "{{subject}}" non è stata accettata perchè è troppo grande. Le dimensioni massime che questo helpdesk accetta sono di {{max_size}}. Rimuovi gli allegati di grosse dimensioni e riprova.'
 portal.emails.end_greeting: 'Cordiali saluti, <br /><br />{{site_name}}'
 portal.emails.feedback-explain: 'Stai ricevendo questa email perchè sei registrato agli aggiornamenti sui feedback in  <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi ulteriori email come questa?  <a href="{{unsubscribe_url}}"> Clicca qui per togliere l''iscrizione da tutte le notifiche sui feedback.</a>'
-portal.emails.feedback-updated-items: '1 Feedback aggiornato'
-portal.emails.feedback-updated-items_plural: '{{count}} Feedback aggiornati'
+portal.emails.feedback-updated-items:
+  one: '1 Feedback aggiornato'
+  other: '{{count}} Feedback aggiornati'
 portal.emails.feedback_agent-validation: 'Ricorda che il tuo feedback non apparirà pubblicamente sul nostro portale per il supporto finchè uno dei nostri agenti non lo approva.'
 portal.emails.feedback_approved: 'Ti informiamo che il tuo feedback è stato approvato ed è ora visibile pubblicamente sul nostro portale per il supporto.'
 portal.emails.feedback_closed: 'il tuo feedback "{{title}}" inviato, è stato chiuso: {{status}}'
@@ -274,22 +281,27 @@ portal.emails.feedback_published: 'Il tuo feedback "{{title}}" è stato convalid
 portal.emails.feedback_thank-you: 'Grazie per averci inviato il tuo feedback "{{title}}"'
 portal.emails.feedback_updated: 'il tuo feedback "{{title}}" è stato aggiornato. Il suo nuovo status è {{status}}"'
 portal.emails.feedback_validate-email: 'Per favore convalida il tuo indirizzo email cliccando sul seguente link:'
-portal.emails.feedback_votes: 'Il tuo feedback corrente è stato <strong>1</strong> votato. Guardalo online su:'
-portal.emails.feedback_votes_plural: 'Il tuo feedback corrente ha <strong>{{count}}</strong> voti. Guardalo online su:'
+portal.emails.feedback_votes:
+  one: 'Il tuo feedback corrente è stato <strong>1</strong> votato. Guardalo online su:'
+  other: 'Il tuo feedback corrente ha <strong>{{count}}</strong> voti. Guardalo online su:'
 portal.emails.greeting: 'Gentile {{to_name}},'
 portal.emails.kb-explain: 'Stai ricevendo questa email perchè sei registrato agli aggiornamenti sugli articoli relatovi alla nostra knowledgebase su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi ulteriori email come questa?  <a href="{{unsubscribe_url}}"> Clicca qui per togliere l''iscrizione da tutte le notifiche sulla knowledgebase.</a>'
-portal.emails.kb-new-articles: '1 Nuovo articolo sulla knowledgebase'
-portal.emails.kb-new-articles_plural: ' {{count}} Articoli nuovi sulla knowladgebase'
-portal.emails.kb-updated-articles: '1 Articolo aggiornato sulla knowledgebase'
-portal.emails.kb-updated-articles_plural: ' {{count}} Articoli aggiornati sulla knowledgebase'
+portal.emails.kb-new-articles:
+  one: '1 Nuovo articolo sulla knowledgebase'
+  other: ' {{count}} Articoli nuovi sulla knowladgebase'
+portal.emails.kb-updated-articles:
+  one: '1 Articolo aggiornato sulla knowledgebase'
+  other: ' {{count}} Articoli aggiornati sulla knowledgebase'
 portal.emails.label_view-online: 'Vedi online'
 portal.emails.message-clipped: '(il messaggio è stato tagliato)'
 portal.emails.new-ticket-guest-link: 'Grazie per averci contattato. Puoi monitorare lo stato del tuo ticket online a questo indirizzo:'
 portal.emails.news-explain: 'Stai ricevendo questa email perchè sei registrato agli aggiornamenti sui feedback in  <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi ulteriori email come questa?  <a href="{{unsubscribe_url}}">Fai click qui per togliere l''iscrizione da tutte le notifiche sui feedback.</a>'
-portal.emails.news-new-articles: '1 Nuvo post sulle novità'
-portal.emails.news-new-articles_plural: ' {{count}} Nuovi post sulle novità'
-portal.emails.news-updated-articles: '1 Nuovo post aggiornato'
-portal.emails.news-updated-articles_plural: ' {{count}} Post nuovi aggiornati'
+portal.emails.news-new-articles:
+  one: '1 Nuvo post sulle novità'
+  other: ' {{count}} Nuovi post sulle novità'
+portal.emails.news-updated-articles:
+  one: '1 Nuovo post aggiornato'
+  other: ' {{count}} Post nuovi aggiornati'
 portal.emails.password_agent-reset: 'Un nostro agente ha resettato la tua password. Puoi fare il login con queste credenziali'
 portal.emails.password_reset: 'Hai chiesto che la tua password sia resettata. Per farlo clicca il link seguente:'
 portal.emails.password_set: 'Per impostare la tua password, fai click sul link sottostante:'
@@ -326,8 +338,9 @@ portal.emails.ticket_rate-request: 'Come valuteresti il supporto che ti abbiamo 
 portal.emails.ticket_received: 'Il tuo ticket è stato ricevuto. Uno dei nostri agenti ti risponderà a breve.'
 portal.emails.ticket_reply-confirm: 'Grazie per la tua risposta. Uno dei membri dello staff ti risponderà a breve.'
 portal.emails.ticket_validate: 'Grazie per averci contattato..<br /><br /> Prima che i nostri agenti possano visualizzare e rispondere ai tuoi messaggi, devi convalidare il tuo indirizzo email.'
-portal.emails.tickets_ommitted: '1 messaggio è stato omesso'
-portal.emails.tickets_ommitted_plural: '{{count}} messaggi sono stati omessi'
+portal.emails.tickets_ommitted:
+  one: '1 messaggio è stato omesso'
+  other: '{{count}} messaggi sono stati omessi'
 portal.emails.validate-email: 'Per favore conferma che questo indirizzo email appartiene a te facendo click sul link sottostante'
 portal.emails.view_full_history_online: 'Visualizza il ticket completo online'
 portal.error.403-desc: 'Ci dispiace, ma non hai l''accesso per visualizzare questa pagina.'
@@ -372,8 +385,9 @@ portal.feedback.status_active: 'Apri oggetti'
 portal.feedback.status_all: 'Tutti gli oggetti'
 portal.feedback.status_closed: 'Oggetti chiusi'
 portal.feedback.submit_feedback: 'Invia feedback'
-portal.feedback.view-x-feedback: 'Visualizza 1 feedback'
-portal.feedback.view-x-feedback_plural: ' Visualizza {{count}} feedback'
+portal.feedback.view-x-feedback:
+  one: 'Visualizza 1 feedback'
+  other: ' Visualizza {{count}} feedback'
 portal.flashes.article_cat_subscribe: 'Ti sei iscritto a questa categoria con successo. Verrai notificato quando ci saranno nuovi articoli.'
 portal.flashes.article_cat_unsubscribe: 'Hai annullato l''iscrizione da questa categoria con successo.'
 portal.flashes.article_subscribe: 'TI sei iscritto a questo articolo con successo. Verrai notificato quando ci sarà un aggiornamento o quando ci sarà un nuovo commento.'
@@ -441,16 +455,21 @@ portal.forms.error_no_uploaded_file: 'C''è stato un problema nel caricare quest
 portal.forms.error_not_checked: 'Questo campo non è verificato.'
 portal.forms.error_password_current: 'Questa dev''essere la tua password corrente'
 portal.forms.error_password_forbid_reuse: 'Non puoi utilizzare una password che hai usato prima'
-portal.forms.error_password_min_length: 'Minimo di {{count}} caratteri '
-portal.forms.error_password_min_length_plural: ' Minimo di {{count}} caratteri'
-portal.forms.error_password_require_num_lowercase: 'Almeno {{count}} caratteri in minuscolo'
-portal.forms.error_password_require_num_lowercase_plural: ' Almeno {{count}} caratteri in minuscolo'
-portal.forms.error_password_require_num_number: 'Almeno {{count}} numero'
-portal.forms.error_password_require_num_number_plural: 'Almeno {{count}} numeri'
-portal.forms.error_password_require_num_symbol: 'Almeno {{count}} simbolo'
-portal.forms.error_password_require_num_symbol_plural: 'Almeno {{count}} simboli'
-portal.forms.error_password_require_num_uppercase: 'Almeno {{count}} caratteri in maiuscolo'
-portal.forms.error_password_require_num_uppercase_plural: ' Almeno {{count}} caratteri in maiuscolo'
+portal.forms.error_password_min_length:
+  one: 'Minimo di {{count}} caratteri '
+  other: ' Minimo di {{count}} caratteri'
+portal.forms.error_password_require_num_lowercase:
+  one: 'Almeno {{count}} caratteri in minuscolo'
+  other: ' Almeno {{count}} caratteri in minuscolo'
+portal.forms.error_password_require_num_number:
+  one: 'Almeno {{count}} numero'
+  other: 'Almeno {{count}} numeri'
+portal.forms.error_password_require_num_symbol:
+  one: 'Almeno {{count}} simbolo'
+  other: 'Almeno {{count}} simboli'
+portal.forms.error_password_require_num_uppercase:
+  one: 'Almeno {{count}} caratteri in maiuscolo'
+  other: ' Almeno {{count}} caratteri in maiuscolo'
 portal.forms.error_person_not_agent: 'La persona con identificativo {{value}} non è agente .'
 portal.forms.error_person_not_found: 'La persona con identificativo {{value}} non è stata trovata.'
 portal.forms.error_person_not_user: 'La persona con identificativo {{value}} non è utente.'
@@ -530,11 +549,13 @@ portal.general.btn-unsubscribe: 'Annulla l''iscrizione'
 portal.general.by: da
 portal.general.by_2: Da
 portal.general.comment_btn_save: 'Salva Commento'
-portal.general.comments-count: '1 Commento'
-portal.general.comments-count_plural: '{{count}} Commenti'
+portal.general.comments-count:
+  one: '1 Commento'
+  other: '{{count}} Commenti'
 portal.general.comments-pending-validation: 'Questo commento è in fase di revisione. Sarà reso visibile a breve'
-portal.general.comments-title: 'Commenti (1)'
-portal.general.comments-title_plural: ' Commenti ({{count}})'
+portal.general.comments-title:
+  one: 'Commenti (1)'
+  other: ' Commenti ({{count}})'
 portal.general.delete: Cancella
 portal.general.everything: Tutto
 portal.general.get-in-touch: 'Rimani in contatto'
@@ -623,12 +644,14 @@ portal.news.recent-title: 'Notizie Recenti'
 portal.news.search-title: 'Notizie sugli articoli'
 portal.news.section-title: Novità
 portal.news.view-as-agent: 'Puoi vedere questa pagina perchè sei un agente. Gli utenti normali non saranno in grado di vedere questa pagina.'
-portal.news.view-x-news: 'Visualizza 1 articolo'
-portal.news.view-x-news_plural: ' Visualizza {{count}} articoli'
+portal.news.view-x-news:
+  one: 'Visualizza 1 articolo'
+  other: ' Visualizza {{count}} articoli'
 portal.sidebar.agents_available: 'Agenti Disponibili'
 portal.sidebar.agents_none: 'Nessuno dei nostri agenti è al momento online. Puoi comunque <a href="{{new_ticket_url}}">aprire un ticket</a>. '
-portal.sidebar.agents_x_online: '{{count}} online'
-portal.sidebar.agents_x_online_plural: '{{count}} online'
+portal.sidebar.agents_x_online:
+  one: '{{count}} online'
+  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Pubblicato da {{name}}'
 portal.sidebar.news_title: Novità
 portal.sidebar.satisfied_customers: 'Clienti Soddisfatti'
@@ -654,8 +677,9 @@ portal.tickets.list_no_tickets: 'Non ci sono ticket da visualizzare in questa sc
 portal.tickets.list_search: 'Cerca nei Ticket:'
 portal.tickets.list_status_agent: 'Il nostro agente risponderà'
 portal.tickets.list_status_open: 'Apri i Ticket'
-portal.tickets.list_status_open_count: '{{count}} sono in attesa di risposta'
-portal.tickets.list_status_open_count_plural: '{{count}} sono in attesa di risposta'
+portal.tickets.list_status_open_count:
+  one: '{{count}} sono in attesa di risposta'
+  other: '{{count}} sono in attesa di risposta'
 portal.tickets.list_status_resolved: Risolto
 portal.tickets.list_status_user: 'Devi rispondere'
 portal.tickets.list_subject: Oggetto
@@ -751,8 +775,9 @@ user.chat.log_created-date: 'Creata {{date}}'
 user.chat.log_fields_agent: Agente
 user.chat.log_fields_department: Dipartimento
 user.chat.log_message_author-you: Tu
-user.chat.log_nav-view-chats: 'Visualizza il tuo ultimo registro della chat'
-user.chat.log_nav-view-chats_plural: ' Visualizza i tuoi ultimi {{count}} registri della chat'
+user.chat.log_nav-view-chats:
+  one: 'Visualizza il tuo ultimo registro della chat'
+  other: ' Visualizza i tuoi ultimi {{count}} registri della chat'
 user.chat.log_no_department: 'Nessun dipartimento'
 user.chat.log_unassigned: 'Nessun agente è stato assegnato'
 user.chat.message_agent-timeout: 'Ci scusiamo; {{name}} risulta disconnesso. Per favore attendi mentre cerchiamo di trovare un altro agente.'
@@ -838,15 +863,18 @@ user.emails.chat_validate_email: 'Per favore convalida il tuo indirizzo email on
 user.emails.comment_approved: 'Il tuo commento è stato pubblicato.'
 user.emails.comment_deleted: 'Il tuo commento è stato usato per migliorare la pagina.'
 user.emails.comment_thank-you: 'Grazie per il commento su {{link}}.'
-user.emails.download-new-downloads: '1 Nuovo download'
-user.emails.download-new-downloads_plural: '{{count}} Nuovi download'
-user.emails.download-updated-downloads: '1 Download aggiornato'
-user.emails.download-updated-downloads_plural: '{{count}} Download aggiornati'
+user.emails.download-new-downloads:
+  one: '1 Nuovo download'
+  other: '{{count}} Nuovi download'
+user.emails.download-updated-downloads:
+  one: '1 Download aggiornato'
+  other: '{{count}} Download aggiornati'
 user.emails.downloads-explain: 'Hai ricevuto questa email perchè sei registrato ai nostri download su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Non vuoi più queste email?<a href="{{unsubscribe_url}}">Fai click qui per annullare l''iscrizione dalle notifiche di tutti i download.</a>'
 user.emails.email-too-big: 'La tua email "{{subject}}" non è stata accettata perchè è troppo grande. Le dimensioni massime che questo helpdesk accetta sono {{max_size}}. Rimuovi gli allegati e riprova.'
 user.emails.feedback-explain: 'Hai ricevuto questa email perchè sei registrato alle nostre novità su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Non vuoi più queste email? <a href="{{unsubscribe_url}}">Fai click qui per annullare l''iscrizione da tutte le notifiche dei feedback.</a>'
-user.emails.feedback-updated-items: '1 Oggetto feedback aggiornato'
-user.emails.feedback-updated-items_plural: '{{count}} Oggetti feedback aggiornati'
+user.emails.feedback-updated-items:
+  one: '1 Oggetto feedback aggiornato'
+  other: '{{count}} Oggetti feedback aggiornati'
 user.emails.feedback_agent-validation: 'Si prega di notare che il feedback non apparirà pubblicamente fino a quando uno dei nostri agenti non lo controllerà.'
 user.emails.feedback_approved: 'Ti volevamo informare che il tuo feedback è stato approvato e adesso è visibile pubblicamente sul nostro sito.'
 user.emails.feedback_closed: 'il tuo feedback "{{title}}" è stato chiuso: {{status}}'
@@ -856,22 +884,27 @@ user.emails.feedback_new-comment: '{{name}} ha scritto un nuovo commento:'
 user.emails.feedback_published: 'Il tuo feedback "{{title}}" è stato convalidato e adesso apparirà sul nostro sito.'
 user.emails.feedback_thank-you: 'Grazie per averci inviato il tuo feedback "{{title}}"'
 user.emails.feedback_updated: 'il tuo feedback "{{title}}" è stato aggiornato. Ora il suo status è: nuovo status "{{status}}"'
-user.emails.feedback_votes: 'Il tuo feedback ha <strong>1</strong> voto. Guardalo online su:'
-user.emails.feedback_votes_plural: 'Il tuo feedback ha <strong>{{count}}</strong> voti. Guardalo online su:'
+user.emails.feedback_votes:
+  one: 'Il tuo feedback ha <strong>1</strong> voto. Guardalo online su:'
+  other: 'Il tuo feedback ha <strong>{{count}}</strong> voti. Guardalo online su:'
 user.emails.greeting: 'Gentile {{to_name}},'
 user.emails.kb-explain: 'Stai ricevendo questa email perchè sei sottoscritto alla nostra knowladgebase su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Non vuoi più queste email? <a href="{{unsubscribe_url}}">Fai click qui per annullare l''iscrizione dalle notifiche della knowladgebase.</a>'
-user.emails.kb-new-articles: '1 Nuovo articolo'
-user.emails.kb-new-articles_plural: '{{count}} Nuovi articoli'
-user.emails.kb-updated-articles: '1 Articolo aggiornato'
-user.emails.kb-updated-articles_plural: '{{count}} Articoli aggiornati'
+user.emails.kb-new-articles:
+  one: '1 Nuovo articolo'
+  other: '{{count}} Nuovi articoli'
+user.emails.kb-updated-articles:
+  one: '1 Articolo aggiornato'
+  other: '{{count}} Articoli aggiornati'
 user.emails.label_view-online: 'Vedi online'
 user.emails.message-clipped: '(il messaggio è stato tagliato)'
 user.emails.new-ticket-guest-link: 'Grazie per averci contattato. Puoi visualizzare lo stato del tuo ticket online a questo indirizzo:'
 user.emails.news-explain: 'Hai ricevuto questa email perchè sei registrato alle nostre novità su <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Non vuoi più queste email? <a href="{{unsubscribe_url}}">Fai click qui per annullare l''iscrizione dalle notifiche sulle novità.</a> '
-user.emails.news-new-articles: '1 Nuovo articolo sulle novità'
-user.emails.news-new-articles_plural: '{{count}} Nuovi articoli sulle novità'
-user.emails.news-updated-articles: '1 Articolo sulle novità aggiornato'
-user.emails.news-updated-articles_plural: '{{count}} Articoli sulle novità aggiornati'
+user.emails.news-new-articles:
+  one: '1 Nuovo articolo sulle novità'
+  other: '{{count}} Nuovi articoli sulle novità'
+user.emails.news-updated-articles:
+  one: '1 Articolo sulle novità aggiornato'
+  other: '{{count}} Articoli sulle novità aggiornati'
 user.emails.password_agent-reset: 'Un agente ha resettato la tua password. Puoi fare il login con queste credenziali'
 user.emails.password_reset: 'Hai chiesto che la tua password sia resettata. Per farlo clicca il link seguente:'
 user.emails.password_set: 'Per impostare la tua password, fai click sul link sottostante:'
@@ -908,18 +941,22 @@ user.error.error_code: 'Codice di errore'
 user.error.error_title: Errore
 user.error.expired-token: 'La pagina alla quale desiderate accedere non è visibile. Per favore tornare indietro e provare ancora.'
 user.error.form_choice_invalid: 'Per favore scegliere un''opzione dalla lista'
-user.error.form_choice_max: 'Per favore selezionare al massimo 1 opzione'
-user.error.form_choice_max_plural: 'Per favore selezionare al massimo {{count}} opzioni'
-user.error.form_choice_min: 'Per favore selezionate come minimo 1 opzione'
-user.error.form_choice_min_plural: 'Selezionate come minimo {{count}} opzioni'
+user.error.form_choice_max:
+  one: 'Per favore selezionare al massimo 1 opzione'
+  other: 'Per favore selezionare al massimo {{count}} opzioni'
+user.error.form_choice_min:
+  one: 'Per favore selezionate come minimo 1 opzione'
+  other: 'Selezionate come minimo {{count}} opzioni'
 user.error.form_date_invalid: 'Per favore inserire una data valida'
 user.error.form_date_invalid_dow: 'Il giorno della settimana selezionato non è disponibile'
 user.error.form_date_invalid_range: 'La data da te selezionata non è nel limite concesso'
 user.error.form_required: 'Campo obbligatorio'
-user.error.form_text_max: 'Per favore Inserire al massimo 1 carattere'
-user.error.form_text_max_plural: 'Per favore inserire al massimo {{count}} caratteri'
-user.error.form_text_min: 'Per favore Inserire come minimo 1 carattere'
-user.error.form_text_min_plural: 'Per favore inserire come minimo {{count}} caratteri'
+user.error.form_text_max:
+  one: 'Per favore Inserire al massimo 1 carattere'
+  other: 'Per favore inserire al massimo {{count}} caratteri'
+user.error.form_text_min:
+  one: 'Per favore Inserire come minimo 1 carattere'
+  other: 'Per favore inserire come minimo {{count}} caratteri'
 user.error.form_text_regex: 'Inserite un valore corretto'
 user.error.invalid_email: 'Indirizzo email non valido'
 user.error.invalid_email-code: 'Il link di convalida non è valido'
@@ -964,16 +1001,21 @@ user.profile.choose_email: 'Scegli l''indirizzo email che vuoi utilizzare'
 user.profile.connect_with: 'Connettiti con'
 user.profile.or_connect_with: 'Oppure connettiti con'
 user.profile.register: Registrati
-user.profile.register_password_min_length: 'Minimi di {{count}} caratteri '
-user.profile.register_password_min_length_plural: ' Minimo di {{count}} caratteri'
-user.profile.register_password_require_num_lowercase: 'Almeno 1 carattere in minuscolo'
-user.profile.register_password_require_num_lowercase_plural: ' Almeno {{count}} caratteri in minuscolo'
-user.profile.register_password_require_num_number: 'Almeno 1 numero'
-user.profile.register_password_require_num_number_plural: 'Almeno {{count}} numeri'
-user.profile.register_password_require_num_symbol: 'Almeno 1 simbolo'
-user.profile.register_password_require_num_symbol_plural: 'Almeno {{count}} simboli'
-user.profile.register_password_require_num_uppercase: 'Almeno 1 carattere in maiuscolo'
-user.profile.register_password_require_num_uppercase_plural: ' Almeno {{count}} caratteri in maiuscolo'
+user.profile.register_password_min_length:
+  one: 'Minimi di {{count}} caratteri '
+  other: ' Minimo di {{count}} caratteri'
+user.profile.register_password_require_num_lowercase:
+  one: 'Almeno 1 carattere in minuscolo'
+  other: ' Almeno {{count}} caratteri in minuscolo'
+user.profile.register_password_require_num_number:
+  one: 'Almeno 1 numero'
+  other: 'Almeno {{count}} numeri'
+user.profile.register_password_require_num_symbol:
+  one: 'Almeno 1 simbolo'
+  other: 'Almeno {{count}} simboli'
+user.profile.register_password_require_num_uppercase:
+  one: 'Almeno 1 carattere in maiuscolo'
+  other: ' Almeno {{count}} caratteri in maiuscolo'
 user.profile.register_password_unused: 'Non puoi utilizzare una password che hai usato in precedenza'
 user.tickets.feedback_message_leave_comment: 'In alternativa lascia un commento'
 user.tickets.fields_category: Categoria

@@ -3,8 +3,10 @@ name: Polish
 nameLocal: Polski
 locale: pl
 isRtl: false
-pluralForms:
-  count: 3
-  selectors:
-    php: '(1 == $n) ? 0 : ((($n % 10 >= 2) && ($n % 10 <= 4) && (($n % 100 < 12) || ($n % 100 > 14))) ? 1 : 2)'
-    js: '(1 == n) ? 0 : (((n % 10 >= 2) && (n % 10 <= 4) && ((n % 100 < 12) || (n % 100 > 14))) ? 1 : 2)'
+pluralRules:
+  plurals: 3
+  formula: '(n == 1) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2)'
+  categories:
+    - one
+    - few
+    - other

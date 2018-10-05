@@ -5,8 +5,9 @@ agent.emails.notice.landing_page: Side
 agent.emails.notice.referer_page: 'Reference side'
 agent.emails.notice.user_agent: Sagsbehandler
 agent.emails.notice_account_login: 'Din konto blev brugt til at logge ind.'
-agent.emails.reply_sent_to_ccs: 'og {{count}} CC''d bruger: '
-agent.emails.reply_sent_to_ccs_plural: ' og {{count}} CC''d brugere:'
+agent.emails.reply_sent_to_ccs:
+  one: 'og {{count}} CC''d bruger: '
+  other: ' og {{count}} CC''d brugere:'
 agent.emails.subject_email_change_merge: 'Bekræft e-mail ændring og konto fusion'
 agent.emails.subject_error_forwarded_email: 'Fejl med din videresendte email: {{subject}}'
 agent.emails.subject_error_forwarded_email_dupe: 'Duplikat videresendt email: {{subject}}'
@@ -71,17 +72,20 @@ agent.publish.ask_set_to_draft: 'Er du sikker på du vil sætte de valgte poster
 agent.publish.change_category: 'Skift kategori'
 agent.publish.click_to_set_date: '(klik for at indstille dato)'
 agent.publish.comment_by: 'Kommentar af {{name}}'
-agent.publish.comments_list_title: '1 Kommentar '
-agent.publish.comments_list_title_plural: ' {{count}} Kommentarer'
+agent.publish.comments_list_title:
+  one: '1 Kommentar '
+  other: ' {{count}} Kommentarer'
 agent.publish.create_artilce: 'Opret artikel'
 agent.publish.create_pending_article: 'Oprettelse af afventende artikel'
 agent.publish.download_category: 'Download kategori'
 agent.publish.download_comments: 'Download kommentarer'
 agent.publish.helpful: Hjælpsom
-agent.publish.kb_list_title: '1 artikler '
-agent.publish.kb_list_title_plural: ' {{count}} artikler'
-agent.publish.kb_list_unique_title: '1 ny artikel'
-agent.publish.kb_list_unique_title_plural: '{{count}} nye artikler'
+agent.publish.kb_list_title:
+  one: '1 artikler '
+  other: ' {{count}} artikler'
+agent.publish.kb_list_unique_title:
+  one: '1 ny artikel'
+  other: '{{count}} nye artikler'
 agent.publish.label_new_file: 'Ny fil'
 agent.publish.label_old_file: 'Gammel fil'
 agent.publish.missing_translation: 'Mangler oversættelse'
@@ -89,8 +93,9 @@ agent.publish.move_to: 'Flyt til'
 agent.publish.n_helpful_n_unhelpful: '{{up_votes}} fandt denne download hjælpsom, {{down_votes}} fandt ikke denne download hjælpsom'
 agent.publish.new_comment_submitted_by: 'En ny kommentar er indsendt af {{name}}'
 agent.publish.news_comments: Nyhedskommentarer
-agent.publish.news_list_title: '1 Indlæg '
-agent.publish.news_list_title_plural: ' {{count}} indlæg'
+agent.publish.news_list_title:
+  one: '1 Indlæg '
+  other: ' {{count}} indlæg'
 agent.publish.no_kb_cats_error: 'Der er ingen kategorier defineret. Før du kan tilføje artikler til knowledgebase-sektionen, skal du definere en kategori.'
 agent.publish.no_related_explain: 'Ingen relaterede artikler, downloads eller nyhedsindlæg er blevet knyttet til denne post. For at tilføje relaterede elementer skal du se dem i listefeltet og klikke på det grønne pilikon.'
 agent.publish.no_uploads_yet: 'Der har ikke været nogen uploads endnu.,'

@@ -3,8 +3,8 @@ name: Korean
 nameLocal: 영어
 locale: ko
 isRtl: false
-pluralForms:
-  count: 0
-  selectors:
-    php: null
-    js: ''
+pluralRules:
+  plurals: 1
+  formula: '0'
+  categories:
+    - other

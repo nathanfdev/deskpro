@@ -3,8 +3,8 @@ name: Japanese
 nameLocal: 日本語
 locale: ja
 isRtl: false
-pluralForms:
-  count: 0
-  selectors:
-    php: null
-    js: ''
+pluralRules:
+  plurals: 1
+  formula: '0'
+  categories:
+    - other
