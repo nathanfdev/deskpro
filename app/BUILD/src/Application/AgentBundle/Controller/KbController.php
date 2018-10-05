@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleRevision;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\Product;
@@ -20,6 +21,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use DeskPRO\Component\Util\StringUtils;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
@@ -205,11 +207,11 @@ class KbController extends AbstractController
         $from_category = $this->in->getInt('from_category');
         $action        = $this->in->getString('action');
 
-        $data  = ['success' => 1, 'category' => $from_category];
-        $skip  = false;
-        $tr    = App::getTranslator();
-        $error = null;
-
+        $data   = ['success' => 1, 'category' => $from_category];
+        $skip   = false;
+        $tr     = App::getTranslator();
+        $error  = null;
+        $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
         switch ($action) {
             case 'move':
                 $to_category = $this->in->getInt('to_category');
@@ -450,10 +452,18 @@ class KbController extends AbstractController
                 break;
 
             case 'content':
+                $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
 
                 $content = $this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html');
+
+                $inlineBlobs = $blob = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
+                foreach ($inlineBlobs as $blob) {
+                    if ($blob && StringUtils::ensureAttachment($blob, $content)) {
+                        $this->em->persist($blob->setIsTemp(false));
+                    }
+                }
 
                 $contentInfo = Strings::parseImageDataUrls($content);
 

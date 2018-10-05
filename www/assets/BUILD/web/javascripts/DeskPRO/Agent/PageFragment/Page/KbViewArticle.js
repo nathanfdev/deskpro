@@ -813,12 +813,19 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				value: wrap.find('.article-editor.wrap').find('.language_id').val()
 		});
 
-			$('input.edit-content-attach:checked', wrap).each(function() {
+		$('input.edit-content-attach:checked', wrap).each(function() {
 			data.push({
 				name: 'attach[]',
 				value: $(this).val()
 			});
 		});
+
+      $('input[name="blob_inline_ids[]"]', wrap).each(function() {
+        data.push({
+          name: 'blob_inline_ids[]',
+          value: $(this).val()
+        });
+      });
 
 		var showSaving = this.getEl('article_save').find('.mark-loading');
 		var showSaved  = this.getEl('article_save').find('.mark-saved');
@@ -887,7 +894,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			}
 
 			this.rte = window.LegacyRteTextarea.init(txt, {
-				height: h
+				height: h,
+        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
 			});
 
       txt.on('froalaEditor.keypress', function () {

@@ -73,10 +73,10 @@ class RteTextarea {
       window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
     });
     rte.on('froalaEditor.image.uploaded', (e, editor, response) => {
-      if (localOptions.inlineHiddenPosition && localOptions.formname) {
+      if (localOptions.inlineHiddenPosition) {
         try {
           const json = JSON.parse(response);
-          const input = `<input type="hidden" name="${localOptions.formname}[blob_inline_ids][]" />`;
+          const input = `<input type="hidden" name="${localOptions.formname ? localOptions.formname : ''}${localOptions.formname ? '[' : ''}blob_inline_ids${localOptions.formname ? ']' : ''}[]" />`;
           localOptions.inlineHiddenPosition.after($(input).val(json.blob_id));
         } catch (exception) {
           console.error('Wasn\'t able to parse response from the server', response);
