@@ -820,12 +820,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			});
 		});
 
-      $('input[name="blob_inline_ids[]"]', wrap).each(function() {
-        data.push({
-          name: 'blob_inline_ids[]',
-          value: $(this).val()
-        });
-      });
+		$('input[name="blob_inline_ids[]"]', wrap).each(function() {
+			data.push({
+				name: 'blob_inline_ids[]',
+				value: $(this).val()
+			});
+		});
 
 		var showSaving = this.getEl('article_save').find('.mark-loading');
 		var showSaved  = this.getEl('article_save').find('.mark-saved');
