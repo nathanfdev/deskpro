@@ -232,10 +232,11 @@ class AgentChatMessagesController extends CrudSubController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
+        $all     = $request->request->all();
         $options = array_merge($options, [
             'chat'   => $this->findParentOr404(),
             'person' => $this->getUser(),
-            'blobs'  => $request->request->all()['blobs'],
+            'blobs'  => isset($all['blobs']) ? $all['blobs'] : [],
         ]);
 
         return parent::handleForm($model, $request, $options);
