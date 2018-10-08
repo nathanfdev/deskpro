@@ -161,6 +161,32 @@ class AmazonS3Adapter extends AbstractStorageAdapter
     /**
      * {@inheritdoc}
      */
+    public function getLogFilenames()
+    {
+        $result = $this->client->listObjects([
+            'Bucket' => $this->bucket,
+            'Prefix' => $this->getLogsPath(),
+        ]);
+
+        if (!count($result['Contents'])) {
+            return [];
+        }
+
+        $filenames = [];
+        foreach ($result['Contents'] as $fileMetadata) {
+            $filename = rtrim($fileMetadata['Key'], '/');
+            if (preg_match('#([^/]+\.log)$#', $filename, $m)) {
+                $filenames[] = $m[0];
+                break;
+            }
+        }
+
+        return $filenames;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function readLogFile($filename)
     {
         return $this->readFile($this->getLogFilePath($filename));

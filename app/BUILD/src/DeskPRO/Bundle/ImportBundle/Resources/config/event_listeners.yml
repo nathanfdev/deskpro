@@ -8,6 +8,8 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@dp.importer.writer.entity_handler_registry"
+      - "@dp.importer.storage_adapter"
+      - "@blob.storage"
     tags:
       - { name: dp.importer.event_subscriber }
 

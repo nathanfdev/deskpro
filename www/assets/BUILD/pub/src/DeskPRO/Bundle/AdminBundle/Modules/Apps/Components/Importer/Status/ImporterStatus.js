@@ -4,16 +4,7 @@ import classNames from 'classnames';
 import ScrollArea from 'react-scrollbar';
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
-
-const stepTitles = {
-  article:          'Articles',
-  article_category: 'Article categories',
-  news:             'News',
-  organization:     'Organizations',
-  person:           'People',
-  ticket:           'Tickets',
-  setting:          'Settings'
-};
+import { stepTitles } from '../ImporterContainer';
 
 class ImporterStatus extends React.Component {
 

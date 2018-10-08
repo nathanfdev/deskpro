@@ -9,7 +9,6 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ProgressEvent extends Event
 {
-    const INIT              = 'importer.init';
     const PRE_IMPORT        = 'importer.pre_import';
     const PRE_MODEL_IMPORT  = 'importer.pre_model_import';
     const POST_MODEL_IMPORT = 'importer.post_model_import';

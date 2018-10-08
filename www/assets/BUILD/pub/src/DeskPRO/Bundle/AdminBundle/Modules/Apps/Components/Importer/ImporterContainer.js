@@ -2,10 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
+import { loadAll } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { getImportStatus } from '../../Actions/importerActions';
 import Importer from './Importer';
 import { replaceRoute } from '../../../../Services/history';
 import * as Sources from './Sources/index';
+import { allImporterLogsSelector, isImporterLogsLoadedSelector } from '../../Selectors/importerLogs';
 
 export const importerSources = {
   kayako: {
@@ -35,11 +37,26 @@ export const importerSources = {
   // }
 };
 
-@connect()
+export const stepTitles = {
+  article:          'Articles',
+  article_category: 'Article categories',
+  news:             'News',
+  organization:     'Organizations',
+  person:           'People',
+  ticket:           'Tickets',
+  setting:          'Settings'
+};
+
+@connect(state => ({
+  logs:       allImporterLogsSelector(state),
+  logsLoaded: isImporterLogsLoadedSelector(state)
+}))
 class ImporterContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func
+    dispatch:   PropTypes.func,
+    logs:       PropTypes.array,
+    logsLoaded: PropTypes.bool
   };
 
   constructor(props) {
@@ -51,6 +68,8 @@ class ImporterContainer extends React.Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+
+    dispatch(loadAll('ImportLog'));
     const promise = dispatch(getImportStatus());
     promise.then(
       () => {
@@ -65,12 +84,13 @@ class ImporterContainer extends React.Component {
   }
 
   render() {
+    const { logs, logsLoaded } = this.props;
     const { loading } = this.state;
-    if (loading) {
+    if (loading || !logsLoaded) {
       return <LoadingPage />;
     }
 
-    return <Importer sources={importerSources} />;
+    return <Importer sources={importerSources} logs={logs} />;
   }
 }
 

@@ -59,8 +59,8 @@ class StorageHandler extends AbstractProcessingHandler
      */
     protected function write(array $record)
     {
-        $flushTimeout = 3 * 60; // 3min
-        $flushMaxSize = 3 * 1024 * 1024; // 3mb
+        $flushTimeout = 10 * 60; // 10min
+        $flushMaxSize = 10 * 1024 * 1024; // 10mb
 
         $this->buffer .= (string) $record['formatted']."\n";
         if (!$this->lastFlushTime || ((time() - $this->lastFlushTime) > $flushTimeout && strlen($this->buffer) > $flushMaxSize)) {

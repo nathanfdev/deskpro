@@ -157,6 +157,33 @@ class FilesystemAdapter extends AbstractStorageAdapter
     /**
      * {@inheritdoc}
      */
+    public function getLogFilenames()
+    {
+        $logPath = $this->getLogsPath();
+        if (!is_dir($logPath)) {
+            return [];
+        }
+
+        $finder = new Finder();
+        $finder
+            ->in($logPath)
+            ->files()
+            ->sort(function (\SplFileInfo $a, \SplFileInfo $b) {
+                return $b->getFilename() > $a->getFilename();
+            })
+        ;
+        /** @var \SplFileInfo $file */
+        $filenames = [];
+        foreach ($finder->getIterator() as $file) {
+            $filenames[] = $file->getFilename();
+        }
+
+        return $filenames;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function readLogFile($filename)
     {
         $filePath = $this->getLogFilePath($filename);
