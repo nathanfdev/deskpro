@@ -141,10 +141,10 @@ class LegacyToNewCommand extends ContainerAwareCommand
         $phrases = [];
 
         for ($i = 0; $i < $pluralInfo['plurals']; ++$i) {
-            $cat           = $pluralInfo['cases'][$i];
-            $phrases[$cat] = @$parts[$i] ?: @$parts[1] ?: $parts[0];
+            $cat                         = $pluralInfo['cases'][$i];
+            $phrases[$phraseId.'.'.$cat] = @$parts[$i] ?: @$parts[1] ?: $parts[0];
         }
 
-        return [$phraseId => $phrases];
+        return $phrases;
     }
 }

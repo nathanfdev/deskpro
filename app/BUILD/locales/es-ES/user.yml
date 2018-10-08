@@ -81,17 +81,14 @@ portal.emails.feedback_published: 'El comentario enviado "{{title}}" se ha acept
 portal.emails.feedback_thank-you: 'Hracias por enviarnos su comentario "{{title}}"'
 portal.emails.feedback_updated: 'Su comentario "{{title}}" ha sido actualizado. Su estado actual es "{{status}}"'
 portal.emails.feedback_validate-email: 'Valide su dirección de correo electrónico haciendo clic en el siguiente enlace:'
-portal.emails.feedback_votes:
-  one: 'Su comentario tiene actualmente <strong>1</strong> voto. Vea su comentario en:'
-  other: 'Su comentario tiene actualmente<strong>{{count}}</strong> votos. Vea su comentario en:'
+portal.emails.feedback_votes.one: 'Su comentario tiene actualmente <strong>1</strong> voto. Vea su comentario en:'
+portal.emails.feedback_votes.other: 'Su comentario tiene actualmente<strong>{{count}}</strong> votos. Vea su comentario en:'
 portal.emails.greeting: 'Apreciado/a {{to_name}}'
 portal.emails.kb-explain: 'Usted ha recibido este correo porque está suscrito a nuestra base de conocimiento en <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> No quiere estos correos otra vez?<a href="{{unsubscribe_url}}"> Click aquí para darse de baja.</a>'
-portal.emails.kb-new-articles:
-  one: 'Un articulo nuevo'
-  other: ' {{count}} Articulos nuevos'
-portal.emails.kb-updated-articles:
-  one: 'Un articulo actualizado'
-  other: ' {{count}} Articulos actualizados'
+portal.emails.kb-new-articles.one: 'Un articulo nuevo'
+portal.emails.kb-new-articles.other: ' {{count}} Articulos nuevos'
+portal.emails.kb-updated-articles.one: 'Un articulo actualizado'
+portal.emails.kb-updated-articles.other: ' {{count}} Articulos actualizados'
 portal.emails.label_view-online: 'Ver en linea'
 portal.emails.message-clipped: '(El mensaje se ha recortado)'
 portal.emails.password_agent-reset: 'Un agente ha reinicializado su contraseña. Puede acceder con estas credenciales'
@@ -115,9 +112,8 @@ portal.emails.ticket_rate-question: '¿ Le ha ayudado este mensaje ?'
 portal.emails.ticket_received: 'Se ha recibido su ticket. Uno de nuestros agentes le responderán pronto.'
 portal.emails.ticket_reply-confirm: 'Gracias por su respuesta. Uno de nuestros agentes le responderá pronto.'
 portal.emails.ticket_validate: 'Gracias por contactar con nosotros.<br /><br />Antes de que nuestros agentes puedan responder su mensaje, debe validar su dirección de correo electrónico.'
-portal.emails.tickets_ommitted:
-  one: '1 mensaje se ha omitido'
-  other: '{{count}} mensajes se han omitido'
+portal.emails.tickets_ommitted.one: '1 mensaje se ha omitido'
+portal.emails.tickets_ommitted.other: '{{count}} mensajes se han omitido'
 portal.emails.view_full_history_online: 'Ver el ticket completo'
 portal.error.404-title: 'No encontrado'
 portal.feedback.attachments: Adjuntos
@@ -129,9 +125,8 @@ portal.feedback.section-desc: 'Estas sugerencias han sido enviadas por clientes 
 portal.feedback.section-title: Comentarios
 portal.feedback.submit_feedback: 'Enviar comentario'
 portal.forms.error_password_forbid_reuse: 'No puedes usar una contraseña que ya utilizaste anteriormente.'
-portal.forms.error_password_min_length:
-  one: 'Mínimo de {{count}} caracteres'
-  other: 'Mínimo de {{count}} caracteres'
+portal.forms.error_password_min_length.one: 'Mínimo de {{count}} caracteres'
+portal.forms.error_password_min_length.other: 'Mínimo de {{count}} caracteres'
 portal.forms.label_category: Categoría
 portal.forms.label_department: Departamento
 portal.forms.label_first_name: Nombre
@@ -228,9 +223,8 @@ user.chat.log_created-date: 'Creado{{date}}'
 user.chat.log_fields_agent: Agente
 user.chat.log_fields_department: Departamento
 user.chat.log_message_author-you: Usted
-user.chat.log_nav-view-chats:
-  one: 'Ver tu ultimo registro de conversación'
-  other: 'Ver tu {{count}} historial de conversaciones.'
+user.chat.log_nav-view-chats.one: 'Ver tu ultimo registro de conversación'
+user.chat.log_nav-view-chats.other: 'Ver tu {{count}} historial de conversaciones.'
 user.chat.log_no_department: 'Sin departamento'
 user.chat.log_unassigned: 'No hay agente asignado aún'
 user.chat.message_agent-timeout: 'Lo sentimos; {{name}} está deconectado. Espere un momento e inténtelo de nuevo con otro agente'
@@ -307,17 +301,14 @@ user.emails.feedback_new-comment: '{{name}} ha enviado un nuevo comentario:'
 user.emails.feedback_published: 'El comentario enviado "{{title}}" se ha aceptado y aparecerá en nuestro sistema.'
 user.emails.feedback_thank-you: 'Hracias por enviarnos su comentario "{{title}}"'
 user.emails.feedback_updated: 'Su comentario "{{title}}" ha sido actualizado. Su estado actual es "{{status}}"'
-user.emails.feedback_votes:
-  one: 'Su comentario tiene actualmente <strong>1</strong> voto. Vea su comentario en:'
-  other: 'Su comentario tiene actualmente<strong>{{count}}</strong> votos. Vea su comentario en:'
+user.emails.feedback_votes.one: 'Su comentario tiene actualmente <strong>1</strong> voto. Vea su comentario en:'
+user.emails.feedback_votes.other: 'Su comentario tiene actualmente<strong>{{count}}</strong> votos. Vea su comentario en:'
 user.emails.greeting: 'Apreciado/a {{to_name}}'
 user.emails.kb-explain: 'Usted ha recibido este correo porque está suscrito a nuestra base de conocimiento en <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> No quiere estos correos otra vez?<a href="{{unsubscribe_url}}"> Click aquí para darse de baja.</a>'
-user.emails.kb-new-articles:
-  one: 'Un articulo nuevo'
-  other: ' {{count}} Articulos nuevos'
-user.emails.kb-updated-articles:
-  one: 'Un articulo actualizado'
-  other: ' {{count}} Articulos actualizados'
+user.emails.kb-new-articles.one: 'Un articulo nuevo'
+user.emails.kb-new-articles.other: ' {{count}} Articulos nuevos'
+user.emails.kb-updated-articles.one: 'Un articulo actualizado'
+user.emails.kb-updated-articles.other: ' {{count}} Articulos actualizados'
 user.emails.label_view-online: 'Ver en linea'
 user.emails.message-clipped: '(El mensaje se ha recortado)'
 user.emails.password_agent-reset: 'Un agente ha reinicializado su contraseña. Puede acceder con estas credenciales'
@@ -349,22 +340,18 @@ user.error.attach_unknown-error: 'Ha habido un problema en nuestro servidor que 
 user.error.error_code: 'Código de error'
 user.error.expired-token: 'La página a la que está intentado acceder ha caducado. Vuelva hacia atrás e inténtelo de nuevo.'
 user.error.form_choice_invalid: 'Por favor, elija una opción de la lista'
-user.error.form_choice_max:
-  one: 'Por favor, seleccione como máximo una opción'
-  other: 'Por favor, seleccione como máximo {{count}} opciones'
-user.error.form_choice_min:
-  one: 'Por favor, seleccione como mínimo una opción'
-  other: 'Por favor, seleccione como mínimo {{count}} opciones'
+user.error.form_choice_max.one: 'Por favor, seleccione como máximo una opción'
+user.error.form_choice_max.other: 'Por favor, seleccione como máximo {{count}} opciones'
+user.error.form_choice_min.one: 'Por favor, seleccione como mínimo una opción'
+user.error.form_choice_min.other: 'Por favor, seleccione como mínimo {{count}} opciones'
 user.error.form_date_invalid: 'Introduzca una fecha válida'
 user.error.form_date_invalid_dow: 'El día de la semana que seleccionaste no está permitido.'
 user.error.form_date_invalid_range: 'La fecha que seleccionaste no contiene un rango permitido.'
 user.error.form_required: 'Campo obligatorio'
-user.error.form_text_max:
-  one: 'Introduzca como máximo un caracter'
-  other: 'Introduzca como máximo {{count}} caracteres'
-user.error.form_text_min:
-  one: 'Introduzca como mínimo un caracter'
-  other: 'Introduzca como mínimo {{count}} caracteres'
+user.error.form_text_max.one: 'Introduzca como máximo un caracter'
+user.error.form_text_max.other: 'Introduzca como máximo {{count}} caracteres'
+user.error.form_text_min.one: 'Introduzca como mínimo un caracter'
+user.error.form_text_min.other: 'Introduzca como mínimo {{count}} caracteres'
 user.error.form_text_regex: 'Introduzca un valor correcto'
 user.error.invalid_email: 'Dirección correo electrónico incorrecto'
 user.error.invalid_email-code: 'El enlace de validación no es válido.'
@@ -406,9 +393,8 @@ user.profile.account_disabled_message: 'Su cuenta está actualmente inactiva. No
 user.profile.choose_email: 'Elija la dirección de correo electrónico que desee utilizar'
 user.profile.or_connect_with: 'O conectar con'
 user.profile.register: Registro
-user.profile.register_password_min_length:
-  one: 'Mínimo de {{count}} caracteres'
-  other: 'Mínimo de {{count}} caracteres'
+user.profile.register_password_min_length.one: 'Mínimo de {{count}} caracteres'
+user.profile.register_password_min_length.other: 'Mínimo de {{count}} caracteres'
 user.profile.register_password_unused: 'No puedes usar una contraseña que ya utilizaste anteriormente.'
 user.tickets.feedback_message_leave_comment: 'Opcionalmente deje un comentario'
 user.tickets.fields_category: Categoría

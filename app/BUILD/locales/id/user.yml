@@ -82,10 +82,8 @@ portal.articles.section-desc: 'Dasar pengetahuan kami mengandung artikel yang di
 portal.articles.section-title: 'Dasar Pengetahuan'
 portal.articles.share-by-email: 'Bagikan artikel ini melalui surat elektronik/E-Mail'
 portal.articles.view-as-agent: 'Anda dapat melihat laman ini karena anda adalah seorang agen. Pengguna tidak akan dapat melihat laman ini.'
-portal.articles.view-x-articles:
-  other: 'Lihat 1 artikel '
-portal.articles.x-articles:
-  other: '1 artikel '
+portal.articles.view-x-articles.other: 'Lihat 1 artikel '
+portal.articles.x-articles.other: '1 artikel '
 portal.chat.agent_blocked_user_on: '{{name}} melakukan blokir pada {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} sepertinya telah terputus'
 portal.chat.agent_typing_message: '{{agentName}} sedang menulis pesan'
@@ -130,8 +128,7 @@ portal.chat.list_chat: Obrolan
 portal.chat.list_date: Tanggal
 portal.chat.list_switch_to_my_chats: 'Alihkan ke Obrolan Saya'
 portal.chat.list_switch_to_organization: 'Alihkan ke Organisasi'
-portal.chat.list_title:
-  other: '1 Obrolan'
+portal.chat.list_title.other: '1 Obrolan'
 portal.chat.list_user: Pengguna
 portal.chat.log_agents: Agent
 portal.chat.log_chat_time: 'Total Waktu Obrolan'
@@ -204,8 +201,7 @@ portal.downloads.section-desc: 'Jelajahi koleksi unduhan kami'
 portal.downloads.section-title: Unduhan
 portal.downloads.uploaded-on: Terunggah
 portal.downloads.view-as-agent: 'Anda dapat melihat laman ini karena anda adalah seorang agen. Pengguna tidak akan dapat melihat laman ini.'
-portal.downloads.view-x-files:
-  other: 'Lihat 1 unduhan'
+portal.downloads.view-x-files.other: 'Lihat 1 unduhan'
 portal.email_subjects.chat_transcript: 'Transkrip percakapan'
 portal.email_subjects.comment-approved: 'Komentar Anda telah disetujui'
 portal.email_subjects.comment-confirmation: 'Terima kasih atas komentar Anda'
@@ -253,10 +249,8 @@ portal.emails.comment_deleted: 'Komentar anda telah digunakan untuk memperbaiki 
 portal.emails.comment_thank-you: 'Terima kasih atas komentar anda pada {{link}}.'
 portal.emails.comment_validate-email: 'Mohon validasi alamat surat elektronik/email anda dengan mengklik tautan berikut:'
 portal.emails.do-not-reply: 'Mohon untuk tidak membalas surat elektronik/email ini. Ini adalah pesan otomatis dan jawaban tidak akan terbaca oleh agen.'
-portal.emails.download-new-downloads:
-  other: '1 Unduhan Baru'
-portal.emails.download-updated-downloads:
-  other: '1 Unduhan Diperbaharui'
+portal.emails.download-new-downloads.other: '1 Unduhan Baru'
+portal.emails.download-updated-downloads.other: '1 Unduhan Diperbaharui'
 portal.emails.downloads-explain: 'Anda menerima surel ini karena Anda berlangganan perbaharuan tentang unduhan yang tersedia <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Tidak menginginkan surel seperti ini lagi?<a href="{{unsubscribe_url}}">Klik disini untuk berhenti berlangganan dari semua pemberitahuan tentang unduhan</a>'
 portal.emails.email-too-big: 'Surat elektronik/email "{{subject}}" tidak diterima karena terlalu besar. Ukuran maksimal surat elektronik/email pada layanan bantuan ini adalah {{max_size}}. Hapus semua lampiran dan coba kembali.'
 portal.emails.end_greeting: 'Salam, <br /><br />{{site_name}}'
@@ -270,15 +264,12 @@ portal.emails.feedback_thank-you: 'Terima kasih atas tanggapan Anda "{{title}}"'
 portal.emails.feedback_validate-email: 'Mohon validasi alamat surat elektronik/email anda dengan klik tautan berikut:'
 portal.emails.greeting: 'Yth {{to_name}},'
 portal.emails.kb-explain: 'Anda menerima surel ini karena Anda berlangganan perbaharuan tentang artikel dasar pengetahuan yang tersedia pada <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Tidak menginginkan surel seperti ini lagi?<a href="{{unsubscribe_url}}">Klik disini untuk berhenti berlangganan dari semua pemberitahuan dasar pengetahuan</a>'
-portal.emails.kb-updated-articles:
-  other: '1 Artikel Dasar Pengetahuan Diperbarui '
+portal.emails.kb-updated-articles.other: '1 Artikel Dasar Pengetahuan Diperbarui '
 portal.emails.label_view-online: 'Lihat yang online'
 portal.emails.new-ticket-guest-link: 'Terima kasih telah menghubungi kami. Anda dapat melihat status tiket anda secara online disini:'
 portal.emails.news-explain: 'Anda menerima surel ini karena Anda berlangganan perbaharuan tentang umpan balik yang tersedia pada <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Tidak menginginkan surel seperti ini lagi?<a href="{{unsubscribe_url}}">Klik disini untuk berhenti berlangganan dari semua pemberitahuan tentang berita</a>'
-portal.emails.news-new-articles:
-  other: '1 Artikel Berita Baru '
-portal.emails.news-updated-articles:
-  other: '1 Artikel Berita Diperbarui '
+portal.emails.news-new-articles.other: '1 Artikel Berita Baru '
+portal.emails.news-updated-articles.other: '1 Artikel Berita Diperbarui '
 portal.emails.password_agent-reset: 'Agen telah melakukan set ulang kata kunci Anda. Anda bisa masuk dengan detil sebagai berikut'
 portal.emails.password_reset: 'Anda mengajukan permintaan untuk pengaturan ulang kata sandi. Untuk mengatur ulang kata sandi anda, klik pada tautan di bawah:'
 portal.emails.password_set: 'Untuk mengatur ulang kata sandi anda, klik pada tautan di bawah:'
@@ -336,8 +327,7 @@ portal.feedback.sort_popularity: Popularitas
 portal.feedback.sort_rating: Penilaian
 portal.feedback.sort_views: Tampilan
 portal.feedback.submit_feedback: 'Kirim tanggapan'
-portal.feedback.view-x-feedback:
-  other: 'Lihat 1 tanggapan '
+portal.feedback.view-x-feedback.other: 'Lihat 1 tanggapan '
 portal.flashes.article_cat_subscribe: 'Anda telah berlangganan kategori ini. Anda akan menerima pemberitahuan apabila terdapat artikel baru.'
 portal.flashes.article_cat_unsubscribe: 'Anda telah berhenti berlangganan kategori ini.'
 portal.flashes.article_subscribe: 'Anda telah berhasil berlangganan artikel ini. Anda akan menerima pemberitahuan apabila ada pembaharuan atau komentar baru'
@@ -392,16 +382,11 @@ portal.forms.error_invalid_email: 'Alamat surat elektronik/ email ini tidak vali
 portal.forms.error_no_uploaded_file: 'Berkas yang diunggah tidak ditemukan. Silakan coba lagi.'
 portal.forms.error_not_checked: 'Kolom tersebut belum diperiksa'
 portal.forms.error_password_forbid_reuse: 'Anda tidak dapat menggunakan sandi yang telah Anda gunakan sebelumnya'
-portal.forms.error_password_min_length:
-  other: 'Jumlah minimal karakter {{count}} '
-portal.forms.error_password_require_num_lowercase:
-  other: 'Setidaknya {{count}} karakter menggunakan huruf kecil '
-portal.forms.error_password_require_num_number:
-  other: 'Setidaknya {{count}} karakter menggunakan angka '
-portal.forms.error_password_require_num_symbol:
-  other: 'Setidaknya {{count}} karakter menggunakan simbol '
-portal.forms.error_password_require_num_uppercase:
-  other: 'Setidaknya {{count}} karakter menggunakan huruf kapital '
+portal.forms.error_password_min_length.other: 'Jumlah minimal karakter {{count}} '
+portal.forms.error_password_require_num_lowercase.other: 'Setidaknya {{count}} karakter menggunakan huruf kecil '
+portal.forms.error_password_require_num_number.other: 'Setidaknya {{count}} karakter menggunakan angka '
+portal.forms.error_password_require_num_symbol.other: 'Setidaknya {{count}} karakter menggunakan simbol '
+portal.forms.error_password_require_num_uppercase.other: 'Setidaknya {{count}} karakter menggunakan huruf kapital '
 portal.forms.error_required: 'Nilai ini diperlukan'
 portal.forms.error_server_rejected_size: 'Terjadi kendala saat mengunggah dokumen dikarenakan batas ukuran maksimum. Silakan coba unggah dokumen yang lebih kecil.'
 portal.forms.error_ticket_department_required: 'Sebuah departemen diperlukan'
@@ -469,11 +454,9 @@ portal.general.btn-unsubscribe: 'Berhenti Berlangganan'
 portal.general.by: oleh
 portal.general.by_2: oleh
 portal.general.comment_btn_save: 'Simpan Komentar'
-portal.general.comments-count:
-  other: '1 Komentar '
+portal.general.comments-count.other: '1 Komentar '
 portal.general.comments-pending-validation: 'Komentar ini telah ditinjau dan akan segera ditampilkan'
-portal.general.comments-title:
-  other: 'Komentar (1) '
+portal.general.comments-title.other: 'Komentar (1) '
 portal.general.delete: Hapus
 portal.general.everything: Semuanya
 portal.general.get-in-touch: Berhubungan
@@ -531,12 +514,10 @@ portal.news.recent-title: 'Berita aktual'
 portal.news.search-title: 'Artikel berita'
 portal.news.section-title: Berita
 portal.news.view-as-agent: 'Anda dapat melihat laman ini karena anda adalah agen. Pengguna normal tidak bisa melihat laman ini.'
-portal.news.view-x-news:
-  other: 'Lihat 1 artikel'
+portal.news.view-x-news.other: 'Lihat 1 artikel'
 portal.sidebar.agents_available: 'Agen Tersedia'
 portal.sidebar.agents_none: 'Saat ini tidak tersedia agen. Anda masih dapat <a href="{{new_ticket_url}}">membuka tiket</a>.'
-portal.sidebar.agents_x_online:
-  other: '{{count}} tersedia'
+portal.sidebar.agents_x_online.other: '{{count}} tersedia'
 portal.sidebar.article_posted_by: 'Dipasang oleh {{name}}'
 portal.sidebar.news_title: Berita
 portal.sidebar.satisfied_customers: 'Pelanggan puas'
@@ -560,8 +541,7 @@ portal.tickets.list_no_tickets: 'Tidak ada tiket untuk ditampilkan. <a href="{{o
 portal.tickets.list_search: 'Cari dalam tiket'
 portal.tickets.list_status_agent: 'Agen kami akan menanggapi'
 portal.tickets.list_status_open: 'Buka Tiket'
-portal.tickets.list_status_open_count:
-  other: '{{count}} menunggu tanggapan'
+portal.tickets.list_status_open_count.other: '{{count}} menunggu tanggapan'
 portal.tickets.list_status_resolved: Terselesaikan
 portal.tickets.list_status_user: 'Anda harus menanggapi'
 portal.tickets.list_subject: Subjek
@@ -647,8 +627,7 @@ user.chat.log_created-date: 'Dibuat {{date}}'
 user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Departemen
 user.chat.log_message_author-you: Anda
-user.chat.log_nav-view-chats:
-  other: 'Lihat riwayat terakhir chat Anda '
+user.chat.log_nav-view-chats.other: 'Lihat riwayat terakhir chat Anda '
 user.chat.log_no_department: 'Tidak ada departemen'
 user.chat.log_unassigned: 'Tidak ada agent yang ditugaskan'
 user.chat.message_agent-timeout: 'Mohon maaf; koneksi {{Name}} nampaknya telah terputus. Mohon menunggu, kami mencoba mencari agen lain.'
@@ -732,10 +711,8 @@ user.emails.chat_transcript: 'Terima kasih telah mengobrol dengan kami. Ini adal
 user.emails.comment_approved: 'Komentar anda telah diterbitkan.'
 user.emails.comment_deleted: 'Komentar anda telah digunakan untuk memperbaiki laman ini.'
 user.emails.comment_thank-you: 'Terima kasih atas komentar anda pada {{link}}.'
-user.emails.download-new-downloads:
-  other: '1 Unduhan Baru'
-user.emails.download-updated-downloads:
-  other: '1 Unduhan yang Diperbarui '
+user.emails.download-new-downloads.other: '1 Unduhan Baru'
+user.emails.download-updated-downloads.other: '1 Unduhan yang Diperbarui '
 user.emails.downloads-explain: 'Anda menerima surel ini karena Anda berlangganan tentang unduhan kami yang tersedia pada <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Tidak menginginkan surel seperti ini lagi?<a href="{{unsubscribe_url}}">Klik disini untuk berhenti berlangganan dari semua pemberitahuan unduhan</a>'
 user.emails.email-too-big: 'Surat elektronik/email ada "{{subject}}" tidak diterima karena terlalu besar. Ukuran maksimal surat elektronik/email adalah {{max_size}}. Hapus semua lampiran dan coba kembali.'
 user.emails.feedback-explain: 'Anda menerima surel ini karena Anda berlangganan tentang berita kami yang tersedia pada <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Tidak menginginkan surel seperti ini lagi?<a href="{{unsubscribe_url}}">Klik disini untuk berhenti berlangganan dari semua pemberitahuan umpan balik</a>'
@@ -746,17 +723,13 @@ user.emails.feedback_published: 'Tanggapan yang Anda kirimkan "{{title}}" telah 
 user.emails.feedback_thank-you: 'Terima kasih telah menyampaikan tanggapan anda "{{title}}"'
 user.emails.greeting: 'Yth. Bapak/Ibu {{to_name}},'
 user.emails.kb-explain: 'Anda menerima surel ini karena Anda berlangganan tentang artikel dasar pengetahuan yang tersedia pada <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Tidak menginginkan surel seperti ini lagi?<a href="{{unsubscribe_url}}">Klik disini untuk berhenti berlangganan dari semua pemberitahuan dasar pengetahuan</a>'
-user.emails.kb-new-articles:
-  other: '1 Artikel Baru '
-user.emails.kb-updated-articles:
-  other: '1 Artikel Diperbarui '
+user.emails.kb-new-articles.other: '1 Artikel Baru '
+user.emails.kb-updated-articles.other: '1 Artikel Diperbarui '
 user.emails.label_view-online: 'Lihat yang online'
 user.emails.new-ticket-guest-link: 'Terima kasih telah menghubungi kami. Anda dapat melihat status tiket anda disini:'
 user.emails.news-explain: 'Anda menerima surel ini karena Anda berlangganan tentang berita kami yang tersedia pada <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Tidak menginginkan surel seperti ini lagi?<a href="{{unsubscribe_url}}">Klik disini untuk berhenti berlangganan dari semua pemberitahuan berita</a>'
-user.emails.news-new-articles:
-  other: '1 Artikel Berita Baru '
-user.emails.news-updated-articles:
-  other: '1 Artikel Berita Diperbarui '
+user.emails.news-new-articles.other: '1 Artikel Berita Baru '
+user.emails.news-updated-articles.other: '1 Artikel Berita Diperbarui '
 user.emails.password_agent-reset: 'Agen telah melakukan set ulang kata kunci Anda. Anda bisa masuk dengan detil sebagai berikut'
 user.emails.password_reset: 'Anda mengajukan permintaan untuk pengaturan ulang kata sandi. Untuk mengatur ulang kata sandi Anda, klik pada link dibawah:'
 user.emails.password_set: 'Untuk mengatur ulang kata sandi anda, klik pada tautan di bawah:'
@@ -787,18 +760,14 @@ user.error.error_code: 'Kode salah'
 user.error.error_title: Gangguan
 user.error.expired-token: 'Laman yang Anda coba akses telah kadaluarsa. Mohon kembali dan coba lagi.'
 user.error.form_choice_invalid: 'Silakan pilih sebuah opsi dari daftar'
-user.error.form_choice_max:
-  other: 'Pilih paling banyak 1 pilihan '
-user.error.form_choice_min:
-  other: 'Pilih sedikitnya 1 pilihan '
+user.error.form_choice_max.other: 'Pilih paling banyak 1 pilihan '
+user.error.form_choice_min.other: 'Pilih sedikitnya 1 pilihan '
 user.error.form_date_invalid: 'Silakan masukkan tanggal dengan benar'
 user.error.form_date_invalid_dow: 'Hari yang Anda pilih tidak diizinkan'
 user.error.form_date_invalid_range: 'Tanggal yang Anda pilih tidak berada dalam rentang waktu yang diizinkan'
 user.error.form_required: 'Kolom ini diperlukan'
-user.error.form_text_max:
-  other: 'Masukkan hanya 1 saja karakter '
-user.error.form_text_min:
-  other: 'Masukkan setidaknya 1 karakter '
+user.error.form_text_max.other: 'Masukkan hanya 1 saja karakter '
+user.error.form_text_min.other: 'Masukkan setidaknya 1 karakter '
 user.error.invalid_email: 'Alamat email tidak benar'
 user.error.invalid_email-code: 'Tautan validasi tidak valid.'
 user.error.invalid_email-explain: 'Maaf, kami tidak dapat menemukan alamat email ini dalam akun Anda'
@@ -840,16 +809,11 @@ user.profile.choose_email: 'Silakan memilih alamat email yang ingin anda gunakan
 user.profile.connect_with: 'Hubungkan dengan'
 user.profile.or_connect_with: 'Atau hubungkan dengan'
 user.profile.register: Daftar
-user.profile.register_password_min_length:
-  other: 'Jumlah minimal karakter {{count}} '
-user.profile.register_password_require_num_lowercase:
-  other: 'Setidaknya {{count}} karakter menggunakan huruf kecil '
-user.profile.register_password_require_num_number:
-  other: 'Setidaknya {{count}} karakter menggunakan angka '
-user.profile.register_password_require_num_symbol:
-  other: 'Setidaknya {{count}} karakter menggunakan simbol '
-user.profile.register_password_require_num_uppercase:
-  other: 'Setidaknya {{count}} karakter menggunakan huruf kapital '
+user.profile.register_password_min_length.other: 'Jumlah minimal karakter {{count}} '
+user.profile.register_password_require_num_lowercase.other: 'Setidaknya {{count}} karakter menggunakan huruf kecil '
+user.profile.register_password_require_num_number.other: 'Setidaknya {{count}} karakter menggunakan angka '
+user.profile.register_password_require_num_symbol.other: 'Setidaknya {{count}} karakter menggunakan simbol '
+user.profile.register_password_require_num_uppercase.other: 'Setidaknya {{count}} karakter menggunakan huruf kapital '
 user.profile.register_password_unused: 'Anda tidak dapat menggunakan kata sandi yang anda telah gunakan sebelumnya'
 user.tickets.feedback_message_leave_comment: 'Berikan komentar'
 user.tickets.fields_category: Kategori

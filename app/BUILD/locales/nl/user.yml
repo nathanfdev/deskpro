@@ -83,12 +83,10 @@ portal.articles.section-desc: 'Onze kennisbank bevat artikelen die zijn geschrev
 portal.articles.section-title: Kennisbank
 portal.articles.share-by-email: 'Deel dit artikel per e-mail:'
 portal.articles.view-as-agent: 'U kunt deze pagina zien, omdat u een medewerker bent. Gebruikers zullen deze pagina niet kunnen zien.'
-portal.articles.view-x-articles:
-  one: 'Bekijk 1 artikel'
-  other: 'Bekijk {{count}} artikelen'
-portal.articles.x-articles:
-  one: '1 artikel'
-  other: '{{count}} artikelen'
+portal.articles.view-x-articles.one: 'Bekijk 1 artikel'
+portal.articles.view-x-articles.other: 'Bekijk {{count}} artikelen'
+portal.articles.x-articles.one: '1 artikel'
+portal.articles.x-articles.other: '{{count}} artikelen'
 portal.chat.agent_blocked_user_on: '{{name}} heeft een blokkade ingesteld op {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} lijkt de verbinding te hebben verloren'
 portal.chat.agent_typing_message: '{{agentName}} is een bericht aan het typen'
@@ -133,9 +131,8 @@ portal.chat.list_chat: Chat
 portal.chat.list_date: Datum
 portal.chat.list_switch_to_my_chats: 'Overschakelen naar Mijn chats'
 portal.chat.list_switch_to_organization: 'Overschakelen naar Organisatie'
-portal.chat.list_title:
-  one: '1 chat'
-  other: '{{count}} chats'
+portal.chat.list_title.one: '1 chat'
+portal.chat.list_title.other: '{{count}} chats'
 portal.chat.list_user: Gebruiker
 portal.chat.log_agents: Medewerkers
 portal.chat.log_chat_time: 'Totale chattijd'
@@ -208,9 +205,8 @@ portal.downloads.section-desc: 'Blader door onze collectie van downloads.'
 portal.downloads.section-title: Downloads
 portal.downloads.uploaded-on: Geüpload
 portal.downloads.view-as-agent: 'U kunt deze pagina zien, omdat u een medewerker bent. Gebruikers zullen deze pagina niet kunnen zien.'
-portal.downloads.view-x-files:
-  one: 'Bekijk 1 download'
-  other: 'Bekijk {{count}} downloads'
+portal.downloads.view-x-files.one: 'Bekijk 1 download'
+portal.downloads.view-x-files.other: 'Bekijk {{count}} downloads'
 portal.email_subjects.chat_transcript: 'Kopie van chatgeschiedenis'
 portal.email_subjects.comment-approved: 'Uw reactie is goedgekeurd'
 portal.email_subjects.comment-confirmation: 'Bedankt voor uw reactie'
@@ -258,19 +254,16 @@ portal.emails.comment_deleted: 'Uw reactie is gebruikt om deze pagina te verbete
 portal.emails.comment_thank-you: 'Bedankt voor uw reactie op {{link}}.'
 portal.emails.comment_validate-email: 'Valideer uw e-mailadres door op de volgende link te klikken:'
 portal.emails.do-not-reply: 'Let op: reageer niet op deze e-mail. Dit is een automatisch verzonden bericht, e-mails naar dit adres zullen niet worden gelezen door onze medewerkers.'
-portal.emails.download-new-downloads:
-  one: '1 nieuwe download'
-  other: '{{count}} nieuwe downloads'
-portal.emails.download-updated-downloads:
-  one: '1 bijgewerkte download'
-  other: '{{count}} bijgewerkte downloads'
+portal.emails.download-new-downloads.one: '1 nieuwe download'
+portal.emails.download-new-downloads.other: '{{count}} nieuwe downloads'
+portal.emails.download-updated-downloads.one: '1 bijgewerkte download'
+portal.emails.download-updated-downloads.other: '{{count}} bijgewerkte downloads'
 portal.emails.downloads-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over beschikbare downloads bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle downloadmeldingen.</a>'
 portal.emails.email-too-big: 'Uw e-mail "{{subject}}" is niet geaccepteerd, omdat deze te groot is. De maximale e-mailgrootte die deze helpdesk accepteert is {{max_size}}. Verwijder grote bijlagen en probeer het nogmaals.'
 portal.emails.end_greeting: 'Met vriendelijke groet,<br /><br />{{site_name}}'
 portal.emails.feedback-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over feedbackitems bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle feedbackmeldingen.</a>'
-portal.emails.feedback-updated-items:
-  one: '1 bijgewerkt feedbackitem'
-  other: '{{count}} bijgewerkte feedbackitems'
+portal.emails.feedback-updated-items.one: '1 bijgewerkt feedbackitem'
+portal.emails.feedback-updated-items.other: '{{count}} bijgewerkte feedbackitems'
 portal.emails.feedback_agent-validation: 'Let er op dat uw feedback niet publiekelijk zichtbaar is op onze ondersteuningsportal totdat een van onze medewerkers deze heeft goedgekeurd.'
 portal.emails.feedback_approved: 'Uw feedback is goedgekeurd en nu voor iedereen zichtbaar op onze website.'
 portal.emails.feedback_closed: 'Uw feedback "{{title}}" is gesloten: {{status}}'
@@ -281,27 +274,22 @@ portal.emails.feedback_published: 'Uw feedback "{{title}}" is gevalideerd en zal
 portal.emails.feedback_thank-you: 'Bedankt voor uw feedback "{{title}}"'
 portal.emails.feedback_updated: 'Uw feedback "{{title}}" is bijgewerkt. Het wordt nu opgeslagen onder de nieuwe status "{{status}}"'
 portal.emails.feedback_validate-email: 'Valideer uw e-mailadres door te klikken op de volgende link:'
-portal.emails.feedback_votes:
-  one: 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:'
-  other: 'Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:'
+portal.emails.feedback_votes.one: 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:'
+portal.emails.feedback_votes.other: 'Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:'
 portal.emails.greeting: 'Beste {{to_name}},'
 portal.emails.kb-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over onze kennisbankartikelen bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle kennisbankmeldingen.</a>'
-portal.emails.kb-new-articles:
-  one: '1 nieuw artikelen'
-  other: '{{count}} nieuwe artikelen'
-portal.emails.kb-updated-articles:
-  one: '1 bijgewerkte artikel'
-  other: '{{count}} bijgewerkte artikelen'
+portal.emails.kb-new-articles.one: '1 nieuw artikelen'
+portal.emails.kb-new-articles.other: '{{count}} nieuwe artikelen'
+portal.emails.kb-updated-articles.one: '1 bijgewerkte artikel'
+portal.emails.kb-updated-articles.other: '{{count}} bijgewerkte artikelen'
 portal.emails.label_view-online: 'Bekijk online'
 portal.emails.message-clipped: '(Bericht is geknipt)'
 portal.emails.new-ticket-guest-link: 'Bedankt dat u contact met ons opneemt. U kunt de status van uw ticket hier online bekijken:'
 portal.emails.news-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op updates over feedbackitems bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle nieuwsmeldingen.</a>'
-portal.emails.news-new-articles:
-  one: '1 nieuw nieuwsbericht'
-  other: '{{count}} nieuwe nieuwsberichten'
-portal.emails.news-updated-articles:
-  one: '1 bijgewerkt nieuwsbericht'
-  other: '{{count}} bijgewerkte nieuwsberichten'
+portal.emails.news-new-articles.one: '1 nieuw nieuwsbericht'
+portal.emails.news-new-articles.other: '{{count}} nieuwe nieuwsberichten'
+portal.emails.news-updated-articles.one: '1 bijgewerkt nieuwsbericht'
+portal.emails.news-updated-articles.other: '{{count}} bijgewerkte nieuwsberichten'
 portal.emails.password_agent-reset: 'Een medewerker heeft uw wachtwoord gereset. U kunt inloggen met deze gegevens'
 portal.emails.password_reset: 'U heeft een aanvraag ingediend voor het resetten van uw wachtwoord. Klik op de onderstaande link om uw wachtwoord te resetten:'
 portal.emails.password_set: 'Om uw wachtwoord in te stellen, klik op de link hieronder:'
@@ -338,9 +326,8 @@ portal.emails.ticket_rate-request: 'Hoe beoordeelt u de ontvangen ondersteuning 
 portal.emails.ticket_received: 'Uw vraag is correct ontvangen. Onze medewerkers zullen uw vraag zo spoedig mogelijk beantwoorden.'
 portal.emails.ticket_reply-confirm: 'Bedankt voor uw antwoord. Een medewerker zal zo spoedig mogelijk antwoorden.'
 portal.emails.ticket_validate: 'Bedankt voor het contact opnemen.<br /><br />Voordat onze medewerkers u verder kunnen helpen, dient u uw e-mailadres te verifiëren.'
-portal.emails.tickets_ommitted:
-  one: 'Er is 1 bericht weggelaten'
-  other: 'Er zijn {{count}} berichten weggelaten'
+portal.emails.tickets_ommitted.one: 'Er is 1 bericht weggelaten'
+portal.emails.tickets_ommitted.other: 'Er zijn {{count}} berichten weggelaten'
 portal.emails.validate-email: 'Bevestig dat dit e-mailadres van u is door op de onderstaande link te klikken.'
 portal.emails.view_full_history_online: 'Bekijk de volledige ticket online'
 portal.error.403-desc: 'Sorry, maar u heeft geen toestemming op deze pagina te bekijken.'
@@ -385,9 +372,8 @@ portal.feedback.status_active: 'Open items'
 portal.feedback.status_all: 'Alle items'
 portal.feedback.status_closed: 'Gesloten items'
 portal.feedback.submit_feedback: 'Feedback verzenden'
-portal.feedback.view-x-feedback:
-  one: 'Bekijk 1 feedback'
-  other: 'Bekijk {{count}} feedbacks'
+portal.feedback.view-x-feedback.one: 'Bekijk 1 feedback'
+portal.feedback.view-x-feedback.other: 'Bekijk {{count}} feedbacks'
 portal.flashes.article_cat_subscribe: 'U heeft zich succesvol geabonneerd op deze categorie. U krijgt een melding wanneer nieuwe artikelen zijn geplaatst.'
 portal.flashes.article_cat_unsubscribe: 'U heeft zich succesvol afgemeld voor deze categorie.'
 portal.flashes.article_subscribe: 'U heeft zich succesvol geabonneerd op dit artikel. U krijgt een melding wanneer het is bijgewerkt of wanneer er een nieuwe reactie is geplaatst.'
@@ -455,21 +441,16 @@ portal.forms.error_no_uploaded_file: 'Geüploade bestand niet gevonden. Probeer 
 portal.forms.error_not_checked: 'Het veld is niet aangevinkt.'
 portal.forms.error_password_current: 'Dit moet je huidige wachtwoord zijn'
 portal.forms.error_password_forbid_reuse: 'Je kunt geen wachtwoord gebruiken dat al eerder is gebruikt'
-portal.forms.error_password_min_length:
-  one: 'Minimaal {{count}} karakter'
-  other: 'Minimaal {{count}} karakters'
-portal.forms.error_password_require_num_lowercase:
-  one: 'Minstens {{count}} kleine letter'
-  other: 'Minstens {{count}} kleine letters'
-portal.forms.error_password_require_num_number:
-  one: 'Minstens {{count}} nummer'
-  other: 'Minstens {{count}} nummers'
-portal.forms.error_password_require_num_symbol:
-  one: 'Minstens {{count}} symbool'
-  other: 'Minstens {{count}} symbolen'
-portal.forms.error_password_require_num_uppercase:
-  one: 'Minstens {{count}} hoofdletter'
-  other: 'Minstens {{count}} hoofdletters'
+portal.forms.error_password_min_length.one: 'Minimaal {{count}} karakter'
+portal.forms.error_password_min_length.other: 'Minimaal {{count}} karakters'
+portal.forms.error_password_require_num_lowercase.one: 'Minstens {{count}} kleine letter'
+portal.forms.error_password_require_num_lowercase.other: 'Minstens {{count}} kleine letters'
+portal.forms.error_password_require_num_number.one: 'Minstens {{count}} nummer'
+portal.forms.error_password_require_num_number.other: 'Minstens {{count}} nummers'
+portal.forms.error_password_require_num_symbol.one: 'Minstens {{count}} symbool'
+portal.forms.error_password_require_num_symbol.other: 'Minstens {{count}} symbolen'
+portal.forms.error_password_require_num_uppercase.one: 'Minstens {{count}} hoofdletter'
+portal.forms.error_password_require_num_uppercase.other: 'Minstens {{count}} hoofdletters'
 portal.forms.error_person_not_agent: 'Persoon met identifier {{value}} is geen medewerker.'
 portal.forms.error_person_not_found: 'Persoon met identifier "{{value}}" niet gevonden.'
 portal.forms.error_person_not_user: 'Persoon met identifier {{value}} is geen gebruiker.'
@@ -549,13 +530,11 @@ portal.general.btn-unsubscribe: Afmelden
 portal.general.by: door
 portal.general.by_2: Door
 portal.general.comment_btn_save: 'Reactie opslaan'
-portal.general.comments-count:
-  one: '1 reactie'
-  other: '{{count}} reacties'
+portal.general.comments-count.one: '1 reactie'
+portal.general.comments-count.other: '{{count}} reacties'
 portal.general.comments-pending-validation: 'Deze reactie wordt gecontroleerd. Deze zal binnenkort zichtbaar zijn'
-portal.general.comments-title:
-  one: 'Reacties (1)'
-  other: 'Reacties ({{count}})'
+portal.general.comments-title.one: 'Reacties (1)'
+portal.general.comments-title.other: 'Reacties ({{count}})'
 portal.general.delete: Verwijderen
 portal.general.everything: Alles
 portal.general.get-in-touch: 'Kom in contact'
@@ -644,14 +623,12 @@ portal.news.recent-title: 'Recent nieuws'
 portal.news.search-title: Nieuwsartikelen
 portal.news.section-title: Nieuws
 portal.news.view-as-agent: 'U kunt deze pagina zien, omdat u een medewerker bent. Normale gebruikers zullen deze pagina niet kunnen zien.'
-portal.news.view-x-news:
-  one: 'Bekijk 1 artikel'
-  other: 'Bekijk {{count}} artikelen'
+portal.news.view-x-news.one: 'Bekijk 1 artikel'
+portal.news.view-x-news.other: 'Bekijk {{count}} artikelen'
 portal.sidebar.agents_available: 'Beschikbare medewerkers'
 portal.sidebar.agents_none: 'Geen van onze medewerkers is op dit moment online. U kunt nog steeds <a href="{{new_ticket_url}}">een ticket openen</a>.'
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
+portal.sidebar.agents_x_online.one: '{{count}} online'
+portal.sidebar.agents_x_online.other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Geplaatst door {{name}}'
 portal.sidebar.news_title: Nieuws
 portal.sidebar.satisfied_customers: 'tevreden klanten'
@@ -677,9 +654,8 @@ portal.tickets.list_no_tickets: 'Er zijn geen ticket om weer te geven in deze ta
 portal.tickets.list_search: 'Zoeken binnen tickets:'
 portal.tickets.list_status_agent: 'Onze medewerker zal reageren'
 portal.tickets.list_status_open: 'geopende tickets'
-portal.tickets.list_status_open_count:
-  one: '{{count}} wachtend op reactie'
-  other: '{{count}} wachtend op reactie'
+portal.tickets.list_status_open_count.one: '{{count}} wachtend op reactie'
+portal.tickets.list_status_open_count.other: '{{count}} wachtend op reactie'
 portal.tickets.list_status_resolved: Opgelost
 portal.tickets.list_status_user: 'U moet reageren'
 portal.tickets.list_subject: Onderwerp
@@ -775,9 +751,8 @@ user.chat.log_created-date: 'Aangemaakt {{date}}'
 user.chat.log_fields_agent: Medewerker
 user.chat.log_fields_department: Afdeling
 user.chat.log_message_author-you: U
-user.chat.log_nav-view-chats:
-  one: 'Bekijk uw nieuwste chatlogboek '
-  other: ' Bekijk uw {{count}} chatlogboek'
+user.chat.log_nav-view-chats.one: 'Bekijk uw nieuwste chatlogboek '
+user.chat.log_nav-view-chats.other: ' Bekijk uw {{count}} chatlogboek'
 user.chat.log_no_department: 'Geen afdeling'
 user.chat.log_unassigned: 'Geen medewerker is toegewezen'
 user.chat.message_agent-timeout: 'Onze excuses; {{name}} lijkt de verbinding te hebben verloren. Een moment geduld zodat wij u kunnen verbinden met een andere medewerker. Wacht terwijl we proberen een andere medewerker te vinden.'
@@ -863,18 +838,15 @@ user.emails.chat_validate_email: 'Valideer uw e-mailadres door deze code "{{vali
 user.emails.comment_approved: 'Uw reactie is gepubliceerd.'
 user.emails.comment_deleted: 'Uw reactie is gebruikt om de pagina te verbeteren.'
 user.emails.comment_thank-you: 'Bedankt voor uw reactie op {{link}}.'
-user.emails.download-new-downloads:
-  one: '1 nieuwe download'
-  other: '{{count}} nieuwe downloads'
-user.emails.download-updated-downloads:
-  one: '1 bijgewerkte download'
-  other: '{{count}} bijgewerkte downloads'
+user.emails.download-new-downloads.one: '1 nieuwe download'
+user.emails.download-new-downloads.other: '{{count}} nieuwe downloads'
+user.emails.download-updated-downloads.one: '1 bijgewerkte download'
+user.emails.download-updated-downloads.other: '{{count}} bijgewerkte downloads'
 user.emails.downloads-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op onze downloads bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle downloadmeldingen.</a>'
 user.emails.email-too-big: 'Uw e-mail "{{subject}}" is niet geaccepteerd, omdat deze te groot is. De maximale e-mailgrootte is {{max_size}}. Verwijder elke bijlage en probeer het nogmaals.'
 user.emails.feedback-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op ons nieuws bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle nieuwsmeldingen.</a>'
-user.emails.feedback-updated-items:
-  one: '1 bijgewerkte feedbackitem'
-  other: '{{count}} bijgewerkte feedbackitems'
+user.emails.feedback-updated-items.one: '1 bijgewerkte feedbackitem'
+user.emails.feedback-updated-items.other: '{{count}} bijgewerkte feedbackitems'
 user.emails.feedback_agent-validation: 'Let er op dat uw feedback niet publiekelijk zichtbaar is totdat een van onze medewerkers het heeft gecontroleerd'
 user.emails.feedback_approved: 'Wij sturen u een e-mail om u te laten weten dat uw feedback nu voor iedereen zichtbaar is op onze website.'
 user.emails.feedback_closed: 'Uw feedback "{{title}}" is gesloten: {{status}}'
@@ -884,27 +856,22 @@ user.emails.feedback_new-comment: '{{name}} heeft een nieuwe reactie geplaatst:'
 user.emails.feedback_published: 'Uw feedback "{{title}}" is gevalideerd en zal nu verschijnen op onze website.'
 user.emails.feedback_thank-you: 'Bedankt voor uw feedback "{{title}}"'
 user.emails.feedback_updated: 'Uw feedback "{{title}}" is bijgewerkt. Het wordt nu opgeslagen onder de nieuwe status "{{status}}"'
-user.emails.feedback_votes:
-  one: 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:'
-  other: 'Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:'
+user.emails.feedback_votes.one: 'Uw feedback heeft op dit moment <strong>1</strong> stem. Bekijk uw feedback online op:'
+user.emails.feedback_votes.other: 'Uw feedback heeft op dit moment <strong>{{count}}</strong> stemmen. Bekijk uw feedback online op:'
 user.emails.greeting: 'Beste {{to_name}},'
 user.emails.kb-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op onze kennisbank bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden voor alle kennisbankmeldingen.</a>'
-user.emails.kb-new-articles:
-  one: '1 nieuw artikelen'
-  other: '{{count}} nieuwe artikelen'
-user.emails.kb-updated-articles:
-  one: '1 bijgewerkte artikel'
-  other: '{{count}} bijgewerkte artikelen'
+user.emails.kb-new-articles.one: '1 nieuw artikelen'
+user.emails.kb-new-articles.other: '{{count}} nieuwe artikelen'
+user.emails.kb-updated-articles.one: '1 bijgewerkte artikel'
+user.emails.kb-updated-articles.other: '{{count}} bijgewerkte artikelen'
 user.emails.label_view-online: 'Online bekijken'
 user.emails.message-clipped: '(Bericht is geknipt)'
 user.emails.new-ticket-guest-link: 'Bedankt dat u contact met ons opneemt. U kunt de status van uw ticket hier bekijken:'
 user.emails.news-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneerd op ons nieuws bij <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Wilt u deze e-mails niet meer ontvangen? <a href="{{unsubscribe_url}}">Klik hier om u af te melden van alle nieuwsmeldingen.</a>'
-user.emails.news-new-articles:
-  one: '1 nieuw nieuwsartikel'
-  other: '{{count}} nieuwe nieuwsartikelen'
-user.emails.news-updated-articles:
-  one: '1 bijgewerkt nieuwsartikel'
-  other: '{{count}} bijgewerkte nieuwsartikelen'
+user.emails.news-new-articles.one: '1 nieuw nieuwsartikel'
+user.emails.news-new-articles.other: '{{count}} nieuwe nieuwsartikelen'
+user.emails.news-updated-articles.one: '1 bijgewerkt nieuwsartikel'
+user.emails.news-updated-articles.other: '{{count}} bijgewerkte nieuwsartikelen'
 user.emails.password_agent-reset: 'Een medewerker heeft uw wachtwoord gereset. U kunt inloggen met deze gegevens'
 user.emails.password_reset: 'U heeft een aanvraag ingediend voor het resetten van uw wachtwoord. Klik op de onderstaande link om uw wachtwoord te resetten:'
 user.emails.password_set: 'Om uw wachtwoord in te stellen, klik op de link hieronder:'
@@ -945,22 +912,18 @@ user.error.error_code: 'Error code'
 user.error.error_title: Fout
 user.error.expired-token: 'De pagina die u probeert te bereiken is verlopen. Ga terug en probeer het opnieuw.'
 user.error.form_choice_invalid: 'Selecteer een optie van de lijst'
-user.error.form_choice_max:
-  one: 'Selecteer ten hoogste 1 optie'
-  other: 'Selecteer ten hoogste {{count}} opties'
-user.error.form_choice_min:
-  one: 'Selecteer ten minste 1 optie'
-  other: 'Selecteer ten minste {{count}} opties'
+user.error.form_choice_max.one: 'Selecteer ten hoogste 1 optie'
+user.error.form_choice_max.other: 'Selecteer ten hoogste {{count}} opties'
+user.error.form_choice_min.one: 'Selecteer ten minste 1 optie'
+user.error.form_choice_min.other: 'Selecteer ten minste {{count}} opties'
 user.error.form_date_invalid: 'Vul een geldige datum in'
 user.error.form_date_invalid_dow: 'Deze werkdag kan niet worden gekozen'
 user.error.form_date_invalid_range: 'De dag die u heeft geselecteerd, valt niet binnen de mogelijkheden'
 user.error.form_required: 'Dit veld is verplicht'
-user.error.form_text_max:
-  one: 'Voer ten hoogste 1 teken in'
-  other: 'Voer ten hoogste {{count}} tekens in'
-user.error.form_text_min:
-  one: 'Voer ten minste 1 teken in'
-  other: 'Voer ten minste {{count}} tekens in'
+user.error.form_text_max.one: 'Voer ten hoogste 1 teken in'
+user.error.form_text_max.other: 'Voer ten hoogste {{count}} tekens in'
+user.error.form_text_min.one: 'Voer ten minste 1 teken in'
+user.error.form_text_min.other: 'Voer ten minste {{count}} tekens in'
 user.error.form_text_regex: 'Geef een correcte waarde'
 user.error.invalid_email: 'Onjuist e-mailadres'
 user.error.invalid_email-code: 'De validatie link is onjuist.'
@@ -1005,21 +968,16 @@ user.profile.choose_email: 'Kies het e-mailadres dat u wilt gebruiken'
 user.profile.connect_with: 'Verbinden met'
 user.profile.or_connect_with: 'Of verbind met'
 user.profile.register: Registreren
-user.profile.register_password_min_length:
-  one: 'Minimum van {{count}} karakter'
-  other: 'Minimum van {{count}} karakters'
-user.profile.register_password_require_num_lowercase:
-  one: 'Minstens {{count}} kleine letter'
-  other: 'Minstens {{count}} kleine letters'
-user.profile.register_password_require_num_number:
-  one: 'Minstens {{count}} nummer'
-  other: 'Minstens {{count}} nummers'
-user.profile.register_password_require_num_symbol:
-  one: 'Minstens {{count}} symbool'
-  other: 'Minstens {{count}} symbool'
-user.profile.register_password_require_num_uppercase:
-  one: 'Minstens {{count}} hoofdletter'
-  other: 'Minstens {{count}} hoofdletters'
+user.profile.register_password_min_length.one: 'Minimum van {{count}} karakter'
+user.profile.register_password_min_length.other: 'Minimum van {{count}} karakters'
+user.profile.register_password_require_num_lowercase.one: 'Minstens {{count}} kleine letter'
+user.profile.register_password_require_num_lowercase.other: 'Minstens {{count}} kleine letters'
+user.profile.register_password_require_num_number.one: 'Minstens {{count}} nummer'
+user.profile.register_password_require_num_number.other: 'Minstens {{count}} nummers'
+user.profile.register_password_require_num_symbol.one: 'Minstens {{count}} symbool'
+user.profile.register_password_require_num_symbol.other: 'Minstens {{count}} symbool'
+user.profile.register_password_require_num_uppercase.one: 'Minstens {{count}} hoofdletter'
+user.profile.register_password_require_num_uppercase.other: 'Minstens {{count}} hoofdletters'
 user.profile.register_password_unused: 'Het nieuwe wachtwoord mag niet gelijk zijn aan een eerder gebruikt wachtwoord'
 user.tickets.feedback_message_leave_comment: 'Laat eventueel een reactie achter'
 user.tickets.fields_category: Categorie

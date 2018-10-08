@@ -83,12 +83,10 @@ portal.articles.section-desc: 'Vores videnbase indeholder artikler skrevet af vo
 portal.articles.section-title: Videnbase
 portal.articles.share-by-email: 'Del denne artikel per e-mail:'
 portal.articles.view-as-agent: 'Du kan se denne side fordi du er sagsbehandler. Brugere vil ikke kunne se siden.'
-portal.articles.view-x-articles:
-  one: 'Vis 1 artikel '
-  other: ' Vis {{count}} artikler'
-portal.articles.x-articles:
-  one: '1 artikel '
-  other: ' {{count}} artikler'
+portal.articles.view-x-articles.one: 'Vis 1 artikel '
+portal.articles.view-x-articles.other: ' Vis {{count}} artikler'
+portal.articles.x-articles.one: '1 artikel '
+portal.articles.x-articles.other: ' {{count}} artikler'
 portal.chat.agent_blocked_user_on: '{{name}} satte en blokering på {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} lader til at være afbrudt'
 portal.chat.agent_typing_message: '{{agentName}} skriver en besked'
@@ -133,9 +131,8 @@ portal.chat.list_chat: Chat
 portal.chat.list_date: Dato
 portal.chat.list_switch_to_my_chats: 'Skift til mine chats'
 portal.chat.list_switch_to_organization: 'Skift til organisation'
-portal.chat.list_title:
-  one: '1 Chat'
-  other: '{{count}} Chats'
+portal.chat.list_title.one: '1 Chat'
+portal.chat.list_title.other: '{{count}} Chats'
 portal.chat.list_user: Bruger
 portal.chat.log_agents: Sagsbehandler
 portal.chat.log_chat_time: 'Total chat tid'
@@ -208,9 +205,8 @@ portal.downloads.section-desc: 'Gennemse vores samling af downloads.'
 portal.downloads.section-title: Downloads
 portal.downloads.uploaded-on: Uploaded
 portal.downloads.view-as-agent: 'Du kan se denne side, fordi du er en agent. Brugerne vil ikke være i stand til at se denne side.'
-portal.downloads.view-x-files:
-  one: 'Vis 1 download '
-  other: ' Vis {{count}} downloads'
+portal.downloads.view-x-files.one: 'Vis 1 download '
+portal.downloads.view-x-files.other: ' Vis {{count}} downloads'
 portal.email_subjects.chat_transcript: 'Chat samtaleudskrift'
 portal.email_subjects.comment-approved: 'Din kommentar er godkendt'
 portal.email_subjects.comment-confirmation: 'Tak for din kommentar'
@@ -258,19 +254,16 @@ portal.emails.comment_deleted: 'Din kommentar er blevet brugt til at forbedre si
 portal.emails.comment_thank-you: 'Tak for din kommentar til {{link}}.'
 portal.emails.comment_validate-email: 'Bekræft venligst din emailadresse, ved at klikke på det følgende link:'
 portal.emails.do-not-reply: 'Svar venligst ikke på denne email. Dette er en maskingenereret besked og svar på denne vil ikke blive læst af vores ansatte.'
-portal.emails.download-new-downloads:
-  one: '1 ny download '
-  other: ' {{count}} nye downloads'
-portal.emails.download-updated-downloads:
-  one: '1 opdateret download'
-  other: '{{count}} opdaterede downloads'
+portal.emails.download-new-downloads.one: '1 ny download '
+portal.emails.download-new-downloads.other: ' {{count}} nye downloads'
+portal.emails.download-updated-downloads.one: '1 opdateret download'
+portal.emails.download-updated-downloads.other: '{{count}} opdaterede downloads'
 portal.emails.downloads-explain: 'Du modtager denne e-mail, fordi du abonnerer på opdateringer om downloads til rådighed på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Ønsker du ikke disse e-mails længere? <a href="{{unsubscribe_url}}"> Klik her for at afmelde alle download notifikationer. </a>'
 portal.emails.email-too-big: 'Din e-mail "{{subject}}" er ikke modtaget fordi den er for stor. Maximum størrelsen for e-mails er  {{max_size}}. Fjern eventuelt store vedhæftede filer og prøv igen.'
 portal.emails.end_greeting: 'Hilsen <br /><br />{{site_name}}''s'
 portal.emails.feedback-explain: 'Du modtager denne e-mail, fordi du abonnerer på opdateringer om feedback-elementer på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Ønsker du ikke disse e-mails længere? <a href="{{unsubscribe_url}}">Klik her for at afmelde alle feedback notifikationer. </a>'
-portal.emails.feedback-updated-items:
-  one: '1 opdateret feedback-element '
-  other: '{{count}} opdaterede feedback-elementer'
+portal.emails.feedback-updated-items.one: '1 opdateret feedback-element '
+portal.emails.feedback-updated-items.other: '{{count}} opdaterede feedback-elementer'
 portal.emails.feedback_agent-validation: 'Bemærk, at din feedback ikke vises offentligt på vores support portal, før en af vores agenter godkender det.'
 portal.emails.feedback_approved: 'Vi ønskede at fortælle dig, at din feedback er godkendt og er nu offentligt på vores support portal.'
 portal.emails.feedback_closed: 'Din fremsendte indlæg "{{title}}" er lukket med statussen: {{status}}'
@@ -281,27 +274,22 @@ portal.emails.feedback_published: 'Dit indlæg "{{title}}" er blevet godkendt og
 portal.emails.feedback_thank-you: 'Tak for dit indlæg "{{title}}"'
 portal.emails.feedback_updated: 'Din indsendte feedback "{{title}}" er blevet opdateret. Dens nye status er "{{status}}"'
 portal.emails.feedback_validate-email: 'Validér venligst din e-mailadresse ved at klikke på følgende link:'
-portal.emails.feedback_votes:
-  one: 'Dit indlæg har i øjeblikket <strong>1</strong> stemme. Se din indlæg online på: '
-  other: 'Dit indlæg har i øjeblikket <strong>{{count}}</strong> stemmer. Se dine indlæg online på:'
+portal.emails.feedback_votes.one: 'Dit indlæg har i øjeblikket <strong>1</strong> stemme. Se din indlæg online på: '
+portal.emails.feedback_votes.other: 'Dit indlæg har i øjeblikket <strong>{{count}}</strong> stemmer. Se dine indlæg online på:'
 portal.emails.greeting: 'Kære {{to_name}},'
 portal.emails.kb-explain: 'Du modtager denne e-mail, fordi du abonnerer på opdateringer om vores vidensbase artikler på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Ønsker du ikke disse e-mails længere? <a href="{{unsubscribe_url}}">Klik her for at afmelde alle vidensbase notifikationer.</a>'
-portal.emails.kb-new-articles:
-  one: '1 ny vidensbase artikel {{count}} nye vidensbase artikler'
-  other: '1 ny vidensbase artikel {{count}} nye vidensbase artikler'
-portal.emails.kb-updated-articles:
-  one: '1 opdateret vidensbase artikel {{count}} opdaterede vidensbase artikler'
-  other: '1 opdateret vidensbase artikel {{count}} opdaterede vidensbase artikler'
+portal.emails.kb-new-articles.one: '1 ny vidensbase artikel {{count}} nye vidensbase artikler'
+portal.emails.kb-new-articles.other: '1 ny vidensbase artikel {{count}} nye vidensbase artikler'
+portal.emails.kb-updated-articles.one: '1 opdateret vidensbase artikel {{count}} opdaterede vidensbase artikler'
+portal.emails.kb-updated-articles.other: '1 opdateret vidensbase artikel {{count}} opdaterede vidensbase artikler'
 portal.emails.label_view-online: 'Se online'
 portal.emails.message-clipped: '(Beskeden er blevet forkortet)'
 portal.emails.new-ticket-guest-link: 'Tak for din henvendelse. Du kan se status for din sag online her:'
 portal.emails.news-explain: 'Du modtager denne e-mail, fordi du abonnerer på opdateringer om feedback-elementer på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Ønsker du ikke disse e-mails længere? <a href="{{unsubscribe_url}}">Klik her for at afmelde alle nyheds notifikationer. </a>'
-portal.emails.news-new-articles:
-  one: '1 nyt nyheds indlæg '
-  other: '{{count}} nye nyheds indlæg'
-portal.emails.news-updated-articles:
-  one: '1 opdateret nyheds indlæg'
-  other: '{{count}} opdaterede nyheds indlæg'
+portal.emails.news-new-articles.one: '1 nyt nyheds indlæg '
+portal.emails.news-new-articles.other: '{{count}} nye nyheds indlæg'
+portal.emails.news-updated-articles.one: '1 opdateret nyheds indlæg'
+portal.emails.news-updated-articles.other: '{{count}} opdaterede nyheds indlæg'
 portal.emails.password_agent-reset: 'En agent har nulstillet adgangskoden til din konto. Du kan logge ind med disse oplysninger'
 portal.emails.password_reset: 'Du har bedt om at få nustillet dit password. For at nulstille dit password, klik på følgende link:'
 portal.emails.password_set: 'For at indstille din adgangskode, skal du klikke på linket nedenfor:'
@@ -338,9 +326,8 @@ portal.emails.ticket_rate-request: 'Hvordan vil du bedømme den hjælp, du har m
 portal.emails.ticket_received: 'Din sag er modtaget. En af vore medarbejdere vil svare snarest.'
 portal.emails.ticket_reply-confirm: 'Tak for dit svar. En af vore medarbejdere svare snarest.'
 portal.emails.ticket_validate: 'Tak fordi du kontaktede os.<br /><br />Før vore medarbejdere læser og svarer din besked, skal du bekræfte din email adresse.'
-portal.emails.tickets_ommitted:
-  one: '1 besked er udeladt '
-  other: ' {{count}} beskeder er udeladt'
+portal.emails.tickets_ommitted.one: '1 besked er udeladt '
+portal.emails.tickets_ommitted.other: ' {{count}} beskeder er udeladt'
 portal.emails.validate-email: 'Bekræft venligst at e-mailadressen er din, ved at klikke på linket nedenfor.'
 portal.emails.view_full_history_online: 'Se hele sagen online'
 portal.error.403-desc: 'Du har desværre ikke adgang til at se denne side.'
@@ -385,9 +372,8 @@ portal.feedback.status_active: 'Åbne elementer'
 portal.feedback.status_all: 'Alle elementer'
 portal.feedback.status_closed: 'Lukkede elementer'
 portal.feedback.submit_feedback: 'Send indlæg'
-portal.feedback.view-x-feedback:
-  one: 'Vis 1 tilbagemelding '
-  other: ' Vis {{count}} tilbagemeldinger'
+portal.feedback.view-x-feedback.one: 'Vis 1 tilbagemelding '
+portal.feedback.view-x-feedback.other: ' Vis {{count}} tilbagemeldinger'
 portal.flashes.article_cat_subscribe: 'Du har abonneret på denne kategori. Du vil få besked, når nye artikler er offentligjort.'
 portal.flashes.article_cat_unsubscribe: 'Du er nu afmeldt fra denne kategori.'
 portal.flashes.article_subscribe: 'Du har abonneret på denne artikel. Du får besked, når den er opdateres, eller når der er en ny kommentar.'
@@ -455,21 +441,16 @@ portal.forms.error_no_uploaded_file: 'Den uploadede fil blev ikke fundet. Prøv 
 portal.forms.error_not_checked: 'Feltet ikke er markeret.'
 portal.forms.error_password_current: 'Skal være dit nuværende password'
 portal.forms.error_password_forbid_reuse: 'Du kan ikke bruge en adgangskode, som du har brugt før'
-portal.forms.error_password_min_length:
-  one: 'Minimum {{count}} karakter '
-  other: ' Minimum {{count}} tegn'
-portal.forms.error_password_require_num_lowercase:
-  one: 'Mindst {{count}} små bogstaver '
-  other: ' Mindst {{count}} små bogstaver'
-portal.forms.error_password_require_num_number:
-  one: 'Mindst {{count}} tal'
-  other: ' Mindst {{count}} tal'
-portal.forms.error_password_require_num_symbol:
-  one: 'Mindst {{count}} symbol '
-  other: ' Mindst {{count}} symboler'
-portal.forms.error_password_require_num_uppercase:
-  one: 'Mindst {{count}} stort bogstav '
-  other: ' Mindst {{count}} store bogstaver'
+portal.forms.error_password_min_length.one: 'Minimum {{count}} karakter '
+portal.forms.error_password_min_length.other: ' Minimum {{count}} tegn'
+portal.forms.error_password_require_num_lowercase.one: 'Mindst {{count}} små bogstaver '
+portal.forms.error_password_require_num_lowercase.other: ' Mindst {{count}} små bogstaver'
+portal.forms.error_password_require_num_number.one: 'Mindst {{count}} tal'
+portal.forms.error_password_require_num_number.other: ' Mindst {{count}} tal'
+portal.forms.error_password_require_num_symbol.one: 'Mindst {{count}} symbol '
+portal.forms.error_password_require_num_symbol.other: ' Mindst {{count}} symboler'
+portal.forms.error_password_require_num_uppercase.one: 'Mindst {{count}} stort bogstav '
+portal.forms.error_password_require_num_uppercase.other: ' Mindst {{count}} store bogstaver'
 portal.forms.error_person_not_agent: 'Person med id {{value}} er ikke agent.'
 portal.forms.error_person_not_found: 'Person med identifier "{{value}}" blev ikke fundet.'
 portal.forms.error_person_not_user: 'Person med id {{value}} er ikke bruger.'
@@ -549,13 +530,11 @@ portal.general.btn-unsubscribe: Afmeld
 portal.general.by: af
 portal.general.by_2: Af
 portal.general.comment_btn_save: 'Gem kommentar'
-portal.general.comments-count:
-  one: '1 kommentar'
-  other: '{{count}} kommentarer'
+portal.general.comments-count.one: '1 kommentar'
+portal.general.comments-count.other: '{{count}} kommentarer'
 portal.general.comments-pending-validation: 'Denne kommentar bliver gennemgået. Den vil blive vist om kort tid'
-portal.general.comments-title:
-  one: 'Kommentar (1)'
-  other: 'Kommentarer ({{count}})'
+portal.general.comments-title.one: 'Kommentar (1)'
+portal.general.comments-title.other: 'Kommentarer ({{count}})'
 portal.general.delete: Slet
 portal.general.everything: Alt
 portal.general.get-in-touch: 'Kom i kontakt'
@@ -644,14 +623,12 @@ portal.news.recent-title: 'Seneste nyheder'
 portal.news.search-title: 'Nyheds artikler'
 portal.news.section-title: Nyhed
 portal.news.view-as-agent: 'Du kan se denne side, fordi du er en agent. Normale brugere vil ikke være i stand til at se denne side.'
-portal.news.view-x-news:
-  one: 'Se 1 artikel '
-  other: ' Vis {{count}} artikler'
+portal.news.view-x-news.one: 'Se 1 artikel '
+portal.news.view-x-news.other: ' Vis {{count}} artikler'
 portal.sidebar.agents_available: 'Ledige agenter'
 portal.sidebar.agents_none: 'Ingen af vores agenter er online lige nu. Du kan stadigvæk  <a href="{{new_ticket_url}}"> åbne en sag </a>.'
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
+portal.sidebar.agents_x_online.one: '{{count}} online'
+portal.sidebar.agents_x_online.other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Indsendt af {{name}}'
 portal.sidebar.news_title: Nyhed
 portal.sidebar.satisfied_customers: 'tilfredse kunder'
@@ -677,9 +654,8 @@ portal.tickets.list_no_tickets: 'Der er ingen sager at vise i denne fane.  <a hr
 portal.tickets.list_search: 'Søg i sager:'
 portal.tickets.list_status_agent: 'Sagsbehandler vil svare'
 portal.tickets.list_status_open: 'Åbne sager'
-portal.tickets.list_status_open_count:
-  one: '{{count}} afventer svar'
-  other: '{{count}} afventer svar'
+portal.tickets.list_status_open_count.one: '{{count}} afventer svar'
+portal.tickets.list_status_open_count.other: '{{count}} afventer svar'
 portal.tickets.list_status_resolved: Løst
 portal.tickets.list_status_user: 'Du er nødt til at reagere'
 portal.tickets.list_subject: Emne
@@ -775,9 +751,8 @@ user.chat.log_created-date: 'Oprettet {{date}}'
 user.chat.log_fields_agent: Sagsbehandler
 user.chat.log_fields_department: Afdeling
 user.chat.log_message_author-you: Du
-user.chat.log_nav-view-chats:
-  one: 'Se din seneste chat-log'
-  other: 'Se dine {{count}} chat-logs'
+user.chat.log_nav-view-chats.one: 'Se din seneste chat-log'
+user.chat.log_nav-view-chats.other: 'Se dine {{count}} chat-logs'
 user.chat.log_no_department: 'Ingen afdeling'
 user.chat.log_unassigned: 'Der var ikke tildelt en sagsbehandler'
 user.chat.message_agent-timeout: 'Vi beklager; {{name}} synes at være blevet afbrudt. Vent venligst mens vi finder en anden medarbejder til dig.'
@@ -863,18 +838,15 @@ user.emails.chat_validate_email: 'Validér venligst din e-mailadresse ved at ind
 user.emails.comment_approved: 'Din kommentar er blevet publiceret'
 user.emails.comment_deleted: 'Din kommentar er blevet brugt til at forbedre siden.'
 user.emails.comment_thank-you: 'Tak for din kommentar til {{link}}.'
-user.emails.download-new-downloads:
-  one: '1 ny download '
-  other: ' {{count}} nye downloads'
-user.emails.download-updated-downloads:
-  one: '1 opdateret download'
-  other: '{{count}} opdaterede downloads'
+user.emails.download-new-downloads.one: '1 ny download '
+user.emails.download-new-downloads.other: ' {{count}} nye downloads'
+user.emails.download-updated-downloads.one: '1 opdateret download'
+user.emails.download-updated-downloads.other: '{{count}} opdaterede downloads'
 user.emails.downloads-explain: 'Du modtager denne e-mail, fordi du abonnerer på vores downloads på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br /> Ønsker du ikke disse e-mails længere? < <a href="{{unsubscribe_url}}">Klik her for at afmelde alle downloads notifikationer. </a>'
 user.emails.email-too-big: 'Din e-mail "{{subject}}" blev ikke accepteret, fordi den er for stor. Den maksimale email størrelse er {{max_size}}. Fjern eventuelle vedhæftede filer, og prøv igen.'
 user.emails.feedback-explain: 'Du modtager denne e-mail, fordi du abonnerer på vores nyheder på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Ønsker du ikke disse e-mails længere? <a href="{{unsubscribe_url}}"> Klik her for at afmelde alle nyheds notifikationer.</a>'
-user.emails.feedback-updated-items:
-  one: '1 opdateret Feedback-element'
-  other: '{{count}} opdaterede Feedback-elementer'
+user.emails.feedback-updated-items.one: '1 opdateret Feedback-element'
+user.emails.feedback-updated-items.other: '{{count}} opdaterede Feedback-elementer'
 user.emails.feedback_agent-validation: 'Bemærk, at din feedback, ikke vil blive vist offentligt, før en af vores agenter gennemgår den'
 user.emails.feedback_approved: 'Vi ønskede at fortælle dig, at din feedback er godkendt, og nu er offentliggjort på vores hjemmeside.'
 user.emails.feedback_closed: 'Din fremsendte indlæg "{{title}}" er lukket med statussen: {{status}}'
@@ -884,27 +856,22 @@ user.emails.feedback_new-comment: '{{name}} har lagt en ny kommentar.'
 user.emails.feedback_published: 'Din indsendt feedback "{{title}}" er blevet valideret og vises nu på vores hjemmeside.'
 user.emails.feedback_thank-you: 'Tak for dit indlæg "{{title}}"'
 user.emails.feedback_updated: 'Din indsendte feedback "{{title}}" er blevet opdateret. Dens status er nu: "{{status}}"'
-user.emails.feedback_votes:
-  one: 'Dit indlæg har i øjeblikket <strong>1</strong> stemme. Se din indlæg online på: '
-  other: 'Dit indlæg har i øjeblikket <strong>{{count}}</strong> stemmer. Se dine indlæg online på:'
+user.emails.feedback_votes.one: 'Dit indlæg har i øjeblikket <strong>1</strong> stemme. Se din indlæg online på: '
+user.emails.feedback_votes.other: 'Dit indlæg har i øjeblikket <strong>{{count}}</strong> stemmer. Se dine indlæg online på:'
 user.emails.greeting: 'Kære {{to_name}},'
 user.emails.kb-explain: 'Du modtager denne e-mail, fordi du abonnerer på vores vidensbase på  <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Ønsker du ikke disse e-mails længere? <a href="{{unsubscribe_url}}">Klik her for at afmelde alle vidensbase notifikationer. </a>'
-user.emails.kb-new-articles:
-  one: '1 ny artikel'
-  other: '{{count}} nye artikler'
-user.emails.kb-updated-articles:
-  one: '1 opdateret artikel '
-  other: '{{count}} opdaterede artikler'
+user.emails.kb-new-articles.one: '1 ny artikel'
+user.emails.kb-new-articles.other: '{{count}} nye artikler'
+user.emails.kb-updated-articles.one: '1 opdateret artikel '
+user.emails.kb-updated-articles.other: '{{count}} opdaterede artikler'
 user.emails.label_view-online: 'Se online'
 user.emails.message-clipped: '(Beskeden er blevet forkortet)'
 user.emails.new-ticket-guest-link: 'Tak for din henvendelse. Du kan se status for din sag her:'
 user.emails.news-explain: 'Du modtager denne e-mail, fordi du abonnerer på vores nyheder på <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Ønsker du ikke disse e-mails længere? <a href="{{unsubscribe_url}}">Klik her for at afmelde alle nyheds notifikationer.</a>'
-user.emails.news-new-articles:
-  one: '1 ny nyheds artikel'
-  other: '{{count}} nye nyheds artikler'
-user.emails.news-updated-articles:
-  one: '1 opdateret nyheds artikel'
-  other: '{{count}} opdaterede nyheds artikler'
+user.emails.news-new-articles.one: '1 ny nyheds artikel'
+user.emails.news-new-articles.other: '{{count}} nye nyheds artikler'
+user.emails.news-updated-articles.one: '1 opdateret nyheds artikel'
+user.emails.news-updated-articles.other: '{{count}} opdaterede nyheds artikler'
 user.emails.password_agent-reset: 'En agent har nulstillet adgangskoden til din konto. Du kan logge ind med disse oplysninger'
 user.emails.password_reset: 'Du har bedt om at få nustillet dit password. For at nulstille dit password, klik på følgende link:'
 user.emails.password_set: 'For at indstille din adgangskode, skal du klikke på linket nedenfor:'
@@ -943,22 +910,18 @@ user.error.error_code: 'Fejl kode'
 user.error.error_title: Fejl
 user.error.expired-token: 'Den side du forsøger at få vist eksisterer ikke mere. Prøv at gå tilbage og prøv igen'
 user.error.form_choice_invalid: 'Foretag et vælg fra listen'
-user.error.form_choice_max:
-  one: 'Vælg ikke flere end 1 mulighed'
-  other: 'Vælg ikke flere end {{count}} muligheder'
-user.error.form_choice_min:
-  one: 'Vælg mindst 1 af mulighederne'
-  other: 'Vælg mindst {{count}} af mulighederne'
+user.error.form_choice_max.one: 'Vælg ikke flere end 1 mulighed'
+user.error.form_choice_max.other: 'Vælg ikke flere end {{count}} muligheder'
+user.error.form_choice_min.one: 'Vælg mindst 1 af mulighederne'
+user.error.form_choice_min.other: 'Vælg mindst {{count}} af mulighederne'
 user.error.form_date_invalid: 'Skriv en gyldig dato'
 user.error.form_date_invalid_dow: 'Den valgte ugedag er ikke tilladt'
 user.error.form_date_invalid_range: 'Den dato, du har valgt er ikke inden for det tilladte interval'
 user.error.form_required: 'Dette felt er påkrævet'
-user.error.form_text_max:
-  one: 'Skriv ikke mere end 1 karakter'
-  other: 'Skriv ikke mere end {{count}} karakterer'
-user.error.form_text_min:
-  one: 'Skriv mindst 1 karakter'
-  other: 'Skriv mindst {{count}} karakterer'
+user.error.form_text_max.one: 'Skriv ikke mere end 1 karakter'
+user.error.form_text_max.other: 'Skriv ikke mere end {{count}} karakterer'
+user.error.form_text_min.one: 'Skriv mindst 1 karakter'
+user.error.form_text_min.other: 'Skriv mindst {{count}} karakterer'
 user.error.form_text_regex: 'Udfyld venligt med en korrekt værdi'
 user.error.invalid_email: 'Ugyldig email adresse'
 user.error.invalid_email-code: 'Bekræftelses linket virker ugyldigt'
@@ -1004,18 +967,14 @@ user.profile.connect_with: 'Forbind med'
 user.profile.or_connect_with: 'Eller tilslut med'
 user.profile.register: Registrer
 user.profile.register_password_min_length: 'Skriv venligst et password på mindst 5 karakterer'
-user.profile.register_password_require_num_lowercase:
-  one: 'Mindst {{count}} små bogstaver '
-  other: ' Mindst {{count}} små bogstaver'
-user.profile.register_password_require_num_number:
-  one: 'Mindst {{count}} nummer '
-  other: ' Mindst {{count}} numre'
-user.profile.register_password_require_num_symbol:
-  one: 'Mindst {{count}} symbol '
-  other: ' Mindst {{count}} symboler'
-user.profile.register_password_require_num_uppercase:
-  one: 'Mindst {{count}} stort bogstav '
-  other: ' Mindst {{count}} store bogstaver'
+user.profile.register_password_require_num_lowercase.one: 'Mindst {{count}} små bogstaver '
+user.profile.register_password_require_num_lowercase.other: ' Mindst {{count}} små bogstaver'
+user.profile.register_password_require_num_number.one: 'Mindst {{count}} nummer '
+user.profile.register_password_require_num_number.other: ' Mindst {{count}} numre'
+user.profile.register_password_require_num_symbol.one: 'Mindst {{count}} symbol '
+user.profile.register_password_require_num_symbol.other: ' Mindst {{count}} symboler'
+user.profile.register_password_require_num_uppercase.one: 'Mindst {{count}} stort bogstav '
+user.profile.register_password_require_num_uppercase.other: ' Mindst {{count}} store bogstaver'
 user.profile.register_password_unused: 'Du kan ikke bruge en adgangskode, som du har brugt før'
 user.tickets.feedback_message_leave_comment: 'Alternativ, læg en kommentar'
 user.tickets.fields_category: Kategori
