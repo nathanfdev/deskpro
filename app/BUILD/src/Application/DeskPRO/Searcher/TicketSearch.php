@@ -2681,6 +2681,20 @@ class TicketSearch extends SearcherAbstract
                     return false;
                 }
                 break;
+            case self::TERM_BRAND:
+                if (count($choice) == 1) {
+                    $choice = Arrays::getFirstItem($choice);
+                }
+                if (!is_array($choice)) {
+                    $choice = [$choice];
+                }
+
+                $choice = array_unique($choice, \SORT_NUMERIC);
+
+                if (!$this->_testChoiceMatch($ticket->getBrandId(), $op, $choice)) {
+                    return false;
+                }
+                break;
             case self::TERM_CATEGORY:
                 if (!$this->_testChoiceMatch($ticket->getCategoryId(), $op, $choice)) {
                     return false;
