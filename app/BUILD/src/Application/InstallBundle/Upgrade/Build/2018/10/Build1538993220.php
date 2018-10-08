@@ -4,7 +4,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use DeskPRO\Component\Util\RandUtils;
 
-class Build1537537849 extends AbstractBuild implements OnlineBuildInterface
+class Build1538993220 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
