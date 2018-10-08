@@ -73,17 +73,6 @@ class UserGroupHelper
         foreach ($modelUserGroups as $groupName) {
             $entity->addUsergroup($this->findOrCreateUserGroup($groupName));
         }
-
-        // remove deleted user groups
-        /** @var Usergroup $usergroup */
-        foreach ($entity->getUsergroups() as $usergroup) {
-            if ($usergroup->isAgentGroup()) {
-                continue;
-            }
-            if (!in_array($usergroup->getSysName(), $modelUserGroups) && !in_array($usergroup->getTitle(), $modelUserGroups)) {
-                $entity->getUsergroups()->removeElement($usergroup);
-            }
-        }
     }
 
     /**
@@ -100,17 +89,6 @@ class UserGroupHelper
         // add new agent groups
         foreach ($model->getAgentGroups() as $groupName) {
             $entity->addUsergroup($this->findOrCreateUserGroup($groupName, true));
-        }
-
-        // remove deleted agent groups
-        /** @var Usergroup $usergroup */
-        foreach ($entity->getUsergroups() as $usergroup) {
-            if (!$usergroup->isAgentGroup()) {
-                continue;
-            }
-            if (!in_array($usergroup->getSysName(), $model->getAgentGroups()) && !in_array($usergroup->getTitle(), $model->getAgentGroups())) {
-                $entity->getUsergroups()->removeElement($usergroup);
-            }
         }
     }
 
