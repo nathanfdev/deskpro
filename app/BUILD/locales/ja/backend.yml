@@ -1,1 +1,1065 @@
-{  }
+adm.settings.logo_title: ロゴ
+adm.settings.rate_limit_enabled_title: ログイン試行レート制限を有効にする
+adm.settings.rate_limit_help: パスワード類推攻撃からのリスクを減らすために、ログイン試行の失敗後にアカウントをロックします。
+adm.settings.rate_limit_title: ログイン試行レート制限
+adm.settings.reset_demo_descriptions_agents: ヘルプデスク内の全てのエージェントを削除します（あなたを除く）。
+adm.settings.reset_demo_descriptions_apps: 全てのDeskproアプリ（Gravatar含む）をアンインストールします。
+adm.settings.reset_demo_descriptions_departments: 全てのカスタム部門を削除し、デフォルトに戻します（サポート部門と営業部門のみ）。
+adm.settings.reset_demo_descriptions_downloads: 全てのダウンロードファイルを削除します。
+adm.settings.reset_demo_descriptions_escalations: 全てのエスカレーションとSLAを削除します。
+adm.settings.reset_demo_descriptions_feedback: 全てのフィードバック項目を削除します。
+adm.settings.reset_demo_descriptions_fields: 全てのカスタムチケット、ユーザー、組織、チャットフィールドを削除します。カテゴリ、優先度、ワークフロー、製品の値を削除し、これらのフィールドを無効にします。
+adm.settings.reset_demo_descriptions_filters: 全てのカスタムフィルタを削除します。
+adm.settings.reset_demo_descriptions_kb: 全てのナレッジベース記事を削除します。
+adm.settings.reset_demo_descriptions_labels: ヘルプデスク内の全てのラベルを削除します。
+adm.settings.reset_demo_descriptions_news: 全てのニュース投稿を削除します。
+adm.settings.reset_demo_descriptions_organizations: ヘルプデスク内の全ての組織を削除します。
+adm.settings.reset_demo_descriptions_perms: 全てのカスタムエージェント権限グループとユーザーグループを削除します。使用する前にエージェントとして全ての権限を持っていることを確認してください。
+adm.settings.reset_demo_descriptions_settings: ヘルプデスクの設定をデフォルトの状態にリセットします。
+adm.settings.reset_demo_descriptions_snippets: 全てのスニペットとマクロを削除します。
+adm.settings.reset_demo_descriptions_templates: ポータルテンプレートとメールテンプレートのカスタマイズを元に戻します。
+adm.settings.reset_demo_descriptions_tickets: ヘルプデスク内の全てのチケットを削除します。
+adm.settings.reset_demo_descriptions_triggers: トリガをデフォルト状態にリセットし、全てのカスタムトリガを削除します。
+adm.settings.reset_demo_descriptions_users: ヘルプデスク内の全てのユーザーを削除します。
+adm.settings.reset_demo_titles_agents: パージエージェント
+adm.settings.reset_demo_titles_apps: アプリリセット
+adm.settings.reset_demo_titles_departments: 部門リセット
+adm.settings.reset_demo_titles_downloads: パージダウンロード
+adm.settings.reset_demo_titles_escalations: エスカレーションとSLAのパージ
+adm.settings.reset_demo_titles_feedback: パージフィードバック
+adm.settings.reset_demo_titles_fields: フィールドリセット
+adm.settings.reset_demo_titles_filters: フィルタリセット
+adm.settings.reset_demo_titles_kb: KBパージ
+adm.settings.reset_demo_titles_labels: ラベルパージ
+adm.settings.reset_demo_titles_news: ニュースパージ
+adm.settings.reset_demo_titles_organizations: 組織パージ
+adm.settings.reset_demo_titles_perms: 権限リセット
+adm.settings.reset_demo_titles_settings: 設定リセット
+adm.settings.reset_demo_titles_snippets: スニペットとマクロをパージ
+adm.settings.reset_demo_titles_templates: ポータルテンプレートとメールテンプレートをリセット
+adm.settings.reset_demo_titles_tickets: チケットパージ
+adm.settings.reset_demo_titles_triggers: トリガリセット
+adm.settings.reset_demo_titles_users: ユーザパージ
+adm.tasks: タスク
+adm.tasks.allow_agents: タスク利用を許可するエージェント
+adm.tasks.allow_groups: タスク利用を許可する権限グループ
+adm.tasks.label_disabled: タスクアプリケーションを無効にする
+adm.tasks.label_enabled: タスクアプリケーションを有効にする
+adm.tasks.settings: 設定
+adm.tasks.task_reminder_time: エージェントのタスクリマインダ送信先
+adm.tickets.account_details: アカウント詳細
+adm.tickets.delete_account: チケットアカウント削除
+adm.tickets.delete_account_confirm: このメールアカウントを削除してもよろしいですか？Deskproはこのアカウントからのメール処理を停止します。
+adm.tickets.email_accounts: メールアカウント
+adm.tickets.new_account: 新しいアカウント
+adm.tickets.no_email_accounts: あなたはまだメールアカウントを作成していません。
+adm.tickets.x_email_accounts:
+  other: '{{count}} メールアカウント'
+admin.designer.add_new_rule: 新しいルールを追加
+admin.general.add_field: 項目追加
+admin.settings.add_label: ラベル追加
+admin.settings.advanced_settings: 詳細設定
+admin.settings.advanced_settings_view: 詳細設定ビュー
+admin.settings.basics: 基本
+admin.settings.captcha_always: 常に
+admin.settings.captcha_based_on_rate_limits: レート制限に基づいて
+admin.settings.captcha_for_everyone: 全ての人に
+admin.settings.captcha_for_guests: ゲスト用
+admin.settings.captcha_header: キャプチャシステム
+admin.settings.captcha_settings: キャプチャ設定
+admin.settings.captcha_settings_help1: '通常、キャプチャはユーザーが定義した <a href="{{url}}">レート制限</a>を超えた場合にのみ表示されます。'
+admin.settings.captcha_settings_help2: ただし、不正行為／スパムを減らすため、特定の機能で常にキャプチャを有効にすることを選択できます。
+admin.settings.choice_gravatar_default: カスタム画像がアップロードされるまで、デフォルトでグラバタープロフィール画像を使用する
+admin.settings.command_to_run_every_minute: １分ごとに実行するコマンド
+admin.settings.configure_minute_command: このコマンドを毎分実行するように設定する
+admin.settings.configure_scheduled_tasks: スケジュールタスク設定
+admin.settings.configuring_scheduled_tasks: スケジュールタスク設定
+admin.settings.confirm_configured_scheduled_tasks: スケジュールタスクを設定しました
+admin.settings.confirm_revert_all: このページの全ての設定をデフォルトに戻してもよろしいですか？この操作は取り消せません。
+admin.settings.continue_to_advanced_settings: 詳細設定に進む
+admin.settings.cookie_domain: クッキードメイン
+admin.settings.cookie_path: クッキーパス
+admin.settings.could_not_find_php_use_real: PHPへのパスを検出できませんでした。あなたのサーバPHPへの絶対パスを使用してください。
+admin.settings.cron_detailed_instructions: 詳細手順はこちら
+admin.settings.cron_explain: 'Deskproでメール処理、トリガ実行、通知送信などのタスクを実行するには、ルートフォルダ内の<var>cron.php</var>ファイルを実行する必要があります。cronスクリプト（Linux）または、スケジュールタスク（Windows）を用いて、毎分 <var>cron.php</var> ファイルを実行することをお勧めします。'
+admin.settings.cron_notice_php_path_not_found: '注：PHP CLIへのパスを自動的に検出できませんでした。パスを指定するには、<var>config.php</var>を編集してから、このページをリフレッシュして適切なコマンドを実行する必要があります。'
+admin.settings.cron_setup_linux: 'Linux cronジョブ作成'
+admin.settings.cron_setup_linux_edit_file: '<var>/etc/crontab</var>を編集して次の行を追加してください：'
+admin.settings.cron_setup_linux_edit_file_user: 'コマンドを実行するには、"exampleuser"をユーザーアカウントに置き換えます。例えば、Webサーバー権限（通常は「www」又は「nobody」）を使用して実行することができます。'
+admin.settings.cron_setup_windows: Windowsでスケジュールタスクを作成
+admin.settings.default_email_from_address: デフォルトのメールFromアドレス
+admin.settings.default_timezone: デフォルトタイムゾーン
+admin.settings.deskpro_name: Deskpro名
+admin.settings.deskpro_url: 'Deskpro URL'
+admin.settings.disallow_file_types: これらのファイルタイプを許可しない
+admin.settings.email_rate_limiting: メールレート制限
+admin.settings.email_rate_limiting_after: 後に
+admin.settings.email_rate_limiting_help1: 送信者が拒否される前に送信できるメールの最大数を制限することにより、乱用を防止します。ユーザーが制限に達すると警告が表示されます。
+admin.settings.email_rate_limiting_help2: 'このレート制限フィルタで捕捉された全てのメールは、拒否された状態で<a href="{{url}}">受診メールログ</a> に保存され、そこでレビューしたり、必要に応じて再処理できます。'
+admin.settings.email_rate_limiting_help3: エージェントからの返信メールにはこの制限が適用されないことに注意してください。
+admin.settings.email_rate_limiting_reject: メッセージを拒否する
+admin.settings.enable_new_comments_captcha: 新しいコメントでキャプチャを有効にする
+admin.settings.enable_new_feedback_captcha: 新しいフィードバックでキャプチャを有効にする
+admin.settings.enable_new_tickets_captcha: 新しいチケットでキャプチャを有効にする
+admin.settings.enable_portal: ポータルを有効にする
+admin.settings.enable_registration_captcha: 登録時にキャプチャを有効にする
+admin.settings.enable_sharing_content_captcha: コンテンツを共有する際にキャプチャを有効にする
+admin.settings.enter_default_email_origin: Deskproがメールを送信する際にデフォルトで使用するメールアドレスを入力してください
+admin.settings.enter_helpdesk_name: ヘルプデスクの名前を入力してください
+admin.settings.enter_valid_url: 有効なURLを入力してください
+admin.settings.filter: フィルタ
+admin.settings.label_types: ラベルタイプ
+admin.settings.linux: Linux
+admin.settings.max_filesize_server: 'サーバがサポートする最大ファイルサイズは{{filesize}}です'
+admin.settings.max_upload_size: 最大アップロードサイズ
+admin.settings.new_label: 新しいラベル
+admin.settings.notice_always_redirect_users: 'ユーザーが別のURLにアクセスした場合、常に「Helpdesk URL」にリダイレクトされます。例えば、これはwww以外をwwwにリダイレクトし、https://を有効にします。'
+admin.settings.notice_default_timezone: プリファレンスが設定されていないユーザーに日付を表示するときに使用されるデフォルトのタイムゾーン
+admin.settings.notice_deskpro_url: これはDeskpro自体のURLでスラッシュが付きます
+admin.settings.notice_deskpro_user_frontend: Deskproには、ユーザーがチケットやフィードバックを送信したり、ナレッジベースの記事やニュースを読んだり、ファイルをダウンロードしたりできるユーザーのフロントエンドが含まれています。後で全てのオプションを設定することができます。ポータルを必要とせず、Deskproを使用してメールを管理している場合は、これをオフにすることができます。
+admin.settings.notice_helpdesk_disabled: ヘルプデスクは現在無効になっています
+admin.settings.notice_name_of_your_helpdesk: あなたのヘルプデスクの名前
+admin.settings.notice_scheduled_tasks: スケジュールタスクを構成する方法は、サーバー設定により異なります。以下は共通サーバーのガイドです。
+admin.settings.portal_disable_rate_limit: レート制限を無効にする
+admin.settings.portal_login_rate_limit_agent: エージェントアカウントのレート制限
+admin.settings.portal_login_rate_limit_guest: ログインフォームのレート制限
+admin.settings.portal_login_rate_limit_user: ユーザーアカウントのレート制限
+admin.settings.portal_rate_limit_comment_attempted: ユーザーがコメントを送信した後
+admin.settings.portal_rate_limit_feedback_attempted: ユーザーがフィードバック項目を送信した後
+admin.settings.portal_rate_limit_forgot_password_attempted: ユーザーが「パスワードを忘れた」フォームを使用した後
+admin.settings.portal_rate_limit_header: レート制限
+admin.settings.portal_rate_limit_ip_whitelist: ホワイトリストIPアドレス
+admin.settings.portal_rate_limit_logged_in: ログインユーザーのレート制限
+admin.settings.portal_rate_limit_login_attempted: ユーザーがログインしようとした後
+admin.settings.portal_rate_limit_minutes: 分
+admin.settings.portal_rate_limit_registration_attempted: ユーザーが登録しようとした後
+admin.settings.portal_rate_limit_reject_form: フォームを無効にする
+admin.settings.portal_rate_limit_share_attempted: ユーザーがコンテンツを共有した後
+admin.settings.portal_rate_limit_show_captcha: ユーザーにキャプチャを表示する
+admin.settings.portal_rate_limit_ticket_attempted: ユーザーがチケットを送信した後
+admin.settings.portal_rate_limit_upload_attempted: ユーザーが添付ファイルを送信した後
+admin.settings.portal_rate_limit_whitelist_text: 多くのエージェント／ユーザーが共有IPアドレスからアクセスしており、常にキャプチャが表示されている場合は、アドレスをホワイトリストに登録します。複数のアドレスはコンマで区切ります。
+admin.settings.re_captcha_secret_key: 秘密鍵
+admin.settings.re_captcha_site_key: サイトキー
+admin.settings.restrict_file_types: これらのファイルタイプのみを許可する
+admin.settings.revert_all_settings: 全ての設定を元に戻す
+admin.settings.revert_settings: 設定を元に戻す
+admin.settings.revert_settings_to_default: 設定をデフォルトに戻す
+admin.settings.saved_success: 設定が正常に保存されました
+admin.settings.select_timezone: タイムゾーンを選択してください
+admin.settings.set_value: 設定値
+admin.settings.sort: ソート
+admin.settings.usage_count: 使用回数
+admin.settings.use_built_in_captcha: Deskproの組み込みキャプチャシステムを使用する
+admin.settings.use_built_in_captcha_help: Deskproには、ほとんどのヘルプデスクに適した画像ベースのキャプチャシステムが付属しています。
+admin.settings.use_re_captcha: reCAPTCHAを使用する（Google）
+admin.settings.use_re_captcha_help: 'reCAPTCHAはGoogleが運営するサービスです。reCAPTCHA は高度な技術を使用して不正なユーザーを検出し、Deskproの組み込みシステムよりも効果的です。'
+admin.settings.use_re_captcha_register: 'reCAPTCHAを使用するには、無料のAPIキー<a href="{{url}}" target="_blank">ここ</a>に登録する必要があります。'
+admin.settings.warning_advanced_settings_undocumented: 警告：「詳細設定」に記載されている設定は文書化されておらず、予期しない結果になる可能性があります。
+admin.settings.welcome_to_deskpro: Deskproへようこそ
+admin.settings.windows: Windows
+admin.settings.your_helpdesk_name: あなたのヘルプデスク名
+admin.settings.your_helpdesk_url: あなたのヘルプデスクURL
+admin.settings.your_main_website_name: メインのWebサイト名
+admin.settings.your_main_website_url: メインのWebサイトURL
+admin.settings.your_site_name: あなたのサイト名
+admin.settings.your_site_url: あなたのサイトURL
+admin.settings.your_website_name: あなたのWebサイト名
+admin.settings.your_website_url: あなたのWebサイトURL
+admin.tickets.account_details: アカウント詳細
+admin.tickets.add_a_new_action: 新しいアクションを追加
+admin.tickets.add_a_new_criteria: 新しい条件を追加
+admin.tickets.add_new_category: 新しいカテゴリを追加
+admin.tickets.add_new_field: 新しい項目を追加
+admin.tickets.add_new_filter: 新しいフィルタを追加
+admin.tickets.add_new_priority: 新しい優先度を追加
+admin.tickets.add_new_workflow: 新しいワークフローを追加
+admin.tickets.add_popup_link: ポップアップウィンドウでフォームを開くリンクをWebサイトに追加します。
+admin.tickets.add_trigger: トリガー追加
+admin.tickets.admin_namenote: 管理者名／メモ
+admin.tickets.agent_access: エージェントアクセス
+admin.tickets.agent_filters: エージェントフィルタ
+admin.tickets.agent_waiting_for_user: エージェントがユーザーの返信を待っているとき
+admin.tickets.all_tickets_match: 条件なし。全てのチケットが該当します。
+admin.tickets.any_ticket: 任意のチケット
+admin.tickets.back_to_categories: カテゴリに戻る
+admin.tickets.back_to_ticket_categories: チケットカテゴリに戻る
+admin.tickets.back_to_ticket_priorities: チケットの優先度に戻る
+admin.tickets.back_to_ticket_properties: チケットプロパティに戻る
+admin.tickets.back_to_ticket_workflows: チケットワークフローに戻る
+admin.tickets.back_to_workflows: ワークフローに戻る
+admin.tickets.captcha: キャプチャ
+admin.tickets.changed_to_effect: '{{desc}}に変更されました'
+admin.tickets.choice_direct_link_ticket_form: 新しいチケットフォームに直接リンクする
+admin.tickets.choice_specific_team_access: 特定のチームのみがこのフィルタを使用できるようにする
+admin.tickets.choose_a_category: カテゴリを選択…
+admin.tickets.choose_a_priority: 優先順位を選択…
+admin.tickets.choose_a_product: プロダクトを選択…
+admin.tickets.choose_trigger_event: トリガを実行させるイベントの種類を選択します：
+admin.tickets.choose_type: タイプ選択
+admin.tickets.choose_widget_type: ウィジェットタイプ選択
+admin.tickets.click_here_to_create: 今すぐ作成するにはここをクリック
+admin.tickets.confirm_delete: 'カテゴリ「<strong>{{title}}</strong>」を削除してもよろしいですか？'
+admin.tickets.confirm_delete_priority: '優先順位「<strong>{{title}}</strong>」を削除してもよろしいですか？'
+admin.tickets.confirm_delete_top_level: 'カテゴリ「<strong>{{title}}</strong>」を削除してもよろしいですか？これはトップレベルのカテゴリなので、<strong>全ての子プロダクトも削除されます</strong>'
+admin.tickets.confirm_delete_trigger: このトリガを削除してもよろしいですか？
+admin.tickets.confirm_delete_workflow: 'ワークフロー「<strong>{{title}}</strong>」を削除してもよろしいですか？'
+admin.tickets.contact_us: お問い合わせ
+admin.tickets.create_new_widget: 新しいウィジェットを作成
+admin.tickets.customize_display_choices: 表示する選択肢をカスタマイズする
+admin.tickets.days: 日
+admin.tickets.default_layout: デフォルトレイアウト
+admin.tickets.delete_account: チケットアカウント削除
+admin.tickets.delete_account_confirm: このメールアカウントを削除してもよろしいですか？Deskproはこのアカウントからのメール処理を停止します。
+admin.tickets.delete_label: チケットラベル削除
+admin.tickets.delete_label_confirm: このラベルを削除してもよろしいですか？
+admin.tickets.delete_priority: 優先順位削除
+admin.tickets.delete_ticket_category: チケットカテゴリ削除
+admin.tickets.delete_workflow: ワークフロー削除
+admin.tickets.direct_link: ダイレクトリンク
+admin.tickets.display_field_in_agent: エージェントインターフェイスの項目を表示
+admin.tickets.display_field_in_user: ユーザーインターフェイスの項目を表示
+admin.tickets.drag_drop_fields: フォームのデザインを開始するには、項目を左からこの領域にドラッグアンドドロップします。
+admin.tickets.edit_account: アカウント編集
+admin.tickets.edit_category_title: カテゴリタイトル編集
+admin.tickets.edit_departments: 部門編集
+admin.tickets.edit_or_select_default_layout: '{{link1}}を編集するか、{{link2}}から選択してください'
+admin.tickets.edit_priorities: 優先順位編集
+admin.tickets.edit_priority: 優先順位編集
+admin.tickets.edit_products: プロダクト編集
+admin.tickets.edit_triggers: トリガ編集
+admin.tickets.edit_workflow: ワークフロー編集
+admin.tickets.edit_workflow_title: ワークフロータイトル編集
+admin.tickets.email_accounts: メールアカウント
+admin.tickets.embed_in_website: あなたのWebサイトに埋め込む
+admin.tickets.embed_ticket_form_websites: 新しいチケットフォームを任意のWebページに埋め込みます。フォームを表示する場所にコードをコピーして貼り付けます。
+admin.tickets.enable_alternative_for_x: '{{subphrase}}の代替レイアウトを有効にする'
+admin.tickets.enable_custom_layouts_department: 部門ごとにカスタムレイアウトを有効にする
+admin.tickets.enable_ticket_feedback: チケットフィードバックを有効にしますか？
+admin.tickets.enter_optional_description: このトリガーが作成された経緯を必要に応じて入力してください
+admin.tickets.event: イベント
+admin.tickets.explain_departments: 部門は、ヘルプデスクで別のものを扱う区分けを編成します。例えば、セールス＆サポート。
+admin.tickets.explain_global_gilter: 全員が使用できるグローバルフィルタ
+admin.tickets.explain_priorities: 優先順位はチケットの重要度を評価します。
+admin.tickets.explain_products: プロダクトは通常、貴社が提供する実際のプロダクトまたはサービスです。チケット、フィードバック、記事など、あらゆる種類のコンテンツを分類することができます。
+admin.tickets.field_options: 項目オプション
+agent.chat.added_as_participant: 参加者として追加
+agent.chat.agent_chats: エージェントチャット
+agent.chat.between_members: '間のチャット:'
+agent.chat.by_department: 部門別
+agent.chat.chat_history: チャット履歴
+agent.chat.chat_started_by: チャット開始日
+agent.chat.chat_transcript: チャット記録
+agent.chat.chat_with_x: '{{name}}とチャット'
+agent.chat.count_agents:
+  other: '1 オンラインエージェント'
+agent.chat.count_seconds:
+  other: '1 秒'
+agent.chat.filter_title_assigned: 割り当てられたチャット
+agent.chat.filter_title_mine: 私のチャット
+agent.chat.filter_title_missed: 不在チャット
+agent.chat.in_department: '{{name}}に'
+agent.chat.invite_agent: エージェントを招待する
+agent.chat.invite_another_agent: 別のエージェントを招待する
+agent.chat.invite_no_agents: 招待できるエージェントはいません。
+agent.chat.invite_others: 他の人を招待する
+agent.chat.join_chat: チャットに参加する
+agent.chat.label_assigned_others: このチャットの他のエージェント
+agent.chat.leave_chat_confirm: このチャットを辞めてもよろしいですか？
+agent.chat.leave_end: チャットを終了し、退出する
+agent.chat.leave_unassign: 割り当てを解除して退出する
+agent.chat.list_title:
+  other: '1 会話'
+agent.chat.msg_agent_timeout: '{{agent_name}} がタイムアウトしました'
+agent.chat.msg_assigned_agent: '{{agent_name}}に割り当てられたチャット'
+agent.chat.msg_part_joined: '{{person_name}} が参加しました'
+agent.chat.msg_part_left: '{{person_name}} は残っています'
+agent.chat.msg_unassigned_agent: '{{agent_name}} は割り当てられていません'
+agent.chat.my_open_chats: 私のオープンチャット
+agent.chat.new_agent_note_by: '{{name}}さんの新しいエージェントメモ'
+agent.chat.new_agent_reply_by: '{{name}}さんの新しい返信'
+agent.chat.new_chat: 新しいチャット
+agent.chat.new_ticket_by: '{{name}} ({{email}})の新しいチケット'
+agent.chat.new_user_reply_by: '新しいユーザからの返信　{{name}} ({{email}})'
+agent.chat.no_department: 部門なし
+agent.chat.no_email: メールなし
+agent.chat.no_online_agents: 他のエージェントはオンラインではありません
+agent.chat.no_open_chats: 現在、開いているチャットはありません。
+agent.chat.no_others: その他なし
+agent.chat.notification_volume: 通知量
+agent.chat.offline: オフライン
+agent.chat.online: オンライン
+agent.chat.online_for_chat: オンラインチャット
+agent.chat.open_chat: オープンチャット
+agent.chat.other_agents: 他のエージェント
+agent.chat.show_offline: オフラインにする
+agent.chat.snippets: スニペット
+agent.chat.take_chat: チャットを取得する
+agent.chat.team_chats: チームチャット
+agent.chat.title_active_chats: 全てのチャットを開く
+agent.chat.title_chat_id: 'チャット{{chat_id}}'
+agent.chat.title_ended: 終了したチャット
+agent.chat.title_leave_chat_prompt: チャットを離れますか？
+agent.chat.title_new_chats: 新しいチャット
+agent.chat.title_open: チャットを開く
+agent.chat.user_is_viewing: ユーザが表示しています
+agent.chat.warning: 警告
+agent.chat.warning_email_address_not_unique: 'ユーザが現在ログインしていないため、IDを確認できません。 ユーザが偽者の場合は機密情報を公開しないように注意してください。'
+agent.chat.x_by_anonymous: '匿名のチャット{{chat_id}}'
+agent.chat.x_by_anonymousymous: 匿名でのチャット
+agent.chat.you_have_been_invited: あなたはチャットに招待されました
+agent.chrome.btn_add: 追加
+agent.chrome.btn_create: 作成する
+agent.chrome.btn_recent: 最近
+agent.chrome.chat_list_agents-online: '<span class="userchat-online-agents-count">0</span> オンラインエージェント:'
+agent.chrome.chat_list_by-department: 部門別
+agent.chrome.chat_list_heading_current-page: 現在のページ
+agent.chrome.chat_list_heading_time: 時間
+agent.chrome.chat_list_heading_user: ユーザ
+agent.chrome.chat_list_no-online-users: オンラインユーザはいません
+agent.chrome.chat_list_online-users:
+  other: '<span class="count-online-users">1</span> オンラインユーザ'
+agent.chrome.chat_logged-in: チャットにログインしました
+agent.chrome.chat_logged-out: チャットからログアウトしました
+agent.chrome.chat_online-agents:
+  other: '<span class="userchat-online-agents-count">{{count}}</span> エージェント'
+agent.chrome.chat_online-users:
+  other: '<span class="userchat-online-users-count">{{count}}</span> ユーザ'
+agent.chrome.chat_sign-in: チャットにサインインする
+agent.chrome.chat_sign-out: チャットからサインアウトする
+agent.chrome.create_new-article: 新しい記事
+agent.chrome.create_new-download: 新しいダウンロード
+agent.chrome.create_new-feedback: 新しいフィードバック
+agent.chrome.create_new-news: 新しいニュースポスト
+agent.chrome.create_new-organization: 新しい組織
+agent.chrome.create_new-person: 新しい個人
+agent.chrome.create_new-task: 新しいタスク
+agent.chrome.create_new-ticket: 新しいチケット
+agent.chrome.create_new-tweet: 新しいツイート
+agent.chrome.hello-user: 'こんにちは、 {{name}}'
+agent.chrome.help-contact-us: お問い合わせ
+agent.chrome.help-contact-us-explain: 'ヘルプデスク <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> またはメールで直接 <a href="mailto:support@deskpro.com">support@deskpro.com</a>にお問い合わせください。'
+agent.chrome.help-manuals: マニュアル
+agent.chrome.help-quickstart-guide-link: 'Deskproを初めてお使いの方は、 <a href="{{link}}">こちらをクリックしてDeskproクイックスタートガイドをダウンロード</a>してください。'
+agent.chrome.kbd-change-status-agent: ステータスをエージェント待ちに変更する
+agent.chrome.kbd-change-status-resolved: ステータスを解決済みに変更する
+agent.chrome.kbd-change-status-user: ステータスをユーザ待ちに変更する
+agent.chrome.kbd-open-org: 組織プロファイルを開く
+agent.chrome.kbd-open-send-actions: 送信アクションのオプションを開く
+agent.chrome.kbd-open-snippets: スニペットを開く
+agent.chrome.kbd-open-user-profile: ユーザプロファイルを開く
+agent.chrome.kbd-send-reply: 返信を送る
+agent.chrome.kbd-shortcuts: キーボードショートカット
+agent.chrome.link_help: ヘルプ
+agent.chrome.link_logout: ログアウト
+agent.chrome.link_preferences: 設定
+agent.chrome.nav_admin_settings: 管理者の設定
+agent.chrome.nav_agentchat: エージェントIM
+agent.chrome.nav_feedback: フィードバック
+agent.chrome.nav_people: CRM
+agent.chrome.nav_publish: 公開する
+agent.chrome.nav_reports: レポート
+agent.chrome.nav_search: 検索
+agent.chrome.nav_tasks: タスク
+agent.chrome.nav_tickets: チケット
+agent.chrome.nav_twitter: ツイッター
+agent.chrome.nav_userchat: ユーザチャット
+agent.chrome.notification_tooltip: ヘルプデスクのアクティビティに関するブラウザの通知を表示する
+agent.chrome.notify_list-dismiss-all: すべての通知を閉じる
+agent.chrome.notify_list-new-messages: '<span class="notify-count">0</span> 新しい通知'
+agent.chrome.notify_list-no-notifications: 新しい通知はありません
+agent.chrome.notify_list-view-dismissed: 閉じられた表示
+agent.chrome.quicksearch_adv-explain: より高度な検索オプションを使用するには、アプリケーションを選択します。
+agent.chrome.quicksearch_info: クイック検索バーでは、さまざまなリソースを検索できます。
+agent.chrome.quicksearch_title: クイック検索バー
+agent.chrome.quicksearch_title-articles: 記事
+agent.chrome.quicksearch_title-chat: チャット
+agent.chrome.quicksearch_title-crm: CRM
+agent.chrome.quicksearch_title-downloads: ダウンロード
+agent.chrome.quicksearch_title-feedback: フィードバック
+agent.chrome.quicksearch_title-news: ニュース
+agent.chrome.quicksearch_title-orgs: 組織
+agent.chrome.quicksearch_title-people: 人
+agent.chrome.quicksearch_title-publish: 公開する
+agent.chrome.quicksearch_title-tickets: チケット
+agent.chrome.recent_list-filter-info: 最新の結果をフィルタリングするために入力します
+agent.chrome.recent_list-none: まだタブを開いていない
+agent.chrome.recent_tooltip: 最近の活動リストを使用して、あなたが取り組んでいたことを簡単に見つけることができます。
+agent.chrome.search-show-more:
+  other: '{{count}} をもっと見る'
+agent.chrome.user_tooltip: エージェントプロファイル、通知、設定を表示し、フィルタ、マクロ、およびSLAを管理します
+agent.chrome.view_tooltip: ヘルプデスクのインターフェイスのビューをリストペインがない2列ビューに変更します
+agent.defaults.default_style: デフォルトスタイル
+agent.defaults.team_lvl1_support: 第1レベルのサポート
+agent.defaults.team_lvl2_support: 第2レベルのサポート
+agent.defaults.team_support_managers: サポートマネージャー
+agent.defaults.usergroup_agent_all_non_destructive: 全ての非破壊許可
+agent.defaults.usergroup_agent_all_non_destructive_note: エージェントには、レコード削除などの破壊的な変更を許可する権限を除く全ての権限があります。
+agent.defaults.usergroup_agent_all_perms: 全ての権限
+agent.defaults.usergroup_agent_all_perms_note: エージェントにはフル権限があります
+agent.defaults.usergroup_everyone: 全ての人
+agent.defaults.usergroup_everyone_note: ゲストと登録されたメンバーの両方を含む全てのユーザ。
+agent.defaults.usergroup_registered: 登録済み
+agent.defaults.usergroup_registered_note: システムに登録されている全ての人
+agent.emails.account_rec_dm_by: '{{account}}さんが{{user}}さんから直接メッセージを受け取りました'
+agent.emails.account_rec_retweet_by: '{{account}}は{{user}}さんのサイトで再投稿されました'
+agent.emails.account_rec_tweet_by: '{{account}}さんが{{user}}さんからツイートを受け取りました'
+agent.emails.admin_password_reset_error: '最近、パスワードをリセットしようとしました。 セキュリティ上の予防措置として、管理者はWebインターフェイスを使用してパスワードをリセットすることはできません。'
+agent.emails.admin_password_reset_instruction: 代わりに、サーバー端末からコマンドラインツールを使用してください：
+agent.emails.agent_assigned_team_tweet: '{{agent}}さんがあなたのチームにツイートを割り当てました'
+agent.emails.agent_assigned_you_tweet: '{{agent}}さんがあなたにツイートを割り当てました'
+agent.emails.agent_completed_task_you_created: '{{agent}}が作成したタスク{{title}}を完了しました'
+agent.emails.alert_failed_login: ログイン試行に失敗
+agent.emails.alert_successful_login: ログインに成功
+agent.emails.api_token_magic_link_click: サインインするにはここをクリック
+agent.emails.api_token_magic_link_copy: または、このリンクをコピーしてブラウザに貼り付けます：
+agent.emails.api_token_magic_link_description: 'すぐにサインインするためのマジックサインインリンクをリクエストしました。 以下のリンクをクリックしてください：'
+agent.emails.api_token_magic_link_note: 注意：あなたのマジックリンクは5時間後に有効期限が切れ、一度しか使用できません。
+agent.emails.api_token_magic_link_subject: '{{helpdesk_name}}のマジックサインインリンク'
+agent.emails.change_password_instructions: '新しいパスワードを設定するには、エージェントインタフェースにログインし、画面の左上隅にある"設定"リンクをクリックします。'
+agent.emails.deskpro_test_email: Deskproテストメール
+agent.emails.deskpro_test_email_body: 'これはDeskproメールシステムのテストです。<br /> <br />これを受け取った場合、あなたのメール設定は正しいです。'
+agent.emails.detected_as_forward: 転送されたメールが、転送メッセージとして検出されました。
+agent.emails.email_change_merge: 'このメールは、既存のヘルプデスクアカウント{{old_email}}と{{new_email}}をマージすることを確認するためのものです。 これらのアカウントをマージしたくない場合、またはリクエストしなかった場合は、このメールを無視してください。 マージを確認するには、以下のリンクをクリックしてください：'
+agent.emails.error_missing_marker_explain: 'この返信マーカーは、返信の適切な処理に必要です。 あなたの返信を再送してください。今回は、返信行マーカーをそのまま残しておきます。'
+agent.emails.error_no_reply_perm: 'チケットに返信する権限がないため、あなたのメッセージは受け入れられませんでした。 あなたの返信は保存されておらず、その他のメールや通知は送信されていません。'
+agent.emails.error_reply_to_ticket_missing_marker: 'チケット＃{{ticket_id}}へのメールの返信に、次のようなマーカー行がありませんでした：'
+agent.emails.error_unknown_email: '未知のメールアドレスから送信しているため、あなたのメッセージは受け入れられませんでした。 ヘルプデスクでエージェントプロファイルで設定したメールアドレスからメッセージを送信してください。'
+agent.emails.first_seen: 最初に見た
+agent.emails.fwd_dupe: '転送しようとしたメッセージの既存のチケットがシステムによって検出されたため、転送されたメッセージは拒否されました。 たとえば、あなたまたは他の誰かがすでに同じメッセージのチケットを作成しています。 既存のチケットは＃{{old_ticket_id}}です：'
+agent.emails.fwd_error_more_info: 'このエラーの詳細については、Deskproサポートサイトを参照してください。<br/> <a href="http://support.deskpro.com/kb/articles/106"> http：//support.deskpro。 com / kb / articles / 106 </a>'
+agent.emails.fwd_not_processed: 'このエラーのため、メールは破棄されました。 新しいチケットは作成されず、通知やその他のアクションは実行されませんでした。 ユーザーの新しいチケットを開始する必要がある場合は、<a href="{{url}}"> {{url}} </a>のエージェントWebインターフェイスを使用してください。'
+agent.emails.fwd_resend_without_fwd: 'ユーザーに代わって新しいチケットを作成したくない場合は、件名に「FW：」または「FWD：」のプレフィックスを付けずにメールを再送信できます。 これにより、代わりに新しいチケットが作成されます。'
+agent.emails.invalid_fwd_email_address: 'ただし、元のメッセージでユーザの<b>メールアドレス</ b>を確認できませんでした。 メールクライアントがメッセージにメールアドレスを追加したことを確認する必要があります。 クライアントによっては名前のみが表示されることがあります。この場合、メールアドレスを手動で追加することでこのエラーを修正できます。'
+agent.emails.invalid_fwd_email_parse: ただし、<b>元のメッセージ</b>を解析できなかったため、新しいチケットに転送することができませんでした。
+agent.emails.invalid_fwd_try_attach: あなたのメールクライアントが元のメールを添付ファイルとして転送することをサポートしている場合は、メッセージをインラインで転送するのではなく、それを試すことが出来ます。この転送方法のチケットはDeskproで正常に動作します。
+agent.emails.landing_page: ランディングページ
+agent.emails.login_url: ログインURL
+agent.emails.message-is-note: 次のメッセージは内部エージェントメモです。
+agent.emails.name_reset_your_password: '{{name}}はあなたのエージェントアカウントのパスワードをリセットしました'
+agent.emails.new_agent_reply_ticket_subject: '[#{{ticket.id}} エージェント返信] Re: {{ticket.subject}}'
+agent.emails.new_chat_message_from: '{{name}}からの新しいIMメッセージ'
+agent.emails.new_mention_ticket_subject: '[#{{ticket.id}} 注意] Re: {{ticket.subject}}'
+agent.emails.new_note_ticket_subject: '[#{{ticket.id}} メモ] Re: {{ticket.subject}}'
+agent.emails.new_user_reply_ticket_subject: '[#{{ticket.id}} ユーザ返信] Re: {{ticket.subject}}'
+agent.emails.newagent-about: Deskproは、組織が使用するヘルプデスクソフトウェアです。
+agent.emails.newagent-about-cloud: Deskproは、組織が使用するクラウドホスト型ヘルプデスクソフトウェアです。
+agent.emails.newagent-about-cloud-demo: Deskproは、あなたの組織が試しているクラウドホスティングのヘルプデスクソフトウェアです。
+agent.emails.newagent-about-demo: Deskproは、あなたの組織が試しているヘルプデスクソフトウェアです。
+agent.emails.newagent-about-pdf: 'エージェントとして知っておく必要がある最も重要なことについての簡単なガイドが書かれています。 付属の「Deskpro.pdf入門」を検索してください。'
+agent.emails.newagent-created-account: 'あなたの同僚{{admin_name}}（{{admin_email}}）が<a href="{{helpdesk_url}}"> {{helpdesk_url}} </a>のDeskproアカウントを作成しました。'
+agent.emails.newagent-help: 'サポートが必要な場合や質問がある場合は、DeskPROのサポートサイト（<a href="https://support.deskpro.com/"> https://support.deskpro.com/ </a>）またはお問い合わせ先 <a href="mailto:support@deskpro.com"> support@deskpro.com </a>に直接お問い合わせください。'
+agent.emails.newagent-login-initial-password: 'あなたの最初のパスワード: {{password}}'
+agent.emails.newagent-login-link: 'ここにログインすることができます: <a href="{{link}}">{{link}}</a>'
+agent.emails.newagent-login-your-email: 'あなたのメールアドレス： {{email}}'
+agent.emails.newagent-login-your-password: 注意：このヘルプデスクにはすでにユーザアカウントがあります。以前に設定したものと同じパスワードを使用してエージェントとしてログインできます。
+agent.emails.newagent-welcome-to-deskpro: DeskPROへようこそ！
+agent.emails.notice.first_seen: 最初に見る
+agent.emails.notice.landing_page: ランディングページ
+agent.emails.notice.referer_page: 参照元ページ
+agent.emails.notice.user_agent: ユーザエージェント
+agent.emails.notice.user_ip: ユーザIP
+agent.emails.notice_account_login: あなたのアカウントは正常ログインするために使用されました。
+agent.emails.notice_login_attempt: 誰かがあなたのアカウントを使用してログインしようとしました。
+agent.emails.person_replied: '{{name}} は "{{subject}}"に返信しました'
+agent.emails.referer_page: 参照元ページ
+agent.emails.referring_page: 参照ページ
+agent.emails.reply_above_line: 前に返信
+agent.emails.reply_is_as_note: あなたの返信はプライベートエージェントメモとして追加されます
+agent.emails.reply_sent_to_ccs:
+  other: '{{count}} CCユーザ:'
+agent.emails.reply_sent_to_user: 'あなたの返信はユーザ{{user}}に送信されます'
+agent.emails.subject_email_change_merge: メールの変更とアカウントのマージを確認する
+agent.emails.subject_error_forwarded_email: '転送メールのエラー：{{subject}}'
+agent.emails.subject_error_forwarded_email_dupe: '重複メール： {{subject}}'
+agent.emails.subject_error_with_message: 'メッセージエラー： {{subject}}'
+agent.emails.subject_error_with_reply: '返信エラー：{{subject}}'
+agent.emails.subject_new_agent: 新しDeskproヘルプデスクのエージェントアカウント
+agent.emails.subject_new_ticket: '[#{{ticket.id}} 新しいチケット] {{ticket.subject}}'
+agent.emails.subject_new_ticket_assigned: '[#{{ticket.id}} 新しいチケット + 割り当て] {{ticket.subject}}'
+agent.emails.subject_new_ticket_assignedteam: '[#{{ticket.id}} 新しいチケット+ 割り当てられたチーム] {{ticket.subject}}'
+agent.emails.task_assigned_due_today: 'あなたに割り当てられたタスク {{title}}は、今日の予定です。'
+agent.emails.task_assigned_team_due_today: 'チームに割り当てられたタスク {{title}}は、今日の予定です。'
+agent.emails.task_assigned_to_you_by: '{{agent}}によってあなたに割り当てられたタスク{{title}}'
+agent.emails.task_assigned_to_your_team_by: '{{agent}}によってチームに割り当てられたタスク{{title}}'
+agent.emails.task_completed: 'タスク{{title}}が完了しました'
+agent.emails.task_due_today: 'タスク{{title}}は今日の予定です'
+agent.emails.ticket_action_assigned: 割り当て済み
+agent.emails.ticket_action_assigned_team: 割り当てられたチーム
+agent.emails.ticket_action_deleted: 削除済み
+agent.emails.ticket_action_followed: フォロー済み
+agent.emails.ticket_action_spam: スパム
+agent.emails.ticket_action_status_agent: エージェント待ち
+agent.emails.ticket_action_status_resolved: 解決済み
+agent.emails.ticket_action_status_user: ユーザ待ち
+agent.emails.ticket_action_updated: 更新済み
+agent.emails.ticket_sla_failed: SLA失敗
+agent.emails.ticket_sla_warning: SLA警告
+agent.emails.ticket_was_created: '{{name}} は新しいチケットを作成しました'
+agent.emails.tweet_assigned_to_you_by: '{{agent}}によってあなたに割り当てられたツイート'
+agent.emails.updated_ticket_assigned: あなたに割り当てました
+agent.emails.updated_ticket_assigned_team: 'あなたのチーム{{team}}に割り当てました'
+agent.emails.updated_ticket_followed: フォロワーとしてあなたを追加しました
+agent.emails.user_agent: ユーザエージェント
+agent.emails.user_ip: ユーザIP
+agent.emails.user_replied_to_tweet: '{{name}} さんがあなたのツイートに返信しました'
+agent.emails.user_replied_to_tweet_you_wrote: 'あなたが{{account}}のために書いたツイートに{{name}}さんが返信しました。'
+agent.emails.user_updated_ticket: '{{name}} チケット "{{subject}}"を更新しました'
+agent.emails.view_account_tweets: '{{account}}さんのツイートを表示'
+agent.emails.view_delegated_tasks: 委任されたタスクを表示する
+agent.emails.view_online_at: オンラインで見る：
+agent.emails.view_team_tweets: チームのツイートを見る
+agent.emails.view_ticket_online: このチケットをオンラインで見る
+agent.emails.view_your_tasks: タスクを表示する
+agent.emails.view_your_teams_tasks: チームのタスクを表示する
+agent.emails.view_your_tweets: あなたのツイートを見る
+agent.emails.whitelist_ip_login_attempt: 次の新しいIPアドレスからDeskPROアカウントのログインが試行されました：
+agent.emails.whitelist_ip_note: 'IPアドレスが確認されると、アカウントにログインすることができます。<br/> <br/>このリクエストを開始していない場合は、 上記のリンクをクリックしないでください。 誰かがあなたのメールアドレスとパスワードを使ってヘルプデスクのアカウントにログインしました。 ヘルプデスクの管理者に連絡する必要があります。'
+agent.emails.whitelist_ip_subject: 'DeskPROログインの確認 - 新しいIPアドレス'
+agent.emails.whitelist_ip_validation_link: これが有効なログイン試行であれば、次のリンクをクリックして新しいIPアドレスを確認してください：
+agent.emails.your_initial_password: あなたの最初のパスワード
+agent.general.add_a_label: ラベル追加
+agent.general.add_a_new_criteria: 新しい条件を追加
+agent.general.add_a_new_term: 新しい用語を追加
+agent.general.add_action_term: アクション追加
+agent.general.add_category: カテゴリ追加
+agent.general.add_child: 子会社追加
+agent.general.add_comment: コメント追加
+agent.general.add_criteria_term: 条件追加
+agent.general.add_labels: ラベル追加
+agent.general.add_manual: マニュアル追加
+agent.general.add_note: メモ追加
+agent.general.add_product: プロダクト追加
+agent.general.properties: プロパティ
+agent.interface.app-billing: 請求書
+agent.interface.app-twitter: ツイッター
+agent.interface.assign_to_self: 私に割り当てる
+agent.interface.chat-notification-vol: チャット通知量
+agent.interface.click_icon_to_add_filter: '{{link}}をクリックして新しいフィルタを作成します'
+agent.interface.click_icon_to_show_filters: '<span class="gear-icon"></span> をクリックしてフィルタを表示します'
+agent.interface.close_current_tab: 現在のタブを閉じる
+agent.interface.create_ticket_person: チケットを作成する
+agent.interface.creation: 作成
+agent.interface.deskpro_agent_interface: Deskproエージェントインタフェース
+agent.interface.deskpro_website_host: www.deskpro.com
+agent.interface.error_report_disclaimer: 'すべてのエラー報告には対応していませんのでご注意ください。 このエラーに関するご質問や回答が必要な場合は、{{email}}までご連絡ください。'
+agent.interface.error_report_submitting: エラーレポートの送信中...
+agent.interface.error_report_thank_you: エラーレポートを送信していただきありがとうございます。
+agent.interface.focus_notes_box: メモにフォーカス
+agent.interface.go_to_next_tab: 次のタブに移動
+agent.interface.go_to_previous_tab: 前のタブに移動
+agent.interface.kbd_change_status_agent: ステータスをエージェント待ちに変更する
+agent.interface.kbd_change_status_resolved: ステータスを解決済みに変更する
+agent.interface.kbd_change_status_user: ステータスをユーザ待ちに変更する
+agent.interface.kbd_ctrl_left: ctrl+left
+agent.interface.kbd_ctrl_right: ctrl+right
+agent.interface.kbd_ctrl_shift_c: ctrl+shift+c
+agent.interface.kbd_ctrl_shift_left: ctrl+shift+left
+agent.interface.kbd_ctrl_shift_right: ctrl+shift+right
+agent.interface.kbd_enter: enter
+agent.interface.kbd_new_article: a
+agent.interface.kbd_new_download: d
+agent.interface.kbd_new_feedback: i
+agent.interface.kbd_new_news: 'n'
+agent.interface.kbd_new_organisation: o
+agent.interface.kbd_new_person: p
+agent.interface.kbd_new_task: k
+agent.interface.kbd_new_ticket: t
+agent.interface.kbd_open_org_profile: 組織プロファイルを開く
+agent.interface.kbd_open_send_options: 送信アクションのオプションを開く
+agent.interface.kbd_open_snippets: スニペットを開く
+agent.interface.kbd_open_user_profile: ユーザプロファイルを開く
+agent.interface.kbd_send_reply: 返信を送信
+agent.interface.kbd_shift_a: shift+a
+agent.interface.kbd_shift_c: shift+c
+agent.interface.kbd_shift_r: shift+r
+agent.interface.kbd_shift_t: shift+t
+agent.interface.kbd_space: スペース
+agent.interface.kbd_up_or_down: 'up or down'
+agent.interface.key_close_tab: タブを閉じる
+agent.interface.key_left_tab: 左のタブを選択
+agent.interface.key_right_tab: 右のタブを選択
+agent.interface.keyboard: キーボード
+agent.interface.keyboard_shortcuts: キーボードショートカット
+agent.interface.major_items_appear_here: チケット、ユーザ、組織、記事、ニュース、ダウンロード、フィードバックはここで開きます。
+agent.interface.open_new_article_form: 新しい記事フォームを開く
+agent.interface.open_new_download_form: 新しいダウンロードフォームを開く
+agent.interface.open_new_feedback_form: 新しフィードバックフォームを開く
+agent.interface.open_new_news_form: 新しいニュースフォームを開く
+agent.interface.open_new_organization_form: 新しい組織フォームを開く
+agent.interface.open_new_person_form: 新しい個人フォームを開く
+agent.interface.open_new_task_form: 新しいタスクフォームを開く
+agent.interface.open_new_ticket_form: 新しいチケットフォームを開く
+agent.interface.powered_by: 'Powered by'
+agent.interface.quick-search-placeholder: 検索
+agent.interface.report_this_error_to_deskpro: Deskproにこのエラーを報告してください
+agent.interface.search_for_text_or_a_phrase: テキストやフレーズを検索する
+agent.interface.search_in_types: タイプで検索
+agent.interface.set_ticket_resolved: 解決済みチケットを設定
+agent.interface.toggle_mute: ミュートを切り替える
+agent.interface.viewbtn-1col: 1列表示
+agent.interface.viewbtn-2col: 2列表示
+agent.interface.viewbtn-normal: リストとタブの表示
+agent.interface.viewbtn-source: フィルタと検索列の切り替え
+agent.interface.viewbtn-tab: タブのみの表示
+agent.interface.viewbtn-table: 表形式の結果表示
+agent.login.account_locked_message: '複数回ログインに失敗したため、アカウントはセキュリティのためロックされています。あなたは{{timeago}}の間ログインすることはできません。'
+agent.login.alert_fields_must_match: 2つのパスワードフィールドが一致しません。
+agent.login.alert_too_short: 4文字以上のパスワードを入力してください。
+agent.login.apple_safari: 'Apple Safari'
+agent.login.back_to_login: ログインフォームに戻る
+agent.login.browser_requirements: ブラウザ要件
+agent.login.email_instructions: メール手順
+agent.login.enter_new_password: 新しいパスワードを入力してください
+agent.login.enter_password: パスワードを入力してください
+agent.login.forgot_password: パスワードをお忘れですか？
+agent.login.google_chrome: 'Google Chrome'
+agent.login.has_logged_out: あなたは正常にログアウトされました。
+agent.login.ie_compat_mode_explain: 'IEの一部のバージョンには、互換性モードと呼ばれる機能があり、古いWebサイトを最新のブラウザテクノロジで動作させることができます。 場合によっては、この機能を誤ってオンにすることがあります。 IE8またはIE9を使用していても依然としてブラウザの要件ページが表示されている場合は、互換性モードが有効になっている可能性があります。 Deskproを使用するには、この機能を無効にする必要があります：'
+agent.login.ie_compat_mode_step1: ツールメニューが表示されていない場合は、キーボードのAltキーを押してメインメニューを表示します
+agent.login.ie_compat_mode_step2: ツールメニューの互換表示設定を選択します
+agent.login.ie_compat_mode_step3: 'ヘルプデスクのURLがリストにないことを確認してください。 表示されている場合は、クリックして削除ボタンをクリックします。 また、「互換性ビューですべてのWebサイトを表示する」が無効になっていることを確認してください。 イントラネットでDeskproを使用している場合は、他のオプション「互換性ビューでイントラネットサイトを表示する」のチェックを外す必要があります。'
+agent.login.ie_compat_mode_step4: このウィンドウを閉じてページを更新する
+agent.login.ie_compat_mode_title: 'あなたはすでにIE8以降を使用していますか？ <a href="{{url}}">互換モードが有効になっていないことを確認する</a>'
+agent.login.ie_use_chrome_frame: 'また、<a href="http://www.google.com/chromeframe"> Google Chrome Frame </a>をインストールすることもできます'
+agent.login.login_failed: 不正なログイン。もう一度お試しください。
+agent.login.mozilla_firefox: 'Mozilla Firefox'
+agent.login.notice_outdated_browser: '管理者インタフェースとエージェントインタフェースには最新のブラウザが必要です。 お使いのブラウザがDeskproを使用するには古すぎることが判明しました。 ブラウザを最新のバージョンにアップグレードするか、別のブラウザをダウンロードしてみてください。'
+agent.login.opera: Opera
+agent.login.password_was_reset: パスワードが正常にリセットされました。
+agent.login.remember_me: ログイン状態を保存する
+agent.login.reset-password-info: メールアドレスを入力して、パスワードをリセットする手順を確認してください：
+agent.login.reset-password-sent: パスワードをリセットする方法については、あなたのメールアドレスにメッセージを送りました。
+agent.login.sent_pw_reset_instructions: パスワードをご提供いただいたメールアドレスに再設定する方法をお送りしました。
+agent.login.session_timeout: あなたのセッションはタイムアウトしました。再度ログインする必要があります。
+agent.login.supported_browsers: 以下のブラウザがサポートされています
+agent.login.version_x_or_later: 'v{{version}} 以降'
+agent.login.whitelist_ip_content: 確認されていないIPアドレスからこのアカウントにアクセスしようとしています：
+agent.login.whitelist_ip_note: メールを確認し、その中の指示に従ってIPアドレスを確認する必要があります。
+agent.login.whitelist_ip_title: 未確認のIPアドレスからログインする
+agent.organizations.add_person: この組織に個人を追加する
+agent.organizations.already_child: 'この組織は既に{{name}}の子組織です'
+agent.organizations.browse_all_members: 全てのメンバーを参照
+agent.organizations.click_set_manager: クリックして、組織マネージャーとして設定します。
+agent.organizations.create_organization: 組織の作成
+agent.organizations.email_domain_assoc: メールドメインの関連付け
+agent.organizations.email_domain_assoc_add: 新しいドメインを追加
+agent.organizations.email_domain_assoc_explain: これらのドメインメールアドレスを持つユーザは、この組織に自動的に関連付けられます。
+agent.organizations.email_domain_assoc_move:
+  other: 1人のユーザの関連付け
+agent.organizations.email_domain_assoc_move_all:
+  other: 既に別の組織に所属している1人のユーザを関連付ける
+agent.organizations.email_domain_assoc_none: この組織とユーザを自動的に関連付けるメールドメインを設定します。
+agent.organizations.email_domain_assoc_remove: メールドメインを削除
+agent.organizations.email_domain_assoc_remove_users:
+  other: メールドメインを削除し、1人のユーザーをこの組織から割り当て解除する
+agent.organizations.email_domain_assoc_title: '{{name}}のメールドメイン関連付け'
+agent.organizations.enter_position: ポジションを入力
+agent.organizations.is_empty: この組織にメンバーはいません。
+agent.organizations.list_title:
+  other: '1 組織'
+agent.organizations.no_slas: この組織にはSLAは自動的に適用されません。
+agent.organizations.org_manager_click_to_remove: 組織マネージャー。クリックして削除。
+agent.people.act_merge_undone_base_side: 'マージを元に戻す。復元された個人： '
+agent.people.act_merge_undone_other_side: 'マージを元に戻すことで再作成された個人： '
+agent.people.act_merged: 'マージされた個人： #{{id}} {{name}}。'
+agent.people.act_merged_undo_title: マージを元に戻す
+agent.people.act_merged_undo_title_not_possible: 大量データが原因でマージを元に戻すことはできません
+agent.people.act_merged_undo_title_undone: マージは既に元に戻されました
+agent.people.act_reg: アカウントを登録しました
+agent.people.act_replied_ticket: チケットに返信：
+agent.people.act_submitted_ticket: チケットを提出しました：
+agent.people.add_address: 住所を追加
+agent.people.add_an_email_address: メールアドレスを追加
+agent.people.add_another: 別のものを追加
+agent.people.add_facebook_profile: Facebookプロファイルを追加
+agent.people.add_im: インスタントメッセージアカウントを追加
+agent.people.add_linkedin_profile: LinkdInプロファイルを追加
+agent.people.add_phone: 電話番号を追加
+agent.people.add_twitter_profile: ツイッタープロファイルを追加
+agent.people.add_website: WebサイトURLを追加
+agent.people.address_city: 市区町村
+agent.people.address_postal: 郵便番号
+agent.people.address_state: 都道府県
+agent.people.and_came_from: 出身
+agent.people.anonymous_user: '匿名ユーザ{{id}}'
+agent.people.confirm_remove_email: このメールアドレスを削除してもよろしいですか？
+agent.people.confirm_remove_phone: この電話番号を削除してもよろしいですか？
+agent.people.contact_info: 連絡先
+agent.people.contact_info_for_x: '{{name}}の連絡先'
+agent.people.count_members:
+  other: '{{count}} メンバー'
+agent.people.create_person: 個人を作成
+agent.people.creation_by: 作成者
+agent.people.delete_user: ユーザを削除
+agent.people.delete_user_and_ban_email: ユーザとメールの削除
+agent.people.disable_account: アカウントを無効にする
+agent.people.double_click_set_name: ダブルクリックして名前を設定
+agent.people.download_vcard: vCardをダウンロード
+agent.people.drop_your_vcard_here: あなたのvCardをここにドロップ
+agent.people.email_awaiting_validation: 確認待ちのメール
+agent.people.enable_account: アカウントを有効化
+agent.people.enter_name_here: ここに名前を入力
+agent.people.find_person: 個人を探す
+agent.people.im: IM
+agent.people.im_account_placeholder: アカウントのユーザ名
+agent.people.is_agent: エージェント
+agent.people.list_title:
+  other: '1 人'
+agent.people.login_as_user: ユーザとしてログイン
+agent.people.make_primary_email: プライマリにする
+agent.people.manager: マネージャー
+agent.people.member_of_teams: 彼らは次のチームのメンバーです：
+agent.people.merge_people: マージする
+agent.people.merge_people_info: このツールを使うと、2人のユーザを1人のユーザにマージできます。削除されたユーザのチケット、チャット、メモ、その他多数のオブジェクトは、保存されるユーザに追加されます。他のユーザは完全に削除されます。
+agent.people.merge_submit_btn: これら2つのプロファイルをマージする
+agent.people.new_registration: 新規登録
+agent.people.new_registration_name: '新規登録： {{name}}'
+agent.people.no_picture: 画像なし
+agent.people.no_position_set: ポジション設定なし
+agent.people.no_slas: この個人にはSLAは自動的に適用されません
+agent.people.on_page: ページ上
+agent.people.online_now: オンライン中
+agent.people.other_user_content_being_deleted: ユーザが関連する他のコンテンツも削除されます。
+agent.people.person_ban_confirm: このユーザを使用禁止にしてもよろしいですか？
+agent.people.person_delete_confirm: このユーザを削除してもよろしいですか？
+agent.people.person_reset_password_confirm: リセットパスワードのリンクが送信されます。
+agent.people.phone_country_placeholder: 国
+agent.people.phone_number_placeholder: 電話番号
+agent.people.primary_email: プライマリ
+agent.people.reg_agent: エージェントによって作成されたユーザ
+agent.people.reg_gateway: ヘルプデスクにメールを送信して作成されたユーザ
+agent.people.reg_website: ウェブサイトを使用して登録されたユーザ
+agent.people.remove_picture: 画像削除
+agent.people.update_picture: 画像更新
+agent.people.upload_new_picture: 新しい画像をアップロード
+agent.people.upload_vcard: vCardアップロード
+agent.people.use_pic_gravatar: グラビアからの画像を使用する
+agent.people.use_uploaded_pic: アップロード画像を使用する
+agent.people.user_awaiting_agent_validation: ユーザはエージェント検証を待っています
+agent.people.user_was_agent: '{{name}}はこのヘルプデスクのエージェントでした。 管理者はこのアカウントを無効にしています。 管理者がエージェントアカウントを再度有効にするか、このエージェントを通常のユーザーに変換するまで、このユーザーはヘルプデスクと対話できません。'
+agent.people.user_will_be_perm_deleted: ユーザは完全に削除されます。
+agent.people.user_will_be_perm_deleted_banned: ユーザーは完全に削除され、メールアドレスは使用が禁止されます。
+agent.people.view_profile: プロフィールを表示
+agent.people.warn_email_address: 'メールアドレス{{email}}はこのプロフィールと一致します。 しかし、ユーザーはヘルプデスクにログインしていないため、ユーザーの身元を確認することはできません。 機密情報を漏らさないように注意してください。'
+agent.people.website: Webサイト
+agent.people.website_url_placeholder: WebサイトURL
+agent.prefs.apps_alert_title: アラート
+agent.prefs.inbox_all_email_created: 新しいチケットが作成された時に私にメールを送ってください
+agent.prefs.name_inbox_agent_email_created: '新しいチケットが作成され、{{name}}に割り当てられたとき{{name}}にメールを送る'
+agent.prefs.name_inbox_agent_email_leave: '{{name}} に割り当てられたチケットが解除されたとき{{name}} にメールしてください'
+agent.prefs.name_inbox_agent_email_new: '{{name}}にチケットが割り当てられたとき{{name}}にメールを送ります'
+agent.prefs.name_inbox_agent_email_property_change: '{{name}} に割り当てられたチケットに変更があった場合は {{name}} にメールしてください'
+agent.prefs.name_inbox_participant_email_new: '{{name}}がチケットのフォロワーとして追加された時{{name}}にメールを送る'
+agent.prefs.name_inbox_participant_email_user_activity: 'ユーザが{{name}}のチケットに返信すると{{name}}のメールが送信されます'
+agent.prefs.name_inbox_unassigned_alert_agent_note: 'エージェントが割り当てられていないチケットにメモを追加すると、警告{{name}} が発生する'
+agent.prefs.name_inbox_unassigned_alert_leave: '未割当のチケットが割り当てられたら{{name}} にアラートを表示する'
+agent.publish.add_new_category: 新しいカテゴリを追加
+agent.publish.add_new_glossary: 新しい用語集を追加
+agent.publish.add_new_guide: 新しいガイドを追加
+agent.publish.add_new_search_word: Enterキーを押下して新規検索ワードを追加
+agent.publish.add_pending: 新しい保留記事の追加
+agent.publish.all_articles: 全ての記事
+agent.publish.all_comments: 全てのコメント
+agent.publish.all_downloads: 全てのダウンロード
+agent.publish.all_draft_content: 全てのドラフト
+agent.publish.all_news: 全てのニュース
+agent.publish.apply_action: アクションを適用
+agent.publish.article_comments: 記事コメント
+agent.publish.article_id: 記事ID
+agent.publish.ask_set_to_draft: 選択したアイテムを下書きとして設定してもよろしいですか？
+agent.publish.awaiting_validation_info: 検証待ち：コンテンツを検証する権限を持つエージェントは、ポータルに表示される前にコンテンツを承認する必要があります。
+agent.publish.change_category: カテゴリ変更
+agent.publish.click_to_set_date: （クリックして日付設定）
+agent.publish.comment_by: '{{name}}によるコメント'
+agent.publish.comment_requires_validation: このコメントは検証が必要です
+agent.publish.comments_list_title:
+  other: '1 コメント'
+agent.publish.comments_to_validate: レビューコメント
+agent.publish.compare_selected: 選択比較
+agent.publish.create_artilce: 記事を作成
+agent.publish.create_pending_article: 保留記事を作成
+agent.publish.delete_category: カテゴリ削除
+agent.publish.delete_category_btn: カテゴリ削除
+agent.publish.delete_guide: ガイド削除
+agent.publish.delete_guide_btn: ガイド削除
+agent.publish.discard_unsaved_changes: 破棄してデフォルトに戻す
+agent.publish.download_category: カテゴリダウンロード
+agent.publish.download_comments: コメントダウンロード
+agent.publish.download_count: ダウンロード数
+agent.publish.download_hotlink_btn: 既存ファイルのホットリンク
+agent.publish.download_specify_filename: オプションで別のファイル名を指定する
+agent.publish.download_specify_filesize: 'オプションで表示するファイルサイズを指定します。例：50 MB または 2KB'
+agent.publish.download_specify_url: 'ファイルの完全URLを入力します。"ダウンロード"ボタンをクリックしたユーザがこのURLに移動します'
+agent.publish.download_upload_btn: ファイルアップロード
+agent.publish.downloads_highest_lowest: 'ダウンロード数（最高 - 最低）'
+agent.publish.downloads_list_title:
+  other: '1 ダウンロード'
+agent.publish.downloads_lowest_highest: 'ダウンロード数（最低 - 最高）'
+agent.publish.draft_content: 私のドラフト
+agent.publish.draft_revision: 変更
+agent.publish.drafts_list_title:
+  other: '1 ドラフト'
+agent.publish.drop_file_to_add: ファイルをここにドロップして、ポストに追加
+agent.publish.edit_category_btn: カテゴリ編集
+agent.publish.edit_guide_btn: ガイド編集
+agent.publish.edit_new_glossary: 用語集編集
+agent.publish.error_kb_cats_same: 同じカテゴリ
+agent.publish.error_kb_missing:
+  other: '{{count}} 記事が見つかりません'
+agent.publish.error_kb_not_in_db: カテゴリが見つかりませんでした。
+agent.publish.error_kb_perm_denied:
+  other: '{{count}} 権限エラー'
+agent.publish.error_kb_unaffected: 一部の記事は影響を受けていませんでした：
+agent.publish.for_ticket: チケットの場合
+agent.publish.glossary: 用語集
+agent.publish.guide_list_title:
+  other: '1 ガイド'
+agent.publish.helpful: 役立つ
+agent.publish.kb_list_title:
+  other: 1記事
+agent.publish.label_new_file: 新規ファイル
+agent.publish.label_old_file: 古いファイル
+agent.publish.missing_translation: 翻訳がありません
+agent.publish.view_count: ビュー数
+agent.publish.view_count_lowest_highest: ビュー数（最小値と最大値）
+agent.publish.when: いつ
+agent.search.by: By
+agent.search.chat_conversations: チャットの会話
+agent.search.find_by_above_criteria: 上記の条件で見つける
+agent.search.find_person: 個人を探す
+agent.search.loading: ロード中
+agent.search.no_email: メールなし
+agent.search.no_people_match_your_criteria: 指定した条件に合致する人はいません
+agent.search.no_results_found: 結果が見つかりませんでした
+agent.search.number_of_tickets: チケット数
+agent.search.person_id: 個人ID
+agent.search.select: 選択
+agent.search.simple: シンプル
+agent.search.type_article: 記事
+agent.search.type_chat_conversation: チャット
+agent.search.type_download: ダウンロード
+agent.search.type_feedback: フィードバック
+agent.search.type_news: ニュース
+agent.search.type_organization: 組織
+agent.search.type_person: 人
+agent.search.type_ticket: チケット
+agent.search.type_ticket_deleted: 削除チケット
+agent.search.type_topic: トピック
+agent.search.view_all_results: 全ての結果を表示
+agent.settings.admin_filters_info: これらは、使用できる管理者によって作成されたフィルタです。
+agent.settings.auto_close_ticket_tabs: 次の場合にチケットのタブを自動的に閉じます：
+agent.settings.auto_close_ticket_tabs_note: メモを追加
+agent.settings.auto_close_ticket_tabs_reply: 返信
+agent.settings.browser_notifications: ブラウザ通知
+agent.settings.chat_immediate_dismiss: 別のエージェントがチャットをした時、直ちに「新しいチャット」ウィンドウを閉じる
+agent.settings.create_filter: フィルタ作成
+agent.settings.create_macro: マクロ作成
+agent.settings.default_team: デフォルトチーム
+agent.settings.delete_filter: フィルタ削除
+agent.settings.desktop_notifs: デスクトップ通知
+agent.settings.desktop_notifs_are_enabled: デスクトップ通知は現在有効です。通知自体のコントロールでのみ無効にすることができます。
+agent.settings.desktop_notifs_autohide: 通知後、自動的に非表示にする：
+agent.settings.desktop_notifs_enable: デスクトップ通知を有効にする
+agent.settings.desktop_notifs_explicit_disabled: デスクトップ通知は明示的に無効になっています。ブラウザ自体からこのドメインに対して有効にする必要があります。
+agent.settings.desktop_notifs_secure_disabled: '<b>注</b>：現代のブラウザでは、通知が機能するためにHTTPSが必要なことがあります。あなたは今HTTPSを使用していないため、通知を受け取ることはできません。ヘルプデスクにHTTPSを有効にするよう管理者に依頼してください。'
+agent.settings.desktop_notifs_tip: 全てのブラウザとプラットフォームは、デスクトップ通知をわずかに異なる方法で処理します。一部のプラットフォームでは、Deskproで通知動作を無効にすることはできません。また、ここで選択した時間より速く消えることもあります。
+agent.settings.drop_here_insert_signature: '<strong>画像</strong>をここにドロップして署名に挿入します'
+agent.settings.edit_filter: フィルタ編集
+agent.settings.edit_macro: マクロ編集
+agent.settings.email_notifications: メール通知
+agent.settings.enable_plaintext_email: プレーンテキスト部分のメール通知を送信する
+agent.settings.enable_plaintext_email_tip: これを有効にすると、Deskproはリッチテキスト（HTML）とプレーンテキストの両方のメールを送信します。これは、プレーンテキストのメールを好むメールソフトウェアを使用する場合に便利です。
+agent.settings.first_login_set_name: 初めてのログインです。名前を入力してプロフィール画像をアップロードしてください。
+agent.settings.first_login_set_pic: 初めてのログインです。プロフィール画像をアップロードしますか？
+agent.settings.hidden_filters_info: 非表示のフィルタはメインインターフェイスに表示されません。いつでもフィルタを元に戻すことができます。
+agent.settings.leave_password_blank: このフィールドを空白のままにして、パスワードを同じにします
+agent.settings.macro_belongs_to_department: 'このマクロは特定の部門に属します：{{department}}。この権限は管理エリアからのみ変更できます。'
+agent.settings.macro_menu_hierarchy: '"-&gt;"を使用して、マクロ内にメニュー階層を作成します。例：Sales -&gt; My Macro'
+agent.settings.macro_who_can_use: 誰がこのマクロを使用出来ますか？
+agent.settings.new_macro: 新しいマクロ
+agent.settings.no_filters: フィルタを定義していません。
+agent.settings.no_macros: カスタムマクロを定義していません。
+agent.settings.no_slas: 管理者はSLAを定義していません。
+agent.settings.no_slas_admin: 'SLAはまだ作成されていません。管理インターフェイス＞チケット＞SLA から新しいSLAを定義できます。'
+agent.settings.notif_all_actions: 全てのアクション
+agent.settings.notif_chat_message: 私がオフライン中にエージェントがIMメッセージを送信する
+agent.settings.notif_contact_admin: メール通知の設定更新は、管理者に連絡してください。
+agent.settings.notif_group_all: 全てのチケット
+agent.settings.notif_group_follow: 私がフォローしているチケット
+agent.settings.notif_group_my: 私のチケット
+agent.settings.notif_group_team: 私のチームのチケット
+agent.settings.notif_group_unassigned: 未割り当てのチケット
+agent.settings.notif_login_attempt: アカウントを使用してログインするたびに
+agent.settings.notif_login_attempt_fail: アカウントがログインに使用され、資格情報が間違っている場合は常に
+agent.settings.notif_my_events: 私のイベント
+agent.settings.notif_my_own_actions: 私のアクション
+agent.settings.notif_new_comment: 新しいコメントが提出されました
+agent.settings.notif_new_comment_validate: 検証が必要な新しいコメントが提出されました
+agent.settings.notif_new_feedback: 新しいフィードバック提出
+agent.settings.notif_new_feedback_validate: 検証が必要な新しいフィードバックが提出されました
+agent.settings.notif_new_user: 新しいユーザーが登録されました
+agent.settings.notif_notes_with_mentions_smart: オフラインの場合のみメールを送信する、オンラインの場合はエージェントのIM経由でメッセージを送信する
+agent.settings.notif_task_assigned: タスクが割り当てられている
+agent.settings.notif_task_assigned_team: 私のチームにタスクが割り当てられている
+agent.settings.notif_task_delegated_complete: 私が委任したタスクが完了しました
+agent.settings.notif_tip_all_agent_note: エージェントがチケットにメモを追加した時に通知する
+agent.settings.notif_tip_all_agent_reply: エージェントがチケットに返信した時に通知する
+agent.settings.notif_tip_all_changes: チケットの変更を通知する
+agent.settings.notif_tip_all_created: 新しいチケットが作成された時に通知する
+agent.settings.notif_tip_all_user_reply: ユーザーがチケットに返信した時に通知する
+agent.settings.notif_tip_event_email: ヘルプデスクにメールを転送すると通知が届きます
+agent.settings.notif_tip_filter_agent_note: エージェントがこのフィルタに一致するチケットにメモを追加した時に通知する
+agent.settings.notif_tip_filter_agent_reply: エージェントがこのフィルタに一致するチケットに返信した時に通知する
+agent.settings.notif_tip_filter_changes: このフィルタに一致するチケットが変更された時に通知する
+agent.settings.notif_tip_filter_created: このフィルタに一致する新しいチケットが作成された時に通知する
+agent.settings.notif_tip_filter_match: チケットの変更によりこのフィルタに一致すると通知されます
+agent.settings.notif_tip_filter_user_reply: このフィルタに一致するチケットにユーザーが返信した時に通知する
+agent.settings.notif_tip_follow_agent_note: エージェントが次のチケットにメモを追加したときに通知する
+agent.settings.notif_tip_follow_agent_reply: エージェントが次のチケットに返信したときに通知する
+agent.settings.notif_tip_follow_changes: フォローしているチケットへの変更点を通知する
+agent.settings.notif_tip_follow_created: 新しいチケットが作成され、フォロワーとして追加されたときに通知する
+agent.settings.notif_tip_follow_follow: チケットにフォロワーとして追加されたときに通知する
+agent.settings.notif_tip_follow_unfollow: フォロワーとして削除されたときに通知する
+agent.settings.notif_tip_follow_user_reply: フォローしているチケットにユーザーが返信したときに通知する
+agent.settings.notif_tip_my_agent_note: 私に割り当てられたチケットに別のエージェントがメモを追加したときに通知する
+agent.settings.notif_tip_my_agent_reply: 割り当てられたチケットに他のエージェントが返信したときに通知する
+agent.settings.notif_tip_my_assigned: チケットが割り当てられたときに通知する
+agent.settings.notif_tip_my_changes: 割り当てられたチケットに変更があった場合に通知する
+agent.settings.notif_tip_my_created_and_assigned: 新しいチケットが作成され、割り当てられた時に通知する
+agent.settings.notif_tip_my_unassigned: チケットに割り当てられていない時に通知する
+agent.settings.notif_tip_my_user_reply: 割り当てられたチケットにユーザーが返信した時に通知する
+agent.settings.notif_tip_team_agent_note: チームの１人に割り当てられたチケットにエージェントがメモを追加した時に通知する
+agent.settings.notif_tip_team_agent_reply: チームの１人に割り当てられたチケットにエージェントが返信した時に通知する
+agent.settings.notif_tip_team_assigned: チームの１人にチケットが割り当てられた時に通知する
+agent.settings.notif_tip_team_changes: チームの１人に割り当てられたチケットが変更された時に通知する
+agent.settings.notif_tip_team_created: 新しいチケットが作成されチームの１人に割り当てられた時に通知する
+agent.settings.notif_tip_team_unassigned: チケットがチームから割り当て解除されたときに通知する
+agent.settings.notif_tip_team_user_reply: チームに割り当てられたチケットにユーザーが返信したときに通知する
+agent.settings.notif_tip_unassigned_agent_note: エージェントが未割り当てのチケットにメモを追加した時に通知する
+agent.settings.notif_tip_unassigned_agent_reply: エージェントが未割り当てのチケットに返信した時に通知する
+agent.settings.notif_tip_unassigned_assigned: 未割り当てチケットが割り当てられた時に通知する
+agent.settings.notif_tip_unassigned_changes: エージェントやチームに割り当てられていないチケットに変更があった場合に通知する
+agent.settings.notif_tip_unassigned_created: エージェントやチームに割り当てられていない新しいチケットが作成された時に通知する
+agent.settings.notif_tip_unassigned_unassigned: チケットが割り当てられない時に通知する
+agent.settings.notif_tip_unassigned_user_reply: 未割り当てのチケットにユーザーが返信したときに通知する
+agent.settings.notif_tweet_assigned: ツイートが割り当てられています
+agent.settings.notif_tweet_assigned_team: チームにツイートが割り当てられています
+agent.settings.notif_tweet_dm: Twitterアカウントでダイレクトメッセージを受け取る
+agent.settings.notif_type_agent: エージェントメッセージ
+agent.settings.notif_type_assign: 割り当て
+agent.settings.notif_type_change: プロパティ変更
+agent.settings.notif_type_new: 新しいチケット
+agent.settings.notif_type_note: エージェントメモ
+agent.settings.notif_type_user: ユーザーメッセージ
+agent.settings.override_name: 名前の上書き
+agent.settings.override_name_explain: 入力した場合、この名前がユーザーに表示されます。
+agent.settings.reset_api_token: APIトークンをリセットします。任意の外部アプリで再ログインする必要があります。
+agent.settings.signature: 署名
+agent.settings.sla_filter_all: 一致する全てのチケットを表示する
+agent.settings.sla_filter_assigned: 私に割り当てられたチケットのみを表示する
+agent.settings.sla_filter_results: SLA結果をフィルタリング
+agent.settings.sla_filter_results_info: エージェントインターフェイスにSLAが表示されると、このオプションでカウントとリスティングがフィルタリングされます。
+agent.settings.sla_filter_team: チームに割り当てられたチケットのみを表示する
+agent.settings.ticket_signature: チケットの署名
+agent.settings.title_other_notifs: 通知
+agent.settings.title_ticket_notifs: チケット通知
+agent.settings.twitter_signature: Twitter署名
+agent.settings.twitter_signature_desc: ツイートには署名が追加されます。簡潔にまとめてください。
+agent.settings.welcome_to_deskpro: Deskproへようこそ
+agent.settings.welcome_to_deskpro_name: 'Deskproへようこそ、{{name}}'
+agent.settings.your_current_picture: あなたの現在の画像
+agent.snippets.add_snippet: スニペット追加
+agent.snippets.all_departments: 全ての部門
+agent.snippets.all_drafts: 全てのドラフト
+agent.snippets.all_snippets: 全てのスニペット
+agent.snippets.at_least_one_type: 少なくとも１つのタイプが必要です。
+agent.snippets.cat_can_be_used_by: カテゴリは次のように使用できます：
+agent.snippets.chat_snippets: チャットスニペット
+agent.snippets.content_change: コンテンツ変更
+agent.snippets.departments: 部門
+agent.snippets.draft_status: ドラフトステータス
+agent.snippets.edit_snippet: スニペット編集
+agent.snippets.feedback: フィードバック：
+agent.snippets.helpdesk_default: ヘルプデスクデフォルト
+agent.snippets.insert_variable: 変数の挿入
+agent.snippets.learn_more_about_vars: 変数の詳細
+agent.snippets.mass_actions_progress: '{total}の大量アクション中{current}処理済み'
+agent.snippets.must_create_cat: スニペットを作成する前に、<br/>最初のカテゴリを作成する必要があります。
+agent.snippets.my_drafts: 私のドラフト
+agent.snippets.my_snippets: 私のスニペット
+agent.snippets.my_team_snippets: 私のチームのスニペット
+agent.snippets.my_teams_snippets: 私のチームのスニペット
+agent.snippets.new_snippet: 新しいスニペット
+agent.snippets.no_comment: コメントなし
+agent.snippets.no_results_new_label: '‘{label}’ の検索結果はありません。新しいラベルを追加するには、Enterキーを押してください'
+agent.snippets.ownership: 所有
+agent.snippets.please_select: 選択してください
+agent.snippets.revert_content: コンテンツをこれに戻す
+agent.snippets.save_changes: 変更内容を保存
+agent.snippets.set_as_draft: ドラフトとして設定
+agent.snippets.set_as_published: 公開として設定
+agent.snippets.shortcut_code: ショートカットコード
+agent.snippets.shortcut_code_info: 'このコードをチケット返信ボックスに入力すると、スニペットが自動的に挿入されます。例えば、''standard-response''のショートカットコードでは、''%standard-response%''と入力するだけでスニペットマネージャを開くことなくスニペットを挿入することができます。'
+agent.snippets.show_only_with_feedback: フィードバックのみで履歴を表示する
+agent.snippets.snippet_created: スニペットが作成されました
+agent.snippets.snippet_is_draft: これはドラフトです
+agent.snippets.specific_departments: 特定部門
+agent.snippets.specific_teams: 特定チーム
+agent.snippets.split_snippet: 分割スニペット
+agent.snippets.teams: チーム
+agent.snippets.ticket_snippets: チケットスニペット
+agent.snippets.usage_history: 使用履歴
+agent.snippets.variables: 変数
+agent.snippets.your_language: あなたの言語
+agent.tasks.add_another_task: 別のタスクを追加
+agent.tasks.all_tasks: 全てのタスク
+agent.tasks.assigned_to_by: '{{name}}によってこのタスクに割り当てられました'
+agent.tasks.completed_by: 'タスクは{{name}}によって完了しました'
+agent.tasks.completed_tasks: 完了したタスク
+agent.tasks.count: カウント
+agent.tasks.creator: クリエイター
+agent.tasks.delete_confirm: このタスクを削除してもよろしいですか？
+agent.tasks.due_in_future: 今後の予定
+agent.tasks.enter_your_comment: コメントを入力してください…
+agent.tasks.linked_ticket: リンクチケット
+agent.tasks.list_title:
+  other: '1 タスク'
+agent.tasks.my_tasks: 私のタスク
+agent.tasks.my_teams: 私のチーム
+agent.tasks.my_teamstasks: 私のチームのタスク
+agent.tasks.no_due_date: 期限なし
+agent.tasks.no_due_time: 指定時間なし
+agent.tasks.or: または
+agent.tasks.overdue: 期日
+agent.tasks.overdue_today: 今日（期日）
+agent.tasks.task_created: 作成されたタスク
+agent.tasks.task_description: タスクの説明…
+agent.tasks.task_due_today: このタスクは今日が期日です
+agent.tasks.task_has_deal_x: 'リンクされているタスク："{{label}}"'
+agent.tasks.task_has_ticket_x: 'リンクされているタスク：チケット"{{label}}"'
+agent.tasks.team_assigned_by: 'あなたのチームは{{name}}によってこのタスクに割り当てられました'
+agent.tickets.any_of_my_teams: 私のチームのどれか
+agent.tickets.api: API
+agent.tickets.assign_current_action: エージェントを現在ログインしているエージェントに割り当てる
+agent.tickets.delete_attachments: 添付ファイルの削除
+agent.tickets.deleted_by: このチケットは以下により削除されました
+agent.tickets.last_agent_reply: 最後のエージェントの返信
+agent.tickets.last_user_reply: 最後のユーザから返信
+agent.tickets.lc_created: 作成されました
+agent.tickets.lc_new_ticket: 新しいチケット
+agent.tickets.new_note: 新しいメモ
+agent.tickets.new_ticket_subject: 新しいチケットの件名
+agent.tickets.newticket_and_apply_macro: チケットを送信してマクロを適用する
+agent.tickets.newticket_and_set_status: チケットを送信してステータスを設定する
+agent.tickets.send_reply_as_x: '{{status}}として返信する'
+agent.tickets.sending_your_message: あなたのメッセージを送信する
+agent.tickets.set_as_normal_message: 通常のメッセージとして設定する
+agent.tickets.ticket_merged: チケットが統合されました
+agent.tickets.ticket_removed_from_hold: チケットが保留から取り外されました
+agent.tickets.ticket_replying: チケットの返信
+agent.tickets.ticket_split: チケットの分割
+agent.userchat.message_wait-timeout: チャットが終了しました：エージェントを見つける事ができませんでした
+agent.userchat.msg_agent_timeout: '{{name}} は応答していません。 別のエージェントを検索しようとしている間お待ちください。'
+agent.userchat.msg_user_timeout: ユーザが応答していません。
+agent.userchat.transcript_sent: '{{email}}に送信された記録'

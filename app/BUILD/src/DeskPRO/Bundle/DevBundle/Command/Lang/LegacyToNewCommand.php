@@ -38,7 +38,9 @@ class LegacyToNewCommand extends ContainerAwareCommand
 
         $fs = new Filesystem();
         if (file_exists($localeDir)) {
-            $fs->remove($localeDir);
+            $fs->remove(
+                Finder::create()->directories()->in($localeDir)->depth(1)
+            );
         }
 
         $doLangId = $input->getArgument('languageId');

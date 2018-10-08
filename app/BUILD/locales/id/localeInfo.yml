@@ -1,0 +1,10 @@
+id: indonesian
+name: Indonesian
+nameLocal: 'Inggris (US)'
+locale: id
+isRtl: false
+pluralRules:
+  plurals: 1
+  formula: '0'
+  categories:
+    - other
