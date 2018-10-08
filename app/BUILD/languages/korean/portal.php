@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.change-password'                 => '비밀번호 바꾸기',
     'portal.account.email-btn-resend-validation'     => '승인 이메일 다시 보내기',
@@ -316,6 +318,7 @@ return [
     'user.emails.message-clipped'                    => '(메세지들이 클립되었습니다 )',
     'user.emails.password_agent-reset'               => '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오',
     'user.emails.password_reset'                     => '비밀번호 재설정을 요청하셨습니다. 재설정 하시려면 아래의 링크를 클릭하십시오:',
+    'user.emails.profile_email-new-confirm'          => '두번째 이메일 주소를 추가하시려면 아래의 확인 링크를 클릭해주십시오',
     'user.emails.profile_email_link-validate'        => '이메일 주소를 인증시키시려면 아래 링크를 클릭해주십시오',
     'user.emails.register-confirm'                   => '가입해주셔서 감사합니다. <br /><br />아래 링크를 클릭해 이메일 주소를 확인해주셔야 계정을 사용하실 수 있습니다.',
     'user.emails.register-welcome'                   => '가입해 주셔서 감사합니다. {{to_email}} 로 Helpdesk 에 로그인 하십시오:',
@@ -324,6 +327,7 @@ return [
     'user.emails.reject_resolved-new'                => '새로운 티켓을 생성하시려면 <a href="mailto:{{email_to}}">{{email_to}}</a> 로 이메일을 보내시거나 <br /><a href="{{link}}">{{link}}</a> 에서 온라인 양식을 작성해 주세요.',
     'user.emails.reject_resolved-newemail'           => '새로운 티켓을 생성하시려면 <a href="mailto:{{email_to}}">{{email_to}}</a> 로 이메일을 보내주세요.',
     'user.emails.ticket_access_ticket_online'        => '티켓은 온라인에서 보시고 관리해주세요:',
+    'user.emails.ticket_cc-new'                      => '티켓에 {{name}}에 의해 참여되셨습니다.',
     'user.emails.ticket_message_title'               => '{{date}} {{time}}에, {{author}} 님이 쓰신 글 입니다:',
     'user.emails.ticket_no-autoresponse'             => '알림: 확인 이메일이 정지 되었습니다',
     'user.emails.ticket_rate-negative'               => '아니오',

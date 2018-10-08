@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.automatically_join_org_tickets' => 'Ymuno a thicedi {{org_name}} yn awtomatig?',
     'portal.account.change-password'                => 'Newid eich cyfrinair',

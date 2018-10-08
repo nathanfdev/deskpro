@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'agent.chat.added_as_participant'                       => 'Adicionado como participante',
     'agent.chat.agent_chats'                                => 'Chat dos Agentes',
