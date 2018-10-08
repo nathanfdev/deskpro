@@ -145,4 +145,58 @@ class JsonBubbleRenderer extends AbstractJsonChartRenderer
 
         return $arrayOutput;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mergeResults(array $results, $graphType, array $options)
+    {
+        $mainResults = array_shift($results);
+
+        $assocKeyedDataProvider = [];
+        foreach ($mainResults['dataProvider'] as $dataProviderItem) {
+            $assocKeyedDataProvider[$dataProviderItem['y']] = $dataProviderItem;
+        }
+        $mainResults['dataProvider'] = $assocKeyedDataProvider;
+
+        foreach ($results as $resultIndex => $result) {
+            foreach ($result['dataProvider'] as $dataProviderItem) {
+                if (isset($mainResults['dataProvider'][$dataProviderItem['y']])) {
+                    foreach ($dataProviderItem as $itemKey => $value) {
+                        if (strpos($itemKey, 'value') !== false) {
+                            $newKey                                                       = $resultIndex.'_'.$itemKey;
+                            $mainResults['dataProvider'][$dataProviderItem['y']][$newKey] = $value;
+                        }
+                        if ($itemKey === 'y') {
+                            $newKey                                                       = $itemKey.$resultIndex;
+                            $mainResults['dataProvider'][$dataProviderItem['y']][$newKey] = $value;
+                        }
+                        if (stripos($itemKey, 'title') !== false) {
+                            $newKey                                                       = $itemKey.$resultIndex;
+                            $mainResults['dataProvider'][$dataProviderItem['y']][$newKey] = $value;
+                        }
+                    }
+                }
+            }
+
+            foreach ($result['graphs'] as &$graph) {
+                $graph['valueField'] = $resultIndex.'_'.$graph['valueField'];
+                $graph['id']         = $resultIndex.'_'.$graph['id'];
+                $graph['yField']     = $graph['yField'].$resultIndex;
+                $graph['xField']     = $graph['xField'].$resultIndex;
+                if (isset($graph['balloonText'])) {
+                    $graph['balloonText'] = str_replace(
+                        ['[[xTitle]]', '[[yTitle]]'],
+                        ["[[xTitle{$resultIndex}]]", "[[yTitle{$resultIndex}]]"],
+                        $graph['balloonText']
+                    );
+                }
+            }
+            $mainResults['graphs'] = array_merge($mainResults['graphs'], $result['graphs']);
+        }
+        $mainResults['graphs']       = array_reverse($mainResults['graphs']);
+        $mainResults['dataProvider'] = array_values($mainResults['dataProvider']);
+
+        return $mainResults;
+    }
 }
