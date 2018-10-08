@@ -271,6 +271,10 @@ class CsvImporter
         $people = $personRepo->findByEmails($personData['emails']);
         $person = reset($people);
 
+        if ($personModel && $personModel->getPassword()) {
+            $person->setPassword($personModel->getPassword());
+        }
+
         if ($sendWelcomeEmail && $isNew && $person) {
             if ($this->featureFlags->hasBeta('email_templates')) {
                 $viewModel = $this->viewModelFactory
