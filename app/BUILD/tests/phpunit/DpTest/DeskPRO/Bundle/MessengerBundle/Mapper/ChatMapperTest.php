@@ -15,6 +15,7 @@ class ChatMapperTest extends MessengerTestCase
             'author_name' => 'Test author name',
             'message'     => '<script>alert("!")</script><div>This is the test message with script</div>',
             'is_user'     => true,
+            'origin'      => 'user',
         ];
 
         $result = $mapper->createChatMessage($data);
@@ -48,6 +49,7 @@ class ChatMapperTest extends MessengerTestCase
             'is_user'     => true,
             'is_sys'      => false,
             'is_html'     => true,
+            'origin'      => ChatMessage::ORIGIN_USER,
             'author'      => 0,
             'chat'        => 0,
             'id'          => 0,

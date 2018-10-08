@@ -63,7 +63,7 @@ class ChatMapper
     public function mapMessageToArray(ChatMessage $message)
     {
         return [
-            'id'          => $message->getId(),
+            'id'          => $message->getId() ?: 0,
             'chat'        => $message->getConversationId(),
             'author_name' => $message->getPersonName(),
             'author'      => $message->getAuthorId(),
