@@ -1022,6 +1022,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						}
 						return;
 					}
+          self.page.doTicketUpdate(true);
+          // Reload message page to show `message forwarded` mark
+          // need to call this manually because doTicketUpdate will not update page without new messages
+          self.page.loadMessagePage(0, true);
           DeskPRO_Window.showAlert('Your forwarded message was successfully sent.');
           self.getElById('replybox_replytab_btn').click();
         },
