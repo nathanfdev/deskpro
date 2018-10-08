@@ -1176,6 +1176,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return bool
      */
+    public function isCheckbox()
+    {
+        return $this->isChoiceType() && $this->getOption('multiple') && $this->getOption('expanded');
+    }
+
+    /**
+     * @return bool
+     */
     public function isDateType()
     {
         return in_array($this->handler_class, [self::HANDLER_CLASS_DATE, self::HANDLER_CLASS_DATETIME], true);

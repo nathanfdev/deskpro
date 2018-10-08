@@ -6123,12 +6123,37 @@ CSS;
      */
     private function filterSubmittedLayoutData(LayoutDisplay $layout, $fieldType, $submittedData)
     {
+        $em = $this->get('doctrine.orm.entity_manager');
+
         $layoutCustomData = [];
         foreach ($layout->all() as $layoutField) {
             if ($layoutField->getFieldType() === $fieldType) {
-                $fieldName = 'field_'.$layoutField->getFieldId();
+                $fieldId   = $layoutField->getFieldId();
+                $fieldName = 'field_'.$fieldId;
+
                 if (isset($submittedData[$fieldName])) {
                     $layoutCustomData[$fieldName] = $submittedData[$fieldName];
+                } else {
+                    if ($fieldId) {
+                        $customField = null;
+                        switch ($layoutField->getFieldType()) {
+                            case 'ticket_field':
+                                $customField = $em->getRepository(Entity\CustomDefTicket::class)->find($fieldId);
+                                break;
+                            case 'user_field':
+                                $customField = $em->getRepository(Entity\CustomDefPerson::class)->find($fieldId);
+                                break;
+                            case 'org_field':
+                                $customField = $em->getRepository(Entity\CustomDefOrganization::class)->find($fieldId);
+                                break;
+                        }
+
+                        if ($customField instanceof Entity\CustomDefAbstract) {
+                            if ($customField->isMulti()) {
+                                $layoutCustomData[$fieldName] = [];
+                            }
+                        }
+                    }
                 }
             }
         }
