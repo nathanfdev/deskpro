@@ -40,6 +40,11 @@ class UserDisabledListener implements EventSubscriberInterface
         ];
     }
 
+    /**
+     * @internal
+     *
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
         if (!$this->tokenStorage->getToken()) {
@@ -49,7 +54,7 @@ class UserDisabledListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         $person = $this->tokenStorage->getToken()->getUser();
-        if ($person && $person instanceof Person && !$person instanceof PersonGuest && $person->is_disabled) {
+        if ($person && $person instanceof Person && !$person instanceof PersonGuest && $person->isDisabled()) {
             if (!preg_match('#^(/.{2,4})?/profile/disabled#', $request->getPathInfo())) {
                 $event->setResponse(new RedirectResponse($request->getUriForPath('/profile/disabled')));
                 $event->stopPropagation();

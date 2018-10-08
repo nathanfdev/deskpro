@@ -25,6 +25,14 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  brand_access.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\BrandAccessListener
+    arguments:
+      - "@brand_stack"
+      - "@security.token_storage"
+    tags:
+      - { name: kernel.event_subscriber }
+
   disabled_helpdesk.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\DisabledHelpdeskListener
     arguments: ["@brand_stack", "@settings_resolver", "@logger"]
