@@ -91,9 +91,12 @@ export class AppsViewFull extends React.PureComponent {
     function computeNotificationsCount(acc, widgetConfig) {
       return acc + getWidgetBadgeCount(widgetConfig.id, appsState);
     }
+
+    const isMainGroup = groupId === 0;
+
     const notificationsCount = widgetList.reduce(computeNotificationsCount, 0);
-    const icon = widgetList.length === 1 ? firstWidget.appConfig.assets.getIconUrl(firstWidget.appConfig.baseUrl) : null;
-    const label = widgetList.length === 1 ? firstWidget.appConfig.applicationTitle : null;
+    const icon = !isMainGroup && widgetList.length === 1 ? firstWidget.appConfig.assets.getIconUrl(firstWidget.appConfig.baseUrl) : null;
+    const label = !isMainGroup && widgetList.length === 1 ? firstWidget.appConfig.applicationTitle : null;
 
     return (<WidgetGroupControlBtn
       groupId={groupId}

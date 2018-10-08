@@ -32,6 +32,7 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
             'core.install_timestamp'     => time(),
             'core.install_key'           => RandUtils::randomStringFormat('%25An'),
             'core.app_secret'            => RandUtils::randomStringFormat('%75An'),
+            'core.helpdesk_uuid'         => RandUtils::uuidV4(),
             'core_tickets.use_ref'       => 1,
         ];
 

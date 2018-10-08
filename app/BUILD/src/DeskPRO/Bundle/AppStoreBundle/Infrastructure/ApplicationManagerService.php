@@ -220,7 +220,13 @@ class ApplicationManagerService
                 $contentType = 'application/octet-stream';
             }
 
-            $blob         = $this->blobStorage->createBlobRecordFromString($resource->getContent(), $resource->getPath(), $contentType);
+            $blob = $this->blobStorage->createBlobRecordFromString(
+                $resource->getContent(),
+                $resource->getPath(),
+                $contentType,
+                ['tag' => 'apps.asset']
+            );
+
             $specialAsset = new AppAssetBlob();
             $specialAsset->setPath($resource->getPath());
             $specialAsset->setBlob($blob);

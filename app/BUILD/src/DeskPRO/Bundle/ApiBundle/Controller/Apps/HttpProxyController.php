@@ -12,7 +12,6 @@ use DeskPRO\Bundle\ApiBundle\Proxy\RequestSigningStrategy;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
-use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
@@ -52,10 +51,11 @@ class HttpProxyController extends BaseController
      * @ParamConverter("instance", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @param AppInstance $instance
-     * @param Request $request
+     * @param Request     $request
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      *
      * @return string
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function proxyAction(AppInstance $instance = null, Request $request)
     {
@@ -63,10 +63,14 @@ class HttpProxyController extends BaseController
         /** @var ProxyRequestFactory $proxyRequestFactory */
         $proxyRequestFactory = $this->get('api_proxy_request_factory');
 
-        if (is_null($instance)) {
-            $proxyRequest = $proxyRequestFactory->createFromRequest($request);
-        } else {
-            $proxyRequest = $proxyRequestFactory->createFromAppRequest($instance, $request, $this->getUser());
+        try {
+            if (is_null($instance)) {
+                $proxyRequest = $proxyRequestFactory->createFromRequest($request);
+            } else {
+                $proxyRequest = $proxyRequestFactory->createFromAppRequest($instance, $request, $this->getUser());
+            }
+        } catch (\Exception $e) {
+            throw $this->createBadRequestException($e->getMessage());
         }
 
         // verify proxy request
@@ -96,7 +100,7 @@ class HttpProxyController extends BaseController
         }
 
         // send proxy request
-        $buildId    = $this->get('deskpro.app_env')->getBuildId();
+        $buildId = $this->get('deskpro.app_env')->getBuildId();
         try {
             $options = [
                 RequestOptions::HEADERS => array_merge(

@@ -105,6 +105,11 @@ return [
     'core.app_secret' => 'APP_SECRET',
 
     /*
+     * A UUID string to identify this helpdesk instance. It's set up during install.
+     */
+    'core.helpdesk_uuid' => 'HELPDESK_UUID',
+
+    /*
      * The default "from" address to send all email from
      */
     'core.default_from_email' => '',
