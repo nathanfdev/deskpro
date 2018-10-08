@@ -78,6 +78,15 @@ class Feedback extends ContentAbstract
     protected $isReviewed;
 
     /**
+     * Items attached to the content.
+     *
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\FeedbackAttachment>>")
+     *
+     * @var TicketAttachment[]
+     */
+    protected $attachments;
+
+    /**
      * Constructor.
      *
      * @param \Application\DeskPRO\Entity\Feedback $entity
@@ -92,6 +101,7 @@ class Feedback extends ContentAbstract
         $this->fields         = $entity->getCustomData();
         $this->popularity     = $entity->getPopularity();
         $this->isReviewed     = $entity->isReviewed();
+        $this->attachments    = $entity->getAttachments();
     }
 
     /**

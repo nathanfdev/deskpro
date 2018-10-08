@@ -21,6 +21,15 @@ class News extends ContentAbstract
     protected $category;
 
     /**
+     * Items attached to the content.
+     *
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\NewsAttachment>>")
+     *
+     * @var TicketAttachment[]
+     */
+    protected $attachments;
+
+    /**
      * Constructor.
      *
      * @param NewsEntity $entity
@@ -28,6 +37,7 @@ class News extends ContentAbstract
     public function __construct(NewsEntity $entity)
     {
         parent::__construct($entity);
-        $this->category = $entity->getCategory();
+        $this->category    = $entity->getCategory();
+        $this->attachments = $entity->getAttachments();
     }
 }
