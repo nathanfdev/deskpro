@@ -12,6 +12,7 @@ use Application\AgentBundle\Form\Type\NewFeedback as NewFeedbackTypeOld;
 use Application\AgentBundle\Validator\NewFeedbackValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -37,6 +38,7 @@ use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -573,11 +575,19 @@ class FeedbackController extends AbstractController
                 $personPrefRepository = $this->em->getRepository('DeskPRO:PersonPref');
                 $personPrefRepository->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
-                $feedback->setContent(
-                    $this->person->hasPerm('agent_publish.can_insert_html')
+                $content = $this->person->hasPerm('agent_publish.can_insert_html')
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
-                    : $this->in->getCleanValue('content', 'html')
-                );
+                    : $this->in->getCleanValue('content', 'html');
+
+                $feedback->setContent($content);
+
+                $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
+                $inlineBlobs   = $blob   = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
+                foreach ($inlineBlobs as $blob) {
+                    if ($blob && StringUtils::ensureAttachment($blob, $content)) {
+                        $this->em->persist($blob->setIsTemp(false));
+                    }
+                }
 
                 $data['content_html'] = $this->renderView(
                     'AgentBundle:Feedback:view-content-tab.html.twig',
@@ -599,7 +609,9 @@ class FeedbackController extends AbstractController
         }
 
         $this->em->persist($feedback);
-
+        foreach ($feedback->getAttachments() as $attachment) {
+            $this->em->persist($attachment->getBlob()->setIsTemp(true));
+        }
         if ($rev) {
             $this->em->persist($rev);
         }
@@ -1287,8 +1299,8 @@ class FeedbackController extends AbstractController
                     ]
                 );
             }
-            $newfeedback->save();
 
+            $newfeedback->save();
             $feedback = $newfeedback->getFeedback();
 
             /** @var PersonPrefRepository $personPrefRepository */

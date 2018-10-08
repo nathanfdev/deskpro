@@ -139,6 +139,7 @@ class SettingsProfile
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($this->new_picture_blob_id);
             if ($blob) {
                 $person->picture_blob = $blob;
+                $this->em->persist($blob->setIsTemp(false));
             }
         }
 

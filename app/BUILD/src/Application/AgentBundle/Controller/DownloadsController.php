@@ -15,6 +15,7 @@ use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use DeskPRO\Component\Util\StringUtils;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -229,20 +230,14 @@ class DownloadsController extends AbstractController
                 $rev = ContentRevisionUtil::findOrCreate($download, ['blob', 'title'], $this->person);
 
                 if ($this->in->getUInt('download.attach') && $blob = $this->em->getRepository(Blob::class)->find($this->in->getUInt('download.attach'))) {
-                    $download->blob = $blob;
-
-                    $title = $this->in->getString('download.title');
-                    if (!$title) {
-                        $title = $blob->filename;
-                    }
-
-                    $download->title = $title;
-
-                    $blob->filename = $title;
+                    $title = $this->in->getString('download.title') ?: $title = $blob->getFilename();
+                    $download->setBlob($blob)->setTitle($title);
+                    /* @var Blob $blob */
+                    $blob->setIsTemp(false)->setFilename($title);
                     $this->em->persist($blob);
 
                     $rev['title'] = $title;
-                    $rev->blob    = $download->blob;
+                    $rev->blob    = $download->getBlob();
                 } elseif ($this->in->getString('download.fileurl')) {
                     $fileurl  = $this->in->getString('download.fileurl');
                     $filesize = $this->in->getString('download.filesize');
@@ -284,6 +279,14 @@ class DownloadsController extends AbstractController
                     $download['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
                         ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                         : $this->in->getCleanValue('content', 'html');
+                }
+
+                $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
+                $inlineBlobs   = $blob   = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
+                foreach ($inlineBlobs as $blob) {
+                    if ($blob && StringUtils::ensureAttachment($blob, $download['content'])) {
+                        $this->em->persist($blob->setIsTemp(false));
+                    }
                 }
 
                 $data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', [

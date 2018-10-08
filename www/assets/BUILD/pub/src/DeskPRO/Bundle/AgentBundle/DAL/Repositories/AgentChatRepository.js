@@ -43,8 +43,8 @@ export class AgentChatRepository extends ApiRepository {
    * @param {string} uuid unique message identity since we have no ID right now
    * @returns {Promise} promise
    */
-  addMessage(chatId, message, uuid) {
-    return this.api.sendPost(`DP_API/${this.url}/${chatId}/messages`, { message, uuid });
+  addMessage(chatId, message, uuid, blobs) {
+    return this.api.sendPost(`DP_API/${this.url}/${chatId}/messages`, { message, uuid, blobs });
   }
 
   /**

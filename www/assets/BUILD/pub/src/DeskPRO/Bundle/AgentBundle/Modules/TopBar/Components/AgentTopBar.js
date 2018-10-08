@@ -184,7 +184,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(chatsActions.hideChat(chat));
   };
 
-  onSubmitChatMessage = (message) => {
+  onSubmitChatMessage = (message, blobs) => {
     let testMessage = striptags(message, ['img', 'svg', 'video', 'object', 'embed']);
     testMessage = testMessage.replace(/(&nbsp;\s)+$/g, '');
     testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
@@ -194,7 +194,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     if (testMessage.trim() || message.indexOf('<video') !== -1) { // another dancing around froala, it wraps <video> into <span>
       const { dispatch, current, me } = this.props;
       const linkedMessage = AgentTopBarContainer.addLinks(message);
-      dispatch(messagesActions.addMessage(current.get('id'), linkedMessage, uuid(), me));
+      dispatch(messagesActions.addMessage(current.get('id'), linkedMessage, uuid(), me, blobs));
     }
   };
 

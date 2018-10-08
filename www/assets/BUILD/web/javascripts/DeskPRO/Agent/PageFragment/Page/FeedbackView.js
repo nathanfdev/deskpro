@@ -572,8 +572,13 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			var data = {
 				action: 'content',
 				content: $('.feedback-editor-wrap textarea:first', wrap).val(),
-				attach: $('.feedback-editor-wrap .edit-content-attach:first', wrap).val()
+				attach: $('.feedback-editor-wrap .edit-content-attach:first', wrap).val(),
+				blob_inline_ids: []
 			};
+
+      $('input[name="blob_inline_ids[]"]', wrap).each(function() {
+        data.blob_inline_ids.push($(this).val());
+      });
 
 			$.ajax({
 				url: BASE_URL + 'agent/feedback/view/' + this.feedback_id + '/ajax-save',
@@ -621,7 +626,8 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 
 
       window.LegacyRteTextarea.init($('.edit-content-field', this.getEl('content_ed')), {
-        height: h
+        height: h,
+        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
 			});
 
       txt.on('froalaEditor.keypress', function () {

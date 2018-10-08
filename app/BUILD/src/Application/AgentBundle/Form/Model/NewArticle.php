@@ -9,27 +9,38 @@ namespace Application\AgentBundle\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Component\Util\StringUtils;
 
 class NewArticle
 {
     /** @var string */
     public $title;
+
     /** @var int */
     public $category_id;
+
     /** @var string */
     public $status;
+
     /** @var string */
     public $content;
+
     /** @var int */
     public $language_id;
 
     /** @var string */
     public $slug;
+
     /** @var array */
     public $labels = [];
+
     /** @var array */
     public $attach = [];
+
+    /** @var array */
+    public $blob_inline_ids = [];
 
     /** @var Article */
     protected $_article;
@@ -87,18 +98,25 @@ class NewArticle
         foreach ($this->attach as $blob_id) {
             $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
             if ($blob) {
-                $attach           = new ArticleAttachment();
-                $attach['blob']   = $blob;
-                $attach['person'] = $this->_person_context;
+                $attach = new ArticleAttachment();
+                $attach->setPerson($this->_person_context)->setBlob($blob->setIsTemp(false));
                 $this->_em->persist($attach);
+                $this->_em->persist($blob);
                 $article->addAttachment($attach);
             }
         }
 
+        // Message Attachments
+        foreach ($this->blob_inline_ids as $blob_id) {
+            /** @var Blob|null $blob */
+            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+            if ($blob && StringUtils::ensureAttachment($blob, $article->getContentHtml())) {
+                $this->_em->persist($blob->setIsTemp(false));
+            }
+        }
+
         $this->_em->flush();
-
         $this->_em->commit();
-
         $this->_article = $article;
     }
 

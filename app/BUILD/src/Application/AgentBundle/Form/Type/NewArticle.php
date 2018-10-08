@@ -37,12 +37,19 @@ class NewArticle extends AbstractType
             'allow_add'    => true,
             'allow_delete' => true,
         ]);
+
+        $builder->add('blob_inline_ids', 'collection', [
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
+        ]);
     }
 
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewArticle',
+            'data_class' => \Application\AgentBundle\Form\Model\NewArticle::class,
         ];
     }
 

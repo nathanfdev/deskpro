@@ -32,6 +32,7 @@ class AgentChatMessageType extends AbstractType
                 'required' => true,
             ]);
 
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'removeBlobsFromData'], 100);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
     }
 
@@ -41,13 +42,27 @@ class AgentChatMessageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(['person', 'chat'])
+            ->setRequired(['person', 'chat', 'blobs'])
             ->setDefaults([
                 'data_class' => AgentChatMessage::class,
+                'blobs'      => [],
             ])
             ->setAllowedTypes('person', Person::class)
             ->setAllowedTypes('chat', AgentChat::class)
+            ->setAllowedTypes('blobs', 'array')
         ;
+    }
+
+    /**
+     * @param FormEvent $event
+     */
+    public function removeBlobsFromData(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['blobs'])) {
+            unset($data['blobs']);
+        }
+        $event->setData($data);
     }
 
     /**

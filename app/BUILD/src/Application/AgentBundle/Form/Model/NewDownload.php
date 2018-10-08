@@ -40,6 +40,9 @@ class NewDownload
     /** @var int|null */
     public $attach = null;
 
+    /** @var int[] */
+    public $blob_inline_ids = [];
+
     /** @var Download */
     protected $_download;
 
@@ -79,6 +82,7 @@ class NewDownload
         if ($this->attach) {
             /** @var Blob $blob */
             $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+            $blob->setIsTemp(false);
             $download->setBlob($blob);
             $download->setFilename($blob->getFilename());
 
@@ -116,8 +120,14 @@ class NewDownload
             }
         }
 
-        $this->_em->persist($download);
+        if ($this->blob_inline_ids) {
+            $inlineBlobs = $this->_em->getRepository(Blob::class)->findBy(['id' => $this->blob_inline_ids]);
+            foreach ($inlineBlobs as $blob) {
+                $this->_em->persist($blob->setIsTemp(false));
+            }
+        }
 
+        $this->_em->persist($download);
         $this->_em->flush();
 
         if ($this->labels) {

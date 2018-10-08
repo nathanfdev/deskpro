@@ -12,6 +12,7 @@ use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
 use DateTimeZone;
+use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -135,6 +136,7 @@ class SettingsController extends AbstractController
             $blob = $this->em->getRepository(Entity\Blob::class)->getByAuthId($blob_id);
             if ($blob) {
                 $this->person->picture_blob = $blob;
+                $this->em->persist($blob->setIsTemp(false));
             }
         }
 
@@ -183,8 +185,12 @@ class SettingsController extends AbstractController
             $signature_html = Strings::trimHtml($signature_html);
 
             foreach ($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard') as $blob_id) {
+                /** @var Entity\Blob|null $blob */
                 $blob = App::getEntityRepository(Entity\Blob::class)->find($blob_id);
                 if ($blob) {
+                    if (StringUtils::ensureAttachment($blob, $signature_html)) {
+                        $this->em->persist($blob->setIsTemp(false));
+                    }
                     $regex          = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
                     $replace        = $blob->getEmbedCode(true, 'signature_image');
                     $signature_html = preg_replace($regex, $replace, $signature_html);

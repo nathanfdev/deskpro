@@ -7,6 +7,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsAttachment;
 use Application\DeskPRO\Entity\Person;
@@ -15,21 +16,31 @@ class NewNews
 {
     /** @var string */
     public $title;
+
     /** @var int */
     public $category_id;
+
     /** @var string */
     public $status;
+
     /** @var string */
     public $content = '';
 
     /** @var string */
     public $slug;
+
     /** @var string */
     public $labels_json;
+
     /** @var array */
     public $labels = [];
+
     /** @var array */
     public $attach = [];
+
+    /** @var array */
+    public $blob_inline_ids = [];
+
     /** @var News */
     protected $_news;
 
@@ -75,17 +86,26 @@ class NewNews
         }
 
         // Message Attachments
-        foreach ($this->attach as $blob_id) {
-            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-            if ($blob) {
-                $attach           = new NewsAttachment();
-                $attach['blob']   = $blob;
-                $attach['person'] = $this->_person_context;
+        if ($this->attach) {
+            $attachBlobs = App::getOrm()->getRepository(Blob::class)->findBy(['id' => $this->attach]);
+            foreach ($attachBlobs as $blob) {
+                $attach = new NewsAttachment();
+                $attach->setPerson($this->_person_context)->setBlob($blob->setIsTemp(false));
                 $this->_em->persist($attach);
+                $this->_em->persist($blob);
                 $news->addAttachment($attach);
             }
         }
 
+        // Message Attachments
+        if ($this->blob_inline_ids) {
+            $inlineBlobs = App::getOrm()->getRepository(Blob::class)->findBy(['id' => $this->blob_inline_ids]);
+            foreach ($inlineBlobs as $blob) {
+                $this->_em->persist($blob->setIsTemp(false));
+            }
+        }
+
+        $this->_em->flush();
         $this->_em->commit();
 
         $this->_news = $news;

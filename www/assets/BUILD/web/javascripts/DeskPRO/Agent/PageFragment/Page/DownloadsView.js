@@ -483,10 +483,15 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			var data = {
 				action: 'content',
 				content: $('.download-editor-wrap textarea:first', wrap).val(),
-				attach: $('.download-editor-wrap .edit-content-attach:first', wrap).val()
-			};
+				attach: $('.download-editor-wrap .edit-content-attach:first', wrap).val(),
+				blob_inline_ids: []
+      };
 
-			$.ajax({
+      $('input[name="blob_inline_ids[]"]', wrap).each(function() {
+        data.blob_inline_ids.push($(this).val());
+      });
+
+      $.ajax({
 				url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/ajax-save',
 				type: 'POST',
 				context: this,
@@ -531,7 +536,8 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 			}
 
       window.LegacyRteTextarea.init(txt, {
-        height: h
+        height: h,
+        inlineHiddenPosition: $('.content-tab-item', this.wrapper)
 			});
 
       txt.on('froalaEditor.keypress', function () {
