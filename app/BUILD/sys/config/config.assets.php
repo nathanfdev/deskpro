@@ -81,7 +81,6 @@ $CONFIG['agent_vendors'] = [
         'vendor/jqTree/tree.jquery.js',
         'vendor/jquery/jquery-checkbox/jquery.checkbox.js',
         'vendor/redactor/redactor.js',
-        'vendor/jquery/colorbox/jquery.colorbox-min.js',
         'vendor/jquery/fileupload/jquery.fileupload.js',
         'vendor/jquery/fileupload/jquery.fileupload-ui.js',
         'vendor/jquery/fileupload/jquery.iframe-transport.js',
@@ -102,6 +101,7 @@ $CONFIG['agent_vendors'] = [
         'bower_components/kbw-calendars/dist/js/jquery.calendars.picker-ar.js',
         'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic.js',
         'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic-ar.js',
+        'node_modules/jquery-colorbox/jquery.colorbox-min.js',
     ],
 ];
 
@@ -537,7 +537,6 @@ $CONFIG['agent_vendors_css'] = [
     'files'   => [
         'stylesheets/vendor/jquery-ui/dp-theme/jquery-ui.css',
         'vendor/jquery/qtip/jquery.qtip.min.css',
-        'vendor/jquery/colorbox/colorbox.css',
         'vendor/select2/select2.css',
         'vendor/redactor/redactor.css',
         'vendor/bootstrap/css/common.css',
