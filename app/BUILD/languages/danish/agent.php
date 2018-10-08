@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'agent.emails.newagent-help'                              => 'Hvis du har brug for hjælp eller har spørgsmål, kan du søger yderligere på deskpro support side <a href="https://support.deskpro.com/"> https://support.deskpro.com/ </a> eller kontakt os direkte på <a href="mailto:support@deskpro.com"> support@deskpro.com </a>.',
     'agent.emails.newagent-login-your-password'               => 'Bemærk: Du har allerede en brugerkonto på denne helpdesk. Du kan logge ind som en agent ved hjælp af den samme adgangskode, du oprettet før.',

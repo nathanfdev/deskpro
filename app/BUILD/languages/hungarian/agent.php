@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'agent.chat.added_as_participant'                         => 'Résztvevőként hozzáadva',
     'agent.chat.agent_chats'                                  => 'Ügyintézői beszélgetések',

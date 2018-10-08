@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.automatically_join_org_tickets'         => 'Automatisch Tickets von {{org_name}} beitreten?',
     'portal.account.change-password'                        => 'Passwort ändern',
@@ -845,6 +847,7 @@ return [
     'user.emails.password_agent-reset'                      => 'Ein Mitarbeiter hat Ihr Kennwort zurückgesetzt. Sie können sich mit diesen Daten anmelden',
     'user.emails.password_reset'                            => 'Sie baten um das Zurücksetzen Ihres Passworts. Um dieses nun zurückzusetzen, klicken Sie auf den folgenden Link:',
     'user.emails.password_set'                              => 'Um Ihr Passwort zu setzen, klicken Sie auf den folgenden Link:',
+    'user.emails.profile_email-new-confirm'                 => 'Um das Hinzufügen dieser sekundären Email Adresse zu Ihrem Konto abzuschliessen einfach auf den folgenden Validierungslink klicken',
     'user.emails.profile_email_link-validate'               => 'Klicken Sie einfach auf den folgenden Link, um Ihre E-Mail-Adresse zu bestätigen',
     'user.emails.register-confirm'                          => 'Danke für das Anlegen eines Kontos.<br /><br />Um Ihr Konto freizuschalten, bestätigen Sie Ihre E-Mail-Adresse durch Klick auf den folgenden Link ',
     'user.emails.register-password'                         => 'Ihr initiales Passwort lautet: {{password}}',
@@ -857,6 +860,7 @@ return [
     'user.emails.remind_unresolved'                         => 'Das ist eine Erinnerungsnachricht, dass Sie weiterhin ein offenes Ticket bei {{ helpdesk_name }} haben.<br />Sofern Sie keine weitere Hilfe mehr benötigen, lassen Sie es uns wissen und klicken bitte auf den unten stehenden Link:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a><br />Sollten Sie weiterhin Hilfe benötigen, so antworten Sie einfach auf diese E-Mail.',
     'user.emails.remind_unresolved_final'                   => 'Wir haben in letzter Zeit keine Rückmeldung von Ihnen zu diesem Ticket erhalten.<br />Sollten Sie weiterhin Hilfe benötigen, antworten Sie einfach auf diese E-Mail.<br />Sofern Sie keine Hilfe mehr benötigen, klicken Sie es uns wissen indem Sie bitte auf den unten stehenden Link klicken:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a>',
     'user.emails.ticket_access_ticket_online'               => 'Ansehen und Verwalten dieses Tickets online:',
+    'user.emails.ticket_cc-new'                             => 'Sie wurden einem Ticket hinzugefügt das durch {{name}} eröffnet wurde.',
     'user.emails.ticket_flood'                              => 'Sie haben vor Kurzem E-Mails an unseren Helpdesk gesendet. Wir haben dabei festgestellt, dass Sie viele Nachrichten in schneller Folge gesendet haben, die wahrscheinlich automatisiert geschickt wurden.<br /><br />Als Schutz vor einer Auto-Responder Schleife wird unser Helpdesk keine weiteren automatischen Benachrichtigungsemails mehr an Sie senden.',
     'user.emails.ticket_message_title'                      => 'Am {{date}} um {{time}} schrieb {{author}}:',
     'user.emails.ticket_no-autoresponse'                    => 'Warnung: Bestätigungs-E-Mails ausgeschaltet',

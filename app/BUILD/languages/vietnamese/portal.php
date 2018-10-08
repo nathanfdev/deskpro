@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.automatically_join_org_tickets'         => 'Tự động tham gia vé của {{org_name}}?',
     'portal.account.change-password'                        => 'Đổi mật khẩu',

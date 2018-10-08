@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.automatically_join_org_tickets'         => 'Anslut automatiskt till {{org_name}}\'s ärenden?',
     'portal.account.change-password'                        => 'Ändra lösenord',
@@ -845,6 +847,7 @@ return [
     'user.emails.password_agent-reset'                      => 'En tekniker har återställt ditt lösenord. Du kan logga in med följande uppgifter:',
     'user.emails.password_reset'                            => 'Du har begärt en återställning av ditt lösenord. För att återställa ditt lösenord klickar du på länken nedan:',
     'user.emails.password_set'                              => 'Klicka på länken nedan för att välja ett lösenord:',
+    'user.emails.profile_email-new-confirm'                 => 'För att slutföra registreringen av din sekundära e-postadress så klickar du på följande länk för att bekfräfta den:',
     'user.emails.profile_email_link-validate'               => 'Klicka på följande länk för att bekräfta din e-postadress',
     'user.emails.register-confirm'                          => 'Tack för att du registrerar ett konto.<br /><br />Innan du har möjlighet att börja använda det så måste du bekräfta din e-postadress',
     'user.emails.register-password'                         => 'Ditt första lösenord är: {{password}}',
@@ -857,6 +860,7 @@ return [
     'user.emails.remind_unresolved'                         => 'Det här är ett uppföljningsmeddelande för att påminna dig om att du fortfarande har ett öppet ärende med {{ helpdesk_name }}.<br />Om du inte behöver någon mer hjälp får du gärna meddela oss detta genom att klicka på länken:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a><br />Om du fortfarande behöver hjälp kan du svara på detta meddelande.',
     'user.emails.remind_unresolved_final'                   => 'Vi har inte hört någon från dig på senare tid gällande det här ärendet..<br />Om du fortfarande behöver hjälp kan du svara på detta mail.<br />Om du inte behöver någon mer hjälp får du gärna meddela oss detta genom att klicka på länken:<br /><a href="{{ resolve_url }}">{{ resolve_url }}</a>',
     'user.emails.ticket_access_ticket_online'               => 'Visa och hantera detta ärende online:',
+    'user.emails.ticket_cc-new'                             => 'Du har blivit inkluderad i ett ärende startat av {{name}}.',
     'user.emails.ticket_flood'                              => 'Du skickade nyligen ett meddelande till vår helpdesk. Vårt automatiska system har upptäckt att du har skickat väldigt många meddelanden på kort tid som troligtvis vart automatiserade.<br /><br />För att skydda vår helpdesk mot loopar med autosvar så kommer vi inte längre att skicka dig några notifieringar via e-post.',
     'user.emails.ticket_message_title'                      => '{{date}} klockan {{time}} skrev {{author}}:',
     'user.emails.ticket_no-autoresponse'                    => 'Varning: Bekräftelsemail är avstängt',

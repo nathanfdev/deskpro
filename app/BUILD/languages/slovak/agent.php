@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'agent.chat.added_as_participant'                         => 'Pridaný ako účastník konania',
     'agent.chat.agent_chats'                                  => 'Konverzácie Operátora',

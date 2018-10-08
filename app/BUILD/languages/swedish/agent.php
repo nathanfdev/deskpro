@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'agent.prefs.inbox_all_email_created' => 'Skicka epost till mig när ett ärende skapats',
     'agent.publish.helpful'               => 'Hjälpsam',

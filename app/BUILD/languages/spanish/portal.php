@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.change-password'                 => 'Cambiar contraseña',
     'portal.account.email-btn-resend-validation'     => 'Reenviar correo electrónico de validación',
@@ -307,6 +309,7 @@ return [
     'user.emails.message-clipped'                    => '(El mensaje se ha recortado)',
     'user.emails.password_agent-reset'               => 'Un agente ha reinicializado su contraseña. Puede acceder con estas credenciales',
     'user.emails.password_reset'                     => 'Ha solicitado la reinicialización de su contraseña. Para reinicializarla haga clic en el enlace:',
+    'user.emails.profile_email-new-confirm'          => 'Para finalizar la incorporación de una nueva dirección a su cuenta, haga clic en el siguiente enlace de validación',
     'user.emails.profile_email_link-validate'        => 'Haga clic en el siguiente enlace para validar su dirección de correo electrónico',
     'user.emails.register-confirm'                   => 'Gracias por registrar una cuenta.<br /><br />Antes de que pueda utilizarla, haga clic en el siguiente enlace para validar su dirección de correo electrónico',
     'user.emails.register-welcome'                   => 'Gracias por su registro. Ahora puedes iniciar sesión con tu dirección de correo {{to_email}} en nuestra mesa de soporte:',
@@ -314,6 +317,7 @@ return [
     'user.emails.reject_resolved'                    => 'Tu respuesta no fue aceptada porque tu ticket ha sido marcado como resuelto. Nuestros agentes no han leido o respuesto este mensaje.',
     'user.emails.reject_resolved-new'                => 'Si desea crear un nuevo ticket, puede enviar un nuevo correo electrónico a <a href="mailto:{{email_to}}">{{email_to}}</a> o puede rellenar nuestro formulario en línea:<br /><a href="{{link}}">{{link}}</a>',
     'user.emails.ticket_access_ticket_online'        => 'Ver y gestionar este ticket:',
+    'user.emails.ticket_cc-new'                      => 'Ha sido incluido en un ticket abierto por {{name}}.',
     'user.emails.ticket_flood'                       => 'Ha enviado recientemente un correo electrónico a nuestro servicio. Nuestro sistema automático ha detectado que ha enviado demasiados mensajes que probablememte son automáticos.<br /><br />Para proteger nuestro sistema de un bucle de auto-respuestas, no se le enviarán nuevas notificaciones por correo electrónico.',
     'user.emails.ticket_message_title'               => 'El día {{date}} a {{time}}, {{author}} escribió:',
     'user.emails.ticket_no-autoresponse'             => 'Alerta: Correos electrónicos de confirmación desactivados',

@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'agent.chat.agent_chats'                       => 'گفتگوی همکاران',
     'agent.chat.between_members'                   => 'گفتگو میان:',
@@ -12,15 +14,15 @@ return [
     'agent.prefs.name_inbox_agent_email_created'   => 'به {{name}} ایمیل بده هر وقت یک تیکت جدید به {{name}} ارجاع داده شد',
     'agent.prefs.name_inbox_participant_email_new' => 'به {{name}} ایمیل یزن وقتی {{name}}  به عنوان دنبال کننده به یک تیکت اضافه شد
 ',
-    'agent.publish.ask_set_to_draft'     => 'آیا مطمئن هستید که می خواهید آیتم های انتخاب شده را به عنوان پیش نویس تنظیم کنید؟',
-    'agent.publish.helpful'              => 'مفید',
-    'agent.publish.view_count'           => 'مشاهده تعداد',
-    'agent.tickets.any_of_my_teams'      => 'هر یک از تیم های من',
-    'agent.tickets.delete_attachments'   => 'پاک کردن فایل های ضمیمه',
-    'agent.tickets.deleted_by'           => 'ای تیکت پاک شد توسط:',
-    'agent.tickets.last_agent_reply'     => 'آخرین پاسخ عامل',
-    'agent.tickets.new_note'             => 'یادداشت جدید',
-    'agent.tickets.send_reply_as_x'      => 'ارسال پاسخ به عنوان {{status}}',
-    'agent.tickets.sending_your_message' => 'در حال ارسال پیام شما',
-    'agent.tickets.ticket_split'         => 'تقسیم تیکت',
+    'agent.publish.ask_set_to_draft'               => 'آیا مطمئن هستید که می خواهید آیتم های انتخاب شده را به عنوان پیش نویس تنظیم کنید؟',
+    'agent.publish.helpful'                        => 'مفید',
+    'agent.publish.view_count'                     => 'مشاهده تعداد',
+    'agent.tickets.any_of_my_teams'                => 'هر یک از تیم های من',
+    'agent.tickets.delete_attachments'             => 'پاک کردن فایل های ضمیمه',
+    'agent.tickets.deleted_by'                     => 'ای تیکت پاک شد توسط:',
+    'agent.tickets.last_agent_reply'               => 'آخرین پاسخ عامل',
+    'agent.tickets.new_note'                       => 'یادداشت جدید',
+    'agent.tickets.send_reply_as_x'                => 'ارسال پاسخ به عنوان {{status}}',
+    'agent.tickets.sending_your_message'           => 'در حال ارسال پیام شما',
+    'agent.tickets.ticket_split'                   => 'تقسیم تیکت',
 ];

@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.change-password'                      => 'パスワード変更',
     'portal.account.email-btn-resend-validation'          => '承認のためのEメールを再送',
@@ -279,6 +281,7 @@ return [
     'user.emails.label_view-online'                       => 'オンラインで確認',
     'user.emails.password_agent-reset'                    => 'アカウントのパスワードがリセットされました。こちらの情報を使ってログインしてください。',
     'user.emails.password_reset'                          => 'パスワードをリセットする依頼がありました。リセットをするには、次のリンクをクリックしてください。:',
+    'user.emails.profile_email-new-confirm'               => 'アカウントに予備のメールアドレスの追加を許可するには、次のリンクをクリックしてください。',
     'user.emails.profile_email_link-validate'             => 'あなたのメールアドレスを有効にするには次のリンクをクリックしてください。',
     'user.emails.register-confirm'                        => 'アカウントをご登録いただきありがとうございます。<br /><br />',
     'user.emails.register-password'                       => 'あなたの初期パスワードは: {{password}}',
@@ -287,6 +290,7 @@ return [
     'user.emails.registration_closed'                     => '{{name}}様<br /><br /><br /><br />新たなリクエストの受付はヘルプデスクのメンバー様からに限定されています。既にアカウントをお持ちのお客様は、登録済みのメールアドレスからもう一度Eメールを送り直してください。',
     'user.emails.reject_resolved'                         => '本リクエストはすでに対応済みとされているため、返信できません。エージェントはメッセージを受け取ったり、このメッセージに返信することはできません。',
     'user.emails.ticket_access_ticket_online'             => 'このリクエストをウェブ上で表示し管理:',
+    'user.emails.ticket_cc-new'                           => '{{name}}さんにより作成されたリクエストにあなたは追加されました。',
     'user.emails.ticket_flood'                            => 'ヘルプデスクへメールを頂いた方へ通知します。あなたから短い間隔で複数のメッセージを頂いたため、当社の自動システムはあなたからのメッセージを自動発信のメッセージであると判断しました。<br /><br />双方の自動発信によるループトラフィックを避けるため、当社からの自動通知メッセージの送信を停止します。',
     'user.emails.ticket_message_title'                    => '{{date}} {{time}}, 作成者{{author}} :',
     'user.emails.ticket_no-autoresponse'                  => '注意: 確認メールの送信設定がオフです',

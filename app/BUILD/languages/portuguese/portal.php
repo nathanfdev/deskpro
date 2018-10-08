@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.change-password'                 => 'Alterar palavra-chave',
     'portal.account.email-btn-resend-validation'     => 'Reenviar E-mail de validação',
@@ -306,6 +308,7 @@ return [
     'user.emails.message-clipped'                    => '(Mensagem foi cortada)',
     'user.emails.password_agent-reset'               => 'Um agente efetuar a reinicialização da palavra chave da sua conta. Pode entrar na sua conta com os seguintes detalhes.',
     'user.emails.password_reset'                     => 'Solicitou a reinicialização da palavra chave. Para reinicializar a sua palavra chave, clique no link abaixo:',
+    'user.emails.profile_email-new-confirm'          => 'Para terminar a adição deste email secundário à sua conta, simplesmente clique no link de validação abaixo',
     'user.emails.profile_email_link-validate'        => 'Para validar o seu endereço de email simplesmente clique no link abaixo',
     'user.emails.register-confirm'                   => 'Obrigado por registar a sua conta.<br /><br />Antes de ser capaz de utilizar a sua conta, tem de clicar no link seguinte para validar o seu endereço de email',
     'user.emails.register-welcome'                   => 'Obrigado por se ter registado. Pode agora entrar no nosso Helpdesk usando o seu endereço de email {{to_email}}',
@@ -314,6 +317,7 @@ return [
     'user.emails.reject_resolved-new'                => 'Se quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a> ou pode enviar através do nosso formulário on-line em: <br /><a href="{{link}}">{{link}}</a>',
     'user.emails.reject_resolved-newemail'           => 'e quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a>',
     'user.emails.ticket_access_ticket_online'        => 'Ver e gerir este bilhete online:',
+    'user.emails.ticket_cc-new'                      => 'Foi incluído em um bilhete iniciado por {{name}}.',
     'user.emails.ticket_flood'                       => 'Enviou recentemente um e-mail para nossa central de atendimento. O nosso sistema automatizado detetou que enviou várias mensagens em sucessão rápida, que eram mais provável automatizado. <br /><br /> Para se proteger contra um ciclo auto-responder o nosso helpdesk não irá enviar mais e-mails de notificação automática para si.',
     'user.emails.ticket_message_title'               => 'Em {{date}} as {{time}}, {{author}} escreveu:',
     'user.emails.ticket_no-autoresponse'             => 'Aviso: Emails de confirmação estão desligados',

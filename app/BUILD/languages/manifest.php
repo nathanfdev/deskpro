@@ -40,6 +40,19 @@ return [
         'is_managed' => true,
     ],
 
+    'czech' => array(
+        'id'         => 'czech',
+        'lang_code'  => 'cze',
+        'title'      => 'Czech',
+        'locale'     => 'cs',
+        'flag_image' => 'cz.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => true,
+        'is_managed' => true
+    ),
+
     'danish' => [
         'id'         => 'danish',
         'lang_code'  => 'dan',
@@ -137,6 +150,19 @@ return [
         'title'      => 'Italian',
         'locale'     => 'it',
         'flag_image' => 'it.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => true,
+        'is_managed' => true,
+    ],
+
+    'indonesian' => [
+        'id'         => 'indonesian',
+        'lang_code'  => 'ind',
+        'title'      => 'Indonesian',
+        'locale'     => 'id',
+        'flag_image' => 'id.png',
         'is_rtl'     => false,
         'has_user'   => true,
         'has_agent'  => true,
@@ -331,18 +357,6 @@ return [
 
     /*
 
-    'czech' => array(
-        'id'         => 'czech',
-        'lang_code'  => 'cze',
-        'title'      => 'Czech',
-        'locale'     => 'cs',
-        'flag_image' => 'cz.png',
-        'is_rtl'     => false,
-        'has_user'   => true,
-        'has_agent'  => false,
-        'has_admin'  => false,
-        'is_managed' => true
-    ),
 
     'greek' => array(
         'id'         => 'greek',

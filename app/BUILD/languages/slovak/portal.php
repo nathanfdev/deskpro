@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.change-password'                 => 'Zmeniť heslo',
     'portal.account.email-btn-resend-validation'     => 'Znovu odoslať overovací e-mail',
@@ -315,6 +317,7 @@ return [
     'user.emails.message-clipped'                    => '(Správa bola pripnutá)',
     'user.emails.password_agent-reset'               => 'Operátor resetol heslo Vášho účtu. Môžete sa prihlásiť s nasledovnými údajmi',
     'user.emails.password_reset'                     => 'Požiadali ste o resetnutie hesla. Pre resetnutie Vašeho hesla, kliknite na odkaz nižšie:',
+    'user.emails.profile_email-new-confirm'          => 'Pre ukončenie pridania sekundárneho e-mailu pre Váš účet, jednoducho kliknite na nasledujúci potvrdzujúci odkaz',
     'user.emails.profile_email_link-validate'        => 'Jednoducho kliknite na nasledovný odkaz pre overenie Vašej e-mailovej adresy',
     'user.emails.register-confirm'                   => 'Ďakujeme za registráciu Vašeho účtu.<br /><br />Predtým než budete môcť používať Váš účet, musíte kliknúť na nasledujúci odkaz pre overenie Vašej e-mailovej adresy',
     'user.emails.register-welcome'                   => 'Ďakueme za Vašu registráciu. Môžete sa prihlásiť použitím Vašej e-mailovej adresy {{to_email}} na našom helpdesku:',
@@ -323,6 +326,7 @@ return [
     'user.emails.reject_resolved-new'                => 'Ak chcete vytvoriť nový tiket môžete zaslať nový e-mail na adresu <a href="mailto:{{email_to}}">{{email_to}}</a> alebo ho môžete odovzdať v online forme na <br /><a href="{{link}}">{{link}}</a>',
     'user.emails.reject_resolved-newemail'           => 'Ak chcete vytvoriť nový tiket môžete zaslať e-mail na adresu <a href="mailto:{{email_to}}">{{email_to}}</a>',
     'user.emails.ticket_access_ticket_online'        => 'Zobraziť a upraviť tento tiket online:',
+    'user.emails.ticket_cc-new'                      => 'Boli ste pridaný do tiketu vytvoreného používateľom {{name}}.',
     'user.emails.ticket_flood'                       => 'Nedávno ste zaslali e-mail na náš helpdesk. Náš automatizovaný systém zistil, že ste zaslali viacero správ v krátkom časovom intervale, ktoré boli pravdepodobne automatizované.<br /><br />Aby sme sa ubránili cyklu z automatických odpovedí náš helpdesk Vám už viacero automatických odpovedí nezašle.',
     'user.emails.ticket_message_title'               => 'Dňa {{date}} o {{time}},{{author}} napísal:',
     'user.emails.ticket_no-autoresponse'             => 'Opozornenie: E-mailové potvrdenia vypnuté',

@@ -1,5 +1,7 @@
 <?php
 
+
+
 return [
     'portal.account.change-password'                 => 'Parola Değiştir',
     'portal.account.email-btn-resend-validation'     => 'Doğrulama Epostasını Tekrar Gönder',
@@ -315,6 +317,7 @@ return [
     'user.emails.message-clipped'                    => '(Mesaj kısaltılmıştır)',
     'user.emails.password_agent-reset'               => 'Personelimiz hesabınızın parolasını sıfırladı. Bu bilgiler ile oturum açabilirsiniz',
     'user.emails.password_reset'                     => 'Parola sıfırlama talebinde bulundunuz. Parolanızı sıfırlamak için aşağıdaki bağlantıya tıklayın:',
+    'user.emails.profile_email-new-confirm'          => 'Hesabınıza ikinci eposta adresini eklemek için aşağıdaki bağlantıya tıklayın',
     'user.emails.profile_email_link-validate'        => 'Bağlantıya tıklayara eposta adresinizi doğrulayabilirsiniz',
     'user.emails.register-confirm'                   => 'Kayıt olduğunuz için teşekküler<br /><br />',
     'user.emails.register-welcome'                   => 'Kayıt olduğunuz için teşekkürler. Mail adresinizi kullanarak giriş yapabilirsiniz {{to_email}} destek bölümüne.',
@@ -322,6 +325,7 @@ return [
     'user.emails.reject_resolved-new'                => 'Yeni bir kayıt oluşturmak istiyorsanız bize yeni bir mail gönderebilirsiniz<a href="mailto:{{email_to}}">{{email_to}}</a> veya formu doldurarak oluşturabilirsiniz:<br /><a href="{{link}}">{{link}}</a>',
     'user.emails.reject_resolved-newemail'           => 'Yeni bir kayıt oluşturmak istiyorsanız bize yeni bir mail gönderebilirsiniz <a href="mailto:{{email_to}}">{{email_to}}</a>',
     'user.emails.ticket_access_ticket_online'        => 'Bu çağrı kaydını çevrim içi olarak gör ve yönet:',
+    'user.emails.ticket_cc-new'                      => '{{name}} tarafından başlatılan çağrı kaydına eklendiniz.',
     'user.emails.ticket_flood'                       => 'Yardım masamıza eposta gönderdiniz.<br /><br />Otomatik sistemimiz sizden çok fazla otomatik mesaj geldiğini tespit etti.',
     'user.emails.ticket_message_title'               => '{{date}} - {{time}}, {{author}} yazdı:',
     'user.emails.ticket_no-autoresponse'             => 'Uyarı: Onaylama epostası kapatıldı',
