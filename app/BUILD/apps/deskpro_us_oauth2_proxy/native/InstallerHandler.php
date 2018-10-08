@@ -20,7 +20,13 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
      */
     protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
     {
-        if (!defined('DPC_IS_CLOUD')) {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
+        if (
+            !defined('DPC_IS_CLOUD')
+            && $DP_ENV->getConfig('env.server_id') !== 'builder.deskprodemo.com'
+        ) {
             throw new \RuntimeException();
         }
 

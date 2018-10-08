@@ -18,6 +18,9 @@ class AppManagerService
 {
     public static function createAppManager(DeskproContainer $container)
     {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
         $em = $container->getEm();
 
         $apps = $em->createQuery('
@@ -77,9 +80,9 @@ class AppManagerService
             }
         }
 
-        $packages = array_filter($packages, function (AppPackage $p) {
+        $packages = array_filter($packages, function (AppPackage $p) use ($DP_ENV) {
             if ($p->isCloudOnly()) {
-                return defined('DPC_IS_CLOUD');
+                return defined('DPC_IS_CLOUD') || $DP_ENV->getConfig('env.server_id') === 'builder.deskprodemo.com';
             }
 
             return true;
