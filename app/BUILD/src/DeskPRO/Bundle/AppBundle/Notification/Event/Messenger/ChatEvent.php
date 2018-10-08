@@ -1,0 +1,80 @@
+<?php
+
+namespace DeskPRO\Bundle\AppBundle\Notification\Event\Messenger;
+
+use DeskPRO\Bundle\AppBundle\Notification\Event\AbstractSystemEvent;
+
+class ChatEvent extends AbstractSystemEvent
+{
+    const EVENT_NAME = 'messenger.chat';
+
+    const CHAT_STARTED_EVENT_TYPE      = 'chat.started';
+    const CHAT_ENDED_EVENT_TYPE        = 'chat.ended';
+    const CHAT_USER_TIMEOUT_EVENT_TYPE = 'chat.userTimeout';
+    const CHAT_TRANSCRIPT_EVENT_TYPE   = 'chat.block.transcript';
+    const CHAT_RATING_EVENT_TYPE       = 'chat.block.rating';
+    const TYPING_START_EVENT_TYPE      = 'typing.start';
+    const TYPING_END_EVENT_TYPE        = 'typing.end';
+
+    /**
+     * @var int
+     */
+    private $chatId;
+
+    /**
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @var array
+     */
+    private $data;
+
+    /**
+     * ChatEvent constructor.
+     *
+     * @param int    $chatId
+     * @param string $type
+     * @param array  $data
+     */
+    public function __construct($chatId, $type, $data = [])
+    {
+        $this->chatId = $chatId;
+        $this->type   = $type;
+        $this->data   = $data;
+    }
+
+    /**
+     * @return int
+     */
+    public function getChatId()
+    {
+        return $this->chatId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    public function __sleep()
+    {
+        return [
+            'chat_id' => $this->chatId,
+            'type'    => $this->chatId,
+            'data'    => $this->chatId,
+        ];
+    }
+}

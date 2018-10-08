@@ -13,4 +13,4 @@ services:
     arguments:
       - "@messenger.mappers.chat"
       - "@doctrine.orm.default_entity_manager"
-      - "@deskpro.notification.event_manager"
+      - "@event_dispatcher"

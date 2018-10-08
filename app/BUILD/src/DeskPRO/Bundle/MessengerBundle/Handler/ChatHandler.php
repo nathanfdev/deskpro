@@ -3,10 +3,11 @@
 namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class ChatHandler
 {
@@ -42,21 +43,22 @@ class ChatHandler
     private $em;
 
     /**
-     * @var NotificationEventManager
+     * @var EventDispatcherInterface
      */
-    private $eventManager;
+    private $eventDispatcher;
 
     /**
      * ChatHandler constructor.
      *
-     * @param ChatMapper    $mapper
-     * @param EntityManager $em
+     * @param ChatMapper               $mapper
+     * @param EntityManager            $em
+     * @param EventDispatcherInterface $eventDispatcher
      */
-    public function __construct(ChatMapper $mapper, EntityManager $em, NotificationEventManager $eventManager)
+    public function __construct(ChatMapper $mapper, EntityManager $em, EventDispatcherInterface $eventDispatcher)
     {
-        $this->chatMapper   = $mapper;
-        $this->em           = $em;
-        $this->eventManager = $eventManager;
+        $this->chatMapper      = $mapper;
+        $this->em              = $em;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -111,6 +113,8 @@ class ChatHandler
      * @param array            $request
      *
      * @throws \Exception
+     *
+     * @return ApiWrapper
      */
     private function handleChatBlockRatingCommand(ChatConversation $chat, array $request)
     {
@@ -120,18 +124,32 @@ class ChatHandler
         if (!$chat->getDateEnded()) {
             throw new \Exception('Cant\'t rate not ended chat');
         }
+
+        $eventData = [];
+
         if ($request['rate'] === true) {
             $chat->setRatingOverall(10);
         } else {
             $chat->setRatingOverall(1);
         }
 
+        $eventData['rate'] = $request['rate'];
+
         if (isset($request['comment'])) {
             $chat->setRatingComment($this->chatMapper->cleanText($request['comment']));
+            $eventData['comment'] = $chat->getRatingComment();
         }
 
         $this->em->persist($chat);
         $this->em->flush();
+
+        $event = new ChatEvent(
+            $chat->getId(),
+            self::CHAT_TRANSCRIPT,
+            $eventData
+        );
+
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, $event);
 
         return new ApiWrapper($chat);
     }
@@ -144,13 +162,15 @@ class ChatHandler
      *
      * @return ApiWrapper
      */
-    private function handleChatBlockTranscript(ChatConversation $chat, array $request)
+    private function handleChatBlockTranscriptCommand(ChatConversation $chat, array $request)
     {
         $chat->setShouldSendTranscript(true);
 
         $this->em->persist($chat);
         $this->em->flush();
 
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), self::CHAT_TRANSCRIPT));
+
         return new ApiWrapper($chat);
     }
 
@@ -160,8 +180,10 @@ class ChatHandler
      *
      * @return ApiWrapper
      */
-    private function handleTypingStart(ChatConversation $chat, array $request)
+    private function handleTypingStartCommand(ChatConversation $chat, array $request)
     {
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), self::TYPING_START));
+
         return new ApiWrapper($chat);
     }
 
@@ -171,8 +193,10 @@ class ChatHandler
      *
      * @return ApiWrapper
      */
-    private function handleTypingEnd(ChatConversation $chat, array $request)
+    private function handleTypingEndCommand(ChatConversation $chat, array $request)
     {
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), self::TYPING_END));
+
         return new ApiWrapper($chat);
     }
 }
