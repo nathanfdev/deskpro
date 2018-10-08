@@ -3,18 +3,32 @@
 namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use Doctrine\ORM\EntityManager;
 
 class ChatHandler
 {
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
+    const CHAT_ENDED               = 'chat.ended';
+    const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
+    const CHAT_TRANSCRIPT          = 'chat.block.transcript';
+    const CHAT_RATING              = 'chat.block.rating';
+    const TYPING_START             = 'typing.start';
+    const TYPING_END               = 'typing.end';
 
     /**
      * @var array
      */
     private $availableMessages = [
         self::MESSAGE_TYPE_NEW_MESSAGE,
+        self::CHAT_ENDED,
+        self::CHAT_USER_TIMEOUT,
+        self::CHAT_TRANSCRIPT,
+        self::CHAT_RATING,
+        self::TYPING_START,
+        self::TYPING_END,
     ];
 
     /**
@@ -28,15 +42,21 @@ class ChatHandler
     private $em;
 
     /**
+     * @var NotificationEventManager
+     */
+    private $eventManager;
+
+    /**
      * ChatHandler constructor.
      *
      * @param ChatMapper    $mapper
      * @param EntityManager $em
      */
-    public function __construct(ChatMapper $mapper, EntityManager $em)
+    public function __construct(ChatMapper $mapper, EntityManager $em, NotificationEventManager $eventManager)
     {
-        $this->chatMapper = $mapper;
-        $this->em         = $em;
+        $this->chatMapper   = $mapper;
+        $this->em           = $em;
+        $this->eventManager = $eventManager;
     }
 
     /**
@@ -103,11 +123,56 @@ class ChatHandler
         if ($request['rate'] === true) {
             $chat->setRatingOverall(10);
         } else {
-            $chat->setRatingOverall(10);
+            $chat->setRatingOverall(1);
         }
 
         if (isset($request['comment'])) {
             $chat->setRatingComment($this->chatMapper->cleanText($request['comment']));
         }
+
+        $this->em->persist($chat);
+        $this->em->flush();
+
+        return new ApiWrapper($chat);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return ApiWrapper
+     */
+    private function handleChatBlockTranscript(ChatConversation $chat, array $request)
+    {
+        $chat->setShouldSendTranscript(true);
+
+        $this->em->persist($chat);
+        $this->em->flush();
+
+        return new ApiWrapper($chat);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @return ApiWrapper
+     */
+    private function handleTypingStart(ChatConversation $chat, array $request)
+    {
+        return new ApiWrapper($chat);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @return ApiWrapper
+     */
+    private function handleTypingEnd(ChatConversation $chat, array $request)
+    {
+        return new ApiWrapper($chat);
     }
 }
