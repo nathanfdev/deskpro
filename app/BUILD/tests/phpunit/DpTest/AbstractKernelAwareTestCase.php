@@ -110,13 +110,13 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
             self::$rebootKernel = false;
         }
 
-        if (self::$messengerKernel && !$force_reboot) {
-            return self::$messengerKernel;
+        if (self::$portal_kernel && !$force_reboot) {
+            return self::$portal_kernel;
         }
 
-        if (self::$messengerKernel) {
-            self::$messengerKernel->shutdown();
-            $kernel = self::$messengerKernel;
+        if (self::$portal_kernel) {
+            self::$portal_kernel->shutdown();
+            $kernel = self::$portal_kernel;
         } else {
             require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
             $kernel = new PortalKernel($GLOBALS['DP_ENV']->getEnvId(), $GLOBALS['DP_ENV']->isDebug(), $GLOBALS['DP_ENV']);
@@ -124,9 +124,9 @@ abstract class AbstractKernelAwareTestCase extends DeskProTestCase
 
         $kernel->boot();
 
-        self::$messengerKernel = $kernel;
+        self::$portal_kernel = $kernel;
 
-        return self::$messengerKernel;
+        return self::$portal_kernel;
     }
 
     /**
