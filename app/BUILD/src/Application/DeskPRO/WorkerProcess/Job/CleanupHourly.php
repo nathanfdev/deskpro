@@ -4,6 +4,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use DeskPRO\Component\Util\ListUtils;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Finder\Finder;
 
 class CleanupHourly extends AbstractJob
@@ -112,6 +113,7 @@ class CleanupHourly extends AbstractJob
                     App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
                 }
             } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
             }
             ++$num;
         }
