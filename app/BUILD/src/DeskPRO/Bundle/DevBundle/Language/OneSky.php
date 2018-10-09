@@ -31,6 +31,10 @@ class OneSky extends OneSkyClient
      */
     public function getProjectId($name)
     {
+        if (!isset($this->projects[$name])) {
+            throw new \InvalidArgumentException();
+        }
+
         return $this->projects[$name];
     }
 }

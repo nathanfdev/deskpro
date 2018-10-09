@@ -82,7 +82,7 @@ class SyncTmsCommand extends ContainerAwareCommand
         switch ($action) {
             case 'sync':
                 $this->executeUpload('en-US');
-                $this->executeDownload(null);
+                $this->executeDownload('all');
                 break;
 
             case 'upload':
@@ -131,14 +131,14 @@ class SyncTmsCommand extends ContainerAwareCommand
         }
 
         foreach ($processLocales as $locale) {
-            $output->writeln("<info>Processing {$locale['locale']}</info>");
+            $output->writeln("<info>[{$locale['locale']}] Processing {$locale['name']}</info>");
 
             $t = new DeskproOneSkyTransformer("{$this->localeDir}/{$locale['locale']}", $appEnv->getUserTmpDir());
 
             foreach ($files as $f) {
                 $timer = Timer::start();
 
-                $output->writeln(sprintf('Uploading %s ... ', $f));
+                $output->writeln("[{$locale['locale']}] Uploading $f");
                 $transformedPath = $t->deskproLangFileToOneSky($f);
 
                 $r = Retry::create()->maxTries(3)->throwLast()->returnValue()->run(function ($tryInfo) use ($onesky, $transformedPath, $locale, $output) {
@@ -157,7 +157,7 @@ class SyncTmsCommand extends ContainerAwareCommand
                 $r = json_decode($r, true);
 
                 if (@$r['meta']['status'] != 201) {
-                    $output->writeln('<error>Unexpected result</error>');
+                    $output->writeln("<error>[{$locale['locale']}] Unexpected result</error>");
                     print_r($r);
 
                     return 1;
@@ -165,17 +165,73 @@ class SyncTmsCommand extends ContainerAwareCommand
 
                 if (!empty($r['data']['import']['id'])) {
                     $importJobs[] = $r['data']['import']['id'];
-                    $output->writeln("Import job: {$r['data']['import']['id']}");
+                    $output->writeln("[{$locale['locale']}] Import job: {$r['data']['import']['id']}");
                 }
 
                 $timer->end();
-                $output->writeln("Done upload in {$timer->formatTotalTime()}");
+                $output->writeln("[{$locale['locale']}] Done upload in {$timer->formatTotalTime()}");
             }
         }
     }
 
-    private function executeDownload()
+    private function executeDownload($locales)
     {
+        $locales = (array) $locales;
+
+        $output = $this->output;
+
+        $appEnv = $this->getContainer()->get('deskpro.app_env');
+        $onesky = $this->getOneskyClient();
+
+        $files = [
+            'backend.yml',
+            'user.yml',
+        ];
+
+        $processLocales = ListUtils::filter($this->localeInfo, function (array $l) use ($locales) {
+            return $l['locale'] !== 'en-US' && (in_array('all', $locales) || in_array($l['locale'], $locales));
+        });
+
+        foreach ($processLocales as $locale) {
+            $output->writeln("<info>[{$locale['locale']}] Processing {$locale['name']}</info>");
+
+            $t = new DeskproOneSkyTransformer("{$this->localeDir}/{$locale['locale']}", $appEnv->getUserTmpDir());
+
+            foreach ($files as $f) {
+                $timer = Timer::start();
+
+                $output->writeln("[{$locale['locale']}] Downloading $f");
+                $r = Retry::create()->maxTries(3)->throwLast()->returnValue()->run(function ($tryInfo) use ($onesky, $f, $locale, $output) {
+                    if (!$tryInfo['isFirst']) {
+                        sleep(2);
+                        $output->writeln(sprintf("\tretry (last error: {$tryInfo['lastErrorMessage']})"));
+                    }
+
+                    $data = $onesky->translations('export', [
+                        'project_id'       => $onesky->getProjectId('deskpro'),
+                        'locale'           => $locale['locale'],
+                        'source_file_name' => $f,
+                        'export_file_name' => 'out.yml',
+                    ]);
+
+                    return $data;
+                });
+
+                if ($r) {
+                    // OneSky mangles newlines in RTL langs like ar
+                    $r = str_replace("\\n\\\n", '\\n', $r);
+
+                    $phraseData = $t->oneSkyDataToDeskproData(Yaml::parse($r));
+                } else {
+                    $phraseData = [];
+                }
+                $langFile = $this->localeDir.DIRECTORY_SEPARATOR.$locale['locale'].DIRECTORY_SEPARATOR.$f;
+                file_put_contents($langFile, Yaml::dump($phraseData, 3, 2));
+
+                $timer->end();
+                $output->writeln("[{$locale['locale']}] Done download in {$timer->formatTotalTime()}");
+            }
+        }
     }
 
     /**
@@ -183,10 +239,6 @@ class SyncTmsCommand extends ContainerAwareCommand
      */
     private function getOneskyClient()
     {
-        return new OneSky(
-            'rF3PAfBgZHBLrUYZqc1DvaL7xntqq99I',
-            '0oZjx5mVPTguWTtmHGocmsihMxMv2cPT',
-            ['deskpro' => '151951']
-        );
+        return $this->getContainer()->get('dpdev.onesky');
     }
 }
