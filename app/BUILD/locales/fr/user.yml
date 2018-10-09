@@ -80,10 +80,12 @@ portal.articles.section-desc: 'Notre base de connaissances contient des articles
 portal.articles.section-title: 'Base de connaissances'
 portal.articles.share-by-email: 'Partager cet article par email :'
 portal.articles.view-as-agent: 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs ne peuvent pas voir cette page.'
-portal.articles.view-x-articles.one: 'Voir 1 article'
-portal.articles.view-x-articles.other: 'Voir {{count}} articles'
-portal.articles.x-articles.one: '1 article'
-portal.articles.x-articles.other: '{{count}} articles'
+portal.articles.view-x-articles:
+  one: 'Voir 1 article'
+  other: 'Voir {{count}} articles'
+portal.articles.x-articles:
+  one: '1 article'
+  other: '{{count}} articles'
 portal.chat.agent_blocked_user_on: 'Bloqué par {{name}} le {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} semble ne plus être connecté'
 portal.chat.agent_typing_message: '{{agentName}} écrit un message'
@@ -128,8 +130,9 @@ portal.chat.list_chat: Chat
 portal.chat.list_date: Date
 portal.chat.list_switch_to_my_chats: 'Basculer sur Mes chats'
 portal.chat.list_switch_to_organization: 'Basculer vers Organisation'
-portal.chat.list_title.one: '1 chat'
-portal.chat.list_title.other: '{{count}} chats'
+portal.chat.list_title:
+  one: '1 chat'
+  other: '{{count}} chats'
 portal.chat.list_user: Utilisateur
 portal.chat.log_agents: Agents
 portal.chat.log_chat_time: 'Durée totale du chat'
@@ -246,14 +249,17 @@ portal.emails.feedback_published: 'La remarque "{{title}}" a été approuvée et
 portal.emails.feedback_thank-you: 'Merci de nous avoir fait parvenir vos remarques "{{title}}"'
 portal.emails.feedback_updated: 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}'
 portal.emails.feedback_validate-email: 'Merci de valider votre adress email en ligne en cliquant sur le lien suivant:'
-portal.emails.feedback_votes.one: 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:'
-portal.emails.feedback_votes.other: 'Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:'
+portal.emails.feedback_votes:
+  one: 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:'
+  other: 'Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:'
 portal.emails.greeting: 'Chère/Cher {{to_name}},'
 portal.emails.kb-explain: 'Vous recevez cet email car vous êtes inscrit à notre base de connaissances sur <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vous ne souhaitez plus recevoir ces emails?<a href="{{unsubscribe_url}}">Cliquez ici pour vous désinscrire.</a>'
-portal.emails.kb-new-articles.one: '1 nouvel article'
-portal.emails.kb-new-articles.other: '{{count}} nouveaux articles'
-portal.emails.kb-updated-articles.one: '1 article mis à jour'
-portal.emails.kb-updated-articles.other: '{{count}} articles mis à jour'
+portal.emails.kb-new-articles:
+  one: '1 nouvel article'
+  other: '{{count}} nouveaux articles'
+portal.emails.kb-updated-articles:
+  one: '1 article mis à jour'
+  other: '{{count}} articles mis à jour'
 portal.emails.label_view-online: 'Voir en ligne'
 portal.emails.message-clipped: '(Le message a été tronqué)'
 portal.emails.new-ticket-guest-link: 'Merci de nous avoir contactés. Vous pouvez suivre l''état de votre ticket en ligne ici :'
@@ -286,8 +292,9 @@ portal.emails.ticket_rate-question: 'Ce message vous a-t-il aidé ?'
 portal.emails.ticket_received: 'Votre ticket a bien été reçu. Un de nos agents va vous répondre sous peu.'
 portal.emails.ticket_reply-confirm: 'Merci pour votre réponse. Un de nos agents va vous répondre sous peu.'
 portal.emails.ticket_validate: 'Merci de nous avoir contacté.<br /><br />Avant que nos agents ne lisent et répondent à votre message, vous devez valider votre adresse email.'
-portal.emails.tickets_ommitted.one: '1 message a été omis'
-portal.emails.tickets_ommitted.other: '{{count}} messages ont été omis'
+portal.emails.tickets_ommitted:
+  one: '1 message a été omis'
+  other: '{{count}} messages ont été omis'
 portal.emails.view_full_history_online: 'Voir l''intégralité du ticket en ligne'
 portal.error.403-desc: 'Désolé, vous n''êtes pas autorisé à consulter cette page.'
 portal.error.403-title: 'Pas d''accès'
@@ -327,16 +334,21 @@ portal.forms.error_no_uploaded_file: 'Le fichier téléchargé est introuvable. 
 portal.forms.error_not_checked: 'La case n''est pas cochée.'
 portal.forms.error_password_current: 'Votre mot de passe actuel est attendu.'
 portal.forms.error_password_forbid_reuse: 'Vous ne pouvez utiliser un mot de passe que vous avez déjà utilisé'
-portal.forms.error_password_min_length.one: 'Au moins {{count}} caractère'
-portal.forms.error_password_min_length.other: 'Au moins {{count}} caractères'
-portal.forms.error_password_require_num_lowercase.one: 'Au moins {{count}} caractère en minuscule'
-portal.forms.error_password_require_num_lowercase.other: 'Au moins {{count}} caractères en minuscule'
-portal.forms.error_password_require_num_number.one: 'Au moins {{count}} chiffre'
-portal.forms.error_password_require_num_number.other: 'Au moins {{count}} chiffres'
-portal.forms.error_password_require_num_symbol.one: 'Au moins {{count}} symbole'
-portal.forms.error_password_require_num_symbol.other: 'Au moins {{count}} symboles'
-portal.forms.error_password_require_num_uppercase.one: 'Au moins {{count}} caractère en majuscule'
-portal.forms.error_password_require_num_uppercase.other: 'Au moins {{count}} caractères en majuscule'
+portal.forms.error_password_min_length:
+  one: 'Au moins {{count}} caractère'
+  other: 'Au moins {{count}} caractères'
+portal.forms.error_password_require_num_lowercase:
+  one: 'Au moins {{count}} caractère en minuscule'
+  other: 'Au moins {{count}} caractères en minuscule'
+portal.forms.error_password_require_num_number:
+  one: 'Au moins {{count}} chiffre'
+  other: 'Au moins {{count}} chiffres'
+portal.forms.error_password_require_num_symbol:
+  one: 'Au moins {{count}} symbole'
+  other: 'Au moins {{count}} symboles'
+portal.forms.error_password_require_num_uppercase:
+  one: 'Au moins {{count}} caractère en majuscule'
+  other: 'Au moins {{count}} caractères en majuscule'
 portal.forms.error_person_not_agent: 'La personne avec l''identifiant {{value}} n''est pas un agent.'
 portal.forms.error_person_not_found: 'La personne avec l''identifiant « {{value}} » est introuvable.'
 portal.forms.error_regex: 'Cette valeur ne correspond pas au format attendu'
@@ -411,11 +423,13 @@ portal.general.btn-unsubscribe: 'Se désabonner'
 portal.general.by: par
 portal.general.by_2: Par
 portal.general.comment_btn_save: 'Enregistrer le commentaire'
-portal.general.comments-count.one: '{{count}} commentaire'
-portal.general.comments-count.other: '{{count}} commentaire'
+portal.general.comments-count:
+  one: '{{count}} commentaire'
+  other: '{{count}} commentaire'
 portal.general.comments-pending-validation: 'Ce commentaire n''a pas encore été validé. Il sera publié prochainement.'
-portal.general.comments-title.one: 'Commentaires ({{count}})'
-portal.general.comments-title.other: 'Commentaires ({{count}})'
+portal.general.comments-title:
+  one: 'Commentaires ({{count}})'
+  other: 'Commentaires ({{count}})'
 portal.general.delete: Supprimer
 portal.general.everything: Tout
 portal.general.get-in-touch: Contactez-nous
@@ -471,8 +485,9 @@ portal.news.section-title: Actualités
 portal.news.view-as-agent: 'Vous pouvez voir cette page car vous êtes un agent. Les utilisateurs normaux ne peuvent pas voir cette page.'
 portal.sidebar.agents_available: 'Agents disponibles'
 portal.sidebar.agents_none: 'Aucun de nos agents n''est en ligne pour le moment. Vous pouvez <a href="{{new_ticket_url}}">ouvrir un ticket</a>.'
-portal.sidebar.agents_x_online.one: '{{count}} en ligne'
-portal.sidebar.agents_x_online.other: '{{count}} en ligne'
+portal.sidebar.agents_x_online:
+  one: '{{count}} en ligne'
+  other: '{{count}} en ligne'
 portal.sidebar.news_title: Actualités
 portal.tickets.feedback_message_leave_comment: 'Facultatif: Laissez un commentaire'
 portal.tickets.guest-thanks-section-title: Merci
@@ -523,8 +538,9 @@ user.chat.log_created-date: 'Créé le {{date}}'
 user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Département
 user.chat.log_message_author-you: Vous
-user.chat.log_nav-view-chats.one: 'Voir votre dernier historique de Chat'
-user.chat.log_nav-view-chats.other: 'Voir vos {{count}} derniers historiques de Chat'
+user.chat.log_nav-view-chats:
+  one: 'Voir votre dernier historique de Chat'
+  other: 'Voir vos {{count}} derniers historiques de Chat'
 user.chat.log_no_department: 'Aucun département'
 user.chat.log_unassigned: 'Aucun agent n''est assigné'
 user.chat.message_agent-timeout: 'Toutes nos excuses, {{name}} semble ne plus être connecté. Veuillez patienter pendant que nous recherchons un autre agent.'
@@ -615,14 +631,17 @@ user.emails.feedback_new-comment: '{{name}} a posté un nouveau commentaire'
 user.emails.feedback_published: 'La remarque "{{title}}" a été approuvée et apparaîtra maintenant sur notre site.'
 user.emails.feedback_thank-you: 'Merci de nous avoir fait parvenir vos remarques "{{title}}"'
 user.emails.feedback_updated: 'Votre remarque "{{title}}" a été mise à jour. Son nouveau statut est "{{status}}'
-user.emails.feedback_votes.one: 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:'
-user.emails.feedback_votes.other: 'Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:'
+user.emails.feedback_votes:
+  one: 'Votre remarque a actuellement <strong>1</strong> vote. Consultez votre remarque en ligne sur:'
+  other: 'Votre remarque a actuellement <strong>{{count}}</strong> votes.Consultez votre remarque en ligne sur:'
 user.emails.greeting: 'Chère/Cher {{to_name}},'
 user.emails.kb-explain: 'Vous recevez cet email car vous êtes inscrit à notre base de connaissances sur <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Vous ne souhaitez plus recevoir ces emails?<a href="{{unsubscribe_url}}">Cliquez ici pour vous désinscrire.</a>'
-user.emails.kb-new-articles.one: '1 nouvel article'
-user.emails.kb-new-articles.other: '{{count}} nouveaux articles'
-user.emails.kb-updated-articles.one: '1 article mis à jour'
-user.emails.kb-updated-articles.other: '{{count}} articles mis à jour'
+user.emails.kb-new-articles:
+  one: '1 nouvel article'
+  other: '{{count}} nouveaux articles'
+user.emails.kb-updated-articles:
+  one: '1 article mis à jour'
+  other: '{{count}} articles mis à jour'
 user.emails.label_view-online: 'Voir en ligne'
 user.emails.message-clipped: '(Le message a été tronqué)'
 user.emails.new-ticket-guest-link: 'Merci de nous avoir contactés. Vous pouvez suivre l''état de votre ticket ici :'
@@ -662,18 +681,22 @@ user.error.error_code: 'Code d''erreur'
 user.error.error_title: Erreur
 user.error.expired-token: 'Le délai d''attente pour afficher la page choisie a expiré. Merci de revenir en arrière et réessayer.'
 user.error.form_choice_invalid: 'Merci de sélectionner une option de la liste.'
-user.error.form_choice_max.one: 'Vous ne devez pas sélectionner plus de 1 option'
-user.error.form_choice_max.other: 'Vous ne devez pas sélectionner plus de {{count}} options.'
-user.error.form_choice_min.one: 'Merci de sélectionner au moins 1 option'
-user.error.form_choice_min.other: 'Merci de sélectionner au moins {{count}} options.'
+user.error.form_choice_max:
+  one: 'Vous ne devez pas sélectionner plus de 1 option'
+  other: 'Vous ne devez pas sélectionner plus de {{count}} options.'
+user.error.form_choice_min:
+  one: 'Merci de sélectionner au moins 1 option'
+  other: 'Merci de sélectionner au moins {{count}} options.'
 user.error.form_date_invalid: 'Merci d''entrer une date valide'
 user.error.form_date_invalid_dow: 'Le jour de la semaine sélectionné n''est pas autorisé'
 user.error.form_date_invalid_range: 'La date sélectionnée n''est pas comprise dans la période autorisée'
 user.error.form_required: 'Vous devez remplir ce champ'
-user.error.form_text_max.one: 'Vous ne devez pas entrer plus d''1 caractère'
-user.error.form_text_max.other: 'Vous ne devez pas entrer plus de {{count}} caractères'
-user.error.form_text_min.one: 'Merci d''entrer au moins 1 caractère'
-user.error.form_text_min.other: 'Merci d''entrer au moins {{count}} caractères'
+user.error.form_text_max:
+  one: 'Vous ne devez pas entrer plus d''1 caractère'
+  other: 'Vous ne devez pas entrer plus de {{count}} caractères'
+user.error.form_text_min:
+  one: 'Merci d''entrer au moins 1 caractère'
+  other: 'Merci d''entrer au moins {{count}} caractères'
 user.error.form_text_regex: 'Merci d''entrer une valeur correcte'
 user.error.invalid_email: 'Adresse email invalide'
 user.error.invalid_email-code: 'Le lien de validation semble ne pas être valide.'
@@ -716,16 +739,21 @@ user.profile.choose_email: 'Choisissez l''adresse email que vous souhaitez utili
 user.profile.connect_with: 'Vous connecter avec'
 user.profile.or_connect_with: 'Ou se connecter avec'
 user.profile.register: 'S''inscrire'
-user.profile.register_password_min_length.one: 'Minimum de {{count}} caractère'
-user.profile.register_password_min_length.other: 'Minimum de {{count}} caractères'
-user.profile.register_password_require_num_lowercase.one: 'Au moins {{count}} caractère en minuscule'
-user.profile.register_password_require_num_lowercase.other: 'Au moins {{count}} caractères en minuscule'
-user.profile.register_password_require_num_number.one: 'Au moins {{count}} chiffre'
-user.profile.register_password_require_num_number.other: 'Au moins {{count}} chiffres'
-user.profile.register_password_require_num_symbol.one: 'Au moins {{count}} symbole'
-user.profile.register_password_require_num_symbol.other: 'Au moins {{count}} symboles'
-user.profile.register_password_require_num_uppercase.one: 'Au moins {{count}} caractère en majuscule'
-user.profile.register_password_require_num_uppercase.other: 'Au moins {{count}} caractères en majuscule'
+user.profile.register_password_min_length:
+  one: 'Minimum de {{count}} caractère'
+  other: 'Minimum de {{count}} caractères'
+user.profile.register_password_require_num_lowercase:
+  one: 'Au moins {{count}} caractère en minuscule'
+  other: 'Au moins {{count}} caractères en minuscule'
+user.profile.register_password_require_num_number:
+  one: 'Au moins {{count}} chiffre'
+  other: 'Au moins {{count}} chiffres'
+user.profile.register_password_require_num_symbol:
+  one: 'Au moins {{count}} symbole'
+  other: 'Au moins {{count}} symboles'
+user.profile.register_password_require_num_uppercase:
+  one: 'Au moins {{count}} caractère en majuscule'
+  other: 'Au moins {{count}} caractères en majuscule'
 user.profile.register_password_unused: 'Vous ne pouvez utiliser un mot de passe que vous avez déjà utilisé'
 user.tickets.feedback_message_leave_comment: 'Facultatif: Laissez un commentaire'
 user.tickets.fields_category: Catégorie

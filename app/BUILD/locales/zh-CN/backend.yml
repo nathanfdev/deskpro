@@ -5,7 +5,8 @@ agent.chat.chat_history: 聊天记录
 agent.chat.chat_started_by: '聊天被   开始'
 agent.chat.chat_transcript: 聊天记录
 agent.chat.chat_with_x: '与谁聊天{{name}}'
-agent.chat.count_seconds.other: "秒 {{count}}秒钟\n"
+agent.chat.count_seconds:
+  other: "秒 {{count}}秒钟\n"
 agent.chat.filter_title_assigned: 指定聊天
 agent.chat.filter_title_mine: 我的聊天
 agent.chat.filter_title_missed: 错过的聊天
@@ -200,7 +201,8 @@ agent.emails.person_replied: '{{name}}已回复到「{{subject}}」'
 agent.emails.referring_page: 参考页
 agent.emails.reply_above_line: 回答上面
 agent.emails.reply_is_as_note: 您的回复将作为私人处理人注释添加
-agent.emails.reply_sent_to_ccs.other: '和{{count}} CC''d用户：'
+agent.emails.reply_sent_to_ccs:
+  other: '和{{count}} CC''d用户：'
 agent.emails.reply_sent_to_user: '您的回复将发送给用户{{user}}'
 agent.emails.subject_email_change_merge: 确认电子邮件更改和帐户合并
 agent.emails.subject_error_forwarded_email: '您转寄的电子邮件地址有误：{{subject}}'
@@ -419,9 +421,12 @@ agent.general.copy_permalink: 复制永久链接
 agent.general.copy_to_clipboard: 复制到剪切板
 agent.general.copy_url: 复制网址
 agent.general.count: 计数
-agent.general.count_chat.other: 1个会话
-agent.general.count_tickets.other: 1条来单
-agent.general.count_votecount_votes.other: 1个赞成
+agent.general.count_chat:
+  other: 1个会话
+agent.general.count_tickets:
+  other: 1条来单
+agent.general.count_votecount_votes:
+  other: 1个赞成
 agent.general.countries: 国家
 agent.general.create: 创建
 agent.general.create_a_new_organization: 创建新的组织
@@ -1011,8 +1016,10 @@ agent.general.value: 价值
 agent.general.verified: 确认
 agent.general.via: 通过
 agent.general.view: 图
-agent.general.view_all_x_chats.other: 查看1聊天
-agent.general.view_all_x_tickets.other: 查看1任务
+agent.general.view_all_x_chats:
+  other: 查看1聊天
+agent.general.view_all_x_tickets:
+  other: 查看1任务
 agent.general.view_in_user_interface: 查看用户界面
 agent.general.view_more: 查看更多
 agent.general.view_profile: 查看资料
@@ -1041,7 +1048,8 @@ agent.general.x_is_not_y: 不是
 agent.general.x_is_y: 是
 agent.general.x_not_include_y: 没有包括
 agent.general.x_selected: 已经选择的
-agent.general.x_up_votes.other: 1个赞成
+agent.general.x_up_votes:
+  other: 1个赞成
 agent.general.years: 年
 agent.general.yim: 雅虎即时通讯
 agent.general.your_email_address: 您的电子邮件地址
@@ -1182,15 +1190,19 @@ agent.organizations.create_organization: 创建组织
 agent.organizations.email_domain_assoc: "电子邮件域名关联\n"
 agent.organizations.email_domain_assoc_add: "添加新域\n"
 agent.organizations.email_domain_assoc_explain: "在这些网域中拥有电子邮件的用户将自动与此单位关联。\n"
-agent.organizations.email_domain_assoc_move.other: "关联{{count}}位用户 关联位用户\n"
-agent.organizations.email_domain_assoc_move_all.other: 关联1个已经属于不同组织的用户
+agent.organizations.email_domain_assoc_move:
+  other: "关联{{count}}位用户 关联位用户\n"
+agent.organizations.email_domain_assoc_move_all:
+  other: 关联1个已经属于不同组织的用户
 agent.organizations.email_domain_assoc_none: 设置邮件域名自动关联用户和此组织。
 agent.organizations.email_domain_assoc_remove: 移除邮箱域
-agent.organizations.email_domain_assoc_remove_users.other: 移除邮箱域并将1名用户从此组织取消关联
+agent.organizations.email_domain_assoc_remove_users:
+  other: 移除邮箱域并将1名用户从此组织取消关联
 agent.organizations.email_domain_assoc_title: '{{name}}的电子邮箱域关联'
 agent.organizations.enter_position: 输入位置
 agent.organizations.is_empty: 这个组织没有成员。
-agent.organizations.list_title.other: 1个组织
+agent.organizations.list_title:
+  other: 1个组织
 agent.organizations.no_slas: 没有服务水平协议自动被应用到此组织。
 agent.organizations.org_manager_click_to_remove: 组织管理。点击移除。
 agent.people.act_reg: 注册账户
@@ -1214,7 +1226,8 @@ agent.people.confirm_remove_email: 您确定要移除这个邮箱地址吗？
 agent.people.confirm_remove_phone: 您确定要移除这个电话号码吗？
 agent.people.contact_info: 联系信息
 agent.people.contact_info_for_x: '{{name}}的联系信息'
-agent.people.count_members.other: '{{count}}成员'
+agent.people.count_members:
+  other: '{{count}}成员'
 agent.people.create_person: 创建人
 agent.people.creation_by: 由...创建
 agent.people.delete_user: 删除用户
@@ -1230,7 +1243,8 @@ agent.people.find_person: 查找人
 agent.people.im: 即时通讯
 agent.people.im_account_placeholder: 账户用户名
 agent.people.is_agent: 是处理人
-agent.people.list_title.other: 1个人
+agent.people.list_title:
+  other: 1个人
 agent.people.login_as_user: 用户身份登录
 agent.people.make_primary_email: 设为主要
 agent.people.manager: 经理
@@ -1313,7 +1327,8 @@ agent.publish.change_category: 更改类别
 agent.publish.click_to_set_date: （点击设置日期）
 agent.publish.comment_by: '评论者：{{name}}'
 agent.publish.comment_requires_validation: 此评论需要验证
-agent.publish.comments_list_title.other: 1条评论
+agent.publish.comments_list_title:
+  other: 1条评论
 agent.publish.comments_to_validate: 查阅评论
 agent.publish.compare_selected: 比较所选项
 agent.publish.create_artilce: 创建文章
@@ -1330,26 +1345,32 @@ agent.publish.download_specify_filesize: 指点显示文件的大小（可选）
 agent.publish.download_specify_url: 输入文件完整的网址。用户点击“下载”按钮会被指引到这个网址。
 agent.publish.download_upload_btn: 上传文件
 agent.publish.downloads_highest_lowest: 下载数量（从高到低）
-agent.publish.downloads_list_title.other: 1条下载
+agent.publish.downloads_list_title:
+  other: 1条下载
 agent.publish.downloads_lowest_highest: 下载数量（从低到高）
 agent.publish.draft_content: 我的草稿
 agent.publish.draft_revision: 改变
-agent.publish.drafts_list_title.other: 1则草稿
+agent.publish.drafts_list_title:
+  other: 1则草稿
 agent.publish.drop_file_to_add: 将文件放在这里添加到发布
 agent.publish.edit_category_btn: 编辑分类
 agent.publish.edit_new_glossary: 编辑术语
 agent.publish.error_kb_cats_same: 相同的分类。
-agent.publish.error_kb_missing.other: '{{count}}篇文章未找到'
+agent.publish.error_kb_missing:
+  other: '{{count}}篇文章未找到'
 agent.publish.error_kb_not_in_db: 类别未被找到。
-agent.publish.error_kb_perm_denied.other: '{{count}}条权限错误。'
+agent.publish.error_kb_perm_denied:
+  other: '{{count}}条权限错误。'
 agent.publish.error_kb_unaffected: 一些文章没有受到影响：
 agent.publish.event_time_ago_at_when: '{{date}}{{ago}}'
 agent.publish.event_time_ago_by_who_at_when: '{{name}}{{date}}{{ago}}'
 agent.publish.for_ticket: 为来单
 agent.publish.glossary: 术语
 agent.publish.helpful: 有帮助
-agent.publish.kb_list_title.other: 1文章
-agent.publish.kb_list_unique_title.other: 1独特文章
+agent.publish.kb_list_title:
+  other: 1文章
+agent.publish.kb_list_unique_title:
+  other: 1独特文章
 agent.publish.label_new_file: 新文件
 agent.publish.label_old_file: 旧的文件
 agent.publish.missing_translation: 缺少翻译
@@ -1360,7 +1381,8 @@ agent.publish.new_comment_submitted_by: '{{name}}提交了一条新评论'
 agent.publish.new_feedback_by: '{{name}}的新反馈'
 agent.publish.new_post: 最新帖子
 agent.publish.news_comments: "新的评论\n"
-agent.publish.news_list_title.other: 帖子
+agent.publish.news_list_title:
+  other: 帖子
 agent.publish.no_changes: "在这两个版本之间未检测到更改\n"
 agent.publish.no_downlod_cats_error: "没有定义类别。在您可以将文件添加到下载部分之前，您需要定义类别。\n"
 agent.publish.no_kb_cats_error: "没有定义类别。在可以向知识库部分添加文章之前，需要定义类别。\n"
@@ -1542,7 +1564,8 @@ agent.tasks.due_today: 今天截止
 agent.tasks.enter_your_comment: 输入您的评论...
 agent.tasks.linked_deal: 关联交易
 agent.tasks.linked_ticket: 关联任务
-agent.tasks.list_title.other: 1任务
+agent.tasks.list_title:
+  other: 1任务
 agent.tasks.my_tasks: "我的任务\n"
 agent.tasks.my_teams: '我的团队'''
 agent.tasks.my_teamstasks: 我的团队的任务
@@ -1817,7 +1840,8 @@ agent.userchat.ended_by_reason: '会话被{{name}}终止：{{reason}}'
 agent.userchat.ended_user: 用户终止了会话
 agent.userchat.full_message: 完整信息
 agent.userchat.ident_unconfirmed: 身份没有确定，用户没有登入
-agent.userchat.list_title.other: 1个会话
+agent.userchat.list_title:
+  other: 1个会话
 agent.userchat.message_agent-timeout: '{{name}}没有回复。请稍等我们正在尝试找到另一个代理。'
 agent.userchat.message_assigned: '会话指派给{{name}}'
 agent.userchat.message_ended: 会话结束

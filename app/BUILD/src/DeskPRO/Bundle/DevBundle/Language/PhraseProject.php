@@ -24,18 +24,15 @@ class PhraseProject
         foreach ($projectIds as $projectId) {
             switch ($projectId) {
                 case 'portal':
-                case 'user': // user is old alias for portal
-                    $files = Finder::create()->in($langDir)->files()->name('portal.php');
+                case 'user':
+                    $files = Finder::create()->in($langDir)->files()->name('user.php');
                     break;
 
                 case 'agent':
                 case 'admin':
                 case 'adm':
-                    $files = Finder::create()->in($langDir)->files()->name('agent.php');
-                    break;
-
                 case 'other':
-                    $files = Finder::create()->in($langDir)->files()->name('/(api|general)\.php/');
+                    $files = Finder::create()->in($langDir)->files()->name('backend.php');
                     break;
 
                 default:

@@ -83,11 +83,14 @@ portal.emails.feedback_published: '남기신 피디백 "{{title}}"이 승인되�
 portal.emails.feedback_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
 portal.emails.feedback_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
 portal.emails.feedback_validate-email: '옆의 링크를 클릭하셔서 이메일 주소를 확인해주십시오.'
-portal.emails.feedback_votes.other: '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: '
+portal.emails.feedback_votes:
+  other: '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: '
 portal.emails.greeting: '{{to_name}}님께,'
 portal.emails.kb-explain: '이 이메일은 지식베이스를 <a href="{{deskpro_url}}">{{deskpro_url}}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{unsubscribe_url}}"> 를 클릭해 구독을 취소해주십시오.</a>'
-portal.emails.kb-new-articles.other: '하나의 새로운 논문 {{count}}개의 새로운 논문'
-portal.emails.kb-updated-articles.other: '하나의 업데이트 논문 {{count}} 개의 업데이트 논문'
+portal.emails.kb-new-articles:
+  other: '하나의 새로운 논문 {{count}}개의 새로운 논문'
+portal.emails.kb-updated-articles:
+  other: '하나의 업데이트 논문 {{count}} 개의 업데이트 논문'
 portal.emails.label_view-online: '온라인에서 확인하세요'
 portal.emails.message-clipped: '(메세지들이 클립되었습니다 )'
 portal.emails.password_agent-reset: '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오'
@@ -112,7 +115,8 @@ portal.emails.ticket_rate-question: '메세지가 도움이 되셨습니까?'
 portal.emails.ticket_received: '티켓이 접수되었습니다. 빠른시간 안에 답변을 받아보실 수 있습니다.'
 portal.emails.ticket_reply-confirm: '답변해 주셔서 감사하니다. 빠른시간 안에 답변 해 드리도록 하겠습니다.'
 portal.emails.ticket_validate: '연락해 주셔서 감사합니다. <br /><br />에이전트가 메세지를 읽고 답변 해 드릴 수 있도록 이메일 주소를 확인해 주세요.'
-portal.emails.tickets_ommitted.other: '1개의 메세지가 제외 되었습니다. {{count}}개의 메세지가 제외 되었습니다'
+portal.emails.tickets_ommitted:
+  other: '1개의 메세지가 제외 되었습니다. {{count}}개의 메세지가 제외 되었습니다'
 portal.emails.view_full_history_online: '티켓 전체는 온라인에서 확인해주세요.'
 portal.error.404-title: '찾을 수 없습니다.'
 portal.feedback.attachments: 첨부파일
@@ -223,7 +227,8 @@ user.chat.log_created-date: '{{date}} 시작'
 user.chat.log_fields_agent: 에이전트
 user.chat.log_fields_department: 부서
 user.chat.log_message_author-you: 고객님
-user.chat.log_nav-view-chats.other: '최근 대화 기록 보기 {{count}}'
+user.chat.log_nav-view-chats:
+  other: '최근 대화 기록 보기 {{count}}'
 user.chat.log_no_department: '부서가 없습니다'
 user.chat.log_unassigned: '에이전트가 배정되지 않았습니다'
 user.chat.message_agent-timeout: '죄송합니다; {{name}} 과 연결이 끊겼습니다. 다른 상담원과 연결될때까지 잠시만 기다려주십시오'
@@ -304,11 +309,14 @@ user.emails.feedback_new-comment: '{{name}} 이 새 댓글을 달았습니다:'
 user.emails.feedback_published: '남기신 피디백 "{{title}}"이 승인되어 웹사이트에서 확인 해 보실 수 있습니다.'
 user.emails.feedback_thank-you: '피드백 "{{title}}"을 남겨주셔서 감사합니다.'
 user.emails.feedback_updated: '"{{title}}" 이 업데이트 되었습니다. 새 상태 "{{status}}" 아래에 저장되었습니다.'
-user.emails.feedback_votes.other: '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: '
+user.emails.feedback_votes:
+  other: '현재 고객님의 피드백이 <strong>1</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: 현재 고객님의 피드백이 <strong>{{count}}</strong>개의 표가 있습니다. 아래의 주소에서 피드백을 확인해보세요: '
 user.emails.greeting: '{{to_name}}님께,'
 user.emails.kb-explain: '이 이메일은 지식베이스를 <a href="{{deskpro_url}}">{{deskpro_url}}</a>에서 구독하시는 분들께 전송되는 이메일입니다. <br />더 이상이메일을 받고 싶지 않으시다면 <a href="{{unsubscribe_url}}"> 를 클릭해 구독을 취소해주십시오.</a>'
-user.emails.kb-new-articles.other: '하나의 새로운 논문 {{count}}개의 새로운 논문'
-user.emails.kb-updated-articles.other: '하나의 업데이트 논문 {{count}} 개의 업데이트 논문'
+user.emails.kb-new-articles:
+  other: '하나의 새로운 논문 {{count}}개의 새로운 논문'
+user.emails.kb-updated-articles:
+  other: '하나의 업데이트 논문 {{count}} 개의 업데이트 논문'
 user.emails.label_view-online: '온라인에서 확인하세요'
 user.emails.message-clipped: '(메세지들이 클립되었습니다 )'
 user.emails.password_agent-reset: '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오'
@@ -342,14 +350,18 @@ user.error.error_code: '오류 코드'
 user.error.error_title: 오류
 user.error.expired-token: '페이지가 만료되었습니다. 뒤로가기를 누르시고 다시 시도해 주세요.'
 user.error.form_choice_invalid: '리스트에서 옵션을 선택해 주세요.'
-user.error.form_choice_max.other: '한개의 옵션만 선택해 주세요 최대 {{count}} 개의 옵션만 선택해 주세요. '
-user.error.form_choice_min.other: '옵션을 1개 이상 선택해 주세요. {{count}} 개 이상의 옵션을 선택해 주세요.'
+user.error.form_choice_max:
+  other: '한개의 옵션만 선택해 주세요 최대 {{count}} 개의 옵션만 선택해 주세요. '
+user.error.form_choice_min:
+  other: '옵션을 1개 이상 선택해 주세요. {{count}} 개 이상의 옵션을 선택해 주세요.'
 user.error.form_date_invalid: '정확한 날짜를 입력해 주세요'
 user.error.form_date_invalid_dow: '선택하신 날은 가능하지 않습니다'
 user.error.form_date_invalid_range: '선택하신 날짜는 가능하지 않습니다.'
 user.error.form_required: '이 칸은 반드시 작성해 주셔야 합니다.'
-user.error.form_text_max.other: '최대 1개의 글자를 입력 해 주세요. 최대 {{count}} 개의 글자를 입력 해 주세요.'
-user.error.form_text_min.other: '최소 1개의 글자를 입력해 주세요. 최소 {{count}} 개의 글자를 입력해주세요.'
+user.error.form_text_max:
+  other: '최대 1개의 글자를 입력 해 주세요. 최대 {{count}} 개의 글자를 입력 해 주세요.'
+user.error.form_text_min:
+  other: '최소 1개의 글자를 입력해 주세요. 최소 {{count}} 개의 글자를 입력해주세요.'
 user.error.form_text_regex: '정확한 가격을 입력해 주세요.'
 user.error.invalid_email: '맞지 않는 이메일 주소 입니다.'
 user.error.invalid_email-code: '이 링크는 맞지 않습니다.'

@@ -119,8 +119,9 @@ portal.feedback.section-desc: 'Nämä samankaltaiset ehdotukset on tullut asiakk
 portal.feedback.section-title: Palaute
 portal.feedback.submit_feedback: 'Lähetä palaute'
 portal.forms.error_password_forbid_reuse: 'Et voi käyttää aikaisempaa salasanaasi'
-portal.forms.error_password_min_length.one: 'Vähintään {{count}} merkkiä'
-portal.forms.error_password_min_length.other: 'Vähintään{{count}} merkkiä'
+portal.forms.error_password_min_length:
+  one: 'Vähintään {{count}} merkkiä'
+  other: 'Vähintään{{count}} merkkiä'
 portal.forms.label_category: Kategoria
 portal.forms.label_department: Laji
 portal.forms.label_first_name: Etunimi
@@ -220,8 +221,9 @@ user.chat.log_created-date: 'Luotu {{date}}'
 user.chat.log_fields_agent: Asiantuntija
 user.chat.log_fields_department: Laji
 user.chat.log_message_author-you: Sinä
-user.chat.log_nav-view-chats.one: 'Tarkastele viimeisimpiä keskustelujasi {{count}} chat log'
-user.chat.log_nav-view-chats.other: 'Tarkastele viimeisimpiä keskustelujasi {{count}} chat log'
+user.chat.log_nav-view-chats:
+  one: 'Tarkastele viimeisimpiä keskustelujasi {{count}} chat log'
+  other: 'Tarkastele viimeisimpiä keskustelujasi {{count}} chat log'
 user.chat.log_no_department: 'Ei lajia'
 user.chat.log_unassigned: 'Asiantuntijaa ei ole vielä valittu'
 user.chat.message_agent-timeout: 'Valitettavasti; {{name}} ei ole tavoitettavissa. Odotathan hetken, etsimme toisen asiantuntijan.'
@@ -296,18 +298,22 @@ user.error.error_code: 'Virhe koodi'
 user.error.error_title: Virhe
 user.error.expired-token: 'Sivu on vahnentunut. Palaa takaisin ja yritä uudelleen.'
 user.error.form_choice_invalid: 'Valitse vaihtoehto listasta'
-user.error.form_choice_max.one: 'Valitse sopivin vaihtoehto'
-user.error.form_choice_max.other: 'Valitse sopivimmat {{count}} vaihtoehdot'
-user.error.form_choice_min.one: 'Valitse vähintään 1 vaihtoehto'
-user.error.form_choice_min.other: 'Valitse vähintään {{count}} vaihtoehtoa'
+user.error.form_choice_max:
+  one: 'Valitse sopivin vaihtoehto'
+  other: 'Valitse sopivimmat {{count}} vaihtoehdot'
+user.error.form_choice_min:
+  one: 'Valitse vähintään 1 vaihtoehto'
+  other: 'Valitse vähintään {{count}} vaihtoehtoa'
 user.error.form_date_invalid: 'Lisää päivämäärä'
 user.error.form_date_invalid_dow: 'Valitsemasi päivä ei ole mahdollinen'
 user.error.form_date_invalid_range: 'Päivämäärä jonka valitsi ei ole sallituissa rajoissa'
 user.error.form_required: 'Pakollinen tieto'
-user.error.form_text_max.one: 'Lisää sopivin merkki'
-user.error.form_text_max.other: 'Valitse sopivimmat {{count}} merkkiä'
-user.error.form_text_min.one: 'Valitse vähintään 1 merkki'
-user.error.form_text_min.other: 'Valitse vähintään {{count}} merkkiä'
+user.error.form_text_max:
+  one: 'Lisää sopivin merkki'
+  other: 'Valitse sopivimmat {{count}} merkkiä'
+user.error.form_text_min:
+  one: 'Valitse vähintään 1 merkki'
+  other: 'Valitse vähintään {{count}} merkkiä'
 user.error.form_text_regex: 'Lisää oikea arvo'
 user.error.invalid_email: 'Virheellinen sähköpostiosoite'
 user.error.invalid_email-code: 'Vahvistus linkki on virheellinen'
@@ -349,8 +355,9 @@ user.profile.choose_email: 'Valitse käytettävä sähköpostiosoite'
 user.profile.connect_with: Yhdistä
 user.profile.or_connect_with: 'Tai yhdistä'
 user.profile.register: Rekisteröidy
-user.profile.register_password_min_length.one: 'Vähintään {{count}} merkkiä'
-user.profile.register_password_min_length.other: 'Vähintään{{count}} merkkiä'
+user.profile.register_password_min_length:
+  one: 'Vähintään {{count}} merkkiä'
+  other: 'Vähintään{{count}} merkkiä'
 user.profile.register_password_unused: 'Et voi käyttää aikaisempaa salasanaasi'
 user.tickets.feedback_message_leave_comment: 'Vapaaehtoinen kommentti'
 user.tickets.fields_category: Kategoria

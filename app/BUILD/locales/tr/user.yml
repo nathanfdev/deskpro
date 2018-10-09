@@ -82,14 +82,17 @@ portal.emails.feedback_published: '"{{title}}" başlıklı geri bildiriminiz ona
 portal.emails.feedback_thank-you: 'Geri bildirimde bulunduğunuz için teşekkür ederiz "{{title}}"'
 portal.emails.feedback_updated: '"{{title}}" başlıklı geri bildiriminiz güncellendi. Durumu "{{status}}" olarak değiştirildi.'
 portal.emails.feedback_validate-email: 'Çevrim içi olarak eposta adresinizi doğrulamak için bağlantıya tıklayın:'
-portal.emails.feedback_votes.one: 'Geri bildiriminiz <strong>1</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
-portal.emails.feedback_votes.other: 'Geri bildiriminiz <strong>{{count}}</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
+portal.emails.feedback_votes:
+  one: 'Geri bildiriminiz <strong>1</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
+  other: 'Geri bildiriminiz <strong>{{count}}</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
 portal.emails.greeting: 'Değerli {{to_name}},'
 portal.emails.kb-explain: 'Bizim bilgi listemize abone olduğunuz için bu maili almaktasınız<a href="{{deskpro_url}}">{{deskpro_url}}</a><br /> Bu tarz mailleri almak istemiyor musunuz ?<a href="{{unsubscribe_url}}"> Abonelikten çıkmak için tıklayınız.</a>'
-portal.emails.kb-new-articles.one: '{{count}} 1 Yeni Makale'
-portal.emails.kb-new-articles.other: '{{count}} 1 Yeni Makale'
-portal.emails.kb-updated-articles.one: '{{count}} Güncel Makale'
-portal.emails.kb-updated-articles.other: '{{count}} Güncel Makale'
+portal.emails.kb-new-articles:
+  one: '{{count}} 1 Yeni Makale'
+  other: '{{count}} 1 Yeni Makale'
+portal.emails.kb-updated-articles:
+  one: '{{count}} Güncel Makale'
+  other: '{{count}} Güncel Makale'
 portal.emails.label_view-online: 'Çevrim içi Gör'
 portal.emails.message-clipped: '(Mesaj kısaltılmıştır)'
 portal.emails.password_agent-reset: 'Personelimiz hesabınızın parolasını sıfırladı. Bu bilgiler ile oturum açabilirsiniz'
@@ -114,8 +117,9 @@ portal.emails.ticket_rate-question: 'Bu mesaj yardımcı oldu mu?'
 portal.emails.ticket_received: 'Çağrı kaydınız alındı. Personelimiz kısa sürede cevap verecektir.'
 portal.emails.ticket_reply-confirm: 'Cevabınız için teşekkürler. Personelimiz kısa sürede cevap verecektir.'
 portal.emails.ticket_validate: 'Bizimle iletişime geçtiğiniz için teşekkür ederi.<br /><br />Personelimiz mesajınızı okuyarak , mailinizi doğruladıktan sonra sizlere cevap verecektir.'
-portal.emails.tickets_ommitted.one: '{{count}} iletiniz okunmamış'
-portal.emails.tickets_ommitted.other: '{{count}} iletiniz okunmamış'
+portal.emails.tickets_ommitted:
+  one: '{{count}} iletiniz okunmamış'
+  other: '{{count}} iletiniz okunmamış'
 portal.emails.view_full_history_online: 'Aktif kayıtlarınızı görüntüleyin'
 portal.error.404-title: Bulunamadı
 portal.feedback.attachments: Ekler
@@ -127,8 +131,9 @@ portal.feedback.section-desc: 'Bu tavsiyeler siz gibi müşterilerimiz tarafınd
 portal.feedback.section-title: 'Geri Bildirim'
 portal.feedback.submit_feedback: 'Geri bildirim gönder'
 portal.forms.error_password_forbid_reuse: 'Daha önce kullanmış olduğunuz bir parola kullanamazsınız'
-portal.forms.error_password_min_length.one: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
-portal.forms.error_password_min_length.other: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
+portal.forms.error_password_min_length:
+  one: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
+  other: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
 portal.forms.label_category: Kategori
 portal.forms.label_department: Departman
 portal.forms.label_first_name: Adı
@@ -228,8 +233,9 @@ user.chat.log_created-date: 'Oluştur {{date}}'
 user.chat.log_fields_agent: Personel
 user.chat.log_fields_department: Departman
 user.chat.log_message_author-you: Siz
-user.chat.log_nav-view-chats.one: '{{count}} sohbet kayıtlarını kontrol et'
-user.chat.log_nav-view-chats.other: '{{count}} sohbet kayıtlarını kontrol et'
+user.chat.log_nav-view-chats:
+  one: '{{count}} sohbet kayıtlarını kontrol et'
+  other: '{{count}} sohbet kayıtlarını kontrol et'
 user.chat.log_no_department: 'Departman Yok'
 user.chat.log_unassigned: 'Personel atanamadı'
 user.chat.message_agent-timeout: 'Özür dileriz; {{name}} bağlantı dışında gözüküyor. Lütfen başka bir personel bulmaya çalışırken bekleyin.'
@@ -309,14 +315,17 @@ user.emails.feedback_new-comment: '{{name}}yeni bir yorum yayınlanmıştır:'
 user.emails.feedback_published: '"{{title}}" başlıklı geri bildiriminiz onaylandı ve sitemizde yayınlanacak.'
 user.emails.feedback_thank-you: 'Geri bildirimde bulunduğunuz için teşekkür ederiz "{{title}}"'
 user.emails.feedback_updated: '"{{title}}" başlıklı geri bildiriminiz güncellendi. Durumu "{{status}}" olarak değiştirildi.'
-user.emails.feedback_votes.one: 'Geri bildiriminiz <strong>1</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
-user.emails.feedback_votes.other: 'Geri bildiriminiz <strong>{{count}}</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
+user.emails.feedback_votes:
+  one: 'Geri bildiriminiz <strong>1</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
+  other: 'Geri bildiriminiz <strong>{{count}}</strong> oyu var. Geri bildiriminizi görmek için tıklayın:'
 user.emails.greeting: 'Değerli {{to_name}},'
 user.emails.kb-explain: 'Bizim bilgi listemize abone olduğunuz için bu maili almaktasınız<a href="{{deskpro_url}}">{{deskpro_url}}</a><br /> Bu tarz mailleri almak istemiyor musunuz ?<a href="{{unsubscribe_url}}"> Abonelikten çıkmak için tıklayınız.</a>'
-user.emails.kb-new-articles.one: '{{count}} 1 Yeni Makale'
-user.emails.kb-new-articles.other: '{{count}} 1 Yeni Makale'
-user.emails.kb-updated-articles.one: '{{count}} Güncel Makale'
-user.emails.kb-updated-articles.other: '{{count}} Güncel Makale'
+user.emails.kb-new-articles:
+  one: '{{count}} 1 Yeni Makale'
+  other: '{{count}} 1 Yeni Makale'
+user.emails.kb-updated-articles:
+  one: '{{count}} Güncel Makale'
+  other: '{{count}} Güncel Makale'
 user.emails.label_view-online: 'Çevrim içi Gör'
 user.emails.message-clipped: '(Mesaj kısaltılmıştır)'
 user.emails.password_agent-reset: 'Personelimiz hesabınızın parolasını sıfırladı. Bu bilgiler ile oturum açabilirsiniz'
@@ -350,18 +359,22 @@ user.error.error_code: 'Hata Kodu'
 user.error.error_title: Hata
 user.error.expired-token: 'Ulaşmaya çalıştığınız sayfa zaman aşımına uğradı. Lütfen geri dönüp tekrar deneyin.'
 user.error.form_choice_invalid: 'Lütfen listeden bir opsiyon seçin'
-user.error.form_choice_max.one: 'Lütfen en az 1 opsiyon seçin'
-user.error.form_choice_max.other: 'Lütfen en fazla {{count}} opsiyon seçin'
-user.error.form_choice_min.one: 'Lütfen en az 1 opsiyon seçin'
-user.error.form_choice_min.other: 'Lütfen en az {{count}} opsiyon seçin'
+user.error.form_choice_max:
+  one: 'Lütfen en az 1 opsiyon seçin'
+  other: 'Lütfen en fazla {{count}} opsiyon seçin'
+user.error.form_choice_min:
+  one: 'Lütfen en az 1 opsiyon seçin'
+  other: 'Lütfen en az {{count}} opsiyon seçin'
 user.error.form_date_invalid: 'Lütfen geçerli bir tarih girin'
 user.error.form_date_invalid_dow: 'Seçtiğiniz gün ve hafta uygun değildir'
 user.error.form_date_invalid_range: 'Seçtiğiniz tarih izin verilen aralıklarda değildir'
 user.error.form_required: 'Bu alan gereklidir'
-user.error.form_text_max.one: 'Lütfen en fazla 1 karakter girin'
-user.error.form_text_max.other: 'Lütfen en fazla {{count}} karakter girin'
-user.error.form_text_min.one: 'Lütfen en az 1 karakter girin'
-user.error.form_text_min.other: 'Lütfen en az {{count}} karakter girin'
+user.error.form_text_max:
+  one: 'Lütfen en fazla 1 karakter girin'
+  other: 'Lütfen en fazla {{count}} karakter girin'
+user.error.form_text_min:
+  one: 'Lütfen en az 1 karakter girin'
+  other: 'Lütfen en az {{count}} karakter girin'
 user.error.form_text_regex: 'Lütfen geçerli bir değer girin'
 user.error.invalid_email: 'geçersiz eposta adresi'
 user.error.invalid_email-code: 'Doğrulama adresi geçerli gözükmüyor'
@@ -402,8 +415,9 @@ user.profile.choose_email: 'Kullanmak istediğiniz eposta adresini seçin'
 user.profile.connect_with: 'İletişime geçiniz'
 user.profile.or_connect_with: 'ya da bağlan'
 user.profile.register: 'Kayı ol'
-user.profile.register_password_min_length.one: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
-user.profile.register_password_min_length.other: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
+user.profile.register_password_min_length:
+  one: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
+  other: 'Lütfen en az {{count}} karakterden oluşan bir parola girin{{count}}'
 user.profile.register_password_unused: 'Daha önce kullanmış olduğunuz bir parola kullanamazsınız'
 user.tickets.feedback_message_leave_comment: 'İsterseniz yorum bırakabilirsiniz.'
 user.tickets.fields_category: Kategori

@@ -83,8 +83,10 @@ portal.articles.section-desc: 'Cơ sở tri thức của chúng tôi có chứa 
 portal.articles.section-title: 'Kiến thức cơ bản'
 portal.articles.share-by-email: 'Chia sẻ bài báo này qua email:'
 portal.articles.view-as-agent: 'Bạn có thể xem trang này vì bạn là đại lý. Người dùng sẽ không thể xem trang này.'
-portal.articles.view-x-articles.other: 'Xem 1 bài viết '
-portal.articles.x-articles.other: '1 bài báo '
+portal.articles.view-x-articles:
+  other: 'Xem 1 bài viết '
+portal.articles.x-articles:
+  other: '1 bài báo '
 portal.chat.agent_blocked_user_on: '{{name}} đặt một khối vào {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} dường như bị ngắt kết nối'
 portal.chat.agent_typing_message: '{{agentName}} đang gõ tin nhắn'
@@ -129,7 +131,8 @@ portal.chat.list_chat: 'Trò chuyện'
 portal.chat.list_date: Ngày
 portal.chat.list_switch_to_my_chats: 'Chuyển sang Cuộc trò chuyện của tôi'
 portal.chat.list_switch_to_organization: 'Chuyển sang Tổ chức'
-portal.chat.list_title.other: '1 Trò chuyện '
+portal.chat.list_title:
+  other: '1 Trò chuyện '
 portal.chat.list_user: 'Người dùng'
 portal.chat.log_agents: 'Đại lý'
 portal.chat.log_chat_time: 'Tổng thời gian trò chuyện'
@@ -202,7 +205,8 @@ portal.downloads.section-desc: 'Duyệt qua bộ sưu tập của chúng tôi t�
 portal.downloads.section-title: 'Tải xuống'
 portal.downloads.uploaded-on: 'Đã tải lên'
 portal.downloads.view-as-agent: 'Bạn có thể xem trang này vì bạn là đại lý. Người dùng sẽ không thể xem trang này.'
-portal.downloads.view-x-files.other: 'Xem 1 lượt tải xuống '
+portal.downloads.view-x-files:
+  other: 'Xem 1 lượt tải xuống '
 portal.email_subjects.chat_transcript: 'Bản ghi trò chuyện'
 portal.email_subjects.comment-approved: 'Nhận xét của bạn đã được phê duyệt'
 portal.email_subjects.comment-confirmation: 'Cảm ơn lời bình luận của bạn'
@@ -250,13 +254,16 @@ portal.emails.comment_deleted: 'Nhận xét của bạn đã được sử dụn
 portal.emails.comment_thank-you: 'Cảm ơn vì nhận xét của bạn về {{link}}.'
 portal.emails.comment_validate-email: 'Vui lòng xác nhận địa chỉ email của bạn bằng cách nhấp vào liên kết sau:'
 portal.emails.do-not-reply: 'Xin đừng trả lơi thư này. Đây là thông điệp được tạo tự động và thư trả lời của chúng tôi sẽ không được đọc.'
-portal.emails.download-new-downloads.other: '1 Tải xuống mới '
-portal.emails.download-updated-downloads.other: '1 Cập nhật Tải xuống '
+portal.emails.download-new-downloads:
+  other: '1 Tải xuống mới '
+portal.emails.download-updated-downloads:
+  other: '1 Cập nhật Tải xuống '
 portal.emails.downloads-explain: 'Bạn nhận được email này vì bạn đã đăng ký bản cập nhật về các tải xuống có sẵn tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn các email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký nhận tất cả các thông báo tải xuống. </a>'
 portal.emails.email-too-big: 'Email của bạn "{{subject}}" đã không được chấp nhận vì nó quá lớn. Kích thước email tối đa mà bảng trợ giúp này chấp nhận là {{max_size}}. Xóa tệp đính kèm lớn và thử lại.'
 portal.emails.end_greeting: 'Kính trọng, <br /> <br /> {{site_name}}'
 portal.emails.feedback-explain: 'Bạn nhận được email này vì bạn đã đăng ký cập nhật về các mục phản hồi tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn các email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký nhận tất cả thông báo phản hồi. </a>'
-portal.emails.feedback-updated-items.other: '1 Cập nhật mục phản hồi '
+portal.emails.feedback-updated-items:
+  other: '1 Cập nhật mục phản hồi '
 portal.emails.feedback_agent-validation: 'Lưu ý rằng phản hồi của bạn sẽ không xuất hiện công khai trên cổng thông tin hỗ trợ của chúng tôi cho đến khi một trong những đại lý của chúng tôi chấp thuận.'
 portal.emails.feedback_approved: 'Chúng tôi muốn thông báo cho bạn biết rằng phản hồi của bạn đã được chấp thuận và bây giờ được hiển thị công khai trên cổng hỗ trợ của chúng tôi.'
 portal.emails.feedback_closed: 'Phản hồi đã gửi của bạn "{{title}}" đã bị đóng: {{status}}'
@@ -267,17 +274,22 @@ portal.emails.feedback_published: 'Phản hồi đã gửi của bạn "{{title}
 portal.emails.feedback_thank-you: 'Cảm ơn bạn đã gửi phản hồi "{{title}}"'
 portal.emails.feedback_updated: 'Phản hồi đã gửi của bạn "{{title}}" đã được cập nhật. Trạng thái mới của nó là "{{status}}"'
 portal.emails.feedback_validate-email: 'Vui lòng xác nhận địa chỉ email của bạn bằng cách nhấp vào liên kết sau:'
-portal.emails.feedback_votes.other: 'Phản hồi của bạn hiện có <strong>1</strong> phiếu bầu. Xem phản hồi của bạn trực tuyến tại: '
+portal.emails.feedback_votes:
+  other: 'Phản hồi của bạn hiện có <strong>1</strong> phiếu bầu. Xem phản hồi của bạn trực tuyến tại: '
 portal.emails.greeting: 'Kính gửi {{to_name}},'
 portal.emails.kb-explain: 'Bạn nhận được email này vì bạn đã đăng ký cập nhật về các bài viết về kiến ​​thức của chúng tôi tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn những email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký khỏi tất cả các thông báo về cơ sở tri thức. </a>'
-portal.emails.kb-new-articles.other: '1 Bài viết mới Kiến thức cơ bản '
-portal.emails.kb-updated-articles.other: '1 Bài thảo luận cập nhật '
+portal.emails.kb-new-articles:
+  other: '1 Bài viết mới Kiến thức cơ bản '
+portal.emails.kb-updated-articles:
+  other: '1 Bài thảo luận cập nhật '
 portal.emails.label_view-online: 'Xem trực tuyến'
 portal.emails.message-clipped: '(Tin nhắn đã được cắt bớt)'
 portal.emails.new-ticket-guest-link: 'Cảm ơn bạn đã liên hệ với chúng tôi. Bạn có thể xem trạng thái của vé trực tuyến tại đây:'
 portal.emails.news-explain: 'Bạn nhận được email này vì bạn đã đăng ký cập nhật về các mục phản hồi tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn các email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký nhận tất cả các thông báo mới. </a>'
-portal.emails.news-new-articles.other: '1 bài viết mới Đăng '
-portal.emails.news-updated-articles.other: '1 Cập nhật Tin tức Đăng '
+portal.emails.news-new-articles:
+  other: '1 bài viết mới Đăng '
+portal.emails.news-updated-articles:
+  other: '1 Cập nhật Tin tức Đăng '
 portal.emails.password_agent-reset: 'Một đại lý đã đặt lại mật khẩu tài khoản của bạn. Bạn có thể đăng nhập với những chi tiết này'
 portal.emails.password_reset: 'Bạn đã yêu cầu đặt lại mật khẩu. Để đặt lại mật khẩu, hãy nhấp vào liên kết dưới đây:'
 portal.emails.password_set: 'Để đặt mật khẩu của bạn, hãy nhấp vào liên kết dưới đây:'
@@ -314,7 +326,8 @@ portal.emails.ticket_rate-request: 'Bạn đánh giá mức hỗ trợ mà bạn
 portal.emails.ticket_received: 'Vé của bạn đã được nhận. Một trong những đại lý của chúng tôi sẽ trả lời bạn ngay.'
 portal.emails.ticket_reply-confirm: 'Cảm ơn bạn đã trả lời của bạn. Một trong những đại lý của chúng tôi sẽ trả lời bạn ngay.'
 portal.emails.ticket_validate: 'Cảm ơn bạn đã liên hệ với chúng tôi. <br /> <br /> Trước khi các đại lý của chúng tôi có thể đọc và trả lời thư của bạn, bạn phải xác nhận địa chỉ email của bạn.'
-portal.emails.tickets_ommitted.other: '1 tin nhắn bị bỏ qua '
+portal.emails.tickets_ommitted:
+  other: '1 tin nhắn bị bỏ qua '
 portal.emails.validate-email: 'Vui lòng xác nhận rằng địa chỉ email này là của bạn bằng cách nhấp vào liên kết bên dưới.'
 portal.emails.view_full_history_online: 'Xem toàn bộ vé trực tuyến'
 portal.error.403-desc: 'Xin lỗi, nhưng bạn không có quyền truy cập để xem trang này.'
@@ -359,7 +372,8 @@ portal.feedback.status_active: 'Các vật phẩm mở'
 portal.feedback.status_all: 'Tất cả món đồ'
 portal.feedback.status_closed: 'đóng mặt hàng'
 portal.feedback.submit_feedback: 'Gửi phản hồi'
-portal.feedback.view-x-feedback.other: 'Xem 1 phản hồi '
+portal.feedback.view-x-feedback:
+  other: 'Xem 1 phản hồi '
 portal.flashes.article_cat_subscribe: 'Bạn đã đăng ký thành công loại này. Bạn sẽ được thông báo khi bài viết mới được đăng.'
 portal.flashes.article_cat_unsubscribe: 'Bạn đã hủy đăng ký khỏi danh mục này.'
 portal.flashes.article_subscribe: 'Bạn đã đăng ký thành công bài báo này. Bạn sẽ được thông báo khi nó được cập nhật hoặc khi có một bình luận mới.'
@@ -427,11 +441,16 @@ portal.forms.error_no_uploaded_file: 'Không tìm thấy tệp tải lên. Vui l
 portal.forms.error_not_checked: 'Trường không được chọn.'
 portal.forms.error_password_current: 'Đây phải là mật khẩu hiện tại của bạn'
 portal.forms.error_password_forbid_reuse: 'Bạn không thể sử dụng mật khẩu mà bạn đã sử dụng trước đây'
-portal.forms.error_password_min_length.other: 'Tối thiểu {{count}} ký tự '
-portal.forms.error_password_require_num_lowercase.other: 'Ít nhất {{count}} ký tự thường '
-portal.forms.error_password_require_num_number.other: 'Ít nhất {{count}} số '
-portal.forms.error_password_require_num_symbol.other: 'Ít nhất {{count}} ký hiệu '
-portal.forms.error_password_require_num_uppercase.other: 'Ít nhất {{count}} ký tự hoa • Chẳng hạn {{count}} ký tự in hoa'
+portal.forms.error_password_min_length:
+  other: 'Tối thiểu {{count}} ký tự '
+portal.forms.error_password_require_num_lowercase:
+  other: 'Ít nhất {{count}} ký tự thường '
+portal.forms.error_password_require_num_number:
+  other: 'Ít nhất {{count}} số '
+portal.forms.error_password_require_num_symbol:
+  other: 'Ít nhất {{count}} ký hiệu '
+portal.forms.error_password_require_num_uppercase:
+  other: 'Ít nhất {{count}} ký tự hoa • Chẳng hạn {{count}} ký tự in hoa'
 portal.forms.error_person_not_agent: 'Người có nhận dạng {{value}} không phải là đại lý.'
 portal.forms.error_person_not_found: 'Không tìm thấy người có số nhận dạng "{{value}}".'
 portal.forms.error_person_not_user: 'Người có nhận dạng {{value}} không phải là người dùng.'
@@ -511,9 +530,11 @@ portal.general.btn-unsubscribe: 'Hủy đăng ký'
 portal.general.by: qua
 portal.general.by_2: Qua
 portal.general.comment_btn_save: 'Bình luận Tiết kiệm'
-portal.general.comments-count.other: '1 Thảo luận '
+portal.general.comments-count:
+  other: '1 Thảo luận '
 portal.general.comments-pending-validation: 'Nhận xét này đang được xem xét. Nó sẽ được hiển thị ngay'
-portal.general.comments-title.other: 'Nhận xét (1) '
+portal.general.comments-title:
+  other: 'Nhận xét (1) '
 portal.general.delete: 'Xóa bỏ'
 portal.general.everything: 'Mọi điều'
 portal.general.get-in-touch: 'Liên lạc'
@@ -602,10 +623,12 @@ portal.news.recent-title: 'Tin tức gần đây'
 portal.news.search-title: 'Những bài báo thời sự'
 portal.news.section-title: 'Tin tức'
 portal.news.view-as-agent: 'Bạn có thể xem trang này vì bạn là đại lý. Người dùng sẽ không thể xem trang này.'
-portal.news.view-x-news.other: 'Xem 1 bài viết '
+portal.news.view-x-news:
+  other: 'Xem 1 bài viết '
 portal.sidebar.agents_available: 'Các nhân viên có sẵn'
 portal.sidebar.agents_none: 'Không có đại lý của chúng tôi đang trực tuyến ngay bây giờ. Bạn vẫn có thể <a href="{{new_ticket_url}}"> mở một vé </a>.'
-portal.sidebar.agents_x_online.other: '{{count}} trực tuyến'
+portal.sidebar.agents_x_online:
+  other: '{{count}} trực tuyến'
 portal.sidebar.article_posted_by: 'Đăng bởi {{name}}'
 portal.sidebar.news_title: 'Tin tức'
 portal.sidebar.satisfied_customers: 'khách hàng hài lòng'
@@ -631,7 +654,8 @@ portal.tickets.list_no_tickets: 'Không có vé để hiển thị trong tab nà
 portal.tickets.list_search: 'Tìm kiếm trong Vé:'
 portal.tickets.list_status_agent: 'Đại lý của chúng tôi sẽ đáp ứng'
 portal.tickets.list_status_open: 'Mở Vé'
-portal.tickets.list_status_open_count.other: '{{count}} Đang chờ phản hồi'
+portal.tickets.list_status_open_count:
+  other: '{{count}} Đang chờ phản hồi'
 portal.tickets.list_status_resolved: 'Giải quyết'
 portal.tickets.list_status_user: 'Bạn cần phản hồi'
 portal.tickets.list_subject: 'Môn học'
@@ -727,7 +751,8 @@ user.chat.log_created-date: 'Tạo {{date}}'
 user.chat.log_fields_agent: 'Đặc vụ'
 user.chat.log_fields_department: 'Bộ phận'
 user.chat.log_message_author-you: Bạn
-user.chat.log_nav-view-chats.other: 'Xem nhật ký trò chuyện mới nhất của bạn '
+user.chat.log_nav-view-chats:
+  other: 'Xem nhật ký trò chuyện mới nhất của bạn '
 user.chat.log_no_department: 'Không có phòng'
 user.chat.log_unassigned: 'Không có đại lý được chỉ định'
 user.chat.message_agent-timeout: 'Lời xin lỗi của chúng tôi; {{name}} dường như bị ngắt kết nối. Vui lòng chờ trong khi chúng tôi cố gắng tìm một đại lý khác.'
@@ -813,12 +838,15 @@ user.emails.chat_validate_email: 'Vui lòng xác nhận địa chỉ email của
 user.emails.comment_approved: 'Cảm nhận của bạn đã được xuất bản.'
 user.emails.comment_deleted: 'Nhận xét của bạn đã được sử dụng để cải tiến trang này.'
 user.emails.comment_thank-you: 'Cảm ơn vì nhận xét của bạn về {{link}}.'
-user.emails.download-new-downloads.other: '1 Tải xuống mới '
-user.emails.download-updated-downloads.other: '1 Cập nhật Tải xuống '
+user.emails.download-new-downloads:
+  other: '1 Tải xuống mới '
+user.emails.download-updated-downloads:
+  other: '1 Cập nhật Tải xuống '
 user.emails.downloads-explain: 'Bạn nhận được email này vì bạn đã đăng ký tải xuống của chúng tôi tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn những email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký nhận tất cả các thông báo tải xuống. </a>'
 user.emails.email-too-big: 'Email của bạn "{{subject}}" đã không được chấp nhận vì nó quá lớn. Kích thước email tối đa là {{max_size}}. Xóa bất kỳ tệp đính kèm nào và thử lại.'
 user.emails.feedback-explain: 'Bạn nhận được email này vì bạn đã đăng ký tin tức của chúng tôi tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn những email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký nhận tất cả thông báo phản hồi. </a>'
-user.emails.feedback-updated-items.other: '1 Cập nhật mục phản hồi '
+user.emails.feedback-updated-items:
+  other: '1 Cập nhật mục phản hồi '
 user.emails.feedback_agent-validation: 'Xin lưu ý rằng phản hồi của bạn sẽ không xuất hiện công khai cho đến khi một trong các đại lý của chúng tôi đánh giá nó'
 user.emails.feedback_approved: 'Chúng tôi muốn thông báo cho bạn biết rằng phản hồi của bạn đã được chấp thuận và bây giờ được hiển thị công khai trên trang của chúng tôi.'
 user.emails.feedback_closed: 'Phản hồi đã gửi của bạn "{{title}}" đã bị đóng: {{status}}'
@@ -828,17 +856,22 @@ user.emails.feedback_new-comment: '{{name}} đã đăng một nhận xét mới:
 user.emails.feedback_published: 'Phản hồi đã gửi của bạn "{{title}}" đã được xác nhận và bây giờ sẽ xuất hiện trên trang web của chúng tôi.'
 user.emails.feedback_thank-you: 'Cảm ơn bạn đã gửi phản hồi "{{title}}"'
 user.emails.feedback_updated: 'Phản hồi đã gửi của bạn "{{title}}" đã được cập nhật. Trạng thái của nó bây giờ là: trạng thái mới "{{status}}"'
-user.emails.feedback_votes.other: 'Phản hồi của bạn hiện có <strong>1</strong> phiếu bầu. Xem phản hồi của bạn trực tuyến tại: '
+user.emails.feedback_votes:
+  other: 'Phản hồi của bạn hiện có <strong>1</strong> phiếu bầu. Xem phản hồi của bạn trực tuyến tại: '
 user.emails.greeting: 'Kính gửi {{to_name}},'
 user.emails.kb-explain: 'Bạn nhận được email này vì bạn đã đăng ký với cơ sở kiến ​​thức của chúng tôi tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn những email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký khỏi tất cả các thông báo về cơ sở tri thức. </a>'
-user.emails.kb-new-articles.other: '1 Bài viết mới '
-user.emails.kb-updated-articles.other: '1 Cập nhật Điều {{count}} Các bài báo cập nhật'
+user.emails.kb-new-articles:
+  other: '1 Bài viết mới '
+user.emails.kb-updated-articles:
+  other: '1 Cập nhật Điều {{count}} Các bài báo cập nhật'
 user.emails.label_view-online: 'Xem trực tuyến'
 user.emails.message-clipped: '(Tin nhắn đã được cắt bớt)'
 user.emails.new-ticket-guest-link: 'Cảm ơn bạn đã liên hệ với chúng tôi. Bạn có thể xem trạng thái của vé trực tuyến tại đây:'
 user.emails.news-explain: 'Bạn nhận được email này vì bạn đã đăng ký tin tức của chúng tôi tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn những email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký nhận tất cả thông báo phản hồi. </a>'
-user.emails.news-new-articles.other: '1 Tin mới Bài báo '
-user.emails.news-updated-articles.other: '1 Cập nhật tin bài Điều {{count}} Đã cập nhật bài báo'
+user.emails.news-new-articles:
+  other: '1 Tin mới Bài báo '
+user.emails.news-updated-articles:
+  other: '1 Cập nhật tin bài Điều {{count}} Đã cập nhật bài báo'
 user.emails.password_agent-reset: 'Một đại lý đã đặt lại mật khẩu tài khoản của bạn. Bạn có thể đăng nhập với những chi tiết này'
 user.emails.password_reset: 'Bạn đã yêu cầu đặt lại mật khẩu. Để đặt lại mật khẩu, hãy nhấp vào liên kết dưới đây:'
 user.emails.password_set: 'Để đặt mật khẩu của bạn, hãy nhấp vào liên kết dưới đây:'
@@ -875,14 +908,18 @@ user.error.error_code: 'Mã lỗi'
 user.error.error_title: Lỗi
 user.error.expired-token: 'Trang bạn đang cố truy cập đã hết hạn. Hãy quay trở lại và thử lại.'
 user.error.form_choice_invalid: 'Vui lòng chọn một tùy chọn từ danh sách'
-user.error.form_choice_max.other: 'Vui lòng chọn tối đa 1 tùy chọn '
-user.error.form_choice_min.other: 'Vui lòng chọn ít nhất 1 tùy chọn '
+user.error.form_choice_max:
+  other: 'Vui lòng chọn tối đa 1 tùy chọn '
+user.error.form_choice_min:
+  other: 'Vui lòng chọn ít nhất 1 tùy chọn '
 user.error.form_date_invalid: 'Vui lòng nhập ngày hợp lệ'
 user.error.form_date_invalid_dow: 'Không cho phép ngày tuần bạn chọn'
 user.error.form_date_invalid_range: 'Ngày bạn chọn không nằm trong phạm vi cho phép'
 user.error.form_required: 'Lĩnh vực này là bắt buộc'
-user.error.form_text_max.other: 'Vui lòng nhập tối đa 1 ký tự '
-user.error.form_text_min.other: 'Vui lòng nhập ít nhất 1 ký tự '
+user.error.form_text_max:
+  other: 'Vui lòng nhập tối đa 1 ký tự '
+user.error.form_text_min:
+  other: 'Vui lòng nhập ít nhất 1 ký tự '
 user.error.form_text_regex: 'Vui lòng nhập đúng giá trị'
 user.error.invalid_email: 'địa chỉ email không hợp lệ'
 user.error.invalid_email-code: 'Liên kết xác nhận có vẻ không hợp lệ.'
@@ -927,11 +964,16 @@ user.profile.choose_email: 'Chọn địa chỉ email bạn muốn sử dụng'
 user.profile.connect_with: 'Kết nối với'
 user.profile.or_connect_with: 'Hoặc kết nối với'
 user.profile.register: 'Trình diện'
-user.profile.register_password_min_length.other: 'Tối thiểu {{count}} ký tự '
-user.profile.register_password_require_num_lowercase.other: 'Ít nhất {{count}} ký tự thường '
-user.profile.register_password_require_num_number.other: 'Ít nhất {{count}} số '
-user.profile.register_password_require_num_symbol.other: 'Ít nhất {{count}} ký hiệu '
-user.profile.register_password_require_num_uppercase.other: 'Ít nhất {{count}} ký tự hoa • Chẳng hạn {{count}} ký tự in hoa'
+user.profile.register_password_min_length:
+  other: 'Tối thiểu {{count}} ký tự '
+user.profile.register_password_require_num_lowercase:
+  other: 'Ít nhất {{count}} ký tự thường '
+user.profile.register_password_require_num_number:
+  other: 'Ít nhất {{count}} số '
+user.profile.register_password_require_num_symbol:
+  other: 'Ít nhất {{count}} ký hiệu '
+user.profile.register_password_require_num_uppercase:
+  other: 'Ít nhất {{count}} ký tự hoa • Chẳng hạn {{count}} ký tự in hoa'
 user.profile.register_password_unused: 'Bạn không thể sử dụng mật khẩu mà bạn đã sử dụng trước đây'
 user.tickets.feedback_message_leave_comment: 'Tùy chọn để lại nhận xét'
 user.tickets.fields_category: 'Thể loại'

@@ -5,8 +5,9 @@ agent.chat.chat_history: 'História do Chat'
 agent.chat.chat_started_by: 'Chat iniciado por'
 agent.chat.chat_transcript: 'Cópia do Chat'
 agent.chat.chat_with_x: 'Chat com {{name}}'
-agent.chat.count_seconds.one: '{{count}} segund'
-agent.chat.count_seconds.other: '{{count}} segundos'
+agent.chat.count_seconds:
+  one: '{{count}} segund'
+  other: '{{count}} segundos'
 agent.chat.filter_title_assigned: 'Chat atribuido'
 agent.chat.filter_title_mine: 'Meus Chats'
 agent.chat.filter_title_missed: 'Chats Perdidas'
@@ -20,8 +21,9 @@ agent.chat.label_assigned_others: 'Outros agentes noutro chat'
 agent.chat.leave_chat_confirm: 'Tem a certeza que quer deixar deste chat?'
 agent.chat.leave_end: 'Terminar chat e sair'
 agent.chat.leave_unassign: 'Não atribuir a mim e sair'
-agent.chat.list_title.one: '1 Conversa'
-agent.chat.list_title.other: '{{count}} Conversas'
+agent.chat.list_title:
+  one: '1 Conversa'
+  other: '{{count}} Conversas'
 agent.chat.msg_agent_timeout: '{{agent_name}}  expirou'
 agent.chat.msg_assigned_agent: 'Chat atribuído a {{agent_name}}'
 agent.chat.msg_part_joined: '{{person_name}} entrou'
@@ -254,8 +256,9 @@ agent.twitter.associated_people: 'Pessoas Associadas'
 agent.twitter.char_remaining: '{{num_chars}} restantes'
 agent.twitter.characters: carácter
 agent.twitter.corresponding_twitter_account: 'Conta do Twitter correspondente'
-agent.twitter.count_selected.one: '{{count}} seleccioando'
-agent.twitter.count_selected.other: '{{count}} seleccioando'
+agent.twitter.count_selected:
+  one: '{{count}} seleccioando'
+  other: '{{count}} seleccioando'
 agent.twitter.delete-search-confirm: 'Tem a certeza que pretende apagar esta busca?'
 agent.twitter.direct: Directo
 agent.twitter.direct_messages: 'Mensagens Directas'
@@ -270,8 +273,9 @@ agent.twitter.from_account: 'De Conta'
 agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'Em resposta de'
 agent.twitter.interactions: Interacções
-agent.twitter.list_title.one: '1 Tweet'
-agent.twitter.list_title.other: '{{count}} Tweets'
+agent.twitter.list_title:
+  one: '1 Tweet'
+  other: '{{count}} Tweets'
 agent.twitter.location: Localização
 agent.twitter.long: Longo
 agent.twitter.mentions: Menções
@@ -317,8 +321,9 @@ agent.userchat.ended_by_reason: 'Conversa terminada por {{name}}: {{reason}}'
 agent.userchat.ended_user: 'Conversa terminada por utilizador'
 agent.userchat.full_message: 'Mensagem Completa'
 agent.userchat.ident_unconfirmed: 'Identidade não confirmada, email ainda não foi validado'
-agent.userchat.list_title.one: '1 Conversa'
-agent.userchat.list_title.other: '{{count}} Conversas'
+agent.userchat.list_title:
+  one: '1 Conversa'
+  other: '{{count}} Conversas'
 agent.userchat.message_agent-timeout: '{{name}} não está respondendo. Por favor aguarde enquanto tentamos encontrar outro Agente.'
 agent.userchat.message_assigned: 'Conversa atribuído a {{name}}'
 agent.userchat.message_ended: 'Conversa terminada'

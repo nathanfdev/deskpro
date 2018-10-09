@@ -5,8 +5,9 @@ agent.chat.chat_history: 'Beszélgetés előzményei'
 agent.chat.chat_started_by: 'A beszélgetést kezdte'
 agent.chat.chat_transcript: 'A beszélgetés átirata'
 agent.chat.chat_with_x: 'Beszélgetés {{name}} nevű ügyintézővel/érdeklődővel'
-agent.chat.count_seconds.one: '{{count}} másodperc'
-agent.chat.count_seconds.other: '{{count}} másodperc'
+agent.chat.count_seconds:
+  one: '{{count}} másodperc'
+  other: '{{count}} másodperc'
 agent.chat.filter_title_assigned: 'Kijelölt beszélgetések'
 agent.chat.filter_title_mine: Beszélgetéseim
 agent.chat.filter_title_missed: 'Elmulasztott beszélgetések'
@@ -20,8 +21,9 @@ agent.chat.label_assigned_others: 'További ügyintézők ebben a beszélgetésb
 agent.chat.leave_chat_confirm: 'Biztosan ki akar lépni ebből a beszélgetésből?'
 agent.chat.leave_end: 'Beszélgetés befejezése és kilépés'
 agent.chat.leave_unassign: 'Saját magam eltávolítása és kilépés'
-agent.chat.list_title.one: '1 Beszélgetés'
-agent.chat.list_title.other: '{{count}} Beszélgetés'
+agent.chat.list_title:
+  one: '1 Beszélgetés'
+  other: '{{count}} Beszélgetés'
 agent.chat.msg_agent_timeout: '{{agent_name}} időtúllépés miatt eltávolítva'
 agent.chat.msg_assigned_agent: 'A beszélgetéshez kijelölt ügyintéző: {{agent_name}}'
 agent.chat.msg_part_joined: '{{person_name}} csatlakozott a beszélgetéshez'
@@ -65,14 +67,17 @@ agent.chrome.chat_list_heading_current-page: 'Jelenlegi oldal'
 agent.chrome.chat_list_heading_time: Idő
 agent.chrome.chat_list_heading_user: Felhasználó
 agent.chrome.chat_list_no-online-users: 'Nincs online felhasználó'
-agent.chrome.chat_list_online-users.one: '<span class="count-online-users">1</span> online felhasználó'
-agent.chrome.chat_list_online-users.other: '<span class="count-online-users">{{count}}</span> online felhasználó'
+agent.chrome.chat_list_online-users:
+  one: '<span class="count-online-users">1</span> online felhasználó'
+  other: '<span class="count-online-users">{{count}}</span> online felhasználó'
 agent.chrome.chat_logged-in: 'Beszélgetésre bejelentkezve'
 agent.chrome.chat_logged-out: 'Beszélgetésből kijelentkezve'
-agent.chrome.chat_online-agents.one: '<span class="userchat-online-agents-count">{{count}}</span> ügyintéző'
-agent.chrome.chat_online-agents.other: '<span class="userchat-online-agents-count">{{count}}</span> ügyintéző'
-agent.chrome.chat_online-users.one: '<span class="userchat-online-users-count">{{count}}</span> felhasználó'
-agent.chrome.chat_online-users.other: '<span class="userchat-online-users-count">{{count}}</span> felhasználó'
+agent.chrome.chat_online-agents:
+  one: '<span class="userchat-online-agents-count">{{count}}</span> ügyintéző'
+  other: '<span class="userchat-online-agents-count">{{count}}</span> ügyintéző'
+agent.chrome.chat_online-users:
+  one: '<span class="userchat-online-users-count">{{count}}</span> felhasználó'
+  other: '<span class="userchat-online-users-count">{{count}}</span> felhasználó'
 agent.chrome.chat_sign-in: 'Bejelentkezés beszélgetéshez'
 agent.chrome.chat_sign-out: 'Kijelentkezés beszélgetésből'
 agent.chrome.create_new-article: 'Új cikk'
@@ -126,8 +131,9 @@ agent.chrome.quicksearch_title-publish: Publikálás
 agent.chrome.quicksearch_title-tickets: Jegyek
 agent.chrome.recent_list-filter-info: 'A legutóbbi találatok szűrése'
 agent.chrome.recent_list-none: 'Ön még nem nyitott meg új fület'
-agent.chrome.search-show-more.one: 'További {{count}} mutatása'
-agent.chrome.search-show-more.other: 'További {{count}} mutatása'
+agent.chrome.search-show-more:
+  one: 'További {{count}} mutatása'
+  other: 'További {{count}} mutatása'
 agent.defaults.default_style: 'Alapértelmezett stílus'
 agent.defaults.team_lvl1_support: '1. szintű támogató'
 agent.defaults.team_lvl2_support: '2. szintű támogató'
@@ -193,8 +199,9 @@ agent.emails.person_replied: '{{name}} válaszolt az alábbi üzenetre "{{subjec
 agent.emails.referring_page: 'Vonatkozó oldal'
 agent.emails.reply_above_line: 'VÁLASZ FENT'
 agent.emails.reply_is_as_note: 'Válaszát belső ügyintézői megjegyzésként adtuk hozzá'
-agent.emails.reply_sent_to_ccs.one: 'és {{count}} további címzett felhasználó:'
-agent.emails.reply_sent_to_ccs.other: 'és {{count}} további címzett felhasználó:'
+agent.emails.reply_sent_to_ccs:
+  one: 'és {{count}} további címzett felhasználó:'
+  other: 'és {{count}} további címzett felhasználó:'
 agent.emails.reply_sent_to_user: 'Válaszát elküldjük a következő felhasználónak {{user}}'
 agent.emails.subject_email_change_merge: 'Email változás és fiók összevonás megerősítése'
 agent.emails.subject_error_forwarded_email: 'Hiba az Ön által továbbított emaillel: {{subject}}'
@@ -244,8 +251,9 @@ agent.feedback.any_status: 'Bármely státusz'
 agent.feedback.count_votes: '{{display_count}} értékelés|{{display_count}} értékelés'
 agent.feedback.feedback_deleted: 'Ez a visszajelzés törölve lett'
 agent.feedback.least_voted_on_top: 'A legkevesebbet értékelt legfelül'
-agent.feedback.list_title.one: '1 benyújtás'
-agent.feedback.list_title.other: '{{count}} benyújtás'
+agent.feedback.list_title:
+  one: '1 benyújtás'
+  other: '{{count}} benyújtás'
 agent.feedback.merge_feedback: 'Visszajelzések összevonása'
 agent.feedback.merge_feedback_note: 'Az összevont visszajelzés leírása hozzászólásként lesz hozzáadva a megtartott visszajelzéshez.'
 agent.feedback.merge_feedback_submit: 'Vonja össze ezen két visszajelzés benyújtását'
@@ -406,12 +414,15 @@ agent.general.copy_permalink: 'Permalink másolása'
 agent.general.copy_to_clipboard: 'Másolás a vágóasztalra'
 agent.general.copy_url: 'URL másolása'
 agent.general.count: Számláló
-agent.general.count_chat.one: '1 Beszélgetés'
-agent.general.count_chat.other: '{{count}} Beszélgetés'
-agent.general.count_tickets.one: '1 jegy'
-agent.general.count_tickets.other: '{{count}} jegy'
-agent.general.count_votecount_votes.one: '1 szavazat'
-agent.general.count_votecount_votes.other: '{{count}} szavazat'
+agent.general.count_chat:
+  one: '1 Beszélgetés'
+  other: '{{count}} Beszélgetés'
+agent.general.count_tickets:
+  one: '1 jegy'
+  other: '{{count}} jegy'
+agent.general.count_votecount_votes:
+  one: '1 szavazat'
+  other: '{{count}} szavazat'
 agent.general.countries: Országok
 agent.general.create: Létrehoz
 agent.general.create_a_new_organization: 'Új szervezet létrehozása'
@@ -961,10 +972,12 @@ agent.general.value: Érték
 agent.general.verified: Megerősítve
 agent.general.via: által
 agent.general.view: Nézet
-agent.general.view_all_x_chats.one: '1 beszélgetés megtekintése'
-agent.general.view_all_x_chats.other: 'Összes beszélgetés {{count}} megtekintése'
-agent.general.view_all_x_tickets.one: '1 jegy megtekintése'
-agent.general.view_all_x_tickets.other: 'Összes jegy {{count}} megtekintése'
+agent.general.view_all_x_chats:
+  one: '1 beszélgetés megtekintése'
+  other: 'Összes beszélgetés {{count}} megtekintése'
+agent.general.view_all_x_tickets:
+  one: '1 jegy megtekintése'
+  other: 'Összes jegy {{count}} megtekintése'
 agent.general.view_in_user_interface: 'Megtekintés a felhasználói felületen'
 agent.general.view_more: 'Továbbiak megtekintése'
 agent.general.view_profile: 'profil megtekintése'
@@ -983,8 +996,9 @@ agent.general.workflows: Munkafolyamatok
 agent.general.working_hours: Munkaórák
 agent.general.x_after_y: '{{field}} {{value}} után'
 agent.general.x_before_y: '{{field}} {{value}} előtt'
-agent.general.x_down_votes.one: '1 leértékelő szavazat'
-agent.general.x_down_votes.other: '{{count}} leértékelő szavazat'
+agent.general.x_down_votes:
+  one: '1 leértékelő szavazat'
+  other: '{{count}} leértékelő szavazat'
 agent.general.x_include_y: '{{field}} beleértve {{value}}'
 agent.general.x_is_between_y_and_z: '{{field}} {{value1}} és {{value2}} között'
 agent.general.x_is_greater_than_y: '{{field}} nagyobb mint {{value}}'
@@ -993,8 +1007,9 @@ agent.general.x_is_not_y: '{{field}} nem {{value}}'
 agent.general.x_is_y: '{{field}} azonos {{value}}'
 agent.general.x_not_include_y: '{{field}} nem beleértve {{value}}'
 agent.general.x_selected: '{{num_placeholder}} kiválasztva'
-agent.general.x_up_votes.one: '1 szavazat'
-agent.general.x_up_votes.other: '{{count}} szavazat'
+agent.general.x_up_votes:
+  one: '1 szavazat'
+  other: '{{count}} szavazat'
 agent.general.years: év
 agent.general.your_email_address: 'Az Ön email címe'
 agent.general.your_teams: 'Az Ön csoportjai'
@@ -1106,19 +1121,23 @@ agent.organizations.create_organization: 'Szervezet létrehozása'
 agent.organizations.email_domain_assoc: 'Email Domain párosítás'
 agent.organizations.email_domain_assoc_add: 'Új domain hozzáadása'
 agent.organizations.email_domain_assoc_explain: 'Az ezt a domaint tartalmazó email címek felhasználói automatikusan hozzá lesznek rendelve ehhez a szervezethez.'
-agent.organizations.email_domain_assoc_move.one: '1 felhasználó hozzárendelése'
-agent.organizations.email_domain_assoc_move.other: '{{count}} felhasználó hozzárendelése'
-agent.organizations.email_domain_assoc_move_all.one: '1 felhasználó hozzárendelése, aki már egy másik szervezethez tartozik'
-agent.organizations.email_domain_assoc_move_all.other: '{{count}} felhasználó hozzárendelése, aki már egy másik szervezethez tartozik'
+agent.organizations.email_domain_assoc_move:
+  one: '1 felhasználó hozzárendelése'
+  other: '{{count}} felhasználó hozzárendelése'
+agent.organizations.email_domain_assoc_move_all:
+  one: '1 felhasználó hozzárendelése, aki már egy másik szervezethez tartozik'
+  other: '{{count}} felhasználó hozzárendelése, aki már egy másik szervezethez tartozik'
 agent.organizations.email_domain_assoc_none: 'Email domain beállítása felhasználók automatikus hozzárendeléséért ehhez a szervezethez.'
 agent.organizations.email_domain_assoc_remove: 'Email domain eltávolítása'
-agent.organizations.email_domain_assoc_remove_users.one: 'Email domain eltávolítása és 1 felhasználó eltávolítása ettől a szervezettől'
-agent.organizations.email_domain_assoc_remove_users.other: 'Email domain eltávolítása és {{count}} felhasználó eltávolítása ettől a szervezettől'
+agent.organizations.email_domain_assoc_remove_users:
+  one: 'Email domain eltávolítása és 1 felhasználó eltávolítása ettől a szervezettől'
+  other: 'Email domain eltávolítása és {{count}} felhasználó eltávolítása ettől a szervezettől'
 agent.organizations.email_domain_assoc_title: 'Email Domain hozzárendelése ehhez a személyhez {{name}}'
 agent.organizations.enter_position: 'Pozíció megadása'
 agent.organizations.is_empty: 'Ennek a szervezetnek nincsenek tagjai.'
-agent.organizations.list_title.one: '1 szervezet'
-agent.organizations.list_title.other: '{{count}} szervezet'
+agent.organizations.list_title:
+  one: '1 szervezet'
+  other: '{{count}} szervezet'
 agent.organizations.no_slas: 'Ehhez a szervezethez nem lesz automatikusan SLA hozzárendelve.'
 agent.organizations.org_manager_click_to_remove: 'Szervezeti menedzser. Kattintson az eltávolításhoz.'
 agent.people.act_reg: 'Regisztrált egy fiókot'
@@ -1142,8 +1161,9 @@ agent.people.confirm_remove_email: 'Biztosan el akarja távolítani ezt az email
 agent.people.confirm_remove_phone: 'Biztosan el akarja távolítani ezt a telefonszámot?'
 agent.people.contact_info: Kapcsolat
 agent.people.contact_info_for_x: 'Kapcsolat ehhez a személyhez {{name}}'
-agent.people.count_members.one: '{{count}} tag'
-agent.people.count_members.other: '{{count}} tag'
+agent.people.count_members:
+  one: '{{count}} tag'
+  other: '{{count}} tag'
 agent.people.create_person: 'Személy létrehozása'
 agent.people.creation_by: Létrehozta
 agent.people.delete_user: 'Felhasználó törlése'
@@ -1158,8 +1178,9 @@ agent.people.enter_name_here: 'Név megadása itt'
 agent.people.find_person: 'Személy megtalálása'
 agent.people.im_account_placeholder: 'Fiók felhasználóneve'
 agent.people.is_agent: 'Egy ügyintéző'
-agent.people.list_title.one: '1 személy'
-agent.people.list_title.other: '{{count}} személy'
+agent.people.list_title:
+  one: '1 személy'
+  other: '{{count}} személy'
 agent.people.login_as_user: 'Belépés felhasználóként'
 agent.people.make_primary_email: 'elsődlegessé tétel'
 agent.people.manager: Menedzser
@@ -1229,8 +1250,9 @@ agent.publish.change_category: 'Kategória váltása'
 agent.publish.click_to_set_date: '(kattintson a dátum beállításához)'
 agent.publish.comment_by: '{{name}} hozzászólása'
 agent.publish.comment_requires_validation: 'Ezt a hozzászólást hitelesíteni kell'
-agent.publish.comments_list_title.one: '1 hozzászólás'
-agent.publish.comments_list_title.other: '{{count}} hozzászólás'
+agent.publish.comments_list_title:
+  one: '1 hozzászólás'
+  other: '{{count}} hozzászólás'
 agent.publish.comments_to_validate: 'Átnézésre váró hozzászólások'
 agent.publish.compare_selected: 'Kiválasztottak összehasonlítása'
 agent.publish.create_artilce: 'Cikk létrehozása'
@@ -1247,32 +1269,38 @@ agent.publish.download_specify_filesize: 'Meghatározhatja a kijelzésre kerül�
 agent.publish.download_specify_url: 'Írja be a fájlhoz tartozó teljes URL-t. A "Letöltés" gombra kattintó felhasználó erre az URL-re lesz irányítva'
 agent.publish.download_upload_btn: 'Fájl feltöltése'
 agent.publish.downloads_highest_lowest: 'Letöltések száma (magas-alacsony)'
-agent.publish.downloads_list_title.one: '1 letöltés'
-agent.publish.downloads_list_title.other: '{{count}} letöltés'
+agent.publish.downloads_list_title:
+  one: '1 letöltés'
+  other: '{{count}} letöltés'
 agent.publish.downloads_lowest_highest: 'Letöltések száma (alacsony-magas)'
 agent.publish.draft_content: Vázlataim
 agent.publish.draft_revision: Változtatás
-agent.publish.drafts_list_title.one: '1 vázlat'
-agent.publish.drafts_list_title.other: '{{count}} vázlat'
+agent.publish.drafts_list_title:
+  one: '1 vázlat'
+  other: '{{count}} vázlat'
 agent.publish.drop_file_to_add: 'A bejegyzéshez való hozzáadáshoz húzza át ide a fájlt'
 agent.publish.edit_category_btn: 'Kategória szerkesztése'
 agent.publish.edit_new_glossary: 'Szójegyzék szerkesztése'
 agent.publish.error_kb_cats_same: 'A kategóriák egyformák.'
-agent.publish.error_kb_missing.one: '{{count}} cikk nem található.'
-agent.publish.error_kb_missing.other: '{{count}} cikk nem található.'
+agent.publish.error_kb_missing:
+  one: '{{count}} cikk nem található.'
+  other: '{{count}} cikk nem található.'
 agent.publish.error_kb_not_in_db: 'Kategória nem található.'
-agent.publish.error_kb_perm_denied.one: '{{count}} hozzáférési hiba.'
-agent.publish.error_kb_perm_denied.other: '{{count}} hozzáférési hiba.'
+agent.publish.error_kb_perm_denied:
+  one: '{{count}} hozzáférési hiba.'
+  other: '{{count}} hozzáférési hiba.'
 agent.publish.error_kb_unaffected: 'Néhány cikkre ez nem volt hatással:'
 agent.publish.event_time_ago_at_when: '{{ago}} az alábbi napon {{date}}'
 agent.publish.event_time_ago_by_who_at_when: '{{ago}} {{name}} által az alábbi napon {{date}}'
 agent.publish.for_ticket: Jegyhez
 agent.publish.glossary: Szójegyzék
 agent.publish.helpful: Hasznos
-agent.publish.kb_list_title.one: '1 cikk'
-agent.publish.kb_list_title.other: '{{count}} cikk'
-agent.publish.kb_list_unique_title.one: '1 egyedi cikk'
-agent.publish.kb_list_unique_title.other: '{{count}} egyedi cikk'
+agent.publish.kb_list_title:
+  one: '1 cikk'
+  other: '{{count}} cikk'
+agent.publish.kb_list_unique_title:
+  one: '1 egyedi cikk'
+  other: '{{count}} egyedi cikk'
 agent.publish.label_new_file: 'Új fájl'
 agent.publish.label_old_file: 'Régi fájl'
 agent.publish.missing_translation: 'Hiányzó fordítás'
@@ -1283,8 +1311,9 @@ agent.publish.new_comment_submitted_by: '{{name}} új hozzászólást nyújtott 
 agent.publish.new_feedback_by: '{{name}} új visszajelzést küldött'
 agent.publish.new_post: 'Új bejegyzés'
 agent.publish.news_comments: 'Új hozzászólás'
-agent.publish.news_list_title.one: '1 bejegyzés'
-agent.publish.news_list_title.other: '{{count}} bejegyzés'
+agent.publish.news_list_title:
+  one: '1 bejegyzés'
+  other: '{{count}} bejegyzés'
 agent.publish.no_changes: 'A két felülvizsgálat között nincs különbség'
 agent.publish.no_downlod_cats_error: 'Nincsenek meghatározott kategóriák. Mielőtt a "Letöltésekhez" fájlokat ad hozzá, meg kell határoznia egy kategóriát.'
 agent.publish.no_kb_cats_error: 'Nincsenek meghatározott kategóriák. Mielőtt a "Tudástárhoz" cikkeket ad hozzá, meg kell határoznia egy kategóriát.'
@@ -1322,8 +1351,9 @@ agent.publish.status_published: Publikálva
 agent.publish.sticky_words_title: Keresőszavak
 agent.publish.untranslated_articles: 'Le nem fordított cikkek'
 agent.publish.validating_comment_manage_tip: 'A hozzászólás hitelesítésre vár. Kattintson a kezeléshez'
-agent.publish.validating_list_title.one: '1 hitelesítés folyamatban'
-agent.publish.validating_list_title.other: '{{count}} hitelesítés folyamatban'
+agent.publish.validating_list_title:
+  one: '1 hitelesítés folyamatban'
+  other: '{{count}} hitelesítés folyamatban'
 agent.publish.view_count: 'Számláló megtekintése'
 agent.publish.view_count_highest_lowest: 'Számláló megtekintése (magas-alacsony)'
 agent.publish.view_count_lowest_highest: 'Számláló megtekintése (alacsony-magas)'
@@ -1487,8 +1517,9 @@ agent.tasks.due_in_future: 'Határidő a jövőben'
 agent.tasks.due_today: 'Határidő napja'
 agent.tasks.enter_your_comment: 'Írja ide a hozzászólását...'
 agent.tasks.linked_ticket: 'Idekapcsolt jegy'
-agent.tasks.list_title.one: '1 feladat'
-agent.tasks.list_title.other: '{{count}} feladat'
+agent.tasks.list_title:
+  one: '1 feladat'
+  other: '{{count}} feladat'
 agent.tasks.my_tasks: 'Az én feladataim'
 agent.tasks.my_teams: 'Az én csoportomé'
 agent.tasks.my_teamstasks: 'Az én csoportom feladatai'
@@ -1555,10 +1586,12 @@ agent.tickets.close_tab_after_reply: 'Ezen ügyintézési fül bezárása a vál
 agent.tickets.close_tab_tip: 'Ezen fül bezárása az üzenet mentése után'
 agent.tickets.coment_after_ticket_created: 'hozzászólás a jegy létrehozása után'
 agent.tickets.commented_on: 'Hozzászólás itt'
-agent.tickets.count_agents.one: '1 ügyintéző'
-agent.tickets.count_agents.other: '{{count}} ügyintéző'
-agent.tickets.count_users.one: '{{count}} felhasználó'
-agent.tickets.count_users.other: '{{count}} felhasználó'
+agent.tickets.count_agents:
+  one: '1 ügyintéző'
+  other: '{{count}} ügyintéző'
+agent.tickets.count_users:
+  one: '{{count}} felhasználó'
+  other: '{{count}} felhasználó'
 agent.tickets.create_linked_ticket: 'Kapcsolódó jegy létrehozása'
 agent.tickets.create_new_pending_article: 'Új folyamatban lévő cikk létrehozása'
 agent.tickets.creating_a_ticket_for: 'Jegy létrehozása az alábbi célból'
@@ -1662,8 +1695,9 @@ agent.tickets.link_existing_ticket: 'Meglévő jegy hozzákapcsolása'
 agent.tickets.linked_tickets: 'Összekapcsolt jegyek'
 agent.tickets.linking_with_chat: 'Összekapcsolás az alábbi beszélgetéssel:'
 agent.tickets.linking_with_ticket: 'Összekapcsolás az alábbi jeggyel:'
-agent.tickets.list_title.one: '{{count}} jegy'
-agent.tickets.list_title.other: '{{count}} jegy'
+agent.tickets.list_title:
+  one: '{{count}} jegy'
+  other: '{{count}} jegy'
 agent.tickets.list_title_counter: '{{x}} jegy'
 agent.tickets.load_more: 'Továbbiak betöltése'
 agent.tickets.lock: Lezárás
@@ -1880,8 +1914,9 @@ agent.tickets.written_after: 'után írva'
 agent.tickets.written_any_time: 'bármikor írva'
 agent.tickets.written_before: 'előtt írva'
 agent.tickets.written_between: 'közé írva'
-agent.tickets.x_messages_moved.one: '1 üzenet áthelyezve'
-agent.tickets.x_messages_moved.other: '{{count}} üzenet áthelyezve'
+agent.tickets.x_messages_moved:
+  one: '1 üzenet áthelyezve'
+  other: '{{count}} üzenet áthelyezve'
 agent.tickets.x_rated_this_message_as: '{{name}} így értékelte az üzenetet:'
 agent.tickets.you_have_auto_lock: 'Ez a jegy automatikusan le van zárva. Más ügyintézők nem fogják tudni szerkeszteni, amíg a lezárás nincs feloldva.'
 agent.tickets.you_have_locked: 'Ön lezárta ezt a jegyet. Más ügyintézők nem fogják tudni szerkeszteni, amíg a lezárás nincs feloldva.'
@@ -2024,8 +2059,9 @@ agent.twitter.associated_people: 'Kapcsolódó személyek'
 agent.twitter.char_remaining: '{{num_chars}} maradt'
 agent.twitter.characters: karakter
 agent.twitter.corresponding_twitter_account: 'hasonló/megegyező Twitter fiókok'
-agent.twitter.count_selected.one: '{{count}} kiválasztva'
-agent.twitter.count_selected.other: '{{count}} kiválasztva'
+agent.twitter.count_selected:
+  one: '{{count}} kiválasztva'
+  other: '{{count}} kiválasztva'
 agent.twitter.delete-search-confirm: 'Biztosan törölni akarja ezt a keresést?'
 agent.twitter.direct: Közvetlen
 agent.twitter.direct_messages: 'Közvetlen üzenet'
@@ -2038,8 +2074,9 @@ agent.twitter.from_account: 'A fiókból'
 agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'Ennek a személynek adott válaszban'
 agent.twitter.interactions: Interakciók
-agent.twitter.list_title.one: '1 tweet'
-agent.twitter.list_title.other: '{{count}} tweet'
+agent.twitter.list_title:
+  one: '1 tweet'
+  other: '{{count}} tweet'
 agent.twitter.location: Hely
 agent.twitter.long: Hosszú
 agent.twitter.long_private: 'Hosszú magán jellegű'
@@ -2104,8 +2141,9 @@ agent.userchat.ended_by_reason: '{{name}} befejezte a beszélgetést: {{reason}}
 agent.userchat.ended_user: 'A felhasználó befejezte a beszélgetést'
 agent.userchat.full_message: 'Teljes üzenet'
 agent.userchat.ident_unconfirmed: 'Személyazonosság nincs megerősítve, az email nincs hitelesítve'
-agent.userchat.list_title.one: '1 beszélgetés'
-agent.userchat.list_title.other: '{{count}} beszélgetés'
+agent.userchat.list_title:
+  one: '1 beszélgetés'
+  other: '{{count}} beszélgetés'
 agent.userchat.message_agent-timeout: '{{name}} nem válaszol. Kérem várjon, amíg találunk Önnek egy másik ügyintézőt.'
 agent.userchat.message_assigned: 'A beszélgetés kiosztva az alábbi személyhez {{name}}'
 agent.userchat.message_ended: 'Beszélgetés befejezve'

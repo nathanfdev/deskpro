@@ -83,8 +83,10 @@ portal.articles.section-desc: 我们的知识库保存了我们的支持代理�
 portal.articles.section-title: 知识库
 portal.articles.share-by-email: 通过邮件分享此文章
 portal.articles.view-as-agent: 因为您是代理所以您可以看到此页。用户是查阅不到此页的。
-portal.articles.view-x-articles.other: '查阅一个文章 查阅{{count}}文章。'
-portal.articles.x-articles.other: '一篇文章 {{count}} 文章'
+portal.articles.view-x-articles:
+  other: '查阅一个文章 查阅{{count}}文章。'
+portal.articles.x-articles:
+  other: '一篇文章 {{count}} 文章'
 portal.chat.agent_blocked_user_on: '{{name}}设置一块{{date}}'
 portal.chat.agent_disconnected: '{{agentName}}似乎连接已断开'
 portal.chat.agent_typing_message: '{{agentName}}正在键入消息'
@@ -129,7 +131,8 @@ portal.chat.list_chat: 聊天
 portal.chat.list_date: 日期
 portal.chat.list_switch_to_my_chats: 切换到我的聊天
 portal.chat.list_switch_to_organization: 切换到组织
-portal.chat.list_title.other: '1个聊天{{count}}聊天'
+portal.chat.list_title:
+  other: '1个聊天{{count}}聊天'
 portal.chat.list_user: 用户
 portal.chat.log_agents: 代理们
 portal.chat.log_chat_time: 聊天总时间
@@ -202,7 +205,8 @@ portal.downloads.section-desc: "浏览我们的下载\n"
 portal.downloads.section-title: 下载
 portal.downloads.uploaded-on: 已上传
 portal.downloads.view-as-agent: 因为您是代理所以您可以看到此页。用户是查阅不到此页的。
-portal.downloads.view-x-files.other: 查看1个下载
+portal.downloads.view-x-files:
+  other: 查看1个下载
 portal.email_subjects.chat_transcript: 聊天记录
 portal.email_subjects.comment-approved: 您的评论已被通过
 portal.email_subjects.comment-confirmation: 感谢您的评论
@@ -250,13 +254,16 @@ portal.emails.comment_deleted: '您的评论用于改善此网页：{{link}}。'
 portal.emails.comment_thank-you: '感谢您的评论在{{link}}'
 portal.emails.comment_validate-email: 请点击下面的链接验证您的邮箱
 portal.emails.do-not-reply: '请勿回复此电子邮件。 这是一封自动生成的邮件，我们的代理将不会读取回复。'
-portal.emails.download-new-downloads.other: 1个新下载
-portal.emails.download-updated-downloads.other: 1个更新下载
+portal.emails.download-new-downloads:
+  other: 1个新下载
+portal.emails.download-updated-downloads:
+  other: 1个更新下载
 portal.emails.downloads-explain: '您收到这封邮件因为您在<a href="{{deskpro_url}}">{{deskpro_url}}</a>订阅了更新反馈内容。<br />不再需要这些邮件? <a href="{{unsubscribe_url}}">点击这里取消订阅所有反馈信息提醒。</a>'
 portal.emails.email-too-big: '您的邮件"{{subject}}" 因为内容过大被拒绝接受。帮助中心能接受的邮件最大内容为{{max_size}}。请删除大的附件并重试。'
 portal.emails.end_greeting: '致意，<br /><br />{{site_name}}'
 portal.emails.feedback-explain: '您收到这封邮件因为您在<a href="{{deskpro_url}}">{{deskpro_url}}</a>订阅了更新反馈内容。<br />不再需要这些邮件? <a href="{{unsubscribe_url}}">点击这里取消订阅所有反馈信息提醒。</a>'
-portal.emails.feedback-updated-items.other: 1条更新的反馈项目
+portal.emails.feedback-updated-items:
+  other: 1条更新的反馈项目
 portal.emails.feedback_agent-validation: 请注意，只有我们的代理核准您的反馈后，您的反馈才会公开显示在我们的支持门户上。
 portal.emails.feedback_approved: 我们想通知您，您的反馈已获得批准，现已在我们的支持门户网站上公开显示。
 portal.emails.feedback_closed: '您提交的反馈信息“{{title}}”已经关闭：{{status}}'
@@ -267,7 +274,8 @@ portal.emails.feedback_published: '您提交的反馈{{题目}}已经通过审�
 portal.emails.feedback_thank-you: '感谢您的反馈“{{title}}”'
 portal.emails.feedback_updated: '您提交的反馈信息“{{title}}”已经更新。新的状态是“{{status}}”'
 portal.emails.feedback_validate-email: 请点击下面的链接验证您的邮箱
-portal.emails.feedback_votes.other: '您的反馈目前已进行<strong> 1 </ strong>投票。 在线查看您的反馈：'
+portal.emails.feedback_votes:
+  other: '您的反馈目前已进行<strong> 1 </ strong>投票。 在线查看您的反馈：'
 portal.emails.greeting: '亲爱的{{to_name}}，'
 portal.emails.kb-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了有关我们的知识库文章的更新。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有知识库通知</a>。'
 portal.emails.kb-new-articles: "新知识库文章\n"
@@ -276,8 +284,10 @@ portal.emails.label_view-online: 在线查看
 portal.emails.message-clipped: （邮件已剪辑）
 portal.emails.new-ticket-guest-link: 感谢您与我们联系。您可以在线查看您的帮助请求状态通过这里：
 portal.emails.news-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了关于反馈项的更新。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处取消订阅所有新闻通知</a>。'
-portal.emails.news-new-articles.other: 新消息发布
-portal.emails.news-updated-articles.other: 1条更新新闻文章
+portal.emails.news-new-articles:
+  other: 新消息发布
+portal.emails.news-updated-articles:
+  other: 1条更新新闻文章
 portal.emails.password_agent-reset: '代理已重置您的帐户密码。 您可以使用这些详细信息登录'
 portal.emails.password_reset: 您请求重置密码。请点击下面的链接来重置您的密码：
 portal.emails.password_set: 要设置您的密码，请点击以下链接：
@@ -314,7 +324,8 @@ portal.emails.ticket_rate-request: '您对帮助请求窗口“{{ticket.subject}
 portal.emails.ticket_received: '您的来单已收到。 我们的代理将尽快给您回复。'
 portal.emails.ticket_reply-confirm: '谢谢您的回复。 我们的代理会尽快给您回复。'
 portal.emails.ticket_validate: '感谢您与我们联系。<br /> <br />在我们的代理可以阅读和回复您的邮件之前，您必须验证您的电子邮件地址。'
-portal.emails.tickets_ommitted.other: 1条消息已省略
+portal.emails.tickets_ommitted:
+  other: 1条消息已省略
 portal.emails.validate-email: 请点击下面的链接确认此电子邮件地址是您的电子邮件地址。
 portal.emails.view_full_history_online: 在线查看完整帮助请求
 portal.error.403-desc: 很抱歉，您无权查看此页面。
@@ -359,7 +370,8 @@ portal.feedback.status_active: 打开项目
 portal.feedback.status_all: 所有项目
 portal.feedback.status_closed: 已关闭项目
 portal.feedback.submit_feedback: 提交反馈
-portal.feedback.view-x-feedback.other: 查看1个反馈
+portal.feedback.view-x-feedback:
+  other: 查看1个反馈
 portal.flashes.article_cat_subscribe: '您已成功订阅此类文章。 当新文章发布时，您将收到通知。'
 portal.flashes.article_cat_unsubscribe: 您已成功取消订阅此类文章。
 portal.flashes.article_subscribe: '您已成功订阅此文章。 当有更新或有新评论时，系统会通知您。'
@@ -427,11 +439,16 @@ portal.forms.error_no_uploaded_file: '找不到上传的文件。 请再试一�
 portal.forms.error_not_checked: 该字段未选中。
 portal.forms.error_password_current: 这必须是您当前的密码
 portal.forms.error_password_forbid_reuse: 您不能使用以前使用过的密码
-portal.forms.error_password_min_length.other: '最少{{count}}个字符'
-portal.forms.error_password_require_num_lowercase.other: '至少{{count}}个小写字符'
-portal.forms.error_password_require_num_number.other: '至少{{count}} 数字'
-portal.forms.error_password_require_num_symbol.other: '至少{{count}}个符号'
-portal.forms.error_password_require_num_uppercase.other: '至少{{count}}个大写字符'
+portal.forms.error_password_min_length:
+  other: '最少{{count}}个字符'
+portal.forms.error_password_require_num_lowercase:
+  other: '至少{{count}}个小写字符'
+portal.forms.error_password_require_num_number:
+  other: '至少{{count}} 数字'
+portal.forms.error_password_require_num_symbol:
+  other: '至少{{count}}个符号'
+portal.forms.error_password_require_num_uppercase:
+  other: '至少{{count}}个大写字符'
 portal.forms.error_person_not_agent: '标识符{{value}}的人不是代理。'
 portal.forms.error_person_not_found: '找不到标识为“{{value}}”的人。'
 portal.forms.error_person_not_user: '标识符{{value}}的人不是用户。'
@@ -511,9 +528,11 @@ portal.general.btn-unsubscribe: 取消订阅
 portal.general.by: 通过
 portal.general.by_2: 通过
 portal.general.comment_btn_save: 保存评论
-portal.general.comments-count.other: 1条评论
+portal.general.comments-count:
+  other: 1条评论
 portal.general.comments-pending-validation: '此评论正在审核中。 它将很快显示'
-portal.general.comments-title.other: 评论（1）
+portal.general.comments-title:
+  other: 评论（1）
 portal.general.delete: 删除
 portal.general.everything: 所有
 portal.general.get-in-touch: 保持联系
@@ -602,10 +621,12 @@ portal.news.recent-title: 最近的消息
 portal.news.search-title: 新闻文章
 portal.news.section-title: 新消息
 portal.news.view-as-agent: 您能看到此页面因为您是代理。普通用户无法查看此页面。
-portal.news.view-x-news.other: 查看一篇文章
+portal.news.view-x-news:
+  other: 查看一篇文章
 portal.sidebar.agents_available: 空闲的代理
 portal.sidebar.agents_none: '现在没有代理在线。您仍可以使用<a href="{{new_ticket_url}}">打开帮助请求</a>。'
-portal.sidebar.agents_x_online.other: '{{count}}人在线'
+portal.sidebar.agents_x_online:
+  other: '{{count}}人在线'
 portal.sidebar.article_posted_by: '由{{name}}发布'
 portal.sidebar.news_title: 新闻
 portal.sidebar.satisfied_customers: 满意的客户
@@ -631,7 +652,8 @@ portal.tickets.list_no_tickets: '标签没有可供显示的来单。点击这�
 portal.tickets.list_search: 在工单里搜索：
 portal.tickets.list_status_agent: 我们的代理将回复
 portal.tickets.list_status_open: 待解决的工单
-portal.tickets.list_status_open_count.other: '{{count}}个等待回复'
+portal.tickets.list_status_open_count:
+  other: '{{count}}个等待回复'
 portal.tickets.list_status_resolved: 已解决的
 portal.tickets.list_status_user: 你需要回复
 portal.tickets.list_subject: 主题
@@ -727,7 +749,8 @@ user.chat.log_created-date: '创建{{date}}'
 user.chat.log_fields_agent: 代理
 user.chat.log_fields_department: 部门
 user.chat.log_message_author-you: 你
-user.chat.log_nav-view-chats.other: 查看您最近的聊天记录
+user.chat.log_nav-view-chats:
+  other: 查看您最近的聊天记录
 user.chat.log_no_department: 没有部门
 user.chat.log_unassigned: "未分配任何代理\n"
 user.chat.message_agent-timeout: '我们很抱歉; {{name}}似乎连接失败。 请稍候，我们正在尝试找到另一个代理。'
@@ -813,12 +836,15 @@ user.emails.chat_validate_email: '请通过在窗口小部件表单中输入此�
 user.emails.comment_approved: 您的评论已发布。
 user.emails.comment_deleted: 您的评论用于改进页面。
 user.emails.comment_thank-you: '感谢您对{{link}}的评论。'
-user.emails.download-new-downloads.other: 1条新下载
-user.emails.download-updated-downloads.other: 1条更新下载
+user.emails.download-new-downloads:
+  other: 1条新下载
+user.emails.download-updated-downloads:
+  other: 1条更新下载
 user.emails.downloads-explain: '您之所以收到此电子邮件，是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的下载。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处取消订阅所有下载通知。</a>'
 user.emails.email-too-big: '您的电子邮件“{{subject}}”未被接受，因为它太大。 最大电子邮件大小为{{max_size}}。 删除所有附件，然后重试。'
 user.emails.feedback-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的新闻。<br />不想再收到这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有反馈通知。</a>'
-user.emails.feedback-updated-items.other: 1条更新反馈项
+user.emails.feedback-updated-items:
+  other: 1条更新反馈项
 user.emails.feedback_agent-validation: 请注意，在我们的代理审核您的反馈之前，您的反馈不会公开显示
 user.emails.feedback_approved: 我们想通知您，您的反馈已获得批准，现在已在我们的网站上公开显示。
 user.emails.feedback_closed: '您提交的反馈“{{title}}”已关闭：{{status}}'
@@ -828,17 +854,22 @@ user.emails.feedback_new-comment: '{{name}}发表了新评论：'
 user.emails.feedback_published: '您提交的反馈“{{title}}”已经过验证，现在将显示在我们的网站上。'
 user.emails.feedback_thank-you: '感谢您提交意见回馈「{{title}}」'
 user.emails.feedback_updated: '您提交的反馈“{{title}}”已更新。 它的状态现在是：“{{status}}”'
-user.emails.feedback_votes.other: '您的反馈目前已进行<strong> 1 </ strong>投票。 在线查看您的反馈：'
+user.emails.feedback_votes:
+  other: '您的反馈目前已进行<strong> 1 </ strong>投票。 在线查看您的反馈：'
 user.emails.greeting: '亲爱的{{to_name}}，'
 user.emails.kb-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的知识库。<br />不再需要这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处可取消订阅所有知识库通知</a>。'
-user.emails.kb-new-articles.other: 1篇新文章
-user.emails.kb-updated-articles.other: 1篇更新文章
+user.emails.kb-new-articles:
+  other: 1篇新文章
+user.emails.kb-updated-articles:
+  other: 1篇更新文章
 user.emails.label_view-online: 在线查看
 user.emails.message-clipped: （消息已被忽略）
 user.emails.new-ticket-guest-link: '感谢您与我们联系。 您可以在这里查看您的帮助请求的状态：'
 user.emails.news-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的新闻。<br />不想再收到这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处取消订阅所有新闻通知</a>。'
-user.emails.news-new-articles.other: 1篇新文章
-user.emails.news-updated-articles.other: 1篇更新的新闻文章
+user.emails.news-new-articles:
+  other: 1篇新文章
+user.emails.news-updated-articles:
+  other: 1篇更新的新闻文章
 user.emails.password_agent-reset: '代理已重置您的帐户密码。 您可以使用这些详细信息登录'
 user.emails.password_reset: '您请求重置密码。 要重置密码，请点击以下链接：'
 user.emails.password_set: 要设置您的密码，请点击以下链接：
@@ -875,14 +906,18 @@ user.error.error_code: 错误代码
 user.error.error_title: 错误
 user.error.expired-token: '您尝试访问的页面已过期。 请返回，然后重试。'
 user.error.form_choice_invalid: 请从列表中选择一个选项
-user.error.form_choice_max.other: 请最多选择1个选项
-user.error.form_choice_min.other: 请至少选择1个选项
+user.error.form_choice_max:
+  other: 请最多选择1个选项
+user.error.form_choice_min:
+  other: 请至少选择1个选项
 user.error.form_date_invalid: 请输入有效的日期
 user.error.form_date_invalid_dow: 您选择的星期是不允许的
 user.error.form_date_invalid_range: 您选择的日期不在允许的范围内
 user.error.form_required: 这是必填栏
-user.error.form_text_max.other: 请输入最多1个字符
-user.error.form_text_min.other: 请输入至少1个字符
+user.error.form_text_max:
+  other: 请输入最多1个字符
+user.error.form_text_min:
+  other: 请输入至少1个字符
 user.error.form_text_regex: 请输入正确的值
 user.error.invalid_email: 无效的邮件地址
 user.error.invalid_email-code: 验证链接似乎无效。
@@ -927,11 +962,16 @@ user.profile.choose_email: 选择您想要使用的邮箱地址
 user.profile.connect_with: 与（）建立连接
 user.profile.or_connect_with: 或者与（）建立连接
 user.profile.register: 注册
-user.profile.register_password_min_length.other: '最少{{count}}个字符'
-user.profile.register_password_require_num_lowercase.other: '最少{{count}}个小写字母'
-user.profile.register_password_require_num_number.other: '最少{{count}}个数字'
-user.profile.register_password_require_num_symbol.other: '最少{{count}}个符号'
-user.profile.register_password_require_num_uppercase.other: '最少{{count}}个大写字母'
+user.profile.register_password_min_length:
+  other: '最少{{count}}个字符'
+user.profile.register_password_require_num_lowercase:
+  other: '最少{{count}}个小写字母'
+user.profile.register_password_require_num_number:
+  other: '最少{{count}}个数字'
+user.profile.register_password_require_num_symbol:
+  other: '最少{{count}}个符号'
+user.profile.register_password_require_num_uppercase:
+  other: '最少{{count}}个大写字母'
 user.profile.register_password_unused: 您不能使用之前您已经使用过的密码
 user.tickets.feedback_message_leave_comment: 可选择地留下评论
 user.tickets.fields_category: 分类

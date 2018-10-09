@@ -53,7 +53,8 @@ adm.tickets.delete_account_confirm: このメールアカウントを削除し�
 adm.tickets.email_accounts: メールアカウント
 adm.tickets.new_account: 新しいアカウント
 adm.tickets.no_email_accounts: あなたはまだメールアカウントを作成していません。
-adm.tickets.x_email_accounts.other: '{{count}} メールアカウント'
+adm.tickets.x_email_accounts:
+  other: '{{count}} メールアカウント'
 admin.designer.add_new_rule: 新しいルールを追加
 admin.general.add_field: 項目追加
 admin.settings.add_label: ラベル追加
@@ -250,8 +251,10 @@ agent.chat.chat_history: チャット履歴
 agent.chat.chat_started_by: チャット開始日
 agent.chat.chat_transcript: チャット記録
 agent.chat.chat_with_x: '{{name}}とチャット'
-agent.chat.count_agents.other: '1 オンラインエージェント'
-agent.chat.count_seconds.other: '1 秒'
+agent.chat.count_agents:
+  other: '1 オンラインエージェント'
+agent.chat.count_seconds:
+  other: '1 秒'
 agent.chat.filter_title_assigned: 割り当てられたチャット
 agent.chat.filter_title_mine: 私のチャット
 agent.chat.filter_title_missed: 不在チャット
@@ -265,7 +268,8 @@ agent.chat.label_assigned_others: このチャットの他のエージェント
 agent.chat.leave_chat_confirm: このチャットを辞めてもよろしいですか？
 agent.chat.leave_end: チャットを終了し、退出する
 agent.chat.leave_unassign: 割り当てを解除して退出する
-agent.chat.list_title.other: '1 会話'
+agent.chat.list_title:
+  other: '1 会話'
 agent.chat.msg_agent_timeout: '{{agent_name}} がタイムアウトしました'
 agent.chat.msg_assigned_agent: '{{agent_name}}に割り当てられたチャット'
 agent.chat.msg_part_joined: '{{person_name}} が参加しました'
@@ -313,11 +317,14 @@ agent.chrome.chat_list_heading_current-page: 現在のページ
 agent.chrome.chat_list_heading_time: 時間
 agent.chrome.chat_list_heading_user: ユーザ
 agent.chrome.chat_list_no-online-users: オンラインユーザはいません
-agent.chrome.chat_list_online-users.other: '<span class="count-online-users">1</span> オンラインユーザ'
+agent.chrome.chat_list_online-users:
+  other: '<span class="count-online-users">1</span> オンラインユーザ'
 agent.chrome.chat_logged-in: チャットにログインしました
 agent.chrome.chat_logged-out: チャットからログアウトしました
-agent.chrome.chat_online-agents.other: '<span class="userchat-online-agents-count">{{count}}</span> エージェント'
-agent.chrome.chat_online-users.other: '<span class="userchat-online-users-count">{{count}}</span> ユーザ'
+agent.chrome.chat_online-agents:
+  other: '<span class="userchat-online-agents-count">{{count}}</span> エージェント'
+agent.chrome.chat_online-users:
+  other: '<span class="userchat-online-users-count">{{count}}</span> ユーザ'
 agent.chrome.chat_sign-in: チャットにサインインする
 agent.chrome.chat_sign-out: チャットからサインアウトする
 agent.chrome.create_new-article: 新しい記事
@@ -378,7 +385,8 @@ agent.chrome.quicksearch_title-tickets: チケット
 agent.chrome.recent_list-filter-info: 最新の結果をフィルタリングするために入力します
 agent.chrome.recent_list-none: まだタブを開いていない
 agent.chrome.recent_tooltip: 最近の活動リストを使用して、あなたが取り組んでいたことを簡単に見つけることができます。
-agent.chrome.search-show-more.other: '{{count}} をもっと見る'
+agent.chrome.search-show-more:
+  other: '{{count}} をもっと見る'
 agent.chrome.user_tooltip: エージェントプロファイル、通知、設定を表示し、フィルタ、マクロ、およびSLAを管理します
 agent.chrome.view_tooltip: ヘルプデスクのインターフェイスのビューをリストペインがない2列ビューに変更します
 agent.defaults.default_style: デフォルトスタイル
@@ -458,7 +466,8 @@ agent.emails.referer_page: 参照元ページ
 agent.emails.referring_page: 参照ページ
 agent.emails.reply_above_line: 前に返信
 agent.emails.reply_is_as_note: あなたの返信はプライベートエージェントメモとして追加されます
-agent.emails.reply_sent_to_ccs.other: '{{count}} CCユーザ:'
+agent.emails.reply_sent_to_ccs:
+  other: '{{count}} CCユーザ:'
 agent.emails.reply_sent_to_user: 'あなたの返信はユーザ{{user}}に送信されます'
 agent.emails.subject_email_change_merge: メールの変更とアカウントのマージを確認する
 agent.emails.subject_error_forwarded_email: '転送メールのエラー：{{subject}}'
@@ -636,15 +645,19 @@ agent.organizations.create_organization: 組織の作成
 agent.organizations.email_domain_assoc: メールドメインの関連付け
 agent.organizations.email_domain_assoc_add: 新しいドメインを追加
 agent.organizations.email_domain_assoc_explain: これらのドメインメールアドレスを持つユーザは、この組織に自動的に関連付けられます。
-agent.organizations.email_domain_assoc_move.other: 1人のユーザの関連付け
-agent.organizations.email_domain_assoc_move_all.other: 既に別の組織に所属している1人のユーザを関連付ける
+agent.organizations.email_domain_assoc_move:
+  other: 1人のユーザの関連付け
+agent.organizations.email_domain_assoc_move_all:
+  other: 既に別の組織に所属している1人のユーザを関連付ける
 agent.organizations.email_domain_assoc_none: この組織とユーザを自動的に関連付けるメールドメインを設定します。
 agent.organizations.email_domain_assoc_remove: メールドメインを削除
-agent.organizations.email_domain_assoc_remove_users.other: メールドメインを削除し、1人のユーザーをこの組織から割り当て解除する
+agent.organizations.email_domain_assoc_remove_users:
+  other: メールドメインを削除し、1人のユーザーをこの組織から割り当て解除する
 agent.organizations.email_domain_assoc_title: '{{name}}のメールドメイン関連付け'
 agent.organizations.enter_position: ポジションを入力
 agent.organizations.is_empty: この組織にメンバーはいません。
-agent.organizations.list_title.other: '1 組織'
+agent.organizations.list_title:
+  other: '1 組織'
 agent.organizations.no_slas: この組織にはSLAは自動的に適用されません。
 agent.organizations.org_manager_click_to_remove: 組織マネージャー。クリックして削除。
 agent.people.act_merge_undone_base_side: 'マージを元に戻す。復元された個人： '
@@ -674,7 +687,8 @@ agent.people.confirm_remove_email: このメールアドレスを削除しても
 agent.people.confirm_remove_phone: この電話番号を削除してもよろしいですか？
 agent.people.contact_info: 連絡先
 agent.people.contact_info_for_x: '{{name}}の連絡先'
-agent.people.count_members.other: '{{count}} メンバー'
+agent.people.count_members:
+  other: '{{count}} メンバー'
 agent.people.create_person: 個人を作成
 agent.people.creation_by: 作成者
 agent.people.delete_user: ユーザを削除
@@ -690,7 +704,8 @@ agent.people.find_person: 個人を探す
 agent.people.im: IM
 agent.people.im_account_placeholder: アカウントのユーザ名
 agent.people.is_agent: エージェント
-agent.people.list_title.other: '1 人'
+agent.people.list_title:
+  other: '1 人'
 agent.people.login_as_user: ユーザとしてログイン
 agent.people.make_primary_email: プライマリにする
 agent.people.manager: マネージャー
@@ -758,7 +773,8 @@ agent.publish.change_category: カテゴリ変更
 agent.publish.click_to_set_date: （クリックして日付設定）
 agent.publish.comment_by: '{{name}}によるコメント'
 agent.publish.comment_requires_validation: このコメントは検証が必要です
-agent.publish.comments_list_title.other: '1 コメント'
+agent.publish.comments_list_title:
+  other: '1 コメント'
 agent.publish.comments_to_validate: レビューコメント
 agent.publish.compare_selected: 選択比較
 agent.publish.create_artilce: 記事を作成
@@ -777,25 +793,31 @@ agent.publish.download_specify_filesize: 'オプションで表示するファ�
 agent.publish.download_specify_url: 'ファイルの完全URLを入力します。"ダウンロード"ボタンをクリックしたユーザがこのURLに移動します'
 agent.publish.download_upload_btn: ファイルアップロード
 agent.publish.downloads_highest_lowest: 'ダウンロード数（最高 - 最低）'
-agent.publish.downloads_list_title.other: '1 ダウンロード'
+agent.publish.downloads_list_title:
+  other: '1 ダウンロード'
 agent.publish.downloads_lowest_highest: 'ダウンロード数（最低 - 最高）'
 agent.publish.draft_content: 私のドラフト
 agent.publish.draft_revision: 変更
-agent.publish.drafts_list_title.other: '1 ドラフト'
+agent.publish.drafts_list_title:
+  other: '1 ドラフト'
 agent.publish.drop_file_to_add: ファイルをここにドロップして、ポストに追加
 agent.publish.edit_category_btn: カテゴリ編集
 agent.publish.edit_guide_btn: ガイド編集
 agent.publish.edit_new_glossary: 用語集編集
 agent.publish.error_kb_cats_same: 同じカテゴリ
-agent.publish.error_kb_missing.other: '{{count}} 記事が見つかりません'
+agent.publish.error_kb_missing:
+  other: '{{count}} 記事が見つかりません'
 agent.publish.error_kb_not_in_db: カテゴリが見つかりませんでした。
-agent.publish.error_kb_perm_denied.other: '{{count}} 権限エラー'
+agent.publish.error_kb_perm_denied:
+  other: '{{count}} 権限エラー'
 agent.publish.error_kb_unaffected: 一部の記事は影響を受けていませんでした：
 agent.publish.for_ticket: チケットの場合
 agent.publish.glossary: 用語集
-agent.publish.guide_list_title.other: '1 ガイド'
+agent.publish.guide_list_title:
+  other: '1 ガイド'
 agent.publish.helpful: 役立つ
-agent.publish.kb_list_title.other: 1記事
+agent.publish.kb_list_title:
+  other: 1記事
 agent.publish.label_new_file: 新規ファイル
 agent.publish.label_old_file: 古いファイル
 agent.publish.missing_translation: 翻訳がありません
@@ -1001,7 +1023,8 @@ agent.tasks.delete_confirm: このタスクを削除してもよろしいです�
 agent.tasks.due_in_future: 今後の予定
 agent.tasks.enter_your_comment: コメントを入力してください…
 agent.tasks.linked_ticket: リンクチケット
-agent.tasks.list_title.other: '1 タスク'
+agent.tasks.list_title:
+  other: '1 タスク'
 agent.tasks.my_tasks: 私のタスク
 agent.tasks.my_teams: 私のチーム
 agent.tasks.my_teamstasks: 私のチームのタスク

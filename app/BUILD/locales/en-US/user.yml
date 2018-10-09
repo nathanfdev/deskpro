@@ -99,10 +99,12 @@ portal.articles.section-desc: 'Our knowledgebase contains articles written by ou
 portal.articles.section-title: Knowledgebase
 portal.articles.share-by-email: 'Share this article by email:'
 portal.articles.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
-portal.articles.view-x-articles.one: 'View 1 article'
-portal.articles.view-x-articles.other: 'View {{count}} articles'
-portal.articles.x-articles.one: '1 article'
-portal.articles.x-articles.other: '{{count}} articles'
+portal.articles.view-x-articles:
+  one: 'View 1 article'
+  other: 'View {{count}} articles'
+portal.articles.x-articles:
+  one: '1 article'
+  other: '{{count}} articles'
 portal.chat.agent_blocked_user_on: '{{name}} set a block on {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} seems to have been disconnected'
 portal.chat.agent_typing_message: '{{agentName}} is typing a message'
@@ -150,8 +152,9 @@ portal.chat.list_chat: Chat
 portal.chat.list_date: Date
 portal.chat.list_switch_to_my_chats: 'Switch to My Chats'
 portal.chat.list_switch_to_organization: 'Switch to Organization'
-portal.chat.list_title.one: '1 Chat'
-portal.chat.list_title.other: '{{count}} Chats'
+portal.chat.list_title:
+  one: '1 Chat'
+  other: '{{count}} Chats'
 portal.chat.list_user: User
 portal.chat.log_agents: Agents
 portal.chat.log_chat_time: 'Total Chat Time'
@@ -225,8 +228,9 @@ portal.downloads.section-desc: 'Browse our collection of downloads.'
 portal.downloads.section-title: Downloads
 portal.downloads.uploaded-on: Uploaded
 portal.downloads.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
-portal.downloads.view-x-files.one: 'View 1 download'
-portal.downloads.view-x-files.other: 'View {{count}} downloads'
+portal.downloads.view-x-files:
+  one: 'View 1 download'
+  other: 'View {{count}} downloads'
 portal.email_subjects.chat_transcript: 'Chat Transcript'
 portal.email_subjects.comment-approved: 'Your comment was approved'
 portal.email_subjects.comment-confirmation: 'Thank you for your comment'
@@ -274,16 +278,19 @@ portal.emails.comment_deleted: 'Your comment was used to improve this page: {{li
 portal.emails.comment_thank-you: 'Thank you for your comment on {{link}}.'
 portal.emails.comment_validate-email: 'Please validate your email address by clicking the following link:'
 portal.emails.do-not-reply: 'Please do not reply to this email. This is an automatically-generated message and replies will not be read by our agents.'
-portal.emails.download-new-downloads.one: '1 New Download'
-portal.emails.download-new-downloads.other: '{{count}} New Downloads'
-portal.emails.download-updated-downloads.one: '1 Updated Download'
-portal.emails.download-updated-downloads.other: '{{count}} Updated Downloads'
+portal.emails.download-new-downloads:
+  one: '1 New Download'
+  other: '{{count}} New Downloads'
+portal.emails.download-updated-downloads:
+  one: '1 Updated Download'
+  other: '{{count}} Updated Downloads'
 portal.emails.downloads-explain: 'You are receiving this email because you have subscribed to updates about downloads available at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all downloads notifications.</a>'
 portal.emails.email-too-big: 'Your email "{{subject}}" was not accepted because it is too big. The maximum email size this helpdesk accepts is {{max_size}}. Remove large attachments and try again.'
 portal.emails.end_greeting: 'Regards,<br /><br />{{site_name}}''s'
 portal.emails.feedback-explain: 'You are receiving this email because you subscribed to updates about feedback items at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
-portal.emails.feedback-updated-items.one: '1 Updated Feedback Item'
-portal.emails.feedback-updated-items.other: '{{count}} Updated Feedback Items'
+portal.emails.feedback-updated-items:
+  one: '1 Updated Feedback Item'
+  other: '{{count}} Updated Feedback Items'
 portal.emails.feedback_agent-validation: 'Note that your feedback will not appear publicly on our support portal until one of our agents approves it.'
 portal.emails.feedback_approved: 'We wanted to let you know that your feedback has been approved and is now publicly visible on our support portal.'
 portal.emails.feedback_closed: 'Your submitted feedback "{{title}}" was closed: {{status}}'
@@ -294,22 +301,27 @@ portal.emails.feedback_published: 'Your submitted feedback "{{title}}" has been 
 portal.emails.feedback_thank-you: 'Thank you for submitting your feedback "{{title}}"'
 portal.emails.feedback_updated: 'Your submitted feedback "{{title}}" has been updated. Its new status is "{{status}}"'
 portal.emails.feedback_validate-email: 'Please validate your email address by clicking the following link:'
-portal.emails.feedback_votes.one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
-portal.emails.feedback_votes.other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
+portal.emails.feedback_votes:
+  one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
+  other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
 portal.emails.greeting: 'Dear {{to_name}},'
 portal.emails.kb-explain: 'You are receiving this email because you subscribed to updates about our knowledgebase articles at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
-portal.emails.kb-new-articles.one: '1 New Knowledgebase Article'
-portal.emails.kb-new-articles.other: '{{count}} New Knowledgebase Articles'
-portal.emails.kb-updated-articles.one: '1 Updated Knowledgebase Article'
-portal.emails.kb-updated-articles.other: '{{count}} Updated Knowledgebase Articles'
+portal.emails.kb-new-articles:
+  one: '1 New Knowledgebase Article'
+  other: '{{count}} New Knowledgebase Articles'
+portal.emails.kb-updated-articles:
+  one: '1 Updated Knowledgebase Article'
+  other: '{{count}} Updated Knowledgebase Articles'
 portal.emails.label_view-online: 'View Online'
 portal.emails.message-clipped: '(Message has been clipped)'
 portal.emails.new-ticket-guest-link: 'Thank you for contacting us. You may view the status of your ticket online here:'
 portal.emails.news-explain: 'You are receiving this email because you subscribed to updates about feedback items at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all news notifications.</a>'
-portal.emails.news-new-articles.one: '1 New News Post'
-portal.emails.news-new-articles.other: '{{count}} New News Posts'
-portal.emails.news-updated-articles.one: '1 Updated News Post'
-portal.emails.news-updated-articles.other: '{{count}} Updated News Posts'
+portal.emails.news-new-articles:
+  one: '1 New News Post'
+  other: '{{count}} New News Posts'
+portal.emails.news-updated-articles:
+  one: '1 Updated News Post'
+  other: '{{count}} Updated News Posts'
 portal.emails.password_agent-reset: 'An agent has reset your account password. You can log in with these details'
 portal.emails.password_reset: 'You requested a password reset. To reset your password, click on the link below:'
 portal.emails.password_set: 'To set your password, click on the link below:'
@@ -348,8 +360,9 @@ portal.emails.ticket_rate-request: 'How would you rate the support you received 
 portal.emails.ticket_received: 'Your ticket has been received. One of our agents will reply to you shortly.'
 portal.emails.ticket_reply-confirm: 'Thank you for your reply. One of our agents will reply to you shortly.'
 portal.emails.ticket_validate: 'Thank you for contacting us.<br /><br />Before our agents can read and reply to your message, you must validate your email address.'
-portal.emails.tickets_ommitted.one: '1 message has been omitted'
-portal.emails.tickets_ommitted.other: '{{count}} messages have been omitted'
+portal.emails.tickets_ommitted:
+  one: '1 message has been omitted'
+  other: '{{count}} messages have been omitted'
 portal.emails.validate-email: 'Please confirm that this email address is yours by clicking the link below.'
 portal.emails.view_full_history_online: 'View full ticket online'
 portal.error.400-desc: 'Sorry, but your request was malformed.'
@@ -396,8 +409,9 @@ portal.feedback.status_active: 'Open items'
 portal.feedback.status_all: 'All items'
 portal.feedback.status_closed: 'Closed items'
 portal.feedback.submit_feedback: 'Submit feedback'
-portal.feedback.view-x-feedback.one: 'View 1 feedback'
-portal.feedback.view-x-feedback.other: 'View {{count}} feedback'
+portal.feedback.view-x-feedback:
+  one: 'View 1 feedback'
+  other: 'View {{count}} feedback'
 portal.flashes.article_cat_subscribe: 'You have successfully subscribed to this category. You will be notified when new articles are posted.'
 portal.flashes.article_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
 portal.flashes.article_subscribe: 'You have successfully subscribed to this article. You will be notified when it is updated or when there is a new comment.'
@@ -486,16 +500,21 @@ portal.forms.error_not_unique_collection: 'One or more of the given values is no
 portal.forms.error_numeric: 'Please enter a number, with no other characters.'
 portal.forms.error_password_current: 'This must be your current password'
 portal.forms.error_password_forbid_reuse: 'You cannot use a password you have used before'
-portal.forms.error_password_min_length.one: 'Minimum of {{count}} character'
-portal.forms.error_password_min_length.other: 'Minimum of {{count}} characters'
-portal.forms.error_password_require_num_lowercase.one: 'At least {{count}} lowercase character'
-portal.forms.error_password_require_num_lowercase.other: 'At least {{count}} lowercase characters'
-portal.forms.error_password_require_num_number.one: 'At least {{count}} number'
-portal.forms.error_password_require_num_number.other: 'At least {{count}} numbers'
-portal.forms.error_password_require_num_symbol.one: 'At least {{count}} symbol'
-portal.forms.error_password_require_num_symbol.other: 'At least {{count}} symbols'
-portal.forms.error_password_require_num_uppercase.one: 'At least {{count}} uppercase character'
-portal.forms.error_password_require_num_uppercase.other: 'At least {{count}} uppercase characters'
+portal.forms.error_password_min_length:
+  one: 'Minimum of {{count}} character'
+  other: 'Minimum of {{count}} characters'
+portal.forms.error_password_require_num_lowercase:
+  one: 'At least {{count}} lowercase character'
+  other: 'At least {{count}} lowercase characters'
+portal.forms.error_password_require_num_number:
+  one: 'At least {{count}} number'
+  other: 'At least {{count}} numbers'
+portal.forms.error_password_require_num_symbol:
+  one: 'At least {{count}} symbol'
+  other: 'At least {{count}} symbols'
+portal.forms.error_password_require_num_uppercase:
+  one: 'At least {{count}} uppercase character'
+  other: 'At least {{count}} uppercase characters'
 portal.forms.error_person_not_agent: 'Person with identifier {{value}} is not an agent.'
 portal.forms.error_person_not_found: 'Person with identifier "{{value}}" not found.'
 portal.forms.error_person_not_user: 'Person with identifier {{value}} is not a user.'
@@ -580,11 +599,13 @@ portal.general.btn-unsubscribe: Unsubscribe
 portal.general.by: by
 portal.general.by_2: By
 portal.general.comment_btn_save: 'Save Comment'
-portal.general.comments-count.one: '1 Comment'
-portal.general.comments-count.other: '{{count}} Comments'
+portal.general.comments-count:
+  one: '1 Comment'
+  other: '{{count}} Comments'
 portal.general.comments-pending-validation: 'This comment is being reviewed. It will be displayed shortly'
-portal.general.comments-title.one: 'Comments (1)'
-portal.general.comments-title.other: 'Comments ({{count}})'
+portal.general.comments-title:
+  one: 'Comments (1)'
+  other: 'Comments ({{count}})'
 portal.general.delete: Delete
 portal.general.everything: Everything
 portal.general.get-in-touch: 'Get in touch'
@@ -678,12 +699,14 @@ portal.news.recent-title: 'Recent News'
 portal.news.search-title: 'News Articles'
 portal.news.section-title: News
 portal.news.view-as-agent: 'You can see this page because you are an agent. Normal users will not be able to view this page.'
-portal.news.view-x-news.one: 'View 1 article'
-portal.news.view-x-news.other: 'View {{count}} articles'
+portal.news.view-x-news:
+  one: 'View 1 article'
+  other: 'View {{count}} articles'
 portal.sidebar.agents_available: 'Available Agents'
 portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
-portal.sidebar.agents_x_online.one: '{{count}} online'
-portal.sidebar.agents_x_online.other: '{{count}} online'
+portal.sidebar.agents_x_online:
+  one: '{{count}} online'
+  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Posted by {{name}}'
 portal.sidebar.news_title: News
 portal.sidebar.satisfied_customers: 'satisfied customers'
@@ -709,8 +732,9 @@ portal.tickets.list_no_tickets: 'There are no tickets to display in this tab. <a
 portal.tickets.list_search: 'Search in Tickets:'
 portal.tickets.list_status_agent: 'Our agent will respond'
 portal.tickets.list_status_open: 'Open Tickets'
-portal.tickets.list_status_open_count.one: '{{count}} awaiting response'
-portal.tickets.list_status_open_count.other: '{{count}} awaiting response'
+portal.tickets.list_status_open_count:
+  one: '{{count}} awaiting response'
+  other: '{{count}} awaiting response'
 portal.tickets.list_status_resolved: Resolved
 portal.tickets.list_status_user: 'You need to respond'
 portal.tickets.list_subject: Subject
@@ -825,8 +849,9 @@ user.chat.log_created-date: 'Created {{date}}'
 user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Department
 user.chat.log_message_author-you: You
-user.chat.log_nav-view-chats.one: 'View your latest chat log'
-user.chat.log_nav-view-chats.other: 'View your {{count}} chat logs'
+user.chat.log_nav-view-chats:
+  one: 'View your latest chat log'
+  other: 'View your {{count}} chat logs'
 user.chat.log_no_department: 'No department'
 user.chat.log_unassigned: 'No agent was assigned'
 user.chat.message_agent-timeout: 'Our Apologies; {{name}} appears to have been disconnected. Please wait while we try to find another agent.'
@@ -910,15 +935,18 @@ user.emails.chat_validate_email: 'Please validate your email address by entering
 user.emails.comment_approved: 'Your comment has been published.'
 user.emails.comment_deleted: 'Your comment was used to improve the page.'
 user.emails.comment_thank-you: 'Thank you for your comment on {{link}}.'
-user.emails.download-new-downloads.one: '1 New Download'
-user.emails.download-new-downloads.other: '{{count}} New Downloads'
-user.emails.download-updated-downloads.one: '1 Updated Download'
-user.emails.download-updated-downloads.other: '{{count}} Updated Downloads'
+user.emails.download-new-downloads:
+  one: '1 New Download'
+  other: '{{count}} New Downloads'
+user.emails.download-updated-downloads:
+  one: '1 Updated Download'
+  other: '{{count}} Updated Downloads'
 user.emails.downloads-explain: 'You are receiving this email because you are subscribed to our downloads at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all downloads notifications.</a>'
 user.emails.email-too-big: 'Your email "{{subject}}" was not accepted because it is too big. The maximum email size is {{max_size}}. Remove any attachments and try again.'
 user.emails.feedback-explain: 'You are receiving this email because you are subscribed to our news at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
-user.emails.feedback-updated-items.one: '1 Updated Feedback Item'
-user.emails.feedback-updated-items.other: '{{count}} Updated Feedback Items'
+user.emails.feedback-updated-items:
+  one: '1 Updated Feedback Item'
+  other: '{{count}} Updated Feedback Items'
 user.emails.feedback_agent-validation: 'Please note that your feedback will not appear publicly until one of our agents reviews it'
 user.emails.feedback_approved: 'We wanted to let you know that your feedback has been approved and is now publicly visible on our site.'
 user.emails.feedback_closed: 'Your submitted feedback "{{title}}" was closed: {{status}}'
@@ -929,26 +957,33 @@ user.emails.feedback_new-comment: '{{name}} posted a new comment:'
 user.emails.feedback_published: 'Your submitted feedback "{{title}}" has been validated and will now appear on our site.'
 user.emails.feedback_thank-you: 'Thank you for submitting your feedback "{{title}}"'
 user.emails.feedback_updated: 'Your submitted feedback "{{title}}" has been updated. Its status is now: new status "{{status}}"'
-user.emails.feedback_votes.one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
-user.emails.feedback_votes.other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
+user.emails.feedback_votes:
+  one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
+  other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
 user.emails.greeting: 'Dear {{to_name}},'
 user.emails.kb-explain: 'You are receiving this email because you are subscribed to our knowledgebase at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
-user.emails.kb-new-articles.one: '1 New Article'
-user.emails.kb-new-articles.other: '{{count}} New Articles'
-user.emails.kb-updated-articles.one: '1 Updated Article'
-user.emails.kb-updated-articles.other: '{{count}} Updated Articles'
+user.emails.kb-new-articles:
+  one: '1 New Article'
+  other: '{{count}} New Articles'
+user.emails.kb-updated-articles:
+  one: '1 Updated Article'
+  other: '{{count}} Updated Articles'
 user.emails.label_view-online: 'View Online'
 user.emails.message-clipped: '(Message has been clipped)'
 user.emails.new-ticket-guest-link: 'Thank you for contacting us. You may view the status of your ticket here:'
 user.emails.news-explain: 'You are receiving this email because you are subscribed to our news at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all news notifications.</a>'
-user.emails.news-new-articles.one: '1 New News Article'
-user.emails.news-new-articles.other: '{{count}} New News Articles'
-user.emails.news-new-news.one: '1 New News Article'
-user.emails.news-new-news.other: '{{count}} New News Articles'
-user.emails.news-updated-articles.one: '1 Updated News Article'
-user.emails.news-updated-articles.other: '{{count}} Updated News Articles'
-user.emails.news-updated-news.one: '1 Updated News Article'
-user.emails.news-updated-news.other: '{{count}} Updated News Articles'
+user.emails.news-new-articles:
+  one: '1 New News Article'
+  other: '{{count}} New News Articles'
+user.emails.news-new-news:
+  one: '1 New News Article'
+  other: '{{count}} New News Articles'
+user.emails.news-updated-articles:
+  one: '1 Updated News Article'
+  other: '{{count}} Updated News Articles'
+user.emails.news-updated-news:
+  one: '1 Updated News Article'
+  other: '{{count}} Updated News Articles'
 user.emails.password_agent-reset: 'An agent has reset your account password. You can log in with these details'
 user.emails.password_reset: 'You requested a password reset. To reset your password, click on the link below:'
 user.emails.password_set: 'To set your password, click on the link below:'
@@ -990,18 +1025,22 @@ user.error.error_code: 'Error Code'
 user.error.error_title: Error
 user.error.expired-token: 'The page you are trying to access has expired. Please go back and try again.'
 user.error.form_choice_invalid: 'Please choose an option from the list'
-user.error.form_choice_max.one: 'Please select at most 1 option'
-user.error.form_choice_max.other: 'Please select at most {{count}} options'
-user.error.form_choice_min.one: 'Please select at least 1 option'
-user.error.form_choice_min.other: 'Please select at least {{count}} options'
+user.error.form_choice_max:
+  one: 'Please select at most 1 option'
+  other: 'Please select at most {{count}} options'
+user.error.form_choice_min:
+  one: 'Please select at least 1 option'
+  other: 'Please select at least {{count}} options'
 user.error.form_date_invalid: 'Please enter a valid date'
 user.error.form_date_invalid_dow: 'The week day you selected is not allowed'
 user.error.form_date_invalid_range: 'The date you selected is not within the allowed range'
 user.error.form_required: 'This field is required'
-user.error.form_text_max.one: 'Please enter at most 1 character'
-user.error.form_text_max.other: 'Please enter at most {{count}} characters'
-user.error.form_text_min.one: 'Please enter at least 1 character'
-user.error.form_text_min.other: 'Please enter at least {{count}} characters'
+user.error.form_text_max:
+  one: 'Please enter at most 1 character'
+  other: 'Please enter at most {{count}} characters'
+user.error.form_text_min:
+  one: 'Please enter at least 1 character'
+  other: 'Please enter at least {{count}} characters'
 user.error.form_text_regex: 'Please enter a correct value'
 user.error.invalid_email: 'Invalid email address'
 user.error.invalid_email-code: 'The validation link seems to be invalid.'
@@ -1048,16 +1087,21 @@ user.profile.choose_email: 'Choose the email address you want to use'
 user.profile.connect_with: 'Connect with'
 user.profile.or_connect_with: 'Or connect with'
 user.profile.register: Register
-user.profile.register_password_min_length.one: 'Minimum of {{count}} character'
-user.profile.register_password_min_length.other: 'Minimum of {{count}} characters'
-user.profile.register_password_require_num_lowercase.one: 'At least {{count}} lowercase character'
-user.profile.register_password_require_num_lowercase.other: 'At least {{count}} lowercase characters'
-user.profile.register_password_require_num_number.one: 'At least {{count}} number'
-user.profile.register_password_require_num_number.other: 'At least {{count}} numbers'
-user.profile.register_password_require_num_symbol.one: 'At least {{count}} symbol'
-user.profile.register_password_require_num_symbol.other: 'At least {{count}} symbols'
-user.profile.register_password_require_num_uppercase.one: 'At least {{count}} uppercase character'
-user.profile.register_password_require_num_uppercase.other: 'At least {{count}} uppercase characters'
+user.profile.register_password_min_length:
+  one: 'Minimum of {{count}} character'
+  other: 'Minimum of {{count}} characters'
+user.profile.register_password_require_num_lowercase:
+  one: 'At least {{count}} lowercase character'
+  other: 'At least {{count}} lowercase characters'
+user.profile.register_password_require_num_number:
+  one: 'At least {{count}} number'
+  other: 'At least {{count}} numbers'
+user.profile.register_password_require_num_symbol:
+  one: 'At least {{count}} symbol'
+  other: 'At least {{count}} symbols'
+user.profile.register_password_require_num_uppercase:
+  one: 'At least {{count}} uppercase character'
+  other: 'At least {{count}} uppercase characters'
 user.profile.register_password_unused: 'You cannot use a password you have used before'
 user.tickets.feedback_message_leave_comment: 'Optionally leave a comment'
 user.tickets.fields_category: Category
@@ -1142,17 +1186,24 @@ user.time.time_x_month: '{0} months'
 user.time.time_x_second: '{0} seconds'
 user.time.time_x_week: '{0} weeks'
 user.time.time_x_year: '{0} years'
-user.time.x_day.one: '1 day'
-user.time.x_day.other: '{{count}} days'
-user.time.x_hour.one: '1 hour'
-user.time.x_hour.other: '{{count}} hours'
-user.time.x_minute.one: '1 minute'
-user.time.x_minute.other: '{{count}} minutes'
-user.time.x_month.one: '1 month'
-user.time.x_month.other: '{{count}} months'
-user.time.x_second.one: '1 second'
-user.time.x_second.other: '{{count}} seconds'
-user.time.x_week.one: '1 week'
-user.time.x_week.other: '{{count}} weeks'
-user.time.x_year.one: '1 year'
-user.time.x_year.other: '{{count}} years'
+user.time.x_day:
+  one: '1 day'
+  other: '{{count}} days'
+user.time.x_hour:
+  one: '1 hour'
+  other: '{{count}} hours'
+user.time.x_minute:
+  one: '1 minute'
+  other: '{{count}} minutes'
+user.time.x_month:
+  one: '1 month'
+  other: '{{count}} months'
+user.time.x_second:
+  one: '1 second'
+  other: '{{count}} seconds'
+user.time.x_week:
+  one: '1 week'
+  other: '{{count}} weeks'
+user.time.x_year:
+  one: '1 year'
+  other: '{{count}} years'

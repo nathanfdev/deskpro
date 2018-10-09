@@ -5,8 +5,9 @@ agent.chat.chat_history: Chatverlauf
 agent.chat.chat_started_by: 'Chat gestartet von'
 agent.chat.chat_transcript: Chat-Protokoll
 agent.chat.chat_with_x: 'Chatten mit {{name}}'
-agent.chat.count_seconds.one: '{{count}} Sekunde'
-agent.chat.count_seconds.other: '{{count}} Sekunden'
+agent.chat.count_seconds:
+  one: '{{count}} Sekunde'
+  other: '{{count}} Sekunden'
 agent.chat.filter_title_assigned: 'Zugeordnete Chats'
 agent.chat.filter_title_mine: 'Meine Chats'
 agent.chat.filter_title_missed: 'Versäumte Chats'
@@ -20,8 +21,9 @@ agent.chat.label_assigned_others: 'Weitere Mitarbeiter in diesem Chat'
 agent.chat.leave_chat_confirm: 'Sind Sie sicher, dass Sie diesen Chat verlassen wollen?'
 agent.chat.leave_end: 'Chat beenden und verlassen'
 agent.chat.leave_unassign: 'Zuweisung an mich entfernen und verlassen'
-agent.chat.list_title.one: '1 Konversation'
-agent.chat.list_title.other: '{{count}} Konversationen'
+agent.chat.list_title:
+  one: '1 Konversation'
+  other: '{{count}} Konversationen'
 agent.chat.msg_agent_timeout: '{{agent_name}} ist abgelaufen'
 agent.chat.msg_assigned_agent: 'Chat zugeteilt an {{agent_name}}'
 agent.chat.msg_part_joined: '{{person_name}} ist eingetreten'
@@ -68,14 +70,17 @@ agent.chrome.chat_list_heading_current-page: 'Aktuelle Seite'
 agent.chrome.chat_list_heading_time: Zeit
 agent.chrome.chat_list_heading_user: Benutzer
 agent.chrome.chat_list_no-online-users: 'Es sind keine Benutzer online'
-agent.chrome.chat_list_online-users.one: '<span class="count-online-users">1</span> Benutzer online'
-agent.chrome.chat_list_online-users.other: '<span class="count-online-users">{{count}}</span> Benutzer online'
+agent.chrome.chat_list_online-users:
+  one: '<span class="count-online-users">1</span> Benutzer online'
+  other: '<span class="count-online-users">{{count}}</span> Benutzer online'
 agent.chrome.chat_logged-in: 'Angemeldet zum Chatten'
 agent.chrome.chat_logged-out: 'Vom Chat abgemeldet'
-agent.chrome.chat_online-agents.one: '<span class="userchat-online-agents-count">{{count}}</span> Mitarbeiter'
-agent.chrome.chat_online-agents.other: '<span class="userchat-online-agents-count">{{count}}</span> Mitarbeiter'
-agent.chrome.chat_online-users.one: '<span class="userchat-online-users-count">{{count}}</span> Benutzer'
-agent.chrome.chat_online-users.other: '<span class="userchat-online-users-count">{{count}}</span> Benutzer'
+agent.chrome.chat_online-agents:
+  one: '<span class="userchat-online-agents-count">{{count}}</span> Mitarbeiter'
+  other: '<span class="userchat-online-agents-count">{{count}}</span> Mitarbeiter'
+agent.chrome.chat_online-users:
+  one: '<span class="userchat-online-users-count">{{count}}</span> Benutzer'
+  other: '<span class="userchat-online-users-count">{{count}}</span> Benutzer'
 agent.chrome.chat_sign-in: 'Zum Chat anmelden'
 agent.chrome.chat_sign-out: 'Vom Chat abmelden'
 agent.chrome.create_new-article: 'Neuer Artikel'
@@ -134,8 +139,9 @@ agent.chrome.quicksearch_title-publish: Veröffentlichen
 agent.chrome.quicksearch_title-tickets: Tickets
 agent.chrome.recent_list-filter-info: 'Tippen, um kürzliche Ergebnisse zu filtern'
 agent.chrome.recent_list-none: 'Sie haben noch keine Registerkarten geöffnet'
-agent.chrome.search-show-more.one: 'Zeige {{count}} weitere'
-agent.chrome.search-show-more.other: 'Zeige {{count}} weitere'
+agent.chrome.search-show-more:
+  one: 'Zeige {{count}} weitere'
+  other: 'Zeige {{count}} weitere'
 agent.defaults.default_style: Standard-Stil
 agent.defaults.team_lvl1_support: 1st-Level-Support
 agent.defaults.team_lvl2_support: 2nd-Level-Support
@@ -206,8 +212,9 @@ agent.emails.person_replied: '{{name}} hat auf „{{subject}}“ geantwortet'
 agent.emails.referring_page: 'Verweis von Seite'
 agent.emails.reply_above_line: 'OBEN ANTWORTEN'
 agent.emails.reply_is_as_note: 'Ihre Antwort wird als private Mitarbeiter-Notiz hinzugefügt'
-agent.emails.reply_sent_to_ccs.one: 'und {{count}} "CC"-Benutzter :'
-agent.emails.reply_sent_to_ccs.other: 'und {{count}} "CC"-Benutzer:'
+agent.emails.reply_sent_to_ccs:
+  one: 'und {{count}} "CC"-Benutzter :'
+  other: 'und {{count}} "CC"-Benutzer:'
 agent.emails.reply_sent_to_user: 'Ihre Antwort wird an den Benutzer {{user}} gesendet'
 agent.emails.subject_email_change_merge: 'E-Mail-Änderung und Konto-Zusammenführung bestätigen'
 agent.emails.subject_error_forwarded_email: 'Fehler bezüglich Ihrer weitergeleiteten E-Mail: {{subject}}'
@@ -259,8 +266,9 @@ agent.feedback.count_votes: '{{display_count}} Stimme|{{display_count}} Stimmen'
 agent.feedback.feedback_deleted: 'Das Feedback wurde gelöscht'
 agent.feedback.feedback_to_review: 'Zu überprüfendes Feedback'
 agent.feedback.least_voted_on_top: 'Wenigste Stimmen oben'
-agent.feedback.list_title.one: '1 Einreichung'
-agent.feedback.list_title.other: '{{count}} Einreichungen'
+agent.feedback.list_title:
+  one: '1 Einreichung'
+  other: '{{count}} Einreichungen'
 agent.feedback.merge_feedback: 'Feedback zusammenführen'
 agent.feedback.merge_feedback_note: 'Die Beschreibung vom zusammengeführten Feedback wird als Kommentar zum verbleibenden Feedback hinzugefügt.'
 agent.feedback.merge_feedback_submit: 'Diese beiden Feedback-Meldungen zusammenführen'
@@ -427,12 +435,15 @@ agent.general.copy_permalink: 'Permalink kopieren'
 agent.general.copy_to_clipboard: 'In Zwischenablage speichern'
 agent.general.copy_url: 'URL kopieren'
 agent.general.count: Zählen
-agent.general.count_chat.one: '1 Chat'
-agent.general.count_chat.other: '{{count}} Chats'
-agent.general.count_tickets.one: '1 Ticket'
-agent.general.count_tickets.other: '{{count}} Tickets'
-agent.general.count_votecount_votes.one: '1 Stimme'
-agent.general.count_votecount_votes.other: '{{count}} Stimmen'
+agent.general.count_chat:
+  one: '1 Chat'
+  other: '{{count}} Chats'
+agent.general.count_tickets:
+  one: '1 Ticket'
+  other: '{{count}} Tickets'
+agent.general.count_votecount_votes:
+  one: '1 Stimme'
+  other: '{{count}} Stimmen'
 agent.general.countries: Länder
 agent.general.create: Erstelle
 agent.general.create_a_new_organization: 'Erzeuge eine neue Organisation'
@@ -1022,10 +1033,12 @@ agent.general.value: Wert
 agent.general.verified: Geprüft
 agent.general.via: Via
 agent.general.view: Ansehen
-agent.general.view_all_x_chats.one: '1 Chat ansehen'
-agent.general.view_all_x_chats.other: 'Alle {{count}} Chats ansehen'
-agent.general.view_all_x_tickets.one: '1 Ticket ansehen'
-agent.general.view_all_x_tickets.other: 'Alle {{count}} Tickets ansehen'
+agent.general.view_all_x_chats:
+  one: '1 Chat ansehen'
+  other: 'Alle {{count}} Chats ansehen'
+agent.general.view_all_x_tickets:
+  one: '1 Ticket ansehen'
+  other: 'Alle {{count}} Tickets ansehen'
 agent.general.view_in_user_interface: 'In Benutzeroberfläche ansehen'
 agent.general.view_more: 'Mehr anzeigen'
 agent.general.view_profile: 'Profil ansehen'
@@ -1045,8 +1058,9 @@ agent.general.workflows: Workflows
 agent.general.working_hours: Geschäftszeiten
 agent.general.x_after_y: '{{field}} nach {{value}}'
 agent.general.x_before_y: '{{field}} vor {{value}}'
-agent.general.x_down_votes.one: '1 negative Stimme'
-agent.general.x_down_votes.other: '{{count}} negative Stimmen'
+agent.general.x_down_votes:
+  one: '1 negative Stimme'
+  other: '{{count}} negative Stimmen'
 agent.general.x_include_y: '{{field}} beinhaltet {{value}}'
 agent.general.x_is_between_y_and_z: '{{field}} ist zwischen {{value1}} und {{value2}}'
 agent.general.x_is_greater_than_y: '{{field}} ist größer als {{value}}'
@@ -1055,8 +1069,9 @@ agent.general.x_is_not_y: '{{field}} ist nicht {{value}}'
 agent.general.x_is_y: '{{field}} ist {{value}}'
 agent.general.x_not_include_y: '{{field}} beinhaltet nicht {{value}}'
 agent.general.x_selected: '{{num_placeholder}} ausgewählt'
-agent.general.x_up_votes.one: '1 positive Stimme'
-agent.general.x_up_votes.other: '{{count}} positive Stimmen'
+agent.general.x_up_votes:
+  one: '1 positive Stimme'
+  other: '{{count}} positive Stimmen'
 agent.general.years: Jahre
 agent.general.yim: YIM
 agent.general.your_email_address: 'Ihre E-Mail-Adresse'
@@ -1216,19 +1231,23 @@ agent.organizations.create_organization: 'Organisation erstellen'
 agent.organizations.email_domain_assoc: E-Mail-Domänen-Verbindungen
 agent.organizations.email_domain_assoc_add: 'Neue Domaine hinzufügen'
 agent.organizations.email_domain_assoc_explain: 'Benutzer mit E-Mail-Adressen, die diese Domäne enthalten, werden automatisch mit der Organisation verknüpft:'
-agent.organizations.email_domain_assoc_move.one: 'Verknüpfe 1 Benutzer'
-agent.organizations.email_domain_assoc_move.other: 'Verknüpfe {{count}} Benutzer'
-agent.organizations.email_domain_assoc_move_all.one: 'Verknüpfe 1 Benutzer der bereits mit einer anderen Organisation verknüpft ist'
-agent.organizations.email_domain_assoc_move_all.other: 'Verknüpfe {{count}} Benutzer die bereits mit einer anderen Organisation verknüpft sind'
+agent.organizations.email_domain_assoc_move:
+  one: 'Verknüpfe 1 Benutzer'
+  other: 'Verknüpfe {{count}} Benutzer'
+agent.organizations.email_domain_assoc_move_all:
+  one: 'Verknüpfe 1 Benutzer der bereits mit einer anderen Organisation verknüpft ist'
+  other: 'Verknüpfe {{count}} Benutzer die bereits mit einer anderen Organisation verknüpft sind'
 agent.organizations.email_domain_assoc_none: 'E-Mail-Domäne festlegen, um Benutzer automatisch mit der Organisation zu verknüpfen.'
 agent.organizations.email_domain_assoc_remove: 'E-Mail-Domäne entfernen'
-agent.organizations.email_domain_assoc_remove_users.one: 'Alle E-Mail-Domänen entfernen und Verknüpfung von 1 Benutzer zu dieser Organisation entfernen'
-agent.organizations.email_domain_assoc_remove_users.other: 'Alle E-Mail-Domänen entfernen und Verknüpfung von {{count}} Benutzer zu dieser Organisation entfernen'
+agent.organizations.email_domain_assoc_remove_users:
+  one: 'Alle E-Mail-Domänen entfernen und Verknüpfung von 1 Benutzer zu dieser Organisation entfernen'
+  other: 'Alle E-Mail-Domänen entfernen und Verknüpfung von {{count}} Benutzer zu dieser Organisation entfernen'
 agent.organizations.email_domain_assoc_title: 'E-Mail-Domänen-Verknüpfungen für {{name}}'
 agent.organizations.enter_position: 'Stelle eingeben'
 agent.organizations.is_empty: 'Diese Organisation hat keine Mitglieder.'
-agent.organizations.list_title.one: '1 Organisation'
-agent.organizations.list_title.other: '{{count}} Organisationen'
+agent.organizations.list_title:
+  one: '1 Organisation'
+  other: '{{count}} Organisationen'
 agent.organizations.no_slas: 'Auf diese Organisation werden keine automatischen SLAs angewendet.'
 agent.organizations.org_manager_click_to_remove: 'Organsiations-Manager. Zum Entfernen klicken.'
 agent.people.act_reg: 'hat ein Konto erstellt'
@@ -1252,8 +1271,9 @@ agent.people.confirm_remove_email: 'Sind Sie sicher, dass Sie diese E-Mail-Adres
 agent.people.confirm_remove_phone: 'Sind Sie sicher, dass Sie diese Telefonnummer entfernen möchten?'
 agent.people.contact_info: Kontaktinformationen
 agent.people.contact_info_for_x: 'Kontaktinformationen für {{name}}'
-agent.people.count_members.one: '{{count}} Mitglied'
-agent.people.count_members.other: '{{count}} Mitglieder'
+agent.people.count_members:
+  one: '{{count}} Mitglied'
+  other: '{{count}} Mitglieder'
 agent.people.create_person: 'Erstelle Person'
 agent.people.creation_by: 'Erstellt durch'
 agent.people.delete_user: 'Benutzer löschen'
@@ -1269,8 +1289,9 @@ agent.people.find_person: 'Person finden'
 agent.people.im: IM
 agent.people.im_account_placeholder: Konto-Benutzername
 agent.people.is_agent: 'ist Mitarbeiter'
-agent.people.list_title.one: '1 Person'
-agent.people.list_title.other: '{{count}} Personen'
+agent.people.list_title:
+  one: '1 Person'
+  other: '{{count}} Personen'
 agent.people.login_as_user: 'Als Benutzer anmelden'
 agent.people.make_primary_email: 'Als Primär definieren'
 agent.people.manager: Manager
@@ -1532,8 +1553,9 @@ agent.publish.change_category: 'Kategorie ändern'
 agent.publish.click_to_set_date: '(Klicken, um Datum festzulegen)'
 agent.publish.comment_by: 'Kommentar von {{name}}'
 agent.publish.comment_requires_validation: 'Dieser Kommentar muss überprüft werden'
-agent.publish.comments_list_title.one: '1 Kommentar'
-agent.publish.comments_list_title.other: '{{count}} Kommentare'
+agent.publish.comments_list_title:
+  one: '1 Kommentar'
+  other: '{{count}} Kommentare'
 agent.publish.comments_to_validate: 'Zu überprüfende Kommentare'
 agent.publish.compare_selected: 'Ausgewählte vergleichen'
 agent.publish.create_artilce: 'Artikel anlegen'
@@ -1550,32 +1572,38 @@ agent.publish.download_specify_filesize: 'Geben sie optional die Dateigröße f�
 agent.publish.download_specify_url: 'Geben Sie die vollständige URL für die Datei ein. Ein Benutzer, der auf die Herunterladen-Schaltfläche klickt, wird zu dieser URL weitergeleitet'
 agent.publish.download_upload_btn: 'Datei hochladen'
 agent.publish.downloads_highest_lowest: 'Anzahl an Downloads (Meiste-Wenigste)'
-agent.publish.downloads_list_title.one: '1 Download'
-agent.publish.downloads_list_title.other: '{{count}} Downloads'
+agent.publish.downloads_list_title:
+  one: '1 Download'
+  other: '{{count}} Downloads'
 agent.publish.downloads_lowest_highest: 'Anzahl an Downloads (Wenigste-Meiste)'
 agent.publish.draft_content: 'Meine Entwürfe'
 agent.publish.draft_revision: Ändern
-agent.publish.drafts_list_title.one: '1 Entwurf'
-agent.publish.drafts_list_title.other: '{{count}} Entwürfe'
+agent.publish.drafts_list_title:
+  one: '1 Entwurf'
+  other: '{{count}} Entwürfe'
 agent.publish.drop_file_to_add: 'Datei hierher ziehen, um sie zum Eintrag hinzuzufügen'
 agent.publish.edit_category_btn: 'Kategorie bearbeiten'
 agent.publish.edit_new_glossary: 'Glossar-Wort bearbeiten'
 agent.publish.error_kb_cats_same: 'Kategorien sind gleich.'
-agent.publish.error_kb_missing.one: '{{count}} Artikel nicht gefunden.'
-agent.publish.error_kb_missing.other: '{{count}} Artikel nicht gefunden.'
+agent.publish.error_kb_missing:
+  one: '{{count}} Artikel nicht gefunden.'
+  other: '{{count}} Artikel nicht gefunden.'
 agent.publish.error_kb_not_in_db: 'Es wurde keine Kategorie gefunden'
-agent.publish.error_kb_perm_denied.one: '{{count}} Rechte-Fehler.'
-agent.publish.error_kb_perm_denied.other: '{{count}} Rechte-Fehler.'
+agent.publish.error_kb_perm_denied:
+  one: '{{count}} Rechte-Fehler.'
+  other: '{{count}} Rechte-Fehler.'
 agent.publish.error_kb_unaffected: 'Manche Artikel sind nicht betroffen:'
 agent.publish.event_time_ago_at_when: '{{ago}} am {{date}}'
 agent.publish.event_time_ago_by_who_at_when: '{{ago}} von {{name}} am {{date}}'
 agent.publish.for_ticket: 'Für Ticket'
 agent.publish.glossary: Glossar
 agent.publish.helpful: Hilfreich
-agent.publish.kb_list_title.one: '1 Artikel'
-agent.publish.kb_list_title.other: '{{count}} Artikel'
-agent.publish.kb_list_unique_title.one: '1 eindeutige Artikel'
-agent.publish.kb_list_unique_title.other: '{{count}} eindeutige Artikel'
+agent.publish.kb_list_title:
+  one: '1 Artikel'
+  other: '{{count}} Artikel'
+agent.publish.kb_list_unique_title:
+  one: '1 eindeutige Artikel'
+  other: '{{count}} eindeutige Artikel'
 agent.publish.label_new_file: 'Neue Datei'
 agent.publish.label_old_file: 'Alte Datei'
 agent.publish.missing_translation: 'Fehlende Übersetzung'
@@ -1586,8 +1614,9 @@ agent.publish.new_comment_submitted_by: 'Von {{name}} wurde ein neuer Kommentar 
 agent.publish.new_feedback_by: 'Neues Feedback von {{name}}'
 agent.publish.new_post: 'Neuer Eintrag'
 agent.publish.news_comments: Neuigkeiten-Kommentare
-agent.publish.news_list_title.one: '1 Eintrag'
-agent.publish.news_list_title.other: '{{count}} Einträge'
+agent.publish.news_list_title:
+  one: '1 Eintrag'
+  other: '{{count}} Einträge'
 agent.publish.no_changes: 'Es wurden keine Änderungen zwischen diesen beiden Revisionen festgestellt'
 agent.publish.no_downlod_cats_error: 'Es sind keine Kategorien vorhanden. Bevor Sie Dateien im Download-Bereich hinzufügen können, müssen Sie eine Kategorie erstellen.'
 agent.publish.no_kb_cats_error: 'Es sind keine Kategorien vorhanden. Bevor Sie Artikel im Wissensdatenbank-Bereich hinzufügen können, müssen Sie eine Kategorie erstellen.'
@@ -1626,8 +1655,9 @@ agent.publish.status_published: Veröffentlicht
 agent.publish.sticky_words_title: Suchbegriffe
 agent.publish.untranslated_articles: 'Nicht übersetzte Artikel'
 agent.publish.validating_comment_manage_tip: 'Kommentar wartet auf Überprüfung. Zum Verwalten klicken'
-agent.publish.validating_list_title.one: '1 in Überprüfung'
-agent.publish.validating_list_title.other: '{{count}} in Überprüfung'
+agent.publish.validating_list_title:
+  one: '1 in Überprüfung'
+  other: '{{count}} in Überprüfung'
 agent.publish.view_count: 'Zeige Anzahl'
 agent.publish.view_count_highest_lowest: 'Anzahl Aufrufe (Meiste-Wenigste)'
 agent.publish.view_count_lowest_highest: 'Anzahl Aufrufe (Wenigste-Meiste)'
@@ -1793,8 +1823,9 @@ agent.tasks.due_today: 'Heute fällig'
 agent.tasks.enter_your_comment: 'Geben Sie ihren Kommentar ein...'
 agent.tasks.linked_deal: 'Verknüpftes Angebot'
 agent.tasks.linked_ticket: 'Verknüpftes Ticket'
-agent.tasks.list_title.one: '1 Aufgabe'
-agent.tasks.list_title.other: '{{count}} Aufgaben'
+agent.tasks.list_title:
+  one: '1 Aufgabe'
+  other: '{{count}} Aufgaben'
 agent.tasks.my_tasks: 'Meine Aufgaben'
 agent.tasks.my_teams: 'Meine Teams'
 agent.tasks.my_teamstasks: 'Aufgaben meiner Teams'
@@ -1866,12 +1897,15 @@ agent.tickets.close_tab_after_reply: 'Schließe diese Ticket-Registerkarte nach 
 agent.tickets.close_tab_tip: 'Schließe diese Registerkarte, nachdem die Nachricht gespeichert wurde'
 agent.tickets.coment_after_ticket_created: 'Kommentiere nach dem das Ticket erstellt wurde'
 agent.tickets.commented_on: 'Kommentiert am'
-agent.tickets.count_agents.one: '1 Mitarbeiter'
-agent.tickets.count_agents.other: '{{count}} Mitarbeiter'
-agent.tickets.count_charges.one: '1 Aufwand'
-agent.tickets.count_charges.other: '{{count}} Aufwände'
-agent.tickets.count_users.one: '{{count}} Benutzer'
-agent.tickets.count_users.other: '{{count}} Benutzer'
+agent.tickets.count_agents:
+  one: '1 Mitarbeiter'
+  other: '{{count}} Mitarbeiter'
+agent.tickets.count_charges:
+  one: '1 Aufwand'
+  other: '{{count}} Aufwände'
+agent.tickets.count_users:
+  one: '{{count}} Benutzer'
+  other: '{{count}} Benutzer'
 agent.tickets.create_linked_ticket: 'Erstelle verknüpftes Ticket'
 agent.tickets.create_new_pending_article: 'Erstelle einen neuen ausstehenden Artikel'
 agent.tickets.creating_a_ticket_for: 'Erstelle ein Ticket für'
@@ -1976,8 +2010,9 @@ agent.tickets.link_existing_ticket_make_below: 'Verwende das Ticket unterhalb de
 agent.tickets.linked_tickets: 'Verknüpfte Tickets'
 agent.tickets.linking_with_chat: 'Verknüpfen mit Chat:'
 agent.tickets.linking_with_ticket: 'Verknüpfen mit Ticket:'
-agent.tickets.list_title.one: '{{count}} Ticket'
-agent.tickets.list_title.other: '{{count}} Tickets'
+agent.tickets.list_title:
+  one: '{{count}} Ticket'
+  other: '{{count}} Tickets'
 agent.tickets.list_title_counter: '{{x}} Tickets'
 agent.tickets.load_more: 'Mehr laden'
 agent.tickets.lock: Sperren
@@ -2203,8 +2238,9 @@ agent.tickets.written_after: 'Geschrieben nach'
 agent.tickets.written_any_time: 'Beliebiger Zeitpunkt'
 agent.tickets.written_before: 'Geschrieben vor'
 agent.tickets.written_between: 'Geschrieben zwischen'
-agent.tickets.x_messages_moved.one: '1 Nachricht wurde verschoben'
-agent.tickets.x_messages_moved.other: '{{count}} Nachrichten  wurden verschoben'
+agent.tickets.x_messages_moved:
+  one: '1 Nachricht wurde verschoben'
+  other: '{{count}} Nachrichten  wurden verschoben'
 agent.tickets.x_rated_this_message_as: '{{name}} hat diese Nachricht bewertet als:'
 agent.tickets.you_have_auto_lock: 'Sie haben eine automatische Sperre auf dieses Ticket. Andere Mitarbeiter können dieses Ticket nicht bearbeiten, solange die Sperre nicht aufgehoben ist.'
 agent.tickets.you_have_locked: 'Sie haben dieses Ticket gesperrt. Andere Mitarbeiter können dieses Ticket nicht bearbeiten, solange die Sperre nicht aufgehoben ist.'
@@ -2347,8 +2383,9 @@ agent.twitter.associated_people: 'Verknüpfte Personen'
 agent.twitter.char_remaining: '{{num_chars}} verbleibend'
 agent.twitter.characters: Zeichen
 agent.twitter.corresponding_twitter_account: 'entsprechendes Konto bei Twitter'
-agent.twitter.count_selected.one: '{{count}} ausgewählt'
-agent.twitter.count_selected.other: '{{count}} ausgewählt'
+agent.twitter.count_selected:
+  one: '{{count}} ausgewählt'
+  other: '{{count}} ausgewählt'
 agent.twitter.delete-search-confirm: 'Sind Sie sicher, daß Sie diese Suche löschen möchten?'
 agent.twitter.direct: Direkt
 agent.twitter.direct_messages: Direktnachricht
@@ -2363,8 +2400,9 @@ agent.twitter.from_account: 'Von Konto'
 agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'Als Antwort auf'
 agent.twitter.interactions: Interaktionen
-agent.twitter.list_title.one: '1 Tweet'
-agent.twitter.list_title.other: '{{count}} Tweets'
+agent.twitter.list_title:
+  one: '1 Tweet'
+  other: '{{count}} Tweets'
 agent.twitter.location: Standort
 agent.twitter.long: Lang
 agent.twitter.long_private: 'Lang Privat'
@@ -2430,8 +2468,9 @@ agent.userchat.ended_by_reason: 'Chat beendet durch {{name}}: {{reason}}'
 agent.userchat.ended_user: 'Chat vom Benutzer beendet'
 agent.userchat.full_message: 'Vollständige Nachricht'
 agent.userchat.ident_unconfirmed: 'Die Identität wurde nicht bestätigt, der Benutzer ist nicht angemeldet'
-agent.userchat.list_title.one: '1 Chat'
-agent.userchat.list_title.other: '{{count}} Chats'
+agent.userchat.list_title:
+  one: '1 Chat'
+  other: '{{count}} Chats'
 agent.userchat.message_agent-timeout: '{{name}} antwortet nicht. Bitte warten Sie, währen wir versuchen einen anderen Mitarbeiter zu finden.'
 agent.userchat.message_assigned: 'Chat zugewiesen an {{name}}'
 agent.userchat.message_ended: 'Chat beendet'

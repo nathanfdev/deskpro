@@ -143,8 +143,9 @@ portal.chat.list_chat: پیام
 portal.chat.list_date: تاریخ
 portal.chat.list_switch_to_my_chats: 'به چت من برگردید'
 portal.chat.list_switch_to_organization: 'به سازمان تغییر دهید'
-portal.chat.list_title.one: '1 چت {{count}} چت '
-portal.chat.list_title.other: '1 چت {{count}} چت '
+portal.chat.list_title:
+  one: '1 چت {{count}} چت '
+  other: '1 چت {{count}} چت '
 portal.chat.list_user: کاربر
 portal.chat.log_agents: 'افراد سازمان'
 portal.chat.log_chat_time: 'زمان کامل چت'
@@ -573,8 +574,9 @@ user.chat.log_created-date: 'ایجاد {{تاریخ}}'
 user.chat.log_fields_agent: 'فرد سازمان'
 user.chat.log_fields_department: دپارتمان
 user.chat.log_message_author-you: شما
-user.chat.log_nav-view-chats.one: 'نمایش آخرین اخبار چت شما '
-user.chat.log_nav-view-chats.other: ' نمایش {{count}} سیاهه های مربوط به چت شما'
+user.chat.log_nav-view-chats:
+  one: 'نمایش آخرین اخبار چت شما '
+  other: ' نمایش {{count}} سیاهه های مربوط به چت شما'
 user.chat.log_no_department: 'بدون دپارتمان'
 user.chat.message_agent-timeout: 'عذر خواهی ما را بپذیرید; {{name}} به نظر می رسد که اتصال قطع شده است. لطفا صبر کنید در حالی که سعی کنید برای پیدا کردن نماینده دیگری.'
 user.chat.message_assigned: 'گپ و گفتگو اختصاص یافته به {{name}}'
