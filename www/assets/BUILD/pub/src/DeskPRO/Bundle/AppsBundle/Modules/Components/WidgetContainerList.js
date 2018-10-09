@@ -23,6 +23,9 @@ export class WidgetContainerList extends React.PureComponent {
      */
     isVisible: PropTypes.bool,
 
+    /**
+     * maps of props that should be passed to each widget
+     */
     widgetProps: PropTypes.shape({
       /**
        * function that returns the current message sent from the underlying iframe
@@ -39,6 +42,10 @@ export class WidgetContainerList extends React.PureComponent {
        */
       unregister: PropTypes.func.isRequired,
     }).isRequired,
+  };
+
+  static defaultProps = {
+    isVisible: true
   };
 
   constructor(props) {
