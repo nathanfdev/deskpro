@@ -1159,6 +1159,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 	},
 
 	sendMessage: function(msg, success) {
+
+    var blob_inline_ids = [];
+    $('input[name="blob_inline_ids[]"]', this.wrapper).each(function() {
+      blob_inline_ids.push($(this).val());
+    });
+
     var self = this
       , promises = this.paste_promises
       , promise
@@ -1171,7 +1177,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
             url: BASE_URL + 'agent/chat/send-message/' + self.meta.conversation_id,
             data: {
               content: msg,
-              is_html: DeskPRO_Window.canUseAgentReplyRte()
+              is_html: DeskPRO_Window.canUseAgentReplyRte(),
+							blob_inline_ids: blob_inline_ids
             },
             execSuccessBefore: true,
             success: function(data) {

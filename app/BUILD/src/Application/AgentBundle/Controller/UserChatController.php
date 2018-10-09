@@ -21,6 +21,7 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -524,6 +525,15 @@ class UserChatController extends AbstractController
 
                 $content = Strings::trimHtml($this->in->getHtmlCore('content'));
                 $content = Strings::prepareWysiwygHtml($content);
+
+                if ($inlineBlobIds = $this->in->getArrayOfInts('blob_inline_ids')) {
+                    $blobs = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
+                    foreach ($blobs as $blob) {
+                        if (StringUtils::ensureAttachment($blob, $content)) {
+                            $blob->setIsTemp(false);
+                        }
+                    }
+                }
             } else {
                 $content = $this->in->getString('content');
             }
@@ -616,6 +626,7 @@ class UserChatController extends AbstractController
 
         /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
         $chatManager = $this->container->getSystemObject('user_chat_manager', ['session' => $this->session->getEntity()]);
+        $blob->setIsTemp(false);
         $chatManager->addMessage(
             $convo,
             $this->person,

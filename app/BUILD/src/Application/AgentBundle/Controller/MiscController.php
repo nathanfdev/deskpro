@@ -657,7 +657,7 @@ JS;
 
         if ($this->in->getBool('save_media')) {
             $blob->is_media_upload = true;
-            $this->em->persist($blob);
+            $this->em->persist($blob->setIsTemp(false));
             $this->em->flush();
         }
 
