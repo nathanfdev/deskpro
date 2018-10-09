@@ -2,7 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 class WidgetIframe extends React.PureComponent {
+
   static propTypes = {
+    isFullscreen:  PropTypes.bool.isRequired,
     url:           PropTypes.string.isRequired,
     id:            PropTypes.string.isRequired,
     onWindowReady: PropTypes.func
@@ -18,7 +20,7 @@ class WidgetIframe extends React.PureComponent {
 
   render()  {
     return (
-      <div id={this.props.id} className={'apps-window'}>
+      <div id={this.props.id} className={this.props.isFullscreen ? 'apps-window apps-window--is-fullscreen dp-AppPanel' : 'apps-window'}>
         <iframe
           ref={this.onWindowReady}
           scrolling={'no'}

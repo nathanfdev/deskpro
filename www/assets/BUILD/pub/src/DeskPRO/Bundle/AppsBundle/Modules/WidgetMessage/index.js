@@ -1,4 +1,4 @@
-import { registerIncomingRequestListeners, receiveMessage, receiveSubscription } from './receiver';
+import { registerIncomingRequestListeners, receiveMessage, interceptMessage, receiveSubscription } from './receiver';
 import { registerOutgoingMessageListener, createEmitAsync } from './emitter';
 import bindIncomingMessageHandlers from './IncomingRequestHandlers';
 import setTimeoutImplementation from './setTimeout';
@@ -9,7 +9,7 @@ export { bindIncomingMessageHandlers, registerIncomingRequestListeners, register
 
 // message receivers
 
-export { receiveMessage, receiveSubscription };
+export { receiveMessage, interceptMessage, receiveSubscription };
 
 /**
  * A function that distributes the message to all listening app widgets

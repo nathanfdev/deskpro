@@ -8,11 +8,40 @@ import {  WidgetConfiguration } from '../Domain';
 
 export class WidgetContainerList extends React.PureComponent {
   static propTypes = {
-    isVisible:         PropTypes.bool,
-    widgets:           PropTypes.arrayOf(WidgetConfiguration).isRequired,
-    getEvent:          PropTypes.func.isRequired,
-    getEventProviders: PropTypes.func.isRequired,
-    unregister:        PropTypes.func.isRequired,
+    /**
+     * the list of configurations of each widget
+     */
+    widgets: PropTypes.arrayOf(WidgetConfiguration).isRequired,
+
+    /**
+     * The id of the widget currently in fullscreen
+     */
+    widgetFullscreen: PropTypes.string,
+
+    /**
+     * If this list should be visible or not
+     */
+    isVisible: PropTypes.bool,
+
+    /**
+     * maps of props that should be passed to each widget
+     */
+    widgetProps: PropTypes.shape({
+      /**
+       * function that returns the current message sent from the underlying iframe
+       */
+      getEvent: PropTypes.func.isRequired,
+
+      /**
+       * function that returns a map of event providers each widget should use to configure its event subscriptions
+       */
+      getEventProviders: PropTypes.func.isRequired,
+
+      /**
+       * callback that is invoked when each widget is unmounted
+       */
+      unregister: PropTypes.func.isRequired,
+    }).isRequired,
   };
 
   static defaultProps = {
@@ -36,14 +65,13 @@ export class WidgetContainerList extends React.PureComponent {
   }
 
   renderWidget = configuration =>  (<WidgetContainer
+    {...this.props.widgetProps}
+    isFullscreen={this.props.widgetFullscreen === configuration.id}
     configuration={configuration}
-    getEvent={this.props.getEvent}
-    getEventProviders={this.props.getEventProviders}
-    unregister={this.props.unregister}
   />);
 
   render()  {
-    return (<div ref={this.wrapperRef}>
+    return (<div className={'layout-sidebar--stretch-vertical layout-sidebar__widget-list'} ref={this.wrapperRef}>
       { this.props.widgets.map(this.renderWidget) }
     </div>);
   }

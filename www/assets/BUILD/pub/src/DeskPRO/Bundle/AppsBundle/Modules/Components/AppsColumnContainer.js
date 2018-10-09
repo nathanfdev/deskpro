@@ -3,7 +3,7 @@ import React from 'react'; // eslint-disable-line no-unused-vars
 import { Scrollbars } from 'react-custom-scrollbars';
 import { AppsViewFull } from './AppsViewFull';
 import { AppsViewIcons } from './AppsViewIcons';
-import { receiveMessage } from '../WidgetMessage';
+import { receiveMessage, interceptMessage } from '../WidgetMessage';
 import { ContainerEvents } from './ContainerEvents';
 import { setWidgetState } from '../Services/appsState';
 import { WidgetConfiguration }  from '../Domain';
@@ -52,7 +52,8 @@ class AppsColumnContainer extends React.Component {
   state = {
     appsState:          {},
     sidebarState:       null,
-    widgetGroupVisible: 0
+    widgetGroupVisible: 0,
+    widgetFullscreen:   null
   };
 
   showWidgetGroup = (groupId) => {
@@ -96,8 +97,31 @@ class AppsColumnContainer extends React.Component {
     const { pageId } = this.props.context;
     this.props.sendMessageLegacyMessageBroker(`apps-column.togglePin.${pageId}`);
     this.setState({
-      sidebarState: this.props.getSidebarState()
+      sidebarState: this.props.getSidebarState(),
     });
+  };
+
+  events = {
+    [ContainerEvents.EVENT_UI_CHANGED]: (response, widget, widgetMessage) => {
+      const { widgetId, body } = widgetMessage;
+      if (body.display === 'fullscreen' && this.state.widgetFullscreen && this.state.widgetFullscreen !== widgetId) {
+        return response('another app is running in fullscreen mode', body);
+      }
+
+      let widgetFullscreen = this.state.widgetFullscreen;
+      if (body.display === 'fullscreen' && !this.state.widgetFullscreen) {
+        widgetFullscreen = widgetId;
+      } else if (body.display !== 'fullscreen' && widgetFullscreen === widgetId) {
+        widgetFullscreen = null;
+      }
+
+      this.setState({
+        appsState: setWidgetState(widgetId, body, this.state.appsState),
+        widgetFullscreen,
+      });
+
+      return response(null, body);
+    }
   };
 
   /**
@@ -108,12 +132,11 @@ class AppsColumnContainer extends React.Component {
    */
   receiveMessage = (widget, event) =>  {
     const { eventName } = event.data;
-    // intercept the EVENT_UI_CHANGED event and update the apps state
-    if (eventName === ContainerEvents.EVENT_UI_CHANGED) {
-      const { widgetId, body } = event.data;
-      this.setState({
-        appsState: setWidgetState(widgetId, body, this.state.appsState)
-      });
+
+    const ownHandler = this.events[eventName];
+    if (typeof ownHandler === 'function') {
+      // intercept events handled at container level
+      interceptMessage(widget, event)(ownHandler);
     } else {
       receiveMessage(widget, event);
     }
@@ -124,7 +147,7 @@ class AppsColumnContainer extends React.Component {
 
     return (
       <Scrollbars autoHide>
-        <div className={'layout-sidebar__views'} onMouseLeave={this.collapse} onMouseOver={this.expand} onClick={this.pin}>
+        <div className={'layout-sidebar__views layout-sidebar--stretch-vertical'} onMouseLeave={this.collapse} onMouseOver={this.expand} onClick={this.pin}>
 
           <AppsViewIcons
             appsState={this.state.appsState}
@@ -139,6 +162,7 @@ class AppsColumnContainer extends React.Component {
             sidebarState={sidebarState}
             showWidgetGroup={this.showWidgetGroup}
             widgetGroupVisible={this.state.widgetGroupVisible}
+            widgetFullscreen={this.state.widgetFullscreen}
 
             togglePin={this.togglePin}
             pin={this.pin}

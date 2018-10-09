@@ -3,7 +3,7 @@
  */
 
 import { parseIncomingMessageJS, createSuccessResponse, WidgetResponse, WidgetRequest } from './Message';
-import { listenForIncomingRequest, receiveRequest, receiveResponse, sendResponse, registerEventSubscriber } from './dispatch';
+import { listenForIncomingRequest, receiveRequest, receiveResponse, interceptRequest, interceptResponse, sendResponse, registerEventSubscriber } from './dispatch';
 
 import { EVENT_SUBSCRIBE } from './Events';
 
@@ -80,6 +80,33 @@ export function receiveSubscription(widget, event, context) {
  *
  * @param {Widget} widget
  * @param {{data: Object}} event
+ * @return {function}
+ */
+export function interceptMessage(widget, event) {
+  const { eventName } = event.data;
+
+  if (!eventName) {
+    throw new Error('failed to dispatch incoming message: unrecognized event name');
+  }
+
+  const message = parseIncomingMessageJS(event.data);
+
+  if (message instanceof WidgetRequest) {
+    return interceptRequest(eventName, widget, message);
+  }
+
+  if (message instanceof WidgetResponse) {
+    return interceptResponse(eventName, widget, message);
+  }
+
+  throw new Error('failed to dispatch incoming message: could not parse widget message');
+}
+
+/**
+ * Dispatches a message initiated by a widget to registered listeners
+ *
+ * @param {Widget} widget
+ * @param {{data: Object}} event
  */
 export function receiveMessage(widget, event) {
   const { eventName } = event.data;
@@ -88,15 +115,15 @@ export function receiveMessage(widget, event) {
     throw new Error('failed to dispatch incoming message: unrecognized event name');
   }
 
-  const widgetMessage = parseIncomingMessageJS(event.data);
+  const message = parseIncomingMessageJS(event.data);
 
-  if (widgetMessage instanceof WidgetRequest) {
-    receiveRequest(eventName, widget, widgetMessage);
+  if (message instanceof WidgetRequest) {
+    receiveRequest(eventName, widget, message);
     return null;
   }
 
-  if (widgetMessage instanceof WidgetResponse) {
-    receiveResponse(eventName, widget, widgetMessage);
+  if (message instanceof WidgetResponse) {
+    receiveResponse(eventName, widget, message);
     return null;
   }
 

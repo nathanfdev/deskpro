@@ -25,9 +25,7 @@ function defaultRenderer({ widgets, getEvent, getEventProviders, unregister }) {
     return (
       <WidgetContainerList
         widgets={widgets}
-        getEvent={getEvent}
-        getEventProviders={getEventProviders}
-        unregister={unregister}
+        widgetProps={{ getEvent, getEventProviders, unregister }}
       />
     );
   }
