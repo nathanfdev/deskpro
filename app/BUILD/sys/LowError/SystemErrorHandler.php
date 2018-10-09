@@ -566,6 +566,12 @@ class SystemErrorHandler
             $no_send_error = true;
         }
 
+        // Ignore mcrypt deprecation
+        if (strpos($errstr, 'mcrypt_create_iv() is deprecated') !== false) {
+            $no_send_error = true;
+            $no_log_error  = true;
+        }
+
         $summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
         $url = '';
