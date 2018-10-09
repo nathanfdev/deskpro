@@ -50,7 +50,8 @@ class SyncTmsCommand extends ContainerAwareCommand
         $this->setName('dpdev:lang:tms:sync')
             ->setDescription('Uploads and downloads phrase data from the translation management system')
             ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Used with download or upload-lang to limit to a specific language')
-            ->addArgument('action', InputArgument::OPTIONAL, 'The action to perform: sync, upload, download, or upload-lang', 'sync');
+            ->addOption('wait', 'w', InputOption::VALUE_NONE, 'When uploading or syncing, wait for import job to finish before exiting')
+            ->addArgument('action', InputArgument::REQUIRED, 'The action to perform: sync, upload, download, or upload-lang');
     }
 
     /**
@@ -81,6 +82,7 @@ class SyncTmsCommand extends ContainerAwareCommand
 
         switch ($action) {
             case 'sync':
+                $input->setOption('wait', true);
                 $this->executeUpload('en-US');
                 $this->executeDownload('all');
                 break;
@@ -91,6 +93,7 @@ class SyncTmsCommand extends ContainerAwareCommand
 
             case 'upload-lang':
                 $this->executeUpload($input->getOption('limit') ?: 'all');
+                break;
 
             case 'download':
                 $this->executeDownload($input->getOption('limit') ?: 'all');
@@ -107,7 +110,8 @@ class SyncTmsCommand extends ContainerAwareCommand
 
     private function executeUpload($locales)
     {
-        $locales = (array) $locales;
+        $fullTimer = Timer::start();
+        $locales   = (array) $locales;
 
         $output = $this->output;
 
@@ -130,6 +134,8 @@ class SyncTmsCommand extends ContainerAwareCommand
             });
         }
 
+        $importJobs = [];
+
         foreach ($processLocales as $locale) {
             $output->writeln("<info>[{$locale['locale']}] Processing {$locale['name']}</info>");
 
@@ -147,10 +153,11 @@ class SyncTmsCommand extends ContainerAwareCommand
                     }
 
                     return $onesky->files('upload', [
-                        'project_id'  => $onesky->getProjectId('deskpro'),
-                        'file'        => $transformedPath,
-                        'file_format' => 'RUBY_YML',
-                        'locale'      => $locale['locale'],
+                        'project_id'             => $onesky->getProjectId('deskpro'),
+                        'file'                   => $transformedPath,
+                        'file_format'            => 'RUBY_YML',
+                        'locale'                 => $locale['locale'],
+                        'is_keeping_all_strings' => false,
                     ]);
                 });
 
@@ -172,6 +179,42 @@ class SyncTmsCommand extends ContainerAwareCommand
                 $output->writeln("[{$locale['locale']}] Done upload in {$timer->formatTotalTime()}");
             }
         }
+
+        if ($importJobs && $this->input->getOption('wait')) {
+            $output->write(sprintf('Waiting on %d jobs ', count($importJobs)));
+
+            while ($importJobs) {
+                $stillWaiting = [];
+                foreach ($importJobs as $id) {
+                    $v = $onesky->import_tasks('show', [
+                        'project_id' => $onesky->getProjectId('deskpro'),
+                        'import_id'  => $id,
+                    ]);
+
+                    $info = @json_decode($v, true);
+
+                    if (!$info || empty($info['data']['status'])) {
+                        $output->writeln("\n<error>Status check on job $id failed!</error>");
+                        print_r($v);
+                        $stillWaiting[] = $id;
+                    } elseif ($info['data']['status'] === 'in-progress') {
+                        $stillWaiting[] = $id;
+                        echo '.';
+                    } elseif ($info['data']['status'] === 'failed') {
+                        $output->writeln("\n<error>Job $id failed!</error>");
+                    } else {
+                        $output->writeln("\nJob $id done");
+                    }
+                }
+                $importJobs = $stillWaiting;
+
+                if ($importJobs) {
+                    sleep(3);
+                }
+            }
+        }
+
+        $output->writeln("ALL DONE in {$fullTimer->formatTotalTime()}");
     }
 
     private function executeDownload($locales)
