@@ -34,8 +34,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class AppPackage extends DomainObject
 {
-    const SCOPE_AGENT     = 'agent';
-    const TAG_USERSOURCES = 'usersources';
+    const SCOPE_AGENT               = 'agent';
+    const TAG_USERSOURCES           = 'usersources';
+    const TAG_CLOUD_ONLY            = 'cloud_only';
+    const TAG_USERSOURCE_AGENT_ONLY = 'usersource_agent_only';
 
     /**
      * @var string
@@ -155,6 +157,16 @@ class AppPackage extends DomainObject
     public function isUsersource()
     {
         return $this->hasTag(self::TAG_USERSOURCES);
+    }
+
+    public function isCloudOnly()
+    {
+        return $this->hasTag(self::TAG_CLOUD_ONLY);
+    }
+
+    public function isAgentOnlyUsersource()
+    {
+        return $this->hasTag(self::TAG_USERSOURCE_AGENT_ONLY);
     }
 
     /**

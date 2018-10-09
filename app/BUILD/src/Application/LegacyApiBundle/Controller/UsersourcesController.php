@@ -95,9 +95,13 @@ class UsersourcesController extends AbstractController
         $sources  = $this->getUsersourceManager()->getAll()->forInterface($interface, true);
         $packages = $this->container->getAppManager()->getAllPackages();
 
-        $available_packages = array_filter($packages, function (AppPackage $package) use ($sources) {
+        $available_packages = array_filter($packages, function (AppPackage $package) use ($sources, $interface) {
             if ($package->isUsersource()) {
-                /** @var \Application\DeskPRO\Entity\Usersource $source */
+                if ($interface !== 'agent' && $package->isAgentOnlyUsersource()) {
+                    return false;
+                }
+
+                    /** @var \Application\DeskPRO\Entity\Usersource $source */
                     foreach ($sources as $source) {
                         /** @var \Application\DeskPRO\Entity\AppInstance $app */
                         if ($app = $source->app) {

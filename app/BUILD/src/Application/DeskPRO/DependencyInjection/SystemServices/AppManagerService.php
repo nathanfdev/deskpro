@@ -11,12 +11,16 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 use Application\DeskPRO\App\AppManager;
 use Application\DeskPRO\App\AppServiceContainer;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\AppPackage;
 use Doctrine\Common\Collections\ArrayCollection;
 
 class AppManagerService
 {
     public static function createAppManager(DeskproContainer $container)
     {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
         $em = $container->getEm();
 
         $apps = $em->createQuery('
@@ -75,6 +79,14 @@ class AppManagerService
                 $app_paths[$prefix] = $path;
             }
         }
+
+        $packages = array_filter($packages, function (AppPackage $p) use ($DP_ENV) {
+            if ($p->isCloudOnly()) {
+                return defined('DPC_IS_CLOUD') || $DP_ENV->getConfig('env.server_id') === 'builder.deskprodemo.com';
+            }
+
+            return true;
+        });
 
         $app_manager = new AppManager($packages, $apps, $app_paths, $app_service_container, $usersources);
 

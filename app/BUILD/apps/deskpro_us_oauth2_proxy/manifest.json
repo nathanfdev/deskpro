@@ -3,7 +3,7 @@
 	"is_native": true,
 	"title": "Social Logins",
 	"description": "Allows agents to log in using social accounts.",
-	"tags": ["usersources"],
+	"tags": ["usersources", "cloud_only", "usersource_agent_only"],
 	"api_version": 1,
 	"version": 1,
 	"version_name": "1.0.0",
