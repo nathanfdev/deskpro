@@ -25,6 +25,11 @@ export class AppsViewFull extends React.PureComponent {
       )
     ).isRequired,
 
+    /**
+     * the id of the widget which is currently in fullscreen mode
+     */
+    widgetFullscreen: PropTypes.string,
+
     context:        PropTypes.object.isRequired,
     receiveMessage: PropTypes.func.isRequired
   };
@@ -47,16 +52,15 @@ export class AppsViewFull extends React.PureComponent {
    * @param groupId
    */
   renderGroupWidgets(widgetList, groupId)  {
-    const { widgetGroupVisible } = this.props;
-    function render({ getEvent, getEventProviders, unregister })    {
+    const { widgetGroupVisible, widgetFullscreen } = this.props;
+    function render({ getEvent, getEventProviders, unregister }) {
       if (widgetList && widgetList.length > 0) {
         return (
           <WidgetContainerList
             isVisible={groupId === widgetGroupVisible}
+            widgetFullscreen={widgetFullscreen}
             widgets={widgetList}
-            getEvent={getEvent}
-            getEventProviders={getEventProviders}
-            unregister={unregister}
+            widgetProps={{ getEvent, getEventProviders, unregister }}
           />
         );
       }
@@ -106,9 +110,9 @@ export class AppsViewFull extends React.PureComponent {
 
   render()  {
     return (
-      <div className={'layout-sidebar__apps'} onClick={this.onClick}>
-        <div className={'dp-Root'}>
-          <div className={'dp-AppPanel'} >
+      <div className={'layout-sidebar__apps layout-sidebar--stretch-vertical'} onClick={this.onClick}>
+        <div className={'dp-Root layout-sidebar--stretch-vertical'}>
+          <div className={'dp-AppPanel layout-sidebar--stretch-vertical'} >
             <div className={'dp-AppTabs is-horizontal'}>
 
               <div className={'dp-ButtonTabs--wrap'} >

@@ -108,6 +108,22 @@ export function listenForIncomingRequest(eventName, handler) {
  * @param {Widget} widget
  * @param {WidgetRequest} request
  */
+export function interceptRequest(eventName, widget, request) {
+  function callback(err, data) {
+    const response = err ? createErrorResponse(request, err, data) : createSuccessResponse(request, data);
+    sendResponse(eventName, widget, response);
+  }
+
+  return function emit(emitter) {
+    emitter(callback, widget, request);
+  };
+}
+
+/**
+ * @param {string} eventName
+ * @param {Widget} widget
+ * @param {WidgetRequest} request
+ */
 export function receiveRequest(eventName, widget, request) {
   function callback(err, data) {
     const response = err ? createErrorResponse(request, err, data) : createSuccessResponse(request, data);
@@ -115,6 +131,17 @@ export function receiveRequest(eventName, widget, request) {
   }
 
   receiverDispatcher.emit(eventName, callback, widget, request);
+}
+
+/**
+ * @param {string} eventName
+ * @param {Widget} widget
+ * @param {WidgetResponse} response
+ */
+export function interceptResponse(eventName, widget, response) {
+  return function emit(emitter) {
+    emitter(widget, response);
+  };
 }
 
 /**

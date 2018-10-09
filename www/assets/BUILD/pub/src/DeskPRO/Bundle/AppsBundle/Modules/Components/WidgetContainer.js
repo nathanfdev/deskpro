@@ -8,10 +8,35 @@ import { WidgetIframe } from './WidgetIframe';
 
 export class WidgetContainer extends React.PureComponent {
   static propTypes = {
-    configuration:     PropTypes.instanceOf(WidgetConfiguration),
-    getEvent:          PropTypes.func,
+
+    /**
+     * indicates this widget should be shown in full screen
+     */
+    isFullscreen: PropTypes.bool,
+
+    /**
+     * widget configuration
+     */
+    configuration: PropTypes.instanceOf(WidgetConfiguration),
+
+    /**
+     * function that returns the current message sent from the underlying iframe
+     */
+    getEvent: PropTypes.func,
+
+    /**
+     * function that returns a map of event providers this widget should use to configure its event subscriptions
+     */
     getEventProviders: PropTypes.func,
-    unregister:        PropTypes.func
+
+    /**
+     * callback that is invoked when the the widget is unmounted
+     */
+    unregister: PropTypes.func
+  };
+
+  static defaultProps = {
+    isFullscreen: false,
   };
 
   componentDidUpdate(prevProps)  { // eslint-disable-line no-unused-vars
@@ -106,6 +131,7 @@ export class WidgetContainer extends React.PureComponent {
 
     const { /** @type {WidgetConfiguration} */ configuration } = this.props;
     return (<WidgetIframe
+      isFullscreen={this.props.isFullscreen}
       id={configuration.canonicId}
       url={configuration.getUrl()}
       onWindowReady={this.onWindowReady}

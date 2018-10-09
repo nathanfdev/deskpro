@@ -20,6 +20,19 @@ const registerPostMessageListener = (windowObject, handler) => {
   addListener(event, listener, false);
 };
 
+/**
+ * a default handler for the EVENT_UI_CHANGED event
+ *
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices}  services
+ */
+export const EVENT_UI_CHANGED = (response, widget, widgetMessage, services) => { // eslint-disable-line no-unused-vars
+  const { body } = widgetMessage;
+  response(null, body);
+};
+
 export const EVENT_SECURITY_SETTINGS_OAUTH = (response, widget, widgetMessage, services) => {
   try {
     const settings = services.oauthProxy.getWidgetSettings({ ...widgetMessage.body }, { applicationId: widget.instanceId });
