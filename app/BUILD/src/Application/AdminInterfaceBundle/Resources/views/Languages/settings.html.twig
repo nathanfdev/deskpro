@@ -131,6 +131,40 @@
 		</footer>
 	</section>
 
+	<section class="dp-paneblock dp-listpane">
+		<header>
+			<h3>Download lates language</h3>
+		</header>
+		<article class="form-horizontal dp-form">
+			<div class="panel panel-innertable">
+				<div class="form-group">
+					<div class="col-lg-12">
+						<div class="inner-group">
+							<div style="padding-bottom: 4px;">
+								Download the latest language for
+								<select ng-model="EditCtrl.form.download_language" ui-select2 style="width: 170px;">
+									<option value="0">(all languages)</option>
+									<option ng-repeat="l in EditCtrl.langChoices" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+								</select>
+							</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls">
+					<div dp-hide-spinning="downloading_languages">
+						<button class="btn btn-primary" ng-click="EditCtrl.doDownloadLanguages()">Download latest language</button>
+					</div>
+					<div dp-show-spinning="downloading_languages">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</section>
+
 	<div dp-register-message="confirm_move_tickets">
 		Are you sure you want to mass update language on all tickets in your database? This action cannot be undone.
 	</div>

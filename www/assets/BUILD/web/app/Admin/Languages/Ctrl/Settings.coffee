@@ -12,6 +12,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         tickets_move_to:   0,
         users_move_from:   0,
         users_move_to:     0,
+        users_move_to:     0,
+        download_language: 0
       }
 
     initialLoad: ->

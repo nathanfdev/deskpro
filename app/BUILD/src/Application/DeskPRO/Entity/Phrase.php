@@ -72,6 +72,13 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
     protected $is_outdated = false;
 
     /**
+     * True if the phrase is 'managed' by the system and is not a custom user phrase.
+     *
+     * @var bool
+     */
+    protected $is_managed = false;
+
+    /**
      * @var \DateTime
      */
     protected $created_at;
@@ -210,6 +217,22 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('original_hash', $originalHash);
     }
 
+    /**
+     * @return bool
+     */
+    public function isManaged()
+    {
+        return $this->is_managed;
+    }
+
+    /**
+     * @param bool $isManaged
+     */
+    public function setIsManaged($isManaged)
+    {
+        $this->setModelField('is_managed', $isManaged);
+    }
+
     public function incUpdatedAt()
     {
         $this->setModelField('updated_at', new \DateTime());
@@ -313,6 +336,15 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
             'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'is_outdated',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'is_managed',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'is_managed',
+            'options'    => ['default' => '0'],
         ]);
         $metadata->mapField([
             'fieldName'  => 'created_at',
