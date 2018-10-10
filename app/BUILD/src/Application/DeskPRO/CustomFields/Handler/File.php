@@ -112,7 +112,9 @@ class File extends HandlerAbstract
     {
         $names = $this->getAllFormFieldNames();
         foreach ($names as $name) {
-            if (!empty($formData[$name]) || (isset($formData[$name]) && (string) $formData[$name] === '0')) {
+            if (!empty($formData[$name])
+                || (isset($formData[$name]) && is_scalar($formData[$name]) && (string) $formData[$name] === '0')
+            ) {
                 $value = $formData[$name];
                 if (is_array($value)) {
                     $value = array_map(function ($item) {
