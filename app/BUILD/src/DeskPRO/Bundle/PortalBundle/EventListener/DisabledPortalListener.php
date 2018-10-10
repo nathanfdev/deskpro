@@ -149,7 +149,12 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
      */
     private function isAdminPreviewApiCall(GetResponseEvent $event)
     {
-        $user = $this->tokenStorage->getToken()->getUser();
+        $token = $this->tokenStorage->getToken();
+        if (!$token) {
+            return false;
+        }
+
+        $user = $token->getUser();
 
         return
             $user instanceof Person
