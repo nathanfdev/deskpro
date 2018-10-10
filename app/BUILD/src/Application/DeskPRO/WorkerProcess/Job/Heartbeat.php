@@ -14,6 +14,10 @@ class Heartbeat extends AbstractJob
 
     public function run()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            return;
+        }
+
         if (!isset($GLOBALS['DP_CRON_IGNORE_INTERVAL']) || !$GLOBALS['DP_CRON_IGNORE_INTERVAL']) {
             $last = App::getSetting('core.last_heartbeat');
             if ($last && $last > (time() - 85000)) {
