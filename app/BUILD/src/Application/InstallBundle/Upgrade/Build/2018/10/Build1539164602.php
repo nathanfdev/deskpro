@@ -4,7 +4,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Doctrine\DBAL\Connection;
 
-class Build1536231609 extends AbstractBuild implements OnlineBuildInterface
+class Build1539164602 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
