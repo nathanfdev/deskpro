@@ -6,7 +6,6 @@ import classNames from 'classnames';
 class Topic extends React.Component {
   static propTypes = {
     topic:      PropTypes.object,
-    locale:     PropTypes.string,
     guideSlug:  PropTypes.string,
     path:       PropTypes.string,
     clickable:  PropTypes.bool,
@@ -36,7 +35,7 @@ class Topic extends React.Component {
   }
 
   getChildren = () => {
-    const { topic, locale, guideSlug, expandable } = this.props;
+    const { topic, guideSlug, expandable } = this.props;
     if (!Object.values(topic.children).length) {
       return null;
     }
@@ -53,7 +52,6 @@ class Topic extends React.Component {
             <Topic
               key={child.slug}
               topic={child}
-              locale={locale}
               guideSlug={guideSlug}
               clickable={parseInt(child.no_content, 10) === 0}
               path={this.props.path}
@@ -71,7 +69,7 @@ class Topic extends React.Component {
   };
 
   render() {
-    const { topic, locale, guideSlug, clickable } = this.props;
+    const { topic, guideSlug, clickable } = this.props;
     let { expandable } = this.props;
     if (!Object.values(topic.children).length) {
       expandable = false;
@@ -79,7 +77,7 @@ class Topic extends React.Component {
     return (
       <li className="topic-item" key={topic.slug}>
         {clickable ?
-          <Link to={`${locale}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
+          <Link to={`${window.DESKPRO_BASE_URL}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
             {topic.title}
             {expandable ? <i
               className={classNames(
