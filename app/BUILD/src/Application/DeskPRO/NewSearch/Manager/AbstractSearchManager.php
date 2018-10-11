@@ -2,10 +2,10 @@
 
 namespace Application\DeskPRO\NewSearch\Manager;
 
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Settings\Settings;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
@@ -13,8 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
- * Class AbstractSearchManager
- * @package Application\DeskPRO\NewSearch\Manager
+ * Class AbstractSearchManager.
  */
 abstract class AbstractSearchManager implements ContainerAwareInterface
 {
@@ -42,7 +41,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
     protected $settings;
 
     /**
-     * Object to Entity mappings
+     * Object to Entity mappings.
      *
      * @var array
      */
@@ -59,7 +58,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
     ];
 
     /**
-     * Objects which require permissions
+     * Objects which require permissions.
      *
      * @var array
      */
@@ -84,7 +83,6 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
 
     /**
      * @param EntityManager $entityManager
-     * @return void
      */
     public function setEntityManager(EntityManager $entityManager)
     {
@@ -92,7 +90,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
     }
 
     /**
-     * $return EntityManager $entityManager
+     * $return EntityManager $entityManager.
      */
     public function getEntityManager()
     {
@@ -107,7 +105,6 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
 
     /**
      * @param Settings $settings
-     * @return void
      */
     public function setSettings(Settings $settings)
     {
@@ -130,8 +127,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
 
     /**
      * @param TicketRepository $entityRepository
-     * @param array $matcher
-     * @return void
+     * @param array            $matcher
      */
     protected function getTicketByRefOrId(TicketRepository $entityRepository, array $matcher)
     {
@@ -144,24 +140,20 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
         if ($matcher['field'] === 'ref') {
             if (($entity = $entityRepository->findTicketRef(strtoupper($matcher['param']))) instanceof Ticket) {
                 if (!is_null($ticketPermissionsChecker) &&
-                    $ticketPermissionsChecker->canView($entity))
-                {
+                    $ticketPermissionsChecker->canView($entity)) {
                     $this->handleResult($matcher['object'], $entity);
                 }
             } elseif (strlen($matcher['param']) >= 3) {
                 foreach ($entityRepository->searchTicketRef($matcher['param']) as $entity) {
                     if (!is_null($ticketPermissionsChecker) &&
-                        $ticketPermissionsChecker->canView($entity))
-                    {
+                        $ticketPermissionsChecker->canView($entity)) {
                         $this->handleResult($matcher['object'], $entity);
                     }
                 }
             }
         } else {
             $entity = $entityRepository->findTicketId($matcher['param']);
-            if (!is_null($ticketPermissionsChecker) &&
-                $ticketPermissionsChecker->canView($entity))
-            {
+            if ($entity && !is_null($ticketPermissionsChecker) && $ticketPermissionsChecker->canView($entity)) {
                 $this->handleResult($matcher['object'], $entity);
             }
         }
@@ -169,10 +161,10 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
 
     /**
      * @param TicketRepository $entityRepository
-     * @param array $matcher
-     * @return void
+     * @param array            $matcher
      */
-    protected function getSimpleTicketById(TicketRepository $entityRepository, array $matcher) {
+    protected function getSimpleTicketById(TicketRepository $entityRepository, array $matcher)
+    {
         $ticketPermissionsChecker = null;
         if ($this->person instanceof Person) {
             /** @var \Application\DeskPRO\People\PermissionChecker\TicketChecker $ticketPermissionsChecker */
@@ -182,14 +174,14 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
         /** @var Ticket|null $entity */
         $entity = $entityRepository->find($matcher['param']);
         if (!is_null($ticketPermissionsChecker) &&
-            $ticketPermissionsChecker->canView($entity))
-        {
+            $ticketPermissionsChecker->canView($entity)) {
             $this->handleResult($matcher['object'], $entity);
         }
     }
 
     /**
      * @param $object
+     *
      * @return bool
      */
     protected function isAllowed($object)
@@ -207,10 +199,9 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
     }
 
     /**
-     * Remove object we don't need to search for
+     * Remove object we don't need to search for.
      *
      * @param array $limitObjects
-     * @return void
      */
     protected function limitResultingObjects(array $limitObjects = [])
     {
@@ -232,7 +223,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
         // Backward compatibility with old code
         $object = ($object === 'chat') ? 'chat_conversation' : $object;
 
-        if (! array_key_exists($object, $this->results)) {
+        if (!array_key_exists($object, $this->results)) {
             $this->results[$object] = [];
         }
 
@@ -244,6 +235,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
 
     /**
      * @param bool $pushBack
+     *
      * @return array
      */
     protected function prepareResults()
@@ -257,6 +249,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
 
     /**
      * @param string $object
+     *
      * @return bool
      */
     protected function requiresPermission($object)
@@ -266,10 +259,11 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
 
     /**
      * @param null|string $query
+     *
      * @return bool
      */
     protected function proceedWithSearch($query = null)
     {
-        return ! (is_null($query) || (is_string($query) && trim($query) === ''));
+        return !(is_null($query) || (is_string($query) && trim($query) === ''));
     }
 }
