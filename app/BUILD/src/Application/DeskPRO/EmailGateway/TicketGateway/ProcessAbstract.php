@@ -387,15 +387,23 @@ abstract class ProcessAbstract
                         $tmpFile  = $tmpDir.'/email-image-'.mt_rand(1000, 9999);
                         $resource = fopen($tmpFile, 'w');
                         $errors   = [];
-                        SystemErrorHandler::runWithoutErrorHandler(function () use ($client, $src, $resource) {
-                            $client->request('GET', $src, ['sink' => $resource]);
-                        }, $errors);
-                        if ($errors) {
-                            $e = $errors[0];
-                            $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', $e['Type'], $e['code'], substr($e['message'], 0, 1000)));
+                        try {
+                            SystemErrorHandler::runWithoutErrorHandler(function () use ($client, $src, $resource) {
+                                $client->request('GET', $src, ['sink' => $resource]);
+                            }, $errors);
+                            if ($errors) {
+                                $e = $errors[0];
+                                $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', $e['Type'], $e['code'], substr($e['message'], 0, 1000)));
+                                $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
+                                $body = str_replace($match[0], $tag, $body);
+
+                                @fclose($resource);
+                                continue;
+                            }
+                        } catch (\Exception $e) {
+                            $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', get_class($e), $e->getCode(), substr($e->getMessage(), 0, 1000)));
                             $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
                             $body = str_replace($match[0], $tag, $body);
-
                             @fclose($resource);
                             continue;
                         }
