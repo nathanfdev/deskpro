@@ -1006,8 +1006,7 @@ class ServeFileScript extends LowScriptAbstract
             }
             header('HTTP/1.0 404 Not Found');
             echo 'File not found. (4)';
-
-            return;
+            exit;
         }
 
         if ($this->dpEnv->getConfig('settings.filestorage_use_xsendfile')) {
