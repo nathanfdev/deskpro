@@ -49,11 +49,11 @@ class TicketAttachmentBlobCheckerListener
     {
         $blob = $entity->getBlob();
 
-        if (!$blob || $blob->isTicketAttachment()) {
+        if ($entity->isInline() || !$blob || $blob->isTicketAttachment()) {
             return;
         }
 
-        $this->logger->error(sprintf(
+        $this->logger->warning(sprintf(
             '[TicketAttachmentBlobCheckerListener] TicketAttachment for the Ticket (#%s) has Blob (#%s) that is not tagged as ticket attachment. Going to recreate tagged Blob.',
             $entity->getTicket() ? $entity->getTicket()->getId().' '.$entity->getTicket()->getTitle() : 'unknown',
             $blob->getId() ? $blob->getId() : $blob->getFilenameSafe()
