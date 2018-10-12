@@ -42,6 +42,15 @@ class FreshDb extends AbstractDbSet
         // Init data
         //------------------------------
 
+        // We already have themes 1(standard) and 2(sidebar) from BrandFixtures of the normal install
+        // We already have brand1 (standard theme) from BrandFixtures too
+        // So just an extra theme for Sidebar
+        $this->getDb()->exec("
+            INSERT INTO `brands` (`id`, `name`, `theme_set_id`)
+            VALUES
+                (2, 'Brand With Sidebar Theme', 2)
+        ");
+
         $admin = $this->addUser(
             UserDetailsRepo::ADMIN_FIRST_NAME,
             UserDetailsRepo::ADMIN_LAST_NAME,
@@ -125,15 +134,6 @@ class FreshDb extends AbstractDbSet
                 ('portal.smaxage_guest_page', '0'),
                 ('portal.smaxage_user_page', '0'),
                 ('portal.smaxage_user_tag', '0');
-        ");
-
-        // We already have themes 1(standard) and 2(sidebar) from BrandFixtures of the normal install
-        // We already have brand1 (standard theme) from BrandFixtures too
-        // So just an extra theme for Sidebar
-        $this->getDb()->exec("
-            INSERT INTO `brands` (`id`, `name`, `theme_set_id`)
-            VALUES
-                (2, 'Brand With Sidebar Theme', 2)
         ");
 
         $perms = [

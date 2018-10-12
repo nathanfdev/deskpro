@@ -2,6 +2,7 @@
 
 namespace DpBehat\Portal;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
@@ -55,6 +56,14 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     public function iLoginWithCredentials($who)
     {
         $this->me = $this->getUserDetails()->getWho($who);
+
+        $brands = $this->getEm()->getRepository(Brand::class)->findAll();
+        foreach ($brands as $brand) {
+            $this->me->addBrand($brand);
+        }
+
+        $this->getEm()->persist($this->me);
+        $this->getEm()->flush();
 
         $driver = $this->getSession()->getDriver();
         if (!$driver instanceof BrowserKitDriver) {

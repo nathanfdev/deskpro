@@ -5,6 +5,7 @@ Feature: New ticket form
   Background:
     Given I'm authenticated as user
     And I have only default brand
+    And user has defaultBrand brand
     And I disable anti-abuse rate limiting
     And only the following Department records exist:
       | #  | Title        | Brands           | Is Tickets Enabled |

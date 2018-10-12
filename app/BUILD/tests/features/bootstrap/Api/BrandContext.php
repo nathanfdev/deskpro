@@ -3,6 +3,7 @@
 namespace DpBehat\Api;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Setting;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
@@ -56,6 +57,23 @@ class BrandContext extends BaseContext
         DataContext::setPlaceholder('defaultBrandId', $brand->getId());
 
         return $brand;
+    }
+
+    /**
+     * @Given :person has :brand brand
+     *
+     * @param string $person
+     * @param string $brand
+     */
+    public function personHasBrand($person, $brand)
+    {
+        /** @var Person $person */
+        $person = DataContext::getReference($person);
+        $brand  = DataContext::getReference($brand);
+
+        $person->addBrand($brand);
+        $this->em()->persist($person);
+        $this->em()->flush();
     }
 
     /**

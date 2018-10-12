@@ -6,6 +6,7 @@ Feature: Render org custom fields on full ticket form w/ a person w/o an org
     And the following languages are enabled:
       | default |
     And I have only default brand
+    And admin has defaultBrand brand
     And the "{defaultBrand}" setting "core_tickets.use_ref" is set to "1"
     And a user with "user_1@deskpro.dev" email exists
     And only the following Department records exist:

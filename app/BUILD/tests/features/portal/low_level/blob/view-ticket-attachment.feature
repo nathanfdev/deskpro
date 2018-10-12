@@ -21,8 +21,10 @@ Feature: View Protected Ticket Attachment
 
   Scenario: I visit the view attachment page and I am authenticated as user and have an access to ticket
     Given I'm authenticated as user
+    And I have only default brand
+    And user has defaultBrand brand
     And I create blob with auth code "1196DYWABSMCWMAAAKN0T"
-  And I mark blob "blob_1196DYWABSMCWMAAAKN0T" as not temp
+    And I mark blob "blob_1196DYWABSMCWMAAAKN0T" as not temp
     And only the following Ticket records exist:
       | #  | Subject | Person |
       | t1 | Ticket  | {user} |
@@ -37,6 +39,8 @@ Feature: View Protected Ticket Attachment
 
   Scenario: I visit the view attachment page and I am authenticated as user and don't have an access to ticket
     Given I'm authenticated as user
+    And I have only default brand
+    And user has defaultBrand brand
     And I create blob with auth code "1196DYWABSMCWMAAAKN0T"
     And I mark blob "blob_1196DYWABSMCWMAAAKN0T" as not temp
     And a user with "user_1@deskpro.dev" email exists
@@ -55,6 +59,8 @@ Feature: View Protected Ticket Attachment
 
   Scenario: I visit the view attachment page and I am authenticated as agent and have an access to ticket
     Given I'm authenticated as agent
+    And I have only default brand
+    And agent has defaultBrand brand
     And I create blob with auth code "1196DYWABSMCWMAAAKN0T"
     And I mark blob "blob_1196DYWABSMCWMAAAKN0T" as not temp
     And only the following Ticket records exist:

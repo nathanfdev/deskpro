@@ -4,6 +4,7 @@ Feature: Only 1 department w/ custom layout
   Background:
     Given I'm authenticated as user
     And I have only default brand
+    And user has defaultBrand brand
     And I set permission "tickets.use" = 1 for "registered" usergroup
     And only the following Department records exist:
       | #  | Title        | Brands           | Is Tickets Enabled |

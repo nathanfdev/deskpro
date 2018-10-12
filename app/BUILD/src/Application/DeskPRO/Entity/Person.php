@@ -4014,7 +4014,6 @@ class Person extends DomainObject implements
         $metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
         $metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
 
-        $metadata->addEntityListener(Events::postLoad, PersonListener::class, 'postLoad');
         $metadata->addEntityListener(Events::prePersist, PersonListener::class, 'prePersist');
         $metadata->addEntityListener(Events::preUpdate, PersonListener::class, 'preUpdate');
 
