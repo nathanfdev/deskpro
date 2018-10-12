@@ -413,17 +413,14 @@ class ViewTopic extends React.Component {
       const topic = Object.values(topics).sort(
         (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
       ).shift();
-      let locale = '';
-      if (this.props.params.locale) {
-        locale = `/${this.props.params.locale}`;
-      }
+
       if (Object.values(topic.children).length) {
         const child = Object.values(topic.children).sort(
           (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
         ).shift();
-        browserHistory.push(`${locale}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
+        browserHistory.push(`${window.DESKPRO_BASE_URL}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
       } else {
-        browserHistory.push(`${locale}/guides/${guide.slug}/${topic.slug}`);
+        browserHistory.push(`${window.DESKPRO_BASE_URL}/guides/${guide.slug}/${topic.slug}`);
       }
     });
   };
@@ -435,16 +432,12 @@ class ViewTopic extends React.Component {
     const { fixed } = this.state;
     const agentBarHeight = this.sizes ? this.agentBarHeight : 0;
 
-    let locale = '';
-    if (this.props.params.locale) {
-      locale = `/${this.props.params.locale}`;
-    }
     return (
       <div>
         <div className={classNames('topic-list', { fixed })} ref={(c) => { this.topicList = c; }} >
           <GuideSelector guideSlug={this.state.guideSlug} selectGuide={this.selectGuide} />
           <hr />
-          <TopicList topics={topics} locale={locale} guideSlug={guideSlug} />
+          <TopicList topics={topics} guideSlug={guideSlug} />
         </div>
         <div className="topic" ref={(c) => { this.topic = c; }}>
           <header className="section-header">
