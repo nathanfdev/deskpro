@@ -251,7 +251,7 @@ class PersonFromEmailProcessor
      */
     public function associatePersonWithAccountBrand(EmailAccount $account, Person $person, $forceRegEnabled = true)
     {
-        $brand = $this->getFirstAccountBrandEnabledForRegistration($account, $person->is_agent ? 'agent' : 'user');
+        $brand = $this->getFirstAccountBrandEnabledForRegistration($account, $person->isAgent() ? 'agent' : 'user');
 
         if (!$brand && $forceRegEnabled) {
             return false;

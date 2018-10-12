@@ -5,6 +5,7 @@ Feature: New ticket form
   Background:
     Given I'm authenticated as user
     And I have only default brand
+    And user has defaultBrand brand
     And the "{defaultBrand}" setting "core_tickets.use_ref" is set to "1"
     And a user with "user_1@deskpro.dev" email exists
     And only the following Department records exist:

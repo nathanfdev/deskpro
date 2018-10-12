@@ -4,6 +4,7 @@ Feature: Edit ticket form custom fields
   Background:
     Given I'm authenticated as user
     And I have only default brand
+    And user has defaultBrand brand
     And the "{defaultBrand}" setting "core_tickets.use_ref" is set to "1"
     And I set permission "tickets.use" = 1 for "registered" usergroup
     And the following languages are enabled:

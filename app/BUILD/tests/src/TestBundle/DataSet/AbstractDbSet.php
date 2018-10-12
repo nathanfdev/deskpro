@@ -7,6 +7,7 @@
 namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\Brand;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Util;
@@ -134,6 +135,11 @@ abstract class AbstractDbSet implements DataSetInterface
         $new_user->is_user      = true;
         $new_user->is_confirmed = true;
         $new_user->is_deleted   = $is_deleted;
+
+        $brands = $this->getEm()->getRepository(Brand::class)->findAll();
+        foreach ($brands as $brand) {
+            $new_user->addBrand($brand);
+        }
 
         if ($agent || $admin) {
             $new_user->is_agent  = true;

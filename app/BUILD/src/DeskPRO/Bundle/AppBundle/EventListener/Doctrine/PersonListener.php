@@ -38,14 +38,6 @@ class PersonListener
     /**
      * @param Person $entity
      */
-    public function postLoad(Person $entity)
-    {
-        $this->verifyBrand($entity);
-    }
-
-    /**
-     * @param Person $entity
-     */
     public function prePersist(Person $entity)
     {
         $this->verifyBrand($entity);
