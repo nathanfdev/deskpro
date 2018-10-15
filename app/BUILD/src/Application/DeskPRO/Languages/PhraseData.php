@@ -40,7 +40,8 @@ class PhraseData
         'agent'   => ['backend'],
         'general' => ['backend'],
         'portal'  => ['user'],
-        'user'    => ['user', 'portal'], // user file contains `user` and `portal` prefix
+        'user'    => ['user', 'portal'],            // prefixes from user.yml file
+        'backend' => ['api', 'agent', 'general'],    // prefixes from backend.yml file
     ];
 
     /**
