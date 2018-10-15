@@ -2,7 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Languages_Ctrl_Settings extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Languages_Ctrl_Settings'
     @CTRL_AS = 'EditCtrl'
-    @DEPS    = ['$http']
+    @DEPS    = ['$http', 'LangSyncApi']
 
     init: ->
       @form = {
@@ -12,8 +12,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         tickets_move_to:   0,
         users_move_from:   0,
         users_move_to:     0,
-        users_move_to:     0,
-        download_language: 0
+        download_language: 'all'
       }
 
     initialLoad: ->
@@ -29,8 +28,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         for pack in res.data.lang.packs
           if pack.is_installed
             @langChoices.push({
-              id:    pack.installed_language_id,
-              title: pack.title
+              id:          pack.installed_language_id,
+              system_name: pack.id,
+              title:       pack.title
             })
 
         @form.tickets_move_to = res.data.lang.default_lang_id
@@ -78,5 +78,62 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         )
       )
 
+    doDownloadLanguages: ->
+
+      syncLanguage = (nameId, locale) =>
+        console.log('[Language sync] Process: ', locale)
+        @$q.all([
+          @LangSyncApi.getPhrases(locale, 'backend')
+          @LangSyncApi.getPhrases(locale, 'user')
+        ]).then (res) =>
+          #combine user and backend phrases
+          phrases = _.extend(res[0].data, res[1].data)
+
+          postData = {
+            phrases: []
+          }
+
+          _.keys(phrases).forEach((phraseName) ->
+            postData.phrases.push({
+              name: phraseName,
+              phrase: phrases[phraseName]
+            })
+          )
+
+          @Api.sendPostJson("/langs/#{nameId}/phrases/sync", postData)
+
+      @showConfirm('@confirm_download_languages').result.then(=>
+        @startSpinner('downloading_languages')
+
+        @LangSyncApi.getManifest().then((result) =>
+          manifest = result.data
+          langs = @langChoices
+          if (@form.download_language != 'all')
+            langs = [{system_name: @form.download_language}]
+
+          deferred = @$q.defer()
+          res = deferred.promise
+
+          #process language sync one by one
+          langs.forEach((lang) ->
+            if _.has(manifest, lang.system_name)
+              # schedule language sync promise subsequent execution
+              res = res.then(() -> syncLanguage(lang.system_name, manifest[lang.system_name].locale))
+          )
+
+          deferred.resolve()
+
+          #execute chained promises
+          res
+            .then(() => @stopSpinner('downloading_languages'))
+            .catch((error) =>
+              console.log(error)
+              @stopSpinner('downloading_languages')
+            )
+        ).catch( (error) =>
+          console.log(error)
+          @stopSpinner('downloading_languages')
+        )
+      )
 
   Admin_Languages_Ctrl_Settings.EXPORT_CTRL()

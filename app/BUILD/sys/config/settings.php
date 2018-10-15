@@ -1170,4 +1170,10 @@ return [
      * The hostname of deskpro's own oauth2 proxy
      */
     'dpoauth2proxy.host' => 'auth.deskpro.com',
+
+    //###################################################################################################################
+    // services
+    //###################################################################################################################
+
+    'services.language_sync_api' => 'https://langtest.free.beeceptor.com/',
 ];

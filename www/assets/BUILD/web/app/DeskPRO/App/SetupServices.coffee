@@ -4,7 +4,6 @@ define [
   'DeskPRO/Main/Service/AppState',
   'DeskPRO/Main/Service/DpApi',
   'DeskPRO/Main/Service/DpApi2',
-  'DeskPRO/Main/Service/LangSyncApi',
   'DeskPRO/Main/Service/Growl',
   'DeskPRO/Main/Service/InhelpState',
 ], (
@@ -13,7 +12,6 @@ define [
   DeskPRO_Main_Service_AppState,
   DeskPRO_Main_Service_DpApi,
   DeskPRO_Main_Service_DpApi2,
-  DeskPRO_Main_Service_LangSyncApi,
   DeskPRO_Main_Service_Growl,
   DeskPRO_Main_Service_InhelpState,
 ) ->
@@ -38,14 +36,6 @@ define [
           window.DP_API_TOKEN,
           Growl
         )
-    ])
-
-    Module.service('LangSyncApi', ['$http', 'Growl', ($http, Growl) ->
-      return new DeskPRO_Main_Service_LangSyncApi(
-        $http,
-        window.DP_LANGUAGE_SYNC_API,
-        Growl
-      )
     ])
 
     Module.service('InhelpState', ['Api', (Api) ->

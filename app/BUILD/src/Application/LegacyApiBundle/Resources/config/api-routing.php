@@ -6814,6 +6814,16 @@ $collection->create(
 );
 
 $collection->create(
+    'api_langs_syncphrases',
+    [
+        'path'         => '/langs/{id}/phrases/sync',
+        'controller'   => 'LegacyApiBundle:Languages:syncPhraseSet',
+        'methods'      => ['POST'],
+        'requirements' => ['id' => '\d+|[a-z_]+'],
+    ]
+);
+
+$collection->create(
     'api_langs_getphrasegroups',
     [
         'path'       => '/langs/phrases-groups',

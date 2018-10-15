@@ -52,7 +52,7 @@ class Phrase extends AbstractEntityRepository
      *
      * @return array
      */
-    public function getPhrasesInGroup($language, $group)
+    public function getPhrasesInGroup($language, $group, $isManaged = false)
     {
         if (Numbers::isInteger($language)) {
             $languageId = $language;
@@ -69,8 +69,8 @@ class Phrase extends AbstractEntityRepository
         $phrases = $this->getEntityManager()->getConnection()->fetchAllKeyValue('
             SELECT name, COALESCE(phrase, original_phrase) AS phrase
             FROM phrases
-            WHERE language_id = ? AND groupname LIKE ?
-        ', [$languageId, $group.'%']);
+            WHERE language_id = ? AND is_managed = ? AND groupname LIKE ?
+        ', [$languageId, $isManaged, $group.'%']);
 
         return $phrases;
     }
@@ -84,12 +84,12 @@ class Phrase extends AbstractEntityRepository
         ')->setParameters([$language, $group])->execute();
     }
 
-    public function getCustomPhrases($language)
+    public function getCustomPhrases($language, $isManaged = false)
     {
         return $this->_em->createQuery("
             SELECT p
             FROM DeskPRO:Phrase p INDEX BY p.name
-            WHERE p.language = ?0 AND p.phrase IS NOT NULL AND p.phrase != ''
-        ")->setParameters([$language])->execute();
+            WHERE p.language = ?0 AND p.phrase IS NOT NULL AND p.phrase != '' AND p.is_managed = ?1
+        ")->setParameters([$language, $isManaged])->execute();
     }
 }

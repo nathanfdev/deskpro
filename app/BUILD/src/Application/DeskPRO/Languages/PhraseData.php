@@ -588,8 +588,10 @@ class PhraseData
         $default_phrases = $this->loadSystemPhrases('en-US', $group_id);
 
         if ($language) {
-            $lang_phrases   = $this->loadSystemPhrases($language->getLocale(), $group_id);
-            $custom_phrases = $this->loadCustomPhrases($language, $group_id);
+            $lang_phrases           = $this->loadSystemPhrases($language->getLocale(), $group_id);
+            $custom_phrases_managed = $this->loadCustomPhrases($language, $group_id, true);
+            $lang_phrases           = array_merge($lang_phrases, $custom_phrases_managed);
+            $custom_phrases         = $this->loadCustomPhrases($language, $group_id);
         } else {
             $lang_phrases   = [];
             $custom_phrases = [];
@@ -625,6 +627,9 @@ class PhraseData
     }
 
     /**
+     * This functions returns only not managed custom phrases.
+     * Refer to Phrase.is_managed for more details.
+     *
      * @param Language $language
      *
      * @return array
@@ -731,7 +736,7 @@ class PhraseData
      *
      * @return array
      */
-    private function loadCustomPhrases(Language $language, $group_id)
+    private function loadCustomPhrases(Language $language, $group_id, $isManaged = false)
     {
         // we need to fetch both: portal and user for portal.* group as well as adm and admin for admin.*
 
@@ -743,7 +748,7 @@ class PhraseData
             $newParts = $parts;
             array_shift($newParts);
             array_unshift($newParts, $prefix);
-            $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts));
+            $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts), $isManaged);
         }
 
         return $phrases;

@@ -187,6 +187,14 @@ class PostBuild extends AbstractBuild
 
         $this->out('.. done recompiling CSS');
 
+        //------------------------------
+        // Managed custom phrases
+        //------------------------------
+
+        $this->out('Remove managed custom phrases');
+
+        $this->container->getDb()->executeUpdate('DELETE FROM phrases WHERE is_managed = 1');
+
         $this->out('Post upgrade done');
     }
 }

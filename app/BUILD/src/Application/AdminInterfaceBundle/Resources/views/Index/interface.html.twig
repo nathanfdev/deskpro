@@ -317,6 +317,7 @@
         window.DP_ASSET_URL         = '{{ asset('') }}';
         window.DP_BASE_URL          = '/{{ path('portal_home')|ltrim('/') }}';
         window.DP_BASE_API_URL      = '/{{ path('user')|ltrim('/') }}api';
+        window.DP_LANGUAGE_SYNC_API = '{{ app.getSetting('services.language_sync_api') }}';
         window.DP_BASE_ADMIN_URL    = '/{{ path('admin')|trim('/') }}';
         window.DP_API_TOKEN         = '{{ api_token.getKeyString() }}';
         window.DP_SESSION_ID        = '{{ app.getSession().getEntity().session_code }}';

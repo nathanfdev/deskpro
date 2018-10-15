@@ -143,8 +143,8 @@
 							<div style="padding-bottom: 4px;">
 								Download the latest language for
 								<select ng-model="EditCtrl.form.download_language" ui-select2 style="width: 170px;">
-									<option value="0">(all languages)</option>
-									<option ng-repeat="l in EditCtrl.langChoices" value="{{ ng_var('l.id') }}">{{ ng_var('l.title') }}</option>
+									<option value="all">(all languages)</option>
+									<option ng-repeat="l in EditCtrl.langChoices" value="{{ ng_var('l.system_name') }}">{{ ng_var('l.title') }}</option>
 								</select>
 							</div>
 					</div>
@@ -170,5 +170,8 @@
 	</div>
 	<div dp-register-message="confirm_move_users">
 		Are you sure you want to mass update language on all users in your database? This action cannot be undone.
+	</div>
+	<div dp-register-message="confirm_download_languages">
+		Are you sure you want to download latest languages? This action cannot be undone.
 	</div>
 {% endblock %}
