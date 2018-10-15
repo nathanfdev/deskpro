@@ -40,6 +40,7 @@ class PhraseData
         'agent'   => ['backend'],
         'general' => ['backend'],
         'portal'  => ['user'],
+        'user'    => ['user', 'portal'], // user file contains `user` and `portal` prefix
     ];
 
     /**
