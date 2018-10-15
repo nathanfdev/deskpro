@@ -732,11 +732,6 @@ class VoiceCallbacksHelper
             $this->em->persist($participant);
             $this->em->flush();
 
-            // unhold the conference, could be on cold transfer
-            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
-                $this->voiceProviderHelper->holdConferenceEndUser($phoneCall, false);
-            }
-
             // log participant join event
             $log = new VoicePhoneCallLog();
             $log->setDetails($details);

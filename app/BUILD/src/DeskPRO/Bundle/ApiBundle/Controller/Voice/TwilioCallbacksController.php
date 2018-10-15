@@ -745,11 +745,13 @@ class TwilioCallbacksController extends BaseController
                 ]);
 
                 // join user to the conference
-                $this->get('dp.voice.provider_helper')->joinUserToConference(
-                    $phoneCall,
-                    $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
-                    'POST'
-                );
+                if ($phoneCall->getParticipants()->count() <= 2) {
+                    $this->get('dp.voice.provider_helper')->joinUserToConference(
+                        $phoneCall,
+                        $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
+                        'POST'
+                    );
+                }
             } else {
                 $twiml->hangup();
             }
