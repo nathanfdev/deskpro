@@ -892,7 +892,7 @@ class PlivoCallbacksController extends BaseController
                     $targetDetails = $dialNumber->getTarget()->getTargetDetails();
 
                     $gather->addSpeak(sprintf(
-                        'For call %s, press %d',
+                        'For %s, press %d',
                         $targetDetails['name'], $dialNumber->getDialNum()
                     ), [
                         'voice' => 'WOMAN',

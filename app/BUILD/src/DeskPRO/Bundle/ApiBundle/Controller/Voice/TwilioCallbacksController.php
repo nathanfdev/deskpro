@@ -921,7 +921,7 @@ class TwilioCallbacksController extends BaseController
                     $targetDetails = $dialNumber->getTarget()->getTargetDetails();
 
                     $gather->say(sprintf(
-                        'For call %s, press %d',
+                        'For %s, press %d',
                         $targetDetails['name'], $dialNumber->getDialNum()
                     ), [
                         'voice' => 'alice',
