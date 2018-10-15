@@ -391,14 +391,17 @@ class PlivoAdapter implements VoiceProviderInterface
 
         $agents = [];
 
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        if ($conference) {
-            foreach ($conference->members as $member) {
-                $agent = $phoneCall->getPersonByCallSid($member['call_uuid']);
-                if ($agent) {
-                    $agents[] = $agent;
+        try {
+            $conference = $this->getConference($account, $phoneCall->getConferenceName());
+            if ($conference) {
+                foreach ($conference->members as $member) {
+                    $agent = $phoneCall->getPersonByCallSid($member['call_uuid']);
+                    if ($agent) {
+                        $agents[] = $agent;
+                    }
                 }
             }
+        } catch (\Exception $e) {
         }
 
         return $agents;
@@ -471,6 +474,29 @@ class PlivoAdapter implements VoiceProviderInterface
                 $this->getClient($account)->calls->delete($participant->getCallSid());
             } catch (\Exception $e) {
             }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function joinUserToConference(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            return $this->getClient($account)->calls->transfer(
+                $phoneCall->getCallSid(),
+                [
+                    'legs'        => 'aleg',
+                    'aleg_url'    => $callbackUrl,
+                    'aleg_method' => $callbackMethod,
+                ]
+            );
+        } catch (\Exception $e) {
         }
     }
 

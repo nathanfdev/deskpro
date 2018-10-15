@@ -764,13 +764,13 @@ class VoiceCallbacksHelper
         $statusParams['phone_call'] = $this->serializer->toArray($phoneCall, new SideloadSerializationContext());
         unset($statusParams['phone_call']['ticket']);
 
+        // is conference on hold
+        $statusParams['hold'] = $this->voiceProviderHelper->isConferenceOnHold($phoneCall);
+
         // all active participants
         $statusParams['agent_participants'] = array_map(function (Person $person) {
             return $person->getId();
         }, $this->voiceProviderHelper->getActivePhoneCallParticipants($phoneCall));
-
-        // is conference on hold
-        $statusParams['hold'] = $this->voiceProviderHelper->isConferenceOnHold($phoneCall);
 
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,

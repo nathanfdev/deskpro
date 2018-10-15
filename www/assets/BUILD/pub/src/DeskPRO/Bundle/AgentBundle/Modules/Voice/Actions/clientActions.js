@@ -178,6 +178,14 @@ export const voiceBootstrap = createAction(
           if (eventName === 'conference-end') {
             dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
           }
+
+          dispatch(updateConnectionState({
+            call_id: parseInt(event.phone_call.id, 10),
+            state:   {
+              participants: event.agent_participants,
+              hold:         !!event.hold
+            }
+          }));
         });
         messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
           const data = event.data;
@@ -236,15 +244,6 @@ export const voiceBootstrap = createAction(
             call_id: parseInt(data.call_id, 10),
             state:   {
               hold: !!data.hold
-            }
-          }));
-        });
-        messageBroker.addMessageListener('agent.voice.conference.status', (data) => {
-          dispatch(updateConnectionState({
-            call_id: parseInt(data.phone_call.id, 10),
-            state:   {
-              participants: data.agent_participants,
-              hold:         !!data.hold
             }
           }));
         });
@@ -543,3 +542,4 @@ export const openDialpad = createAction(
     window.AgentVoiceDropdown.openDialpad(outgoingNumber, ticketId, ticketTitle);
   }
 );
+

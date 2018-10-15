@@ -204,10 +204,6 @@ class TwilioCallbacksController extends BaseController
                 $conference = $this->get('twilio_adapter')->getConference($account, $phoneCall->getConferenceSid());
                 if (!$conference || $conference->status === 'completed') {
                     $twiml->hangup();
-                } else {
-                    $twiml->dial()->conference($phoneCall->getConferenceName(), [
-                        'endConferenceOnExit' => true,
-                    ]);
                 }
             } else {
                 $hadWorkers = $task->getWorkerIds();
@@ -747,6 +743,13 @@ class TwilioCallbacksController extends BaseController
                     'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
                     'recordingStatusCallbackMethod' => 'POST',
                 ]);
+
+                // join user to the conference
+                $this->get('dp.voice.provider_helper')->joinUserToConference(
+                    $phoneCall,
+                    $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
+                    'POST'
+                );
             } else {
                 $twiml->hangup();
             }
@@ -948,6 +951,49 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *     description="User joins conference callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/user_joins_conference_callback", name="twilio_user_joins_conference_callback")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param string             $accountAuth
+     * @param Request            $request
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function userJoinsConferenceCallbackAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $twiml  = new Twiml();
+        $callId = $request->get('callId');
+        if ($callId) {
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
+            if ($phoneCall) {
+                $twiml->dial()->conference($phoneCall->getConferenceName(), [
+                    'endConferenceOnExit' => true,
+                ]);
+            }
+        }
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
      * @param TwilioVoiceAccount $account
      * @param Task               $task
      *
@@ -1107,6 +1153,21 @@ class TwilioCallbacksController extends BaseController
             'accountAuth' => $account->getAccountAuth(),
             'CallId'      => $phoneCall->getId(),
             'AgentId'     => $agent->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param TwilioVoiceAccount $account
+     * @param VoicePhoneCall     $phoneCall
+     *
+     * @return string
+     */
+    private function getUserJoinsConferenceCallbackUrl(TwilioVoiceAccount $account, VoicePhoneCall $phoneCall)
+    {
+        return $this->get('router')->generate('twilio_user_joins_conference_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'callId'      => $phoneCall->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 

@@ -406,12 +406,15 @@ class TwilioAdapter implements VoiceProviderInterface
 
         $agents = [];
 
-        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
-        foreach ($participants as $participant) {
-            $agent = $phoneCall->getPersonByCallSid($participant->callSid);
-            if ($agent) {
-                $agents[] = $agent;
+        try {
+            $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
+            foreach ($participants as $participant) {
+                $agent = $phoneCall->getPersonByCallSid($participant->callSid);
+                if ($agent) {
+                    $agents[] = $agent;
+                }
             }
+        } catch (\Exception $e) {
         }
 
         return $agents;
@@ -500,6 +503,25 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function joinUserToConference(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof TwilioVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            $this->getClient($account)->calls($phoneCall->getCallSid())->update([
+                'url'    => $callbackUrl,
+                'method' => $callbackMethod,
+            ]);
+        } catch (\Exception $e) {
+        }
+    }
+
+    /**
      * @param TwilioVoiceAccount $account
      *
      * @return Client
@@ -561,9 +583,13 @@ class TwilioAdapter implements VoiceProviderInterface
      */
     protected function getConferenceParticipants(TwilioVoiceAccount $account, $conferenceSid)
     {
-        $conference   = $this->getConferenceContext($account, $conferenceSid);
-        $participants = $conference->participants->read();
+        try {
+            $conference   = $this->getConferenceContext($account, $conferenceSid);
+            $participants = $conference->participants->read();
 
-        return $participants;
+            return $participants;
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 }

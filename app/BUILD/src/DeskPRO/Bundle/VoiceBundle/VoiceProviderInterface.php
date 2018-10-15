@@ -71,4 +71,13 @@ interface VoiceProviderInterface
      * @return bool
      */
     public function isCallActive(VoicePhoneCall $phoneCall);
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param string         $callbackUrl
+     * @param string         $callbackMethod
+     *
+     * @return bool
+     */
+    public function joinUserToConference(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod);
 }

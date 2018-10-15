@@ -20,7 +20,6 @@ class VoiceControlsContainer extends React.Component {
 
   static propTypes = {
     dispatch:         PropTypes.func,
-    me:               PropTypes.object,
     agents:           PropTypes.object,
     onlineAgentIds:   PropTypes.object,
     connections:      PropTypes.object,
@@ -66,10 +65,8 @@ class VoiceControlsContainer extends React.Component {
     });
 
     this.interval = setInterval(() => {
-      const { me } = this.props;
       const { status } = this.state;
       const connection = this.getConnection();
-      const connectionState = this.getConnectionState();
 
       let connectionStatus;
       if (!connection) {
@@ -84,9 +81,7 @@ class VoiceControlsContainer extends React.Component {
       }
 
       if (connectionStatus === 'open') {
-        if (status !== 'active'
-          && (connectionState.participants.contains(me.get('id')) || connection.outbound)
-        ) {
+        if (status !== 'active' || connection.outbound) {
           this.setState({
             status: 'active'
           });

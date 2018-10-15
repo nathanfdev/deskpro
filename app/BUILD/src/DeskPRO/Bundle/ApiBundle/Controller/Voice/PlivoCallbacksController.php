@@ -167,6 +167,7 @@ class PlivoCallbacksController extends BaseController
                 );
 
                 if ($phoneCall) {
+                    // join conference
                     /** @var PlivoVoiceAccount $account */
                     $account = $phoneCall->getNumber()->getAccount();
                     $plivoXml->addConference($phoneCall->getConferenceName(), [
@@ -175,6 +176,13 @@ class PlivoCallbacksController extends BaseController
                         'callbackMethod' => 'POST',
                         'record'         => true,
                     ]);
+
+                    // join user to the conference
+                    $this->get('dp.voice.provider_helper')->joinUserToConference(
+                        $phoneCall,
+                        $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
+                        'POST'
+                    );
                 } else {
                     $plivoXml->addHangup();
                 }
@@ -421,10 +429,6 @@ class PlivoCallbacksController extends BaseController
                 // just end the call
                 if (!$conference || $conference->conferenceMemberCount === 0) {
                     $plivoXml->addHangup();
-                } else {
-                    $plivoXml->addConference($phoneCall->getConferenceName(), [
-                        'endConferenceOnExit' => true,
-                    ]);
                 }
             } else {
                 $hadWorkers = $task->getWorkerIds();
@@ -975,6 +979,49 @@ class PlivoCallbacksController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *     description="User joins conference callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/user_joins_conference_callback", name="plivo_user_joins_conference_callback")
+     *
+     * @param PlivoVoiceAccount $account
+     * @param string            $accountAuth
+     * @param Request           $request
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function userJoinsConferenceCallbackAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $plivoXml = new PlivoXML();
+        $callId   = $request->get('callId');
+        if ($callId) {
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
+            if ($phoneCall) {
+                $plivoXml->addConference($phoneCall->getConferenceName(), [
+                    'endConferenceOnExit' => true,
+                ]);
+            }
+        }
+
+        $response = new Response($plivoXml->toXML());
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
      * @param PlivoVoiceAccount $account
      * @param Task              $task
      *
@@ -1114,6 +1161,21 @@ class PlivoCallbacksController extends BaseController
     private function getOutboundCallbackUrl(PlivoVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
         return $this->get('router')->generate('plivo_outbound_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'callId'      => $phoneCall->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     * @param VoicePhoneCall    $phoneCall
+     *
+     * @return string
+     */
+    private function getUserJoinsConferenceCallbackUrl(PlivoVoiceAccount $account, VoicePhoneCall $phoneCall)
+    {
+        return $this->get('router')->generate('plivo_user_joins_conference_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'callId'      => $phoneCall->getId(),
