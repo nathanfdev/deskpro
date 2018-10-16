@@ -4,7 +4,9 @@ namespace Application\DeskPRO\NewSearch\Manager;
 
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Application\DeskPRO\NewSearch\Manager\Traits\ExtractsMatchersFromQuery;
+use Application\DeskPRO\NewSearch\Repository\AbstractRepository;
 use DpSys\LowError\SystemErrorHandler;
 use Elastica\Response;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
@@ -81,8 +83,6 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                     }
                 }
             }
-
-            return [$this->prepareResults(), [], false];
         }
 
         /*
@@ -105,9 +105,11 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
             }
 
             // get ES entity repository
+            /** @var AbstractRepository $elsentRepository */
             $elsentRepository = $repositoryManager->getRepository($entityClass);
 
             // to operate with exact matches like ref, id or slug we don't need elasticsearch
+            /** @var AbstractEntityRepository $entityRepository */
             $entityRepository = $this->getEntityManager()->getRepository($entityClass);
 
             // check if object requires permissions and set person context
@@ -134,12 +136,12 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                         'field'  => 'ref',
                         'param'  => $query,
                     ]);
-                } else {
-                    $result = $elsentRepository->find($query, null, [
-                        'sort_type' => $sort,
-                    ]);
-                    $this->handleResult($object, $result);
                 }
+
+                $result = $elsentRepository->find($query, null, [
+                    'sort_type' => $sort,
+                ]);
+                $this->handleResult($object, $result);
             } elseif ($object === 'person') {
                 // Custom logic for person
 
@@ -156,12 +158,12 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                     if ($entity instanceof Person) {
                         $this->handleResult($object, $entity);
                     }
-                } else {
-                    $result = $elsentRepository->find($query, null, [
-                        'sort_type' => $sort,
-                    ]);
-                    $this->handleResult($object, $result);
                 }
+
+                $result = $elsentRepository->find($query, null, [
+                    'sort_type' => $sort,
+                ]);
+                $this->handleResult($object, $result);
             } else {
                 /*
                  * All other objects do not require any specific logic,
@@ -174,12 +176,12 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                     if (!is_null($entity)) {
                         $this->handleResult($object, $entity);
                     }
-                } else {
-                    $result = $elsentRepository->find($query, null, [
-                        'sort_type' => $sort,
-                    ]);
-                    $this->handleResult($object, $result);
                 }
+
+                $result = $elsentRepository->find($query, null, [
+                    'sort_type' => $sort,
+                ]);
+                $this->handleResult($object, $result);
             }
         }
 
