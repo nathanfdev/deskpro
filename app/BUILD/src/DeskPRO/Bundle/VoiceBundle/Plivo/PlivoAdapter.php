@@ -307,12 +307,12 @@ class PlivoAdapter implements VoiceProviderInterface
         $conference = $this->getConference($account, $phoneCall->getConferenceName());
         if ($conference && count($conference->members) < 2) {
             $conference->delete();
-        }
 
-        foreach ($phoneCall->getUserParticipants() as $participant) {
-            try {
-                $this->getClient($account)->calls->delete($participant->getCallSid());
-            } catch (\Exception $e) {
+            foreach ($phoneCall->getUserParticipants() as $participant) {
+                try {
+                    $this->getClient($account)->calls->delete($participant->getCallSid());
+                } catch (\Exception $e) {
+                }
             }
         }
     }
