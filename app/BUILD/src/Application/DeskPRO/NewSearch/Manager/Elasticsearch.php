@@ -4,7 +4,9 @@ namespace Application\DeskPRO\NewSearch\Manager;
 
 use Application\DeskPRO\Elastica\ClientFactory;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Application\DeskPRO\NewSearch\Manager\Traits\ExtractsMatchersFromQuery;
+use Application\DeskPRO\NewSearch\Repository\AbstractRepository;
 use DpSys\LowError\SystemErrorHandler;
 use Elastica\Response;
 use FOS\ElasticaBundle\Manager\RepositoryManager;
@@ -13,8 +15,7 @@ use Orb\Util\Numbers;
 use Orb\Validator\StringEmail;
 
 /**
- * Class Elasticsearch
- * @package Application\DeskPRO\NewSearch\Manager
+ * Class Elasticsearch.
  */
 class Elasticsearch extends AbstractSearchManager implements SearchManagerInterface
 {
@@ -24,12 +25,13 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
      * @param null|string $query
      * @param null|string $sort
      * @param array       $limitTypes
+     *
      * @return array|mixed
      */
     public function quickSearch($query = null, $sort = null, array $limitTypes = [])
     {
         // check if we need to proceed
-        if (! $this->proceedWithSearch($query)) {
+        if (!$this->proceedWithSearch($query)) {
             return array_map(function ($object) {
                 return [$object => []];
             }, array_keys($this->objects));
@@ -43,7 +45,7 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
         if (count($matchers) > 0) {
             foreach ($this->extractMatchersFromQuery($query) as $matcher) {
                 // check if person has access to an object
-                if (! $this->isAllowed($matcher['object'])) {
+                if (!$this->isAllowed($matcher['object'])) {
                     continue;
                 }
 
@@ -51,7 +53,7 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                 $entityRepository = $this->getEntityManager()
                     ->getRepository($this->objects[$matcher['object']]);
 
-                /**
+                /*
                  * For tickets search we use custom logic in order to utilize
                  * findTicketRef(), SearchTicketRef() and findTicketId() methods,
                  * and check ticket permissions for logged in user if any.
@@ -66,31 +68,29 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                      * so no specific logic needed here.
                      */
                     $entity = $entityRepository->findOneBy([
-                        $matcher['field'] => $matcher['param']
+                        $matcher['field'] => $matcher['param'],
                     ]);
 
-                    /**
+                    /*
                      * Add to results set if it's not null
                      *
                      * @todo: maybe better use instanceof, but this will
                      *        require more complex workaround, so not sure
                      *        it does matter that much to impact the timings.
                      */
-                    if (! is_null($entity)) {
+                    if (!is_null($entity)) {
                         $this->handleResult($matcher['object'], $entity);
                     }
                 }
             }
-
-            return [$this->prepareResults(), [], false];
         }
 
-        /**
+        /*
          * Time for ES to perform fulltext search
          */
 
         // define sorting order
-        if (! is_null($sort) && ! in_array($sort, ['score', 'date_active', 'date_created'])) {
+        if (!is_null($sort) && !in_array($sort, ['score', 'date_active', 'date_created'])) {
             $sort = 'score';
         }
 
@@ -100,14 +100,16 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
         // go over objects
         foreach ($this->objects as $object => $entityClass) {
             // check if person has access to an object
-            if (! $this->isAllowed($object)) {
+            if (!$this->isAllowed($object)) {
                 continue;
             }
 
             // get ES entity repository
+            /** @var AbstractRepository $elsentRepository */
             $elsentRepository = $repositoryManager->getRepository($entityClass);
 
             // to operate with exact matches like ref, id or slug we don't need elasticsearch
+            /** @var AbstractEntityRepository $entityRepository */
             $entityRepository = $this->getEntityManager()->getRepository($entityClass);
 
             // check if object requires permissions and set person context
@@ -118,20 +120,29 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
             // Specific logic for tickets
             if ($object === 'ticket') {
                 // Lookup by id or ref
-                if (Numbers::isInteger($query) || preg_match('#^[0-9A-Z\-_\.]+$#', $query)) {
+                if (Numbers::isInteger($query) || preg_match('#^[0-9A-Za-z\-_\.]+$#', $query)) {
                     // use custom lookup logic
+                    // if number try id
+                    if (Numbers::isInteger($query)) {
+                        $this->getTicketByRefOrId($entityRepository, [
+                            'object' => 'ticket',
+                            'field'  => 'id',
+                            'param'  => $query,
+                        ]);
+                    }
+                    // always search ref
                     $this->getTicketByRefOrId($entityRepository, [
                         'object' => 'ticket',
-                        'field'  => 'id',
+                        'field'  => 'ref',
                         'param'  => $query,
                     ]);
-                } else {
-                    $result = $elsentRepository->find($query, null, [
-                        'sort_type' => $sort,
-                    ]);
-                    $this->handleResult($object, $result);
                 }
-            } else if ($object === 'person') {
+
+                $result = $elsentRepository->find($query, null, [
+                    'sort_type' => $sort,
+                ]);
+                $this->handleResult($object, $result);
+            } elseif ($object === 'person') {
                 // Custom logic for person
 
                 if (Numbers::isInteger($query)) {
@@ -147,14 +158,14 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                     if ($entity instanceof Person) {
                         $this->handleResult($object, $entity);
                     }
-                } else {
-                    $result = $elsentRepository->find($query, null, [
-                        'sort_type' => $sort,
-                    ]);
-                    $this->handleResult($object, $result);
                 }
+
+                $result = $elsentRepository->find($query, null, [
+                    'sort_type' => $sort,
+                ]);
+                $this->handleResult($object, $result);
             } else {
-                /**
+                /*
                  * All other objects do not require any specific logic,
                  * so just standard cases
                  */
@@ -162,15 +173,15 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                 // Lookup by id
                 if (Numbers::isInteger($query)) {
                     $entity = $entityRepository->findById($query);
-                    if (! is_null($entity)) {
+                    if (!is_null($entity)) {
                         $this->handleResult($object, $entity);
                     }
-                } else {
-                    $result = $elsentRepository->find($query, null, [
-                        'sort_type' => $sort,
-                    ]);
-                    $this->handleResult($object, $result);
                 }
+
+                $result = $elsentRepository->find($query, null, [
+                    'sort_type' => $sort,
+                ]);
+                $this->handleResult($object, $result);
             }
         }
 
