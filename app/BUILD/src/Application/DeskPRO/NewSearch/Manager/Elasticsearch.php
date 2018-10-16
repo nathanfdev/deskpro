@@ -118,11 +118,20 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
             // Specific logic for tickets
             if ($object === 'ticket') {
                 // Lookup by id or ref
-                if (Numbers::isInteger($query) || preg_match('#^[0-9A-Z\-_\.]+$#', $query)) {
+                if (Numbers::isInteger($query) || preg_match('#^[0-9A-Za-z\-_\.]+$#', $query)) {
                     // use custom lookup logic
+                    // if number try id
+                    if (Numbers::isInteger($query)) {
+                        $this->getTicketByRefOrId($entityRepository, [
+                            'object' => 'ticket',
+                            'field'  => 'id',
+                            'param'  => $query,
+                        ]);
+                    }
+                    // always search ref
                     $this->getTicketByRefOrId($entityRepository, [
                         'object' => 'ticket',
-                        'field'  => Numbers::isInteger($query) ? 'id' : 'ref',
+                        'field'  => 'ref',
                         'param'  => $query,
                     ]);
                 } else {
