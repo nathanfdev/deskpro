@@ -65,7 +65,6 @@ class ProcessNew extends ProcessAbstract
         // Read email body/subject
         //------------------------------
 
-        $this->processBlobs();
         $inlineImages = new InlineImageTokens($this->reader);
 
         $emailInfo = new TicketIncomingEmailMessage(
@@ -77,6 +76,8 @@ class ProcessNew extends ProcessAbstract
             [$this, 'replaceInlineAttachTokens'],
             $this->getLogger()
         );
+
+        $this->processBlobs();
 
         $runReplyCutter = $this->ticketEmail->force_reply_cutter;
 

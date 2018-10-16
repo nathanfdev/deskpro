@@ -7,6 +7,8 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\EmailGateway\Reader\Item\Attachment;
+use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -39,11 +41,14 @@ class InlineImageTokens
      */
     public function processTokens($body)
     {
+        /**
+         * @var Attachment[]
+         */
         $haveCids = [];
         foreach ($this->reader->getAttachments() as $attach) {
             $cid = $attach->getContentId();
             if ($cid) {
-                $haveCids[$cid] = true;
+                $haveCids[$cid] = $attach;
             }
         }
 
@@ -71,7 +76,8 @@ class InlineImageTokens
                     $this->tokens[$cid] = [];
                 }
 
-                $this->tokens[$cid][] = $token;
+                $this->tokens[$cid][]      = $token;
+                $haveCids[$cid]->is_inline = true;
             }
         }
 
@@ -101,6 +107,10 @@ class InlineImageTokens
                 }
 
                 $this->tokens[$cid][] = $token;
+
+                if (ContentTypes::isInlineContentType($haveCids[$cid]->getMimeType())) {
+                    $haveCids[$cid]->is_inline = true;
+                }
             }
         }
 

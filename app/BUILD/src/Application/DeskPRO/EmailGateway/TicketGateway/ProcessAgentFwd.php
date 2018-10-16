@@ -606,7 +606,7 @@ class ProcessAgentFwd extends ProcessAbstract
                 $attach->getFileContents(),
                 $attach->getFileName(),
                 $attach->getMimeType(),
-                ['tag' => 'ticket_attachment']
+                ['tag' => $attach->is_inline ? null : 'ticket_attachment']
             );
 
             $processedBlobs[$blob->id] = $blob;

@@ -67,6 +67,11 @@ class Attachment
     public $size;
 
     /**
+     * @var bool
+     */
+    public $is_inline = false;
+
+    /**
      * @return string
      */
     public function getFileContents()
