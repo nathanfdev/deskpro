@@ -435,7 +435,7 @@ class TicketMessage extends DomainObject
         $message = trim($message);
 
         if ($max_length && isset($message[$max_length])) {
-            $message = substr($message, 0, $max_length);
+            $message = mb_substr($message, 0, $max_length);
             $message = trim($message);
             $message .= $ellipses;
         }
