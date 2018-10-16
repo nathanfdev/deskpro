@@ -420,7 +420,8 @@
   }
 }
 .phrases {
-  width: 780px;
+  width: calc(300px + 25vw);
+  max-width: 780px;
   height: 550px;
   .ui.vertical.menu {
     border-width: 0 1px 0 0;
