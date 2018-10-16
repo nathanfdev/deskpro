@@ -169,7 +169,7 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
          */
         public function getPluralCategories()
         {
-            return $this->pluralCategories;
+            return $this->pluralCategories ?: [];
         }
 
         /**
@@ -524,9 +524,8 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
                     'fieldName'  => 'pluralCategories',
                     'type'       => 'simple_array',
                     'length'     => 255,
-                    'nullable'   => false,
+                    'nullable'   => true,
                     'columnName' => 'plural_categories',
-                    'options'    => ['default' => 'one,other'],
                 ]
             );
 
