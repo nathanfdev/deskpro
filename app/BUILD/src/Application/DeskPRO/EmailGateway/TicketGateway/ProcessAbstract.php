@@ -281,7 +281,7 @@ abstract class ProcessAbstract
                 $attach->getFileContents(),
                 $filename,
                 $attach->getMimeType(),
-                ['tag' => 'ticket_attachment']
+                ['tag' => $attach->is_inline ? null : 'ticket_attachment']
             );
 
             $this->logMessage(sprintf('Processed blob %s (%d)', $blob->filename, $blob->id));
