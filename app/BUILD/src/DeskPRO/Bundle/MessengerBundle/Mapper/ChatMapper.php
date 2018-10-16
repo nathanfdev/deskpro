@@ -40,8 +40,6 @@ class ChatMapper
                     'Wrong author id (%d) given. Couldn\'t find author', $data['author']), 400
                 );
             }
-        } elseif ($data['author_name']) {
-            $message->setPersonName($data['author_name']);
         }
         if (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_AGENT) {
             $message->setIsUser(false);

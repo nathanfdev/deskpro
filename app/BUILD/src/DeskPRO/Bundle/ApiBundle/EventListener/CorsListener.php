@@ -34,6 +34,11 @@ class CorsListener extends NelmioCorsListener
     protected $em;
 
     /**
+     * @var bool
+     */
+    protected $ignoreAuth = false;
+
+    /**
      * @param ApiAuthenticator $apiAuthenticator
      */
     public function setApiAuthenticator(ApiAuthenticator $apiAuthenticator)
@@ -58,6 +63,14 @@ class CorsListener extends NelmioCorsListener
     }
 
     /**
+     * @param bool $ignore
+     */
+    public function setIgnoreAuth($ignore = false)
+    {
+        $this->ignoreAuth = (bool) $ignore;
+    }
+
+    /**
      * Enable CORS only for requests with ApiKey or with OauthToken.
      *
      * {@inheritdoc}
@@ -67,6 +80,7 @@ class CorsListener extends NelmioCorsListener
         if (!$event->isMasterRequest()) {
             return;
         }
+
         if ($event->getResponse()->getStatusCode() !== Response::HTTP_UNAUTHORIZED && !$this->isSupportedAuthenticationType()) {
             throw new UnauthorizedHttpException('key,oauth token realm="DeskPRO API"', ErrorsCodes::INVALID_CORS_AUTH_TYPE);
         }
@@ -97,6 +111,8 @@ class CorsListener extends NelmioCorsListener
      * Enable CORS only for ApiKey or OAuth Token
      * even if authentication failed.
      *
+     * Skip check for messenger.
+     *
      * We can't just check type of Token from TokenStorage
      * because it can be null in case of failed authentication
      * but we still need to setup CORS to proper show 403 error
@@ -106,6 +122,10 @@ class CorsListener extends NelmioCorsListener
      */
     protected function isSupportedAuthenticationType()
     {
+        if ($this->ignoreAuth) {
+            return true;
+        }
+
         $token = $this->tokenStorage->getToken();
 
         if ($token instanceof ApiKeySecurityToken) {
