@@ -31,7 +31,7 @@ class JsonSerializationVisitor extends BaseVisitor
                         }
                     } elseif (is_string($value)) {
                         // fix german umlauts, keep this for umlauts like ä ö ü
-                        $encoding = mb_detect_encoding($value, mb_detect_order(), false);
+                        $encoding = mb_detect_encoding($value, mb_detect_order(), false) ?: 'UTF-8';
                         $value    = mb_convert_encoding($value, 'UTF-8', $encoding);
 
                         // fix encoding
