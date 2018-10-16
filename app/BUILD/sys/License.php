@@ -192,6 +192,7 @@ final class License
         }
 
         $license_code   = trim($license_code);
+        $license_code   = str_replace(["\n", "\r", ' ', "\t"], '', $license_code);
         $this->raw_code = $license_code;
 
         $this->install_key = $install_key;
@@ -209,7 +210,6 @@ final class License
             $opts = explode(',', $parts[1]);
         }
 
-        $license_code = str_replace(["\n", "\r", ' ', "\t"], '', $license_code);
         $license_code = base64_decode($license_code);
 
         $this->license_id   = substr($license_code, 0, 14);

@@ -207,6 +207,14 @@ class NativeAppsSync
                 continue;
             }
 
+            /* @var \DpRun\DpEnv $DP_ENV */
+            global $DP_ENV;
+
+            if (in_array(AppPackage::TAG_CLOUD_ONLY, $app_package->getManifest()->getTags()) && !(defined('DPC_IS_CLOUD') || $DP_ENV->getConfig('env.server_id') === 'builder.deskprodemo.com')) {
+                $this->logger->debug("cloud only app -- skipping {$f}");
+                continue;
+            }
+
             $this->logger->debug("installing new native app {$f}");
             try {
                 $this->package_installer->installPackage($app_package);
