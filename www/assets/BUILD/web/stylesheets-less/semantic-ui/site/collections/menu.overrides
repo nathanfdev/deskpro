@@ -54,3 +54,10 @@
 .ui.vertical.menu .item.with-divider:before {
   height: 1px;
 }
+
+.ui.dropdown > .text {
+  text-overflow: ellipsis;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
