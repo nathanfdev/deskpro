@@ -31,7 +31,7 @@ class JsonSerializationVisitor extends BaseVisitor
                             $value[$key] = $iterator($item);
                         }
                     } elseif (is_string($value)) {
-                        $value = Strings::utf8_bad_strip($value);
+                        $value = Strings::utf8_bad_strip(utf8_encode($value));
                     }
 
                     return $value;
