@@ -215,7 +215,10 @@ class DbAdapter implements StorageAdapterInterface
      */
     public function removeWorker($type, $typeId)
     {
-        $entity = $this->getWorkerByType($type, $typeId);
+        $entity = $this->em->getRepository(WorkerEntity::class)->findOneBy([
+            'type'   => $type,
+            'typeId' => $typeId,
+        ]);
         if (!$entity) {
             return;
         }
