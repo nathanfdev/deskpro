@@ -257,7 +257,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $request->get('context'));
         $writer  = new ArrayWriter();
-        if ($usersourceTest && $adapter instanceof Loggable && $adapter->getLogger()) {
+        if ($usersourceTest && $adapter instanceof Loggable) {
+            if (!$adapter->getLogger()) {
+                $adapter->setLogger(new \Orb\Log\Logger());
+            }
             $adapter->getLogger()->addWriter($writer);
         }
 
@@ -313,7 +316,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         }
 
         $writer = new ArrayWriter();
-        if ($usersourceTest && $adapter instanceof Loggable && $adapter->getLogger()) {
+        if ($usersourceTest && $adapter instanceof Loggable) {
+            if (!$adapter->getLogger()) {
+                $adapter->setLogger(new \Orb\Log\Logger());
+            }
             $adapter->getLogger()->addWriter($writer);
         }
 
