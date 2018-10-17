@@ -36,7 +36,6 @@ class MessengerKernel extends BaseKernel
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
             new \DeskPRO\Bundle\SendmailBundle\SendmailBundle(),
-            new \DeskPRO\Bundle\ApiBundle\ApiBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),

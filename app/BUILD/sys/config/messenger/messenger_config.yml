@@ -1,7 +1,6 @@
 imports:
     - { resource: ../config.shared.php }
     - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
-    - { resource: ../api/api_versions.yml }
 
 # Keeping all parameter changes here rather than in various bundles
 parameters:
@@ -72,8 +71,6 @@ fos_rest:
       json: fos_rest.decoder.jsontoform
     array_normalizer:
       forms: false
-  service:
-    inflector: api_url_inflector
   format_listener:
     rules:
       - { path: '^/api/messenger', priorities: ['json', 'jsonp', 'zip'], fallback_format: json, prefer_extension: false }

@@ -34,11 +34,6 @@ class CorsListener extends NelmioCorsListener
     protected $em;
 
     /**
-     * @var bool
-     */
-    protected $ignoreAuth = false;
-
-    /**
      * @param ApiAuthenticator $apiAuthenticator
      */
     public function setApiAuthenticator(ApiAuthenticator $apiAuthenticator)
@@ -60,14 +55,6 @@ class CorsListener extends NelmioCorsListener
     public function setEntityManager(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    /**
-     * @param bool $ignore
-     */
-    public function setIgnoreAuth($ignore = false)
-    {
-        $this->ignoreAuth = (bool) $ignore;
     }
 
     /**
@@ -122,10 +109,6 @@ class CorsListener extends NelmioCorsListener
      */
     protected function isSupportedAuthenticationType()
     {
-        if ($this->ignoreAuth) {
-            return true;
-        }
-
         $token = $this->tokenStorage->getToken();
 
         if ($token instanceof ApiKeySecurityToken) {
