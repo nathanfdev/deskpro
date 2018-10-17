@@ -146,7 +146,7 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
                 // Custom logic for person
 
                 if (Numbers::isInteger($query)) {
-                    $entity = $entityRepository->findById($query);
+                    $entity = $entityRepository->find($query);
 
                     if ($entity instanceof Person) {
                         $this->handleResult($object, $entity);
@@ -172,7 +172,7 @@ class Elasticsearch extends AbstractSearchManager implements SearchManagerInterf
 
                 // Lookup by id
                 if (Numbers::isInteger($query)) {
-                    $entity = $entityRepository->findById($query);
+                    $entity = $entityRepository->find($query);
                     if (!is_null($entity)) {
                         $this->handleResult($object, $entity);
                     }
