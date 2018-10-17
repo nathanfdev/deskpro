@@ -44,6 +44,11 @@ services:
     tags:
     - { name: 'kernel.event_subscriber' }
 
+  persist_explicit_id_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\PersistExplicitIdListener
+    tags:
+      - { name: kernel.event_subscriber }
+
   api_url_inflector:
     class: DeskPRO\Bundle\ApiBundle\Util\UrlInflector
 

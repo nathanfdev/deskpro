@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\AppBundle\CountBadge\AbstractCount;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountMap;
+use DeskPRO\Bundle\AppBundle\Doctrine\ExplicitIdPersister;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -382,6 +383,8 @@ abstract class CrudController extends BaseController
      * @param QueryBuilder $qb
      * @param string       $alias
      * @param Request      $request
+     *
+     * @throws \Exception
      */
     protected function applySorting(QueryBuilder $qb, $alias, Request $request)
     {
@@ -525,7 +528,22 @@ abstract class CrudController extends BaseController
 
         $this->additionalValidation($model, $request);
 
-        $this->persistModel($model, $form);
+        // we have an explicit id
+        // if we're persisting a new model set id explicitly
+        $explicitId = $request->attributes->get('with_entity_id');
+        if ($explicitId && !$isModify) {
+            ExplicitIdPersister::persistWithId(
+                $this->getManager(),
+                $model,
+                $explicitId,
+                function ($entity) use ($form) {
+                    $this->persistModel($entity, $form);
+                }
+            );
+        } else {
+            // default persist with id generator
+            $this->persistModel($model, $form);
+        }
 
         $view = View::create(!$isModify ? $this->wrap($model) : null, $status);
         if ($this->isExposed('get')) {

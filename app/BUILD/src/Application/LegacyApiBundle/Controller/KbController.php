@@ -18,7 +18,10 @@ use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Doctrine\ExplicitIdPersister;
 use Orb\Util\Numbers;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -290,8 +293,12 @@ class KbController extends AbstractController
      *        )
      *    )
      * ).
+     *
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function newArticleAction()
+    public function newArticleAction(Request $request)
     {
         $errors  = [];
         $article = new Article();
@@ -385,8 +392,20 @@ class KbController extends AbstractController
         $this->_insertArticleAttachments($article);
         $article->person = $this->person;
 
-        $this->em->persist($article);
-        $this->em->flush();
+        if ($explicitId = $request->request->get('with_entity_id')) {
+            ExplicitIdPersister::persistWithId(
+                $this->em,
+                $article,
+                $explicitId,
+                function ($entity) {
+                    $this->em->persist($entity);
+                    $this->em->flush();
+                }
+            );
+        } else {
+            $this->em->persist($article);
+            $this->em->flush();
+        }
 
         $field_manager      = $this->container->getSystemService('article_fields_manager');
         $post_custom_fields = $this->getCustomFieldInput();
