@@ -21,7 +21,7 @@ class Twig_Tests_Node_CalloutTest extends Twig_Test_NodeTestCase
 echo "<table class=\"callout\">";
 echo "<tr>";
 echo "<th class=\"callout-inner\">";
-echo (isset($context["foo"]) ? $context["foo"] : null);
+echo ($context["foo"] ?? null);
 echo "</th>";
 echo "<th class=\"expander\"></th>";
 echo "</tr>";

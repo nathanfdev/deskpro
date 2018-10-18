@@ -21,7 +21,7 @@ class Twig_Tests_Node_WrapperTest extends Twig_Test_NodeTestCase
 echo "<table class=\"wrapper\" align=\"center\">";
 echo "<tr>";
 echo "<td class=\"wrapper-inner\">";
-echo (isset($context["foo"]) ? $context["foo"] : null);
+echo ($context["foo"] ?? null);
 echo "</td>";
 echo "</tr>";
 echo "</table>";
@@ -33,7 +33,7 @@ EOF
 echo "<table bgcolor=\"#8a8a8a\" class=\"wrapper header\" align=\"center\">";
 echo "<tr>";
 echo "<td class=\"wrapper-inner\">";
-echo (isset($context["foo"]) ? $context["foo"] : null);
+echo ($context["foo"] ?? null);
 echo "</td>";
 echo "</tr>";
 echo "</table>";

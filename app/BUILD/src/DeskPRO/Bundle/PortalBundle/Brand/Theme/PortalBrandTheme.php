@@ -125,6 +125,11 @@ class PortalBrandTheme
      */
     public function getBrandTemplateFromDb($name)
     {
-        return $this->themeResolver->getThemeSetTemplateFromDb($this->getActiveThemeSet(), $name);
+        $themeSet = $this->getActiveThemeSet();
+        if (!$themeSet) {
+            return;
+        }
+
+        return $this->themeResolver->getThemeSetTemplateFromDb($themeSet, $name);
     }
 }
