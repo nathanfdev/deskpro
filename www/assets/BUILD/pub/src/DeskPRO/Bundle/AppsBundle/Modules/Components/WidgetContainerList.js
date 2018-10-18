@@ -5,6 +5,7 @@ import React from 'react';
 
 import { WidgetContainer } from './WidgetContainer';
 import {  WidgetConfiguration } from '../Domain';
+import { WidgetContainerLegacy } from './WidgetContainerLegacy';
 
 export class WidgetContainerList extends React.PureComponent {
   static propTypes = {
@@ -24,6 +25,11 @@ export class WidgetContainerList extends React.PureComponent {
     isVisible: PropTypes.bool,
 
     /**
+     * whether to render the legacy app container
+     */
+    withLegacyAppContainer: PropTypes.bool,
+
+    /**
      * maps of props that should be passed to each widget
      */
     widgetProps: PropTypes.shape({
@@ -41,11 +47,13 @@ export class WidgetContainerList extends React.PureComponent {
        * callback that is invoked when each widget is unmounted
        */
       unregister: PropTypes.func.isRequired,
+
     }).isRequired,
   };
 
   static defaultProps = {
-    isVisible: true
+    isVisible:              true,
+    withLegacyAppContainer: false,
   };
 
   constructor(props) {
@@ -73,6 +81,7 @@ export class WidgetContainerList extends React.PureComponent {
   render()  {
     return (<div className={'layout-sidebar--stretch-vertical layout-sidebar__widget-list'} ref={this.wrapperRef}>
       { this.props.widgets.map(this.renderWidget) }
+      { this.props.withLegacyAppContainer && <WidgetContainerLegacy /> }
     </div>);
   }
 }

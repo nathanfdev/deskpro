@@ -307,7 +307,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
           ctrlLocals.containerElementId = containerId;
           ctrlLocals.$tabScope = tplScope;
 
-          self.renderTemplate('#TAB_layout_sidebar', tplName, ctrl, ctrlLocals).then(function(info) {
+          self.renderTemplate('#TAB_layout_sidebar .layout-sidebar__legacy-widget-list', tplName, ctrl, ctrlLocals).then(function(info) {
             updateClassFn(tplScope.btnClass);
             $('#' + self.getFragment().meta.baseId + '_layout_sidebar_icons').find('> ul').first().append(tabElement);
             deferred.resolve(info);
