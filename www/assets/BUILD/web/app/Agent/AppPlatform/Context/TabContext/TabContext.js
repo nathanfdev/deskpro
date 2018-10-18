@@ -398,8 +398,30 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
           }
 
           // Automatically insert the widget into the DOM
+          // Poll the dom every 100ms at most 5 times for the location to be available since the location is probably
+          // rendered by react and it is possible that this code is executed before that element is inserted into the dom
+          // so far this 'synchronization' choice seems to be enough
           if (locationSelector) {
-            locationEl = self.moveElementTo(element, locationSelector, locationPlace, true);
+            var
+              nrTries = 0,
+              maxTries = 4,
+              interval = 100,
+              locationReady = function () {
+                var el = angular.element(locationSelector).first();
+                return !!el[0];
+              },
+              moveElementWhenLocationReady = function() {
+                if (nrTries < maxTries) {
+                  nrTries++;
+                  if (locationReady()) {
+                    locationEl = self.moveElementTo(element, locationSelector, locationPlace, true);
+                  } else {
+                    setTimeout(moveElementWhenLocationReady, interval);
+                  }
+                }
+              };
+
+            moveElementWhenLocationReady();
           }
 
           element.html(tplSource);
