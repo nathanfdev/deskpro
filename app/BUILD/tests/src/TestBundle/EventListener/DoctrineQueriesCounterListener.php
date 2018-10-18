@@ -116,7 +116,7 @@ class DoctrineQueriesCounterListener
                         self::$maxFetchRows, $subQuery['rows'], $sql
                     ));
                 }
-                if ($subQuery['rows'] > 100 && $subQuery['select_type'] !== 'DERIVED' && $subQuery['type'] === 'ALL') {
+                if ($subQuery['rows'] > 150 && $subQuery['select_type'] !== 'DERIVED' && $subQuery['type'] === 'ALL') {
                     throw new \Exception(sprintf('Sub query of type ALL detected. Sql: %s', $sql));
                 }
             }
