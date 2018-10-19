@@ -89,20 +89,14 @@ class UserController extends BaseController
      *     },
      *     requirements={
      *          {
-     *              "name"="visitorId",
-     *              "requirement"="[a-zA-Z0-9\\.\\-_]+",
-     *              "description"="id of the visitor to look for",
-     *              "dataType"="string"
-     *          },
-     *          {
      *              "name"="lastActionAlert",
-     *              "requirement"="[a-zA-Z0-9\\.\\-_]+",
+     *              "requirement"="\d+",
      *              "description"="id of last action alert",
      *              "dataType"="integer"
      *          }
      *      }
      * )
-     * @Rest\Get("/action_alerts/{visitorId}/{lastActionAlert}")
+     * @Rest\Get("/action_alerts/{lastActionAlert}")
      *
      * @param int     $lastActionAlert
      * @param Request $request
