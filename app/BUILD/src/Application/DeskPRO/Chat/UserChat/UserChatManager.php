@@ -17,6 +17,7 @@ use Application\DeskPRO\People\ActivityLogger\ActivityLogger;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -809,6 +810,14 @@ class UserChatManager
         $data = $msg->getInfo();
 
         $this->dispatchLegacyEvent($channel, $data);
+        $this->eventDispatcher->dispatch(
+            ChatMessageEvent::EVENT_NAME,
+            new ChatMessageEvent(
+                $convo->getId(),
+                $msg->getId(),
+                ChatMessageEvent::CHAT_MESSAGE_EVENT_TYPE
+            )
+        );
 
         return $msg;
     }

@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\ExternalEvent\PopupEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Helpdesk\RefreshAgentInterfaceEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Organization\OrganizationCreatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
@@ -46,6 +47,7 @@ class NotificationEventManager implements EventSubscriberInterface
             SnippetsUpdatedEvent::EVENT_NAME       => 'handleEvent',
             PopupEvent::EVENT_NAME                 => 'handleEvent',
             ChatEvent::EVENT_NAME                  => 'handleEvent',
+            ChatMessageEvent::EVENT_NAME           => 'handleEvent',
         ];
     }
 

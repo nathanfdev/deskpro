@@ -20,17 +20,17 @@ class ChatEvent extends AbstractSystemEvent
     /**
      * @var int
      */
-    private $chatId;
+    protected $chatId;
 
     /**
      * @var string
      */
-    private $type;
+    protected $type;
 
     /**
      * @var array
      */
-    private $data;
+    protected $data;
 
     /**
      * ChatEvent constructor.
@@ -73,9 +73,9 @@ class ChatEvent extends AbstractSystemEvent
     public function __sleep()
     {
         return [
-            'chat_id' => $this->chatId,
-            'type'    => $this->chatId,
-            'data'    => $this->chatId,
+            'chatId' => $this->chatId,
+            'type'   => $this->type,
+            'data'   => $this->data,
         ];
     }
 }

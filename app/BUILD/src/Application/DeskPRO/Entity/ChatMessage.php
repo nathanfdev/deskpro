@@ -447,6 +447,14 @@ class ChatMessage extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getOrigin()
+    {
+        return $this->origin;
+    }
+
+    /**
      * @param string $content
      *
      * @return $this

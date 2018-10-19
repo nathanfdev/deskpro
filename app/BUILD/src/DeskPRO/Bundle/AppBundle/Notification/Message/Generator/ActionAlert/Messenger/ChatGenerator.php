@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
@@ -40,7 +41,7 @@ class ChatGenerator extends AbstractGenerator
      *
      * @return array
      */
-    private function getTargets(SystemEventInterface $event)
+    protected function getTargets(SystemEventInterface $event)
     {
         /** @var ChatEvent $event */
         $chat           = $this->getChat($event);
@@ -56,7 +57,7 @@ class ChatGenerator extends AbstractGenerator
      *
      * @return ChatConversation
      */
-    private function getChat(SystemEventInterface $event)
+    protected function getChat(SystemEventInterface $event)
     {
         /** @var ChatEvent $event */
         $repository = $this->em->getRepository(ChatConversation::class);
@@ -93,7 +94,7 @@ class ChatGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return $event instanceof ChatEvent;
+        return $event instanceof ChatEvent && !$event instanceof ChatMessageEvent;
     }
 
     /**
@@ -101,7 +102,7 @@ class ChatGenerator extends AbstractGenerator
      *
      * @return array
      */
-    private function getData(ChatEvent $event)
+    protected function getData(ChatEvent $event)
     {
         $chat = $this->getChat($event);
 

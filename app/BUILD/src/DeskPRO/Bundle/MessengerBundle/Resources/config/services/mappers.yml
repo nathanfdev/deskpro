@@ -4,3 +4,4 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@deskpro.core.input_cleaner"
+      - "@avatar_resolver"

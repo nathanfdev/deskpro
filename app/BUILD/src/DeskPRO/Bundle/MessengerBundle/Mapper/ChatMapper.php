@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Mapper;
 
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use Doctrine\ORM\EntityManager;
 use Orb\Input\Cleaner\Cleaner;
 
@@ -19,10 +20,23 @@ class ChatMapper
      */
     private $cleaner;
 
-    public function __construct(EntityManager $em, Cleaner $cleaner)
+    /**
+     * @var AvatarResolver
+     */
+    private $avatarResolver;
+
+    /**
+     * ChatMapper constructor.
+     *
+     * @param EntityManager  $em
+     * @param Cleaner        $cleaner
+     * @param AvatarResolver $avatarResolver
+     */
+    public function __construct(EntityManager $em, Cleaner $cleaner, AvatarResolver $avatarResolver)
     {
-        $this->em      = $em;
-        $this->cleaner = $cleaner;
+        $this->em             = $em;
+        $this->cleaner        = $cleaner;
+        $this->avatarResolver = $avatarResolver;
     }
 
     public function createChatMessage($data)
@@ -61,15 +75,17 @@ class ChatMapper
     public function mapMessageToArray(ChatMessage $message)
     {
         return [
-            'id'          => $message->getId() ?: 0,
-            'chat'        => $message->getConversationId(),
-            'author_name' => $message->getPersonName(),
-            'author'      => $message->getAuthorId(),
-            'message'     => $message->getContentHtml(),
-            'origin'      => $message->getOrigin(),
-            'is_user'     => $message->getIsUser(),
-            'is_sys'      => $message->getIsSys(),
-            'is_html'     => $message->isHtml(),
+            'id'           => $message->getId() ?: 0,
+            'chat'         => $message->getConversationId(),
+            'name'         => $message->getPersonName(),
+            'author'       => $message->getAuthorId(),
+            'avatar'       => $message->getAuthor() ? $this->avatarResolver->getAvatar($message->getAuthor()) : '',
+            'message'      => $message->isHtml() ? $message->getContentHtml() : $message->getContent(),
+            'origin'       => $message->getIsSys() ? 'system' : $message->getOrigin(),
+            'date_created' => $message->getDateCreated()->format(\DateTime::ISO8601),
+            'is_user'      => $message->getIsUser(),
+            'is_sys'       => $message->getIsSys(),
+            'is_html'      => $message->isHtml(),
         ];
     }
 

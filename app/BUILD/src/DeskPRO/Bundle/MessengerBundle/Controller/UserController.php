@@ -45,7 +45,7 @@ class UserController extends BaseController
      *          }
      *      }
      * )
-     * @Rest\Get("/")
+     * @Rest\Get("")
      *
      * @param Request $request
      *
