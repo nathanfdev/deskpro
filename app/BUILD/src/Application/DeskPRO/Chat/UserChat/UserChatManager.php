@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\People\ActivityLogger\ActivityLogger;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -363,6 +364,18 @@ class UserChatManager
                 array_merge(
                     $convo->getInfo(),
                     ['old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user]
+                )
+            );
+
+            $this->eventDispatcher->dispatch(
+                ChatEvent::EVENT_NAME,
+                new ChatEvent(
+                    $convo->getId(),
+                    ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
+                    array_merge(
+                        $convo->getInfo(),
+                        ['old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user]
+                    )
                 )
             );
 

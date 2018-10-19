@@ -3,8 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\Messenger;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
-use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
@@ -58,11 +58,10 @@ class ChatGenerator extends AbstractGenerator
      */
     private function getChat(SystemEventInterface $event)
     {
-        /** @var ChatEvent|LegacySystemEvent $event */
+        /** @var ChatEvent $event */
         $repository = $this->em->getRepository(ChatConversation::class);
-        $chatId     = $event instanceof ChatEvent ? $event->getChatId() : $event->getData()['conversation_id'];
 
-        return $repository->find($chatId);
+        return $repository->find($event->getChatId());
     }
 
     /**
@@ -72,10 +71,14 @@ class ChatGenerator extends AbstractGenerator
      */
     public function createMessages(SystemEventInterface $event)
     {
-        /** @var ChatEvent|LegacySystemEvent $event */
+        /** @var ChatEvent $event */
         $messages = [];
         foreach ($this->getTargets($event) as $target) {
             if ($target && $target !== $this->getUser()->getId()) {
+                if ($target instanceof Person) {
+                    $target = $target->getId();
+                }
+
                 $messages[] = new ActionAlert($target, $this->getData($event), $event->getType());
             }
         }
@@ -90,17 +93,15 @@ class ChatGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return
-            $event instanceof ChatEvent
-            || ($event instanceof LegacySystemEvent && $event->getEventType() === 'chat.reassigned');
+        return $event instanceof ChatEvent;
     }
 
     /**
-     * @param ChatEvent|LegacySystemEvent $event
+     * @param ChatEvent $event
      *
      * @return array
      */
-    private function getData($event)
+    private function getData(ChatEvent $event)
     {
         $chat = $this->getChat($event);
 
