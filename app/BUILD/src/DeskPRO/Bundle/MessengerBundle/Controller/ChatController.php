@@ -79,6 +79,8 @@ class ChatController extends BaseController
      *
      * @Rest\Post("/{idToken}/send", requirements={"idToken"="(\d+)\-([a-zA-Z0-9]{30})"})
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function sendMessageAction($idToken, Request $request)

@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
@@ -106,6 +107,29 @@ class ChatHandler
         $this->em->flush();
 
         return $this->chatMapper->mapMessageToArray($message);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return array
+     */
+    private function handleChatHistoryCommand(ChatConversation $chat, array $request)
+    {
+        $chatMapper = $this->chatMapper;
+
+        return array_map(
+            function ($message) use ($chatMapper) {
+                return $this->chatMapper->mapMessageToArray($message);
+            },
+            array_filter($chat->getMessages(), function ($message) {
+                /* @var ChatMessage $message */
+                return !$message->getIsUserHidden();
+            })
+        );
     }
 
     /**

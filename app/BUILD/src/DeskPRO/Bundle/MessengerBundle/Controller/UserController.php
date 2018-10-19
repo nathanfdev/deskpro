@@ -57,4 +57,58 @@ class UserController extends BaseController
 
         return View::create($this->wrap($userInfo->addChats($chats)), Response::HTTP_OK);
     }
+
+    /**
+     * You can use this endpoint to fetch latest action alerts.
+     *
+     * @ApiDoc(
+     *     section="Messenger",
+     *     resourceDescription="Gathering action_alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     requirements={
+     *          {
+     *              "name"="visitorId",
+     *              "requirement"="[a-zA-Z0-9\\.\\-_]+",
+     *              "description"="id of the visitor to look for",
+     *              "dataType"="string"
+     *          },
+     *          {
+     *              "name"="lastActionAlert",
+     *              "requirement"="[a-zA-Z0-9\\.\\-_]+",
+     *              "description"="id of last action alert",
+     *              "dataType"="integer"
+     *          }
+     *      }
+     * )
+     * @Rest\Get("/action_alerts/{visitorId}/{lastActionAlert}")
+     *
+     * @param string $visitorId
+     * @param int    $lastActionAlert
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     *
+     * @return View
+     */
+    public function loadLastActionAlerts($visitorId, $lastActionAlert)
+    {
+        $connection = $this->get('doctrine.dbal.read_connection');
+
+        $sql = <<<'SQL'
+SELECT * FROM `notify_action_alerts`
+WHERE (`target_id` = :target_id)
+  AND `id` > :last
+ORDER BY `id` ASC
+SQL;
+        $stmnt = $connection->prepare($sql);
+        $stmnt->execute([
+            'target_id' => $visitorId,
+            'last'      => $lastActionAlert,
+        ]);
+
+        $all = $stmnt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return View::create($this->wrap($all), Response::HTTP_OK);
+    }
 }
