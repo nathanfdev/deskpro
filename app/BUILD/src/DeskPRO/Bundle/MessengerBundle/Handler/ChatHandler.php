@@ -17,6 +17,7 @@ class ChatHandler
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
     const CHAT_TRANSCRIPT          = 'chat.block.transcript';
     const CHAT_RATING              = 'chat.block.rating';
+    const CHAT_HISTORY             = 'chat.history';
     const TYPING_START             = 'typing.start';
     const TYPING_END               = 'typing.end';
 
@@ -31,6 +32,7 @@ class ChatHandler
         self::CHAT_RATING,
         self::TYPING_START,
         self::TYPING_END,
+        self::CHAT_HISTORY,
     ];
 
     /**

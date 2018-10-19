@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType;
+use DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -88,6 +89,44 @@ class ChatController extends BaseController
         $chat = $this->findChatByIdToken($idToken);
 
         return View::create($this->get('messenger.handlers.chat')->handle($chat, $request->request->all()), Response::HTTP_OK);
+    }
+
+    /**
+     * @param string  $idToken
+     * @param Request $request
+     *
+     * @ApiDoc(
+     *     section="Messenger",
+     *     resourceDescription="Get messages",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     requirements={
+     *          {
+     *              "name"="idToken",
+     *              "requirement"="[a-zA-Z0-9\\-]+",
+     *              "description"="id-accessToken to find a chat",
+     *              "dataType"="string"
+     *          }
+     *      }
+     * )
+     *
+     * @Rest\Get("/{idToken}/messages", requirements={"idToken"="(\d+)\-([a-zA-Z0-9]{30})"})
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function getChatMessagesAction($idToken)
+    {
+        $chat = $this->findChatByIdToken($idToken);
+
+        return View::create(
+            $this
+                ->get('messenger.handlers.chat')
+                ->handle($chat, ['type' => ChatHandler::CHAT_HISTORY]),
+            Response::HTTP_OK
+        );
     }
 
     /**
