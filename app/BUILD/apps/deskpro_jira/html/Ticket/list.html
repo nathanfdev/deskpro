@@ -2,15 +2,15 @@
     <header>
         <h4>JIRA</h4>
     </header>
-    <header class="sub-header centered" ng-show="!link_search_mode" ng-if="!meta.error">
-        <button class="dp-btn" ng-click="createIssueModal()" type="button" style="margin-right: 8px;">
+    <header class="sub-header centered" ng-show="!link_search_mode" ng-if="!meta.error" style="z-index: auto">
+        <button class="dp-btn" ng-click="createIssueModal()" type="button" style="margin-right: 8px; padding: 4px">
             <i class="fa fa-plus"></i> Create Issue
         </button>
-        <button class="dp-btn" ng-click="enableSearchMode()" type="button">
+        <button class="dp-btn" ng-click="enableSearchMode()" type="button" style="padding: 4px">
             <i class="fa fa-search-plus"></i> Link Existing Issue
         </button>
     </header>
-    <header class="sub-header" ng-show="link_search_mode" style="height: auto;">
+    <header class="sub-header" ng-show="link_search_mode" style="height: auto; z-index: 5">
         <input type="text" placeholder="Enter Issue ID" ng-model="search" style="display: block; width: 95%;" />
         <div style="text-align: center; margin: 8px 0;">
             <div ng-show="active_searches === 0">

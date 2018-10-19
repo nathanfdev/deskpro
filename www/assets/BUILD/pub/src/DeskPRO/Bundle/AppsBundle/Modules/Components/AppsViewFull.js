@@ -7,6 +7,7 @@ import { WidgetGroupControlBtn } from './WidgetGroupControlBtn';
 import { getWidgetBadgeCount } from '../Services/appsState';
 import { WidgetConfiguration }  from '../Domain';
 import { WidgetContainerListEmpty } from './WidgetContainerListEmpty';
+import { WidgetContainerLegacy } from './WidgetContainerLegacy';
 import { WidgetContainerList } from './WidgetContainerList';
 
 
@@ -52,6 +53,8 @@ export class AppsViewFull extends React.PureComponent {
    * @param groupId
    */
   renderGroupWidgets(widgetList, groupId)  {
+    const isMainGroup = groupId === 0;
+
     const { widgetGroupVisible, widgetFullscreen } = this.props;
     function render({ getEvent, getEventProviders, unregister }) {
       if (widgetList && widgetList.length > 0) {
@@ -61,6 +64,7 @@ export class AppsViewFull extends React.PureComponent {
             widgetFullscreen={widgetFullscreen}
             widgets={widgetList}
             widgetProps={{ getEvent, getEventProviders, unregister }}
+            withLegacyAppContainer={isMainGroup}
           />
         );
       }
@@ -119,13 +123,15 @@ export class AppsViewFull extends React.PureComponent {
             <div className={'dp-AppTabs is-horizontal'}>
 
               <div className={'dp-ButtonTabs--wrap'} >
-                { this.props.widgetGroups.map((widgetList, index) => this.renderGroupTab(widgetList, index)) }
+                { this.props.widgetGroups.length > 0 && this.props.widgetGroups.map((widgetList, index) => this.renderGroupTab(widgetList, index)) }
+                { this.props.widgetGroups.length === 0 && <WidgetGroupControlBtn groupId={'legacy'} /> }
               </div>
 
               <SidebarControlBtn sidebarState={this.props.sidebarState} onActivate={this.props.togglePin} />
             </div>
 
-            { this.props.widgetGroups.map((widgetList, index) => this.renderGroupWidgets(widgetList, index)) }
+            { this.props.widgetGroups.length > 0 && this.props.widgetGroups.map((widgetList, index) => this.renderGroupWidgets(widgetList, index)) }
+            { this.props.widgetGroups.length === 0 && <WidgetContainerLegacy /> }
 
           </div>
         </div>

@@ -4,14 +4,16 @@ import PropTypes from 'prop-types';
 export class WidgetGroupControlBtn extends React.PureComponent {
   static propTypes = {
     groupId:            PropTypes.string.isRequired,
-    onClick:            PropTypes.func.isRequired,
+    onClick:            PropTypes.func,
     label:              PropTypes.string,
     icon:               PropTypes.string,
     notificationsCount: PropTypes.number
   };
 
   onClick = () =>  {
-    this.props.onClick(this.props.groupId);
+    if (typeof this.props.onClick === 'function') {
+      this.props.onClick(this.props.groupId);
+    }
   };
 
   render()  {
