@@ -39,24 +39,16 @@ class ChatMapperTest extends MessengerTestCase
             ->setPersonName('Test author name')
             ->setContent('Test content')
             ->setIsSys(false)
-            ->setIsHtml(true);
-
-        $expectedData = [
-            'name'         => 'Test author name',
-            'date_created' => $message->getDateCreated()->format(\DateTime::ISO8601),
-            'avatar'       => 'http://localhost/file.php/avatar/80/default.jpg?size-fit=1',
-            'uuid'         => '',
-            'message'      => 'Test content',
-            'is_user'      => true,
-            'is_sys'       => false,
-            'is_html'      => true,
-            'origin'       => ChatMessage::ORIGIN_USER,
-            'author'       => 0,
-            'chat'         => 0,
-            'id'           => 0,
-        ];
+            ->setIsHtml(true)
+        ;
 
         $result = $mapper->mapMessageToArray($message);
-        $this->assertEquals($expectedData, $result);
+        $this->assertEquals('Test author name', $result['name']);
+        $this->assertEquals('Test content', $result['message']);
+        $this->assertTrue($result['is_user']);
+        $this->assertTrue($result['is_html']);
+        $this->assertFalse($result['is_sys']);
+        $this->assertEquals(ChatMessage::ORIGIN_USER, $result['origin']);
+        $this->assertContains('/file.php/avatar/80/default.jpg?size-fit=1', $result['avatar']);
     }
 }

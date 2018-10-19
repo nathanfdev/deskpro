@@ -28,7 +28,10 @@ class GeneralSettingsType extends AbstractType
             ->add('site_url', UrlType::class)
             ->add('deskpro_name', TextType::class)
             ->add('deskpro_url', UrlType::class)
-            ->add('orig_deskpro_url', HiddenType::class, ['mapped' => false]) //unused, there for perf reasons on FE
+            ->add('brand_slug', TextType::class)
+            ->add('orig_deskpro_url', HiddenType::class, [
+                'mapped' => false, // unused, there for perf reasons on FE
+            ])
             ->add('apps_feedback', ApiBooleanType::class)
             ->add('apps_kb', ApiBooleanType::class)
             ->add('apps_news', ApiBooleanType::class)

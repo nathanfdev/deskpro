@@ -135,7 +135,7 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function urlFull($route_name, $vars = [])
     {
-        return $this->container->get('router.default')->generate($route_name, $vars, UrlGeneratorInterface::ABSOLUTE_URL);
+        return $this->container->get('router')->generate($route_name, $vars, UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
     /**

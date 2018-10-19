@@ -29,7 +29,7 @@ Feature: Brand Settings Setup
   "publish_comments":true
 }
     """
-    And the response status code should be 204
+    And the response status code should be 200
 
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/general"
     Then the response should be in JSON
@@ -72,7 +72,7 @@ Feature: Brand Settings Setup
   "publish_comments":true
 }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/settings/brands/{lastCreatedId}/portal/general"
     Then the response should be in JSON

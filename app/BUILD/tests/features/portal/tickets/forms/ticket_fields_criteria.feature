@@ -3,8 +3,8 @@ Feature: New ticket form
   I want to check fields criteria
 
   Background:
-    Given I'm authenticated as user
-    And I have only default brand
+    Given I have only default brand
+    And I'm authenticated as user
     And user has defaultBrand brand
     And the "{defaultBrand}" setting "core_tickets.use_ref" is set to "1"
     And a user with "user_1@deskpro.dev" email exists

@@ -594,7 +594,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
 
         $url = false;
         if ($this->picture_blob) {
-            $url = App::get('router.default')->generate(
+            $url = App::get('router')->generate(
                 'serve_blob_sizefit',
                 [
                     'blob_auth_id' => $this->picture_blob->getAuthId(),
@@ -606,7 +606,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         }
 
         if (!$url) {
-            $url = App::get('router.default')->generate(
+            $url = App::get('router')->generate(
                 'serve_org_picture_default',
                 [
                     's'        => $size,

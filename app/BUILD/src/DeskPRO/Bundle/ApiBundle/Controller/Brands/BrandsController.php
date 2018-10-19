@@ -8,7 +8,6 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\BrandType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Metrics\InterestingEvent;
@@ -95,7 +94,7 @@ class BrandsController extends CrudController
      *
      * @param Request $request
      *
-     * @throws InvalidFormException
+     * @throws \Exception
      *
      * @return View
      */
@@ -177,6 +176,8 @@ class BrandsController extends CrudController
      * @param int     $id
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function deleteAction($id, Request $request)
@@ -209,15 +210,19 @@ class BrandsController extends CrudController
      */
     public function checkBrandUrlAction(Request $request)
     {
-        $url         = $this->get('url_host_checker')->simplifyUrl($request->request->get('url'));
-        $brand       = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
-        $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
-        $helpdeskUrl = $this->get('url_host_checker')->simplifyUrl($helpdeskUrl);
-        $response    = ['free' => !$brand];
+        $url = $this->get('url_host_checker')->simplifyUrl($request->request->get('url'));
+        if ($url) {
+            $brand       = $this->getRepository(Brand::class)->findOneBy(['url' => $url]);
+            $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+            $helpdeskUrl = $this->get('url_host_checker')->simplifyUrl($helpdeskUrl);
+            $response    = ['free' => !$brand];
 
-        if ($url === $helpdeskUrl) {
-            $response['free']   = false;
-            $response['reason'] = 'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.';
+            if ($url === $helpdeskUrl) {
+                $response['free']   = false;
+                $response['reason'] = 'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.';
+            }
+        } else {
+            $response = ['free' => true];
         }
 
         return new View($this->wrap($response));

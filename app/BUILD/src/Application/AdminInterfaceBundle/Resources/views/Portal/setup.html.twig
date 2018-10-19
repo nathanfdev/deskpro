@@ -83,6 +83,15 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row" ng-if="brand.id != default_brand.id">
+                        <div class="bucket-third">
+                            <div class="inline-input">
+                                <label>{{ phrase('admin.setup.helpdesk_slug') }}:</label>
+                                <input id="brand_slug" type="text" placeholder="{{ phrase('admin.setup.helpdesk_slug') }}" ng-model="Ctrl.settings.brand_slug" />
+                            </div>
+                        </div>
+                    </div>
                 </div><!-- End .content-section -->
             </div>
 
@@ -129,7 +138,7 @@
                         <div class="bucket-third">
                             <div class="inline-input">
                                 <label>{{ phrase('admin.setup.view_brand') }}:</label>
-                                <a class="btn btn-primary" href="/brand-{{ ng_var('brand_id') }}" target="_blank">Portal</a>
+                                <a class="btn btn-primary" href="/b/{{ ng_var('Ctrl.settings.brand_slug') }}" target="_blank">Portal</a>
                             </div>
                         </div>
                     </div>

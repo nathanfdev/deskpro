@@ -5,8 +5,8 @@ Feature: Ignore extra fields on new ticket form
     Given no Person records exist
     And no Ticket records exist
     And no TicketLayout records exist
-    And I'm authenticated as user
     And I have only default brand
+    And I'm authenticated as user
     And user has defaultBrand brand
     And the "{defaultBrand}" setting "core_tickets.use_ref" is set to "1"
     And the following languages are enabled:

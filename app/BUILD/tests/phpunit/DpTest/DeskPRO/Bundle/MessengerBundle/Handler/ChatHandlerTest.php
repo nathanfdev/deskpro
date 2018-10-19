@@ -54,31 +54,25 @@ class ChatHandlerTest extends MessengerTestCase
     public function testHandleNewMessage()
     {
         $handler = $this->getContainer()->get('messenger.handlers.chat');
-
         $request = [
             'type'    => 'chat.message',
             'message' => '<scrpit>alert(\'test\')</scrpit>Test message',
             'origin'  => 'user',
         ];
 
-        $chat         = new ChatConversation();
-        $actualData   = $handler->handle($chat, $request);
-        $message      = $chat->getMessages()->current();
-        $uuid         = $message->getMetadata()['uuid'];
-        $expectedData = [
-            'name'         => '',
-            'date_created' => $message->getDateCreated()->format(\DateTime::ISO8601),
-            'avatar'       => 'http://localhost/file.php/avatar/80/default.jpg?size-fit=1',
-            'message'      => 'alert(\'test\')Test message',
-            'is_user'      => true,
-            'is_sys'       => false,
-            'is_html'      => true,
-            'origin'       => ChatMessage::ORIGIN_USER,
-            'author'       => 0,
-            'chat'         => $chat->getId(),
-            'id'           => $message->getId(),
-            'uuid'         => $uuid,
-        ];
-        $this->assertEquals($expectedData, $actualData);
+        $chat       = new ChatConversation();
+        $actualData = $handler->handle($chat, $request);
+        $message    = $chat->getMessages()->current();
+        $uuid       = $message->getMetadata()['uuid'];
+
+        $this->assertEquals(ChatMessage::ORIGIN_USER, $actualData['origin']);
+        $this->assertEquals($chat->getId(), $actualData['chat']);
+        $this->assertEquals($message->getId(), $actualData['id']);
+        $this->assertEquals($uuid, $actualData['uuid']);
+        $this->assertEquals('alert(\'test\')Test message', $actualData['message']);
+        $this->assertTrue($actualData['is_user']);
+        $this->assertTrue($actualData['is_html']);
+        $this->assertFalse($actualData['is_sys']);
+        $this->assertContains('/file.php/avatar/80/default.jpg?size-fit=1', $actualData['avatar']);
     }
 }

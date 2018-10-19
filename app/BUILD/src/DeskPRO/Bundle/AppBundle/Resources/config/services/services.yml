@@ -23,9 +23,9 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@assets.packages"
       - "@router"
+      - "@original_url_generator"
       - "@security.token_storage"
       - "@portal_permissions_manager"
-      - "@portal_mode_storage"
       - "@url_corrector_factory"
       - "@language_manager"
 
@@ -69,8 +69,10 @@ services:
 
   avatar_resolver:
     class: DeskPRO\Bundle\AppBundle\Content\AvatarResolver
-    #todo #portal second param here needs to be setting for gravatar
-    arguments: ["@router.default", "@doctrine.orm.default_entity_manager", "@settings_resolver"]
+    arguments:
+      - "@router"
+      - "@doctrine.orm.default_entity_manager"
+      - "@settings_resolver"
 
   feedback_subscription_helper:
     class: DeskPRO\Bundle\AppBundle\Content\FeedbackSubscriptionHelper
@@ -136,6 +138,11 @@ services:
   url_corrector_factory:
     class: DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory
     arguments: ["@deskpro.app_env", "@brand_aware_settings_resolver"]
+
+  original_url_generator:
+    class: DeskPRO\Bundle\AppBundle\Request\OriginalUrlGenerator
+    arguments:
+      - "@router.default"
 
   request_matcher:
     class: DeskPRO\Bundle\AppBundle\Routing\RequestMatcher

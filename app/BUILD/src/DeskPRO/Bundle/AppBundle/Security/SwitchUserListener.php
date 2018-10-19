@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Security;
 
 use Psr\Log\LoggerInterface;
@@ -88,15 +84,19 @@ class SwitchUserListener implements ListenerInterface
     private $use_override_uri = false;
 
     /**
-     * @param TokenStorageInterface $token_storage
-     * @param UserProviderInterface $provider
-     * @param UserCheckerInterface  $user_checker
-     * @param $provider_key
+     * Constructor.
+     *
+     * @param TokenStorageInterface          $token_storage
+     * @param UserProviderInterface          $provider
+     * @param UserCheckerInterface           $user_checker
+     * @param string                         $provider_key
      * @param AccessDecisionManagerInterface $access_decision_manager
      * @param LoggerInterface|null           $logger
      * @param string                         $username_parameter
      * @param string                         $role
      * @param EventDispatcherInterface|null  $dispatcher
+     *
+     * @throws \Exception
      */
     public function __construct(
         TokenStorageInterface $token_storage,
@@ -125,16 +125,11 @@ class SwitchUserListener implements ListenerInterface
     }
 
     /**
-     * Handles the switch to another user.
-     *
-     * @param GetResponseEvent $event A GetResponseEvent instance
-     *
-     * @throws \LogicException if switching to a user failed
+     * {@inheritdoc}
      */
     public function handle(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-
         if (!$request->get($this->username_parameter)) {
             return;
         }

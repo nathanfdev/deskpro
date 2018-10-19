@@ -5,33 +5,28 @@ namespace DeskPRO\Bundle\PortalBundle\Mode;
 /**
  * Generates a portal mode using URL paths. The request listener uses this to determine the portal mode.
  *
- * @see DeskPRO\Bundle\PortalBundle\Mode\PortalMode
+ * @see \DeskPRO\Bundle\PortalBundle\Mode\PortalMode
  */
 class PortalModeFactory
 {
     const REGEX_ADMIN_PREVIEW = '#^/admin\-preview-([0-9]+?)(/{1}.*|$)$#';
-    const REGEX_BRAND         = '#^/brand-([0-9]+?)(/{1}.*|$)$#';
     const REGEX_ADMIN         = '#^/admin\-mode(/{1}.*|$)$#';
     const REGEX_FOCUS_WIN     = '#^/focus\-win(/{1}.*|$)$#';
     const REGEX_FRAME_EMBED   = '#^/frame\-embed(/{1}.*|$)$#';
 
+    /**
+     * @param string $path
+     *
+     * @return PortalMode
+     */
     public function createMode($path)
     {
         $mode = new PortalMode($path);
 
         if (preg_match(self::REGEX_ADMIN_PREVIEW, $path, $matches)) {
-            $brand_id = (int) $matches[1];
-            $mode->setBrand($brand_id);
             $mode->setAdminPreview();
             $mode->setInternalPath(strlen($matches[2]) > 0 ? $matches[2] : '/');
-            $mode->setModePath(sprintf('/admin-preview-%s', $brand_id));
-        } elseif (preg_match(self::REGEX_BRAND, $path, $matches)) {
-            // this will be deleted. brand won't be a mode. brand will be detected on the request listener
-            // because it will depend on hostname. the brand stack is a separate thing.
-            $brand_id = (int) $matches[1];
-            $mode->setBrand($brand_id);
-            $mode->setInternalPath(strlen($matches[2]) > 0 ? $matches[2] : '/');
-            $mode->setModePath(sprintf('/brand-%s', $brand_id));
+            $mode->setModePath(sprintf('/admin-preview-%s', (int) $matches[1]));
         } elseif (preg_match(self::REGEX_ADMIN, $path, $matches)) {
             // this one will likely be deleted completely, no use at the moment
             $mode->setAdmin();

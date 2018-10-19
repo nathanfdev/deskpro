@@ -68,8 +68,10 @@ class UrlRequestContextFactory
             return $this->absContextToBrand[$brand->getId()];
         }
 
-        $url = $this->container->get('settings_resolver')->getBrandSettings($brand)->get('core.deskpro_url')
-            ?: $this->container->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
+        $settingsResolver = $this->container->get('settings_resolver');
+
+        $url = $settingsResolver->getBrandSettings($brand)->get('core.deskpro_url')
+            ?: $settingsResolver->getGlobalSettings()->get('core.deskpro_url');
 
         if (!$url) {
             return $defaultContext;
@@ -82,15 +84,8 @@ class UrlRequestContextFactory
         }
 
         $context = clone $defaultContext;
-
-        $portalModeStorage = $this->container->get('portal_mode_storage');
-        $portalMode        = $portalModeStorage->getMode() ?: null;
-        if ($portalMode && strpos($portalMode->getModePath(), '/brand-') === 0) {
-            $context->setHost($context->getHost().$portalMode->getModePath());
-        } else {
-            $context->setHost($urlParts['host']);
-            $context->setScheme($urlParts['scheme']);
-        }
+        $context->setHost($urlParts['host']);
+        $context->setScheme($urlParts['scheme']);
 
         $port = (int) @$urlParts['port'];
         if (!$port) {

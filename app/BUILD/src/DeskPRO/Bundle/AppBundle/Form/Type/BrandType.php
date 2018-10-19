@@ -22,6 +22,9 @@ class BrandType extends AbstractType
             ->add('name', TextType::class, [
                 'required' => true,
             ])
+            ->add('slug', TextType::class, [
+                'required' => true,
+            ])
             ->add('url', TextType::class, [
                 'required' => true,
             ])

@@ -15,7 +15,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         {id: "sidebar", title: "Sidebar"}
       ]
       @$scope.brand_id = @$stateParams.brandId
-      @$scope.baseUrl  = window.DP_BASE_URL+'brand-'+@$scope.brand_id
 
       @$scope.welcome_box = {
         title: '',
@@ -48,7 +47,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @preview_as_email = null
       @selected_theme = null
       @theme_set = null
-      @refreshPreviewUrl()
 
     save: =>
       promises = [@saveValues(), @editWelcomeBox()]
@@ -151,17 +149,26 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       )
 
     initialLoad: =>
-      @$q.all([
-        @$http.get(@$scope.baseUrl+'/portal/api/style/variable-groups').success((data) => @groups = data),
-        @loadValues(),
-        @loadAdvancedEdits(),
-        @loadAssetFiles(),
-        @loadLogo(),
-        @loadFavicon(),
-        @loadTemplateOptions(),
-        @loadThemeSet()
-        @loadWelcomeBox()
-      ])
+      d = @$q.defer()
+      @Api2.sendGet('brands/'+@$scope.brand_id).then (res) =>
+        @$scope.baseUrl  = window.DP_BASE_URL+'b/'+res.data.data.slug
+        @refreshPreviewUrl()
+
+        @$q.all([
+          @$http.get(@$scope.baseUrl+'/portal/api/style/variable-groups').success((data) => @groups = data),
+          @loadValues(),
+          @loadAdvancedEdits(),
+          @loadAssetFiles(),
+          @loadLogo(),
+          @loadFavicon(),
+          @loadTemplateOptions(),
+          @loadThemeSet()
+          @loadWelcomeBox()
+        ]).then(->
+          d.resolve()
+        )
+
+      d.promise
 
     togglePanel: (name) =>
       if name in @open_panels

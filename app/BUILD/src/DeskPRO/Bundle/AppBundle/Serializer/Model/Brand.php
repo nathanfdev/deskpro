@@ -29,6 +29,15 @@ class Brand
     private $name;
 
     /**
+     * Brand slug.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $slug;
+
+    /**
      * Brand url.
      *
      * @JMS\Type("string")
@@ -50,11 +59,13 @@ class Brand
      * Blob constructor.
      *
      * @param BrandEntity $brand
+     * @param string      $logoUrl
      */
     public function __construct(BrandEntity $brand, $logoUrl = null)
     {
         $this->id      = $brand->getId();
         $this->name    = $brand->getName();
+        $this->slug    = $brand->getSlug();
         $this->url     = $brand->getUrl();
         $this->logoUrl = $logoUrl;
     }

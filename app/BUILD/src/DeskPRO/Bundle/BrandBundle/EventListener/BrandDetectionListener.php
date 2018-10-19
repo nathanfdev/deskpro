@@ -2,15 +2,15 @@
 
 namespace DeskPRO\Bundle\BrandBundle\EventListener;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
-use Application\DeskPRO\EntityRepository\Brand;
+use Application\DeskPRO\EntityRepository\Brand as BrandRepo;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -64,7 +64,7 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
      *
      * @param BrandStack         $brandStack
      * @param SettingsResolver   $settingsResolver
-     * @param Brand              $brandRepository
+     * @param BrandRepo          $brandRepository
      * @param DefaultBrandFinder $defaultBrandFinder
      * @param PortalModeStorage  $modeStorage
      * @param LoggerInterface    $logger
@@ -73,7 +73,7 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
     public function __construct(
         BrandStack         $brandStack,
         SettingsResolver   $settingsResolver,
-        Brand              $brandRepository,
+        BrandRepo          $brandRepository,
         DefaultBrandFinder $defaultBrandFinder,
         PortalModeStorage  $modeStorage,
         LoggerInterface    $logger,
@@ -89,14 +89,29 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
     }
 
     /**
+     * @internal
+     *
      * @param GetResponseEvent $event
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
         $brand = null;
         if ($event->isMasterRequest()) {
-            if ($mode = $this->modeStorage->getMode()) {
-                $brand = $this->detectBrandMode($mode);
+            $request = $event->getRequest();
+            $mode    = $this->modeStorage->getMode();
+
+            if ($mode && $mode->isAdminPreview()) {
+                try {
+                    $brand = $this->brandRepository->find($mode->getData());
+                } catch (\Exception $e) {
+                }
+            } elseif ($request->attributes->has('_dp_brand_slug')) {
+                try {
+                    $brand = $this->brandRepository->findOneBy([
+                        'slug' => $request->attributes->get('_dp_brand_slug'),
+                    ]);
+                } catch (\Exception $e) {
+                }
             } else {
                 $brand = $this->detectFromEsiQuery($event->getRequest());
             }
@@ -131,22 +146,6 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
         }
 
         return;
-    }
-
-    /**
-     * @param PortalMode $mode
-     *
-     * @return null|Brand|void
-     */
-    protected function detectBrandMode(PortalMode $mode)
-    {
-        if ($mode->isBrand() || $mode->isAdminPreview()) {
-            try {
-                return $this->brandRepository->find($mode->getData());
-            } catch (\Exception $e) {
-                return;
-            }
-        }
     }
 
     /**

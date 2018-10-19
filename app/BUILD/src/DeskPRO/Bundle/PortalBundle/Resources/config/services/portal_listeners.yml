@@ -55,7 +55,10 @@ services:
 
   portal_mode.listener:
     class: DeskPRO\Bundle\PortalBundle\EventListener\PortalModeListener
-    arguments: ["@portal_mode_factory", "@portal_mode_storage", "@logger"]
+    arguments:
+      - "@portal_mode_factory"
+      - "@portal_mode_storage"
+      - "@logger"
     tags:
       - { name: kernel.event_subscriber }
 

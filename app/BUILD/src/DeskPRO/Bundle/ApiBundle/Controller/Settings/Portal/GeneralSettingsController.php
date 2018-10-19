@@ -15,7 +15,6 @@ use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
@@ -85,12 +84,14 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
      *     input= {
      *         "class"="DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal\GeneralSettingsType"
      *     },
-     *     noOutput=true
+     *     output="Application\DeskPRO\Settings\GeneralPortalSettings"
      *)
      * @Rest\Post("/{brand}/portal/general")
      *
      * @param Request $request
      * @param Brand   $brand
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -122,10 +123,13 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
         }
 
         $brand->setUrl($url);
-
+        $brand->setSlug($model->getBrandSlug());
         $brand->setName($model->getBrandName());
+
         $em->persist($brand);
         $em->flush();
+
+        $model->setBrandSlug($brand->getSlug());
 
         $this->persistModel($model);
 
@@ -133,7 +137,7 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
             \Cloud\LegacyApiBundle\Helper\CloudBrandHelper::flushBrandDomains();
         }
 
-        return new View(null, Response::HTTP_NO_CONTENT);
+        return new View($this->wrap($this->getModel($brand)));
     }
 
     /**

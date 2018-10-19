@@ -141,6 +141,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setSiteUrl($this->getSetting(self::SITE_URL, $brand))
             ->setDeskproName($this->getSetting(self::HELPDESK_NAME, $brand))
             ->setDeskproUrl($this->getSetting(self::HELPDESK_URL, $brand))
+            ->setBrandSlug($brand->getSlug())
             ->setAppsFeedback($this->getSetting(self::APPS_FEEDBACK, $brand))
             ->setAppsKb($this->getSetting(self::APPS_KB, $brand))
             ->setAppsNews($this->getSetting(self::APPS_NEWS, $brand))

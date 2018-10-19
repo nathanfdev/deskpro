@@ -1,0 +1,9 @@
+services:
+
+  original_request_storage:
+    class: DeskPRO\Bundle\BrandBundle\Request\OriginalRequestStorage
+
+  request_brand_corrector:
+    class: DeskPRO\Bundle\BrandBundle\Request\RequestBrandCorrector
+    arguments:
+      - "@doctrine.orm.entity_manager"

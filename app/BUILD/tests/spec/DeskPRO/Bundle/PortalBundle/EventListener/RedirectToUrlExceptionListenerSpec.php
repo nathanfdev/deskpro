@@ -11,6 +11,7 @@ use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -57,10 +58,13 @@ class RedirectToUrlExceptionListenerSpec extends ObjectBehavior
     public function it_sets_a_redirect_response_if_it_is_the_right_exception(
         RedirectToUrlException $correct_exception,
         GetResponseForExceptionEvent $event,
-        Request $request
+        Request $request,
+        ParameterBag $attributes
     ) {
         $event->getException()->willReturn($correct_exception);
         $event->getRequest()->willReturn($request);
+        $request->attributes = $attributes;
+        $attributes->has('_dp_brand_slug')->willReturn(false);
 
         $correct_exception->getUrl()->shouldBeCalled()->willReturn('http://redirect.here');
         $event->setResponse(Argument::type('Symfony\Component\HttpFoundation\Response'))->shouldBeCalled();
