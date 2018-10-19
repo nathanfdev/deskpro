@@ -125,6 +125,20 @@ SQL;
 
         $all = $stmnt->fetchAll(\PDO::FETCH_ASSOC);
 
-        return View::create($this->wrap($all), Response::HTTP_OK);
+        foreach ($all as &$datum) {
+            foreach ($datum as &$innerData) {
+                if (is_numeric($innerData)) {
+                    $innerData = (int) $innerData;
+                }
+            }
+            $date                  = new \DateTime($datum['date_created']);
+            $datum['date_created'] = $date->format(\DateTime::ISO8601);
+            $datum['timestamp']    = $date->getTimestamp();
+            if (isset($datum['data'])) {
+                $datum['data'] = @json_decode($datum['data'], true);
+            }
+        }
+
+        return View::create($all, Response::HTTP_OK);
     }
 }
