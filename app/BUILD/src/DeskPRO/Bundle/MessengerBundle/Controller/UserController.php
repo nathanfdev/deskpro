@@ -7,8 +7,10 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\NonUniqueResultException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,6 +47,8 @@ class UserController extends BaseController
      *
      * @param string $visitorId
      *
+     * @throws NonUniqueResultException
+     *
      * @return View
      */
     public function loadUserInfoAction($visitorId)
@@ -53,7 +57,14 @@ class UserController extends BaseController
         $em                   = $this->get('doctrine.orm.default_entity_manager');
         $chatConversationRepo = $em->getRepository(ChatConversation::class);
         $chats                = $chatConversationRepo->findBy(['visitor_id' => $visitorId], ['date_created' => 'DESC'], 25);
-        $userInfo             = new UserInfo($visitorId);
+
+        $actionAlertRepo = $em->getRepository(ActionAlert::class);
+        $qb              = $actionAlertRepo->createQueryBuilder('aa');
+        $alert           = $qb->orderBy('aa.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
+
+        $alert = $alert ? $alert->getId() : 0;
+
+        $userInfo = new UserInfo($visitorId, $alert);
 
         return View::create($this->wrap($userInfo->addChats($chats)), Response::HTTP_OK);
     }

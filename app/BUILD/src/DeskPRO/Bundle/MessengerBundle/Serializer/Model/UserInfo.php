@@ -26,12 +26,23 @@ class UserInfo
     private $chats;
 
     /**
-     * UserInfo constructor.
+     * @JMS\Type("integer")
+     *
+     * @var int
      */
-    public function __construct($visitorId)
+    private $lastActionAlert;
+
+    /**
+     * UserInfo constructor.
+     *
+     * @param string $visitorId
+     * @param int    $lastActionAlert
+     */
+    public function __construct($visitorId, $lastActionAlert)
     {
-        $this->visitorId = $visitorId;
-        $this->chats     = new ArrayCollection();
+        $this->visitorId       = $visitorId;
+        $this->chats           = new ArrayCollection();
+        $this->lastActionAlert = $lastActionAlert;
     }
 
     /**
