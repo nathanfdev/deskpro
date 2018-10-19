@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Security\Authentication;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\AppSecret\AppSecret;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
@@ -12,8 +13,8 @@ use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterfa
 
 class MessengerAuthenticator implements SimplePreAuthenticatorInterface
 {
-    const HTTP_REALM      = 'realm="DeskPRO User Messenger API"';
-    const APP_HEADER_NAME = 'X-DeskPRO-App-ID';
+    const HTTP_REALM          = 'realm="x-deskpro-visitorid DeskPRO User Messenger API"';
+    const VISITOR_HEADER_NAME = 'X-Deskpro-VisitorID';
 
     /**
      * @var string
@@ -27,6 +28,10 @@ class MessengerAuthenticator implements SimplePreAuthenticatorInterface
 
     public function createToken(Request $request, $providerKey)
     {
+        if (!$request->headers->has(self::VISITOR_HEADER_NAME)) {
+            throw new UnauthorizedHttpException(self::HTTP_REALM, 'Visitor ID header is not set. Cant auth');
+        }
+
         return new AnonymousToken($this->secret, new Person(), ['ROLE_API']);
     }
 

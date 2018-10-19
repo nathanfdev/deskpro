@@ -8,11 +8,13 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
+use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NonUniqueResultException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -43,16 +45,18 @@ class UserController extends BaseController
      *          }
      *      }
      * )
-     * @Rest\Get("/{visitorId}")
+     * @Rest\Get("/")
      *
-     * @param string $visitorId
+     * @param Request $request
      *
      * @throws NonUniqueResultException
      *
      * @return View
      */
-    public function loadUserInfoAction($visitorId)
+    public function loadUserInfoAction(Request $request)
     {
+        $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
+
         /** @var EntityManager $em */
         $em                   = $this->get('doctrine.orm.default_entity_manager');
         $chatConversationRepo = $em->getRepository(ChatConversation::class);
@@ -60,7 +64,12 @@ class UserController extends BaseController
 
         $actionAlertRepo = $em->getRepository(ActionAlert::class);
         $qb              = $actionAlertRepo->createQueryBuilder('aa');
-        $alert           = $qb->orderBy('aa.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
+        $alert           = $qb->where('aa.target_id = :visitorId')
+            ->orderBy('aa.id', 'DESC')
+            ->setParameter('visitorId', $visitorId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
 
         $alert = $alert ? $alert->getId() : 0;
 
@@ -95,15 +104,17 @@ class UserController extends BaseController
      * )
      * @Rest\Get("/action_alerts/{visitorId}/{lastActionAlert}")
      *
-     * @param string $visitorId
-     * @param int    $lastActionAlert
+     * @param int     $lastActionAlert
+     * @param Request $request
      *
      * @throws \Doctrine\DBAL\DBALException
      *
      * @return View
      */
-    public function loadLastActionAlerts($visitorId, $lastActionAlert)
+    public function loadLastActionAlerts($lastActionAlert, Request $request)
     {
+        $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
+
         $connection = $this->get('doctrine.dbal.read_connection');
 
         $sql = <<<'SQL'

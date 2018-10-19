@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType;
 use DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler;
+use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -51,6 +52,7 @@ class ChatController extends BaseController
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
+        $chatConversation->setVisitorId($request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME));
 
         $this->em()->persist($chatConversation);
         $this->em()->flush();

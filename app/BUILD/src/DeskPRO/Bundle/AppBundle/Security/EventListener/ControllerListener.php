@@ -10,6 +10,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\ExceptionController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use Doctrine\Common\Util\ClassUtils;
 use Sensio\Bundle\FrameworkExtraBundle\EventListener\ControllerListener as BaseControllerListener;
+use Symfony\Bundle\FrameworkBundle\Controller\RedirectController;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 
 /**
@@ -35,7 +36,7 @@ class ControllerListener extends BaseControllerListener
         $method = $object->getMethod($controller[1]);
 
         $classAnnotations    = $this->reader->getClassAnnotations($object);
-        $classConfigurations = !$controller[0] instanceof ExceptionController && $event->isMasterRequest()
+        $classConfigurations = $this->shouldTakeClassConfiguration($controller, $event)
             ? $this->getClassConfigurations($classAnnotations)
             : $this->getConfigurations($classAnnotations);
         $methodConfigurations = $this->getConfigurations($this->reader->getMethodAnnotations($method));
@@ -63,6 +64,19 @@ class ControllerListener extends BaseControllerListener
         foreach ($configurations as $key => $attributes) {
             $request->attributes->set($key, $attributes);
         }
+    }
+
+    /**
+     * @param array                 $controller
+     * @param FilterControllerEvent $event
+     *
+     * @return bool
+     */
+    protected function shouldTakeClassConfiguration(array $controller, FilterControllerEvent $event)
+    {
+        return !$controller[0] instanceof ExceptionController
+            && $event->isMasterRequest()
+            && !$controller[0] instanceof RedirectController;
     }
 
     /**

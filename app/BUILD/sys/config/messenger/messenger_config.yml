@@ -130,7 +130,7 @@ nelmio_cors:
 # Security Configuration
 security:
   role_hierarchy:
-    ROLE_AGENT: ROLE_USER
+    ROLE_API: ROLE_USER
 
   providers:
     dp_person_user_provider:
