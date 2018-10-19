@@ -63,12 +63,14 @@ abstract class AbstractGenerator implements MessageGeneratorInterface
      */
     public function getUser()
     {
-        if ($this->token_storage->getToken()) {
+        if ($this->token_storage->getToken() && $this->token_storage->getToken()->getUser() instanceof Person) {
             return $this->token_storage->getToken()->getUser();
         }
-        // todo actually this is just a stub to handle
+
         $user = new PersonGuest();
 
-        return $user->setIsAgent(true)->setName('System');
+        $isSystem = !(bool) $this->token_storage->getToken();
+
+        return $user->setIsAgent($isSystem)->setName($isSystem ? 'System' : '');
     }
 }

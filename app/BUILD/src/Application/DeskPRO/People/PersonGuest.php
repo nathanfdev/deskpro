@@ -25,6 +25,7 @@ class PersonGuest extends Person
         $this->id             = 0;
         $this->_usergroup_ids = [];
         $this->usergroups     = new ArrayCollection();
+        $this->teams          = new ArrayCollection();
         $this->tickets        = new ArrayCollection();
         $this->chats          = new ArrayCollection();
         $this->timezone       = App::getSetting('core.default_timezone');
