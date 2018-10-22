@@ -53,6 +53,7 @@ class DevKernel extends BaseKernel
             new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle(),
             new \DeskPRO\Bundle\ReportBundle\ReportBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
+            new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
         ];
 
         return $bundles;

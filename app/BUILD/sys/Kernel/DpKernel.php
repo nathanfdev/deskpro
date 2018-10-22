@@ -7,7 +7,6 @@
 namespace DpSys\Kernel;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Bundle\MessengerBundle\MessengerBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
 
 class DpKernel extends BaseKernel
@@ -119,7 +118,7 @@ class DpKernel extends BaseKernel
             new \Application\UserBundle\UserBundle(),
             new \Application\LegacyApiBundle\LegacyApiBundle(),
             new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
-            new MessengerBundle(),
+            new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
         ];
 
         if (defined('DPC_IS_CLOUD')) {
