@@ -27,7 +27,7 @@ echo "<th class=\"$className\">";
 echo "<table>";
 echo "<tr>";
 echo "<th>";
-echo (isset($context["foo"]) ? $context["foo"] : null);
+echo ($context["foo"] ?? null);
 echo "</th>";
 echo "</tr>";
 echo "</table>";

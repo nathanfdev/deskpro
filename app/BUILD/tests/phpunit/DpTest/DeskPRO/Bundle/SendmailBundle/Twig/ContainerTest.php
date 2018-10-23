@@ -22,7 +22,7 @@ echo "<table align=\"center\" class=\"container\">";
 echo "<tbody>";
 echo "<tr>";
 echo "<td>";
-echo (isset($context["foo"]) ? $context["foo"] : null);
+echo ($context["foo"] ?? null);
 echo "</td>";
 echo "</tr>";
 echo "</tbody>";

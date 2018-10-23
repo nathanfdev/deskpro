@@ -22,7 +22,7 @@ $context['zurb_columns']['first'] = true;
 echo "<table class=\"row\">";
 echo "<tbody>";
 echo "<tr>";
-echo (isset($context["foo"]) ? $context["foo"] : null);
+echo ($context["foo"] ?? null);
 echo "</tr>";
 echo "</tbody>";
 echo "</table>";
