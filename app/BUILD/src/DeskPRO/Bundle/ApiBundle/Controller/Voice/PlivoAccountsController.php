@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiModes("all")
  * @Rest\Route("/voice_accounts/plivo")
  * @Feature("voice")
- * @ApiUserContext("admin", agent={"list", "get", "count"})
+ * @ApiUserContext("admin", agent={"list", "get", "count", "refreshEndpoint"})
  * @ApiDoc(target="all", section="Voice Channel", output="DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount")
  * @ApiDoc(
  *     target="postAction,putAction,testCredentialsAction",
