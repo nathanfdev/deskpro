@@ -113,7 +113,7 @@ class NewCustomTemplate extends React.Component {
           <Input id="template_name" className="ui input" onChange={this.handleName} />.html<br />
         </Field>
         <span className="help-block">
-          Enter a file name for your email template. Valid characters are letters, numbers, hyphens, periods and underscores.
+          Enter a file name for your email template. Valid characters are lowercase letters, numbers, hyphens, periods and underscores.
         </span><br />
         <label htmlFor="base_template">Base template: </label><br />
         <Select options={templates} value={this.state.baseTemplate} onChange={this.handleBaseTemplate} filter />< br />< br />
