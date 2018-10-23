@@ -7,7 +7,7 @@ class NewAccountContainer extends BaseAccountFormContainer {
 
   submitData = (data) => {
     const { accountType, dispatch } = this.props;
-    dispatch(createAccount(accountType, data));
+    return dispatch(createAccount(accountType, data));
   }
 }
 
