@@ -3,6 +3,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { Icon, List, ListElement, CustomSelect, Checkbox } from '@deskpro/react-components';
 import { sortByAttribute } from 'DeskPRO/Component/Util/Map';
 import LanguageItem from './LanguageItem';
@@ -224,7 +225,7 @@ export class LanguageSelect extends React.PureComponent {
     type:        PropTypes.string,
   };
 
-  inputRenderer = () => <span key="label"><Icon name="globe" />&nbsp;<FormattedMessage id="agent.general.languages" /></span>;
+  inputRenderer = () => <span key="label"><Icon name={faGlobe} />&nbsp;<FormattedMessage id="agent.general.languages" /></span>;
 
   render() {
     const { languages, langContext, langPref, onChange, type } = this.props;

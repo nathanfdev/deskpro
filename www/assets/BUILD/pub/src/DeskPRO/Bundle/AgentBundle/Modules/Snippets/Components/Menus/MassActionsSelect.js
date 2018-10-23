@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import { faDownload, faPencilAlt, faTag, faUsers } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faEye } from '@fortawesome/free-regular-svg-icons';
 import { Icon, CustomSelect, List, ListElement } from '@deskpro/react-components';
 
 export class MassActionsSelect extends React.PureComponent {
@@ -12,32 +14,32 @@ export class MassActionsSelect extends React.PureComponent {
     return [
       {
         value: 'labels',
-        icon:  'tag',
+        icon:  faTag,
         text:  <FormattedMessage id="agent.general.labels" />,
       },
       {
         value: 'visibility',
-        icon:  'eye',
+        icon:  faEye,
         text:  <FormattedMessage id="agent.snippets.visibility" />,
       },
       {
         value: 'ownership',
-        icon:  'users',
+        icon:  faUsers,
         text:  <FormattedMessage id="agent.snippets.ownership" />,
       },
       {
         value: 'type',
-        icon:  'envelope-o',
+        icon:  faEnvelope,
         text:  <FormattedMessage id="agent.general.type" />,
       },
       {
         value: 'export',
-        icon:  'download',
+        icon:  faDownload,
         text:  <FormattedMessage id="agent.general.export" />,
       },
       {
         value: 'draft',
-        icon:  'pencil',
+        icon:  faPencilAlt,
         text:  <FormattedMessage id="agent.snippets.draft_status" />,
       },
     ];

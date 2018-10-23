@@ -412,7 +412,9 @@ class SearchContainer extends React.Component {
   };
 
   closeMenu = () => {
-    this.tokenField.blur();
+    if (this.tokenField) {
+      this.tokenField.blur();
+    }
     this.setState({
       value:   [],
       results: {}

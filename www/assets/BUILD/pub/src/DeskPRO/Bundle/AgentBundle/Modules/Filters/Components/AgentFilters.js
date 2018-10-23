@@ -7,6 +7,7 @@ import {
   DrawerList,
   Scrollbar,
 } from '@deskpro/react-components';
+import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { FormattedMessage } from 'react-intl';
 import FiltersSet from './FiltersSet';
 import Stars from './Stars';
@@ -108,7 +109,7 @@ export default class AgentFilters extends React.Component {
     return (
       <Column style={{ width: '213px' }} className="agent-filters">
         <Heading>
-          <Icon name="envelope-o" />
+          <Icon name={faEnvelope} />
           <FormattedMessage id="agent.search.type_ticket" />
         </Heading>
         <DrawerList>

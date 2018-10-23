@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { faListAlt, faThumbsUp } from '@fortawesome/free-regular-svg-icons';
+import { faBolt, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { Icon, ListElement, ToggleableList } from '@deskpro/react-components';
 import Articles from './Articles';
 import Downloads from './Downloads';
@@ -55,7 +57,7 @@ export default class Publishing extends React.Component {
           key="feedback"
           heading={
             <span>
-              <Icon name="thumbs-o-up" size="m" fixedWidth /> Feedback
+              <Icon name={faThumbsUp} size="m" fixedWidth /> Feedback
               &nbsp;<span className="count">{results.feedback.length}</span>
             </span>
           }
@@ -70,7 +72,7 @@ export default class Publishing extends React.Component {
       drawers.push(
         <Drawer
           key="articles"
-          heading={<span><Icon name="list-alt" size="m" fixedWidth /> Articles</span>}
+          heading={<span><Icon name={faListAlt} size="m" fixedWidth /> Articles</span>}
           opened={activeDrawer === 'articles'}
           onClick={selected => this.onSelect(selected, 'articles')}
         >
@@ -82,7 +84,7 @@ export default class Publishing extends React.Component {
       drawers.push(
         <Drawer
           key="news"
-          heading={<span><Icon name="bolt" size="m" fixedWidth /> News</span>}
+          heading={<span><Icon name={faBolt} size="m" fixedWidth /> News</span>}
           opened={activeDrawer === 'news'}
           onClick={selected => this.onSelect(selected, 'news')}
         >
@@ -94,7 +96,7 @@ export default class Publishing extends React.Component {
       drawers.push(
         <Drawer
           key="downloads"
-          heading={<span><Icon name="download" size="m" fixedWidth /> Downloads</span>}
+          heading={<span><Icon name={faDownload} size="m" fixedWidth /> Downloads</span>}
           opened={activeDrawer === 'downloads'}
           onClick={selected => this.onSelect(selected, 'downloads')}
         >

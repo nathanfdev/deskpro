@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
+import { faCaretDown, faCaretUp } from '@fortawesome/free-solid-svg-icons';
 import { Icon, Select } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 
@@ -55,7 +56,7 @@ export class Ticket extends React.Component {
           return (
             <div className="messages">
               <span className="messages-count" onClick={this.toggleMessages}>
-                1 of {messages.length} <Icon name="caret-down" />
+                1 of {messages.length} <Icon name={faCaretDown} />
               </span> {messages[0].text}
             </div>
           );
@@ -69,7 +70,7 @@ export class Ticket extends React.Component {
                     <td>
                       {index === 0 ?
                         <span className="messages-count" onClick={this.toggleMessages}>
-                          <Icon name="caret-up" />
+                          <Icon name={faCaretUp} />
                         </span>
                         : null
                       }
@@ -169,7 +170,7 @@ export default class Tickets extends React.Component {
             searchable={false}
             value={sort}
           />
-          <a href="#"><FormattedMessage id="agent.search.manage_tickets" /></a>
+          <a><FormattedMessage id="agent.search.manage_tickets" /></a>
         </header>
         {tickets.map(ticket =>
           <Ticket key={ticket.id} ticket={ticket} />

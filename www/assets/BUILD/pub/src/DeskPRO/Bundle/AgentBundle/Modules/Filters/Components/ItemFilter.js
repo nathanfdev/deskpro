@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon, Popper } from '@deskpro/react-components';
+import { faFilter } from '@fortawesome/free-solid-svg-icons';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 
 /**
@@ -99,7 +100,7 @@ export default class ItemFilter extends React.Component {
           className="dp-icon__filter dp-filters-popup"
         >
           <Icon
-            name="filter"
+            name={faFilter}
           />
         </PopUp>
       </span>

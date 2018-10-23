@@ -5,6 +5,7 @@ import Immutable from 'immutable';
 import { FormattedMessage } from 'react-intl';
 import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
+import { faPhone } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@deskpro/react-components';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import BackButton from '../../../../Common/Components/BackButton';
@@ -169,7 +170,7 @@ class CallLogView extends React.Component {
                                     onClick={event => this.openDialpad(event, call.get('external_number'))}
                                     href={`tel:${call.get('external_number')}`}
                                   >
-                                    {call.get('external_number')} <Icon name="phone" />
+                                    {call.get('external_number')} <Icon name={faPhone} />
                                   </a>
                                 ),
                                 person: (

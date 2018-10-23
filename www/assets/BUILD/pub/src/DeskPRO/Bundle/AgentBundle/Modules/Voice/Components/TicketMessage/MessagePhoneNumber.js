@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { findPhoneNumbers, getCountryCallingCode } from 'libphonenumber-js';
 import { getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import { connect } from 'react-redux';
+import { faPhone } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@deskpro/react-components';
 import { openDialpad } from '../../Actions/clientActions';
 import { canOpenDialpadSelector } from '../../Selectors/numbers';
@@ -76,7 +77,7 @@ class MessagePhoneNumber extends React.PureComponent {
     const { number, children } = this.props;
     return (
       <a onClick={this.openDialpad} href={`tel:${number}`}>
-        {children} <Icon name="phone" />
+        {children} <Icon name={faPhone} />
       </a>
     );
   }

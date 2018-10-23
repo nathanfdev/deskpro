@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
 import { List } from 'react-virtualized';
+import { faFrown, faMeh, faSmile } from '@fortawesome/free-regular-svg-icons';
 import { Checkbox, Tag, Icon } from '@deskpro/react-components';
 
 export class SnippetsListElement extends React.PureComponent {
@@ -160,15 +161,15 @@ export class SnippetsListElement extends React.PureComponent {
       <span className="stat">
         <FormattedMessage id="agent.snippets.feedback" />&nbsp;
         <span className="rating">
-          <Icon name="smile-o" />
+          <Icon name={faSmile} />
           <span className="value">{snippet.get('positive_ratings')}</span>
         </span>
         <span className="rating">
-          <Icon name="meh-o" />
+          <Icon name={faMeh} />
           <span className="value">{snippet.get('neutral_ratings')}</span>
         </span>
         <span className="rating">
-          <Icon name="frown-o" />
+          <Icon name={faFrown} />
           <span className="value">{snippet.get('negative_ratings')}</span>
         </span>
       </span>

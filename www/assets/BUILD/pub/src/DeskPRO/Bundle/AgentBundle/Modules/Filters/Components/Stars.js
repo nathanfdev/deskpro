@@ -7,6 +7,7 @@ import {
   Count,
   Icon
 } from '@deskpro/react-components';
+import { faStar } from '@fortawesome/free-regular-svg-icons';
 import PropTypes from 'prop-types';
 
 export default class Stars extends React.Component {
@@ -61,7 +62,7 @@ export default class Stars extends React.Component {
               selected={mode && mode.type === 'star' && mode.star === star.get('id')}
               onClick={selected => this.onSelect(selected, star)}
             >
-              <Icon name="star" style={{ color: star.get('hex') }} />
+              <Icon name={faStar} style={{ color: star.get('hex') }} />
               {star.get('name')}
               {this.renderCount(star)}
             </Item>

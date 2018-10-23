@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
+import { faLink } from '@fortawesome/free-solid-svg-icons';
 import { Icon } from '@deskpro/react-components';
 
 export default class Articles extends React.Component {
@@ -21,8 +23,8 @@ export default class Articles extends React.Component {
                   <span className="status">{article.status}</span> <span className="content">{article.content}</span>
                 </td>
                 <td className="actions">
-                  <Icon name="file-text-o" /><br />
-                  <Icon name="link" />
+                  <Icon name={faFileAlt} /><br />
+                  <Icon name={faLink} />
                 </td>
               </tr>
           )}

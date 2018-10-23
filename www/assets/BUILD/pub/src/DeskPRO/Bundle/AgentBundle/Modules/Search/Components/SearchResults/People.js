@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
+import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 import { Icon } from '@deskpro/react-components';
 import PersonTickets from './PersonTickets';
 
@@ -65,11 +66,11 @@ export default class People extends React.Component {
           <span className="title">{person.name}</span>
           <span className="email">{person.email}</span>
           <a className="tickets-count" onClick={() => this.showPersonTickets(person.id)}>
-            <Icon name="envelope-o" size="m" />
+            <Icon name={faEnvelope} size="m" />
             {person.tickets}
           </a>
           <span className="new-ticket">
-            <Icon name="envelope-o" size="m" />
+            <Icon name={faEnvelope} size="m" />
           </span>
         </div>
       );

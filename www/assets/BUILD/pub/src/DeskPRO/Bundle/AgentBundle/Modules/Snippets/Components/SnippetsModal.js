@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import htmlToText from 'html-to-text';
+import { faCompress, faExpand, faPaperclip } from '@fortawesome/free-solid-svg-icons';
 import { Button, ConfirmButton, Modal, Icon, Checkbox, Input, Label, TagInput, Select, Tabs, TabLink } from '@deskpro/react-components';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
@@ -664,7 +665,9 @@ export class SnippetsModal extends React.Component {
         {snippet.get('id', false) ? <FormattedMessage id="agent.snippets.edit_snippet" /> : 'New snippet'}
         {usage}
         {snippet.get('id', false) ?
-          <a className="change_log" onClick={this.openChangeLogModal}><FormattedMessage id="agent.general.changelog" /></a>
+          <a className="change_log" onClick={this.openChangeLogModal}>
+            <FormattedMessage id="agent.general.changelog" />
+          </a>
           : null }
       </div>
     );
@@ -887,7 +890,7 @@ export class SnippetsModal extends React.Component {
                       onChange={updateMergeKeep}
                     />
                     <Button type="primary" size="medium" onClick={mergeSnippet}>
-                      <Icon name="compress" />
+                      <Icon name={faCompress} />
                       <FormattedMessage id="agent.general.merge" />
                     </Button>
                     <Button type="secondary" size="medium" onClick={this.displayMerge}>
@@ -895,7 +898,7 @@ export class SnippetsModal extends React.Component {
                     </Button>
                   </div>
                  : <a href="#merge" className="merge-link" onClick={this.displayMerge}>
-                   <Icon name="compress" /> Merge
+                   <Icon name={faCompress} /> Merge
                   </a>
                 }
               </div>
@@ -921,7 +924,7 @@ export class SnippetsModal extends React.Component {
             <div className="upload">
               <div className="upload-button">
                 <span className="styled-button">
-                  <Icon name="paperclip" /> <FormattedMessage id="agent.general.attach_files" />
+                  <Icon name={faPaperclip} /> <FormattedMessage id="agent.general.attach_files" />
                 </span>
                 <UploadButton
                   id={'upload_attachment'}
@@ -977,7 +980,7 @@ export class SnippetsModal extends React.Component {
                 {<FormattedMessage id="agent.general.chat" />}
               </Checkbox>
               {!this.props.isSplit ?
-                <a href="#expand" onClick={splitSnippet}><Icon name="expand" />
+                <a href="#expand" onClick={splitSnippet}><Icon name={faExpand} />
                   &nbsp;<FormattedMessage id="agent.snippets.split_snippet" />
                 </a>
               : null}
