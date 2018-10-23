@@ -12,17 +12,15 @@ class ChatMapperTest extends MessengerTestCase
         $mapper = $this->getContainer()->get('messenger.mappers.chat');
 
         $data = [
-            'author_name' => 'Test author name',
-            'message'     => '<script>alert("!")</script><div>This is the test message with script</div>',
-            'is_user'     => true,
-            'origin'      => 'user',
+            'message' => '<script>alert("!")</script><div>This is the test message with script</div>',
+            'is_user' => true,
+            'origin'  => 'user',
         ];
 
         $result = $mapper->createChatMessage($data);
         $this->assertEquals(true, $result->getIsUser());
         $this->assertEquals('<div>This is the test message with script</div>', $result->getContent());
         $this->assertEquals(0, $result->getAuthorId());
-        $this->assertEquals('Test author name', $result->getPersonName());
         $this->assertEquals(0, $result->getConversationId());
         $this->assertEquals(true, $result->isHtml());
         $this->assertEquals(true, $result->getIsUser());
