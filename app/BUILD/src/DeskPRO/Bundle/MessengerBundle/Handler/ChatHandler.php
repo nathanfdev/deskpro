@@ -24,7 +24,7 @@ class ChatHandler
     /**
      * @var array
      */
-    private $availableMessages = [
+    private $availableCommands = [
         self::MESSAGE_TYPE_NEW_MESSAGE,
         self::CHAT_ENDED,
         self::CHAT_USER_TIMEOUT,
@@ -75,7 +75,7 @@ class ChatHandler
     public function handle(ChatConversation $chat, array $request)
     {
         $commandType = $request['type'];
-        if (!in_array($request['type'], $this->availableMessages)) {
+        if (!in_array($commandType, $this->availableCommands)) {
             throw new \Exception('Wrong command given');
         }
 
