@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
@@ -79,7 +80,12 @@ class CustomDataHandler implements SubscribingHandlerInterface
 
             switch ($customDef->getType()) {
                 case CustomDefAbstract::TYPE_FILE:
-                    $result[$defId]['value'][] = $customData->getValue();
+                    $blob = $this->em->getRepository(Blob::class)->find($customData->getValue());
+                    if ($blob) {
+                        $result[$defId]['value'][]  = $blob->getId();
+                        $result[$defId]['detail'][] = $context->accept($blob);
+                    }
+
                     break;
 
                 case CustomDefAbstract::TYPE_DATA_LIST:
