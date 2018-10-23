@@ -476,7 +476,17 @@ export const toggleMute = createAction(
   'VOICE_AGENT_TOGGLE_MUTE',
   (connection, mute) => {
     // mute on client side
-    connection.mute(mute);
+    if (connection.getCallUUID) {
+      // plivo
+      if (mute) {
+        connection.mute();
+      } else {
+        connection.unmute();
+      }
+    } else {
+      // twilio
+      connection.mute(mute);
+    }
 
     // send participant mute request
     api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/mute_call`, { mute });
