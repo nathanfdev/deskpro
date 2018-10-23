@@ -1291,12 +1291,17 @@ class LoginController extends AbstractController
      */
     public function usersourceSsoAction($usersource_id)
     {
+        $usersourceTest = $this->session->getFlash(self::USERSOURCE_TEST, []);
+        if (!$usersourceTest) {
+            $usersourceTest = $this->in->getBool(self::USERSOURCE_TEST);
+        }
+
         // TODO: user auth_manager for this
         $interface = $this->getInterface();
         $source    = $this
             ->usersource_manager
             ->getAll()
-            ->forInterface($interface)// TODO: will always be user interface since this is always a user URL
+            ->forInterface($interface, $usersourceTest)// TODO: will always be user interface since this is always a user URL
             ->withCapability(UsersourceInfo::CAPABILITY_SSO_JS)
             ->mustHaveId($usersource_id)
             ->getFirstOrNull();
@@ -1309,11 +1314,6 @@ class LoginController extends AbstractController
 
         if (!$adapter instanceof SsoLoginActionInterface) {
             return new NotFoundHttpException();
-        }
-
-        $usersourceTest = $this->session->getFlash(self::USERSOURCE_TEST, []);
-        if (!$usersourceTest) {
-            $usersourceTest = $this->in->getBool(self::USERSOURCE_TEST);
         }
 
         $this->attachTestLoggerIfNecessary($usersourceTest, $adapter);
