@@ -354,7 +354,8 @@
 }
 .image-menu-item,
 .template-item  {
-  .ui.top.right.popup {
+  .ui.top.right.popup,
+  .ui.top.left.popup {
     border-color: $dp-sonic-primary;
     font-size: 12px;
     font-weight: 400;
@@ -372,6 +373,13 @@
     img {
       max-width: 300px;
       max-height: 200px;
+    }
+  }
+  .ui.top.left.popup {
+    &:before {
+      right: -4px;
+      left: auto;
+      transform: rotate(315deg);
     }
   }
 }
