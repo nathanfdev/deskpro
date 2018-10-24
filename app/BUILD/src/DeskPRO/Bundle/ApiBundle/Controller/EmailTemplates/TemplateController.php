@@ -28,6 +28,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 /**
  * API access to person settings.
@@ -133,6 +134,8 @@ class TemplateController extends BaseController
 
         if (!$template) {
             $template = $set->createCustomTemplate($name, 'email');
+        } elseif ($request->request->get('create_new')) {
+            throw new ConflictHttpException('Template already exists');
         }
 
         $templateCode = $template->getTemplateCode();

@@ -36,6 +36,23 @@ class NewCustomTemplate extends React.Component {
     this.props.addTemplate(this.state.name, this.state.baseTemplate)
     .then(() => {
       this.props.close();
+    })
+    .catch((error) => {
+      if (error.status === 409) {
+        this.setState({
+          errors: {
+            fields: {
+              name: {
+                errors: [
+                  {
+                    message: 'Template already exists'
+                  }
+                ]
+              }
+            }
+          }
+        });
+      }
     });
   };
 
@@ -47,7 +64,7 @@ class NewCustomTemplate extends React.Component {
 
   handleName = (value) => {
     this.setState({
-      name: value
+      name: value,
     });
     this.validateName(value);
   };

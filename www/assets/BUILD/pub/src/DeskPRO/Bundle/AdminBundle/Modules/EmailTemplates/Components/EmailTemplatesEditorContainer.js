@@ -225,9 +225,6 @@ class EmailTemplatesEditorContainer extends React.Component {
         this.props.dispatch(actions.saveTemplate(`SendmailBundle:emails_custom:${name}.html.twig`, template)
       ).then(
         () => {
-          this.setState({
-            addingNewTemplate: false
-          });
           this.props.dispatch(actions.loadTemplates()).then(
             (templates) => {
               const newTemplate = fromJS(templates).getIn(
@@ -241,7 +238,12 @@ class EmailTemplatesEditorContainer extends React.Component {
           );
           this.selectTemplateGroup('custom');
         }
-      ));
+      )
+      .finally(() => {
+        this.setState({
+          addingNewTemplate: false
+        });
+      }));
   };
 
   changeTemplateSubject = (value) => {
