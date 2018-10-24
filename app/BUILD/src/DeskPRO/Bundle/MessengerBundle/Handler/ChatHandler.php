@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\MessengerBundle\Exception\MapperException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -76,7 +77,7 @@ class ChatHandler
     {
         $commandType = $request['type'];
         if (!in_array($commandType, $this->availableCommands)) {
-            throw new \Exception('Wrong command given');
+            throw new MapperException(['type' => 'Wrong message type sent']);
         }
 
         $commandName = 'handle'.implode(

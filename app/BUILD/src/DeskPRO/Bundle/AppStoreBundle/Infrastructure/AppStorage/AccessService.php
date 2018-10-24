@@ -31,8 +31,9 @@ class AccessService
     }
 
     /**
-     * @param AccessRequest $request
+     * @param AccessRequest         $request
      * @param Domain\AppStorageItem $item
+     *
      * @return bool
      */
     public function allowWriteAccess(AccessRequest $request, Domain\AppStorageItem $item)
@@ -46,8 +47,9 @@ class AccessService
     }
 
     /**
-     * @param AccessRequest $request
+     * @param AccessRequest         $request
      * @param Domain\AppStorageItem $item
+     *
      * @return bool
      */
     public function allowReadAccess(AccessRequest $request, Domain\AppStorageItem $item)
@@ -69,7 +71,7 @@ class AccessService
 
     /**
      * @param Domain\AppStorageItemIdentifier $identifier
-     * @param AccessRequest             $request
+     * @param AccessRequest                   $request
      *
      * @return bool
      */
@@ -133,12 +135,12 @@ class AccessService
 
     /**
      * @param Domain\AppStorageItemIdentifier $identifier
-     * @param ServiceAccessRequest      $request
+     * @param ServiceAccessRequest            $request
      * @param $value
      *
      * @return Domain\AppStorageItem
      */
-    public function writeValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value)
+    public function writeValue(Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value)
     {
         /** @var \Exception $exception */
         $exception = null;
@@ -161,12 +163,12 @@ class AccessService
 
     /**
      * @param Domain\AppStorageItemIdentifier $identifier
-     * @param ServiceAccessRequest      $request
+     * @param ServiceAccessRequest            $request
      * @param $value
      *
      * @return Domain\AppStorageItem
      */
-    public function addValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value)
+    public function addValue(Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value)
     {
         /** @var Entity\AppStore\AppInstance $appInstance */
         $appInstance = $this->entityManager->find(Entity\AppStore\AppInstance::class, $identifier->getInstanceId());
@@ -217,12 +219,12 @@ class AccessService
 
     /**
      * @param Domain\AppStorageItemIdentifier $identifier
-     * @param ServiceAccessRequest      $request
-     * @param string                    $value
+     * @param ServiceAccessRequest            $request
+     * @param string                          $value
      *
      * @return Domain\AppStorageItem
      */
-    public function changeValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value)
+    public function changeValue(Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request, $value)
     {
         if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_WRITE) {
             $exception = Domain\AppStorage\Exception::createAccessDeniedException();
@@ -248,7 +250,7 @@ class AccessService
 
         if ($this->allowWriteAccess($request, $state)) {
             $stateEntity->setValue($value);
-            $this->entityManager->persist($stateEntity);
+            $this->entityManagers->persist($stateEntity);
             $this->entityManager->flush();
 
             return $converter->toDomainObject($stateEntity);
@@ -260,11 +262,11 @@ class AccessService
 
     /**
      * @param Domain\AppStorageItemIdentifier $identifier
-     * @param ServiceAccessRequest      $request
+     * @param ServiceAccessRequest            $request
      *
      * @return string
      */
-    public function readValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request)
+    public function readValue(Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request)
     {
         if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_READ) {
             $exception = Domain\AppStorage\Exception::createAccessDeniedException();
@@ -298,11 +300,11 @@ class AccessService
 
     /**
      * @param Domain\AppStorageSearchFilter $filter
-     * @param ServiceAccessRequest                $request
+     * @param ServiceAccessRequest          $request
      *
      * @return Domain\AppStorageItem[]|array
      */
-    public function readAllValues( Domain\AppStorageSearchFilter $filter, ServiceAccessRequest $request)
+    public function readAllValues(Domain\AppStorageSearchFilter $filter, ServiceAccessRequest $request)
     {
         $entities = [];
 
@@ -336,11 +338,11 @@ class AccessService
 
     /**
      * @param Domain\AppStorageItemIdentifier $identifier
-     * @param ServiceAccessRequest      $request
+     * @param ServiceAccessRequest            $request
      *
      * @return string
      */
-    public function removeValue( Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request)
+    public function removeValue(Domain\AppStorageItemIdentifier $identifier, ServiceAccessRequest $request)
     {
         if ($request->getAccessLevel() !== Domain\Constants::ACCESS_LEVEL_WRITE) {
             $exception = Domain\AppStorage\Exception::createAccessDeniedException();

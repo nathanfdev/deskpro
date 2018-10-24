@@ -42,15 +42,17 @@ class ChatMapperTest extends MessengerTestCase
             ->setIsHtml(true);
 
         $expectedData = [
-            'author_name' => 'Test author name',
-            'message'     => 'Test content',
-            'is_user'     => true,
-            'is_sys'      => false,
-            'is_html'     => true,
-            'origin'      => ChatMessage::ORIGIN_USER,
-            'author'      => 0,
-            'chat'        => 0,
-            'id'          => 0,
+            'name'         => 'Test author name',
+            'date_created' => $message->getDateCreated()->format(\DateTime::ISO8601),
+            'avatar'       => '',
+            'message'      => 'Test content',
+            'is_user'      => true,
+            'is_sys'       => false,
+            'is_html'      => true,
+            'origin'       => ChatMessage::ORIGIN_USER,
+            'author'       => 0,
+            'chat'         => 0,
+            'id'           => 0,
         ];
 
         $result = $mapper->mapMessageToArray($message);

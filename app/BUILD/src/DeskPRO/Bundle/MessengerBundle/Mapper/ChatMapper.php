@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Mapper;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\MessengerBundle\Exception\MapperException;
 use Doctrine\ORM\EntityManager;
 use Orb\Input\Cleaner\Cleaner;
 
@@ -43,16 +44,19 @@ class ChatMapper
     {
         $message = new ChatMessage();
 
-        if (isset($data['message'])) {
+        $errors = [];
+
+        if (isset($data['message']) && trim($data['message'])) {
             $message->setContent($this->cleanText($data['message']))->setIsHtml(true);
+        } else {
+            $errors['message'] = 'Message could not be empty';
         }
+
         if (isset($data['author'])) {
             if ($author = $this->em->find(Person::class, (int) $data['author'])) {
                 $message->setAuthor($author);
             } else {
-                throw new \InvalidArgumentException(sprintf(
-                    'Wrong author id (%d) given. Couldn\'t find author', $data['author']), 400
-                );
+                $errors['author'] = sprintf('Wrong author id (%d) given. Couldn\'t find author', $data['author']);
             }
         }
         if (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_AGENT) {
@@ -60,13 +64,21 @@ class ChatMapper
         } elseif (isset($data['origin']) && $data['origin'] === ChatMessage::ORIGIN_USER) {
             $message->setIsUser(true);
         } else {
-            throw new \Exception('Wrong origin!');
+            $errors['origin'] = sprintf(
+                'Unexpected value. Only %s and %s are allowed.',
+                ChatMessage::ORIGIN_USER,
+                ChatMessage::ORIGIN_AGENT
+            );
         }
 
         if ($message->getAuthor()) {
             $message->setOrigin($message->getAuthor()->isAgent() ? ChatMessage::ORIGIN_AGENT : ChatMessage::ORIGIN_USER);
         } else {
             $message->setOrigin($message->getIsUser() ? ChatMessage::ORIGIN_USER : ChatMessage::ORIGIN_AGENT);
+        }
+
+        if ($errors) {
+            throw new MapperException($errors);
         }
 
         return $message;
