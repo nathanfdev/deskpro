@@ -18,12 +18,26 @@ class MediaDropZone extends React.Component {
     onSuccess() {}
   };
 
-  onFail = () => {
-    // TODO show error
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null
+    };
+  }
+
+  onFail = (event, data) => {
+    if (data.errorThrown === 'Request Entity Too Large') {
+      this.setState({
+        error: 'File size over the limit'
+      });
+    }
     this.props.onFail();
   };
 
   onSend = () => {
+    this.setState({
+      error: null
+    });
     this.props.onSend();
   };
 
@@ -43,6 +57,11 @@ class MediaDropZone extends React.Component {
       onFail={this.onFail}
       ref={(c) => { this.node = c; }}
     >
+      { this.state.error ?
+        <div className="error">
+          {this.state.error}
+        </div> : null
+      }
       <div className="drop-zone">
         <i className={classNames('icon', icon)} />
         Drop new files here or

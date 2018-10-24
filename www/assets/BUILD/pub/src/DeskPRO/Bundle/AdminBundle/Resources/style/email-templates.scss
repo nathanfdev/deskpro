@@ -520,6 +520,11 @@
       background-color: $dp-greyscale-50 !important;
     }
   }
+  .error {
+    text-align: center;
+    color: $dp-knuckles-primary;
+    border: 1px solid $dp-knuckles-secondary;
+  }
   .ui.vertical.menu.files {
     width: 480px;
     margin: 20px -21px -21px;
