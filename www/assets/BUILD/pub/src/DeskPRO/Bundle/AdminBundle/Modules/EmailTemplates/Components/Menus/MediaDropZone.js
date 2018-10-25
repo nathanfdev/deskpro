@@ -30,6 +30,10 @@ class MediaDropZone extends React.Component {
       this.setState({
         error: 'File size over the limit'
       });
+    } else if (data.errorThrown === 'Bad Request') {
+      this.setState({
+        error: data._response.jqXHR.responseJSON.message // eslint-disable-line no-underscore-dangle
+      });
     }
     this.props.onFail();
   };
