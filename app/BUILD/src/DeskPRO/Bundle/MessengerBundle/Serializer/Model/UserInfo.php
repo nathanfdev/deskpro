@@ -4,30 +4,23 @@ namespace DeskPRO\Bundle\MessengerBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Doctrine\Common\Collections\ArrayCollection;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class UserInfo.
  */
-class UserInfo
+class UserInfo implements MessengerModelInterface
 {
     /**
-     * @JMS\Type("string")
-     *
      * @var string
      */
     private $visitorId;
 
     /**
-     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\ChatConversation>>")
-     *
      * @var ArrayCollection
      */
     private $chats;
 
     /**
-     * @JMS\Type("integer")
-     *
      * @var int
      */
     private $lastActionAlert;
@@ -45,20 +38,13 @@ class UserInfo
         $this->lastActionAlert = $lastActionAlert;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getVisitorId()
+    public function toArray()
     {
-        return $this->visitorId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getChats()
-    {
-        return $this->chats;
+        return [
+            'visitor_id'        => $this->visitorId,
+            'chats'             => $this->chats->toArray(),
+            'last_action_alert' => $this->lastActionAlert,
+        ];
     }
 
     /**

@@ -4,7 +4,6 @@ namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
@@ -25,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @Rest\Route("/user")
  */
-class UserController extends BaseController
+class UserController extends AbstractMessengerController
 {
     /**
      * You can use this endpoint to gather information about clients you need to obtain notifications and alerts.
