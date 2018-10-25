@@ -941,7 +941,12 @@ class EmailTemplatesEditor extends React.Component {
                       <label htmlFor="test_email_submit">&nbsp;</label>
                       <Button
                         className={classNames('ui basic button', { loading: this.props.previewSubmit })}
-                        disabled={textareaDisabled || templateType === 'block'}
+                        disabled={
+                          this.props.selectedEmailAccount === ''
+                          || this.props.previewEmailAddress === ''
+                          || textareaDisabled
+                          || templateType === 'block'
+                        }
                         onClick={this.props.sendPreview}
                       >
                         Send
