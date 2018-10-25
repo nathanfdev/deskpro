@@ -1,8 +1,5 @@
-# This is the "main" file for the api kernel. No other kernel imports this.
-# 1) It avoids recursion in the loader, and 2) Let's us add specific route config for this kernel only
-
 messenger_routes:
   resource: "@MessengerBundle/Resources/config/routing_messenger.yml"
 
 serve_blob:
-    path: '/file.php/{blob_auth_id}/{filename}'
+  path: '/file.php/{blob_auth_id}/{filename}'

@@ -2,7 +2,7 @@ imports:
   - { resource: messenger_config_dev.yml }
 
 framework:
-    test: ~
-    profiler: { only_exceptions: false }
-    session:
-        storage_id: session.storage.mock_file
+  test: ~
+  profiler: { only_exceptions: false }
+  session:
+    storage_id: session.storage.mock_file

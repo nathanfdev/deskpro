@@ -1,2 +1,2 @@
 _main:
-    resource: messenger_routing.yml
+  resource: messenger_routing.yml
