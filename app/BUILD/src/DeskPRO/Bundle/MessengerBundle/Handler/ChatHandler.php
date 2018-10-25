@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Handler;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\MessengerBundle\Exception\MapperException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
@@ -108,6 +109,15 @@ class ChatHandler
         $this->em->persist($message);
         $this->em->persist($chat);
         $this->em->flush();
+
+        $this->eventDispatcher->dispatch(
+            ChatMessageEvent::EVENT_NAME,
+            new ChatMessageEvent(
+                $chat->getId(),
+                $message->getId(),
+                ChatMessageEvent::CHAT_MESSAGE_EVENT_TYPE
+            )
+        );
 
         return $this->chatMapper->mapMessageToArray($message);
     }
