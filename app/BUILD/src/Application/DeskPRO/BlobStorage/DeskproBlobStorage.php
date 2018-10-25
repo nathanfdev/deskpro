@@ -638,6 +638,12 @@ class DeskproBlobStorage implements Loggable
      * @param string $content_type
      * @param array  $props
      *
+     * @throws BlobStorageException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
      * @return BlobEntity
      */
     public function createBlobRecordFromString($source_data, $filename, $content_type, array $props = null)
