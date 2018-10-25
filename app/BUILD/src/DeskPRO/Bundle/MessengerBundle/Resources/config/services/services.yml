@@ -20,3 +20,11 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@doctrine.dbal.read_connection"
+
+  messenger.service.tech:
+    class: DeskPRO\Bundle\MessengerBundle\Service\TechService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@permissions_manager"
+      - "@brand_stack"
+      - "@data.agent"

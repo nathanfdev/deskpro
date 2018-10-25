@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
+use DeskPRO\Bundle\MessengerBundle\Serializer\Model\TechInfo;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -50,7 +51,7 @@ class UserController extends AbstractMessengerController
      *
      * @return View
      */
-    public function loadUserInfoAction(Request $request)
+    public function getUserInfoAction(Request $request)
     {
         $visitorId = $this->getVisitorId($request);
 
@@ -92,10 +93,35 @@ class UserController extends AbstractMessengerController
      *
      * @return View
      */
-    public function loadLastActionAlerts($lastActionAlert, Request $request)
+    public function getLastActionAlerts($lastActionAlert, Request $request)
     {
         $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
 
         return View::create($this->get('messenger.service.action_alerts')->getActionAlerts($visitorId, $lastActionAlert), Response::HTTP_OK);
+    }
+
+    /**
+     * You can use this endpoint to fetch latest action alerts.
+     *
+     * @ApiDoc(
+     *     section="Messenger",
+     *     resourceDescription="Get some useful system info",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     }
+     * )
+     * @Rest\Get("/info")
+     */
+    public function getInfo()
+    {
+        $techInfo    = new TechInfo($this->get('avatar_resolver'));
+        $techService = $this->get('messenger.service.tech');
+
+        $techInfo
+            ->setChatDepartments($techService->getChatDepartments())
+            ->setAgentsOnline($techService->getAgentsOnline())
+        ;
+
+        return View::create($this->wrap($techInfo));
     }
 }

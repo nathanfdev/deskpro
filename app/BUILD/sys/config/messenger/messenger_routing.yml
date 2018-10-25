@@ -3,3 +3,9 @@ messenger_routes:
 
 serve_blob:
   path: '/file.php/{blob_auth_id}/{filename}'
+
+serve_blob_sizefit:
+  path: '/file.php/size/{s}/size-fit/{blob_auth_id}/{filename}'
+
+serve_org_picture_default:
+  path: '/file.php/o-avatar/default'
