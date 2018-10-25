@@ -273,3 +273,12 @@ services:
       - "@avatar_resolver"
     tags:
       - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.messenger.chat.typing:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\Messenger\ChatTypingGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@avatar_resolver"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }

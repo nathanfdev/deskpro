@@ -97,7 +97,9 @@ class ChatGenerator extends AbstractGenerator
         return $event instanceof ChatEvent
             && !$event instanceof ChatMessageEvent
             && $event->getType() !== ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE
-            && $event->getType() !== ChatEvent::CHAT_ENDED_EVENT_TYPE;
+            && $event->getType() !== ChatEvent::CHAT_ENDED_EVENT_TYPE
+            && $event->getType() !== ChatEvent::TYPING_START_EVENT_TYPE
+            && $event->getType() !== ChatEvent::TYPING_END_EVENT_TYPE;
     }
 
     /**

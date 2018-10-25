@@ -20,8 +20,8 @@ class ChatHandler
     const CHAT_TRANSCRIPT          = 'chat.block.transcript';
     const CHAT_RATING              = 'chat.block.rating';
     const CHAT_HISTORY             = 'chat.history';
-    const TYPING_START             = 'typing.start';
-    const TYPING_END               = 'typing.end';
+    const TYPING_START             = 'chat.typing.start';
+    const TYPING_END               = 'chat.typing.end';
 
     /**
      * @var array
@@ -217,7 +217,7 @@ class ChatHandler
      *
      * @return ApiWrapper
      */
-    private function handleTypingStartCommand(ChatConversation $chat, array $request)
+    private function handleChatTypingStartCommand(ChatConversation $chat, array $request)
     {
         $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), self::TYPING_START));
 
@@ -230,7 +230,7 @@ class ChatHandler
      *
      * @return ApiWrapper
      */
-    private function handleTypingEndCommand(ChatConversation $chat, array $request)
+    private function handleChatTypingEndCommand(ChatConversation $chat, array $request)
     {
         $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), self::TYPING_END));
 
