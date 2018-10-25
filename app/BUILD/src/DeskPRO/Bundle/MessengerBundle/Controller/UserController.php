@@ -6,11 +6,9 @@ use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
-use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\NonUniqueResultException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,31 +46,21 @@ class UserController extends AbstractMessengerController
      *
      * @param Request $request
      *
-     * @throws NonUniqueResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      *
      * @return View
      */
     public function loadUserInfoAction(Request $request)
     {
-        $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
+        $visitorId = $this->getVisitorId($request);
 
         /** @var EntityManager $em */
         $em                   = $this->get('doctrine.orm.default_entity_manager');
         $chatConversationRepo = $em->getRepository(ChatConversation::class);
         $chats                = $chatConversationRepo->findBy(['visitor_id' => $visitorId], ['date_created' => 'DESC'], 25);
+        $actionAlertsService  = $this->get('messenger.service.action_alerts');
 
-        $actionAlertRepo = $em->getRepository(ActionAlert::class);
-        $qb              = $actionAlertRepo->createQueryBuilder('aa');
-        $alert           = $qb->where('aa.target_id = :visitorId')
-            ->orderBy('aa.id', 'DESC')
-            ->setParameter('visitorId', $visitorId)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        $alert = $alert ? $alert->getId() : 0;
-
-        $userInfo = new UserInfo($visitorId, $alert);
+        $userInfo = new UserInfo($visitorId, $actionAlertsService->getLastActionAlert($visitorId));
 
         return View::create($this->wrap($userInfo->addChats($chats)), Response::HTTP_OK);
     }
@@ -108,36 +96,6 @@ class UserController extends AbstractMessengerController
     {
         $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
 
-        $connection = $this->get('doctrine.dbal.read_connection');
-
-        $sql = <<<'SQL'
-SELECT * FROM `notify_action_alerts`
-WHERE (`target_id` = :target_id)
-  AND `id` > :last
-ORDER BY `id` ASC
-SQL;
-        $stmnt = $connection->prepare($sql);
-        $stmnt->execute([
-            'target_id' => $visitorId,
-            'last'      => $lastActionAlert,
-        ]);
-
-        $all = $stmnt->fetchAll(\PDO::FETCH_ASSOC);
-
-        foreach ($all as &$datum) {
-            foreach ($datum as &$innerData) {
-                if (is_numeric($innerData)) {
-                    $innerData = (int) $innerData;
-                }
-            }
-            $date                  = new \DateTime($datum['date_created']);
-            $datum['date_created'] = $date->format(\DateTime::ISO8601);
-            $datum['timestamp']    = $date->getTimestamp();
-            if (isset($datum['data'])) {
-                $datum['data'] = @json_decode($datum['data'], true);
-            }
-        }
-
-        return View::create($all, Response::HTTP_OK);
+        return View::create($this->get('messenger.service.action_alerts')->getActionAlerts($visitorId, $lastActionAlert), Response::HTTP_OK);
     }
 }
