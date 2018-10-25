@@ -96,7 +96,8 @@ class ChatGenerator extends AbstractGenerator
     {
         return $event instanceof ChatEvent
             && !$event instanceof ChatMessageEvent
-            && $event->getType() !== ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE;
+            && $event->getType() !== ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE
+            && $event->getType() !== ChatEvent::CHAT_ENDED_EVENT_TYPE;
     }
 
     /**
@@ -112,8 +113,10 @@ class ChatGenerator extends AbstractGenerator
             'origin' => 'system',
             'name'   => $chat->getPersonName(),
             'email'  => $chat->getPersonEmail(),
-            'avatar' => $chat->getAgent() ? $this->avatarResolver->getAvatar($chat->getAgent()) : '',
-            'data'   => $event->getData(),
+            'avatar' => $chat->getAgent()
+                ? $this->avatarResolver->getAvatar($chat->getAgent())
+                : $this->avatarResolver->getDefaultCommonAvatar(),
+            'data' => $event->getData(),
         ];
     }
 }

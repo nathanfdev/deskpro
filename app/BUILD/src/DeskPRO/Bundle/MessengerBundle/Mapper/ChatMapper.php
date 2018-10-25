@@ -87,11 +87,13 @@ class ChatMapper
     public function mapMessageToArray(ChatMessage $message)
     {
         return [
-            'id'           => $message->getId() ?: 0,
-            'chat'         => $message->getConversationId(),
-            'name'         => $message->getPersonName(),
-            'author'       => $message->getAuthorId(),
-            'avatar'       => $message->getAuthor() ? $this->avatarResolver->getAvatar($message->getAuthor()) : '',
+            'id'     => $message->getId() ?: 0,
+            'chat'   => $message->getConversationId(),
+            'name'   => $message->getPersonName(),
+            'author' => $message->getAuthorId(),
+            'avatar' => $message->getAuthor()
+                ? $this->avatarResolver->getAvatar($message->getAuthor())
+                : $this->avatarResolver->getDefaultPersonAvatar(),
             'message'      => $message->isHtml() ? $message->getContentHtml() : $message->getContent(),
             'origin'       => $message->getIsSys() ? 'system' : $message->getOrigin(),
             'date_created' => $message->getDateCreated()->format(\DateTime::ISO8601),

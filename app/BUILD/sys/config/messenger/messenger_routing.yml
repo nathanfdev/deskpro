@@ -9,3 +9,9 @@ serve_blob_sizefit:
 
 serve_org_picture_default:
   path: '/file.php/o-avatar/default'
+
+serve_default_picture:
+  path: '/file.php/avatar/{s}/default.jpg'
+  defaults:
+    name: 'default_picture'
+    s: '0'
