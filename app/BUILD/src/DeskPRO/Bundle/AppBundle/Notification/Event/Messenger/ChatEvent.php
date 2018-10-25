@@ -14,8 +14,8 @@ class ChatEvent extends AbstractSystemEvent
     const CHAT_TRANSCRIPT_EVENT_TYPE     = 'chat.block.transcript';
     const CHAT_RATING_EVENT_TYPE         = 'chat.block.rating';
     const CHAT_AGENT_ASSIGNED_EVENT_TYPE = 'chat.agentAssigned';
-    const TYPING_START_EVENT_TYPE        = 'typing.start';
-    const TYPING_END_EVENT_TYPE          = 'typing.end';
+    const TYPING_START_EVENT_TYPE        = 'chat.typing.start';
+    const TYPING_END_EVENT_TYPE          = 'chat.typing.end';
 
     /**
      * @var int

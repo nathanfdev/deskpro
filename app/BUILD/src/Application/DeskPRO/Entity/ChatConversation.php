@@ -1005,6 +1005,14 @@ class ChatConversation extends DomainObject implements LabelsOwner
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateAssigned()
+    {
+        return $this->date_assigned;
+    }
+
+    /**
      * @param \DateTime $date
      *
      * @return $this
