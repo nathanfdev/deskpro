@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\UserChat;
 
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -37,6 +39,8 @@ class UserChatPingListener implements EventSubscriberInterface
             UserChatEvent::USER_TYPING   => 'onPing',
             UserChatEvent::ACK_MESSAGES  => 'onPing',
             UserChatEvent::POLLING       => 'onPing',
+            ChatEvent::EVENT_NAME        => 'onMessengerPing',
+            ChatMessageEvent::EVENT_NAME => 'onMessengerPing',
         ];
     }
 
@@ -47,6 +51,17 @@ class UserChatPingListener implements EventSubscriberInterface
     {
         $this->em->getConnection()->insert('chat_conversation_pings', [
             'chat_id'   => $event->getChat()->getId(),
+            'ping_time' => time(),
+        ]);
+    }
+
+    /**
+     * @param ChatEvent $event
+     */
+    public function onMessengerPing(ChatEvent $event)
+    {
+        $this->em->getConnection()->insert('chat_conversation_pings', [
+            'chat_id'   => $event->getChatId(),
             'ping_time' => time(),
         ]);
     }
