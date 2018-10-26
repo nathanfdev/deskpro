@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\MessengerBundle\Exception\MapperException;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Input\Cleaner\Cleaner;
 
@@ -45,6 +46,14 @@ class ChatMapper
         $message = new ChatMessage();
 
         $errors = [];
+
+        if (isset($data['uuid']) && trim($data['uuid'])) {
+            $uuid = $data['uuid'];
+        } else {
+            $uuid = RandUtils::uuidV4();
+        }
+
+        $message->setMetadata(['uuid' => $uuid]);
 
         if (isset($data['message']) && trim($data['message'])) {
             $message->setContent($this->cleanText($data['message']))->setIsHtml(true);
@@ -86,6 +95,10 @@ class ChatMapper
 
     public function mapMessageToArray(ChatMessage $message)
     {
+        $metadata = $message->getMetadata();
+
+        $uuid = isset($metadata['uuid']) ? $metadata['uuid'] : '';
+
         return [
             'id'     => $message->getId() ?: 0,
             'chat'   => $message->getConversationId(),
@@ -100,6 +113,7 @@ class ChatMapper
             'is_user'      => $message->getIsUser(),
             'is_sys'       => $message->getIsSys(),
             'is_html'      => $message->isHtml(),
+            'uuid'         => $uuid,
         ];
     }
 
