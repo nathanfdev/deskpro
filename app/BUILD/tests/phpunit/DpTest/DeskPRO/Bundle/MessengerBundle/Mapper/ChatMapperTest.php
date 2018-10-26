@@ -44,7 +44,8 @@ class ChatMapperTest extends MessengerTestCase
         $expectedData = [
             'name'         => 'Test author name',
             'date_created' => $message->getDateCreated()->format(\DateTime::ISO8601),
-            'avatar'       => '',
+            'avatar'       => 'http://localhost/file.php/avatar/80/default.jpg?size-fit=1',
+            'uuid'         => '',
             'message'      => 'Test content',
             'is_user'      => true,
             'is_sys'       => false,

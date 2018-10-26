@@ -61,14 +61,14 @@ class ChatHandlerTest extends MessengerTestCase
             'origin'  => 'user',
         ];
 
-        $chat       = new ChatConversation();
-        $actualData = $handler->handle($chat, $request);
-        $message    = $chat->getMessages()->current();
-
+        $chat         = new ChatConversation();
+        $actualData   = $handler->handle($chat, $request);
+        $message      = $chat->getMessages()->current();
+        $uuid         = $message->getMetadata()['uuid'];
         $expectedData = [
             'name'         => '',
             'date_created' => $message->getDateCreated()->format(\DateTime::ISO8601),
-            'avatar'       => '',
+            'avatar'       => 'http://localhost/file.php/avatar/80/default.jpg?size-fit=1',
             'message'      => 'alert(\'test\')Test message',
             'is_user'      => true,
             'is_sys'       => false,
@@ -77,6 +77,7 @@ class ChatHandlerTest extends MessengerTestCase
             'author'       => 0,
             'chat'         => $chat->getId(),
             'id'           => $message->getId(),
+            'uuid'         => $uuid,
         ];
         $this->assertEquals($expectedData, $actualData);
     }
