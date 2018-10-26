@@ -31,6 +31,7 @@ class ChatAgentAssignedGenerator extends ChatGenerator
         $chat = $this->getChat($event);
 
         return [
+            'id'            => $chat->getId(),
             'origin'        => 'system',
             'name'          => $chat->getAgent()->getDisplayNameUser(),
             'avatar'        => $this->avatarResolver->getAvatar($chat->getAgent()),

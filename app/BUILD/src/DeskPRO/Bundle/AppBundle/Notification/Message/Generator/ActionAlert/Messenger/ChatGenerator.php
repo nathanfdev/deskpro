@@ -112,6 +112,7 @@ class ChatGenerator extends AbstractGenerator
         $chat = $this->getChat($event);
 
         return [
+            'id'     => $chat->getId(),
             'origin' => 'system',
             'name'   => $chat->getPersonName(),
             'email'  => $chat->getPersonEmail(),
