@@ -299,6 +299,7 @@ class TemplateController extends BaseController
         $emailCode = $this->renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $extraTemplates);
         $message->setBody($emailCode->getBody(), 'text/html');
         $message->setSubject($emailCode->getSubject());
+        $message->setFrom($fromAccount);
         foreach ($emailCode->getAttachments() as $blob) {
             $message->attachBlob($blob);
         }
