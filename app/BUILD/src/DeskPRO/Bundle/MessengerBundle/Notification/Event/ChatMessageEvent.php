@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Event\Messenger;
+namespace DeskPRO\Bundle\MessengerBundle\Notification\Event;
 
 class ChatMessageEvent extends ChatEvent
 {

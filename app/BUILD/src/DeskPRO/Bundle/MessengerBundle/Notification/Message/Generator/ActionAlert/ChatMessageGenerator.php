@@ -1,13 +1,13 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\Messenger;
+namespace DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert;
 
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -50,26 +50,26 @@ class ChatMessageGenerator extends ChatGenerator
     }
 
     /**
-     * @param ChatEvent $event
+     * @param \DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent $event
      *
      * @return array
      */
     protected function getData(ChatEvent $event)
     {
-        /** @var ChatMessageEvent $event */
+        /** @var \DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent $event */
         $message = $this->getMessage($event);
 
         return $this->chatMapper->mapMessageToArray($message);
     }
 
     /**
-     * @param ChatMessageEvent $event
+     * @param \DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent $event
      *
      * @return ChatMessage
      */
     protected function getMessage(ChatMessageEvent $event)
     {
-        /** @var ChatMessageEvent $event */
+        /** @var \DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent $event */
         $repository = $this->em->getRepository(ChatMessage::class);
 
         return $repository->find($event->getMessageId());

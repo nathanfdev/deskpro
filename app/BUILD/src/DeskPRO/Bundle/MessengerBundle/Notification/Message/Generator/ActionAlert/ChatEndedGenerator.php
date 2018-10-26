@@ -1,11 +1,10 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\Messenger;
+namespace DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert;
 
 use Application\DeskPRO\Entity\ChatConversation;
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 
 /**
  * Class ChatEndedGenerator.
@@ -19,7 +18,7 @@ class ChatEndedGenerator extends ChatGenerator
      */
     protected function getTargets(SystemEventInterface $event)
     {
-        /** @var ChatEvent $event */
+        /** @var \DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent $event */
         $chat           = $this->getChat($event);
         $agentTargets   = $chat->getAgentParticipants() ?: [];
         $userTargets    = $chat->getUserParticipants() ?: [];

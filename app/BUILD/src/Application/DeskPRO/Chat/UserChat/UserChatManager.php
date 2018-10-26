@@ -16,9 +16,9 @@ use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\People\ActivityLogger\ActivityLogger;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

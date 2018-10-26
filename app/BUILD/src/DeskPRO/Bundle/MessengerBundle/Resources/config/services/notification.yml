@@ -1,0 +1,47 @@
+services:
+
+  deskpro.notification.generator.action_alert.messenger.chat:
+    class: DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert\ChatGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@avatar_resolver"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.messenger.chat_message:
+    class: DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert\ChatMessageGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@avatar_resolver"
+      - "@messenger.mappers.chat"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.messenger.chat.agent.assigned:
+    class: DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert\ChatAgentAssignedGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@avatar_resolver"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.messenger.chat.ended:
+    class: DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert\ChatEndedGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@avatar_resolver"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.messenger.chat.typing:
+    class: DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert\ChatTypingGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@avatar_resolver"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }

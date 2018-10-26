@@ -4,11 +4,11 @@ namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\MessengerBundle\Exception\MapperException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 

@@ -1,10 +1,9 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\Messenger;
+namespace DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert;
 
-use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 
 /**
  * Class ChatAgentAssignedGenerator.

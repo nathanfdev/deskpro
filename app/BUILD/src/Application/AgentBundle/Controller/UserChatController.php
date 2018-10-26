@@ -22,7 +22,7 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Dates;
 use Orb\Util\Strings;

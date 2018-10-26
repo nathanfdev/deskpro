@@ -1,15 +1,15 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\Messenger;
+namespace DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -103,7 +103,7 @@ class ChatGenerator extends AbstractGenerator
     }
 
     /**
-     * @param ChatEvent $event
+     * @param \DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent $event
      *
      * @return array
      */

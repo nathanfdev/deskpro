@@ -8,8 +8,6 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\NewMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\ExternalEvent\PopupEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Helpdesk\RefreshAgentInterfaceEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\Messenger\ChatMessageEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Organization\OrganizationCreatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
@@ -19,6 +17,8 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use PhpSpec\ObjectBehavior;
 
 /**
