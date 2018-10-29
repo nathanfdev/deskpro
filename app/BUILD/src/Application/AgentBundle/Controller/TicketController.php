@@ -2108,7 +2108,7 @@ class TicketController extends AbstractController
             );
 
             $ticket->setStatus('hidden.deleted');
-            $this->em->persist($ticket);
+            Util::deleteTicketsCallRecords($ticket, $this->em, $this->get('blob.storage'));
 
             $hidden_data = $this->_getHiddenBarData($ticket);
 
@@ -3555,6 +3555,7 @@ class TicketController extends AbstractController
         try {
             $ticket->setStatus('hidden.spam');
             $this->em->flush();
+            Util::deleteTicketsCallRecords($ticket, $this->em, $this->get('blob.storage'));
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
