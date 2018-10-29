@@ -194,8 +194,11 @@ SQL
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
      */
-    public static function deleteTicketsCallRecords(Ticket $ticket, EntityManager $em, DeskproBlobStorage $blobStorage)
-    {
+    public static function deleteTicketsCallRecords(
+        Ticket $ticket,
+        EntityManager $em,
+        DeskproBlobStorage $blobStorage
+    ) {
         foreach ($ticket->getMessages() as $message) {
             if ($ticketMessageVoicePhoneCall = $message->getAttribute('voice_phone_call')) {
                 /** @var TicketMessageVoicePhoneCall $ticketMessageVoicePhoneCall */

@@ -15,7 +15,6 @@ use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
-use Application\DeskPRO\Tickets\Util;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\SuperKeyPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -568,7 +567,6 @@ class TicketController extends AbstractController implements ProtectedController
         try {
             $ticket->setStatus('hidden.deleted');
             $this->em->flush();
-            Util::deleteTicketsCallRecords($ticket, $this->em, $this->get('blob.storage'));
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
@@ -969,7 +967,6 @@ class TicketController extends AbstractController implements ProtectedController
         try {
             $ticket->setStatus('hidden.spam');
             $this->em->flush();
-            Util::deleteTicketsCallRecords($ticket, $this->em, $this->get('blob.storage'));
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();

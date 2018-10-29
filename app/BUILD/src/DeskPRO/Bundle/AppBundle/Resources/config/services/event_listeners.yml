@@ -126,3 +126,11 @@ services:
     arguments: ["@deskpro.interface_info", "@brand_stack", "@portal_mode_storage", "@url_corrector_factory", "@logger"]
     tags:
       - { name: kernel.event_subscriber }
+
+  dp.api.event_listeners.doctrine.ticket_voice_phone_call_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\TicketVoicePhoneCallListener
+    arguments: ["@service_container"]
+    tags:
+    - { name: doctrine.event_listener, event: postPersist }
+    - { name: doctrine.event_listener, event: postUpdate }
+    - { name: doctrine.event_listener, event: preRemove }
