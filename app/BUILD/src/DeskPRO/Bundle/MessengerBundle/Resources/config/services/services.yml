@@ -27,4 +27,3 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@permissions_manager"
       - "@brand_stack"
-      - "@data.agent"

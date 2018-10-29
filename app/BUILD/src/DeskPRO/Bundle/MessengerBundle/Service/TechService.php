@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\MessengerBundle\Service;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
@@ -28,28 +27,20 @@ class TechService
     private $brandStack;
 
     /**
-     * @var AgentDataService
-     */
-    private $agentDataService;
-
-    /**
      * TechService constructor.
      *
      * @param EntityManager      $em
      * @param PermissionsManager $permissionsManager
      * @param BrandStack         $brandStack
-     * @param AgentDataService   $agentDataService
      */
     public function __construct(
         EntityManager $em,
         PermissionsManager $permissionsManager,
-        BrandStack $brandStack,
-        AgentDataService $agentDataService
+        BrandStack $brandStack
     ) {
         $this->permissionsManager = $permissionsManager;
         $this->em                 = $em;
         $this->brandStack         = $brandStack;
-        $this->agentDataService   = $agentDataService;
     }
 
     /**
@@ -82,10 +73,10 @@ class TechService
      */
     public function getAgentsOnline()
     {
-        $agentIds = $this->agentDataService->getAgentsOnlineStatus();
         /** @var PersonRepository $personRepository */
         $personRepository = $this->em->getRepository(Person::class);
+        $agentIds         = $personRepository->getActiveAgentIdsForUserChat();
 
-        return $personRepository->findBy(['id' => $agentIds['online']]);
+        return $personRepository->findBy(['id' => $agentIds]);
     }
 }

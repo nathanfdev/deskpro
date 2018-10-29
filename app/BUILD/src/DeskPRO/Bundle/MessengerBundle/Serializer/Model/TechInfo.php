@@ -55,9 +55,10 @@ class TechInfo implements MessengerModelInterface
         $agentsOnline = array_map(function ($agent) use ($self) {
             /* @var Person $agent */
             return [
-                'name'   => $agent->getDisplayNameUser(),
-                'id'     => $agent->getId(),
-                'avatar' => $self->avatarResolver->getAvatar($agent),
+                'name'             => $agent->getDisplayNameUser(),
+                'id'               => $agent->getId(),
+                'avatar'           => $self->avatarResolver->getAvatar($agent),
+                'chat_departments' => $agent->getAllowedDepartments('chat'),
             ];
         }, $this->agentsOnline);
 
