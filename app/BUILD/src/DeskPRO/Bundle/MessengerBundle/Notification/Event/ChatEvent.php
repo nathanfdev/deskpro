@@ -11,6 +11,7 @@ class ChatEvent extends AbstractSystemEvent
     const CHAT_STARTED_EVENT_TYPE        = 'chat.started';
     const CHAT_ENDED_EVENT_TYPE          = 'chat.ended';
     const CHAT_USER_TIMEOUT_EVENT_TYPE   = 'chat.userTimeout';
+    const CHAT_WAIT_TIMEOUT_EVENT_TYPE   = 'chat.waitTimeout';
     const CHAT_TRANSCRIPT_EVENT_TYPE     = 'chat.block.transcript';
     const CHAT_RATING_EVENT_TYPE         = 'chat.block.rating';
     const CHAT_AGENT_ASSIGNED_EVENT_TYPE = 'chat.agentAssigned';

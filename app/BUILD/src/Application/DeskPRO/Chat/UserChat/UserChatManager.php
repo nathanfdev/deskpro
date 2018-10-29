@@ -593,15 +593,18 @@ class UserChatManager
     public function endChat(ChatConversation $convo, Person $author = null, $reason = '')
     {
         $convo->status = 'ended';
+        $eventType     = ChatEvent::CHAT_ENDED_EVENT_TYPE;
 
         if ($author) {
             $convo->ended_by = ChatConversation::ENDED_AGENT;
         } elseif ($reason == 'timeout') {
             $reason          = '';
             $convo->ended_by = ChatConversation::ENDED_TIMEOUT;
+            $eventType       = ChatEvent::CHAT_USER_TIMEOUT_EVENT_TYPE;
         } elseif ($reason == 'wait_timeout') {
             $reason          = '';
             $convo->ended_by = ChatConversation::ENDED_WAIT_TIMEOUT;
+            $eventType       = ChatEvent::CHAT_WAIT_TIMEOUT_EVENT_TYPE;
         } elseif ($reason == 'abandoned') {
             $reason          = '';
             $convo->ended_by = ChatConversation::ENDED_ABANDONED;
@@ -620,7 +623,7 @@ class UserChatManager
             ChatEvent::EVENT_NAME,
             new ChatEvent(
                 $convo->getId(),
-                ChatEvent::CHAT_ENDED_EVENT_TYPE
+                $eventType
             )
         );
 

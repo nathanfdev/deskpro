@@ -47,7 +47,11 @@ class ChatEndedGenerator extends ChatGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return $event instanceof ChatEvent && $event->getType() === ChatEvent::CHAT_ENDED_EVENT_TYPE;
+        return $event instanceof ChatEvent && (
+            $event->getType() === ChatEvent::CHAT_ENDED_EVENT_TYPE
+            || $event->getType() === ChatEvent::CHAT_WAIT_TIMEOUT_EVENT_TYPE
+            || $event->getType() === ChatEvent::CHAT_USER_TIMEOUT_EVENT_TYPE
+        );
     }
 
     /**
@@ -69,7 +73,7 @@ class ChatEndedGenerator extends ChatGenerator
                 $origin = 'agent';
                 break;
             case ChatConversation::ENDED_USER:
-                $origin = 'agent';
+                $origin = 'user';
                 break;
             default:
                 $origin = 'system';
