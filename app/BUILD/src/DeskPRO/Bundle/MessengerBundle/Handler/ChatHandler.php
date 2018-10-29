@@ -182,7 +182,7 @@ class ChatHandler
 
         $event = new ChatEvent(
             $chat->getId(),
-            self::CHAT_TRANSCRIPT,
+            ChatEvent::CHAT_RATING_EVENT_TYPE,
             $eventData
         );
 
@@ -206,7 +206,7 @@ class ChatHandler
         $this->em->persist($chat);
         $this->em->flush();
 
-        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), self::CHAT_TRANSCRIPT));
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), ChatEvent::CHAT_TRANSCRIPT_EVENT_TYPE));
 
         return new ApiWrapper($chat);
     }
@@ -219,7 +219,7 @@ class ChatHandler
      */
     private function handleChatTypingStartCommand(ChatConversation $chat, array $request)
     {
-        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), self::TYPING_START));
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), ChatEvent::TYPING_START_EVENT_TYPE));
 
         return new ApiWrapper($chat);
     }
@@ -232,7 +232,7 @@ class ChatHandler
      */
     private function handleChatTypingEndCommand(ChatConversation $chat, array $request)
     {
-        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), self::TYPING_END));
+        $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), ChatEvent::TYPING_END_EVENT_TYPE));
 
         return new ApiWrapper($chat);
     }

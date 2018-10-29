@@ -628,7 +628,12 @@ class UserChatManager
         );
 
         if ($reason !== 'timeout' && $reason !== 'wait_timeout' && $reason != 'abandoned') {
-            $this->autoSendChatTranscript($convo);
+            if ($this->autoSendChatTranscript($convo)) {
+                $this->eventDispatcher->dispatch(
+                    ChatEvent::EVENT_NAME,
+                    new ChatEvent($convo->getId(), ChatEvent::CHAT_TRANSCRIPT_EVENT_TYPE)
+                );
+            }
         }
     }
 
