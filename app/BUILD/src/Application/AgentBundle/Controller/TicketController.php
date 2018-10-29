@@ -55,6 +55,7 @@ use Application\DeskPRO\Tickets\TicketDisplay;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\Tickets\TicketSplit;
+use Application\DeskPRO\Tickets\Util;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
@@ -3491,6 +3492,7 @@ class TicketController extends AbstractController
             $this->em->getConnection()->beginTransaction();
             $ticket->setStatus('hidden.deleted');
             $this->em->flush();
+            Util::deleteTicketsCallRecords($ticket, $this->em, $this->get('blob.storage'));
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollBack();
