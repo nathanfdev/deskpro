@@ -400,6 +400,7 @@ class LanguagesController extends CrudController
         $phrases = [];
         switch ($group) {
             case 'user':
+            case 'custom':
                 $phrases = [
                     'portal.email_subjects.*',
                     'user.email_subjects.*',
