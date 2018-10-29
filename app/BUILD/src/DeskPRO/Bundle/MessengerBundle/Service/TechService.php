@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Service;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
@@ -78,5 +79,17 @@ class TechService
         $agentIds         = $personRepository->getActiveAgentIdsForUserChat();
 
         return $personRepository->findBy(['id' => $agentIds]);
+    }
+
+    /**
+     * @param $visitorId
+     *
+     * @return ChatConversation|null|object
+     */
+    public function getLastChatByVisitorId($visitorId)
+    {
+        $chatConversationRepo = $this->em->getRepository(ChatConversation::class);
+
+        return $chatConversationRepo->findOneBy(['visitor_id' => $visitorId, 'status' => ChatConversation::STATUS_OPEN]);
     }
 }

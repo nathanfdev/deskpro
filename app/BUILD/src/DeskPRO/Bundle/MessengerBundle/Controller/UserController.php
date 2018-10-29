@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\TechInfo;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\UserInfo;
@@ -96,6 +97,10 @@ class UserController extends AbstractMessengerController
     public function getLastActionAlerts($lastActionAlert, Request $request)
     {
         $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
+
+        if ($chat = $this->get('messenger.service.tech')->getLastChatByVisitorId($visitorId)) {
+            $this->get('event_dispatcher')->dispatch(UserChatEvent::POLLING, new UserChatEvent($chat));
+        }
 
         return View::create($this->get('messenger.service.action_alerts')->getActionAlerts($visitorId, $lastActionAlert), Response::HTTP_OK);
     }
