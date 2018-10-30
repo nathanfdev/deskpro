@@ -1178,6 +1178,56 @@ class Translate implements PersonContextInterface, TranslatorInterface
     }
 
     /**
+     *
+     * @param string $phraseName
+     * @param LanguageEntity|null $language
+     * @return boolean
+     */
+    public function isPhraseHasPlural($phraseName, LanguageEntity $language = null)
+    {
+        if ($language === null) {
+            $language = $this->_language;
+        }
+
+        foreach ($language->getPluralCategories() as $cat) {
+            if ($this->hasPhrase($phraseName . '.' . $cat, $language)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns
+     * [
+     *     'one' => '1 Agent',
+     *     .....
+     *     'other' => '{{count}} Agents'
+     * ]
+     *
+     * @param string $phraseName
+     * @param LanguageEntity|null $language
+     * @return string[]
+     */
+    public function getPhrasePluralTexts($phraseName, LanguageEntity $language = null)
+    {
+        if ($language === null) {
+            $language = $this->_language;
+        }
+
+        $texts = [];
+        foreach ($language->getPluralCategories() as $cat) {
+            $text = $this->getPhraseText($phraseName . '.' . $cat, $language, true);
+            if ($text !== null) {
+                $texts[$cat]  = $text;
+            }
+        }
+
+        return $texts;
+    }
+
+    /**
      * @return ObjectPhraseNamer
      */
     public function getObjectPhraseNamer()

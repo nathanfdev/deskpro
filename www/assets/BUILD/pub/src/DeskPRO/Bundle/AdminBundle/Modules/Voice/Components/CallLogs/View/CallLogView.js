@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
 import Immutable from 'immutable';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { FormattedMessage } from 'react-intl';
 import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
 import { Icon } from '@deskpro/react-components';
@@ -161,25 +161,28 @@ class CallLogView extends React.Component {
                             [<Duration value={duration} />]
                           </td>
                           <td>
-                            {agentPhrases.getHtmlWithComponents(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
-                              number: (
-                                <a
-                                  onClick={event => this.openDialpad(event, call.get('external_number'))}
-                                  href={`tel:${call.get('external_number')}`}
-                                >
-                                  {call.get('external_number')} <Icon name="phone" />
-                                </a>
-                              ),
-                              person: (
-                                <a data-route={`person:/agent/people/${person.get('id')}`}>
-                                  {person.get('name')} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
-                                </a>
-                              ),
-                              to_number:        number.get('nickname') || number.get('number'),
-                              key:              log.getIn(['details', 'Digits']) || '',
-                              target,
-                              forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
-                            })}
+                            <FormattedMessage
+                              id="{`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`}"
+                              values={{
+                                number: (
+                                  <a
+                                    onClick={event => this.openDialpad(event, call.get('external_number'))}
+                                    href={`tel:${call.get('external_number')}`}
+                                  >
+                                    {call.get('external_number')} <Icon name="phone" />
+                                  </a>
+                                ),
+                                person: (
+                                  <a data-route={`person:/agent/people/${person.get('id')}`}>
+                                    {person.get('name')} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
+                                  </a>
+                                ),
+                                to_number:        number.get('nickname') || number.get('number'),
+                                key:              log.getIn(['details', 'Digits']) || '',
+                                target:           log.getIn(['details', 'target', 'name']),
+                                forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
+                              }}
+                            />
                           </td>
                         </tr>
                       );

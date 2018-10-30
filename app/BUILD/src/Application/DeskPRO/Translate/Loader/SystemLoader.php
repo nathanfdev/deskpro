@@ -44,7 +44,7 @@ class SystemLoader implements LoaderInterface
         $lang_packs = [];
 
         // Always read from the default because it has the core phrases
-        $lang_packs[] = DP_ROOT.'/locales/en_US';
+        $lang_packs[] = DP_ROOT.'/locales/en-US';
 
         if ($language && $language->base_filepath) {
             $lang_packs[] = str_replace('%DP_ROOT%', DP_ROOT, $language->base_filepath);
