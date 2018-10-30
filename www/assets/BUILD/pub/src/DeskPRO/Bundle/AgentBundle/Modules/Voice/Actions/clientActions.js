@@ -225,7 +225,7 @@ export const voiceBootstrap = createAction(
 
             const routeUrl = `/agent/tickets/${data.ticket_id}`;
             if (!window.DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl)) {
-              window.DeskPRO_Window.runPageRoute(`ticket:${routeUrl}`);
+              window.DeskPRO_Window.runPageRoute(`ticket:${routeUrl}`, { noToggle: true });
             }
           }
         });
@@ -444,7 +444,7 @@ export const acceptPhoneCall = createAction(
         clients[accountId].client.callId   = callId;
       }
 
-      window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
+      window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`, { noToggle: true });
     });
   }
 );
