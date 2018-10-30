@@ -154,6 +154,8 @@ class AssetsManager
             ->select('tsa')
             ->from(ThemeSetAsset::class, 'tsa')
             ->where('tsa.theme_set = ?0 AND tsa.tags = ?1')
+            ->orderBy('tsa.id', 'desc')
+            ->setMaxResults(1)
             ->setParameters([$this->edit_theme_set, $blobType]);
 
         $asset = $qb->getQuery()->getOneOrNullResult();
