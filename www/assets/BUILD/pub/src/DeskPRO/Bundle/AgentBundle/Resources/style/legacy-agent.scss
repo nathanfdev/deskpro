@@ -354,6 +354,7 @@ $contrast: 5% !default;
     vertical-align: middle;
     margin-left: 10px;
     margin-right: 20px;
+    margin-top: -10px;
     display: inline-block;
     cursor: pointer;
     text-align: center;
@@ -376,6 +377,7 @@ $contrast: 5% !default;
       fill: $dp-emerald-primary;
     }
     .status {
+      position: absolute;
       font-size: 10px;
       .count {
         color: $dp-greyscale-350;
