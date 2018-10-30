@@ -58,7 +58,7 @@ class TechInfo implements MessengerModelInterface
                 'name'             => $agent->getDisplayNameUser(),
                 'id'               => $agent->getId(),
                 'avatar'           => $self->avatarResolver->getAvatar($agent),
-                'chat_departments' => $agent->getAllowedDepartments('chat'),
+                'chat_departments' => array_map('intval', $agent->getAllowedDepartments('chat')),
             ];
         }, $this->agentsOnline);
 
