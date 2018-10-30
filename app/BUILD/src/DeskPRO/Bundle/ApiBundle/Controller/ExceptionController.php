@@ -105,12 +105,17 @@ class ExceptionController extends BaseController
     {
         // in dev environment, display a stack trace, dont show if we have a test.client
         if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client')) {
+            if ($exception instanceof FlattenException) {
+                $backtrace = $exception->getTrace();
+            } else {
+                $backtrace = explode("\n", $exception->getTraceAsString());
+            }
             $representation['exception'] = [
                 'class'     => get_class($exception),
                 'code'      => $exception->getCode(),
                 'message'   => $exception->getMessage(),
                 'file'      => $exception->getFile().':'.$exception->getLine(),
-                'backtrace' => explode("\n", $exception->getTraceAsString()),
+                'backtrace' => $backtrace,
             ];
         }
 

@@ -5,6 +5,7 @@ namespace DpSys\LowError;
 use DpRun\LowUtil;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -160,12 +161,12 @@ class SystemErrorHandler
     }
 
     /**
-     * @param \Exception $exception    The exception to log
-     * @param bool       $send         True to send a report to deskpro
-     * @param string     $unique_id    An error ID. if this error has been reported before, it will not be reported again
-     * @param bool       $noShowErrors Don't show errors override
+     * @param \Exception|FlattenException $exception    The exception to log
+     * @param bool                        $send         True to send a report to deskpro
+     * @param string                      $unique_id    An error ID. if this error has been reported before, it will not be reported again
+     * @param bool                        $noShowErrors Don't show errors override
      */
-    public static function logException(\Exception $exception, $send = false, $unique_id = null, $noShowErrors = false)
+    public static function logException(/* Throwable */ $exception, $send = false, $unique_id = null, $noShowErrors = false)
     {
         if (!self::shouldLog($exception)) {
             return;
@@ -215,8 +216,12 @@ class SystemErrorHandler
         self::$noShowErrors = $curNoShowErrors;
     }
 
-    private static function shouldLog(/* Throwable */
-        $exception)
+    /**
+     * @param \Exception|FlattenException $exception
+     *
+     * @return bool
+     */
+    private static function shouldLog(/* Throwable */ $exception)
     {
         if (($exception instanceof HttpException
                 && $exception->getStatusCode() >= 400
