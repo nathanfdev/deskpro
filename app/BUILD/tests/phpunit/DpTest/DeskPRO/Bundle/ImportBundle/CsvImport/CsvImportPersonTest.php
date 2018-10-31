@@ -136,11 +136,11 @@ class CsvImportPersonTest extends AbstractWriterTest
                 ['map' => 'primary_email'],
                 ['map' => 'language'],
             ],
-            ['New Person', 'new-person@example.com', 'eng'],
+            ['New Person', 'new-person@example.com', 'en-US'],
             'ref'
         ));
 
-        $this->assertEquals('eng', $this->getPerson()->getLanguage()->getLangCode());
+        $this->assertEquals('en-US', $this->getPerson()->getLanguage()->getLocale());
     }
 
     public function test_language_by_id()
@@ -155,7 +155,7 @@ class CsvImportPersonTest extends AbstractWriterTest
             'ref'
         ));
 
-        $this->assertEquals('eng', $this->getPerson()->getLanguage()->getLangCode());
+        $this->assertEquals('en-US', $this->getPerson()->getLanguage()->getLocale());
     }
 
     /**

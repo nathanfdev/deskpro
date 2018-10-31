@@ -37,7 +37,7 @@ class TranslationHelperTest extends AbstractWriterTest
         $contentTranslations = [];
 
         $titleTranslation1 = new Translation();
-        $titleTranslation1->setLanguage('eng');
+        $titleTranslation1->setLanguage('en-US');
         $titleTranslation1->setValue('eng title');
         $titleTranslations[] = $titleTranslation1;
 
@@ -47,7 +47,7 @@ class TranslationHelperTest extends AbstractWriterTest
         $titleTranslations[] = $titleTranslation2;
 
         $contentTranslation1 = new Translation();
-        $contentTranslation1->setLanguage('eng');
+        $contentTranslation1->setLanguage('en-US');
         $contentTranslation1->setValue('eng content');
         $contentTranslations[] = $contentTranslation1;
 
@@ -77,7 +77,7 @@ class TranslationHelperTest extends AbstractWriterTest
         // prepare entity
         $entity     = new Article();
         $objectLang = new ObjectLang();
-        $objectLang->setLanguage($this->findOrCreateLanguage('eng'));
+        $objectLang->setLanguage($this->findOrCreateLanguage('en-US'));
         $objectLang->setPropName('title');
         $objectLang->setValue('en title');
 
@@ -103,7 +103,7 @@ class TranslationHelperTest extends AbstractWriterTest
         $translations[] = $translation1;
 
         $translation2 = new Translation();
-        $translation2->setLanguage('eng');
+        $translation2->setLanguage('en-US');
         $translation2->setValue('en title edited');
         $translations[] = $translation2;
 
