@@ -60,7 +60,7 @@ class TemplatingExtension extends \Twig_Extension
     }
 
     /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     public function getBrandStack()
     {

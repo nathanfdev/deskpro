@@ -38,6 +38,7 @@ class PortalKernel extends BaseKernel
             new \Application\AgentBundle\AgentBundle(),
 
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\BrandBundle\BrandBundle(),
             new \DeskPRO\Bundle\PortalBundle\PortalBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),

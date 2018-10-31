@@ -59,7 +59,7 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer
      */
     protected function getBrandContainer()
     {

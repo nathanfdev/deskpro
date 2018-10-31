@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;

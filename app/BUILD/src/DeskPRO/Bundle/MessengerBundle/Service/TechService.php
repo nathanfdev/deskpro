@@ -7,7 +7,7 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
 class TechService
@@ -23,16 +23,16 @@ class TechService
     private $em;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 
     /**
      * TechService constructor.
      *
-     * @param EntityManager      $em
-     * @param PermissionsManager $permissionsManager
-     * @param BrandStack         $brandStack
+     * @param EntityManager                                $em
+     * @param PermissionsManager                           $permissionsManager
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
      */
     public function __construct(
         EntityManager $em,

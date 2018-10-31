@@ -10,7 +10,7 @@ use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
 use Psr\Log\LoggerInterface;

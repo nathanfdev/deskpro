@@ -15,7 +15,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitFeedbackAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
@@ -33,7 +33,7 @@ class CaptchaDecider
     const CAPTCHA_EVERYONE = 'everyone';
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brand_stack;
 

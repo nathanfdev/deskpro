@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DeskPRO\Bundle\BrandBundle\EventListener;
 
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\EntityRepository\Brand;
@@ -8,8 +8,8 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Helper\IsProxyRequestHelper;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Brand\DefaultBrandFinder;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
@@ -25,7 +25,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 

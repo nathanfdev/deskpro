@@ -5,7 +5,7 @@ namespace Application\EmailBundle\SwiftMailer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Translate\Translate;
 use Application\EmailBundle\SwiftMailer\Message\Message;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\SendmailBundle\Sender\EmailSender;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 
@@ -37,10 +37,10 @@ class MailerUtils
     /**
      * Constructor.
      *
-     * @param Mailer      $mailer
-     * @param EmailSender $emailSender
-     * @param BrandStack  $brandStack
-     * @param Translate   $translator
+     * @param Mailer                                       $mailer
+     * @param EmailSender                                  $emailSender
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param Translate                                    $translator
      */
     public function __construct(Mailer $mailer, EmailSender $emailSender, BrandStack $brandStack, Translate $translator)
     {

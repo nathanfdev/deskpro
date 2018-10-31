@@ -3,8 +3,8 @@
 namespace spec\DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;

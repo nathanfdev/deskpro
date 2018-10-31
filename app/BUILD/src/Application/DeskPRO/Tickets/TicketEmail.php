@@ -8,7 +8,7 @@ use Application\DeskPRO\Mail\Message;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Monolog\Logger;
 use Orb\Util\CheckedOptionsArray;
 

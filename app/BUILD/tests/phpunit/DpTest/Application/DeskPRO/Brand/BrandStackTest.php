@@ -6,26 +6,26 @@
 
 namespace DpTest\DeskPRO\Application\Brand;
 
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DpTest\DeskProTestCase;
 
 class BrandStackTest extends DeskProTestCase
 {
     public function testTheStack()
     {
-        $mockFactory = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory');
+        $mockFactory = \Mockery::mock('DeskPRO\Bundle\BrandBundle\Brand\BrandContainerFactory');
 
         $mockBrand1    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
         $mockThemeSet1 = \Mockery::mock('DeskPRO\AppBundle\Entity\ThemeSet');
         $mockBrand1->shouldReceive('getId')->andReturn(1);
         $mockBrand1->shouldReceive('getThemeSet')->andReturn($mockThemeSet1);
-        $mockContainer1 = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Brand\BrandContainer');
+        $mockContainer1 = \Mockery::mock('DeskPRO\Bundle\BrandBundle\Brand\BrandContainer');
 
         $mockBrand2    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
         $mockThemeSet2 = \Mockery::mock('DeskPRO\AppBundle\Entity\ThemeSet');
         $mockBrand2->shouldReceive('getId')->andReturn(2);
         $mockBrand1->shouldReceive('getThemeSet')->andReturn($mockThemeSet2);
-        $mockContainer2 = \Mockery::mock('DeskPRO\Bundle\PortalBundle\Brand\BrandContainer');
+        $mockContainer2 = \Mockery::mock('DeskPRO\Bundle\BrandBundle\Brand\BrandContainer');
 
         $mockFactory->shouldReceive('create')->with($mockBrand1)->andReturn($mockContainer1);
         $mockFactory->shouldReceive('create')->with($mockBrand2)->andReturn($mockContainer2);

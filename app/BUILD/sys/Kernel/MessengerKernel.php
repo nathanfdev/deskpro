@@ -27,17 +27,19 @@ class MessengerKernel extends BaseKernel
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
             new \FOS\RestBundle\FOSRestBundle(),
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
+            new \FOS\HttpCacheBundle\FOSHttpCacheBundle(),
             new \Nelmio\CorsBundle\NelmioCorsBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new \Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
 
+            new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\BrandBundle\BrandBundle(),
+            new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
             new \DeskPRO\Bundle\SendmailBundle\SendmailBundle(),
-            new \DeskPRO\Bundle\AppBundle\AppBundle(),
-            new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
             new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
         ];

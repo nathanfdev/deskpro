@@ -17,7 +17,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
 class ContentSubscriptionsHelper

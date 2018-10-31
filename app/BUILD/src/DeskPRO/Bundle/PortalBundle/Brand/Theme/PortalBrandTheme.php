@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Brand\Theme;
 
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
@@ -12,7 +12,7 @@ use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 class PortalBrandTheme
 {
     /**
-     * @var BrandContainer
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer
      */
     private $brandContainer;
 

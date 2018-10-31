@@ -13,7 +13,7 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Arrays;

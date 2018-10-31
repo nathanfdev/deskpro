@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Brand\Theme;
 
 use Application\DeskPRO\Entity\Brand;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandContainerFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 
@@ -13,7 +13,7 @@ use DeskPRO\Bundle\PortalBundle\Theme\ThemeResolver;
 class PortalBrandThemeLoader
 {
     /**
-     * @var BrandContainerFactory
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandContainerFactory
      */
     private $brandContainerFactory;
 

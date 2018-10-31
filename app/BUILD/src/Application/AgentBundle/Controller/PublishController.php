@@ -37,7 +37,6 @@ use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -89,7 +88,7 @@ class PublishController extends AbstractController
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
-        /** @var BrandStack $brandStack */
+        /** @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack */
         $brandStack = $this->get('brand_stack');
 
         /** @var BrandAwareSettingsResolver $brandSettingsResolver */

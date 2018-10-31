@@ -7,8 +7,8 @@
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use Application\DeskPRO\Entity\Brand;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;

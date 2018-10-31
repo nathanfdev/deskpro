@@ -17,7 +17,7 @@ use Application\DeskPRO\Entity\NewsAttachment;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Topic;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Orb\Util\Strings;
 
 class PortalIconFactory

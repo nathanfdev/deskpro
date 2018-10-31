@@ -8,7 +8,7 @@ namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +23,7 @@ class RedirectProtectionListener implements EventSubscriberInterface, SkipLowReq
     const ALLOW_REDIRECT_OFFSITE_HEADER = 'X-DeskPRO-Redirect-Offsite';
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brand_stack;
 

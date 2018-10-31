@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\PortalBundle\Designer;
 
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -30,9 +30,9 @@ class BrandThemeManager
     /**
      * Constructor.
      *
-     * @param EntityManager          $em
-     * @param BrandStack             $brandStack
-     * @param ThemeSetCopyingService $themeSetCopyingService
+     * @param EntityManager                                $em
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param ThemeSetCopyingService                       $themeSetCopyingService
      */
     public function __construct(EntityManager $em, BrandStack $brandStack, ThemeSetCopyingService $themeSetCopyingService)
     {

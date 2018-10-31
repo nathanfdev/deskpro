@@ -11,7 +11,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Helper\WidgetJwtDecoder;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;

@@ -21,7 +21,7 @@ use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\TicketLayout\TicketLayoutManager;
 use Application\DeskPRO\Translate\Translate;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Monolog\Logger;
 use Orb\Util\Arrays;
@@ -79,22 +79,22 @@ class TicketEmailBuilder
     private $ticketLayoutManager;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 
     /**
      * Constructor.
      *
-     * @param EntityManager       $em
-     * @param Settings            $settings
-     * @param Swift_Mailer        $mailer
-     * @param Translate           $translate
-     * @param EmailAccountManager $emailAccountManager
-     * @param TicketFieldManager  $ticketFieldManager
-     * @param PersonFieldManager  $personFieldManager
-     * @param TicketLayoutManager $ticketLayoutManager
-     * @param BrandStack          $brandStack
+     * @param EntityManager                                $em
+     * @param Settings                                     $settings
+     * @param Swift_Mailer                                 $mailer
+     * @param Translate                                    $translate
+     * @param EmailAccountManager                          $emailAccountManager
+     * @param TicketFieldManager                           $ticketFieldManager
+     * @param PersonFieldManager                           $personFieldManager
+     * @param TicketLayoutManager                          $ticketLayoutManager
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
      */
     private function __construct(
         EntityManager       $em,

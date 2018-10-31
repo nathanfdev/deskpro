@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Brand\DefaultBrandFinder;
+use DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -14,7 +14,7 @@ use Doctrine\ORM\EntityManager;
 class BrandListener
 {
     /**
-     * @var DefaultBrandFinder
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder
      */
     private $defaultBrandFinder;
 
@@ -26,8 +26,8 @@ class BrandListener
     /**
      * Constructor.
      *
-     * @param DefaultBrandFinder $defaultBrandFinder
-     * @param EntityManager      $em
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder $defaultBrandFinder
+     * @param EntityManager                                        $em
      */
     public function __construct(DefaultBrandFinder $defaultBrandFinder, EntityManager $em)
     {

@@ -3,7 +3,7 @@
 namespace DeskPRO\Component\Pdf;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Response;

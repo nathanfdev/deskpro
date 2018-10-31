@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\PortalBundle\Theme;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Component\Util\EntityUtils;
@@ -118,7 +117,7 @@ class TagRequestFactory
             $lang = $languageStack->getDefaultLanguage();
         }
 
-        /** @var BrandContainer $brandContainer */
+        /** @var \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer $brandContainer */
         $brandContainer = $this->container->get('brand_stack')->getActive();
         /** @var PortalBrandTheme $portalBrandTheme */
         $portalBrandTheme = $this->container->get('portal_brand_theme_loader')->getPortalBrandTheme($brandContainer->getBrand());

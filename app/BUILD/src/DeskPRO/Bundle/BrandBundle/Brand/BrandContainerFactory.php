@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\PortalBundle\Brand;
+namespace DeskPRO\Bundle\BrandBundle\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;

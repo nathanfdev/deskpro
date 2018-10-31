@@ -1,9 +1,9 @@
 <?php
 
-namespace DeskPRO\Bundle\PortalBundle\EventListener;
+namespace DeskPRO\Bundle\BrandBundle\EventListener;
 
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class BrandAccessListener implements EventSubscriberInterface
 {
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 
@@ -28,8 +28,8 @@ class BrandAccessListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param BrandStack            $brandStack
-     * @param TokenStorageInterface $tokenStorage
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param TokenStorageInterface                        $tokenStorage
      */
     public function __construct(BrandStack $brandStack, TokenStorageInterface $tokenStorage)
     {

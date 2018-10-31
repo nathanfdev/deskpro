@@ -7,7 +7,7 @@
 namespace DeskPRO\Bundle\PortalBundle\DataCollector;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +17,7 @@ use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 class PortalCollector extends DataCollector
 {
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brand_stack;
     /**

@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\PortalBundle\EventListener;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
@@ -53,12 +53,12 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     /**
      * Constructor.
      *
-     * @param BrandStack            $brandStack
-     * @param SettingsResolver      $resolver
-     * @param LoggerInterface       $logger
-     * @param EngineInterface       $portalTpl
-     * @param PortalModeStorage     $modeStorage
-     * @param TokenStorageInterface $tokenStorage
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param SettingsResolver                             $resolver
+     * @param LoggerInterface                              $logger
+     * @param EngineInterface                              $portalTpl
+     * @param PortalModeStorage                            $modeStorage
+     * @param TokenStorageInterface                        $tokenStorage
      */
     public function __construct(
         BrandStack            $brandStack,

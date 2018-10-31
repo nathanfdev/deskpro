@@ -6,7 +6,7 @@ use Application\DeskPRO\Entity\Person;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Security\AgentImpersonateToken;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;

@@ -34,7 +34,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     public function getBrandStack()
     {

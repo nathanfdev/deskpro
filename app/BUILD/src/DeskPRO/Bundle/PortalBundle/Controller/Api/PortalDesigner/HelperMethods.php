@@ -31,7 +31,7 @@ trait HelperMethods
     abstract public function get($id);
 
     /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer
      */
     abstract protected function getBrandContainer();
 

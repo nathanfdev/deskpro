@@ -12,7 +12,7 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;

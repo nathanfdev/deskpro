@@ -70,7 +70,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
     }
 
     /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     public function getBrandStack()
     {
@@ -844,7 +844,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
     private function renderSocialLoginButton(Usersource $usersource, array $params = [])
     {
-        $providers = (array) $usersource->getOption('providers');
+        $providers        = (array) $usersource->getOption('providers');
         $enabledProviders = array_filter(
             array_keys($providers),
             function ($provider) use ($providers) {
@@ -853,7 +853,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         );
 
         if (empty($enabledProviders)) {
-            return "";
+            return '';
         }
 
         // add params
@@ -864,7 +864,7 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
 
         $params['providers'] = [];
         foreach ($enabledProviders as $provider) {
-            $params['providers'][] = [ "name" => $provider, "url" => "/" ];
+            $params['providers'][] = ['name' => $provider, 'url' => '/'];
         }
 
         $tpl  = 'DeskPRO:Auth:'.'social-login'.'.html.twig';

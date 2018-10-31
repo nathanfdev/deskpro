@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Captcha;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Gregwar\CaptchaBundle\Type\CaptchaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

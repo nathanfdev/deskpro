@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\PortalBundle\Helper;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Firebase\JWT\JWT;
 use Orb\Util\Arrays;
@@ -26,7 +26,7 @@ class WidgetJwtDecoder
     private $settingsResolver;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 

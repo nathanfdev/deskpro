@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Captcha;
 
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use ReCaptcha\ReCaptcha;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Constraint;
@@ -27,8 +27,8 @@ class ValidRecaptcha2Validator extends ConstraintValidator
     /**
      * Constructor.
      *
-     * @param BrandStack   $brand_stack
-     * @param RequestStack $request_stack
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brand_stack
+     * @param RequestStack                                 $request_stack
      */
     public function __construct(BrandStack $brand_stack, RequestStack $request_stack)
     {

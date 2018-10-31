@@ -59,20 +59,20 @@ services:
   ######################################################################################################################
 
   brand_stack:
-    class: DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+    class: DeskPRO\Bundle\BrandBundle\Brand\BrandStack
     arguments:
       - "@brand_container_factory"
       - "@default_brand"
     lazy: true
 
   brand_container_factory:
-    class: DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory
+    class: DeskPRO\Bundle\BrandBundle\Brand\BrandContainerFactory
     arguments:
       - "@settings_resolver"
       - "@doctrine.orm.default_entity_manager"
 
   default_brand_finder:
-    class: DeskPRO\Bundle\PortalBundle\Brand\DefaultBrandFinder
+    class: DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder
     arguments: ["@settings_resolver", "@brand_repository"]
 
   default_brand:

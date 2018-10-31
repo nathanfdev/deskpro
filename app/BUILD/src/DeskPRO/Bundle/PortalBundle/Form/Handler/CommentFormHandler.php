@@ -19,7 +19,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Helper\ContentSubscriptionsHelper;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
@@ -106,7 +106,7 @@ class CommentFormHandler
      */
     private $personDataService;
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 
