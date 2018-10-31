@@ -4,11 +4,10 @@ namespace DeskPRO\Bundle\MessengerBundle\Controller;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
-use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType;
+use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatCreateType;
 use DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler;
 use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
 use Doctrine\ORM\EntityManager;
@@ -33,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response;
  * )
  * @Rest\Route("/chat")
  */
-class ChatController extends BaseController
+class ChatController extends AbstractMessengerController
 {
     /**
      * @param Request $request
@@ -47,7 +46,14 @@ class ChatController extends BaseController
     {
         $chatConversation = new ChatConversation();
 
-        $form = $this->container->get('form.factory')->create(ChatConversationType::class, $chatConversation);
+        $form = $this->container->get('form.factory')->create(
+            ChatCreateType::class,
+            $chatConversation,
+            [
+                'visitor_id' => $this->getVisitorId($request),
+                'person'     => null,
+            ]
+        );
         $form->submit($request->request->all());
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
