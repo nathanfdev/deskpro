@@ -162,7 +162,7 @@ class CallLogView extends React.Component {
                           </td>
                           <td>
                             <FormattedMessage
-                              id="{`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`}"
+                              id={`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`}
                               values={{
                                 number: (
                                   <a
