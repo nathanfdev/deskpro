@@ -76,7 +76,7 @@ class TextSnippetCategoryHandlerTest extends AbstractEntityHandlerTest
         $model->setTypename('tickets');
 
         $translation = new Model\Translation();
-        $translation->setLanguage('eng');
+        $translation->setLanguage('en-US');
         $translation->setValue('cat_1');
 
         $model->addTitleTranslation($translation);

@@ -117,7 +117,7 @@ class TextSnippetCategoryHelper
             $language = $this->languageMapper->findFirst();
             if (!$language) {
                 // or install english language if no one was found
-                $language = $this->languageHelper->findOrCreateLanguage('eng');
+                $language = $this->languageHelper->findOrCreateLanguage('en-US');
             }
 
             $entity = new Entity\TextSnippetCategory();

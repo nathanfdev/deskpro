@@ -13,10 +13,10 @@ Feature: /ticket_snippets endpoint
       | c1 | {admin} | tickets  |
       | c2 | {admin} | tickets  |
     And only the following Language records exist:
-      | #  | Locale | Lang Code |
-      | l1 | en_US  | eng       |
-      | l2 | fr    | fre        |
-      | l3 | ru    | rus        |
+      | #  | Locale | Sys Name |
+      | l1 | en-US  | english  |
+      | l2 | fr     | french   |
+      | l3 | ru     | russian  |
 
   Scenario: I retrieve a list of text snippets
     Given only the following TextSnippet records exist:
@@ -145,15 +145,10 @@ Feature: /ticket_snippets endpoint
       | o1 | text_snippets.~s1~ | text_snippets | ~s1:id~ | title     | Ticket Snippet 1 | {l1}     |
       | o2 | text_snippets.~s2~ | text_snippets | ~s2:id~ | title     | Ticket Snippet 2 | {l2}     |
 
-    When I send a GET request to "/api/v2/ticket_snippets?language=en_US"
+    When I send a GET request to "/api/v2/ticket_snippets?language=en-US"
     Then the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{s1}"
-
-    When I send a GET request to "/api/v2/ticket_snippets?language=fre"
-    Then the response status code should be 200
-    And the JSON node "data" should have 1 element
-    And the JSON node "data[0].id" should be equal to "{s2}"
 
     When I send a GET request to "/api/v2/ticket_snippets?language={l1}"
     Then the response status code should be 200
@@ -181,8 +176,8 @@ Feature: /ticket_snippets endpoint
 
     When I send a GET request to "/api/v2/ticket_snippets/{s1}/content"
     Then the response status code should be 200
-    And the JSON node "data.en_US.title" should be equal to the string "Snippet title (en)"
-    And the JSON node "data.en_US.content" should be equal to the string "Snippet content (en)"
+    And the JSON node "data.en-US.title" should be equal to the string "Snippet title (en)"
+    And the JSON node "data.en-US.content" should be equal to the string "Snippet content (en)"
     And the JSON node "data.fr.title" should be equal to the string "Snippet title (fr)"
     And the JSON node "data.fr.content" should be equal to the string "Snippet content (fr)"
 
@@ -200,8 +195,8 @@ Feature: /ticket_snippets endpoint
 
     When I send a GET request to "/api/v2/ticket_snippets/{s1}/content?ticket={t1}"
     Then the response status code should be 200
-    And the JSON node "data.en_US.title" should be equal to "Snippet for Ticket 1"
-    And the JSON node "data.en_US.content" should be equal to "Created by User User"
+    And the JSON node "data.en-US.title" should be equal to "Snippet for Ticket 1"
+    And the JSON node "data.en-US.content" should be equal to "Created by User User"
 
   Scenario: I retrieve ticket snippets with sideloading
     Given only the following TextSnippet records exist:
@@ -217,13 +212,13 @@ Feature: /ticket_snippets endpoint
 
     When I send a GET request to "/api/v2/ticket_snippets?include=text_snippet_content"
     Then the response status code should be 200
-    And the JSON node "linked.text_snippet_content.{s1}.en_US.title" should be equal to the string "Snippet for {{ ticket.subject }}"
-    And the JSON node "linked.text_snippet_content.{s1}.en_US.content" should be equal to the string "Created by {{ ticket.person.name }}"
+    And the JSON node "linked.text_snippet_content.{s1}.en-US.title" should be equal to the string "Snippet for {{ ticket.subject }}"
+    And the JSON node "linked.text_snippet_content.{s1}.en-US.content" should be equal to the string "Created by {{ ticket.person.name }}"
 
     When I send a GET request to "/api/v2/ticket_snippets?include=text_snippet_content&ticket={t1}"
     Then the response status code should be 200
-    And the JSON node "linked.text_snippet_content.{s1}.en_US.title" should be equal to the string "Snippet for Ticket 1"
-    And the JSON node "linked.text_snippet_content.{s1}.en_US.content" should be equal to the string "Created by User User"
+    And the JSON node "linked.text_snippet_content.{s1}.en-US.title" should be equal to the string "Snippet for Ticket 1"
+    And the JSON node "linked.text_snippet_content.{s1}.en-US.content" should be equal to the string "Created by User User"
 
   Scenario: I sideload snippet w/o content
     Given only the following TextSnippet records exist:
