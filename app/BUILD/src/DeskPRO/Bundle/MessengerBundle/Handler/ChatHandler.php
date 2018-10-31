@@ -134,14 +134,14 @@ class ChatHandler
     {
         $chatMapper = $this->chatMapper;
 
-        return array_map(
+        return array_values(array_map(
             function ($message) use ($chatMapper) {
                 return $this->chatMapper->mapMessageToArray($message);
             },
-            array_filter($chat->getMessages(), function ($message) {
+            array_filter($chat->getMessages()->toArray(), function ($message) {
                 /* @var ChatMessage $message */
                 return !$message->getIsUserHidden();
-            })
+            }))
         );
     }
 
