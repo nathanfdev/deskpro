@@ -399,11 +399,7 @@ export const makeOutboundCall = createAction(
 
 export const toggleHold = createAction(
   'VOICE_AGENT_TOGGLE_HOLD',
-  (callId, hold) => (dispatch) => {
-    dispatch(updateConnectionState({ call_id: parseInt(callId, 10), state: { hold } }));
-
-    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold });
-  }
+  (callId, hold) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold })
 );
 
 export const acceptPhoneCall = createAction(

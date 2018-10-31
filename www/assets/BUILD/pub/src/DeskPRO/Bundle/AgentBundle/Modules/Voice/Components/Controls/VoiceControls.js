@@ -173,13 +173,25 @@ class Active extends React.Component {
     this.state = {
       transferMenuOpened: false,
       addMenuOpened:      false,
-      dialpadOpened:      false
+      dialpadOpened:      false,
+      updatingHold:       false
     };
   }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.hold !== this.props.hold) {
+      this.setState({
+        updatingHold: false
+      });
+    }
+  };
 
   toggleHold = (event) => {
     event.preventDefault();
     this.props.toggleHold();
+    this.setState({
+      updatingHold: true
+    });
   };
 
   toggleMute = (event) => {
@@ -233,7 +245,7 @@ class Active extends React.Component {
 
   render() {
     const { hold, mute, ended, onlineAgents, sendDigits, divRef } = this.props;
-    const { transferMenuOpened, addMenuOpened, dialpadOpened } = this.state;
+    const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
 
     return (
@@ -259,7 +271,7 @@ class Active extends React.Component {
           Dialpad
         </Button>
         <Button
-          className={classNames('basic', { active: hold, disabled: ended })}
+          className={classNames('basic', { active: hold, disabled: ended, loading: updatingHold })}
           onClick={this.toggleHold}
         >
           <i className="pause icon" />
