@@ -397,6 +397,15 @@ export const makeOutboundCall = createAction(
   }
 );
 
+export const toggleHold = createAction(
+  'VOICE_AGENT_TOGGLE_HOLD',
+  (callId, hold) => (dispatch) => {
+    dispatch(updateConnectionState({ call_id: parseInt(callId, 10), state: { hold } }));
+
+    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold });
+  }
+);
+
 export const acceptPhoneCall = createAction(
   'VOICE_AGENT_ACCEPT_PHONE_CALL',
   incomingCall => (dispatch, getState) => {
@@ -442,6 +451,10 @@ export const acceptPhoneCall = createAction(
 
         clients[accountId].client.ticketId = data.id;
         clients[accountId].client.callId   = callId;
+      }
+
+      if (incomingCall.get('call_type') === 'transfer' && incomingCall.get('invite_type') === 'cold') {
+        dispatch(toggleHold(callId, false));
       }
 
       window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`, { noToggle: true });
@@ -493,15 +506,6 @@ export const toggleMute = createAction(
   }
 );
 
-export const toggleHold = createAction(
-  'VOICE_AGENT_TOGGLE_HOLD',
-  (connection, hold) => (dispatch) => {
-    dispatch(updateConnectionState({ call_id: parseInt(connection.callId, 10), state: { hold } }));
-
-    return api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/hold_call`, { hold });
-  }
-);
-
 export const addAgent = createAction(
   'VOICE_AGENT_ADD',
   (connection, agent, type) =>
@@ -511,7 +515,7 @@ export const addAgent = createAction(
 export const transferCall = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
   (connection, agent, type) => (dispatch) => {
-    dispatch(toggleHold(connection, true));
+    dispatch(toggleHold(connection.callId, true));
 
     return api
       .sendPut(`DP_API/voice_client/phone_call/${connection.callId}/transfer/${agent.get('id')}/${type}`)

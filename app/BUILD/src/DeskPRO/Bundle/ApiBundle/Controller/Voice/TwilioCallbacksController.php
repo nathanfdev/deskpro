@@ -292,9 +292,7 @@ class TwilioCallbacksController extends BaseController
         }
 
         // handle conference events
-        if ($eventName === 'conference-start') {
-            $this->get('dp.voice.callbacks_helper')->logConferenceStart($phoneCall, $details);
-        } elseif ($eventName === 'participant-join') {
+        if ($eventName === 'participant-join') {
             $this->get('dp.voice.callbacks_helper')->joinConference($phoneCall, $callSid, $conferenceSid, $details);
         }
 

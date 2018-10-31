@@ -225,14 +225,16 @@ class VoiceCallbacksHelper
         }
 
         // create the agent participant
-        $participant = new VoicePhoneCallParticipantAgent();
-        $participant->setCallSid($agentCallId);
-        $participant->setPerson($agent);
+        if (!$phoneCall->getParticipantByPerson($agent)) {
+            $participant = new VoicePhoneCallParticipantAgent();
+            $participant->setCallSid($agentCallId);
+            $participant->setPerson($agent);
 
-        $phoneCall->addParticipant($participant);
+            $phoneCall->addParticipant($participant);
 
-        $this->em->persist($phoneCall);
-        $this->em->flush();
+            $this->em->persist($phoneCall);
+            $this->em->flush();
+        }
 
         // log answering event
         $log = new VoicePhoneCallLog();
@@ -623,13 +625,7 @@ class VoiceCallbacksHelper
         $this->em->persist($log);
         $this->em->flush();
 
-        if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
-            // original agent was disconnected, change status to pending
-            $phoneCall->setStatus(VoicePhoneCall::STATUS_PENDING);
-
-            $this->em->persist($phoneCall);
-            $this->em->flush();
-        } else {
+        if ($phoneCall->getStatus() !== VoicePhoneCall::STATUS_COLD_TRANSFER) {
             $this->voiceProviderHelper->tryEndConference($phoneCall);
         }
 
@@ -720,8 +716,6 @@ class VoiceCallbacksHelper
         // store conference sid on its join callback
         if (!$phoneCall->getConferenceSid()) {
             $phoneCall->setConferenceSid($conferenceSid);
-
-            $this->em->persist($phoneCall);
             $this->em->flush();
         }
 
@@ -729,8 +723,15 @@ class VoiceCallbacksHelper
         if ($participant instanceof VoicePhoneCallParticipantAgent) {
             // set participant join event time
             $participant->setDateJoined(new \DateTime());
-            $this->em->persist($participant);
             $this->em->flush();
+
+            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
+                // mark the phone call as started
+                $phoneCall->setDateStarted(new \DateTime());
+                $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
+
+                $this->em->flush();
+            }
 
             // log participant join event
             $log = new VoicePhoneCallLog();
@@ -743,6 +744,8 @@ class VoiceCallbacksHelper
 
             $this->em->persist($log);
             $this->em->flush();
+        } elseif ($participant instanceof VoicePhoneCallParticipantUser) {
+            $this->logConferenceStart($phoneCall, $details);
         }
     }
 
