@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\PortalBundle\Helper;
+namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;

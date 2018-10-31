@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\UserChat;
 
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\Entity\ChatConversation;

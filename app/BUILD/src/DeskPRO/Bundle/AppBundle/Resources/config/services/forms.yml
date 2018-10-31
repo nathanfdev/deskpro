@@ -410,6 +410,23 @@ services:
   form.snippet_translation:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetTranslationType
     arguments:
-    - "@doctrine.orm.default_entity_manager"
+     - "@doctrine.orm.default_entity_manager"
     tags:
-    - { name: form.type }
+     - { name: form.type }
+
+  form.api.chat.set_person_listener:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\UserChat\SetPersonListener
+    arguments: ["@email.email_account_manager", "@doctrine.orm.default_entity_manager"]
+
+  form.api.chat_create:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatCreateType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@form.api.chat.set_person_listener"
+      - "@widget_settings_resolver"
+      - "@custom_field_manager"
+      - "@brand_stack"
+      - "@permissions_manager"
+      - "@widget_jwt_decoder"
+    tags:
+      - { name: form.type }

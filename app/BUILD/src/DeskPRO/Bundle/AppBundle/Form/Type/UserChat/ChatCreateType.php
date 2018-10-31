@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\UserChat;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
@@ -8,11 +8,12 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
+use DeskPRO\Bundle\AppBundle\Helper\WidgetJwtDecoder;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Helper\WidgetJwtDecoder;
+use DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\AutoSetShouldSentTranscriptListener;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -62,20 +63,20 @@ class ChatCreateType extends AbstractType
     private $permissionsManager;
 
     /**
-     * @var WidgetJwtDecoder
+     * @var \DeskPRO\Bundle\AppBundle\Helper\WidgetJwtDecoder
      */
     private $jwtDecoder;
 
     /**
      * Constructor.
      *
-     * @param EntityManager          $em
-     * @param SetPersonListener      $personListener
-     * @param WidgetSettingsResolver $settingsResolver
-     * @param CustomFieldManager     $fieldManager
-     * @param BrandStack             $brandStack
-     * @param PermissionsManager     $permissionsManager
-     * @param WidgetJwtDecoder       $jwtDecoder
+     * @param EntityManager                                     $em
+     * @param SetPersonListener                                 $personListener
+     * @param WidgetSettingsResolver                            $settingsResolver
+     * @param CustomFieldManager                                $fieldManager
+     * @param BrandStack                                        $brandStack
+     * @param PermissionsManager                                $permissionsManager
+     * @param \DeskPRO\Bundle\AppBundle\Helper\WidgetJwtDecoder $jwtDecoder
      */
     public function __construct(
         EntityManager          $em,

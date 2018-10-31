@@ -46,10 +46,6 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider
     arguments: ["@brand_stack", "@security.authorization_checker", "@security.token_storage", "@request_stack", "@anti_abuse"]
 
-  form.api.chat.set_person_listener:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\SetPersonListener
-    arguments: ["@email.email_account_manager", "@doctrine.orm.default_entity_manager"]
-
   #
   # Types
   #
@@ -105,19 +101,6 @@ services:
     arguments:
       - "@captcha_decider"
       - "@language_manager"
-    tags:
-      - { name: form.type }
-
-  form.api.chat_create:
-    class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@form.api.chat.set_person_listener"
-      - "@widget_settings_resolver"
-      - "@custom_field_manager"
-      - "@brand_stack"
-      - "@permissions_manager"
-      - "@widget_jwt_decoder"
     tags:
       - { name: form.type }
 
