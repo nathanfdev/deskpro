@@ -2,8 +2,8 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert;
 
+use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
-use DeskPRO\Bundle\ImportBundle\Model\ChatMessage;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 
 /**
