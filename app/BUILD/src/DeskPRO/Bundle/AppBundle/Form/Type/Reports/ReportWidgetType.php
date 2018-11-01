@@ -126,6 +126,8 @@ class ReportWidgetType extends AbstractType
                     $label = preg_replace('/\.(.*?)$/', '$1', strtolower($label));
                 }
             }
+        } else {
+            $form->remove('labels');
         }
 
         if ($form->has('input_mode')) {
