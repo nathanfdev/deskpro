@@ -579,9 +579,10 @@ class LanguagesController extends CrudController
             switch ($format) {
                 case 'icu':
                     $phraseText = $translate->phrase($id, [], $language);
-                    if (!$phraseText && $translate->isPhraseHasPlural($id, $language)) {
+                    if (!$phraseText && $translate->hasPhrasePlural($id, $language)) {
                         $phraseText = $translate->getPhrasePluralTexts($id, $language);
                     }
+
                     return [$id, $this->convertToIcu($phraseText ?: "!$id!")];
                 case 'twig':
                 default:
@@ -667,7 +668,7 @@ class LanguagesController extends CrudController
     {
         // plural categories case
         if (is_array($phrase)) {
-            $res = "{count, plural,";
+            $res = '{count, plural,';
             foreach ($phrase as $cat => $phraseText) {
                 $phraseText = str_replace('{{', '{', $phraseText);
                 $phraseText = str_replace('}}', '}', $phraseText);
