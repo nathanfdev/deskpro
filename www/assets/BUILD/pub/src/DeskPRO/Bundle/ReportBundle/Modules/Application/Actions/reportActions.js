@@ -57,6 +57,7 @@ export const runReport = createAction(
       variables:     report.vars,
       input_mode:    report.extended_query ? 'dpql' : 'form',
       title:         report.title,
+      labels:        report.labels
     };
     if (report.extended_query) {
       data.query = report.query;
