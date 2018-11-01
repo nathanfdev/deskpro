@@ -56,7 +56,7 @@ export class MediaMenuContainer extends React.Component {
 
   deleteFile = (e, file, type) => {
     e.stopPropagation();
-    if (confirm('Any uses of the file will stop working')) {
+    if (confirm('Are you sure you want to delete this file ?')) {
       this.props.dispatch(actions.deleteAsset(file.get('id'))).then(() => {
         const action = (type === 'inline-image') ? actions.loadInlineImages : actions.loadAttachments;
         this.props.dispatch(action);
