@@ -155,7 +155,7 @@ class ChatHandler
      *
      * @return ApiWrapper
      */
-    private function handleChatBlockRatingCommand(ChatConversation $chat, array $request)
+    private function handleChatRatingCommand(ChatConversation $chat, array $request)
     {
         $errors = [];
         if (!isset($request['rate'])) {
@@ -206,7 +206,7 @@ class ChatHandler
      *
      * @return ApiWrapper
      */
-    private function handleChatBlockTranscriptCommand(ChatConversation $chat, array $request)
+    private function handleChatTranscriptCommand(ChatConversation $chat, array $request)
     {
         $chat->setShouldSendTranscript(true);
 
