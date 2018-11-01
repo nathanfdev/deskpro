@@ -39,3 +39,20 @@ export function getWidgetBadgeCount(widgetId, appState) {
 
   return 0;
 }
+
+/**
+ * @param {String} widgetId
+ * @param {{}} appState
+ * @return {String}
+ */
+export function getWidgetBadgeStyle(widgetId, appState) {
+  const state = appState[widgetId];
+  if (state && typeof state === 'object') {
+    const { badgeStyle } = state;
+
+    return badgeStyle || 'urgent';
+  }
+
+  return 'urgent';
+}
+

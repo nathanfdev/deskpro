@@ -50,7 +50,7 @@ export class AppsViewFull extends React.PureComponent {
 
   /**
    * @param {Array<WidgetConfiguration>} widgetList
-   * @param groupId
+   * @param {Number} groupId
    */
   renderGroupWidgets(widgetList, groupId)  {
     const isMainGroup = groupId === 0;
