@@ -38,6 +38,8 @@ class SetLabels extends AbstractContainerAwareAction implements ActionInterface,
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
+        $em = $this->getContainer()->getEm();
+
         //--------------------
         // Add labels
         //--------------------
@@ -50,6 +52,8 @@ class SetLabels extends AbstractContainerAwareAction implements ActionInterface,
             }
         }
 
+        $em->flush();
+
         //--------------------
         // Remove labels
         //--------------------
@@ -61,6 +65,8 @@ class SetLabels extends AbstractContainerAwareAction implements ActionInterface,
                 $ticket->removeLabelByString($l);
             }
         }
+
+        $em->flush();
     }
 
     /**
