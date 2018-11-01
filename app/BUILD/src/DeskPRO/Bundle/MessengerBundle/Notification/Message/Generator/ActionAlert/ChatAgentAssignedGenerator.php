@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\ImportBundle\Model\ChatMessage;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 
 /**
@@ -27,10 +28,15 @@ class ChatAgentAssignedGenerator extends ChatGenerator
      */
     protected function getData(ChatEvent $event)
     {
-        $chat = $this->getChat($event);
+        $chat      = $this->getChat($event);
+        $eventData = $event->getData();
 
-        return [
-            'id'            => $chat->getId(),
+        $messageData = [];
+        if (isset($eventData['message']) && $eventData['message'] instanceof ChatMessage) {
+            $messageData = $this->chatMapper->mapMessageToArray($eventData['message']);
+        }
+
+        return $messageData + [
             'origin'        => 'system',
             'name'          => $chat->getAgent()->getDisplayNameUser(),
             'avatar'        => $this->avatarResolver->getAvatar($chat->getAgent()),

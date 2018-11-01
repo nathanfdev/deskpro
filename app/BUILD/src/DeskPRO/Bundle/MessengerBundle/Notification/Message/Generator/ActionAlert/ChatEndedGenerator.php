@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 
@@ -11,35 +12,6 @@ use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
  */
 class ChatEndedGenerator extends ChatGenerator
 {
-    /**
-     * @param SystemEventInterface $event
-     *
-     * @return array
-     */
-    protected function getTargets(SystemEventInterface $event)
-    {
-        /** @var \DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent $event */
-        $chat           = $this->getChat($event);
-        $agentTargets   = $chat->getAgentParticipants() ?: [];
-        $userTargets    = $chat->getUserParticipants() ?: [];
-        $visitorTargets = $chat->getVisitorId() ?: '';
-
-        return array_merge($agentTargets, $userTargets, [$visitorTargets]);
-    }
-
-    /**
-     * @param SystemEventInterface $event
-     *
-     * @return ChatConversation
-     */
-    protected function getChat(SystemEventInterface $event)
-    {
-        /** @var ChatEvent $event */
-        $repository = $this->em->getRepository(ChatConversation::class);
-
-        return $repository->find($event->getChatId());
-    }
-
     /**
      * @param SystemEventInterface $event
      *
@@ -61,7 +33,8 @@ class ChatEndedGenerator extends ChatGenerator
      */
     protected function getData(ChatEvent $event)
     {
-        $chat = $this->getChat($event);
+        $chat      = $this->getChat($event);
+        $eventData = $event->getData();
 
         switch ($chat->getEndedBy()) {
             case ChatConversation::ENDED_TIMEOUT:
@@ -92,8 +65,12 @@ class ChatEndedGenerator extends ChatGenerator
                 $avatar = $this->avatarResolver->getDefaultCommonAvatar();
         }
 
-        return [
-            'id'         => $chat->getId(),
+        $messageData = [];
+        if (isset($eventData['message']) && $eventData['message'] instanceof ChatMessage) {
+            $messageData = $this->chatMapper->mapMessageToArray($eventData['message']);
+        }
+
+        return $messageData + [
             'origin'     => $origin,
             'avatar'     => $avatar,
             'date_ended' => $chat->getDateEnded()->format(\DateTime::ISO8601),

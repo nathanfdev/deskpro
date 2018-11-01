@@ -6,6 +6,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
       - "@avatar_resolver"
+      - "@messenger.mappers.chat"
     tags:
       - { name: deskpro.notification.action_alert.generator }
 
@@ -25,6 +26,17 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
       - "@avatar_resolver"
+      - "@messenger.mappers.chat"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
+
+  deskpro.notification.generator.action_alert.messenger.chat.user.joined_left:
+    class: DeskPRO\Bundle\MessengerBundle\Notification\Message\Generator\ActionAlert\ChatUserJoinedLeftGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+      - "@avatar_resolver"
+      - "@messenger.mappers.chat"
     tags:
       - { name: deskpro.notification.action_alert.generator }
 
@@ -34,6 +46,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
       - "@avatar_resolver"
+      - "@messenger.mappers.chat"
     tags:
       - { name: deskpro.notification.action_alert.generator }
 
@@ -43,5 +56,6 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
       - "@avatar_resolver"
+      - "@messenger.mappers.chat"
     tags:
       - { name: deskpro.notification.action_alert.generator }

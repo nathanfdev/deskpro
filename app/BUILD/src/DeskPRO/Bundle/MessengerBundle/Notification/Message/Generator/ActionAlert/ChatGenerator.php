@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
+use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use Doctrine\ORM\EntityManager;
@@ -24,15 +25,26 @@ class ChatGenerator extends AbstractGenerator
     protected $avatarResolver;
 
     /**
+     * @var ChatMapper
+     */
+    protected $chatMapper;
+
+    /**
      * ChatGenerator constructor.
      *
      * @param EntityManager         $em
      * @param TokenStorageInterface $tokenStorage
      * @param AvatarResolver        $avatarResolver
+     * @param ChatMapper            $chatMapper
      */
-    public function __construct(EntityManager $em, TokenStorageInterface $tokenStorage, AvatarResolver $avatarResolver)
-    {
+    public function __construct(
+        EntityManager $em,
+        TokenStorageInterface $tokenStorage,
+        AvatarResolver $avatarResolver,
+        ChatMapper $chatMapper
+    ) {
         $this->avatarResolver = $avatarResolver;
+        $this->chatMapper     = $chatMapper;
         parent::__construct($em, $tokenStorage);
     }
 
@@ -45,11 +57,10 @@ class ChatGenerator extends AbstractGenerator
     {
         /** @var ChatEvent $event */
         $chat           = $this->getChat($event);
-        $agentTargets   = $chat->getAgentParticipants() ?: [];
         $userTargets    = $chat->getUserParticipants() ?: [];
         $visitorTargets = $chat->getVisitorId() ?: '';
 
-        return array_merge($agentTargets, $userTargets, [$visitorTargets]);
+        return array_merge($userTargets, [$visitorTargets]);
     }
 
     /**
@@ -99,6 +110,8 @@ class ChatGenerator extends AbstractGenerator
             && $event->getType() !== ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE
             && $event->getType() !== ChatEvent::CHAT_ENDED_EVENT_TYPE
             && $event->getType() !== ChatEvent::TYPING_START_EVENT_TYPE
+            && $event->getType() !== ChatEvent::CHAT_USER_JOINED_EVENT_TYPE
+            && $event->getType() !== ChatEvent::CHAT_USER_LEFT_EVENT_TYPE
             && $event->getType() !== ChatEvent::TYPING_END_EVENT_TYPE;
     }
 
