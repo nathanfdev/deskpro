@@ -336,10 +336,16 @@ class VoiceCallbacksHelper
             // ticket is already created, that means we are joining the existing conference
             $ticket = $messageAttribute->getMessage()->getTicket();
 
-            $participant = new TicketParticipant();
-            $participant->setPerson($agent);
+            if ($ticket->getAgent()) {
+                $participant = new TicketParticipant();
+                $participant->setPerson($agent);
 
-            $ticket->addParticipant($participant);
+                $ticket->addParticipant($participant);
+            } else {
+                // ticket couldn't have an agent, e.g. on cold transfer
+                $ticket->setAgent($agent);
+            }
+
             $this->saveTicket($ticket);
         }
 
@@ -952,7 +958,7 @@ class VoiceCallbacksHelper
     /**
      * @param Ticket $ticket
      */
-    private function saveTicket(Ticket $ticket)
+    public function saveTicket(Ticket $ticket)
     {
         $changes = $ticket->getStateChangeRecorder();
         if ($changes->isNewTicket()) {

@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -304,10 +305,6 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         $em = $this->getManager();
-        if ($callType === 'transfer' && $inviteType === 'cold') {
-            $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
-            $em->persist($phoneCall);
-        }
 
         // get phone call ticket
         $messageAttribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
@@ -318,6 +315,22 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         $ticket = $messageAttribute->getMessage()->getTicket();
+
+        if ($callType === 'transfer') {
+            if ($inviteType === 'cold') {
+                $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
+            }
+
+            // change ticket assigned agent to follower on cold transfer
+            $ticketPerson = $ticket->getAgent();
+            $ticket->setAgent(null);
+
+            $participant = new TicketParticipant();
+            $participant->setPerson($ticketPerson);
+
+            $ticket->addParticipant($participant);
+            $this->get('dp.voice.callbacks_helper')->saveTicket($ticket);
+        }
 
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.participant-invite',
