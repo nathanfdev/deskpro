@@ -19,6 +19,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -212,8 +213,12 @@ class UserChatManager
             $message = $this->addSystemMessage(
                 $convo,
                 'message_user-joined',
-                ['name'        => $person->display_name_user],
-                ['user_joined' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id]
+                ['name' => $person->display_name_user],
+                [
+                    'user_joined' => true,
+                    'person_name' => $person->display_name_user,
+                    'person_id'   => $person->id,
+                ]
             );
 
             $this->eventDispatcher->dispatch(
@@ -811,6 +816,9 @@ class UserChatManager
             $msg->is_html = (bool) $metadata['is_html'];
             unset($metadata['is_html']);
         }
+        if (!isset($metadata['uuid'])) {
+            $metadata['uuid'] = RandUtils::uuidV4();
+        }
 
         $msg->metadata = $metadata;
         $convo->addMessage($msg);
@@ -895,6 +903,9 @@ class UserChatManager
         if (isset($metadata['is_html'])) {
             $msg->is_html = true;
             unset($metadata['is_html']);
+        }
+        if (!isset($metadata['uuid'])) {
+            $metadata['uuid'] = RandUtils::uuidV4();
         }
 
         $msg->metadata = $metadata;
