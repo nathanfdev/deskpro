@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Handler;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
-use DeskPRO\Bundle\MessengerBundle\Exception\MapperException;
+use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
@@ -78,7 +78,7 @@ class ChatHandler
     {
         $commandType = $request['type'];
         if (!in_array($commandType, $this->availableCommands)) {
-            throw new MapperException(['type' => 'Wrong message type sent']);
+            throw new MessengerApiException(['type' => 'Wrong message type sent']);
         }
 
         $commandName = 'handle'.implode(
@@ -164,7 +164,7 @@ class ChatHandler
         }
 
         if ($errors) {
-            throw new MapperException($errors);
+            throw new MessengerApiException($errors);
         }
 
         $eventData = [];

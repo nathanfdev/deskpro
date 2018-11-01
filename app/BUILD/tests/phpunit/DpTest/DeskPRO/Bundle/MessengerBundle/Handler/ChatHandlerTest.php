@@ -4,7 +4,7 @@ namespace DpTest\DeskPRO\Bundle\MessengerBundle\Handler;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
-use DeskPRO\Bundle\MessengerBundle\Exception\MapperException;
+use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DpTest\MessengerTestCase;
 
 class ChatHandlerTest extends MessengerTestCase
@@ -40,8 +40,8 @@ class ChatHandlerTest extends MessengerTestCase
         try {
             $handler->handle($chat, $request);
         } catch (\Exception $e) {
-            $this->assertInstanceOf(MapperException::class, $e);
-            /** @var MapperException $e */
+            $this->assertInstanceOf(MessengerApiException::class, $e);
+            /** @var MessengerApiException $e */
             $expectedErrors = [
                 'author'  => 'Wrong author id (999999) given. Couldn\'t find author',
                 'message' => 'Message could not be empty',

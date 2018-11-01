@@ -76,7 +76,7 @@ fos_rest:
       - { path: '^/api/messenger', priorities: ['json', 'jsonp', 'zip'], fallback_format: json, prefer_extension: false }
   exception:
     enabled: true
-    exception_controller: 'DeskPRO\Bundle\ApiBundle\Controller\ExceptionController::showAction'
+    exception_controller: 'DeskPRO\Bundle\MessengerBundle\Controller\ExceptionController::showAction'
   view:
     mime_types:
       { zip: ['application/zip'] }

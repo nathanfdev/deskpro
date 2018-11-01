@@ -2,9 +2,10 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Exception;
 
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Throwable;
 
-class MapperException extends \InvalidArgumentException
+class MessengerApiException extends BadRequestHttpException
 {
     /**
      * @var array
@@ -12,17 +13,17 @@ class MapperException extends \InvalidArgumentException
     private $errors;
 
     /**
-     * MapperException constructor.
+     * MessengerApiException constructor.
      *
      * @param array          $errors
      * @param string         $message
      * @param int            $code
      * @param Throwable|null $previous
      */
-    public function __construct(array $errors, $message = '', $code = 0, Throwable $previous = null)
+    public function __construct(array $errors, $message = '', $code = 0, $previous = null)
     {
         $this->errors = $errors;
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $previous, $code);
     }
 
     /**

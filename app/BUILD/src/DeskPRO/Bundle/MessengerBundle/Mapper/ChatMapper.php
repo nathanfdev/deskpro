@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Mapper;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
-use DeskPRO\Bundle\MessengerBundle\Exception\MapperException;
+use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Input\Cleaner\Cleaner;
@@ -87,7 +87,7 @@ class ChatMapper
         }
 
         if ($errors) {
-            throw new MapperException($errors);
+            throw new MessengerApiException($errors);
         }
 
         return $message;
