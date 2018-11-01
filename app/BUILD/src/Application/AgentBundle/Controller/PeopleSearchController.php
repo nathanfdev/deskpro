@@ -805,8 +805,10 @@ class PeopleSearchController extends AbstractController
 
         $format = $this->in->getString('format');
 
+        $response = new Response();
         if ($format == 'json' or (!$format and $this->in->getBool('ajax'))) {
             $tpl = 'AgentBundle:PeopleSearch:search_results.json.jsonphp';
+            $response->headers->set('Content-Type', 'application/json');
         } else {
             $tpl = 'AgentBundle:PeopleSearch:search_results.html.twig';
             if ($format == 'simplelist') {
@@ -828,6 +830,7 @@ class PeopleSearchController extends AbstractController
 
         return $this->render($tpl, [
             'people_list' => $peopleList,
-        ]);
+        ],
+        $response);
     }
 }
