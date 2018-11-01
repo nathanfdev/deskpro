@@ -17,8 +17,8 @@ class ChatHandler
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
     const CHAT_ENDED               = 'chat.ended';
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
-    const CHAT_TRANSCRIPT          = 'chat.block.transcript';
-    const CHAT_RATING              = 'chat.block.rating';
+    const CHAT_TRANSCRIPT          = 'chat.transcript';
+    const CHAT_RATING              = 'chat.rating';
     const CHAT_HISTORY             = 'chat.history';
     const TYPING_START             = 'chat.typing.start';
     const TYPING_END               = 'chat.typing.end';
@@ -155,11 +155,16 @@ class ChatHandler
      */
     private function handleChatBlockRatingCommand(ChatConversation $chat, array $request)
     {
+        $errors = [];
         if (!isset($request['rate'])) {
-            throw new \Exception('"rate" parameter wasn\'t sent');
+            $errors['rate'] = 'parameter wasn\'t sent';
         }
         if (!$chat->getDateEnded()) {
-            throw new \Exception('Cant\'t rate not ended chat');
+            $errors['chat'] = 'Cant\'t rate not ended chat';
+        }
+
+        if ($errors) {
+            throw new MapperException($errors);
         }
 
         $eventData = [];
