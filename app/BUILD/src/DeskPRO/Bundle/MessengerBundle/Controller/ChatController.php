@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatCreateType;
 use DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler;
@@ -44,11 +45,11 @@ class ChatController extends AbstractMessengerController
      */
     public function createChatAction(Request $request)
     {
-        $chatConversation = new ChatConversation();
+        $chat = new ChatConversation();
 
         $form = $this->container->get('form.factory')->create(
             ChatCreateType::class,
-            $chatConversation,
+            $chat,
             [
                 'visitor_id' => $this->getVisitorId($request),
                 'person'     => null,
@@ -58,12 +59,17 @@ class ChatController extends AbstractMessengerController
         if (!$form->isValid()) {
             throw new InvalidFormException($form);
         }
-        $chatConversation->setVisitorId($request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME));
+        $chat->setVisitorId($request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME));
 
-        $this->em()->persist($chatConversation);
+        $this->em()->persist($chat);
         $this->em()->flush();
 
-        return View::create($this->wrap($chatConversation), Response::HTTP_CREATED);
+        $this->get('event_dispatcher')->dispatch(
+            ClientMessageEvent::SEND,
+            new ClientMessageEvent('chat.new', $chat)
+        );
+
+        return View::create($this->wrap($chat), Response::HTTP_CREATED);
     }
 
     /**

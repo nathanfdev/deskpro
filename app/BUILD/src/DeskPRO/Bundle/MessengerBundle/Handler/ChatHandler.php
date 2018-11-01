@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
@@ -111,12 +112,13 @@ class ChatHandler
         $this->em->flush();
 
         $this->eventDispatcher->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent($chat->getChannelId('newmessage'), $message->getInfo())
+        );
+
+        $this->eventDispatcher->dispatch(
             ChatMessageEvent::EVENT_NAME,
-            new ChatMessageEvent(
-                $chat->getId(),
-                $message->getId(),
-                ChatMessageEvent::CHAT_MESSAGE_EVENT_TYPE
-            )
+            new ChatMessageEvent($chat->getId(), $message->getId(), ChatMessageEvent::CHAT_MESSAGE_EVENT_TYPE)
         );
 
         return $this->chatMapper->mapMessageToArray($message);
