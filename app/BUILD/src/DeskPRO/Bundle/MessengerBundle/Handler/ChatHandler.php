@@ -210,6 +210,22 @@ class ChatHandler
     {
         $chat->setShouldSendTranscript(true);
 
+        $errors = [];
+
+        if (!$chat->getPersonEmail() && (!isset($request['email']) || !trim($request['email']))) {
+            $errors['email'] = 'You have to set email to receive transcript';
+        } elseif (isset($request['email']) && trim($request['email'])) {
+            $chat->setPersonEmail($request['email']);
+        }
+
+        if (isset($request['name']) && trim($request['name'])) {
+            $chat->setPersonName($request['name']);
+        }
+
+        if ($errors) {
+            throw new MessengerApiException($errors);
+        }
+
         $this->em->persist($chat);
         $this->em->flush();
 
