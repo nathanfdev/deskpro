@@ -470,11 +470,21 @@ class UserChatManager
         $convo->setAgent(null);
         $this->em->persist($convo);
 
-        $this->addSystemMessage($convo, 'message_unassigned', [], [
+        $message = $this->addSystemMessage($convo, 'message_unassigned', [], [
             'chat_unassigned'   => true,
             'old_assigned_to'   => $old_agent_id,
             'old_assigned_name' => $old_agent_name,
         ]);
+
+        // broadcast to user agent was unassigned
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_AGENT_UNASSIGNED_EVENT_TYPE,
+                ['message' => $message]
+            )
+        );
 
         // Try to reassign
         if ($this->auto_assigner) {

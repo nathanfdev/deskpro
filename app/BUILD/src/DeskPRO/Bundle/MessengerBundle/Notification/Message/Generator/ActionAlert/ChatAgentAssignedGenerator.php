@@ -18,7 +18,10 @@ class ChatAgentAssignedGenerator extends ChatGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return $event instanceof ChatEvent && $event->getType() === ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE;
+        return $event instanceof ChatEvent && (
+            $event->getType() === ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE
+            || $event->getType() === ChatEvent::CHAT_AGENT_UNASSIGNED_EVENT_TYPE
+        );
     }
 
     /**
@@ -31,16 +34,20 @@ class ChatAgentAssignedGenerator extends ChatGenerator
         $chat      = $this->getChat($event);
         $eventData = $event->getData();
 
-        $messageData = [];
+        $data = [
+            'origin' => 'system',
+            'name'   => $chat->getAgent()->getDisplayNameUser(),
+            'avatar' => $this->avatarResolver->getAvatar($chat->getAgent()),
+        ];
+
         if (isset($eventData['message']) && $eventData['message'] instanceof ChatMessage) {
-            $messageData = $this->chatMapper->mapMessageToArray($eventData['message']);
+            $data += $this->chatMapper->mapMessageToArray($eventData['message']);
         }
 
-        return $messageData + [
-            'origin'        => 'system',
-            'name'          => $chat->getAgent()->getDisplayNameUser(),
-            'avatar'        => $this->avatarResolver->getAvatar($chat->getAgent()),
-            'date_assigned' => $chat->getDateAssigned()->format(\DateTime::ISO8601),
-        ];
+        if ($event->getType() === ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE) {
+            $data['date_assigned'] = $chat->getDateAssigned()->format(\DateTime::ISO8601);
+        }
+
+        return $data;
     }
 }
