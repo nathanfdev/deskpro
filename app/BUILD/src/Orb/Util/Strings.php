@@ -1784,6 +1784,7 @@ class Strings
         static $charset_map = [
             'KS_C_5601-1987' => 'CP949',
             'ISO-8859-8-I'   => 'ISO-8859-8',
+            'X-ROMAN8'       => 'HP-ROMAN8',
         ];
 
         $from_charset_u = strtoupper($from_charset);
