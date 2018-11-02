@@ -6,16 +6,18 @@ import DropZone from 'DeskPRO/Component/Uploader/DropZone';
 
 class MediaDropZone extends React.Component {
   static propTypes = {
-    icon:      PropTypes.string,
-    type:      PropTypes.string,
-    onFail:    PropTypes.func,
-    onSend:    PropTypes.func,
-    onSuccess: PropTypes.func
+    icon:       PropTypes.string,
+    type:       PropTypes.string,
+    onFail:     PropTypes.func,
+    onSend:     PropTypes.func,
+    onSuccess:  PropTypes.func,
+    onProgress: PropTypes.func,
   };
   static defaultProps = {
     onFail() {},
     onSend() {},
-    onSuccess() {}
+    onSuccess() {},
+    onProgress() {},
   };
 
   constructor(props) {
@@ -52,7 +54,7 @@ class MediaDropZone extends React.Component {
   };
 
   render() {
-    const { icon, type } = this.props;
+    const { icon, type, onProgress } = this.props;
     return (<DropZone
       getExternalInput={() => this.uploadButton.input}
       uploadUrl={this.getUploadUrl()}
@@ -78,6 +80,7 @@ class MediaDropZone extends React.Component {
           onSuccess={this.handleSuccess}
           onFail={this.onFail}
           uploadUrl={this.getUploadUrl()}
+          onProgress={onProgress}
         />
         <label className="ui button small basic" htmlFor={`upload_${type}`}>Upload files</label>
       </div>

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { Progress, ProgressBar } from '@deskpro/react-components';
 import { Tab, TabGroup } from 'DeskPRO/Component/Semantic/Tab';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
@@ -29,19 +30,27 @@ export class MediaMenuContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      uploading: false
+      uploading: false,
+      progress:  0,
     };
   }
 
   onSend = () => {
     this.setState({
-      uploading: true
+      uploading: true,
+      progress:  0
     });
   };
 
   onFail = () => {
     this.setState({
       uploading: false
+    });
+  };
+
+  handleProgress = (progress) => {
+    this.setState({
+      progress: progress * 100
     });
   };
 
@@ -82,12 +91,14 @@ export class MediaMenuContainer extends React.Component {
       reloadFiles={this.reloadFiles}
       onFail={this.onFail}
       onSend={this.onSend}
+      onProgress={this.handleProgress}
       deleteFile={this.deleteFile}
       downloadFile={this.downloadFile}
       insertAttachment={this.props.insertAttachment}
       insertAttachmentAsLink={this.props.insertAttachmentAsLink}
       insertInlineImage={this.props.insertInlineImage}
       uploading={this.state.uploading}
+      progress={this.state.progress}
     />);
   }
 }
@@ -99,12 +110,14 @@ export class MediaMenu extends React.Component {
     reloadFiles:            PropTypes.func,
     onFail:                 PropTypes.func,
     onSend:                 PropTypes.func,
+    onProgress:             PropTypes.func,
     deleteFile:             PropTypes.func,
     downloadFile:           PropTypes.func,
     insertAttachment:       PropTypes.func,
     insertAttachmentAsLink: PropTypes.func,
     insertInlineImage:      PropTypes.func,
-    uploading:              PropTypes.bool
+    uploading:              PropTypes.bool,
+    progress:               PropTypes.number,
   };
 
   componentWillMount() {
@@ -152,6 +165,9 @@ export class MediaMenu extends React.Component {
         <div className="menu-button-cover" style={{ width: this.coverWidth + 20 }} />
         <div className={classNames('ui dimmer', { active: this.props.uploading })}>
           <div className="ui text loader">Uploading file</div>
+          <Progress size="large" type="primary" style={{ height: '5px' }}>
+            <ProgressBar percent={this.props.progress} />
+          </Progress>
         </div>
         <TabGroup>
           <Tab key="inline" label="Inline images" icon="image">
@@ -161,6 +177,7 @@ export class MediaMenu extends React.Component {
               onSuccess={this.props.reloadFiles}
               onSend={this.props.onSend}
               onFail={this.props.onFail}
+              onProgress={this.props.onProgress}
             />
             <MenuWrapper className="files">
               <Menu>
@@ -175,6 +192,7 @@ export class MediaMenu extends React.Component {
               onSuccess={this.props.reloadFiles}
               onSend={this.props.onSend}
               onFail={this.props.onFail}
+              onProgress={this.props.onProgress}
             />
             <MenuWrapper className="files">
               <Menu>

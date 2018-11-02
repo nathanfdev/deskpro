@@ -11,12 +11,25 @@ export class UploadButton extends AbstractFileUpload {
     name:            PropTypes.string,
     className:       PropTypes.string,
     multiple:        PropTypes.bool,
-    acceptFileTypes: PropTypes.func
+    acceptFileTypes: PropTypes.func,
+    onSubmit:        PropTypes.func,
+    onSend:          PropTypes.func,
+    onSuccess:       PropTypes.func,
+    onFail:          PropTypes.func,
+    onProgress:      PropTypes.func,
+  };
+
+  static defaultProps = {
+    onProgress() {},
+    onSubmit() {},
+    onSend() {},
+    onSuccess() {},
+    onFail() {},
   };
 
   initializeFileUpload() {
     const { uploadUrl, uploadParams, acceptFileTypes } = this.props;
-    const { onSubmit, onSend, onSuccess, onFail } = this.props;
+    const { onSubmit, onSend, onSuccess, onFail, onProgress } = this.props;
 
     const $input = $(this.input);
     $input.fileupload({
@@ -29,6 +42,11 @@ export class UploadButton extends AbstractFileUpload {
       send:      onSend,
       done:      onSuccess,
       fail:      onFail
+    });
+    $input.bind('fileuploadprogress', (e, data) => {
+      if (data.loaded && data.total) {
+        onProgress(data.loaded / data.total);
+      }
     });
   }
 
