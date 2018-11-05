@@ -1274,7 +1274,7 @@ return [
     'agent.interface.viewbtn-table'                            => 'Tabular Results View',
     'agent.jira.actions'                                       => 'Actions',
     'agent.jira.assignedto'                                    => 'Assigned To',
-    'agent.jira.error'                                         => 'Error occured',
+    'agent.jira.error'                                         => 'Error occurred',
     'agent.jira.export_jira'                                   => 'Export to JIRA',
     'agent.jira.issuekey'                                      => 'Issue Key',
     'agent.jira.labels.assignee'                               => 'Assign To',
