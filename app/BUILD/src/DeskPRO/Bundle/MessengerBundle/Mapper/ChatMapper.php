@@ -53,6 +53,10 @@ class ChatMapper
             $uuid = RandUtils::uuidV4();
         }
 
+        if (isset($data['blobs']) && !is_array($data['blobs'])) {
+            $errors['blobs'] = 'Blobs should be array';
+        }
+
         $message->setMetadata(['uuid' => $uuid]);
 
         if (isset($data['message']) && trim($data['message'])) {

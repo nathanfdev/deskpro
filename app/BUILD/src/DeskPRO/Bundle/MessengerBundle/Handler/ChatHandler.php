@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
@@ -10,6 +11,7 @@ use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
+use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -109,6 +111,18 @@ class ChatHandler
         $chat->addMessage($message);
         $this->em->persist($message);
         $this->em->persist($chat);
+
+        if (isset($request['blobs']) && !empty($request['blobs'])) {
+            $blobIds = array_map('intval', $request['blobs']);
+            $blobs   = $this->em->getRepository(Blob::class)->findBy(['id' => $blobIds]);
+            $content = $message->getContent();
+            foreach ($blobs as $blob) {
+                if ($blob && StringUtils::ensureAttachment($blob, $content)) {
+                    $this->em->persist($blob->setIsTemp(false));
+                }
+            }
+        }
+
         $this->em->flush();
 
         $this->eventDispatcher->dispatch(
