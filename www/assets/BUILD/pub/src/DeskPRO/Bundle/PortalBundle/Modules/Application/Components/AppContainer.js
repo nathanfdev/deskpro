@@ -12,10 +12,15 @@ class AppContainer extends React.Component {
   };
 
   render() {
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+
     return (
       <Router history={browserHistory}>
         <Route path="/" component={Guides.ViewTopic}>
-          <Route path={`${window.DESKPRO_BASE_URL}/guides/**/:slug`} component={Guides.ViewTopic} />
+          <Route path={`${baseUrl}/guides/**/:slug`} component={Guides.ViewTopic} />
         </Route>
       </Router>
     );
