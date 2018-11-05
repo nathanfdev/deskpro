@@ -3752,7 +3752,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
         // web kit handles content editable without an issue. this prevents the span
         // from being extended unnecessarily
-        var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+        var editable = $.browser.webkit || "contentEditable" in document.documentElement ? ' contenteditable="false"' : '';
         api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(notifyAgentMap[agentId].name) + '</span>&nbsp;');
       };
 
