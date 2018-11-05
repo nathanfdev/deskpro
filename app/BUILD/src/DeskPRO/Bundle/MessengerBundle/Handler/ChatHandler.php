@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
@@ -23,6 +24,7 @@ class ChatHandler
     const CHAT_TRANSCRIPT          = 'chat.transcript';
     const CHAT_RATING              = 'chat.rating';
     const CHAT_HISTORY             = 'chat.history';
+    const CHAT_TRACK               = 'chat.track';
     const TYPING_START             = 'chat.typing.start';
     const TYPING_END               = 'chat.typing.end';
 
@@ -38,6 +40,7 @@ class ChatHandler
         self::TYPING_START,
         self::TYPING_END,
         self::CHAT_HISTORY,
+        self::CHAT_TRACK,
     ];
 
     /**
@@ -272,5 +275,22 @@ class ChatHandler
         $this->eventDispatcher->dispatch(ChatEvent::EVENT_NAME, new ChatEvent($chat->getId(), ChatEvent::TYPING_END_EVENT_TYPE));
 
         return new ApiWrapper($chat);
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    private function handleChatTrackCommand(ChatConversation $chat, array $request)
+    {
+        $trackMsg = $this->chatMapper->createUserTrackMessage($chat, $request);
+        $chat->addMessage($trackMsg);
+        $this->em->persist($trackMsg);
+        $this->em->persist($chat);
+        $this->em->flush();
+
+        $this->eventDispatcher->dispatch(UserChatEvent::USER_TRACK, new UserChatEvent($chat, $trackMsg));
     }
 }

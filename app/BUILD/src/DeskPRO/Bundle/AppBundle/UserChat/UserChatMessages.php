@@ -94,11 +94,12 @@ class UserChatMessages
 
     /**
      * @param ChatConversation $chat
-     * @param                  $url
+     * @param string           $url
+     * @param string           $title
      *
      * @return ChatMessage
      */
-    public static function createUserTrackMessage(ChatConversation $chat, $url)
+    public static function createUserTrackMessage(ChatConversation $chat, $url, $title = null)
     {
         $phraseId = 'msg_new_user_track';
 
@@ -109,6 +110,10 @@ class UserChatMessages
 
         $url     = htmlspecialchars($url);
         $urlShow = htmlspecialchars($urlShow);
+
+        if ($title) {
+            $urlShow = sprintf('%s, %s', $urlShow, $title);
+        }
 
         $label = "<a href=\"$url\" target=\"_blank\" title=\"$url\">$urlShow</a>";
 

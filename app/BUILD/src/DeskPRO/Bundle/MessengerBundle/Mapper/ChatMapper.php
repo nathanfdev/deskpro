@@ -2,9 +2,11 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Mapper;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\UserChat\UserChatMessages;
 use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
@@ -129,5 +131,28 @@ class ChatMapper
     public function cleanText($text)
     {
         return $this->cleaner->clean($text, 'html');
+    }
+
+    /**
+     * @param ChatConversation $chat
+     * @param array            $request
+     *
+     * @return ChatMessage
+     */
+    public function createUserTrackMessage($chat, array $request)
+    {
+        $errors = [];
+        if (!isset($request['page_url']) || !trim($request['page_url'])) {
+            $errors['page_url'] = 'page_url can\'t be blank';
+        }
+        if (!isset($request['page_title']) || !trim($request['page_title'])) {
+            $errors['page_title'] = 'page_title can\'t be blank';
+        }
+
+        if ($errors) {
+            throw new MessengerApiException($errors);
+        }
+
+        return UserChatMessages::createUserTrackMessage($chat, $request['page_url'], $request['page_title']);
     }
 }
