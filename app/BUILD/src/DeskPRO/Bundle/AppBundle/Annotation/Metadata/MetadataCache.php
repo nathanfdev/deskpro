@@ -70,7 +70,7 @@ class MetadataCache extends FileCache
      */
     protected function getFilePath($data_name)
     {
-        return $this->dir.'/'.strtr($data_name, '\\', '-').'.cache.php';
+        return $this->dir.DIRECTORY_SEPARATOR.strtr($data_name, '\\', '-').'.cache.php';
     }
 
     /**
