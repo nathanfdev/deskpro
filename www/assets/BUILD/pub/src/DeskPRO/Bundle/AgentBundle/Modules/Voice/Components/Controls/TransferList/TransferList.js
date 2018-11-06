@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
+import { /* TabButton, */ Tab } from 'DeskPRO/Component/Tab/Tab';
 import TransferListButton from '../TransferListButton';
-import TransferSearch from '../TransferSearch';
 // import Queues from './Queues';
 // import Dialpad from './Dialpad';
 // import QueuesContainer from '../../Common/QueuesContainer';
@@ -74,17 +73,22 @@ class TransferList extends React.Component {
 
     return (
       <div>
-        <TransferSearch />
+        {/* <TransferSearch />*/}
 
-        <div className="tab-menu">
+        <div className="online-agents-header">
+          <i className="fa fa-user" />
+          Agents online
+        </div>
+
+        {/* <div className="tab-menu">
           <TabButton
             tabName="agents"
-            title="Agents"
+            title="Agents online"
             iconClass="fa-user"
             onClick={this.onChangeTab}
             active={tabName === 'agents'}
           />
-          {/* <TabButton
+          <TabButton
             tabName="queues"
             title="Queues"
             iconClass="fa-tasks"
@@ -97,8 +101,8 @@ class TransferList extends React.Component {
             iconClass="fa-th"
             onClick={this.onChangeTab}
             active={tabName === 'dialpad'}
-          /> */}
-        </div>
+          />
+        </div> */}
 
         <Tab active={tabName === 'agents'}>
           <AgentList
