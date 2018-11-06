@@ -29,6 +29,8 @@ class NewQueueModalContainer extends React.Component {
         saving: false
       });
     });
+
+    return promise;
   };
 
   render() {

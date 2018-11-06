@@ -68,7 +68,7 @@ class QueueForm extends BaseForm {
 
     return (
       <div className="twilio-queue-form">
-        <Form onSubmit={this.onSubmit} formValue={formData}>
+        <Form formValue={formData}>
           <Fieldset>
             <Field select="name" label="Queue Name *">
               <Input type="text" />
@@ -123,7 +123,7 @@ class QueueForm extends BaseForm {
               <Checkbox label="Recording enabled" />
             </Field>
 
-            <button className={classNames('ui button', { loading: saving })}>
+            <button onClick={this.onSubmit} className={classNames('ui button', { loading: saving })}>
               {queueId ? 'Update' : 'Create'}
             </button>
             {onCancel &&
