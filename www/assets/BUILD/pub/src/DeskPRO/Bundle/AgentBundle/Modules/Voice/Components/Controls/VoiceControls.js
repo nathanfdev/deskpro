@@ -178,20 +178,22 @@ class Active extends React.Component {
     };
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps.hold !== this.props.hold) {
-      this.setState({
-        updatingHold: false
-      });
-    }
-  };
-
   toggleHold = (event) => {
     event.preventDefault();
-    this.props.toggleHold();
     this.setState({
       updatingHold: true
     });
+
+    const newHold = !this.state.hold;
+    const promise = this.props.toggleHold();
+    if (promise) {
+      promise.success(() => {
+        this.setState({
+          updatingHold: false,
+          hold:         newHold
+        });
+      });
+    }
   };
 
   toggleMute = (event) => {

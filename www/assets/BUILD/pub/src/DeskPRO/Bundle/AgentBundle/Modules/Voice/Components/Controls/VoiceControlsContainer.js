@@ -224,11 +224,8 @@ class VoiceControlsContainer extends React.Component {
     const { dispatch } = this.props;
     const connection = this.getConnection();
     const connectionState = this.getConnectionState();
-    if (!connection) {
-      return;
-    }
 
-    dispatch(toggleHold(connection.callId, !connectionState.hold));
+    return connection ? dispatch(toggleHold(connection.callId, !connectionState.hold)) : null;
   };
 
   transferCall = (target, type) => {
