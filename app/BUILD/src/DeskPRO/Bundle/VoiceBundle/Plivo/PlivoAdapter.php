@@ -366,8 +366,8 @@ class PlivoAdapter implements VoiceProviderInterface
 
             try {
                 if ($isHold) {
-                    $conference->muteMember($memberIds);
                     $conference->createDeaf($memberIds);
+                    $conference->muteMember($memberIds);
                     $conference->startPlaying($memberIds, 'http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3');
                 } else {
                     $conference->deleteDeaf($memberIds);
