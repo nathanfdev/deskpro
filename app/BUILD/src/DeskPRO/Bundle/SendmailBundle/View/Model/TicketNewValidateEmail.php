@@ -18,9 +18,16 @@ class TicketNewValidateEmail extends TicketEmailType
 
     protected $templateFile = 'emails_user:ticket_new_validate.html.twig';
 
-    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $verifyUrl)
-    {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
+    public function __construct(
+        Ticket $ticket,
+        $ticketPerson,
+        $ticketAgent,
+        $ticketLink,
+        $ticketMessages,
+        $ticketSatisfaction,
+        $verifyUrl
+    ) {
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketSatisfaction);
 
         $this->verifyUrl = $verifyUrl;
     }

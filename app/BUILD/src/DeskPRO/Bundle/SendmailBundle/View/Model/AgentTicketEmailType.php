@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\TicketFeedback;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage;
@@ -32,13 +33,14 @@ class AgentTicketEmailType extends TicketEmailType
     /**
      * TicketEmailType constructor.
      *
-     * @param Ticket        $ticket
-     * @param Person        $ticketPerson
-     * @param Person        $ticketAgent
-     * @param string        $ticketLink
-     * @param TicketMessage $ticketMessages
-     * @param array         $participants
-     * @param               $ticketLayout
+     * @param Ticket           $ticket
+     * @param Person           $ticketPerson
+     * @param Person           $ticketAgent
+     * @param string           $ticketLink
+     * @param TicketMessage[]  $ticketMessages
+     * @param TicketFeedback[] $ticketSatisfaction
+     * @param array            $participants
+     * @param                  $ticketLayout
      * @param $customFields
      * @param $customUserFields
      */
@@ -48,12 +50,13 @@ class AgentTicketEmailType extends TicketEmailType
         $ticketAgent,
         $ticketLink,
         $ticketMessages,
+        $ticketSatisfaction,
         $participants,
         $ticketLayout,
         $customFields,
         $customUserFields
     ) {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketSatisfaction);
 
         $this->participants     = $participants;
         $this->ticketLayout     = $ticketLayout;

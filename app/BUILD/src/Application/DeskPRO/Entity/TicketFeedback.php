@@ -84,6 +84,16 @@ class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
         return $this->rating;
     }
 
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
     /**
      * Is this is a new record? (ie not persisted, or persisted this request).
      *

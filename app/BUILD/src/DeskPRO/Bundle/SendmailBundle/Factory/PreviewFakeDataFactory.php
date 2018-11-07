@@ -71,7 +71,13 @@ class PreviewFakeDataFactory
                     $className = ArticleComment::class;
                 }
 
-                return $this->manager->getRepository($className)->findOneBy([]);
+                $variables = $request->request->get('variables');
+
+                if (!empty($request->request->get('variables')[$parameter->getName()])) {
+                    return $this->manager->getRepository($className)->find($request->request->get('variables')[$parameter->getName()]['id']);
+                } else {
+                    return $this->manager->getRepository($className)->findOneBy([]);
+                }
             } else {
                 switch ($parameter->getName()) {
                     case 'resetUrl':

@@ -24,9 +24,10 @@ class TicketAwaitingWarn extends TicketEmailType
         $ticketAgent,
         $ticketLink,
         $ticketMessages,
+        $ticketSatisfaction,
         $ticketResolveLink
     ) {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketSatisfaction);
 
         $this->ticketResolveLink = $ticketResolveLink;
     }

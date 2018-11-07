@@ -299,9 +299,9 @@ class EmailTemplatesEditorContainer extends React.Component {
     if (this.props.emailTemplates.getIn(['template', 'type']) !== 'email') {
       return true;
     }
-    const variables = [];
+    const variables = {};
     if (this.props.emailTemplates.get('exampleTicket')) {
-      variables.push({ ticket: this.props.emailTemplates.get('exampleTicket') });
+      variables.ticket = this.props.emailTemplates.get('exampleTicket');
     }
     const viewModel = this.props.emailTemplates.getIn(['currentTemplate', 'viewModel']);
     const group = this.props.emailTemplates.get('currentTemplateGroup');
