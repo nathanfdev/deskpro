@@ -93,6 +93,9 @@ define [
           @latest_version = result.data.latestVersion.version_info
           @latest_version.count_behind = parseInt(result.data.latestVersion.version_info.count_behind) || 0
 
+          if @latest_version.build_name.indexOf(@version_info.build_name) == -1
+            @latest_version.build_name = @latest_version.build_name.split(/\.(?=[^\.]+$)/)[0]
+
         if not result.data.news?.news?
           @news_status = "error"
         else
