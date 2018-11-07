@@ -200,7 +200,7 @@ class Storage
             $data = $this->storageAdapter->readLogFile($filename).$data;
         } else {
             $date     = new \DateTime();
-            $filename = 'import_log.'.$date->format('c').'.log';
+            $filename = 'import_log.'.$date->format('Y_m_d_H_i_s').'.log';
         }
 
         $this->storageAdapter->writeLogFile($filename, $data);
