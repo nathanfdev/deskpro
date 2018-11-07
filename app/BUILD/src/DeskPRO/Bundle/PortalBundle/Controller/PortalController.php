@@ -134,6 +134,10 @@ class PortalController extends AbstractController
                 $token = new DpTransferSessionAuthToken($person, 'token_login_'.RandUtils::randomString(20));
                 $this->get('security.token_storage')->setToken($token);
 
+                if ($request->query->get('return')) {
+                    return $this->redirect($request->query->get('return'));
+                }
+
                 return $this->redirectToRoute('portal_home');
             }
         }
