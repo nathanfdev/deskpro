@@ -79,7 +79,7 @@ class ErrorController extends AbstractController
         $code     = $exception->getStatusCode();
         $template = $this->makeTemplateName($code);
 
-        // if an exception occured BEFORE the security (Firewall) listener runs, then
+        // if an exception occurred BEFORE the security (Firewall) listener runs, then
         // there is no token in storage. Our templates usually do is_granted type checks,
         // so we need to do something to avoid the is_granted throwing its own exception while we render this page.
         // Ideally, error templates would not contain security checks, but in practice they will, so this
