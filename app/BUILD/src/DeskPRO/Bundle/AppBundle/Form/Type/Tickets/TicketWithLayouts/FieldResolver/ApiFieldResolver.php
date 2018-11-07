@@ -27,18 +27,20 @@ class ApiFieldResolver extends AbstractFieldResolver
      */
     protected function createDepartment(TicketWithLayoutsContext $context)
     {
-        // we can just skip department field for api if it's single and already chosen
-        if ($context->getTicket()->getDepartment() && $this->isNotSelectableDepartment($context)) {
-            return false;
-        }
-
-        return new FormField(TicketDepartmentChoiceType::class, [
+        $options = [
             'person'      => $context->getPerson(),
             'ticket'      => $context->getTicket(),
             'constraints' => [
                 new Assert\NotNull(),
             ],
-        ]);
+        ];
+
+        // we can just skip department field for api if it's single and already chosen
+        if ($context->getTicket()->getDepartment() && $this->isNotSelectableDepartment($context)) {
+            $options['empty_data'] = (string) $context->getTicket()->getDepartment()->getId();
+        }
+
+        return new FormField(TicketDepartmentChoiceType::class, $options);
     }
 
     /**
