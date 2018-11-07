@@ -158,6 +158,22 @@ pageMeta.baseId = '{{ baseId }}';
 					</span>
 				</dd>
 
+        <dd id="{{baseId}}_past_pub_date_readonly" {% if not (news.status_code == 'published') or perms.can_edit %}style="display: none"{% endif %}>
+					<span class="auto-publish" {% if not news.date_published %}style="display: none"{% endif %}>
+            {{ phrase('agent.general.date_published')}}: {{ news.date_published|date('day') }}
+					</span>
+        </dd>
+
+				<dd id="{{baseId}}_past_pub_date" {% if not (news.status_code == 'published' and perms.can_edit) %}style="display: none"{% endif %}>
+					<span class="auto-publish" {% if not news.date_published %}style="display: none"{% endif %}>
+            {{ phrase('agent.general.date_published')}}: 
+							<div style="display: inline-block; position: relative;">
+								<span class="pub-date opt" data-val="{{ news.date_published|date('U') }}"> {{ news.date_published|date('day') }}</span>
+							</div>
+						<input type="text" class="pub-date-input" value="{{ news.date_published|date('j M, y') }}000" style="display: none; height: 10px;" />
+					</span>
+				</dd>
+
 			</dl>
 
 			<div class="controls" id="{{baseId}}_action_buttons">

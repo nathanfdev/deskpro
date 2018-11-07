@@ -34,6 +34,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		this._initLabels();
 		this._initAutoUnpublishOptions();
 		this._initAutoPublishOptions();
+    this._initPastPublishOptions();
 
 		this._initCommentForm();
 
@@ -179,9 +180,13 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 			self.getEl('auto_unpub').hide();
 			self.getEl('auto_pub').hide();
+      self.getEl('past_pub_date').hide();
 
 			if (status == 'published') {
 				self.getEl('auto_unpub').show();
+
+        self.showCurrentDateAsPublishedDate();
+        self.getEl('past_pub_date').show();
 			} else if (status == 'hidden.unpublished') {
 				self.getEl('auto_pub').show();
 			}
@@ -469,6 +474,83 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 	},
 
+	//#################################################################
+	//# Set Publish Date in the Past
+	//#################################################################
+
+	_initPastPublishOptions: function() {
+		var self = this;
+
+		var optWrap = this.getEl('past_pub_date');
+
+		var pubDate = $('.auto-publish .pub-date.opt', optWrap);
+		var dateInput = $('.auto-publish .pub-date-input', optWrap);
+		dateInput.each(function() {
+			$(this).datetimepicker({
+				format: 'D MMM, YY',
+        maxDate: moment(),
+				widgetParent: $(this).prev('div'),
+				widgetPositioning: { vertical: 'bottom' },
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
+    pubDate.on('click', function() {
+      dateInput.data('DateTimePicker').show();
+    });
+
+    dateInput.on('dp.change', function(e){
+      pubDate.data('val', e.date.unix());
+      pubDate.text(e.date.format('D MMM, YY'));
+      self.updatePastPubOptions();
+    });
+	},
+
+  // we don't load real publish date from server
+  // in case if we change status to publish - assume current date as publish date
+  showCurrentDateAsPublishedDate: function() {
+    var now = moment();
+    var optWrap = this.getEl('past_pub_date');
+    pubDate = $('.auto-publish .pub-date.opt', optWrap);
+    pubDate.data('val', now.unix());
+    pubDate.text(now.format('D MMM, YY'));
+  },
+
+	updatePastPubOptions: function() {
+		var optWrap = this.getEl('past_pub_date');
+		var timestamp = $('.auto-publish .pub-date.opt', optWrap).data('val');
+
+		// Still need them to enter an input
+		if (!timestamp) {
+			return;
+		}
+
+		var data = [];
+		data.push({
+			name: 'action',
+			value: 'set-past-pub-date'
+		});
+		data.push({
+			name: 'pub_timestamp',
+			value: timestamp
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
+			type: 'POST',
+			data: data,
+			context: this,
+			dataType: 'json'
+		});
+	},
 
 	//#################################################################
 	//# Labels

@@ -268,6 +268,27 @@ class NewsController extends AbstractController
                 $news->date_published = $date;
                 break;
 
+            // set publish date in the past
+            case 'set-past-pub-date':
+                if ($news->status_code !== News::STATUS_PUBLISHED) {
+                    return $this->createJsonResponse([
+                        'success' => false,
+                        'error'   => "Can't set publish date for News in not published status",
+                    ]);
+                }
+
+                $date = date_create('@'.$this->in->getUInt('pub_timestamp'));
+                $now  = new \DateTime('now');
+                if ($date > $now) {
+                    return $this->createJsonResponse([
+                        'success' => false,
+                        'error'   => 'Can only set date in the past',
+                    ]);
+                }
+
+                $news->date_published = $date;
+                break;
+
             case 'remove-auto-pub':
                 $news->date_published = null;
                 break;
