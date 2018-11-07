@@ -94,6 +94,7 @@ class ReportWidget extends DomainObject
     public function __construct()
     {
         $this->favorited_by = new ArrayCollection();
+        $this->labels       = [];
     }
 
     /**
