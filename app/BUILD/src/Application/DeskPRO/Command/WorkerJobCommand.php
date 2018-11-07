@@ -57,35 +57,33 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         $appEnv    = $this->getContainer()->get('deskpro.app_env');
 
         // see if we need to do an ES index
-        if (!defined('DPC_IS_CLOUD')) {
-            @set_time_limit(0);
-            $index_reset = \Application\DeskPRO\App::getSetting('elastica.requires_reset');
-            if ($index_reset) {
-                try {
-                    $id = mt_rand(10000, 99999);
-                    \Application\DeskPRO\App::getDb()->insertIgnore('settings', ['name' => 'elastica.requires_reset_started', 'value' => $id]);
+        @set_time_limit(0);
+        $index_reset = \Application\DeskPRO\App::getSetting('elastica.requires_reset');
+        if ($index_reset) {
+            try {
+                $id = mt_rand(10000, 99999);
+                \Application\DeskPRO\App::getDb()->insertIgnore('settings', ['name' => 'elastica.requires_reset_started', 'value' => $id]);
 
-                    $cmd = $appEnv->getConsolePhpCommand('dp:elastica:populate --auto-reset '.$id);
+                $cmd = $appEnv->getConsolePhpCommand('dp:elastica:populate --auto-reset '.$id);
 
-                    if ($isVerbose && defined('DP_START_TIME')) {
-                        $output->writeln('Starting ElasticSearch indexing: '.$cmd);
-                    }
-
-                    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                        // this is needed as we need a fake window to hide the process
-                        $cmd = str_replace('php-win.exe', 'php.exe', $cmd);
-
-                        if (class_exists('\COM', false)) {
-                            $shell = new \COM('WScript.Shell');
-                            $shell->Run($cmd, 0, false);
-                        } else {
-                            pclose(popen("start \"dpindexer\" /MIN $cmd", 'r'));
-                        }
-                    } else {
-                        exec("nohup $cmd > /dev/null 2> /dev/null &");
-                    }
-                } catch (\Exception $e) {
+                if ($isVerbose && defined('DP_START_TIME')) {
+                    $output->writeln('Starting ElasticSearch indexing: '.$cmd);
                 }
+
+                if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                    // this is needed as we need a fake window to hide the process
+                    $cmd = str_replace('php-win.exe', 'php.exe', $cmd);
+
+                    if (class_exists('\COM', false)) {
+                        $shell = new \COM('WScript.Shell');
+                        $shell->Run($cmd, 0, false);
+                    } else {
+                        pclose(popen("start \"dpindexer\" /MIN $cmd", 'r'));
+                    }
+                } else {
+                    exec("nohup $cmd > /dev/null 2> /dev/null &");
+                }
+            } catch (\Exception $e) {
             }
         }
 
