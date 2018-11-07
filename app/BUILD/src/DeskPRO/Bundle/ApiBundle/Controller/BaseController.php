@@ -8,6 +8,7 @@ use DeskPRO\Component\Util\TypeUtils;
 use DpSys\LowError\SystemErrorHandler;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Debug\Exception\FlattenException;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -83,7 +84,8 @@ class BaseController extends FOSRestController
         ], Response::HTTP_BAD_REQUEST);
     }
 
-    protected function createEntityNotFoundExceptionMessage($entity, $id) {
+    protected function createEntityNotFoundExceptionMessage($entity, $id)
+    {
         return  "#{$id} Not Found";
     }
 
@@ -233,9 +235,9 @@ class BaseController extends FOSRestController
      *
      * Don't use this to log handled exceptions which have no value for end users.
      *
-     * @param \Exception $exception
+     * @param \Exception|FlattenException $exception
      */
-    protected function logException(\Exception $exception)
+    protected function logException(/* Throwable */ $exception)
     {
         SystemErrorHandler::logException($exception);
     }
