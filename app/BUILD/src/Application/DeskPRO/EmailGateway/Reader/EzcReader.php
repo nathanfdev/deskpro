@@ -162,14 +162,14 @@ class EzcReader extends AbstractReader
                         ++$count;
                         if (
                             $p instanceof \ezcMailText
-                            && $p->subType === 'plain'
+                            && trim($p->subType) === 'plain'
                             && !($p->contentDisposition && $p->contentDisposition->disposition == 'attachment')
                         ) {
                             $textPart = $p;
                         }
                         if (
                             $p instanceof \ezcMailText
-                            && $p->subType === 'html'
+                            && trim($p->subType) === 'html'
                             && !($p->contentDisposition && $p->contentDisposition->disposition == 'attachment')
                         ) {
                             $htmlPart = $p;
@@ -433,7 +433,7 @@ class EzcReader extends AbstractReader
             if (
                 $part instanceof \ezcMailFile
                 || ($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
-                || ($part instanceof \ezcMailText && $part->subType == 'calendar')
+                || ($part instanceof \ezcMailText && trim($part->subType) == 'calendar')
                 || ($part instanceof \ezcMailRfc822Digest)
             ) {
                 // We already analysed the signature or the encrypted content so we don't had it as an attachment
@@ -455,7 +455,7 @@ class EzcReader extends AbstractReader
                     }
 
                     if (!$attach->file_name) {
-                        if ($part instanceof \ezcMailText && $part->subType == 'calendar') {
+                        if ($part instanceof \ezcMailText && trim($part->subType) == 'calendar') {
                             $attach->file_name = 'icalendar.ics';
                             $attach->mime_type = 'text/calendar';
                         } else {
@@ -579,7 +579,7 @@ class EzcReader extends AbstractReader
 
         foreach ($mail->fetchParts(['ezcMailText']) as $part) {
             if (
-                $part->subType == 'html'
+                trim($part->subType) == 'html'
                 && !($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
             ) {
                 $originalCharset = $this->getOriginalCharset($part);
@@ -668,7 +668,7 @@ class EzcReader extends AbstractReader
 
         foreach ($mail->fetchParts(['ezcMailText']) as $part) {
             if (
-                $part->subType == 'plain'
+                trim($part->subType) == 'plain'
                 && !($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
             ) {
                 $originalCharset = $this->getOriginalCharset($part);
