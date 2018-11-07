@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Language;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -17,6 +18,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SnippetTranslationType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -79,12 +95,22 @@ class SnippetTranslationType extends AbstractType
      */
     public function onPostSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
         /** @var SnippetTranslation $snippetTranslation */
         $snippetTranslation = $event->getData();
 
         if (!is_object($snippetTranslation)) {
             return;
+        }
+
+        $imagesAuth = [];
+        if (preg_match_all('|file\.php/([A-Z0-9]+)/|', $snippetTranslation->getContent(), $imagesAuth)) {
+            $blobRepository = $this->em->getRepository(Blob::class);
+            foreach ($imagesAuth[1] as $imageAuth) {
+                $blob = $blobRepository->getByAuthCode($imageAuth);
+                if ($blob instanceof Blob && $blob->getId()) {
+                    $blob->setIsTemp(false);
+                }
+            }
         }
 
         $blobs = $snippetTranslation->getBlobs();

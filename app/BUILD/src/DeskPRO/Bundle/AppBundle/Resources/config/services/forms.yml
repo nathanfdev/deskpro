@@ -453,3 +453,10 @@ services:
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type }
+
+  form.snippet_translation:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetTranslationType
+    arguments:
+    - "@doctrine.orm.default_entity_manager"
+    tags:
+    - { name: form.type }
