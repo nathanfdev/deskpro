@@ -65,16 +65,6 @@ class ReportSaver
             $widget->setVariables($widgetVars);
             $widgetData = $this->widgetService->renderWidget($widget, $person);
 
-            if ($widgetData && $widget->getType() == DashboardWidgetManager::WIDGET_TYPE_TABLE) {
-                $columns = [];
-                foreach ($widgetData['columns'] as $column) {
-                    $aoColumns[] = null;
-                    $columns[]   = ['title' => $column];
-                }
-                $widgetData['aoColumns'] = $aoColumns;
-                $widgetData['columns']   = $columns;
-            }
-
             $savedWidget = new SavedDashboardWidget();
             $savedWidget
                 ->setVariables($widget->getVariables())
