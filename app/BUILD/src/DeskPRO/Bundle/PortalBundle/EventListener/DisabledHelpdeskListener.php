@@ -29,6 +29,9 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
         'portal_set_password_process',
         'gregwar_captcha.generate_captcha',
         'goto',
+        'jira_webhook_handle',
+        'api_channel_facebook_incoming',
+        'api_channel_incoming_sms_twilio',
     ];
 
     /**
