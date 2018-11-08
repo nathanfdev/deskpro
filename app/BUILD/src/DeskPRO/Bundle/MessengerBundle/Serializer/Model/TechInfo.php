@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\MessengerBundle\Serializer\Model;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 
 /**
  * Class TechInfo.
@@ -25,6 +26,11 @@ class TechInfo implements MessengerModelInterface
      * @var AvatarResolver
      */
     private $avatarResolver;
+
+    /**
+     * @var NotificationConfiguration
+     */
+    private $clientsSetup;
 
     /**
      * TechInfo constructor.
@@ -65,6 +71,7 @@ class TechInfo implements MessengerModelInterface
         return [
             'chat_departments' => $chatDepartments,
             'agents_online'    => $agentsOnline,
+            'client'           => $this->clientsSetup->getClients()[0],
         ];
     }
 
@@ -90,5 +97,13 @@ class TechInfo implements MessengerModelInterface
         $this->chatDepartments = $chatDepartments;
 
         return $this;
+    }
+
+    /**
+     * @param NotificationConfiguration $clientsSetup
+     */
+    public function setClientsSetup(NotificationConfiguration $clientsSetup)
+    {
+        $this->clientsSetup = $clientsSetup;
     }
 }
