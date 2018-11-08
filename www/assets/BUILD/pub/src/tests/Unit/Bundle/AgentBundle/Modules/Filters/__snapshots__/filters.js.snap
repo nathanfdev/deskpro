@@ -13,9 +13,22 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
   <h1
     className="dp-heading"
   >
-    <i
-      className="fa fa-envelope-o dp-icon dp-icon--s"
-    />
+    <svg
+      aria-hidden="true"
+      className="svg-inline--fa fa-envelope fa-w-16 fa-sm dp-icon"
+      data-icon="envelope"
+      data-prefix="far"
+      role="img"
+      style={Object {}}
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z"
+        fill="currentColor"
+        style={Object {}}
+      />
+    </svg>
     <span>
       Tickets
     </span>
@@ -67,12 +80,30 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
             onClick={[Function]}
           >
             Inbox
-            <i
+            <svg
               aria-hidden={true}
-              className="fa fa-caret-up dp-icon dp-icon--s dp-column-drawer__arrow"
+              aria-labelledby="svg-inline--fa-title-1N67RP9HZaD7"
+              className="svg-inline--fa fa-caret-up fa-w-10 fa-sm dp-icon dp-column-drawer__arrow"
+              data-icon="caret-up"
+              data-prefix="fas"
               onClick={[Function]}
-              title="Close"
-            />
+              role="img"
+              style={Object {}}
+              viewBox="0 0 320 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <title
+                id="svg-inline--fa-title-1N67RP9HZaD7"
+                style={Object {}}
+              >
+                Close
+              </title>
+              <path
+                d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
           </h1>
           <div
             aria-hidden={false}
@@ -104,9 +135,22 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                       onMouseLeave={[Function]}
                       style={undefined}
                     >
-                      <i
-                        className="fa fa-filter dp-icon dp-icon--s"
-                      />
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-filter fa-w-16 fa-sm dp-icon"
+                        data-icon="filter"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
                       <div />
                     </div>
                   </span>
@@ -143,9 +187,22 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                       onMouseLeave={[Function]}
                       style={undefined}
                     >
-                      <i
-                        className="fa fa-filter dp-icon dp-icon--s"
-                      />
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-filter fa-w-16 fa-sm dp-icon"
+                        data-icon="filter"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
                       <div />
                     </div>
                   </span>
@@ -182,9 +239,22 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                       onMouseLeave={[Function]}
                       style={undefined}
                     >
-                      <i
-                        className="fa fa-filter dp-icon dp-icon--s"
-                      />
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-filter fa-w-16 fa-sm dp-icon"
+                        data-icon="filter"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
                       <div />
                     </div>
                   </span>
@@ -221,9 +291,22 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                       onMouseLeave={[Function]}
                       style={undefined}
                     >
-                      <i
-                        className="fa fa-filter dp-icon dp-icon--s"
-                      />
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-filter fa-w-16 fa-sm dp-icon"
+                        data-icon="filter"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
                       <div />
                     </div>
                   </span>
@@ -260,9 +343,22 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                       onMouseLeave={[Function]}
                       style={undefined}
                     >
-                      <i
-                        className="fa fa-filter dp-icon dp-icon--s"
-                      />
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-filter fa-w-16 fa-sm dp-icon"
+                        data-icon="filter"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
                       <div />
                     </div>
                   </span>
@@ -293,12 +389,30 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
             onClick={[Function]}
           >
             Filters
-            <i
+            <svg
               aria-hidden={true}
-              className="fa fa-caret-up dp-icon dp-icon--s dp-column-drawer__arrow"
+              aria-labelledby="svg-inline--fa-title-dsXx1ywvGg0Y"
+              className="svg-inline--fa fa-caret-up fa-w-10 fa-sm dp-icon dp-column-drawer__arrow"
+              data-icon="caret-up"
+              data-prefix="fas"
               onClick={[Function]}
-              title="Close"
-            />
+              role="img"
+              style={Object {}}
+              viewBox="0 0 320 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <title
+                id="svg-inline--fa-title-dsXx1ywvGg0Y"
+                style={Object {}}
+              >
+                Close
+              </title>
+              <path
+                d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"
+                fill="currentColor"
+                style={Object {}}
+              />
+            </svg>
           </h1>
           <div
             aria-hidden={false}
@@ -330,9 +444,22 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                       onMouseLeave={[Function]}
                       style={undefined}
                     >
-                      <i
-                        className="fa fa-filter dp-icon dp-icon--s"
-                      />
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-filter fa-w-16 fa-sm dp-icon"
+                        data-icon="filter"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
                       <div />
                     </div>
                   </span>
@@ -369,9 +496,22 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                       onMouseLeave={[Function]}
                       style={undefined}
                     >
-                      <i
-                        className="fa fa-filter dp-icon dp-icon--s"
-                      />
+                      <svg
+                        aria-hidden="true"
+                        className="svg-inline--fa fa-filter fa-w-16 fa-sm dp-icon"
+                        data-icon="filter"
+                        data-prefix="fas"
+                        role="img"
+                        style={Object {}}
+                        viewBox="0 0 512 512"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                          fill="currentColor"
+                          style={Object {}}
+                        />
+                      </svg>
                       <div />
                     </div>
                   </span>
@@ -405,12 +545,30 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
               onClick={[Function]}
             >
               My Stars
-              <i
+              <svg
                 aria-hidden={true}
-                className="fa fa-caret-up dp-icon dp-icon--s dp-column-drawer__arrow"
+                aria-labelledby="svg-inline--fa-title-Ubh5Kn6gb1qn"
+                className="svg-inline--fa fa-caret-up fa-w-10 fa-sm dp-icon dp-column-drawer__arrow"
+                data-icon="caret-up"
+                data-prefix="fas"
                 onClick={[Function]}
-                title="Close"
-              />
+                role="img"
+                style={Object {}}
+                viewBox="0 0 320 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title
+                  id="svg-inline--fa-title-Ubh5Kn6gb1qn"
+                  style={Object {}}
+                >
+                  Close
+                </title>
+                <path
+                  d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"
+                  fill="currentColor"
+                  style={Object {}}
+                />
+              </svg>
             </h1>
             <div
               aria-hidden={false}
@@ -429,14 +587,26 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                   <span
                     className="dp-drawer-item__pos-left"
                   >
-                    <i
-                      className="fa fa-star dp-icon dp-icon--s"
+                    <svg
+                      aria-hidden="true"
+                      className="svg-inline--fa fa-star fa-w-18 fa-sm dp-icon"
+                      data-icon="star"
+                      data-prefix="far"
+                      role="img"
                       style={
                         Object {
                           "color": "#0000FF",
                         }
                       }
-                    />
+                      viewBox="0 0 576 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
+                        fill="currentColor"
+                        style={Object {}}
+                      />
+                    </svg>
                   </span>
                   <span
                     className="dp-drawer-item__pos-middle"
@@ -462,14 +632,26 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                   <span
                     className="dp-drawer-item__pos-left"
                   >
-                    <i
-                      className="fa fa-star dp-icon dp-icon--s"
+                    <svg
+                      aria-hidden="true"
+                      className="svg-inline--fa fa-star fa-w-18 fa-sm dp-icon"
+                      data-icon="star"
+                      data-prefix="far"
+                      role="img"
                       style={
                         Object {
                           "color": "#008000",
                         }
                       }
-                    />
+                      viewBox="0 0 576 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
+                        fill="currentColor"
+                        style={Object {}}
+                      />
+                    </svg>
                   </span>
                   <span
                     className="dp-drawer-item__pos-middle"
@@ -495,14 +677,26 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                   <span
                     className="dp-drawer-item__pos-left"
                   >
-                    <i
-                      className="fa fa-star dp-icon dp-icon--s"
+                    <svg
+                      aria-hidden="true"
+                      className="svg-inline--fa fa-star fa-w-18 fa-sm dp-icon"
+                      data-icon="star"
+                      data-prefix="far"
+                      role="img"
                       style={
                         Object {
                           "color": "#FFA500",
                         }
                       }
-                    />
+                      viewBox="0 0 576 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
+                        fill="currentColor"
+                        style={Object {}}
+                      />
+                    </svg>
                   </span>
                   <span
                     className="dp-drawer-item__pos-middle"
@@ -528,14 +722,26 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                   <span
                     className="dp-drawer-item__pos-left"
                   >
-                    <i
-                      className="fa fa-star dp-icon dp-icon--s"
+                    <svg
+                      aria-hidden="true"
+                      className="svg-inline--fa fa-star fa-w-18 fa-sm dp-icon"
+                      data-icon="star"
+                      data-prefix="far"
+                      role="img"
                       style={
                         Object {
                           "color": "#FFC0CB",
                         }
                       }
-                    />
+                      viewBox="0 0 576 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
+                        fill="currentColor"
+                        style={Object {}}
+                      />
+                    </svg>
                   </span>
                   <span
                     className="dp-drawer-item__pos-middle"
@@ -561,14 +767,26 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                   <span
                     className="dp-drawer-item__pos-left"
                   >
-                    <i
-                      className="fa fa-star dp-icon dp-icon--s"
+                    <svg
+                      aria-hidden="true"
+                      className="svg-inline--fa fa-star fa-w-18 fa-sm dp-icon"
+                      data-icon="star"
+                      data-prefix="far"
+                      role="img"
                       style={
                         Object {
                           "color": "#800080",
                         }
                       }
-                    />
+                      viewBox="0 0 576 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
+                        fill="currentColor"
+                        style={Object {}}
+                      />
+                    </svg>
                   </span>
                   <span
                     className="dp-drawer-item__pos-middle"
@@ -594,14 +812,26 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                   <span
                     className="dp-drawer-item__pos-left"
                   >
-                    <i
-                      className="fa fa-star dp-icon dp-icon--s"
+                    <svg
+                      aria-hidden="true"
+                      className="svg-inline--fa fa-star fa-w-18 fa-sm dp-icon"
+                      data-icon="star"
+                      data-prefix="far"
+                      role="img"
                       style={
                         Object {
                           "color": "#FF0000",
                         }
                       }
-                    />
+                      viewBox="0 0 576 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
+                        fill="currentColor"
+                        style={Object {}}
+                      />
+                    </svg>
                   </span>
                   <span
                     className="dp-drawer-item__pos-middle"
@@ -627,14 +857,26 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                   <span
                     className="dp-drawer-item__pos-left"
                   >
-                    <i
-                      className="fa fa-star dp-icon dp-icon--s"
+                    <svg
+                      aria-hidden="true"
+                      className="svg-inline--fa fa-star fa-w-18 fa-sm dp-icon"
+                      data-icon="star"
+                      data-prefix="far"
+                      role="img"
                       style={
                         Object {
                           "color": "#FFFF00",
                         }
                       }
-                    />
+                      viewBox="0 0 576 512"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M528.1 171.5L382 150.2 316.7 17.8c-11.7-23.6-45.6-23.9-57.4 0L194 150.2 47.9 171.5c-26.2 3.8-36.7 36.1-17.7 54.6l105.7 103-25 145.5c-4.5 26.3 23.2 46 46.4 33.7L288 439.6l130.7 68.7c23.2 12.2 50.9-7.4 46.4-33.7l-25-145.5 105.7-103c19-18.5 8.5-50.8-17.7-54.6zM388.6 312.3l23.7 138.4L288 385.4l-124.3 65.3 23.7-138.4-100.6-98 139-20.2 62.2-126 62.2 126 139 20.2-100.6 98z"
+                        fill="currentColor"
+                        style={Object {}}
+                      />
+                    </svg>
                   </span>
                   <span
                     className="dp-drawer-item__pos-middle"
@@ -671,12 +913,30 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
               onClick={[Function]}
             >
               Labels
-              <i
+              <svg
                 aria-hidden={true}
-                className="fa fa-caret-up dp-icon dp-icon--s dp-column-drawer__arrow"
+                aria-labelledby="svg-inline--fa-title-WieotsMzO5Rj"
+                className="svg-inline--fa fa-caret-up fa-w-10 fa-sm dp-icon dp-column-drawer__arrow"
+                data-icon="caret-up"
+                data-prefix="fas"
                 onClick={[Function]}
-                title="Close"
-              />
+                role="img"
+                style={Object {}}
+                viewBox="0 0 320 512"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title
+                  id="svg-inline--fa-title-WieotsMzO5Rj"
+                  style={Object {}}
+                >
+                  Close
+                </title>
+                <path
+                  d="M288.662 352H31.338c-17.818 0-26.741-21.543-14.142-34.142l128.662-128.662c7.81-7.81 20.474-7.81 28.284 0l128.662 128.662c12.6 12.599 3.676 34.142-14.142 34.142z"
+                  fill="currentColor"
+                  style={Object {}}
+                />
+              </svg>
             </h1>
             <div
               aria-hidden={false}
