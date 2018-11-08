@@ -223,7 +223,7 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   onSearchFocus = () => {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
-    if (this.agentTopBar && this.agentTopBar.searchBox.textInput.value) {
+    if (this.agentTopBar && this.agentTopBar.searchBox.searchBox.textInput.value) {
       window.$('.dp-omnibox-results').show();
     }
   };

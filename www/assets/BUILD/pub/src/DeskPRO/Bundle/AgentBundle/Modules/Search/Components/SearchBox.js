@@ -32,7 +32,7 @@ class SearchBox extends React.Component {
         </SemanticSearchBox>
       );
     }
-    return <SemanticSearchBox {...props} />;
+    return <SemanticSearchBox ref={(c) => { this.searchBox = c; }} {...props} />;
   }
 }
 
