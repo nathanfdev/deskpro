@@ -15,3 +15,17 @@ serve_default_picture:
   defaults:
     name: 'default_picture'
     s: '0'
+
+agent_people_view:
+  path: '/agent/people/{person_id}'
+  requirements:
+    person_id: '\d+'
+  options:
+    fragment: 'p'
+
+agent_ticket_view:
+  path: '/agent/tickets/{ticket_id}'
+  requirements:
+    person_id: '\d+'
+  options:
+    fragment: 't'
