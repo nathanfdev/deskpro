@@ -1,4 +1,4 @@
-<<li class="task task-row-{{ task.id }} inside"
+<li class="task task-row-{{ task.id }} inside"
 	data-type="tasks"
 	{% if task.assigned_agent %}
 		data-route="listpane:{{ path('agent_task_list',{'search_type': 'own', 'search_category': 'total'}) }}"
