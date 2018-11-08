@@ -131,4 +131,37 @@ class UserController extends AbstractMessengerController
 
         return View::create($this->wrap($techInfo));
     }
+
+    /**
+     * This endpoint provide you an ability to authenticate pusher app.
+     *
+     * @ApiDoc(
+     *     section="Notifications and alerts",
+     *     resourceDescription="Operations about action alerts",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     parameters={
+     *         {"name"="channel_name", "description"="", "dataType"="string", "required"=true},
+     *         {"name"="socket_id", "description"="", "dataType"="string", "required"=true}
+     *     },
+     *     output="array"
+     * )
+     *
+     * @Rest\Post("/pusher/auth")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function pusherAuthAction(Request $request)
+    {
+        $submitted = $request->request->all();
+        /** @var \Pusher $pusher */
+        $pusher = $this->get('deskpro.notification.pusher');
+        $status = Response::HTTP_OK;
+        $data   = json_decode($pusher->socket_auth($submitted['channel_name'], $submitted['socket_id']), true);
+
+        return View::create($data, $status);
+    }
 }
