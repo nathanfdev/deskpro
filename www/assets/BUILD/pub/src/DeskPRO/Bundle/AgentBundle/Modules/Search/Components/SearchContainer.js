@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import Isvg from 'react-inlinesvg';
-import TokenField from '@deskpro/token-field';
+import TokenField from '@deskpro/token-field/dist/index';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import fakeResults from 'tests/DemoState/AgentBundle/Modules/Search/result.json';

@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Input, Checkbox, Radio, List, ListElement } from '@deskpro/react-components';
 
 class SnippetsFiltering extends React.Component {
@@ -281,7 +282,7 @@ class SnippetsFiltering extends React.Component {
             value={labelFilter}
             className="search"
             onChange={handleLabelFilter}
-            icon="search"
+            icon={faSearch}
           />
           { multiLabels.length ?
             <div className="multi-mode">
