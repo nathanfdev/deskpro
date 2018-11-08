@@ -261,10 +261,16 @@ class SyncTmsCommand extends ContainerAwareCommand
                 });
 
                 if ($r) {
-                    // OneSky mangles newlines in RTL langs like ar
-                    $r = str_replace("\\n\\\n", '\\n', $r);
+                    try {
+                        $phraseData = $t->parseOneSkyYamlString($r);
+                    } catch (\Exception $e) {
+                        $output->writeln("<error>{$e->getMessage()}</error>");
+                        echo "\n\n";
+                        echo $r;
+                        echo "\n\n";
 
-                    $phraseData = $t->oneSkyDataToDeskproData(Yaml::parse($r));
+                        return 1;
+                    }
                 } else {
                     $phraseData = [];
                 }

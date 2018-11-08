@@ -181,6 +181,16 @@ class StringUtils
     }
 
     /**
+     * @param string $string
+     *
+     * @return array
+     */
+    public static function lines($string)
+    {
+        return explode("\n", self::standardEol($string));
+    }
+
+    /**
      * Maps a function to every line of a string, then returns the new string.
      *
      * @param string   $string The string
@@ -188,7 +198,7 @@ class StringUtils
      */
     public static function mapLines($string, $fn = null)
     {
-        return implode("\n", array_map($fn, explode("\n", self::standardEol($string))));
+        return implode("\n", array_map($fn, self::lines($string)));
     }
 
     /**
@@ -222,10 +232,9 @@ class StringUtils
      */
     public static function reformatLines($string, $format, $regex = null, array $vars = [])
     {
-        $string = self::standardEol($string);
-        $lines  = array_map(function ($l) use ($format, $regex, $vars) {
+        $lines = array_map(function ($l) use ($format, $regex, $vars) {
             return self::reformatString($l, $format, $regex, $vars);
-        }, explode("\n", $string));
+        }, self::lines($string));
 
         return implode("\n", $lines);
     }

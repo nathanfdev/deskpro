@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\DevBundle\Language;
 
 use DeskPRO\Component\Filesystem\TmpDir;
+use DeskPRO\Component\Util\StringUtils;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -62,6 +63,48 @@ class DeskproOneSkyTransformer
         $d = array_values($oneskyData);
 
         return $d[0] ?: [];
+    }
+
+    /**
+     * @param string $yamlString
+     *
+     * @return array
+     */
+    public function parseOneSkyYamlString($yamlString)
+    {
+        // OneSky mangles newlines in RTL langs like ar
+        $y = str_replace("\\n\\\n", '\\n', trim($yamlString));
+
+        // OneSky puts everything under a parent key being the lang
+        // locale. But this also fails on 'no' for Norwegian because
+        // they erroneously encode it as:
+        // ---
+        // ? "no"
+        // :
+        //   phrases.here: xxx
+
+        // So we're just going to discard the leading lines until we get
+        // to the first phrase, then de-indent the rest of the lines
+        // so it becomes just a big top-level map.
+
+        $m = null;
+        if (!preg_match('#^\s+#m', $y, $m, \PREG_OFFSET_CAPTURE)) {
+            throw new \InvalidArgumentException('Couldnt find where phrases start');
+        }
+
+        $indentString   = $m[0][0];
+        $rootYamlString = substr($y, $m[0][1]);
+
+        $rootYamlString = StringUtils::mapLines($rootYamlString, function ($line) use ($indentString) {
+            $newLine = StringUtils::removeFromStart($indentString, $line);
+            if ($newLine === null) {
+                throw new \InvalidArgumentException("Invalid line: $line");
+            }
+
+            return $newLine;
+        });
+
+        return Yaml::parse($rootYamlString);
     }
 
     /**
