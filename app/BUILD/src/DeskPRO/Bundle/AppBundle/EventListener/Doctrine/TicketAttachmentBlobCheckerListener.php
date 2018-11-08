@@ -44,6 +44,11 @@ class TicketAttachmentBlobCheckerListener
 
     /**
      * @param TicketAttachment $entity
+     *
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function prePersist(TicketAttachment $entity)
     {
@@ -53,7 +58,7 @@ class TicketAttachmentBlobCheckerListener
             return;
         }
 
-        $this->logger->warning(sprintf(
+        $this->logger->info(sprintf(
             '[TicketAttachmentBlobCheckerListener] TicketAttachment for the Ticket (#%s) has Blob (#%s) that is not tagged as ticket attachment. Going to recreate tagged Blob.',
             $entity->getTicket() ? $entity->getTicket()->getId().' '.$entity->getTicket()->getTitle() : 'unknown',
             $blob->getId() ? $blob->getId() : $blob->getFilenameSafe()
