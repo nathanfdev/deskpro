@@ -15,6 +15,7 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use DeskPRO\Bundle\ReportBundle\Reports\Results;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
+use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
@@ -366,6 +367,7 @@ class DashboardWidgetManager
             $results[] = [
                 'graphType'   => $compiledQuery->getGraphTypeHint() ?: $graphType,
                 'queryResult' => $queryResult,
+                'isEmpty'     => $queryResult->isEmpty(),
             ];
         }
 
@@ -373,6 +375,21 @@ class DashboardWidgetManager
             $options = @json_decode($options, true) ?: [];
         } else {
             $options = [];
+        }
+
+        // Layered but a query might have no results,
+        // turn it back into a single thing
+        if ($multiLayer) {
+            $results = ListUtils::filter($results, function ($r) {
+                return !$r['isEmpty'];
+            });
+
+            if (count($results) === 1) {
+                $multiLayer = false;
+                ListUtils::map($results, function ($r) {
+                    $r['queryResult']->getMetadata()->removeFlag(ResultMetadata::FLAG_LAYERED);
+                });
+            }
         }
 
         $renderer = $this->rendererRegistry->getRenderer($graphType, $format);

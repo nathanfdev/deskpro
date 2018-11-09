@@ -149,6 +149,13 @@ define ['handlebars'], (Handlebars) ->
                   Object.keys(item.dataContext).forEach((k) -> vars[k] = item.dataContext[k])
                   if not vars.value and graph.valueField
                     vars.value = item.dataContext[graph.valueField]
+
+                  # handles cases where a layered graph was collapsed down into a single one
+                  if not vars['0_value'] and graph.valueField
+                    vars['0_value'] = item.dataContext[graph.valueField]
+                  if not vars['1_value'] and graph.valueField
+                    vars['1_value'] = item.dataContext[graph.valueField]
+
                   return Handlebars.compile(g.balloonTextTemplate)(vars)
 
               return g
