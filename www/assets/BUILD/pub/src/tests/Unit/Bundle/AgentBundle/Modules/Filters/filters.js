@@ -5,9 +5,13 @@ import { IntlProvider } from 'react-intl';
 import AgentFilters from 'DeskPRO/Bundle/AgentBundle/Modules/Filters/Components/AgentFilters';
 import { filterSets, filters, stars } from 'DemoState/AgentBundle/Modules/Filters/filters';
 
+const mockMath = Object.create(global.Math);
+mockMath.random = () => 0.5;
+global.Math = mockMath;
+
 describe('>>> Filters --- Snapshot', () => {
   it('+++capturing Snapshot of Filters', (props = {
-    locale: 'en',
+    locale:   'en',
     messages: { 'agent.search.type_ticket': 'Tickets' }
   }) => {
     const renderedValue = renderer.create(

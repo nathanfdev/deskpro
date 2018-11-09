@@ -82,7 +82,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
             Inbox
             <svg
               aria-hidden={true}
-              aria-labelledby="svg-inline--fa-title-lp1PzISUd28K"
+              aria-labelledby="svg-inline--fa-title-vvvvvvvvvvvv"
               className="svg-inline--fa fa-caret-up fa-w-10 fa-sm dp-icon dp-column-drawer__arrow"
               data-icon="caret-up"
               data-prefix="fas"
@@ -93,7 +93,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <title
-                id="svg-inline--fa-title-lp1PzISUd28K"
+                id="svg-inline--fa-title-vvvvvvvvvvvv"
                 style={Object {}}
               >
                 Close
@@ -391,7 +391,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
             Filters
             <svg
               aria-hidden={true}
-              aria-labelledby="svg-inline--fa-title-uAv6Hhue0Xjh"
+              aria-labelledby="svg-inline--fa-title-vvvvvvvvvvvv"
               className="svg-inline--fa fa-caret-up fa-w-10 fa-sm dp-icon dp-column-drawer__arrow"
               data-icon="caret-up"
               data-prefix="fas"
@@ -402,7 +402,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <title
-                id="svg-inline--fa-title-uAv6Hhue0Xjh"
+                id="svg-inline--fa-title-vvvvvvvvvvvv"
                 style={Object {}}
               >
                 Close
@@ -547,7 +547,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
               My Stars
               <svg
                 aria-hidden={true}
-                aria-labelledby="svg-inline--fa-title-V25bSJyjv0x3"
+                aria-labelledby="svg-inline--fa-title-vvvvvvvvvvvv"
                 className="svg-inline--fa fa-caret-up fa-w-10 fa-sm dp-icon dp-column-drawer__arrow"
                 data-icon="caret-up"
                 data-prefix="fas"
@@ -558,7 +558,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <title
-                  id="svg-inline--fa-title-V25bSJyjv0x3"
+                  id="svg-inline--fa-title-vvvvvvvvvvvv"
                   style={Object {}}
                 >
                   Close
@@ -915,7 +915,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
               Labels
               <svg
                 aria-hidden={true}
-                aria-labelledby="svg-inline--fa-title-HxGII2ounDYh"
+                aria-labelledby="svg-inline--fa-title-vvvvvvvvvvvv"
                 className="svg-inline--fa fa-caret-up fa-w-10 fa-sm dp-icon dp-column-drawer__arrow"
                 data-icon="caret-up"
                 data-prefix="fas"
@@ -926,7 +926,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <title
-                  id="svg-inline--fa-title-HxGII2ounDYh"
+                  id="svg-inline--fa-title-vvvvvvvvvvvv"
                   style={Object {}}
                 >
                   Close
