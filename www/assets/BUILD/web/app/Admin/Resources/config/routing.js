@@ -652,7 +652,6 @@ define(function() {
     url: '/trigger-create',
     template: '',
     controller: ['$state', '$stateParams', function ($state, $stateParams) {
-      alert('sdadasdas')
       $state.go('tickets.webhooks.trigger-edit', $stateParams);
     }]
   });
@@ -2408,6 +2407,13 @@ define(function() {
   });
 
   routes.push({
+    id: 'apps.install-success',
+    url: '/apps/{instanceId:\\d+}',
+    templateName: 'Apps/list.html',
+    controller: 'Admin_Apps_Ctrl_List'
+  });
+
+  routes.push({
     id: 'apps.go_apps',
     url: '/go-apps',
     templateName: 'Index/blank.html',
@@ -2458,9 +2464,9 @@ define(function() {
 
   routes.push({
     id: 'apps.apps.edit-v2',
-    url: '/v2/{instanceId:\\d+}',
+    url: '/v2/{instanceId:\\d+}{configuration:\\??.+|}',
     templateName: 'Apps/instance_v2.html',
-    controller: 'Admin_Apps_Ctrl_EditInstanceV2'
+    controller: 'Admin_Apps_Ctrl_EditInstanceV2',
   });
 
   // this route allows reloading of the apps.apps.installer-v2 route

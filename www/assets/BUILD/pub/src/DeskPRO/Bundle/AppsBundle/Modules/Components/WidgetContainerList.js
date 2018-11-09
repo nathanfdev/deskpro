@@ -73,6 +73,7 @@ export class WidgetContainerList extends React.PureComponent {
   }
 
   renderWidget = configuration =>  (<WidgetContainer
+    key={`widget-${configuration.id}`}
     {...this.props.widgetProps}
     isFullscreen={this.props.widgetFullscreen === configuration.id}
     configuration={configuration}

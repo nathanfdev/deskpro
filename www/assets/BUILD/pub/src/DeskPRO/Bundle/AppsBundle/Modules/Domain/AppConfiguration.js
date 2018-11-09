@@ -8,7 +8,7 @@ export class AppConfiguration extends PropertyBag {
    * @return {AppConfiguration}
    */
   static fromAppManifestJS(config) {
-    const { id, application_id, settings, targets, baseUrl, title, name, appVersion } = config;
+    const { id, application_id, settings, targets, baseUrl, title, name, appVersion, bundleUpdatedAt } = config;
     return new AppConfiguration({
       instanceId:    id.toString(),
       applicationId: application_id.toString(),
@@ -17,7 +17,8 @@ export class AppConfiguration extends PropertyBag {
       baseUrl,
       title,
       packageName:   name,
-      version:       appVersion
+      version:       appVersion,
+      bundleUpdatedAt
     });
   }
 
@@ -30,10 +31,11 @@ export class AppConfiguration extends PropertyBag {
    * @param {String} title
    * @param {String} packageName
    * @param {String} version
+   * @param {Number} bundleUpdatedAt
    * @param undeclared
    */
-  constructor({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, ...undeclared }) {
-    super({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, ...undeclared });
+  constructor({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, bundleUpdatedAt, ...undeclared }) {
+    super({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, bundleUpdatedAt, ...undeclared });
   }
 
   /**
@@ -62,7 +64,7 @@ export class AppConfiguration extends PropertyBag {
   get settings() { return this.props.settings; }
 
   /**
-   * @return {Array}
+   * @return {Array<{target:String, url:String}>}
    */
   get targets() { return this.props.targets; }
 
@@ -75,6 +77,11 @@ export class AppConfiguration extends PropertyBag {
    * @return {String}
    */
   get version() { return this.props.version; }
+
+  /**
+   * @return {Number}
+   */
+  get bundleUpdatedAt() { return this.props.bundleUpdatedAt; }
 
   /**
    * @return {AppAssets}

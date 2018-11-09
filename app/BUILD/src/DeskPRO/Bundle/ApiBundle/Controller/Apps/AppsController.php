@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppStoreBundle;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
+use DeskPRO\Bundle\AppStoreBundle\EventsSystem;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationRemovalService;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -127,10 +128,11 @@ class AppsController extends BaseController
         return $instance;
     }
 
-     /**
-      * @Rest\Post("/{application}", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
-      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
-      */
+    /**
+     * @Rest\Post("/{application}", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
      public function createAction(Entity\AppStore\App $application = null)
      {
          if (empty($application)) {
@@ -215,10 +217,12 @@ class AppsController extends BaseController
 
         $this->container
             ->get('event_dispatcher')
-            ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
+            ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS, [
                 'type'        => 'admin',
                 'person_id'   => 0,
                 'person_name' => 'System',
+                'appStatus' => 'updated',
+                'applicationId'   => $application->getId(),
             ]));
 
         return $this->wrap($application);
@@ -231,6 +235,7 @@ class AppsController extends BaseController
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @return View
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function deleteApplicationAction(Entity\AppStore\AppInstance $application = null)
     {
@@ -248,10 +253,12 @@ class AppsController extends BaseController
 
         $this->container
             ->get('event_dispatcher')
-            ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
+            ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS, [
                 'type'        => 'admin',
                 'person_id'   => 0,
                 'person_name' => 'System',
+                'appStatus' => 'deleted',
+                'applicationId'   => $application->getId(),
             ]));
 
         return new View(null, HttpFoundation\Response::HTTP_NO_CONTENT);

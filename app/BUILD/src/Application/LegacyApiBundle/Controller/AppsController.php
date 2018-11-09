@@ -20,6 +20,8 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
+use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstance;
+use DeskPRO\Bundle\AppStoreBundle\EventsSystem;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\BundleFileHandlingStrategyZip;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
@@ -283,7 +285,12 @@ class AppsController extends AbstractController
     // install-package
     //###################################################################################################################
 
-    public function installPackageAction($name)
+    /**
+     * @param $name
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function installPackageAction( $name)
     {
         // we are expecting the client to double url encode $name
         // in case it contains forward slashes, e.g @deskproapps/app-name
@@ -297,6 +304,15 @@ class AppsController extends AbstractController
             $appArchive = $this->getAppV2ArchiveBundle($name);
 
             if ($appArchive) {
+
+                /** @var AppBundleValidator $validator */
+                $validator = $this->container->get(AppBundleValidator::class);
+                if (!$validator->validateBundle($appArchive)) {
+                    return $this->createApiErrorResponse(
+                        'invalid_argument', "the zip package for $name is invalid. it probably contains an invalid schema"
+                    );
+                }
+
                 $app = $this->em->getRepository(App::class)->findOneBy([
                     'name' => $name,
                 ]);
@@ -305,6 +321,8 @@ class AppsController extends AbstractController
                 $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
                 $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
 
+                /** @var ApplicationInstance $instance */
+                $instance = null;
                 if ($isAppUpdate) {
                     $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appArchive);
                     $instance = $app->getInstances()->first();
@@ -317,13 +335,14 @@ class AppsController extends AbstractController
                 $context->setInlineSideloads(true);
 
                 $this->container->get('event_dispatcher')->dispatch(
-                    LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent('agent.ui.reload', [
-                        'type'           => 'admin',
-                        'person_id'      => 0,
-                        'person_name'    => 'System',
-                        'exclude_target' => $this->person->getId(),
-                    ])
+                    LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS
+                        , [
+                            'type'        => 'admin',
+                            'person_id'   => 0,
+                            'person_name' => 'System',
+                            'appStatus' => 'updated',
+                            'applicationId'   => $instance->getApplicationId(),
+                        ])
                 );
 
                 $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
@@ -951,6 +970,19 @@ class AppsController extends AbstractController
             $appsManager    = $this->container->get('apps2.application_manager');
             $installDetails = $appsManager->installBundle($appBundle);
 
+            if ($installDetails->reloadRequired()) {
+                $this->container->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(EventsSystem::EVENT_AGENT_RELOADAPPS
+                        , [
+                        'type'        => 'admin',
+                        'person_id'   => 0,
+                        'person_name' => 'System',
+                        'appStatus' => 'updated',
+                        'applicationId'   => $installDetails->getApp()->getId(),
+                    ])
+                );
+            }
+
             $context = new SideloadSerializationContext();
             $context->setIncludes(['app']);
             $context->setInlineSideloads(true);
@@ -963,6 +995,7 @@ class AppsController extends AbstractController
                         'version'      => 2,
                         'package_name' => $manifest->getName(),
                         'install_type' => $installDetails->getInstallType(),
+                        'force_configuration' => $installDetails->getForceConfiguration(),
                     ]
                 ),
                 sprintf('/api/v2/apps/packages/%s', $installDetails->getApp()->getId())

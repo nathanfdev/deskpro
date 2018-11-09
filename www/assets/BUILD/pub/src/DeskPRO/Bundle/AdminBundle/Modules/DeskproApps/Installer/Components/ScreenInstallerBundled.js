@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import uuid from 'uuid';
-import { AppsRegistry } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
+import { apps } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 import { DeskproAppContainer } from 'DeskPRO/Bundle/AppsBundle/Modules/Components';
 import { Context } from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
 import { createInterceptor } from 'DeskPRO/Bundle/AppsBundle/Modules/Services/interceptors';
@@ -40,17 +40,17 @@ export class ScreenInstallerBundled extends React.Component {
   }
 
   /**
-   * @param {string} eventName
-   * @param {*} message
-   * @param {Widget} widget
    * @return {{status: boolean, result: null}}
+   * @param {Widget} widget
+   * @param {{ data:Object }} ev
    */
-  interceptDispatchIncoming = (eventName, message, widget) => {
+  interceptDispatchIncoming = (widget, ev) => {
     const status = false;
-    if (eventName === INSTALL_STATUS_EVENT) {
+
+    if (ev.data.eventName === INSTALL_STATUS_EVENT) {
       // the application manifest is also available if we need it
       // const { manifest } = widgetMessage.body;
-      const { status: installStatus } = message;
+      const { status: installStatus } = ev.data.body;
       if (installStatus === 'success') {
         const { onInstallFinished } = this.props;
         onInstallFinished(widget.instanceId);
@@ -62,14 +62,12 @@ export class ScreenInstallerBundled extends React.Component {
 
   render() {
     const { config, installerManifest } = this.props;
-
-    const registry = AppsRegistry.fromJS([{ manifest: installerManifest, settings: {} }], config);
-    const widgetsConfigList = registry.getWidgetConfigByTargetType(TARGET_INSTALL);
+    const widget = apps.createWidget({ manifest: installerManifest, settings: {}, bundleUpdatedAt: 0 }, config, TARGET_INSTALL);
     const context = this.createRuntimeContext();
 
     return (<DeskproAppContainer
       context={context}
-      widgetsConfigList={widgetsConfigList}
+      widgetsConfigList={[widget]}
       receiveMessage={createInterceptor(this.interceptDispatchIncoming, receiveMessage)}
     />);
   }

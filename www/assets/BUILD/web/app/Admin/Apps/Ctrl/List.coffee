@@ -63,7 +63,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         )
       )
 
-      return @$q.all([appsPromise, apps2Promise, apps2PackagesPromise])
+      return @$q.all([appsPromise, apps2Promise, apps2PackagesPromise]).then((data) =>
+        if @$stateParams.instanceId
+          @$state.go('apps.apps.edit-v2', {instanceId: @$stateParams.instanceId, configuration: ""})
+
+        return data
+      )
 
     listInstalledAppsV2: () ->
       if @apps_v2 instanceof Array
@@ -163,7 +168,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
                   instance = if data.data.manifest.isSingle then me.apps_v2.filter((x) -> return x.app.name == data.data.manifest.name).pop() else null
 
                   if (data.install_type == 'upgrade' && instance)
-                    me.$state.go('apps.apps.edit-v2', {instanceId: instance.id})
+                    me.$state.go('apps.apps.edit-v2', {instanceId: instance.id, configuration: "?forceConfiguration=#{ if data.force_configuration then 'yes' else 'no'  }"}, {reload: true})
                   else
                     me.$state.go('apps.apps.install-v2-reload', {appName: encodeURIComponent(data.package_name)})
 

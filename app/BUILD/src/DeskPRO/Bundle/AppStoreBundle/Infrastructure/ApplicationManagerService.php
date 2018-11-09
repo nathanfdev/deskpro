@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppChanges\ChangeDetector;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use Doctrine\ORM\EntityManager;
 use Orb\Data\ContentTypes;
@@ -33,16 +34,34 @@ class ApplicationManagerService
     private $entityResolver;
 
     /**
+     * @var ChangeDetector
+     */
+    private $changeDetector;
+
+    /**
+     * @param EntityManager $em
+     * @param DeskproBlobStorage $blobStorage
+     * @return ApplicationManagerService
+     */
+    static public function create( EntityManager $em, DeskproBlobStorage $blobStorage)
+    {
+        $changeDetector = new ChangeDetector();
+        return new ApplicationManagerService($em, $blobStorage, $changeDetector);
+    }
+
+    /**
      * Constructor.
      *
-     * @param EntityManager      $em
+     * @param EntityManager $em
      * @param DeskproBlobStorage $blobStorage
+     * @param ChangeDetector $changeDetector
      */
-    public function __construct(EntityManager $em, DeskproBlobStorage $blobStorage)
+    public function __construct(EntityManager $em, DeskproBlobStorage $blobStorage, ChangeDetector $changeDetector)
     {
         $this->em             = $em;
         $this->blobStorage    = $blobStorage;
         $this->entityResolver = new EntityIdentityMapResolver($em);
+        $this->changeDetector = $changeDetector;
     }
 
     /**
@@ -67,6 +86,7 @@ class ApplicationManagerService
      * @param AppInstance $instance
      *
      * @return string
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getRemoveStrategy(AppInstance $instance)
     {
@@ -100,6 +120,7 @@ class ApplicationManagerService
      * @param Domain\AppBundle $bundle
      *
      * @return Domain\ApplicationInstance
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function createFirstInstance(Domain\AppBundle $bundle)
     {
@@ -112,13 +133,14 @@ class ApplicationManagerService
     /**
      * @param Domain\AppBundle $bundle
      *
-     * @return string
+     * @return App|null
      */
     public function findAppForBundle(Domain\AppBundle $bundle)
     {
         $manifestReader = new Infrastructure\AppManifestReader();
         $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
 
+        /** @var App $app */
         $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
 
         return $app ? $app : null;
@@ -128,30 +150,55 @@ class ApplicationManagerService
      * @param Domain\AppBundle $bundle
      *
      * @return InstallBundleDetails
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function installBundle(Domain\AppBundle $bundle)
     {
         $app         = $this->findAppForBundle($bundle);
         $installType = $app ? InstallBundleDetails::INSTALL_TYPE_UPGRADE : InstallBundleDetails::INSTALL_TYPE_INSTALL;
 
-        if (!$app) {
-            $manifestReader = new Infrastructure\AppManifestReader();
-            $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
+        $bundleManifestJson = json_decode($bundle->getManifestAsString(), true);
+        $manifestReader = new Infrastructure\AppManifestReader();
+        $bundleManifest = $manifestReader->readManifestFromArray($bundleManifestJson);
 
+        $forceConfiguration = false;
+
+        if (!$app) {
             $app = new App();
-            $app->setName($manifest->getName());
+            $app->setName($bundleManifest->getName());
+        } else {
+            $manifest = $app->getManifest();
+            $change = $this->changeDetector->forceConfigurationStatusChange($bundleManifest, $manifest);
+            $forceConfiguration = !empty($change) && $change->getValue();
         }
 
-        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
+        $app->setManifest($bundleManifestJson);
         $this->updateAssets($app, $bundle);
+        if ($forceConfiguration) {
+            $this->disableInstances($app);
+        }
 
-        return new InstallBundleDetails($app, $installType);
+        return new InstallBundleDetails($app, $installType, $forceConfiguration);
     }
+
+    private function disableInstances(App $app)
+    {
+        $qb = $this->em->createQueryBuilder()
+            ->update(AppInstance::class, 'i')
+            ->set('i.isInstalled', 0)
+            ->where('i.app = :id')
+            ->setParameter('id', $app->getId())
+        ;
+
+        $qb->getQuery()->execute();
+    }
+
 
     /**
      * @param Domain\AppBundle $bundle
      *
      * @return App
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function createOrUpdateAppEntity(Domain\AppBundle $bundle)
     {
@@ -172,10 +219,11 @@ class ApplicationManagerService
     }
 
     /**
-     * @param App              $app
+     * @param App $app
      * @param Domain\AppBundle $bundle
      *
      * @return App
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function updateAssets(App $app, Domain\AppBundle $bundle)
     {
@@ -237,6 +285,8 @@ class ApplicationManagerService
         foreach ($removals as $asset) {
             $this->em->remove($asset);
         }
+
+        $app->setBundleUpdatedAt(new \DateTime());
         $this->em->persist($app);
         $this->em->flush();
 
@@ -244,10 +294,11 @@ class ApplicationManagerService
     }
 
     /**
-     * @param App        $app
+     * @param App $app
      * @param array|null $settings
      *
      * @return AppInstance
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function createInstance(App $app, array $settings = [])
     {

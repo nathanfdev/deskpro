@@ -1,11 +1,40 @@
 <?php
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppChanges;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppVersion;
 
 class ChangeDetector
 {
+
+
+    /**
+     * Checks the two manifests for a difference that would cause a change for the forceConfiguration status
+     *
+     * @param AppManifest $current
+     * @param AppManifest $previous
+     * @return BooleanFlagChange|null
+     */
+    public function forceConfigurationStatusChange( AppManifest $current, AppManifest $previous)
+    {
+        $currentVersion = AppVersion::parse($current->getAppVersion());
+        $previousVersion = AppVersion::parse($previous->getAppVersion());
+
+        // no longer a pre-release version
+        if (!empty($previousVersion->getLabel()) && empty($currentVersion->getLabel())) {
+            $versionChange = true;
+        } else {
+            $versionChange = $currentVersion->getMajor() !== $previousVersion->getMajor() || $currentVersion->getMinor() !== $previousVersion->getMinor();
+        }
+
+        if ($versionChange && count($current->getSettings())) {
+            return new BooleanFlagChange('forceConfiguration', 'update', true);
+        }
+
+        return null;
+    }
+
     /**
      * @param AppManifest $current
      * @param AppManifest $previous
@@ -34,7 +63,7 @@ class ChangeDetector
         /** @var AppManifest\Setting $value */
         foreach ($previous->getSettings() as $value) {
             if (in_array($value->getName(), $deletions)) {
-                $changes[] = new SettingChange('delete', $value);
+                $changes[] = new SettingChange('delete', null, $value);
             }
         }
 
@@ -76,7 +105,7 @@ class ChangeDetector
         /** @var AppManifest\CustomField $value */
         foreach ($previous->getCustomFields() as $value) {
             if (in_array($value->getAlias(), $deletions)) {
-                $changes[] = new CustomFieldChange('delete', $value);
+                $changes[] = new CustomFieldChange('delete', null, $value);
             }
         }
 

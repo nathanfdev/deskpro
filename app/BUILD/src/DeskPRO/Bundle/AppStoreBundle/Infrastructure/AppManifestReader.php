@@ -73,7 +73,9 @@ class AppManifestReader
     }
 
     /**
-     * @param $jsonString
+     * Reads the manifest version. This is used to determine which schema to apply to the manifest
+     *
+     * @param string $jsonString
      * @return string|null
      */
     public function readVersionFromJson($jsonString)

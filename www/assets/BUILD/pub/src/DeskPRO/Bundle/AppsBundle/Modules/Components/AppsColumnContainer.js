@@ -57,8 +57,8 @@ class AppsColumnContainer extends React.Component {
    * @param {SyntheticEvent} [e]
    */
   expand = (e) => { // eslint-disable-line no-unused-vars
+    const { pageId } = this.props.context;
     if (this.props.getSidebarState() !== 'pinned') {
-      const { pageId } = this.props.context;
       this.props.sendMessageLegacyMessageBroker(`apps-column.expand.${pageId}`);
       this.setState({
         sidebarState: this.props.getSidebarState()
@@ -67,8 +67,8 @@ class AppsColumnContainer extends React.Component {
   };
 
   collapse = () => {
+    const { pageId } = this.props.context;
     if (this.props.getSidebarState() !== 'pinned') {
-      const { pageId } = this.props.context;
       this.props.sendMessageLegacyMessageBroker(`apps-column.collapse.${pageId}`);
       this.setState({
         sidebarState: this.props.getSidebarState()
@@ -77,8 +77,8 @@ class AppsColumnContainer extends React.Component {
   };
 
   pin = () => {
+    const { pageId } = this.props.context;
     if (this.props.getSidebarState() !== 'pinned') {
-      const { pageId } = this.props.context;
       this.props.sendMessageLegacyMessageBroker(`apps-column.togglePin.${pageId}`);
       this.setState({
         sidebarState: this.props.getSidebarState()

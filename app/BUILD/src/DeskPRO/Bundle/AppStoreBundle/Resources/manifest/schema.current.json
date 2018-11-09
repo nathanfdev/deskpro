@@ -2,7 +2,8 @@
   "type": "object",
   "properties": {
     "appVersion": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^v?(0|[1-9]\\d*)\\.(0|[1-9]d*)\\.(0|[1-9]\\d*)(-.+)?$"
     },
     "id": {
       "type": "string"

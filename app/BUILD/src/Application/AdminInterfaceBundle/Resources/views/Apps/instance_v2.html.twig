@@ -27,7 +27,7 @@
 			</div>
 		</article>
 
-		<footer ng-hide="has_own_footer" style="height: 100px;">
+		<footer ng-hide="has_own_footer">
 			<div class="dp-content">
 				<a ng-if="Ctrl.showChangeSettings" class="btn btn-default" href="{{ ng_href('apps.apps.update-v2-reload', "{instanceId: Ctrl.instanceId}") }}" style="float:left">Change Settings</a>
 
@@ -35,6 +35,10 @@
 					<button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>
 				</div>
 				<div style="clear:both"></div>
+			</div>
+
+			<div class="dp-content" ng-if="Ctrl.settings.forceConfiguration" style="color: red">
+				This app requires your attention. You should review the settings and re-configure it.
 			</div>
 
 			<div class="dp-content">

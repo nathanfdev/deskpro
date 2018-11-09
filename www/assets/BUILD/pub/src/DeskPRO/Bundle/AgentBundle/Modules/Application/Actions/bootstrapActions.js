@@ -221,10 +221,10 @@ export const preloadData    = createAction(
           if (discover && discover.data) {
             builder.addHelpdeskDiscoverySettings(discover.data);
           }
-          const appStoreConfig = builder.build();
+          DeskproAppStore.setConfig(builder.build());
 
           // bootstrap appstore
-          return DeskproAppStore.bootstrap(dispatch, api, appStoreConfig)
+          return DeskproAppStore.bootstrap(dispatch, api)
              .then(() => new Promise(appResolve => setTimeout(appResolve, 100)))
           ;
         })

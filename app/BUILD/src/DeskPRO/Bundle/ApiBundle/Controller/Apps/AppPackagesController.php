@@ -10,7 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges\ChangeDetector;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppChanges\ChangeDetector;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -124,18 +124,25 @@ class AppPackagesController extends CrudController
             return $asset->getPath() === '.deskpro/versions/manifest.json.prev';
         }))->first();
 
-        if (!$previousManifestAsset) {
-            $previousManifest = new AppManifest();
-        } else {
+        $previousManifest = null;
+        if ($previousManifestAsset) {
             /** @var ApplicationManagerService $instanceManager */
             $instanceManager  = $this->container->get('apps2.application_manager');
             $previousManifest = $instanceManager->readManifestFromAssetBlob($previousManifestAsset);
         }
+        $emptyManifest = new AppManifest();
 
         $changeDetector = new ChangeDetector();
         $changes        = [];
-        $changes        = array_merge($changes, $changeDetector->customFieldChanges($manifest, $previousManifest));
-        $changes        = array_merge($changes, $changeDetector->settingsChanges($manifest, $previousManifest));
+        $changes        = array_merge($changes, $changeDetector->customFieldChanges($manifest, $previousManifest ? $previousManifest : $emptyManifest));
+        $changes        = array_merge($changes, $changeDetector->settingsChanges($manifest, $previousManifest ? $previousManifest : $emptyManifest));
+
+        if ($previousManifest) {
+            $change = $changeDetector->forceConfigurationStatusChange($manifest, $previousManifest);
+            if ($change) {
+                $changes[] = $change;
+            }
+        }
 
         return $changes;
     }

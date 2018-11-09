@@ -16,10 +16,28 @@ class InstallBundleDetails
     /** @var string */
     private $installType;
 
-    public function __construct($app, $installType)
+    /** @var bool */
+    private $forceConfiguration;
+
+    /**
+     * InstallBundleDetails constructor.
+     * @param App $app
+     * @param string $installType
+     * @param bool $forceConfiguration
+     */
+    public function __construct(App $app, $installType, $forceConfiguration)
     {
         $this->app         = $app;
         $this->installType = $installType;
+        $this->forceConfiguration = $forceConfiguration;
+    }
+
+    /**
+     * @return bool
+     */
+    public function reloadRequired()
+    {
+        return $this->installType === InstallBundleDetails::INSTALL_TYPE_UPGRADE || $this->getForceConfiguration();
     }
 
     /**
@@ -30,8 +48,19 @@ class InstallBundleDetails
         return $this->app;
     }
 
+    /**
+     * @return string
+     */
     public function getInstallType()
     {
         return $this->installType;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getForceConfiguration()
+    {
+        return $this->forceConfiguration;
     }
 }

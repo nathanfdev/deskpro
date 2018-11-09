@@ -1,11 +1,5 @@
-export {
-  extractPageContextProps,
-  createContextsFromPage,
-  createContextsFromTab,
-  mountContextInWindow,
-  unmountContextInWindow
-} from  './AppContextServices';
+import * as contexts from './contexts';
 
+export { contexts };
 export { AppServices } from './AppServices';
-export { ContainerMounter } from './ContainerMounter';
 export { ContainerConfiguration } from './ContainerConfiguration';

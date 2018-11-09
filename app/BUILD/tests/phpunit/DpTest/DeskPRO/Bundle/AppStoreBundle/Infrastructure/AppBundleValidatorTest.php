@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DpTest\AbstractKernelAwareTestCase;
+use JsonSchema\Validator;
 
 class AppBundleValidatorTest extends AbstractKernelAwareTestCase
 {
@@ -100,6 +101,23 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
         $isValid = $validator->validateBundle($zipBundle);
 
         $this->assertFalse($isValid, 'a bundle with an empty manifest should not pass validation');
+    }
+
+    /**
+     * @test
+     */
+    public function test_current_schema_rejects_version_number()
+    {
+        $filePath = $this->locateFile(sprintf('@AppStoreBundle/Resources/manifest/schema.%s.json', "current"));
+        $schema = json_decode(file_get_contents($filePath));
+
+        $filePath = $this->locateFile(sprintf('@AppStoreBundle/Resources/manifest/app-manifest.%s.example.json', "current"));
+        $manifest = json_decode(file_get_contents($filePath));
+        $manifest->appVersion = "not a semver";
+
+        $validator = new Validator();
+        $validator->validate($manifest, (object)$schema);
+        $this->assertFalse($validator->isValid(), "a manifest with a wrong type of appVersion should not pass validation");
     }
 
 

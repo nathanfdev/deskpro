@@ -74,7 +74,9 @@ class InstallerFactory extends React.Component {
       if (window && window.location) {
         window.location.hash = `/apps/apps/v2/${id}`;
       }
-      legacyNavigate('apps.apps.edit-v2', { instanceId: id });
+      // legacyNavigate('apps.apps.edit-v2', { instanceId: id, configuration: "" });
+      // legacyNavigate('apps.apps', { instanceId: id, configuration: "" }, { reload: true });
+      legacyNavigate('apps.install-success', { instanceId: id, configuration: '' }, { reload: true });
     };
 
     return class extends React.Component {
