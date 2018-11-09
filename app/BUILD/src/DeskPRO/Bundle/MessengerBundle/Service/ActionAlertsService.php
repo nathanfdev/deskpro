@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Service;
 
-use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 
@@ -22,27 +21,6 @@ class ActionAlertsService
     {
         $this->em             = $em;
         $this->readConnection = $readConnection;
-    }
-
-    /**
-     * @param string $visitorId
-     *
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     *
-     * @return int
-     */
-    public function getLastActionAlert($visitorId)
-    {
-        $actionAlertRepo = $this->em->getRepository(ActionAlert::class);
-        $qb              = $actionAlertRepo->createQueryBuilder('aa');
-        $alert           = $qb->where('aa.target_id = :visitorId')
-            ->orderBy('aa.id', 'DESC')
-            ->setParameter('visitorId', $visitorId)
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
-
-        return $alert ? $alert->getId() : 0;
     }
 
     /**

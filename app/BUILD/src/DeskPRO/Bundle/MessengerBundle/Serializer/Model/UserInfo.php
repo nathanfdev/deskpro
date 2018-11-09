@@ -21,29 +21,21 @@ class UserInfo implements MessengerModelInterface
     private $chats;
 
     /**
-     * @var int
-     */
-    private $lastActionAlert;
-
-    /**
      * UserInfo constructor.
      *
      * @param string $visitorId
-     * @param int    $lastActionAlert
      */
-    public function __construct($visitorId, $lastActionAlert)
+    public function __construct($visitorId)
     {
-        $this->visitorId       = $visitorId;
-        $this->chats           = new ArrayCollection();
-        $this->lastActionAlert = $lastActionAlert;
+        $this->visitorId = $visitorId;
+        $this->chats     = new ArrayCollection();
     }
 
     public function toArray()
     {
         return [
-            'visitor_id'        => $this->visitorId,
-            'chats'             => $this->chats->toArray(),
-            'last_action_alert' => $this->lastActionAlert,
+            'visitor_id' => $this->visitorId,
+            'chats'      => $this->chats->toArray(),
         ];
     }
 

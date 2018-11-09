@@ -60,9 +60,8 @@ class UserController extends AbstractMessengerController
         $em                   = $this->get('doctrine.orm.default_entity_manager');
         $chatConversationRepo = $em->getRepository(ChatConversation::class);
         $chats                = $chatConversationRepo->findBy(['visitor_id' => $visitorId], ['date_created' => 'DESC'], 25);
-        $actionAlertsService  = $this->get('messenger.service.action_alerts');
 
-        $userInfo = new UserInfo($visitorId, $actionAlertsService->getLastActionAlert($visitorId));
+        $userInfo = new UserInfo($visitorId);
 
         return View::create($this->wrap($userInfo->addChats($chats)), Response::HTTP_OK);
     }
