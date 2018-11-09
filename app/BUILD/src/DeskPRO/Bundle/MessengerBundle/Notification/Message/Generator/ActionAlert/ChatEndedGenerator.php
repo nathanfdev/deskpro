@@ -71,6 +71,7 @@ class ChatEndedGenerator extends ChatGenerator
         }
 
         return $messageData + [
+            'chat'       => $chat->getId(),
             'origin'     => $origin,
             'avatar'     => $avatar,
             'date_ended' => $chat->getDateEnded()->format(\DateTime::ISO8601),
