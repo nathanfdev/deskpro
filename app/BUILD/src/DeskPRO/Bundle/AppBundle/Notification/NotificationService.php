@@ -71,33 +71,62 @@ class NotificationService
     }
 
     /**
+     * @param int    $userId
+     * @param string $visitorId
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
      * @return int
      */
-    public function lastAlert()
+    public function lastAlert($userId, $visitorId)
     {
         $actionAlertRepo = $this->em->getRepository(ActionAlert::class);
         $qb              = $actionAlertRepo->createQueryBuilder('aa');
-        $alert           = $qb->orderBy('aa.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
+        $alert           = $qb->orderBy('aa.id', 'DESC')->setMaxResults(1);
 
-        return $alert ? $alert->getId() : 0;
+        if ($userId) {
+            $alert->andWhere('aa.target_id = :target')->setParameter('target', $userId);
+        } elseif ($visitorId) {
+            $alert->andWhere('aa.target_id = :target')->setParameter('target', $visitorId);
+        }
+
+        $alert = $alert->getQuery()->getOneOrNullResult();
+
+        return $alert ? (int) $alert->getId() : 0;
     }
 
     /**
+     * @param int    $userId
+     * @param string $visitorId
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
      * @return int
      */
-    public function lastNotify()
+    public function lastNotify($userId, $visitorId)
     {
         $notificationRepo = $this->em->getRepository(Notification::class);
         $qb               = $notificationRepo->createQueryBuilder('n');
-        $notification     = $qb->orderBy('n.id', 'DESC')->setMaxResults(1)->getQuery()->getOneOrNullResult();
+        $notification     = $qb->orderBy('n.id', 'DESC')->setMaxResults(1);
 
-        return $notification ? $notification->getId() : 0;
+        if ($userId) {
+            $notification->andWhere('n.target_id = :target')->setParameter('target', $userId);
+        } elseif ($visitorId) {
+            $notification->andWhere('n.target_id = :target')->setParameter('target', $visitorId);
+        }
+
+        $notification = $notification->getQuery()->getOneOrNullResult();
+
+        return $notification ? (int) $notification->getId() : 0;
     }
 
     /**
+     * @param int    $userId
+     * @param string $visitorId
+     *
      * @return NotificationConfiguration
      */
-    public function getClientsSetup()
+    public function getClientsSetup($userId = null, $visitorId = null)
     {
         $handlers = [];
 
@@ -116,7 +145,7 @@ class NotificationService
 
         $setup = [];
         foreach (array_keys($handlers) as $handler) {
-            $setup[] = $this->getClientSetup($handler);
+            $setup[] = $this->getClientSetup($handler, $userId, $visitorId);
         }
 
         return new NotificationConfiguration($setup);
@@ -168,11 +197,13 @@ class NotificationService
     }
 
     /**
-     * @param $handler
+     * @param string $handler
+     * @param int    $userId
+     * @param string $visitorId
      *
      * @return NotificationClient
      */
-    protected function getClientSetup($handler)
+    protected function getClientSetup($handler, $userId = null, $visitorId = null)
     {
         switch ($handler) {
             case 'pusher':
@@ -184,8 +215,8 @@ class NotificationService
                 ]);
             case 'db':
                 return new NotificationClient('legacy', [
-                    'last_alert'  => $this->lastAlert(),
-                    'last_notify' => $this->lastNotify(),
+                    'last_alert'  => $this->lastAlert($userId, $visitorId),
+                    'last_notify' => $this->lastNotify($userId, $visitorId),
                 ]);
             case 'deskpro':
                 return new NotificationClient('deskpro', [

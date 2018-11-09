@@ -94,7 +94,7 @@ class UserController extends AbstractMessengerController
      *
      * @return View
      */
-    public function getLastActionAlerts($lastActionAlert, Request $request)
+    public function getLastActionAlertsAction($lastActionAlert, Request $request)
     {
         $visitorId = $request->headers->get(MessengerAuthenticator::VISITOR_HEADER_NAME);
 
@@ -108,6 +108,8 @@ class UserController extends AbstractMessengerController
     /**
      * You can use this endpoint to fetch latest action alerts.
      *
+     * @param Request $request
+     *
      * @ApiDoc(
      *     section="Messenger",
      *     resourceDescription="Get some useful system info",
@@ -116,8 +118,10 @@ class UserController extends AbstractMessengerController
      *     }
      * )
      * @Rest\Get("/info")
+     *
+     * @return View
      */
-    public function getInfo()
+    public function getInfoAction(Request $request)
     {
         $techInfo            = new TechInfo($this->get('avatar_resolver'));
         $techService         = $this->get('messenger.service.tech');
@@ -126,7 +130,7 @@ class UserController extends AbstractMessengerController
         $techInfo
             ->setChatDepartments($techService->getChatDepartments())
             ->setAgentsOnline($techService->getAgentsOnline())
-            ->setClientsSetup($notificationService->getClientsSetup())
+            ->setClientsSetup($notificationService->getClientsSetup(null, $this->getVisitorId($request)))
         ;
 
         return View::create($this->wrap($techInfo));

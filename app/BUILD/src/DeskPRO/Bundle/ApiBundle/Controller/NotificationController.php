@@ -50,7 +50,7 @@ class NotificationController extends BaseController
      */
     public function setupActionAlertsAction()
     {
-        return View::create($this->wrap($this->get('deskpro.notification.service')->getClientsSetup()));
+        return View::create($this->wrap($this->get('deskpro.notification.service')->getClientsSetup($this->getUser()->getId())));
     }
 
     /**
@@ -117,7 +117,7 @@ class NotificationController extends BaseController
      */
     public function getClientCredentialsAction()
     {
-        $config = $this->get('deskpro.notification.service')->getClientsSetup();
+        $config = $this->get('deskpro.notification.service')->getClientsSetup($this->getUser()->getId());
 
         $pusherEnabled  = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'pusher';
         $deskproEnabled = count($config->getClients()) === 1 && $config->getClients()[0]->getType() === 'deskpro';
