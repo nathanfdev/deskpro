@@ -241,7 +241,7 @@ abstract class ProcessAbstract
      *
      * @return \Application\DeskPRO\Entity\Blob[]
      */
-    protected function processBlobs($skip_attach = null)
+    public function processBlobs($skip_attach = null)
     {
         if ($this->processed_blobs !== null) {
             return $this->processed_blobs;

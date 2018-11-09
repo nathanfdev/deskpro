@@ -64,8 +64,6 @@ class ProcessReply extends ProcessAbstract
     {
         $this->logMessage("doNewReply context $context");
 
-        $this->processBlobs();
-
         if ($context == 'user') {
             $executor_context = $this->getTicketManager()->createUserExecutorContext(
                 $this->person,
@@ -114,6 +112,7 @@ class ProcessReply extends ProcessAbstract
                 $this->ticket_email,
                 $this->cleaner,
                 [$this, 'replaceInlineAttachTokens'],
+                [$this, 'processBlobs'],
                 $this->getLogger()
             );
         } else {
@@ -125,6 +124,7 @@ class ProcessReply extends ProcessAbstract
                 $this->cleaner,
                 App::$container->getEmailAccountManager(),
                 [$this, 'replaceInlineAttachTokens'],
+                [$this, 'processBlobs'],
                 $this->getLogger()
             );
         }

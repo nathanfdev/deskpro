@@ -74,10 +74,9 @@ class ProcessNew extends ProcessAbstract
             $this->cleaner,
             App::$container->getEmailAccountManager(),
             [$this, 'replaceInlineAttachTokens'],
+            [$this, 'processBlobs'],
             $this->getLogger()
         );
-
-        $this->processBlobs();
 
         $runReplyCutter = $this->ticketEmail->force_reply_cutter;
 
