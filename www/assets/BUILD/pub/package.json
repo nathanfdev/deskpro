@@ -7,10 +7,10 @@
     "@amcharts/amcharts3-react": "^3.0.3",
     "@deskpro/apps-components-style": "0.11.0",
     "@deskpro/js-utils": "^1.0.4",
-    "@deskpro/react-components": "1.4.0",
+    "@deskpro/react-components": "1.4.1",
     "@deskpro/react-forms": "^2.0.0-beta41",
     "@deskpro/react-loader": "^2.4.2",
-    "@deskpro/token-field": "0.6.1",
+    "@deskpro/token-field": "0.6.2",
     "@fortawesome/fontawesome-svg-core": "1.2.4",
     "@fortawesome/free-regular-svg-icons": "5.4.1",
     "@fortawesome/free-solid-svg-icons": "5.3.1",
@@ -252,8 +252,8 @@
     "gulp-dev-all": "npm run-script resources:copy && node bin/refresh-widget-loader && npm run-script gulp-refresh-reducers && node bin/dev-server",
     "dev": "npm run-script resources:copy && node bin/refresh-widget-loader && npm run-script gulp-refresh-reducers && node bin/dev-server",
     "prod": "npm run-script webpack && npm run-script resources:copy",
-    "gulp-prod": "npm run-script webpack && npm run-script resources:copy",
-    "build:prod": "npm run-script webpack && npm run-script resources:copy",
+    "gulp-prod": "npm run-script webpack",
+    "build:prod": "npm run-script webpack",
     "gulp-refresh-reducers": "node ./build-tools/app-reducer-gen/refresh_reducers.js",
     "test:unit": "jest",
     "test:visual": "start-storybook -p 9001 -s src/tests/Visual/Resources",
@@ -261,7 +261,7 @@
     "test:e2e": "nightwatch",
     "test:e2e:setup": "node selenium-download.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
-    "webpack": "rm -rf ./build && npm run-script gulp-refresh-reducers && node bin/refresh-widget-loader && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details",
+    "webpack": "rm -rf ./build && npm run-script gulp-refresh-reducers && node bin/refresh-widget-loader && npm run-script resources:copy && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details",
     "license-checker": "license-checker --production --json"
   }
 }
