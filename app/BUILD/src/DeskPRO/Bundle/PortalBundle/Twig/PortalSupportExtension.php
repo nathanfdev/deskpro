@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\Entity\Person;
@@ -248,9 +244,16 @@ class PortalSupportExtension extends \Twig_Extension
                 }
                 break;
             case 'guides':
-                if ($sec->isGranted('USE_GUIDES') && $this->container->get('data.guides')->hasAny()) {
+                $person = null;
+                $token  = $this->container->get('security.token_storage')->getToken();
+
+                if ($token && $token->getUser() instanceof Person) {
+                    $person = $token->getUser();
+                }
+                if ($sec->isGranted('USE_GUIDES') && $this->container->get('data.guides')->hasAny($person)) {
                     return true;
                 }
+
                 break;
         }
 

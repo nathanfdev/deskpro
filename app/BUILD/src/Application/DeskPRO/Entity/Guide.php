@@ -180,12 +180,20 @@ class Guide extends DomainObject
     /**
      * @return Topic[]|ArrayCollection
      */
-    public function getTopics()
+    public function getActiveTopics()
     {
         return $this->topics->filter(function ($topic) {
             /* @var Topic $topic */
             return $topic->getStatus() !== Topic::STATUS_HIDDEN && !$topic->getParent();
         });
+    }
+
+    /**
+     * @return Topic[]|ArrayCollection
+     */
+    public function getTopics()
+    {
+        return $this->topics;
     }
 
     /**

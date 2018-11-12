@@ -23,11 +23,11 @@ class Guide extends AbstractEntityRepository
         $counts = App::getDb()->fetchAllKeyed('
             SELECT g.id as guide_id, COUNT(t.id) as count
             FROM guides AS g
-              LEFT JOIN topics AS t
-                ON t.guide_id = g.id
+            LEFT JOIN topics AS t ON t.guide_id = g.id
+            WHERE t.hidden_status != ? OR t.hidden_status IS NULL
             GROUP BY g.id
             ORDER BY g.id ASC
-        ', [], 'guide_id');
+        ', [\Application\DeskPRO\Entity\Topic::HIDDEN_STATUS_DELETED], 'guide_id');
 
         $result = [];
         foreach ($counts as $count) {

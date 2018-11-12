@@ -50,7 +50,7 @@ class GuidesController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
-        $topic = $guide->getTopics()->first();
+        $topic = $guide->getActiveTopics()->first();
 
         if (!$topic) {
             return $this->redirectToRoute('portal_home');
@@ -71,7 +71,7 @@ class GuidesController extends AbstractController
      */
     public function browseAction(Guide $guide)
     {
-        $topic = $guide->getTopics()->first();
+        $topic = $guide->getActiveTopics()->first();
 
         if (!$topic) {
             return $this->redirectToRoute('portal_home');

@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -33,14 +34,25 @@ class GuidesDataService extends AbstractDataService
     }
 
     /**
+     * @param mixed Person
+     *
      * @return bool
      */
-    public function hasAny()
+    public function hasAny($person)
     {
-        $em = $this->em;
+        return $this->generateAndCache(['hasAny'], function () use ($person) {
+            $allowedIds = $this->permissionsManager->getPortalPermissionsBag(
+                $person
+            )->getAllowedGuides();
 
-        return $this->generateAndCache(['hasAny'], function () use ($em) {
-            return $em->getConnection()->fetchColumn('SELECT COUNT(*) FROM topics LIMIT 1') ? true : false;
+            if (!count($allowedIds)) {
+                return false;
+            }
+
+            return (bool) $this->em->getConnection()->fetchColumn(
+                'SELECT COUNT(*) FROM topics WHERE guide_id IN (?) AND `status` = ? LIMIT 1',
+                [$allowedIds, Topic::STATUS_PUBLISHED], 0, [Connection::PARAM_INT_ARRAY, \PDO::PARAM_STR]
+            );
         });
     }
 
