@@ -48,8 +48,7 @@ class TicketWithLayoutsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetCurrentBrand'], 100);
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetDefaultDepartment'], 100);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData'], 100);
     }
 
     /**
@@ -96,22 +95,6 @@ class TicketWithLayoutsType extends AbstractType
     }
 
     /**
-     * Assign ticket to the current brand.
-     *
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onSetCurrentBrand(FormEvent $event)
-    {
-        /** @var Ticket $data */
-        $data = $event->getData();
-        if (!$data->getBrand()) {
-            $data->setBrand($this->brandHelper->getCurrentBrand());
-        }
-    }
-
-    /**
      * Set department from options.
      * Used to set default department from request.
      *
@@ -119,14 +102,19 @@ class TicketWithLayoutsType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetDefaultDepartment(FormEvent $event)
+    public function onPreSetData(FormEvent $event)
     {
+        // assign ticket to the current brand
         /** @var Ticket $data */
-        $data    = $event->getData();
+        $data = $event->getData();
+        if (!$data->getBrand()) {
+            $data->setBrand($this->brandHelper->getCurrentBrand());
+        }
+
         $config  = $event->getForm()->getConfig();
         $options = $config->getOptions();
 
-        // Setting ticket person if not defined
+        // set ticket person if not defined
         if ($data && !$data->getPerson()) {
             $data->setPerson($options['person']);
         }
