@@ -52,7 +52,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreData']);
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 200);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUpdateRelatedData']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
     }
 
@@ -140,7 +140,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onUpdateRelatedData(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $ticket = $event->getForm()->getData();
 

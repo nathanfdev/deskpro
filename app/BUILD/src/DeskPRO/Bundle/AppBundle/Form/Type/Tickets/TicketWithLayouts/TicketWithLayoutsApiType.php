@@ -52,7 +52,7 @@ class TicketWithLayoutsApiType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureRequireFields'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
     }
 
     /**
@@ -86,7 +86,7 @@ class TicketWithLayoutsApiType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onEnsureRequireFields(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $ticket = $event->getForm()->getData();
         $data   = $event->getData();
@@ -97,6 +97,7 @@ class TicketWithLayoutsApiType extends AbstractType
             return;
         }
 
+        // ensure required fields
         if ($form->has(FormFields::DEPARTMENT) && !isset($data[FormFields::DEPARTMENT])) {
             $data[FormFields::DEPARTMENT] = '';
         }

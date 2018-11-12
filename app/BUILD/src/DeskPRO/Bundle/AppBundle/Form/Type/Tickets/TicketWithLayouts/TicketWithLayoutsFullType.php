@@ -27,7 +27,7 @@ class TicketWithLayoutsFullType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onRenderFullLayout']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
     }
 
     /**
@@ -48,8 +48,9 @@ class TicketWithLayoutsFullType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onRenderFullLayout(FormEvent $event)
+    public function onPreSetData(FormEvent $event)
     {
+        // render full layout
         $context = new TicketWithLayoutsContext($event->getForm(), $event->getData(), new TicketLayout());
         $context->setNewLayout($event->getForm()->getConfig()->getOption('full_layout'));
         $context->setFullLayout(true);
