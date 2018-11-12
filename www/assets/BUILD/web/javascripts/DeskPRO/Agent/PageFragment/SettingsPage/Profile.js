@@ -142,9 +142,10 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			var enableButton = notificationsRow.find('.enable-desktop-notifications');
 
 			var permissionCallback = function(didChange) {
+
 				var perm;
 
-				Notify.needsPermission = !(Notify.isSupported && Notification.permission === 'granted');
+				Notify.needsPermission = !(Notify.isSupported && window.Notification !== undefined && Notification.permission === 'granted');
 
 				if (didChange) {
 					perm = didChange;
