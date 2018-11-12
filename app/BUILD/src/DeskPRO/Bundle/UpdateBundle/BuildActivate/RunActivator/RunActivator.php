@@ -83,19 +83,24 @@ class RunActivator implements RunActivatorInterface, LoggerAwareInterface
 
         $this->logger->info('Existing run dir will be moved to: '.$oldRunPath);
 
-        $moves = [
-            $runPath    => $oldRunPath,
-            $newRunPath => $runPath,
-        ];
-
-        foreach ($moves as $from => $to) {
-            try {
-                $this->logger->info("Move: $from => $to");
-                $fs->rename($from, $to);
-            } catch (\Exception $e) {
-                $this->logger->error('Failed fs move: '.$e->getMessage());
-                throw $e;
-            }
+        // Move:
+        // $runPath    => $oldRunPath,
+        // $newRunPath => $runPath,
+        $overwrite = false;
+        try {
+            $this->logger->info("Move: $runPath => $oldRunPath");
+            $fs->rename($runPath, $oldRunPath);
+        } catch (\Exception $e) {
+            $this->logger->error('Failed fs move: '.$e->getMessage());
+            $this->logger->info('Will try to update new folder version over current');
+            $overwrite = true;
+        }
+        try {
+            $this->logger->info("Move: $newRunPath => $runPath");
+            $fs->rename($newRunPath, $runPath, $overwrite);
+        } catch (\Exception $e) {
+            $this->logger->error('Failed fs move: '.$e->getMessage());
+            throw $e;
         }
 
         // Remove the old one
