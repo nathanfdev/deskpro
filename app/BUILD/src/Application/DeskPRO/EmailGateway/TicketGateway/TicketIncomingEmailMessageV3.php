@@ -66,9 +66,16 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
      * @param TicketIncomingEmail $ticket_email
      * @param Cleaner             $cleaner
      * @param null                $token_replace_callback
+     * @param null                $process_blobs_callback
      * @param Logger              $logger
      */
-    public function __construct(Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, $token_replace_callback = null, Logger $logger = null)
+    public function __construct(
+        Ticket $ticket = null,
+        TicketIncomingEmail $ticket_email,
+        Cleaner $cleaner,
+        $token_replace_callback = null,
+        $process_blobs_callback = null,
+        Logger $logger = null)
     {
         if ($logger) {
             $this->setLogger($logger);
@@ -105,6 +112,17 @@ class TicketIncomingEmailMessageV3 extends TicketIncomingEmailMessage
 
             // Replace inline image tags with tokens
             $this->body = $inline_images->processTokens($this->body);
+
+            if ($process_blobs_callback) {
+                // We need to call ProcessAbstract::processBlobs
+                // between InlineImageTokens::processTokens and ProcessAbstract::replaceInlineAttachTokens
+                // so, call sequence: InlineImageTokens::processTokens -> ProcessAbstract::processBlobs -> ProcessAbstract::replaceInlineAttachTokens
+                // because
+                // .. `processTokens` mark reader->attachments inline/not inline
+                // .. depending from this `processBlobs` creates attachments tagged as `ticket_attachment` or not
+                // .. `replaceInlineAttachTokens` need data from `processBlobs`
+                call_user_func($process_blobs_callback);
+            }
         }
 
         $this->body_raw = $this->body;

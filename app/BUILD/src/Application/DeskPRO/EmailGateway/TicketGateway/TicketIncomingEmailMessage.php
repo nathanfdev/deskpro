@@ -99,9 +99,18 @@ class TicketIncomingEmailMessage
      * @param Cleaner             $cleaner
      * @param EmailAccountManager $email_accounts
      * @param null                $token_replace_callback
+     * @param null                $process_blobs_callback
      * @param Logger              $logger
      */
-    public function __construct($mode, Ticket $ticket = null, TicketIncomingEmail $ticket_email, Cleaner $cleaner, EmailAccountManager $email_accounts, $token_replace_callback = null, Logger $logger = null)
+    public function __construct(
+        $mode,
+        Ticket $ticket = null,
+        TicketIncomingEmail $ticket_email,
+        Cleaner $cleaner,
+        EmailAccountManager $email_accounts,
+        $token_replace_callback = null,
+        $process_blobs_callback = null,
+        Logger $logger = null)
     {
         if ($logger) {
             $this->setLogger($logger);
@@ -418,6 +427,17 @@ class TicketIncomingEmailMessage
         // Replace inline image tags with tokens
         $this->body      = $inline_images->processTokens($this->body);
         $this->body_full = $inline_images2->processTokens($this->body_full);
+
+        if ($process_blobs_callback) {
+            // We need to call ProcessAbstract::processBlobs
+            // between InlineImageTokens::processTokens and ProcessAbstract::replaceInlineAttachTokens
+            // so, call sequence: InlineImageTokens::processTokens -> ProcessAbstract::processBlobs -> ProcessAbstract::replaceInlineAttachTokens
+            // because
+            // .. `processTokens` mark reader->attachments inline/not inline
+            // .. depending from this `processBlobs` creates attachments tagged as `ticket_attachment` or not
+            // .. `replaceInlineAttachTokens` need data from `processBlobs`
+            call_user_func($process_blobs_callback);
+        }
 
         if ($this->body_is_html) {
             // The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace

@@ -281,6 +281,7 @@ class TestEmailDecodeCommand extends ContainerAwareCommand
                 $this->getContainer()->getInputCleaner(),
                 $this->getContainer()->getEmailAccountManager(),
                 null,
+                null,
                 $logger
             );
 
