@@ -286,6 +286,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
       $scope.report.variables = vars
 
+      if vars.length == 0
+        $scope.had_empty_vars = false
+
       if cb then cb()
 
     $scope.canEdit = () ->
