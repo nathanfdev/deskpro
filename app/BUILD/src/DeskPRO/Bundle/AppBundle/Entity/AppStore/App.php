@@ -80,6 +80,26 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     private $parsedManifest;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="`created_at`", type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="`updated_at`", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="`bundle_updated_at`", type="datetime", nullable=true)
+     * @JMS\Expose()
+     * @JMS\Type("DateTime<'U'>")
+     */
+    private $bundleUpdatedAt;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -227,5 +247,43 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     public function setIsDev($isDev)
     {
         $this->isDev = $isDev;
+    }
+
+    /**
+     * @param bool $isDev
+     */
+
+    /**
+     * @return mixed
+     */
+    public function getBundleUpdatedAt()
+    {
+        return $this->bundleUpdatedAt;
+    }
+
+    /**
+     * @param \DateTime $timestamp
+     */
+    public function setBundleUpdatedAt(\DateTime $timestamp)
+    {
+        $this->bundleUpdatedAt = $timestamp;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function setTimestampsOnPersist()
+    {
+        $this->createdAt = new \DateTime();
+        $this->updatedAt   = new \DateTime();
+        $this->bundleUpdatedAt   = new \DateTime();
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function setTimestampsOnUpdate()
+    {
+        $this->updatedAt = new \DateTime();
     }
 }

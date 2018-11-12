@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppChanges;
 
 use JMS\Serializer\Annotation as JMS;
 
@@ -34,15 +34,25 @@ class GenericChange
     private $value;
 
     /**
+     * @JMS\Type("string")
+     * @JMS\Expose()
+     *
+     * @var string
+     */
+    private $previousValue;
+
+    /**
      * @param $component
      * @param $changeType
      * @param $value
+     * @param $previousValue
      */
-    public function __construct($component, $changeType, $value)
+    public function __construct($component, $changeType, $value = null, $previousValue = null)
     {
         $this->module = $component;
         $this->type   = $changeType;
         $this->value  = $value;
+        $this->previousValue  = $previousValue;
     }
 
     /**
@@ -62,9 +72,17 @@ class GenericChange
     }
 
     /**
-     * @return string
+     * @return string | null
      */
     public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @return string | null
+     */
+    public function getPreviousValue()
     {
         return $this->value;
     }

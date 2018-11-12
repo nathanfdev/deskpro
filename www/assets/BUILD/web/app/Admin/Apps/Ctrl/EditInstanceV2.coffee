@@ -1,3 +1,15 @@
+parseParams = (search)->
+  params = {}
+  if search == ""
+    return params
+
+  d = (str)-> decodeURIComponent str.replace /\+/g, ' '
+  query = search.substring 1
+  regex = /(.*?)=([^\&]*)&?/g
+
+  params[d(m[1])] = d(m[2]) while m = regex.exec query
+  params
+
 define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
   class Admin_Apps_Ctrl_EditInstanceV2 extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_Apps_Ctrl_EditInstanceV2'
@@ -5,6 +17,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
     @DEPS      = ['$http', 'dpTemplateManager', '$q']
 
     init: ->
+
+      configuration = parseParams(@$stateParams.configuration)
+
       @instanceId = parseInt(@$stateParams.instanceId)
       @$scope.getController = => return this
       @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
@@ -13,6 +28,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       @devUrl = '#'
       @settings = {
         showInOwnTab: false
+        forceConfiguration: configuration.forceConfiguration == 'yes'
       }
 
       return

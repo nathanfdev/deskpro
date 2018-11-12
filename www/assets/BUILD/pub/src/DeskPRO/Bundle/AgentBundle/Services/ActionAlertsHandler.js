@@ -1,5 +1,6 @@
 import debounce from 'lodash/debounce';
 import clone from 'lodash/clone';
+import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
@@ -7,6 +8,9 @@ import { updateAgentStatus } from '../Modules/Agent/Actions/agentActions';
 import { addToCollection, updateCollection, removeFromCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
 import * as snippetActions from '../Modules/Snippets/Actions/snippetsActions';
 import * as filtersActions from '../Modules/Filters/Actions/filterActions';
+import { reloadApps } from '../Modules/DeskproApps/Actions/Actions';
+import { api } from '../../AppBundle/DAL';
+
 
 /* eslint no-undef: "warn" */
 
@@ -20,6 +24,9 @@ class ActionAlertsHandler {
     const { data, linked } = payload.data;
     const records = [];
     switch (payload.type) {
+      case 'agent.apps.reload':
+        this.options.dispatch(reloadApps(payload.data, api, DeskproAppStore.getConfig()));
+        break;
       case 'agents.update_online':
         if (payload.data.online) {
           payload.data.online.forEach((item) => {

@@ -1,14 +1,13 @@
 <?php
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppChanges;
 
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField;
 use JMS\Serializer\Annotation as JMS;
 
 /**
  * @JMS\ExclusionPolicy("all")
  */
-class CustomFieldChange
+class BooleanFlagChange
 {
     /**
      * @JMS\Type("string")
@@ -16,7 +15,7 @@ class CustomFieldChange
      *
      * @var string
      */
-    private $module = 'customFields';
+    private $module;
 
     /**
      * @JMS\Type("string")
@@ -27,21 +26,23 @@ class CustomFieldChange
     private $type;
 
     /**
-     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField")
+     * @JMS\Type("string")
      * @JMS\Expose()
      *
-     * @var CustomField
+     * @var string
      */
     private $value;
 
     /**
+     * @param $component
      * @param $changeType
-     * @param CustomField $value
+     * @param $value
      */
-    public function __construct($changeType, CustomField $value)
+    public function __construct($component, $changeType, $value)
     {
-        $this->type  = $changeType;
-        $this->value = $value;
+        $this->module = $component;
+        $this->type   = $changeType;
+        $this->value  = $value;
     }
 
     /**
@@ -55,16 +56,24 @@ class CustomFieldChange
     /**
      * @return string
      */
-    public function getType()
+    public function getChangeType()
     {
         return $this->type;
     }
 
     /**
-     * @return CustomField
+     * @return bool
      */
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPreviousValue()
+    {
+        return !$this->value;
     }
 }

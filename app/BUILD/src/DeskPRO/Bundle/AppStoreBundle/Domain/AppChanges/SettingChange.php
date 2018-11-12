@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppChanges;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting;
@@ -36,13 +36,23 @@ class SettingChange
     private $value;
 
     /**
-     * @param $changeType
-     * @param Setting $value
+     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting")
+     * @JMS\Expose()
+     *
+     * @var CustomField
      */
-    public function __construct($changeType, Setting $value)
+    private $previousValue;
+
+    /**
+     * @param $changeType
+     * @param Setting|null $value
+     * @param Setting|null $previousValue
+     */
+    public function __construct($changeType, Setting $value = null, Setting $previousValue = null)
     {
         $this->type  = $changeType;
         $this->value = $value;
+        $this->previousValue = $previousValue;
     }
 
     /**
@@ -68,4 +78,13 @@ class SettingChange
     {
         return $this->value;
     }
+
+    /**
+     * @return CustomField
+     */
+    public function getPreviousValue()
+    {
+        return $this->value;
+    }
+
 }

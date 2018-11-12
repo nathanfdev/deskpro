@@ -5,26 +5,14 @@
  * @return string|null
  */
 export default function getSidebarState() {
-  if (!localStorage) {
+  if (typeof DeskPRO_Window.appsSidebar !== 'object') { // eslint-disable-line no-undef
     return null;
   }
 
-  let state;
-
-  try {
-    state = JSON.parse(localStorage.apps_sidebar_state);
-    if (typeof state !== 'object') {
-      console.error(`expecting apps_sidebar_state to be an object, received instead ${typeof state}`);
-      return 'pinned';
-    }
-  } catch (e) {
-    console.error('failed to parse the apps_sidebar_state', e);
-    return 'pinned';
-  }
-
-  const { pinned, expanded } = state;
+  const { pinned, expanded } = DeskPRO_Window.appsSidebar; // eslint-disable-line no-undef
   if (pinned) {
     return 'pinned';
   }
+
   return expanded ? 'expanded' : 'collapsed';
 }

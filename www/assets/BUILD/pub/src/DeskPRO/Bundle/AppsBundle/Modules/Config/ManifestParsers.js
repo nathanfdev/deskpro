@@ -4,8 +4,9 @@ export class ManifestParsers {
     const manifest = JSON.parse(JSON.stringify(linked.app[appId].manifest));
 
     return {
-      manifest: { ...manifest, application_id: appId, id, targets, title },
-      settings: settings && typeof settings === 'object' ? settings : {}
+      manifest:        { ...manifest, application_id: appId, id, targets, title },
+      settings:        settings && typeof settings === 'object' ? settings : {},
+      bundleUpdatedAt: linked.app[appId].bundle_updated_at
     };
   }
 

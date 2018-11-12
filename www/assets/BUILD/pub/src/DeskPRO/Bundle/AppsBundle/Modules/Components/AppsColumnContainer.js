@@ -7,36 +7,7 @@ import { receiveMessage, interceptMessage } from '../WidgetMessage';
 import { ContainerEvents } from './ContainerEvents';
 import { setWidgetState } from '../Services/appsState';
 import { WidgetConfiguration }  from '../Domain';
-
-/**
- * @param {Array<WidgetConfiguration>} widgetList
- */
-function mapWidgetsToGroups(widgetList) {
-  const defaultGroup = [];
-
-  /**
-   * @param {Object} acc
-   * @param {WidgetConfiguration} config
-   */
-  function reducer(acc, config) {
-    const { appSettings, id } = config;
-
-    if (!appSettings || !appSettings.showInTab || appSettings.showInTab === 'default') {
-      defaultGroup.push(config);
-    } else if (appSettings.showInTab === 'own-tab') {
-      acc[id] = [config];
-    }
-
-    return acc;
-  }
-
-  const namedGroups = widgetList.reduce(reducer, {});
-  if (defaultGroup.length === 0) {
-    return Object.keys(namedGroups).map(key => namedGroups[key]);
-  }
-
-  return [defaultGroup].concat(Object.keys(namedGroups).map(key => namedGroups[key]));
-}
+import { fromWidgetListToWidgetGroupList } from './widgetGroups';
 
 class AppsColumnContainer extends React.Component {
 
@@ -56,16 +27,38 @@ class AppsColumnContainer extends React.Component {
     widgetFullscreen:   null
   };
 
+  /**
+   * @param {WidgetConfiguration} widgetConfiguration
+   * @param {Number} groupId
+   */
+  onWidgetIconClick = (widgetConfiguration, groupId) => {
+    this.setState({ widgetGroupVisible: groupId });
+    this.expand();
+
+    let widgetElem = null;
+    if (window && window.document) {
+      widgetElem = window.document.getElementById(widgetConfiguration.canonicId);
+    }
+
+    if (widgetElem && this.scrollbarsRef.current) {
+      const scrollbars = this.scrollbarsRef.current;
+      const scrollTop = widgetElem.offsetTop + widgetElem.offsetHeight - scrollbars.getClientHeight();
+      scrollbars.scrollTop(scrollTop);
+    }
+  };
+
+  scrollbarsRef = React.createRef();
+
   showWidgetGroup = (groupId) => {
     this.setState({ widgetGroupVisible: groupId });
   };
 
   /**
-   * @param {SyntheticEvent} e
+   * @param {SyntheticEvent} [e]
    */
   expand = (e) => { // eslint-disable-line no-unused-vars
+    const { pageId } = this.props.context;
     if (this.props.getSidebarState() !== 'pinned') {
-      const { pageId } = this.props.context;
       this.props.sendMessageLegacyMessageBroker(`apps-column.expand.${pageId}`);
       this.setState({
         sidebarState: this.props.getSidebarState()
@@ -74,8 +67,8 @@ class AppsColumnContainer extends React.Component {
   };
 
   collapse = () => {
+    const { pageId } = this.props.context;
     if (this.props.getSidebarState() !== 'pinned') {
-      const { pageId } = this.props.context;
       this.props.sendMessageLegacyMessageBroker(`apps-column.collapse.${pageId}`);
       this.setState({
         sidebarState: this.props.getSidebarState()
@@ -84,8 +77,8 @@ class AppsColumnContainer extends React.Component {
   };
 
   pin = () => {
+    const { pageId } = this.props.context;
     if (this.props.getSidebarState() !== 'pinned') {
-      const { pageId } = this.props.context;
       this.props.sendMessageLegacyMessageBroker(`apps-column.togglePin.${pageId}`);
       this.setState({
         sidebarState: this.props.getSidebarState()
@@ -144,9 +137,10 @@ class AppsColumnContainer extends React.Component {
 
   render()  {
     const sidebarState = this.state.sidebarState || this.props.getSidebarState();
+    const widgetGroups = fromWidgetListToWidgetGroupList(this.props.widgetsConfigList);
 
     return (
-      <Scrollbars autoHide>
+      <Scrollbars autoHide ref={this.scrollbarsRef}>
         <div className={'layout-sidebar__views layout-sidebar--stretch-vertical'} onMouseLeave={this.collapse} onMouseOver={this.expand} onClick={this.pin}>
 
           <AppsViewIcons
@@ -154,7 +148,8 @@ class AppsColumnContainer extends React.Component {
             sidebarState={sidebarState}
 
             togglePin={this.togglePin}
-            widgetsConfigList={this.props.widgetsConfigList}
+            widgetGroups={widgetGroups}
+            onIconClick={this.onWidgetIconClick}
           />
 
           <AppsViewFull
@@ -166,7 +161,7 @@ class AppsColumnContainer extends React.Component {
 
             togglePin={this.togglePin}
             pin={this.pin}
-            widgetGroups={mapWidgetsToGroups(this.props.widgetsConfigList)}
+            widgetGroups={widgetGroups}
 
             context={this.props.context}
             receiveMessage={this.receiveMessage}

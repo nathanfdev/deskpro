@@ -20,22 +20,6 @@ const initialState = Immutable.fromJS({
  * @param {Object} action
  * @returns {Object}
  */
-function loadAppstoreConfigHandler(state, payload, action) {
-  const { sequence } = action.meta;
-  if (sequence !== 'done') { return state; }
-  // let's assume it was validated before is was serialized
-  const { config } = payload;
-
-  const changes = Immutable.fromJS({ config });
-  return state.merge(changes);
-}
-
-/**
- * @param {Object} state
- * @param {{config:AppsConfig, manifests:*}}  payload
- * @param {Object} action
- * @returns {Object}
- */
 function loadAppsHandler(state, payload, action) {
   const { sequence } = action.meta;
   if (sequence !== 'done') { return state; }
@@ -46,6 +30,15 @@ function loadAppsHandler(state, payload, action) {
 
   const newState = Immutable.fromJS({ apps: { environment, apps } });
   return state.merge(newState);
+}
+
+/**
+ * @param {Object} state
+ * @param {{config:AppsConfig, manifests:*}}  payload
+ * @param {Object} action
+ */
+function reloadAppHandler(state, payload, action) {
+  return loadAppsHandler(state, payload, action);
 }
 
 /**
@@ -107,6 +100,6 @@ export default createReducer(
     [actions.unloadContextsFromPageFragments]: unloadContexts,
     [actions.loadApps]:                        loadAppsHandler,
     [actions.loadApiToken]:                    loadApiTokenHandler,
-    [actions.loadAppstoreConfig]:              loadAppstoreConfigHandler
+    [actions.reloadApps]:                      reloadAppHandler
   }
 );
