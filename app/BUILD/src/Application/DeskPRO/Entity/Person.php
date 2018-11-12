@@ -3688,6 +3688,18 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param $checkFirst
+     *
+     * @return int
+     */
+    public function getPrimaryTeamId($checkFirst = true)
+    {
+        $team = $this->getPrimaryTeam($checkFirst);
+
+        return $team ? $team->getId() : null;
+    }
+
+    /**
      * @param PersonOnboarding $onboarding
      *
      * @return $this
