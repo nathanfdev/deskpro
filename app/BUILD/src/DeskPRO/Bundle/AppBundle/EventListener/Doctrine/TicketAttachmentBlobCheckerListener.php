@@ -70,8 +70,8 @@ class TicketAttachmentBlobCheckerListener
             $raw_file = $this->blobStorage->copyBlobRecordToString($blob);
             $newBlob  = $this->blobStorage->createBlobRecordFromString(
                 $raw_file,
-                $blob->filename,
-                $blob->content_type,
+                $blob->getFilename(),
+                $blob->getContentType(),
                 ['tag' => 'ticket_attachment']
             );
         } catch (BlobStorageException $ex) {
