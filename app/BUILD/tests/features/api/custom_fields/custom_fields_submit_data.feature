@@ -4,6 +4,7 @@ Feature: Custom fields
 
   Background:
     Given I'm authenticated as admin
+    And I have only default brand
     And only the following Ticket records exist:
       | #  | Subject  |
       | t1 | Ticket 1 |

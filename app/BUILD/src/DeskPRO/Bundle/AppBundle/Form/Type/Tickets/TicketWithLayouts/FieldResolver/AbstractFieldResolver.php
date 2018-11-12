@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\LabelTicket;
@@ -22,6 +23,7 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -34,6 +36,11 @@ abstract class AbstractFieldResolver
      * @var EntityManager
      */
     protected $em;
+
+    /**
+     * @var BrandStack
+     */
+    protected $brandStack;
 
     /**
      * @var HierarchyGenerator
@@ -64,6 +71,7 @@ abstract class AbstractFieldResolver
      * Constructor.
      *
      * @param EntityManager              $em
+     * @param BrandStack                 $brandStack
      * @param HierarchyGenerator         $hierarchyGenerator
      * @param LanguageManager            $languageManager
      * @param CustomFieldManager         $fieldManager
@@ -72,6 +80,7 @@ abstract class AbstractFieldResolver
      */
     public function __construct(
         EntityManager              $em,
+        BrandStack                 $brandStack,
         HierarchyGenerator         $hierarchyGenerator,
         LanguageManager            $languageManager,
         CustomFieldManager         $fieldManager,
@@ -79,6 +88,7 @@ abstract class AbstractFieldResolver
         BrandAwareSettingsResolver $settingsResolver
     ) {
         $this->em                 = $em;
+        $this->brandStack         = $brandStack;
         $this->hierarchyGenerator = $hierarchyGenerator;
         $this->languageManager    = $languageManager;
         $this->fieldManager       = $fieldManager;
@@ -103,6 +113,8 @@ abstract class AbstractFieldResolver
                 return $this->createPerson($context);
             case FormFields::DEPARTMENT:
                 return $this->createDepartment($context);
+            case FormFields::BRAND:
+                return $this->createBrand();
             case FormFields::CATEGORY:
                 return $this->createCategory($context);
             case FormFields::PRIORITY:
@@ -140,6 +152,11 @@ abstract class AbstractFieldResolver
      * @return FormField
      */
     abstract protected function createDepartment(TicketWithLayoutsContext $context);
+
+    /**
+     * @return FormField
+     */
+    abstract protected function createBrand();
 
     /**
      * @return FormField
@@ -452,13 +469,14 @@ abstract class AbstractFieldResolver
      * We can add specific logic to skip this field or render it as hidden.
      *
      * @param TicketWithLayoutsContext $context
+     * @param Brand                    $brand
      *
      * @return bool
      */
-    protected function isNotSelectableDepartment(TicketWithLayoutsContext $context)
+    protected function isNotSelectableDepartment(TicketWithLayoutsContext $context, Brand $brand = null)
     {
         $person    = $context->getOption('person');
-        $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($person);
+        $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($person, $context->getTicket(), $brand);
 
         return $hierarchy->countSelectable() <= 1;
     }

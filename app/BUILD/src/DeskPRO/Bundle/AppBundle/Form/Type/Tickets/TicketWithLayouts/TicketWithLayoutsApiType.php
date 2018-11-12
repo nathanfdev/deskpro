@@ -40,8 +40,11 @@ class TicketWithLayoutsApiType extends AbstractType
      * @param ApiFieldRenderer    $fieldRenderer
      * @param TicketLayoutFactory $layoutFactory
      */
-    public function __construct(ApiFieldResolver $fieldResolver, ApiFieldRenderer $fieldRenderer, TicketLayoutFactory $layoutFactory)
-    {
+    public function __construct(
+        ApiFieldResolver    $fieldResolver,
+        ApiFieldRenderer    $fieldRenderer,
+        TicketLayoutFactory $layoutFactory
+    ) {
         $this->fieldResolver = $fieldResolver;
         $this->fieldRenderer = $fieldRenderer;
         $this->layoutFactory = $layoutFactory;
@@ -93,21 +96,19 @@ class TicketWithLayoutsApiType extends AbstractType
         $form   = $event->getForm();
 
         // should applied for new tickets only
-        if (!$ticket instanceof Ticket || $ticket->getId()) {
-            return;
-        }
+        if ($ticket instanceof Ticket && !$ticket->getId()) {
+            // ensure required fields
+            if ($form->has(FormFields::DEPARTMENT) && !isset($data[FormFields::DEPARTMENT])) {
+                $data[FormFields::DEPARTMENT] = '';
+            }
+            if ($form->has(FormFields::SUBJECT) && !isset($data[FormFields::SUBJECT])) {
+                $data[FormFields::SUBJECT] = '';
+            }
+            if ($form->has(FormFields::MESSAGE) && !isset($data[FormFields::MESSAGE])) {
+                $data[FormFields::MESSAGE] = ['message' => ''];
+            }
 
-        // ensure required fields
-        if ($form->has(FormFields::DEPARTMENT) && !isset($data[FormFields::DEPARTMENT])) {
-            $data[FormFields::DEPARTMENT] = '';
+            $event->setData($data);
         }
-        if ($form->has(FormFields::SUBJECT) && !isset($data[FormFields::SUBJECT])) {
-            $data[FormFields::SUBJECT] = '';
-        }
-        if ($form->has(FormFields::MESSAGE) && !isset($data[FormFields::MESSAGE])) {
-            $data[FormFields::MESSAGE] = ['message' => ''];
-        }
-
-        $event->setData($data);
     }
 }

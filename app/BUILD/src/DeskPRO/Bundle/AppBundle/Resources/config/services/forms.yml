@@ -42,6 +42,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\ApiFieldResolver
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@brand_stack"
       - "@form_hierarchy_generator"
       - "@language_manager"
       - "@custom_field_manager"
@@ -52,6 +53,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@brand_stack"
       - "@form_hierarchy_generator"
       - "@language_manager"
       - "@custom_field_manager"

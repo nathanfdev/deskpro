@@ -115,6 +115,7 @@ class TicketWithLayoutsManipulatorType extends AbstractType
         $ticket->disableAutoTicketProcess();
         $ticket->setPerson($person);
         if ($data) {
+            $ticket->setBrand($data->getBrand());
             $ticket->setDepartment($data->getDepartment());
         }
 

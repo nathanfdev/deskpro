@@ -110,7 +110,7 @@ class TicketLayout
                 $aType = $a->getFieldType();
                 $bType = $b->getFieldType();
 
-                foreach ([FormFields::PERSON, FormFields::DEPARTMENT] as $type) {
+                foreach ([FormFields::PERSON, FormFields::BRAND, FormFields::DEPARTMENT] as $type) {
                     if ($aType === $type) {
                         return -1;
                     }

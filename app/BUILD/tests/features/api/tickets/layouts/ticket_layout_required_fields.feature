@@ -4,6 +4,7 @@ Feature: /ticket_layouts endpoint
 
   Background:
     Given I'm authenticated as admin
+    And I have only default brand
 
   Scenario Outline: I check base props
     Given the only default ticket layout exists with fields:
@@ -93,3 +94,29 @@ Feature: /ticket_layouts endpoint
       | user    | user_field        | CustomDefPerson       | 0         | required        | 1        |
       | user    | org_field         | CustomDefOrganization | 0         | required        | 0        |
       | user    | org_field         | CustomDefOrganization | 0         | required        | 1        |
+
+  Scenario Outline: I check multi-brand field
+    Given I have several brands
+    And the only default ticket layout exists with fields:
+      | <context>_layout |
+      | department       |
+
+    When I send a GET request to "/api/v2/ticket_layouts/<context>/default"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data.fields[<dep_num>].field_id" should be equal to "department"
+    And the JSON node "data.fields[<dep_num>].required" should be equal to 1
+
+    And the JSON node "data.fields[<subject_num>].field_id" should be equal to "subject"
+    And the JSON node "data.fields[<subject_num>].required" should be equal to 1
+
+    And the JSON node "data.fields[<message_num>].field_id" should be equal to "message"
+    And the JSON node "data.fields[<message_num>].required" should be equal to 1
+
+    And the JSON node "data.fields[<brand_num>].field_id" should be equal to "brand"
+    And the JSON node "data.fields[<brand_num>].required" should be equal to 0
+
+    Examples:
+      | context | dep_num | subject_num | message_num | brand_num |
+      | agent   | 2       | 4           | 5           | 1         |
+      | user    | 0       | 1           | 2           | 5         |

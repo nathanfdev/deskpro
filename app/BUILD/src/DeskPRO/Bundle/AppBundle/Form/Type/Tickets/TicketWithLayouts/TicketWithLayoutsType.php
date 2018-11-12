@@ -124,11 +124,10 @@ class TicketWithLayoutsType extends AbstractType
             return;
         }
 
-        if ($config->getOption('department_id')) {
-            $hierarchy    = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($config->getOption('person'));
-            $choiceLoader = $hierarchy->getChoiceLoader();
+        $departmentsHierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($options['person'], $data);
 
-            $choice = current($choiceLoader->loadChoicesForValues([$config->getOption('department_id')]));
+        if ($config->getOption('department_id')) {
+            $choice = current($departmentsHierarchy->getChoiceLoader()->loadChoicesForValues([$config->getOption('department_id')]));
             if ($choice) {
                 $data->setDepartment($choice->getData());
             }
@@ -137,12 +136,11 @@ class TicketWithLayoutsType extends AbstractType
         }
 
         // if there is only one department we want to make sure to set it now...
-        $hierarchy = $this->hierarchyGenerator->generateTicketDepartmentsHierarchy($options['person']);
 
         // if there is only one dep, and ticket has no dep, just set it on the ticket (we won't be showing the widget)
         if (!$data->getDepartment()) {
-            if ($hierarchy->countSelectable() === 1) {
-                $data->setDepartment($hierarchy->getFirstSelectable());
+            if ($departmentsHierarchy->countSelectable() === 1) {
+                $data->setDepartment($departmentsHierarchy->getFirstSelectable());
             }
         }
     }

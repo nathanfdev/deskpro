@@ -8,6 +8,7 @@ Feature: /tickets endpoint
     Given no Person records exist
     And no EmailAccount records exist
     And I'm authenticated as admin
+    And I have only default brand
     And agent and user exist
     And only the following Brand records exist:
       | #  | Name    |

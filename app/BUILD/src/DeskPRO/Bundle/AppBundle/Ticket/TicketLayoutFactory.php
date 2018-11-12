@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Ticket;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
@@ -161,6 +162,15 @@ class TicketLayoutFactory extends AbstractDataService
         }
 
         if ($forApi) {
+            $brands = $this->em->getRepository(Brand::class)->findAll();
+            if (count($brands) > 1) {
+                $new = new LayoutField(FormFields::BRAND);
+                $new->enableOnNew();
+                $new->enableOnEdit();
+                $new->enableOnView();
+                $layout->add($new);
+            }
+
             if (!$layout->has(FormFields::LABELS)) {
                 $new = new LayoutField(FormFields::LABELS);
                 $new->enableOnNew();
