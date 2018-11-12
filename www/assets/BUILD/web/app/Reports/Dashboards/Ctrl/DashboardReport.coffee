@@ -55,6 +55,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     load_promises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
       $scope.report = loadedReport
       $scope.report.variables = loadedReport.variables
+      $scope.had_empty_vars = !loadedReport.variables || loadedReport.variables.length == 0
 
       DashboardsInfo.getDashboardDetail(loadedReport.dashboard).then( (db) ->
         $scope.dashboard = db
@@ -94,7 +95,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         )
 
         $q.all(reloadPromises).then(->
-          # all ok
+          if $scope.had_empty_vars
+            $scope.had_empty_vars = false
+            DashboardService.saveReportVars($scope.report, true).then( () ->
+              $scope.refreshDashboardReport()
+            )
+
           return
         , ->
           $state.go('reports.dashboards.view.empty')
