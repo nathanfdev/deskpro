@@ -2,14 +2,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
-use Application\DeskPRO\Entity\Organization;
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldRenderer\WebFieldRenderer;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver\WebFieldResolver;
 use DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -76,21 +72,6 @@ class TicketWithLayoutsWebFullType extends AbstractType
             'full_layout'    => $this->layoutFactory->getFullLayoutForTicketForm(),
             'layout_factory' => function ($department) {
                 return $this->layoutFactory->getLayoutForTicketForm($department, false);
-            },
-            'person' => function (Options $options) {
-                // fake person/org to process the full form
-                $person = new Person();
-                $person->setOrganization(new Organization());
-
-                return $person;
-            },
-            'data' => function (Options $options) {
-                // fake ticket to process the full form
-                $ticket = new Ticket();
-                $ticket->disableAutoTicketProcess();
-                $ticket->setPerson($options['person']);
-
-                return $ticket;
             },
         ]);
     }

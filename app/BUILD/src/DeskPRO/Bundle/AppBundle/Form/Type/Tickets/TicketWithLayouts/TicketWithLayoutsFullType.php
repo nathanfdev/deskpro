@@ -2,11 +2,15 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts;
 
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -38,6 +42,23 @@ class TicketWithLayoutsFullType extends AbstractType
         $resolver
             ->setRequired('full_layout')
             ->setAllowedTypes('full_layout', TicketLayout::class)
+            ->setDefaults([
+                'person' => function (Options $options) {
+                    // fake person/org to process the full form
+                    $person = new Person();
+                    $person->setOrganization(new Organization());
+
+                    return $person;
+                },
+                'data' => function (Options $options) {
+                    // fake ticket to process the full form
+                    $ticket = new Ticket();
+                    $ticket->disableAutoTicketProcess();
+                    $ticket->setPerson($options['person']);
+
+                    return $ticket;
+                },
+            ])
         ;
     }
 
