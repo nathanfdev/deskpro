@@ -232,7 +232,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.changeReportLevelVar = () ->
       $scope.loaded = false
 
-      DashboardService.saveReportVars($scope.report).then( () ->
+      DashboardService.saveReportVars($scope.report, true).then( () ->
         $scope.refreshDashboardReport()
       )
 

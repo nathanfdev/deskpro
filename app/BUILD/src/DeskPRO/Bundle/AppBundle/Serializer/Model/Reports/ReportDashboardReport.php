@@ -77,7 +77,12 @@ class ReportDashboardReport
         $this->title     = $entity->getTitle();
         $this->sortOrder = $entity->getSortOrder();
         $this->dashboard = $entity->getDashboard();
-        $this->variables = $entity->getVariables();
+
+        if ($person && $overrideVars = $person->getPref("reports.dashboards.report.{$entity->getId()}.vars")) {
+            $this->variables = $entity->getVariables($overrideVars);
+        } else {
+            $this->variables = $entity->getVariables();
+        }
 
         if ($person) {
             $this->schedule = $entity->getPersonSchedule($person);

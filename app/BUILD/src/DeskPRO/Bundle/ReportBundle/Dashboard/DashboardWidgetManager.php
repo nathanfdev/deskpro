@@ -15,6 +15,7 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use DeskPRO\Bundle\ReportBundle\Reports\Results;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
+use DeskPRO\Bundle\ReportBundle\Util\VariableHelper;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
@@ -177,7 +178,14 @@ class DashboardWidgetManager
             return;
         }
 
-        $variables = $this->transformVariables($widget);
+        $varOverrides = [];
+        if ($person && $widget->getReport()) {
+            if ($pref = $person->getPref("reports.dashboards.report.{$widget->getReport()->getId()}.vars")) {
+                $varOverrides = $pref;
+            }
+        }
+
+        $variables = $this->transformVariables($widget, $varOverrides);
         $variables = $this->applyPermissionsToVariables($variables, $widget, $person);
 
         try {
@@ -267,21 +275,16 @@ class DashboardWidgetManager
      *
      * @return array
      */
-    protected function transformVariables(DashboardWidgetEntity $widget)
+    protected function transformVariables(DashboardWidgetEntity $widget, array $overrides = [])
     {
         $report          = $widget->getReport();
-        $variables       = [];
         $reportVariables = $report->getVariables();
         $widgetVariables = $widget->getVariables();
 
-        foreach ($widgetVariables as $widgetVariable) {
-            foreach ($reportVariables as $reportVariable) {
-                if ($reportVariable['name'] === $widgetVariable['name']) {
-                    $widgetVariable['value'] = $reportVariable['value'];
-                }
-            }
+        $variables = VariableHelper::mergeVariables($widgetVariables, $reportVariables);
 
-            $variables[] = $widgetVariable;
+        if ($overrides) {
+            $variables = VariableHelper::mergeVariables($variables, $overrides);
         }
 
         return $variables;
