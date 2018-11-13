@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1538748565 extends AbstractBuild implements OnlineBuildInterface
+class Build1542131204 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
@@ -11,6 +11,7 @@ class Build1538748565 extends AbstractBuild implements OnlineBuildInterface
     public function runAlters()
     {
         $this->execDbQuery('default', 'ALTER TABLE languages ADD title_local VARCHAR(255) DEFAULT \'\', ADD plural_categories VARCHAR(255) DEFAULT NULL COMMENT \'(DC2Type:simple_array)\', ADD plural_formula VARCHAR(255) DEFAULT \'n != 1\' NOT NULL');
+        $this->execDbQuery('default', 'ALTER TABLE phrases ADD is_managed TINYINT(1) DEFAULT \'0\'');
     }
 
     public function run()
