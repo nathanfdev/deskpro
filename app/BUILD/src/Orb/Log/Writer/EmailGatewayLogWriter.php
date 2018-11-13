@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright (c) DeskPRO.
  */
@@ -18,15 +19,15 @@ use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\LogItem;
 
 /**
- * Log writer to save all email gateway proceccing logs
+ * Log writer to save all email gateway proceccing logs.
  *
  * Class EmailGatewayLogWriter
- * @package Orb\Log\Writer
  */
 class EmailGatewayLogWriter extends AbstractWriter
 {
     /**
-     * Entity Manager
+     * Entity Manager.
+     *
      * @var EntityManagerInterface
      */
     protected $entityManager;
@@ -34,41 +35,45 @@ class EmailGatewayLogWriter extends AbstractWriter
     protected $dpBlobStorage;
 
     /**
-     *  Email account
+     *  Email account.
+     *
      * @var EmailAccount
      */
     protected $emailAccount;
 
     /**
-     * Logger entity
+     * Logger entity.
+     *
      * @var EmailAccountLog
      */
     protected $emailAccountLog;
 
     /**
-     * Log messages
+     * Log messages.
+     *
      * @var array
      */
     protected $messages = [];
 
     /**
-     * Number of fetched sources
+     * Number of fetched sources.
+     *
      * @var int
      */
     protected $totalfetchedSources = 0;
 
     /**
      * EmailGatewayLog constructor.
-     * @param EmailAccount $emailAccount
+     *
+     * @param EmailAccount           $emailAccount
      * @param EntityManagerInterface $entityManager
-     * @param DeskproBlobStorage $dpBlobStorage
+     * @param DeskproBlobStorage     $dpBlobStorage
      */
     public function __construct(
         EmailAccount $emailAccount,
         EntityManagerInterface $entityManager,
         DeskproBlobStorage $dpBlobStorage
-    )
-    {
+    ) {
         // set email account
         $this->emailAccount = $emailAccount;
 
@@ -84,6 +89,7 @@ class EmailGatewayLogWriter extends AbstractWriter
 
     /**
      * Write a message to the log.
+     *
      * @param LogItem $log_item
      */
     public function _write(LogItem $log_item)
@@ -92,14 +98,15 @@ class EmailGatewayLogWriter extends AbstractWriter
     }
 
     /**
-     * Get log writer entity
+     * Get log writer entity.
+     *
+     * @throws \InvalidArgumentException
      *
      * @return EmailAccountLog
-     * @throws \InvalidArgumentException
      */
     public function getLoggerEntity()
     {
-        if (! $this->emailAccountLog instanceof EmailAccountLog) {
+        if (!$this->emailAccountLog instanceof EmailAccountLog) {
             $this->emailAccountLog = new EmailAccountLog(
                 $this->emailAccount, $this->emailAccount->incoming_account->getType()
             );
@@ -112,9 +119,10 @@ class EmailGatewayLogWriter extends AbstractWriter
     }
 
     /**
-     * Set total fetched sources
+     * Set total fetched sources.
      *
      * @param int $totalFetchedSources
+     *
      * @return EmailGatewayLogWriter
      */
     public function setTotalFetchedSources($totalFetchedSources = 0)
@@ -125,7 +133,8 @@ class EmailGatewayLogWriter extends AbstractWriter
     }
 
     /**
-     * Increment total received emails counter
+     * Increment total received emails counter.
+     *
      * @return EmailGatewayLogWriter
      */
     public function incrementTotalFetchedSources()
@@ -141,10 +150,10 @@ class EmailGatewayLogWriter extends AbstractWriter
     public function flush()
     {
         try {
-            if (! $this->getLoggerEntity()->getBlob() instanceof Blob) {
+            if (!$this->getLoggerEntity()->getBlob() instanceof Blob) {
                 $blob = $this->dpBlobStorage->createBlobRecordFromString(
                     implode(PHP_EOL, $this->messages),
-                    'email-gateway-runner.account-'. $this->emailAccount->getId() .'.date-'.date('Y-m-d.H-i-s').'.log',
+                    'email-gateway-runner.account-'.$this->emailAccount->getId().'.log',
                     'plain/text',
                     [
                         'prefer_gzipped' => true,

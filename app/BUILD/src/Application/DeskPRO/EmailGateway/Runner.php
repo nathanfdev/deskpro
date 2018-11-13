@@ -106,6 +106,7 @@ class Runner
 
     /**
      * Runner constructor.
+     *
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \ezcBasePropertyNotFoundException
@@ -428,6 +429,9 @@ class Runner
         ++$source->exec_count;
 
         $sourceLogger->logDebug('Executing Source '.$source->getId());
+        if ($source->uid) {
+            $sourceLogger->logDebug('Email UID '.$source->uid);
+        }
         $sourceLogger->logDebug('Attempt: '.$source->exec_count);
 
         // Attempt to detect if we should break due to memory
@@ -711,7 +715,7 @@ BODY;
         $incomingAccount = $account->getIncomingAccount();
 
         // check if email account has incoming account config
-        if (! $incomingAccount instanceof AccountConfigInterface) {
+        if (!$incomingAccount instanceof AccountConfigInterface) {
             throw new \InvalidArgumentException(
                 'Email account must have and incoming email account config'
             );
@@ -750,14 +754,14 @@ BODY;
             $this->markAccountAsNoLongerProcessing($account, false);
             // log failure
             $this->logger->log(
-                "Failed to initialize fetcher for {$account->getAddress()} {$account->getIncomingAccountType()}: " .
+                "Failed to initialize fetcher for {$account->getAddress()} {$account->getIncomingAccountType()}: ".
                 "{$exception->getMessage()}",
                 'error'
             );
         }
 
         // ensure fetcher is created correctly even we didn't catch any exception
-        if (! $fetcher instanceof AbstractFetcher) {
+        if (!$fetcher instanceof AbstractFetcher) {
             // mark account as no longer processing
             $this->markAccountAsNoLongerProcessing($account, false);
             // log failure
@@ -875,7 +879,7 @@ BODY;
                 try {
                     // add session writer if not added
                     if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter &&
-                        ! $this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
+                        !$this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
                     ) {
                         $this->logger->addWriter($emailGatewayLogWriter);
                     }
@@ -916,7 +920,6 @@ BODY;
                     );
 
                     if (is_null($source)) {
-
                         $this->logger->log(
                             'No more messages in inbox',
                             'debug'
@@ -951,7 +954,7 @@ BODY;
 
             $processedSourceIds[] = $source->getId();
 
-            if (! $this->logMessages) {
+            if (!$this->logMessages) {
                 $this->logMessages = new \Orb\Log\Writer\ArrayWriter();
                 $this->logger->addWriter($this->logMessages);
             }
@@ -1079,7 +1082,7 @@ BODY;
 
         // add session writer if not added
         if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter &&
-            ! $this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
+            !$this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
         ) {
             $this->logger->addWriter($emailGatewayLogWriter);
         }
@@ -1124,11 +1127,13 @@ BODY;
     }
 
     /**
-     * Create fetcher instance
+     * Create fetcher instance.
      *
      * @param EmailAccount $account
-     * @return \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
+     *
      * @throws \InvalidArgumentException
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
      */
     private function createFetcher(EmailAccount $account)
     {
@@ -1138,7 +1143,7 @@ BODY;
         // get incoming account config
         $incomingAccount = $account->getIncomingAccount();
 
-        if (! $incomingAccount instanceof AccountConfigInterface) {
+        if (!$incomingAccount instanceof AccountConfigInterface) {
             throw new \InvalidArgumentException('No incoming email account');
         }
 
@@ -1181,14 +1186,15 @@ BODY;
     }
 
     /**
-     * Mark account as processing
+     * Mark account as processing.
      *
      * @param EmailAccount $account
      *
-     * @return int
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     *
+     * @return int
      */
     private function markAccountAsProcessing(EmailAccount $account)
     {
@@ -1203,16 +1209,17 @@ BODY;
     }
 
     /**
-     * Mark account as no longer processing
+     * Mark account as no longer processing.
      *
      * @param EmailAccount $account
+     * @param bool         $fetcherSucceed
      *
-     * @param bool $fetcherSucceed
-     * @return int
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \InvalidArgumentException
+     *
+     * @return int
      */
     private function markAccountAsNoLongerProcessing(EmailAccount $account, $fetcherSucceed = true)
     {
@@ -1223,9 +1230,9 @@ BODY;
 
         // If fetcher succeeded, set date_last_incoming
         if (true === $fetcherSucceed) {
-            $query  .= ', `date_last_incoming` = :dt';
+            $query .= ', `date_last_incoming` = :dt';
             $params += ['dt' => Carbon::now()];
-            $types  += ['dt' => TYPE::DATETIME];
+            $types += ['dt' => TYPE::DATETIME];
         }
 
         // Limit query to account

@@ -399,6 +399,19 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
         $data['object_info'] = $this->object_info;
 
+        // EmailAccountLog is a new-style entity, doesnt use toApiData
+        if ($this->email_account_log) {
+            $data['email_account_log'] = [
+                'id'           => $this->email_account_log->getId(),
+                'blob'         => $this->email_account_log->getBlob() ? $this->email_account_log->getBlob()->toApiData(false, $deep) : null,
+                'protocol'     => $this->email_account_log->getProtocol(),
+                'num_emails'   => $this->email_account_log->getNumEmails(),
+                'date_created' => $this->email_account_log->getDateCreated()->format('Y-m-d H:i:s'),
+            ];
+        } else {
+            $data['email_account_log'] = null;
+        }
+
         return $data;
     }
 
@@ -466,9 +479,9 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                         'object_id',
                     ],
                 ],
-                'status_idx' => ['columns' => ['status']],
-                'from_idx'   => ['columns' => ['from_email']],
-                'IDX_6F9D0D3D15AC8F3C' => ['columns' => ['email_account_log_id']]
+                'status_idx'           => ['columns' => ['status']],
+                'from_idx'             => ['columns' => ['from_email']],
+                'IDX_6F9D0D3D15AC8F3C' => ['columns' => ['email_account_log_id']],
             ],
         ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
