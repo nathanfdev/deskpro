@@ -60,7 +60,7 @@ class ZapierWebHook implements TicketSaveActionInterface
                 foreach ($hooks as $zapierHook) {
                     try {
                         $params = $zapierHook->getParams();
-                        if ($params['filter']) {
+                        if (!empty($params['filter'])) {
                             /** @var LegacyTicketFilter $filter */
                             $filter = $this->em->getRepository(LegacyTicketFilter::class)->find($params['filter']);
                             if ($filter) {
