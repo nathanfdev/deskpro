@@ -44,12 +44,12 @@ class PlainMailDir extends AbstractFetcher
     {
         $this->maildir = $this->account['connection_options']['dir'];
 
-        $this->logger->logDebug("Reading from: {$this->maildir}");
+        $this->logger->log("Reading from: {$this->maildir}", 'debug');
 
         if (is_dir($this->maildir)) {
             $this->dir = dir($this->maildir);
         } else {
-            $this->logger->logDebug('Directory does not exist');
+            $this->logger->log('Directory does not exist', 'debug');
 
             // Dir doesnt exist, but that doesnt mean error
             // Just means no mail. Checking on dir should be a separate test at setup time
@@ -64,7 +64,11 @@ class PlainMailDir extends AbstractFetcher
         if ($this->storage && is_resource($this->storage->handle)) {
             try {
                 @$this->storage->close();
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
+                $this->logger->log(
+                    "Failed to close connection to maildir: {$exception->getMessage()}",
+                    'error'
+                );
             }
         }
 
@@ -132,7 +136,7 @@ class PlainMailDir extends AbstractFetcher
 
         if (!is_writable($mailfile)) {
             error_log("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
-            $this->logger->logError("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
+            $this->logger->log("Skipping mailfile $mailfile because it is not writable so we cant delete it after", 'error');
 
             return $this->_readNext();
         }
@@ -167,7 +171,10 @@ class PlainMailDir extends AbstractFetcher
             $rawMessage->too_big = true;
         }
 
-        $this->logger->log(sprintf('Got message Took %0.2f seconds.', microtime(true) - $startTime), 'debug');
+        $this->logger->log(
+            sprintf('Got message Took %0.2f seconds.', microtime(true) - $startTime),
+            'debug'
+        );
 
         return $rawMessage;
     }
@@ -184,7 +191,7 @@ class PlainMailDir extends AbstractFetcher
         if (is_file($this->maildir.'/'.$id) && !@unlink($this->maildir.'/'.$id)) {
             sleep(1);
             if (is_file($this->maildir.'/'.$id) && !unlink($this->maildir.'/'.$id)) {
-                $this->logger->logError('Failed to delete source file: '.$this->maildir.'/'.$id);
+                $this->logger->log('Failed to delete source file: '.$this->maildir.'/'.$id, 'error');
             }
         }
     }

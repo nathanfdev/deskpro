@@ -112,6 +112,16 @@ class GmailConfig implements AccountConfigInterface
         return 'gmail';
     }
 
+    /**
+     * Get Ggmail protocol type
+     *
+     * @return string
+     */
+    public function getProtocolType()
+    {
+        return $this->type;
+    }
+
     //###########################################################################
     // Validation Metadata
     //###########################################################################

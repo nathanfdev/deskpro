@@ -141,6 +141,18 @@
 						</div>
 					</td>
 				</tr>
+				<tr ng-if="ViewSource.account_log">
+					<th>
+						Account Log
+					</th>
+					<td>
+						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.account_log') }}</textarea>
+						<div style="margin-top: 2px;">
+							<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.email_account_log.blob.download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log File</a>
+						</div>
+					</td>
+				</tr>
+
 				<tr ng-if="ViewSource.source_info">
 					<th>
 						Status Context

@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
 use DeskPRO\Component\Util\IpUtils;
@@ -21,8 +22,8 @@ use Orb\Util\Arrays;
 /**
  * @property int $id
  * @property string $account_type
- * @property \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface $incoming_account
- * @property \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface $outgoing_account
+ * @property AccountConfigInterface $incoming_account
+ * @property AccountConfigInterface $outgoing_account
  * @property bool $is_enabled
  * @property string $address
  * @property array $other_addresses
@@ -69,12 +70,12 @@ class EmailAccount extends DomainObject
     protected $account_type;
 
     /**
-     * @var \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     * @var AccountConfigInterface
      */
     protected $incoming_account = null;
 
     /**
-     * @var \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     * @var AccountConfigInterface
      */
     protected $outgoing_account = null;
 
@@ -241,7 +242,21 @@ class EmailAccount extends DomainObject
     }
 
     /**
-     * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     * Get incoming account config
+     *
+     * @return AccountConfigInterface|null
+     */
+    public function getIncomingAccount()
+    {
+        if (! $this->incoming_account instanceof AccountConfigInterface) {
+            return null;
+        }
+
+        return $this->incoming_account;
+    }
+
+    /**
+     * @return AccountConfigInterface
      */
     public function getOutgoingAccount()
     {
@@ -258,7 +273,7 @@ class EmailAccount extends DomainObject
     }
 
     /**
-     * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     * @return AccountConfigInterface
      */
     public function getRealOutgoingAccount()
     {

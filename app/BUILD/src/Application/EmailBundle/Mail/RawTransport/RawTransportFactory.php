@@ -110,6 +110,10 @@ class RawTransportFactory
         }
         $tr->registerPlugin($tr_logger);
 
+        if ($heloDomain = $this->settings->get('smtp.helo_domain')) {
+            $tr->setLocalDomain($heloDomain);
+        }
+
         return new RawSmtpTransport($tr);
     }
 

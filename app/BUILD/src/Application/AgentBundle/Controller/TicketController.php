@@ -5622,6 +5622,14 @@ CSS;
                         $message->email_source->getLogBlob()
                     );
             }
+
+            if ($message->email_source && $message->email_source->getEmailAccountLog()) {
+                $this->container->getBlobStorage()
+                    ->copyBlobRecordToFile(
+                        $tmpdir.'/message-'.$message->id.'.email_account_session.log',
+                        $message->email_source->getEmailAccountLog()->getBlob()
+                    );
+            }
         }
 
         $tm_logs = $this->em->createQuery(

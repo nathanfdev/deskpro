@@ -7,7 +7,9 @@
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Email\EmailAccount\EmailAccountUtil;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config;
+use Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config;
 use DpSys\LowError\SystemErrorHandler;
 
 /**
@@ -15,6 +17,8 @@ use DpSys\LowError\SystemErrorHandler;
  */
 class Pop3 extends AbstractFetcher implements BatchFetcher
 {
+    use NeedsIncomingAccountDecryptionTrait;
+
     /**
      * @var int
      */
@@ -72,87 +76,146 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
      * Initiates the connection.
      *
      * @return \Zend\Mail\Storage\Pop3
+     * @throws \CannotPerformOperationException
+     * @throws \InvalidArgumentException
+     * @throws \InvalidCiphertextException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     * @throws \Zend\Mail\Storage\Exception\InvalidArgumentException
      */
     protected function _initConnection()
     {
+        // stubs
+        $properties = ['user', 'password'];
         $options = [];
 
-        $incomingAccount = EmailAccountUtil::decryptIncomingAccount($this->account->incoming_account, App::$container->get('dp_enc'));
+        // decrypt account config
+        $incomingAccount = $this->decryptIncomingAccount();
 
+        // setup connection options
         switch ($incomingAccount->getType()) {
             case 'pop3':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $pop3Config */
-                $pop3Config = $incomingAccount;
+                /** @var Pop3Config $protocolConfig */
+                $protocolConfig = $incomingAccount;
 
-                $options['host']                    = $pop3Config->host;
-                $options['port']                    = $pop3Config->port;
-                $options['user']                    = $pop3Config->user;
-                $options['password']                = $pop3Config->password;
-                $options['disable_cert_validation'] = $pop3Config->disable_cert_validation;
-
-                $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
-
-                if ($pop3Config->secure_mode == 'ssl') {
-                    $options['ssl'] = 'SSL';
-                    $this->logger->log('SSL Enabled', 'debug');
-                } elseif ($pop3Config->secure_mode == 'tls') {
-                    $options['ssl'] = 'TLS';
-                    $this->logger->log('TLS Enabled', 'debug');
+                foreach (array_merge($properties, ['host', 'port', 'disable_cert_validation']) as $property) {
+                    if (property_exists($protocolConfig, $property)) {
+                        $options[$property] = $protocolConfig->{$property};
+                    }
                 }
-                break;
 
+                if (! is_null($protocolConfig->secure_mode) &&
+                    in_array($protocolConfig->secure_mode, ['ssl', 'tls']))
+                {
+                    $options['ssl'] = strtoupper($protocolConfig->secure_mode);
+                }
+
+                break;
             case 'gmail':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $gmailConfig */
-                $gmailConfig = $incomingAccount;
+                /** @var GmailConfig $protocolConfig */
+                $protocolConfig = $incomingAccount;
 
-                $options['host']     = 'pop.gmail.com';
-                $options['port']     = 995;
-                $options['user']     = $gmailConfig->user;
-                $options['password'] = $gmailConfig->password;
+                foreach ($properties as $property) {
+                    if (property_exists($protocolConfig, $property)) {
+                        $options[$property] = $protocolConfig->{$property};
+                    }
+                }
 
-                $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+                $options = array_merge(
+                    $options,
+                    [
+                        'host' => 'pop.gmail.com',
+                        'port' => 995,
+                        'ssl'  => 'SSL',
+                    ]
+                );
 
-                $options['ssl'] = 'SSL';
-                $this->logger->log('SSL Enabled', 'debug');
                 break;
-
             case 'office365':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365Config $config */
-                $config = $incomingAccount;
+                /** @var Office365Config $protocolConfig */
+                $protocolConfig = $incomingAccount;
 
-                $options['host']     = 'outlook.office365.com';
-                $options['port']     = 995;
-                $options['user']     = $config->user;
-                $options['password'] = $config->password;
+                foreach ($properties as $property) {
+                    if (property_exists($protocolConfig, $property)) {
+                        $options[$property] = $protocolConfig->{$property};
+                    }
+                }
 
-                $this->logger->log("Connecting with user {$options['user']} to {$options['host']}:{$options['port']}", 'debug');
+                $options = array_merge(
+                    $options,
+                    [
+                        'host' => 'outlook.office365.com',
+                        'port' => 995,
+                        'ssl'  => 'SSL',
+                    ]
+                );
 
-                $options['ssl'] = 'SSL';
-                $this->logger->log('SSL Enabled', 'debug');
                 break;
-
             default:
-                throw new \InvalidArgumentException('Unknown account type: '.$incomingAccount->getType());
+                throw new \InvalidArgumentException(
+                    'Unknown account type: '.$incomingAccount->getType()
+                );
+                break;
         }
 
+        // pass logger to the storage
         $options['logger'] = $this->logger;
 
-        $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3($options);
+        try {
+            // log attempt
+            $this->logger->log(
+                "Connecting to {$options['user']}@{$options['host']}:{$options['port']}",
+                'debug'
+            );
 
+            // log SSL mode
+            if (array_key_exists('ssl', $options)) {
+                $this->logger->log(
+                    "{$options['ssl']} mode enabled",
+                    'debug'
+                );
+            }
+
+            // attempt to connect
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(
+                array_merge($options, ['logger' => $this->logger])
+            );
+
+            // log success
+            $this->logger->log(
+                "Connected to {$options['user']}@{$options['host']}:{$options['port']}",
+                'debug'
+            );
+        } catch (\Zend\Mail\Protocol\Exception\RuntimeException $exception) {
+            // log failure
+            $this->logger->log(
+                "An error has occured while setting up connection: {$exception->getMessage()}",
+                'error'
+            );
+
+            throw $exception;
+        }
+
+        // return storage
         return $storage;
     }
 
+    /**
+     * Close connection
+     */
     public function close()
     {
         if ($this->storage) {
             $this->storage->close();
             $this->storage = null;
+            $this->logger->log('Connection closed', 'debug');
         }
     }
 
     public function resetConnection()
     {
-        $this->logger->logDebug('Resetting connection');
+        $this->logger->log('Resetting connection', 'debug');
         $this->getStorage(true);
         $this->_initMessageList(true);
     }
@@ -194,12 +257,15 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 } catch (\Exception $e) {
                     $capas = '<unknown>';
                 }
-                $this->logger->log("Email account does not support unique but keep_read is enabled. Capabilities: $capas", 'debug');
+                $this->logger->log(
+                    "Email account does not support unique but keep_read is enabled. Capabilities: {$capas}",
+                    'debug'
+                );
 
-                $e                      = new \InvalidArgumentException('Email account does not support uniqueid');
-                $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
-                $einfo['no_send_error'] = true;
-                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
+                $exception             = new \InvalidArgumentException('Email account does not support uniqueid');
+                $info                  = SystemErrorHandler::getExceptionInfo($exception);
+                $info['no_send_error'] = true;
+                SystemErrorHandler::logErrorInfo($info);
 
                 $this->messageList = [];
 
@@ -208,16 +274,19 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
 
             $idToNum = array_flip($this->getStorage()->getUniqueId());
 
-            $this->logger->log('Server has '.count($idToNum).' messages', 'debug');
+            $this->logger->log(
+                'Server has '.count($idToNum).' messages',
+                'debug'
+            );
 
             if (count($idToNum) > 2500) {
                 $this->logger->log('Server has >= 2500 messages, breaking', 'ERR');
                 $this->messageList = [];
 
-                $e                      = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
-                $einfo                  = \DpSys\LowError\SystemErrorHandler::getExceptionInfo($e);
-                $einfo['no_send_error'] = true;
-                \DpSys\LowError\SystemErrorHandler::logErrorInfo($einfo);
+                $exception             = new \InvalidArgumentException("POP3 server has >= 2500 messages and 'keep read' setting is enbaled. Clean out old messages and try again.");
+                $info                  = SystemErrorHandler::getExceptionInfo($exception);
+                $info['no_send_error'] = true;
+                SystemErrorHandler::logErrorInfo($info);
 
                 return;
             }
@@ -228,11 +297,17 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 WHERE email_account_id = ?
             ', [$this->account->getId()]);
 
-            $this->logger->log('System has '.count($readIds).' tracked IDs', 'debug');
+            $this->logger->log(
+                'System has '.count($readIds).' tracked IDs',
+                'debug'
+            );
 
             foreach ($readIds as $id) {
                 if (isset($idToNum[$id])) {
-                    $this->logger->log(sprintf('Skipping message #%s because UID %s', $idToNum[$id], $id), 'debug');
+                    $this->logger->log(
+                        sprintf('Skipping message #%s because UID %s', $idToNum[$id], $id),
+                        'debug'
+                    );
                     unset($idToNum[$id]);
                 }
             }
@@ -248,7 +323,10 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 }
             }
 
-            $this->logger->log('Message list contains '.count($this->messageList).' new messages', 'debug');
+            $this->logger->log(
+                'Message list contains '.count($this->messageList).' new messages',
+                'debug'
+            );
         } else {
             $list = $this->getStorage()->getSize();
 
@@ -257,7 +335,10 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                 $this->messageList[] = ['num' => $num, 'size' => $size, 'uid' => null];
             }
 
-            $this->logger->log('Message list contains '.count($this->messageList).' messages', 'debug');
+            $this->logger->log(
+                'Message list contains '.count($this->messageList).' messages',
+                'debug'
+            );
         }
     }
 
@@ -265,6 +346,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
      * Reads the next message in the inbox.
      *
      * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
+     * @throws \Exception
      */
     protected function _readNext()
     {
@@ -319,7 +401,10 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
 
         $startTime = microtime(true);
 
-        $this->logger->log("Fetching message #$messageNum", 'debug');
+        $this->logger->log(
+            "Fetching message #{$messageNum}",
+            'debug'
+        );
 
         $rawMessage       = new RawMessage();
         $rawMessage->id   = $messageNum;
@@ -330,7 +415,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
             $rawMessage->content = $this->getStorage()->getProtocol()->top($messageNum)."\n\n";
         } else {
             if ($memoryProtection) {
-                $this->logger->logInfo('Memory protected enabled');
+                $this->logger->log('Memory protected enabled', 'info');
                 $contentFile = dp_get_backup_dir().'/eml-'.uniqid('', true).'.eml';
                 $fp          = fopen($contentFile, 'w');
                 if ($fp) {
@@ -348,7 +433,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
                     SystemErrorHandler::logException($e, false);
                 }
 
-                $this->logger->logInfo('Message source saved to: '.$contentFile);
+                $this->logger->log('Message source saved to: '.$contentFile, 'debug');
                 $rawMessage->content = file_get_contents($contentFile);
                 $this->backupFile    = $contentFile;
             }
@@ -396,6 +481,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
      * Deletes the message from the server.
      *
      * @param  $id
+     * @throws \Exception
      */
     protected function _doneRead($id)
     {
@@ -419,6 +505,7 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
             $this->getStorage()->removeMessage($id);
         } catch (\Exception $e) {
             $this->logger->log("Exception: {$e->getMessage()} {$e->getTraceAsString()}", 'crit');
+
             throw $e;
         }
     }
@@ -443,9 +530,10 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
 
     /**
      * @param string $object_type
-     * @param int    $limit
+     * @param int $limit
      *
      * @return \Application\DeskPRO\Entity\EmailSource[]
+     * @throws \Exception
      */
     public function readBatch($object_type = 'ticket', $limit = 10)
     {

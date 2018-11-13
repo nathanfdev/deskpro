@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
+use Carbon\Carbon;
 use DeskPRO\Component\Util\ListUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Finder\Finder;
@@ -27,6 +28,7 @@ class CleanupHourly extends AbstractJob
         $this->_cleanupPrefs();
         $this->_cleanupSendmailSources();
         $this->_cleanupEmailProcessLogs();
+        $this->_cleanupEmailAccountLogs();
         $this->_cleanupEmailSources();
         $this->_cleanupTicketManagerLogs();
         $this->_cleanupSavedForms();
@@ -216,6 +218,38 @@ class CleanupHourly extends AbstractJob
     }
 
     //###################################################################################################################
+
+    /**
+     * Cluanup old email_account_logs.
+     */
+    private function _cleanupEmailAccountLogs()
+    {
+        $db = $this->getContainer()->get('database_connection');
+
+        $blob_ids = $db->fetchAllCol('
+            SELECT blob_id
+            FROM email_account_logs
+            WHERE num_emails = 0 AND date_created < ?
+        ', [Carbon::now()->subHours(1)->toDateTimeString()]);
+
+        if ($blob_ids) {
+            $count = $this->_deleteBlobsBatch($blob_ids);
+            $this->logStatus("Cleaned up $count email account logs with no emails from last hour");
+        }
+
+        $days     = intval($this->getContainer()->getSetting('email_log.cleanup.delay_days')) ?: 0;
+        $timesnip = date('Y-m-d H:i:s', time() - ($days * 86400));
+        $blob_ids = $db->fetchAllCol('
+            SELECT blob_id
+            FROM email_account_logs
+            WHERE date_created < ?
+        ', [$timesnip]);
+
+        if ($blob_ids) {
+            $count = $this->_deleteBlobsBatch($blob_ids);
+            $this->logStatus("Cleaned up $count email account logs older than $days days");
+        }
+    }
 
     private function _cleanupSendmailSources()
     {

@@ -10,13 +10,19 @@ namespace Application\DeskPRO\Email\EmailAccount;
 
 use Application\DeskPRO\Encryption\DpEnc;
 
+/**
+ * Class EmailAccountUtil
+ * @package Application\DeskPRO\Email\EmailAccount
+ */
 class EmailAccountUtil
 {
     /**
      * @param AccountConfigInterface $acc
-     * @param DpEnc                  $enc
+     * @param DpEnc $enc
      *
      * @return AccountConfigInterface
+     * @throws \CannotPerformOperationException
+     * @throws \InvalidCiphertextException
      */
     public static function decryptIncomingAccount(AccountConfigInterface $acc, DpEnc $enc)
     {
@@ -31,9 +37,11 @@ class EmailAccountUtil
 
     /**
      * @param AccountConfigInterface $acc
-     * @param DpEnc                  $enc
+     * @param DpEnc $enc
      *
      * @return AccountConfigInterface
+     * @throws \CannotPerformOperationException
+     * @throws \InvalidCiphertextException
      */
     public static function decryptOutgoingAccount(AccountConfigInterface $acc, DpEnc $enc)
     {

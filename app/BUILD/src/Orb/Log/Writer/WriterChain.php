@@ -43,6 +43,17 @@ class WriterChain extends AbstractWriter implements \Countable, \IteratorAggrega
     }
 
     /**
+     * Check if writer is added to the chain
+     *
+     * @param AbstractWriter $writer
+     * @return bool
+     */
+    public function hasWriter(AbstractWriter $writer)
+    {
+        return ((array_search($writer, $this->_writers, true)) !== false);
+    }
+
+    /**
      * Get the writers currently set.
      *
      * @return array

@@ -7,20 +7,25 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
 use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
+use Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher;
 use Application\DeskPRO\EmailGateway\Fetcher\BatchFetcher;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
+use Carbon\Carbon;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Component\Util\MathUtils;
+use Doctrine\DBAL\Types\Type;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Filter\CallbackFormatter;
 use Orb\Log\LogItem;
+use Orb\Log\Writer\EmailGatewayLogWriter;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
@@ -99,6 +104,14 @@ class Runner
      */
     protected $fromHeaders;
 
+    /**
+     * Runner constructor.
+     *
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \ezcBasePropertyNotFoundException
+     * @throws \ezcBaseValueException
+     */
     public function __construct()
     {
         $this->logger         = new \Application\DeskPRO\Log\Logger();
@@ -416,6 +429,9 @@ class Runner
         ++$source->exec_count;
 
         $sourceLogger->logDebug('Executing Source '.$source->getId());
+        if ($source->uid) {
+            $sourceLogger->logDebug('Email UID '.$source->uid);
+        }
         $sourceLogger->logDebug('Attempt: '.$source->exec_count);
 
         // Attempt to detect if we should break due to memory
@@ -687,28 +703,94 @@ BODY;
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
 
+        // Settings
+        $settings = App::$container->get('settings_resolver')->getGlobalSettings();
+        // get entity manager and connection
+        $entityManager = App::$container->get('doctrine.orm.default_entity_manager');
+        $dbConnection  = App::$container->get('doctrine.dbal.default_connection');
+        // get event logger
+        $dpEventLogger = App::$container->get('dp_sys.alerts.event_logger');
+
+        // get incoming account config
+        $incomingAccount = $account->getIncomingAccount();
+
+        // check if email account has incoming account config
+        if (!$incomingAccount instanceof AccountConfigInterface) {
+            throw new \InvalidArgumentException(
+                'Email account must have and incoming email account config'
+            );
+        }
+
+        // Enable GC to log memory usage in benchmarks
         gc_enable();
 
-        $this->logger->log("Start processing {$account['address']} {$account['account_type']}", 'info');
+        // start bechmark timer
         $startTime = microtime(true);
 
-        $account->date_read_start = new \DateTime();
-        App::$container->getDb()->update(
-            'email_accounts',
-            ['date_read_start' => $account->date_read_start->format('Y-m-d H:i:s')],
-            ['id'              => $account->id]
+        // Email gateway log writer
+        $emailGatewayLogWriter = new EmailGatewayLogWriter(
+            $account,
+            $entityManager,
+            App::$container->get('deskpro.blob_storage')
+        );
+        $this->logger->addWriter($emailGatewayLogWriter);
+
+        // start logging
+        $this->logger->log(
+            "Start processing {$account->getAddress()} {$account->getIncomingAccountType()}",
+            'info'
         );
 
-        /** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
-        $fetcher = $this->createFetcher($account);
+        // stub
+        $fetcher = null;
+
+        try {
+            // Mark email account as processing
+            $this->markAccountAsProcessing($account);
+            // attempt to create fetcher
+            $fetcher = $this->createFetcher($account);
+        } catch (\InvalidArgumentException $exception) {
+            // mark account as no longer processing
+            $this->markAccountAsNoLongerProcessing($account, false);
+            // log failure
+            $this->logger->log(
+                "Failed to initialize fetcher for {$account->getAddress()} {$account->getIncomingAccountType()}: ".
+                "{$exception->getMessage()}",
+                'error'
+            );
+        }
+
+        // ensure fetcher is created correctly even we didn't catch any exception
+        if (!$fetcher instanceof AbstractFetcher) {
+            // mark account as no longer processing
+            $this->markAccountAsNoLongerProcessing($account, false);
+            // log failure
+            $this->logger->log(
+                "Failed to initialize fetcher for {$account->getAddress()} {$account->getIncomingAccountType()}",
+                'error'
+            );
+        }
+
+        // Log fetcher initialization
+        $this->logger->log(
+            'Initialized fetcher of type: '.Util::getBaseClassname($fetcher),
+            'info'
+        );
+
+        // set loggers
         $fetcher->setLogger($this->logger);
 
-        $this->logger->log('Fetcher type: '.Util::getBaseClassname($fetcher), 'info');
-
-        $maxSize = App::getSetting('core.gateway_max_email');
-        if (!$maxSize) {
-            $maxSize = 20971520;
+        if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter) {
+            // set gateway logger entity
+            $fetcher->setEmailGatewayLogWriter($emailGatewayLogWriter);
         }
+
+        // Define max size
+        $maxSize = $settings->has('core.gateway_max_email')
+            ? $settings->get('core.gateway_max_email')
+            : 20971520; // @fixme: why not 41943040 as in config?
+
+        // Configure fetcher
         $fetcher->setMaxSize($maxSize);
 
         $execStart  = time();
@@ -718,17 +800,26 @@ BODY;
 
         $insertedSourceIds = [];
 
+        // Check whether we need to only collect emails or process them as well
         $onlyCollect = $onlyCollect || $DP_ENV->getConfig('async_email_processing.process');
+        if (false === $onlyCollect) {
+            /**
+             * if we need to process already inserted emails, get them from database.
+             * Those are marked as 'inserted' or 'retry'.
+             */
+            $query = 'SELECT `id` FROM `email_sources`
+                WHERE `status` IN (:states) AND `email_account_id` = :id
+                ORDER BY id ASC';
 
-        if (!$onlyCollect) {
-            $insertedSourceIds = App::getDb()->fetchAllCol("
-                SELECT id FROM
-                email_sources
-                WHERE status IN ('inserted', 'retry') AND email_account_id = ?
-                ORDER BY id ASC
-            ", [$account->getId()]);
+            $params = ['states' => implode(',', ['inserted', 'retry']), 'id' => $account->getId()];
+            $types  = ['id' => TYPE::INTEGER];
 
-            $this->logger->logDebug(sprintf('%d inserted messages being processed first', count($insertedSourceIds)));
+            $insertedSourceIds = $dbConnection->fetchAllCol($query, $params, $types);
+
+            $this->logger->log(
+                sprintf('%d inserted messages being processed first', count($insertedSourceIds)),
+                'debug'
+            );
         }
 
         $processedSourceIds = [];
@@ -740,56 +831,81 @@ BODY;
         while (true) {
             // All records should be flushed
             // Make sure there are no orphaned records
-            App::getOrm()->flush();
+            $entityManager->flush();
 
             // Protection against nested transactions.
             // This should not be needed, but its a safety against unclosed transactions.
             // Without it, a mistake somewhere down the line can result in an entire
             // process of emails being rolledback.
-            if (App::getDb()->isTransactionActive()) {
+            if ($dbConnection->isTransactionActive()) {
                 $this->logger->log('WARNING: Unclosed transaction!', 'info');
-                $e = new \RuntimeException('WARNING: Unclosed transaction. Sources processed: '.implode(', ', $processedSourceIds));
-                App::getEventLogger()->logAloud($e);
-                while (App::getDb()->isTransactionActive()) {
-                    App::getDb()->commit();
+                $dpEventLogger->logAloud(
+                    new \RuntimeException(
+                        'WARNING: Unclosed transaction. Sources processed: '.implode(', ', $processedSourceIds)
+                    )
+                );
+                while ($dbConnection->isTransactionActive()) {
+                    $dbConnection->commit();
                 }
             }
 
-            if ($this->messageLimit) {
+            // Check if we need to stop after specific messages limit
+            if ($this->messageLimit > 0) {
                 if ($this->messageCount >= $this->messageLimit) {
-                    $this->logger->logWarn(sprintf('Hit message limit, breaking :: Processed %d messages', $this->messageCount));
+                    $this->logger->logWarn(
+                        sprintf('Hit message limit, breaking :: Processed %d messages', $this->messageCount)
+                    );
                     break;
                 }
             }
 
             $m = memory_get_usage();
 
-            if ($nextInsertedId = array_shift($insertedSourceIds)) {
-                $this->logger->logDebug(sprintf('Processing next inserted message: %d', $nextInsertedId));
-                $source = App::getOrm()->find('DeskPRO:EmailSource', $nextInsertedId);
-            } elseif ($nextUp && ($nextReady = array_shift($nextUp))) {
-                $this->logger->logDebug(sprintf('Processing next inserted message'));
+            if (null !== ($nextInsertedId = array_shift($insertedSourceIds))) {
+                $this->logger->log(
+                    sprintf('Processing next inserted message: %d', $nextInsertedId),
+                    'debug'
+                );
+                // get next inserted email from database
+                $source = $entityManager->find('DeskPRO:EmailSource', $nextInsertedId);
+            } elseif (count($nextUp) > 0 && (null !== ($nextReady = array_shift($nextUp)))) {
+                $this->logger->log(
+                    sprintf('Processing next inserted message'),
+                    'debug'
+                );
+                // set current source to next message
                 $source = $nextReady;
             } else {
                 try {
+                    // add session writer if not added
+                    if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter &&
+                        !$this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
+                    ) {
+                        $this->logger->addWriter($emailGatewayLogWriter);
+                    }
+
                     $ts = microtime(true);
                     if ($fetcher instanceof BatchFetcher) {
                         if ($doCheckNextBatch) {
                             $batchLimit = 10;
-                            $this->logger->logDebug('BatchFetcher -- reading batch of '.$batchLimit);
+
+                            $this->logger->log(
+                                "BatchFetcher: fetching batch of {$batchLimit}",
+                                'debug'
+                            );
+
                             $nextUp     = $fetcher->readBatch('ticket', $batchLimit);
                             $batchCount = count($nextUp);
 
-                            $this->logger->logDebug('BatchFetcher -- read batch of '.$batchCount);
+                            $this->logger->log(
+                                "BatchFetcher: fetched batch of {$batchCount}",
+                                'debug'
+                            );
 
                             $source = array_shift($nextUp);
 
-                            if ($batchCount >= $batchLimit) {
-                                // only try another batch if we got a full batch last time
-                                $doCheckNextBatch = true;
-                            } else {
-                                $doCheckNextBatch = false;
-                            }
+                            // only try another batch if we got a full batch last time
+                            $doCheckNextBatch = ($batchCount >= $batchLimit);
                         } else {
                             $nextUp = [];
                             $source = null;
@@ -797,29 +913,46 @@ BODY;
                     } else {
                         $source = $fetcher->readNext();
                     }
-                    $this->logger->logDebug(sprintf('Read took %.3fs', microtime(true) - $ts));
-                    if (!$source) {
-                        $this->logger->logDebug('No more messages in inbox');
+
+                    $this->logger->log(
+                        sprintf('Read took %.3fs', microtime(true) - $ts),
+                        'debug'
+                    );
+
+                    if (is_null($source)) {
+                        $this->logger->log(
+                            'No more messages in inbox',
+                            'debug'
+                        );
 
                         // If this is the first time we've reached the end
                         // save a start date to the account
-                        if (!$account->date_read_start) {
+                        if (is_null($account->date_read_start)) {
                             $account->date_read_start = new \DateTime('-10 days');
-                            App::getOrm()->persist($account);
-                            App::getOrm()->flush();
+                            $entityManager->persist($account);
+                            $entityManager->flush();
                         }
 
                         break;
                     }
-                    App::getEventLogger()->log(new IncomingEmailSuccessEvent($account));
+
+                    // Log success event
+                    $dpEventLogger->log(new IncomingEmailSuccessEvent($account));
                 } catch (\Exception $e) {
-                    $this->logger->log(sprintf('readNext exception: %s', $e->getMessage()), 'info');
-                    App::getEventLogger()->logAloud(new IncomingEmailFailureEvent($account, $e));
+                    // Log exception
+                    $this->logger->log(
+                        sprintf('readNext exception: %s', $e->getMessage()),
+                        'info'
+                    );
+
+                    // Log failure event
+                    $dpEventLogger->logAloud(new IncomingEmailFailureEvent($account, $e));
+
                     break;
                 }
             }
 
-            $processedSourceIds[] = $source->id;
+            $processedSourceIds[] = $source->getId();
 
             if (!$this->logMessages) {
                 $this->logMessages = new \Orb\Log\Writer\ArrayWriter();
@@ -828,19 +961,32 @@ BODY;
 
             $this->logMessages->clear();
 
+            // remove session writer if added
+            if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter &&
+                $this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
+            ) {
+                $this->logger->removeWriter($emailGatewayLogWriter);
+            }
+
             if ($this->setTimeLimit) {
                 @set_time_limit($this->setTimeLimit);
             }
 
-            $this->logger->log("[Account {$account['id']}] Read source ID {$source['id']}", 'debug');
+            $this->logger->log(
+                "[Account {$account['id']}] Read source ID {$source['id']}",
+                'debug'
+            );
 
             // Already marked as an error (e.g., message too big) so we dont
             // process it through the account handlers
-            if ($source->status == 'error') {
-                $this->logger->log(sprintf('Source marked as error :: %s', $source->error_code), 'debug');
+            if ($source->getStatus() === 'error') {
+                $this->logger->log(
+                    sprintf('Source marked as error :: %s', $source->getErrorCode()),
+                    'debug'
+                );
 
                 // Send alert to user
-                if ($source->error_code == EmailSource::ERR_MESSAGE_TOO_BIG) {
+                if ($source->getErrorCode() === EmailSource::ERR_MESSAGE_TOO_BIG) {
                     $reader = $this->reader;
                     $reader->setRawSource($source->headers."\n\nBogus Body\n");
                     $fromEmail = $reader->getFromAddress()->getEmail();
@@ -872,7 +1018,7 @@ BODY;
                 continue;
             }
 
-            if ($onlyCollect && $source->status !== 'error' && $DP_ENV->getConfig('async_email_processing.process')) {
+            if ($onlyCollect && $source->getStatus() !== 'error' && $DP_ENV->getConfig('async_email_processing.process')) {
                 /** @var \Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface $proc */
                 $proc = App::getContainer()->get('in_email.proc_queue');
                 try {
@@ -934,17 +1080,23 @@ BODY;
             }
         }
 
-        $account->date_last_incoming = new \DateTime();
-        $account->is_read_active     = false;
-        App::$container->getDb()->update(
-            'email_accounts',
-            ['date_last_incoming' => $account->date_last_incoming->format('Y-m-d H:i:s'), 'is_read_active' => 0],
-            ['id'                 => $account->id]
-        );
+        // add session writer if not added
+        if ($emailGatewayLogWriter instanceof EmailGatewayLogWriter &&
+            !$this->logger->getWriterChain()->hasWriter($emailGatewayLogWriter)
+        ) {
+            $this->logger->addWriter($emailGatewayLogWriter);
+        }
 
+        // Mark account as no longer processing
+        $this->markAccountAsNoLongerProcessing($account, true);
+
+        // Close fetcher
         $fetcher->close();
 
+        // Stop benchmark
         $endTime = microtime(true);
+
+        // Log processing completion
         $this->logger->log(sprintf(
             'Finished processing account. Took %.2f seconds. Peak memory %.2f MB (current %.2f MB).',
             $endTime - $startTime,
@@ -975,39 +1127,119 @@ BODY;
     }
 
     /**
+     * Create fetcher instance.
+     *
      * @param EmailAccount $account
      *
      * @throws \InvalidArgumentException
      *
-     * @return Fetcher\Exchange|Fetcher\Imap|Fetcher\Pop3|Fetcher\ImapSocket
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
      */
     private function createFetcher(EmailAccount $account)
     {
-        if (!$account->incoming_account) {
+        // stub
+        $fetcher = null;
+
+        // get incoming account config
+        $incomingAccount = $account->getIncomingAccount();
+
+        if (!$incomingAccount instanceof AccountConfigInterface) {
             throw new \InvalidArgumentException('No incoming email account');
         }
 
-        switch ($account->incoming_account->getType()) {
+        // Create fetcher instance
+        switch ($incomingAccount->getType()) {
             case 'pop3':
-                return new Fetcher\Pop3($account, 20971520);
-            case 'gmail':
-                // BC, Gmail XOAUTH2 works only via IMAP
-                if ($account->incoming_account->type === GmailConfig::TYPE_OAUTH) {
-                    return new Fetcher\ImapSocket($account, 20971520);
-                } else {
-                    return new Fetcher\Pop3($account, 20971520);
-                }
-            case 'imap':
-                return new Fetcher\Imap($account, 20971520);
-            case 'exchange':
-                return new Fetcher\Exchange($account, 20971520);
             case 'office365':
-                return new Fetcher\Pop3($account, 20971520);
+                $fetcher = new Fetcher\Pop3($account, 20971520);
+                break;
+            case 'gmail':
+                {
+                    if (method_exists($incomingAccount, 'getProtocolType')) {
+                        $protocolType = $incomingAccount->getProtocolType();
+                        // BC, Gmail XOAUTH2 works only via IMAP
+                        $fetcher = ($protocolType === GmailConfig::TYPE_OAUTH)
+                            ? new Fetcher\ImapSocket($account, 20971520)
+                            : new Fetcher\Pop3($account, 20971520);
+                    } else {
+                        $fetcher = new Fetcher\Pop3($account, 20971520);
+                    }
+                } break;
+            case 'imap':
+                $fetcher = new Fetcher\Imap($account, 20971520);
+                break;
+            case 'exchange':
+                $fetcher = new Fetcher\Exchange($account, 20971520);
+                break;
             case 'noop':
             case 'null':
-                return new Fetcher\Noop($account);
+                $fetcher = new Fetcher\Noop($account);
+                break;
             default:
-                throw new \InvalidArgumentException("Unknown incoming email account: {$account->incoming_account->getType()}");
+                throw new \InvalidArgumentException(
+                    "Unknown incoming email account: {$account->incoming_account->getType()}"
+                );
+                break;
         }
+
+        return $fetcher;
+    }
+
+    /**
+     * Mark account as processing.
+     *
+     * @param EmailAccount $account
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     *
+     * @return int
+     */
+    private function markAccountAsProcessing(EmailAccount $account)
+    {
+        // Base query, params and types
+        $query  = 'UPDATE `email_accounts` SET `date_read_start` = :dt, `is_read_active` = :flag WHERE `id` = :id';
+        $params = ['dt' => Carbon::now(), 'flag' => true, 'id' => $account->getId()];
+        $types  = ['dt' => TYPE::DATETIME, 'flag' => TYPE::BOOLEAN, 'id' => TYPE::INTEGER];
+
+        // Update account in database
+        return App::$container->get('doctrine.dbal.default_connection')
+            ->executeUpdate($query, $params, $types);
+    }
+
+    /**
+     * Mark account as no longer processing.
+     *
+     * @param EmailAccount $account
+     * @param bool         $fetcherSucceed
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \InvalidArgumentException
+     *
+     * @return int
+     */
+    private function markAccountAsNoLongerProcessing(EmailAccount $account, $fetcherSucceed = true)
+    {
+        // Base query, params and types
+        $query  = 'UPDATE `email_accounts` SET `is_read_active` = :flag';
+        $params = ['flag' => false, 'id' => $account->getId()];
+        $types  = ['flag' => TYPE::BOOLEAN, 'id' => TYPE::INTEGER];
+
+        // If fetcher succeeded, set date_last_incoming
+        if (true === $fetcherSucceed) {
+            $query .= ', `date_last_incoming` = :dt';
+            $params += ['dt' => Carbon::now()];
+            $types += ['dt' => TYPE::DATETIME];
+        }
+
+        // Limit query to account
+        $query .= ' WHERE `id` = :id';
+
+        // Update account in database
+        return App::$container->get('doctrine.dbal.default_connection')
+            ->executeUpdate($query, $params, $types);
     }
 }

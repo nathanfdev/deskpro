@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -185,6 +186,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $date_created;
 
     /**
+     * @var \DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog
+     */
+    protected $email_account_log;
+
+    /**
      * How many times the email has been processed.
      *
      * @var int
@@ -299,6 +305,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $this->_raw = null;
     }
 
+    public function getErrorCode()
+    {
+        return $this->error_code;
+    }
+
     /**
      * @return string
      */
@@ -388,6 +399,19 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
         $data['object_info'] = $this->object_info;
 
+        // EmailAccountLog is a new-style entity, doesnt use toApiData
+        if ($this->email_account_log) {
+            $data['email_account_log'] = [
+                'id'           => $this->email_account_log->getId(),
+                'blob'         => $this->email_account_log->getBlob() ? $this->email_account_log->getBlob()->toApiData(false, $deep) : null,
+                'protocol'     => $this->email_account_log->getProtocol(),
+                'num_emails'   => $this->email_account_log->getNumEmails(),
+                'date_created' => $this->email_account_log->getDateCreated()->format('Y-m-d H:i:s'),
+            ];
+        } else {
+            $data['email_account_log'] = null;
+        }
+
         return $data;
     }
 
@@ -419,6 +443,22 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return $this->parsed_headers;
+    }
+
+    /**
+     * @param EmailAccountLog $emailAccountLog
+     */
+    public function setEmailAccountLog(EmailAccountLog $emailAccountLog)
+    {
+        $this->setModelField('email_account_log', $emailAccountLog);
+    }
+
+    /**
+     * @return EmailAccountLog
+     */
+    public function getEmailAccountLog()
+    {
+        return $this->email_account_log;
     }
 
     //###########################################################################
@@ -593,6 +633,20 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'joinColumns'  => [
                 [
                     'name'                 => 'log_blob_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                ],
+            ],
+        ]);
+        $metadata->mapManyToOne([
+            'fieldName'    => 'email_account_log',
+            'targetEntity' => EmailAccountLog::class,
+            'dpApi'        => true,
+            'dpApiDeep'    => true,
+            'joinColumns'  => [
+                [
+                    'name'                 => 'email_account_log_id',
                     'referencedColumnName' => 'id',
                     'nullable'             => true,
                     'onDelete'             => 'set null',
