@@ -211,7 +211,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
                                             {% if team in teams %}
 												<option value="{{ team.id }}"
 														data-icon="{{ team.getAvatarUrl(20) }}"
-                                                        {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.getPref('agent.ticket_default_team_id') == team.id or not app.user.getPref('agent.ticket_default_team_id')) %}selected="selected"{% endif %}
+                                                        {% if app.getSetting('core_tickets.new_assignteam') == 'assign' and (app.user.primaryTeamId() == team.id or not app.user.primaryTeamId()) %}selected="selected"{% endif %}
 												>{{ team.name }}</option>
                                             {% endif %}
                                         {% endfor %}

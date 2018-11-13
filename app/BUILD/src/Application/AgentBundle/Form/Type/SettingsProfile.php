@@ -59,7 +59,7 @@ class SettingsProfile extends AbstractType
 
         $builder->add('reset_api_token', 'hidden', ['required' => false]);
 
-        $builder->add('default_team_id', 'hidden', ['required' => false]);
+        $builder->add('primary_team_id', 'hidden', ['required' => false]);
 
         $builder->add('new_picture_blob_id', 'hidden', ['required' => false]);
         $builder->add('remove_picture', 'checkbox', ['required' => false]);

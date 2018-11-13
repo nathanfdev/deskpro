@@ -46,7 +46,7 @@ class SettingsProfile
     /** @var bool */
     public $enable_plaintext_email = false;
     /** @var int */
-    public $default_team_id = 0;
+    public $primary_team_id = 0;
     /** @var bool */
     public $reset_api_token = false;
 
@@ -90,18 +90,13 @@ class SettingsProfile
         $this->timezone              = $person->timezone;
         $this->language_id           = $person->getLanguage()->getId();
 
-        $this->ticket_close_reply     = (bool) $person->getPref('agent.ticket_close_reply', true);
-        $this->ticket_close_note      = (bool) $person->getPref('agent.ticket_close_note', false);
-        $this->ticket_go_next_reply   = (bool) $person->getPref('agent.ticket_go_next_reply', false);
-        $this->hide_claimed_chat      = (bool) $person->getPref('agent.hide_claimed_chat', false);
-        $this->default_team_id        = $person->getPref('agent.ticket_default_team_id');
-        $this->ticket_reverse_order   = (bool) $person->getPref('agent.ticket_reverse_order');
-        $this->enable_plaintext_email = (bool) $person->getPref('agent.enable_plaintext_email');
-        if ($this->default_team_id === null) {
-            $teams                 = $person->getAgent()->getTeams();
-            $last_team             = end($teams);
-            $this->default_team_id = $last_team ? $last_team->id : 0;
-        }
+        $this->ticket_close_reply         = (bool) $person->getPref('agent.ticket_close_reply', true);
+        $this->ticket_close_note          = (bool) $person->getPref('agent.ticket_close_note', false);
+        $this->ticket_go_next_reply       = (bool) $person->getPref('agent.ticket_go_next_reply', false);
+        $this->hide_claimed_chat          = (bool) $person->getPref('agent.hide_claimed_chat', false);
+        $this->primary_team_id            = $person->getPrimaryTeamId() ? $person->getPrimaryTeamId() : 0;
+        $this->ticket_reverse_order       = (bool) $person->getPref('agent.ticket_reverse_order');
+        $this->enable_plaintext_email     = (bool) $person->getPref('agent.enable_plaintext_email');
         $this->auto_dismiss_notifications = $person->getPref('agent.ui.auto_dismiss_notification', 60);
     }
 
@@ -200,9 +195,11 @@ class SettingsProfile
             || App::getSetting('core_tickets.reply_assignteam_assigned') == 'assign'
             || App::getSetting('core_tickets.reply_assignteam_unassigned') == 'assign'
         );
-        $primaryTeam = $person->getPrimaryTeam();
-        if ($primaryTeam && $assign_team_setting) {
-            $person->setPreference('agent.ticket_default_team_id', $this->default_team_id ? (int) $this->default_team_id : (int) $primaryTeam['id']);
+        if ($this->primary_team_id && $assign_team_setting) {
+            $primaryTeam = App::getEntityRepository('DeskPRO:AgentTeam')->find($this->primary_team_id);
+            if ($primaryTeam) {
+                $person->setPrimaryTeam($primaryTeam);
+            }
         }
 
         $person->setPreference('agent.ui.auto_dismiss_notification', intval($this->auto_dismiss_notifications));
