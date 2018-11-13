@@ -1646,6 +1646,10 @@ class TicketSearchController extends AbstractController
                     $row[] = $display_field;
                     $row[] = preg_replace('/id$/', 'name', $display_field);
                     break;
+                case 'person_email_id':
+                    $row[] = $display_field;
+                    $row[] = preg_replace('/_id$/', '', $display_field);
+                    break;
                 default:
                     if ($field_id = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $display_field)) {
                         $row[] = $field_manager->getFieldFromId($field_id)->title;
@@ -1736,6 +1740,18 @@ class TicketSearchController extends AbstractController
                         }
                         break;
                     case 'person_email_id':
+                        preg_match('/^(.*)_id$/', $display_field, $matches);
+                        list(, $name) = $matches;
+                        $entity       = $ticket->{$name};
+
+                        if ($entity) {
+                            $row[] = $entity->id;
+                            $row[] = $entity->email;
+                        } else {
+                            $row[] = '';
+                            $row[] = '';
+                        }
+                        break;
                     case 'labels':
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
