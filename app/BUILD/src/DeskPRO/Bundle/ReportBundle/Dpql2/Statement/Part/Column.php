@@ -282,7 +282,7 @@ END)
                                     $sql      = "($sql / $delimiter)";
                                     $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($field, $currency) {
                                         if ($currency) {
-                                            $value = $currency->getSymbol().number_format($value, $currency->getDecimalPlaces(), '.', ',');
+                                            $value = $currency->getSymbol().number_format(floatval($value), $currency->getDecimalPlaces(), '.', ',');
                                         }
 
                                         return $valueRenderer->renderValue($value, $field->getType(), $metadata);

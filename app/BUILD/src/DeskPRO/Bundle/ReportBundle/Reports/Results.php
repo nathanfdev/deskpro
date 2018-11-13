@@ -22,6 +22,30 @@ class Results
     protected $metadata;
 
     /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        if (empty($this->results)) {
+            return true;
+        }
+
+        if ($this->hasSplitResults()) {
+            foreach ($this->results as $r) {
+                if (!empty($r[0])) {
+                    return false;
+                }
+            }
+        } else {
+            if (!empty($this->results[0][0])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Sets the results to a single result set.
      *
      * @param array $results

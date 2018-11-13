@@ -172,6 +172,10 @@ abstract class AbstractCount
      */
     public function getId()
     {
+        if ($this->value !== null && $this->id === null) {
+            return $this->value;
+        }
+
         return $this->id;
     }
 

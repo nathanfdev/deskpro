@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
+use DeskPRO\Bundle\ReportBundle\Util\VariableHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -178,8 +179,12 @@ class ReportDashboardReport extends DomainObject
     /**
      * @return array
      */
-    public function getVariables()
+    public function getVariables($overrides = [])
     {
+        if ($overrides) {
+            return VariableHelper::mergeVariables($this->variables ?: [], $overrides);
+        }
+
         return $this->variables;
     }
 

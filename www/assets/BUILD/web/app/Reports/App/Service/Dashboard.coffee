@@ -243,13 +243,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       deferred.promise
 
 
-    saveReportVars: (report) ->
+    saveReportVars: (report, saveForCurrentAgent) ->
       d = @$q.defer()
 
-      @Api2.sendPutJson \
-        "/dashboard_reports/#{report.id}",
+      @Api2.sendPostJson \
+        "/dashboard_reports/#{report.id}/variables",
         {
-          variables: report.variables
+          variables: report.variables,
+          saveForCurrentAgent: !!saveForCurrentAgent
         }
         .then( (resp) ->
           d.resolve(resp.data)

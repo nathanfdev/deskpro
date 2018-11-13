@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Reports;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
@@ -145,5 +146,44 @@ class DashboardReportsController extends CrudController
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * @Rest\Post("/{report}/variables", requirements={"report"="\d+"})
+     *
+     * @param ReportDashboardReport $report
+     * @param Request               $request
+     *Column.php
+     *
+     * @return View
+     */
+    public function saveReportVariablesAction(ReportDashboardReport $report, Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($report->getId(), $request));
+
+        $vars       = $request->request->get('variables');
+        $saveAsPref = $request->request->getBoolean('saveForCurrentAgent');
+
+        if ($saveAsPref) {
+
+            /** @var Person $agent */
+            $agent = $this->getUser();
+
+            $pref = $agent->setPreference("reports.dashboards.report.{$report->getId()}.vars", $vars);
+            $this->getManager()->persist($pref);
+            $this->getManager()->flush();
+        } else {
+            $report->setVariables($vars);
+            $this->getManager()->persist($report);
+            $this->getManager()->flush();
+        }
+
+        $route = 'deskpro_api_reports_dashboardreports_savereportvariables';
+        $view  = View::create(null, Response::HTTP_NO_CONTENT);
+        $view->setLocation(
+            $this->generateUrl($route, ['report' => $report->getId()])
+        );
+
+        return $view;
     }
 }

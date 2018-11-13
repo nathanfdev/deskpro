@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Reports;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Component\Util\ListUtils;
 
 /**
  * Handler for defining how DPQL results should be formatted, including
@@ -249,6 +250,16 @@ class ResultMetadata
 
         if ($this->hasFlag(self::FLAG_WITH_ROLLUP) && $this->hasFlag(self::FLAG_HIERARCHY_DESCENDS_FROM)) {
             throw new \Exception('You cannot use WITH ROLLUP and HIERARCHY_DESCENDS_FROM() together');
+        }
+    }
+
+    /**
+     * @param int $flag
+     */
+    public function removeFlag($flag)
+    {
+        if ($this->hasFlag($flag)) {
+            $this->flags = ListUtils::filterOutValues($this->flags, $flag);
         }
     }
 
