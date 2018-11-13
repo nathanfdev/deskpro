@@ -8,6 +8,8 @@ interface Oauth1AuthorizationSession
      * @param Oauth1ProviderDetails   $providerDetails
      * @param Oauth1ClientCredentials $credentials
      *
+     * @throws OauthException
+     *
      * @return Oauth1AuthorizationSession
      */
     public function refreshTemporaryCredentials(Oauth1ProviderDetails $providerDetails, Oauth1ClientCredentials $credentials);
@@ -25,6 +27,8 @@ interface Oauth1AuthorizationSession
      * @param Oauth1ClientCredentials $credentials
      * @param $oauthToken
      * @param $oauthVerifier
+     *
+     * @throws OauthException
      *
      * @return Oauth1AccessToken
      */

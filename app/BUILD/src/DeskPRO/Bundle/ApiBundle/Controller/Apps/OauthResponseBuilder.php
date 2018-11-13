@@ -1,5 +1,7 @@
 <?php namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthErrorCodes;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthException;
 use League\OAuth2\Client\Token\AccessToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,8 +27,13 @@ class OauthResponseBuilder
     /** @var string */
     private $oauthVersion;
 
+    /** @var string */
+    private $appState = '';
+
     /** @var int  */
     private $httpStatus;
+
+    private $messagePropNames = ['token', 'error', 'state'];
 
     /**
      * @param bool $buildErrorResponse
@@ -45,7 +52,7 @@ class OauthResponseBuilder
      */
     public function withApplicationState($state)
     {
-        $this->messageProps['state'] = $state;
+        $this->appState = $state;
         return $this;
     }
 
@@ -71,17 +78,49 @@ class OauthResponseBuilder
 
     /**
      * @param string $message
+     * @param int $code
      * @return OauthResponseBuilder
      */
-    public function withErrorType($message)
+    public function withError($code, $message = null, array $props = [])
     {
-        $this->messageProps['error'] = $message;
+        $httpCodes = [
+            OauthErrorCodes::CODE_BAD_CREDENTIALS => 400,
+            OauthErrorCodes::CODE_BAD_REQUEST => 400,
+            OauthErrorCodes::CODE_CONNECTION_NOT_FOUND => 404,
+            OauthErrorCodes::CODE_PROVIDER_NOT_FOUND => 404,
+            OauthErrorCodes::CODE_GENERIC_FAILURE => 500,
+        ];
+        $this->httpStatus = array_key_exists($code, $httpCodes) ? $httpCodes[$code] : 500;
 
-        if ($message === 'Connection not found') {
-            $this->httpStatus = 404;
+        $messages = [
+            OauthErrorCodes::CODE_BAD_CREDENTIALS => "Bad Credentials",
+            OauthErrorCodes::CODE_BAD_REQUEST => "Invalid Request",
+            OauthErrorCodes::CODE_CONNECTION_NOT_FOUND => "Oauth connection not found",
+            OauthErrorCodes::CODE_PROVIDER_NOT_FOUND => "Oauth provider not found",
+            OauthErrorCodes::CODE_GENERIC_FAILURE => "An Oauth error occurred",
+        ];
+
+        $errorMessage = $message;
+        if (empty($errorMessage)) {
+            $errorMessage = array_key_exists($code, $messages) ? $messages[$code] : $messages[OauthErrorCodes::CODE_GENERIC_FAILURE];
+        }
+        $this->messageProps['error'] = $errorMessage;
+
+        $otherProps = array_diff(array_keys($props), $this->messagePropNames);
+        foreach ($otherProps as $name) {
+            $this->messageProps[$name] = $props[$name];
         }
 
         return $this;
+    }
+
+    /**
+     * @param OauthException $e
+     * @return OauthResponseBuilder
+     */
+    public function withOauthException(OauthException $e)
+    {
+        return $this->withError($e->getCode(), $e->getMessage());
     }
 
     /**
@@ -102,6 +141,7 @@ class OauthResponseBuilder
             'status' => $this->buildErrorResponse ? 'error' : 'success',
             'http_status' => $this->httpStatus,
             'oauthVersion' => $this->oauthVersion,
+            'state' => $this->appState,
             'body' => $this->messageProps
         ]);
         $content = <<<EOT
