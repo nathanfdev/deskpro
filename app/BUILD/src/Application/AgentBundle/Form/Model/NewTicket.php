@@ -417,18 +417,26 @@ class NewTicket
         // Message Attachments
         foreach ($this->attach as $blob_id) {
             $blob = $this->_em->getRepository(Blob::class)->find($blob_id);
-            $blob->setIsTemp(false);
-            $this->_em->persist($blob);
-            if ($this->_em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
-                $blob = clone $blob;
-                $this->_em->persist($blob);
-            }
-            $attach           = new TicketAttachment();
-            $attach['blob']   = $blob;
-            $attach['person'] = $this->_person_context;
+            if ($blob) {
+                if ($this->_em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
+                    $raw_file = App::$container->get('blob.storage')->copyBlobRecordToString($blob);
+                    $blob     = App::$container->get('blob.storage')->createBlobRecordFromString(
+                        $raw_file,
+                        $blob->getFilename(),
+                        $blob->getContentType(),
+                        ['tag' => 'ticket_attachment']
+                    );
+                }
 
-            $message->addAttachment($attach);
-            $ticket->addAttachment($attach);
+                $blob->setIsTemp(false);
+
+                $attach = new TicketAttachment();
+                $attach->setBlob($blob);
+                $attach->setPerson($this->_person_context);
+
+                $message->addAttachment($attach);
+                $ticket->addAttachment($attach);
+            }
         }
 
         foreach ($this->_blob_inline_ids as $blob_id) {

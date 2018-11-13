@@ -1420,10 +1420,21 @@ class TicketController extends AbstractController
         foreach ($this->in->getCleanValueArray('attach') as $blobId) {
             $blob = $this->em->getRepository(Blob::class)->find($blobId);
             if ($blob) {
-                $attach           = new Entity\TicketAttachment();
-                $attach['blob']   = $blob;
-                $attach['person'] = $this->person;
+                if ($this->em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
+                    $raw_file = $this->get('blob.storage')->copyBlobRecordToString($blob);
+                    $blob     = $this->get('blob.storage')->createBlobRecordFromString(
+                        $raw_file,
+                        $blob->getFilename(),
+                        $blob->getContentType(),
+                        ['tag' => 'ticket_attachment']
+                    );
+                }
+
                 $blob->setIsTemp(false);
+
+                $attach = new Entity\TicketAttachment();
+                $attach->setBlob($blob);
+                $attach->setPerson($this->person);
                 $message->addAttachment($attach);
             }
         }
