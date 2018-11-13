@@ -58,7 +58,7 @@ class InfoTpl
         if (isset($info[0])) {
             $r = [];
             foreach ($info as $sub) {
-                $r[] = $this->_readDb($sub);
+                $r = array_merge($r, $this->_readDbFromConfig($name, $sub));
             }
 
             return $r;

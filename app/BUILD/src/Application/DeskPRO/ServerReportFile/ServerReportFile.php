@@ -546,6 +546,8 @@ class ServerReportFile
 
             if ($schemaDiff) {
                 $schemaDiff = implode(";\n", $schemaDiff).';';
+            } else {
+                $schemaDiff = '';
             }
         } catch (\Exception $e) {
             $schemaDiff = null;
