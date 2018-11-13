@@ -1175,5 +1175,5 @@ return [
     // services
     //###################################################################################################################
 
-    'services.language_sync_api' => 'https://langtest.free.beeceptor.com/',
+    'services.language_sync_api' => 'https://lang-sync-services.deskpro.com/',
 ];
