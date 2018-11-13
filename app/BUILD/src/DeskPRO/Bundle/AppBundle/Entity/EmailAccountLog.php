@@ -12,7 +12,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class EmailAccountLog.
  *
  * @ORM\Entity()
- * @ORM\Table(name="email_account_logs")
+ * @ORM\Table(name="email_account_logs", indexes={
+ *     @ORM\Index(name="date_created_idx", columns={"date_created"})
+ * })
  */
 class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
 {

@@ -479,9 +479,8 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                         'object_id',
                     ],
                 ],
-                'status_idx'           => ['columns' => ['status']],
-                'from_idx'             => ['columns' => ['from_email']],
-                'IDX_6F9D0D3D15AC8F3C' => ['columns' => ['email_account_log_id']],
+                'status_idx' => ['columns' => ['status']],
+                'from_idx'   => ['columns' => ['from_email']],
             ],
         ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
