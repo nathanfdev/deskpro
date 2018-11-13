@@ -1,4 +1,5 @@
 <?php
+
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Blob;
@@ -8,8 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class EmailAccountLog
- * @package DeskPRO\Bundle\AppBundle\Entity
+ * Class EmailAccountLog.
  *
  * @ORM\Entity()
  * @ORM\Table(name="email_account_logs")
@@ -19,11 +19,11 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
-     * Protocols
+     * Protocols.
      */
-    const PROTO_POP3      = 'pop3',
-          PROTO_IMAP      = 'imap',
-          PROTO_EXCHANGE  = 'exchange';
+    const PROTO_POP3     = 'pop3',
+          PROTO_IMAP     = 'imap',
+          PROTO_EXCHANGE = 'exchange';
 
     /**
      * @ORM\Id()
@@ -36,7 +36,7 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\EmailAccount", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="email_account_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="email_account_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      *
      * @Assert\NotNull()
      *
@@ -55,7 +55,7 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob")
-     * @ORM\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      *
      * @var Blob
      */
@@ -64,19 +64,18 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="num_emails", type="integer", nullable=true)
      *
-     * @var integer
+     * @var int
      */
     private $numEmails;
 
     /**
-     * @ORM\Column(name="date_created", type="datetime")
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
      *
      * @var \DateTime
      */
     protected $dateCreated;
 
     /**
-     *
      * @var array
      */
     private $supportedProtocols = [
@@ -87,9 +86,11 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * EmailAccountLog constructor.
+     *
      * @param EmailAccount $emailAccount
      * @param $protocol
      * @param \DateTime|null $dateCreated
+     *
      * @throws \InvalidArgumentException
      */
     public function __construct(EmailAccount $emailAccount, $protocol, \DateTime $dateCreated = null)
@@ -99,7 +100,7 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
 
         // set dateCreated if provided
         $this->setDateCreated(
-            ! is_null($dateCreated) ? $dateCreated : new \DateTime()
+            !is_null($dateCreated) ? $dateCreated : new \DateTime()
         );
     }
 
@@ -142,12 +143,13 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
     /**
      * @param string $protocol
      *
-     * @return $this
      * @throws \InvalidArgumentException
+     *
+     * @return $this
      */
     public function setProtocol($protocol)
     {
-        if (! in_array($protocol, $this->supportedProtocols)) {
+        if (!in_array($protocol, $this->supportedProtocols)) {
             throw new \InvalidArgumentException('Invalid protocol provided');
         }
 
@@ -206,6 +208,7 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @param \DateTime $dateCreated
+     *
      * @return $this
      */
     public function setDateCreated(\DateTime $dateCreated)
