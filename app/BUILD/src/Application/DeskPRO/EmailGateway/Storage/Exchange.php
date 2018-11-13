@@ -551,8 +551,27 @@ class Exchange
             return;
         }
 
-        $this->logger->logInfo(sprintf('Exchange request [%s]: ', $operation).$this->getLastRequest());
-        $this->logger->logInfo(sprintf('Exchange response [%s]: ', $operation).$this->getLastResponse());
+        $this->logger->logDebug(sprintf('Exchange request [%s]: ', $operation).$this->trimXml($this->getLastRequest()));
+
+        if ($operation === 'GetItem') {
+            $this->logger->logDebug(sprintf('Exchange response [%s]: ', $operation).$this->trimXml($this->getLastResponse(), 300));
+        } else {
+            $this->logger->logDebug(sprintf('Exchange response [%s]: ', $operation).$this->trimXml($this->getLastResponse()));
+        }
+    }
+
+    private function trimXml($xml, $limit = null)
+    {
+        if (!$xml) {
+            return '';
+        }
+        $xml = preg_replace('/<\?xml[^>]+\?>/', '', $xml);
+        $xml = preg_replace('/\s*xmlns(:[a-zA-Z\-0-9]+)?=\"[^\"]+\"/', '', $xml);
+        if ($limit && isset($xml[$limit])) {
+            $xml = substr($xml, 0, $limit);
+        }
+
+        return trim($xml);
     }
 
     public function close()
