@@ -316,6 +316,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		dateInput.each(function() {
 			$(this).datetimepicker({
 				format: 'D MMM, YY',
+        minDate: moment(),
 				widgetParent: $(this).prev('div'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
