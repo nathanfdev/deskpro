@@ -445,15 +445,22 @@ export const EVENT_DESKPROWINDOW_INSERT_MARKUP = (response, widget, message, ser
 };
 
 export const EVENT_DESKPROWINDOW_DOM_INSERT = (response, widget, message, services) => {
-  const { parent, markup } = message.body;
+  const { parent, markup, operation } = message.body;
 
   const { $, window } = services;
 
   try {
     const parentEl = typeof parent === 'string' ? $(parent) : $(window.document.body);
     if (parentEl.length) {
-      parentEl.append(markup);
-      response(null, markup);
+      if (!operation || operation === 'append') {
+        parentEl.append(markup);
+        response(null, markup);
+      } else if (operation === 'replace') {
+        parentEl.replaceWith(markup);
+        response(null, markup);
+      } else {
+        response(new Error('unknown dom operation'), { ...message.body });
+      }
     } else {
       response(new Error('could not find parent element for insertion'), { ...message.body });
     }

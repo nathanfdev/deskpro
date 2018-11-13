@@ -136,9 +136,9 @@ function onReceiveMessage({ cb, oauthProxyUrl }, ev)  { // eslint-disable-line c
   if (status === 'success') {
     cb(null, ev.data);
   } else {
-    const { error: oauthError } = ev.data.body;
+    const { error: oauthError,  } = ev.data.body;
     const errorMessage = oauthError || 'authentication failed';
-    cb(new Error(errorMessage), null);
+    cb(new Error(errorMessage), ev.data.body);
   }
   return true;
 }
@@ -167,7 +167,7 @@ function onReceiveMessageOauth2Implicit({ cb, oauthProxyUrl }, ev)  { // eslint-
   } else {
     const { error: oauthError } = ev.data.body;
     const errorMessage = oauthError || 'authentication failed';
-    cb(new Error(errorMessage), null);
+    cb(new Error(errorMessage),  ev.data.body);
   }
   return true;
 }
@@ -187,7 +187,7 @@ function onReceiveOauth2TokenListener({ cb, oauthProxyUrl, correlationId }, ev) 
 
   let messageIsAuthentic;
   try {
-    const receivedState = decodeJSON(ev.data.body.state);
+    const receivedState = decodeJSON(ev.data.state);
     messageIsAuthentic = correlationId === receivedState.correlationId;
   } catch (error) {
     messageIsAuthentic = false;
@@ -204,7 +204,7 @@ function onReceiveOauth2TokenListener({ cb, oauthProxyUrl, correlationId }, ev) 
   } else {
     const { error: oauthError } = ev.data.body;
     const errorMessage = oauthError || 'authentication failed';
-    cb(new Error(errorMessage), null);
+    cb(new Error(errorMessage),  ev.data.body);
   }
   return true;
 }
