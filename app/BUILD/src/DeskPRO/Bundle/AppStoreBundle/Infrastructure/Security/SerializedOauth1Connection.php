@@ -130,9 +130,10 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
 
     /**
      * @param Oauth1AuthorizationSession $session
-     * @param array                      $options
+     * @param array $options
      *
      * @return string
+     * @throws OauthException
      */
     public function getAuthorizationUrl(Oauth1AuthorizationSession $session, $options = [])
     {
@@ -145,6 +146,7 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
      * @param $oauthVerifier
      *
      * @return Oauth1AccessToken
+     * @throws OauthException
      */
     public function getAccessToken(Oauth1AuthorizationSession $session, $oauthToken, $oauthVerifier)
     {

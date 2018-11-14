@@ -6,6 +6,9 @@ use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth1AccessToken;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth1AuthorizationSession;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth1ClientCredentials;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\Oauth1ProviderDetails;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthErrorCodes;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthException;
+use League\OAuth1\Client\Credentials\CredentialsException;
 use League\OAuth1\Client\Credentials\TemporaryCredentials;
 
 class AuthorizationSession implements Oauth1AuthorizationSession
@@ -81,17 +84,21 @@ class AuthorizationSession implements Oauth1AuthorizationSession
 
     public function refreshTemporaryCredentials(Oauth1ProviderDetails $providerDetails, Oauth1ClientCredentials $credentials)
     {
-        $credentials  = $this->createClient($providerDetails, $credentials)->getTemporaryCredentials();
-        $this->token  = $credentials->getIdentifier();
-        $this->secret = $credentials->getSecret();
+        try {
+            $credentials  = $this->createClient($providerDetails, $credentials)->getTemporaryCredentials();
+            $this->token  = $credentials->getIdentifier();
+            $this->secret = $credentials->getSecret();
 
-        return $this;
+            return $this;
+        } catch (CredentialsException $e) {
+            throw new OauthException($e->getMessage(), OauthErrorCodes::CODE_BAD_CREDENTIALS, $e);
+        }
+
     }
 
     public function getAuthorizationUrl(Oauth1ProviderDetails $providerDetails, Oauth1ClientCredentials $credentials)
     {
         $temporary = $this->getTemporaryCredentials();
-
         return $this->createClient($providerDetails, $credentials)->getAuthorizationUrl($temporary);
     }
 
@@ -101,12 +108,16 @@ class AuthorizationSession implements Oauth1AuthorizationSession
         $oauthToken,
         $oauthVerifier
     ) {
-        $temporaryCredentials = $this->getTemporaryCredentials();
-        $tokenCredentials          = $this->createClient($providerDetails, $credentials)
-            ->getTokenCredentials($temporaryCredentials, $oauthToken, $oauthVerifier)
-        ;
+        try {
+            $temporaryCredentials = $this->getTemporaryCredentials();
+            $tokenCredentials  = $this->createClient($providerDetails, $credentials)
+                ->getTokenCredentials($temporaryCredentials, $oauthToken, $oauthVerifier)
+            ;
 
-        return new Oauth1AccessToken($tokenCredentials->getIdentifier(), $tokenCredentials->getSecret());
+            return new Oauth1AccessToken($tokenCredentials->getIdentifier(), $tokenCredentials->getSecret());
+        } catch (CredentialsException $e) {
+            throw new OauthException($e->getMessage(), OauthErrorCodes::CODE_BAD_CREDENTIALS, $e);
+        }
     }
 
     /**

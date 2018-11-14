@@ -11,6 +11,10 @@ use League\OAuth2\Client\Token\AccessToken;
 
 class OauthProviderConnectionLoader
 {
+    private $providerName;
+
+    private $manager;
+
     /**
      * OauthConnectionLoader constructor.
      *
