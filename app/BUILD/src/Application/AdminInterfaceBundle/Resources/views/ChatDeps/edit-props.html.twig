@@ -103,6 +103,24 @@
 				</div>
 			</div>
 		</div>
+		<div class="form-group">
+			<div class="col-lg-3">
+				<h3>Chat Queue</h3>
+			</div>
+			<div class="col-lg-9">
+				<select
+						ui-select2
+						ng-model="EditCtrl.form.chat_queue_id"
+						style="min-width: 240px"
+						class="no-search"
+				>
+					<option value="0">Use Default Queue</option>
+					<option value="{{ ng_var('queue.id') }}" ng-repeat="queue in EditCtrl.chatQueues">
+                        {{ ng_var('queue.name') }}
+					</option>
+				</select>
+			</div>
+		</div>
 
 	</div>
 </div>

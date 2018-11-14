@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -95,6 +96,11 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
      * @var DepartmentPermission[]|ArrayCollection
      */
     protected $permissions;
+
+    /**
+     * @var UserChatQueue
+     */
+    protected $chatQueue;
 
     /**
      * @return Department
@@ -525,11 +531,36 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
         return $this;
     }
 
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
     public function removeBrand(Brand $brand)
     {
         $this->brands->removeElement($brand);
         $brand->removeDepartment($this);
         $this->_onPropertyChanged('brands', null, $this->brands);
+
+        return $this;
+    }
+
+    /**
+     * @return UserChatQueue
+     */
+    public function getChatQueue()
+    {
+        return $this->chatQueue;
+    }
+
+    /**
+     * @param UserChatQueue $chatQueue
+     *
+     * @return $this
+     */
+    public function setChatQueue(UserChatQueue $chatQueue = null)
+    {
+        $this->setModelField('chatQueue', $chatQueue);
 
         return $this;
     }
@@ -585,6 +616,10 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
             $data['title_parts']      = [$this->title];
             $data['user_title_parts'] = [$this->getUserTitle()];
             $data['has_children']     = count($this->children) != 0;
+        }
+
+        if ($this->is_chat_enabled) {
+            $data['chat_queue_id'] = $this->chatQueue ? $this->chatQueue->getId() : null;
         }
 
         return $data;
@@ -759,6 +794,24 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
                             'nullable'             => false,
                             'onDelete'             => 'cascade',
                         ],
+                    ],
+                ],
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'chatQueue',
+                'targetEntity' => UserChatQueue::class,
+                'mappedBy'     => null,
+                'inversedBy'   => 'departments',
+                'fetch'        => ClassMetadataInfo::FETCH_LAZY,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'chat_queue_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
                     ],
                 ],
             ]

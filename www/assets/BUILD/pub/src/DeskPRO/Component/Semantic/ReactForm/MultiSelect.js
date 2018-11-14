@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
 import classNames from 'classnames';
+import Immutable from 'immutable';
 
 class SemanticMultiSelect extends React.Component {
 
@@ -20,10 +21,11 @@ class SemanticMultiSelect extends React.Component {
 
   onChange = (item) => {
     const { value = [], onChange } = this.props;
-    const index = value.indexOf(item);
+    const immutableValue = Immutable.fromJS(value);
+    const immutableItem = Immutable.fromJS(item);
 
-    if (index !== -1) {
-      value.splice(index, 1);
+    if (immutableValue.includes(immutableItem)) {
+      value.splice(immutableValue.indexOf(immutableItem), 1);
     } else {
       value.push(item);
     }
@@ -60,8 +62,11 @@ class SemanticMultiSelect extends React.Component {
     const { choices = [], value, selectedCount, toggleAll, uncheckAll } = this.props;
     const primaryChoices = choices.filter(choice => choice.primary);
     const otherChoices = choices.filter(choice => !choice.primary);
+
+    const immutableValue = Immutable.fromJS(value);
     const renderChoice = (choice, index) => {
-      const checked = value && value.indexOf(choice.value) !== -1;
+      const immutableItem = Immutable.fromJS(choice.value);
+      const checked = value && immutableValue.indexOf(immutableItem) !== -1;
 
       return (
         <div

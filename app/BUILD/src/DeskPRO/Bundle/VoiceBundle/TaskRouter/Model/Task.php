@@ -9,7 +9,7 @@ class Task extends AbstractModel
 {
     const STATUS_PENDING  = 'pending';
     const STATUS_TIMEOUT  = 'timeout';
-    const STATUS_DONE     = 'done';
+    const STATUS_ACCEPTED = 'accepted';
     const STATUS_CANCELED = 'canceled';
     const STATUS_ERROR    = 'error';
 
@@ -57,6 +57,11 @@ class Task extends AbstractModel
      * @var \DateTime
      */
     protected $dateCreated;
+
+    /**
+     * @var \DateTime
+     */
+    protected $dateExpireAssigned;
 
     /**
      * Constructor.
@@ -127,27 +132,27 @@ class Task extends AbstractModel
     }
 
     /**
-     * @param int $workerId
+     * @param Worker $worker
      *
      * @return $this
      */
-    public function addWorkerId($workerId)
+    public function addWorker(Worker $worker)
     {
-        if (!in_array($workerId, $this->workersIds)) {
-            $this->workersIds[] = $workerId;
+        if (!in_array($worker->getId(), $this->workersIds)) {
+            $this->workersIds[] = $worker->getId();
         }
 
         return $this;
     }
 
     /**
-     * @param int $workerId
+     * @param Worker $worker
      *
      * @return $this
      */
-    public function removeWorkerId($workerId)
+    public function removeWorker(Worker $worker)
     {
-        if (($key = array_search($workerId, $this->workersIds)) !== false) {
+        if (($key = array_search($worker->getId(), $this->workersIds)) !== false) {
             unset($this->workersIds[$key]);
         }
 
@@ -233,9 +238,9 @@ class Task extends AbstractModel
     /**
      * @return bool
      */
-    public function isDone()
+    public function isAccepted()
     {
-        return $this->status === self::STATUS_DONE;
+        return $this->status === self::STATUS_ACCEPTED;
     }
 
     /**
@@ -287,14 +292,14 @@ class Task extends AbstractModel
     }
 
     /**
-     * @param int $workerId
+     * @param Worker $worker
      *
      * @return $this
      */
-    public function addRejectedBy($workerId)
+    public function addRejectedBy(Worker $worker)
     {
-        if (!in_array($workerId, $this->rejectedBy)) {
-            $this->rejectedBy[] = $workerId;
+        if (!in_array($worker->getId(), $this->rejectedBy)) {
+            $this->rejectedBy[] = $worker->getId();
         }
 
         return $this;
@@ -309,13 +314,61 @@ class Task extends AbstractModel
     }
 
     /**
-     * @param |DateTime $dateCreated
+     * @param \DateTime $dateCreated
      *
      * @return $this
      */
-    public function setDateCreated($dateCreated)
+    public function setDateCreated(\DateTime $dateCreated = null)
     {
         $this->dateCreated = $dateCreated;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateExpireAssigned()
+    {
+        return $this->dateExpireAssigned;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAssignExpired()
+    {
+        if (!$this->dateExpireAssigned) {
+            return false;
+        }
+
+        $date = new \DateTime();
+
+        return $date > $this->dateExpireAssigned;
+    }
+
+    /**
+     * @param \DateTime $dateExpireAssigned
+     *
+     * @return $this
+     */
+    public function setDateExpireAssigned(\DateTime $dateExpireAssigned = null)
+    {
+        $this->dateExpireAssigned = $dateExpireAssigned;
+
+        return $this;
+    }
+
+    /**
+     * @param int $offset
+     *
+     * @return $this
+     */
+    public function setDateExpireOffset($offset)
+    {
+        if ($offset) {
+            $this->setDateExpireAssigned(new \DateTime('+'.$offset.' seconds'));
+        }
 
         return $this;
     }

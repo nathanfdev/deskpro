@@ -611,8 +611,6 @@ class VoiceCallbacksHelper
 
         /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $participant->getPhoneCall();
-        /** @var Person $person */
-        $person = $participant->getPerson();
 
         // set participant leave event time
         $participant->setDateLeft(new \DateTime());
@@ -635,7 +633,11 @@ class VoiceCallbacksHelper
             $this->voiceProviderHelper->tryEndConference($phoneCall);
         }
 
-        $this->workerHelper->setIdle('agent', $person->getId());
+        $this->taskRouter->completeTaskForWorker(
+            $phoneCall->getTaskSid(),
+            'agent',
+            $participant->getPerson()->getId()
+        );
     }
 
     /**

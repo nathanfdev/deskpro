@@ -83,9 +83,11 @@ define [
 
       deferred = @$q.defer()
       brandPromise = @Api2.sendGet('brands');
+      chatQueuesPromise = @Api2.sendGet('user_chat_queues');
 
-      allPromise = @$q.all([promise, @loadList(), brandPromise]).then( (result) =>
+      allPromise = @$q.all([promise, @loadList(), brandPromise, chatQueuesPromise]).then( (result) =>
         brands = result[2].data.data;
+        chatQueues = result[3].data.data;
         result = result[0].data
 
         data = {}
@@ -108,10 +110,11 @@ define [
               data.dep_parent_list = Arrays.removeIndex(data.dep_parent_list, idx)
               break
 
-        data.agents          = result.agentsInfo.agents
-        data.brands          = brands
-        data.agentgroups     = result.agentgroupsInfo.groups
-        data.usergroups      = result.usergroupsInfo.groups
+        data.agents      = result.agentsInfo.agents
+        data.brands      = brands
+        data.chatQueues  = chatQueues
+        data.agentgroups = result.agentgroupsInfo.groups
+        data.usergroups  = result.usergroupsInfo.groups
 
         data.form = @getFormMapper().getFormFromModel(
           data.dep,

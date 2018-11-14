@@ -2060,6 +2060,29 @@ define(function() {
     controller: 'Admin_ChatRoundRobin_Ctrl_Edit'
   });
 
+  //###
+  //# Chat Queues
+  //###
+  routes.push({
+    id: 'chat.chat_queues',
+    url: '/queues',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'chat.chat_queues_new',
+    url:          '/queues/new',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'chat.chat_queues_edit',
+    url:          '/queues/{id:\\d+}',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
 
   //##################################################################################################################
   // Twitter

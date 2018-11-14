@@ -3,8 +3,8 @@ services:
   dp.voice.event_dispatcher:
     class: Symfony\Component\EventDispatcher\EventDispatcher
 
-  dp.voice.listener.agent_notify:
-    class: DeskPRO\Bundle\VoiceBundle\EventListener\AgentNotifyListener
+  dp.voice.listener.voice_agent_notify:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\VoiceAgentNotifyListener
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@dp.voice.voice_task_helper"
@@ -28,6 +28,23 @@ services:
     arguments:
       - "@dp.voice.voice_task_helper"
       - "@dp.voice.task_router.storage"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
+  dp.voice.listener.chat_queue_count:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\ChatQueueCountListener
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.voice.chat_task_helper"
+      - "@dp.voice.task_router.storage"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
+  dp.voice.listener.chat_agent_notify:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\ChatAgentNotifyListener
+    arguments:
+      - "@dp.voice.chat_task_helper"
+      - "@event_dispatcher"
     tags:
       - { name: dp.voice.event_subscriber }
 
@@ -76,5 +93,13 @@ services:
   event_listener.doctrine.voice_agent_target:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceAgentTargetListener
     arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.user_chat_queue:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\UserChatQueueListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@chat_settings_resolver"
     tags:
       - { name: doctrine.entity_listener }

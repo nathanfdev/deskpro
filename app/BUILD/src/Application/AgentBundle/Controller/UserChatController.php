@@ -132,26 +132,59 @@ class UserChatController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
+    /**
+     * @param $conversation_id
+     *
+     * @throws NotFoundHttpException
+     *
+     * @return Response
+     */
     public function joinChatAction($conversation_id)
     {
         /** @var ChatConversation $convo */
         $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
-
         if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $hasJoined = (bool) $convo->hasParticipant($this->person) || ($convo->getAgentId() == $this->person->getId());
+        if ($this->get('dp.voice.task_router')->acceptTask($convo->getTaskId(), 'agent', $this->person->getId())) {
+            $assigned = $this->joinConvo($convo);
 
-        $assigned = $this->joinConvo($convo);
+            return $this->createJsonCmResponse([
+                'result'   => 'success',
+                'assigned' => $assigned,
+            ]);
+        } else {
+            return $this->createJsonCmResponse([
+                'result' => 'error',
+            ]);
+        }
+    }
 
-        if (!$hasJoined) {
+    /**
+     * @param $conversation_id
+     *
+     * @throws NotFoundHttpException
+     *
+     * @return Response
+     */
+    public function declineChatAction($conversation_id)
+    {
+        /** @var ChatConversation $convo */
+        $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        if (!$convo || !$this->person->getPermissionsManager()->ChatChecker->canView($convo)) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->createJsonCmResponse([
-            'result'   => 'success',
-            'assigned' => $assigned,
-        ]);
+        if ($this->get('dp.voice.task_router')->rejectTask($convo->getTaskId(), 'agent', $this->person->getId())) {
+            return $this->createJsonCmResponse([
+                'result' => 'success',
+            ]);
+        } else {
+            return $this->createJsonCmResponse([
+                'result' => 'error',
+            ]);
+        }
     }
 
     private function joinConvo($convo)

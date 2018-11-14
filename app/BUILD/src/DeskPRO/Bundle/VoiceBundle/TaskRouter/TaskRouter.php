@@ -4,9 +4,9 @@ namespace DeskPRO\Bundle\VoiceBundle\TaskRouter;
 
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
-use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\WorkflowInterface;
+use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Lock\LockInterface;
@@ -87,10 +87,16 @@ class TaskRouter
                     $task->setStatus(Task::STATUS_ERROR);
                     $task->setStatusReason('Unknown workflow');
 
-                    $this->dispatcher->dispatch(TaskRouterEvent::ERROR, new TaskRouterEvent($task));
+                    try {
+                        $this->dispatcher->dispatch(TaskRouterEvent::ERROR, new TaskRouterEvent($task));
+                    } catch (\Exception $e) {
+                        SystemErrorHandler::logException($e);
+                    }
+
                     $this->storage->saveTask($task);
                 }
 
+                /** @var WorkflowInterface $workflow */
                 $workflow = $this->container->get($this->workflows[$task->getChannel()]);
 
                 // check if task is expired
@@ -100,15 +106,41 @@ class TaskRouter
                     // task is timed out, reset workers
                     $workers = $this->storage->getWorkers($task->getWorkerIds());
                     foreach ($workers as $worker) {
-                        $worker->setActivity(Worker::ACTIVITY_IDLE);
+                        $worker->removePendingTask($task);
                         $this->storage->saveWorker($worker);
                     }
 
-                    $this->dispatcher->dispatch(TaskRouterEvent::TIMEOUT, new TaskRouterEvent($task));
+                    try {
+                        $this->dispatcher->dispatch(TaskRouterEvent::TIMEOUT, new TaskRouterEvent($task));
+                    } catch (\Exception $e) {
+                        SystemErrorHandler::logException($e);
+                    }
+
                     $this->storage->saveTask($task);
-                } elseif (!$task->getWorkerIds()) {
+                } elseif ($task->isAssignExpired() || !$task->getWorkerIds()) {
+                    // re-route timeout
+                    if ($task->isAssignExpired()) {
+                        $task->setDateExpireAssigned(null);
+                        // remove pending task
+                        $workers = $this->storage->getWorkers($task->getWorkerIds());
+                        foreach ($workers as $worker) {
+                            $task->removeWorker($worker);
+
+                            $worker->removePendingTask($task);
+                            $this->storage->saveWorker($worker);
+                        }
+
+                        try {
+                            $this->dispatcher->dispatch(TaskRouterEvent::ASSIGN_TIMEOUT, new TaskRouterEvent($task));
+                        } catch (\Exception $e) {
+                            SystemErrorHandler::logException($e);
+                        }
+
+                        $this->storage->saveTask($task);
+                    }
+
                     // if task wasn't assigned yet then try to find a worker for it
-                    $workflow->assignTask($task);
+                    $workflow->assignTask($task, $workflow->getAvailableWorkers($task));
 
                     // we've found workers for the task
                     // update task
@@ -116,14 +148,16 @@ class TaskRouter
                         // reserve workers for the task
                         $workers = $this->storage->getWorkers($task->getWorkerIds());
                         foreach ($workers as $worker) {
-                            if ($worker->isAvailable()) {
-                                $worker->setActivity(Worker::ACTIVITY_RESERVED);
-
-                                $this->storage->saveWorker($worker);
-                            }
+                            $worker->addPendingTask($task);
+                            $this->storage->saveWorker($worker);
                         }
 
-                        $this->dispatcher->dispatch(TaskRouterEvent::ASSIGNED, new TaskRouterEvent($task));
+                        try {
+                            $this->dispatcher->dispatch(TaskRouterEvent::ASSIGNED, new TaskRouterEvent($task));
+                        } catch (\Exception $e) {
+                            SystemErrorHandler::logException($e);
+                        }
+
                         $this->storage->saveTask($task);
                     }
                 }
@@ -162,27 +196,30 @@ class TaskRouter
                 return false;
             }
 
-            $acceptedWorker->setActivity(Worker::ACTIVITY_BUSY);
+            $acceptedWorker->addActiveTask($task);
             $this->storage->saveWorker($acceptedWorker);
 
             // task is accepted
-            // other workers should become 'idle'
+            // remove pending task
             $workers = $this->storage->getWorkers($task->getWorkerIds());
             foreach ($workers as $worker) {
-                if ($worker->getId() !== $acceptedWorker->getId()) {
-                    $task->removeWorkerId($worker->getId());
+                $task->removeWorker($worker);
 
-                    $worker->setActivity(Worker::ACTIVITY_IDLE);
-                    $this->storage->saveWorker($worker);
-                }
+                $worker->removePendingTask($task);
+                $this->storage->saveWorker($worker);
             }
 
             // mark task as completed
             // e.g. phone call is already established and conference is started
-            $task->setStatus(Task::STATUS_DONE);
+            $task->setStatus(Task::STATUS_ACCEPTED);
             $task->setAcceptedWorkerId($acceptedWorker->getId());
 
-            $this->dispatcher->dispatch(TaskRouterEvent::ACCEPTED, new TaskRouterEvent($task));
+            try {
+                $this->dispatcher->dispatch(TaskRouterEvent::ACCEPTED, new TaskRouterEvent($task));
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
+            }
+
             $this->storage->saveTask($task);
 
             return true;
@@ -220,14 +257,19 @@ class TaskRouter
                 return false;
             }
 
-            $worker->setActivity(Worker::ACTIVITY_IDLE);
+            $worker->removePendingTask($task);
             $this->storage->saveWorker($worker);
 
             // add worker id to 'rejected' list
-            $task->addRejectedBy($worker->getId());
-            $task->removeWorkerId($worker->getId());
+            $task->addRejectedBy($worker);
+            $task->removeWorker($worker);
 
-            $this->dispatcher->dispatch(TaskRouterEvent::REJECTED, new TaskRouterEvent($task));
+            try {
+                $this->dispatcher->dispatch(TaskRouterEvent::REJECTED, new TaskRouterEvent($task));
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
+            }
+
             $this->storage->saveTask($task);
 
             return true;
@@ -255,7 +297,9 @@ class TaskRouter
             // reject all workers
             $workers = $this->storage->getWorkers($task->getWorkerIds());
             foreach ($workers as $worker) {
-                $worker->setActivity(Worker::ACTIVITY_IDLE);
+                $worker->removeActiveTask($task);
+                $worker->removePendingTask($task);
+
                 $this->storage->saveWorker($worker);
             }
 
@@ -264,9 +308,42 @@ class TaskRouter
                 $task->setStatus(Task::STATUS_CANCELED);
                 $task->setWorkersIds([]);
 
-                $this->dispatcher->dispatch(TaskRouterEvent::CANCELED, new TaskRouterEvent($task));
+                try {
+                    $this->dispatcher->dispatch(TaskRouterEvent::CANCELED, new TaskRouterEvent($task));
+                } catch (\Exception $e) {
+                    SystemErrorHandler::logException($e);
+                }
+
                 $this->storage->saveTask($task);
             }
+
+            return true;
+        } finally {
+            $this->lock->release();
+        }
+    }
+
+    /**
+     * @param int    $taskId
+     * @param string $workerType
+     * @param int    $workerId
+     *
+     * @return bool
+     */
+    public function completeTaskForWorker($taskId, $workerType, $workerId)
+    {
+        $this->lock->acquire(true);
+
+        try {
+            $task   = $this->storage->getTask($taskId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+
+            if (!$task || !$worker) {
+                return false;
+            }
+
+            $worker->removeActiveTask($task);
+            $this->storage->saveWorker($worker);
 
             return true;
         } finally {

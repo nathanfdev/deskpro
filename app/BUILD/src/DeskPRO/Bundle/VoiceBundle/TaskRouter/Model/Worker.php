@@ -7,10 +7,8 @@ namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Model;
  */
 class Worker extends AbstractModel
 {
-    const ACTIVITY_IDLE     = 'idle';
-    const ACTIVITY_RESERVED = 'reserved';
-    const ACTIVITY_BUSY     = 'busy';
-    const ACTIVITY_OFFLINE  = 'offline';
+    const ACTIVITY_IDLE    = 'idle';
+    const ACTIVITY_OFFLINE = 'offline';
 
     /**
      * @var string
@@ -31,6 +29,16 @@ class Worker extends AbstractModel
      * @var \DateTime
      */
     protected $dateLastActive;
+
+    /**
+     * @var array
+     */
+    protected $pendingTaskIds = [];
+
+    /**
+     * @var array
+     */
+    protected $activeTaskIds = [];
 
     /**
      * @return string
@@ -103,22 +111,6 @@ class Worker extends AbstractModel
     /**
      * @return bool
      */
-    public function isReserved()
-    {
-        return $this->activity === self::ACTIVITY_RESERVED;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBusy()
-    {
-        return $this->activity === self::ACTIVITY_BUSY;
-    }
-
-    /**
-     * @return bool
-     */
     public function isOffline()
     {
         return $this->activity === self::ACTIVITY_OFFLINE;
@@ -142,5 +134,161 @@ class Worker extends AbstractModel
         $this->dateLastActive = $dateLastActive;
 
         return $this;
+    }
+
+    /**
+     * @param int[] $pendingTaskIds
+     *
+     * @return $this
+     */
+    public function setPendingTaskIds(array $pendingTaskIds)
+    {
+        $this->pendingTaskIds = $pendingTaskIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getPendingTaskIds()
+    {
+        return $this->pendingTaskIds;
+    }
+
+    /**
+     * @param Task $task
+     *
+     * @return $this
+     */
+    public function addPendingTask(Task $task)
+    {
+        if (!isset($this->pendingTaskIds[$task->getChannel()])) {
+            $this->pendingTaskIds[$task->getChannel()] = [];
+        }
+        if (!in_array($task->getId(), $this->pendingTaskIds)[$task->getChannel()]) {
+            $this->pendingTaskIds[$task->getChannel()][] = $task->getId();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Task $task
+     *
+     * @return $this
+     */
+    public function removePendingTask(Task $task)
+    {
+        if (!isset($this->pendingTaskIds[$task->getChannel()])) {
+            $this->pendingTaskIds[$task->getChannel()] = [];
+        }
+        if (($key = array_search($task->getId(), $this->pendingTaskIds[$task->getChannel()])) !== false) {
+            unset($this->pendingTaskIds[$task->getChannel()][$key]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $channel
+     *
+     * @return int[]
+     */
+    public function getPendingTaskIdsForChannel($channel)
+    {
+        if (!isset($this->pendingTaskIds[$channel])) {
+            $this->pendingTaskIds[$channel] = [];
+        }
+
+        return $this->pendingTaskIds[$channel];
+    }
+
+    /**
+     * @param string $channel
+     *
+     * @return bool
+     */
+    public function hasPendingTasksForChannel($channel)
+    {
+        return count($this->getPendingTaskIdsForChannel($channel)) > 0;
+    }
+
+    /**
+     * @param int[] $activeTaskIds
+     *
+     * @return $this
+     */
+    public function setActiveTaskIds(array $activeTaskIds)
+    {
+        $this->activeTaskIds = $activeTaskIds;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getActiveTaskIds()
+    {
+        return $this->activeTaskIds;
+    }
+
+    /**
+     * @param Task $task
+     *
+     * @return $this
+     */
+    public function addActiveTask(Task $task)
+    {
+        if (!isset($this->activeTaskIds[$task->getChannel()])) {
+            $this->activeTaskIds[$task->getChannel()] = [];
+        }
+        if (!in_array($task->getId(), $this->activeTaskIds)[$task->getChannel()]) {
+            $this->activeTaskIds[$task->getChannel()][] = $task->getId();
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Task $task
+     *
+     * @return $this
+     */
+    public function removeActiveTask(Task $task)
+    {
+        if (!isset($this->activeTaskIds[$task->getChannel()])) {
+            $this->activeTaskIds[$task->getChannel()] = [];
+        }
+        if (($key = array_search($task->getId(), $this->activeTaskIds[$task->getChannel()])) !== false) {
+            unset($this->activeTaskIds[$task->getChannel()][$key]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $channel
+     *
+     * @return int[]
+     */
+    public function getActiveTaskIdsForChannel($channel)
+    {
+        if (!isset($this->activeTaskIds[$channel])) {
+            $this->activeTaskIds[$channel] = [];
+        }
+
+        return $this->activeTaskIds[$channel];
+    }
+
+    /**
+     * @param string $channel
+     *
+     * @return bool
+     */
+    public function hasActiveTasksForChannel($channel)
+    {
+        return count($this->getActiveTaskIdsForChannel($channel)) > 0;
     }
 }

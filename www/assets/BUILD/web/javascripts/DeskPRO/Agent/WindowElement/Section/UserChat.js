@@ -840,6 +840,12 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				} catch(e) {}
 			}
 			alertEl.remove();
+      DeskPRO_Window.util.ajaxWithClientMessages({
+        url: BASE_URL + 'agent/chat/decline/' + conversation_id,
+        success: function(data) {
+        }
+      });
+
 			self.dismissedChats[data.conversation_id] = true;
 			DeskPRO_Window.faviconBadge.disableCrazyMode();
 			window.clearTimeout(waitTimer);

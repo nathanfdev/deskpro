@@ -467,6 +467,12 @@ class UserChatManager
         $old_agent_id   = $convo->getAgentId();
         $old_agent_name = $convo->getAgent()->getDisplayNameUser();
 
+        App::$container->get('dp.voice.task_router')->completeTaskForWorker(
+            $convo->getTaskId(),
+            'agent',
+            $old_agent_id
+        );
+
         $convo->setAgent(null);
         $this->em->persist($convo);
 
@@ -619,7 +625,9 @@ class UserChatManager
     }
 
     /**
-     * @param $reason
+     * @param ChatConversation $convo
+     * @param Person           $author
+     * @param string           $reason
      */
     public function endChat(ChatConversation $convo, Person $author = null, $reason = '')
     {
@@ -648,6 +656,16 @@ class UserChatManager
             } else {
                 $message = $this->addSystemMessage($convo, 'message_ended', [], ['chat_ended' => true]);
             }
+        }
+
+        if ($author) {
+            App::$container->get('dp.voice.task_router')->completeTaskForWorker(
+                $convo->getTaskId(),
+                'agent',
+                $author->getId()
+            );
+        } else {
+            App::$container->get('dp.voice.task_router')->cancelTask($convo->getTaskId());
         }
 
         $this->dispatchLegacyEvent('chat.ended', $convo->getInfo());

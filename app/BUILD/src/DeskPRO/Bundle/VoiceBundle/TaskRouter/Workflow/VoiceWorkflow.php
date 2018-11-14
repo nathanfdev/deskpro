@@ -85,9 +85,8 @@ class VoiceWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function assignTask(Task $task)
+    public function getAvailableWorkers(Task $task)
     {
-        // get available workers
         /** @var Worker[] $availableAgentWorkers */
         $availableAgentWorkers = [];
         foreach ($this->storage->getOnlineWorkersByType('agent') as $worker) {
@@ -97,10 +96,23 @@ class VoiceWorkflow implements WorkflowInterface
             $availableAgentWorkers[$worker->getId()] = $worker;
         }
 
+        $voiceAgentIds = $this->workerHelper->getVoiceAgentIds();
+
         $availableAgentWorkers = array_filter(
             $availableAgentWorkers,
-            function (Worker $worker) use ($task) {
+            function (Worker $worker) use ($task, $voiceAgentIds) {
+                // ignore if agent has already rejected task
                 if ($task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
+                    return false;
+                }
+
+                // ignore if agent is already on a call or has incoming call popup
+                if ($worker->hasPendingTasksForChannel(self::getChannelName())
+                    || $worker->hasActiveTasksForChannel(self::getChannelName())
+                    || $worker->hasPendingTasksForChannel(ChatWorkflow::getChannelName())
+                    || $worker->hasActiveTasksForChannel(ChatWorkflow::getChannelName())
+                    || !in_array($worker->getTypeId(), $voiceAgentIds)
+                ) {
                     return false;
                 }
 
@@ -108,14 +120,23 @@ class VoiceWorkflow implements WorkflowInterface
             }
         );
 
+        return $availableAgentWorkers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function assignTask(Task $task, array $workers)
+    {
+        // get available workers
         $workerToAgentMap = [];
-        foreach ($availableAgentWorkers as $worker) {
+        foreach ($workers as $worker) {
             $workerToAgentMap[$worker->getTypeId()] = $worker->getId();
         }
 
         $availableWorkerAgentIds = array_map(function (Worker $worker) {
             return $worker->getTypeId();
-        }, $availableAgentWorkers);
+        }, $workers);
 
         // get workers for the task
         $voiceQueue = $this->taskHelper->getVoiceQueue($task);
@@ -179,7 +200,7 @@ class VoiceWorkflow implements WorkflowInterface
                     // get answered call stat, order by answered calls count
                     // and get ids with max available count of workers option from queue settings
                     if (!is_array($taskQueue->getAttribute('answered_calls_counts'))) {
-                        $taskQueue->setAttribute('answered_calls', []);
+                        $taskQueue->setAttribute('answered_calls_counts', []);
                     }
 
                     $answeredCallsCounts = $taskQueue->getAttribute('answered_calls_counts');

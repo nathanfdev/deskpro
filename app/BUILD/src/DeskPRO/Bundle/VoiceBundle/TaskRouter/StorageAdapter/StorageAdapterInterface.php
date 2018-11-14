@@ -12,9 +12,11 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 interface StorageAdapterInterface
 {
     /**
+     * @param string $channel
+     *
      * @return Task[]
      */
-    public function getActiveTasks();
+    public function getActiveTasks($channel = null);
 
     /**
      * @param int $id

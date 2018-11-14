@@ -11,7 +11,6 @@ import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allVoiceAccountsSelector } from '../Selectors/accounts';
 import { allNumbersSelector } from '../Selectors/numbers';
 import { closeIframes } from '../../Application/Actions/bootstrapActions';
-import { actionAlertsSelector } from '../../Application/Selectors/notifications';
 
 export const setMicEnabled = createAction('VOICE_AGENT_SET_MIC_ENABLED');
 export const setVoiceSettings = createAction('VOICE_AGENT_SET_SETTINGS');
@@ -85,18 +84,6 @@ export const voiceBootstrap = createAction(
         // mark the mic as enabled
         stream.stop();
         dispatch(setMicEnabled(true));
-
-        // if pusher is enabled we need to use an another polling action
-        const actionAlerts = actionAlertsSelector(initialState);
-        const hasPusher = actionAlerts.clients.filter(notifyClient =>
-          notifyClient.type === 'pusher' || notifyClient.type === 'deskpro'
-        ).length > 0;
-
-        if (hasPusher) {
-          setInterval(() => {
-            api.sendGet('/agent/ping-voice-worker');
-          }, 5000);
-        }
 
         const messageBroker = window.DeskPRO_Window.getMessageBroker();
         messageBroker.addMessageListener('agent.voice.conference.incoming-call', (data) => {

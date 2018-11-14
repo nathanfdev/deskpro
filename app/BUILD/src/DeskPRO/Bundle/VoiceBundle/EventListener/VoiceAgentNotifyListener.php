@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 /**
  * Class AgentNotifyListener.
  */
-class AgentNotifyListener implements EventSubscriberInterface
+class VoiceAgentNotifyListener implements EventSubscriberInterface
 {
     /**
      * @var

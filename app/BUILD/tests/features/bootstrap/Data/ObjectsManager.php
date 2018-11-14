@@ -109,6 +109,9 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
+use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgent;
+use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgentTeam;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceRecordAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceTextAsset;
@@ -396,6 +399,9 @@ class ObjectsManager
             'Currency'                         => [Factory\SimpleFactory::class, 'create', Currency::class],
             'AppPackage'                       => [Factory\SimpleFactory::class, 'create', AppPackage::class],
             'AppInstance'                      => [Factory\SimpleFactory::class, 'create', AppInstance::class],
+            'UserChatQueue'                    => [Factory\SimpleFactory::class, 'create', UserChatQueue::class],
+            'UserChatQueueAgent'               => [Factory\SimpleFactory::class, 'create', UserChatQueueAgent::class],
+            'UserChatQueueAgentTeam'           => [Factory\SimpleFactory::class, 'create', UserChatQueueAgentTeam::class],
         ];
     }
 
@@ -531,6 +537,9 @@ class ObjectsManager
             'Currency'                         => [$this, 'find', Currency::class],
             'AppPackage'                       => [$this, 'find', AppPackage::class],
             'AppInstance'                      => [$this, 'find', AppInstance::class],
+            'UserChatQueue'                    => [$this, 'find', UserChatQueue::class],
+            'UserChatQueueAgent'               => [$this, 'find', UserChatQueueAgent::class],
+            'UserChatQueueAgentTeam'           => [$this, 'find', UserChatQueueAgentTeam::class],
         ];
     }
 }

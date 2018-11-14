@@ -55,7 +55,7 @@ class Department
      *
      * @var string
      */
-    protected $user_title = '';
+    protected $userTitle = '';
 
     /**
      * Are tickets enabled for this Department?
@@ -65,7 +65,7 @@ class Department
      *
      * @var bool
      */
-    protected $is_tickets_enabled = true;
+    protected $isTicketsEnabled = true;
 
     /**
      * Are chats enabled for this Department?
@@ -74,7 +74,7 @@ class Department
      *
      * @var bool
      */
-    protected $is_chat_enabled = true;
+    protected $isChatEnabled = true;
 
     /**
      * Department display order.
@@ -83,7 +83,7 @@ class Department
      *
      * @var int
      */
-    protected $display_order;
+    protected $displayOrder;
 
     /**
      * Avatar for this department.
@@ -111,15 +111,15 @@ class Department
      */
     public function __construct(DepartmentEntity $department, Avatar $avatar)
     {
-        $this->id                 = $department->getId();
-        $this->parent             = $department->getParent();
-        $this->children           = $department->getChildrenOrdered();
-        $this->title              = $department->getTitle();
-        $this->user_title         = $department->getUserTitle();
-        $this->is_chat_enabled    = $department->isChatEnabled();
-        $this->is_tickets_enabled = $department->isTicketsEnabled();
-        $this->display_order      = $department->getDisplayOrder();
-        $this->brands             = $department->getBrands();
-        $this->avatar             = $avatar;
+        $this->id               = $department->getId();
+        $this->parent           = $department->getParent();
+        $this->children         = $department->getChildrenOrdered();
+        $this->title            = $department->getTitle();
+        $this->userTitle        = $department->getUserTitle();
+        $this->isChatEnabled    = $department->isChatEnabled();
+        $this->isTicketsEnabled = $department->isTicketsEnabled();
+        $this->displayOrder     = $department->getDisplayOrder();
+        $this->brands           = $department->getBrands();
+        $this->avatar           = $avatar;
     }
 }

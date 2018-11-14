@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow;
 
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 
 /**
  * Interface WorkflowInterface.
@@ -23,6 +24,14 @@ interface WorkflowInterface
 
     /**
      * @param Task $task
+     *
+     * @return Worker[]
      */
-    public function assignTask(Task $task);
+    public function getAvailableWorkers(Task $task);
+
+    /**
+     * @param Task     $task
+     * @param Worker[] $workers
+     */
+    public function assignTask(Task $task, array $workers);
 }

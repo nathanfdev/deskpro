@@ -111,6 +111,13 @@ class AgentLegacyApp {
       }
     }
 
+    if ((window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use']) || window.DP_HAS_VOICE) {
+      api.sendPost('/api/v2/task_router/create_worker');
+      setInterval(() => {
+        api.sendGet('/agent/ping-voice-worker');
+      }, 5000);
+    }
+
    // let the app store know we finished the start sequence so
     DeskproAppStore.onAgentLegacyAppReady(this.store, window, api, messageBroker);
   }

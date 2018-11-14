@@ -1,16 +1,11 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ChatVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\TicketsVoter;
-use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -61,6 +56,8 @@ class ChatController extends AbstractController
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      *
      * @param ChatConversation $chat
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -137,7 +134,11 @@ class ChatController extends AbstractController
             $em->persist($chat);
             $em->flush();
 
-            $this->get('event_dispatcher')->dispatch(UserChatEvent::STARTED, new UserChatEvent($chat));
+            // create a task to find an agent
+            $task = $this->get('dp.voice.task_builder')->createChatTaskForQueue($chat);
+            $chat->setTaskId($task->getId());
+
+            $this->get('doctrine.orm.entity_manager')->flush();
         }
 
         return $this->renderThemeView('Theme:Chat:validate-email.html.twig', [

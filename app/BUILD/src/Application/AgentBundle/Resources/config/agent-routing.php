@@ -2268,6 +2268,11 @@ $collection->create('agent_userchat_join', [
     'controller' => 'AgentBundle:UserChat:joinChat',
 ]);
 
+$collection->create('agent_userchat_decline', [
+    'path'       => '/chat/decline/{conversation_id}',
+    'controller' => 'AgentBundle:UserChat:declineChat',
+]);
+
 $collection->create('agent_userchat_save_fields', [
     'path'       => '/chat/{conversation_id}/save-fields',
     'controller' => 'AgentBundle:UserChat:saveFields',

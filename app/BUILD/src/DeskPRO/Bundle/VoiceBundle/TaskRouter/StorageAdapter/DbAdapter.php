@@ -33,11 +33,17 @@ class DbAdapter implements StorageAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getActiveTasks()
+    public function getActiveTasks($channel = null)
     {
-        $entities = $this->em->getRepository(TaskEntity::class)->findBy([
+        $criteria = [
             'status' => Task::STATUS_PENDING,
-        ]);
+        ];
+
+        if ($channel) {
+            $criteria['channel'] = $channel;
+        }
+
+        $entities = $this->em->getRepository(TaskEntity::class)->findBy($criteria);
 
         $tasks = [];
         foreach ($entities as $entity) {
@@ -84,6 +90,7 @@ class DbAdapter implements StorageAdapterInterface
             ->setStatusReason($task->getStatusReason())
             ->setRejectedBy($task->getRejectedBy())
             ->setDateCreated($task->getDateCreated())
+            ->setDateExpireAssigned($task->getDateExpireAssigned())
             ->setAttributes($task->getAttributes())
         ;
 
@@ -202,6 +209,8 @@ class DbAdapter implements StorageAdapterInterface
             ->setActivity($worker->getActivity())
             ->setDateLastActive($worker->getDateLastActive())
             ->setAttributes($worker->getAttributes())
+            ->setPendingTasks($worker->getPendingTaskIds())
+            ->setActiveTasks($worker->getActiveTaskIds())
         ;
 
         $this->em->persist($entity);
@@ -302,6 +311,7 @@ class DbAdapter implements StorageAdapterInterface
             ->setStatusReason($entity->getStatusReason())
             ->setRejectedBy($entity->getRejectedBy())
             ->setDateCreated($entity->getDateCreated())
+            ->setDateExpireAssigned($entity->getDateExpireAssigned())
             ->setAttributes($entity->getAttributes())
         ;
 
@@ -323,6 +333,8 @@ class DbAdapter implements StorageAdapterInterface
             ->setActivity($entity->getActivity())
             ->setDateLastActive($entity->getDateLastActive())
             ->setAttributes($entity->getAttributes())
+            ->setPendingTaskIds($entity->getPendingTasks())
+            ->setActiveTaskIds($entity->getActiveTasks())
         ;
 
         return $worker;
