@@ -250,7 +250,7 @@ class AccessService
 
         if ($this->allowWriteAccess($request, $state)) {
             $stateEntity->setValue($value);
-            $this->entityManagers->persist($stateEntity);
+            $this->entityManager->persist($stateEntity);
             $this->entityManager->flush();
 
             return $converter->toDomainObject($stateEntity);

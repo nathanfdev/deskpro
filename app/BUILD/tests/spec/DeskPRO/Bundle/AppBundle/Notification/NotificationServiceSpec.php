@@ -65,8 +65,8 @@ class NotificationServiceSpec extends ObjectBehavior
         $client->shouldHaveType(NotificationClient::class);
         $client->getType()->shouldBe('legacy');
         $client->getOptions()->shouldBe([
-            'last_alert'  => $this->lastAlert(),
-            'last_notify' => $this->lastNotify(),
+            'last_alert'  => $this->lastAlert(0, 0),
+            'last_notify' => $this->lastNotify(0, 0),
         ]);
 
         $client = $clients[1];
