@@ -39,7 +39,7 @@ Feature: Custom currency field
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.fields.fields_~f1~.errors[0].code" should be equal to "numeric"
 
-  Scenario: I validate currency value
+  Scenario: I validate required currency value
     When I send a PUT request to "/api/v2/people/{admin}" with body:
     """
 {

@@ -107,7 +107,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
             case CustomDefAbstract::TYPE_TOGGLE:
                 return $this->value;
             case CustomDefAbstract::TYPE_CURRENCY:
-                if (!$this->input && $this->value) {
+                if ($this->input === '' && $this->value !== 0) {
                     // backwards compat: no input but a value
                     return $this->value;
                 }
@@ -156,11 +156,15 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     public function setData($data)
     {
         if ($this->root_field && $this->root_field->getWidgetType() === CustomDefAbstract::TYPE_CURRENCY) {
-            // data should be already in integer format but has double or string format
-            // so force set to int
-            $normalized = (int) (string) $data;
-            if ((string) $normalized === (string) $data) {
-                $data = $normalized;
+            if ($data === '' || $data === null || $data === false) {
+                $data = null;
+            } else {
+                // data should be already in integer format but has double or string format
+                // so force set to int
+                $normalized = (int) (string) $data;
+                if ((string) $normalized === (string) $data) {
+                    $data = $normalized;
+                }
             }
         }
 
