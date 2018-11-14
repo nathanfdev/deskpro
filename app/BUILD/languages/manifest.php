@@ -40,7 +40,7 @@ return [
         'is_managed' => true,
     ],
 
-    'czech' => array(
+    'czech' => [
         'id'         => 'czech',
         'lang_code'  => 'cze',
         'title'      => 'Czech',
@@ -50,8 +50,8 @@ return [
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => true,
-        'is_managed' => true
-    ),
+        'is_managed' => true,
+    ],
 
     'danish' => [
         'id'         => 'danish',
@@ -280,6 +280,19 @@ return [
         'title'      => 'Slovak',
         'locale'     => 'sk',
         'flag_image' => 'sk.png',
+        'is_rtl'     => false,
+        'has_user'   => true,
+        'has_agent'  => true,
+        'has_admin'  => false,
+        'is_managed' => true,
+    ],
+
+    'slovenian' => [
+        'id'         => 'slovenian',
+        'lang_code'  => 'slv',
+        'title'      => 'Slovenian',
+        'locale'     => 'sl-SI',
+        'flag_image' => 'si.png',
         'is_rtl'     => false,
         'has_user'   => true,
         'has_agent'  => true,
