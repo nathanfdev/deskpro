@@ -395,14 +395,6 @@ $CONFIG['user_portaladmin'] = [
     ],
 ];
 
-$CONFIG['user_portaladmin_css'] = [
-    'out'     => 'css/user-portaladmin.css',
-    'filters' => ['less', 'css'],
-    'files'   => [
-        'stylesheets-less/admin/portal-admin.less',
-    ],
-];
-
 $CONFIG['user_common'] = [
     'out'   => 'js/user-common.js',
     'files' => [

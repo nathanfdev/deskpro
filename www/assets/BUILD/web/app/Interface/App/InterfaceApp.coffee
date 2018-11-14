@@ -91,7 +91,8 @@ define [
 
   if window.parent
     event = new CustomEvent('dpIframeLoaded', { 'detail': { id: 'reports-interface' } });
-    window.parent.document.dispatchEvent event
+    if window and window.parent and window.parent.document and window.parent.document.dispatchEvent
+      window.parent.document.dispatchEvent event
 
   try
     if window.parent?.DP_FRAME_OVERLAYS?['reports-interface']

@@ -29,7 +29,7 @@ var gulp         = require('gulp'),
 //# Task Runners
 //######################################################################################################################
 
-gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader'], function() {
+gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader'], function() {
   // hacking coffee here to run after all others
   // because something in the other tasks corrupts
   // the stream and causes coffee compile to fail
@@ -66,7 +66,8 @@ deskpro.watches = [
   ['./app/**/*.js', ['cpjs-all']],
   ['./loader/*', ['loader-requirejs']],
   ['./stylesheets-less/semantic-ui/**', ['semantic-watch']],
-  ['./stylesheets-less/admin/**', ['less-dp-semantic-app']]
+  ['./stylesheets-less/admin/**', ['less-dp-semantic-app']],
+  ['./stylesheets-less/agent/**', ['less-legacy']]
 ];
 
 //------------------------------
@@ -278,6 +279,11 @@ gulp.task('less-dp-semantic', ['clean'], function () {
   deskpro.taskGen.copyThemeConfig();
   deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
   return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Interface/Resources/style');
+});
+
+// only used in dev -- real build uses config.assets.php and assetic
+gulp.task('less-legacy', function () {
+  return deskpro.taskGen.lessCss('./stylesheets-less/agent/*.less', './stylesheets/agent/');
 });
 
 //------------------------------
