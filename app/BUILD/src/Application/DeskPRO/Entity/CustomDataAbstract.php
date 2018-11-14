@@ -57,6 +57,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     public function setValue($value)
     {
+        $this->setData($value);
         $this->setModelField('value', $value);
 
         return $this;
@@ -76,6 +77,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     public function setInput($input)
     {
+        $this->setData($input);
         $this->setModelField('input', $input);
 
         return $this;
@@ -101,10 +103,16 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         }
 
         switch ($this->field->getTypeName()) {
-            case CustomDefAbstract::TYPE_CURRENCY:
             case CustomDefAbstract::TYPE_FILE:
             case CustomDefAbstract::TYPE_TOGGLE:
                 return $this->value;
+            case CustomDefAbstract::TYPE_CURRENCY:
+                if (!$this->input && $this->value) {
+                    // backwards compat: no input but a value
+                    return $this->value;
+                }
+
+                return (int) $this->input;
             default:
                 return $this->value ? $this->value : $this->input;
         }
@@ -161,6 +169,13 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
             $this->setModelField('input', '');
         } elseif (in_array($this->root_field->getType(), [CustomDefAbstract::TYPE_TOGGLE, CustomDefAbstract::TYPE_CURRENCY])) {
             $this->setModelField('value', (int) $data);
+        } elseif (in_array($this->root_field->getType(), [CustomDefAbstract::TYPE_CURRENCY])) {
+            // save currency in input (real value as string, used in forms etc)
+            // but also value. a string means we can work with it in code as a bigint,
+            // but value in db might be truncated, but we do this so can use db ops on it
+            // in most cases. if column is bigint then it means it'll be fine most of the time anyway.
+            $this->setModelField('value', (int) $data);
+            $this->setModelField('input', (int) $data);
         } elseif (is_int($data)) {
             $this->setModelField('value', $data);
         } else {

@@ -2,10 +2,15 @@
 
 namespace DeskPRO\Component\Doctrine\ORM\Tools;
 
+use DeskPRO\Component\Util\ListUtils;
+use Doctrine\DBAL\Schema\ColumnDiff;
 use Doctrine\DBAL\Schema\Comparator;
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Schema\SchemaDiff;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
+use Doctrine\DBAL\Types\BigIntType;
+use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool as BaseSchemaTool;
 
@@ -20,11 +25,20 @@ class SchemaTool extends BaseSchemaTool
     protected $em;
 
     /**
-     * {@inheritdoc}
+     * @var bool
      */
-    public function __construct(EntityManagerInterface $em)
+    protected $hideUnecessary = true;
+
+    /**
+     * SchemaTool constructor.
+     *
+     * @param EntityManagerInterface $em
+     * @param bool                   $hideUnecessary True to hide changes that are not strictly necessary
+     */
+    public function __construct(EntityManagerInterface $em, $hideUnecessary = true)
     {
-        $this->em = $em;
+        $this->em             = $em;
+        $this->hideUnecessary = $hideUnecessary;
         parent::__construct($em);
     }
 
@@ -141,11 +155,72 @@ class SchemaTool extends BaseSchemaTool
         $comparator = new Comparator();
         $schemaDiff = $comparator->compare($fromSchema, $toSchema);
 
+        $useSchemaDiff = new SchemaDiff(
+            $schemaDiff->newTables,
+            $this->hideUnecessary
+                ? ListUtils::filterMap($schemaDiff->changedTables, [$this, 'mapChangedTables'])
+                : $schemaDiff->changedTables,
+            $schemaDiff->removedTables,
+            $schemaDiff->fromSchema
+        );
+
         if ($saveMode) {
-            return $schemaDiff->toSaveSql($this->getPlatform());
+            return $useSchemaDiff->toSaveSql($this->getPlatform());
         }
 
-        return $schemaDiff->toSql($this->getPlatform());
+        return $useSchemaDiff->toSql($this->getPlatform());
+    }
+
+    /**
+     * Removes table alters we dont want to force on upgrades.
+     *
+     * @param TableDiff $diff
+     *
+     * @internal
+     */
+    public function mapChangedTables(TableDiff $diff)
+    {
+        switch ($diff->name) {
+            case 'custom_data_article':
+            case 'custom_data_billing':
+            case 'custom_data_chat':
+            case 'custom_data_feedback':
+            case 'custom_data_organizations':
+            case 'custom_data_person':
+            case 'custom_data_product':
+            case 'custom_data_ticket':
+                $diff->changedColumns = ListUtils::filterMap($diff->changedColumns, function (ColumnDiff $cd) {
+
+                    // changing from INT to BIGINT
+                    // this is not necessary to do during upgrade-time and not worth big downtime on large dbs
+                    // so it can be skipped until later.
+                    if (
+                        $cd->fromColumn->getName() === 'value'
+                        && $cd->column->getName() === 'value'
+                        && $this->isColumnDiffToBigInt($cd)
+                    ) {
+                        return null;
+                    }
+
+                    return $cd;
+                });
+                break;
+        }
+
+        return $diff;
+    }
+
+    /**
+     * Check if a ColumnDiff is about changing from INT to BIGINT.
+     *
+     * @param ColumnDiff $cd
+     *
+     * @return bool
+     */
+    private function isColumnDiffToBigInt(ColumnDiff $cd)
+    {
+        return $cd->fromColumn->getType() instanceof IntegerType
+            && $cd->column->getType() instanceof BigIntType;
     }
 
     /**
