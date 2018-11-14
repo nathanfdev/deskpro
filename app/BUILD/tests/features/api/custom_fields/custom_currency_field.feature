@@ -1,7 +1,8 @@
 @new
-Feature: Custom url field
+Feature: Custom currency field
 
   Background:
+    Given I install the api data set
     Given I'm authenticated as admin
     And only the following Currency records exist:
       | #  | Name          | Currency Code | Symbol |
