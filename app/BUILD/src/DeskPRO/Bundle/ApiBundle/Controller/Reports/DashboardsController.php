@@ -123,8 +123,8 @@ class DashboardsController extends CrudController
         }
 
         $qb
-            ->join("$alias.permissions", 'p')
-            ->join('p.person', 'per')
+            ->leftJoin("$alias.permissions", 'p')
+            ->leftJoin('p.person', 'per')
             ->andWhere("p.person IN (:person) OR p.team IN (:teams) OR $alias.person IN (:person)")
             ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
             ->setParameter('person', $this->getUser())
