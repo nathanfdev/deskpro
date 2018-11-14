@@ -26,14 +26,16 @@ class KeyPairsController extends BaseController
      *      statusCodes={
      *          200="Returned in case of successful resource creation",
      *          500="Returned when keypair generation fails",
-     *      }
+     *      },
+     *     output="DeskPRO\Bundle\ApiBundle\Controller\Crypto\KeyPair",
+     *     noInput=true
      * )
      * @Rest\Post("")
      * @Rest\Get("")
      *
      * @param Request $request
      *
-     * @return JsonResponse
+     * @return KeyPair
      */
     public function postAction(Request $request)
     {
@@ -50,9 +52,6 @@ class KeyPairsController extends BaseController
         $publicKey = $keyPairDetails["key"];
         openssl_pkey_free($res);
 
-        return new JsonResponse([
-            'publicKey' => $publicKey,
-            'privateKey' => $privateKey,
-        ]);
+        return new KeyPair($publicKey, $privateKey);
     }
 }
