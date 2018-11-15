@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\PortalBundle\Theme;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme;
+use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandTheme;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use DeskPRO\Component\Util\EntityUtils;
 use Symfony\Component\DependencyInjection\ContainerInterface;

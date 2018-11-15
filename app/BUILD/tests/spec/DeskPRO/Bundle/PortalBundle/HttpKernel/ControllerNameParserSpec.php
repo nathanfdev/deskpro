@@ -9,8 +9,8 @@ namespace spec\DeskPRO\Bundle\PortalBundle\HttpKernel;
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
+use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandTheme;
+use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandThemeLoader;
 use PhpSpec\ObjectBehavior;
 use Symfony\Component\HttpKernel\KernelInterface;
 

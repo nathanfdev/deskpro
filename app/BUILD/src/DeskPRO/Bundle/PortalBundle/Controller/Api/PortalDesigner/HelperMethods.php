@@ -8,7 +8,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
+use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\BrandThemeManager;

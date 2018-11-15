@@ -8,7 +8,7 @@ namespace DeskPRO\Bundle\PortalBundle\DataCollector;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
+use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

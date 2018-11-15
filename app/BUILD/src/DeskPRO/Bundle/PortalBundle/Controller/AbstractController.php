@@ -194,7 +194,7 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme
+     * @return \DeskPRO\Bundle\BrandBundle\Theme\PortalBrandTheme
      */
     public function getPortalBrandTheme()
     {

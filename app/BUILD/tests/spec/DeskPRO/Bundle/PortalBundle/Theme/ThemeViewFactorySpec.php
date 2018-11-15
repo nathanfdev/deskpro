@@ -7,7 +7,7 @@
 namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
+use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandThemeLoader;
 use PhpSpec\ObjectBehavior;
 
 /**
