@@ -8,8 +8,10 @@
 
 namespace Application\DeskPRO\Translate\Loader;
 
+use DeskPRO\Component\Util\MapUtils;
 use DpSys\CodePlugin\DpPlugins;
 use Orb\Util\Arrays;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Loads default phrases from filesystem-based lang packs.
@@ -17,14 +19,14 @@ use Orb\Util\Arrays;
 class SystemLoader implements LoaderInterface
 {
     private static $groupFileMap = [
-        'adm'     => 'agent.php',
-        'admin'   => 'agent.php',
-        'reports' => 'agent.php',
-        'api'     => 'api.php',
-        'agent'   => 'agent.php',
-        'general' => 'general.php',
-        'portal'  => 'portal.php',
-        'user'    => 'portal.php',
+        'adm'     => 'backend',
+        'admin'   => 'backend',
+        'reports' => 'backend',
+        'api'     => 'backend',
+        'agent'   => 'backend',
+        'general' => 'backend',
+        'portal'  => 'user',
+        'user'    => 'user',
     ];
 
     /**
@@ -32,7 +34,7 @@ class SystemLoader implements LoaderInterface
      *
      * @var array
      */
-    protected $loaded_files = [];
+    private $loadedResources = [];
 
     /**
      * {@inheritdoc}
@@ -42,7 +44,7 @@ class SystemLoader implements LoaderInterface
         $lang_packs = [];
 
         // Always read from the default because it has the core phrases
-        $lang_packs[] = DP_ROOT.'/languages/default';
+        $lang_packs[] = DP_ROOT.'/locales/en-US';
 
         if ($language && $language->base_filepath) {
             $lang_packs[] = str_replace('%DP_ROOT%', DP_ROOT, $language->base_filepath);
@@ -63,8 +65,7 @@ class SystemLoader implements LoaderInterface
                 }
 
                 if (isset(self::$groupFileMap[$groupParts[0]])) {
-                    $file        = $path.'/'.self::$groupFileMap[$groupParts[0]];
-                    $filePhrases = $this->loadFile($file);
+                    $filePhrases = $this->loadFile($path, self::$groupFileMap[$groupParts[0]]);
                     if ($filePhrases && isset($filePhrases[$groupParts[0]][$groupParts[1]])) {
                         $phrases = array_merge($phrases, $filePhrases[$groupParts[0]][$groupParts[1]]);
                     }
@@ -80,33 +81,42 @@ class SystemLoader implements LoaderInterface
      *
      * @return array
      */
-    public function loadFile($file)
+    private function loadFile($localeDir, $name)
     {
-        if (isset($this->loaded_files[$file])) {
-            return $this->loaded_files[$file];
+        $base = $localeDir.DIRECTORY_SEPARATOR.$name;
+        if (isset($this->loadedResources[$base])) {
+            return $this->loadedResources[$base];
         }
 
-        if (is_file($file)) {
-            $relFile     = basename(dirname($file)).'/'.basename($file);
-            $filePhrases = include $file;
-            if ($filePhrases && is_array($filePhrases)) {
-                $filePhrases = array_merge(
-                    $filePhrases,
-                    DpPlugins::getManager()->loadExtraLangFile($relFile)
-                );
+        $relFile = basename($localeDir)."/$name.php";
 
-                foreach ($filePhrases as $phraseName => $phraseTranslation) {
-                    $groupParts = explode('.', $phraseName, 3);
+        if (is_file("$base.php")) {
+            $filePhrases = require "$base.php";
+        } elseif (is_file("$base.yml")) {
+            $filePhrases = Yaml::parse(file_get_contents("$base.yml"));
+        } else {
+            $filePhrases = null;
+        }
 
-                    $this->loaded_files[$file][$groupParts[0]][$groupParts[1]][$phraseName] = $phraseTranslation;
-                }
+        if ($filePhrases !== null) {
+            $filePhrases = array_merge(
+                $filePhrases,
+                DpPlugins::getManager()->loadExtraLangFile($relFile)
+            );
+
+            $filePhrases = MapUtils::flattenKeys($filePhrases);
+
+            foreach ($filePhrases as $phraseName => $phraseTranslation) {
+                $groupParts = explode('.', $phraseName, 3);
+
+                $this->loadedResources[$base][$groupParts[0]][$groupParts[1]][$phraseName] = $phraseTranslation;
             }
         }
 
-        if (!isset($this->loaded_files[$file])) {
-            $this->loaded_files[$file] = [];
+        if (!isset($this->loadedResources[$base])) {
+            $this->loadedResources[$base] = [];
         }
 
-        return $this->loaded_files[$file];
+        return $this->loadedResources[$base];
     }
 }

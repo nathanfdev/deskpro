@@ -61,7 +61,7 @@ class CheckMissingCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $env      = $this->getContainer()->get('deskpro.app_env');
-        $lang_dir = $env->getAppDir().'/languages/default';
+        $lang_dir = $env->getAppDir().'/locales/en-US';
 
         $format = $input->getOption('format');
         if ($format !== 'table' && $format !== 'json' && $format !== 'csv') {

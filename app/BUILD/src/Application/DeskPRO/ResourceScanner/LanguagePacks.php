@@ -18,7 +18,7 @@ class LanguagePacks
     public function __construct($pack_root = null)
     {
         if ($pack_root === null) {
-            $pack_root = DP_ROOT.'/languages';
+            $pack_root = DP_ROOT.'/locales';
         }
 
         $this->pack_root = $pack_root;

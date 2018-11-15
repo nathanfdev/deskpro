@@ -32,7 +32,7 @@ class GenWarmUpFileCommand extends ContainerAwareCommand
 
         $finder = Finder::create()
             ->in([
-                DP_APP_DIR.'/languages/default',
+                DP_APP_DIR.'/locales/en-US',
                 DP_APP_DIR.'/src/Application/DeskPRO/Entity',
                 DP_APP_DIR.'/src/Application/DeskPRO/EntityRepository',
                 DP_APP_DIR.'/src/DeskPRO/Bundle/AppBundle/Entity',

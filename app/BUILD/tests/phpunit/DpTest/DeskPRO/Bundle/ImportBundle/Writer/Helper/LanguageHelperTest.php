@@ -43,7 +43,7 @@ class LanguageHelperTest extends AbstractWriterTest
         $language = $this->helper->findOrCreateLanguage($title);
 
         $this->assertNotNull($language);
-        $this->assertEquals('eng', $language->getLangCode());
+        $this->assertEquals('English', $language->getTitle());
     }
 
     /**
@@ -60,7 +60,7 @@ class LanguageHelperTest extends AbstractWriterTest
         $language = $this->helper->findOrCreateLanguage($title);
 
         $this->assertNotNull($language);
-        $this->assertEquals('eng', $language->getLangCode());
+        $this->assertEquals('English', $language->getTitle());
     }
 
     /**
@@ -69,9 +69,8 @@ class LanguageHelperTest extends AbstractWriterTest
     public function languageTitleProvider()
     {
         return [
-            ['eng'],
             ['English'],
-            ['en_US'],
+            ['en-US'],
             ['default'],
         ];
     }

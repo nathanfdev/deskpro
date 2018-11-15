@@ -1,0 +1,11 @@
+id: default
+name: English
+nameLocal: English
+locale: en-US
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

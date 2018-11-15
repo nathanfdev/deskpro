@@ -1,12 +1,14 @@
 define [
   'Admin/Main/Service/SessionPing',
   'Admin/Main/Service/DpDate',
+  'Admin/Main/Service/LangSyncApi',
   'Admin/License/Service/DpLicense',
   'Admin/Cloud/App/CloudService',
   'angular'
 ], (
   Admin_Main_Service_SessionPing,
   Admin_Main_Service_DpDate,
+  Admin_Main_Service_LangSyncApi,
   Admin_License_Service_DpLicense,
   Admin_Cloud_App_CloudService,
   angular
@@ -24,6 +26,14 @@ define [
 
     Module.service('Cloud', [ ->
       return new Admin_Cloud_App_CloudService()
+    ])
+
+    Module.service('LangSyncApi', ['$http', 'Growl', ($http, Growl) ->
+      return new Admin_Main_Service_LangSyncApi(
+        $http,
+        window.DP_LANGUAGE_SYNC_API,
+        Growl
+      )
     ])
 
     Module.run(['SessionPing', (SessionPing) ->

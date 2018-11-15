@@ -1,0 +1,507 @@
+portal.account.change-password: 'Zmeniť heslo'
+portal.account.email-btn-resend-validation: 'Znovu odoslať overovací e-mail'
+portal.account.login-register-btn: Registrovať
+portal.account.login-register-header: Registrovať
+portal.account.register-btn: Registrovať
+portal.account.reset-password-btn: 'Reset hesla'
+portal.account.section-title-profile: Profil
+portal.account.section-title-register: Registrovať
+portal.account.section-title-reset-password: 'Reset hesla'
+portal.articles.search-title: 'Databáza znalostí'
+portal.articles.section-title: 'Databáza znalostí'
+portal.articles.view-as-agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
+portal.chat.assigned_to: 'Chat pridelený {{name}}'
+portal.chat.chat_transcript: 'Odpis konverzácie'
+portal.chat.end_chat: 'Ukončiť konverzáciu'
+portal.chat.ended_by: 'Chat ukončený užívateľom {{name}}'
+portal.chat.ended_user: 'Chat ukončený užívateľom'
+portal.chat.feedback_action: 'Zaslať spätnú väzbu'
+portal.chat.helpful: Pomocné
+portal.chat.label-name: 'Vaše meno'
+portal.chat.list_agent: Operátor
+portal.chat.log_department: Oddelenie
+portal.chat.message_assigned: 'Chat pridelený {{name}}'
+portal.chat.message_ended: 'Konverzácia ukončená'
+portal.chat.message_ended-by: 'Chat ukončený užívateľom {{name}}'
+portal.chat.message_ended-by-user: 'Chat ukončený užívateľom'
+portal.chat.message_set-department: '{{name}} nastavil oddelenie na {{department}}'
+portal.chat.message_set_department: '{{name}} nastavil oddelenie na {{department}}'
+portal.chat.message_started: 'Konverzácia zahájená'
+portal.chat.message_unassigned: 'Chat nepriradený'
+portal.chat.message_user-joined: '{{name}} sa pripojil ku konverzácii'
+portal.chat.message_user-left: '{{name}} opustil konverzáciu'
+portal.chat.message_user-returned: 'Užívateľ sa vrátil'
+portal.chat.message_user-timeout: 'Užívateľ sa odpojil'
+portal.chat.message_user_joined: '{{name}} sa pripojil ku konverzácii'
+portal.chat.message_user_left: '{{name}} opustil konverzáciu'
+portal.chat.not_helpful: 'Nie nápomocné'
+portal.chat.transcript_sent: 'Odpis zaslaný na adresu {{email}}'
+portal.chat.unassigned: 'Chat nepriradený'
+portal.chat.you: Vy
+portal.downloads.download: Stiahnuť
+portal.downloads.search-title: Stiahnutia
+portal.downloads.section-title: Stiahnutia
+portal.downloads.view-as-agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
+portal.email_subjects.chat_transcript: 'Odpis konverzácie'
+portal.email_subjects.comment-approved: 'Váš komentár bol schválený'
+portal.email_subjects.comment-confirmation: 'Ďakujeme za Váš komentár'
+portal.email_subjects.comment-deleted: 'Váš komentár bol prečítaný našimi operátormi'
+portal.email_subjects.email-too-big: 'Váš e-mail "{{subject}}" nebol prijatý'
+portal.email_subjects.email_new-confirm: 'Potvrďte Vašu e-mailovú adresu'
+portal.email_subjects.email_primary-confirm: 'Potvrďte Vašu e-mailovú adresu'
+portal.email_subjects.feedback_new: 'Ďakujeme za podanie Vašej spätnej väzby'
+portal.email_subjects.feedback_new-approved: 'Vaša spätná väzba bol prijatá'
+portal.email_subjects.feedback_new-comment: 'Nový komentár v "{{title}}"'
+portal.email_subjects.feedback_new-confirm: 'Ďakujeme za podanie Vašej spätnej väzby (potrebné overenie)'
+portal.email_subjects.feedback_new-disapproved: 'Vaša spätná väzba bola odmietnutá'
+portal.email_subjects.feedback_updated: 'Vaša soätná väzba bola aktualizovaná: {{title}}'
+portal.email_subjects.kb_sub_new: 'Nové články'
+portal.email_subjects.kb_sub_new_and_updated: 'Nové a aktualizované články'
+portal.email_subjects.kb_sub_updated: 'Aktualizované články'
+portal.email_subjects.password_agent-reset: 'Operátor Vám resetol heslo'
+portal.email_subjects.password_reset: 'Reset hesla'
+portal.email_subjects.register-welcome: 'Ďakujeme za Vašu registráci'
+portal.email_subjects.ticket-rate: 'Ohodnoťte Vaše skúsenosti s podporou na tikete "{{ticket.subject}}"'
+portal.email_subjects.ticket_new-participant: 'Nová osoba bola pridaná do Vášho tiketu'
+portal.email_subjects.validate-email: 'Potvrďte Vašu e-mailovú adresu'
+portal.emails.auto-close: 'Váš tiket "{{ticket.subject}}" bude automatický uzavretý, pretože ste ho už istú dobu neaktualizovali. Ak nechcete, aby Váš tiket bol uzavretý, môžete pridať novú odpoveď a naši agenti Vám pomôžu ďalej.'
+portal.emails.chat_transcript: 'Ďakujeme za Vašu konverzáciu s nami. Tu je Váš odpis konverzácie.'
+portal.emails.comment_approved: 'Váš komentár bol uverejnený.'
+portal.emails.comment_deleted: 'Váš komentár bol použitý na vylepšenie stránky.'
+portal.emails.comment_thank-you: 'Ďakujeme za Váš komentár v {{link}}.'
+portal.emails.comment_validate-email: 'Prosím potvrďte Vašu e-mailovú adresu kliknutím na nasledujúci odkaz:'
+portal.emails.do-not-reply: 'Prosím neodpovedajte na tento e-mail. Je to automaticky generovaná správa a odpovede nebudú prečítané našimi zamestnancami.'
+portal.emails.email-too-big: 'Váš e-mail "{{subject}}" nebol prijatý, pretože je veľmi veľký. Maximálna veľkosť e-mailu je {{max_size}}. Odstráňte pripojené súbory a skúste znova.'
+portal.emails.feedback_approved: 'Zasielame Vám e-mail, aby sme Vás upovedomili, že Vaša spätná väzba bola prijatá a je verejne zobrazená na našej stránke.'
+portal.emails.feedback_closed: 'Vaša prijatá spätná väzba "{{title}}" bola uzavretá: {{status}}'
+portal.emails.feedback_disapproved: 'Zasielame Vám e-mail, aby sme Vás upovedomili, že Vaša spätná väzba bola zamietnutá a nebude zobrazená na našej stránke.'
+portal.emails.feedback_disapproved-reason: 'Zasielame Vám e-mail, aby sme Vás upovedomili, že Vaša spätná väzba bola zamietnutá a nebude zobrazená na našej stránke. {{name}} udal nasledujúci dôvod:'
+portal.emails.feedback_new-comment: '{{name}} pridal nový komentár:'
+portal.emails.feedback_published: 'Vaša prijatá spätná väzba "{{title}}" bola overená a bude zobrazená na našej stránke.'
+portal.emails.feedback_thank-you: 'Ďakujeme za potvrdenie Vašej spätnej väzby "{{title}}"'
+portal.emails.feedback_updated: 'Vaša prijatá spätná väzba "{{title}}" bol aktualizovaná. Nachádza sa pod novým statusom "{{status}}"'
+portal.emails.feedback_validate-email: 'Prosím potvrďte Vašu e-mailovú adresu kliknutím na nasledujúci odkaz:'
+portal.emails.feedback_votes:
+  one: 'Vaša spätná väzba má <strong>1</strong> hlas. Zobraziť Vašu spätnú väzbu online na:'
+  few: 'Vaša spätná väzba má <strong>{{count}}</strong> hlasov. ZobraziŤ Vašu spätnú väzbu online na:'
+  other: 'Vaša spätná väzba má <strong>{{count}}</strong> hlasov. ZobraziŤ Vašu spätnú väzbu online na:'
+portal.emails.greeting: 'Milý {{to_name}},'
+portal.emails.kb-explain: 'Dostávate tento e-mail, pretože nás odoberáte na <a href="{{deskpro_url}}">{{deskpro_url}}</a><br />Nechcete dostávať tieto e-maily? <a href="{{unsubscribe_url}}">Kliknite sem pre zrušenie odberu.</a>'
+portal.emails.kb-new-articles:
+  one: '1 nový článok'
+  few: '{{count}} nových článkov'
+  other: '{{count}} nových článkov'
+portal.emails.kb-updated-articles:
+  one: '1 aktualizovaný článok'
+  few: '{{count}}aktualizovaných článkov'
+  other: '{{count}}aktualizovaných článkov'
+portal.emails.label_view-online: 'Pozri online'
+portal.emails.message-clipped: '(Správa bola pripnutá)'
+portal.emails.password_agent-reset: 'Operátor resetol heslo Vášho účtu. Môžete sa prihlásiť s nasledovnými údajmi'
+portal.emails.password_reset: 'Požiadali ste o resetnutie hesla. Pre resetnutie Vašeho hesla, kliknite na odkaz nižšie:'
+portal.emails.profile_email-new-confirm: 'Pre ukončenie pridania sekundárneho e-mailu pre Váš účet, jednoducho kliknite na nasledujúci potvrdzujúci odkaz'
+portal.emails.profile_email_link-validate: 'Jednoducho kliknite na nasledovný odkaz pre overenie Vašej e-mailovej adresy'
+portal.emails.register-agent-validation: 'Poznámka: Predtým než Váš účet bude plne aktívny, naši operátori musia manuálne potvrdiť Váš účet. Tikety a ostatný obsah, ktoré potvrdíte budú podržané pre kontrolu pokiaľ operátor Váš účet neaktivuje.'
+portal.emails.register-confirm: 'Ďakujeme za registráciu Vašeho účtu.<br /><br />Predtým než budete môcť používať Váš účet, musíte kliknúť na nasledujúci odkaz pre overenie Vašej e-mailovej adresy'
+portal.emails.register-welcome: 'Ďakueme za Vašu registráciu. Môžete sa prihlásiť použitím Vašej e-mailovej adresy {{to_email}} na našom helpdesku:'
+portal.emails.registration_closed: 'Milý {{name}},<br /><br />Nové tikety sú akceptované iba od existujúcich členov helpdesku. Ak uz máte účet, prosím kontaktujte nás e-mailom znova z Vašej registrovanej e-mailovej adresy.'
+portal.emails.reject_resolved: 'Vaša odpoveď nebola prijatá, pretože Váš tiket bol už označený ako vyriešený. Naši operátori túto správu nebudú čítať ani na ňu odpovedať.'
+portal.emails.reject_resolved-new: 'Ak chcete vytvoriť nový tiket môžete zaslať nový e-mail na adresu <a href="mailto:{{email_to}}">{{email_to}}</a> alebo ho môžete odovzdať v online forme na <br /><a href="{{link}}">{{link}}</a>'
+portal.emails.reject_resolved-newemail: 'Ak chcete vytvoriť nový tiket môžete zaslať e-mail na adresu <a href="mailto:{{email_to}}">{{email_to}}</a>'
+portal.emails.ticket_access_ticket_online: 'Zobraziť a upraviť tento tiket online:'
+portal.emails.ticket_cc-new: 'Boli ste pridaný do tiketu vytvoreného používateľom {{name}}.'
+portal.emails.ticket_flood: 'Nedávno ste zaslali e-mail na náš helpdesk. Náš automatizovaný systém zistil, že ste zaslali viacero správ v krátkom časovom intervale, ktoré boli pravdepodobne automatizované.<br /><br />Aby sme sa ubránili cyklu z automatických odpovedí náš helpdesk Vám už viacero automatických odpovedí nezašle.'
+portal.emails.ticket_message_title: 'Dňa {{date}} o {{time}},{{author}} napísal:'
+portal.emails.ticket_no-autoresponse: 'Opozornenie: E-mailové potvrdenia vypnuté'
+portal.emails.ticket_rate-negative: Nie
+portal.emails.ticket_rate-neutral: 'Bolo to OK'
+portal.emails.ticket_rate-positive: Áno
+portal.emails.ticket_rate-question: 'Pomohla Vámtáto správa?'
+portal.emails.ticket_received: 'Váš tiket bol prijatý. Jeden z našich operátorov Vám čoskoro odpovie.'
+portal.emails.ticket_reply-confirm: 'Ďakujeme za Vašu odpoveď. Jeden z našich operátorov Vám čoskoro odpovie.'
+portal.emails.ticket_validate: 'Ďakujeme, že ste nás kontaktovali.<br /><br />Prv, než Vašu správu naši operátori spracujú si musíte overiť Vašu e-mailovú adresu.'
+portal.emails.tickets_ommitted:
+  one: '1 správa bola vynechaná'
+  few: '{{count}} správ bolo vynechaných'
+  other: '{{count}} správ bolo vynechaných'
+portal.emails.view_full_history_online: 'Zobraziť celý tiket online'
+portal.error.404-title: Nenájdené
+portal.feedback.attachments: Pripojenia
+portal.feedback.btn-closed: Uzavreté
+portal.feedback.btn-vote: Súhlasím
+portal.feedback.form_title: Nadpis
+portal.feedback.search-title: 'Spätná väzba'
+portal.feedback.section-desc: 'Tieto návrhy boli schválené zákazníkmi ako vy; skúste problém s nimi prediskutovať a prísť na koreň problému spoločne.'
+portal.feedback.section-title: 'Spätná väzba'
+portal.feedback.submit_feedback: 'Potvrdiť spätnú väzbu'
+portal.forms.error_password_forbid_reuse: 'Nemôžte použiť heslo používané predtým'
+portal.forms.error_password_min_length:
+  one: 'Minimálne {{count}}znak'
+  few: 'Minimálne {{count}} znakov'
+  other: 'Minimálne {{count}} znakov'
+portal.forms.label_category: Kategória
+portal.forms.label_department: Oddelenie
+portal.forms.label_first_name: 'Krstné meno'
+portal.forms.label_full_name: 'Vaše meno'
+portal.forms.label_language: Jazyk
+portal.forms.label_last_name: Priezvisko
+portal.forms.label_message: Správa
+portal.forms.label_name: Meno
+portal.forms.label_password: Heslo
+portal.forms.label_priority: Priorita
+portal.forms.label_save: Uložiť
+portal.forms.label_subject: Predmet
+portal.forms.label_submit: Potvrdiť
+portal.forms.label_timezone: 'Časové pásmo'
+portal.forms.label_title: Nadpis
+portal.general.add-comment: 'Pridať komentár'
+portal.general.agent: Operátor
+portal.general.attachments: Pripojenia
+portal.general.btn-cancel: Zrušiť
+portal.general.btn-download-pdf: 'Stiahnuť PDF'
+portal.general.btn-go: Ísť
+portal.general.delete: Zmazať
+portal.general.everything: Všetko
+portal.general.nav-downloads: Stiahnutia
+portal.general.nav-downloads-desc: 'Prehľadávať naše stiahnutia'
+portal.general.nav-feedback: 'Spätná väzba'
+portal.general.nav-kb: 'Databáza znalostí'
+portal.general.nav-kb-desc: 'Čítaj pomocné články'
+portal.general.nav-news: Novinky
+portal.general.nav-news-desc: 'Novinky a aktualizácie'
+portal.general.nav-newticket: 'Kontaktujte nás'
+portal.general.nav-profile: Profil
+portal.general.nav-register: Registrovať
+portal.general.nav-reset-password: 'Reset hesla'
+portal.general.nav-tickets: Tikety
+portal.general.rate-page-positive: 'Táto stránka mi pomohla'
+portal.general.rated-negative: 'Označil ste túto stránku, že vám nepomohla'
+portal.general.rated-positive: 'Označil ste túto stránku ako nápomocnú'
+portal.general.rating_x_of_y_found_helpful: '{{vote_up}} z {{vote_count}} ľudom táto stránka pomohla'
+portal.general.related-downloads: 'Príbuzné súbory'
+portal.general.related-feedback: 'Podobná spätná väzba'
+portal.general.related-news: 'Podobné novinky'
+portal.general.search-labels-section-title: 'Hľadaj štítky'
+portal.general.search-section-title: Hľadať
+portal.general.search_btn: Hľadať
+portal.general.share-this: 'Zdieľať toto'
+portal.general.show: Ukáž
+portal.general.submit-feedback: 'Predložiť spätnú väzbu'
+portal.news.section-title: Novinky
+portal.news.view-as-agent: 'Vidíte túto stránku, pretože ste operátor. Bežní užívatelia túto stránku neuvidia.'
+portal.sidebar.news_title: Novinky
+portal.tickets.feedback_message_leave_comment: 'Ak chcete zanechajte komentár'
+portal.tickets.guest-thanks-section-title: Ďakujeme
+portal.tickets.guest_thank_you_title: Ďakujeme
+portal.tickets.list_agent: 'Pridelený agent'
+portal.tickets.list_date_created: 'Dátum vytvorený'
+portal.tickets.list_department: Oddelenie
+portal.tickets.list_status_open: 'Otvorené tikety'
+portal.tickets.list_status_resolved: Vyriešené
+portal.tickets.list_subject: Predmet
+portal.tickets.list_title: 'Vaše tikety'
+portal.tickets.new-intro: 'Prosím vyplňte tento formulár a jeden z našich opertátorov vás bude kontaktovať e-mailom akonáhle bude vedieť.'
+portal.tickets.new-section-title: 'Kontaktujte nás'
+portal.tickets.rate-intro: '{{name}} Vám pomohol s tiketom "{{subject}}"'
+portal.tickets.rate-negative: 'Nebolo to dobré'
+portal.tickets.rate-neutral: 'Bolo to OK'
+portal.tickets.rate-positive: 'Bolo to dobré'
+portal.tickets.rate-question: 'Ako by ste hodnotili pomoc, ktorú ste obdržal?'
+portal.tickets.related_articles_title: 'Podobné články'
+portal.tickets.resolve_my_ticket_btn: 'Vyriešiť môj tiket'
+portal.tickets.resolve_ticket: 'Vyriešiť tiket: {{subject}}'
+portal.tickets.resolve_ticket_explain: 'Ste si istý, že chcete vyriešiť tento tiket? Po jeho vyriešení naši operátori prestanú odpovedať.'
+portal.tickets.search-title: Tikety
+portal.tickets.section-title: Tikety
+portal.tickets.timeline_marked_resolved: Vyriešené
+portal.tickets.view_btn_edit: Upraviť
+portal.tickets.view_label_your_name: 'Vaše meno'
+portal.tickets.view_unassigned: Nepridelené
+user.chat.email: 'Vaša e-mailová adresa'
+user.chat.ended-no-agent: 'Je nám ľúto, ale momentálne nemáme nikoho voľného aby prevzal Vašu konverzáciu. Prosíme kontaktujte nás e-mailom alebo skúste neskôr.'
+user.chat.error: 'Chyba konverzácie'
+user.chat.form_chat_button-submit: Poslať
+user.chat.form_chat_send-file: 'Nahrať súbor'
+user.chat.form_create_button-submit: 'Začať konverzáciu'
+user.chat.form_create_department: 'Vyberte si oddelenie'
+user.chat.form_create_title: 'Začat konverzáciu s operátorom'
+user.chat.form_feedback_button-submit: 'Zaslať spätnú väzbu a zatvoriť okno'
+user.chat.form_feedback_comments: 'Komentáre?'
+user.chat.form_feedback_rate-satisfaction: 'Boli ste s konverzáciou spokojný?'
+user.chat.form_feedback_rate-satisfied: Áno
+user.chat.form_feedback_rate-time: 'Odpovedali sme Vám dostatočne rýchlo?'
+user.chat.form_feedback_rate-unsatisfied: Nie
+user.chat.form_feedback_title: 'Zašlite nám spätnú väzbu'
+user.chat.form_feedback_transcript-email: 'Zaslať odpis konverzácie'
+user.chat.log-title: 'Vaše konverzácie'
+user.chat.log_chat-id: 'ID konverzácie'
+user.chat.log_created-date: 'Vytvorené dňa {{date}}'
+user.chat.log_fields_agent: Operátor
+user.chat.log_fields_department: Oddelenie
+user.chat.log_message_author-you: Vy
+user.chat.log_nav-view-chats:
+  one: 'Zobraziť log Vašej poslednej konverzácie'
+  few: 'Zobraziť Vašich {{count}} logov konverzácií'
+  other: 'Zobraziť Vašich {{count}} logov konverzácií'
+user.chat.log_no_department: 'Žiadne oddelenie'
+user.chat.log_unassigned: 'Nepridelené žiadnemu operátorovi'
+user.chat.message_agent-timeout: 'Ospravedlňujeme sa, ale {{name}} sa pravdepodobne odpojil. Prosím čakajte kým nájdeteme ďalšieho agenta.'
+user.chat.message_assigned: 'Chat pridelený {{name}}'
+user.chat.message_chatting-with: 'Konverzujete s'
+user.chat.message_ended: 'Konverzácia ukončená'
+user.chat.message_ended-by: 'Chat ukončený užívateľom {{name}}'
+user.chat.message_ended-by-user: 'Chat ukončený užívateľom'
+user.chat.message_finding-agent: 'Hľadá sa operátor'
+user.chat.message_long-wait: 'Ešte stále hľadáme operátora pre Vašu konverzáciu; toto normálne trvá menej ako minútu. <br /><br />Máte na ponáhlo? <a class="cancel-and-newticket-trigger">necháte nam radšej správu?</a>'
+user.chat.message_set-department: '{{name}} nastavil oddelenie na {{department}}'
+user.chat.message_started: 'Konverzácia zahájená'
+user.chat.message_unassigned: 'Chat nepriradený'
+user.chat.message_uploading: 'Nahráva sa ...'
+user.chat.message_user-joined: '{{name}} sa pripojil ku konverzácii'
+user.chat.message_user-left: '{{name}} opustil konverzáciu'
+user.chat.message_user-returned: 'Užívateľ sa vrátil'
+user.chat.message_user-timeout: 'Užívateľ sa odpojil'
+user.chat.message_wait: 'Hľadáme pre Vás operátora'
+user.chat.message_wait-timeout: 'Žiadny operátor sa nenašiel'
+user.chat.name: 'Vaše meno'
+user.chat.submit-ticket-button: 'Zašlite nám e-mail'
+user.chat.submit-ticket-title: 'E-mailujte nás radšej'
+user.chat.transcript_sent: 'Odpis zaslaný na adresu {{email}}'
+user.chat.window_cancel: Zrušiť
+user.chat.window_cancel-confirm: 'Ste si istý, že chcete ukončiť konverzáciu?'
+user.chat.window_close: 'Nie ďakujem, len uzavri okno'
+user.chat.window_close_only: 'Zavrieť okno'
+user.chat.window_end-chat: 'Ukončiť konverzáciu'
+user.chat.window_offline-button: 'Kliknite sem a kontaktujte nás'
+user.chat.window_open-new: 'Otvoriť túto koverzáciu v novom okne'
+user.chat.window_resume-button: 'Otvoriť konverzáciu'
+user.chat.window_start-button: 'Kliknite sem pre konverzáciu s nami'
+user.chat.window_upload-drag: 'Presuňte súbor sem pre nahranie do konverzácie'
+user.defaults.article_category_general: Hlavné
+user.defaults.article_example_content: 'Toto je príklad znalostného článku. Ľubovoľne ho upravujte alebo ho odstráňte z agentského rozhrania'
+user.defaults.article_example_title: 'Príkladný článok'
+user.defaults.department_sales: Odbyt
+user.defaults.department_support: Podpora
+user.defaults.downloads_category_general: Dokumenty
+user.defaults.news_category_general: Hlavné
+user.defaults.news_example_content: 'Toto je príklad noviniek. Ľubovoľne ho upravujte alebo ho odstráňte z operátorského rozhrania.'
+user.defaults.news_example_title: 'Príklad noviniek'
+user.downloads.change_file: 'Zmeniť súbor'
+user.email_subjects.chat_transcript: 'Odpis konverzácie'
+user.email_subjects.comment-approved: 'Váš komentár bol schválený'
+user.email_subjects.comment-deleted: 'Váš komentár bol prečítaný našimi operátormi'
+user.email_subjects.email-too-big: 'Váš e-mail "{{subject}}" nebol prijatý'
+user.email_subjects.email_new-confirm: 'Potvrďte Vašu e-mailovú adresu'
+user.email_subjects.email_primary-confirm: 'Potvrďte Vašu e-mailovú adresu'
+user.email_subjects.feedback_new: 'Ďakujeme za podanie Vašej spätnej väzby'
+user.email_subjects.feedback_new-approved: 'Vaša spätná väzba bol prijatá'
+user.email_subjects.feedback_new-comment: 'Nový komentár v "{{title}}"'
+user.email_subjects.feedback_new-disapproved: 'Vaša spätná väzba bola odmietnutá'
+user.email_subjects.feedback_updated: 'Vaša soätná väzba bola aktualizovaná: {{title}}'
+user.email_subjects.kb_sub_new: 'Nové články'
+user.email_subjects.kb_sub_new_and_updated: 'Nové a aktualizované články'
+user.email_subjects.kb_sub_updated: 'Aktualizované články'
+user.email_subjects.password_agent-reset: 'Operátor Vám resetol heslo'
+user.email_subjects.password_reset: 'Reset hesla'
+user.email_subjects.register-welcome: 'Ďakujeme za Vašu registráci'
+user.email_subjects.ticket-rate: 'Ohodnoťte Vaše skúsenosti s podporou na tikete "{{ticket.subject}}"'
+user.email_subjects.ticket_new-participant: 'Nová osoba bola pridaná do Vášho tiketu'
+user.emails.auto-close: 'Váš tiket "{{ticket.subject}}" bude automatický uzavretý, pretože ste ho už istú dobu neaktualizovali. Ak nechcete, aby Váš tiket bol uzavretý, môžete pridať novú odpoveď a naši agenti Vám pomôžu ďalej.'
+user.emails.chat_transcript: 'Ďakujeme za Vašu konverzáciu s nami. Tu je Váš odpis konverzácie.'
+user.emails.comment_approved: 'Váš komentár bol uverejnený.'
+user.emails.comment_deleted: 'Váš komentár bol použitý na vylepšenie stránky.'
+user.emails.comment_thank-you: 'Ďakujeme za Váš komentár v {{link}}.'
+user.emails.email-too-big: 'Váš e-mail "{{subject}}" nebol prijatý, pretože je veľmi veľký. Maximálna veľkosť e-mailu je {{max_size}}. Odstráňte pripojené súbory a skúste znova.'
+user.emails.feedback_agent-validation: 'Berte na vedomie, že vaša spätná väzba nebude verejne zobrazená na našej stránke pokiaľ ju jeden z našich operátorov neprezrie.'
+user.emails.feedback_approved: 'Zasielame Vám e-mail, aby sme Vás upovedomili, že Vaša spätná väzba bola prijatá a je verejne zobrazená na našej stránke.'
+user.emails.feedback_closed: 'Vaša prijatá spätná väzba "{{title}}" bola uzavretá: {{status}}'
+user.emails.feedback_disapproved: 'Zasielame Vám e-mail, aby sme Vás upovedomili, že Vaša spätná väzba bola zamietnutá a nebude zobrazená na našej stránke.'
+user.emails.feedback_disapproved-reason: 'Zasielame Vám e-mail, aby sme Vás upovedomili, že Vaša spätná väzba bola zamietnutá a nebude zobrazená na našej stránke. {{name}} udal nasledujúci dôvod:'
+user.emails.feedback_new-comment: '{{name}} pridal nový komentár:'
+user.emails.feedback_published: 'Vaša prijatá spätná väzba "{{title}}" bola overená a bude zobrazená na našej stránke.'
+user.emails.feedback_thank-you: 'Ďakujeme za potvrdenie Vašej spätnej väzby "{{title}}"'
+user.emails.feedback_updated: 'Vaša prijatá spätná väzba "{{title}}" bol aktualizovaná. Nachádza sa pod novým statusom "{{status}}"'
+user.emails.feedback_votes:
+  one: 'Vaša spätná väzba má <strong>1</strong> hlas. Zobraziť Vašu spätnú väzbu online na:'
+  few: 'Vaša spätná väzba má <strong>{{count}}</strong> hlasov. ZobraziŤ Vašu spätnú väzbu online na:'
+  other: 'Vaša spätná väzba má <strong>{{count}}</strong> hlasov. ZobraziŤ Vašu spätnú väzbu online na:'
+user.emails.greeting: 'Milý {{to_name}},'
+user.emails.kb-explain: 'Dostávate tento e-mail, pretože nás odoberáte na <a href="{{deskpro_url}}">{{deskpro_url}}</a><br />Nechcete dostávať tieto e-maily? <a href="{{unsubscribe_url}}">Kliknite sem pre zrušenie odberu.</a>'
+user.emails.kb-new-articles:
+  one: '1 nový článok'
+  few: '{{count}} nových článkov'
+  other: '{{count}} nových článkov'
+user.emails.kb-updated-articles:
+  one: '1 aktualizovaný článok'
+  few: '{{count}}aktualizovaných článkov'
+  other: '{{count}}aktualizovaných článkov'
+user.emails.label_view-online: 'Pozri online'
+user.emails.message-clipped: '(Správa bola pripnutá)'
+user.emails.password_agent-reset: 'Operátor resetol heslo Vášho účtu. Môžete sa prihlásiť s nasledovnými údajmi'
+user.emails.password_reset: 'Požiadali ste o resetnutie hesla. Pre resetnutie Vašeho hesla, kliknite na odkaz nižšie:'
+user.emails.profile_email-new-confirm: 'Pre ukončenie pridania sekundárneho e-mailu pre Váš účet, jednoducho kliknite na nasledujúci potvrdzujúci odkaz'
+user.emails.profile_email_link-validate: 'Jednoducho kliknite na nasledovný odkaz pre overenie Vašej e-mailovej adresy'
+user.emails.register-confirm: 'Ďakujeme za registráciu Vašeho účtu.<br /><br />Predtým než budete môcť používať Váš účet, musíte kliknúť na nasledujúci odkaz pre overenie Vašej e-mailovej adresy'
+user.emails.register-welcome: 'Ďakueme za Vašu registráciu. Môžete sa prihlásiť použitím Vašej e-mailovej adresy {{to_email}} na našom helpdesku:'
+user.emails.registration_closed: 'Milý {{name}},<br /><br />Nové tikety sú akceptované iba od existujúcich členov helpdesku. Ak uz máte účet, prosím kontaktujte nás e-mailom znova z Vašej registrovanej e-mailovej adresy.'
+user.emails.reject_resolved: 'Vaša odpoveď nebola prijatá, pretože Váš tiket bol už označený ako vyriešený. Naši operátori túto správu nebudú čítať ani na ňu odpovedať.'
+user.emails.reject_resolved-new: 'Ak chcete vytvoriť nový tiket môžete zaslať nový e-mail na adresu <a href="mailto:{{email_to}}">{{email_to}}</a> alebo ho môžete odovzdať v online forme na <br /><a href="{{link}}">{{link}}</a>'
+user.emails.reject_resolved-newemail: 'Ak chcete vytvoriť nový tiket môžete zaslať e-mail na adresu <a href="mailto:{{email_to}}">{{email_to}}</a>'
+user.emails.ticket_access_ticket_online: 'Zobraziť a upraviť tento tiket online:'
+user.emails.ticket_cc-new: 'Boli ste pridaný do tiketu vytvoreného používateľom {{name}}.'
+user.emails.ticket_flood: 'Nedávno ste zaslali e-mail na náš helpdesk. Náš automatizovaný systém zistil, že ste zaslali viacero správ v krátkom časovom intervale, ktoré boli pravdepodobne automatizované.<br /><br />Aby sme sa ubránili cyklu z automatických odpovedí náš helpdesk Vám už viacero automatických odpovedí nezašle.'
+user.emails.ticket_message_title: 'Dňa {{date}} o {{time}},{{author}} napísal:'
+user.emails.ticket_no-autoresponse: 'Opozornenie: E-mailové potvrdenia vypnuté'
+user.emails.ticket_rate-negative: Nie
+user.emails.ticket_rate-neutral: 'Bolo to OK'
+user.emails.ticket_rate-positive: Áno
+user.emails.ticket_rate-question: 'Pomohla Vámtáto správa?'
+user.emails.ticket_received: 'Váš tiket bol prijatý. Jeden z našich operátorov Vám čoskoro odpovie.'
+user.emails.ticket_reply-confirm: 'Ďakujeme za Vašu odpoveď. Jeden z našich operátorov Vám čoskoro odpovie.'
+user.emails.ticket_validate: 'Ďakujeme, že ste nás kontaktovali.<br /><br />Prv, než Vašu správu naši operátori spracujú si musíte overiť Vašu e-mailovú adresu.'
+user.error.attach_ext-allowed: 'Iba nasledujúce typy súborov môžu byť nahrané: {{error_detail}}'
+user.error.attach_ext-not-allow: 'Typ súboru, ktorý ste nahral nie je povolený.'
+user.error.attach_failed: 'Nahrávanie pripojeného súboru bolo neúspešné(pozastavil ste to). Skúste znova.'
+user.error.attach_no-file: 'Vyberte súbor na nahranie'
+user.error.attach_size: 'Pripojený súbor je príliš veľký. Maximálna veľkosť je {{error_detail}}'
+user.error.attach_unknown-error: 'Vyskytol sa problém s našim serverom pri pokuse o nahranie prílohy. Skúste znova.'
+user.error.error_code: 'Chybný kód'
+user.error.error_title: Chyba
+user.error.expired-token: 'Stránka, na ktorú sa pokúšate dostať neodpovedá. Prosím vráťte sa a skúste znova.'
+user.error.form_choice_invalid: 'Prosím vyberte si z nasledujúcich možností'
+user.error.form_choice_max:
+  one: 'Prosím vyberte jednu z možností'
+  few: 'Prosím Vyberte {{count}} možností'
+  other: 'Prosím Vyberte {{count}} možností'
+user.error.form_choice_min:
+  one: 'Prosím vyberte aspoň 1 možnosť'
+  few: 'Prosím vyberte aspoň {{count}} možností'
+  other: 'Prosím vyberte aspoň {{count}} možností'
+user.error.form_date_invalid: 'Prosím zadajte platný dátum'
+user.error.form_date_invalid_dow: 'Deň v týždni, ktorý ste vybral nie je povolený'
+user.error.form_date_invalid_range: 'Deň, ktorý ste vybral nie je z povoleného rozsahu'
+user.error.form_required: 'Toto políčko je povinné'
+user.error.form_text_max:
+  one: 'Prosím zadajte aspoň 1 znak'
+  few: 'Prosím zadajte aspoň {{count}} znakov'
+  other: 'Prosím zadajte aspoň {{count}} znakov'
+user.error.form_text_min:
+  one: 'Prosím zadajte aspoň 1 znak'
+  few: 'Prosím zadajte aspoň {{count}} znakov'
+  other: 'Prosím zadajte aspoň {{count}} znakov'
+user.error.form_text_regex: 'Prosím zadajte platnú adresu'
+user.error.invalid_email: 'Neplatná e-mailová adresa'
+user.error.invalid_email-code: 'Odkaz na overenie sa zdá byť neplatný.'
+user.error.invalid_email-explain: 'Na Vašom účte sme danú e-mailovú adresu nenašli.'
+user.error.not-found: 'Stranka, ktorú hľadáte nebola nájdená.'
+user.error.not-found-title: Nenájdené
+user.error.permission-denied: 'Prepáčte, ale akcia, ktorú sa snažíte vykonať nie je povolená.'
+user.error.permission-denied-login: 'Momentálne ste odhlásený. <a href="{{login_url}}">Prihláste sa</a> a skúste znova.'
+user.error.permission-denied-title: 'Na danú akciu nemáte oprávnenie'
+user.error.server-error: 'Nastala chyba pri načítavaní stránky. Prosím skúste znova.'
+user.feedback.submit_feedback: 'Potvrdiť spätnú väzbu'
+user.general.helpdesk_by: 'Helpdeskový software od <strong>{{deskpro}}</strong>'
+user.general.label_captcha: 'Kód overenia'
+user.general.page: Stránka
+user.knowledgebase.auto_action_on_date: 'Automaticky {{action}}dňa {{date}}'
+user.knowledgebase.creating_pending_article: 'Vytvára sa trvajúci článok'
+user.lang.lang_title: Slovenčina
+user.lang.lang_title_arabic: Arabsky
+user.lang.lang_title_danish: Dánsky
+user.lang.lang_title_default: Englicky
+user.lang.lang_title_dutch: Holandsky
+user.lang.lang_title_french: Francúzsky
+user.lang.lang_title_german: Nemecky
+user.lang.lang_title_hungarian: Maďarsky
+user.lang.lang_title_italian: Taliansky
+user.lang.lang_title_japanese: Japonsky
+user.lang.lang_title_norwegian: Nórsky
+user.lang.lang_title_persian: Perzsky
+user.lang.lang_title_polish: Polsky
+user.lang.lang_title_portuguese: Portugalsky
+user.lang.lang_title_romanian: Rumunsky
+user.lang.lang_title_russian: Rusky
+user.lang.lang_title_spanish: Španielsky
+user.lang.lang_title_swedish: Švédsky
+user.lang.lang_title_turkish: Turecky
+user.news.title: Novinky
+user.profile.account_disabled_message: 'Váš účet je momentálne deaktivovaný. Nebudete schopný komunikovať s tiketmi alebo v konverzáciách.'
+user.profile.choose_email: 'Vyberte si e-mailovú adresu, ktorú chcete používaŤ'
+user.profile.or_connect_with: 'Alebo sa spojiť s'
+user.profile.register: Registrovať
+user.profile.register_password_min_length:
+  one: 'Minimálne {{count}}znak'
+  few: 'Minimálne {{count}} znakov'
+  other: 'Minimálne {{count}} znakov'
+user.profile.register_password_unused: 'Nemôžte použiť heslo používané predtým'
+user.tickets.feedback_message_leave_comment: 'Ak chcete zanechajte komentár'
+user.tickets.fields_category: Kategória
+user.tickets.fields_department: Oddelenie
+user.tickets.fields_priority: Priorita
+user.tickets.fields_product: Produkt
+user.tickets.form_error_captcha: 'Prosím zadajte kód'
+user.tickets.form_error_captcha_invalid: 'Kód, ktorý ste zadali je neplatný.'
+user.tickets.from_x_at_y: 'Od {{name}} dňa {{date}}'
+user.tickets.label_cced: CC-nutý
+user.tickets.no_subject: '(Žiadny predmet)'
+user.tickets.rate-negative: 'Nebolo to dobré'
+user.tickets.rate-neutral: 'Bolo to OK'
+user.tickets.rate-positive: 'Bolo to dobré'
+user.tickets.rate-thanks-vialink: 'Ďakujeme za Vašu hodnotenie. Ak chcete môžte nechať komentár nižšie.'
+user.tickets.rate_support: 'Ohodnoťte Vašu pomoc'
+user.time.long-day_friday: Piatok
+user.time.long-day_monday: Pondelok
+user.time.long-day_saturday: Sobota
+user.time.long-day_sunday: Nedeľa
+user.time.long-day_thursday: Štvrtok
+user.time.long-day_tuesday: Utorok
+user.time.long-day_wednesday: Streda
+user.time.long-month_april: Apríl
+user.time.long-month_february: Február
+user.time.long-month_january: Január
+user.time.long-month_july: Júl
+user.time.long-month_june: Jún
+user.time.long-month_march: Marec
+user.time.long-month_may: Máj
+user.time.long-month_october: Október
+user.time.short-day_friday: Pia
+user.time.short-day_monday: Pon
+user.time.short-day_saturday: So
+user.time.short-day_sunday: Ne
+user.time.short-day_thursday: Stv
+user.time.short-day_tuesday: Ut
+user.time.short-day_wednesday: Str
+user.time.short-month_july: Júl
+user.time.short-month_june: Jún
+user.time.short-month_may: Máj
+user.time.short-month_october: Okt
+user.time.time-ago_1_day: 'Pred 1 dňom'
+user.time.time-ago_1_hour: 'Pred 1 hodinou'
+user.time.time-ago_1_minute: 'Pred 1 minutou'
+user.time.time-ago_1_month: 'Pred 1 mesiacom'
+user.time.time-ago_1_second: 'Pred 1 sekundou'
+user.time.time-ago_1_week: 'Pred 1 týždňom'
+user.time.time-ago_1_year: 'Pred 1 rokom'
+user.time.time-ago_less_second: 'Menej ako pred sekundou'
+user.time.time-ago_x_day: 'Pred {0} dňami'
+user.time.time-ago_x_hour: 'Pred {0} hodinami'
+user.time.time-ago_x_minute: 'Pred {0} minútami'
+user.time.time-ago_x_month: 'Pred {0} mesiacmi'
+user.time.time-ago_x_second: 'Pred {0} sekundami'
+user.time.time-ago_x_week: 'Pred {0} týždňami'
+user.time.time-ago_x_year: 'Pred {0} rokmi'
+user.time.time_1_day: '1 deň'
+user.time.time_1_hour: '1 hodina'
+user.time.time_1_minute: '1 minúta'
+user.time.time_1_month: '1 mesiac'
+user.time.time_1_second: '1 sekunda'
+user.time.time_1_week: '1 týždeň'
+user.time.time_1_year: '1 rok'
+user.time.time_less_second: 'menej ako sekunda'
+user.time.time_x_day: '{0} dní'
+user.time.time_x_hour: '{0} hodín'
+user.time.time_x_minute: '{0} minút'
+user.time.time_x_month: '{0} mesiacov'
+user.time.time_x_second: '{0} sekúnd'
+user.time.time_x_week: '{0} týždňov'
+user.time.time_x_year: '{0} rokov'

@@ -141,7 +141,7 @@ class CsvImporter
                         /** @var Language $language */
                         $language = $this->em->find(Language::class, $columnValue);
                         if ($language) {
-                            $columnValue = $language->getLangCode();
+                            $columnValue = $language->getLocale();
                         } else {
                             $columnValue = null;
                         }

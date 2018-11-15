@@ -68,13 +68,13 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 'title'                 => $title,
                 'show_title'            => $lang ? $lang->title : $pack_local_titles[$id],
                 'local_title'           => $pack_local_titles[$id],
-                'flag'                  => $info['flag_image'],
-                'show_flag'             => $lang ? $lang->flag_image : $info['flag_image'],
+                'flag'                  => 'locale_'.$info['locale'].'.png',
+                'show_flag'             => 'locale_'.$info['locale'].'.png',
                 'is_installed'          => $lang ? true : false,
                 'installed_language_id' => $lang ? $lang->id : null,
-                'has_user'              => $info['has_user'],
-                'has_agent'             => $info['has_agent'],
-                'has_admin'             => $info['has_admin'],
+                'has_user'              => true,
+                'has_agent'             => true,
+                'has_admin'             => true,
             ];
 
             $all_packs[] = $r;
@@ -463,6 +463,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
             if ($phrase != '' && $phrase !== null) {
                 $p = new Phrase();
                 $p->setName($phrase_id);
+                $p->setIsManaged(false);
                 $p->phrase = $phrase;
 
                 $adds[] = [
@@ -473,6 +474,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
                     'original_phrase' => $p->original_phrase,
                     'original_hash'   => $p->original_hash,
                     'is_outdated'     => (int) $p->is_outdated,
+                    'is_managed'      => (int) $p->isManaged(),
                     'created_at'      => $p->created_at ? $p->created_at->format('Y-m-d H:i:s') : null,
                     'updated_at'      => $p->updated_at ? $p->updated_at->format('Y-m-d H:i:s') : null,
                 ];
@@ -481,6 +483,87 @@ class LanguagesController extends AbstractController implements ProtectedControl
 
         if ($phrase_ids) {
             $this->db->deleteIn('phrases', $phrase_ids, 'name', false, "language_id = {$lang->id}");
+
+            if ($adds) {
+                $this->db->batchInsert('phrases', $adds, true);
+            }
+        }
+
+        return $this->createSuccessResponse();
+    }
+
+    //###################################################################################################################
+    // Save and sync downloaded from the server updated language set
+    //###################################################################################################################
+
+    public function syncPhraseSetAction($id)
+    {
+        $langpacks = new LangPackInfo();
+        if (!$langpacks->hasLang($id)) {
+            throw $this->createNotFoundException();
+        }
+
+        $lang_info = $langpacks->getLangInfo($id);
+        $lang      = null;
+
+        foreach ($this->container->getLanguageData()->getAll() as $l) {
+            if ($l->sys_name == $lang_info['id']) {
+                $lang = $l;
+                break;
+            }
+        }
+
+        if (!$lang) {
+            throw $this->createNotFoundException();
+        }
+
+        $customPhrases = $this->db->fetchAllCol(
+            "select name from phrases where is_managed = 0 and language_id = {$lang->getId()}"
+        );
+
+        $adds       = [];
+        $phrase_ids = [];
+
+        foreach ($this->in->getArrayValue('phrases') as $phrase_info) {
+            if (empty($phrase_info['name']) || !preg_match('#^[a-zA-Z0-9\.\-_]+$#', $phrase_info['name'])) {
+                continue;
+            }
+
+            if (!isset($phrase_info['phrase']) || !$phrase_info['phrase']) {
+                continue;
+            }
+
+            // Skip not custom phrases set by User
+            if (in_array($phrase_info['name'], $customPhrases)) {
+                continue;
+            }
+
+            $phrase_id = $phrase_info['name'];
+            $phrase    = $phrase_info['phrase'];
+
+            $phrase_ids[] = $phrase_id;
+
+            $p = new Phrase();
+            $p->setName($phrase_id);
+            $p->setIsManaged(true);
+            $p->phrase = $phrase;
+
+            $adds[] = [
+                'language_id'     => $lang->id,
+                'name'            => $p->name,
+                'groupname'       => $p->groupname,
+                'phrase'          => $p->phrase,
+                'original_phrase' => $p->original_phrase,
+                'original_hash'   => $p->original_hash,
+                'is_outdated'     => (int) $p->is_outdated,
+                'is_managed'      => (int) $p->isManaged(),
+                'created_at'      => $p->created_at ? $p->created_at->format('Y-m-d H:i:s') : null,
+                'updated_at'      => $p->updated_at ? $p->updated_at->format('Y-m-d H:i:s') : null,
+            ];
+        }
+
+        if ($phrase_ids) {
+            $this->db->deleteIn('phrases', $phrase_ids, 'name', false, ["language_id = {$lang->id}", 'is_managed = 1']);
 
             if ($adds) {
                 $this->db->batchInsert('phrases', $adds, true);
@@ -556,9 +639,8 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createJsonResponse([
             'phrase_groups' => [
                 'object' => $object_groups,
-                'user'   => $phrase_groups['portal'],
-                'agent'  => $phrase_groups['agent'],
-                'admin'  => $phrase_groups['admin'],
+                'user'   => $phrase_groups['user'],
+                'agent'  => $phrase_groups['backend'],
             ],
         ]);
     }
@@ -598,7 +680,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
         /** @var \Application\DeskPRO\EntityRepository\Phrase $repos */
         $repos = $this->em->getRepository(Phrase::class);
 
-        $phrase_data = new PhraseData($repos, DP_ROOT.'/languages');
+        $phrase_data = new PhraseData($repos, DP_ROOT.'/locales');
 
         switch ($group_id) {
             case 'ticket_departments':

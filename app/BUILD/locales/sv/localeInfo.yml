@@ -1,0 +1,11 @@
+id: swedish
+name: Swedish
+nameLocal: Svenska
+locale: sv
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

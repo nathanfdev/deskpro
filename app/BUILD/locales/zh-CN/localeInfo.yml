@@ -1,0 +1,10 @@
+id: chinese_simplified
+name: 'Chinese (Simplified)'
+nameLocal: 英语（美国）
+locale: zh-CN
+isRtl: false
+pluralRules:
+  plurals: 1
+  formula: '0'
+  categories:
+    - other

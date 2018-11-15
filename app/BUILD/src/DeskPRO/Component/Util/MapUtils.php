@@ -328,6 +328,46 @@ class MapUtils
     }
 
     /**
+     * Flatten a multi-level map into a single level.
+     *
+     * <code>
+     * $arr = [
+     *   'a' => [
+     *     'b' => [
+     *       'c' => ['foo', 'bar'],
+     *       'd' => 123
+     *     ]
+     *   ]
+     * ];
+     * $flat = MapUtils::flattenKeys($arr);
+     * // => ['a.b.c' => ['foo', 'bar'], 'a.b.d' => 123]
+     * </code>
+     *
+     * @param \Traversable|array $array
+     * @param string             $sep         The stirng to separate each level of key with
+     * @param string[]           $startPrefix The key segments to start with (defaults to nothing)
+     *
+     * @return string
+     */
+    public static function flattenKeys($array, $sep = '.', array $startPrefix = [])
+    {
+        $flat = [];
+
+        foreach ($array as $k => $v) {
+            $startPrefix[] = $k;
+            if ((is_array($v) || $v instanceof \Traversable) && !TypeUtils::isList($v, true)) {
+                $flat = array_merge($flat, self::flattenKeys($v, $sep, $startPrefix));
+            } else {
+                $newKey        = implode($sep, $startPrefix);
+                $flat[$newKey] = $v;
+            }
+            array_pop($startPrefix);
+        }
+
+        return $flat;
+    }
+
+    /**
      * Creates a copy of $array and returns it with $path set to $value.
      *
      * Note that if you attempt to set a deep key and the element in the middle of the

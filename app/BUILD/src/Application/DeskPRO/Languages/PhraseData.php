@@ -21,24 +21,27 @@ use Application\DeskPRO\Tickets\TicketCategories;
 use Application\DeskPRO\Tickets\TicketPriorities;
 use Application\DeskPRO\Tickets\TicketWorkflows;
 use DeskPRO\Component\Util\MapUtils;
+use Symfony\Component\Yaml\Yaml;
 
 class PhraseData
 {
     private static $groupFileMap = [
-        'adm'     => 'agent.php',
-        'admin'   => 'agent.php',
-        'api'     => 'api.php',
-        'agent'   => 'agent.php',
-        'general' => 'general.php',
-        'portal'  => 'portal.php',
-        'user'    => 'portal.php',
+        'adm'     => 'backend',
+        'admin'   => 'backend',
+        'api'     => 'backend',
+        'agent'   => 'backend',
+        'general' => 'backend',
+        'portal'  => 'user',
+        'user'    => 'user',
     ];
 
     private static $reverseMap = [
-        'api'     => ['api'],
-        'agent'   => ['agent', 'adm', 'admin'],
-        'general' => ['general'],
-        'portal'  => ['portal', 'user'],
+        'api'     => ['backend'],
+        'agent'   => ['backend'],
+        'general' => ['backend'],
+        'portal'  => ['user'],
+        'user'    => ['user', 'portal'],            // prefixes from user.yml file
+        'backend' => ['api', 'agent', 'general'],    // prefixes from backend.yml file
     ];
 
     /**
@@ -584,11 +587,13 @@ class PhraseData
      */
     public function loadGroup(Language $language = null, $group_id)
     {
-        $default_phrases = $this->loadSystemPhrases('default', $group_id);
+        $default_phrases = $this->loadSystemPhrases('en-US', $group_id);
 
         if ($language) {
-            $lang_phrases   = $this->loadSystemPhrases($language->sys_name, $group_id);
-            $custom_phrases = $this->loadCustomPhrases($language, $group_id);
+            $lang_phrases           = $this->loadSystemPhrases($language->getLocale(), $group_id);
+            $custom_phrases_managed = $this->loadCustomPhrases($language, $group_id, true);
+            $lang_phrases           = array_merge($lang_phrases, $custom_phrases_managed);
+            $custom_phrases         = $this->loadCustomPhrases($language, $group_id);
         } else {
             $lang_phrases   = [];
             $custom_phrases = [];
@@ -624,6 +629,9 @@ class PhraseData
     }
 
     /**
+     * This functions returns only not managed custom phrases.
+     * Refer to Phrase.is_managed for more details.
+     *
      * @param Language $language
      *
      * @return array
@@ -653,8 +661,8 @@ class PhraseData
             $phrase_groups = array_unique($phrase_groups);
 
             foreach ($phrase_groups as $group_id) {
-                $default_phrases = array_merge($default_phrases,   $this->loadSystemPhrases('default', $group_id));
-                $lang_phrases    = array_merge($lang_phrases,      $this->loadSystemPhrases($language->sys_name, $group_id));
+                $default_phrases = array_merge($default_phrases,   $this->loadSystemPhrases('en-US', $group_id));
+                $lang_phrases    = array_merge($lang_phrases,      $this->loadSystemPhrases($language->getLocale(), $group_id));
             }
         }
 
@@ -684,12 +692,12 @@ class PhraseData
     /**
      * Returns a k=>v array of phrases from the system lang files.
      *
-     * @param string $lang_name
+     * @param string $locale
      * @param string $group_id
      *
      * @return array
      */
-    private function loadSystemPhrases($lang_name, $group_id)
+    private function loadSystemPhrases($locale, $group_id)
     {
         // Simple cast to prevent bad input
         $group_id = preg_replace('#[^a-zA-Z0-9\.\-_]#', '', $group_id);
@@ -701,17 +709,20 @@ class PhraseData
 
         $path = $this->lang_dir
             .DIRECTORY_SEPARATOR
-            .$lang_name
+            .$locale
             .DIRECTORY_SEPARATOR
             .self::$groupFileMap[$parts[0]];
 
-        if (!file_exists($path)) {
+        if (file_exists("$path.php")) {
+            $phrases = require "$path.php";
+        } elseif (file_exists("$path.yml")) {
+            $phrases = MapUtils::flattenKeys(Yaml::parse(file_get_contents("$path.yml")));
+        } else {
             return [];
         }
 
         $subGroupId = $parts[1];
 
-        $phrases = require $path;
         $phrases = MapUtils::filter($phrases, function ($phraseId) use ($subGroupId) {
             $parts = explode('.', $phraseId);
 
@@ -727,7 +738,7 @@ class PhraseData
      *
      * @return array
      */
-    private function loadCustomPhrases(Language $language, $group_id)
+    private function loadCustomPhrases(Language $language, $group_id, $isManaged = false)
     {
         // we need to fetch both: portal and user for portal.* group as well as adm and admin for admin.*
 
@@ -739,7 +750,7 @@ class PhraseData
             $newParts = $parts;
             array_shift($newParts);
             array_unshift($newParts, $prefix);
-            $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts));
+            $phrases += $this->phrase_repos->getPhrasesInGroup($language, implode('.', $newParts), $isManaged);
         }
 
         return $phrases;

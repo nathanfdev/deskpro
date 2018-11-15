@@ -1,0 +1,1923 @@
+agent.chat.added_as_participant: 'Aggiunto come partecipante'
+agent.chat.agent_chats: 'Chat Agente'
+agent.chat.between_members: 'Chat tra:'
+agent.chat.chat_history: 'Storia Chat'
+agent.chat.chat_started_by: 'Chat avviata da'
+agent.chat.chat_transcript: 'Trascrizione Chat'
+agent.chat.chat_with_x: 'Chat con {{name}}'
+agent.chat.count_seconds:
+  one: '{{count}} secondo'
+  other: '{{count}} secondi'
+agent.chat.filter_title_assigned: 'Chat Assegnate'
+agent.chat.filter_title_mine: 'Le Mie Chat'
+agent.chat.filter_title_missed: 'Chat Perse'
+agent.chat.in_department: 'in {{name}}'
+agent.chat.invite_agent: 'Invita Agente'
+agent.chat.invite_another_agent: 'Invita un altro agente'
+agent.chat.invite_no_agents: 'Non ci sono altri agenti che puoi invitare'
+agent.chat.invite_others: 'Invita Altri'
+agent.chat.join_chat: 'Unisciti alla Chat'
+agent.chat.label_assigned_others: 'Altri agenti in questa chat'
+agent.chat.leave_chat_confirm: 'Sei sicuro di voler abbandonare questa chat?'
+agent.chat.leave_end: 'Chiudi chat e Abbandona'
+agent.chat.leave_unassign: 'Non assegnarmi e lascia'
+agent.chat.list_title:
+  one: '1 Conversazione'
+  other: '{{count}} Conversazioni'
+agent.chat.msg_agent_timeout: '{{agent_name}} è scaduto'
+agent.chat.msg_assigned_agent: 'Chat assegnata a {{agent_name}}'
+agent.chat.msg_part_joined: '{{person_name}} si è unito'
+agent.chat.msg_part_left: '{{person_name}} ha abbandonato'
+agent.chat.msg_unassigned_agent: '{{agent_name}} non era assegnato'
+agent.chat.my_open_chats: 'Le Mie Chat Aperte'
+agent.chat.new_agent_note_by: 'Nuova nota agente da {{name}}'
+agent.chat.new_agent_reply_by: 'Nuova risposta agente da {{name}}'
+agent.chat.new_chat: 'Nuova Chat'
+agent.chat.new_ticket_by: 'Nuovo Ticket da {{name}} ({{email}})'
+agent.chat.new_user_reply_by: 'Nuova risposta utente da {{name}} ({{email}})'
+agent.chat.no_department: 'Nessun Reparto'
+agent.chat.no_email: 'Nessuna Email'
+agent.chat.no_online_agents: 'Non ci sono altri agenti online'
+agent.chat.no_open_chats: 'Non ci sono chat aperte attualmente.'
+agent.chat.no_others: 'Nessun altro'
+agent.chat.offline: Offline
+agent.chat.online: Online
+agent.chat.open_chat: 'Aprire Chat'
+agent.chat.other_agents: 'Altri Agenti'
+agent.chat.show_offline: 'Mostra Offline'
+agent.chat.snippets: Frammenti
+agent.chat.take_chat: 'Avvia Chat'
+agent.chat.team_chats: 'Team delle Chat'
+agent.chat.title_active_chats: 'Tutte le Chat Aperte'
+agent.chat.title_chat_id: 'Chat {{chat_id}}'
+agent.chat.title_ended: 'Chat terminate'
+agent.chat.title_leave_chat_prompt: 'Abbandonare Chat?'
+agent.chat.title_new_chats: 'Nuove Chat'
+agent.chat.title_open: 'Chat Aperte'
+agent.chat.user_is_viewing: 'L''utente sta visualizzando'
+agent.chat.user_typing: Digitazione
+agent.chat.warning: Avviso
+agent.chat.warning_email_address_not_unique: 'L''utente non è attualmente connesso quindi la sua identità non può essere verificata. Fare attenzione a non esporre informazioni sensibili nel caso in cui l''utente è un impostore.'
+agent.chat.x_by_anonymous: 'Chat {{chat_id}} da Anonimi'
+agent.chat.x_by_anonymousymous: 'Chat da Anonimi'
+agent.chat.you_have_been_invited: 'Sei stato invitato in una chat'
+agent.chrome.btn_add: Aggiungi
+agent.chrome.btn_create: Crea
+agent.chrome.btn_recent: Recente
+agent.chrome.chat_list_agents-online: '<span class="userchat-online-agents-count">0</span> agenti online:'
+agent.chrome.chat_list_by-department: 'Dal Reparto'
+agent.chrome.chat_list_heading_current-page: 'Pagina Corrente'
+agent.chrome.chat_list_heading_time: Tempo
+agent.chrome.chat_list_heading_user: Utente
+agent.chrome.chat_list_no-online-users: 'Non ci sono utenti online'
+agent.chrome.chat_list_online-users:
+  one: '<span class="count-online-users"> 1 </span> Utente Online'
+  other: '<span class="count-online-users">{{count}}</span> Utenti Online'
+agent.chrome.chat_logged-in: 'Connesso alla chat'
+agent.chrome.chat_logged-out: 'Sconnesso dalla chat'
+agent.chrome.chat_online-agents:
+  one: '<span class="userchat-online-agents-count">{{count}}</span> Agente'
+  other: '<span class="userchat-online-agents-count">{{count}}</span> Agenti'
+agent.chrome.chat_online-users:
+  one: '<span class="userchat-online-users-count">{{count}}</span> Utente'
+  other: '<span class="userchat-online-users-count">{{count}}</span> Utenti'
+agent.chrome.chat_sign-in: 'Accedi alla chat'
+agent.chrome.chat_sign-out: 'Esci dalla chat'
+agent.chrome.create_new-article: 'Nuovo Articolo'
+agent.chrome.create_new-download: 'Nuovo Download'
+agent.chrome.create_new-feedback: 'Nuovo Feedback'
+agent.chrome.create_new-news: 'Nuova Messaggio Notizie'
+agent.chrome.create_new-organization: 'Nuova Organizzazione'
+agent.chrome.create_new-person: 'Persona Nuova'
+agent.chrome.create_new-task: 'Nuovo Incarico'
+agent.chrome.create_new-ticket: 'Nuovo Ticket'
+agent.chrome.create_new-tweet: 'Nuovo Tweet'
+agent.chrome.hello-user: 'Ciao, {{name}}'
+agent.chrome.help-contact-us: Contattaci
+agent.chrome.help-contact-us-explain: 'Contattaci sulla nostra piattaforma a <a href="https://support.deskpro.com/" target="_blank"> support.deskpro.com</a> o direttamente via email a <a href="mailto:support@deskpro.com"> supporto@deskpro.com</a>.'
+agent.chrome.help-manuals: Manuali
+agent.chrome.help-quickstart-guide-link: 'Se sei nuovo in DeskPRO, <a href="{{link}}"> clicca qui per scaricare la Guida di Avvio Rapido DeskPRO</a>.'
+agent.chrome.kbd-change-status-agent: 'Cambia stato in Agente in Attesa'
+agent.chrome.kbd-change-status-resolved: 'Cambia stato in Risolto'
+agent.chrome.kbd-change-status-user: 'Cambia stato in Attesa di Utente'
+agent.chrome.kbd-open-org: 'Apri profilo organizzazione'
+agent.chrome.kbd-open-send-actions: 'Aprire opzioni di azione invio'
+agent.chrome.kbd-open-snippets: 'Aprire frammenti'
+agent.chrome.kbd-open-user-profile: 'Aprire il profilo utente'
+agent.chrome.kbd-send-reply: 'Invia Risposta'
+agent.chrome.kbd-shortcuts: 'Comandi veloci della Tastiera'
+agent.chrome.link_help: Aiuto
+agent.chrome.link_logout: Disconnesso
+agent.chrome.link_preferences: Preferenze
+agent.chrome.nav_admin_settings: 'Impostazioni Amministratore'
+agent.chrome.nav_agentchat: 'IM Agente'
+agent.chrome.nav_feedback: Feedback
+agent.chrome.nav_people: CRM
+agent.chrome.nav_publish: Pubblicare
+agent.chrome.nav_reports: Report
+agent.chrome.nav_search: Cerca
+agent.chrome.nav_tasks: Incarichi
+agent.chrome.nav_tickets: Ticket
+agent.chrome.nav_twitter: Twitter
+agent.chrome.nav_userchat: 'Chat Utente'
+agent.chrome.notify_list-dismiss-all: 'Rimuovi Tutte le Notifiche'
+agent.chrome.notify_list-new-messages: '<span class="notify-count">0</span> Nuove Notifiche'
+agent.chrome.notify_list-no-notifications: 'Non ci sono nuove notifiche'
+agent.chrome.notify_list-view-dismissed: 'Vedi Rimossi'
+agent.chrome.quicksearch_adv-explain: 'Per maggiori opzioni di ricerca avanzate, seleziona un''azione:'
+agent.chrome.quicksearch_info: 'La barra di ricerca rapida permette di cercare una vasta gamma di risorse.'
+agent.chrome.quicksearch_title: 'Barra di Ricerca Rapida'
+agent.chrome.quicksearch_title-articles: Articoli
+agent.chrome.quicksearch_title-chat: Chat
+agent.chrome.quicksearch_title-crm: CRM
+agent.chrome.quicksearch_title-downloads: Download
+agent.chrome.quicksearch_title-feedback: Feedback
+agent.chrome.quicksearch_title-news: Novità
+agent.chrome.quicksearch_title-orgs: Organizzazioni
+agent.chrome.quicksearch_title-people: Persone
+agent.chrome.quicksearch_title-publish: Pubblicare
+agent.chrome.quicksearch_title-tickets: Ticket
+agent.chrome.recent_list-filter-info: 'Digita per filtrare i risultati recenti'
+agent.chrome.recent_list-none: 'Non hai ancora aperto nessuna scheda'
+agent.chrome.search-show-more:
+  one: 'Mostra {{count}} di più'
+  other: ' Mostra {{count}} di più'
+agent.defaults.default_style: 'Stile Predefinito'
+agent.defaults.team_lvl1_support: 'Supporto di 1° Livello'
+agent.defaults.team_lvl2_support: 'Supporto di 2° Livello'
+agent.defaults.team_support_managers: 'Gestioni Supporto'
+agent.defaults.usergroup_agent_all_non_destructive: 'Tutte Autorizzazioni Non-Dannose'
+agent.defaults.usergroup_agent_all_non_destructive_note: 'Gli agenti ha tutte le autorizzazioni eccetto quelle che permetterebbero ad essi di effettuare cambiamenti dannosi come l''eliminazione dei registri.'
+agent.defaults.usergroup_agent_all_perms: 'Tutte le Autorizzazioni'
+agent.defaults.usergroup_agent_all_perms_note: 'L''agente ha completa autorizzazione'
+agent.defaults.usergroup_everyone: Chiunque
+agent.defaults.usergroup_everyone_note: 'Ogni utente compresi ospiti e membri registrati.'
+agent.defaults.usergroup_registered: Registrato
+agent.defaults.usergroup_registered_note: 'Tutte le persone registrate nel sistema'
+agent.emails.account_rec_dm_by: '{{account}} ha ricevuto un messaggio diretto da {{user}}'
+agent.emails.account_rec_retweet_by: '{{account}} è stato retweetato da {{user}}'
+agent.emails.account_rec_tweet_by: '{{account}} ha ricevuto un tweet da {{user}}'
+agent.emails.admin_password_reset_error: 'Hai recentemente provato a resettare la tua password. Come precauzione di sicurezza, gli amministratori non possono utilizzare l''interfaccia web per resettare le loro password.'
+agent.emails.admin_password_reset_instruction: 'Invece, si prega di utilizzare lo strumento della linea di comando dal terminale del server:'
+agent.emails.agent_assigned_team_tweet: '{{agent}} ha assegnato un tweet al tuo team'
+agent.emails.agent_assigned_you_tweet: '{{agent}} ti ha assegnato un tweet'
+agent.emails.agent_completed_task_you_created: '{{agent}} ha completato l''incarico {{title}} che tu hai creato'
+agent.emails.alert_failed_login: 'Allarme Tentativo di Accesso Fallito'
+agent.emails.alert_successful_login: 'Avviso di Login Avvenuto con successo'
+agent.emails.change_password_instructions: 'Per impostare una nuova password, accedi nell''interfaccia Agente e clicca sul link "Preferenze" nell''angolo in altro a sinistra dello schermo.'
+agent.emails.deskpro_test_email: 'Email Prova DeskPRO'
+agent.emails.deskpro_test_email_body: 'Questa è una prova  del sistema email DeskPRO.<br /><br />Se hai ricevuto questa, le tue impostazioni email sono corrette.'
+agent.emails.detected_as_forward: 'Abbiamo rilevato l''email che hai appena inviato come messaggio inoltrato.'
+agent.emails.email_change_merge: 'Questa email serve per confermare che vuoi unire i tuoi due account helpdesk esistenti:{{old_email}} e {{new_email}}. Se non vuoi unire questi account, o non ha richiesto ciò, puoi ignorare questa email. Per confermare l''unione, clicca sul seguente link:'
+agent.emails.error_missing_marker_explain: 'Questo indicatore di risposta è necessario per il corretto trattamento delle sue risposte. Si prega di rinviare la risposta, ma questa volta lascia intatta la linea dell''indicatore di risposta.'
+agent.emails.error_no_reply_perm: 'Il tuo messaggio non è stato accettato perché non sei autorizzato a rispondere al ticket. La tua risposta NON è stata salvata e nessun'' altra email o notifica è stata inviata.'
+agent.emails.error_reply_to_ticket_missing_marker: 'La tua email che risponde al ticket #{{ticket_id}} è mancante di un indicatore d linea che assomiglia a questo:'
+agent.emails.error_unknown_email: 'Il tuo messaggio non è stato accettato perché lo stai inviando da un indirizzo email sconosciuto. Per favore invia i messaggi dall''indirizzo email impostato nel tuo profilo agente sulla piattaforma.'
+agent.emails.first_seen: 'Prima Vista'
+agent.emails.fwd_dupe: 'Il tuo messaggio in uscita è stato rigettato perché il sistema ha rilevato un ticket esistente per il messaggio che hai provato a inviare. Per esempio, tu o qualcun altro ha già creato un ticket per lo stesso messaggio. Il ticket esistente è #{{old_ticket_id}}'
+agent.emails.fwd_error_more_info: 'Per maggiori informazioni circa questo errore, puoi rivolgerti al sito di supporto DeskPRO:<br/><a href="http://support.deskpro.com/kb/articles/106">http://support.deskpro.com/kb/articles/106</a>'
+agent.emails.fwd_not_processed: 'A causa di questo errore, la tua email è stata scartata. Nessun nuovo ticket è stato creato e nessuna notifica o ogni altra azione è stata eseguita. Se hai bisogno di attivare un nuovo ticket per un utente, per favore utilizza l''interfaccia web agente al <a href="{{url}}">{{url}}</a>'
+agent.emails.fwd_resend_without_fwd: 'Se NON vuoi creare un nuovo ticket per conto di un utente, puoi rinviare l''email senza il prefisso ''FW'' o ''FWD'' dalla riga dell''oggetto. Al contrario questo creerà un nuovo ticket da parte tua.'
+agent.emails.invalid_fwd_email_address: 'Tuttavia, non eravamo <b>in grado di verificare l''indirizzo</b> email dell''utente nel messaggio originale. Devi controllare che l''email del tuo cliente aggiunga l''indirizzo email al messaggio. Alcuni clienti potrebbero mostrare solo il nome, in quel caso puoi correggere questo errore manualmente aggiungendo l''indirizzo email.'
+agent.emails.invalid_fwd_email_parse: 'Tuttavia, non siamo stati <b>in grado di analizzare il messaggio originale</b> così non è stato possibile elaborare l''invio in un nuovo ticket.'
+agent.emails.invalid_fwd_try_attach: 'Se il tuo supporto email clienti invia le email originali come allegato invece, si può provare l''invio di messaggi in linea. Questo metodo di inoltra ticket funziona meglio con DeskPRO.'
+agent.emails.login_url: 'Accesso URL'
+agent.emails.message-is-note: 'Il messaggio seguente è la nota di un agente interno.'
+agent.emails.name_reset_your_password: '{{name}} ha azzerato la password del tuo account agente'
+agent.emails.new_agent_reply_ticket_subject: '[#{{ticket.id}} RISPOSTA AGENTE] Re: {{ticket.subject}}'
+agent.emails.new_chat_message_from: 'Nuovo messaggio IM da {{name}}'
+agent.emails.new_mention_ticket_subject: '[#{{ticket.id}} MENZIONATO] Re: {{ticket.subject}}'
+agent.emails.new_note_ticket_subject: '[#{{ticket.id}} NOTE] Re: {{ticket.subject}}'
+agent.emails.new_user_reply_ticket_subject: '[#{{ticket.id}} RISPOSTA UTENTE] Re: {{ticket.subject}}'
+agent.emails.newagent-about: 'DeskPRO è il software helpdesk che la tua organizzazione utilizza.'
+agent.emails.newagent-about-cloud: 'DeskPRO è il cloud-hosted software helpdesk che la tua organizzazione utilizza.'
+agent.emails.newagent-about-cloud-demo: 'DeskPRO è il cloud-hosted software helpdesk che la tua organizzazione sta provando.'
+agent.emails.newagent-about-demo: 'DeskPRO è il software helpdesk che la tua organizzazione sta provando.'
+agent.emails.newagent-about-pdf: 'Abbiamo scritto una guida rapida con le cose più importanti che hai bisogno di sapere in quanto agente. Troverai in allegato, "Iniziare con DeskPRO.pdf".'
+agent.emails.newagent-created-account: 'Il tuo collega {{admin_name}} ({{admin_email}}) ha creato un account DeskPRO per te su <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.'
+agent.emails.newagent-help: 'se hai bisogno di aiuto o hai delle domande, per favore accedi al sito di supporto di DeskPRO a: <a href="https://support.deskpro.com/">https://support.deskpro.com </a> o contattaci direttamente a: <a href="mailto:support@deskpro.com">support@deskpro.com</a>.'
+agent.emails.newagent-login-initial-password: 'La tua password iniziale: {{password}}'
+agent.emails.newagent-login-link: 'Puoi accedere qui: <a href="{{link}}">{{link}}</a>'
+agent.emails.newagent-login-your-email: 'Il tuo indirizzo email: {{email}}'
+agent.emails.newagent-login-your-password: 'Note: hai già un account utente in questa piattaforma.  Puoi accedere come un agente utilizzando la stessa password che hai impostato prima.'
+agent.emails.newagent-welcome-to-deskpro: 'Benvenuto in DeskPRO!'
+agent.emails.notice.first_seen: 'Prima visualizzazione'
+agent.emails.notice.landing_page: 'pagina di  destinazione'
+agent.emails.notice.referer_page: 'Pagina del Referente'
+agent.emails.notice.user_agent: 'Utente Agente'
+agent.emails.notice.user_ip: 'IP Utente'
+agent.emails.notice_account_login: 'Il tuo account è stato utilizzato per accedere con successo.'
+agent.emails.notice_login_attempt: 'Qualcuno ha provato ad accedere utilizzando il tuo account.'
+agent.emails.person_replied: '{{name}} ha risposto a "{{subject}}"'
+agent.emails.referring_page: 'Pagina di Riferimento'
+agent.emails.reply_above_line: 'RISPONDI SOPRA'
+agent.emails.reply_is_as_note: 'La tua risposta sarà aggiunta come nota di agente privato'
+agent.emails.reply_sent_to_ccs:
+  one: 'e {{count}} utente CC''d:'
+  other: '{{count}} utenti CC''d'
+agent.emails.reply_sent_to_user: 'La tua risposta sarà inviata all''utente {{user}}'
+agent.emails.subject_email_change_merge: 'Confermare la modifica dell''email e l''unione dell''account'
+agent.emails.subject_error_forwarded_email: 'Errore con l''email inviata: {{subject}}'
+agent.emails.subject_error_forwarded_email_dupe: 'Duplicare email inviate: {{subject}}'
+agent.emails.subject_error_with_message: 'Errore con il messaggio: {{subject}}'
+agent.emails.subject_error_with_reply: 'Errore con la risposta in: {{subject}}'
+agent.emails.subject_new_agent: 'Il Tuo nuovo account agente DeskPRO helpdesk'
+agent.emails.subject_new_ticket: '[#{{ticket.id}} NUOVO TICKET] {{ticket.subject}}'
+agent.emails.subject_new_ticket_assigned: '[#{{ticket.id}} NUOVO TICKET + ASSEGNATO] {{ticket.subject}}'
+agent.emails.subject_new_ticket_assignedteam: '[#{{ticket.id}} NUOVO TICKET + TEAM ASSEGNATO] {{ticket.subject}}'
+agent.emails.task_assigned_due_today: 'L''incarico {{title}}, che ti è stato assegnato, è dovuto oggi.'
+agent.emails.task_assigned_team_due_today: 'L''incarico {{title}}, assegnato al tuo team, è dovuto oggi.'
+agent.emails.task_assigned_to_you_by: 'Incarico {{title}} assegnato a te da {{agent}}'
+agent.emails.task_assigned_to_your_team_by: 'Incarico {{title}} assegnato al tuo team da {{agent}}'
+agent.emails.task_completed: 'Incarico {{title}} completato'
+agent.emails.task_due_today: 'Incarico {{title}} è dovuto oggi'
+agent.emails.ticket_action_assigned: ASSEGNATO
+agent.emails.ticket_action_assigned_team: 'TEAM ASSEGNATO'
+agent.emails.ticket_action_deleted: ELIMINATO
+agent.emails.ticket_action_followed: SEGUITO
+agent.emails.ticket_action_spam: SPAM
+agent.emails.ticket_action_status_agent: 'AGENTE IN ATTESA'
+agent.emails.ticket_action_status_resolved: RISOLTO
+agent.emails.ticket_action_status_user: 'IN ATTESA DI UTENTE'
+agent.emails.ticket_action_updated: AGGIORNATO
+agent.emails.ticket_sla_failed: 'SLA FALLITO'
+agent.emails.ticket_sla_warning: 'SLA PERICOLO '
+agent.emails.ticket_was_created: '{{name}} creato un nuovo ticket'
+agent.emails.tweet_assigned_to_you_by: 'Tweet assegnato a te da {{agent}}'
+agent.emails.updated_ticket_assigned: 'e assegnato a te'
+agent.emails.updated_ticket_assigned_team: 'e assegnalo al tuo team {{team}}'
+agent.emails.updated_ticket_followed: 'e ti aggiunge come follower'
+agent.emails.user_ip: "IP Utente\n"
+agent.emails.user_replied_to_tweet: '{{name}} ha risposto al tuo tweet'
+agent.emails.user_replied_to_tweet_you_wrote: '{{name}} ha risposto a un tweet che hai scritto per {{account}}.'
+agent.emails.user_updated_ticket: '{{name}} ha aggiornato il ticket "{{subject}}"'
+agent.emails.view_account_tweets: 'Vedi i tweet dell''{{account}}'
+agent.emails.view_delegated_tasks: 'Vista incarichi delegati'
+agent.emails.view_online_at: 'Vedi online a:'
+agent.emails.view_team_tweets: 'Vedi i tweet del tuo team'
+agent.emails.view_ticket_online: 'Vedi questo ticket online'
+agent.emails.view_your_tasks: 'Vista dei tuoi incarichi'
+agent.emails.view_your_teams_tasks: 'Vista incarichi del tuo team'
+agent.emails.view_your_tweets: 'Vedi i tuoi tweet'
+agent.emails.your_initial_password: 'La Tua password iniziale'
+agent.feedback.any_category: 'Qualsiasia Categoria'
+agent.feedback.any_status: 'Qualsiasi Stato'
+agent.feedback.count_votes: '{{display_count}} voto| {{display_count}} voti'
+agent.feedback.feedback_deleted: 'Questo feedback è stato eliminato'
+agent.feedback.feedback_to_review: 'Feedback da esaminare'
+agent.feedback.least_voted_on_top: 'Meno votati in cima'
+agent.feedback.list_title:
+  one: '1 Richiesta'
+  other: '{{count}} Richieste'
+agent.feedback.merge_feedback: 'Unire Feedback'
+agent.feedback.merge_feedback_note: 'La descrizione dal feedback unito sarà aggiunta come commento al feedback tenuto.'
+agent.feedback.merge_feedback_submit: 'Unisci queste due richieste di feedback'
+agent.feedback.merge_howto: 'Apri una scheda feedback aggiuntiva da unire'
+agent.feedback.new_feedback: 'Nuovo Feedback:'
+agent.feedback.newest_on_top: 'I più recenti in cima'
+agent.feedback.no_feedback_cats_error: 'Non ci sono tipologie definite. Prima che tu possa aggiungere tipologie alla sezione feedback, bisogna che definisci un tipo dall''interfaccia Admin'
+agent.feedback.no_labels_explain: 'Non hai ancora classificato nessun feedback. Vedi una richiesta di feedback a cui aggiungere etichette.'
+agent.feedback.oldest_on_top: 'I più vecchi in cima'
+agent.feedback.popularity_least_most: 'Popolarità (Più-Meno)'
+agent.feedback.popularity_most_least: 'Popolarità (Più-Meno)'
+agent.feedback.showing_results: 'Mostra i risultati'
+agent.feedback.status_active: Attivo
+agent.feedback.status_closed: Chiuso
+agent.feedback.status_deleted: Eliminato
+agent.feedback.status_hidden: Nascosto
+agent.feedback.status_new: Nuovo
+agent.feedback.status_spam: Spam
+agent.feedback.top_voted_on_top: 'I più votati in cima'
+agent.feedback.update_filter: 'Aggiornare Filtro'
+agent.feedback.user_submitted_new_feedback: '{{name}} inviato un nuovo feedback'
+agent.feedback.vote_for_this_feedback: 'Vota per questo feedback'
+agent.feedback.votes_least_most: 'Voti (Più-Meno)'
+agent.feedback.votes_most_least: 'Voti (Più-Meno)'
+agent.general.24x7: 24x7
+agent.general.actions: Azioni
+agent.general.activity_stream: 'Flusso delle Attività'
+agent.general.add: Aggiungi
+agent.general.add_a_label: 'Aggiungi un''etichetta'
+agent.general.add_a_new_criteria: 'Aggiungi nuovo criterio'
+agent.general.add_a_new_term: 'Aggiungi un nuovo termine'
+agent.general.add_action_term: 'Aggiungi azione'
+agent.general.add_as_related: 'Aggiungi come correlato'
+agent.general.add_bulk: 'Quantità Agenti Aggiunti'
+agent.general.add_category: 'Aggiungi Categoria'
+agent.general.add_comment: 'Aggiungi Commento'
+agent.general.add_criteria_term: 'Aggiungi criterio'
+agent.general.add_labels: 'Aggiungi Etichette'
+agent.general.add_me: Aggiungimi
+agent.general.add_note: 'Aggiungi Nota'
+agent.general.add_product: 'Aggiungi Prodotto'
+agent.general.add_search_term: 'Aggiungi termine di ricerca'
+agent.general.add_ticket_reply: 'Aggiungi Risposta Ticket'
+agent.general.added_by: 'aggiunto da {{name}}'
+agent.general.address: Indirizzo
+agent.general.admin_interface: 'Interfaccia Amministratore'
+agent.general.advanced: Avanzato
+agent.general.after: dopo
+agent.general.agent: Agente
+agent.general.agent_email_address: 'Indirizzo Email Agente'
+agent.general.agent_interface: 'Interfaccia Agente'
+agent.general.agent_is_not_me: 'L''agente non sono io'
+agent.general.agent_team: 'Team Agente'
+agent.general.agent_waiting_x: 'Agente in attesa {{time}}'
+agent.general.agents: Agenti
+agent.general.ago: fà
+agent.general.aim: AIM
+agent.general.alert: Avviso
+agent.general.all: Tutto
+agent.general.all_words: 'Tutte le parole'
+agent.general.altc: (alt+c)
+agent.general.always_notify_agents: 'Notifica sempre agenti'
+agent.general.always_set_this_urgency: 'Imposta sempre questa urgenza'
+agent.general.and: e
+agent.general.and_grouped_by: 'raggruppato da'
+agent.general.andor: e/o
+agent.general.anonymous: Anonimi
+agent.general.any: Qualunque
+agent.general.any_language: 'Qualunque Lingua'
+agent.general.any_sla: 'Qualunque SLA'
+agent.general.any_words: 'Qualunque parola'
+agent.general.api_token: 'Dispositivo per la sicurezza API'
+agent.general.apply: Applica
+agent.general.apply_sla: 'Applica SLA'
+agent.general.apply_to_x_selections: 'Applica azioni a {{placeholder}} selezioni'
+agent.general.approve: Approva
+agent.general.archive: Archivio
+agent.general.article: Articolo
+agent.general.articles: Articoli
+agent.general.ask_delete_selected: 'Sei sicuro di voler eliminare gli elementi selezionati?'
+agent.general.assign: Assegna
+agent.general.assign_agent: 'Assegna Agente'
+agent.general.assign_me: Assegnami
+agent.general.assign_team: 'Assegna Team'
+agent.general.assign_to: 'Assegna a'
+agent.general.assign_to_me: 'Assegna a Me'
+agent.general.assign_to_my_team: 'Assegna al Mio Team'
+agent.general.assign_to_primary_team: 'Assegna al Team principale'
+agent.general.assigned: Assegnato
+agent.general.assigned_agent: 'Agente Assegnato'
+agent.general.assigned_agent_id: 'Id Agente'
+agent.general.assigned_team: 'team assegnato'
+agent.general.assigned_to: 'Assegna a '
+agent.general.assignment: Assegnazione
+agent.general.assignments: Assegnazioni
+agent.general.attach: Allega
+agent.general.attach_description: 'Clicca qui per allegare un file. Puoi anche trascinare un file dal desktop del tuo computer in questa area di risposta per caricare più velocemente gli allegati.'
+agent.general.attach_error_failed_upload: 'Il tuo allegato non è riuscito a caricare (vuoi annullarlo?). Potresti riprovare.'
+agent.general.attach_error_no_file: 'Per favore selezione un file da caricare'
+agent.general.attach_error_not_allowed_exts: "Il tipo di file che hai caricato non è ammesso.\n"
+agent.general.attach_error_not_in_allowed_exts: 'Possono essere caricati solo i seguenti tipi di file: {{error_detail}}'
+agent.general.attach_error_server_error: 'C''era un problema con il nostro server nell''accettare il tuo allegato. Per favore riprova.'
+agent.general.attach_error_size: 'Il tuo allegato è troppo pesante.'
+agent.general.attachments: Allegati
+agent.general.author: Autore
+agent.general.awaiting_agent_validation: 'In Attesa di Convalida Agente'
+agent.general.awaiting_email_validation: 'In Attesa di Convalida Email'
+agent.general.awaiting_validation: 'In Attesa di Convalida'
+agent.general.banned: Vietato
+agent.general.before: prima
+agent.general.between: tra
+agent.general.billing_interface: 'Interfacci di fatturazione'
+agent.general.blank: Vuoto
+agent.general.browser_agent: 'Browser Agente'
+agent.general.by_agent: 'Da un agente'
+agent.general.by_agent_for_user: 'Dall''agente per conto dell''utente'
+agent.general.by_anyone: 'Da qualcuno'
+agent.general.by_name: 'Da {{name}}'
+agent.general.by_person_at_date: 'Da {{person}} il {{date}}'
+agent.general.by_user: 'Dall''utente'
+agent.general.calendar: Calendario
+agent.general.cancel: Annulla
+agent.general.categories: Categorie
+agent.general.category: Categoria
+agent.general.cc_address: 'Indirizzo di CC'
+agent.general.ccs: 'di CC'
+agent.general.change_password: 'Cambia Password'
+agent.general.change_pic_for: 'Cambia immagine per {{name}}'
+agent.general.change_status: "Cambia Stato\n"
+agent.general.change_user: 'Cambia Utente'
+agent.general.changed: Cambiato
+agent.general.changed_from: 'Cambiato da'
+agent.general.changed_from_gte: 'Cambiato da >= '
+agent.general.changed_from_lte: 'Cambiato da <='
+agent.general.changed_to: 'Cambiato a '
+agent.general.changed_to_gte: 'Cambiato a >='
+agent.general.changed_to_include: 'Cambiato per includere'
+agent.general.changed_to_lte: 'Cambiato a <='
+agent.general.changed_to_remove: 'Cambiato per rimuovere'
+agent.general.changelog: 'Registro delle modifiche'
+agent.general.chat: Chat
+agent.general.chat_ended: 'Chat terminata'
+agent.general.chats: Chat
+agent.general.choose_a_person: 'Scegli una persona'
+agent.general.choose_a_type: 'Scegli un tipo'
+agent.general.choose_criteria: 'Scegli criterio...'
+agent.general.choose_person_for_ticket: 'Scegli una persona per la quale creare il ticket'
+agent.general.click_learn_more: 'Clicca qui per saperne di più'
+agent.general.click_to_upload_picture: 'Clicca per caricare una nuova immagine'
+agent.general.close_lc: chiudi
+agent.general.close_tab: 'chiudi la scheda'
+agent.general.comment: Commento
+agent.general.comments: Commenti
+agent.general.compare: Compara
+agent.general.comparing_revisions: 'Comparazione Revisioni'
+agent.general.confirm: Conferma
+agent.general.contact_address: 'Indirizzo Contatto'
+agent.general.contact_instant_messaging: 'Contatti di messaggistica istantanea'
+agent.general.contact_phone: 'Contatto Telefonico'
+agent.general.contains: contenuti
+agent.general.content_matches_summary: 'Contenuti corrispondenti: {{pattern}}'
+agent.general.continue: Continua
+agent.general.copy_permalink: 'Copiare permalink'
+agent.general.copy_to_clipboard: 'Copia negli appunti'
+agent.general.copy_url: 'Copia URL'
+agent.general.count: Conto
+agent.general.count_chat:
+  one: '1 Chat'
+  other: '{{count}} Chat'
+agent.general.count_tickets:
+  one: '1 Ticket'
+  other: '{{count}} Ticket'
+agent.general.count_votecount_votes:
+  one: '1 voto'
+  other: '{{count}} voti'
+agent.general.countries: Paesi
+agent.general.create: Crea
+agent.general.create_a_new_organization: 'Crea una nuova organizzazione'
+agent.general.create_a_new_person: 'Crea una nuova persona'
+agent.general.create_article: 'Crea Articolo'
+agent.general.create_content: 'Crea Contenuto'
+agent.general.create_deal: 'Crea Accordo'
+agent.general.create_download: 'Crea Download'
+agent.general.create_feedback: 'Crea Feedback'
+agent.general.create_news: 'Crea Nuovo Postt'
+agent.general.create_status: 'Crea Stato'
+agent.general.create_ticket: 'Crea Ticket'
+agent.general.created: Creato
+agent.general.created_and_published: 'Creato e Pubblicato'
+agent.general.created_timeago_by_x_on_y: 'Creato {{timeago}} da {{name}} il {{date}}'
+agent.general.criteria: Criterio
+agent.general.crm: CRM
+agent.general.current_agent: 'Agente Corrente'
+agent.general.current_computer_tz: 'Ora corrente secondo il tuo computer'
+agent.general.current_page: 'Pagina Corrente'
+agent.general.current_profile_tz: 'Ora corrente secondo il tuo profilo'
+agent.general.date: Data
+agent.general.date_archived: 'Data Archiviata'
+agent.general.date_completed: 'Data Completa'
+agent.general.date_created: 'Data Creata'
+agent.general.date_created_newestoldest: 'Data Creata (nuova-vecchia)'
+agent.general.date_created_oldestnewest: 'Data Creata (vecchia-nuova)'
+agent.general.date_due: 'Data di scadenza'
+agent.general.date_of_last_agent_reply: 'Data di Ultima Risposta dell''Utente'
+agent.general.date_of_last_reply: 'Data di Ultima Risposta'
+agent.general.date_of_last_user_reply: 'Data di Ultima Risposta dell''Utente'
+agent.general.date_opened: 'Data Aperta'
+agent.general.date_published: 'Data Pubblicata'
+agent.general.date_resolved: 'Data di risoluzione'
+agent.general.dates_and_times: 'Data & Ora'
+agent.general.day_created: 'Giorno Creato'
+agent.general.day_created_summary: 'Giorno creato {{op}} in {{days}}'
+agent.general.day_last_user_reply: 'Giorno dell''ultima risposta dell''utente'
+agent.general.day_user_replay_summary: 'Giorno dell''ultima risposta dell''utente {{op}} nei {{days}}'
+agent.general.days: giorni
+agent.general.deal_stage: 'Fase di accordo'
+agent.general.default: Predefinito
+agent.general.default_working_hours: 'ore di lavoro predefinite'
+agent.general.delete: Elimina
+agent.general.delete_comment: 'Elimina Commento'
+agent.general.delete_content: 'Elimina contenuto'
+agent.general.delete_ticket: 'Elimina Ticket'
+agent.general.deleted: Eliminato
+agent.general.deleted_by: 'Eliminato da {{nome}}'
+agent.general.deleted_reason: 'Motivazione Eliminata'
+agent.general.department: Dipartimento
+agent.general.departments: Dipartimenti
+agent.general.description: Descrizione
+agent.general.deskpro: DeskPRO
+agent.general.detail: Dettaglio
+agent.general.details: Dettagli
+agent.general.dev_validating: 'DEV: Convalida'
+agent.general.dimentions: Dimensioni
+agent.general.disable_agent_notifications: 'Disabilita notifiche agente'
+agent.general.disable_all_notifications: 'Disabilita tutte le notifiche'
+agent.general.disable_user_notifications: 'Disabilita notifiche utente'
+agent.general.disapprove: Disapprovare
+agent.general.disapprove_input: 'Motivo o commento da inviare all''autore'
+agent.general.dismiss: Rimuovere
+agent.general.display_count_selected: '{{display_count}} selezionato'
+agent.general.display_name: 'nome Display'
+agent.general.display_options: 'Opzioni Display'
+agent.general.do_not_refresh: 'Non Ricaricare'
+agent.general.does_not_contain: 'non contiene'
+agent.general.does_not_include: 'non include'
+agent.general.does_not_include_label: 'non include etichetta'
+agent.general.domain_is_summary: 'dominio Email è {{domain}}'
+agent.general.done: Fatto
+agent.general.download_log: 'Registro Download'
+agent.general.download_pdf: 'Scarica PDF'
+agent.general.download_url: 'Scarica URL'
+agent.general.downloads: Download
+agent.general.dp_updates: 'Aggiornamenti DeskPRO'
+agent.general.drop_here_to_attach: 'Rilascia qui il tuo file per allegarlo nella tua risposta'
+agent.general.drop_here_to_insert_image: 'Rilascia la tua <strong>immagine</strong> qui per inserirla nella tua risposta'
+agent.general.drop_here_to_upload: 'Rilascia qui il tuo file per caricare una nuova immagine'
+agent.general.edit: Modifica
+agent.general.edit_categories: 'Modifica Categorie'
+agent.general.edit_comment: 'Modifica Commento'
+agent.general.edit_properties: 'Modifica Proprietà'
+agent.general.edit_search_terms: 'Modifica termini di ricerca'
+agent.general.email: Email
+agent.general.email_account: 'Account Email'
+agent.general.email_address: 'Indirizzo Email'
+agent.general.email_agent_new_agent_reply: 'Email: notifica Agente della risposta di un nuovo agente'
+agent.general.email_agent_new_reply: 'Email: notifica Agente relativa una nuova risposta'
+agent.general.email_agent_new_ticket: 'Email: notifica Agente relativa a un nuovo ticket'
+agent.general.email_domain: 'Dominio Email'
+agent.general.email_domains: 'Domini Email'
+agent.general.email_is_summary: 'L'' Email è {{email}}'
+agent.general.email_send_by_robot_summary: 'Email inviata da un robot (così come una risposta-automatica)'
+agent.general.email_sent_by_robot: 'Email inviata da un robot'
+agent.general.email_user: 'Email Utente'
+agent.general.email_user_auto_new_reply: 'Email: notifica di risposta-automatica relativa ad una nuova risposta'
+agent.general.email_user_auto_new_ticket: 'Email: notifica risposta-automatica relativa ad un nuovo ticket'
+agent.general.email_user_new_agent_reply: 'Email: notifica utente relativa alla risposta di un nuovo agente'
+agent.general.email_user_new_ticket: 'Email: notifica Utente di un nuovo ticket'
+agent.general.email_user_validation_alert: 'Email: avviso convalida Utente'
+agent.general.enter_a_message: 'Inserire un messaggio'
+agent.general.enter_a_title: 'Inserire un titolo'
+agent.general.enter_organization_name: 'Inserire il nome di un''organizzazione...'
+agent.general.enter_search_terms: 'Inserire i termini di ricerca'
+agent.general.error: Errore
+agent.general.error_email_address: 'Per favore inserire un indirizzo email valido'
+agent.general.error_email_dupe_agent: 'L''indirizzo email inserito è già in uso da un altro agente'
+agent.general.error_form_correct: 'Si prega di correggere i seguenti errori con il vostro modulo'
+agent.general.error_invalid_phone_number: 'Il numero di telefono inserito non ha un formato valido'
+agent.general.error_password_invalid: 'La password non aderisce alla politica della password dell''agente'
+agent.general.error_password_mismatch: 'I due campi password non corrispondono'
+agent.general.error_password_short: 'Si prega di inserire una password di almeno {{len}} caratteri'
+agent.general.error_your_name: 'Per favore inserire il nome completo'
+agent.general.escalation: intensificazione
+agent.general.everyone: Chiunque
+agent.general.existing_picture: 'Immagine Esistente'
+agent.general.facebook: Facebook
+agent.general.failed: Fallito
+agent.general.failure: Fallimento
+agent.general.favorite: Preferito
+agent.general.feedback: Feedback
+agent.general.field_name: 'Campo: {{field}}'
+agent.general.field_name_title: 'Campo del Nome'
+agent.general.field_type_choice: 'Scelte predefinite'
+agent.general.field_type_data: Data
+agent.general.field_type_date: 'Widget di inserimento data'
+agent.general.field_type_display: 'Display HTML'
+agent.general.field_type_hidden: 'Campo nascosto'
+agent.general.field_type_text: 'Casella di testo'
+agent.general.field_type_textarea: 'Casella di testo multilinea'
+agent.general.field_type_textemail: 'Casella di testo email'
+agent.general.field_type_texturl: 'URL della casella di testo'
+agent.general.field_type_toggle: 'Casella di controllo on/off'
+agent.general.fields: Campi
+agent.general.file: File
+agent.general.filename: 'Nome File'
+agent.general.files: File
+agent.general.filesize: 'Grandezza File'
+agent.general.fileurl: 'File URL'
+agent.general.filter: Filtra...
+agent.general.filter_checks_selected: 'Quando in una lista di filtro, controlli la casella di controllo nella riga selezionata'
+agent.general.filter_match: 'Corrispondenza di filtro'
+agent.general.filter_moves_cursor: 'Quando in una lista di filtro, sposti il cursore riga selezionato'
+agent.general.filter_opens_selected: 'Quando in una lista di filtro, apri la riga selezionata'
+agent.general.filters: Filtri
+agent.general.find: Trova
+agent.general.find_or_create_org: 'Trova o crea un''organizzazione'
+agent.general.find_org: 'Trova un''organizzazione'
+agent.general.find_person_with_criteria: 'Trova una persona inserendo i criteri di cui sopra.'
+agent.general.flag: Flag
+agent.general.flag_blue: Blu
+agent.general.flag_green: Verde
+agent.general.flag_orange: Arancione
+agent.general.flag_pink: Rosa
+agent.general.flag_purple: 'Viola '
+agent.general.flag_red: Rosso
+agent.general.flag_yellow: Giallo
+agent.general.flagged: Contrassegnato
+agent.general.flagged_with_color_summary: 'Contrassegnato col colore {{color}}'
+agent.general.focus_reply_box: 'Focus sulla casella di risposta'
+agent.general.follow: Segui
+agent.general.followers: Seguaci
+agent.general.force_email_validation: 'Forza convalida email'
+agent.general.found_article_helpful_or_not: '{{up_votes}} trova questo articolo utile, {{down_votes}} trova questo articolo inutile'
+agent.general.frequency: Frequenza
+agent.general.from: 'Da '
+agent.general.full_image: 'Immagine completa'
+agent.general.gateway_is_not_summary: 'L''account email non è {{names}}'
+agent.general.gateway_is_summary: 'L''account email è {{names}}'
+agent.general.generate_password: 'Imposta password'
+agent.general.greater_than: 'Più grande di'
+agent.general.group_by: 'raggruppa per'
+agent.general.grouped_by: 'Raggruppato da'
+agent.general.gtalk: GTalk
+agent.general.height: Altezza
+agent.general.help: Aiuto
+agent.general.hidden: Nascosto
+agent.general.hidden_awaiting_validating_spam: 'Nascosto (in attesa di convalida, spam)'
+agent.general.hidden_deleted: 'Nascosto: Eliminato'
+agent.general.hidden_status: 'Stato Nascosto'
+agent.general.hidden_unpublished: 'Nascosto: Non Pubblicato'
+agent.general.hidden_validating: 'Nascosto : Convalida'
+agent.general.hide: Nascondere
+agent.general.hierarchy: Gerarchia
+agent.general.host: Ospite
+agent.general.hostname: 'nome ospite'
+agent.general.hour: Ora
+agent.general.hours: Ore
+agent.general.icq: ICQ
+agent.general.id: ID
+agent.general.inbox: Inbox
+agent.general.include: include
+agent.general.includes_label: 'Include etichetta'
+agent.general.increase_decrease_urgency: 'Aumento/Diminuzione Urgenza'
+agent.general.initial_visit: 'Visita Iniziale'
+agent.general.insert: Inserire
+agent.general.insert_attach: 'Inserire Allegato'
+agent.general.insert_content: 'Inserire i contenuti completi di questa pagina nella tua risposta'
+agent.general.insert_image: 'Inserire immagine'
+agent.general.insert_into_article: 'Inserire nell''Articolo'
+agent.general.insert_link: 'Inserire Link'
+agent.general.insert_thumbnail: 'Inserire Miniatura'
+agent.general.insert_title: 'Inserire {{title}}'
+agent.general.inserts_file_link: 'Questo inserirà un link al file con l''etichetta  come il testo del link cliccabile'
+agent.general.inserts_full_image: 'Questo inserirà l''immagine nella sua dimensione completa.'
+agent.general.inserts_plaintext_url: 'Questo inserirà un plain-text URL al file.'
+agent.general.inserts_thumbnail_with_link: 'Questo inserirà una immagine in miniatura che indirizza verso l''immagine a dimensione completa.'
+agent.general.internet_explorer: 'Internet Explorer'
+agent.general.ip_address: 'Indirizzo IP'
+agent.general.ip_addresses: 'Indirizzi IP'
+agent.general.is: è
+agent.general.is_a_new_user: 'è un nuovo utente'
+agent.general.is_exactly: 'è esatto'
+agent.general.is_greater_than: 'è più grande di'
+agent.general.is_less_than: 'è meno di'
+agent.general.is_not: 'non è'
+agent.general.is_not_a_new_user: 'non è un nuovo utente'
+agent.general.is_not_published: 'Non è Pubblicato'
+agent.general.is_not_set: 'non è impostato'
+agent.general.is_not_x: 'non è {{field}}'
+agent.general.is_published: 'E'' Pubblicato'
+agent.general.is_set: 'E'' impostato'
+agent.general.is_x: 'è {{field}}'
+agent.general.just_me: 'Solo io'
+agent.general.kb: KB
+agent.general.knowledgebase: 'Conoscenza base'
+agent.general.label: Etichetta
+agent.general.label_picture: Immagine
+agent.general.label_revisions: Revisioni
+agent.general.labels: Etichette
+agent.general.labels_added: 'Etichette aggiunte'
+agent.general.labels_cloud: Cloud
+agent.general.labels_list: lista
+agent.general.labels_removed: 'Etichette rimosse'
+agent.general.landing_page: 'Pagina di Destinazione'
+agent.general.language: Lingua
+agent.general.last_activity: 'Ultima Attività'
+agent.general.last_login: 'Ultimo Accesso'
+agent.general.last_login_time: 'Ora di Ultimo Accesso'
+agent.general.leave_unchanged: 'Lasciare Invariato'
+agent.general.less_than: 'meno di'
+agent.general.license_interface: 'Interfaccia Licenza'
+agent.general.link: Link
+agent.general.linked_chat: 'Chat collegata'
+agent.general.linked_thumbnail: 'Miniatura Collegata'
+agent.general.linkedin: LinkedInd
+agent.general.linkedin_url: 'URL LinkedIn'
+agent.general.list_as_article_attachment: 'Lista come allegato all''articolo'
+agent.general.loading: 'Caricamento in corso'
+agent.general.loading_dot: 'Caricamento in corso...'
+agent.general.loading_interface: 'Interfaccia Caricamento'
+agent.general.local_time: 'Ora Locale'
+agent.general.log_in: Connessione
+agent.general.log_out: Disconnessione
+agent.general.logged_in_as: 'Connesso come'
+agent.general.lost: Perso
+agent.general.lost_field: 'Perso {{field}}'
+agent.general.lost_password: 'Password Persa'
+agent.general.lost_qm: 'perso?'
+agent.general.macros: Macro
+agent.general.manage_macros: 'Gestione Macro'
+agent.general.mark_spam: 'Segnato come spam'
+agent.general.matches: Corrispondenze
+agent.general.matches_regex: 'Combinazioni Espressioni'
+agent.general.me: Me
+agent.general.members: Membri
+agent.general.mentions: Menzioni
+agent.general.merge: Unire
+agent.general.merge_keep_this: 'Mantieni questo'
+agent.general.merge_merge_this: 'Unire Questo'
+agent.general.merge_switch_btn: Cambiare
+agent.general.message: Messaggio
+agent.general.message_history: 'Cronologia Messaggi'
+agent.general.messages: Messaggi
+agent.general.minute: Minuto
+agent.general.minutes: minuti
+agent.general.misc: Maligni
+agent.general.mobile: Mobile
+agent.general.months: mesi
+agent.general.more: Più
+agent.general.move_to_tab: 'Passa alla scheda'
+agent.general.msg_agent_timeout: 'Agente scaduto'
+agent.general.msg_user_timeout: 'Utente scaduto'
+agent.general.msn: MSN
+agent.general.my_account: 'Il Mio Account'
+agent.general.my_team: 'Il Mio Team'
+agent.general.na: N/A
+agent.general.name: Nome
+agent.general.name_az: 'Nome (A-Z)'
+agent.general.name_is_summary: 'Nome è {{name}}'
+agent.general.name_za: 'Nome (A-Z)'
+agent.general.never: Mai
+agent.general.new: Nuovo
+agent.general.new_article: 'Nuovo Articolo'
+agent.general.new_comment: 'Nuovo Commento'
+agent.general.new_download: 'Nuovo Download'
+agent.general.new_feedback: 'Nuovo Feedback'
+agent.general.new_filter: 'Nuovo Filtro'
+agent.general.new_note: 'Nuova Nota'
+agent.general.new_organization: 'Nuova Organizzazione'
+agent.general.new_password: 'Nuova Password'
+agent.general.new_person: 'Nuova Persona'
+agent.general.new_pic: 'Nuova Immagine'
+agent.general.new_task: 'Nuovo Incarico'
+agent.general.new_ticket: 'Nuovo Ticket'
+agent.general.new_user_summary: 'è un nuovo utente'
+agent.general.news: Novità
+agent.general.no: 'No'
+agent.general.no_agent_assigned: 'Nessun agente assegnato'
+agent.general.no_chat_labels: 'Non hai etichettato nessuna chat. Vedi una chat per etichettarla.'
+agent.general.no_content: 'Nessun Contenuto'
+agent.general.no_org_labels: 'Non hai etichettato nessuna organizzazione. Vedi una organizzazione per etichettarla.'
+agent.general.no_people_labels: 'Non hai etichettato nessuna persona. Vedi una persona per etichettarli.'
+agent.general.no_team: 'Nessun Team'
+agent.general.no_ticket_labels: 'Non hai contrassegnato nessun ticket. Guarda un ticket per contrassegnarlo.'
+agent.general.none: Nessuna
+agent.general.not_changed_from: 'Non cambiato da'
+agent.general.not_changed_from_lte: 'Non cambiato da <='
+agent.general.not_changed_to: 'Non cambiato a'
+agent.general.not_changed_to_gte: 'Non cambiato a >='
+agent.general.not_matches_regex: 'Non ci sono espressioni corrispondenti'
+agent.general.not_new_user_summary: 'non è un nuovo utente'
+agent.general.note: Nota
+agent.general.note_attn: Nota
+agent.general.note_by: 'Nota da {{name}}'
+agent.general.notes: Note
+agent.general.notice_only_when_urgency_lower: 'Imposta solo quando l''urgenza è più bassa'
+agent.general.num_downloads: 'Numero di Download'
+agent.general.num_ratings: 'Numero Giudizi'
+agent.general.num_views: 'Numero di Visite'
+agent.general.number_of_comments: 'Numero di commenti'
+agent.general.number_of_downloads: 'Numero di download'
+agent.general.number_of_members: 'Numero di Membri'
+agent.general.number_of_ratings: 'Numero di voti'
+agent.general.number_of_tickets: 'Numero di ticket'
+agent.general.of: di
+agent.general.off: 'Off'
+agent.general.okay: Okay
+agent.general.on: 'On'
+agent.general.online_now: 'Online Ora'
+agent.general.open: Apri
+agent.general.open_tab: 'Apri la scheda'
+agent.general.open_tickets: 'Apri Ticket'
+agent.general.or_sep: o
+agent.general.order_by: 'Ordina Da'
+agent.general.ordered_by: 'Ordinato da'
+agent.general.org_position: 'Posizione Organizzativa'
+agent.general.organization: Organizzazione
+agent.general.organization_name: 'Nome Organizzazione'
+agent.general.organizations: Organizzazioni
+agent.general.originated_interface: 'Interfaccia Originata'
+agent.general.other: Altri
+agent.general.other_properties: 'Altre Proprietà'
+agent.general.owner: Proprietario
+agent.general.page: Pagina
+agent.general.page_x_of_y: 'Pagina {{page}} di {{num_pages}}'
+agent.general.parent: Superiore
+agent.general.parent_category: 'Categoria Superiore'
+agent.general.password: Password
+agent.general.pause: Pausa
+agent.general.pending: Sospeso
+agent.general.people: Persone
+agent.general.percent_helpful_subphrase: '{{percent}}% utile ({{subphrase}})'
+agent.general.perform_actions: 'Eseguire Azioni'
+agent.general.performer: Esecutore
+agent.general.performing_updates: 'La piattaforma al momento sta eseguendo gli aggiornamenti.'
+agent.general.permissions: Autorizzazioni
+agent.general.person: Persona
+agent.general.person_id: 'Id Utente'
+agent.general.phone: Telefono
+agent.general.phone_number: 'Numero di Telefono'
+agent.general.phrase: Frase
+agent.general.please_wait: 'Attendi Per favore '
+agent.general.popular_feedback_only: 'solo feedback popolari'
+agent.general.popularity: Popolarità
+agent.general.position: Posizione
+agent.general.prev: Precendente
+agent.general.print: Stampare
+agent.general.priorities: Priorità
+agent.general.priority: Priorità
+agent.general.private: Privato
+agent.general.product: Prodotto
+agent.general.products: Prodotti
+agent.general.profile: Profilo
+agent.general.properties: Proprietà
+agent.general.public: Pubblico
+agent.general.publish: Pubblicare
+agent.general.quote: citazione
+agent.general.rating: Giudizio
+agent.general.read: Letto
+agent.general.reason: Motivo
+agent.general.record_deleted: 'Questo registro è stato eliminato.'
+agent.general.record_marked_spam: 'Questo registro è  stato segnato come spam.'
+agent.general.recycle_bin: Cestino
+agent.general.recycle_bin_none: 'Non ci sono elementi nel cestino.'
+agent.general.redirect_continue: 'Continua a {{url}}'
+agent.general.redirect_explain: 'Il link che hai cliccato è per un sito esterno su {{host}}. Sei sicuro di voler continuare?'
+agent.general.redirect_page_makeup: '(composto da {{num_images}} immagini e {{num_scripts}} testi)'
+agent.general.redirect_page_title: 'Titolo di Pagina'
+agent.general.redirect_server_ip: 'IP Server'
+agent.general.redirect_title: 'Stai per lasciare l''helpdesk'
+agent.general.ref: Ref
+agent.general.referrer: Riferimento
+agent.general.refresh_device_token: 'Riavvia prova del dispositivo'
+agent.general.refresh_now: 'Riavvia Ora'
+agent.general.refresh_required: 'Riavvio Richiesto'
+agent.general.refresh_required_auto: 'Il tuo browser si riavvierà automaticamente in {{secs}} secondi a meno che non clicchi uno dei pulsanti in basso.'
+agent.general.refresh_required_explain: 'Un amministratore ({{name}}) ha effettuato modifiche che richiedono di riavviare il tuo browser.'
+agent.general.registered: Registrato
+agent.general.registered_downloads: 'Downloads Registrati'
+agent.general.registered_views: 'Visualizzazioni Registrate'
+agent.general.related_articles: 'Articoli Registarti'
+agent.general.related_content: 'Contenuto Correlato'
+agent.general.related_downloads: 'Download Correlati'
+agent.general.related_feedback: 'Feedback Correlati'
+agent.general.related_news: 'Novità Correlate'
+agent.general.relative_time: 'tempo relativo'
+agent.general.remove: Rimuovi
+agent.general.remove_as_related: 'Rimuovi come correlato'
+agent.general.remove_favorite: 'Rimuovi Preferito'
+agent.general.remove_labels: 'Rimuovi Etichette'
+agent.general.reopen: riapri
+agent.general.repeat: Ripeti
+agent.general.repeat_password: 'Ripeti Password '
+agent.general.reply: Rispondere
+agent.general.reply_to_own_tickets: 'Rispondere ai ticket del proprio team'
+agent.general.reports_interface: 'Interfaccia Report'
+agent.general.requirements: Requisiti
+agent.general.requirements_complete: 'Requisiti Completi'
+agent.general.requires_validation: 'Richiesta di Convalida'
+agent.general.reset: Resettare
+agent.general.reset_password: 'Resettare Password'
+agent.general.revision: Revisione
+agent.general.save: Salva
+agent.general.save_settings: 'Salva Impostazioni'
+agent.general.saved: Salvato
+agent.general.saving: Salvataggio
+agent.general.search: Cerca
+agent.general.search_terms: 'Cerca Termini'
+agent.general.seconds: secondi
+agent.general.select_a_department: 'Seleziona un reparto'
+agent.general.select_agent: 'Seleziona un Agente'
+agent.general.select_your_region: 'Seleziona la tua regione'
+agent.general.send: Invia
+agent.general.send_welcome_email: 'Invia email di benvenuto'
+agent.general.server_error_explain: 'C''è stato un errore col server e la tua ultima richiesta è fallita. Per favore riprova.'
+agent.general.session_started: 'Sessione Aperta'
+agent.general.set_a_position: 'Imposta una posizione...'
+agent.general.set_agent: 'Imposta Agente'
+agent.general.set_agent_team: 'Imposta Team Agente'
+agent.general.set_assignments: 'Assegna compiti'
+agent.general.set_category: 'Imposta Categoria'
+agent.general.set_department: 'Imposta reparto'
+agent.general.set_field_name: 'Imposta: {{field}}'
+agent.general.set_flag: 'Imposta flag'
+agent.general.set_new_pic: 'Imposta come nuova immagine'
+agent.general.set_password: 'Imposta Password'
+agent.general.set_password_manual: 'Inserisci manualmente la nuova password'
+agent.general.set_priority: 'Imposta Priorità'
+agent.general.set_product: 'Imposta Prodotto'
+agent.general.set_status: 'Imposta Stato'
+agent.general.set_type: 'Imposta il Tipo'
+agent.general.set_urgency: 'Imposta Urgenza'
+agent.general.set_user_field_name: 'Imposta Campo Utente: {{field}}'
+agent.general.set_workflow: 'Imposta Flusso di Lavoro'
+agent.general.settings: Impostazioni
+agent.general.setup_device_token: 'Impostazione prova del prodotto'
+agent.general.show: Mostra
+agent.general.showing: 'In mostra'
+agent.general.showing_results_x_of_y: 'In mostra i risultati {{display_count}} di{{size}}'
+agent.general.since_time: 'da {{time}}'
+agent.general.skype: Skype
+agent.general.sla: SLA
+agent.general.sla_status: 'Stato SLA'
+agent.general.slas: SLAs
+agent.general.snippet_text_placeholder: 'Parte di testo'
+agent.general.snippets: Parti
+agent.general.snippets_description: 'Apri parti'
+agent.general.sort_asc: ASC
+agent.general.sort_asc_highlow: Basso-Alto
+agent.general.sort_by: 'Ordina per'
+agent.general.sort_desc: DESC
+agent.general.sort_desc_highlow: 'Alto- Basso'
+agent.general.source_code: 'Codice Sorgente'
+agent.general.spam: Spam
+agent.general.start: Inizia
+agent.general.status: Stato
+agent.general.status_is: 'Stato è {{status}}'
+agent.general.statuses: Stati
+agent.general.stop_processing_other_triggers: 'Interrompere l''elaborazione di altri trigger'
+agent.general.subject: Oggetto
+agent.general.summary: Sommario
+agent.general.supportdeskprocom: support@deskpro.com
+agent.general.system_user: Sistema
+agent.general.tabs_close_all: 'Chiudere tutte le schede'
+agent.general.tabs_close_current: 'Chiudi questa scheda'
+agent.general.tabs_close_others: 'Chiudere tutte le altre schede'
+agent.general.tabs_reopen: 'Riapri:'
+agent.general.tasks: Incarichi
+agent.general.team: Team
+agent.general.teams: Team
+agent.general.template: Modello
+agent.general.text: Testo
+agent.general.there_are_no_results: 'Non ci sono risultati'
+agent.general.ticket: Ticket
+agent.general.ticket_escalations: 'Escalation dei biglietti'
+agent.general.ticket_gateway_account: 'Account di Accesso Ticket'
+agent.general.ticket_gateway_address: 'Indirizzo di Accesso Ticket'
+agent.general.ticket_id: 'ID Ticket'
+agent.general.ticket_ref: 'Ref Ticket'
+agent.general.ticket_starter: 'Avvio Ticket'
+agent.general.ticket_triggers: 'Ticket di Trigger'
+agent.general.tickets: Ticket
+agent.general.time_created: 'Ora Creata'
+agent.general.time_created_summary: 'Ora creata {{op}} {{hour}}:{{minute}}:00'
+agent.general.time_of_last_user_reply: 'Ora di Ultima Risposta dell''Utente'
+agent.general.time_open: 'Tempo Aperto'
+agent.general.time_since_creation: 'Tempo dalla Creazione'
+agent.general.time_until_first_response: 'Tempo fino alla prima risposta'
+agent.general.time_until_resolution: 'Tempo fino alla risoluzione del ticket'
+agent.general.time_user_reply_summary: 'Ora di ultima risposta dell''utente {{op}} {{hour}}:{{minute}}:00'
+agent.general.time_waiting: 'Tempo di Attesa'
+agent.general.timezone: 'Fuso orario'
+agent.general.title: Titolo
+agent.general.to: A
+agent.general.to_address: 'All''Indirizzo'
+agent.general.total: Totale
+agent.general.total_time_waiting: 'Tutto il Tempo di Attesa'
+agent.general.total_user_waiting_x: 'Il tempo totale di attesa dell''utente è {{time}}'
+agent.general.translate_from_x_to_y: 'Traduzione da {{x}} a {{y}}'
+agent.general.translation: Traduzione
+agent.general.translations: traduzioni
+agent.general.trend: Andamento
+agent.general.trigger_x: 'Trigger {{id}}'
+agent.general.triggers_auto_close_resolve_agent_reply: 'Risoluzione automatica dei ticket che sono in attesa di utente'
+agent.general.triggers_auto_close_resolve_user_reply: 'Risoluzione automatica dei ticket che sono in attesa di utente'
+agent.general.triggers_auto_close_warn_user: 'Avvertire gli utenti che i loro ticket sono risolti automaticamente'
+agent.general.triggers_urgency_base: 'Urgenza predefinita per i nuovi ticket'
+agent.general.twitter: Twitter
+agent.general.twitter_username: 'username Twitter'
+agent.general.type: Tipo
+agent.general.types: Tipi
+agent.general.tz_wrong_explain: 'Il fuso orario della regione salvata nel tuo profilo risulta diversa dalla regione segnalata dal tuo computer.'
+agent.general.ucfirst_edit: Modifica
+agent.general.unassign: 'Non assegna'
+agent.general.unassigned: 'Non Assegnato'
+agent.general.undelete: 'Non eliminare'
+agent.general.unfollow: 'Non seguire'
+agent.general.unformatted: 'Non Formattato'
+agent.general.unknown_agent: 'agente sconosciuto'
+agent.general.unpublish: 'Non Pubblicato'
+agent.general.unread: 'Non letto'
+agent.general.unsaved_changes: 'Cambiamenti non salvati'
+agent.general.unsaved_changes_were_restored: 'I cambiamenti non salvati sono stati ripristinati.'
+agent.general.unspam: 'non spam'
+agent.general.update: Aggiorna
+agent.general.update_region_question: 'Vuoi aggiornare la tua regione ora?'
+agent.general.update_tz_region: 'Aggiorna la Regione del Fuso Orario'
+agent.general.updated_by: 'Aggiornato da {{name}}'
+agent.general.upload: Caricato
+agent.general.upload_explain: 'Clicca il pulsante di caricamento o rilascia un file in quest''area.'
+agent.general.upload_vcard_for: 'Aggiorna vCard per {{name}}'
+agent.general.urgency: Urgenza
+agent.general.urgency_enter_negative_number: '(Inserisci un numero negativo per ridurre l''urgenza)'
+agent.general.url: URL
+agent.general.user: Utente
+agent.general.user_agent: 'Agente User'
+agent.general.user_agents: 'Agenti User'
+agent.general.user_field: 'Campo Utente'
+agent.general.user_interface: 'Interfaccia Utente'
+agent.general.user_time_until_resolution: 'Tempo di attesa del cliente fino alla risoluzione del ticket'
+agent.general.user_title: 'Titolo Utente'
+agent.general.user_waiting: 'Utente In Attesa'
+agent.general.user_waiting_x: 'Utente in Attesa {{time}}'
+agent.general.usergroup: 'Gruppo di utenti'
+agent.general.usergroup_everyone: Chiunque
+agent.general.usergroups: 'Gruppi di utenti'
+agent.general.username: 'Nome Utente'
+agent.general.users: Utenti
+agent.general.usersources: 'Risorse Utenti'
+agent.general.validate: Convalida
+agent.general.validate_comment: 'Valida Commento'
+agent.general.value: Valore
+agent.general.verified: Verificato
+agent.general.via: Via
+agent.general.view: Vista
+agent.general.view_all_x_chats:
+  one: 'Vedi 1 chat'
+  other: 'Vedi tutte {{count}} le chat'
+agent.general.view_all_x_tickets:
+  one: 'Vedi 1 ticket'
+  other: 'Vedi tutti {{count}} i ticket'
+agent.general.view_in_user_interface: 'Vista nell''interfaccia utente'
+agent.general.view_more: 'Vedi di più'
+agent.general.view_profile: 'vedi profilo'
+agent.general.visitor_id: 'ID Visitatore'
+agent.general.votes: Voti
+agent.general.warning: Pericolo
+agent.general.web_interface: 'Interfaccia Web'
+agent.general.website_embed: 'Sito Web Incorporato'
+agent.general.website_widget: 'Widget Sito Web'
+agent.general.weeks: settimane
+agent.general.when: Quando
+agent.general.widget_add: +
+agent.general.width: Ampiezza
+agent.general.window_navigation: 'Finestra di Navigazione'
+agent.general.workflow: 'Flusso di Lavoro'
+agent.general.workflows: 'Flussi di Lavoro'
+agent.general.working_hours: 'Ore di lavoro'
+agent.general.x_after_y: '{{field}} dopo {{value}}'
+agent.general.x_before_y: '{{field}} prima {{value}}'
+agent.general.x_down_votes:
+  one: '1 voti bassi'
+  other: '{{count}} voti bassi'
+agent.general.x_include_y: '{{field}} include {{value}}'
+agent.general.x_is_between_y_and_z: '{{field}} è tra {{value1}} e {{value2}}'
+agent.general.x_is_greater_than_y: '{{field}} è grande rispetto a {{value}}'
+agent.general.x_is_less_than_y: '{{field}} è meno di {{value}}'
+agent.general.x_is_not_y: '{{field}} non è {{value}}'
+agent.general.x_is_y: '{{field}} è {{value}}'
+agent.general.x_not_include_y: '{{field}} non include {{value}}'
+agent.general.x_selected: '{{num_placeholder}} selezionati'
+agent.general.x_up_votes:
+  one: '1 voti su'
+  other: '{{count}} voti su'
+agent.general.years: anni
+agent.general.yim: YIM
+agent.general.your_email_address: 'Il Tuo Indirizzo Email'
+agent.general.your_teams: 'I Tuoi Team'
+agent.interface.app-billing: Fatturazione
+agent.interface.app-twitter: Twitter
+agent.interface.assign_to_self: 'Assegna a me'
+agent.interface.chat-notification-vol: 'volume notifica Chat'
+agent.interface.click_icon_to_add_filter: 'Clicca {{link}} per creare un nuovo filtro'
+agent.interface.click_icon_to_show_filters: 'Clicca <span class="gear-icon"></span> per mostrare i filtri'
+agent.interface.close_current_tab: 'Chiudi la finestra attuale'
+agent.interface.create_ticket_person: 'Creare ticket per le persone'
+agent.interface.creation: Creazione
+agent.interface.deskpro_agent_interface: 'Interfaccia Agente DeskPRO'
+agent.interface.deskpro_website_host: www.deskpro.com
+agent.interface.error_report_disclaimer: 'Si prega di notare che non rispondiamo a tutti gli errori dei report. Se hai una domanda o richiedi una risposta in riferimento a questo errore, contattaci a  {{email}}'
+agent.interface.error_report_submitting: 'Presentazione report errore ...'
+agent.interface.error_report_thank_you: 'Grazie per aver sottoposto il tuo report errore.'
+agent.interface.focus_notes_box: 'Casella focus delle note'
+agent.interface.go_to_next_tab: 'Vai alla scheda successiva'
+agent.interface.go_to_previous_tab: 'Vai alla scheda precedente'
+agent.interface.kbd_change_status_agent: 'Cambia stato a Agente in Attesa'
+agent.interface.kbd_change_status_resolved: 'Cambia stato in Risolto'
+agent.interface.kbd_change_status_user: 'Cambia stato in Attesa di Utente'
+agent.interface.kbd_ctrl_left: ctrl+left
+agent.interface.kbd_ctrl_right: ctrl+right
+agent.interface.kbd_ctrl_shift_c: ctrl+shift+c
+agent.interface.kbd_ctrl_shift_left: ctrl+shift+left
+agent.interface.kbd_ctrl_shift_right: ctrl+shift+right
+agent.interface.kbd_enter: inserire
+agent.interface.kbd_new_article: un
+agent.interface.kbd_new_download: d
+agent.interface.kbd_new_feedback: i
+agent.interface.kbd_new_news: 'n'
+agent.interface.kbd_new_organisation: o
+agent.interface.kbd_new_person: p
+agent.interface.kbd_new_task: k
+agent.interface.kbd_new_ticket: t
+agent.interface.kbd_open_org_profile: 'Apri profilo organizzazione'
+agent.interface.kbd_open_send_options: 'Apri opzioni di azione invio'
+agent.interface.kbd_open_snippets: 'Aprire parti'
+agent.interface.kbd_open_user_profile: 'Apri profilo utente'
+agent.interface.kbd_send_reply: 'Invia risposta'
+agent.interface.kbd_shift_a: shift+a
+agent.interface.kbd_shift_c: shift+c
+agent.interface.kbd_shift_r: shift+r
+agent.interface.kbd_shift_t: shift+t
+agent.interface.kbd_space: spazio
+agent.interface.kbd_up_or_down: 'su o giù'
+agent.interface.key_close_tab: 'Chiudi scheda'
+agent.interface.key_left_tab: 'Selezionare la scheda di sinistra'
+agent.interface.key_right_tab: 'Selezionare la scheda di destra'
+agent.interface.keyboard: Tastiera
+agent.interface.keyboard_shortcuts: 'Comandi Veloci Tastiera'
+agent.interface.major_items_appear_here: 'Aprire qui Ticket, Utenti, Organizzazioni, Articoli, Notizie, Download e Feedback.'
+agent.interface.open_new_article_form: 'Apri la nuova scheda articolo'
+agent.interface.open_new_download_form: 'Apri la nuova scheda download'
+agent.interface.open_new_feedback_form: 'Apri la nuova scheda feedback'
+agent.interface.open_new_news_form: 'Apri la nuova scheda novità'
+agent.interface.open_new_organization_form: 'Apri la nuova scheda organizzazione'
+agent.interface.open_new_person_form: 'Apri la nuova scheda persone'
+agent.interface.open_new_task_form: 'Apri la nuova scheda incarichi'
+agent.interface.open_new_ticket_form: 'Apri la nuova scheda ticket'
+agent.interface.powered_by: 'Offerto da'
+agent.interface.quick-search-placeholder: Cerca
+agent.interface.report_this_error_to_deskpro: 'Segnala questo errore a DeskPRO'
+agent.interface.search_for_text_or_a_phrase: 'Cerca per testo o frase'
+agent.interface.search_in_types: 'Cerca in tipi'
+agent.interface.set_ticket_resolved: 'Imposta ticket risolti'
+agent.interface.toggle_mute: 'Attiva la modalità muto'
+agent.interface.viewbtn-1col: '1 Colonna in Vista'
+agent.interface.viewbtn-2col: '2 Colonne in Vista'
+agent.interface.viewbtn-normal: 'Vista della lista e delle schede'
+agent.interface.viewbtn-source: 'Aziona Filtro e Cerca Colonna'
+agent.interface.viewbtn-tab: 'Schede di sola visualizzazione'
+agent.interface.viewbtn-table: 'Vista dei Risultati tabellari'
+agent.jira.actions: Azioni
+agent.jira.assignedto: 'Assegnato A'
+agent.jira.error: 'si è verificato un errore '
+agent.jira.export_jira: 'Esporta a JIRA'
+agent.jira.issuekey: 'Schema di emissione'
+agent.jira.labels.assignee: 'Assegna A'
+agent.jira.labels.comment: Commento
+agent.jira.labels.description: Descrizione
+agent.jira.labels.description.warning: 'Si prega di essere sicuri di controllare i contenuti per qualunque informazione sensibile prima di esportarla'
+agent.jira.labels.export: Esporta
+agent.jira.labels.labels: Etichette
+agent.jira.labels.labels.instrcution: 'Aggiungi qualche tag/etichetta per classificare meglio questo problema'
+agent.jira.labels.priority: Priorità
+agent.jira.labels.project: Progetto
+agent.jira.labels.reset: 'Ripristina impostazioni predefinite'
+agent.jira.labels.smarttags: 'Puoi anche utilizzare il seguente "tag smart" per aggiungere informazioni DeskPRO rilevanti a questo elemento.'
+agent.jira.labels.title: 'Titolo Emesso'
+agent.jira.labels.type: Tipo
+agent.jira.labels.unlink: Scollegare
+agent.jira.lastactivity: 'Ultima Attività'
+agent.jira.nobody: Nessuno
+agent.jira.optional: facoltativo
+agent.jira.post_comment: 'Aggiungi un commento'
+agent.jira.select.project: 'Seleziona Progetto'
+agent.jira.status: Stato
+agent.jira.unlink: 'Scollegare il punto JIRA'
+agent.login.account_locked_message: 'In seguito a molteplici tentativi di accesso falliti, il tuo account è stato bloccato per sicurezza. Non sarai in grado di accedervi per {{timeago}}'
+agent.login.alert_fields_must_match: 'I due campi password non corrispondono.'
+agent.login.alert_too_short: 'Per favore inserisci una password di almeno 4 caratteri.'
+agent.login.apple_safari: 'Apple Safari'
+agent.login.back_to_login: 'Torna alla scheda di accesso'
+agent.login.browser_requirements: 'Requisiti del Browser'
+agent.login.email_instructions: 'Istruzioni Email'
+agent.login.enter_new_password: 'Inserire Nuova Password'
+agent.login.enter_password: 'Inserire password'
+agent.login.forgot_password: 'Password dimenticata?'
+agent.login.google_chrome: 'Google Chrome'
+agent.login.has_logged_out: 'Ti sei disconnesso con successo.'
+agent.login.ie_compat_mode_explain: 'Alcune versioni di IE hanno una funzione chiamata Modalità di Compatibilità allo scopo di rendere i siti web obsoleti compatibili con i browser di nuova tecnologia. Qualche volta questa funzione può essere attivata erroneamente. Se stai usando IE8 o IE9 ma vedi ancora la pagina dei requisiti del browser, è probabile che la Modalità di Compatibilità sia attivata. Per utilizzare DeskPRO è necessario che disabiliti questa funzione:'
+agent.login.ie_compat_mode_step1: 'Se il menù degli Strumenti non è ancora visibile, premi il pulsante Alt sulla tastiera per rivelare il relativo menù'
+agent.login.ie_compat_mode_step2: 'Dal menù degli Strumenti scegli Vedi Impostazioni di Compatibilità'
+agent.login.ie_compat_mode_step3: 'Assicurarsi che la tua piattaforma URL non sia nella lista. Se è presente, cliccala e poi clicca il pulsante Rimuovi. Assicurarsi anche che "Visualizza tutti i siti web in Vedi Compatibilità" siano disabilitato. Se stai usando DeskPRO in una intranet, devi deselezionare anche l''altra opzione, "Visualizza siti intranet in Vedi Compatibilità".'
+agent.login.ie_compat_mode_step4: 'Chiudi questa finestra e ricarica la pagina'
+agent.login.ie_compat_mode_title: 'Stai già utilizzando IE8 o successivi? <a href="{{url}}">Assicurarsi che la Modalità di Compatibilità non sia abilitata</a>'
+agent.login.ie_use_chrome_frame: 'Alternativamente, puoi istallare <a href="http://www.google.com/chromeframe">Google Chrome Frame</a>'
+agent.login.login_failed: 'Accesso non valido. Per favore riprova.'
+agent.login.mozilla_firefox: 'Mozilla Firefox'
+agent.login.notice_outdated_browser: 'Le interfacce agente e amministratore richiedono un browser moderno. Abbiamo rilevato che il tuo browser è troppo obsoleto per utilizzare DeskPRO. Aggiorna il tuo browser all''ultima versione, o prova a scaricare un browser alternativo.'
+agent.login.opera: Opera
+agent.login.password_was_reset: 'La tua password è stata resettata con successo.'
+agent.login.remember_me: Ricordami
+agent.login.reset-password-info: 'Inserisci il tuo indirizzo email per ricevere istruzioni su come resettare la tua password:'
+agent.login.reset-password-sent: 'Abbiamo inviato un messaggio al tuo indirizzo email con le istruzioni su come resettare la tua password.'
+agent.login.sent_pw_reset_instructions: 'Abbiamo inviato istruzioni su come resettare la tua password all''indirizzo email che ci hai fornito.'
+agent.login.session_timeout: 'La tua sessione è scaduta, devi riconnetterti.'
+agent.login.supported_browsers: 'I seguenti browser sono supportati'
+agent.login.version_x_or_later: 'v{{version}} o successiva'
+agent.organizations.add_person: 'Aggiungi una persona a questa organizzazione'
+agent.organizations.browse_all_members: 'Sfoglia tutti i membri'
+agent.organizations.click_set_manager: 'Clicca per impostare come gestore organizzazione'
+agent.organizations.create_organization: 'Crea Organizzazione'
+agent.organizations.email_domain_assoc: 'Unioni Domini Email'
+agent.organizations.email_domain_assoc_add: 'Aggiungi Nuovo Dominio'
+agent.organizations.email_domain_assoc_explain: 'Gli utenti con le email in questi domini saranno associati automaticamente a questa organizzazione.'
+agent.organizations.email_domain_assoc_move:
+  one: '1 utente Associato'
+  other: ' utenti {{count}} Associati'
+agent.organizations.email_domain_assoc_move_all:
+  one: '1 utente Associato che appartiene già a un''organizzazione diversa'
+  other: 'utenti {{count}} Associati che appartengono già a organizzazioni diverse'
+agent.organizations.email_domain_assoc_none: 'Imposta un dominio email per auto-associare gli utenti con questa organizzazione.'
+agent.organizations.email_domain_assoc_remove: 'Rimuovi il dominio email'
+agent.organizations.email_domain_assoc_remove_users:
+  one: 'Rimuovi il dominio email e annulla l''assegnazione di 1 utente da questa organizzazione '
+  other: ' Rimuovi il dominio email e annulla l''assegnazione di {{count}} utenti da questa organizzazione'
+agent.organizations.email_domain_assoc_title: 'Unione Domini Email per  {{name}}'
+agent.organizations.enter_position: 'Inserire posizione'
+agent.organizations.is_empty: 'Questa organizzazione non ha membri'
+agent.organizations.list_title:
+  one: '1 Organizzazione'
+  other: '{{count}} Organizzazioni'
+agent.organizations.no_slas: 'Nessuna SLA è stata applicata automaticamente a questa organizzazione.'
+agent.organizations.org_manager_click_to_remove: 'Gestione Organizzazione. Clicca per rimuovere.'
+agent.people.act_reg: 'Registrato un account'
+agent.people.act_replied_ticket: 'Risposto al ticket:'
+agent.people.act_submitted_ticket: 'Inviato un ticket:'
+agent.people.add_address: 'Aggiungi un indirizzo'
+agent.people.add_an_email_address: 'Aggiungi un indirizzo email'
+agent.people.add_another: 'aggiungi un altro'
+agent.people.add_facebook_profile: 'Aggiungi un profilo Facebook'
+agent.people.add_im: 'Aggiungi un account di messaggistica istantanea'
+agent.people.add_linkedin_profile: 'Aggiungi un profilo LinkedIn'
+agent.people.add_phone: 'Aggiungi un numero di telefono'
+agent.people.add_twitter_profile: 'Aggiungi un profilo twitter'
+agent.people.add_website: 'Aggiungi l''URL di un sito web'
+agent.people.address_city: Città
+agent.people.address_postal: 'Codice Postale'
+agent.people.address_state: Stato
+agent.people.and_came_from: 'e viene da'
+agent.people.anonymous_user: 'Utente Anonimo {{id}}'
+agent.people.confirm_remove_email: 'Sei sicuro di voler rimuovere questo indirizzo email?'
+agent.people.confirm_remove_phone: 'Sei sicuro di voler rimuovere questo numero di telefono?'
+agent.people.contact_info: 'Informazione Contatto'
+agent.people.contact_info_for_x: 'Informazione Contatto Per {{name}}'
+agent.people.count_members:
+  one: '{{count}} membro'
+  other: '{{count}} membri'
+agent.people.create_person: 'Crea Persona'
+agent.people.creation_by: 'Creazione da'
+agent.people.delete_user: 'Elimina Utente'
+agent.people.delete_user_and_ban_email: 'Elimina Utente & Banna Email'
+agent.people.disable_account: 'Account Disabilitato'
+agent.people.double_click_set_name: 'Doppio-click per impostare il nome'
+agent.people.download_vcard: 'Scarica vCard'
+agent.people.drop_your_vcard_here: 'Rilascia la tua vCard qui'
+agent.people.email_awaiting_validation: 'Email in Attesa di Convalida'
+agent.people.enable_account: 'Account Abilitato'
+agent.people.enter_name_here: 'Inserire un nome qui'
+agent.people.find_person: 'Trova Persona'
+agent.people.im: IM
+agent.people.im_account_placeholder: 'Username dell''Account'
+agent.people.is_agent: 'è Agente'
+agent.people.list_title:
+  one: '1 Persona'
+  other: '{{count}} Persone'
+agent.people.login_as_user: 'Accedi come Utente'
+agent.people.make_primary_email: 'rendi principale'
+agent.people.manager: Gestione
+agent.people.member_of_teams: 'Sono membri dei team seguenti:'
+agent.people.merge_people: 'Unisce Persone'
+agent.people.merge_people_info: 'Questo strumento ti permette di unire due utenti in uno unico. Ticket, chat, note e numeri di altri oggetti dagli utenti eliminati saranno aggiunti all''utente che hai mantenuto.Gli altri utenti saranno eliminati in modo permanente.'
+agent.people.merge_submit_btn: 'Unisci questi due profili'
+agent.people.new_registration: 'Nuova Registrazione'
+agent.people.new_registration_name: 'Nuova Registrazione: {{name}}'
+agent.people.no_picture: 'Nessuna immagine'
+agent.people.no_position_set: 'Nessuna posizione impostata'
+agent.people.no_slas: 'Nessuna SLA è stata applicata automaticamente  a questa persona'
+agent.people.on_page: 'nella pagina'
+agent.people.online_now: 'Ora Online'
+agent.people.other_user_content_being_deleted: 'Anche gli utenti associati ad altro contenuto saranno eliminati:'
+agent.people.person_ban_confirm: 'Sei sicuro di voler bannare questo utente?'
+agent.people.person_delete_confirm: 'Sei sicuro di voler eliminare questo utente?'
+agent.people.person_reset_password_confirm: 'Questo invierà alla persona un link per resettare la password.'
+agent.people.phone_country_placeholder: Paese
+agent.people.phone_number_placeholder: 'Numero di Telefono'
+agent.people.primary_email: principale
+agent.people.reg_agent: 'Utente creato da un agente'
+agent.people.reg_gateway: 'L''utente è stato creato inviando una e-mail per l''helpdesk'
+agent.people.reg_website: 'Utente registrato usando il sito web'
+agent.people.remove_picture: 'Rimuovi Immagine'
+agent.people.since: Da
+agent.people.title_dr: Dott.
+agent.people.title_hon: On.
+agent.people.title_miss: Sig.ra
+agent.people.title_mr: Sig.re
+agent.people.title_mrs: Sig.ra
+agent.people.title_ms: Sig.
+agent.people.title_prof: Prof.
+agent.people.title_rev: Rev.
+agent.people.update_picture: 'Aggiorna Immagine'
+agent.people.upload_new_picture: 'Carica una nuova immagine'
+agent.people.upload_vcard: 'Carica vCard'
+agent.people.use_pic_gravatar: 'Usa l''immagine del Gravatar'
+agent.people.use_uploaded_pic: 'Utilizza immagine caricata'
+agent.people.user_awaiting_agent_validation: 'Utente in attesa di convalida agente'
+agent.people.user_awaiting_email_and_agent_validation: 'Utente in attesa di convalida email e agente'
+agent.people.user_awaiting_email_validation: 'Utente in attesa di convalida email'
+agent.people.user_awaiting_validation: 'Utente in attesa di convalida'
+agent.people.user_is_agent: '{{name}} è un agente su questa piattaforma.'
+agent.people.user_is_autoresponder: 'L''utente è un rispondente automatico. Le risposte automatiche non saranno inviate.'
+agent.people.user_landed_on_page: 'L''utente è stato destinato nella pagina'
+agent.people.user_not_autoresponder: 'L''utente non è un rispondente automatico'
+agent.people.user_will_be_perm_deleted: 'L''utente sarà eliminato in modo permanente.'
+agent.people.user_will_be_perm_deleted_banned: 'L''utente sarà eliminato in modo permanente e il loro indirizzo email sarà bannato.'
+agent.people.view_profile: 'Vedi Profilo'
+agent.people.warn_email_address: 'L''indirizzo email {{email}} corrisponde a questo profilo. Ma dato che l''utente non ha effettuato l''accesso nella piattaforma helpdesk, non possiamo verificare la sua identità. Fare attenzione a non rilasciare alcuna informazione sensibile.'
+agent.people.website: 'Sito Web'
+agent.people.website_url_placeholder: 'URL Sito Web'
+agent.problems.close_problem: 'Chiudi Problema'
+agent.problems.close_problem_prompt: 'Vuoi porre fine al Problema?'
+agent.problems.closed_problems: 'Problemi Chiusi'
+agent.problems.create_problem: 'Crea Problema'
+agent.problems.incidents: Incidenti
+agent.problems.no_problems_boss: 'Non ci sono problemi aperti'
+agent.problems.open_problems: 'Apri Problemi'
+agent.problems.problem: Problema
+agent.problems.reopen_problem: 'Riapri Problema'
+agent.problems.reopen_problem_prompt: 'Vuoi riaprire il Problema?'
+agent.problems.title: 'Problemi e Incidenti'
+agent.publish.add_new_category: 'Aggiungi una nuova categoria'
+agent.publish.add_new_glossary: 'Aggiungi una nuova parola nel glossario'
+agent.publish.add_new_search_word: 'Premi inserire per aggiungere una nuova parola di ricerca'
+agent.publish.add_pending: 'Aggiungi un nuovo articolo in sospeso'
+agent.publish.all_articles: 'Tutti gli Articoli'
+agent.publish.all_comments: 'Tutti i Commenti'
+agent.publish.all_downloads: 'Tutti i Download'
+agent.publish.all_draft_content: 'Tutte le Bozze'
+agent.publish.all_news: 'Tutte le Novità'
+agent.publish.apply_action: 'Applicare Azione'
+agent.publish.article_comments: 'Commenti Articolo'
+agent.publish.article_id: 'Articolo ID'
+agent.publish.ask_set_to_draft: 'Sei sicuro di voler impostare gli elementi selezionati come bozza?'
+agent.publish.awaiting_validation_info: 'In Attesa di Convalida: Un agente autorizzato a convalidare il contenuto dovrà approvarlo prima della sua visualizzazione nel portale.'
+agent.publish.change_category: 'Cambia Categoria'
+agent.publish.click_to_set_date: '(clicca per impostare la data)'
+agent.publish.comment_by: 'Commentato da {{name}}'
+agent.publish.comment_requires_validation: 'Questo commento richiede convalida'
+agent.publish.comments_list_title:
+  one: '1 Commento'
+  other: '{{count}} Commenti'
+agent.publish.comments_to_validate: 'Commenti da esaminare'
+agent.publish.compare_selected: 'Confronta Selezionati'
+agent.publish.create_artilce: 'Crea Articolo'
+agent.publish.create_pending_article: 'Creazione di articoli sospesi'
+agent.publish.delete_category: 'Categoria Eliminata'
+agent.publish.delete_category_btn: 'Elimina Categoria'
+agent.publish.discard_unsaved_changes: 'Abbandona e ritorna al predefinito'
+agent.publish.download_category: 'Scarica Categoria'
+agent.publish.download_comments: 'Scarica Commenti'
+agent.publish.download_count: 'Scarica Conto'
+agent.publish.download_hotlink_btn: 'Incorpora file esistente'
+agent.publish.download_specify_filename: 'Eventualmente specifica un nome diverso'
+agent.publish.download_specify_filesize: 'Facoltativamente specifica l''ampiezza del file da visualizzare. Es: 50 MB o 2 KB'
+agent.publish.download_specify_url: 'Inserire l''URL completo al file. Un utente cliccando il pulsante "Download" sarà portato a questo URL'
+agent.publish.download_upload_btn: 'Carica un file'
+agent.publish.downloads_highest_lowest: 'Numero di Downloads (Alti-Bassi)'
+agent.publish.downloads_list_title:
+  one: '1 Download'
+  other: '{{count}} Downloads'
+agent.publish.downloads_lowest_highest: 'Numero di Downloads (Alti-Bassi)'
+agent.publish.draft_content: 'Le Mie Bozze'
+agent.publish.draft_revision: Cambia
+agent.publish.drafts_list_title:
+  one: '1 Bozza'
+  other: '{{count}} Bozze'
+agent.publish.drop_file_to_add: 'Rilascia il tuo file qui e aggiungilo a questo post'
+agent.publish.edit_category_btn: 'Modifica Categoria'
+agent.publish.edit_new_glossary: 'Modifica parole del glossario'
+agent.publish.error_kb_cats_same: 'Le Categorie sono le stesse'
+agent.publish.error_kb_missing:
+  one: '{{count}} articolo non trovato.'
+  other: '{{count}} articoli non trovati.'
+agent.publish.error_kb_not_in_db: 'Una categoria non è stata trovata.'
+agent.publish.error_kb_perm_denied:
+  one: '{{count}} errori autorizzati.'
+  other: '{{count}} errori autorizzati.'
+agent.publish.error_kb_unaffected: 'Alcuni articoli non erano affetti'
+agent.publish.event_time_ago_at_when: '{{ago}} il {{date}}'
+agent.publish.event_time_ago_by_who_at_when: '{{ago}} da {{name}} il {{date}}'
+agent.publish.for_ticket: 'Per Ticket'
+agent.publish.glossary: Glossario
+agent.publish.helpful: Utile
+agent.publish.kb_list_title:
+  one: '1 Articolo'
+  other: '{{count}} Articoli'
+agent.publish.kb_list_unique_title:
+  one: '1 Articolo Unico'
+  other: '{{count}} Articoli Unici'
+agent.publish.label_new_file: 'Nuovo File'
+agent.publish.label_old_file: 'File Vecchi'
+agent.publish.missing_translation: 'Traduzione mancante'
+agent.publish.move_to: 'Sposta in'
+agent.publish.n_helpful_n_unhelpful: '{{up_votes}} trova questi download utili, {{down_votes}} trova questi download inutili'
+agent.publish.new_comment_on: 'Nuovo commento su {{name}}'
+agent.publish.new_comment_submitted_by: 'Un nuovo commento è stato assegnato da {{name}}'
+agent.publish.new_feedback_by: 'Nuovo feedback da {{name}}'
+agent.publish.new_post: 'Nuovo Post'
+agent.publish.news_comments: 'Nuovi Commenti'
+agent.publish.news_list_title:
+  one: '1 Post '
+  other: ' {{count}} Post'
+agent.publish.no_changes: 'Nessuna modifica rilevata in queste due revisioni'
+agent.publish.no_downlod_cats_error: 'Non ci sono categorie definite. Prima di aggiungere file nella sezione dei download, hai bisogno di definire una categoria.'
+agent.publish.no_kb_cats_error: 'Non ci sono categorie definite. Prima di aggiungere file nella knowledge base, hai bisogno di definire una categoria.'
+agent.publish.no_news_cats_error: "Non ci sono categorie definite. Prima di aggiungere file nella sezione delle notizie, hai bisogno di definire una categoria.\n"
+agent.publish.no_related_explain: 'Nessun articolo correlato, download o post nuovi sono stati collegati a questo elemento. Per aggiungere elementi correlati, vedi nell''elenco e clicca l''icona con la freccia verde.'
+agent.publish.no_uploads_yet: 'Non ci sono stati ancora caricamenti.,'
+agent.publish.not_helpful: 'Non Utile'
+agent.publish.pending_articles: 'Articoli Sopspesi'
+agent.publish.permalink_copy_prompt: 'Il permalink a  questo download nel sito web è:'
+agent.publish.please_choose_file: 'Per favore scegli un file'
+agent.publish.please_enter_title: 'Per favore inserisci un titolo'
+agent.publish.please_select_category: 'Per favore seleziona una categoria'
+agent.publish.post: Post
+agent.publish.primary_lang_explain: 'La lingua principale per questo articolo. Dopo che l''articolo è stato creato sarai in grado di tradurlo in altre lingue.'
+agent.publish.reorder_category_title: 'Riordina Categoria (Trascina & Rilascia)'
+agent.publish.requires_validation: 'Richiede Convalida'
+agent.publish.revision_by: 'Revisione da {{name}}'
+agent.publish.search_sticky_words_explain: 'Quando un utente cerca alcune di queste parole, questa pagina sarà sempre elencata in cima ai loro risultati.'
+agent.publish.searches_helpful: 'Ricerche in cui questo è stato giudicato utile'
+agent.publish.searches_unhelpful: 'Ricerche in cui è stato ritenuto utile'
+agent.publish.set_as_draft: 'Imposta come Bozza'
+agent.publish.set_auto_publish_date: 'Imposta una data di pubblicazione automatica'
+agent.publish.set_auto_unpublish_date: 'Imposta una data di non pubblicazione automatica'
+agent.publish.set_contents_from_article: 'Imposta i contenuti dall''articolo'
+agent.publish.slug: 'URL Slug'
+agent.publish.slug_edit: 'Modifica Slug'
+agent.publish.slug_edit_prompt: 'Inserire un nuovo URL slug (solo lettere, numeri, trattini e sottolineature)'
+agent.publish.status_archived: Archiviato
+agent.publish.status_hidden_deleted: Eliminato
+agent.publish.status_hidden_draft: Bozza
+agent.publish.status_hidden_spam: Spam
+agent.publish.status_hidden_unpublished: 'Non pubblicato'
+agent.publish.status_hidden_user_validating: 'Convalida Utente'
+agent.publish.status_hidden_validating: Convalida
+agent.publish.status_published: Pubblicato
+agent.publish.sticky_words_title: 'Ricerca Parole'
+agent.publish.untranslated_articles: 'Articoli non tradotti'
+agent.publish.validating_comment_manage_tip: 'Commento in attesa di convalida. Clicca per gestire'
+agent.publish.validating_list_title:
+  one: '1 revisione'
+  other: '{{count}} revisione'
+agent.publish.view_count: 'Vista Conto'
+agent.publish.view_count_highest_lowest: 'Vista Conto (Alta-Bassa)'
+agent.publish.view_count_lowest_highest: 'Vista Conto (Più-Meno)'
+agent.publish.when: Quando
+agent.publish.who: Chi
+agent.publish.who_downloaded: 'Chi ha scaricato'
+agent.publish.who_viewed: 'Chi ha Visualizzato'
+agent.publish.who_voted: 'Chi ha votato'
+agent.publish.who_voted_none: 'Nessuno ha ancora votato'
+agent.publish.who_voted_show_guests: 'Mostra ospiti'
+agent.publish.who_voted_show_people: 'Mostra persone e contatti'
+agent.publish.word_def: 'Definizione Parola'
+agent.publish.word_title: 'titolo della parola'
+agent.publish.words: Parole
+agent.report.agent_activity: 'Attività Agente'
+agent.report.agent_hours: 'Ore Agente'
+agent.report.clone: Clone
+agent.report.clone_bracket: '[Clone]'
+agent.report.current: Corrente
+agent.report.data_range: 'Intervallo di date'
+agent.report.overview: Panoramica
+agent.report.report_builder: 'costruttore del report'
+agent.report.updates: Aggiornamenti
+agent.settings.add_additional_emails: 'Aggiungi Email Aggiuntive'
+agent.settings.add_another_email: 'Aggiungi un''altra email'
+agent.settings.additional_emails: 'Email Aggiuntive'
+agent.settings.admin_filters_info: 'Questi sono filtri creati dall''amministratore che tu puoi usare.'
+agent.settings.auto_close_ticket_tabs: 'Chiudi automaticamente la scheda ticket quando:'
+agent.settings.auto_close_ticket_tabs_note: 'aggiungi una nota'
+agent.settings.auto_close_ticket_tabs_reply: rispondendo
+agent.settings.browser_notifications: 'Notifiche Browser'
+agent.settings.chat_immediate_dismiss: 'Respingi immediatamente la finestra "nuova chat" quando un altro agente accede alla chat stessa'
+agent.settings.create_filter: 'Crea Filtro'
+agent.settings.create_macro: 'Crea Macro'
+agent.settings.default_team: 'Team Predefinito'
+agent.settings.delete_filter: 'Elimina Filtro'
+agent.settings.desktop_notifs: 'Notifiche Descktop'
+agent.settings.desktop_notifs_are_enabled: 'Le notifiche desktop sono attualmente abilitate. Possono essere disabilitate solo tramite controlli delle proprie notifiche.'
+agent.settings.desktop_notifs_autohide: 'Notifiche nascoste automaticamente dopo:'
+agent.settings.desktop_notifs_enable: 'Notifiche Desktop Abilitate'
+agent.settings.desktop_notifs_explicit_disabled: 'Le notifiche desktop sono state disabilitate esplicitamente. Devono essere abilitate per questo dominio attraverso il proprio browser.'
+agent.settings.desktop_notifs_test: 'Genera Notifica di Prova'
+agent.settings.done_start_using: 'Fatto, inizia a usare DeskPRO'
+agent.settings.drop_here_insert_signature: 'Rilascia la tua <strong>immagine</strong> qui per inserirla nella tua firma'
+agent.settings.edit_filter: 'Modifica Filtro'
+agent.settings.edit_macro: 'Modifica Macro'
+agent.settings.email_notifications: 'Notifiche Email'
+agent.settings.filter_match: 'Segna Filtro'
+agent.settings.filters_shared_with_you: 'Filtri condivisi con te'
+agent.settings.first_login_set_name: 'Questa è la prima volta che accedi, per favore inserisci il tuo nome e carica un''immagine profilo.'
+agent.settings.first_login_set_pic: 'Questa è la prima volta che accedi, vorresti caricare un''immagine profilo?'
+agent.settings.hidden_filters_info: "I filtri nascosti non saranno elencati nell'interfaccia principale.È possibile tornare indietro e visualizzare i filtri in qualsiasi momento.\n"
+agent.settings.leave_password_blank: 'Lascia questo campo vuoto per mantenere la stessa password'
+agent.settings.macro_who_can_use: 'Chi può usare questa macro?'
+agent.settings.new_macro: 'Nuova Macro'
+agent.settings.no_filters: 'Non hai definito alcun filtro.'
+agent.settings.no_macros: 'Non hai ancora definito alcune macro personalizzate.'
+agent.settings.no_slas: 'Il tuo amministratore non ha definito alcuna SLA.'
+agent.settings.no_slas_admin: 'Non hai ancora creato alcuna SLAs. Puoi definire nuove SLAs da Amministratore > Interfaccia > Tiket> SLAs.'
+agent.settings.notif_all_actions: 'Tutte le Azioni'
+agent.settings.notif_chat_message: 'Un agente mi ha inviato un messaggio IM mentre ero offline'
+agent.settings.notif_contact_admin: 'Si prega di contattare l''amministratore per aggiornare le tue preferenze sulle notifiche email.'
+agent.settings.notif_forwards: 'In Uscita'
+agent.settings.notif_group_all: 'Tutti i Ticket'
+agent.settings.notif_group_follow: 'Ticket che Seguo'
+agent.settings.notif_group_my: 'I miei Ticket'
+agent.settings.notif_group_team: 'I Ticket del mio Team'
+agent.settings.notif_group_unassigned: 'Ticket Non Assegnato'
+agent.settings.notif_login_attempt: 'Ogni volta che il mio account è utilizzato per accedere'
+agent.settings.notif_login_attempt_fail: 'Ogni volta che il mio account è utilizzato per accedere e le credenziali non sono corrette'
+agent.settings.notif_my_events: 'I Miei Eventi'
+agent.settings.notif_my_own_actions: 'Le Mie Azioni'
+agent.settings.notif_new_comment: 'Un nuovo commento è inviato'
+agent.settings.notif_new_comment_validate: 'E'' stato inviato un nuovo commento che richiede convalida'
+agent.settings.notif_new_feedback: 'Invio nuovo Feedback'
+agent.settings.notif_new_feedback_validate: 'E'' stata inviato un nuovo feedback richiede convalida'
+agent.settings.notif_new_user: 'Un nuovo utente registrato'
+agent.settings.notif_notes_with_mentions: 'Note con @menzioni'
+agent.settings.notif_notes_with_mentions_always: 'Invia sempre email e messaggi attraverso IM Agente'
+agent.settings.notif_notes_with_mentions_opt: 'Come vuoi sapere quando un agente ti menziona nella nota di un ticket?'
+agent.settings.notif_notes_with_mentions_smart: 'Invia Email solo se offline, e via messaggi via Agent IM se online'
+agent.settings.notif_take_due_today: 'Un incarico a me assegnato scade oggi'
+agent.settings.notif_task_assigned: 'Un incarico è stato assegnato a me'
+agent.settings.notif_task_assigned_team: 'Un incarico è stato assegnato al mio team'
+agent.settings.notif_task_delegated_complete: 'Un incarico che avevo delegato è completato'
+agent.settings.notif_tweet_assigned: 'Un tweet mi è stato assegnato'
+agent.settings.notif_tweet_assigned_team: 'Un tweet è stato assegnato al mio team'
+agent.settings.notif_tweet_dm: 'Uno dei miei account Twiter riceve un messaggio diretto'
+agent.settings.notif_tweet_mention: 'Uno dei miei account Twitter è menzionato in un tweet'
+agent.settings.notif_tweet_responded: 'Uno dei miei account Twitter riceve una risposta'
+agent.settings.notif_tweet_responded_my: 'Qualcuno risponde al tweet che ho scritto'
+agent.settings.notif_tweet_retweet: 'Uno dei miei account Twitter è retweetato'
+agent.settings.notif_type_agent: 'Messaggio Agente'
+agent.settings.notif_type_assign: Incarico
+agent.settings.notif_type_change: 'Cambia Proprietà'
+agent.settings.notif_type_new: 'Nuovo Ticket'
+agent.settings.notif_type_note: 'Nota Agente'
+agent.settings.notif_type_user: 'Messaggio Utente'
+agent.settings.override_name: 'Ignorare Nome'
+agent.settings.override_name_explain: 'Se inserito, questo nome sarà visualizzato dagli utenti al posto del tuo vero nome.'
+agent.settings.reset_api_token: 'Resettare il vostro token API. Avrete bisogno di loggarvi nuovamente con qualunque app esterna.'
+agent.settings.signature: Firma
+agent.settings.sla_filter_all: 'Mostra tutti i ticket associati'
+agent.settings.sla_filter_assigned: 'Mostra solo i ticket assegnati a me'
+agent.settings.sla_filter_results: 'Filtra i risultati SLA'
+agent.settings.sla_filter_results_info: 'Quando gli SLA sono visualizzati nell''interfaccia agente, i conteggi e le liste saranno filtrate da questa opzione.'
+agent.settings.sla_filter_team: 'Mostra solo i ticket assegnati al mio team'
+agent.settings.ticket_signature: 'Firma Ticket'
+agent.settings.ticket_signature_desc: 'Questa firma sarà aggiunta automaticamente quando invii un ticket di risposta'
+agent.settings.ticket_signature_note: 'Nota: Ogni bozza sarà eliminata aggiornando la tua firma.'
+agent.settings.tickets_autoload_next: 'Carica automaticamente il prossimo ticket nella lista dopo la risposta (solo con la chiusura della scheda ticket)'
+agent.settings.tickets_reverse_order: 'Mostra prima i messaggi più recenti (inverti ordine cronologico) con la casella di risposta in cima'
+agent.settings.title_other_notifs: Notifiche
+agent.settings.title_ticket_notifs: 'Notifiche Ticket'
+agent.settings.twitter_signature: 'Firma Twitter'
+agent.settings.twitter_signature_desc: 'Ogni tweet che hai scritto sarà firmato con questo. Sii breve.'
+agent.settings.welcome_to_deskpro: 'Benvenuto in DeskPRO'
+agent.settings.welcome_to_deskpro_name: 'Benvenuto in DeskPRO, {{name}}'
+agent.settings.your_current_picture: 'La tua immagine corrente'
+agent.snippets.add_snippet: 'Aggiungi Frammento'
+agent.snippets.all_snippets: 'Tutti i Frammenti'
+agent.snippets.cat_can_be_used_by: 'La categoria può essere usata da:'
+agent.snippets.chat_snippets: 'Frammenti di Chat'
+agent.snippets.edit_snippet: 'Modifica Frammento'
+agent.snippets.insert_variable: 'Inserisci Variabile'
+agent.snippets.learn_more_about_vars: 'Impara di più sulle variabili'
+agent.snippets.must_create_cat: 'Prima di iniziare a creare i frammenti, <br/> avete bisogno di creare la vostra prima categoria.'
+agent.snippets.shortcut_code: 'codice di scelta rapida'
+agent.snippets.shortcut_code_info: 'Digitare questo codice nella casella di risposta ticket e il frammento sarà inserito automaticamente. Per esempio, con il codice di scelta rapida della ''risposta-standard'', tu digiterai in ''%risposta-standard%'' per inserire il frammento senza aprire la gestione frammenti.'
+agent.tasks.add_another_task: 'Aggiungi un altro incarico'
+agent.tasks.all_tasks: 'Tutti gli Incarichi'
+agent.tasks.assigned_to_by: 'Incaricato di questo incarico da {{name}}'
+agent.tasks.completed_by: 'L''incarico è stato completato da {{name}}'
+agent.tasks.completed_tasks: 'Incarichi Completati'
+agent.tasks.count: Conteggio
+agent.tasks.creator: Creatore
+agent.tasks.delete_confirm: 'Sei sicuro di voler eliminare questo incarico?'
+agent.tasks.due_in_future: 'Da fare In Futuro'
+agent.tasks.due_today: 'Dovuto Oggi'
+agent.tasks.enter_your_comment: 'Inserisci il tuo commento...'
+agent.tasks.linked_deal: 'accordo collegato'
+agent.tasks.linked_ticket: 'biglietto collegato'
+agent.tasks.list_title:
+  one: '1 Incarico'
+  other: '{{count}} Incarichi'
+agent.tasks.my_tasks: 'I Miei Incarichi'
+agent.tasks.my_teams: 'I Miei Team'
+agent.tasks.my_teamstasks: 'Gli incarichi del mio Team'
+agent.tasks.no_due_date: 'nessuna data di scadenza'
+agent.tasks.no_due_time: 'Nessuno tempo specifico'
+agent.tasks.or: o
+agent.tasks.overdue: 'In Ritardo'
+agent.tasks.task_description: 'Descrizione Incarico...'
+agent.tasks.task_due_today: 'Questo incarico è da fare oggi'
+agent.tasks.task_has_deal_x: 'Incarico collegato a: Accordo  "{{label}}"'
+agent.tasks.task_has_ticket_x: 'Incarico collegato a: Ticket "{{label}}"'
+agent.tasks.tasks_i_delegated: 'Incarichi che ho Delegato'
+agent.tasks.team_assigned_by: 'Al tuo team è stato assegnato questo incarico da {{name}}'
+agent.tickets.send_flood_warning_action: 'Inviare email di avvertimento che l''utente sta inondando il sistema'
+agent.tickets.send_newticket_and_apply_x: 'Invia ticket ed applica {{name}}'
+agent.tickets.send_newticket_as_x: 'Invia Ticket come {{status}}'
+agent.tickets.send_notifs_from_email_action: 'Invio notifiche utente da {{email}}'
+agent.tickets.send_notifs_from_name_action: 'Invio notifica utente da nome {{name}}'
+agent.tickets.send_reply: 'Invia Risposta'
+agent.tickets.send_reply_and_apply_x: 'Inviare Risposta ed applicare {{name}}'
+agent.tickets.send_reply_as_x: 'Invia una Risposta come {{status}}'
+agent.tickets.sending: Invio
+agent.tickets.sending_your_message: 'Invio messaggio'
+agent.tickets.sent_from_address: 'Invia dall''Indirizzo'
+agent.tickets.sent_to_gateway_address: 'Inviato all''indirizzo del portale'
+agent.tickets.set_as_normal_message: 'Imposta come messaggio normale'
+agent.tickets.set_as_note: 'Imposta come nota agente'
+agent.tickets.set_as_spam: 'Imposta un Ticket come Spam'
+agent.tickets.set_awaiting_agent: 'Imposta agente in attesa'
+agent.tickets.set_awaiting_user: 'Imposta utente in attesa'
+agent.tickets.set_category_action: 'Imposta categoria a {{category}}'
+agent.tickets.set_delete: 'Seleziona Per eliminare'
+agent.tickets.set_department_action: 'Imposta sezione a {{department}}'
+agent.tickets.set_flag_to_action: 'settare flag su {{flag}}'
+agent.tickets.set_language_action: 'Imposta Lingua in {{language}}'
+agent.tickets.set_priority_action: 'Imposta priorità a {{priority}}'
+agent.tickets.set_product_action: 'Imposta prodotto in {{product}}'
+agent.tickets.set_resolved: 'Set risolto'
+agent.tickets.set_sla_status: 'Imposta stato SLA in {{sla_status}}'
+agent.tickets.set_sla_status_action: 'Imposta stato SLA in {{sla_status}}'
+agent.tickets.set_sla_status_for_sla: 'Imposta stato SLA in {{sla_status}} per {{sla}}'
+agent.tickets.set_sla_status_for_sla_action: 'Imposta stato SLA in {{sla_status}} per SLA {{sla}}'
+agent.tickets.set_workflow_action: 'Imposta  flusso di lavoro a {{workflow}}'
+agent.tickets.set_x_to_y_action: 'Imposta {{title}} a {{value}}'
+agent.tickets.sla_fail_date: 'Data non valida'
+agent.tickets.sla_remove_confirm: 'Sei sicuro di voler rimuovere questo SLA?'
+agent.tickets.sla_severity: 'Obblighi SLA'
+agent.tickets.sla_warn_date: 'data di avviso'
+agent.tickets.slas_title: SLAs
+agent.tickets.split_from_here: 'Dividi ticket da qui'
+agent.tickets.split_message_btn: 'Dividi Messaggio'
+agent.tickets.split_messages_into_ticket: 'Dividere Messaggi a Nuovi Ticket'
+agent.tickets.split_selected_messages_btn: 'Dividi i Messaggi Selezionati'
+agent.tickets.status_archived: Archiviato
+agent.tickets.status_archived_deleted: Eliminato
+agent.tickets.status_archived_spam: Spam
+agent.tickets.status_archived_temp: Provvisorio
+agent.tickets.status_archived_validating: 'In Attesa di Convalida'
+agent.tickets.status_awaiting_agent: 'In Attesa di Agente'
+agent.tickets.status_awaiting_agent_deleted: Eliminato
+agent.tickets.status_awaiting_agent_spam: Spam
+agent.tickets.status_awaiting_agent_temp: Provvisorio
+agent.tickets.status_awaiting_agent_validating: 'In Attesa di Convalida'
+agent.tickets.status_awaiting_user: 'In attesa di Utente'
+agent.tickets.status_awaiting_user_deleted: Eliminato
+agent.tickets.status_awaiting_user_spam: Spam
+agent.tickets.status_awaiting_user_temp: Provvisorio
+agent.tickets.status_awaiting_user_validating: 'In Attesa di Convalida'
+agent.tickets.status_hidden: Nascosto
+agent.tickets.status_hidden_deleted: Eliminato
+agent.tickets.status_hidden_spam: Spam
+agent.tickets.status_hidden_temp: Provvisorio
+agent.tickets.status_hidden_validating: 'In Attesa di Convalida'
+agent.tickets.status_resolved: Risolto
+agent.tickets.status_resolved_deleted: Eliminato
+agent.tickets.status_resolved_spam: Spam
+agent.tickets.status_resolved_temp: Provvisorio
+agent.tickets.status_resolved_validating: 'In Attesa di Convalida'
+agent.tickets.stop_later_triggers_action: 'Interrompere l''elaborazione dei trigger successivi'
+agent.tickets.subject_changed: 'Oggetto cambiato'
+agent.tickets.subject_changed_from: "Oggetto cambiato da\n"
+agent.tickets.subscribed_tickets: 'ticket sottoscritti'
+agent.tickets.teams_action: 'Team: {{teams}}'
+agent.tickets.text_body: 'Corpo del Testo'
+agent.tickets.ticket_changes: 'Cambio Ticket'
+agent.tickets.ticket_feedback: 'Ticket Feedback'
+agent.tickets.ticket_field_name: 'Tipologia di Ticket: {{field}}'
+agent.tickets.ticket_is_delete7d: 'Ticket eliminato'
+agent.tickets.ticket_is_deleted: 'Ticket eliminato'
+agent.tickets.ticket_is_marked_as_spam: 'Questo ticket è stato segnato come spam.'
+agent.tickets.ticket_merged: 'Ticket unito'
+agent.tickets.ticket_put_on_hold: 'Ticket messo in attesa'
+agent.tickets.ticket_removed_from_hold: 'Ticket rimosso da vincoli'
+agent.tickets.ticket_replying: 'Ticket di Risposta'
+agent.tickets.ticket_split: 'Ticket diviso'
+agent.tickets.ticket_split_from: 'Ticket diviso da'
+agent.tickets.ticket_split_to: 'Ticket diviso a'
+agent.tickets.tickets_on_hold: 'In Attesa'
+agent.tickets.time_til_resolve: 'Tempo fino alla risoluzione'
+agent.tickets.total_user_waiting_time: 'Tempo totale di attesa dell''utente'
+agent.tickets.translate_into: 'Traduci messaggio in:'
+agent.tickets.triggers: Trigger
+agent.tickets.unassign_action: 'Agente non asssegnato'
+agent.tickets.unassign_team: 'Team non assegnato'
+agent.tickets.unhelpful: inutile
+agent.tickets.unhold_btn: 'rimuovi il ticket dal supporto'
+agent.tickets.unhold_ticket: 'Ticket non mantenuto'
+agent.tickets.unlock: Sblocco
+agent.tickets.unsanitized_message: 'messaggio grezzo (Unsanitized)'
+agent.tickets.unsanitized_message_confirm: 'Sei sicuro di voler vedere la versione grezza? Questa potrebbe contenere codici sorgente maligni e pericolosi.'
+agent.tickets.unset_flag_action: 'Flag non impostata'
+agent.tickets.upload_files_here: 'Trascina o rilascia i file in questa area o scegli un file'
+agent.tickets.urgency_highest_lowest: 'Urgenza (Alta-Bassa)'
+agent.tickets.urgency_lowest_highest: 'Urgenza (Alta-Bassa)'
+agent.tickets.use_email_tpl_action: 'Usa il modello email: {{tpl}}'
+agent.tickets.user_email: 'Email Utente'
+agent.tickets.user_is_disabled: 'L''utente che hai selezionato è stato disabilitato. Non puoi creare ticket per utenti disabilitati.'
+agent.tickets.users_tickets: 'Ticket degli utenti'
+agent.tickets.view_entire_in_new_win: 'Vedi il messaggio intero in una nuova finestra'
+agent.tickets.view_full_message: 'Vedi il Messaggio Completo'
+agent.tickets.view_full_quoted_message: 'Vista messaggi citati completi'
+agent.tickets.view_message_in_window: 'Vedi il messaggio in una nuova finestra'
+agent.tickets.view_newer_messages: 'Vista messaggi recenti'
+agent.tickets.view_older_messages: 'Vedi messaggi vecchi'
+agent.tickets.view_ticket_id: 'Vedi Ticket #{{id}}'
+agent.tickets.waiting_til_first_reply: 'Attesa fino alla prima risposta'
+agent.tickets.written_after: 'Scritto successivamente'
+agent.tickets.written_any_time: 'Scritto in qualsiasi momento'
+agent.tickets.written_before: 'Scritto prima'
+agent.tickets.written_between: 'Scritto tra'
+agent.tickets.x_messages_moved:
+  one: '1 messaggio spostato '
+  other: ' {{count}} messaggi spostati'
+agent.tickets.x_rated_this_message_as: '{{name}} ha valutato questo messaggio come:'
+agent.tickets.you_have_auto_lock: 'Hai un blocco automatico su questo ticket. Altri agenti non saranno in grado di modificare il ticket finché non è sbloccato.'
+agent.tickets.you_have_locked: 'Hai bloccato questo ticket. Altri agenti non saranno in grado di modificarlo prima del suo sblocco.'
+agent.tickets.your_teams_tickets: 'Ticket del tuo team'
+agent.tickets.your_tickets: 'I Tuoi ticket'
+agent.time.group_12_to_24_hours: '12 - 24 ore'
+agent.time.group_15_to_30_mins: '15 - 30 minuti'
+agent.time.group_1_to_2_days: '1 - 2 giorni'
+agent.time.group_1_to_2_hours: '1 - 2 ore'
+agent.time.group_1_to_2_months: '1 - 2 mesi'
+agent.time.group_1_to_2_weeks: '1 - 2 settimane'
+agent.time.group_2_to_3_days: '2 - 3 giorni'
+agent.time.group_2_to_3_hours: '2 - 3 ore'
+agent.time.group_2_to_3_months: '2 - 3 mesi'
+agent.time.group_2_to_3_weeks: '2 - 3 settimane'
+agent.time.group_30_to_60_mins: '30 - 60 minuti'
+agent.time.group_3_to_4_days: '3 - 4 giorni'
+agent.time.group_3_to_4_hours: '3 - 4 ore'
+agent.time.group_3_to_4_months: '3- 4 mesi'
+agent.time.group_3_to_4_weeks: '3 - 4 settimane'
+agent.time.group_4_to_5_days: '4 - 5 giorni'
+agent.time.group_4_to_5_months: '4 - 5 mesi'
+agent.time.group_4_to_6_hours: '4 - 6 ore'
+agent.time.group_5_to_15_mins: '5 - 15 minuti'
+agent.time.group_5_to_6_days: '5 - 6 giorni'
+agent.time.group_5_to_6_months: '5 - 6 mesi'
+agent.time.group_6_to_12_hours: '6 - 12 ore'
+agent.time.group_6_to_7_days: '6 - 7 giorni'
+agent.time.group_gt_6_months: '> 6 mesi'
+agent.time.group_lt_5_mins: '< 5 minuti'
+agent.time.long-day_friday: Venerdì
+agent.time.long-day_monday: Lunedì
+agent.time.long-day_saturday: Sabato
+agent.time.long-day_sunday: Domenica
+agent.time.long-day_thursday: Giovedì
+agent.time.long-day_tuesday: Martedì
+agent.time.long-day_wednesday: Mercoledì
+agent.time.long-month_april: Aprile
+agent.time.long-month_august: Agosto
+agent.time.long-month_december: Dicembre
+agent.time.long-month_february: Febbraio
+agent.time.long-month_january: Gennaio
+agent.time.long-month_july: Luglio
+agent.time.long-month_june: Giugno
+agent.time.long-month_march: Marzo
+agent.time.long-month_may: Maggio
+agent.time.long-month_november: Novembre
+agent.time.long-month_october: Ottobre
+agent.time.long-month_september: Settembre
+agent.time.reltime_1_day: '1 giorno'
+agent.time.reltime_1_hour: '1 ora'
+agent.time.reltime_1_minute: '1 minuto'
+agent.time.reltime_1_month: '1 mese'
+agent.time.reltime_1_second: '1 secondo'
+agent.time.reltime_1_week: '1 settimana'
+agent.time.reltime_1_year: '1 anno'
+agent.time.reltime_less_minute: '1 minuto'
+agent.time.reltime_less_second: '1 secondo'
+agent.time.reltime_x_day: '{0} giorni'
+agent.time.reltime_x_hour: '{0} ore'
+agent.time.reltime_x_minute: '{0} minuti'
+agent.time.reltime_x_month: '{0} mesi'
+agent.time.reltime_x_second: '{0} secondi'
+agent.time.reltime_x_week: '{0} settimane'
+agent.time.reltime_x_year: '{0} anni'
+agent.time.reltimeago_1_day: '1 giorno fa'
+agent.time.reltimeago_1_hour: '1 ora fa'
+agent.time.reltimeago_1_minute: '1 minuto fa'
+agent.time.reltimeago_1_month: '1 mese fa'
+agent.time.reltimeago_1_second: '1 secondo fa'
+agent.time.reltimeago_1_week: '1 settimana fa'
+agent.time.reltimeago_1_year: '1 anno fa'
+agent.time.reltimeago_less_minute: 'meno di un minuto fa'
+agent.time.reltimeago_less_second: 'meno di un secondo fa'
+agent.time.reltimeago_x_day: '{0} giorni fa'
+agent.time.reltimeago_x_hour: '{0} ore fa'
+agent.time.reltimeago_x_minute: '{0} minuti fa'
+agent.time.reltimeago_x_month: '{0} mesi fa'
+agent.time.reltimeago_x_second: '{0} secondi fa'
+agent.time.reltimeago_x_week: '{0} settimane fa'
+agent.time.reltimeago_x_year: '{0} anni fa'
+agent.time.short-day_friday: Ven
+agent.time.short-day_monday: Lun
+agent.time.short-day_saturday: Sab
+agent.time.short-day_sunday: Dom
+agent.time.short-day_thursday: Gio
+agent.time.short-day_tuesday: Mar
+agent.time.short-day_wednesday: Mer
+agent.time.short-month_april: Apr
+agent.time.short-month_august: Ago
+agent.time.short-month_december: Dic
+agent.time.short-month_february: Feb
+agent.time.short-month_january: Gen
+agent.time.short-month_july: Lug
+agent.time.short-month_june: Giu
+agent.time.short-month_march: Mar
+agent.time.short-month_may: Mag
+agent.time.short-month_november: Nov
+agent.time.short-month_october: Ott
+agent.time.short-month_september: Set
+agent.time.time-ago_1_day: '1 giorno fa'
+agent.time.time-ago_1_hour: '1 ora fa'
+agent.time.time-ago_1_minute: '1 minuto fa'
+agent.time.time-ago_1_month: '1 mese fa'
+agent.time.time-ago_1_second: '1 secondo fa'
+agent.time.time-ago_1_week: '1 settimana fa'
+agent.time.time-ago_1_year: '1 anno fa'
+agent.time.time-ago_less_second: 'meno di un secondo fa'
+agent.time.time-ago_x_day: '{0} giorni fa'
+agent.time.time-ago_x_hour: '{0} ore fa'
+agent.time.time-ago_x_minute: '{0} minuti fa'
+agent.time.time-ago_x_month: '{0} mesi fa'
+agent.time.time-ago_x_second: '{0} secondi fa'
+agent.time.time-ago_x_week: '{0} settimane fa'
+agent.time.time-ago_x_year: '{0} anni fa'
+agent.time.time_1_day: '1 giorno'
+agent.time.time_1_hour: '1 ora'
+agent.time.time_1_minute: '1 minuto'
+agent.time.time_1_month: '1 mese'
+agent.time.time_1_second: '1 secondo'
+agent.time.time_1_week: '1 settimana'
+agent.time.time_1_year: '1 anno'
+agent.time.time_less_second: 'meno di un secondo'
+agent.time.time_x_day: '{0} giorni'
+agent.time.time_x_hour: '{0} ore'
+agent.time.time_x_minute: '{0} minuti'
+agent.time.time_x_month: '{0} mesi'
+agent.time.time_x_second: '{0} secondi'
+agent.time.time_x_week: '{0} settimane'
+agent.time.time_x_year: '{0} anni'
+agent.userchat.agent_blocked_user_on: '{{name}} imposta un blocco alla {{date}}'
+agent.userchat.assigned_to: 'Chat assegnata a {{name}}'
+agent.userchat.block_ip_address: 'Blocca indirizzo IP'
+agent.userchat.block_ip_address_info: 'Il blocco sul''indirizzo IP può essere più efficace, ma può indurre gli utenti legittimi ad essere bloccati se l''indirizzo IP viene utilizzato da più persone (per esempio, un network condiviso, un wifi pubblico etc).'
+agent.userchat.block_reason: 'Causa: {{reason}}'
+agent.userchat.block_title: 'Termina la chat e blocca questo utente dall''iniziare una nuova chat nelle prossime 24 ore.'
+agent.userchat.block_user: 'Utente Bloccato'
+agent.userchat.create_ticket: 'Crea Ticket'
+agent.userchat.ended_by: 'Chat terminata da {{name}}'
+agent.userchat.ended_by_reason: 'Chat terminata da {{name}}: {{reason}}'
+agent.userchat.ended_user: 'Chat terminata dall''utente'
+agent.userchat.full_message: 'Messaggio Completo'
+agent.userchat.ident_unconfirmed: 'Identità non confermata, utente non collegato'
+agent.userchat.list_title:
+  one: '1 Chat'
+  other: '{{count}} Chat'
+agent.userchat.message_agent-timeout: '{{name}} non sta rispondendo. Per favore aspetta mentre proveremo a trovare un altro agente.'
+agent.userchat.message_assigned: 'Chat assegnata a {{name}}'
+agent.userchat.message_ended: 'Chat terminata'
+agent.userchat.message_ended-by: 'Chat terminata da {{name}}'
+agent.userchat.message_ended-by-user: 'Chat terminata dall''utente'
+agent.userchat.message_set-department: '{{name}} seleziona reparto a {{department}}'
+agent.userchat.message_set_department: '{{name}} imposta reparto a {{department}}'
+agent.userchat.message_started: 'Chat attivate'
+agent.userchat.message_unassigned: 'Chat non assegnata'
+agent.userchat.message_uploading: Caricamento...
+agent.userchat.message_user-joined: '{{name}} si è unito alla chat'
+agent.userchat.message_user-left: '{{name}} ha abbandonato la chat'
+agent.userchat.message_user-returned: 'l''utente è tornato'
+agent.userchat.message_user-timeout: 'Utente scaduto'
+agent.userchat.message_user_joined: '{{name}} si è unito alla chat'
+agent.userchat.message_user_left: '{{name}} ha abbandonato la chat'
+agent.userchat.message_wait-timeout: 'Chat terminata: Non si può trovare un agente'
+agent.userchat.msg_agent_timeout: '{{name}} non risponde. Per favore aspetta mentre proveremo a trovare un altro agente.'
+agent.userchat.msg_new_user_track: 'L''utente sta visualizzando: {{label}}'
+agent.userchat.msg_user_timeout: 'L''Utente non risponde'
+agent.userchat.new_chat: 'Nuova Chat'
+agent.userchat.take_chat: 'Avvia Chat'
+agent.userchat.taken_by: 'Chat tenuta da'
+agent.userchat.transcript_sent: 'Trascrizione inviata a {{email}}'
+agent.userchat.unassigned: 'Chat non assegnata'
+agent.userchat.unblock: Sbloccato
+agent.userchat.user_is_blocked: "Utente bloccato\n"
+agent.usertrack.first_visit_date: 'Data di Prima Visita'
+agent.usertrack.initial_landing_page: 'Pagina di Destinazione Iniziale'
+agent.usertrack.initial_visit_time: 'Tempo di Visita Iniziale'
+agent.usertrack.landing_pages: 'Pagine di Destinazione'
+agent.usertrack.number_of_pages: 'Numero di pagine'
+agent.usertrack.number_of_visits: 'Numero di visite'
+agent.usertrack.session_landing_page: 'Sessione Pagina di Destinazione'
+agent.usertrack.session_start_time: 'Sessione Tempo di Avvio'
+agent.usertrack.visited_pages: 'Pagine Visitate'
+agent.usertrack.visitor_id: 'ID Visitatore'

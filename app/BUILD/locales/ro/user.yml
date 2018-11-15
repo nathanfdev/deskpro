@@ -1,0 +1,442 @@
+portal.account.change-password: 'Schimba parola'
+portal.account.email-btn-resend-validation: 'Retrimite email-ul de validare'
+portal.account.login-register-btn: Inrestreaza-te
+portal.account.login-register-header: Inrestreaza-te
+portal.account.register-btn: Inrestreaza-te
+portal.account.reset-password-btn: 'Resetare parola'
+portal.account.section-title-profile: Profil
+portal.account.section-title-register: Inrestreaza-te
+portal.account.section-title-reset-password: 'Resetare parola'
+portal.articles.view-as-agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
+portal.chat.assigned_to: 'Chat-ul este asignat catre {{name}}'
+portal.chat.chat_transcript: 'Inregistrare Chat'
+portal.chat.end_chat: 'Finalizati chat-ul'
+portal.chat.ended_by: 'Chat inchis de catre {{name}}'
+portal.chat.ended_user: 'Chat inchis de catre user'
+portal.chat.feedback_action: 'Trimite feedback'
+portal.chat.helpful: 'De ajutor'
+portal.chat.label-name: 'Numele dumneavoastra'
+portal.chat.log_department: Departament
+portal.chat.message_assigned: 'Chat-ul este asignat catre {{name}}'
+portal.chat.message_ended: 'Chat terminat'
+portal.chat.message_ended-by: 'Chat inchis de catre {{name}}'
+portal.chat.message_ended-by-user: 'Chat inchis de catre user'
+portal.chat.message_set-department: '{{name}} a setat departamentul ca {{department}}'
+portal.chat.message_set_department: '{{name}} a setat departamentul ca {{department}}'
+portal.chat.message_started: 'Chat-ul a pornit'
+portal.chat.message_unassigned: 'Chat neasignat'
+portal.chat.message_user-joined: '{{name}} a intrat in chat'
+portal.chat.message_user-left: '{{name}} a parasit chat-ul'
+portal.chat.message_user-returned: 'User-ul s-a intors'
+portal.chat.message_user-timeout: 'Sesiunea userului a expirat'
+portal.chat.message_user_joined: '{{name}} a intrat in chat'
+portal.chat.message_user_left: '{{name}} a parasit chat-ul'
+portal.chat.not_helpful: Inutil
+portal.chat.transcript_sent: 'Copia conversatie a fost trimisa la adresa: {{email}}'
+portal.chat.unassigned: 'Chat neasignat'
+portal.chat.you: Dumneavoastra
+portal.downloads.download: Descarca
+portal.downloads.search-title: Descarcari
+portal.downloads.section-title: Descarcari
+portal.downloads.view-as-agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
+portal.email_subjects.chat_transcript: 'Inregistrare Chat'
+portal.email_subjects.comment-approved: 'Comentariul dumneavoastra a fost aprobat'
+portal.email_subjects.comment-confirmation: 'Multumim pentru comentariu'
+portal.email_subjects.comment-deleted: 'Comentariul dumneavoastra a fost citit de agentii nostri'
+portal.email_subjects.email-too-big: 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat'
+portal.email_subjects.email_new-confirm: 'Va rugam sa validati adresa dumneavoastra de email'
+portal.email_subjects.email_primary-confirm: 'Va rugam sa validati adresa dumneavoastra de email'
+portal.email_subjects.feedback_new: 'Multumim pentru feedback'
+portal.email_subjects.feedback_new-approved: 'Feedback-ul dumneavoastra a fost aprobat'
+portal.email_subjects.feedback_new-comment: 'A fost postat un nou comentariu la "{{title}}"'
+portal.email_subjects.feedback_new-confirm: 'Va multumim pentru feedback(necesita validare)'
+portal.email_subjects.feedback_new-disapproved: 'Feedback-ul dumneavoastra a fost respins'
+portal.email_subjects.feedback_updated: 'Feedback-ul dumneavoastra a fost actualizat: {{title}}'
+portal.email_subjects.password_agent-reset: 'Un agent v-a resetat parola'
+portal.email_subjects.password_reset: 'Resetare parola'
+portal.email_subjects.register-welcome: 'Va multumim ca v-ati inregistrat'
+portal.email_subjects.ticket-rate: 'Va rugam sa dati o nota experientei dumneavoastra cu tichetul "{{ticket.subject}}"'
+portal.email_subjects.ticket_new-participant: 'O noua persoana a fost adaugata tichetului dumneavoastra'
+portal.email_subjects.validate-email: 'Va rugam sa validati adresa dumneavoastra de email'
+portal.emails.auto-close: 'Tichetul dumneavoastra "{{ticket.subject}}" va fi inchis automat deoarece nu am primit niciun raspuns. Daca nu doriti ca tichetul sa fie inchis, va rugam sa ne trimiteti un mesaj iar agentii nostri va vor ajuta cu cea mai mare placere.'
+portal.emails.chat_transcript: 'Va multumim pentru conversatie. Aceasta este o copie a acesteia'
+portal.emails.comment_approved: 'Comentariul dumneavoastra a fost publicat'
+portal.emails.comment_deleted: 'Comentariul dumneavoastra a fost folosit pentru imbunatatirea paginii'
+portal.emails.comment_thank-you: 'Va multumim pentru comentariul dumneavoastra de la {{link}}.'
+portal.emails.comment_validate-email: 'Va rugam sa validati adresa dumneavoastra de email dand click pe urmatorul link:'
+portal.emails.do-not-reply: 'Va rugam sa nu raspundeti la acest email. Acesta este un mesaj generat automat si nu va fi raspuns de unul din membrii echipei noastre.'
+portal.emails.email-too-big: 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat deoarece este prea mare. Dimensiunea maxima acceptata de Helpdesk-ul nostru este {{max_size}}. Va rugam sa renuntati la atasamente si sa incercati din nou.'
+portal.emails.feedback_approved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost aprobat si este vizibil pe site-ul nostru.'
+portal.emails.feedback_closed: 'Feedback-ul dumneavoastra "{{title}}" a sfost inchis: {{status}}'
+portal.emails.feedback_disapproved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.'
+portal.emails.feedback_disapproved-reason: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.{{name}} a pus urmatorul motiv:'
+portal.emails.feedback_new-comment: '{{name}} a adaugat un nou comentariu:'
+portal.emails.feedback_published: 'Feedback-ul dumneavoastra "{{title}}" a fost validat si nu va aparea pe site-ul nostru.'
+portal.emails.feedback_thank-you: 'Va multumim pentru feedback-ul "{{title}}"'
+portal.emails.feedback_updated: 'Feedback-ul dumneavoastra "{{title}}" a fost actualizat. Acesta apare sub noul status  "{{status}}"'
+portal.emails.feedback_validate-email: 'Va rugam sa validati adresa dumneavoastra de email dand click pe urmatorul link:'
+portal.emails.feedback_votes:
+  one: 'Feedback-ul dumneavoastra are acum <strong>1</strong> vot. Puteti sa il vedeti online la:'
+  few: ' Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
+  other: ' Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
+portal.emails.greeting: 'Draga {{to_name}},'
+portal.emails.label_view-online: 'Vedeti Online'
+portal.emails.message-clipped: '(Acest mesaj a fost trunchiat)'
+portal.emails.password_agent-reset: 'Un agent v-a resetat parola contului dumneavoastra. Va puteti loga folosind urmatoarele credentiale'
+portal.emails.password_reset: 'Ati solicitat resetarea parolei. Pentru a va reseta parola, dati click pe link-ul de mai jos:'
+portal.emails.profile_email-new-confirm: 'Pentru a finaliza adaugarea aceste adrese secundare contului dumneavoastra, va rugam sa dati click pe urmatorul link'
+portal.emails.profile_email_link-validate: 'Dati click pe urmatorul link pentru a valida adresa dumneavoastra de email'
+portal.emails.register-agent-validation: 'Nota: Pentru a deveni activ, contul dumneavoastra trebuie sa fie validat manual de catre unul dintre agentii nostri. Tichetele si orice alt continut trimis va fi tinut intr-o coada de validare pana cand un agent va confirma contul.'
+portal.emails.register-confirm: 'Va multumim pentru crearea contului.<br /><br />Inainte sa va puteti folosi contul trebuie sa dati click pe urmatorul link pentru a valida adresa dumneavoastra de email.'
+portal.emails.register-welcome: 'Va multumim ca v-ati inregistrat. Incepand din acest moment va puteti loga in Helpdesk-ul nostru folosind urmatoarea adresa de email: {{to_email}}'
+portal.emails.registration_closed: 'Draga {{name}},<br /><br /><br /><br />Tichetele noi sunt acceptate doar de la membrii existenti ai Helpdesk-ului. Daca aveti deja un cont, va rugam sa ne trimiteti un email de la adresa deja inregistrata.'
+portal.emails.reject_resolved: 'Mesajul dumneavoastra nu a fost acceptat deoarece tichetul a fost deja marcat ca fiind rezolvat. Agentii nostri nu vor citi sau raspunde la acest mesaj.'
+portal.emails.reject_resolved-new: 'Daca doriti sa creati in tichet nou puteti trimite un email la <a href="mailto:{{email_to}}">{{email_to}}</a> sau sa completati formularul nostru online la adresa: <br /><a href="{{link}}">{{link}}</a>'
+portal.emails.reject_resolved-newemail: 'Daca doriti sa creati in tichet nou puteti trimite un email la <a href="mailto:{{email_to}}">{{email_to}}</a>'
+portal.emails.ticket_access_ticket_online: 'Vedeti si modificati acest tichet online:'
+portal.emails.ticket_cc-new: 'Ati fost inclus in conversatia de pe un tichet deschis de {{name}}.'
+portal.emails.ticket_flood: 'Ati trimis recent un email catre Helpdesk-ul nostru. Sistemul nostru automat a detectat ca ati trimis o succesiune de mesaje care, cel mai probabil, au fost automate. <br /><br />Pentru a preveni intrarea intr-o bucla de raspunsuri automate, Helpdesk-ul nostru nu va va mai trimite notificari automate.'
+portal.emails.ticket_message_title: 'La {{date}}; {{time}}, {{author}} a scris:'
+portal.emails.ticket_no-autoresponse: 'Avertizare: Email-urile de confirmare au fost oprite'
+portal.emails.ticket_rate-negative: Nu
+portal.emails.ticket_rate-neutral: 'A fost in regula'
+portal.emails.ticket_rate-positive: Da
+portal.emails.ticket_rate-question: 'A fost acest mesaj de ajutor?'
+portal.emails.ticket_received: 'Tichetul dumneavoastra a fost primit. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.'
+portal.emails.ticket_reply-confirm: 'Va multumim pentru raspuns. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.'
+portal.emails.ticket_validate: 'Va multumim ca ne-ati contactat. <br /><br />Inainte ca agentii nostri sa citeasca si sa raspunda la mesajul dumneavostra, trebuie sa validati adresa dumneavoastra de email.'
+portal.emails.tickets_ommitted:
+  one: '1 mesaj a fost omis'
+  few: ' {{count}} mesaje au fost omise'
+  other: ' {{count}} mesaje au fost omise'
+portal.emails.view_full_history_online: 'Vedeti intregul tichet online'
+portal.error.404-title: 'Nu a fost gasit'
+portal.feedback.attachments: Atasamente
+portal.feedback.btn-closed: Inchis
+portal.feedback.btn-vote: 'Sunt de acord'
+portal.feedback.section-desc: 'Aceste sugestii au fost trimise de clienti ca dumneavoastra; va rugam sa discutati si sa le votati pe cele pe care le agreati sau sa postati propriile sugestii daca ideea nu este deja listata.'
+portal.feedback.submit_feedback: 'Trimite feedback'
+portal.forms.error_password_min_length: 'Va rugam sa introduceti o parola de cel putin 5 caractere'
+portal.forms.label_category: Categoria
+portal.forms.label_department: Departament
+portal.forms.label_first_name: Prenume
+portal.forms.label_full_name: 'Numele dumneavoastra'
+portal.forms.label_language: Limba
+portal.forms.label_last_name: Nume
+portal.forms.label_message: Mesaj
+portal.forms.label_name: Nume
+portal.forms.label_password: Parola
+portal.forms.label_priority: Prioritate
+portal.forms.label_save: Salveaza
+portal.forms.label_subject: Subiect
+portal.forms.label_submit: Trimite
+portal.forms.label_timezone: 'Fus orar'
+portal.general.add-comment: 'Adauga un comentariu'
+portal.general.attachments: Atasamente
+portal.general.btn-cancel: Anulare
+portal.general.btn-download-pdf: 'Downloadati PDF-ul'
+portal.general.btn-go: Start
+portal.general.delete: Sterge
+portal.general.everything: Tot
+portal.general.nav-downloads: Descarcari
+portal.general.nav-downloads-desc: 'Rasfoiesti printre descarcarile noastre'
+portal.general.nav-kb-desc: 'Citeste articolele de ajutor'
+portal.general.nav-news: Stiri
+portal.general.nav-news-desc: 'Stiri si noutati'
+portal.general.nav-newticket: Contacteaza-ne
+portal.general.nav-profile: Profil
+portal.general.nav-register: Inrestreaza-te
+portal.general.nav-reset-password: 'Resetare parola'
+portal.general.nav-tickets: Tichete
+portal.general.rate-page-positive: 'Aceasta pagina a fost de ajutor'
+portal.general.rated-negative: 'Ati marcat aceasta pagina ca ne fiind de ajutor'
+portal.general.rated-positive: 'Ati marcat aceasta pagina ca fiind de ajutor'
+portal.general.rating_x_of_y_found_helpful: '{{vote_up}} din {{vote_count}} persoane au gasit aceasta pagina ca fiind de ajutor'
+portal.general.related-downloads: 'Fisiere legate'
+portal.general.related-feedback: 'Feedback legat de'
+portal.general.related-news: 'Stiri cu referire la'
+portal.general.search-labels-section-title: 'Cauta etichete'
+portal.general.search-section-title: Cautare
+portal.general.search_btn: Cautare
+portal.general.share-this: Distribuie
+portal.general.submit-feedback: 'Trimite Feedback'
+portal.news.section-title: Stiri
+portal.news.view-as-agent: 'Puteti vedea aceasta pagina deoarece sunteti un agent. Userii nu au dreptul sa vizualizeze aceasta pagina'
+portal.sidebar.news_title: Stiri
+portal.tickets.feedback_message_leave_comment: 'Optional, puteti lasa un comentariu'
+portal.tickets.guest-thanks-section-title: 'Va multumim'
+portal.tickets.guest_thank_you_title: 'Va multumim'
+portal.tickets.list_agent: 'Agentul asignat'
+portal.tickets.list_date_created: 'Data crearii'
+portal.tickets.list_department: Departament
+portal.tickets.list_status_open: 'Tichete deschise'
+portal.tickets.list_status_resolved: Rezolvat
+portal.tickets.list_subject: Subiect
+portal.tickets.list_title: 'Tichetele dumneavoastra'
+portal.tickets.new-intro: 'Va rugam sa completati acest formular iar unul din agentii nostri va va raspunde cu un email in cel mai scurt timp posibil.'
+portal.tickets.new-section-title: Contacteaza-ne
+portal.tickets.rate-intro: '{{name}} v-a ajutat cu tichetul "{{subject}}"'
+portal.tickets.rate-negative: 'Nu a fost bun'
+portal.tickets.rate-neutral: 'A fost in regula'
+portal.tickets.rate-positive: 'A fost exceptional'
+portal.tickets.rate-question: 'Cum ai cataloga suportul oferit de departamentul nostru?'
+portal.tickets.related_articles_title: 'Articole in legatura cu'
+portal.tickets.resolve_my_ticket_btn: 'Rezolva tichetul meu'
+portal.tickets.resolve_ticket: 'Rezolva tichet: {{subject}}'
+portal.tickets.resolve_ticket_explain: 'Sunteti sigur ca vreti sa rezolvati acest tichet? Odata rezolvat, agentii nu vor mai putea raspunde.'
+portal.tickets.search-title: Tichete
+portal.tickets.section-title: Tichete
+portal.tickets.timeline_marked_resolved: Rezolvat
+portal.tickets.view_btn_edit: Editare
+portal.tickets.view_label_your_name: 'Numele dumneavoastra'
+portal.tickets.view_unassigned: Neasignat
+user.chat.email: 'Adresa dumneavoastra de Email'
+user.chat.ended-no-agent: 'Pentru moment toti operatorii nostri sunt ocupati. Va rugam sa ne trimiteti un email sau sa incercati mai tarziu.'
+user.chat.error: 'Eroare chat'
+user.chat.form_chat_button-submit: Trimite
+user.chat.form_chat_send-file: 'Incarca un fisier'
+user.chat.form_create_department: 'Alegeti un departament'
+user.chat.form_create_title: 'Incepeti Chat-ul cu un agent'
+user.chat.form_feedback_button-submit: 'Trimite feedback-ul si inchide fereastra'
+user.chat.form_feedback_comments: 'Comentarii?'
+user.chat.form_feedback_rate-satisfaction: 'Ati fost multumiti de aceasta conversatie?'
+user.chat.form_feedback_rate-satisfied: Da
+user.chat.form_feedback_rate-time: 'Timpul nostru de raspuns a fost suficient de rapid?'
+user.chat.form_feedback_rate-unsatisfied: Nu
+user.chat.form_feedback_title: 'Trimiteti-ne feedback'
+user.chat.form_feedback_transcript-email: 'Trimite conversatia anterioara catre'
+user.chat.log-title: 'Chat-urile dumneavoastra'
+user.chat.log_chat-id: 'ID Chat'
+user.chat.log_created-date: 'Creat la {{date}}'
+user.chat.log_fields_department: Departament
+user.chat.log_message_author-you: Dumneavoastra
+user.chat.log_nav-view-chats:
+  one: 'Arata ultimul log al chat-ului'
+  few: ' Arata ultimele {{count}} loguri de chat.'
+  other: ' Arata ultimele {{count}} loguri de chat.'
+user.chat.log_no_department: 'Niciun departament'
+user.chat.log_unassigned: 'Niciun agent nu a fost asignat'
+user.chat.message_agent-timeout: 'Ne cerem scuze {{name}} apare ca fiind deconectat. Va rugam sa asteptati cat timp incercam sa gasim un alt agent disponibil.'
+user.chat.message_assigned: 'Chat-ul este asignat catre {{name}}'
+user.chat.message_chatting-with: 'Sunteti in chat cu'
+user.chat.message_ended: 'Chat terminat'
+user.chat.message_ended-by: 'Chat inchis de catre {{name}}'
+user.chat.message_ended-by-user: 'Chat inchis de catre user'
+user.chat.message_finding-agent: 'In cautarea unui agent disponibil'
+user.chat.message_long-wait: 'Suntem in cautarea unui agent disponibil. Aceasta operatiune dureaza in mod normal mai putin de un minut. <br /><br /> Sunteti in graba?<a class="cancel-and-newticket-trigger">Doriti sa ne lasati un mesaj in schimb?</a>'
+user.chat.message_set-department: '{{name}} a setat departamentul ca {{department}}'
+user.chat.message_started: 'Chat-ul a pornit'
+user.chat.message_unassigned: 'Chat neasignat'
+user.chat.message_uploading: Incarcare...
+user.chat.message_user-joined: '{{name}} a intrat in chat'
+user.chat.message_user-left: '{{name}} a parasit chat-ul'
+user.chat.message_user-returned: 'User-ul s-a intors'
+user.chat.message_user-timeout: 'Sesiunea userului a expirat'
+user.chat.message_wait: 'Cautam un agent pentru dumneavoastra'
+user.chat.message_wait-timeout: 'Niciun agent nu este disponibil'
+user.chat.name: 'Numele dumneavoastra'
+user.chat.submit-ticket-button: 'Trimiteti-ne un email'
+user.chat.submit-ticket-title: 'Trimiteti-ne un email in loc'
+user.chat.transcript_sent: 'Copia conversatie a fost trimisa la adresa: {{email}}'
+user.chat.window_cancel: Anulare
+user.chat.window_cancel-confirm: 'Sunteti sigur ca vreti sa inchideti conversatia?'
+user.chat.window_close: 'Nu multumesc, inchideti fereastra'
+user.chat.window_close_only: 'Inchideti fereastra'
+user.chat.window_end-chat: 'Finalizati chat-ul'
+user.chat.window_offline-button: 'Click aici pentru a ne contacta'
+user.chat.window_open-new: 'Deschideti acest chat intr-o noua fereastra'
+user.chat.window_resume-button: 'Deschideti chat-ul dumneavoastra'
+user.chat.window_start-button: 'Click aici pentru a intra in chat cu noi'
+user.chat.window_upload-drag: 'Atasati fisierul aici pentru a fi urcat in chat'
+user.defaults.article_example_content: 'Acesta este un exemplu de articol knowledgebase. Puteti sa il editati sau sa il stergeti din interfata de agent'
+user.defaults.article_example_title: 'Exemplu de articol'
+user.defaults.department_sales: Vanzari
+user.defaults.department_support: Suport
+user.defaults.downloads_category_general: Documente
+user.defaults.news_example_content: 'Acesta este un exemplu de stire. Puteti edita sau sterge acest exemplu din interfata de agent'
+user.defaults.news_example_title: 'Exemplu de stire'
+user.email_subjects.chat_transcript: 'Inregistrare Chat'
+user.email_subjects.comment-approved: 'Comentariul dumneavoastra a fost aprobat'
+user.email_subjects.comment-deleted: 'Comentariul dumneavoastra a fost citit de agentii nostri'
+user.email_subjects.email-too-big: 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat'
+user.email_subjects.email_new-confirm: 'Va rugam sa validati adresa dumneavoastra de email'
+user.email_subjects.email_primary-confirm: 'Va rugam sa validati adresa dumneavoastra de email'
+user.email_subjects.feedback_new: 'Multumim pentru feedback'
+user.email_subjects.feedback_new-approved: 'Feedback-ul dumneavoastra a fost aprobat'
+user.email_subjects.feedback_new-comment: 'A fost postat un nou comentariu la "{{title}}"'
+user.email_subjects.feedback_new-disapproved: 'Feedback-ul dumneavoastra a fost respins'
+user.email_subjects.feedback_updated: 'Feedback-ul dumneavoastra a fost actualizat: {{title}}'
+user.email_subjects.password_agent-reset: 'Un agent v-a resetat parola'
+user.email_subjects.password_reset: 'Resetare parola'
+user.email_subjects.register-welcome: 'Va multumim ca v-ati inregistrat'
+user.email_subjects.ticket-rate: 'Va rugam sa dati o nota experientei dumneavoastra cu tichetul "{{ticket.subject}}"'
+user.email_subjects.ticket_new-participant: 'O noua persoana a fost adaugata tichetului dumneavoastra'
+user.emails.auto-close: 'Tichetul dumneavoastra "{{ticket.subject}}" va fi inchis automat deoarece nu am primit niciun raspuns. Daca nu doriti ca tichetul sa fie inchis, va rugam sa ne trimiteti un mesaj iar agentii nostri va vor ajuta cu cea mai mare placere.'
+user.emails.chat_transcript: 'Va multumim pentru conversatie. Aceasta este o copie a acesteia'
+user.emails.comment_approved: 'Comentariul dumneavoastra a fost publicat'
+user.emails.comment_deleted: 'Comentariul dumneavoastra a fost folosit pentru imbunatatirea paginii'
+user.emails.comment_thank-you: 'Va multumim pentru comentariul dumneavoastra de la {{link}}.'
+user.emails.email-too-big: 'Emailul dumneavoastra "{{subject}}" nu a fost acceptat deoarece este prea mare. Dimensiunea maxima acceptata de Helpdesk-ul nostru este {{max_size}}. Va rugam sa renuntati la atasamente si sa incercati din nou.'
+user.emails.feedback_agent-validation: 'Va informam ca feedback-ul dumneavoastra nu va fi facut public pe site-ul nostru pana cand va fi revizuit de unul dintre agentii nostri.'
+user.emails.feedback_approved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost aprobat si este vizibil pe site-ul nostru.'
+user.emails.feedback_closed: 'Feedback-ul dumneavoastra "{{title}}" a sfost inchis: {{status}}'
+user.emails.feedback_disapproved: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.'
+user.emails.feedback_disapproved-reason: 'Va trimitem acest email pentru a va anunta ca feedback-ul dumneavoastra a fost respins si nu va fi vizibil pe site-ul nostru.{{name}} a pus urmatorul motiv:'
+user.emails.feedback_new-comment: '{{name}} a adaugat un nou comentariu:'
+user.emails.feedback_published: 'Feedback-ul dumneavoastra "{{title}}" a fost validat si nu va aparea pe site-ul nostru.'
+user.emails.feedback_thank-you: 'Va multumim pentru feedback-ul "{{title}}"'
+user.emails.feedback_updated: 'Feedback-ul dumneavoastra "{{title}}" a fost actualizat. Acesta apare sub noul status  "{{status}}"'
+user.emails.feedback_votes:
+  one: 'Feedback-ul dumneavoastra are acum <strong>1</strong> vot. Puteti sa il vedeti online la:'
+  few: ' Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
+  other: ' Feedback-ul dumneavoastra are acum <strong>{{count}}</strong> voturi. Puteti sa il vizualizati online la:'
+user.emails.greeting: 'Draga {{to_name}},'
+user.emails.label_view-online: 'Vedeti Online'
+user.emails.message-clipped: '(Acest mesaj a fost trunchiat)'
+user.emails.password_agent-reset: 'Un agent v-a resetat parola contului dumneavoastra. Va puteti loga folosind urmatoarele credentiale'
+user.emails.password_reset: 'Ati solicitat resetarea parolei. Pentru a va reseta parola, dati click pe link-ul de mai jos:'
+user.emails.profile_email-new-confirm: 'Pentru a finaliza adaugarea aceste adrese secundare contului dumneavoastra, va rugam sa dati click pe urmatorul link'
+user.emails.profile_email_link-validate: 'Dati click pe urmatorul link pentru a valida adresa dumneavoastra de email'
+user.emails.register-confirm: 'Va multumim pentru crearea contului.<br /><br />Inainte sa va puteti folosi contul trebuie sa dati click pe urmatorul link pentru a valida adresa dumneavoastra de email.'
+user.emails.register-welcome: 'Va multumim ca v-ati inregistrat. Incepand din acest moment va puteti loga in Helpdesk-ul nostru folosind urmatoarea adresa de email: {{to_email}}'
+user.emails.registration_closed: 'Draga {{name}},<br /><br /><br /><br />Tichetele noi sunt acceptate doar de la membrii existenti ai Helpdesk-ului. Daca aveti deja un cont, va rugam sa ne trimiteti un email de la adresa deja inregistrata.'
+user.emails.reject_resolved: 'Mesajul dumneavoastra nu a fost acceptat deoarece tichetul a fost deja marcat ca fiind rezolvat. Agentii nostri nu vor citi sau raspunde la acest mesaj.'
+user.emails.reject_resolved-new: 'Daca doriti sa creati in tichet nou puteti trimite un email la <a href="mailto:{{email_to}}">{{email_to}}</a> sau sa completati formularul nostru online la adresa: <br /><a href="{{link}}">{{link}}</a>'
+user.emails.reject_resolved-newemail: 'Daca doriti sa creati in tichet nou puteti trimite un email la <a href="mailto:{{email_to}}">{{email_to}}</a>'
+user.emails.ticket_access_ticket_online: 'Vedeti si modificati acest tichet online:'
+user.emails.ticket_cc-new: 'Ati fost inclus in conversatia de pe un tichet deschis de {{name}}.'
+user.emails.ticket_flood: 'Ati trimis recent un email catre Helpdesk-ul nostru. Sistemul nostru automat a detectat ca ati trimis o succesiune de mesaje care, cel mai probabil, au fost automate. <br /><br />Pentru a preveni intrarea intr-o bucla de raspunsuri automate, Helpdesk-ul nostru nu va va mai trimite notificari automate.'
+user.emails.ticket_message_title: 'La {{date}}; {{time}}, {{author}} a scris:'
+user.emails.ticket_no-autoresponse: 'Avertizare: Email-urile de confirmare au fost oprite'
+user.emails.ticket_rate-negative: NU
+user.emails.ticket_rate-neutral: 'A fost in regula'
+user.emails.ticket_rate-positive: DA
+user.emails.ticket_rate-question: 'A fost acest mesaj de ajutor?'
+user.emails.ticket_received: 'Tichetul dumneavoastra a fost primit. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.'
+user.emails.ticket_reply-confirm: 'Va multumim pentru raspuns. Unul dintre agentii nostri va va raspunde in cel mai scurt timp posibil.'
+user.emails.ticket_validate: 'Va multumim ca ne-ati contactat. <br /><br />Inainte ca agentii nostri sa citeasca si sa raspunda la mesajul dumneavostra, trebuie sa validati adresa dumneavoastra de email.'
+user.error.attach_ext-allowed: 'Doar urmatoarele tipuri de fisiere pot fi urcate: {{error_detail}}'
+user.error.attach_ext-not-allow: 'Tipul de fisier urcat de dumneavoastra nu este permis.'
+user.error.attach_failed: 'Atasamentul dumneavoastra nu a putut fi urcat (a fost anulat?). Va rugam sa incercati din nou.'
+user.error.attach_no-file: 'Va rugam sa selectati fiserul pe care doriti sa il urcati'
+user.error.attach_size: 'Atasamentul dumneavoastra este prea mare. Marimea maxima admisa este {{error_detail}}'
+user.error.attach_unknown-error: 'A existat o problema cu serverul nostru iar fisierul dumneavoastra nu a fost acceptat. Va rugam sa incercati din nou.'
+user.error.error_code: 'Cod de eroare'
+user.error.error_title: Eroare
+user.error.expired-token: 'Pagina pe care incercati sa o vizualizati a expirat. Va rugam sa mergeti inapoi si sa incercati din nou.'
+user.error.form_choice_invalid: 'Va rugam sa alege o optiune din lista'
+user.error.form_choice_max:
+  one: 'Va rugam sa selectati cel mult 1 optiune'
+  few: ' Va rugam sa selectati cel mult {{count}} optiuni'
+  other: ' Va rugam sa selectati cel mult {{count}} optiuni'
+user.error.form_choice_min:
+  one: 'Va rugam sa selectati cel putin1 optiune'
+  few: ' Va rugam sa selectati cel putin {{count}} optiuni'
+  other: ' Va rugam sa selectati cel putin {{count}} optiuni'
+user.error.form_date_invalid: 'Va rugam sa introduceti o data valida'
+user.error.form_date_invalid_dow: 'Ziua selectata de dumneavoastra nu este disponibila'
+user.error.form_date_invalid_range: 'Data selectata de dumneavoastra nu se afla in perioada permisa.'
+user.error.form_required: 'Acest camp este obligatoriu'
+user.error.form_text_max:
+  one: 'Va rugam sa introduceti cel mult 1 caracter'
+  few: 'Va rugam sa introduceti cel mult {{count}} caractere'
+  other: 'Va rugam sa introduceti cel mult {{count}} caractere'
+user.error.form_text_min:
+  one: 'Va rugam sa introduceti cel putin 1 caracter'
+  few: 'Va rugam sa introduceti cel putin {{count}} caractere'
+  other: 'Va rugam sa introduceti cel putin {{count}} caractere'
+user.error.form_text_regex: 'Va rugam sa introduceti o valoare corecta'
+user.error.invalid_email: 'Adresa de email nu este valida'
+user.error.invalid_email-code: 'Link-ul de validare nu este valid.'
+user.error.invalid_email-explain: 'Nu am putut gasi aceasta adresa de email pe contul dumneavoastra.'
+user.error.not-found: 'Pagina pe care o cautati nu a fost gasita.'
+user.error.not-found-title: 'Nu a fost gasit'
+user.error.permission-denied: 'Ne cerem scuze, actiunea pe care doriti sa o faceti nu este permisa.'
+user.error.permission-denied-login: 'Momentan sunteti delogat.  <a href="{{login_url}}">Logati-va </a> si incercati din nou.'
+user.error.permission-denied-title: 'Nu aveti voie sa faceti acesta actiune'
+user.error.server-error: 'Datorita unei erori pagina nu s-a incarcat. Va rugam sa incercati din nou.'
+user.feedback.submit_feedback: 'Trimite feedback'
+user.general.helpdesk_by: 'Helpdesk software creat de <strong>{{deskpro}}</strong>'
+user.general.label_captcha: 'Cod de confirmare'
+user.general.page: Pagina
+user.lang.lang_title: Română
+user.news.title: Stiri
+user.profile.account_disabled_message: 'Contul dumneavoastra este dezactivat. Nu va veti putea loga, intra pe Chat sau modifica tichete.'
+user.profile.choose_email: 'Alegeti adresa de email pe care vreti sa o folositi'
+user.profile.or_connect_with: 'Sau conecteaza-te cu'
+user.profile.register: Inrestreaza-te
+user.profile.register_password_min_length: 'Va rugam sa introduceti o parola de cel putin 5 caractere'
+user.tickets.feedback_message_leave_comment: 'Optional, puteti lasa un comentariu'
+user.tickets.fields_category: Categorie
+user.tickets.fields_department: Departament
+user.tickets.fields_priority: Prioritate
+user.tickets.fields_product: Produs
+user.tickets.form_error_captcha: 'Va rugam introduceti codul.'
+user.tickets.form_error_captcha_invalid: 'Codul introdus de dumneavoastra este incorect.'
+user.tickets.from_x_at_y: 'De la {{name}} la {{date}}'
+user.tickets.no_subject: '(fara subiect)'
+user.tickets.rate-negative: 'Nu a fost bun'
+user.tickets.rate-neutral: 'A fost OK'
+user.tickets.rate-positive: 'A fost exceptional'
+user.tickets.rate-thanks-vialink: 'Va multumim pentru feedback. Optional, puteti lasa un comentariu mai jos.'
+user.tickets.rate_support: 'Noteaza suportul'
+user.time.long-day_friday: Vineri
+user.time.long-day_monday: Luni
+user.time.long-day_saturday: Sambata
+user.time.long-day_sunday: Duminica
+user.time.long-day_thursday: Joi
+user.time.long-day_tuesday: Marti
+user.time.long-day_wednesday: Miercuri
+user.time.long-month_april: Aprilie
+user.time.long-month_december: Decembrie
+user.time.long-month_february: Februarie
+user.time.long-month_january: Ianuarie
+user.time.long-month_july: Iulie
+user.time.long-month_june: Iunie
+user.time.long-month_march: Martie
+user.time.long-month_may: Mai
+user.time.long-month_november: Noiembrie
+user.time.long-month_october: Octombrie
+user.time.long-month_september: Septembrie
+user.time.short-day_friday: Vin
+user.time.short-day_monday: Lun
+user.time.short-day_saturday: Sam
+user.time.short-day_sunday: Dum
+user.time.short-day_thursday: Joi
+user.time.short-day_tuesday: Mar
+user.time.short-day_wednesday: Mie
+user.time.short-month_january: Ian
+user.time.short-month_july: Iul
+user.time.short-month_june: Iun
+user.time.short-month_may: Mai
+user.time.short-month_november: Noi
+user.time.time-ago_1_day: 'Acum 1 zi'
+user.time.time-ago_1_hour: 'Acum 1 ora'
+user.time.time-ago_1_minute: 'Acum 1 minut'
+user.time.time-ago_1_month: 'Acum 1 luna'
+user.time.time-ago_1_second: 'Acum 1 secunda'
+user.time.time-ago_1_week: 'Acum 1 saptamana'
+user.time.time-ago_1_year: 'Acum 1 an'
+user.time.time-ago_less_second: 'cu mai putin de 1 secunda inainte'
+user.time.time-ago_x_day: '{0} zile inainte'
+user.time.time-ago_x_hour: '{0} ore inainte'
+user.time.time-ago_x_minute: '{0} minute inainte'
+user.time.time-ago_x_month: '{0} luni inainte'
+user.time.time-ago_x_second: '{0} secunde inainte'
+user.time.time-ago_x_week: '{0} saptamani inainte'
+user.time.time-ago_x_year: '{0} ani inainte'
+user.time.time_1_day: '1 zi'
+user.time.time_1_hour: '1 ora'
+user.time.time_1_minute: '1 minut'
+user.time.time_1_month: '1 luna'
+user.time.time_1_second: '1 secunda'
+user.time.time_1_week: '1 saptamana'
+user.time.time_1_year: '1 an'
+user.time.time_less_second: 'acum mai putin de o secunda'
+user.time.time_x_day: '{0} zile'
+user.time.time_x_hour: '{0} ore'
+user.time.time_x_minute: '{0} minute'
+user.time.time_x_month: '{0} luni'
+user.time.time_x_second: '{0} secunde'
+user.time.time_x_week: '{0} saptamani'
+user.time.time_x_year: '{0} ani'

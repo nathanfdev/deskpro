@@ -1,0 +1,1209 @@
+portal.account.automatically_join_org_tickets: 'Automatically join {{org_name}}''s tickets?'
+portal.account.change-password: 'Change Password'
+portal.account.change-password-btn: 'Update Password'
+portal.account.comment-lockout: 'You have submitted a lot of comments. Please wait to submit more.'
+portal.account.email-add: 'Add Email'
+portal.account.email-add-description: 'Add additional email addresses to your account. You can submit tickets from these email addresses and the system will track them under a single account.'
+portal.account.email-btn-make-primary: 'Make Primary'
+portal.account.email-btn-remove: 'Remove email'
+portal.account.email-btn-resend-validation: 'Resend validation email'
+portal.account.email-btn-usersource-set: 'Add Email Address'
+portal.account.email-management: 'Manage Emails'
+portal.account.email-management-from-form: 'Manage Your Email Addresses'
+portal.account.email-primary-description: 'This is your primary email. It will be used by default unless you have specified otherwise.'
+portal.account.feedback-lockout: 'You have submitted feedback too many times so you have been locked out. Please try again later.'
+portal.account.link-expired: 'Sorry, the link you clicked has expired or has already been used before.'
+portal.account.lockout_time: 'You can try again in {{time}} minutes.'
+portal.account.login-btn: Login
+portal.account.login-btn-usersource: 'Login with {{usersource}}'
+portal.account.login-captcha-failed: 'You have entered an invalid CAPTCHA code. Please try again.'
+portal.account.login-disabled: 'Your email address has been banned.'
+portal.account.login-email: 'Your email'
+portal.account.login-email-placeholder: email@example.com
+portal.account.login-external: 'Login with an external service'
+portal.account.login-form-disabled: 'Login form is disabled'
+portal.account.login-invalid: 'You have entered the wrong email or password. Please try again.'
+portal.account.login-lockout: 'You have failed login too many times so you have been locked out. Please try again later.'
+portal.account.login-not-configured: 'External service is not configured.'
+portal.account.login-password: 'Your password'
+portal.account.login-password-reminder: 'Need a password reminder?'
+portal.account.login-register-btn: Register
+portal.account.login-register-header: Register
+portal.account.login-remember: 'Stay Logged In?'
+portal.account.login-saved-add_email: 'Your add email has not been submitted yet. Please login to continue.'
+portal.account.login-saved-comment: 'Your comment has not been submitted yet. Please login to continue.'
+portal.account.login-saved-form: 'Your form has not been submitted yet. Please login to continue.'
+portal.account.login-saved-new_feedback: 'Your new feedback has not been submitted yet. Please login to continue.'
+portal.account.login-saved-new_ticket: 'Your new ticket has not been submitted yet. Please login to continue.'
+portal.account.login-saved-register: 'Your register has not been submitted yet. Please login to continue.'
+portal.account.login-stay-logged-in: 'Stay Logged In?'
+portal.account.logout-btn: Logout
+portal.account.logout-confirm: 'Are you sure you want to log out?'
+portal.account.new-ticket-no-login: 'Portal CRM is disabled. Unable to submit a ticket.'
+portal.account.profile-btn-save: 'Save Profile'
+portal.account.profile-delete-picture: 'Change or delete profile picture?'
+portal.account.register-btn: Register
+portal.account.register-lockout: 'You have registered too many times. Registration is now locked for you. Please try again later.'
+portal.account.registration-set-password: 'An account with this email already exists. We have sent you an email that will allow you to set your password and login.'
+portal.account.reset-password-btn: 'Reset Password'
+portal.account.reset-password-click-here: 'Click here to request a password reset code'
+portal.account.reset-password-invalid-desc: 'Your password reset code is invalid or has expired. To reset your password, please request a new code.'
+portal.account.reset-password-invalid-input: 'Please enter a valid email address or username'
+portal.account.reset-password-lockout: 'You have tried to reset your password too many times. You will be locked out for a short period of time. Please try again later.'
+portal.account.reset-password-request-desc: 'Complete this form to have a password reset link sent to you.'
+portal.account.reset-password-request-title: 'Forgot your password?'
+portal.account.reset-password-sent-desc: 'We have received your password reset request for the email shown below. If this email address belongs to a registered account, we have sent an email with a password reset link to that account''s primary email address. Please check your email inbox for further instructions.'
+portal.account.reset-password-sent-title: 'Password Request Received'
+portal.account.reset-password-sent-to: 'We sent an email to'
+portal.account.reset-password-success: 'Your password has been updated.'
+portal.account.section-desc-login: 'Already have an account? Login below.'
+portal.account.section-desc-login-external: 'Use the links below if you have an account with another provider.'
+portal.account.section-desc-register: 'Register an account so you can easily manage your communications.'
+portal.account.section-title-emails: Emails
+portal.account.section-title-login: Login
+portal.account.section-title-profile: Profile
+portal.account.section-title-register: Register
+portal.account.section-title-reset-password: 'Reset Password'
+portal.account.section-title-set-password: 'Set Password'
+portal.account.section-title-usersource-email: 'Enter Your Email'
+portal.account.section-title-your-account: 'Your Account'
+portal.account.set-password-btn: 'Set Password'
+portal.account.set-password-click-here: 'Click here to set your password'
+portal.account.set-password-for-user: 'Your account does not have a password yet. Please set one now so that you can login to post content in the future.'
+portal.account.set-password-invalid-desc: 'Your password code is invalid or has expired. To set your password, please request a new code.'
+portal.account.set-password-invalid-input: 'Please enter a valid email address or username'
+portal.account.set-password-request-desc: 'Complete this form and we will email you a link to set your password.'
+portal.account.set-password-request-title: 'Set Your Password'
+portal.account.set-password-sent-desc: 'We have sent you an email with instruction on how to set your password.'
+portal.account.set-password-sent-title: 'Set Your Password'
+portal.account.set-password-sent-to: 'We sent an email to'
+portal.account.set-password-success: 'Your password has been updated.'
+portal.account.share-lockout: 'You have shared content too many times so you have been locked out. Please try again later.'
+portal.account.submit-saved-add_email: 'Your add email has not been submitted yet but we have saved it for you.'
+portal.account.submit-saved-comment: 'Your comment has not been submitted yet but we have saved it for you.'
+portal.account.submit-saved-form: 'Your form has not been submitted yet but we have saved it for you.'
+portal.account.submit-saved-form-go: 'Click here to automatically re-submit the form.'
+portal.account.submit-saved-new_feedback: 'Your new feedback has not been submitted yet but we have saved it for you.'
+portal.account.submit-saved-new_ticket: 'Your new ticket has not been submitted yet but we have saved it for you.'
+portal.account.submit-saved-register: 'Your register has not been submitted yet but we have saved it for you.'
+portal.account.tickets-lockout: 'You have submitted too many tickets so you have been locked out. Please try again later.'
+portal.account.usersource-set-email-desc: 'Before you can login we need your email address. Please enter your email address below so we can send you a verification email.'
+portal.account.welcome-back: 'Welcome back'
+portal.account.your-emails: 'Your Email Addresses'
+portal.account.your-pending-email-addresses: 'Your Pending Email Addresses'
+portal.articles.by-line: 'By {{name}} on {{date}}'
+portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
+portal.articles.none: 'No articles yet'
+portal.articles.search-title: Knowledgebase
+portal.articles.section-desc: 'Our knowledgebase contains articles written by our support agents to help you.'
+portal.articles.section-title: Knowledgebase
+portal.articles.share-by-email: 'Share this article by email:'
+portal.articles.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
+portal.articles.view-x-articles:
+  one: 'View 1 article'
+  other: 'View {{count}} articles'
+portal.articles.x-articles:
+  one: '1 article'
+  other: '{{count}} articles'
+portal.chat.agent_blocked_user_on: '{{name}} set a block on {{date}}'
+portal.chat.agent_disconnected: '{{agentName}} seems to have been disconnected'
+portal.chat.agent_typing_message: '{{agentName}} is typing a message'
+portal.chat.asset_failed: failed
+portal.chat.asset_not_delivered: 'Not delivered'
+portal.chat.assigned_to: 'Chat assigned to {{name}}'
+portal.chat.attached_photo: '{{authorName}} attached this photo'
+portal.chat.block_ip_address: 'Block IP address'
+portal.chat.block_ip_address_info: 'Blocking on the IP address can be more effective, but may result in other people who share the same connection being blocked.'
+portal.chat.block_reason: 'Reason: {{reason}}'
+portal.chat.block_title: 'End the chat and block this user from starting a new chat for the next 24 hours.'
+portal.chat.block_user: 'Block User'
+portal.chat.cancel_end_chat: 'Cancel and return to chat'
+portal.chat.chat_logs_header: 'Your Chat Logs'
+portal.chat.chat_logs_header_org: 'Organization Chat Logs'
+portal.chat.chat_transcript: 'Chat Transcript'
+portal.chat.check_validation_code: 'Check your email and then enter the code below'
+portal.chat.create_ticket: 'Create ticket'
+portal.chat.details-placeholder: 'First name, Last name'
+portal.chat.dismiss_message: 'Dismiss message'
+portal.chat.dropzone1: 'Dropping this file here'
+portal.chat.dropzone2: 'Will send it as a message'
+portal.chat.end_chat: 'End Chat'
+portal.chat.end_chat_confirm_title: 'Are you sure you want to end this chat?'
+portal.chat.ended_by: 'Chat ended by {{name}}'
+portal.chat.ended_by_reason: 'Chat ended by {{name}}: {{reason}}'
+portal.chat.ended_user: 'Chat ended by user'
+portal.chat.expired_jwt_token: 'Your JWT token is expired.'
+portal.chat.feedback_action: 'Send Feedback'
+portal.chat.feedback_enter_message: 'Enter your message here'
+portal.chat.feedback_label: Comment
+portal.chat.feedback_not_helpful_title: 'You have rated <br /> {{agentName}} as <span class="negative">{{notHelpful}}</span>'
+portal.chat.feedback_title: 'Thank you for your feedback!'
+portal.chat.find_agent_now: 'Find another agent now'
+portal.chat.find_another_agent: 'If they don''t return soon, we''ll find another agent for you.'
+portal.chat.full_message: 'Full Message'
+portal.chat.helpful: Helpful
+portal.chat.ident_unconfirmed: 'Identity not confirmed, email has not been validated'
+portal.chat.invalid_jwt_token: 'Your JWT token is not valid.'
+portal.chat.label-department: 'Select department'
+portal.chat.label-email: 'Your Email'
+portal.chat.label-name: 'Your Name'
+portal.chat.list_agent: Agent
+portal.chat.list_chat: Chat
+portal.chat.list_date: Date
+portal.chat.list_switch_to_my_chats: 'Switch to My Chats'
+portal.chat.list_switch_to_organization: 'Switch to Organization'
+portal.chat.list_title:
+  one: '1 Chat'
+  other: '{{count}} Chats'
+portal.chat.list_user: User
+portal.chat.log_agents: Agents
+portal.chat.log_chat_time: 'Total Chat Time'
+portal.chat.log_department: Department
+portal.chat.log_linked_ticket: 'Assigned to ticket'
+portal.chat.log_title: 'Your chat with {{person}}'
+portal.chat.log_view_linked_ticket: 'View Ticket'
+portal.chat.looking_for_another_agent: 'We''re looking for a new agent.'
+portal.chat.lost_connection: 'Lost connection. Trying to reconnect.'
+portal.chat.message_agent-timeout: '{{name}} is not responding. Please wait while we try to find another agent.'
+portal.chat.message_assigned: 'Chat assigned to {{name}}'
+portal.chat.message_ended: 'Chat ended'
+portal.chat.message_ended-by: 'Chat ended by {{name}}'
+portal.chat.message_ended-by-user: 'Chat ended by user'
+portal.chat.message_set-department: '{{name}} set department to {{department}}'
+portal.chat.message_set_department: '{{name}} set department to {{department}}'
+portal.chat.message_started: 'Chat started'
+portal.chat.message_type: 'Type your message to {{agentName}}'
+portal.chat.message_unassigned: 'Chat unassigned'
+portal.chat.message_uploading: Uploading...
+portal.chat.message_user-joined: '{{name}} joined the chat'
+portal.chat.message_user-left: '{{name}} left the chat'
+portal.chat.message_user-returned: 'User has returned'
+portal.chat.message_user-timeout: 'User timeout: The system has detected that the user has been disconnected or has left the chat page. If the user does not return, the chat will soon be ended automatically.'
+portal.chat.message_user_joined: '{{name}} joined the chat'
+portal.chat.message_user_left: '{{name}} left the chat'
+portal.chat.message_wait-long: 'Sorry! It’s taking longer than expected to find an agent to take your chat.'
+portal.chat.message_wait-pending: 'We are finding you an agent...'
+portal.chat.message_wait-ticket: 'Would you like to submit a ticket instead?'
+portal.chat.message_wait-timeout: 'Chat ended: Sorry. We could not find you an agent right now.'
+portal.chat.missing_jwt_token: 'JWT token is required.'
+portal.chat.msg_agent_timeout: '{{name}} is not responding. Please wait while will try to find another agent.'
+portal.chat.msg_new_user_track: 'User is viewing: {{label}}'
+portal.chat.msg_user_timeout: 'User is not responding.'
+portal.chat.mute_button: Mute
+portal.chat.new_chat: 'New Chat'
+portal.chat.not_helpful: 'Not Helpful'
+portal.chat.online_agent: 'You are chatting with <span class="name">{{agentName}}</span>'
+portal.chat.rate_agent_title: 'You just had a chat session with {{agentName}}'
+portal.chat.reopen_chat: 'Reopen this chat'
+portal.chat.reopen_chat_action: 'Reopen chat'
+portal.chat.reply_to: 'Reply to {{firstName}}'
+portal.chat.require_validate_email: 'We require you to validate your email address before we can chat.'
+portal.chat.screen_share: 'Screen Share'
+portal.chat.see_full_image: 'Click here to see the full image'
+portal.chat.send_another_validation_email: 'Send me another email'
+portal.chat.sent_validation_code: 'We sent you an email with a validation code.'
+portal.chat.start: 'Start a new chat'
+portal.chat.support_powered_by: 'Support powered by {{DeskPRO}}'
+portal.chat.take_chat: 'Take Chat'
+portal.chat.taken_by: 'Chat Taken by'
+portal.chat.transcript_action: 'Send me a transcript'
+portal.chat.transcript_already_sent: 'A transcript has already been sent to <b>{{email}}</b>'
+portal.chat.transcript_desc: 'Enter your name & email below and we''ll email it to you.'
+portal.chat.transcript_sent: 'Transcript sent to {{email}}'
+portal.chat.transcript_title: 'Need a transcript of this chat?'
+portal.chat.type_message_to: 'Type your message to {{firstName}}'
+portal.chat.unassigned: 'Chat unassigned'
+portal.chat.unblock: Unblock
+portal.chat.upload_file: 'Upload file'
+portal.chat.user_is_blocked: 'User is blocked'
+portal.chat.validation_email_was_sent: 'Another email was successfully sent.'
+portal.chat.visitor_info: 'Visitor Information'
+portal.chat.you: You
+portal.chat.you_have_been_invited: 'You have been invited to join a chat'
+portal.downloads.download: Download
+portal.downloads.none: 'No downloads yet'
+portal.downloads.recent-downloads: 'Recent Downloads'
+portal.downloads.search-title: Downloads
+portal.downloads.section-desc: 'Browse our collection of downloads.'
+portal.downloads.section-title: Downloads
+portal.downloads.uploaded-on: Uploaded
+portal.downloads.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
+portal.downloads.view-x-files:
+  one: 'View 1 download'
+  other: 'View {{count}} downloads'
+portal.email_subjects.chat_transcript: 'Chat Transcript'
+portal.email_subjects.comment-approved: 'Your comment was approved'
+portal.email_subjects.comment-confirmation: 'Thank you for your comment'
+portal.email_subjects.comment-deleted: 'Your comment was read by our agents'
+portal.email_subjects.download_sub_new: 'New Downloads'
+portal.email_subjects.download_sub_new_and_updated: 'New and Updated Downloads'
+portal.email_subjects.download_sub_updated: 'Updated Downloads'
+portal.email_subjects.email-too-big: 'Your email "{{subject}}" was not accepted'
+portal.email_subjects.email_new-confirm: 'Validate your email address'
+portal.email_subjects.email_primary-confirm: 'Validate your email address'
+portal.email_subjects.email_ticket-reminder: 'Action Required: Your ticket has not yet been submitted'
+portal.email_subjects.feedback_new: 'Thank you for submitting your feedback'
+portal.email_subjects.feedback_new-approved: 'Your feedback has been published'
+portal.email_subjects.feedback_new-comment: 'There is a new comment on "{{title}}"'
+portal.email_subjects.feedback_new-confirm: 'Thank you for submitting your feedback (validation required)'
+portal.email_subjects.feedback_new-disapproved: 'Sorry. Your feedback item has been declined'
+portal.email_subjects.feedback_sub_updated: 'Updated Feedback'
+portal.email_subjects.feedback_updated: 'Your feedback was updated: {{title}}'
+portal.email_subjects.kb_sub_new: 'New Articles'
+portal.email_subjects.kb_sub_new_and_updated: 'New and Updated Articles'
+portal.email_subjects.kb_sub_updated: 'Updated Articles'
+portal.email_subjects.new-ticket-guest: 'Thank you for contacting us'
+portal.email_subjects.news_sub_new: 'Breaking News'
+portal.email_subjects.news_sub_new_and_updated: 'New and Updated News'
+portal.email_subjects.news_sub_updated: 'Updated News'
+portal.email_subjects.password_agent-reset: 'An agent has reset your password'
+portal.email_subjects.password_reset: 'Reset Password'
+portal.email_subjects.password_set: 'Set Your Password'
+portal.email_subjects.re: 'RE: {{subject}}'
+portal.email_subjects.register-welcome: 'Thank you for registering'
+portal.email_subjects.register-welcome-byagent: 'Your new helpdesk account'
+portal.email_subjects.remind_unresolved_final_subject: 'REMINDER: {{ticket.subject}}'
+portal.email_subjects.remind_unresolved_subject: 'REMINDER: {{ticket.subject}}'
+portal.email_subjects.share-article: '{{author_name}} wants to share this article with you'
+portal.email_subjects.ticket-rate: 'Please rate your support experience for your ticket "{{ticket.subject}}"'
+portal.email_subjects.ticket_added_cc: 'You have been added to the ticket "{{ticket.subject}}"'
+portal.email_subjects.ticket_new-participant: 'A new person has been added to your ticket'
+portal.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
+portal.email_subjects.too-many-emails: 'NOTICE: You have sent too many emails'
+portal.email_subjects.validate-email: 'Validate your email address'
+portal.emails.auto-close: 'We have not heard from you regarding your ticket: "{{ticket.subject}}". Please let us know if you require any further assistance, otherwise your ticket will be resolved shortly.'
+portal.emails.chat_transcript: 'Thank you for chatting with us. Here is your chat transcript.'
+portal.emails.comment_approved: 'Your comment has been published.'
+portal.emails.comment_deleted: 'Your comment was used to improve this page: {{link}}.'
+portal.emails.comment_thank-you: 'Thank you for your comment on {{link}}.'
+portal.emails.comment_validate-email: 'Please validate your email address by clicking the following link:'
+portal.emails.do-not-reply: 'Please do not reply to this email. This is an automatically-generated message and replies will not be read by our agents.'
+portal.emails.download-new-downloads:
+  one: '1 New Download'
+  other: '{{count}} New Downloads'
+portal.emails.download-updated-downloads:
+  one: '1 Updated Download'
+  other: '{{count}} Updated Downloads'
+portal.emails.downloads-explain: 'You are receiving this email because you have subscribed to updates about downloads available at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all downloads notifications.</a>'
+portal.emails.email-too-big: 'Your email "{{subject}}" was not accepted because it is too big. The maximum email size this helpdesk accepts is {{max_size}}. Remove large attachments and try again.'
+portal.emails.end_greeting: 'Regards,<br /><br />{{site_name}}''s'
+portal.emails.feedback-explain: 'You are receiving this email because you subscribed to updates about feedback items at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
+portal.emails.feedback-updated-items:
+  one: '1 Updated Feedback Item'
+  other: '{{count}} Updated Feedback Items'
+portal.emails.feedback_agent-validation: 'Note that your feedback will not appear publicly on our support portal until one of our agents approves it.'
+portal.emails.feedback_approved: 'We wanted to let you know that your feedback has been approved and is now publicly visible on our support portal.'
+portal.emails.feedback_closed: 'Your submitted feedback "{{title}}" was closed: {{status}}'
+portal.emails.feedback_disapproved: 'We wanted to let you know that your feedback has been declined and will not appear publicly on our support portal.'
+portal.emails.feedback_disapproved-reason: 'We wanted to let you know that your feedback has been declined and will not appear publicly on our support portal. {{name}} gave the following reason:'
+portal.emails.feedback_new-comment: '{{name}} posted a new comment:'
+portal.emails.feedback_published: 'Your submitted feedback "{{title}}" has been validated and will now appear on our support portal.'
+portal.emails.feedback_thank-you: 'Thank you for submitting your feedback "{{title}}"'
+portal.emails.feedback_updated: 'Your submitted feedback "{{title}}" has been updated. Its new status is "{{status}}"'
+portal.emails.feedback_validate-email: 'Please validate your email address by clicking the following link:'
+portal.emails.feedback_votes:
+  one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
+  other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
+portal.emails.greeting: 'Dear {{to_name}},'
+portal.emails.kb-explain: 'You are receiving this email because you subscribed to updates about our knowledgebase articles at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
+portal.emails.kb-new-articles:
+  one: '1 New Knowledgebase Article'
+  other: '{{count}} New Knowledgebase Articles'
+portal.emails.kb-updated-articles:
+  one: '1 Updated Knowledgebase Article'
+  other: '{{count}} Updated Knowledgebase Articles'
+portal.emails.label_view-online: 'View Online'
+portal.emails.message-clipped: '(Message has been clipped)'
+portal.emails.new-ticket-guest-link: 'Thank you for contacting us. You may view the status of your ticket online here:'
+portal.emails.news-explain: 'You are receiving this email because you subscribed to updates about feedback items at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all news notifications.</a>'
+portal.emails.news-new-articles:
+  one: '1 New News Post'
+  other: '{{count}} New News Posts'
+portal.emails.news-updated-articles:
+  one: '1 Updated News Post'
+  other: '{{count}} Updated News Posts'
+portal.emails.password_agent-reset: 'An agent has reset your account password. You can log in with these details'
+portal.emails.password_reset: 'You requested a password reset. To reset your password, click on the link below:'
+portal.emails.password_set: 'To set your password, click on the link below:'
+portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
+portal.emails.profile_email-primary-confirm: 'To verify your primary email address, simply click on the following link'
+portal.emails.profile_email_link-validate: 'Click on the following link to validate your email address'
+portal.emails.ratelimit_explain: 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be removed and you will be able to send emails again.'
+portal.emails.ratelimit_submit-online: 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:'
+portal.emails.register-agent-validation: 'Note: Before your account is fully active, our agents will need to validate your account. Anything you submit now will be on hold until an agent validates your account.'
+portal.emails.register-confirm: 'Thank you for registering an account.<br /><br />Before you can use your account, you must click on the following link to validate your email address'
+portal.emails.register-password: 'Your initial password is: {{password}}'
+portal.emails.register-welcome: 'Thank you for registering. You can now log in using your email address {{to_email}} on our helpdesk:'
+portal.emails.register-welcome-byagent: 'A new account has been created for you. You can now log in using your email address {{to_email}} on our helpdesk:'
+portal.emails.registration_closed: 'Dear {{name}},<br /><br />New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.'
+portal.emails.reject_resolved: 'Your reply was not accepted because your ticket has already been marked as resolved. Our agents will not read or reply to this message.'
+portal.emails.reject_resolved-new: 'If you want to create a brand new ticket, you can send an email to <a href="mailto:{{email_to}}">{{email_to}}</a> or use our contact form at:<br /><a href="{{link}}">{{link}}</a>'
+portal.emails.reject_resolved-newemail: 'If you want to create a brand new ticket, you can send an email to <a href="mailto:{{email_to}}">{{email_to}}</a>'
+portal.emails.remind_unresolved: 'This is a follow-up message to remind you that you still have an open ticket with {{helpdesk_name}}.<br />If you don''t need any further help with this, please click the link below to let us know:<br /><a href="{{resolve_url}}">{{resolve_url}}</a><br />If you still need help, reply to this email.'
+portal.emails.remind_unresolved_final: 'We haven''t heard from you recently about this ticket.<br />If you still need help, simply reply to this email.<br />If you don''t need any further assistance with this issue, please click the link below to let us know:<br /><a href="{{resolve_url}}">{{resolve_url}}</a>'
+portal.emails.remind_unresolved_final_subject: 'REMINDER: {{ticket.subject}}'
+portal.emails.remind_unresolved_subject: 'REMINDER: {{ticket.subject}}'
+portal.emails.ticket-reminder: 'Your ticket is awaiting email validation. Please click the link below to submit your ticket and verify your email address. Your ticket will be deleted without being seen by an agent if you do not click this link before {{expire_date}}.'
+portal.emails.ticket_access_ticket_online: 'View and manage this ticket online:'
+portal.emails.ticket_cc-added: '{{author_name}}, {{author_email}}, has added you to the ticket {{ticket.subject}}.'
+portal.emails.ticket_cc-added-reply: 'Replying to this email will reply to the ticket.'
+portal.emails.ticket_cc-added-reply-view: 'Replying to this email will reply to the ticket, or you can view the ticket online here:'
+portal.emails.ticket_cc-new: 'You have been included in a ticket started by {{name}}.'
+portal.emails.ticket_flood: 'You recently sent an email to our helpdesk. We have detected that you sent many messages in rapid succession that were most likely automated.<br /><br />To prevent an endless loop of automatic emails, our helpdesk will not send any more automatic notification emails to you.'
+portal.emails.ticket_message_title: 'On {{date}} at {{time}}, {{author}} wrote:'
+portal.emails.ticket_no-autoresponse: 'Warning: Confirmation emails turned off'
+portal.emails.ticket_rate-negative: 'No'
+portal.emails.ticket_rate-neutral: 'It was OK'
+portal.emails.ticket_rate-positive: 'Yes'
+portal.emails.ticket_rate-question: 'Was this message helpful?'
+portal.emails.ticket_rate-request: 'How would you rate the support you received on your ticket "{{ticket.subject}}"?'
+portal.emails.ticket_received: 'Your ticket has been received. One of our agents will reply to you shortly.'
+portal.emails.ticket_reply-confirm: 'Thank you for your reply. One of our agents will reply to you shortly.'
+portal.emails.ticket_validate: 'Thank you for contacting us.<br /><br />Before our agents can read and reply to your message, you must validate your email address.'
+portal.emails.tickets_ommitted:
+  one: '1 message has been omitted'
+  other: '{{count}} messages have been omitted'
+portal.emails.validate-email: 'Please confirm that this email address is yours by clicking the link below.'
+portal.emails.view_full_history_online: 'View full ticket online'
+portal.error.400-desc: 'Sorry, but your request was malformed.'
+portal.error.400-title: 'Bad Request'
+portal.error.403-desc: 'Sorry, but you do not have access to view this page.'
+portal.error.403-title: 'No Access'
+portal.error.404-desc: 'Sorry, but we couldn''t find this page.'
+portal.error.404-title: 'Not Found'
+portal.error.contact: 'If you feel that this is an error, please contact us.'
+portal.error.general-desc: 'Sorry, but an error occurred. Please try again later or contact us.'
+portal.error.general-title: 'An Error Occurred'
+portal.feedback.attachments: Attachments
+portal.feedback.btn-closed: Closed
+portal.feedback.btn-vote: 'I Agree'
+portal.feedback.dir_asc: ASC
+portal.feedback.dir_desc: DESC
+portal.feedback.error_hidden: 'This feedback item is hidden'
+portal.feedback.error_login: 'Please login'
+portal.feedback.filter_all_items: 'All items'
+portal.feedback.filter_closed_items: 'Closed items'
+portal.feedback.filter_open_items: 'Open items'
+portal.feedback.form_attach_files: 'Attach files'
+portal.feedback.form_btn_submit: 'Add your feedback'
+portal.feedback.form_email_not_shown: 'Your Email (will not be shown publicly)'
+portal.feedback.form_i_have_a: 'I have a'
+portal.feedback.form_logged_in_as: 'Logged in as: <span>{{name}}</span>, from email <span>{{email}}</span>.'
+portal.feedback.form_logout: 'Not you?'
+portal.feedback.form_tell_us_more: 'Tell us more'
+portal.feedback.form_title: Title
+portal.feedback.module_forbidden: 'You don''t have access to this module'
+portal.feedback.no_matching: 'No matching feedback'
+portal.feedback.none: 'No feedback yet'
+portal.feedback.rate_forbidden: 'You are not allowed to vote'
+portal.feedback.recent-feedback: 'Recent Feedback'
+portal.feedback.search-title: Feedback
+portal.feedback.section-desc: 'These feedback items have been submitted by customers like you; we encourage you to discuss and vote on those you agree with, and to submit your own feedback if the idea is not already listed.'
+portal.feedback.section-title: Feedback
+portal.feedback.sort_comments: Comments
+portal.feedback.sort_date: Date
+portal.feedback.sort_popularity: Popularity
+portal.feedback.sort_rating: Rating
+portal.feedback.sort_views: Views
+portal.feedback.status_active: 'Open items'
+portal.feedback.status_all: 'All items'
+portal.feedback.status_closed: 'Closed items'
+portal.feedback.submit_feedback: 'Submit feedback'
+portal.feedback.view-x-feedback:
+  one: 'View 1 feedback'
+  other: 'View {{count}} feedback'
+portal.flashes.article_cat_subscribe: 'You have successfully subscribed to this category. You will be notified when new articles are posted.'
+portal.flashes.article_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
+portal.flashes.article_subscribe: 'You have successfully subscribed to this article. You will be notified when it is updated or when there is a new comment.'
+portal.flashes.article_unsubscribe: 'You have successfully unsubscribed from this article.'
+portal.flashes.article_unsubscribe_everything: 'You have unsubscribed from all Knowledgebase notifications'
+portal.flashes.comment_thank_you: 'Thank you for your comment!'
+portal.flashes.comment_thank_you_review: 'Thank you for your comment! It will be visible on the portal after agent review.'
+portal.flashes.download_cat_subscribe: 'You have successfully subscribed to this category. You will be notified when new files are available for download.'
+portal.flashes.download_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
+portal.flashes.download_subscribe: 'You have successfully subscribed to this download. You will be notified when it is updated or when there is a new comment.'
+portal.flashes.download_unsubscribe: 'You have successfully unsubscribed from this download.'
+portal.flashes.download_unsubscribe_everything: 'You have unsubscribed from all downloads notifications'
+portal.flashes.email_sent: 'Your email has been sent'
+portal.flashes.feedback_login: 'You should log in to vote'
+portal.flashes.feedback_subscribe: 'You have successfully subscribed to this feedback item. You will be notified when it is updated or when there is a new comment.'
+portal.flashes.feedback_unsubscribe: 'You have successfully unsubscribed from this feedback item.'
+portal.flashes.feedback_unsubscribe_everything: 'You have unsubscribed from all feedback notifications'
+portal.flashes.guest_content_must_verify: 'Before we can post your content you must verify your email. Please check your email inbox. We have sent you a verification link.'
+portal.flashes.guest_new_ticket_must_verify: 'Before we can accept your ticket we must verify your email address. Please check your email inbox. We have sent you a verification link.'
+portal.flashes.new_feedback_awaiting_review: 'Thank you for your feedback. It will be visible on our support portal after agent review.'
+portal.flashes.new_feedback_posted: 'Thank you for your feedback.'
+portal.flashes.news_cat_subscribe: 'You have successfully subscribed to this category. You will be notified of new posts.'
+portal.flashes.news_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
+portal.flashes.news_subscribe: 'You have successfully subscribed to this news article. You will be notified when there are new comments.'
+portal.flashes.news_unsubscribe: 'You have successfully unsubscribed from this news article.'
+portal.flashes.news_unsubscribe_everything: 'You have unsubscribed from all news article notifications'
+portal.flashes.rating_thanks: 'Thank you for your feedback!'
+portal.flashes.ticket_created: 'Your ticket has been submitted. Thanks!'
+portal.flashes.ticket_feedback_thank_you: 'Thank you for your feedback!'
+portal.flashes.ticket_participant_add: 'We have added {{name}} ({{email}}) as a participant to this ticket.'
+portal.flashes.ticket_participant_add_unknown_error: 'There was a problem when trying to add your participant. Please try again.'
+portal.flashes.ticket_participant_already_error: 'The person you tried to add as a participant is already a participant on this ticket.'
+portal.flashes.ticket_participant_cc_limit_reached: 'Maximum CC''s limit ({{max}}) reached'
+portal.flashes.ticket_participant_email_error: 'Please enter a valid email for your participant and try again.'
+portal.flashes.ticket_participant_remove: 'We have removed {{name}} ({{email}}) as a participant to this ticket.'
+portal.flashes.ticket_participant_remove_unknown_error: 'There was a problem when trying to remove your participant. Please try again.'
+portal.flashes.ticket_re_opened: 'You have re-opened this ticket.'
+portal.flashes.ticket_replied: 'Your reply has been submitted. Thanks!'
+portal.flashes.ticket_resolved: 'Your ticket is now marked as resolved. Thank you.'
+portal.flashes.ticket_updated: 'Your ticket has been updated. Thanks!'
+portal.flashes.user_add_email_verified: 'Your email address has been added to your account.'
+portal.flashes.user_add_email_verify: 'We need to verify your email before we add it to your account. Please check your email inbox for a verification link.'
+portal.flashes.user_changed_password: 'Your password has been updated.'
+portal.flashes.user_changed_primary_email: 'Your primary email address has been changed.'
+portal.flashes.user_registered_must_verify: 'Thank you for registering. Please check your email, we have sent you a verification link.'
+portal.flashes.user_registered_verified: 'Thank you. Your email address has been verified.'
+portal.flashes.user_registered_verified_authenticated: 'Thank you. Your email address has been verified and you have been logged in.'
+portal.flashes.user_removed_an_email: 'Your email address {{email}} was removed.'
+portal.flashes.user_resend_email_verify: 'The validation email has been sent to your email address again.'
+portal.flashes.user_updated_profile: 'Your profile has been updated.'
+portal.flashes.usersource_new_add_email_verified: 'Thank you for verifying your email address. Your account is now active.'
+portal.flashes.usersource_new_add_email_verify: 'We need to verify your email before we create your account. Please check your inbox for a verification link.'
+portal.forms.confirm_reset: 'Are you sure you want to reset this form?'
+portal.forms.error_accept_failed_upload: 'There was a problem uploading this file. Please try again.'
+portal.forms.error_accept_no_file: 'You cannot upload an empty file.'
+portal.forms.error_accept_not_allowed_exts: 'You cannot upload a file with any of the following file extensions: {{detail}}'
+portal.forms.error_accept_not_in_allowed_exts: 'You can only upload a file with any of the following file extensions: {{detail}}'
+portal.forms.error_accept_server_error: 'There was a problem uploading this file. Please try again.'
+portal.forms.error_accept_size: 'Sorry but this file is too large. Maximum allowed size is {{detail}}.'
+portal.forms.error_bad_choice: 'One or more of the given values is invalid.'
+portal.forms.error_banned_email: 'Email "{{email}}" is banned.'
+portal.forms.error_captcha: 'The CAPTCHA value was incorrect'
+portal.forms.error_csrf: 'The form you submitted has expired. Please re-submit your form.'
+portal.forms.error_date_day: 'This is not a valid day of the week'
+portal.forms.error_date_max: 'This date is too far into the future. Please pick a date before {{date}}.'
+portal.forms.error_date_min: 'This date is too far into the past. Please pick a date after {{date}}.'
+portal.forms.error_dupe_email: 'This email "{{email}}" is already in use by other user.'
+portal.forms.error_dupe_ticket: 'Duplicate ticket.'
+portal.forms.error_dupe_ticket_message: 'Duplicate ticket message.'
+portal.forms.error_email_required: 'You must provide your email address'
+portal.forms.error_extra_fields: 'Sorry but there was an error processing your request. Please try again.'
+portal.forms.error_invalid_data_type: 'This data type was not expected.'
+portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
+portal.forms.error_invalid_url: 'This value is not a valid URL.'
+portal.forms.error_length_invalid: 'This value should have exactly {{limit}} characters.'
+portal.forms.error_length_too_long: 'This value is too long. It should have {{limit}} characters or less'
+portal.forms.error_length_too_short: 'This value should have {{limit}} characters or more'
+portal.forms.error_mismatch_values: 'This value does not match'
+portal.forms.error_no_uploaded_file: 'Uploaded file was not found. Please try again.'
+portal.forms.error_not_assignable_category: 'Unable to select parent category.'
+portal.forms.error_not_assignable_choice: 'Unable to select parent choice.'
+portal.forms.error_not_assignable_department: 'Unable to select parent department.'
+portal.forms.error_not_assignable_product: 'Unable to select parent product.'
+portal.forms.error_not_checked: 'The field is not checked.'
+portal.forms.error_not_unique_collection: 'One or more of the given values is not unique.'
+portal.forms.error_numeric: 'Please enter a number, with no other characters.'
+portal.forms.error_password_current: 'This must be your current password'
+portal.forms.error_password_forbid_reuse: 'You cannot use a password you have used before'
+portal.forms.error_password_min_length:
+  one: 'Minimum of {{count}} character'
+  other: 'Minimum of {{count}} characters'
+portal.forms.error_password_require_num_lowercase:
+  one: 'At least {{count}} lowercase character'
+  other: 'At least {{count}} lowercase characters'
+portal.forms.error_password_require_num_number:
+  one: 'At least {{count}} number'
+  other: 'At least {{count}} numbers'
+portal.forms.error_password_require_num_symbol:
+  one: 'At least {{count}} symbol'
+  other: 'At least {{count}} symbols'
+portal.forms.error_password_require_num_uppercase:
+  one: 'At least {{count}} uppercase character'
+  other: 'At least {{count}} uppercase characters'
+portal.forms.error_person_not_agent: 'Person with identifier {{value}} is not an agent.'
+portal.forms.error_person_not_found: 'Person with identifier "{{value}}" not found.'
+portal.forms.error_person_not_user: 'Person with identifier {{value}} is not a user.'
+portal.forms.error_regex: 'This value does not match the expected format'
+portal.forms.error_required: 'This value is required'
+portal.forms.error_server_rejected_size: 'There was a problem uploading files due to the maximum size limit. Please try uploading smaller files.'
+portal.forms.error_system_email: 'Email "{{email}}" is already being used as email account.'
+portal.forms.error_ticket_department_invalid: 'You cannot select a parent department. Try selecting a sub-department.'
+portal.forms.error_ticket_department_required: 'A department is required'
+portal.forms.error_ticket_msg_length: 'Your message must be at least {{limit}} characters in length'
+portal.forms.error_ticket_msg_required: 'You must provide a message'
+portal.forms.error_ticket_opened: 'Ticket should be neither resolved nor archived.'
+portal.forms.error_ticket_subject_length: 'The subject must be at least {{limit}} characters in length'
+portal.forms.error_ticket_subject_required: 'A ticket subject is required'
+portal.forms.error_too_few_elements: 'This collection should contain {{limit}} element or more.|This collection should contain {{limit}} elements or more.'
+portal.forms.error_unique_entity: 'This value already exists in the system.'
+portal.forms.error_upload_empty: 'You cannot upload an empty file.'
+portal.forms.error_upload_file: 'Could not upload file'
+portal.forms.error_upload_general: 'There was a problem uploading this file. Please try again.'
+portal.forms.error_upload_html_size: 'The file is too large.'
+portal.forms.error_upload_ini_size: 'The file is too large. Maximum allowed size is {{limit}} {{suffix}}.'
+portal.forms.label_add_attachment: 'Add Another Attachment'
+portal.forms.label_captcha: 'To prove you are a human, please tell us the text you see in the CAPTCHA image'
+portal.forms.label_category: Category
+portal.forms.label_cc: CCs
+portal.forms.label_choose: 'Choose a file'
+portal.forms.label_comment: 'Any comments?'
+portal.forms.label_content: Content
+portal.forms.label_current_password: 'Current password'
+portal.forms.label_department: Department
+portal.forms.label_drag: 'Drag a file in here or'
+portal.forms.label_drag_overlay: 'Drag your file in here.'
+portal.forms.label_email: Email
+portal.forms.label_first_name: 'First Name'
+portal.forms.label_full_name: 'Your Name'
+portal.forms.label_language: Language
+portal.forms.label_last_name: 'Last Name'
+portal.forms.label_message: Message
+portal.forms.label_name: Name
+portal.forms.label_password: Password
+portal.forms.label_password_confirm: Confirm
+portal.forms.label_priority: Priority
+portal.forms.label_product: Product
+portal.forms.label_reset: Reset
+portal.forms.label_save: Save
+portal.forms.label_select: Select...
+portal.forms.label_send_to_myself: 'Send to myself'
+portal.forms.label_subject: Subject
+portal.forms.label_submit: Submit
+portal.forms.label_timezone: Timezone
+portal.forms.label_title: Title
+portal.forms.label_upload_picture: 'Upload Picture'
+portal.forms.label_workflow: Workflow
+portal.general.add-comment: 'Add a comment'
+portal.general.admin: Admin
+portal.general.admin_home: 'Admin Home'
+portal.general.agent: Agent
+portal.general.agent_bar_admin_desc: 'Manage your Helpdesk'
+portal.general.agent_bar_admin_dl: 'Downloads Settings'
+portal.general.agent_bar_admin_feedback: 'Feedback Settings'
+portal.general.agent_bar_admin_kb: 'Knowledgebase Settings'
+portal.general.agent_bar_admin_lang: 'Language Settings'
+portal.general.agent_bar_admin_news: 'News Settings'
+portal.general.agent_bar_admin_portal: 'Portal Design & Templates'
+portal.general.agent_bar_agent_desc: 'View Tickets / Manage Content'
+portal.general.agent_bar_agent_dl: 'Manage Downloads'
+portal.general.agent_bar_agent_feedback: 'Manage Feedback'
+portal.general.agent_bar_agent_home: 'Agent Home'
+portal.general.agent_bar_agent_kb: 'Manage Knowledgebase'
+portal.general.agent_bar_agent_news: 'Manage News'
+portal.general.agents-available: 'Agents Available'
+portal.general.attachments: Attachments
+portal.general.btn-cancel: Cancel
+portal.general.btn-download-pdf: 'Download PDF'
+portal.general.btn-email: Email
+portal.general.btn-go: Go
+portal.general.btn-print: Print
+portal.general.btn-send-email: 'Send e-mail'
+portal.general.btn-share: Share
+portal.general.btn-subscribe: Subscribe
+portal.general.btn-unsubscribe: Unsubscribe
+portal.general.by: by
+portal.general.by_2: By
+portal.general.comment_btn_save: 'Save Comment'
+portal.general.comments-count:
+  one: '1 Comment'
+  other: '{{count}} Comments'
+portal.general.comments-pending-validation: 'This comment is being reviewed. It will be displayed shortly'
+portal.general.comments-title:
+  one: 'Comments (1)'
+  other: 'Comments ({{count}})'
+portal.general.delete: Delete
+portal.general.everything: Everything
+portal.general.get-in-touch: 'Get in touch'
+portal.general.get-in-touch-desc: 'Send us an email'
+portal.general.impersonation_mode: 'Impersonation mode'
+portal.general.in: in
+portal.general.label-search-enter-label: 'Please provide a label to search for'
+portal.general.lang-change-to-current: 'Make <span class="italics">{{lang}}</span> my default language'
+portal.general.lang-diff: 'This page is in <span class="italics">{{active_lang}}</span> but your account is in <span class="italics">{{person_lang}}</span>.'
+portal.general.lang-switch: 'Switch to <span class="italics">{{lang}}</span>'
+portal.general.nav-all: All
+portal.general.nav-chat: 'Chat Logs'
+portal.general.nav-chatlog: 'Chat Log'
+portal.general.nav-downloads: Downloads
+portal.general.nav-downloads-desc: 'Browse our downloads'
+portal.general.nav-emails: Emails
+portal.general.nav-feedback: Feedback
+portal.general.nav-feedback-desc: 'Custom suggestions'
+portal.general.nav-guides: Guides
+portal.general.nav-guides-desc: 'Product documentation'
+portal.general.nav-kb: Knowledgebase
+portal.general.nav-kb-desc: 'Read help articles'
+portal.general.nav-login: Login
+portal.general.nav-news: News
+portal.general.nav-news-desc: 'News & updates'
+portal.general.nav-newticket: 'Contact Us'
+portal.general.nav-newticket-desc: 'We are here to help'
+portal.general.nav-portal: Portal
+portal.general.nav-profile: Profile
+portal.general.nav-quick-jump: 'Quick Jump'
+portal.general.nav-register: Register
+portal.general.nav-reset-password: 'Reset Password'
+portal.general.nav-set-password: 'Set Password'
+portal.general.nav-tickets: Tickets
+portal.general.nav-tickets-org: 'Organization Tickets'
+portal.general.nav-your-account: 'Your Account'
+portal.general.no-agents-available: 'Sorry but there are no agents available'
+portal.general.no-search-query: 'Please type a search query into the search box.'
+portal.general.no-search-results: 'We couldn''t find any results for "{{query}}"'
+portal.general.no-search-results-general: 'We couldn''t find any results'
+portal.general.on: 'on'
+portal.general.or: or
+portal.general.prop_comments_asc: 'Least comments first'
+portal.general.prop_comments_desc: 'Most comments first'
+portal.general.prop_date_asc: 'Oldest first'
+portal.general.prop_date_desc: 'Newest first'
+portal.general.prop_popularity_asc: 'Least popular first'
+portal.general.prop_popularity_desc: 'Most popular first'
+portal.general.prop_rating_asc: 'Lowest rated first'
+portal.general.prop_rating_desc: 'Highest rated first'
+portal.general.prop_views_asc: 'Least views first'
+portal.general.prop_views_desc: 'Most views first'
+portal.general.published: Published
+portal.general.rate-page: 'Rate the quality of this page'
+portal.general.rate-page-negative: 'This page was not helpful'
+portal.general.rate-page-positive: 'This page was helpful'
+portal.general.rated-negative: 'You marked this page as unhelpful'
+portal.general.rated-positive: 'You marked this page as helpful'
+portal.general.rating_x_of_y_found_helpful: '{{vote_up}} of {{vote_count}} people found this page helpful'
+portal.general.related-downloads: 'Related Files'
+portal.general.related-feedback: 'Related Feedback'
+portal.general.related-news: 'Related News'
+portal.general.related-pages: 'Related Pages'
+portal.general.rerender-form: 'Please review this form before you submit it.'
+portal.general.rss_subscribe: 'RSS Feed'
+portal.general.search-labels-section-title: 'Search Labels'
+portal.general.search-section-title: Search
+portal.general.search_btn: Search
+portal.general.select_placeholder: Select...
+portal.general.select_search_placeholder: 'Search for option...'
+portal.general.share-this: 'Share this'
+portal.general.show: Show
+portal.general.show_less: 'Show less'
+portal.general.show_more: 'Show more'
+portal.general.show_x_more: 'Show {num} more'
+portal.general.software_provided_by: 'Helpdesk software provided by'
+portal.general.start-chat: 'Start a chat session'
+portal.general.submit-feedback: 'Submit Feedback'
+portal.general.submit-feedback-desc: 'Feedback and suggestions submitted by customers like you'
+portal.general.tagged_with: 'tagged with'
+portal.general.tags: Tags
+portal.general.toggle_off: 'off'
+portal.general.toggle_on: 'on'
+portal.general.top: Top
+portal.general.updated: Updated
+portal.general.x-search-results: '{{num}} search results for "{{query}}"'
+portal.general.x-search-results-no-query: '{{num}} search results'
+portal.guides.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
+portal.news.none: 'No news yet'
+portal.news.recent-title: 'Recent News'
+portal.news.search-title: 'News Articles'
+portal.news.section-title: News
+portal.news.view-as-agent: 'You can see this page because you are an agent. Normal users will not be able to view this page.'
+portal.news.view-x-news:
+  one: 'View 1 article'
+  other: 'View {{count}} articles'
+portal.sidebar.agents_available: 'Available Agents'
+portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
+portal.sidebar.agents_x_online:
+  one: '{{count}} online'
+  other: '{{count}} online'
+portal.sidebar.article_posted_by: 'Posted by {{name}}'
+portal.sidebar.news_title: News
+portal.sidebar.satisfied_customers: 'satisfied customers'
+portal.sidebar.top_articles_title: 'Top Articles'
+portal.tickets.add-reply: Reply
+portal.tickets.cancel-ticket-edit: 'Cancel edit and show me the ticket again'
+portal.tickets.feedback_message_leave_comment: 'Optionally leave a comment'
+portal.tickets.form-changed-notice: 'New fields have been added to the form. Please review these fields and then re-submit the form.'
+portal.tickets.guest-thanks-section-title: 'Thank You'
+portal.tickets.guest_thank_you_desc: 'Thank you for contacting us. We have sent you an email with instructions on how to manage your ticket with us.'
+portal.tickets.guest_thank_you_title: 'Thank You'
+portal.tickets.list_agent: 'Assigned Agent'
+portal.tickets.list_date_created: 'Date Created'
+portal.tickets.list_date_last_agent: 'Last Agent Reply'
+portal.tickets.list_date_last_user: 'Last User Reply'
+portal.tickets.list_department: Department
+portal.tickets.list_desc: 'This is the description of a list of your tickets'
+portal.tickets.list_desc_org: 'This is the description of a list of your organization''s tickets'
+portal.tickets.list_filter: 'You have an active filter on this view.'
+portal.tickets.list_filter_clear: 'Click here to clear it and see everything.'
+portal.tickets.list_last_action: 'Last Action'
+portal.tickets.list_no_tickets: 'There are no tickets to display in this tab. <a href="{{open_ticket_url}}">Click here to open a new ticket</a>.'
+portal.tickets.list_search: 'Search in Tickets:'
+portal.tickets.list_status_agent: 'Our agent will respond'
+portal.tickets.list_status_open: 'Open Tickets'
+portal.tickets.list_status_open_count:
+  one: '{{count}} awaiting response'
+  other: '{{count}} awaiting response'
+portal.tickets.list_status_resolved: Resolved
+portal.tickets.list_status_user: 'You need to respond'
+portal.tickets.list_subject: Subject
+portal.tickets.list_switch_to_my_tickets: 'Switch to My Tickets'
+portal.tickets.list_switch_to_organization: 'Switch to Organization'
+portal.tickets.list_ticket_ref: Reference
+portal.tickets.list_title: 'Your Tickets'
+portal.tickets.list_title_org: 'Organization Tickets'
+portal.tickets.list_user: User
+portal.tickets.mark-unresolved: 'Re-open Ticket'
+portal.tickets.need-login_desc: 'Please go to <a href="{{login_url}}" target="_blank">the login page</a> to send us a message'
+portal.tickets.need-login_title: 'You need to log in to open a ticket'
+portal.tickets.new-intro: 'Please complete this form and one of our agents will reply to you by email as soon as possible.'
+portal.tickets.new-section-title: 'Contact Us'
+portal.tickets.new-title: 'Open a new ticket'
+portal.tickets.new_ticket_button: 'Create a new ticket'
+portal.tickets.no_participants: 'No participants'
+portal.tickets.not-allowed_desc: 'Sorry, our agents are unable to take your chat at the moment'
+portal.tickets.not-allowed_title: 'We''ll be right back'
+portal.tickets.please_login_to_reply: 'Log in to reply.'
+portal.tickets.rate-intro: '{{name}} helped you with your ticket "{{subject}}"'
+portal.tickets.rate-negative: 'It was not good'
+portal.tickets.rate-neutral: 'It was OK'
+portal.tickets.rate-positive: 'It was great'
+portal.tickets.rate-question: 'How would you rate the support you received?'
+portal.tickets.related_articles_desc: 'We found the following articles that may solve your problem.'
+portal.tickets.related_articles_title: 'Related Articles'
+portal.tickets.resolve_my_ticket_btn: 'Resolve my ticket'
+portal.tickets.resolve_ticket: 'Resolve Ticket: {{subject}}'
+portal.tickets.resolve_ticket_explain: 'Are you sure you want to resolve your ticket? Once your ticket is resolved, our agents will no longer respond.'
+portal.tickets.search-last-activity: 'Last Activity'
+portal.tickets.search-title: Tickets
+portal.tickets.section-title: Tickets
+portal.tickets.switched-department-rerender: 'The structure of this form may have changed. Please review the form and submit again.'
+portal.tickets.thank_you: 'Your ticket is on the way'
+portal.tickets.thank_you_check_email: 'Please verify your email address'
+portal.tickets.thank_you_check_email_desc: 'To finish submitting your ticket, you must check your email inbox. Please click the verification link we sent you.'
+portal.tickets.thank_you_create_pw_link: 'Want to keep track of your ticket? You can <a href="{{create_pw_link}}">set a password for your account</a>.'
+portal.tickets.thank_you_desc: 'Thank you for contacting us. You will be notified when one of our agents responds.'
+portal.tickets.thank_you_ticket_link: 'Want to keep track of your ticket? Here''s <a href="{{ticket_link}}">a link to your new ticket</a>.'
+portal.tickets.ticket-ref: 'Ticket reference'
+portal.tickets.timeline_attached: 'Attached with this message:'
+portal.tickets.timeline_marked: 'marked this ticket:'
+portal.tickets.timeline_marked_resolved: Resolved
+portal.tickets.timeline_opened: 'opened this ticket'
+portal.tickets.timeline_re_opened: 'reopened this ticket'
+portal.tickets.timeline_wrote: 'wrote:'
+portal.tickets.view_assigned_agent: 'Assigned agent:'
+portal.tickets.view_awaiting_user: 'An agent is waiting for you to reply to a message.'
+portal.tickets.view_btn_add_cc: 'Add a CC''ed user'
+portal.tickets.view_btn_add_to_ticket: 'Add To Ticket'
+portal.tickets.view_btn_edit: Edit
+portal.tickets.view_btn_edit_full: 'Edit this ticket'
+portal.tickets.view_cant_reply_archived: 'You cannot reply to this ticket because it has been resolved.'
+portal.tickets.view_close: 'Close this ticket'
+portal.tickets.view_closed: 'This ticket was closed {{ago}} ({{day}}).'
+portal.tickets.view_closed_more: 'You can <a href="{{kb_url}}">return to the knowledge base</a> or <a href="{{new_ticket_url}}">open a new ticket</a>.'
+portal.tickets.view_label_your_email: 'Your Email'
+portal.tickets.view_label_your_email_placeholder: 'Email Address (required)'
+portal.tickets.view_label_your_name: 'Your Name'
+portal.tickets.view_label_your_name_placeholder: 'Name (required)'
+portal.tickets.view_last_message: 'Your last message was received {{ago}}.'
+portal.tickets.view_media: 'Media on this ticket:'
+portal.tickets.view_more_info: 'Additional ticket information:'
+portal.tickets.view_now_closed: 'This ticket is now closed'
+portal.tickets.view_opened_by: 'Ticket opened by:'
+portal.tickets.view_participants: 'Also on this ticket:'
+portal.tickets.view_reply: 'Add a reply'
+portal.tickets.view_reply_errors: 'There are some errors with your submission.'
+portal.tickets.view_reply_or_close: 'Add a reply or <a href="{{close_url}}" class="close-ticket-trigger">close the ticket</a>'
+portal.tickets.view_scroll_reply: 'Click here to scroll down to the form.'
+portal.tickets.view_ticket_info: 'Ticket info:'
+portal.tickets.view_unassigned: Unassigned
+portal.tickets.view_unassigned_more: 'An agent will be assigned'
+portal.tickets.view_will_notify_you: 'We have received your message and will send you an email notification as soon as an agent has added a comment.'
+portal.tickets.view_you_created: 'You created this ticket {{ago}}.'
+portal.topics.none: 'No topics yet'
+portal.topics.search-title: Guides
+portal.widget.help_button: 'Chat Now'
+portal.widget.help_ticket_button: 'Contact Us'
+portal.widget.label_add_attachment: 'Add Attachment'
+portal.widget.label_email: 'Your Email'
+portal.widget.label_message: 'Your Question'
+portal.widget.label_name: 'Your Name'
+portal.widget.label_subject: Subject
+portal.widget.new-ticket-title: 'Ask us a Question'
+portal.widget.online_agents: 'Agents Online'
+portal.widget.popup_heading: 'Ask us a question!'
+portal.widget.popup_message: 'Need help? Just reply to start a live chat with one of our team.'
+portal.widget.popup_start_button: 'Start a conversation'
+portal.widget.popup_subheading: 'Our team are online and ready to help with your enquiries. Send us a message to get started.'
+portal.widget.popup_title: 'Customer Support'
+user.chat.email: 'Your Email Address'
+user.chat.ended-no-agent: 'We are very sorry but we do not have anyone available to take your chat right now. Please email us or try again later.'
+user.chat.error: 'Chat Error'
+user.chat.form_chat_button-submit: Send
+user.chat.form_chat_send-file: 'Upload a File'
+user.chat.form_create_button-submit: 'Start Chat'
+user.chat.form_create_department: 'Choose department'
+user.chat.form_create_title: 'Start a Chat with an Agent'
+user.chat.form_feedback_button-submit: 'Send Feedback & Close Window'
+user.chat.form_feedback_comments: 'Comments?'
+user.chat.form_feedback_rate-satisfaction: 'Were you satisfied with this conversation?'
+user.chat.form_feedback_rate-satisfied: 'Yes'
+user.chat.form_feedback_rate-time: 'Was our response time fast enough?'
+user.chat.form_feedback_rate-unsatisfied: 'No'
+user.chat.form_feedback_title: 'Send us feedback'
+user.chat.form_feedback_transcript-email: 'Send a transcript of this chat to'
+user.chat.log-title: 'Your Chats'
+user.chat.log_chat-id: 'Chat ID'
+user.chat.log_created-date: 'Created {{date}}'
+user.chat.log_fields_agent: Agent
+user.chat.log_fields_department: Department
+user.chat.log_message_author-you: You
+user.chat.log_nav-view-chats:
+  one: 'View your latest chat log'
+  other: 'View your {{count}} chat logs'
+user.chat.log_no_department: 'No department'
+user.chat.log_unassigned: 'No agent was assigned'
+user.chat.message_agent-timeout: 'Our Apologies; {{name}} appears to have been disconnected. Please wait while we try to find another agent.'
+user.chat.message_assigned: 'Chat assigned to {{name}}'
+user.chat.message_chatting-with: 'You are chatting with'
+user.chat.message_ended: 'Chat ended'
+user.chat.message_ended-by: 'Chat ended by {{name}}'
+user.chat.message_ended-by-user: 'Chat ended by user'
+user.chat.message_finding-agent: 'Finding an agent'
+user.chat.message_long-wait: 'We are still trying to find an available agent to take your chat; this normally takes less than a minute. <br /><br />In a rush? <a class="cancel-and-newticket-trigger">leave us a message instead?</a>'
+user.chat.message_set-department: '{{name}} set department to {{department}}'
+user.chat.message_started: 'Chat started'
+user.chat.message_unassigned: 'Chat unassigned'
+user.chat.message_uploading: 'Uploading ...'
+user.chat.message_user-joined: '{{name}} joined the chat'
+user.chat.message_user-left: '{{name}} left the chat'
+user.chat.message_user-returned: 'User has returned'
+user.chat.message_user-timeout: 'User timed out'
+user.chat.message_wait: 'We are finding an agent for you'
+user.chat.message_wait-timeout: 'Sorry; no agents are available right now.'
+user.chat.name: 'Your Name'
+user.chat.submit-ticket-button: 'Email Us'
+user.chat.submit-ticket-title: 'Email us instead'
+user.chat.transcript_sent: 'Transcript sent to {{email}}'
+user.chat.window_cancel: Cancel
+user.chat.window_cancel-confirm: 'Are you sure you want to end your chat?'
+user.chat.window_close: 'No thanks, just close the window'
+user.chat.window_close_only: 'Close the window'
+user.chat.window_end-chat: 'End Chat'
+user.chat.window_offline-button: 'Click here to contact us'
+user.chat.window_open-new: 'Open this chat in a new window'
+user.chat.window_resume-button: 'Open your chat'
+user.chat.window_start-button: 'Click here to chat with us'
+user.chat.window_upload-drag: 'Drop your file here to upload it to the chat'
+user.defaults.article_category_general: General
+user.defaults.article_example_content: 'This is an example knowledgebase article. Feel free to edit or delete it from the agent interface.'
+user.defaults.article_example_title: 'Example Article'
+user.defaults.department_sales: Sales
+user.defaults.department_support: Support
+user.defaults.downloads_category_general: Documents
+user.defaults.news_category_general: General
+user.defaults.news_example_content: 'This is an example news post. Feel free to edit or delete it from the agent interface.'
+user.defaults.news_example_title: 'Example News Post'
+user.downloads.change_file: 'Change File'
+user.email_subjects.chat_transcript: 'Chat Transcript'
+user.email_subjects.chat_validate_email: 'Chat email validation'
+user.email_subjects.comment-approved: 'Your comment was approved'
+user.email_subjects.comment-deleted: 'Your comment was read by our agents'
+user.email_subjects.download_sub_new: 'New Downloads'
+user.email_subjects.download_sub_new_and_updated: 'New and Updated Downloads'
+user.email_subjects.download_sub_updated: 'Updated Downloads'
+user.email_subjects.email-too-big: 'Your email "{{subject}}" was not accepted'
+user.email_subjects.email_new-confirm: 'Please validate your email address'
+user.email_subjects.feedback_created_for_user: 'Thank you for your feedback'
+user.email_subjects.feedback_new: 'Thank you for submitting your feedback'
+user.email_subjects.feedback_new-approved: 'Your feedback has been approved'
+user.email_subjects.feedback_new-comment: 'There is a new comment on "{{title}}"'
+user.email_subjects.feedback_new-disapproved: 'Sorry but your feedback has been declined'
+user.email_subjects.feedback_sub_updated: 'Updated Feedback'
+user.email_subjects.feedback_updated: 'Your feedback was updated: {{title}}'
+user.email_subjects.kb_sub_new: 'New Articles'
+user.email_subjects.kb_sub_new_and_updated: 'New and Updated Articles'
+user.email_subjects.kb_sub_updated: 'Updated Articles'
+user.email_subjects.new-ticket-guest: 'Thank you for contacting us'
+user.email_subjects.news_sub_new: 'New News'
+user.email_subjects.news_sub_new_and_updated: 'New and Updated News'
+user.email_subjects.news_sub_updated: 'Updated News'
+user.email_subjects.password_agent-reset: 'An agent has reset your password'
+user.email_subjects.password_reset: 'Reset Password'
+user.email_subjects.password_set: 'Set Your Password'
+user.email_subjects.re: 'RE: {{subject}}'
+user.email_subjects.register-welcome: 'Thank you for registering'
+user.email_subjects.register-welcome-byagent: 'Your new helpdesk account'
+user.email_subjects.remind_unresolved_final_subject: 'REMINDER: {{ticket.subject}}'
+user.email_subjects.remind_unresolved_subject: 'REMINDER: {{ticket.subject}}'
+user.email_subjects.ticket-rate: 'Rate your support experience on your ticket "{{ticket.subject}}"'
+user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
+user.emails.auto-close: 'Your ticket "{{ticket.subject}}" will be closed shortly as we haven''t heard from you lately. If you need further assistance simply reply and one of our agents will help you.'
+user.emails.chat_transcript: 'Thank you for chatting with us. Here is your chat transcript.'
+user.emails.chat_validate_email: 'Please validate your email address by entering this code "{{validation_code}}" in the widget form or clicking this link:'
+user.emails.comment_approved: 'Your comment has been published.'
+user.emails.comment_deleted: 'Your comment was used to improve the page.'
+user.emails.comment_thank-you: 'Thank you for your comment on {{link}}.'
+user.emails.download-new-downloads:
+  one: '1 New Download'
+  other: '{{count}} New Downloads'
+user.emails.download-updated-downloads:
+  one: '1 Updated Download'
+  other: '{{count}} Updated Downloads'
+user.emails.downloads-explain: 'You are receiving this email because you are subscribed to our downloads at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all downloads notifications.</a>'
+user.emails.email-too-big: 'Your email "{{subject}}" was not accepted because it is too big. The maximum email size is {{max_size}}. Remove any attachments and try again.'
+user.emails.feedback-explain: 'You are receiving this email because you are subscribed to our news at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
+user.emails.feedback-updated-items:
+  one: '1 Updated Feedback Item'
+  other: '{{count}} Updated Feedback Items'
+user.emails.feedback_agent-validation: 'Please note that your feedback will not appear publicly until one of our agents reviews it'
+user.emails.feedback_approved: 'We wanted to let you know that your feedback has been approved and is now publicly visible on our site.'
+user.emails.feedback_closed: 'Your submitted feedback "{{title}}" was closed: {{status}}'
+user.emails.feedback_created_for_user: 'Thank you for your recent feedback "{{title}}". {{agentName}} has created a new feedback item so you can stay up to date with our progress:'
+user.emails.feedback_disapproved: 'We wanted to let you know that unfortunately your feedback has been declined and will not appear publicly on our site.'
+user.emails.feedback_disapproved-reason: 'We wanted to let you know that unfortunately your feedback has been declined and will not appear publicly on our site. {{name}} gave the following reason:'
+user.emails.feedback_new-comment: '{{name}} posted a new comment:'
+user.emails.feedback_published: 'Your submitted feedback "{{title}}" has been validated and will now appear on our site.'
+user.emails.feedback_thank-you: 'Thank you for submitting your feedback "{{title}}"'
+user.emails.feedback_updated: 'Your submitted feedback "{{title}}" has been updated. Its status is now: new status "{{status}}"'
+user.emails.feedback_votes:
+  one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
+  other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
+user.emails.greeting: 'Dear {{to_name}},'
+user.emails.kb-explain: 'You are receiving this email because you are subscribed to our knowledgebase at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
+user.emails.kb-new-articles:
+  one: '1 New Article'
+  other: '{{count}} New Articles'
+user.emails.kb-updated-articles:
+  one: '1 Updated Article'
+  other: '{{count}} Updated Articles'
+user.emails.label_view-online: 'View Online'
+user.emails.message-clipped: '(Message has been clipped)'
+user.emails.new-ticket-guest-link: 'Thank you for contacting us. You may view the status of your ticket here:'
+user.emails.news-explain: 'You are receiving this email because you are subscribed to our news at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all news notifications.</a>'
+user.emails.news-new-articles:
+  one: '1 New News Article'
+  other: '{{count}} New News Articles'
+user.emails.news-new-news:
+  one: '1 New News Article'
+  other: '{{count}} New News Articles'
+user.emails.news-updated-articles:
+  one: '1 Updated News Article'
+  other: '{{count}} Updated News Articles'
+user.emails.news-updated-news:
+  one: '1 Updated News Article'
+  other: '{{count}} Updated News Articles'
+user.emails.password_agent-reset: 'An agent has reset your account password. You can log in with these details'
+user.emails.password_reset: 'You requested a password reset. To reset your password, click on the link below:'
+user.emails.password_set: 'To set your password, click on the link below:'
+user.emails.profile_email-new-confirm: 'To finish adding this secondary email address to your account, simply click on the following validation link'
+user.emails.profile_email-primary-confirm: 'To verify your primary email address, simply click on the following validation link'
+user.emails.profile_email_link-validate: 'Simply click on the following link to validate to your email address'
+user.emails.ratelimit_explain: 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be automatically deactivated and you will be able to send emails again.'
+user.emails.ratelimit_submit-online: 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:'
+user.emails.register-confirm: 'Thank you for registering an account.<br /><br />Before you can use your account, you must validate your email using the following link '
+user.emails.register-password: 'Your initial password is: {{password}}'
+user.emails.register-welcome: 'Thank you for registering. You can now log in using your email address {{to_email}} on our helpdesk:'
+user.emails.register-welcome-byagent: 'A new account has been created for you. You can now log in using your email address {{to_email}} on our helpdesk:'
+user.emails.registration_closed: 'Hi {{name}},<br /><br />New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.'
+user.emails.reject_resolved: 'Your reply was not accepted because your ticket has already been marked as resolved. Our agents will not read or reply to this message.'
+user.emails.reject_resolved-new: 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a> or you can submit our online form at:<br /><a href="{{link}}">{{link}}</a>'
+user.emails.reject_resolved-newemail: 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a>'
+user.emails.remind_unresolved: 'This is a follow-up message to remind you that you still have an open ticket with {{helpdesk_name}}.<br />If you don''t need any further help with this issue, please click the link below to let us know:<br /><a href="{{resolve_url}}">{{resolve_url}}</a><br />If you still need help, simply reply to this email.'
+user.emails.remind_unresolved_final: 'We haven''t heard from you recently about this ticket.<br />If you still need help, simply reply to this email.<br />If you don''t need any further help, please click the link below to let us know:<br /><a href="{{resolve_url}}">{{resolve_url}}</a>'
+user.emails.ticket_access_ticket_online: 'View and manage this ticket online:'
+user.emails.ticket_cc-new: 'You have been included in a ticket started by {{name}}.'
+user.emails.ticket_flood: 'You recently sent an email to our helpdesk. We can see that you have sent many messages in rapid succession that were most likely automated.<br /><br />To protect against an auto-responder loop our helpdesk will not send any more automatic notification emails to you.'
+user.emails.ticket_message_title: 'On {{date}} at {{time}}, {{author}} wrote:'
+user.emails.ticket_no-autoresponse: 'Warning: Confirmation emails turned off'
+user.emails.ticket_rate-negative: 'No'
+user.emails.ticket_rate-neutral: 'It was OK'
+user.emails.ticket_rate-positive: 'Yes'
+user.emails.ticket_rate-question: 'Was this message helpful?'
+user.emails.ticket_rate-request: 'How would you rate the support you received on your ticket "{{ticket.subject}}"?'
+user.emails.ticket_received: 'Your ticket has been received. One of our agents will reply to you shortly.'
+user.emails.ticket_reply-confirm: 'Thank you for your reply. One of our agents will reply to you shortly.'
+user.emails.ticket_validate: 'Thank you for contacting us.<br /><br />Before our agents reply, you must validate your email address.'
+user.error.attach_ext-allowed: 'Only the following file types can be uploaded: {{error_detail}}'
+user.error.attach_ext-not-allow: 'The type of file you uploaded is not allowed.'
+user.error.attach_failed: 'Your attachment failed to upload (did you cancel it?). You should try again.'
+user.error.attach_no-file: 'Please select a file to upload'
+user.error.attach_size: 'Your attachment is too large. The maximum file size is {{error_detail}}'
+user.error.attach_unknown-error: 'Sorry but there was a problem with our server while trying to accept your attachment. Please try again.'
+user.error.error_code: 'Error Code'
+user.error.error_title: Error
+user.error.expired-token: 'The page you are trying to access has expired. Please go back and try again.'
+user.error.form_choice_invalid: 'Please choose an option from the list'
+user.error.form_choice_max:
+  one: 'Please select at most 1 option'
+  other: 'Please select at most {{count}} options'
+user.error.form_choice_min:
+  one: 'Please select at least 1 option'
+  other: 'Please select at least {{count}} options'
+user.error.form_date_invalid: 'Please enter a valid date'
+user.error.form_date_invalid_dow: 'The week day you selected is not allowed'
+user.error.form_date_invalid_range: 'The date you selected is not within the allowed range'
+user.error.form_required: 'This field is required'
+user.error.form_text_max:
+  one: 'Please enter at most 1 character'
+  other: 'Please enter at most {{count}} characters'
+user.error.form_text_min:
+  one: 'Please enter at least 1 character'
+  other: 'Please enter at least {{count}} characters'
+user.error.form_text_regex: 'Please enter a correct value'
+user.error.invalid_email: 'Invalid email address'
+user.error.invalid_email-code: 'The validation link seems to be invalid.'
+user.error.invalid_email-explain: 'Sorry but we could not find that email address on your account.'
+user.error.not-found: 'The page you are looking for was not found.'
+user.error.not-found-title: 'Not Found'
+user.error.permission-denied: 'Sorry, the action you are trying to perform is not allowed.'
+user.error.permission-denied-login: 'You are currently logged out. <a href="{{login_url}}">Log in</a> and try again.'
+user.error.permission-denied-title: 'You are not allowed to do that'
+user.error.server-error: 'Sorry but there was a server error that prevented the page from loading. Please try again.'
+user.feedback.submit_feedback: 'Submit feedback'
+user.general.deskpro: Deskpro
+user.general.helpdesk_by: 'Helpdesk software by <strong>{{deskpro}}</strong>'
+user.general.label_captcha: 'Confirmation code'
+user.general.page: Page
+user.general.request_token_expired: 'Your request token has expired. Please try again.'
+user.knowledgebase.auto_action_on_date: 'Automatically {{action}} on {{date}}'
+user.knowledgebase.creating_pending_article: 'Creating pending article'
+user.lang.lang_title: English
+user.lang.lang_title_arabic: Arabic
+user.lang.lang_title_czech: Czech
+user.lang.lang_title_danish: Danish
+user.lang.lang_title_default: English
+user.lang.lang_title_dutch: Dutch
+user.lang.lang_title_english_gb: 'English (UK)'
+user.lang.lang_title_french: French
+user.lang.lang_title_german: German
+user.lang.lang_title_hungarian: Hungarian
+user.lang.lang_title_indonesian: Indonesian
+user.lang.lang_title_italian: Italian
+user.lang.lang_title_japanese: Japanese
+user.lang.lang_title_norwegian: Norwegian
+user.lang.lang_title_persian: Persian
+user.lang.lang_title_polish: Polish
+user.lang.lang_title_portuguese: Portuguese
+user.lang.lang_title_romanian: Romanian
+user.lang.lang_title_russian: Russian
+user.lang.lang_title_spanish: Spanish
+user.lang.lang_title_swedish: Swedish
+user.lang.lang_title_turkish: Turkish
+user.news.title: News
+user.profile.account_disabled_message: 'Your account is currently disabled. You may not login or interact with tickets or chat.'
+user.profile.choose_email: 'Choose the email address you want to use'
+user.profile.connect_with: 'Connect with'
+user.profile.or_connect_with: 'Or connect with'
+user.profile.register: Register
+user.profile.register_password_min_length:
+  one: 'Minimum of {{count}} character'
+  other: 'Minimum of {{count}} characters'
+user.profile.register_password_require_num_lowercase:
+  one: 'At least {{count}} lowercase character'
+  other: 'At least {{count}} lowercase characters'
+user.profile.register_password_require_num_number:
+  one: 'At least {{count}} number'
+  other: 'At least {{count}} numbers'
+user.profile.register_password_require_num_symbol:
+  one: 'At least {{count}} symbol'
+  other: 'At least {{count}} symbols'
+user.profile.register_password_require_num_uppercase:
+  one: 'At least {{count}} uppercase character'
+  other: 'At least {{count}} uppercase characters'
+user.profile.register_password_unused: 'You cannot use a password you have used before'
+user.tickets.feedback_message_leave_comment: 'Optionally leave a comment'
+user.tickets.fields_category: Category
+user.tickets.fields_department: Department
+user.tickets.fields_priority: Priority
+user.tickets.fields_product: Product
+user.tickets.form_error_captcha: 'Please enter the code'
+user.tickets.form_error_captcha_invalid: 'The code you entered is incorrect.'
+user.tickets.from_x_at_y: 'From {{name}} at {{date}}'
+user.tickets.label_cced: CCed
+user.tickets.no_subject: '(No subject)'
+user.tickets.rate-negative: 'It wasn''t good'
+user.tickets.rate-neutral: 'It was OK'
+user.tickets.rate-positive: 'It was great'
+user.tickets.rate-thanks-vialink: 'Thank you for submitting your rating. Feel free to leave a comment below.'
+user.tickets.rate_support: 'Rate your support'
+user.time.long-day_friday: Friday
+user.time.long-day_monday: Monday
+user.time.long-day_saturday: Saturday
+user.time.long-day_sunday: Sunday
+user.time.long-day_thursday: Thursday
+user.time.long-day_tuesday: Tuesday
+user.time.long-day_wednesday: Wednesday
+user.time.long-month_april: April
+user.time.long-month_august: August
+user.time.long-month_december: December
+user.time.long-month_february: February
+user.time.long-month_january: January
+user.time.long-month_july: July
+user.time.long-month_june: June
+user.time.long-month_march: March
+user.time.long-month_may: May
+user.time.long-month_november: November
+user.time.long-month_october: October
+user.time.long-month_september: September
+user.time.short-day_friday: Fri
+user.time.short-day_monday: Mon
+user.time.short-day_saturday: Sat
+user.time.short-day_sunday: Sun
+user.time.short-day_thursday: Thu
+user.time.short-day_tuesday: Tue
+user.time.short-day_wednesday: Wed
+user.time.short-month_april: Apr
+user.time.short-month_august: Aug
+user.time.short-month_december: Dec
+user.time.short-month_february: Feb
+user.time.short-month_january: Jan
+user.time.short-month_july: Jul
+user.time.short-month_june: Jun
+user.time.short-month_march: Mar
+user.time.short-month_may: May
+user.time.short-month_november: Nov
+user.time.short-month_october: Oct
+user.time.short-month_september: Sep
+user.time.time-ago_1_day: '1 day ago'
+user.time.time-ago_1_hour: '1 hour ago'
+user.time.time-ago_1_minute: '1 minute ago'
+user.time.time-ago_1_month: '1 month ago'
+user.time.time-ago_1_second: '1 second ago'
+user.time.time-ago_1_week: '1 week ago'
+user.time.time-ago_1_year: '1 year ago'
+user.time.time-ago_less_second: 'less than a second ago'
+user.time.time-ago_x_day: '{0} days ago'
+user.time.time-ago_x_hour: '{0} hours ago'
+user.time.time-ago_x_minute: '{0} minutes ago'
+user.time.time-ago_x_month: '{0} months ago'
+user.time.time-ago_x_second: '{0} seconds ago'
+user.time.time-ago_x_week: '{0} weeks ago'
+user.time.time-ago_x_year: '{0} years ago'
+user.time.time_1_day: '1 day'
+user.time.time_1_hour: '1 hour'
+user.time.time_1_minute: '1 minute'
+user.time.time_1_month: '1 month'
+user.time.time_1_second: '1 second'
+user.time.time_1_week: '1 week'
+user.time.time_1_year: '1 year'
+user.time.time_less_second: 'less than a second'
+user.time.time_x_day: '{0} days'
+user.time.time_x_hour: '{0} hours'
+user.time.time_x_minute: '{0} minutes'
+user.time.time_x_month: '{0} months'
+user.time.time_x_second: '{0} seconds'
+user.time.time_x_week: '{0} weeks'
+user.time.time_x_year: '{0} years'
+user.time.x_day:
+  one: '1 day'
+  other: '{{count}} days'
+user.time.x_hour:
+  one: '1 hour'
+  other: '{{count}} hours'
+user.time.x_minute:
+  one: '1 minute'
+  other: '{{count}} minutes'
+user.time.x_month:
+  one: '1 month'
+  other: '{{count}} months'
+user.time.x_second:
+  one: '1 second'
+  other: '{{count}} seconds'
+user.time.x_week:
+  one: '1 week'
+  other: '{{count}} weeks'
+user.time.x_year:
+  one: '1 year'
+  other: '{{count}} years'

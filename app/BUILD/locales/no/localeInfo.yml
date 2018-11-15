@@ -1,0 +1,11 @@
+id: norwegian
+name: Norwegian
+nameLocal: Norsk
+locale: 'no'
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

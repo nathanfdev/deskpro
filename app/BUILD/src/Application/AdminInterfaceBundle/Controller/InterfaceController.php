@@ -89,7 +89,7 @@ class InterfaceController extends AbstractController
     {
         $js_exporter = new JsExporter($this->container->getTranslator());
 
-        $get_phrases = include DP_ROOT.'/languages/expose-js.php';
+        $get_phrases = include DP_ROOT.'/locales/expose-js.php';
         $get_phrases = $get_phrases['admin'];
 
         if ($_format == 'js') {

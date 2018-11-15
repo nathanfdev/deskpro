@@ -9,10 +9,10 @@ Feature: /snippets endpoint
     And the setting "beta_features.new_snippets" is set to 1
     And agent and user exist
     And only the following Language records exist:
-      | #  | Locale | Lang Code |
-      | l1 | en_US  | eng       |
-      | l2 | fr     | fre       |
-      | l3 | ru     | rus       |
+      | #  | Locale | Sys Name |
+      | l1 | en-US  | english  |
+      | l2 | fr     | french   |
+      | l3 | ru     | russian  |
 
   Scenario: I create a snippet form myself
     When I send a POST request to "/api/v2/snippets?inline_sideloads=true&include=snippet_translation" with body:

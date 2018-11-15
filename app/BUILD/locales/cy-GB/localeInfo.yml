@@ -1,0 +1,15 @@
+id: welsh
+name: Welsh
+nameLocal: Welsh
+locale: cy-GB
+isRtl: false
+pluralRules:
+  plurals: 6
+  formula: '(n == 0) ? 0 : ((n == 1) ? 1 : ((n == 2) ? 2 : ((n == 3) ? 3 : ((n == 6) ? 4 : 5))))'
+  categories:
+    - zero
+    - one
+    - two
+    - few
+    - many
+    - other

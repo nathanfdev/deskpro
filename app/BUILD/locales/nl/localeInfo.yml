@@ -1,0 +1,11 @@
+id: dutch
+name: Dutch
+nameLocal: Engels
+locale: nl
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

@@ -1,0 +1,549 @@
+portal.account.automatically_join_org_tickets: 'Liitä automaattisesti {{org_name}}:n tiketit.'
+portal.account.change-password: 'Vaihda salasana'
+portal.account.change-password-btn: 'Päivitä salasana'
+portal.account.email-add: 'Lisää sähköpostiosoite'
+portal.account.email-add-description: 'Lisää sähköpostiosotteita tilillesi. Voit sitten näistä osotteista lähettää palvelupyyntöjä.'
+portal.account.email-btn-make-primary: 'Muuta pääasialliseksi'
+portal.account.email-btn-remove: 'Poista sähköpostiosoite'
+portal.account.email-btn-resend-validation: 'Lähetä vahvistussähköposti uudelleen'
+portal.account.email-btn-usersource-set: 'Lisää sähköpostiosoite'
+portal.account.email-management: 'Ylläpidä sähköposteja'
+portal.account.email-management-from-form: 'Ylläpidä sähköpostiosotteita'
+portal.account.lockout_time: 'Voit yrittää uudelleen {{time}} minuutin kuluttua'
+portal.account.login-btn: Kirjaudu
+portal.account.login-btn-usersource: 'Kirjaudu {{usersource}}:lla'
+portal.account.login-captcha-failed: 'CAPTCHAn kaikki merkit eivät olleet oikein. Yritä uudelleen.'
+portal.account.login-email: Sähköpostiosoitteesi
+portal.account.login-invalid: 'Annoit väärän sähköpostiosoitteen tai salasanan. Yritä uudelleen.'
+portal.account.login-lockout: 'Olet yrittänyt kirjautua sisään väärillä tiedoilla liian monta kertaa. Yritä uudelleen myöhemmin.'
+portal.account.login-password: Salasanasi
+portal.account.login-password-reminder: 'Tarvitsetko salasanan muistutuksen?'
+portal.account.login-register-btn: Rekisteröidy
+portal.account.login-register-header: Rekisteröidy
+portal.account.login-remember: 'Pysy kirjautuneena?'
+portal.account.login-stay-logged-in: 'Pysy kirjautuneena?'
+portal.account.logout-btn: 'Kirjaudu ulos'
+portal.account.logout-confirm: 'Haluatko varmasti kirjautua ulos?'
+portal.account.profile-btn-save: 'Tallenna profiili'
+portal.account.register-btn: Rekisteröidy
+portal.account.reset-password-btn: 'Vaihda salasana'
+portal.account.reset-password-click-here: 'Klikkaa tästä saadaksesi salasanan vaihtokoodin'
+portal.account.reset-password-invalid-desc: 'Salasananvaihtokoodi on väärä tai vanhentunut. Hae uusi koodi vaihtaaksesi salasanan.'
+portal.account.reset-password-invalid-input: 'Sähköpostiosoite tai käyttäjätunnus'
+portal.account.reset-password-request-title: 'Salasana unohtunut?'
+portal.account.reset-password-sent-to: 'Lähetimme sähköpostin seuraavaan osoitteeseen'
+portal.account.reset-password-success: 'Salasanasi on päivitetty'
+portal.account.section-desc-login: 'Onko teillä jo tili? Kirjautukaa alta.'
+portal.account.section-title-profile: Profiili
+portal.account.section-title-register: Rekisteröidy
+portal.account.section-title-reset-password: 'Vaihda salasana'
+portal.account.welcome-back: 'Tervetuloa takaisin'
+portal.articles.by-line: '{{name}} kirjoitti {{date}}'
+portal.articles.link: 'Linkki: <a href="{{link}}">{{link}}</a>'
+portal.articles.search-title: Ohjeet
+portal.articles.section-title: Tietokanta
+portal.articles.view-as-agent: 'Näet tämän sivun koska olet asiantuntijamme. Peruskäyttäjät eivät näe tätä sivua.'
+portal.chat.agent_typing_message: '{{agentName}} kirjoittaa...'
+portal.chat.assigned_to: 'Keskusteluun liitetty {{name}}'
+portal.chat.block_reason: 'Syy: {{reason}}'
+portal.chat.chat_transcript: 'Keskustelu kopio'
+portal.chat.create_ticket: 'Luo palvelupyyntö'
+portal.chat.details-placeholder: 'Etunimi, Sukunimi'
+portal.chat.end_chat: 'Lopeta keskustelu'
+portal.chat.end_chat_confirm_title: 'Haluatko varmasti lopettaa keskustelun?'
+portal.chat.ended_by: '{{name}} lopetti keskustelun'
+portal.chat.ended_by_reason: '{{name}} lopetti keskustelun, syy: {{reason}}'
+portal.chat.ended_user: 'Käyttäjä on päättänyt keskustelun'
+portal.chat.feedback_action: 'Lähetä palautetta'
+portal.chat.feedback_enter_message: 'Kirjoita tähän'
+portal.chat.helpful: Hyödyllinen
+portal.chat.label-email: Sähköpostiosoitteesi
+portal.chat.label-name: Nimesi
+portal.chat.list_agent: Asiantuntija
+portal.chat.log_department: Osasto
+portal.chat.log_title: 'Keskustelusi {{person}} kanssa'
+portal.chat.log_view_linked_ticket: 'Näytä palvelupyyntö'
+portal.chat.message_assigned: 'Keskusteluun liitetty {{name}}'
+portal.chat.message_ended: 'Keskustelu päätetty'
+portal.chat.message_ended-by: '{{name}} lopetti keskustelun'
+portal.chat.message_ended-by-user: 'Käyttäjä on päättänyt keskustelun'
+portal.chat.message_set-department: '{{name}} asetti osastoksi {{department}}'
+portal.chat.message_set_department: '{{name}} asetti osastoksi {{department}}'
+portal.chat.message_started: 'Keskustelu aloitettu'
+portal.chat.message_unassigned: 'Ei liitettyä kesksutelua'
+portal.chat.message_user-joined: '{{name}} liittyi keskusteluun'
+portal.chat.message_user-left: '{{name}} poistui keskustelusta'
+portal.chat.message_user-returned: 'Käyttäjä palasi takaisin'
+portal.chat.message_user-timeout: 'Käyttäjä aika katkaistu'
+portal.chat.message_user_joined: '{{name}} liittyi keskusteluun'
+portal.chat.message_user_left: '{{name}} poistui keskustelusta'
+portal.chat.not_helpful: Hyödytön
+portal.chat.transcript_sent: 'Keskustelun kopio lähetetty {{email}}'
+portal.chat.unassigned: 'Ei liitettyä kesksutelua'
+portal.chat.you: Sinä
+portal.downloads.download: Lataa
+portal.downloads.search-title: Lataukset
+portal.downloads.section-title: Lataukset
+portal.downloads.view-as-agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
+portal.email_subjects.chat_transcript: 'Keskustelu kopio'
+portal.email_subjects.comment-approved: 'Kommenttisi hyväksyttiin'
+portal.email_subjects.comment-confirmation: 'Kiitos kommentistasi'
+portal.email_subjects.comment-deleted: 'Edustajamme on lukenut kommenttisi'
+portal.email_subjects.email-too-big: 'Sähköpostiosoitteesi "{{subject}}" hylättiin'
+portal.email_subjects.email_new-confirm: 'Vahvista sähköpostiosoitteesi'
+portal.email_subjects.email_primary-confirm: 'Vahvista sähköpostiosoitteesi'
+portal.email_subjects.feedback_new: 'Kiitos lähettämästäsi palautteesta'
+portal.email_subjects.feedback_new-approved: 'Palautteesi hyväskyttiin'
+portal.email_subjects.feedback_new-comment: 'Uusi kommentti ketjussa "{{title}}"'
+portal.email_subjects.feedback_new-confirm: 'Kiitos lähettämästäsi palautteesta (vahvistus vaaditaan)'
+portal.email_subjects.feedback_new-disapproved: 'Palautteesi hylättiin'
+portal.email_subjects.feedback_updated: 'Palautteesi ladattiin: {{title}}'
+portal.email_subjects.kb_sub_new: 'Uudet artikkelit'
+portal.email_subjects.kb_sub_new_and_updated: 'uudet ja päivitetyt artikkelit'
+portal.email_subjects.kb_sub_updated: 'Päivitetyt artikkelit'
+portal.email_subjects.password_agent-reset: 'Salasanasi on vaihdettu'
+portal.email_subjects.password_reset: 'Vaihda salasana'
+portal.email_subjects.re: 'VS: {{subject}}'
+portal.email_subjects.register-welcome: 'Kiitos rekisteröitymisestä'
+portal.email_subjects.ticket-rate: 'Arvioi saamsi palvelu tukipyynnössä "{{ticket.subject}}"'
+portal.email_subjects.ticket_new-participant: 'Uusi henkilö lisätty tukipyyntöösi'
+portal.email_subjects.tickets_re: 'VS: {{ticket.subject}}'
+portal.email_subjects.validate-email: 'Vahvista sähköpostiosoitteesi'
+portal.emails.auto-close: 'Tukipyyntösi "{{ticket.subject}}" suljetaan automaattisesti, koska et ole päivittänyt sitä vähään aikaan. Jos et halua että tukipyyntö sulkeutuu, lisää kommentti niin voimme edelleen auttaa sinua tässä asiassa.'
+portal.emails.chat_transcript: 'Kiitos keskustelusta kanssamme. Tässä kopio keskustelustamme.'
+portal.emails.comment_approved: 'Kommenttisi on julkaistu.'
+portal.emails.comment_deleted: 'Kommenttiasi käytettiin sivumme parantamiseen.'
+portal.emails.comment_thank-you: 'Kiitos kommentistasi {{link}}.'
+portal.emails.comment_validate-email: 'Vahvistathan sähköpostiosoitteesi tästä linkistä:'
+portal.emails.do-not-reply: 'Ethän vastaa tähän sähköpostiin. Viesti on lähetetty automaattisesti järjestelmästämme ja vastauksia ei lueta.'
+portal.emails.email-too-big: 'Sähköpostiviestisi "{{subject}}" on liian suuri. Maksimi koko viesteille järjestelmässä on {{max_size}}. POistathan liitteet ja yrität uudelleen.'
+portal.emails.feedback_approved: 'Ilmoitamme sähköpostitse kun palautteesi on luettu ja näkyvissä sivuillamme.'
+portal.emails.feedback_closed: 'Lähettämäsi palaute "{{title}}" on suljettu: {{status}}'
+portal.emails.feedback_disapproved: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme.'
+portal.emails.feedback_disapproved-reason: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme. {{name}} perustelee päätöstä:'
+portal.emails.feedback_new-comment: '{{name}} julkaisi uuden kommentin:'
+portal.emails.feedback_published: 'Lähettämäsi palaute "{{title}}" on hyväksytty ja julkaistaan sivuillamme.'
+portal.emails.feedback_thank-you: 'Kiitos lähettämästäsi palautteesta "{{title}}"'
+portal.emails.feedback_updated: 'Lähettämäsi palaute "{{title}}" on päivitetty ja on tallennettu uudella statuksella "{{status}}"'
+portal.emails.feedback_validate-email: 'Vahvistathan sähköpostiosoitteesi tästä linkistä:'
+portal.emails.feedback_votes:
+  one: 'Palautteellasi on <strong>1</strong> ääntä. Katso palautteesi:'
+  other: 'Palautteellasi on <strong>{{count}}</strong> ääntä. Katso palautteesi:'
+portal.emails.greeting: 'Hyvä {{to_name}},'
+portal.emails.kb-explain: 'Saat tämän viestin koska olet tietokantamme postituslistalla <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Haluatko jatkossa viestejämme? <a href="{{unsubscribe_url}}">Jos haluat poistua listalta seuraa klikkaa oheista linkkiä.</a>'
+portal.emails.kb-new-articles:
+  one: '1 uusi artikkeli'
+  other: '{{count}} uutta artikkelia'
+portal.emails.kb-updated-articles:
+  one: '1 päivitetty artikkeli'
+  other: '{{count}} päivitettyä artikkelia'
+portal.emails.label_view-online: 'Katso online'
+portal.emails.message-clipped: '(viesti leikattu)'
+portal.emails.password_agent-reset: 'Käyttäjätilisi salasana on vaihdettu. Kirjaudu uudella salasanalla'
+portal.emails.password_reset: 'Vaihda salasanasi klikkamalla linkkiä:'
+portal.emails.profile_email-new-confirm: 'Viimeistele vaihtoehtoisen sähköpostiosoitteen lisääminen, klikkaamalla linkkiä'
+portal.emails.profile_email_link-validate: 'Klikkaa linkkiä vahvistaaksesti sähköpostiosoite'
+portal.emails.register-agent-validation: 'Huomioi että edustajamme on vahvistettava käyttäjätilisi. Tukipyynnöt ja muut lähettämäsi viestit ovat jonossa kunnes käyttäjätili on aktivoitu.'
+portal.emails.register-confirm: 'Kiitos käyttäjätilin rekisteröinnistä.<br /><br />Vahvista sähköpostiosoittesi niin käyttäjätilisi on valmis.'
+portal.emails.register-welcome: 'Kiitos rekisteröitymisestä. Jatkossa voit kirjautua sähköpostiosoitteellasi {{to_email}} tukisivuillemme:'
+portal.emails.registration_closed: 'Hyvä {{name}},<br /><br /> tukipyynnöt on sallittuja vain olemassa oleville käyttäjille. Jos sinulla on jo käyttäjätili, lähetätähän viestin uudelleen rekisteröidystä sähköpostiosoitteesta.'
+portal.emails.reject_resolved: 'Viestiäsi ei voitu hyväksyä, koska tukipyyntösi on jo ratkaistu. Edustajamme ei lue tai vastaa tähän viestiin.'
+portal.emails.reject_resolved-new: 'Jos haluat lähettää uuden tukupyynnön lähetä sähköposti <a href="mailto:{{email_to}}">{{email_to}}</a> tai täytä online lomake:<br /><a href="{{link}}">{{link}}</a>'
+portal.emails.reject_resolved-newemail: 'Jos haluat lähettää uuden tukupyynnön lähetä sähköposti <a href="mailto:{{email_to}}">{{email_to}}</a>'
+portal.emails.ticket_access_ticket_online: 'Tarkastele ja muokkaa tukipyyntöäsi online tilassa:'
+portal.emails.ticket_cc-new: 'Sinut on lisätty tukipyyntöön, jonka lähettäjä on {{name}}.'
+portal.emails.ticket_message_title: '{{date}} kello {{time}}, {{author}} kirjoitti:'
+portal.emails.ticket_no-autoresponse: 'Varoitus: vahvistus sähköpostit pois käytöstä'
+portal.emails.ticket_rate-negative: Ei
+portal.emails.ticket_rate-neutral: 'Se oli OK'
+portal.emails.ticket_rate-positive: Kyllä
+portal.emails.ticket_rate-question: 'Oliko tämä viesti avuksi?'
+portal.emails.ticket_received: 'Tukipyyntösi on vastaanotettu. Edustajamme ottaa sinuun pian yhteyttä.'
+portal.emails.ticket_reply-confirm: 'Kiitos vastauksestasi. Edustajamme ottaa sinuun pian yhteyttä.'
+portal.emails.ticket_validate: 'Kiitos yhteydenotosta.<br /><br />ennen kuin edustajamme lukee tai vastaa viestiisi, pitää sähköpostiosoitteesi vahvistaa.'
+portal.emails.tickets_ommitted:
+  one: '1 viesti huomioimatta'
+  other: '{{count}} viestiä huomioimatta'
+portal.emails.view_full_history_online: 'Tarkastele tukipyyntöä online tilassa'
+portal.error.404-title: 'Ei löytynyt.'
+portal.feedback.attachments: Liitetiedostot
+portal.feedback.btn-closed: Suljettu
+portal.feedback.btn-vote: 'Samaa mieltä'
+portal.feedback.form_title: Aihe
+portal.feedback.search-title: Palaute
+portal.feedback.section-desc: 'Nämä samankaltaiset ehdotukset on tullut asiakkailtamme. Ehdotamme että kesksutelet ja äänestä heidän ehdotuksistaan ja lisäät omasi mikäli ajatustasi ei ole jo listattu.'
+portal.feedback.section-title: Palaute
+portal.feedback.submit_feedback: 'Lähetä palaute'
+portal.forms.error_password_forbid_reuse: 'Et voi käyttää aikaisempaa salasanaasi'
+portal.forms.error_password_min_length:
+  one: 'Vähintään {{count}} merkkiä'
+  other: 'Vähintään{{count}} merkkiä'
+portal.forms.label_category: Kategoria
+portal.forms.label_department: Laji
+portal.forms.label_first_name: Etunimi
+portal.forms.label_full_name: Nimesi
+portal.forms.label_language: Kieli
+portal.forms.label_last_name: Sukunimi
+portal.forms.label_message: Viesti
+portal.forms.label_name: Nimesi
+portal.forms.label_password: Salasana
+portal.forms.label_priority: Ensisijainen
+portal.forms.label_save: Tallenna
+portal.forms.label_subject: Aihe
+portal.forms.label_submit: Lähetä
+portal.forms.label_timezone: Aikavyöhyke
+portal.forms.label_title: Aihe
+portal.general.add-comment: 'Lisää kommentti'
+portal.general.agent: Edustaja
+portal.general.attachments: Liitetiedostot
+portal.general.btn-cancel: Peruuta
+portal.general.btn-download-pdf: 'Lataa PDF'
+portal.general.btn-go: Mene
+portal.general.delete: Poista
+portal.general.everything: Kaikki
+portal.general.nav-downloads: Lataukset
+portal.general.nav-downloads-desc: 'Selaa latauksiamme'
+portal.general.nav-feedback: Palaute
+portal.general.nav-kb: Tietokanta
+portal.general.nav-kb-desc: 'Lue tuki artikkeleita'
+portal.general.nav-news: Uutiset
+portal.general.nav-news-desc: 'Uutisia & päivityksiä'
+portal.general.nav-newticket: 'Ota yhteyttä'
+portal.general.nav-profile: Profiili
+portal.general.nav-register: Rekisteröidy
+portal.general.nav-reset-password: 'Vaihda salasana'
+portal.general.nav-tickets: Kutsut
+portal.general.rate-page-positive: 'Tämä sivu oli hyödyllinen'
+portal.general.rated-negative: 'Merkitsit sivun hyödyttömäksi'
+portal.general.rated-positive: 'Merkitsit sivun hyödylliseksi'
+portal.general.rating_x_of_y_found_helpful: '{{vote_up}} / {{vote_count}} pitää tätä sivua hyödyllisenä'
+portal.general.related-downloads: 'Samanlaisia tiedostoja'
+portal.general.related-feedback: 'Vastaava palaute'
+portal.general.related-news: 'Samanlaisia uutisia'
+portal.general.search-labels-section-title: 'Etsi nimikkeitä'
+portal.general.search-section-title: Etsi
+portal.general.search_btn: Etsi
+portal.general.share-this: Jaa
+portal.general.show: Näytä
+portal.general.submit-feedback: 'Lähetä palaute'
+portal.news.section-title: Uutiset
+portal.news.view-as-agent: 'Näet tämän sivun koska olet edustajamme. Peruskäyttäjät eivät näe tätä sivua.'
+portal.sidebar.news_title: Uutiset
+portal.tickets.feedback_message_leave_comment: 'Vapaaehtoinen kommentti'
+portal.tickets.guest-thanks-section-title: Kiitos
+portal.tickets.guest_thank_you_title: Kiitos
+portal.tickets.list_agent: 'Liitetty tukihenkilö'
+portal.tickets.list_date_created: Luotu
+portal.tickets.list_department: Laji
+portal.tickets.list_status_open: 'Avoimet kutsut'
+portal.tickets.list_status_resolved: Päätetty
+portal.tickets.list_subject: Aihe
+portal.tickets.list_title: Kutsusi
+portal.tickets.new-intro: 'Täytä lomake niin otamme mahdollisimman pian yhteyttä.'
+portal.tickets.new-section-title: 'Ota yhteyttä'
+portal.tickets.rate-intro: '{{name}} auttoi sinua kutsussasi "{{subject}}"'
+portal.tickets.rate-negative: 'Se ei ollut hyvä'
+portal.tickets.rate-neutral: 'Se oli OK'
+portal.tickets.rate-positive: 'Se oli loistava'
+portal.tickets.rate-question: 'Miten arvioisit tuen jota sait?'
+portal.tickets.related_articles_title: 'Vastaavia artikkeleita'
+portal.tickets.resolve_my_ticket_btn: 'Päätä kutsuni'
+portal.tickets.resolve_ticket: 'Päätä kutsu: {{subject}}'
+portal.tickets.resolve_ticket_explain: 'Oletko varma että haluat päättä kutsusi? Kun päätät kutsun henkilökuntamme ei enään vastaa.'
+portal.tickets.search-title: Kutsut
+portal.tickets.section-title: Kutsut
+portal.tickets.timeline_marked_resolved: Päätetty
+portal.tickets.view_btn_edit: Muokkaa
+portal.tickets.view_label_your_name: Nimesi
+user.chat.email: Sähköpostiosoite
+user.chat.ended-no-agent: 'Valitettavasti emme ole nyt tavoitettavissa online keskusteluun. Lähetä meille sähköpostia tai yritä myöhemmin uudellen.'
+user.chat.error: 'Keskustelu virhe'
+user.chat.form_chat_button-submit: Lähetetty
+user.chat.form_chat_send-file: 'Lataa tiedosto'
+user.chat.form_create_button-submit: 'Aloita keskustelu'
+user.chat.form_create_department: 'Valitse laji'
+user.chat.form_create_title: 'Aloita keskustelu tukihenkilön kanssa'
+user.chat.form_feedback_button-submit: 'Lähetä palautetta ja sulje ikkuna'
+user.chat.form_feedback_comments: 'Kommentteja?'
+user.chat.form_feedback_rate-satisfaction: 'Olitko tyytyväinen saamaasi palveluun?'
+user.chat.form_feedback_rate-satisfied: Kyllä
+user.chat.form_feedback_rate-time: 'Oliko vastausaika riittävä?'
+user.chat.form_feedback_rate-unsatisfied: Ei
+user.chat.form_feedback_title: 'Lähetä meille palautetta'
+user.chat.form_feedback_transcript-email: 'Lähetä kopio tästä keskustelusta osoitteeseen'
+user.chat.log-title: Keskustelusi
+user.chat.log_chat-id: 'Keskustelu ID'
+user.chat.log_created-date: 'Luotu {{date}}'
+user.chat.log_fields_agent: Asiantuntija
+user.chat.log_fields_department: Laji
+user.chat.log_message_author-you: Sinä
+user.chat.log_nav-view-chats:
+  one: 'Tarkastele viimeisimpiä keskustelujasi {{count}} chat log'
+  other: 'Tarkastele viimeisimpiä keskustelujasi {{count}} chat log'
+user.chat.log_no_department: 'Ei lajia'
+user.chat.log_unassigned: 'Asiantuntijaa ei ole vielä valittu'
+user.chat.message_agent-timeout: 'Valitettavasti; {{name}} ei ole tavoitettavissa. Odotathan hetken, etsimme toisen asiantuntijan.'
+user.chat.message_assigned: 'Keskusteluun liitetty {{name}}'
+user.chat.message_chatting-with: Keskustelet
+user.chat.message_ended: 'Keskustelu päätetty'
+user.chat.message_ended-by: '{{name}} lopetti keskustelun'
+user.chat.message_ended-by-user: 'Käyttäjä on päättänyt keskustelun'
+user.chat.message_finding-agent: 'Etsimme asiantuntijaa'
+user.chat.message_long-wait: 'Yritämme edelleen löytää vapaana olevaa asiantuntijaa; normaalisti tämä kestää alle minuutin. <br /><br />Etkö ehdi odottaa? <a class="cancel-and-newticket-trigger">Jätä meille viesti?</a>'
+user.chat.message_set-department: '{{name}} asetti lajiksi {{department}}'
+user.chat.message_started: 'Keskustelu aloitettu'
+user.chat.message_unassigned: 'Ei liitettyä kesksutelua'
+user.chat.message_uploading: 'Lataa ...'
+user.chat.message_user-joined: '{{name}} liittyi keskusteluun'
+user.chat.message_user-left: '{{name}} poistui keskustelusta'
+user.chat.message_user-returned: 'Käyttäjä palasi takaisin'
+user.chat.message_user-timeout: 'Käyttäjä aika katkaistu'
+user.chat.message_wait: 'Etsimme sinulle asiantuntijan'
+user.chat.message_wait-timeout: 'Edustajaa ei löytynyt'
+user.chat.name: Nimesi
+user.chat.submit-ticket-button: 'Lähetä meille sähköpostia'
+user.chat.submit-ticket-title: 'Lähetä meille sähköpostia'
+user.chat.transcript_sent: 'Keskustelun kopio lähetetty {{email}}'
+user.chat.window_cancel: Peruuta
+user.chat.window_cancel-confirm: 'Oletko varma että haluat lopettaa keskustelun'
+user.chat.window_close: 'Ei kiitos, sulje ikkuna'
+user.chat.window_close_only: 'Sulje ikkuna'
+user.chat.window_end-chat: 'Lopeta keskustelu'
+user.chat.window_offline-button: 'Ota meihin yhteyttä tästä'
+user.chat.window_open-new: 'Avaa keskustelu uuteen ikkunaan'
+user.chat.window_resume-button: 'Avaa keskustelu'
+user.chat.window_start-button: 'Avaa chat keskustelu kanssamme tästä'
+user.chat.window_upload-drag: 'Siirrä tiedosto tähän ladataksesi se keskusteluun'
+user.defaults.article_category_general: Yleinen
+user.defaults.article_example_title: 'Esimerkki artikkeli'
+user.defaults.department_sales: Myynti
+user.defaults.department_support: Tuki
+user.defaults.downloads_category_general: Asiakirjat
+user.defaults.news_category_general: Yleinen
+user.defaults.news_example_content: 'Tämä on esimerkki uutinen. Voit vapaasti poistaa tai muokata sitä.'
+user.defaults.news_example_title: 'Esimerkki uutinen'
+user.downloads.change_file: 'Vaihda tiedostoa'
+user.email_subjects.chat_transcript: 'Keskustelu kopio'
+user.email_subjects.comment-approved: 'Kommenttisi hyväksyttiin'
+user.email_subjects.comment-deleted: 'Asiantuntijamme on lukenut kommenttisi'
+user.email_subjects.email-too-big: 'Sähköpostiosoitteesi "{{subject}}" hylättiin'
+user.email_subjects.email_new-confirm: 'Vahvista sähköpostiosoitteesi'
+user.email_subjects.email_primary-confirm: 'Vahvista sähköpostiosoitteesi'
+user.email_subjects.feedback_new: 'Kiitos lähettämästäsi palautteesta'
+user.email_subjects.feedback_new-approved: 'Palautteesi hyväskyttiin'
+user.email_subjects.feedback_new-comment: 'Uusi kommentti ketjussa "{{title}}"'
+user.email_subjects.feedback_new-disapproved: 'Palautteesi hylättiin'
+user.email_subjects.feedback_updated: 'Palautteesi ladattiin: {{title}}'
+user.email_subjects.kb_sub_new: 'Uudet artikkelit'
+user.email_subjects.kb_sub_new_and_updated: 'uudet ja päivitetyt artikkelit'
+user.email_subjects.kb_sub_updated: 'Päivitetyt artikkelit'
+user.email_subjects.password_agent-reset: 'Salasanasi on vaihdettu'
+user.email_subjects.password_reset: 'Vaihda salasana'
+user.email_subjects.re: 'VS: {{subject}}'
+user.email_subjects.register-welcome: 'Kiitos rekisteröitymisestä'
+user.email_subjects.ticket-rate: 'Arvioi saamsi palvelu tukipyynnössä "{{ticket.subject}}"'
+user.email_subjects.ticket_new-participant: 'Uusi henkilö lisätty tukipyyntöösi'
+user.email_subjects.tickets_re: 'VS: {{ticket.subject}}'
+user.emails.auto-close: 'Tukipyyntösi "{{ticket.subject}}" suljetaan automaattisesti, koska et ole päivittänyt sitä vähään aikaan. Jos et halua että tukipyyntö sulkeutuu, lisää kommentti niin voimme edelleen auttaa sinua tässä asiassa.'
+user.emails.chat_transcript: 'Kiitos keskustelusta kanssamme. Tässä kopio keskustelustamme.'
+user.emails.comment_approved: 'Kommenttisi on julkaistu.'
+user.emails.comment_deleted: 'Kommenttiasi käytettiin sivumme parantamiseen.'
+user.emails.comment_thank-you: 'Kiitos kommentistasi {{link}}.'
+user.emails.email-too-big: 'Sähköpostiviestisi "{{subject}}" on liian suuri. Maksimi koko viesteille järjestelmässä on {{max_size}}. POistathan liitteet ja yrität uudelleen.'
+user.emails.feedback_agent-validation: 'Huomioithan että palautteesi näkyy julkisena vasta kun se on esiluettu.'
+user.emails.feedback_approved: 'Ilmoitamme sähköpostitse kun palautteesi on luettu ja näkyvissä sivuillamme.'
+user.emails.feedback_closed: 'Lähettämäsi palaute "{{title}}" on suljettu: {{status}}'
+user.emails.feedback_disapproved: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme.'
+user.emails.feedback_disapproved-reason: 'Lähetämmä sähköpostiviesti mikäli palautettasi ei valitettavasi julkaista sivuillamme. {{name}} perustelee päätöstä:'
+user.emails.feedback_new-comment: '{{name}} julkaisi uuden kommentin:'
+user.emails.feedback_published: 'Lähettämäsi palaute "{{title}}" on hyväksytty ja julkaistaan sivuillamme.'
+user.emails.feedback_thank-you: 'Kiitos lähettämästäsi palautteesta "{{title}}"'
+user.emails.feedback_updated: 'Lähettämäsi palaute "{{title}}" on päivitetty ja on tallennettu uudella statuksella "{{status}}"'
+user.emails.feedback_votes:
+  one: 'Palautteellasi on <strong>1</strong> ääntä. Katso palautteesi:'
+  other: 'Palautteellasi on <strong>{{count}}</strong> ääntä. Katso palautteesi:'
+user.emails.greeting: 'Hyvä {{to_name}},'
+user.emails.kb-explain: 'Saat tämän viestin koska olet tietokantamme postituslistalla <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Haluatko jatkossa viestejämme? <a href="{{unsubscribe_url}}">Jos haluat poistua listalta seuraa klikkaa oheista linkkiä.</a>'
+user.emails.kb-new-articles:
+  one: '1 uusi artikkeli'
+  other: '{{count}} uutta artikkelia'
+user.emails.kb-updated-articles:
+  one: '1 päivitetty artikkeli'
+  other: '{{count}} päivitettyä artikkelia'
+user.emails.label_view-online: 'Katso online'
+user.emails.message-clipped: '(viesti leikattu)'
+user.emails.password_agent-reset: 'Käyttäjätilisi salasana on vaihdettu. Kirjaudu uudella salasanalla'
+user.emails.password_reset: 'Vaihda salasanasi klikkamalla linkkiä:'
+user.emails.profile_email-new-confirm: 'Viimeistele vaihtoehtoisen sähköpostiosoitteen lisääminen, klikkaamalla linkkiä'
+user.emails.profile_email_link-validate: 'Klikkaa linkkiä vahvistaaksesti sähköpostiosoite'
+user.emails.register-confirm: 'Kiitos käyttäjätilin rekisteröinnistä.<br /><br />Vahvista sähköpostiosoittesi niin käyttäjätilisi on valmis.'
+user.emails.register-welcome: 'Kiitos rekisteröitymisestä. Jatkossa voit kirjautua sähköpostiosoitteellasi {{to_email}} tukisivuillemme:'
+user.emails.registration_closed: 'Hyvä {{name}},<br /><br /> tukipyynnöt on sallittuja vain olemassa oleville käyttäjille. Jos sinulla on jo käyttäjätili, lähetätähän viestin uudelleen rekisteröidystä sähköpostiosoitteesta.'
+user.emails.reject_resolved: 'Viestiäsi ei voitu hyväksyä, koska tukipyyntösi on jo ratkaistu. Edustajamme ei lue tai vastaa tähän viestiin.'
+user.emails.reject_resolved-new: 'Jos haluat lähettää uuden tukupyynnön lähetä sähköposti <a href="mailto:{{email_to}}">{{email_to}}</a> tai täytä online lomake:<br /><a href="{{link}}">{{link}}</a>'
+user.emails.reject_resolved-newemail: 'Jos haluat lähettää uuden tukupyynnön lähetä sähköposti <a href="mailto:{{email_to}}">{{email_to}}</a>'
+user.emails.ticket_access_ticket_online: 'Tarkastele ja muokkaa tukipyyntöäsi online tilassa:'
+user.emails.ticket_cc-new: 'Sinut on lisätty tukipyyntöön, jonka lähettäjä on {{name}}.'
+user.emails.ticket_message_title: '{{date}} kello {{time}}, {{author}} kirjoitti:'
+user.emails.ticket_no-autoresponse: 'Varoitus: vahvistus sähköpostit pois käytöstä'
+user.emails.ticket_rate-negative: Ei
+user.emails.ticket_rate-neutral: 'Se oli OK'
+user.emails.ticket_rate-positive: Kyllä
+user.emails.ticket_rate-question: 'Oliko tämä viesti avuksi?'
+user.emails.ticket_received: 'Tukipyyntösi on vastaanotettu. Edustajamme ottaa sinuun pian yhteyttä.'
+user.emails.ticket_reply-confirm: 'Kiitos vastauksestasi. Edustajamme ottaa sinuun pian yhteyttä.'
+user.emails.ticket_validate: 'Kiitos yhteydenotosta.<br /><br />ennen kuin edustajamme lukee tai vastaa viestiisi, pitää sähköpostiosoitteesi vahvistaa.'
+user.error.attach_ext-allowed: 'Vain seuraavat tiedostotyypit voidaan ladata: {{error_detail}}'
+user.error.attach_ext-not-allow: 'Lataamasi tiedostotyyppi ei ole sallittu.'
+user.error.attach_failed: 'Liitetiedoston lataaminen epäonnistui (keskeytitkö lataamisen?). Yritä uudelleen.'
+user.error.attach_no-file: 'Valitse ladattava tiedosto'
+user.error.attach_size: 'Liitetiedosto on liian suuri. Maksimi koko on {{error_detail}}'
+user.error.attach_unknown-error: 'Palvelimessa oli ongelma hyväskyä liitetiedostoasi. Ole hyvä ja yritä uudelleen.'
+user.error.error_code: 'Virhe koodi'
+user.error.error_title: Virhe
+user.error.expired-token: 'Sivu on vahnentunut. Palaa takaisin ja yritä uudelleen.'
+user.error.form_choice_invalid: 'Valitse vaihtoehto listasta'
+user.error.form_choice_max:
+  one: 'Valitse sopivin vaihtoehto'
+  other: 'Valitse sopivimmat {{count}} vaihtoehdot'
+user.error.form_choice_min:
+  one: 'Valitse vähintään 1 vaihtoehto'
+  other: 'Valitse vähintään {{count}} vaihtoehtoa'
+user.error.form_date_invalid: 'Lisää päivämäärä'
+user.error.form_date_invalid_dow: 'Valitsemasi päivä ei ole mahdollinen'
+user.error.form_date_invalid_range: 'Päivämäärä jonka valitsi ei ole sallituissa rajoissa'
+user.error.form_required: 'Pakollinen tieto'
+user.error.form_text_max:
+  one: 'Lisää sopivin merkki'
+  other: 'Valitse sopivimmat {{count}} merkkiä'
+user.error.form_text_min:
+  one: 'Valitse vähintään 1 merkki'
+  other: 'Valitse vähintään {{count}} merkkiä'
+user.error.form_text_regex: 'Lisää oikea arvo'
+user.error.invalid_email: 'Virheellinen sähköpostiosoite'
+user.error.invalid_email-code: 'Vahvistus linkki on virheellinen'
+user.error.invalid_email-explain: 'Emme löydä sähköpostiosoitetta käyttäjätililtäsi.'
+user.error.not-found: 'Hakemaasi sivua ei löydy.'
+user.error.not-found-title: 'Ei löytynyt.'
+user.error.permission-denied: 'Valitettavasti yrittämäsi toiminto ei ole sallittu.'
+user.error.permission-denied-login: 'Olet kirjautunut ulos. <a href="{{login_url}}">Kirjaudu sisään</a> ja yritä uudelleen.'
+user.error.permission-denied-title: 'Toimenpide ei ole sallittu'
+user.error.server-error: 'Palvelimessa oli virhe joka esti sivun latautumisen. Ole hyvä ja yritä uudelleen.'
+user.feedback.submit_feedback: 'Lähetä palaute'
+user.general.helpdesk_by: 'Tukiohjelmisto <strong>{{deskpro}}</strong>'
+user.general.label_captcha: Vahvistuskoodi
+user.general.page: Sivu
+user.knowledgebase.auto_action_on_date: 'Automaattisesti {{action}}  {{date}}'
+user.knowledgebase.creating_pending_article: 'Luodaan artikkelia'
+user.lang.lang_title: Englanti
+user.lang.lang_title_arabic: Arabia
+user.lang.lang_title_danish: Tanska
+user.lang.lang_title_default: Englanti
+user.lang.lang_title_dutch: Hollanti
+user.lang.lang_title_french: Ranska
+user.lang.lang_title_german: Saksa
+user.lang.lang_title_hungarian: Unkari
+user.lang.lang_title_italian: Italia
+user.lang.lang_title_japanese: Japani
+user.lang.lang_title_norwegian: Norja
+user.lang.lang_title_persian: Persia
+user.lang.lang_title_polish: Puola
+user.lang.lang_title_portuguese: Portugali
+user.lang.lang_title_romanian: Romania
+user.lang.lang_title_russian: Venäjä
+user.lang.lang_title_spanish: Espanja
+user.lang.lang_title_swedish: Ruotsi
+user.lang.lang_title_turkish: Turkki
+user.news.title: Uutiset
+user.profile.account_disabled_message: 'Käyttäjätilisi on väliaikaisesti suljettu. '
+user.profile.choose_email: 'Valitse käytettävä sähköpostiosoite'
+user.profile.connect_with: Yhdistä
+user.profile.or_connect_with: 'Tai yhdistä'
+user.profile.register: Rekisteröidy
+user.profile.register_password_min_length:
+  one: 'Vähintään {{count}} merkkiä'
+  other: 'Vähintään{{count}} merkkiä'
+user.profile.register_password_unused: 'Et voi käyttää aikaisempaa salasanaasi'
+user.tickets.feedback_message_leave_comment: 'Vapaaehtoinen kommentti'
+user.tickets.fields_category: Kategoria
+user.tickets.fields_department: Osasto
+user.tickets.fields_priority: Ensisijainen
+user.tickets.fields_product: Tuote
+user.tickets.form_error_captcha: 'Syötä koodi tähän'
+user.tickets.form_error_captcha_invalid: 'Koodi on virheellinen'
+user.tickets.from_x_at_y: '{{name}}  {{date}}'
+user.tickets.label_cced: Liitetty
+user.tickets.no_subject: '(Ei aihetta)'
+user.tickets.rate-negative: 'Se ei ollut hyvä'
+user.tickets.rate-neutral: 'Se oli OK'
+user.tickets.rate-positive: 'Se oli loistava'
+user.tickets.rate-thanks-vialink: 'Kiitos lähettämästäsi arviosta. Voit jättää vapaan kommentin alle.'
+user.tickets.rate_support: 'Arvioi tuki'
+user.time.long-day_friday: perjantai
+user.time.long-day_monday: maanantai
+user.time.long-day_saturday: lauantai
+user.time.long-day_sunday: sunnuntai
+user.time.long-day_thursday: torstai
+user.time.long-day_tuesday: tiistai
+user.time.long-day_wednesday: keskiviikko
+user.time.long-month_april: huhtikuu
+user.time.long-month_august: elokuu
+user.time.long-month_december: joulukuu
+user.time.long-month_february: helmikuu
+user.time.long-month_january: tammikuu
+user.time.long-month_july: heinäkuu
+user.time.long-month_june: kesäkuu
+user.time.long-month_march: maaliskuu
+user.time.long-month_may: toukokuu
+user.time.long-month_november: marraskuu
+user.time.long-month_october: lokakuu
+user.time.long-month_september: syyskuu
+user.time.short-day_friday: pe
+user.time.short-day_monday: ma
+user.time.short-day_saturday: la
+user.time.short-day_sunday: su
+user.time.short-day_thursday: to
+user.time.short-day_tuesday: ti
+user.time.short-day_wednesday: ke
+user.time.short-month_april: huhti
+user.time.short-month_august: elo
+user.time.short-month_december: joulu
+user.time.short-month_february: helmi
+user.time.short-month_january: tammi
+user.time.short-month_july: heinä
+user.time.short-month_june: kesä
+user.time.short-month_march: maalis
+user.time.short-month_may: touko
+user.time.short-month_november: marras
+user.time.short-month_october: loka
+user.time.short-month_september: syys
+user.time.time-ago_1_day: '1 päivä sitten'
+user.time.time-ago_1_hour: '1 tunti sitten'
+user.time.time-ago_1_minute: '1 minuutti sitten'
+user.time.time-ago_1_month: '1 kuukausi sitten'
+user.time.time-ago_1_second: '1 sekuntti sitten'
+user.time.time-ago_1_week: '1 viikko sitten'
+user.time.time-ago_1_year: '1 vuosi sitten'
+user.time.time-ago_less_second: 'alla sekuntti sitten'
+user.time.time-ago_x_day: '{0} päivää sitten'
+user.time.time-ago_x_hour: '{0} tuntia sitten'
+user.time.time-ago_x_minute: '{0} minuuttia sitten'
+user.time.time-ago_x_month: '{0} kuukautta sitten'
+user.time.time-ago_x_second: '{0} secunttia sitten'
+user.time.time-ago_x_week: '{0} viikkoa sitten'
+user.time.time-ago_x_year: '{0} vuotta sitten'
+user.time.time_1_day: '1 päivä'
+user.time.time_1_hour: '1 tunti'
+user.time.time_1_minute: '1 minuutti'
+user.time.time_1_month: '1 kuukausi'
+user.time.time_1_second: '1 sekuntti'
+user.time.time_1_week: '1 viikko'
+user.time.time_1_year: '1 vuosi'
+user.time.time_less_second: 'alle sekuntti'
+user.time.time_x_day: '{0} päivää'
+user.time.time_x_hour: '{0} tuntia'
+user.time.time_x_minute: '{0} minuuttia'
+user.time.time_x_month: '{0} kuukautta'
+user.time.time_x_second: '{0} sekunttia'
+user.time.time_x_week: '{0} viikkoa'
+user.time.time_x_year: '{0} vuotta'

@@ -1,0 +1,283 @@
+portal.account.reset-password-btn: 'Nullstill passord'
+portal.account.section-title-reset-password: 'Nullstill passord'
+portal.articles.search-title: Kunnskapsbase
+portal.articles.section-title: Kunnskapsbase
+portal.articles.view-as-agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
+portal.chat.assigned_to: 'Chat er tildelt {{name}}'
+portal.chat.chat_transcript: 'Samtale referat'
+portal.chat.end_chat: 'Avslutt samtale'
+portal.chat.ended_by: 'Chat ble avsluttet av {{name}}'
+portal.chat.ended_user: 'Chat ble avsluttet av kunde'
+portal.chat.helpful: 'Hjalp meg'
+portal.chat.label-name: 'Ditt navn'
+portal.chat.log_department: Avdeling
+portal.chat.message_assigned: 'Chat er tildelt {{name}}'
+portal.chat.message_ended: 'Chat avsluttet'
+portal.chat.message_ended-by: 'Chat ble avsluttet av {{name}}'
+portal.chat.message_ended-by-user: 'Chat ble avsluttet av kunde'
+portal.chat.message_set-department: '{{name}} satt avdeling til {{department}}'
+portal.chat.message_set_department: '{{name}} satt avdeling til {{department}}'
+portal.chat.message_started: 'Chat startet'
+portal.chat.message_user-joined: '{{name}} kom inn i samtalen'
+portal.chat.message_user-left: '{{name}} forlot samtalen'
+portal.chat.message_user-returned: 'Kunde kom tilbake'
+portal.chat.message_user-timeout: 'Kunde har tidsavbrudd'
+portal.chat.message_user_joined: '{{name}} kom inn i samtalen'
+portal.chat.message_user_left: '{{name}} forlot samtalen'
+portal.chat.not_helpful: 'Hjalp ikke'
+portal.chat.you: Du
+portal.downloads.download: 'Last ned'
+portal.downloads.search-title: Nedlastninger
+portal.downloads.section-title: Nedlastninger
+portal.downloads.view-as-agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
+portal.email_subjects.chat_transcript: 'Samtale referat'
+portal.email_subjects.comment-approved: 'Din kommentar har blitt godkjent'
+portal.email_subjects.comment-confirmation: 'Takk for din kommentar'
+portal.email_subjects.comment-deleted: 'Din kommentar ble lest av våre medarbeidere'
+portal.email_subjects.email_new-confirm: 'Bekreft epost addressen din'
+portal.email_subjects.email_primary-confirm: 'Bekreft epost addressen din'
+portal.email_subjects.feedback_new: 'Takk for at du sendte tilbakemelding'
+portal.email_subjects.feedback_new-approved: 'Din tilbakemelding har blitt godkjent'
+portal.email_subjects.feedback_new-comment: 'Det er en ny kommentar på "{{title}}"'
+portal.email_subjects.feedback_new-confirm: 'Takk for at du sendte tilbakemelding (må bekreftes)'
+portal.email_subjects.feedback_new-disapproved: 'Din tilbakemelding har blitt avvist'
+portal.email_subjects.feedback_updated: 'Din tilbakemelding har blitt oppdatert: {{title}}'
+portal.email_subjects.password_agent-reset: 'Ditt passord har blitt nullstillt'
+portal.email_subjects.password_reset: 'Nullstill passord'
+portal.email_subjects.ticket_new-participant: 'En ny person har blitt lagt til din sak'
+portal.email_subjects.validate-email: 'Bekreft epost addressen din'
+portal.emails.chat_transcript: 'Takk for praten. Her er et referat av vår samtale.'
+portal.emails.comment_approved: 'Din kommentar har blitt publisert.'
+portal.emails.comment_deleted: 'Din kommentar ble brukt til å forbedre siden.'
+portal.emails.comment_thank-you: 'Takk for din kommentar på {{link}}'
+portal.emails.comment_validate-email: 'Vennligst bekreft epostaddressen din ved å trykke på følgende link:'
+portal.emails.do-not-reply: 'Vennligst ikke svar på denne eposten. Dette er en automatisk generert melding og svar vil ikke bli lest.'
+portal.emails.feedback_approved: 'Vi sender deg en epost for å fortelle deg at din tilbakemelding har blitt godkjent og kan ses på nettsiden vår.'
+portal.emails.feedback_closed: 'Din tilbakemelding {{title}} ble markert {{status}}'
+portal.emails.feedback_disapproved: 'Vi sender deg denne eposten for å fortelle deg at din tilbakemelding ikke vil bli vist på våre nettsider.'
+portal.emails.feedback_disapproved-reason: 'Vi sender deg denne eposten for å fortelle deg at din tilbakemelding ikke vil bli vist på våre nettsider. {{name}} ga følgende grunn:'
+portal.emails.feedback_new-comment: '{{name}} la til en ny kommentar'
+portal.emails.feedback_published: 'Du sendte inn tilbakemeldingen "{{title}}" har blitt godkjent og vil nå bli vist på nettsidene våre.'
+portal.emails.feedback_thank-you: 'Takk for at ga oss tilbakemeldingen "{{title}}"'
+portal.emails.feedback_updated: 'Din tilbakemelding "{{title}}" har nå blitt oppdatert. Den har nå fått statusen "{{status}}"'
+portal.emails.feedback_validate-email: 'Vennligst bekreft epostaddressen din ved å trykke på følgende link:'
+portal.emails.feedback_votes:
+  one: 'Din tilbakemelding har fått <strong>1</strong> stemme. Se tilbakemeldingen her:'
+  other: 'Din tilbakemelding har fått <strong>{{count}}</strong> stemmer. Se tilbakemeldingen her:'
+portal.emails.greeting: 'Kjære {{to_name}},'
+portal.emails.label_view-online: 'Se denne online'
+portal.emails.message-clipped: '(Meldingen har blitt kuttet ned)'
+portal.emails.password_agent-reset: 'En av våre medarbeidere har tilbakestilt passordet ditt. Du kan logge inn med følgende detaljer:'
+portal.emails.password_reset: 'Du har spurt etter et nytt passord. For å sette nytt passord, klikk på følgende lenke:'
+portal.emails.profile_email-new-confirm: 'For å legge til en sekundær epost addresse, vennligst klikk på følgende lenke:'
+portal.emails.profile_email_link-validate: 'Vennligst klikk følgende lenke for å bekrefte epost addressen din:'
+portal.emails.register-confirm: 'Takk for at du lagde en konto hos oss.<br /><br />Før du kan bruke kontoen, så må du klikke på følgende lenke:'
+portal.emails.registration_closed: 'Dear {{name}},<br /><br /><br /><br />New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.'
+portal.emails.ticket_access_ticket_online: 'Se og administrer denne saken online:'
+portal.emails.ticket_cc-new: 'Du har blitt inkludert i en sak startet av {{name}}'
+portal.emails.ticket_flood: 'Du sendte en epost til vår kundesenter. Vårt automatiske system har oppdaget at du har sendt mange meldinger rett etter hverandre, som for oss ser ut til å være automatiske. <br /><br />For å beskytte oss mot en autosvar løkke, så vil ikke vårt kundesenter sende flere automatiske meldinger til deg.'
+portal.emails.ticket_message_title: 'Den {{date}} kl {{time}}, {{author}} skrev:'
+portal.emails.ticket_no-autoresponse: 'Advarsel: Bekreftelsesepost er skrudd av.'
+portal.emails.ticket_rate-negative: Nei
+portal.emails.ticket_rate-positive: Ja
+portal.emails.ticket_received: 'Din sak har blitt mottatt. En av våre medarbeidere vil svare innen kort tid.'
+portal.emails.ticket_reply-confirm: 'Takk for ditt svar. En av våre medarbeidere vil svare innen kort tid.'
+portal.emails.ticket_validate: 'Takk for at du tok kontakt.<br /><br />Før en av våre medarbeidere vil lese og svare på meldingen din, må du bekrefte epost-addressen din.'
+portal.emails.tickets_ommitted:
+  one: '1 melding har blitt utelatt'
+  other: '{{count}} melding har blitt utelatt'
+portal.emails.view_full_history_online: 'Se hele saken online'
+portal.error.404-title: 'Fant Ikke'
+portal.feedback.attachments: Vedlegg
+portal.forms.label_category: Kategori
+portal.forms.label_department: Avdeling
+portal.forms.label_first_name: Fornavn
+portal.forms.label_full_name: 'Ditt navn'
+portal.forms.label_last_name: Etternavn
+portal.forms.label_message: Melding
+portal.forms.label_name: Navn
+portal.forms.label_priority: Prioritet
+portal.forms.label_save: Lagre
+portal.forms.label_subject: Emne
+portal.forms.label_submit: Send
+portal.general.add-comment: 'Ny kommentar'
+portal.general.attachments: Vedlegg
+portal.general.btn-cancel: Avbryt
+portal.general.btn-download-pdf: 'Last ned PDF'
+portal.general.btn-go: Gå
+portal.general.nav-downloads: Nedlastninger
+portal.general.nav-kb: Kunnskapsbase
+portal.general.nav-newticket: 'Kontakt oss'
+portal.general.nav-reset-password: 'Nullstill passord'
+portal.general.nav-tickets: Saker
+portal.general.rate-page-positive: 'Denne siden hjalp meg'
+portal.general.rated-negative: 'Du markerte siden som ikke hjelpsom'
+portal.general.rated-positive: 'Du markerte siden som hjelpsom'
+portal.general.rating_x_of_y_found_helpful: '{{vote_up}} av {{vote_count}} syns denne siden hjalp dem'
+portal.general.related-downloads: 'Relaterte filer'
+portal.news.view-as-agent: 'Du kan se denne siden for du er en medarbeider. Normale brukere kan ikke se denne siden.'
+portal.tickets.feedback_message_leave_comment: 'Eventuelt legg igjen en kommentar'
+portal.tickets.guest-thanks-section-title: Takk
+portal.tickets.guest_thank_you_title: Takk
+portal.tickets.list_agent: 'Tildelt medarbeider'
+portal.tickets.list_department: Avdeling
+portal.tickets.list_status_open: 'Uløste saker'
+portal.tickets.list_status_resolved: Lukket
+portal.tickets.list_subject: Emne
+portal.tickets.list_title: 'Dine saker'
+portal.tickets.new-intro: 'Vennligst fyll ut skjema og en av våre medarbeidere vil svare deg på epost så snart som mulig.'
+portal.tickets.new-section-title: 'Kontakt oss'
+portal.tickets.related_articles_title: 'Relaterte artikler'
+portal.tickets.resolve_my_ticket_btn: 'Lukk saken'
+portal.tickets.resolve_ticket: 'Løs sak: {{subject}}'
+portal.tickets.resolve_ticket_explain: 'Er du sikker på at du vil lukke saken? Når saken er lukket vil vi ikke svare på den.'
+portal.tickets.search-title: Saker
+portal.tickets.section-title: Saker
+portal.tickets.timeline_marked_resolved: Lukket
+portal.tickets.view_btn_edit: Rediger
+portal.tickets.view_label_your_name: 'Ditt navn'
+portal.tickets.view_unassigned: Utildelt
+user.chat.email: 'Din epost adresse'
+user.chat.ended-no-agent: 'Vi beklager, men det er ingen som kan chatte med deg akkurat nå. Vennligst send oss en epost eller prøv senere.'
+user.chat.form_chat_send-file: 'Last opp fil'
+user.chat.form_create_department: 'Velg avdeling'
+user.chat.form_create_title: 'Start en chat med en medarbeider'
+user.chat.form_feedback_button-submit: 'Send tilbakemelding og lukk vindu'
+user.chat.form_feedback_comments: 'Kommentar?'
+user.chat.form_feedback_rate-satisfaction: 'Er du fornøyd med samtalen?'
+user.chat.form_feedback_rate-satisfied: Ja
+user.chat.form_feedback_rate-time: 'Svarte vi raskt nok?'
+user.chat.form_feedback_rate-unsatisfied: Nei
+user.chat.form_feedback_title: 'Send oss tilbakemelding'
+user.chat.form_feedback_transcript-email: 'Send et referat av denne samtalen til'
+user.chat.log_created-date: 'Laget {{date}}'
+user.chat.log_fields_department: Avdeling
+user.chat.log_message_author-you: Du
+user.chat.message_agent-timeout: 'Vi beklager; {{name}} ser ut til å ha blitt frakoblet. Vennligst vent mens vi finner en annen medarbeider'
+user.chat.message_assigned: 'Chat er tildelt {{name}}'
+user.chat.message_chatting-with: 'Du chatter med'
+user.chat.message_ended: 'Chat avsluttet'
+user.chat.message_ended-by: 'Chat ble avsluttet av {{name}}'
+user.chat.message_ended-by-user: 'Chat ble avsluttet av kunde'
+user.chat.message_finding-agent: 'Finner en medarbeider'
+user.chat.message_long-wait: 'Vi prøver fremdeles å finne en tilgjengelig medarbeider til å svare, dette tar normalt under ett minutt. <br /><br />Travelt? <a class="cancel-and-newticket-trigger">Skriv en beskjed til oss isteden</a>'
+user.chat.message_set-department: '{{name}} satt avdeling til {{department}}'
+user.chat.message_started: 'Chat startet'
+user.chat.message_uploading: 'Laster opp ...'
+user.chat.message_user-joined: '{{name}} kom inn i samtalen'
+user.chat.message_user-left: '{{name}} forlot samtalen'
+user.chat.message_user-returned: 'Kunde kom tilbake'
+user.chat.message_user-timeout: 'Kunde har tidsavbrudd'
+user.chat.message_wait: 'Vi finner en medarbeider til deg'
+user.chat.name: 'Ditt navn'
+user.chat.submit-ticket-button: 'Send oss en epost'
+user.chat.submit-ticket-title: 'Send oss en epost istedet'
+user.chat.window_cancel: Avbryt
+user.chat.window_cancel-confirm: 'Er du sikker på at du avslutte samtalen?'
+user.chat.window_close: 'Nei takk, bare lukk vinduet'
+user.chat.window_end-chat: 'Avslutt samtale'
+user.chat.window_open-new: 'Åpne opp denne samtalen i et nytt vindu'
+user.chat.window_resume-button: 'Åpne chat'
+user.chat.window_start-button: 'Klikk her for å chatte med oss'
+user.chat.window_upload-drag: 'Slipp filen din her for å laste den opp i chatten'
+user.defaults.article_category_general: Generelt
+user.defaults.article_example_content: 'Dette er et eksempel av en kunnskapsbase artikkel. Gjør gjerne endringer eller fjern den fra agent grensesnittet.'
+user.defaults.article_example_title: 'Artikkel Eksempel'
+user.defaults.department_sales: Salg
+user.defaults.downloads_category_general: Dokumenter
+user.defaults.news_category_general: Nytt
+user.defaults.news_example_content: 'Dette er en eksempel nyhet. Gjør gjerne endringer eller fjern den fra agent grensesnittet.'
+user.defaults.news_example_title: 'Eksempel nyhet'
+user.email_subjects.chat_transcript: 'Samtale referat'
+user.email_subjects.comment-approved: 'Din kommentar har blitt godkjent'
+user.email_subjects.comment-deleted: 'Din kommentar ble lest av våre medarbeidere'
+user.email_subjects.email_new-confirm: 'Bekreft epost addressen din'
+user.email_subjects.email_primary-confirm: 'Bekreft epost addressen din'
+user.email_subjects.feedback_new: 'Takk for at du sendte tilbakemelding'
+user.email_subjects.feedback_new-approved: 'Din tilbakemelding har blitt godkjent'
+user.email_subjects.feedback_new-comment: 'Det er en ny kommentar på "{{title}}"'
+user.email_subjects.feedback_new-disapproved: 'Din tilbakemelding har blitt avvist'
+user.email_subjects.feedback_updated: 'Din tilbakemelding har blitt oppdatert: {{title}}'
+user.email_subjects.password_agent-reset: 'Ditt passord har blitt nullstillt'
+user.email_subjects.password_reset: 'Nullstill passord'
+user.email_subjects.ticket_new-participant: 'En ny person har blitt lagt til din sak'
+user.emails.chat_transcript: 'Takk for praten. Her er et referat av vår samtale.'
+user.emails.comment_approved: 'Din kommentar har blitt publisert.'
+user.emails.comment_deleted: 'Din kommentar ble brukt til å forbedre siden.'
+user.emails.comment_thank-you: 'Takk for din kommentar på {{link}}'
+user.emails.feedback_agent-validation: 'Legg merke til at din tilbakemelding ikke vil bli publisert før en av våre medarbeidere godkjenner den.'
+user.emails.feedback_approved: 'Vi sender deg en epost for å fortelle deg at din tilbakemelding har blitt godkjent og kan ses på nettsiden vår.'
+user.emails.feedback_closed: 'Din tilbakemelding {{title}} ble markert {{status}}'
+user.emails.feedback_disapproved: 'Vi sender deg denne eposten for å fortelle deg at din tilbakemelding ikke vil bli vist på våre nettsider.'
+user.emails.feedback_disapproved-reason: 'Vi sender deg denne eposten for å fortelle deg at din tilbakemelding ikke vil bli vist på våre nettsider. {{name}} ga følgende grunn:'
+user.emails.feedback_new-comment: '{{name}} la til en ny kommentar'
+user.emails.feedback_published: 'Du sendte inn tilbakemeldingen "{{title}}" har blitt godkjent og vil nå bli vist på nettsidene våre.'
+user.emails.feedback_thank-you: 'Takk for at ga oss tilbakemeldingen "{{title}}"'
+user.emails.feedback_updated: 'Din tilbakemelding "{{title}}" har nå blitt oppdatert. Den har nå fått statusen "{{status}}"'
+user.emails.feedback_votes:
+  one: 'Din tilbakemelding har fått <strong>1</strong> stemme. Se tilbakemeldingen her:'
+  other: 'Din tilbakemelding har fått <strong>{{count}}</strong> stemmer. Se tilbakemeldingen her:'
+user.emails.greeting: 'Kjære {{to_name}},'
+user.emails.label_view-online: 'Se denne online'
+user.emails.message-clipped: '(Meldingen har blitt kuttet ned)'
+user.emails.password_agent-reset: 'En av våre medarbeidere har tilbakestilt passordet ditt. Du kan logge inn med følgende detaljer:'
+user.emails.password_reset: 'Du har spurt etter et nytt passord. For å sette nytt passord, klikk på følgende lenke:'
+user.emails.profile_email-new-confirm: 'For å legge til en sekundær epost addresse, vennligst klikk på følgende lenke:'
+user.emails.profile_email_link-validate: 'Vennligst klikk følgende lenke for å bekrefte epost addressen din:'
+user.emails.register-confirm: 'Takk for at du lagde en konto hos oss.<br /><br />Før du kan bruke kontoen, så må du klikke på følgende lenke:'
+user.emails.registration_closed: 'Dear {{name}},<br /><br /><br /><br />New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.'
+user.emails.ticket_access_ticket_online: 'Se og administrer denne saken online:'
+user.emails.ticket_cc-new: 'Du har blitt inkludert i en sak startet av {{name}}'
+user.emails.ticket_flood: 'Du sendte en epost til vår kundesenter. Vårt automatiske system har oppdaget at du har sendt mange meldinger rett etter hverandre, som for oss ser ut til å være automatiske. <br /><br />For å beskytte oss mot en autosvar løkke, så vil ikke vårt kundesenter sende flere automatiske meldinger til deg.'
+user.emails.ticket_message_title: 'Den {{date}} kl {{time}}, {{author}} skrev:'
+user.emails.ticket_no-autoresponse: 'Advarsel: Bekreftelsesepost er skrudd av.'
+user.emails.ticket_rate-negative: Nei
+user.emails.ticket_rate-positive: Ja
+user.emails.ticket_received: 'Din sak har blitt mottatt. En av våre medarbeidere vil svare innen kort tid.'
+user.emails.ticket_reply-confirm: 'Takk for ditt svar. En av våre medarbeidere vil svare innen kort tid.'
+user.emails.ticket_validate: 'Takk for at du tok kontakt.<br /><br />Før en av våre medarbeidere vil lese og svare på meldingen din, må du bekrefte epost-addressen din.'
+user.error.attach_ext-allowed: 'Bare følgende filtyper kan lastes opp: {{error_detail}}'
+user.error.attach_ext-not-allow: 'Filtypen som du lastet opp er ikke tillat.'
+user.error.attach_failed: 'Vedlegget ditt ble ikke lastet opp (Avbrøt du?) Prøv igjen.'
+user.error.attach_no-file: 'Velg en fil å laste opp'
+user.error.attach_size: 'Vedlegget er for stort. Maks filstørrelse er {{error_detail}}'
+user.error.attach_unknown-error: 'Det var et problem på vår server mens vi prøvde å ta imot vedlegget. Vennligst prøv igjen.'
+user.error.error_code: 'Feil kode'
+user.error.error_title: Feil
+user.error.expired-token: 'Siden har gått ut på dato. Gå tilbake og prøv igjen.'
+user.error.form_choice_invalid: 'Velg et alternativ fra listen'
+user.error.form_choice_max:
+  one: 'Du kan velge maks 1 alternativ'
+  other: 'Du kan velge maks {{count}} alternativ'
+user.error.form_choice_min:
+  one: 'Velg minst 1 alternativ'
+  other: 'Du må velge minst {{count}} alternativ'
+user.error.form_date_invalid: 'Skriv inn en gyldig dato'
+user.error.form_required: 'Dette feltet er påkrevd'
+user.error.form_text_max:
+  one: 'Du kan skrive maks 1 tegn'
+  other: 'Du kan skrive maks {{count}} tegn'
+user.error.form_text_min:
+  one: 'Du må skrive minst 1 tegn'
+  other: 'Du må skrive minst {{count}} tegn'
+user.error.form_text_regex: 'Skriv inn en gyldig verdi'
+user.error.invalid_email: 'Ugyldig epostadresse'
+user.error.invalid_email-code: 'Bekreftselslenken ser ut til å være feil.'
+user.error.invalid_email-explain: 'Vi kan ikke finne den epost adressen på din konto.'
+user.error.not-found: 'Vi fant ikke siden du søkte etter'
+user.error.not-found-title: 'Fant Ikke'
+user.error.permission-denied: 'Beklager, men handling du prøver er ikke tillat.'
+user.general.helpdesk_by: 'Software av <strong>{{deskpro}}</strong>'
+user.general.label_captcha: Bekreftelseskode
+user.general.page: Side
+user.lang.lang_title: Norsk
+user.tickets.feedback_message_leave_comment: 'Eventuelt legg igjen en kommentar'
+user.tickets.fields_category: Kategori
+user.tickets.fields_department: Avdeling
+user.tickets.fields_priority: Prioritet
+user.tickets.fields_product: Produkt
+user.tickets.form_error_captcha: 'Vennligst tast inn kode'
+user.tickets.form_error_captcha_invalid: 'Koden du tastet inn er feil'
+user.tickets.from_x_at_y: 'Fra {{name}}, {{date}}'
+user.tickets.label_cced: CCet
+user.tickets.no_subject: '(tomt emne)'

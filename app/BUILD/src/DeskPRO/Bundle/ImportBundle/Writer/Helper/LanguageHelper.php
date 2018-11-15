@@ -62,7 +62,7 @@ class LanguageHelper
         // try to install a new language from the language pack
         $langPacks = new LangPackInfo();
         foreach ($langPacks->getManifest() as $info) {
-            if ($info['locale'] === $title || $info['id'] === $title || $info['title'] === $title || $info['lang_code'] === $title) {
+            if ($info['locale'] === $title || $info['id'] === $title || $info['title'] === $title) {
                 $language = $langPacks->newLanguageEntity($info['id']);
                 $this->persister->persistAndFlush($language);
 

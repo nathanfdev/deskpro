@@ -1,0 +1,11 @@
+id: german
+name: German
+nameLocal: 'Englisch (US)'
+locale: de
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

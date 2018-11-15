@@ -1,0 +1,11 @@
+id: persian
+name: Persian
+nameLocal: فارسی
+locale: fa
+isRtl: true
+pluralRules:
+  plurals: 2
+  formula: 'n > 1'
+  categories:
+    - one
+    - other

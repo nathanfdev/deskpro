@@ -1,0 +1,2160 @@
+agent.chat.added_as_participant: 'Pridaný ako účastník konania'
+agent.chat.agent_chats: 'Konverzácie Operátora'
+agent.chat.between_members: 'Konverzácia medzi:'
+agent.chat.chat_history: 'História konverzácie'
+agent.chat.chat_started_by: 'Konverzácia začala'
+agent.chat.chat_transcript: 'Opis konverzácie'
+agent.chat.chat_with_x: 'Konverzácia s {{name}}'
+agent.chat.count_seconds:
+  one: '{{count}} sekunda'
+  few: '{{count}} sekúnd'
+  other: '{{count}} sekúnd'
+agent.chat.filter_title_assigned: 'Pripojené konverzácie'
+agent.chat.filter_title_mine: 'Moje konverzácie'
+agent.chat.filter_title_missed: 'Zmeškané konverzácie'
+agent.chat.in_department: 'v {{name}}'
+agent.chat.invite_agent: 'Pozvať Operátora'
+agent.chat.invite_another_agent: 'Pozvať ďalšieho operátora'
+agent.chat.invite_no_agents: 'Nie je možné požvať ďalšieho operátora'
+agent.chat.invite_others: 'Pozvať iných'
+agent.chat.join_chat: 'Pripojiť sa do konverzácie'
+agent.chat.label_assigned_others: 'Ostatní operátori v tejto konverzácií'
+agent.chat.leave_chat_confirm: 'Ste si istý, že chcete opustit túto konverzáciu?'
+agent.chat.leave_end: 'Ukončiť konverzáciu a odísť'
+agent.chat.leave_unassign: 'Odhlásiť sa a odísť'
+agent.chat.list_title:
+  one: '1 Konverzácia'
+  few: '{{count}} Konverácie'
+  other: '{{count}} Konverácie'
+agent.chat.msg_agent_timeout: '{{agent_name}}, čas vypršal'
+agent.chat.msg_assigned_agent: 'Chat priradený pre: {{agent_name}}'
+agent.chat.msg_part_joined: '{{person_name}} sa pripojil'
+agent.chat.msg_part_left: '{{person_name}} odišiel'
+agent.chat.msg_unassigned_agent: '{{agent_name}} bol preradený'
+agent.chat.my_open_chats: 'Moje otvorené konverzácie'
+agent.chat.new_agent_note_by: 'Moja operátorská poznámka {{name}}'
+agent.chat.new_agent_reply_by: 'Nový operátor odpovedal v súhlade s: {{name}}'
+agent.chat.new_chat: 'Nová konverzácia'
+agent.chat.new_ticket_by: 'Nový ticket od {{name}} ({{email}})'
+agent.chat.new_user_reply_by: 'Nová odpoveď užívateľa {{name}} ({{email}})'
+agent.chat.no_department: 'Žiadne oddelenie'
+agent.chat.no_email: 'Žiadny Mail'
+agent.chat.no_online_agents: 'Nie je pripojený žiaden iný operátor'
+agent.chat.no_open_chats: 'Momentálne nie sú otvorené žiadne konverzácie'
+agent.chat.no_others: 'Nikto iný'
+agent.chat.offline: Odpojený
+agent.chat.online: Pripojený
+agent.chat.open_chat: 'Otvor konverzáciu'
+agent.chat.other_agents: 'Ostatní operátori'
+agent.chat.show_offline: 'Zobraz odpojených'
+agent.chat.snippets: Úryvky
+agent.chat.take_chat: 'Zaháj konverzáciu'
+agent.chat.team_chats: 'Skupinová konverzácia'
+agent.chat.title_active_chats: 'Všetky otvorené konverzácie'
+agent.chat.title_chat_id: 'Konverzácia {{chat_id}}'
+agent.chat.title_ended: 'Ukončené konverzácie'
+agent.chat.title_leave_chat_prompt: 'Opustiť konverzácie?'
+agent.chat.title_new_chats: 'Nové konverzácie'
+agent.chat.title_open: 'Otvoriť konverzácie'
+agent.chat.user_is_viewing: 'Užívateľ sleduje'
+agent.chat.user_typing: Píše
+agent.chat.warning: Upozornenie
+agent.chat.warning_email_address_not_unique: 'Uživateľ momentálne nie je pripojený a nie je možné overiť jeho identitu. Buďte opatrný a neposkytujte citlivé informácie nakoľko môže ísť o podvodníka.'
+agent.chat.x_by_anonymous: 'Konverzácia {{chat_id}} s anonymom'
+agent.chat.x_by_anonymousymous: 'Konverzácia s anonymom'
+agent.chat.you_have_been_invited: 'Boli ste pozvaný do konverzácie'
+agent.chrome.btn_create: Vytvoriť
+agent.chrome.btn_recent: Nedávne
+agent.chrome.chat_list_agents-online: '<span class="userchat-online-agents-count">0</span> online operátorov:'
+agent.chrome.chat_list_by-department: Oddelením
+agent.chrome.chat_list_heading_current-page: 'Aktuálna stránka'
+agent.chrome.chat_list_heading_time: Čas
+agent.chrome.chat_list_heading_user: Užívateľ
+agent.chrome.chat_list_no-online-users: 'Nie sú žiadni online užívatelia'
+agent.chrome.chat_list_online-users:
+  one: '<span class="count-online-users">1</span> online užívateľ'
+  few: '<span class="count-online-users">{{count}}</span> online užívateľov'
+  other: '<span class="count-online-users">{{count}}</span> online užívateľov'
+agent.chrome.chat_logged-in: 'Prihlásený do konverzácie'
+agent.chrome.chat_logged-out: 'Odhlásený z konverzácie'
+agent.chrome.chat_online-agents:
+  one: '<span class="userchat-online-agents-count">{{count}}</span> operátor'
+  few: '<span class="userchat-online-agents-count">{{count}}</span> operátorov'
+  other: '<span class="userchat-online-agents-count">{{count}}</span> operátorov'
+agent.chrome.chat_online-users:
+  one: '<span class="userchat-online-users-count">{{count}}</span> užívateľ'
+  few: '<span class="userchat-online-users-count">{{count}}</span> užívateľov'
+  other: '<span class="userchat-online-users-count">{{count}}</span> užívateľov'
+agent.chrome.chat_sign-in: 'Prihlásiť sado konverzácie'
+agent.chrome.chat_sign-out: 'Odhlásiť sa z konverzácie'
+agent.chrome.create_new-article: 'Nový článok'
+agent.chrome.create_new-download: 'Nové stiahnutie'
+agent.chrome.create_new-feedback: 'Nová spätná väzba'
+agent.chrome.create_new-news: 'Nová novinka'
+agent.chrome.create_new-organization: 'Nová organizácia'
+agent.chrome.create_new-person: 'Nová osoba'
+agent.chrome.create_new-task: 'Nová úloha'
+agent.chrome.create_new-ticket: 'Nový tiket'
+agent.chrome.create_new-tweet: 'Nový tweet'
+agent.chrome.hello-user: 'Ahoj, {{name}}'
+agent.chrome.help-contact-us: 'Kontaktujte nás'
+agent.chrome.help-contact-us-explain: 'Kontaktujte nás na našom helpdesku na <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> alebo priamo cez e-mail na <a href="mailto:support@deskpro.com">support@deskpro.com</a>.'
+agent.chrome.help-manuals: Manuály
+agent.chrome.help-quickstart-guide-link: 'Ak ste na DeskPRO nový, <a href="{{link}}">kliknite sem pre úvod do DeskPRO systému</a>.'
+agent.chrome.kbd-change-status-agent: 'Zmeniť status na očakávanie operátora'
+agent.chrome.kbd-change-status-resolved: 'Zmeniť status na vyriešené'
+agent.chrome.kbd-change-status-user: 'Zmeniť status na očakávanie užívateľa'
+agent.chrome.kbd-open-org: 'Otvoriť profil organizácie'
+agent.chrome.kbd-open-send-actions: 'Otvoriť možnosti odosielania'
+agent.chrome.kbd-open-snippets: 'Otvoriť útržky'
+agent.chrome.kbd-open-user-profile: 'Otvoriť profil užívateľa'
+agent.chrome.kbd-send-reply: 'Zaslať odpoveď'
+agent.chrome.kbd-shortcuts: 'Klávesové skratky'
+agent.chrome.link_help: Pomoc
+agent.chrome.link_logout: 'Odhlásiť sa'
+agent.chrome.link_preferences: Preferencie
+agent.chrome.nav_admin_settings: 'Administrátorské nastavenia'
+agent.chrome.nav_agentchat: 'Operátorské IM'
+agent.chrome.nav_feedback: 'Spätná väzba'
+agent.chrome.nav_publish: Publikovať
+agent.chrome.nav_reports: Reporty
+agent.chrome.nav_search: Hľadať
+agent.chrome.nav_tasks: Úlohy
+agent.chrome.nav_tickets: Tikety
+agent.chrome.nav_twitter: Twiter
+agent.chrome.nav_userchat: 'Užívateľská konverzácia'
+agent.chrome.notify_list-dismiss-all: 'Zrušiť všetky oznámenia'
+agent.chrome.notify_list-new-messages: '<span class="notify-count">0</span> nových upozornení'
+agent.chrome.notify_list-no-notifications: 'Nie sú žiadne nové upozornenia'
+agent.chrome.quicksearch_adv-explain: 'Pre viac rozšírené možnoti, zvoľte aplikáciu:'
+agent.chrome.quicksearch_info: 'Bar rýchleho vyhľadávania Vám umožní vyhľadávať spomedzi škály zdrojov.'
+agent.chrome.quicksearch_title: 'Bar rýchleho vyhľadávania'
+agent.chrome.quicksearch_title-articles: Články
+agent.chrome.quicksearch_title-chat: Konverzácia
+agent.chrome.quicksearch_title-downloads: Stiahnutia
+agent.chrome.quicksearch_title-feedback: 'Spätná väzba'
+agent.chrome.quicksearch_title-news: Novinky
+agent.chrome.quicksearch_title-orgs: Organizácie
+agent.chrome.quicksearch_title-people: Ľudia
+agent.chrome.quicksearch_title-publish: Publikovať
+agent.chrome.quicksearch_title-tickets: Tikety
+agent.chrome.recent_list-filter-info: 'Píšte pre filtráciu nedávnych výsledkov'
+agent.chrome.recent_list-none: 'Neotvorili ste ešte žiadne tabuľky'
+agent.chrome.search-show-more:
+  one: 'Zobraziť ešte {{count}}'
+  few: 'Zobraziť ešte {{count}}'
+  other: 'Zobraziť ešte {{count}}'
+agent.defaults.default_style: 'Východzí štýl'
+agent.defaults.team_lvl1_support: 'Pomoc prvého stupňa'
+agent.defaults.team_lvl2_support: 'Pomoc druhého stupňa'
+agent.defaults.team_support_managers: 'Menežéri pomoci'
+agent.defaults.usergroup_agent_all_non_destructive: 'Všetky nezničiteľné povolenia'
+agent.defaults.usergroup_agent_all_non_destructive_note: 'Operátor má povolenia okrem tích, ktoré by mu dovoľovali uskutočnovať destruktívne zmeny ako napr. mazanie záznamov.'
+agent.defaults.usergroup_agent_all_perms: 'Všetky povolenia'
+agent.defaults.usergroup_agent_all_perms_note: 'Operátor má všetky povolenia'
+agent.defaults.usergroup_everyone: Každí
+agent.defaults.usergroup_everyone_note: 'Kaž´di užívateľ zahŕňajúc dvoch hosťov a registrovaních členov.'
+agent.defaults.usergroup_registered: Registrovaní
+agent.defaults.usergroup_registered_note: 'Všetcia registrovaní ľudia v systéme'
+agent.emails.account_rec_dm_by: '{{account}} obdržal priamu správu od užívateľa {{user}}'
+agent.emails.account_rec_retweet_by: '{{account}} bol retweetnutý užívateľom {{user}}'
+agent.emails.account_rec_tweet_by: '{{account}} obdržal tweet od užívateľa {{user}}'
+agent.emails.admin_password_reset_error: 'Nedávno ste sa pokúšali o reset Vášho hesla. Ako bezpečnostné opatrenie, administrátori nevedia použiť webové rozhranie na reset ich hesla.'
+agent.emails.admin_password_reset_instruction: 'Namiesto toho, prosím použite príkazový riadok z Vašeho serverového terminálu'
+agent.emails.agent_assigned_team_tweet: '{{agent}} pridelil tweet Vašemu teamu'
+agent.emails.agent_assigned_you_tweet: '{{agent}} Vám pridelil tweet'
+agent.emails.agent_completed_task_you_created: '{{agent}} splnil úlohu {{title}}, ktorú ste vytvoril'
+agent.emails.alert_failed_login: 'Upozornenie neúspešného prihlásenia'
+agent.emails.alert_successful_login: 'Upozornenie úspešného prihlásenia'
+agent.emails.change_password_instructions: 'Pre nastavenie nového hesla, prihláste sa do operátorského rozhrania a kliknite na odkaz "Vlastnosti" vľavo hore na obrazovke.'
+agent.emails.deskpro_test_email: 'DeskPRO testovací e-mail'
+agent.emails.deskpro_test_email_body: 'Totot je test DeskPRP e-mailového systému.<br /><br />Ak ste toto obdržali, Vaše nastavenia e-mailu sú správne.'
+agent.emails.detected_as_forward: 'Zistili sme, že e-mail, ktorý ste práve poslal je preposlaná správa.'
+agent.emails.email_change_merge: 'Tento e-mail je pre potvrdenie, že chcete spojiť dve existujúce účty helpdesku:{{old_email}} a {{new_email}}. Ak nechcete spojiť tieto účty, alebo ste o to nepožiadali, tak ignorujte tento e-mail. Pre potvrdenie spojenia kliknite na nasledujúci odkaz:'
+agent.emails.error_missing_marker_explain: 'Táto značka odpovede je potrebná pre správne spracovanie Vašich odpovedí. Prosím prepošlite Vašu odpoveď, ale tentoraz nezabudnite vyplniť aj značku odpovede.'
+agent.emails.error_reply_to_ticket_missing_marker: 'Vašej e-mailovej odpovedi pre tiket #{{ticket_id}} chýbal značkový riadok, ktorý vyzerá takto:'
+agent.emails.error_unknown_email: 'Vaša správa nebola prijatá, pretože ste ju zaslali z neznámej e-mailovej adresy. Prosím zasielajte správy z e-mailovej adresy, ktorú ste si nastavili v profile operátora na helpdesku.'
+agent.emails.first_seen: 'Prvá obrazovka'
+agent.emails.fwd_error_more_info: 'Pre viac informácií o tejto chybe sa môžte obrátiť na stránku podpory DeskPRO:<br/><a href="http://support.deskpro.com/kb/articles/106">http://suppor.deskpro.com/kb/articles/106</a>'
+agent.emails.fwd_not_processed: 'Kvôli tejto chybe bola Vaš e-mail odmiednutý. Žiadny nový tiket nebol vytvorený a žiadne upozornenia alebo iné akcie neboli vykonané. Ak chcete začať nový tiket pre užívateľa, prosím použite webové rozhranie operátora na <a href="{{url}}">{{url}}</a>'
+agent.emails.fwd_resend_without_fwd: 'Ak ste nechceli vytvoriť nový tiket pre užívateľa, viete znova poslať e-mail bez ''FW:'' alebo ''FWD:'' v predmete Toto vytvorí nový tiket pre vás namiesto neho.'
+agent.emails.invalid_fwd_email_address: '<b>Nepodarilo sa nám overiť e-mailoví adresu</b> užívateľa v originálnej správe. Preverte si, či Váš e-mailový klient pridal e-mailovú adresu do správy. Niektorí klienti zadajú iba meno, v tom prípade viete upraviť túto chybu manuálnym zadaním e-mailovej adresy.'
+agent.emails.invalid_fwd_email_parse: '<b>Nepodarilo sa nám analyzovať originálnu správu</b> a tým pádom sme neboli schopní problematiku presunúť do tiketu.'
+agent.emails.invalid_fwd_try_attach: 'Ak váš e-mailový klient podporuje preposielanie originálnej správy ako prílohu, môžte to vyskúsať namiesto preposielania správy in-line. Táto metóda preposielania e-mailov spolupracuje lepšie s DeskPRO'
+agent.emails.login_url: 'Prihlasovacia URL'
+agent.emails.name_reset_your_password: '{{name}} resetol Vaše heslo operátorského účtu'
+agent.emails.new_agent_reply_ticket_subject: '[#{{ticket.id}} odpoveď operátora] Re: {{ticket.subject}}'
+agent.emails.new_chat_message_from: 'Nová správa od {{name}}'
+agent.emails.new_mention_ticket_subject: '[#{{ticket.id}} SPOMENUTÉ] Re: {{ticket.subject}}'
+agent.emails.new_note_ticket_subject: '[#{{ticket.id}} POZNÁMKA] Re: {{ticket.subject}}'
+agent.emails.new_user_reply_ticket_subject: '[#{{ticket.id}} odpoveď užívateľa] Re: {{ticket.subject}}'
+agent.emails.newagent-about: 'DeskPRO je helpdeskový softvér, ktorý Vaša organizácia používa.'
+agent.emails.newagent-about-cloud: 'DeskPRO je hosťovaný v cloude helpdeskového softvéru, ktorý Vaša organizácia používa.'
+agent.emails.newagent-about-cloud-demo: 'DeskPRO je hosťovaný v cloude helpdeskového softvéru, z ktorého sa Vaša organizácia snaží dostať.'
+agent.emails.newagent-about-demo: 'DeskPRO je  helpdeskový softvér, ktorý Vaša organizácia skúša.'
+agent.emails.newagent-about-pdf: 'Napísali sme rýchly návod pre najdôležitejšie veci, ktoré budete potrebovať ako operátor. Nájdete ich pripojené ako "Getting Started with DeskPRO.pdf".'
+agent.emails.newagent-created-account: 'Váš kolega {{admin_name}}({{admin_email}}) vytvoril DeskPRO účet pre Vás na <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>'
+agent.emails.newagent-help: 'Ak potrebujete nejakú pomoc alebo máte nejaké otázky, prosím prezrite si stránku pomoci DeskPRO na <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> alebo nás kontaktujte priamo na <a href="mailto:support@deskpro.com">support@deskpro.com</a>.'
+agent.emails.newagent-login-initial-password: 'Vaše počiatočné heslo: {{password}}'
+agent.emails.newagent-login-link: 'Viete sa prihlásiť tu: <a href="{{link}}">{{link}}</a>'
+agent.emails.newagent-login-your-email: 'Vaša e-mailová adresa: {{email}}'
+agent.emails.newagent-welcome-to-deskpro: 'Vitajte na DeskPRO!'
+agent.emails.notice_account_login: 'Váš účet bol použitý pre úspešné prihlásenie.'
+agent.emails.notice_login_attempt: 'Niekto sa snažil prihlásiť na Váš účet'
+agent.emails.person_replied: '{{name}} odpovedal na "{{subject}}"'
+agent.emails.referring_page: 'Odkazovať sa na stránku'
+agent.emails.reply_above_line: 'ODPOVEĎ VYŠŠIE'
+agent.emails.subject_email_change_merge: 'Zmena overovacieho e-mailu a spájač účtov'
+agent.emails.subject_error_forwarded_email: 'Chyba s Vaším preposlaným e-mailom: {{subject}}'
+agent.emails.subject_error_with_message: 'Chyba s Vasou správou: {{subject}}'
+agent.emails.subject_error_with_reply: 'Chyba s Vašou odpoveďou na: {{subject}}'
+agent.emails.subject_new_agent: 'Váš nový operátorský účet DeskPRO'
+agent.emails.subject_new_ticket: '[#{{ticket.id}} NOVÝ TIKET] {{ticket.subject}}'
+agent.emails.subject_new_ticket_assigned: '[#{{ticket.id}} NOVÝ TIKET + PRIDELENÝ] {{ticket.subject}}'
+agent.emails.subject_new_ticket_assignedteam: '[#{{ticket.id}} NNOVÝ TIKET + PRIDELENÝ TEAM] {{ticket.subject}}'
+agent.emails.task_assigned_due_today: 'Vaša úloha {{title}} má platnosť do dnes.'
+agent.emails.task_assigned_team_due_today: 'Úloha Vašeho teamu {{title}} má platnosť do dnes.'
+agent.emails.task_assigned_to_you_by: 'Úloha {{title}} Vám bola pridelená operátorom {{agent}}'
+agent.emails.task_assigned_to_your_team_by: 'Úloha {{title}} bola Vašemu teamu pridelená operátorom {{agent}}'
+agent.emails.task_completed: 'Úloha {{title}} ukončená'
+agent.emails.task_due_today: 'Úloha {{title}} má platnosť do dnes'
+agent.emails.ticket_action_assigned: PRIDELENÉ
+agent.emails.ticket_action_assigned_team: 'PRIDELENÝ TEAM'
+agent.emails.ticket_action_deleted: ZMAZANÉ
+agent.emails.ticket_action_followed: ODOBERANÉ
+agent.emails.ticket_action_status_agent: 'OČAKÁVA SA OPERÁTOR'
+agent.emails.ticket_action_status_resolved: VYRIEŠENÉ
+agent.emails.ticket_action_status_user: 'OČAKÁVA SA UŽÍVATEĽ'
+agent.emails.ticket_action_updated: AKTUALIZOVANÉ
+agent.emails.ticket_sla_failed: 'SLA ZLYHALO'
+agent.emails.ticket_sla_warning: 'SLA UPOZORNENIE'
+agent.emails.ticket_was_created: '{{name}} vytvoril nový tiket'
+agent.emails.tweet_assigned_to_you_by: 'Tweet Vám bol pridelený operátorom {{agent}}'
+agent.emails.updated_ticket_assigned: 'a Vám bol pridelený'
+agent.emails.updated_ticket_assigned_team: 'A bol pridelený Vášmu teamu {{team}}'
+agent.emails.updated_ticket_followed: 'a pridal Vás ako odberateľa'
+agent.emails.user_ip: 'IP užívateľa'
+agent.emails.user_replied_to_tweet: '{{name}} odpvoedal na Váš tweet'
+agent.emails.user_replied_to_tweet_you_wrote: '{{name}} odpovedal na Váš tweet, ktorý ste napísal pre {{account}}.'
+agent.emails.user_updated_ticket: '{{name}} aktualizoval tiket "{{subject}}"'
+agent.emails.view_account_tweets: 'Zobraziť tweety užívateľa {{account}}'
+agent.emails.view_delegated_tasks: 'Zobraziť Vaše delegované úlohy'
+agent.emails.view_online_at: 'Zobraziť online na:'
+agent.emails.view_team_tweets: 'Zobraziť tweety Vašeho teamu'
+agent.emails.view_ticket_online: 'Zobraziť tento tiket online'
+agent.emails.view_your_tasks: 'Zobraziť Vaše úlohy'
+agent.emails.view_your_teams_tasks: 'Zobraziť úlohy Vášho teamu'
+agent.emails.view_your_tweets: 'Zobraziť Vaše tweety'
+agent.emails.your_initial_password: 'Vaše počiatočné heslo'
+agent.feedback.any_category: 'Hocijaká kategória'
+agent.feedback.any_status: 'Hocijaký status'
+agent.feedback.count_votes: '{{display_count}} hlas|{{display_count}} hlasov'
+agent.feedback.feedback_deleted: 'Táto spätná väzba bola odstránená'
+agent.feedback.feedback_to_review: 'Spätná väzba na preskúmanie'
+agent.feedback.least_voted_on_top: 'Najmenej hodnotené na vrchu'
+agent.feedback.list_title:
+  one: '1 podanie'
+  few: '{{count}} podaní'
+  other: '{{count}} podaní'
+agent.feedback.merge_feedback: 'Spojiť spätnú väzbu'
+agent.feedback.merge_feedback_note: 'Opis zo spojenej spätnej väzby bude pridaný ako komentár do ponechanej spätnej väzby.'
+agent.feedback.merge_feedback_submit: 'Spojiť tieto podania dvoch spätných väzieb'
+agent.feedback.merge_howto: 'Otvoriť ďalšie okno spätnej väzby pre spojenie'
+agent.feedback.new_feedback: 'Nová spätná väzba:'
+agent.feedback.newest_on_top: 'Najnovšie na vrchu'
+agent.feedback.no_feedback_cats_error: 'Nie sú definované žiadne typy. Prv, než budete vedieť pridávať typy do sekcie spätných väzieb, musíte definovať typ v administrátorskom rozhraní.'
+agent.feedback.no_labels_explain: 'Zatiaľ ste neoštítkovali žiadnu spätnú väzbu.  Zobraziť podanie spätnej väzby pre jej oštítkovanie.'
+agent.feedback.oldest_on_top: 'Najstaršie na vrchu'
+agent.feedback.popularity_least_most: 'Popularita (Najmenej-Najviac)'
+agent.feedback.popularity_most_least: 'Popularita (Najviac-Najmenej)'
+agent.feedback.showing_results: 'Zobrazuje výsledky'
+agent.feedback.status_active: Aktívne
+agent.feedback.status_closed: Uzavreté
+agent.feedback.status_deleted: Zmazané
+agent.feedback.status_hidden: Skryté
+agent.feedback.status_new: Nové
+agent.feedback.top_voted_on_top: 'Najviac hodnotené na vrchu'
+agent.feedback.update_filter: 'Aktualizovať filter'
+agent.feedback.user_submitted_new_feedback: '{{name}} potvrdil novú spätnú väzbu'
+agent.feedback.vote_for_this_feedback: 'Hlasuj pre túto spätnú väzbu'
+agent.feedback.votes_least_most: 'Hlasy (Najmenej-Najviac)'
+agent.feedback.votes_most_least: 'Hlasy (Najviac-Najmenej)'
+agent.general.actions: Akcie
+agent.general.activity_stream: 'Prúd aktivít'
+agent.general.add: Pridať
+agent.general.add_a_label: 'Pridať štítok'
+agent.general.add_a_new_criteria: 'Pridať nové kritérium'
+agent.general.add_a_new_term: 'Pridať nový termín'
+agent.general.add_action_term: 'Pridať akciu'
+agent.general.add_as_related: 'Pridať ako príbuzné'
+agent.general.add_category: 'Pridať kategóriu'
+agent.general.add_comment: 'Pridať komentár'
+agent.general.add_criteria_term: 'Pridať kritériá'
+agent.general.add_labels: 'Pridať štítky'
+agent.general.add_note: 'Pridať poznámku'
+agent.general.add_product: 'Pridať produkt'
+agent.general.add_search_term: 'Pridať termín vyhľadávania'
+agent.general.add_ticket_reply: 'Pridať odpoveď tiketu'
+agent.general.added_by: 'Pridané užívateľom {{name}}'
+agent.general.address: Adresa
+agent.general.admin_interface: 'Administrátorské rozhranie'
+agent.general.advanced: Pokročilé
+agent.general.after: po
+agent.general.agent: Operátor
+agent.general.agent_email_address: 'E-mailová adresa operátora'
+agent.general.agent_interface: 'Operátorské rozhranie'
+agent.general.agent_is_not_me: 'Operátor ja nie som'
+agent.general.agent_team: 'Team operátorov'
+agent.general.agent_waiting_x: 'Operátor čaká {{time}}'
+agent.general.agents: Operátori
+agent.general.ago: pred
+agent.general.alert: Poplach
+agent.general.all: Všetko
+agent.general.all_words: 'Všetky slová'
+agent.general.always_notify_agents: 'Vždy upozorniť operátorov'
+agent.general.always_set_this_urgency: 'Vždy nastaviť túto urgenciu'
+agent.general.and: a
+agent.general.and_grouped_by: 'zoskupené užívateľom'
+agent.general.andor: a/alebo
+agent.general.anonymous: Anonym
+agent.general.any: hocijaké
+agent.general.any_language: 'Hocijaký jazyk'
+agent.general.any_sla: 'Akékoľvek SLA'
+agent.general.any_words: 'Akékoľvek Slová'
+agent.general.apply: Aplikuj
+agent.general.apply_sla: 'Aplikuj SLA'
+agent.general.apply_to_x_selections: 'Aplikuj akciu pre {{placeholder}} výber'
+agent.general.approve: Schváliť
+agent.general.archive: Archivuj
+agent.general.article: Článok
+agent.general.articles: Články
+agent.general.ask_delete_selected: 'Ste si istý, že chcete zmazať vybrané položky?'
+agent.general.assign: Priradiť
+agent.general.assign_agent: 'Priradiť operátorovi'
+agent.general.assign_to: 'Priradiť pre'
+agent.general.assigned: Priradené
+agent.general.assigned_agent: 'Priradený Operátor'
+agent.general.assigned_agent_id: 'ID Operátora'
+agent.general.assigned_team: 'Priradený Team'
+agent.general.assigned_to: 'Priradený k'
+agent.general.assignment: Priradenie
+agent.general.assignments: Priradenia
+agent.general.attach: Pripoj
+agent.general.attach_error_failed_upload: 'Vašu prílohu sa nepodarilo nahrať (prerušil ste to?). Skúste znova'
+agent.general.attach_error_no_file: 'Vyber súbor, ktorý chceš nahrať'
+agent.general.attach_error_not_allowed_exts: 'Typ súboru, ktorý ste nahrali nieje povolený.'
+agent.general.attach_error_not_in_allowed_exts: 'Iba nasledovné typy súborov sa dajú nahrať:{{error_detail}}'
+agent.general.attach_error_server_error: 'Nastal problém s našim serverom počas prijímania Vašej prílohy. Prosím skúste znova.'
+agent.general.attach_error_size: 'Vaša príloha je príliž veľká.'
+agent.general.attachments: Prílohy
+agent.general.author: Autor
+agent.general.awaiting_agent_validation: 'Očakáva sa overenie operátorom'
+agent.general.awaiting_email_validation: 'Očakáva sa overenie e-mailu'
+agent.general.awaiting_validation: 'Cáká sa na overenie'
+agent.general.banned: Zabanovaný
+agent.general.before: pred
+agent.general.between: medzi
+agent.general.billing_interface: 'Rozhranie úhrad'
+agent.general.blank: Prázdna
+agent.general.browser_agent: 'Operátor prehľadávača'
+agent.general.by_agent: Operátorom
+agent.general.by_agent_for_user: 'Operátorom v mene užívateľa'
+agent.general.by_anyone: Hocikým
+agent.general.by_name: '{{name}}'
+agent.general.by_person_at_date: '{{person}} dňa {{date}}'
+agent.general.by_user: Užívateľom
+agent.general.calendar: Kalendár
+agent.general.cancel: Zrušiť
+agent.general.categories: Kategórie
+agent.general.category: Kategória
+agent.general.cc_address: 'CC-nutá adresa'
+agent.general.ccs: CC-čka
+agent.general.change_password: 'Zmeniť heslo'
+agent.general.change_pic_for: 'Zmeniť obrázok pre {{name}}'
+agent.general.change_status: 'Zmeniť status'
+agent.general.change_user: 'Zmeniť užívateľa'
+agent.general.changed: Zmenený
+agent.general.changed_from: 'Zmenené z'
+agent.general.changed_from_gte: 'Zmenené z >='
+agent.general.changed_from_lte: 'Zmenené z <='
+agent.general.changed_to: 'Zmenené na'
+agent.general.changed_to_gte: 'Zmenené na >='
+agent.general.changed_to_include: 'Zmenené, aby zahŕňalo'
+agent.general.changed_to_lte: 'Zmenené na <='
+agent.general.changed_to_remove: 'Zmenené pre zmazanie'
+agent.general.chat: Konverzácia
+agent.general.chat_ended: 'Konverzácia ukončená'
+agent.general.chats: Konverzácie
+agent.general.choose_a_person: 'Vyberte osobu'
+agent.general.choose_a_type: 'Vyberte typ'
+agent.general.choose_criteria: 'Vyberte kritériá...'
+agent.general.choose_person_for_ticket: 'Vyberte osobu, pre ktorú chcete vytvorit tiket'
+agent.general.click_learn_more: 'Kliknite sem pre viac informácií'
+agent.general.click_to_upload_picture: 'Kliknite pre nahranie nového obrázku'
+agent.general.close_lc: zatvoriť
+agent.general.close_tab: 'Zatvoriť okno'
+agent.general.comment: Komentár
+agent.general.comments: Komentáre
+agent.general.compare: Porovnať
+agent.general.comparing_revisions: 'Porovnávajú sa revízie'
+agent.general.confirm: Potvrdiť
+agent.general.contact_address: 'Kontaktná adresa'
+agent.general.contact_instant_messaging: 'Kontaktný IM'
+agent.general.contact_phone: 'Kontaktný telefón'
+agent.general.contains: obsahuje
+agent.general.content_matches_summary: 'Obsah sa zhoduje: {{pattern}}'
+agent.general.continue: Pokračovať
+agent.general.copy_permalink: 'KopírovaŤ permalink'
+agent.general.copy_to_clipboard: 'Kopírovať do schránky'
+agent.general.copy_url: 'Kopírovať URL'
+agent.general.count: Počet
+agent.general.count_chat:
+  one: '1 konverzácia'
+  few: '{{count}} konverzácií'
+  other: '{{count}} konverzácií'
+agent.general.count_tickets:
+  one: '1 tiket'
+  few: '{{count}} tiketov'
+  other: '{{count}} tiketov'
+agent.general.count_votecount_votes:
+  one: '1 hlas'
+  few: '{{count}} hlasov'
+  other: '{{count}} hlasov'
+agent.general.countries: Krajiny
+agent.general.create: Vytvoriť
+agent.general.create_a_new_organization: 'Vytvoriť novú organizáciu'
+agent.general.create_a_new_person: 'Vytvoriť novú osobu'
+agent.general.create_article: 'Vytvoriť nový clánok'
+agent.general.create_content: 'Vytvoriť obsah'
+agent.general.create_deal: 'Vytvoriť dohodu'
+agent.general.create_download: 'Vytvoriť stiahnutie'
+agent.general.create_feedback: 'Vytvoriť spätnú väzbu'
+agent.general.create_news: 'Vytvoriť nový príspevok'
+agent.general.create_status: 'Vytvoriť status'
+agent.general.create_ticket: 'Vytvoriť tiket'
+agent.general.created: Vytvorené
+agent.general.created_and_published: 'Vytvorené a zverejnené'
+agent.general.created_timeago_by_x_on_y: 'Vytvorené {{timeago}} užívateľom {{name}} dňa {{date}}'
+agent.general.criteria: Kritériá
+agent.general.current_agent: 'Momentálny operátor'
+agent.general.current_computer_tz: 'Aktuálny čas podľa Vášho počítača'
+agent.general.current_page: 'Aktuálna stránka'
+agent.general.current_profile_tz: 'Aktuálny čas podľa Vášho profilu'
+agent.general.date: Schôdza
+agent.general.date_archived: 'Schôdza uzavretá'
+agent.general.date_completed: 'Schôdza dokončená'
+agent.general.date_created: 'Schôdza vytvorená'
+agent.general.date_created_newestoldest: 'Schôdza vytvorená (najnovšia-najstaršia)'
+agent.general.date_created_oldestnewest: 'Schôdza vytvorená (najstaršia-najnovšia)'
+agent.general.date_due: 'Schôdza do'
+agent.general.date_of_last_agent_reply: 'Dátum poslednej odpovede operátora'
+agent.general.date_of_last_reply: 'Dátum poslednej odpovede'
+agent.general.date_of_last_user_reply: 'Dátum poslednej odpovede užívateľa'
+agent.general.date_published: 'Schôdza publikovaná'
+agent.general.date_resolved: 'Schôdza vyriešená'
+agent.general.dates_and_times: 'Dátumy a časy'
+agent.general.day_created: 'Deň vytvorený'
+agent.general.day_created_summary: 'Deň vytvorený {{op}} v dňoch {{days}}'
+agent.general.day_last_user_reply: 'Deň poslednej odpovede užívateľa'
+agent.general.day_user_replay_summary: 'Deň poslednej odpovede užívateľa {{op}} v dňoch {{days}}'
+agent.general.days: dni
+agent.general.deal_stage: 'Pokročilosť dohody'
+agent.general.default: Východzie
+agent.general.default_working_hours: 'Východzie pracovné hodiny'
+agent.general.delete: Zmazať
+agent.general.delete_comment: 'Zmazať komentár'
+agent.general.delete_content: 'Zmazať obsah'
+agent.general.delete_ticket: 'Zmazať tiket'
+agent.general.deleted: Zmazané
+agent.general.deleted_by: 'Zmazané užívateľom {{name}}'
+agent.general.deleted_reason: 'Dôvod zmazania'
+agent.general.department: Oddelenie
+agent.general.departments: Oddelenia
+agent.general.description: Popis
+agent.general.details: Detaily
+agent.general.dev_validating: 'DEV: Overovanie'
+agent.general.dimentions: Rozmery
+agent.general.disable_agent_notifications: 'Vypnúť upozornenie operátora'
+agent.general.disable_all_notifications: 'Vypnúť všetky upozornenia'
+agent.general.disable_user_notifications: 'Vypnúť užívateľské upozornenia'
+agent.general.disapprove: Neschváliť
+agent.general.disapprove_input: 'Dôvod alebo komentár pre zaslanie autorovi'
+agent.general.dismiss: Zrušiť
+agent.general.display_count_selected: '{{display_count}} vybraných'
+agent.general.display_name: 'Zobraziť meno'
+agent.general.display_options: 'Zobraziť možnosti'
+agent.general.do_not_refresh: Neobnoviť
+agent.general.does_not_contain: neobsahuje
+agent.general.does_not_include: nezahŕňa
+agent.general.does_not_include_label: 'nezahŕňa štítok'
+agent.general.domain_is_summary: 'E-mailová doména je {{domain}}'
+agent.general.done: Hotovo
+agent.general.download_log: 'Stiahni log'
+agent.general.download_pdf: 'Stiahni PDF'
+agent.general.download_url: 'Stiahni URL'
+agent.general.downloads: Stiahnutia
+agent.general.drop_here_to_attach: 'Presuňte sem súbor pre pripojenie ku Vašej odpovedi'
+agent.general.drop_here_to_insert_image: 'Presuňte <strong>obrázok</strong> sem pre vloženie do Vašej odpovede'
+agent.general.drop_here_to_upload: 'Presuňte súbor sem pre nahranie nového obrázku'
+agent.general.edit: Upraviť
+agent.general.edit_categories: 'Upraviť kategórie'
+agent.general.edit_comment: 'Upraviť komentáre'
+agent.general.edit_properties: 'Upraviť vlastnosti'
+agent.general.edit_search_terms: 'Upraviť pojmy vyhľadávania'
+agent.general.email: E-mail
+agent.general.email_address: 'E-mailová adresa'
+agent.general.email_agent_new_agent_reply: 'E-mail: Upozornenie operátora o novej odpovedi operátora'
+agent.general.email_agent_new_reply: 'E-mail: Upozornenie o novej odpovedi'
+agent.general.email_agent_new_ticket: 'E-mail: Upozornenie operátora o novom tikete'
+agent.general.email_domain: 'E-mailová doména'
+agent.general.email_domains: 'E-mailové domény'
+agent.general.email_is_summary: 'E-mail je {{email}}'
+agent.general.email_send_by_robot_summary: 'E-mail zaslaný robotom (automatický odpoveď)'
+agent.general.email_sent_by_robot: 'E-mail zaslaný robotom'
+agent.general.email_user: 'Zaslať e-mail užívateľovi'
+agent.general.email_user_auto_new_reply: 'E-mail: Automatické upozornenie o novej odpovedi'
+agent.general.email_user_auto_new_ticket: 'E-mail: Automatické upozornenie o novom tikete'
+agent.general.email_user_new_agent_reply: 'E-mail: Upozornenie o novej odpovedi'
+agent.general.email_user_new_ticket: 'E-mail: Upozornenie o novom tikete'
+agent.general.email_user_validation_alert: 'E-mail: Problém overenia užívateľa'
+agent.general.enter_a_message: 'Zadajte správu'
+agent.general.enter_a_title: 'Zadajte nadpis'
+agent.general.enter_organization_name: 'Zadajte meno organizácie...'
+agent.general.enter_search_terms: 'Zadajte termíny vyhľadávania'
+agent.general.error: Chyba
+agent.general.error_email_address: 'Prosím zadajte platńu e-mailovú adresu'
+agent.general.error_email_dupe_agent: 'E-mailová adresa, ktorú ste zadali je používaná iným operátorom'
+agent.general.error_form_correct: 'Prosím opravte nasledovné chyby vo Vašom formulári'
+agent.general.error_password_mismatch: 'Heslá sa nezhodujú'
+agent.general.error_password_short: 'Prosím zadajte heslo dlhé aspoň {{len}} znakov'
+agent.general.error_your_name: 'Prosím zadajte Vaše celé meno'
+agent.general.escalation: Eskalácia
+agent.general.everyone: Všetci
+agent.general.existing_picture: 'Existujúci obrázok'
+agent.general.failed: Zlyhalo
+agent.general.failure: Zlyhanie
+agent.general.favorite: Obľúbené
+agent.general.feedback: 'Spätná väzba'
+agent.general.field_name: 'Pole: {{field}}'
+agent.general.field_name_title: 'Názov poľa'
+agent.general.field_type_choice: 'Pred-defnované možnosti'
+agent.general.field_type_data: Dáta
+agent.general.field_type_date: 'Widget pre vloženie dátumu'
+agent.general.field_type_display: 'HTML displej'
+agent.general.field_type_hidden: 'Skryté pole'
+agent.general.field_type_text: 'Textové okienko'
+agent.general.field_type_textarea: 'Viac-riadkové textové okienko'
+agent.general.field_type_textemail: 'Textové okienko e-mailu'
+agent.general.field_type_texturl: 'Textové okienko URL'
+agent.general.field_type_toggle: 'Zap/Vyp zaškrtávacie políčko'
+agent.general.fields: Polia
+agent.general.file: Súbor
+agent.general.filename: 'Názov súboru'
+agent.general.files: Súbory
+agent.general.filesize: 'Veľkosť súboru'
+agent.general.fileurl: 'URL súboru'
+agent.general.filter_checks_selected: 'Keď v zozname filtra, zaznačiť kolónku vo výberovom rade.'
+agent.general.filter_match: 'Zhoda filtra'
+agent.general.filter_moves_cursor: 'Keď v zozname filtra, pohne vybraný kurzor radu'
+agent.general.filter_opens_selected: 'Keď v zozname filtra, otvorí vybraný rad'
+agent.general.filters: Filtre
+agent.general.find: Hľadať
+agent.general.find_person_with_criteria: 'Vyhľadať osobu zadaním kritérií vyššie.'
+agent.general.flag: Označiť
+agent.general.flag_blue: Modrá
+agent.general.flag_green: Zelená
+agent.general.flag_orange: Oražová
+agent.general.flag_pink: Ružová
+agent.general.flag_purple: Fialová
+agent.general.flag_red: červená
+agent.general.flag_yellow: Žltá
+agent.general.flagged: Označené
+agent.general.flagged_with_color_summary: 'Označené farbou {{color}}'
+agent.general.focus_reply_box: 'Sústrediť sa na okienko odpovede'
+agent.general.follow: Sleduj
+agent.general.followers: Sledujúci
+agent.general.force_email_validation: 'Donútiť overenie emailom'
+agent.general.found_article_helpful_or_not: '{{up_votes}} užívateľom tento článok pomohol, {{down_votes}} užívateľom tento článok nepomohol'
+agent.general.frequency: Frekvencia
+agent.general.from: Od
+agent.general.full_image: 'Celý obrázok'
+agent.general.gateway_is_not_summary: 'E-mailový účet niejeE-mailový účet nieje {{names}}'
+agent.general.gateway_is_summary: 'E-mailový účet je {{names}}'
+agent.general.greater_than: 'Väčší než'
+agent.general.group_by: 'Zoskupiť podľa'
+agent.general.grouped_by: 'Zoskupené podľa'
+agent.general.height: Výška
+agent.general.help: Pomoc
+agent.general.hidden: Skryté
+agent.general.hidden_awaiting_validating_spam: 'Skryté (čaká sa na potvrdenie, spam)'
+agent.general.hidden_deleted: 'Skryté: Zmazané'
+agent.general.hidden_unpublished: 'Skryté: Nepublikované'
+agent.general.hidden_validating: 'Skryté: Overuje sa'
+agent.general.hide: Skryť
+agent.general.host: Hosť
+agent.general.hour: Hodina
+agent.general.hours: Hodiny
+agent.general.inbox: 'Schránka prijatí'
+agent.general.include: obsahuje
+agent.general.includes_label: 'obsahuje štítok'
+agent.general.increase_decrease_urgency: 'Zvýšiť/Znížiť urgenciu'
+agent.general.initial_visit: 'Počiatočná návšteva'
+agent.general.insert: Vlož
+agent.general.insert_content: 'Vložiť celý obsah tejto stránky do Vašej odpovede'
+agent.general.insert_image: 'Vložiť obrázok'
+agent.general.insert_into_article: 'Vložiť do článku'
+agent.general.insert_link: 'Vložiť odkaz'
+agent.general.insert_thumbnail: 'Vložiť náhľad'
+agent.general.insert_title: 'Vložiť {{title}}'
+agent.general.inserts_file_link: 'Toto vloží odkaz do súboru so štítkom ako text, na ktorý sa dá kliknúť.'
+agent.general.inserts_full_image: 'Toto vloží obrázok v plnej veľkosti.'
+agent.general.inserts_plaintext_url: 'Toto vloží URL do súboru ako čistý text.'
+agent.general.inserts_thumbnail_with_link: 'Toto vloží náhľad obrázku, ktorý sa odkazuje na obrázok v plnej veľkosti.'
+agent.general.ip_address: 'IP adresa'
+agent.general.ip_addresses: 'IP adresy'
+agent.general.is: je
+agent.general.is_a_new_user: 'je nový užívateľ'
+agent.general.is_exactly: 'je presne'
+agent.general.is_greater_than: 'je väčšie ako'
+agent.general.is_less_than: 'je menšie ako'
+agent.general.is_not: 'nie je'
+agent.general.is_not_a_new_user: 'nie je nový užívateľ'
+agent.general.is_not_published: 'nie je publikované'
+agent.general.is_not_x: 'nie je {{field}}'
+agent.general.is_published: 'je publikované'
+agent.general.is_x: 'je {{field}}'
+agent.general.just_me: 'Iba ja'
+agent.general.kb: DZ
+agent.general.knowledgebase: 'Databáza znalostí'
+agent.general.label: štítok
+agent.general.label_picture: obrázok
+agent.general.label_revisions: Revízie
+agent.general.labels: Štítky
+agent.general.labels_added: 'Štítky pridané'
+agent.general.labels_cloud: Oblak
+agent.general.labels_list: Lišta
+agent.general.labels_removed: 'Štítky odstránené'
+agent.general.landing_page: 'Domovská stránka'
+agent.general.language: Jazyk
+agent.general.last_activity: 'Posledná aktivita'
+agent.general.last_login: 'Posledné prihlásenie'
+agent.general.last_login_time: 'Čas posledného prihlásenia'
+agent.general.leave_unchanged: 'Ponechať nezmenené'
+agent.general.less_than: 'menej ako'
+agent.general.license_interface: 'Licencuje sa rozhranie'
+agent.general.link: Odkaz
+agent.general.linked_chat: 'Pripojená konverzácia'
+agent.general.linked_thumbnail: 'Pripojený náhľad'
+agent.general.list_as_article_attachment: 'Zapísať ako prílohu do článku'
+agent.general.loading: Nahráva
+agent.general.loading_dot: Nahráva...
+agent.general.loading_interface: 'Nahráva rozhranie'
+agent.general.local_time: 'Lokálny čas'
+agent.general.log_in: 'Prihlásiť sa'
+agent.general.log_out: 'Odhlásiť sa'
+agent.general.logged_in_as: 'Prihlásený ako'
+agent.general.lost: Stratený
+agent.general.lost_field: 'Stratený {{field}}'
+agent.general.lost_password: 'Stratené heslo'
+agent.general.lost_qm: 'stratený?'
+agent.general.macros: Makrá
+agent.general.manage_macros: 'Menežovať makrá'
+agent.general.mark_spam: 'Označiť ako spam'
+agent.general.matches: Zhody
+agent.general.matches_regex: 'zhoduje sa regex'
+agent.general.me: Ja
+agent.general.members: Členovia
+agent.general.mentions: Spomína
+agent.general.merge: Spojiť
+agent.general.merge_keep_this: 'Ponechať toto'
+agent.general.merge_merge_this: 'Spojiť toto'
+agent.general.merge_switch_btn: Prepnúť
+agent.general.message: Správa
+agent.general.message_history: 'História správ'
+agent.general.messages: Správy
+agent.general.minute: Minúta
+agent.general.minutes: minúty
+agent.general.misc: Zmiešané
+agent.general.mobile: Mobil
+agent.general.months: mesiace
+agent.general.more: Viac
+agent.general.move_to_tab: 'Presunúť do okna'
+agent.general.msg_agent_timeout: 'Agent sa odpojil'
+agent.general.msg_user_timeout: 'Užívateľ sa odpojil'
+agent.general.my_account: 'Môj účet'
+agent.general.my_team: 'Môj team'
+agent.general.name: Meno
+agent.general.name_az: 'Meno (A-Z)'
+agent.general.name_is_summary: 'Meno je {{name}}'
+agent.general.name_za: 'Meno (Z-A)'
+agent.general.never: Nikdy
+agent.general.new: Nové
+agent.general.new_article: 'Nový článok'
+agent.general.new_comment: 'Nový komentár'
+agent.general.new_download: 'Nové stiahnutie'
+agent.general.new_feedback: 'Nová spätná väzba'
+agent.general.new_filter: 'Nový filter'
+agent.general.new_note: 'Nová poznámka'
+agent.general.new_organization: 'Nová organizácia'
+agent.general.new_password: 'Nové heslo'
+agent.general.new_person: 'Nová osoba'
+agent.general.new_pic: 'Nový obrázok'
+agent.general.new_task: 'Nová úloha'
+agent.general.new_ticket: 'Nový tiket'
+agent.general.new_user_summary: 'Je nový užívateľ'
+agent.general.news: Novinky
+agent.general.no: Nie
+agent.general.no_agent_assigned: 'Žiaden operátor pridelený'
+agent.general.no_content: 'Žiadny obsah'
+agent.general.no_org_labels: 'Neoznačili ste žiadne organizácie. Zobrazi%t organizáciu pre jej oštítkovanie.'
+agent.general.no_people_labels: 'Neoznačili ste žiadne osoby. Zobraziť osoby pre ich označenie.'
+agent.general.no_team: 'Žiadny team'
+agent.general.no_ticket_labels: 'Neoznačili ste žiadne tikety. Zobraziť tiket pre jeho označenie.'
+agent.general.none: Žiadne
+agent.general.not_changed_from: 'Nezmenilo sa z'
+agent.general.not_changed_from_lte: 'Nezmenilo sa z <='
+agent.general.not_changed_to: 'Nezmenilo sa na'
+agent.general.not_changed_to_gte: 'Nezmenilo sa na >='
+agent.general.not_matches_regex: 'sa nezhoduje s regex-om'
+agent.general.not_new_user_summary: 'nie je nový užívateľ'
+agent.general.note: Pozńamka
+agent.general.note_attn: Poznámka
+agent.general.note_by: 'Poznámka užívateľom {{name}}'
+agent.general.notes: Poznámky
+agent.general.notice_only_when_urgency_lower: 'Nastaviť iba ak je urgencia nižšia'
+agent.general.num_downloads: 'Počet stiahnutí'
+agent.general.num_ratings: 'Num hodnotenia'
+agent.general.num_views: 'Počet zobrazení'
+agent.general.number_of_comments: 'Počet komentárov'
+agent.general.number_of_downloads: 'Počet stiahnutí'
+agent.general.number_of_members: 'Počet členov'
+agent.general.number_of_ratings: 'Počet hodnotiacich hlasov'
+agent.general.of: z
+agent.general.off: Vypnuté
+agent.general.okay: Ok
+agent.general.on: Zapnuté
+agent.general.online_now: 'Online teraz'
+agent.general.open: Otvorené
+agent.general.open_tab: 'Otvorené okno'
+agent.general.open_tickets: 'Otvorené tikety'
+agent.general.or_sep: alebo
+agent.general.order_by: 'Zoradiť podľa'
+agent.general.ordered_by: 'Zoradené podľa'
+agent.general.org_position: 'Pozícia organizácie'
+agent.general.organization: Organizácia
+agent.general.organization_name: 'Meno organizácia'
+agent.general.organizations: Organizácie
+agent.general.originated_interface: 'Vzniknuté rozhranie'
+agent.general.other: Ďalšie
+agent.general.other_properties: 'Ďalšie vlastnosti'
+agent.general.owner: Majiteľ
+agent.general.page: Stránka
+agent.general.page_x_of_y: 'Stránka {{page}} z {{num_pages}}'
+agent.general.parent: Rodič
+agent.general.parent_category: 'Rodičovská kategória'
+agent.general.password: Heslo
+agent.general.pause: Pauza
+agent.general.pending: Trvá
+agent.general.people: Ľudia
+agent.general.percent_helpful_subphrase: '{{percent}}% nápomocné({{subphrase}})'
+agent.general.perform_actions: 'Vykonať akcie'
+agent.general.performer: Vykonávač
+agent.general.performing_updates: 'Helpdesk momentálne vykonáva aktualizácie.'
+agent.general.permissions: Povolenia
+agent.general.person: Osoba
+agent.general.person_id: 'Užívateľské ID'
+agent.general.phone: Telefón
+agent.general.phrase: Fráza
+agent.general.please_wait: 'Prosím čakajte'
+agent.general.popular_feedback_only: 'Iba populárna spätná väzba'
+agent.general.popularity: Popularita
+agent.general.position: Pozícia
+agent.general.prev: Predchádzajúce
+agent.general.print: Tlačiť
+agent.general.priorities: Priority
+agent.general.priority: Priorita
+agent.general.private: Privátne
+agent.general.product: Produkt
+agent.general.products: Produkty
+agent.general.profile: Profil
+agent.general.properties: Vlastnosti
+agent.general.public: Verejné
+agent.general.publish: Publikovať
+agent.general.quote: Citát
+agent.general.rating: Hodnotenie
+agent.general.read: Čítaj
+agent.general.reason: Dôvod
+agent.general.record_deleted: 'Tento záznam bol zmazaný.'
+agent.general.record_marked_spam: 'Tento záznam bol označený ako spam.'
+agent.general.recycle_bin: 'Odpadkový kôš'
+agent.general.recycle_bin_none: 'Kôš je prázdny.'
+agent.general.redirect_continue: 'Pokračovať na {{url}}'
+agent.general.redirect_explain: 'Odkaz, na ktorý ste klikol je externá stránka na {{host}}. Ste si istý, že chcete pokračovať?'
+agent.general.redirect_page_makeup: '(vytvorená z {{num_images}} obrázkov a {{num_scripts}} skriptov)'
+agent.general.redirect_page_title: 'Nadpis stránky'
+agent.general.redirect_server_ip: 'IP servera'
+agent.general.redirect_title: 'Opúštate helpdesk'
+agent.general.referrer: Odkazovateľ
+agent.general.refresh_now: 'Obnoviť teraz'
+agent.general.refresh_required: 'Nutná obnova'
+agent.general.refresh_required_auto: 'Váš prehľadávač sa automaticky obnoví za {{secs}} sekúnd pokiaľ nekliknete na niektoré z tlačidiel nižšie.'
+agent.general.refresh_required_explain: 'Administrátor ({{name}})'
+agent.general.registered: Registrované
+agent.general.registered_downloads: 'Registrované stiahnutia'
+agent.general.registered_views: 'Registrované zobrazenia'
+agent.general.related_articles: 'Podobné články'
+agent.general.related_content: 'Podobný obsah'
+agent.general.related_downloads: 'Podobné stiahnutia'
+agent.general.related_feedback: 'Podobná spätná väzba'
+agent.general.related_news: 'Podobné novinky'
+agent.general.relative_time: 'Relatívny čas'
+agent.general.remove: Odstrániť
+agent.general.remove_as_related: 'Odstrániž ako podobné'
+agent.general.remove_favorite: 'Odstrániť obľúbené'
+agent.general.remove_labels: 'Odstrániť štítky'
+agent.general.repeat: Opakovať
+agent.general.repeat_password: 'Opakovať heslo'
+agent.general.reply: Odpovedať
+agent.general.reply_to_own_tickets: 'Odpovedať vlastným aj teamovým tiketom'
+agent.general.reports_interface: 'Nahlási rozhranie'
+agent.general.requirements: Požiadavky
+agent.general.requirements_complete: 'Požiadavky kompletné'
+agent.general.requires_validation: 'Vyžaduje overenie'
+agent.general.reset_password: 'Resetnutie hesla'
+agent.general.revision: Revízia
+agent.general.save: Uložiť
+agent.general.save_settings: 'Uložiť nastavenia'
+agent.general.saved: Uložené
+agent.general.saving: Ukladá
+agent.general.search: Hľadať
+agent.general.search_terms: 'Termíny vyhľadávania'
+agent.general.seconds: Sekundy
+agent.general.select_a_department: 'Vyberte oddelenie'
+agent.general.select_agent: 'Vyberte operátora'
+agent.general.select_your_region: 'Vyberte región'
+agent.general.send: Poslať
+agent.general.server_error_explain: 'Vyskytla sa chyba servera a Vaše posledná požiadavka zlyhala. Prosím skúste znova.'
+agent.general.session_started: 'Spojenie začaté'
+agent.general.set_a_position: 'Nastaviť pozíciu...'
+agent.general.set_agent: 'Nastaviť operátora'
+agent.general.set_agent_team: 'Nastaviť team operátorov'
+agent.general.set_assignments: 'Nastavit úlohy'
+agent.general.set_category: 'Nastaviť kategóriu'
+agent.general.set_department: 'Nastaviť oddelenie'
+agent.general.set_field_name: 'Nastaviť: {{field}}'
+agent.general.set_flag: 'Nastaviť označenie'
+agent.general.set_new_pic: 'Nastaviť ako nový obrázok'
+agent.general.set_priority: 'Nastaviť prioritu'
+agent.general.set_product: 'Nastaviť produkt'
+agent.general.set_status: 'Nastaviť status'
+agent.general.set_type: 'Nastaviť typ'
+agent.general.set_urgency: 'Nastaviť urgenciu'
+agent.general.set_user_field_name: 'Nastaviť pole užívateľa: {{field}}'
+agent.general.set_workflow: 'Nastaviť prúd práce'
+agent.general.settings: Nastavenia
+agent.general.show: Zobraz
+agent.general.showing: Zobrazuje
+agent.general.showing_results_x_of_y: 'UkaZobrazujú sa výsledky {{display_count}} z {{size}}'
+agent.general.since_time: 'od {{time}}'
+agent.general.sla_status: 'SLA status'
+agent.general.slas: SLA-čka
+agent.general.snippet_text_placeholder: 'Útržok textu'
+agent.general.snippets: Útržky
+agent.general.sort_asc_highlow: Najnižšie-Najvyššie
+agent.general.sort_by: 'Zoradené podľa'
+agent.general.sort_desc: Opis
+agent.general.sort_desc_highlow: Najvyššie-Najnižšie
+agent.general.source_code: 'Zdrojový kód'
+agent.general.start: Štart
+agent.general.status_is: 'Status je {{status}}'
+agent.general.statuses: Statusy
+agent.general.stop_processing_other_triggers: 'Prestať spracúvať ďalšie spúšťače'
+agent.general.subject: Subjekt
+agent.general.summary: Zhrnutie
+agent.general.system_user: Systém
+agent.general.tasks: Ulohy
+agent.general.teams: Teamy
+agent.general.template: Vzor
+agent.general.there_are_no_results: 'Nie sú žiadne výsledky'
+agent.general.ticket: Tiket
+agent.general.ticket_escalations: 'Eskalácie tiketu'
+agent.general.ticket_gateway_account: 'Účet brány tiketov'
+agent.general.ticket_gateway_address: 'Adresa brány tiketov'
+agent.general.ticket_id: 'ID tiketu'
+agent.general.ticket_ref: 'Ref tiketu'
+agent.general.ticket_starter: 'Štartér tiketu'
+agent.general.ticket_triggers: 'Spúštače tiketu'
+agent.general.tickets: Tikety
+agent.general.time_created: 'Čas vytvorenia'
+agent.general.time_created_summary: 'Čas vytvorenia {{op}}{{hour}}{{minute}}:00'
+agent.general.time_of_last_user_reply: 'Čas poslednej odpovede užívateľa'
+agent.general.time_open: 'Otvorený čas'
+agent.general.time_since_creation: 'Čas od vytvorenia'
+agent.general.time_until_first_response: 'Čas do prvej odpovede'
+agent.general.time_until_resolution: 'Čas do vyriešenia tiketu'
+agent.general.time_user_reply_summary: 'Čas psolednej odpvoede užívateľa {{op}}{{hour}}{{minute}}:00'
+agent.general.time_waiting: 'Doba čakania'
+agent.general.timezone: 'Časová zóna'
+agent.general.title: Nadpis
+agent.general.to: K
+agent.general.to_address: 'Na adresu'
+agent.general.total: Totálne
+agent.general.total_time_waiting: 'Celá doba čakania'
+agent.general.total_user_waiting_x: 'Celková doba čakania užívateľa je {{time}}'
+agent.general.translate_from_x_to_y: 'Preložiť z {{x}} do {{y}}'
+agent.general.translation: Preklad
+agent.general.translations: preklady
+agent.general.trigger_x: 'Spúšťač {{id}}'
+agent.general.triggers_auto_close_resolve_agent_reply: 'Automaticky vyriešiť tikety, ktoré čakajú užívateľa'
+agent.general.triggers_auto_close_resolve_user_reply: 'Automaticky vyriešiť tikety, ktoré čakajú užívateľa'
+agent.general.triggers_auto_close_warn_user: 'Upozorniť užívateľa o automatickom vyriešení tiketu.'
+agent.general.triggers_urgency_base: 'Východzia urgencia pre nové tikety'
+agent.general.twitter_username: 'Twittrové užívateľské meno'
+agent.general.type: Typ
+agent.general.types: Typy
+agent.general.tz_wrong_explain: 'Časová zóna uložená vo Vašom profile sa zdá byť iné ako regiónu hláseného Vašim počítačom.'
+agent.general.ucfirst_edit: Upraviť
+agent.general.unassigned: Nepridelené
+agent.general.undelete: Nezmazať
+agent.general.unfollow: Nesledovať
+agent.general.unformatted: Neformátované
+agent.general.unknown_agent: 'neznámy operátor'
+agent.general.unpublish: Nepublikovať
+agent.general.unread: Nečítané
+agent.general.unsaved_changes: 'Neuložené zmeny'
+agent.general.unsaved_changes_were_restored: 'Neuložené zmeny boli obnovené.'
+agent.general.unspam: Odspamovať
+agent.general.update: Aktualizácia
+agent.general.update_region_question: 'Chcete aktualizovať Váš región teraz?'
+agent.general.update_tz_region: 'Aktualizovať časovú zónu regiónu'
+agent.general.updated_by: 'Aktualizované užívateľom {{name}}'
+agent.general.upload: Nahrať
+agent.general.upload_explain: 'Kliknite na tlačítko nahrania alebo preneste súbor do tejto časti.'
+agent.general.upload_vcard_for: 'NahraŤ vCard pre {{name}}'
+agent.general.urgency: Urgencia
+agent.general.urgency_enter_negative_number: '(Zadajte negatívne číslo pre zníženie urgencie)'
+agent.general.user: Užívateľ
+agent.general.user_agent: 'Užívateľský operátor'
+agent.general.user_agents: 'Užívateľskí operátori'
+agent.general.user_field: 'Užívateľské pole'
+agent.general.user_interface: 'Užívateľské rozhranie'
+agent.general.user_time_until_resolution: 'Užívateľská doba do vyriešenia tiketu'
+agent.general.user_title: 'Užívateľský nadpis'
+agent.general.user_waiting: 'Užívateľ čaká'
+agent.general.user_waiting_x: 'Užívateľ čaká {{time}}'
+agent.general.usergroup: 'Užívateľská skupina'
+agent.general.usergroup_everyone: Každý
+agent.general.usergroups: 'Užívateľské skupiny'
+agent.general.username: 'Uživateľské meno'
+agent.general.users: Užívatelia
+agent.general.usersources: 'Užívateľské zdroje'
+agent.general.validate: Potvrdiť
+agent.general.validate_comment: 'Overiť komentár'
+agent.general.value: Hodnota
+agent.general.verified: Overené
+agent.general.via: Cez
+agent.general.view: Zobraziť
+agent.general.view_all_x_chats:
+  one: 'Zobraziť 1 konverzáciu'
+  few: 'Zobraziť  všetkých {{count}} koverzácií'
+  other: 'Zobraziť  všetkých {{count}} koverzácií'
+agent.general.view_all_x_tickets:
+  one: 'Zobraziť 1 tiket'
+  few: 'Zobraziť všetkých {{count}} tiketov'
+  other: 'Zobraziť všetkých {{count}} tiketov'
+agent.general.view_in_user_interface: 'Zobraziť v užívateľskom rozhraní'
+agent.general.view_more: 'Zobraziť viac'
+agent.general.view_profile: 'zobraziť profil'
+agent.general.visitor_id: 'ID návštevníka'
+agent.general.votes: Hlasy
+agent.general.warning: Upozornenie
+agent.general.web_interface: 'Webové rozhranie'
+agent.general.website_embed: 'Stránka vložená'
+agent.general.website_widget: 'Widget stránky'
+agent.general.weeks: týždne
+agent.general.when: Keď
+agent.general.width: Šírka
+agent.general.window_navigation: 'Navigácia okna'
+agent.general.workflow: 'Prúd práce'
+agent.general.workflows: 'Prudy práce'
+agent.general.working_hours: 'Pracovné hodiny'
+agent.general.x_after_y: '{{field}} po {{value}}'
+agent.general.x_before_y: '{{field}} pred {{value}}'
+agent.general.x_down_votes:
+  one: '1 zlý hlas'
+  few: '{{count}} zlých hlasov'
+  other: '{{count}} zlých hlasov'
+agent.general.x_include_y: '{{field}} zahŕňa {{value}}'
+agent.general.x_is_between_y_and_z: '{{field}} je medzi {{value1}} a {{value2}}'
+agent.general.x_is_greater_than_y: '{{field}} je väčšie ako {{value}}'
+agent.general.x_is_less_than_y: '{{field}} je menšie ako {{value}}'
+agent.general.x_is_not_y: '{{field}} nie je {{value}}'
+agent.general.x_is_y: '{{field}} je {{value}}'
+agent.general.x_not_include_y: '{{field}} nezahŕňa {{value}}'
+agent.general.x_selected: '{{num_placeholder}} vybraných'
+agent.general.x_up_votes:
+  one: '1 kladný hlas'
+  few: '{{count}} kladných hlasov'
+  other: '{{count}} kladných hlasov'
+agent.general.years: roky
+agent.general.your_email_address: 'Vaša e-mailová adresa'
+agent.general.your_teams: 'Vaše teamy'
+agent.interface.app-billing: Fakturácia
+agent.interface.assign_to_self: 'Prideľ mi'
+agent.interface.chat-notification-vol: 'Hlasitosť upozornení konverzácie'
+agent.interface.click_icon_to_add_filter: 'Kliknite na {{link}} pre vytvorenie nového filtra'
+agent.interface.click_icon_to_show_filters: 'Kliknite na <span class="gear-icon"></span> pre zobrazenie filtrov'
+agent.interface.close_current_tab: 'Zatvoriť aktuálne okno'
+agent.interface.create_ticket_person: 'Vytvoriť tiket pre osobu'
+agent.interface.creation: Vytvorenie
+agent.interface.deskpro_agent_interface: 'DeskPRO operátorské rozhranie'
+agent.interface.error_report_disclaimer: 'Prosím berte na vedomie, že neodpovedáme na všetky chybové hlášky. Ak máte otázku alebo potrebujeje odpoveď ohľadom týchto chýb, kontaktujte nás na {{email}}'
+agent.interface.error_report_submitting: 'Podanie chybovej hlášky...'
+agent.interface.error_report_thank_you: 'Ďakujeme za podanie Vašej chybovej hlásky.'
+agent.interface.focus_notes_box: 'Sledovať okienko s poznámkami'
+agent.interface.go_to_next_tab: 'Choď na ďalšiu tabuľku'
+agent.interface.go_to_previous_tab: 'Choď na predošlú tabuľku'
+agent.interface.kbd_change_status_agent: 'Zmeniť status na Očakávanie operátora'
+agent.interface.kbd_change_status_resolved: 'Zmeniť status na vyriešené'
+agent.interface.kbd_change_status_user: 'Zmeniť status na Očakávanie užívateľa'
+agent.interface.kbd_ctrl_left: ctrl+vľavo
+agent.interface.kbd_ctrl_right: ctrl+vpravo
+agent.interface.kbd_ctrl_shift_left: ctrl+shift+vľavo
+agent.interface.kbd_ctrl_shift_right: ctrl+shift+vpravo
+agent.interface.kbd_open_org_profile: 'Otvoriť profil organizácie'
+agent.interface.kbd_open_send_options: 'Otvoriť možnosti odosielania'
+agent.interface.kbd_open_snippets: 'Otvoriť útržky'
+agent.interface.kbd_open_user_profile: 'Otvoriť profil užívateľa'
+agent.interface.kbd_send_reply: 'Zaslať odpoveď'
+agent.interface.kbd_space: medzerník
+agent.interface.kbd_up_or_down: 'šípka hore alebo dole'
+agent.interface.key_close_tab: 'Zatvoriť tabuľku'
+agent.interface.key_left_tab: 'Vybrať ľavú tabuľku'
+agent.interface.key_right_tab: 'Vybrať pravú tabuľku'
+agent.interface.keyboard: Klávesnica
+agent.interface.keyboard_shortcuts: 'Klávesové skratky'
+agent.interface.major_items_appear_here: 'Tikety, užívatelia, organizácie, články, novinky. stiahnutia a spätné väzby sa otvárajú tu.'
+agent.interface.open_new_article_form: 'Otvoriť formulár nového článku'
+agent.interface.open_new_download_form: 'Otvoriť formulár nového stiahnutia'
+agent.interface.open_new_feedback_form: 'Otvoriť formulár novej spätnej väzby'
+agent.interface.open_new_news_form: 'Otvoriť formulár novej novinky'
+agent.interface.open_new_organization_form: 'Otvoriť formulár novej organiácie'
+agent.interface.open_new_person_form: 'Otvoriť formulár novej osoby'
+agent.interface.open_new_task_form: 'Otvoriť formulár novej úlohy'
+agent.interface.open_new_ticket_form: 'Otvoriť formulár nového tiketu'
+agent.interface.powered_by: 'Poháňané s'
+agent.interface.quick-search-placeholder: Hľadať
+agent.interface.report_this_error_to_deskpro: 'Nahlásiť túto chybu ku DeskPRO'
+agent.interface.search_for_text_or_a_phrase: 'Vyhľadať text alebo frázu'
+agent.interface.search_in_types: 'Vyhľadať v typoch'
+agent.interface.set_ticket_resolved: 'Nastaviť tiket ako vyriešený'
+agent.interface.toggle_mute: 'Prepnúť stíšenie'
+agent.interface.viewbtn-normal: 'Zobraziž lišty a tabuľky'
+agent.interface.viewbtn-source: 'Prepnúť filtrové a vyhľadávacie okienko'
+agent.interface.viewbtn-tab: 'Zobraziť iba tabuľky'
+agent.interface.viewbtn-table: 'Zobraziť tabulárne výsledky'
+agent.login.alert_fields_must_match: 'Heslá v kolónkach sa nezhodujú.'
+agent.login.alert_too_short: 'Prosím zadajte heslo dlhé aspoň 4 znaky.'
+agent.login.back_to_login: 'Späť na prihlasovaciu stránku'
+agent.login.browser_requirements: 'Požiadavky prehľadávača'
+agent.login.email_instructions: 'Mailové inštrukcie'
+agent.login.enter_new_password: 'Zadajte nové heslo'
+agent.login.enter_password: 'Zadaj svoje heslo'
+agent.login.forgot_password: 'Zabudli ste heslo?'
+agent.login.has_logged_out: 'Boli ste úspešne odhlásený.'
+agent.login.ie_compat_mode_explain: 'Niektoré verzie IE majú vlastnosť zvanú kompatibilný mód, vďaka ktorému staršie stránky spolupracujú s najnovšou prehľadávacou technológiou. Niekedy táto vlastnosť vie byť chybne vypnutá. Ak používate IE8 alebo IE9 a stále vídite stránku s požiadavkami prehľadávača, pravdepodobne je kompatibilný mód zapnutý. Pre používanie DeskPro musíte túto vlastnosť vypnúť.'
+agent.login.ie_compat_mode_step1: 'Ak menu nástrojov nieje viditeľné, stlačnte klávesu ALT pre zobrazenie'
+agent.login.ie_compat_mode_step2: 'Z menu nástrojov vyberte zobrazenie kompatibility'
+agent.login.ie_compat_mode_step3: 'Uistite sa, že Vaša URL helpdesku nie je na zozname, kliknite na ňu a následne ju odstráňte. Takisto sa uistite, že "Zobrazenie všetkých stránok v kompatibilnom móde" je vypnuté. Ak používate DeskPRO v intranete, musíte odznačiť aj možnosť "Zobrazovať stránky intranetu v kompatibilnom režime."'
+agent.login.ie_compat_mode_step4: 'Zatvoriť toto okno a obnoviť stránku'
+agent.login.ie_compat_mode_title: 'Používate IE8 alebo starší? <a href="{{url}}">Uistite sa, že kompatibilný mód je vypnutý</a>'
+agent.login.ie_use_chrome_frame: 'Alternatívne si môžete nainštalovať <a href="http://www.google.com/chromeframe">Google Chrome</a>'
+agent.login.login_failed: 'Neúspešné prihlásenie. Prosím skúste znova.'
+agent.login.notice_outdated_browser: 'Administrátorské a operátorské rozhranie vyžadujú moderný prehľadávač. Váš prehľadávač je príliš starý pre používanie DeskPro. Aktualizujte si ho, alebo stiahnite iný.'
+agent.login.password_was_reset: 'Vaše heslo bolo úspešne resetované'
+agent.login.remember_me: 'Zapamätať si ma'
+agent.login.reset-password-info: 'Zadajte Vašu e-mailovú adresu pre obdržanie inštrukcií na resetnutie hesla:'
+agent.login.reset-password-sent: 'Zaslali sme Vám e-mail s inštrukciami na resetnutie hesla.'
+agent.login.sent_pw_reset_instructions: 'Zaslali sme Vám inštrukcie ako si resetnúť Vaše heslo na e-mailovú adresu, ktorú ste zadali.'
+agent.login.session_timeout: 'Boli ste po dlhšom čase odhlásený. musíte sa znovu prihlásiť.'
+agent.login.supported_browsers: 'Nasledujúce prehľadávače sú podporované'
+agent.login.version_x_or_later: 'verzia {{version}} alebo novšia'
+agent.media.choose_file_from_computer: 'Vyberte súbor z Vášho počítača'
+agent.media.choose_files: 'Vyberte súbory'
+agent.media.crop_and_scale: 'Posiať a upraviť'
+agent.media.download_file: 'Stiahnuť súbor'
+agent.media.drop_here: 'alebo presuňte súbory do tohto okna'
+agent.media.file_attached_to_thing: '{{filename}} pripnuté ku {{subphrase}}{{link}}'
+agent.media.file_name: 'Názov súboru'
+agent.media.file_size: 'Veľkosť súboru'
+agent.media.insert_edited_image: 'Vložte upravený obrázok'
+agent.media.insert_image: 'Vložte obrázok'
+agent.media.insert_link_to_file: 'Vlzte odkaz obrázka'
+agent.media.library: Knižnica
+agent.media.media: Médiá
+agent.media.no_files_selected: 'Nevybrali ste žiadne súbory pre pripojenie.'
+agent.media.previously_uploaded: 'Skorej nahrané'
+agent.media.recent_uploads: 'Nedávne nahrania'
+agent.media.scale: Upraviť
+agent.media.ticket: tiket
+agent.media.upload_file: 'Nahrať súbor'
+agent.organizations.add_person: 'Pridať do tejto organizácie osobu'
+agent.organizations.browse_all_members: 'Prehľadávať všetkých členov'
+agent.organizations.click_set_manager: 'Kliknite pre nastavenie ako manažéra organizácie'
+agent.organizations.create_organization: 'Vytvoriť organizáciu'
+agent.organizations.email_domain_assoc: 'E-mailová doména združenia'
+agent.organizations.email_domain_assoc_add: 'Pridať novú doménu'
+agent.organizations.email_domain_assoc_explain: 'Užívatelia s e-mailami na tejto doméne budú automaticky priradený do tejto organizácie.'
+agent.organizations.email_domain_assoc_move:
+  one: 'Nastaviť ako spolupracovníka 1 užívateľa'
+  few: 'Nastaviť ako spolupracovníkov {{count}} užívateľov'
+  other: 'Nastaviť ako spolupracovníkov {{count}} užívateľov'
+agent.organizations.email_domain_assoc_move_all:
+  one: 'Nastaviť ako spolupracovníka 1 užívateľa, ktorý už patrí do inej organizácie'
+  few: 'Nastaviť ako spolupracovníkov {{count}} užívateľov, ktorí už patria do inej organizácie'
+  other: 'Nastaviť ako spolupracovníkov {{count}} užívateľov, ktorí už patria do inej organizácie'
+agent.organizations.email_domain_assoc_none: 'Nastaviť e-mailovú doménu pre automatické pridelenie do tejto organizácie.'
+agent.organizations.email_domain_assoc_remove: 'Odstrániť všetky domény'
+agent.organizations.email_domain_assoc_remove_users:
+  one: 'Odstrániť e-mailovú doménu a odobrať 1 užívateľa z tejto organizácie'
+  few: 'Odstrániť e-mailovú doménu a odobrať {{count}} užívateľov z tejto organizácie'
+  other: 'Odstrániť e-mailovú doménu a odobrať {{count}} užívateľov z tejto organizácie'
+agent.organizations.email_domain_assoc_title: 'Združenia e-mailových domén pre {{name}}'
+agent.organizations.enter_position: 'Zadajte pozíciu'
+agent.organizations.is_empty: 'Táto organizácia nemá žiadnych členov'
+agent.organizations.list_title:
+  one: '1 organizácia'
+  few: '{{count}} organizácií'
+  other: '{{count}} organizácií'
+agent.organizations.no_slas: 'Žiadne SLA-čka niesú automaticky prideľované k tejto organizácii'
+agent.organizations.org_manager_click_to_remove: 'Manažér organizácie. Kliknite pre odstránenie.'
+agent.people.act_reg: 'Registroval účet'
+agent.people.act_replied_ticket: 'Odpovedal na tiket:'
+agent.people.act_submitted_ticket: 'Potvrdil tiket:'
+agent.people.add_address: 'Pridať adresu'
+agent.people.add_an_email_address: 'Pridať Emailovú adresu'
+agent.people.add_another: 'pridať ďalšie'
+agent.people.add_facebook_profile: 'Pridať facebookový profil'
+agent.people.add_im: 'Pridať IM účet'
+agent.people.add_linkedin_profile: 'Pridať Linkedln profil'
+agent.people.add_phone: 'Pridať telefónne číslo'
+agent.people.add_twitter_profile: 'Pridať twitrový profil'
+agent.people.add_website: 'Pridať webovú stránku'
+agent.people.address_city: Mesto
+agent.people.address_postal: 'Smerovacie číslo'
+agent.people.address_state: Stát
+agent.people.and_came_from: 'a prišiel z'
+agent.people.anonymous_user: 'Anonymný užívateľ {{id}}'
+agent.people.confirm_remove_email: 'Ste si istý, že chcete odstrániť túto e-mailovú adresu?'
+agent.people.contact_info: 'Kontaktné informácie'
+agent.people.contact_info_for_x: 'Kontaktné informácie pre {{name}}'
+agent.people.count_members:
+  one: '{{count}} člen'
+  few: '{{count}} členov'
+  other: '{{count}} členov'
+agent.people.create_person: 'Vytvoriť osobu'
+agent.people.creation_by: Vytvorený
+agent.people.delete_user: 'Zmazať užívateľa'
+agent.people.delete_user_and_ban_email: 'Zmazať užívateľa a zabanovať Email'
+agent.people.disable_account: 'zakázať účet'
+agent.people.double_click_set_name: 'Dvoj-kliknite pre nastavenie mena'
+agent.people.download_vcard: 'Stiahnuť vCard'
+agent.people.drop_your_vcard_here: 'Položit Vašu vCard tu'
+agent.people.email_awaiting_validation: 'E-mail čaká na potvrdenie'
+agent.people.enable_account: 'Povoliť účet'
+agent.people.enter_name_here: 'Zadajte meno sem'
+agent.people.find_person: 'Nájsť osobu'
+agent.people.im_account_placeholder: 'Užívateľské meno účtu'
+agent.people.is_agent: 'Je operátor'
+agent.people.list_title:
+  one: '1 osoba'
+  few: '{{count}}'
+  other: ' osôb'
+agent.people.login_as_user: 'Prihlásiť sa ako Užívateľ'
+agent.people.make_primary_email: 'nastavit ako prmárne'
+agent.people.manager: Manažér
+agent.people.member_of_teams: 'Sú členmi nasledujúcich teamov:'
+agent.people.merge_people: 'Spojiť osoby'
+agent.people.merge_people_info: 'Tento nástroj Vám umožňuje spojiť dvoch užívateľov do jedného. Tikety, konverzácie a množstvo ostatných objektov zo zmzaného užívateľa budú pridané do užívateľa, ktorý ostáva. Druhý užívateľ bude permanentne zmazaný.'
+agent.people.merge_submit_btn: 'Spojiť dva profily'
+agent.people.new_registration: 'Nová registrácia'
+agent.people.new_registration_name: 'Nová registrácia: {{name}}'
+agent.people.no_picture: 'Žiadny obrázok'
+agent.people.no_position_set: 'Žiadna pozícia nastavená'
+agent.people.no_slas: 'Žiadne SLA-čka niesú automaticky pridelované tejto osobe'
+agent.people.on_page: 'na stránke'
+agent.people.online_now: 'Teraz online'
+agent.people.other_user_content_being_deleted: 'Užívateľov ďalší obsah bude zmazaný tiež:'
+agent.people.person_ban_confirm: 'Ste si istý, že chcete zabanovať tohto užívateľa?'
+agent.people.person_delete_confirm: 'Ste si istý, že chcete zmazať tohto užívateľa?'
+agent.people.phone_country_placeholder: Krajina
+agent.people.phone_number_placeholder: 'Telefónne číslo'
+agent.people.primary_email: primárne
+agent.people.reg_agent: 'Uzívateľ vytvorený operátorom'
+agent.people.reg_gateway: 'Užívateľ bol vytvorený pridaním e-mailu k helpdesku'
+agent.people.reg_website: 'Užívateľ registrovaný použitím stránky'
+agent.people.remove_picture: 'Odstrániť obrázok'
+agent.people.since: Od
+agent.people.update_picture: 'Aktualizovať Obrázok'
+agent.people.upload_new_picture: 'Nahrať nový obrázok'
+agent.people.upload_vcard: 'Nahrať vCard'
+agent.people.use_pic_gravatar: 'Použiť obrázok z gravataru'
+agent.people.use_uploaded_pic: 'Použiť nahraný obrázok'
+agent.people.user_awaiting_agent_validation: 'Užívateľ čaká na potvrdenie operátora'
+agent.people.user_awaiting_email_and_agent_validation: 'Užívateľ čaká na potvrdenie e-mailu a operátora'
+agent.people.user_awaiting_email_validation: 'Užívateľ čakána potvrdenie e-mailu'
+agent.people.user_awaiting_validation: 'Užívateľ čaká na potvrdenie'
+agent.people.user_is_agent: '{{name}} je operátorom tohto helpdesku.'
+agent.people.user_is_autoresponder: 'Užívateľ je auto-odpovedač. Auto-odpovede zaslané nebudú.'
+agent.people.user_landed_on_page: 'Užívateľ skončil na stránke'
+agent.people.user_not_autoresponder: 'Užívateľ neni auto-odpovedač'
+agent.people.user_will_be_perm_deleted: 'Užívateľ bude permanentne odstránený.'
+agent.people.user_will_be_perm_deleted_banned: 'Užívateľ bude permanentne odstránneý a jeho e-mailová adresa bannutá.'
+agent.people.view_profile: 'Pozrieť profil'
+agent.people.warn_email_address: 'E-mailová adresa {{email}} sa zhoduje s týmto profilom. Ale keďže sa užívateľ neprihlásil do helpdesku nevieme overiť jeho identitu. Buďte opatrný s Vašimi osobnými údajmi.'
+agent.people.website: 'Webová stránka'
+agent.people.website_url_placeholder: 'URL webovej stránky'
+agent.publish.add_new_category: 'Pridaj novú kategóriu'
+agent.publish.add_new_glossary: 'Pridať nové slovo glosáru'
+agent.publish.add_pending: 'Pridať nový článok'
+agent.publish.all_articles: 'Všetky články'
+agent.publish.all_comments: 'Všetky Komentáre'
+agent.publish.all_downloads: 'Všetky stiahnutia'
+agent.publish.all_draft_content: 'Všetky návrhy'
+agent.publish.all_news: 'Všetky novinky'
+agent.publish.apply_action: 'Aplikovať akciu'
+agent.publish.article_comments: 'Komentáre článku'
+agent.publish.article_id: 'ID článku'
+agent.publish.ask_set_to_draft: 'Ste si istý, že chcete vybrané položky nastavit ako návrhy?'
+agent.publish.awaiting_validation_info: 'Očakáva sa overenie: Operátor s právomocou na overenie obsahu ho musí potvrdiť prv, než bude zobrazený verejne na portáli-'
+agent.publish.change_category: 'Zmeniť kategóriu'
+agent.publish.click_to_set_date: '(klikni pre nastavenie dátumu)'
+agent.publish.comment_by: 'Komentoval {{name}}'
+agent.publish.comment_requires_validation: 'Tento komentár potrebuje overenie'
+agent.publish.comments_list_title:
+  one: '1 komentár'
+  few: '{{count}} komentárov'
+  other: '{{count}} komentárov'
+agent.publish.comments_to_validate: 'Komentáre na prezretie'
+agent.publish.compare_selected: 'Porovnať zvolené'
+agent.publish.create_artilce: 'Vytvoriť článok'
+agent.publish.create_pending_article: 'Vytvoriť trvajúci článok'
+agent.publish.delete_category: 'Zmazať kategóriu'
+agent.publish.delete_category_btn: 'Zmazať kategóriu'
+agent.publish.discard_unsaved_changes: 'Zrušiť a vrátiť späť na východzie'
+agent.publish.download_category: 'Stiahnuť kategóriu'
+agent.publish.download_comments: 'Stiahnuť komentáre'
+agent.publish.download_count: 'Stiahnuť Počet'
+agent.publish.download_hotlink_btn: 'Hotlinknúť existujúci súbor'
+agent.publish.download_specify_filename: 'Ak chcete zadajte iný názov zložky'
+agent.publish.download_specify_filesize: 'Ak chcete špecifikujte veľkosť súboru na zobrazenie. Napr. 50MB alebo 2KB.'
+agent.publish.download_specify_url: 'Zadajte celú URL súboru. Užívateľ kliknutím na tlačidlo "Stiahnuť" bude presmerovaný na túto URL'
+agent.publish.download_upload_btn: 'Nahrať súbor'
+agent.publish.downloads_highest_lowest: 'Počet stiahnutí (Najvyšší-Najnižší)'
+agent.publish.downloads_list_title:
+  one: '1 stiahnutie'
+  few: '{{count}} stiahnutí'
+  other: '{{count}} stiahnutí'
+agent.publish.downloads_lowest_highest: 'Počet stiahnutí (Najnižší-Najvyšší)'
+agent.publish.draft_content: 'Moje návrhy'
+agent.publish.draft_revision: Zmeniť
+agent.publish.drafts_list_title:
+  one: '1 návrh'
+  few: '{{count}} návrhov'
+  other: '{{count}} návrhov'
+agent.publish.drop_file_to_add: 'Presuňte Váš súbor sem pre pridanie do príspevku'
+agent.publish.edit_category_btn: 'Upraviť kategóriu'
+agent.publish.edit_new_glossary: 'Upraviť glosu'
+agent.publish.error_kb_cats_same: 'Kategórie sú rovnaké.'
+agent.publish.error_kb_missing:
+  one: '{{count}} článok nenájdený.'
+  few: '{{count}} článkov nenájdených.'
+  other: '{{count}} článkov nenájdených.'
+agent.publish.error_kb_not_in_db: 'Kategória nebola nájdená.'
+agent.publish.error_kb_perm_denied:
+  one: '{{count}} problém povolenia.'
+  few: '{{count}} problémov povolení.'
+  other: '{{count}} problémov povolení.'
+agent.publish.error_kb_unaffected: 'Niektoré články neboli ovplyvnené:'
+agent.publish.event_time_ago_at_when: '{{ago}} dňa {{date}}'
+agent.publish.event_time_ago_by_who_at_when: '{{ago}} užívateľom{{name}} dňa {{date}}'
+agent.publish.for_ticket: 'Pre tiket'
+agent.publish.glossary: Glosár
+agent.publish.helpful: Nápomocné
+agent.publish.kb_list_title:
+  one: '1 článok'
+  few: '{{count}} článkov'
+  other: '{{count}} článkov'
+agent.publish.kb_list_unique_title:
+  one: '1 unikátny článok'
+  few: '{{count}} unikátnych článkov'
+  other: '{{count}} unikátnych článkov'
+agent.publish.label_new_file: 'Nový súbor'
+agent.publish.label_old_file: 'Starý Súbor'
+agent.publish.missing_translation: 'Chýbajúci preklad'
+agent.publish.move_to: 'Presunúť do'
+agent.publish.n_helpful_n_unhelpful: '{{up_votes}} označili toto stiahnutie ako nápomocné, {{down_votes}} označili, že im to nepomohlo'
+agent.publish.new_comment_on: 'Nový koment na {{name}}'
+agent.publish.new_comment_submitted_by: 'Nový komentár bol potvrdený užívateľom {{name}}'
+agent.publish.new_feedback_by: 'Nová spätná väzba od {{name}}'
+agent.publish.new_post: 'Nový Post'
+agent.publish.news_comments: 'Nový Komentár'
+agent.publish.news_list_title:
+  one: '1 príspevok'
+  few: '{{count}} príspevkov'
+  other: '{{count}} príspevkov'
+agent.publish.no_changes: 'Žiadne zmeny zistené medzi týmito dvoma revíziami'
+agent.publish.no_downlod_cats_error: 'Nie sú definované žiadne kategórie. Prv, než budete vedieť pridávať súbory do sekcie stiahnutí, musíte definovať kategóriu.'
+agent.publish.no_kb_cats_error: 'Nie sú definované žiadne kategórie. Prv, než budete vedieť pridávať články do databázy znalostí, musíte definovať kategóriu.'
+agent.publish.no_news_cats_error: 'Nie sú definované žiadne kategórie. Prv, než budete vedieť pridávať príspevky do sekcie noviniek, musíte definovať kategóriu.'
+agent.publish.no_related_explain: 'Žiadne ďalšie články, stiahnutia alebo príspevky noviniek neboli pripojené. Prehľadávajte zoznam a kliknite na "Pridať ako pripojené" pre pridanie do pripojeného obsahu.'
+agent.publish.no_uploads_yet: 'Neboli tam žiadne nahrania zatiaľ.'
+agent.publish.not_helpful: 'Nie je nápomocné'
+agent.publish.pending_articles: 'Trvajúce články'
+agent.publish.please_choose_file: 'Prosím vyberte súbor'
+agent.publish.please_enter_title: 'Prosím zadajte názov'
+agent.publish.please_select_category: 'Prosím vyberte kategóriu'
+agent.publish.post: Príspevok
+agent.publish.primary_lang_explain: 'Primárny jazyk článku. Po jeho vytvorení ho budete môcť preložiť do ostatných jazykov.'
+agent.publish.reorder_category_title: 'Popresúvať kategórie (chyť a presuň)'
+agent.publish.requires_validation: 'Vyžaduje overenie'
+agent.publish.revision_by: 'Revízia užívateľom {{name}}'
+agent.publish.search_sticky_words_explain: 'Keď užívateľ vyhľadá niektoré z týchto slov, táto stránka bude vždy zobrazená medzi prvými vo výsledkoch.'
+agent.publish.searches_helpful: 'Vyhľadávania kde toto bolo hodnotené ako nápomocné'
+agent.publish.searches_unhelpful: 'Vyhľadávania kde toto nebolo hodnotené ako nápomocné'
+agent.publish.set_as_draft: 'Nastaviť ako návrh'
+agent.publish.set_auto_publish_date: 'Nastaviť automatické zverejňovanie dátumu'
+agent.publish.set_auto_unpublish_date: 'Nastaviť automatické nezverejňovanie dátumu'
+agent.publish.set_contents_from_article: 'Nastaviť obsahy z článku'
+agent.publish.status_archived: Archivované
+agent.publish.status_hidden_deleted: Zmazané
+agent.publish.status_hidden_draft: Návrh
+agent.publish.status_hidden_spam: SPAM
+agent.publish.status_hidden_unpublished: Nepublikované
+agent.publish.status_hidden_user_validating: 'Užívateľ sa overuje'
+agent.publish.status_hidden_validating: Overuje
+agent.publish.status_published: Zverejnené
+agent.publish.sticky_words_title: 'Hľadať slová'
+agent.publish.untranslated_articles: 'Nepreložené články'
+agent.publish.validating_comment_manage_tip: 'Komentár očakáva schválenie. Kliknite pre úpravu'
+agent.publish.validating_list_title:
+  one: '1 preskúmanie'
+  few: '{{count}} preskúmaní'
+  other: '{{count}} preskúmaní'
+agent.publish.view_count: 'Zobraziť počet'
+agent.publish.view_count_highest_lowest: 'Zobraziť počet (Najvyšší-Najnižší)'
+agent.publish.view_count_lowest_highest: 'Zobraziť počet (Najnižší-Najvyšší)'
+agent.publish.when: Keď
+agent.publish.who: Kto
+agent.publish.who_downloaded: 'Kto stiahol'
+agent.publish.who_viewed: 'Kto videl'
+agent.publish.who_voted: 'Kto hlasoval'
+agent.publish.who_voted_none: 'Nik nehlasoval'
+agent.publish.who_voted_show_guests: 'Zobraziť hostí'
+agent.publish.who_voted_show_people: 'Zobraziť ľudí a kontakty'
+agent.publish.word_def: 'Definícia slova'
+agent.publish.word_title: 'Slovný nadpis'
+agent.publish.words: Slová
+agent.report.agent_activity: 'Aktivita operátora'
+agent.report.agent_hours: 'Operátorove hodiny'
+agent.report.clone: Klónovať
+agent.report.clone_bracket: '[Klon]'
+agent.report.current: Momentálny
+agent.report.data_range: 'Rozsah dát'
+agent.report.overview: Prehľad
+agent.report.report_builder: 'Nahlásiť staviteľa'
+agent.report.updates: Aktualizácie
+agent.search.by: Od
+agent.search.chat_conversations: 'Konverzácie chatu'
+agent.search.find_by_above_criteria: 'Vyhľadať kritériá'
+agent.search.find_person: 'Vyhľadať osobu'
+agent.search.loading: nahráva
+agent.search.no_email: 'Žiaden e-mail'
+agent.search.no_people_match_your_criteria: 'Žiaden užívateľ nevyhovuje tvojim kritériam'
+agent.search.no_results_found: 'Žiadne výsledky sa nenašli'
+agent.search.number_of_tickets: 'Počet tiketov'
+agent.search.person_id: 'ID osoby'
+agent.search.select: Zvoľ
+agent.search.simple: Jednoduchý
+agent.search.view_all_results: 'Zobraziť všetky výsledky'
+agent.settings.add_additional_emails: 'Pridať ďalšie Emaily'
+agent.settings.add_another_email: 'Pridať ďalší Email'
+agent.settings.additional_emails: 'Ďalšie e-maily'
+agent.settings.admin_filters_info: 'Sú tam filtre vytvorené administrátorom, ktoré viete použiť.'
+agent.settings.auto_close_ticket_tabs: 'Automaticky uzatvoriť tickety keď:'
+agent.settings.auto_close_ticket_tabs_note: 'pridávať poznámku'
+agent.settings.auto_close_ticket_tabs_reply: 'odpovedá sa'
+agent.settings.browser_notifications: 'Notifikácia v prehliadači'
+agent.settings.chat_immediate_dismiss: 'Automaticky zrušiť okno "nová konverzácia"  keď si ju prevezme druhý operátor'
+agent.settings.create_filter: 'Vytvoriť filter'
+agent.settings.create_macro: 'Vytvoriť macro'
+agent.settings.default_team: 'Defaultný Team'
+agent.settings.delete_filter: 'Zmazať filter'
+agent.settings.desktop_notifs: 'Notifikácie na stanicu'
+agent.settings.desktop_notifs_are_enabled: 'Notifikácie na stanicu sú momentákne zapnuté. Dajú sa vypnúť iba cez nastavenia v upozorneniach samotných.'
+agent.settings.desktop_notifs_autohide: 'Automaticky skryť upozornenia po:'
+agent.settings.desktop_notifs_enable: 'Povoliť notifikáciu na stanici'
+agent.settings.desktop_notifs_explicit_disabled: 'Notifikácie na stanici boli vypnuté. Pre túto doménu sa dajú zapnúť cez prehľadávač samotný.'
+agent.settings.desktop_notifs_test: 'Generovať textové notifikácie'
+agent.settings.done_start_using: 'Hotovo, začať používať DeskPro'
+agent.settings.drop_here_insert_signature: 'Vhoďte Váš <strong>obrázok</strong> sem pre vloženie do Vašeho podpisu.'
+agent.settings.edit_filter: 'Upraviť filter'
+agent.settings.edit_macro: 'Upraviť Makro'
+agent.settings.email_notifications: 'Emailové notifikácie'
+agent.settings.filter_match: 'Zhoda filtra'
+agent.settings.filters_shared_with_you: 'Filtre zdieľané s Vami'
+agent.settings.first_login_set_name: 'Toto je Vaše prvé prihlásenie, prosím vyplňte Vaše meno a nahrajte obrázok profilu.'
+agent.settings.first_login_set_pic: 'Toto je Vaše prvé prihlásenie, chcete nahrať obrázok profilu?'
+agent.settings.hidden_filters_info: 'Skryté filtre nebudú zobrazené v hlavnom rozhraní. Viete sa hocikedy vrátiť a odkryť ich.'
+agent.settings.leave_password_blank: 'Vynechajte toto políčko pre zanechanie pôvodného hesla'
+agent.settings.macro_who_can_use: 'Kto smie použiť toto macro?'
+agent.settings.new_macro: 'Nové macro'
+agent.settings.no_filters: 'Nedefinovali ste žiadne filtre.'
+agent.settings.no_macros: 'Nedefinovali ste žiadne macrá.'
+agent.settings.no_slas: 'Váš administrátor nedefinoval žiadne SLA-čka.'
+agent.settings.no_slas_admin: 'Nevytvorili ste žiadne SLA-čka. Viete ich definovať z administrátorského rozhrania > Tikety > SLA.'
+agent.settings.notif_all_actions: 'Všetky akcie'
+agent.settings.notif_chat_message: 'Niekto mi zasiela správu keď som offline'
+agent.settings.notif_contact_admin: 'Prosím kontaktujte administrátora pre upravenie Vašich e-mailových upozornení.'
+agent.settings.notif_forwards: Posúva
+agent.settings.notif_group_all: 'Všetky tikety'
+agent.settings.notif_group_follow: 'Tickety ktoré Sledujem'
+agent.settings.notif_group_my: 'Moje Tickety'
+agent.settings.notif_group_team: 'Tickety môjho teamu'
+agent.settings.notif_group_unassigned: 'Nepridelené tikety'
+agent.settings.notif_login_attempt: 'Hocikedy je môj účet použitý po lognutí'
+agent.settings.notif_login_attempt_fail: 'Hocikedy je môj účet použitý po lognutí a údaje sú nesprávne zadané'
+agent.settings.notif_my_events: 'Moje udalosti'
+agent.settings.notif_my_own_actions: 'Moje vykonané akcie'
+agent.settings.notif_new_comment: 'Nový komentár bol postúpený'
+agent.settings.notif_new_comment_validate: 'Nový komentár bol odovzdaný, ktorý potrebuje overenie'
+agent.settings.notif_new_feedback: 'Novo podaná spätná väzba'
+agent.settings.notif_new_feedback_validate: 'Nová spätná väzba bola odovzdaná, ktorá potrebuje overenie'
+agent.settings.notif_new_user: 'Nový užívateľ registrovaný'
+agent.settings.notif_notes_with_mentions: 'Poznámky so @zmienkou'
+agent.settings.notif_notes_with_mentions_always: 'Vždy e-mailovať a zasielať správu konverzácie'
+agent.settings.notif_notes_with_mentions_opt: 'Ako chcete byť informovaný keď Vás operátor spomenie v poznámke tiketu?'
+agent.settings.notif_notes_with_mentions_smart: 'Zaslať správu ak online alebo e-mail ak offline'
+agent.settings.notif_take_due_today: 'Úloha pridelená mne musí byť riešená dnes'
+agent.settings.notif_task_assigned: 'Úloha pridelená mne'
+agent.settings.notif_task_assigned_team: 'Úloha pridelená môjmu teamu'
+agent.settings.notif_task_delegated_complete: 'Úloha, ktorú som označil ako dokončenú'
+agent.settings.notif_tweet_assigned: 'Tweet pridelený mne'
+agent.settings.notif_tweet_assigned_team: 'Tweet pridelený môjmu teamu'
+agent.settings.notif_tweet_dm: 'Jeden z mojich twittrových účtov dostáva priamu správu'
+agent.settings.notif_tweet_mention: 'Jeden z mojich twittrových účtov je spomenutý v tweete.'
+agent.settings.notif_tweet_responded: 'Jeden z mojich twittrových účtov dostáva odpoveď'
+agent.settings.notif_tweet_responded_my: 'Niekto odpovedá na tweet mnou napísaný'
+agent.settings.notif_tweet_retweet: 'Jeden z mojich twittrových účtov je pretweetnutý'
+agent.settings.notif_type_agent: 'Správa Operátora'
+agent.settings.notif_type_assign: Úloha
+agent.settings.notif_type_change: 'Zmena vlastnosti'
+agent.settings.notif_type_new: 'Nový ticket'
+agent.settings.notif_type_note: 'Poznámka Operátora'
+agent.settings.notif_type_user: 'Správa Užívateľa'
+agent.settings.override_name: 'Ovládať meno'
+agent.settings.override_name_explain: 'Ak zadané, toto meno bude zobrazené užívateľom namiesto Vašeho skutočného.'
+agent.settings.reset_api_token: 'Resetnúť Váš API token. Budete sa musieť znova prihlásiť  s hocijakou externou aplikáciou.'
+agent.settings.signature: Podpis
+agent.settings.sla_filter_all: 'Zobraz všetky vyhovujúce Tickety'
+agent.settings.sla_filter_assigned: 'Zobraziž len tikety pridelené mne'
+agent.settings.sla_filter_results: 'Filtrovať výsledky SLA-čka'
+agent.settings.sla_filter_results_info: 'Keďú SLA-čka zobrazené v operátorskom rozhraní, počet a zobrazenie bude filtrované týmto nastavením.'
+agent.settings.sla_filter_team: 'Zobraziť len tikety pridelené môjmu teamu'
+agent.settings.ticket_signature: 'Podpis Ticketu'
+agent.settings.ticket_signature_desc: 'Tento podpis bude automaticky pripojený keď pošlete odpoveď tiketu.'
+agent.settings.tickets_autoload_next: 'Automaticky nahrať ďalší tiket po odpovedaní (len po uzatvorení okna tiketu)'
+agent.settings.tickets_reverse_order: 'Zobraziť nové správy ako prvé (obrátiť chronologické poradie) s boxom pre odpoveď na vrchu'
+agent.settings.title_other_notifs: Upozornenia
+agent.settings.title_ticket_notifs: 'Upozornenia tiketu'
+agent.settings.twitter_signature: 'Podpis twittra'
+agent.settings.twitter_signature_desc: 'Všetky tweety, ktoré napíšete budú podpísané týmto. Ponechajte to krátke.'
+agent.settings.welcome_to_deskpro: Vitajte
+agent.settings.welcome_to_deskpro_name: 'Vitajte, {{name}}'
+agent.settings.your_current_picture: 'Vaša aktuálna fotka'
+agent.snippets.add_snippet: 'Pridať útržok'
+agent.snippets.all_snippets: 'Všetky útržky'
+agent.snippets.cat_can_be_used_by: 'Kategória vie byť použitá:'
+agent.snippets.chat_snippets: 'Útržky konverzácií'
+agent.snippets.edit_snippet: 'Upraviť útržok'
+agent.snippets.insert_variable: 'Vložiť premennú'
+agent.snippets.learn_more_about_vars: 'Zistiť viac o premenných'
+agent.snippets.must_create_cat: 'Predtým než začnete vytvárať útržky, <br/>musíte vytvoriť Vašu prvú kategóriu.'
+agent.snippets.shortcut_code: 'Kód skratky'
+agent.snippets.shortcut_code_info: 'Zadajte tento kód do odpovede tiketu a útržok bude vložený automaticky. Napr. s kódom skratky ''štandardná-odpoveď'' jednoducho napíšte ''%sštandardná-odpoveď%'' pre vloženie útržku bez otvorenie manažéra útržkov.'
+agent.snippets.ticket_snippets: 'Útržky tiketu'
+agent.tasks.add_another_task: 'Pridať novú úlohu'
+agent.tasks.all_tasks: 'Všetky úlohy'
+agent.tasks.assigned_to_by: 'Pridelený k úlohe užívateľom {{name}}'
+agent.tasks.completed_by: 'Úloha dokončená užívateľom {{name}}'
+agent.tasks.completed_tasks: 'Dokončené úlohy'
+agent.tasks.count: Počet
+agent.tasks.creator: Tvorca
+agent.tasks.delete_confirm: 'Ste si istý, že chcete túto úlohu zmazať?'
+agent.tasks.due_in_future: 'Očakávané v budúcnosti'
+agent.tasks.due_today: 'Počas Dneška'
+agent.tasks.enter_your_comment: 'Pridaj svoj komentár...'
+agent.tasks.linked_deal: 'Pripojená dohoda'
+agent.tasks.linked_ticket: 'Pripojený tiket'
+agent.tasks.list_title:
+  one: '1 úloha'
+  few: '{{count}} úloh'
+  other: '{{count}} úloh'
+agent.tasks.my_tasks: 'Moje úlohy'
+agent.tasks.my_teams: 'Môjho teamu'
+agent.tasks.my_teamstasks: 'Úlohy mojich teamov'
+agent.tasks.no_due_date: 'Nie počas dátumu'
+agent.tasks.no_due_time: 'Žiadny špecifický čas'
+agent.tasks.or: alebo
+agent.tasks.overdue: Oneskorene
+agent.tasks.task_description: 'Popis úlohy...'
+agent.tasks.task_due_today: 'Táto úloha má dnešnú splatnosť.'
+agent.tasks.task_has_deal_x: 'Úloha priradená: Dohode "{{label}}"'
+agent.tasks.task_has_ticket_x: 'Úloha priradená tiketu: Tiket "{{label}}"'
+agent.tasks.tasks_i_delegated: 'Úlohy, ktoré som delegoval'
+agent.tasks.team_assigned_by: 'Tvoj team bol priradený k úlohe používateľom {{name}}'
+agent.tickets.active_tickets_term: 'Tiket je aktívny'
+agent.tickets.active_tickets_term_explain: 'Filtre viete vytvárať iba v aktívnych tiketoch. Aktívne tikety očakávajú užívateľa, operátora alebo sú vyriešené. Archivované alebo skryté nebudú filtrované. Tieto dve typy viete nájsť vykonaním vyhľadávania vo vyhľadávaní.'
+agent.tickets.add_attachments: 'Pridať prílohy'
+agent.tickets.add_cc: 'Pridať CC'
+agent.tickets.add_follower: 'Pridať odoberateľa'
+agent.tickets.add_followers: 'Pridať odberateľov'
+agent.tickets.add_labels_action: 'Pridať štítky: {{labels}}'
+agent.tickets.add_note: 'Pridať Poznámku'
+agent.tickets.add_org_managers_action: 'Pridať menežérov organizácie do tiektu'
+agent.tickets.add_reply_action: 'Pridať odpoveď'
+agent.tickets.add_reply_x_action: 'Pridať odpoveď {{desc}}'
+agent.tickets.add_sla_action: 'Pridať SLA: {{sla}}'
+agent.tickets.adding_your_note: 'Pridať tvoju poznámku'
+agent.tickets.admin_trigger_notifications: 'Spúšťače, ktoré Vás upozornia'
+agent.tickets.admin_trigger_notifications_explain: 'Administrátor vytvoril tieto spúšťače aby Vám boli zasielané upozornenia e-mailom.'
+agent.tickets.agent_has_lock: '{{agent}} uzamkol tento tiket. Pre jeho úpravy ho najprv musíte odomknúť.'
+agent.tickets.agents_action: 'Operátori: {{agents}}'
+agent.tickets.always_notify_people: 'Vždy notifikuj {{parts}}'
+agent.tickets.and_count_were_cced: '(a {{display_count}} bolo CC-nutý)|(a {{display_count}} bolo cc-nutých)'
+agent.tickets.announce_this_ticket_in_campfire: 'Oznámiť tento tiket pri vatre'
+agent.tickets.any_of_my_teams: 'Hociktorý z mojich teamov'
+agent.tickets.api: API
+agent.tickets.applied: aplikovaný
+agent.tickets.apply_a_macro: 'Aplikovať macro'
+agent.tickets.assign_current_action: 'Prideliť operátora momentálne prihlásenému operátorovi'
+agent.tickets.assign_current_team_action: 'Prideliť team momentálne prihlásenému teamu'
+agent.tickets.assign_team_action: 'Prideliť team k: {{name}}'
+agent.tickets.assign_ticket_to: 'Pripojiť Ticket ku'
+agent.tickets.assign_to_agent_action: 'Priradenie operátora k {{agent}}'
+agent.tickets.assignments: Úlohy
+agent.tickets.attachment: Prílohy
+agent.tickets.attachment_deleted: 'Príloha zmazaná'
+agent.tickets.attachments: Pripojenia
+agent.tickets.billing: Fakturácia
+agent.tickets.billing_add_charge: 'Pridať poplatok'
+agent.tickets.billing_amount: Suma
+agent.tickets.billing_and_timelog: 'Fakturačný a časový log'
+agent.tickets.billing_charge: Poplatok
+agent.tickets.billing_chargetime: Poplatok/Doba
+agent.tickets.billing_delete_confirm: 'Ste si istý, že chcete tento poplatok zmazať?'
+agent.tickets.billing_time: Čas
+agent.tickets.billing_timelog: 'Časový log'
+agent.tickets.call_webhook_action: 'Zavolať webový hák {{hook}}'
+agent.tickets.cc: CC
+agent.tickets.change_status: 'Zmeniť status z {{old}} na {{new}}'
+agent.tickets.change_status_to: 'Upraviť status na'
+agent.tickets.change_user: 'Zmeniť Užívateľa'
+agent.tickets.change_user_btn: 'Zmeniť užívateľa'
+agent.tickets.change_user_ticket_email: 'Zmeniť mail Užívateľa v tomto Tickete'
+agent.tickets.changed_from: 'zmenený z'
+agent.tickets.changed_to: pre
+agent.tickets.charge: Poplatok
+agent.tickets.charge_time: 'Termín Poplatku'
+agent.tickets.click_icon_to_show_slas: 'Klikni {{icon}} pre zobrazenie SLAčiek'
+agent.tickets.close_tab_after_reply: 'Zatvor tento ticket tab po zodpovedaní'
+agent.tickets.close_tab_tip: 'Zatvor tento tab po uložení správy'
+agent.tickets.coment_after_ticket_created: 'komentovať po tom ako bol ticket vytvorený'
+agent.tickets.commented_on: 'Komentoval na'
+agent.tickets.count_agents:
+  one: '1 operátor'
+  few: '{{count}} operátorov'
+  other: '{{count}} operátorov'
+agent.tickets.count_charges:
+  one: '1 poplatok'
+  few: '{{count}} poplatkov'
+  other: '{{count}} poplatkov'
+agent.tickets.count_users:
+  one: '{{count}} užívateľ'
+  few: '{{count}} užívateľov'
+  other: '{{count}} užívateľov'
+agent.tickets.create_linked_ticket: 'Vytvoriť pripojený tiket'
+agent.tickets.create_new_pending_article: 'VytvoriŤ nový trvajúci článok'
+agent.tickets.creating_a_ticket_for: 'Vytvára sa tiket pre'
+agent.tickets.creation_system: 'Systém vytvárania'
+agent.tickets.creation_system_gateway: 'e-mailová brána'
+agent.tickets.creation_system_gateway_agent: 'e-mailová brána operátorom'
+agent.tickets.creation_system_gateway_person: 'e-mailová brána užívatEľom'
+agent.tickets.creation_system_via: 'Vytvorené cez'
+agent.tickets.creation_system_web: 'webové rozhranie'
+agent.tickets.creation_system_web_agent: 'webové rozhranie operátorom'
+agent.tickets.creation_system_web_person: 'webové rozhranie užívateľom'
+agent.tickets.creation_system_widget: 'widget stránky užívateľom'
+agent.tickets.current_agent_waiting_time: 'Doba čakania operátora'
+agent.tickets.current_user_waiting_time: 'Aktuálna doba čakania užívateľa'
+agent.tickets.currently_on_hold: 'Tento ticket je momentálne pozastavený.'
+agent.tickets.date_last_agent_reply: 'Dátum poslednej odpovede operátora'
+agent.tickets.date_last_reply: 'Dátum poslednej odpovede'
+agent.tickets.date_last_user_reply: 'Dátum poslednej odpovede užívateľa'
+agent.tickets.debug_file: 'Ladiaci súbor'
+agent.tickets.debug_file_download: 'Stiahni Ladiaci súbor'
+agent.tickets.debug_file_explain: 'DeskPRO operátor Vás môže požiadať o sprostredkovanie tohto súboru pre lepšiu diagnózu problémov.'
+agent.tickets.decrease_urgency_action: 'Ponížiť urgenciuť o {{amount}}'
+agent.tickets.delete_attach: 'Zmazať Prílohy'
+agent.tickets.delete_attach_confirm: 'Ste si istý, že chcete zmazať túto prílohu?'
+agent.tickets.delete_attachments: 'Zmazať pílohu'
+agent.tickets.delete_message: 'Zmazať Správu'
+agent.tickets.delete_message_confirm: 'Ste si istý, že chcete zmazať túto správu?'
+agent.tickets.delete_ticket: 'Zmazať Ticket'
+agent.tickets.deleted_by: 'Ticket odstránil:'
+agent.tickets.deleted_by_name: 'Zmazané užívateľom {{name}}'
+agent.tickets.deleted_info: 'Tiket #{{old_ticket_id}} bol zmazaný dňa {{date}} uzívateľom {{agent}}'
+agent.tickets.deleted_merged_info: 'Tiket #{{old_ticket_id}} bol spojený do #{{new_ticket_id}} dňa {{date}} užívateľom{{agent}}'
+agent.tickets.deleted_reason: 'Dôvod: {{reason}}'
+agent.tickets.disable_agent_notifs_action: 'Zakázať notifikácie operátora'
+agent.tickets.disable_all_notifs_action: 'Zakázať všetky notifikácie'
+agent.tickets.disabled_user_notifs_action: 'Zakázať notifikácie užívateľa'
+agent.tickets.draft: 'Návrh správy'
+agent.tickets.draft_message: 'Návrh správy'
+agent.tickets.draft_note: 'Návrh poznámky'
+agent.tickets.edit_snippet_category: 'Upraviť kategóriu útržku'
+agent.tickets.email_is_ticket_account: 'E-mailová adresa, ktorú ste zadali patrí účtu v Admin > Tikety > E-mailové účty. Neviete vytvoriť tiket pre e-mailový účet'
+agent.tickets.email_user_newticket_info: 'Zaslať e-mailom tento tiket uŽívateľovi'
+agent.tickets.email_user_tip: 'Zaslať užívateľovi e-mailové upozornenie od tejto odpovedi'
+agent.tickets.error_merge_with_self: 'Neviete spojiť tiket samotný.'
+agent.tickets.error_reply_badfields: 'Vyskytla sa chyba s poľami tiketu, ktoré musíte opraviť pred odpovedaním.'
+agent.tickets.explain_flags: 'Označenia Vám umožnia vytvoriť si osobnú kolekciu tiketov. Dvojkliknite na označenie pre zmenu jeho nadpisu.'
+agent.tickets.explain_search_all_tickets: 'Prehľadávať vŠetky tikety, zahŕňajúc vyriešené alebo archivované'
+agent.tickets.export_to_csv: 'Export do CSV'
+agent.tickets.filter_agent: 'Moje Tickety'
+agent.tickets.filter_agent_team: 'Tickety môjho Teamu'
+agent.tickets.filter_agent_teams: 'Tickety môjho Teamu'
+agent.tickets.filter_all: 'Všeky Tickety'
+agent.tickets.filter_participant: 'Tickety ktoré sledujem'
+agent.tickets.filter_results: 'Výsledky Filtra'
+agent.tickets.filter_unassigned: 'Nepriradené Tickety'
+agent.tickets.find_other_ip_addy: 'Vyhľadať ostatné tikety potvrdené z tejto IP adresy'
+agent.tickets.find_ticket: 'Nájsť ticket'
+agent.tickets.first_agent_reply: 'Prvá odpoveď operátora'
+agent.tickets.first_assignment: 'Prvé piradenie'
+agent.tickets.forward_header: 'Táto správa Vám bola preposlaná z {{hd}} od{{user}}'
+agent.tickets.forward_message: 'Presunúť správu'
+agent.tickets.forward_noreply_header: 'Prosím neodpovedajte na túto srpávu. Ak chcete odpovedať, odpovedajte priamo užívateľovi {{user}}'
+agent.tickets.forwarded_message: 'Preposlaná správa'
+agent.tickets.from_email: '(potvrdené cez e-mail z {{address}})'
+agent.tickets.from_web: '(potvrdené cez webové rozhranie z IP adresy {{address}})'
+agent.tickets.full_email_source: 'Úplný zdroj Emailu'
+agent.tickets.full_log: 'Plný záznam'
+agent.tickets.gateway_source_id: 'Gateway Source ID'
+agent.tickets.group_by: 'Skupina od'
+agent.tickets.grouped_results_empty: 'Zoskupené výsledky sa zobrazia keď filter nájde zhodu tiketov'
+agent.tickets.helpful: nápomocné
+agent.tickets.hidden_because: 'Tento Ticket je momentálne ukrytý lebo:'
+agent.tickets.hidden_explain: 'Toto znamená, že sa nezobrazí vo väčsine výsledkoch a nebude vytvárať operátorské upozornenia'
+agent.tickets.hidden_status: 'Skytý Status'
+agent.tickets.hidden_status_deleted: Zmazané
+agent.tickets.hidden_status_spam: Spam
+agent.tickets.hidden_tickets: 'Skyté Tickety'
+agent.tickets.hold_btn: 'Pridržať Ticket'
+agent.tickets.html_body: 'HTML Body'
+agent.tickets.increase_urgency_action: 'Navýšiť naliehavosť o {{amount}}'
+agent.tickets.insert_text_snippets: 'Vložte textové úryvky'
+agent.tickets.into_this_from_ticket: 'do tohto z tiketu #{{id}}'
+agent.tickets.kbd_awaiting_agent: 'Čaká sa <span class="show-key-shortcut">O</span>perátor'
+agent.tickets.kbd_awaiting_user: 'Čaká sa <span class="show-key-shortcut">U</span>žívateľ'
+agent.tickets.kbd_resolved: 'Vyriešen<span class="show-key-shortcut">é</span>'
+agent.tickets.kbd_send_awaiting_agent: 'Zaslať odpoveď ako očakávaný <span class="show-key-shortcut">O</span>perátor'
+agent.tickets.kbd_send_awaiting_user: 'Zaslať odpoveď ako očakávaný <span class="show-key-shortcut">U</span>žívateľ'
+agent.tickets.kbd_send_resolved: 'Zaslať odpoveď ako vyriešen<span class="show-key-shortcut">ú</span>'
+agent.tickets.lables: Vrstvy
+agent.tickets.last_agent_reply: 'Posledná odpoveď operátora'
+agent.tickets.last_user_reply: 'Posledná odpoveď užívateľa'
+agent.tickets.lc_created: vytvorený
+agent.tickets.lc_new_reply: 'nová odpoveď'
+agent.tickets.lc_new_ticket: 'nový ticket'
+agent.tickets.lc_new_ticket_agent: 'nový ticket operátorom'
+agent.tickets.lc_update: aktualizácia
+agent.tickets.linked_tickets: 'Pripojené tikety'
+agent.tickets.linking_with_chat: 'Pripája sa s konverzáciou:'
+agent.tickets.list_title:
+  one: '{{count}} tiket'
+  few: '{{count}} tiketov'
+  other: '{{count}} tiketov'
+agent.tickets.list_title_counter: '{{x}} tiketov'
+agent.tickets.load_more: 'Načítať Viac'
+agent.tickets.lock: Uzamknúť
+agent.tickets.lock_auto_release: 'Váš zámok bude automaticky uvoľnený po uzatvorení tohto tiketu.'
+agent.tickets.log_created_via_comment: 'Vytvoriť cez komentár (ID{{id}})'
+agent.tickets.log_message_deleted: 'Správa zmazaná'
+agent.tickets.log_message_old_message: 'Stará správa'
+agent.tickets.log_message_updated: 'Správa #{{id}} aktualizovaná'
+agent.tickets.log_new_email_agent: 'Nový tiket od operátora cez preposlanie'
+agent.tickets.log_new_email_user: 'Nový tiket od užívateľa cez e-mailovú bránu'
+agent.tickets.log_new_web_agent_portal: 'Nový tiket od operátora cez webové rozhranie'
+agent.tickets.log_new_web_user_embed: 'Nový tiket od užívateľa cez vloženú formu'
+agent.tickets.log_new_web_user_portal: 'Nový tiket od užívatEľa cez portál'
+agent.tickets.log_new_web_user_widget: 'Nový tiket užívateľa cez widget stránky'
+agent.tickets.log_note_deleted: 'Poznámka zmazaná'
+agent.tickets.log_on_article: 'v článku "{{title}}" (ID {{id}})'
+agent.tickets.log_on_download: 'na stiahnutí "{{title}}" (ID {{id}})'
+agent.tickets.log_on_feedback: 'na spätnej väzbe "{{title}}" (ID {{id}})'
+agent.tickets.log_on_news: 'na novinke "{{title}}" (ID {{id}})'
+agent.tickets.log_sent_from: 'Zaslané z e-mailu {{email}}'
+agent.tickets.log_sla_added: 'SLA priadaná'
+agent.tickets.log_sla_removed: 'SLA odstránená'
+agent.tickets.log_sla_updated: 'SLA Aktualizovaná'
+agent.tickets.log_sub_on_filter: 'Predplatné na filtri'
+agent.tickets.log_trigger_forced_notif: 'Upozornenie vytvorené spúšťaČom'
+agent.tickets.log_update_agent: 'Aktualizované operátorom'
+agent.tickets.log_update_agent_reply: 'Odpoveď operátora'
+agent.tickets.log_update_escalation: 'Aktualizované eskaláciou'
+agent.tickets.log_update_user: 'Aktualizované užívateľom'
+agent.tickets.log_update_user_reply: 'Odpoveď užívateľa'
+agent.tickets.log_written_by: 'Napísané užívateľom {{name}} (ID {{id}})'
+agent.tickets.log_written_by_agent: 'Napísané operátorom {{name}}'
+agent.tickets.long_message_clipped: 'Táto správa bola pripnutá, pretože je veľmi dlhá.'
+agent.tickets.mark_as_pending_kb_article: 'Označiť ako trvajúci KB článok'
+agent.tickets.mass_reply: 'Hromadná odpoveď'
+agent.tickets.merge_submit_btn: 'Spojiť tieto dva tikety'
+agent.tickets.merge_ticket: 'Spojiť tiket'
+agent.tickets.merged_into_this: 'spojené do'
+agent.tickets.message_id: 'ID správy'
+agent.tickets.message_number: 'Správa #{{number}}'
+agent.tickets.messages: Správy
+agent.tickets.my_team: 'Môj team'
+agent.tickets.na: N/A
+agent.tickets.neutral: neutrálne
+agent.tickets.new_attachment: 'Nová príloha'
+agent.tickets.new_message: 'Nová správa'
+agent.tickets.new_note: 'Nová poznámka'
+agent.tickets.new_ticket_subject: 'Predmet nového ticketu'
+agent.tickets.newticket_and_apply_macro: 'Potvrdiť tiket a aplikovať macro'
+agent.tickets.newticket_and_set_status: 'Potvrdiť tiket a nastaviť status'
+agent.tickets.no_criteria: 'Žiadne kritériá'
+agent.tickets.no_grouping: '(Žiadne zoskupenia)'
+agent.tickets.no_recent_searches: 'Žiadne nedávne vyhľadávania'
+agent.tickets.normal_message: 'Normálna správa'
+agent.tickets.notes: Poznámky
+agent.tickets.notifications: Notifikácie
+agent.tickets.notified_of: 'upozornený o'
+agent.tickets.notify_new_ticket_by_for: '{{name}} vytvoril nový tiket pre {{user}}'
+agent.tickets.on: na
+agent.tickets.on_hold: 'V poradí'
+agent.tickets.open_tab_info: 'Otvoriť nový tiekt v tabuľke po jeho vytvorení'
+agent.tickets.open_tickets: 'Otvorené tikety'
+agent.tickets.optionally_enter_message: 'Ak chcete zadajte správu'
+agent.tickets.original_message: 'Pôvodná správa'
+agent.tickets.participant_added: 'Užívateľ CC-nutý'
+agent.tickets.participant_removed: 'Užívateľ odstranený z CC'
+agent.tickets.participants: CC-čka
+agent.tickets.pending_article_desc: 'Zadajte poznámku alebo opis článku, ktorý musí byť napísaný. Bude to pripojené do tohto tiketu.'
+agent.tickets.pending_article_info: 'Trvajúci článok je poznámka v publikovanej sekcii o článku, ktorý musí byť písaný.'
+agent.tickets.percent_of: '% z'
+agent.tickets.perm_del_user_and_content: 'Permanentne zmazať užívateľa a jeho ostatný obsah'
+agent.tickets.perm_del_user_and_other_tickets: 'Permanentne zmazať užívateľa a jeho {{ticket_count}} tiketov'
+agent.tickets.perm_del_user_and_ticket: 'Permanentne zmazať užívateľa a tento tiket'
+agent.tickets.perm_delete_note: 'Tento tiekt bude permanentne zmazaný zo systému za {{time}}'
+agent.tickets.placeholder_type_a_result: 'Začnite písať odpoveď...'
+agent.tickets.please_choose_or_create_user: 'Prosím vyberte alebo vytvorte užívateľa'
+agent.tickets.please_enter_subject: 'Prosím zadajte predmet'
+agent.tickets.priority_highestlowest: 'Priorita (Najvyššia-Najnižšia)'
+agent.tickets.priority_lowesthighest: 'Priorita (Najnižšia-Najvyššia)'
+agent.tickets.raw_message: 'Neupravená správa'
+agent.tickets.recalculate_sla_status_action: 'Prekalkulovať status SLA'
+agent.tickets.receiving_gateway: 'Prijíma sa brána'
+agent.tickets.receiving_gateway_account: 'Prijíma sa bránový účet'
+agent.tickets.remove_all_slas_action: 'Odstrániť všetky SLA-čka'
+agent.tickets.remove_category_action: 'Odstrániť kategóriu'
+agent.tickets.remove_labels_action: 'Odstráiť štítky: {{labels}}'
+agent.tickets.remove_participants_action: 'Odstrániť CC-nutých užívateľov: {{parts}}'
+agent.tickets.remove_priority_action: 'Odstrániť prioritu'
+agent.tickets.remove_product_action: 'Odstrániť produkt'
+agent.tickets.remove_sla_action: 'Odstrániť SLA: {{sla}}'
+agent.tickets.remove_workflow_action: 'Odstrániť prúd práce'
+agent.tickets.reply_and_apply_macro: 'Odpovedať a aplikovať macro'
+agent.tickets.reply_and_set_status: 'Odpovedať a nastaviť status'
+agent.tickets.results: Výsledky
+agent.tickets.save_errors: 'Prosím opravte nasledovné chyby'
+agent.tickets.search_all_tickets: 'Hľadať vo všetkých ticketoch'
+agent.tickets.search_for_people_to_add: 'Vyhľadajte ľudí pre pridanie, alebo zadajte ich e-mailové adresy pre ich vytvorenie'
+agent.tickets.select_group_var: 'Vyberte pole pre zoskupenie tiketov'
+agent.tickets.send_agent_notifs_from_email_action: 'Poslať operátorovy notifikáciu z {{email}}'
+agent.tickets.send_agent_notifs_from_name_action: 'Poslať operátorovy notifikáciu s menom {{name}}'
+agent.tickets.send_cc_to: 'Zaslať CC:'
+agent.tickets.send_flood_warning_action: 'Zaslať e-mailové upozornenie, že užívateľ zaplavuje systém'
+agent.tickets.send_newticket_and_apply_x: 'Potvrdiť tiket a aplikovať {{name}}'
+agent.tickets.send_newticket_as_x: 'Potvrdiť tiket ako {{status}}'
+agent.tickets.send_notifs_from_email_action: 'Zaslať užívateľské upozornenia z {{email}}'
+agent.tickets.send_notifs_from_name_action: 'Zaslať užívateľské upozornenia z {{name}}'
+agent.tickets.send_reply: 'Poslať Odpoveď'
+agent.tickets.send_reply_and_apply_x: 'Poslať odpoveď a aplykovať {{name}}'
+agent.tickets.send_reply_as_x: 'Poslať odpoveď ako {{status}}'
+agent.tickets.sending: Posielam
+agent.tickets.sending_your_message: 'Posielanie vašej správy'
+agent.tickets.sent_from_address: 'Zaslať z adersy'
+agent.tickets.sent_to_gateway_address: 'Zaslať na adresu brány'
+agent.tickets.set_as_normal_message: 'Nastaviť ako normálnu správu'
+agent.tickets.set_as_note: 'Nastaviť ako poznámku operátora'
+agent.tickets.set_as_spam: 'Nastaviť správu ako SPAM'
+agent.tickets.set_awaiting_agent: 'Nastaviť čakajúceho operátora'
+agent.tickets.set_awaiting_user: 'nastaviť čakajúceho užívateľa'
+agent.tickets.set_category_action: 'Nastaviť kategóriu na {{category}}'
+agent.tickets.set_delete: 'Označiť pre zmazanie'
+agent.tickets.set_department_action: 'Nastaviť oddelenie na {{department}}'
+agent.tickets.set_flag_to_action: 'Nastaviť vlajku na {{flag}}'
+agent.tickets.set_language_action: 'Nastaviť jazyk na {{language}}'
+agent.tickets.set_priority_action: 'Nastaviť prioritu na {{priority}}'
+agent.tickets.set_product_action: 'Nastaviť produkt na {{product}}'
+agent.tickets.set_resolved: 'Nastaiť ako vyriešený'
+agent.tickets.set_sla_status: 'Nastaviť SLA statusy na {{sla_status}}'
+agent.tickets.set_sla_status_action: 'Nastaviť SLA status na {{sla_status}}'
+agent.tickets.set_sla_status_for_sla: 'Nastaviť SLA status na {{sla_status}} pre {{sla}}'
+agent.tickets.set_sla_status_for_sla_action: 'Nastaviť SLA status na {{sla_status}} pre SLA {{sla}}'
+agent.tickets.set_workflow_action: 'Nastaviť prúd práce na {{workflow}}'
+agent.tickets.set_x_to_y_action: 'Nastaviť {{title}} na {{value}}'
+agent.tickets.sla_fail_date: 'Zlý Dátum'
+agent.tickets.sla_remove_confirm: 'Ste si istý, že chcete zmazať toto SLA'
+agent.tickets.sla_severity: 'Závažnosť SLA'
+agent.tickets.sla_warn_date: 'Dátum upozornenia'
+agent.tickets.slas_title: SLÁčky
+agent.tickets.split_from_here: 'Rozdeliť tiket odtiaľto'
+agent.tickets.split_message_btn: 'Rozdeliť správu'
+agent.tickets.split_messages_into_ticket: 'Rozdeliť správy do nového tiketu'
+agent.tickets.split_selected_messages_btn: 'Rozdeliť vybrané správy'
+agent.tickets.status_awaiting_agent: 'Čakajúci operátor'
+agent.tickets.status_awaiting_agent_deleted: Zmazané
+agent.tickets.status_awaiting_agent_spam: SPAM
+agent.tickets.status_awaiting_agent_temp: Dočasné
+agent.tickets.status_awaiting_agent_validating: 'Čaká sa na ovrnie'
+agent.tickets.status_awaiting_user: 'Čakajúci užívateľ'
+agent.tickets.status_awaiting_user_deleted: Zmazané
+agent.tickets.status_awaiting_user_spam: SPAM
+agent.tickets.status_awaiting_user_temp: Dočasne
+agent.tickets.status_awaiting_user_validating: 'Očakáva sa overenie'
+agent.tickets.status_hidden: Skryté
+agent.tickets.status_hidden_deleted: Zmazané
+agent.tickets.status_hidden_temp: Dočasné
+agent.tickets.status_hidden_validating: 'Očakáva sa overenie'
+agent.tickets.status_resolved: Vyriešený
+agent.tickets.status_resolved_deleted: Vymazaný
+agent.tickets.status_resolved_temp: Dočasný
+agent.tickets.status_resolved_validating: 'Čaká sa na overenie'
+agent.tickets.stop_later_triggers_action: 'Prestať spracúvať neskoršie spúšťače'
+agent.tickets.subject_changed: 'Predmet sa zmenil'
+agent.tickets.subject_changed_from: 'Predmet sa zmenil z'
+agent.tickets.subscribed_tickets: 'Odoberané Tickety'
+agent.tickets.teams_action: 'Teamy: {{teams}}'
+agent.tickets.text_body: 'Text Tela'
+agent.tickets.ticket_changes: 'Zmeny Ticketu'
+agent.tickets.ticket_feedback: 'Spätná väzba Ticketu'
+agent.tickets.ticket_field_name: 'Pole tiketu: {{field}}'
+agent.tickets.ticket_is_delete7d: 'Ticket je zmazaný'
+agent.tickets.ticket_is_deleted: 'ticket je zmazaný'
+agent.tickets.ticket_is_marked_as_spam: 'Tento Ticket bol označený ako SPAM.'
+agent.tickets.ticket_merged: 'Tiket spojený'
+agent.tickets.ticket_put_on_hold: 'Ticket odložený'
+agent.tickets.ticket_removed_from_hold: 'Tiket odstránený z držania'
+agent.tickets.ticket_replying: 'Tiket odpovedá'
+agent.tickets.ticket_split: 'Tiket rozdelený'
+agent.tickets.ticket_split_from: 'Tiket rozdelený z'
+agent.tickets.ticket_split_to: 'Tiket spojený do'
+agent.tickets.tickets_on_hold: 'Na držanie'
+agent.tickets.time_til_resolve: 'Čas do vyriešenia'
+agent.tickets.total_user_waiting_time: 'Celkový čakací čas užívateľa'
+agent.tickets.translate_into: 'Preložiť správu do:'
+agent.tickets.triggers: Spúšťače
+agent.tickets.unassign_action: 'Odobrať agenta'
+agent.tickets.unassign_team: 'Odobrať team'
+agent.tickets.unhelpful: nenápomocný
+agent.tickets.unhold_btn: 'Odstŕaniť Ticket z podržaných'
+agent.tickets.unhold_ticket: 'Pustiť tiket'
+agent.tickets.unlock: Odomknúť
+agent.tickets.unsanitized_message: 'Neupravená správa'
+agent.tickets.unsanitized_message_confirm: 'Ste si istý, že chcete vidieť neupravenú správu? Mohla by obsahovať škodlivý zdrojový kód.'
+agent.tickets.unset_flag_action: Odznačiť
+agent.tickets.upload_files_here: 'Presuňte súbory sem alebo ich vyberte'
+agent.tickets.urgency_highest_lowest: 'Naliehavosť (Najvyššia-Najnižšia)'
+agent.tickets.urgency_lowest_highest: 'Naliehavosť (Najnižšia-Najvyššia)'
+agent.tickets.use_email_tpl_action: 'Použiť e-mailový vzor: {{tpl}}'
+agent.tickets.user_email: 'Užívateľský e-mail'
+agent.tickets.user_is_disabled: 'Užívateľ, ktorého ste vybrali je neaktívny. Neviete vytvárať tikety pre neaktívnych užívateľov.'
+agent.tickets.users_tickets: 'Užívateľove tiekty'
+agent.tickets.view_entire_in_new_win: 'Zobraziť všetky tickety v novom okne'
+agent.tickets.view_full_message: 'Zobraziť celú správu'
+agent.tickets.view_full_quoted_message: 'Zobraziť celú citovanú správu'
+agent.tickets.view_message_in_window: 'Pozrieť správu v novom okne'
+agent.tickets.view_newer_messages: 'Pozrieť novšiu správu'
+agent.tickets.view_older_messages: 'Zobraziť staršie správy'
+agent.tickets.view_ticket_id: 'Zobraziť tiket #{{id}}'
+agent.tickets.waiting_til_first_reply: 'Čaká sa na prvú odpoveď'
+agent.tickets.written_after: 'Napísané po'
+agent.tickets.written_any_time: 'Napísané hocikedy'
+agent.tickets.written_before: 'Napísané pred'
+agent.tickets.written_between: 'Napísané medzi'
+agent.tickets.x_messages_moved:
+  one: '1 správa presunutá'
+  few: '{{count}} správ presunutých'
+  other: '{{count}} správ presunutých'
+agent.tickets.x_rated_this_message_as: '{{name}} hodnotil túto správu ako:'
+agent.tickets.you_have_auto_lock: 'Na tomto tikete máte automatický zámok. Ostatní operátori nebudú môcť tento tiket upravovať dokiaľ nebude odomknutý.'
+agent.tickets.you_have_locked: 'Uzamkli ste tento tiket. Ostatní operátori nebudú môcť tento tiket upravovať dokiaľ nebude odomknutý.'
+agent.tickets.your_teams_tickets: 'Tikety Vašeho teamu'
+agent.tickets.your_tickets: 'Vaše tikety'
+agent.time.group_12_to_24_hours: '12 - 24 hodín'
+agent.time.group_15_to_30_mins: '15 - 30 minút'
+agent.time.group_1_to_2_days: '1 - 2 dni'
+agent.time.group_1_to_2_hours: '1 - 2 hodiny'
+agent.time.group_1_to_2_months: '1 - 2 mesiace'
+agent.time.group_1_to_2_weeks: '1 - 2 týždne'
+agent.time.group_2_to_3_days: '2 - 3 dni'
+agent.time.group_2_to_3_hours: '2 - 3 hodiny'
+agent.time.group_2_to_3_months: '2 - 3 mesiace'
+agent.time.group_2_to_3_weeks: '2 - 3 týždne'
+agent.time.group_30_to_60_mins: '30 - 60 minút'
+agent.time.group_3_to_4_days: '3 - 4 dni'
+agent.time.group_3_to_4_hours: '3 - 4 hodiny'
+agent.time.group_3_to_4_months: '3 - 4 mesiace'
+agent.time.group_3_to_4_weeks: '3 - 4 týždne'
+agent.time.group_4_to_5_days: '4 - 5 dní'
+agent.time.group_4_to_5_months: '4 - 5 mesiacov'
+agent.time.group_4_to_6_hours: '4 - 6 hodín'
+agent.time.group_5_to_15_mins: '5 - 15 minút'
+agent.time.group_5_to_6_days: '5 - 6 dní'
+agent.time.group_5_to_6_months: '5 - 6 mesiacov'
+agent.time.group_6_to_12_hours: '6 - 12 hodín'
+agent.time.group_6_to_7_days: '6 - 7 dní'
+agent.time.group_gt_6_months: '> 6 mesiacov'
+agent.time.group_lt_5_mins: '< 5 minút'
+agent.time.long-day_friday: Piatok
+agent.time.long-day_monday: Pondelok
+agent.time.long-day_saturday: Sobota
+agent.time.long-day_sunday: Nedeľa
+agent.time.long-day_thursday: Štvrtok
+agent.time.long-day_tuesday: Utorok
+agent.time.long-day_wednesday: Streda
+agent.time.long-month_april: Apríl
+agent.time.long-month_february: Február
+agent.time.long-month_january: Január
+agent.time.long-month_july: Júl
+agent.time.long-month_june: Jún
+agent.time.long-month_march: Marec
+agent.time.long-month_may: Máj
+agent.time.long-month_october: Október
+agent.time.reltime_1_day: '1 deň'
+agent.time.reltime_1_hour: '1 Hodina'
+agent.time.reltime_1_minute: '1 minuta'
+agent.time.reltime_1_month: '1 mesiac'
+agent.time.reltime_1_second: '1 sekunda'
+agent.time.reltime_1_week: '1 týždeň'
+agent.time.reltime_1_year: '1 rok'
+agent.time.reltime_less_minute: '1 minuta'
+agent.time.reltime_less_second: '1 sekunda'
+agent.time.reltime_x_day: '{0} dní'
+agent.time.reltime_x_hour: '{0} hodín'
+agent.time.reltime_x_minute: '{0} minút'
+agent.time.reltime_x_month: '{0} mesiacov'
+agent.time.reltime_x_second: '{0} sekúnd'
+agent.time.reltime_x_week: '{0} týždnov'
+agent.time.reltime_x_year: '{0} rokov'
+agent.time.reltimeago_1_day: 'Pred 1 dňom'
+agent.time.reltimeago_1_hour: 'Pred 1 hodinou'
+agent.time.reltimeago_1_minute: 'Pred 1 minútou'
+agent.time.reltimeago_1_month: 'Pred 1 mesiacom'
+agent.time.reltimeago_1_second: 'Pred 1 sekundov'
+agent.time.reltimeago_1_week: 'Pred 1 týžňom'
+agent.time.reltimeago_1_year: 'Pred 1 rokom'
+agent.time.reltimeago_less_minute: 'Pred menej ako minutou'
+agent.time.reltimeago_less_second: 'Pred menej ako sekundou'
+agent.time.reltimeago_x_day: 'Pred {0} dňami'
+agent.time.reltimeago_x_hour: 'Pred {0} hodinami'
+agent.time.reltimeago_x_minute: 'Pred {0} minutami'
+agent.time.reltimeago_x_month: 'Pred {0} mesiacmi'
+agent.time.reltimeago_x_second: 'Pred {0} sekundami'
+agent.time.reltimeago_x_week: 'Pred {0} týždňami'
+agent.time.reltimeago_x_year: 'Pred {0} rokmi'
+agent.time.short-day_friday: Pia
+agent.time.short-day_monday: Pon
+agent.time.short-day_saturday: Sob
+agent.time.short-day_sunday: Ned
+agent.time.short-day_thursday: Štv
+agent.time.short-day_tuesday: Ut
+agent.time.short-day_wednesday: Str
+agent.time.short-month_may: Máj
+agent.time.short-month_october: Okt
+agent.time.time-ago_1_day: 'Pred 1 dňom'
+agent.time.time-ago_1_hour: 'Pred 1 hodinou'
+agent.time.time-ago_1_minute: 'Pred 1 minutou'
+agent.time.time-ago_1_month: 'Pred 1 mesiacom'
+agent.time.time-ago_1_second: 'Pred 1 sekundou'
+agent.time.time-ago_1_week: 'Pred 1 týždňom'
+agent.time.time-ago_1_year: 'Pred 1 rokom'
+agent.time.time-ago_less_second: 'pred menej ako sekundou'
+agent.time.time-ago_x_day: 'pred {0} dňami'
+agent.time.time-ago_x_hour: 'pred {0} hodinami'
+agent.time.time-ago_x_minute: 'pred {0} minutami'
+agent.time.time-ago_x_month: 'pred {0} mesiacmi'
+agent.time.time-ago_x_second: 'pred {0} sekundami'
+agent.time.time-ago_x_week: 'pred {0} týždňami'
+agent.time.time-ago_x_year: 'pred {0} rokmi'
+agent.time.time_1_day: '1 deň'
+agent.time.time_1_hour: '1 hodina'
+agent.time.time_1_minute: '1 minuta'
+agent.time.time_1_month: '1 mesiac'
+agent.time.time_1_second: '1 sekunda'
+agent.time.time_1_week: '1 týždeň'
+agent.time.time_1_year: '1 rok'
+agent.time.time_less_second: 'menej ako sekunda'
+agent.time.time_x_day: '{0} dní'
+agent.time.time_x_hour: '{0} hodín'
+agent.time.time_x_minute: '{0} minút'
+agent.time.time_x_month: '{0} mesiacov'
+agent.time.time_x_second: '{0} sekúnd'
+agent.time.time_x_week: '{0} týždňov'
+agent.time.time_x_year: '{0} rokov'
+agent.twitter.account_rec_new_dm_from: '{{account}} prijal správu priamo od {{name}}'
+agent.twitter.account_rec_tweet_from: '{{account}} prijal tweet od {{name}}'
+agent.twitter.account_retweeted_by: '{{account}} bol retweetnutý užívateľom {{name}}'
+agent.twitter.add_note: 'Pridať poznámku'
+agent.twitter.added_by_agent: 'Pridaný operátorom {{name}}'
+agent.twitter.all_tweets: 'Všetky tweety'
+agent.twitter.assigned_to_by: 'Piradené na tweetnutie užívateľom {{name}}'
+agent.twitter.associated_orgs: 'Pripojené organizácie'
+agent.twitter.associated_people: 'Pripojený ludia'
+agent.twitter.char_remaining: '{{num_chars}} ostáva'
+agent.twitter.characters: znaky
+agent.twitter.corresponding_twitter_account: 'korešpondujúci Twittrový účet'
+agent.twitter.count_selected:
+  one: '{{count}} zvolených'
+  few: '{{count}} zvolených'
+  other: '{{count}} zvolených'
+agent.twitter.delete-search-confirm: 'Ste si istý, že chcete zmazať toto hľadanie?'
+agent.twitter.direct: Priamo
+agent.twitter.direct_messages: 'Priama spáva'
+agent.twitter.dm: DM
+agent.twitter.edit_long_tweet: 'Upraviť dlhý tweet'
+agent.twitter.example: '#príklad'
+agent.twitter.find_person: 'Nájdi @osobu...'
+agent.twitter.follow: Odoberať
+agent.twitter.followers: Odberatelia
+agent.twitter.following: 'Odoberá sa'
+agent.twitter.from_account: 'Z účtu'
+agent.twitter.geo: GEO
+agent.twitter.in_reply_to: 'V odpovedi pre'
+agent.twitter.interactions: Interakcie
+agent.twitter.list_title:
+  one: '1 tweet'
+  few: '{{count}} tweetov'
+  other: '{{count}} tweetov'
+agent.twitter.location: Lokácia
+agent.twitter.long: Dlhé
+agent.twitter.long_private: 'Dlhá súkromná'
+agent.twitter.long_tweet_read: 'Dlhý tweet prečítaný'
+agent.twitter.mentions: Spomína
+agent.twitter.message_sent: 'Správa zaslaná'
+agent.twitter.my_teams_tweets: 'Tweety môjho teamu'
+agent.twitter.my_tweets: 'Moje tweety'
+agent.twitter.new_followers: 'Nový odberatelia'
+agent.twitter.new_search: 'Nové vyhľadávanie'
+agent.twitter.newest_first: 'Najnovšie najprv'
+agent.twitter.no_followed: 'Žiadny odoberaný užívatelia'
+agent.twitter.no_followers: 'Žiadny odberatelia,'
+agent.twitter.no_mentions: 'Užívateľ nespomenutý'
+agent.twitter.no_messages: 'Žiadne správy pre užívateľa'
+agent.twitter.no_statuses: 'Žiadne statusy pre užívateľa'
+agent.twitter.oldest_first: 'Najstaršie najprv'
+agent.twitter.people: Ľudia
+agent.twitter.perform_action: 'Vykonat akciu'
+agent.twitter.previous_tweets: 'Predchádzajúce tweety'
+agent.twitter.protected: Chránené
+agent.twitter.replies: Odpvoede
+agent.twitter.retweet: Retweet
+agent.twitter.retweet_as_is: 'Retweet ako je'
+agent.twitter.retweet_of: 'Retweet z'
+agent.twitter.retweet_with_edit: 'Retweet s úpravou'
+agent.twitter.retweeted: Retweetnuté
+agent.twitter.retweeted_by: 'Retweetnuté užívateľom {{name}}'
+agent.twitter.retweets: Retweety
+agent.twitter.searches: Hľadania
+agent.twitter.select_group_var: 'Vyberte pole pre zoskupenie tweetov'
+agent.twitter.selected: vybrané
+agent.twitter.send_tweet: 'Zaslať tweet'
+agent.twitter.send_user_message_on_twitter: 'Zaslať správu cez Twitter užívateľovi {{name}}'
+agent.twitter.sent: Odoslané
+agent.twitter.show_archived_tweets: 'Zobraziť archivované tweety'
+agent.twitter.show_read_tweets: 'Zobraziť prečítané tweety'
+agent.twitter.show_users_tweets: 'Zobraziť tweety užívateľa {{name}}'
+agent.twitter.split_to_multiple: 'Rozdeliť do viacerých'
+agent.twitter.split_to_multiple_explain: 'Ak zaškrtnuté, zašle sa viacero tweetov. Ak zaškrtnuté nie je, odkaz na celú správu bude zaslaný.'
+agent.twitter.starred: Hral
+agent.twitter.starred_tweets: 'Hrané tweety'
+agent.twitter.team_assigned_by: 'Váš team bol priradený ku tweetu užívateľom {{name}}'
+agent.twitter.timeline: 'Časová os'
+agent.twitter.tweet: Tweet
+agent.twitter.tweets: Tweety
+agent.twitter.unassigned_tweets: 'Nepriradené tweety'
+agent.twitter.unfollow: Neodoberať
+agent.twitter.unknown: neznáme
+agent.twitter.unretweet: nezretweetovať
+agent.twitter.user_replied_to_tweet: '{{name}} odpovedal na Váš tweet'
+agent.twitter.view_twitter_profile: 'Zobraziť twittrový profil'
+agent.userchat.agent_blocked_user_on: '{{name}} nastavil blok na {{date}}'
+agent.userchat.assigned_to: 'Konverzácia priradená pre {{name}}'
+agent.userchat.block_ip_address: 'Blokovať IP Adresu'
+agent.userchat.block_ip_address_info: 'Blokovanie IP adresy môže byť efektívne, ale môže aj zablokovať prístup ostatným užívateľom, ktorý ju majú rovnakú.(napr. zdieľaná sieť, verejná wifi atď.).'
+agent.userchat.block_reason: 'Dôvod: {{reason}}'
+agent.userchat.block_title: 'Ukončiť konverzáciu a bloknúť užívateľovi vytváranie nových po dobu 24 hodín.'
+agent.userchat.block_user: 'Bloknúť užívateľa'
+agent.userchat.create_ticket: 'Vytvoriť ticket'
+agent.userchat.ended_by: 'Konverzácia ukončený uživateľom {{name}}'
+agent.userchat.ended_by_reason: 'Konverzácia ukončená uživateľom {{name}}: {{reason}}'
+agent.userchat.ended_user: 'Konverzáciu ukončil uživateľ'
+agent.userchat.full_message: 'Úplná správa'
+agent.userchat.ident_unconfirmed: 'Identita nieje potvrdená, email nebol overený'
+agent.userchat.list_title:
+  one: '1 konverzácia'
+  few: '{{count}} konverzácií'
+  other: '{{count}} konverzácií'
+agent.userchat.message_agent-timeout: '{{name}} neodpovedá. Prosím počkajte než sa nájde ďalší operátor.'
+agent.userchat.message_assigned: 'Konverzácia priradená: {{name}}'
+agent.userchat.message_ended: 'Konverzácia ukončená'
+agent.userchat.message_ended-by: 'Konverzáciu ukončil {{name}}'
+agent.userchat.message_ended-by-user: 'Konverzácia ukončená užívateľom'
+agent.userchat.message_set-department: '{{name}} nastavil oddelenie na {{department}}'
+agent.userchat.message_set_department: '{{name}} nastavil oddelenie na {{department}}'
+agent.userchat.message_started: 'Konverzácia zahájená'
+agent.userchat.message_unassigned: 'Konverzácia nepriradená'
+agent.userchat.message_uploading: Nahrávanie...
+agent.userchat.message_user-joined: '{{name}} sa pripojil ku konverzácii'
+agent.userchat.message_user-left: '{{name}} opustil konverzáciu'
+agent.userchat.message_user-returned: 'Užívateľ sa vrátil'
+agent.userchat.message_user-timeout: 'Užívateľov čas vypršal'
+agent.userchat.message_user_joined: '{{name}} sa pripojil ku konverzácii'
+agent.userchat.message_user_left: '{{name}} opustil konverzáciu'
+agent.userchat.message_wait-timeout: 'Konverzácia ukončená: Nie je možné nájť agenta'
+agent.userchat.msg_agent_timeout: '{{name}} neodpovedá. Prosím počkajte, než sa pokúsíme nájsť ďalšieho operátora.'
+agent.userchat.msg_new_user_track: 'Užívateľ sleduje: {{label}}'
+agent.userchat.msg_user_timeout: 'Užívateľ neopovedá.'
+agent.userchat.new_chat: 'Nová konverzácia'
+agent.userchat.take_chat: 'Vezmi konverzáciu'
+agent.userchat.taken_by: 'Konverzácia začatá užívateľom'
+agent.userchat.transcript_sent: 'Trancript poslaný pre {{email}}'
+agent.userchat.unassigned: 'Konverzácia nepriradená'
+agent.userchat.unblock: Odblokovať
+agent.userchat.user_is_blocked: 'Užívateľ je bloknutý'
+agent.userchat.visitor_info: 'Informácie o návštevníkovi'
+agent.userchat.you_have_been_invited: 'Bol ste pozvaný na pripojenie ku konverzácii'
+agent.usertrack.first_visit_date: 'Dátum prvej návštevy'
+agent.usertrack.initial_landing_page: 'Počiatočná vstupná stránka'
+agent.usertrack.initial_visit_time: 'Počiatočný čas návštevy'
+agent.usertrack.landing_pages: 'Vstupné stránky'
+agent.usertrack.number_of_pages: 'Počet stránok'
+agent.usertrack.number_of_visits: 'Počet návštev'
+agent.usertrack.session_landing_page: 'Doba vstupnej stránky'
+agent.usertrack.session_start_time: 'Doba počiatočného času'
+agent.usertrack.visited_pages: 'Navštívené stránky'
+agent.usertrack.visitor_id: 'ID návštevníka'

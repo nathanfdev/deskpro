@@ -578,7 +578,12 @@ class LanguagesController extends CrudController
         $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language, $format) {
             switch ($format) {
                 case 'icu':
-                    return [$id, $this->convertToIcu($translate->phrase($id, [], $language) ?: "!$id!")];
+                    $phraseText = $translate->phrase($id, [], $language);
+                    if (!$phraseText && $translate->hasPhrasePlural($id, $language)) {
+                        $phraseText = $translate->getPhrasePluralTexts($id, $language);
+                    }
+
+                    return [$id, $this->convertToIcu($phraseText ?: "!$id!")];
                 case 'twig':
                 default:
                     return [$id, $translate->phrase($id, [], $language) ?: "!$id!"];
@@ -661,12 +666,21 @@ class LanguagesController extends CrudController
 
     private function convertToIcu($phrase)
     {
+        // plural categories case
+        if (is_array($phrase)) {
+            $res = '{count, plural,';
+            foreach ($phrase as $cat => $phraseText) {
+                $phraseText = str_replace('{{', '{', $phraseText);
+                $phraseText = str_replace('}}', '}', $phraseText);
+                $res .= "\n{$cat} {{$phraseText}}";
+            }
+            $res .= "\n}";
+
+            return $res;
+        }
+
         $phrase = str_replace('{{', '{', $phrase);
         $phrase = str_replace('}}', '}', $phrase);
-        if (strpos($phrase, '|') !== false) {
-            $parts  = explode('|', $phrase);
-            $phrase = "{count, plural,\none {{$parts[0]}}\nother {{$parts[1]}}\n}";
-        }
 
         return $phrase;
     }

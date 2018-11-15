@@ -1,0 +1,780 @@
+portal.account.automatically_join_org_tickets: 'به صورت خودکار به پیام{{org_name}} پیوست؟'
+portal.account.change-password: 'تغییر رمز عبور'
+portal.account.change-password-btn: 'به روزرسانی رمز عبور'
+portal.account.comment-lockout: 'شما نظرات بسیاری را ارسال کرده اید. لطفا منتظر بمانید تا بیشتر ارسال شود'
+portal.account.email-add: 'اضافه کردن ایمیل'
+portal.account.email-add-description: 'آدرس های ایمیل اضافی را به حساب خود اضافه کنید. شما می توانید پیام ها  را از این آدرس ایمیل ارسال کنید و سیستم آنها را تحت یک حساب پیگیری می کند.'
+portal.account.email-btn-make-primary: ابتدا
+portal.account.email-btn-remove: 'حذف کردن ایمیل'
+portal.account.email-btn-resend-validation: 'ارسال ایمیل تایید'
+portal.account.email-btn-usersource-set: 'اضافه کردن ادرس ایمیل'
+portal.account.email-management: 'مدیریت ایمیل ها'
+portal.account.email-management-from-form: 'مدیریت ایمیل های شما'
+portal.account.email-primary-description: 'این ایمیل اصلی شما است. این کار به صورت پیش فرض مورد استفاده قرار می گیرد مگر اینکه  ایمیل دیگری مشخص کنید.'
+portal.account.feedback-lockout: 'بازخورد بیش از حد ارسال شده است، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
+portal.account.link-expired: 'با عرض پوزش، لینکی که روی آن کلیک کردید منقضی شده یا قبلا استفاده شده است.'
+portal.account.lockout_time: 'شما میتوانید تا چند لحظه ی دیگر مجدد تلاش کنید'
+portal.account.login-btn: ورود
+portal.account.login-btn-usersource: 'ورود با منابع کاربران'
+portal.account.login-captcha-failed: 'شما کد امنیتی نامعتبر وارد کرده اید. لطفا دوباره تلاش کنید'
+portal.account.login-disabled: 'با عرض پوزش، لینکی که روی آن کلیک کرده اید منقضی شده یا استفاده شده است.'
+portal.account.login-email: 'ادرس ایمیل شما'
+portal.account.login-external: 'با یک سرویس خارجی وارد شوید'
+portal.account.login-form-disabled: 'فرم ورود غیر فعال است'
+portal.account.login-invalid: 'شما ایمیل یا رمز عبور اشتباه وارد کرده اید. لطفا دوباره تلاش کنید.'
+portal.account.login-lockout: 'شما بیش از حد وارد حساب کاربری شده اید، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
+portal.account.login-not-configured: 'سرویس خارجی پیکربندی نشده است.'
+portal.account.login-password: 'رمز عبور شما'
+portal.account.login-password-reminder: 'نیاز به یادآور رمز عبوردارید؟'
+portal.account.login-register-btn: 'ثبت نام'
+portal.account.login-register-header: 'ثبت نام'
+portal.account.login-remember: 'در حساب باقی میمانید؟'
+portal.account.login-saved-add_email: "ایمیل اضافه شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
+portal.account.login-saved-comment: "نظر شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
+portal.account.login-saved-form: '{{type}} شما هنوز ارسال نشده است لطفا برای ادامه وارد شوید.'
+portal.account.login-saved-new_feedback: "بازخورد جدید شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
+portal.account.login-saved-new_ticket: "پیام جدید شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
+portal.account.login-saved-register: "ثبت نام شما هنوز ارسال نشده است. لطفا برای ادامه وارد شوید.\n"
+portal.account.login-stay-logged-in: 'در حساب باقی میمانید؟'
+portal.account.logout-btn: خروج
+portal.account.logout-confirm: 'ایا مطمئن هستید خارج میشوید؟'
+portal.account.profile-btn-save: 'ذخیره کردن پروفایل'
+portal.account.profile-delete-picture: 'تغییر یا حذف عکس پروفایل'
+portal.account.register-btn: 'ثبت نام'
+portal.account.register-lockout: 'شما بیش از حد ثبت کرده اید ثبت نام برای شما قفل شده است لطفا بعدا دوباره امتحان کنید'
+portal.account.registration-set-password: 'یک حساب کاربری با این ایمیل قبلا وجود دارد ما به شما یک ایمیل ارسال کرده ایم که به شما امکان می دهد گذرواژه خود را وارد کنید و وارد شوید'
+portal.account.reset-password-btn: 'تنظیم مجدد رمز عبور'
+portal.account.reset-password-click-here: 'برای درخواست کد بازنشانی رمز عبور اینجا را کلیک کنید'
+portal.account.reset-password-invalid-desc: 'کد بازنشانی گذرواژه شما نامعتبر است یا منقضی شده است برای بازنشانی رمز عبور خود، لطفا یک کد جدید درخواست کنید.'
+portal.account.reset-password-invalid-input: 'لطفا یک آدرس ایمیل یا نام کاربری معتبر وارد کنید'
+portal.account.reset-password-lockout: 'شما سعی کرده اید چندین بار رمز عبور خود را بازنشانی کنید. شما برای مدت کوتاهی قفل می شوید. لطفا بعدا دوباره امتحان کنید'
+portal.account.reset-password-request-desc: 'این فرم را پر کنید تا یک پیوند بازنشانی رمز عبور به شما ارسال شود.'
+portal.account.reset-password-request-title: 'ایمیل خود را فراموش کرده اید؟'
+portal.account.reset-password-sent-desc: 'ما درخواست بازنشانی رمز عبور خود را برای ایمیل زیر نشان داده ایم. اگر این آدرس ایمیل متعلق به یک حساب کاربری ثبت شده باشد، ما یک ایمیل با پیوند بازنشانی رمز عبور را به آدرس ایمیل اصلی آن حساب فرستاده ایم. برای دریافت دستورالعمل های بیشتر لطفا صندوق پستی ایمیل خود را بررسی کنید'
+portal.account.reset-password-sent-title: 'درخواست رمز عبور دریافت شده'
+portal.account.reset-password-sent-to: 'ما ایمیل را ارسال کردیم به'
+portal.account.reset-password-success: 'رمز عبور شما به روز رسانی شد.'
+portal.account.section-desc-login: 'در حال حاضر یک حساب کاربری دارید؟ ورود به سیستم زیر'
+portal.account.section-desc-login-external: 'اگر یک حساب کاربری با یک ارائه دهنده دیگر دارید، از لینک های زیر استفاده کنید.'
+portal.account.section-desc-register: ' یک حساب کاربری ثبت کنید، بنابراین شما به راحتی می توانید ارتباطات خود را مدیریت کنید.'
+portal.account.section-title-emails: 'ایمیل ها'
+portal.account.section-title-login: ورود
+portal.account.section-title-profile: پروفایل
+portal.account.section-title-register: 'ثبت نام'
+portal.account.section-title-reset-password: 'تنظیم مجدد رمز عبور'
+portal.account.section-title-set-password: 'ایجاد رمز عبور'
+portal.account.section-title-usersource-email: 'ایمیل خود را وارد کنید'
+portal.account.section-title-your-account: 'حساب شما'
+portal.account.set-password-btn: 'ایجاد رمز عبور'
+portal.account.set-password-click-here: 'برای ایجاد رمز عبور اینجا را کلیک کنید'
+portal.account.set-password-for-user: 'حساب کاربری شما هنوز رمز عبور ندارد لطفا یک بار تنظیم کنید تا بتوانید برای ارسال محتوا در آینده وارد شوید.'
+portal.account.set-password-invalid-desc: 'کد رمز شما نامعتبر است یا منقضی شده است برای تنظیم رمز عبور خود، لطفا یک کد جدید را درخواست کنید'
+portal.account.set-password-invalid-input: 'لطفا یک آدرس ایمیل یا نام کاربری معتبر وارد کنید'
+portal.account.set-password-request-desc: 'این فرم را تکمیل کنید و به شما یک پیوند برای تنظیم گذرواژه شما ارسال میکنیم.'
+portal.account.set-password-request-title: 'رمز عبور خود را ایجاد کنید'
+portal.account.set-password-sent-desc: 'ما یک ایمیل با دستورالعمل در مورد نحوه تنظیم رمز عبور خود به شما ارسال کردیم.'
+portal.account.set-password-sent-title: 'رمز عبور خود را ایجاد کنید'
+portal.account.set-password-sent-to: 'ما یک ایمیل ارسال کردیم به'
+portal.account.set-password-success: 'رمز عبور شما به روزرسانی شد'
+portal.account.share-lockout: 'شما چندین بار محتوا را به اشتراک گذاشته اید، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
+portal.account.submit-saved-add_email: 'ایمیل شما هنوز ارسال نشده است، اما ما آن را برای شما ذخیره کرده ایم.'
+portal.account.submit-saved-comment: 'نظر شما هنوز ارسال نشده است، اما ما آن را برای شما ذخیره کرده ایم.'
+portal.account.submit-saved-form: '{{type}} شما هنوز ارسال نشده است، اما ما آن را برای شما ذخیره کرده ایم.'
+portal.account.submit-saved-form-go: 'اینجا کلیک کنید تا فرم را دوباره ارسال کنید'
+portal.account.submit-saved-new_ticket: 'پیام جدید شما هنوز ارسال نشده است، اما ما آن را برای شما ذخیره کرده ایم.'
+portal.account.submit-saved-register: 'ثبت نام شما هنوز ارسال نشده است، اما ما آن را برای شما ذخیره کرده ایم.'
+portal.account.tickets-lockout: 'شما بیش از حد پیام را ارسال کرده اید، بنابراین شما قفل شده اید. لطفا بعدا دوباره امتحان کنید'
+portal.account.usersource-set-email-desc: 'قبل از اینکه بتوانید وارد شوید ما نیاز به آدرس ایمیل شما داریم. لطفا آدرس ایمیل خود را در زیر وارد کنید تا بتوانیم یک ایمیل تأیید به شما ارسال کنیم.'
+portal.account.welcome-back: 'خوش امدید'
+portal.account.your-emails: 'ادرس ایمیل شما'
+portal.account.your-pending-email-addresses: 'آدرس های ایمیل در حال انتظارشما'
+portal.articles.by-line: 'توسط {{name}} در تاریخ {{تاریخ}}'
+portal.articles.link: 'لینک: <a href="{{link}}"> {{link}} </a>'
+portal.articles.none: 'هنوز هیچ مقالاتی وجود ندارد'
+portal.articles.search-title: 'مرکز آموزش'
+portal.articles.section-desc: 'پایگاه دانش ما شامل مقالاتی است که توسط عوامل پشتیبانی ما برای کمک به شما نوشته شده است.'
+portal.articles.section-title: 'مرکز آموزش'
+portal.articles.share-by-email: 'این مقاله را از طریق ایمیل به اشتراک بگذارید:'
+portal.articles.view-as-agent: 'شما می توانید این صفحه را ببینید زیرا شما یک عامل هستید. کاربران نمی توانند این صفحه را مشاهده کنند.'
+portal.articles.view-x-articles: 'نمایش 1 مقاله | نمایش {{تعداد}} مقالات'
+portal.articles.x-articles: '1 مقاله | {{تعداد}} مقالات'
+portal.chat.agent_blocked_user_on: '{{name}} بلوکی را در تاریخ {{date}} تنظیم میکند'
+portal.chat.agent_disconnected: '{{agentName}} به نظر می رسد قطع شده است'
+portal.chat.agent_typing_message: '{{agentName}} یک پیام را تایپ می کند'
+portal.chat.asset_failed: ناموفق
+portal.chat.asset_not_delivered: 'ارسال نشد '
+portal.chat.assigned_to: 'گپ و گفتگو اختصاص یافته به {{name}}'
+portal.chat.attached_photo: '{{authorName}} این عکس را ضمیمه کرد'
+portal.chat.block_ip_address: 'مسدود کردن آدرس IP'
+portal.chat.block_ip_address_info: 'مسدود کردن آدرس IP می تواند مؤثرتر باشد، اما ممکن است به افرادی که همان اتصال را مسدود کرده اند، منجر شود.'
+portal.chat.block_reason: 'دلیل: {{دلیل}}'
+portal.chat.block_title: 'گپ را پایان دهید و این کاربر را از شروع یک چت جدید برای 24 ساعت آینده مسدود کند.'
+portal.chat.block_user: 'مسدود کردن کاربر'
+portal.chat.cancel_end_chat: 'لغو و بازگشت به چت'
+portal.chat.chat_logs_header: 'پیام های شما'
+portal.chat.chat_logs_header_org: 'مدیریت پیام ها'
+portal.chat.chat_transcript: 'رونوشت چت'
+portal.chat.check_validation_code: 'ایمیل خود را بررسی کنید و سپس کد زیر را وارد کنید'
+portal.chat.create_ticket: 'ایجاد یک پیام'
+portal.chat.details-placeholder: 'نام و نام خانوادگی'
+portal.chat.dismiss_message: "پیام را رد کنید\n"
+portal.chat.dropzone1: 'حذف این فایل از اینجا'
+portal.chat.dropzone2: 'ما آن را به عنوان یک پیام ارسال می کند'
+portal.chat.end_chat: 'پایان دادن به چت'
+portal.chat.end_chat_confirm_title: 'آیا مطمئن هستید که میخواهید این چت را پایان دهید؟'
+portal.chat.ended_by: 'چت به پایان رسید توسط {{name}}'
+portal.chat.ended_by_reason: 'چت توسط {{name}} به  دلیل  {{reason}}پایان رسید'
+portal.chat.ended_user: 'چت توسط کاربر به پایان رسید'
+portal.chat.feedback_action: 'ارسال نظرات'
+portal.chat.feedback_enter_message: 'پیام خود را در این قسمت وارد کنید'
+portal.chat.feedback_label: کامنت
+portal.chat.feedback_not_helpful_title: 'شما <br /> {{agentName}} را به عنوان <span class = "negative"> {{nonHelpful}} </ span> رتبه داده اید'
+portal.chat.feedback_title: 'از نظرات شما متشکریم'
+portal.chat.find_agent_now: 'اکنون یک فرد دیگر پیدا کنید'
+portal.chat.find_another_agent: 'اگر آنها به زودی باز نگردند،فردی دیگر برای شما پیدا خواهیم کرد.'
+portal.chat.full_message: 'پیام کامل'
+portal.chat.helpful: مفید
+portal.chat.ident_unconfirmed: 'هویت تایید نشده است، ایمیل تایید نشده است'
+portal.chat.label-department: 'یک دپارتمان انتخاب کنید'
+portal.chat.label-email: 'ایمیل شما'
+portal.chat.label-name: 'نام شما'
+portal.chat.list_agent: فرد
+portal.chat.list_chat: پیام
+portal.chat.list_date: تاریخ
+portal.chat.list_switch_to_my_chats: 'به چت من برگردید'
+portal.chat.list_switch_to_organization: 'به سازمان تغییر دهید'
+portal.chat.list_title:
+  one: '1 چت {{count}} چت '
+  other: '1 چت {{count}} چت '
+portal.chat.list_user: کاربر
+portal.chat.log_agents: 'افراد سازمان'
+portal.chat.log_chat_time: 'زمان کامل چت'
+portal.chat.log_department: دپارتمان
+portal.chat.log_linked_ticket: 'اختصاص دادن به پیام'
+portal.chat.log_title: 'چت با {{person}}'
+portal.chat.log_view_linked_ticket: 'مشاهده پیام'
+portal.chat.looking_for_another_agent: 'ما به دنبال یک فرد جدید هستیم.'
+portal.chat.lost_connection: "ارتباط از دست رفته. تلاش برای اتصال مجدد\n"
+portal.chat.message_agent-timeout: '{{name}} جواب نمی دهد لطفا منتظر بمانید تا ما سعی کنیم عامل دیگری پیدا کنیم.'
+portal.chat.message_assigned: 'گپ و گفتگو اختصاص یافته به {{name}}'
+portal.chat.message_ended: 'چت به پایان رسید'
+portal.chat.message_ended-by: 'چت به پایان رسید توسط {{name}}'
+portal.chat.message_ended-by-user: 'چت توسط کاربر به پایان رسید'
+portal.chat.message_set-department: '{{name}} تنظیم بخش {{department}}'
+portal.chat.message_set_department: '{{name}} تنظیم دپارتمان{{department}}'
+portal.chat.message_started: 'گفتگو آغاز شده'
+portal.chat.message_type: 'پیام خود را به {{agentName}} تایپ کنید'
+portal.chat.message_unassigned: 'گپ اختصاص داده نشده است'
+portal.chat.message_uploading: 'آپلود ...'
+portal.chat.message_user-joined: '{{name}} به چت پیوست'
+portal.chat.message_user-left: '{{name}} چت را ترک کرد'
+portal.chat.message_user-returned: 'کاربر بازگشته است'
+portal.chat.message_user-timeout: "سیستم شناسایی کرده است که کاربر قطع شده است و یا صفحه چت را ترک کرده است. اگر کاربر برگشت ندهد، به زودی گپ به طور خودکار پایان می یابد.\nچت به پایان رسیده است"
+portal.chat.message_user_joined: '{{name}} به چت پیوست'
+portal.chat.message_user_left: '{{name}} چت را ترک کرد'
+portal.chat.message_wait-long: 'متاسفم! این زمان طولانی تر از انتظار می رود تا یک فرد برای گپ خود را پیدا کند.'
+portal.chat.message_wait-pending: 'ما یک فرد را پیدا میکنیم ...'
+portal.chat.message_wait-ticket: 'آیا می خواهید به جای یک پیام بفرستید؟'
+portal.chat.message_wait-timeout: 'چت به پایان رسید: با عرض پوزش در حال حاضر ما نمی توانیم یک نماینده پیدا کنیم.'
+portal.chat.msg_agent_timeout: '{{name}} جواب نمی دهد لطفا منتظر بمانید تا سعی کنید عامل دیگری پیدا کنید.'
+portal.chat.msg_new_user_track: 'کاربر درحال مشاهده است: {{label}}'
+portal.chat.msg_user_timeout: 'کاربر پاسخ نمی دهد'
+portal.chat.mute_button: 'بی صدا'
+portal.chat.new_chat: 'گپ جدید'
+portal.chat.not_helpful: 'مفید نیست'
+portal.chat.online_agent: 'شما با <span class = "name"> {{agentName}} </ span> چت میکنید'
+portal.chat.rate_agent_title: 'شما فقط یک جلسه چت با {{agentName}} داشتید'
+portal.chat.reopen_chat: 'این گپ را دوباره فعال کنید'
+portal.chat.reopen_chat_action: ' باز کردن گپ'
+portal.chat.reply_to: 'پاسخ به {{firstName}}'
+portal.chat.require_validate_email: 'ما نیاز داریم قبل از اینکه بتوانیم چت کنیم، آدرس ایمیل شما را تأیید کنیم.'
+portal.chat.screen_share: 'صفحه نمایش به اشتراک بگذارید'
+portal.chat.see_full_image: 'برای دیدن تصویر کامل اینجا را کلیک کنید'
+portal.chat.send_another_validation_email: 'یک ایمیل دیگر به من بفرست'
+portal.chat.sent_validation_code: 'ما یک ایمیل با کد اعتبار ارسال کردیم'
+portal.chat.start: 'یک چت جدید شروع کنید'
+portal.chat.start_conversation: 'یک مکالمه شروع کنید'
+portal.chat.support_powered_by: 'پشتیبانی شده توسط {{DeskPRO}}'
+portal.chat.take_chat: 'نگاهی به چت'
+portal.chat.taken_by: 'چت گرفته شده توسط'
+portal.chat.transcript_action: 'به من یک رونوشت ارسال کن'
+portal.chat.transcript_already_sent: 'یک رونوشت از قبل به <b> {{email}} </ b> ارسال شده است'
+portal.chat.transcript_desc: 'نام و ایمیل خود را در زیر وارد کنید و ما آن را برای شما ایمیل می کنیم.'
+portal.chat.transcript_sent: 'متن ارسال شده به {{email}}'
+portal.chat.transcript_title: 'آیا نیازمند رونویسی از این چت هستید؟'
+portal.chat.type_message_to: 'پیام خود را به {{firstName}} تایپ کنید'
+portal.chat.unassigned: 'چت خودتان به'
+portal.chat.unblock: 'خارج کردن از مسدودی'
+portal.chat.upload_file: 'اپلود کردن فایل'
+portal.chat.user_is_blocked: 'کاربر مسدود شده است'
+portal.chat.validation_email_was_sent: 'ایمیل دیگری با موفقیت فرستاده شد'
+portal.chat.visitor_info: 'اطلاعات بازدید کننده'
+portal.chat.you: شما
+portal.chat.you_have_been_invited: 'شما برای پیوستن به یک چت دعوت شده اید'
+portal.downloads.download: دانلود
+portal.downloads.none: 'دانلود وجود ندارد'
+portal.downloads.recent-downloads: 'دانلود های اخیر'
+portal.downloads.search-title: دانلود
+portal.downloads.section-desc: 'مرور مجموعه ای از دریافت ها.'
+portal.downloads.section-title: دانلود
+portal.downloads.uploaded-on: 'اپلود ها'
+portal.downloads.view-as-agent: 'شما می توانید این صفحه را ببینید زیرا شما یک عامل هستید. کاربران نمی توانند این صفحه را مشاهده کنند.'
+portal.downloads.view-x-files: 'نمایش 1 دانلود | نمایش {{شمارش}} دریافت'
+portal.email_subjects.chat_transcript: 'رونوشت چت'
+portal.email_subjects.comment-approved: 'نظر شما مورد تایید قرار گرفت'
+portal.email_subjects.comment-confirmation: 'با تشکر ازنظر شما'
+portal.email_subjects.comment-deleted: 'نظر شما توسط ماموران ما خوانده شده'
+portal.email_subjects.download_sub_new: 'دانلود های جدید'
+portal.email_subjects.download_sub_new_and_updated: 'جدید و به هنگام شده'
+portal.email_subjects.download_sub_updated: 'دانلود های به روز شده'
+portal.email_subjects.email-too-big: 'ایمیل شما "{{subject}}" پذیرفته نشد'
+portal.email_subjects.email_new-confirm: 'اعتبار سنجی آدرس ایمیل شما'
+portal.email_subjects.email_primary-confirm: 'اعتبار سنجی آدرس ایمیل شما'
+portal.email_subjects.email_ticket-reminder: 'اقدام لازم: بلیط شما هنوز ارسال نشده است'
+portal.email_subjects.feedback_new: 'با تشکر از شما برای ارسال نظرات خود'
+portal.email_subjects.feedback_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
+portal.email_subjects.feedback_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
+portal.email_subjects.feedback_new-confirm: 'با تشکر از شما برای ارسال نظرات خود ( اعتبار مورد نیاز )'
+portal.email_subjects.feedback_new-disapproved: 'نظرات شما رد شده است'
+portal.email_subjects.feedback_sub_updated: ' بازخورد به روز شده'
+portal.email_subjects.feedback_updated: 'نظرات شما به روز رسانی: {{title}}'
+portal.email_subjects.kb_sub_new: 'مقاله جدید'
+portal.email_subjects.kb_sub_new_and_updated: 'مقالات جدید و به روز شده'
+portal.email_subjects.kb_sub_updated: 'به روز رسانی مقالات'
+portal.email_subjects.new-ticket-guest: 'از اینکه با ما تماس گرفتید، متشکریم'
+portal.email_subjects.news_sub_new: 'خبر فوری'
+portal.email_subjects.news_sub_new_and_updated: 'اخبار جدید و به روز شده'
+portal.email_subjects.news_sub_updated: 'به روز رسانی اخبار'
+portal.email_subjects.password_agent-reset: 'ما رمز عبور شما را بازیابی کردیم'
+portal.email_subjects.password_reset: 'تنظیم مجدد رمز عبور'
+portal.email_subjects.password_set: 'کلمه ی عبور خود را تنظیم کنید'
+portal.email_subjects.re: 'پاسخ: {{subject}}'
+portal.email_subjects.register-welcome: 'ممنون بابت ثبت نام شما'
+portal.email_subjects.register-welcome-byagent: 'حساب کاربری جدید سرویس شما'
+portal.email_subjects.remind_unresolved_final_subject: 'یادآوری: {{ticket.subject}}'
+portal.email_subjects.remind_unresolved_subject: 'یادآوری: {{ticket.subject}}'
+portal.email_subjects.share-article: '{{author_name}} میخواهد این مقاله را با شما به اشتراک بگذارد'
+portal.email_subjects.ticket-rate: 'لطفا تجربه پشتیبانی خود را برای پیام خود "{{ticket.subject}}" را ارزیابی کنید'
+portal.email_subjects.ticket_added_cc: 'شما به پیام"{{ticket.subject}}" افزوده اید'
+portal.email_subjects.ticket_new-participant: 'یک شخص جدید است اضافه شده به تیک خود'
+portal.email_subjects.validate-email: 'اعتبار سنجی آدرس ایمیل شما'
+portal.emails.chat_transcript: 'با تشکر از شما برای چت کردن با ما . در اینجا متن چت شما قرار دارد .'
+portal.emails.comment_approved: 'نظر شما منتشر شده است.'
+portal.emails.comment_deleted: 'نظر شما برای بهبود به صفحه مورد استفاده قرار گرفت .'
+portal.emails.comment_thank-you: 'ممنونم از شما برای ارسال کامنت در '
+portal.emails.do-not-reply: "لطفا به این ایمیل پاسخ ندهید. این یک پیام به صورت خودکار تولید می شود و پاسخ های ما توسط عوامل ما خوانده نمی شود.\n"
+portal.emails.greeting: '{{to_name}} عزیز,'
+portal.emails.label_view-online: 'مشاهده آنلاین'
+portal.emails.password_agent-reset: 'یک نماینده رمز عبور حساب شما را بازنشانی کرده است. شما می توانید با این جزئیات وارد شوید'
+portal.emails.profile_email-new-confirm: 'ما درخواستی از {{orig_email}} برای اضافه کردن این ایمیل {{new_email}} به حساب کاربری شما در مرکز خدمات {{site_name}} در اختیار شما قرار داده ایم. اگر این درخواست را آغاز کردید، لطفا روی لینک زیر. اگر این کار را نکردید، لطفا این ایمیل را پاک کنید.'
+portal.emails.register-agent-validation: 'توجه: قبل از اینکه حساب کاربری شما کاملا فعال باشد، نمایندگان ما باید اعتبار حساب شما را داشته باشند. هر چیزی که شما در حال حاضر ارسال کنید، تا زمانی که یک نماینده حساب کاربری شما را تأیید کند، در حالت تعلیق نگهداری خواهد شد.'
+portal.emails.register-confirm: 'از شما برای ثبت نام حساب متشکریم.قبل از اینکه بتوانید از حساب خود استفاده کنید، باید بر روی لینک زیر کلیک کنید تا آدرس ایمیل خود را تأیید کنید'
+portal.emails.reject_resolved: "پاسخ شما قبول نشد زیرا پیام  شما قبلا به عنوان حل شده مشخص شده است. کارشناسان ما به این پیام  پاسخ نخواهند داد.\n"
+portal.emails.ticket_cc-added-reply: 'پاسخ به این ایمیل به پیام پاسخ خواهد داد.'
+portal.emails.ticket_cc-added-reply-view: 'می توانید وضعیت پیام خود را دراینجا ببینید:'
+portal.emails.ticket_no-autoresponse: 'هشدار: ایمیل تأیید خاموش است'
+portal.emails.ticket_rate-negative: خیر
+portal.emails.ticket_rate-neutral: 'خوب بود'
+portal.emails.ticket_rate-positive: بله
+portal.emails.ticket_rate-question: 'آیا این پیام مفید بود؟'
+portal.emails.ticket_received: "پیام شما دریافت شده است یکی از عوامل ما به زودی به شما پاسخ خواهد داد.\n"
+portal.emails.ticket_reply-confirm: "از پاسخ شما متشکرم یکی از عوامل ما به زودی به شما پاسخ خواهد داد.\n"
+portal.emails.validate-email: 'لطفا آدرس ایمیل خود را از طریق لینک زیر تایید کنید.'
+portal.emails.view_full_history_online: 'مشاهده آنلاین تمام تیکت ها'
+portal.error.400-desc: 'با عرض پوزش، درخواست شما ناقص بود'
+portal.error.403-title: 'عدم دسترسی'
+portal.error.404-title: 'یافت نشد'
+portal.error.general-desc: "متاسفیم، ولی یک مشکل رخ داده است. لطفا بعدا دوباره امتحان کنید یا با ما تماس بگیرید\n"
+portal.error.general-title: 'یک خطا رخ داد'
+portal.feedback.attachments: 'فایل پیوست'
+portal.feedback.btn-closed: بسته
+portal.feedback.btn-vote: 'من موافقت می کنم'
+portal.feedback.error_hidden: 'این مورد بازخورد پنهان است'
+portal.feedback.error_login: 'لطفا وارد شوید'
+portal.feedback.filter_all_items: 'همه موارد'
+portal.feedback.filter_closed_items: 'آیتم های بسته شده'
+portal.feedback.filter_open_items: 'ایتم های باز'
+portal.feedback.form_attach_files: 'فایل های ضمیمه '
+portal.feedback.form_btn_submit: 'نظرات خود را اضافه کنید'
+portal.feedback.form_email_not_shown: 'ایمیل شما (به صورت عمومی نمایش داده نمی شود)'
+portal.feedback.form_logout: 'شما نیستید؟'
+portal.feedback.form_tell_us_more: 'بیشتر به ما بگویید'
+portal.feedback.form_title: عنوان
+portal.feedback.none: 'هیچ بازخوردی  وجود ندارد'
+portal.feedback.search-title: 'انتقادات و پیشنهادات'
+portal.feedback.section-title: 'انتقادات و پیشنهادات'
+portal.feedback.sort_comments: نظرات
+portal.feedback.sort_date: تاریخ
+portal.feedback.sort_rating: امتیاز
+portal.feedback.sort_views: بازدید
+portal.feedback.status_active: 'ایتم های باز'
+portal.feedback.status_all: 'همه موارد'
+portal.feedback.status_closed: 'آیتم های بسته شده'
+portal.feedback.submit_feedback: 'ارسال انتقاد و پیشنهاد'
+portal.flashes.article_subscribe: "شما با موفقیت به این مقاله مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
+portal.flashes.article_unsubscribe: 'شما با موفقیت از این مقاله لغو شده است.'
+portal.flashes.article_unsubscribe_everything: 'اشتراک شما از تمام اعلانهای پایگاه دانش  لغو شد'
+portal.flashes.comment_thank_you: 'ممنون از نظر شما!'
+portal.flashes.comment_thank_you_review: "ممنون از نظر شما! پس از بررسی پیام، در پورتال قابل مشاهده خواهد بود.\n"
+portal.flashes.download_cat_subscribe: "شما با موفقیت به این دسته وصل شده اید. هنگامی که فایل های جدید برای دانلود در دسترس هستند، شما مطلع خواهید شد.\n"
+portal.flashes.download_cat_unsubscribe: 'شما با موفقیت از این گروه لغو شدید'
+portal.flashes.download_subscribe: "شما با موفقیت به این دانلود مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
+portal.flashes.download_unsubscribe: 'شما با موفقیت این اشتراک را لغو کردید.'
+portal.flashes.download_unsubscribe_everything: 'شما از همه اعلانهای دریافتی لغو شده اید'
+portal.flashes.email_sent: 'ایمیل شما فرستاده شده است'
+portal.flashes.feedback_login: 'شما باید برای رای دادن وارد شوید'
+portal.flashes.feedback_subscribe: "شما با موفقیت به این مورد بازخورد مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
+portal.flashes.feedback_unsubscribe: 'شما با موفقیت این مورد بازخورد لغو شده اید.'
+portal.flashes.feedback_unsubscribe_everything: 'شما همه اعلانهای بازخورد لغو شده اید'
+portal.flashes.guest_content_must_verify: "قبل از اینکه محتوای خود را ارسال کنید لازم است آدرس ایمیل  را تایید بفرمایید.\nلطفا صندوق ورودی ایمیل خود را چک کنید و ما لینک تایید  حساب رو برای شما ارسال می کنیم."
+portal.flashes.guest_new_ticket_must_verify: "قبل از اینکه بتوانیم پیام خود را بپذیریم، باید آدرس ایمیل شما را تأیید کنیم. لطفا صندوق پستی خود را بررسی کنید ما یک پیوند تأیید را برای شما ارسال کرده ایم.\n"
+portal.flashes.new_feedback_awaiting_review: "از نظرات شما متشکریم پس از بررسی عامل، در پورتال پشتیبانی ما قابل مشاهده خواهد بود.\n"
+portal.flashes.new_feedback_posted: 'از نظرات شما متشکریم'
+portal.flashes.news_cat_subscribe: "شما با موفقیت به این دسته متصل شده اید. شما از پست های جدید مطلع خواهید شد.\n"
+portal.flashes.news_cat_unsubscribe: 'شما با موفقیت  این گروه لغو شدید'
+portal.flashes.news_subscribe: "شما با موفقیت به این مقاله خبری مشترکید. وقتی نظرات جدیدی به شما اطلاع داده می شود، مطلع خواهید شد\n"
+portal.flashes.news_unsubscribe: 'شما با موفقیت این مقاله خبری را لغو کرده اید.'
+portal.flashes.news_unsubscribe_everything: 'شما  همه اطلاعیه های مقاله خبری را لغو کرده اید'
+portal.flashes.rating_thanks: 'از نظرات شما متشکریم'
+portal.flashes.ticket_created: "پیام شما ارسال شده است. با تشکر!\n"
+portal.flashes.ticket_feedback_thank_you: 'از نظرات شما متشکریم'
+portal.flashes.ticket_participant_add_unknown_error: "هنگام تلاش برای افزودن مشارکت کننده شما مشکلی پیش آمد. لطفا دوباره تلاش کنید.\n"
+portal.flashes.ticket_participant_already_error: "فردی که سعی کردید به عنوان یک شرکت کننده اضافه کنید، در حال حاضر یک شرکت کننده در این پیام است.\n"
+portal.flashes.ticket_participant_email_error: 'لطفا یک ایمیل معتبر برای شرکت کننده خود وارد کنید و دوباره امتحان کنید.'
+portal.flashes.ticket_re_opened: 'شما این پیام را دوباره باز کردید'
+portal.flashes.ticket_replied: "پاسخ شما ارسال شده است. با تشکر!\n"
+portal.flashes.ticket_resolved: 'پیام شما به عنوان پیام حل شده شناخته شد '
+portal.flashes.ticket_updated: "پیام شما به روز شده است با تشکر!\n"
+portal.flashes.user_add_email_verified: "آدرس ایمیل شما به حساب کاربری شما افزوده شده است.\n"
+portal.flashes.user_add_email_verify: 'ما باید قبل از اضافه کردن آن به حساب کاربری خود، ایمیل خود را تأیید کنیم. لطفا صندوق ورودی ایمیل خود را برای پیوند تأیید بررسی کنید'
+portal.flashes.user_changed_password: "رمز عبور شما به روز شده است\n"
+portal.flashes.user_changed_primary_email: 'آدرس ایمیل اصلی شما تغییر کرده است'
+portal.flashes.user_registered_verified: "متشکرم. آدرس ایمیل شما تأیید شده است\n"
+portal.flashes.user_registered_verified_authenticated: "متشکرم. آدرس ایمیل شما تأیید شده است و شما وارد سیستم شده اید\n"
+portal.flashes.user_updated_profile: 'مشخصات شما به روز شده است.'
+portal.flashes.usersource_new_add_email_verified: "با تشکر از شما برای تأیید آدرس ایمیل خود. حساب شما اکنون فعال است\n"
+portal.flashes.usersource_new_add_email_verify: "قبل از ایجاد حساب کاربری ما باید ایمیل شما را تأیید کنیم. لطفا صندوق پستی خود را برای پیوند تأیید بررسی کنید.\n"
+portal.forms.error_email_required: 'شما باید آدرس ایمیل خود را ارائه دهید'
+portal.forms.error_invalid_data_type: 'این نوع داده قابل قبول نیست'
+portal.forms.error_password_current: 'این باید گذرواژه فعلی شما باشد'
+portal.forms.error_password_forbid_reuse: 'شما نمیتوانید از یک رمز عبور که قبلا استفاده کردهاید استفاده کنید'
+portal.forms.error_password_min_length: 'لطفا یک رمز عبور حداقل 5 کاراکتر وارد کنید .'
+portal.forms.error_required: 'یک مقدار مورد نیاز است'
+portal.forms.error_ticket_department_required: 'یک دپارتمان لازم است'
+portal.forms.error_ticket_msg_required: 'شما باید یک پیام را ارائه کنید'
+portal.forms.error_upload_general: "هنگام آپلود این فایل یک مشکل وجود داشت. لطفا دوباره تلاش کنید\n"
+portal.forms.label_category: دسته
+portal.forms.label_comment: 'ایا نظری ندارید؟'
+portal.forms.label_content: محتوا
+portal.forms.label_current_password: 'رمز عبور فعلی'
+portal.forms.label_department: دپارتمان
+portal.forms.label_first_name: نام
+portal.forms.label_full_name: 'نام شما'
+portal.forms.label_language: زبان
+portal.forms.label_last_name: 'نام خانوادگی'
+portal.forms.label_message: پیغام
+portal.forms.label_name: نام
+portal.forms.label_password: 'رمز عبور'
+portal.forms.label_password_confirm: تایید
+portal.forms.label_priority: اولویت
+portal.forms.label_product: محصول
+portal.forms.label_reset: بازیابی
+portal.forms.label_save: 'ذخیره کردن'
+portal.forms.label_select: انتخاب
+portal.forms.label_send_to_myself: 'برای خودم بفرست'
+portal.forms.label_subject: موضوع
+portal.forms.label_submit: تایید
+portal.forms.label_timezone: 'منطقه زمانی'
+portal.forms.label_title: عنوان
+portal.forms.label_upload_picture: 'اپلود کردن عکس'
+portal.general.add-comment: 'اضافه کردن نظر'
+portal.general.admin: مدیر
+portal.general.admin_home: 'صفحه اصلی'
+portal.general.agent: 'کارشناس پشتیبانی'
+portal.general.agent_bar_admin_desc: 'مدیریت مرکز راهنمایی خود را مدیریت کنید'
+portal.general.agent_bar_admin_dl: 'تنظیمات دانلود'
+portal.general.agent_bar_admin_feedback: 'تنظیمات بازخورد'
+portal.general.agent_bar_admin_kb: 'تنظیمات مرکز آموزش'
+portal.general.agent_bar_admin_lang: 'تنظیمات زبان'
+portal.general.agent_bar_admin_news: 'تنظیمات اخبار'
+portal.general.agent_bar_admin_portal: 'طراحی پورتال و قالب'
+portal.general.agent_bar_agent_desc: 'طراحی پورتال و قالب'
+portal.general.agent_bar_agent_dl: 'مدیریت دانلودها'
+portal.general.agent_bar_agent_feedback: 'مدیریت بازخورد'
+portal.general.agent_bar_agent_home: 'صفحه اصلی'
+portal.general.agent_bar_agent_kb: 'مدیریت دانش پایگاه'
+portal.general.agent_bar_agent_news: 'مدیریت اخبار'
+portal.general.agents-available: 'کارشناسان موجود'
+portal.general.attachments: 'فایل پیوست'
+portal.general.btn-cancel: انصراف
+portal.general.btn-download-pdf: 'دانلود PDF'
+portal.general.btn-email: ایمیل
+portal.general.btn-go: برو
+portal.general.btn-print: چاپ
+portal.general.btn-send-email: 'ارسال پیام'
+portal.general.btn-share: 'اشتراک گذاری'
+portal.general.btn-subscribe: 'اشتراک گذاری'
+portal.general.btn-unsubscribe: 'لغو اشتراک'
+portal.general.by: 'به وسیله ی '
+portal.general.comment_btn_save: 'ذخیره نظر'
+portal.general.comments-count: 'یک نظر/نظرات'
+portal.general.comments-pending-validation: "این نظر در حال بررسی است آن را به زودی نمایش داده خواهد شد\n"
+portal.general.comments-title: 'یک نظر/نظرات'
+portal.general.delete: 'حذف کردن'
+portal.general.everything: 'همه چیز'
+portal.general.get-in-touch: 'در تماس باشید'
+portal.general.get-in-touch-desc: 'یک ایمیل برای ما بفرستید'
+portal.general.impersonation_mode: 'حالت منفجر شدن'
+portal.general.in: در
+portal.general.label-search-enter-label: 'لطفا برچسب را برای جستجو انتخاب کنید'
+portal.general.nav-all: همه
+portal.general.nav-chat: 'گفتگوی چت'
+portal.general.nav-chatlog: 'گفتگو چت'
+portal.general.nav-downloads: دانلود
+portal.general.nav-emails: 'ایمیل ها'
+portal.general.nav-feedback: 'انتقادات و پیشنهادات'
+portal.general.nav-feedback-desc: پیشنهادات
+portal.general.nav-guides-desc: 'مستندات '
+portal.general.nav-kb: 'مرکز آموزش'
+portal.general.nav-kb-desc: 'مقالات کمکی'
+portal.general.nav-login: ورود
+portal.general.nav-news: اخبار
+portal.general.nav-news-desc: اخبار
+portal.general.nav-newticket: 'تماس با ما'
+portal.general.nav-portal: پرتال
+portal.general.nav-profile: پروفایل
+portal.general.nav-quick-jump: 'پرش سریع'
+portal.general.nav-register: 'ثبت نام'
+portal.general.nav-reset-password: 'تنظیم مجدد رمز عبور'
+portal.general.nav-set-password: 'رمز عبور خود را ایجاد کنید'
+portal.general.nav-tickets: 'پیام ها'
+portal.general.nav-your-account: 'حساب کاربری شما'
+portal.general.no-agents-available: 'با عرض پوزش، هیچ کارشناسی در دسترس نیست'
+portal.general.no-search-query: 'لطفا یک کلمه را در کادر جستجو تایپ کنید.'
+portal.general.no-search-results-general: 'ما هیچ نتیجه ای پیدا نکردیم'
+portal.general.on: روی
+portal.general.or: یا
+portal.general.rate-page: 'به کیفیت این صفحه امتیاز بده'
+portal.general.rate-page-negative: 'این صفحه مفید نبود'
+portal.general.rate-page-positive: 'این صفحه مفید بود'
+portal.general.related-downloads: 'فایل های مرتبط'
+portal.general.related-feedback: 'انتقادات و پیشنهادات مرتبط'
+portal.general.related-news: 'اخبار مرتبط'
+portal.general.search-labels-section-title: 'جستجو برچسب ها'
+portal.general.search-section-title: جستجو
+portal.general.search_btn: جستجو
+portal.general.share-this: 'به اشتراک گذاشتن این'
+portal.general.submit-feedback: 'ارسال انتقاد و پیشنهاد'
+portal.general.top: عالی
+portal.general.updated: 'بروز شده'
+portal.guides.view-as-agent: "شما می توانید این صفحه را ببینید زیرا شما یک پشتیبان هستید. کاربران نمی توانند این صفحه را مشاهده کنند.\n"
+portal.news.recent-title: 'اخبار اخیر'
+portal.news.search-title: 'مقاله های جدید'
+portal.news.section-title: اخبار
+portal.sidebar.agents_available: 'کارشناس انلاین'
+portal.sidebar.news_title: اخبار
+portal.sidebar.satisfied_customers: 'مشتریان راضی'
+portal.sidebar.top_articles_title: 'مقاله های برتر'
+portal.tickets.add-reply: پاسخ
+portal.tickets.cancel-ticket-edit: 'لغو ویرایش و دوباره پیام من را نشان دهید'
+portal.tickets.feedback_message_leave_comment: 'به صورت اختیاری میتوانید نظر دهید'
+portal.tickets.guest-thanks-section-title: 'با تشکر از شما'
+portal.tickets.guest_thank_you_title: 'با تشکر از شما'
+portal.tickets.list_date_last_agent: 'اخرین پیام کارشناس'
+portal.tickets.list_date_last_user: 'اخرین پاسخ کاربر'
+portal.tickets.list_department: دپارتمان
+portal.tickets.list_desc: 'این شرح یک لیست از پیام های شماست'
+portal.tickets.list_desc_org: 'این توصیف یک لیست از پیام سازمان شما است'
+portal.tickets.list_filter: 'شما یک فیلتر فعال در این نمایه دارید'
+portal.tickets.list_last_action: 'اخرین فعالیت'
+portal.tickets.list_search: 'جستجو در پیام:'
+portal.tickets.list_status_agent: 'کارشناس ما پاسخ خواهد داد'
+portal.tickets.list_status_open: 'پیام های باز'
+portal.tickets.list_status_resolved: 'بسته شده'
+portal.tickets.list_subject: موضوع
+portal.tickets.list_switch_to_my_tickets: 'به پیام من بروید'
+portal.tickets.list_switch_to_organization: 'به سازمان تغییر دهید'
+portal.tickets.list_ticket_ref: مرجع
+portal.tickets.list_title: 'پیام شما'
+portal.tickets.list_title_org: 'پیام های سازمان'
+portal.tickets.list_user: کاربر
+portal.tickets.mark-unresolved: 'باز کردن مجدد پیام'
+portal.tickets.new-intro: 'اخرین پاسخ کارشناس'
+portal.tickets.new-section-title: 'تماس با ما'
+portal.tickets.new-title: 'یک پیام جدید باز کنید'
+portal.tickets.new_ticket_button: 'یک پیام جدید بسازید'
+portal.tickets.please_login_to_reply: 'برای پاسخ دادن وارد شوید'
+portal.tickets.rate-negative: 'خوب نبود'
+portal.tickets.rate-neutral: 'خوب بود'
+portal.tickets.rate-positive: 'عالی بود'
+portal.tickets.related_articles_title: 'مقالات مرتبط'
+portal.tickets.resolve_my_ticket_btn: 'پیام من را ببند'
+portal.tickets.search-last-activity: 'اخرین فعالیت'
+portal.tickets.search-title: 'پیام ها'
+portal.tickets.section-title: 'پیام ها'
+portal.tickets.switched-department-rerender: 'ساختار این فرم ممکن است تغییر کند. لطفا فرم را بررسی کنید و دوباره ارسال کنید'
+portal.tickets.thank_you_check_email: 'لطفا آدرس ایمیل خود را تایید کنید'
+portal.tickets.thank_you_create_pw_link: 'آیا می خواهید پیگیری پیام خود را ادامه دهید؟ شما می توانیدگذرواژه خود را برای حساب خود تنظیم کنید'
+portal.tickets.timeline_marked_resolved: 'بسته شده'
+portal.tickets.timeline_opened: 'این پیام باز شد'
+portal.tickets.timeline_re_opened: 'این پیام مجدد باز شده است'
+portal.tickets.timeline_wrote: 'نوشته شده:'
+portal.tickets.view_btn_edit: ویرایش
+portal.tickets.view_btn_edit_full: 'ویرایش پیام'
+portal.tickets.view_cant_reply_archived: 'شما نمی توانید به این پیام پاسخ دهید زیرا بسته شده است.'
+portal.tickets.view_close: 'بستن پیام'
+portal.tickets.view_label_your_email: 'ایمیل شما'
+portal.tickets.view_label_your_email_placeholder: 'ادرس ایمیل شما'
+portal.tickets.view_label_your_name: 'نام شما'
+portal.tickets.view_label_your_name_placeholder: نام
+portal.tickets.view_last_message: 'آخرین پیام شما دریافت شد.'
+portal.tickets.view_media: 'رسانه ها در این پیام :'
+portal.tickets.view_more_info: 'اطلاعات اضافی پیام:'
+portal.tickets.view_now_closed: 'پیام شما بسته شد'
+portal.tickets.view_opened_by: 'این پیام باز شد به وسیله ی '
+portal.tickets.view_reply: 'اضافه کردن پاسخ'
+portal.tickets.view_reply_errors: 'برخی از خطاها با ارسال شما وجود دارد.'
+portal.tickets.view_scroll_reply: 'برای حرکت به پایین به فرم، اینجا را کلیک کنید.'
+portal.tickets.view_ticket_info: 'اطلاعات پیام:'
+portal.topics.none: 'عنوانی وجود ندارد'
+portal.topics.search-title: راهنمایی
+portal.widget.help_button: 'چت انلاین'
+portal.widget.help_ticket_button: 'ارتباط با ما'
+portal.widget.label_add_attachment: پیوست
+portal.widget.label_email: 'ایمیل شما'
+portal.widget.label_message: 'سوال شما'
+portal.widget.label_name: 'نام شما'
+portal.widget.label_subject: موضوع
+portal.widget.new-ticket-title: 'سوال خود را بپرسید '
+portal.widget.online_agents: 'پشتیبان های انلاین'
+portal.widget.popup_heading: 'سوالات خود را از ما بپرسید '
+portal.widget.popup_message: 'فقط برای شروع یک چت زنده با یکی از تیم ما کلیک کنید '
+portal.widget.popup_start_button: 'شروع مکالمه'
+portal.widget.popup_subheading: 'تیم ما آنلاین هستند و آماده پاسخ به سوالات شما هستند. برای شروع به ما یک پیام ارسال کنید'
+portal.widget.popup_title: 'پشتیبانی کاربران'
+user.chat.email: 'آدرس ایمیل شما'
+user.chat.ended-no-agent: 'ما بسیار متاسفیم چون کسی در حال حاضر در دسترسنیست که با شما چت کند. لطفا به ما ایمیل بزنید یا بعدا دوباره سعی کنید.'
+user.chat.error: 'خطا در گفتگو'
+user.chat.form_chat_button-submit: ارسال
+user.chat.form_chat_send-file: 'آپلود فایل'
+user.chat.form_create_button-submit: 'شروع چت'
+user.chat.form_create_department: 'انتخاب دپارتمان'
+user.chat.form_create_title: 'شروع چت با نماینده'
+user.chat.form_feedback_button-submit: 'ارسال نظرات و بستن پنجره'
+user.chat.form_feedback_comments: نظرات
+user.chat.form_feedback_rate-satisfaction: 'شما با این گفتگو راضی هستید؟'
+user.chat.form_feedback_rate-satisfied: بله
+user.chat.form_feedback_rate-time: 'زمان پاسخ ما به اندازه کافی سریع است؟'
+user.chat.form_feedback_rate-unsatisfied: خیر
+user.chat.form_feedback_title: 'ارسال نظرات به ما'
+user.chat.form_feedback_transcript-email: 'ارسال یک رونوشت از این گفتگو به'
+user.chat.log-title: 'پیام شما'
+user.chat.log_chat-id: 'ایدی شما'
+user.chat.log_created-date: 'ایجاد {{تاریخ}}'
+user.chat.log_fields_agent: 'فرد سازمان'
+user.chat.log_fields_department: دپارتمان
+user.chat.log_message_author-you: شما
+user.chat.log_nav-view-chats:
+  one: 'نمایش آخرین اخبار چت شما '
+  other: ' نمایش {{count}} سیاهه های مربوط به چت شما'
+user.chat.log_no_department: 'بدون دپارتمان'
+user.chat.message_agent-timeout: 'عذر خواهی ما را بپذیرید; {{name}} به نظر می رسد که اتصال قطع شده است. لطفا صبر کنید در حالی که سعی کنید برای پیدا کردن نماینده دیگری.'
+user.chat.message_assigned: 'گپ و گفتگو اختصاص یافته به {{name}}'
+user.chat.message_chatting-with: 'چت با شما'
+user.chat.message_ended: 'چت به پایان رسید'
+user.chat.message_ended-by: 'چت به پایان رسید توسط {{name}}'
+user.chat.message_ended-by-user: 'چت توسط کاربر به پایان رسید'
+user.chat.message_finding-agent: 'پیدا کردن یک نماینده'
+user.chat.message_long-wait: 'ما هنوز در حال تلاش کردن برای پیدا کردن یک نماینده موجود برای چت کردن با شما هستیم; این به طور معمول کمتر از یک دقیقه طول می کشد. <br /><br />با عجله از سر راه بردارد؟ <a class="cancel-and-newticket-trigger">ترک ما پیغام به جای?</a>'
+user.chat.message_set-department: '{{name}} تنظیم بخش {{department}}'
+user.chat.message_started: 'گفتگو آغاز شده'
+user.chat.message_unassigned: 'چت خودتان به'
+user.chat.message_uploading: آپلود...
+user.chat.message_user-joined: '{{name}} به چت پیوست'
+user.chat.message_user-left: '{{name}} چت را ترک کرد'
+user.chat.message_user-returned: 'کاربر بازگشته است'
+user.chat.message_user-timeout: 'کاربر به پایان رسیده است'
+user.chat.message_wait: 'در حال پیدا کردن یک نماینده برای شما'
+user.chat.message_wait-timeout: 'متاسفم؛ هیچ نماینده ای در دسترس نیست'
+user.chat.name: 'نام شما'
+user.chat.submit-ticket-button: 'ایمیل برای ما'
+user.chat.submit-ticket-title: 'ایمیل برای ما در عوض'
+user.chat.transcript_sent: 'متن ارسال شده به {{email}}'
+user.chat.window_cancel: انصراف
+user.chat.window_cancel-confirm: 'آیا شما مایل هستید که می خواهید چت خود را به اتمام برسانید؟'
+user.chat.window_close: 'نه ممنون، فقط پنجره را ببندید'
+user.chat.window_close_only: 'پنجره را ببند'
+user.chat.window_end-chat: 'پایان دادن به چت'
+user.chat.window_offline-button: 'برای تماس با ما اینجا کلیک کنید'
+user.chat.window_open-new: 'این گفتگو را باز کنید در پنجره جدید'
+user.chat.window_resume-button: 'باز کردن چت شما'
+user.chat.window_start-button: 'اینجا کلیک کنید تا با ما چت کنید'
+user.chat.window_upload-drag: 'فایل خود را به اینجا درگ و داپ کنید که در چت آپلود شود'
+user.defaults.article_category_general: عمومی
+user.defaults.article_example_content: 'این مقاله اطلاعات پایه به عنوان مثال است. احساس رایگان برای ویرایش و یا حذف آن از رابط نماینده .'
+user.defaults.article_example_title: 'مقاله به عنوان مثال'
+user.defaults.department_sales: فروش
+user.defaults.department_support: پشتیبانی
+user.defaults.downloads_category_general: اسناد
+user.defaults.news_category_general: عمومی
+user.defaults.news_example_content: 'این پست اخبار به عنوان مثال است. احساس رایگان برای ویرایش و یا حذف آن از رابط نماینده .'
+user.defaults.news_example_title: 'به عنوان مثال پست اخبار'
+user.downloads.change_file: 'تغییر فایل'
+user.email_subjects.chat_transcript: 'رونوشت چت'
+user.email_subjects.chat_validate_email: 'تأیید اعتبار ایمیل'
+user.email_subjects.comment-approved: 'نظر شما مورد تایید قرار گرفت'
+user.email_subjects.comment-deleted: 'نظر شما توسط ماموران ما خوانده شده'
+user.email_subjects.download_sub_new: 'دانلود های جدید'
+user.email_subjects.download_sub_new_and_updated: 'دانلودهای جدید و بروز رسانی شده'
+user.email_subjects.download_sub_updated: 'دانلودهای بروز رسانی شده'
+user.email_subjects.email_new-confirm: 'اعتبار سنجی آدرس ایمیل شما'
+user.email_subjects.email_primary-confirm: 'اعتبار سنجی آدرس ایمیل شما'
+user.email_subjects.feedback_created_for_user: 'از نظرات شما متشکریم'
+user.email_subjects.feedback_new: 'با تشکر از شما برای ارسال نظرات خود'
+user.email_subjects.feedback_new-approved: 'نظرات شما مورد تایید قرار گرفته است'
+user.email_subjects.feedback_new-comment: 'یک نظر جدید وجود دارد "{{title}}"'
+user.email_subjects.feedback_new-disapproved: 'نظرات شما رد شده است'
+user.email_subjects.feedback_sub_updated: 'بازخورد به روز شده '
+user.email_subjects.feedback_updated: 'نظرات شما به روز رسانی: {{title}}'
+user.email_subjects.kb_sub_new: 'مقاله جدید'
+user.email_subjects.kb_sub_new_and_updated: 'مقاله های جدید و بروز شده'
+user.email_subjects.kb_sub_updated: 'مقاله های بروز شده'
+user.email_subjects.new-ticket-guest: 'از ارتباط شما سپاسگزاریم'
+user.email_subjects.news_sub_new: 'اخبار جدید'
+user.email_subjects.news_sub_new_and_updated: 'اخبار جدید و بروز شده'
+user.email_subjects.news_sub_updated: 'اخبار بروز رسانی شده'
+user.email_subjects.password_agent-reset: 'عامل تنظیم مجدد رمز عبور خود'
+user.email_subjects.password_reset: 'تنظیم مجدد رمز عبور'
+user.email_subjects.password_set: 'رمز عبور خود را تعریف کنید'
+user.email_subjects.re: 'پاسخ: {{subject}}'
+user.email_subjects.register-welcome: 'از ثبت نام شما متشکریم'
+user.email_subjects.register-welcome-byagent: 'حساب کاربری جدیدشما'
+user.email_subjects.ticket-rate: 'به پاسخ ما امتیاز دهید'
+user.email_subjects.ticket_new-participant: 'یک شخص جدید است اضافه شده به تیک خود'
+user.email_subjects.too-many-emails: 'توجه: شما ایمیل های زیادی ارسال کرده اید'
+user.emails.chat_transcript: 'با تشکر از شما برای چت کردن با ما . در اینجا متن چت شما قرار دارد .'
+user.emails.comment_approved: 'نظر شما منتشر شده است.'
+user.emails.comment_deleted: 'نظر شما برای بهبود به صفحه مورد استفاده قرار گرفت .'
+user.emails.comment_thank-you: 'ممنون از شما برای کامنت خود در'
+user.emails.feedback_disapproved: 'ما می خواستیم به شما اطلاع دهیم که متاسفانه بازخورد شما کاهش یافته است و به طور عمومی در سایت ما ظاهر نخواهد شد.'
+user.emails.greeting: '{{to_name}} عزیز,'
+user.emails.label_view-online: 'مشاهده آنلاین'
+user.emails.password_agent-reset: "یک نماینده رمز عبور حساب شما را بازنشانی کرده است. شما می توانید با این جزئیات وارد شوید\n"
+user.emails.password_reset: "بازیابی رمز عبور را درخواست کردید \nبرای بازنشانی گذرواژه خود، روی لینک زیر کلیک کنید:\n"
+user.emails.password_set: 'برای تنظیم رمز عبور خود، روی لینک زیر کلیک کنید:'
+user.emails.profile_email-new-confirm: "برای افزودن این آدرس ایمیل ثانویه به حساب خود، به سادگی بر روی پیوند اعتبار سنجی زیر کلیک کنید\n"
+user.emails.register-confirm: "از شما برای ثبت نام حساب متشکریم. قبل از اینکه بتوانید از حسابتان استفاده کنید، باید ایمیل خود را با استفاده از لینک زیر تأیید کنید\n"
+user.emails.ticket_access_ticket_online: 'مشاهده و مدیریت این پیام آنلاین:'
+user.emails.ticket_no-autoresponse: 'هشدار: ایمیل تأیید خاموش است'
+user.emails.ticket_rate-negative: خیر
+user.emails.ticket_rate-neutral: 'خوب بود'
+user.emails.ticket_rate-positive: بله
+user.emails.ticket_rate-question: 'آیا این پیام مفید بود؟'
+user.emails.ticket_received: 'پیام شما دریافت شده است یکی از عوامل ما به زودی به شما پاسخ خواهد داد.'
+user.emails.ticket_reply-confirm: 'از پاسخ شما متشکرم یکی از عوامل ما به زودی به شما پاسخ خواهد داد.'
+user.error.attach_ext-allowed: 'فقط انواع فایل های زیر را می توانید آپلود کنید: {{error_detail}}'
+user.error.attach_ext-not-allow: 'نوع فایل آپلود شده شما مجاز نمی باشد.'
+user.error.attach_no-file: 'لطفا یک فایل برای آپلود انتخاب کنید'
+user.error.error_code: 'کد خطا'
+user.error.error_title: خطا
+user.error.form_choice_invalid: 'لطفا یک گزینه از لیست انتخاب کنید'
+user.error.form_date_invalid: 'لطفا یک تاریخ معتبر وارد کنید'
+user.error.form_required: 'این فیلد الزامی است'
+user.error.form_text_regex: 'لطفا مقدار صحیح را وارد کنید'
+user.error.invalid_email: 'آدرس ایمیل نامعتبر است'
+user.error.invalid_email-code: 'لینک اعتبار به نظر می رسد نامعتبر است.'
+user.error.invalid_email-explain: "با عرض پوزش، ما نمی توانیم آن آدرس ایمیل را در حساب کاربری خود پیدا کنیم.\n"
+user.error.not-found: 'صفحه مورد نظر شما که دنبال آن هستید یافت نشد .'
+user.error.not-found-title: 'یافت نشد'
+user.error.permission-denied: 'با عرض پوزش ، اقدام شما در حالا انجام برای شما مجاز نمی باشد.'
+user.error.permission-denied-title: 'انجام این کار برای شما امکان پذیر نیست'
+user.error.server-error: 'یک خطای سرور وجود دارد که مانع از صفحه در حال بارگذاری می شود. لطفا دوباره سعی کنید.'
+user.feedback.submit_feedback: 'ارسال انتقاد و پیشنهاد'
+user.general.label_captcha: 'کد تایید'
+user.general.page: صفحه
+user.lang.lang_title: فارسی
+user.news.title: اخبار
+user.profile.choose_email: 'آدرس ایمیل خود را که میخواهید استفده کنید را انتخاب کنید'
+user.profile.or_connect_with: 'و یا ارتباط با'
+user.profile.register: 'ثبت نام'
+user.profile.register_password_min_length: 'لطفا یک رمز عبور حداقل 5 کاراکتر وارد کنید .'
+user.profile.register_password_unused: 'شما نمیتوانید از یک رمز عبور که قبلا استفاده کردهاید استفاده کنید'
+user.tickets.fields_category: 'دسته بندی'
+user.tickets.fields_department: دپارتمان
+user.tickets.fields_priority: اولویت
+user.tickets.fields_product: محصول
+user.tickets.form_error_captcha: 'رمز را وارد کنید'
+user.tickets.form_error_captcha_invalid: 'کد وارد شده صحیح نیست '
+user.tickets.from_x_at_y: 'از {{name}} به {{date}}'
+user.tickets.rate-negative: 'خوب نبود'
+user.tickets.rate-neutral: 'خوب بود'
+user.tickets.rate-positive: 'عالی بود'
+user.tickets.rate_support: 'به پشتیبانی امتیاز دهید '
+user.time.long-day_friday: جمعه
+user.time.long-day_monday: دوشنبه
+user.time.long-day_saturday: شنبه
+user.time.long-day_sunday: یکشنبه
+user.time.long-day_thursday: 'پنج شنبه'
+user.time.long-day_tuesday: 'سه شنبه'
+user.time.long-day_wednesday: 'چهار شنبه'
+user.time.long-month_april: آپریل
+user.time.long-month_august: آگوست
+user.time.long-month_december: دسامبر
+user.time.long-month_february: فوریه
+user.time.long-month_january: ژانویه
+user.time.long-month_july: جولای
+user.time.long-month_june: جون
+user.time.long-month_march: مارس
+user.time.long-month_may: می
+user.time.long-month_november: نوامبر
+user.time.long-month_october: اکتبر
+user.time.long-month_september: سپتامبر
+user.time.short-day_friday: جمعه
+user.time.short-day_monday: دوشنبه
+user.time.short-day_saturday: شنبه
+user.time.short-day_sunday: یکشنبه
+user.time.short-day_thursday: پنجشنبه
+user.time.short-day_tuesday: 'سه شنبه'
+user.time.short-day_wednesday: 'چهار شنبه'
+user.time.short-month_april: آپریل
+user.time.short-month_august: آگوست
+user.time.short-month_december: دسامبر
+user.time.short-month_february: فوریه
+user.time.short-month_january: ژانویه
+user.time.short-month_july: جولای
+user.time.short-month_june: جون
+user.time.short-month_march: مارس
+user.time.short-month_may: می
+user.time.short-month_november: نوامبر
+user.time.short-month_october: اکتبر
+user.time.short-month_september: سپتامبر
+user.time.time-ago_1_day: '1 روز پیش'
+user.time.time-ago_1_hour: '1 ساعت پیش'
+user.time.time-ago_1_minute: '1 دقیقه پیش'
+user.time.time-ago_1_month: '1 ماه پیش'
+user.time.time-ago_1_second: '1 ثانیه پیش'
+user.time.time-ago_1_week: '1 هفته پیش'
+user.time.time-ago_1_year: '1 سال پیش'
+user.time.time-ago_less_second: 'کمتر از یک ثانیه پیش'
+user.time.time-ago_x_day: '{0} روز پیش'
+user.time.time-ago_x_hour: '{0} ساعت پیش'
+user.time.time-ago_x_minute: '{0} دقیقه پیش'
+user.time.time-ago_x_month: '{0} ماه پیش'
+user.time.time-ago_x_second: '{0} ثانیه پیش'
+user.time.time-ago_x_week: '{0} هفته پیش'
+user.time.time-ago_x_year: '{0} سال پیش'
+user.time.time_1_day: '1 روز'
+user.time.time_1_hour: '1 ساعت'
+user.time.time_1_minute: '1 دقیقه'
+user.time.time_1_month: '1 ماه'
+user.time.time_1_second: '1 ثانیه'
+user.time.time_1_week: '1 هفته'
+user.time.time_1_year: '1 سال'
+user.time.time_less_second: 'کمتر از یک ثانیه'
+user.time.time_x_day: '{0} روز'
+user.time.time_x_hour: '{0} ساعت'
+user.time.time_x_minute: '{0} دقیقه'
+user.time.time_x_month: '{0} ماه'
+user.time.time_x_second: '{0} ثانیه'
+user.time.time_x_week: '{0} هفته'
+user.time.time_x_year: '{0} سال'

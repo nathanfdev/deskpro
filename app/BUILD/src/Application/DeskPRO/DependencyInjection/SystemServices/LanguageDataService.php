@@ -88,29 +88,12 @@ class LanguageDataService extends BaseRepositoryService
 
         /** @var Language $lang */
         foreach ($this->languages as $lang) {
-            if ($lang->getLangCode() === $code || $lang->getLocale() === $code || substr($lang->getLocale(), 0, 2) == $code) {
+            if ($lang->getLocale() === $code || substr($lang->getLocale(), 0, 2) == $code) {
                 return $lang;
             }
         }
 
         return;
-    }
-
-    /**
-     * Get an array of lang codes.
-     *
-     * @return string[]
-     */
-    public function getLangCodes()
-    {
-        $this->preload();
-        $codes = [];
-
-        foreach ($this->languages as $lang) {
-            $codes[] = $lang->lang_code;
-        }
-
-        return $codes;
     }
 
     /**

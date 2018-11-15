@@ -1,0 +1,10 @@
+id: japanese
+name: Japanese
+nameLocal: 日本語
+locale: ja
+isRtl: false
+pluralRules:
+  plurals: 1
+  formula: '0'
+  categories:
+    - other

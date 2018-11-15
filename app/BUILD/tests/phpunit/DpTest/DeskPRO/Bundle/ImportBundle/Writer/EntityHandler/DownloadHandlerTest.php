@@ -65,7 +65,7 @@ class DownloadHandlerTest extends AbstractEntityHandlerTest
         $model->setDatePublished(new \DateTime('2016-07-20'));
         $model->setViewCount(100);
         $model->setNumDownloads(10);
-        $model->setLanguage('eng');
+        $model->setLanguage('en-US');
         $model->setCategory('Download category 1 > Sub category 1');
         $model->setBlob($blobModel);
         $model->setLabels(['label 1', 'label 2']);
@@ -82,7 +82,7 @@ class DownloadHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('2016-07-20', $entity->getDatePublished()->format('Y-m-d'));
         $this->assertEquals(100, $entity->getViewCount());
         $this->assertEquals(10, $entity->getNumDownloads());
-        $this->assertEquals('eng', $entity->getLanguage()->getLangCode());
+        $this->assertEquals('en-US', $entity->getLanguage()->getLocale());
         $this->assertEquals('Sub category 1', $entity->getCategory()->getTitle());
         $this->assertEquals('file1.txt', $entity->getBlob()->getFilename());
         $this->assertEquals('label 1', $entity->getLabels()[0]->getLabel());

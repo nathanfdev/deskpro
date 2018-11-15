@@ -65,7 +65,7 @@ class TextSnippetHandlerTest extends AbstractEntityHandlerTest
         $model->setPerson(1);
 
         $translation = new Model\Translation();
-        $translation->setLanguage('eng');
+        $translation->setLanguage('en-US');
         $translation->setValue('title_1');
 
         $model->addTitleTranslation($translation);

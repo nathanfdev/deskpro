@@ -75,7 +75,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $model->setWorkflow('New workflow');
         $model->setPriority('New priority');
         $model->setStatus('awaiting_user');
-        $model->setLanguage('eng');
+        $model->setLanguage('en-US');
         $model->setDateCreated(new \DateTime('2016-07-01'));
         $model->setDateArchived(new \DateTime('2016-07-05'));
         $model->setDateResolved(new \DateTime('2016-07-10'));
@@ -98,7 +98,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('New workflow', $entity->getWorkflow()->getTitle());
         $this->assertEquals('New priority', $entity->getPriority()->getTitle());
         $this->assertEquals('awaiting_user', $entity->getStatus());
-        $this->assertEquals('eng', $entity->getLanguage()->getLangCode());
+        $this->assertEquals('en-US', $entity->getLanguage()->getLocale());
         $this->assertEquals('2016-07-01', $entity->getDateCreated()->format('Y-m-d'));
         $this->assertEquals('2016-07-05', $entity->getDateArchived()->format('Y-m-d'));
         $this->assertEquals('2016-07-10', $entity->getDateResolved()->format('Y-m-d'));

@@ -1,0 +1,11 @@
+id: english_gb
+name: 'English (UK)'
+nameLocal: 'English (UK)'
+locale: en-GB
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

@@ -1,0 +1,417 @@
+portal.account.change-password: パスワード変更
+portal.account.email-btn-resend-validation: 承認のためのEメールを再送
+portal.account.login-register-btn: 登録
+portal.account.login-register-header: 登録
+portal.account.register-btn: 登録
+portal.account.reset-password-btn: パスワードのリセット
+portal.account.section-title-profile: プロフィール
+portal.account.section-title-register: 登録
+portal.account.section-title-reset-password: パスワードのリセット
+portal.articles.search-title: ナレッジベース
+portal.articles.section-title: ナレッジベース
+portal.chat.assigned_to: 'このチャットは{{name}}が担当します。'
+portal.chat.chat_transcript: チャットトランスクリプト
+portal.chat.end_chat: チャットを終了
+portal.chat.ended_by: '{{name}}によりチャットは終了されました。'
+portal.chat.ended_user: チャットはユーザにより終了しました。
+portal.chat.feedback_action: フィードバックを送信
+portal.chat.helpful: 参考になった
+portal.chat.label-name: あなたの名前
+portal.chat.log_department: 部門
+portal.chat.message_assigned: 'このチャットは{{name}}が担当します。'
+portal.chat.message_ended: チャットは終了しました。
+portal.chat.message_ended-by: '{{name}}によりチャットは終了されました。'
+portal.chat.message_ended-by-user: チャットはユーザにより終了しました。
+portal.chat.message_set-department: '{{name}} の部門の設定は {{department}}です。'
+portal.chat.message_set_department: '{{name}} の部門の設定は {{department}}です。'
+portal.chat.message_started: チャットが開始されました。
+portal.chat.message_unassigned: チャットはアサインされていません。
+portal.chat.message_user-joined: '{{name}} がチャットへ参加しました。'
+portal.chat.message_user-left: '{{name}} がチャットを離れました。'
+portal.chat.message_user-returned: ユーザが戻りました。
+portal.chat.message_user-timeout: ユーザがタイムアウトしました。
+portal.chat.message_user_joined: '{{name}} がチャットへ参加しました。'
+portal.chat.message_user_left: '{{name}} がチャットを離れました。'
+portal.chat.not_helpful: 参考にならなかった
+portal.chat.unassigned: チャットはアサインされていません。
+portal.chat.you: あなた
+portal.downloads.download: ダウンロード
+portal.downloads.search-title: ダウンロード
+portal.downloads.section-title: ダウンロード
+portal.email_subjects.chat_transcript: チャットトランスクリプト
+portal.email_subjects.comment-approved: コメントは承認されました。
+portal.email_subjects.comment-confirmation: コメントをいただきありがとうございます。
+portal.email_subjects.comment-deleted: あなたのコメントはエージェントにより確認されました。
+portal.email_subjects.email_new-confirm: メールアドレスを認証してください。
+portal.email_subjects.email_primary-confirm: メールアドレスを認証してください。
+portal.email_subjects.feedback_new: フィードバックを頂きありがとうございました。
+portal.email_subjects.feedback_new-approved: フィードバックは承認されました。
+portal.email_subjects.feedback_new-comment: '"{{title}}"に新着コメントがあります。'
+portal.email_subjects.feedback_new-confirm: フィードバックを送信頂きありがとうございました。(承認手続き中)
+portal.email_subjects.feedback_new-disapproved: フィードバックは承認されませんでした。
+portal.email_subjects.feedback_updated: 'フィードバックが更新されました：{{title}}'
+portal.email_subjects.password_agent-reset: エージェントによりあなたのパスワードはリセットされました。
+portal.email_subjects.password_reset: パスワードのリセット
+portal.email_subjects.ticket_new-participant: リクエストに新たな参加者が追加されました。
+portal.email_subjects.validate-email: メールアドレスを認証してください。
+portal.emails.chat_transcript: チャットに参加いただきありがとうございました。以下、チャットの記録(トランスクリプト)です。
+portal.emails.comment_approved: コメントが公開されました。
+portal.emails.comment_deleted: あなたのコメントはページの改善のために参考にされました。
+portal.emails.comment_thank-you: '{{link}}についてのコメントを頂き、ありがとうございました。'
+portal.emails.comment_validate-email: 次のリンクをクリックして、メールアドレスを有効にしてください。
+portal.emails.do-not-reply: 本メールはシステムにより自動配信されたものです。メッセージへの返信はこちらのメールアドレスでは受け付けておりません。また返信されたメッセージの内容は確認できませんのでご注意ください。
+portal.emails.feedback_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
+portal.emails.feedback_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
+portal.emails.feedback_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
+portal.emails.feedback_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
+portal.emails.feedback_new-comment: '{{name}}からの新しいコメント:'
+portal.emails.feedback_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
+portal.emails.feedback_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
+portal.emails.feedback_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
+portal.emails.feedback_validate-email: 次のリンクをクリックして、メールアドレスを有効にしてください。
+portal.emails.feedback_votes:
+  other: 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:'
+portal.emails.greeting: '{{to_name}}様'
+portal.emails.label_view-online: オンラインで確認
+portal.emails.password_agent-reset: アカウントのパスワードがリセットされました。こちらの情報を使ってログインしてください。
+portal.emails.password_reset: 'パスワードをリセットする依頼がありました。リセットをするには、次のリンクをクリックしてください。:'
+portal.emails.profile_email-new-confirm: アカウントに予備のメールアドレスの追加を許可するには、次のリンクをクリックしてください。
+portal.emails.profile_email_link-validate: あなたのメールアドレスを有効にするには次のリンクをクリックしてください。
+portal.emails.register-confirm: 'アカウントをご登録いただきありがとうございます。<br /><br />'
+portal.emails.registration_closed: '{{name}}様<br /><br /><br /><br />新たなリクエストの受付はヘルプデスクのメンバー様からに限定されています。既にアカウントをお持ちのお客様は、登録済みのメールアドレスからもう一度Eメールを送り直してください。'
+portal.emails.ticket_access_ticket_online: 'このリクエストをウェブ上で表示し管理:'
+portal.emails.ticket_cc-new: '{{name}}さんにより作成されたリクエストにあなたは追加されました。'
+portal.emails.ticket_flood: 'ヘルプデスクへメールを頂いた方へ通知します。あなたから短い間隔で複数のメッセージを頂いたため、当社の自動システムはあなたからのメッセージを自動発信のメッセージであると判断しました。<br /><br />双方の自動発信によるループトラフィックを避けるため、当社からの自動通知メッセージの送信を停止します。'
+portal.emails.ticket_message_title: '{{date}} {{time}}, 作成者{{author}} :'
+portal.emails.ticket_no-autoresponse: '注意: 確認メールの送信設定がオフです'
+portal.emails.ticket_rate-negative: いいえ
+portal.emails.ticket_rate-positive: はい
+portal.emails.ticket_received: リクエストを受け付けました。エージェントにより折り返しいたしますのでしばらくお待ちください。
+portal.emails.ticket_reply-confirm: 返信を頂きありがとうございます。エージェントが折り返しいたしますのでしばらくお待ちください。
+portal.emails.ticket_validate: 'ご連絡をいただきありがとうございます。<br /><br />エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。'
+portal.emails.tickets_ommitted:
+  other: メッセージが1つ削除されました
+portal.emails.view_full_history_online: リクエストの全文をオンラインにて表示
+portal.error.404-title: 見つかりません。
+portal.feedback.attachments: 添付
+portal.feedback.btn-closed: クローズ(対応済み)
+portal.feedback.btn-vote: 同意
+portal.feedback.search-title: フィードバック
+portal.feedback.section-desc: 他のユーザから以下の様な提案があります。投票や意見交換を通してあなたのご意見をお聞かせください。また新たな提案がある場合は、新しいアイデアをお送りください。
+portal.feedback.section-title: フィードバック
+portal.feedback.submit_feedback: フィードバックを送信
+portal.forms.error_password_min_length: パスワードは5文字以上入力してください。
+portal.forms.label_category: カテゴリ
+portal.forms.label_department: 部門
+portal.forms.label_first_name: 名前
+portal.forms.label_full_name: あなたの名前
+portal.forms.label_language: 言語
+portal.forms.label_last_name: 名字
+portal.forms.label_message: メッセージ
+portal.forms.label_name: 名前
+portal.forms.label_password: パスワード
+portal.forms.label_priority: 優先順位
+portal.forms.label_save: 保存
+portal.forms.label_subject: 件名
+portal.forms.label_submit: 送信
+portal.forms.label_timezone: タイムゾーン
+portal.general.add-comment: コメントを追加
+portal.general.attachments: 添付
+portal.general.btn-cancel: キャンセル
+portal.general.btn-download-pdf: PDFをダウンロード
+portal.general.btn-go: 進む
+portal.general.delete: 削除
+portal.general.everything: 全て
+portal.general.nav-downloads: ダウンロード
+portal.general.nav-downloads-desc: ダウンロードを検索
+portal.general.nav-feedback: フィードバック
+portal.general.nav-kb: ナレッジベース
+portal.general.nav-kb-desc: ヘルプ記事を読む
+portal.general.nav-news: ニュース
+portal.general.nav-newticket: 連絡先
+portal.general.nav-profile: プロフィール
+portal.general.nav-register: 登録
+portal.general.nav-reset-password: パスワードのリセット
+portal.general.nav-tickets: リクエスト
+portal.general.rate-page-positive: 参考になりました
+portal.general.rated-negative: 参考にならない情報としてマーク済み
+portal.general.rated-positive: 参考ページとしてマーク済み
+portal.general.rating_x_of_y_found_helpful: '{{vote_count}} 中{{vote_up}} 人の方が参考になると投票しています。'
+portal.general.related-downloads: 関連ファイル
+portal.general.related-feedback: 関連フィードバック
+portal.general.related-news: 関連ニュース
+portal.general.search-labels-section-title: 検索ラベル
+portal.general.search-section-title: 検索
+portal.general.search_btn: 検索
+portal.general.share-this: 共有する
+portal.general.submit-feedback: フィードバックを送る
+portal.news.section-title: ニュース
+portal.sidebar.news_title: ニュース
+portal.tickets.feedback_message_leave_comment: オプション：コメントを残す
+portal.tickets.guest-thanks-section-title: ありがとうございました。
+portal.tickets.guest_thank_you_title: ありがとうございました。
+portal.tickets.list_agent: 担当エージェント
+portal.tickets.list_department: 部門
+portal.tickets.list_status_open: 対応中のリクエスト
+portal.tickets.list_status_resolved: 解決
+portal.tickets.list_subject: 件名
+portal.tickets.list_title: あなたのリクエスト
+portal.tickets.new-intro: フォームへの記入を完了してください。担当エージェントが折り返し電子メールにてご連絡します。
+portal.tickets.new-section-title: 連絡先
+portal.tickets.related_articles_title: 関連記事
+portal.tickets.resolve_my_ticket_btn: リクエストを解決にする
+portal.tickets.resolve_ticket: '解決済みリクエスト: {{subject}}'
+portal.tickets.resolve_ticket_explain: リクエストを解決にしてよろしいですか？リクエストを解決にすると担当エージェントからこれ以上の返信はされません。
+portal.tickets.search-title: リクエスト
+portal.tickets.section-title: リクエスト
+portal.tickets.timeline_marked_resolved: 解決
+portal.tickets.view_btn_edit: 編集
+portal.tickets.view_label_your_name: あなたの名前
+portal.tickets.view_unassigned: アサイン前
+user.chat.email: メールアドレス
+user.chat.ended-no-agent: 申し訳ございませんが、現在チャットサービスはご利用いただけません。後ほど再度アクセス頂くか、電子メールにてご連絡ください。
+user.chat.error: チャットエラー
+user.chat.form_chat_button-submit: 送信
+user.chat.form_chat_send-file: ファイルをアップロード
+user.chat.form_create_button-submit: チャットを開始
+user.chat.form_create_department: 部門を選択
+user.chat.form_create_title: エージェントとチャットを開始
+user.chat.form_feedback_button-submit: コメントを送りウィンドウを閉じる
+user.chat.form_feedback_comments: コメントはありますか？
+user.chat.form_feedback_rate-satisfaction: 今回の対応はお役に立てましたか？
+user.chat.form_feedback_rate-satisfied: はい
+user.chat.form_feedback_rate-time: 対応するまでにかかった時間は許容範囲でしたか？
+user.chat.form_feedback_rate-unsatisfied: いいえ
+user.chat.form_feedback_title: フィードバックのコメントをおよせください
+user.chat.form_feedback_transcript-email: チャットの内容を送る宛先
+user.chat.log-title: あなたのチャット
+user.chat.log_chat-id: チャットID
+user.chat.log_created-date: '作成日 {{date}}'
+user.chat.log_fields_agent: エージェント
+user.chat.log_fields_department: 部門
+user.chat.log_message_author-you: あなた
+user.chat.log_nav-view-chats:
+  other: 最新のチャットログを確認
+user.chat.log_no_department: 部門がありません
+user.chat.log_unassigned: アサインなし
+user.chat.message_agent-timeout: '申し訳ございません; {{name}} との接続が予期せぬ理由で切断されました。次のエージェントを見つける間しばらくお待ちください。'
+user.chat.message_assigned: 'このチャットは{{name}}が担当します。'
+user.chat.message_chatting-with: このチャットの担当者
+user.chat.message_ended: チャットは終了しました。
+user.chat.message_ended-by: '{{name}}によりチャットは終了されました。'
+user.chat.message_ended-by-user: チャットはユーザにより終了しました。
+user.chat.message_finding-agent: エージェントを探しています。
+user.chat.message_long-wait: '対応可能なエージェントを探しています。; 通常この作業には、数分程度の時間をいただきます。<br /><br />お急ぎの場合<a class="cancel-and-newticket-trigger">チャットの代わりにメッセージを残されますか？</a>'
+user.chat.message_set-department: '{{name}} の部門の設定は {{department}}です。'
+user.chat.message_started: チャットが開始されました。
+user.chat.message_unassigned: チャットはアサインされていません。
+user.chat.message_uploading: アップロード中...
+user.chat.message_user-joined: '{{name}} がチャットへ参加しました。'
+user.chat.message_user-left: '{{name}} がチャットを離れました。'
+user.chat.message_user-returned: ユーザが戻りました。
+user.chat.message_user-timeout: ユーザがタイムアウトしました。
+user.chat.message_wait: エージェントを探しています。
+user.chat.message_wait-timeout: エージェトが不在です。
+user.chat.name: あなたの名前
+user.chat.submit-ticket-button: 電子メールの送り先
+user.chat.submit-ticket-title: 電子メールをあなたから送る
+user.chat.transcript_sent: 'スクリプト送信先 {{email}}'
+user.chat.window_cancel: キャンセル
+user.chat.window_cancel-confirm: チャットを終了してもよろしいですか？
+user.chat.window_close: 無視して、このウィンドウを閉じます。
+user.chat.window_close_only: ウィンドウを閉じる
+user.chat.window_end-chat: チャットを終了
+user.chat.window_offline-button: クリックしてリクエストを送る
+user.chat.window_open-new: このチャットを新しいウィンドウで開きます。
+user.chat.window_resume-button: チャットを開きます。
+user.chat.window_start-button: こちらをクリックしてチャットを開始します。
+user.chat.window_upload-drag: ファイルをこちらへドロップして、チャットへアップロードします。
+user.defaults.article_category_general: 一般
+user.defaults.article_example_content: こちらはナレッジベース記事の一例です。エージェントのインターフェース上から削除しても、内容を編集されても結構です。
+user.defaults.article_example_title: 記事の例
+user.defaults.department_sales: セールス
+user.defaults.department_support: サポート
+user.defaults.downloads_category_general: 書類
+user.defaults.news_category_general: 一般
+user.defaults.news_example_content: こちらはニュースポストの例文です。必要に応じてエージェントインターフェースから編集や削除をしてください。
+user.defaults.news_example_title: ニュースポストの例文
+user.downloads.change_file: ファイルを変更
+user.email_subjects.chat_transcript: チャットトランスクリプト
+user.email_subjects.comment-approved: コメントは承認されました。
+user.email_subjects.comment-deleted: あなたのコメントはエージェントにより確認されました。
+user.email_subjects.email-too-big: 'あなたのメール "{{subject}}" は受理されませんでした。'
+user.email_subjects.email_new-confirm: メールアドレスを認証してください。
+user.email_subjects.email_primary-confirm: メールアドレスを認証してください。
+user.email_subjects.feedback_new: フィードバックを頂きありがとうございました。
+user.email_subjects.feedback_new-approved: フィードバックは承認されました。
+user.email_subjects.feedback_new-comment: '"{{title}}"に新着コメントがあります。'
+user.email_subjects.feedback_new-disapproved: フィードバックは承認されませんでした。
+user.email_subjects.feedback_updated: 'フィードバックが更新されました：{{title}}'
+user.email_subjects.kb_sub_new: 新しい記事
+user.email_subjects.kb_sub_new_and_updated: 新しい記事と更新情報
+user.email_subjects.kb_sub_updated: 更新された記事
+user.email_subjects.password_agent-reset: エージェントによりあなたのパスワードはリセットされました。
+user.email_subjects.password_reset: パスワードのリセット
+user.email_subjects.register-welcome: ご登録いただきありがとうございます。
+user.email_subjects.register-welcome-byagent: 新しいヘルプデスクアカウント
+user.email_subjects.remind_unresolved_final_subject: 'リマインダ: {{subject}}'
+user.email_subjects.remind_unresolved_subject: 'リマインダ: {{subject}}'
+user.email_subjects.ticket-rate: 'リクエスト "{{ticket.subject}}"を評価する'
+user.email_subjects.ticket_new-participant: リクエストに新たな参加者が追加されました。
+user.email_subjects.too-many-emails: 通知：上限を超えた数のメールが届いています。
+user.emails.auto-close: '長期間返信がないため、リクエスト "{{ticket.subject}}" は対応済みとしてクローズされます。未解決事項がある場合は、エージェントあてに返信を送信してください。'
+user.emails.chat_transcript: チャットに参加いただきありがとうございました。以下、チャットの記録(トランスクリプト)です。
+user.emails.comment_approved: コメントが公開されました。
+user.emails.comment_deleted: あなたのコメントはページの改善のために参考にされました。
+user.emails.comment_thank-you: '{{link}}についてのコメントを頂き、ありがとうございました。'
+user.emails.email-too-big: 'あなたのメール "{{subject}}" はサイズが大きすぎるため、受理されませんでした。 受付可能なメールのサイズは最大 {{max_size}} です。添付ファイルを削除して、再度送信してください。'
+user.emails.feedback_agent-validation: フィードバックはエージェントにより、内容確認と承認がされるまで公開されません。
+user.emails.feedback_approved: 本メールはあなたのフィードバックに対する、内容確認と承認プロセスが終わりウェブサイトへフィードバックが公開された事をお知らせするものです。
+user.emails.feedback_closed: '送信頂いた、"{{title}}" のフィードバックはクローズされました: {{status}}'
+user.emails.feedback_disapproved: 本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。
+user.emails.feedback_disapproved-reason: '本メールはあなたのフィードバックがエージェントにより承認されなかったため、非公開となった事をお伝えします。{{name}} は次を理由に挙げています:'
+user.emails.feedback_new-comment: '{{name}}からの新しいコメント:'
+user.emails.feedback_published: '送信されたフィードバック"{{title}}" は承認され、ウェブサイトに公開済みです。'
+user.emails.feedback_thank-you: 'フィードバック"{{title}}"をお送り頂き、ありがとうございます。'
+user.emails.feedback_updated: 'フィードバック"{{title}}"は更新されました。現在のステータスは"{{status}}"です。'
+user.emails.feedback_votes:
+  other: 'あなたのフィードバックには <strong>1</strong>票の投票があります。フィードバックをオンラインで確認するにはこちら:'
+user.emails.greeting: '{{to_name}}様'
+user.emails.label_view-online: オンラインで確認
+user.emails.password_agent-reset: アカウントのパスワードがリセットされました。こちらの情報を使ってログインしてください。
+user.emails.password_reset: 'パスワードをリセットする依頼がありました。リセットをするには、次のリンクをクリックしてください。:'
+user.emails.profile_email-new-confirm: アカウントに予備のメールアドレスの追加を許可するには、次のリンクをクリックしてください。
+user.emails.profile_email_link-validate: あなたのメールアドレスを有効にするには次のリンクをクリックしてください。
+user.emails.register-confirm: 'アカウントをご登録いただきありがとうございます。<br /><br />'
+user.emails.register-password: 'あなたの初期パスワードは: {{password}}'
+user.emails.register-welcome: 'ご登録ありがとうございます。 {{to_email}} を使ってヘルプデスクへのログインが可能です。:'
+user.emails.register-welcome-byagent: '新しいアカウントが作成されました。 {{to_email}} を使ってヘルプデスクへのログインが可能です。:'
+user.emails.registration_closed: '{{name}}様<br /><br /><br /><br />新たなリクエストの受付はヘルプデスクのメンバー様からに限定されています。既にアカウントをお持ちのお客様は、登録済みのメールアドレスからもう一度Eメールを送り直してください。'
+user.emails.reject_resolved: 本リクエストはすでに対応済みとされているため、返信できません。エージェントはメッセージを受け取ったり、このメッセージに返信することはできません。
+user.emails.ticket_access_ticket_online: 'このリクエストをウェブ上で表示し管理:'
+user.emails.ticket_cc-new: '{{name}}さんにより作成されたリクエストにあなたは追加されました。'
+user.emails.ticket_flood: 'ヘルプデスクへメールを頂いた方へ通知します。あなたから短い間隔で複数のメッセージを頂いたため、当社の自動システムはあなたからのメッセージを自動発信のメッセージであると判断しました。<br /><br />双方の自動発信によるループトラフィックを避けるため、当社からの自動通知メッセージの送信を停止します。'
+user.emails.ticket_message_title: '{{date}} {{time}}, 作成者{{author}} :'
+user.emails.ticket_no-autoresponse: '注意: 確認メールの送信設定がオフです'
+user.emails.ticket_rate-negative: いいえ
+user.emails.ticket_rate-positive: はい
+user.emails.ticket_received: リクエストを受け付けました。エージェントにより折り返しいたしますのでしばらくお待ちください。
+user.emails.ticket_reply-confirm: 返信を頂きありがとうございます。エージェントが折り返しいたしますのでしばらくお待ちください。
+user.emails.ticket_validate: 'ご連絡をいただきありがとうございます。<br /><br />エージェントによる対応を開始する前に、あなたのメールアドレスの認証手続きを行ってください。'
+user.error.attach_ext-allowed: '次のファイル形式のみアップロードが可能です。: {{error_detail}}'
+user.error.attach_ext-not-allow: アップロードされたファイル形式では受付できません。
+user.error.attach_failed: 添付ファイルのアップロードに失敗しました。あるいはキャンセルされた可能性があります。アップロードをやり直してください。
+user.error.attach_no-file: アップロードするファイルを選択してください。
+user.error.attach_size: '添付ファイルの容量が大きすぎます。ファイルの最大容量は {{error_detail}}です。'
+user.error.attach_unknown-error: 添付ファイルを受信する際にサーバ上でエラーが発生しました。もう一度やり直してください。
+user.error.error_code: エラーコード
+user.error.error_title: エラー
+user.error.expired-token: アクセスされたページは無効です。戻って再度やり直してください。
+user.error.form_choice_invalid: リストからオプションを選択してください。
+user.error.form_choice_max:
+  other: 1つオプションを選択してください。
+user.error.form_choice_min:
+  other: 1つ以上オプションを選択してください。
+user.error.form_date_invalid: 有効な日付を入力してください。
+user.error.form_required: 必ず入力してください。
+user.error.form_text_max:
+  other: 1文字入力してください。
+user.error.form_text_min:
+  other: 1文字以上は入力してください。
+user.error.form_text_regex: 正しい数値を入力してください。
+user.error.invalid_email: メールアドレスが正しくありません。
+user.error.invalid_email-code: 承認のリンクが無効です。
+user.error.invalid_email-explain: あなたのアカウントにそのメールアドレスは登録されていません。
+user.error.not-found: お探しのページが見つかりません。
+user.error.not-found-title: 見つかりません。
+user.error.permission-denied: 申し訳ございませんが、その動作は許可されていません。
+user.error.permission-denied-login: 'ログアウトされています。 <a href="{{login_url}}">ログイン</a> してからもう一度やり直してください。'
+user.error.permission-denied-title: その動作は許可されていません。
+user.error.server-error: サーバエラーによりページは正しく表示されませんでした。もう一度やり直してください。
+user.feedback.submit_feedback: フィードバックを送信
+user.general.deskpro: SupportSTAR
+user.general.label_captcha: 確認コード
+user.general.page: ページ
+user.lang.lang_title: 日本語
+user.news.title: ニュース
+user.profile.choose_email: 使用するメールアドレスを選択
+user.profile.or_connect_with: または次に接続
+user.profile.register: 登録
+user.profile.register_password_min_length: パスワードは5文字以上入力してください。
+user.tickets.feedback_message_leave_comment: オプション：コメントを残す
+user.tickets.fields_category: カテゴリ
+user.tickets.fields_department: 部門
+user.tickets.fields_priority: 優先順位
+user.tickets.fields_product: 製品
+user.tickets.form_error_captcha: コードを入力してください
+user.tickets.form_error_captcha_invalid: 入力されたコードは無効です。
+user.tickets.from_x_at_y: '送信元 {{name}} 日付: {{date}}'
+user.tickets.label_cced: CC
+user.time.long-day_friday: 金曜日
+user.time.long-day_monday: 月曜日
+user.time.long-day_saturday: 土曜日
+user.time.long-day_sunday: 日曜日
+user.time.long-day_thursday: 木曜日
+user.time.long-day_tuesday: 火曜日
+user.time.long-day_wednesday: 水曜日
+user.time.long-month_april: ４月
+user.time.long-month_august: ８月
+user.time.long-month_december: １２月
+user.time.long-month_february: ２月
+user.time.long-month_january: １月
+user.time.long-month_july: ７月
+user.time.long-month_june: ６月
+user.time.long-month_march: ３月
+user.time.long-month_may: ５月
+user.time.long-month_november: １１月
+user.time.long-month_october: １０月
+user.time.long-month_september: ９月
+user.time.short-day_friday: 金
+user.time.short-day_monday: 月
+user.time.short-day_saturday: 土
+user.time.short-day_sunday: 日
+user.time.short-day_thursday: 木
+user.time.short-day_tuesday: 火
+user.time.short-day_wednesday: 水
+user.time.short-month_april: ４月
+user.time.short-month_august: ８月
+user.time.short-month_december: １２月
+user.time.short-month_february: ２月
+user.time.short-month_january: １月
+user.time.short-month_july: ７月
+user.time.short-month_june: ６月
+user.time.short-month_march: ３月
+user.time.short-month_may: ５月
+user.time.short-month_november: １１月
+user.time.short-month_october: １０月
+user.time.short-month_september: ９月
+user.time.time-ago_1_day: 1日前
+user.time.time-ago_1_hour: 1時間前
+user.time.time-ago_1_minute: 1分前
+user.time.time-ago_1_month: 1ヶ月前
+user.time.time-ago_1_second: 1秒前
+user.time.time-ago_1_week: 1週間前
+user.time.time-ago_1_year: 1年前
+user.time.time-ago_less_second: ０秒前
+user.time.time-ago_x_day: '{0} 日前'
+user.time.time-ago_x_hour: '{0} 時間前'
+user.time.time-ago_x_minute: '{0} 分前'
+user.time.time-ago_x_month: '{0} ヶ月前'
+user.time.time-ago_x_second: '{0} 秒前'
+user.time.time-ago_x_week: '{0} 週前'
+user.time.time-ago_x_year: '{0} 年前'
+user.time.time_1_day: 1日
+user.time.time_1_hour: 1時間
+user.time.time_1_minute: 1分
+user.time.time_1_month: 1ヶ月
+user.time.time_1_second: 1秒
+user.time.time_1_week: 1週
+user.time.time_1_year: 1年
+user.time.time_less_second: ０秒前
+user.time.time_x_day: '{0} 日'
+user.time.time_x_hour: '{0} 時間'
+user.time.time_x_minute: '{0} 分'
+user.time.time_x_month: '{0} ヶ月'
+user.time.time_x_second: '{0} 秒'
+user.time.time_x_week: '{0} 週'
+user.time.time_x_year: '{0} 年'

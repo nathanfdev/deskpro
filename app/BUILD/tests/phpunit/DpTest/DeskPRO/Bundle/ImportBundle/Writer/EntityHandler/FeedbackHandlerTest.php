@@ -68,7 +68,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
         $model->setDateCreated(new \DateTime('2016-07-10'));
         $model->setDatePublished(new \DateTime('2016-07-20'));
         $model->setViewCount(100);
-        $model->setLanguage('eng');
+        $model->setLanguage('en-US');
         $model->setCategory('Category 1 > Sub category 1');
         $model->setLabels(['label 1', 'label 2']);
         $model->addCustomField($customField1);
@@ -85,7 +85,7 @@ class FeedbackHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('2016-07-10', $entity->getDateCreated()->format('Y-m-d'));
         $this->assertEquals('2016-07-20', $entity->getDatePublished()->format('Y-m-d'));
         $this->assertEquals(100, $entity->getViewCount());
-        $this->assertEquals('eng', $entity->getLanguage()->getLangCode());
+        $this->assertEquals('en-US', $entity->getLanguage()->getLocale());
         $this->assertEquals('Sub category 1', $entity->getCategory()->getTitle());
         $this->assertEquals('label 1', $entity->getLabels()[0]->getLabel());
         $this->assertEquals('label 2', $entity->getLabels()[1]->getLabel());

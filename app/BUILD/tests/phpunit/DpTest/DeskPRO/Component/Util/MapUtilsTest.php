@@ -154,6 +154,24 @@ class MapUtilsTest extends DeskProTestCase
             MapUtils::recursiveDiff($arr1, $arr2)
         );
     }
+
+    public function testFlattenKeys()
+    {
+        $arr = [
+            'a' => [
+                'b' => [
+                    'c' => ['foo', 'bar'],
+                    'd' => 123,
+                ],
+                'xxx' => 'gibbly',
+            ],
+        ];
+
+        $this->assertEquals(
+            ['a.b.c' => ['foo', 'bar'], 'a.b.d' => 123, 'a.xxx' => 'gibbly'],
+            MapUtils::flattenKeys($arr)
+        );
+    }
 }
 
 class POJOExample

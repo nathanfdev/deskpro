@@ -1,0 +1,10 @@
+id: korean
+name: Korean
+nameLocal: 영어
+locale: ko
+isRtl: false
+pluralRules:
+  plurals: 1
+  formula: '0'
+  categories:
+    - other

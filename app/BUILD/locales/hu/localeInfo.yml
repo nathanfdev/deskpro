@@ -1,0 +1,11 @@
+id: hungarian
+name: Hungarian
+nameLocal: Magyar
+locale: hu
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

@@ -29,7 +29,6 @@ class LanguageMapper extends AbstractContainerMapper implements MapperByTitleInt
         $criteria = new Criteria();
         $criteria
             ->orWhere(Criteria::expr()->eq('title', $title))
-            ->orWhere(Criteria::expr()->eq('lang_code', $title))
             ->orWhere(Criteria::expr()->eq('locale', $title))
             ->orWhere(Criteria::expr()->eq('sys_name', $title))
         ;

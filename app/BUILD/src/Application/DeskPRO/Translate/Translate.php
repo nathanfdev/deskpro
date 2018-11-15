@@ -20,7 +20,6 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
@@ -82,13 +81,6 @@ class Translate implements PersonContextInterface, TranslatorInterface
      * @var \Application\DeskPRO\Entity\Language
      */
     protected $_language = null;
-
-    /**
-     * See getCountPhraseSelector().
-     *
-     * @var MessageSelector
-     */
-    protected $_phrase_selector = null;
 
     /**
      * @var ObjectPhraseNamer
@@ -700,31 +692,39 @@ class Translate implements PersonContextInterface, TranslatorInterface
      */
     public function getPhraseTextCount($phrase_name, $count, $language = null)
     {
-        $phraseText = $this->getPhraseText($phrase_name);
-        if (!$phraseText) {
-            return;
-        }
-
         if ($language === null) {
             $language = $this->_language;
         } elseif (Numbers::isInteger($language) && isset($this->_loaded_languages[$language])) {
             $language = $this->_loaded_languages[$language];
         }
 
-        try {
-            $phrase = $this->getCountPhraseSelector()->choose($phraseText, $count, $language->getLocale());
-        } catch (\InvalidArgumentException $e) {
-            try {
-                // Try again with en_US locale in case
-                // Could be an untranslated phrase (which defaults to eng), but then the locale would be passed as the lang,
-                // which could use different rules and cause the chooser to fail.
-                $phrase = $this->getCountPhraseSelector()->choose($phraseText, $count, 'en_US');
-            } catch (\InvalidArgumentException $e) {
-                $phrase = $e->getMessage();
+        $cat = $language->selectPluralCategory($count);
+
+        $try = [$phrase_name.'.'.$cat];
+        if ($count === 0 && $cat !== 'zero') {
+            // this tries 'zero' on langs that dont typically use it
+            // i.e. this allows for a unique phrase for 0 in english like "You haven't created any departments yet."
+            $try[] = $phrase_name.'.zero';
+        }
+        if ($cat !== 'other') {
+            $try[] = $phrase_name.'.other';
+        }
+        $try[] = $phrase_name;
+
+        foreach ($try as $tryPhraseId) {
+            $t = $this->getPhraseText($tryPhraseId, $language, true);
+            if ($t) {
+                return $t;
             }
         }
 
-        return $phrase;
+        // try fallback on English
+        if ($this->_default_language !== $language) {
+            return $this->getPhraseTextCount($phrase_name, $count, $this->_default_language);
+        }
+
+        // otherwise missing phrase
+        return $this->getPhraseText($try[0], $language);
     }
 
     /**
@@ -1178,17 +1178,54 @@ class Translate implements PersonContextInterface, TranslatorInterface
     }
 
     /**
-     * @return MessageSelector
+     * @param string              $phraseName
+     * @param LanguageEntity|null $language
+     *
+     * @return bool
      */
-    public function getCountPhraseSelector()
+    public function hasPhrasePlural($phraseName, LanguageEntity $language = null)
     {
-        if ($this->_phrase_selector !== null) {
-            return $this->_phrase_selector;
+        if ($language === null) {
+            $language = $this->_language;
         }
 
-        $this->_phrase_selector = new MessageSelector();
+        foreach ($language->getPluralCategories() as $cat) {
+            if ($this->hasPhrase($phraseName.'.'.$cat, $language)) {
+                return true;
+            }
+        }
 
-        return $this->_phrase_selector;
+        return false;
+    }
+
+    /**
+     * Returns
+     * [
+     *     'one' => '1 Agent',
+     *     .....
+     *     'other' => '{{count}} Agents'
+     * ].
+     *
+     * @param string              $phraseName
+     * @param LanguageEntity|null $language
+     *
+     * @return string[]
+     */
+    public function getPhrasePluralTexts($phraseName, LanguageEntity $language = null)
+    {
+        if ($language === null) {
+            $language = $this->_language;
+        }
+
+        $texts = [];
+        foreach ($language->getPluralCategories() as $cat) {
+            $text = $this->getPhraseText($phraseName.'.'.$cat, $language, true);
+            if ($text !== null) {
+                $texts[$cat] = $text;
+            }
+        }
+
+        return $texts;
     }
 
     /**

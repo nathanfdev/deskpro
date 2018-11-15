@@ -1,0 +1,11 @@
+id: french
+name: French
+nameLocal: 'Anglais (US)'
+locale: fr
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n > 1'
+  categories:
+    - one
+    - other

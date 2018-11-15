@@ -1,0 +1,11 @@
+id: turkish
+name: Turkish
+nameLocal: İngiliz
+locale: tr
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other

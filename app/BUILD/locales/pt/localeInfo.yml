@@ -1,0 +1,11 @@
+id: portuguese
+name: Portuguese
+nameLocal: Português
+locale: pt
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n > 1'
+  categories:
+    - one
+    - other

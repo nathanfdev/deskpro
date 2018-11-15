@@ -29,24 +29,30 @@ class PostBuild extends AbstractBuild
 
         foreach ($langPacks->getLangTitles(true) as $id => $title) {
             $this->out(sprintf('lang(%s).title = %s', $title, $id));
-            $this->container->getDb()->executeUpdate("UPDATE languages SET title = ? WHERE sys_name = ? AND title = ''", [$title, $id]);
 
             $info = $langPacks->getLangInfo($id);
-            $this->container->getDb()->executeUpdate('UPDATE languages SET has_user = ?, has_agent = ?, has_admin = ? WHERE sys_name = ?', [$info['has_user'], $info['has_agent'], $info['has_admin'], $id]);
-        }
-
-        // Update flags if theyre blank
-        $blankFlags = $this->container->getDb()->fetchAllCol("SELECT sys_name FROM languages WHERE flag_image = ''");
-        foreach ($blankFlags as $sysName) {
-            if (!$langPacks->hasLang($sysName)) {
-                continue;
-            }
-
-            $flag = $langPacks->getLangInfo($sysName, 'flag_image');
-            if ($flag) {
-                $this->out(sprintf('lang(%s).flag = %s', $flag, $sysName));
-                $this->container->getDb()->executeUpdate('UPDATE languages SET flag_image = ? WHERE sys_name = ?', [$flag, $sysName]);
-            }
+            $this->container->getDb()->executeUpdate('
+                UPDATE languages
+                SET
+                    title = ?,
+                    flag_image = \'\',
+                    locale = ?,
+                    plural_formula = ?,
+                    plural_categories = ?,
+                    has_user = 1,
+                    has_agent = 1,
+                    has_admin = 1,
+                    base_filepath = ?
+                WHERE sys_name = ?',
+                [
+                    $title,
+                    $info['locale'],
+                    $info['pluralRules']['formula'],
+                    implode(',', $info['pluralRules']['categories']),
+                    '%DP_ROOT%/locales/'.$info['locale'],
+                    $id,
+                ]
+            );
         }
 
         // Auto-install any new langs
@@ -180,6 +186,14 @@ class PostBuild extends AbstractBuild
         }
 
         $this->out('.. done recompiling CSS');
+
+        //------------------------------
+        // Managed custom phrases
+        //------------------------------
+
+        $this->out('Remove managed custom phrases');
+
+        $this->container->getDb()->executeUpdate('DELETE FROM phrases WHERE is_managed = 1');
 
         $this->out('Post upgrade done');
     }

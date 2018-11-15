@@ -1,0 +1,12 @@
+id: romanian
+name: Romanian
+nameLocal: Română
+locale: ro
+isRtl: false
+pluralRules:
+  plurals: 3
+  formula: '(n == 1) ? 0 : ((n == 0 || n != 1 && n % 100 >= 1 && n % 100 <= 19) ? 1 : 2)'
+  categories:
+    - one
+    - few
+    - other

@@ -1,0 +1,2185 @@
+agent.chat.added_as_participant: 'Résztvevőként hozzáadva'
+agent.chat.agent_chats: 'Ügyintézői beszélgetések'
+agent.chat.between_members: 'Beszélgetés az alábbi személyek között:'
+agent.chat.chat_history: 'Beszélgetés előzményei'
+agent.chat.chat_started_by: 'A beszélgetést kezdte'
+agent.chat.chat_transcript: 'A beszélgetés átirata'
+agent.chat.chat_with_x: 'Beszélgetés {{name}} nevű ügyintézővel/érdeklődővel'
+agent.chat.count_seconds:
+  one: '{{count}} másodperc'
+  other: '{{count}} másodperc'
+agent.chat.filter_title_assigned: 'Kijelölt beszélgetések'
+agent.chat.filter_title_mine: Beszélgetéseim
+agent.chat.filter_title_missed: 'Elmulasztott beszélgetések'
+agent.chat.in_department: '{{name}} részlegben'
+agent.chat.invite_agent: 'Ügyintéző meghívása'
+agent.chat.invite_another_agent: 'További ügyintéző meghívása'
+agent.chat.invite_no_agents: 'Nincs több meghívható ügyintéző.'
+agent.chat.invite_others: 'További személyek meghívása'
+agent.chat.join_chat: 'Csatlakozás a beszélgetéshez'
+agent.chat.label_assigned_others: 'További ügyintézők ebben a beszélgetésben'
+agent.chat.leave_chat_confirm: 'Biztosan ki akar lépni ebből a beszélgetésből?'
+agent.chat.leave_end: 'Beszélgetés befejezése és kilépés'
+agent.chat.leave_unassign: 'Saját magam eltávolítása és kilépés'
+agent.chat.list_title:
+  one: '1 Beszélgetés'
+  other: '{{count}} Beszélgetés'
+agent.chat.msg_agent_timeout: '{{agent_name}} időtúllépés miatt eltávolítva'
+agent.chat.msg_assigned_agent: 'A beszélgetéshez kijelölt ügyintéző: {{agent_name}}'
+agent.chat.msg_part_joined: '{{person_name}} csatlakozott a beszélgetéshez'
+agent.chat.msg_part_left: '{{person_name}} elhagyta a beszélgetést'
+agent.chat.msg_unassigned_agent: '{{agent_name}} el lett távolítva'
+agent.chat.my_open_chats: '''Folyamatban lévő beszélgetéseim'''
+agent.chat.new_agent_note_by: 'Új ügyintézőként hozzászólt: {{name}}'
+agent.chat.new_agent_reply_by: 'Új ügyintézőként válaszolt: {{name}}'
+agent.chat.new_chat: 'Új beszélgetés'
+agent.chat.new_ticket_by: 'Új jegy az alábbi személytől: {{name}} ({{email}})'
+agent.chat.new_user_reply_by: 'Új felhasználói válasz az alábbi személytől: {{name}} ({{email}})'
+agent.chat.no_email: 'Nincs email'
+agent.chat.no_online_agents: 'Nincs online ügyintéző'
+agent.chat.no_open_chats: 'Jelenleg nincs folyamatban lévő beszélgetés.'
+agent.chat.offline: 'Nem elérhető'
+agent.chat.open_chat: 'Beszélgetés megnyitása'
+agent.chat.other_agents: 'További ügyintézők'
+agent.chat.show_offline: 'Nem elérhető ügyintézők mutatása'
+agent.chat.snippets: Sablonok
+agent.chat.take_chat: 'Beszélgetés elkezdése'
+agent.chat.team_chats: 'Csoport beszélgetés'
+agent.chat.title_active_chats: 'Minden folyamatban lévő beszélgetés'
+agent.chat.title_chat_id: 'Beszélgetés száma: {{chat_id}}'
+agent.chat.title_ended: 'Befejezett beszélgetések'
+agent.chat.title_leave_chat_prompt: 'Elhagyja a beszélgetést?'''
+agent.chat.title_new_chats: 'Új beszélgetések'
+agent.chat.title_open: 'Folyamatban lévő beszélgetések'
+agent.chat.user_is_viewing: Érdeklődő
+agent.chat.user_typing: 'Üzenetet ír'
+agent.chat.warning: Figyelmeztetés
+agent.chat.warning_email_address_not_unique: 'A felhasználó jelenleg nincs bejelentkezve, így nem azonosítható. Lehetséges, hogy csalóval áll szemben, ne adjon ki bizalmas információt!'
+agent.chat.x_by_anonymous: 'Ismeretlen felhasználó, {{chat_id}}. számú beszélgetés'
+agent.chat.x_by_anonymousymous: 'Beszélgetés ismeretlen felhasználóval'
+agent.chat.you_have_been_invited: 'Önt meghívták egy beszélgetésbe.'
+agent.chrome.btn_add: Hozzáadás
+agent.chrome.btn_create: Létrehoz
+agent.chrome.btn_recent: Friss
+agent.chrome.chat_list_agents-online: '<span class="userchat-online-agents-count">0</span> online ügyintéző:'
+agent.chrome.chat_list_by-department: 'Részlegek szerint'
+agent.chrome.chat_list_heading_current-page: 'Jelenlegi oldal'
+agent.chrome.chat_list_heading_time: Idő
+agent.chrome.chat_list_heading_user: Felhasználó
+agent.chrome.chat_list_no-online-users: 'Nincs online felhasználó'
+agent.chrome.chat_list_online-users:
+  one: '<span class="count-online-users">1</span> online felhasználó'
+  other: '<span class="count-online-users">{{count}}</span> online felhasználó'
+agent.chrome.chat_logged-in: 'Beszélgetésre bejelentkezve'
+agent.chrome.chat_logged-out: 'Beszélgetésből kijelentkezve'
+agent.chrome.chat_online-agents:
+  one: '<span class="userchat-online-agents-count">{{count}}</span> ügyintéző'
+  other: '<span class="userchat-online-agents-count">{{count}}</span> ügyintéző'
+agent.chrome.chat_online-users:
+  one: '<span class="userchat-online-users-count">{{count}}</span> felhasználó'
+  other: '<span class="userchat-online-users-count">{{count}}</span> felhasználó'
+agent.chrome.chat_sign-in: 'Bejelentkezés beszélgetéshez'
+agent.chrome.chat_sign-out: 'Kijelentkezés beszélgetésből'
+agent.chrome.create_new-article: 'Új cikk'
+agent.chrome.create_new-download: 'Új letöltés'
+agent.chrome.create_new-feedback: 'Új visszajelzés'
+agent.chrome.create_new-news: 'Új hírek'
+agent.chrome.create_new-organization: 'Új szervezet'
+agent.chrome.create_new-person: 'Új személy'
+agent.chrome.create_new-task: 'Új feladat'
+agent.chrome.create_new-ticket: 'Új jegy'
+agent.chrome.create_new-tweet: 'Új jelzés'
+agent.chrome.hello-user: 'Üdvözlöm {{name}}'
+agent.chrome.help-contact-us: Kapcsolat
+agent.chrome.help-contact-us-explain: 'Lépjen velünk kapcsolatba <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> vagy közvetlenül emailen keresztül <a href="mailto:support@deskpro.com">support@deskpro.com</a>'
+agent.chrome.help-manuals: 'Felhasználási útmutató'
+agent.chrome.help-quickstart-guide-link: 'Amennyiben az Ön számára ismeretlen a DeskPRO alkalmazás, <a href="{{link}}">kattintson a linkre a DeskPRO rövid útmutatójának letöltéséhez</a>'
+agent.chrome.kbd-change-status-agent: 'Státusz megváltoztatása: ügyintézőre vár'
+agent.chrome.kbd-change-status-resolved: 'Státusz megváltoztatása: teljesített'
+agent.chrome.kbd-change-status-user: 'Státusz megváltoztatása: ügyfélre vár'
+agent.chrome.kbd-open-org: 'Szervezeti profil megnyitása'
+agent.chrome.kbd-open-send-actions: 'Küldési lehetőségek megnyitása'
+agent.chrome.kbd-open-snippets: 'Sablonok megnyitása'
+agent.chrome.kbd-open-user-profile: 'Felhasználó profiljának megnyitása'
+agent.chrome.kbd-send-reply: 'Válasz küldése'
+agent.chrome.kbd-shortcuts: Billentyűparancsok
+agent.chrome.link_help: Segítség
+agent.chrome.link_logout: Kijelentkezés
+agent.chrome.link_preferences: Tulajdonságok
+agent.chrome.nav_admin_settings: 'Admin beállítások'
+agent.chrome.nav_feedback: Visszajelzés
+agent.chrome.nav_reports: Jelentések
+agent.chrome.nav_search: Keresés
+agent.chrome.nav_tasks: Feladatok
+agent.chrome.nav_tickets: Jegyek
+agent.chrome.nav_userchat: 'Felhasználói beszélgetés'
+agent.chrome.notify_list-dismiss-all: 'Minden értesítés eltávolítása'
+agent.chrome.notify_list-new-messages: '<span class="notify-count">0</span> Új értesítések'
+agent.chrome.notify_list-no-notifications: 'Nincsenek új értesítések'
+agent.chrome.notify_list-view-dismissed: 'Eltávolított értesítések megtekintése'
+agent.chrome.quicksearch_adv-explain: 'A részletes kereséshez válasszon új alkalmazást:'
+agent.chrome.quicksearch_info: 'A gyorskereső segítségével kereshet a készletek között.'
+agent.chrome.quicksearch_title: Gyorskereső
+agent.chrome.quicksearch_title-articles: Cikkek
+agent.chrome.quicksearch_title-chat: Beszélgetés
+agent.chrome.quicksearch_title-downloads: Letöltések
+agent.chrome.quicksearch_title-feedback: Visszajelzés
+agent.chrome.quicksearch_title-news: Hírek
+agent.chrome.quicksearch_title-orgs: Szervezetek
+agent.chrome.quicksearch_title-people: Személyek
+agent.chrome.quicksearch_title-publish: Publikálás
+agent.chrome.quicksearch_title-tickets: Jegyek
+agent.chrome.recent_list-filter-info: 'A legutóbbi találatok szűrése'
+agent.chrome.recent_list-none: 'Ön még nem nyitott meg új fület'
+agent.chrome.search-show-more:
+  one: 'További {{count}} mutatása'
+  other: 'További {{count}} mutatása'
+agent.defaults.default_style: 'Alapértelmezett stílus'
+agent.defaults.team_lvl1_support: '1. szintű támogató'
+agent.defaults.team_lvl2_support: '2. szintű támogató'
+agent.defaults.team_support_managers: 'Támogató menedzser'
+agent.defaults.usergroup_agent_all_non_destructive: 'Minden nem ártalmas hatású jogosultság'
+agent.defaults.usergroup_agent_all_non_destructive_note: 'Az ügyintézőknek mindenhez van jogosultságuk, kivéve azokat a műveleteket, melyekkel kárt okoznának, ilyen pl.: a bejegyzések törlése.'
+agent.defaults.usergroup_agent_all_perms: 'Minden jogosultság'
+agent.defaults.usergroup_agent_all_perms_note: 'Az ügyintézőnek minden jogosultsága megvan'
+agent.defaults.usergroup_everyone: Mindenki
+agent.defaults.usergroup_everyone_note: 'Minden felhasználó, kivéve a vendégeket és a regisztrált tagokat.'
+agent.defaults.usergroup_registered: Regisztrált
+agent.defaults.usergroup_registered_note: 'Minden regisztrált személy a rendszerben'
+agent.emails.account_rec_dm_by: '{{account}} üzenetet kapott ettől a felhasználótól: {{user}}'
+agent.emails.account_rec_retweet_by: '{{account}}-t újratweetelte {{user}}'
+agent.emails.account_rec_tweet_by: '{{account}} tweetet kapott ettől a felhasználótól {{user}}'
+agent.emails.admin_password_reset_error: 'Nemrégiben megpróbálta újra beállítani a jelszavát. Biztonsági okok miatt az adminisztrátorok nem állíthatják be jelszavukat webes felületen.'
+agent.emails.admin_password_reset_instruction: 'Ehelyett kérem használja a parancssor eszközt a szerver terminálján:'
+agent.emails.agent_assigned_team_tweet: '{{agent}} kinevezett egy tweetet az Ön csoportja számára'
+agent.emails.agent_assigned_you_tweet: '{{agent}} kinevezett egy tweetet az Ön számára'
+agent.emails.agent_completed_task_you_created: '{{agent}} befejezte a {{title}} nevű feladatot, amit Ön hozott létre'
+agent.emails.alert_failed_login: 'Meghiúsult belépési kísérlet figyelmeztetés'
+agent.emails.alert_successful_login: 'Sikeres belépés figyelmeztetés'
+agent.emails.change_password_instructions: 'Az új jelszó beállításához, lépjen be az ügyintézői felületre és kattintson a "Tulajdonságok" linkre a képernyő bal felső sarkában.'
+agent.emails.deskpro_test_email: 'DeskPRO teszt email'
+agent.emails.deskpro_test_email_body: 'Ez a DeskPRO email rendszer tesztje.<br /><br />Ha Ön ezt megkapta, az email beállításai helyesek.'
+agent.emails.detected_as_forward: 'Az Ön által küldött emailt továbbított levélnek tekintjük.'
+agent.emails.email_change_merge: 'Ez az email megerősítésként szolgál, hogy össze akarja vonni a két meglévő helpdesk fiókját: {{old_email}} és {{new_email}}. Ha nem akarja összevonni a két fiókot vagy nem Ön kérte az összevonást, hagyja figyelmen kívül ezt az emailt. Az összevonás megerősítéséhez kattintson az alábbi linkre:'
+agent.emails.error_missing_marker_explain: 'Ez a válasz jelölő (reply marker) a válasz email-ek precíz feldolgozásához szükséges. Kérem, küldje el újra a válasz emailt, de ezúttal hagyja érintetlenül a válasz jelölőt.'
+agent.emails.error_no_reply_perm: 'Az Ön által küldött emailt nem fogadtuk, mert nincs jogosultsága erre a jegyre válaszolni. Az Ön válasza NEM lett elmentve és más email-ek, értesítések sem lettek elküldve.'
+agent.emails.error_reply_to_ticket_missing_marker: 'A #{{ticket_id}} számú jegyre adott email válaszából hiányzott a jelölő sor (marker line), mely így néz ki:'
+agent.emails.error_unknown_email: 'Az Ön által küldött emailt nem fogadtuk, mert ismeretlen címről küldte. Kérjük küldje újra az emailt olyan címről, melyet az helpdesk ügyintézői profiljában beállított.'
+agent.emails.first_seen: 'Először látta'
+agent.emails.fwd_dupe: 'A továbbított üzenetet nem fogadtuk el, mert a rendszerben már található egy létező jegy ugyanerre az üzenetre. Ön vagy valaki más már valószínűleg létrehozott egy jegyet ugyanerre az üzenetre. A már létező jegy száma az alábbi #{{old_ticket_id}}:'
+agent.emails.fwd_error_more_info: 'Erről a hibáról bővebb információt a DeskPRO oldalán talál:<br/><a href="http://support.deskpro.com/kb/articles/106">http://support.deskpro.com/kb/articles/106</a>'
+agent.emails.fwd_not_processed: 'Emiatt a hiba miatt az Ön email-jét töröltük. Nem jött létre új jegy és értesítést sem küldtünk, semmilyen más műveletet sem hajtottunk végre. Amennyiben egy felhasználó számára új jegyet szeretne létrehozni, kérjük használja az ügyintézői felület az alábbi helyen: <a href="{{url}}">{{url}}</a>'
+agent.emails.fwd_resend_without_fwd: 'Ha Ön NEM a felhasználó kérésére akart egy új jegyet létrehozni, akkor küldje újra az emailt a ''FW:'' vagy a ''FWD:'' előtag nélkül a tárgy mezőben. Ezzel Ön a saját szándékából fog létrehozni egy új jegyet.'
+agent.emails.invalid_fwd_email_address: '<b>nem tudtuk azonosítani az email címet</b> a felhasználó részéről az eredeti üzenetben. Kérjük ellenőrizze, hogy az email címet hozzáadták-e az üzenethez. Néhány esetben a levelező kliensek csak a nevet tüntetik fel, ezt a hibát Ön kijavíthatja, ha manuálisan viszi be az email címet.'
+agent.emails.invalid_fwd_email_parse: '<b>nem tudtuk elemezni az eredeti üzenetet</b> ezért nem tudtuk jeggyé alakítani a továbbított üzenetet.'
+agent.emails.invalid_fwd_try_attach: 'Amennyiben az Ön levelező kliense támogatja az eredeti üzenet csatolmányként történő továbbítását, kérjük próbálja meg így elküldeni az üzenetet a közvetlen továbbítás helyett. A jegyek ilyen módon történő továbbítását jobban tudja kezelni a DeskPRO.'
+agent.emails.login_url: 'Belépési URL'
+agent.emails.message-is-note: 'A következő üzenet egy belső ügyintézői megjegyzés.'
+agent.emails.name_reset_your_password: '{{name}} visszaállította az Ön ügyintézői fiókjának jelszavát'
+agent.emails.new_agent_reply_ticket_subject: '[#{{ticket.id}} ÜGYINTÉZŐ VÁLASZ] Re: {{ticket.subject}}'
+agent.emails.new_chat_message_from: 'Új üzenet a beszélgetésben ettől a személytől {{name}}'
+agent.emails.new_mention_ticket_subject: '[#{{ticket.id}} MEGEMLÍTVE] Re: {{ticket.subject}}'
+agent.emails.new_note_ticket_subject: '[#{{ticket.id}} MEGEJGYZÉS] Re: {{ticket.subject}}'
+agent.emails.new_user_reply_ticket_subject: '[#{{ticket.id}} FELHASZNÁLÓ VÁLASZ] Re: {{ticket.subject}}'
+agent.emails.newagent-about: 'A DeskPRO egy felhő alapú helpdesk szoftver, amit az Ön cége használ.'
+agent.emails.newagent-about-cloud: 'A DeskPRO egy felhő alapú helpdesk szoftver, amit az Ön cége használ.'
+agent.emails.newagent-about-cloud-demo: 'A DeskPRO egy felhő alapú helpdesk szoftver, amit az Ön cége éppen kipróbál.'
+agent.emails.newagent-about-demo: 'A DeskPRO egy felhő alapú helpdesk szoftver, amit az Ön cége éppen kipróbál.'
+agent.emails.newagent-about-pdf: 'Írtunk Önnek egy segédletet a legfontosabb dolgokról, amit ügyintézőként tudnia kell. A csatolmányban megtalálja, "Getting Started with DeskPRO.pdf".'
+agent.emails.newagent-created-account: 'Az Ön kollégája {{admin_name}} ({{admin_email}}) létrehozott egy  DeskPRO fiókot az Ön számára <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.'
+agent.emails.newagent-help: 'Amennyiben Önnek segítségre van szüksége, vagy kérdése van, kérjük látogasson el a DeskPRO támogatói oldalára az alábbi címen <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> vagy keressen meg bennünket közvetlenül az alábbi címen <a href="mailto:support@deskpro.com">support@deskpro.com</a>.'
+agent.emails.newagent-login-initial-password: 'Az Ön kezdeti jelszava: {{password}}'
+agent.emails.newagent-login-link: 'Itt léphet be: <a href="{{link}}">{{link}}</a>'
+agent.emails.newagent-login-your-email: 'Az Ön email címe: {{email}}'
+agent.emails.newagent-login-your-password: 'Megjegyzés: Önnek már van egy felhasználói fiókja ezen a helpdesken. Beléphet ügyintézőként a korábban beállított jelszóval.'
+agent.emails.newagent-welcome-to-deskpro: 'Üdvözöljük a DeskPRO-nál!'
+agent.emails.notice_account_login: 'Az Ön fiókjával sikeres belépés történt.'
+agent.emails.notice_login_attempt: 'Valaki megpróbált belépni az Ön fiókjával.'
+agent.emails.person_replied: '{{name}} válaszolt az alábbi üzenetre "{{subject}}"'
+agent.emails.referring_page: 'Vonatkozó oldal'
+agent.emails.reply_above_line: 'VÁLASZ FENT'
+agent.emails.reply_is_as_note: 'Válaszát belső ügyintézői megjegyzésként adtuk hozzá'
+agent.emails.reply_sent_to_ccs:
+  one: 'és {{count}} további címzett felhasználó:'
+  other: 'és {{count}} további címzett felhasználó:'
+agent.emails.reply_sent_to_user: 'Válaszát elküldjük a következő felhasználónak {{user}}'
+agent.emails.subject_email_change_merge: 'Email változás és fiók összevonás megerősítése'
+agent.emails.subject_error_forwarded_email: 'Hiba az Ön által továbbított emaillel: {{subject}}'
+agent.emails.subject_error_forwarded_email_dupe: 'Kétszeresen továbbított email: {{subject}}'
+agent.emails.subject_error_with_message: 'Hiba az Ön üzenetével: {{subject}}'
+agent.emails.subject_error_with_reply: 'Hiba az Ön alábbi tárgyra küldött válaszával: {{subject}}'
+agent.emails.subject_new_agent: 'Az Ön új DeskPRO helpdesk ügyintézői fiókja'
+agent.emails.subject_new_ticket: '[#{{ticket.id}} ÚJ JEGY] {{ticket.subject}}'
+agent.emails.subject_new_ticket_assigned: '[#{{ticket.id}} ÚJ JEGY + KINEVEZETT CSOPORT] {{ticket.subject}}'
+agent.emails.subject_new_ticket_assignedteam: '[#{{ticket.id}} ÚJ JEGY + KINEVEZETT CSOPORT] {{ticket.subject}}'
+agent.emails.task_assigned_due_today: 'Az Ön számára kiosztott feladat {{title}} határideje a mai nap.'
+agent.emails.task_assigned_team_due_today: 'Az Ön csoportja számára kiosztott feladat {{title}} határideje a mai nap.'
+agent.emails.task_assigned_to_you_by: '{{title}} feladatot {{agent}} Önhöz osztotta ki'
+agent.emails.task_assigned_to_your_team_by: '{{title}} feladatot {{agent}} az Ön csoportjához osztotta ki'
+agent.emails.task_completed: '{{title}} feladat befejezve'
+agent.emails.task_due_today: '{{title}} feladat határideje a mai nap'
+agent.emails.ticket_action_assigned: 'KINEVEZETT SZEMÉLY'
+agent.emails.ticket_action_assigned_team: 'KINEVEZETT CSOPORT'
+agent.emails.ticket_action_deleted: TÖRÖLVE
+agent.emails.ticket_action_followed: KÖVETVE
+agent.emails.ticket_action_status_agent: 'ÜGYINTÉZŐRE VÁR'
+agent.emails.ticket_action_status_resolved: TELJESÍTVE
+agent.emails.ticket_action_status_user: 'FELHASZNÁLÓRA VÁR'
+agent.emails.ticket_action_updated: FRISSÍTVE
+agent.emails.ticket_sla_failed: 'SLA SIKERTELEN'
+agent.emails.ticket_sla_warning: 'SLA RIASZTÁS'
+agent.emails.ticket_was_created: '{{name}} létrehozott egy új jegyet'
+agent.emails.tweet_assigned_to_you_by: 'A tweetet {{agent}} Önhöz osztotta ki'
+agent.emails.updated_ticket_assigned: 'és kinevezte Önhöz'
+agent.emails.updated_ticket_assigned_team: 'és kinevezte az Ön {{team}} csoportjához'
+agent.emails.updated_ticket_followed: 'és hozzáadta követőként'
+agent.emails.user_ip: 'Felhasználói IP'
+agent.emails.user_replied_to_tweet: '{{name}} válaszolt az Ön tweetjére'
+agent.emails.user_replied_to_tweet_you_wrote: '{{name}} válaszolt egy twetre, melyet Ön küldött az alábbi fiókra {{account}}.'
+agent.emails.user_updated_ticket: '{{name}} frissítette az alábbi jegyet "{{subject}}"'
+agent.emails.view_account_tweets: '{{account}} tweetjének megtekintése'
+agent.emails.view_delegated_tasks: 'Az Ön által kiküldött feladatok megtekintése'
+agent.emails.view_online_at: 'Online megtekintés itt:'
+agent.emails.view_team_tweets: 'Az Ön csoportjának tweet-jeinek megtekintése'
+agent.emails.view_ticket_online: 'Jegyek online megtekintése'
+agent.emails.view_your_tasks: 'Az Ön feladatainak megtekintése'
+agent.emails.view_your_teams_tasks: 'Az Ön csoportjának feladatainak megtekintése'
+agent.emails.view_your_tweets: 'Az Ön tweet-jeinek megtekintése'
+agent.emails.your_initial_password: 'Az Ön kezdeti jelszava'
+agent.feedback.any_category: 'Bármely kategória'
+agent.feedback.any_status: 'Bármely státusz'
+agent.feedback.count_votes: '{{display_count}} értékelés|{{display_count}} értékelés'
+agent.feedback.feedback_deleted: 'Ez a visszajelzés törölve lett'
+agent.feedback.least_voted_on_top: 'A legkevesebbet értékelt legfelül'
+agent.feedback.list_title:
+  one: '1 benyújtás'
+  other: '{{count}} benyújtás'
+agent.feedback.merge_feedback: 'Visszajelzések összevonása'
+agent.feedback.merge_feedback_note: 'Az összevont visszajelzés leírása hozzászólásként lesz hozzáadva a megtartott visszajelzéshez.'
+agent.feedback.merge_feedback_submit: 'Vonja össze ezen két visszajelzés benyújtását'
+agent.feedback.merge_howto: 'Nyisson meg egy újabb visszajelzés fület az összevonáshoz'
+agent.feedback.new_feedback: 'Új visszajelzés'
+agent.feedback.newest_on_top: 'A legújabb legfelül'
+agent.feedback.no_feedback_cats_error: 'Nincs meghatározott típus. Mielőtt hozzáadhatna típusokat a visszajelzés szekcióhoz, meg kell határoznia egy típust az adminisztrátor felületen.'
+agent.feedback.no_labels_explain: 'Még nem címkézett fel egyetlen visszajelzést sem. Nézzen meg egy visszajelzés benyújtást, hogy felcímkézhesse.'
+agent.feedback.oldest_on_top: 'A legrégebbi legfelül'
+agent.feedback.popularity_least_most: 'Népszerűség (legkevésbé-leginkább)'
+agent.feedback.popularity_most_least: 'Népszerűség (leginkább-legkevésbé)'
+agent.feedback.showing_results: 'Eredmények mutatása'
+agent.feedback.status_active: Aktív
+agent.feedback.status_closed: Bezárva
+agent.feedback.status_deleted: Törölve
+agent.feedback.status_hidden: Rejtett
+agent.feedback.status_new: Új
+agent.feedback.top_voted_on_top: 'A legtöbbet értékelt legfelül'
+agent.feedback.update_filter: 'Szűrő frissítése'
+agent.feedback.user_submitted_new_feedback: '{{name}} benyújtott egy új visszajelzést'
+agent.feedback.vote_for_this_feedback: 'Értékelje ezt a visszajelzést'
+agent.feedback.votes_least_most: 'Értékelés (legkevésbé-leginkább)'
+agent.feedback.votes_most_least: 'Értékelés (leginkább-legkevésbé)'
+agent.general.actions: Műveletek
+agent.general.activity_stream: 'Cselekmények listája'
+agent.general.add: Hozzáadás
+agent.general.add_a_label: 'Címke hozzáadása'
+agent.general.add_a_new_criteria: 'Új feltétel hozzáadása'
+agent.general.add_a_new_term: 'Új kifejezés hozzáadása'
+agent.general.add_action_term: 'Művelet hozzáadása'
+agent.general.add_as_related: 'Hozzáadás kapcsolódóként'
+agent.general.add_bulk: 'Több ügyintéző hozzáadása'
+agent.general.add_category: 'Kategória hozzáadása'
+agent.general.add_comment: 'Megjegyzés hozzáadása'
+agent.general.add_criteria_term: 'Feltétel hozzáadása'
+agent.general.add_labels: 'Címke hozzáadása'
+agent.general.add_me: 'Saját magam hozzáadása'
+agent.general.add_note: 'Megjegyzés hozzáadása'
+agent.general.add_product: 'Termék hozzáadása'
+agent.general.add_search_term: 'Keresési kifejezés hozzáadása'
+agent.general.add_ticket_reply: 'Jegy válasz hozzáadása'
+agent.general.added_by: 'hozzáadva {{name}} által'
+agent.general.address: Cím
+agent.general.admin_interface: 'Admin felület'
+agent.general.advanced: Haladó
+agent.general.after: később
+agent.general.agent: Ügyintéző
+agent.general.agent_email_address: 'Ügyintézői email cím'
+agent.general.agent_interface: 'Ügyintézői felület'
+agent.general.agent_is_not_me: 'Ez az ügyintéző nem én vagyok'
+agent.general.agent_team: 'Ügyintéző csoport'
+agent.general.agent_waiting_x: 'Ügyintéző várakozik {{time}}'
+agent.general.agents: Ügyintézők
+agent.general.ago: óta
+agent.general.alert: Figyelmeztetés
+agent.general.all: Mind
+agent.general.all_words: 'Minden szó'
+agent.general.always_notify_agents: 'Mindig értesítsen ügyintézőt'
+agent.general.always_set_this_urgency: 'Mindig ezt a fontossági szinten állítsa be'
+agent.general.and: és
+agent.general.and_grouped_by: 'csoportosítás az alábbiak szerint'
+agent.general.andor: és/vagy
+agent.general.anonymous: ismeretlen
+agent.general.any: bármely
+agent.general.any_language: 'Bármely nyelv'
+agent.general.any_sla: 'Bármely SLA'
+agent.general.any_words: 'Bármely szó'
+agent.general.apply: Alkalmaz
+agent.general.apply_sla: 'SLA alkalmazása'
+agent.general.apply_to_x_selections: 'Műveletek alkalmazása {{placeholder}} kiválasztottakra'
+agent.general.approve: Elfogad
+agent.general.archive: Archivál
+agent.general.article: Cikk
+agent.general.articles: Cikkek
+agent.general.ask_delete_selected: 'Biztosan törli a kijelölt elemeket?'
+agent.general.assign: Kinevezés
+agent.general.assign_agent: 'Ügyintéző kinevezése'
+agent.general.assign_me: 'Saját magam kinevezése'
+agent.general.assign_team: 'Csoport kinevezése'
+agent.general.assign_to: 'Kiosztás az alábbiakhoz'
+agent.general.assign_to_me: 'Kiosztás magamnak'
+agent.general.assign_to_my_team: 'Kiosztás a csoportom számára'
+agent.general.assign_to_primary_team: 'Kiosztás az elsődleges csoporthoz'
+agent.general.assigned: Kiosztva
+agent.general.assigned_agent: 'Kinevezett ügyintéző'
+agent.general.assigned_agent_id: 'Ügyintéző azonosítója'
+agent.general.assigned_team: 'Kinevezett csoport'
+agent.general.assigned_to: 'Kinevezve az alábbiakhoz'
+agent.general.assignment: Kinevezés
+agent.general.assignments: Kinvezések
+agent.general.attach: Csatolás
+agent.general.attach_description: 'Kattintson ide a fájl csatolásához. Csatolmányokat gyorsabban is hozzáadhat, ha egérrel egyszerűen megfogja és áthúzza őket.'
+agent.general.attach_error_failed_upload: 'A csatolmány feltöltése sikertelen volt (Ön állította le?). Próbálja újra.'
+agent.general.attach_error_no_file: 'Válasszon egy feltöltendő fájlt'
+agent.general.attach_error_not_allowed_exts: 'Az Ön által feltöltött fájl nem engedélyezett.'
+agent.general.attach_error_not_in_allowed_exts: 'Csak az alábbi fájl típusok engedélyezettek: {{error_detail}}'
+agent.general.attach_error_server_error: 'Szerverhiba történt a csatolmányok elfogadása során. Kérem, próbálja újra.'
+agent.general.attach_error_size: 'A csatolmány mérete túlságosan nagy.'
+agent.general.attachments: Csatolmányok
+agent.general.author: Szerző
+agent.general.awaiting_agent_validation: 'Várakozás az ügyintéző jóváhagyására'
+agent.general.awaiting_email_validation: 'Várakozás az email cím jóváhagyására'
+agent.general.awaiting_validation: 'Várakozás jóváhagyásra'
+agent.general.banned: Tiltott
+agent.general.before: előtt
+agent.general.between: között
+agent.general.billing_interface: 'Számlázási felület'
+agent.general.blank: Üres
+agent.general.browser_agent: 'Ügyintéző keresése'
+agent.general.by_agent: 'Egy ügyintéző által'
+agent.general.by_agent_for_user: 'Egy ügyintéző által egy ügyfél nevében'
+agent.general.by_anyone: 'Bárki által'
+agent.general.by_name: '{{name}} által'
+agent.general.by_person_at_date: '{{person}} által ezen a napon: {{date}}'
+agent.general.by_user: 'Felhasználó által'
+agent.general.calendar: Naptár
+agent.general.cancel: Mégse
+agent.general.categories: Kategóriák
+agent.general.category: Kategória
+agent.general.cc_address: 'További címzettek címei'
+agent.general.change_password: 'Jelszó megváltoztatása'
+agent.general.change_pic_for: 'Kép megváltoztatása {{name}} részére'
+agent.general.change_status: 'Állapot megváltoztatása'
+agent.general.change_user: 'Felhasználó megváltozatása'
+agent.general.changed: Megváltoztatva
+agent.general.changed_from: 'Megváltoztatva erről'
+agent.general.changed_from_gte: 'Megváltoztatva >=-ről'
+agent.general.changed_from_lte: 'Megváltoztatva <=-ről'
+agent.general.changed_to: 'Megváltoztatva erre'
+agent.general.changed_to_gte: 'Megváltoztatva >=-re'
+agent.general.changed_to_include: 'Megváltoztatva, hogy tartalmazza'
+agent.general.changed_to_lte: 'Megváltoztatva <=-re'
+agent.general.changed_to_remove: 'Megváltoztatva eltávolítandóra'
+agent.general.changelog: 'Változtatások napló'
+agent.general.chat: Beszélgetés
+agent.general.chat_ended: 'A beszélgetés befejeződött'
+agent.general.chats: Beszélgetések
+agent.general.choose_a_person: 'Személy kiválasztása'
+agent.general.choose_a_type: 'Típus kiválasztása'
+agent.general.choose_criteria: 'Feltétel kiválasztása...'
+agent.general.choose_person_for_ticket: 'Személy kiválasztása ehhez a jegyhez'
+agent.general.click_learn_more: 'További információkért kattintson ide'
+agent.general.click_to_upload_picture: 'Új kép feltöltése'
+agent.general.close_lc: bezárás
+agent.general.close_tab: 'Fül bezárása'
+agent.general.comment: Megjegyzés
+agent.general.comments: Megjegyzések
+agent.general.compare: Összehasonlítás
+agent.general.comparing_revisions: 'Módosítások összehasonlítása'
+agent.general.confirm: Megerősítés
+agent.general.contact_address: Cím
+agent.general.contact_instant_messaging: 'Azonnali üzenet'
+agent.general.contact_phone: Telefon
+agent.general.contains: tartalmaz
+agent.general.content_matches_summary: 'Találatok: {{pattern}}'
+agent.general.continue: Folytatás
+agent.general.copy_permalink: 'Permalink másolása'
+agent.general.copy_to_clipboard: 'Másolás a vágóasztalra'
+agent.general.copy_url: 'URL másolása'
+agent.general.count: Számláló
+agent.general.count_chat:
+  one: '1 Beszélgetés'
+  other: '{{count}} Beszélgetés'
+agent.general.count_tickets:
+  one: '1 jegy'
+  other: '{{count}} jegy'
+agent.general.count_votecount_votes:
+  one: '1 szavazat'
+  other: '{{count}} szavazat'
+agent.general.countries: Országok
+agent.general.create: Létrehoz
+agent.general.create_a_new_organization: 'Új szervezet létrehozása'
+agent.general.create_a_new_person: 'Új személy létrehozása'
+agent.general.create_article: 'Cikk létrehozása'
+agent.general.create_content: 'Tartalom létrehozása'
+agent.general.create_deal: 'Ajánlat létrehozása'
+agent.general.create_download: 'Letöltés létrehozása'
+agent.general.create_feedback: 'Visszajelzés létrehozása'
+agent.general.create_news: 'Új bejegyzés létrehozása'
+agent.general.create_status: 'Státusz létrehozása'
+agent.general.create_ticket: 'Jegy létrehozása'
+agent.general.created: Létrehozva
+agent.general.created_and_published: 'Létrehozva és publikálva'
+agent.general.created_timeago_by_x_on_y: 'Létrehozva {{timeago}} {{name}} által az alábbi napon {{date}}'
+agent.general.criteria: Feltétel
+agent.general.current_agent: 'Jelenlegi ügyintéző'
+agent.general.current_computer_tz: 'Jelenlegi idő az Ön számítógépe szerint'
+agent.general.current_page: 'Jelenlegi oldal'
+agent.general.current_profile_tz: 'Jelenlegi idő az Ön profilja szerint'
+agent.general.date: Dátum
+agent.general.date_archived: 'Archiválás dátuma'
+agent.general.date_completed: 'Befejezés dátuma'
+agent.general.date_created: 'Létrehozás dátuma'
+agent.general.date_created_newestoldest: 'Létrehozás dátuma (új-régi)'
+agent.general.date_created_oldestnewest: 'Létrehozás dátuma (régi-új)'
+agent.general.date_due: Határidő
+agent.general.date_of_last_agent_reply: 'A legutóbbi ügyintézői válasz dátuma'
+agent.general.date_of_last_reply: 'A legutóbbi válasz dátuma'
+agent.general.date_of_last_user_reply: 'A legutóbbi felhasználói válasz dátuma'
+agent.general.date_published: 'Publikálás dátuma'
+agent.general.date_resolved: 'Teljesítés dátuma'
+agent.general.dates_and_times: 'Dátumok és időpontok'
+agent.general.day_created: 'Létrehozás napja'
+agent.general.day_created_summary: 'létrehozás napja {{op}} in {{days}}'
+agent.general.day_last_user_reply: 'Utolsó felhasználói válasz napja'
+agent.general.day_user_replay_summary: 'Utolsó felhasználói válasz napja {{op}} in {{days}}'
+agent.general.days: nap
+agent.general.deal_stage: 'Ajánlat állapota'
+agent.general.default: Alapértelmezett
+agent.general.default_working_hours: 'Alapértelmezett munkaórák'
+agent.general.delete: Törlés
+agent.general.delete_comment: 'Megjegyzés törlése'
+agent.general.delete_content: 'Tartalom törlése'
+agent.general.delete_ticket: 'Jegy törlése'
+agent.general.deleted: Törölve
+agent.general.deleted_by: 'Törölve {{name}} által'
+agent.general.deleted_reason: 'Törlés oka'
+agent.general.department: Részleg
+agent.general.departments: Részlegek
+agent.general.description: Leírás
+agent.general.detail: Részlet
+agent.general.details: Részletek
+agent.general.dev_validating: 'DEV: hitelesítés'
+agent.general.dimentions: Dimenziók
+agent.general.disable_agent_notifications: 'Ügyintézői értesítések kikapcsolása'
+agent.general.disable_all_notifications: 'Minden értesítés kikapcsolása'
+agent.general.disable_user_notifications: 'Felhasználói értesítések kikapcsolása'
+agent.general.disapprove: 'Jóváhagyás megtagadása'
+agent.general.disapprove_input: 'Indok vagy megjegyzés küldése a szerzőnek'
+agent.general.dismiss: Elutasít
+agent.general.display_count_selected: '{{display_count}} kiválasztva'
+agent.general.display_name: 'Név megjelenítése'
+agent.general.display_options: 'Opciók megjelenítése'
+agent.general.do_not_refresh: 'Ne frissítsen'
+agent.general.does_not_contain: 'nem tartalmazza'
+agent.general.does_not_include: 'nem beleértendő'
+agent.general.does_not_include_label: 'nem beleértve a címkét'
+agent.general.domain_is_summary: 'Az email domain: {{domain}}'
+agent.general.done: Kész
+agent.general.download_log: 'Letöltések listája'
+agent.general.download_pdf: 'PDF letöltése'
+agent.general.download_url: 'URL letöltése'
+agent.general.downloads: Letöltések
+agent.general.dp_updates: 'DeskPRO Frissítések'
+agent.general.drop_here_to_attach: 'Fájl áthúzása ide a válaszhoz történő csatoláshoz'
+agent.general.drop_here_to_insert_image: '<strong>image</strong> áthúzása ide a válaszba történő belillesztéshez'
+agent.general.drop_here_to_upload: 'Fájl áthúzása ide új kép feltöltéséhez'
+agent.general.edit: Szerkesztés
+agent.general.edit_categories: 'Kategóriák szerkesztése'
+agent.general.edit_comment: 'Megjegyzések  szerkesztése'
+agent.general.edit_properties: 'Tulajdonságok szerkesztése'
+agent.general.edit_search_terms: 'Keresési szavak szerkesztése'
+agent.general.email_address: 'Email cím'
+agent.general.email_agent_new_agent_reply: 'Email: Ügyintéző értesítése új ügyintézői válaszról'
+agent.general.email_agent_new_reply: 'Email: Ügyintéző értesítése új válaszról'
+agent.general.email_agent_new_ticket: 'Email: Ügyintéző értesítése új ügyintézői jegyről'
+agent.general.email_domains: 'Email Domainek'
+agent.general.email_is_summary: 'Email: {{email}}'
+agent.general.email_send_by_robot_summary: 'Az emailt egy robot küldte (automatikus válaszként)'
+agent.general.email_sent_by_robot: 'Az emailt egy robot küldte'
+agent.general.email_user: 'Email a felhasználónak'
+agent.general.email_user_auto_new_reply: 'Email: felhasználó automatikus értesítése új válaszról'
+agent.general.email_user_auto_new_ticket: 'Email: felhasználó automatikus értesítése új jegyről'
+agent.general.email_user_new_agent_reply: 'Email: felhasználó automatikus értesítése új ügyintézői válaszról'
+agent.general.email_user_new_ticket: 'Email: felhasználó értesítése új jegyről'
+agent.general.email_user_validation_alert: 'Email: figyelmeztetés felhasználó jóváhagyásáról'
+agent.general.enter_a_message: 'Üzenet bevitele'
+agent.general.enter_a_title: 'Cím bevitele'
+agent.general.enter_organization_name: 'Szervezet nevének bevitele...'
+agent.general.enter_search_terms: 'Keresési kifejezések bevitele'
+agent.general.error: Hiba
+agent.general.error_email_address: 'Kérem, adjon meg valós email címet'
+agent.general.error_email_dupe_agent: 'Az Ön által megadott email címet már használja egy másik ügyintéző'
+agent.general.error_form_correct: 'Kérem, javítsa ki az alábbi hibákat az adatlapon'
+agent.general.error_invalid_phone_number: 'A megadott telefonszám formátuma nem érvényes'
+agent.general.error_password_invalid: 'A jelszó nem felel meg az ügyintézői jelszavakkal szemben támasztott elvásároknak'
+agent.general.error_password_mismatch: 'A két jelszó nem egyezik'
+agent.general.error_password_short: 'Kérem, olyan jelszót adjon meg, mely legalább {{len}} karakterből áll'
+agent.general.error_your_name: 'Kérem, írja be a teljes nevét'
+agent.general.escalation: Eszkaláció
+agent.general.everyone: Mindenki
+agent.general.existing_picture: 'Létező kép'
+agent.general.failed: 'Nem sikerült'
+agent.general.failure: Sikertelen
+agent.general.favorite: Kedvenc
+agent.general.feedback: Visszajelzés
+agent.general.field_name: '{{field}} mező'
+agent.general.field_name_title: 'Mező neve'
+agent.general.field_type_choice: 'Előre meghatározott válaszok'
+agent.general.field_type_data: Adat
+agent.general.field_type_date: 'Dátum választó alkalmazás'
+agent.general.field_type_display: 'HTML kijelzés'
+agent.general.field_type_hidden: 'Rejtett mező'
+agent.general.field_type_text: Szövegdoboz
+agent.general.field_type_textarea: 'Többsoros szövegmező'
+agent.general.field_type_textemail: 'Email szövegdoboz'
+agent.general.field_type_texturl: 'URL szövegdoboz'
+agent.general.field_type_toggle: 'Be/Ki jelölőnégyzet'
+agent.general.fields: Mezők
+agent.general.file: Fájl
+agent.general.filename: 'Fájl név'
+agent.general.files: Fájlok
+agent.general.filesize: 'Fájl méret'
+agent.general.fileurl: 'Fájl URL'
+agent.general.filter: Szűrő...
+agent.general.filter_checks_selected: 'Szűrők listája esetén, jelölje be a jelölőnégyzeteket a kiválasztási sornál'
+agent.general.filter_match: 'Szűrési találat'
+agent.general.filter_moves_cursor: 'Szűrők listája esetén, mozgassa a kiválasztott sor kurzorát'
+agent.general.filter_opens_selected: 'Szűrők listája esetén, nyissa meg a kiválasztott sort'
+agent.general.filters: Szűrők
+agent.general.find: Keresés
+agent.general.find_or_create_org: '''Szervezet keresése vagy létrehozása'
+agent.general.find_person_with_criteria: 'Keressen meg egy személyt a fenti feltételek megadásával.'
+agent.general.flag: Jelölő
+agent.general.flag_blue: Kék
+agent.general.flag_green: Zöld
+agent.general.flag_orange: Narancssárga
+agent.general.flag_pink: Rózsaszín
+agent.general.flag_purple: Lila
+agent.general.flag_red: Piros
+agent.general.flag_yellow: Citromsárga
+agent.general.flagged: Megjelölt
+agent.general.flagged_with_color_summary: '{{color}} színnel megjelölt'
+agent.general.focus_reply_box: 'Válasz box a középpontban'
+agent.general.follow: Követés
+agent.general.followers: Követők
+agent.general.force_email_validation: 'Email hitelesítés kényszerítése'
+agent.general.found_article_helpful_or_not: '{{up_votes}} személy hasznosnak gondolta ezt a cikket, {{down_votes}} személy nem gondolta hasznosnak ezt a cikket'
+agent.general.frequency: Gyakoriság
+agent.general.from: Tól/Től
+agent.general.full_image: 'Teljes méretű kép'
+agent.general.gateway_is_not_summary: 'Ez az email nem az alábbi személyhez tartozik: {{names}}'
+agent.general.gateway_is_summary: 'Ez az email az alábbi személyhez tartozik: {{names}}'
+agent.general.generate_password: 'Jelszó beállítása'
+agent.general.greater_than: 'nagyobb mint'
+agent.general.grouped_by: 'Csoportosítva az alábbiak szerint'
+agent.general.height: Magasság
+agent.general.help: Segítség
+agent.general.hidden: Rejtett
+agent.general.hidden_awaiting_validating_spam: 'Rejtett (hitelesítésre vár, spam)'
+agent.general.hidden_deleted: 'Rejtett: tölörve'
+agent.general.hidden_status: 'Rejtett státusz'
+agent.general.hidden_unpublished: 'Rejtett: nem publikált'
+agent.general.hidden_validating: 'Rejtett: hitelesítés'
+agent.general.hide: Elrejtés
+agent.general.hostname: 'Host neve'
+agent.general.hour: Óra
+agent.general.hours: óra
+agent.general.id: Azonosító
+agent.general.inbox: Bejövő
+agent.general.include: tartalmaz
+agent.general.includes_label: 'tartalmazza az alábbi címkéket'
+agent.general.increase_decrease_urgency: 'Sürgősségi szint emelése/csökkentése'
+agent.general.initial_visit: 'Előzetes átnézés'
+agent.general.insert: Beszúrás
+agent.general.insert_attach: 'Csatolmány hozzáadása'
+agent.general.insert_content: 'A lap teljes tartalmának beszúrása a válaszba'
+agent.general.insert_image: 'Kép beszúrása'
+agent.general.insert_into_article: 'Beszúrás a cikkbe'
+agent.general.insert_link: 'Link beszúrása'
+agent.general.insert_thumbnail: 'Előkép beszúrása'
+agent.general.insert_title: '{{title}} beszúrása'
+agent.general.inserts_file_link: 'Link beszúrása a fájlba, kattintható szövegként.'
+agent.general.inserts_full_image: 'Teljes méretű kép beszúrása.'
+agent.general.inserts_plaintext_url: 'Szöveg formátumó URL beszúrása a fájlba.'
+agent.general.inserts_thumbnail_with_link: 'Előkép beszúrása, mely a teljes méretű képhez vezet.'
+agent.general.ip_address: 'IP cím'
+agent.general.ip_addresses: 'IP címek'
+agent.general.is: van
+agent.general.is_a_new_user: 'Új felhasználó'
+agent.general.is_exactly: pontosan
+agent.general.is_greater_than: 'nagyobb mint'
+agent.general.is_less_than: 'kisebb mint'
+agent.general.is_not: nem
+agent.general.is_not_a_new_user: 'nem új felhasználó'
+agent.general.is_not_published: 'Nem publikált'
+agent.general.is_not_x: 'nem {{field}}'
+agent.general.is_published: Publikálva
+agent.general.is_x: '{{field}}'
+agent.general.just_me: 'Csak én'
+agent.general.knowledgebase: Tudástár
+agent.general.label: Címke
+agent.general.label_picture: Kép
+agent.general.label_revisions: Módosítások
+agent.general.labels: Címkék
+agent.general.labels_added: 'Címkék hozzáadva'
+agent.general.labels_cloud: Felhő
+agent.general.labels_list: Lista
+agent.general.labels_removed: 'Címkék eltávolítva'
+agent.general.landing_page: 'Megérkezési oldal'
+agent.general.language: Nyelv
+agent.general.last_activity: 'Utolsó tevékenység'
+agent.general.last_login: 'Utolsó belépés'
+agent.general.last_login_time: 'Utolsó belépés ideje'
+agent.general.leave_unchanged: 'Változatlanul hagy'
+agent.general.less_than: 'kevesebb mint'
+agent.general.license_interface: 'Engedélyezési felület'
+agent.general.linked_chat: 'Linkelt beszélgetés'
+agent.general.linked_thumbnail: 'Linkelt előkép'
+agent.general.list_as_article_attachment: 'Listázás cikkhez kapcsolódó csatolmányként'''
+agent.general.loading: Betöltés
+agent.general.loading_dot: Betöltés...
+agent.general.loading_interface: 'Felület betöltése'
+agent.general.local_time: 'Helyi idő'
+agent.general.log_in: Belépés
+agent.general.log_out: Kilépés
+agent.general.logged_in_as: 'Belépve mint'
+agent.general.lost: Elveszett
+agent.general.lost_field: 'Elveszett {{field}}'
+agent.general.lost_password: 'Elfelejtett jelszó'
+agent.general.lost_qm: 'elveszett?'
+agent.general.macros: Makrók
+agent.general.manage_macros: 'Makrók kezelése'
+agent.general.mark_spam: 'Megjelölés spamként'
+agent.general.matches: Találatok
+agent.general.me: Én
+agent.general.members: Tagok
+agent.general.mentions: Említések
+agent.general.merge: Összevonás
+agent.general.merge_keep_this: 'Alábbiak megtartása:'
+agent.general.merge_merge_this: 'Alábbiak összevonása'
+agent.general.merge_switch_btn: Váltás
+agent.general.message: Üzenet
+agent.general.message_history: 'Üzenetek előzményeik'
+agent.general.messages: Üzenetek
+agent.general.minute: Perc
+agent.general.minutes: perc
+agent.general.misc: Mindenféle
+agent.general.mobile: Mobil
+agent.general.months: hónap
+agent.general.more: Több
+agent.general.move_to_tab: 'Mozgatás fülhöz'
+agent.general.msg_agent_timeout: 'Ügyintéző időtúllépés miatt kilépve'
+agent.general.msg_user_timeout: 'Felhasználó időtúllépés miatt kilépve'
+agent.general.my_account: 'Az én fiókom'
+agent.general.my_team: 'Az én csoportom'
+agent.general.name: Név
+agent.general.name_az: 'Név (A-Z)'
+agent.general.name_is_summary: 'Neve: {{name}}'
+agent.general.name_za: 'Név (Z-A)'
+agent.general.never: Soha
+agent.general.new: Új
+agent.general.new_article: 'Új cikk'
+agent.general.new_comment: 'Új hozzászólás'
+agent.general.new_download: 'Új letöltés'
+agent.general.new_feedback: 'Új visszajelzés'
+agent.general.new_filter: 'Új szűrő'
+agent.general.new_note: 'Új megjegyzés'
+agent.general.new_organization: 'Új szervezet'
+agent.general.new_password: 'Új jelszó'
+agent.general.new_person: 'Új személy'
+agent.general.new_pic: 'Új kép'
+agent.general.new_task: 'Új feladat'
+agent.general.new_ticket: 'Új jegy'
+agent.general.new_user_summary: 'egy új felhasználó'
+agent.general.news: Hírek
+agent.general.no: Nem
+agent.general.no_agent_assigned: 'Nincs ügyintéző kinevezve'
+agent.general.no_chat_labels: 'Ön nem címkézett fel egyetlen beszélgetést sem. Nézzen meg egy beszélgetést a címkézéshez.'
+agent.general.no_content: 'Nincs tartalom'
+agent.general.no_org_labels: 'Ön nem címkézett fel egyetlen szervezetet sem.'
+agent.general.no_people_labels: 'Ön nem címkézett fel egyetlen személyt sem. Nézzen meg egy személyt a címkézéshez.'
+agent.general.no_team: 'Nincs csoport'
+agent.general.no_ticket_labels: 'Ön nem címkézett fel egyetlen jegyet sem. Nézzen meg egy jegyet a címkézéshez.'
+agent.general.none: 'Egyik sem'
+agent.general.not_changed_from: 'Nem lett megváltoztatva erről'
+agent.general.not_changed_from_lte: 'Nem lett megváltoztatva <=-ről'
+agent.general.not_changed_to: 'Nem lett megváltoztatva erre'
+agent.general.not_changed_to_gte: 'Nem lett megváltoztatva >=-re'
+agent.general.not_matches_regex: 'nem egyezik a regex-szel'
+agent.general.not_new_user_summary: 'Nem új felhasználó'
+agent.general.note: Megjegyzés
+agent.general.note_attn: Megjegyzés
+agent.general.note_by: 'Megjegyzés az alábbi személytől {{name}}'
+agent.general.notes: Megjegyzések
+agent.general.notice_only_when_urgency_lower: 'Csak akkor válassza, ha a sürgősségi szint alacsony'
+agent.general.num_downloads: 'Letöltések száma'
+agent.general.num_views: 'Megtekintések száma'
+agent.general.number_of_comments: 'Hozzászólások száma'
+agent.general.number_of_downloads: 'Letöltések száma'
+agent.general.number_of_members: 'Tagok száma'
+agent.general.number_of_ratings: 'Értékelő szavazatok száma'
+agent.general.number_of_tickets: 'Jegyek száma'
+agent.general.off: Kikapcsolva
+agent.general.okay: Rendben
+agent.general.online_now: 'Most elérhető'
+agent.general.open: Megnyitás
+agent.general.open_tab: 'Fül megnyitása'
+agent.general.open_tickets: 'Jegy megnyitása'
+agent.general.or_sep: vagy
+agent.general.order_by: 'Rendezés az alábbiak szerint'
+agent.general.ordered_by: 'Rendezés az alábbiak szerint'
+agent.general.org_position: 'Szervezet pozíciója'
+agent.general.organization: Szervezet
+agent.general.organization_name: 'Szervezet neve'
+agent.general.organizations: Szervezetek
+agent.general.originated_interface: 'Létrehozó felület'
+agent.general.other: Egyéb
+agent.general.other_properties: 'Egyéb tulajdonságok'
+agent.general.owner: Tulajdonos
+agent.general.page: Oldal
+agent.general.page_x_of_y: '{{page}} / {{num_pages}}'
+agent.general.parent: Forrás
+agent.general.parent_category: 'Forrás kategória'
+agent.general.password: Jelszó
+agent.general.pause: Szüneteltetés
+agent.general.pending: Folyamatban
+agent.general.people: Személyek
+agent.general.percent_helpful_subphrase: '{{percent}}% hasznos ({{subphrase}})'
+agent.general.perform_actions: 'Művelet végrehajtása'
+agent.general.performer: Végrehajtó
+agent.general.performing_updates: 'A helpdesk éppen frissítést végez.'
+agent.general.permissions: Engedélyek
+agent.general.person: Személy
+agent.general.person_id: 'Felhasználó azonosító'
+agent.general.phone: Telefon
+agent.general.phone_number: Telefonszám
+agent.general.phrase: Kifejezés
+agent.general.please_wait: 'Kérem, várjon'
+agent.general.popular_feedback_only: 'Csak a népszerű visszajelzések'
+agent.general.popularity: Népszerűség
+agent.general.position: Pozíció
+agent.general.prev: Előző
+agent.general.print: Nyomtatás
+agent.general.priorities: Prioritások
+agent.general.priority: Prioritás
+agent.general.private: Személyes
+agent.general.product: Termék
+agent.general.products: Termékek
+agent.general.profile: Profil
+agent.general.properties: Tulajdonságok
+agent.general.public: Nyilvános
+agent.general.publish: Idézet
+agent.general.quote: Idézet
+agent.general.rating: Értékelés
+agent.general.read: Elolvasva
+agent.general.reason: Ok
+agent.general.record_deleted: 'Ez a bejegyzés törölve lett.'
+agent.general.record_marked_spam: 'Ez a bejegyzés spamként lett megjelölve.'
+agent.general.recycle_bin: Kuka
+agent.general.recycle_bin_none: 'Nincs elem a kukában.'
+agent.general.redirect_continue: 'Folytatás {{url}} felé'
+agent.general.redirect_explain: 'Ez a link az alábbi külső oldalra vezet {{host}}. Biztosan folytatja?'
+agent.general.redirect_page_makeup: '{{num_images}} kép és {{num_scripts}} script felhasználásával készült)'
+agent.general.redirect_page_title: 'Oldal címe'
+agent.general.redirect_server_ip: 'Szerver IP'
+agent.general.redirect_title: 'A helpdesk elhagyása'
+agent.general.referrer: Referáló
+agent.general.refresh_now: 'Frissítés most'
+agent.general.refresh_required: 'Frissítés szükséges'
+agent.general.refresh_required_auto: 'A böngésző automatikusa frissíteni fog {{secs}} másodperc múlva, ha nem kattint az alábbiak valamelyikére.'
+agent.general.refresh_required_explain: '({{name}}) admin változtatásokat hajtott végre, kérem, frissítse a böngészőt.'
+agent.general.registered: Regisztrált
+agent.general.registered_downloads: 'Regisztrált letöltések'
+agent.general.registered_views: 'Regisztrált megtekintések'
+agent.general.related_articles: 'Kapcsolódó cikkek'
+agent.general.related_content: 'Kapcsolódó tartalom'
+agent.general.related_downloads: 'Kapcsolódó letöltések'
+agent.general.related_feedback: 'Kapcsolódó visszajelzés'
+agent.general.related_news: 'Kapcsolódó hírek'
+agent.general.relative_time: 'Relatív idő'
+agent.general.remove: Eltávolítás
+agent.general.remove_as_related: 'Eltávolítás kapcsolódóként'
+agent.general.remove_favorite: 'Kedvencek eltávolítása'
+agent.general.remove_labels: 'Címkék eltávolítása'
+agent.general.repeat: Ismét
+agent.general.repeat_password: 'Jelszó megismétlése'
+agent.general.reply: Válasz
+agent.general.reply_to_own_tickets: 'Válasz a saját és a csoport jegyeire'
+agent.general.reports_interface: 'Jelentések felület'
+agent.general.requirements: Követelmények
+agent.general.requirements_complete: 'Követelmények teljesítve'
+agent.general.requires_validation: 'Hitelesítés szükséges'
+agent.general.reset: Visszaállítás
+agent.general.reset_password: 'Jelszó visszaállítás'
+agent.general.revision: Felülvizsgálat
+agent.general.save: Mentés
+agent.general.save_settings: 'Beállítások mentése'
+agent.general.saved: Elmentve
+agent.general.saving: Mentés
+agent.general.search: Keresés
+agent.general.search_terms: 'Keresési kifejezések'
+agent.general.seconds: másodperc
+agent.general.select_a_department: 'Részleg kiválasztása'
+agent.general.select_agent: 'Ügyintéző kiválasztása'
+agent.general.select_your_region: 'Régió kiválasztása'
+agent.general.send: Küldés
+agent.general.send_welcome_email: 'Üdvözlő email küldése'
+agent.general.server_error_explain: 'Szerverhiba, a legutóbbi művelet nem sikerült. Kérem, próbálja újra.'
+agent.general.session_started: 'Folyamat elkezdődött'
+agent.general.set_a_position: 'Állítsa be a pozíciót...'
+agent.general.set_agent: 'Állítsa be az ügyintézőt'
+agent.general.set_agent_team: 'Állítsa be az ügyintéző csoportot'
+agent.general.set_assignments: 'Állítsa be a kinevezést'
+agent.general.set_category: 'Állítsa be a kategóriát'
+agent.general.set_department: 'Állítsa be a részleget'
+agent.general.set_field_name: 'Állítsa be a következőt: {{field}}'
+agent.general.set_flag: 'Állítsa be a jelzést'
+agent.general.set_new_pic: 'Állítsa be az új képet'
+agent.general.set_password: 'Jelszó beállítása'
+agent.general.set_password_manual: 'Új jelszó bevitele'
+agent.general.set_priority: 'Állítsa be a prioritást'
+agent.general.set_product: 'Állítsa be a terméket'
+agent.general.set_status: 'Állítsa be a státuszt'
+agent.general.set_type: 'Állítsa be a típust'
+agent.general.set_urgency: 'Állítsa be a sürgősséget'
+agent.general.set_user_field_name: 'Állítsa be az alábbi felhasználó mezőt: {{field}}'
+agent.general.set_workflow: 'Állítsa be a munkafolyamatot'
+agent.general.settings: Beállítások
+agent.general.show: Mutat
+agent.general.showing: Mutat
+agent.general.showing_results_x_of_y: 'Eredmények mutatása {{display_count}} / {{size}}'
+agent.general.since_time: '{{time}} óta'
+agent.general.sla_status: 'SLA státusz'
+agent.general.slas: SLA-k
+agent.general.snippet_text_placeholder: 'Sablon szöveg'
+agent.general.snippets: Sablonok
+agent.general.snippets_description: 'Sablonok megnyitása'
+agent.general.sort_asc: NÖV.
+agent.general.sort_asc_highlow: Alacsony-magas
+agent.general.sort_by: 'Rendezés az alábbiak szerint'
+agent.general.sort_desc: CSÖKK.
+agent.general.sort_desc_highlow: Magas-alacsony
+agent.general.source_code: Forráskód
+agent.general.status: Státusz
+agent.general.status_is: 'A státusz az következő: {{status}}'
+agent.general.statuses: Státusz
+agent.general.stop_processing_other_triggers: 'További indítások leállítása'
+agent.general.subject: Tárgy
+agent.general.summary: Összefoglaló
+agent.general.system_user: Rendszer
+agent.general.tabs_close_all: 'Minden fül bezárása'
+agent.general.tabs_close_current: 'Fül bezárása'
+agent.general.tabs_close_others: 'Minden más fül bezárása'
+agent.general.tabs_reopen: 'Újra megnyit:'
+agent.general.tasks: Feladatok
+agent.general.team: Csoport
+agent.general.teams: Csoportok
+agent.general.template: Minta
+agent.general.text: Szöveg
+agent.general.there_are_no_results: 'Nincs eredmény'
+agent.general.ticket: Jegy
+agent.general.ticket_escalations: 'Jegy kiterjesztése'
+agent.general.ticket_gateway_account: 'Jegy Gateway fiók'
+agent.general.ticket_gateway_address: 'Jegy Gateway cím'
+agent.general.ticket_id: 'Jegy azonosító'
+agent.general.ticket_ref: 'Jegy ref'
+agent.general.ticket_starter: 'Jegy indító'
+agent.general.ticket_triggers: 'Jegy triggers'
+agent.general.tickets: Jegyek
+agent.general.time_created: 'Létrehozás ideje'
+agent.general.time_created_summary: 'Létrehozás ideje {{op}} {{hour}}:{{minute}}:00'
+agent.general.time_of_last_user_reply: 'Az utolsó felhasználói válasz ideje'
+agent.general.time_open: 'Megnyitás ideje'
+agent.general.time_since_creation: 'Létrehozás óta eltelt idő'
+agent.general.time_until_first_response: 'Az első válaszig eltelt idő'
+agent.general.time_until_resolution: 'A jegy teljesítéséig eltelt idő'
+agent.general.time_user_reply_summary: 'Az utolsó felhasználói válasz ideje {{op}} {{hour}}:{{minute}}:00'
+agent.general.time_waiting: 'Várakozási idő'
+agent.general.timezone: Időzóna
+agent.general.title: Cím
+agent.general.to: Címzett
+agent.general.to_address: 'Címzett címe'
+agent.general.total_time_waiting: 'Összes várakozási idő'
+agent.general.total_user_waiting_x: 'Összes felhasználói várakozási idő {{time}}'
+agent.general.translate_from_x_to_y: 'Fordítás erről a nyelvről: {{x}} erre: {{y}}'
+agent.general.translation: Fordítás
+agent.general.translations: fordítások
+agent.general.triggers_auto_close_resolve_agent_reply: 'Felhasználóra váró automatikusan teljesített jegyek'
+agent.general.triggers_auto_close_resolve_user_reply: 'Felhasználóra váró automatikusan teljesített jegyek'
+agent.general.triggers_auto_close_warn_user: 'Felhasználók figyelmeztetése az automatikusan teljesített jegyeikről'
+agent.general.triggers_urgency_base: 'Alapértelmezett sürgősségi beállítás új jegyek esetén'
+agent.general.twitter_username: 'Twitter felhasználói név'
+agent.general.type: Típus
+agent.general.types: Típusok
+agent.general.tz_wrong_explain: 'A profilban elmentett időzóna nem egyezik a számítógép időzónájával.'
+agent.general.ucfirst_edit: Szerkesztés
+agent.general.unassign: 'Kiosztásra vár'
+agent.general.unassigned: 'Kiosztásra vár'
+agent.general.undelete: 'Törlés visszavonása'
+agent.general.unfollow: 'Követés megszüntetése'
+agent.general.unformatted: 'Nem formázott'
+agent.general.unknown_agent: 'ismeretlen ügyintéző'
+agent.general.unpublish: 'Publikálás visszavonása'
+agent.general.unread: Olvasatlan
+agent.general.unsaved_changes: 'El nem mentett változások'
+agent.general.unsaved_changes_were_restored: 'El nem mentett változások visszaállítása.'
+agent.general.unspam: 'Nem  spam'
+agent.general.update: Frissítés
+agent.general.update_region_question: 'Akarja most frissíteni a régiót?'
+agent.general.update_tz_region: 'Régió időzónájának frissítése'
+agent.general.updated_by: 'Frissítve az alábbi személy által: {{name}}'
+agent.general.upload: Feltöltés
+agent.general.upload_explain: 'Kattintson a feltöltés gombra vagy húzza át ide a fájlt.'
+agent.general.upload_vcard_for: 'Névjegy feltöltése {{name}} részére'
+agent.general.urgency: Sürgősség
+agent.general.urgency_enter_negative_number: '(Üssön be egy negatív számot a sürgősség csökkentéséhez)'
+agent.general.user: Felhasználó
+agent.general.user_agent: 'Ügyintéző felhasználó'
+agent.general.user_agents: 'Ügyintéző felhasználók'
+agent.general.user_field: 'Ügyintéző mező'
+agent.general.user_interface: 'Ügyintéző felület'
+agent.general.user_time_until_resolution: 'Felhasználó várakozási ideje a jegy teljesítéséig'
+agent.general.user_title: 'Felhasználó megszólítása'
+agent.general.user_waiting: 'Várakozó felhasználó'
+agent.general.user_waiting_x: 'Várakozó felhasználó  {{time}}'
+agent.general.usergroup: 'Felhasználói csoport'
+agent.general.usergroup_everyone: Mindenki
+agent.general.usergroups: 'Felhasználói csoportok'
+agent.general.username: Felhasználónév
+agent.general.users: Felhasználók
+agent.general.usersources: 'Felhasználó források'
+agent.general.validate: Hitelesítés
+agent.general.validate_comment: 'Hozzászólás hitelesítése'
+agent.general.value: Érték
+agent.general.verified: Megerősítve
+agent.general.via: által
+agent.general.view: Nézet
+agent.general.view_all_x_chats:
+  one: '1 beszélgetés megtekintése'
+  other: 'Összes beszélgetés {{count}} megtekintése'
+agent.general.view_all_x_tickets:
+  one: '1 jegy megtekintése'
+  other: 'Összes jegy {{count}} megtekintése'
+agent.general.view_in_user_interface: 'Megtekintés a felhasználói felületen'
+agent.general.view_more: 'Továbbiak megtekintése'
+agent.general.view_profile: 'profil megtekintése'
+agent.general.visitor_id: 'Látogató azonosítója'
+agent.general.votes: Szavazatok
+agent.general.warning: Figyelmeztetések
+agent.general.web_interface: 'Web felület'
+agent.general.website_embed: 'Weboldal beágyazva'
+agent.general.website_widget: 'Weboldal alkalmazás'
+agent.general.weeks: hét
+agent.general.when: Mikor
+agent.general.width: Szélesség
+agent.general.window_navigation: 'Ablak navigáció'
+agent.general.workflow: Munkafolyamat
+agent.general.workflows: Munkafolyamatok
+agent.general.working_hours: Munkaórák
+agent.general.x_after_y: '{{field}} {{value}} után'
+agent.general.x_before_y: '{{field}} {{value}} előtt'
+agent.general.x_down_votes:
+  one: '1 leértékelő szavazat'
+  other: '{{count}} leértékelő szavazat'
+agent.general.x_include_y: '{{field}} beleértve {{value}}'
+agent.general.x_is_between_y_and_z: '{{field}} {{value1}} és {{value2}} között'
+agent.general.x_is_greater_than_y: '{{field}} nagyobb mint {{value}}'
+agent.general.x_is_less_than_y: '{{field}} kisebb mint {{value}}'
+agent.general.x_is_not_y: '{{field}} nem {{value}}'
+agent.general.x_is_y: '{{field}} azonos {{value}}'
+agent.general.x_not_include_y: '{{field}} nem beleértve {{value}}'
+agent.general.x_selected: '{{num_placeholder}} kiválasztva'
+agent.general.x_up_votes:
+  one: '1 szavazat'
+  other: '{{count}} szavazat'
+agent.general.years: év
+agent.general.your_email_address: 'Az Ön email címe'
+agent.general.your_teams: 'Az Ön csoportjai'
+agent.interface.app-billing: Számlázás
+agent.interface.assign_to_self: 'Ossza ki hozzám'
+agent.interface.chat-notification-vol: 'Beszélgetés értesítés hangereje'
+agent.interface.click_icon_to_add_filter: 'Kattintson ide {{link}} új szűrő létrehozásához'
+agent.interface.click_icon_to_show_filters: 'Kattintson ide <span class="gear-icon"></span> a szűrők mutatásához'
+agent.interface.close_current_tab: 'Jelenlegi fül bezárása'
+agent.interface.create_ticket_person: 'Jegy létrehozása ennek a személynek'
+agent.interface.creation: Létrehozás
+agent.interface.deskpro_agent_interface: 'DeskPRO ügyintéző felület'
+agent.interface.error_report_disclaimer: 'Figyelem! Nem válaszolunk minden hibaüzenetre. Amennyiben kérdése van vagy szeretne kapcsolatba lépni velünk ezzel a hibával kapcsolat, kérem, keressen minket ezen az email címen {{email}}'
+agent.interface.error_report_submitting: 'Hibajelentés beküldése ...'
+agent.interface.error_report_thank_you: 'Köszönjük, hogy beküldte a hibajelentést.'
+agent.interface.focus_notes_box: 'Fókuszálás a megjegyzések dobozra'
+agent.interface.go_to_next_tab: 'Továbblépés a következő fülre'
+agent.interface.go_to_previous_tab: 'Továbblépés az előző fülre'
+agent.interface.kbd_change_status_agent: 'Státusz megváltoztatása: ügyintézőre vár'
+agent.interface.kbd_change_status_resolved: 'Státusz megváltoztatása: teljesített'
+agent.interface.kbd_change_status_user: 'Státusz megváltoztatása: felhasználóra vár'
+agent.interface.kbd_ctrl_left: ctrl+bal
+agent.interface.kbd_ctrl_right: ctrl+jobb
+agent.interface.kbd_ctrl_shift_left: ctrl+shift+bal
+agent.interface.kbd_ctrl_shift_right: ctrl+shift+jobb
+agent.interface.kbd_open_org_profile: 'Szervezeti profil megnyitása'
+agent.interface.kbd_open_send_options: 'Küldési műveletek megnyitása'
+agent.interface.kbd_open_snippets: 'Sablonok megnyitása'
+agent.interface.kbd_open_user_profile: 'Felhasználói profil megnyitása'
+agent.interface.kbd_send_reply: 'Válasz küldése'
+agent.interface.kbd_up_or_down: 'fel vagy le'
+agent.interface.key_close_tab: 'Fül bezárása'
+agent.interface.key_left_tab: 'Bal oldali fül kiválasztása'
+agent.interface.key_right_tab: 'Jobb oldali fül kiválasztása'
+agent.interface.keyboard: Billentyűzet
+agent.interface.keyboard_shortcuts: Billentyűparancsok
+agent.interface.major_items_appear_here: 'A jegyek, felhasználók, szervezetek, cikkek, hírek, letöltések és visszajelzések itt jelennek meg.'
+agent.interface.open_new_article_form: 'Új cikk űrlap megnyitása'
+agent.interface.open_new_download_form: 'Új letöltési űrlap megnyitása'
+agent.interface.open_new_feedback_form: 'Új visszajelzési űrlap megnyitása'
+agent.interface.open_new_news_form: 'Új hírek űrlap megnyitása'
+agent.interface.open_new_organization_form: 'Új szervezeti űrlap megnyitása'
+agent.interface.open_new_person_form: 'Új személy űrlap megnyitása'
+agent.interface.open_new_task_form: 'Új feladat űrlap megnyitása'
+agent.interface.open_new_ticket_form: 'Új jegy űrlap megnyitása'
+agent.interface.powered_by: Szolgáltatja
+agent.interface.quick-search-placeholder: Keresés
+agent.interface.report_this_error_to_deskpro: 'Jelentse ezt a hibát a DeskPRO-nak'
+agent.interface.search_for_text_or_a_phrase: 'Szöveg vagy kifejezés keresése'
+agent.interface.search_in_types: 'Keresés a típusokban'
+agent.interface.set_ticket_resolved: 'Jegy teljesítve beállítása'
+agent.interface.toggle_mute: 'Lenémítás kapcsoló'
+agent.interface.viewbtn-1col: '1 oszlopos nézet'
+agent.interface.viewbtn-2col: '2 oszlopos nézet'
+agent.interface.viewbtn-normal: 'Lista és fül nézet'
+agent.interface.viewbtn-source: 'Szűrés kapcsoló és keresési oszlop'
+agent.interface.viewbtn-tab: 'Csak fül nézet'
+agent.interface.viewbtn-table: 'Eredmények táblás megtekintése'
+agent.login.account_locked_message: 'Többszöri sikertelen belépési kísérlet miatt a fiókját zároltuk. Ennyi ideig {{timeago}} nem fog tudni belépni'
+agent.login.alert_fields_must_match: 'A két jelszó nem egyezik.'
+agent.login.alert_too_short: 'Kérem adjon meg olyan jelszót, mely legalább 4 karaktert tartalmaz.'
+agent.login.back_to_login: 'Vissza a bejelentkezési űrlaphoz'
+agent.login.browser_requirements: 'Böngésző követelményei'
+agent.login.email_instructions: 'Email útmutatások'
+agent.login.enter_new_password: 'Új jelszó megadása'
+agent.login.enter_password: 'Adja meg a jelszavát'
+agent.login.forgot_password: 'Elfelejtette a jelszavát?'
+agent.login.has_logged_out: 'Sikeresen kijelentkezett.'
+agent.login.ie_compat_mode_explain: 'Az Internet Explorer egyes verzióiban található egy ún. "Kompatibilátás Nézet", melynek segítségével a régi weboldalak is működtethetők a legújabb technológiával. Előfordulhat, hogy ez a funkció tévesen kapcsolódik be. Ha Ön IE 8-at vagy IE9-et használ és még mindig a böngésző követelményeivel kapcsolatos képernyőt látja, akkor valószínű, hogy a fenti funkció be van kapcsolva. A DeskPRO használatához ki kell kapcsolnia ezt a funkciót:'
+agent.login.ie_compat_mode_step1: 'Az Eszközök menüben válassza a Kompatibilátás Nézet beállításait'
+agent.login.ie_compat_mode_step2: 'Az Eszközök menüben válassza a Kompatibilátás Nézet beállításait'
+agent.login.ie_compat_mode_step3: 'Győződjön meg róla, hogy a helpdesk URL nincs a listában. Amennyiben ott van, kattintson rá, majd kattintson az Eltávolítás gombra. Szintén győződjön meg arról, hogy a "minden weboldalt Kompatibilátás Nézet-ben jelenítsen meg" ki van kapcsolva. Amennyiben a DeskPRO-t intraneten használja, szintén ki kell kapcsolnia az "intranet oldalak megtekintése Kompatibilátás Nézet-ben." funkciót'
+agent.login.ie_compat_mode_step4: 'Zárja be ezt az ablakot és frissítse az oldalt'
+agent.login.ie_compat_mode_title: 'IE8-at vagy későbbi verziót használ? <a href="{{url}}">Győződjön meg róla, hogy a Kompatibilátás Nézet nincs engedélyezve</a>'
+agent.login.ie_use_chrome_frame: 'Másik megoldásként, telepítheti a <a href="http://www.google.com/chromeframe">Google Chrome Frame</a>'
+agent.login.login_failed: 'Érvénytelen belépés. Próbálja újra.'
+agent.login.notice_outdated_browser: 'Az adminisztrátori és az ügyintézői felület modern böngészőt kíván. Úgy látjuk, hogy az Ön böngészője túl régi a DeskPRO használatához. Frissítse böngészőjét a legújabb verzióra vagy telepítsen egy másik böngészőt.'
+agent.login.password_was_reset: 'Az Ön jelszavát sikeresen visszaállítottunk.'
+agent.login.remember_me: Emlékeztessen
+agent.login.reset-password-info: 'Adja meg az email címét, hogy a jelszó visszaállításával kapcsolatos információkat elküldhessük:'
+agent.login.reset-password-sent: 'Küldtünk egy üzenetet az Ön email címére a jelszó visszaállításával kapcsolatos információkkal.'
+agent.login.sent_pw_reset_instructions: 'Küldtünk egy üzenetet az Ön által megadott email címére a jelszó visszaállításával kapcsolatos információkkal.'
+agent.login.session_timeout: 'Az Ön ideje lejárt, lépjen be újra.'
+agent.login.supported_browsers: 'Az alábbi böngészők támogatottak'
+agent.login.version_x_or_later: 'v{{version}} vagy későbbi'
+agent.media.choose_file_from_computer: 'Válasszon egy fájlt a számítógépről'
+agent.media.choose_files: 'Fájlok kiválasztása'
+agent.media.crop_and_scale: 'Levágás és méretezés'
+agent.media.download_file: 'Fájl letöltése'
+agent.media.drop_here: 'vagy húzzon át fájlokat ebbe az ablakba'
+agent.media.file_attached_to_thing: '{{filename}} csatolva ide {{subphrase}} {{link}}'
+agent.media.file_name: Fájlnév
+agent.media.file_size: Fájlméret
+agent.media.insert_edited_image: 'Szerkesztett kép beszúrása'
+agent.media.insert_image: 'Kép beszúrása'
+agent.media.insert_link_to_file: 'Link beszúrása a fájlba'
+agent.media.library: Könyvtár
+agent.media.media: Média
+agent.media.no_files_selected: 'Nincs a csatoláshoz kiválasztott fájl.'
+agent.media.previously_uploaded: 'Korábban feltöltött'
+agent.media.recent_uploads: 'Legutóbbi feltöltések'
+agent.media.scale: Mérték
+agent.media.ticket: jegy
+agent.media.upload_file: 'Fájl feltöltése'
+agent.organizations.add_person: 'Személy hozzáadása ehhez a szervezethez'
+agent.organizations.browse_all_members: 'Minden tag tallózása'
+agent.organizations.click_set_manager: 'Kattintson a szervezeti menedzserként történő beállításhoz.'
+agent.organizations.create_organization: 'Szervezet létrehozása'
+agent.organizations.email_domain_assoc: 'Email Domain párosítás'
+agent.organizations.email_domain_assoc_add: 'Új domain hozzáadása'
+agent.organizations.email_domain_assoc_explain: 'Az ezt a domaint tartalmazó email címek felhasználói automatikusan hozzá lesznek rendelve ehhez a szervezethez.'
+agent.organizations.email_domain_assoc_move:
+  one: '1 felhasználó hozzárendelése'
+  other: '{{count}} felhasználó hozzárendelése'
+agent.organizations.email_domain_assoc_move_all:
+  one: '1 felhasználó hozzárendelése, aki már egy másik szervezethez tartozik'
+  other: '{{count}} felhasználó hozzárendelése, aki már egy másik szervezethez tartozik'
+agent.organizations.email_domain_assoc_none: 'Email domain beállítása felhasználók automatikus hozzárendeléséért ehhez a szervezethez.'
+agent.organizations.email_domain_assoc_remove: 'Email domain eltávolítása'
+agent.organizations.email_domain_assoc_remove_users:
+  one: 'Email domain eltávolítása és 1 felhasználó eltávolítása ettől a szervezettől'
+  other: 'Email domain eltávolítása és {{count}} felhasználó eltávolítása ettől a szervezettől'
+agent.organizations.email_domain_assoc_title: 'Email Domain hozzárendelése ehhez a személyhez {{name}}'
+agent.organizations.enter_position: 'Pozíció megadása'
+agent.organizations.is_empty: 'Ennek a szervezetnek nincsenek tagjai.'
+agent.organizations.list_title:
+  one: '1 szervezet'
+  other: '{{count}} szervezet'
+agent.organizations.no_slas: 'Ehhez a szervezethez nem lesz automatikusan SLA hozzárendelve.'
+agent.organizations.org_manager_click_to_remove: 'Szervezeti menedzser. Kattintson az eltávolításhoz.'
+agent.people.act_reg: 'Regisztrált egy fiókot'
+agent.people.act_replied_ticket: 'Válaszolt egy jegyre:'
+agent.people.act_submitted_ticket: 'Benyújtott egy jegyet:'
+agent.people.add_address: 'Cím hozzáadása'
+agent.people.add_an_email_address: 'Email cím hozzáadása'
+agent.people.add_another: 'másik hozzáadása'
+agent.people.add_facebook_profile: 'Facebook profil hozzáadása'
+agent.people.add_im: 'Azonnali üzenet fiók hozzáadása'
+agent.people.add_linkedin_profile: 'LinkedIn profil hozzáadása'
+agent.people.add_phone: 'Telefonszám hozzáadása'
+agent.people.add_twitter_profile: 'Twitter profil hozzáadása'
+agent.people.add_website: 'Weboldal URL hozzáadása'
+agent.people.address_city: Város
+agent.people.address_postal: Irányítószám
+agent.people.address_state: Állam/Megye
+agent.people.and_came_from: 'és innét érkezett'
+agent.people.anonymous_user: 'Ismeretlen felhasználó {{id}}'
+agent.people.confirm_remove_email: 'Biztosan el akarja távolítani ezt az email címet?'
+agent.people.confirm_remove_phone: 'Biztosan el akarja távolítani ezt a telefonszámot?'
+agent.people.contact_info: Kapcsolat
+agent.people.contact_info_for_x: 'Kapcsolat ehhez a személyhez {{name}}'
+agent.people.count_members:
+  one: '{{count}} tag'
+  other: '{{count}} tag'
+agent.people.create_person: 'Személy létrehozása'
+agent.people.creation_by: Létrehozta
+agent.people.delete_user: 'Felhasználó törlése'
+agent.people.delete_user_and_ban_email: 'Felhasználó törlése és email letiltása'
+agent.people.disable_account: 'Fiók elérhetetlenné tétele'
+agent.people.double_click_set_name: 'Dupla kattintás a név beállításához'
+agent.people.download_vcard: 'Névjegy letöltése'
+agent.people.drop_your_vcard_here: 'Húzza át ide a névjegyet'
+agent.people.email_awaiting_validation: 'Hitelesítésre váró email'
+agent.people.enable_account: 'Fiók elérhetővé tétele'
+agent.people.enter_name_here: 'Név megadása itt'
+agent.people.find_person: 'Személy megtalálása'
+agent.people.im_account_placeholder: 'Fiók felhasználóneve'
+agent.people.is_agent: 'Egy ügyintéző'
+agent.people.list_title:
+  one: '1 személy'
+  other: '{{count}} személy'
+agent.people.login_as_user: 'Belépés felhasználóként'
+agent.people.make_primary_email: 'elsődlegessé tétel'
+agent.people.manager: Menedzser
+agent.people.member_of_teams: 'Ők a következő csoport tagjai:'
+agent.people.merge_people: 'Személyek összevonása'
+agent.people.merge_people_info: 'Ennek az eszköznek a segítségével két felhasználót összevonhat egy felhasználóvá. A törölt személy jegyei, beszélgetései, megjegyzései és számos más adat hozzáadódik az megtartott felhasználóhoz. A másik felhasználó végérvényesen törölve lesz.'
+agent.people.merge_submit_btn: 'Ezen két profil összevonása'
+agent.people.new_registration: 'Új regisztráció'
+agent.people.new_registration_name: 'Új regisztráció: {{name}}'
+agent.people.no_picture: 'Nincs kép'
+agent.people.no_position_set: 'Nincs pozíció beállítva'
+agent.people.no_slas: 'Nincs erre a személyre automatikusan alkalmazható SLA'
+agent.people.on_page: oldalon
+agent.people.online_now: 'Most online'
+agent.people.other_user_content_being_deleted: 'A felhasználóhoz tartozó egyéb tartalmak is törölve lesznek:'
+agent.people.person_ban_confirm: 'Biztosan ki akarja tiltani ezt a felhasználót?'
+agent.people.person_delete_confirm: 'Biztosan törölni akarja ezt a felhasználót?'
+agent.people.person_reset_password_confirm: 'Ez egy jelszó visszaállítási linket fog küldeni.'
+agent.people.phone_country_placeholder: Ország
+agent.people.phone_number_placeholder: Telefonszám
+agent.people.primary_email: elsődleges
+agent.people.reg_agent: 'Ügyintéző által létrehozott felhasználó'
+agent.people.reg_gateway: 'A helpdesknek beküldött email alapján létrehozott felhasználó'
+agent.people.reg_website: 'Weboldalon regisztrált felhasználó'
+agent.people.remove_picture: 'Kép eltávolítása'
+agent.people.since: Óta
+agent.people.title_hon: Nagytiszteletű
+agent.people.title_miss: Hölgy
+agent.people.title_mr: Úr
+agent.people.title_mrs: Hölgy
+agent.people.title_ms: Hölgy
+agent.people.title_rev: Tiszteletes
+agent.people.update_picture: 'Kép frissítése'
+agent.people.upload_new_picture: 'Új kép feltöltése'
+agent.people.upload_vcard: 'Névjegykártya feltöltése'
+agent.people.use_pic_gravatar: 'Kép használata a gravatarból'
+agent.people.use_uploaded_pic: 'Feltöltött kép használata'
+agent.people.user_awaiting_agent_validation: 'A felhasználó az ügyintéző hitelesítésére vár'
+agent.people.user_awaiting_email_and_agent_validation: 'A felhasználó az email és az ügyintéző hitelesítésére vár'
+agent.people.user_awaiting_email_validation: 'A felhasználó az email hitelesítésére vár'
+agent.people.user_awaiting_validation: 'A felhasználó hitelesítésre vár'
+agent.people.user_is_agent: '{{name}} egy ügyintéző ezen a helpdesken.'
+agent.people.user_is_autoresponder: 'A felhasználó egy automata válaszoló. Az automata válaszok nem kerülnek elküldésre.'
+agent.people.user_landed_on_page: 'Felhasználó érkezett az oldalra'
+agent.people.user_not_autoresponder: 'A felhasználó nem automata válaszoló'
+agent.people.user_will_be_perm_deleted: 'A felhasználó végérvényesen törölve lesz.'
+agent.people.user_will_be_perm_deleted_banned: 'A felhasználó végérvényesen törölve lesz és az email címe le lesz tiltva.'
+agent.people.view_profile: 'Profil megtekintése'
+agent.people.warn_email_address: 'Ez az email cím {{email}} ehhez a profilhoz tartozik. De a felhasználó nem jelentkezett be a helpdeskre, így nem tudjuk azonosítani. Ne adjon ki semmilyen bizalmas információt!'
+agent.people.website: Weboldal
+agent.people.website_url_placeholder: 'Weboldal URL'
+agent.publish.add_new_category: 'Új kategória hozzáadása'
+agent.publish.add_new_glossary: 'Új szó hozzáadása a szójegyzékhez'
+agent.publish.add_new_search_word: 'Üssön Enter-t és adjon meg egy új keresőszót'
+agent.publish.add_pending: 'Új folyamatban lévő jegy hozzáadása'
+agent.publish.all_articles: 'Minden jegy'
+agent.publish.all_comments: 'Minden hozzászólás'
+agent.publish.all_downloads: 'Minden letöltés'
+agent.publish.all_draft_content: 'Minden vázlat'
+agent.publish.all_news: 'Minden hír'
+agent.publish.apply_action: 'Művelet alkalmazása'
+agent.publish.article_comments: 'Cikk hozzászólások'
+agent.publish.article_id: 'Cikk azonosító'
+agent.publish.ask_set_to_draft: 'Biztosan vázlatként kívánja beállítani a kiválasztott tételt?'
+agent.publish.awaiting_validation_info: 'Várakozás hitelesítésre: Egy hitelesítési jogosultsággal rendelkező ügyintézőnek el kell fogadnia ezt a tartalmat, mielőtt az publikálható lesz.'
+agent.publish.change_category: 'Kategória váltása'
+agent.publish.click_to_set_date: '(kattintson a dátum beállításához)'
+agent.publish.comment_by: '{{name}} hozzászólása'
+agent.publish.comment_requires_validation: 'Ezt a hozzászólást hitelesíteni kell'
+agent.publish.comments_list_title:
+  one: '1 hozzászólás'
+  other: '{{count}} hozzászólás'
+agent.publish.comments_to_validate: 'Átnézésre váró hozzászólások'
+agent.publish.compare_selected: 'Kiválasztottak összehasonlítása'
+agent.publish.create_artilce: 'Cikk létrehozása'
+agent.publish.create_pending_article: 'Folyamatban lévő cikk létrehozása'
+agent.publish.delete_category: 'Kategória törlése'
+agent.publish.delete_category_btn: 'Kategória törlése'
+agent.publish.discard_unsaved_changes: 'Törlés és az alapértelmezett visszaállítása'
+agent.publish.download_category: 'Kategória letöltése'
+agent.publish.download_comments: 'Hozzászólások letöltése'
+agent.publish.download_count: 'Számláló letöltése'
+agent.publish.download_hotlink_btn: 'Meglévő fájl hotlinkelése'
+agent.publish.download_specify_filename: 'Meghatározhat egy másik fájlnevet'
+agent.publish.download_specify_filesize: 'Meghatározhatja a kijelzésre kerülő fájl méretét. Pl: 50 MB vagy 2 KB.'
+agent.publish.download_specify_url: 'Írja be a fájlhoz tartozó teljes URL-t. A "Letöltés" gombra kattintó felhasználó erre az URL-re lesz irányítva'
+agent.publish.download_upload_btn: 'Fájl feltöltése'
+agent.publish.downloads_highest_lowest: 'Letöltések száma (magas-alacsony)'
+agent.publish.downloads_list_title:
+  one: '1 letöltés'
+  other: '{{count}} letöltés'
+agent.publish.downloads_lowest_highest: 'Letöltések száma (alacsony-magas)'
+agent.publish.draft_content: Vázlataim
+agent.publish.draft_revision: Változtatás
+agent.publish.drafts_list_title:
+  one: '1 vázlat'
+  other: '{{count}} vázlat'
+agent.publish.drop_file_to_add: 'A bejegyzéshez való hozzáadáshoz húzza át ide a fájlt'
+agent.publish.edit_category_btn: 'Kategória szerkesztése'
+agent.publish.edit_new_glossary: 'Szójegyzék szerkesztése'
+agent.publish.error_kb_cats_same: 'A kategóriák egyformák.'
+agent.publish.error_kb_missing:
+  one: '{{count}} cikk nem található.'
+  other: '{{count}} cikk nem található.'
+agent.publish.error_kb_not_in_db: 'Kategória nem található.'
+agent.publish.error_kb_perm_denied:
+  one: '{{count}} hozzáférési hiba.'
+  other: '{{count}} hozzáférési hiba.'
+agent.publish.error_kb_unaffected: 'Néhány cikkre ez nem volt hatással:'
+agent.publish.event_time_ago_at_when: '{{ago}} az alábbi napon {{date}}'
+agent.publish.event_time_ago_by_who_at_when: '{{ago}} {{name}} által az alábbi napon {{date}}'
+agent.publish.for_ticket: Jegyhez
+agent.publish.glossary: Szójegyzék
+agent.publish.helpful: Hasznos
+agent.publish.kb_list_title:
+  one: '1 cikk'
+  other: '{{count}} cikk'
+agent.publish.kb_list_unique_title:
+  one: '1 egyedi cikk'
+  other: '{{count}} egyedi cikk'
+agent.publish.label_new_file: 'Új fájl'
+agent.publish.label_old_file: 'Régi fájl'
+agent.publish.missing_translation: 'Hiányzó fordítás'
+agent.publish.move_to: 'Mozgatás ide'
+agent.publish.n_helpful_n_unhelpful: '{{up_votes}} személy találta ezt a letöltést hasznosnak, {{down_votes}} személy nem találta hasznosnak ezt a letöltést'
+agent.publish.new_comment_on: 'Új hozzászólás ehhez as személyhez {{name}}'
+agent.publish.new_comment_submitted_by: '{{name}} új hozzászólást nyújtott be'
+agent.publish.new_feedback_by: '{{name}} új visszajelzést küldött'
+agent.publish.new_post: 'Új bejegyzés'
+agent.publish.news_comments: 'Új hozzászólás'
+agent.publish.news_list_title:
+  one: '1 bejegyzés'
+  other: '{{count}} bejegyzés'
+agent.publish.no_changes: 'A két felülvizsgálat között nincs különbség'
+agent.publish.no_downlod_cats_error: 'Nincsenek meghatározott kategóriák. Mielőtt a "Letöltésekhez" fájlokat ad hozzá, meg kell határoznia egy kategóriát.'
+agent.publish.no_kb_cats_error: 'Nincsenek meghatározott kategóriák. Mielőtt a "Tudástárhoz" cikkeket ad hozzá, meg kell határoznia egy kategóriát.'
+agent.publish.no_news_cats_error: 'Nincsenek meghatározott kategóriák. Mielőtt ehhez az új szekcióhoz bejegyzéseket ad hozzá, meg kell határoznia egy kategóriát.'
+agent.publish.no_related_explain: 'Nincs ehhez az elemhez kapcsolódó cikk, letöltés vagy hír bejegyzés. Kapcsolódó elemek hozzáadásához keresse meg őket a listában és kattintson a zöld nyíl ikonra.'
+agent.publish.no_uploads_yet: 'Még nem történt feltöltés.'
+agent.publish.not_helpful: 'Nem hasznos'
+agent.publish.pending_articles: 'Folyamatban lévő cikk'
+agent.publish.permalink_copy_prompt: 'A weboldalon a letöltéshez kapcsolódó link a következő:'
+agent.publish.please_choose_file: 'Kérem, válasszon fájl nevet'
+agent.publish.please_enter_title: 'Kérem, adjon meg címet'
+agent.publish.please_select_category: 'Kérem, válasszon kategóriát'
+agent.publish.post: Bejegyzés
+agent.publish.primary_lang_explain: 'Ehhez a cikkhez tartozó elsődleges nyelv. Miután a cikk létrejött, le tudja fordítani más nyelvre.'
+agent.publish.reorder_category_title: 'Kategória újrarendelése (áthúzással)'
+agent.publish.requires_validation: 'Hitelesítés szükséges'
+agent.publish.revision_by: '{{name}} által átnézve'
+agent.publish.search_sticky_words_explain: 'Ha egy felhasználó bármelyik ilyen szóra rákeres, ez az oldal mindig a találatok elején fog szerepelni.'
+agent.publish.searches_helpful: 'Keresések, ahol ezt hasznosnak ítélték'
+agent.publish.searches_unhelpful: 'Keresések, ahol ezt nem ítélték hasznosnak'
+agent.publish.set_as_draft: 'Beállítás vázlatként'
+agent.publish.set_auto_publish_date: 'Publikálási dátum automatikus beállítása'
+agent.publish.set_auto_unpublish_date: 'Publikálás visszavonása dátum automatikus beállítása'
+agent.publish.set_contents_from_article: 'Tartalom beállítása ebből a cikkből'
+agent.publish.slug: 'URL részlet (slug)'
+agent.publish.slug_edit: 'URL részlet (slug) szerkesztése'
+agent.publish.slug_edit_prompt: 'Új URL részlet (slug) megadása (csak betűk, számok, vonalak és aláhúzások)'
+agent.publish.status_archived: Archiválva
+agent.publish.status_hidden_deleted: Törölve
+agent.publish.status_hidden_draft: Vázlat
+agent.publish.status_hidden_unpublished: 'Publikálás visszavonva'
+agent.publish.status_hidden_user_validating: 'Felhasználói hitelesítés'
+agent.publish.status_hidden_validating: Hitelesítés
+agent.publish.status_published: Publikálva
+agent.publish.sticky_words_title: Keresőszavak
+agent.publish.untranslated_articles: 'Le nem fordított cikkek'
+agent.publish.validating_comment_manage_tip: 'A hozzászólás hitelesítésre vár. Kattintson a kezeléshez'
+agent.publish.validating_list_title:
+  one: '1 hitelesítés folyamatban'
+  other: '{{count}} hitelesítés folyamatban'
+agent.publish.view_count: 'Számláló megtekintése'
+agent.publish.view_count_highest_lowest: 'Számláló megtekintése (magas-alacsony)'
+agent.publish.view_count_lowest_highest: 'Számláló megtekintése (alacsony-magas)'
+agent.publish.when: Mikor
+agent.publish.who: Ki
+agent.publish.who_downloaded: 'Ki töltötte le'
+agent.publish.who_viewed: 'Ki nézte meg'''
+agent.publish.who_voted: 'Ki értékelte'
+agent.publish.who_voted_none: 'Még senki sem értékelte'
+agent.publish.who_voted_show_guests: 'Vendégek mutatása'
+agent.publish.who_voted_show_people: 'Személyek és kapcsolatok mutatása'
+agent.publish.word_def: 'Szó meghatározása'
+agent.publish.word_title: 'Szó címe'
+agent.publish.words: Szavak
+agent.report.agent_activity: 'Ügyintéző aktivitás'
+agent.report.agent_hours: 'Ügyintéző óra'
+agent.report.clone: Klón
+agent.report.current: Jelenlegi
+agent.report.data_range: Adatskála
+agent.report.overview: Áttekintés
+agent.report.report_builder: Jelentéskészítő
+agent.report.updates: Frissítések
+agent.search.by: által
+agent.search.chat_conversations: Beszélgetések
+agent.search.find_by_above_criteria: 'Fenti feltételek megtalálása'
+agent.search.find_person: 'Személy megtalálása'
+agent.search.loading: töltés
+agent.search.no_email: 'Nincs email'
+agent.search.no_people_match_your_criteria: 'Nincs a feltételeknek megfelelő személy'
+agent.search.no_results_found: 'Nincs találat'
+agent.search.number_of_tickets: 'Megbízások száma'
+agent.search.person_id: 'Személy azonosító'
+agent.search.select: Kiválasztás
+agent.search.simple: Egyszerű
+agent.search.type_article: Cikk
+agent.search.type_chat_conversation: Beszélgetések
+agent.search.type_download: Letöltés
+agent.search.type_feedback: Visszajelzés
+agent.search.type_news: Hírek
+agent.search.type_organization: Szervezetek
+agent.search.type_person: Személyek
+agent.search.type_ticket: Jegyek
+agent.search.type_ticket_deleted: 'Törölt megbízások'
+agent.search.view_all_results: 'Minden találat megtekintése'
+agent.settings.add_additional_emails: 'További email-ek hozzáadása'
+agent.settings.add_another_email: 'Másik email hozzáadása'
+agent.settings.additional_emails: 'További email-ek'
+agent.settings.admin_filters_info: 'Ezek szűrők, melyeket egy adminisztrátor hozott létre és Ön használhatja ezeket.'
+agent.settings.auto_close_ticket_tabs: 'Automatikusan zárja be a jegy fület, ha:'
+agent.settings.auto_close_ticket_tabs_note: 'megjegyzés hozzáadása'
+agent.settings.auto_close_ticket_tabs_reply: válaszol
+agent.settings.browser_notifications: 'Böngészői értesítések'
+agent.settings.chat_immediate_dismiss: 'Azonnal zárja be az "új beszélgetés" ablakot, ha egy másik ügyintéző átveszi a beszélgetést'
+agent.settings.create_filter: 'Szűrő létrehozása'
+agent.settings.create_macro: 'Makró létrehozása'
+agent.settings.default_team: 'Alapértelmezett csoport'
+agent.settings.delete_filter: 'Szűrő törlése'
+agent.settings.desktop_notifs: 'Tálca értestések'
+agent.settings.desktop_notifs_are_enabled: 'A tálca értesítések jelenleg elérhetők. Megszüntetésük kizárólag a értesítések beállításainál lehetséges.'
+agent.settings.desktop_notifs_autohide: 'Értesítések automatikus elrejtése, miután:'
+agent.settings.desktop_notifs_enable: 'Tálca értesítések elérhetővé tétele'
+agent.settings.desktop_notifs_explicit_disabled: 'A tálca értesítések le lettek tiltva. Ezen domain számára a böngészőben kell bekapcsolni őket.'
+agent.settings.desktop_notifs_test: 'Teszt értesítések generálása'
+agent.settings.done_start_using: 'Kész, DeskPRO használatának elkezdése'
+agent.settings.drop_here_insert_signature: 'Húzza át a következő elemt <strong>image</strong> ide az Ön aláírásába történő beillesztéshez'
+agent.settings.edit_filter: 'Szűrő szerkesztése'
+agent.settings.edit_macro: 'Makró szerkesztése'
+agent.settings.email_notifications: 'Email értesítések'
+agent.settings.filter_match: 'Szűrési találat'
+agent.settings.filters_shared_with_you: 'Az Önnel megosztott szűrők'
+agent.settings.first_login_set_name: 'Ez az Ön első bejelentkezése, kérem, töltse ki a nevét és töltsön fel egy profilképet.'
+agent.settings.first_login_set_pic: 'Ez az Ön első belépése. Szeretne feltölteni egy profilképet?'
+agent.settings.hidden_filters_info: 'A rejtett szűrők nem kerülnek listázásra a fő felületen. Bármikor visszatérhet és megszüntetheti a szűrőkre vonatkozó rejtettséget.'
+agent.settings.leave_password_blank: 'A jelenlegi jelszó megtartásához hagyja üresen ezt a mezőt'
+agent.settings.macro_who_can_use: 'Ki használhatja ezt a makrót?'
+agent.settings.new_macro: 'Új makró'
+agent.settings.no_filters: 'Ön nem adott meg egyetlen szűrőt sem.'
+agent.settings.no_macros: 'Ön nem adott meg egyetlen saját makrót sem.'
+agent.settings.no_slas: 'Az Ön adminisztrátora nem adott meg egyetlen SLA-t sem.'
+agent.settings.no_slas_admin: 'Ön nem hozott létre egyetlen SLA-t sem. Ön megadhat új SLA-kat az Adminisztrációs felületen > Jegyek > SLA-k.'
+agent.settings.notif_all_actions: 'Minden művelet'
+agent.settings.notif_chat_message: 'Valaki küld nekem egy üzenetet a beszélgetés során, ha nem vagyok elérhető'
+agent.settings.notif_contact_admin: 'Kérem, keresse fel az adminisztrátort, hogy frissítse az Ön email értesítéseinek beállításait.'
+agent.settings.notif_forwards: Továbbítás
+agent.settings.notif_group_all: 'Minden jegy'
+agent.settings.notif_group_follow: 'Az általam követett jegyek'
+agent.settings.notif_group_my: 'Az én jegyeim'
+agent.settings.notif_group_team: 'Az én csoportom jegyei'
+agent.settings.notif_group_unassigned: 'Ki nem osztott jegyek'
+agent.settings.notif_login_attempt: 'Bármikor, amikor a fiókomat belépéshez használták'
+agent.settings.notif_login_attempt_fail: 'Bármikor, amikor a fiókomat belépéshez használták és a tanúsítványok helytelenek voltak'
+agent.settings.notif_my_events: 'Az én eseményeim'
+agent.settings.notif_my_own_actions: 'Saját műveleteim'
+agent.settings.notif_new_comment: 'Egy új hozzászólást nyújtottak be'
+agent.settings.notif_new_comment_validate: 'Egy új hozzászólást nyújtottak be, melyet hitelesíteni kell'
+agent.settings.notif_new_feedback: 'Egy új visszajelzést nyújtottak be'
+agent.settings.notif_new_feedback_validate: 'Egy új visszajelzést nyújtottak be, melyet hitelesíteni kell'
+agent.settings.notif_new_user: 'Egy új felhasználó regisztrált'
+agent.settings.notif_notes_with_mentions: 'Megjegyzések @említésével'
+agent.settings.notif_notes_with_mentions_always: 'Mindig az ügyintézői üzeneten keresztül küldjön emailt és üzenetet'
+agent.settings.notif_notes_with_mentions_opt: 'Hogyan kér értesítést, ha egy ügyintéző megemlíti Önt egy jegy megjegyzésében?'
+agent.settings.notif_notes_with_mentions_smart: 'Csak akkor küldjön emailt, ha nem vagyok elérhető, ha online vagyok küldjön üzenetet az ügyintézői üzeneten keresztül.'
+agent.settings.notif_take_due_today: 'Egy nekem kiosztott feladat határideje a mai nap'
+agent.settings.notif_task_assigned: 'Kiosztottak nekem egy feladatot'
+agent.settings.notif_task_assigned_team: 'Kiosztottak a csoportomnak egy feladatot'
+agent.settings.notif_task_delegated_complete: 'Egy általam kiadott feladat elkészült'
+agent.settings.notif_tweet_assigned: 'Kiosztottak nekem egy tweetet'''
+agent.settings.notif_tweet_assigned_team: 'Kiosztottak a csoportomnak egy tweetet'
+agent.settings.notif_tweet_dm: 'Az egyik Twitter fiókom üzenetet kapott'
+agent.settings.notif_tweet_mention: 'Az egyik Twitter fiókomat megemlítették egy tweetben'
+agent.settings.notif_tweet_responded: 'Az egyik Twitter fiókom választ kap'
+agent.settings.notif_tweet_responded_my: 'Valaki válaszol egy tweetre, amit én írtam'
+agent.settings.notif_tweet_retweet: 'Az egyik Twitter fiókomat újratweetelik'
+agent.settings.notif_type_agent: 'Ügyintézői üzenet'
+agent.settings.notif_type_assign: Kinevezés
+agent.settings.notif_type_change: 'Tulajdonságok változtatása'
+agent.settings.notif_type_new: 'Új jegy'
+agent.settings.notif_type_note: 'Ügyintézői megjegyzés'
+agent.settings.notif_type_user: 'Felhasználói üzenet'
+agent.settings.override_name: 'Név figyelmen kívül hagyása'
+agent.settings.override_name_explain: 'Belépés esetén ez a név fog megjelenni a felhasználóknak az igazi helyett'
+agent.settings.reset_api_token: 'Állítsa vissza az API tokenjét. Minden külső alkalmazással újra be kell lépnie.'
+agent.settings.signature: Aláírás
+agent.settings.sla_filter_all: 'Minden egyező jegy mutatása'
+agent.settings.sla_filter_assigned: 'Csak a nekem kiosztott jegyeket mutassa'
+agent.settings.sla_filter_results: 'SLA eredmények szűrése'
+agent.settings.sla_filter_results_info: 'SLA-k ügyintézői felületen történő kijelzése esetén, a számlálók és a listázások ezen opció szerint lesznek megszűrve.'
+agent.settings.sla_filter_team: 'Csak a csoportom számára kiosztott jegyeket mutassa'
+agent.settings.ticket_signature: 'Jegy aláírása'
+agent.settings.ticket_signature_desc: 'Ez az aláírás automatikusan be lesz szúrva, ha Ön válaszokat küld egy jegyre'
+agent.settings.ticket_signature_note: 'Megjegyzés: Minden válasz vázlat törölve lesz, ha frissíti az aláírást.'
+agent.settings.tickets_autoload_next: 'Válasz után automatikus töltse be a listából a következő jegyet (csak a jegy fül bezárása után)'
+agent.settings.tickets_reverse_order: 'A legújabb üzeneteket mutatása először (fordított kronológia sorrend) a válasz mezővel a tetején'
+agent.settings.title_other_notifs: Értesítések
+agent.settings.title_ticket_notifs: 'Jegy értesítések'
+agent.settings.twitter_signature: 'Twitter aláírás'
+agent.settings.twitter_signature_desc: 'Minden tweet ezzel lesz befejezve. Legyen rövid!'
+agent.settings.welcome_to_deskpro: 'Üdvözöljük a DeskPRO-nál'
+agent.settings.welcome_to_deskpro_name: '{{name}}, üdvözöljük a DeskPRO-nál'
+agent.settings.your_current_picture: 'Az Ön jelenlegi képe'
+agent.snippets.add_snippet: 'Sablon hozzáadása'
+agent.snippets.all_snippets: 'Minden sablon'
+agent.snippets.cat_can_be_used_by: 'A kategóriát az alábbiak használhatják:'
+agent.snippets.chat_snippets: 'Beszélgetés sablonok'
+agent.snippets.edit_snippet: 'Sablon szerkesztése'
+agent.snippets.insert_variable: 'Változó beszúrása'
+agent.snippets.learn_more_about_vars: 'Tudjon meg többet a változókról'
+agent.snippets.must_create_cat: 'Mielőtt létrehozza a sablonokat,<br/>létre kell hoznia az első kategóriáját.'
+agent.snippets.shortcut_code: 'Rövidítési kód'
+agent.snippets.shortcut_code_info: 'Gépelje be ezt a kódot a jegy válasz mezőbe és a sablon automatikusan beillesztődik. Pl ezzel a rövidítési kóddal ''standard-response'' egyszerűen csak gépelje be, hogy ''%standard-response%'' a sablon beszúrásához, így nem kell megnyitnia a sablon menedzsert.'
+agent.snippets.ticket_snippets: 'Jegy sablonok'
+agent.tasks.add_another_task: 'Másik feladat megadása'
+agent.tasks.all_tasks: 'Minden feladat'
+agent.tasks.assigned_to_by: '{{name}} kinevezte ehhez a feladathoz'
+agent.tasks.completed_by: '{{name}} teljesítette ezt a feladatot'
+agent.tasks.completed_tasks: 'Teljesített feladatok'
+agent.tasks.count: Számláló
+agent.tasks.creator: Létrehozó
+agent.tasks.delete_confirm: 'Biztosan törli ezt a feladatot?'
+agent.tasks.due_in_future: 'Határidő a jövőben'
+agent.tasks.due_today: 'Határidő napja'
+agent.tasks.enter_your_comment: 'Írja ide a hozzászólását...'
+agent.tasks.linked_ticket: 'Idekapcsolt jegy'
+agent.tasks.list_title:
+  one: '1 feladat'
+  other: '{{count}} feladat'
+agent.tasks.my_tasks: 'Az én feladataim'
+agent.tasks.my_teams: 'Az én csoportomé'
+agent.tasks.my_teamstasks: 'Az én csoportom feladatai'
+agent.tasks.no_due_date: 'Nincs határidő'
+agent.tasks.no_due_time: 'Nincs meghatározott idő'
+agent.tasks.or: vagy
+agent.tasks.overdue: Késő
+agent.tasks.task_description: 'Feladat leírás...'
+agent.tasks.task_due_today: 'Ennek a feladatnak ma van a határideje'
+agent.tasks.task_has_deal_x: 'A feladat ide kapcsolódik: Deal "{{label}}"'''
+agent.tasks.task_has_ticket_x: 'A feladat ide kapcsolódik: "{{label}}" jegy'
+agent.tasks.tasks_i_delegated: 'Általam kiosztott feladatok'
+agent.tasks.team_assigned_by: '{{name}} kinevezte az Ön csoportját ehhez a feladathoz'
+agent.tickets.active_tickets_term: 'A jegy aktív'
+agent.tickets.active_tickets_term_explain: 'Csak aktív jegykre hozhat létre szűrőket. Aktív jegyek a következők: felhasználóra vár, ügyintézőre vár, teljesített. Archív vagy rejtett jegyek nem szűrhetők. Archivált vagy rejtett jegyeket továbbra is a keresőben találhat.'
+agent.tickets.add_attachments: 'Csatolmány hozzáadása'
+agent.tickets.add_follower: 'Követő hozzáadása'
+agent.tickets.add_followers: 'Követők hozzáadása'
+agent.tickets.add_labels_action: 'Az alábbi címkék hozzáadása: {{labels}}'
+agent.tickets.add_note: 'Megjegyzés hozzáadása'
+agent.tickets.add_org_managers_action: 'Szervezeti menedzser hozzáadása a jegyhez'
+agent.tickets.add_reply_action: 'Válasz hozzáadása'
+agent.tickets.add_reply_x_action: 'Válasz hozzáadása {{desc}}'
+agent.tickets.add_sla_action: 'SLA hozzáadása: {{sla}}'
+agent.tickets.adding_your_note: 'Az Ön megjegyzésének hozzáadása'
+agent.tickets.admin_trigger_notifications: 'Triggerek, melyek értesítik Önt'
+agent.tickets.admin_trigger_notifications_explain: 'Egy admin létrehozta ezeket a triggereket, hogy email üzeneteket küldjön Önnek.'
+agent.tickets.agent_has_lock: '{{agent}} zárolta ezt a jegyet. A szerkesztéshez előbb fel kell oldani a zárolást.'
+agent.tickets.agents_action: 'Ügyintézők: {{agents}}'
+agent.tickets.always_notify_people: 'Mindig értesítse {{parts}}'
+agent.tickets.and_count_were_cced: '(és {{display_count}} további címzettként lett hozzáadva)|(és {{display_count}} további címzettként lett hozzáadva)'
+agent.tickets.announce_this_ticket_in_campfire: 'Jegy bejelentése a Campfire-be'
+agent.tickets.any_of_my_teams: 'Bármelyik a csoportjaim közül'
+agent.tickets.applied: alkalmazva
+agent.tickets.apply_a_macro: 'Makró alkalmazása'
+agent.tickets.assign_current_action: 'Ügyintéző kinevezése a bejelentkezett ügyintézőkhöz'
+agent.tickets.assign_current_team_action: 'Csoport kinevezése a bejelentkezett ügyintéző csoportokhoz'
+agent.tickets.assign_team_action: 'Csoport kinevezése az alábbi személyhez {{name}}'
+agent.tickets.assign_ticket_to: 'Jegy kiosztása ide'
+agent.tickets.assign_to_agent_action: 'Ügyintéző kinevezése az alábbi ügyintézőhöz {{agent}}'
+agent.tickets.assignments: Kinevezések
+agent.tickets.attachment: Csatolmány
+agent.tickets.attachment_deleted: 'Csatolmány törölve'
+agent.tickets.attachments: Csatolmányok
+agent.tickets.billing: Számlázás
+agent.tickets.billing_add_charge: 'Díj hozzáadása'
+agent.tickets.billing_amount: Összeg
+agent.tickets.billing_and_timelog: 'Számlázási és időnapló'
+agent.tickets.billing_charge: Díj
+agent.tickets.billing_chargetime: Díj/idő
+agent.tickets.billing_delete_confirm: 'Biztosan törli ezt a díjat?'
+agent.tickets.billing_time: Idő
+agent.tickets.billing_timelog: Időnapló
+agent.tickets.call_webhook_action: 'Web hook hívása {{hook}}'
+agent.tickets.change_status: 'Státusz megváltoztatása erről {{old}} erre {{new}}'
+agent.tickets.change_status_to: 'Státusz megváltoztatása erre'
+agent.tickets.change_user: 'Felhasználó váltás'
+agent.tickets.change_user_btn: 'Felhasználó váltás'
+agent.tickets.change_user_ticket_email: 'Felhasználói email megváltoztatása ennél a jegyenél'
+agent.tickets.changed_from: 'megváltoztatva erről'
+agent.tickets.changed_to: részére
+agent.tickets.click_icon_to_show_slas: 'Klikkeljen ide {{icon}} az SLA-k mutatásához'
+agent.tickets.close_tab_after_reply: 'Ezen ügyintézési fül bezárása a válasz után'
+agent.tickets.close_tab_tip: 'Ezen fül bezárása az üzenet mentése után'
+agent.tickets.coment_after_ticket_created: 'hozzászólás a jegy létrehozása után'
+agent.tickets.commented_on: 'Hozzászólás itt'
+agent.tickets.count_agents:
+  one: '1 ügyintéző'
+  other: '{{count}} ügyintéző'
+agent.tickets.count_users:
+  one: '{{count}} felhasználó'
+  other: '{{count}} felhasználó'
+agent.tickets.create_linked_ticket: 'Kapcsolódó jegy létrehozása'
+agent.tickets.create_new_pending_article: 'Új folyamatban lévő cikk létrehozása'
+agent.tickets.creating_a_ticket_for: 'Jegy létrehozása az alábbi célból'
+agent.tickets.creation_system: 'Rendszer létrehozása'
+agent.tickets.creation_system_gateway: 'email gateway'
+agent.tickets.creation_system_gateway_agent: 'email gateway ügyintéző által'
+agent.tickets.creation_system_gateway_person: 'email gateway felhasználó által'
+agent.tickets.creation_system_via: 'Létrehozva az alábbin keresztül:'
+agent.tickets.creation_system_web: 'web felület'
+agent.tickets.creation_system_web_agent: 'web felület ügyintéző által'
+agent.tickets.creation_system_web_person: 'web felület felhasználó által'
+agent.tickets.creation_system_widget: 'weboldal alkalmazás felhasználó által'
+agent.tickets.current_agent_waiting_time: 'Jelenlegi ügyintéző várakozási ideje'
+agent.tickets.current_user_waiting_time: 'Jelenlegi felhasználó várakozási ideje'
+agent.tickets.currently_on_hold: 'Ez a jegy jelenleg szünetel.'
+agent.tickets.date_last_agent_reply: 'Utolsó ügyintézői válasz dátuma'
+agent.tickets.date_last_reply: 'Utolsó válasz dátuma'
+agent.tickets.date_last_user_reply: 'Utolsó felhasználói válasz dátuma'
+agent.tickets.debug_file: 'Javító fájl'
+agent.tickets.debug_file_download: 'Javító fájl letöltése'
+agent.tickets.debug_file_explain: 'Egy DeskPRO ügyintéző kérheti ezt a fájlt a probléma felderítése céljából.'
+agent.tickets.decrease_urgency_action: 'Sürgősségi szint csökkentése a következő mértékben {{amount}}'
+agent.tickets.delete_attach: 'Csatolmányok törlése'
+agent.tickets.delete_attach_confirm: 'Biztosan törli ezt a csatolmányt?'
+agent.tickets.delete_attachments: 'Csatolmányok törlése'
+agent.tickets.delete_message: 'Üzenet törlése'
+agent.tickets.delete_message_confirm: 'Biztosan törli ezt az üzenetet?'
+agent.tickets.delete_ticket: 'Jegy törlése'
+agent.tickets.deleted_by: 'A jegyet az alábbi személy törölte:'
+agent.tickets.deleted_by_name: 'Törölve az alábbi személy által {{name}}'
+agent.tickets.deleted_info: 'A #{{old_ticket_id}} számú jegyet az alábbi napon {{date}} {{agent}} törölte'
+agent.tickets.deleted_merged_info: 'A #{{old_ticket_id}} számú jegyet a #{{new_ticket_id}} számú jeggyel az alábbi napon {{date}} {{agent}} összevonta'
+agent.tickets.deleted_reason: 'Ok: {{reason}}'
+agent.tickets.disable_agent_notifs_action: 'Ügyintéző értesítések kikapcsolása'
+agent.tickets.disable_all_notifs_action: 'Minden értesítés kikapcsolása'
+agent.tickets.disabled_user_notifs_action: 'Felhasználói értesítés kikapcsolása'
+agent.tickets.discard_draft: 'Piszkozat elvetése'
+agent.tickets.draft: 'Vázlat üzenet'
+agent.tickets.draft_message: 'Vázlat üzenet'
+agent.tickets.draft_note: 'Vázlat jegyzet'
+agent.tickets.edit_snippet_category: 'Sablonok kategória szerkesztése'
+agent.tickets.email_is_agent_use_followers: 'Az Ön által megadott felhasználó egy ügyintéző. Ügyintézőt a jegyhez az alábbi módon adhat: "Követő hozzáadása" gomb a tulajdonságoknál.'
+agent.tickets.email_is_dupe: 'Az Ön által megadott email cím már szerepel ennél a jegynél.'
+agent.tickets.email_is_ticket_account: 'Az Ön által megadott email cím az alábbi fiókhoz tartozik Admin > Tickets > Email Accounts. Jegy létrehozása ehhez az email címhez nem lehetséges.'
+agent.tickets.email_user_newticket_info: 'Új jegy elküldése emailben a felhasználónak'
+agent.tickets.email_user_tip: 'Értesítés küldése emailben a felhasználónak erről a válaszról'
+agent.tickets.error_merge_with_self: 'Egy jegy nem vonható össze saját magával.'
+agent.tickets.error_reply_badfields: 'A jegy mező hibáit ki kell javítani a válasz elküldése előtt.'
+agent.tickets.explain_flags: 'A megjelölések által saját kollekció alakítható ki a jegyekből. Dupla kattintás a jelölésre a cím megváltoztatásához.'
+agent.tickets.explain_search_all_tickets: 'Keresés minden jegy között, ide értve a teljesítetteket és az archiváltakat is'
+agent.tickets.export_to_csv: 'Exportálás CSV-formátumba'
+agent.tickets.filter_agent: 'Az én jegyeim'
+agent.tickets.filter_agent_team: 'A csoportom jegyei'
+agent.tickets.filter_agent_teams: 'A csoportom jegyei'
+agent.tickets.filter_all: 'Minden jegy'
+agent.tickets.filter_participant: 'Általam követett jegyek'
+agent.tickets.filter_results: 'Eredmények szűrése'
+agent.tickets.filter_unassigned: 'Ki nem osztott jegyek'
+agent.tickets.find_other_ip_addy: 'További jegyek keresése erről az IP címről'
+agent.tickets.find_ticket: 'Jegy keresése'
+agent.tickets.first_agent_reply: 'Első ügyintézői válasz'
+agent.tickets.first_assignment: 'Első kinevezés'
+agent.tickets.forward_header: 'Ezt az üzenetet {{user}} továbbította az alábbi helyről {{hd}}'
+agent.tickets.forward_message: 'Üzenet továbbítása'
+agent.tickets.forward_noreply_header: 'Kérem, NE VÁLASZOLJON erre az üzenetre. Amennyiben válaszolni szeretne, küldjön emailt közvetlenül az alábbi felhasználónak {{user}}'
+agent.tickets.forwarded_message: 'Továbbított üzenet'
+agent.tickets.from_email: '(emailen benyújtva az alábbi helyről {{address}})'
+agent.tickets.from_web: '(a web felületen benyújtva az alábbi IP címről {{address}})'
+agent.tickets.full_email_source: 'Teljes email forrás'
+agent.tickets.full_log: 'Teljes napló'
+agent.tickets.gateway_source_id: 'Gateway forrás azonosító'
+agent.tickets.group_by: 'Csoportosítás alábbiak szerint'
+agent.tickets.grouped_results_empty: 'A csoportosítás eredménye akkor válik láthatóvá, ha van a szűrésnek megfelelő jegy'
+agent.tickets.helpful: hasznos
+agent.tickets.hidden_because: 'Ez a jegy jelenleg rejtett, az alábbi ok miatt:'
+agent.tickets.hidden_explain: 'Ez azt jelenti, hogy a legtöbb keresés során nem szerepel a találatok között és az ügyintézők nem kapnak róla értesítést.'
+agent.tickets.hidden_status: 'Rejtett státusz'
+agent.tickets.hidden_status_deleted: Törölve
+agent.tickets.hidden_status_spam: Spam
+agent.tickets.hidden_tickets: 'Rejtett jegyek'
+agent.tickets.hold_btn: 'Jegyek szüneteltetése'
+agent.tickets.html_body: 'HTML Body'
+agent.tickets.increase_urgency_action: 'Sürgősségi szint megnövelése az alábbi mértékkel {{amount}}'
+agent.tickets.insert_text_snippets: 'Szövegsablonok beszúrása'
+agent.tickets.into_this_from_ticket: 'a #{{id}} számú jegyből ide'
+agent.tickets.kbd_awaiting_agent: '<span class="show-key-shortcut">A</span> Ügyintézőre vár'
+agent.tickets.kbd_awaiting_user: '<span class="show-key-shortcut">U</span> Felhasználóra vár'
+agent.tickets.kbd_resolved: '<span class="show-key-shortcut">d</span> Teljesítve'
+agent.tickets.kbd_send_awaiting_agent: 'Válasz (új státusz: <span class="show-key-shortcut">A</span> Ügyintézőre vár)'
+agent.tickets.kbd_send_awaiting_user: 'Válasz (új státusz: <span class="show-key-shortcut">U</span> Felhasználóra vár)'
+agent.tickets.kbd_send_resolved: 'Válasz (új státusz: <span class="show-key-shortcut">d</span> Teljesítve)'
+agent.tickets.lables: Címkék
+agent.tickets.last_agent_reply: 'Utolsó ügyintéző válasz'
+agent.tickets.last_user_reply: 'Utolsó felhasználó válasz'
+agent.tickets.lc_created: létrehozva
+agent.tickets.lc_new_reply: 'Új válasz'
+agent.tickets.lc_new_ticket: 'új jegy'
+agent.tickets.lc_new_ticket_agent: 'új jegy ügyintéző által'
+agent.tickets.lc_update: frissítés
+agent.tickets.link_existing_ticket: 'Meglévő jegy hozzákapcsolása'
+agent.tickets.linked_tickets: 'Összekapcsolt jegyek'
+agent.tickets.linking_with_chat: 'Összekapcsolás az alábbi beszélgetéssel:'
+agent.tickets.linking_with_ticket: 'Összekapcsolás az alábbi jeggyel:'
+agent.tickets.list_title:
+  one: '{{count}} jegy'
+  other: '{{count}} jegy'
+agent.tickets.list_title_counter: '{{x}} jegy'
+agent.tickets.load_more: 'Továbbiak betöltése'
+agent.tickets.lock: Lezárás
+agent.tickets.lock_auto_release: 'A lezárás automatikusan fel lesz oldva a jegy bezárásakor.'
+agent.tickets.log_created_via_comment: 'Létrehozás az alábbi hozzászóláson keresztül (ID {{id}})'
+agent.tickets.log_message_deleted: 'Üzenet törölve'
+agent.tickets.log_message_old_message: 'Régi üzenet'
+agent.tickets.log_message_updated: '#{{id}} számú üzenet frissítve'
+agent.tickets.log_new_api_agent: 'Új jegy API-n keresztül (ügyintéző)'
+agent.tickets.log_new_api_user: 'Új jegy API-n keresztül (felhasználó)'
+agent.tickets.log_new_email_agent: 'Új jegy ügyintéző által továbbítás útján'
+agent.tickets.log_new_email_user: 'Új jegy a felhasználó által email gateway-en keresztül.'
+agent.tickets.log_new_web_agent_portal: 'Új jegy ügyintéző által a web felületen keresztül'
+agent.tickets.log_new_web_user_embed: 'Új jegy felhasználó által a beágyazott űrlapon keresztül'
+agent.tickets.log_new_web_user_portal: 'Új jegy felhasználó által a portálon keresztül'
+agent.tickets.log_new_web_user_widget: 'Új jegy felhasználó által a weboldal alkalmazásán keresztül'
+agent.tickets.log_note_deleted: 'Jegyzet törölve'
+agent.tickets.log_on_article: 'az alábbi cikken "{{title}} (ID {{id}})'
+agent.tickets.log_on_download: 'az alábbi letöltésen "{{title}} (ID {{id}})'
+agent.tickets.log_on_feedback: 'az alábbi visszajelzésen "{{title}} (ID {{id}})'
+agent.tickets.log_on_news: 'az alábbi híreken "{{title}} (ID {{id}})'
+agent.tickets.log_selected_option: 'kiválasztva: '
+agent.tickets.log_sent_from: 'Elküldött űrlapok {{email}}'
+agent.tickets.log_sla_added: 'SLA hozzáadva'
+agent.tickets.log_sla_removed: 'SLA eltávolítva'
+agent.tickets.log_sla_updated: 'SLA frissítve'
+agent.tickets.log_unselected_option: 'kiválasztás megszüntetve: '
+agent.tickets.log_update_agent: 'Ügyintéző által frissítve'
+agent.tickets.log_update_agent_reply: 'Ügyintézői válasz'
+agent.tickets.log_update_user: 'Felhasználó által frissítve'
+agent.tickets.log_update_user_reply: 'Felhasználói válasz'
+agent.tickets.log_written_by: '{{name}} írta (ID {{id}})'
+agent.tickets.log_written_by_agent: '{{name}} ügyintéző írta'
+agent.tickets.long_message_clipped: 'Az üzenet meg lett rövidítve, mert túl hosszú volt.'
+agent.tickets.mark_as_pending_kb_article: 'Megjelölés folyamatban lévő KB cikként.'
+agent.tickets.mass_reply: 'Tömeges válasz'
+agent.tickets.merge_submit_btn: 'Ezen két jegy összevonása'
+agent.tickets.merge_ticket: 'Jegy összevonása'
+agent.tickets.merged_into_this: 'összevonás ezzel'
+agent.tickets.message_id: 'Üzenet azonosítója'
+agent.tickets.message_number: '#{{number}} számú üzenet'
+agent.tickets.messages: Üzenetek
+agent.tickets.my_team: 'Az én csoportom'
+agent.tickets.na: 'nem elérhető'
+agent.tickets.neutral: semleges
+agent.tickets.new_attachment: 'új csatolmány'
+agent.tickets.new_message: 'Új üzenet'
+agent.tickets.new_note: 'Új megjegyzés'
+agent.tickets.new_ticket_subject: 'Új tárgy a jegyhez'
+agent.tickets.newticket_and_apply_macro: 'Új jegy benyújtása és makró alkalmazása'
+agent.tickets.newticket_and_set_status: 'Új jegy benyújtása és státusz beállítása'
+agent.tickets.no_criteria: 'Nincs feltétel'
+agent.tickets.no_grouping: '(Nincs csoportosítás)'
+agent.tickets.no_recent_searches: 'Nincsenek friss keresések'
+agent.tickets.normal_message: 'Normál üzenet'
+agent.tickets.notes: Megjegyzések
+agent.tickets.notifications: Értesítések
+agent.tickets.notified_of: 'értesítve az alábbiakról'
+agent.tickets.notify_new_ticket_by_for: '{{name}} létrehozott egy új jegyet az alábbi felhasználónak {{user}}'
+agent.tickets.on_hold: Szünetel
+agent.tickets.open_tab_info: 'Jegy megnyitása új fülön a létrehozás után'
+agent.tickets.open_tickets: 'Nyitott jegyek'
+agent.tickets.optionally_enter_message: 'Opcionális üzenetbevitel'
+agent.tickets.original_message: 'Eredeti üzenet'
+agent.tickets.participant_added: 'Felhasználó CC-zve'
+agent.tickets.participant_already_exists: 'A megadott felhasználó már szerepel ebben a jegyben.'
+agent.tickets.participant_removed: 'Felhasználó eltávolítva a további címzettekből'
+agent.tickets.participants: 'további címzett'
+agent.tickets.pending_article_desc: 'Megjegyzés vagy leírás bevitele a megírni kívánt cikkről. Ez hozzá lesz kapcsolva a jegyhez.'
+agent.tickets.pending_article_info: 'A függőben lévő cikk egy megjegyzés a Publikálás szekcióban egy megírásra cikkről.'
+agent.tickets.percent_of: '%-a'
+agent.tickets.perm_del_user_and_content: 'Felhasználó és egyéb tartalmainak végleges törlése'
+agent.tickets.perm_del_user_and_other_tickets: 'Felhasználó és {{ticket_count}} jegyének végleges törlése'
+agent.tickets.perm_del_user_and_ticket: 'Felhasználó és ezen jegy végleges törlése'
+agent.tickets.perm_delete_note: 'Ez a jegy végleges el lesz távolítva a rendszerből {{time}} múlva'
+agent.tickets.placeholder_type_a_result: '''Válasz gépelése...'
+agent.tickets.please_choose_or_create_user: 'Kérem válasszon vagy hozzon létre egy felhasználót'
+agent.tickets.please_enter_subject: 'Kérem adjon meg egy tárgyat'
+agent.tickets.priority_highestlowest: 'Fontosság (Magas-alacsony)'
+agent.tickets.priority_lowesthighest: 'Fontosság (Alacsony-magas)'
+agent.tickets.raw_message: 'Nyers üzenet'
+agent.tickets.real_time_updates: 'Valós idejű frissítés engedélyezve'
+agent.tickets.real_time_updates_description: 'A valós idejú frissítés engedélyezésével ez a lista frissülni fog, amint a jegyek is frissülnek a helpdesken.'
+agent.tickets.recalculate_sla_status_action: 'SLA státusz újraszámolása'
+agent.tickets.receiving_gateway: 'Fogadó gateway'
+agent.tickets.receiving_gateway_account: 'Fogadó gateway fiók'
+agent.tickets.remove_all_slas_action: 'Minden SLA eltávolítása'
+agent.tickets.remove_category_action: 'Kategória eltávolítása'
+agent.tickets.remove_labels_action: 'következő címkék eltávolítása: {{labels}}'
+agent.tickets.remove_participants_action: 'További címzettként hozzáadott felhasználók eltávolítása: {{parts}}'
+agent.tickets.remove_priority_action: 'Fontosság eltávolítása'
+agent.tickets.remove_product_action: 'Termék eltávolítása'
+agent.tickets.remove_sla_action: 'Az alábbi SLA eltávolítása: {{sla}}'
+agent.tickets.remove_workflow_action: 'Munkafolyamat eltávolítása'
+agent.tickets.reply_and_apply_macro: 'Válasz és makró alkalmazása'
+agent.tickets.reply_and_set_status: 'Válasz és státusz beállítása'
+agent.tickets.results: Eredmények
+agent.tickets.save_errors: 'Kérem, javítsa a következő hibákat'
+agent.tickets.search_all_tickets: 'Minden jegy keresése'
+agent.tickets.search_for_people_to_add: 'Személyek keresése hozzáadás céljából vagy email cím bevitele a létrehozásukhoz'
+agent.tickets.select_group_var: 'Mező kiválasztása csoportos jegyhez'
+agent.tickets.send_agent_notifs_from_email_action: 'Ügyintéző értesítés küldése az alábbi címről {{email}}'
+agent.tickets.send_agent_notifs_from_name_action: 'Ügyintéző értesítés küldése az alábbi névvel {{name}}'
+agent.tickets.send_cc_to: 'Továbbí címzettek ide:'
+agent.tickets.send_flood_warning_action: 'Figyelmeztető email küldése a rendszert leterhelő felhasználóról'''
+agent.tickets.send_newticket_and_apply_x: 'Jegy benyújtása és {{name}} hozzáillesztése'
+agent.tickets.send_newticket_as_x: 'Jegy benyújtása mint {{status}}'
+agent.tickets.send_notifs_from_email_action: 'Felhasználói értesítés küldése az alábbi címről {{email}}'
+agent.tickets.send_notifs_from_name_action: 'Felhasználói értesítés küldése az alábbi névről {{name}}'
+agent.tickets.send_reply: 'Válasz küldése'
+agent.tickets.send_reply_and_apply_x: 'Válasz küldése és {{name}} hozzáillesztése'
+agent.tickets.send_reply_as_x: 'Válasz küldése, új státusz: {{status}}'
+agent.tickets.sending: Küldés
+agent.tickets.sending_your_message: 'Üzenet küldése'
+agent.tickets.sent_from_address: 'Az alábbi címről küldve'
+agent.tickets.sent_to_gateway_address: 'Beállítás normál üzenetként'
+agent.tickets.set_as_normal_message: 'Beállítás normál üzenetként'
+agent.tickets.set_as_note: 'Beállítás ügyintézői megjegyzésként'
+agent.tickets.set_as_spam: 'Jegy beállítása spam-ként'
+agent.tickets.set_awaiting_agent: 'Ügyintézőre vár'
+agent.tickets.set_awaiting_user: 'Ügyfélre vár'
+agent.tickets.set_category_action: 'Kategória beállítása az következőre {{category}}'
+agent.tickets.set_delete: 'Kijelölés törlésre'
+agent.tickets.set_department_action: 'Részleg beállítása a következőre {{department}}'
+agent.tickets.set_flag_to_action: 'Jelzés beállítása a következőre {{flag}}'
+agent.tickets.set_language_action: 'Nyelv beállítása a következőre {{language}}'
+agent.tickets.set_priority_action: 'Fontosság beállítása a következőre {{priority}}'
+agent.tickets.set_product_action: 'Termék beállítása a következőre {{product}}'
+agent.tickets.set_resolved: Teljesítve
+agent.tickets.set_sla_status: 'SLA státuszok beállítása a következőre {{sla_status}}'
+agent.tickets.set_sla_status_action: 'SLA státusz beállítása a következőre {{sla_status}}'
+agent.tickets.set_sla_status_for_sla: 'SLA státusz beállítása a következőre {{sla_status}} {{sla}} számára'
+agent.tickets.set_sla_status_for_sla_action: 'SLA státusz beállítása a következőre {{sla_status}} {{sla}} SLA számára'
+agent.tickets.set_workflow_action: 'Munkafolyamat beállítása a következőre {{workflow}}'
+agent.tickets.set_x_to_y_action: '{{title}} beállítása a következőre {{value}}'
+agent.tickets.sla_fail_date: 'Dátum hiba'
+agent.tickets.sla_remove_confirm: 'Biztosan eltávolítja ezt az SLA-t?'
+agent.tickets.sla_severity: 'SLA szint'
+agent.tickets.sla_warn_date: 'Figyelmeztetés dátuma'
+agent.tickets.slas_title: SLA-k
+agent.tickets.split_from_here: 'Jegy elválasztása innentől'
+agent.tickets.split_message_btn: 'Üzenet elválasztása'
+agent.tickets.split_messages_into_ticket: 'Üzenetek elválasztása új jegyekhez'
+agent.tickets.split_selected_messages_btn: 'Kiválasztott üzenetek elválasztása'
+agent.tickets.status_archived: Archiválva
+agent.tickets.status_archived_deleted: Törölve
+agent.tickets.status_archived_temp: Ideiglenes
+agent.tickets.status_archived_validating: 'Várakozás jóváhagyásra'
+agent.tickets.status_awaiting_agent: 'Ügyintézőre vár'
+agent.tickets.status_awaiting_agent_deleted: Törölve
+agent.tickets.status_awaiting_agent_temp: Ideiglenes
+agent.tickets.status_awaiting_agent_validating: 'Várakozás hitelesítésre'
+agent.tickets.status_awaiting_user: 'Felhasználóra vár'
+agent.tickets.status_awaiting_user_deleted: Törölve
+agent.tickets.status_awaiting_user_temp: Ideiglenes
+agent.tickets.status_awaiting_user_validating: 'Várakozás hitelesítésre'
+agent.tickets.status_hidden: Rejtett
+agent.tickets.status_hidden_deleted: Törölve
+agent.tickets.status_hidden_temp: Ideiglenes
+agent.tickets.status_hidden_validating: 'Várakozás hitelesítésre'
+agent.tickets.status_resolved: Teljesítve
+agent.tickets.status_resolved_deleted: Törölve
+agent.tickets.status_resolved_temp: Ideiglenes
+agent.tickets.status_resolved_validating: 'Várakozás hitelesítésre'
+agent.tickets.stop_later_triggers_action: 'Későbbi triggerek feldolgozásának leállítása'
+agent.tickets.subject_changed: 'Megváltozott tárgy'
+agent.tickets.subject_changed_from: 'Megváltozott a tárgy az alábbiról'
+agent.tickets.subscribed_tickets: 'Aláírt jegyek'
+agent.tickets.teams_action: 'Csoportok: {{teams}}'
+agent.tickets.text_body: Szövegtörzs
+agent.tickets.ticket_changes: 'Jegy változásai'
+agent.tickets.ticket_feedback: 'Jegy visszajelzés'
+agent.tickets.ticket_field_name: 'Jegy mező: {{field}}'
+agent.tickets.ticket_is_delete7d: 'Törölt jegy'
+agent.tickets.ticket_is_deleted: 'Törölt jegy'
+agent.tickets.ticket_is_marked_as_spam: 'Ez a jegy spamként lett megjelölve.'
+agent.tickets.ticket_merged: 'Jegy összevonva'
+agent.tickets.ticket_put_on_hold: 'Jegy függőben'
+agent.tickets.ticket_removed_from_hold: 'Jegy függő állapotának visszavonása'
+agent.tickets.ticket_replying: 'Jegy válasz'
+agent.tickets.ticket_split: 'Jegy elválasztva'
+agent.tickets.ticket_split_from: 'Jegy leválasztva ettől'
+agent.tickets.ticket_split_to: 'Jegy leválasztva ide'
+agent.tickets.tickets_on_hold: Függőben
+agent.tickets.time_til_resolve: 'Teljesítésig hátralévő idő'
+agent.tickets.total_user_waiting_time: 'Összes felhasználó várakozási idő'
+agent.tickets.translate_into: 'Üzenet lefordítása erre:'
+agent.tickets.triggers: Triggerek
+agent.tickets.unassign_action: 'Ügyintézői kinevezés megszüntetése'
+agent.tickets.unassign_team: 'Csoport kinevezés megszüntetése'
+agent.tickets.unhelpful: 'nem hasznos'
+agent.tickets.unhold_btn: 'Üzenet függő állapotának megszüntetése'
+agent.tickets.unhold_ticket: 'Jegy függő állapotának megszüntetése'
+agent.tickets.unlock: 'Zárás feloldása'
+agent.tickets.unsanitized_message: 'Nyers üzenet (nincs ellenőrizve)'
+agent.tickets.unsanitized_message_confirm: 'Biztosan meg akarja tekinteni az ellenőrizetlen üzenetet? Veszélyes és rosszindulatú forráskódot tartalmazhat.'
+agent.tickets.unset_flag_action: 'Jelzés visszavonása'
+agent.tickets.upload_files_here: 'Húzzon át erre a területre fájlokat vagy válassza ki őket'
+agent.tickets.urgency_highest_lowest: 'Sürgősség (magas-alacsony)'
+agent.tickets.urgency_lowest_highest: 'Sürgősség (alacsony-magas)'
+agent.tickets.use_email_tpl_action: 'Email minta használata: {{tpl}}'
+agent.tickets.user_email: 'Felhasználói email'
+agent.tickets.user_is_disabled: 'Az Ön által kiválasztott felhasználó nem elérhető. Nem elérhető felhasználók számára nem hozható létre jegy.'
+agent.tickets.users_tickets: 'Felhasználó jegyei'
+agent.tickets.view_entire_in_new_win: 'A teljes üzenet megjelenítése új ablakban'
+agent.tickets.view_full_message: 'A teljes üzenet megtekintése'
+agent.tickets.view_full_quoted_message: 'A teljes idézett üzenet megtekintése'
+agent.tickets.view_message_in_window: 'Üzenet megtekintése új ablakban'
+agent.tickets.view_newer_messages: 'Újabb üzenetek megtekintése'
+agent.tickets.view_older_messages: 'Korábbi üzenetek megtekintése'
+agent.tickets.view_ticket_id: '#{{id}} számú jegy megtekintése'
+agent.tickets.waiting_til_first_reply: 'Várakozás az első válaszig'
+agent.tickets.written_after: 'után írva'
+agent.tickets.written_any_time: 'bármikor írva'
+agent.tickets.written_before: 'előtt írva'
+agent.tickets.written_between: 'közé írva'
+agent.tickets.x_messages_moved:
+  one: '1 üzenet áthelyezve'
+  other: '{{count}} üzenet áthelyezve'
+agent.tickets.x_rated_this_message_as: '{{name}} így értékelte az üzenetet:'
+agent.tickets.you_have_auto_lock: 'Ez a jegy automatikusan le van zárva. Más ügyintézők nem fogják tudni szerkeszteni, amíg a lezárás nincs feloldva.'
+agent.tickets.you_have_locked: 'Ön lezárta ezt a jegyet. Más ügyintézők nem fogják tudni szerkeszteni, amíg a lezárás nincs feloldva.'
+agent.tickets.your_teams_tickets: 'Az Ön csoportjának jegyei'
+agent.tickets.your_tickets: 'Az Ön jegyei'
+agent.time.group_12_to_24_hours: '12 - 24 óra'
+agent.time.group_15_to_30_mins: '15 - 30 perc'
+agent.time.group_1_to_2_days: '1 - 2 nap'
+agent.time.group_1_to_2_hours: '1 - 2 óra'
+agent.time.group_1_to_2_months: '1 - 2 hónap'
+agent.time.group_1_to_2_weeks: '1 - 2 hét'
+agent.time.group_2_to_3_days: '2 - 3 nap'
+agent.time.group_2_to_3_hours: '2 - 3 óra'
+agent.time.group_2_to_3_months: '2 - 3 hónap'
+agent.time.group_2_to_3_weeks: '2 - 3 hét'
+agent.time.group_30_to_60_mins: '30 - 60 perc'
+agent.time.group_3_to_4_days: '3 - 4 nap'
+agent.time.group_3_to_4_hours: '3 - 4 óra'
+agent.time.group_3_to_4_months: '3 - 4 hónap'
+agent.time.group_3_to_4_weeks: '3 - 4 hét'
+agent.time.group_4_to_5_days: '4 - 5 nap'
+agent.time.group_4_to_5_months: '4 - 5 hónap'
+agent.time.group_4_to_6_hours: '4 - 6 óra'
+agent.time.group_5_to_15_mins: '5 - 15 perc'
+agent.time.group_5_to_6_days: '5 - 6 nap'
+agent.time.group_5_to_6_months: '5 - 6 hónap'
+agent.time.group_6_to_12_hours: '6-12 óra'
+agent.time.group_6_to_7_days: '6-7 nap'
+agent.time.group_gt_6_months: '6 hónap'
+agent.time.group_lt_5_mins: '5 perc'
+agent.time.long-day_friday: péntek
+agent.time.long-day_monday: hétfő
+agent.time.long-day_saturday: szombat
+agent.time.long-day_sunday: vasárnap
+agent.time.long-day_thursday: csütörtök
+agent.time.long-day_tuesday: kedd
+agent.time.long-day_wednesday: szerda
+agent.time.long-month_april: április
+agent.time.long-month_august: augusztus
+agent.time.long-month_december: december
+agent.time.long-month_february: február
+agent.time.long-month_january: január
+agent.time.long-month_july: július
+agent.time.long-month_june: június
+agent.time.long-month_march: március
+agent.time.long-month_may: május
+agent.time.long-month_november: november
+agent.time.long-month_october: október
+agent.time.long-month_september: szeptember
+agent.time.reltime_1_day: '1 nap'
+agent.time.reltime_1_hour: '1 óra'
+agent.time.reltime_1_minute: '1 perc'
+agent.time.reltime_1_month: '1 hónap'
+agent.time.reltime_1_second: '1 másodperc'
+agent.time.reltime_1_week: '1 hét'
+agent.time.reltime_1_year: '1 év'
+agent.time.reltime_less_minute: '1 perc'
+agent.time.reltime_less_second: '1 másodperc'
+agent.time.reltime_x_day: '{0} nap'
+agent.time.reltime_x_hour: '{0} óra'
+agent.time.reltime_x_minute: '{0} perc'
+agent.time.reltime_x_month: '{0} hónap'
+agent.time.reltime_x_second: '{0} másodperc'
+agent.time.reltime_x_week: '{0} hét'
+agent.time.reltime_x_year: '{0} év'
+agent.time.reltimeago_1_day: '1 napja'
+agent.time.reltimeago_1_hour: '1 órája'
+agent.time.reltimeago_1_minute: '1 perce'
+agent.time.reltimeago_1_month: '1 hónapja'
+agent.time.reltimeago_1_second: '1 másodperce'
+agent.time.reltimeago_1_week: '1 hete'
+agent.time.reltimeago_1_year: '1 éve'
+agent.time.reltimeago_less_minute: 'kevesebb, mint 1 perce'
+agent.time.reltimeago_less_second: 'kevesebb, mint 1 másodperce'
+agent.time.reltimeago_x_day: '{0} napja'
+agent.time.reltimeago_x_hour: '{0} órája'
+agent.time.reltimeago_x_minute: '{0} perce'
+agent.time.reltimeago_x_month: '{0} hónapja'
+agent.time.reltimeago_x_second: '{0} másodperce'
+agent.time.reltimeago_x_week: '{0} hete'
+agent.time.reltimeago_x_year: '{0} éve'
+agent.time.short-day_friday: Pén
+agent.time.short-day_monday: Hét
+agent.time.short-day_saturday: Szo
+agent.time.short-day_sunday: Vas
+agent.time.short-day_thursday: Csü
+agent.time.short-day_tuesday: Ke
+agent.time.short-day_wednesday: Sze
+agent.time.short-month_april: ápr.
+agent.time.short-month_august: aug.
+agent.time.short-month_december: dec.
+agent.time.short-month_february: feb.
+agent.time.short-month_january: jan.
+agent.time.short-month_july: júl.
+agent.time.short-month_june: jún.
+agent.time.short-month_march: márc.
+agent.time.short-month_may: máj.
+agent.time.short-month_november: nov.
+agent.time.short-month_october: okt.
+agent.time.short-month_september: szept.
+agent.time.time-ago_1_day: '1 napja'
+agent.time.time-ago_1_hour: '1 órája'
+agent.time.time-ago_1_minute: '1 perce'
+agent.time.time-ago_1_month: '1 hónapja'
+agent.time.time-ago_1_second: '1 másodperce'
+agent.time.time-ago_1_week: '1 hete'
+agent.time.time-ago_1_year: '1 éve'
+agent.time.time-ago_less_second: 'kevesebb, mint 1 másodperce'
+agent.time.time-ago_x_day: '{0} napja'
+agent.time.time-ago_x_hour: '{0} órája'
+agent.time.time-ago_x_minute: '{0} perce'
+agent.time.time-ago_x_month: '{0} hónapja'
+agent.time.time-ago_x_second: '{0} másodperce'
+agent.time.time-ago_x_week: '{0} hete'
+agent.time.time-ago_x_year: '{0} éve'
+agent.time.time_1_day: '1 nap'
+agent.time.time_1_hour: '1 óra'
+agent.time.time_1_minute: '1 perc'
+agent.time.time_1_month: '1 hónap'
+agent.time.time_1_second: '1 másodperc'
+agent.time.time_1_week: '1 hét'
+agent.time.time_1_year: '1 év'
+agent.time.time_less_second: 'kevesebb, mint 1 másodperc'
+agent.time.time_x_day: '{0} nap'
+agent.time.time_x_hour: '{0} óra'
+agent.time.time_x_minute: '{0} perc'
+agent.time.time_x_month: '{0} hónap'
+agent.time.time_x_second: '{0} másodperc'
+agent.time.time_x_week: '{0} hét'
+agent.time.time_x_year: '{0} év'
+agent.twitter.account_rec_new_dm_from: '{{account}} kapott egy új üzenetet ettől a személytől {{name}}'
+agent.twitter.account_rec_tweet_from: '{{account}} kapott egy új tweet-et ettől a személytől {{name}}'
+agent.twitter.account_retweeted_by: '{{name}} újratweetelte {{account}}-t'
+agent.twitter.add_note: 'Megjegyzés hozzáadása'
+agent.twitter.added_by_agent: '{{name}} hozzáadta'
+agent.twitter.all_tweets: 'Minden tweet'
+agent.twitter.assigned_to_by: '{{name}} kinevezte a tweethez'
+agent.twitter.associated_orgs: 'Kapcsolódó szervezetek'
+agent.twitter.associated_people: 'Kapcsolódó személyek'
+agent.twitter.char_remaining: '{{num_chars}} maradt'
+agent.twitter.characters: karakter
+agent.twitter.corresponding_twitter_account: 'hasonló/megegyező Twitter fiókok'
+agent.twitter.count_selected:
+  one: '{{count}} kiválasztva'
+  other: '{{count}} kiválasztva'
+agent.twitter.delete-search-confirm: 'Biztosan törölni akarja ezt a keresést?'
+agent.twitter.direct: Közvetlen
+agent.twitter.direct_messages: 'Közvetlen üzenet'
+agent.twitter.edit_long_tweet: 'Hosszú tweet szerkesztése'
+agent.twitter.find_person: 'Találja meg @person-t...'
+agent.twitter.follow: Követés
+agent.twitter.followers: Követők
+agent.twitter.following: Követ
+agent.twitter.from_account: 'A fiókból'
+agent.twitter.geo: GEO
+agent.twitter.in_reply_to: 'Ennek a személynek adott válaszban'
+agent.twitter.interactions: Interakciók
+agent.twitter.list_title:
+  one: '1 tweet'
+  other: '{{count}} tweet'
+agent.twitter.location: Hely
+agent.twitter.long: Hosszú
+agent.twitter.long_private: 'Hosszú magán jellegű'
+agent.twitter.long_tweet_read: 'Hosszú tweet olvasása'
+agent.twitter.mentions: Említések
+agent.twitter.message_sent: 'Üzenet elküldve'
+agent.twitter.my_teams_tweets: 'Az én csoportom tweetjei'
+agent.twitter.my_tweets: 'Az én tweetjeim'
+agent.twitter.new_followers: 'Új követők'
+agent.twitter.new_search: 'Új keresés'
+agent.twitter.newest_first: 'A legújabb először'
+agent.twitter.no_followed: 'Nincs követett felhasználó'
+agent.twitter.no_followers: 'Nincsenek követők'
+agent.twitter.no_mentions: 'Nincs említés a felhasználónak'
+agent.twitter.no_messages: 'Nincs üzenet a felhasználónak'
+agent.twitter.no_statuses: 'Nincsenek státuszok a felhasználónak'
+agent.twitter.oldest_first: 'A legrégebbi először'
+agent.twitter.people: Személyek
+agent.twitter.perform_action: 'Művelet végrehajtása'
+agent.twitter.previous_tweets: 'Korábbi tweetek'
+agent.twitter.protected: Védett
+agent.twitter.replies: Válaszok
+agent.twitter.retweet: Újratweetelés
+agent.twitter.retweet_as_is: 'Újratweetelés ebben a fromában'
+agent.twitter.retweet_of: Újratweetelése
+agent.twitter.retweet_with_edit: 'Újratweetelés szerkesztéssel'
+agent.twitter.retweeted: Újratweetelve
+agent.twitter.retweeted_by: '{{name}} újratweetelte'
+agent.twitter.retweets: Újratweetelések
+agent.twitter.searches: Keresések
+agent.twitter.select_group_var: 'Válasszon mezőt a csoportos tweethez'
+agent.twitter.selected: kiválasztva
+agent.twitter.send_tweet: 'Tweet elküldése'
+agent.twitter.send_user_message_on_twitter: 'Küldjön üzenetet a Twitteren ennek a személynek {{name}}'
+agent.twitter.sent: Elküldve
+agent.twitter.show_archived_tweets: 'Mutassa az archivált tweeteket'
+agent.twitter.show_read_tweets: 'Mutassa az olvasott tweeteket'
+agent.twitter.show_users_tweets: 'Mutassa {{name}} tweetjeit'
+agent.twitter.split_to_multiple: 'Felosztás több részre'
+agent.twitter.split_to_multiple_explain: 'Ha ezt kiválasztja, többszörös tweetként lesz elküldve. Ha szabadon hagyja egy tweet lesz elküldve, mely tartalmaz egy linket a teljes üzenethez.'
+agent.twitter.starred: Becsillagozva
+agent.twitter.starred_tweets: 'Becsillagozott tweetek'
+agent.twitter.team_assigned_by: '{{name}} kinevezte az Ön csoportját ehhez a tweethez'
+agent.twitter.timeline: Idővonal
+agent.twitter.tweet: Tweet
+agent.twitter.tweets: Tweetek
+agent.twitter.unassigned_tweets: 'Ki nem osztott tweetek'
+agent.twitter.unfollow: 'Követés megszüntetése'
+agent.twitter.unknown: ismeretlen
+agent.twitter.unretweet: 'Újratweetelés visszavonása'
+agent.twitter.user_replied_to_tweet: '{{name}} válaszolt az Ön tweetjére'
+agent.twitter.view_twitter_profile: 'Twitter profil megtekintése'
+agent.userchat.assigned_to: 'Beszélgetés kiosztva az alábbi személyhez {{name}}'
+agent.userchat.block_ip_address: 'IP cím blokkolása'
+agent.userchat.block_ip_address_info: 'Az IP cím blokkolása hatásos lehet, de más, megfelelően viselkedő felhasználók számára is elérhetetlenné teheti a hozzáférést, ha többen használnak egy IP címet (pl. megosztott hálózat, nyilvános wifi, stb).'
+agent.userchat.block_reason: 'Ok: {{reason}}'
+agent.userchat.block_title: 'Beszélgetés befejezése és a felhasználó eltiltása a beszélgetés kezdeményezésétől 24 óráig.'
+agent.userchat.block_user: 'Felhasználó blokkolása'
+agent.userchat.create_ticket: 'Jegy létrehozása'
+agent.userchat.ended_by: '{{name}} befejezte a beszélgetést'
+agent.userchat.ended_by_reason: '{{name}} befejezte a beszélgetést: {{reason}}'
+agent.userchat.ended_user: 'A felhasználó befejezte a beszélgetést'
+agent.userchat.full_message: 'Teljes üzenet'
+agent.userchat.ident_unconfirmed: 'Személyazonosság nincs megerősítve, az email nincs hitelesítve'
+agent.userchat.list_title:
+  one: '1 beszélgetés'
+  other: '{{count}} beszélgetés'
+agent.userchat.message_agent-timeout: '{{name}} nem válaszol. Kérem várjon, amíg találunk Önnek egy másik ügyintézőt.'
+agent.userchat.message_assigned: 'A beszélgetés kiosztva az alábbi személyhez {{name}}'
+agent.userchat.message_ended: 'Beszélgetés befejezve'
+agent.userchat.message_ended-by: '{{name}} befejezte a beszélgetést'
+agent.userchat.message_ended-by-user: 'A felhasználó befejezte a beszélgetést'
+agent.userchat.message_set-department: '{{name}} beállította a részleget az alábbira {{department}}'
+agent.userchat.message_set_department: '{{name}} beállította a részleget az alábbira {{department}}'
+agent.userchat.message_started: 'A beszélgetés elkezdődött'
+agent.userchat.message_unassigned: 'A beszélgetés nincs kiosztva'
+agent.userchat.message_uploading: Feltöltés...
+agent.userchat.message_user-joined: '{{name}} csatlakozott a beszélgetéshez'
+agent.userchat.message_user-left: '{{name}} elhagyta a beszélgetést'
+agent.userchat.message_user-returned: 'A felhasználó visszatért'
+agent.userchat.message_user-timeout: 'A felhasználó ideje lejárt'
+agent.userchat.message_user_joined: '{{name}} csatlakozott a beszélgetéshez'
+agent.userchat.message_user_left: '{{name}} elhagyta a beszélgetést'
+agent.userchat.message_wait-timeout: 'A beszélgetés befejeződött: nem találtunk ügyintézőt'
+agent.userchat.msg_agent_timeout: '{{name}} nem válaszol. Kérem várjon, amíg találunk Önnek egy másik ügyintézőt.'
+agent.userchat.msg_new_user_track: 'A felhasználó most ez nézi: {{label}}'
+agent.userchat.msg_user_timeout: 'A felhasználó nem válaszol.'
+agent.userchat.new_chat: 'Új beszélgetés'
+agent.userchat.take_chat: 'Válassza ezt a beszélgetést'
+agent.userchat.taken_by: 'A beszélgetést az alábbi személy választotta'
+agent.userchat.transcript_sent: 'Az átiratot elküldtük ide {{email}}'
+agent.userchat.unassigned: 'A beszélgetés nincs kiosztva'
+agent.userchat.unblock: 'Blokkolás feloldása'
+agent.userchat.user_is_blocked: 'A felhasználó blokkolva van'
+agent.userchat.visitor_info: 'Látogatói információ'
+agent.userchat.you_have_been_invited: 'Önt meghívták, hogy csatlakozzon a beszélgetéshez'
+agent.usertrack.first_visit_date: 'Első látogatás dátuma'
+agent.usertrack.initial_landing_page: 'Legelső beérkezési oldal'
+agent.usertrack.initial_visit_time: 'Legelső látogatási idő'
+agent.usertrack.landing_pages: 'Beérkezési oldal'
+agent.usertrack.number_of_pages: 'Lapok száma'
+agent.usertrack.number_of_visits: 'Látogatások száma'
+agent.usertrack.session_landing_page: 'Session beérkezési oldal'
+agent.usertrack.session_start_time: 'Session kezdési idő'
+agent.usertrack.visited_pages: 'Látogatott lapok'
+agent.usertrack.visitor_id: 'Látogató azonosító'

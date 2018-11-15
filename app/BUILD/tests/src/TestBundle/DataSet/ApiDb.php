@@ -97,12 +97,12 @@ class ApiDb extends AbstractDbSet
         $this->getDb()->exec(
             <<<'SQL'
             INSERT INTO `languages`
-                (`id`, `sys_name`, `lang_code`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
+                (`id`, `sys_name`, `title`, `base_filepath`, `locale`, `flag_image`, `is_rtl`, `has_user`,
                  `has_agent`, `has_admin`)
             VALUES
-                (1, 'default', 'eng', 'English', NULL, 'en_US', 'us.png', 0, 1, 1, 1),
-                (2, 'french', 'fre', 'Français', '%DP_ROOT%/languages/french', 'fr', 'fr.png', '0', '1', '1', '0'),
-                (3, 'russian', 'rus', 'Pусский', '%DP_ROOT%/languages/russian', 'ru', 'ru.png', '0', '1', '1', '0')
+                (1, 'default', 'English', NULL, 'en-US', '', 0, 1, 1, 1),
+                (2, 'french', 'Français', '%DP_ROOT%/locales/fr', 'fr', '', '0', '1', '1', '1'),
+                (3, 'russian', 'Pусский', '%DP_ROOT%/locales/ru', 'ru', '', '0', '1', '1', '1')
 
             ;
 SQL

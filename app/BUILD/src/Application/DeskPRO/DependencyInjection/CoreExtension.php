@@ -83,7 +83,7 @@ class CoreExtension extends Extension
     protected function loadTranslation(ContainerBuilder $container)
     {
         $definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\SystemLoader', [[
-            DP_ROOT.'/languages',
+            DP_ROOT.'/locales',
         ]]);
         $container->setDefinition('deskpro.core.translate_loader_system', $definition);
 

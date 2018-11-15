@@ -1,0 +1,10 @@
+id: vietnamese
+name: Vietnamese
+nameLocal: 'Tiếng Anh (US)'
+locale: vi
+isRtl: false
+pluralRules:
+  plurals: 1
+  formula: '0'
+  categories:
+    - other

@@ -1,0 +1,12 @@
+id: slovak
+name: Slovak
+nameLocal: Slovenčina
+locale: sk
+isRtl: false
+pluralRules:
+  plurals: 3
+  formula: '(n == 1) ? 0 : ((n >= 2 && n <= 4) ? 1 : 2)'
+  categories:
+    - one
+    - few
+    - other

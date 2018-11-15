@@ -77,6 +77,13 @@ dp_build_runcmd('bin/console dp:assetic -r ALL --kernel dp --env prod --verbose'
 echo "Generating schema file\n";
 dp_build_runcmd('bin/console dpdev:gen:schema-file --env prod --barg is-building');
 
+####################################################################################################################php####
+# Optimise fs language files
+########################################################################################################################
+
+echo "Optimise language\n";
+dp_build_runcmd('bin/console dpdev:gen:opt-lang --env prod --barg is-building');
+
 ########################################################################################################################
 # Template map
 ########################################################################################################################

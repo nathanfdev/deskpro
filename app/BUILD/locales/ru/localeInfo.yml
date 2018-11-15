@@ -1,0 +1,12 @@
+id: russian
+name: Russian
+nameLocal: Pусский
+locale: ru
+isRtl: false
+pluralRules:
+  plurals: 3
+  formula: '(n % 10 == 1 && n % 100 != 11) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14)) ? 1 : 2)'
+  categories:
+    - one
+    - few
+    - other

@@ -1,0 +1,11 @@
+id: italian
+name: Italian
+nameLocal: Inglese
+locale: it
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n != 1'
+  categories:
+    - one
+    - other
