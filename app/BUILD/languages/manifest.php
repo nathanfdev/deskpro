@@ -291,7 +291,7 @@ return [
         'id'         => 'slovenian',
         'lang_code'  => 'slv',
         'title'      => 'Slovenian',
-        'locale'     => 'sl-SI',
+        'locale'     => 'sl_SI',
         'flag_image' => 'si.png',
         'is_rtl'     => false,
         'has_user'   => true,
