@@ -220,7 +220,7 @@ class NotificationService
                 ]);
             case 'deskpro':
                 return new NotificationClient('deskpro', [
-                    'token'  => $this->getJwtToken(),
+                    'token'  => $this->getJwtToken($visitorId),
                     'debug'  => $this->settings->get('notification.settings.deskpro_client.debug'),
                     'host'   => $this->settings->get('notification.settings.deskpro_client.host'),
                     'port'   => $this->settings->get('notification.settings.deskpro_client.port'),
@@ -231,13 +231,14 @@ class NotificationService
         }
     }
 
-    protected function getJwtToken()
+    protected function getJwtToken($visitorId = null)
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
         return JWT::encode(
             [
-                'id' => $user instanceof Person ? $user->getId() : 0,
+                'id'         => $visitorId ? $visitorId : ($user instanceof Person ? $user->getId() : 0),
+                'by_visitor' => (bool) $visitorId,
             ],
             $this->settings->get('notification.settings.deskpro_client.secret')
         );
