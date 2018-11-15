@@ -64,6 +64,7 @@ abstract class AbstractSearchManager implements ContainerAwareInterface
      */
     protected $restrictedObjects = [
         'ticket',
+        'chat',
     ];
 
     /**

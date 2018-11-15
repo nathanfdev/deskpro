@@ -27,6 +27,7 @@ class ChatToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('department', $object->getDepartmentId());
         $document->set('person', $object->getPerson() ? $object->getPerson()->getId() : null);
         $document->set('agent', $object->getAgentId());
+        $document->set('participants', $object->getParticipantIds());
         $document->set('is_agent', $object->isAgentChat());
 
         if ($object->getLabels()) {

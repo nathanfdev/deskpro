@@ -55,29 +55,31 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
         // See app/src/Application/DeskPRO/Searcher/TicketSearch.php
         // Re-creating permission logic via filters
 
-        $main_filter = new Query\BoolQuery();
+        $mainFilter = new Query\BoolQuery();
 
-        $assigned_filter = new Query\BoolQuery();
-        $assigned_filter->addShould(new Query\Term(['agent' => $this->person->getId()]));
+        $assignedFilter = new Query\BoolQuery();
+        $assignedFilter->addShould(new Query\Term(['agent' => $this->person->getId()]));
 
         $this->person->loadHelper('Agent');
         $teamIds = $this->person->getHelper('Agent')->getTeamIds();
         if ($teamIds) {
-            $assigned_filter->addShould(new Query\Terms('agent_team', $teamIds));
+            $assignedFilter->addShould(new Query\Terms('agent_team', $teamIds));
         }
 
-        $main_filter->addShould($assigned_filter);
+        $mainFilter->addShould($assignedFilter);
         $this->person->loadHelper('AgentPermissions');
 
-        if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
+        if (!$this->person->getAllowedDepartments()
+            || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))
+        ) {
             // cant see anything else
         } else {
-            $sub_filter = new Query\BoolQuery();
-            $any        = false;
+            $subFilter = new Query\BoolQuery();
+            $any       = false;
 
-            $dis_dep_ids = $this->person->getDisallowedDepartments();
-            if ($dis_dep_ids) {
-                $sub_filter->addMustNot(new Query\Terms('department', $dis_dep_ids));
+            $disDepIds = $this->person->getDisallowedDepartments();
+            if ($disDepIds) {
+                $subFilter->addMustNot(new Query\Terms('department', $disDepIds));
                 $any = true;
             }
 
@@ -91,13 +93,13 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
                 $not_assigned = new Query\BoolQuery();
                 $not_assigned->addShould($setAgentQuery);
                 $not_assigned->addShould($setAgentTeamQuery);
-                $sub_filter->addMust($not_assigned);
+                $subFilter->addMust($not_assigned);
                 $any = true;
             }
 
             if (!$this->person->hasPerm('agent_tickets.view_others')) {
-                $sub_filter->addMustNot(new Query\Term(['agent' => 0]));
-                $sub_filter->addMustNot(new Query\Term(['agent_team' => 0]));
+                $subFilter->addMustNot(new Query\Range('agent', ['gt' => 0]));
+                $subFilter->addMustNot(new Query\Range('agent_team', ['gt' => 0]));
                 $any = true;
             }
 
@@ -107,9 +109,9 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
                 return [];
             }
 
-            $main_filter->addShould($sub_filter);
+            $mainFilter->addShould($subFilter);
         }
 
-        return $main_filter->toArray();
+        return $mainFilter->toArray();
     }
 }
