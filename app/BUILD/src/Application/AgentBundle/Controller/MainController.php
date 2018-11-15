@@ -165,6 +165,7 @@ class MainController extends AbstractController
         }
 
         AvailableTrigger::update();
+        $this->get('dp.voice.worker_helper')->updateWorkerActivityOnBootstrap($this->person);
 
         /** @var TextSnippetCategoryRepository $textSnippetCategoryRepository */
         $textSnippetCategoryRepository = $this->em->getRepository(TextSnippetCategory::class);

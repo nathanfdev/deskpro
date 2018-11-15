@@ -1,0 +1,28 @@
+services:
+
+  form.twilio_account:
+    class: DeskPRO\Bundle\VoiceBundle\Form\Type\TwilioAccountType
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: form.type }
+
+  form.plivo_account:
+    class: DeskPRO\Bundle\VoiceBundle\Form\Type\PlivoAccountType
+    arguments:
+      - "@plivo_adapter"
+    tags:
+      - { name: form.type }
+
+  form.voice_asset_auth:
+    class: DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAssetAuthType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.voice_outbound_call_type:
+    class: DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceOutboundCallType
+    arguments: ["@person_repository"]
+    tags:
+      - { name: form.type }

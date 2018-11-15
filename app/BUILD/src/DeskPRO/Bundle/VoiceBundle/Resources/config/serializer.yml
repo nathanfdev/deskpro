@@ -1,0 +1,22 @@
+services:
+
+  api_serializer.handler.twilio_voice_account:
+    class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\TwilioVoiceAccountHandler
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.plivo_voice_account:
+    class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\PlivoVoiceAccountHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.voice_phone_call:
+    class: DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity\VoicePhoneCallHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }

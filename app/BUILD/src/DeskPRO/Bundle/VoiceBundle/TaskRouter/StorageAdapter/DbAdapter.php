@@ -219,6 +219,7 @@ class DbAdapter implements StorageAdapterInterface
             'type'   => $type,
             'typeId' => $typeId,
         ]);
+
         if (!$entity) {
             return;
         }

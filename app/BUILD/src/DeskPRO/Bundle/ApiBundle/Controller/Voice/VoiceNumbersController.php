@@ -7,7 +7,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceNumberType;
+use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceNumberType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
@@ -21,7 +21,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceNumberType",
+ *      "class"="DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceNumberType",
  *      "options"={
  *          "data"="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber"
  *      }

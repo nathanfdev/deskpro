@@ -47,7 +47,7 @@ class VoiceControls extends React.Component {
       window.requestAnimationFrame(() => {
         const baseId = this.props.baseId;
         const content = window.document.getElementById(`${baseId}_page_header`);
-        if (content) {
+        if (content && this.div) {
           content.style.paddingTop = `${this.div.clientHeight + 20}px`;
         }
         this.ticking = false;
@@ -173,13 +173,27 @@ class Active extends React.Component {
     this.state = {
       transferMenuOpened: false,
       addMenuOpened:      false,
-      dialpadOpened:      false
+      dialpadOpened:      false,
+      updatingHold:       false
     };
   }
 
   toggleHold = (event) => {
     event.preventDefault();
-    this.props.toggleHold();
+    this.setState({
+      updatingHold: true
+    });
+
+    const newHold = !this.state.hold;
+    const promise = this.props.toggleHold();
+    if (promise) {
+      promise.success(() => {
+        this.setState({
+          updatingHold: false,
+          hold:         newHold
+        });
+      });
+    }
   };
 
   toggleMute = (event) => {
@@ -233,7 +247,7 @@ class Active extends React.Component {
 
   render() {
     const { hold, mute, ended, onlineAgents, sendDigits, divRef } = this.props;
-    const { transferMenuOpened, addMenuOpened, dialpadOpened } = this.state;
+    const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
 
     return (
@@ -259,7 +273,7 @@ class Active extends React.Component {
           Dialpad
         </Button>
         <Button
-          className={classNames('basic', { active: hold, disabled: ended })}
+          className={classNames('basic', { active: hold, disabled: ended, loading: updatingHold })}
           onClick={this.toggleHold}
         >
           <i className="pause icon" />

@@ -1006,9 +1006,9 @@ $voice-green-border-color: #47BF61;
   }
 }
 
-.voice-ticket-add-list {
+.voice-ticket-add-list, .voice-ticket-transfer-list {
   .online-agents-header {
-    margin: 0 20px;
+    margin: 20px 20px 0 20px;
     font-weight: 600;
     font-size: 12px;
     color: $dp-greyscale-850;

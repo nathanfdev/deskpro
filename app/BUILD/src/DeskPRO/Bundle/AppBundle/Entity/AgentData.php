@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\VoiceBundle\Validator\Constraints as VoiceAssert;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -19,8 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\UniqueConstraint(name="unique_extension_numbers", columns={"extension_number"})
  * })
  * @ORM\EntityListeners({
- *     "DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener",
- *     "DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceSettingsListener"
+ *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceWorkerListener",
+ *     "DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceSettingsListener"
  * })
  *
  * @JMS\ExclusionPolicy("all")
@@ -58,7 +59,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
-     * @AppAssert\Voice\VoiceExtension()
+     * @VoiceAssert\VoiceExtension()
      *
      * @var int
      */

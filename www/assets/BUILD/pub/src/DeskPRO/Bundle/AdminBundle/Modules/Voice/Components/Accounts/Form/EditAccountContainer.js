@@ -29,7 +29,7 @@ class EditAccountContainer extends BaseAccountFormContainer {
   submitData = (data) => {
     const { dispatch, account } = this.props;
 
-    return dispatch(updateAccount(account.get('id'), data));
+    return dispatch(updateAccount(account.get('type'), account.get('id'), data));
   };
 }
 

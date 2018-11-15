@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { findPhoneNumbers, getCountryCallingCode } from 'libphonenumber-js';
+import { getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import { connect } from 'react-redux';
 import { Icon } from '@deskpro/react-components';
 import { openDialpad } from '../../Actions/clientActions';
@@ -20,7 +21,7 @@ class MessagePhoneNumber extends React.PureComponent {
   static detectPhoneNumbers(messages, numbers) {
     let agentCountry = null;
     if (numbers.size) {
-      agentCountry = numbers.first().get('country_code').toUpperCase();
+      agentCountry = getPhoneCountryCode(numbers.first().get('number')).toUpperCase();
     }
     messages.find('.content-message').toArray().forEach((messageContent) => {
       let country = null;

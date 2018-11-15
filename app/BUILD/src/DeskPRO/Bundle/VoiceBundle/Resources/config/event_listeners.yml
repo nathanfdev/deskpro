@@ -30,3 +30,51 @@ services:
       - "@dp.voice.task_router.storage"
     tags:
       - { name: dp.voice.event_subscriber }
+
+  event_listener.doctrine.twilio_account:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\TwilioAccountListener
+    arguments:
+      - "@twilio_adapter"
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.plivo_account:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\PlivoAccountListener
+    arguments:
+      - "@plivo_adapter"
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.voice_worker:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceWorkerListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@event_dispatcher"
+      - "@dp.voice.task_router.storage"
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.voice_number:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceNumberListener
+    arguments: ["@service_container", "@event_dispatcher"]
+    tags:
+      - { name: doctrine.entity_listener }
+      - { name: doctrine.event_subscriber, connection: default }
+
+  event_listener.doctrine.voice_settings:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceSettingsListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@event_dispatcher"
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.voice_agent_target:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceAgentTargetListener
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: doctrine.entity_listener }

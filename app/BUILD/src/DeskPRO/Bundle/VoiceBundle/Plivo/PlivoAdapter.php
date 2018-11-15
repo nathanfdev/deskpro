@@ -1,0 +1,516 @@
+<?php
+
+namespace DeskPRO\Bundle\VoiceBundle\Plivo;
+
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\VoiceBundle\Plivo\Proxy\ProxyRestClient;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
+use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
+use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
+use Plivo\Exceptions\PlivoNotFoundException;
+use Plivo\Exceptions\PlivoResponseException;
+use Plivo\Exceptions\PlivoRestException;
+use Plivo\Resources\Call\Call;
+use Plivo\Resources\Call\CallCreateResponse;
+use Plivo\Resources\Conference\ConferenceMember;
+use Plivo\Resources\Endpoint\Endpoint;
+use Plivo\RestClient;
+
+/**
+ * Class PlivoAdapter.
+ */
+class PlivoAdapter implements VoiceProviderInterface
+{
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * @var VoiceSettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager         $em
+     * @param VoiceSettingsResolver $settingsResolver
+     */
+    public function __construct(EntityManager $em, VoiceSettingsResolver $settingsResolver)
+    {
+        $this->em               = $em;
+        $this->settingsResolver = $settingsResolver;
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     * @param string            $appName
+     * @param string            $answerUrl
+     * @param string            $answerMethod
+     * @param string            $hangupUrl
+     * @param string            $hangupMethod
+     *
+     * @return string|null
+     */
+    public function createApplication(PlivoVoiceAccount $account, $appName, $answerUrl, $answerMethod, $hangupUrl, $hangupMethod)
+    {
+        try {
+            $client = $this->getClient($account);
+
+            // check for existing app with the same name
+            // to avoid duplicate app name errors
+            $existApplication = null;
+            foreach ($client->applications->getList() as $application) {
+                if ($application->appName === $appName) {
+                    $existApplication = $application;
+                }
+            }
+
+            $options = [
+                'answer_url'    => $answerUrl,
+                'answer_method' => $answerMethod,
+                'hangup_url'    => $hangupUrl,
+                'hangup_method' => $hangupMethod,
+            ];
+
+            // create or update plivo application
+            if ($existApplication) {
+                $client->applications->update($existApplication->appId, $options);
+
+                return $existApplication->appId;
+            } else {
+                $result = $client->applications->create($appName, $options);
+
+                return $result->appId;
+            }
+        } catch (PlivoRestException $e) {
+            return;
+        }
+    }
+
+    /**
+     * @param VoiceNumber $number
+     *
+     * @throws \RuntimeException
+     */
+    public function setApplicationId(VoiceNumber $number)
+    {
+        $account = $number->getAccount();
+        if (!$account || !$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $this->getClient($account)->numbers->update($number->getSid(), [
+            'app_id' => $account->getUserApplicationId(),
+        ]);
+    }
+
+    /**
+     * @param VoiceNumber $number
+     *
+     * @throws \RuntimeException
+     */
+    public function unsetApplicationId(VoiceNumber $number)
+    {
+        $account = $number->getAccount();
+        if (!$account || !$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $this->getClient($account)->numbers->update($number->getSid(), [
+            'app_id' => '',
+        ]);
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     *
+     * @return Endpoint[]
+     */
+    public function getEndpoints(PlivoVoiceAccount $account)
+    {
+        try {
+            return $this->getClient($account)->endpoints->list();
+        } catch (PlivoRestException $e) {
+            return [];
+        }
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     * @param Person            $person
+     * @param string            $password
+     *
+     * @return Endpoint|null
+     */
+    public function createEndpoint(PlivoVoiceAccount $account, Person $person, $password)
+    {
+        try {
+            $username = 'agent'.Strings::random(20);
+            $alias    = self::getAgentEndpointAliases($person);
+
+            return $this->getClient($account)->endpoints->create($username, $password, $alias, $account->getAgentApplicationId());
+        } catch (PlivoRestException $e) {
+            return;
+        }
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     * @param string            $endpointId
+     */
+    public function deleteEndpoint(PlivoVoiceAccount $account, $endpointId)
+    {
+        try {
+            $this->getClient($account)->endpoints->delete($endpointId);
+        } catch (PlivoRestException $e) {
+        }
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return string
+     */
+    public static function getAgentEndpointAliases(Person $person)
+    {
+        return 'agent'.$person->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public static function createEndpointPassword()
+    {
+        return Strings::random(20);
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     *
+     * @return \Plivo\Resources\Account\Account
+     */
+    public function getAccount(PlivoVoiceAccount $account)
+    {
+        return $this->getClient($account)->accounts->get();
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     * @param string            $conferenceName
+     *
+     * @return \Plivo\Resources\Conference\Conference|null
+     */
+    public function getConference(PlivoVoiceAccount $account, $conferenceName)
+    {
+        try {
+            return $this->getClient($account)->getConferences()->get($conferenceName);
+        } catch (PlivoRestException $e) {
+            return;
+        }
+    }
+
+    /**
+     * @param VoiceNumber $fromNumber
+     * @param string      $toNumber
+     * @param string      $answerUrl
+     * @param string      $answerMethod
+     *
+     * @throws \Exception
+     *
+     * @return string|bool
+     */
+    public function callNumber(VoiceNumber $fromNumber, $toNumber, $answerUrl, $answerMethod)
+    {
+        $account = $fromNumber->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            /** @var CallCreateResponse $call */
+            $call = $this->getClient($account)->calls->create(
+                $fromNumber->getNumber(),
+                [$toNumber],
+                $answerUrl,
+                $answerMethod
+            );
+
+            return $call->getRequestUuid();
+        } catch (PlivoRestException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cancelForwardingCall(VoicePhoneCall $phoneCall, Person $person)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $agentData = $person->getAgentData();
+        if (!$agentData || !$agentData->getForwardingNumber()) {
+            return;
+        }
+
+        /** @var Call[] $forwardingCalls */
+        $client = $this->getClient($account);
+        foreach ($phoneCall->getAgentForwardingRequestIds($person->getId()) as $forwardingRequestId) {
+            try {
+                $client->calls->cancel($forwardingRequestId);
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cancelForwardingCalls(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $client = $this->getClient($account);
+        foreach ($phoneCall->getForwardingRequestIds() as $agentId => $forwardingRequestIds) {
+            foreach ($forwardingRequestIds as $forwardingRequestId) {
+                try {
+                    $client->calls->cancel($forwardingRequestId);
+                } catch (\Exception $e) {
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function tryEndConference(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $conference = $this->getConference($account, $phoneCall->getConferenceName());
+        if ($conference && count($conference->members) < 2) {
+            $conference->delete();
+
+            foreach ($phoneCall->getUserParticipants() as $participant) {
+                try {
+                    $this->getClient($account)->calls->delete($participant->getCallSid());
+                } catch (\Exception $e) {
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $conference = $this->getConference($account, $phoneCall->getConferenceName());
+        foreach ($conference->members as $member) {
+            /** @var ConferenceMember $member */
+            if ($member['call_uuid'] === $callSid) {
+                if ($mute) {
+                    $conference->muteMember([$member['member_id']]);
+                } else {
+                    $conference->UnMuteMember([$member['member_id']]);
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $userParticipants = $phoneCall->getUserParticipants()->map(function (VoicePhoneCallParticipantUser $participant) {
+            return $participant->getCallSid();
+        })->toArray();
+
+        $memberIds  = [];
+        $conference = $this->getConference($account, $phoneCall->getConferenceName());
+        if ($conference) {
+            foreach ($conference->members as $member) {
+                /** @var ConferenceMember $member */
+                if (in_array($member['call_uuid'], $userParticipants)) {
+                    $memberIds[] = $member['member_id'];
+                }
+            }
+
+            try {
+                if ($isHold) {
+                    $conference->createDeaf($memberIds);
+                    $conference->muteMember($memberIds);
+                    $conference->startPlaying($memberIds, 'http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3');
+                } else {
+                    $conference->deleteDeaf($memberIds);
+                    $conference->UnMuteMember($memberIds);
+                    $conference->stopPlaying($memberIds);
+                }
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $agents = [];
+
+        try {
+            $conference = $this->getConference($account, $phoneCall->getConferenceName());
+            if ($conference) {
+                foreach ($conference->members as $member) {
+                    $agent = $phoneCall->getPersonByCallSid($member['call_uuid']);
+                    if ($agent) {
+                        $agents[] = $agent;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+        }
+
+        return $agents;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isConferenceOnHold(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $conference = $this->getConference($account, $phoneCall->getConferenceName());
+        if ($conference) {
+            foreach ($conference->members as $member) {
+                /** @var ConferenceMember $member */
+                if ($member['call_uuid'] === $phoneCall->getCallSid()) {
+                    return $member['deaf'];
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isCallActive(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            $call = $this->getClient($account)->calls->get($phoneCall->getCallSid());
+            if ($call) {
+                return !$call->endTime;
+            }
+        } catch (PlivoResponseException $e) {
+            if ($e->getException(null) instanceof PlivoNotFoundException) {
+                // it's possible that required call couldn't be found
+                // just after creating, could be cache related or something
+                // it means that the call is already created and still active
+                // otherwise there will be the call object with non-empty endTime
+                return true;
+            }
+        } catch (\Exception $e) {
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cancelCall(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        foreach ($phoneCall->getUserParticipants() as $participant) {
+            try {
+                $this->getClient($account)->calls->delete($participant->getCallSid());
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function joinUserToConference(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            return $this->getClient($account)->calls->transfer(
+                $phoneCall->getCallSid(),
+                [
+                    'legs'        => 'aleg',
+                    'aleg_url'    => $callbackUrl,
+                    'aleg_method' => $callbackMethod,
+                ]
+            );
+        } catch (\Exception $e) {
+        }
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     *
+     * @return RestClient
+     */
+    private function getClient(PlivoVoiceAccount $account)
+    {
+        return new ProxyRestClient(
+            $account->getAccountId(),
+            $account->getAuthToken(),
+            $this->settingsResolver->getPlivoProxyHost()
+        );
+    }
+}

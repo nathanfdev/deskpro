@@ -6,15 +6,14 @@ import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { phoneTokenSelector, connectionsSelector, incomingCallSelector } from '../Selectors/client';
+import { connectionsSelector, incomingCallSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
+import { allVoiceAccountsSelector } from '../Selectors/accounts';
 import { allNumbersSelector } from '../Selectors/numbers';
 import { closeIframes } from '../../Application/Actions/bootstrapActions';
 import { actionAlertsSelector } from '../../Application/Selectors/notifications';
 
 export const setMicEnabled = createAction('VOICE_AGENT_SET_MIC_ENABLED');
-export const setVoiceTokens = createAction('VOICE_AGENT_SET_TOKENS');
-export const setVoiceActivities = createAction('VOICE_AGENT_SET_ACTIVITIES');
 export const setVoiceSettings = createAction('VOICE_AGENT_SET_SETTINGS');
 export const addIncomingCall = createAction('VOICE_AGENT_ADD_RESERVATION');
 export const updateIncomigCall = createAction('VOICE_AGENT_UPDATE_RESERVATION');
@@ -25,6 +24,39 @@ export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
 export const setOutgoingCall = createAction('VOICE_AGENT_deskpro_call_idSET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
 export const updateConnectionState = createAction('VOICE_AGENT_UPDATE_CONNECTION_STATE');
+
+const filterConnection = (connection, callSid) => {
+  if (!connection) {
+    return false;
+  }
+
+  // filter for twilio
+  if (connection.parameters && connection.parameters.CallSid === callSid) {
+    return true;
+  }
+
+  // filter for plivo
+  if (connection.getCallUUID && connection.getCallUUID() === callSid) {
+    return true;
+  }
+
+  return false;
+};
+
+const hangupConnection = (connection) => {
+  // twilio
+  if (connection.disconnect) {
+    connection.disconnect();
+  }
+
+  // plivo
+  if (connection.hangup) {
+    connection.hangup();
+  }
+};
+
+// list of active voice clients
+const clients = {};
 
 export const setRingingVolume = createAction(
   'VOICE_AGENT_SET_RINGING_VOLUME',
@@ -41,9 +73,9 @@ export const voiceBootstrap = createAction(
   'VOICE_AGENT_BOOTSTRAP',
   () => (dispatch, getState) => {
     const initialState = getState();
-    const phoneToken = phoneTokenSelector(initialState);
+    const accounts = allVoiceAccountsSelector(initialState);
 
-    if (!phoneToken) {
+    if (!accounts.size) {
       return;
     }
 
@@ -53,14 +85,6 @@ export const voiceBootstrap = createAction(
         // mark the mic as enabled
         stream.stop();
         dispatch(setMicEnabled(true));
-
-        try {
-          window.Twilio.Device.setup(phoneToken, {
-            debug: true
-          });
-        } catch (e) {
-          // handle invalid token
-        }
 
         // if pusher is enabled we need to use an another polling action
         const actionAlerts = actionAlertsSelector(initialState);
@@ -86,7 +110,7 @@ export const voiceBootstrap = createAction(
             dispatch(loadBatch('Person', relatedPeopleIds, 'all'));
           }
 
-          dispatch(addIncomingCall(data));
+          dispatch(addIncomingCall(Immutable.fromJS(data)));
         });
         messageBroker.addMessageListener('agent.voice.conference.incoming-call-answered', (data) => {
           // another agent have already accepted the call
@@ -131,10 +155,10 @@ export const voiceBootstrap = createAction(
             dispatch(loadBatch('Person', data.caller_person_id, 'all'));
           }
 
-          dispatch(addIncomingCall(data));
+          dispatch(addIncomingCall(Immutable.fromJS(data)));
         });
         messageBroker.addMessageListener('agent.voice.conference.participant-cancel', (data) => {
-          dispatch(removeIncomingCall(data));
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
         });
         messageBroker.addMessageListener('agent.voice.conference.status', (event) => {
           const eventName = event.StatusCallbackEvent;
@@ -154,6 +178,14 @@ export const voiceBootstrap = createAction(
           if (eventName === 'conference-end') {
             dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
           }
+
+          dispatch(updateConnectionState({
+            call_id: parseInt(event.phone_call.id, 10),
+            state:   {
+              participants: event.agent_participants,
+              hold:         !!event.hold
+            }
+          }));
         });
         messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
           const data = event.data;
@@ -182,28 +214,29 @@ export const voiceBootstrap = createAction(
         messageBroker.addMessageListener('agent.voice.outgoing-call-answered', (data) => {
           const state = getState();
           const connections = connectionsSelector(state);
-          const connection = connections.filter(c => c.parameters.CallSid === data.CallSid).first();
+          const connection = connections.filter(c => filterConnection(c, data.call_sid)).first();
 
           if (connection) {
             closeIframes();
 
             dispatch(resetOutgoingCall());
-            connection.message.TicketId = data.ticket.id;
+            connection.ticketId = data.ticket_id;
+            connection.callId   = data.call_id;
 
-            const routeUrl = `/agent/tickets/${data.ticket.id}`;
+            const routeUrl = `/agent/tickets/${data.ticket_id}`;
             if (!window.DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl)) {
-              window.DeskPRO_Window.runPageRoute(`ticket:${routeUrl}`);
+              window.DeskPRO_Window.runPageRoute(`ticket:${routeUrl}`, { noToggle: true });
             }
           }
         });
         messageBroker.addMessageListener('agent.voice.outgoing-call-declined', (data) => {
           const state = getState();
           const connections = connectionsSelector(state);
-          const connection = connections.filter(c => c.parameters.CallSid === data.CallSid).first();
+          const connection = connections.filter(c => filterConnection(c, data.CallSid)).first();
 
           dispatch(resetOutgoingCall());
           if (connection) {
-            connection.disconnect();
+            hangupConnection(connection);
           }
         });
         messageBroker.addMessageListener('agent.voice.conference.hold', (data) => {
@@ -211,15 +244,6 @@ export const voiceBootstrap = createAction(
             call_id: parseInt(data.call_id, 10),
             state:   {
               hold: !!data.hold
-            }
-          }));
-        });
-        messageBroker.addMessageListener('agent.voice.conference.status', (data) => {
-          dispatch(updateConnectionState({
-            call_id: parseInt(data.phone_call.id, 10),
-            state:   {
-              participants: data.agent_participants,
-              hold:         !!data.hold
             }
           }));
         });
@@ -231,27 +255,91 @@ export const voiceBootstrap = createAction(
         // nothing to do
       });
 
-      try {
-        window.Twilio.Device.setup(phoneToken, { debug: true });
-        window.Twilio.Device.ready(() => {
-          console.log('phone ready');
-        });
-        window.Twilio.Device.error((error) => {
-          console.log('device error');
-          console.log(error);
-        });
-        window.Twilio.Device.connect((connection) => {
-          dispatch(addConnection(connection));
-          connection.disconnect(() => {
-            // call has ended
-            // unset incoming and outgoing calls and set worker activity to idle
-            dispatch(removeConnection(connection));
-            dispatch(resetOutgoingCall());
-          });
-        });
-      } catch (e) {
-        console.error(e.message);
-      }
+      accounts.forEach((account) => {
+        const id = account.get('id');
+        const type = account.get('type');
+        const credentials = account.get('client_credentials');
+
+        if (type === 'twilio') {
+          try {
+            const options = {
+              debug: true
+            };
+
+            clients[id] = new window.Twilio.Device(credentials.get('phone_token'), options);
+            clients[id].ready(() => {
+              console.log('phone ready');
+            });
+            clients[id].error((error) => {
+              console.log('device error');
+              console.log(error);
+            });
+            clients[id].connect((connection) => {
+              connection.ticketId = connection.message.TicketId;
+              connection.callId   = connection.message.CallId;
+              connection.outbound = connection.message.Outbound;
+
+              dispatch(addConnection(connection));
+              connection.disconnect(() => {
+                // call has ended
+                // unset incoming and outgoing calls
+                dispatch(removeConnection(connection));
+                dispatch(resetOutgoingCall());
+              });
+            });
+          } catch (e) {
+            console.error(e.message);
+          }
+        } else if (type === 'plivo') {
+          try {
+            const username = credentials.getIn(['endpoint', 'username']);
+            const password = credentials.getIn(['endpoint', 'password']);
+            const options = {
+              debug:            'DEBUG',
+              permOnClick:      true,
+              audioConstraints: {
+                optional: [
+                  { googAutoGainControl: false },
+                  { googEchoCancellation: false }
+                ]
+              },
+              enableTracking: true
+            };
+
+            const refreshEndpoint = () => {
+              // regenerate token if not found for some reason
+              const me = meSelector(initialState);
+              api.sendPost(`DP_API/voice_accounts/plivo/${id}/refresh_endpoint/${me.get('id')}`).success(({ data }) => {
+                clients[id].client.login(data.username, data.password);
+              });
+            };
+
+            clients[id] = new window.Plivo(options);
+            clients[id].client.on('onLoginFailed', refreshEndpoint);
+            clients[id].client.on('onCalling', () => {
+              dispatch(addConnection(clients[id].client));
+            });
+            clients[id].client.on('onCallTerminated', () => {
+              // call has ended
+              // unset incoming and outgoing calls
+              dispatch(removeConnection(clients[id].client));
+              dispatch(resetOutgoingCall());
+
+              delete clients[id].client.ticketId;
+              delete clients[id].client.callId;
+              delete clients[id].client.outbound;
+            });
+
+            if (username && password) {
+              clients[id].client.login(username, password);
+            } else {
+              refreshEndpoint();
+            }
+          } catch (e) {
+            console.error(e.message);
+          }
+        }
+      });
     }
   }
 );
@@ -262,7 +350,6 @@ export const makeOutboundCall = createAction(
     const state   = getState();
     const me      = meSelector(state);
     const agentId = me.get('id');
-    // const busySid = busyActivitySidSelector(state);
     const numbers = allNumbersSelector(state);
     const promise = api.sendPost('DP_API/voice_client/prepare_outbound_call?include=person', {
       call_from: callFrom,
@@ -274,29 +361,62 @@ export const makeOutboundCall = createAction(
         dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(linked.person)));
       }
 
-      const number = numbers.get(callFrom);
+      const number      = numbers.get(callFrom);
+      const accounts    = allVoiceAccountsSelector(state);
+      const accountId   = number.get('account');
+      const account     = accounts.get(accountId);
+      const accountType = account.get('type');
+
       dispatch(setOutgoingCall({ callFrom: number, callTo, phoneCall: data }));
-      // worker.update('ActivitySid', busySid);
-      window.Twilio.Device.connect({
-        CallId:   data.id,
-        AgentId:  agentId,
-        From:     number.get('number'),
-        To:       callTo,
-        Outbound: true
-      });
+      if (accountType === 'twilio') {
+        clients[accountId].connect({
+          CallId:   data.id,
+          AgentId:  agentId,
+          From:     number.get('number'),
+          To:       callTo,
+          Outbound: true
+        });
+      } else if (accountType === 'plivo') {
+        clients[accountId].client.call(callTo, {
+          'X-PH-CallId':   data.id,
+          'X-PH-AgentId':  agentId,
+          'X-PH-From':     number.get('number'),
+          'X-PH-To':       callTo,
+          'X-PH-Outbound': true
+        });
+
+        clients[accountId].client.agentId  = agentId;
+        clients[accountId].client.callId   = data.id;
+        clients[accountId].client.outbound = true;
+
+        dispatch(addConnection(clients[accountId].client));
+      }
     });
 
     return promise;
   }
 );
 
+export const toggleHold = createAction(
+  'VOICE_AGENT_TOGGLE_HOLD',
+  (callId, hold) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold })
+);
+
 export const acceptPhoneCall = createAction(
   'VOICE_AGENT_ACCEPT_PHONE_CALL',
   incomingCall => (dispatch, getState) => {
-    const state   = getState();
-    const me      = meSelector(state);
-    const agentId = me.get('id');
-    const callId  = incomingCall.get('call_id');
+    const state       = getState();
+    const me          = meSelector(state);
+    const agentId     = me.get('id');
+    const callId      = incomingCall.get('call_id');
+    const accountId   = incomingCall.get('account_id');
+    const accounts    = allVoiceAccountsSelector(state);
+    const account     = accounts.get(accountId);
+    const accountType = account.get('type');
+
+    if (!account || !clients[accountId]) {
+      return;
+    }
 
     // create and open a ticket
     let promise;
@@ -312,13 +432,28 @@ export const acceptPhoneCall = createAction(
       closeIframes();
 
       dispatch(removeIncomingCall(incomingCall));
-      window.Twilio.Device.connect({
-        CallId:   callId,
-        AgentId:  agentId,
-        TicketId: data.id
-      });
+      if (accountType === 'twilio') {
+        clients[accountId].connect({
+          CallId:   callId,
+          AgentId:  agentId,
+          TicketId: data.id
+        });
+      } else if (accountType === 'plivo') {
+        clients[accountId].client.call('accept', {
+          'X-PH-CallId':   callId,
+          'X-PH-AgentId':  agentId,
+          'X-PH-TicketId': data.id
+        });
 
-      window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`);
+        clients[accountId].client.ticketId = data.id;
+        clients[accountId].client.callId   = callId;
+      }
+
+      if (incomingCall.get('call_type') === 'transfer' && incomingCall.get('invite_type') === 'cold') {
+        dispatch(toggleHold(callId, false));
+      }
+
+      window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.id}`, { noToggle: true });
     });
   }
 );
@@ -350,76 +485,56 @@ export const toggleMute = createAction(
   'VOICE_AGENT_TOGGLE_MUTE',
   (connection, mute) => {
     // mute on client side
-    connection.mute(mute);
+    if (connection.getCallUUID) {
+      // plivo
+      if (mute) {
+        connection.mute();
+      } else {
+        connection.unmute();
+      }
+    } else {
+      // twilio
+      connection.mute(mute);
+    }
 
     // send participant mute request
-    const callId = connection.message.CallId;
-    api.sendPut(`DP_API/voice_client/phone_call/${callId}/mute_call`, { mute });
-  }
-);
-
-export const toggleHold = createAction(
-  'VOICE_AGENT_TOGGLE_HOLD',
-  (connection, hold) => (dispatch) => {
-    const callId = connection.message.CallId;
-    dispatch(updateConnectionState({ call_id: parseInt(callId, 10), state: { hold } }));
-
-    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold });
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/mute_call`, { mute });
   }
 );
 
 export const addAgent = createAction(
   'VOICE_AGENT_ADD',
-  (connection, agent, type) => {
-    const callId = connection.message.CallId;
-    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/add/${agent.get('id')}/${type}`);
-  }
+  (connection, agent, type) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/add/${agent.get('id')}/${type}`)
 );
 
 export const transferCall = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
   (connection, agent, type) => (dispatch) => {
-    dispatch(toggleHold(connection, true));
+    dispatch(toggleHold(connection.callId, true));
 
-    const callId = connection.message.CallId;
-    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/transfer/${agent.get('id')}/${type}`).success(() => {
-      if (type === 'cold') {
-        connection.disconnect();
-      }
-    });
+    return api
+      .sendPut(`DP_API/voice_client/phone_call/${connection.callId}/transfer/${agent.get('id')}/${type}`)
+      .success(() => {
+        if (type === 'cold') {
+          hangupConnection(connection);
+        }
+      });
   }
 );
 
 export const cancelInvite = createAction(
   'VOICE_AGENT_CANCEL_INVITE',
-  (callId, agent, type) => (dispatch, getState) => {
-    const state   = getState();
-    const me      = meSelector(state);
-    const agentId = me.get('id');
-    const from    = `client:deskpro${agentId}`;
-
-    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`);
-    promise.success(() => {
-      if (type === 'cold') {
-        window.Twilio.Device.connect({
-          From:    from,
-          CallId:  callId,
-          AgentId: agentId
-        });
-      }
-    });
-
-    return promise;
-  }
+  (callId, agent) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`)
 );
 
 export const hangup = createAction(
   'VOICE_AGENT_HANGUP',
-  (connection) => {
-    connection.disconnect();
-
-    const callId = connection.message.CallId;
-    api.sendPut(`DP_API/voice_client/phone_call/${callId}/end_call`);
+  connection => (dispatch) => {
+    dispatch(resetOutgoingCall());
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/end_call`).success(() => {
+      hangupConnection(connection);
+    });
   }
 );
 
@@ -437,3 +552,4 @@ export const openDialpad = createAction(
     window.AgentVoiceDropdown.openDialpad(outgoingNumber, ticketId, ticketTitle);
   }
 );
+

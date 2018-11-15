@@ -5,9 +5,10 @@ import { testCredentials } from '../../../Actions/accountActions';
 class BaseAccountFormContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func,
-    onClose:  PropTypes.func,
-    children: PropTypes.node
+    dispatch:    PropTypes.func,
+    onClose:     PropTypes.func,
+    children:    PropTypes.node,
+    accountType: PropTypes.string
   };
 
   constructor(props) {
@@ -41,13 +42,14 @@ class BaseAccountFormContainer extends React.Component {
   };
 
   onTestCredentials = (data) => {
+    const { accountType, dispatch } = this.props;
     this.setState({
       testing:        true,
       displaySuccess: false,
       errors:         {}
     });
 
-    const promise = this.props.dispatch(testCredentials(data));
+    const promise = dispatch(testCredentials(accountType, data));
     promise.success(() => {
       this.setState({
         displaySuccess: true,

@@ -22,7 +22,7 @@ class DialpadContainer extends React.Component {
       localStorage.setItem('dpAgent.voice.lastCallFrom', callFrom);
     }
 
-    this.props.dispatch(makeOutboundCall(callFrom, callTo, ticketId));
+    return this.props.dispatch(makeOutboundCall(callFrom, callTo, ticketId));
   };
 
   searchPerson = searchString => this.props.dispatch(searchPerson(searchString));

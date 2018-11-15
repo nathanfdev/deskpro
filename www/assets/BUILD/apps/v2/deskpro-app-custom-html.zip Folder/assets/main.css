@@ -1,0 +1,32 @@
+.dp-container, .dp-section {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 16px; }
+
+.dp-heading__controls .dp-icon {
+  cursor: pointer; }
+
+.dp-textarea textarea {
+  height: 250px;
+  font-size: 14px;
+  font-family: monospace;
+  white-space: nowrap; }
+
+.dp-button {
+  width: 100%;
+  margin-bottom: 2px; }
+
+p {
+  margin: 4px 0; }
+
+h3 {
+  margin-bottom: 4px; }
+
+pre {
+  margin: 8px 0;
+  padding: 8px;
+  color: #505050;
+  overflow-x: scroll;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #eceef0; }

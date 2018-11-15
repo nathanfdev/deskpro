@@ -30,7 +30,8 @@ class AccountListContainer extends React.Component {
     super(props);
     this.state = {
       formOpened:  false,
-      editAccount: null
+      editAccount: null,
+      accountType: null
     };
   }
 
@@ -41,23 +42,26 @@ class AccountListContainer extends React.Component {
     dispatch(loadSettings());
   }
 
-  onNewAccountClick = () => {
+  onNewAccountClick = (accountType) => {
     this.setState({
-      formOpened: true
+      formOpened: true,
+      accountType
     });
   };
 
   onEditAccountClick = (account) => {
     this.setState({
       formOpened:  true,
-      editAccount: account
+      editAccount: account,
+      accountType: account.get('type')
     });
   };
 
   onCloseClick = () => {
     this.setState({
       formOpened:  false,
-      editAccount: null
+      editAccount: null,
+      accountType: null
     });
   };
 
@@ -65,8 +69,9 @@ class AccountListContainer extends React.Component {
 
   render() {
     const { accountsLoaded, settingsLoaded } = this.props;
-    const FormContainer = this.state.editAccount ? EditAccountContainer : NewAccountContainer;
-    const title = this.state.editAccount ? 'Edit account' : 'New account';
+    const { editAccount, accountType, formOpened } = this.state;
+    const FormContainer = editAccount ? EditAccountContainer : NewAccountContainer;
+    const title = editAccount ? 'Edit account' : 'New account';
 
     if (!accountsLoaded || !settingsLoaded) {
       return <LoadingPage />;
@@ -80,8 +85,8 @@ class AccountListContainer extends React.Component {
           onEditAccount={this.onEditAccountClick}
           saveSettings={this.saveSettings}
         />
-        <Modal isOpen={this.state.formOpened} onClose={this.onClose} title={title}>
-          <FormContainer account={this.state.editAccount} onClose={this.onCloseClick}>
+        <Modal isOpen={formOpened} onClose={this.onClose} title={title}>
+          <FormContainer account={editAccount} accountType={accountType} onClose={this.onCloseClick}>
             <AccountForm />
           </FormContainer>
         </Modal>

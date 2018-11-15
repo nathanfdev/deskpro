@@ -3,9 +3,9 @@
 namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
-use DeskPRO\Bundle\AppBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\Helper\WorkerHelper;
+use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;

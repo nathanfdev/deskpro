@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoiceAgentTarget.
  *
- * @ORM\EntityListeners({"DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAgentTargetListener"})
+ * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceAgentTargetListener"})
  *
  * @JMS\ExclusionPolicy("all")
  * @ORM\Entity

@@ -4,7 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetAuthType;
+use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceAssetAuthType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

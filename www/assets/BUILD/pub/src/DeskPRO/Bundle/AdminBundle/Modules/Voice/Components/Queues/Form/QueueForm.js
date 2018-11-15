@@ -7,7 +7,6 @@ import { Fieldset } from '@deskpro/react-forms';
 import { Input, Form, Field, Select, MultiSelect, Checkbox, RecordsChoiceWrapper } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
-import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
 import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
 import AgentsSelectContainer from '../../../../Common/Components/Select/AgentsSelectContainer';
 
@@ -16,7 +15,6 @@ class QueueForm extends BaseForm {
   static propTypes = {
     queueId:           PropTypes.number,
     queues:            PropTypes.object,
-    accounts:          PropTypes.object,
     agents:            PropTypes.object,
     agentTeams:        PropTypes.object,
     ticketDepartments: PropTypes.object,
@@ -36,7 +34,7 @@ class QueueForm extends BaseForm {
   };
 
   getDefaultState() {
-    const { queueId, queues, accounts } = this.props;
+    const { queueId, queues } = this.props;
 
     let queue;
     if (queueId) {
@@ -47,15 +45,7 @@ class QueueForm extends BaseForm {
     const loopAsset = queue && queue.get('loop_asset');
     const voicemailAsset = queue && queue.get('voicemail_asset');
 
-    let account = null;
-    if (queue) {
-      account = queue.get('account');
-    } else if (accounts && accounts.size === 1) {
-      account = accounts.first().get('id');
-    }
-
     return {
-      account,
       name:                 queue ? queue.get('name') : '',
       department:           queue ? queue.get('department') : null,
       agents:               queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
@@ -73,19 +63,13 @@ class QueueForm extends BaseForm {
   }
 
   render() {
-    const { queueId, accounts, agents, agentTeams, ticketDepartments, onCancel } = this.props;
+    const { queueId, agents, agentTeams, ticketDepartments, onCancel } = this.props;
     const { formData, saving } = this.state;
 
     return (
       <div className="twilio-queue-form">
-        <Form onSubmit={this.onSubmit} formValue={formData}>
+        <Form formValue={formData}>
           <Fieldset>
-            {!queueId && accounts && accounts.size > 1 &&
-              <Field select="account" label="Choose account *">
-                <AccountChoiceWrapper accounts={accounts}>
-                  <Select clearable={false} />
-                </AccountChoiceWrapper>
-              </Field>}
             <Field select="name" label="Queue Name *">
               <Input type="text" />
             </Field>
@@ -139,7 +123,7 @@ class QueueForm extends BaseForm {
               <Checkbox label="Recording enabled" />
             </Field>
 
-            <button className={classNames('ui button', { loading: saving })}>
+            <button onClick={this.onSubmit} className={classNames('ui button', { loading: saving })}>
               {queueId ? 'Update' : 'Create'}
             </button>
             {onCancel &&

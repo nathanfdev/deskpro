@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Bundle\VoiceBundle\Validator\Constraints as VoiceAssert;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -21,7 +21,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @JMS\ExclusionPolicy("all")
  *
  * @UniqueEntity(fields={"voiceAutoAttendant", "dialNum"}, errorPath="dialNum")
- * @AppAssert\Voice\VoiceAutoAttendantTargetSelf()
+ * @VoiceAssert\VoiceAutoAttendantTargetSelf()
  */
 class VoiceAutoAttendantDialNumber implements EntityInterface, NotifyPropertyChanged
 {

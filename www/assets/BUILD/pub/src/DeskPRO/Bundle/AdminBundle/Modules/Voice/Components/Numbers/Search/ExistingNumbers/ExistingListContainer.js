@@ -6,14 +6,14 @@ import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/Lo
 import { connect } from 'react-redux';
 import ExistingList from './ExistingList';
 import { loadExistingNumbers, changeExistingNumbersFilter } from '../../../../Actions/numberActions';
-import { isAccountsLoadedSelector, allAccountsSelector } from '../../../../Selectors/account';
+import { isAccountsLoadedSelector, allTwilioAccountsSelector } from '../../../../Selectors/account';
 import { isNumbersLoadedSelector, existingNumbersFilterSelector } from '../../../../Selectors/numbers';
 import BaseSearchContainer from '../BaseSearchContainer';
 import { replaceRoute } from '../../../../../../Services/history';
 
 @connect(state => ({
   accountsLoaded: isAccountsLoadedSelector(state),
-  accounts:       allAccountsSelector(state),
+  accounts:       allTwilioAccountsSelector(state),
   numbersLoaded:  isNumbersLoadedSelector(state),
   filter:         existingNumbersFilterSelector(state)
 }))
@@ -38,10 +38,9 @@ class ExistingNumbersContainer extends BaseSearchContainer {
 
   onAddNumber = (number) => {
     const params = {
-      sid:          number.get('sid'),
-      account:      number.get('account'),
-      number:       number.get('number'),
-      country_code: number.get('country_code')
+      sid:     number.get('sid'),
+      account: number.get('account'),
+      number:  number.get('number')
     };
 
     replaceRoute(`/voice_channel/numbers/new?${compileParams(params)}`);

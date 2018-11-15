@@ -21,7 +21,7 @@ class OutgoingCallContainer extends React.Component {
   onHangup = () => {
     const { connections, outgoingCall, dispatch } = this.props;
     const connection = connections
-      .filter(conn => conn.message.CallId === outgoingCall.getIn(['phoneCall', 'id']))
+      .filter(c => c.callId === outgoingCall.getIn(['phoneCall', 'id']))
       .first();
 
     if (!connection) {

@@ -53,10 +53,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Settings\UpdaterSettingsResolver
     arguments: ["@brand_aware_settings_resolver", "@deskpro.app_env", "@router"]
 
-  voice_settings_resolver:
-    class: DeskPRO\Bundle\AppBundle\Settings\VoiceSettingsResolver
-    arguments: ["@settings_resolver"]
-
   user_rule_processor:
     class: Application\DeskPRO\People\UserRuleProcessor
     arguments: ["@doctrine.orm.default_entity_manager"]
@@ -190,3 +186,14 @@ services:
     arguments:
       - "@ticketfilters.env_loader"
       - "@ticketfilters.matcher_factory"
+
+  job.scheduler:
+    class: Application\DeskPRO\JobQueue\JobScheduler
+    arguments:
+      - "@doctrine.orm.entity_manager"
+
+  job.queue:
+    class: Application\DeskPRO\JobQueue\JobQueue
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@job.scheduler"

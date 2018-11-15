@@ -14,7 +14,7 @@ class AccountChoiceWrapper extends React.Component {
     const choices = accounts.toArray().map(account => ({
       value: account.get('id'),
       label: account.get('account_name')
-    })).toArray();
+    }));
 
     return React.cloneElement(children, { ...children.props, ...this.props, choices });
   }

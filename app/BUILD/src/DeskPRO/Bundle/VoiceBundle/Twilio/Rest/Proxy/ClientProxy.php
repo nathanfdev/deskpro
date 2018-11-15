@@ -30,56 +30,6 @@ class ClientProxy extends Client
     protected $proxyPricingUrl;
 
     /**
-     * @var string
-     */
-    protected $proxyUsername;
-
-    /**
-     * @var string
-     */
-    protected $proxyPassword;
-
-    /**
-     * @return string
-     */
-    public function getProxyUsername()
-    {
-        return $this->proxyUsername;
-    }
-
-    /**
-     * @param string $proxyUsername
-     *
-     * @return $this
-     */
-    public function setProxyUsername($proxyUsername)
-    {
-        $this->proxyUsername = $proxyUsername;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getProxyPassword()
-    {
-        return $this->proxyPassword;
-    }
-
-    /**
-     * @param string $proxyPassword
-     *
-     * @return $this
-     */
-    public function setProxyPassword($proxyPassword)
-    {
-        $this->proxyPassword = $proxyPassword;
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getApiProxyUrl()
@@ -212,13 +162,6 @@ class ClientProxy extends Client
      */
     public function request($method, $uri, $params = [], $data = [], $headers = [], $username = null, $password = null, $timeout = null)
     {
-        if (!$username && $this->proxyUsername) {
-            $username = $this->proxyUsername;
-        }
-        if (!$password && $this->proxyPassword) {
-            $password = $this->proxyPassword;
-        }
-
         return parent::request($method, $uri, $params, $data, $headers, $username, $password, $timeout);
     }
 }

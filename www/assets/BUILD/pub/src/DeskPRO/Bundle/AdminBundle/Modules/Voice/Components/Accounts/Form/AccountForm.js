@@ -24,7 +24,7 @@ class AccountForm extends React.Component {
       formData: createValue({
         value: {
           account_name: props.account ? props.account.get('account_name') : '',
-          account_sid:  props.account ? props.account.get('account_sid') : '',
+          account_id:   props.account ? props.account.get('account_id') : '',
           auth_token:   props.account ? props.account.get('auth_token') : ''
         },
         errorList: {},
@@ -78,7 +78,7 @@ class AccountForm extends React.Component {
               <Input placeholder="Account Name" />
             </Field>
           }
-          <Field select="account_sid" label="Account SID">
+          <Field select="account_id" label="Account SID">
             <Input placeholder="Account SID" />
           </Field>
           <Field select="auth_token" label="Auth Token">

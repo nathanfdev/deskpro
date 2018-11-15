@@ -7,16 +7,16 @@ Feature: /voice_numbers endpoint
     And no VoiceQueueTarget records exist
     And no VoiceAgentTarget records exist
     And the setting "beta_features.voice" is set to 1
-    And only the following VoiceAccount records exist:
-      | #  | AccountName | AccountSid | AuthToken |
-      | a1 | Account 1   | Sid1       | Token1    |
+    And only the following TwilioVoiceAccount records exist:
+      | #  | AccountName | AccountId | AuthToken |
+      | a1 | Account 1   | Sid1      | Token1    |
 
   Scenario: I retrieve a list of twilio numbers
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code |
-      | n1 | Number 1 | sid1 | 111111 | gb           |
-      | n2 | Number 2 | sid2 | 222222 | us           |
-      | n3 | Number 3 | sid3 | 333333 | fr           |
+      | #  | Nickname | Sid  | Number |
+      | n1 | Number 1 | sid1 | 111111 |
+      | n2 | Number 2 | sid2 | 222222 |
+      | n3 | Number 3 | sid3 | 333333 |
 
     When I send a GET request to "/api/v2/voice_numbers"
     Then the response status code should be 200
@@ -24,8 +24,8 @@ Feature: /voice_numbers endpoint
 
   Scenario: I get twilio number
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code |
-      | n1 | Number 1 | sid1 | 111111 | gb           |
+      | #  | Nickname | Sid  | Number |
+      | n1 | Number 1 | sid1 | 111111 |
 
     When I send a GET request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
@@ -39,7 +39,6 @@ Feature: /voice_numbers endpoint
   "sid": "sidcode",
   "nickname": "nickname",
   "number": "12345",
-  "country_code": "gb",
   "target": {
     "type": "agent",
     "target": ~admin~
@@ -51,14 +50,13 @@ Feature: /voice_numbers endpoint
     And the JSON node "data.sid" should be equal to the string "sidcode"
     And the JSON node "data.nickname" should be equal to the string "nickname"
     And the JSON node "data.number" should be equal to the string "12345"
-    And the JSON node "data.country_code" should be equal to the string "gb"
     And the JSON node "data.target.type" should be equal to the string "agent"
     And the JSON node "data.target.target" should be equal to "{admin}"
 
   Scenario: I set target queue
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code |
-      | n1 | Number 1 | sid1 | 111111 | gb           |
+      | #  | Nickname | Sid  | Number |
+      | n1 | Number 1 | sid1 | 111111 |
     And only the following VoiceQueue records exist:
       | #  | Name    | Routing Model |
       | q1 | Queue 1 | round_robin   |
@@ -81,8 +79,8 @@ Feature: /voice_numbers endpoint
 
   Scenario: I set target agent
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code |
-      | n1 | Number 1 | sid1 | 111111 | gb           |
+      | #  | Nickname | Sid  | Number |
+      | n1 | Number 1 | sid1 | 111111 |
 
     When I send a PUT request to "/api/v2/voice_numbers/{n1}" with body:
     """
@@ -109,8 +107,8 @@ Feature: /voice_numbers endpoint
       | #   | Queue |
       | qt1 | {q1}  |
     And only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code | Target |
-      | n1 | Number 1 | sid1 | 111111 | gb           | {qt1}  |
+      | #  | Nickname | Sid  | Number | Target |
+      | n1 | Number 1 | sid1 | 111111 | {qt1}  |
 
     When I send a PUT request to "/api/v2/voice_numbers/{n1}" with body:
     """
@@ -137,8 +135,8 @@ Feature: /voice_numbers endpoint
       | #   | Queue |
       | qt1 | {q1}  |
     And only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code | Target |
-      | n1 | Number 1 | sid1 | 111111 | gb           | {qt1}  |
+      | #  | Nickname | Sid  | Number | Target |
+      | n1 | Number 1 | sid1 | 111111 | {qt1}  |
 
     When I send a PUT request to "/api/v2/voice_numbers/{n1}" with body:
     """
@@ -152,9 +150,9 @@ Feature: /voice_numbers endpoint
 
   Scenario: I delete twilio number
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code |
-      | n1 | Number 1 | sid1 | 111111 | gb           |
-      | n2 | Number 2 | sid2 | 222222 | us           |
+      | #  | Nickname | Sid  | Number |
+      | n1 | Number 1 | sid1 | 111111 |
+      | n2 | Number 2 | sid2 | 222222 |
 
     When I send a DELETE request to "/api/v2/voice_numbers/{n1}"
     Then the response status code should be 200
@@ -165,8 +163,8 @@ Feature: /voice_numbers endpoint
 
   Scenario: I set default countries for outgoing calls
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code |
-      | n1 | Number 1 | sid1 | 111111 | gb           |
+      | #  | Nickname | Sid  | Number |
+      | n1 | Number 1 | sid1 | 111111 |
     When I send a PUT request to "/api/v2/voice_numbers/{n1}" with body:
     """
 {
@@ -187,8 +185,8 @@ Feature: /voice_numbers endpoint
 
   Scenario: I set number as default for all outgoing calls
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code |
-      | n1 | Number 1 | sid1 | 111111 | gb           |
+      | #  | Nickname | Sid  | Number |
+      | n1 | Number 1 | sid1 | 111111 |
     When I send a PUT request to "/api/v2/voice_numbers/{n1}" with body:
     """
 {
@@ -206,10 +204,10 @@ Feature: /voice_numbers endpoint
 
   Scenario: I overwrite default country codes
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code | Outbound Calls Default Countries |
-      | n1 | Number 1 | sid1 | 111111 | gb           | ["us", "uk", "fr"]               |
-      | n2 | Number 2 | sid2 | 222222 | gb           | []                               |
-      | n3 | Number 3 | sid3 | 333333 | gb           | ["ca", "it"]                     |
+      | #  | Nickname | Sid  | Number | Outbound Calls Default Countries |
+      | n1 | Number 1 | sid1 | 111111 | ["us", "uk", "fr"]               |
+      | n2 | Number 2 | sid2 | 222222 | []                               |
+      | n3 | Number 3 | sid3 | 333333 | ["ca", "it"]                     |
 
     When I send a PUT request to "/api/v2/voice_numbers/{n2}" with body:
     """
@@ -239,10 +237,10 @@ Feature: /voice_numbers endpoint
 
   Scenario: I overwrite default number option
     Given only the following VoiceNumber records exist:
-      | #  | Nickname | Sid  | Number | Country Code | Outbound Calls Default | Outbound Calls Default Type |
-      | n1 | Number 1 | sid1 | 111111 | gb           | 1                      | all                         |
-      | n2 | Number 2 | sid2 | 222222 | gb           | 1                      | country                     |
-      | n3 | Number 3 | sid3 | 333333 | gb           | 1                      | specific                    |
+      | #  | Nickname | Sid  | Number | Outbound Calls Default | Outbound Calls Default Type |
+      | n1 | Number 1 | sid1 | 111111 | 1                      | all                         |
+      | n2 | Number 2 | sid2 | 222222 | 1                      | country                     |
+      | n3 | Number 3 | sid3 | 333333 | 1                      | specific                    |
 
     When I send a PUT request to "/api/v2/voice_numbers/{n2}" with body:
     """

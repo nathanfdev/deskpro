@@ -3998,6 +3998,25 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @return bool
+     */
+    public function canForwardCall()
+    {
+        return $this->agentData
+            && $this->agentData->agentCanUseForwarding()
+            && $this->agentData->canUseForwarding()
+            && $this->agentData->getForwardingNumber();
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getForwardingNumber()
+    {
+        return $this->agentData ? $this->agentData->getForwardingNumber() : null;
+    }
+
+    /**
      * @return VoiceQueueAgent[]|ArrayCollection
      */
     public function getVoiceQueues()

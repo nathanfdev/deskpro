@@ -9,7 +9,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserCont
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
-use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceQueueType;
+use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceQueueType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +26,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceQueueType",
+ *      "class"="DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceQueueType",
  *      "options"={
  *          "data"="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue"
  *      }

@@ -215,8 +215,12 @@ security:
             stateless: true
             anonymous: ~
             methods: [GET]
+        api_anonymous_voice:
+            pattern: ^/api/v2/(twilio_callbacks|plivo_callbacks)
+            stateless: true
+            anonymous: ~
         api_anonymous:
-            pattern: ^/api/v2/(doc|man$|api_tokens|get_session|helpdesk/discover|get_session|twilio_callbacks|cloud/countries|cloud/states|cloud/eu_countries|cloud/geo_ip|cloud/forgot_password|webhooks/([^/]+)/invocation|graphiql|graphql/doc|graphql)
+            pattern: ^/api/v2/(doc|man$|api_tokens|get_session|helpdesk/discover|get_session|cloud/countries|cloud/states|cloud/eu_countries|cloud/geo_ip|cloud/forgot_password|webhooks/([^/]+)/invocation|graphiql|graphql/doc|graphql)
             stateless: true
             anonymous: ~
         api:

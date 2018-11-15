@@ -37,17 +37,17 @@ export const deleteNumber = createAction(
 
 export const loadExistingNumbers = createAction(
   'VOICE_LOAD_EXISTING_NUMBERS',
-  (accountId, page = 0) => api.sendGet(`DP_API/voice_accounts/${accountId}/existing_numbers?page=${page}`)
+  (accountId, page = 0) => api.sendGet(`DP_API/voice_accounts/twilio/${accountId}/existing_numbers?page=${page}`)
 );
 
 export const loadAvailableNumbers = createAction(
   'VOICE_LOAD_AVAILABLE_NUMBERS',
-  (accountId, params) => api.sendGet(`DP_API/voice_accounts/${accountId}/available_numbers?${compileParams(params)}`)
+  (accountId, params) => api.sendGet(`DP_API/voice_accounts/twilio/${accountId}/available_numbers?${compileParams(params)}`)
 );
 
 export const addAvailableNumber = createAction(
   'VOICE_ADD_AVAILABLE_NUMBER',
-  number => api.sendPost(`DP_API/voice_accounts/${number.get('account')}/buy_number`, {
+  number => api.sendPost(`DP_API/voice_accounts/twilio/${number.get('account')}/buy_number`, {
     number: number.get('number')
   }).error((response) => {
     if (response.errors && response.errors.errors && response.errors.errors[0]) {

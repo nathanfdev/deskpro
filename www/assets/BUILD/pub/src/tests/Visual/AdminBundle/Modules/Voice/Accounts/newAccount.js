@@ -7,7 +7,7 @@ import { adminCss } from '../../../../decorators';
 const testAccount = Immutable.fromJS({
   id:           1,
   account_name: 'Test Account',
-  account_sid:  '313851deeb4e5fb6c380ae7dc2ed1cf3',
+  account_id:   '313851deeb4e5fb6c380ae7dc2ed1cf3',
   auth_token:   '313851deeb4e5fb6c380ae7dc2ed1cf3'
 });
 

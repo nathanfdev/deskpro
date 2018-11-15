@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import TransferListButton from '../TransferListButton';
-import TransferSearch from '../TransferSearch';
 import AgentList from '../AgentList';
 import TransferStatus from '../TransferStatus';
 
@@ -56,7 +55,7 @@ class AddList extends React.Component {
 
     return (
       <div>
-        <TransferSearch />
+        {/* <TransferSearch /> */}
 
         <div className="online-agents-header">
           <i className="fa fa-user" />

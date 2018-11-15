@@ -1,6 +1,5 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import Immutable from 'immutable';
 import { updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { editAgent } from '../../Application/Actions/peopleActions';
@@ -8,15 +7,9 @@ import { allAgentsSelector } from '../../Application/Selectors/people';
 
 export const addExtension = createAction(
   'VOICE_EDIT_EXTENSION',
-  (agentId, extensionNumber) => (dispatch, getState) => {
-    const state = getState();
-    const agents = agentsSelector(state);
-    const agent = agents.get(agentId);
-    const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
-
+  (agentId, extensionNumber) => (dispatch) => {
     const data = {
       agent_data: {
-        ...agentData,
         extension_number: extensionNumber
       }
     };

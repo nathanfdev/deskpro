@@ -105,7 +105,7 @@ class AudioWidgetForm extends React.Component {
 
     return (
       <div>
-        <Form onSubmit={this.onSubmit} formValue={this.state.formData}>
+        <Form formValue={this.state.formData}>
           <Fieldset>
             <Field select="blob" label="Choose source">
               <AudioSource
@@ -114,7 +114,7 @@ class AudioWidgetForm extends React.Component {
               />
             </Field>
 
-            <button className={classNames('ui primary', { loading: saving }, 'button')}>
+            <button onClick={this.onSubmit} className={classNames('ui primary', { loading: saving }, 'button')}>
               Save
             </button>
           </Fieldset>

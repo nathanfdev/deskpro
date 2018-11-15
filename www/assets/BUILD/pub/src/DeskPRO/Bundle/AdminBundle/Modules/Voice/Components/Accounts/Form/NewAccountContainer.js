@@ -5,7 +5,10 @@ import BaseAccountFormContainer from './BaseAccountFormContainer';
 @connect()
 class NewAccountContainer extends BaseAccountFormContainer {
 
-  submitData = data => this.props.dispatch(createAccount(data));
+  submitData = (data) => {
+    const { accountType, dispatch } = this.props;
+    return dispatch(createAccount(accountType, data));
+  }
 }
 
 export default NewAccountContainer;

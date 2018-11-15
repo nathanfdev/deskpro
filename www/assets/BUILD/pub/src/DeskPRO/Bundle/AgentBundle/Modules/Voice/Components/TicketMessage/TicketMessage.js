@@ -67,7 +67,7 @@ class TicketMessage extends React.Component {
 
     return (
       <div className="voice-ticket-message">
-        <div className="voice-ticket-message-participants">
+        <div className="voice-ticket-message-participants" style={{ width: Math.ceil(participants.size / 3) * 45 }}>
           {participants.map((participant, index) =>
             <Avatar
               key={index}

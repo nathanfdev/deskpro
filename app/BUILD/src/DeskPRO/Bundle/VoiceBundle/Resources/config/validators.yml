@@ -1,0 +1,15 @@
+services:
+
+  validator.twilio_voice_account:
+    class: DeskPRO\Bundle\VoiceBundle\Validator\Constraints\TwilioVoiceAccountValidator
+    arguments:
+      - "@twilio_adapter"
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.plivo_voice_account:
+    class: DeskPRO\Bundle\VoiceBundle\Validator\Constraints\PlivoVoiceAccountValidator
+    arguments:
+      - "@plivo_adapter"
+    tags:
+      - { name: validator.constraint_validator }

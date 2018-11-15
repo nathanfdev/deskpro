@@ -11,8 +11,6 @@ if (storageAvailable('localStorage') && localStorage.getItem('dpAgent.voice.ring
 
 const initialState = {
   micEnabled:       false,
-  tokens:           {},
-  activities:       {},
   incomingCalls:    [],
   outgoingCall:     null,
   connections:      [],
@@ -21,12 +19,10 @@ const initialState = {
 };
 
 export default createReducer(initialState, {
-  [actions.setMicEnabled]:      setFullPayload('micEnabled'),
-  [actions.setVoiceTokens]:     setFullPayload('tokens'),
-  [actions.setVoiceActivities]: setFullPayload('activities'),
-  [actions.setVoiceSettings]:   setFullPayload('settings'),
-  [actions.addIncomingCall]:    pushPayloadToCollection('incomingCalls'),
-  [actions.updateIncomigCall]:  (state, payload) => {
+  [actions.setMicEnabled]:     setFullPayload('micEnabled'),
+  [actions.setVoiceSettings]:  setFullPayload('settings'),
+  [actions.addIncomingCall]:   pushPayloadToCollection('incomingCalls'),
+  [actions.updateIncomigCall]: (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
     if (payload && payload.get('call_id')) {
       const existingCall = incomingCalls.filter(incomingCall => incomingCall.get('call_id') === payload.get('call_id')).first();
@@ -39,21 +35,8 @@ export default createReducer(initialState, {
   },
   [actions.removeIncomingCall]: (state, payload) => {
     let incomingCalls = state.get('incomingCalls');
-    if (payload) {
-      if (payload.get('call_id')) {
-        // remove calls by call id
-        // e.g. declines calls if agent several tabs are opened
-        incomingCalls = incomingCalls.filter(incomingCall => incomingCall.get('call_id') !== payload.get('call_id'));
-      } else if (payload.sid) {
-        // remove calls from connection
-        incomingCalls = incomingCalls.filter(incomingCall => incomingCall.sid !== payload.sid);
-      } else {
-        // remove add/transfer calls
-        incomingCalls = incomingCalls.filter(incomingCall =>
-          !(incomingCall instanceof Immutable.Map)
-          || incomingCall.get('call_id') !== payload.call_id
-        );
-      }
+    if (payload && payload.get('call_id')) {
+      incomingCalls = incomingCalls.filter(incomingCall => incomingCall.get('call_id') !== payload.get('call_id'));
     }
 
     return state.set('incomingCalls', incomingCalls);

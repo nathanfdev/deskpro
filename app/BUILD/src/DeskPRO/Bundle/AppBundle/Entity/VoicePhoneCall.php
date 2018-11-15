@@ -80,9 +80,16 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="forwarding_sids", type="json_array")
      *
-     * @var string[]
+     * @var array[]
      */
     private $forwardingSids = [];
+
+    /**
+     * @ORM\Column(name="forwarding_request_ids", type="json_array")
+     *
+     * @var array[]
+     */
+    private $forwardingRequestIds = [];
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
@@ -711,7 +718,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return \string[]
+     * @return array[]
      */
     public function getForwardingSids()
     {
@@ -719,28 +726,83 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param \string[] $forwardingSids
+     * @param int $agentId
+     *
+     * @return string[]
+     */
+    public function getAgentForwardingSids($agentId)
+    {
+        $forwardingSids = $this->forwardingSids;
+        if (!isset($forwardingSids[$agentId])) {
+            $forwardingSids[$agentId] = [];
+        }
+
+        return $forwardingSids[$agentId];
+    }
+
+    /**
+     * @param int    $agentId
+     * @param string $forwardingSid
      *
      * @return $this
      */
-    public function setForwardingSids(array $forwardingSids)
+    public function addForwardingSid($agentId, $forwardingSid)
     {
+        $forwardingSids = $this->forwardingSids;
+        if (!isset($forwardingSids[$agentId])) {
+            $forwardingSids[$agentId] = [];
+        }
+        if (!in_array($forwardingSid, $forwardingSids[$agentId])) {
+            $forwardingSids[$agentId][] = $forwardingSid;
+        }
+
         $this->setModelField('forwardingSids', $forwardingSids);
 
         return $this;
     }
 
     /**
-     * @param string $forwardingSid
-     *
-     * @return $this
+     * @return array[]
      */
-    public function addForwardingSid($forwardingSid)
+    public function getForwardingRequestIds()
     {
-        $forwardingSids   = $this->forwardingSids;
-        $forwardingSids[] = $forwardingSid;
+        return $this->forwardingRequestIds;
+    }
 
-        return $this->setForwardingSids($forwardingSids);
+    /**
+     * @param int $agentId
+     *
+     * @return array
+     */
+    public function getAgentForwardingRequestIds($agentId)
+    {
+        $requestIds = $this->forwardingRequestIds;
+        if (!isset($requestIds[$agentId])) {
+            $requestIds[$agentId] = [];
+        }
+
+        return $requestIds[$agentId];
+    }
+
+    /**
+     * @param int    $agentId
+     * @param string $requestId
+     *
+     * @return VoicePhoneCall
+     */
+    public function addForwardingRequestId($agentId, $requestId)
+    {
+        $requestIds = $this->forwardingRequestIds;
+        if (!isset($requestIds[$agentId])) {
+            $requestIds[$agentId] = [];
+        }
+        if (!in_array($requestId, $requestIds[$agentId])) {
+            $requestIds[$agentId][] = $requestId;
+        }
+
+        $this->setModelField('forwardingRequestIds', $requestIds);
+
+        return $this;
     }
 
     /**
@@ -769,5 +831,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getTicketMessageAttributes()
     {
         return $this->ticketMessageAttributes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConferenceName()
+    {
+        return 'conference'.$this->getId();
     }
 }
