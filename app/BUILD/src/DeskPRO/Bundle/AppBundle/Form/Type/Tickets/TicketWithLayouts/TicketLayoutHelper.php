@@ -12,38 +12,6 @@ use DeskPRO\Component\Util\ListUtils;
 class TicketLayoutHelper
 {
     /**
-     * Submitted choice values are not submitted with the entity Id. Instead we are given the choice list key.
-     *
-     * This inspects the submitted data on our form and gives us data we're interested in.
-     *
-     * @param array                    $submitted_data
-     * @param TicketWithLayoutsContext $context
-     *
-     * @return array the form key and its selected entity ID (or null if not submitted)
-     */
-    public static function getExtractedData(array $submitted_data, TicketWithLayoutsContext $context)
-    {
-        $finalData = [];
-        $keys      = [
-            FormFields::DEPARTMENT,
-            FormFields::PRODUCT,
-            FormFields::CATEGORY,
-            FormFields::WORKFLOW,
-            FormFields::PRIORITY,
-        ];
-
-        foreach ($keys as $key) {
-            if (array_key_exists($key, $submitted_data)) {
-                $finalData[$key] = $submitted_data[$key];
-            } else {
-                $finalData[$key] = null;
-            }
-        }
-
-        return $finalData;
-    }
-
-    /**
      * @param TicketWithLayoutsContext $context
      *
      * @return LayoutField[]
@@ -77,7 +45,7 @@ class TicketLayoutHelper
             $form->remove($child->getName());
         }
 
-        // some of the form fields depends on person form field to re-set their data properly
+        // some of the form fields depends on person or brand form fields to re-set their data properly
         // so we should create person field first and detach/re-add in the proper display order
 
         $fieldResolver = $context->getFieldResolver();
@@ -86,16 +54,21 @@ class TicketLayoutHelper
         $personField = new LayoutField(FormFields::PERSON);
         $fieldRenderer->addField($context, $personField, $fieldResolver->createFormField($context, $personField));
 
+        $brandField = new LayoutField(FormFields::BRAND);
+        if ($brandFormField = $fieldResolver->createFormField($context, $brandField)) {
+            $fieldRenderer->addField($context, $brandField, $brandFormField);
+        }
+
         $fields = self::getLayoutFields($context);
         foreach ($fields as $field) {
             if (!self::shouldBeAlwaysOnTheForm($field) && $field->hasCriteria() && !$matchedCriteria($field)) {
                 continue;
             }
 
-            if ($field->getId() === FormFields::PERSON) {
+            if (in_array($field->getId(), [FormFields::PERSON, FormFields::BRAND])) {
                 // as person field is already on the form we need to detach it and set in the proper display order
-                $formField = $form->get(FormFields::PERSON);
-                $form->remove(FormFields::PERSON);
+                $formField = $form->get($field->getId());
+                $form->remove($field->getId());
                 $form->add($formField);
             } else {
                 $formField = $fieldResolver->createFormField($context, $field);
@@ -118,6 +91,7 @@ class TicketLayoutHelper
     {
         return in_array($field->getId(), [
             FormFields::DEPARTMENT,
+            FormFields::BRAND,
             FormFields::PERSON,
             FormFields::SUBJECT,
             FormFields::MESSAGE,

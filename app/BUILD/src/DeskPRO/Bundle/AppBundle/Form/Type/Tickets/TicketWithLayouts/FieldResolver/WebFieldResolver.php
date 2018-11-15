@@ -59,6 +59,14 @@ class WebFieldResolver extends AbstractFieldResolver
     /**
      * {@inheritdoc}
      */
+    protected function createBrand()
+    {
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function createCaptcha(TicketWithLayoutsContext $context)
     {
         if (!$context->getOption('use_captcha')) {

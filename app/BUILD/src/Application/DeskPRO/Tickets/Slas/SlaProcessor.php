@@ -313,7 +313,9 @@ class SlaProcessor
                 $actions = $sla->fail_actions;
             }
 
-            $this->action_applicator->apply($actions, $ticket, $context);
+            if ($actions) {
+                $this->action_applicator->apply($actions, $ticket, $context);
+            }
         } catch (\Exception $e) {
             $context->getLogger()->error(sprintf('[SlaProcessor] Exception: [%s] %s', $e->getCode(), $e->getMessage()), ['exception' => $e]);
             SystemErrorHandler::logException($e);

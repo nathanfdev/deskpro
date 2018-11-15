@@ -32,4 +32,5 @@ class FormFields
     const FOLLOWERS     = 'followers';
     const ATTACHMENTS   = 'attachments';
     const LABELS        = 'labels';
+    const BRAND         = 'brand';
 }

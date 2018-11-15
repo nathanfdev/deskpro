@@ -40,8 +40,11 @@ class TicketWithLayoutsApiType extends AbstractType
      * @param ApiFieldRenderer    $fieldRenderer
      * @param TicketLayoutFactory $layoutFactory
      */
-    public function __construct(ApiFieldResolver $fieldResolver, ApiFieldRenderer $fieldRenderer, TicketLayoutFactory $layoutFactory)
-    {
+    public function __construct(
+        ApiFieldResolver    $fieldResolver,
+        ApiFieldRenderer    $fieldRenderer,
+        TicketLayoutFactory $layoutFactory
+    ) {
         $this->fieldResolver = $fieldResolver;
         $this->fieldRenderer = $fieldRenderer;
         $this->layoutFactory = $layoutFactory;
@@ -52,7 +55,7 @@ class TicketWithLayoutsApiType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureRequireFields'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
     }
 
     /**
@@ -86,27 +89,26 @@ class TicketWithLayoutsApiType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onEnsureRequireFields(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $ticket = $event->getForm()->getData();
         $data   = $event->getData();
         $form   = $event->getForm();
 
         // should applied for new tickets only
-        if (!$ticket instanceof Ticket || $ticket->getId()) {
-            return;
-        }
+        if ($ticket instanceof Ticket && !$ticket->getId()) {
+            // ensure required fields
+            if ($form->has(FormFields::DEPARTMENT) && !isset($data[FormFields::DEPARTMENT])) {
+                $data[FormFields::DEPARTMENT] = '';
+            }
+            if ($form->has(FormFields::SUBJECT) && !isset($data[FormFields::SUBJECT])) {
+                $data[FormFields::SUBJECT] = '';
+            }
+            if ($form->has(FormFields::MESSAGE) && !isset($data[FormFields::MESSAGE])) {
+                $data[FormFields::MESSAGE] = ['message' => ''];
+            }
 
-        if ($form->has(FormFields::DEPARTMENT) && !isset($data[FormFields::DEPARTMENT])) {
-            $data[FormFields::DEPARTMENT] = '';
+            $event->setData($data);
         }
-        if ($form->has(FormFields::SUBJECT) && !isset($data[FormFields::SUBJECT])) {
-            $data[FormFields::SUBJECT] = '';
-        }
-        if ($form->has(FormFields::MESSAGE) && !isset($data[FormFields::MESSAGE])) {
-            $data[FormFields::MESSAGE] = ['message' => ''];
-        }
-
-        $event->setData($data);
     }
 }

@@ -4,6 +4,7 @@ Feature: Custom fields
 
   Background:
     Given I'm authenticated as admin
+    And I have only default brand
 
   Scenario Outline: I check bad single choice
     Given only the following custom ticket fields exist:

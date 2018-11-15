@@ -63,7 +63,7 @@ class TicketWithLayoutsApiFullType extends AbstractType
             'field_renderer' => $this->fieldRenderer,
             'full_layout'    => $this->layoutFactory->getFullLayoutForTicketForm(true),
             'layout_factory' => function ($department) {
-                return $this->layoutFactory->getLayoutForTicketForm($department, false);
+                return $this->layoutFactory->getLayoutForTicketForm($department, true);
             },
         ]);
     }

@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Hierarchy;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
@@ -235,12 +236,15 @@ class HierarchyGenerator
      *
      * @param Person $person
      * @param Ticket $ticket
+     * @param Brand  $brand
      *
      * @return Hierarchy
      */
-    public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null)
+    public function generateTicketDepartmentsHierarchy(Person $person, Ticket $ticket = null, Brand $brand = null)
     {
-        $brand = $this->brandStack->getActive()->getBrand();
+        if (!$brand) {
+            $brand = $this->brandStack->getActive()->getBrand();
+        }
 
         return $this->generateAndCache(
             [

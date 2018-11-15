@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
@@ -14,6 +15,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDepartmentChoiceType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketDescriptionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -30,17 +32,36 @@ class ApiFieldResolver extends AbstractFieldResolver
         $options = [
             'person'      => $context->getPerson(),
             'ticket'      => $context->getTicket(),
+            'brand'       => $this->getSubmittedBrand($context),
             'constraints' => [
                 new Assert\NotNull(),
             ],
         ];
 
         // we can just skip department field for api if it's single and already chosen
-        if ($context->getTicket()->getDepartment() && $this->isNotSelectableDepartment($context)) {
+        if ($context->getTicket()->getDepartment() && $this->isNotSelectableDepartment($context, $this->getSubmittedBrand($context))) {
             $options['empty_data'] = (string) $context->getTicket()->getDepartment()->getId();
         }
 
         return new FormField(TicketDepartmentChoiceType::class, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function createBrand()
+    {
+        $options = [
+            'class'    => Brand::class,
+            'required' => false,
+        ];
+
+        $activeBrand = $this->brandStack->getActive();
+        if ($activeBrand) {
+            $options['empty_data'] = (string) $this->brandStack->getActive()->getBrand()->getId();
+        }
+
+        return new FormField(EntityType::class, $options);
     }
 
     /**
@@ -171,14 +192,36 @@ class ApiFieldResolver extends AbstractFieldResolver
      */
     protected function getSubmittedPerson(TicketWithLayoutsContext $context)
     {
-        $submitted = $context->getSubmittedData();
-        if (isset($submitted[FormFields::PERSON])) {
-            $personForm = clone $context->getForm()->get(FormFields::PERSON);
-            $personForm->submit($submitted[FormFields::PERSON]);
+        return $this->getSubmittedField($context, FormFields::PERSON);
+    }
 
-            return $personForm->getData();
+    /**
+     * @param TicketWithLayoutsContext $context
+     *
+     * @return mixed
+     */
+    protected function getSubmittedBrand(TicketWithLayoutsContext $context)
+    {
+        return $this->getSubmittedField($context, FormFields::BRAND);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getSubmittedField(TicketWithLayoutsContext $context, $field)
+    {
+        if (!$context->getForm()->has($field)) {
+            return;
         }
 
-        return $context->getForm()->get(FormFields::PERSON)->getData();
+        $submitted = $context->getSubmittedData();
+        if (isset($submitted[$field])) {
+            $childForm = clone $context->getForm()->get($field);
+            $childForm->submit($submitted[$field]);
+
+            return $childForm->getData();
+        }
+
+        return $context->getForm()->get($field)->getData();
     }
 }

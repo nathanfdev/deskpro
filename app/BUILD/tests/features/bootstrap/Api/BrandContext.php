@@ -37,6 +37,8 @@ class BrandContext extends BaseContext
     public function iHaveSeveralBrand()
     {
         $brand = $this->createNewBrand('Other Brand');
+
+        DataContext::setReference('otherBrand', $brand);
         DataContext::setPlaceholder('otherBrandId', $brand->getId());
     }
 
