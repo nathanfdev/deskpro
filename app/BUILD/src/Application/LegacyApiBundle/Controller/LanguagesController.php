@@ -17,6 +17,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 /**
@@ -523,23 +524,23 @@ class LanguagesController extends AbstractController implements ProtectedControl
 
         $adds       = [];
         $phrase_ids = [];
+        $phraseData = Arrays::flattenWithKeys($this->in->getArrayValue('phrases'), '.');
 
-        foreach ($this->in->getArrayValue('phrases') as $phrase_info) {
-            if (empty($phrase_info['name']) || !preg_match('#^[a-zA-Z0-9\.\-_]+$#', $phrase_info['name'])) {
+        $tr = $this->get('deskpro.core.translate');
+
+        foreach ($phraseData as $phrase_id => $phrase) {
+            if (empty($phrase_id) || !preg_match('#^[a-zA-Z0-9\.\-_]+$#', $phrase_id)) {
                 continue;
             }
 
-            if (!isset($phrase_info['phrase']) || !$phrase_info['phrase']) {
+            if (empty($phrase)) {
                 continue;
             }
 
             // Skip not custom phrases set by User
-            if (in_array($phrase_info['name'], $customPhrases)) {
+            if (in_array($phrase_id, $customPhrases)) {
                 continue;
             }
-
-            $phrase_id = $phrase_info['name'];
-            $phrase    = $phrase_info['phrase'];
 
             $phrase_ids[] = $phrase_id;
 

@@ -19,25 +19,26 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
           config.headers['X-Requested-With'] = 'XMLHttpRequest'
 
-          if window.DP_SESSION_ID and not config.headers?['X-DeskPRO-Session-ID']?
-            config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
-          if window.DP_REQUEST_TOKEN and not config.headers?['X-DeskPRO-Request-Token']?
-            config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN
+          if not config.isCorsRequest
+            if window.DP_SESSION_ID and not config.headers?['X-DeskPRO-Session-ID']?
+              config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
+            if window.DP_REQUEST_TOKEN and not config.headers?['X-DeskPRO-Request-Token']?
+              config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN
 
-          if config.headers?['X-DeskPRO-API-Token']?
-            config.startTime = new Date()
+            if config.headers?['X-DeskPRO-API-Token']?
+              config.startTime = new Date()
 
-            next = updateTimes.pop()
-            if next
-              if config.url.indexOf('?') == -1
-                config.url += '?'
-              else
-                config.url += '&'
+              next = updateTimes.pop()
+              if next
+                if config.url.indexOf('?') == -1
+                  config.url += '?'
+                else
+                  config.url += '&'
 
-              #timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_')
-              #config.url += "__dp_reqtime=#{next.requestId}_t#{timeEnc}"
+                #timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_')
+                #config.url += "__dp_reqtime=#{next.requestId}_t#{timeEnc}"
 
-          config.url = config.url.replace(/^DP_URL\//g, window.DP_BASE_URL.replace(/\/+$/, '')+'/')
+            config.url = config.url.replace(/^DP_URL\//g, window.DP_BASE_URL.replace(/\/+$/, '')+'/')
 
           return config
 

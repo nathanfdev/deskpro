@@ -22,7 +22,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
       http_params = {
         method: 'GET',
-        url: url
+        url: url,
+        isCorsRequest: true
       }
 
       @sendRequest http_params
@@ -32,7 +33,8 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
       http_params = {
         method: 'GET',
-        url: url
+        url: url,
+        isCorsRequest: true
       }
 
       @sendRequest http_params

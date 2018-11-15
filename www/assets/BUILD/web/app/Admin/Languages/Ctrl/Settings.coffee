@@ -87,18 +87,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @LangSyncApi.getPhrases(locale, 'user')
         ]).then (res) =>
           #combine user and backend phrases
-          phrases = _.extend(res[0].data, res[1].data)
-
           postData = {
-            phrases: []
+            phrases: Object.assign({}, res[0].data, res[1].data)
           }
-
-          _.keys(phrases).forEach((phraseName) ->
-            postData.phrases.push({
-              name: phraseName,
-              phrase: phrases[phraseName]
-            })
-          )
 
           @Api.sendPostJson("/langs/#{nameId}/phrases/sync", postData)
 
@@ -111,14 +102,15 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           if (@form.download_language != 'all')
             langs = [{system_name: @form.download_language}]
 
+          langs = langs.map((l) -> l.system_name)
+
           deferred = @$q.defer()
           res = deferred.promise
 
           #process language sync one by one
-          langs.forEach((lang) ->
-            if _.has(manifest, lang.system_name)
-              # schedule language sync promise subsequent execution
-              res = res.then(() -> syncLanguage(lang.system_name, manifest[lang.system_name].locale))
+          manifest.forEach((lang) ->
+            if langs.indexOf(lang.id) != -1
+              res = res.then(() -> syncLanguage(lang.id, lang.locale))
           )
 
           deferred.resolve()
