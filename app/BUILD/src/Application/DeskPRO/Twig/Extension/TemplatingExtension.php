@@ -544,7 +544,7 @@ class TemplatingExtension extends \Twig_Extension
         $raw_packs = $this->container->get('deskpro.app_env')->getConfig('settings.raw_assets')
             ?: $this->container->get('deskpro.app_env')->getConfig('paths.raw_assets')
             ?: [];
-        $less_use_css         = App::getConfig('debug.less_use_css_dir', false);
+        $use_less             = App::getConfig('debug.less_use_less', false);
         $disable_client_cache = App::getConfig('debug.disable_client_cache', false);
 
         if (App::getConfig('debug.dev') && !$raw_packs) {
@@ -585,7 +585,7 @@ class TemplatingExtension extends \Twig_Extension
                         $options['media'] = 'screen,print';
                     }
 
-                    if ($less_use_css && strpos($url, '/stylesheets-less/') !== false) {
+                    if (!$use_less && strpos($url, '/stylesheets-less/') !== false) {
                         $url    = str_replace('/stylesheets-less/', '/stylesheets/', $url);
                         $url    = str_replace('.less', '.css', $url);
                         $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
@@ -664,7 +664,7 @@ class TemplatingExtension extends \Twig_Extension
 
     private function renderSocialLoginButton(Usersource $usersource, array $params = [])
     {
-        $providers = (array) $usersource->getOption('providers');
+        $providers        = (array) $usersource->getOption('providers');
         $enabledProviders = array_filter(
             array_keys($providers),
             function ($provider) use ($providers) {
@@ -673,7 +673,7 @@ class TemplatingExtension extends \Twig_Extension
         );
 
         if (empty($enabledProviders)) {
-            return "";
+            return '';
         }
 
         // add params
@@ -684,7 +684,7 @@ class TemplatingExtension extends \Twig_Extension
 
         $params['providers'] = [];
         foreach ($enabledProviders as $provider) {
-            $params['providers'][] = [ "name" => $provider, "url" => "/" ];
+            $params['providers'][] = ['name' => $provider, 'url' => '/'];
         }
 
         $tpl  = 'DeskPRO:Auth:'.'social-login'.'.html.twig';

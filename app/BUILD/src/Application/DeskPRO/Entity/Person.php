@@ -3728,7 +3728,13 @@ class Person extends DomainObject implements
             ? $this->report_dashboard_permissions
             : $this->report_dashboard_permissions->toArray();
 
-        return array_merge($newPerms, $additionalPermissions);
+        if ($tids = $this->getTeamIds()) {
+            $additionalPermissions2 = $repo->createQueryBuilder('p')->where('p.team IN (:teams)')->getQuery()->execute(['teams' => $tids]);
+        } else {
+            $additionalPermissions2 = [];
+        }
+
+        return array_merge($newPerms, $additionalPermissions, $additionalPermissions2);
     }
 
     /**

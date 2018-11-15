@@ -82,7 +82,7 @@ class Currency extends HandlerAbstract
         }
 
         return [
-            [$this->field_def['id'], 'value', $value],
+            [$this->field_def['id'], 'input', $value],
         ];
     }
 

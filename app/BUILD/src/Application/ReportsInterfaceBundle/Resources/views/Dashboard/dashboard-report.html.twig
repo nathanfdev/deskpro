@@ -39,7 +39,7 @@
         </nav>
         <nav class="reports-control" ng-show="loaded">
             <ul>
-                <li ng-repeat="(index, var) in report.variables">
+                <li ng-repeat="(index, var) in report.variables" ng-if="!( (var.type == 'values' && (var.field_type == 'agent' || var.field_type == 'agent_team')) && !canViewAllAgents() && dashboard.is_agent && !me.person.can_admin )">
                     <span>{{ ng_var('var.name') }}</span>
                     <select
                         ng-change="changeReportLevelVar()"
@@ -48,7 +48,6 @@
                         ng-model="var.value"
                         ng-selected="key === var.value"
                         ng-if="var.type != 'dates'"
-                        ng-disabled="(var.type == 'values' && (var.field_type == 'agent' || var.field_type == 'agent_team')) && !canViewAllAgents() && dashboard.is_agent && !me.person.can_admin"
                     >
                         <option
                             ng-if="key != 'from_report_value'"

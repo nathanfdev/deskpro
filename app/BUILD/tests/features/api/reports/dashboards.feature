@@ -2,23 +2,32 @@
 Feature: /dashboards endpoint
 
   Background:
-    Given I'm authenticated as admin
+    Given admin person exists
     Given I'm authenticated as agent
     And "agent_2@deskpro.dev" agent exists
     And "admin_2@deskpro.dev" admin exists
     And the setting "beta_features.new_reports" is set to 1
+    And only the following "AgentTeam" records exist:
+      | #  | Name   | Members   |
+      | t1 | Team 1 | [{agent}] |
+    And the "{agent}" record "primary_team" prop is equal to "{t1}"
     And only the following ReportDashboard records exist:
       | #  | Title       | Is Default |
       | d1 | Dashboard 1 | 1          |
       | d2 | Dashboard 2 | 0          |
       | d3 | Dashboard 3 | 0          |
       | d4 | Dashboard 4 | 1          |
+      | d5 | Dashboard 5 | 1          |
+      | d6 | Dashboard 6 | 1          |
     And only the following ReportDashboardPermission records exist:
-      | #  | Dashboard | Person  | Name |
-      | p1 | {d1}      | {agent} | view |
-      | p2 | {d2}      | {agent} | full |
-      | p3 | {d4}      | {agent} | full |
-      | p4 | {d1}      | {admin} | full |
+      | #  | Dashboard | Person  | Team | Name |
+      | p1 | {d1}      | {agent} | NULL | view |
+      | p2 | {d2}      | {agent} | NULL | full |
+      | p3 | {d4}      | {agent} | NULL | full |
+      | p4 | {d1}      | {admin} | NULL | full |
+      | p5 | {d1}      | {admin} | NULL | full |
+      | p6 | {d5}      | NULL    | NULL | full |
+      | p7 | {d6}      | NULL    | {t1} | full |
     And only the following ReportDashboardReport records exist:
       | #  | Title    | Dashboard | Variables                                             |
       | r1 | Report 1 | {d1}      | [{"name":"date","type":"dates","value":"last_month"}] |
@@ -26,11 +35,14 @@ Feature: /dashboards endpoint
       | r3 | Report 3 | {d2}      | NULL                                                  |
 
   Scenario: I retrieve a list of report dashboards
+    Given I'm authenticated as agent
     When I send a GET request to "/api/v2/dashboards?order_dir=asc&order_by=id"
-    Then the JSON node "data" should have 3 elements
+    Then the JSON node "data" should have 5 elements
     And the JSON node "data[0].id" should be equal to "{d1}"
     And the JSON node "data[1].id" should be equal to "{d2}"
     And the JSON node "data[2].id" should be equal to "{d4}"
+    And the JSON node "data[3].id" should be equal to "{d5}"
+    And the JSON node "data[4].id" should be equal to "{d6}"
 
   Scenario: I get a report dashboard
     When I send a GET request to "/api/v2/dashboards/{d1}"
@@ -240,11 +252,25 @@ Feature: /dashboards endpoint
     And the JSON node "data[1].title" should be equal to "Report 2 (copy)"
 
   Scenario: I sideload reports
+    Given I'm authenticated as agent
     When I send a GET request to "/api/v2/dashboards?order_dir=asc&order_by=id&include=reports"
-    Then the JSON node "linked.reports" should have 3 elements
+    Then the JSON node "linked.reports" should have 5 elements
     And the JSON node "linked.reports.{d1}" should have 2 elements
     And the JSON node "linked.reports.{d2}" should have 1 element
     And the JSON node "linked.reports.{d4}" should have 0 elements
+    And the JSON node "linked.reports.{d5}" should have 0 elements
+    And the JSON node "linked.reports.{d6}" should have 0 elements
+
+  Scenario: I sideload reports
+    Given I'm authenticated as admin
+    When I send a GET request to "/api/v2/dashboards?order_dir=asc&order_by=id&include=reports"
+    Then the JSON node "linked.reports" should have 6 elements
+    And the JSON node "linked.reports.{d1}" should have 2 elements
+    And the JSON node "linked.reports.{d2}" should have 1 element
+    And the JSON node "linked.reports.{d3}" should have 0 elements
+    And the JSON node "linked.reports.{d4}" should have 0 elements
+    And the JSON node "linked.reports.{d5}" should have 0 elements
+    And the JSON node "linked.reports.{d6}" should have 0 elements
 
   Scenario: I add dashboard reports
     When I send a PUT request to "/api/v2/dashboards/{d2}" with body:

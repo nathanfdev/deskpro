@@ -111,7 +111,7 @@ class CustomDataOrganization extends CustomDataAbstract
         $metadata->mapField(
             [
                 'fieldName'  => 'value',
-                'type'       => 'integer',
+                'type'       => 'bigint',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
