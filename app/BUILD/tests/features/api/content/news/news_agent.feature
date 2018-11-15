@@ -75,6 +75,22 @@ Feature: /news endpoint
     And the JSON node "data.content" should be equal to "<p>News content</p>"
     And the JSON node "data.status" should be equal to "published"
     And the JSON node "data.hidden_status" should be null
+    And the JSON node "data.date_published" should exist
+
+  Scenario: I edit publish date of the existing news
+    Given the following News records exist:
+      | #  | title     | content             | status    | date_published         |
+      | n1 | Test News | <p>News content</p> | published | 2017-10-10 10:10:10    |
+    When I send a PUT request to "/api/v2/news/{n1}" with body:
+    """
+{
+  "date_published": "2017-11-11 10:10:10"
+}
+    """
+    Then the response status code should be 204
+    When I send a GET request to "/api/v2/news/{n1}"
+    And the response status code should be 200
+    And the JSON node "data.date_published" should be equal to "2017-11-11T10:10:10+0000"
 
   Scenario: I change news category
     Given I have only default brand
