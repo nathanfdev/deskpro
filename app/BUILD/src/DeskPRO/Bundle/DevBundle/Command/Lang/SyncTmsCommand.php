@@ -161,13 +161,14 @@ class SyncTmsCommand extends ContainerAwareCommand
                     ]);
                 });
 
-                $r = json_decode($r, true);
+                $raw = $r;
+                $r   = json_decode($raw, true);
 
                 if (@$r['meta']['status'] != 201) {
                     $output->writeln("<error>[{$locale['locale']}] Unexpected result</error>");
-                    print_r($r);
+                    print_r($raw);
 
-                    return 1;
+                    continue;
                 }
 
                 if (!empty($r['data']['import']['id'])) {
