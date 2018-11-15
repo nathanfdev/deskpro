@@ -21,13 +21,6 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
     use NotifyPropertyChangedTrait;
 
     /**
-     * Protocols.
-     */
-    const PROTO_POP3     = 'pop3',
-          PROTO_IMAP     = 'imap',
-          PROTO_EXCHANGE = 'exchange';
-
-    /**
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -76,15 +69,6 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
      * @var \DateTime
      */
     protected $dateCreated;
-
-    /**
-     * @var array
-     */
-    private $supportedProtocols = [
-        self::PROTO_POP3,
-        self::PROTO_IMAP,
-        self::PROTO_EXCHANGE,
-    ];
 
     /**
      * EmailAccountLog constructor.
@@ -151,10 +135,6 @@ class EmailAccountLog implements EntityInterface, NotifyPropertyChanged
      */
     public function setProtocol($protocol)
     {
-        if (!in_array($protocol, $this->supportedProtocols)) {
-            throw new \InvalidArgumentException('Invalid protocol provided');
-        }
-
         $this->setModelField('protocol', $protocol);
 
         return $this;
