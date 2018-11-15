@@ -12,23 +12,34 @@ portal.account.email-management: 'E-mailadressen beheren'
 portal.account.email-management-from-form: 'Uw e-mailadres beheren'
 portal.account.email-primary-description: 'Dit is uw primaire e-mailadres. Deze zal standaard worden gebruikt, tenzij u anders opgeeft.'
 portal.account.feedback-lockout: 'U heeft te vaak feedback verstuurd, dus u bent uitgesloten. Probeer het later nogmaals.'
+portal.account.link-expired: 'Sorry, de link waarop je hebt geklikt is verlopen of is al eerder gebruikt.'
 portal.account.lockout_time: 'U kunt het nogmaals proberen over {{time}} minuten.'
 portal.account.login-btn: Inloggen
 portal.account.login-btn-usersource: 'Inloggen met {{usersource}}'
 portal.account.login-captcha-failed: 'U heeft een ongeldige CAPTCHA-code ingevuld. Probeer het nogmaals.'
+portal.account.login-disabled: 'Uw e-mailadres is verbannen.'
 portal.account.login-email: 'Uw e-mailadres'
+portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Inloggen met een externe service'
+portal.account.login-form-disabled: 'Aanmeldingsformulier is uitgeschakeld'
 portal.account.login-invalid: Inloggen
 portal.account.login-lockout: 'U heeft te veel mislukte inlogpogingen, dus u bent uitgesloten. Probeer het later nogmaals.'
+portal.account.login-not-configured: 'Externe service is niet geconfigureerd.'
 portal.account.login-password: 'Uw wachtwoord'
 portal.account.login-password-reminder: 'Wachtwoordherinnering nodig?'
 portal.account.login-register-btn: Registreren
 portal.account.login-register-header: Registreren
 portal.account.login-remember: 'Ingelogd blijven?'
+portal.account.login-saved-add_email: 'Uw e-mailadres voor toevoegen is nog niet verzonden. Meld u aan om verder te gaan.'
+portal.account.login-saved-comment: 'Uw commentaar is nog niet ingediend. Meld u aan om verder te gaan.'
 portal.account.login-saved-form: 'Uw {{type}} is nog niet verstuurd. Log in om door te gaan.'
+portal.account.login-saved-new_feedback: 'Je nieuwe feedback is nog niet verzonden. Meld u aan om verder te gaan.'
+portal.account.login-saved-new_ticket: 'Je nieuwe ticket is nog niet ingeleverd. Meld u aan om verder te gaan.'
+portal.account.login-saved-register: 'Uw registratie is nog niet ingediend. Meld u aan om verder te gaan.'
 portal.account.login-stay-logged-in: 'Ingelogd blijven?'
 portal.account.logout-btn: Uitloggen
 portal.account.logout-confirm: 'Weet u zeker dat u wilt uitloggen?'
+portal.account.new-ticket-no-login: 'Portal CRM is uitgeschakeld. Kon geen ticket plaatsen.'
 portal.account.profile-btn-save: 'Profiel opslaan'
 portal.account.profile-delete-picture: 'Profielfoto wijzigen of verwijderen?'
 portal.account.register-btn: Registreren
@@ -68,8 +79,13 @@ portal.account.set-password-sent-title: 'Stel uw wachtwoord in'
 portal.account.set-password-sent-to: 'We hebben een e-mail verstuurd naar'
 portal.account.set-password-success: 'Uw wachtwoord is bijgewerkt.'
 portal.account.share-lockout: 'U heeft inhoud te vaak gedeeld, dus u bent uitgesloten. Probeer het later nogmaals.'
+portal.account.submit-saved-add_email: 'Uw e-mailadres voor toevoegen is nog niet ingediend, maar we hebben het voor u opgeslagen.'
+portal.account.submit-saved-comment: 'Uw opmerking is nog niet verstuurd, maar we hebben het voor u opgeslagen.'
 portal.account.submit-saved-form: 'Uw {{type}} is nog niet verstuurd, maar we hebben het voor u opgeslagen.'
 portal.account.submit-saved-form-go: 'Klik hier om het formulier automatisch opnieuw te versturen.'
+portal.account.submit-saved-new_feedback: 'Je nieuwe feedback is nog niet verzonden, maar we hebben deze voor je bewaard.'
+portal.account.submit-saved-new_ticket: 'Uw nieuwe ticket is nog niet ingediend, maar we hebben het voor u bewaard.'
+portal.account.submit-saved-register: 'Uw registratie is nog niet ingediend, maar we hebben het voor u bewaard.'
 portal.account.tickets-lockout: 'U heeft te vaak tickets verstuurd, dus u bent uitgesloten. Probeer het later nogmaals.'
 portal.account.usersource-set-email-desc: 'Voordat u kunt inloggen hebben we uw e-mailadres nodig. Vul uw e-mailadres hieronder in, zodat we u een verificatiemail kunnen sturen.'
 portal.account.welcome-back: 'Welkom terug'
@@ -116,6 +132,7 @@ portal.chat.end_chat_confirm_title: 'Weet u zeker dat u deze chat wilt beëindig
 portal.chat.ended_by: 'Chat beëindigd door {{name}}'
 portal.chat.ended_by_reason: 'Chat beëindigd door {{name}}: {{reason}}'
 portal.chat.ended_user: 'Chat beëindigd door gebruiker'
+portal.chat.expired_jwt_token: 'Uw JWT-token is verlopen.'
 portal.chat.feedback_action: 'Verzend feedback'
 portal.chat.feedback_enter_message: 'Vul uw bericht hier in'
 portal.chat.feedback_label: Reactie
@@ -126,6 +143,8 @@ portal.chat.find_another_agent: 'Als ze niet snel terugkeren, zoeken we een ande
 portal.chat.full_message: 'Volledig bericht'
 portal.chat.helpful: Behulpzaam
 portal.chat.ident_unconfirmed: 'Identiteit niet bevestigd, e-mailadres is niet gevalideerd'
+portal.chat.invalid_jwt_token: 'Uw JWT-token is niet geldig.'
+portal.chat.label-department: 'Selecteer afdeling'
 portal.chat.label-email: 'Uw e-mailadres'
 portal.chat.label-name: 'Uw naam'
 portal.chat.list_agent: Medewerker
@@ -144,6 +163,7 @@ portal.chat.log_linked_ticket: 'Toegewezen aan ticket'
 portal.chat.log_title: 'Uw chat met {{person}}'
 portal.chat.log_view_linked_ticket: 'Ticket tonen'
 portal.chat.looking_for_another_agent: 'We zoeken naar een nieuwe medewerker.'
+portal.chat.lost_connection: 'Verbinding verbroken. Probeer opnieuw te verbinden.'
 portal.chat.message_agent-timeout: '{{name}} reageert niet. Wacht terwijl we proberen een andere medewerker te vinden.'
 portal.chat.message_assigned: 'Chat toegewezen aan {{name}}'
 portal.chat.message_ended: 'Chat beëindigd'
@@ -165,6 +185,7 @@ portal.chat.message_wait-long: 'Sorry! Het duurt langer dan verwacht om een mede
 portal.chat.message_wait-pending: 'We zoeken een medewerker voor u...'
 portal.chat.message_wait-ticket: 'Wilt u in plaats daarvan een ticket versturen?'
 portal.chat.message_wait-timeout: 'Chat beëindigd: Sorry. We konden geen medewerker voor u vinden op dit moment.'
+portal.chat.missing_jwt_token: 'JWT-token is verplicht.'
 portal.chat.msg_agent_timeout: '{{name}} reageert niet. Wacht terwijl we proberen een andere medewerker te vinden.'
 portal.chat.msg_new_user_track: 'Gebruiker is aan het bekijken: {{label}}'
 portal.chat.msg_user_timeout: 'Gebruiker reageert niet.'
@@ -326,6 +347,8 @@ portal.emails.remind_unresolved_subject: 'HERINNERING: {{ticket.subject}}'
 portal.emails.ticket-reminder: 'Uw ticket wacht op e-mailvalidatie. Klik op de link hieronder om uw ticket te versturen en uw e-mailadres te verifiëren. Uw ticket zal worden verwijderd zonder dat een medewerker deze heeft gezien als u niet op deze link klik voor {{expire_date}}.'
 portal.emails.ticket_access_ticket_online: 'Bekijk en beheer deze ticket online:'
 portal.emails.ticket_cc-added: '{{author_name}}, {{author_email}}, heeft u aan het ticket {{ticket.subject}} toegevoegd.'
+portal.emails.ticket_cc-added-reply: 'Door deze e-mail te beantwoorden, beantwoordt u het ticket.'
+portal.emails.ticket_cc-added-reply-view: 'Door deze e-mail te beantwoorden, beantwoordt u het ticket, of u kunt het ticket hier online bekijken:'
 portal.emails.ticket_cc-new: 'U bent toegevoegd aan de ticket van {{name}}.'
 portal.emails.ticket_flood: 'U heeft onlangs een e-mail naar onze helpdesk gestuurd. Ons geautomatiseerd systeem heeft ontdekt dat er veel berichten zijn gestuurd.<br /><br />Ter bescherming tegen een hoop automatische antwoorden, zal onze helpdesk geen automatische meldingen naar uw e-mailadres verzenden.'
 portal.emails.ticket_message_title: 'Op {{date}} om {{time}}, schreef {{author}}:'
@@ -343,6 +366,8 @@ portal.emails.tickets_ommitted:
   other: 'Er zijn {{count}} berichten weggelaten'
 portal.emails.validate-email: 'Bevestig dat dit e-mailadres van u is door op de onderstaande link te klikken.'
 portal.emails.view_full_history_online: 'Bekijk de volledige ticket online'
+portal.error.400-desc: 'Sorry, maar uw verzoek was misvormd.'
+portal.error.400-title: 'Foutief verzoek'
 portal.error.403-desc: 'Sorry, maar u heeft geen toestemming op deze pagina te bekijken.'
 portal.error.403-title: 'Geen toegang'
 portal.error.404-desc: 'Sorry, maar we konden deze pagina niet vinden.'
@@ -417,6 +442,13 @@ portal.flashes.news_unsubscribe_everything: 'U heeft zich afgemeld voor alle nie
 portal.flashes.rating_thanks: 'Bedankt voor uw feedback!'
 portal.flashes.ticket_created: 'Uw ticket is verstuurd. Bedankt!'
 portal.flashes.ticket_feedback_thank_you: 'Bedankt voor uw feedback!'
+portal.flashes.ticket_participant_add: 'We hebben {{name}} ({{email}}) toegevoegd als deelnemer aan dit ticket.'
+portal.flashes.ticket_participant_add_unknown_error: 'Er is een probleem opgetreden bij het toevoegen van uw deelnemer. Probeer het opnieuw.'
+portal.flashes.ticket_participant_already_error: 'De persoon die u als deelnemer probeerde toe te voegen, is al deelnemer aan dit ticket.'
+portal.flashes.ticket_participant_cc_limit_reached: 'Maximale CC-limiet ({{max}}) bereikt'
+portal.flashes.ticket_participant_email_error: 'Voer een geldig e-mailadres in voor uw deelnemer en probeer het opnieuw.'
+portal.flashes.ticket_participant_remove: 'We hebben {{name}} ({{email}}) verwijderd als deelnemer aan dit ticket.'
+portal.flashes.ticket_participant_remove_unknown_error: 'Er is een probleem opgetreden bij het verwijderen van uw deelnemer. Probeer het opnieuw.'
 portal.flashes.ticket_re_opened: 'U heeft dit ticket heropend.'
 portal.flashes.ticket_replied: 'Uw antwoord is verstuurd. Bedankt!'
 portal.flashes.ticket_resolved: 'Uw ticket is nu gemarkeerd als opgelost. Bedankt.'
@@ -426,6 +458,7 @@ portal.flashes.user_add_email_verify: 'We moeten uw e-mailadres verifiëren voor
 portal.flashes.user_changed_password: 'Uw wachtwoord is bijgewerkt.'
 portal.flashes.user_changed_primary_email: 'Uw primaire e-mailadres is gewijzigd.'
 portal.flashes.user_registered_must_verify: 'Bedankt voor het registreren. Controleer uw e-mail, we hebben u een verificatielink gestuurd.'
+portal.flashes.user_registered_verified: 'Dank je. Uw e-mail adres is geverifieerd.'
 portal.flashes.user_registered_verified_authenticated: 'Bedankt. Uw e-mailadres is geverifieerd en u bent ingelogd.'
 portal.flashes.user_removed_an_email: 'Uw e-mailadres {{email}} is verwijderd.'
 portal.flashes.user_resend_email_verify: 'De validatie e-mail is nogmaals naar uw e-mailadres gestuurd.'
@@ -439,6 +472,7 @@ portal.forms.error_accept_not_allowed_exts: 'U kunt geen bestand uploaden met ee
 portal.forms.error_accept_not_in_allowed_exts: 'U kunt een bestand uploaden met een van de volgende bestandsextensies: {{detail}}'
 portal.forms.error_accept_server_error: 'Er was een probleem bij het uploaden van dit bestand. Probeer het nogmaals.'
 portal.forms.error_accept_size: 'Sorry, maar dit bestand is te groot. Maximum toegestane grootte is {{detail}}.'
+portal.forms.error_bad_choice: 'Een of meer van de opgegeven waarden is ongeldig.'
 portal.forms.error_banned_email: 'E-mailadres "{{email}}" is verbannen.'
 portal.forms.error_captcha: 'De CAPTCHA-waarde was onjuist'
 portal.forms.error_csrf: 'Het formulier dat u verstuurde is verlopen. Verstuur uw formulier opnieuw.'
@@ -446,13 +480,25 @@ portal.forms.error_date_day: 'Dit is geen geldige dag van de week'
 portal.forms.error_date_max: 'Deze datum ligt te ver in de toekomst. Kies een datum voor {{date}}.'
 portal.forms.error_date_min: 'Deze datum is te ver in het verleden. Kies een datum na {{date}}.'
 portal.forms.error_dupe_email: 'Dit e-mailadres "{{email}}" is al in gebruik bij een andere gebruiker.'
+portal.forms.error_dupe_ticket: 'Duplicaat ticket.'
+portal.forms.error_dupe_ticket_message: 'Dubbel ticketbericht.'
 portal.forms.error_email_required: 'U moet een e-mailadres opgeven'
+portal.forms.error_extra_fields: 'Sorry, maar er is een fout opgetreden bij het verwerken van uw verzoek. Probeer het opnieuw.'
+portal.forms.error_invalid_data_type: 'Dit gegevenstype is niet verwacht.'
 portal.forms.error_invalid_email: 'Het e-mailadres is niet geldig'
+portal.forms.error_invalid_url: 'Deze waarde is geen geldige URL.'
 portal.forms.error_length_invalid: 'De waarde moet exact {{limit}} karakters bevatten.'
 portal.forms.error_length_too_long: 'De waarde is te lang. Deze moet {{limit}} karakters of minder bevatten'
 portal.forms.error_length_too_short: 'Deze waarde moet {{limit}} karakters of meer bevatten'
+portal.forms.error_mismatch_values: 'Deze waarde komt niet overeen'
 portal.forms.error_no_uploaded_file: 'Geüploade bestand niet gevonden. Probeer het nogmaals.'
+portal.forms.error_not_assignable_category: 'Kan geen oudercategorie selecteren.'
+portal.forms.error_not_assignable_choice: 'Kan ouderkeuze niet selecteren.'
+portal.forms.error_not_assignable_department: 'Kan ouderafdeling niet selecteren.'
+portal.forms.error_not_assignable_product: 'Kan geen ouderproduct selecteren.'
 portal.forms.error_not_checked: 'Het veld is niet aangevinkt.'
+portal.forms.error_not_unique_collection: 'Een of meer van de gegeven waarden is niet uniek.'
+portal.forms.error_numeric: 'Voer een nummer in, zonder andere tekens.'
 portal.forms.error_password_current: 'Dit moet je huidige wachtwoord zijn'
 portal.forms.error_password_forbid_reuse: 'Je kunt geen wachtwoord gebruiken dat al eerder is gebruikt'
 portal.forms.error_password_min_length:
@@ -476,12 +522,15 @@ portal.forms.error_person_not_user: 'Persoon met identifier {{value}} is geen ge
 portal.forms.error_regex: 'Deze waarde komt niet overeen met het verwachte formaat'
 portal.forms.error_required: 'Deze waarde is vereist'
 portal.forms.error_server_rejected_size: 'Er was een probleem met het uploaden van bestanden voor de maximale grootte. Probeer kleinere bestanden te uploaden.'
+portal.forms.error_system_email: 'E-mail "{{email}}" wordt al gebruikt als e-mailaccount.'
 portal.forms.error_ticket_department_invalid: 'U kunt geen hoofdafdeling selecteren. Probeer een subafdeling te selecteren.'
 portal.forms.error_ticket_department_required: 'Een afdeling is vereist'
 portal.forms.error_ticket_msg_length: 'Uw bericht moet minstens {{limit}} karakters in lengte zijn'
 portal.forms.error_ticket_msg_required: 'U moet een bericht opgeven'
+portal.forms.error_ticket_opened: 'Ticket moet niet worden opgelost of gearchiveerd.'
 portal.forms.error_ticket_subject_length: 'Het onderwerp moet minstens {{limit}} karakters in lengte zijn'
 portal.forms.error_ticket_subject_required: 'Een ticketonderwerp is vereist'
+portal.forms.error_too_few_elements: 'Deze verzameling moet het {{limit}} -element of meer bevatten. | Deze verzameling moet {{limit}} elementen of meer bevatten.'
 portal.forms.error_unique_entity: 'Deze waarde bestaat al in het systeem.'
 portal.forms.error_upload_empty: 'U kunt geen leeg bestand uploaden.'
 portal.forms.error_upload_file: 'Kon bestand niet uploaden'
@@ -496,6 +545,7 @@ portal.forms.label_cc: 'CC''s'
 portal.forms.label_choose: 'Kies een bestand'
 portal.forms.label_comment: Reageer
 portal.forms.label_content: Inhoud
+portal.forms.label_current_password: 'Huidig ​​wachtwoord'
 portal.forms.label_department: Afdeling
 portal.forms.label_drag: 'Sleep een bestand hier naartoe of'
 portal.forms.label_drag_overlay: 'Sleep uw bestand hier naartoe.'
@@ -509,6 +559,7 @@ portal.forms.label_name: Naam
 portal.forms.label_password: Wachtwoord
 portal.forms.label_password_confirm: Bevestigen
 portal.forms.label_priority: Prioriteit
+portal.forms.label_product: Product
 portal.forms.label_reset: Resetten
 portal.forms.label_save: Opslaan
 portal.forms.label_select: Selecteer...
@@ -517,6 +568,7 @@ portal.forms.label_subject: Onderwerp
 portal.forms.label_submit: Versturen
 portal.forms.label_timezone: Tijdzone
 portal.forms.label_title: Titel
+portal.forms.label_upload_picture: 'Upload foto'
 portal.forms.label_workflow: Workflow
 portal.general.add-comment: 'Reactie toevoegen'
 portal.general.admin: Beheerder
@@ -574,6 +626,8 @@ portal.general.nav-downloads-desc: 'Bekijk onze downloads'
 portal.general.nav-emails: E-mails
 portal.general.nav-feedback: Feedback
 portal.general.nav-feedback-desc: 'Aangepaste suggesties'
+portal.general.nav-guides: Gidsen
+portal.general.nav-guides-desc: Productdocumentatie
 portal.general.nav-kb: Kennisbank
 portal.general.nav-kb-desc: 'Lees artikelen'
 portal.general.nav-login: Inloggen
@@ -606,6 +660,7 @@ portal.general.prop_rating_asc: 'Laagst beoordeeld eerst'
 portal.general.prop_rating_desc: 'Hoogst beoordeeld eerst'
 portal.general.prop_views_asc: 'Minste weergaven eerst'
 portal.general.prop_views_desc: 'Meeste weergaven eerst'
+portal.general.published: Gepubliceerd
 portal.general.rate-page: 'Beoordeel de kwaliteit van deze pagina'
 portal.general.rate-page-negative: 'Deze pagina was niet nuttig'
 portal.general.rate-page-positive: 'Deze pagina was nuttig'
@@ -637,8 +692,10 @@ portal.general.tags: Tags
 portal.general.toggle_off: uit
 portal.general.toggle_on: aan
 portal.general.top: Top
+portal.general.updated: Bijgewerkt
 portal.general.x-search-results: '{{num}} zoekresultaten voor "{{query}}"'
 portal.general.x-search-results-no-query: '{{num}} zoekresultaten'
+portal.guides.view-as-agent: 'U kunt deze pagina zien omdat u een agent bent. Gebruikers kunnen deze pagina niet bekijken.'
 portal.news.none: 'Nog geen nieuws'
 portal.news.recent-title: 'Recent nieuws'
 portal.news.search-title: Nieuwsartikelen
@@ -695,6 +752,7 @@ portal.tickets.need-login_title: 'U moet inloggen op een ticket te openen'
 portal.tickets.new-intro: 'Vul dit formulier in en één van onze medewerkers zal u zo spoedig mogelijk via mail antwoorden.'
 portal.tickets.new-section-title: 'Neem contact met ons op'
 portal.tickets.new-title: 'Open een nieuw ticket'
+portal.tickets.new_ticket_button: 'Maak een nieuw ticket'
 portal.tickets.no_participants: 'Geen deelnemers'
 portal.tickets.not-allowed_desc: 'Sorry, onze medewerker zijn niet in de gelegenheid om uw chat op dit moment aan te nemen'
 portal.tickets.not-allowed_title: 'We zijn zo terug'
@@ -732,6 +790,7 @@ portal.tickets.view_btn_add_cc: 'CC gebruiker toevoegen'
 portal.tickets.view_btn_add_to_ticket: 'Aan ticket toevoegen'
 portal.tickets.view_btn_edit: Bewerken
 portal.tickets.view_btn_edit_full: 'Dit ticket bewerken'
+portal.tickets.view_cant_reply_archived: 'Je kunt niet antwoorden op dit ticket omdat het is opgelost.'
 portal.tickets.view_close: 'Dit ticket sluiten'
 portal.tickets.view_closed: 'Dit ticket is {{ago}} gesloten ({{day}})'
 portal.tickets.view_closed_more: 'U kunt <a href="{{kb_url}}">terugkeren naar de kennisbank</a> of <a href="{{new_ticket_url}}">open een nieuw ticket</a>.'
@@ -745,6 +804,7 @@ portal.tickets.view_more_info: 'Aanvullende ticketinformatie:'
 portal.tickets.view_now_closed: 'Dit ticket is nu gesloten'
 portal.tickets.view_opened_by: 'Ticket geopend door:'
 portal.tickets.view_participants: 'Ook op dit ticket:'
+portal.tickets.view_reply: 'Voeg een antwoord toe'
 portal.tickets.view_reply_errors: 'Er zijn enkele fouten bij uw inzending.'
 portal.tickets.view_reply_or_close: 'Voeg een antwoord toe of <a href="{{close_url}}" class="close-ticket-trigger">sluit het ticket</a>'
 portal.tickets.view_scroll_reply: 'Klik hier om te scrollen naar het formulier.'
@@ -753,6 +813,22 @@ portal.tickets.view_unassigned: 'Niet toegewezen'
 portal.tickets.view_unassigned_more: 'Een medewerker zal worden toegewezen'
 portal.tickets.view_will_notify_you: 'We hebben uw bericht ontvangen en zullen u een e-mailmelding sturen zodra een medewerker een reactie heeft toegevoegd.'
 portal.tickets.view_you_created: 'U heeft dit ticket {{ago}} aagemaakt.'
+portal.topics.none: 'Nog geen onderwerpen'
+portal.topics.search-title: Gidsen
+portal.widget.help_button: 'Praat nu'
+portal.widget.help_ticket_button: 'Neem contact met ons op'
+portal.widget.label_add_attachment: 'Voeg bijlage toe'
+portal.widget.label_email: 'Uw e-mailadres'
+portal.widget.label_message: 'Uw vraag'
+portal.widget.label_name: 'Uw naam'
+portal.widget.label_subject: Onderwerp
+portal.widget.new-ticket-title: 'Stel ons een vraag'
+portal.widget.online_agents: 'Agenten online'
+portal.widget.popup_heading: 'Stel ons een vraag!'
+portal.widget.popup_message: 'Hulp nodig? Antwoord gewoon om een ​​livechat te starten met een van ons team.'
+portal.widget.popup_start_button: 'Start een gesprek'
+portal.widget.popup_subheading: 'Ons team staat online en staat klaar om u te helpen met uw vragen. Stuur ons een bericht om aan de slag te gaan.'
+portal.widget.popup_title: Klantenondersteuning
 user.chat.email: 'Uw e-mailadres'
 user.chat.ended-no-agent: 'Het spijt ons zeer, maar we hebben niemand beschikbaar om uw chat op dit moment aan te nemen. Stuur ons een e-mail of probeer het later nogmaals.'
 user.chat.error: Chatfout
@@ -832,6 +908,7 @@ user.email_subjects.download_sub_updated: 'Bijgewerkte downloads'
 user.email_subjects.email-too-big: 'Uw email "{{subject}}"  werd niet aanvaard'
 user.email_subjects.email_new-confirm: 'Valideer uw e-mailadres'
 user.email_subjects.email_primary-confirm: 'Valideer uw e-mailadres'
+user.email_subjects.feedback_created_for_user: 'Bedankt voor je feedback'
 user.email_subjects.feedback_new: 'Bedankt voor het sturen van uw feedback'
 user.email_subjects.feedback_new-approved: 'Uw feedback is goedgekeurd'
 user.email_subjects.feedback_new-comment: 'Er is een nieuwe reactie op "{{title}}"'
@@ -878,6 +955,7 @@ user.emails.feedback-updated-items:
 user.emails.feedback_agent-validation: 'Let er op dat uw feedback niet publiekelijk zichtbaar is totdat een van onze medewerkers het heeft gecontroleerd'
 user.emails.feedback_approved: 'Wij sturen u een e-mail om u te laten weten dat uw feedback nu voor iedereen zichtbaar is op onze website.'
 user.emails.feedback_closed: 'Uw feedback "{{title}}" is gesloten: {{status}}'
+user.emails.feedback_created_for_user: 'Bedankt voor je recente feedback "{{title}}". {{agentName}} heeft een nieuw feedbackitem gemaakt, zodat u op de hoogte blijft van onze voortgang:'
 user.emails.feedback_disapproved: 'Wij sturen u een e-mail om u te laten weten dat uw feedback is geweigerd en niet zichtbaar zal zijn op onze website.'
 user.emails.feedback_disapproved-reason: 'Wij sturen u een e-mail om u te laten weten dat uw feedback is geweigerd en niet zichtbaar zal zijn op onze website. {{name}} heeft de volgende reden gegeven:'
 user.emails.feedback_new-comment: '{{name}} heeft een nieuwe reactie geplaatst:'
@@ -902,13 +980,20 @@ user.emails.news-explain: 'U ontvangt deze e-mail, omdat u zich heeft geabonneer
 user.emails.news-new-articles:
   one: '1 nieuw nieuwsartikel'
   other: '{{count}} nieuwe nieuwsartikelen'
+user.emails.news-new-news:
+  one: '1 Nieuw nieuwsartikel '
+  other: ' {{count}} Nieuw nieuwsartikelen'
 user.emails.news-updated-articles:
   one: '1 bijgewerkt nieuwsartikel'
   other: '{{count}} bijgewerkte nieuwsartikelen'
+user.emails.news-updated-news:
+  one: '1 Nieuw nieuwsartikel '
+  other: ' {{count}} Nieuw nieuwsartikelen'
 user.emails.password_agent-reset: 'Een medewerker heeft uw wachtwoord gereset. U kunt inloggen met deze gegevens'
 user.emails.password_reset: 'U heeft een aanvraag ingediend voor het resetten van uw wachtwoord. Klik op de onderstaande link om uw wachtwoord te resetten:'
 user.emails.password_set: 'Om uw wachtwoord in te stellen, klik op de link hieronder:'
 user.emails.profile_email-new-confirm: 'Om de toevoeging van het tweede e-mailadres te voltooien, klikt u simpelweg op de volgende validatie link'
+user.emails.profile_email-primary-confirm: 'Klik op de volgende validatielink om uw primaire e-mailadres te verifiëren'
 user.emails.profile_email_link-validate: 'Klik op de volgende link om uw e-mailadres te valideren'
 user.emails.ratelimit_explain: 'U heeft {{num_messagess}} berichten verstuurd binnen {{time_limit}}. Om misbruik te voorkomen is uw account tijdelijk geblokkeerd voor {{time_lock}}. Na {{date_lock_end}} kunt u weer berichten versturen.'
 user.emails.ratelimit_submit-online: 'Als dit een vergissing is en u wilt direct contact met ons opnemen, dan kunt u online een ticket insturen:'
@@ -1104,3 +1189,24 @@ user.time.time_x_month: '{0} maanden'
 user.time.time_x_second: '{0} seconden'
 user.time.time_x_week: '{0} weken'
 user.time.time_x_year: '{0} jaren'
+user.time.x_day:
+  one: '1 dag '
+  other: ' {{count}} dagen'
+user.time.x_hour:
+  one: '1 uur '
+  other: ' {{count}} uur'
+user.time.x_minute:
+  one: '1 minuut '
+  other: ' {{count}} minuten'
+user.time.x_month:
+  one: '1 maand '
+  other: ' {{count}} maanden'
+user.time.x_second:
+  one: '1 seconde '
+  other: ' {{count}} seconden'
+user.time.x_week:
+  one: '1 week '
+  other: ' {{count}} weken'
+user.time.x_year:
+  one: '1 jaar '
+  other: ' {{count}} jaar'

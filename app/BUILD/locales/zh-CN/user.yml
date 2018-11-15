@@ -12,23 +12,34 @@ portal.account.email-management: 管理电子邮件
 portal.account.email-management-from-form: 管理您的电子邮件地址
 portal.account.email-primary-description: '这是您的主要电子邮件。 默认情况下将被使用，除非你另有规定。'
 portal.account.feedback-lockout: '您提交的反馈太多次，您已被锁定。 请稍后再试。'
+portal.account.link-expired: 抱歉，您点击的链接已过期或之前已被使用过。
 portal.account.lockout_time: 您可以在（time）分钟后再试。
 portal.account.login-btn: 登录
 portal.account.login-btn-usersource: '使用{{user source}}登录'
 portal.account.login-captcha-failed: '您输入了一个无效的验证码。 请再试一遍。'
+portal.account.login-disabled: 您的电子邮件地址已被禁止。
 portal.account.login-email: 您的电子邮件
+portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 使用外部服务登录
+portal.account.login-form-disabled: 登录表单已禁用
 portal.account.login-invalid: '您输入了错误的电子邮件或密码。 请再试一次。'
 portal.account.login-lockout: '您登录失败的次数过多，因此您已被锁定。 请稍后再试。'
+portal.account.login-not-configured: 未配置外部服务。
 portal.account.login-password: 您的密码
 portal.account.login-password-reminder: 密码提醒？
 portal.account.login-register-btn: 注册
 portal.account.login-register-header: 注册
 portal.account.login-remember: 保持登录状态？
+portal.account.login-saved-add_email: 您的添加电子邮件尚未提交。请登录访问更多内容。
+portal.account.login-saved-comment: 您的评论尚未提交。请登录访问更多内容。
 portal.account.login-saved-form: 您的（文字）还没有提交，请登录然后继续
+portal.account.login-saved-new_feedback: 您的新反馈尚未提交。请登录访问更多内容。
+portal.account.login-saved-new_ticket: 您的新机票尚未提交。请登录访问更多内容。
+portal.account.login-saved-register: 您的注册尚未提交。请登录访问更多内容。
 portal.account.login-stay-logged-in: 保持登录状态？
 portal.account.logout-btn: 退出
 portal.account.logout-confirm: 您确定要退出吗？
+portal.account.new-ticket-no-login: 'Portal CRM已禁用。无法提交门票。'
 portal.account.profile-btn-save: 保存资料
 portal.account.profile-delete-picture: 替换或删除头像？
 portal.account.register-btn: 注册
@@ -68,8 +79,13 @@ portal.account.set-password-sent-title: 设置密码
 portal.account.set-password-sent-to: 我们发送了邮件到
 portal.account.set-password-success: 您的密码已经更新
 portal.account.share-lockout: 您分享内容的次数过多，账户已被锁住。请稍后再试。
+portal.account.submit-saved-add_email: 您的添加电子邮件尚未提交，但我们已为您保存。
+portal.account.submit-saved-comment: 您的评论尚未提交，但我们已为您保存。
 portal.account.submit-saved-form: 您的（TYPE）还没有提交，但是我们已经替您保存了。
 portal.account.submit-saved-form-go: 请点击这里自动重新提交表格。
+portal.account.submit-saved-new_feedback: 您的新反馈尚未提交，但我们已为您保存。
+portal.account.submit-saved-new_ticket: 您的新机票尚未提交，但我们已为您保存。
+portal.account.submit-saved-register: 您的注册尚未提交，但我们已为您保存。
 portal.account.tickets-lockout: 您已经提交了很多评论，账户已被锁住。请稍后再试。
 portal.account.usersource-set-email-desc: 在您登录之前我们需要您的邮箱地址。请在下方输入您的邮箱地址以便我们发送确认邮件。
 portal.account.welcome-back: 欢迎回来
@@ -114,6 +130,7 @@ portal.chat.end_chat_confirm_title: 您确定您要结束聊天吗？
 portal.chat.ended_by: '聊天被{{name}}终止'
 portal.chat.ended_by_reason: '聊天被{{name}}终止{{reason}}'
 portal.chat.ended_user: 聊天被用户终止
+portal.chat.expired_jwt_token: 您的JWT令牌已过期。
 portal.chat.feedback_action: 发送反馈
 portal.chat.feedback_enter_message: 在这里输入您的信息
 portal.chat.feedback_label: 评论
@@ -124,6 +141,8 @@ portal.chat.find_another_agent: 如果他们不会及时回来，我们会为您
 portal.chat.full_message: 完整信息
 portal.chat.helpful: 有用的
 portal.chat.ident_unconfirmed: 身份未确认，电子邮件未经过验证
+portal.chat.invalid_jwt_token: 您的JWT令牌无效。
+portal.chat.label-department: 选择一个部门
 portal.chat.label-email: 您的电子邮件
 portal.chat.label-name: 您的名字
 portal.chat.list_agent: 代理
@@ -141,6 +160,7 @@ portal.chat.log_linked_ticket: 已经指定的来单
 portal.chat.log_title: '您与（person） 的聊天'
 portal.chat.log_view_linked_ticket: 查阅来单
 portal.chat.looking_for_another_agent: 我们正在寻找新的代理。
+portal.chat.lost_connection: 失去了连接。试图重新连接。
 portal.chat.message_agent-timeout: '{{name}}没有响应。 请稍候，我们正在尝试找到另一个代理。'
 portal.chat.message_assigned: '聊天发放到{{名字}}'
 portal.chat.message_ended: 聊天结束
@@ -162,6 +182,7 @@ portal.chat.message_wait-long: '抱歉! 我们需要比预期更长的时间才�
 portal.chat.message_wait-pending: 我们正在寻找您的代理...
 portal.chat.message_wait-ticket: 您要提交工单请求吗？
 portal.chat.message_wait-timeout: '聊天结束：对不起。 我们现在找不到您的代理。'
+portal.chat.missing_jwt_token: JWT令牌是必需的。
 portal.chat.msg_agent_timeout: '{{name}}无响应。 请稍候，我们将尝试找到另一个代理。'
 portal.chat.msg_new_user_track: '用户正在查看：{{label}}'
 portal.chat.msg_user_timeout: 用户没有响应。
@@ -312,6 +333,8 @@ portal.emails.remind_unresolved_subject: '提醒：{{ticket.subject}}'
 portal.emails.ticket-reminder: '您的来单求正在等待电子邮件验证。 请点击下面的链接提交您的来单，并验证您的电子邮件地址。 如果您在{{expire_date}}之前未点击此链接，您的订单将被删除，而不会被代理看到。'
 portal.emails.ticket_access_ticket_online: 在线查看和管理此来单：
 portal.emails.ticket_cc-added: '{{author_name}}，{{author_email}}已将您添加到来单{{ticket.subject}}。'
+portal.emails.ticket_cc-added-reply: 回复此电子邮件将回复该票证。
+portal.emails.ticket_cc-added-reply-view: 回复此电子邮件将回复该票证，或者您可以在此处在线查看票证：
 portal.emails.ticket_cc-new: '您已被列入由{{name}}发起的来单。'
 portal.emails.ticket_flood: '您最近向我们的帮助台发送了一封电子邮件。 我们检测到您快速连续发送了很多可能是自动发送的邮件。<br /> <br />为了防止无限循环的自动电子邮件，我们的帮助台不会向您发送任何更多自动通知电子邮件。'
 portal.emails.ticket_message_title: '于{{date}}在{{time}}{{author}}写道'
@@ -328,6 +351,8 @@ portal.emails.tickets_ommitted:
   other: 1条消息已省略
 portal.emails.validate-email: 请点击下面的链接确认此电子邮件地址是您的电子邮件地址。
 portal.emails.view_full_history_online: 在线查看完整帮助请求
+portal.error.400-desc: 抱歉，您的请求格式不正确。
+portal.error.400-title: 错误的请求
 portal.error.403-desc: 很抱歉，您无权查看此页面。
 portal.error.403-title: 无访问权限
 portal.error.404-desc: 很抱歉，我们找不到此网页。
@@ -401,6 +426,13 @@ portal.flashes.news_unsubscribe_everything: 您已取消订阅所有新闻文章
 portal.flashes.rating_thanks: 感谢您的反馈意见！
 portal.flashes.ticket_created: '您的帮助请求已提交。 谢谢！'
 portal.flashes.ticket_feedback_thank_you: 谢谢您的反馈！
+portal.flashes.ticket_participant_add: '我们已将{{name}}（{{email}}）添加为此故障单的参与者。'
+portal.flashes.ticket_participant_add_unknown_error: 尝试添加参与者时出现问题。请再试一次。
+portal.flashes.ticket_participant_already_error: 您尝试添加为参与者的人已经是此故障单的参与者。
+portal.flashes.ticket_participant_cc_limit_reached: '达到最大CC限制（{{max}}）'
+portal.flashes.ticket_participant_email_error: 请为您的参与者输入有效的电子邮件，然后重试。
+portal.flashes.ticket_participant_remove: '我们已删除{{name}}（{{email}}）作为此故障单的参与者。'
+portal.flashes.ticket_participant_remove_unknown_error: 尝试删除您的参与者时出现问题。请再试一次。
 portal.flashes.ticket_re_opened: 您已重新打开此请求。
 portal.flashes.ticket_replied: '您的回复已提交。 谢谢！'
 portal.flashes.ticket_resolved: '您的帮助请求现在标记为已解决。 谢谢。'
@@ -410,6 +442,7 @@ portal.flashes.user_add_email_verify: '我们需要先验证您的电子邮件�
 portal.flashes.user_changed_password: 您的密码已更新。
 portal.flashes.user_changed_primary_email: 您的主要电子邮件地址已更改。
 portal.flashes.user_registered_must_verify: '感谢您注册。 请检查您的电子邮件，我们已向您发送验证链接。'
+portal.flashes.user_registered_verified: 谢谢。您的电子邮件地址已经过验证。
 portal.flashes.user_registered_verified_authenticated: '谢谢。 您的电子邮件地址已通过验证，您已登录。'
 portal.flashes.user_removed_an_email: '您的电子邮件地址{{email}}已移除。'
 portal.flashes.user_resend_email_verify: 验证电子邮件已重新发送到您的电子邮件地址。
@@ -423,6 +456,7 @@ portal.forms.error_accept_not_allowed_exts: '您无法上传含有以下扩展�
 portal.forms.error_accept_not_in_allowed_exts: '您只能上传包含以下扩展名的文件：{{detail}}'
 portal.forms.error_accept_server_error: '上传此文件时出现问题。 请再试一次。'
 portal.forms.error_accept_size: '抱歉，此文件太大。 允许的大小上限为{{detail}}。'
+portal.forms.error_bad_choice: 一个或多个给定值无效。
 portal.forms.error_banned_email: '电子邮件“{{email}}”被禁止。'
 portal.forms.error_captcha: CAPTCHA值不正确
 portal.forms.error_csrf: '您提交的表单已过期。 请重新提交您的表单。'
@@ -430,13 +464,25 @@ portal.forms.error_date_day: 他不是一周中有效的一天
 portal.forms.error_date_max: '这个日期太遥远了。 请选择{{date}}之前的日期。'
 portal.forms.error_date_min: '这个日期离过去太远。 请选择{{date}}后的日期。'
 portal.forms.error_dupe_email: '此电子邮件“{{email}}”已被其他用户使用。'
+portal.forms.error_dupe_ticket: 重复的票。
+portal.forms.error_dupe_ticket_message: 重复的故障单消息。
 portal.forms.error_email_required: 您必须提供您的电子邮件地址
+portal.forms.error_extra_fields: '很抱歉，处理您的要求时发生错误。 请再试一次。'
+portal.forms.error_invalid_data_type: 此数据类型不是预期的。
 portal.forms.error_invalid_email: 此电子邮件地址无效
+portal.forms.error_invalid_url: 该值不是有效的URL。
 portal.forms.error_length_invalid: '此值应该有{{limit}}个字符。'
 portal.forms.error_length_too_long: '此值太长。 它应该有{{limit}}个字符或更少'
 portal.forms.error_length_too_short: '此值应该有{{limit}}个字符或更多'
+portal.forms.error_mismatch_values: 该值不匹配
 portal.forms.error_no_uploaded_file: '找不到上传的文件。 请再试一次。'
+portal.forms.error_not_assignable_category: 无法选择父类别。
+portal.forms.error_not_assignable_choice: 无法选择父选择。
+portal.forms.error_not_assignable_department: 无法选择父部门。
+portal.forms.error_not_assignable_product: 无法选择父产品。
 portal.forms.error_not_checked: 该字段未选中。
+portal.forms.error_not_unique_collection: 一个或多个给定值不是唯一的。
+portal.forms.error_numeric: 请输入一个没有其他字符的数字。
 portal.forms.error_password_current: 这必须是您当前的密码
 portal.forms.error_password_forbid_reuse: 您不能使用以前使用过的密码
 portal.forms.error_password_min_length:
@@ -455,12 +501,15 @@ portal.forms.error_person_not_user: '标识符{{value}}的人不是用户。'
 portal.forms.error_regex: 此值与预期格式不匹配
 portal.forms.error_required: 此值是必需的
 portal.forms.error_server_rejected_size: '由于上限大小限制，上传文件时出现问题。 请尝试上传较小的文件。'
+portal.forms.error_system_email: '电子邮件“{{email}}”已被用作电子邮件帐户。'
 portal.forms.error_ticket_department_invalid: '您不能选择父部门。 尝试选择一个子部门。'
 portal.forms.error_ticket_department_required: 需要一个部门
 portal.forms.error_ticket_msg_length: '您的邮件长度必须至少为{{limit}}个字符'
 portal.forms.error_ticket_msg_required: 您必须提供消息
+portal.forms.error_ticket_opened: 票证既不能解决也不能存档。
 portal.forms.error_ticket_subject_length: '主题长度必须至少为{{limit}}个字符'
 portal.forms.error_ticket_subject_required: 需要帮助请求主题
+portal.forms.error_too_few_elements: '此集合应包含{{limit}}元素或更多元素。|此集合应包含{{limit}}元素或更多元素。'
 portal.forms.error_unique_entity: 此值已在系统中存在。
 portal.forms.error_upload_empty: 您无法上传空文件。
 portal.forms.error_upload_file: 无法上传文件
@@ -475,6 +524,7 @@ portal.forms.label_cc: 抄送
 portal.forms.label_choose: 选择文件
 portal.forms.label_comment: 任何评论？
 portal.forms.label_content: 内容
+portal.forms.label_current_password: 当前密码
 portal.forms.label_department: 部门
 portal.forms.label_drag: 在此处拖动文件或
 portal.forms.label_drag_overlay: 在此处拖动您的文件。
@@ -488,6 +538,7 @@ portal.forms.label_name: 姓名
 portal.forms.label_password: 密码
 portal.forms.label_password_confirm: 确认
 portal.forms.label_priority: 优先
+portal.forms.label_product: 产品
 portal.forms.label_reset: 重置
 portal.forms.label_save: 保存
 portal.forms.label_select: 选择
@@ -496,6 +547,7 @@ portal.forms.label_subject: 主题
 portal.forms.label_submit: 提交
 portal.forms.label_timezone: 时区
 portal.forms.label_title: 标题
+portal.forms.label_upload_picture: 上传图片
 portal.forms.label_workflow: 工作流
 portal.general.add-comment: 添加一条评论
 portal.general.admin: 管理员
@@ -551,6 +603,8 @@ portal.general.nav-downloads-desc: 浏览我们的下载
 portal.general.nav-emails: 电子邮件
 portal.general.nav-feedback: 反馈
 portal.general.nav-feedback-desc: 自定义建议
+portal.general.nav-guides: 指南
+portal.general.nav-guides-desc: 产品文档
 portal.general.nav-kb: 知识库
 portal.general.nav-kb-desc: 阅读帮助文章
 portal.general.nav-login: 登录
@@ -583,6 +637,7 @@ portal.general.prop_rating_asc: 最低评分的优先
 portal.general.prop_rating_desc: 最高评分的优先
 portal.general.prop_views_asc: 最少浏览的优先
 portal.general.prop_views_desc: 最多浏览的优先
+portal.general.published: 已发布的
 portal.general.rate-page: 评价此页面的质量
 portal.general.rate-page-negative: 这个页面没有帮助
 portal.general.rate-page-positive: 此页面有帮助
@@ -614,8 +669,10 @@ portal.general.tags: 标签
 portal.general.toggle_off: 关闭
 portal.general.toggle_on: 打开
 portal.general.top: 顶部
+portal.general.updated: 已更新
 portal.general.x-search-results: '"{{query}}"的搜索结果有{{num}}条'
 portal.general.x-search-results-no-query: '{{num}}条搜索结果'
+portal.guides.view-as-agent: 因为您是代理所以您可以看到此页。用户是查阅不到此页的。
 portal.news.none: 没有新消息
 portal.news.recent-title: 最近的消息
 portal.news.search-title: 新闻文章
@@ -669,6 +726,7 @@ portal.tickets.need-login_title: 您需要登录打开一个工单
 portal.tickets.new-intro: 请完成填写这张表单，我们的代理将通过邮件尽快与您取得联系。
 portal.tickets.new-section-title: 联系我们
 portal.tickets.new-title: 打开一个新的工单
+portal.tickets.new_ticket_button: 创建一个新票证
 portal.tickets.no_participants: 没有参与者
 portal.tickets.not-allowed_desc: '抱歉， 我们的代理现在无法接受您的会话'
 portal.tickets.not-allowed_title: 我们会马上回来
@@ -706,6 +764,7 @@ portal.tickets.view_btn_add_cc: 添加一个抄送用户
 portal.tickets.view_btn_add_to_ticket: 添加到工单
 portal.tickets.view_btn_edit: 编辑
 portal.tickets.view_btn_edit_full: 编辑这条来单
+portal.tickets.view_cant_reply_archived: 您无法回复此故障单，因为它已经解决。
 portal.tickets.view_close: 关闭这条来单
 portal.tickets.view_closed: '这条来单在({{day}}{{ago}}被关闭。'
 portal.tickets.view_closed_more: '您可以回到<a href="{{kb_url}}">知识库</a>或者<a href="{{new_ticket_url}}">打开一个新的来单</a>。'
@@ -719,6 +778,7 @@ portal.tickets.view_more_info: 其它的帮助请求信息：
 portal.tickets.view_now_closed: 这条帮助请求现在已被关闭
 portal.tickets.view_opened_by: 来单被（）打开
 portal.tickets.view_participants: 同样在这条来单上：
+portal.tickets.view_reply: 添加回复
 portal.tickets.view_reply_errors: 您的提交出现了一些错误。
 portal.tickets.view_reply_or_close: '添加回复或<a href="{{close_url}}" class="close-ticket-trigger">关闭来单</a>'
 portal.tickets.view_scroll_reply: 点击这里向下滚动到表格。
@@ -727,6 +787,22 @@ portal.tickets.view_unassigned: 没有被指派的
 portal.tickets.view_unassigned_more: 一名代理将被指派
 portal.tickets.view_will_notify_you: 我们已收到您的消息，当一名代理添加评论时我们会立即发送邮件通知。
 portal.tickets.view_you_created: '您在{{ago}}前创建这条工单。'
+portal.topics.none: 暂无主题
+portal.topics.search-title: 指南
+portal.widget.help_button: 现在聊天
+portal.widget.help_ticket_button: 联系我们
+portal.widget.label_add_attachment: 添加附件
+portal.widget.label_email: 您的电子邮件
+portal.widget.label_message: 你的问题
+portal.widget.label_name: 您的名字
+portal.widget.label_subject: 主题
+portal.widget.new-ticket-title: 问我们一个问题
+portal.widget.online_agents: 代理商在线
+portal.widget.popup_heading: 问我们一个问题！
+portal.widget.popup_message: 需要帮忙？只需回复即可与我们的团队进行实时聊天。
+portal.widget.popup_start_button: 开始对话
+portal.widget.popup_subheading: 我们的团队在线，随时准备为您提供帮助。发送消息即可开始使用。
+portal.widget.popup_title: 客户支持
 user.chat.email: 您的电子邮件地址
 user.chat.ended-no-agent: '很抱歉，我们目前没有任何人可以开始聊天。 请电邮我们或稍后再试。'
 user.chat.error: 聊天错误
@@ -805,6 +881,7 @@ user.email_subjects.download_sub_updated: 更新的下载
 user.email_subjects.email-too-big: '您的电子邮件“{{subject}}”未被接受'
 user.email_subjects.email_new-confirm: 请验证您的电子邮件地址
 user.email_subjects.email_primary-confirm: 验证您的电子邮件地址
+user.email_subjects.feedback_created_for_user: 谢谢您的反馈
 user.email_subjects.feedback_new: 感谢您提交反馈
 user.email_subjects.feedback_new-approved: 您的反馈已获得批准
 user.email_subjects.feedback_new-comment: '有关于“{{title}}”的新评论'
@@ -848,6 +925,7 @@ user.emails.feedback-updated-items:
 user.emails.feedback_agent-validation: 请注意，在我们的代理审核您的反馈之前，您的反馈不会公开显示
 user.emails.feedback_approved: 我们想通知您，您的反馈已获得批准，现在已在我们的网站上公开显示。
 user.emails.feedback_closed: '您提交的反馈“{{title}}”已关闭：{{status}}'
+user.emails.feedback_created_for_user: '感谢您最近的反馈“{{title}}”。 {{agentName}}已创建新的反馈项，因此您可以及时了解我们的进度：'
 user.emails.feedback_disapproved: 谨此通知您，很抱歉，您的反馈已被拒绝，不会公开显示在我们的网站上。
 user.emails.feedback_disapproved-reason: '谨此通知您，很抱歉，由于以下原因{{name}}，您的反馈已被拒绝，不会公开显示在我们的网站上。 '
 user.emails.feedback_new-comment: '{{name}}发表了新评论：'
@@ -868,12 +946,20 @@ user.emails.new-ticket-guest-link: '感谢您与我们联系。 您可以在这�
 user.emails.news-explain: '您收到此电子邮件是因为您在<a href="{{deskpro_url}}"> {{deskpro_url}} </a>订阅了我们的新闻。<br />不想再收到这些电子邮件了吗？ <a href="{{unsubscribe_url}}">点击此处取消订阅所有新闻通知</a>。'
 user.emails.news-new-articles:
   other: 1篇新文章
+user.emails.news-new-news:
+  other: 1篇新文章
 user.emails.news-updated-articles:
+  other: 1篇更新的新闻文章
+user.emails.news-updated-news:
   other: 1篇更新的新闻文章
 user.emails.password_agent-reset: '代理已重置您的帐户密码。 您可以使用这些详细信息登录'
 user.emails.password_reset: '您请求重置密码。 要重置密码，请点击以下链接：'
 user.emails.password_set: 要设置您的密码，请点击以下链接：
+user.emails.profile_email-new-confirm: 要将此辅助电子邮件地址添加到您的帐户，只需点击以下验证链接即可
+user.emails.profile_email-primary-confirm: 要验证您的主电子邮件地址，只需单击以下验证链接即可
 user.emails.profile_email_link-validate: 只需点击以下链接验证您的电子邮件地址
+user.emails.ratelimit_explain: '您已在{{time_limit}}内发送了{{num_messagess}}条消息。为防止滥用行为，我们暂时禁止您使用{{time_lock}}的电子邮件地址。在{{date_lock_end}}之后，此临时禁令将自动停用，您将能够再次发送电子邮件。'
+user.emails.ratelimit_submit-online: 如果这是一个错误，您需要立即与我们联系，您可以绕过此电子邮件过滤器并在线提交帮助请求：
 user.emails.register-confirm: '感谢您注册帐户。<br /> <br />在使用您的帐户之前，您必须使用以下链接验证您的电子邮件'
 user.emails.register-password: '您的初始密码为：{{password}}'
 user.emails.register-welcome: '感谢您注册。 您现在可以使用我们的帮助台上的电子邮件地址{{to_email}}登录：'
@@ -885,6 +971,7 @@ user.emails.reject_resolved-newemail: '如果您想创建全新的来单，可�
 user.emails.remind_unresolved: '这是一封后续讯息，提醒您，您仍然持有{{helpdesk_name}}的公开帮助请求。<br />如果您不需要任何关于此问题的进一步帮助，请点击下面的链接告诉我们 ：<br /> <a href="{{resolve_url}}"> {{resolve_url}} </a> <br />如果您仍需要帮助，请直接回复此电子邮件。'
 user.emails.remind_unresolved_final: '我们最近没有收到您对这张帮助请求的通知。<br />如果您仍需要帮助，只需回复此电子邮件即可。<br />如果您不需要任何帮助，请点击下面的链接，让我们知道：<br /> <a href="{{resolve_url}}"> {{resolve_url}} </a>'
 user.emails.ticket_access_ticket_online: 在线查看和管理此帮助请求：
+user.emails.ticket_cc-new: '您已被列入由{{name}}发起的来单。'
 user.emails.ticket_flood: '您最近向我们的帮助台发送了一封电子邮件。 我们可以看到，您已经快速连续发送了很多自动化的邮件。<br /> <br />为了防止自动回复程序循环，我们的帮助台不会向您发送任何更多的自动通知电子邮件。'
 user.emails.ticket_message_title: '{{date}}在{{time}}，{{author}}写道：'
 user.emails.ticket_no-autoresponse: 警告：确认邮件已关闭
@@ -1056,3 +1143,17 @@ user.time.time_x_month: '{0}个月'
 user.time.time_x_second: '{0}秒'
 user.time.time_x_week: '{0}星期'
 user.time.time_x_year: '{0}年'
+user.time.x_day:
+  other: 1天
+user.time.x_hour:
+  other: 1小时
+user.time.x_minute:
+  other: 1分钟
+user.time.x_month:
+  other: 1个月
+user.time.x_second:
+  other: '秒 {{count}}秒钟'
+user.time.x_week:
+  other: 1周
+user.time.x_year:
+  other: 1年
