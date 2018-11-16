@@ -8,14 +8,19 @@ export default class PortalSimpleSelectBoxWrapper extends React.Component {
     level:         PropTypes.number,
     multiple:      PropTypes.bool,
     value:         PropTypes.oneOfType([PropTypes.array, PropTypes.number]),
-    choices:       PropTypes.object,
+    choices:       PropTypes.object, // eslint-disable-line
     onChange:      PropTypes.func,
     widgetOptions: PropTypes.object
   };
 
   constructor(props) {
     super(props);
+    this.state = {
+      options: []
+    };
+  }
 
+  componentWillReceiveProps(nextProps) {
     // prepare config for <PortalSimpleSelectBox> component
     // need to refactor <PortalSimpleSelectBox> to accept 'choices' as is
     const options = [];
@@ -27,7 +32,7 @@ export default class PortalSimpleSelectBoxWrapper extends React.Component {
         depth
       };
 
-      if (props.multiple) {
+      if (nextProps.multiple) {
         option.children = hasChildren ? choice.get('children').map(child => ({
           id:    child.get('id'),
           title: child.get('title')
@@ -36,13 +41,13 @@ export default class PortalSimpleSelectBoxWrapper extends React.Component {
 
       options.push(option);
 
-      if (props.multiple && hasChildren) {
+      if (nextProps.multiple && hasChildren) {
         choice.get('children').map(child => prepareOptions(child, depth + 1));
       }
     };
 
-    props.choices.map(choice => prepareOptions(choice));
-    this.state = { options };
+    nextProps.choices.map(choice => prepareOptions(choice));
+    this.setState({ options });
   }
 
   onChange = (value) => {
