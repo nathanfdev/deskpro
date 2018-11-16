@@ -6,6 +6,7 @@ use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\Attachments\RestrictionSet;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\Blob;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -19,6 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @ApiUserContext("open")
  * @Rest\Route("/file")
+ * @Feature("messenger")
  */
 class BlobController extends AbstractMessengerController
 {

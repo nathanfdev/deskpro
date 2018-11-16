@@ -72,3 +72,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.messenger:
+    class: DeskPRO\Bundle\AppBundle\Features\MessengerFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }

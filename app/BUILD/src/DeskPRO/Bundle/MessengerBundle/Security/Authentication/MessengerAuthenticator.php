@@ -29,7 +29,7 @@ class MessengerAuthenticator implements SimplePreAuthenticatorInterface
     public function createToken(Request $request, $providerKey)
     {
         if (!$request->headers->has(self::VISITOR_HEADER_NAME)) {
-            throw new UnauthorizedHttpException(self::HTTP_REALM, 'Visitor ID header is not set. Cant auth');
+            throw new UnauthorizedHttpException(self::HTTP_REALM, 'Visitor ID header is not set. Can\'t auth');
         }
 
         return new AnonymousToken($this->secret, new Person(), ['ROLE_API']);

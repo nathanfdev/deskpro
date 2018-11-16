@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator;
 use DeskPRO\Bundle\MessengerBundle\Serializer\Model\TechInfo;
@@ -23,6 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiUserContext("open")
  *
  * @Rest\Route("/user")
+ * @Feature("messenger")
  */
 class UserController extends AbstractMessengerController
 {
