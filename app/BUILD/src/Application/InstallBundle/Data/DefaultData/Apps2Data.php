@@ -12,6 +12,7 @@ class Apps2Data extends AbstractDefaultData
 {
     /**
      * {@inheritdoc}
+     *
      * @throws \Exception
      */
     public function runInstall()
@@ -20,7 +21,7 @@ class Apps2Data extends AbstractDefaultData
         $appsDir  = new \DirectoryIterator($assetDir.'/apps/v2');
 
         foreach ($appsDir as $fileInfo) {
-            if (!$fileInfo->isDot()) {
+            if (!$fileInfo->isDot() && $fileInfo->isDir()) {
                 $this->runInstallApp($fileInfo->getPathname());
             }
         }
@@ -28,9 +29,10 @@ class Apps2Data extends AbstractDefaultData
 
     /**
      * @param $bundlePath
+     *
      * @throws \Exception
      */
-    private function runInstallApp( $bundlePath)
+    private function runInstallApp($bundlePath)
     {
         $this->getLogger()->info(sprintf('Installing v2 app from path: %s', $bundlePath));
 
