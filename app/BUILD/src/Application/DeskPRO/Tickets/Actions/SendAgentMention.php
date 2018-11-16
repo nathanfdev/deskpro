@@ -41,6 +41,13 @@ class SendAgentMention extends AbstractContainerAwareAction implements ActionInt
                     if (!($agent = $agentData->get($agentId))) {
                         continue;
                     }
+                    if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
+                        $context->getLogger()->debug(sprintf(
+                            '[SendAgentMention] Agent #%d mentioned but has no permission to view ticket. Skip notifications for this agent.',
+                            $agentId
+                        ));
+                        continue;
+                    }
 
                     $notifyChat[$agent->getId()] = $agent;
                     $allNotifyAgentIds[]         = $agent->getId();
