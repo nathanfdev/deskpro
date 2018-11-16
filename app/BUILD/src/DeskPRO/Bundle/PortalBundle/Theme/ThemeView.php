@@ -7,7 +7,6 @@
 namespace DeskPRO\Bundle\PortalBundle\Theme;
 
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandThemeLoader;
 
 class ThemeView
 {
@@ -17,7 +16,7 @@ class ThemeView
     private $brand_stack;
 
     /**
-     * @var PortalBrandThemeLoader
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader
      */
     private $brand_theme_loader;
 
@@ -26,7 +25,7 @@ class ThemeView
      */
     private $default_options;
 
-    public function __construct(BrandStack $brand_stack, PortalBrandThemeLoader $brand_theme_loader, array $default_options)
+    public function __construct(BrandStack $brand_stack, \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader $brand_theme_loader, array $default_options)
     {
         $this->default_options    = $default_options;
         $this->brand_stack        = $brand_stack;

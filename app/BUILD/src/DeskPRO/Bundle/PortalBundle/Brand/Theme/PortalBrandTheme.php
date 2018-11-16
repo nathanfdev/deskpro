@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\BrandBundle\Theme;
+namespace DeskPRO\Bundle\PortalBundle\Brand\Theme;
 
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;

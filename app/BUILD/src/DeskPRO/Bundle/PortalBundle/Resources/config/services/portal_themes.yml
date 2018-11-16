@@ -78,3 +78,10 @@ services:
     public: false
     tags:
       - { name: twig.extension }
+
+  portal_brand_theme_loader:
+    class: DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader
+    arguments:
+      - "@brand_container_factory"
+      - "@theme_resolver"
+      - "@portal_mode_storage"

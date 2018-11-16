@@ -9,8 +9,7 @@ namespace spec\DeskPRO\Bundle\PortalBundle\Theme;
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
-use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandTheme;
-use DeskPRO\Bundle\BrandBundle\Theme\PortalBrandThemeLoader;
+use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme;
 use DeskPRO\Bundle\PortalBundle\Theme\Tag;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeInterface;
 use PhpSpec\ObjectBehavior;
@@ -24,7 +23,7 @@ class ThemeViewSpec extends ObjectBehavior
         BrandStack $brand_stack,
         Brand $brand,
         BrandContainer $brand_container,
-        PortalBrandThemeLoader $portalBrandThemeLoader,
+        \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader $portalBrandThemeLoader,
         PortalBrandTheme $portalBrandTheme,
         ThemeInterface $theme,
         Tag $tag
@@ -44,7 +43,7 @@ class ThemeViewSpec extends ObjectBehavior
     }
 
     public function it_will_call_a_tag_using_the_constructed_default_options(
-        \DeskPRO\Bundle\BrandBundle\Theme\PortalBrandTheme $portalBrandTheme,
+        \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme $portalBrandTheme,
         $default_options
     ) {
         $portalBrandTheme->renderTag('tag_name', [
@@ -58,7 +57,7 @@ class ThemeViewSpec extends ObjectBehavior
     }
 
     public function it_allows_tags_to_be_called_with_explicit_options_that_will_override_default_options(
-        PortalBrandTheme $portalBrandTheme,
+        \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandTheme $portalBrandTheme,
         $default_options
     ) {
         $portalBrandTheme->renderTag('tag_name', [

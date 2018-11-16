@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\BrandBundle\Theme;
+namespace DeskPRO\Bundle\PortalBundle\Brand\Theme;
 
 use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandContainerFactory;

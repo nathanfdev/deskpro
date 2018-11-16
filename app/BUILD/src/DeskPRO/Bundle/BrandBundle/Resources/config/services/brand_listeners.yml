@@ -20,9 +20,3 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-  portal_brand_theme_loader:
-    class: DeskPRO\Bundle\BrandBundle\Theme\PortalBrandThemeLoader
-    arguments:
-      - "@brand_container_factory"
-      - "@theme_resolver"
-      - "@portal_mode_storage"
