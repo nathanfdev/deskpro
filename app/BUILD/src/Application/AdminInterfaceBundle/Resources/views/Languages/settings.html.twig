@@ -133,7 +133,7 @@
 
 	<section class="dp-paneblock dp-listpane">
 		<header>
-			<h3>Download lates language</h3>
+			<h3>Download latest language</h3>
 		</header>
 		<article class="form-horizontal dp-form">
 			<div class="panel panel-innertable">
@@ -149,15 +149,25 @@
 							</div>
 					</div>
 				</div>
+        <div class="col-lg-6" ng-show="EditCtrl.syncLog">
+          <div class="inner-group">
+              <button class="btn btn-default btn-xs" style="margin: 0;" ng-click="EditCtrl.showLog = true" ><i class="far fa-file-alt"></i> View log</button>
+              <button class="btn btn-default btn-xs" style="margin: 0;" ng-click="EditCtrl.showLog = false" ><i class="far fa-file-alt"></i> Hide log</button>
+              <div ng-if="EditCtrl.showLog" style="margin-top: 4px;">
+                <textarea ng-model="EditCtrl.syncLog" class="form-control" style="width: 100%; height: 175px; font-family: Monaco, Consolas, monospace; font-size: 11px;"></textarea>
+              </div>
+          </div>
+        </div>
 			</div>
 		</article>
 		<footer>
 			<div class="dp-content">
 				<div class="dp-btn-controls">
-					<div dp-hide-spinning="downloading_languages">
+					<div dp-hide-spinning="update_languages">
 						<button class="btn btn-primary" ng-click="EditCtrl.doDownloadLanguages()">Download latest language</button>
+            <button class="btn btn-primary" ng-click="EditCtrl.doResetManagedPhrases()">Reset phrases</button>
 					</div>
-					<div dp-show-spinning="downloading_languages">
+					<div dp-show-spinning="update_languages">
 						<i class="spinner-flat"></i>
 					</div>
 				</div>
@@ -172,6 +182,10 @@
 		Are you sure you want to mass update language on all users in your database? This action cannot be undone.
 	</div>
 	<div dp-register-message="confirm_download_languages">
-		Are you sure you want to download latest languages? This action cannot be undone.
+		Are you sure you want to download latest languages?
+	</div>
+	<div dp-register-message="confirm_reset_managed_phrases">
+    Are you sure you want to reset phrases?
+    All updated phrases will be reset to the default text that were bundled with your version.
 	</div>
 {% endblock %}
