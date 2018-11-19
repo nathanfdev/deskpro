@@ -179,7 +179,7 @@ class CallLogView extends React.Component {
                                 ),
                                 to_number:        number.get('nickname') || number.get('number'),
                                 key:              log.getIn(['details', 'Digits']) || '',
-                                target:           log.getIn(['details', 'target', 'name']),
+                                target,
                                 forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
                               }}
                             />
