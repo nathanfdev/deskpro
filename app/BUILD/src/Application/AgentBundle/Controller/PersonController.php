@@ -1240,7 +1240,7 @@ class PersonController extends AbstractController
 
             $file['agent']  = $this->person;
             $file['person'] = $person;
-            $file['blob']   = $blob;
+            $file['blob']   = $blob->setIsTemp(false);
         }
 
         $file['note'] = $note_txt;
