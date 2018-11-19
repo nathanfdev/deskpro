@@ -14,6 +14,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         users_move_to:     0,
         download_language: 'all'
       }
+      @syncLog = ''
 
     initialLoad: ->
       promise = @Api.sendDataGet({
@@ -82,6 +83,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       syncLanguage = (nameId, locale) =>
         console.log('[Language sync] Process: ', locale)
+        @syncLog += "Downloading " + locale + " ...\n"
         @$q.all([
           @LangSyncApi.getPhrases(locale, 'backend')
           @LangSyncApi.getPhrases(locale, 'user')
@@ -91,11 +93,16 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
             phrases: Object.assign({}, res[0].data, res[1].data)
           }
 
+          @syncLog += "Syncing " + locale + " ...\n"
           @Api.sendPostJson("/langs/#{nameId}/phrases/sync", postData)
 
       @showConfirm('@confirm_download_languages').result.then(=>
-        @startSpinner('downloading_languages')
+        @startSpinner('update_languages')
 
+        @syncLog = ''
+        @showLog = true
+
+        @syncLog += "Downloading Manifest ...\n"
         @LangSyncApi.getManifest().then((result) =>
           manifest = result.data
           langs = @langChoices
@@ -107,7 +114,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           deferred = @$q.defer()
           res = deferred.promise
 
-          #process language sync one by one
+          #queue promises to process languages sync one by one
           manifest.forEach((lang) ->
             if langs.indexOf(lang.id) != -1
               res = res.then(() -> syncLanguage(lang.id, lang.locale))
@@ -117,14 +124,28 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
           #execute chained promises
           res
-            .then(() => @stopSpinner('downloading_languages'))
+            .then(() =>
+              @stopSpinner('update_languages')
+              @syncLog += "Done.\n"
+            )
             .catch((error) =>
               console.log(error)
-              @stopSpinner('downloading_languages')
+              @syncLog += "Error. Please check the console.\n"
+              @stopSpinner('update_languages')
             )
         ).catch( (error) =>
           console.log(error)
-          @stopSpinner('downloading_languages')
+          @syncLog += "Error. Please check the console.\n"
+          @stopSpinner('update_languages')
+        )
+      )
+
+    doResetManagedPhrases: ->
+
+      @showConfirm('@confirm_reset_managed_phrases').result.then(=>
+        @startSpinner('update_languages')
+        @Api.sendPostJson("/langs/phrases/reset-managed", {}).then( (result) =>
+          @stopSpinner('update_languages')
         )
       )
 
