@@ -155,4 +155,22 @@ class ChatMapper
 
         return UserChatMessages::createUserTrackMessage($chat, $request['page_url'], $request['page_title']);
     }
+
+    /**
+     * @param $request
+     *
+     * @return string
+     */
+    public function createUserViewPageMessage($request)
+    {
+        $message = '';
+        if (isset($request['page_url']) && trim($request['page_url'])) {
+            $message .= sprintf('The user was browsing %s', trim($request['page_url']));
+        }
+        if (isset($request['page_title']) && trim($request['page_title'])) {
+            $message .= sprintf('The user was browsing %s', trim($request['page_title']));
+        }
+
+        return $message;
+    }
 }

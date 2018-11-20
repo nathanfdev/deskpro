@@ -121,17 +121,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     const TAC_AUTHCODE_LEN     = 15;
     const TAC_AUTHCODE_LEN_MAX = 30;
 
-    const CREATED_WEB_PERSON        = 'web.person';
-    const CREATED_WEB_PERSON_PORTAL = 'web.person.portal';
-    const CREATED_WEB_PERSON_WIDGET = 'web.person.widget';
-    const CREATED_WEB_PERSON_EMBED  = 'web.person.embed';
-    const CREATED_WEB_AGENT         = 'web.agent';
-    const CREATED_WEB_AGENT_PORTAL  = 'web.agent.portal';
-    const CREATED_WEB_API           = 'web.api';
-    const CREATED_WEB_API_PERSON    = 'web.api.person';
-    const CREATED_WEB_API_AGENT     = 'web.api.agent';
-    const CREATED_GATEWAY_PERSON    = 'gateway.person';
-    const CREATED_GATEWAY_AGENT     = 'gateway.agent';
+    const CREATED_WEB_PERSON           = 'web.person';
+    const CREATED_WEB_PERSON_PORTAL    = 'web.person.portal';
+    const CREATED_WEB_PERSON_WIDGET    = 'web.person.widget';
+    const CREATED_WEB_PERSON_EMBED     = 'web.person.embed';
+    const CREATED_WEB_AGENT            = 'web.agent';
+    const CREATED_WEB_AGENT_PORTAL     = 'web.agent.portal';
+    const CREATED_WEB_API              = 'web.api';
+    const CREATED_WEB_API_PERSON       = 'web.api.person';
+    const CREATED_WEB_API_AGENT        = 'web.api.agent';
+    const CREATED_GATEWAY_PERSON       = 'gateway.person';
+    const CREATED_GATEWAY_AGENT        = 'gateway.agent';
+    const CREATED_MESSENGER_UNANSWERED = 'messenger.unanswered';
 
     const STATUS_AWAITING_AGENT = 'awaiting_agent';
     const STATUS_AWAITING_USER  = 'awaiting_user';

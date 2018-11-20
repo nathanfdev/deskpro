@@ -5,6 +5,12 @@ namespace DeskPRO\Bundle\MessengerBundle\Handler;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
@@ -20,6 +26,7 @@ class ChatHandler
 {
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
     const CHAT_ENDED               = 'chat.ended';
+    const CHAT_CREATE_TICKET       = 'chat.ticket.create';
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
     const CHAT_TRANSCRIPT          = 'chat.transcript';
     const CHAT_RATING              = 'chat.rating';
@@ -41,6 +48,7 @@ class ChatHandler
         self::TYPING_END,
         self::CHAT_HISTORY,
         self::CHAT_TRACK,
+        self::CHAT_CREATE_TICKET,
     ];
 
     /**
@@ -292,5 +300,118 @@ class ChatHandler
         $this->em->flush();
 
         $this->eventDispatcher->dispatch(UserChatEvent::USER_TRACK, new UserChatEvent($chat, $trackMsg));
+    }
+
+    private function handleChatTicketCreateCommand(ChatConversation $chat, array $request)
+    {
+        $ticketRepository = $this->em->getRepository(Ticket::class);
+        $ticket           = $ticketRepository->findOneBy(['linked_chat' => $chat]);
+        if ($ticket) {
+            return new ApiWrapper($ticket);
+        }
+
+        $ticket = new Ticket();
+        $person = null;
+
+        /** @var DepartmentRepository $departmentRepository */
+        $departmentRepository = $this->em->getRepository(Department::class);
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+
+        $errors = [];
+        // try to find person
+        if (isset($request['person_id'])) {
+            $person = $this->em->find(Person::class, $request['person_id']);
+        }
+        if (!$person && isset($request['email'])) {
+            $person = $personRepository->findOneByEmail($request['email']);
+        }
+
+        if (!$person && !isset($request['email'])) {
+            $errors['email']     = 'Either email or person_id parameter is required';
+            $errors['person_id'] = 'Either email or person_id parameter is required';
+        }
+
+        $department = null;
+        if (isset($request['department_id'])) {
+            $department = $departmentRepository->findOneBy(['id' => $request['department_id'], 'is_tickets_enabled' => 1]);
+            if ($department) {
+                $ticket->setDepartment($department);
+            } else {
+                $errors['department_id'] = 'Wrong id, department wasn\'t found';
+            }
+        } else {
+            $errors['department_id'] = 'This parameter is required';
+        }
+
+        if ($errors) {
+            throw new MessengerApiException($errors);
+        }
+
+        // determine username for person
+        if (isset($request['name'])) {
+            $username = $request['name'];
+        } elseif ($person) {
+            $username = $person->getDisplayName();
+        } else {
+            $username = 'anonymous user';
+        }
+
+        // if email was sent but person wasn't found - create person
+        if (!$person) {
+            $person = new Person();
+            $person->setEmail($request['email']);
+            $person->setName($username);
+        }
+
+        $ticket->setPerson($person);
+
+        $ticketMessage = sprintf('Missed chat at %s.', $chat->getDateCreated()->format('Y-m-d H:i:s'));
+        if ($msg = $this->chatMapper->createUserViewPageMessage($request)) {
+            $ticketMessage .= '<br/>'.$msg;
+        }
+        $messages = $chat->getMessages()->filter(function ($message) {
+            /* @var ChatMessage $message */
+            return $message->getOrigin() == ChatMessage::ORIGIN_USER
+                || $message->getOrigin() == ChatMessage::ORIGIN_AGENT;
+        });
+
+        foreach ($messages as $message) {
+            /* @var ChatMessage $message */
+            $ticketMessage .= '<br/>'.$message->getIsUser() ? 'agent: ' : 'user: '.$message->getContentHtml();
+        }
+
+        $ticket
+            ->setSubject(sprintf('Missed chat with %s', $username))
+            ->setDateCreated(new \DateTime())
+            ->setCreationSystem(Ticket::CREATED_MESSENGER_UNANSWERED)
+            ->setDepartment($department)
+            ->setPerson($person)
+            ->setStatus(Ticket::STATUS_AWAITING_AGENT)
+            ->linked_chat = $chat;
+
+        $message = new TicketMessage();
+        $ticket->addMessage($message
+            ->setPerson($person)
+            ->setAsAgentNote(true)
+            ->setMessageHtml($ticketMessage)
+            ->setCreationSystem(TicketMessage::CREATED_MESSENGER_UNANSWERED)
+            ->setDateCreated(new \DateTime())
+        );
+        $ticket->getTicketLogger()->recordExtra('suppress_user_notify', true);
+
+        try {
+            $this->em->beginTransaction();
+            $this->em->persist($ticket);
+            $this->em->persist($message);
+            $this->em->persist($person);
+            $this->em->flush();
+            $this->em->commit();
+        } catch (\Exception $e) {
+            $this->em->rollback();
+            throw new MessengerApiException([], 'Failed to create a ticket', 400, $e);
+        }
+
+        return new ApiWrapper($ticket);
     }
 }
