@@ -21,7 +21,15 @@ class ProcessEmailGateways extends AbstractJob
         // Using adv_email_collect (daemon)
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
-        if ($DP_ENV->getConfig('adv_email_collect')) {
+        if ($DP_ENV->getConfig('async_email_processing')) {
+            $this->getLogger()->logNotice('Skipping job because async_email_processing is enabled');
+
+            return;
+        }
+
+        if (App::getSetting('cron.disable_email_gateway_job')) {
+            $this->getLogger()->logNotice('Skipping job because of cron.disable_email_gateway_job');
+
             return;
         }
 

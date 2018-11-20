@@ -18,6 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ProcessEmailCommand extends ContainerAwareCommand
 {
+    const RET_MISSING_SOURCE = 64;
+    const RET_EXPECT_PENDING = 65;
+
     protected function configure()
     {
         $this->setName('dp:process-email');
@@ -67,7 +70,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
             if (!$source) {
                 $output->writeln('<error>Could not find source</error>');
 
-                return 1;
+                return self::RET_MISSING_SOURCE;
             }
 
             $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
@@ -83,7 +86,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 if ($source->getStatus() !== EmailSource::STATUS_INSERTED && $source->getStatus() !== EmailSource::STATUS_RETRY) {
                     $output->writeln(sprintf('<error>Status is %s (expected inserted or retry)</error>', $source->getStatus()));
 
-                    return 1;
+                    return self::RET_EXPECT_PENDING;
                 }
             }
 

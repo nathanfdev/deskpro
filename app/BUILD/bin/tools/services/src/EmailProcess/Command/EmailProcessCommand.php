@@ -46,9 +46,9 @@ class EmailProcessCommand extends Command
     {
         $output->writeln('Email processing starting ...');
 
-        $stop_time    = $input->getOption('max-time') ?: 0;
+        $stop_time    = (int) $input->getOption('max-time') ?: 0;
         $task_timeout = 600;
-        $max_tasks    = $input->getOption('max-processes') ?: 8;
+        $max_tasks    = (int) $input->getOption('max-processes') ?: 8;
         $redis_key    = $input->getOption('redis-key') ?: 'dp_incoming_email';
 
         if ($input->getOption('redis')) {

@@ -44,10 +44,10 @@ class EmailCollectionCommand extends Command
     {
         $output->writeln('Email collection starting ...');
 
-        $stop_time    = $input->getOption('max-time') ?: 0;
+        $stop_time    = (int) $input->getOption('max-time') ?: 0;
         $task_timeout = 600;
-        $interval     = $input->getOption('connect-interval') ?: 30;
-        $max_tasks    = $input->getOption('max-processes') ?: 999;
+        $interval     = (int) $input->getOption('connect-interval') ?: 30;
+        $max_tasks    = (int) $input->getOption('max-processes') ?: 999;
 
         if ($input->getOption('load-config')) {
             $config = $this->dpEnv->getConfig('async_email_processing');

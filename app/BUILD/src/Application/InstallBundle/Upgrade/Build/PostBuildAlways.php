@@ -68,7 +68,13 @@ class PostBuildAlways extends AbstractBuild
         // Clear error logs
         //------------------------------
 
-        foreach (['cli-phperr.log', 'server-phperr-web.log', 'error.log'] as $l) {
+        foreach ([
+            'cli-phperr.log',
+            'server-phperr-web.log',
+            'error.log',
+            'blob_storage.log',
+            'es-indexer.log',
+        ] as $l) {
             $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$l;
             if (file_exists($path)) {
                 $this->out('resetting '.$l);
