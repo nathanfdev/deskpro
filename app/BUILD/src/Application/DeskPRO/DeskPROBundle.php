@@ -63,6 +63,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
             'Application\\DeskPRO\\Command\\MoveBlobsCommand',
             'Application\\DeskPRO\\Command\\OptimisePermsCommand',
             'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
+            'Application\\DeskPRO\\Command\\ProcessEmailBacklogCommand',
             'Application\\DeskPRO\\Command\\ProcessEmailCommand',
             'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
             'Application\\DeskPRO\\Command\\SchemaCommand',

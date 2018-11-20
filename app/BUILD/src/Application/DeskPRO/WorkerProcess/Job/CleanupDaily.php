@@ -40,6 +40,18 @@ class CleanupDaily extends AbstractJob
         $this->_cleanupRateLimitLogs();
         $this->_cleanupOldBuilds();
         $this->_cleanHttpCache();
+
+        //------------------------------
+        // Clear error logs
+        //------------------------------
+
+        foreach (['email.collection.log', 'email.process.log', 'es-indexer.log', 'blob_storage.log'] as $l) {
+            $path = dp_get_log_dir().DIRECTORY_SEPARATOR.$l;
+            if (file_exists($path) && filesize($path) > 104857600) {
+                $this->logStatus("Clearing big log $path");
+                @file_put_contents($path, '');
+            }
+        }
     }
 
     private function _cleanupLogItems()
