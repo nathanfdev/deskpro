@@ -100,7 +100,7 @@ class TechInfo implements MessengerModelInterface
         $self = $this;
         if ($department->getChildren()->count()) {
             $children =
-                array_map(
+                array_values(array_map(
                     [$this, 'departmentToArray'],
                     $department->getChildren()
                         ->filter(
@@ -110,7 +110,7 @@ class TechInfo implements MessengerModelInterface
                             }
                         )
                         ->toArray()
-                );
+                ));
 
             if ($children) {
                 $return['children'] = $children;
