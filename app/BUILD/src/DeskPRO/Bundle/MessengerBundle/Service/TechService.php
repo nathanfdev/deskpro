@@ -52,21 +52,49 @@ class TechService
         $permissionBag        = $this->permissionsManager->getPortalPermissionsBag();
         $allowedDepartmentIds = $permissionBag->getAllowedChatDepartmentIds();
 
+        return $this->getDepartments('chat', $allowedDepartmentIds);
+    }
+
+    /**
+     * @return Department[]
+     */
+    public function getTicketDepartments()
+    {
+        $permissionBag        = $this->permissionsManager->getPortalPermissionsBag();
+        $allowedDepartmentIds = $permissionBag->getAllowedTicketDepartmentIds();
+
+        return $this->getDepartments('tickets', $allowedDepartmentIds);
+    }
+
+    /**
+     * @param string $type
+     * @param array  $allowedDepartmentIds
+     *
+     * @return array
+     */
+    private function getDepartments($type, array $allowedDepartmentIds = [])
+    {
         $qb = $this->em->createQueryBuilder();
         $qb
             ->select('d')
             ->from(Department::class, 'd')
-            ->join('d.brands', 'b')
+            ->leftJoin('d.brands', 'b')
             ->where(
-                'd.is_chat_enabled = true',
+                'd.is_'.$type.'_enabled = true',
                 'd.id IN (:allowed_department_ids)',
-                'b.id IN(:brand)'
+                'd.parent IS NULL'
             )
             ->setParameter('allowed_department_ids', $allowedDepartmentIds)
-            ->setParameter('brand', $this->brandStack->getActive()->getBrand())
         ;
 
-        return $qb->getQuery()->getResult();
+        $self = $this;
+
+        return array_filter($qb->getQuery()->getResult(),
+            function ($dep) use ($self) {
+                /* @var Department $dep */
+                return !$dep->getBrands()->count() || $dep->hasBrand($self->brandStack->getActive()->getBrand());
+            }
+        );
     }
 
     /**

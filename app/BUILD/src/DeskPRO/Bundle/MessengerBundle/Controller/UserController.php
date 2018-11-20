@@ -124,12 +124,13 @@ class UserController extends AbstractMessengerController
      */
     public function getInfoAction(Request $request)
     {
-        $techInfo            = new TechInfo($this->get('avatar_resolver'));
+        $techInfo            = new TechInfo($this->get('avatar_resolver'), $this->get('brand_stack'));
         $techService         = $this->get('messenger.service.tech');
         $notificationService = $this->get('deskpro.notification.service');
 
         $techInfo
             ->setChatDepartments($techService->getChatDepartments())
+            ->setTicketDepartments($techService->getTicketDepartments())
             ->setAgentsOnline($techService->getAgentsOnline())
             ->setClientsSetup($notificationService->getClientsSetup(null, $this->getVisitorId($request)))
         ;

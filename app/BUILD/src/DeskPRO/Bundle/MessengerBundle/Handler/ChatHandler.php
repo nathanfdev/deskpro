@@ -14,6 +14,7 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
@@ -67,17 +68,28 @@ class ChatHandler
     private $eventDispatcher;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * ChatHandler constructor.
      *
      * @param ChatMapper               $mapper
      * @param EntityManager            $em
      * @param EventDispatcherInterface $eventDispatcher
+     * @param BrandStack               $brandStack
      */
-    public function __construct(ChatMapper $mapper, EntityManager $em, EventDispatcherInterface $eventDispatcher)
-    {
+    public function __construct(
+        ChatMapper $mapper,
+        EntityManager $em,
+        EventDispatcherInterface $eventDispatcher,
+        BrandStack $brandStack
+    ) {
         $this->chatMapper      = $mapper;
         $this->em              = $em;
         $this->eventDispatcher = $eventDispatcher;
+        $this->brandStack      = $brandStack;
     }
 
     /**
@@ -388,6 +400,7 @@ class ChatHandler
             ->setDepartment($department)
             ->setPerson($person)
             ->setStatus(Ticket::STATUS_AWAITING_AGENT)
+            ->setBrand($this->brandStack->getActive()->getBrand())
             ->linked_chat = $chat;
 
         $message = new TicketMessage();

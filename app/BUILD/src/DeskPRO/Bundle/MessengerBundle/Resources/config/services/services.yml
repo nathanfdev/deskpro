@@ -14,6 +14,7 @@ services:
       - "@messenger.mappers.chat"
       - "@doctrine.orm.default_entity_manager"
       - "@event_dispatcher"
+      - "@brand_stack"
 
   messenger.service.action_alerts:
     class: DeskPRO\Bundle\MessengerBundle\Service\ActionAlertsService
