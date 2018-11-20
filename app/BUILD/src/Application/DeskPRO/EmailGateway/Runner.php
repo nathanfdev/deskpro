@@ -21,6 +21,7 @@ use Carbon\Carbon;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
 use DeskPRO\Component\Util\MathUtils;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Filter\CallbackFormatter;
@@ -811,8 +812,8 @@ BODY;
                 WHERE `status` IN (:states) AND `email_account_id` = :id
                 ORDER BY id ASC';
 
-            $params = ['states' => implode(',', ['inserted', 'retry']), 'id' => $account->getId()];
-            $types  = ['id' => TYPE::INTEGER];
+            $params = ['states' => ['inserted', 'retry'], 'id' => $account->getId()];
+            $types  = ['states' => Connection::PARAM_STR_ARRAY, 'id' => \PDO::PARAM_INT];
 
             $insertedSourceIds = $dbConnection->fetchAllCol($query, $params, $types);
 
