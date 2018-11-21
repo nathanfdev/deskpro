@@ -58,7 +58,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     public function setValue($value)
     {
         $this->setData($value);
-        $this->setModelField('value', $value);
 
         return $this;
     }
@@ -78,7 +77,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     public function setInput($input)
     {
         $this->setData($input);
-        $this->setModelField('input', $input);
 
         return $this;
     }
