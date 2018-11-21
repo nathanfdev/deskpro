@@ -327,6 +327,7 @@
         window.DP_PERSON_LANG_ID    = {{ app.user.language.id }};
         window.DP_PERSON_LANG_CODE  = '{{ app.user.language.getUrlCode() }}';
         window.DP_PERSON_TZ         = '{{ app.user.timezone|default('UTC') }}';
+        window.DP_MAX_UPLOAD_SIZE   = '{{ app.getEffectiveMaxUploadSize }}'
         window.DP_IS_DEBUG          = {% if app.isDebug() %}true{% else %}false{% endif %};
         window.DP_IS_TESTING        = {% if app.isTesting() %}true{% else %}false{% endif %};
         window.DP_IS_CLOUD          = {% if app.isCloud() %}true{% else %}false{% endif %};

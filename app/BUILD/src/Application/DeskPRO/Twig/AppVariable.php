@@ -6,6 +6,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Templating\GlobalVariablesInterface;
 use DeskPRO\Bundle\AppBundle\Server\PhpInfo;
 use DpSys\Features;
+use Orb\Util\Env;
 use Symfony\Bridge\Twig\AppVariable as BaseAppVariable;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -361,5 +362,10 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
     public function getVersionName()
     {
         return $this->container->get('deskpro.app_env')->getVersionName();
+    }
+
+    public function getEffectiveMaxUploadSize()
+    {
+        return Env::getEffectiveMaxUploadSize();
     }
 }

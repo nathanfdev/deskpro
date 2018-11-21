@@ -40,11 +40,18 @@ class MediaDropZone extends React.Component {
     this.props.onFail();
   };
 
-  onSend = () => {
+  onSend = (e, data) => {
+    if (data.originalFiles.find(file => file.size > window.DP_MAX_UPLOAD_SIZE)) {
+      this.setState({
+        error: 'File size over the limit'
+      });
+      return false;
+    }
     this.setState({
       error: null
     });
     this.props.onSend();
+    return true;
   };
 
   getUploadUrl = () => `/api/v2/email_templates/email_assets/${this.props.type}`;
