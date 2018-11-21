@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Security\Firewall;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\Adapter\Saml;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Exception\UsersourceNoEmailException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
@@ -14,6 +15,7 @@ use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
+use Orb\Log\LogItem;
 use Orb\Log\Writer\ArrayWriter;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -194,7 +196,24 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             throw new NotFoundHttpException('it is illegal to use this usersource in this context');
         }
 
-        $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $request->get('context'));
+        $adapter = $usersource->getAdapter();
+        $context = $request->get('context');
+        if ($adapter && $usersourceTest && $adapter instanceof Saml) {
+            // workaround for Google (G suite) Saml authentication testing
+            // when we do `test settings` for SAML - context is usually `auth-to-iframe`
+            // but with this context AuthFactory will generate adapter with callback url (ACS in terms of SAML) = `agent_login_usersource_sso`
+            // something like: http://deskpro-dev/agent/login/usersource-sso/3
+            // but we configure Google saml app with ACS = `agent_login_callback`
+            // something like: http://deskpro-dev/agent/login/authenticate-callback/3
+            // Google see the difference between configured ACS and ACS generated during runtime and return an error
+            // we set $context to null to generate ACS same as configured for Google app
+            // when we do testing - there are no difference in results for those two endpoints
+            // We do the same in UserBundle/Controller/LoginController::authenticateAction
+
+            $context = null;
+        }
+
+        $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $context);
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
             // set return path only if it's defined in query params, otherwise it could be set in auth listener
             // so don't clear it
@@ -276,7 +295,21 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         // Valid
         if ($result->isValid()) {
-            $token = $this->createTokenFromUsersourceResult($usersource, $result);
+            try {
+                $token = $this->createTokenFromUsersourceResult($usersource, $result, $usersourceTest, $usersourceTest);
+            } catch (\Exception $ex) {
+                if ($usersourceTest) {
+                    $writer->write(new LogItem([
+                        LogItem::MESSAGE => $ex->getMessage(),
+                    ]));
+
+                    return $this->getFailedTestResponse($writer);
+                }
+
+                // bypass exception if not test mode
+                throw $ex;
+            }
+
             if ($usersourceTest) {
                 return $this->getSuccessTestResponse($token->getUser(), $writer);
             }
@@ -369,16 +402,18 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
      *
      * @return DpFormLoginToken
      */
-    protected function createTokenFromUsersourceResult(Usersource $usersource, Result $result)
+    protected function createTokenFromUsersourceResult(Usersource $usersource, Result $result, $usersourceTest = false)
     {
         try {
             $em              = $this->container->get('doctrine.orm.default_entity_manager');
-            $login_processor = new LoginProcessor($usersource, $result->getIdentity());
+            $login_processor = new LoginProcessor($usersource, $result->getIdentity(), $usersourceTest);
             $person          = $login_processor->getPerson();
             $person->setLastLoginAt();
 
-            $em->persist($person);
-            $em->flush();
+            if (!$usersourceTest) {
+                $em->persist($person);
+                $em->flush();
+            }
         } catch (UsersourceNoEmailException $e) {
             return $this->saveTmpDataAndRedirectToSetEmailPage($usersource, $result);
         }
@@ -512,7 +547,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     protected function getFailedTestResponse(ArrayWriter $writer)
     {
         return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_failed.html.twig', [
-            'log' => $writer->getMessagesAsString(),
+            'log'            => $writer->getMessagesAsString(),
+            'display_errors' => '',
         ]);
     }
 }
