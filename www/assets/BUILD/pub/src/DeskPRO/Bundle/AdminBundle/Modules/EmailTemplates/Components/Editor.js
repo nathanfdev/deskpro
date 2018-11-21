@@ -127,6 +127,12 @@ class Editor extends React.Component {
 
   render() {
     const { disabled, subject, body } = this.props;
+    let extendedSubject = false;
+    const bodyStyle = {};
+    if (subject.split(/\r\n|\r|\n/).length > 1) {
+      extendedSubject = true;
+      bodyStyle.height = 'calc(100% - 205px)';
+    }
     return (
       <div className={classNames('dp-code-editor', { disabled })}>
         <div className={classNames('ui dimmer inverted', { active: disabled })}>
@@ -134,7 +140,7 @@ class Editor extends React.Component {
         </div>
         {
           this.props.type === 'email' ?
-            <div className="subject">
+            <div className={classNames('subject', { extended: extendedSubject })}>
             Email subject:
             <CodeMirror
               value={subject}
@@ -142,7 +148,7 @@ class Editor extends React.Component {
             />
             </div> : ''
         }
-        <div className={classNames('body', { block: this.props.type === 'block' })}>
+        <div className={classNames('body', { block: this.props.type === 'block' })}  style={bodyStyle}>
           {this.props.type === 'email' ? 'Email:' : 'Code:'}
           <CodeMirror
             value={body}
