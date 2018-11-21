@@ -418,7 +418,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       undoSubmit: true
     });
     this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']))).then(
-      () => {
+      (data) => {
+        this.props.dispatch(actions.setTemplate(data));
         this.setState({
           undoSubmit: false
         });
