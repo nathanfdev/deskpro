@@ -27,7 +27,7 @@ class ChatHandler
 {
     const MESSAGE_TYPE_NEW_MESSAGE = 'chat.message';
     const CHAT_ENDED               = 'chat.ended';
-    const CHAT_CREATE_TICKET       = 'chat.ticket.create';
+    const CHAT_SAVE_TICKET         = 'chat.ticket.save';
     const CHAT_USER_TIMEOUT        = 'chat.userTimeout';
     const CHAT_TRANSCRIPT          = 'chat.transcript';
     const CHAT_RATING              = 'chat.rating';
@@ -49,7 +49,7 @@ class ChatHandler
         self::TYPING_END,
         self::CHAT_HISTORY,
         self::CHAT_TRACK,
-        self::CHAT_CREATE_TICKET,
+        self::CHAT_SAVE_TICKET,
     ];
 
     /**
@@ -314,7 +314,7 @@ class ChatHandler
         $this->eventDispatcher->dispatch(UserChatEvent::USER_TRACK, new UserChatEvent($chat, $trackMsg));
     }
 
-    private function handleChatTicketCreateCommand(ChatConversation $chat, array $request)
+    private function handleChatTicketSaveCommand(ChatConversation $chat, array $request)
     {
         $ticketRepository = $this->em->getRepository(Ticket::class);
         $ticket           = $ticketRepository->findOneBy(['linked_chat' => $chat]);
@@ -390,7 +390,7 @@ class ChatHandler
 
         foreach ($messages as $message) {
             /* @var ChatMessage $message */
-            $ticketMessage .= '<br/>'.$message->getIsUser() ? 'agent: ' : 'user: '.$message->getContentHtml();
+            $ticketMessage .= '<br/>'.($message->getIsUser() ? 'user: ' : 'agent: ').$message->getContentHtml();
         }
 
         $ticket
