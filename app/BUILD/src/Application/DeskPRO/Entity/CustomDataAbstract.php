@@ -171,9 +171,9 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         if ($data === '' || $data === null) {
             $this->setModelField('value', '');
             $this->setModelField('input', '');
-        } elseif (in_array($this->root_field->getType(), [CustomDefAbstract::TYPE_TOGGLE, CustomDefAbstract::TYPE_CURRENCY])) {
+        } elseif ($this->root_field && $this->root_field->getType() === CustomDefAbstract::TYPE_TOGGLE) {
             $this->setModelField('value', (int) $data);
-        } elseif (in_array($this->root_field->getType(), [CustomDefAbstract::TYPE_CURRENCY])) {
+        } elseif ($this->root_field && $this->root_field->getType() === CustomDefAbstract::TYPE_CURRENCY) {
             // save currency in input (real value as string, used in forms etc)
             // but also value. a string means we can work with it in code as a bigint,
             // but value in db might be truncated, but we do this so can use db ops on it
