@@ -81,6 +81,21 @@ class TicketController extends AbstractMessengerController
             unset($requestData['email']);
         }
 
+        // determine username for person
+        if (isset($request['name'])) {
+            $username = $request['name'];
+            unset($requestData['name']);
+        } else {
+            $username = 'anonymous user';
+        }
+
+        // if email was sent but person wasn't found - create person
+        if (!$person) {
+            $person = new Person();
+            $person->setEmail($request['email']);
+            $person->setName($username);
+        }
+
         $errors = [];
         if (!$person && !isset($request['email'])) {
             $errors['email']     = 'Either email or person_id parameter is required';
