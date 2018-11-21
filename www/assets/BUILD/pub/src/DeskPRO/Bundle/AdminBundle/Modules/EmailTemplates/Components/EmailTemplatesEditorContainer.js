@@ -925,6 +925,7 @@ class EmailTemplatesEditor extends React.Component {
                         onChange={this.props.selectEmailAccount}
                         disabled={textareaDisabled || templateType === 'block'}
                         value={this.props.selectedEmailAccount}
+                        title={this.props.selectedEmailAccount}
                       />
                     </div>
                     <div className="six wide field">

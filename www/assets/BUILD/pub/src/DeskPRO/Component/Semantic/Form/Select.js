@@ -13,14 +13,15 @@ class Select extends React.Component {
     placeholder: PropTypes.string,
     value:       PropTypes.string,
     className:   PropTypes.string,
+    title:       PropTypes.string,
     options:     PropTypes.oneOfType([
       PropTypes.array,
       PropTypes.object
     ]).isRequired
   };
   static defaultProps = {
-    onChange() {
-    }
+    onChange() {},
+    title: '',
   };
 
   constructor(props) {
@@ -249,7 +250,7 @@ class Select extends React.Component {
 
   render() {
     const { value, isOpen, inputValue } = this.state;
-    const { placeholder, filter, name, className, disabled } = this.props;
+    const { placeholder, filter, name, className, disabled, title } = this.props;
     const text = value ? value.label : placeholder;
     const options = this.visibleOptions = this.filterOptions();
 
@@ -257,6 +258,7 @@ class Select extends React.Component {
       className={classNames('ui selection dropdown', className, { active: isOpen, visible: isOpen, search: filter, disabled })}
       onClick={this.openSelect}
       onKeyDown={this.handleKeyDown}
+      title={title}
     >
       <input ref={(c) => { this.input = c; }} type="hidden" name={name} value={this.props.value} />
       <i className="dropdown icon" />
