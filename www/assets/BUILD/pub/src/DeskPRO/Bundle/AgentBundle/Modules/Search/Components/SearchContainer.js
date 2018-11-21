@@ -70,9 +70,11 @@ class SearchContainer extends React.Component {
             ],
           },
           renderHeader: <h3><FormattedMessage id="agent.general.status" /></h3>,
-          showSearch:   false
+          showSearch:   false,
+          isMultiple:   true,
         },
-        description: 'Status of the ticket'
+        allowDuplicate: false,
+        description:    'Status of the ticket'
       },
       {
         id:     'department',
@@ -88,8 +90,10 @@ class SearchContainer extends React.Component {
                           }))
           },
           showSearch: true,
+          isMultiple: true,
         },
-        showOnFocus: true,
+        allowDuplicate: false,
+        showOnFocus:    true,
       },
       {
         id:     'agent',
@@ -105,8 +109,10 @@ class SearchContainer extends React.Component {
                           }))
           },
           showSearch: true,
+          isMultiple: true,
         },
-        showOnFocus: true,
+        allowDuplicate: false,
+        showOnFocus:    true,
       },
       {
         id:     'agent_team',
@@ -123,6 +129,7 @@ class SearchContainer extends React.Component {
           },
           showSearch: true,
         },
+        allowDuplicate: false,
       },
       {
         id:     'ticket_product',
@@ -133,8 +140,10 @@ class SearchContainer extends React.Component {
             getOptions: search => this.props.dispatch(searchActions.loadProducts({ search }))
           },
           showSearch: true,
+          isMultiple: true,
         },
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_category',
@@ -145,8 +154,10 @@ class SearchContainer extends React.Component {
             getOptions: search => this.props.dispatch(searchActions.loadCategories({ search }))
           },
           showSearch: true,
+          isMultiple: true,
         },
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_priority',
@@ -157,8 +168,10 @@ class SearchContainer extends React.Component {
             getOptions: search => this.props.dispatch(searchActions.loadPriorities({ search }))
           },
           showSearch: true,
+          isMultiple: true,
         },
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'urgency',
@@ -173,8 +186,10 @@ class SearchContainer extends React.Component {
                           }))
           },
           showSearch: false,
+          isMultiple: true,
         },
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_workflow',
@@ -184,48 +199,56 @@ class SearchContainer extends React.Component {
           dataSource: {
             getOptions: search => this.props.dispatch(searchActions.loadWorkflows({ search }))
           },
+          isMultiple: true,
         },
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
-        id:     'subject',
-        label:  intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase().replace(/ /, '-'),
-        widget: 'TextInput',
-        props:  {},
+        id:             'subject',
+        label:          intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase().replace(/ /, '-'),
+        widget:         'TextInput',
+        props:          {},
+        allowDuplicate: false,
       },
       {
-        id:     'date_created',
-        label:  intl.formatMessage({ id: 'agent.general.date_created' }).toLowerCase().replace(/ /, '-'),
-        widget: 'DateTimeInput',
-        props:  {},
+        id:             'date_created',
+        label:          intl.formatMessage({ id: 'agent.general.date_created' }).toLowerCase().replace(/ /, '-'),
+        widget:         'DateTimeInput',
+        props:          {},
+        allowDuplicate: false,
       },
       {
-        id:     'date_resolved',
-        label:  intl.formatMessage({ id: 'agent.general.date_resolved' }).toLowerCase().replace(/ /, '-'),
-        widget: 'DateTimeInput',
-        props:  {},
+        id:             'date_resolved',
+        label:          intl.formatMessage({ id: 'agent.general.date_resolved' }).toLowerCase().replace(/ /, '-'),
+        widget:         'DateTimeInput',
+        props:          {},
+        allowDuplicate: false,
       },
       {
-        id:       'last_agent_reply',
-        label:    'last-agent-reply',
-        widget:   'DateTimeInput',
-        props:    {},
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        id:             'last_agent_reply',
+        label:          'last-agent-reply',
+        widget:         'DateTimeInput',
+        props:          {},
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
       },
       {
-        id:       'last_user_reply',
-        label:    'last-user-reply',
-        widget:   'DateTimeInput',
-        props:    {},
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        id:             'last_user_reply',
+        label:          'last-user-reply',
+        widget:         'DateTimeInput',
+        props:          {},
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
       },
       {
-        id:          'user_waiting',
-        label:       'user-waiting',
-        widget:      'DurationInput',
-        props:       {},
-        description: 'Time waited by user',
-        category:    intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        id:             'user_waiting',
+        label:          'user-waiting',
+        widget:         'DurationInput',
+        props:          {},
+        description:    'Time waited by user',
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
       },
       {
         id:     'person_name',
@@ -236,13 +259,16 @@ class SearchContainer extends React.Component {
             getOptions: search => this.props.dispatch(searchActions.loadPersons({ search }))
           },
           showSearch: true,
+          isMultiple: true,
         },
+        allowDuplicate: false,
       },
       {
-        id:     'email_address',
-        label:  intl.formatMessage({ id: 'agent.general.email_address' }).toLowerCase().replace(/ /, '-'),
-        widget: 'TextInput',
-        props:  {},
+        id:             'email_address',
+        label:          intl.formatMessage({ id: 'agent.general.email_address' }).toLowerCase().replace(/ /, '-'),
+        widget:         'TextInput',
+        props:          {},
+        allowDuplicate: false,
       },
       {
         id:     'followers',
@@ -260,7 +286,8 @@ class SearchContainer extends React.Component {
           isMultiple: true,
           showSearch: true,
         },
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
       },
       {
         id:     'organization',
@@ -271,7 +298,9 @@ class SearchContainer extends React.Component {
             getOptions: search => this.props.dispatch(searchActions.loadOrganizations({ search }))
           },
           showSearch: true,
+          isMultiple: true,
         },
+        allowDuplicate: false,
       },
       {
         id:     'sla',
@@ -283,7 +312,8 @@ class SearchContainer extends React.Component {
             false: intl.formatMessage({ id: 'agent.general.no' }),
           }
         },
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
       },
       {
         id:     'sla_status',
@@ -293,8 +323,10 @@ class SearchContainer extends React.Component {
           dataSource: {
             getOptions: search => this.props.dispatch(searchActions.loadSlas({ search }))
           },
+          isMultiple: true,
         },
-        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        allowDuplicate: false,
       },
       {
         id:     'brand',
@@ -310,41 +342,48 @@ class SearchContainer extends React.Component {
                           }))
           },
           showSearch: true,
+          isMultiple: true,
         },
+        allowDuplicate: false,
       },
       {
-        id:     'id',
-        label:  intl.formatMessage({ id: 'agent.general.id' }).toLowerCase().replace(/ /, '-'),
-        widget: 'TextInput',
-        props:  {},
+        id:             'id',
+        label:          intl.formatMessage({ id: 'agent.general.id' }).toLowerCase().replace(/ /, '-'),
+        widget:         'TextInput',
+        props:          {},
+        allowDuplicate: false,
       },
       {
-        id:     'file_name',
-        label:  intl.formatMessage({ id: 'agent.general.file' }).toLowerCase().replace(/ /, '-'),
-        widget: 'TextInput',
-        props:  {},
+        id:             'file_name',
+        label:          intl.formatMessage({ id: 'agent.general.file' }).toLowerCase().replace(/ /, '-'),
+        widget:         'TextInput',
+        props:          {},
+        allowDuplicate: false,
       },
       {
-        id:     'file_size',
-        label:  intl.formatMessage({ id: 'agent.general.filesize' }).toLowerCase().replace(/ /, '-'),
-        widget: 'NumericRangeInput',
-        props:  {},
+        id:             'file_size',
+        label:          intl.formatMessage({ id: 'agent.general.filesize' }).toLowerCase().replace(/ /, '-'),
+        widget:         'NumericRangeInput',
+        props:          {},
+        allowDuplicate: false,
       },
       {
-        id:     'filetype',
-        label:  intl.formatMessage({ id: 'agent.general.filetype' }).toLowerCase().replace(/ /, '-'),
-        widget: 'TextInput',
-        props:  {},
+        id:             'filetype',
+        label:          intl.formatMessage({ id: 'agent.general.filetype' }).toLowerCase().replace(/ /, '-'),
+        widget:         'TextInput',
+        props:          {},
+        allowDuplicate: false,
       },
     ];
     this.setState(tokenTypes);
     this.props.dispatch(searchActions.loadCustomFields()).then((res) => {
       const customFields = res.map(field => ({
-        id:          `custom_field_${field.id}`,
-        label:       `${intl.formatMessage({ id: 'agent.general.field' }).toLowerCase()}-${field.title.toLowerCase().replace(/ /, '-')}`,
-        widget:      this.tokenFromField(field),
-        props:       this.tokenPropsFromField(field),
-        description: field.description,
+        id:             `custom_field_${field.id}`,
+        label:          field.title.toLowerCase().replace(/ /, '-'),
+        widget:         this.tokenFromField(field),
+        props:          this.tokenPropsFromField(field),
+        description:    field.description,
+        allowDuplicate: false,
       }));
       tokenTypes.concat(customFields);
       this.setState({
@@ -381,6 +420,7 @@ class SearchContainer extends React.Component {
                         value: e.id,
                       }))
       };
+      props.isMultiple = true;
     }
     return props;
   };

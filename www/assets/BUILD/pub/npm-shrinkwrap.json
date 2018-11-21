@@ -212,12 +212,12 @@
       }
     },
     "@deskpro/token-field": {
-      "version": "0.6.2",
-      "resolved": "https://registry.npmjs.org/@deskpro/token-field/-/token-field-0.6.2.tgz",
-      "integrity": "sha512-xD/PzSzY7836a8dwzHTWq2NImj/kUmfHvILi+xxkm8hFeBWZY73VGPnVFe4VchHP/Tws5nADOfSv5pyYyNpQrA==",
+      "version": "0.6.6",
+      "resolved": "https://registry.npmjs.org/@deskpro/token-field/-/token-field-0.6.6.tgz",
+      "integrity": "sha512-s1kgnJS/WuvSlTPA/AFYNQMyTNwZC1E5soEUMqWcG7h2aAAdL04nvEEQ/Iyicp32KTQYbVx+aN1irlAxDgVOOA==",
       "requires": {
         "@deskpro/js-utils": "^1.0.6",
-        "@deskpro/react-components": "1.4.1",
+        "@deskpro/react-components": "1.4.2",
         "@fortawesome/free-solid-svg-icons": "^5.4.1",
         "classnames": "^2.2.5",
         "moment": "^2.22.2",
@@ -233,10 +233,41 @@
           "resolved": "https://registry.npmjs.org/@deskpro/js-utils/-/js-utils-1.0.6.tgz",
           "integrity": "sha512-Xlr7YbrUUT59dZ6Nndxy+Ve3PYSyF4vmEc4nI48pgmC0y8qMtf1tp2J+N5gOpMoNmb/dzjEZKigIcQp9zUFn4A=="
         },
+        "@deskpro/react-components": {
+          "version": "1.4.2",
+          "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.4.2.tgz",
+          "integrity": "sha512-pi/c//kmsuy6T5o/jHkzNG4bS68hPDQzljaBDL4ClxPMC/ZGfdO20IWk4GYD0I3k7UJ39frY9oBy1igAYt+7xw==",
+          "requires": {
+            "@fortawesome/fontawesome-svg-core": "^1.2.6",
+            "@fortawesome/free-regular-svg-icons": "^5.4.1",
+            "@fortawesome/free-solid-svg-icons": "^5.4.1",
+            "@fortawesome/react-fontawesome": "0.1.3",
+            "classnames": "^2.2.6",
+            "moment": "^2.20.0",
+            "popper.js": "^1.14.3",
+            "react-autosuggest": "^9.3.4",
+            "react-color": "^2.14.1",
+            "react-custom-scrollbars": "^4.2.1",
+            "react-onclickoutside": "^6.7.1",
+            "react-select": "^1.2.1",
+            "react-svg-inline": "^2.1.1",
+            "react-tagsinput": "^3.19.0",
+            "react-textarea-autosize": "^6.1.0",
+            "util-deprecate": "^1.0.2"
+          }
+        },
         "@fortawesome/fontawesome-common-types": {
           "version": "0.2.8",
           "resolved": "https://npm.fontawesome.com/@fortawesome/fontawesome-common-types/-/fontawesome-common-types-0.2.8.tgz",
           "integrity": "sha512-0sU7JDLdEeGQlWBSr5uEE6PZOM15YM1s9rFlpZV+WhNdX2V6Co3Sj0OW5el4F54X1Tw+nfxf4Cc3dUedudaDWg=="
+        },
+        "@fortawesome/fontawesome-svg-core": {
+          "version": "1.2.8",
+          "resolved": "https://npm.fontawesome.com/@fortawesome/fontawesome-svg-core/-/fontawesome-svg-core-1.2.8.tgz",
+          "integrity": "sha512-cvcMQZ5F8WSNSGMk9uWlkmZNfDzmdsWLRrTMrNwwihHcEmWRlIuSbDt+PQ/rXsnGmJnmLQJLFBT1cse/3swxbg==",
+          "requires": {
+            "@fortawesome/fontawesome-common-types": "^0.2.8"
+          }
         },
         "@fortawesome/free-solid-svg-icons": {
           "version": "5.5.0",
@@ -258,6 +289,14 @@
           "requires": {
             "highlight-words-core": "^1.2.0",
             "prop-types": "^15.5.8"
+          }
+        },
+        "react-textarea-autosize": {
+          "version": "6.1.0",
+          "resolved": "http://registry.npmjs.org/react-textarea-autosize/-/react-textarea-autosize-6.1.0.tgz",
+          "integrity": "sha512-F6bI1dgib6fSvG8so1HuArPUv+iVEfPliuLWusLF+gAKz0FbB4jLrWUrTAeq1afnPT2c9toEZYUdz/y1uKMy4A==",
+          "requires": {
+            "prop-types": "^15.6.0"
           }
         }
       }
@@ -20117,21 +20156,13 @@
       }
     },
     "url-parse": {
-      "version": "1.1.9",
-      "resolved": "https://registry.npmjs.org/url-parse/-/url-parse-1.1.9.tgz",
-      "integrity": "sha1-xn8dd11R8KGJEd17P/rSe7nlvRk=",
+      "version": "1.4.4",
+      "resolved": "https://registry.npmjs.org/url-parse/-/url-parse-1.4.4.tgz",
+      "integrity": "sha512-/92DTTorg4JjktLNLe6GPS2/RvAd/RGr6LuktmWSMLEOa6rjnlrFXNgSbSmkNvCoL2T028A0a1JaJLzRMlFoHg==",
       "dev": true,
       "requires": {
-        "querystringify": "~1.0.0",
-        "requires-port": "1.0.x"
-      },
-      "dependencies": {
-        "querystringify": {
-          "version": "1.0.0",
-          "resolved": "https://registry.npmjs.org/querystringify/-/querystringify-1.0.0.tgz",
-          "integrity": "sha1-YoYkIRLFtxL6ZU5SZlK/ahP/Bcs=",
-          "dev": true
-        }
+        "querystringify": "^2.0.0",
+        "requires-port": "^1.0.0"
       }
     },
     "urllite": {
