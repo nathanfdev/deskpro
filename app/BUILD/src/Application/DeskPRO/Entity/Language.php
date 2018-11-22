@@ -193,9 +193,13 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
          */
         public function getPluralCategoryForForm($pluralForm)
         {
-            return isset($this->pluralCategories[$pluralForm]) ?
-                $this->pluralCategories[$pluralForm]
-                : $this->pluralCategories['other'];
+            if (isset($this->pluralCategories[$pluralForm])) {
+                return $this->pluralCategories[$pluralForm];
+            }
+            // find the 'other' category, fallback to first element or false)
+            $otherKey = array_search('other', $this->pluralCategories);
+
+            return $otherKey ? $this->pluralCategories[$otherKey] : reset($this->pluralCategories);
         }
 
         /**
