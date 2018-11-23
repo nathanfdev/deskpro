@@ -6514,6 +6514,10 @@ ul.categories-article-list {
     }
   }
 
+  td {
+    padding: 2px 2px;
+  }
+
   header, .padded {
     @include padding-left(10px);
     @media screen and (max-width: 760px) {
