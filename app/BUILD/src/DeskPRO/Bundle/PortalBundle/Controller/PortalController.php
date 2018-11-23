@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\DependencyInjection\SystemServices\UsersourceAuthAdapterFactoryService;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
@@ -485,10 +486,15 @@ class PortalController extends AbstractController
 
         /** @var DeskproContainer $container */
         $container = $this->container;
-        /** @var UsersourceAuthAdapterFactory $factory */
-        $factory = $container->getSystemService('usersource_auth_adapter_factory');
-        $adapter = $factory->getAuthAdapter($usersource);
-
+        $type      = $usersource->getType() ?: null;
+        if ($type) {
+            /** @var UsersourceAuthAdapterFactory $factory */
+            $factory = UsersourceAuthAdapterFactoryService::create($container, ['interface' => $type]);
+        } else {
+            /** @var UsersourceAuthAdapterFactory $factory */
+            $factory = $container->getSystemService('usersource_auth_adapter_factory');
+        }
+        $adapter = $factory->getAuthAdapter($usersource, null, $type);
         if ($adapter instanceof SamlAdapterInterface) {
             return $adapter->getMetadataXmlResponse();
         }
