@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { connect } from 'react-redux';
+import { faFrown, faMeh, faSmile } from '@fortawesome/free-regular-svg-icons';
 import { Checkbox, Modal, Icon } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import * as actions from '../Actions/snippetsActions';
@@ -16,13 +17,13 @@ export class UsageHistoryModal extends React.Component {
 
   static getRating(use) {
     if (use.rating === 1) {
-      return <Icon name="smile-o" className="positive" />;
+      return <Icon name={faSmile} className="positive" />;
     }
     if (use.rating === 0) {
-      return <Icon name="meh-o" className="neutral" />;
+      return <Icon name={faMeh} className="neutral" />;
     }
     if (use.rating === -1) {
-      return <Icon name="frown-o" className="negative" />;
+      return <Icon name={faFrown} className="negative" />;
     }
     return null;
   }

@@ -12,6 +12,7 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\SearchHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\UsergroupsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
@@ -49,6 +50,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *          {"name"="agent_team", "description"="agent teams filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
  *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
  *          {"name"="label", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
+ *          {"name"="search", "description"="search filter (on name)", "dataType"="string", "pattern"="\w+"},
  *          {
  *              "name"="person_field.{id}",
  *              "description"="
@@ -226,6 +228,7 @@ class PeopleController extends AbstractPeopleController
         ListHelper::applyInListFilter($context, 'organization');
         LabelHelper::applyLabelFilters($context, static::$entity);
         CustomDataHelper::applyCustomDataFilters($context, 'person', CustomDefPerson::class);
+        SearchHelper::applyFieldFilter($context, 'search', 'name');
 
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");

@@ -24,7 +24,7 @@ export const loadVoicemailRecords = createAction(
   }
 );
 
-export const makrVoicemalRecordAsListened = createAction(
+export const markVoicemalRecordAsListened = createAction(
   'VOICE_MAKR_VOICEMAIL_RECORD_AS_LISTENED',
   id => (dispatch, getState) => {
     const promise = api.sendPut(`DP_API/voicemail_records/${id}/mark_listened`);

@@ -5,6 +5,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\SearchHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\ProblemType;
 use Doctrine\ORM\QueryBuilder;
@@ -64,6 +66,9 @@ class TicketProblemsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        $context = new RequestQueryContext($qb, $alias, $request);
+        SearchHelper::applyFieldFilter($context, 'search', 'title');
+
         $isOpen = $request->get('is_open');
         if (!is_null($isOpen)) {
             $qb->andWhere("{$alias}.is_open = :is_open");

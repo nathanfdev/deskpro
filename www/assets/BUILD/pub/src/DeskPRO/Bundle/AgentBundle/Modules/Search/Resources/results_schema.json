@@ -1,0 +1,324 @@
+{
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "additionalProperties" : false,
+  "properties": {
+    "organizations": {
+      "$id": "/properties/organizations",
+      "type": "array",
+      "items": {
+        "$id": "/properties/organizations/items",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$id": "/properties/organizations/items/properties/id",
+            "type": "integer",
+            "title": "Organization Id",
+            "default": 0,
+            "examples": [
+              1
+            ]
+          },
+          "name": {
+            "$id": "/properties/organizations/items/properties/name",
+            "type": "string",
+            "title": "Organization name",
+            "default": "",
+            "examples": [
+              "Deskpro"
+            ]
+          },
+          "members": {
+            "$id": "/properties/organizations/items/properties/members",
+            "type": "integer",
+            "title": "Number of members of the organization",
+            "default": 0,
+            "examples": [
+              123
+            ]
+          }
+        }
+      }
+    },
+    "people": {
+      "$id": "/properties/people",
+      "type": "array",
+      "items": {
+        "$id": "/properties/people/items",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$id": "/properties/people/items/properties/id",
+            "type": "integer",
+            "title": "Person ID",
+            "default": 0,
+            "examples": [
+              1
+            ]
+          },
+          "name": {
+            "$id": "/properties/people/items/properties/name",
+            "type": "string",
+            "title": "Person name",
+            "default": "",
+            "examples": [
+              "Kenneth James"
+            ]
+          },
+          "email": {
+            "$id": "/properties/people/items/properties/email",
+            "type": "string",
+            "title": "Person email",
+            "default": "",
+            "examples": [
+              "raterequests@alllogistics.com"
+            ]
+          },
+          "tickets": {
+            "$id": "/properties/people/items/properties/tickets",
+            "type": "integer",
+            "title": "Number of person tickets",
+            "default": 0,
+            "examples": [
+              132
+            ]
+          }
+        }
+      }
+    },
+    "tickets": {
+      "$id": "/properties/tickets",
+      "type": "array",
+      "items": {
+        "$id": "/properties/tickets/items",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$id": "/properties/tickets/items/properties/id",
+            "type": "integer",
+            "title": "Ticket Id",
+            "default": 0,
+            "examples": [
+              83995
+            ]
+          },
+          "subject": {
+            "$id": "/properties/tickets/items/properties/subject",
+            "type": "string",
+            "title": "Ticket subject",
+            "default": "",
+            "examples": [
+              "Pricing and Purchasing Questions"
+            ]
+          },
+          "person_name": {
+            "$id": "/properties/people/items/properties/name",
+            "type": "string",
+            "title": "Person name",
+            "default": "",
+            "examples": [
+              "Kenneth James"
+            ]
+          },
+          "person_email": {
+            "$id": "/properties/people/items/properties/email",
+            "type": "string",
+            "title": "Person email",
+            "default": "",
+            "examples": [
+              "raterequests@alllogistics.com"
+            ]
+          },
+          "agent": {
+            "$id": "/properties/tickets/items/properties/agent",
+            "type": "integer",
+            "title": "Ticket agent Id",
+            "default": 0,
+            "examples": [
+              1
+            ]
+          },
+          "messages": {
+            "$id": "/properties/tickets/items/properties/messages",
+            "type": "array",
+            "items": {
+              "$id": "/properties/tickets/items/properties/messages/items",
+              "type": "object",
+              "properties": {
+                "id": {
+                  "$id": "/properties/tickets/items/properties/messages/items/properties/id",
+                  "type": "integer",
+                  "title": "Message Id",
+                  "default": 0,
+                  "examples": [
+                    123
+                  ]
+                },
+                "text": {
+                  "$id": "/properties/tickets/items/properties/messages/items/properties/text",
+                  "type": "string",
+                  "title": "Message text including the searched word including ellipses",
+                  "default": "",
+                  "examples": [
+                    "Many software vendors have government rate pricing that differs from the"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "feedback": {
+      "$id": "/properties/feedback",
+      "type": "array",
+      "items": {
+        "$id": "/properties/feedback/items",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$id": "/properties/feedback/items/properties/id",
+            "type": "integer",
+            "title": "Feedback Id",
+            "default": 0,
+            "examples": [
+              83995
+            ]
+          },
+          "title": {
+            "$id": "/properties/feedback/items/properties/title",
+            "type": "string",
+            "title": "Feedback title",
+            "default": "",
+            "examples": [
+              "Feedback result"
+            ]
+          }
+        }
+      }
+    },
+    "articles": {
+      "$id": "/properties/articles",
+      "type": "array",
+      "items": {
+        "$id": "/properties/articles/items",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$id": "/properties/articles/items/properties/id",
+            "type": "integer",
+            "title": "Article Id",
+            "default": 0,
+            "examples": [
+              83995
+            ]
+          },
+          "title": {
+            "$id": "/properties/articles/items/properties/title",
+            "type": "string",
+            "title": "Article title",
+            "default": "",
+            "examples": [
+              "Article result"
+            ]
+          },
+          "status": {
+            "$id": "/properties/articles/items/properties/status",
+            "type": "string",
+            "title": "Article status translated",
+            "default": "",
+            "examples": [
+              "Published"
+            ]
+          },
+          "content": {
+            "$id": "/properties/articles/items/properties/content",
+            "type": "string",
+            "title": "Article content extract with ellipses",
+            "default": "",
+            "examples": [
+              "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+            ]
+          }
+        }
+      }
+    },
+    "news": {
+      "$id": "/properties/news",
+      "type": "array",
+      "items": {
+        "$id": "/properties/news/items",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$id": "/properties/news/items/properties/id",
+            "type": "integer",
+            "title": "News Id",
+            "default": 0,
+            "examples": [
+              83995
+            ]
+          },
+          "title": {
+            "$id": "/properties/news/items/properties/title",
+            "type": "string",
+            "title": "News title",
+            "default": "",
+            "examples": [
+              "News result"
+            ]
+          }
+        }
+      }
+    },
+    "downloads": {
+      "$id": "/properties/downloads",
+      "type": "array",
+      "items": {
+        "$id": "/properties/downloads/items",
+        "type": "object",
+        "properties": {
+          "id": {
+            "$id": "/properties/downloads/items/properties/id",
+            "type": "integer",
+            "title": "Download Id",
+            "default": 0,
+            "examples": [
+              83995
+            ]
+          },
+          "title": {
+            "$id": "/properties/downloads/items/properties/title",
+            "type": "string",
+            "title": "Download title",
+            "default": "",
+            "examples": [
+              "Download result"
+            ]
+          }
+        }
+      }
+    },
+    "admin": {
+      "$id": "/properties/admin",
+      "type": "array",
+      "items": {
+        "$id": "/properties/admin/items",
+        "type": "object",
+        "properties": {
+          "title": {
+            "$id": "/properties/admin/items/properties/title",
+            "type": "string",
+            "title": "The Title Schema ",
+            "default": "",
+            "examples": [
+              "Admin result"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

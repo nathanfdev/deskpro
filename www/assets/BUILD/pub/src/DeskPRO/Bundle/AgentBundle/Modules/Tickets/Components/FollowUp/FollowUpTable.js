@@ -4,6 +4,7 @@ import { FormattedMessage, FormattedRelative } from 'react-intl';
 import moment from 'moment';
 import htmlToText from 'html-to-text';
 import { Icon } from '@deskpro/react-components';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
 class FollowUpTable extends React.Component {
   static propTypes = {
@@ -168,7 +169,7 @@ class FollowUpTable extends React.Component {
                   {followUp.get('status') === 'pending' ?
                     <Icon
                       className="delete-follow-up"
-                      name="times"
+                      name={faTimes}
                       onClick={() => this.props.deleteFollowUp(followUp)}
                     /> : null
               }

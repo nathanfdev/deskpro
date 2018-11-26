@@ -3,6 +3,7 @@ import React from 'react';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { faFileAlt } from '@fortawesome/free-solid-svg-icons';
 import { Select, Modal, Icon } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import * as actions from '../Actions/snippetsActions';
@@ -52,7 +53,7 @@ export class ChangeLogModal extends React.Component {
     return changes.map((change, key) => {
       const version = changes.length + 1 - key;
       return (<div key={change.id} className="change" onClick={() => this.handleChangeClick(version)}>
-        <Icon name="file-text" size="s" />
+        <Icon name={faFileAlt} size="s" />
         <FormattedMessage id="agent.snippets.content_change" /> (#{version})
             <AgentAvatar agent={change.person} />
         <span className="date"><FormattedRelative value={change.date_created} /></span>
@@ -197,7 +198,7 @@ export class ChangeLogModal extends React.Component {
                 className={classNames('change', { creation: changes.length === 0 })}
                 onClick={() => changes.length !== 0 && this.handleChangeClick(2)}
               >
-                <Icon name="file-text" size="s" />
+                <Icon name={faFileAlt} size="s" />
                 <FormattedMessage id="agent.snippets.snippet_created" /> (#1)
                 <AgentAvatar agent={snippet.get('person')} />
                 <span className="date"><FormattedRelative value={snippet.get('date_created')} /></span>

@@ -14,7 +14,6 @@ import * as chatsActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/cha
 import * as messagesActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
-import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { defaultBrandSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/common';
@@ -28,6 +27,7 @@ import { isVoiceAvailableSelector } from '../../Voice/Selectors/client';
 import { onlineUserChatAgentsSelector, userChatEnabledSelector } from '../../Agent/Selectors/agents';
 import { toggleUserChat } from '../../Agent/Actions/agentActions';
 import { closeIframes } from '../../Application/Actions/bootstrapActions';
+import SearchBox from '../../Search/Components/SearchBox';
 
 @connect(state => ({
   agents:              collectionSelectorFactory('Person', 'agents')(state),
@@ -223,7 +223,7 @@ export class AgentTopBarContainer extends SeparateComponent {
 
   onSearchFocus = () => {
     window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
-    if (this.agentTopBar && this.agentTopBar.searchBox.textInput.value) {
+    if (this.agentTopBar && this.agentTopBar.searchBox.searchBox.textInput.value) {
       window.$('.dp-omnibox-results').show();
     }
   };

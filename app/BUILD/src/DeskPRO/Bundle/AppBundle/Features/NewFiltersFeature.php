@@ -41,7 +41,7 @@ class NewFiltersFeature extends AbstractBetaFeature
      */
     public function getDisableDescription()
     {
-        return 'Disabling this feature will return the agent interface to using the previous filtering systme.';
+        return 'Disabling this feature will return the agent interface to using the previous filtering system.';
     }
 
     /**

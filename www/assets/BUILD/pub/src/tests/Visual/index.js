@@ -5,6 +5,7 @@ import './AgentBundle/Modules/Application/notifications';
 import './AgentBundle/Modules/Application/sidebar';
 import './AgentBundle/Modules/Application/topbar';
 import './AgentBundle/Modules/Application/onboarding';
+import './AgentBundle/Modules/Search/search';
 import './AgentBundle/Modules/Snippets/snippets';
 import './AgentBundle/Modules/Tickets/tickets';
 import './AgentBundle/Modules/Voice/index';

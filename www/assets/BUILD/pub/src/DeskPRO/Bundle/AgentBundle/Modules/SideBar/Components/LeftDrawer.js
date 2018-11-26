@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import { SnippetsMenuContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsMenu';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
+import SearchContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Search/Components/SearchContainer';
 
 export class LeftDrawerContainer extends SeparateComponent {
   static getType() {
@@ -17,6 +18,7 @@ export class LeftDrawerContainer extends SeparateComponent {
       props:  {},
       width:  600,
       zIndex: null,
+      style:  {},
     };
     this.ticking  = false;
     this.splitter = document.getElementById('dp_list_resizer');
@@ -44,6 +46,14 @@ export class LeftDrawerContainer extends SeparateComponent {
           }
           break;
         }
+        case 'Search': {
+          this.resize();
+          module = SearchContainer;
+          props = {
+            closeMenu: this.closeDrawer,
+          };
+          break;
+        }
         default:
           module = false;
       }
@@ -54,7 +64,7 @@ export class LeftDrawerContainer extends SeparateComponent {
           this.setState({
             module,
             props,
-            zIndex: e.detail.zIndex ? e.detail.zIndex : null,
+            style: e.detail.style ? e.detail.style : {},
           });
           this.openDrawer();
         }
@@ -72,6 +82,13 @@ export class LeftDrawerContainer extends SeparateComponent {
   componentWillUnmount() {
     window.document.removeEventListener('dpLeftDrawerClose', this.closeDrawer);
     window.document.removeEventListener('dpChangeSection', this.closeDrawer);
+  }
+
+  componentDidUpdate() {
+    if (this.state.active) {
+      const event = new CustomEvent('dpLeftDrawerOpened');
+      window.document.dispatchEvent(event);
+    }
   }
 
   openDrawer = () => {
@@ -93,6 +110,12 @@ export class LeftDrawerContainer extends SeparateComponent {
     });
   };
 
+  updateStyle = (style) => {
+    this.setState({
+      style
+    });
+  };
+
   resize = () => {
     let width;
     if (!window.DeskPRO_Window.paneVis.tabs || !window.DeskPRO_Window.paneVis.list) {
@@ -106,11 +129,8 @@ export class LeftDrawerContainer extends SeparateComponent {
   };
 
   render() {
-    const { active, width, zIndex } = this.state;
-    const style = { width: active ? width : 0 };
-    if (zIndex) {
-      style.zIndex = zIndex;
-    }
+    const { active, width } = this.state;
+    const style = { width: active ? width : 0, ...this.state.style };
     const props = this.state.props;
     const Module = this.state.module;
     if (Module) {
@@ -118,6 +138,7 @@ export class LeftDrawerContainer extends SeparateComponent {
         <Module
           open={active}
           width={width}
+          updateStyle={this.updateStyle}
           {...props}
           ref={(c) => { this.module = c; }}
         />

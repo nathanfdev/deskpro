@@ -1,23 +1,29 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import classNames from 'classnames';
 
 class SearchBox extends React.Component {
   static propTypes = {
     placeholder:  PropTypes.string,
     text:         PropTypes.string,
+    className:    PropTypes.string,
     onUserInput:  PropTypes.func,
     onFocus:      PropTypes.func,
     onBlur:       PropTypes.func,
     onClearInput: PropTypes.func,
     focusOnMount: PropTypes.bool,
-    icon:         PropTypes.node
+    icon:         PropTypes.node,
+    children:     PropTypes.node,
+    clear:        PropTypes.bool,
   };
   static defaultProps = {
     onUserInput() {},
     onFocus() {},
     onBlur() {},
     onClearInput() {},
-    focusOnMount: false
+    className:    '',
+    focusOnMount: false,
+    clear:        true,
   };
 
   componentDidMount() {
@@ -40,7 +46,6 @@ class SearchBox extends React.Component {
   };
 
   clearInput = () => {
-    console.log('clear input');
     this.textInput.value = '';
     this.props.onUserInput(
       this.textInput.value
@@ -51,21 +56,35 @@ class SearchBox extends React.Component {
   };
 
   render() {
-    const { placeholder, text, onFocus, onBlur } = this.props;
+    const { placeholder, text, onFocus, onBlur, children, className, clear } = this.props;
+    let childrenWithProps;
+    const props = {
+      placeholder
+    };
+    if (!children) {
+      childrenWithProps = (<input
+        type="search"
+        ref={(c) => { this.textInput = c; }}
+        onChange={this.handleChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        value={text}
+        required="required"
+        {...props}
+      />);
+    } else {
+      childrenWithProps = React.Children.map(children, child =>
+        React.cloneElement(child, props)
+      );
+    }
     return (
-      <div className="ui input left icon search">
+      <div className={classNames('ui input left icon search', className)}>
         {this.getIcon()}
-        <input
-          type="search"
-          placeholder={placeholder}
-          ref={(c) => { this.textInput = c; }}
-          onChange={this.handleChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          value={text}
-          required="required"
-        />
-        <i onClick={this.clearInput} className="remove circle icon right" />
+        { childrenWithProps }
+        { clear ?
+          <i onClick={this.clearInput} className="remove circle icon right" />
+          : null
+        }
       </div>
     );
   }
