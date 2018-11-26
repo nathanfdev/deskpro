@@ -20,7 +20,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 class PageTitleGenerator
@@ -31,7 +31,7 @@ class PageTitleGenerator
     private $language_manager;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brand_stack;
 

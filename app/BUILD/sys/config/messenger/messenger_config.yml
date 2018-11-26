@@ -1,0 +1,151 @@
+imports:
+    - { resource: ../config.shared.php }
+    - { resource: ../../../src/DeskPRO/Bundle/AppBundle/Resources/config/notification.yml }
+
+# Keeping all parameter changes here rather than in various bundles
+parameters:
+
+  doctrine.orm.proxy_dir: "%kernel.cache_dir%/doctrine-proxies"
+  monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
+  file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
+  nelmio_api_doc.extractor.api_doc_extractor.class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocExtractor
+  sensio_framework_extra.controller.listener.class: DeskPRO\Bundle\AppBundle\Security\EventListener\ControllerListener
+  fos_rest.body_listener.throw_exception_on_unsupported_content_type: true
+  fos_rest.body_listener.default_format: json
+
+services:
+  # legacy ext is required by some ticket functions (e.g. rendering notifications)
+  twig.helpers.deskpro_templating:
+    class: Application\DeskPRO\Twig\Extension\TemplatingExtension
+    arguments: ["@service_container"]
+    tags:
+      - { name: twig.extension }
+  # override the default body_listener to keep throw error behaviour but ignore some content-types like zip
+  # see the original configuration in vendor/friendsofsymfony/rest-bundle/config/body_listener.xml
+  fos_rest.body_listener:
+    class: DeskPRO\Bundle\ApiBundle\EventListener\DecodeRequestBodyListener
+    calls:
+      - [setDefaultFormat, ["%fos_rest.body_listener.default_format%"]]
+    arguments: ["@fos_rest.decoder_provider", "%fos_rest.body_listener.throw_exception_on_unsupported_content_type%"]
+    tags:
+      - { name: "kernel.event_listener", event: "kernel.request", method: "onKernelRequest", priority: 10 }
+
+framework:
+  esi:             { enabled: true }
+  secret:          "irrelevant - compiler pass will override this"
+  router:
+    resource: "%kernel.root_dir%/config/messenger/messenger_routing.yml"
+    strict_requirements: ~
+  form:            ~
+  csrf_protection: ~
+  validation:      { enable_annotations: true }
+  templating:
+    engines: ['twig', 'php']
+  default_locale:  "%locale%"
+  trusted_hosts:   ~
+  session:
+    handler_id:  session.handler.dbal
+  fragments:       ~
+  http_method_override: true
+
+jms_serializer:
+  visitors:
+    json:
+      options: 128 # JSON_PRETTY_PRINT constant unavailable in php 5.3, use int instead
+
+fos_rest:
+  disable_csrf_role: ROLE_API
+  routing_loader:
+    default_format: json
+    include_format: false
+  allowed_methods_listener: true
+  body_converter:
+    enabled: false
+  param_fetcher_listener: true
+  serializer:
+    serialize_null: true
+  body_listener:
+    default_format: "%fos_rest.body_listener.default_format%"
+    throw_exception_on_unsupported_content_type: "%fos_rest.body_listener.throw_exception_on_unsupported_content_type%"
+    decoders:
+      json: fos_rest.decoder.jsontoform
+    array_normalizer:
+      forms: false
+  format_listener:
+    rules:
+      - { path: '^/api/messenger', priorities: ['json', 'jsonp', 'zip'], fallback_format: json, prefer_extension: false }
+  exception:
+    enabled: true
+    exception_controller: 'DeskPRO\Bundle\MessengerBundle\Controller\ExceptionController::showAction'
+  view:
+    mime_types:
+      { zip: ['application/zip'] }
+    view_response_listener: force
+    formats:
+      json: true
+      jsonp: true
+      html: false
+    jsonp_handler:
+      callback_param: callback
+    failed_validation: HTTP_BAD_REQUEST
+
+nelmio_cors:
+  defaults:
+    allow_credentials: false
+    allow_origin: []
+    allow_headers: []
+    allow_methods: []
+    expose_headers: []
+    max_age: 0
+    hosts: []
+    origin_regex: false
+  paths:
+    '^/api/messenger/':
+      allow_origin: ['*']
+      allow_headers: ['*']
+      allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
+      allow_credentials: true
+      max_age: 3600
+
+# Security Configuration
+security:
+  role_hierarchy:
+    ROLE_API: ROLE_USER
+
+  providers:
+    dp_person_user_provider:
+      id: dp_person_user_provider
+
+  firewalls:
+    api_anonymous_home:
+      pattern: ^/api/messenger/?$
+      stateless: true
+      anonymous: ~
+    api:
+      pattern: ^/api/messenger
+      stateless: true
+      simple_preauth:
+        authenticator: messenger_authenticator
+
+sensio_framework_extra:
+  cache:    { annotations: true }
+  security: { annotations: true }
+
+white_october_pagerfanta:
+  default_view: deskpro
+  exceptions_strategy:
+    out_of_range_page:      to_http_not_found
+    not_valid_current_page: to_http_not_found
+
+doctrine:
+  orm:
+    entity_managers:
+      default:
+        dql:
+          datetime_functions:
+            date: DoctrineExtensions\Query\Mysql\Date
+
+          string_functions:
+            field: DoctrineExtensions\Query\Mysql\Field
+            group_concat: DoctrineExtensions\Query\Mysql\GroupConcat
+            regexp: DoctrineExtensions\Query\Mysql\Regexp

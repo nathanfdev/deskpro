@@ -6,8 +6,8 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -25,7 +25,7 @@ use Doctrine\ORM\EntityManager;
 class BrandAwareSettingsResolver
 {
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brand_stack;
 
@@ -42,9 +42,9 @@ class BrandAwareSettingsResolver
     /**
      * Constructor.
      *
-     * @param SettingsResolver $settings_resolver
-     * @param EntityManager    $em
-     * @param BrandStack|null  $brand_stack
+     * @param SettingsResolver                                  $settings_resolver
+     * @param EntityManager                                     $em
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack|null $brand_stack
      */
     public function __construct(
         SettingsResolver $settings_resolver,

@@ -1,0 +1,2 @@
+_main:
+  resource: messenger_routing.yml

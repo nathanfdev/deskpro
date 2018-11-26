@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Routing\RedirectToUrlException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -28,7 +28,7 @@ class RedirectToUrlExceptionListener implements EventSubscriberInterface
     private $urlCorrectorFactory;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 

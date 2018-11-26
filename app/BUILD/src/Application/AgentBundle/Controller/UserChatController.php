@@ -8,6 +8,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Chat\UserChat\GroupingCounter;
+use Application\DeskPRO\ClientMessage\Generator\Chat;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Blob;
@@ -21,6 +22,7 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
@@ -493,7 +495,17 @@ class UserChatController extends AbstractController
 
         /** @var ChatConversation $conversation */
         $conversation = $this->em->find(ChatConversation::class, $conversation_id);
-        $conversation->setDateAgentTyping($erase ? null : new \DateTime());
+        $date         = new \DateTime();
+        $conversation->setDateAgentTyping($erase ? null : $date);
+
+        $type = $erase ? ChatEvent::TYPING_END_EVENT_TYPE : ChatEvent::TYPING_START_EVENT_TYPE;
+
+        $this->get('event_dispatcher')->dispatch(
+            ChatEvent::EVENT_NAME, new ChatEvent($conversation_id, $type, [
+                'date_typing' => $date,
+                'origin'      => 'agent',
+            ])
+        );
 
         $this->em->persist($conversation);
         $this->em->flush();

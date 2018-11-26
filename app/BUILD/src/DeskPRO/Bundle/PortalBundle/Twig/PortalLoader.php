@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\EntityRepository\Template;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Twig_Error_Loader;
 
@@ -13,7 +13,7 @@ use Twig_Error_Loader;
 class PortalLoader implements \Twig_LoaderInterface
 {
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 
@@ -23,7 +23,7 @@ class PortalLoader implements \Twig_LoaderInterface
     private $templateRepo;
 
     /**
-     * @var PortalBrandThemeLoader
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader
      */
     private $brandThemeLoader;
 
@@ -35,9 +35,9 @@ class PortalLoader implements \Twig_LoaderInterface
     /**
      * Constructor.
      *
-     * @param BrandStack             $brandStack
-     * @param Template               $templateRepo
-     * @param PortalBrandThemeLoader $brandThemeLoader
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack                    $brandStack
+     * @param Template                                                        $templateRepo
+     * @param \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader $brandThemeLoader
      */
     public function __construct(BrandStack $brandStack, Template $templateRepo, PortalBrandThemeLoader $brandThemeLoader)
     {
@@ -108,7 +108,7 @@ class PortalLoader implements \Twig_LoaderInterface
     /**
      * @throws \RuntimeException
      *
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer
      */
     protected function getBrandContainer()
     {

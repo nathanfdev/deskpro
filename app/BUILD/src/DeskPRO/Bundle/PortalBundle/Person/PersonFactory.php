@@ -14,7 +14,7 @@ use Application\DeskPRO\People\UserRuleProcessor;
 use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Person\Events\PersonCreateEvent;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -34,7 +34,7 @@ class PersonFactory
     private $eventDispatcher;
 
     /**
-     * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 

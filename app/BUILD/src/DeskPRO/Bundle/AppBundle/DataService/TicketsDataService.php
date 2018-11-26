@@ -9,7 +9,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
@@ -32,9 +32,9 @@ class TicketsDataService extends AbstractDataService
     /**
      * TicketsDataService constructor.
      *
-     * @param EntityManager   $em
-     * @param BrandStack      $brandStack
-     * @param LoggerInterface $logger
+     * @param EntityManager                                $em
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param LoggerInterface                              $logger
      */
     public function __construct(EntityManager $em, BrandStack $brandStack, LoggerInterface $logger)
     {

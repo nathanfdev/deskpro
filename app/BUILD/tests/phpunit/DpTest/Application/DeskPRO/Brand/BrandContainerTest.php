@@ -6,7 +6,6 @@
 
 namespace DpTest\DeskPRO\Application\Brand;
 
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DpTest\DeskProTestCase;
 
 class BrandContainerTest extends DeskProTestCase
@@ -15,7 +14,7 @@ class BrandContainerTest extends DeskProTestCase
     {
         $mockBrand    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
         $mockSettings = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
-        $bc           = new BrandContainer($mockBrand, $mockSettings);
+        $bc           = new \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer($mockBrand, $mockSettings);
 
         $this->assertSame($mockBrand, $bc->getBrand());
         $this->assertSame($mockSettings, $bc->getSettings());
@@ -25,7 +24,7 @@ class BrandContainerTest extends DeskProTestCase
     {
         $mockBrand    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
         $mockSettings = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
-        $bc           = new BrandContainer($mockBrand, $mockSettings);
+        $bc           = new \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer($mockBrand, $mockSettings);
 
         $mockSettings->shouldReceive('get')->with('setting_name', null)->andReturn('the val!')->once();
 

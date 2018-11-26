@@ -118,6 +118,7 @@ class DpKernel extends BaseKernel
             new \Application\UserBundle\UserBundle(),
             new \Application\LegacyApiBundle\LegacyApiBundle(),
             new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
+            new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
         ];
 
         if (defined('DPC_IS_CLOUD')) {

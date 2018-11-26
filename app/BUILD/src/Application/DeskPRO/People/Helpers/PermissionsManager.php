@@ -16,7 +16,7 @@ use Application\DeskPRO\People\PermissionLoader\Usergroups;
 use Application\DeskPRO\People\PersonContextInterface;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Orb\Util\Util;
 
 /**

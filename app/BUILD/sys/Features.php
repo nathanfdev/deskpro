@@ -129,7 +129,7 @@ final class Features
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\AppEnv\AppEnv
+     * @return \DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface
      */
     private function getAppEnv()
     {

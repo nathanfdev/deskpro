@@ -67,6 +67,7 @@ class CorsListener extends NelmioCorsListener
         if (!$event->isMasterRequest()) {
             return;
         }
+
         if ($event->getResponse()->getStatusCode() !== Response::HTTP_UNAUTHORIZED && !$this->isSupportedAuthenticationType()) {
             throw new UnauthorizedHttpException('key,oauth token realm="DeskPRO API"', ErrorsCodes::INVALID_CORS_AUTH_TYPE);
         }
@@ -96,6 +97,8 @@ class CorsListener extends NelmioCorsListener
     /**
      * Enable CORS only for ApiKey or OAuth Token
      * even if authentication failed.
+     *
+     * Skip check for messenger.
      *
      * We can't just check type of Token from TokenStorage
      * because it can be null in case of failed authentication

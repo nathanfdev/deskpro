@@ -17,7 +17,7 @@ use DeskPRO\Bundle\AppBundle\DataService\DepartmentDataService;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
 use DeskPRO\Bundle\AppBundle\Helper\ArbitraryHasher;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Component\Hierarchy\Formatter\FlatListLanguageAwareFormatter;
 use DeskPRO\Component\Hierarchy\Formatter\ParentListLanguageAwareFormatter;
 use DeskPRO\Component\Hierarchy\HierarchyNode;

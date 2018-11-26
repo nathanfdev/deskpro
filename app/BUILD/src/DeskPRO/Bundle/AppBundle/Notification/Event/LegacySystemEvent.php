@@ -37,6 +37,14 @@ class LegacySystemEvent extends AbstractLegacyEvent
     }
 
     /**
+     * Just the alias for getEventType, needed for compatibility purposes.
+     */
+    public function getType()
+    {
+        return $this->eventType;
+    }
+
+    /**
      * @return int[]
      */
     public function getTargets()

@@ -53,15 +53,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class TicketMessage extends DomainObject
 {
-    const CREATED_WEB_PERSON        = 'web.person';
-    const CREATED_WEB_PERSON_PORTAL = 'web.person.portal';
-    const CREATED_WEB_AGENT         = 'web.agent';
-    const CREATED_WEB_AGENT_PORTAL  = 'web.agent.portal';
-    const CREATED_WEB_API           = 'web.api';
-    const CREATED_MOBILE_AGENT      = 'web.api.mobile.agent';
-    const CREATED_MOBILE_PERSON     = 'web.api.mobile.person';
-    const CREATED_GATEWAY_PERSON    = 'gateway.person';
-    const CREATED_GATEWAY_AGENT     = 'gateway.agent';
+    const CREATED_WEB_PERSON           = 'web.person';
+    const CREATED_WEB_PERSON_PORTAL    = 'web.person.portal';
+    const CREATED_WEB_AGENT            = 'web.agent';
+    const CREATED_WEB_AGENT_PORTAL     = 'web.agent.portal';
+    const CREATED_WEB_API              = 'web.api';
+    const CREATED_MOBILE_AGENT         = 'web.api.mobile.agent';
+    const CREATED_MOBILE_PERSON        = 'web.api.mobile.person';
+    const CREATED_GATEWAY_PERSON       = 'gateway.person';
+    const CREATED_GATEWAY_AGENT        = 'gateway.agent';
+    const CREATED_MESSENGER_UNANSWERED = 'messenger.unanswered';
 
     /**
      * The unique id of message.
@@ -716,10 +717,14 @@ class TicketMessage extends DomainObject
 
     /**
      * @param $message
+     *
+     * @return $this
      */
     public function setMessageHtml($message)
     {
         $this->setMessage($message);
+
+        return $this;
     }
 
     /**

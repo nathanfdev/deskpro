@@ -1,0 +1,31 @@
+messenger_routes:
+  resource: "@MessengerBundle/Resources/config/routing_messenger.yml"
+
+serve_blob:
+  path: '/file.php/{blob_auth_id}/{filename}'
+
+serve_blob_sizefit:
+  path: '/file.php/size/{s}/size-fit/{blob_auth_id}/{filename}'
+
+serve_org_picture_default:
+  path: '/file.php/o-avatar/default'
+
+serve_default_picture:
+  path: '/file.php/avatar/{s}/default.jpg'
+  defaults:
+    name: 'default_picture'
+    s: '0'
+
+agent_people_view:
+  path: '/agent/people/{person_id}'
+  requirements:
+    person_id: '\d+'
+  options:
+    fragment: 'p'
+
+agent_ticket_view:
+  path: '/agent/tickets/{ticket_id}'
+  requirements:
+    person_id: '\d+'
+  options:
+    fragment: 't'

@@ -6,7 +6,6 @@ use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\PortalSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 
 class Build1469786849 extends AbstractBuild
 {
@@ -19,7 +18,7 @@ class Build1469786849 extends AbstractBuild
 
         $settings = $portalSettingsResolver->getConstants();
 
-        /** @var BrandStack $brandStack */
+        /** @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack */
         $brandStack = $this->container->getBrandStack();
 
         $brand = $brandStack->getActive()->getBrand();

@@ -6,7 +6,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Request;
 
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -18,12 +18,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TagRequestConverter implements ParamConverterInterface
 {
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brand_stack;
 
     /**
-     * @var PortalBrandThemeLoader
+     * @var \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader
      */
     private $brand_theme_loader;
 

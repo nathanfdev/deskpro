@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\ApiBundle\Log;
 use DeskPRO\Bundle\ApiBundle\Log\Helper\LogComposer;
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use GuzzleHttp\RequestOptions;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +33,7 @@ class Replayer
     private $factory;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 

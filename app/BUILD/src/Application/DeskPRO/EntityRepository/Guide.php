@@ -3,7 +3,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Strings;
 
 class Guide extends AbstractEntityRepository
@@ -66,7 +65,7 @@ class Guide extends AbstractEntityRepository
         $qb->andWhere($qb->expr()->in('t.usergroup_id', $usergroupIds));
         $qb->groupBy('t.guide_id');
 
-        /** @var BrandStack $brandStack */
+        /** @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack */
         $brandStack = App::get('brand_stack');
 
         $currentBrand = $brandStack->getActive()->getBrand();

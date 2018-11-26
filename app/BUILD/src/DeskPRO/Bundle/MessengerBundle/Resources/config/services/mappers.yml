@@ -1,0 +1,7 @@
+services:
+  messenger.mappers.chat:
+    class: DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@deskpro.core.input_cleaner"
+      - "@avatar_resolver"

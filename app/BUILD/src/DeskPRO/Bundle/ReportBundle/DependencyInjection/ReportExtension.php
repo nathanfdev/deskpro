@@ -17,6 +17,6 @@ class ReportExtension extends Extension
     public function load(array $config, ContainerBuilder $container)
     {
         $loader = new YamlDirectoryLoader($container);
-        $loader->loadDir(__DIR__.'/../Resources/config');
+        $loader->loadDir(__DIR__.'/../Resources/config/services');
     }
 }

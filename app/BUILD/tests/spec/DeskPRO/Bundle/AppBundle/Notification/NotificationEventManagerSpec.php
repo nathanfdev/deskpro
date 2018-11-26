@@ -17,6 +17,8 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -52,6 +54,8 @@ class NotificationEventManagerSpec extends ObjectBehavior
                 TicketFollowUpUpdatedEvent::EVENT_NAME => 'handleEvent',
                 SnippetsUpdatedEvent::EVENT_NAME       => 'handleEvent',
                 PopupEvent::EVENT_NAME                 => 'handleEvent',
+                ChatEvent::EVENT_NAME                  => 'handleEvent',
+                ChatMessageEvent::EVENT_NAME           => 'handleEvent',
             ]
         );
     }

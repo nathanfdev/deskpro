@@ -102,7 +102,7 @@ abstract class AbstractVoter extends Voter
     }
 
     /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer
      */
     public function getActiveBrandContainer()
     {

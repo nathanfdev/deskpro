@@ -8,7 +8,6 @@ namespace DeskPRO\Bundle\PortalBundle\Controller\Api\PortalDesigner;
 
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use DeskPRO\Bundle\PortalBundle\Designer\AdvancedEditsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Designer\BrandThemeManager;
@@ -31,7 +30,7 @@ trait HelperMethods
     abstract public function get($id);
 
     /**
-     * @return \DeskPRO\Bundle\PortalBundle\Brand\BrandContainer
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer
      */
     abstract protected function getBrandContainer();
 
@@ -125,7 +124,7 @@ trait HelperMethods
     }
 
     /**
-     * @return PortalBrandThemeLoader
+     * @return \DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader
      */
     private function getPortalBrandThemeLoader()
     {

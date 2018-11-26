@@ -42,7 +42,7 @@ class VerifyOrgManagers implements TicketSaveActionInterface
             return;
         }
 
-        if ($ticket->organization) {
+        if ($ticket->getOrganizationId()) {
             $managers = $this->org_repos->getManagers($ticket->organization);
             foreach ($managers as $manager) {
                 if ($manager->getPref('org.manager_auto_add')) {

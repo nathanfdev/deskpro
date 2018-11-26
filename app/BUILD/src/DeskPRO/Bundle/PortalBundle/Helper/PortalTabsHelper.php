@@ -7,7 +7,7 @@
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Orb\Util\Arrays;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 

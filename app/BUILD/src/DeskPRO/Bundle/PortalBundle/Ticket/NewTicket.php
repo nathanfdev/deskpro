@@ -14,7 +14,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints\Ticket\TicketDupe;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Person\PersonFactory;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\Form;
@@ -59,20 +59,20 @@ class NewTicket
     private $urlGenerator;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 
     /**
      * Constructor.
      *
-     * @param EntityManager         $em
-     * @param TicketManager         $ticket_manager
-     * @param LanguageManager       $language_manager
-     * @param PersonFactory         $person_factory
-     * @param AntiAbuse             $anti_abuse
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param BrandStack            $brandStack
+     * @param EntityManager                                $em
+     * @param TicketManager                                $ticket_manager
+     * @param LanguageManager                              $language_manager
+     * @param PersonFactory                                $person_factory
+     * @param AntiAbuse                                    $anti_abuse
+     * @param UrlGeneratorInterface                        $urlGenerator
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
      */
     public function __construct(
         EntityManager         $em,

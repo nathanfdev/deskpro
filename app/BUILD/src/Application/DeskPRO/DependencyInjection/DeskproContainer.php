@@ -10,7 +10,7 @@ namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\App\AgentAppPermissions;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\DependencyInjection\Container;
@@ -723,7 +723,7 @@ class DeskproContainer extends Container
      *
      * @throws \Throwable
      *
-     * @return BrandStack
+     * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     public function getBrandStack()
     {

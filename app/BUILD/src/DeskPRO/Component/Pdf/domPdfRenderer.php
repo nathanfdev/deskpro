@@ -3,7 +3,7 @@
 namespace DeskPRO\Component\Pdf;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Dompdf\Dompdf;
 
 /**
@@ -20,7 +20,7 @@ class domPdfRenderer implements PdfRendererInterface
     private $object;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 

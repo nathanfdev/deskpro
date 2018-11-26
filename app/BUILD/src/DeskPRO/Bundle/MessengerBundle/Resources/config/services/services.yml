@@ -1,0 +1,30 @@
+parameters:
+  json_body_listener.ignore_content_type_names:
+    - zip
+
+services:
+  messenger_authenticator:
+    class: DeskPRO\Bundle\MessengerBundle\Security\Authentication\MessengerAuthenticator
+    arguments:
+      - "@app_secret"
+
+  messenger.handlers.chat:
+    class: DeskPRO\Bundle\MessengerBundle\Handler\ChatHandler
+    arguments:
+      - "@messenger.mappers.chat"
+      - "@doctrine.orm.default_entity_manager"
+      - "@event_dispatcher"
+      - "@brand_stack"
+
+  messenger.service.action_alerts:
+    class: DeskPRO\Bundle\MessengerBundle\Service\ActionAlertsService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@doctrine.dbal.read_connection"
+
+  messenger.service.tech:
+    class: DeskPRO\Bundle\MessengerBundle\Service\TechService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@permissions_manager"
+      - "@brand_stack"

@@ -42,13 +42,13 @@ class ActionAlert implements EntityInterface, NotifyPropertyChanged, Notificatio
     protected $id;
 
     /**
-     * Target indetity (means user id).
+     * Target identity (means user id or visitor_id).
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=200)
      * @Assert\NotNull()
      *
      * @JMS\Expose()
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      *
      * @var int
      */

@@ -38,12 +38,14 @@ class PortalKernel extends BaseKernel
             new \Application\AgentBundle\AgentBundle(),
 
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\BrandBundle\BrandBundle(),
             new \DeskPRO\Bundle\PortalBundle\PortalBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
             new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle(),
             new \DeskPRO\Bundle\ReportBundle\ReportBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
+            new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
         ];
 
         if ('dev' === $this->getEnvironment()

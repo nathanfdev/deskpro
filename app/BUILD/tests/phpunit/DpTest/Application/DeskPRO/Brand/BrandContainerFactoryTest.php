@@ -6,7 +6,7 @@
 
 namespace DpTest\DeskPRO\Application\Brand;
 
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainerFactory;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandContainerFactory;
 use DpTest\DeskProTestCase;
 
 class BrandContainerFactoryTest extends DeskProTestCase

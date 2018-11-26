@@ -46,6 +46,7 @@ class ApiKernel extends BaseKernel
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
             new \DeskPRO\Bundle\ImportBundle\ImportBundle(),
             new \DeskPRO\Bundle\VoiceBundle\VoiceBundle(),
+            new \DeskPRO\Bundle\MessengerBundle\MessengerBundle(),
         ];
 
         if ('dev' === $this->getEnvironment()

@@ -17,6 +17,9 @@ use Application\DeskPRO\People\ActivityLogger\ActivityLogger;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
+use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
+use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -207,11 +210,24 @@ class UserChatManager
             $convo->addParticipant($person);
             $this->em->persist($convo);
 
-            $this->addSystemMessage(
+            $message = $this->addSystemMessage(
                 $convo,
                 'message_user-joined',
-                ['name'        => $person->display_name_user],
-                ['user_joined' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id]
+                ['name' => $person->display_name_user],
+                [
+                    'user_joined' => true,
+                    'person_name' => $person->display_name_user,
+                    'person_id'   => $person->id,
+                ]
+            );
+
+            $this->eventDispatcher->dispatch(
+                ChatEvent::EVENT_NAME,
+                new ChatEvent(
+                    $convo->getId(),
+                    ChatEvent::CHAT_USER_JOINED_EVENT_TYPE,
+                    ['message' => $message]
+                )
             );
 
             $this->em->flush();
@@ -254,11 +270,20 @@ class UserChatManager
             $convo->removeParticipant($person);
             $this->em->persist($convo);
 
-            $this->addSystemMessage(
+            $message = $this->addSystemMessage(
                 $convo,
                 'message_user-left',
                 ['name'      => $person->display_name_user],
                 ['user_left' => true, 'person_name' => $person->display_name_user, 'person_id' => $person->id]
+            );
+
+            $this->eventDispatcher->dispatch(
+                ChatEvent::EVENT_NAME,
+                new ChatEvent(
+                    $convo->getId(),
+                    ChatEvent::CHAT_USER_LEFT_EVENT_TYPE,
+                    ['message' => $message]
+                )
             );
 
             $this->em->flush();
@@ -354,7 +379,7 @@ class UserChatManager
             $convo->agent = $agent;
             $this->em->persist($convo);
 
-            $this->sendMessageAssignEvent($convo, $old_agent_id, $old_agent_name);
+            $message = $this->sendMessageAssignEvent($convo, $old_agent_id, $old_agent_name);
 
             $this->em->flush();
 
@@ -363,6 +388,15 @@ class UserChatManager
                 array_merge(
                     $convo->getInfo(),
                     ['old_agent_id' => $old_agent_id, 'new_agent_name' => $agent->display_name_user]
+                )
+            );
+
+            $this->eventDispatcher->dispatch(
+                ChatEvent::EVENT_NAME,
+                new ChatEvent(
+                    $convo->getId(),
+                    ChatEvent::CHAT_AGENT_ASSIGNED_EVENT_TYPE,
+                    ['message' => $message]
                 )
             );
 
@@ -382,7 +416,8 @@ class UserChatManager
     public function sendMessageAssignEvent(ChatConversation $conversation, $old_agent_id = null, $old_agent_name = '')
     {
         $agent = $conversation->getAgent();
-        $this->addSystemMessage($conversation, 'message_assigned', ['name' => $agent->display_name_user], [
+
+        return $this->addSystemMessage($conversation, 'message_assigned', ['name' => $agent->display_name_user], [
             'chat_assigned'     => true,
             'assigned_to'       => $agent->id,
             'assigned_name'     => $agent->getDisplayNameUser(),
@@ -435,11 +470,21 @@ class UserChatManager
         $convo->setAgent(null);
         $this->em->persist($convo);
 
-        $this->addSystemMessage($convo, 'message_unassigned', [], [
+        $message = $this->addSystemMessage($convo, 'message_unassigned', [], [
             'chat_unassigned'   => true,
             'old_assigned_to'   => $old_agent_id,
             'old_assigned_name' => $old_agent_name,
         ]);
+
+        // broadcast to user agent was unassigned
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                ChatEvent::CHAT_AGENT_UNASSIGNED_EVENT_TYPE,
+                ['message' => $message]
+            )
+        );
 
         // Try to reassign
         if ($this->auto_assigner) {
@@ -579,32 +624,49 @@ class UserChatManager
     public function endChat(ChatConversation $convo, Person $author = null, $reason = '')
     {
         $convo->status = 'ended';
+        $eventType     = ChatEvent::CHAT_ENDED_EVENT_TYPE;
 
         if ($author) {
             $convo->ended_by = ChatConversation::ENDED_AGENT;
         } elseif ($reason == 'timeout') {
             $reason          = '';
             $convo->ended_by = ChatConversation::ENDED_TIMEOUT;
+            $eventType       = ChatEvent::CHAT_USER_TIMEOUT_EVENT_TYPE;
         } elseif ($reason == 'wait_timeout') {
             $reason          = '';
             $convo->ended_by = ChatConversation::ENDED_WAIT_TIMEOUT;
+            $eventType       = ChatEvent::CHAT_WAIT_TIMEOUT_EVENT_TYPE;
         } elseif ($reason == 'abandoned') {
             $reason          = '';
             $convo->ended_by = ChatConversation::ENDED_ABANDONED;
         }
 
+        $message = null;
         if ($convo->ended_by != 'timeout' && $convo->ended_by != 'wait_timeout' && $convo->ended_by != 'abandoned') {
             if ($author) {
-                $this->addSystemMessage($convo, 'message_ended-by', ['name' => $author->getDisplayNameUser()], ['chat_ended' => true]);
+                $message = $this->addSystemMessage($convo, 'message_ended-by', ['name' => $author->getDisplayNameUser()], ['chat_ended' => true]);
             } else {
-                $this->addSystemMessage($convo, 'message_ended', [], ['chat_ended' => true]);
+                $message = $this->addSystemMessage($convo, 'message_ended', [], ['chat_ended' => true]);
             }
         }
 
         $this->dispatchLegacyEvent('chat.ended', $convo->getInfo());
+        $this->eventDispatcher->dispatch(
+            ChatEvent::EVENT_NAME,
+            new ChatEvent(
+                $convo->getId(),
+                $eventType,
+                ['message' => $message]
+            )
+        );
 
         if ($reason !== 'timeout' && $reason !== 'wait_timeout' && $reason != 'abandoned') {
-            $this->autoSendChatTranscript($convo);
+            if ($this->autoSendChatTranscript($convo)) {
+                $this->eventDispatcher->dispatch(
+                    ChatEvent::EVENT_NAME,
+                    new ChatEvent($convo->getId(), ChatEvent::CHAT_TRANSCRIPT_EVENT_TYPE)
+                );
+            }
         }
     }
 
@@ -764,6 +826,9 @@ class UserChatManager
             $msg->is_html = (bool) $metadata['is_html'];
             unset($metadata['is_html']);
         }
+        if (!isset($metadata['uuid'])) {
+            $metadata['uuid'] = RandUtils::uuidV4();
+        }
 
         $msg->metadata = $metadata;
         $convo->addMessage($msg);
@@ -796,6 +861,14 @@ class UserChatManager
         $data = $msg->getInfo();
 
         $this->dispatchLegacyEvent($channel, $data);
+        $this->eventDispatcher->dispatch(
+            ChatMessageEvent::EVENT_NAME,
+            new ChatMessageEvent(
+                $convo->getId(),
+                $msg->getId(),
+                ChatMessageEvent::CHAT_MESSAGE_EVENT_TYPE
+            )
+        );
 
         return $msg;
     }
@@ -840,6 +913,9 @@ class UserChatManager
         if (isset($metadata['is_html'])) {
             $msg->is_html = true;
             unset($metadata['is_html']);
+        }
+        if (!isset($metadata['uuid'])) {
+            $metadata['uuid'] = RandUtils::uuidV4();
         }
 
         $msg->metadata = $metadata;

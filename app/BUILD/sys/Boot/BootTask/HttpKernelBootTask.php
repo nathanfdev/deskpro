@@ -52,11 +52,13 @@ class HttpKernelBootTask implements BootTaskInterface
      * @param string  $interface_id
      * @param DpEnv   $env
      *
-     * @return PortalHttpCache|Kernel\ApiKernel|Kernel\DpKernel|Kernel\InstallKernel|Kernel\PortalKernel
+     * @return PortalHttpCache|Kernel\ApiKernel|Kernel\DpKernel|Kernel\InstallKernel|Kernel\PortalKernel|Kernel\MessengerKernel
      */
     private function getKernelClass(Request $request, $interface_id, DpEnv $env)
     {
         switch ($interface_id) {
+            case 'messenger':
+                return new Kernel\MessengerKernel($env->getEnvId(), $env->isDebug(), $env);
             case 'apiv2':
                 return new Kernel\ApiKernel($env->getEnvId(), $env->isDebug(), $env);
             case 'user':
@@ -98,6 +100,9 @@ class HttpKernelBootTask implements BootTaskInterface
             return 'user';
         }
 
+        if ($this->isUrlSegmentPrefix($path, '/api/messenger')) {
+            return 'messenger';
+        }
         if ($this->isUrlSegmentPrefix($path, '/agent') || $this->isUrlSegmentPrefix($path, '/scripts/agent')) {
             return 'agent';
         }

@@ -3,7 +3,7 @@
 namespace DeskPRO\Component\Pdf;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Symfony\Component\HttpFoundation\Response;
 
 interface PdfRendererInterface
@@ -11,8 +11,8 @@ interface PdfRendererInterface
     /**
      * PdfRendererInterface constructor.
      *
-     * @param BrandStack $brandStack
-     * @param AppEnv     $appEnv
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param AppEnv                                       $appEnv
      */
     public function __construct(BrandStack $brandStack, AppEnv $appEnv);
 

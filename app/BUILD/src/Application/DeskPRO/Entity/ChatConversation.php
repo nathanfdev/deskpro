@@ -274,6 +274,11 @@ class ChatConversation extends DomainObject implements LabelsOwner
      */
     protected $_label_manager = null;
 
+    /**
+     * @var string
+     */
+    protected $accessToken;
+
     public function getChannelId($name = false)
     {
         return 'chat_convo.'.$this->id.($name ? '.'.$name : '');
@@ -287,6 +292,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $this->custom_data       = new ArrayCollection();
         $this->date_created      = new \DateTime();
         $this->date_user_waiting = new \DateTime();
+        $this->accessToken       = Strings::random(30, Strings::CHARS_ALPHANUM);
     }
 
     /**
@@ -999,6 +1005,14 @@ class ChatConversation extends DomainObject implements LabelsOwner
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateAssigned()
+    {
+        return $this->date_assigned;
+    }
+
+    /**
      * @param \DateTime $date
      *
      * @return $this
@@ -1445,6 +1459,26 @@ class ChatConversation extends DomainObject implements LabelsOwner
         return $this->status;
     }
 
+    /**
+     * @return string
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
+    }
+
+    /**
+     * @param string $accessToken
+     *
+     * @return $this
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->setModelField('accessToken', $accessToken);
+
+        return $this;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);
@@ -1473,6 +1507,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
                 'indexes' => [
                     'status_idx'                 => ['columns' => ['status']],
                     'should_send_transcript_idx' => ['columns' => ['should_send_transcript']],
+                    'access_token_idx'           => ['columns' => ['access_token']],
                 ],
             ]
         );
@@ -1881,6 +1916,18 @@ class ChatConversation extends DomainObject implements LabelsOwner
                 'mappedBy'      => 'chat',
                 'orphanRemoval' => true,
                 'dpApi'         => true,
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'accessToken',
+                'type'       => 'string',
+                'length'     => 30,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'access_token',
             ]
         );
     }

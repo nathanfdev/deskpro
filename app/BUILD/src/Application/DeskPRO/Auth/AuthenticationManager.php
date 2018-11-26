@@ -11,7 +11,7 @@ use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Identity;
@@ -76,7 +76,7 @@ class AuthenticationManager
     private $authBy;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 
@@ -263,7 +263,6 @@ class AuthenticationManager
     {
         return $this->getUsersources()->withCapability(UsersourceInfo::CAPABILITY_SOCIAL_LOGIN);
     }
-
 
     /**
      * Usersources that have an icon to display to login.

@@ -9,7 +9,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
+use DeskPRO\Bundle\ReportBundle\Entity\ScheduledReport;
 use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 

@@ -7,7 +7,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\DataService\PersonDataService;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Controller\PasswordController;
 use DeskPRO\Bundle\PortalBundle\EmailSender\PortalEmailSender;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
@@ -37,7 +37,7 @@ class PortalValidation
     private $mailer;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     private $brandStack;
 

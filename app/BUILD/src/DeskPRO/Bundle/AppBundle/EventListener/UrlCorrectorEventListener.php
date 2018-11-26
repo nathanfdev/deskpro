@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Component\Util\DebugUtils;
@@ -51,11 +51,11 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
     /**
      * Constructor.
      *
-     * @param InterfaceInfo       $interfaceInfo
-     * @param BrandStack          $brandStack
-     * @param PortalModeStorage   $portalModeStorage
-     * @param UrlCorrectorFactory $urlCorrectorFactory
-     * @param LoggerInterface     $logger
+     * @param InterfaceInfo                                $interfaceInfo
+     * @param \DeskPRO\Bundle\BrandBundle\Brand\BrandStack $brandStack
+     * @param PortalModeStorage                            $portalModeStorage
+     * @param UrlCorrectorFactory                          $urlCorrectorFactory
+     * @param LoggerInterface                              $logger
      */
     public function __construct(
         InterfaceInfo       $interfaceInfo,

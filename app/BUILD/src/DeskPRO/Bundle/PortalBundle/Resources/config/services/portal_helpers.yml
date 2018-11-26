@@ -29,10 +29,3 @@ services:
       class: DeskPRO\Bundle\PortalBundle\Helper\NavigationHelper
       arguments:
         - "@security.authorization_checker"
-
-  widget_jwt_decoder:
-    class: DeskPRO\Bundle\PortalBundle\Helper\WidgetJwtDecoder
-    arguments:
-      - "@doctrine.orm.default_entity_manager"
-      - "@widget_settings_resolver"
-      - "@brand_stack"

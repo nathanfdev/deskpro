@@ -9,7 +9,7 @@ namespace DpBehat;
 use Application\DeskPRO\Entity\Brand;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DpBehat\Data\DataContext;
 
 class BrandSettingContext extends BaseContext

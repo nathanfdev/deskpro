@@ -9,3 +9,10 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@brand_stack"
       - "@brand_aware_settings_resolver"
+
+  widget_jwt_decoder:
+    class: DeskPRO\Bundle\AppBundle\Helper\WidgetJwtDecoder
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@widget_settings_resolver"
+      - "@brand_stack"

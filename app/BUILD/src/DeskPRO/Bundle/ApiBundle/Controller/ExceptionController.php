@@ -35,14 +35,11 @@ class ExceptionController extends BaseController
             $exception  = $exception->getException();
         }
 
-        $errorsArray = [];
         if ($exception instanceof AbuseCaptchaFormException) {
             return $this->createCaptchaResponse($exception);
-        } elseif ($exception instanceof FormExceptionInterface) {
-            $errorsArray = $this->get('form_error.form_errors_generator.api')->generateFormErrors($exception->getForm());
-        } elseif ($exception instanceof ValidatorErrorsException) {
-            $errorsArray = $this->get('form_error.validator_errors_generator.api')->generateValidatorErrors($exception->getErrors());
         }
+
+        $errorsArray = $this->getErrorsArray($exception);
 
         // Log exceptions if in production
         if (!$exception instanceof FormExceptionInterface
@@ -96,12 +93,29 @@ class ExceptionController extends BaseController
     }
 
     /**
+     * @param $exception
+     *
+     * @return array
+     */
+    protected function getErrorsArray($exception)
+    {
+        $errorsArray = [];
+        if ($exception instanceof FormExceptionInterface) {
+            $errorsArray = $this->get('form_error.form_errors_generator.api')->generateFormErrors($exception->getForm());
+        } elseif ($exception instanceof ValidatorErrorsException) {
+            $errorsArray = $this->get('form_error.validator_errors_generator.api')->generateValidatorErrors($exception->getErrors());
+        }
+
+        return $errorsArray;
+    }
+
+    /**
      * @param \Exception|FlattenException $exception
      * @param array                       $representation
      *
      * @return array
      */
-    private function addExceptionInfo($exception, array $representation)
+    protected function addExceptionInfo($exception, array $representation)
     {
         // in dev environment, display a stack trace, dont show if we have a test.client
         if ($this->container->getParameter('kernel.debug') && !$this->container->has('test.client')) {
@@ -127,7 +141,7 @@ class ExceptionController extends BaseController
      *
      * @return View
      */
-    private function createCaptchaResponse(AbuseCaptchaFormException $exception)
+    protected function createCaptchaResponse(AbuseCaptchaFormException $exception)
     {
         $token   = DpStrings::random(20, Strings::CHARS_KEY_ALPHA);
         $message = $this->container->get('form_error.message_factory.api')->createMessage($exception->getMessage());

@@ -9,7 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
+use DeskPRO\Bundle\ReportBundle\Entity\ScheduledReport;
 use DeskPRO\Bundle\ReportBundle\Util\VariableHelper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
@@ -201,7 +201,7 @@ class ReportDashboardReport extends DomainObject
     }
 
     /**
-     * @return \DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport[]|ArrayCollection
+     * @return \DeskPRO\Bundle\ReportBundle\Entity\ScheduledReport[]|ArrayCollection
      */
     public function getSchedules()
     {

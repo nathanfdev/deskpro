@@ -14,7 +14,7 @@ use Application\DeskPRO\Translate\Translate;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use Application\EmailBundle\SwiftMailer\MailerUtils;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
 use Doctrine\ORM\EntityManager;
 use DpSys\Features;
@@ -47,7 +47,7 @@ class FeedbackModerate implements PersonContextInterface
     protected $feedbackDataService;
 
     /**
-     * @var BrandStack
+     * @var \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     protected $brandStack;
 
