@@ -1111,9 +1111,9 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1542364842 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/11/Build1542364842.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1542364842',
+    1543231085 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/11/Build1543231085.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1543231085',
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
