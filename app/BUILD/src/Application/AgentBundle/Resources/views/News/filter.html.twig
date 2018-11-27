@@ -19,7 +19,7 @@
 
 {% block pane_header %}
 	<ul class="pane-tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-active-classname="active">
-		<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="fa icon-dp-article"></i> {{ phrase('agent.publish.news_list_title', {count: total_results|default(0)}) }}</li>
+		<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="far icon-dp-article"></i> {{ phrase('agent.publish.news_list_title', {count: total_results|default(0)}) }}</li>
 
 		{% if category %}
 			<li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="fas fa-folder"></i> <span>{{ category.title }}</span></li>
