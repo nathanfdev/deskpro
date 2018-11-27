@@ -21,6 +21,7 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MemoizeMethod;
+use DeskPRO\Component\Util\TypeUtils;
 use Orb\Util\Dates;
 
 /**
@@ -121,7 +122,7 @@ class CustomFieldsTermsHandler implements ValueTermHandlerInterface, SqlTermHand
             return $d->field == $field->field;
         });
 
-        /**
+        /*
          * @fixme: If custom field is "agent only" it does not show up
          * in $dataCollection, thus fails to validate further
          */
@@ -190,10 +191,9 @@ class CustomFieldsTermsHandler implements ValueTermHandlerInterface, SqlTermHand
         switch ($field->type) {
             case CustomDefAbstract::TYPE_DATE:
             case CustomDefAbstract::TYPE_DATETIME:
-                $dateConvert = function($date) {
-
-                    if (! is_null($date)) {
-                        if (is_string($date)) {
+                $dateConvert = function ($date) {
+                    if (!is_null($date)) {
+                        if (is_string($date) && !TypeUtils::isIntLike($date)) {
                             $date = Carbon::parse($date);
                         } elseif (is_int($date)) {
                             $date = Carbon::parse("@$date");
