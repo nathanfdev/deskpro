@@ -574,6 +574,17 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createSuccessResponse();
     }
 
+    //###################################################################################################################
+    // Reset managed phrases.
+    //###################################################################################################################
+
+    public function resetManagedPhrasesAction()
+    {
+        $this->db->executeUpdate('DELETE FROM phrases WHERE is_managed = 1');
+
+        return $this->createSuccessResponse();
+    }
+
     //###########################################################################
     // get-phrase-groups
     //###########################################################################

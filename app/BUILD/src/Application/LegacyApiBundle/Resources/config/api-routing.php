@@ -6824,6 +6824,15 @@ $collection->create(
 );
 
 $collection->create(
+    'api_langs_reset_managed',
+    [
+        'path'       => '/langs/phrases/reset-managed',
+        'controller' => 'LegacyApiBundle:Languages:resetManagedPhrases',
+        'methods'    => ['POST'],
+    ]
+);
+
+$collection->create(
     'api_langs_getphrasegroups',
     [
         'path'       => '/langs/phrases-groups',
