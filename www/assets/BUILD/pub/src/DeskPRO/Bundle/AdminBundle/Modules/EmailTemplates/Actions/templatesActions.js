@@ -190,9 +190,11 @@ export const saveCustomPhrase = createAction(
 
 export const saveTemplate = createAction(
   'EMAIL_TEMPLATES_SAVE_TEMPLATE',
-  (name, template) => new Promise((resolve) => {
+  (name, template) => new Promise((resolve, reject) => {
     repository('EmailTemplates').saveTemplate(name, template).then((promise) => {
       resolve(promise.getData());
+    }, (err) => {
+      reject(err.data);
     });
   })
 );

@@ -38,7 +38,7 @@ abstract class TicketEmailType extends EmailBaseType
     protected $ticketAgent;
 
     /**
-     * Ticket messages.
+     * Messages sent within the ticket.
      *
      * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage>")
      *

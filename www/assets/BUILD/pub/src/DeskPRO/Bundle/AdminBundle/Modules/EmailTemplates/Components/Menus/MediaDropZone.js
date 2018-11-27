@@ -6,25 +6,52 @@ import DropZone from 'DeskPRO/Component/Uploader/DropZone';
 
 class MediaDropZone extends React.Component {
   static propTypes = {
-    icon:      PropTypes.string,
-    type:      PropTypes.string,
-    onFail:    PropTypes.func,
-    onSend:    PropTypes.func,
-    onSuccess: PropTypes.func
+    icon:       PropTypes.string,
+    type:       PropTypes.string,
+    onFail:     PropTypes.func,
+    onSend:     PropTypes.func,
+    onSuccess:  PropTypes.func,
+    onProgress: PropTypes.func,
   };
   static defaultProps = {
     onFail() {},
     onSend() {},
-    onSuccess() {}
+    onSuccess() {},
+    onProgress() {},
   };
 
-  onFail = () => {
-    // TODO show error
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null
+    };
+  }
+
+  onFail = (event, data) => {
+    if (data.errorThrown === 'Request Entity Too Large') {
+      this.setState({
+        error: 'File size over the limit'
+      });
+    } else if (data.errorThrown === 'Bad Request') {
+      this.setState({
+        error: data._response.jqXHR.responseJSON.message // eslint-disable-line no-underscore-dangle
+      });
+    }
     this.props.onFail();
   };
 
-  onSend = () => {
+  onSend = (e, data) => {
+    if (data.originalFiles.find(file => file.size > window.DP_MAX_UPLOAD_SIZE)) {
+      this.setState({
+        error: 'File size over the limit'
+      });
+      return false;
+    }
+    this.setState({
+      error: null
+    });
     this.props.onSend();
+    return true;
   };
 
   getUploadUrl = () => `/api/v2/email_templates/email_assets/${this.props.type}`;
@@ -34,7 +61,7 @@ class MediaDropZone extends React.Component {
   };
 
   render() {
-    const { icon, type } = this.props;
+    const { icon, type, onProgress } = this.props;
     return (<DropZone
       getExternalInput={() => this.uploadButton.input}
       uploadUrl={this.getUploadUrl()}
@@ -43,6 +70,11 @@ class MediaDropZone extends React.Component {
       onFail={this.onFail}
       ref={(c) => { this.node = c; }}
     >
+      { this.state.error ?
+        <div className="error">
+          {this.state.error}
+        </div> : null
+      }
       <div className="drop-zone">
         <i className={classNames('icon', icon)} />
         Drop new files here or
@@ -55,6 +87,7 @@ class MediaDropZone extends React.Component {
           onSuccess={this.handleSuccess}
           onFail={this.onFail}
           uploadUrl={this.getUploadUrl()}
+          onProgress={onProgress}
         />
         <label className="ui button small basic" htmlFor={`upload_${type}`}>Upload files</label>
       </div>

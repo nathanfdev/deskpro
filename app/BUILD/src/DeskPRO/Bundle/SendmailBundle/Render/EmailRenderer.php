@@ -46,6 +46,11 @@ class EmailRenderer
     private $em;
 
     /**
+     * @var array
+     */
+    private $propertiesCache;
+
+    /**
      * EmailRenderer constructor.
      *
      * @param Serializer      $serializer
@@ -59,6 +64,7 @@ class EmailRenderer
         $this->templateEngine   = $templateEngine;
         $this->serviceContainer = $serviceContainer;
         $this->em               = $em;
+        $this->propertiesCache  = [];
     }
 
     /**
@@ -220,6 +226,8 @@ class EmailRenderer
     /**
      * @param EmailBaseType|string $model
      *
+     * @throws \Exception
+     *
      * @return array
      */
     public function getStructure($model)
@@ -245,9 +253,29 @@ class EmailRenderer
             ];
             if (!empty($attribute['children'])) {
                 $structure[$key]['properties'] = $this->simplifyStructure($attribute['children'], $level + 1);
+                $this->cacheProperties($attribute['class'], $structure[$key]['properties']);
+            } elseif (isset($attribute['class'])) {
+                $properties = $this->getPropertiesCache($attribute['class']);
+                if ($properties) {
+                    $structure[$key]['properties'] = $properties;
+                }
             }
         }
 
         return $structure;
+    }
+
+    private function cacheProperties($class, $properties)
+    {
+        $this->propertiesCache[$class] = $properties;
+    }
+
+    private function getPropertiesCache($class)
+    {
+        if (isset($this->propertiesCache[$class])) {
+            return $this->propertiesCache[$class];
+        }
+
+        return null;
     }
 }

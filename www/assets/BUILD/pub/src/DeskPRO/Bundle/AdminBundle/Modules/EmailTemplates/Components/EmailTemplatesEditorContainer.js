@@ -225,9 +225,6 @@ class EmailTemplatesEditorContainer extends React.Component {
         this.props.dispatch(actions.saveTemplate(`SendmailBundle:emails_custom:${name}.html.twig`, template)
       ).then(
         () => {
-          this.setState({
-            addingNewTemplate: false
-          });
           this.props.dispatch(actions.loadTemplates()).then(
             (templates) => {
               const newTemplate = fromJS(templates).getIn(
@@ -241,7 +238,12 @@ class EmailTemplatesEditorContainer extends React.Component {
           );
           this.selectTemplateGroup('custom');
         }
-      ));
+      )
+      .finally(() => {
+        this.setState({
+          addingNewTemplate: false
+        });
+      }));
   };
 
   changeTemplateSubject = (value) => {
@@ -416,7 +418,8 @@ class EmailTemplatesEditorContainer extends React.Component {
       undoSubmit: true
     });
     this.props.dispatch(actions.loadTemplate(this.props.emailTemplates.getIn(['currentTemplate', 'newTemplate']))).then(
-      () => {
+      (data) => {
+        this.props.dispatch(actions.setTemplate(data));
         this.setState({
           undoSubmit: false
         });
@@ -637,6 +640,7 @@ class EmailTemplatesEditor extends React.Component {
         textareaDisabled: !emailTemplates.get('currentTemplate')
       });
     }
+    this.checkChanges();
   };
 
   handleChangeBody = (value) => {
@@ -730,6 +734,17 @@ class EmailTemplatesEditor extends React.Component {
   };
 
   render() {
+    const {
+      contentChanged,
+      currentTemplate,
+      newCustomTemplateOpened,
+      showLegacy,
+      templateBody,
+      templateSubject,
+      templateType,
+      templatesGroups,
+      textareaDisabled
+    } = this.state;
     return (
       <div className="dp-email-templates">
         <div className="editor">
@@ -738,7 +753,7 @@ class EmailTemplatesEditor extends React.Component {
               <div className="ui form">
                 <div className="ui field">
                   <Select
-                    options={this.state.templatesGroups}
+                    options={templatesGroups}
                     className="group-select basic"
                     onChange={this.handleSelectTemplateGroup}
                     value={this.props.emailTemplates.get('currentTemplateGroup')}
@@ -762,7 +777,7 @@ class EmailTemplatesEditor extends React.Component {
                 </Button> : null
               }
               <NewCustomTemplate
-                opened={this.state.newCustomTemplateOpened}
+                opened={newCustomTemplateOpened}
                 addingNewTemplate={this.props.addingNewTemplate}
                 close={this.closeNewTemplateDialog}
                 addTemplate={this.props.addTemplate}
@@ -772,7 +787,7 @@ class EmailTemplatesEditor extends React.Component {
               <div className="top-menu">
                 <DropDownMenu
                   icon="mail"
-                  label={this.state.currentTemplate}
+                  label={currentTemplate}
                   className="emails-block-button"
                   ref={(c) => { this.templateMenu = c; }}
                 >
@@ -781,12 +796,12 @@ class EmailTemplatesEditor extends React.Component {
                   />
                 </DropDownMenu>
               </div>
-              <div className={classNames('top-menu right floated', { disabled: this.state.textareaDisabled })}>
+              <div className={classNames('top-menu right floated', { disabled: textareaDisabled })}>
                 <DropDownMenu
                   icon="image"
                   label="Media"
                   className="media-button"
-                  disabled={this.state.textareaDisabled}
+                  disabled={textareaDisabled}
                   ref={(c) => { this.mediaMenu = c; }}
                 >
                   <MediaMenuContainer
@@ -797,12 +812,12 @@ class EmailTemplatesEditor extends React.Component {
                   />
                 </DropDownMenu>
               </div>
-              <div className={classNames('top-menu right floated', { disabled: this.state.textareaDisabled })}>
+              <div className={classNames('top-menu right floated', { disabled: textareaDisabled })}>
                 <DropDownMenu
                   icon="globe"
                   label="Phrases"
                   className="phrases-button"
-                  disabled={this.state.textareaDisabled}
+                  disabled={textareaDisabled}
                   ref={(c) => { this.phrasesMenu = c; }}
                 >
                   <PhrasesMenuContainer
@@ -834,10 +849,10 @@ class EmailTemplatesEditor extends React.Component {
             </div>
           </div>
           <Editor
-            disabled={this.state.textareaDisabled}
-            body={this.state.templateBody}
-            subject={this.state.templateSubject}
-            type={this.state.templateType}
+            disabled={textareaDisabled}
+            body={templateBody}
+            subject={templateSubject}
+            type={templateType}
             changeTemplateSubject={this.handleChangeSubject}
             changeTemplateBody={this.handleChangeBody}
             ref={(c) => { this.editor = c; }}
@@ -852,14 +867,14 @@ class EmailTemplatesEditor extends React.Component {
           <div className="footer">
             <Button
               className={classNames('primary small', { loading: this.props.saveSubmit })}
-              disabled={this.state.textareaDisabled || !this.state.contentChanged}
+              disabled={textareaDisabled || !contentChanged}
               onClick={this.props.saveTemplate}
             >
               Save changes
             </Button>
             <Button
               className={classNames('basic small', { loading: this.props.undoSubmit })}
-              disabled={this.state.textareaDisabled || !this.state.contentChanged}
+              disabled={textareaDisabled || !contentChanged}
               onClick={this.undoChanges}
               confirm
             >
@@ -868,7 +883,7 @@ class EmailTemplatesEditor extends React.Component {
             { this.props.emailTemplates.getIn(['currentTemplate', 'is_custom'], false) ?
               <Button
                 className={classNames('right floated negative basic small', { loading: this.props.resetSubmit })}
-                disabled={this.state.textareaDisabled}
+                disabled={textareaDisabled}
                 onClick={this.props.deleteTemplate}
                 confirm
               >
@@ -877,7 +892,7 @@ class EmailTemplatesEditor extends React.Component {
               :
               <Button
                 className={classNames('right floated basic small', { loading: this.props.resetSubmit })}
-                disabled={this.state.textareaDisabled}
+                disabled={textareaDisabled}
                 onClick={this.props.resetTemplate}
                 confirm
               >
@@ -893,7 +908,7 @@ class EmailTemplatesEditor extends React.Component {
                 <p>
                   Please copy your changes into the new template on the left side, you can switch to the preview to see how your email will look
                 </p>
-                <Toggle onChange={this.handlePreviewToggle} active={this.state.showLegacy}>Preview</Toggle>
+                <Toggle onChange={this.handlePreviewToggle} active={showLegacy}>Preview</Toggle>
               </div>
               :
               <div>
@@ -908,8 +923,9 @@ class EmailTemplatesEditor extends React.Component {
                         options={this.props.emailAccounts}
                         className="email-account basic"
                         onChange={this.props.selectEmailAccount}
-                        disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
+                        disabled={textareaDisabled || templateType === 'block'}
                         value={this.props.selectedEmailAccount}
+                        title={this.props.selectedEmailAccount}
                       />
                     </div>
                     <div className="six wide field">
@@ -919,7 +935,7 @@ class EmailTemplatesEditor extends React.Component {
                         name="to"
                         id="test_email_to"
                         onChange={this.props.handleEmailAddress}
-                        disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
+                        disabled={textareaDisabled || templateType === 'block'}
                         value={this.props.previewEmailAddress}
                       />
                     </div>
@@ -927,7 +943,12 @@ class EmailTemplatesEditor extends React.Component {
                       <label htmlFor="test_email_submit">&nbsp;</label>
                       <Button
                         className={classNames('ui basic button', { loading: this.props.previewSubmit })}
-                        disabled={this.state.textareaDisabled || this.state.templateType === 'block'}
+                        disabled={
+                          this.props.selectedEmailAccount === ''
+                          || this.props.previewEmailAddress === ''
+                          || textareaDisabled
+                          || templateType === 'block'
+                        }
                         onClick={this.props.sendPreview}
                       >
                         Send
@@ -938,17 +959,17 @@ class EmailTemplatesEditor extends React.Component {
               </div>
             }
           </div>
-          {this.props.emailTemplates.get('legacyTemplate') && !this.state.showLegacy ?
+          {this.props.emailTemplates.get('legacyTemplate') && !showLegacy ?
             <div>
               <CodeMirror value={this.props.emailTemplates.getIn(['legacyTemplate', 0, 'template_code'])} />
             </div>
             :
             <PreviewEmail
               preview={this.props.emailTemplates.get('preview')}
-              type={this.state.templateType}
-              content={this.state.templateBody}
+              type={templateType}
+              content={templateBody}
               name={this.props.name}
-              newTemplate={this.props.newTemplate || this.state.newCustomTemplateOpened}
+              newTemplate={this.props.newTemplate || newCustomTemplateOpened}
             />
           }
         </div>

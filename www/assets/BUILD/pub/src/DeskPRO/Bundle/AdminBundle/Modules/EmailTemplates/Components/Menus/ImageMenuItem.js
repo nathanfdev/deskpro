@@ -47,10 +47,19 @@ class ImageMenuItem extends React.Component {
   };
 
   render() {
+    let positionMy;
+    let positionAt;
+    if (window.document.documentElement.clientWidth > 1750) {
+      positionMy = 'left top-15px';
+      positionAt = 'right top';
+    } else {
+      positionMy = 'right top-15px';
+      positionAt = 'left top';
+    }
     return (
       <PopUp
-        positionMy="left top-15px"
-        positionAt="right top"
+        positionMy={positionMy}
+        positionAt={positionAt}
         zIndex={99999}
         content={<img src={this.props.url} role="presentation" />}
         ref={(c) => { this.templatePopup = c; }}

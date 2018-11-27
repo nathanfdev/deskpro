@@ -131,6 +131,12 @@
         .CodeMirror {
           height: 30px;
         }
+        &.extended {
+          height: 180px;
+          .CodeMirror {
+            height: 150px;
+          }
+        }
       }
       .body {
         height: calc(100% - 85px);
@@ -354,7 +360,8 @@
 }
 .image-menu-item,
 .template-item  {
-  .ui.top.right.popup {
+  .ui.top.right.popup,
+  .ui.top.left.popup {
     border-color: $dp-sonic-primary;
     font-size: 12px;
     font-weight: 400;
@@ -372,6 +379,13 @@
     img {
       max-width: 300px;
       max-height: 200px;
+    }
+  }
+  .ui.top.left.popup {
+    &:before {
+      right: -4px;
+      left: auto;
+      transform: rotate(315deg);
     }
   }
 }
@@ -412,7 +426,8 @@
   }
 }
 .phrases {
-  width: 780px;
+  width: calc(300px + 25vw);
+  max-width: 780px;
   height: 550px;
   .ui.vertical.menu {
     border-width: 0 1px 0 0;
@@ -510,6 +525,11 @@
       margin-left: 20px;
       background-color: $dp-greyscale-50 !important;
     }
+  }
+  .error {
+    text-align: center;
+    color: $dp-knuckles-primary;
+    border: 1px solid $dp-knuckles-secondary;
   }
   .ui.vertical.menu.files {
     width: 480px;
