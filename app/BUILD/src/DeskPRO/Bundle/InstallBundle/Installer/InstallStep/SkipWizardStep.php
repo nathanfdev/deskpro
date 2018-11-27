@@ -89,7 +89,7 @@ class SkipWizardStep extends AbstractStep
             $voiceDbInfo->user     = $env->getConfig('database_advanced.voice.user') ?: $env->getConfig('database.user');
             $voiceDbInfo->password = $env->getConfig('database_advanced.voice.password') ?: $env->getConfig('database.password');
             $voiceDbInfo->dbname   = $env->getConfig('database_advanced.voice.dbname') ?: $env->getConfig('database.dbname');
-            $this->getSession()->setVoiceDbInfo($auditDbInfo);
+            $this->getSession()->setVoiceDbInfo($voiceDbInfo);
         } else {
             $voiceDbInfo = $this->getSession()->getVoiceDbInfo();
         }
