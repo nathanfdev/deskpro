@@ -440,10 +440,12 @@ class SelectPart
                     }
 
                     $queryResults = $this->sqlSelectContext->execute($sql, $this->resultMetadata);
+                    $results->addRawSql(SqlSelect::getLastCompiledSql());
                     $results->addSplitResults($this->fillResults($queryResults), $splitResult);
                 }
             } else {
                 $queryResults = $this->sqlSelectContext->execute($this->sql, $this->resultMetadata);
+                $results->addRawSql(SqlSelect::getLastCompiledSql());
                 $results->setResults($this->fillResults($queryResults));
             }
         } catch (DpqlException $e) {
