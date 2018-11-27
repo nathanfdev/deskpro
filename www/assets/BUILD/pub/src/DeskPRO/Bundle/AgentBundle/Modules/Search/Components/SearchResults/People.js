@@ -67,7 +67,7 @@ export default class People extends React.Component {
           <span className="email">{person.email}</span>
           <a className="tickets-count" onClick={() => this.showPersonTickets(person.id)}>
             <Icon name={faEnvelope} size="m" />
-            {person.tickets}
+            <span className="count-label">{person.tickets}</span>
           </a>
           <span className="new-ticket">
             <Icon name={faEnvelope} size="m" />
