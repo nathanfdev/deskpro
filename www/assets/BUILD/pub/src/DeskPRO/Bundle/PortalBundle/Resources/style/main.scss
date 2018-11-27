@@ -5517,6 +5517,10 @@ h1.fancy-header {
   .feedback-item {
     @include clearfix;
 
+    td {
+      padding: 2px 2px;
+    }
+
     margin-bottom: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid $hr-border;
