@@ -10,6 +10,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\ReportBundle\Form\Type\ReportDashboardWidgetType;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,10 +83,24 @@ class DashboardReportWidgetsController extends CrudController
         );
         $renderer = $this->get('reports.renderer_registry')->getRenderer(ReportsRendererInterface::TYPE_TABLE, $type);
 
+        $actualResults = [];
+        if ($results instanceof SplitResults) {
+            foreach ($results->getResults() as $result) {
+                /* @var SplitResult $result */
+                $actualResults[] = $result->getTitle();
+                $actualResults[] = $result->getResults();
+            }
+            $actualResults = implode("\r\n", $actualResults);
+        } elseif ($results instanceof SplitResult) {
+            $actualResults = $results->getResults();
+        } else {
+            $actualResults = $results;
+        }
+
         $response = new Response();
         $response->headers->set('Content-Type', $renderer->getContentType());
         $response->headers->set('Content-Disposition', 'inline; filename='.$widget->getTitle().'.'.$renderer->getExtension());
-        $response->setContent($results);
+        $response->setContent($actualResults);
 
         return $response;
     }
