@@ -31,7 +31,7 @@ class LangFixture extends AbstractFixture implements OrderedFixtureInterface
         $lang->setLangCode('eng');
         $lang->setTitle('English');
         $lang->setLocale('en_US');
-        $lang->setFlagImage('us.png');
+        $lang->setFlagImage('locale_en-US.png');
         $lang->setHasUser(true);
         $lang->setHasAgent(true);
         $lang->setHasAdmin(true);
