@@ -7,7 +7,7 @@
     </header>
 
     <!-- Popup Content -->
-    <div class="popup-content">
+    <div class="popup-content widget-edit">
         <!-- Content Form -->
         <form class="popup-form-default">
 
@@ -18,10 +18,16 @@
             </div>
             <div class="bucket">
                 <label class="label">Widget Options:</label>
-                <div class="bucket-column"><textarea ng-model="widget.options" placeholder="Put json string here"></textarea></div>
+                <div class="bucket-column">
+                    <textarea ng-model="widget.options" placeholder="Put json string here"></textarea>
+                    <span class="help-block">
+                    For example:
+                    <pre>{"legend":false,"labelsEnabled":false,"categoryAxis":{"labelRotation":45,"title":null}}</pre>
+                    For more information about override options <a href="https://support.deskpro.com/kb/articles/681">read this knowledgebase article</a>
+                </span>
+                </div>
             </div>
             <!-- End Form Row -->
-
             <hr>
         </form>
     </div>
