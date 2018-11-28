@@ -200,7 +200,11 @@
                     </div>
                     <div ng-if="brandId > 0 && brandId != 'new'">
                         {{ nav.list_subitem('Portal', ng_href('portal.portal_editor', '{brandId: brandId}'), 'portal.portal_editor', 'fa-home', 'true', '{"is-disabled": !Ctrl.settings.iface_portal}') }}
-                        {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor', 'fa-puzzle-piece') }}
+                        {% if app.hasBeta('messenger') %}
+                            {{ nav.list_subitem('Messenger setup', ng_href('portal.messenger_setup', '{brandId: brandId}'), 'portal.messenger_setup', 'fa-puzzle-piece') }}
+                        {% else %}
+                            {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor', 'fa-puzzle-piece') }}
+                        {% endif %}
                         {{ nav.list_subitem('Ticket Form Widget', ng_href('portal.ticket_form_widget', '{brandId: brandId}'), 'portal.ticket_form_widget', 'fa-envelope') }}
                     </div>
                 {{ nav.list_item_group_end() }}
