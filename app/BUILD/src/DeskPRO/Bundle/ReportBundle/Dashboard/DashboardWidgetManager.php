@@ -16,10 +16,13 @@ use DeskPRO\Bundle\ReportBundle\Reports\Results;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use DeskPRO\Bundle\ReportBundle\Util\VariableHelper;
+use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Log\NullLogger;
 
 /**
  * Class DashboardWidget.
@@ -89,17 +92,23 @@ class DashboardWidgetManager
     private $rendererRegistry;
 
     /**
+     * @var LoggerInterface|null
+     */
+    private $logger;
+
+    /**
      * DashboardWidget constructor.
      *
      * @param EntityManager           $em
      * @param DpqlCompiler            $compiler
      * @param ReportsRendererRegistry $rendererRegistry
      */
-    public function __construct(EntityManager $em, DpqlCompiler $compiler, ReportsRendererRegistry $rendererRegistry)
+    public function __construct(EntityManager $em, DpqlCompiler $compiler, ReportsRendererRegistry $rendererRegistry, LoggerInterface $logger = null)
     {
         $this->em               = $em;
         $this->compiler         = $compiler;
         $this->rendererRegistry = $rendererRegistry;
+        $this->logger           = $logger ?: new NullLogger();
     }
 
     /**
@@ -189,9 +198,13 @@ class DashboardWidgetManager
         $variables = $this->applyPermissionsToVariables($variables, $widget, $person);
 
         try {
+            $this->logger->debug(sprintf('[Widget %d] %s -- %s', $widget->getWidget()->getId(), $widget->getWidget()->getTitle(), $widget->getWidget()->getQuery()));
+            if ($variables) {
+                $this->logger->debug(sprintf('[Widget %d] Vars: %s', $widget->getWidget()->getId(), DebugUtils::varToString($variables)));
+            }
             $data = $this->doRender(
                 $widget->getWidget()->getQuery(),
-                ['variables' => $variables],
+                ['variables' => $variables, 'widgetId' => $widget->getWidget()->getId()],
                 $this->getWidgetGraphType($widget->getType()),
                 'json',
                 $person,
@@ -367,6 +380,11 @@ class DashboardWidgetManager
             if ($multiLayer) {
                 $queryResult->getMetadata()->addFlag(ResultMetadata::FLAG_LAYERED);
             }
+
+            foreach ($queryResult->getRawSql() as $sql) {
+                $this->logger->debug(sprintf('[Widget %d] SQL: %s', @$params['widgetId'] ?: '?', $sql));
+            }
+
             $results[] = [
                 'graphType'   => $compiledQuery->getGraphTypeHint() ?: $graphType,
                 'queryResult' => $queryResult,

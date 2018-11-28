@@ -22,6 +22,11 @@ class Results
     protected $metadata;
 
     /**
+     * @var array
+     */
+    protected $rawSql = [];
+
+    /**
      * @return bool
      */
     public function isEmpty()
@@ -127,5 +132,21 @@ class Results
     public function setMetadata(ResultMetadata $metadata)
     {
         $this->metadata = $metadata;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRawSql()
+    {
+        return $this->rawSql;
+    }
+
+    /**
+     * @param array $rawSql
+     */
+    public function addRawSql($rawSql)
+    {
+        $this->rawSql[] = $rawSql;
     }
 }

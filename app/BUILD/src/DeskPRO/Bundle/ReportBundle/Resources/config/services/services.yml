@@ -9,6 +9,9 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@dpql.compiler"
       - "@reports.renderer_registry"
+      - "@logger"
+    tags:
+      - { name: monolog.logger, channel: reports.widgets }
 
   reports.report_saver:
     class: DeskPRO\Bundle\ReportBundle\Service\ReportSaver
