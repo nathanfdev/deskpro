@@ -4,13 +4,13 @@
       "id":1,
       "name":"Deskpro",
       "members":123,
-      "img": "deskpro.png"
+      "img": "http://localhost/file.php/avatar/25/default.jpg?size-fit=1"
     },
     {
       "id":2,
       "name":"Deskpro",
       "members":123,
-      "img": "deskpro.png"
+      "img": "http://localhost/file.php/avatar/25/default.jpg?size-fit=1"
     }
   ],
   "people":[
@@ -18,13 +18,15 @@
       "id":1,
       "name":"Kenneth James",
       "email":"raterequests@alllogistics.com",
-      "tickets":132
+      "tickets":132,
+      "img": "http://localhost/file.php/avatar/25/default.jpg?size-fit=1"
     },
     {
       "id":2,
       "name":"Richard Blaine",
       "email":"hello@email.co.uk",
-      "tickets":76
+      "tickets":76,
+      "img": "http://localhost/file.php/avatar/25/default.jpg?size-fit=1"
     }
   ],
   "tickets":[

@@ -167,7 +167,7 @@ export const editTranslation = Immutable.fromJS({
 export const languages = Immutable.fromJS([
   {
     has_agent:  true,
-    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/us.png',
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/locale_en-US.png',
     has_admin:  true,
     has_user:   true,
     is_rtl:     false,
@@ -179,7 +179,7 @@ export const languages = Immutable.fromJS([
   },
   {
     has_agent:  true,
-    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/us.png',
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/locale_en-US.png',
     has_admin:  true,
     has_user:   true,
     is_rtl:     false,
@@ -191,7 +191,7 @@ export const languages = Immutable.fromJS([
   },
   {
     has_agent:  true,
-    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/us.png',
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/locale_en-US.png',
     has_admin:  true,
     has_user:   true,
     is_rtl:     false,
@@ -203,7 +203,7 @@ export const languages = Immutable.fromJS([
   },
   {
     has_agent:  true,
-    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/us.png',
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/locale_en-US.png',
     has_admin:  true,
     has_user:   true,
     is_rtl:     true,
@@ -215,7 +215,7 @@ export const languages = Immutable.fromJS([
   },
   {
     has_agent:  true,
-    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/arabic.png',
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/locale_ar.png',
     has_admin:  true,
     has_user:   true,
     is_rtl:     true,
@@ -227,7 +227,7 @@ export const languages = Immutable.fromJS([
   },
   {
     has_agent:  true,
-    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/fr.png',
+    flag_image: 'http://deskpro5.local/assets/BUILD/web/images/flags/locale_fr.png',
     has_admin:  false,
     has_user:   true,
     is_rtl:     false,
