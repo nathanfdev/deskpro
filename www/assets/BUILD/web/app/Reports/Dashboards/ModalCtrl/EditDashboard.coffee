@@ -59,9 +59,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
       $scope.is_new = true
       $scope.dashboard =
         title: '',
-        reports: [{
-          title: ''
-        }],
+        reports: [],
         is_default: false,
         is_agent: false,
         permissions: {agent: [], team: [], department: [], all: ''}
@@ -103,14 +101,17 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
     ###
     # Adds a blank report to the dashboard
     ###
-    $scope.addReport = ->
+    $scope.addReport = (reportTitle = '') ->
       $scope.did_edit_reports = true
       $scope.reports.push({
         id: Util.uid('new'),
         isNew: true,
         isAdded: true
-        title: ''
+        title: reportTitle
       })
+
+    if !dashboard_id
+      $scope.addReport('My report')
 
     ###
     # Clones all reports from specified dashboard
