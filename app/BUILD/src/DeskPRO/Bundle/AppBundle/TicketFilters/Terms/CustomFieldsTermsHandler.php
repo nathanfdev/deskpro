@@ -195,7 +195,7 @@ class CustomFieldsTermsHandler implements ValueTermHandlerInterface, SqlTermHand
                     if (!is_null($date)) {
                         if (is_string($date) && !TypeUtils::isIntLike($date)) {
                             $date = Carbon::parse($date);
-                        } elseif (is_int($date)) {
+                        } elseif (is_int($date) || TypeUtils::isIntLike($date)) {
                             $date = Carbon::parse("@$date");
                         } elseif (is_array($date)) {
                             $size = count($date);
