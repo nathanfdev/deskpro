@@ -16,11 +16,6 @@ class Imap extends \Zend\Mail\Protocol\Imap implements Loggable
     use LoggableTrait;
 
     /**
-     * @var \Orb\Log\Logger
-     */
-    protected $logger;
-
-    /**
      * @var int
      */
     protected $connect_timeout = 8;
