@@ -98,6 +98,10 @@ class CleanupHourly extends AbstractJob
 
     private function _cleanupTempAttachments()
     {
+        // this is temporary return until we will find why blobs are still is_temp = 1
+
+        return;
+
         $datetime = date('Y-m-d H:i:s', strtotime('-6 hours'));
 
         $blob_ids = App::getDb()->fetchAllCol('
