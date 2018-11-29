@@ -95,4 +95,29 @@
     color: #888;
     cursor: pointer;
   }
+
+  .bulk-add-agents {
+    margin-top: 10px;
+
+    .Select {
+      float: left;
+      width: 350px;
+
+      .Select-menu-outer {
+        .Select-option {
+          padding-left: 2em;
+        }
+        .Select-option.is-disabled {
+          cursor: default;
+          padding-left: 1em;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .button {
+      height: 35px;
+      margin-left: 10px;
+    }
+  }
 }

@@ -9,22 +9,31 @@ import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Componen
 import BackButton from '../../../../Common/Components/BackButton';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 
-
 class QueueForm extends BaseForm {
 
   static propTypes = {
-    returnBack:  PropTypes.func,
-    deleteQueue: PropTypes.func,
-    queue:       PropTypes.object,
-    agents:      PropTypes.object,
-    agentTeams:  PropTypes.object
+    returnBack:               PropTypes.func,
+    deleteQueue:              PropTypes.func,
+    agents:                   PropTypes.object,
+    agentTeams:               PropTypes.object,
+    agentGroups:              PropTypes.object,
+    chatDepartments:          PropTypes.object,
+    queues:                   PropTypes.object,
+    queueId:                  PropTypes.object,
+    loadTeamAgentsList:       PropTypes.func,
+    loadDepartmentAgentsList: PropTypes.func,
+    loadGroupAgentsList:      PropTypes.func
   };
 
   getDefaultState() {
-    const { queue } = this.props;
+    const { queueId, queues } = this.props;
     let isAllAgents = 1;
-    if (queue) {
-      isAllAgents = queue.get('is_all_agents') ? 1 : 0;
+    let queue = null;
+    if (queues && queueId) {
+      queue = queues.get(queueId);
+      if (queue) {
+        isAllAgents = queue.get('is_all_agents') ? 1 : 0;
+      }
     }
 
     return {
@@ -33,10 +42,16 @@ class QueueForm extends BaseForm {
       is_all_agents:  isAllAgents,
       answer_timeout: queue ? parseInt(queue.get('answer_timeout'), 10) : 10,
       max_queue_size: queue ? parseInt(queue.get('max_queue_size'), 10) : 1,
-      targets:        queue ? queue.get('targets').toArray().map(target => ({
-        type:   target.get('type'),
-        target: target.get('target')
-      })) : []
+      targets:        queue
+        ? queue.get('targets')
+          .toOrderedMap()
+          .sort((a, b) => a.get('sort') - b.get('sort'))
+          .toArray()
+          .map(target => ({
+            type:   target.get('type'),
+            target: target.get('target')
+          }))
+        : []
     };
   }
 
@@ -48,8 +63,15 @@ class QueueForm extends BaseForm {
   };
 
   render() {
-    const { queue, agents, agentTeams, returnBack, deleteQueue } = this.props;
+    const { queueId, queues, returnBack, deleteQueue } = this.props;
+    const { agents, agentTeams, agentGroups, chatDepartments } = this.props;
+    const { loadTeamAgentsList, loadDepartmentAgentsList, loadGroupAgentsList } = this.props;
     const { formData, saving } = this.state;
+
+    let queue = null;
+    if (queues && queueId) {
+      queue = queues.get(queueId);
+    }
 
     return (
       <div className="page user-chat">
@@ -77,7 +99,16 @@ class QueueForm extends BaseForm {
               </Field>
               {!formData.value.is_all_agents &&
               <Field select="targets">
-                <TargetsList agents={agents} agentTeams={agentTeams} />
+                <TargetsList
+                  agents={agents}
+                  agentTeams={agentTeams}
+                  agentGroups={agentGroups}
+                  chatDepartments={chatDepartments}
+                  loadTeamAgentsList={loadTeamAgentsList}
+                  loadDepartmentAgentsList={loadDepartmentAgentsList}
+                  loadGroupAgentsList={loadGroupAgentsList}
+                  isDraggable={formData.value.routing_model === 'round_robin'}
+                />
               </Field>}
 
               <button className={classNames('ui button', { loading: saving })}>
@@ -211,16 +242,80 @@ class AllAgents extends React.Component {
 class TargetsList extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.array,
-    onChange: PropTypes.func,
-    agents:   PropTypes.object
+    value:                    PropTypes.array,
+    onChange:                 PropTypes.func,
+    agents:                   PropTypes.object,
+    agentTeams:               PropTypes.object,
+    agentGroups:              PropTypes.object,
+    chatDepartments:          PropTypes.object,
+    loadTeamAgentsList:       PropTypes.func,
+    loadDepartmentAgentsList: PropTypes.func,
+    loadGroupAgentsList:      PropTypes.func,
+    isDraggable:              PropTypes.bool
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      bulkChoice: null
+    };
+  }
+
+  setBulkChoice = (bulkChoice) => {
+    this.setState({ bulkChoice });
+  };
+
+  addBulkAgents = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const { agents, value, onChange, loadTeamAgentsList, loadDepartmentAgentsList, loadGroupAgentsList } = this.props;
+    const params = this.state.bulkChoice.split('.');
+    const type = params[0];
+    const id = params[1];
+
+    let promise;
+    if (type === 'team') {
+      promise = loadTeamAgentsList(id);
+    } else if (type === 'department') {
+      promise = loadDepartmentAgentsList(id);
+    } else if (type === 'group') {
+      promise = loadGroupAgentsList(id);
+    }
+
+    if (promise) {
+      promise.success(({ data }) => {
+        const selectedAgentIds = [];
+        value.forEach((target) => {
+          if (target.type === 'agent') {
+            const agent = agents.get(target.target);
+            if (agent) {
+              selectedAgentIds.push(target.target);
+            }
+          }
+        });
+
+        data.forEach((agent) => {
+          if (selectedAgentIds.indexOf(agent.id) === -1) {
+            value.push({ type: 'agent', target: agent.id });
+          }
+        });
+
+        onChange(value);
+      });
+    }
+
+    this.setState({
+      bulkChoice: null
+    });
   };
 
   render() {
-    const { value, onChange, agents } = this.props;
+    const { value, onChange, agents, agentTeams, agentGroups, chatDepartments, isDraggable } = this.props;
     const choices = [];
-    agents.forEach((agent) => {
+    const addAgentChoice = (agent, sortable) => {
       choices.push({
+        sortable,
         value: { type: 'agent', target: agent.get('id') },
         label: (
           <div className="multi-select-label">
@@ -228,6 +323,63 @@ class TargetsList extends React.Component {
             <span>{agent.get('name')}</span>
           </div>
         )
+      });
+    };
+
+    const selectedAgentIds = [];
+    value.forEach((target) => {
+      if (target.type === 'agent') {
+        const agent = agents.get(target.target);
+        if (agent) {
+          selectedAgentIds.push(target.target);
+          addAgentChoice(agent, isDraggable);
+        }
+      }
+    });
+
+    agents.forEach((agent) => {
+      if (selectedAgentIds.indexOf(agent.get('id')) === -1) {
+        addAgentChoice(agent);
+      }
+    });
+
+    const bulkChoices = [];
+    bulkChoices.push({
+      value:    0,
+      label:    'Agent Team',
+      disabled: true
+    });
+
+    agentTeams.forEach((team) => {
+      bulkChoices.push({
+        value: `team.${team.get('id')}`,
+        label: team.get('name')
+      });
+    });
+
+    bulkChoices.push({
+      value:    0,
+      label:    'Departments',
+      disabled: true
+    });
+
+    chatDepartments.forEach((departemnt) => {
+      bulkChoices.push({
+        value: `department.${departemnt.get('id')}`,
+        label: departemnt.get('title')
+      });
+    });
+
+    bulkChoices.push({
+      value:    0,
+      label:    'Permission Groups',
+      disabled: true
+    });
+
+    agentGroups.forEach((group) => {
+      bulkChoices.push({
+        value: `group.${group.get('id')}`,
+        label: group.get('title')
       });
     });
 
@@ -240,7 +392,20 @@ class TargetsList extends React.Component {
           onChange={onChange}
         />
 
-        Bulk add agents that are members of teams, departments or permission groups
+        <div className="bulk-add-agents">
+          <span className="help-block">
+            Bulk add agents that are members of teams, departments or permission groups:
+          </span>
+          <Select
+            choices={bulkChoices}
+            value={this.state.bulkChoice}
+            onChange={this.setBulkChoice}
+            clearable={false}
+          />
+          <button className="ui basic button" onClick={this.addBulkAgents}>
+            Add
+          </button>
+        </div>
       </div>
     );
   }

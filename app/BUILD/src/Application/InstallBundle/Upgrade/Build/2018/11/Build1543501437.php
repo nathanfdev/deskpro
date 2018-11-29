@@ -39,8 +39,9 @@ class Build1543501437 extends AbstractBuild implements OnlineBuildInterface
             }
 
             $db->insert('user_chat_queues', [
-                'name'          => $roundRobin['title'],
-                'routing_model' => $routingModel,
+                'name'           => $roundRobin['title'],
+                'routing_model'  => $routingModel,
+                'answer_timeout' => 60,
             ]);
 
             $chatQueueId = $db->lastInsertId();
