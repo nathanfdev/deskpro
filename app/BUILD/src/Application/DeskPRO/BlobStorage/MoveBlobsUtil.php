@@ -146,6 +146,10 @@ class MoveBlobsUtil implements Loggable
                 break;
             }
 
+            if ($blob->getFilesize() === 0) {
+                $blob->setStorageLocPref('db');
+            }
+
             $this->logger->logDebug("{$x}. Processing blob #{$blob['id']}");
             if ($blob->storage_loc == $blob->storage_loc_pref) {
                 $this->logger->logInfo('Already using preferred storage');
