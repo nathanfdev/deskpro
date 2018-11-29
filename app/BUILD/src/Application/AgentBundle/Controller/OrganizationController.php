@@ -658,7 +658,7 @@ class OrganizationController extends AbstractController
             $file                 = new OrganizationFile();
             $file['agent']        = $this->person;
             $file['organization'] = $org;
-            $file['blob']         = $blob;
+            $file['blob']         = $blob->setIsTemp(false);
         }
         $file['note'] = $noteTxt;
 
