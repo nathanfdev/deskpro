@@ -211,14 +211,13 @@ class AllAgents extends React.Component {
 class TargetsList extends React.Component {
 
   static propTypes = {
-    value:      PropTypes.array,
-    onChange:   PropTypes.func,
-    agents:     PropTypes.object,
-    agentTeams: PropTypes.object
+    value:    PropTypes.array,
+    onChange: PropTypes.func,
+    agents:   PropTypes.object
   };
 
   render() {
-    const { value, onChange, agents, agentTeams } = this.props;
+    const { value, onChange, agents } = this.props;
     const choices = [];
     agents.forEach((agent) => {
       choices.push({
@@ -232,25 +231,17 @@ class TargetsList extends React.Component {
       });
     });
 
-    agentTeams.forEach((team) => {
-      choices.push({
-        value: { type: 'agent_team', target: team.get('id') },
-        label: (
-          <div className="multi-select-label">
-            <PersonAvatar person={team} size={16} />
-            <span>{team.get('name')}</span>
-          </div>
-        )
-      });
-    });
-
     return (
-      <MultiSelect
-        {...this.props}
-        value={value}
-        choices={choices}
-        onChange={onChange}
-      />
+      <div>
+        <MultiSelect
+          {...this.props}
+          value={value}
+          choices={choices}
+          onChange={onChange}
+        />
+
+        Bulk add agents that are members of teams, departments or permission groups
+      </div>
     );
   }
 }

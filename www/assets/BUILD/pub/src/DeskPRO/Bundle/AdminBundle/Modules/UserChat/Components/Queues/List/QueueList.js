@@ -111,10 +111,9 @@ class QueueHeader extends React.Component {
 class QueueRow extends React.Component {
 
   static propTypes = {
-    queue:      PropTypes.object,
-    agents:     PropTypes.object,
-    agentTeams: PropTypes.object,
-    editQueue:  PropTypes.func
+    queue:     PropTypes.object,
+    agents:    PropTypes.object,
+    editQueue: PropTypes.func
   };
 
   onEditQueue = (event) => {
@@ -125,7 +124,7 @@ class QueueRow extends React.Component {
   };
 
   render() {
-    const { queue, agents, agentTeams } = this.props;
+    const { queue, agents } = this.props;
     const targets = queue.get('targets') ? queue.get('targets').toOrderedMap()
       .sort((a, b) => a.get('sort') - b.get('sort'))
       .map((target) => {
@@ -133,8 +132,6 @@ class QueueRow extends React.Component {
         const id = target.get('target');
         if (type === 'agent') {
           return agents.get(id);
-        } else if (type === 'agent_team') {
-          return agentTeams.get(id);
         }
 
         return null;

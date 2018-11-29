@@ -8,7 +8,6 @@ use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepo;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgent;
-use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgentTeam;
 use DeskPRO\Bundle\VoiceBundle\Helper\ChatTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\Settings\ChatSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
@@ -289,7 +288,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueue $queue,
         TaskQueue $taskQueue,
         UserChatQueueAgent $target1,
-        UserChatQueueAgentTeam $target2,
+        UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         PersonRepo $personRepo,
         ChatTaskHelper $taskHelper,
@@ -344,7 +343,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueue $queue,
         TaskQueue $taskQueue,
         UserChatQueueAgent $target1,
-        UserChatQueueAgentTeam $target2,
+        UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         PersonRepo $personRepo,
         ChatTaskHelper $taskHelper,
@@ -399,7 +398,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueue $queue,
         TaskQueue $taskQueue,
         UserChatQueueAgent $target1,
-        UserChatQueueAgentTeam $target2,
+        UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         PersonRepo $personRepo,
         AgentTeamRepo $agentTeamRepo,
@@ -455,12 +454,12 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueue $queue,
         TaskQueue $taskQueue,
         UserChatQueueAgent $target1,
-        UserChatQueueAgentTeam $target2,
+        UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         PersonRepo $personRepo,
         Person $agent1,
         Person $agent2,
-        AgentTeam $agentTeam,
+        Person $agent3,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
@@ -472,13 +471,13 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target1->getSort()->willReturn(10);
         $target1->getAgent()->willReturn($agent1);
         $target2->getSort()->willReturn(20);
-        $target2->getAgentTeam()->willReturn($agentTeam);
+        $target2->getAgent()->willReturn($agent2);
         $target3->getSort()->willReturn(30);
-        $target3->getAgent()->willReturn($agent2);
+        $target3->getAgent()->willReturn($agent3);
 
         $agent1->getId()->willReturn(1);
         $agent2->getId()->willReturn(2);
-        $agentTeam->getMembers()->willReturn([]);
+        $agent3->getId()->willReturn(3);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_SIMULRING);
@@ -493,7 +492,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $storage->getTaskQueue('chat', 1)->willReturn($taskQueue);
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
-        $task->setWorkersIds([10])->shouldBeCalled();
+        $task->setWorkersIds([10, 30])->shouldBeCalled();
         $task->setDateExpireOffset(null)->shouldBeCalled();
 
         $this->assignTask($task, [$worker1, $worker3]);
@@ -504,25 +503,25 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueue $queue,
         TaskQueue $taskQueue,
         UserChatQueueAgent $target1,
-        UserChatQueueAgentTeam $target2,
+        UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         PersonRepo $personRepo,
         Person $agent1,
         Person $agent2,
-        AgentTeam $agentTeam,
+        Person $agent3,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
         $target1->getSort()->willReturn(10);
         $target1->getAgent()->willReturn($agent1);
         $target2->getSort()->willReturn(20);
-        $target2->getAgentTeam()->willReturn($agentTeam);
+        $target2->getAgent()->willReturn($agent2);
         $target3->getSort()->willReturn(30);
-        $target3->getAgent()->willReturn($agent2);
+        $target3->getAgent()->willReturn($agent3);
 
         $agent1->getId()->willReturn(1);
         $agent2->getId()->willReturn(2);
-        $agentTeam->getMembers()->willReturn([]);
+        $agent3->getId()->willReturn(3);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_SIMULRING);
@@ -551,7 +550,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueue $queue,
         TaskQueue $taskQueue,
         UserChatQueueAgent $target1,
-        UserChatQueueAgentTeam $target2,
+        UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage
@@ -598,7 +597,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueue $queue,
         TaskQueue $taskQueue,
         UserChatQueueAgent $target1,
-        UserChatQueueAgentTeam $target2,
+        UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage
@@ -658,7 +657,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueue $queue,
         TaskQueue $taskQueue,
         UserChatQueueAgent $target1,
-        UserChatQueueAgentTeam $target2,
+        UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage

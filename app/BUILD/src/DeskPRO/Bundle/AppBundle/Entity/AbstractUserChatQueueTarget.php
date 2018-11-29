@@ -15,8 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=30)
  * @ORM\DiscriminatorMap({
- *   "agent" = "UserChatQueueAgent",
- *   "agent_team" = "UserChatQueueAgentTeam"
+ *   "agent" = "UserChatQueueAgent"
  * })
  *
  * @JMS\ExclusionPolicy("all")
@@ -25,8 +24,7 @@ abstract class AbstractUserChatQueueTarget implements EntityInterface, NotifyPro
 {
     use NotifyPropertyChangedTrait;
 
-    const TYPE_AGENT      = 'agent';
-    const TYPE_AGENT_TEAM = 'agent_team';
+    const TYPE_AGENT = 'agent';
 
     /**
      * The unique ID.
@@ -117,8 +115,6 @@ abstract class AbstractUserChatQueueTarget implements EntityInterface, NotifyPro
         switch ($type) {
             case self::TYPE_AGENT:
                 return new UserChatQueueAgent();
-            case self::TYPE_AGENT_TEAM:
-                return new UserChatQueueAgentTeam();
             default:
                 return;
         }

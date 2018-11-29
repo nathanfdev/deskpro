@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgent;
-use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgentTeam;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\ChatTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
@@ -121,12 +120,6 @@ class ChatQueueCountListener implements EventSubscriberInterface
                 if ($target instanceof UserChatQueueAgent) {
                     if ($target->getAgent() === $agent) {
                         $incrementTargetCount($target);
-                    }
-                } elseif ($target instanceof UserChatQueueAgentTeam) {
-                    foreach ($target->getAgentTeam()->getMembers() as $member) {
-                        if ($member === $agent) {
-                            $incrementTargetCount($target);
-                        }
                     }
                 }
             }

@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\UserChat;
 
-use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget;
 use Doctrine\ORM\EntityRepository;
@@ -30,7 +29,6 @@ class UserChatQueueTargetType extends AbstractType
                 'choices_as_values' => true,
                 'choices'           => [
                     AbstractUserChatQueueTarget::TYPE_AGENT,
-                    AbstractUserChatQueueTarget::TYPE_AGENT_TEAM,
                 ],
             ])
         ;
@@ -79,13 +77,6 @@ class UserChatQueueTargetType extends AbstractType
                             'u.is_disabled = 0'
                         );
                     },
-                ]);
-
-                break;
-            case AbstractUserChatQueueTarget::TYPE_AGENT_TEAM:
-                $form->add('target', EntityType::class, [
-                    'class'         => AgentTeam::class,
-                    'property_path' => 'agentTeam',
                 ]);
 
                 break;

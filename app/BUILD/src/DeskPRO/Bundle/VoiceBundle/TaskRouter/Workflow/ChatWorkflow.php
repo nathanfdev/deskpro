@@ -2,12 +2,10 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow;
 
-use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgent;
-use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgentTeam;
 use DeskPRO\Bundle\VoiceBundle\Helper\ChatTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\Settings\ChatSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
@@ -224,16 +222,6 @@ class ChatWorkflow implements WorkflowInterface
                             if (in_array($agentId, $availableWorkerAgentIds) && isset($workerToAgentMap[$agentId])) {
                                 $workersIds[] = $workerToAgentMap[$agentId];
                             }
-                        } elseif ($orderTarget['type'] === AbstractUserChatQueueTarget::TYPE_AGENT_TEAM) {
-                            $agentTeam = $this->em->getRepository(AgentTeam::class)->find($orderTarget['id']);
-                            if ($agentTeam instanceof AgentTeam) {
-                                foreach ($agentTeam->getMembers() as $member) {
-                                    $agentId = $member->getId();
-                                    if (in_array($agentId, $availableWorkerAgentIds) && isset($workerToAgentMap[$agentId])) {
-                                        $workersIds[] = $workerToAgentMap[$agentId];
-                                    }
-                                }
-                            }
                         }
 
                         if ($workersIds) {
@@ -306,20 +294,6 @@ class ChatWorkflow implements WorkflowInterface
                                 break;
                             }
                         }
-                    } elseif ($targetType === AbstractUserChatQueueTarget::TYPE_AGENT_TEAM) {
-                        $agentTeam = $this->em->getRepository(AgentTeam::class)->find($chatCount['target']['id']);
-                        if ($agentTeam instanceof AgentTeam) {
-                            foreach ($agentTeam->getMembers() as $member) {
-                                $agentId = $member->getId();
-                                if (isset($workerToAgentMap[$agentId])) {
-                                    $workerIds[] = $workerToAgentMap[$agentId];
-                                }
-
-                                if (count($workerIds) >= $chatQueue->getMaxQueueSize()) {
-                                    break;
-                                }
-                            }
-                        }
                     }
                 }
 
@@ -336,13 +310,6 @@ class ChatWorkflow implements WorkflowInterface
 
                         if (in_array($agentId, $availableWorkerAgentIds) && isset($workerToAgentMap[$agentId])) {
                             $workersIds[] = $workerToAgentMap[$agentId];
-                        }
-                    } elseif ($target instanceof UserChatQueueAgentTeam) {
-                        foreach ($target->getAgentTeam()->getMembers() as $member) {
-                            $agentId = $member->getId();
-                            if (in_array($agentId, $availableWorkerAgentIds) && isset($workerToAgentMap[$agentId])) {
-                                $workersIds[] = $workerToAgentMap[$agentId];
-                            }
                         }
                     }
                 }
