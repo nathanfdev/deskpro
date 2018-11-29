@@ -106,18 +106,34 @@ class NewArticle
             }
         }
 
-        // Message Attachments
-        foreach ($this->blob_inline_ids as $blob_id) {
-            /** @var Blob|null $blob */
-            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
-            if ($blob && StringUtils::ensureAttachment($blob, $article->getContentHtml())) {
-                $this->_em->persist($blob->setIsTemp(false));
-            }
-        }
+        $this->processInlineBlobs($article->getContentHtml());
 
         $this->_em->flush();
         $this->_em->commit();
         $this->_article = $article;
+    }
+
+    /**
+     * @param string $content
+     */
+    private function processInlineBlobs($content)
+    {
+        $blobAuthcodes  = StringUtils::gatherInlineAttachments($content);
+        $blobRepository = $this->_em->getRepository(Blob::class);
+        // these we found via html
+        $inlineBlobs = $blobRepository->getByAuthCodes($blobAuthcodes);
+        foreach ($inlineBlobs as $blob) {
+            $this->_em->persist($blob->setIsTemp(false));
+        }
+
+        // Message Attachments
+        foreach ($this->blob_inline_ids as $blob_id) {
+            /** @var Blob|null $blob */
+            $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
+            if ($blob && StringUtils::ensureAttachment($blob, $content)) {
+                $this->_em->persist($blob->setIsTemp(false));
+            }
+        }
     }
 
     public function getArticle()

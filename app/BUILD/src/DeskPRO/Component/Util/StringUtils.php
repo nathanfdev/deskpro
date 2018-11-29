@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Component\Util;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 
 /**
@@ -257,5 +258,32 @@ class StringUtils
         $matches = $matches ?: RegexUtils::safePregMatch('#<img[^>]+'.$embedBlobImg.'[^>]>#', $text);
 
         return $matches;
+    }
+
+    /**
+     * @param string       $text       html text which will be checked for blobs
+     * @param string|false $urlPattern an url template for blobs
+     *
+     * @return array
+     */
+    public static function gatherInlineAttachments($text, $urlPattern = false)
+    {
+        $sets = [];
+        $sets = array_merge($sets, RegexUtils::getAllMatchSets('#dp-embed-blob-a-([a-zA-Z0-9]+)#', $text) ?: []);
+        $sets = array_merge($sets, RegexUtils::getAllMatchSets('#dp-embed-blob-img-([a-zA-Z0-9]+)#', $text) ?: []);
+        if (!$urlPattern) {
+            $urlPattern = App::get('router')->generate('serve_blob', ['blob_auth_id' => '00000', 'filename' => '11111'], true);
+        }
+        $url       = preg_quote($urlPattern);
+        $url       = str_replace('00000', '([a-zA-Z0-9-]+)', $url);
+        $url       = str_replace('11111', '[a-zA-Z0-9-_]+\.[a-z0-9A-Z]{1,4}', $url);
+        $urlRegexp = '#'.$url.'#';
+        $sets      = array_merge($sets, RegexUtils::getAllMatchSets($urlRegexp, $text) ?: []);
+
+        return array_filter(array_map(function ($set) {
+            return isset($set[1]) ? $set[1] : null;
+        }, $sets), function ($match) {
+            return $match == true;
+        });
     }
 }

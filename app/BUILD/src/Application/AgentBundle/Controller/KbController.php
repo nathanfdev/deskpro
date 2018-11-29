@@ -456,13 +456,7 @@ class KbController extends AbstractController
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html');
 
-                $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
-                $inlineBlobs   = $blob   = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
-                foreach ($inlineBlobs as $blob) {
-                    if ($blob && StringUtils::ensureAttachment($blob, $content)) {
-                        $this->em->persist($blob->setIsTemp(false));
-                    }
-                }
+                $this->processInlineBlobs($content);
 
                 $contentInfo = Strings::parseImageDataUrls($content);
 
@@ -577,6 +571,30 @@ class KbController extends AbstractController
         }
 
         return $this->createJsonResponse($data);
+    }
+
+    /**
+     * @param string $content
+     */
+    private function processInlineBlobs($content)
+    {
+        $blobAuthcodes = StringUtils::gatherInlineAttachments($content);
+
+        $blobRepository = $this->em->getRepository(Blob::class);
+        // these we found via html
+        $inlineBlobs = $blobRepository->getByAuthCodes($blobAuthcodes);
+        foreach ($inlineBlobs as $blob) {
+            $this->em->persist($blob->setIsTemp(false));
+        }
+
+        // these we found via request params, we're going to check they are really there
+        $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
+        $inlineBlobs   = $blobRepository->findBy(['id' => $inlineBlobIds]);
+        foreach ($inlineBlobs as $blob) {
+            if ($blob && StringUtils::ensureAttachment($blob, $content)) {
+                $this->em->persist($blob->setIsTemp(false));
+            }
+        }
     }
 
     public function ajaxSaveCustomFieldsAction($article_id)
