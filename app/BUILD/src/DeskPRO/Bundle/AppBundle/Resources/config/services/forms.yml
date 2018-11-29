@@ -283,6 +283,8 @@ services:
       - "@language_manager"
       - "@security.token_storage"
       - "@doctrine.orm.default_entity_manager"
+      - "@attachment_helper"
+      -
       - "@?api_client_info"
     tags:
       - { name: form.type }

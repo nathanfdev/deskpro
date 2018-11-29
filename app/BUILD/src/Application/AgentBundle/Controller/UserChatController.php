@@ -23,7 +23,6 @@ use Application\DeskPRO\Searcher\ChatConversationSearch;
 use Application\DeskPRO\Searcher\SearcherAbstract;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
-use DeskPRO\Component\Util\StringUtils;
 use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
@@ -538,14 +537,7 @@ class UserChatController extends AbstractController
                 $content = Strings::trimHtml($this->in->getHtmlCore('content'));
                 $content = Strings::prepareWysiwygHtml($content);
 
-                if ($inlineBlobIds = $this->in->getArrayOfInts('blob_inline_ids')) {
-                    $blobs = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
-                    foreach ($blobs as $blob) {
-                        if (StringUtils::ensureAttachment($blob, $content)) {
-                            $blob->setIsTemp(false);
-                        }
-                    }
-                }
+                $this->get('attachment_helper')->processInlineBlobs($content, $this->in->getArrayOfInts('blob_inline_ids'));
             } else {
                 $content = $this->in->getString('content');
             }

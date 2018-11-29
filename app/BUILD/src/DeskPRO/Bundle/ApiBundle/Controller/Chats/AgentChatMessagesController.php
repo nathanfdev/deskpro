@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Chats;
 
-use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
@@ -16,7 +15,6 @@ use DeskPRO\Bundle\AppBundle\Form\Type\AgentChat\AgentMarkMessageType;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkAllMessagesEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\AgentChat\MarkMessageEvent;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
-use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -245,14 +243,8 @@ class AgentChatMessagesController extends CrudSubController
     protected function persistModel($model, FormInterface $form = null)
     {
         /** @var AgentChatMessage $model */
-        $blobs        = $form->getConfig()->getOption('blobs');
-        $em           = $this->get('doctrine.orm.default_entity_manager');
-        $blobEntities = $em->getRepository(Blob::class)->findBy(['id' => $blobs]);
-        foreach ($blobEntities as $blobEntity) {
-            if (StringUtils::ensureAttachment($blobEntity, $model->getMessage())) {
-                $em->persist($blobEntity->setIsTemp(false));
-            }
-        }
+        $blobs = $form->getConfig()->getOption('blobs', []);
+        $this->get('attachment_helper')->processInlineBlobs($model->getMessage(), $blobs);
 
         return parent::persistModel($model);
     }

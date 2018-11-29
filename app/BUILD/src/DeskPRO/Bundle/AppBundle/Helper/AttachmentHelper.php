@@ -31,6 +31,8 @@ class AttachmentHelper
     /**
      * @param string $content
      * @param array  $blobIds
+     *
+     * @return Blob[]
      */
     public function processInlineBlobs($content, $blobIds = [])
     {
@@ -38,8 +40,8 @@ class AttachmentHelper
         /** @var BlobRepository $blobRepository */
         $blobRepository = $this->em->getRepository(Blob::class);
         // these we found via html
-        $inlineBlobs = $blobRepository->getByAuthCodes($blobAuthcodes);
-        foreach ($inlineBlobs as $blob) {
+        $allBlobs = $inlineBlobsInMessage = $blobRepository->getByAuthCodes($blobAuthcodes) ?: [];
+        foreach ($inlineBlobsInMessage as $blob) {
             $this->em->persist($blob->setIsTemp(false));
         }
 
@@ -52,6 +54,11 @@ class AttachmentHelper
                     $this->em->persist($blob->setIsTemp(false));
                 }
             }
+            $allBlobs = array_merge($allBlobs, $inlineBlobs);
         }
+
+        return array_filter($allBlobs, function (Blob $blob) {
+            return !$blob->isTemp();
+        });
     }
 }
