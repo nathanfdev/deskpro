@@ -171,10 +171,8 @@ class ChatHandler
      */
     private function handleChatHistoryCommand(ChatConversation $chat, array $request)
     {
-        $chatMapper = $this->chatMapper;
-
         return array_values(array_map(
-            function ($message) use ($chatMapper) {
+            function ($message) {
                 return $this->chatMapper->mapMessageToArray($message);
             },
             array_filter($chat->getMessages()->toArray(), function ($message) {

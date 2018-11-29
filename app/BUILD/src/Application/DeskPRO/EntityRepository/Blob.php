@@ -35,6 +35,8 @@ class Blob extends AbstractEntityRepository
     /**
      * @param string $auth_code
      *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
      * @return \Application\DeskPRO\Entity\Blob|null
      */
     public function getByAuthCode($auth_code)
@@ -46,6 +48,11 @@ class Blob extends AbstractEntityRepository
         ')->setParameters([$auth_code])->getOneOrNullResult();
     }
 
+    /**
+     * @param array $auth_codes
+     *
+     * @return \Application\DeskPRO\Entity\Blob[]|null
+     */
     public function getByAuthCodes($auth_codes)
     {
         $auth_codes = (array) $auth_codes;

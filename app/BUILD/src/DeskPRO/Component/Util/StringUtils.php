@@ -281,7 +281,7 @@ class StringUtils
         $sets      = array_merge($sets, RegexUtils::getAllMatchSets($urlRegexp, $text) ?: []);
 
         return array_filter(array_map(function ($set) {
-            return isset($set[1]) ? $set[1] : null;
+            return isset($set[1]) ? preg_quote($set[1]) : null;
         }, $sets), function ($match) {
             return $match == true;
         });

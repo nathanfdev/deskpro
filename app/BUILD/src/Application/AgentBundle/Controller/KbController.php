@@ -21,7 +21,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
-use DeskPRO\Component\Util\StringUtils;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
@@ -456,7 +455,9 @@ class KbController extends AbstractController
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html');
 
-                $this->processInlineBlobs($content);
+                $this
+                    ->get('attachment_helper')
+                    ->processInlineBlobs($content, $this->in->getCleanValueArray('blob_inline_ids', 'int'));
 
                 $contentInfo = Strings::parseImageDataUrls($content);
 
@@ -571,30 +572,6 @@ class KbController extends AbstractController
         }
 
         return $this->createJsonResponse($data);
-    }
-
-    /**
-     * @param string $content
-     */
-    private function processInlineBlobs($content)
-    {
-        $blobAuthcodes = StringUtils::gatherInlineAttachments($content);
-
-        $blobRepository = $this->em->getRepository(Blob::class);
-        // these we found via html
-        $inlineBlobs = $blobRepository->getByAuthCodes($blobAuthcodes);
-        foreach ($inlineBlobs as $blob) {
-            $this->em->persist($blob->setIsTemp(false));
-        }
-
-        // these we found via request params, we're going to check they are really there
-        $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
-        $inlineBlobs   = $blobRepository->findBy(['id' => $inlineBlobIds]);
-        foreach ($inlineBlobs as $blob) {
-            if ($blob && StringUtils::ensureAttachment($blob, $content)) {
-                $this->em->persist($blob->setIsTemp(false));
-            }
-        }
     }
 
     public function ajaxSaveCustomFieldsAction($article_id)

@@ -16,3 +16,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@widget_settings_resolver"
       - "@brand_stack"
+  attachment_helper:
+    class: DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper
+    arguments:
+      - "@doctrine.orm.default_entity_manager"

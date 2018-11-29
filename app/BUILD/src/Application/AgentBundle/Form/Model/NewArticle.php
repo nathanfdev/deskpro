@@ -11,7 +11,6 @@ use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Component\Util\StringUtils;
 
 class NewArticle
 {
@@ -106,34 +105,11 @@ class NewArticle
             }
         }
 
-        $this->processInlineBlobs($article->getContentHtml());
+        App::get('attachment_helper')->processInlineBlobs($article->getContentHtml(), $this->blob_inline_ids);
 
         $this->_em->flush();
         $this->_em->commit();
         $this->_article = $article;
-    }
-
-    /**
-     * @param string $content
-     */
-    private function processInlineBlobs($content)
-    {
-        $blobAuthcodes  = StringUtils::gatherInlineAttachments($content);
-        $blobRepository = $this->_em->getRepository(Blob::class);
-        // these we found via html
-        $inlineBlobs = $blobRepository->getByAuthCodes($blobAuthcodes);
-        foreach ($inlineBlobs as $blob) {
-            $this->_em->persist($blob->setIsTemp(false));
-        }
-
-        // Message Attachments
-        foreach ($this->blob_inline_ids as $blob_id) {
-            /** @var Blob|null $blob */
-            $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
-            if ($blob && StringUtils::ensureAttachment($blob, $content)) {
-                $this->_em->persist($blob->setIsTemp(false));
-            }
-        }
     }
 
     public function getArticle()
