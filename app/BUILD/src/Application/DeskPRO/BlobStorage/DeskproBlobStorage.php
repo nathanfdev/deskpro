@@ -1131,6 +1131,11 @@ class DeskproBlobStorage implements Loggable
      */
     public function createCache(BlobEntity $blob, $fileData)
     {
+        // prevents runaway caching
+        if (count($this->cachedFiles) >= 250) {
+            return;
+        }
+
         $cache               = $this->getCachePath($blob);
         $this->cachedFiles[] = $cache;
         $result              = @file_put_contents($cache, $fileData);
