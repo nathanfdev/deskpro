@@ -18,6 +18,7 @@ use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -72,8 +73,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property string                              $creation_system_option
  * @property string                              $ticket_hash
  * @property string                              $status
- * @property string                              $hidden_status
- * @property bool                                $is_hold
+ * @property TicketStatus                        $ticket_status
  * @property int                                 $urgency
  * @property int                                 $feedback_rating
  * @property \DateTime                           $date_feedback_rating
@@ -353,8 +353,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $status;
 
     /**
-     * @var string
+     * @var TicketStatus
      */
+    protected $ticket_status = null;
+
     protected $hidden_status = null;
 
     /**
@@ -3209,6 +3211,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return string
+     */
+    public function getTicketStatus()
+    {
+        return $this->ticket_status;
+    }
+
+    /**
+     * @param TicketStatus $ticket_status
+     *
+     * @return $this
+     */
+    public function setTicketStatus(TicketStatus $ticket_status = null)
+    {
+        $this->setModelField('ticket_status', $ticket_status);
+
+        return $this;
+    }
+
+    /**
      * Set date created.
      *
      * @param \DateTime $dateCreated
@@ -4192,6 +4214,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'creation_system_option' => $this->creation_system_option,
             'ticket_hash'            => $this->ticket_hash,
             'status'                 => $this->status,
+            'ticket_status'          => $this->ticket_status,
             'hidden_status'          => $this->hidden_status,
             'is_hold'                => $this->is_hold,
             'urgency'                => $this->urgency,
@@ -4899,7 +4922,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 'indexes' => [
                     'date_created_idx' => ['columns' => ['date_created']],
                     'date_locked_idx'  => ['columns' => ['date_locked']],
-                    'status_idx'       => ['columns' => ['status']],
+                    'status_idx'       => ['columns' => ['status', 'ticket_status_id']],
                 ],
                 'uniqueConstraints' => [
                     'ref_idx' => ['columns' => ['ref']],
@@ -4988,21 +5011,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 'nullable'   => false,
             ]
         );
-        $metadata->mapField(
+        $metadata->mapManyToOne(
             [
-                'fieldName'  => 'hidden_status',
-                'columnName' => 'hidden_status',
-                'type'       => 'string',
-                'length'     => 30,
-                'nullable'   => true,
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'is_hold',
-                'columnName' => 'is_hold',
-                'type'       => 'boolean',
-                'nullable'   => false,
+                'fieldName'    => 'ticket_status',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketStatus',
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'ticket_status_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
         $metadata->mapField(

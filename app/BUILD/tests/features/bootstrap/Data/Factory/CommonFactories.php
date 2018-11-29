@@ -22,6 +22,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Form\Type\CustomFields\ContextualChoiceType;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DpBehat\Data\DataContext;
 
 /**
@@ -314,6 +315,28 @@ class CommonFactories
         $comment = new TaskComment($me, '');
 
         return SimpleFactory::provide($comment, $data);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Exception
+     *
+     * @return TicketStatus
+     */
+    public static function ticketStatus(array $data)
+    {
+        if (!isset($data['statustype'])) {
+            throw new \Exception('Specify `StatusType` field to create TicketStatus');
+        }
+
+        $ticketStatus = new TicketStatus($data['statustype']);
+        unset($data['statustype']);
+
+        return SimpleFactory::provide($ticketStatus, $data);
     }
 
     public static function ticketFilterSetAssoc(array $data)
