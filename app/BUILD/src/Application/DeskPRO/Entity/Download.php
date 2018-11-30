@@ -11,10 +11,12 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -770,6 +772,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
         );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
+        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 
     /**

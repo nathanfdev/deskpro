@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\Helper;
 
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
 use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
@@ -60,5 +62,22 @@ class AttachmentHelper
         return array_filter($allBlobs, function (Blob $blob) {
             return !$blob->isTemp();
         });
+    }
+
+    /**
+     * @param $entity
+     */
+    public function verifyBlobs($entity)
+    {
+        $content = null;
+        if ($entity instanceof TicketMessage) {
+            $content = $entity->getMessageHtml();
+        } elseif ($entity instanceof ContentAbstract) {
+            $content = $entity->getContentHtml();
+        }
+
+        if ($content) {
+            $this->processInlineBlobs($content);
+        }
     }
 }

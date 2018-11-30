@@ -12,11 +12,13 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\PersistentCollection;
@@ -1340,5 +1342,7 @@ class TicketMessage extends DomainObject
                 'cascade'      => ['persist'],
             ]
         );
+        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 }

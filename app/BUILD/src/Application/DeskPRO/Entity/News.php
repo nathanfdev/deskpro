@@ -11,10 +11,12 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DateTime;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -610,6 +612,8 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
+        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 
     /**

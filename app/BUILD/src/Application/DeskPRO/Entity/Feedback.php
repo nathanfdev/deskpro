@@ -12,10 +12,12 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Labels\LabelManager;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -1014,6 +1016,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
+        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 
     protected function getUpdateFields()
