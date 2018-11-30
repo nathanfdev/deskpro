@@ -60,10 +60,11 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         ');
 
         $h_stats = $this->db->fetchAllKeyValue("
-            SELECT hidden_status, COUNT(*)
-            FROM tickets
-            WHERE status = 'hidden' AND hidden_status IS NOT NULL
-            GROUP BY hidden_status
+            SELECT ts.sys_id, COUNT(*)
+            FROM tickets t
+            INNER JOIN ticket_statuses ts ON t.ticket_status_id = ts.id
+            WHERE t.status = 'hidden' AND ts.sys_id IN ('spam', 'deleted')
+            GROUP BY ts.sys_id
         ");
         foreach ($h_stats as $s => $c) {
             $stats['hidden_'.$s] = $c;

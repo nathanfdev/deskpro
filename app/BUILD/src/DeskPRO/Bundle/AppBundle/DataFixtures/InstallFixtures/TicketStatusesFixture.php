@@ -21,6 +21,8 @@ class TicketStatusesFixture extends AbstractDpFixture
         $spam = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
         $spam->setSysId('spam');
         $spam->setTitle('Spam');
-        $spam->persist($spam);
+        $manager->persist($spam);
+
+        $manager->flush();
     }
 }

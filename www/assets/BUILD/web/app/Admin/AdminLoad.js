@@ -104,6 +104,8 @@ define([
   'Admin/TicketStatuses/Ctrl/EditHiddenSpam',
   'Admin/TicketStatuses/Ctrl/EditHiddenValidating',
   'Admin/TicketStatuses/Ctrl/EditResolved',
+  'Admin/TicketStatuses/Ctrl/Edit',
+  'Admin/TicketStatuses/Ctrl/EditPending',
   'Admin/TicketTriggers/Ctrl/EditDepartmentTrigger',
   'Admin/TicketTriggers/Ctrl/EditEmailAccountTrigger',
   'Admin/TicketTriggers/Ctrl/EditSatisfactionTrigger',

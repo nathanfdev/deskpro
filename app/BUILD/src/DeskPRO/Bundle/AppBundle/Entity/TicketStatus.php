@@ -151,6 +151,9 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
      */
     public function setSysId($sysId)
     {
+        if ($sysId === '') {
+            $sysId = null;
+        }
         $this->setModelField('sysId', $sysId);
 
         return $this;
