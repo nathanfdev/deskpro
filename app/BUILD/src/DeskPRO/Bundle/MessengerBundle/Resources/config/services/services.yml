@@ -15,6 +15,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@event_dispatcher"
       - "@brand_stack"
+      - "@attachment_helper"
 
   messenger.service.action_alerts:
     class: DeskPRO\Bundle\MessengerBundle\Service\ActionAlertsService

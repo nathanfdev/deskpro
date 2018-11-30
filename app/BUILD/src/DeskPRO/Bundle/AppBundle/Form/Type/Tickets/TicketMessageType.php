@@ -67,7 +67,7 @@ class TicketMessageType extends AbstractType
     private $em;
 
     /**
-     * @var
+     * @var AttachmentHelper
      */
     private $attachmentHelper;
 
@@ -89,9 +89,9 @@ class TicketMessageType extends AbstractType
     ) {
         $this->languageManager  = $languageManager;
         $this->tokenStorage     = $tokenStorage;
-        $this->apiClientInfo    = $apiClientInfo;
         $this->em               = $em;
         $this->attachmentHelper = $attachmentHelper;
+        $this->apiClientInfo    = $apiClientInfo;
     }
 
     /**
