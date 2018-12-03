@@ -2044,23 +2044,6 @@ define(function() {
   });
 
   //###
-  //# Round Robin
-  //###
-  routes.push({
-    id: 'chat.roundrobin',
-    url: '/roundrobin',
-    templateName: 'ChatRoundRobin/list.html',
-    controller: 'Admin_ChatRoundRobin_Ctrl_List'
-  });
-
-  routes.push({
-    id: 'chat.roundrobin.edit',
-    url: '/{id:.*}',
-    templateName: 'ChatRoundRobin/edit.html',
-    controller: 'Admin_ChatRoundRobin_Ctrl_Edit'
-  });
-
-  //###
   //# Chat Queues
   //###
   routes.push({
