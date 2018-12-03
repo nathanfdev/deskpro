@@ -153,7 +153,12 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       return d.promise
 
     saveSettings: (skipCloudCheck) ->
-      if !@settings.deskpro_url.match(/^https?:\/\//i)
+      if (!@settings.deskpro_name)
+        @Growl.error "You must specify a name"
+        $('#helpdesk_name').focus()
+        return false
+
+      if @settings.deskpro_url and !@settings.deskpro_url.match(/^https?:\/\//i)
         @settings.deskpro_url = 'https://' + @settings.deskpro_url
 
       @startSpinner()
@@ -171,7 +176,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         checkP = d.promise
 
       checkP.then(=>
-        @portalSettings.updateSettings(@settings).then(=>
+        @portalSettings.updateSettings(@settings).then((s) =>
+          @settings = s
           @originalUrl == @settings.deskpro_url
           @stopSpinner()
           @$scope.$emit 'dp-update-brands'
@@ -195,19 +201,21 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         else if @settings.deskpro_url
           @settings.deskpro_name = @settings.deskpro_url.replace(/^https?:\/\//i, '').replace(/\/+$/, '')
 
-      if (!@settings.deskpro_name || !@settings.deskpro_url)
-        @Growl.error "You must specify a name and a url"
+      if (!@settings.deskpro_name)
+        @Growl.error "You must specify a name"
         $('#helpdesk_name').focus()
-        @stopSpinner()
         return false
 
-      if !@settings.deskpro_url.match(/^https?:\/\//i)
+      if @settings.deskpro_url and !@settings.deskpro_url.match(/^https?:\/\//i)
         @settings.deskpro_url = 'https://' + @settings.deskpro_url
 
       brand = {
         name: @settings.deskpro_name,
-        url: @settings.deskpro_url
+        slug: @settings.brand_slug
       }
+
+      if @settings.deskpro_url
+        brand.url = @settings.deskpro_url
 
       @startSpinner()
 

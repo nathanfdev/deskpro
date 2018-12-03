@@ -130,7 +130,7 @@ security:
 
     access_control:
         - { path: ^/admin-preview-[0-9]+/, roles: [ROLE_ADMIN, ROLE_PREVIOUS_ADMIN] }
-        - { path: ^/(brand-[0-9]+/[a-z]+)?portal/api/style/(edit-theme-set|variable-groups), roles: [ROLE_ADMIN] }
+        - { path: ^/(b/[\w\d-]+/[a-z]+)?portal/api/style/(edit-theme-set|variable-groups), roles: [ROLE_ADMIN] }
         - { path: template_editor, roles: [ROLE_ADMIN] }
         - { path: ^/_internal/, roles: [ROLE_ADMIN] }
 
@@ -178,7 +178,7 @@ fos_rest:
             forms: false
     format_listener:
         rules:
-            - { path: '^/(brand-[0-9]+/)?(\w+/)?portal/api/', priorities: ['json', 'js', 'jsonp'], fallback_format: json, prefer_extension: true }
+            - { path: '^/(b/[\w\d-]+/)?(\w+/)?portal/api/', priorities: ['json', 'js', 'jsonp'], fallback_format: json, prefer_extension: true }
             - { path: '^/', stop: true }
     exception:
         # disabled because this is portal and we want to use portal exception handler

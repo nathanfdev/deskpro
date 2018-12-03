@@ -19,7 +19,11 @@ services:
 
   language_changer:
     class: DeskPRO\Bundle\PortalBundle\Helper\LanguageChanger
-    arguments: ["@router", "@language_manager", "@portal_mode_storage"]
+    arguments:
+      - "@router"
+      - "@router"
+      - "@language_manager"
+      - "@request_brand_corrector"
 
   icon_factory:
     class: DeskPRO\Bundle\PortalBundle\View\PortalIconFactory

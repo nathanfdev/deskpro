@@ -136,7 +136,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
     public function getAvatarUrl($size = 50)
     {
         if (!$this->hasAvatar()) {
-            return App::get('router.default')->generate(
+            return App::get('router')->generate(
                 'serve_default_picture',
                 [
                     's'        => $size,

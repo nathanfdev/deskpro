@@ -12,6 +12,9 @@ use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Input\Cleaner\Cleaner;
 
+/**
+ * Class ChatMapper.
+ */
 class ChatMapper
 {
     /**
@@ -43,6 +46,13 @@ class ChatMapper
         $this->avatarResolver = $avatarResolver;
     }
 
+    /**
+     * @param mixed $data
+     *
+     * @throws MessengerApiException
+     *
+     * @return ChatMessage
+     */
     public function createChatMessage($data)
     {
         $message = new ChatMessage();
@@ -99,6 +109,11 @@ class ChatMapper
         return $message;
     }
 
+    /**
+     * @param ChatMessage $message
+     *
+     * @return array
+     */
     public function mapMessageToArray(ChatMessage $message)
     {
         $metadata = $message->getMetadata();
@@ -136,6 +151,8 @@ class ChatMapper
     /**
      * @param ChatConversation $chat
      * @param array            $request
+     *
+     * @throws \Exception
      *
      * @return ChatMessage
      */

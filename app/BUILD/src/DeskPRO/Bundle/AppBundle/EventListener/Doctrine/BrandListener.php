@@ -7,6 +7,8 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Orb\Util\Strings;
 
 /**
  * Class BrandListener.
@@ -36,6 +38,45 @@ class BrandListener
     }
 
     /**
+     * @internal
+     *
+     * @param Brand $entity
+     */
+    public function prePersist(Brand $entity)
+    {
+        if (!$entity->getSlug()) {
+            $entity->setSlug($this->slugifyName($entity));
+        }
+
+        $this->validateSlug($entity);
+        $this->ensureUniqueSlug($entity);
+        $this->unsetEmptyUrl($entity);
+    }
+
+    /**
+     * @internal
+     *
+     * @param Brand              $entity
+     * @param PreUpdateEventArgs $args
+     */
+    public function preUpdate(Brand $entity, PreUpdateEventArgs $args)
+    {
+        // we updated name but not slug
+        // update slug as well based on the new brand name
+        if (!$entity->getSlug()
+            || (!$args->hasChangedField('slug') && $args->hasChangedField('name') && $entity->getName())
+        ) {
+            $entity->setSlug($this->slugifyName($entity));
+        }
+
+        $this->validateSlug($entity);
+        $this->ensureUniqueSlug($entity);
+        $this->unsetEmptyUrl($entity);
+    }
+
+    /**
+     * @internal
+     *
      * @param Brand $entity
      */
     public function preRemove(Brand $entity)
@@ -118,6 +159,79 @@ class BrandListener
                 ->getQuery()
                 ->execute()
             ;
+        }
+    }
+
+    /**
+     * @param Brand $entity
+     */
+    private function ensureUniqueSlug(Brand $entity)
+    {
+        $originalSlug = $entity->getSlug();
+        if (!$originalSlug) {
+            $originalSlug = $this->slugifyName($entity);
+        }
+
+        $i    = 1;
+        $slug = $originalSlug;
+        while (!$this->isSlugUnique($slug, $entity)) {
+            // if expected slug is not valid, keep incrementing a value at the end until we get something valid
+            $slug = sprintf('%s-%d', $originalSlug, ++$i);
+        }
+
+        $entity->setSlug($slug);
+    }
+
+    /**
+     * @param Brand $entity
+     *
+     * @return string
+     */
+    private function slugifyName(Brand $entity)
+    {
+        $name = $entity->getName();
+        if (!$name && $entity->getId()) {
+            $name = 'Brand '.$entity->getId();
+        }
+
+        return substr(Strings::slugifyTitle($name), 0, 94) ?: '';
+    }
+
+    /**
+     * @param string $newSlug
+     * @param Brand  $entity
+     *
+     * @return bool
+     */
+    private function isSlugUnique($newSlug, Brand $entity)
+    {
+        $existingBrand = $this->em->getRepository(Brand::class)->findOneBy([
+            'slug' => $newSlug,
+        ]);
+
+        if ($existingBrand && $entity !== $existingBrand) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param Brand $entity
+     */
+    private function validateSlug(Brand $entity)
+    {
+        $entity->setSlug(Strings::slugifyTitle($entity->getSlug()));
+    }
+
+    /**
+     * @param Brand $entity
+     */
+    private function unsetEmptyUrl(Brand $entity)
+    {
+        // if no url then force set it to NULL to prevent unique constraint errors
+        if (!$entity->getUrl()) {
+            $entity->setUrl(null);
         }
     }
 }

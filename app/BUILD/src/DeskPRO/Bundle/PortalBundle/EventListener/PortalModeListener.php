@@ -32,6 +32,13 @@ class PortalModeListener implements EventSubscriberInterface, SkipLowRequestInte
      */
     private $logger;
 
+    /**
+     * Constructor.
+     *
+     * @param PortalModeFactory $factory
+     * @param PortalModeStorage $store
+     * @param LoggerInterface   $logger
+     */
     public function __construct(PortalModeFactory $factory, PortalModeStorage $store, LoggerInterface $logger)
     {
         $this->factory = $factory;
@@ -39,6 +46,9 @@ class PortalModeListener implements EventSubscriberInterface, SkipLowRequestInte
         $this->logger  = $logger;
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function onKernelRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest() || IsProxyRequestHelper::check($event->getRequest())) {
@@ -64,6 +74,9 @@ class PortalModeListener implements EventSubscriberInterface, SkipLowRequestInte
         $this->logMode($mode);
     }
 
+    /**
+     * @param PortalMode $mode
+     */
     protected function logMode(PortalMode $mode)
     {
         $this->logger->info(sprintf('setting portal mode to "%s"', $mode));

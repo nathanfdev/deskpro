@@ -9,7 +9,6 @@ use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\BrandListener;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use JMS\Serializer\Annotation as JMS;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -20,16 +19,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @property Blob   $logo_blob
  *
  * @UniqueEntity("url")
- *
- * @JMS\ExclusionPolicy("ALL")
  */
 class Brand extends DomainObject
 {
     /**
      * The unique ID.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -38,18 +32,17 @@ class Brand extends DomainObject
     /**
      * The brand name.
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $slug;
+
+    /**
      * The brand url.
-     *
-     * @JMS\Expose()
-     * @JMS\Type("string")
      *
      * @var string
      */
@@ -128,10 +121,34 @@ class Brand extends DomainObject
 
     /**
      * @param string $name
+     *
+     * @return $this
      */
     public function setName($name)
     {
         $this->setModelField('name', $name);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     *
+     * @return $this
+     */
+    public function setSlug($slug)
+    {
+        $this->setModelField('slug', $slug);
+
+        return $this;
     }
 
     /**
@@ -144,10 +161,14 @@ class Brand extends DomainObject
 
     /**
      * @param string $url
+     *
+     * @return $this
      */
     public function setUrl($url)
     {
         $this->setModelField('url', $url);
+
+        return $this;
     }
 
     /**
@@ -233,10 +254,13 @@ class Brand extends DomainObject
 
         $builder->mapId();
         $builder->mapString('name');
+        $builder->mapString('slug', 255, false, true);
         $builder->mapString('url', 255, true, true);
         $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->build();
         $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
 
+        $metadata->addEntityListener(Events::prePersist, BrandListener::class, Events::prePersist);
+        $metadata->addEntityListener(Events::preUpdate, BrandListener::class, Events::preUpdate);
         $metadata->addEntityListener(Events::preRemove, BrandListener::class, Events::preRemove);
         $metadata->mapManyToMany(
             [

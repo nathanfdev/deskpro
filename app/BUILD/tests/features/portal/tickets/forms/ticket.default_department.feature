@@ -2,9 +2,8 @@
 Feature: Check default department for brand
 
   Background:
-    Given I'm authenticated as user
-    And I have only default brand
-    And user has defaultBrand brand
+    Given I have only default brand
+    And I'm authenticated as user
     And the default brand is using the standard theme
     And the only default ticket layout exists with fields:
       | user_layout |

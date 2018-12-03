@@ -55,6 +55,15 @@ class GeneralSettings extends AbstractBrandAwareSettings
     private $deskproUrl;
 
     /**
+     * Brand slug.
+     *
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $brandSlug;
+
+    /**
      * Application feedback enabled.
      *
      * @var bool
@@ -220,6 +229,26 @@ class GeneralSettings extends AbstractBrandAwareSettings
     public function setDeskproUrl($deskproUrl)
     {
         $this->deskproUrl = $deskproUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrandSlug()
+    {
+        return $this->brandSlug;
+    }
+
+    /**
+     * @param string $brandSlug
+     *
+     * @return $this
+     */
+    public function setBrandSlug($brandSlug)
+    {
+        $this->brandSlug = $brandSlug;
 
         return $this;
     }

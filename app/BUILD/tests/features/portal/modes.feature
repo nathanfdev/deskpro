@@ -13,7 +13,3 @@ Feature: Portal Modes
   Scenario: I specify an admin mode
     When I go to "/admin-mode"
     Then the portal should be in admin mode
-
-  Scenario: I specify brand mode
-    When I go to "/brand-1"
-    Then the portal should be in brand mode

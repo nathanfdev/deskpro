@@ -3,8 +3,8 @@ Feature: Add and edit ticket participants
 
   Background:
     Given no Person records exist
-    And I'm authenticated as user
     And I have only default brand
+    And I'm authenticated as user
     And user has defaultBrand brand
     And I disable anti-abuse rate limiting
     And I set permission "tickets.use" = 1 for registered usergroup

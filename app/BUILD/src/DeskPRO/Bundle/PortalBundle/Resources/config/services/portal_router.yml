@@ -1,19 +1,29 @@
 services:
 
+  portal_url_builder:
+    class: DeskPRO\Bundle\PortalBundle\Routing\PortalUrlBuilder
+    arguments:
+      - "@language_manager"
+      - "@portal_mode_storage"
+      - "@router.default"
+
   # the PortalRouter replaces the router by decorating it (see "decorates:")
-  language_router:
+  portal_router:
     public: false
     class: DeskPRO\Bundle\PortalBundle\Routing\PortalRouter
     decorates: router
     arguments:
-      - "@language_router.inner"
+      - "@portal_router.inner"
+      - "@original_url_generator"
       - "@language_manager"
       - "@portal_mode_storage"
       - "@portal_mode_factory"
+      - "@portal_url_builder"
+      - "@original_request_storage"
 
   router.cache_warmer:
     public: false
     class: Symfony\Bundle\FrameworkBundle\CacheWarmer\RouterCacheWarmer
-    arguments: ["@language_router"]
+    arguments: ["@portal_router"]
     tags:
       - { name: kernel.cache_warmer }

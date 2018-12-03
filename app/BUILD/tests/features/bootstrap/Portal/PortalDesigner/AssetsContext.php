@@ -92,8 +92,12 @@ class AssetsContext extends BasePortalContext
     public function portalThemeSetCssContains($expectedText)
     {
         $styleManager = $this->container()->get('dp.portal.designer.styles_manager');
-        $css          = $this->container()->get('blob.storage')->copyBlobRecordToString($styleManager->getCssBlob());
 
+        if (!$blob = $styleManager->getCssBlob()) {
+            throw new \Exception('Portal theme css not found');
+        }
+
+        $css = $this->container()->get('blob.storage')->copyBlobRecordToString($blob);
         if (strpos($css, $expectedText) === -1) {
             throw new \Exception("Portal theme css doesn't contain $expectedText");
         }

@@ -41,9 +41,6 @@ class PortalModeContext extends BasePortalContext implements RebootableContextIn
             case 'admin':
                 $mode = $this->mode_factory->createMode('/admin-mode');
                 break;
-            case 'brand':
-                $mode = $this->mode_factory->createMode('/brand-1');
-                break;
             default:
                 $mode = $this->mode_factory->createMode('/');
                 break;
@@ -64,9 +61,6 @@ class PortalModeContext extends BasePortalContext implements RebootableContextIn
                 break;
             case 'normal':
                 expect($mode->isNormal())->toBe(true);
-                break;
-            case 'brand':
-                expect($mode->isBrand())->toBe(true);
                 break;
         }
     }

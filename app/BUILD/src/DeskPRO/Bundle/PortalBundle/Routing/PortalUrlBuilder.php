@@ -2,8 +2,9 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Routing;
 
-use Application\DeskPRO\Entity\Language;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class PortalUrlBuilder.
@@ -11,70 +12,72 @@ use DeskPRO\Bundle\PortalBundle\Mode\PortalMode;
 class PortalUrlBuilder
 {
     /**
-     * @var string
+     * @var LanguageManager
      */
-    private $path;
+    private $languageManager;
 
     /**
-     * @var Language
+     * @var PortalModeStorage
      */
-    private $language;
+    private $modeStorage;
 
     /**
-     * @var PortalMode
+     * @var RouterInterface
      */
-    private $mode;
-
-    /**
-     * @var string
-     */
-    private $baseUrl;
+    private $router;
 
     /**
      * Constructor.
      *
-     * @param string          $path
-     * @param Language|null   $language
-     * @param PortalMode|null $mode
-     * @param string          $baseUrl
+     * @param LanguageManager   $languageManager
+     * @param PortalModeStorage $modeStorage
+     * @param RouterInterface   $router
      */
-    public function __construct($path, Language $language = null, PortalMode $mode = null, $baseUrl = '')
+    public function __construct(LanguageManager $languageManager, PortalModeStorage $modeStorage, RouterInterface $router)
     {
-        $this->path     = trim($path);
-        $this->language = $language;
-        $this->mode     = $mode;
-        $this->baseUrl  = $baseUrl;
+        $this->languageManager = $languageManager;
+        $this->modeStorage     = $modeStorage;
+        $this->router          = $router;
     }
 
     /**
+     * @param string $path
+     *
      * @return string
      */
-    public function __toString()
+    public function buildUrl($path)
     {
-        $parts = [];
-        $path  = $this->path;
+        $mode     = $this->modeStorage->getMode();
+        $path     = trim($path);
+        $baseUrl  = $this->router->getContext()->getBaseUrl();
+        $language = $this->languageManager->isMultiLanguagePortal() ? $this->languageManager->getLanguageStack()->getActive() : null;
 
-        if ($path && $path[0] !== '/' && strlen($this->baseUrl) > 1) {
-            $this->baseUrl = ltrim($this->baseUrl, '/');
-        }
+        $parts = [];
         // remove base url from the url path to set it in the proper order
-        if ($this->baseUrl && strpos($path, $this->baseUrl) === 0) {
-            $path    = substr($path, strlen($this->baseUrl));
-            $parts[] = trim($this->baseUrl, '/');
+        if ($baseUrl) {
+            if (strpos($path, $baseUrl) === 0) {
+                $path = substr($path, strlen($baseUrl));
+            }
+            if (strpos($path, ltrim($baseUrl, '/')) === 0) {
+                $path = substr($path, strlen(ltrim($baseUrl, '/')));
+            }
+
+            $parts[] = trim($baseUrl, '/');
         }
 
         if (!preg_match('#^/?(?:agent|admin|reports)(/|$)#', $path)) {
-            if ($this->mode) {
-                $mode_path = trim($this->mode->getModePath(), '/');
-                if (strlen($mode_path) > 0) {
-                    $parts[] = $mode_path;
+            // ignore brand mode, we set it in base url
+            if ($mode) {
+                $modePath = trim($mode->getModePath(), '/');
+                if (strlen($modePath) > 0) {
+                    $parts[] = $modePath;
                 }
             }
 
-            if ($this->language) {
-                $lang_part = trim($this->language->getUrlCode(), '/');
-                if (strlen($lang_part) > 0) {
-                    $parts[] = $lang_part;
+            if ($language) {
+                $langPart = trim($language->getUrlCode(), '/');
+                if (strlen($langPart) > 0) {
+                    $parts[] = $langPart;
                 }
             }
         }

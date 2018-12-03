@@ -1,16 +1,16 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Helper;
 
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
-use League\Url\Url;
+use DeskPRO\Bundle\BrandBundle\Request\RequestBrandCorrector;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Class LanguageChanger.
+ */
 class LanguageChanger
 {
     /**
@@ -19,74 +19,81 @@ class LanguageChanger
     private $router;
 
     /**
-     * @var LanguageManager
+     * @var RequestMatcherInterface
      */
-    private $lang_manager;
+    private $requestMatcher;
 
     /**
-     * @var PortalModeStorage
+     * @var LanguageManager
      */
-    private $mode_storage;
+    private $langManager;
 
+    /**
+     * @var RequestBrandCorrector
+     */
+    private $requestBrandCorrector;
+
+    /**
+     * Constructor.
+     *
+     * @param RouterInterface         $router
+     * @param RequestMatcherInterface $requestMatcher
+     * @param LanguageManager         $langManager
+     * @param RequestBrandCorrector   $requestBrandCorrector
+     */
     public function __construct(
-        RouterInterface $router,
-        LanguageManager $lang_manager,
-        PortalModeStorage $mode_storage
+        RouterInterface         $router,
+        RequestMatcherInterface $requestMatcher,
+        LanguageManager         $langManager,
+        RequestBrandCorrector   $requestBrandCorrector
     ) {
-        $this->router       = $router;
-        $this->lang_manager = $lang_manager;
-        $this->mode_storage = $mode_storage;
+        $this->router                = $router;
+        $this->requestMatcher        = $requestMatcher;
+        $this->langManager           = $langManager;
+        $this->requestBrandCorrector = $requestBrandCorrector;
     }
 
-    public function changeLanguage($new_lang_code, $http_referer)
+    /**
+     * @param string $newLangCode
+     * @param string $httpReferer
+     *
+     * @return string
+     */
+    public function changeLanguage($newLangCode, $httpReferer)
     {
-        $router           = $this->router;
-        $language_manager = $this->lang_manager;
-        $language_stack   = $language_manager->getLanguageStack();
-        $mode             = $this->mode_storage->getMode();
-        $isMode           = $mode && strlen(trim($mode->getModePath(), '/')) > 0;
-
-        $referer_or_home = function () use ($http_referer, $router) {
-            if (!$http_referer) {
-                return $router->generate('portal_home');
-            }
-
-            return $http_referer;
-        };
+        if (!$httpReferer) {
+            $httpReferer = $this->router->generate('portal_home');
+        }
 
         // must be a multi lang portal
-        if (!$language_manager->isMultiLanguagePortal()) {
-            return $referer_or_home();
+        if (!$this->langManager->isMultiLanguagePortal()) {
+            return $httpReferer;
         }
 
         // must be supported
-        if (!$new_lang_code || !$language_manager->isLanguageSupported($new_lang_code)) {
-            return $referer_or_home();
+        if (!$newLangCode || !$this->langManager->isLanguageSupported($newLangCode)) {
+            return $httpReferer;
+        }
+
+        $refererRequest = Request::create($httpReferer);
+        $this->requestBrandCorrector->patchRequest($refererRequest);
+
+        $match = $this->requestMatcher->matchRequest($refererRequest);
+        if (!isset($match['_route'])) {
+            return $httpReferer;
         }
 
         // get the new and old lang objects
-        $new_lang = $language_manager->getLanguage($new_lang_code);
-        $old_lang = $language_stack->getActive();
-        $language_stack->push($new_lang);
+        $newLang = $this->langManager->getLanguage($newLangCode);
+        $this->langManager->getLanguageStack()->push($newLang);
 
-        if (!$http_referer) {
-            return $this->router->generate('portal_home');
-        }
+        $route = $match['_route'];
+        unset($match['_route']);
 
         // replace the language path from the referer with the new lang
-        $url        = Url::createFromUrl($http_referer);
-        $path       = $url->getPath();
-        $path_array = $path->toArray();
-        if ($isMode) {
-            array_shift($path_array);
-        }
-        array_shift($path_array);
-        array_unshift($path_array, $new_lang->getUrlCode());
-        if ($isMode) {
-            array_unshift($path_array, trim($mode->getModePath(), '/'));
-        }
-        $url->setPath($path_array);
+        $newReferer = $this->router->generate($route, $match);
+        $this->langManager->getLanguageStack()->pop();
 
-        return (string) $url;
+        return $newReferer;
     }
 }

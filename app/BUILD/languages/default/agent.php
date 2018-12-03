@@ -4788,6 +4788,7 @@ return [
     'admin.setup.enable_portal'                                                            => 'Enable Portal',
     'admin.setup.enable_portal_help'                                                       => 'The portal is the public facing website that your users can use from their browser or mobile phone.',
     'admin.setup.helpdesk_name'                                                            => 'Helpdesk name',
+    'admin.setup.helpdesk_slug'                                                            => 'Helpdesk slug',
     'admin.setup.helpdesk_name_help'                                                       => 'This is the name of your brands helpdesk.',
     'admin.setup.brand_name'                                                               => 'Brand name',
     'admin.setup.brand_name_help'                                                          => 'This is the actual name of your brand.',

@@ -54,4 +54,16 @@ class RequestUtils
     {
         return stripos($request->getRequestUri(), '/sys/') === 0;
     }
+
+    /**
+     * Checks if the request is a proxy request.
+     *
+     * @param Request $request
+     *
+     * @return bool
+     */
+    public static function isProxyRequest(Request $request)
+    {
+        return stripos($request->getRequestUri(), '/_proxy/') === 0;
+    }
 }

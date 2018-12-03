@@ -7,14 +7,13 @@ namespace DeskPRO\Bundle\PortalBundle\Mode;
  *
  * There is always a portal mode. The default mode is "normal".
  *
- * @see DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
+ * @see \DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory
  */
 class PortalMode
 {
     const ATTR_NAME          = '_portal_mode';
     const MODE_ADMIN         = 'admin';
     const MODE_NORMAL        = 'normal';
-    const MODE_BRAND         = 'brand';
     const MODE_ADMIN_PREVIEW = 'preview';
 
     /**
@@ -29,17 +28,25 @@ class PortalMode
     const MODE_FRAME_EMBED = 'frame-embed';
 
     protected $mode;
-    protected $original_path;
-    protected $internal_path;
-    protected $mode_path;
+    protected $originalPath;
+    protected $internalPath;
+    protected $modePath;
     protected $data;
 
+    /**
+     * Constructor.
+     *
+     * @param string $path
+     */
     public function __construct($path)
     {
-        $this->mode          = self::MODE_NORMAL;
-        $this->original_path = $this->internal_path = $path;
+        $this->mode         = self::MODE_NORMAL;
+        $this->originalPath = $this->internalPath = $path;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         if ($this->isAdminPreview()) {
@@ -48,10 +55,6 @@ class PortalMode
 
         if ($this->isAdmin()) {
             return self::MODE_ADMIN;
-        }
-
-        if ($this->isBrand()) {
-            return sprintf('%s [ID=%s]', self::MODE_BRAND, $this->getData());
         }
 
         if ($this->isFocusWindow()) {
@@ -65,30 +68,34 @@ class PortalMode
         return self::MODE_NORMAL;
     }
 
+    /**
+     * @return array
+     */
     public function __sleep()
     {
         return [
             'mode',
-            'original_path',
-            'internal_path',
-            'mode_path',
+            'originalPath',
+            'internalPath',
+            'modePath',
             'data',
         ];
     }
 
+    /**
+     * @return bool
+     */
     public function isAdmin()
     {
         return self::MODE_ADMIN === $this->mode;
     }
 
+    /**
+     * @return bool
+     */
     public function isNormal()
     {
         return self::MODE_NORMAL === $this->mode;
-    }
-
-    public function isBrand()
-    {
-        return self::MODE_BRAND === $this->mode;
     }
 
     public function setAdmin()
@@ -96,6 +103,9 @@ class PortalMode
         $this->mode = self::MODE_ADMIN;
     }
 
+    /**
+     * @return bool
+     */
     public function isAdminPreview()
     {
         return self::MODE_ADMIN_PREVIEW === $this->mode;
@@ -106,17 +116,17 @@ class PortalMode
         $this->mode = self::MODE_ADMIN_PREVIEW;
     }
 
-    public function setBrand($data)
-    {
-        $this->mode = self::MODE_BRAND;
-        $this->data = $data;
-    }
-
+    /**
+     * @return bool
+     */
     public function isFocusWindow()
     {
         return self::MODE_FOCUS_WINDOW === $this->mode;
     }
 
+    /**
+     * @return bool
+     */
     public function isFrameEmbed()
     {
         return self::MODE_FRAME_EMBED === $this->mode;
@@ -132,24 +142,33 @@ class PortalMode
         $this->mode = self::MODE_FRAME_EMBED;
     }
 
+    /**
+     * @return string
+     */
     public function getOriginalPath()
     {
-        return $this->original_path;
+        return $this->originalPath;
     }
 
-    public function setOriginalPath($original_path)
+    /**
+     * @param string $originalPath
+     */
+    public function setOriginalPath($originalPath)
     {
-        $this->original_path = $original_path;
+        $this->originalPath = $originalPath;
     }
 
-    public function setInternalPath($internal_path)
+    /**
+     * @param string $internalPath
+     */
+    public function setInternalPath($internalPath)
     {
-        $this->internal_path = $internal_path;
+        $this->internalPath = $internalPath;
     }
 
     public function getInternalPath()
     {
-        return $this->internal_path;
+        return $this->internalPath;
     }
 
     public function getData()
@@ -157,13 +176,16 @@ class PortalMode
         return $this->data;
     }
 
-    public function setModePath($mode_path)
+    /**
+     * @param string $modePath
+     */
+    public function setModePath($modePath)
     {
-        $this->mode_path = $mode_path;
+        $this->modePath = $modePath;
     }
 
     public function getModePath()
     {
-        return $this->mode_path;
+        return $this->modePath;
     }
 }

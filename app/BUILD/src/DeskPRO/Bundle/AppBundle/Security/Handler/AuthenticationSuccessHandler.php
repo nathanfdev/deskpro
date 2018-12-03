@@ -59,10 +59,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
                 return $this->getResponseForAjax($savedFormUrl);
             }
 
-            return $this->httpUtils->createRedirectResponse(
-                $request,
-                $savedFormUrl
-            );
+            return $this->httpUtils->createRedirectResponse($request, $savedFormUrl);
         }
 
         try {
@@ -89,6 +86,26 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
         return $this->httpUtils->createRedirectResponse($request, $redirectUrl);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function onLogoutSuccess(Request $request)
+    {
+    }
+
+    /**
+     * @param string $redirect
+     *
+     * @return JsonResponse
+     */
     protected function getResponseForAjax($redirect)
     {
         return new JsonResponse(
@@ -100,11 +117,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
     }
 
     /**
-     * Builds the target URL according to the defined options.
-     *
-     * @param Request $request
-     *
-     * @return string
+     * {@inheritdoc}
      */
     protected function determineTargetUrl(Request $request)
     {
@@ -132,15 +145,6 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             $request->getSession()->remove('_security.'.$this->providerKey.'.target_path');
 
             if ($targetUrl != $login_url && strpos($targetUrl, '_proxy') === false) {
-                try {
-                    $targetRequest = Request::create($targetUrl);
-                    $targetInfo    = $this->container->get('router')->matchRequest($targetRequest);
-
-                    return $this->container->get('router')->generate($targetInfo['_route'], $targetRequest->query->all());
-                } catch (\Exception $e) {
-                    // unable to parse target url, redirect to it as is
-                }
-
                 return $targetUrl;
             }
         }
@@ -155,7 +159,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             }
         }
 
-        return $this->container->get('router')->buildUrl($this->options['default_target_path']);
+        return $this->container->get('portal_url_builder')->buildUrl($this->options['default_target_path']);
     }
 
     /**
@@ -190,14 +194,5 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
         }
 
         return false;
-    }
-
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
-    }
-
-    public function onLogoutSuccess(Request $request)
-    {
     }
 }

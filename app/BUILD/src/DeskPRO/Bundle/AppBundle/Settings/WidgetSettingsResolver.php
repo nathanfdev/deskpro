@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Usergroup;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Request\OriginalUrlGenerator;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
@@ -20,7 +21,6 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\GlobalSettings\Widget
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\WidgetOptions;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetUrlSettings;
-use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use DeskPRO\Bundle\PortalBundle\Routing\PortalRouter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -59,6 +59,11 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $router;
 
     /**
+     * @var OriginalUrlGenerator
+     */
+    private $originalUrlGenerator;
+
+    /**
      * @var TokenStorageInterface
      */
     private $tokenStorage;
@@ -67,11 +72,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @var PortalPermissionsManager
      */
     private $permissionsManager;
-
-    /**
-     * @var PortalModeStorage
-     */
-    private $portalModeStorage;
 
     /**
      * @var UrlCorrectorFactory
@@ -90,9 +90,9 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      * @param EntityManager              $em
      * @param Packages                   $assetPackages
      * @param RouterInterface            $router
+     * @param OriginalUrlGenerator       $originalUrlGenerator
      * @param TokenStorageInterface      $tokenStorage
      * @param PortalPermissionsManager   $permissionsManager
-     * @param PortalModeStorage          $portalModeStorage
      * @param UrlCorrectorFactory        $urlCorrectorFactory
      * @param LanguageManager            $languageManager
      */
@@ -101,9 +101,9 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         EntityManager              $em,
         Packages                   $assetPackages,
         RouterInterface            $router,
+        OriginalUrlGenerator       $originalUrlGenerator,
         TokenStorageInterface      $tokenStorage,
         PortalPermissionsManager   $permissionsManager,
-        PortalModeStorage          $portalModeStorage,
         UrlCorrectorFactory        $urlCorrectorFactory,
         LanguageManager            $languageManager
     ) {
@@ -113,7 +113,6 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         $this->assetPackages       = $assetPackages;
         $this->tokenStorage        = $tokenStorage;
         $this->permissionsManager  = $permissionsManager;
-        $this->portalModeStorage   = $portalModeStorage;
         $this->urlCorrectorFactory = $urlCorrectorFactory;
         $this->languageManager     = $languageManager;
 
@@ -122,6 +121,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         } else {
             $this->router = $router;
         }
+
+        $this->originalUrlGenerator = $originalUrlGenerator;
     }
 
     /**
@@ -207,10 +208,18 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function getWidgetUrlSettings(Brand $brand, Request $request = null)
     {
-        $portalMode = $this->portalModeStorage->getMode();
+        if ($request && $request->attributes->has('_dp_brand_slug')) {
+            if ($request && $request->attributes->has('original_request')) {
+                $baseUrl = $this->originalUrlGenerator->generate(
+                    $request->attributes->get('original_request'),
+                    'portal_home',
+                    [],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $baseUrl = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+            }
 
-        if ($portalMode && $portalMode->isBrand()) {
-            $baseUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
             $helpdeskUrl = rtrim($baseUrl, '/');
         } else {
             $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);

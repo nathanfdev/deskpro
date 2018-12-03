@@ -3,8 +3,8 @@ Feature: New ticket form
   I want to check fields visibility
 
   Background:
-    Given I'm authenticated as user
-    And I have only default brand
+    Given I have only default brand
+    And I'm authenticated as user
     And user has defaultBrand brand
     And I disable anti-abuse rate limiting
     And only the following Department records exist:

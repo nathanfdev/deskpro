@@ -91,7 +91,11 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        $brand   = $this->brandStack->getActive()->getBrand();
+        if ($request->attributes->has('_dp_brand_slug')) {
+            return;
+        }
+
+        $brand = $this->brandStack->getActive()->getBrand();
 
         $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
         $corrections  = $urlCorrector->getCorrections($request);
@@ -210,7 +214,7 @@ class UrlCorrectorEventListener implements EventSubscriberInterface
         }
 
         $portalMode = $this->portalModeStorage->getMode();
-        if ($portalMode && ($portalMode->isFocusWindow() || $portalMode->isBrand() || $portalMode->isAdminPreview())) {
+        if ($portalMode && ($portalMode->isFocusWindow() || $portalMode->isAdminPreview())) {
             return self::MODE_ATTR;
         }
 

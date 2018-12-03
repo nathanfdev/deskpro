@@ -21,7 +21,6 @@ class PortalModeSpec extends ObjectBehavior
     {
         $this->isAdmin()->shouldReturn(false);
         $this->isAdminPreview()->shouldReturn(false);
-        $this->isBrand()->shouldReturn(false);
         $this->isNormal()->shouldReturn(true);
     }
 
@@ -30,16 +29,6 @@ class PortalModeSpec extends ObjectBehavior
         $this->setAdmin();
 
         $this->isAdmin()->shouldReturn(true);
-        $this->isNormal()->shouldReturn(false);
-    }
-
-    public function it_can_be_in_brand_mode()
-    {
-        $this->setBrand($data = 4);
-
-        $this->isBrand()->shouldReturn(true);
-        $this->getData()->shouldReturn($data);
-        $this->isAdmin()->shouldReturn(false);
         $this->isNormal()->shouldReturn(false);
     }
 
@@ -78,11 +67,5 @@ class PortalModeSpec extends ObjectBehavior
     {
         $this->setAdmin();
         $this->__toString()->shouldReturn(PortalMode::MODE_ADMIN);
-    }
-
-    public function it_can_make_a_sensible_string_when_brand_mode()
-    {
-        $this->setBrand(5);
-        $this->__toString()->shouldReturn(sprintf('%s [ID=%s]', PortalMode::MODE_BRAND, 5));
     }
 }
