@@ -365,6 +365,7 @@ export class EditFormComponent extends React.Component {
             name="title"
             validate={reduxForm.validators.required}
           />
+          <reduxForm.Textarea autosize onChange={() => {}} label="Description" name="description" id="description" />
           <FieldArray name="labels" component={renderLabels} />
           <Field component="input" type="hidden" name="query_input_mode" />
           <div className="query-builder-input">

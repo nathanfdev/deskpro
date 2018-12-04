@@ -240,7 +240,13 @@
     max-height: none;
 
     .stat-list {
-      li { padding-left: 10px; }
+      li {
+        padding-left: 10px;
+        h1 .help-block {
+          font-size: 10px;
+          color: $dp-greyscale-650;
+        }
+      }
       .mark { display: none; }
     }
   }

@@ -98,6 +98,7 @@ class EditContainer extends React.Component {
     const reportData = {
       id:            this.props.report.get('id') || null,
       title:         formData.title,
+      description:   formData.description,
       display_types: displayTypes.length ? displayTypes : ['table'],
       vars:          formData.vars,
       inputMode:     formData.query_input_mode,

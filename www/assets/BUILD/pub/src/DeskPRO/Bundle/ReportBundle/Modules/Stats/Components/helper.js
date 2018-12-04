@@ -54,7 +54,7 @@ export function transformReportDataToApi(reportData, error = false) {
 
   if (!reportData.displayOnly) {
     data.title         = reportData.title;
-    data.description   = reportData.desc;
+    data.description   = reportData.description;
     data.display_types = reportData.display_types;
     data.variables     = reportData.vars;
     data.labels        = reportData.labels;

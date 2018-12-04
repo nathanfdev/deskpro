@@ -46,7 +46,11 @@
                             report="report"
                             possible-values="groupParams">
                     </dp-report-variables>
+                    <span class="help-block">
+                         {{ ng_var('report.description') }}
+                    </span>
                 </h1>
+
 
                 <p>
                     <a ng-repeat="label in report.labels" class="link-pointer stat-label"
