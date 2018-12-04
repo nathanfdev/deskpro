@@ -1381,6 +1381,22 @@ i.icon.fitted {
     cursor: pointer;
   }
 }
+.token-field-input-tether .dp-select__content {
+  span.label {
+    padding: 0 3px;
+    border-radius: 5px;
+  }
+  .dp-input {
+    width: 100%;
+    padding-bottom: 5px;
+    input {
+      width: 96%;
+    }
+  }
+  .dp-tabs__tab {
+    white-space: nowrap;
+  }
+}
 
 .fa, .fas {
   font-weight: 900 !important;

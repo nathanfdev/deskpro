@@ -22,7 +22,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketProductsController extends CrudController
 {
-    public static $exposeOnly   = ['get', 'list', 'count'];
+    public static $exposeOnly  = ['get', 'list', 'count'];
+    public static $sortOptions = [
+        'display_order' => 'display_order',
+        'title'         => 'title',
+    ];
     public static $entity       = Product::class;
     public static $listPaginate = false;
 

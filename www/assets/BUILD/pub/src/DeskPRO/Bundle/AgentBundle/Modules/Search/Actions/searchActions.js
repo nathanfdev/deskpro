@@ -101,3 +101,44 @@ export const loadSlas = createAction(
     });
   })
 );
+
+export const loadEmailAccounts = createAction(
+  'SEARCH_LOAD_EMAIL_ACCOUNTS',
+  (params = {}) => new Promise((resolve) => {
+    params.order_by = 'address';
+    params.order_dir = 'asc';
+    repository('EmailAccount').search(params).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
+
+export const loadTicketLabels = createAction(
+  'SEARCH_LOAD_TICKET_LABELS',
+  (params = {}) => new Promise((resolve) => {
+    params.order_by = 'label';
+    params.order_dir = 'asc';
+    repository('TicketLabels').search(params).then((promise) => {
+      const res = promise.getData();
+      console.log(res);
+
+      resolve(res.data);
+    });
+  })
+);
+
+export const loadUserGroups = createAction(
+  'SEARCH_LOAD_USER_GROUPS',
+  (params = {}) => new Promise((resolve) => {
+    params.order_by = 'title';
+    params.order_dir = 'asc';
+    repository('UserGroups').search(params).then((promise) => {
+      const res = promise.getData();
+      console.log(res);
+
+      resolve(res.data);
+    });
+  })
+);

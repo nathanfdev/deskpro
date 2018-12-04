@@ -41,8 +41,11 @@ export const repositoriesConfig = {
   Ticket:             { type: 'api', url: '/tickets', allowAll: true, repositoryClass: TicketRepository },
   TicketCategories:   { type: 'api', url: '/ticket_categories', allowAll: true },
   TicketCustomFields: { type: 'api', url: '/ticket_custom_fields', allowAll: true },
+  TicketLabels:       { type: 'api', url: '/ticket_labels', allowAll: true },
   TicketMacros:       { type: 'api', url: '/ticket_macros', allowAll: true },
   TicketPriorities:   { type: 'api', url: '/ticket_priorities', allowAll: true },
   TicketProducts:     { type: 'api', url: '/ticket_products', allowAll: true },
   TicketWorkflows:    { type: 'api', url: '/ticket_workflows', allowAll: true },
+  EmailAccount:       { type: 'api', url: '/email_accounts', allowAll: true },
+  UserGroups:         { type: 'api', url: '/user_groups', allowAll: true },
 };
