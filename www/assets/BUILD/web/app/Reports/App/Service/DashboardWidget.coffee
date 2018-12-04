@@ -107,7 +107,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
 
     testWidget: (reportWidget) ->
-      url = "/report_widgets/test/#{reportWidget.id}?include=rendered_result&inline_sideloads=1"
+      url = "/report_widgets/test/#{reportWidget.id}?include=rendered_result,report_widget&inline_sideloads=1"
       dataToSend =
         title:         'test widget'
         display_types: reportWidget.display_types
@@ -127,7 +127,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @widgetsResults = {}
 
       @Api2
-      .sendGet "/dashboard_reports/#{reportId}/widgets"
+      .sendGet "/dashboard_reports/#{reportId}/widgets?include=report_widget&inline_sideloads=1"
       .then (resp) =>
         widgets = resp.data.data;
 
@@ -142,7 +142,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         idBatches = (widgetIds.splice(0, 10) while widgetIds.length)
         for idBatch in idBatches
           @Api2
-            .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result&inline_sideloads=1&ids=#{idBatch}"
+            .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result,report_widget&inline_sideloads=1&ids=#{idBatch}"
             .then (batchResp) =>
               batchWidgets = batchResp.data.data;
               for widget in batchWidgets
@@ -156,7 +156,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       deferred = @$q.defer()
 
       @Api2
-        .sendGet "/dashboard_report_widgets/#{id}?include=rendered_result&inline_sideloads=1"
+        .sendGet "/dashboard_report_widgets/#{id}?include=rendered_result,report_widget&inline_sideloads=1"
         .then (resp) =>
           widget = resp.data.data;
           widget.sizeX = widget.size_x
