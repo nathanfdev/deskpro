@@ -156,6 +156,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       window.open($http.formatApi2Url('/dashboard_report_widgets/' + widget.id + '/download/csv'))
       return true
 
+    $scope.downloadPdf = (widget) ->
+      window.open($http.formatApi2Url('/dashboard_report_widgets/' + widget.id + '/download/pdf'))
+      return true
+
     ####################################################################################################################
     # MODAL HANDLERS
     ####################################################################################################################

@@ -112,6 +112,7 @@
                             <a ng-if="layoutEditing && !dashboard.is_default" title="Edit widget" ng-click="openEditWidget(widget)"><i class="fa fa-cog"></i><span>Edit</span></a>
                             <a ng-if="layoutEditing && !dashboard.is_default" title="Remove widget" ng-click="removeWidget(widget)"><i class="fa fa-times"></i><span>Delete</span></a>
                             <a ng-if="!layoutEditing" target='_self' title="Download as CSV" ng-click="download(widget)"><i class="far fa-file-excel"></i></a>
+                            <a ng-if="!layoutEditing" target='_self' title="Print" ng-click="downloadPdf(widget)"><i class="fa fa-print"></i></a>
                             <a ng-if="!layoutEditing" target='_self' title="{{ ng_var('widget.widget.description') }}"><i class="fa fa-question-circle"></i></a>
                         </div>
                         <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>

@@ -73,8 +73,9 @@ class PdfTableRenderer implements ReportsRendererInterface
     {
         $html        = $this->htmlRenderer->render($results, $options);
         $contentHtml = $this->templating->render('DeskPRO:pdf_agent:report-builder.html.twig', [
-            'html'  => $html,
-            'title' => isset($options['title']) ?: '',
+            'html'    => $html,
+            'title'   => isset($options['title']) ? $options['title'] : '',
+            'no_date' => isset($options['no_date']) ? (bool) $options['no_date'] : false,
         ]);
 
         return $this->pdfRenderer->render($contentHtml);
