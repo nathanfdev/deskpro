@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\Traits\TicketSearchTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\ApiKeyAwareTrait;
@@ -321,6 +322,67 @@ class TicketsController extends AbstractTicketsController
     public function deleteAction($id, Request $request)
     {
         return parent::deleteAction($id, $request);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Merge tickets",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="ref:[\w\-\.]+|\d+",
+     *              "description"="The id|ref of the resource",
+     *              "dataType"="integer|string"
+     *          },
+     *          {
+     *              "name"="mergeId",
+     *              "requirement"="ref:[\w\-\.]+|\d+",
+     *              "description"="The id|ref of the merging resource",
+     *              "dataType"="integer|string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returns the modified resource",
+     *          400="We will return this in case your request was malformed",
+     *      },
+     *     noInput=true,
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket"
+     * )
+     *
+     * @Rest\Post("/{id}/merge/{mergeId}", requirements={"id"="ref:[\w\-\.]+|\d+", "mergeId"="ref:[\w\-\.]+|\d+"})
+     *
+     * @param int|string $id
+     * @param int|string $mergeId
+     * @param Request    $request
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function mergeAction($id, $mergeId, Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($mergeId, $request));
+
+        /** @var Ticket $ticket */
+        /** @var Ticket $mergeTicket */
+        $ticket      = $this->findEntity($id, $request);
+        $mergeTicket = $this->findEntity($mergeId, $request);
+
+        $em = $this->getManager();
+
+        try {
+            $em->beginTransaction();
+            $merge = new TicketMerge($this->getUser(), $ticket, $mergeTicket);
+            $merge->merge();
+            $em->commit();
+        } catch (\Exception $e) {
+            $em->rollback();
+            throw $this->createBadRequestException($e->getMessage());
+        }
+
+        return View::create($ticket, Response::HTTP_OK);
     }
 
     /**
