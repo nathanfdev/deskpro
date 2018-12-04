@@ -157,7 +157,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       return true
 
     $scope.downloadPdf = (widget) ->
-      window.open($http.formatApi2Url('/dashboard_report_widgets/' + widget.id + '/download/pdf'))
+      if widget.widget_type == 'graph'
+        widget.print()
+      else
+       window.open($http.formatApi2Url('/dashboard_report_widgets/' + widget.id + '/download/pdf'))
       return true
 
     ####################################################################################################################

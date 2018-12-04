@@ -20,6 +20,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonLineRenderer
     arguments:
       - "@reports.values_renderer.text"
+      - "@templating.helper.assets"
     tags:
       - { name: reports.renderer }
 
@@ -27,6 +28,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonPieRenderer
     arguments:
       - "@reports.values_renderer.text"
+      - "@templating.helper.assets"
     tags:
       - { name: reports.renderer }
 
@@ -34,6 +36,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonAreaRenderer
     arguments:
       - "@reports.values_renderer.text"
+      - "@templating.helper.assets"
     tags:
       - { name: reports.renderer }
 
@@ -41,6 +44,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonBarRenderer
     arguments:
       - "@reports.values_renderer.text"
+      - "@templating.helper.assets"
     tags:
       - { name: reports.renderer }
 
@@ -62,6 +66,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonGaugeRenderer
     arguments:
       - "@reports.values_renderer.json"
+      - "@templating.helper.assets"
     tags:
       - { name: reports.renderer }
 
@@ -69,6 +74,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonBubbleRenderer
     arguments:
       - "@reports.values_renderer.json"
+      - "@templating.helper.assets"
     tags:
       - { name: reports.renderer }
 

@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\TextValueRenderer;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\AssetsHelper;
 
 /**
  * Class JsonChartRenderer.
@@ -16,13 +17,20 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
     protected $options = [];
 
     /**
+     * @var AssetsHelper
+     */
+    protected $assetsHelper;
+
+    /**
      * Constructor.
      *
      * @param TextValueRenderer $valueRenderer
+     * @param AssetsHelper      $assetsHelper
      */
-    public function __construct(TextValueRenderer $valueRenderer)
+    public function __construct(TextValueRenderer $valueRenderer, AssetsHelper $assetsHelper)
     {
         $this->valueRenderer = $valueRenderer;
+        $this->assetsHelper  = $assetsHelper;
     }
 
     /**
@@ -56,7 +64,13 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 'markerSize'       => 10,
             ],
             'categoryField' => 'category',
-            'exportConfig'  => false,
+            'export'        => [
+                'enabled' => true,
+                'libs'    => [
+                    'path' => $this->assetsHelper->getUrl('vendor/amcharts3/libs/', 'legacy_web'),
+                ],
+                'menu' => [],
+            ],
         ];
     }
 

@@ -9,6 +9,7 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
 @import '../../../../../../node_modules/@deskpro/react-components/src/styles/main';
 @import '../../../../../../node_modules/@deskpro/react-components/src/styles/components/loader';
 @import '../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon';
+@import '../../../../../../vendor/amcharts3/plugins/export/export.css';
 
 @import 'legacy-vars.scss';
 @import 'report-widget-editor';
