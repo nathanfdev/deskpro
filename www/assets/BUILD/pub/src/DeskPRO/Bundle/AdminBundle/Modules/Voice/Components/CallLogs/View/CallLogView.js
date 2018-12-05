@@ -121,7 +121,7 @@ class CallLogView extends React.Component {
               </td>
             </tr>
             <tr>
-              <th>Twilio data</th>
+              <th>Call data</th>
               <td>
                 <table>
                   <tbody>
