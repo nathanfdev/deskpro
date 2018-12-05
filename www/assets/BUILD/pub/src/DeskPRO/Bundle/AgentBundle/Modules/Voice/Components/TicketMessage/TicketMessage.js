@@ -134,13 +134,13 @@ class TicketMessage extends React.Component {
                 Call in progress
               </div>
             : <div className="voice-ticket-message-controls">
-              {recording && <MediaControls recording={recording} />}
-              {!recording && recordingEnabled ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
-              {recordingProcessed && !recording && !recordingEnabled ? 'This call was not recorded.' : ''}
               {outboundCallsEnabled &&
               <Button className="basic call-button" onClick={onCall}>
                 <i className="icon call" /> Call {phoneCall.get('external_number')}
               </Button>}
+              {recording && <MediaControls recording={recording} />}
+              {!recording && recordingEnabled ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
+              {recordingProcessed && !recording && !recordingEnabled ? 'This call was not recorded.' : ''}
             </div>}
           {transcript &&
             <div className="voice-ticket-message-transcript">
