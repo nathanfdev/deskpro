@@ -6,13 +6,14 @@ import classNames from 'classnames';
 class Modal extends React.Component {
 
   static propTypes = {
-    title:         PropTypes.string,
-    isOpen:        PropTypes.bool,
-    onClose:       PropTypes.func,
-    children:      PropTypes.node,
-    className:     PropTypes.string,
-    overlayStyles: PropTypes.object,
-    contentStyles: PropTypes.object
+    title:              PropTypes.string,
+    isOpen:             PropTypes.bool,
+    onClose:            PropTypes.func,
+    onCloseButtonClick: PropTypes.func,
+    children:           PropTypes.node,
+    className:          PropTypes.string,
+    overlayStyles:      PropTypes.object,
+    contentStyles:      PropTypes.object
   };
 
   static defaultProps = {
@@ -21,7 +22,7 @@ class Modal extends React.Component {
   };
 
   render() {
-    const { isOpen, onClose, className, title, children } = this.props;
+    const { isOpen, onClose, className, title, children, onCloseButtonClick } = this.props;
     const { overlayStyles, contentStyles } = this.props;
     const customStyles = {
       overlay: {
@@ -53,7 +54,11 @@ class Modal extends React.Component {
         style={customStyles}
         className={classNames('widget-modal', className)}
       >
-        {title && <div className="header">{title}</div>}
+        {title &&
+          <div className="header">
+            {title}
+            {onCloseButtonClick && <span className="close-btn" onClick={onCloseButtonClick}>[ x ]</span>}
+          </div>}
         <div className="content" style={contentWrapperStyles}>
           {children}
         </div>
