@@ -11,8 +11,10 @@ use Application\DeskPRO\Entity\TicketWorkflow;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Products\Products;
 use Application\DeskPRO\Tickets\TicketCategories;
+use Application\DeskPRO\Tickets\TicketManager;
 use Application\DeskPRO\Tickets\TicketPriorities;
 use Application\DeskPRO\Tickets\TicketWorkflows;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use Mockery as m;
 
 class ContainerMock
@@ -138,6 +140,30 @@ class ContainerMock
         }
 
         $this->mock->shouldReceive('getTicketPriorities')->andReturn($obj);
+
+        return $this;
+    }
+
+    /**
+     * @param TicketStatusDataService $mock
+     *
+     * @return $this
+     */
+    public function withTicketStatusesMock(TicketStatusDataService $mock)
+    {
+        $this->mock->shouldReceive('getTicketStatuses')->andReturn($mock);
+
+        return $this;
+    }
+
+    /**
+     * @param TicketManager $mock
+     *
+     * @return $this
+     */
+    public function withTicketManagerMock(TicketManager $mock)
+    {
+        $this->mock->shouldReceive('getTicketManager')->andReturn($mock);
 
         return $this;
     }

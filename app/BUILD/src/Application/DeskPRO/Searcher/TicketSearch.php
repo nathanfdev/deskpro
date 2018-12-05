@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketTerms;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -2954,7 +2955,7 @@ class TicketSearch extends SearcherAbstract
                 break;
 
             case self::TERM_DATE_ARCHIVED:
-                if ($ticket->getStatus() != Ticket::STATUS_ARCHIVED) {
+                if ($ticket->getStatus() != TicketStatus::STATUS_TYPE_ARCHIVED) {
                     return false;
                 }
                 if (!$this->_testDateMatch($ticket->getDateArchived(), $op, $choice)) {
@@ -3201,11 +3202,11 @@ class TicketSearch extends SearcherAbstract
             // not means the real applicable statuses are the opposite
             if ($op === self::OP_NOT || $op === self::OP_NOTCONTAINS) {
                 $status = array_diff([
-                    Ticket::STATUS_AWAITING_AGENT,
-                    Ticket::STATUS_AWAITING_USER,
-                    Ticket::STATUS_RESOLVED,
-                    Ticket::STATUS_ARCHIVED,
-                    Ticket::STATUS_HIDDEN,
+                    TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                    TicketStatus::STATUS_TYPE_AWAITING_USER,
+                    TicketStatus::STATUS_TYPE_RESOLVED,
+                    TicketStatus::STATUS_TYPE_ARCHIVED,
+                    TicketStatus::STATUS_TYPE_HIDDEN,
                 ], $status);
             }
         }
@@ -3215,18 +3216,18 @@ class TicketSearch extends SearcherAbstract
             // all tickets inc archive
             if ($this->is_archive) {
                 return [
-                    Ticket::STATUS_AWAITING_AGENT,
-                    Ticket::STATUS_AWAITING_USER,
-                    Ticket::STATUS_RESOLVED,
-                    Ticket::STATUS_ARCHIVED,
-                    Ticket::STATUS_HIDDEN,
+                    TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                    TicketStatus::STATUS_TYPE_AWAITING_USER,
+                    TicketStatus::STATUS_TYPE_RESOLVED,
+                    TicketStatus::STATUS_TYPE_ARCHIVED,
+                    TicketStatus::STATUS_TYPE_HIDDEN,
                 ];
             // just active
             } else {
                 return [
-                    Ticket::STATUS_AWAITING_AGENT,
-                    Ticket::STATUS_AWAITING_USER,
-                    Ticket::STATUS_RESOLVED,
+                    TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                    TicketStatus::STATUS_TYPE_AWAITING_USER,
+                    TicketStatus::STATUS_TYPE_RESOLVED,
                 ];
             }
         }

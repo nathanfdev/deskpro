@@ -10,6 +10,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Publish\GlossaryHandler;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -478,16 +479,18 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function getTicketStatusString($ticket)
     {
         switch ($ticket->status_code) {
-            case Entity\Ticket::STATUS_RESOLVED:
+            case TicketStatus::STATUS_TYPE_RESOLVED:
                 return 'Resolved';
-            case Entity\Ticket::STATUS_AWAITING_AGENT:
+            case TicketStatus::STATUS_TYPE_AWAITING_AGENT:
                 return 'Awaiting Agent';
-            case Entity\Ticket::STATUS_AWAITING_USER:
+            case TicketStatus::STATUS_TYPE_AWAITING_USER:
                 return 'Awaiting You';
-            case Entity\Ticket::STATUS_HIDDEN:
+            case TicketStatus::STATUS_TYPE_HIDDEN:
                 return 'Hidden';
-            case Entity\Ticket::STATUS_ARCHIVED:
+            case TicketStatus::STATUS_TYPE_ARCHIVED:
                 return 'Archived';
+            case TicketStatus::STATUS_TYPE_PENDING:
+                return 'Pending';
             default:
                 return 'Unknown';
         }

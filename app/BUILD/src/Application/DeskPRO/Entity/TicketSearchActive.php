@@ -239,6 +239,8 @@ class TicketSearchActive extends DomainObject
      */
     protected $original_subject = '';
 
+    protected $is_hold = false;
+
     /**
      * @return array
      */
@@ -560,6 +562,13 @@ class TicketSearchActive extends DomainObject
             'columnName' => 'original_subject',
             'type'       => 'string',
             'length'     => 255,
+            'nullable'   => false,
+        ]);
+
+        $metadata->mapField([
+            'fieldName'  => 'is_hold',
+            'columnName' => 'is_hold',
+            'type'       => 'boolean',
             'nullable'   => false,
         ]);
     }

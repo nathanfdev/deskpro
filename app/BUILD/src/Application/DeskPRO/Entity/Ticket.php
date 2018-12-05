@@ -21,6 +21,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
+use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -133,15 +134,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     const CREATED_GATEWAY_PERSON       = 'gateway.person';
     const CREATED_GATEWAY_AGENT        = 'gateway.agent';
     const CREATED_MESSENGER_UNANSWERED = 'messenger.unanswered';
-
-    const STATUS_AWAITING_AGENT = 'awaiting_agent';
-    const STATUS_AWAITING_USER  = 'awaiting_user';
-    const STATUS_RESOLVED       = 'resolved';
-    const STATUS_ARCHIVED       = 'archived';
-    const STATUS_HIDDEN         = 'hidden';
-
-    const HIDDEN_STATUS_SPAM    = 'spam';
-    const HIDDEN_STATUS_DELETED = 'deleted';
 
     /**#@+
      * These strings in $notify_email_name have special meanings.
@@ -663,7 +655,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this['date_status']  = new \DateTime();
 
         $this['auth'] = DpStrings::random(self::TAC_AUTHCODE_LEN, Strings::CHARS_KEY);
-        $this->setModelField('status', self::STATUS_AWAITING_AGENT);
+        $this->setModelField('status', TicketStatus::STATUS_TYPE_AWAITING_AGENT);
 
         $this->__dp_auto_ticket_process = true;
     }
@@ -2914,12 +2906,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function isResolved()
     {
-        return $this->status == self::STATUS_RESOLVED;
+        return $this->status == TicketStatus::STATUS_TYPE_RESOLVED;
     }
 
     public function getIsHidden()
     {
-        if ($this->status == self::STATUS_HIDDEN) {
+        if ($this->status == TicketStatus::STATUS_TYPE_HIDDEN) {
             return true;
         }
 
@@ -2952,7 +2944,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getIsDeleted()
     {
-        if ($this->hidden_status == self::HIDDEN_STATUS_DELETED) {
+        if ($this->getTicketStatus() && $this->getTicketStatus()->isDeleted()) {
             return true;
         }
 
@@ -3091,6 +3083,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @deprecated use setTicketStatus instead
+     *
      * @param string $status
      *
      * @return $this
@@ -3101,6 +3095,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $old_status      = $this->status;
         $old_status_code = $this->getStatusCode();
+
+        // This method deprecated
+        // unset ticket_status if this method called
+        $this->setModelField('ticket_status', null);
 
         $status_code = $status;
         $hstatus     = null;
@@ -3163,25 +3161,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this['is_hold'] = false;
         }
 
-        if (!$status || !in_array(
-                $status,
-                [
-                    self::STATUS_AWAITING_AGENT,
-                    self::STATUS_AWAITING_USER,
-                    self::STATUS_ARCHIVED,
-                    self::STATUS_RESOLVED,
-                    self::STATUS_HIDDEN,
-                ]
-            )
-        ) {
+        if (!$status || !TicketStatus::isValidStatusType($status)) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
 
         if ($hstatus && !in_array(
                 $hstatus,
                 [
-                    self::HIDDEN_STATUS_DELETED,
-                    self::HIDDEN_STATUS_SPAM,
+                    TicketStatus::SYS_ID_DELETED,
+                    TicketStatus::SYS_ID_SPAM,
                 ]
             )
         ) {
@@ -3195,17 +3183,29 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         $this->setModelField('status', $status);
-        $this->setModelField('hidden_status', $hstatus);
+
+        if ($hstatus) {
+            $ticketStatus = $hstatus == TicketStatus::SYS_ID_DELETED
+                ? App::getContainer()->getTicketStatuses()->getDeletedStatus()
+                : App::getContainer()->getTicketStatuses()->getSpamStatus();
+            $this->setTicketStatus($ticketStatus);
+        }
 
         $this->getStateChangeRecorder()->record('status_code', $old_status_code, $this->getStatusCode());
 
-        if ($old_status_code == 'hidden.deleted' && $status_code != 'hidden.deleted') {
-            $this->undeleteTicket();
+        if ($old_status == TicketStatus::STATUS_TYPE_HIDDEN) {
+            $deletedTicketStatus = App::getContainer()->getTicketStatuses()->getDeletedStatus();
+            if ($old_status_code == $deletedTicketStatus->getStatusCode()
+                && $status_code != $deletedTicketStatus->getStatusCode()
+            ) {
+                $this->undeleteTicket();
+            }
         }
 
-        if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
-            $this->setModelField('is_hold', false);
-        }
+        // Not sure do I need to refactor this somehow with substatuses
+//        if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
+//            $this->setModelField('is_hold', false);
+//        }
 
         return $this;
     }
@@ -3215,7 +3215,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getTicketStatus()
     {
-        return $this->ticket_status;
+        return $this->ticket_status ?: new VirtualTicketStatus($this->status);
     }
 
     /**
@@ -3225,7 +3225,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setTicketStatus(TicketStatus $ticket_status = null)
     {
-        $this->setModelField('ticket_status', $ticket_status);
+        // we need to call this first
+        $this->setStatus($ticket_status->getStatusType());
+
+        if (!$ticket_status instanceof VirtualTicketStatus) {
+            $this->setModelField('ticket_status', $ticket_status);
+        }
 
         return $this;
     }
@@ -3325,8 +3330,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getStatusCode()
     {
-        if ($this->status == 'hidden') {
-            return 'hidden.'.($this->hidden_status ?: self::HIDDEN_STATUS_DELETED);
+        if (!$this->getTicketStatus() instanceof  VirtualTicketStatus) {
+            return $this->getTicketStatus()->getStatusCode();
         } else {
             return $this->status;
         }
@@ -3352,17 +3357,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function isAwaitingUser()
     {
-        return $this->status === self::STATUS_AWAITING_USER;
+        return $this->status === TicketStatus::STATUS_TYPE_AWAITING_USER;
     }
 
     public function isAwaitingAgent()
     {
-        return $this->status === self::STATUS_AWAITING_AGENT;
+        return $this->status === TicketStatus::STATUS_TYPE_AWAITING_AGENT;
     }
 
     public function isOpen()
     {
-        return $this->status === self::STATUS_AWAITING_USER || $this->status === self::STATUS_AWAITING_AGENT;
+        return $this->status === TicketStatus::STATUS_TYPE_AWAITING_USER || $this->status === TicketStatus::STATUS_TYPE_AWAITING_AGENT;
     }
 
     /**
@@ -3383,11 +3388,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function setIsHold($is_hold)
     {
         if ($is_hold) {
-            $this->setStatus(self::STATUS_AWAITING_AGENT);
+            $this->setStatus(TicketStatus::STATUS_TYPE_PENDING);
             $this->setModelField('date_on_hold', new \DateTime());
-            $this->setModelField('is_hold', true);
         } else {
-            $this->setModelField('date_on_hold', null);
+            $this->setStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT);
             $this->setModelField('is_hold', false);
         }
 
@@ -3411,7 +3415,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         }
 
         if ($this->status == 'hidden') {
-            $this->setModelField('status', self::STATUS_AWAITING_AGENT);
+            $this->setModelField('status', TicketStatus::STATUS_TYPE_AWAITING_AGENT);
         }
 
         App::getOrm()->remove($del);
@@ -3428,7 +3432,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function deleteTicket($person = null, $reason = '', $persist_self = true)
     {
         if ($persist_self) {
-            $this->setStatus('hidden.deleted');
+            $this->setTicketStatus(App::getContainer()->getTicketStatuses()->getDeletedStatus());
             $tm      = App::$container->getTicketManager();
             $context = $tm->createAgentExecutorContext($person, $reason, '');
             $tm->saveTicket($this, $context);
@@ -3889,29 +3893,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public static function getStatusInt($status_code)
     {
-        $status  = $status_code;
-        $hstatus = null;
+        $status   = $status_code;
+        $idStatus = null;
         if (strpos($status, '.')) {
-            list($status, $hstatus) = explode('.', $status, 2);
+            list($status, $idStatus) = explode('.', $status, 2);
         }
 
         switch ($status) {
-            case self::STATUS_AWAITING_AGENT:
+            case TicketStatus::STATUS_TYPE_AWAITING_AGENT:
                 return 100;
-            case self::STATUS_AWAITING_USER:
+            case TicketStatus::STATUS_TYPE_AWAITING_USER:
                 return 110;
-            case self::STATUS_RESOLVED:
+            case TicketStatus::STATUS_TYPE_RESOLVED:
                 return 200;
-            case self::STATUS_ARCHIVED:
+            case TicketStatus::STATUS_TYPE_ARCHIVED:
                 return 210;
-            case self::STATUS_HIDDEN:
-                switch ($hstatus) {
-                    case self::HIDDEN_STATUS_DELETED:
-                        return 310;
-                    case self::HIDDEN_STATUS_SPAM:
-                        return 320;
+            case TicketStatus::STATUS_TYPE_HIDDEN:
+                if ($idStatus && $status_code == App::getContainer()->getTicketStatuses()->getDeletedStatus()->getStatusCode()) {
+                    return 310;
+                } elseif ($idStatus && $status_code == App::getContainer()->getTicketStatuses()->getSpamStatus()->getStatusCode()) {
+                    return 320;
                 }
                 break;
+            case TicketStatus::STATUS_TYPE_PENDING:
+                return 400;
         }
 
         return 0;
@@ -4895,13 +4900,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public static function getTicketStatuses()
     {
         return [
-            self::STATUS_AWAITING_AGENT,
-            self::STATUS_AWAITING_USER,
-            self::STATUS_ARCHIVED,
-            self::STATUS_RESOLVED,
-            self::STATUS_HIDDEN,
-            self::STATUS_HIDDEN.'.'.self::HIDDEN_STATUS_SPAM,
-            self::STATUS_HIDDEN.'.'.self::HIDDEN_STATUS_DELETED,
+            TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+            TicketStatus::STATUS_TYPE_AWAITING_USER,
+            TicketStatus::STATUS_TYPE_ARCHIVED,
+            TicketStatus::STATUS_TYPE_RESOLVED,
+            TicketStatus::STATUS_TYPE_HIDDEN,
+            TicketStatus::STATUS_TYPE_HIDDEN.'.'.TicketStatus::SYS_ID_SPAM,
+            TicketStatus::STATUS_TYPE_HIDDEN.'.'.TicketStatus::SYS_ID_DELETED,
         ];
     }
 
@@ -5653,6 +5658,23 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                         ],
                     ],
                 ],
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'hidden_status',
+                'columnName' => 'hidden_status',
+                'type'       => 'string',
+                'length'     => 30,
+                'nullable'   => true,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'is_hold',
+                'columnName' => 'is_hold',
+                'type'       => 'boolean',
+                'nullable'   => false,
             ]
         );
     }

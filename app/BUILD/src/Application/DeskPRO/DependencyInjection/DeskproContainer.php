@@ -637,6 +637,14 @@ class DeskproContainer extends Container
     }
 
     /**
+     * @return DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService
+     */
+    public function getTicketStatuses()
+    {
+        return $this->get('ticket.statuses');
+    }
+
+    /**
      * @return \Application\DeskPRO\Products\Products
      */
     public function getProducts()

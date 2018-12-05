@@ -6,6 +6,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -33,6 +34,12 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     const STATUS_TYPE_ARCHIVED       = 'archived';
     const STATUS_TYPE_HIDDEN         = 'hidden';
 
+    const SYS_ID_DELETED = 'deleted';
+    const SYS_ID_SPAM    = 'spam';
+
+    /**
+     * @return array
+     */
     public static function getStatusTypes()
     {
         return [
@@ -43,6 +50,16 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
             self::STATUS_TYPE_ARCHIVED,
             self::STATUS_TYPE_HIDDEN,
         ];
+    }
+
+    /**
+     * @param string $statusType
+     *
+     * @return bool
+     */
+    public static function isValidStatusType($statusType)
+    {
+        return in_array($statusType, self::getStatusTypes());
     }
 
     /**
@@ -115,9 +132,15 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
      */
     protected $displayOrder;
 
+    /**
+     * @var ArrayCollection
+     */
+    protected $children;
+
     public function __construct($statusType)
     {
         $this->setModelField('statusType', $statusType);
+        $this->children = new ArrayCollection();
     }
 
     /**
@@ -126,6 +149,18 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -229,5 +264,37 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     public function getStatusCode()
     {
         return $this->statusType.'.'.$this->id;
+    }
+
+    /**
+     * @return array
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param ArrayCollection|array $children
+     *
+     * @return $this
+     */
+    public function setChildren($children)
+    {
+        if (is_array($children) && !$children instanceof ArrayCollection) {
+            $children = new ArrayCollection($children);
+        }
+
+        $this->children = $children;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->sysId == 'deleted';
     }
 }

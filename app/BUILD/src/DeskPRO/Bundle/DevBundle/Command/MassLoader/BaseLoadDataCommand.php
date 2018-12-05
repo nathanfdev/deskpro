@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\DevBundle\Command\MassLoader;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -45,27 +46,27 @@ EOF
             'filters'    => [
                 [
                     'terms' => [
-                        'status' => Ticket::STATUS_AWAITING_USER,
+                        'status' => TicketStatus::STATUS_TYPE_AWAITING_USER,
                     ],
                 ],
                 [
                     'terms' => [
-                        'status' => Ticket::STATUS_AWAITING_AGENT,
+                        'status' => TicketStatus::STATUS_TYPE_AWAITING_AGENT,
                     ],
                 ],
                 [
                     'terms' => [
-                        'status' => Ticket::STATUS_AWAITING_AGENT,
+                        'status' => TicketStatus::STATUS_TYPE_AWAITING_AGENT,
                     ],
                 ],
                 [
                     'terms' => [
-                        'status' => Ticket::STATUS_RESOLVED,
+                        'status' => TicketStatus::STATUS_TYPE_RESOLVED,
                     ],
                 ],
                 [
                     'terms' => [
-                        'status' => Ticket::STATUS_ARCHIVED,
+                        'status' => TicketStatus::STATUS_TYPE_ARCHIVED,
                     ],
                 ],
             ],

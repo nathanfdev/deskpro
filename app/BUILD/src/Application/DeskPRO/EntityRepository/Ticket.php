@@ -18,6 +18,7 @@ use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use Doctrine\ORM\Query\Expr\Join;
 use Orb\Util\Arrays;
@@ -705,15 +706,15 @@ class Ticket extends AbstractEntityRepository
     {
         if ($only_open) {
             $status = [
-                TicketEntity::STATUS_AWAITING_AGENT,
-                TicketEntity::STATUS_AWAITING_USER,
+                TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                TicketStatus::STATUS_TYPE_AWAITING_USER,
             ];
         } else {
             $status = [
-                TicketEntity::STATUS_AWAITING_AGENT,
-                TicketEntity::STATUS_AWAITING_USER,
-                TicketEntity::STATUS_ARCHIVED,
-                TicketEntity::STATUS_RESOLVED,
+                TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                TicketStatus::STATUS_TYPE_AWAITING_USER,
+                TicketStatus::STATUS_TYPE_ARCHIVED,
+                TicketStatus::STATUS_TYPE_RESOLVED,
             ];
         }
 
@@ -737,7 +738,7 @@ class Ticket extends AbstractEntityRepository
      */
     public function getWaitingForReplyForPerson(Entity\Person $person, $max = 5)
     {
-        $status = TicketEntity::STATUS_AWAITING_USER;
+        $status = TicketStatus::STATUS_TYPE_AWAITING_USER;
 
         $tickets = $this->getEntityManager()->createQuery('
             SELECT t
@@ -1187,8 +1188,8 @@ class Ticket extends AbstractEntityRepository
             )
             ->setParameter('number', $number)
             ->setParameter('statuses', [
-                TicketEntity::STATUS_AWAITING_USER,
-                TicketEntity::STATUS_AWAITING_AGENT,
+                TicketStatus::STATUS_TYPE_AWAITING_USER,
+                TicketStatus::STATUS_TYPE_AWAITING_AGENT,
             ])
             ->setMaxResults(1)
         ;

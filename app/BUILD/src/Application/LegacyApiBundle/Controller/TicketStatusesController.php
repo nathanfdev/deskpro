@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketPurger;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Orb\Util\Arrays;
 
 /**
@@ -147,7 +148,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
                 UPDATE tickets
                 SET status = ?
                 WHERE status = ?
-            ', [Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED]);
+            ', [TicketStatus::STATUS_TYPE_RESOLVED, TicketStatus::STATUS_TYPE_ARCHIVED]);
             $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
         }
 
