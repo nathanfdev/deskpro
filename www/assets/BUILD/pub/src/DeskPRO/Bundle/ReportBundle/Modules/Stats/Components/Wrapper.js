@@ -37,6 +37,7 @@ class Wrapper extends React.Component {
     groupParams:   PropTypes.object.isRequired,
     labels:        PropTypes.object,
     dispatch:      PropTypes.func.isRequired,
+    params:        PropTypes.object
   };
 
   static createNewReport(report) {
@@ -86,7 +87,7 @@ class Wrapper extends React.Component {
       reports:       props.reports || Immutable.Map(),
       searchText:    '',
       labels:        newLabels,
-      activeLabels:  0,
+      activeLabels:  0
     };
 
     this.onEditReportClick          = this.onEditReportClick.bind(this);
@@ -104,6 +105,12 @@ class Wrapper extends React.Component {
     this.parseReportQuery           = this.parseReportQuery.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.params.reportId) {
+      this.onEditReportClick(Immutable.fromJS({ id: this.props.params.reportId }));
+    }
+  }
+
   componentWillReceiveProps(props) {
     let newReports = props.reports;
     this.state.reports.forEach((report) => { // we have to persist changed var values, to keep run mode work
@@ -111,6 +118,9 @@ class Wrapper extends React.Component {
         newReports = newReports.mergeIn([report.get('id')], { variables: report.get('variables'), varChanged: true });
       }
     });
+    if (props.params.reportId && (this.props.params.reportId !== props.params.reportId)) {
+      this.onEditReportClick(Immutable.fromJS({ id: props.params.reportId }));
+    }
     this.setState({ reports: newReports });
     this.setLabels(props);
   }
