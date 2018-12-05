@@ -39,6 +39,11 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 		});
 		this.ownObject(this.stateSaver);
 
+    $('#new_feedback_brand_id').on('change', function() {
+      self.updateCategories();
+      self.updateStatusCategories();
+    });
+
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
 
@@ -137,6 +142,38 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 			}
 		});
 	},
+
+  updateCategories: function() {
+    var brand_select = $('#new_feedback_brand_id');
+    var brand_id = brand_select.val();
+    var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.category_id');
+    $.ajax({
+      url: BASE_URL + 'agent/feedback/categories/brand/'+brand_id,
+      type: 'GET',
+      context: this,
+      success: function(result) {
+        categories_select.children().remove();
+        categories_select.append($(result).find('option'));
+        categories_select.select2("val", '');
+      }
+    });
+  },
+
+  updateStatusCategories: function() {
+    var brand_select = $('#new_feedback_brand_id');
+    var brand_id = brand_select.val();
+    var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.status_id');
+    $.ajax({
+      url: BASE_URL + 'agent/feedback/statuses/brand/'+brand_id,
+      type: 'GET',
+      context: this,
+      success: function(result) {
+        categories_select.children().remove();
+        categories_select.append($(result).find('optgroup'));
+        categories_select.select2("val", '');
+      }
+    });
+  },
 
 	//#################################################################
 	//# User section

@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\HttpKernel;
 
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
@@ -52,10 +48,13 @@ class ControllerNameParser extends BaseParser
         return $this->brand_stack;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function parse($controller)
     {
         if (!$brand_container = $this->getBrandStack()->getActive()) {
-            throw new \RuntimeException('no brand is active in the brand stack. cannot parse theme controller.');
+            $brand_container = $this->brand_stack->getDefaultBrandModelContainer();
         }
 
         // if the controller is a string, we're going to array cache the resolved controller based on brand to avoid over-computing

@@ -2,8 +2,10 @@
 
 namespace Application\DeskPRO\FeedbackTypes\Form\Type;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,6 +33,9 @@ class FeedbackTypePropsType extends AbstractType
                         'u.is_agent_group = false AND u.is_enabled = true'
                     );
                 },
+            ])
+            ->add('brand', EntityType::class, [
+                'class' => Brand::class,
             ])
         ;
     }

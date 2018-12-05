@@ -49,22 +49,20 @@ class BrandStack
     private $brandContainers;
 
     /**
-     * @var \Application\DeskPRO\Entity\Brand
+     * @var DefaultBrandFinder
      */
-    private $defaultBrand;
+    private $defaultBrandFinder;
 
     /**
      * @param BrandContainerFactory $factory
-     * @param Brand                 $default_brand
+     * @param DefaultBrandFinder    $defaultBrandFinder
      */
-    public function __construct(BrandContainerFactory $factory, Brand $default_brand)
+    public function __construct(BrandContainerFactory $factory, DefaultBrandFinder $defaultBrandFinder)
     {
-        $this->factory         = $factory;
-        $this->stack           = [];
-        $this->brandContainers = [];
-        $this->defaultBrand    = $default_brand;
-
-        $this->push($default_brand);
+        $this->factory            = $factory;
+        $this->stack              = [];
+        $this->brandContainers    = [];
+        $this->defaultBrandFinder = $defaultBrandFinder;
     }
 
     /**
@@ -80,7 +78,11 @@ class BrandStack
             return $this->brandContainers[$brandId];
         }
 
-        return null;
+        if ($this->defaultBrandFinder->getDefaultBrand()) {
+            return $this->factory->create($this->defaultBrandFinder->getDefaultBrand());
+        }
+
+        return;
     }
 
     /**
@@ -91,6 +93,9 @@ class BrandStack
         return $this->stack;
     }
 
+    /**
+     * @return array|BrandContainer[]
+     */
     public function getContainers()
     {
         return $this->brandContainers;
@@ -101,7 +106,23 @@ class BrandStack
      */
     public function getDefaultBrand()
     {
-        return $this->defaultBrand;
+        return $this->defaultBrandFinder->getDefaultBrand();
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getDefaultBrandModel()
+    {
+        return $this->defaultBrandFinder->getDefaultBrandModel();
+    }
+
+    /**
+     * @return BrandContainer
+     */
+    public function getDefaultBrandModelContainer()
+    {
+        return $this->factory->create($this->defaultBrandFinder->getDefaultBrandModel());
     }
 
     /**
@@ -120,7 +141,7 @@ class BrandStack
             array_push($this->stack, $brandId);
 
             if (!array_key_exists($brandId, $this->brandContainers)) {
-                $this->brandContainers[ $brandId] = $this->factory->create($brand);
+                $this->brandContainers[$brandId] = $this->factory->create($brand);
             }
         }
 
@@ -135,13 +156,11 @@ class BrandStack
     public function pop()
     {
         $brandId = array_pop($this->stack);
-
-        // always at least the default brand
-        if (empty($this->stack)) {
-            $this->push($this->defaultBrand);
+        if ($brandId && isset($this->brandContainers[$brandId])) {
+            return $this->brandContainers[$brandId];
         }
 
-        return $this->brandContainers[ $brandId];
+        return $this->factory->create($this->defaultBrandFinder->getDefaultBrand());
     }
 
     /**
@@ -154,7 +173,9 @@ class BrandStack
      * @param Brand    $brand
      * @param callback $func
      *
-     * @throws null|\Exception
+     * @throws \Exception
+     *
+     * @return mixed
      */
     public function pushTemporary(Brand $brand = null, $func = null)
     {

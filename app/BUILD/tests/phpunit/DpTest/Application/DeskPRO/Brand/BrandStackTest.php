@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DpTest\DeskPRO\Application\Brand;
 
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
@@ -27,6 +23,9 @@ class BrandStackTest extends DeskProTestCase
         $mockBrand1->shouldReceive('getThemeSet')->andReturn($mockThemeSet2);
         $mockContainer2 = \Mockery::mock('DeskPRO\Bundle\BrandBundle\Brand\BrandContainer');
 
+        $defaultBrandFinder = \Mockery::mock('DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder');
+        $defaultBrandFinder->shouldReceive('getDefaultBrand')->andReturn($mockBrand1);
+
         $mockFactory->shouldReceive('create')->with($mockBrand1)->andReturn($mockContainer1);
         $mockFactory->shouldReceive('create')->with($mockBrand2)->andReturn($mockContainer2);
 
@@ -34,7 +33,7 @@ class BrandStackTest extends DeskProTestCase
          * As demonstrated below, the BrandStack lets you seamlessly move between different brand "containers" (eg. contexts)
          * through runtime. You can push(Brand entity) and pop() in an out of these container contexts.
          */
-        $stack = new BrandStack($mockFactory, $mockBrand1);
+        $stack = new BrandStack($mockFactory, $defaultBrandFinder);
         // There's always a brand, at least the default brand, even in CLI mode
         $this->assertSame($mockContainer1, $stack->getActive());
 

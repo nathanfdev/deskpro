@@ -12,7 +12,9 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Validator\HasValidationMetadataInterface;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackStatusCategoryListener;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -42,6 +44,11 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
      * @var int
      */
     protected $id = null;
+
+    /**
+     * @var Brand
+     */
+    protected $brand;
 
     /**
      * Category status type.
@@ -74,6 +81,26 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand(Brand $brand = null)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
     }
 
     /**
@@ -196,12 +223,26 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
         );
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = [])
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+
+        $data['brand'] = $this->brand ? $this->brand->getId() : null;
+
+        return $data;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
+        $metadata->addEntityListener(Events::prePersist, FeedbackStatusCategoryListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, FeedbackStatusCategoryListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackStatusCategory';
         $metadata->setPrimaryTable(['name' => 'feedback_status_categories']);
@@ -247,6 +288,22 @@ class FeedbackStatusCategory extends DomainObject implements HasPhraseName, HasV
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'display_order',
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'cascade'      => ['persist'],
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

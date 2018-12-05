@@ -8,6 +8,7 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -1266,23 +1267,17 @@ class FeedbackController extends AbstractController
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return \Application\DeskPRO\Entity\CustomDefFeedback
      */
-    protected function _getUserCategoryField()
+    protected function _getUserCategoryField(Brand $brand = null)
     {
-        $field = $this->container->getDataService('CustomDefFeedback')->getCategoryField();
-
-        if (!$field) {
-            $field                = new \Application\DeskPRO\Entity\CustomDefFeedback();
-            $field->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
-            $field->title         = 'Category';
-            $field->sys_name      = 'cat';
-            $field->description   = 'Category';
-            $this->em->persist($field);
-            $this->em->flush();
+        if (!$brand) {
+            $brand = $this->get('default_brand_finder')->getDefaultBrand();
         }
 
-        return $field;
+        return $this->container->getSystemService('feedback_categories')->getParentCategory($brand);
     }
 
     /**

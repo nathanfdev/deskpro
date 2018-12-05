@@ -30,7 +30,6 @@ define [
       ]
 
       promise = @$q.all(requests).then((result) =>
-
         if @$stateParams.id
           @feedback_category = result[1].data.feedback_category.feedback_category
         @feedback_categories_parent_list = @FeedbackCategoriesData.getListOfParents @feedback_category
@@ -44,6 +43,8 @@ define [
       # @return {promise}
     ###
     saveForm: ->
+
+      @feedback_category.brand = @$stateParams.brandId
 
       if not @$scope.form_props.$valid
         return
@@ -60,6 +61,7 @@ define [
       promise.success((result) =>
 
         @feedback_category.id = result.id
+        @feedback_category.brand = result.brand
 
         @stopSpinner('saving_feedback_category', true).then(=>
           @Growl.success(@getRegisteredMessage('saved_feedback_category'))

@@ -2,6 +2,7 @@
 
 namespace Application\EmailBundle\SwiftMailer;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Translate\Translate;
 use Application\EmailBundle\SwiftMailer\Message\Message;
@@ -57,13 +58,16 @@ class MailerUtils
      *
      * @param Message $message
      * @param Person  $person
+     * @param Brand   $brand
      *
      * @return mixed
      */
-    public function sendWithPersonContext(Message $message, Person $person = null)
+    public function sendWithPersonContext(Message $message, Person $person = null, Brand $brand = null)
     {
-        if ($person) {
-            $brand = $person->getBrands()->first();
+        if ($person || $brand) {
+            if (!$brand) {
+                $brand = $person->getBrands()->first();
+            }
             if (!$brand) {
                 $brand = $this->brandStack->getDefaultBrand();
             }
@@ -91,21 +95,29 @@ class MailerUtils
      * This will attempt to catch exceptions so the brand is always reset afterwards.
      *
      *
-     * @param Person  $person
-     * @param Message $message
+     * @param Person        $person
+     * @param EmailBaseType $model
+     * @param mixed         $args
+     * @param Brand         $brand
      *
      * @return mixed
      */
-    public function sendModelWithPersonContext(Person $person, EmailBaseType $model, $args)
+    public function sendModelWithPersonContext(Person $person, EmailBaseType $model, $args, Brand $brand = null)
     {
         $res = null;
 
+        if (!$brand) {
+            $brand = $person->getBrands()->first();
+        }
+        if (!$brand) {
+            $brand = $this->brandStack->getDefaultBrand();
+        }
+
         // we don't need to wrap into $translator->setTemporaryLanguage, because it is done in SendMail directly
-        $self = $this;
         $this->brandStack->pushTemporary(
-            $person->getBrands()->first(),
-            function () use ($self, $model, $args, &$res) {
-                $res = $self->emailSender->send($model, $args);
+            $brand,
+            function () use ($model, $args, &$res) {
+                $res = $this->emailSender->send($model, $args);
             }
         );
 

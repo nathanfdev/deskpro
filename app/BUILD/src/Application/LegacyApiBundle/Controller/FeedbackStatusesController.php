@@ -115,6 +115,7 @@ class FeedbackStatusesController extends AbstractController implements Protected
             [
                  'success' => true,
                  'id'      => $feedback_status->getId(),
+                 'brand'   => $feedback_status->getBrand() ? $feedback_status->getBrand()->getId() : null,
             ]
         );
     }

@@ -7,7 +7,7 @@
 {%- elseif list_type == 'status' -%}
 	{% set tplvars = {
 		baseId: el_uid(),
-		subgroup_url: path('agent_feedback_status', {'status': status}) ~ '?subgroup=SUBGROUP_ID'
+		subgroup_url: path('agent_feedback_status', {'status': status, 'brand_id': selected_brand_id}) ~ '?subgroup=SUBGROUP_ID'
 	} %}
 {%- else -%}
 	{% set tplvars = {
@@ -26,11 +26,11 @@
 			pageMeta.refreshUrl = '{{ path('agent_feedback_category', {'category_id': category_id}) }}';
 			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_category', {'category': category}) }}';
 		{% elseif list_type == 'status' %}
-			pageMeta.refreshUrl = '{{ path('agent_feedback_status', {'status': status}) }}?';
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status}) }}';
+			pageMeta.refreshUrl = '{{ path('agent_feedback_status', {'status': status, 'brand_id': selected_brand_id}) }}?';
+			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'status': status, 'brand_id': selected_brand_id}) }}';
 		{% elseif list_type == 'label' %}
-			pageMeta.refreshUrl = '{{ path('agent_feedback_label', {'label': label}) }}?';
-			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'label': label}) }}';
+			pageMeta.refreshUrl = '{{ path('agent_feedback_label', {'label': label, 'brand_id': selected_brand_id}) }}?';
+			pageMeta.url_fragment = '{{ url_fragment('agent_feedback_status', {'label': label, 'brand_id': selected_brand_id}) }}';
 		{% elseif list_type == 'validating' %}
 			pageMeta.refreshUrl = '{{ path('agent_feedback_validating') }}?';
 		{% else %}

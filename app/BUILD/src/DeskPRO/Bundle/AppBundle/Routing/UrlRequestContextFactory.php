@@ -59,10 +59,11 @@ class UrlRequestContextFactory
      */
     private function createContextForSettingsUrl(RequestContext $defaultContext, array $parameters)
     {
+        $brandStack = $this->container->get('brand_stack');
         /** @var Brand $brand */
         $brand = array_key_exists('brand', $parameters) && $parameters['brand'] instanceof Brand
             ? $parameters['brand']
-            : $this->container->get('brand_stack')->getActive()->getBrand();
+            : $brandStack->getActive()->getBrand();
 
         if (isset($this->absContextToBrand[$brand->getId()])) {
             return $this->absContextToBrand[$brand->getId()];
@@ -70,9 +71,10 @@ class UrlRequestContextFactory
 
         $settingsResolver = $this->container->get('settings_resolver');
 
-        $url = $settingsResolver->getBrandSettings($brand)->get('core.deskpro_url')
-            ?: $settingsResolver->getGlobalSettings()->get('core.deskpro_url');
+        $brandUrl  = $settingsResolver->getBrandSettings($brand)->get('core.deskpro_url');
+        $globalUrl = $settingsResolver->getGlobalSettings()->get('core.deskpro_url');
 
+        $url = $brandUrl ?: $globalUrl;
         if (!$url) {
             return $defaultContext;
         }
@@ -81,6 +83,10 @@ class UrlRequestContextFactory
 
         if (!$urlParts || empty($urlParts['host']) || empty($urlParts['scheme'])) {
             return $defaultContext;
+        }
+
+        if (!$brandUrl && $brand !== $brandStack->getDefaultBrand()) {
+            $urlParts['host'] = rtrim($urlParts['host'], '/').'/b/'.$brand->getSlug();
         }
 
         $context = clone $defaultContext;

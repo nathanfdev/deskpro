@@ -1,25 +1,26 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\EntityRepository;
 
 class CustomDefFeedback extends CustomDefAbstract
 {
     /**
+     * @param Brand $brand
+     *
      * @return \Application\DeskPRO\Entity\CustomDefFeedback|null
      */
-    public function getCategoryField()
+    public function getCategoryField(\Application\DeskPRO\Entity\Brand $brand)
     {
-        return $this->_em->createQuery("
-            SELECT f
-            FROM DeskPRO:CustomDefFeedback f
-            WHERE f.sys_name = 'cat'
-        ")->setMaxResults(1)->getOneOrNullResult();
+        return $this->_em
+            ->createQuery("
+                SELECT f
+                FROM DeskPRO:CustomDefFeedback f
+                WHERE f.sys_name = 'cat' AND f.brand = :brand
+            ")
+            ->setParameter('brand', $brand)
+            ->setMaxResults(1)
+            ->getOneOrNullResult()
+        ;
     }
 
     /**
@@ -40,6 +41,7 @@ class CustomDefFeedback extends CustomDefAbstract
                 $hierarchy[] = [
                     'id'        => $child->getId(),
                     'title'     => $child->getTitle(),
+                    'brand'     => $child->getBrand() ? $child->getBrand()->getId() : null,
                     'parent_id' => $child->getOption('parent_id', 0),
                 ];
             }

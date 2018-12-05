@@ -13,6 +13,7 @@ class FeedbackSearch extends SearcherAbstract
 {
     const TERM_ID                = 'id';
     const TERM_STATUS            = 'status';
+    const TERM_BRAND             = 'brand';
     const TERM_DELETED           = 'deleted';
     const TERM_HIDDEN_STATUS     = 'hidden_status';
     const TERM_CATEGORY          = 'category';
@@ -405,6 +406,19 @@ class FeedbackSearch extends SearcherAbstract
 
                     $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
                         $titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getNames((array) $choice);
+
+                        return $titles;
+                    });
+                    break;
+
+                case self::TERM_BRAND:
+                    $ids = (array) $choice;
+                    $ids = array_unique($ids);
+
+                    $wheres[] = $this->_choiceMatch('feedback.brand_id', $op, $ids);
+
+                    $this->summary[] = $this->_choiceSummary('Brand', $op, $choice, function ($choice) {
+                        $titles = App::getEntityRepository('DeskPRO:Brand')->getNames((array) $choice);
 
                         return $titles;
                     });

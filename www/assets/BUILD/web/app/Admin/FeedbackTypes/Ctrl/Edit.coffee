@@ -44,6 +44,7 @@ define [
     ###
     saveFeedbackType: ->
 
+      @feedback_type.brand = @$stateParams.brandId
       @feedback_type.usergroups = []
 
       for own key, value of @selected_usergroups
@@ -66,6 +67,7 @@ define [
       promise.success((result) =>
 
         @feedback_type.id = result.id
+        @feedback_type.brand = result.brand
 
         @stopSpinner('saving_feedback_type', true).then(=>
           @Growl.success(@getRegisteredMessage('saved_feedback_type'))

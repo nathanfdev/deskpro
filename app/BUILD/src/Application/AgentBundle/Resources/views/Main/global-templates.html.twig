@@ -65,60 +65,6 @@
 </ul>
 
 {##############################################################}
-{# Feedback related #}
-{##############################################################}
-
-<ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
-	{% for cat in app.getDataService('FeedbackCategory').getRootNodes() %}
-		{% if last_with_child %}
-			<li class="sep">-</li>
-		{% endif %}
-		{% if cat.children|length %}
-			<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
-			{% for subcat in cat.children %}
-				<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
-			{% endfor %}
-			{% set last_with_child = true %}
-		{% else %}
-			<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
-			{% set last_with_child = false %}
-		{% endif %}
-	{% endfor %}
-</ul>
-
-<ul id="feedback_status_menu" data-menu-type="feedback-status-menu" data-menu-flag="copy-menu">
-	<li
-		class="status-new"
-		data-status-type="new"
-		data-option-value="new"
-	>{{ phrase('agent.feedback.status_new') }}</li>
-	<li
-		class="section-title status-active"
-		data-status-type="active"
-		data-option-value="active"
-	>{{ phrase('agent.feedback.status_active') }}</li>
-	{% for cat in app.getDataService('FeedbackStatusCategory').getActiveCategories() %}
-		<li
-			class="status-{{cat.id}}"
-			data-status-type="active"
-			data-option-value="active.{{cat.id}}"
-		>{{cat.title}}</li>
-	{% endfor %}
-	<li
-		class="section-title status-closed"
-		data-status-type="closed"
-		data-option-value="closed"
-	>{{ phrase('agent.feedback.status_closed') }}</li>
-	{% for cat in app.getDataService('FeedbackStatusCategory').getClosedCategories() %}
-		<li
-			class="status-{{cat.id}}"
-			data-status-type="closed"
-			data-option-value="closed.{{cat.id}}"
-		>{{cat.title}}</li>
-	{% endfor %}
-</ul>
-
-{##############################################################}
 {# Search related #}
 {##############################################################}
 

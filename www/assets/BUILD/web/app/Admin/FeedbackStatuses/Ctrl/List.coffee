@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
 
+      @$scope.brand_id = @$stateParams.brandId
       @$scope.activeType = 'active'
       @$scope.closedType = 'closed'
 
@@ -54,7 +55,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     initialLoad: ->
 
-      list_promise = @FeedbackStatusesData.loadList().then( (recs) =>
+      promises = []
+      promises.push @FeedbackStatusesData.loadList().then( (recs) =>
 
         @feedback_active_statuses = @sort recs.active_statuses.values()
         @feedback_closed_statuses = @sort recs.closed_statuses.values()
@@ -72,7 +74,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         )
       )
 
-      return @$q.all([list_promise])
+      return @$q.all(promises)
 
     ###
   # Show the delete dlg

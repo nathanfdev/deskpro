@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -11,6 +12,9 @@ use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
+/**
+ * Class FeedbackFixture.
+ */
 class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
     const NUM_FEEDBACK            = 100;
@@ -188,6 +192,9 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
 
     private function loadFeedback()
     {
+        /** @var Brand $brand */
+        $brand = $this->getReference('brand');
+
         $i     = 0;
         $batch = [];
         while ($i++ < self::NUM_FEEDBACK) {
@@ -198,6 +205,7 @@ class FeedbackFixture extends AbstractDpFixture implements OrderedFixtureInterfa
                 'category_id'  => $this->faker->randomElement($this->types),
                 'language_id'  => $this->faker->randomElement($this->languages),
                 'date_created' => $dateCreated,
+                'brand_id'     => $brand->getId(),
             ];
             $values  = $this->setReviewed($values);
             $values  = $this->setStatus($values);

@@ -6,7 +6,9 @@
 
 namespace Application\DeskPRO\FeedbackStatuses\Form\Type;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,6 +21,9 @@ class FeedbackStatusPropsType extends AbstractType
         $builder->add('status_type', 'choice', [
             'choices'  => ['active' => 'active', 'closed' => 'closed'],
             'required' => true,
+        ]);
+        $builder->add('brand', EntityType::class, [
+            'class' => Brand::class,
         ]);
     }
 

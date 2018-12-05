@@ -49,6 +49,16 @@ pageMeta.baseId = '{{ baseId }}';
 
 <div class="{% if not ticket %}first{% endif %} section cat-section" id="{{baseId}}_cat_section">
 	<div class="content">
+        <div class="col">
+            <h4>{{ phrase('agent.general.brand') }}</h4>
+            <select name="newfeedback[brand]" id="new_feedback_brand_id">
+                {% for brand in brands %}
+                    <option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
+                        {{ brand.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
 		<div class="col">
 			<h4>{{ phrase('agent.general.type') }}</h4>
 			{% include 'AgentBundle:Common:select-standard.html.twig' with {
@@ -63,7 +73,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
-			{% include 'AgentBundle:Common:select-feedback-status.html.twig' with {'name': 'newfeedback[status_code]'} %}
+			{% include 'AgentBundle:Common:select-feedback-status.html.twig' with {'name': 'newfeedback[status_code]', 'add_classname': 'status_id'} %}
 		</div>
 		<div class="col">
 			<h4 class="light">{{ phrase('agent.general.labels') }}</h4>

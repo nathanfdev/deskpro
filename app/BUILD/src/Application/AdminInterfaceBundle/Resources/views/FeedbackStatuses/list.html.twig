@@ -18,7 +18,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list" ui-sortable="FeedbackStatusesList.sortedListOptions">
-				<li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_active_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
+				<li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_active_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}" ng-if="status.brand == brand_id">
 					<a href="{{ ng_href('portal.feedback_statuses.edit', '{id: status.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<h4><span class="title-text">{{ ng_var('status.title') }}</span></h4>
@@ -40,7 +40,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list" ui-sortable="FeedbackStatusesList.sortedListOptions">
-				<li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_closed_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
+				<li class="with-drag-handle" ng-repeat="status in FeedbackStatusesList.feedback_closed_statuses" dp-state-mark="portal.feedback_statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}" ng-if="status.brand == brand_id">
 					<a href="{{ ng_href('portal.feedback_statuses.edit', '{id: status.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<h4><span class="title-id" title="ID">#{{ ng_var('status.id') }}</span> <span class="title-text">{{ ng_var('status.title') }}</span></h4>

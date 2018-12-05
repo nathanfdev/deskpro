@@ -113,6 +113,7 @@ class FeedbackTypesController extends AbstractController implements ProtectedCon
         return $this->createApiResponse([
              'success' => true,
              'id'      => $feedbackType->getId(),
+             'brand'   => $feedbackType->getBrand() ? $feedbackType->getBrand()->getId() : null,
         ]);
     }
 

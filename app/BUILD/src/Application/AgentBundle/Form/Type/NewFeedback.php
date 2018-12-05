@@ -6,6 +6,7 @@
 
 namespace Application\AgentBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -24,6 +25,9 @@ class NewFeedback extends AbstractType
         $builder->add('title', 'text');
         $builder->add('content', 'textarea', ['filter_clean' => false]);
 
+        $builder->add('brand', EntityType::class, [
+            'class' => Brand::class,
+        ]);
         $builder->add('category_id', 'text');
         $builder->add('status_code', 'text');
 

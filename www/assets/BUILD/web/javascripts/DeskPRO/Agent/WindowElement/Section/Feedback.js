@@ -26,7 +26,9 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 	},
 
 	reload: function() {
-		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this));
+		DeskPRO_Window.getSectionData('feedback_section', this._initSection.bind(this), {
+			brand_id: $('#feedback_brand_id').val()
+		});
 	},
 
 	_initSection: function(data) {
@@ -45,6 +47,10 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 
 			}
 		});
+
+    $('select#feedback_brand_id').select2().on('change', function() {
+      self.reload();
+    });
 
 		this.recountBadge();
 
