@@ -17,6 +17,7 @@ import {
 import { allReportsSelector } from '../Selectors/reports';
 import { allReportLabelsSelector } from '../../Application/Selectors/reports';
 import { regex, activateLabel, transformLabels, transformReportData, countActiveLabels } from './helper';
+import { replaceRoute } from '../../../../AdminBundle/Services/history';
 
 @connect(state => ({
   reports:       allReportsSelector(state),
@@ -107,7 +108,7 @@ class Wrapper extends React.Component {
 
   componentDidMount() {
     if (this.props.params.reportId) {
-      this.onEditReportClick(Immutable.fromJS({ id: this.props.params.reportId }));
+      this.changeEditingReport(Immutable.fromJS({ id: this.props.params.reportId }));
     }
   }
 
@@ -119,7 +120,7 @@ class Wrapper extends React.Component {
       }
     });
     if (props.params.reportId && (this.props.params.reportId !== props.params.reportId)) {
-      this.onEditReportClick(Immutable.fromJS({ id: props.params.reportId }));
+      this.changeEditingReport(Immutable.fromJS({ id: props.params.reportId }));
     }
     this.setState({ reports: newReports });
     this.setLabels(props);
@@ -141,24 +142,8 @@ class Wrapper extends React.Component {
   }
 
   onEditReportClick(report) {
-    this.setState({
-      currentReport: Immutable.Map(),
-      reportLoading: true,
-    });
-
-    const promise = this.props.dispatch(loadReport(report.get('id')));
-    promise.then((response) => {
-      this.setState({
-        reportLoading: false,
-        currentReport: Immutable.fromJS(response.data.data)
-      });
-    }, () => {
-      this.setState({
-        reportLoading: false
-      });
-    });
-
-    this.setState({ mode: 'edit' });
+    replaceRoute(`/stats/edit/${report.get('id')}`);
+    this.changeEditingReport(report);
   }
 
   onDeleteReportClick(report) {
@@ -268,6 +253,27 @@ class Wrapper extends React.Component {
       });
       this.setState({ labels: newLabels, activeLabels: countActiveLabels(newLabels) });
     }
+  }
+
+  changeEditingReport(report) {
+    this.setState({
+      currentReport: Immutable.Map(),
+      reportLoading: true,
+    });
+
+    const promise = this.props.dispatch(loadReport(report.get('id')));
+    promise.then((response) => {
+      this.setState({
+        reportLoading: false,
+        currentReport: Immutable.fromJS(response.data.data)
+      });
+    }, () => {
+      this.setState({
+        reportLoading: false
+      });
+    });
+
+    this.setState({ mode: 'edit' });
   }
 
   parseReportQuery(report, query) {
