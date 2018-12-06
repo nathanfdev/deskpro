@@ -351,7 +351,7 @@ class Wrapper extends React.Component {
           </div>
         </div>
         <div className="report-list-pane-wrapper">
-          { currentReport.get('query_parts') && mode === 'edit'
+          { mode === 'edit'
             ? <Edit
               parseQuery={this.parseReportQuery}
               reportLoading={reportLoading}

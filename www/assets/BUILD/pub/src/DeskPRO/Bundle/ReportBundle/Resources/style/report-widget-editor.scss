@@ -1,6 +1,13 @@
 .report-widget-edit-n-run-content {
   background: #fff;
 
+  &.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+
   .ui.form {
     padding: 10px;
 
