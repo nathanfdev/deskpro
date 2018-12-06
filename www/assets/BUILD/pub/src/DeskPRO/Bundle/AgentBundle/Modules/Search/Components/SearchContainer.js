@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import TokenField from '@deskpro/token-field/dist/index';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -59,11 +60,6 @@ class SearchContainer extends React.Component {
 
   initTokenTypes = () => {
     const { intl } = this.props;
-    console.log(this.props.ticketDepartments);
-    console.log(this.props.ticketDepartments.toJS());
-    console.log(JSON.stringify(this.props.ticketDepartments.toJS()));
-    console.log(this.props.chatDepartments);
-    console.log(JSON.stringify(this.props.chatDepartments.toJS()));
     const tokenTypes = [
       {
         id:     'status',
@@ -89,15 +85,10 @@ class SearchContainer extends React.Component {
       {
         id:     'ticket_department',
         label:  intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
-        widget: 'SelectInput',
+        widget: 'DepartmentInput',
         props:  {
           dataSource: {
-            getOptions: this.props.ticketDepartments.toArray()
-                          .sort((a, b) => a.get('title') > b.get('title'))
-                          .map(e => ({
-                            label: e.get('title'),
-                            value: e.get('id'),
-                          }))
+            getOptions: this.props.ticketDepartments
           },
           showSearch: true,
           isMultiple: true,
@@ -109,22 +100,16 @@ class SearchContainer extends React.Component {
       {
         id:     'chat_department',
         label:  intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
-        widget: 'SelectInput',
+        widget: 'DepartmentInput',
         props:  {
           dataSource: {
-            getOptions: this.props.chatDepartments.toArray()
-                          .sort((a, b) => a.get('title') > b.get('title'))
-                          .map(e => ({
-                            label: e.get('title'),
-                            value: e.get('id'),
-                          }))
+            getOptions: this.props.chatDepartments
           },
           showSearch: true,
           isMultiple: true,
         },
         allowDuplicate: false,
         scopes:         ['chat'],
-        showOnFocus:    true,
       },
       {
         id:     'agent',
