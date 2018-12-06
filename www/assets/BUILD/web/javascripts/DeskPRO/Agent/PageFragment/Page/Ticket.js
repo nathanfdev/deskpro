@@ -2010,7 +2010,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	detectPhoneNumbers: function(messageEl) {
-    window.AgentLegacyBundle.detectPhoneNumbers(messageEl);
+    window.AgentLegacyBundle.detectPhoneNumbersFromMessages(messageEl);
 	},
 
 	refreshMessageTranslation: function(messageEl) {
@@ -2515,6 +2515,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				event.deskpro.cancelClose = true;
 			}
 		}, this);
+
+    if (window.DP_HAS_VOICE) {
+      window.AgentLegacyBundle.detectPhoneNumbers($('.ticket-subject', this.wrapper)[0]);
+    }
 	},
 
 	_initForward: function() {
