@@ -34,6 +34,7 @@ Feature: /tickets endpoint
       | ticket3 | Third Demo Ticket  | {agent} |              | resolved       |               |
       | ticket4 | Fourth Demo Ticket | {agent} |              | archived       |               |
       | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | {ts2}         |
+      | ticket6 | Six Demo Ticket    | {agent} |              | hidden         | {ts1}         |
     And there are no custom ticket fields defined
 
   Scenario: I create a ticket
@@ -69,6 +70,18 @@ Feature: /tickets endpoint
     And the JSON node "data.cc[1]" should be equal to "{agent}"
     And the JSON node "data.cc[2]" should be equal to "{admin}"
     And the JSON node "data.star" should be equal to the string "green"
+
+  Scenario: I create a ticket with substatus
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Test Ticket",
+  "status": "hidden.~ts2~"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.subject" should be equal to "Test Ticket"
+    And the JSON node "data.status" should be equal to "hidden.{ts2}"
 
   Scenario: I modify a ticket
     When I send a PUT request to "/api/v2/tickets/{ticket1}" with body:
@@ -193,8 +206,30 @@ Feature: /tickets endpoint
   Scenario: I retrieve list of hidden and archived tickets
     When I send a GET request to "/api/v2/tickets?status[]=hidden&status[]=archived"
     Then the response status code should be 200
-    And the JSON node "data" should have 2 elements
+    And the JSON node "data" should have 3 elements
     And the JSON node "linked" should have 0 elements
+
+  Scenario: I test filter by status
+    When I send a GET request to "/api/v2/tickets?status[]=hidden.{ts2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 elements
+    And the JSON node "data[0].id" should be equal to "{ticket5}"
+
+    When I send a GET request to "/api/v2/tickets?status[]=hidden.{ts2}&status[]=hidden.{ts1}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{ticket5}"
+    And the JSON node "data[1].id" should be equal to "{ticket6}"
+
+    When I send a GET request to "/api/v2/tickets?not_status[]=hidden"
+    Then the response status code should be 200
+    And the JSON node "data" should have 4 elements
+
+    When I send a GET request to "/api/v2/tickets?status[]=awaiting_user&status[]=hidden.{ts2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{ticket1}"
+    And the JSON node "data[1].id" should be equal to "{ticket5}"
 
   Scenario: I retrieve a ticket side loading people and organizations
     When I send a GET request to "/api/v2/tickets/{ticket1}?include=person,organization"
@@ -509,7 +544,7 @@ Feature: /tickets endpoint
     And the JSON node "data.date_first_agent_assign" should be equal to "2018-01-01T23:59:59+0000"
     And the JSON node "data.date_on_hold" should be equal to "2018-01-01T23:59:59+0000"
 
-  Scenario: I create a ticket with specific date_first_agent_assign and date_on_hold, this should not be an error
+  Scenario: I create a ticket with specific date_first_agent_assign and date_on_hold, this should not be an error2
     Given "admin_for_tickets@deskpro.dev" admin exists
     And I'm authenticated as person with email "admin_for_tickets@deskpro.dev" with super key
     When I send a POST request to "/api/v2/tickets" with body:

@@ -3975,6 +3975,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $data['access_code_email_body_token']   = '(#'.$this->getAccessCode().')';
         $data['access_code_email_header_token'] = 'PTAC-'.$this->getAccessCode();
 
+        $data['status']           = $this->getStatusCode();
+        $data['ticket_status_id'] = $this->getTicketStatus()->getId() ?: null;
+
         // Render custom fields to text values
         $field_manager = App::getContainer()->getTicketFieldManager();
         $field_manager->addApiData($this, $data);

@@ -263,7 +263,12 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
      */
     public function getStatusCode()
     {
-        return $this->statusType.'.'.$this->id;
+        $code = $this->statusType;
+        if ($this->id) {
+            $code .= '.'.$this->id;
+        }
+
+        return $code;
     }
 
     /**

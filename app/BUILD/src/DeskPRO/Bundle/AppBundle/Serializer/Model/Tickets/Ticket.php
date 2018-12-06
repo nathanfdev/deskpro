@@ -268,6 +268,15 @@ class Ticket
     private $hiddenStatus;
 
     /**
+     * Ticket status.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $ticketStatus;
+
+    /**
      * Is this on hold?
      *
      * @JMS\Type("boolean")
@@ -659,6 +668,7 @@ class Ticket
         $this->status               = $ticket->getStatusCode();
         $this->oldStatus            = $ticket->getStatus();
         $this->hiddenStatus         = $ticket->getHiddenStatus();
+        $this->ticketStatus         = $ticket->getStatusCode();
         $this->isHold               = $ticket->isHold();
         $this->urgency              = $ticket->getUrgency();
         $this->feedbackRating       = $ticket->getFeedbackRating();

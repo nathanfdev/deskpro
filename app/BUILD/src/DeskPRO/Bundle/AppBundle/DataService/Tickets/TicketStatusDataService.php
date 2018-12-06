@@ -75,4 +75,33 @@ class TicketStatusDataService
 
         return $statusEntity;
     }
+
+    /**
+     * [
+     *    ['title': ..., 'value': ...]
+     * ].
+     *
+     * @return array
+     */
+    public function getFormOptions()
+    {
+        $res = [];
+
+        foreach (TicketStatus::getStatusTypes() as $statusType) {
+            $topLevelStatus = $this->findStatus($statusType, true);
+            $res[]          = [
+                'value' => $topLevelStatus->getStatusCode(),
+                // translate
+                'title' => $topLevelStatus->getStatusType(),
+            ];
+            foreach ($topLevelStatus->getChildren() as $subStatus) {
+                $res[] = [
+                    'value' => $subStatus->getStatusCode(),
+                    'title' => $subStatus->getTitle(),
+                ];
+            }
+        }
+
+        return $res;
+    }
 }
