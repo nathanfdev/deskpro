@@ -23,13 +23,17 @@ Feature: /tickets endpoint
     And only the following Organization records exist:
       | #         | Name                  |
       | microsoft | Microsoft Corporation |
+    And only the following TicketStatus records exist:
+      | #   | StatusType     | SysId        | Title    |
+      | ts1 | hidden         | spam         | Spam     |
+      | ts2 | hidden         | deleted      | Deleted  |
     And only the following Ticket records exist:
-      | #       | Subject            | Agent   | Organization | Status         | Hidden status |
+      | #       | Subject            | Agent   | Organization | Status         | TicketSTatus  |
       | ticket1 | First Demo Ticket  | {admin} | {microsoft}  | awaiting_user  |               |
       | ticket2 | Second Demo Ticket | {agent} |              | awaiting_agent |               |
       | ticket3 | Third Demo Ticket  | {agent} |              | resolved       |               |
       | ticket4 | Fourth Demo Ticket | {agent} |              | archived       |               |
-      | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | deleted       |
+      | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | {ts2}         |
     And there are no custom ticket fields defined
 
   Scenario: I create a ticket
@@ -37,7 +41,7 @@ Feature: /tickets endpoint
       | #  | Title     |
       | p1 | Product 1 |
       | p2 | Product 2 |
-    When I send a POST request to "/api/v2/tickets" with body:
+    When I send a POST request to "/api/v2/tickets?XDEBUG_SESSION_START=netbeans-xdebug" with body:
     """
 {
   "subject": "Test Ticket",
@@ -146,14 +150,14 @@ Feature: /tickets endpoint
     Given I send a DELETE request to "/api/v2/tickets/{ticket1}"
     When I send a GET request to "/api/v2/tickets/{ticket1}"
     Then the response status code should be 200
-    And the JSON node "data.status" should be equal to "hidden.deleted"
+    And the JSON node "data.status" should be equal to "hidden.{ts2}"
 
   Scenario: I delete a ticket by ref then verify it's properly soft-deleted
     Given I have a Ticket record referenced as ticket_for_del
     When I send a DELETE request to "/api/v2/tickets/ref:{ticket_for_del:ref}"
     Then I send a GET request to "/api/v2/tickets/ref:{ticket_for_del:ref}"
     Then the response status code should be 200
-    And the JSON node "data.status" should be equal to "hidden.deleted"
+    And the JSON node "data.status" should be equal to "hidden.{ts2}"
 
   Scenario: I retrieve a ticket
     When I send a GET request to "/api/v2/tickets/{ticket1}"

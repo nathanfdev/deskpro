@@ -3157,9 +3157,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this->setModelField('date_resolved', null);
         }
 
-        if ($status != 'awaiting_agent' && $this->is_hold) {
-            $this['is_hold'] = false;
-        }
+//        if ($status != 'awaiting_agent' && $this->is_hold) {
+//            $this['is_hold'] = false;
+//        }
 
         if (!$status || !TicketStatus::isValidStatusType($status)) {
             throw new \InvalidArgumentException("Invalid status `$status`");
@@ -3225,6 +3225,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setTicketStatus(TicketStatus $ticket_status = null)
     {
+        if (!$ticket_status) {
+            $this->setModelField('ticket_status', $ticket_status);
+
+            return $this;
+        }
+
         // we need to call this first
         $this->setStatus($ticket_status->getStatusType());
 
@@ -3375,7 +3381,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function isHold()
     {
-        return $this->is_hold;
+        return $this->status === TicketStatus::STATUS_TYPE_PENDING;
     }
 
     /**
@@ -3391,8 +3397,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this->setStatus(TicketStatus::STATUS_TYPE_PENDING);
             $this->setModelField('date_on_hold', new \DateTime());
         } else {
-            $this->setStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT);
-            $this->setModelField('is_hold', false);
+            if ($this->status === TicketStatus::STATUS_TYPE_PENDING) {
+                $this->setStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT);
+            }
         }
 
         return $this;
@@ -3874,7 +3881,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'status',
             'hidden_status',
             'subject',
-            'is_hold',
             'urgency',
         ];
 
@@ -4221,7 +4227,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'status'                 => $this->status,
             'ticket_status'          => $this->ticket_status,
             'hidden_status'          => $this->hidden_status,
-            'is_hold'                => $this->is_hold,
+            'is_hold'                => $this->isHold(),
             'urgency'                => $this->urgency,
             'count_agent_replies'    => $this->count_agent_replies,
             'count_user_replies'     => $this->count_user_replies,

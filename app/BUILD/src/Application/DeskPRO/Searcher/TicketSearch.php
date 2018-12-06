@@ -480,9 +480,11 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_STATUS:
                         $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
                         break;
                     case self::TERM_HIDDEN_STATUS:
-                        $this->affected_fields[] = 'ticket.hidden_status';
+                        $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
                         break;
                     case self::TERM_HOLD:
                         $this->affected_fields[] = 'ticket.is_hold';
@@ -1900,31 +1902,24 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_STATUS:
 
                         $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
                         $set_status              = true;
 
                         $show_status   = [];
                         $hidden_status = [];
 
-                        $choice_str = [];
-
                         foreach ((array) $choice as $c) {
                             if (strpos($c, '.') !== false) {
-                                list($status, $hstatus) = explode('.', $c, 2);
-                                $hidden_status[]        = $hstatus;
-                                if ($status == 'hidden' && $tr->hasPhrase('agent.tickets.hidden_status_'.$hstatus)) {
-                                    $choice_str[] = $tr->phrase('agent.tickets.hidden_status_'.$hstatus);
-                                }
+                                list($status, $statusId) = explode('.', $c, 2);
+                                $hidden_status[]         = $statusId;
                                 $this->enableArchiveSearch();
                             } else {
                                 $show_status[] = $show_status;
-                                $choice_str[]  = $tr->phrase('agent.tickets.status_'.$c);
                                 if ($c != 'awaiting_agent' && $c != 'awaiting_user' && $c != 'resolved') {
                                     $this->enableArchiveSearch();
                                 }
                             }
                         }
-
-                        $choice_str = implode(' or ', $choice_str);
 
                         $w = '(';
                         if ($show_status) {
@@ -1933,8 +1928,9 @@ class TicketSearch extends SearcherAbstract
                             $w .= ')';
                         } else {
                             $w .= '(';
-                            $w .= "$tickets_table.status = 'hidden' AND ";
-                            $w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $hidden_status);
+                            $w .= $this->_choiceMatch("$tickets_table.status", $op, $status);
+                            $w .= ' AND ';
+                            $w .= $this->_choiceMatch("$tickets_table.ticket_status_id", $op, $hidden_status);
                             $this->enableArchiveSearch();
                             $w .= ')';
                         }
@@ -1943,15 +1939,17 @@ class TicketSearch extends SearcherAbstract
                         $wheres[] = $w;
                         break;
                     case self::TERM_HIDDEN_STATUS:
-                        $this->affected_fields[] = 'ticket.hidden_status';
+                        $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
+                        $set_status              = true;
 
-                        $choice_str = [];
-                        foreach ((array) $choice as $c) {
-                            $choice_str[] = $tr->phrase('agent.tickets.hidden_status_'.$c);
-                        }
-                        $choice_str = implode(', ', $choice_str);
+                        $w = '(';
+                        $w .= $this->_choiceMatch("$tickets_table.status", self::OP_IS, TicketStatus::STATUS_TYPE_HIDDEN);
+                        $w .= ' AND ';
+                        $w .= $this->_choiceMatch("$tickets_table.ticket_status_id", $op, $choice);
+                        $w .= ')';
 
-                        $wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
+                        $wheres[] = $w;
                         $this->enableArchiveSearch();
 
                         break;

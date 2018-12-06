@@ -641,7 +641,7 @@ class DeskproContainer extends Container
      */
     public function getTicketStatuses()
     {
-        return $this->get('ticket.statuses');
+        return $this->get('tickets.statuses');
     }
 
     /**
