@@ -15315,9 +15315,9 @@
       }
     },
     "@deskpro/token-field": {
-      "version": "0.6.8-beta.8",
-      "resolved": "https://registry.npmjs.org/@deskpro/token-field/-/token-field-0.6.8-beta.8.tgz",
-      "integrity": "sha512-n54B1Sd+IKQee81Onpp4idKYXtEITAJdt9N4IiD+1ElEB7XYuh9AIlgSyN/4HP8dyaN66aZb40+u3xvYeBuYog==",
+      "version": "0.6.8-beta.9",
+      "resolved": "https://registry.npmjs.org/@deskpro/token-field/-/token-field-0.6.8-beta.9.tgz",
+      "integrity": "sha512-Ki/CV5gjJJiuEfYpJWllMESvHNSTyATGwTbAIGWEam0rx4cFqAuivYQEviT0155Odm3OYxt3mSF75X1y4XD1oQ==",
       "requires": {
         "@deskpro/js-utils": "1.0.6",
         "@fortawesome/free-solid-svg-icons": "5.4.1",

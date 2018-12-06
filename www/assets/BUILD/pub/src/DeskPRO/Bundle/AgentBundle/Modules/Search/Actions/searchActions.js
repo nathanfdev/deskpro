@@ -53,10 +53,21 @@ export const loadWorkflows = createAction(
   })
 );
 
-export const loadCustomFields = createAction(
-  'SEARCH_LOAD_CUSTOM_FIELDS',
+export const loadTicketCustomFields = createAction(
+  'SEARCH_LOAD_TICKET_CUSTOM_FIELDS',
   params => new Promise((resolve) => {
     repository('TicketCustomFields').search(params).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
+
+export const loadPersonCustomFields = createAction(
+  'SEARCH_LOAD_PERSON_CUSTOM_FIELDS',
+  params => new Promise((resolve) => {
+    repository('PersonCustomFields').search(params).then((promise) => {
       const res = promise.getData();
 
       resolve(res.data);

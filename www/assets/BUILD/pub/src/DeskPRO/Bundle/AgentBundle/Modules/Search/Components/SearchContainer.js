@@ -11,6 +11,7 @@ import * as searchActions from '../Actions/searchActions';
 import SearchResults from './SearchResults';
 
 @connect(state => ({
+  chatDepartments:   collectionSelectorFactory('Department', 'all_chat')(state),
   ticketDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
   agents:            agentsSelector(state),
   agentTeams:        allSelectorFactory('AgentTeam')(state),
@@ -20,6 +21,7 @@ import SearchResults from './SearchResults';
 class SearchContainer extends React.Component {
   static propTypes = {
     intl:              PropTypes.object,
+    chatDepartments:   PropTypes.object,
     ticketDepartments: PropTypes.object,
     agents:            PropTypes.object,
     agentTeams:        PropTypes.object,
@@ -57,6 +59,11 @@ class SearchContainer extends React.Component {
 
   initTokenTypes = () => {
     const { intl } = this.props;
+    console.log(this.props.ticketDepartments);
+    console.log(this.props.ticketDepartments.toJS());
+    console.log(JSON.stringify(this.props.ticketDepartments.toJS()));
+    console.log(this.props.chatDepartments);
+    console.log(JSON.stringify(this.props.chatDepartments.toJS()));
     const tokenTypes = [
       {
         id:     'status',
@@ -80,7 +87,7 @@ class SearchContainer extends React.Component {
         description:    'Status of the ticket'
       },
       {
-        id:     'department',
+        id:     'ticket_department',
         label:  intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
@@ -97,6 +104,26 @@ class SearchContainer extends React.Component {
         },
         allowDuplicate: false,
         scopes:         ['ticket'],
+        showOnFocus:    true,
+      },
+      {
+        id:     'chat_department',
+        label:  intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: this.props.chatDepartments.toArray()
+                          .sort((a, b) => a.get('title') > b.get('title'))
+                          .map(e => ({
+                            label: e.get('title'),
+                            value: e.get('id'),
+                          }))
+          },
+          showSearch: true,
+          isMultiple: true,
+        },
+        allowDuplicate: false,
+        scopes:         ['chat'],
         showOnFocus:    true,
       },
       {
@@ -459,18 +486,39 @@ class SearchContainer extends React.Component {
       },
     ];
     this.setState(tokenTypes);
-    this.props.dispatch(searchActions.loadCustomFields()).then((res) => {
-      const customFields = res.map(field => ({
-        id:             `custom_field_${field.id}`,
+    const ticketCustomFieldPromise = new Promise((resolve) => {
+      this.props.dispatch(searchActions.loadTicketCustomFields()).then((res) => {
+        resolve(res);
+      });
+    });
+    const personCustomFieldPromise = new Promise((resolve) => {
+      this.props.dispatch(searchActions.loadPersonCustomFields()).then((res) => {
+        resolve(res);
+      });
+    });
+    Promise.all([ticketCustomFieldPromise, personCustomFieldPromise]).then((values) => {
+      const ticketCustomFields = values[0].map(field => ({
+        id:             `ticket_custom_field_${field.id}`,
         label:          field.title.toLowerCase().replace(/ /, '-'),
         widget:         this.tokenFromField(field),
         props:          this.tokenPropsFromField(field),
         description:    field.description,
         allowDuplicate: false,
+        category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        scopes:         ['ticket'],
       }));
-      tokenTypes.concat(customFields);
+      const personCustomFields = values[1].map(field => ({
+        id:             `person_custom_field_${field.id}`,
+        label:          field.title.toLowerCase().replace(/ /, '-'),
+        widget:         this.tokenFromField(field),
+        props:          this.tokenPropsFromField(field),
+        description:    field.description,
+        allowDuplicate: false,
+        category:       intl.formatMessage({ id: 'agent.general.person' }).toLowerCase(),
+        scopes:         ['person'],
+      }));
       this.setState({
-        tokenTypes: tokenTypes.concat(customFields)
+        tokenTypes: tokenTypes.concat(ticketCustomFields).concat(personCustomFields)
       });
     });
   };

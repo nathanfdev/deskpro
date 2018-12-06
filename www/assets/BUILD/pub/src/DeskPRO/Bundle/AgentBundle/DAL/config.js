@@ -21,6 +21,7 @@ export const repositoriesConfig = {
   Onboarding:           { type: 'api', url: '/people/onboarding', repositoryClass: OnboardingRepository },
   Person:               { type: 'api', url: '/people' },
   PersonSetting:        { type: 'api', url: '/person_setting', repositoryClass: PersonSettingRepository },
+  PersonCustomFields:   { type: 'api', url: '/person_custom_fields', allowAll: true },
   Project:              { type: 'api', url: '/task_projects', allowAll: true },
   Snippets:             { type: 'api', url: '/snippets', repositoryClass: SnippetsRepository },
   Slas:                 { type: 'api', url: '/slas' },
