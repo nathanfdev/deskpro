@@ -24,7 +24,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     )
     load_promises.push DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
       $scope.reports = reports
-      if reports.length > 0
+      if $state.params.report_id
+        $state.go('reports.dashboards.view.report', { report_id: $state.params.report_id } )
+      else if reports.length > 0
         $state.go('reports.dashboards.view.report', { report_id: reports[0].id} )
       else
         $state.go('reports.dashboards.view.empty')
