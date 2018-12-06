@@ -11,6 +11,7 @@ use DeskPRO\Bundle\VoiceBundle\Plivo\Proxy\ProxyRestClient;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Plivo\Exceptions\PlivoNotFoundException;
 use Plivo\Exceptions\PlivoResponseException;
@@ -198,7 +199,11 @@ class PlivoAdapter implements VoiceProviderInterface
      */
     public function getAccount(PlivoVoiceAccount $account)
     {
-        return $this->getClient($account)->accounts->get();
+        // plivo sdk bugs out if the account is a sub-account because it tries to
+        // use account_type which isnt set on sub-accounts, so a notice is raised
+        return SystemErrorHandler::runWithoutErrorHandler(function () use ($account) {
+            return $this->getClient($account)->accounts->get();
+        });
     }
 
     /**
