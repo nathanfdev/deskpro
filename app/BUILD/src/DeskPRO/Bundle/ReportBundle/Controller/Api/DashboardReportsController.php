@@ -178,7 +178,7 @@ class DashboardReportsController extends CrudController
             $this->getManager()->flush();
         }
 
-        $route = 'deskpro_api_reports_dashboardreports_savereportvariables';
+        $route = 'deskpro_report_api_dashboardreports_savereportvariables';
         $view  = View::create(null, Response::HTTP_NO_CONTENT);
         $view->setLocation(
             $this->generateUrl($route, ['report' => $report->getId()])

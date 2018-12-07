@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Container, Tabs, TabLink, Section } from '@deskpro/react-components';
-import { reduxForm } from '@deskpro/react-components/dist/bindings';
+import * as reduxForm from '@deskpro/redux-components';
 import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
 import { varTypes } from './helper';
@@ -205,7 +205,7 @@ class LabelsFieldComponent extends React.PureComponent {
       label="Labels"
       tags={fields.getAll() || []}
       options={newOptions}
-      editable={isCustom}
+      input={{ editable: isCustom }}
     />);
   }
 }
