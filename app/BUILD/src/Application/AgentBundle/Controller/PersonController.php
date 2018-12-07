@@ -694,7 +694,7 @@ class PersonController extends AbstractController
                     $email = $person->getPrimaryEmailAddress();
 
                     if ($email) {
-                        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates') and false) {
+                        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                             $factory   = $this->get('email.user_viewmodel_factory');
                             $viewModel = $this->get('brand_stack')->pushTemporary(
                                 $person->getBrands()->first(),
@@ -1604,10 +1604,15 @@ class PersonController extends AbstractController
 
             if ($this->in->getString('newperson.send_welcome_email')) {
                 if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-                    $viewModel = $this->get('email.user_viewmodel_factory')
-                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
-                    $this->get('email.email_sender')
-                        ->send($viewModel, ['to' => $person]);
+                    $factory   = $this->get('email.user_viewmodel_factory');
+                    $viewModel = $this->get('brand_stack')->pushTemporary(
+                        $person->getBrands()->first(),
+                        function () use ($factory, $person) {
+                            return $factory->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                        }
+                    );
+                    $this->get('mailer.utils')
+                        ->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
                 } else {
                     /** @var Mailer $mailer */
                     $mailer  = $this->get('mailer');
@@ -1619,7 +1624,7 @@ class PersonController extends AbstractController
                             'person' => $person,
                         ]
                     );
-                    $mailer->send($message);
+                    $this->get('mailer.utils')->sendWithPersonContext($message, $person);
                 }
             }
 
@@ -1703,10 +1708,15 @@ class PersonController extends AbstractController
                 $trans->setPersonContext($newperson->getPerson());
 
                 if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-                    $viewModel = $this->get('email.user_viewmodel_factory')
-                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
-                    $this->get('email.email_sender')
-                        ->send($viewModel, ['to' => $person]);
+                    $factory   = $this->get('email.user_viewmodel_factory');
+                    $viewModel = $this->get('brand_stack')->pushTemporary(
+                        $person->getBrands()->first(),
+                        function () use ($factory, $person) {
+                            return $factory->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                        }
+                    );
+                    $this->get('mailer.utils')
+                        ->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
                 } else {
                     /** @var Mailer $mailer */
                     $mailer  = $this->get('mailer');
@@ -1719,7 +1729,7 @@ class PersonController extends AbstractController
                         ]
                     );
 
-                    $mailer->send($message);
+                    $this->get('mailer.utils')->sendWithPersonContext($message, $person);
                 }
 
                 $trans->setPersonContext($this->person);
