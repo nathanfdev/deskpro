@@ -48,7 +48,7 @@ class TicketStatusDataService
      *
      * @return VirtualTicketStatus
      */
-    public function findStatus($statusCode, $withSubstatuses = false)
+    public function findStatus($statusCode, $withSubstatuses = false, $withFallback = false)
     {
         $statusType = $statusCode;
         $statusId   = null;
@@ -59,6 +59,9 @@ class TicketStatusDataService
         if ($statusId) {
             $statusEntity = $this->repository->find($statusId);
             if (!$statusEntity || $statusEntity->getStatusType() !== $statusType) {
+                if ($withFallback) {
+                    return $this->findStatus($statusType, $withSubstatuses);
+                }
                 throw new \InvalidArgumentException(sprintf("Can't find TicketStus `%s`", $statusCode));
             }
         } else {
@@ -91,7 +94,7 @@ class TicketStatusDataService
             $topLevelStatus = $this->findStatus($statusType, true);
             $res[]          = [
                 'value' => $topLevelStatus->getStatusCode(),
-                // translate
+                // @TODO: translate
                 'title' => $topLevelStatus->getStatusType(),
             ];
             foreach ($topLevelStatus->getChildren() as $subStatus) {

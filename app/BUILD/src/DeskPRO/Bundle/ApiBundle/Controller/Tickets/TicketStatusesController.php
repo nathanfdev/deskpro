@@ -29,10 +29,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketStatusesController extends CrudController
 {
-    public static $exposeOnly = ['get', 'list', 'count', 'delete', 'post', 'put'];
-    public static $entity     = TicketStatus::class;
-    public static $type       = TicketStatusesType::class;
-    public static $listOrder  = 'asc';
+    public static $exposeOnly   = ['get', 'list', 'count', 'delete', 'post', 'put'];
+    public static $entity       = TicketStatus::class;
+    public static $type         = TicketStatusesType::class;
+    public static $listOrder    = 'asc';
+    public static $listPaginate = false;
 
     /**
      * @ApiDoc(

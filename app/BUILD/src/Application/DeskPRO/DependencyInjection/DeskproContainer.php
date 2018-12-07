@@ -637,7 +637,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @return DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService
+     * @return \DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService
      */
     public function getTicketStatuses()
     {

@@ -25,7 +25,7 @@ class TicketTest extends PortalTestCase
     public function setUp()
     {
         $this->containerBefore = App::$container;
-        //$this->installDataSet('fresh', true);
+        $this->installDataSet('fresh', true);
     }
 
     public function tearDown()
@@ -33,46 +33,46 @@ class TicketTest extends PortalTestCase
         App::$container = $this->containerBefore;
     }
 
-//    /**
-//     * @expectedException \InvalidArgumentException
-//     * @expectedExceptionMessage is not an agent
-//     */
-//    public function testSetNotAgentForNewTicket()
-//    {
-//        $person = new Person();
-//        $person->setIsAgent(false);
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage is not an agent
+     */
+    public function testSetNotAgentForNewTicket()
+    {
+        $person = new Person();
+        $person->setIsAgent(false);
 
-//        $this->getEntityManager()->persist($person);
+        $this->getEntityManager()->persist($person);
 
-//        $ticket = new Ticket();
-//        $ticket->setAgent($person);
+        $ticket = new Ticket();
+        $ticket->setAgent($person);
 
-//        $this->getEntityManager()->persist($ticket);
-//        $this->getEntityManager()->flush();
-//    }
+        $this->getEntityManager()->persist($ticket);
+        $this->getEntityManager()->flush();
+    }
 
-//    /**
-//     * @expectedException \InvalidArgumentException
-//     * @expectedExceptionMessage is not an agent
-//     */
-//    public function testSetNotAgentOnTicketUpdate()
-//    {
-//        $ticket = new Ticket();
-//        $ticket->setSubject('subject');
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage is not an agent
+     */
+    public function testSetNotAgentOnTicketUpdate()
+    {
+        $ticket = new Ticket();
+        $ticket->setSubject('subject');
 
-//        $this->getEntityManager()->persist($ticket);
-//        $this->getEntityManager()->flush();
+        $this->getEntityManager()->persist($ticket);
+        $this->getEntityManager()->flush();
 
-//        $person = new Person();
-//        $person->setIsAgent(false);
+        $person = new Person();
+        $person->setIsAgent(false);
 
-//        $this->getEntityManager()->persist($person);
+        $this->getEntityManager()->persist($person);
 
-//        $ticket->setAgent($person);
+        $ticket->setAgent($person);
 
-//        $this->getEntityManager()->persist($ticket);
-//        $this->getEntityManager()->flush();
-//    }
+        $this->getEntityManager()->persist($ticket);
+        $this->getEntityManager()->flush();
+    }
 
     /**
      * @return array
