@@ -982,7 +982,9 @@ class TwilioCallbacksController extends BaseController
             $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
             if ($phoneCall) {
                 $twiml->dial()->conference($phoneCall->getConferenceName(), [
-                    'endConferenceOnExit' => true,
+                    'endConferenceOnExit'  => true,
+                    'statusCallbackMethod' => 'POST',
+                    'statusCallbackEvent'  => 'join leave start end mute hold',
                 ]);
             }
         }

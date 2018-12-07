@@ -225,7 +225,11 @@ class VoiceCallbacksHelper
         }
 
         // create the agent participant
-        if (!$phoneCall->getParticipantByPerson($agent)) {
+        $existParticipant = $phoneCall->getParticipantByPerson($agent);
+        if ($existParticipant instanceof VoicePhoneCallParticipantAgent) {
+            $existParticipant->setCallSid($agentCallId);
+            $this->em->flush();
+        } else {
             $participant = new VoicePhoneCallParticipantAgent();
             $participant->setCallSid($agentCallId);
             $participant->setPerson($agent);
