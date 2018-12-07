@@ -2565,7 +2565,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             primary_email: $('input[name=select_user_email]', self.wrapper).val(),
             language: $('select[name=select_user_language]', self.wrapper).val(),
           },
-          success: reloadPersonView
+          success: reloadPersonView,
+					error: function (response) {
+						var data = response.responseJSON;
+						var errors = data.errors;
+            var error;
+
+						if (errors && errors.fields && errors.fields.primary_email) {
+							 error = errors.fields.primary_email.errors[0].message;
+						}
+
+						if (error) {
+							$('.error-message', self.wrapper).html(error);
+						}
+          }
         });
       } else if (value === 'unknown_person') {
         $.ajax({
