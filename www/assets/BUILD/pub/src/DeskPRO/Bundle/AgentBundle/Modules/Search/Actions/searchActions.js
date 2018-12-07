@@ -53,28 +53,6 @@ export const loadWorkflows = createAction(
   })
 );
 
-export const loadTicketCustomFields = createAction(
-  'SEARCH_LOAD_TICKET_CUSTOM_FIELDS',
-  params => new Promise((resolve) => {
-    repository('TicketCustomFields').search(params).then((promise) => {
-      const res = promise.getData();
-
-      resolve(res.data);
-    });
-  })
-);
-
-export const loadPersonCustomFields = createAction(
-  'SEARCH_LOAD_PERSON_CUSTOM_FIELDS',
-  params => new Promise((resolve) => {
-    repository('PersonCustomFields').search(params).then((promise) => {
-      const res = promise.getData();
-
-      resolve(res.data);
-    });
-  })
-);
-
 export const loadPersons = createAction(
   'SEARCH_LOAD_PERSONS',
   (params = {}) => new Promise((resolve) => {
@@ -101,11 +79,12 @@ export const loadOrganizations = createAction(
   })
 );
 
-export const loadSlas = createAction(
-  'SEARCH_LOAD_SLAS',
+export const loadEmailAccounts = createAction(
+  'SEARCH_LOAD_EMAIL_ACCOUNTS',
   (params = {}) => new Promise((resolve) => {
+    params.order_by = 'address';
     params.order_dir = 'asc';
-    repository('Slas').search(params).then((promise) => {
+    repository('EmailAccount').search(params).then((promise) => {
       const res = promise.getData();
 
       resolve(res.data);
@@ -113,12 +92,26 @@ export const loadSlas = createAction(
   })
 );
 
-export const loadEmailAccounts = createAction(
-  'SEARCH_LOAD_EMAIL_ACCOUNTS',
+export const loadOrganizationLabels = createAction(
+  'SEARCH_LOAD_ORGANIZATION_LABELS',
   (params = {}) => new Promise((resolve) => {
-    params.order_by = 'address';
+    params.order_by = 'label';
     params.order_dir = 'asc';
-    repository('EmailAccount').search(params).then((promise) => {
+    repository('OrganizationLabels').search(params).then((promise) => {
+      const res = promise.getData();
+      console.log(res);
+
+      resolve(res.data);
+    });
+  })
+);
+
+export const loadPersonLabels = createAction(
+  'SEARCH_LOAD_PERSON_LABELS',
+  (params = {}) => new Promise((resolve) => {
+    params.order_by = 'label';
+    params.order_dir = 'asc';
+    repository('PersonLabels').search(params).then((promise) => {
       const res = promise.getData();
 
       resolve(res.data);
@@ -133,7 +126,6 @@ export const loadTicketLabels = createAction(
     params.order_dir = 'asc';
     repository('TicketLabels').search(params).then((promise) => {
       const res = promise.getData();
-      console.log(res);
 
       resolve(res.data);
     });
@@ -147,7 +139,6 @@ export const loadUserGroups = createAction(
     params.order_dir = 'asc';
     repository('UserGroups').search(params).then((promise) => {
       const res = promise.getData();
-      console.log(res);
 
       resolve(res.data);
     });

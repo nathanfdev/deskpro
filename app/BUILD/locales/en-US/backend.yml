@@ -1383,6 +1383,7 @@ admin.general.error_ssl_feature_tip: 'This feature requires the OpenSSL PHP exte
 admin.general.error_ssl_tip: 'Secure connections require the OpenSSL PHP extension which is currently not installed. Click now for more information.'
 admin.general.error_type: 'Error Type'
 admin.general.event: Event
+admin.general.fail: Fail
 admin.general.fields: Fields
 admin.general.file_uploads: 'File Uploads'
 admin.general.first: First
@@ -3408,6 +3409,7 @@ agent.general.number_of_tickets: 'Number of tickets'
 agent.general.of: of
 agent.general.off: 'Off'
 agent.general.okay: Okay
+agent.general.ok: OK
 agent.general.on: 'On'
 agent.general.online_now: 'Onlne Now'
 agent.general.open: Open

@@ -113,9 +113,9 @@
       "integrity": "sha512-j6OPXm0OHHo07wmBqAzaquN4mbEej5xcEz6u5JJdLRzrKTK0oQGhkFUGD9K46j75hkvuvm8tW5FuX20ok/cGsQ=="
     },
     "@deskpro/react-components": {
-      "version": "1.4.4-beta.7",
-      "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.4.4-beta.7.tgz",
-      "integrity": "sha512-gSVnXYhGzLtVtz4v7B/yYyYxagcFKSczJhdq1H/hdH3d9sNMYTA0I5rXPEgscog5EjaGm5ztoW+WJ7L+S6gcqw==",
+      "version": "1.4.5-beta.0",
+      "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.4.5-beta.0.tgz",
+      "integrity": "sha512-SgIcC6fHlR+ELJT3u8kuH22TZCcKzXb6Vf9vTxrBTE5DlzMl/lSwSv1VrLu5UcXjq9Ouwcx30aT4sNe7knjDwQ==",
       "requires": {
         "@fortawesome/fontawesome-svg-core": "^1.2.6",
         "@fortawesome/free-regular-svg-icons": "^5.4.1",
@@ -15315,9 +15315,9 @@
       }
     },
     "@deskpro/token-field": {
-      "version": "0.6.9-beta.0",
-      "resolved": "https://registry.npmjs.org/@deskpro/token-field/-/token-field-0.6.9-beta.0.tgz",
-      "integrity": "sha512-k/KTUUA5ihXoEcDTdSpaxLcQOn0OlaNXPG+YqB43FJszqUP+wy1fdE4cmGLgYfb4y88lPxA6czb6vG9bTgpuyA==",
+      "version": "0.7.0-beta.1",
+      "resolved": "https://registry.npmjs.org/@deskpro/token-field/-/token-field-0.7.0-beta.1.tgz",
+      "integrity": "sha512-x3peZ/RIfQv5VLPXtHAeY/TusmKsSISCpdVRJ6LY9grntdcQEFe9eBJSR52ddhy0iyNkcDlExgUfpspdGKcpBw==",
       "requires": {
         "@deskpro/js-utils": "1.0.6",
         "@fortawesome/free-solid-svg-icons": "5.4.1",
