@@ -2436,7 +2436,7 @@ define(function() {
 
   routes.push({
     id: 'apps.apps.instance',
-    url: '/{id:\\d+}',
+    url: '/v1/{id:\\d+}',
     templateName: 'Apps/instance.html',
     controller: 'Admin_Apps_Ctrl_EditInstance'
   });
