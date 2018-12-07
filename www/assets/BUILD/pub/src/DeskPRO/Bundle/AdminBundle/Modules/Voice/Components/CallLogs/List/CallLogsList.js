@@ -4,6 +4,7 @@ import ReactPaginate from 'react-paginate';
 import moment from 'moment';
 import Immutable from 'immutable';
 import { BlobPlayButton } from 'DeskPRO/Component/AudioWidget/PlayButton';
+import { DeleteButton } from 'DeskPRO/Component/AudioWidget/DeleteButton';
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import PersonName from '../../../../Common/Components/PersonName';
@@ -21,7 +22,12 @@ class CallLogsList extends React.Component {
     onPageChange:        PropTypes.func,
     onOpenCallLog:       PropTypes.func,
     openDialpad:         PropTypes.func,
-    onToggleLiveUpdates: PropTypes.func
+    onToggleLiveUpdates: PropTypes.func,
+    onDeleteRecordClick: PropTypes.func
+  };
+
+  onDeleteClick = (callId) => {
+    this.props.onDeleteRecordClick(callId);
   };
 
   render() {
@@ -38,14 +44,14 @@ class CallLogsList extends React.Component {
             <col width="1%" />
             <col width="10%" />
             <col width="10%" />
-            <col width="25%" />
+            <col width="20%" />
             <col width="10%" />
             <col width="10%" />
             <col width="5%" />
             <col width="5%" />
             <col width="5%" />
             <col width="1%" />
-            <col width="1%" />
+            <col width="6%" />
           </colgroup>
           <thead>
             <tr>
@@ -131,8 +137,8 @@ class CallLogsList extends React.Component {
                   </td>
                   <CallStatus call={call} />
                   <td>
-                    {call.get('recording') ?
-                      <BlobPlayButton iconOnly value={call.get('recording')} /> : '-'}
+                    {call.get('recording') ? <BlobPlayButton iconOnly value={call.get('recording')} /> : '-'}
+                    {call.get('recording') ? <DeleteButton iconOnly onClick={() => this.onDeleteClick(call.get('id'))} /> : null}
                   </td>
                 </tr>
               );

@@ -1,5 +1,5 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 const setIncludes = (promise, dispatch) => {
@@ -36,4 +36,9 @@ export const loadPhoneCall = createAction(
 export const openDialpad = createAction(
   'ADMIN_VOICE_OPEN_DIALPAD',
   number => window.parent.AgentLegacyBundle.openVoiceDialpad(number)
+);
+
+export const deleteRecord = createAction(
+  'VOICE_AGENT_DELETE_RECORD',
+  phoneCallId => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`)
 );

@@ -1,5 +1,16 @@
 $voice-green-border-color: #47BF61;
 
+.voice-ticket-message-edit-menu-popup {
+  .popup.ui {
+
+    border: none;
+
+    &:before {
+      display: none;
+    }
+  }
+}
+
 .voice-profile {
   width: 360px;
   font-family: 'Open Sans';
@@ -1199,6 +1210,15 @@ $voice-green-border-color: #47BF61;
           top: 2px;
           cursor: pointer;
         }
+      }
+
+      .voice-ticket-message-edit-menu {
+        position: relative;
+        float: right;
+        font-weight: 400;
+        color: $dp-greyscale-50;
+        margin-left: 20px;
+        cursor: pointer;
       }
     }
 

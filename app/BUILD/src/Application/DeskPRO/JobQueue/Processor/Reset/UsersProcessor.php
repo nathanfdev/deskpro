@@ -34,7 +34,7 @@ class UsersProcessor extends Base
             if (@$data['context_person_id'] === $person['id']) {
                 continue;
             }
-            $purger = new Purger($person, $this->em);
+            $purger = new Purger($person, $this->em, $this->container->get('blob.storage'));
             $purger->purge();
         }
 

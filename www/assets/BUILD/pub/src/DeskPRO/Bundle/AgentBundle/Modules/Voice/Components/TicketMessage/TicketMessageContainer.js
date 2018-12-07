@@ -28,7 +28,8 @@ class TicketMessageContainer extends React.Component {
     data:        PropTypes.object,
     people:      PropTypes.object,
     connections: PropTypes.object,
-    phoneCalls:  PropTypes.object
+    phoneCalls:  PropTypes.object,
+    elid:        PropTypes.string
   };
 
   constructor(props) {
@@ -143,6 +144,7 @@ class TicketMessageContainer extends React.Component {
     return (
       <TicketMessage
         {...this.props}
+        elid={this.props.elid}
         message={data.data}
         ticket={this.getTicket()}
         phoneCall={this.getPhoneCall()}

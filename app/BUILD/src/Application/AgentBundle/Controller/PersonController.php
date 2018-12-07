@@ -1424,7 +1424,7 @@ class PersonController extends AbstractController
             /** @var PersonEditManager $edit_manager */
             $edit_manager = $this->container->getSystemService('person_edit_manager');
             $edit_manager->setPersonContext($this->person);
-            $edit_manager->deleteUser($person);
+            $edit_manager->deleteUser($person, $this->getContainer()->get('blob.storage'));
 
             $this->em->commit();
         } catch (\Exception $e) {

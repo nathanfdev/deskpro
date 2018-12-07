@@ -275,6 +275,18 @@
                     'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
                     } %}
 
+
+
+
+
+
+
+
+
+
+
+
+
                     <span id="{{ baseId }}_department_icon" class="avatar"
                           {% if not ticket.department.hasAvatar() %}style="display: none;"{% endif %}><img
                               src="{{ ticket.department.getAvatarUrl(22) }}" /></span>

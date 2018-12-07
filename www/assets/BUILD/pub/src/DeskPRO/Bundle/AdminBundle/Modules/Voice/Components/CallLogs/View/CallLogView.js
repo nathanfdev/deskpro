@@ -156,10 +156,14 @@ class CallLogView extends React.Component {
                         );
                       }
 
+                      const time = log.get('action_type') === 'call.recording_deleted'
+                        ? moment(log.get('date_created')).format('YYYY-MM-DD H:mm:ss')
+                        : <Duration value={duration} />;
+
                       return (
                         <tr key={index}>
-                          <td width="80">
-                            [<Duration value={duration} />]
+                          <td width="100">
+                            [{time}]
                           </td>
                           <td>
                             <FormattedMessage

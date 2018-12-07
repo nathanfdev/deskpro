@@ -40,9 +40,9 @@ class PersonEditManager implements PersonContextInterface
         $this->db = $em->getConnection();
     }
 
-    public function deleteUser(Person $person)
+    public function deleteUser(Person $person, $blobStorage)
     {
-        $purger = new Purger($person, $this->em);
+        $purger = new Purger($person, $this->em, $blobStorage);
         if ($this->person_context) {
             $purger->setPersonContext($this->person_context);
         }

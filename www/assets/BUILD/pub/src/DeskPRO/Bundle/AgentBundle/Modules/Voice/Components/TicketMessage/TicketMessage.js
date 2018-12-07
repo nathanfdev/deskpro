@@ -7,8 +7,11 @@ import { Button } from 'DeskPRO/Component/Semantic/Button';
 import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
 import classNames from 'classnames';
+import PopUp from 'DeskPRO/Component/Semantic/PopUp/PopUp';
+import { deleteRecord } from '../../Actions/clientActions';
 import Avatar from '../Common/Avatar';
 import MessagePhoneNumber from './MessagePhoneNumber';
+import { TicketMessageMenu } from './TicketMessageMenu';
 
 class TicketMessage extends React.Component {
 
@@ -23,7 +26,9 @@ class TicketMessage extends React.Component {
     outboundCallsEnabled: PropTypes.bool,
     dateCreatedFormatted: PropTypes.string,
     openTarget:           PropTypes.func,
-    me:                   PropTypes.object
+    me:                   PropTypes.object,
+    elid:                 PropTypes.string,
+    dispatch:             PropTypes.func
   };
 
   static defaultProps = {
@@ -52,6 +57,16 @@ class TicketMessage extends React.Component {
       logExpanded: !logExpanded
     });
   };
+
+  openMenu = () => {
+    if (this.popup) {
+      this.popup.openPopup();
+    }
+  };
+
+  deleteRecord = (phoneCallId) => {
+    this.props.dispatch(deleteRecord(phoneCallId));
+  }
 
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
@@ -88,13 +103,31 @@ class TicketMessage extends React.Component {
                   : 'agent.voice.incoming_call_title'}
               />
             </span>
+            <span className="voice-ticket-message-edit-menu" onClick={this.openMenu}>
+              <i className="fas fa-cog" />
+              <PopUp
+                ref={(c) => { this.popup = c; }}
+                positionMy="right top"
+                positionAt="right+20 bottom-15"
+                zIndex={99999}
+                className="voice-ticket-message-edit-menu-popup"
+                content={
+                  <TicketMessageMenu
+                    phoneCall={phoneCall}
+                    deleteRecord={this.deleteRecord}
+                  />
+                }
+              />
+            </span>
             <span className="voice-ticket-message-date">
               <time
-                className="timeago with-stickytip timeago-auto-update with-timeago dp-stickytip-init"
+                data-stickytip-target={`#${this.props.elid}`}
+                className="timeago with-stickytip timeago-auto-update with-timeago"
                 dateTime={message.date_created}
                 title={dateCreatedFormatted}
               />
             </span>
+
           </div>
           {connection
             ? <div className="voice-ticket-message-controls">

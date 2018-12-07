@@ -1,0 +1,30 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" width="50" style="padding: 10px; vertical-align: top">
+					<label class="row-label">
+						Delete Voice Phone Call Records
+					</label>
+				</td>
+				<td>
+					<label style="padding: 10px; display: block;">
+						Only delete files that are at least
+						<input type="number" style="width: 70px;" ng-model="model.at_least" />
+						KB <strong>and</strong>
+					</label>
+					<label style="padding: 10px; display: block;">
+						Only delete files that are shorter than
+						<input type="number" style="width: 70px;" ng-model="model.shorter_than" />
+						seconds <strong>and</strong>
+					</label>
+					<label style="padding: 10px; display: block;">
+						Only delete files that are longer than
+						<input type="number" style="width: 70px;" ng-model="model.longer_than" />
+						seconds
+					</label>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

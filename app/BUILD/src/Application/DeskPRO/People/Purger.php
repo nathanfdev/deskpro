@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\People;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
 use Doctrine\ORM\EntityManager;
@@ -34,17 +35,24 @@ class Purger implements PersonContextInterface
      */
     protected $person_context;
 
-    public function __construct(Person $person, EntityManager $em)
+    /**
+     * @var DeskproBlobStorage
+     */
+    protected $blobStorage;
+
+    public function __construct(Person $person, EntityManager $em, DeskproBlobStorage $blobStorage = null)
     {
-        $this->person = $person;
-        $this->em     = $em;
-        $this->db     = $em->getConnection();
+        $this->person      = $person;
+        $this->em          = $em;
+        $this->db          = $em->getConnection();
+        $this->blobStorage = $blobStorage;
     }
 
     public function purge()
     {
         $this->db->beginTransaction();
         try {
+            $this->purgeCallRecords();
             $this->purgeTickets();
 
             $this->db->delete('people', ['id' => $this->person->getId()]);
@@ -52,6 +60,13 @@ class Purger implements PersonContextInterface
         } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
+        }
+    }
+
+    public function purgeCallRecords()
+    {
+        if ($this->blobStorage) {
+            TicketUtil::deletePersonCallRecords($this->person, $this->em, $this->blobStorage);
         }
     }
 

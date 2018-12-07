@@ -2830,6 +2830,7 @@ return [
     'agent.general.brands'         => 'Brands',
     'agent.general.select_a_brand' => 'Select a brand',
 
+    'agent.voice.call'                                      => 'Call',
     'agent.voice.incoming_call_title'                       => 'Inbound call record',
     'agent.voice.outgoing_call_title'                       => 'Outbound call record',
     'agent.voice.call_new_incoming'                         => 'Incoming call from {{person}} {{number}} to {{to_number}}',
@@ -2860,6 +2861,10 @@ return [
     'agent.voice.call_agent_hangup'                         => 'Agent {{person}} hung up',
     'agent.voice.call_started'                              => 'Call started',
     'agent.voice.call_ended'                                => 'Call ended',
+    'agent.voice.recording_downloaded'                      => 'Recording downloaded',
+    'agent.voice.record_deleted'                            => 'Call Record for Phone Call #{{ phoneCallId }} deleted',
+    'agent.voice.delete_record'                             => 'Delete record',
+    'agent.voice.call_recording_deleted'                    => '{{person}} deleted record for this call',
     'agent.email_subjects.scheduled_report_ready'           => 'View your report: {{report_title}}',
     'agent.scheduled_report.accost'                         => 'Hello {{person_title}}!',
     'agent.scheduled_report.scheduler'                      => '{{scheduler_name}} scheduled a report and set you as email recipient.',
