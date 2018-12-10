@@ -272,7 +272,7 @@ class StringUtils
         $sets = array_merge($sets, RegexUtils::getAllMatchSets('#dp-embed-blob-a-([a-zA-Z0-9]+)#', $text) ?: []);
         $sets = array_merge($sets, RegexUtils::getAllMatchSets('#dp-embed-blob-img-([a-zA-Z0-9]+)#', $text) ?: []);
         if (!$urlPattern) {
-            $urlPattern = App::get('router')->generate('serve_blob', ['blob_auth_id' => '00000', 'filename' => '11111'], true);
+            $urlPattern = App::get('router')->generate('serve_blob', ['blob_auth_id' => '00000', 'filename' => '11111']);
         }
         $url       = preg_quote($urlPattern);
         $url       = str_replace('00000', '([a-zA-Z0-9-]+)', $url);
