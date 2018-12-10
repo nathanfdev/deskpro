@@ -18,7 +18,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class MessengerEmbedType.
+ * Class MessengerChatType.
  */
 class MessengerChatType extends AbstractType
 {
