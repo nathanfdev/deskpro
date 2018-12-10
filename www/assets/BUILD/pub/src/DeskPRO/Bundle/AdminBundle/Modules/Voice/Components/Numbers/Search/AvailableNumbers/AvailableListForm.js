@@ -49,20 +49,44 @@ const allowedCountryCodes = [
 ];
 
 const countryCodesWithRegions = ['US', 'CA', 'TW'];
-const numberTypes = [
-  {
-    value: 'local',
-    title: 'Local'
-  },
-  {
-    value: 'tollFree',
-    title: 'Toll free'
-  },
-  {
-    value: 'mobile',
-    title: 'Mobile'
-  }
-];
+const numberTypes = {
+  twilio: [
+    {
+      value: 'local',
+      title: 'Local'
+    },
+    {
+      value: 'tollfree',
+      title: 'Toll free'
+    },
+    {
+      value: 'mobile',
+      title: 'Mobile'
+    }
+  ],
+  plivo: [
+    {
+      value: 'local',
+      title: 'Local'
+    },
+    {
+      value: 'tollfree',
+      title: 'Toll free'
+    },
+    {
+      value: 'mobile',
+      title: 'Mobile'
+    },
+    {
+      value: 'national',
+      title: 'National'
+    },
+    {
+      value: 'fixed',
+      title: 'Fixed'
+    }
+  ]
+};
 
 class AvailableListForm extends React.Component {
 
@@ -119,7 +143,7 @@ class AvailableListForm extends React.Component {
             </div>
             <div className="inline-field">
               <Field select="types" label="Types of number *">
-                <TypesOfNumber />
+                <TypesOfNumber account={accounts.get(formData.value.account)} />
               </Field>
             </div>
             <div className="inline-field">
@@ -143,6 +167,7 @@ class AvailableListForm extends React.Component {
 class TypesOfNumber extends React.Component {
 
   static propTypes = {
+    account:  PropTypes.object,
     value:    PropTypes.array,
     onChange: PropTypes.func
   };
@@ -161,11 +186,15 @@ class TypesOfNumber extends React.Component {
   };
 
   render() {
-    const { value = [] } = this.props;
+    const { account, value = [] } = this.props;
+    let types = [];
+    if (account) {
+      types = numberTypes[account.get('type')];
+    }
 
     return (
       <div className="number-types">
-        {numberTypes.map((type, index) => {
+        {types.map((type, index) => {
           const checked = value.indexOf(type.value) !== -1;
 
           return (

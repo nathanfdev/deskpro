@@ -72,12 +72,23 @@ class BaseController extends FOSRestController
      */
     protected function getFormErrorResponseFromException($code, \Exception $e)
     {
+        return $this->getFormErrorResponseFromExceptionMessage($code, $e->getMessage());
+    }
+
+    /**
+     * @param string $code
+     * @param string $message
+     *
+     * @return View
+     */
+    protected function getFormErrorResponseFromExceptionMessage($code, $message)
+    {
         return new View([
             'errors' => [
                 'errors' => [
                     [
                         'code'    => $code,
-                        'message' => $e->getMessage(),
+                        'message' => $message,
                     ],
                 ],
             ],

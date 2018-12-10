@@ -7,6 +7,9 @@ use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoAvailableNumber;
+use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoExistingNumber;
+use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoPaginate;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Proxy\ProxyRestClient;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
@@ -20,6 +23,8 @@ use Plivo\Resources\Call\Call;
 use Plivo\Resources\Call\CallCreateResponse;
 use Plivo\Resources\Conference\ConferenceMember;
 use Plivo\Resources\Endpoint\Endpoint;
+use Plivo\Resources\Number\Number;
+use Plivo\Resources\PhoneNumber\PhoneNumber;
 use Plivo\RestClient;
 
 /**
@@ -503,6 +508,117 @@ class PlivoAdapter implements VoiceProviderInterface
             );
         } catch (\Exception $e) {
         }
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     * @param string            $countryCode
+     * @param string            $type
+     * @param array             $options
+     *
+     * @return PlivoExistingNumber[]
+     */
+    public function getAvailablePhoneNumbers(PlivoVoiceAccount $account, $countryCode, $type, array $options)
+    {
+        $numbers = [];
+        $options = array_merge($options, [
+            'type' => $type,
+        ]);
+
+        try {
+            $client  = $this->getClient($account);
+            $result  = $client->getPhoneNumbers()->getList($countryCode, $options);
+            $exclude = $this->getAccountNumbersList($account);
+
+            /** @var PhoneNumber $apiNumber */
+            foreach ($result as $apiNumber) {
+                $numbers[] = new PlivoAvailableNumber(
+                    $account,
+                    $apiNumber,
+                    isset($exclude['+'.$apiNumber->number])
+                );
+            }
+        } catch (\Exception $e) {
+        }
+
+        return $numbers;
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     * @param int               $pageNum
+     *
+     * @return PlivoPaginate
+     */
+    public function getExistingPhoneNumbers(PlivoVoiceAccount $account, $pageNum = 1)
+    {
+        try {
+            $exclude = $this->getAccountNumbersList($account);
+            $limit   = 20;
+            $offset  = ($pageNum - 1) * $limit;
+
+            $result = $this->getClient($account)->getNumbers()->getList([
+                'limit'  => $limit,
+                'offset' => $offset,
+            ]);
+
+            $numbers = [];
+
+            /** @var Number $apiNumber */
+            foreach ($result as $apiNumber) {
+                $numbers[] = new PlivoExistingNumber(
+                    $account,
+                    $apiNumber,
+                    isset($exclude['+'.$apiNumber->number])
+                );
+            }
+
+            return new PlivoPaginate($numbers, $pageNum, $result);
+        } catch (\Exception $e) {
+            return new PlivoPaginate([], $pageNum);
+        }
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     * @param array             $data
+     *
+     * @return Number
+     */
+    public function buyNumber(PlivoVoiceAccount $account, array $data)
+    {
+        $number = $data['phoneNumber'];
+        $number = ltrim($number, '+');
+
+        $client = $this->getClient($account);
+        $client->getPhoneNumbers()->buy($number);
+
+        return $client->getNumbers()->get($number);
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     *
+     * @return string[]
+     */
+    private function getAccountNumbersList(PlivoVoiceAccount $account)
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('n.number')
+            ->from(VoiceNumber::class, 'n')
+            ->where('n.account = :account')
+            ->setParameter('account', $account)
+        ;
+
+        $result  = $qb->getQuery()->getArrayResult();
+        $numbers = [];
+
+        foreach ($result as $number) {
+            $numbers[] = $number['number'];
+        }
+
+        return array_fill_keys($numbers, true);
     }
 
     /**

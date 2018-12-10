@@ -4,26 +4,23 @@ import Immutable from 'immutable';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import { connect } from 'react-redux';
-import { getPhoneCountryCode } from 'DeskPRO/Component/Util/PhoneNumber';
 import ExistingList from './ExistingList';
-import { loadExistingNumbers, changeExistingNumbersFilter } from '../../../../Actions/numberActions';
-import { isAccountsLoadedSelector, allTwilioAccountsSelector } from '../../../../Selectors/account';
-import { isNumbersLoadedSelector, existingNumbersFilterSelector } from '../../../../Selectors/numbers';
+import { loadExistingNumbers } from '../../../../Actions/numberActions';
+import { isAccountsLoadedSelector, allAccountsSelector } from '../../../../Selectors/account';
+import { isNumbersLoadedSelector } from '../../../../Selectors/numbers';
 import BaseSearchContainer from '../BaseSearchContainer';
 import { replaceRoute } from '../../../../../../Services/history';
 
 @connect(state => ({
   accountsLoaded: isAccountsLoadedSelector(state),
-  accounts:       allTwilioAccountsSelector(state),
-  numbersLoaded:  isNumbersLoadedSelector(state),
-  filter:         existingNumbersFilterSelector(state)
+  accounts:       allAccountsSelector(state),
+  numbersLoaded:  isNumbersLoadedSelector(state)
 }))
 class ExistingNumbersContainer extends BaseSearchContainer {
 
   static propTypes = {
     accountsLoaded: PropTypes.bool,
     numbersLoaded:  PropTypes.bool,
-    filter:         PropTypes.object,
     dispatch:       PropTypes.func
   };
 
@@ -33,7 +30,8 @@ class ExistingNumbersContainer extends BaseSearchContainer {
       loading: false,
       numbers: [],
       pageNum: 1,
-      hasNext: false
+      hasNext: false,
+      filter:  null
     };
   }
 
@@ -51,24 +49,31 @@ class ExistingNumbersContainer extends BaseSearchContainer {
     this.setState({
       loading: true,
       numbers: [],
-      pageNum: 1
+      pageNum: 1,
+      filter
     });
 
-    const { dispatch } = this.props;
-
-    dispatch(changeExistingNumbersFilter(filter));
-    dispatch(loadExistingNumbers(filter.account, 1)).success(this.onLoadNumbers);
+    if (filter.account) {
+      const { accounts, dispatch } = this.props;
+      const account = accounts.get(filter.account);
+      if (account) {
+        dispatch(loadExistingNumbers(account, 1)).success(this.onLoadNumbers);
+      }
+    }
   };
 
   onChangePage = (pageNum) => {
+    const { accounts, dispatch } = this.props;
     this.setState({
       loading: true,
       numbers: [],
       pageNum
     });
 
-    const { filter, dispatch } = this.props;
-    dispatch(loadExistingNumbers(filter.account, pageNum)).success(this.onLoadNumbers);
+    const account = accounts.get(this.state.filter.account);
+    if (account) {
+      dispatch(loadExistingNumbers(account, pageNum)).success(this.onLoadNumbers);
+    }
   };
 
   onLoadNumbers = (result) => {
@@ -81,7 +86,7 @@ class ExistingNumbersContainer extends BaseSearchContainer {
   };
 
   render() {
-    const { numbersLoaded, accountsLoaded, filter, accounts } = this.props;
+    const { numbersLoaded, accountsLoaded, accounts } = this.props;
     if (!numbersLoaded || !accountsLoaded) {
       return <LoadingPage />;
     }
@@ -89,7 +94,6 @@ class ExistingNumbersContainer extends BaseSearchContainer {
     return (
       <ExistingList
         {...this.state}
-        filter={filter}
         accounts={accounts}
         onClickBack={this.onClickBack}
         onChangeFilter={this.onChangeFilter}

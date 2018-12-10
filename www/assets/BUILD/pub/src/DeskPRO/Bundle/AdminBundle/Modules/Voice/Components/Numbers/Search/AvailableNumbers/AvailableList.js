@@ -7,8 +7,10 @@ import AvailableListForm from './AvailableListForm';
 
 const numberTypes = {
   local:    'Local',
-  tollFree: 'Toll free',
-  mobile:   'Mobile'
+  tollfree: 'Toll free',
+  mobile:   'Mobile',
+  national: 'National',
+  fixed:    'Fixed'
 };
 
 class AvailableList extends React.Component {
@@ -16,7 +18,7 @@ class AvailableList extends React.Component {
   static propTypes = {
     filter:         PropTypes.object,
     accounts:       PropTypes.object,
-    numbers:        PropTypes.numbers,
+    numbers:        PropTypes.object,
     loading:        PropTypes.bool,
     onChangeFilter: PropTypes.func,
     onAddNumber:    PropTypes.func,

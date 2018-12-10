@@ -3,13 +3,13 @@
 namespace DeskPRO\Bundle\VoiceBundle\Twilio\Model;
 
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
+use DeskPRO\Bundle\VoiceBundle\Model\AbstractVoiceNumber;
 use JMS\Serializer\Annotation as JMS;
-use libphonenumber\PhoneNumberUtil;
 
 /**
  * Class AbstractTwilioNumber.
  */
-abstract class AbstractTwilioNumber
+abstract class AbstractTwilioNumber extends AbstractVoiceNumber
 {
     /**
      * @var string
@@ -23,49 +23,7 @@ abstract class AbstractTwilioNumber
      *
      * @JMS\Type("string")
      */
-    protected $numberCountryCode;
-
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    protected $nationalNumber;
-
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    protected $number;
-
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
     protected $nickname;
-
-    /**
-     * @var string
-     *
-     * @JMS\Type("string")
-     */
-    protected $countryCode;
-
-    /**
-     * @var array
-     *
-     * @JMS\Type("array<string>")
-     */
-    protected $capabilities = [];
-
-    /**
-     * @var bool
-     *
-     * @JMS\Type("boolean")
-     */
-    protected $added;
 
     /**
      * Constructor.
@@ -76,21 +34,16 @@ abstract class AbstractTwilioNumber
      */
     public function __construct($apiNumber, TwilioVoiceAccount $account, $added)
     {
-        $phoneUtil = PhoneNumberUtil::getInstance();
-        $number    = $phoneUtil->parse($apiNumber->phoneNumber, null);
-
-        $this->numberCountryCode = $number->getCountryCode();
-        $this->nationalNumber    = $number->getNationalNumber();
-        $this->number            = $apiNumber->phoneNumber;
+        parent::__construct($apiNumber->phoneNumber, $added);
 
         $this->account  = $account;
         $this->nickname = $apiNumber->friendlyName;
-        $this->added    = $added;
 
-        foreach ($apiNumber->capabilities as $capability => $enabled) {
-            if ($enabled) {
-                $this->capabilities[] = $capability;
-            }
+        if (isset($apiNumber->capabilities['voice']) && $apiNumber->capabilities['voice']) {
+            $this->voiceEnabled = true;
+        }
+        if (isset($apiNumber->capabilities['sms']) && $apiNumber->capabilities['sms']) {
+            $this->smsEnabled = true;
         }
     }
 }

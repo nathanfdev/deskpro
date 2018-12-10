@@ -4,9 +4,7 @@ import toastr from 'toastr';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { loadAll, addToCollection, updateCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-
-export const changeExistingNumbersFilter = createAction('VOICE_CHANGE_EXISTING_NUMBERS_FILTER');
-export const changeAvailableNumbersFilter = createAction('VOICE_CHANGE_AVAILABLE_NUMBERS_FILTER');
+import { allAccountsSelector } from '../Selectors/account';
 
 export const loadNumbers = createAction(
   'VOICE_LOAD_NUMBERS',
@@ -37,21 +35,30 @@ export const deleteNumber = createAction(
 
 export const loadExistingNumbers = createAction(
   'VOICE_LOAD_EXISTING_NUMBERS',
-  (accountId, page = 0) => api.sendGet(`DP_API/voice_accounts/twilio/${accountId}/existing_numbers?page=${page}`)
+  (account, page = 0) => api.sendGet(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/existing_numbers?page=${page}`)
 );
 
 export const loadAvailableNumbers = createAction(
   'VOICE_LOAD_AVAILABLE_NUMBERS',
-  (accountId, params) => api.sendGet(`DP_API/voice_accounts/twilio/${accountId}/available_numbers?${compileParams(params)}`)
+  (account, params) => api.sendGet(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/available_numbers?${compileParams(params)}`)
 );
 
 export const addAvailableNumber = createAction(
   'VOICE_ADD_AVAILABLE_NUMBER',
-  number => api.sendPost(`DP_API/voice_accounts/twilio/${number.get('account')}/buy_number`, {
-    number: number.get('number')
-  }).error((response) => {
-    if (response.errors && response.errors.errors && response.errors.errors[0]) {
-      toastr.error(response.errors.errors[0].message);
+  number => (dispatch, getState) => {
+    const state = getState();
+    const accounts = allAccountsSelector(state);
+    const account = accounts.get(number.get('account'));
+    if (!account) {
+      return null;
     }
-  })
+
+    return api.sendPost(`DP_API/voice_accounts/${account.get('type')}/${account.get('id')}/buy_number`, {
+      number: number.get('number')
+    }).error((response) => {
+      if (response.errors && response.errors.errors && response.errors.errors[0]) {
+        toastr.error(response.errors.errors[0].message);
+      }
+    });
+  }
 );
