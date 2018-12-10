@@ -32,7 +32,7 @@ class MessengerChat
     /**
      * @var int
      */
-    private $department = 3;
+    private $department = 0;
 
     /**
      * @var string
