@@ -21,5 +21,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@router"
     tags:
       - { name: doctrine.entity_listener }

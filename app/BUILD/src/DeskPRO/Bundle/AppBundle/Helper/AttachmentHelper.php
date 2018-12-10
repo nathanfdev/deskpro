@@ -6,8 +6,10 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
+use DeskPRO\Component\Util\MatchConfig;
 use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class AttachmentHelper
@@ -21,13 +23,20 @@ class AttachmentHelper
     private $em;
 
     /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
      * AttachmentHelper constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager   $em
+     * @param RouterInterface $router
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, RouterInterface $router)
     {
-        $this->em = $em;
+        $this->em     = $em;
+        $this->router = $router;
     }
 
     /**
@@ -38,7 +47,12 @@ class AttachmentHelper
      */
     public function processInlineBlobs($content, $blobIds = [])
     {
-        $blobAuthcodes = StringUtils::gatherInlineAttachments($content);
+        $matchConfig = new MatchConfig(
+            $this->router->generate('serve_blob', ['blob_auth_id' => '00000', 'filename' => '11111']),
+            '00000',
+            '11111'
+        );
+        $blobAuthcodes = StringUtils::gatherInlineAttachments($content, $matchConfig);
         /** @var BlobRepository $blobRepository */
         $blobRepository = $this->em->getRepository(Blob::class);
         // these we found via html
