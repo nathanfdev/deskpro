@@ -8,11 +8,14 @@ use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsContr
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerType;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class AdminController.
@@ -48,6 +51,37 @@ class AdminController extends AbstractBrandAwareSettingsController
     }
 
     /**
+     * Create widget.
+     *
+     * @ApiDoc(
+     *     section="Messenger setup",
+     *     resourceDescription="Operations about Messenger setup",
+     *     description="create Messenger",
+     *
+     *     statusCodes={
+     *         200="Returned if request was successful",
+     *         400="In case your request was malformed",
+     *     },
+     *     input= {
+     *         "class"="DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerType"
+     *     },
+     *     output="DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettins"
+     *)
+     * @Rest\Post("/setup")
+     *
+     * @param Request $request
+     * @param Brand   $brand
+     *
+     * @return View
+     */
+    public function postSettingsAction(Request $request, Brand $brand)
+    {
+        $this->handleForm($request, $this->getModel($brand));
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * @param Brand $brand
      *
      * @return MessengerSettings
@@ -60,6 +94,22 @@ class AdminController extends AbstractBrandAwareSettingsController
     protected function getType()
     {
         return MessengerType::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param MessengerSettings $model
+     */
+    protected function handleForm(Request $request, AbstractBrandAwareSettings $model)
+    {
+        $form = $this->createForm($this->getType(), $model, ['brand' => $model->getBrand()]);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $this->persistModel($model);
     }
 
     protected function persistModel(AbstractBrandAwareSettings $model)

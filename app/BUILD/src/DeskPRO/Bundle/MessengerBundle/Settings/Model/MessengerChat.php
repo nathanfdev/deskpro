@@ -4,6 +4,10 @@ namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
 class MessengerChat
 {
+    const NO_ANSWER_SAVE_TICKET   = 'save_ticket';
+    const NO_ANSWER_SHOW_BUSY     = '';
+    const NO_ANSWER_CREATE_TICKET = 'create_ticket';
+
     /**
      * @var bool
      */

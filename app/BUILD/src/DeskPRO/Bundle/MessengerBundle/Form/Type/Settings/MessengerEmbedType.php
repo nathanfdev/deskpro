@@ -20,12 +20,8 @@ class MessengerEmbedType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('show_on_portal', ApiBooleanType::class, [
-                'property_path' => 'showOnPortal',
-            ])
-            ->add('authorize_domains', TextType::class, [
-                'property_path' => 'authorizeDomains',
-            ])
+            ->add('showOnPortal', ApiBooleanType::class)
+            ->add('authorizeDomains', TextType::class)
         ;
     }
 

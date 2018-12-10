@@ -2,8 +2,11 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Form\Type\Settings;
 
+use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MessengerType extends AbstractType
 {
@@ -14,6 +17,19 @@ class MessengerType extends AbstractType
     {
         $builder
             ->add('embed', MessengerEmbedType::class)
+            ->add('chat', MessengerChatType::class, ['brand' => $options['brand']])
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setDefaults(['data_class' => MessengerSettings::class])
+            ->setRequired(['brand'])
+            ->setAllowedTypes('brand', [Brand::class])
         ;
     }
 }

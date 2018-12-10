@@ -1,0 +1,8 @@
+services:
+
+  form.messenger.admin.chat_type:
+    class: DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerChatType
+    arguments:
+      - "@permissions_manager"
+    tags:
+      - { name: form.type }

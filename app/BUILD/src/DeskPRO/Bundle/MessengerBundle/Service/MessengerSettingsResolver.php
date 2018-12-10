@@ -78,6 +78,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model = new MessengerSettings();
 
         return $model
+            ->setBrand($brand)
             ->setEmbed($this->getMessengerEmbedSettings($brand))
             ->setStyles($this->getMessengerStyles($brand))
             ->setTickets($this->getMessengerTickets($brand))

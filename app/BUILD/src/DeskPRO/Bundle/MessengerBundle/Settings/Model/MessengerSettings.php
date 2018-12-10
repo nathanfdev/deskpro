@@ -2,10 +2,12 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
+use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
+
 /**
  * Class MessengerSettings.
  */
-class MessengerSettings
+class MessengerSettings extends AbstractBrandAwareSettings
 {
     /**
      * @var MessengerEmbed
