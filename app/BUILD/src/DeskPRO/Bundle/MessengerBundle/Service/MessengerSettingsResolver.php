@@ -8,6 +8,7 @@ use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
 use Doctrine\ORM\EntityManager;
 
@@ -28,6 +29,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_BUSY_MESSAGE       = 'messenger.chat.busy';
     const CHAT_DEFAULT_DEPARTMENT = 'messenger.chat.department';
     const CHAT_TICKET_SUBJECT     = 'messenger.chat.ticket_subject';
+
+    const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
+    const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
 
     /**
      * @var EntityManager
@@ -107,7 +111,18 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
             ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
             ->setPrompt($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
-            ->setPrompt($this->getSettings(self::CHAT_TICKET_SUBJECT, $brand, $mChat->getTicketSubject()));
+            ->setPrompt($this->getSettings(self::CHAT_TICKET_SUBJECT, $brand, $mChat->getTicketSubject()))
+            ;
+    }
+
+    protected function getMessengerStyles(Brand $brand)
+    {
+        $mStyles = new MessengerStyles();
+
+        return $mStyles
+            ->setBackgroundColor($this->getSettings(self::STYLE_BG_COLOR, $brand, $mStyles->getBackgroundColor()))
+            ->setPrimaryColor($this->getSettings(self::STYLE_PRIMARY_COLOR, $brand, $mStyles->getPrimaryColor()))
+            ;
     }
 
     /**
