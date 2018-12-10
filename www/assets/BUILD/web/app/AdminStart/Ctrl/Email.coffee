@@ -45,7 +45,7 @@ define ['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
         return
 
       @$scope.is_loading = true
-      promise = @Api.sendPutJson('/email_accounts', postData)
+      promise = @Api.sendPostJson('/email_accounts', postData)
 
       promise.success( (result) =>
         @account.id = result.email_account_id || @account.id

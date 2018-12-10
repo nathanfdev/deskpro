@@ -4711,7 +4711,7 @@ $collection->create(
         'path'       => '/email_accounts',
         'controller' => 'LegacyApiBundle:EmailAccounts:save',
         'defaults'   => ['id' => '0'],
-        'methods'    => ['PUT'],
+        'methods'    => ['PUT', 'POST'],
     ]
 );
 
