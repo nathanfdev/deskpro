@@ -7,6 +7,9 @@ use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsChat;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsTickets;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerStyles;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
@@ -32,6 +35,19 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
     const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
     const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
+
+    const OPTIONS_AUTOSTART = 'messenger.options.autostart';
+    const OPTIONS_SUBTEXT   = 'messenger.options.subtext';
+    const OPTIONS_TITLE     = 'messenger.options.title';
+
+    const OPTIONS_CHAT_TITLE       = 'messenger.options.chat.title';
+    const OPTIONS_CHAT_BUTTON_TEXT = 'messenger.options.chat.button_text';
+    const OPTIONS_CHAT_DESCRIPTION = 'messenger.options.chat.description';
+    const OPTIONS_CHAT_SHOW_PHOTOS = 'messenger.options.chat.show_photos';
+
+    const OPTIONS_TICKETS_TITLE       = 'messenger.options.tickets.title';
+    const OPTIONS_TICKETS_BUTTON_TEXT = 'messenger.options.tickets.button_text';
+    const OPTIONS_TICKETS_DESCRIPTION = 'messenger.options.tickets.description';
 
     /**
      * @var EntityManager
@@ -60,11 +76,14 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function getMessengerSettings(Brand $brand)
     {
         $model = new MessengerSettings();
-        $model
-            ->setEmbed($this->getMessengerEmbedSettings($brand))
-        ;
 
-        return $model;
+        return $model
+            ->setEmbed($this->getMessengerEmbedSettings($brand))
+            ->setStyles($this->getMessengerStyles($brand))
+            ->setTickets($this->getMessengerTickets($brand))
+            ->setChat($this->getMessengerChat($brand))
+            ->setMessenger($this->getMessengerOptions($brand))
+        ;
     }
 
     /**
@@ -115,6 +134,11 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ;
     }
 
+    /**
+     * @param Brand $brand
+     *
+     * @return MessengerStyles
+     */
     protected function getMessengerStyles(Brand $brand)
     {
         $mStyles = new MessengerStyles();
@@ -122,6 +146,57 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         return $mStyles
             ->setBackgroundColor($this->getSettings(self::STYLE_BG_COLOR, $brand, $mStyles->getBackgroundColor()))
             ->setPrimaryColor($this->getSettings(self::STYLE_PRIMARY_COLOR, $brand, $mStyles->getPrimaryColor()))
+            ;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return MessengerOptions
+     */
+    protected function getMessengerOptions(Brand $brand)
+    {
+        $mOptions = new MessengerOptions();
+
+        return $mOptions
+            ->setAutoStart($this->getSettings(self::OPTIONS_AUTOSTART, $brand, $mOptions->isAutoStart()))
+            ->setSubtext($this->getSettings(self::OPTIONS_SUBTEXT, $brand, $mOptions->getSubtext()))
+            ->setTitle($this->getSettings(self::OPTIONS_TITLE, $brand, $mOptions->getTitle()))
+            ->setChat($this->getMessengerOptionsChat($brand))
+            ->setTickets($this->getMessengerOptionsTickets($brand))
+            ;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return MessengerOptionsChat
+     */
+    protected function getMessengerOptionsChat(Brand $brand)
+    {
+        $mOptionsChat = new MessengerOptionsChat();
+
+        return $mOptionsChat
+            ->setTitle($this->getSettings(self::OPTIONS_CHAT_TITLE, $brand, $mOptionsChat->getTitle()))
+            ->setButtonText($this->getSettings(self::OPTIONS_CHAT_BUTTON_TEXT, $brand, $mOptionsChat->getButtonText()))
+            ->setDescription($this->getSettings(self::OPTIONS_CHAT_DESCRIPTION, $brand, $mOptionsChat->getDescription()))
+            ->setShowAgentPhotos($this->getSettings(self::OPTIONS_CHAT_SHOW_PHOTOS, $brand, $mOptionsChat->isShowAgentPhotos()))
+            ;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return MessengerOptionsTickets
+     */
+    protected function getMessengerOptionsTickets(Brand $brand)
+    {
+        $mOptionsTickets = new MessengerOptionsTickets();
+
+        return $mOptionsTickets
+            ->setTitle($this->getSettings(self::OPTIONS_CHAT_TITLE, $brand, $mOptionsTickets->getTitle()))
+            ->setButtonText($this->getSettings(self::OPTIONS_CHAT_BUTTON_TEXT, $brand, $mOptionsTickets->getButtonText()))
+            ->setDescription($this->getSettings(self::OPTIONS_CHAT_DESCRIPTION, $brand, $mOptionsTickets->getDescription()))
             ;
     }
 
