@@ -2,14 +2,29 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * Class MessengerEmbed.
+ */
 class MessengerEmbed
 {
     /**
+     * Should messenger be shown on the Portal.
+     *
+     * @JMS\Type("boolean")
+     * @JMS\SerializedName("showOnPortal")
+     *
      * @var bool
      */
     private $showOnPortal = false;
 
     /**
+     * A comma separated list of authorized domains.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("authorizeDomains")
+     *
      * @var string
      */
     private $authorizeDomains = '';

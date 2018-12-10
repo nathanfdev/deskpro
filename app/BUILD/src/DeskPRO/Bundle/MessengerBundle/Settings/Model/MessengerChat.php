@@ -2,6 +2,11 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
+/**
+ * Class MessengerChat.
+ */
 class MessengerChat
 {
     const NO_ANSWER_SAVE_TICKET   = 'save_ticket';
@@ -9,36 +14,67 @@ class MessengerChat
     const NO_ANSWER_CREATE_TICKET = 'create_ticket';
 
     /**
+     * Is chat enabled.
+     *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     private $enabled = true;
 
     /**
+     * A short prompt to chat.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $prompt = 'What can we help you with today?';
 
     /**
+     * How long to wait before consider chat is timed out.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     private $timeout = 90;
 
     /**
+     * What to do if chat is not answered.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("noAnswerBehavior")
+     *
      * @var string
      */
     private $noAnswerBehavior = 'save_ticket';
 
     /**
+     * A message to show when there is no answer.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("busyMessage")
+     *
      * @var string
      */
     private $busyMessage = 'It looks like all of our agents are busy at the moment. You can still send us a ticket below and we will get back to you as soon as possible';
 
     /**
+     * A default department ID.
+     *
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     private $department = 0;
 
     /**
+     * A default ticket subject for missed chat.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("ticketSubject")
+     *
      * @var string
      */
     private $ticketSubject = 'Missed chat from {name}';

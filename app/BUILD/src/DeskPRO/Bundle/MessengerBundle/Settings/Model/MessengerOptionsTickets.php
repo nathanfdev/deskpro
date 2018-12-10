@@ -2,22 +2,37 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Class MessengerOptionsTickets.
  */
 class MessengerOptionsTickets
 {
     /**
+     * A title.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $title = 'Start a conversation';
 
     /**
+     * A short description summoned to help a user.
+     *
+     * @JMS\Type("string")
+     *
      * @var string
      */
     private $description = 'Start a chat with one of our agents';
 
     /**
+     * A text which will be shown on a button inside tickets block.
+     *
+     * @JMS\Type("string")
+     * @JMS\SerializedName("buttonText")
+     *
      * @var string
      */
     private $buttonText = 'Start a new conversation';

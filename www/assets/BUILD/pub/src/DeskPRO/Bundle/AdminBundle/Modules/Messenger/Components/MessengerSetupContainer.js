@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import MessengerSetup from '@deskpro/messenger-setup';
 import Immutable from 'immutable';
 import { connect } from 'react-redux';
-import { getSettings } from '../Actions/messengerActions';
+import { Button } from '@deskpro/react-components';
+import { getSettings, saveSettings } from '../Actions/messengerActions';
 
 @connect()
 class MessengerSetupContainer extends React.Component {
@@ -19,6 +20,7 @@ class MessengerSetupContainer extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(getSettings(this.props.params.brandId)).then((response) => {
+      response.data.data.chat.ticketsDefault = { department: response.data.data.chat.department };
       const newSettings = this.state.settings.merge(response.data.data);
       this.setState({ settings: newSettings });
     });
@@ -39,13 +41,20 @@ class MessengerSetupContainer extends React.Component {
     }
   };
 
+  handleSubmit = () => {
+    this.props.dispatch(saveSettings(this.props.params.brandId, this.state.settings));
+  };
+
   render() {
     const { settings } = this.state;
     return (
-      <MessengerSetup
-        settings={settings}
-        handleChange={this.onChange}
-      />
+      <div>
+        <MessengerSetup
+          settings={settings}
+          handleChange={this.onChange}
+        />
+        <Button onClick={this.handleSubmit} type="cta" size="large">Save</Button>
+      </div>
     );
   }
 }

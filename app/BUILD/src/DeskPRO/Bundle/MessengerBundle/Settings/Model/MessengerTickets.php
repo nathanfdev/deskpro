@@ -2,12 +2,18 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Class MessengerTickets.
  */
 class MessengerTickets
 {
     /**
+     * Are tickets enabled.
+     *
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     private $enabled = false;
