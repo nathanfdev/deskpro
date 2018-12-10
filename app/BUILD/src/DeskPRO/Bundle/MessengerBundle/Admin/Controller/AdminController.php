@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractBrandAwareSettings;
 use DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerType;
+use DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver as MSR;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -72,6 +73,9 @@ class AdminController extends AbstractBrandAwareSettingsController
      * @param Request $request
      * @param Brand   $brand
      *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     *
      * @return View
      */
     public function postSettingsAction(Request $request, Brand $brand)
@@ -97,9 +101,13 @@ class AdminController extends AbstractBrandAwareSettingsController
     }
 
     /**
-     * {@inheritdoc}
+     * @param Request                    $request
+     * @param AbstractBrandAwareSettings $model
      *
-     * @param MessengerSettings $model
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     *
+     * @return View|void
      */
     protected function handleForm(Request $request, AbstractBrandAwareSettings $model)
     {
@@ -112,8 +120,48 @@ class AdminController extends AbstractBrandAwareSettingsController
         $this->persistModel($model);
     }
 
+    /**
+     * @param MessengerSettings $model
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     */
     protected function persistModel(AbstractBrandAwareSettings $model)
     {
-        // TODO: Implement persistModel() method.
+        $brand            = $model->getBrand();
+        $messengerChat    = $model->getChat();
+        $messengerStyles  = $model->getStyles();
+        $messengerOptions = $model->getMessenger();
+        $optionsTickets   = $messengerOptions->getTickets();
+        $optionsChat      = $messengerOptions->getChat();
+        $this
+            ->getSettingRepository()
+
+            ->updateSetting(MSR::CHAT_TICKET_SUBJECT, $messengerChat->getTicketSubject(), $brand)
+            ->updateSetting(MSR::CHAT_TIMEOUT, $messengerChat->getTimeout(), $brand)
+            ->updateSetting(MSR::CHAT_PROMPT, $messengerChat->getPrompt(), $brand)
+            ->updateSetting(MSR::CHAT_NO_ANSWER_BEHAVIOR, $messengerChat->getNoAnswerBehavior(), $brand)
+            ->updateSetting(MSR::CHAT_DEFAULT_DEPARTMENT, $messengerChat->getDepartment(), $brand)
+            ->updateSetting(MSR::CHAT_BUSY_MESSAGE, $messengerChat->getBusyMessage(), $brand)
+            ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
+
+            ->updateSetting(MSR::TICKETS_ENABLED, $model->getTickets()->isEnabled(), $brand)
+
+            ->updateSetting(MSR::STYLE_PRIMARY_COLOR, $messengerStyles->getPrimaryColor(), $brand)
+            ->updateSetting(MSR::STYLE_BG_COLOR, $messengerStyles->getBackgroundColor(), $brand)
+
+            ->updateSetting(MSR::OPTIONS_TITLE, $messengerOptions->getTitle(), $brand)
+            ->updateSetting(MSR::OPTIONS_AUTOSTART, $messengerOptions->isAutoStart(), $brand)
+            ->updateSetting(MSR::OPTIONS_SUBTEXT, $messengerOptions->getSubtext(), $brand)
+
+            ->updateSetting(MSR::OPTIONS_TICKETS_TITLE, $optionsTickets->getTitle(), $brand)
+            ->updateSetting(MSR::OPTIONS_TICKETS_BUTTON_TEXT, $optionsTickets->getButtonText(), $brand)
+            ->updateSetting(MSR::OPTIONS_TICKETS_DESCRIPTION, $optionsTickets->getDescription(), $brand)
+
+            ->updateSetting(MSR::OPTIONS_CHAT_SHOW_PHOTOS, $optionsChat->isShowAgentPhotos(), $brand)
+            ->updateSetting(MSR::OPTIONS_CHAT_TITLE, $optionsChat->getTitle(), $brand)
+            ->updateSetting(MSR::OPTIONS_CHAT_DESCRIPTION, $optionsChat->getDescription(), $brand)
+            ->updateSetting(MSR::OPTIONS_CHAT_BUTTON_TEXT, $optionsChat->getButtonText(), $brand)
+        ;
     }
 }
