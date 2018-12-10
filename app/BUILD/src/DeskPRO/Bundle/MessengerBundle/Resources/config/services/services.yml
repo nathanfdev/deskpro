@@ -30,3 +30,9 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@permissions_manager"
       - "@brand_stack"
+
+  messenger.service.settings_resolver:
+    class: DeskPRO\Bundle\MessengerBundle\Service\MessengerSettingsResolver
+    arguments:
+      - "@brand_aware_settings_resolver"
+      - "@doctrine.orm.entity_manager"

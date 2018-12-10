@@ -20,6 +20,9 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Http\Authentication\SimplePreAuthenticatorInterface;
 
+/**
+ * Class MessengerAuthenticator.
+ */
 class MessengerAuthenticator implements SimplePreAuthenticatorInterface
 {
     const HTTP_REALM      = 'session,token,key realm="DeskPRO User Messenger API"';
@@ -30,16 +33,38 @@ class MessengerAuthenticator implements SimplePreAuthenticatorInterface
      */
     private $secret;
 
+    /**
+     * MessengerAuthenticator constructor.
+     *
+     * @param AppSecret $appSecret
+     */
     public function __construct(AppSecret $appSecret)
     {
         $this->secret = $appSecret->getAppSecret();
     }
 
+    /**
+     * @param Request $request
+     * @param         $providerKey
+     *
+     * @return AnonymousToken
+     */
     public function createToken(Request $request, $providerKey)
     {
+        if (!$request->headers->has(self::VISITOR_HEADER_NAME)) {
+            throw new UnauthorizedHttpException(self::HTTP_REALM, self::VISITOR_HEADER_NAME.' header is not set. Can\'t auth');
+        }
+
         return new AnonymousToken($this->secret, new Person(), ['ROLE_API']);
     }
 
+    /**
+     * @param TokenInterface        $token
+     * @param UserProviderInterface $userProvider
+     * @param                       $providerKey
+     *
+     * @return TokenInterface
+     */
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
         return $token;

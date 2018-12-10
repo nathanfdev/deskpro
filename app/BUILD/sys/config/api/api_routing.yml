@@ -7,6 +7,9 @@ api_routes:
 api_reports_routes:
   resource: "@ReportBundle/Resources/config/routing_api.yml"
 
+messenger_api_admin_routes:
+  resource: "@MessengerBundle/Resources/config/routing_admin_messenger.yml"
+
 serve_blob:
     path: '/file.php/{blob_auth_id}/{filename}'
 

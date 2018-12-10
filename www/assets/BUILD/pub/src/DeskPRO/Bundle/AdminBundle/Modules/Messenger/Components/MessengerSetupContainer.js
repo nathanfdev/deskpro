@@ -1,8 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import MessengerSetup from '@deskpro/messenger-setup';
 import Immutable from 'immutable';
+import { connect } from 'react-redux';
+import { getSettings } from '../Actions/messengerActions';
 
+@connect()
 class MessengerSetupContainer extends React.Component {
+
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    params:   PropTypes.object.isRequired,
+  };
+
   static getInitialSettings() {
     return {
       styles: {
@@ -48,6 +58,13 @@ class MessengerSetupContainer extends React.Component {
   state = {
     settings: Immutable.fromJS(MessengerSetupContainer.getInitialSettings())
   };
+
+  componentDidMount() {
+    this.props.dispatch(getSettings(this.props.params.brandId)).then((data) => {
+      const newSettings = this.state.settings.merge(data.data);
+      this.setState({ settings: newSettings });
+    });
+  }
 
   onChange = (value, name) => {
     const { settings } = this.state;
