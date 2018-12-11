@@ -80,6 +80,8 @@ class TicketStatusDataService
     }
 
     /**
+     * Used in forms to get valid `status` options.
+     *
      * [
      *    ['title': ..., 'value': ...]
      * ].
@@ -103,6 +105,20 @@ class TicketStatusDataService
                     'title' => $subStatus->getTitle(),
                 ];
             }
+        }
+
+        return $res;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTopLevelStatuses($withSubstatuses = false)
+    {
+        $res = [];
+
+        foreach (TicketStatus::getStatusTypes() as $statusType) {
+            $res[$statusType] = $this->findStatus($statusType, $withSubstatuses);
         }
 
         return $res;

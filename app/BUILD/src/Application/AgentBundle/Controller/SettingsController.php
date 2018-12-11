@@ -394,11 +394,13 @@ class SettingsController extends AbstractController
         $custom_fields                        = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
         $term_options['custom_ticket_fields'] = $custom_fields;
         $brands                               = $this->getAgentBrands();
+        $ticketStatuses                       = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', [
-            'term_options' => $term_options,
-            'filter'       => $filter,
-            'brands'       => $brands,
+            'term_options'    => $term_options,
+            'filter'          => $filter,
+            'brands'          => $brands,
+            'ticket_statuses' => $ticketStatuses,
         ]);
     }
 
