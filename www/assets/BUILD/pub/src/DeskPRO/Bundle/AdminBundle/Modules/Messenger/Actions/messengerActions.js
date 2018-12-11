@@ -10,6 +10,10 @@ export const saveSettings = createAction(
   'MESSENGER_SAVE_SETTINGS_ACTION',
   (brandId, settings) => {
     const data = settings.toJS();
+    if (data.chat.ticketsDefault) {
+      data.chat.department = data.chat.ticketsDefault.department;
+      delete data.chat.ticketsDefault;
+    }
     if (data.chat.ticketDefaults) {
       data.chat.department = data.chat.ticketDefaults.department;
       delete data.chat.ticketDefaults;

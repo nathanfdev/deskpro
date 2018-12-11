@@ -27,7 +27,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
 
     const CHAT_ENABLED            = 'messenger.chat.enabled';
     const CHAT_PROMPT             = 'messenger.chat.prompt';
-    const CHAT_TIMEOUT            = 'messenger.chat.timout';
+    const CHAT_TIMEOUT            = 'messenger.chat.timeout';
     const CHAT_NO_ANSWER_BEHAVIOR = 'messenger.chat.no_answer';
     const CHAT_BUSY_MESSAGE       = 'messenger.chat.busy';
     const CHAT_DEFAULT_DEPARTMENT = 'messenger.chat.department';
@@ -195,9 +195,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
         $mOptionsTickets = new MessengerOptionsTickets();
 
         return $mOptionsTickets
-            ->setTitle($this->getSettings(self::OPTIONS_CHAT_TITLE, $brand, $mOptionsTickets->getTitle()))
-            ->setButtonText($this->getSettings(self::OPTIONS_CHAT_BUTTON_TEXT, $brand, $mOptionsTickets->getButtonText()))
-            ->setDescription($this->getSettings(self::OPTIONS_CHAT_DESCRIPTION, $brand, $mOptionsTickets->getDescription()))
+            ->setTitle($this->getSettings(self::OPTIONS_TICKETS_TITLE, $brand, $mOptionsTickets->getTitle()))
+            ->setButtonText($this->getSettings(self::OPTIONS_TICKETS_BUTTON_TEXT, $brand, $mOptionsTickets->getButtonText()))
+            ->setDescription($this->getSettings(self::OPTIONS_TICKETS_DESCRIPTION, $brand, $mOptionsTickets->getDescription()))
             ;
     }
 

@@ -129,6 +129,7 @@ class AdminController extends AbstractBrandAwareSettingsController
     protected function persistModel(AbstractBrandAwareSettings $model)
     {
         $brand            = $model->getBrand();
+        $messengerEmbed   = $model->getEmbed();
         $messengerChat    = $model->getChat();
         $messengerStyles  = $model->getStyles();
         $messengerOptions = $model->getMessenger();
@@ -136,6 +137,9 @@ class AdminController extends AbstractBrandAwareSettingsController
         $optionsChat      = $messengerOptions->getChat();
         $this
             ->getSettingRepository()
+
+            ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)
+            ->updateSetting(MSR::EMBED_ENABLED_ON_PORTAL, $messengerEmbed->isShowOnPortal(), $brand)
 
             ->updateSetting(MSR::CHAT_TICKET_SUBJECT, $messengerChat->getTicketSubject(), $brand)
             ->updateSetting(MSR::CHAT_TIMEOUT, $messengerChat->getTimeout(), $brand)
