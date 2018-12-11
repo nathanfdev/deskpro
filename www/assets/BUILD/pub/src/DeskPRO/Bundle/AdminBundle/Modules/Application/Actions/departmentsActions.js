@@ -1,6 +1,16 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { loadFromApi } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
+export const loadChatDepartments = createAction(
+  'ADMIN_LOAD_CHAT_DEPARTMENTS',
+  () => loadFromApi('ChatDepartment', 'DP_API/chat_departments', 'all')
+);
+
+export const loadTicketDepartments = createAction(
+  'ADMIN_LOAD_TICKET_DEPARTMENTS',
+  () => loadFromApi('TicketDepartment', 'DP_API/ticket_departments', 'all')
+);
+
 export const loadSelectableTicketDepartments = createAction(
   'ADMIN_LOAD_SELECTABLE_TICKET_DEPARTMENTS',
   (reload = false) => loadFromApi('TicketDepartment', 'DP_API/ticket_departments?selectable=1', 'selectable', reload)

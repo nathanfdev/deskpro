@@ -11,6 +11,7 @@ export const repositoriesConfig = {
   Languages:          { type: 'api', url: '/languages', repositoryClass: LanguagesRepository },
   Person:             { type: 'api', url: '/people', allowAll: false },
   Ticket:             { type: 'api', url: '/people', allowAll: false },
+  ChatDepartment:     { type: 'api', url: '/chat_departments', allowAll: true },
   TicketDepartment:   { type: 'api', url: '/ticket_departments', allowAll: true },
   ChatDepartment:     { type: 'api', url: '/chat_departments', allowAll: true },
   AgentTeam:          { type: 'api', url: '/agent_teams', allowAll: true },

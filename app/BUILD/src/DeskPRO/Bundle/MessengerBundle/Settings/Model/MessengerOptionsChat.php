@@ -40,7 +40,7 @@ class MessengerOptionsChat
     /**
      * Indicates whenever agent avatar should be shown or not.
      *
-     * @JMS\Type("string")
+     * @JMS\Type("boolean")
      * @JMS\SerializedName("showAgentPhotos")
      *
      * @var bool
