@@ -130,8 +130,8 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setDepartment($this->getSettings(self::CHAT_DEFAULT_DEPARTMENT, $brand, $mChat->getDepartment()))
             ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
             ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
-            ->setPrompt($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
-            ->setPrompt($this->getSettings(self::CHAT_TICKET_SUBJECT, $brand, $mChat->getTicketSubject()))
+            ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
+            ->setTicketSubject($this->getSettings(self::CHAT_TICKET_SUBJECT, $brand, $mChat->getTicketSubject()))
             ;
     }
 
@@ -208,7 +208,7 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
      *
      * @return mixed
      */
-    protected function getSettings($name, Brand $brand, $default = null)
+    public function getSettings($name, Brand $brand, $default = null)
     {
         return $this->settingsResolver->getSetting($name, $brand, $default);
     }
