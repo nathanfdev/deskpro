@@ -203,7 +203,9 @@ class TaskRouter
             // remove pending task
             $workers = $this->storage->getWorkers($task->getWorkerIds());
             foreach ($workers as $worker) {
-                $task->removeWorker($worker);
+                if ($acceptedWorker->getId() !== $worker->getId()) {
+                    $task->removeWorker($worker);
+                }
 
                 $worker->removePendingTask($task);
                 $this->storage->saveWorker($worker);
@@ -283,7 +285,7 @@ class TaskRouter
      *
      * @return bool
      */
-    public function cancelTask($taskId)
+    public function endTask($taskId)
     {
         if (!$taskId) {
             return false;

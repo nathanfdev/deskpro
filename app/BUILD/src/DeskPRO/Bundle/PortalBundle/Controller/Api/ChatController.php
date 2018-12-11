@@ -373,7 +373,7 @@ class ChatController extends AbstractApiController
 
         // cancel task
         $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));
-        $this->get('dp.voice.task_router')->cancelTask($conversation->getTaskId());
+        $this->get('dp.voice.task_router')->endTask($conversation->getTaskId());
 
         return View::create();
     }

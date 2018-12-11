@@ -517,7 +517,7 @@ class VoiceCallbacksHelper
 
         // ensure that we completed the end-user task if the phone call was not established
         // to avoid new reservation creations
-        $this->taskRouter->cancelTask($phoneCall->getTaskSid());
+        $this->taskRouter->endTask($phoneCall->getTaskSid());
 
         // cancel all ringing forwarding calls
         $this->voiceProviderHelper->cancelForwardingCalls($phoneCall);
