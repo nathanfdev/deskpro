@@ -65,8 +65,8 @@ define [
 			return new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
 		])
 	
-		Module.factory('dpObTypesDefTicketCriteria', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
-			return new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager)
+		Module.factory('dpObTypesDefTicketCriteria', [ '$q', 'Api', 'Api2', 'dpTemplateManager', ($q, Api, Api2, dpTemplateManager) ->
+			return new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, Api2, dpTemplateManager)
 		])
 	
 		Module.factory('dpObTypesDefTicketActions', [ '$q', 'Api', 'Api2', 'dpTemplateManager', ($q, Api, Api2, dpTemplateManager) ->

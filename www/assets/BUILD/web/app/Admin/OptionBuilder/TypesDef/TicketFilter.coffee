@@ -394,6 +394,9 @@ define [
           options_data['usergroups']        = data.usergroups.groups
           options_data['organizations']     = data.organizations.organizations
 
+          # ApiV2 results
+          options_data['ticket_statuses'] =result[1].data.data
+
           @options_data = options_data
 
           if @options_data?.ticket_fields
@@ -405,9 +408,6 @@ define [
           if @options_data?.org_fields
             for f in @options_data.org_fields
               @initFieldGetter 'FilterOrgField', f, true
-
-          # ApiV2 results
-          options_data['ticket_statuses'] =result[1].data.data
 
           @loadDataPromise.resolve(options_data)
         )
