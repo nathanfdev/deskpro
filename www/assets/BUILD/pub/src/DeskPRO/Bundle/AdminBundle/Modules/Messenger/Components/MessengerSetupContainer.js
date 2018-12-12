@@ -32,7 +32,6 @@ class MessengerSetupContainer extends React.Component {
     dispatch(loadTicketDepartments());
 
     this.props.dispatch(getSettings(this.props.params.brandId)).then((response) => {
-      response.data.data.chat.ticketDefaults = { department: response.data.data.chat.department };
       const newSettings = this.state.settings.merge(response.data.data);
       this.setState({ settings: newSettings });
     });

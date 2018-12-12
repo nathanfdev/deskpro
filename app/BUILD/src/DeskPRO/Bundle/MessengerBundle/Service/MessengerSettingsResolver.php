@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Brand;
 use DeskPRO\Bundle\AppBundle\Settings\AbstractBrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChat;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerEmbed;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptions;
 use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerOptionsChat;
@@ -23,7 +24,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const EMBED_ENABLED_ON_PORTAL = 'messenger.embed.show_on_portal';
     const EMBED_AUTHORIZE_DOMAINS = 'messenger.embed.authorize_domains';
 
-    const TICKETS_ENABLED = 'messenger.tickets.enabled';
+    const TICKETS_ENABLED    = 'messenger.tickets.enabled';
+    const TICKETS_SUBJECT    = 'messenger.tickets.subject';
+    const TICKETS_DEPARTMENT = 'messenger.tickets.department';
 
     const CHAT_ENABLED            = 'messenger.chat.enabled';
     const CHAT_PROMPT             = 'messenger.chat.prompt';
@@ -31,7 +34,9 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_NO_ANSWER_BEHAVIOR = 'messenger.chat.no_answer';
     const CHAT_BUSY_MESSAGE       = 'messenger.chat.busy';
     const CHAT_DEFAULT_DEPARTMENT = 'messenger.chat.department';
-    const CHAT_TICKET_SUBJECT     = 'messenger.chat.ticket_subject';
+
+    const CHAT_TICKET_DEFAULTS_SUBJECT = 'messenger.chat.ticket_defaults.subject';
+    const CHAT_TICKET_DEFAULTS_DEP     = 'messenger.chat.ticket_defaults.department';
 
     const STYLE_BG_COLOR      = 'messenger.styles.bg_color';
     const STYLE_PRIMARY_COLOR = 'messenger.styles.primary_color';
@@ -112,7 +117,11 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
     {
         $mTickets = new MessengerTickets();
 
-        return $mTickets->setEnabled($this->getSettings(self::TICKETS_ENABLED, $brand, $mTickets->isEnabled()));
+        return $mTickets
+            ->setEnabled($this->getSettings(self::TICKETS_ENABLED, $brand, $mTickets->isEnabled()))
+            ->setSubject($this->getSettings(self::TICKETS_SUBJECT, $brand, $mTickets->getSubject()))
+            ->setDepartment($this->getSettings(self::TICKETS_DEPARTMENT, $brand, $mTickets->getDepartment()))
+            ;
     }
 
     /**
@@ -131,7 +140,22 @@ class MessengerSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setNoAnswerBehavior($this->getSettings(self::CHAT_NO_ANSWER_BEHAVIOR, $brand, $mChat->getNoAnswerBehavior()))
             ->setPrompt($this->getSettings(self::CHAT_PROMPT, $brand, $mChat->getPrompt()))
             ->setTimeout($this->getSettings(self::CHAT_TIMEOUT, $brand, $mChat->getTimeout()))
-            ->setTicketSubject($this->getSettings(self::CHAT_TICKET_SUBJECT, $brand, $mChat->getTicketSubject()))
+            ->setTicketDefaults($this->getMessengerChatTicketDefaults($brand))
+            ;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return MessengerChatTicketDefaults
+     */
+    protected function getMessengerChatTicketDefaults(Brand $brand)
+    {
+        $mChatTicketDefaults = new MessengerChatTicketDefaults();
+
+        return $mChatTicketDefaults
+            ->setSubject($this->getSettings(self::CHAT_TICKET_DEFAULTS_SUBJECT, $brand, $mChatTicketDefaults->getSubject()))
+            ->setDepartment($this->getSettings(self::CHAT_TICKET_DEFAULTS_DEP, $brand, $mChatTicketDefaults->getDepartment()))
             ;
     }
 

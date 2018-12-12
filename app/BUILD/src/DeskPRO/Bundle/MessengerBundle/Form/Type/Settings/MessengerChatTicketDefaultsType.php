@@ -4,9 +4,8 @@ namespace DeskPRO\Bundle\MessengerBundle\Form\Type\Settings;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
-use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerTickets;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -14,10 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class MessengerTicketsType.
- */
-class MessengerTicketsType extends AbstractType
+class MessengerChatTicketDefaultsType extends AbstractType
 {
     /**
      * @var PermissionsManager
@@ -44,7 +40,7 @@ class MessengerTicketsType extends AbstractType
         $brand                      = $options['brand'];
 
         $builder
-            ->add('enabled', ApiBooleanType::class)
+            ->add('subject', TextType::class)
             ->add('department', EntityType::class, [
                 'class'         => Department::class,
                 'choice_label'  => 'id',
@@ -65,8 +61,6 @@ class MessengerTicketsType extends AbstractType
                 },
                 'required' => true,
             ])
-            ->add('subject', TextType::class)
-
         ;
     }
 
@@ -77,7 +71,7 @@ class MessengerTicketsType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => MessengerTickets::class,
+                'data_class' => MessengerChatTicketDefaults::class,
             ])
             ->setRequired(['brand'])
             ->setAllowedTypes('brand', [Brand::class])

@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Settings\Model;
 
+use Application\DeskPRO\Entity\Department;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -72,12 +73,12 @@ class MessengerChat
     /**
      * A default ticket subject for missed chat.
      *
-     * @JMS\Type("string")
-     * @JMS\SerializedName("ticketSubject")
+     * @JMS\Type("DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerChatTicketDefaults")
+     * @JMS\SerializedName("ticketDefaults")
      *
-     * @var string
+     * @var MessengerChatTicketDefaults
      */
-    private $ticketSubject = 'Missed chat from {name}';
+    private $ticketDefaults;
 
     /**
      * @return bool
@@ -188,33 +189,33 @@ class MessengerChat
     }
 
     /**
-     * @param int $department
+     * @param Department $department
      *
      * @return $this
      */
     public function setDepartment($department)
     {
-        $this->department = $department;
+        $this->department = $department instanceof Department ? $department->getId() : $department;
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return MessengerChatTicketDefaults
      */
-    public function getTicketSubject()
+    public function getTicketDefaults()
     {
-        return $this->ticketSubject;
+        return $this->ticketDefaults;
     }
 
     /**
-     * @param string $ticketSubject
+     * @param MessengerChatTicketDefaults $ticketDefaults
      *
      * @return $this
      */
-    public function setTicketSubject($ticketSubject)
+    public function setTicketDefaults(MessengerChatTicketDefaults $ticketDefaults)
     {
-        $this->ticketSubject = $ticketSubject;
+        $this->ticketDefaults = $ticketDefaults;
 
         return $this;
     }

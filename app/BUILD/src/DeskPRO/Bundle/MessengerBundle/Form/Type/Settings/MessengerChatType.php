@@ -42,9 +42,9 @@ class MessengerChatType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag();
-        $allowedDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
-        $brand                = $options['brand'];
+        $permissionsBag           = $this->permissionsManager->getPortalPermissionsBag();
+        $allowedChatDepartmentIds = $permissionsBag->getAllowedChatDepartmentIds();
+        $brand                    = $options['brand'];
 
         $builder
             ->add('enabled', ApiBooleanType::class)
@@ -54,7 +54,7 @@ class MessengerChatType extends AbstractType
             ->add('department', EntityType::class, [
                 'class'         => Department::class,
                 'choice_label'  => 'id',
-                'query_builder' => function (EntityRepository $er) use ($allowedDepartmentIds, $brand) {
+                'query_builder' => function (EntityRepository $er) use ($allowedChatDepartmentIds, $brand) {
                     $qb = $er
                         ->createQueryBuilder('d')
                         ->join('d.brands', 'b')
@@ -63,7 +63,7 @@ class MessengerChatType extends AbstractType
                             'd.id IN (:allowed_department_ids)',
                             'b.id IN(:brand)'
                         )
-                        ->setParameter('allowed_department_ids', $allowedDepartmentIds)
+                        ->setParameter('allowed_department_ids', $allowedChatDepartmentIds)
                         ->setParameter('brand', $brand)
                     ;
 
@@ -84,11 +84,7 @@ class MessengerChatType extends AbstractType
                 ],
 
             ])
-            ->add('ticketSubject', TextType::class, [
-                'constraints' => [
-                    new Assert\NotBlank(),
-                ],
-            ])
+            ->add('ticketDefaults', MessengerChatTicketDefaultsType::class, ['brand' => $brand])
         ;
     }
 

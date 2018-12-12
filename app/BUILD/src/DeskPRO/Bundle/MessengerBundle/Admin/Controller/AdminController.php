@@ -128,20 +128,21 @@ class AdminController extends AbstractBrandAwareSettingsController
      */
     protected function persistModel(AbstractBrandAwareSettings $model)
     {
-        $brand            = $model->getBrand();
-        $messengerEmbed   = $model->getEmbed();
-        $messengerChat    = $model->getChat();
-        $messengerStyles  = $model->getStyles();
-        $messengerOptions = $model->getMessenger();
-        $optionsTickets   = $messengerOptions->getTickets();
-        $optionsChat      = $messengerOptions->getChat();
+        $brand                       = $model->getBrand();
+        $messengerEmbed              = $model->getEmbed();
+        $messengerChat               = $model->getChat();
+        $messengerChatTicketDefaults = $messengerChat->getTicketDefaults();
+        $messengerStyles             = $model->getStyles();
+        $messengerOptions            = $model->getMessenger();
+        $optionsTickets              = $messengerOptions->getTickets();
+        $optionsChat                 = $messengerOptions->getChat();
+        $messengerTickets            = $model->getTickets();
         $this
             ->getSettingRepository()
 
             ->updateSetting(MSR::EMBED_AUTHORIZE_DOMAINS, $messengerEmbed->getAuthorizeDomains(), $brand)
             ->updateSetting(MSR::EMBED_ENABLED_ON_PORTAL, $messengerEmbed->isShowOnPortal(), $brand)
 
-            ->updateSetting(MSR::CHAT_TICKET_SUBJECT, $messengerChat->getTicketSubject(), $brand)
             ->updateSetting(MSR::CHAT_TIMEOUT, $messengerChat->getTimeout(), $brand)
             ->updateSetting(MSR::CHAT_PROMPT, $messengerChat->getPrompt(), $brand)
             ->updateSetting(MSR::CHAT_NO_ANSWER_BEHAVIOR, $messengerChat->getNoAnswerBehavior(), $brand)
@@ -149,7 +150,12 @@ class AdminController extends AbstractBrandAwareSettingsController
             ->updateSetting(MSR::CHAT_BUSY_MESSAGE, $messengerChat->getBusyMessage(), $brand)
             ->updateSetting(MSR::CHAT_ENABLED, $messengerChat->isEnabled(), $brand)
 
-            ->updateSetting(MSR::TICKETS_ENABLED, $model->getTickets()->isEnabled(), $brand)
+            ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_SUBJECT, $messengerChatTicketDefaults->getSubject(), $brand)
+            ->updateSetting(MSR::CHAT_TICKET_DEFAULTS_DEP, $messengerChatTicketDefaults->getDepartment(), $brand)
+
+            ->updateSetting(MSR::TICKETS_ENABLED, $messengerTickets->isEnabled(), $brand)
+            ->updateSetting(MSR::TICKETS_DEPARTMENT, $messengerTickets->getDepartment(), $brand)
+            ->updateSetting(MSR::TICKETS_SUBJECT, $messengerTickets->getSubject(), $brand)
 
             ->updateSetting(MSR::STYLE_PRIMARY_COLOR, $messengerStyles->getPrimaryColor(), $brand)
             ->updateSetting(MSR::STYLE_BG_COLOR, $messengerStyles->getBackgroundColor(), $brand)

@@ -6,3 +6,17 @@ services:
       - "@permissions_manager"
     tags:
       - { name: form.type }
+
+  form.messenger.admin.chat_ticket_defaults_type:
+    class: DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerChatTicketDefaultsType
+    arguments:
+      - "@permissions_manager"
+    tags:
+      - { name: form.type }
+
+  form.messenger.admin.chat_tickets_type:
+    class: DeskPRO\Bundle\MessengerBundle\Form\Type\Settings\MessengerTicketsType
+    arguments:
+      - "@permissions_manager"
+    tags:
+      - { name: form.type }
