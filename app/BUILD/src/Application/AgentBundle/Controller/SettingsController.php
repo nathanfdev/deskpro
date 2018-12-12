@@ -492,11 +492,13 @@ class SettingsController extends AbstractController
         $ticket_options['people_organizations'] = $this->em->getRepository(Entity\Organization::class)->getOrganizationNames();
         $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
         $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
+        $ticketStatuses                         = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         return $this->render('AgentBundle:Settings:ticket-macro-edit.html.twig', [
-            'ticket_options' => $ticket_options,
-            'macro'          => $macro,
-            'is_new'         => $is_new,
+            'ticket_options'  => $ticket_options,
+            'macro'           => $macro,
+            'is_new'          => $is_new,
+            'ticket_statuses' => $ticketStatuses,
         ]);
     }
 

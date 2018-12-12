@@ -294,7 +294,7 @@ class TicketsController extends AbstractController
         $person = $this->getUser();
 
         if ('POST' === $request->getMethod()) {
-            $ticket->setStatus($this->getContainer()->getTicketStatuses()->findStatus(TicketStatus::STATUS_TYPE_RESOLVED));
+            $ticket->setStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_RESOLVED));
             $this->saveEditedTicket($ticket, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
 
@@ -586,7 +586,7 @@ class TicketsController extends AbstractController
             return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 
-        $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
+        $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
         $this->saveEditedTicket($ticket, $person);
         $this->addFlash('success', $this->phrase('portal.flashes.ticket_re_opened'));
 
@@ -733,7 +733,7 @@ class TicketsController extends AbstractController
                     TicketStatus::STATUS_TYPE_RESOLVED,
                 ]
             )) {
-                $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
+                $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
             }
 
             if ($person->getId() && !$ticket->hasParticipantPerson($person)) {

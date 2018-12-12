@@ -465,7 +465,7 @@ class TicketMessageType extends AbstractType
         $ticket = $config->getOption('ticket');
         $status = $form->get('status')->getData();
         if ($status) {
-            $ticket->setTicketStatus($this->ticketStatuses->findStatus($status));
+            $ticket->setTicketStatus($this->ticketStatuses->findStatusOrException($status));
         }
     }
 

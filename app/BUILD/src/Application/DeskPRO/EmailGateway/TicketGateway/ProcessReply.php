@@ -346,10 +346,10 @@ class ProcessReply extends ProcessAbstract
             $ticketStatuses = App::$container->getTicketStatuses();
             if ($this->person['is_agent'] && $context == 'agent') {
                 $this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
-                $this->ticket->setTicketStatus($ticketStatuses->findStatus(TicketStatus::STATUS_TYPE_AWAITING_USER));
+                $this->ticket->setTicketStatus($ticketStatuses->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_USER));
             } else {
                 $this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_agent');
-                $this->ticket->setTicketStatus($ticketStatuses->findStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
+                $this->ticket->setTicketStatus($ticketStatuses->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
             }
         }
 

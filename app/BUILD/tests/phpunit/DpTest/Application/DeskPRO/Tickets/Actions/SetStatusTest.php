@@ -31,10 +31,7 @@ class SetStatusTest extends DeskProTestCase
     {
         // GIVEN
         $statusesMock = m::mock(TicketStatusDataService::class);
-        $statusesMock->shouldReceive('getFormOptions')->andReturn([
-            ['title' => 'Awaiting Agent', 'value' => 'awaiting_agent'],
-            ['title' => 'Deleted', 'value' => 'hidden.2'],
-        ]);
+        $statusesMock->shouldReceive('isValidStatusCode')->andReturn(true);
         App::$container = ContainerMock::create()->withTicketStatusesMock($statusesMock)->get();
 
         $action = new SetStatus(['status' => 'hidden.2']);
@@ -47,10 +44,7 @@ class SetStatusTest extends DeskProTestCase
     {
         // GIVEN
         $statusesMock = m::mock(TicketStatusDataService::class);
-        $statusesMock->shouldReceive('getFormOptions')->andReturn([
-            ['title' => 'Awaiting Agent', 'value' => 'awaiting_agent'],
-            ['title' => 'Deleted', 'value' => 'hidden.2'],
-        ]);
+        $statusesMock->shouldReceive('isValidStatusCode')->andReturn(false);
         App::$container = ContainerMock::create()->withTicketStatusesMock($statusesMock)->get();
 
         $expectedException = null;

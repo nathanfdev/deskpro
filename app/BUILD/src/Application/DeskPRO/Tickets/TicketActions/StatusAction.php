@@ -32,10 +32,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
 
     public function setStatus($status)
     {
-        if (!in_array($status, [
-            'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.deleted',
-        ])) {
+        if (!App::getContainer()->getTicketStatuses()->isValidStatusCode($status)) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
         $this->status = $status;
@@ -51,7 +48,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
             return true;
         }
 
-        if (($this->status == 'hidden.deleted' || $this->status == 'hidden.spam') && !$person->getPermissionsManager()->TicketChecker->canDelete($ticket)) {
+        if ($this->isDeletedOrSpamStatus($this->status) && !$person->getPermissionsManager()->TicketChecker->canDelete($ticket)) {
             return false;
         }
         if ($this->status == 'awaiting_agent' && !$person->getPermissionsManager()->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
@@ -72,24 +69,13 @@ class StatusAction extends AbstractAction implements PermissionableAction
      */
     public function apply(Ticket $ticket)
     {
-        if (strpos($this->status, '.') !== false) {
-            list($status, $hidden_status) = explode('.', $this->status, 2);
-        } else {
-            $status        = $this->status;
-            $hidden_status = null;
-        }
-
-        if ($hidden_status) {
-            $ticket->setHiddenStatus($hidden_status);
-        } else {
-            $ticket->setStatus($status);
-        }
+        $ticket->setTicketStatus(App::getContainer()->getTicketStatuses()->findStatusOrException($this->status));
 
         if ($this->getMetaData('is_preview')) {
             return;
         }
 
-        if ($ticket->hidden_status == 'deleted') {
+        if ($ticket->isDeleted()) {
             $delete_person = null;
             if ($this->tracker && $this->tracker->getPersonPerformer()) {
                 $delete_person = $this->tracker->getPersonPerformer();
@@ -154,8 +140,23 @@ class StatusAction extends AbstractAction implements PermissionableAction
      */
     public function getDescription($as_html = true)
     {
-        $tr = App::getTranslator();
+        return App::getTranslator()->phrase('admin.tickets.set_status_to_x', [
+            'status' => App::getContainer()->getTicketStatuses()->findStatusOrException($this->status)->getTitle(),
+        ]);
+    }
 
-        return $tr->phrase('admin.tickets.set_status_to_x', ['status' => $tr->phrase('agent.tickets.status_'.str_replace('.', '_', $this->status))]);
+    /**
+     * @param string $statusCode
+     *
+     * @return bool
+     */
+    protected function isDeletedOrSpamStatus($statusCode)
+    {
+        $statuses = App::getContainer()->getTicketStatuses();
+
+        return in_array($statusCode, [
+            $statuses->getDeletedStatus()->getStatusCode(),
+            $statuses->getSpamStatus()->getStatusCode(),
+        ]);
     }
 }

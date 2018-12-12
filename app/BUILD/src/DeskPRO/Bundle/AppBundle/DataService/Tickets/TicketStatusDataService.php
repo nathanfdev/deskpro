@@ -48,7 +48,7 @@ class TicketStatusDataService
      *
      * @return VirtualTicketStatus
      */
-    public function findStatus($statusCode, $withSubstatuses = false, $withFallback = false)
+    public function findStatusOrException($statusCode, $withSubstatuses = false, $withFallback = false)
     {
         $statusType = $statusCode;
         $statusId   = null;
@@ -60,7 +60,7 @@ class TicketStatusDataService
             $statusEntity = $this->repository->find($statusId);
             if (!$statusEntity || $statusEntity->getStatusType() !== $statusType) {
                 if ($withFallback) {
-                    return $this->findStatus($statusType, $withSubstatuses);
+                    return $this->findStatusOrException($statusType, $withSubstatuses);
                 }
                 throw new \InvalidArgumentException(sprintf("Can't find TicketStus `%s`", $statusCode));
             }
@@ -93,11 +93,10 @@ class TicketStatusDataService
         $res = [];
 
         foreach (TicketStatus::getStatusTypes() as $statusType) {
-            $topLevelStatus = $this->findStatus($statusType, true);
+            $topLevelStatus = $this->findStatusOrException($statusType, true);
             $res[]          = [
                 'value' => $topLevelStatus->getStatusCode(),
-                // @TODO: translate
-                'title' => $topLevelStatus->getStatusType(),
+                'title' => $topLevelStatus->getTitle(),
             ];
             foreach ($topLevelStatus->getChildren() as $subStatus) {
                 $res[] = [
@@ -118,9 +117,26 @@ class TicketStatusDataService
         $res = [];
 
         foreach (TicketStatus::getStatusTypes() as $statusType) {
-            $res[$statusType] = $this->findStatus($statusType, $withSubstatuses);
+            $res[$statusType] = $this->findStatusOrException($statusType, $withSubstatuses);
         }
 
         return $res;
+    }
+
+    /**
+     * @param string $statusCode
+     * @param bool   $withFallback
+     *
+     * @return bool
+     */
+    public function isValidStatusCode($statusCode, $withFallback = false)
+    {
+        try {
+            $status = $this->findStatusOrException($statusCode, false, $withFallback);
+        } catch (\InvalidArgumentException $ex) {
+            $status = null;
+        }
+
+        return $status !== null;
     }
 }

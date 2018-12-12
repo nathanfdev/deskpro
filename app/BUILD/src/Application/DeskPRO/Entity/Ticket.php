@@ -3211,7 +3211,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @return string
+     * @return TicketStatus
      */
     public function getTicketStatus()
     {
@@ -3919,6 +3919,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                     return 310;
                 } elseif ($idStatus && $status_code == App::getContainer()->getTicketStatuses()->getSpamStatus()->getStatusCode()) {
                     return 320;
+                } else {
+                    return 300;
                 }
                 break;
             case TicketStatus::STATUS_TYPE_PENDING:

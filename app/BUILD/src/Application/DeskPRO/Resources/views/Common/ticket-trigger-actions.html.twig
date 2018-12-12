@@ -1,5 +1,5 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
-
+{% import 'DeskPRO:Common:ticket-search-criteria.html.twig' as substatuses_macro %}
 <div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none">
 <div class="row">
 	<div class="term">
@@ -70,8 +70,11 @@
 	<div class="builder-options">
 		<select name="status">
 			<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+      {{ substatuses_macro.substatuses_options(ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent')) }}
 			<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+      {{ substatuses_macro.substatuses_options(ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user')) }}
 			<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+      {{ substatuses_macro.substatuses_options(ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved')) }}
 		</select>
 	</div>
 </div>

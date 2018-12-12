@@ -56,11 +56,7 @@ class SetStatus extends AbstractContainerAwareAction implements ActionInterface,
      */
     public function isValidStatus($status)
     {
-        $valid_statuses = array_map(function ($item) {
-            return $item['value'];
-        }, $this->getContainer()->getTicketStatuses()->getFormOptions());
-
-        return in_array($status, $valid_statuses);
+        return $this->getContainer()->getTicketStatuses()->isValidStatusCode($status, true);
     }
 
     /**
@@ -73,7 +69,7 @@ class SetStatus extends AbstractContainerAwareAction implements ActionInterface,
             return;
         }
 
-        $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatus($set_status, false, true));
+        $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException($set_status, false, true));
         $context->getLogger()->debug("[SetStatus] Setting status $set_status");
     }
 

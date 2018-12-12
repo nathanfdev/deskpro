@@ -406,7 +406,7 @@ class ChatHandler
             ->setCreationSystem(Ticket::CREATED_MESSENGER_UNANSWERED)
             ->setDepartment($department)
             ->setPerson($person)
-            ->setTicketStatus($this->ticketStatuses->findStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT))
+            ->setTicketStatus($this->ticketStatuses->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT))
             ->setBrand($this->brandStack->getActive()->getBrand())
             ->linked_chat = $chat;
 
