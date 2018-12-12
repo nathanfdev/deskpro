@@ -2272,13 +2272,14 @@ class TicketSearchController extends AbstractController
         $ticket_options['custom_people_fields'] = $customPersonFieldsHandler->getFieldsDisplayArray($person_field_defs);
 
         return $this->render('AgentBundle:TicketSearch:filter-massactions-overlay.html.twig', [
-            'agents'               => $agents,
-            'agent_teams'          => $agent_teams,
-            'brands'               => $brands,
-            'macros'               => $macros,
-            'agent_signature'      => $this->person->getSignature(),
-            'agent_signature_html' => $this->person->getSignatureHtml(),
-            'ticket_options'       => $ticket_options,
+            'agents'                  => $agents,
+            'agent_teams'             => $agent_teams,
+            'brands'                  => $brands,
+            'macros'                  => $macros,
+            'agent_signature'         => $this->person->getSignature(),
+            'agent_signature_html'    => $this->person->getSignatureHtml(),
+            'ticket_options'          => $ticket_options,
+            'ticket_statuses_service' => App::getContainer()->getTicketStatuses(),
         ]);
     }
 
