@@ -360,7 +360,7 @@ we detect that the user has replied to a message inline rather than above the cu
                     ],
                     'auth' => [
                         'description' => 'Auth string.',
-                        'type'        => 'integer',
+                        'type'        => 'string',
                         'attribute'   => 'auth',
                     ],
                     'sent_to_address' => [
