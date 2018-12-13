@@ -302,9 +302,9 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         return $this->convertParameters(AgentTicketForward::class, $arguments);
     }
 
-    public function getTicketArguments($ticket)
+    public function getTicketArguments($ticket, $forAgent = true)
     {
-        $arguments = parent::getTicketArguments($ticket);
+        $arguments = parent::getTicketArguments($ticket, true);
 
         $department = $ticket->getDepartment();
         $layoutId   = $department ? $department->getId() : null;

@@ -157,16 +157,25 @@ abstract class AbstractViewModelFactory
 
     /**
      * @param Ticket $ticket
+     * @param bool   $forAgent
      *
      * @return array
      */
-    protected function getTicketArguments($ticket)
+    protected function getTicketArguments($ticket, $forAgent = false)
     {
         $ticketLink = $this->objectRouter->getPortalUrl($ticket);
 
         $ticketPerson   = $ticket->getPerson();
         $ticketAgent    = $ticket->getAgent();
-        $ticketMessages = iterator_to_array($ticket->getMessages());
+        $ticketMessages = $this->container->getEm()->getRepository(TicketMessage::class)->getTicketMessages(
+            $ticket,
+            [
+                'with_notes'       => $forAgent,
+                'with_attachments' => true,
+                'limit'            => 15,
+                'order'            => 'DESC',
+            ]
+        );
         $ticketFeedback = $this->container->getEm()->getRepository(TicketFeedback::class)->getFeedbackForTicket($ticket);
 
         return [$ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $ticketFeedback];
