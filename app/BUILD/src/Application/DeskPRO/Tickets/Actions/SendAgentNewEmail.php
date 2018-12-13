@@ -13,6 +13,7 @@ use Application\DeskPRO\Tickets\Notifications\AgentNotifyListBuilder;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Application\DeskPRO\Tickets\Util as TicketUtil;
+use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentTicketUpdate;
 use Orb\Util\CheckedOptionsArray;
 
@@ -304,7 +305,14 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                 ->prepareMessage($viewModel, $messagesArgs, $message);
 
             try {
-                $mailer->send($message);
+                if ($mailer instanceof StorageTransportInterface) {
+                    $id = $mailer->queueMessage($message);
+                } else {
+                    $mailer->send($message);
+                    $id = null;
+                }
+                $ticketEmail->setSendmailSourceId($id);
+                $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
             } catch (\Exception $e) {
                 $context->getLogger()->error(
                     sprintf('[SendAgentNewEmail] Exception: [%s] %s', $e->getCode(), $e->getMessage()),
