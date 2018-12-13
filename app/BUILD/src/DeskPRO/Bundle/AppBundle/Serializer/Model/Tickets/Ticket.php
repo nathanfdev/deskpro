@@ -50,7 +50,7 @@ class Ticket
     /**
      * Auth string.
      *
-     * @JMS\Type("integer")
+     * @JMS\Type("string")
      *
      * @var string
      */
