@@ -21,7 +21,6 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Publish\GlossaryHandler;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
-use DeskPRO\Component\Util\StringUtils;
 use Doctrine\DBAL\Connection;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
@@ -456,13 +455,9 @@ class KbController extends AbstractController
                     ? $this->in->getCleanValue('content', 'string', null, ['noclean' => true])
                     : $this->in->getCleanValue('content', 'html');
 
-                $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
-                $inlineBlobs   = $blob   = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
-                foreach ($inlineBlobs as $blob) {
-                    if ($blob && StringUtils::ensureAttachment($blob, $content)) {
-                        $this->em->persist($blob->setIsTemp(false));
-                    }
-                }
+                $this
+                    ->get('attachment_helper')
+                    ->processInlineBlobs($content, $this->in->getCleanValueArray('blob_inline_ids', 'int'));
 
                 $contentInfo = Strings::parseImageDataUrls($content);
 

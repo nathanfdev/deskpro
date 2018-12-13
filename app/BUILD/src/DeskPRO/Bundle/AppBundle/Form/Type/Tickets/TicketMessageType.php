@@ -22,8 +22,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\ApiTicketMessag
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketAttachments\WebTicketMessageInlineAttachmentCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Component\Util\RegexUtils;
+use DeskPRO\Component\Util\StringUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -66,23 +67,31 @@ class TicketMessageType extends AbstractType
     private $em;
 
     /**
+     * @var AttachmentHelper
+     */
+    private $attachmentHelper;
+
+    /**
      * Constructor.
      *
-     * @param LanguageManager $languageManager
-     * @param TokenStorage    $tokenStorage
-     * @param EntityManager   $em
-     * @param ApiClientInfo   $apiClientInfo
+     * @param LanguageManager  $languageManager
+     * @param TokenStorage     $tokenStorage
+     * @param EntityManager    $em
+     * @param AttachmentHelper $attachmentHelper
+     * @param ApiClientInfo    $apiClientInfo
      */
     public function __construct(
         LanguageManager $languageManager,
         TokenStorage $tokenStorage,
         EntityManager $em,
+        AttachmentHelper $attachmentHelper,
         ApiClientInfo $apiClientInfo = null
     ) {
-        $this->languageManager = $languageManager;
-        $this->tokenStorage    = $tokenStorage;
-        $this->apiClientInfo   = $apiClientInfo;
-        $this->em              = $em;
+        $this->languageManager  = $languageManager;
+        $this->tokenStorage     = $tokenStorage;
+        $this->em               = $em;
+        $this->attachmentHelper = $attachmentHelper;
+        $this->apiClientInfo    = $apiClientInfo;
     }
 
     /**
@@ -305,20 +314,13 @@ class TicketMessageType extends AbstractType
             if (isset($attachment['is_inline']) && $attachment['is_inline'] === '1') {
                 $blob = $blobRepository->getByAuthCode($attachment['blob_auth']);
 
-                $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
-                $matches = RegexUtils::safePregMatch($regex, $data['message']);
-
-                $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
-                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data['message']);
-
-                $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
-                $matches = $matches ?: RegexUtils::safePregMatch($regex, $data['message']);
-
-                if (!$matches) {
+                if (!StringUtils::ensureAttachment($blob, $data['message'])) {
                     unset($data['attachments'][$index]);
                 }
             }
         }
+        // also check if there are other blobs, which have probably been inserted via copy-paste or somehow
+        $this->attachmentHelper->processInlineBlobs($data['message']);
 
         $event->setData($data);
     }

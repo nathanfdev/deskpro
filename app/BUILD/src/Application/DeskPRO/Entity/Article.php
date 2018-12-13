@@ -14,10 +14,12 @@ use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableInterface;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectTranslatableTrait;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -862,6 +864,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
 
         ObjectTranslatable::loadEntityMetadata($metadata);
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
+        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 
     /**

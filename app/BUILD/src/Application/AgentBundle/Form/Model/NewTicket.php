@@ -16,7 +16,6 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
-use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 
@@ -439,17 +438,14 @@ class NewTicket
             }
         }
 
-        foreach ($this->_blob_inline_ids as $blob_id) {
-            $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
-            if ($blob && $this->ensureAttachment($blob, $message)) {
-                $attach            = new TicketAttachment();
-                $attach['blob']    = $blob;
-                $attach['person']  = $this->_person_context;
-                $attach->is_inline = true;
-                $blob->setIsTemp(false);
-                $message->addAttachment($attach);
-                $ticket->addAttachment($attach);
-            }
+        $blobs = App::get('attachment_helper')->processInlineBlobs($message, $this->_blob_inline_ids);
+        foreach ($blobs as $blob) {
+            $attach            = new TicketAttachment();
+            $attach['blob']    = $blob;
+            $attach['person']  = $this->_person_context;
+            $attach->is_inline = true;
+            $message->addAttachment($attach);
+            $ticket->addAttachment($attach);
         }
 
         $message->convertEmbeddedImagesToInlineAttach();
@@ -561,19 +557,5 @@ class NewTicket
     public function getTicket()
     {
         return $this->_ticket;
-    }
-
-    private function ensureAttachment(Blob $blob, TicketMessage $message)
-    {
-        $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
-        $matches = RegexUtils::safePregMatch($regex, $message->getMessageHtml());
-
-        $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
-        $matches = $matches ?: RegexUtils::safePregMatch($regex, $message->getMessageHtml());
-
-        $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
-        $matches = $matches ?: RegexUtils::safePregMatch($regex, $message->getMessageHtml());
-
-        return $matches;
     }
 }

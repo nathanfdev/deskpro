@@ -38,7 +38,6 @@ use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
-use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -582,12 +581,7 @@ class FeedbackController extends AbstractController
                 $feedback->setContent($content);
 
                 $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
-                $inlineBlobs   = $blob   = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
-                foreach ($inlineBlobs as $blob) {
-                    if ($blob && StringUtils::ensureAttachment($blob, $content)) {
-                        $this->em->persist($blob->setIsTemp(false));
-                    }
-                }
+                $this->get('attachment_helper')->processInlineBlobs($content, $inlineBlobIds);
 
                 $data['content_html'] = $this->renderView(
                     'AgentBundle:Feedback:view-content-tab.html.twig',

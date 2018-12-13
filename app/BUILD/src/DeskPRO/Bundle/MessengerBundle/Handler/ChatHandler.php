@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\MessengerBundle\Handler;
 
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\Department;
@@ -11,6 +10,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
@@ -19,7 +19,6 @@ use DeskPRO\Bundle\MessengerBundle\Exception\MessengerApiException;
 use DeskPRO\Bundle\MessengerBundle\Mapper\ChatMapper;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatEvent;
 use DeskPRO\Bundle\MessengerBundle\Notification\Event\ChatMessageEvent;
-use DeskPRO\Component\Util\StringUtils;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -73,23 +72,31 @@ class ChatHandler
     private $brandStack;
 
     /**
+     * @var AttachmentHelper
+     */
+    private $attachmentHelper;
+
+    /**
      * ChatHandler constructor.
      *
      * @param ChatMapper               $mapper
      * @param EntityManager            $em
      * @param EventDispatcherInterface $eventDispatcher
      * @param BrandStack               $brandStack
+     * @param AttachmentHelper         $attachmentHelper
      */
     public function __construct(
         ChatMapper $mapper,
         EntityManager $em,
         EventDispatcherInterface $eventDispatcher,
-        BrandStack $brandStack
+        BrandStack $brandStack,
+        AttachmentHelper $attachmentHelper
     ) {
-        $this->chatMapper      = $mapper;
-        $this->em              = $em;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->brandStack      = $brandStack;
+        $this->chatMapper       = $mapper;
+        $this->em               = $em;
+        $this->eventDispatcher  = $eventDispatcher;
+        $this->brandStack       = $brandStack;
+        $this->attachmentHelper = $attachmentHelper;
     }
 
     /**
@@ -135,16 +142,9 @@ class ChatHandler
         $this->em->persist($message);
         $this->em->persist($chat);
 
-        if (isset($request['blobs']) && !empty($request['blobs'])) {
-            $blobIds = array_map('intval', $request['blobs']);
-            $blobs   = $this->em->getRepository(Blob::class)->findBy(['id' => $blobIds]);
-            $content = $message->getContent();
-            foreach ($blobs as $blob) {
-                if ($blob && StringUtils::ensureAttachment($blob, $content)) {
-                    $this->em->persist($blob->setIsTemp(false));
-                }
-            }
-        }
+        $blobIds = (isset($request['blobs'])) ? array_map('intval', $request['blobs'] ?: []) : [];
+
+        $this->attachmentHelper->processInlineBlobs($message->getContent(), $blobIds);
 
         $this->em->flush();
 
@@ -171,10 +171,8 @@ class ChatHandler
      */
     private function handleChatHistoryCommand(ChatConversation $chat, array $request)
     {
-        $chatMapper = $this->chatMapper;
-
         return array_values(array_map(
-            function ($message) use ($chatMapper) {
+            function ($message) {
                 return $this->chatMapper->mapMessageToArray($message);
             },
             array_filter($chat->getMessages()->toArray(), function ($message) {

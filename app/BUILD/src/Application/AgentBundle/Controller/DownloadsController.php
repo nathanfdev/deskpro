@@ -15,7 +15,6 @@ use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
-use DeskPRO\Component\Util\StringUtils;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -282,12 +281,7 @@ class DownloadsController extends AbstractController
                 }
 
                 $inlineBlobIds = $this->in->getCleanValueArray('blob_inline_ids', 'int');
-                $inlineBlobs   = $blob   = $this->em->getRepository(Blob::class)->findBy(['id' => $inlineBlobIds]);
-                foreach ($inlineBlobs as $blob) {
-                    if ($blob && StringUtils::ensureAttachment($blob, $download['content'])) {
-                        $this->em->persist($blob->setIsTemp(false));
-                    }
-                }
+                $this->get('attachment_helper')->processInlineBlobs($download['content'], $inlineBlobIds);
 
                 $data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', [
                     'download' => $download,

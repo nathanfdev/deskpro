@@ -3,8 +3,10 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\EntityRepository\Topic as TopicRepository;
+use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -606,5 +608,7 @@ class Topic extends ContentAbstract implements HighlightableModelInterface
         );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
+        $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');
+        $metadata->addEntityListener(Events::postUpdate, AttachmentHelper::class, 'verifyBlobs');
     }
 }

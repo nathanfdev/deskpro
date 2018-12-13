@@ -64,7 +64,6 @@ use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
-use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
@@ -1441,16 +1440,13 @@ class TicketController extends AbstractController
             }
         }
 
-        foreach ($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard') as $blobId) {
-            $blob = $this->em->getRepository(Blob::class)->find($blobId);
-            if ($blob && $this->ensureAttachment($blob, $message)) {
-                $attach            = new Entity\TicketAttachment();
-                $attach['blob']    = $blob;
-                $attach['person']  = $this->person;
-                $attach->is_inline = true;
-                $blob->setIsTemp(false);
-                $message->addAttachment($attach);
-            }
+        $blobs = $this->get('attachment_helper')->processInlineBlobs($message, $this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
+        foreach ($blobs as $blob) {
+            $attach            = new Entity\TicketAttachment();
+            $attach['blob']    = $blob;
+            $attach['person']  = $this->person;
+            $attach->is_inline = true;
+            $message->addAttachment($attach);
         }
 
         $message->convertEmbeddedImagesToInlineAttach();
@@ -1815,20 +1811,6 @@ class TicketController extends AbstractController
         );
 
         return $this->createJsonResponse($data);
-    }
-
-    protected function ensureAttachment(Blob $blob, TicketMessage $message)
-    {
-        $regex   = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
-        $matches = RegexUtils::safePregMatch($regex, $message->getMessageHtml());
-
-        $regex   = '#<a[^>]+'.preg_quote('dp-embed-blob-a-'.$blob->getAuthId()).'[^>]*>.*?</a>#';
-        $matches = $matches ?: RegexUtils::safePregMatch($regex, $message->getMessageHtml());
-
-        $regex   = '#<img[^>]+'.preg_quote('dp-embed-blob-img-'.$blob->getAuthId()).'[^>]>#';
-        $matches = $matches ?: RegexUtils::safePregMatch($regex, $message->getMessageHtml());
-
-        return $matches;
     }
 
     public function updateViewsAction($ticket_id)

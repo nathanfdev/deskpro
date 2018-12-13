@@ -258,4 +258,30 @@ class StringUtils
 
         return $matches;
     }
+
+    /**
+     * @param string           $text   html text which will be checked for blobs
+     * @param MatchConfig|null $config a URL template options
+     *
+     * @return array
+     */
+    public static function gatherInlineAttachments($text, MatchConfig $config = null)
+    {
+        $sets = [];
+        $sets = array_merge($sets, RegexUtils::getAllMatchSets('#dp-embed-blob-a-([a-zA-Z0-9]+)#', $text) ?: []);
+        $sets = array_merge($sets, RegexUtils::getAllMatchSets('#dp-embed-blob-img-([a-zA-Z0-9]+)#', $text) ?: []);
+        if ($config) {
+            $url       = preg_quote($config->getPattern());
+            $url       = str_replace($config->getBlobAuthIdStub(), '([a-zA-Z0-9-]+)', $url);
+            $url       = str_replace($config->getFilenameStub(), '[a-zA-Z0-9-_]+\.[a-z0-9A-Z]{1,4}', $url);
+            $urlRegexp = '#'.$url.'#';
+            $sets      = array_merge($sets, RegexUtils::getAllMatchSets($urlRegexp, $text) ?: []);
+        }
+
+        return array_filter(array_map(function ($set) {
+            return isset($set[1]) ? preg_quote($set[1]) : null;
+        }, $sets), function ($match) {
+            return $match == true;
+        });
+    }
 }
