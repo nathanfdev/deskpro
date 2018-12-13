@@ -73,7 +73,7 @@ class ImageMenuItem extends React.Component {
           onMouseOut={this.cancelToolTip}
         >
           {this.getImage()}
-          {this.props.label}
+          <span className="filename" title={this.props.label}>{this.props.label}</span>
           <i onClick={this.props.downloadFile} className="download icon" title="Download" />
           <i onClick={this.props.deleteFile} className="remove icon" title="Remove" />
         </MenuItem>
