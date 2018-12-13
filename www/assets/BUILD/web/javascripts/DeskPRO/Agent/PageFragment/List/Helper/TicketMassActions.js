@@ -398,9 +398,11 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         val = '';
       }
 
-      if ($(this).is(':radio, :checkbox')) {
-        if (!$(this).is(':checked')) {
+      if (!$(this).is(':checked')) {
+        if ($(this).is(':radio')) {
           return;
+        } else if ($(this).is(':checkbox')) {
+          val = '0';
         }
       }
 
