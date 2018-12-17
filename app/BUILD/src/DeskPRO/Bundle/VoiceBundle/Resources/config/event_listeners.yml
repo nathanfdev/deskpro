@@ -44,6 +44,8 @@ services:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\ChatAgentNotifyListener
     arguments:
       - "@dp.voice.chat_task_helper"
+      - "@serializer"
+      - "@dp.voice.task_router.storage"
       - "@event_dispatcher"
     tags:
       - { name: dp.voice.event_subscriber }

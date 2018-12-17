@@ -33,8 +33,6 @@ class UserChatClientListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            UserChatEvent::STARTED        => 'onStarted',
-            UserChatEvent::FIND_AGENT     => 'onStarted',
             UserChatEvent::USER_RETURNED  => 'onUserReturned',
             UserChatEvent::ENDED          => 'onEnded',
             UserChatEvent::END_BY         => 'onEndedBy',
@@ -47,14 +45,6 @@ class UserChatClientListener implements EventSubscriberInterface
             UserChatEvent::ACK_MESSAGES   => 'onAckMessages',
             UserChatEvent::USER_TYPING    => 'onUserTyping',
         ];
-    }
-
-    /**
-     * @param UserChatEvent $event
-     */
-    public function onStarted(UserChatEvent $event)
-    {
-        $this->send($event, ClientMessageEvent::CHANNEL_CHAT_NEW, $event->getChat());
     }
 
     /**

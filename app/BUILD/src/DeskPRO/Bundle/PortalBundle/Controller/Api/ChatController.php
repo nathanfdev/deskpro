@@ -414,7 +414,11 @@ class ChatController extends AbstractApiController
     public function findAnotherAgentAction(ChatConversation $conversation)
     {
         if (!$conversation->getAgent()) {
-            $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+            // create a task to find an agent
+            $task = $this->get('dp.voice.task_builder')->createChatTaskForQueue($conversation);
+            $conversation->setTaskId($task->getId());
+
+            $this->getManager()->flush();
         }
 
         return View::create();
