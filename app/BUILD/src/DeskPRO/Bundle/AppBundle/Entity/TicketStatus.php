@@ -302,4 +302,12 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     {
         return $this->sysId == 'deleted';
     }
+
+    /**
+     * @return bool
+     */
+    public function isSpam()
+    {
+        return $this->sysId == 'spam';
+    }
 }

@@ -227,8 +227,14 @@ class TicketEdit implements PersonContextInterface
                             $this->perm_errors[] = 'status';
                             break;
                         }
+                        if (isset($actions['hidden_status'])) {
+                            $action .= '.'.$actions['hidden_status'];
+                        }
+
+                        $status = App::getcontainer()->getTicketStatuses()->findStatusOrException($action);
                     }
-                    $this->ticket['status'] = $action;
+
+                    $this->ticket->setTicketStatus($status);
                     break;
 
                 case 'is_hold':

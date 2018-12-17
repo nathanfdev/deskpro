@@ -1,6 +1,6 @@
-<div class="ticket-hidden-bar {% if ticket.hidden_status == 'deleted' or ticket.hidden_status == 'spam' %}deleted{% endif %}">
+<div class="ticket-hidden-bar {% if ticket.ticketStatus.isDeleted() or ticket.ticketStatus.isSpam() %}deleted{% endif %}">
 	<article>
-	{% if ticket.hidden_status == 'deleted' %}
+	{% if ticket.ticketStatus.isDeleted() %}
 		{{ phrase('agent.tickets.deleted_by') }} {{ ticket_deleted.by_person.display_name }}
 		(<time
 			{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
@@ -21,7 +21,7 @@
 		{% if hard_delete_time %}
 			{{ phrase('agent.tickets.perm_delete_note', {'time': relative_time(hard_delete_time)}) }}
 		{% endif %}
-	{% elseif ticket.hidden_status == 'spam' %}
+	{% elseif ticket.ticketStatus.isSpam() %}
 		{{ phrase('agent.tickets.ticket_is_marked_as_spam') }}<br />
 
 		{% if ticket_perms.delete %}
@@ -35,7 +35,7 @@
 		{% endif %}
 	{% else %}
 		{{ phrase('agent.tickets.hidden_because') }}
-		<span>{{ phrase('agent.tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
+		<span>{{ phrase('agent.tickets.hidden_status_' ~ ticket.ticketStatus.sysId) }}</span><br />
 		{{ phrase('agent.tickets.hidden_explain') }}
 	{% endif %}
 	</article>
