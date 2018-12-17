@@ -54,7 +54,6 @@ class TwilioAvailableNumber extends AbstractTwilioNumber
      * @param string             $type
      * @param string             $price
      * @param string             $priceUnit
-     * @param string             $priceUnit
      */
     public function __construct($apiNumber, TwilioVoiceAccount $account, $added, $type, $price, $priceUnit)
     {
@@ -63,7 +62,7 @@ class TwilioAvailableNumber extends AbstractTwilioNumber
         $this->countryCode = $apiNumber->isoCountry;
         $this->region      = $apiNumber->region;
         $this->rateCenter  = $apiNumber->rateCenter;
-        $this->type        = $type;
+        $this->type        = strtolower($type);
         $this->price       = $price;
         $this->priceUnit   = $priceUnit;
     }

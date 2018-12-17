@@ -135,6 +135,10 @@ class TwilioAccountsController extends AbstractVoiceCrudController
 
         $numbers = [];
         foreach ($types as $type) {
+            if ($type === 'tollfree') {
+                $type = 'tollFree';
+            }
+
             $numbers = array_merge($numbers, $adapter->getAvailablePhoneNumbers($account, $countryCode, $type, $options));
         }
 
