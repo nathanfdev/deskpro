@@ -343,6 +343,10 @@ class DeskproBlobStorage implements Loggable
             $blob_entity_tmp->setDimensions($imageinfo);
         }
 
+        if ($blob_entity_tmp->getFilesize() === 0 && $this->hasAdapter('db')) {
+            $props['storage_loc_specific'] = 'db';
+        }
+
         if ($props && !isset($props['storage_loc_specific']) && isset($props['tag'])) {
             $props['storage_loc_specific'] = $this->getAdapterIdForTag($props['tag']);
         }
@@ -398,7 +402,7 @@ class DeskproBlobStorage implements Loggable
                 $blob_entity_tmp->save_path   = $path;
                 $blob_entity_tmp->storage_loc = $adapter_id;
 
-                if ($adapter->requiresTempCache()) {
+                if ($adapter->requiresTempCache() && $blob_entity_tmp->getFilesize()) {
                     $this->createCache($blob_entity_tmp, file_get_contents($source_path));
                 }
 
@@ -518,6 +522,10 @@ class DeskproBlobStorage implements Loggable
             @unlink($tmpfname);
         }
 
+        if ($blob_entity_tmp->getFilesize() === 0 && $this->hasAdapter('db')) {
+            $props['storage_loc_specific'] = 'db';
+        }
+
         if ($props && !isset($props['storage_loc_specific']) && isset($props['tag'])) {
             $props['storage_loc_specific'] = $this->getAdapterIdForTag($props['tag']);
         }
@@ -573,7 +581,7 @@ class DeskproBlobStorage implements Loggable
                 $blob_entity_tmp->setSavePath($path);
                 $blob_entity_tmp->setStorageLoc($adapter_id);
 
-                if ($adapter->requiresTempCache()) {
+                if ($adapter->requiresTempCache() && $blob_entity_tmp->getFilesize()) {
                     $this->createCache($blob_entity_tmp, $source_data);
                 }
 
@@ -1092,10 +1100,6 @@ class DeskproBlobStorage implements Loggable
         $this->em->persist($blob_entity);
         $this->em->flush();
 
-        if ($adapter->requiresTempCache()) {
-            $this->createCache($blob_entity, $file_data);
-        }
-
         $this->db->insert('blobs_auth_moved', $blobauth_moved);
 
         // Delete the old one
@@ -1127,6 +1131,11 @@ class DeskproBlobStorage implements Loggable
      */
     public function createCache(BlobEntity $blob, $fileData)
     {
+        // prevents runaway caching
+        if (count($this->cachedFiles) >= 250) {
+            return;
+        }
+
         $cache               = $this->getCachePath($blob);
         $this->cachedFiles[] = $cache;
         $result              = @file_put_contents($cache, $fileData);

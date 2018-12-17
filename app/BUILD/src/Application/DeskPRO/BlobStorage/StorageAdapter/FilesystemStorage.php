@@ -91,9 +91,19 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
      */
     public function writeBlobString(Blob $blob, $data)
     {
-        $fp  = $this->getBlobWriteStream($blob);
-        $ret = @fwrite($fp, $data);
+        $fp = $this->getBlobWriteStream($blob);
+
+        try {
+            $ret = $this->_writeChunkToStream($fp, $data);
+        } catch (\Exception $e) {
+            @fclose($fp);
+            throw $e;
+        }
+
+        @fflush($fp);
         @fclose($fp);
+
+        $this->_verifyWrite($this->resolvePath($blob->getPath()));
 
         $this->logger->logInfo('[FilesystemStorage] (writeBlobString) Wrote '.Numbers::filesizeDisplay($ret).' from string to '.$this->resolvePath($blob->getPath()));
 
@@ -144,6 +154,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     {
         $fp  = $this->getBlobWriteStream($blob);
         $ret = $this->_copyStream($fp_source, $fp);
+        @fflush($fp);
         @fclose($fp);
 
         $this->logger->logInfo('[FilesystemStorage] (writeBlobFromStream) Wrote '.Numbers::filesizeDisplay($ret).' from stream to '.$this->resolvePath($blob->getPath()));
@@ -152,6 +163,8 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         if (file_exists($path)) {
             $this->_chmod($path, $this->file_mode);
         }
+
+        $this->_verifyWrite($this->resolvePath($blob->getPath()));
 
         return $ret;
     }
@@ -291,7 +304,7 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
     {
         $size = 0;
         while (!feof($fp_from)) {
-            $size += @fwrite($fp_to, fread($fp_from, 8192));
+            $size += $this->_writeChunkToStream($fp_to, fread($fp_from, 8192));
         }
 
         return $size;
@@ -309,5 +322,51 @@ class FilesystemStorage extends AbstractStorageAdapter implements ReadStreamInte
         @umask(0000);
         @chmod($file, $mode);
         @umask($current_umask);
+    }
+
+    /**
+     * @param resource $fp
+     * @param string   $chunk
+     *
+     * @throws BlobStorageException
+     */
+    private function _writeChunkToStream($fp, $chunk)
+    {
+        $expectSize = strlen($chunk);
+        $wroteSize  = @fwrite($fp, $chunk);
+
+        if ($wroteSize !== $expectSize) {
+            $this->logger->logInfo(sprintf('[FilesystemStorage] (_writeChunkToStream) Attempted fwrite of %d bytes but only wrote %d bytes', $expectSize, $wroteSize));
+            throw new BlobStorageException('Failed to write total bytes to file', BlobStorageException::FAILED_RESOURCE_WRITE);
+        }
+
+        return $wroteSize;
+    }
+
+    private function _verifyWrite($path)
+    {
+        if (!$this->_fileSeemsOkay($path)) {
+            $this->logger->logInfo(sprintf('[FilesystemStorage] (_verifyWrite) File %d is not written', $path));
+            throw new BlobStorageException('Written file could not be verified', BlobStorageException::FAILED_RESOURCE_WRITE);
+        }
+    }
+
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
+    private function _fileSeemsOkay($path)
+    {
+        if (!file_exists($path)) {
+            return false;
+        }
+
+        $size = @filesize($path);
+        if (!$size || $size < 1) {
+            return false;
+        }
+
+        return true;
     }
 }
