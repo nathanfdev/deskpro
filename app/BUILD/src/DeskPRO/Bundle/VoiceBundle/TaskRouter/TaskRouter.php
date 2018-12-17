@@ -83,7 +83,7 @@ class TaskRouter
 
             foreach ($tasks as $task) {
                 // get task workflow
-                if (!isset($this->workflows[$task->getChannel()])) {
+                if (!isset($this->workflows[ $task->getChannel() ])) {
                     $task->setStatus(Task::STATUS_ERROR);
                     $task->setStatusReason('Unknown workflow');
 
@@ -97,7 +97,7 @@ class TaskRouter
                 }
 
                 /** @var WorkflowInterface $workflow */
-                $workflow = $this->container->get($this->workflows[$task->getChannel()]);
+                $workflow = $this->container->get($this->workflows[ $task->getChannel() ]);
 
                 // check if task is expired
                 if ($workflow->isTaskTimedOut($task)) {
@@ -162,6 +162,8 @@ class TaskRouter
                     }
                 }
             }
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
         } finally {
             $this->lock->release();
         }
@@ -225,6 +227,8 @@ class TaskRouter
             $this->storage->saveTask($task);
 
             return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
         } finally {
             $this->lock->release();
         }
@@ -275,6 +279,8 @@ class TaskRouter
             $this->storage->saveTask($task);
 
             return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
         } finally {
             $this->lock->release();
         }
@@ -320,6 +326,8 @@ class TaskRouter
             }
 
             return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
         } finally {
             $this->lock->release();
         }
@@ -348,6 +356,8 @@ class TaskRouter
             $this->storage->saveWorker($worker);
 
             return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
         } finally {
             $this->lock->release();
         }

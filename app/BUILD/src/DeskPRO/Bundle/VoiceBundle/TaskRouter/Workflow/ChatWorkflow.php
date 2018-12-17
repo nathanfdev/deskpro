@@ -162,7 +162,7 @@ class ChatWorkflow implements WorkflowInterface
                 $targets[] = $target;
             }
         } else {
-            $targets = $chatQueue->getTargets();
+            $targets = $chatQueue->getTargets()->toArray();
         }
 
         // sort targets by priority
