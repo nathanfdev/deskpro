@@ -227,6 +227,10 @@ export const pollingChat = createAction(
 
         // Chat closed by user can be reopened for 5 minutes, chat are closed immediately otherwise
         const canReopen = canReopenSelector(state);
+        if (!newChatInfo.date_ended && !canReopen) {
+          dispatch(enableChatReopen());
+        }
+
         if (newChatInfo.date_ended && canReopen) {
           if (newChatInfo.ended_by === 'user') {
             const ended = moment(newChatInfo.date_ended).format('X');
