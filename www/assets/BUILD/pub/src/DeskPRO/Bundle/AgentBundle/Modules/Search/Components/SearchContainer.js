@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import Isvg from 'react-inlinesvg';
 import TokenField from '@deskpro/token-field/dist/index';
@@ -47,11 +47,12 @@ class SearchContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value:      [],
-      tokenTypes: [],
-      focused:    false,
-      results:    {},
-      style:      {},
+      value:         [],
+      tokenTypes:    [],
+      menuStructure: [],
+      focused:       false,
+      results:       {},
+      style:         {},
     };
   }
   componentWillMount = () => {
@@ -69,8 +70,8 @@ class SearchContainer extends React.Component {
     const { intl } = this.props;
     const tokenTypes = [
       {
-        id:     'status',
-        label:  intl.formatMessage({ id: 'agent.general.status' }).toLowerCase().replace(/ /, '-'),
+        id:     'ticket_status',
+        label:  intl.formatMessage({ id: 'agent.general.status' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -81,17 +82,17 @@ class SearchContainer extends React.Component {
               { label: intl.formatMessage({ id: 'agent.tickets.status_archived' }), value: 'archived' },
             ],
           },
-          renderHeader: <h3><FormattedMessage id="agent.general.status" /></h3>,
-          showSearch:   false,
-          isMultiple:   true,
+          showSearch: false,
+          isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
-        description:    'Status of the ticket'
+        scopes:         ['Ticket'],
+        description:    'Status of the ticket',
+        showOnFocus:    true,
       },
       {
         id:     'ticket_department',
-        label:  intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.department' }),
         widget: 'DepartmentInput',
         props:  {
           dataSource: {
@@ -101,12 +102,12 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
         showOnFocus:    true,
       },
       {
         id:     'chat_department',
-        label:  intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.department' }),
         widget: 'DepartmentInput',
         props:  {
           dataSource: {
@@ -116,11 +117,11 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['chat'],
+        scopes:         ['Chat'],
       },
       {
         id:     'agent',
-        label:  intl.formatMessage({ id: 'agent.general.agent' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.agent' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -135,12 +136,13 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket', 'task'],
+        scopes:         ['Ticket', 'Task', 'Chat'],
         showOnFocus:    true,
+        category:       intl.formatMessage({ id: 'agent.general.chat' }).toLowerCase(),
       },
       {
         id:     'agent_team',
-        label:  intl.formatMessage({ id: 'agent.general.agent_team' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.agent_team' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -152,13 +154,14 @@ class SearchContainer extends React.Component {
                           }))
           },
           showSearch: true,
+          isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
       },
       {
         id:     'ticket_product',
-        label:  intl.formatMessage({ id: 'agent.general.product' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.product' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -168,12 +171,12 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_category',
-        label:  intl.formatMessage({ id: 'agent.general.category' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.category' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -183,93 +186,84 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'organization_label',
-        label:  intl.formatMessage({ id: 'agent.general.label' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.label' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: search => this.props.dispatch(searchActions.loadOrganizationLabels({ search })).then((options) => {
-              console.log(options);
-              const result = options.map(label => ({
-                label: (
-                  <span className="label" style={{ color: label.text_color, 'background-color': label.color }}>
-                    {label.label}
-                  </span>
+            getOptions: search => this.props.dispatch(searchActions.loadOrganizationLabels({ search })).then(options => options.map(label => ({
+              label: (
+                <span className="label" style={{ color: label.text_color, backgroundColor: label.color }}>
+                  {label.label}
+                </span>
                      ),
-                value: label.label,
-              }
-              ));
-              return result;
-            })
+              content: label.label,
+              value:   label.label,
+            }
+              )))
           },
           showSearch: true,
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['organization'],
+        scopes:         ['Organization'],
         category:       intl.formatMessage({ id: 'agent.general.organization' }).toLowerCase(),
       },
       {
         id:     'person_label',
-        label:  intl.formatMessage({ id: 'agent.general.label' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.label' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: search => this.props.dispatch(searchActions.loadPersonLabels({ search })).then((options) => {
-              console.log(options);
-              const result = options.map(label => ({
-                label: (
-                  <span className="label" style={{ color: label.text_color, 'background-color': label.color }}>
-                    {label.label}
-                  </span>
+            getOptions: search => this.props.dispatch(searchActions.loadPersonLabels({ search })).then(options => options.map(label => ({
+              label: (
+                <span className="label" style={{ color: label.text_color, backgroundColor: label.color }}>
+                  {label.label}
+                </span>
                      ),
-                value: label.label,
-              }
-              ));
-              return result;
-            })
+              content: label.label,
+              value:   label.label,
+            }
+              )))
           },
           showSearch: true,
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['person'],
+        scopes:         ['Person'],
         category:       intl.formatMessage({ id: 'agent.general.person' }).toLowerCase(),
       },
       {
         id:     'ticket_label',
-        label:  intl.formatMessage({ id: 'agent.general.label' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.label' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: search => this.props.dispatch(searchActions.loadTicketLabels({ search })).then((options) => {
-              console.log(options);
-              const result = options.map(label => ({
-                label: (
-                  <span className="label" style={{ color: label.text_color, 'background-color': label.color }}>
-                    {label.label}
-                  </span>
+            getOptions: search => this.props.dispatch(searchActions.loadTicketLabels({ search })).then(options => options.map(label => ({
+              label: (
+                <span className="label" style={{ color: label.text_color, backgroundColor: label.color }}>
+                  {label.label}
+                </span>
                      ),
-                value: label.label,
-              }
-              ));
-              return result;
-            })
+              content: label.label,
+              value:   label.label,
+            }
+              )))
           },
           showSearch: true,
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_priority',
-        label:  intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.priority' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -279,12 +273,12 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'urgency',
-        label:  intl.formatMessage({ id: 'agent.general.urgency' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.urgency' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -298,12 +292,12 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_workflow',
-        label:  intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.workflow' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -312,31 +306,31 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
-        id:             'subject',
-        label:          intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase().replace(/ /, '-'),
+        id:             'ticket-subject',
+        label:          intl.formatMessage({ id: 'agent.general.subject' }),
         widget:         'TextInput',
         props:          {},
         allowDuplicate: false,
-        scopes:         ['ticket', 'chat'],
+        scopes:         ['Ticket'],
       },
       {
         id:             'date_created',
-        label:          intl.formatMessage({ id: 'agent.general.date_created' }).toLowerCase().replace(/ /, '-'),
+        label:          intl.formatMessage({ id: 'agent.general.date_created' }),
         widget:         'DateTimeInput',
         props:          { locale: window.DP_LOCALE },
         allowDuplicate: false,
       },
       {
         id:             'date_resolved',
-        label:          intl.formatMessage({ id: 'agent.general.date_resolved' }).toLowerCase().replace(/ /, '-'),
+        label:          intl.formatMessage({ id: 'agent.general.date_resolved' }),
         widget:         'DateTimeInput',
         props:          { locale: window.DP_LOCALE },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
       },
       {
         id:             'last_agent_reply',
@@ -345,7 +339,7 @@ class SearchContainer extends React.Component {
         props:          { locale: window.DP_LOCALE },
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
         allowDuplicate: false,
-        scopes:         ['ticket', 'chat'],
+        scopes:         ['Ticket'],
       },
       {
         id:             'last_user_reply',
@@ -354,7 +348,7 @@ class SearchContainer extends React.Component {
         props:          { locale: window.DP_LOCALE },
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
         allowDuplicate: false,
-        scopes:         ['ticket', 'chat'],
+        scopes:         ['Ticket'],
       },
       {
         id:             'user_waiting',
@@ -364,11 +358,11 @@ class SearchContainer extends React.Component {
         description:    'Time waited by user',
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
       },
       {
         id:     'person_name',
-        label:  intl.formatMessage({ id: 'agent.general.name' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.name' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -377,33 +371,37 @@ class SearchContainer extends React.Component {
           showSearch: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket', 'chat', 'person'],
+        scopes:         ['Ticket', 'Chat', 'Person'],
       },
       {
         id:             'email_address',
-        label:          intl.formatMessage({ id: 'agent.general.email_address' }).toLowerCase().replace(/ /, '-'),
+        label:          intl.formatMessage({ id: 'agent.general.email_address' }),
         widget:         'TextInput',
         props:          {},
         allowDuplicate: false,
-        scopes:         ['agent', 'ticket', 'chat'],
+        scopes:         ['Agent', 'Ticket', 'Chat', 'Person'],
       },
       {
         id:     'email_account',
-        label:  intl.formatMessage({ id: 'agent.general.email_account' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.email_account' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: search => this.props.dispatch(searchActions.loadEmailAccounts({ search }))
+            getOptions: search => this.props.dispatch(searchActions.loadEmailAccounts({ search })).then(options => options.map(account => ({
+              label: account.address,
+              value: account.id,
+            }
+              )))
           },
           showSearch: true,
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
       },
       {
         id:     'language',
-        label:  intl.formatMessage({ id: 'agent.general.language' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.language' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -415,18 +413,19 @@ class SearchContainer extends React.Component {
                                 <img src={e.get('flag_image')} alt={e.get('title')} />&nbsp;{e.get('title')}
                               </span>
                                    ),
-                            value: e.get('id'),
+                            content: e.get('title'),
+                            value:   e.get('id'),
                           }))
           },
           showSearch: true,
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket', 'person'],
+        scopes:         ['Ticket'],
       },
       {
         id:     'followers',
-        label:  intl.formatMessage({ id: 'agent.general.followers' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.followers' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -442,11 +441,11 @@ class SearchContainer extends React.Component {
         },
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
       },
       {
-        id:     'organization',
-        label:  intl.formatMessage({ id: 'agent.general.organization' }).toLowerCase().replace(/ /, '-'),
+        id:     'organization_name',
+        label:  intl.formatMessage({ id: 'agent.general.organization' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -456,11 +455,11 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket', 'organization', 'person'],
+        scopes:         ['Ticket', 'Organization', 'Person'],
       },
       {
         id:     'sla',
-        label:  intl.formatMessage({ id: 'agent.general.sla' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.sla' }),
         widget: 'BooleanInput',
         props:  {
           translations: {
@@ -470,11 +469,11 @@ class SearchContainer extends React.Component {
         },
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
       },
       {
         id:     'sla_status',
-        label:  intl.formatMessage({ id: 'agent.general.sla_status' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.sla_status' }),
         widget: 'SlaStatusInput',
         props:  {
           dataSource: {
@@ -494,11 +493,11 @@ class SearchContainer extends React.Component {
         },
         category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
         allowDuplicate: false,
-        scopes:         ['ticket'],
+        scopes:         ['Ticket'],
       },
       {
         id:     'usergroups',
-        label:  intl.formatMessage({ id: 'agent.general.usergroup' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.usergroup' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -507,11 +506,11 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['person', 'organization'],
+        scopes:         ['Person', 'Organization'],
       },
       {
         id:     'brand',
-        label:  intl.formatMessage({ id: 'agent.general.brand' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.brand' }),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -526,59 +525,215 @@ class SearchContainer extends React.Component {
           isMultiple: true,
         },
         allowDuplicate: false,
-        scopes:         ['ticket', 'content', 'organization'],
+        scopes:         ['Ticket', 'Content', 'Organization'],
       },
       {
         id:             'id',
-        label:          intl.formatMessage({ id: 'agent.general.id' }).toLowerCase().replace(/ /, '-'),
+        label:          intl.formatMessage({ id: 'agent.general.id' }),
         widget:         'TextInput',
         props:          {},
         allowDuplicate: false,
       },
       {
         id:             'email_domain',
-        label:          intl.formatMessage({ id: 'agent.general.email_domain' }).toLowerCase().replace(/ /, '-'),
+        label:          intl.formatMessage({ id: 'agent.general.email_domain' }),
         widget:         'TextInput',
         props:          {},
         allowDuplicate: false,
-        scopes:         ['person', 'organization'],
+        scopes:         ['Person', 'Organization'],
       },
+      {
+        id:     'content_type',
+        label:  intl.formatMessage({ id: 'agent.general.content_type' }),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: [
+              {
+                value: 'article',
+                label: intl.formatMessage({ id: 'agent.general.article' })
+              },
+              {
+                value: 'news',
+                label: intl.formatMessage({ id: 'agent.general.news' })
+              },
+              {
+                value: 'download',
+                label: intl.formatMessage({ id: 'agent.general.download' })
+              },
+              {
+                value: 'feedback',
+                label: intl.formatMessage({ id: 'agent.general.feedback' })
+              },
+              {
+                value: 'guide',
+                label: intl.formatMessage({ id: 'agent.general.guide' })
+              },
+            ]
+          },
+          isMultiple: true,
+        },
+        scopes: ['Content'],
+      }
     ];
     const ticketCustomFields = this.props.ticketCustomFields.toArray().map(field => ({
       id:             `ticket_custom_field_${field.get('id')}`,
-      label:          field.get('title').toLowerCase().replace(/ /, '-'),
+      label:          field.get('title'),
       widget:         this.tokenFromField(field),
       props:          this.tokenPropsFromField(field),
       description:    field.get('description'),
       allowDuplicate: false,
       category:       intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
-      scopes:         ['ticket'],
+      scopes:         ['Ticket'],
     }));
     const personCustomFields = this.props.personCustomFields.toArray().map(field => ({
       id:             `person_custom_field_${field.get('id')}`,
-      label:          field.get('title').toLowerCase().replace(/ /, '-'),
+      label:          field.get('title'),
       widget:         this.tokenFromField(field),
       props:          this.tokenPropsFromField(field),
       description:    field.get('description'),
       allowDuplicate: false,
       category:       intl.formatMessage({ id: 'agent.general.person' }).toLowerCase(),
-      scopes:         ['person'],
+      scopes:         ['Person'],
     }));
     const organizationCustomFields = this.props.organizationCustomFields.toArray().map(field => ({
       id:             `organization_custom_field_${field.get('id')}`,
-      label:          field.get('title').toLowerCase().replace(/ /, '-'),
+      label:          field.get('title'),
       widget:         this.tokenFromField(field),
       props:          this.tokenPropsFromField(field),
       description:    field.get('description'),
       allowDuplicate: false,
       category:       intl.formatMessage({ id: 'agent.general.organization' }).toLowerCase(),
-      scopes:         ['organization'],
+      scopes:         ['Organization'],
     }));
-    console.log(ticketCustomFields);
-    console.log(personCustomFields);
-    console.log(organizationCustomFields);
+    const ticketMenu = [
+      {
+        label: intl.formatMessage({ id: 'agent.general.status' }),
+        token: 'ticket_status'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.agent' }),
+        token: 'agent'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.brand' }),
+        token: 'brand'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.department' }),
+        token: 'ticket_department'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.product' }),
+        token: 'ticket_product'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.subject' }),
+        token: 'ticket-subject'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.person' }),
+        token: 'person_name'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.organization' }),
+        token: 'organization_name'
+      },
+    ];
+
+    ticketCustomFields.forEach((customField) => {
+      ticketMenu.push({
+        label: customField.label,
+        token: customField.id
+      });
+    });
+
+    const personMenu = [
+      {
+        label: intl.formatMessage({ id: 'agent.general.name' }),
+        token: 'person_name'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.email_address' }),
+        token: 'email_address'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.email_domain' }),
+        token: 'email_domain'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.organization' }),
+        token: 'organization_name'
+      },
+    ];
+
+    personCustomFields.forEach((customField) => {
+      personMenu.push({
+        label: customField.label,
+        token: customField.id
+      });
+    });
+
+    const organizationMenu = [
+      {
+        label: intl.formatMessage({ id: 'agent.general.name' }),
+        token: 'organization_name'
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.email_domain' }),
+        token: 'email_domain'
+      },
+    ];
+
+    organizationCustomFields.forEach((customField) => {
+      organizationMenu.push({
+        label: customField.label,
+        token: customField.id
+      });
+    });
+
+    const menuStructure = [
+      {
+        label: intl.formatMessage({ id: 'agent.general.id' }),
+        token: 'id',
+      },
+      {
+        label: intl.formatMessage({ id: 'agent.general.label' }),
+        token: 'label',
+      },
+      {
+        label:    intl.formatMessage({ id: 'agent.general.ticket' }),
+        scope:    'Ticket',
+        children: ticketMenu
+      },
+      {
+        label:    intl.formatMessage({ id: 'agent.general.person' }),
+        scope:    'Person',
+        children: personMenu
+      },
+      {
+        label:    intl.formatMessage({ id: 'agent.general.organization' }),
+        scope:    'Organization',
+        children: organizationMenu
+      },
+      {
+        label:    intl.formatMessage({ id: 'agent.general.content' }),
+        scope:    'Content',
+        children: [
+          {
+            label: intl.formatMessage({ id: 'agent.general.brand' }),
+            token: 'brand'
+          },
+          {
+            label: intl.formatMessage({ id: 'agent.general.type' }),
+            token: 'content_type'
+          }
+        ]
+      }
+    ];
     this.setState({
-      tokenTypes: tokenTypes.concat(ticketCustomFields).concat(personCustomFields).concat(organizationCustomFields)
+      tokenTypes: tokenTypes.concat(ticketCustomFields).concat(personCustomFields).concat(organizationCustomFields),
+      menuStructure
     });
   };
 
@@ -672,7 +827,7 @@ class SearchContainer extends React.Component {
   }
 
   render() {
-    const { tokenTypes } = this.state;
+    const { tokenTypes, menuStructure } = this.state;
     return (
       <div id="search_menu">
         <div className="top">
@@ -683,6 +838,7 @@ class SearchContainer extends React.Component {
           <TokenField
             ref={(c) => { this.tokenField = c; }}
             tokenTypes={tokenTypes}
+            menuStructure={menuStructure}
             onChange={this.handleChange}
             placeholder=""
             zIndex={1800}

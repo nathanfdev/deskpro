@@ -152,7 +152,7 @@ SQL;
     private function createMessageUserJoined()
     {
         $content = [
-            'phrase_id' => 'message_user - joined',
+            'phrase_id' => 'message_user-joined',
             'name'      => $this->agent->getDisplayName(),
         ];
         $message = new ChatMessage();
@@ -227,7 +227,7 @@ SQL;
     private function createMessageEnded()
     {
         $content = [
-            'phrase_id' => 'message_ended - by',
+            'phrase_id' => 'message_ended-by',
             'name'      => $this->agent->getDisplayName(),
         ];
         $message = new ChatMessage();

@@ -1393,8 +1393,23 @@ i.icon.fitted {
       width: 96%;
     }
   }
+  .dp-selectable-list {
+    margin-bottom: 10px;
+    .dp-input {
+      input {
+        width: 100%;
+      }
+      .dp-icon {
+        top: calc(50% - 8px);
+      }
+    }
+  }
   .dp-tabs__tab {
     white-space: nowrap;
+  }
+  .dp-scrollbar > div:first-child {
+    overflow: auto !important;
+    overflow-y: scroll !important;
   }
 }
 

@@ -3002,6 +3002,8 @@ agent.general.contact_address: 'Contact Address'
 agent.general.contact_instant_messaging: 'Contact Instant Messaging'
 agent.general.contact_phone: 'Contact Phone'
 agent.general.contains: contains
+agent.general.content: Content
+agent.general.content_type: 'Content type'
 agent.general.content_matches_summary: 'Content matches: {{pattern}}'
 agent.general.continue: Continue
 agent.general.copy_permalink: 'Copy permalink'
