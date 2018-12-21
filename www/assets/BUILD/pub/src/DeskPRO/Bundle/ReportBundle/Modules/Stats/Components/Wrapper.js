@@ -14,12 +14,13 @@ import {
   deleteReport,
   downloadReport
 } from '../../Application/Actions/reportActions';
-import { allReportsSelector } from '../Selectors/reports';
+import { allReportsSelector, allDashboardsSelector } from '../Selectors/reports';
 import { allReportLabelsSelector } from '../../Application/Selectors/reports';
 import { regex, activateLabel, transformLabels, transformReportData, countActiveLabels } from './helper';
 
 @connect(state => ({
   reports:       allReportsSelector(state),
+  dashboards:    allDashboardsSelector(state),
   reportsLoaded: state.Application.reports.get('reportsLoaded'),
   groupParams:   state.Application.reports.get('groupParams'),
   labels:        allReportLabelsSelector(state)
@@ -33,6 +34,7 @@ class Wrapper extends React.Component {
 
   static propTypes = {
     reports:       PropTypes.object.isRequired,
+    dashboards:    PropTypes.object.isRequired,
     reportsLoaded: PropTypes.bool,
     groupParams:   PropTypes.object.isRequired,
     labels:        PropTypes.object,
@@ -168,7 +170,9 @@ class Wrapper extends React.Component {
 
     const promise = this.props.dispatch(runReport(report.get('id'), transformReportData(report)));
     promise.then((response) => {
-      const reportData = report.set('rendered_result', Immutable.fromJS(response.data.data.rendered_result));
+      const reportData = report
+        .set('rendered_result', Immutable.fromJS(response.data.data.rendered_result))
+        .set('reports', Immutable.List(response.data.data.reports) || []);
 
       this.setState({
         reportLoading: false,
@@ -300,7 +304,7 @@ class Wrapper extends React.Component {
   }
 
   render() {
-    const { reportsLoaded, groupParams } = this.props;
+    const { reportsLoaded, groupParams, dashboards } = this.props;
     const { reports, labels, activeLabels, searchText, currentReport, currentErrors, reportLoading, mode } = this.state;
 
     const filteredCustomReports = reports.filter(report => report.get('is_custom')).filter(this.filter);
@@ -354,6 +358,7 @@ class Wrapper extends React.Component {
               groupParams={groupParams}
               onChangeReportDisplayTypes={this.onChangeReportDisplayTypes}
               report={currentReport}
+              dashboards={dashboards}
               reportErrors={currentErrors}
               reportLoading={reportLoading}
               onEditReportClick={this.onEditReportClick}
