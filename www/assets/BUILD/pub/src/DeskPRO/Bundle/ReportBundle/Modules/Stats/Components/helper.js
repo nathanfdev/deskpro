@@ -30,7 +30,7 @@ export function transformReportData(report) {
     query:          report.get('query', ''),
     title:          report.get('title'),
     labels:         report.get('labels', Immutable.List()).toArray(),
-    desc:           report.get('description', ''),
+    description:    report.get('description', ''),
     display_types:  report.get('display_types', Immutable.List()).toJS(),
     select:         queryParts.get('select', ''),
     from:           queryParts.get('from', ''),
