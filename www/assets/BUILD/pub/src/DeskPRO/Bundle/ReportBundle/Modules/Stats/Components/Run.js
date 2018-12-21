@@ -5,6 +5,7 @@ import { Button, Loader } from '@deskpro/react-components';
 import Select from 'react-select';
 import Immutable from 'immutable';
 import Handlebars from 'handlebars';
+import Modal from 'DeskPRO/Component/Semantic/Modal';
 import TitleWithVars from './TitleWithVars';
 import { displayTypes } from './helper';
 import DataTable from './DataTables';
@@ -127,7 +128,8 @@ class Run extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayTypes: props.report.get('display_types', Immutable.List()).toJS()
+      displayTypes:       props.report.get('display_types', Immutable.List()).toJS(),
+      deleteConfirmation: false
     };
   }
 
@@ -161,7 +163,20 @@ class Run extends React.Component {
   onDeleteClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
+    this.setState({ deleteConfirmation: true });
+  };
+
+  onConfirmDeleteClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     this.props.onDeleteClick(this.props.report);
+    this.setState({ deleteConfirmation: false });
+  };
+
+  onRejectDeleteClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({ deleteConfirmation: false });
   };
 
   clickSlice = (event) => {
@@ -216,6 +231,7 @@ class Run extends React.Component {
 
   renderRun() {
     const { report, reportErrors, onChangeReportVar, groupParams } = this.props;
+    const { deleteConfirmation } = this.state;
 
     const title = (<TitleWithVars
       onChangeReportVar={onChangeReportVar}
@@ -248,6 +264,22 @@ class Run extends React.Component {
             {report.get('is_custom') && <Button size="medium" onClick={this.onDeleteClick}>Delete</Button>}
           </div>
         </div>
+        <Modal
+          isOpen={deleteConfirmation}
+          title="Confirm stat delete"
+          contentStyles={{ top: '25%', bottom: 'auto', height: '150px', width: '30%' }}
+          className="widget-modal-stat-delete-confirmation"
+        >
+          <h2>Do you really want to delete this stat? This cannot be undone.</h2>
+          <div>
+            <span style={{ float: 'left' }}>
+              <Button size="large" type="secondary" onClick={this.onRejectDeleteClick}>Decline</Button>
+            </span>
+            <span style={{ float: 'right' }}>
+              <Button size="large" type="cta" onClick={this.onConfirmDeleteClick}>Confirm</Button>
+            </span>
+          </div>
+        </Modal>
         <div className="display-as-option">
           <label htmlFor="displayTypes">Display</label>
           <Select
