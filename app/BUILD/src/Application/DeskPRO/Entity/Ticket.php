@@ -3091,6 +3091,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setStatus($status)
     {
+        // fallback to support these 2 statuses for cases which has not been updated
+        if (in_array($status, ['hidden.deleted', 'hidden.spam'])) {
+            return $this->setTicketStatus(App::getContainer()->getTicketStatuses()->findStatusOrException($status));
+        }
+
         $this['date_status'] = new \DateTime();
 
         $old_status      = $this->status;
@@ -3318,12 +3323,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setHiddenStatus($hidden_status)
     {
+        $status = null;
         if (!$hidden_status) {
             if ($this->status == 'hidden') {
-                $this->setStatus('awaiting_agent');
+                $status = 'awaiting_agent';
             }
         } else {
-            $this->setStatus('hidden.'.$hidden_status);
+            $status = 'hidden.'.$hidden_status;
+        }
+
+        if ($status) {
+            $this->setTicketStatus(App::getContainer()->getTicketStatuses()->findStatusOrException($status));
         }
 
         return $this;

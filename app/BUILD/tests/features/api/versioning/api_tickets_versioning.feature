@@ -3,15 +3,19 @@ Feature: I check tickets versioning
 
   Background:
     Given I'm authenticated as agent
+    And only the following TicketStatus records exist:
+      | #   | StatusType     | SysId        | Title    |
+      | ts1 | hidden         | spam         | Spam     |
+      | ts2 | hidden         | deleted      | Deleted  |
     And only the following Ticket records exist:
-      | #  | Subject  | Status         |
-      | t1 | Ticket 1 | awaiting_agent |
-      | t2 | Ticket 2 | awaiting_user  |
-      | t3 | Ticket 3 | archived       |
-      | t4 | Ticket 4 | resolved       |
-      | t5 | Ticket 5 | hidden         |
-      | t6 | Ticket 6 | hidden.spam    |
-      | t7 | Ticket 7 | hidden.deleted |
+      | #  | Subject  | Status         | TicketStatus |
+      | t1 | Ticket 1 | awaiting_agent |              |
+      | t2 | Ticket 2 | awaiting_user  |              |
+      | t3 | Ticket 3 | archived       |              |
+      | t4 | Ticket 4 | resolved       |              |
+      | t5 | Ticket 5 | hidden         |              |
+      | t6 | Ticket 6 | hidden         | {ts1}        |
+      | t7 | Ticket 7 | hidden         | {ts2}        |
 
   Scenario: I check 20160101 version
     When I send a GET request to "/api/v2/20160101/tickets?order_by=id&order_dir=asc&status[]=awaiting_agent&status[]=awaiting_user&status[]=archived&status[]=resolved&status[]=hidden"

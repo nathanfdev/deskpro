@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketExcerptDataService;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsApiType;
@@ -231,6 +232,14 @@ class TicketHandler extends AbstractEntityHandler
         }
 
         $model = new TicketModel($entity);
+
+        $version = $context->attributes->get('version');
+        if (!$version->isEmpty() && $version->get() < 20170400) {
+            if ($model->getStatus() === TicketStatus::STATUS_TYPE_HIDDEN && $model->getHiddenStatus()) {
+                $model->setHiddenStatus($model->getStatus().'.'.$model->getHiddenStatus());
+            }
+        }
+
         $model->setStar(new CallbackDeferredProperty([$this, 'getStar'], [$entity, $context]));
         $model->setLabels(new CallbackDeferredProperty([$this, 'getLabels'], [$entity]));
         $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));

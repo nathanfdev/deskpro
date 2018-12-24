@@ -667,7 +667,7 @@ class Ticket
         $this->ticketHash           = $ticket->getTicketHash();
         $this->status               = $ticket->getStatusCode();
         $this->oldStatus            = $ticket->getStatus();
-        $this->hiddenStatus         = $ticket->getHiddenStatus();
+        $this->hiddenStatus         = $ticket->getTicketStatus()->getSysId();
         $this->ticketStatus         = $ticket->getStatusCode();
         $this->isHold               = $ticket->isHold();
         $this->urgency              = $ticket->getUrgency();
@@ -698,6 +698,34 @@ class Ticket
         $this->waitingTimes         = $ticket->getWaitingTimes();
         $this->children             = $ticket->getChildrenTickets();
         $this->siblings             = $ticket->getSiblingsTickets();
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHiddenStatus()
+    {
+        return $this->hiddenStatus;
+    }
+
+    /**
+     * @param string $hiddenStatus
+     *
+     * @return $this
+     */
+    public function setHiddenStatus($hiddenStatus)
+    {
+        $this->hiddenStatus = $hiddenStatus;
+
+        return $this;
     }
 
     /**

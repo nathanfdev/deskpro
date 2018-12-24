@@ -57,7 +57,13 @@ class TicketStatusDataService
         }
 
         if ($statusId) {
-            $statusEntity = $this->repository->find($statusId);
+            if (is_numeric($statusId)) {
+                $statusEntity = $this->repository->find($statusId);
+            } else {
+                // fallback to support `hidden.deleted` and `hidden.spam` statuses
+                // for cases that has not been updated
+                $statusEntity = $this->repository->findOneBySysId($statusId);
+            }
             if (!$statusEntity || $statusEntity->getStatusType() !== $statusType) {
                 if ($withFallback) {
                     return $this->findStatusOrException($statusType, $withSubstatuses);

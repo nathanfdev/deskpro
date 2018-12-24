@@ -558,6 +558,17 @@ class TicketLogGenerator
                 ];
                 break;
 
+            case 'ticket_status':
+                return [
+                    'action_type' => 'changed_ticket_status',
+                    'id_before'   => $old ? $old->getId() : null,
+                    'id_after'    => $new ? $new->getId() : null,
+
+                    'old_status_code' => $old ? $old->getStatusCode() : null,
+                    'new_status_code' => $new ? $new->getStatusCode() : null,
+                ];
+                break;
+
             case 'subject':
                 return [
                     'action_type' => 'changed_subject',
