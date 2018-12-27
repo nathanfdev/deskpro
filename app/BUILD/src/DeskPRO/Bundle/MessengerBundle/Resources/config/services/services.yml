@@ -15,6 +15,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@event_dispatcher"
       - "@brand_stack"
+      - "@messenger.service.settings_resolver"
       - "@attachment_helper"
       - "@tickets.statuses"
 
