@@ -19,8 +19,23 @@
       document.body.className += ' with-touch-device';
     } else {
       document.body.className += ' without-touch-device';
+
+
     }
   })();
 </script>
 
 {% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_widget_enabled() %}{{ portal_widget_loader() }}{% endif %}
+{% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_widget_enabled() %}
+    <script type="text/javascript">
+      window.parent.DESKPRO_MESSENGER_ASSET_URL = "{{ asset('', 'messenger_assets') }}";
+      window.parent.DESKPRO_MESSENGER_OPTIONS = {
+        "helpdeskUrl": "http://localhost/api/messenger"
+      }
+    </script>
+    <script id="dp-messenger-loader" src="{{ asset('loader.js', 'messenger_assets') }}" data-helpdesk-url="http://localhost"></script>
+{% endif %}
+
+
+
+
