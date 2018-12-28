@@ -40,34 +40,7 @@ function refreshWidgetLoader(loaderFilename) {
   console.log(`... done writing ${loaderFilename}`);
 }
 
-function refreshMessengerLoader()
-{  const loaderFilePath    = `/messenger-loader.js`;
-  const minLoaderFilePath = `/loader.min.js`;
-  const widgetBundlePath  = path.join(pubDir, 'node_modules/@deskpro/messenger-loader/dist');
-  const buildDir          = path.join(pubDir, 'build/messenger');
 
-  if (!fs.existsSync(buildDir)) {
-    fs.mkdirSync(buildDir);
-  }
-  console.log(`Writing messenger_loader`);
-
-  const loaderCode = fs.readFileSync(widgetBundlePath + loaderFilePath).toString();
-
-  fs.writeFileSync(buildDir + '/loader.js', loaderCode);
-
-  try {
-    const loaderCodemin = uglify.minify(loaderCode, { fromString: true }).code;
-    fs.writeFileSync(buildDir + minLoaderFilePath, loaderCodemin);
-  } catch (e) {
-    console.log('Trying to minify:\n');
-    console.log(loaderCode);
-    console.log('\n\n');
-    console.error(e);
-    return;
-  }
-
-  console.log(`... done writing messenger_loader`);
-}
 
 const widgets = [
   'widget_loader',
@@ -78,4 +51,3 @@ const widgets = [
 for (widget of widgets) {
   refreshWidgetLoader(widget);
 }
-refreshMessengerLoader();
