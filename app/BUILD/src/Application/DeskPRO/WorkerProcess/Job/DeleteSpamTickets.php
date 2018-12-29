@@ -33,12 +33,13 @@ class DeleteSpamTickets extends AbstractJob
 
         $ticket_count = 0;
 
-        $all_tickets = App::getDb()->fetchAll("
+        $spamStatusId = (int) App::getContainer()->getTicketStatuses()->getSpamStatus()->getId();
+        $all_tickets  = App::getDb()->fetchAll('
 			SELECT id, person_id
 			FROM tickets
-			WHERE tickets.hidden_status = 'spam' AND tickets.date_status < ?
+			WHERE tickets.ticket_status_id = ? AND tickets.date_status < ?
 			LIMIT 1000
-		", [$date_cut->format('Y-m-d H:i:s')]);
+		', [$spamStatusId, $date_cut->format('Y-m-d H:i:s')]);
 
         $this->logger->log(sprintf('[DeleteSpamTickets] %d tickets to delete', count($all_tickets)), 'DEBUG');
         $date_str = date('Y-m-d H:i:s');

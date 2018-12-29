@@ -27,13 +27,16 @@ class CleanupQuarterHourly extends AbstractJob
         // Update table counts
         //------------------------------
 
+        $deletedStatusId = (int) App::getContainer()->getTicketStatuses()->getDeletedStatus()->getId();
+        $spamStatusId    = (int) App::getContainer()->getTicketStatuses()->getSpamStatus()->getId();
+
         $counts                               = [];
         $counts['tickets']                    = App::getDbRead('search.filter.tickets')->fetchColumn('SELECT COUNT(*) FROM `tickets`');
         $counts['tickets.resolved']           = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
         $counts['tickets.awaiting_user']      = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_user'");
-        $counts['tickets.archive_validating'] = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
-        $counts['tickets.archive_spam']       = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
-        $counts['tickets.archive_deleted']    = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
+        $counts['tickets.archive_validating'] = 0; //App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
+        $counts['tickets.archive_spam']       = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `ticket_status_id` = $spamStatusId");
+        $counts['tickets.archive_deleted']    = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `ticket_status_id` = $deletedStatusId");
         $counts['tickets.archive_archived']   = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'archived'");
         $counts['people']                     = App::getDbRead('search.filter.tickets')->fetchColumn('SELECT COUNT(*) FROM `people`');
 

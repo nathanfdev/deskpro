@@ -821,10 +821,11 @@ class Ticket extends AbstractEntityRepository
     public function getArchiveCounts()
     {
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-            SELECT IF(status = 'hidden', CONCAT('hidden', '.', hidden_status), status) AS status_code, COUNT(*)
-            FROM tickets
+            SELECT IF(t.status = 'hidden', CONCAT('hidden', '.', ts.sys_id), t.status) AS status_code, COUNT(*)
+            FROM tickets t
+            LEFT JOIN ticket_statuses ts on t.ticket_status_id = ts.id
             WHERE
-                status IN ('awaiting_user', 'archived', 'resolved', 'hidden')
+                t.status IN ('awaiting_user', 'archived', 'resolved', 'hidden')
             GROUP BY status_code
         ");
     }

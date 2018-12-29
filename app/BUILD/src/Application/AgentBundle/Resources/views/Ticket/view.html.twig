@@ -17,7 +17,7 @@
     {% elseif ticketStatus.isSpam() %}
       {{ 'hidden_spam' }}
     {% else %}
-      {{ ticketStatus.statusType }}
+      {{ ticketStatus.statusType }} {% if ticketStatus.statusType == 'pending' %} {{ 'awaiting_agent' }} {% endif %}
     {% endif%}
 {% endmacro %}
 {% import _self as self_macro %}

@@ -37,9 +37,12 @@
             </span>
             <% } %>
 			<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
-			<div class="status-pill status urgency-<%= ticket_display.urgency %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
+			<div class="status-pill status urgency-<%= ticket_display.urgency %> <% if (ticket_display.status == 'pending') { %>awaiting_agent<% } %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
 				<% if (ticket_display.status == 'awaiting_agent') { %>
 					<label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
+				<% } %>
+				<% if (ticket_display.status == 'pending') { %>
+					<label>{{ phrase('agent.tickets.status_pending') }}</label>
 				<% } %>
 				<% if (ticket_display.status == 'awaiting_user') { %>
 					<label>{{ phrase('agent.tickets.status_awaiting_user') }}</label>
@@ -60,7 +63,7 @@
 					<label>{{ phrase('agent.tickets.status_hidden_spam') }}</label>
 				<% } %>
 
-				<% if (ticket_display.status == 'awaiting_agent') { %>
+				<% if (ticket_display.status == 'awaiting_agent' || ticket_display.status == 'pending') { %>
 					<i class="ticket-urgency"><%= ticket_display.urgency %></i>
 				<% } %>
 			</div>

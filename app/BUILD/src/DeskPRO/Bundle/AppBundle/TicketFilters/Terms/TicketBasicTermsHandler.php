@@ -197,7 +197,7 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
                 $column = '{tickets}.email_account_id';
                 break;
             case TermFieldIds::TICKET_IS_HOLD:
-                $column = '{tickets}.is_hold';
+                $column = '{tickets}.status';
                 break;
             default:
                 $column = null;

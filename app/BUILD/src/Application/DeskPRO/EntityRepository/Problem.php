@@ -77,7 +77,10 @@ class Problem extends AbstractEntityRepository
         }
 
         $where .= ' AND p.id IN ('.implode(',', $ids).')';
-        $where .= sprintf(' AND (t.hidden_status is null or t.hidden_status NOT IN ("%s", "%s"))', TicketStatus::SYS_ID_DELETED, TicketStatus::SYS_ID_SPAM);
+
+        // MARK: hidden_status was replaced by ticket_status_id
+        // below condition cover all tickets, why we need it then ?
+        // $where .= sprintf(' AND (t.hidden_status is null or t.hidden_status NOT IN ("%s", "%s"))', TicketStatus::SYS_ID_DELETED, TicketStatus::SYS_ID_SPAM);
 
         $results = $this->getEntityManager()->getConnection()->fetchAll(
             "

@@ -309,4 +309,31 @@ class TicketTest extends PortalTestCase
         $ticket->setIsHold(false);
         $this->assertEquals(TicketStatus::STATUS_TYPE_AWAITING_AGENT, $ticket->getStatusCode());
     }
+
+    public function testGetHiddenStatus()
+    {
+        // GIVEN
+        $deletedStatus = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
+        $deletedStatus->setSysId(TicketStatus::SYS_ID_DELETED);
+        $deletedStatus->setId(2);
+        $spamStatus = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
+        $spamStatus->setSysId(TicketStatus::SYS_ID_SPAM);
+        $spamStatus->setId(3);
+        $agentStatus = new TicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT);
+        $agentStatus->setId(3);
+
+        $ticketD = new Ticket();
+        $ticketD->setTicketStatus($deletedStatus);
+        $ticketS = new Ticket();
+        $ticketS->setTicketStatus($spamStatus);
+        $ticketA = new Ticket();
+        $ticketA->setTicketStatus($agentStatus);
+        $ticket = new Ticket();
+
+        // WHEN /THEN
+        $this->assertEquals(TicketStatus::SYS_ID_DELETED, $ticketD->getHiddenStatus());
+        $this->assertEquals(TicketStatus::SYS_ID_SPAM, $ticketS->getHiddenStatus());
+        $this->assertNull($ticketA->getHiddenStatus());
+        $this->assertNull($ticket->getHiddenStatus());
+    }
 }

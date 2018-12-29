@@ -474,7 +474,7 @@ class TicketManager
 
         $context->getLogger()->info(sprintf('########## END SAVE TICKET -- %s -- %.4fs ##########', $ticket->getId() ?: 0, microtime(true) - $time_start));
 
-        if (!$is_noop && $ticket->getStatusCode() != 'hidden.deleted' && $context->getLogger() instanceof DpLogger) {
+        if (!$is_noop && !$ticket->getTicketStatus()->isDeleted() && $context->getLogger() instanceof DpLogger) {
             $log_text = $context->getLogger()->getSavedMessages();
             if ($log_text) {
                 try {

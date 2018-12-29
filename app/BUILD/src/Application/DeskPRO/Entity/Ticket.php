@@ -349,15 +349,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     protected $ticket_status = null;
 
-    protected $hidden_status = null;
-
-    /**
-     * Is the ticket on hold?
-     *
-     * @var bool
-     */
-    protected $is_hold = false;
-
     /**
      * @var int
      */
@@ -3122,17 +3113,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if (!$status) {
             $status = 'awaiting_agent';
         }
-        if ($status != 'awaiting_agent' && $old_status == 'awaiting_agent' && $this->date_user_waiting) {
+        if (!in_array($status, ['awaiting_agent', 'pending']) && in_array($old_status, ['awaiting_agent', 'pending']) && $this->date_user_waiting) {
             $this->setModelField(
                 'total_user_waiting',
                 $this->total_user_waiting + time() - $this->date_user_waiting->getTimestamp()
             );
             $this->addWaitingTimeRecord('user', $this->date_user_waiting);
         }
-        if ($status == 'awaiting_agent' && !$this->date_user_waiting) {
+        if (in_array($status, ['awaiting_agent', 'pending']) && !$this->date_user_waiting) {
             $this->setModelField('date_user_waiting', new \DateTime());
         }
-        if ($status != 'awaiting_agent' && $this->date_user_waiting) {
+        if (!in_array($status, ['awaiting_agent', 'pending']) && $this->date_user_waiting) {
             $this->setModelField('date_user_waiting', null);
         }
 
@@ -3239,7 +3230,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         // we need to call this first
         $this->setStatus($ticket_status->getStatusType());
 
-        if (!$ticket_status instanceof VirtualTicketStatus) {
+        if ($ticket_status instanceof VirtualTicketStatus) {
+            $this->setModelField('ticket_status', null);
+        } else {
             $this->setModelField('ticket_status', $ticket_status);
         }
 
@@ -3346,11 +3339,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getStatusCode()
     {
-        if (!$this->getTicketStatus() instanceof  VirtualTicketStatus) {
-            return $this->getTicketStatus()->getStatusCode();
-        } else {
-            return $this->status;
-        }
+        return $this->getTicketStatus()->getStatusCode();
     }
 
     /**
@@ -3368,7 +3357,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getHiddenStatus()
     {
-        return $this->hidden_status;
+        $ticketStatus = $this->getTicketStatus();
+
+        return $ticketStatus->isDeleted() || $ticketStatus->isSpam() ? $ticketStatus->getSysId() : null;
     }
 
     public function isAwaitingUser()
@@ -3889,7 +3880,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'language',
             'organization',
             'status',
-            'hidden_status',
+            'ticket_status',
             'subject',
             'urgency',
         ];
@@ -4241,7 +4232,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             'ticket_hash'            => $this->ticket_hash,
             'status'                 => $this->status,
             'ticket_status'          => $this->ticket_status,
-            'hidden_status'          => $this->hidden_status,
             'is_hold'                => $this->isHold(),
             'urgency'                => $this->urgency,
             'count_agent_replies'    => $this->count_agent_replies,
@@ -5679,23 +5669,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                         ],
                     ],
                 ],
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'hidden_status',
-                'columnName' => 'hidden_status',
-                'type'       => 'string',
-                'length'     => 30,
-                'nullable'   => true,
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'is_hold',
-                'columnName' => 'is_hold',
-                'type'       => 'boolean',
-                'nullable'   => false,
             ]
         );
     }
