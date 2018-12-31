@@ -19,6 +19,8 @@ use DeskPRO\Bundle\AppBundle\Entity\IconProperty;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Model\TicketView;
 use Exception;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\WidgetBrandSettings;
+use DeskPRO\Bundle\MessengerBundle\Settings\Model\MessengerSettings;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Form\FormError;
@@ -42,6 +44,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Throwable
+     *
      * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandStack
      */
     public function getBrandStack()
@@ -50,6 +54,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \Application\DeskPRO\NewSettings\SettingsResolver
      */
     public function getSettingsResolver()
@@ -58,6 +64,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DeskPRO\Bundle\AppBundle\Content\AvatarResolver
      */
     public function getAvatarResolver()
@@ -66,6 +74,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DeskPRO\Bundle\AppBundle\Helper\TicketPublicIdResolver
      */
     public function getTicketPublicIdResolver()
@@ -74,6 +84,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager
      */
     public function getPermissionManager()
@@ -82,6 +94,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage
      */
     public function getTokenStorage()
@@ -90,6 +104,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DeskPRO\Bundle\PortalBundle\Helper\PortalRatingsHelper
      */
     public function getRatingsHelper()
@@ -98,6 +114,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DeskPRO\Bundle\PortalBundle\Visitor\VisitorIdentificationProvider
      */
     public function getVisitorIdentificationProvider()
@@ -106,6 +124,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DeskPRO\Bundle\AppBundle\Language\LanguageManager
      */
     public function getLanguageManager()
@@ -147,6 +167,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('insert_glossary_js', [$this, 'makeGlossaryJs'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('portal_mode', [$this, 'getPortalMode'], ['is_safe' => ['html', 'javascript']]),
             new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
+            new \Twig_SimpleFunction('is_portal_messenger_enabled', [$this, 'isPortalMessengerEnabled']),
             new \Twig_SimpleFunction('portal_widget_loader', [$this, 'getWidgetLoader'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('should_show_nav_buttons', [$this, 'shouldShowNavButtons']),
             new \Twig_SimpleFunction('can_login', [$this, 'canLogin']),
@@ -186,17 +207,22 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     // legacy
+
     /**
-     * @param $phrase_name
+     * @param $phraseName
+     *
+     * @throws \Exception
      *
      * @return bool
      */
-    public function hasPhrase($phrase_name)
+    public function hasPhrase($phraseName)
     {
-        return $this->container->get('deskpro.core.translate')->hasPhrase($phrase_name);
+        return $this->container->get('deskpro.core.translate')->hasPhrase($phraseName);
     }
 
     /**
+     * @throws \Exception
+     *
      * @return string
      */
     public function getAuthUsersourcesJsObject()
@@ -205,6 +231,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return bool
      */
     public function hasLoginForm()
@@ -213,44 +241,50 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return bool
      */
     public function isForgotPasswordVisible()
     {
-        return $auth_manager = $this->container->get('dp_authentication_manager.user')->isForgotPasswordVisible();
+        return $this->container->get('dp_authentication_manager.user')->isForgotPasswordVisible();
     }
 
     /**
      * @param $article
      *
+     * @throws \Throwable
+     *
      * @return string
      */
     public function makeGlossaryJs($article)
     {
-        $brand          = $this->container->getBrandStack()->getActive()->getBrand();
-        $glossary       = new GlossaryHandler($this->container->getEm(), $brand);
-        $glossary_words = $glossary->findWords($article->content);
-        $word_defs      = $glossary->getWordDefs($glossary_words);
+        $brand         = $this->container->getBrandStack()->getActive()->getBrand();
+        $glossary      = new GlossaryHandler($this->container->getEm(), $brand);
+        $glossaryWords = $glossary->findWords($article->content);
+        $wordDefs      = $glossary->getWordDefs($glossaryWords);
 
-        $dp_glossary_words = [];
-        foreach ($glossary_words as $word) {
-            $dp_glossary_words[$word] = $word_defs[$word];
+        $dpGlossaryWords = [];
+        foreach ($glossaryWords as $word) {
+            $dpGlossaryWords[$word] = $wordDefs[$word];
         }
 
         $data = [
-            'words' => $glossary_words,
-            'defs'  => $dp_glossary_words,
+            'words' => $glossaryWords,
+            'defs'  => $dpGlossaryWords,
         ];
 
-        $data_encoded = json_encode($data);
+        $dataEncoded = json_encode($data);
 
-        $script = '<script type="text/javascript">window.DP_ARTICLE_GLOSSARY = '.$data_encoded.';</script>';
+        $script = '<script type="text/javascript">window.DP_ARTICLE_GLOSSARY = '.$dataEncoded.';</script>';
 
         return $script;
     }
 
     /**
      * @param FormError $formError
+     *
+     * @throws \Exception
      *
      * @return string
      */
@@ -270,6 +304,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
 
     /**
      * @param $content
+     *
+     * @throws \Exception
      *
      * @return string
      */
@@ -294,17 +330,21 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
-     * @param $blob_or_download
+     * @param $blobOrDownload
+     *
+     * @throws \Exception
      *
      * @return string
      */
-    public function makeFileIcon($blob_or_download)
+    public function makeFileIcon($blobOrDownload)
     {
-        return $this->container->get('icon_factory')->makeFileIcon($blob_or_download);
+        return $this->container->get('icon_factory')->makeFileIcon($blobOrDownload);
     }
 
     /**
      * @param $article
+     *
+     * @throws \Exception
      *
      * @return string
      */
@@ -316,6 +356,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     /**
      * @param $news
      *
+     * @throws \Exception
+     *
      * @return string
      */
     public function makeNewsIcon($news)
@@ -326,6 +368,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     /**
      * @param $topic
      *
+     * @throws \Exception
+     *
      * @return string
      */
     public function makeCommunityIcon($topic)
@@ -335,6 +379,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
 
     /**
      * @param $object
+     *
+     * @throws \Exception
      *
      * @return bool
      */
@@ -350,6 +396,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     /**
      * @param $object
      *
+     * @throws \Exception
+     *
      * @return bool
      */
     public function didUserDownVote($object)
@@ -364,6 +412,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     /**
      * @param $object
      *
+     * @throws \Exception*
+     *
      * @return Entity\Rating|null
      */
     public function getRating($object)
@@ -375,18 +425,20 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
                 return $rating;
             }
         } else {
-            $visitor_id = $this->getVisitorIdentificationProvider()->getVisitorIdentifier();
+            $visitorId = $this->getVisitorIdentificationProvider()->getVisitorIdentifier();
 
-            if ($rating = $this->getRatingsHelper()->findVisitorRating($object, $visitor_id)) {
+            if ($rating = $this->getRatingsHelper()->findVisitorRating($object, $visitorId)) {
                 return $rating;
             }
         }
 
-        return;
+        return null;
     }
 
     /**
      * @param Entity\Ticket $ticket
+     *
+     * @throws \Exception
      *
      * @return TicketView
      */
@@ -398,6 +450,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     /**
      * @param array $tickets
      *
+     * @throws \Exception
+     *
      * @return array
      */
     public function getTicketExcerpts($tickets)
@@ -407,6 +461,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
 
     /**
      * @param $ticket
+     *
+     * @throws \Exception
      *
      * @return int
      */
@@ -419,7 +475,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
         if (!$ticket instanceof Entity\Ticket) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    'Twig function "ticket_public_id" requires a Ticket or TicketView, but "" given',
+                    'Twig function "ticket_public_id" requires a Ticket or TicketView, but "%s" given',
                     is_object($ticket) ? get_class($ticket) : 'scalar'
                 )
             );
@@ -431,54 +487,72 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     /**
      * @param ContentAbstract $content
      *
+     * @throws \Exception
+     *
      * @return array
      */
     public function getSecureCats(ContentAbstract $content)
     {
-        $permission_bag = $this->getPermissionBagForCurrentUser();
+        $category       = $this->getContentCategory($content);
+        $categoryTree   = [];
+        $permissionsBag = $this->getPermissionBagForCurrentUser();
+
+        if (!$category) {
+            return [];
+        }
+        foreach ($category->getTreeParents() as $c) {
+            if ($permissionsBag->hasContentCategoryAccess($c)) {
+                $categoryTree[] = $c;
+            }
+        }
+
+        // check here, too
+        if ($permissionsBag->hasContentCategoryAccess($category)) {
+            $categoryTree[] = $category;
+        }
+
+        return $categoryTree;
+    }
+
+    /**
+     * @param Entity\ContentAbstract $content
+     *
+     * @throws \Exception
+     * @throws \InvalidArgumentException
+     *
+     * @return Entity\ArticleCategory|Entity\DownloadCategory|Entity\FeedbackCategory|Entity\NewsCategory
+     */
+    protected function getContentCategory(Entity\ContentAbstract $content)
+    {
+        $permissionsBag = $this->getPermissionBagForCurrentUser();
 
         if ($content instanceof Entity\Article) {
-            $cat = $content->getPrimaryCategory();
-            if (!$permission_bag->hasContentCategoryAccess($cat)) {
-                foreach ($content->getCategories() as $cat) {
-                    if ($permission_bag->hasContentCategoryAccess($cat)) {
+            $category = $content->getPrimaryCategory();
+            if (!$permissionsBag->hasContentCategoryAccess($category)) {
+                foreach ($content->getCategories() as $category) {
+                    if ($permissionsBag->hasContentCategoryAccess($category)) {
                         break;
                     }
                 }
             }
         } elseif ($content instanceof Entity\News) {
-            $cat = $content->getCategory();
+            $category = $content->getCategory();
         } elseif ($content instanceof Entity\Download) {
-            $cat = $content->getCategory();
+            $category = $content->getCategory();
         } elseif ($content instanceof Entity\CommunityTopic) {
-            $cat = $content->getCategory();
+            $category = $content->getCategory();
         } else {
             throw new \InvalidArgumentException('the get_secure_cats twig function requires one of: Article, Download, News, Community Topics, but did not get one');
         }
 
-        $category_tree = [];
-
-        $permission_bag = $this->getPermissionBagForCurrentUser();
-        if (!$cat) {
-            return [];
-        }
-        foreach ($cat->getTreeParents() as $c) {
-            if ($permission_bag->hasContentCategoryAccess($c)) {
-                $category_tree[] = $c;
-            }
-        }
-
-        // check here, too
-        if ($permission_bag->hasContentCategoryAccess($cat)) {
-            $category_tree[] = $cat;
-        }
-
-        return $category_tree;
+        return $category;
     }
 
     /**
      * @param string $setting
      * @param mixed  $default
+     *
+     * @throws \Throwable
      *
      * @return mixed
      */
@@ -490,6 +564,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     /**
      * @param string $prop
      *
+     * @throws \Throwable
+     *
      * @return string
      */
     public function getBrand($prop)
@@ -498,6 +574,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DeskPRO\Bundle\PortalBundle\Mode\PortalMode
      */
     public function getPortalMode()
@@ -535,6 +613,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      *
      * @param mixed $obj
      * @param int   $size
+     *
+     * @throws \Exception
      *
      * @return string the url
      */
@@ -594,6 +674,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      * @param mixed $obj
      * @param mixed $opt
      *
+     * @throws \Exception
+     *
      * @return string
      */
     public function getRenderedObject($obj, $opt = null)
@@ -612,6 +694,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return array
      */
     public function getGlobals()
@@ -623,20 +707,42 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return bool
      */
     public function isPortalWidgetEnabled()
     {
-        return $this->container->get('widget_settings_resolver')->isEnabledOnPortal();
+        return $this->container->get('widget_settings_resolver')->isEnabledOnPortal() && !$this->container->get('deskpro.feature_flags')->hasBeta('messenger');
     }
 
     /**
+     * @throws \Throwable
+     *
+     * @return bool
+     */
+    public function isPortalMessengerEnabled()
+    {
+        $brand            = $this->getBrandStack()->getActive()->getBrand();
+        $settingsResolver = $this->container->get('messenger.service.settings_resolver');
+
+        /** @var MessengerSettings $messengerSettings */
+        $messengerSettings = $settingsResolver->getMessengerSettings($brand);
+
+        return $messengerSettings->getEmbed() &&
+            $this->container->get('deskpro.feature_flags')->hasBeta('messenger');
+    }
+
+    /**
+     * @throws \Throwable
+     *
      * @return string
      */
     public function getWidgetLoader()
     {
-        $request       = $this->container->get('request_stack')->getCurrentRequest();
-        $brand         = $this->getBrandStack()->getActive()->getBrand();
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $brand   = $this->getBrandStack()->getActive()->getBrand();
+        /** @var WidgetBrandSettings $widgetOptions */
         $widgetOptions = $this->container->get('widget_settings_resolver')->getWidgetBrandOptions($brand);
 
         if (!$widgetOptions->getWidget()->isEnabled()) {
@@ -670,6 +776,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return bool
      */
     public function shouldShowNavButtons()
@@ -690,6 +798,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return bool
      */
     public function canLogin()
@@ -784,6 +894,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return PersonGuest|Entity\Person
      */
     public function getPerson()
@@ -807,6 +919,8 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     }
 
     /**
+     * @throws \Exception
+     *
      * @return \DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsBag
      */
     protected function getPermissionBagForCurrentUser()

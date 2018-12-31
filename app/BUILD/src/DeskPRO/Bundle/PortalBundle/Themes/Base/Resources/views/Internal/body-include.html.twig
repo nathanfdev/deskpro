@@ -26,7 +26,7 @@
 </script>
 
 {% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_widget_enabled() %}{{ portal_widget_loader() }}{% endif %}
-{% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_widget_enabled() %}
+{% if portal_mode() != 'focus-window' and portal_mode() != 'fame-embed' and is_portal_messenger_enabled() %}
     <script type="text/javascript">
       window.parent.DESKPRO_MESSENGER_ASSET_URL = "{{ asset('', 'messenger_assets') }}";
       window.parent.DESKPRO_MESSENGER_OPTIONS = {
