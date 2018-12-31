@@ -357,7 +357,7 @@ class ChatHandler
             $person = $personRepository->findOneByEmail($request['email']);
         }
 
-        if (!$person && !isset($request['email'])) {
+        if (!$person && (!isset($request['email']) || !trim($request['email']))) {
             $errors['email']     = 'Either email or person_id parameter is required';
             $errors['person_id'] = 'Either email or person_id parameter is required';
         }
@@ -412,12 +412,12 @@ class ChatHandler
         }
 
         $subjectPattern = $this->settingsResolver->getSettings(
-            MessengerSettingsResolver::CHAT_TICKET_SUBJECT,
+            MessengerSettingsResolver::CHAT_TICKET_DEFAULTS_SUBJECT,
                     $this->brandStack->getActive()->getBrand(),
                     'Missed chat with {name}'
         );
 
-        $subjectPattern = RegexUtils::safePregReplace('#\{[a-zA-Z0-9]\}', '%s', $subjectPattern);
+        $subjectPattern = RegexUtils::safePregReplace('#\{[a-zA-Z0-9]+\}#', '%s', $subjectPattern);
 
         $ticket
             ->setSubject(sprintf($subjectPattern, $username))
