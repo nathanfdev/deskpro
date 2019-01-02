@@ -18,15 +18,32 @@ class ProxyBaseClient extends BaseClient
     protected $proxyHost;
 
     /**
+     * @var string
+     */
+    protected $proxyUsername;
+
+    /**
+     * @var string
+     */
+    protected $proxyPassword;
+
+    /**
      * Constructor.
      *
      * @param string $authId
      * @param string $authToken
      * @param string $proxyHost
+     * @param string $proxyUsername
+     * @param string $proxyPassword
      */
-    public function __construct($authId, $authToken, $proxyHost)
+    public function __construct($authId, $authToken, $proxyHost, $proxyUsername, $proxyPassword)
     {
-        $this->basicAuth         = new BasicAuth($authId, $authToken);
+        if ($proxyUsername) {
+            $this->basicAuth = new BasicAuth($proxyUsername, $proxyPassword);
+        } else {
+            $this->basicAuth = new BasicAuth($authId, $authToken);
+        }
+
         $this->proxyHost         = $proxyHost;
         $this->httpClientHandler = new PlivoGuzzleHttpClient(null, $this->basicAuth);
     }
