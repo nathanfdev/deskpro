@@ -92,7 +92,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
     }
 
     /**
-     * @return ArrayCollection
+     * @return ArrayCollection|Entity\Person[]
      */
     public function getMembers()
     {

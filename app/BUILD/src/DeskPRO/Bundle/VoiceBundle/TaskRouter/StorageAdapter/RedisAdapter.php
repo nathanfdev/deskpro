@@ -14,7 +14,7 @@ class RedisAdapter implements StorageAdapterInterface
     /**
      * {@inheritdoc}
      */
-    public function getActiveTasks()
+    public function getActiveTasks($channel = null)
     {
         throw new \RuntimeException('Not implemented');
     }

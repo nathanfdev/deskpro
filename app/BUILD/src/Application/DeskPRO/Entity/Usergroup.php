@@ -108,6 +108,11 @@ class Usergroup extends DomainObject
     protected $permissions;
 
     /**
+     * @var DepartmentPermission[]
+     */
+    protected $department_permissions;
+
+    /**
      * Usergroup members.
      *
      * @var ArrayCollection|Person[]
@@ -119,8 +124,9 @@ class Usergroup extends DomainObject
      */
     public function __construct()
     {
-        $this->permissions = new ArrayCollection();
-        $this->people      = new ArrayCollection();
+        $this->permissions            = new ArrayCollection();
+        $this->department_permissions = new ArrayCollection();
+        $this->people                 = new ArrayCollection();
     }
 
     /**
@@ -390,6 +396,18 @@ class Usergroup extends DomainObject
                 'orphanRemoval' => true,
             ]
         );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'    => 'department_permissions',
+                'targetEntity' => DepartmentPermission::class,
+                'mappedBy'     => 'usergroup',
+                'cascade'      => [
+                    'persist',
+                    'remove',
+                ],
+                'orphanRemoval' => true,
+            ]
+        );
 
         $metadata->mapManyToMany(
             [
@@ -399,6 +417,7 @@ class Usergroup extends DomainObject
                 'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
             ]
         );
+
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

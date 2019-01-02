@@ -13,6 +13,7 @@ import * as EmailTemplates from '../../EmailTemplates/Components';
 import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import * as Apps from '../../Apps/Components/index';
+import * as UserChat from '../../UserChat/Components/index';
 import { loadAdminPhraseTranslations } from '../Actions/bootstrapActions';
 import { InstallerFactory } from '../../DeskproApps';
 
@@ -107,6 +108,11 @@ class AppContainer extends React.Component {
             />
             <Route path="emails" key="email_routes">
               <Route path="templates_editor(/:name)" component={EmailTemplates.EmailTemplatesEditorContainer} {...props} />
+            </Route>
+            <Route path="chat">
+              <Route path="queues" component={UserChat.Queues} />
+              <Route path="queues/new" component={UserChat.NewQueueForm} />
+              <Route path="queues/:queueId" component={UserChat.EditQueueForm} />
             </Route>
           </Router>
         </IntlProvider>

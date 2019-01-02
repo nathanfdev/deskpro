@@ -4,6 +4,7 @@ import { collectionSelectorFactory, isLoadedCollectionSelectorFactory } from 'De
 export const allPeopleSelector = collectionSelectorFactory('Person', 'all');
 export const allAgentsSelector = collectionSelectorFactory('Person', 'agents');
 export const isAgentsLoadedSelector = isLoadedCollectionSelectorFactory('Person', 'agents');
+export const allAgentGroupsSelector = collectionSelectorFactory('AgentGroup', 'all');
 
 export const voicePeopleSelector = createSelector(
   allAgentsSelector,
@@ -12,3 +13,4 @@ export const voicePeopleSelector = createSelector(
 
 export const allAgentTeamsSelector = collectionSelectorFactory('AgentTeam', 'all');
 export const isAgentTeamsLoadedSelector = isLoadedCollectionSelectorFactory('AgentTeam', 'all');
+export const isAgentGroupsLoadedSelector = isLoadedCollectionSelectorFactory('AgentGroup', 'all');

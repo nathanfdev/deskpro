@@ -144,8 +144,6 @@ class GetMsgScript extends LowScriptAbstract
             ');
             $q->execute([date('Y-m-d H:i:s', time()), $agent_session['id']]);
 
-            $this->updateVoiceWorker();
-
             if (!empty($_REQUEST['recent_tabs'])) {
                 $post_recent_tabs = $_REQUEST['recent_tabs'];
                 if (!is_array($post_recent_tabs)) {
@@ -649,27 +647,5 @@ SQL;
         }
 
         return $data;
-    }
-
-    protected function updateVoiceWorker()
-    {
-        $q = $this->getPdoRead()->prepare('
-            SELECT is_voice_enabled, agent_calls_enabled
-            FROM agent_data a
-            JOIN people p ON p.agent_data_id = a.id
-            WHERE p.id = ?
-        ');
-        $q->execute([$this->_person_id]);
-        $result = $q->fetch();
-
-        // todo support other storages
-        if ($result['is_voice_enabled'] && $result['agent_calls_enabled']) {
-            $q = $this->getVoicePdo()->prepare('
-            UPDATE voice_workers
-            SET date_last_active = ?
-            WHERE type = ? AND type_id = ?
-        ');
-            $q->execute([date('Y-m-d H:i:s', time()), 'agent', $this->_person_id]);
-        }
     }
 }

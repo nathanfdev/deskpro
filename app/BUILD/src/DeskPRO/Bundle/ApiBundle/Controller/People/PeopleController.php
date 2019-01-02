@@ -250,6 +250,16 @@ class PeopleController extends AbstractPeopleController
                 $qb->andWhere('teams.id IS NULL');
             }
         }
+        if (null !== $request->get('usergroup')) {
+            $usergroup = (int) $request->get('usergroup');
+            $qb->leftJoin("$alias.usergroups", 'usergroups');
+            if ($usergroup > 0) {
+                $qb->andWhere('usergroups.id = :usergroup_id');
+                $qb->setParameter('usergroup_id', $usergroup);
+            } else {
+                $qb->andWhere('usergroups.id IS NULL');
+            }
+        }
 
         if (null !== $request->get('primary_email')) {
             $email = $request->get('primary_email');
@@ -264,6 +274,21 @@ class PeopleController extends AbstractPeopleController
             $qb->leftJoin("$alias.emails", 'emails');
             $qb->andWhere('emails.email IN (:emails)');
             $qb->setParameter('emails', $emails);
+        }
+
+        if (null !== $request->get('department')) {
+            $department = (int) $request->get('department');
+            $qb->leftJoin("$alias.department_permissions", 'department_permissions');
+            $qb->leftJoin("$alias.usergroups", 'usergroups');
+            $qb->leftJoin('usergroups.department_permissions', 'usergroup_department_permissions');
+
+            if ($department > 0) {
+                $qb->andWhere('department_permissions.department = :department OR usergroup_department_permissions.department = :department');
+                $qb->setParameter('department', $department);
+            } else {
+                $qb->andWhere('department_permissions.department IS NULL');
+                $qb->andWhere('usergroup_department_permissions.department IS NULL');
+            }
         }
     }
 

@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ScrollArea from 'react-scrollbar';
+import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 import classNames from 'classnames';
+import Immutable from 'immutable';
 
 class SemanticMultiSelect extends React.Component {
 
@@ -11,7 +13,7 @@ class SemanticMultiSelect extends React.Component {
     onChange:      PropTypes.func,
     toggleAll:     PropTypes.bool,
     uncheckAll:    PropTypes.bool,
-    selectedCount: PropTypes.bool,
+    selectedCount: PropTypes.bool
   };
 
   static defaultProps = {
@@ -20,10 +22,11 @@ class SemanticMultiSelect extends React.Component {
 
   onChange = (item) => {
     const { value = [], onChange } = this.props;
-    const index = value.indexOf(item);
+    const immutableValue = Immutable.fromJS(value);
+    const immutableItem = Immutable.fromJS(item);
 
-    if (index !== -1) {
-      value.splice(index, 1);
+    if (immutableValue.includes(immutableItem)) {
+      value.splice(immutableValue.indexOf(immutableItem), 1);
     } else {
       value.push(item);
     }
@@ -57,11 +60,22 @@ class SemanticMultiSelect extends React.Component {
   };
 
   render() {
-    const { choices = [], value, selectedCount, toggleAll, uncheckAll } = this.props;
+    const { choices = [], value, onChange, selectedCount, toggleAll, uncheckAll } = this.props;
     const primaryChoices = choices.filter(choice => choice.primary);
     const otherChoices = choices.filter(choice => !choice.primary);
+
+    const primarySortableChoices = primaryChoices.filter(choice => choice.sortable);
+    const primaryUnsortableChoices = primaryChoices.filter(choice => !choice.sortable);
+
+    const otherSortableChoices = otherChoices.filter(choice => choice.sortable);
+    const otherUnsortableChoices = otherChoices.filter(choice => !choice.sortable);
+
+    const hasSortable = primarySortableChoices.length > 0 || otherSortableChoices.length > 0;
+
+    const immutableValue = Immutable.fromJS(value);
     const renderChoice = (choice, index) => {
-      const checked = value && value.indexOf(choice.value) !== -1;
+      const immutableItem = Immutable.fromJS(choice.value);
+      const checked = value && immutableValue.indexOf(immutableItem) !== -1;
 
       return (
         <div
@@ -71,13 +85,48 @@ class SemanticMultiSelect extends React.Component {
               this.onChange(choice.value);
             }
           }}
+          className={classNames({ sortable: choice.sortable })}
         >
+          <span className={classNames({ 'multi-sortable-icon': hasSortable })}>
+            {choice.sortable && <i className="fa fa-bars drag-handle" />}
+          </span>
           <div className={classNames('ui', { checked, disabled: choice.disabled }, 'checkbox')}>
             <input type="checkbox" checked={checked ? 'checked' : ''} className="hidden" />
-            <label htmlFor="checkbox">{choice.label}</label>
+            <label htmlFor="checkbox">
+              {choice.label}
+            </label>
           </div>
         </div>
       );
+    };
+
+    const SortableItem = SortableElement(({ item, index }) => renderChoice(item, index));
+    const SortableList = SortableContainer(({ items }) => (
+      <div>
+        {items.map((item, index) => (
+          <SortableItem key={`item-${index}`} index={index} item={item} />
+        ))}
+      </div>
+    ));
+
+    const sortPrimaryChoices = ({ oldIndex, newIndex }) => {
+      const newVal = [
+        ...arrayMove(primarySortableChoices, oldIndex, newIndex),
+        ...primaryUnsortableChoices,
+        ...otherChoices
+      ].map(choice => choice.value).filter(item => immutableValue.includes(Immutable.fromJS(item)));
+
+      onChange(newVal);
+    };
+
+    const sortOtherChoices = ({ oldIndex, newIndex }) => {
+      const newVal = [
+        ...primaryChoices,
+        ...arrayMove(otherSortableChoices, oldIndex, newIndex),
+        ...otherUnsortableChoices
+      ].map(choice => choice.value).filter(item => immutableValue.includes(Immutable.fromJS(item)));
+
+      onChange(newVal);
     };
 
     return (
@@ -88,9 +137,11 @@ class SemanticMultiSelect extends React.Component {
         <ScrollArea className="multi-select" vertical>
           {primaryChoices.length > 0 &&
           <div className="multi-select-primary-options">
-            {primaryChoices.map(renderChoice)}
+            <SortableList items={primarySortableChoices} onSortEnd={sortPrimaryChoices} />
+            {primaryUnsortableChoices.map(renderChoice)}
           </div>}
-          {otherChoices.map(renderChoice)}
+          <SortableList items={otherSortableChoices} onSortEnd={sortOtherChoices} />
+          {otherUnsortableChoices.map(renderChoice)}
         </ScrollArea>
       </div>
     );

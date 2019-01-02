@@ -13,6 +13,7 @@ $fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
 @import 'voice';
 @import 'importer';
 @import 'dev';
+@import 'user-chat';
 
 $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/src/styles/fonts/';
 @import "../../../../../../node_modules/@deskpro/react-components/src/styles/main";
@@ -362,4 +363,13 @@ div.field.error div.error-message {
   th {
     padding: 8px;
   }
+}
+
+.page-form {
+  width: 525px;
+}
+
+.multi-sortable-icon {
+  display: inline-block;
+  width: 25px;
 }

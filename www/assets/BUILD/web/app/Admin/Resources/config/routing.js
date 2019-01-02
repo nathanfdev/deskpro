@@ -2044,22 +2044,28 @@ define(function() {
   });
 
   //###
-  //# Round Robin
+  //# Chat Queues
   //###
   routes.push({
-    id: 'chat.roundrobin',
-    url: '/roundrobin',
-    templateName: 'ChatRoundRobin/list.html',
-    controller: 'Admin_ChatRoundRobin_Ctrl_List'
+    id: 'chat.chat_queues',
+    url: '/queues',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
-    id: 'chat.roundrobin.edit',
-    url: '/{id:.*}',
-    templateName: 'ChatRoundRobin/edit.html',
-    controller: 'Admin_ChatRoundRobin_Ctrl_Edit'
+    id:           'chat.chat_queues_new',
+    url:          '/queues/new',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
+  routes.push({
+    id:           'chat.chat_queues_edit',
+    url:          '/queues/{id:\\d+}',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
 
   //##################################################################################################################
   // Twitter

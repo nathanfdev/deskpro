@@ -4,6 +4,7 @@ namespace Application\DeskPRO\Departments\Form\Type;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
+use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -37,6 +38,11 @@ class ChatDepartmentPropsType extends AbstractType
                         ->where('d.is_chat_enabled = true AND d.parent IS NULL')
                         ->orderBy('d.display_order', 'ASC');
                 },
+            ])
+            ->add('chat_queue', EntityType::class, [
+                'class'         => UserChatQueue::class,
+                'required'      => false,
+                'property_path' => 'chatQueue',
             ])
             ->add('avatar', EntityType::class, [
                 'required' => false,

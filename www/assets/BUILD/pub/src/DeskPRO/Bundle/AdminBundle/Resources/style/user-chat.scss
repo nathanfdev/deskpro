@@ -1,0 +1,123 @@
+.user-chat {
+
+  .answer-timeout {
+    padding-top: 10px;
+
+    .input {
+      display: inline-block;
+      width: 50px !important;
+      margin: 0 10px;
+      position: relative;
+
+      input {
+        position: absolute;
+        top: -25px;
+      }
+    }
+  }
+
+  .user-chat-default-queue {
+    padding: 0  0 15px 0;
+
+    .Select {
+      display: inline-block;
+      width: 300px !important;
+      margin: 0 10px;
+      position: relative;
+      top: 10px;
+
+      input {
+        position: absolute;
+        top: -25px;
+      }
+    }
+  }
+
+  .user-chat-max-chats {
+    padding: 15px 0;
+
+    .input {
+      display: inline-block;
+      width: 100px !important;
+      margin: 0 10px;
+      position: relative;
+
+      input {
+        position: absolute;
+        top: -23px;
+        height: 34px;
+      }
+    }
+  }
+
+  .more-button-wrapper {
+    > div {
+      display: inline-block;
+    }
+  }
+
+  .more-button {
+    display: inline-block;
+    margin-left: 5px;
+    color: #2B2F2F;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .queue-size {
+    margin-top: 25px !important;
+    margin-bottom: 25px !important;
+
+    .help {
+      float: right;
+      margin-top: 10px;
+    }
+
+    .select-wrapper {
+      position: relative;
+      width: 65px;
+      display: inline-block;
+
+      .Select {
+        position: absolute;
+        top: -25px;
+        width: 45px !important;
+        margin-left: 10px !important;
+        margin-right: 10px !important;
+        display: inline-block;
+      }
+    }
+  }
+
+  .multi-select-toggle-all {
+    font-size: 11px;
+    color: #888;
+    cursor: pointer;
+  }
+
+  .bulk-add-agents {
+    margin-top: 10px;
+
+    .Select {
+      float: left;
+      width: 350px;
+
+      .Select-menu-outer {
+        .Select-option {
+          padding-left: 2em;
+        }
+        .Select-option.is-disabled {
+          cursor: default;
+          padding-left: 1em;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .button {
+      height: 35px;
+      margin-left: 10px;
+    }
+  }
+}

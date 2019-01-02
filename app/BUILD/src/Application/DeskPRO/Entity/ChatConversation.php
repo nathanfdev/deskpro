@@ -65,6 +65,11 @@ class ChatConversation extends DomainObject implements LabelsOwner
     protected $brand = null;
 
     /**
+     * @var int
+     */
+    protected $taskId;
+
+    /**
      * @var \Doctrine\Common\Collections\ArrayCollection|LabelChatConversation[]
      *
      * @Assert\Valid()
@@ -845,6 +850,26 @@ class ChatConversation extends DomainObject implements LabelsOwner
     public function setBrand($brand)
     {
         $this->setModelField('brand', $brand);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTaskId()
+    {
+        return $this->taskId;
+    }
+
+    /**
+     * @param int $taskId
+     *
+     * @return $this
+     */
+    public function setTaskId($taskId)
+    {
+        $this->setModelField('taskId', $taskId);
 
         return $this;
     }
@@ -1747,6 +1772,16 @@ class ChatConversation extends DomainObject implements LabelsOwner
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'visitor_id',
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'taskId',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'task_id',
             ]
         );
 

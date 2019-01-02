@@ -41,6 +41,20 @@ class Worker extends AbstractEntity
     protected $dateLastActive;
 
     /**
+     * @ORM\Column(name="pending_tasks", type="json_array", nullable=true)
+     *
+     * @var int[]
+     */
+    protected $pendingTasks = [];
+
+    /**
+     * @ORM\Column(name="active_tasks", type="json_array", nullable=true)
+     *
+     * @var int[]
+     */
+    protected $activeTasks = [];
+
+    /**
      * @return string
      */
     public function getType()
@@ -116,6 +130,46 @@ class Worker extends AbstractEntity
     public function setDateLastActive(\DateTime $dateLastActive = null)
     {
         $this->setModelField('lastActiveDate', $dateLastActive);
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getPendingTasks()
+    {
+        return $this->pendingTasks;
+    }
+
+    /**
+     * @param int[] $pendingTasks
+     *
+     * @return $this
+     */
+    public function setPendingTasks(array $pendingTasks)
+    {
+        $this->setModelField('pendingTasks', $pendingTasks);
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getActiveTasks()
+    {
+        return $this->activeTasks;
+    }
+
+    /**
+     * @param int[] $activeTasks
+     *
+     * @return $this
+     */
+    public function setActiveTasks(array $activeTasks)
+    {
+        $this->setModelField('activeTasks', $activeTasks);
 
         return $this;
     }

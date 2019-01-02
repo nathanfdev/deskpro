@@ -36,9 +36,12 @@ class ChatAgentAssignedGenerator extends ChatGenerator
 
         $data = [
             'origin' => 'system',
-            'name'   => $chat->getAgent()->getDisplayNameUser(),
-            'avatar' => $this->avatarResolver->getAvatar($chat->getAgent()),
         ];
+
+        if ($chat->getAgent()) {
+            $data['name']   = $chat->getAgent()->getDisplayNameUser();
+            $data['avatar'] = $this->avatarResolver->getAvatar($chat->getAgent());
+        }
 
         if (isset($eventData['message']) && $eventData['message'] instanceof ChatMessage) {
             $data += $this->chatMapper->mapMessageToArray($eventData['message']);

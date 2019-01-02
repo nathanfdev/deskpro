@@ -105,4 +105,27 @@ class WorkerHelper
 
         return $this->storage->getWorkersByType('agent', $agentIds);
     }
+
+    /**
+     * @return array
+     */
+    public function getVoiceAgentIds()
+    {
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('a')
+            ->from(AgentData::class, 'a')
+            ->where(
+                'a.isVoiceEnabled = 1',
+                'a.agentCallsEnabled = 1'
+            )
+        ;
+
+        $agentData = $qb->getQuery()->getResult();
+        $agentIds  = array_map(function (AgentData $agentData) {
+            return $agentData->getPerson()->getId();
+        }, $agentData);
+
+        return $agentIds;
+    }
 }

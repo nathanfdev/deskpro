@@ -11,6 +11,8 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use PhpSpec\ObjectBehavior;
 
 /**
@@ -29,116 +31,227 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $this->beConstructedWith($workerHelper, $taskHelper, $settingsResolver, $storage);
     }
 
-    public function it_accepts_empty_task(
-        Task $task,
-        WorkerHelper $workerHelper,
-        VoiceTaskHelper $taskHelper,
-        StorageAdapterInterface $storage
-    ) {
+    public function it_returns_empty_list_of_workers(Task $task, WorkerHelper $workerHelper, StorageAdapterInterface $storage)
+    {
         $storage->getOnlineWorkersByType('agent')->willReturn([]);
+        $workerHelper->getVoiceAgentIds()->willReturn([]);
         $workerHelper->getForwardingCallWorkers()->willReturn([]);
 
-        $taskHelper->getVoiceQueue($task)->willReturn(null);
-        $taskHelper->getWorkerAgent($task)->willReturn(null);
-
-        $task->getRejectedBy()->willReturn([]);
-
-        $this->assignTask($task);
+        $this->getAvailableWorkers($task)->shouldReturn([]);
     }
 
-    public function it_ignores_rejected_workers_when_assigning_an_agent_directly(
-        Person $agent,
+    public function it_returns_a_list_of_workers(
+        Worker $worker1,
+        Worker $worker2,
         Task $task,
         WorkerHelper $workerHelper,
-        VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
-        $worker1 = new Worker();
-        $worker1->setId(10);
-        $worker1->setTypeId(1);
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
+        $worker1->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
 
-        $worker2 = new Worker();
-        $worker2->setId(20);
-        $worker2->setTypeId(2);
+        $worker2->getId()->willReturn(20);
+        $worker2->getTypeId()->willReturn(2);
+        $worker2->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
 
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
         $workerHelper->getForwardingCallWorkers()->willReturn([$worker2]);
+        $workerHelper->getVoiceAgentIds()->willReturn([1, 2]);
 
-        $agent->getId()->willReturn(1);
+        $this->getAvailableWorkers($task)->shouldReturn([10 => $worker1, 20 => $worker2]);
+    }
 
-        $taskHelper->getVoiceQueue($task)->willReturn(null);
-        $taskHelper->getWorkerAgent($task)->willReturn($agent);
+    public function it_ignores_rejected_workers(
+        Worker $worker1,
+        Worker $worker2,
+        Task $task,
+        WorkerHelper $workerHelper,
+        StorageAdapterInterface $storage
+    ) {
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
+        $worker1->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
 
+        $worker2->getId()->willReturn(20);
+        $worker2->getTypeId()->willReturn(2);
+        $worker2->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+
+        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
+        $workerHelper->getForwardingCallWorkers()->willReturn([$worker2]);
+        $workerHelper->getVoiceAgentIds()->willReturn([1, 2]);
         $task->getRejectedBy()->willReturn([10]);
-        $task->setWorkersIds([10])->shouldNotBeCalled();
 
-        $this->assignTask($task);
+        $this->getAvailableWorkers($task)->shouldReturn([20 => $worker2]);
     }
 
-    public function it_assigns_an_agent_directly(
-        Person $agent,
+    public function it_merges_online_and_forwarding_agents(
+        Worker $worker1,
+        Worker $worker2,
         Task $task,
         WorkerHelper $workerHelper,
-        VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
-        $worker1 = new Worker();
-        $worker1->setId(10);
-        $worker1->setTypeId(1);
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
+        $worker1->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
 
-        $worker2 = new Worker();
-        $worker2->setId(20);
-        $worker2->setTypeId(2);
+        $worker2->getId()->willReturn(20);
+        $worker2->getTypeId()->willReturn(2);
+        $worker2->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker2->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+
+        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1, $worker2]);
+        $workerHelper->getForwardingCallWorkers()->willReturn([$worker2]);
+        $workerHelper->getVoiceAgentIds()->willReturn([1, 2]);
+
+        $this->getAvailableWorkers($task)->shouldReturn([10 => $worker1, 20 => $worker2]);
+    }
+
+    public function it_ignores_worker_if_it_has_pending_voice_tasks(
+        Worker $worker1,
+        Task $task,
+        WorkerHelper $workerHelper,
+        StorageAdapterInterface $storage
+    ) {
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
+        $worker1->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(true);
+        $worker1->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
 
         $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
-        $workerHelper->getForwardingCallWorkers()->willReturn([$worker2]);
+        $workerHelper->getForwardingCallWorkers()->willReturn([]);
+        $workerHelper->getVoiceAgentIds()->willReturn([1, 2]);
 
-        $agent->getId()->willReturn(1);
-
-        $taskHelper->getVoiceQueue($task)->willReturn(null);
-        $taskHelper->getWorkerAgent($task)->willReturn($agent);
-
-        $task->getRejectedBy()->willReturn([]);
-        $task->setWorkersIds([10])->shouldBeCalled();
-
-        $this->assignTask($task);
+        $this->getAvailableWorkers($task)->shouldReturn([]);
     }
 
-    public function it_doesnt_assign_an_offline_agent_directly(
-        Person $agent,
+    public function it_ignores_worker_if_it_has_pending_chat_tasks(
+        Worker $worker1,
         Task $task,
         WorkerHelper $workerHelper,
-        VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
-        $storage->getOnlineWorkersByType('agent')->willReturn([]);
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
+        $worker1->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(true);
+        $worker1->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+
+        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
         $workerHelper->getForwardingCallWorkers()->willReturn([]);
+        $workerHelper->getVoiceAgentIds()->willReturn([1, 2]);
 
-        $agent->getId()->willReturn(1);
+        $this->getAvailableWorkers($task)->shouldReturn([]);
+    }
 
+    public function it_ignores_worker_if_it_has_active_voice_tasks(
+        Worker $worker1,
+        Task $task,
+        WorkerHelper $workerHelper,
+        StorageAdapterInterface $storage
+    ) {
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
+        $worker1->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(true);
+        $worker1->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+
+        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
+        $workerHelper->getForwardingCallWorkers()->willReturn([]);
+        $workerHelper->getVoiceAgentIds()->willReturn([1, 2]);
+
+        $this->getAvailableWorkers($task)->shouldReturn([]);
+    }
+
+    public function it_ignores_worker_if_it_has_active_chat_tasks(
+        Worker $worker1,
+        Task $task,
+        WorkerHelper $workerHelper,
+        StorageAdapterInterface $storage
+    ) {
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
+        $worker1->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(true);
+
+        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
+        $workerHelper->getForwardingCallWorkers()->willReturn([]);
+        $workerHelper->getVoiceAgentIds()->willReturn([1, 2]);
+
+        $this->getAvailableWorkers($task)->shouldReturn([]);
+    }
+
+    public function it_ignores_worker_if_it_doesnt_have_voice(
+        Worker $worker1,
+        Task $task,
+        WorkerHelper $workerHelper,
+        StorageAdapterInterface $storage
+    ) {
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
+        $worker1->hasPendingTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(VoiceWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasPendingTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+        $worker1->hasActiveTasksForChannel(ChatWorkflow::getChannelName())->willReturn(false);
+
+        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1]);
+        $workerHelper->getForwardingCallWorkers()->willReturn([]);
+        $workerHelper->getVoiceAgentIds()->willReturn([2, 3]);
+
+        $this->getAvailableWorkers($task)->shouldReturn([]);
+    }
+
+    public function it_accepts_empty_task(Task $task)
+    {
+        $this->assignTask($task, []);
+    }
+
+    public function it_doesnt_assign_an_offline_agent(Person $agent, Task $task, VoiceTaskHelper $taskHelper)
+    {
         $taskHelper->getVoiceQueue($task)->willReturn(null);
         $taskHelper->getWorkerAgent($task)->willReturn($agent);
 
-        $task->getRejectedBy()->willReturn([]);
-
-        $this->assignTask($task);
+        $this->assignTask($task, []);
     }
 
     public function it_handles_round_robin_queue(
+        Worker $worker1,
+        Worker $worker3,
         VoiceQueue $queue,
         Task $task,
         TaskQueue $taskQueue,
-        WorkerHelper $workerHelper,
         VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
-        $worker1 = new Worker();
-        $worker1->setId(10);
-        $worker1->setTypeId(1);
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
 
-        $worker3 = new Worker();
-        $worker3->setId(30);
-        $worker3->setTypeId(3);
+        $worker3->getId()->willReturn(30);
+        $worker3->getTypeId()->willReturn(3);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_AUTOMATIC);
@@ -151,27 +264,23 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $taskQueue->setAttribute('round_robin_order', [2, 3, 1])->shouldBeCalled();
 
         $storage->getTaskQueue('voice', 1)->willReturn($taskQueue);
-        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1, $worker3]);
-        $workerHelper->getForwardingCallWorkers()->willReturn([]);
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
-        $task->getRejectedBy()->willReturn([]);
         $task->setWorkersIds([10])->shouldBeCalled();
 
-        $this->assignTask($task);
+        $this->assignTask($task, [$worker1, $worker3]);
     }
 
     public function it_keeps_round_robin_up_to_date(
+        Worker $worker1,
         VoiceQueue $queue,
         Task $task,
         TaskQueue $taskQueue,
-        WorkerHelper $workerHelper,
         VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
-        $worker1 = new Worker();
-        $worker1->setId(10);
-        $worker1->setTypeId(1);
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_AUTOMATIC);
@@ -184,21 +293,17 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $taskQueue->setAttribute('round_robin_order', [3, 5, 1])->shouldBeCalled();
 
         $storage->getTaskQueue('voice', 1)->willReturn($taskQueue);
-        $storage->getOnlineWorkersByType('agent')->willReturn([]);
-        $workerHelper->getForwardingCallWorkers()->willReturn([$worker1]);
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
-        $task->getRejectedBy()->willReturn([]);
         $task->setWorkersIds([10])->shouldBeCalled();
 
-        $this->assignTask($task);
+        $this->assignTask($task, [$worker1]);
     }
 
     public function it_keeps_round_robin_order_same_if_no_workers(
         VoiceQueue $queue,
         Task $task,
         TaskQueue $taskQueue,
-        WorkerHelper $workerHelper,
         VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
@@ -213,34 +318,29 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $taskQueue->setAttribute('round_robin_order', [1, 3, 5])->shouldBeCalled();
 
         $storage->getTaskQueue('voice', 1)->willReturn($taskQueue);
-        $storage->getOnlineWorkersByType('agent')->willReturn([]);
-        $workerHelper->getForwardingCallWorkers()->willReturn([]);
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
-        $task->getRejectedBy()->willReturn([]);
-
-        $this->assignTask($task);
+        $this->assignTask($task, []);
     }
 
     public function it_handles_simulring_queue(
+        Worker $worker1,
+        Worker $worker3,
+        Worker $worker5,
         VoiceQueue $queue,
         Task $task,
         TaskQueue $taskQueue,
-        WorkerHelper $workerHelper,
         VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
-        $worker1 = new Worker();
-        $worker1->setId(10);
-        $worker1->setTypeId(1);
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
 
-        $worker3 = new Worker();
-        $worker3->setId(30);
-        $worker3->setTypeId(3);
+        $worker3->getId()->willReturn(30);
+        $worker3->getTypeId()->willReturn(3);
 
-        $worker5 = new Worker();
-        $worker5->setId(50);
-        $worker5->setTypeId(5);
+        $worker3->getId()->willReturn(50);
+        $worker3->getTypeId()->willReturn(5);
 
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_SIMULRING);
@@ -250,39 +350,35 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $taskHelper->getWorkerAgent($task)->willReturn(null);
 
         $storage->getTaskQueue('voice', 1)->willReturn($taskQueue);
-        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1, $worker5]);
-        $workerHelper->getForwardingCallWorkers()->willReturn([$worker1]);
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
-        $task->getRejectedBy()->willReturn([]);
         $task->setWorkersIds([10, 50])->shouldBeCalled();
 
-        $this->assignTask($task);
+        $this->assignTask($task, [$worker1, $worker3, $worker5]);
     }
 
     public function it_handles_least_utilized_queue(
+        Worker $worker1,
+        Worker $worker2,
+        Worker $worker3,
+        Worker $worker4,
         VoiceQueue $queue,
         Task $task,
         TaskQueue $taskQueue,
-        WorkerHelper $workerHelper,
         VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
-        $worker1 = new Worker();
-        $worker1->setId(10);
-        $worker1->setTypeId(1);
+        $worker1->getId()->willReturn(10);
+        $worker1->getTypeId()->willReturn(1);
 
-        $worker2 = new Worker();
-        $worker2->setId(20);
-        $worker2->setTypeId(2);
+        $worker2->getId()->willReturn(20);
+        $worker2->getTypeId()->willReturn(2);
 
-        $worker3 = new Worker();
-        $worker3->setId(30);
-        $worker3->setTypeId(3);
+        $worker3->getId()->willReturn(30);
+        $worker3->getTypeId()->willReturn(3);
 
-        $worker4 = new Worker();
-        $worker4->setId(40);
-        $worker4->setTypeId(4);
+        $worker4->getId()->willReturn(40);
+        $worker4->getTypeId()->willReturn(4);
 
         $queue->getId()->willReturn(1);
         $queue->getMaxQueueSize()->willReturn(2);
@@ -299,31 +395,27 @@ class VoiceWorkflowSpec extends ObjectBehavior
         ]);
 
         $storage->getTaskQueue('voice', 1)->willReturn($taskQueue);
-        $storage->getOnlineWorkersByType('agent')->willReturn([$worker1, $worker4]);
-        $workerHelper->getForwardingCallWorkers()->willReturn([$worker2, $worker3]);
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
-        $task->getRejectedBy()->willReturn([]);
         $task->setWorkersIds([30, 10])->shouldBeCalled();
 
-        $this->assignTask($task);
+        $this->assignTask($task, [$worker1, $worker2, $worker3, $worker4]);
     }
 
     public function it_keeps_least_utilized_up_to_date(
+        Worker $worker3,
+        Worker $worker4,
         VoiceQueue $queue,
         Task $task,
         TaskQueue $taskQueue,
-        WorkerHelper $workerHelper,
         VoiceTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
-        $worker3 = new Worker();
-        $worker3->setId(30);
-        $worker3->setTypeId(3);
+        $worker3->getId()->willReturn(30);
+        $worker3->getTypeId()->willReturn(3);
 
-        $worker4 = new Worker();
-        $worker4->setId(40);
-        $worker4->setTypeId(4);
+        $worker4->getId()->willReturn(40);
+        $worker4->getTypeId()->willReturn(4);
 
         $queue->getId()->willReturn(1);
         $queue->getMaxQueueSize()->willReturn(2);
@@ -340,13 +432,10 @@ class VoiceWorkflowSpec extends ObjectBehavior
         ]);
 
         $storage->getTaskQueue('voice', 1)->willReturn($taskQueue);
-        $storage->getOnlineWorkersByType('agent')->willReturn([$worker3, $worker4]);
-        $workerHelper->getForwardingCallWorkers()->willReturn([]);
         $storage->saveTaskQueue($taskQueue)->shouldBeCalled();
 
-        $task->getRejectedBy()->willReturn([]);
         $task->setWorkersIds([40, 30])->shouldBeCalled();
 
-        $this->assignTask($task);
+        $this->assignTask($task, [$worker3, $worker4]);
     }
 }

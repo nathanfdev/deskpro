@@ -53,6 +53,7 @@ define [
         @agentgroups = data.agentgroups
         @agents      = data.agents
         @brands      = data.brands
+        @chatQueues  = data.chatQueues
 
         @dep_parent_list = data.dep_parent_list
         @setAvatar @dep.avatar

@@ -2,11 +2,14 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\TaskRouter;
 
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 
 /**
  * Class TaskBuilder.
@@ -39,7 +42,7 @@ class TaskBuilder
     public function createVoiceTaskForAgent(VoicePhoneCall $phoneCall, Person $agent, Person $person, array $relatedPeople = [])
     {
         $task = new Task();
-        $task->setChannel('voice');
+        $task->setChannel(VoiceWorkflow::getChannelName());
         $task->setAttributes([
             'agent'          => $agent->getId(),
             'phone_call'     => $phoneCall->getId(),
@@ -65,7 +68,7 @@ class TaskBuilder
     public function createVoiceTaskForQueue(VoicePhoneCall $phoneCall, VoiceQueue $queue, Person $person, array $relatedPeople = [])
     {
         $task = new Task();
-        $task->setChannel('voice');
+        $task->setChannel(VoiceWorkflow::getChannelName());
         $task->setAttributes([
             'queue'          => $queue->getId(),
             'phone_call'     => $phoneCall->getId(),
@@ -73,6 +76,24 @@ class TaskBuilder
             'related_people' => array_map(function (Person $person) {
                 return $person->getId();
             }, $relatedPeople),
+        ]);
+
+        $this->storage->saveTask($task);
+
+        return $task;
+    }
+
+    /**
+     * @param ChatConversation $chat
+     *
+     * @return Task
+     */
+    public function createChatTaskForQueue(ChatConversation $chat)
+    {
+        $task = new Task();
+        $task->setChannel(ChatWorkflow::getChannelName());
+        $task->setAttributes([
+            'chat' => $chat->getId(),
         ]);
 
         $this->storage->saveTask($task);

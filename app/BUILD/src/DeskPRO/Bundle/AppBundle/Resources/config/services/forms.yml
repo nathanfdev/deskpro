@@ -360,6 +360,12 @@ services:
     tags:
       - { name: form.type }
 
+  form.user_chat.queue_settings_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\UserChat\UserChatQueueSettingsType
+    arguments: ["@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: form.type }
+
   form.manual:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType
     arguments:

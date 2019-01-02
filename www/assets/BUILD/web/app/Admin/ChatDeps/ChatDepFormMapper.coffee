@@ -16,6 +16,7 @@ define [
         title: '',
         user_title: '',
         parent_id: '0',
+        chat_queue_id: '0',
         enable_user_title: false,
         brands: [],
       }
@@ -30,6 +31,8 @@ define [
 
         if not Util.isBlank(dep.parent_id)
           form.parent_id = dep.parent_id + ""
+        if not Util.isBlank(dep.chat_queue_id)
+          form.chat_queue_id = dep.chat_queue_id + ""
       else
         for brand in brands
           form.brands.push(brand.id)
@@ -61,11 +64,15 @@ define [
     ###
 
     getPostDataFromForm: (formModel) ->
+      chatQueueId = formModel.chat_queue_id
+      if !chatQueueId || chatQueueId == "0"
+        chatQueueId = null
 
       depData = {}
 
       depData.title           = formModel.title
       depData.parent          = formModel.parent_id || "0"
+      depData.chat_queue      = chatQueueId
       depData.move_tickets_to = 'self'
       depData.avatar          = formModel.avatar
       depData.brands          = formModel.brands

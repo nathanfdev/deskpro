@@ -5,6 +5,11 @@ services:
     arguments:
       - "@settings_resolver"
 
+  chat_settings_resolver:
+    class: DeskPRO\Bundle\VoiceBundle\Settings\ChatSettingsResolver
+    arguments:
+      - "@settings_resolver"
+
   twilio_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter
     arguments:
@@ -51,12 +56,28 @@ services:
       - "@dp.voice.task_router.storage"
       - "@doctrine.orm.entity_manager"
 
+  dp.voice.chat_task_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\ChatTaskHelper
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@chat_settings_resolver"
+
   dp.voice.task_router.voice_workflow:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow
     arguments:
       - "@dp.voice.worker_helper"
       - "@dp.voice.voice_task_helper"
       - "@voice_settings_resolver"
+      - "@dp.voice.task_router.storage"
+    tags:
+      - { name: dp.voice.task_router_workflow }
+
+  dp.voice.task_router.chat_workflow:
+    class: DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.voice.chat_task_helper"
+      - "@chat_settings_resolver"
       - "@dp.voice.task_router.storage"
     tags:
       - { name: dp.voice.task_router_workflow }

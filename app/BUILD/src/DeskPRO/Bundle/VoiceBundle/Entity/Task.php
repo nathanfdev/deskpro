@@ -5,6 +5,8 @@ namespace DeskPRO\Bundle\VoiceBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * todo index status, channel.
+ *
  * @ORM\Entity()
  * @ORM\Table(name="voice_tasks")
  *
@@ -74,6 +76,13 @@ class Task extends AbstractEntity
      * @var \DateTime
      */
     protected $dateCreated;
+
+    /**
+     * @ORM\Column(name="date_expire_assigned", type="datetime", nullable=true)
+     *
+     * @var \DateTime
+     */
+    protected $dateExpireAssigned;
 
     /**
      * @return string
@@ -251,6 +260,26 @@ class Task extends AbstractEntity
     public function setDateCreated(\DateTime $dateCreated = null)
     {
         $this->setModelField('dateCreated', $dateCreated);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateExpireAssigned()
+    {
+        return $this->dateExpireAssigned;
+    }
+
+    /**
+     * @param \DateTime $dateExpireAssigned
+     *
+     * @return $this
+     */
+    public function setDateExpireAssigned(\DateTime $dateExpireAssigned = null)
+    {
+        $this->dateExpireAssigned = $dateExpireAssigned;
 
         return $this;
     }
