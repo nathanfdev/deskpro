@@ -2533,6 +2533,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     $type.first().attr('checked', true);
     $type.first().parent().find('.select-user-item-options').show();
 
+    if ($('.select-user-menu', this.wrapper).length) {
+			this.wrapper.addClass('field-error');
+		} else if (!this.getEl('field_errors').hasClass('on')) {
+			this.wrapper.removeClass('field-error');
+		}
+
     $type.on('click', function () {
 			var $selected = $(this);
       $('.select-user-item-options', this.wrapper).hide();
