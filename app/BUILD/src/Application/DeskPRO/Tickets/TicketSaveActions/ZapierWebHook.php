@@ -47,6 +47,8 @@ class ZapierWebHook implements TicketSaveActionInterface
 
             $httpClient = new HttpClient(['timeout' => 30]);
 
+            $autoProcessTicket = $ticket->__dp_last_process_save;
+
             if ($state->isNewTicket()) {
                 $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'ticket_created']);
 
@@ -112,7 +114,7 @@ class ZapierWebHook implements TicketSaveActionInterface
             } elseif (!$state->isTrivialChangeSet()) {
                 $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'ticket_update']);
 
-                if (false && !$hooks) {
+                if (!$hooks) {
                     return false;
                 }
 
@@ -149,6 +151,10 @@ class ZapierWebHook implements TicketSaveActionInterface
                         }
                     }
                 }
+            }
+
+            if ($autoProcessTicket === false) {
+                $ticket->disableAutoTicketProcess();
             }
 
             return true;
