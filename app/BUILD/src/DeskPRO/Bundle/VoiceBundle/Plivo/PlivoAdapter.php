@@ -631,7 +631,9 @@ class PlivoAdapter implements VoiceProviderInterface
         return new ProxyRestClient(
             $account->getAccountId(),
             $account->getAuthToken(),
-            $this->settingsResolver->getPlivoProxyHost()
+            $this->settingsResolver->getPlivoProxyHost(),
+            $this->settingsResolver->getPlivoProxyUsername(),
+            $this->settingsResolver->getPlivoProxyPassword()
         );
     }
 }
