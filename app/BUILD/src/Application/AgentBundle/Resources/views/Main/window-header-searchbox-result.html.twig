@@ -17,30 +17,7 @@
 				<div class="bound-fade"></div>
 				<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
 				<div class="status-pill status urgency-<%= ticket_display.urgency %> <% if (ticket_display.status == 'pending') { %>awaiting_agent<% } %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
-					<% if (ticket_display.status == 'awaiting_agent') { %>
-						<label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
-					<% } %>
-          <% if (ticket_display.status == 'pending') { %>
-            <label>{{ phrase('agent.tickets.status_pending') }}</label>
-          <% } %>
-					<% if (ticket_display.status == 'awaiting_user') { %>
-						<label>{{ phrase('agent.tickets.status_awaiting_user') }}</label>
-					<% } %>
-					<% if (ticket_display.status == 'resolved') { %>
-						<label>{{ phrase('agent.tickets.status_resolved') }}</label>
-					<% } %>
-					<% if (ticket_display.status == 'archived') { %>
-						<label>{{ phrase('agent.tickets.status_archived') }}</label>
-					<% } %>
-					<% if (ticket_display.status == 'hidden' && !ticket_display.hidden_status) { %>
-						<label>{{ phrase('agent.tickets.status_hidden') }}</label>
-					<% } %>
-					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'deleted') { %>
-						<label>{{ phrase('agent.tickets.status_hidden_deleted') }}</label>
-					<% } %>
-					<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'spam') { %>
-						<label>{{ phrase('agent.tickets.status_hidden_spam') }}</label>
-					<% } %>
+          <label><%= ticket_display.ticket_status.display_title %></label>
 
 					<% if (ticket_display.status == 'awaiting_agent' || ticket_display.status == 'pending') { %>
 						<i class="ticket-urgency"><%= ticket_display.urgency %></i>
@@ -103,16 +80,9 @@
 				<div class="on-hold" ng-if="ticket.is_hold">{{ phrase('agent.tickets.on_hold') }}</div>
 				<div class="status-pill status urgency-{{ ng_var('ticket.urgency') }} {{ ng_var('ticket.status') }}"
              ng-class="{awaiting_agent: ticket.status == 'pending'}">
-					<span ng-switch="ticket.status">
-						<label ng-switch-when="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
-						<label ng-switch-when="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</label>
-						<label ng-switch-when="resolved">{{ phrase('agent.tickets.status_resolved') }}</label>
-						<label ng-switch-when="archived">{{ phrase('agent.tickets.status_archived') }}</label>
-						<label ng-switch-when="hidden">{{ phrase('agent.tickets.status_hidden') }}</label>
-            <label ng-switch-when="pending">{{ phrase('agent.tickets.status_pending') }}</label>
-					</span>
+          <span><label>{{ ng_var('ticket.ticket_status.display_title') }}</label></span>
 
-					<i ng-if="ticket.status == 'awaiting_agent'" class="ticket-urgency">{{ ng_var('ticket.urgency') }}</i>
+					<i ng-if="ticket.status == 'awaiting_agent' || ticket.status == 'pending'" class="ticket-urgency">{{ ng_var('ticket.urgency') }}</i>
 				</div>
 			</div>
 		</div>

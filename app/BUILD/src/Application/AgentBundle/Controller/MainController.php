@@ -614,6 +614,12 @@ class MainController extends AbstractController
                         'agent'   => null,
                     ];
 
+                    $ticketStatus                 = $r->getTicketStatus();
+                    $ticket_info['ticket_status'] = [
+                        'title'         => $ticketStatus->getTitle(),
+                        'display_title' => $ticketStatus->getDisplayTitle(),
+                    ];
+
                     $agent = $ticket_display->getAgent($r);
                     if ($agent) {
                         $ticket_info['agent'] = $render_person($agent);

@@ -26,7 +26,7 @@
 			<div class="bound-fade"></div>
 			{% if ticket.is_hold %}<div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div>{% endif %}
 			<div class="status-pill status urgency-{{ ticket.urgency }} {% if ticket.status == 'pending' %} awaiting_agent {% endif %} {{ticket.status}} {{ ticket.status}}_{{ticket.hidden_status }}">
-				<label>{{ phrase('agent.tickets.status_' ~ ticket.status) }}</label>
+				<label>{{ ticket.ticketStatus.displayTitle }}</label>
 				{% if ticket.status == 'awaiting_agent' or  ticket.status == 'pending'%}<i class="ticket-urgency" data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
 			</div>
 			{% if ticket.agent %}

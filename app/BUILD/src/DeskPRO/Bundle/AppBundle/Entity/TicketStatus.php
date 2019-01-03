@@ -215,6 +215,14 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return string
+     */
+    public function getDisplayTitle()
+    {
+        return $this->getTitle();
+    }
+
+    /**
      * @return TicketStatus|null
      */
     public function getParent()
