@@ -114,7 +114,7 @@ class QueueForm extends BaseForm {
               <button className={classNames('ui button', { loading: saving })}>
                 {queue ? 'Update' : 'Create'}
               </button>
-              {queue &&
+              {queue && queues.size > 1 &&
               <span className="voice-delete-button" onClick={deleteQueue}>
                 Delete this queue
               </span>}
