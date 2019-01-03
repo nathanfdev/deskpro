@@ -36,7 +36,7 @@ class CorsListener extends NelmioCorsListener
         }
 
         if ($origins = $this->settingsResolver->getSetting(MessengerSettingsResolver::EMBED_AUTHORIZE_DOMAINS)) {
-            $settingsUrls = array_map('trim', explode($origins, ','));
+            $settingsUrls = array_map('trim', explode(',', $origins));
         }
 
         $options['allow_origin'] = array_merge($brandUrls, $settingsUrls);
