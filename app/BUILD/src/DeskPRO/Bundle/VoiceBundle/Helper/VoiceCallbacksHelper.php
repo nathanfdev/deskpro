@@ -739,7 +739,6 @@ class VoiceCallbacksHelper
 
             if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
                 // mark the phone call as started
-                $phoneCall->setDateStarted(new \DateTime());
                 $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
 
                 $this->em->flush();

@@ -1013,6 +1013,9 @@ class PlivoCallbacksController extends BaseController
             if ($phoneCall) {
                 $plivoXml->addConference($phoneCall->getConferenceName(), [
                     'endConferenceOnExit' => true,
+                    'callbackUrl'         => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
+                    'callbackMethod'      => 'POST',
+                    'record'              => true,
                 ]);
             }
         }
