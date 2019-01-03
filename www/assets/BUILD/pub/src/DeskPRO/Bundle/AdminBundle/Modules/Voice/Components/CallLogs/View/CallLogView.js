@@ -83,7 +83,7 @@ class CallLogView extends React.Component {
                   ? <button onClick={event => this.openDialpad(event, fromNumber)}>
                     {fromNumber}
                   </button>
-                  : number.get('number')
+                  : <span x-ms-format-detection="none">{number.get('number')}</span>
                 }
               </td>
             </tr>
@@ -91,7 +91,7 @@ class CallLogView extends React.Component {
               <th>To Number</th>
               <td>
                 {isInbound
-                  ? number.get('number')
+                  ? <span x-ms-format-detection="none">{number.get('number')}</span>
                   : <button onClick={event => this.openDialpad(event, toNumber)}>
                     {toNumber}
                   </button>
@@ -128,7 +128,7 @@ class CallLogView extends React.Component {
                     {Object.keys(rawData).map(key =>
                       <tr key={key}>
                         <th width="140">{key}</th>
-                        <td>{rawData[key]}</td>
+                        <td x-ms-format-detection="none">{rawData[key]}</td>
                       </tr>
                     )}
                   </tbody>
@@ -165,7 +165,7 @@ class CallLogView extends React.Component {
                           <td width="100">
                             [{time}]
                           </td>
-                          <td>
+                          <td x-ms-format-detection="none">
                             <FormattedMessage
                               id={`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`}
                               values={{
