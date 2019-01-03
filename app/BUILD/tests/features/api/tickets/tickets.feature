@@ -225,6 +225,10 @@ Feature: /tickets endpoint
     Then the response status code should be 200
     And the JSON node "data" should have 4 elements
 
+    When I send a GET request to "/api/v2/tickets?not_status[]=hidden.{ts2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 5 elements
+
     When I send a GET request to "/api/v2/tickets?status[]=awaiting_user&status[]=hidden.{ts2}"
     Then the response status code should be 200
     And the JSON node "data" should have 2 elements

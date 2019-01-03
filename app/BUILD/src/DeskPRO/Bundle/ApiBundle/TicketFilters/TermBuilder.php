@@ -355,13 +355,18 @@ class TermBuilder
 
             if (strpos($status, '.') !== false) {
                 list($status, $statusId) = explode('.', $status, 2);
-                $part                    = sprintf(
-                    "(%s = '%s' AND %s = %s)",
-                    TermFieldIds::TICKET_STATUS, $status,
-                    TermFieldIds::TICKET_TICKET_STATUS_ID, $statusId
-                );
                 if ($isNot) {
-                    $part = '(NOT'.$part.')';
+                    $part = sprintf(
+                        '(%s != %s)',
+                        TermFieldIds::TICKET_TICKET_STATUS_ID,
+                        $statusId
+                    );
+                } else {
+                    $part = sprintf(
+                        "(%s = '%s' AND %s = %s)",
+                        TermFieldIds::TICKET_STATUS, $status,
+                        TermFieldIds::TICKET_TICKET_STATUS_ID, $statusId
+                    );
                 }
                 $myParts[] = $part;
             } else {
@@ -375,7 +380,8 @@ class TermBuilder
         }
 
         if (count($myParts) > 1) {
-            $query = '('.implode(' OR ', $myParts).')';
+            $op    = $isNot ? ' AND ' : ' OR ';
+            $query = '('.implode($op, $myParts).')';
         } else {
             $query = $myParts[0];
         }
