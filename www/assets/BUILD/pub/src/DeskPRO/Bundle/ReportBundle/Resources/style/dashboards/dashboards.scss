@@ -1451,6 +1451,11 @@ $gridster-box-header-height: 40px;
             font-size: 11px;
           }
         }
+        &.editing {
+          a:nth-child(2) {
+            margin-left: 0;
+          }
+        }
       }
 
       &:hover {
