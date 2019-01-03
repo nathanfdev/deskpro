@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoAvailableNumber;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoExistingNumber;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoPaginate;
@@ -231,12 +232,13 @@ class PlivoAdapter implements VoiceProviderInterface
      * @param string      $toNumber
      * @param string      $answerUrl
      * @param string      $answerMethod
+     * @param mixed       $exception
      *
      * @throws \Exception
      *
      * @return string|bool
      */
-    public function callNumber(VoiceNumber $fromNumber, $toNumber, $answerUrl, $answerMethod)
+    public function callNumber(VoiceNumber $fromNumber, $toNumber, $answerUrl, $answerMethod, &$exception = false)
     {
         $account = $fromNumber->getAccount();
         if (!$account instanceof PlivoVoiceAccount) {
@@ -254,6 +256,12 @@ class PlivoAdapter implements VoiceProviderInterface
 
             return $call->getRequestUuid();
         } catch (PlivoRestException $e) {
+            if (strpos($e->getErrorMessage(), '"Destination Phone numbers need to be verified.') === 0) {
+                $exception = new UnverifiedException();
+            } else {
+                $exception = $e;
+            }
+
             return false;
         }
     }
