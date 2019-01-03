@@ -23,6 +23,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.onlineUsersWrap = $('#agent_status_online_users');
 		this.statusMenuOpen = false;
 		this.dismissedChats = {};
+		this.newChats = {};
 		this.openingChatTimeout = {};
 		this.refreshCountsTimeout = null;
 		this.onlineAgentIds = [];
@@ -613,8 +614,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}
 
 		if (!data.agent_id) {
-			if (!this.dismissedChats[data.conversation_id]) {
-				var info_line = [];
+			if (!this.dismissedChats[data.conversation_id] && !this.newChats[data.conversation_id]) {
 				this.showNewChatAlert(data);
 			}
 		} else {
@@ -783,6 +783,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		}
 
 		var conversation_id = data.conversation_id;
+		this.newChats[conversation_id] = true;
 
 		// If we already have the chat tab open, it probably means the chat was timed out
 		// but the user came back
