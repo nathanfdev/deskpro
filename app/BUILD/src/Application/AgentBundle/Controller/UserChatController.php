@@ -147,18 +147,13 @@ class UserChatController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        if ($this->get('dp.voice.task_router')->acceptTask($convo->getTaskId(), 'agent', $this->person->getId())) {
-            $assigned = $this->joinConvo($convo);
+        $this->get('dp.voice.task_router')->acceptTask($convo->getTaskId(), 'agent', $this->person->getId());
+        $assigned = $this->joinConvo($convo);
 
-            return $this->createJsonCmResponse([
-                'result'   => 'success',
-                'assigned' => $assigned,
-            ]);
-        } else {
-            return $this->createJsonCmResponse([
-                'result' => 'error',
-            ]);
-        }
+        return $this->createJsonCmResponse([
+            'result'   => 'success',
+            'assigned' => $assigned,
+        ]);
     }
 
     /**
