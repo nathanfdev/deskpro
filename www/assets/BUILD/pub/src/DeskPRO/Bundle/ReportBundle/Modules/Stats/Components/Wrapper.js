@@ -323,8 +323,8 @@ class Wrapper extends React.Component {
     const { reportsLoaded, groupParams, dashboards } = this.props;
     const { reports, labels, activeLabels, searchText, currentReport, currentErrors, reportLoading, mode } = this.state;
 
-    const filteredCustomReports = reports.filter(report => report.get('is_custom')).filter(this.filter);
-    const filteredBuiltInReports = reports.filter(report => !report.get('is_custom')).filter(this.filter);
+    const filteredCustomReports = reports.filter(report => report.get('is_custom')).filter(this.filter).sortBy(r => r.get('title'));
+    const filteredBuiltInReports = reports.filter(report => !report.get('is_custom')).filter(this.filter).sortBy(r => r.get('title'));
 
     return (
       <div className="stats-app-wrapper">
