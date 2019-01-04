@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 
-{% macro substatuses_options(substatuses, parent_title) %}
+{% macro substatuses_options(ticket, substatuses, parent_title) %}
   {% for status in substatuses %}
     <option 
       value="{{ status.statusCode }}"
@@ -17,7 +17,7 @@
     {% elseif ticketStatus.isSpam() %}
       {{ 'hidden_spam' }}
     {% else %}
-      {{ ticketStatus.statusType }} {% if ticketStatus.statusType == 'pending' %} {{ 'awaiting_agent' }} {% endif %}
+      {{ ticketStatus.statusType }} {% if ticketStatus.statusType == 'pending' %} awaiting_agent {% endif %}
     {% endif%}
 {% endmacro %}
 {% import _self as self_macro %}
@@ -328,28 +328,31 @@
                         {% if ticket.status == 'hidden' %}
                             <option value="" selected="selected">{{ phrase('agent.general.hidden') }}</option>
                         {% endif %}
-                        {% if ticket.status == 'pending' %}
-                            <option value="" selected="selected">{{ phrase('agent.tickets.status_pending') }}</option>
-                        {% endif %}
-                        {% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
+                        {% if ticket.status_code == 'awaiting_agent' or ticket_perms.modify_set_awaiting_agent %}
                             <option value="awaiting_agent"
                                     {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
-                            {{ self_macro.substatuses_options(ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent')) }}
+                            {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent')) }}
                         {% endif %}
                         {% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
                             <option value="awaiting_user"
                                     {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_user') }}</option>
-                            {{ self_macro.substatuses_options(ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user')) }}
+                            {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user')) }}
                         {% endif %}
                         {% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
                             <option value="resolved"
                                     {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_resolved') }}</option>
-                            {{ self_macro.substatuses_options(ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved')) }}
+                            {{ self_macro.substatuses_options(ticket, ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved')) }}
                         {% endif %}
                         {% if ticket.status_code == 'archived' %}
                             <option value="archived"
                                     {% if ticket.status_code == 'archived' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_archived') }}</option>
                         {% endif %}
+                        {% if ticket.status_code == 'pending' or (ticket.status == 'awaiting_agent' and ticket_perms.modify_set_hold) %}
+                            <option value="pending"
+                                    {% if ticket.status_code == 'pending' %}selected="selected"{% endif %}
+                            >{{ phrase('agent.tickets.status_pending') }}</option>
+                        {% endif %}
+
                     </select>
 
                     <span id="{{ baseId }}_status_txt" class="urgency-text">
@@ -775,10 +778,6 @@
 
         <ul style="display:none" id="{{ baseId }}_actions_menu">
             <li data-action="change-user">{{ phrase('agent.tickets.change_user_btn') }}</li>
-            <li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold"
-                data-action="set-hold">{{ phrase('agent.tickets.hold_btn') }}</li>
-            <li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold"
-                data-action="unset-hold">{{ phrase('agent.tickets.unhold_btn') }}</li>
             {% if ticket_perms.modify_merge %}
                 <li data-action="split">{{ phrase('agent.tickets.split_messages_into_ticket') }}</li>{% endif %}
             {% if app.user.hasPerm('agent_tickets.create') %}

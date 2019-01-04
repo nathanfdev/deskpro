@@ -38,6 +38,10 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
       status_code += '.' + status_id;
     }
 
+    if (status_classname == 'pending') {
+      status_classname += ' awaiting_agent';
+    }
+
 		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved archived hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
 
 		$('input.status:first', this.ticketPage.valueForm).val(status_code);
@@ -58,15 +62,36 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
           ? this.ticketPage.meta.deletedTicketStatusTitle
           : this.ticketPage.meta.spamTicketStatusTitle
       );
-    } else if (status_code == 'pending') {
-      this.getInterfaceElement().text(this.ticketPage.meta.pendingTicketStatusTitle);
     } else {
       this.ticketPage.getEl('status_code').select2('val', status_code);
       this.ticketPage.getEl('status_code').val(status_code);
       var txt = this.ticketPage.getEl('status_code').find('option:selected').text().trim();
       this.getInterfaceElement().text(txt);
     }
+
+    if (value == 'awaiting_agent') {
+      this.addPendingOption();
+    } else if (value != 'pending') {
+      this.removePendingOption();
+    }
 	},
+
+  addPendingOption: function() {
+    if (this.ticketPage.getEl('status_code').find('option[value="pending"]').length) {
+      return;
+    }
+
+    if (!this.ticketPage.meta.ticket_perms.modify_set_hold) {
+      return;
+    }
+
+    this.ticketPage.getEl('status_code')
+      .append('<option value="pending">'+ this.ticketPage.meta.pendingTicketStatusTitle  +'</option>');
+  },
+
+  removePendingOption: function() {
+    this.ticketPage.getEl('status_code').find('option[value="pending"]').remove();
+  },
 
 	getValue: function() {
 		var data = [];
