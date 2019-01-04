@@ -15,6 +15,7 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias as ObjectAliasEntity;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\AppBundle\ObjectAlias as ObjectAliasDomain;
+use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
@@ -32,24 +33,34 @@ class CustomFieldManager
     private $em;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
+     * @param BrandStack    $brandStack
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, BrandStack $brandStack)
     {
-        $this->em = $em;
+        $this->em         = $em;
+        $this->brandStack = $brandStack;
     }
 
     /**
      * @param string $customFieldType
+     *
+     * @throws \Exception
+     *
      * @return FieldNameResolver
      */
     public function getFieldNameResolver($customFieldType)
     {
         try {
             $aliasFieldNameStrategy = null;
-            $aliasType = ObjectAliasEntity\Aliases::resolveAliasType($customFieldType, $this->em);
+            $aliasType              = ObjectAliasEntity\Aliases::resolveAliasType($customFieldType, $this->em);
             if (empty($aliasType)) {
                 throw new \DomainException('no alias type found');
             }
@@ -58,7 +69,7 @@ class CustomFieldManager
             $repository = $this->em->getRepository($aliasType);
             $strategies = [
                 new ObjectAliasDomain\FieldIdResolvingStrategy(),
-                new ObjectAliasDomain\DefaultIdResolvingStrategy($repository)
+                new ObjectAliasDomain\DefaultIdResolvingStrategy($repository),
             ];
 
             return new FieldNameResolver($strategies);
@@ -189,6 +200,14 @@ class CustomFieldManager
             ->orderBy('f.display_order')
         ;
 
+        if (in_array($entityType, [CustomDefFeedback::class])) {
+            $currentBrand = $this->brandStack->getActive()->getBrand();
+            if ($currentBrand && $currentBrand->getId()) {
+                $qb->andWhere('f.brand = :brand');
+                $qb->setParameter('brand', $currentBrand);
+            }
+        }
+
         $result = new ArrayCollection($qb->getQuery()->getResult());
         $result = $result->filter(function (CustomDefAbstract $def) {
             if ($def->isChoiceType() && !$def->hasChildren()) {
@@ -203,6 +222,8 @@ class CustomFieldManager
 
     /**
      * @param $context
+     *
+     * @throws \Exception
      *
      * @return ArrayCollection
      */
@@ -232,6 +253,8 @@ class CustomFieldManager
 
     /**
      * @param $context
+     *
+     * @throws \Exception
      *
      * @return ArrayCollection collection of {parent_id => children collection} for current context
      */

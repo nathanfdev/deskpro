@@ -29,6 +29,20 @@
 				</article>
 			</section>
 
+            {% if (brands|length) > 1 %}
+				<section>
+					<select class="dp-select-widget-simple brand_id" name="brand_id" id="feedback_brand_id" style="width: 100%">
+                        {% for brand in brands %}
+							<option value="{{ brand.id }}" {% if selected_brand_id == brand.id %}selected="selected"{% endif %}>
+                                {{ brand.name }}
+							</option>
+                        {% endfor %}
+					</select>
+				</section>
+            {% else %}
+				<input type="hidden" name="brand_id" id="feedback_brand_id" value="{{ brands[0].id }}" />
+            {% endif %}
+
 			<section class="pane-section with-tabs last">
 				<nav class="pane-section-tabs" id="feedback_outline_tabstrip">
 					<ul>
@@ -41,14 +55,14 @@
 				<section id="feedback_outline_status" class="deskpro-tab-item">
 					<ul class="nav-list nav-list-small">
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'active'}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'active', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.feedback.status_active') }}</h3>
 								<em class="counter list-counter" id="feedback_status_active_0_count">{{ status_counts.active[0]|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								{% for cat in active_status_cats %}
 									<li class="is-nav-item">
-										<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': cat.id}) }}">
+										<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
 											<h3>{{ cat.title }}</h3>
 											<em class="counter list-counter" id="feedback_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</em>
 										</div>
@@ -57,14 +71,14 @@
 							</ul>
 						</li>
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'closed'}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'closed', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.feedback.status_closed') }}</h3>
 								<em class="counter list-counter" id="feedback_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								{% for cat in closed_status_cats %}
 									<li class="is-nav-item">
-										<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': cat.id}) }}">
+										<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': cat.id, 'brand_id': selected_brand_id}) }}">
 											<h3>{{ cat.title }}</h3>
 											<em class="counter list-counter" id="feedback_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</em>
 										</div>
@@ -73,19 +87,19 @@
 							</ul>
 						</li>
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden'}) }}">
+							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden', 'brand_id': selected_brand_id}) }}">
 								<h3>{{ phrase('agent.general.hidden') }}</h3>
 								<em class="counter list-counter" id="feedback_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</em>
 							</div>
 							<ul class="nav-list-small indented">
 								<li class="is-nav-item">
-									<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.deleted'}) }}">
+									<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.deleted', 'brand_id': selected_brand_id}) }}">
 										<h3>{{ phrase('agent.general.deleted') }}</h3>
 										<em class="counter list-counter" id="feedback_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</em>
 									</div>
 								</li>
 								<li class="is-nav-item">
-									<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.spam' }) }}">
+									<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'hidden.spam', 'brand_id': selected_brand_id}) }}">
 										<h3>{{ phrase('agent.general.spam') }}</h3>
 										<em class="counter list-counter" id="feedback_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</em>
 									</div>
@@ -119,7 +133,7 @@
 										<td class="labels">
 											<ul>
 												{% for label in labels %}
-													<li class="is-nav-item"><span data-route="listpane:{{ path('agent_feedback_label', {'label': label}) }}">{{label}}</span></li>
+													<li class="is-nav-item"><span data-route="listpane:{{ path('agent_feedback_label', {'label': label, 'brand_id': selected_brand_id}) }}">{{label}}</span></li>
 												{% endfor %}
 											</ul>
 										</td>
@@ -139,4 +153,56 @@
 	<div class="pane-content pane-content-search" style="display: none;">
 		{% include 'AgentBundle:Feedback:window-search.html.twig' %}
 	</div>
+
+<div id="deskpro_window_feedback_templates" style="display: none;">
+	<ul id="feedback_category_menu" data-menu-type="feedback-category-menu" data-menu-flag="copy-menu">
+        {% for cat in app.getDataService('FeedbackCategory').getRootNodes(selected_brand_id) %}
+            {% if last_with_child %}
+				<li class="sep">-</li>
+            {% endif %}
+            {% if cat.children|length %}
+				<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
+                {% for subcat in cat.children %}
+					<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
+                {% endfor %}
+                {% set last_with_child = true %}
+            {% else %}
+				<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
+                {% set last_with_child = false %}
+            {% endif %}
+        {% endfor %}
+	</ul>
+
+	<ul id="feedback_status_menu" data-menu-type="feedback-status-menu" data-menu-flag="copy-menu">
+		<li
+				class="status-new"
+				data-status-type="new"
+				data-option-value="new"
+		>{{ phrase('agent.feedback.status_new') }}</li>
+		<li
+				class="section-title status-active"
+				data-status-type="active"
+				data-option-value="active"
+		>{{ phrase('agent.feedback.status_active') }}</li>
+        {% for cat in active_status_cats %}
+			<li
+					class="status-{{cat.id}}"
+					data-status-type="active"
+					data-option-value="active.{{cat.id}}"
+			>{{cat.title}}</li>
+        {% endfor %}
+		<li
+				class="section-title status-closed"
+				data-status-type="closed"
+				data-option-value="closed"
+		>{{ phrase('agent.feedback.status_closed') }}</li>
+        {% for cat in closed_status_cats %}
+			<li
+					class="status-{{cat.id}}"
+					data-status-type="closed"
+					data-option-value="closed.{{cat.id}}"
+			>{{cat.title}}</li>
+        {% endfor %}
+	</ul>
+</div>
 {% endblock %}

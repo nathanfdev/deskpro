@@ -2016,6 +2016,18 @@ $collection->create('agent_downloads_ajax_get_categories', [
     'requirements' => ['brand_id' => '\\d+'],
 ]);
 
+$collection->create('agent_feedback_ajax_get_categories', [
+    'path'         => '/feedback/categories/brand/{brand_id}',
+    'controller'   => 'AgentBundle:Feedback:ajaxGetCategoriesByBrand',
+    'requirements' => ['brand_id' => '\\d+'],
+]);
+
+$collection->create('agent_feedback_ajax_get_statuses', [
+    'path'         => '/feedback/statuses/brand/{brand_id}',
+    'controller'   => 'AgentBundle:Feedback:ajaxGetStatusesByBrand',
+    'requirements' => ['brand_id' => '\\d+'],
+]);
+
 $collection->create('agent_feedback_category', [
     'path'       => '/feedback/category/{category_id}',
     'controller' => 'AgentBundle:Feedback:categoryList',
@@ -2023,16 +2035,17 @@ $collection->create('agent_feedback_category', [
 ]);
 
 $collection->create('agent_feedback_status', [
-    'path'       => '/feedback/status/{status}',
-    'controller' => 'AgentBundle:Feedback:statusList',
-    'options'    => ['fragment_name' => 'status', 'fragment_type' => 'list'],
+    'path'         => '/feedback/status/{brand_id}/{status}',
+    'controller'   => 'AgentBundle:Feedback:statusList',
+    'options'      => ['fragment_name' => 'status', 'fragment_type' => 'list'],
+    'requirements' => ['brand_id' => '\\d+'],
 ]);
 
 $collection->create('agent_feedback_label', [
-    'path'         => '/feedback/label/{label}',
+    'path'         => '/feedback/label/{brand_id}/{label}',
     'controller'   => 'AgentBundle:Feedback:labelList',
     'options'      => ['fragment_name' => 'label', 'fragment_type' => 'list'],
-    'requirements' => ['label' => '.*'],
+    'requirements' => ['label' => '.*', 'brand_id' => '\\d+'],
 ]);
 
 $collection->create('agent_feedback_filter', [

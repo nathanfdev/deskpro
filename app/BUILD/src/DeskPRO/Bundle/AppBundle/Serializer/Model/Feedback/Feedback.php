@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback;
 
 use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\FeedbackAttachment;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Content\ContentAbstract;
 use JMS\Serializer\Annotation as JMS;
 
@@ -82,7 +83,7 @@ class Feedback extends ContentAbstract
      *
      * @JMS\Type("collection<entity<Application\DeskPRO\Entity\FeedbackAttachment>>")
      *
-     * @var TicketAttachment[]
+     * @var FeedbackAttachment[]
      */
     protected $attachments;
 

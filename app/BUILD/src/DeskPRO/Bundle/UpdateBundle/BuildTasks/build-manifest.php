@@ -1117,6 +1117,12 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
+    1543313545 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/11/Build1543313545.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1543313545',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
+    ],
     1543395804 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/11/Build1543395804.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1543395804',
@@ -1129,9 +1135,9 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1543313545 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/11/Build1543313545.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1543313545',
+    1544002910 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/12/Build1544002910.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1544002910',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],

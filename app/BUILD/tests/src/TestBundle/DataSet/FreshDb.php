@@ -1,12 +1,7 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DpTestSrc\TestBundle\DataSet;
 
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\InstallBundle\Data\DefaultDataProcessor;

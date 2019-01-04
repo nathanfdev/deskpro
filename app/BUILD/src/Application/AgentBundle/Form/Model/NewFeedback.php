@@ -8,6 +8,7 @@ namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -26,6 +27,11 @@ class NewFeedback
 
     /** @var string */
     public $title;
+
+    /**
+     * @var Brand
+     */
+    public $brand;
 
     /** @var int */
     public $category_id;
@@ -89,7 +95,8 @@ class NewFeedback
     {
         $this->em->beginTransaction();
 
-        $feedback         = new Feedback();
+        $feedback = new Feedback();
+        $feedback->setBrand($this->brand);
         $feedback->person = $this->getPersonForFeedback();
         $feedback->setStatusCode($this->status_code);
         $feedback->title = $this->title;

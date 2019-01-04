@@ -1,16 +1,12 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\BrandBundle\Brand;
 
-use Application\DeskPRO\Entity\Brand as BrandEntity;
-use Application\DeskPRO\EntityRepository\Brand;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\PortalBundle\Themes\Standard\StandardTheme;
+use Doctrine\ORM\EntityManager;
 
 /**
  * A service that can quickly hand you the default brand (useful in cases here there is no request listener detecting
@@ -21,41 +17,59 @@ class DefaultBrandFinder
     /**
      * @var \Application\DeskPRO\NewSettings\SettingsResolver
      */
-    private $settings_resolver;
+    private $settingsResolver;
 
     /**
-     * @var \Application\DeskPRO\EntityRepository\Brand
+     * @var EntityManager
      */
-    private $brand_repo;
+    private $em;
 
     /**
      * Constructor.
      *
-     * @param SettingsResolver $settings_resolver
-     * @param Brand            $brand_repo
+     * @param SettingsResolver $settingsResolver
+     * @param EntityManager    $em
      */
-    public function __construct(SettingsResolver $settings_resolver, Brand $brand_repo)
+    public function __construct(SettingsResolver $settingsResolver, EntityManager $em)
     {
-        $this->settings_resolver = $settings_resolver;
-        $this->brand_repo        = $brand_repo;
+        $this->settingsResolver = $settingsResolver;
+        $this->em               = $em;
     }
 
     /**
-     * @return BrandEntity
+     * @return Brand
      */
     public function getDefaultBrand()
     {
         $brand = null;
+
         try {
-            $brand = $this->brand_repo->find(
-                $this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1)
-            );
+            // get default brand from settings
+            $defaultBrandId = $this->settingsResolver->getGlobalSettings()->get('portal.default_brand');
+            if ($defaultBrandId) {
+                $brand = $this->em->getRepository(Brand::class)->find($defaultBrandId);
+            }
+
+            // get first brand as fallback
+            if (!$brand) {
+                $brand = $this->em->getRepository(Brand::class)->findOneBy([]);
+            }
         } catch (\Exception $e) {
         }
 
+        return $brand;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getDefaultBrandModel()
+    {
+        $brand = $this->getDefaultBrand();
+
         // if somehow we don't have a database or brand entity, just return a brand that represents a "standard theme"
         if (!$brand) {
-            $brand     = new BrandEntity();
+            $brand     = new Brand();
             $brand->id = 1;
             $theme_set = new ThemeSet();
             $theme_set->setThemeId(StandardTheme::THEME_ID);

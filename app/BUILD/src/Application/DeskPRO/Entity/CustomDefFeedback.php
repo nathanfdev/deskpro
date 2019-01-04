@@ -8,6 +8,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefFeedbackListener;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -38,6 +40,16 @@ class CustomDefFeedback extends CustomDefAbstract
      */
     protected $sys_name = null;
 
+    /**
+     * @var Brand
+     */
+    protected $brand;
+
+    /**
+     * @param $string
+     *
+     * @return $this
+     */
     public function setSysName($string)
     {
         $this->setModelField('sys_name', $string);
@@ -69,12 +81,46 @@ class CustomDefFeedback extends CustomDefAbstract
         return $category;
     }
 
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand(Brand $brand = null)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = [])
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+
+        $data['brand'] = $this->brand ? $this->brand->getId() : null;
+
+        return $data;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
+        $metadata->addEntityListener(Events::prePersist, CustomDefFeedbackListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, CustomDefFeedbackListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefFeedback';
         $metadata->setPrimaryTable(['name' => 'custom_def_feedback']);
@@ -273,6 +319,22 @@ class CustomDefFeedback extends CustomDefAbstract
                         'columnDefinition'     => null,
                     ],
                 ],
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'cascade'      => ['persist'],
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
     }

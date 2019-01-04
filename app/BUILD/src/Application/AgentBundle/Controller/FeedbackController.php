@@ -12,7 +12,7 @@ use Application\AgentBundle\Form\Type\NewFeedback as NewFeedbackTypeOld;
 use Application\AgentBundle\Validator\NewFeedbackValidator;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
@@ -59,6 +59,13 @@ class FeedbackController extends AbstractController
      */
     public function getSectionDataAction()
     {
+        $selectedBrandId = $this->in->getUInt('brand_id');
+        if (!$selectedBrandId) {
+            $selectedBrandId = (int) $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+        if (!$selectedBrandId) {
+            $selectedBrandId = $this->get('brand_stack')->getDefaultBrand()->getId();
+        }
 
         /** @var FeedbackRepository $feedbackRepository */
         /* @var FeedbackCategoryRepository $feedbackCategoryRepository */
@@ -75,16 +82,21 @@ class FeedbackController extends AbstractController
         ];
 
         $statusCounts = [
-            'active' => $feedbackRepository->countActiveGrouped(),
-            'closed' => $feedbackRepository->countClosedGrouped(),
-            'hidden' => $feedbackRepository->countHiddenGrouped(),
+            'active' => $feedbackRepository->countActiveGrouped($selectedBrandId),
+            'closed' => $feedbackRepository->countClosedGrouped($selectedBrandId),
+            'hidden' => $feedbackRepository->countHiddenGrouped($selectedBrandId),
         ];
 
         $categoryCounts = $feedbackRepository->countAllCategoriesGrouped();
 
-        $feedbackCategories     = $feedbackCategoryRepository->getFlatHierarchy();
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($selectedBrandId);
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($selectedBrandId);
+        $feedbackCategories     = array_filter($feedbackCategoryRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
+            return $category['brand_id'] === $selectedBrandId;
+        });
+
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
 
         $labelLister      = new LabelLister('feedback');
         $feedbackTagIndex = $labelLister->getIndexList();
@@ -100,6 +112,8 @@ class FeedbackController extends AbstractController
                     'active_status_cats' => $activeStatusCategories,
                     'closed_status_cats' => $closedStatusCategories,
                     'feedback_tag_index' => $feedbackTagIndex,
+                    'brands'             => $brands,
+                    'selected_brand_id'  => $selectedBrandId,
                 ]
             ),
         ];
@@ -208,9 +222,11 @@ class FeedbackController extends AbstractController
         $relatedContent         = $relatedFinder->getRelatedEntities(true);
         $feedbackRevisions      = $feedback->getRevisions();
         $stickySearchWords      = $searchStickyResultRepository->getWordsForObject($feedback);
-        $feedbackCategories     = $feedbackCategoryRepository->getInHierarchy();
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($feedback->getBrand());
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($feedback->getBrand());
+        $feedbackCategories     = array_filter($feedbackCategoryRepository->getInHierarchy(), function ($category) use ($feedback) {
+            return $feedback->getBrand() && $category['brand_id'] === $feedback->getBrand()->getId();
+        });
 
         //@TODO: related entities fetching optimization
         $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
@@ -268,6 +284,44 @@ class FeedbackController extends AbstractController
                 'feedback_votes' => $feedback_votes,
             ]
         );
+    }
+
+    public function ajaxGetCategoriesByBrandAction($brand_id)
+    {
+        $feedbackCategories = array_filter($this->em->getRepository(FeedbackCategory::class)->getFlatHierarchy(), function ($category) use ($brand_id) {
+            return $category['brand_id'] === (int) $brand_id;
+        });
+
+        return $this->render('AgentBundle:Common:select-standard.html.twig', [
+            'name'             => 'newfeedback[category_id]',
+            'id'               => '_cat',
+            'add_classname'    => 'category_id',
+            'add_attr'         => '',
+            'with_blank'       => 0,
+            'blank_title'      => '',
+            'categories'       => $feedbackCategories,
+            'allow_parent_sel' => true,
+        ]);
+    }
+
+    public function ajaxGetStatusesByBrandAction($brand_id)
+    {
+        $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
+
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($brand_id);
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($brand_id);
+
+        return $this->render('AgentBundle:Common:select-feedback-status.html.twig', [
+            'name'               => 'newfeedback[status_code]',
+            'id'                 => '_cat',
+            'add_classname'      => 'status_id',
+            'add_attr'           => '',
+            'with_blank'         => 0,
+            'blank_title'        => '',
+            'active_status_cats' => $activeStatusCategories,
+            'closed_status_cats' => $closedStatusCategories,
+            'allow_parent_sel'   => true,
+        ]);
     }
 
     /**
@@ -833,6 +887,7 @@ class FeedbackController extends AbstractController
             null,
             [
                 'list_type'    => 'category',
+                'brand_id'     => $cat->getBrand() ? $cat->getBrand()->getId() : null,
                 'category_id'  => $category_id,
                 'page_title'   => $cat->getFullTitle(),
                 'grouped'      => $grouped,
@@ -846,16 +901,18 @@ class FeedbackController extends AbstractController
     /**
      * A shortcut to run a filter on a label.
      *
+     * @param int    $brand_id
      * @param string $label
      *
      * @return Response
      */
-    public function labelListAction($label)
+    public function labelListAction($brand_id, $label)
     {
         $resultHelper = FeedbackResults::newFromRequest(
             $this,
             [
                 'specific_terms' => [
+                    ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
                     ['type' => 'label', 'op' => 'is', 'label' => $label],
                     ['type' => 'status', 'op' => 'not', 'status' => 'hidden'],
                 ],
@@ -866,9 +923,10 @@ class FeedbackController extends AbstractController
             $resultHelper,
             null,
             [
-                'list_type'  => 'label',
-                'label'      => $label,
-                'page_title' => $label,
+                'list_type'         => 'label',
+                'label'             => $label,
+                'page_title'        => $label,
+                'selected_brand_id' => $brand_id,
             ]
         );
     }
@@ -876,11 +934,12 @@ class FeedbackController extends AbstractController
     /**
      * A shortcut to run a filter on a status.
      *
+     * @param int    $brand_id
      * @param string $status
      *
      * @return Response
      */
-    public function statusListAction($status)
+    public function statusListAction($brand_id, $status)
     {
         // $status can be either a top-level name like active, closed or hidden,
         // or an integer which will be treated as a status category (Active > Planned for example)
@@ -891,6 +950,7 @@ class FeedbackController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
+                        'brand'    => ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
                         'status'   => ['type' => 'status', 'op' => 'is', 'status' => $status],
                         'v_status' => ['type' => 'hidden_status', 'op' => 'is', 'hidden_status' => $v_status],
                     ],
@@ -901,6 +961,7 @@ class FeedbackController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
+                        'brand'  => ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
                         'status' => ['type' => 'status', 'op' => 'is', 'status' => $status],
                     ],
                 ]
@@ -912,6 +973,7 @@ class FeedbackController extends AbstractController
                 $this,
                 [
                     'specific_terms' => [
+                        'brand'    => ['type' => 'brand', 'op' => 'is', 'brand' => $brand_id],
                         'status'   => ['type' => 'status', 'op' => 'is', 'status' => $status],
                         'category' => [
                             'type'     => 'category',
@@ -934,10 +996,11 @@ class FeedbackController extends AbstractController
             $resultHelper,
             null,
             [
-                'list_type' => 'status',
-                'status'    => $status,
-                'grouped'   => $grouped,
-                'subgroup'  => $this->in->getString('subgroup'),
+                'list_type'         => 'status',
+                'status'            => $status,
+                'grouped'           => $grouped,
+                'subgroup'          => $this->in->getString('subgroup'),
+                'selected_brand_id' => $brand_id,
             ]
         );
     }
@@ -965,15 +1028,19 @@ class FeedbackController extends AbstractController
             $template = str_replace('.html.twig', '-part.html.twig', $template);
         }
 
+        $brandId = isset($templateVars['brand_id']) ? $templateVars['brand_id'] : null;
+
         /** @var FeedbackCategoryRepository $feedbackCategoryRepository */
         /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
         $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
         $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
 
         // Options for the filter form
-        $feedbackCategories     = $feedbackCategoryRepository->getFlatHierarchy();
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($brandId);
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($brandId);
+        $feedbackCategories     = array_filter($feedbackCategoryRepository->getFlatHierarchy(), function ($category) use ($brandId) {
+            return $category['brand_id'] === $brandId;
+        });
 
         $displayFields = $this->person->getPref('agent.ui.feedback-filter-display-fields.0')
             ?: [
@@ -1230,6 +1297,11 @@ class FeedbackController extends AbstractController
             }
         }
 
+        $selectedBrandId = (int) $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        if (!$selectedBrandId) {
+            $selectedBrandId = $this->get('brand_stack')->getDefaultBrand()->getId();
+        }
+
         /** @var PersonPrefRepository $personPrefRepository */
          /* @var FeedbackCategoryRepository       $feedbackCategoryRepository */
          /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
@@ -1237,11 +1309,15 @@ class FeedbackController extends AbstractController
         $feedbackCategoryRepository       = $this->em->getRepository(FeedbackCategory::class);
         $feedbackStatusCategoryRepository = $this->em->getRepository(FeedbackStatusCategory::class);
 
-        $feedbackCategories     = $feedbackCategoryRepository->getFlatHierarchy();
-        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
-        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
+        $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories($selectedBrandId);
+        $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories($selectedBrandId);
+        $feedbackCategories     = array_filter($feedbackCategoryRepository->getFlatHierarchy(), function ($category) use ($selectedBrandId) {
+            return $category['brand_id'] === $selectedBrandId;
+        });
 
-        $state = $personPrefRepository->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        $state  = $personPrefRepository->getPrefForPersonId('agent.ui.state.newfeedback', $this->person->id);
 
         return $this->render(
             'AgentBundle:Feedback:newfeedback.html.twig',
@@ -1254,6 +1330,8 @@ class FeedbackController extends AbstractController
                 'active_status_cats'  => $activeStatusCategories,
                 'closed_status_cats'  => $closedStatusCategories,
                 'state'               => $state,
+                'brands'              => $brands,
+                'selected_brand_id'   => $selectedBrandId,
             ]
         );
     }

@@ -1,56 +1,32 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\EntityRepository;
+
+use Application\DeskPRO\Entity\FeedbackStatusCategory as FeedbackStatusCategoryEntity;
 
 /**
  * Class FeedbackStatusCategory.
  */
 class FeedbackStatusCategory extends AbstractEntityRepository
 {
-    /** @var array|null */
-    protected $active_cats = null;
-    /** @var array|null */
-    protected $closed_cats = null;
-
-    public function reload()
+    /**
+     * @param int|\Application\DeskPRO\Entity\Brand $brand
+     *
+     * @return FeedbackStatusCategory[]
+     */
+    public function getActiveCategories($brand = null)
     {
-        $this->active_cats = $this->getEntityManager()->createQuery('
-            SELECT c
-            FROM DeskPRO:FeedbackStatusCategory c INDEX BY c.id
-            WHERE c.status_type = ?1
-            ORDER BY c.display_order DESC
-        ')->setParameter(1, 'active')->execute();
-
-        $this->closed_cats = $this->getEntityManager()->createQuery('
-            SELECT c
-            FROM DeskPRO:FeedbackStatusCategory c INDEX BY c.id
-            WHERE c.status_type = ?1
-            ORDER BY c.display_order DESC
-        ')->setParameter(1, 'closed')->execute();
+        return $this->getCategoriesForType('active', $brand);
     }
 
-    public function getActiveCategories()
+    /**
+     * @param int|\Application\DeskPRO\Entity\Brand $brand
+     *
+     * @return FeedbackStatusCategory[]
+     */
+    public function getClosedCategories($brand = null)
     {
-        if ($this->active_cats === null) {
-            $this->reload();
-        }
-
-        return $this->active_cats;
-    }
-
-    public function getClosedCategories()
-    {
-        if ($this->closed_cats === null) {
-            $this->reload();
-        }
-
-        return $this->closed_cats;
+        return $this->getCategoriesForType('closed', $brand);
     }
 
     public function getNames(array $for_ids = null)
@@ -65,5 +41,30 @@ class FeedbackStatusCategory extends AbstractEntityRepository
         }
 
         return $ret;
+    }
+
+    /**
+     * @param string                                $type
+     * @param int|\Application\DeskPRO\Entity\Brand $brand
+     *
+     * @return array
+     */
+    private function getCategoriesForType($type, $brand = null)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('c')
+            ->from(FeedbackStatusCategoryEntity::class, 'c', 'c.id')
+            ->where('c.status_type = :type')
+            ->orderBy('c.display_order', 'DESC')
+            ->setParameter('type', $type)
+        ;
+
+        if ($brand) {
+            $qb->andWhere('c.brand = :brand');
+            $qb->setParameter('brand', $brand);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

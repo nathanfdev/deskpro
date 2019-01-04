@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\FeedbackCategories;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Doctrine\ORM\EntityManager;
 
@@ -17,7 +18,7 @@ class FeedbackCategories
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\Entity\CustomDefFeedback
+     * @var \Application\DeskPRO\Entity\CustomDefFeedback[]
      */
     protected $parent_category;
 
@@ -26,14 +27,20 @@ class FeedbackCategories
      */
     protected $feedback_categories;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->createInitialFeedbackCategoryIfNotDefined();
     }
 
     /**
      * Loads data from the database.
+     *
+     * @param Brand $brand
      */
     private function preload()
     {
@@ -41,7 +48,15 @@ class FeedbackCategories
             return;
         }
 
-        $this->feedback_categories = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getAllFlatData($this->parent_category);
+        $this->feedback_categories = [];
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        foreach ($brands as $brand) {
+            $this->feedback_categories = array_merge(
+                $this->feedback_categories,
+                $this->em->getRepository('DeskPRO:CustomDefFeedback')->getAllFlatData($this->getParentCategory($brand))
+            );
+        }
     }
 
     /**
@@ -93,33 +108,41 @@ class FeedbackCategories
 
     /**
      * Attempts to create initial (parent) category for all hierarchy of categories.
+     *
+     * @param Brand $brand
      */
-    protected function createInitialFeedbackCategoryIfNotDefined()
+    protected function createInitialFeedbackCategoryIfNotDefined(Brand $brand)
     {
-        $this->parent_category = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getCategoryField();
+        $this->parent_category[$brand->getId()] = $this->em->getRepository('DeskPRO:CustomDefFeedback')->getCategoryField($brand);
 
-        if (!$this->parent_category) {
-            $this->parent_category                = new CustomDefFeedback();
-            $this->parent_category->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
-            $this->parent_category->title         = 'Category';
-            $this->parent_category->sys_name      = 'cat';
-            $this->parent_category->description   = 'Category';
+        if (!$this->parent_category[$brand->getId()]) {
+            $this->parent_category[$brand->getId()]                = new CustomDefFeedback();
+            $this->parent_category[$brand->getId()]->handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
+            $this->parent_category[$brand->getId()]->setBrand($brand);
+            $this->parent_category[$brand->getId()]->title       = 'Category';
+            $this->parent_category[$brand->getId()]->sys_name    = 'cat';
+            $this->parent_category[$brand->getId()]->description = 'Category';
 
-            $this->em->persist($this->parent_category);
+            $this->em->persist($this->parent_category[$brand->getId()]);
             $this->em->flush();
         }
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return CustomDefFeedback
      */
-    public function getParentCategory()
+    public function getParentCategory(Brand $brand = null)
     {
-        if (!$this->parent_category) {
-            $this->createInitialFeedbackCategoryIfNotDefined();
+        if (!$brand) {
+            return;
+        }
+        if (!isset($this->parent_category[$brand->getId()])) {
+            $this->createInitialFeedbackCategoryIfNotDefined($brand);
         }
 
-        return $this->parent_category;
+        return $this->parent_category[$brand->getId()];
     }
 
     /**

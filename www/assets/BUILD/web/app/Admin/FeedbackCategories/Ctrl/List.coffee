@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
 
+      @$scope.brand_id = @$stateParams.brandId
       @feedback_categories = []
       @parent_data = []
       @child_data = {}
@@ -51,7 +52,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     initialLoad: ->
 
-      list_promise = @FeedbackCategoriesData.loadList().then( (recs) =>
+      promises = []
+      promises.push @FeedbackCategoriesData.loadList().then( (recs) =>
 
         @initHierarchyData(@sort recs.values())
 
@@ -62,7 +64,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         )
       )
 
-      return @$q.all([list_promise])
+      return @$q.all(promises)
 
     initHierarchyData: (feedback_categories) ->
 

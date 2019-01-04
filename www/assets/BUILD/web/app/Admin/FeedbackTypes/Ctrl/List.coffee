@@ -6,7 +6,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     init: ->
 
+      @$scope.brand_id = @$stateParams.brandId
       @feedback_types = [];
+      @brands = [];
 
       @sortedListOptions = {
 
@@ -49,7 +51,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     initialLoad: ->
 
-      list_promise = @FeedbackTypesData.loadList().then( (recs) =>
+      promises = []
+      promises.push @FeedbackTypesData.loadList().then( (recs) =>
 
         @feedback_types = @sort recs.values()
 
@@ -60,7 +63,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         )
       )
 
-      return @$q.all([list_promise])
+      return @$q.all(promises)
 
     ###
   # Show the delete dlg

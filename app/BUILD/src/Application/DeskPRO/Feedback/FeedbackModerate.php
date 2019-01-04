@@ -122,31 +122,25 @@ class FeedbackModerate implements PersonContextInterface
         }
 
         if ($becameReviewed) {
-            $agent            = $this->personContext;
-            $mailer           = $this->mailer;
-            $featureFlags     = $this->featureFlags;
-            $viewModelFactory = $this->userViewmodelFactory;
-            $mailerUtils      = $this->mailerUtils;
+            $this->brandStack->pushTemporary(
+                $feedback->getBrand(),
+                function () use ($feedback) {
+                    if ($this->featureFlags->hasBeta('email_templates')) {
+                        $viewModel = $this->userViewmodelFactory->createFeedbackApprovedModel($feedback, $this->personContext);
+                        $this->mailerUtils->sendModelWithPersonContext($feedback->getPerson(), $viewModel, ['to' => $feedback->getPerson()]);
+                    } else {
+                        $vars = [
+                            'feedback' => $feedback,
+                            'agent'    => $this->personContext,
+                        ];
+                        $message = $this->mailer->createMessage();
+                        $message->setToPerson($feedback->getPerson());
+                        $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
 
-            if ($featureFlags->hasBeta('email_templates')) {
-                $viewModel = $this->brandStack->pushTemporary(
-                    $feedback->getPerson()->getBrands()->first(),
-                    function () use ($viewModelFactory, $feedback, $agent) {
-                        return $viewModelFactory->createFeedbackApprovedModel($feedback, $agent);
+                        $this->mailerUtils->sendWithPersonContext($message, $feedback->getPerson(), $feedback->getBrand());
                     }
-                );
-                $mailerUtils->sendModelWithPersonContext($feedback->getPerson(), $viewModel, ['to' => $feedback->getPerson()]);
-            } else {
-                $vars = [
-                    'feedback' => $feedback,
-                    'agent'    => $agent,
-                ];
-                $message = $mailer->createMessage();
-                $message->setToPerson($feedback->getPerson());
-                $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
-
-                $mailerUtils->sendWithPersonContext($message, $feedback->getPerson());
-            }
+                }
+            );
         }
     }
 
@@ -173,26 +167,25 @@ class FeedbackModerate implements PersonContextInterface
             throw $e;
         }
 
-        $agent            = $this->personContext;
-        $mailer           = $this->mailer;
-        $featureFlags     = $this->featureFlags;
-        $viewModelFactory = $this->userViewmodelFactory;
-        $mailerUtils      = $this->mailerUtils;
+        $this->brandStack->pushTemporary(
+            $feedback->getBrand(),
+            function () use ($feedback, $reason) {
+                if ($this->featureFlags->hasBeta('email_templates')) {
+                    $viewModel = $this->userViewmodelFactory->createFeedbackDisapprovedModel($feedback, $this->personContext, $reason);
+                    $this->mailerUtils->sendModelWithPersonContext($feedback->getPerson(), $viewModel, ['to' => $feedback->getPerson()]);
+                } else {
+                    $vars = [
+                        'feedback' => $feedback,
+                        'agent'    => $this->personContext,
+                        'reason'   => $reason,
+                    ];
+                    $message = $this->mailer->createMessage();
+                    $message->setToPerson($feedback->getPerson());
+                    $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
 
-        if ($featureFlags->hasBeta('email_templates')) {
-            $viewModel = $viewModelFactory->createFeedbackDisapprovedModel($feedback, $agent, $reason);
-            $mailerUtils->sendModelWithPersonContext($feedback->getPerson(), $viewModel, ['to' => $feedback->getPerson()]);
-        } else {
-            $vars = [
-                'feedback' => $feedback,
-                'agent'    => $agent,
-                'reason'   => $reason,
-            ];
-            $message = $mailer->createMessage();
-            $message->setToPerson($feedback->getPerson());
-            $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
-
-            $mailerUtils->sendWithPersonContext($message, $feedback->getPerson());
-        }
+                    $this->mailerUtils->sendWithPersonContext($message, $feedback->getPerson(), $feedback->getBrand());
+                }
+            }
+        );
     }
 }

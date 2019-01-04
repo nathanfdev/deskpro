@@ -1,4 +1,4 @@
-<select name="{{ name }}">
+<select name="{{ name }}" class="{{ add_classname }}">
 	<optgroup label="{{ phrase('agent.feedback.status_active') }}">
 		{% for cat in active_status_cats %}
 			<option value="active.{{ cat.id }}">{{ cat.title }}</option>

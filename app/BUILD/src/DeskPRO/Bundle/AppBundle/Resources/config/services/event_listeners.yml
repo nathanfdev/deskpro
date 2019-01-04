@@ -69,13 +69,37 @@ services:
 
   event_listener.doctrine.person:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonListener
-    arguments: ["@doctrine.orm.default_entity_manager", "@settings_resolver"]
+    arguments: ["@default_brand_finder"]
     tags:
       - { name: doctrine.entity_listener }
 
   event_listener.doctrine.usersource:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\UsersourceListener
-    arguments: ["@doctrine.orm.default_entity_manager", "@settings_resolver"]
+    arguments: ["@default_brand_finder"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.feedback:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackListener
+    arguments: ["@brand_stack"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.feedback_category:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackCategoryListener
+    arguments: ["@brand_stack"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.feedback_status_category:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackStatusCategoryListener
+    arguments: ["@brand_stack"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.custom_def_feedback:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefFeedbackListener
+    arguments: ["@brand_stack"]
     tags:
       - { name: doctrine.entity_listener }
 

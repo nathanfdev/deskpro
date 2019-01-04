@@ -23,17 +23,13 @@ define [
 
     initialLoad: ->
 
-      if not @$stateParams.id
-
-        return
-
-      else
-
-        data_promise = @Api.sendGet('/feedback_statuses/' + @$stateParams.id).then((result) =>
+      promises = []
+      if @$stateParams.id
+        promises.push @Api.sendGet('/feedback_statuses/' + @$stateParams.id).then((result) =>
           @feedback_status = result.data.feedback_status
         )
 
-        return @$q.all([data_promise])
+        return @$q.all(promises)
 
     ###
       # Saves the current form
@@ -41,6 +37,8 @@ define [
       # @return {promise}
     ###
     saveFeedbackStatus: ->
+
+      @feedback_status.brand = @$stateParams.brandId
 
       if not @$scope.form_props.$valid
         return
@@ -57,6 +55,7 @@ define [
       promise.success((result) =>
 
         @feedback_status.id = result.id
+        @feedback_status.brand = result.brand
 
         @stopSpinner('saving_feedback_status', true).then(=>
           @Growl.success(@getRegisteredMessage('saved_feedback_status'))

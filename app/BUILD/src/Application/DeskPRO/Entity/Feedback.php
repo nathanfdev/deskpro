@@ -12,6 +12,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
 use Application\DeskPRO\Labels\LabelManager;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\FeedbackListener;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\AgentLinkRoute;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
@@ -42,6 +43,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
      * Not public (e.g., waiting for review). But agents see it.
      */
     const STATUS_HIDDEN = 'hidden';
+
+    /**
+     * @var Brand
+     */
+    protected $brand;
 
     /**
      * Has this feedback been reviewed by an agent?
@@ -127,6 +133,26 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
         $this->comments    = new ArrayCollection();
         $this->custom_data = new ArrayCollection();
         $this->attachments = new ArrayCollection();
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand(Brand $brand = null)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
     }
 
     /**
@@ -554,6 +580,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
             }
         }
 
+        $data['brand'] = $this->brand ? $this->brand->getId() : null;
+
         return $data;
     }
 
@@ -693,6 +721,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
+        $metadata->addEntityListener(Events::prePersist, FeedbackListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, FeedbackListener::class, 'preUpdate');
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Feedback';
         $metadata->setPrimaryTable(
@@ -1012,6 +1042,22 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface, L
                 'targetEntity' => 'Application\DeskPRO\Entity\FeedbackSlugHistory',
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'feedback',
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'cascade'      => ['persist'],
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+                'dpApi' => true,
             ]
         );
 

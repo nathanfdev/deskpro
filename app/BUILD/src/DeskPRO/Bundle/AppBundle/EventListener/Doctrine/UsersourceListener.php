@@ -2,10 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\NewSettings\SettingsResolver;
-use Doctrine\ORM\EntityManager;
+use DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 /**
@@ -14,25 +12,18 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 class UsersourceListener
 {
     /**
-     * @var EntityManager
+     * @var DefaultBrandFinder
      */
-    private $em;
-
-    /**
-     * @var SettingsResolver
-     */
-    private $settingsResolver;
+    private $defaultBrandFinder;
 
     /**
      * Constructor.
      *
-     * @param EntityManager    $em
-     * @param SettingsResolver $settingsResolver
+     * @param DefaultBrandFinder $defaultBrandFinder
      */
-    public function __construct(EntityManager $em, SettingsResolver $settingsResolver)
+    public function __construct(DefaultBrandFinder $defaultBrandFinder)
     {
-        $this->em               = $em;
-        $this->settingsResolver = $settingsResolver;
+        $this->defaultBrandFinder = $defaultBrandFinder;
     }
 
     /**
@@ -64,20 +55,7 @@ class UsersourceListener
         if (!count($entity->getBrands()) && !$entity->isAllBrands()) {
             // person should have at least one brand
             // set a default one
-
-            $brand = null;
-
-            // get default brand from settings
-            $defaultBrandId = $this->settingsResolver->getGlobalSettings()->get('portal.default_brand');
-            if ($defaultBrandId) {
-                $brand = $this->em->getRepository(Brand::class)->find($defaultBrandId);
-            }
-
-            // get first brand as fallback
-            if (!$brand) {
-                $brand = $this->em->getRepository(Brand::class)->findOneBy([]);
-            }
-
+            $brand = $this->defaultBrandFinder->getDefaultBrand();
             if ($brand) {
                 $entity->addBrand($brand);
             }

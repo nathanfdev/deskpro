@@ -106,21 +106,15 @@ class PortalLoader implements \Twig_LoaderInterface
     }
 
     /**
-     * @throws \RuntimeException
-     *
      * @return \DeskPRO\Bundle\BrandBundle\Brand\BrandContainer
      */
     protected function getBrandContainer()
     {
-        if (!$brand_container = $this->brandStack->getActive()) {
-            $this->brandStack->push($this->brandStack->getDefaultBrand());
+        if (!$brandContainer = $this->brandStack->getActive()) {
+            $brandContainer = $this->brandStack->getDefaultBrandModelContainer();
         }
 
-        if (!$brand_container && !$brand_container = $this->brandStack->getActive()) {
-            throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
-        }
-
-        return $brand_container;
+        return $brandContainer;
     }
 
     /**

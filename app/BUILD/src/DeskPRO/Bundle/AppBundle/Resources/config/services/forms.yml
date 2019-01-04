@@ -28,7 +28,7 @@ services:
 
   custom_field_manager:
     class: DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@brand_stack"]
 
   ticket_layout_factory:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory

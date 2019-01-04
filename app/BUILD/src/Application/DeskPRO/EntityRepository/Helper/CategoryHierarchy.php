@@ -11,6 +11,7 @@ namespace Application\DeskPRO\EntityRepository\Helper;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
@@ -163,7 +164,7 @@ class CategoryHierarchy
             if ($this->table_name == 'departments') {
                 $select = 'id, parent_id, title, user_title';
             }
-            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories'])) {
+            if (in_array($this->table_name, ['article_categories', 'download_categories', 'news_categories', 'feedback_categories'])) {
                 $select = 'id, parent_id, title, brand_id';
             }
 
@@ -487,6 +488,7 @@ class CategoryHierarchy
             ArticleCategory::class,
             DownloadCategory::class,
             NewsCategory::class,
+            FeedbackCategory::class,
         ];
 
         if (in_array($this->class->name, $brandRelatedCategories)) {

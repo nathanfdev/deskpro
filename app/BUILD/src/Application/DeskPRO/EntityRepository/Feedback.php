@@ -51,50 +51,56 @@ class Feedback extends AbstractEntityRepository
      * Count the number of feedback that are 'active', grouped by status category as key.
      * The key 0 will be used as the total.
      *
+     * @param int $brandId
+     *
      * @return array
      */
-    public function countActiveGrouped()
+    public function countActiveGrouped($brandId)
     {
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
             SELECT IFNULL(status_category_id, 0), COUNT(*) as count
             FROM feedback
-            WHERE status = 'active'
+            WHERE status = 'active' AND brand_id = ?
             GROUP BY status_category_id WITH ROLLUP
-        ");
+        ", [$brandId]);
     }
 
     /**
      * Count the number of feedback that are 'active', grouped by status category as key.
      * The key 0 will be used as the total.
      *
+     * @param int $brandId
+     *
      * @return array
      */
-    public function countClosedGrouped()
+    public function countClosedGrouped($brandId)
     {
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
             SELECT IFNULL(status_category_id, 0), COUNT(*) as count
             FROM feedback
-            WHERE status = 'closed'
+            WHERE status = 'closed' AND brand_id = ?
             GROUP BY status_category_id WITH ROLLUP
-        ");
+        ", [$brandId]);
     }
 
     /**
      * Count the number of hidden feedback, groupbed by hidden_status as key.
      * The key 'hidden' will be used as the total.
      *
+     * @param int $brandId
+     *
      * @return array
      */
-    public function countHiddenGrouped()
+    public function countHiddenGrouped($brandId)
     {
         // We dont count validating with this number because
         // in the UI we generally show validating separately
         return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
             SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
             FROM feedback
-            WHERE status = ?
+            WHERE status = ? AND brand_id = ?
             GROUP BY hidden_status WITH ROLLUP
-        ", ['hidden']);
+        ", ['hidden', $brandId]);
     }
 
     /**

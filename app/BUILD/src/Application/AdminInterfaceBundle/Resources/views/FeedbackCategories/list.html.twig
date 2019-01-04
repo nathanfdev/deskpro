@@ -32,7 +32,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list" ui-sortable="FeedbackCategoriesList.sortedListOptions">
-				<li class="with-drag-handle" ng-repeat="category in FeedbackCategoriesList.parent_data" dp-state-mark="portal.feedback_categories.edit.{{ ng_var('category.id') }}" data-id="{{ ng_var('category.id') }}">
+				<li class="with-drag-handle" ng-repeat="category in FeedbackCategoriesList.parent_data" dp-state-mark="portal.feedback_categories.edit.{{ ng_var('category.id') }}" data-id="{{ ng_var('category.id') }}" ng-if="category.brand == brand_id">
 					<a href="{{ ng_href('portal.feedback_categories.edit', '{id: category.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<h4><span class="title-id" title="ID">#{{ ng_var('category.id') }}</span> <span class="title-text">{{ ng_var('category.title') }}</span></h4>

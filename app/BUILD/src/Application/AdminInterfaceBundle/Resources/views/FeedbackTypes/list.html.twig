@@ -24,7 +24,7 @@
 		</header>
 		<article>
 			<ul class="dp-item-list" ui-sortable="FeedbackTypesList.sortedListOptions">
-				<li class="with-drag-handle" ng-repeat="type in FeedbackTypesList.feedback_types" dp-state-mark="portal.feedback_types.edit.{{ ng_var('type.id') }}" data-id="{{ ng_var('type.id') }}">
+				<li class="with-drag-handle" ng-repeat="type in FeedbackTypesList.feedback_types" dp-state-mark="portal.feedback_types.edit.{{ ng_var('type.id') }}" data-id="{{ ng_var('type.id') }}" ng-if="type.brand == brand_id">
 					<a href="{{ ng_href('portal.feedback_types.edit', '{id: type.id}') }}">
 						<i class="fa fa-bars drag-handle"></i>
 						<h4><span class="title-id" title="ID">#{{ ng_var('type.id') }}</span> <span class="title-text">{{ ng_var('type.title') }}</span></h4>

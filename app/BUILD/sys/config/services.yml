@@ -62,7 +62,7 @@ services:
     class: DeskPRO\Bundle\BrandBundle\Brand\BrandStack
     arguments:
       - "@brand_container_factory"
-      - "@default_brand"
+      - "@default_brand_finder"
     lazy: true
 
   brand_container_factory:
@@ -73,7 +73,7 @@ services:
 
   default_brand_finder:
     class: DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder
-    arguments: ["@settings_resolver", "@brand_repository"]
+    arguments: ["@settings_resolver", "@doctrine.orm.entity_manager"]
 
   default_brand:
     class: Application\DeskPRO\Entity\Brand

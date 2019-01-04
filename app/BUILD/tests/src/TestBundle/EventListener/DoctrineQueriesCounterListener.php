@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
  */
 class DoctrineQueriesCounterListener
 {
-    const MAX_QUERIES_COUNT = 100;
+    const MAX_QUERIES_COUNT = 150;
     const MAX_FETCH_ROWS    = 1000;
 
     /**

@@ -6,6 +6,7 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
@@ -104,8 +105,16 @@ class FeedbackCategoriesController extends AbstractController implements Protect
                 isset($postData['feedback_category']['options']) ?
                 $postData['feedback_category']['options']['parent_id'] : '';
 
+            $brand = null;
+            if (!empty($postData['feedback_category']['brand'])) {
+                $brand = $this->em->getRepository(Brand::class)->find($postData['feedback_category']['brand']);
+            }
+            if (!$brand) {
+                $brand = $this->get('default_brand_finder')->getDefaultBrand();
+            }
+
             $feedback_category->title  = $postData['feedback_category']['title'];
-            $feedback_category->parent = $feedback_categories->getParentCategory();
+            $feedback_category->parent = $feedback_categories->getParentCategory($brand);
             $feedback_category->setOption('parent_id', $parent_id);
 
             $this->em->persist($feedback_category);
@@ -121,6 +130,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
             [
                  'success' => true,
                  'id'      => $feedback_category->getId(),
+                 'brand'   => $feedback_category->getBrand() ? $feedback_category->getBrand()->getId() : null,
             ]
         );
     }
