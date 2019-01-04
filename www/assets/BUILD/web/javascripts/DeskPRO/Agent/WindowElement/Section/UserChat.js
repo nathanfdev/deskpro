@@ -738,8 +738,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			notifyWin.addClass('claimed');
 			notifyWin.find('.waiting.row').hide();
 			notifyWin.find('.taken.row').show().find('.place-assigned-name').text(data.new_agent_name);
-			notifyWin.find('button.accept-trigger').hide();
-			notifyWin.find('button.join-trigger').show();
+			notifyWin.find('.accept-trigger').hide();
 			notifyWin.find('audio').remove();
 
 			notifyWin.data('dismiss-count', 100);
