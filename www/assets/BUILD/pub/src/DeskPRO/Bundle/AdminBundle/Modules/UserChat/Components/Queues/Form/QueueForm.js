@@ -91,9 +91,10 @@ class QueueForm extends BaseForm {
               <Field select="max_queue_size" className="queue-size">
                 <MaxQueueSize />
               </Field>}
+              {formData.value.routing_model !== 'simulring' &&
               <Field select="answer_timeout" label="Answer Timeout">
                 <AnswerTimeout />
-              </Field>
+              </Field>}
               <Field select="is_all_agents" label="Agents">
                 <AllAgents />
               </Field>
