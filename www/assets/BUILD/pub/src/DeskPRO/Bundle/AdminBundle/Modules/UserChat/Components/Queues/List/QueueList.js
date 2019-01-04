@@ -65,6 +65,7 @@ class QueueList extends React.Component {
           <span>Agents can handle a maximum of</span>
           <Input
             type="number"
+            min="1"
             value={maxChatsCount}
             onChange={changeMaxChatsCount}
           />

@@ -49,7 +49,10 @@ class UserChatQueueSettingsType extends AbstractType
                 'class'    => UserChatQueue::class,
             ])
             ->add('max_chats_count', IntegerType::class, [
-                'required' => false,
+                'required'    => false,
+                'constraints' => [
+                    new Assert\Range(['min' => 1]),
+                ],
             ])
         ;
 
