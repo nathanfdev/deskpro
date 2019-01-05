@@ -240,6 +240,17 @@ class TicketHandler extends AbstractEntityHandler
             }
         }
 
+        $version = $context->attributes->get('version');
+        if (!$version->isEmpty() && $version->get() == 20170401) {
+            $status       = $entity->getStatus();
+            $hiddenStatus = $entity->getHiddenStatus();
+            if ($status === TicketStatus::STATUS_TYPE_HIDDEN && !$hiddenStatus) {
+                // this logic from legacy Ticket::getHiddenStatus()
+                $hiddenStatus = TicketStatus::SYS_ID_DELETED;
+            }
+            $model->setStatus($hiddenStatus ? $status.'.'.$hiddenStatus : $status);
+        }
+
         $model->setStar(new CallbackDeferredProperty([$this, 'getStar'], [$entity, $context]));
         $model->setLabels(new CallbackDeferredProperty([$this, 'getLabels'], [$entity]));
         $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));

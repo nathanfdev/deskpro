@@ -357,9 +357,10 @@ class TermBuilder
                 list($status, $statusId) = explode('.', $status, 2);
                 if ($isNot) {
                     $part = sprintf(
-                        '(%s != %s)',
+                        '(%s != %s OR %s IS NULL)',
                         TermFieldIds::TICKET_TICKET_STATUS_ID,
-                        $statusId
+                        $statusId,
+                        TermFieldIds::TICKET_TICKET_STATUS_ID
                     );
                 } else {
                     $part = sprintf(
