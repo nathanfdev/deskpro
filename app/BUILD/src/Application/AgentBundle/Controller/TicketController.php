@@ -3055,28 +3055,28 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(['inserted' => false]);
         }
 
-        $ticket_log = new TicketLog();
+        $ticketLog = new TicketLog();
         $this->em->persist($charge);
-        $this->em->persist($ticket_log);
+        $this->em->persist($ticketLog);
 
-        $ticket_log->ticket      = $ticket;
-        $ticket_log->person      = $this->person;
-        $ticket_log->action_type = 'new_billing';
-        $ticket_log->id_object   = $charge->getId();
-        $ticket_log->details     = [
+        $ticketLog->ticket      = $ticket;
+        $ticketLog->person      = $this->person;
+        $ticketLog->action_type = 'new_billing';
+        $ticketLog->id_object   = $charge->getId();
+        $ticketLog->details     = [
             'new_amount' => $charge->getAmount(),
             'new_time'   => $charge->getChargeTime(),
         ];
 
-        $field_manager = $this->container->getBillingFieldManager();
-        $custom_fields = @$_POST['custom_fields'] ?: [];
+        $fieldManager = $this->container->getBillingFieldManager();
+        $customFields = @$_POST['custom_fields'] ?: [];
 
-        $invalid_custom_fields = [];
-        $is_valid              = true;
-        $trans                 = $this->container->getTranslator();
-        foreach ($field_manager->getFields() as $field) {
+        $invalidCustomFields = [];
+        $isValid             = true;
+        $trans               = $this->container->getTranslator();
+        foreach ($fieldManager->getFields() as $field) {
             $errors = $field->getHandler()->validateFormData(
-                $custom_fields,
+                $customFields,
                 HandlerAbstract::CONTEXT_AGENT,
                 ['exist_ticket' => $ticket]
             );
@@ -3098,24 +3098,23 @@ class TicketController extends AbstractController
                     default:
                         $msg = $trans->getPhraseText('user.error.form_'.$code);
                 }
-                $invalid_custom_fields['field_'.$field->getId()] = $field['title'].': '.$msg;
-                $is_valid                                        = false;
+                $invalidCustomFields['field_'.$field->getId()] = $field['title'].': '.$msg;
+                $isValid                                       = false;
             }
         }
-        if (!$is_valid) {
+        if (!$isValid) {
             return $this->createJsonResponse(
                 [
                     'inserted'              => false,
-                    'invalid_custom_fields' => $invalid_custom_fields,
+                    'invalid_custom_fields' => $invalidCustomFields,
                 ]
             );
         }
 
         $this->em->persist($ticket);
-        $this->em->flush();
 
-        if (!empty($custom_fields)) {
-            $field_manager->saveFormToObject($custom_fields, $charge);
+        if (!empty($customFields)) {
+            $fieldManager->saveFormToObject($customFields, $charge);
             $changes = $charge->getStateChangeRecorder()->getChanges();
 
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
@@ -3126,7 +3125,7 @@ class TicketController extends AbstractController
                 'getLogDataForChange'
             );
             $method->setAccessible(true);
-            $details = $ticket_log->details;
+            $details = $ticketLog->details;
 
             foreach ($changes as $change) {
                 if (0 !== strpos($change->getField(), 'custom_data.')) {
@@ -3134,15 +3133,15 @@ class TicketController extends AbstractController
                 }
                 $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
             }
-            $ticket_log->details = $details;
+            $ticketLog->details = $details;
         }
-        $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
+        $billingFields[$charge['id']] = $fieldManager->getDisplayArrayForObject($charge);
 
         // todo need a transaction joined with above
-        $details               = $ticket_log->details;
-        $details['charge_id']  = $charge->getId();
-        $ticket_log->id_object = $charge->getId();
-        $ticket_log->details   = $details;
+        $details              = $ticketLog->details;
+        $details['charge_id'] = $charge->getId();
+        $ticketLog->id_object = $charge->getId();
+        $ticketLog->details   = $details;
         $this->em->flush();
 
         return $this->createJsonResponse(
@@ -3154,7 +3153,7 @@ class TicketController extends AbstractController
                         'ticket_perms'   => $this->_getTicketPerms($ticket),
                         'ticket'         => $ticket,
                         'charge'         => $charge,
-                        'billing_fields' => $billing_fields,
+                        'billing_fields' => $billingFields,
                     ]
                 ),
             ]
@@ -3180,36 +3179,36 @@ class TicketController extends AbstractController
             );
         }
 
-        $field_manager = $this->container->getBillingFieldManager();
-        $custom_fields = @$_POST['custom_fields'] ?: [];
+        $fieldManager = $this->container->getBillingFieldManager();
+        $customFields = @$_POST['custom_fields'] ?: [];
 
-        $invalid_custom_fields = [];
-        $is_valid              = true;
-        $trans                 = $this->container->getTranslator();
-        foreach ($field_manager->getFields() as $field) {
+        $invalidCustomFields = [];
+        $isValid             = true;
+        $trans               = $this->container->getTranslator();
+        foreach ($fieldManager->getFields() as $field) {
             $errors = $field->getHandler()->validateFormData(
-                $custom_fields,
+                $customFields,
                 HandlerAbstract::CONTEXT_AGENT,
                 ['exist_ticket' => $ticket]
             );
             foreach ($errors as $code) {
-                $invalid_custom_fields['field_'.$field->getId()] = $field['title'].': '.$trans->phrase(
+                $invalidCustomFields['field_'.$field->getId()] = $field['title'].': '.$trans->phrase(
                         preg_replace('#^(.*?)\.#', 'user.error.form_', $code)
                     );
-                $is_valid = false;
+                $isValid = false;
             }
         }
-        if (!$is_valid) {
+        if (!$isValid) {
             return $this->createJsonResponse(
                 [
                     'success'               => false,
-                    'invalid_custom_fields' => $invalid_custom_fields,
+                    'invalid_custom_fields' => $invalidCustomFields,
                 ]
             );
         }
 
-        $old_amount = $charge->getAmount();
-        $old_time   = $charge->getChargeTime();
+        $oldAmount = $charge->getAmount();
+        $oldTime   = $charge->getChargeTime();
 
         $amount = $this->in->getFloat('amount');
 
@@ -3225,12 +3224,12 @@ class TicketController extends AbstractController
             $charge->amount = $amount;
         }
 
-        $ticket_log              = new TicketLog();
-        $ticket_log->ticket      = $ticket;
-        $ticket_log->person      = $this->person;
-        $ticket_log->action_type = 'modify_billing';
-        $ticket_log->id_object   = $charge->getId();
-        $details                 = [];
+        $ticketLog              = new TicketLog();
+        $ticketLog->ticket      = $ticket;
+        $ticketLog->person      = $this->person;
+        $ticketLog->action_type = 'modify_billing';
+        $ticketLog->id_object   = $charge->getId();
+        $details                = [];
 
         if ($created = $this->in->getString('date_created')) {
             try {
@@ -3248,17 +3247,17 @@ class TicketController extends AbstractController
             }
         }
 
-        if ($old_amount !== $charge->getAmount()) {
-            $details['old_amount'] = $old_amount;
+        if ($oldAmount !== $charge->getAmount()) {
+            $details['old_amount'] = $oldAmount;
             $details['new_amount'] = $charge->getAmount();
         }
 
-        if ($old_time !== $charge->getChargeTime()) {
-            $details['old_time'] = $old_time;
+        if ($oldTime !== $charge->getChargeTime()) {
+            $details['old_time'] = $oldTime;
             $details['new_time'] = $charge->getChargeTime();
         }
 
-        $field_manager->saveFormToObject($custom_fields, $charge);
+        $fieldManager->saveFormToObject($customFields, $charge);
         if ($changes = $charge->getStateChangeRecorder()->getChanges()) {
             $class      = 'Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator';
             $serialized = sprintf('O:%u:"%s":0:{}', strlen($class), $class);
@@ -3279,12 +3278,12 @@ class TicketController extends AbstractController
 
         if ($details) {
             $details['charge_id'] = $charge->getId();
-            $ticket_log->details  = $details;
-            $this->em->persist($ticket_log);
+            $ticketLog->details   = $details;
+            $this->em->persist($ticketLog);
         }
 
         $this->em->flush();
-        $billing_fields[$charge['id']] = $field_manager->getDisplayArrayForObject($charge);
+        $billingFields[$charge['id']] = $fieldManager->getDisplayArrayForObject($charge);
 
         return $this->createJsonResponse(
             [
@@ -3294,7 +3293,7 @@ class TicketController extends AbstractController
                     [
                         'ticket'         => $ticket,
                         'charge'         => $charge,
-                        'billing_fields' => $billing_fields,
+                        'billing_fields' => $billingFields,
                         'ticket_perms'   => $this->_getTicketPerms($ticket),
                     ]
                 ),
@@ -3319,12 +3318,12 @@ class TicketController extends AbstractController
             );
         }
 
-        $ticket_log              = new TicketLog();
-        $ticket_log->ticket      = $ticket;
-        $ticket_log->person      = $this->person;
-        $ticket_log->action_type = 'delete_billing';
-        $ticket_log->id_object   = $charge->getId();
-        $ticket_log->details     = [
+        $ticketLog              = new TicketLog();
+        $ticketLog->ticket      = $ticket;
+        $ticketLog->person      = $this->person;
+        $ticketLog->action_type = 'delete_billing';
+        $ticketLog->id_object   = $charge->getId();
+        $ticketLog->details     = [
             'charge_id'   => $charge->getId(),
             'old_amount'  => $charge->getAmount(),
             'old_time'    => $charge->getChargeTime(),
@@ -3344,7 +3343,7 @@ class TicketController extends AbstractController
             'getLogDataForChange'
         );
         $method->setAccessible(true);
-        $details = $ticket_log->details;
+        $details = $ticketLog->details;
 
         foreach ($changes as $change) {
             if (0 !== strpos($change->getField(), 'custom_data.')) {
@@ -3352,9 +3351,9 @@ class TicketController extends AbstractController
             }
             $details['custom_data'][$change->getField()] = $method->invoke($obj, $change);
         }
-        $ticket_log->details = $details;
+        $ticketLog->details = $details;
 
-        $this->em->persist($ticket_log);
+        $this->em->persist($ticketLog);
         $this->em->remove($charge);
         $this->em->flush();
 

@@ -4,6 +4,7 @@ namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
 use Application\DeskPRO\Entity\LegacyTicketFilter;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketCharge;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use DeskPRO\Bundle\AppBundle\Entity\Zapier\TicketUpdate;
@@ -125,7 +126,36 @@ class ZapierWebHook implements TicketSaveActionInterface
                     $logData = $logGenerator->getLogDataForChange($change);
                     if ($logData) {
                         $ticketLogs[] = $logData;
+                    } elseif ($change->getField() === 'charges') {
+                        // TicketLogGenerator does not generate Log for ticket billing as it is done manually in TicketController
+                        $new = $change->getNew();
+                        if ($new) {
+                            /** @var TicketCharge $charge */
+                            $charge = end($new);
+                            $log    = [
+                                'action_type' => 'new_billing',
+                                'charge_id'   => $charge->getId(),
+                                'new_amount'  => $charge->getAmount(),
+                                'new_time'    => $charge->getChargeTime(),
+                            ];
+                            foreach ($charge->getCustomData() as $data) {
+                                $field                                              = $data->getField();
+                                $log['custom_data']['custom_data.'.$field->getId()] = [
+                                    'action_type' => 'changed_custom_field',
+                                    'type'        => $field->getType(),
+                                    'field_id'    => $field->getId(),
+                                    'field_name'  => $field->getTitle(),
+                                    'value_after' => $data->getInput(),
+                                    'is_choice'   => $field->isChoiceType(),
+                                ];
+                            }
+                            $ticketLogs[] = $log;
+                        }
                     }
+                }
+
+                if (!$ticketLogs) {
+                    return false;
                 }
 
                 $ticketUpdate = new TicketUpdate();
