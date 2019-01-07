@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1543313545 extends AbstractBuild implements OnlineBuildInterface
+class Build1546868709 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
@@ -10,7 +10,7 @@ class Build1543313545 extends AbstractBuild implements OnlineBuildInterface
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE brands ADD slug VARCHAR(255) NOT NULL');
+        $this->execDbQueryQuiet('default', 'ALTER TABLE brands ADD slug VARCHAR(255) NOT NULL');
     }
 
     public function run()
@@ -26,6 +26,6 @@ class Build1543313545 extends AbstractBuild implements OnlineBuildInterface
 
         // add unique index after filling the slug column
         // to prevent unique errors because the slug column can't be null
-        $this->execDbQuery('default', 'CREATE UNIQUE INDEX UNIQ_7EA24434989D9B62 ON brands (slug)');
+        $this->execDbQueryQuiet('default', 'CREATE UNIQUE INDEX UNIQ_7EA24434989D9B62 ON brands (slug)');
     }
 }
