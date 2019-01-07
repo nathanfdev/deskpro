@@ -7,7 +7,7 @@ pageMeta.url_fragment  = '{{ url_fragment('agent_feedback_view', {'feedback_id':
 pageMeta.url  = '{{ path('agent_feedback_view', {'feedback_id': feedback.id}) }}';
 pageMeta.obj_code = 'feedback_{{ feedback.id }}';
 
-pageMeta.permalink = '{{ feedback.permalink }}';
+pageMeta.permalink = '{{ permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_feedback_ajax_labels_save', {'feedback_id': feedback.id}) }}';
 
 pageMeta.canEdit   = {% if not perms.can_edit %}false{% else %}true{% endif %};
