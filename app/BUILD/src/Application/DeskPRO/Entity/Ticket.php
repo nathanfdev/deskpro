@@ -667,10 +667,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * By default, all ticket chagnes go through the full ticket processing routines
+     * By default, all ticket changes go through the full ticket processing routines
      * (triggers, filters etc) automatically on every flush.
      *
-     * This is mostly for legacy reasons though. It's recommneded you always handle it yourself.
+     * This is mostly for legacy reasons though. It's recommended you always handle it yourself.
      * So if you are manually managing the ticket will save the ticket through the TicketManager,
      * you should disable auto-processing.
      *
