@@ -69,9 +69,14 @@ class QueueListContainer extends React.Component {
   };
 
   changeMaxChatsCount = (value) => {
-    this.setState({ maxChatsCount: value });
+    let maxChatsCount = value;
+    if (maxChatsCount < 1) {
+      maxChatsCount = 1;
+    }
+
+    this.setState({ maxChatsCount });
     this.props.dispatch(updateQueueSettings({
-      max_chats_count: value
+      max_chats_count: maxChatsCount
     }));
   };
 

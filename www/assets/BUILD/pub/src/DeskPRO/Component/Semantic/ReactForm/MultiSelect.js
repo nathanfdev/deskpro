@@ -4,6 +4,7 @@ import ScrollArea from 'react-scrollbar';
 import { SortableContainer, SortableElement, arrayMove } from 'react-sortable-hoc';
 import classNames from 'classnames';
 import Immutable from 'immutable';
+import $ from 'jquery';
 
 class SemanticMultiSelect extends React.Component {
 
@@ -129,6 +130,8 @@ class SemanticMultiSelect extends React.Component {
       onChange(newVal);
     };
 
+    const shouldCancelStart = event => $(event.target).attr('for') === 'checkbox';
+
     return (
       <div>
         { toggleAll ? <span onClick={this.toggleAll} className="multi-select-toggle-all">Toggle all</span> : null }
@@ -137,10 +140,10 @@ class SemanticMultiSelect extends React.Component {
         <ScrollArea className="multi-select" vertical>
           {primaryChoices.length > 0 &&
           <div className="multi-select-primary-options">
-            <SortableList items={primarySortableChoices} onSortEnd={sortPrimaryChoices} />
+            <SortableList items={primarySortableChoices} shouldCancelStart={shouldCancelStart} onSortEnd={sortPrimaryChoices} />
             {primaryUnsortableChoices.map(renderChoice)}
           </div>}
-          <SortableList items={otherSortableChoices} onSortEnd={sortOtherChoices} />
+          <SortableList items={otherSortableChoices} shouldCancelStart={shouldCancelStart} onSortEnd={sortOtherChoices} />
           {otherUnsortableChoices.map(renderChoice)}
         </ScrollArea>
       </div>

@@ -74,4 +74,21 @@ class UserChatQueuesController extends CrudController
 
         return View::create(null, Response::HTTP_NO_CONTENT);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function deleteEntity($entity)
+    {
+        $qb = $this->getManager()->createQueryBuilder();
+        $qb->select('count(q.id)');
+        $qb->from(self::$entity, 'q');
+
+        $count = (int) $qb->getQuery()->getSingleScalarResult();
+        if ($count === 1) {
+            throw $this->createBadRequestException('There should be at least one chat queue');
+        }
+
+        return parent::deleteEntity($entity);
+    }
 }
