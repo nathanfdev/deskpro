@@ -560,11 +560,22 @@
           margin: 0 0 0 8px;
           display:none;
         }
+        .filename {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: inline-block;
+          width: calc(100% - 40px);
+          height: 18px;
+        }
         &:hover {
           .download.icon,
           .linkify.icon,
           .remove.icon {
             display: inline-block;
+          }
+          .filename {
+            width: calc(100% - 85px);
           }
         }
       }

@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use Application\EmailBundle\SwiftMailer\Message\Message;
+use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\Model\EmailTo;
 use DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer;
@@ -169,7 +170,7 @@ class EmailSender
         }
         $message->setEncoder(\Swift_Encoding::getQpEncoding());
         $message->setBody($emailCode->getBody(), 'text/html');
-        $message->setSubject($emailCode->getSubject());
+        $message->setSubject(html_entity_decode($emailCode->getSubject()));
         foreach ($emailCode->getAttachments() as $blob) {
             $message->attachBlob($blob);
         }
@@ -205,7 +206,14 @@ class EmailSender
     public function send(EmailBaseType $model, $args)
     {
         $message = $this->prepareMessage($model, $args);
-        $this->mailer->send($message);
+        if ($this->mailer instanceof StorageTransportInterface) {
+            $id = $this->mailer->queueMessage($message);
+        } else {
+            $this->mailer->send($message);
+            $id = null;
+        }
+
+        return $id;
     }
 
     private function configureOptions()

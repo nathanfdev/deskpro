@@ -478,4 +478,16 @@ class TicketEmail
     {
         return $this->sendmailSourceId;
     }
+
+    /**
+     * @param int $sendmailSourceId
+     *
+     * @return TicketEmail
+     */
+    public function setSendmailSourceId($sendmailSourceId)
+    {
+        $this->sendmailSourceId = $sendmailSourceId;
+
+        return $this;
+    }
 }

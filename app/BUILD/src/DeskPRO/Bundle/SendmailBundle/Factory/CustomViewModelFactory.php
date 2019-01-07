@@ -8,6 +8,10 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\CustomTemplate;
 class CustomViewModelFactory extends AbstractViewModelFactory
 {
     /**
+     * @param Ticket $ticket
+     *
+     * @throws \Exception
+     *
      * @return CustomTemplate
      */
     public function createCustomTemplateModel(Ticket $ticket)

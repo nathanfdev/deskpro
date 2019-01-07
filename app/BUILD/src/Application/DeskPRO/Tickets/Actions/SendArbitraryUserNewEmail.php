@@ -18,6 +18,7 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
+use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -185,7 +186,14 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
                 ->prepareMessage($viewModel, $messagesArgs, $message);
 
             try {
-                $mailer->send($message);
+                if ($mailer instanceof StorageTransportInterface) {
+                    $id = $mailer->queueMessage($message);
+                } else {
+                    $mailer->send($message);
+                    $id = null;
+                }
+                $ticketEmail->setSendmailSourceId($id);
+                $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
             } catch (\Exception $e) {
                 $context->getLogger()->error(
                     sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()),

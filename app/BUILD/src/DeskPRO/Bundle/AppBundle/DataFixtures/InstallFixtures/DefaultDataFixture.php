@@ -32,6 +32,14 @@ class DefaultDataFixture extends AbstractDpFixture implements OrderedFixtureInte
 
         $manager->flush();
 
+        $blob = $this->container->get('blob.storage')->createBlobRecordFromFile(
+            DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
+            'Getting Started with DeskPRO.pdf',
+            'application/pdf'
+        );
+
+        $this->container->getDb()->executeUpdate('UPDATE blobs SET sys_name = ? WHERE id = ?', ['agent-quickstart', $blob->getId()]);
+
         $this->appsSync($manager);
         $dataProcessor = new DefaultDataProcessor($this->container);
         $dataProcessor->setExtraOptions([

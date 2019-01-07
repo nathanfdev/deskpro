@@ -34,8 +34,8 @@ class SaveTicketLogs implements TicketSaveActionInterface
      */
     public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $ticketlog_generator = new TicketLogGenerator($ticket, $context);
-        $logs                = $ticketlog_generator->getLogEntries();
+        $ticketLogGenerator = new TicketLogGenerator($ticket, $context);
+        $logs               = $ticketLogGenerator->getLogEntries();
 
         foreach ($logs as $l) {
             $this->em->persist($l);
