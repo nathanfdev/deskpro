@@ -76,6 +76,7 @@ class QueueList extends React.Component {
           <div className="row header">
             <div className="column queue-name">Name</div>
             <div className="column agents">Agents</div>
+            <div className="column agents">Routing model</div>
           </div>
           {queues.toArray().map(queue =>
             <QueueRow
@@ -140,6 +141,11 @@ class QueueRow extends React.Component {
 
     const displayTargets = targets.slice(0, 5);
     const popupTargets = targets.slice(5);
+    const routingModels = {
+      simulring:      'Simulring',
+      least_utilized: 'Least Utilized',
+      round_robin:    'Round Robin'
+    };
 
     return (
       <div className="row" key={queue.get('id')}>
@@ -178,6 +184,9 @@ class QueueRow extends React.Component {
                 </PopUp>
               </span>}
             </div>}
+          <div className="column routing-model">
+            {routingModels[queue.get('routing_model')]}
+          </div>
           <div className="column options-button">
             <a onClick={this.onEditQueue}>
               <i className="fas fa-cog" />
