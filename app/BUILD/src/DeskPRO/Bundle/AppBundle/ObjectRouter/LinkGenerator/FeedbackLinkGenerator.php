@@ -41,12 +41,18 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
      */
     public function generate($object, $type, $context, $extra_params, $reference_type)
     {
-        if ($type && $type === 'vote_up') {
-            $route = 'portal_feedback_vote_up';
-        } elseif ($type && $type === 'vote_down') {
-            $route = 'portal_feedback_vote_down';
-        } else {
-            $route = 'portal_feedback_view';
+        switch ($type) {
+            case 'vote_up':
+                $route = 'portal_feedback_vote_up';
+                break;
+            case 'vote_down':
+                $route = 'portal_feedback_vote_down';
+                break;
+            case 'toggle_subscription':
+                $route = 'portal_feedback_toggle_subscription';
+                break;
+            default:
+                $route = 'portal_feedback_view';
         }
 
         return $this->urlGenerator->generate(
