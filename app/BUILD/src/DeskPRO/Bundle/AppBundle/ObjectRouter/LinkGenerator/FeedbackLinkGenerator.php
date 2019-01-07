@@ -1,40 +1,29 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\FeedbackCategory;
-use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
-use DeskPRO\Bundle\PortalBundle\Helper\FeedbackFilterUriHelper;
-use DeskPRO\Bundle\PortalBundle\Model\FeedbackFilter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Creates the proper link for a download "serve" (a direct url to put in an img tag for ex.)
- * This is because the normal "save" type will first hit a controller
- * for security and to increment count + redirect
- * this avoids both security and the download increment, so be careful with the "serve" type on Downloads!
+ * Creates the proper link for a feedback "serve" (a direct url to put in an img tag for ex.).
  */
 class FeedbackLinkGenerator implements LinkGeneratorInterface
 {
     /**
      * @var UrlGeneratorInterface
      */
-    private $url_generator;
+    private $urlGenerator;
 
     /**
      * Constructor.
      *
-     * @param UrlGeneratorInterface $url_generator
+     * @param UrlGeneratorInterface $urlGenerator
      */
-    public function __construct(UrlGeneratorInterface $url_generator)
+    public function __construct(UrlGeneratorInterface $urlGenerator)
     {
-        $this->url_generator = $url_generator;
+        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -42,30 +31,21 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
      */
     public function supports($object, $type, $context)
     {
-        return $object instanceof FeedbackCategory || $object instanceof FeedbackStatusCategory;
+        return $object instanceof Feedback;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @param Feedback $object
      */
     public function generate($object, $type, $context, $extra_params, $reference_type)
     {
-        $filter = new FeedbackFilter();
-
-        if ($object instanceof FeedbackCategory) {
-            $filter->setTypes([$object->getId()]);
-        } elseif ($object instanceof FeedbackStatusCategory) {
-            $filter->setStatus($object->getStatusType());
-            $filter->setStatusCategories([$object->getId()]);
-        }
-
-        $uri_helper = new FeedbackFilterUriHelper();
-        $filter_uri = $uri_helper->generateUriSegment($filter);
-
-        return $this->url_generator->generate(
-            'portal_feedback_browse',
+        return $this->urlGenerator->generate(
+            'portal_feedback_view',
             array_merge([
-                'filter_uri' => $filter_uri,
+                'slug'  => $object->getSlug(),
+                'brand' => $object->getBrand(),
             ], $extra_params),
             $reference_type
         );
