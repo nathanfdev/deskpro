@@ -24,7 +24,6 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->clearTable('products');
         $this->clearTable('people');
         $this->clearTable('organizations');
-        $this->clearTable('ticket_statuses');
 
         parent::setUp();
     }
@@ -383,13 +382,6 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
 
     public function test_deleted_status()
     {
-        $deletedStatus = new TicketStatusEntity(TicketStatusEntity::STATUS_TYPE_HIDDEN);
-        $deletedStatus->setSysId(TicketStatusEntity::SYS_ID_DELETED);
-        $deletedStatus->setTitle('Deleted');
-        $this->em()->persist($deletedStatus);
-        $this->em()->flush();
-        $this->em()->clear();
-
         $message1 = new Model\TicketMessage();
         $message1->setOid(1);
         $message1->setMessage('message');

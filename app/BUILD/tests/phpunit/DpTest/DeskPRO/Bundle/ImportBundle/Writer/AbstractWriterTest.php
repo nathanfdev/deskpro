@@ -4,6 +4,7 @@ namespace DpTest\DeskPRO\Bundle\ImportBundle\Writer;
 
 use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DpTest\ApiTestCase;
 use Monolog\Handler\TestHandler;
 
@@ -44,6 +45,15 @@ abstract class AbstractWriterTest extends ApiTestCase
             $brand->setEditThemeSet($editThemeSet);
 
             $this->em()->persist($brand);
+            $this->em()->flush();
+        }
+
+        $deletedStatus = $this->getRepository(TicketStatus::class)->findOneBy(['sysId' => TicketStatus::SYS_ID_DELETED]);
+        if (!$deletedStatus) {
+            $deletedStatus = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
+            $deletedStatus->setSysId(TicketStatus::SYS_ID_DELETED);
+            $deletedStatus->setTitle('Deleted');
+            $this->em()->persist($deletedStatus);
             $this->em()->flush();
         }
 
