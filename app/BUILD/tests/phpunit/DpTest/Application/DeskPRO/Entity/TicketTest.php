@@ -25,7 +25,6 @@ class TicketTest extends PortalTestCase
     public function setUp()
     {
         $this->containerBefore = App::$container;
-        $this->installDataSet('fresh', true);
     }
 
     public function tearDown()
@@ -39,6 +38,8 @@ class TicketTest extends PortalTestCase
      */
     public function testSetNotAgentForNewTicket()
     {
+        $this->installDataSet('fresh', true);
+
         $person = new Person();
         $person->setIsAgent(false);
 
@@ -57,6 +58,8 @@ class TicketTest extends PortalTestCase
      */
     public function testSetNotAgentOnTicketUpdate()
     {
+        $this->installDataSet('fresh', true);
+
         $ticket = new Ticket();
         $ticket->setSubject('subject');
 
