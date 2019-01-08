@@ -50,6 +50,8 @@ class TicketStatusDataService
      */
     public function findStatusOrException($statusCode, $withSubstatuses = false, $withFallback = false)
     {
+        $repository = $this->em->getRepository(TicketStatus::class);
+
         $statusType = $statusCode;
         $statusId   = null;
         if (strpos($statusType, '.')) {
@@ -62,7 +64,7 @@ class TicketStatusDataService
             } else {
                 // fallback to support `hidden.deleted` and `hidden.spam` statuses
                 // for cases that has not been updated
-                $statusEntity = $this->repository->findOneBySysId($statusId);
+                $statusEntity = $repository->findOneBySysId($statusId);
             }
             if (!$statusEntity || $statusEntity->getStatusType() !== $statusType) {
                 if ($withFallback) {
