@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ImportBundle\Writer\EntityHandler;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\ImportBundle\Model;
 
@@ -47,6 +48,10 @@ class TicketHandler extends AbstractEntityHandler
             ->setDateResolved($model->getDateResolved())
             ->setDateArchived($model->getDateArchived())
         ;
+
+        if ($entity->getTicketStatus()->getId()) {
+            App::getContainer()->getEm()->persist($entity->getTicketStatus());
+        }
 
         if ($model->getBrand()) {
             // overwrite custom ticket brand from the model
