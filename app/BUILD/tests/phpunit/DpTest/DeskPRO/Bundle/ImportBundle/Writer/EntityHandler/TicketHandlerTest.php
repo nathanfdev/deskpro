@@ -388,7 +388,6 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $deletedStatus->setTitle('Deleted');
         $this->em()->persist($deletedStatus);
         $this->em()->flush();
-        $this->em()->clear();
 
         $message1 = new Model\TicketMessage();
         $message1->setOid(1);
