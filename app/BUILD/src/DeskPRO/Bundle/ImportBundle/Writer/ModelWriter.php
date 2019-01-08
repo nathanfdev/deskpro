@@ -3,10 +3,10 @@
 namespace DeskPRO\Bundle\ImportBundle\Writer;
 
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
-use DeskPRO\Bundle\ImportBundle\Writer\Mapper\ImportMapMapper;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\ImportBundle\Model\PrimaryImportModelInterface;
 use DeskPRO\Bundle\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
+use DeskPRO\Bundle\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Psr\Log\LoggerInterface;
@@ -101,6 +101,7 @@ class ModelWriter
             $this->entityWatcher->flushUpdatesQuiet();
             $this->em->commit();
         } catch (\Exception $e) {
+            print_r($e->__toString());
             $this->logger->error(sprintf(
                 'Unable to create `%s` with oid `%s`. Reason %s',
                 get_class($model), $model->getOid(), $e->__toString()
