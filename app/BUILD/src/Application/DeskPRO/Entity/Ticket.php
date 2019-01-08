@@ -5037,7 +5037,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             [
                 'fieldName'    => 'ticket_status',
                 'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketStatus',
-                'cascade'      => ['persist'],
                 'joinColumns'  => [
                     [
                         'name'                 => 'ticket_status_id',

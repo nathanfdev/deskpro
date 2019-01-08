@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ImportBundle\Writer\EntityHandler;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\ImportBundle\Model;
 
@@ -40,9 +41,17 @@ class TicketHandler extends AbstractEntityHandler
         }
 
         $entity
-            ->disableAutoTicketProcess()
+            ->disableAutoTicketProcess();
+
+        if ($model->getStatus()) {
+            $entity->setTicketStatus(App::getContainer()->getTicketStatuses()->findStatusOrException($model->getStatus()));
+        } else {
+            $entity->setStatus($model->getStatus());
+        }
+
+        $entity
             ->setSubject($model->getSubject())
-            ->setStatus($model->getStatus())
+            //->setStatus($model->getStatus())
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDateResolved($model->getDateResolved())
             ->setDateArchived($model->getDateArchived())
