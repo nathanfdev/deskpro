@@ -375,7 +375,7 @@ GROUP BY MATRIX(%2:FIELD_GROUP:tickets%, %3:FIELD_GROUP:tickets%)',
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
-WHERE tickets.status = \'awaiting_agent\'
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\')
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_user_waiting), \'Time Waiting\'), %1:FIELD_GROUP:tickets%)',
                 'title' => 'Number of tickets awaiting agent grouped by time awaiting agent and <1:field group:tickets, default: none> <chart:bar>',
             ],
@@ -387,7 +387,7 @@ GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(NOW(), tickets.date_user_waiting), \'Tim
                 'query'         => 'DISPLAY TABLE, BAR
 SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
-WHERE tickets.status = \'awaiting_agent\'
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\')
 GROUP BY MATRIX(ALIAS(DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Waiting\'), %1:FIELD_GROUP:tickets%)',
                 'title' => 'Number of tickets awaiting agent grouped by total waiting time and <1:field group:tickets, default: none> <chart:bar>',
             ],
@@ -538,7 +538,7 @@ GROUP BY tickets.ticket_slas.sla_status',
                 'query'         => 'DISPLAY TABLE
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
 FROM tickets
-WHERE tickets.status = \'awaiting_agent\'
+WHERE tickets.status = IN (\'awaiting_agent\', \'pending\')
 SPLIT BY %1:FIELD_GROUP:tickets%
 ORDER BY %2:ORDER_GROUP:tickets%
 LIMIT 100',
@@ -592,7 +592,7 @@ LIMIT 100',
                 'query'         => 'DISPLAY TABLE
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
 FROM tickets
-WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\')
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\')
 SPLIT BY %1:FIELD_GROUP:tickets%
 ORDER BY %2:ORDER_GROUP:tickets%
 LIMIT 100',
@@ -604,9 +604,9 @@ LIMIT 100',
                 'description'   => '',
                 'display_order' => '220',
                 'query'         => 'DISPLAY TABLE
-SELECT COUNT() AS \'Total\', COUNT(tickets.status = \'awaiting_agent\') AS \'Total Awaiting Agent\', COUNT(tickets.status = \'awaiting_user\') AS \'Total Awaiting User\'
+SELECT COUNT() AS \'Total\', COUNT(tickets.status IN (\'awaiting_agent\', \'pending\')) AS \'Total Awaiting Agent\', COUNT(tickets.status = \'awaiting_user\') AS \'Total Awaiting User\'
 FROM tickets
-WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\') AND tickets.date_created < %PAST_7_DAYS%',
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\') AND tickets.date_created < %PAST_7_DAYS%',
                 'title' => 'Total tickets unresolved after a week',
             ],
 
@@ -617,7 +617,7 @@ WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\') AND tickets.date
                 'query'         => 'DISPLAY TABLE
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.priority
 FROM tickets
-WHERE tickets.priority.priority = 1 AND tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+WHERE tickets.priority.priority = 1 AND tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\')
 ORDER BY tickets.date_created
 LIMIT 100',
                 'title' => 'Unresolved [high priority] tickets',
@@ -630,7 +630,7 @@ LIMIT 100',
                 'query'         => 'DISPLAY TABLE
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.count_agent_replies AS \'Agent Replies\'
 FROM tickets
-WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\') AND tickets.count_agent_replies >= 10
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\') AND tickets.count_agent_replies >= 10
 ORDER BY tickets.date_created
 LIMIT 100',
                 'title' => 'Unresolved tickets with 10 or more agent replies',
@@ -643,7 +643,7 @@ LIMIT 100',
                 'query'         => 'DISPLAY TABLE
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.urgency
 FROM tickets
-WHERE tickets.urgency > 7 AND tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+WHERE tickets.urgency > 7 AND tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\')
 ORDER BY tickets.date_created
 LIMIT 100',
                 'title' => 'Unresolved [urgent] tickets',
@@ -656,7 +656,7 @@ LIMIT 100',
                 'query'         => 'DISPLAY TABLE
 SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
-WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\')
 GROUP BY tickets.person
 ORDER BY COUNT() DESC
 LIMIT 100',
