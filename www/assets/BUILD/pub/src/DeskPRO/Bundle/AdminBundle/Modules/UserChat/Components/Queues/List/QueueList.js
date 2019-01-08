@@ -152,7 +152,7 @@ class QueueRow extends React.Component {
         <div className="info">
           <div className="column queue-name">{queue.get('name')}</div>
           {queue.get('is_all_agents')
-            ? <div className="column press-options">
+            ? <div className="column agents">
               <span className="press-option">
                 All Agents
               </span>
