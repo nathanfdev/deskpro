@@ -3233,6 +3233,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if ($ticket_status instanceof VirtualTicketStatus) {
             $this->setModelField('ticket_status', null);
         } else {
+            print_r(sprintf('Id: #%s, type: `%s`, title: `%s`, sys_id: `%s`.',
+                $ticket_status->getId(),
+                $ticket_status->getStatusType(),
+                $ticket_status->getTitle(),
+                $ticket_status->getSysId()
+            ));
             $this->setModelField('ticket_status', $ticket_status);
         }
 
