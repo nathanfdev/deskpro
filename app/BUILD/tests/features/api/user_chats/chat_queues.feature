@@ -116,3 +116,28 @@ Feature: /user_chat_queues endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.targets.fields.targets_1.fields.target.errors[0].code" should be equal to "bad_choice"
+
+  Scenario: I check targets are not validated if 'all_agents' flag is set
+    When I send a POST request to "/api/v2/user_chat_queues" with body:
+    """
+{
+  "name": "My Queue",
+  "routing_model": "least_utilized",
+  "is_all_agents": 1,
+  "targets": []
+}
+    """
+    Then the response status code should be 201
+
+  Scenario: I check targets validation
+    When I send a POST request to "/api/v2/user_chat_queues" with body:
+    """
+{
+  "name": "My Queue",
+  "routing_model": "least_utilized",
+  "is_all_agents": 0,
+  "targets": []
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.targets.errors[0].code" should be equal to "too_few_elements"
