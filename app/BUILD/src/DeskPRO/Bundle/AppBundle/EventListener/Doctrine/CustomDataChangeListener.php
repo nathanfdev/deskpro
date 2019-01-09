@@ -28,11 +28,14 @@ class CustomDataChangeListener
      */
     public function preUpdate(CustomDataAbstract $entity, PreUpdateEventArgs $event)
     {
-        $oldEntity    = clone $entity;
         $propertyPath = $this->getDataProperty($entity);
 
-        PropertyAccess::createPropertyAccessor()->setValue($oldEntity, $propertyPath, $event->getOldValue($propertyPath));
-        $this->recordStateChange($entity, $oldEntity, $entity);
+        if ($event->hasChangedField($propertyPath)) {
+            $oldEntity = clone $entity;
+
+            PropertyAccess::createPropertyAccessor()->setValue($oldEntity, $propertyPath, $event->getOldValue($propertyPath));
+            $this->recordStateChange($entity, $oldEntity, $entity);
+        }
     }
 
     /**
