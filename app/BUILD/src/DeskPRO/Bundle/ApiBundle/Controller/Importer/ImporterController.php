@@ -104,12 +104,12 @@ class ImporterController extends BaseController
     public function stopImportAction()
     {
         $activeJob = $this->get('dp.importer.data_service.job')->getActiveJob();
-        if (!$activeJob) {
-            throw $this->createBadRequestException('No active imports was found');
+        if ($activeJob) {
+            $this->getManager()->remove($activeJob);
+            $this->getManager()->flush();
         }
 
-        $this->getManager()->remove($activeJob);
-        $this->getManager()->flush();
+        $this->getManager()->getConnection()->delete('settings', ['name' => 'core.croncheck.importer']);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
