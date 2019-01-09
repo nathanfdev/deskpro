@@ -2,6 +2,7 @@
 
 namespace DpTest\DeskPRO\Bundle\ImportBundle\Writer\EntityHandler;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus as TicketStatusEntity;
 use DeskPRO\Bundle\ImportBundle\Model;
@@ -383,7 +384,8 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
 
     public function test_deleted_status()
     {
-        $deletedStatus = new TicketStatusEntity(TicketStatusEntity::STATUS_TYPE_HIDDEN);
+        App::$container = $this->getContainer();
+        $deletedStatus  = new TicketStatusEntity(TicketStatusEntity::STATUS_TYPE_HIDDEN);
         $deletedStatus->setSysId(TicketStatusEntity::SYS_ID_DELETED);
         $deletedStatus->setTitle('Deleted');
         $this->em()->persist($deletedStatus);
