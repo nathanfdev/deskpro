@@ -101,7 +101,6 @@ class ModelWriter
             $this->entityWatcher->flushUpdatesQuiet();
             $this->em->commit();
         } catch (\Exception $e) {
-            print_r($e->__toString());
             $this->logger->error(sprintf(
                 'Unable to create `%s` with oid `%s`. Reason %s',
                 get_class($model), $model->getOid(), $e->__toString()
