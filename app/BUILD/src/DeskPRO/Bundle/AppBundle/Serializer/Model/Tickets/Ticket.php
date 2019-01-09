@@ -448,7 +448,7 @@ class Ticket
     private $dateOnHold;
 
     /**
-     * Does this ticked has attachments?
+     * Does this ticket has attachments?
      *
      * @JMS\Type("boolean")
      *

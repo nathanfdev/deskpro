@@ -1229,7 +1229,7 @@ agent.prefs.name_inbox_agent_email_agent_note: 'Gửi email {{name}} khi một �
 agent.prefs.name_inbox_agent_email_created: 'Gửi email {{name}} khi tạo một ticket mới được tạo và giao cho {{name}}'
 agent.prefs.name_inbox_agent_email_leave: 'Gửi email {{name}} khi {{name}} được bỏ chỉ định khỏi một ticket'
 agent.prefs.name_inbox_agent_email_new: 'Gửi email {{name}} khi một vé được giao cho {{name}}'
-agent.prefs.name_inbox_agent_email_property_change: 'Email {{name}} of any change to a ticked assigned to {{name}}'
+agent.prefs.name_inbox_agent_email_property_change: 'Email {{name}} of any change to a ticket assigned to {{name}}'
 agent.prefs.name_inbox_agent_email_user_activity: 'Gửi email {{name}} khi người dùng trả lời một Ticket được giao cho {{name}}'
 agent.prefs.name_inbox_agent_team_alert_agent_activity: 'Cảnh báo {{name}} khi đại lý trả lời một ticket được giao cho một trong các nhóm của {{name}}'
 agent.prefs.name_inbox_agent_team_alert_agent_note: 'Cảnh báo {{name}} khi một agent bổ sung một ghi chú vào một ticket được giao cho một trong các nhóm của {{name}}'
