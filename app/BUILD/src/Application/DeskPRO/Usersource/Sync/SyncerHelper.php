@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Usersource\Sync;
 
 use Application\DeskPRO\App;
@@ -16,6 +12,8 @@ use Application\DeskPRO\EntityRepository\TmpData as TmpDataRepo;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 use Orb\Log\Logger;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * This will be offered as a service to all Syncers. It aids them by taking care of common Syncer needs.
@@ -29,14 +27,27 @@ class SyncerHelper
     private $em;
 
     /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
      * @var Logger
      */
     private $logger;
 
-    public function __construct(EntityManager $em, Logger $logger = null)
+    /**
+     * Constructor.
+     *
+     * @param EntityManager      $em
+     * @param ValidatorInterface $validator
+     * @param Logger|null        $logger
+     */
+    public function __construct(EntityManager $em, ValidatorInterface $validator, Logger $logger = null)
     {
-        $this->em     = $em;
-        $this->logger = $logger;
+        $this->em        = $em;
+        $this->validator = $validator;
+        $this->logger    = $logger;
     }
 
     public function getEm()
@@ -75,6 +86,16 @@ class SyncerHelper
         );
 
         if (empty($user_info['email'])) {
+            return false;
+        }
+
+        $errors = $this->validator->validate($user_info['email'], [
+            new Assert\Email([
+                'strict' => true,
+            ]),
+        ]);
+
+        if (count($errors)) {
             return false;
         }
 

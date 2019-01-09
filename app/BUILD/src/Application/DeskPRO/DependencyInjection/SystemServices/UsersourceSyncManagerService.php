@@ -23,7 +23,7 @@ class UsersourceSyncManagerService
             $usLogger = $container->getUsersourceLogger();
         }
 
-        $helper = new SyncerHelper($container->getEm(), $usLogger);
+        $helper = new SyncerHelper($container->getEm(), $container->get('validator'), $usLogger);
 
         $syncers = [];
 
