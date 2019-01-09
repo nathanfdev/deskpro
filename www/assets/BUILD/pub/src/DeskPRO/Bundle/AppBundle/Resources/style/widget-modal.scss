@@ -14,6 +14,11 @@
     color: #fff;
     text-transform: uppercase;
     padding: 5px;
+
+    .close-btn {
+      float: right;
+      cursor: pointer;
+    }
   }
 
   .menu {

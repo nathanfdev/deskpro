@@ -1231,10 +1231,11 @@ $voice-green-border-color: #47BF61;
       overflow: auto;
 
       .media-controls {
-        display: inline-block;
+        display: flex;
+        align-items: center;
 
         .media-timeline {
-          display: inline-block;
+          width: 100px;
 
           .range {
             width: 100%;

@@ -107,12 +107,12 @@ class CallLogsList extends React.Component {
                       ? <button onClick={() => openDialpad(fromNumber)}>
                         {fromNumber}
                       </button>
-                      : number.get('number')
+                      : <span x-ms-format-detection="none">{number.get('number')}</span>
                     }
                   </td>
                   <td>
                     {isInbound
-                      ? number.get('number')
+                      ? <span x-ms-format-detection="none">{number.get('number')}</span>
                       : <button onClick={() => openDialpad(toNumber)}>
                         {toNumber}
                       </button>

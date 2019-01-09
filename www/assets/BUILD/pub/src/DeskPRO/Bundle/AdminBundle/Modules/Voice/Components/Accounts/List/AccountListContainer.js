@@ -57,7 +57,7 @@ class AccountListContainer extends React.Component {
     });
   };
 
-  onCloseClick = () => {
+  closeEditPopup = () => {
     this.setState({
       formOpened:  false,
       editAccount: null,
@@ -85,8 +85,8 @@ class AccountListContainer extends React.Component {
           onEditAccount={this.onEditAccountClick}
           saveSettings={this.saveSettings}
         />
-        <Modal isOpen={formOpened} onClose={this.onClose} title={title}>
-          <FormContainer account={editAccount} accountType={accountType} onClose={this.onCloseClick}>
+        <Modal isOpen={formOpened} onClose={this.onClose} title={title} onCloseButtonClick={this.closeEditPopup}>
+          <FormContainer account={editAccount} accountType={accountType} onClose={this.closeEditPopup}>
             <AccountForm />
           </FormContainer>
         </Modal>

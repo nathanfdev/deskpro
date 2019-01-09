@@ -19,7 +19,7 @@ class MessagePhoneNumber extends React.PureComponent {
     canOpenDialpad: PropTypes.bool
   };
 
-  static detectPhoneNumbers(messages, numbers) {
+  static detectPhoneNumbersFromMessages(messages, numbers) {
     let agentCountry = null;
     if (numbers.size) {
       agentCountry = getPhoneCountryCode(numbers.first().get('number')).toUpperCase();
@@ -43,22 +43,26 @@ class MessagePhoneNumber extends React.PureComponent {
         country = agentCountry;
       }
       const message = messageContent.getElementsByClassName('body-text-message').item(0);
-      let diff = 0;
-      findPhoneNumbers(message.innerHTML, country).forEach((number) => {
-        const initialNumber = message.innerHTML.substring(number.startsAt - diff, number.endsAt - diff);
-        const intlNumber = `${getCountryCallingCode(number.country)}${number.phone}`;
-        const replacement = `<span data-tel="+${intlNumber}" class="dp-click-to-call">${initialNumber}</span>`;
-        message.innerHTML = message.innerHTML.substring(0, number.startsAt - diff)
-          + replacement + message.innerHTML.substring(number.endsAt - diff);
-        diff = diff + initialNumber.length - replacement.length;
-      });
-      const clickToCall = messageContent.getElementsByClassName('dp-click-to-call');
-      for (let i = 0; i < clickToCall.length; i++) {
-        const element = clickToCall.item(i);
-        const number = element.dataset.tel;
-        window.AgentLegacyBundle.renderClickToCall(element, number, element.innerText);
-      }
+      MessagePhoneNumber.detectPhoneNumbers(message, country);
     });
+  }
+
+  static detectPhoneNumbers(element, country) {
+    let diff = 0;
+    findPhoneNumbers(element.innerHTML, country).forEach((number) => {
+      const initialNumber = element.innerHTML.substring(number.startsAt - diff, number.endsAt - diff);
+      const intlNumber = `${getCountryCallingCode(number.country)}${number.phone}`;
+      const replacement = `<span data-tel="+${intlNumber}" class="dp-click-to-call">${initialNumber}</span>`;
+      element.innerHTML = element.innerHTML.substring(0, number.startsAt - diff)
+        + replacement + element.innerHTML.substring(number.endsAt - diff);
+      diff = diff + initialNumber.length - replacement.length;
+    });
+    const clickToCall = element.getElementsByClassName('dp-click-to-call');
+    for (let i = 0; i < clickToCall.length; i++) {
+      const item = clickToCall.item(i);
+      const number = item.dataset.tel;
+      window.AgentLegacyBundle.renderClickToCall(item, number, item.innerText);
+    }
   }
 
   openDialpad = (e) => {

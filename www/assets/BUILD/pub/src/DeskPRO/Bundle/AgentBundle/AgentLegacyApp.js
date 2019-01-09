@@ -314,10 +314,14 @@ class AgentLegacyApp {
   }
 
 
-  detectPhoneNumbers(messages) { // eslint-disable-line
+  detectPhoneNumbersFromMessages(messages) { // eslint-disable-line
     const state = this.store.getState();
     const numbers = allNumbersSelector(state);
-    MessagePhoneNumber.detectPhoneNumbers(messages, numbers);
+    MessagePhoneNumber.detectPhoneNumbersFromMessages(messages, numbers);
+  }
+
+  detectPhoneNumbers(html) { // eslint-disable-line
+    MessagePhoneNumber.detectPhoneNumbers(html);
   }
 
   renderClickToCall(node, number, child) {

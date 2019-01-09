@@ -225,7 +225,11 @@ class VoiceCallbacksHelper
         }
 
         // create the agent participant
-        if (!$phoneCall->getParticipantByPerson($agent)) {
+        $existParticipant = $phoneCall->getParticipantByPerson($agent);
+        if ($existParticipant instanceof VoicePhoneCallParticipantAgent) {
+            $existParticipant->setCallSid($agentCallId);
+            $this->em->flush();
+        } else {
             $participant = new VoicePhoneCallParticipantAgent();
             $participant->setCallSid($agentCallId);
             $participant->setPerson($agent);
@@ -735,7 +739,6 @@ class VoiceCallbacksHelper
 
             if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
                 // mark the phone call as started
-                $phoneCall->setDateStarted(new \DateTime());
                 $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
 
                 $this->em->flush();

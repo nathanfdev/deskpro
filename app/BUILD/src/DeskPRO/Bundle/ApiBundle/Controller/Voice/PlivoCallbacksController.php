@@ -18,6 +18,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
+use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Plivo\XML\Response as PlivoXML;
@@ -135,7 +136,8 @@ class PlivoCallbacksController extends BaseController
                     $phoneCall->getNumber(),
                     $phoneCall->getExternalNumber(),
                     $this->getOutboundCallbackUrl($account, $phoneCall),
-                    'POST'
+                    'POST',
+                    $exception
                 );
 
                 if ($callRequestId) {
@@ -147,9 +149,15 @@ class PlivoCallbacksController extends BaseController
                         'record'         => true,
                     ]);
                 } else {
-                    $plivoXml->addSpeak('Unable to make a call to this number. Please check your voice permissions.', [
-                        'voice' => 'WOMAN',
-                    ]);
+                    if ($exception instanceof UnverifiedException) {
+                        $plivoXml->addSpeak('Unable to make a call to this number. You need to verify this number or upgrade your account.', [
+                            'voice' => 'WOMAN',
+                        ]);
+                    } else {
+                        $plivoXml->addSpeak('Unable to make a call to this number. Please check your voice permissions.', [
+                            'voice' => 'WOMAN',
+                        ]);
+                    }
                 }
             } catch (OutOfServiceException $e) {
                 $plivoXml->addSpeak('Unable to make a call.', [
@@ -1013,6 +1021,9 @@ class PlivoCallbacksController extends BaseController
             if ($phoneCall) {
                 $plivoXml->addConference($phoneCall->getConferenceName(), [
                     'endConferenceOnExit' => true,
+                    'callbackUrl'         => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
+                    'callbackMethod'      => 'POST',
+                    'record'              => true,
                 ]);
             }
         }

@@ -232,10 +232,10 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
   }
 
   .media-controls {
-    display: inline-block;
+    display: flex;
+    align-items: center;
 
     .media-timeline {
-      display: inline-block;
       width: 300px;
 
       .range {

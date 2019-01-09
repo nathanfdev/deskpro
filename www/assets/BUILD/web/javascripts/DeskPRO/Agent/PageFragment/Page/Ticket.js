@@ -2010,7 +2010,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	detectPhoneNumbers: function(messageEl) {
-    window.AgentLegacyBundle.detectPhoneNumbers(messageEl);
+    window.AgentLegacyBundle.detectPhoneNumbersFromMessages(messageEl);
 	},
 
 	refreshMessageTranslation: function(messageEl) {
@@ -2515,6 +2515,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				event.deskpro.cancelClose = true;
 			}
 		}, this);
+
+    if (window.DP_HAS_VOICE) {
+      window.AgentLegacyBundle.detectPhoneNumbers($('.ticket-subject', this.wrapper)[0]);
+    }
 	},
 
 	_initForward: function() {
@@ -2528,6 +2532,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var $type = $('input[name=select_user]', this.wrapper);
     $type.first().attr('checked', true);
     $type.first().parent().find('.select-user-item-options').show();
+
+    if ($('.select-user-menu', this.wrapper).length) {
+			this.wrapper.addClass('field-error');
+		} else if (!this.getEl('field_errors').hasClass('on')) {
+			this.wrapper.removeClass('field-error');
+		}
 
     $type.on('click', function () {
 			var $selected = $(this);

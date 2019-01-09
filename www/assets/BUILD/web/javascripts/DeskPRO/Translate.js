@@ -63,10 +63,12 @@ DeskPRO.Translate = new Orb.Class({
 			Object.each(vars, function (value, key) {
 				var re = new RegExp('\{\{\s*' + Orb.regexQuote(key) + '\s*\}\}' , 'g');
 
-				if (raw) {
-					text = text.replace(re, value);
-				} else {
-					text = text.replace(re, Orb.escapeHtml(value));
+				if (text) {
+          if (raw) {
+            text = text.replace(re, value);
+          } else {
+            text = text.replace(re, Orb.escapeHtml(value));
+          }
 				}
 			});
 		}

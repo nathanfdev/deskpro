@@ -28,7 +28,7 @@ class VoiceFeature extends AbstractBetaFeature
      */
     public function getShortDescription()
     {
-        return 'Twilio voice integration.';
+        return 'Voice integration.';
     }
 
     /**
@@ -36,7 +36,7 @@ class VoiceFeature extends AbstractBetaFeature
      */
     public function getEnableDescription()
     {
-        return 'Enable Twilio voice feature.';
+        return 'Enable voice feature.';
     }
 
     /**
@@ -44,7 +44,7 @@ class VoiceFeature extends AbstractBetaFeature
      */
     public function getDisableDescription()
     {
-        return 'Disable Twilio voice feature.';
+        return 'Disable voice feature.';
     }
 
     /**
