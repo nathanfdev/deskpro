@@ -484,7 +484,7 @@ we detect that the user has replied to a message inline rather than above the cu
                         'attribute'   => 'date_locked',
                     ],
                     'has_attachments' => [
-                        'description' => 'Does this ticked has attachments?',
+                        'description' => 'Does this ticket has attachments?',
                         'type'        => 'boolean',
                         'attribute'   => 'has_attachments',
                     ],
