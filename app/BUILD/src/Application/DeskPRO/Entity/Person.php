@@ -1941,6 +1941,24 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param int|object $brandId
+     *
+     * @return bool
+     */
+    public function isMemberOfBrand($brandId)
+    {
+        if (is_object($brandId)) {
+            $brandId = $brandId->getId();
+        }
+
+        $brandIds = $this->brands->map(function (Brand $brand) {
+            return $brand->getId();
+        });
+
+        return $brandIds->contains($brandId);
+    }
+
+    /**
      * @param PersonContactData $contact_data
      */
     public function addContactData(PersonContactData $contact_data)
