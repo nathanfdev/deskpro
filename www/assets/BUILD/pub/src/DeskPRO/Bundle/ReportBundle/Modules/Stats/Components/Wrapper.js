@@ -17,6 +17,7 @@ import {
 import { allReportsSelector } from '../Selectors/reports';
 import { allReportLabelsSelector } from '../../Application/Selectors/reports';
 import { regex, activateLabel, transformLabels, transformReportData, countActiveLabels } from './helper';
+import { replaceRoute } from '../../../../AdminBundle/Services/history';
 
 @connect(state => ({
   reports:       allReportsSelector(state),
@@ -37,6 +38,7 @@ class Wrapper extends React.Component {
     groupParams:   PropTypes.object.isRequired,
     labels:        PropTypes.object,
     dispatch:      PropTypes.func.isRequired,
+    params:        PropTypes.object
   };
 
   static createNewReport(report) {
@@ -86,7 +88,7 @@ class Wrapper extends React.Component {
       reports:       props.reports || Immutable.Map(),
       searchText:    '',
       labels:        newLabels,
-      activeLabels:  0,
+      activeLabels:  0
     };
 
     this.onEditReportClick          = this.onEditReportClick.bind(this);
@@ -104,6 +106,12 @@ class Wrapper extends React.Component {
     this.parseReportQuery           = this.parseReportQuery.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.params.reportId) {
+      this.changeEditingReport(Immutable.fromJS({ id: this.props.params.reportId }));
+    }
+  }
+
   componentWillReceiveProps(props) {
     let newReports = props.reports;
     this.state.reports.forEach((report) => { // we have to persist changed var values, to keep run mode work
@@ -111,6 +119,9 @@ class Wrapper extends React.Component {
         newReports = newReports.mergeIn([report.get('id')], { variables: report.get('variables'), varChanged: true });
       }
     });
+    if (props.params.reportId && (this.props.params.reportId !== props.params.reportId)) {
+      this.changeEditingReport(Immutable.fromJS({ id: props.params.reportId }));
+    }
     this.setState({ reports: newReports });
     this.setLabels(props);
   }
@@ -131,24 +142,8 @@ class Wrapper extends React.Component {
   }
 
   onEditReportClick(report) {
-    this.setState({
-      currentReport: Immutable.Map(),
-      reportLoading: true,
-    });
-
-    const promise = this.props.dispatch(loadReport(report.get('id')));
-    promise.then((response) => {
-      this.setState({
-        reportLoading: false,
-        currentReport: Immutable.fromJS(response.data.data)
-      });
-    }, () => {
-      this.setState({
-        reportLoading: false
-      });
-    });
-
-    this.setState({ mode: 'edit' });
+    replaceRoute(`/stats/edit/${report.get('id')}`);
+    this.changeEditingReport(report);
   }
 
   onDeleteReportClick(report) {
@@ -260,6 +255,27 @@ class Wrapper extends React.Component {
     }
   }
 
+  changeEditingReport(report) {
+    this.setState({
+      currentReport: Immutable.Map(),
+      reportLoading: true,
+    });
+
+    const promise = this.props.dispatch(loadReport(report.get('id')));
+    promise.then((response) => {
+      this.setState({
+        reportLoading: false,
+        currentReport: Immutable.fromJS(response.data.data)
+      });
+    }, () => {
+      this.setState({
+        reportLoading: false
+      });
+    });
+
+    this.setState({ mode: 'edit' });
+  }
+
   parseReportQuery(report, query) {
     this.props.dispatch(parseQuery(report, query));
   }
@@ -335,7 +351,7 @@ class Wrapper extends React.Component {
           </div>
         </div>
         <div className="report-list-pane-wrapper">
-          { currentReport.get('query_parts') && mode === 'edit'
+          { mode === 'edit'
             ? <Edit
               parseQuery={this.parseReportQuery}
               reportLoading={reportLoading}

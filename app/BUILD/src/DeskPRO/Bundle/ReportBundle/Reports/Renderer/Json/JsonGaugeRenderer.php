@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\AssetsHelper;
 
 /**
  * Class JsonGaugeRenderer.
@@ -13,10 +14,12 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
      * Constructor.
      *
      * @param JsonValueRenderer $valueRenderer
+     * @param AssetsHelper      $assetsHelper
      */
-    public function __construct(JsonValueRenderer $valueRenderer)
+    public function __construct(JsonValueRenderer $valueRenderer, AssetsHelper $assetsHelper)
     {
         $this->valueRenderer = $valueRenderer;
+        $this->assetsHelper  = $assetsHelper;
     }
 
     /**

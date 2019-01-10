@@ -14,6 +14,7 @@ define ['handlebars'], (Handlebars) ->
         widgetType: '@'
         chartType: '@'
         loaded: '@'
+        control: '='
 
       link: (scope, element) ->
         window.initHandlebars(Handlebars)
@@ -32,6 +33,8 @@ define ['handlebars'], (Handlebars) ->
         scope.loaded = false
         scope.noData = false
 
+
+
         chartDiv    = angular.element(document.getElementById("ch#{scope.widgetId}"))
         chartParent = chartDiv.parent().parent()
         chartHeader = chartDiv.parent().siblings('.box-header')
@@ -39,6 +42,14 @@ define ['handlebars'], (Handlebars) ->
         options     = scope.options
         drawn       = false
         interval    = false
+
+        scope.control.print = ->
+          if chart
+            chart.export.capture(
+              {},
+              () ->
+                this.toPRINT()
+            )
 
         scope.$watch 'chartData', (n) ->
           return if !drawn

@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\AssetsHelper;
 
 /**
  * Class JsonBubbleRenderer.
@@ -13,10 +14,12 @@ class JsonBubbleRenderer extends AbstractJsonChartRenderer
      * Constructor.
      *
      * @param JsonValueRenderer $valueRenderer
+     * @param AssetsHelper      $assetsHelper
      */
-    public function __construct(JsonValueRenderer $valueRenderer)
+    public function __construct(JsonValueRenderer $valueRenderer, AssetsHelper $assetsHelper)
     {
         $this->valueRenderer = $valueRenderer;
+        $this->assetsHelper  = $assetsHelper;
     }
 
     /**
@@ -54,7 +57,13 @@ class JsonBubbleRenderer extends AbstractJsonChartRenderer
             'autoMargins'   => true,
             'pullOutRadius' => 0,
             'legend'        => false,
-            'exportConfig'  => false,
+            'export'        => [
+                'enabled' => true,
+                'libs'    => [
+                    'path' => $this->assetsHelper->getUrl('vendor/amcharts3/libs/', 'legacy_web'),
+                ],
+                'menu' => [],
+            ],
         ];
 
         $selectColumns = $metadata->getSelectColumns();

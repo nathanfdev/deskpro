@@ -7,6 +7,7 @@ import { repositoriesConfig } from 'DeskPRO/Bundle/ReportBundle/DAL/config';
 import store from '../../../Services/store';
 import { history } from '../../../Services/history';
 import Wrapper from '../../Stats/Components/Wrapper';
+import Edit from '../../Stats/Components/Edit';
 import { loadReports, loadGroupParams } from '../Actions/reportActions';
 
 class AppContainer extends React.Component {
@@ -33,7 +34,9 @@ class AppContainer extends React.Component {
     return (
       <Provider store={store}>
         <Router history={history}>
-          <Route path="stats" component={Wrapper} />
+          <Route path="stats" component={Wrapper}>
+            <Route path="edit/:reportId" component={Edit} />
+          </Route>
         </Router>
       </Provider>
     );

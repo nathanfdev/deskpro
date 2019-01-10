@@ -16,6 +16,7 @@ import '../../../../vendor/amcharts3/funnel';
 import '../../../../vendor/amcharts3/radar';
 import '../../../../vendor/amcharts3/xy';
 import '../../../../vendor/amcharts3/themes/light';
+import '../../../../vendor/amcharts3/plugins/export/export';
 
 import App from './Modules/Application/Components/AppContainer';
 

@@ -13,13 +13,14 @@ import { transformReportDataToApi } from './helper';
 class EditContainer extends React.Component {
 
   static propTypes = {
-    report:       PropTypes.object.isRequired,
-    groupParams:  PropTypes.object.isRequired,
-    labels:       PropTypes.object.isRequired,
-    onCloneClick: PropTypes.func.isRequired,
-    onRunClick:   PropTypes.func.isRequired,
-    dispatch:     PropTypes.func.isRequired,
-    onSubmit:     PropTypes.func.isRequired
+    report:        PropTypes.object.isRequired,
+    groupParams:   PropTypes.object.isRequired,
+    labels:        PropTypes.object.isRequired,
+    onCloneClick:  PropTypes.func.isRequired,
+    onRunClick:    PropTypes.func.isRequired,
+    dispatch:      PropTypes.func.isRequired,
+    onSubmit:      PropTypes.func.isRequired,
+    reportLoading: PropTypes.bool.isRequired,
   };
 
   static dpqlParser(query) {
@@ -147,7 +148,7 @@ class EditContainer extends React.Component {
 
   renderForm() {
     const { initialFormValue, saving, error, formErrors } = this.state;
-    const { groupParams, report, labels } = this.props;
+    const { groupParams, report, labels, reportLoading } = this.props;
 
     const EditStatForm = reduxForm({
       form:               'editStat',
@@ -184,6 +185,7 @@ class EditContainer extends React.Component {
         groupParams={groupParams.toJS()}
         dpqlParser={EditContainer.dpqlParser}
         isCustom={report.get('is_custom')}
+        reportLoading={reportLoading}
       />
       {controls}
     </div>);
@@ -209,11 +211,11 @@ class EditContainer extends React.Component {
   }
 
   render() {
-    const { report } = this.props;
-    const reportExists  = report && report.get('id') && report.get('query_parts');
+    const { report, reportLoading } = this.props;
+    const loaded  = ((report && report.get('id') && report.get('query_parts')) || report.get('is_new')) && !reportLoading;
     return (
-      <div className="report-widget-edit-n-run-content">
-        { (reportExists || report.get('is_new')) ? this.renderReport() : <Loader size="xlarge" /> }
+      <div className={classNames('report-widget-edit-n-run-content', { loading: !loaded })}>
+        { loaded ? this.renderReport() : <Loader size="xlarge" /> }
       </div>
     );
   }

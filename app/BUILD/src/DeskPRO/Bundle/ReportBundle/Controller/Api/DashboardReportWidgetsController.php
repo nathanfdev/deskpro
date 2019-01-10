@@ -79,7 +79,8 @@ class DashboardReportWidgetsController extends CrudController
             ['variables' => $variables],
             ReportsRendererInterface::TYPE_TABLE,
             $type,
-            $this->getUser()
+            $this->getUser(),
+            json_encode(['title' => $widget->getTitle('no_groupable'), 'no_date' => true])
         );
         $renderer = $this->get('reports.renderer_registry')->getRenderer(ReportsRendererInterface::TYPE_TABLE, $type);
 

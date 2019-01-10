@@ -73,15 +73,15 @@ define -> (States) ->
     .setCtrl('Reports.Stats.StatsMain')
     .setTpl('ReportsInterfaceBundle:Stats:main.html')
 
-  States.add('reports.stats.view')
-    .setUrl('/{widget_id:[0-9]+}')
-    .setCtrl('Reports.Stats.WidgetView')
-    .setTpl('ReportsInterfaceBundle:Stats:widget.html')
+  States.add('reports.stats.edit')
+    .setUrl('/edit/{reportId:[0-9]+}')
+    .setCtrl('Reports.Stats.StatsMain')
+    .setTpl('ReportsInterfaceBundle:Stats:main.html')
 
   States.add('reports.stats.new')
     .setUrl('/new')
-    .setCtrl('Reports.Stats.WidgetView')
-    .setTpl('ReportsInterfaceBundle:Stats:widget.html')
+    .setCtrl('Reports.Stats.StatsMain')
+    .setTpl('ReportsInterfaceBundle:Stats:main.html')
 
   #----------------------------------------
   # Agent Activity
