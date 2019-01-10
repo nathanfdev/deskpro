@@ -61,14 +61,35 @@
   }
 }
 
-.popup .popup-content .schedule-form {
-  .bucket {
-    .bucket-column, &.run-options {
-      label {
-        display: inline-block;
-        margin: 0 5px 5px 5px;
-        float: none;
-        width: auto;
+
+
+.popup .popup-content {
+  &.widget-edit {
+    .bucket {
+      .help-block {
+
+        display: block;
+        font-size: 0.75em;
+        margin: 10px 5px 10px 0px;
+        color: #737373;
+
+        pre {
+          background-color: white;
+          border: 1px solid #626262;
+          padding: 3px;
+        }
+      }
+    }
+  }
+  .schedule-form {
+    .bucket {
+      .bucket-column, &.run-options {
+        label {
+          display: inline-block;
+          margin: 0 5px 5px 5px;
+          float: none;
+          width: auto;
+        }
       }
     }
   }
