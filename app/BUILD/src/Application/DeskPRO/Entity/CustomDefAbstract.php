@@ -1232,6 +1232,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return bool
      */
+    public function isToggleType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_TOGGLE;
+    }
+
+    /**
+     * @return bool
+     */
     public function getDateExpectedFormat()
     {
         switch ($this->handler_class) {

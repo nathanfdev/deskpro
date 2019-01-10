@@ -6153,6 +6153,9 @@ CSS;
                             if ($customField->isMulti()) {
                                 $layoutCustomData[$fieldName] = [];
                             }
+                            if ($customField->isToggleType()) {
+                                $layoutCustomData[$fieldName] = 0;
+                            }
                         }
                     }
                 }
