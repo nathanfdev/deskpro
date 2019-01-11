@@ -100,8 +100,8 @@ export class OmniSearch extends React.Component {
   };
 
   doSearch(newQuery, lastSearchLogId) {
-    if (!newQuery || newQuery.length < 3) {
-      // we need a query with a length of at least 3 for the server to do any real searching
+    if (!newQuery || newQuery.length < 2) {
+      // we need a query with a length of at least 2 for the server to do any real searching
       // so don't do a HTTP request if we don't at least have that
       return;
     }
@@ -220,7 +220,7 @@ export class OmniSearch extends React.Component {
   render() {
     const { $input, $button } = this.props;
 
-    if (this.state.searchQuery.length < 3) {
+    if (this.state.searchQuery.length < 2) {
       return null;
     }
 
