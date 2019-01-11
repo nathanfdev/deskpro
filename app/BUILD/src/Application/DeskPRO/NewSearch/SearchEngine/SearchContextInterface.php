@@ -4,6 +4,8 @@ namespace Application\DeskPRO\NewSearch\SearchEngine;
 
 interface SearchContextInterface
 {
+    const SEARCH_BY_ID = 'search_id';
+
     /**
      * @return int[]
      */
@@ -38,4 +40,19 @@ interface SearchContextInterface
      * @return \Application\DeskPRO\Entity\Brand
      */
     public function getBrand();
+
+    /**
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return $this
+     */
+    public function setOption($name, $value);
+
+    /**
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getOption($name);
 }

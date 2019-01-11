@@ -2,6 +2,8 @@
 
 namespace Application\DeskPRO\NewSearch\SearchEngine;
 
+use Orb\Util\OptionsArray;
+
 class SearchContext implements SearchContextInterface
 {
     /**
@@ -38,6 +40,42 @@ class SearchContext implements SearchContextInterface
      * @var \Application\DeskPRO\Entity\Brand
      */
     private $brand;
+
+    /**
+     * @var OptionsArray
+     */
+    private $options;
+
+    /**
+     * SearchContext constructor.
+     */
+    public function __construct()
+    {
+        $this->options = new OptionsArray();
+    }
+
+    /**
+     * @param $name
+     * @param $value
+     *
+     * @return $this
+     */
+    public function setOption($name, $value)
+    {
+        $this->options->set($name, $value);
+
+        return $this;
+    }
+
+    /**
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function getOption($name)
+    {
+        return $this->options->get($name);
+    }
 
     /**
      * @return \Application\DeskPRO\Entity\Person
