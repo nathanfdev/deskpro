@@ -53,10 +53,8 @@ class EditExtensionContainer extends React.Component {
       deleting: true
     });
 
-    const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
     const promise = dispatch(editAgent(agent.get('id'), {
       agent_data: {
-        ...agentData,
         extension_number: null
       }
     }));
