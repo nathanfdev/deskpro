@@ -71,8 +71,7 @@ class CallLogsList extends React.Component {
           <tbody>
             {calls.toArray().map((call, index) => {
               const ticketId = call.get('ticket');
-              const fromNumber = call.getIn(['data', 'From']);
-              const toNumber = call.getIn(['data', 'To']);
+              const externalNumber = call.get('external_number');
               const isInbound = call.get('type') === 'inbound';
               const number = numbers.get(call.get('number')) || Immutable.fromJS({});
               const onOpen = (event) => {
@@ -104,8 +103,8 @@ class CallLogsList extends React.Component {
                   </td>
                   <td>
                     {isInbound
-                      ? <button onClick={() => openDialpad(fromNumber)}>
-                        {fromNumber}
+                      ? <button onClick={() => openDialpad(externalNumber)}>
+                        {externalNumber}
                       </button>
                       : <span x-ms-format-detection="none">{number.get('number')}</span>
                     }
@@ -113,8 +112,8 @@ class CallLogsList extends React.Component {
                   <td>
                     {isInbound
                       ? <span x-ms-format-detection="none">{number.get('number')}</span>
-                      : <button onClick={() => openDialpad(toNumber)}>
-                        {toNumber}
+                      : <button onClick={() => openDialpad(externalNumber)}>
+                        {externalNumber}
                       </button>
                     }
                   </td>

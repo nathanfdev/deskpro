@@ -34,8 +34,7 @@ class CallLogView extends React.Component {
   render() {
     const { onReturnBack, call, numbers, people } = this.props;
     const number = numbers.get(call.get('number')) || Immutable.fromJS({});
-    const fromNumber = call.getIn(['data', 'From']);
-    const toNumber = call.getIn(['data', 'To']);
+    const externalNumber = call.get('external_number');
     const isInbound = call.get('type') === 'inbound';
     const rawData = call.get('data').toJS();
 
@@ -80,8 +79,8 @@ class CallLogView extends React.Component {
               <th>From Number</th>
               <td>
                 {isInbound
-                  ? <button onClick={event => this.openDialpad(event, fromNumber)}>
-                    {fromNumber}
+                  ? <button onClick={event => this.openDialpad(event, externalNumber)}>
+                    {externalNumber}
                   </button>
                   : <span x-ms-format-detection="none">{number.get('number')}</span>
                 }
@@ -92,8 +91,8 @@ class CallLogView extends React.Component {
               <td>
                 {isInbound
                   ? <span x-ms-format-detection="none">{number.get('number')}</span>
-                  : <button onClick={event => this.openDialpad(event, toNumber)}>
-                    {toNumber}
+                  : <button onClick={event => this.openDialpad(event, externalNumber)}>
+                    {externalNumber}
                   </button>
                 }
               </td>
