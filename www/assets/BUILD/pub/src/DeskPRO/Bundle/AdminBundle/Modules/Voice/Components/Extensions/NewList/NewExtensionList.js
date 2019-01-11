@@ -16,13 +16,13 @@ const rangeNumbers = range(minNumber, maxNumber);
 class NewExtensionList extends React.Component {
 
   static propTypes = {
-    agents:            PropTypes.object,
-    queues:            PropTypes.object,
-    errors:            PropTypes.object,
-    loading:           PropTypes.bool,
-    onClickBack:       PropTypes.func,
-    onAddExtension:    PropTypes.func,
-    onAddAllSuggested: PropTypes.func
+    agents:          PropTypes.object,
+    queues:          PropTypes.object,
+    errors:          PropTypes.object,
+    loading:         PropTypes.bool,
+    onClickBack:     PropTypes.func,
+    addExtension:    PropTypes.func,
+    addAllSuggested: PropTypes.func
   };
 
   componentWillReceiveProps(newProps) {
@@ -41,8 +41,10 @@ class NewExtensionList extends React.Component {
     }
   }
 
-  onAddAllSuggested = () => {
-    const { onAddAllSuggested } = this.props;
+  getExtensionNumber = agent => agent.getIn(['agent_data', 'extension_number']);
+
+  addAllSuggested = () => {
+    const { addAllSuggested } = this.props;
     const extensions = [];
     Object.keys(this.rows).forEach((agentId) => {
       const extensionNumber = this.rows[agentId].state.formData.value.agent_data.extension_number;
@@ -51,10 +53,8 @@ class NewExtensionList extends React.Component {
       }
     });
 
-    onAddAllSuggested(extensions);
+    addAllSuggested(extensions);
   };
-
-  getExtensionNumber = agent => agent.getIn(['agent_data', 'extension_number']);
 
   renderEmpty() {
     const { onClickBack } = this.props;
@@ -71,7 +71,7 @@ class NewExtensionList extends React.Component {
 
   renderTable() {
     const { agents = Immutable.fromJS({}), queues, errors, loading } = this.props;
-    const { onClickBack, onAddExtension } = this.props;
+    const { onClickBack, addExtension } = this.props;
 
     const newAgents = [];
     const existingNumbers = [];
@@ -98,7 +98,7 @@ class NewExtensionList extends React.Component {
         <BackButton onClick={onClickBack} />
         <ExtensionsHeader />
 
-        <button className="ui right floated primary button" onClick={this.onAddAllSuggested}>
+        <button className="ui right floated primary button" onClick={this.addAllSuggested}>
           Add all suggested
         </button>
         <h3>Add some extensions for your team members:</h3>
@@ -122,7 +122,7 @@ class NewExtensionList extends React.Component {
                 queues={queues}
                 errors={errors[agent.get('id')]}
                 extension={availableNumbers.splice(0, 1)[0]}
-                onAddExtension={onAddExtension}
+                addExtension={addExtension}
               />
             )}
           </tbody>
@@ -142,21 +142,16 @@ class NewExtensionList extends React.Component {
 class NewExtensionRow extends React.Component {
 
   static propTypes = {
-    agent:          PropTypes.object,
-    queues:         PropTypes.object,
-    extension:      PropTypes.object,
-    onAddExtension: PropTypes.func
+    agent:        PropTypes.object,
+    queues:       PropTypes.object,
+    addExtension: PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
       formData: createValue({
-        value: {
-          agent_data: {
-            extension_number: props.extension
-          }
-        },
+        value:     this.getDefaultValue(props),
         errorList: {},
         onChange:  this.onChange
       })
@@ -164,11 +159,9 @@ class NewExtensionRow extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { formData } = this.state;
-
     this.setState({
       formData: createValue({
-        value:     formData.value,
+        value:     this.getDefaultValue(newProps),
         errorList: newProps.errors || {},
         onChange:  this.onChange
       })
@@ -180,11 +173,18 @@ class NewExtensionRow extends React.Component {
   };
 
   onSubmit = () => {
-    const { agent, onAddExtension } = this.props;
+    const { agent, addExtension } = this.props;
     const { formData } = this.state;
 
-    onAddExtension(agent, formData.value.agent_data.extension_number);
+    addExtension(agent, formData.value.agent_data.extension_number);
   };
+
+
+  getDefaultValue = props => ({
+    agent_data: {
+      extension_number: props.extension
+    }
+  });
 
   render() {
     const { agent, queues = Immutable.fromJS([]) } = this.props;
