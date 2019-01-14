@@ -1344,7 +1344,7 @@ i.icon.fitted {
   & div.token-field {
     min-width: 162px;
     height: 48px;
-    padding: 15px 0 5px 40px !important;
+    padding: 13px 0 13px 40px !important;
     color: #2b2f2f;
     margin-left: 2px;
     margin-right: 25px;
@@ -1364,6 +1364,12 @@ i.icon.fitted {
     }
     .value {
       padding: 1px 5px 1px 8px;
+    }
+    .scope {
+      margin-right: 25px;
+    }
+    .raw-text {
+      padding-top: 3px;
     }
   }
   .isvg.close-icon {

@@ -698,10 +698,6 @@ class SearchContainer extends React.Component {
         token: 'id',
       },
       {
-        label: intl.formatMessage({ id: 'agent.general.label' }),
-        token: 'label',
-      },
-      {
         label:    intl.formatMessage({ id: 'agent.general.ticket' }),
         scope:    'Ticket',
         children: ticketMenu
@@ -842,6 +838,7 @@ class SearchContainer extends React.Component {
             onChange={this.handleChange}
             placeholder=""
             zIndex={1800}
+            nbCollapsed={3}
             showTokensOnFocus
           />
           <a className="close-icon" onClick={this.closeMenu}>

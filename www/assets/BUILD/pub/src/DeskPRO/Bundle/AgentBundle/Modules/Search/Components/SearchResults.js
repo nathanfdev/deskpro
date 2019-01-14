@@ -62,9 +62,6 @@ class SearchResults extends React.Component {
         <Section hidden={activePane !== 'publishing'}>
           <Publishing results={results} />
         </Section>
-        <Section hidden={activePane !== 'admin'}>
-          Admin
-        </Section>
         {this.renderOrganizations()}
         {this.renderPeople()}
         {this.renderTickets()}
