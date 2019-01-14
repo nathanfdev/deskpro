@@ -241,7 +241,7 @@ class TicketHandler extends AbstractEntityHandler
         }
 
         $version = $context->attributes->get('version');
-        if (!$version->isEmpty() && $version->get() == 20170401) {
+        if (!$version->isEmpty() && $version->get() <= 20170401) {
             $status       = $entity->getStatus();
             $hiddenStatus = $entity->getHiddenStatus();
             if ($status === TicketStatus::STATUS_TYPE_HIDDEN && !$hiddenStatus) {

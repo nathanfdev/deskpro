@@ -2,7 +2,7 @@
 api:
   default_version: "latest"
   versions:
-    - 20181201
+    - 20190110
     - 20170601
     - 20170401
     - 20160101

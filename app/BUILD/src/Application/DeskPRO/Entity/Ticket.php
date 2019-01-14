@@ -3153,10 +3153,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             $this->setModelField('date_resolved', null);
         }
 
-//        if ($status != 'awaiting_agent' && $this->is_hold) {
-//            $this['is_hold'] = false;
-//        }
-
         if (!$status || !TicketStatus::isValidStatusType($status)) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
@@ -3197,11 +3193,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 $this->undeleteTicket();
             }
         }
-
-        // Not sure do I need to refactor this somehow with substatuses
-//        if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
-//            $this->setModelField('is_hold', false);
-//        }
 
         return $this;
     }

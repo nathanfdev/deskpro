@@ -1,5 +1,5 @@
 @new
-Feature: /20170601/ticket_statuses endpoint
+Feature: /20190110/ticket_statuses endpoint
   To CRUD DeskPRO ticket's statuses
   As an API user
   I want an API endpoint
@@ -14,7 +14,7 @@ Feature: /20170601/ticket_statuses endpoint
       | t4 | Ticket 4 | awaiting_user |
 
   Scenario: I retrieve a list of ticket statuses
-    When I send a GET request to "/api/v2/20170601/ticket_statuses"
+    When I send a GET request to "/api/v2/20190110/ticket_statuses"
     Then the response status code should be 200
     And the JSON node "data[0]" should be equal to the string "awaiting_agent"
     And the JSON node "data[1]" should be equal to the string "awaiting_user"
@@ -25,7 +25,7 @@ Feature: /20170601/ticket_statuses endpoint
     And the JSON node "data[6]" should be equal to the string "hidden.deleted"
 
   Scenario Outline: I retrieve status' tickets
-    When I send a GET request to "/api/v2/20170601/ticket_statuses/<status>/tickets"
+    When I send a GET request to "/api/v2/20190110/ticket_statuses/<status>/tickets"
     Then the response status code should be 200
     And the JSON node "data" should have <count> elements
 

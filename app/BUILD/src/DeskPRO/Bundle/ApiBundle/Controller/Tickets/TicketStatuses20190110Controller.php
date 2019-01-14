@@ -14,9 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
  * API access to ticket labels.
  *
  * @ApiModes("all")
- * @Rest\Route("/20170601/ticket_statuses")
+ * @Rest\Route("/20190110/ticket_statuses")
  */
-class TicketStatuses20170601Controller extends BaseController
+class TicketStatuses20190110Controller extends BaseController
 {
     /**
      * Fetch available ticket statuses.
