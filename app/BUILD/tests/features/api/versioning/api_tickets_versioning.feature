@@ -49,6 +49,12 @@ Feature: I check tickets versioning
     And the JSON node "data[6].status" should be equal to "hidden.deleted"
     And the JSON node "data[6].hidden_status" should not exist
 
+  Scenario: I check 20170405 version
+    When I send a GET request to "/api/v2/20170405/tickets?order_by=id&order_dir=asc"
+    Then the response status code should be 200
+    And the JSON node "data[0].status" should be equal to "awaiting_agent"
+    And the JSON node "data[0].hidden_status" should not exist
+
   Scenario: I check default version
     When I send a GET request to "/api/v2/tickets?order_by=id&order_dir=asc"
     Then the response status code should be 200
