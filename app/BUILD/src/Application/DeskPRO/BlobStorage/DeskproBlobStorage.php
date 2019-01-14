@@ -806,7 +806,7 @@ class DeskproBlobStorage implements Loggable
 
         $client = new HttpClient([
             GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
-            GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 4,
+            GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 10,
             GuzzleHttp\RequestOptions::TIMEOUT         => 10,
         ]);
 
