@@ -39,13 +39,6 @@ export default class TopTabs extends React.Component {
         </TabLink>
       );
     }
-    if (this.getAdminCount() > 0) {
-      tabs.push(
-        <TabLink name="admin" key="admin">
-          Admin <span className="count">{this.getAdminCount()}</span>
-        </TabLink>
-      );
-    }
     if (tabs.length === 0) {
       return null;
     }

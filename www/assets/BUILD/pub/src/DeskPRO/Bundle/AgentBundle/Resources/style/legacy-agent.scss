@@ -1418,6 +1418,13 @@ i.icon.fitted {
     overflow-y: scroll !important;
   }
 }
+.token-field__popup {
+  .dp-scrollbar__view {
+    overflow: auto !important;
+    overflow-y: scroll !important;
+    margin-bottom: 10px;
+  }
+}
 
 .fa, .fas {
   font-weight: 900 !important;
