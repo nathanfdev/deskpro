@@ -51,6 +51,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
       }
     >
       <div
+        className="dp-scrollbar__view"
         style={
           Object {
             "WebkitOverflowScrolling": "touch",

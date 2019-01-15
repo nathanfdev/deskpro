@@ -103,7 +103,7 @@ DeskPRO.Translate = new Orb.Class({
 	 */
 	choosePlural: function(text, number) {
 		var parts = text.split('|');
-		if (number == 0 || number != 1) {
+		if (parts[1] && (number === 0 || number !== 1)) {
 			return parts[1];
 		} else {
 			return parts[0];
@@ -111,7 +111,7 @@ DeskPRO.Translate = new Orb.Class({
 	},
 
 	testInterval: function(number, interval) {
-		var x = 0
+		var x = 0;
 		var number = parseInt(number);
 		interval = interval.trim();
 
