@@ -139,7 +139,7 @@ class Language extends AbstractEntityRepository
         }
 
         if ($langCode == 'en') {
-            $langCode = 'en_US';
+            $langCode = 'en-US';
         }
 
         if ($langCode == 'es') {
