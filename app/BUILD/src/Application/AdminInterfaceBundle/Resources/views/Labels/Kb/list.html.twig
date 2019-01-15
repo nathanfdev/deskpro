@@ -8,4 +8,11 @@
 	</section>
 
     {% include 'AdminInterfaceBundle:Labels:Common/list-section.html.twig' with {prefix: 'portal.kb_labels', name: 'Knowledgebase Labels'} %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.kb_custom_fields') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Knowledgebase Custom Fields</h3>
+		</a>
+	</section>
 {% endblock %}

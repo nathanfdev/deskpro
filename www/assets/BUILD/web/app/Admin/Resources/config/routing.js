@@ -1696,6 +1696,41 @@ define(function() {
     data: {type: 'articles'}
   });
 
+
+  //###
+  //# Kb::CustomFields
+  //###
+  routes.push({
+    id: 'portal.kb_custom_fields',
+    url: '/kb/custom_fields',
+    templateName: 'CustomFields/Kb/list.html',
+    controller: 'Admin_CustomFields_Kb_Ctrl_List',
+  });
+
+  routes.push({
+    id: 'portal.kb_custom_fields.gocreate',
+    url: '/go-create/',
+    templateName: 'CustomFields/Common/edit.html',
+    controller: ['$state', function ($state) {
+      $state.go('portal.kb_custom_fields.create');
+    }]
+  });
+
+  routes.push({
+    id: 'portal.kb_custom_fields.create',
+    url: '/create/',
+    templateName: 'CustomFields/Common/edit.html',
+    controller: 'Admin_CustomFields_Kb_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'portal.kb_custom_fields.edit',
+    url: '/{id:\d+}/',
+    templateName: 'CustomFields/Common/edit.html',
+    controller: 'Admin_CustomFields_Kb_Ctrl_Edit',
+  });
+
+
   //###
   //# Downloads::Settings
   //###

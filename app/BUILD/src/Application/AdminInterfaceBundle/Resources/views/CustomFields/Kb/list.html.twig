@@ -1,0 +1,40 @@
+{% extends 'AdminInterfaceBundle:Labels:layout.html.twig' %}
+{% block listpane_content %}
+    <section class="dp-paneblock dp-panelink">
+        <a href="{{ ng_href('portal.kb_settings') }}">
+            <em><i class="fa fa-chevron-down"></i></em>
+            <h3>Knowledgebase Settings</h3>
+        </a>
+    </section>
+
+    <section class="dp-paneblock dp-panelink">
+        <a href="{{ ng_href('portal.kb_labels') }}">
+            <em><i class="fa fa-chevron-down"></i></em>
+            <h3>Knowledgebase labels</h3>
+        </a>
+    </section>
+
+    <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>Knowledgebase Custom Fields</h3>
+        </header>
+        <article>
+            <ul class="dp-item-list" dp-max-height>
+                <li ng-repeat="field in fields"
+                    dp-state-mark="field!:portal.kb_custom_fields.edit.{{ ng_var('field.id|murmurhash') }}">
+
+                    <a href="{{ ng_href('portal.kb_custom_fields.edit', '{id: field.id}') }}">
+                        <h4>
+                            <span class="title-text" dp-label="label" style="display: inline-block; padding: 1% 2%; border-radius: 3px"></span>
+                        </h4>
+                    </a>
+
+                </li>
+            </ul>
+            <div class="dp-add-control">
+                <a class="btn btn-default" href="{{ ng_href('portal.kb_custom_fields.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{phrase('agent.general.add')}}</a>
+            </div>
+        </article>
+    </section>
+
+{% endblock %}
