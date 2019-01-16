@@ -1,6 +1,6 @@
 id: finnish
 name: Finnish
-nameLocal: Englanti
+nameLocal: 'Suomen Kieli'
 locale: fi
 isRtl: false
 pluralRules:

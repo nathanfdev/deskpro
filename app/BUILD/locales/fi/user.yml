@@ -435,7 +435,7 @@ user.general.label_captcha: Vahvistuskoodi
 user.general.page: Sivu
 user.knowledgebase.auto_action_on_date: 'Automaattisesti {{action}}  {{date}}'
 user.knowledgebase.creating_pending_article: 'Luodaan artikkelia'
-user.lang.lang_title: Englanti
+user.lang.lang_title: 'Suomen Kieli'
 user.lang.lang_title_arabic: Arabia
 user.lang.lang_title_danish: Tanska
 user.lang.lang_title_default: Englanti

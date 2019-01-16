@@ -496,7 +496,7 @@ user.feedback.submit_feedback: 'Odeslat připomínku'
 user.general.label_captcha: 'Potvrzovací kód'
 user.general.page: Stránka
 user.general.request_token_expired: 'Váš token expiroval. Zkuste to znovu.'
-user.lang.lang_title: Angličtina
+user.lang.lang_title: Čeština
 user.lang.lang_title_arabic: Arabština
 user.lang.lang_title_danish: Dánština
 user.lang.lang_title_default: Angličtina
