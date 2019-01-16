@@ -3355,6 +3355,7 @@ agent.general.name: Name
 agent.general.name_az: 'Name (A-Z)'
 agent.general.name_is_summary: 'Name is {{name}}'
 agent.general.name_za: 'Name (Z-A)'
+agent.general.next: Next
 agent.general.never: Never
 agent.general.new: New
 agent.general.new_article: 'New Article'
@@ -3450,6 +3451,7 @@ agent.general.popularity: Popularity
 agent.general.portal: Portal
 agent.general.position: Position
 agent.general.prev: Prev
+agent.general.previous: Previous
 agent.general.print: Print
 agent.general.priorities: Priorities
 agent.general.priority: Priority

@@ -136,8 +136,8 @@
                 </a>
 			</div>
 			<ul class="pagenav" ng-class="{'no-prev': !hasPrevPage, 'no-next': !hasNextPage}">
-				<li class="prev" ng-click="loadPrevCursorPage();"></li>
-				<li class="next" ng-click="loadNextCursorPage();"></li>
+				<li class="prev" ng-click="loadPrevCursorPage();" role="button" title="{{ phrase('agent.general.previous') }}"></li>
+				<li class="next" ng-click="loadNextCursorPage();" role="button" title="{{ phrase('agent.general.next') }}"></li>
 			</ul>
 		</footer>
 	</div>
