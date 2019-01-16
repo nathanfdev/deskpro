@@ -72,7 +72,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     protected $end_action = null;
 
     /**
-     * \Doctrine\Common\Collections\ArrayCollection.
+     * @var \Doctrine\Common\Collections\ArrayCollection|CustomDataArticle[]
      */
     protected $custom_data;
 
@@ -218,6 +218,76 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
             $this->labels->removeElement($label);
             $this->_onPropertyChanged('labels', null, $this->labels);
         }
+    }
+
+    /**
+     * Find an existing data record for a field id.
+     *
+     * @param CustomDefArticle|int $fieldId
+     *
+     * @return CustomDataArticle
+     */
+    public function getCustomDataForField($fieldId)
+    {
+        if ($fieldId instanceof CustomDefArticle) {
+            $fieldId = $fieldId['id'];
+        }
+
+        foreach ($this->custom_data as $data) {
+            if ($data['field_id'] == $fieldId) {
+                return $data;
+            }
+        }
+
+        return;
+    }
+
+    /**
+     * @param CustomDefArticle $field
+     */
+    public function removeCustomDataForField(CustomDefArticle $field)
+    {
+        $parentId = null;
+        $fieldId  = $field->getId();
+        if ($field->getParent()) {
+            $parentId = $field->getParent()->getId();
+        }
+
+        $change = false;
+        foreach ($this->custom_data as $data) {
+            if ($data['field_id'] == $fieldId or $data['field_id'] == $parentId) {
+                $change = true;
+                $this->custom_data->removeElement($data);
+            }
+        }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+        }
+    }
+
+    /**
+     * Check if this article has a specific custom field.
+     *
+     * @param int $fieldId
+     *
+     * @return bool
+     */
+    public function hasCustomField($fieldId)
+    {
+        foreach ($this->custom_data as $data) {
+            if ($data->getField()->getId() == $fieldId) {
+                return true;
+            }
+        }
+
+        foreach ($this->custom_data as $data) {
+            if ($data->getField()->getParent() and $data->getField()->getParent()->getId() == $fieldId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -99,27 +99,27 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var fieldsRendered = this.getEl('custom_fields_rendered');
 		var fieldsForm = this.getEl('custom_fields_editable');
 
-		var buttonsWrap = this.getEl('properties_controls');
 		var propToggle = function(what) {
 			if (what == 'display') {
-				$('.showing-editing-fields', buttonsWrap).hide();
-				$('.showing-rendered-fields', buttonsWrap).show();
+				$('.showing-editing-fields', this.wrapper).hide();
+				$('.showing-rendered-fields', this.wrapper).show();
 				fieldsForm.hide();
 				fieldsRendered.show();
 			} else {
-				$('.showing-rendered-fields', buttonsWrap).hide();
-				$('.showing-editing-fields', buttonsWrap).show();
+				$('.showing-rendered-fields', this.wrapper).hide();
+				$('.showing-editing-fields', this.wrapper).show();
 				fieldsRendered.hide();
 				fieldsForm.show();
 			}
 		};
+		propToggle('display');
 
-		$('.edit-fields-trigger', buttonsWrap).on('click', function() {
+		$('.edit-fields-trigger', this.wrapper).on('click', function() {
 			propToggle('edit');
 		});
 
-		$('.save-fields-trigger', buttonsWrap).on('click', function() {
-			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+		$('.save-fields-trigger', this.wrapper).on('click', function() {
+			var formData = $('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', fieldsForm);
 
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save-custom-fields',

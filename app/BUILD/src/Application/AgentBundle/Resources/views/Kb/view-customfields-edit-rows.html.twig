@@ -1,6 +1,35 @@
-{% for f in custom_fields %}
-	<dt class="">{{ f.title }}</dt>
-	<dd class="">
-		{{ render_custom_field_form(f) }}
-	</dd>
-{% endfor %}
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table{% if errors|length %} error{% endif %}" id="{{ baseId }}_custom_fields_editable">
+	{# Custom fields#}
+	<tbody class="kb_field_{{f.id}} custom-field item" data-field-type="kb_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
+	{% for f in custom_fields %}
+		<tr class="mode-edit">
+			{% if f.field_def.isFormField() %}
+				<th width="120">{{ f.title }}:</th>
+				<td>
+					<div class="custom-field field-input kb_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
+						{{ render_custom_field_form(f) }}
+					</div>
+				</td>
+			{% else %}
+				<td>
+					<span class="custom-field edit-trigger kb_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
+				</td>
+				<td>
+					<div class="custom-field content kb_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
+						{% if not article.hasCustomField(f.id) %}
+							{{ phrase('agent.general.none') }}
+						{% else %}
+							{{ render_custom_field(f) }}
+						{% endif %}
+					</div>
+				</td>
+			{% endif %}
+		</tr>
+	{% endfor %}
+		</tbody>
+	<tfoot>
+		<tr colspan="2">
+			<td><button class="clean-white save-fields-trigger"><span>{{ phrase('agent.general.save') }}</span></button></td>
+		</tr>
+	</tfoot>
+</table>
