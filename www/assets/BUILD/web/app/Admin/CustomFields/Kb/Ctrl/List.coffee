@@ -5,7 +5,9 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     @CTRL_AS = 'ListCtrl'
 
     init: ->
+      @$scope.fields = []
 
     initialLoad: ->
+      @DataService.get('KbFields').loadList().then((list) => @$scope.fields = list);
 
   Admin_CustomFields_Kb_Ctrl_List.EXPORT_CTRL()

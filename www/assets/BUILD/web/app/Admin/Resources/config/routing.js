@@ -1709,7 +1709,7 @@ define(function() {
 
   routes.push({
     id: 'portal.kb_custom_fields.gocreate',
-    url: '/go-create/',
+    url: '/go-create',
     templateName: 'CustomFields/Common/edit.html',
     controller: ['$state', function ($state) {
       $state.go('portal.kb_custom_fields.create');
@@ -1718,14 +1718,14 @@ define(function() {
 
   routes.push({
     id: 'portal.kb_custom_fields.create',
-    url: '/create/',
+    url: '/create',
     templateName: 'CustomFields/Common/edit.html',
     controller: 'Admin_CustomFields_Kb_Ctrl_Edit'
   });
 
   routes.push({
     id: 'portal.kb_custom_fields.edit',
-    url: '/{id:\d+}/',
+    url: '/{id:[0-9]+}',
     templateName: 'CustomFields/Common/edit.html',
     controller: 'Admin_CustomFields_Kb_Ctrl_Edit',
   });
