@@ -34,7 +34,7 @@ class ApiVersionInfo
      */
     public function getDefaultVersion()
     {
-        return $this->defaultVersion === 'latest' ? max($this->versions) : $this->defaultVersion;
+        return $this->defaultVersion === 'latest' ? date('Ymd') : $this->defaultVersion;
     }
 
     /**
@@ -46,18 +46,6 @@ class ApiVersionInfo
     }
 
     /**
-     * @param string $checkVersion
-     *
-     * @return string
-     */
-    public function getClosestVersion($checkVersion)
-    {
-        $filtered = $this->getLowerVersions($checkVersion);
-
-        return count($filtered) ? max($filtered) : min($this->versions);
-    }
-
-    /**
      * @param $checkVersion
      *
      * @return array
@@ -66,6 +54,18 @@ class ApiVersionInfo
     {
         return array_filter($this->versions, function ($version) use ($checkVersion) {
             return (int) $checkVersion >= (int) $version;
+        });
+    }
+
+    /**
+     * @param $checkVersion
+     *
+     * @return array
+     */
+    public function getNextVersions($checkVersion)
+    {
+        return array_filter($this->versions, function ($version) use ($checkVersion) {
+            return (int) $checkVersion < (int) $version;
         });
     }
 }

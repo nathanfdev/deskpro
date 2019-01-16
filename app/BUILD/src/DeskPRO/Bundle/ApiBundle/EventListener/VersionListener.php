@@ -57,10 +57,10 @@ class VersionListener implements EventSubscriberInterface
         $request = $event->getRequest();
 
         // get version number from the request
-        if (preg_match('#^/api/v2/(\d+)#', $request->getPathInfo(), $matches)) {
-            $currentVersion = $this->versionInfo->getClosestVersion($matches[1]);
+        if (preg_match('#^/api/v2/(\d{8})#', $request->getPathInfo(), $matches)) {
+            $currentVersion = (int) $matches[1];
         } else {
-            $currentVersion = $this->versionInfo->getDefaultVersion();
+            $currentVersion = (int) $this->versionInfo->getDefaultVersion();
         }
 
         // register version num from the request
@@ -89,7 +89,7 @@ class VersionListener implements EventSubscriberInterface
         // if matched controller version is differ than requested one
         // e.g. we have controller action just for the previous version
         // then update request url as well
-        if ($matchedVersion !== null && $currentVersion !== $matchedVersion) {
+        if ($matchedVersion !== null) {
             $reflection = new \ReflectionClass(Request::class);
             $property   = $reflection->getProperty('pathInfo');
             $property->setAccessible(true);
@@ -105,22 +105,29 @@ class VersionListener implements EventSubscriberInterface
      */
     private function getCheckVersions($checkVersion)
     {
-        $filtered = $this->versionInfo->getLowerVersions($checkVersion);
-        rsort($filtered);
+        $lowerVersions  = $this->versionInfo->getLowerVersions($checkVersion);
+        $higherVersions = $this->versionInfo->getNextVersions($checkVersion);
+        rsort($lowerVersions);
+        sort($higherVersions);
 
         $versions = [];
-        $default  = $this->versionInfo->getDefaultVersion();
-        foreach ($filtered as $version) {
-            // add versionless for default
-            if ($version === $default) {
-                $versions[] = '';
+        if (isset($lowerVersions[0]) && (
+            $checkVersion > $lowerVersions[0] ||
+            (!count($higherVersions) && !in_array($checkVersion, $lowerVersions))
+        )) {
+            foreach ($higherVersions as $version) {
+                $versions[] = $version;
             }
 
+            $versions[] = '';
+        }
+
+        foreach ($lowerVersions as $version) {
             $versions[] = $version;
         }
 
         // if no default was added then add versionless as fallback
-        if (!in_array($default, $versions)) {
+        if (!in_array('', $versions)) {
             $versions[] = '';
         }
 
