@@ -9,6 +9,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener;
 use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use Orb\Util\Strings;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -39,6 +40,7 @@ class MetaGeneratorListener implements EventSubscriberInterface
             && !$event->getRequest()->isXmlHttpRequest()
             && !RequestUtils::isLowRequest($event->getRequest())
             && strpos($event->getResponse()->headers->get('Content-Type', ''), 'text/html') !== false
+            && !$event->getResponse() instanceof StreamedResponse
         )
         ) {
             return;
