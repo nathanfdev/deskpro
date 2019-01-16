@@ -85,13 +85,14 @@ class UrlRequestContextFactory
             return $defaultContext;
         }
 
-        if (!$brandUrl && $brand !== $brandStack->getDefaultBrand()) {
-            $urlParts['host'] = rtrim($urlParts['host'], '/').'/b/'.$brand->getSlug();
-        }
-
         $context = clone $defaultContext;
         $context->setHost($urlParts['host']);
         $context->setScheme($urlParts['scheme']);
+
+        $slugPrefix = '/b/'.$brand->getSlug();
+        if (!$brandUrl && $brand !== $brandStack->getDefaultBrand() && strpos($context->getBaseUrl(), $slugPrefix) === false) {
+            $context->setBaseUrl(rtrim($context->getBaseUrl(), '/').$slugPrefix);
+        }
 
         $port = (int) @$urlParts['port'];
         if (!$port) {

@@ -390,7 +390,7 @@ user.general.helpdesk_by: '<strong>{{deskpro}}</strong> yardım masası yazılı
 user.general.label_captcha: 'doğrulama kodu'
 user.general.page: Sayfa
 user.knowledgebase.auto_action_on_date: 'Otomatik {{action}} ve {{date}}'
-user.lang.lang_title: İngiliz
+user.lang.lang_title: Türkçe
 user.lang.lang_title_arabic: Arapça
 user.lang.lang_title_danish: Danimarkalı
 user.lang.lang_title_default: İngilizce

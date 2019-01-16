@@ -1,6 +1,6 @@
 id: turkish
 name: Turkish
-nameLocal: İngiliz
+nameLocal: Türkçe
 locale: tr
 isRtl: false
 pluralRules:

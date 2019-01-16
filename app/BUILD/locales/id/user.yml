@@ -1025,7 +1025,7 @@ user.general.page: Laman
 user.general.request_token_expired: 'Permintaan token Anda telah kadaluarsa. Silakan coba kembali'
 user.knowledgebase.auto_action_on_date: "Otomatis {{action}} pada {{date}}\n"
 user.knowledgebase.creating_pending_article: 'Membuat artikel yang tertunda'
-user.lang.lang_title: 'Inggris (US)'
+user.lang.lang_title: 'Bahasa Indonesia'
 user.lang.lang_title_arabic: Arab
 user.lang.lang_title_danish: Denmark
 user.lang.lang_title_default: Inggris

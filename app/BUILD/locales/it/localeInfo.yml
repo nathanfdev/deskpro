@@ -1,6 +1,6 @@
 id: italian
 name: Italian
-nameLocal: Inglese
+nameLocal: Italiano
 locale: it
 isRtl: false
 pluralRules:

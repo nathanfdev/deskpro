@@ -325,11 +325,18 @@ class Translate
             RequestOptions::QUERY => ['locale' => $locale],
             RequestOptions::BODY  => $body,
         ]);
+
         $raw_data = $this->xml($response->getBody());
 
         $data = [];
+
+        $i = 0;
         foreach ($raw_data as $k => $r) {
-            $data[$lang_codes[$k]] = (string) $r;
+            if (isset($lang_codes[$i])) {
+                $data[$lang_codes[$i]] = (string) $r;
+            }
+
+            ++$i;
         }
 
         return $data;

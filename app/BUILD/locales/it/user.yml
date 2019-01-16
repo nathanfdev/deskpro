@@ -1064,7 +1064,7 @@ user.general.page: Pagina
 user.general.request_token_expired: 'Il tuo token di richiesta è scaduto. Per favore riprova di nuovo.'
 user.knowledgebase.auto_action_on_date: 'Automaticamente {{action}} il {{date}}'
 user.knowledgebase.creating_pending_article: 'Creazione di un articolo in attesa'
-user.lang.lang_title: Inglese
+user.lang.lang_title: Italiano
 user.lang.lang_title_arabic: Arabo
 user.lang.lang_title_danish: Danese
 user.lang.lang_title_default: Inglese

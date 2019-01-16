@@ -42,7 +42,7 @@ class UrlMatcher
     {
         $locale = Strings::extractRegexMatch('#^/([a-z]{2})(/|$)#', $pathinfo, 1);
         if (!$locale) {
-            $locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z0-9]{2})(/|$)#', $pathinfo, 1);
+            $locale = Strings::extractRegexMatch('#^/([a-z]{2}(_|-)[A-Z0-9]{2})(/|$)#', $pathinfo, 1);
         }
 
         return $locale ?: null;
