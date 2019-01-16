@@ -50,11 +50,12 @@ class UserChatQueueType extends AbstractType
                 'property_path' => 'isAllAgents',
             ])
             ->add('targets', CollectionType::class, [
-                'required'     => false,
-                'entry_type'   => UserChatQueueTargetType::class,
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'by_reference' => false,
+                'required'       => false,
+                'entry_type'     => UserChatQueueTargetType::class,
+                'allow_add'      => true,
+                'allow_delete'   => true,
+                'by_reference'   => false,
+                'error_bubbling' => false,
             ])
         ;
     }

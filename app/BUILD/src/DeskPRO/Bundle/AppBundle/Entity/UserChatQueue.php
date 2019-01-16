@@ -8,6 +8,7 @@ use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
  * Class UserChatQueue.
@@ -17,8 +18,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\EntityListeners({"DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\UserChatQueueListener"})
  *
  * @JMS\ExclusionPolicy("all")
+ * @Assert\GroupSequenceProvider
  */
-class UserChatQueue implements EntityInterface, NotifyPropertyChanged
+class UserChatQueue implements EntityInterface, NotifyPropertyChanged, GroupSequenceProviderInterface
 {
     use NotifyPropertyChangedTrait;
 
@@ -91,6 +93,7 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged
      * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\AbstractUserChatQueueTarget>")
      *
      * @Assert\Valid()
+     * @Assert\Count(min=1, groups="SpecificTargets")
      *
      * @var AbstractUserChatQueueTarget[]|ArrayCollection
      */
@@ -297,5 +300,19 @@ class UserChatQueue implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('maxQueueSize', $maxQueueSize);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getGroupSequence()
+    {
+        $groups = ['UserChatQueue'];
+
+        if (!$this->isAllAgents) {
+            $groups[] = 'SpecificTargets';
+        }
+
+        return $groups;
     }
 }
