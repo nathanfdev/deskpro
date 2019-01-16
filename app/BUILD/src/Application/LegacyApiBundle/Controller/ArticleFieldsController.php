@@ -41,7 +41,7 @@ class ArticleFieldsController extends AbstractController implements ProtectedCon
         $fieldManager = $this->container->getSystemService('article_fields_manager');
 
         $custom_fields         = $fieldManager->getDefinedFields();
-        $data['custom_fields'] = $this->getApiData($custom_fields, false);
+        $data['custom_fields'] = array_values($this->getApiData($custom_fields, false));
 
         return $this->createApiResponse($data);
     }

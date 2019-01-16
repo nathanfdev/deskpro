@@ -2836,7 +2836,7 @@ $collection->create(
 );
 
 $collection->create(
-    'api_kb_fields',
+    'api_kb_fields_old',
     [
         'path'       => '/kb/fields',
         'controller' => 'LegacyApiBundle:Kb:getFields',
