@@ -1,6 +1,6 @@
 id: german
 name: German
-nameLocal: 'Englisch (US)'
+nameLocal: Deutsch
 locale: de
 isRtl: false
 pluralRules:

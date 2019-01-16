@@ -1064,7 +1064,7 @@ user.general.page: Seite
 user.general.request_token_expired: 'Ihre Anfrage ist abgelaufen. Bitte versuchen Sie es erneuert.'
 user.knowledgebase.auto_action_on_date: 'Automatisch {{action}} am {{date}}'
 user.knowledgebase.creating_pending_article: 'Erstelle anstehenden Artikel'
-user.lang.lang_title: 'Englisch (US)'
+user.lang.lang_title: Deutsch
 user.lang.lang_title_arabic: Arabisch
 user.lang.lang_title_danish: Dänisch
 user.lang.lang_title_default: 'Englisch (US)'

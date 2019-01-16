@@ -938,7 +938,7 @@ user.general.page: Trang
 user.general.request_token_expired: 'Mã thông báo yêu cầu của bạn đã hết hạn. Vui lòng thử lại.'
 user.knowledgebase.auto_action_on_date: 'Tự động {{action}} trên {{date}}'
 user.knowledgebase.creating_pending_article: 'Tạo bài báo đang chờ giải quyết'
-user.lang.lang_title: 'Tiếng Anh (US)'
+user.lang.lang_title: 'Tiếng Việt'
 user.lang.lang_title_arabic: 'tiếng Ả Rập'
 user.lang.lang_title_danish: 'người Đan Mạch'
 user.lang.lang_title_default: 'Tiếng Anh (US)'

@@ -1,6 +1,6 @@
 id: vietnamese
 name: Vietnamese
-nameLocal: 'Tiếng Anh (US)'
+nameLocal: 'Tiếng Việt'
 locale: vi
 isRtl: false
 pluralRules:

@@ -1064,7 +1064,7 @@ user.general.page: Pagina
 user.general.request_token_expired: 'Uw aanvraagtoken is verlopen. Probeer het nogmaals.'
 user.knowledgebase.auto_action_on_date: 'Automatisch {{action}} op {{date}}'
 user.knowledgebase.creating_pending_article: 'Een conceptartikel aanmaken'
-user.lang.lang_title: Engels
+user.lang.lang_title: Nederlands
 user.lang.lang_title_arabic: Arabisch
 user.lang.lang_title_danish: Deens
 user.lang.lang_title_default: Engels
