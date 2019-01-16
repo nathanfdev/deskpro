@@ -6,7 +6,7 @@ import { ArchiveFiles } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Compone
 import { FollowUp } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/FollowUp/FollowUp';
 import { list } from 'DemoState/AgentBundle/Modules/Tickets/tickets';
 import { agentTeams } from 'DemoState/AgentBundle/Modules/Snippets/snippets';
-import { css } from '../../../decorators';
+import { css, redux } from '../../../decorators';
 
 const agents = Immutable.fromJS([
   {
@@ -109,6 +109,7 @@ const macros = Immutable.fromJS([
 
 storiesOf('Agent: Tickets', module)
   .addDecorator(story => css(story()))
+  .addDecorator(story => redux({}, story()))
   .add(
     'Archive Files',
     () => <ArchiveFiles list={list} />
