@@ -30,7 +30,6 @@ class SitemapFile extends AbstractJob
         }
 
         $gen = new \Application\DeskPRO\Portal\SitemapGenerator(
-            App::getContainer()->getBrandSetting('core.deskpro_url'),
             App::getOrm(),
             App::getRouter());
         $file = $gen->getXml();

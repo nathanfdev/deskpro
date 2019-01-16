@@ -34,21 +34,15 @@ class SitemapGenerator
     protected $structure;
 
     /**
-     * @var string
-     */
-    protected $base_url;
-
-    /**
      * @var array
      */
     protected $items = null;
 
-    public function __construct($base_url, EntityManager $em, RouterInterface $router)
+    public function __construct(EntityManager $em, RouterInterface $router)
     {
-        $this->base_url = rtrim($base_url, '/');
-        $this->em       = $em;
-        $this->db       = $em->getConnection();
-        $this->router   = $router;
+        $this->em     = $em;
+        $this->db     = $em->getConnection();
+        $this->router = $router;
 
         $person          = new PersonGuest();
         $this->structure = new PublishStructure(
@@ -75,11 +69,7 @@ class SitemapGenerator
             $xml[] = '<url>';
             foreach ($attributes as $attr) {
                 if (!empty($item[$attr])) {
-                    $val = $item[$attr];
-                    if ($attr == 'loc') {
-                        $val = $this->base_url.$val;
-                    }
-
+                    $val   = $item[$attr];
                     $xml[] = "\t<$attr>$val</$attr>";
                 }
             }
@@ -123,17 +113,17 @@ class SitemapGenerator
     {
         $items   = [];
         $items[] = [
-            'loc'        => $this->router->generate('portal_home', []),
+            'loc'        => $this->router->generate('portal_home', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'daily',
         ];
 
         $items[] = [
-            'loc'        => $this->router->generate('portal_new_ticket', []),
+            'loc'        => $this->router->generate('portal_new_ticket', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'monthly',
         ];
 
         $items[] = [
-            'loc'        => $this->router->generate('portal_feedback', []),
+            'loc'        => $this->router->generate('portal_feedback', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'daily',
         ];
 
@@ -153,7 +143,7 @@ class SitemapGenerator
         $items = [];
 
         $items[] = [
-            'loc'        => $this->router->generate('portal_kb', []),
+            'loc'        => $this->router->generate('portal_kb', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'daily',
         ];
 
@@ -166,7 +156,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             if ($cat->getSlug()) {
                 $items[] = [
-                    'loc'        => $this->router->generate('portal_kb_browse', ['slug' => $cat->getSlug()]),
+                    'loc'        => $this->router->generate('portal_kb_browse', ['slug' => $cat->getSlug()], RouterInterface::ABSOLUTE_URL),
                     'changefreq' => 'daily',
                 ];
             }
@@ -188,7 +178,7 @@ class SitemapGenerator
         foreach ($articles as $a) {
             if ($a->getSlug()) {
                 $items[] = [
-                    'loc'        => $this->router->generate('portal_kb_view', ['slug' => $a->getSlug()]),
+                    'loc'        => $this->router->generate('portal_kb_view', ['slug' => $a->getSlug()], RouterInterface::ABSOLUTE_URL),
                     'changefreq' => 'weekly',
                 ];
             }
@@ -210,7 +200,7 @@ class SitemapGenerator
         $items = [];
 
         $items[] = [
-            'loc'        => $this->router->generate('portal_news', []),
+            'loc'        => $this->router->generate('portal_news', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'daily',
         ];
 
@@ -223,7 +213,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             if ($cat->getSlug()) {
                 $items[] = [
-                    'loc'        => $this->router->generate('portal_news_browse', ['slug' => $cat->getSlug()]),
+                    'loc'        => $this->router->generate('portal_news_browse', ['slug' => $cat->getSlug()], RouterInterface::ABSOLUTE_URL),
                     'changefreq' => 'daily',
                 ];
             }
@@ -245,7 +235,7 @@ class SitemapGenerator
             foreach ($news as $n) {
                 if ($n->getSlug()) {
                     $items[] = [
-                        'loc'        => $this->router->generate('portal_news_view', ['slug' => $n->getSlug()]),
+                        'loc'        => $this->router->generate('portal_news_view', ['slug' => $n->getSlug()], RouterInterface::ABSOLUTE_URL),
                         'changefreq' => 'weekly',
                     ];
                 }
@@ -268,7 +258,7 @@ class SitemapGenerator
         $items = [];
 
         $items[] = [
-            'loc'        => $this->router->generate('portal_downloads', []),
+            'loc'        => $this->router->generate('portal_downloads', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'daily',
         ];
 
@@ -281,7 +271,7 @@ class SitemapGenerator
         foreach ($cats as $cat) {
             if ($cat->getSlug()) {
                 $items[] = [
-                    'loc'        => $this->router->generate('portal_downloads_browse', ['slug' => $cat->getSlug()]),
+                    'loc'        => $this->router->generate('portal_downloads_browse', ['slug' => $cat->getSlug()], RouterInterface::ABSOLUTE_URL),
                     'changefreq' => 'daily',
                 ];
             }
@@ -302,7 +292,7 @@ class SitemapGenerator
         foreach ($downloads as $d) {
             if ($d->getSlug()) {
                 $items[] = [
-                    'loc'        => $this->router->generate('portal_downloads_view', ['slug' => $d->getSlug()]),
+                    'loc'        => $this->router->generate('portal_downloads_view', ['slug' => $d->getSlug()], RouterInterface::ABSOLUTE_URL),
                     'changefreq' => 'weekly',
                 ];
             }
@@ -324,7 +314,7 @@ class SitemapGenerator
         $items = [];
 
         $items[] = [
-            'loc'        => $this->router->generate('portal_feedback', []),
+            'loc'        => $this->router->generate('portal_feedback', [], RouterInterface::ABSOLUTE_URL),
             'changefreq' => 'daily',
         ];
 
@@ -343,7 +333,7 @@ class SitemapGenerator
         foreach ($feedback as $f) {
             if ($f->getSlug()) {
                 $items[] = [
-                    'loc'        => $this->router->generate('portal_feedback_view', ['slug' => $f->getSlug()]),
+                    'loc'        => $this->router->generate('portal_feedback_view', ['slug' => $f->getSlug()], RouterInterface::ABSOLUTE_URL),
                     'changefreq' => 'weekly',
                 ];
             }
