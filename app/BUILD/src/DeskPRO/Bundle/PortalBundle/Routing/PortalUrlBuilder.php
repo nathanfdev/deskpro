@@ -55,6 +55,8 @@ class PortalUrlBuilder
         $parts = [];
         // remove base url from the url path to set it in the proper order
         if ($baseUrl) {
+            $originalPath = $path;
+
             if (strpos($path, $baseUrl) === 0) {
                 $path = substr($path, strlen($baseUrl));
             }
@@ -62,7 +64,9 @@ class PortalUrlBuilder
                 $path = substr($path, strlen(ltrim($baseUrl, '/')));
             }
 
-            $parts[] = trim($baseUrl, '/');
+            if ($originalPath !== $path || preg_match('#/b/[\w\d-_]+#', $baseUrl)) {
+                $parts[] = trim($baseUrl, '/');
+            }
         }
 
         if (!preg_match('#^/?(?:agent|admin|reports)(/|$)#', $path)) {
