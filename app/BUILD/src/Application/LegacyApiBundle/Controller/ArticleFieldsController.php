@@ -12,11 +12,11 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
 /**
- * Class KbFieldsController.
+ * Class ArticleFieldsController.
  *
  * @ApiModes("all")
  */
-class KbFieldsController extends AbstractController implements ProtectedControllerInterface
+class ArticleFieldsController extends AbstractController implements ProtectedControllerInterface
 {
     /**
      * {@inheritdoc}
@@ -38,7 +38,7 @@ class KbFieldsController extends AbstractController implements ProtectedControll
         $data = [];
 
         /** @var \Application\DeskPRO\CustomFields\KbFieldManager $fieldManager */
-        $fieldManager = $this->container->getSystemService('kb_fields_manager');
+        $fieldManager = $this->container->getSystemService('article_fields_manager');
 
         $custom_fields         = $fieldManager->getDefinedFields();
         $data['custom_fields'] = $this->getApiData($custom_fields, false);
@@ -89,7 +89,7 @@ class KbFieldsController extends AbstractController implements ProtectedControll
     public function saveCustomFieldAction($id)
     {
         /** @var \Application\DeskPRO\CustomFields\KbFieldManager $fieldManager */
-        $fieldManager = $this->container->getSystemService('kb_fields_manager');
+        $fieldManager = $this->container->getSystemService('article_fields_manager');
 
         if ($id) {
             $field = $this->em->find(CustomDefArticle::class, $id);
@@ -166,7 +166,7 @@ class KbFieldsController extends AbstractController implements ProtectedControll
     public function toggleFieldAction($field_id, $is_enabled)
     {
         /** @var \Application\DeskPRO\CustomFields\KbFieldManager $fieldManager */
-        $fieldManager = $this->container->getSystemService('kb_fields_manager');
+        $fieldManager = $this->container->getSystemService('article_fields_manager');
         $fieldManager->setFieldEnabledById($field_id, $is_enabled);
 
         return $this->createSuccessResponse();
