@@ -45,9 +45,42 @@
       {% endif %}
     </header>
 
-    <div class="article-content padded dpx-kb-article-content">
-      {{ article.translated_content|raw }}
+    <div class="article-content-wrapper">
+      <div class="article-content padded dpx-kb-article-content">
+        {{ article.translated_content|raw }}
+      </div>
+      {% if article.custom_data|length %}
+        <div class="ticket-view-sidebar">
+          <div class="ticket-sidebar-container ticket-sidebar-meta">
+            <ul>
+              {% for datum in article.custom_data %}
+                {% set value = datum.getData() is iterable ? datum.getData() : datum.getData()|smart_wrap(35) %}
+                <li>
+                  <h3>{{ datum.field.title }}</h3>
+                  {% if datum.field.type == 'url' %}
+                    <p><a href="{{ value }}" target="_blank">{{ value }}</a></p>
+                  {% elseif datum.field.type == 'file' %}
+                    {% for file in value %}
+                      <div>
+                        <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
+                          {{ content_icon(file) }}
+                          {{ file.filename }}
+                          ({{ file.readableFilesize }})
+                        </a>
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    <p>{{ value }}</p>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
     </div>
+
+
 
     {% if article.labels|length %}
       <div class="tag-list">
