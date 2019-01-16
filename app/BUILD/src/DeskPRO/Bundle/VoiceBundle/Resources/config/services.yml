@@ -30,6 +30,8 @@ services:
   dp.voice.task_router_lock:
     class: Symfony\Component\Lock\Lock
     factory: ['DeskPRO\Bundle\VoiceBundle\TaskRouter\LockFactory', createTaskRouterLock]
+    arguments:
+      - "@service_container"
 
   dp.voice.task_router:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskRouter
