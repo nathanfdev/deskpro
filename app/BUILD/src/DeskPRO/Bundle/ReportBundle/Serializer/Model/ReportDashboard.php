@@ -59,6 +59,7 @@ class ReportDashboard
      * Constructor.
      *
      * @param ReportDashboardEntity $entity
+     * @param array                 $allAdmins
      */
     public function __construct(ReportDashboardEntity $entity, $allAdmins)
     {

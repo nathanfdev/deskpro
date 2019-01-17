@@ -41,10 +41,31 @@ Feature: /people/{id}/notes endpoint endpoint
     When I send a DELETE request to "/api/v2/people/{user}/notes/{pn1}"
     Then the response status code should be 200
 
-  Scenario: Admin is allmighty and they doesn't care about permission groups
+  Scenario: Admin has all permissions
     Given I'm authenticated as "admin"
-    And I remove "admin" usergroup relation "agent_all_perms"
+    And I set permission "agent_people.notes" = 0 for "registered" usergroup
+    And I add "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"
+
+    When I send a POST request to "/api/v2/people/{user}/notes" with body:
+    """
+{
+  "note": "my note"
+}
+    """
+    Then the response status code should be 201
+
+    When I send a PUT request to "/api/v2/people/{user}/notes/{pn1}"
+    Then the response status code should be 204
+
+    When I send a DELETE request to "/api/v2/people/{user}/notes/{pn1}"
+    Then the response status code should be 200
+
+  Scenario: Admin has all safe permissions
+    Given I'm authenticated as "admin"
+    And I set permission "agent_people.notes" = 0 for "registered" usergroup
+    And I remove "admin" usergroup relation "agent_all_perms"
+    And I add "admin" usergroup relation "agent_all_safe_perms"
 
     When I send a POST request to "/api/v2/people/{user}/notes" with body:
     """

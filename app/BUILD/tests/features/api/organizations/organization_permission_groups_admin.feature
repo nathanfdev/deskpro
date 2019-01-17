@@ -2,9 +2,9 @@
 Feature: /organizations endpoint
   I want to check ticket permission groups admin
 
-  Scenario: Admin is allmighty and they doesn't care about permission groups
+  Scenario: Admin has all permission groups
     Given I'm authenticated as "admin"
-    And I remove "admin" usergroup relation "agent_all_perms"
+    And I add "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"
     And the following "Organization" records exist:
       | #    | name       | summary                                    |

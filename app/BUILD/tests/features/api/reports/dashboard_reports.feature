@@ -2,8 +2,11 @@
 Feature: /dashboard_reports endpoint
 
   Background:
-    Given I'm authenticated as agent
+    Given no Person records exist
+    And I'm authenticated as agent
     And "agent_2@deskpro.dev" agent exists
+    And I remove "agent" usergroup relation "agent_all_perms"
+    And I remove "agent" usergroup relation "agent_all_safe_perms"
     And the setting "beta_features.new_reports" is set to 1
     And the following "AgentTeam" records exist:
       | #  | Name   | Members   |

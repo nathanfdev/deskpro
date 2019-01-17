@@ -2,7 +2,10 @@
 Feature: /dashboard_report_widgets endpoint
 
   Background:
-    Given I'm authenticated as agent
+    Given no Person records exist
+    And I'm authenticated as agent
+    And I remove "agent" usergroup relation "agent_all_perms"
+    And I remove "agent" usergroup relation "agent_all_safe_perms"
     And the setting "beta_features.new_reports" is set to 1
     And only the following ReportWidget records exist:
       | #  | Display Types | Title           | Query                          | Is Custom | Variables                                            |
