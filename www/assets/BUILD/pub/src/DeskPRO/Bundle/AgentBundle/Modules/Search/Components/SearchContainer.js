@@ -53,6 +53,7 @@ class SearchContainer extends React.Component {
       focused:       false,
       results:       {},
       style:         {},
+      scopes:        [],
     };
   }
   componentWillMount = () => {
@@ -778,6 +779,12 @@ class SearchContainer extends React.Component {
     this.updateStyle(results);
   };
 
+  handleScopesChange = (scopes) => {
+    this.setState({
+      scopes
+    });
+  };
+
   updateStyle = (results) => {
     let style = {};
     if (Object.keys(results).length === 0) {
@@ -811,12 +818,13 @@ class SearchContainer extends React.Component {
   };
 
   renderResults() {
-    const { results } = this.state;
+    const { results, scopes } = this.state;
     if (Object.keys(results).length === 0) {
       return null;
     }
     return (
       <SearchResults
+        scopes={scopes}
         results={results}
       />
     );
@@ -836,6 +844,7 @@ class SearchContainer extends React.Component {
             tokenTypes={tokenTypes}
             menuStructure={menuStructure}
             onChange={this.handleChange}
+            onScopesChange={this.handleScopesChange}
             placeholder=""
             zIndex={1800}
             nbCollapsed={3}
