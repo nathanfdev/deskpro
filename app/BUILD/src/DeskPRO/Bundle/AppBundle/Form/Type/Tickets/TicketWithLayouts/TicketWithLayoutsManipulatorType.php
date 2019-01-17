@@ -68,7 +68,13 @@ class TicketWithLayoutsManipulatorType extends AbstractType
             ->setAllowedTypes('field_resolver', AbstractFieldResolver::class)
             ->setAllowedTypes('field_renderer', FieldRendererInterface::class)
             ->setAllowedTypes('layout_factory', 'callable')
-            ->setDefault('form_type', null)
+            ->setDefaults([
+                'form_type' => null,
+
+                // if user is not logged in then allow to create ticket
+                // but don't modify user props as guest
+                'ignore_user_fields' => false,
+            ])
         ;
     }
 

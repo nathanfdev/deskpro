@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldResolver;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\Department;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
@@ -191,6 +193,10 @@ class WebFieldResolver extends AbstractFieldResolver
             'ticket'          => $context->getTicket(),
         ];
 
+        if ($context->ignoreUserFields() && ($def instanceof CustomDefPerson || $def instanceof CustomDefOrganization)) {
+            $options['mapped'] = false;
+        }
+
         return new FormField(CustomDataType::class, $options);
     }
 
@@ -229,6 +235,9 @@ class WebFieldResolver extends AbstractFieldResolver
 
         if ($context->isFullLayout()) {
             $options['disabled'] = true;
+        }
+        if ($context->ignoreUserFields()) {
+            $options['mapped'] = false;
         }
 
         return [

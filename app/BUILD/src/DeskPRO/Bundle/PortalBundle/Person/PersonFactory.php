@@ -200,7 +200,7 @@ class PersonFactory
 
         // if user is not logged in and reg is disabled then we should redirect the user to the login form
         if (!$this->authManager->isRegistrationFormVisible()) {
-            throw new LoginRequiredException($guest);
+            throw new EmailValidationRequiredException($guest->getEmailAddress(), $guest->name, $person);
         }
 
         if (!$person) {
@@ -212,7 +212,7 @@ class PersonFactory
                 throw new LoginRequiredException($person);
             } else {
                 // this person exists in the db but can't login, send them a validation email!
-                throw new EmailValidationRequiredException($guest->getEmailAddress(), $guest->name);
+                throw new EmailValidationRequiredException($guest->getEmailAddress(), $guest->name, $person);
             }
         }
     }

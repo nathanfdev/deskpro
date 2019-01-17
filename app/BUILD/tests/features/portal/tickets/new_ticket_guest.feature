@@ -5,6 +5,7 @@ Feature: Guests can submit new tickets
     And the following languages are enabled:
       | default |
     And the default brand is using the standard theme
+    And I disable anti-abuse rate limiting
 
   Scenario: Submitting a VALID FORM
     Given I go to "/new-ticket"
@@ -33,8 +34,9 @@ Feature: Guests can submit new tickets
     Then I should be on "/thank-you"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
 
-  Scenario: Submitting a VALID FORM but being forced to LOGIN
-    Given I go to "/new-ticket"
+  Scenario: Submitting a VALID FORM but being forced to verify email
+    Given the setting "core_tickets.web_require_validation" is set to "1"
+    And I go to "/new-ticket"
     And I select "Sales" from "Department"
     And I fill in "Subject" with "This is a subject"
     And I fill in "Message" with "Here is my ticket message"
@@ -42,9 +44,20 @@ Feature: Guests can submit new tickets
     And I fill in "ticket_person_user_email_email" with "user@deskpro.dev"
 
     And I press "Submit"
-    Then I should be on "/login"
-    When I fill in "login_username" with "user@deskpro.dev"
-    And I fill in "login_password" with "12345"
-    And I press "login_button"
-    Then the url should match "/thank-you/[a-zA-Z0-9\-]+"
-    And I should see a success flash message with the phrase "portal.flashes.ticket_created"
+    Then I should be on "/thank-you/verify-email"
+    Then I should see a "success" flash message with the phrase "portal.flashes.guest_new_ticket_must_verify"
+    And I should receive an email on "some@new.email" with the subject phrase "portal.email_subjects.email_new-confirm"
+    When I click the email verification link received on "user@deskpro.dev"
+    Then I should see a success flash message with the phrase "portal.flashes.ticket_created"
+
+  Scenario: Submitting a VALID FORM creates a ticket for an existing user being as guest
+    Given the setting "core_tickets.web_require_validation" is set to "0"
+    And I go to "/new-ticket"
+    And I select "Sales" from "Department"
+    And I fill in "Subject" with "This is a subject 2"
+    And I fill in "Message" with "Here is my ticket message 2"
+    And I fill in "ticket_person_user_name" with "Chris Name"
+    And I fill in "ticket_person_user_email_email" with "user@deskpro.dev"
+
+    And I press "Submit"
+    Then I should see a success flash message with the phrase "portal.flashes.ticket_created"
