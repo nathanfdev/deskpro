@@ -203,7 +203,6 @@ portal.chat.see_full_image: 'Haga clic aquí para ver la imagen completa.'
 portal.chat.send_another_validation_email: 'Mandame otro email'
 portal.chat.sent_validation_code: 'Te enviamos un correo electrónico con un código de validación.'
 portal.chat.start: 'Iniciar un nuevo chat'
-portal.chat.start_conversation: 'Iniciar una conversación'
 portal.chat.support_powered_by: 'Soporte alimentado por {{DeskPRO}}'
 portal.chat.take_chat: 'Tomar Chat'
 portal.chat.taken_by: 'Chat Tomado por'
@@ -275,7 +274,7 @@ portal.email_subjects.validate-email: 'Validar su dirección de correo electrón
 portal.emails.auto-close: 'Su ticket "{{ticket.subject}}" no cerrará automáticamente porque no lo ha actualizado recientemente. Si no quiere que su ticket sea cerrado, puede enviar una respuesta para que nuestros agentes continuen ayudándole.'
 portal.emails.chat_transcript: 'Gracias por conversar con nosotros. Aquí tiene su transcripción'
 portal.emails.comment_approved: 'Su comentario ha sido publicado.'
-portal.emails.comment_deleted: 'Su comentario se ha utilizado para mejorar la página.'
+portal.emails.comment_deleted: 'Your comment was used to improve this page: {{link}}.'
 portal.emails.comment_thank-you: 'Gracias por comentar sobre {{link}}'
 portal.emails.comment_validate-email: 'Valide su dirección de correo electrónico haciendo clic en el siguiente enlace:'
 portal.emails.do-not-reply: 'Por favor, no responda a este correo electrónico. Este es un mensaje automatizado y las respuestas no serán leídas por nuestro equipo.'
@@ -326,7 +325,7 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'Un agente ha reinicializado su contraseña. Puede acceder con estas credenciales'
 portal.emails.password_reset: 'Ha solicitado la reinicialización de su contraseña. Para reinicializarla haga clic en el enlace:'
 portal.emails.password_set: 'Para establecer su contraseña, haga clic en el siguiente enlace:'
-portal.emails.profile_email-new-confirm: 'Para finalizar la incorporación de una nueva dirección a su cuenta, haga clic en el siguiente enlace de validación'
+portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'Para verificar su dirección de correo electrónico principal, simplemente haga clic en el siguiente enlace'
 portal.emails.profile_email_link-validate: 'Haga clic en el siguiente enlace para validar su dirección de correo electrónico'
 portal.emails.ratelimit_explain: 'Has enviado {{num_messagess}} mensajes dentro de {{time_limit}}. Para evitar el abuso, hemos prohibido temporalmente su dirección de correo electrónico para {{time_lock}}. Después de {{date_lock_end}}, esta prohibición temporal se eliminará y podrás enviar correos electrónicos nuevamente.'
@@ -442,7 +441,7 @@ portal.flashes.news_unsubscribe_everything: 'Has cancelado tu suscripción a tod
 portal.flashes.rating_thanks: '¡Gracias por tus comentarios!'
 portal.flashes.ticket_created: 'Su boleto ha sido enviado. ¡Gracias!'
 portal.flashes.ticket_feedback_thank_you: '¡Gracias por tus comentarios!'
-portal.flashes.ticket_participant_add: 'Hemos agregado {{nombre}} ({{correo electrónico}}) como participante a este ticket.'
+portal.flashes.ticket_participant_add: 'We have added {{name}} ({{email}}) as a participant to this ticket.'
 portal.flashes.ticket_participant_add_unknown_error: 'Hubo un problema al intentar agregar a su participante. Inténtalo de nuevo.'
 portal.flashes.ticket_participant_already_error: 'La persona que intentó agregar como participante ya es un participante en este ticket.'
 portal.flashes.ticket_participant_cc_limit_reached: 'Límite máximo de CC ({{max}}) alcanzado'
@@ -471,7 +470,7 @@ portal.forms.error_accept_no_file: 'No puedes subir un archivo vacío.'
 portal.forms.error_accept_not_allowed_exts: 'No puede cargar un archivo con ninguna de las siguientes extensiones de archivo: {{detail}}'
 portal.forms.error_accept_not_in_allowed_exts: 'Solo puede cargar un archivo con cualquiera de las siguientes extensiones de archivo: {{detail}}'
 portal.forms.error_accept_server_error: 'Hubo un problema al subir este archivo. Inténtalo de nuevo.'
-portal.forms.error_accept_size: 'Lo siento pero este archivo es demasiado grande. El tamaño máximo permitido es {{detalle}}.'
+portal.forms.error_accept_size: 'Sorry but this file is too large. Maximum allowed size is {{detail}}.'
 portal.forms.error_bad_choice: 'Uno o más de los valores dados no son válidos.'
 portal.forms.error_banned_email: 'El correo electrónico "{{email}}" está prohibido.'
 portal.forms.error_captcha: 'El valor de CAPTCHA era incorrecto'
@@ -537,7 +536,6 @@ portal.forms.error_upload_file: 'No se pudo subir el archivo'
 portal.forms.error_upload_general: 'Hubo un problema al subir este archivo. Inténtalo de nuevo.'
 portal.forms.error_upload_html_size: 'El archivo es demasiado grande.'
 portal.forms.error_upload_ini_size: 'El archivo es demasiado grande. El tamaño máximo permitido es {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Lo sentimos pero hubo un error al procesar su solicitud. Inténtalo de nuevo.'
 portal.forms.label_add_attachment: 'Añadir otro archivo adjunto'
 portal.forms.label_captcha: 'Para demostrar que eres un humano, por favor dinos el texto que ves en la imagen de CAPTCHA'
 portal.forms.label_category: Categoría
@@ -907,7 +905,6 @@ user.email_subjects.download_sub_new_and_updated: 'Descargas nuevas y actualizad
 user.email_subjects.download_sub_updated: 'Descargas actualizadas'
 user.email_subjects.email-too-big: 'Tu correo {{subject}} no fue aceptado'
 user.email_subjects.email_new-confirm: 'Validar su dirección de correo electrónico'
-user.email_subjects.email_primary-confirm: 'Validar su dirección de correo electrónico'
 user.email_subjects.feedback_created_for_user: '¡Gracias por tus comentarios!'
 user.email_subjects.feedback_new: 'Gracias por enviar sus comentarios'
 user.email_subjects.feedback_new-approved: 'Su comentario ha sido aprobado'
@@ -931,9 +928,7 @@ user.email_subjects.register-welcome-byagent: 'Tu nueva cuenta de servicio de as
 user.email_subjects.remind_unresolved_final_subject: 'RECORDATORIO: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'RECORDATORIO: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Valore la experiencia del soporte en su ticket "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Una nueva persona ha sido añadida a su ticket'
 user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'AVISO: Has enviado demasiados correos electrónicos.'
 user.emails.auto-close: 'Su ticket "{{ticket.subject}}" no cerrará automáticamente porque no lo ha actualizado recientemente. Si no quiere que su ticket sea cerrado, puede enviar una respuesta para que nuestros agentes continuen ayudándole.'
 user.emails.chat_transcript: 'Gracias por conversar con nosotros. Aquí tiene su transcripción'
 user.emails.chat_validate_email: 'Valide su dirección de correo electrónico ingresando este código "{{validation_code}}" en el formulario del widget o haciendo clic en este enlace:'
@@ -1066,6 +1061,7 @@ user.knowledgebase.auto_action_on_date: 'Automaticamente {{action}} en {{date}}'
 user.knowledgebase.creating_pending_article: 'Creando artículo pendiente'
 user.lang.lang_title: Español
 user.lang.lang_title_arabic: Árabe
+user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Dánes
 user.lang.lang_title_default: Inglés
 user.lang.lang_title_dutch: Holandés
@@ -1073,6 +1069,7 @@ user.lang.lang_title_english_gb: 'Inglés (UK)'
 user.lang.lang_title_french: Francés
 user.lang.lang_title_german: Aleman
 user.lang.lang_title_hungarian: Hungaro
+user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italiano
 user.lang.lang_title_japanese: Japones
 user.lang.lang_title_norwegian: Noruego

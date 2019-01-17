@@ -118,15 +118,53 @@ portal.chat.block_reason: 'Razão: {{reason}}'
 portal.chat.block_title: 'Finalizar o Chat e bloquear esse usuário de iniciar novo Chat por pelo menos 24 horas.'
 portal.chat.block_user: 'Bloquear Utilizador'
 portal.chat.cancel_end_chat: 'Cancelar e voltar ao chat'
-portal.chat.chat_transcript: 'Transcrição da Conversa'
+portal.chat.chat_logs_header: 'Your Chat Logs'
+portal.chat.chat_logs_header_org: 'Organization Chat Logs'
+portal.chat.chat_transcript: 'Cópia do chat'
+portal.chat.check_validation_code: 'Check your email and then enter the code below'
+portal.chat.create_ticket: 'Create ticket'
+portal.chat.details-placeholder: 'First name, Last name'
+portal.chat.dismiss_message: 'Dismiss message'
+portal.chat.dropzone1: 'Dropping this file here'
+portal.chat.dropzone2: 'Will send it as a message'
 portal.chat.end_chat: 'Fim a conversa'
+portal.chat.end_chat_confirm_title: 'Are you sure you want to end this chat?'
 portal.chat.ended_by: 'Conversa com {{name}} terminou'
+portal.chat.ended_by_reason: 'Chat ended by {{name}}: {{reason}}'
 portal.chat.ended_user: 'Conversa terminada pelo utilizador'
+portal.chat.expired_jwt_token: 'Your JWT token is expired.'
 portal.chat.feedback_action: 'Enviar comentário'
+portal.chat.feedback_enter_message: 'Enter your message here'
+portal.chat.feedback_label: Comment
+portal.chat.feedback_not_helpful_title: 'You have rated <br /> {{agentName}} as <span class="negative">{{notHelpful}}</span>'
+portal.chat.feedback_title: 'Thank you for your feedback!'
+portal.chat.find_agent_now: 'Find another agent now'
+portal.chat.find_another_agent: 'If they don''t return soon, we''ll find another agent for you.'
+portal.chat.full_message: 'Full Message'
 portal.chat.helpful: Útil
+portal.chat.ident_unconfirmed: 'Identity not confirmed, email has not been validated'
+portal.chat.invalid_jwt_token: 'Your JWT token is not valid.'
+portal.chat.label-department: 'Select department'
+portal.chat.label-email: 'Your Email'
 portal.chat.label-name: 'O seu Nome'
 portal.chat.list_agent: Agente
+portal.chat.list_chat: Chat
+portal.chat.list_date: Date
+portal.chat.list_switch_to_my_chats: 'Switch to My Chats'
+portal.chat.list_switch_to_organization: 'Switch to Organization'
+portal.chat.list_title:
+  one: '1 Chat'
+  other: '{{count}} Chats'
+portal.chat.list_user: User
+portal.chat.log_agents: Agents
+portal.chat.log_chat_time: 'Total Chat Time'
 portal.chat.log_department: Departamento
+portal.chat.log_linked_ticket: 'Assigned to ticket'
+portal.chat.log_title: 'Your chat with {{person}}'
+portal.chat.log_view_linked_ticket: 'View Ticket'
+portal.chat.looking_for_another_agent: 'We''re looking for a new agent.'
+portal.chat.lost_connection: 'Lost connection. Trying to reconnect.'
+portal.chat.message_agent-timeout: '{{name}} is not responding. Please wait while we try to find another agent.'
 portal.chat.message_assigned: 'Conversa atribuida a {{name}}'
 portal.chat.message_ended: 'Conversa terminou'
 portal.chat.message_ended-by: 'Conversa com {{name}} terminou'
@@ -134,6 +172,7 @@ portal.chat.message_ended-by-user: 'Conversa terminada pelo utilizador'
 portal.chat.message_set-department: '{{name}} defeniu o departamente como {{department}}'
 portal.chat.message_set_department: '{{name}} defeniu o departamente como {{department}}'
 portal.chat.message_started: 'Conversa começou'
+portal.chat.message_type: 'Type your message to {{agentName}}'
 portal.chat.message_unassigned: 'Conversa não attribuida'
 portal.chat.message_uploading: Carregado
 portal.chat.message_user-joined: '{{name}} entrou na conversa'
@@ -142,41 +181,117 @@ portal.chat.message_user-returned: 'Utilizador regressou'
 portal.chat.message_user-timeout: 'Utilizador expirou'
 portal.chat.message_user_joined: '{{name}} entrou na conversa'
 portal.chat.message_user_left: '{{name}} saiu da conversa'
+portal.chat.message_wait-long: 'Sorry! It’s taking longer than expected to find an agent to take your chat.'
+portal.chat.message_wait-pending: 'We are finding you an agent...'
+portal.chat.message_wait-ticket: 'Would you like to submit a ticket instead?'
+portal.chat.message_wait-timeout: 'Chat ended: Sorry. We could not find you an agent right now.'
+portal.chat.missing_jwt_token: 'JWT token is required.'
+portal.chat.msg_agent_timeout: '{{name}} is not responding. Please wait while will try to find another agent.'
+portal.chat.msg_new_user_track: 'User is viewing: {{label}}'
+portal.chat.msg_user_timeout: 'User is not responding.'
+portal.chat.mute_button: Mute
+portal.chat.new_chat: 'New Chat'
 portal.chat.not_helpful: Inútil
+portal.chat.online_agent: 'You are chatting with <span class="name">{{agentName}}</span>'
+portal.chat.rate_agent_title: 'You just had a chat session with {{agentName}}'
+portal.chat.reopen_chat: 'Reopen this chat'
+portal.chat.reopen_chat_action: 'Reopen chat'
+portal.chat.reply_to: 'Reply to {{firstName}}'
+portal.chat.require_validate_email: 'We require you to validate your email address before we can chat.'
+portal.chat.screen_share: 'Screen Share'
+portal.chat.see_full_image: 'Click here to see the full image'
+portal.chat.send_another_validation_email: 'Send me another email'
+portal.chat.sent_validation_code: 'We sent you an email with a validation code.'
+portal.chat.start: 'Start a new chat'
+portal.chat.support_powered_by: 'Support powered by {{DeskPRO}}'
+portal.chat.take_chat: 'Take Chat'
+portal.chat.taken_by: 'Chat Taken by'
+portal.chat.transcript_action: 'Envie-me uma cópia'
+portal.chat.transcript_already_sent: 'Uma cópia já foi enviada para <b>{{email}}</b>'
+portal.chat.transcript_desc: 'Insira seu nome e e-mail e a enviaremos para você.'
 portal.chat.transcript_sent: 'Cópia enviada para {{email}}'
+portal.chat.transcript_title: 'Precisa de uma cópia deste chat?'
+portal.chat.type_message_to: 'Type your message to {{firstName}}'
 portal.chat.unassigned: 'Conversa não attribuida'
+portal.chat.unblock: Unblock
+portal.chat.upload_file: 'Upload file'
+portal.chat.user_is_blocked: 'User is blocked'
+portal.chat.validation_email_was_sent: 'Another email was successfully sent.'
+portal.chat.visitor_info: 'Visitor Information'
 portal.chat.you: Você
+portal.chat.you_have_been_invited: 'You have been invited to join a chat'
 portal.downloads.download: Baixar
+portal.downloads.none: 'No downloads yet'
+portal.downloads.recent-downloads: 'Recent Downloads'
 portal.downloads.search-title: Transferências
+portal.downloads.section-desc: 'Browse our collection of downloads.'
 portal.downloads.section-title: Transferências
+portal.downloads.uploaded-on: Uploaded
 portal.downloads.view-as-agent: 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.'
-portal.email_subjects.chat_transcript: 'Transcrição da Conversa'
+portal.downloads.view-x-files:
+  one: 'View 1 download'
+  other: 'View {{count}} downloads'
+portal.email_subjects.chat_transcript: 'Cópia do chat'
 portal.email_subjects.comment-approved: 'O seu comentário foi aprovado'
 portal.email_subjects.comment-confirmation: 'Obrigado pelo seu comentário'
 portal.email_subjects.comment-deleted: 'O seu comentário foi lido pelos nossos agentes'
+portal.email_subjects.download_sub_new: 'New Downloads'
+portal.email_subjects.download_sub_new_and_updated: 'New and Updated Downloads'
+portal.email_subjects.download_sub_updated: 'Updated Downloads'
 portal.email_subjects.email-too-big: 'O seu email "{{subject}}" não foi aceite'
 portal.email_subjects.email_new-confirm: 'Valide o seu endereço de email'
 portal.email_subjects.email_primary-confirm: 'Valide o seu endereço de email'
+portal.email_subjects.email_ticket-reminder: 'Action Required: Your ticket has not yet been submitted'
 portal.email_subjects.feedback_new: 'Obrigado por ter enviado os seus comentários'
 portal.email_subjects.feedback_new-approved: 'Os seus comentários foram aprovados'
 portal.email_subjects.feedback_new-comment: 'Existe um novo comentário no "{{title}}"'
 portal.email_subjects.feedback_new-confirm: 'Obrigado por ter enviado os seus comentários (confirmação requerida)'
 portal.email_subjects.feedback_new-disapproved: 'Os seus comentários foram refutados'
+portal.email_subjects.feedback_sub_updated: 'Updated Feedback'
 portal.email_subjects.feedback_updated: 'O seu comentário foi atualizado: {{title}}'
+portal.email_subjects.kb_sub_new: 'New Articles'
+portal.email_subjects.kb_sub_new_and_updated: 'New and Updated Articles'
+portal.email_subjects.kb_sub_updated: 'Updated Articles'
+portal.email_subjects.new-ticket-guest: 'Thank you for contacting us'
+portal.email_subjects.news_sub_new: 'Breaking News'
+portal.email_subjects.news_sub_new_and_updated: 'New and Updated News'
+portal.email_subjects.news_sub_updated: 'Updated News'
 portal.email_subjects.password_agent-reset: 'Um agente efectuou a reinicialização da sua palavra cháve'
 portal.email_subjects.password_reset: 'Reinicializar a palavra cháve'
+portal.email_subjects.password_set: 'Set Your Password'
+portal.email_subjects.re: 'RE: {{subject}}'
 portal.email_subjects.register-welcome: 'Obrigado por se ter registado'
+portal.email_subjects.register-welcome-byagent: 'Your new helpdesk account'
+portal.email_subjects.remind_unresolved_final_subject: 'REMINDER: {{ticket.subject}}'
+portal.email_subjects.remind_unresolved_subject: 'REMINDER: {{ticket.subject}}'
+portal.email_subjects.share-article: '{{author_name}} wants to share this article with you'
 portal.email_subjects.ticket-rate: 'Avalie a sua experiencia com a equipa de suporte para o seu bilhete "{{ticket.subject}}"'
+portal.email_subjects.ticket_added_cc: 'You have been added to the ticket "{{ticket.subject}}"'
 portal.email_subjects.ticket_new-participant: 'Uma nova pessoa foi adicionada ao seu bilhete'
+portal.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
+portal.email_subjects.too-many-emails: 'NOTICE: You have sent too many emails'
 portal.email_subjects.validate-email: 'Valide o seu endereço de email'
 portal.emails.auto-close: 'O seu bilhete "{{ticket.subject}}" irá ser fechado automaticamente devido a não ter atualizado o mesmo recentemente. Se não deseja que o seu bilhete seja fechado, por enviar uma nova resposta para que os nossos agentes o possam ajudar.'
-portal.emails.chat_transcript: 'Obrigado por ter conversado connosco. Aqui está a cópia da nossa conversa.'
+portal.emails.chat_transcript: 'Obrigado por conversar conosco. Aqui está a cópia da nossa conversa.'
 portal.emails.comment_approved: 'O seu comentário foi publicado.'
-portal.emails.comment_deleted: 'O seu comentário foi usado para melhorar a página.'
+portal.emails.comment_deleted: 'Your comment was used to improve this page: {{link}}.'
 portal.emails.comment_thank-you: 'Obrigado pelo seu comentário sobre {{link}}.'
 portal.emails.comment_validate-email: 'Por favor valide o seu endereço de email clicando no link seguinte:'
 portal.emails.do-not-reply: 'Por favor não responda a este email. Esta mensagem é gerada automaticamente pelo servidor e respostas a esta mensagem não serão lidas pelo nosso pessoal.'
+portal.emails.download-new-downloads:
+  one: '1 New Download'
+  other: '{{count}} New Downloads'
+portal.emails.download-updated-downloads:
+  one: '1 Updated Download'
+  other: '{{count}} Updated Downloads'
+portal.emails.downloads-explain: 'You are receiving this email because you have subscribed to updates about downloads available at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all downloads notifications.</a>'
 portal.emails.email-too-big: 'O seu e-mail "{{subject}}" não foi aceito, porque é mdemasiado grande. O tamanho máximo de e-mail que este helpdesk aceita é {{max_size}}. Remova todos os anexos e tente novamente.'
+portal.emails.end_greeting: 'Regards,<br /><br />{{site_name}}''s'
+portal.emails.feedback-explain: 'You are receiving this email because you subscribed to updates about feedback items at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
+portal.emails.feedback-updated-items:
+  one: '1 Updated Feedback Item'
+  other: '{{count}} Updated Feedback Items'
+portal.emails.feedback_agent-validation: 'Note that your feedback will not appear publicly on our support portal until one of our agents approves it.'
 portal.emails.feedback_approved: 'Gostaríamos de o informar que o seu comentário foi aprovado e está agora visível publicamente no nosso site.'
 portal.emails.feedback_closed: 'O comentário que nos enviou "{{title}}" foi fechado: {{status}}'
 portal.emails.feedback_disapproved: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site.'
@@ -190,46 +305,249 @@ portal.emails.feedback_votes:
   one: 'O seu comentário tem atualmente  <strong>1</strong> voto. Veja o seu comentário online em:'
   other: 'O seu comentário tem atualmente  <strong>{{count}}</strong> votos. Veja o seu comentário online em:'
 portal.emails.greeting: 'Caro {{to_name}},'
+portal.emails.kb-explain: 'You are receiving this email because you subscribed to updates about our knowledgebase articles at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
+portal.emails.kb-new-articles:
+  one: '1 New Knowledgebase Article'
+  other: '{{count}} New Knowledgebase Articles'
+portal.emails.kb-updated-articles:
+  one: '1 Updated Knowledgebase Article'
+  other: '{{count}} Updated Knowledgebase Articles'
 portal.emails.label_view-online: 'Ver Online'
 portal.emails.message-clipped: '(Mensagem foi cortada)'
+portal.emails.new-ticket-guest-link: 'Thank you for contacting us. You may view the status of your ticket online here:'
+portal.emails.news-explain: 'You are receiving this email because you subscribed to updates about feedback items at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all news notifications.</a>'
+portal.emails.news-new-articles:
+  one: '1 New News Post'
+  other: '{{count}} New News Posts'
+portal.emails.news-updated-articles:
+  one: '1 Updated News Post'
+  other: '{{count}} Updated News Posts'
 portal.emails.password_agent-reset: 'Um agente efetuar a reinicialização da palavra chave da sua conta. Pode entrar na sua conta com os seguintes detalhes.'
 portal.emails.password_reset: 'Solicitou a reinicialização da palavra chave. Para reinicializar a sua palavra chave, clique no link abaixo:'
-portal.emails.profile_email-new-confirm: 'Para terminar a adição deste email secundário à sua conta, simplesmente clique no link de validação abaixo'
+portal.emails.password_set: 'To set your password, click on the link below:'
+portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
+portal.emails.profile_email-primary-confirm: 'To verify your primary email address, simply click on the following link'
 portal.emails.profile_email_link-validate: 'Para validar o seu endereço de email simplesmente clique no link abaixo'
+portal.emails.ratelimit_explain: 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be removed and you will be able to send emails again.'
+portal.emails.ratelimit_submit-online: 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:'
 portal.emails.register-agent-validation: 'Nota: Antes da sua conta se tornar completamente ativa, os nossos agentes necessitam validar a sua conta. Bilhetes e outros conteúdos que já enviou serão mantidos numa fila de validação até que um agente valide as suas contas.'
+portal.emails.register-confirm: 'Thank you for registering an account.<br /><br />Before you can use your account, you must click on the following link to validate your email address'
+portal.emails.register-password: 'Your initial password is: {{password}}'
 portal.emails.register-welcome: 'Obrigado por se ter registado. Pode agora entrar no nosso Helpdesk usando o seu endereço de email {{to_email}}'
+portal.emails.register-welcome-byagent: 'A new account has been created for you. You can now log in using your email address {{to_email}} on our helpdesk:'
 portal.emails.registration_closed: 'Caro {{name}},<br /><br /><br /><br />Novos bilhetes só são aceites de membros do helpdesk existentes. Se já possui uma conta, por favor envie-nos novamente um email através do endereço de email registado.'
 portal.emails.reject_resolved: 'A sua resposta não foi aceite porque o bilhete já foi marcado como resolvido. Os nossos agentes não vão ler ou responder a esta mensagem.'
 portal.emails.reject_resolved-new: 'Se quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a> ou pode enviar através do nosso formulário on-line em: <br /><a href="{{link}}">{{link}}</a>'
 portal.emails.reject_resolved-newemail: 'e quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a>'
+portal.emails.remind_unresolved: 'This is a follow-up message to remind you that you still have an open ticket with {{helpdesk_name}}.<br />If you don''t need any further help with this, please click the link below to let us know:<br /><a href="{{resolve_url}}">{{resolve_url}}</a><br />If you still need help, reply to this email.'
+portal.emails.remind_unresolved_final: 'We haven''t heard from you recently about this ticket.<br />If you still need help, simply reply to this email.<br />If you don''t need any further assistance with this issue, please click the link below to let us know:<br /><a href="{{resolve_url}}">{{resolve_url}}</a>'
+portal.emails.remind_unresolved_final_subject: 'REMINDER: {{ticket.subject}}'
+portal.emails.remind_unresolved_subject: 'REMINDER: {{ticket.subject}}'
+portal.emails.ticket-reminder: 'Your ticket is awaiting email validation. Please click the link below to submit your ticket and verify your email address. Your ticket will be deleted without being seen by an agent if you do not click this link before {{expire_date}}.'
 portal.emails.ticket_access_ticket_online: 'Ver e gerir este bilhete online:'
+portal.emails.ticket_cc-added: '{{author_name}}, {{author_email}}, has added you to the ticket {{ticket.subject}}.'
+portal.emails.ticket_cc-added-reply: 'Replying to this email will reply to the ticket.'
+portal.emails.ticket_cc-added-reply-view: 'Replying to this email will reply to the ticket, or you can view the ticket online here:'
 portal.emails.ticket_cc-new: 'Foi incluído em um bilhete iniciado por {{name}}.'
+portal.emails.ticket_flood: 'You recently sent an email to our helpdesk. We have detected that you sent many messages in rapid succession that were most likely automated.<br /><br />To prevent an endless loop of automatic emails, our helpdesk will not send any more automatic notification emails to you.'
 portal.emails.ticket_message_title: 'Em {{date}} as {{time}}, {{author}} escreveu:'
 portal.emails.ticket_no-autoresponse: 'Aviso: Emails de confirmação estão desligados'
 portal.emails.ticket_rate-negative: Não
 portal.emails.ticket_rate-neutral: 'Foi bem'
 portal.emails.ticket_rate-positive: Sim
 portal.emails.ticket_rate-question: 'Esta mensagem foi de ajuda?'
+portal.emails.ticket_rate-request: 'How would you rate the support you received on your ticket "{{ticket.subject}}"?'
 portal.emails.ticket_received: 'O seu bilhete foi recebido. Um dos nossos agentes irá entrar em contacto consigo o mais brevemente possível.'
 portal.emails.ticket_reply-confirm: 'Obrigado pela sua resposta. Um dos nossos agentes irá entrar em contacto consigo o mais brevemente possível.'
+portal.emails.ticket_validate: 'Thank you for contacting us.<br /><br />Before our agents can read and reply to your message, you must validate your email address.'
 portal.emails.tickets_ommitted:
   one: '1 mensagem foi omitida'
   other: '{{count}} mensagens foram omitidas'
+portal.emails.validate-email: 'Please confirm that this email address is yours by clicking the link below.'
 portal.emails.view_full_history_online: 'Ver bilhete online inteiro'
+portal.error.400-desc: 'Sorry, but your request was malformed.'
+portal.error.400-title: 'Bad Request'
+portal.error.403-desc: 'Sorry, but you do not have access to view this page.'
+portal.error.403-title: 'No Access'
+portal.error.404-desc: 'Sorry, but we couldn''t find this page.'
 portal.error.404-title: 'Não encontrada'
+portal.error.contact: 'If you feel that this is an error, please contact us.'
+portal.error.general-desc: 'Sorry, but an error occurred. Please try again later or contact us.'
+portal.error.general-title: 'An Error Occurred'
 portal.feedback.attachments: Anexos
 portal.feedback.btn-closed: Fechado
 portal.feedback.btn-vote: Concordo
+portal.feedback.dir_asc: ASC
+portal.feedback.dir_desc: DESC
+portal.feedback.error_hidden: 'This feedback item is hidden'
+portal.feedback.error_login: 'Please login'
+portal.feedback.filter_all_items: 'All items'
+portal.feedback.filter_closed_items: 'Closed items'
+portal.feedback.filter_open_items: 'Open items'
+portal.feedback.form_attach_files: 'Attach files'
+portal.feedback.form_btn_submit: 'Add your feedback'
+portal.feedback.form_email_not_shown: 'Your Email (will not be shown publicly)'
 portal.feedback.form_i_have_a: 'Eu tenho um...'
+portal.feedback.form_logged_in_as: 'Logged in as: <span>{{name}}</span>, from email <span>{{email}}</span>.'
+portal.feedback.form_logout: 'Not you?'
+portal.feedback.form_tell_us_more: 'Tell us more'
+portal.feedback.form_title: Title
+portal.feedback.module_forbidden: 'You don''t have access to this module'
+portal.feedback.no_matching: 'No matching feedback'
+portal.feedback.none: 'No feedback yet'
+portal.feedback.rate_forbidden: 'You are not allowed to vote'
+portal.feedback.recent-feedback: 'Recent Feedback'
 portal.feedback.search-title: Comentário
 portal.feedback.section-desc: 'Estas sugestões foram apresentadas por clientes como você, nós encorajamos-lo a discutir e votar naqueles com que concorda e enviar suas próprias sugestões, se a sugestão não estiver listada.'
 portal.feedback.section-title: Comentário
 portal.feedback.sort_comments: 'Comentários?'
+portal.feedback.sort_date: Date
+portal.feedback.sort_popularity: Popularity
+portal.feedback.sort_rating: Rating
+portal.feedback.sort_views: Views
+portal.feedback.status_active: 'Open items'
+portal.feedback.status_all: 'All items'
+portal.feedback.status_closed: 'Closed items'
 portal.feedback.submit_feedback: 'Submeter Comentário'
+portal.feedback.view-x-feedback:
+  one: 'View 1 feedback'
+  other: 'View {{count}} feedback'
+portal.flashes.article_cat_subscribe: 'You have successfully subscribed to this category. You will be notified when new articles are posted.'
+portal.flashes.article_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
+portal.flashes.article_subscribe: 'You have successfully subscribed to this article. You will be notified when it is updated or when there is a new comment.'
+portal.flashes.article_unsubscribe: 'You have successfully unsubscribed from this article.'
+portal.flashes.article_unsubscribe_everything: 'You have unsubscribed from all Knowledgebase notifications'
 portal.flashes.comment_thank_you: 'Obrigado pelo seu comentário'
-portal.forms.error_password_min_length: 'Por favor insira uma palavra-chave de pelo menos 5 caracteres.'
+portal.flashes.comment_thank_you_review: 'Thank you for your comment! It will be visible on the portal after agent review.'
+portal.flashes.download_cat_subscribe: 'You have successfully subscribed to this category. You will be notified when new files are available for download.'
+portal.flashes.download_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
+portal.flashes.download_subscribe: 'You have successfully subscribed to this download. You will be notified when it is updated or when there is a new comment.'
+portal.flashes.download_unsubscribe: 'You have successfully unsubscribed from this download.'
+portal.flashes.download_unsubscribe_everything: 'You have unsubscribed from all downloads notifications'
+portal.flashes.email_sent: 'Your email has been sent'
+portal.flashes.feedback_login: 'You should log in to vote'
+portal.flashes.feedback_subscribe: 'You have successfully subscribed to this feedback item. You will be notified when it is updated or when there is a new comment.'
+portal.flashes.feedback_unsubscribe: 'You have successfully unsubscribed from this feedback item.'
+portal.flashes.feedback_unsubscribe_everything: 'You have unsubscribed from all feedback notifications'
+portal.flashes.guest_content_must_verify: 'Before we can post your content you must verify your email. Please check your email inbox. We have sent you a verification link.'
+portal.flashes.guest_new_ticket_must_verify: 'Before we can accept your ticket we must verify your email address. Please check your email inbox. We have sent you a verification link.'
+portal.flashes.new_feedback_awaiting_review: 'Thank you for your feedback. It will be visible on our support portal after agent review.'
+portal.flashes.new_feedback_posted: 'Thank you for your feedback.'
+portal.flashes.news_cat_subscribe: 'You have successfully subscribed to this category. You will be notified of new posts.'
+portal.flashes.news_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
+portal.flashes.news_subscribe: 'You have successfully subscribed to this news article. You will be notified when there are new comments.'
+portal.flashes.news_unsubscribe: 'You have successfully unsubscribed from this news article.'
+portal.flashes.news_unsubscribe_everything: 'You have unsubscribed from all news article notifications'
+portal.flashes.rating_thanks: 'Thank you for your feedback!'
+portal.flashes.ticket_created: 'Your ticket has been submitted. Thanks!'
+portal.flashes.ticket_feedback_thank_you: 'Thank you for your feedback!'
+portal.flashes.ticket_participant_add: 'We have added {{name}} ({{email}}) as a participant to this ticket.'
+portal.flashes.ticket_participant_add_unknown_error: 'There was a problem when trying to add your participant. Please try again.'
+portal.flashes.ticket_participant_already_error: 'The person you tried to add as a participant is already a participant on this ticket.'
+portal.flashes.ticket_participant_cc_limit_reached: 'Maximum CC''s limit ({{max}}) reached'
+portal.flashes.ticket_participant_email_error: 'Please enter a valid email for your participant and try again.'
+portal.flashes.ticket_participant_remove: 'We have removed {{name}} ({{email}}) as a participant to this ticket.'
+portal.flashes.ticket_participant_remove_unknown_error: 'There was a problem when trying to remove your participant. Please try again.'
+portal.flashes.ticket_re_opened: 'You have re-opened this ticket.'
+portal.flashes.ticket_replied: 'Your reply has been submitted. Thanks!'
+portal.flashes.ticket_resolved: 'Your ticket is now marked as resolved. Thank you.'
+portal.flashes.ticket_updated: 'Your ticket has been updated. Thanks!'
+portal.flashes.user_add_email_verified: 'Your email address has been added to your account.'
+portal.flashes.user_add_email_verify: 'We need to verify your email before we add it to your account. Please check your email inbox for a verification link.'
+portal.flashes.user_changed_password: 'Your password has been updated.'
+portal.flashes.user_changed_primary_email: 'Your primary email address has been changed.'
+portal.flashes.user_registered_must_verify: 'Thank you for registering. Please check your email, we have sent you a verification link.'
+portal.flashes.user_registered_verified: 'Thank you. Your email address has been verified.'
+portal.flashes.user_registered_verified_authenticated: 'Thank you. Your email address has been verified and you have been logged in.'
+portal.flashes.user_removed_an_email: 'Your email address {{email}} was removed.'
+portal.flashes.user_resend_email_verify: 'The validation email has been sent to your email address again.'
+portal.flashes.user_updated_profile: 'Your profile has been updated.'
+portal.flashes.usersource_new_add_email_verified: 'Thank you for verifying your email address. Your account is now active.'
+portal.flashes.usersource_new_add_email_verify: 'We need to verify your email before we create your account. Please check your inbox for a verification link.'
+portal.forms.confirm_reset: 'Are you sure you want to reset this form?'
+portal.forms.error_accept_failed_upload: 'There was a problem uploading this file. Please try again.'
+portal.forms.error_accept_no_file: 'You cannot upload an empty file.'
+portal.forms.error_accept_not_allowed_exts: 'You cannot upload a file with any of the following file extensions: {{detail}}'
+portal.forms.error_accept_not_in_allowed_exts: 'You can only upload a file with any of the following file extensions: {{detail}}'
+portal.forms.error_accept_server_error: 'There was a problem uploading this file. Please try again.'
+portal.forms.error_accept_size: 'Sorry but this file is too large. Maximum allowed size is {{detail}}.'
+portal.forms.error_bad_choice: 'One or more of the given values is invalid.'
+portal.forms.error_banned_email: 'Email "{{email}}" is banned.'
+portal.forms.error_captcha: 'The CAPTCHA value was incorrect'
+portal.forms.error_csrf: 'The form you submitted has expired. Please re-submit your form.'
+portal.forms.error_date_day: 'This is not a valid day of the week'
+portal.forms.error_date_max: 'This date is too far into the future. Please pick a date before {{date}}.'
+portal.forms.error_date_min: 'This date is too far into the past. Please pick a date after {{date}}.'
+portal.forms.error_dupe_email: 'This email "{{email}}" is already in use by other user.'
+portal.forms.error_dupe_ticket: 'Duplicate ticket.'
+portal.forms.error_dupe_ticket_message: 'Duplicate ticket message.'
+portal.forms.error_email_required: 'You must provide your email address'
+portal.forms.error_extra_fields: 'Sorry but there was an error processing your request. Please try again.'
+portal.forms.error_invalid_data_type: 'This data type was not expected.'
+portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
+portal.forms.error_invalid_url: 'This value is not a valid URL.'
+portal.forms.error_length_invalid: 'This value should have exactly {{limit}} characters.'
+portal.forms.error_length_too_long: 'This value is too long. It should have {{limit}} characters or less'
+portal.forms.error_length_too_short: 'This value should have {{limit}} characters or more'
+portal.forms.error_mismatch_values: 'This value does not match'
+portal.forms.error_no_uploaded_file: 'Uploaded file was not found. Please try again.'
+portal.forms.error_not_assignable_category: 'Unable to select parent category.'
+portal.forms.error_not_assignable_choice: 'Unable to select parent choice.'
+portal.forms.error_not_assignable_department: 'Unable to select parent department.'
+portal.forms.error_not_assignable_product: 'Unable to select parent product.'
+portal.forms.error_not_checked: 'The field is not checked.'
+portal.forms.error_not_unique_collection: 'One or more of the given values is not unique.'
+portal.forms.error_numeric: 'Please enter a number, with no other characters.'
+portal.forms.error_password_current: 'This must be your current password'
+portal.forms.error_password_forbid_reuse: 'You cannot use a password you have used before'
+portal.forms.error_password_min_length:
+  one: 'Minimum of {{count}} character'
+  other: 'Minimum of {{count}} characters'
+portal.forms.error_password_require_num_lowercase:
+  one: 'At least {{count}} lowercase character'
+  other: 'At least {{count}} lowercase characters'
+portal.forms.error_password_require_num_number:
+  one: 'At least {{count}} number'
+  other: 'At least {{count}} numbers'
+portal.forms.error_password_require_num_symbol:
+  one: 'At least {{count}} symbol'
+  other: 'At least {{count}} symbols'
+portal.forms.error_password_require_num_uppercase:
+  one: 'At least {{count}} uppercase character'
+  other: 'At least {{count}} uppercase characters'
+portal.forms.error_person_not_agent: 'Person with identifier {{value}} is not an agent.'
+portal.forms.error_person_not_found: 'Person with identifier "{{value}}" not found.'
+portal.forms.error_person_not_user: 'Person with identifier {{value}} is not a user.'
+portal.forms.error_regex: 'This value does not match the expected format'
+portal.forms.error_required: 'This value is required'
+portal.forms.error_server_rejected_size: 'There was a problem uploading files due to the maximum size limit. Please try uploading smaller files.'
+portal.forms.error_system_email: 'Email "{{email}}" is already being used as email account.'
+portal.forms.error_ticket_department_invalid: 'You cannot select a parent department. Try selecting a sub-department.'
+portal.forms.error_ticket_department_required: 'A department is required'
+portal.forms.error_ticket_msg_length: 'Your message must be at least {{limit}} characters in length'
+portal.forms.error_ticket_msg_required: 'You must provide a message'
+portal.forms.error_ticket_opened: 'Ticket should be neither resolved nor archived.'
+portal.forms.error_ticket_subject_length: 'The subject must be at least {{limit}} characters in length'
+portal.forms.error_ticket_subject_required: 'A ticket subject is required'
+portal.forms.error_too_few_elements: 'This collection should contain {{limit}} element or more.|This collection should contain {{limit}} elements or more.'
+portal.forms.error_unique_entity: 'This value already exists in the system.'
+portal.forms.error_upload_empty: 'You cannot upload an empty file.'
+portal.forms.error_upload_file: 'Could not upload file'
+portal.forms.error_upload_general: 'There was a problem uploading this file. Please try again.'
+portal.forms.error_upload_html_size: 'The file is too large.'
+portal.forms.error_upload_ini_size: 'The file is too large. Maximum allowed size is {{limit}} {{suffix}}.'
+portal.forms.label_add_attachment: 'Add Another Attachment'
+portal.forms.label_captcha: 'To prove you are a human, please tell us the text you see in the CAPTCHA image'
 portal.forms.label_category: Categoria
+portal.forms.label_cc: CCs
+portal.forms.label_choose: 'Choose a file'
+portal.forms.label_comment: 'Any comments?'
+portal.forms.label_content: Content
+portal.forms.label_current_password: 'Current password'
 portal.forms.label_department: Departamento
+portal.forms.label_drag: 'Drag a file in here or'
+portal.forms.label_drag_overlay: 'Drag your file in here.'
+portal.forms.label_email: Email
 portal.forms.label_first_name: 'Primeiro Nome'
 portal.forms.label_full_name: 'O seu Nome'
 portal.forms.label_language: Linguagem
@@ -237,23 +555,77 @@ portal.forms.label_last_name: 'Ultimo Nome'
 portal.forms.label_message: Mensagem
 portal.forms.label_name: Nome
 portal.forms.label_password: Palavra-chave
+portal.forms.label_password_confirm: Confirm
 portal.forms.label_priority: Prioridade
+portal.forms.label_product: Product
+portal.forms.label_reset: Reset
 portal.forms.label_save: Salvar
+portal.forms.label_select: Select...
+portal.forms.label_send_to_myself: 'Send to myself'
 portal.forms.label_subject: Assunto
 portal.forms.label_submit: Enviar
 portal.forms.label_timezone: 'Fuso horário'
+portal.forms.label_title: Title
+portal.forms.label_upload_picture: 'Upload Picture'
+portal.forms.label_workflow: Workflow
 portal.general.add-comment: 'Adicionar comentário'
+portal.general.admin: Admin
+portal.general.admin_home: 'Admin Home'
 portal.general.agent: Agente
+portal.general.agent_bar_admin_desc: 'Manage your Helpdesk'
+portal.general.agent_bar_admin_dl: 'Downloads Settings'
+portal.general.agent_bar_admin_feedback: 'Feedback Settings'
+portal.general.agent_bar_admin_kb: 'Knowledgebase Settings'
+portal.general.agent_bar_admin_lang: 'Language Settings'
+portal.general.agent_bar_admin_news: 'News Settings'
+portal.general.agent_bar_admin_portal: 'Portal Design & Templates'
+portal.general.agent_bar_agent_desc: 'View Tickets / Manage Content'
+portal.general.agent_bar_agent_dl: 'Manage Downloads'
+portal.general.agent_bar_agent_feedback: 'Manage Feedback'
+portal.general.agent_bar_agent_home: 'Agent Home'
+portal.general.agent_bar_agent_kb: 'Manage Knowledgebase'
+portal.general.agent_bar_agent_news: 'Manage News'
+portal.general.agents-available: 'Agents Available'
 portal.general.attachments: Anexos
 portal.general.btn-cancel: Cancelar
 portal.general.btn-download-pdf: 'Baixar PDF'
+portal.general.btn-email: Email
 portal.general.btn-go: Seguinte
+portal.general.btn-print: Print
 portal.general.btn-send-email: 'Enviar E-mail'
+portal.general.btn-share: Share
+portal.general.btn-subscribe: Subscribe
+portal.general.btn-unsubscribe: Unsubscribe
+portal.general.by: by
+portal.general.by_2: By
+portal.general.comment_btn_save: 'Save Comment'
+portal.general.comments-count:
+  one: '1 Comment'
+  other: '{{count}} Comments'
+portal.general.comments-pending-validation: 'This comment is being reviewed. It will be displayed shortly'
+portal.general.comments-title:
+  one: 'Comments (1)'
+  other: 'Comments ({{count}})'
 portal.general.delete: Excluir
 portal.general.everything: Tudo
+portal.general.get-in-touch: 'Get in touch'
+portal.general.get-in-touch-desc: 'Send us an email'
+portal.general.impersonation_mode: 'Impersonation mode'
+portal.general.in: in
+portal.general.label-search-enter-label: 'Please provide a label to search for'
+portal.general.lang-change-to-current: 'Make <span class="italics">{{lang}}</span> my default language'
+portal.general.lang-diff: 'This page is in <span class="italics">{{active_lang}}</span> but your account is in <span class="italics">{{person_lang}}</span>.'
+portal.general.lang-switch: 'Switch to <span class="italics">{{lang}}</span>'
+portal.general.nav-all: All
+portal.general.nav-chat: 'Chat Logs'
+portal.general.nav-chatlog: 'Chat Log'
 portal.general.nav-downloads: Transferências
 portal.general.nav-downloads-desc: 'Procure nas nossas transferências'
+portal.general.nav-emails: Emails
 portal.general.nav-feedback: Comentário
+portal.general.nav-feedback-desc: 'Custom suggestions'
+portal.general.nav-guides: Guides
+portal.general.nav-guides-desc: 'Product documentation'
 portal.general.nav-kb: 'Base de Conhecimento'
 portal.general.nav-kb-desc: 'Ler artigos de ajuda'
 portal.general.nav-login: Entrar
@@ -261,10 +633,34 @@ portal.general.nav-news: Notícias
 portal.general.nav-news-desc: 'Notícias e atualizações'
 portal.general.nav-newticket: Contacte-nos
 portal.general.nav-newticket-desc: 'Estamos aqui para ajudar'
+portal.general.nav-portal: Portal
 portal.general.nav-profile: Perfil
+portal.general.nav-quick-jump: 'Quick Jump'
 portal.general.nav-register: Registar
 portal.general.nav-reset-password: 'Reinicializar a palavra cháve'
+portal.general.nav-set-password: 'Set Password'
 portal.general.nav-tickets: Bilhetes
+portal.general.nav-tickets-org: 'Organization Tickets'
+portal.general.nav-your-account: 'Your Account'
+portal.general.no-agents-available: 'Sorry but there are no agents available'
+portal.general.no-search-query: 'Please type a search query into the search box.'
+portal.general.no-search-results: 'We couldn''t find any results for "{{query}}"'
+portal.general.no-search-results-general: 'We couldn''t find any results'
+portal.general.on: 'on'
+portal.general.or: or
+portal.general.prop_comments_asc: 'Least comments first'
+portal.general.prop_comments_desc: 'Most comments first'
+portal.general.prop_date_asc: 'Oldest first'
+portal.general.prop_date_desc: 'Newest first'
+portal.general.prop_popularity_asc: 'Least popular first'
+portal.general.prop_popularity_desc: 'Most popular first'
+portal.general.prop_rating_asc: 'Lowest rated first'
+portal.general.prop_rating_desc: 'Highest rated first'
+portal.general.prop_views_asc: 'Least views first'
+portal.general.prop_views_desc: 'Most views first'
+portal.general.published: Published
+portal.general.rate-page: 'Rate the quality of this page'
+portal.general.rate-page-negative: 'This page was not helpful'
 portal.general.rate-page-positive: 'Esta página foi útil'
 portal.general.rated-negative: 'Marcou esta página como inútil'
 portal.general.rated-positive: 'Marcou esta página como útil'
@@ -272,42 +668,165 @@ portal.general.rating_x_of_y_found_helpful: '{{vote_up}} pessoas de {{vote_count
 portal.general.related-downloads: 'Arquivos relacionados'
 portal.general.related-feedback: 'Comentário relacionado'
 portal.general.related-news: 'Notícias relacionadas'
+portal.general.related-pages: 'Related Pages'
+portal.general.rerender-form: 'Please review this form before you submit it.'
+portal.general.rss_subscribe: 'RSS Feed'
 portal.general.search-labels-section-title: 'Procurar Etiquetas'
 portal.general.search-section-title: Pesquisar
 portal.general.search_btn: Pesquisar
+portal.general.select_placeholder: Select...
+portal.general.select_search_placeholder: 'Search for option...'
 portal.general.share-this: 'Partilhe isto'
+portal.general.show: Show
+portal.general.show_less: 'Show less'
+portal.general.show_more: 'Show more'
+portal.general.show_x_more: 'Show {num} more'
+portal.general.software_provided_by: 'Helpdesk software provided by'
+portal.general.start-chat: 'Start a chat session'
 portal.general.submit-feedback: 'Submeter Comentário'
+portal.general.submit-feedback-desc: 'Feedback and suggestions submitted by customers like you'
+portal.general.tagged_with: 'tagged with'
+portal.general.tags: Tags
+portal.general.toggle_off: 'off'
+portal.general.toggle_on: 'on'
+portal.general.top: Top
+portal.general.updated: Updated
+portal.general.x-search-results: '{{num}} search results for "{{query}}"'
+portal.general.x-search-results-no-query: '{{num}} search results'
+portal.guides.view-as-agent: 'You can see this page because you are an agent. Users will not be able to view this page.'
+portal.news.none: 'No news yet'
+portal.news.recent-title: 'Recent News'
+portal.news.search-title: 'News Articles'
 portal.news.section-title: Notícias
 portal.news.view-as-agent: 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.'
+portal.news.view-x-news:
+  one: 'View 1 article'
+  other: 'View {{count}} articles'
+portal.sidebar.agents_available: 'Available Agents'
+portal.sidebar.agents_none: 'None of our agents are online right now. You can still <a href="{{new_ticket_url}}">open a ticket</a>.'
+portal.sidebar.agents_x_online:
+  one: '{{count}} online'
+  other: '{{count}} online'
+portal.sidebar.article_posted_by: 'Posted by {{name}}'
 portal.sidebar.news_title: Notícias
+portal.sidebar.satisfied_customers: 'satisfied customers'
+portal.sidebar.top_articles_title: 'Top Articles'
+portal.tickets.add-reply: Reply
+portal.tickets.cancel-ticket-edit: 'Cancel edit and show me the ticket again'
 portal.tickets.feedback_message_leave_comment: 'Opcionalmente deixe um comentário'
+portal.tickets.form-changed-notice: 'New fields have been added to the form. Please review these fields and then re-submit the form.'
 portal.tickets.guest-thanks-section-title: Obrigado
+portal.tickets.guest_thank_you_desc: 'Thank you for contacting us. We have sent you an email with instructions on how to manage your ticket with us.'
 portal.tickets.guest_thank_you_title: Obrigado
 portal.tickets.list_agent: 'Agente designado'
 portal.tickets.list_date_created: 'Criado em:'
+portal.tickets.list_date_last_agent: 'Last Agent Reply'
+portal.tickets.list_date_last_user: 'Last User Reply'
 portal.tickets.list_department: Departamento
+portal.tickets.list_desc: 'This is the description of a list of your tickets'
+portal.tickets.list_desc_org: 'This is the description of a list of your organization''s tickets'
+portal.tickets.list_filter: 'You have an active filter on this view.'
+portal.tickets.list_filter_clear: 'Click here to clear it and see everything.'
+portal.tickets.list_last_action: 'Last Action'
+portal.tickets.list_no_tickets: 'There are no tickets to display in this tab. <a href="{{open_ticket_url}}">Click here to open a new ticket</a>.'
+portal.tickets.list_search: 'Search in Tickets:'
+portal.tickets.list_status_agent: 'Our agent will respond'
 portal.tickets.list_status_open: 'Bilhetes Abertos'
+portal.tickets.list_status_open_count:
+  one: '{{count}} awaiting response'
+  other: '{{count}} awaiting response'
 portal.tickets.list_status_resolved: Fechado
+portal.tickets.list_status_user: 'You need to respond'
 portal.tickets.list_subject: Assunto
+portal.tickets.list_switch_to_my_tickets: 'Switch to My Tickets'
+portal.tickets.list_switch_to_organization: 'Switch to Organization'
+portal.tickets.list_ticket_ref: Reference
 portal.tickets.list_title: 'Os seus Bilhetes'
+portal.tickets.list_title_org: 'Organization Tickets'
+portal.tickets.list_user: User
+portal.tickets.mark-unresolved: 'Re-open Ticket'
+portal.tickets.need-login_desc: 'Please go to <a href="{{login_url}}" target="_blank">the login page</a> to send us a message'
+portal.tickets.need-login_title: 'You need to log in to open a ticket'
 portal.tickets.new-intro: 'Por favor preencha este formulário e um dos nossos agentes irá responder por e-mail o mais rápido possível.'
 portal.tickets.new-section-title: Contacte-nos
+portal.tickets.new-title: 'Open a new ticket'
+portal.tickets.new_ticket_button: 'Create a new ticket'
+portal.tickets.no_participants: 'No participants'
+portal.tickets.not-allowed_desc: 'Sorry, our agents are unable to take your chat at the moment'
+portal.tickets.not-allowed_title: 'We''ll be right back'
+portal.tickets.please_login_to_reply: 'Log in to reply.'
 portal.tickets.rate-intro: '{{name}} ajudo-o com o seu bilhete "{{subject}}"'
 portal.tickets.rate-negative: 'Não foi bom'
 portal.tickets.rate-neutral: 'Foi bem'
 portal.tickets.rate-positive: 'Foi óptimo'
 portal.tickets.rate-question: 'Como classificaria o apoio que recebeu?'
+portal.tickets.related_articles_desc: 'We found the following articles that may solve your problem.'
 portal.tickets.related_articles_title: 'Artigos Relacionados'
 portal.tickets.resolve_my_ticket_btn: 'Fechar o meu bilhete'
 portal.tickets.resolve_ticket: 'Fechar o bilhete: {{subject}}'
 portal.tickets.resolve_ticket_explain: 'Tem certeza de que quer fechar o seu bilhete? Uma vez que o seu bilhete seja fechado, os nossos agentes deixarão de responder.'
+portal.tickets.search-last-activity: 'Last Activity'
 portal.tickets.search-title: Bilhetes
 portal.tickets.section-title: Bilhetes
+portal.tickets.switched-department-rerender: 'The structure of this form may have changed. Please review the form and submit again.'
+portal.tickets.thank_you: 'Your ticket is on the way'
+portal.tickets.thank_you_check_email: 'Please verify your email address'
+portal.tickets.thank_you_check_email_desc: 'To finish submitting your ticket, you must check your email inbox. Please click the verification link we sent you.'
+portal.tickets.thank_you_create_pw_link: 'Want to keep track of your ticket? You can <a href="{{create_pw_link}}">set a password for your account</a>.'
+portal.tickets.thank_you_desc: 'Thank you for contacting us. You will be notified when one of our agents responds.'
+portal.tickets.thank_you_ticket_link: 'Want to keep track of your ticket? Here''s <a href="{{ticket_link}}">a link to your new ticket</a>.'
+portal.tickets.ticket-ref: 'Ticket reference'
+portal.tickets.timeline_attached: 'Attached with this message:'
+portal.tickets.timeline_marked: 'marked this ticket:'
 portal.tickets.timeline_marked_resolved: Fechado
+portal.tickets.timeline_opened: 'opened this ticket'
+portal.tickets.timeline_re_opened: 'reopened this ticket'
+portal.tickets.timeline_wrote: 'wrote:'
 portal.tickets.view_assigned_agent: 'Agente designado'
+portal.tickets.view_awaiting_user: 'An agent is waiting for you to reply to a message.'
+portal.tickets.view_btn_add_cc: 'Add a CC''ed user'
+portal.tickets.view_btn_add_to_ticket: 'Add To Ticket'
 portal.tickets.view_btn_edit: Editar
+portal.tickets.view_btn_edit_full: 'Edit this ticket'
+portal.tickets.view_cant_reply_archived: 'You cannot reply to this ticket because it has been resolved.'
+portal.tickets.view_close: 'Close this ticket'
+portal.tickets.view_closed: 'This ticket was closed {{ago}} ({{day}}).'
+portal.tickets.view_closed_more: 'You can <a href="{{kb_url}}">return to the knowledge base</a> or <a href="{{new_ticket_url}}">open a new ticket</a>.'
+portal.tickets.view_label_your_email: 'Your Email'
+portal.tickets.view_label_your_email_placeholder: 'Email Address (required)'
 portal.tickets.view_label_your_name: 'O seu Nome'
+portal.tickets.view_label_your_name_placeholder: 'Name (required)'
+portal.tickets.view_last_message: 'Your last message was received {{ago}}.'
+portal.tickets.view_media: 'Media on this ticket:'
+portal.tickets.view_more_info: 'Additional ticket information:'
+portal.tickets.view_now_closed: 'This ticket is now closed'
+portal.tickets.view_opened_by: 'Ticket opened by:'
+portal.tickets.view_participants: 'Also on this ticket:'
+portal.tickets.view_reply: 'Add a reply'
+portal.tickets.view_reply_errors: 'There are some errors with your submission.'
+portal.tickets.view_reply_or_close: 'Add a reply or <a href="{{close_url}}" class="close-ticket-trigger">close the ticket</a>'
+portal.tickets.view_scroll_reply: 'Click here to scroll down to the form.'
+portal.tickets.view_ticket_info: 'Ticket info:'
 portal.tickets.view_unassigned: 'Não atribuído'
+portal.tickets.view_unassigned_more: 'An agent will be assigned'
+portal.tickets.view_will_notify_you: 'We have received your message and will send you an email notification as soon as an agent has added a comment.'
+portal.tickets.view_you_created: 'You created this ticket {{ago}}.'
+portal.topics.none: 'No topics yet'
+portal.topics.search-title: Guides
+portal.widget.help_button: 'Chat Now'
+portal.widget.help_ticket_button: 'Contact Us'
+portal.widget.label_add_attachment: 'Add Attachment'
+portal.widget.label_email: 'Your Email'
+portal.widget.label_message: 'Your Question'
+portal.widget.label_name: 'Your Name'
+portal.widget.label_subject: Subject
+portal.widget.new-ticket-title: 'Ask us a Question'
+portal.widget.online_agents: 'Agents Online'
+portal.widget.popup_heading: 'Ask us a question!'
+portal.widget.popup_message: 'Need help? Just reply to start a live chat with one of our team.'
+portal.widget.popup_start_button: 'Start a conversation'
+portal.widget.popup_subheading: 'Our team are online and ready to help with your enquiries. Send us a message to get started.'
+portal.widget.popup_title: 'Customer Support'
 user.chat.email: 'O seu endereço de email'
 user.chat.ended-no-agent: 'Pedimos imensa desculpa mas neste momento não temos ninguém disponível para o atender nesta conversa. Por favor envie-nos um email ou tente novamente mais tarde.'
 user.chat.error: 'Erro na conversa'
@@ -376,31 +895,62 @@ user.defaults.downloads_category_general: Documentos
 user.defaults.news_category_general: Geral
 user.defaults.news_example_content: 'Isto é um exemplo de postar notícia. Esteja à vontade de o editar ou apagar do interface do agente.'
 user.defaults.news_example_title: 'Exemplo de postar notícia'
-user.email_subjects.chat_transcript: 'Transcrição da Conversa'
+user.downloads.change_file: 'Change File'
+user.email_subjects.chat_transcript: 'Cópia do chat'
+user.email_subjects.chat_validate_email: 'Chat email validation'
 user.email_subjects.comment-approved: 'O seu comentário foi aprovado'
 user.email_subjects.comment-deleted: 'O seu comentário foi lido pelos nossos agentes'
+user.email_subjects.download_sub_new: 'New Downloads'
+user.email_subjects.download_sub_new_and_updated: 'New and Updated Downloads'
+user.email_subjects.download_sub_updated: 'Updated Downloads'
 user.email_subjects.email-too-big: 'O seu email "{{subject}}" não foi aceite'
 user.email_subjects.email_new-confirm: 'Valide o seu endereço de email'
-user.email_subjects.email_primary-confirm: 'Valide o seu endereço de email'
+user.email_subjects.feedback_created_for_user: 'Thank you for your feedback'
 user.email_subjects.feedback_new: 'Obrigado por ter enviado os seus comentários'
 user.email_subjects.feedback_new-approved: 'Os seus comentários foram aprovados'
 user.email_subjects.feedback_new-comment: 'Existe um novo comentário no "{{title}}"'
 user.email_subjects.feedback_new-disapproved: 'Os seus comentários foram refutados'
+user.email_subjects.feedback_sub_updated: 'Updated Feedback'
 user.email_subjects.feedback_updated: 'O seu comentário foi atualizado: {{title}}'
+user.email_subjects.kb_sub_new: 'New Articles'
+user.email_subjects.kb_sub_new_and_updated: 'New and Updated Articles'
+user.email_subjects.kb_sub_updated: 'Updated Articles'
+user.email_subjects.new-ticket-guest: 'Thank you for contacting us'
+user.email_subjects.news_sub_new: 'New News'
+user.email_subjects.news_sub_new_and_updated: 'New and Updated News'
+user.email_subjects.news_sub_updated: 'Updated News'
 user.email_subjects.password_agent-reset: 'Um agente efectuou a reinicialização da sua palavra cháve'
 user.email_subjects.password_reset: 'Reinicializar a palavra cháve'
+user.email_subjects.password_set: 'Set Your Password'
+user.email_subjects.re: 'RE: {{subject}}'
 user.email_subjects.register-welcome: 'Obrigado por se ter registado'
+user.email_subjects.register-welcome-byagent: 'Your new helpdesk account'
+user.email_subjects.remind_unresolved_final_subject: 'REMINDER: {{ticket.subject}}'
+user.email_subjects.remind_unresolved_subject: 'REMINDER: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Avalie a sua experiencia com a equipa de suporte para o seu bilhete "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Uma nova pessoa foi adicionada ao seu bilhete'
+user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 user.emails.auto-close: 'O seu bilhete "{{ticket.subject}}" irá ser fechado automaticamente devido a não ter atualizado o mesmo recentemente. Se não deseja que o seu bilhete seja fechado, por enviar uma nova resposta para que os nossos agentes o possam ajudar.'
-user.emails.chat_transcript: 'Obrigado por ter conversado connosco. Aqui está a cópia da nossa conversa.'
+user.emails.chat_transcript: 'Obrigado por conversar conosco. Aqui está a cópia da nossa conversa.'
+user.emails.chat_validate_email: 'Please validate your email address by entering this code "{{validation_code}}" in the widget form or clicking this link:'
 user.emails.comment_approved: 'O seu comentário foi publicado.'
 user.emails.comment_deleted: 'O seu comentário foi usado para melhorar a página.'
 user.emails.comment_thank-you: 'Obrigado pelo seu comentário sobre {{link}}.'
+user.emails.download-new-downloads:
+  one: '1 New Download'
+  other: '{{count}} New Downloads'
+user.emails.download-updated-downloads:
+  one: '1 Updated Download'
+  other: '{{count}} Updated Downloads'
+user.emails.downloads-explain: 'You are receiving this email because you are subscribed to our downloads at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all downloads notifications.</a>'
 user.emails.email-too-big: 'O seu e-mail "{{subject}}" não foi aceito, porque é mdemasiado grande. O tamanho máximo de e-mail que este helpdesk aceita é {{max_size}}. Remova todos os anexos e tente novamente.'
+user.emails.feedback-explain: 'You are receiving this email because you are subscribed to our news at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all feedback notifications.</a>'
+user.emails.feedback-updated-items:
+  one: '1 Updated Feedback Item'
+  other: '{{count}} Updated Feedback Items'
 user.emails.feedback_agent-validation: 'Lembre-se que seu comentário não será exibido publicamente no nosso site, até que um dos nossos agentes o reveja manualmente.'
 user.emails.feedback_approved: 'Gostaríamos de o informar que o seu comentário foi aprovado e está agora visível publicamente no nosso site.'
 user.emails.feedback_closed: 'O comentário que nos enviou "{{title}}" foi fechado: {{status}}'
+user.emails.feedback_created_for_user: 'Thank you for your recent feedback "{{title}}". {{agentName}} has created a new feedback item so you can stay up to date with our progress:'
 user.emails.feedback_disapproved: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site.'
 user.emails.feedback_disapproved-reason: 'Gostaríamos de o informar que infelizmente o seu comentário foi recusado e não irá ser visível publicamente no nosso site. {{name}} deu a seguinte razão:'
 user.emails.feedback_new-comment: '{{name}} postou um novo comentário:'
@@ -411,18 +961,47 @@ user.emails.feedback_votes:
   one: 'O seu comentário tem atualmente  <strong>1</strong> voto. Veja o seu comentário online em:'
   other: 'O seu comentário tem atualmente  <strong>{{count}}</strong> votos. Veja o seu comentário online em:'
 user.emails.greeting: 'Caro {{to_name}},'
+user.emails.kb-explain: 'You are receiving this email because you are subscribed to our knowledgebase at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
+user.emails.kb-new-articles:
+  one: '1 New Article'
+  other: '{{count}} New Articles'
+user.emails.kb-updated-articles:
+  one: '1 Updated Article'
+  other: '{{count}} Updated Articles'
 user.emails.label_view-online: 'Ver Online'
 user.emails.message-clipped: '(Mensagem foi cortada)'
+user.emails.new-ticket-guest-link: 'Thank you for contacting us. You may view the status of your ticket here:'
+user.emails.news-explain: 'You are receiving this email because you are subscribed to our news at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all news notifications.</a>'
+user.emails.news-new-articles:
+  one: '1 New News Article'
+  other: '{{count}} New News Articles'
+user.emails.news-new-news:
+  one: '1 New News Article'
+  other: '{{count}} New News Articles'
+user.emails.news-updated-articles:
+  one: '1 Updated News Article'
+  other: '{{count}} Updated News Articles'
+user.emails.news-updated-news:
+  one: '1 Updated News Article'
+  other: '{{count}} Updated News Articles'
 user.emails.password_agent-reset: 'Um agente efetuar a reinicialização da palavra chave da sua conta. Pode entrar na sua conta com os seguintes detalhes.'
 user.emails.password_reset: 'Solicitou a reinicialização da palavra chave. Para reinicializar a sua palavra chave, clique no link abaixo:'
+user.emails.password_set: 'To set your password, click on the link below:'
 user.emails.profile_email-new-confirm: 'Para terminar a adição deste email secundário à sua conta, simplesmente clique no link de validação abaixo'
+user.emails.profile_email-primary-confirm: 'To verify your primary email address, simply click on the following validation link'
 user.emails.profile_email_link-validate: 'Para validar o seu endereço de email simplesmente clique no link abaixo'
+user.emails.ratelimit_explain: 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be automatically deactivated and you will be able to send emails again.'
+user.emails.ratelimit_submit-online: 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:'
 user.emails.register-confirm: 'Obrigado por registar a sua conta.<br /><br />Antes de ser capaz de utilizar a sua conta, tem de clicar no link seguinte para validar o seu endereço de email'
+user.emails.register-password: 'Your initial password is: {{password}}'
 user.emails.register-welcome: 'Obrigado por se ter registado. Pode agora entrar no nosso Helpdesk usando o seu endereço de email {{to_email}}'
+user.emails.register-welcome-byagent: 'A new account has been created for you. You can now log in using your email address {{to_email}} on our helpdesk:'
 user.emails.registration_closed: 'Caro {{name}},<br /><br /><br /><br />Novos bilhetes só são aceites de membros do helpdesk existentes. Se já possui uma conta, por favor envie-nos novamente um email através do endereço de email registado.'
 user.emails.reject_resolved: 'A sua resposta não foi aceite porque o bilhete já foi marcado como resolvido. Os nossos agentes não vão ler ou responder a esta mensagem.'
 user.emails.reject_resolved-new: 'Se quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a> ou pode enviar através do nosso formulário on-line em: <br /><a href="{{link}}">{{link}}</a>'
 user.emails.reject_resolved-newemail: 'e quiser criar um novo bilhete, pode enviar um novo e-mail para <a href="mailto:{{email_to}}">{{email_to}}</a>'
+user.emails.remind_unresolved: 'This is a follow-up message to remind you that you still have an open ticket with {{helpdesk_name}}.<br />If you don''t need any further help with this issue, please click the link below to let us know:<br /><a href="{{resolve_url}}">{{resolve_url}}</a><br />If you still need help, simply reply to this email.'
+user.emails.remind_unresolved_final: 'We haven''t heard from you recently about this ticket.<br />If you still need help, simply reply to this email.<br />If you don''t need any further help, please click the link below to let us know:<br /><a href="{{resolve_url}}">{{resolve_url}}</a>'
 user.emails.ticket_access_ticket_online: 'Ver e gerir este bilhete online:'
 user.emails.ticket_cc-new: 'Foi incluído em um bilhete iniciado por {{name}}.'
 user.emails.ticket_flood: 'Enviou recentemente um e-mail para nossa central de atendimento. O nosso sistema automatizado detetou que enviou várias mensagens em sucessão rápida, que eram mais provável automatizado. <br /><br /> Para se proteger contra um ciclo auto-responder o nosso helpdesk não irá enviar mais e-mails de notificação automática para si.'
@@ -432,6 +1011,7 @@ user.emails.ticket_rate-negative: Não
 user.emails.ticket_rate-neutral: 'Foi bem'
 user.emails.ticket_rate-positive: Sim
 user.emails.ticket_rate-question: 'Esta mensagem foi de ajuda?'
+user.emails.ticket_rate-request: 'How would you rate the support you received on your ticket "{{ticket.subject}}"?'
 user.emails.ticket_received: 'O seu bilhete foi recebido. Um dos nossos agentes irá entrar em contacto consigo o mais brevemente possível.'
 user.emails.ticket_reply-confirm: 'Obrigado pela sua resposta. Um dos nossos agentes irá entrar em contacto consigo o mais brevemente possível.'
 user.emails.ticket_validate: 'Obrigado por nos contactar.<br /><br />Antes dos nossos agentes lerem e responderem à sua mensagem, necessita validar o seu endereço de email.'
@@ -472,16 +1052,57 @@ user.error.permission-denied-login: 'Está correntemente desconectado. <a href="
 user.error.permission-denied-title: 'Não tem permissão para fazer isso'
 user.error.server-error: 'Houve um erro no servidor que impediu o carregamento da página. Por favor, tente novamente'
 user.feedback.submit_feedback: 'Submeter Comentário'
+user.general.deskpro: Deskpro
 user.general.helpdesk_by: 'Programa Helpdesk da <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Código de confirmação'
 user.general.page: Pagina
+user.general.request_token_expired: 'Your request token has expired. Please try again.'
+user.knowledgebase.auto_action_on_date: 'Automatically {{action}} on {{date}}'
+user.knowledgebase.creating_pending_article: 'Creating pending article'
 user.lang.lang_title: Português
+user.lang.lang_title_arabic: Arabic
+user.lang.lang_title_czech: Czech
+user.lang.lang_title_danish: Danish
+user.lang.lang_title_default: English
+user.lang.lang_title_dutch: Dutch
+user.lang.lang_title_english_gb: 'English (UK)'
+user.lang.lang_title_french: French
+user.lang.lang_title_german: German
+user.lang.lang_title_hungarian: Hungarian
+user.lang.lang_title_indonesian: Indonesian
+user.lang.lang_title_italian: Italian
+user.lang.lang_title_japanese: Japanese
+user.lang.lang_title_norwegian: Norwegian
+user.lang.lang_title_persian: Persian
+user.lang.lang_title_polish: Polish
+user.lang.lang_title_portuguese: Portuguese
+user.lang.lang_title_romanian: Romanian
+user.lang.lang_title_russian: Russian
+user.lang.lang_title_spanish: Spanish
+user.lang.lang_title_swedish: Swedish
+user.lang.lang_title_turkish: Turkish
 user.news.title: Notícias
 user.profile.account_disabled_message: 'Sua conta está desativada. Não pode acessar ou interagir com bilhetes ou conversas.'
 user.profile.choose_email: 'Escolha o endereço de e-mail que deseja usar'
+user.profile.connect_with: 'Connect with'
 user.profile.or_connect_with: 'Ou entre com'
 user.profile.register: Registar
-user.profile.register_password_min_length: 'Por favor insira uma palavra-chave de pelo menos 5 caracteres.'
+user.profile.register_password_min_length:
+  one: 'Minimum of {{count}} character'
+  other: 'Minimum of {{count}} characters'
+user.profile.register_password_require_num_lowercase:
+  one: 'At least {{count}} lowercase character'
+  other: 'At least {{count}} lowercase characters'
+user.profile.register_password_require_num_number:
+  one: 'At least {{count}} number'
+  other: 'At least {{count}} numbers'
+user.profile.register_password_require_num_symbol:
+  one: 'At least {{count}} symbol'
+  other: 'At least {{count}} symbols'
+user.profile.register_password_require_num_uppercase:
+  one: 'Pelo menos {{count}} letra maiúscula'
+  other: 'Pelo menos {{count}} letras maiúsculas'
+user.profile.register_password_unused: 'You cannot use a password you have used before'
 user.tickets.feedback_message_leave_comment: 'Opcionalmente deixe um comentário'
 user.tickets.fields_category: Categoria
 user.tickets.fields_department: Departamento
@@ -490,6 +1111,7 @@ user.tickets.fields_product: Produto
 user.tickets.form_error_captcha: 'Por favor introduza o código'
 user.tickets.form_error_captcha_invalid: 'O código que introduziu está incorreto.'
 user.tickets.from_x_at_y: 'De {{name}} em {{date}}'
+user.tickets.label_cced: CCed
 user.tickets.no_subject: '(Sem assunto)'
 user.tickets.rate-negative: 'Não foi bom'
 user.tickets.rate-neutral: 'Foi OK'
@@ -526,7 +1148,12 @@ user.time.short-month_april: Abr
 user.time.short-month_august: Ago
 user.time.short-month_december: Dez
 user.time.short-month_february: Fev
+user.time.short-month_january: Jan
+user.time.short-month_july: Jul
+user.time.short-month_june: Jun
+user.time.short-month_march: Mar
 user.time.short-month_may: Mai
+user.time.short-month_november: Nov
 user.time.short-month_october: Out
 user.time.short-month_september: Set
 user.time.time-ago_1_day: '1 dia atrás'
@@ -553,8 +1180,30 @@ user.time.time_1_week: '1 semana'
 user.time.time_1_year: '1 ano'
 user.time.time_less_second: 'menos de um segundo'
 user.time.time_x_day: '{0} dias'
+user.time.time_x_hour: '{0} horas'
 user.time.time_x_minute: '{0} minutos'
 user.time.time_x_month: '{0} meses'
 user.time.time_x_second: '{0} segundos'
 user.time.time_x_week: '{0} semanas'
 user.time.time_x_year: '{0} anos'
+user.time.x_day:
+  one: '1 dia'
+  other: '{{count}} dias'
+user.time.x_hour:
+  one: '1 hora'
+  other: '{{count}} horas'
+user.time.x_minute:
+  one: '1 minuto'
+  other: '{{count}} minutos'
+user.time.x_month:
+  one: '1 mês'
+  other: '{{count}} meses'
+user.time.x_second:
+  one: '1 segundo'
+  other: '{{count}} segundos'
+user.time.x_week:
+  one: '1 semana'
+  other: '{{count}} semanas'
+user.time.x_year:
+  one: '1 ano'
+  other: '{{count}} anos'

@@ -203,7 +203,6 @@ portal.chat.see_full_image: 'Cliquer ici pour voir l''image complète'
 portal.chat.send_another_validation_email: 'Renvoyer un autre email'
 portal.chat.sent_validation_code: 'Nous venons de vous envoyer un email contenant un code de validation.'
 portal.chat.start: 'Démarrer un nouveau chat'
-portal.chat.start_conversation: 'Démarrer une conversation'
 portal.chat.support_powered_by: 'Support produit par {{DeskPRO}}'
 portal.chat.take_chat: 'Prendre le chat'
 portal.chat.taken_by: 'Chat pris par'
@@ -275,7 +274,7 @@ portal.email_subjects.validate-email: 'Validez votre adresse email'
 portal.emails.auto-close: 'Faute d''avoir été mis à jour récemment, votre ticket "{{ticket.subject}}" sera automatiquement clôturé. Si vous souhaitez que votre ticket reste ouvert, ajoutez un nouveau message à votre ticket et nos agents pourront continuer à vous épauler dans la résolution de votre ticket.'
 portal.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 portal.emails.comment_approved: 'Votre commentaire a été publié.'
-portal.emails.comment_deleted: 'Votre commentaire a été utilisé pour améliorer la page.'
+portal.emails.comment_deleted: 'Your comment was used to improve this page: {{link}}.'
 portal.emails.comment_thank-you: 'Merci pour votre commentaire sur {{link}}.'
 portal.emails.comment_validate-email: 'Merci de valider votre adress email en ligne en cliquant sur le lien suivant:'
 portal.emails.do-not-reply: 'Merci de ne pas répondre à cet email. Ce message a été généré automatiquement par une machine et les réponses envoyées à cette adresse ne seront pas lues par notre équipe.'
@@ -326,7 +325,7 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'Un agent a généré un nouveau mot de passe pour votre compte. Vous pouvez vous connecter avec ces informations de connexion.'
 portal.emails.password_reset: 'Vous avez demandé à recevoir un nouveau mot de passe. Pour générer un nouveau mot de passe, cliquez sur le lien ci-dessous:'
 portal.emails.password_set: 'Pour définir un mot de passe, cliquez sur le lien ci-dessous :'
-portal.emails.profile_email-new-confirm: 'Pour finir d''ajouter cette deuxième adresse email à votre compte, cliquez sur le lien d''activation suivant:'
+portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'Pour valider votre adresse email principale, veuillez cliquer sur le lien suivant'
 portal.emails.profile_email_link-validate: 'Cliquez simplement sur le lien suivant pour valider votre adresse email.'
 portal.emails.ratelimit_explain: 'Vous avez envoyé {{num_messagess}} messages en {{time_limit}}. Pour éviter les abus, nous avons banni votre adresse email temporairement pour une durée de {{time_lock}}. Après le {{date_lock_end}}, ce blocage temporaire sera levé et vous pourrez à nouveau envoyer des emails.'
@@ -485,7 +484,7 @@ portal.forms.error_dupe_ticket_message: 'Message de duplicata.'
 portal.forms.error_email_required: 'Veuillez indiquer votre adresse email'
 portal.forms.error_extra_fields: 'Désolé, une erreur s''est produite. Veuillez réessayer.'
 portal.forms.error_invalid_data_type: 'Ce type de données n''était pas attendu.'
-portal.forms.error_invalid_email: 'Cette adresse email n''est pas valide'
+portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Cette valeur n''est pas une URL valide.'
 portal.forms.error_length_invalid: 'Cette valeur devrait comporter exactement {{limit}} caractères.'
 portal.forms.error_length_too_long: 'Cette valeur est trop longue. Elle ne peut comporter plus de {{limit}} caractères.'
@@ -537,7 +536,6 @@ portal.forms.error_upload_file: 'Le téléchargement a échoué'
 portal.forms.error_upload_general: 'Votre fichier n''a pas été envoyé. Veuillez réessayer.'
 portal.forms.error_upload_html_size: 'Ce fichier est trop lourd.'
 portal.forms.error_upload_ini_size: 'Ce fichier est trop lourd. Il ne peut pas dépasser {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Désolé, une erreur s''est produite. Veuillez réessayer.'
 portal.forms.label_add_attachment: 'Ajouter une autre pièce jointe'
 portal.forms.label_captcha: 'Pour prouver que vous êtes un être humain, veuillez recopier le texte que vous voyez dans l''image CAPTCHA'
 portal.forms.label_category: Catégorie
@@ -907,7 +905,6 @@ user.email_subjects.download_sub_new_and_updated: 'Téléchargements nouveaux et
 user.email_subjects.download_sub_updated: 'Téléchargements mis à jour'
 user.email_subjects.email-too-big: 'Votre email "{{subject}}" n''a pu être envoyé'
 user.email_subjects.email_new-confirm: 'Veuillez valider votre adresse email'
-user.email_subjects.email_primary-confirm: 'Validez votre adresse email'
 user.email_subjects.feedback_created_for_user: 'Merci pour vos remarques'
 user.email_subjects.feedback_new: 'Merci de nous avoir fait part de vos remarques'
 user.email_subjects.feedback_new-approved: 'Votre remarque a été approuvée'
@@ -931,9 +928,7 @@ user.email_subjects.register-welcome-byagent: 'Votre nouveau compte sur le helpd
 user.email_subjects.remind_unresolved_final_subject: 'RAPPEL : {{subject}}'
 user.email_subjects.remind_unresolved_subject: 'RAPPEL : {{subject}}'
 user.email_subjects.ticket-rate: 'Evaluez la qualité de l''aide reçue concernant votre ticket "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Une nouvelle personne a été ajoutée à votre ticket'
 user.email_subjects.tickets_re: 'RE:{{ticket.subject}}'
-user.email_subjects.too-many-emails: 'REMARQUE : Vous avez envoyé trop d''emails'
 user.emails.auto-close: 'Faute d''avoir été mis à jour récemment, votre ticket "{{ticket.subject}}" sera automatiquement clôturé. Si vous souhaitez que votre ticket reste ouvert, ajoutez un nouveau message à votre ticket et nos agents pourront continuer à vous épauler dans la résolution de votre ticket.'
 user.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 user.emails.chat_validate_email: 'Veuillez valider votre adresse e-mail en entrant ce code "{{validation_code}}" dans le formulaire du widget ou en cliquant sur ce lien:'
@@ -1066,6 +1061,7 @@ user.knowledgebase.auto_action_on_date: 'Automatiquement {{action}} le {{date}}'
 user.knowledgebase.creating_pending_article: 'Création d''un article provisoire'
 user.lang.lang_title: 'Anglais (US)'
 user.lang.lang_title_arabic: Arabe
+user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Danois
 user.lang.lang_title_default: 'Anglais (US)'
 user.lang.lang_title_dutch: Néerlandais
@@ -1073,6 +1069,7 @@ user.lang.lang_title_english_gb: 'Anglais (GB)'
 user.lang.lang_title_french: Français
 user.lang.lang_title_german: Allemand
 user.lang.lang_title_hungarian: Hongrois
+user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italien
 user.lang.lang_title_japanese: Japonais
 user.lang.lang_title_norwegian: Norvégien

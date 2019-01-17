@@ -203,7 +203,6 @@ portal.chat.see_full_image: 'Klik her for at se hele billedet'
 portal.chat.send_another_validation_email: 'Send mig en anden e-mail'
 portal.chat.sent_validation_code: 'Vi har sendt dig en e-mail med en valideringskode.'
 portal.chat.start: 'Start en ny chat'
-portal.chat.start_conversation: 'Start en samtale'
 portal.chat.support_powered_by: 'Support drevet af {{DeskPRO}}'
 portal.chat.take_chat: 'Tag chat'
 portal.chat.taken_by: 'Chat taget af'
@@ -326,7 +325,7 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'En agent har nulstillet adgangskoden til din konto. Du kan logge ind med disse oplysninger'
 portal.emails.password_reset: 'Du har bedt om at få nustillet dit password. For at nulstille dit password, klik på følgende link:'
 portal.emails.password_set: 'For at indstille din adgangskode, skal du klikke på linket nedenfor:'
-portal.emails.profile_email-new-confirm: 'For at kunne tilføje denne sekundære email adresse, skal du bare klikke på følgende bekræftende link'
+portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'For at bekræfte din primære e-mail-adresse, skal du blot klikke på følgende link'
 portal.emails.profile_email_link-validate: 'Klik på følgende link for at validere din e-mailadresse'
 portal.emails.ratelimit_explain: 'Du har sendt {{num_messagess}} meddelelser inden {{time_limit}}. For at forhindre misbrug, har vi midlertidigt blokeret din e-mailadresse for {{time_lock}}. Efter {{date_lock_end}}, vil denne midlertidige blokering fjernes, og du vil være i stand til at sende e-mails igen.'
@@ -485,7 +484,7 @@ portal.forms.error_dupe_ticket_message: 'Duplikat billetbesked.'
 portal.forms.error_email_required: 'Du skal oplyse din e-mailadresse'
 portal.forms.error_extra_fields: 'Beklager, men der opstod en fejl under behandlingen af ​​din anmodning. Prøv igen.'
 portal.forms.error_invalid_data_type: 'Denne datatype var ikke forventet.'
-portal.forms.error_invalid_email: 'Denne e-mail adresse er ikke gyldig'
+portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Denne værdi er ikke en gyldig webadresse.'
 portal.forms.error_length_invalid: 'Denne værdi skal have præcist {{limit}} tegn.'
 portal.forms.error_length_too_long: 'Denne værdi er for lang. Den burde have {{limit}} tegn eller mindre'
@@ -537,7 +536,6 @@ portal.forms.error_upload_file: 'Kunne ikke uploade filen'
 portal.forms.error_upload_general: 'Der opstod et problem med at uploade denne fil. Prøv igen.'
 portal.forms.error_upload_html_size: 'Filen er for stor.'
 portal.forms.error_upload_ini_size: 'Filen er for stor. Den maksimalt tilladte størrelse er {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Beklager, men der opstod en fejl under behandling af din anmodning. Prøv igen.'
 portal.forms.label_add_attachment: 'Tilføj endnu en vedhæftet fil'
 portal.forms.label_captcha: 'For at bevise du er et menneske, så angiv den tekst, du ser i CAPTCHA billedet'
 portal.forms.label_category: Kategori
@@ -646,7 +644,7 @@ portal.general.nav-tickets-org: 'Organisations sager'
 portal.general.nav-your-account: 'Din konto'
 portal.general.no-agents-available: 'Desværre men der er ingen agenter tilgængelige'
 portal.general.no-search-query: 'Indtast en søgestreng, ind i søgefeltet.'
-portal.general.no-search-results: 'Indtast en søgning i søgefeltet.'
+portal.general.no-search-results: 'We couldn''t find any results for "{{query}}"'
 portal.general.no-search-results-general: 'Vi kunne ikke finde nogen resultater'
 portal.general.on: til
 portal.general.or: eller
@@ -907,7 +905,6 @@ user.email_subjects.download_sub_new_and_updated: 'Nye og opdaterede downloads'
 user.email_subjects.download_sub_updated: 'Opdaterede downloads'
 user.email_subjects.email-too-big: 'Din e-mail "{{subject}}" blev ikke accepteret'
 user.email_subjects.email_new-confirm: 'Bekræft venligst din e-mailadresse'
-user.email_subjects.email_primary-confirm: 'Bekræft din email adresse'
 user.email_subjects.feedback_created_for_user: 'Tak for din feedback'
 user.email_subjects.feedback_new: 'Tak for dit indlæg'
 user.email_subjects.feedback_new-approved: 'Dit indlæg er blevet godkendt'
@@ -931,9 +928,7 @@ user.email_subjects.register-welcome-byagent: 'Din nye konto'
 user.email_subjects.remind_unresolved_final_subject: 'PÅMINDELSE: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'PÅMINDELSE: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Bedøm din support oplevelse på din sag "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'En ny person er blevet tilføjet til din sag'
 user.email_subjects.tickets_re: 'SV: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'BEMÆRK: Du har sendt for mange e-mails'
 user.emails.auto-close: 'Din sag "{{ticket.subject}}" vil blive lukket inden længe, eftersom vi ikke har hørt fra dig på det seneste. Hvis du har brug for yderligere assistance, skal du blot svare og en af vores agenter vil hjælpe dig.'
 user.emails.chat_transcript: 'Tak fordi du chattede med os. Her udskriften af fra din chat.'
 user.emails.chat_validate_email: 'Validér venligst din e-mailadresse ved at indtaste denne kode "{{validation_code}}" i formularen, eller ved at klikke på dette link:'
@@ -1066,6 +1061,7 @@ user.knowledgebase.auto_action_on_date: 'Automatisk {{action}} på {{date}}'
 user.knowledgebase.creating_pending_article: 'Opretter afventende artikel'
 user.lang.lang_title: Dansk
 user.lang.lang_title_arabic: Arabisk
+user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Dansk
 user.lang.lang_title_default: Engelsk
 user.lang.lang_title_dutch: Hollandsk
@@ -1073,6 +1069,7 @@ user.lang.lang_title_english_gb: 'Engelsk (GB)'
 user.lang.lang_title_french: Fransk
 user.lang.lang_title_german: Tysk
 user.lang.lang_title_hungarian: Ungarnsk
+user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italiansk
 user.lang.lang_title_japanese: Japansk
 user.lang.lang_title_norwegian: Norsk
@@ -1090,7 +1087,9 @@ user.profile.choose_email: 'Vælg den email adresse du vil bruge'
 user.profile.connect_with: 'Forbind med'
 user.profile.or_connect_with: 'Eller tilslut med'
 user.profile.register: Registrer
-user.profile.register_password_min_length: 'Skriv venligst et password på mindst 5 karakterer'
+user.profile.register_password_min_length:
+  one: 'Minimum of {{count}} character'
+  other: 'Minimum of {{count}} characters'
 user.profile.register_password_require_num_lowercase:
   one: 'Mindst {{count}} små bogstaver '
   other: ' Mindst {{count}} små bogstaver'

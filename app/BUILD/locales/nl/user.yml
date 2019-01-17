@@ -203,7 +203,6 @@ portal.chat.see_full_image: 'Klik hier om de volledige afbeelding te zien'
 portal.chat.send_another_validation_email: 'Stuur me nog een e-mail'
 portal.chat.sent_validation_code: 'We hebben u een e-mail met een validatiecode gestuurd.'
 portal.chat.start: 'Start een nieuwe chat'
-portal.chat.start_conversation: 'Start een gesprek'
 portal.chat.support_powered_by: 'Ondersteuning mogelijk gemaakt door {{DeskPRO}}'
 portal.chat.take_chat: 'Chat aannemen'
 portal.chat.taken_by: 'Chat aangenomen door'
@@ -326,7 +325,7 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'Een medewerker heeft uw wachtwoord gereset. U kunt inloggen met deze gegevens'
 portal.emails.password_reset: 'U heeft een aanvraag ingediend voor het resetten van uw wachtwoord. Klik op de onderstaande link om uw wachtwoord te resetten:'
 portal.emails.password_set: 'Om uw wachtwoord in te stellen, klik op de link hieronder:'
-portal.emails.profile_email-new-confirm: 'Om de toevoeging van het tweede e-mailadres te voltooien, klikt u simpelweg op de volgende validatie link'
+portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'Om uw primaire e-mailadres te verifiëren, klik eenvoudig op de volgende link'
 portal.emails.profile_email_link-validate: 'Klik op de volgende link om uw e-mailadres te valideren'
 portal.emails.ratelimit_explain: 'U heeft {{num_messagess}} berichten verstuurd binnen {{time_limit}}. Om misbruik te voorkomen, hebben we uw e-mailadres tijdelijk geblokkeerd voor {{time_lock}}. Na {{date_lock_end}}, zal deze tijdelijke blokkade worden verwijderd en kunt u weer e-mails versturen.'
@@ -485,7 +484,7 @@ portal.forms.error_dupe_ticket_message: 'Dubbel ticketbericht.'
 portal.forms.error_email_required: 'U moet een e-mailadres opgeven'
 portal.forms.error_extra_fields: 'Sorry, maar er is een fout opgetreden bij het verwerken van uw verzoek. Probeer het opnieuw.'
 portal.forms.error_invalid_data_type: 'Dit gegevenstype is niet verwacht.'
-portal.forms.error_invalid_email: 'Het e-mailadres is niet geldig'
+portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Deze waarde is geen geldige URL.'
 portal.forms.error_length_invalid: 'De waarde moet exact {{limit}} karakters bevatten.'
 portal.forms.error_length_too_long: 'De waarde is te lang. Deze moet {{limit}} karakters of minder bevatten'
@@ -537,7 +536,6 @@ portal.forms.error_upload_file: 'Kon bestand niet uploaden'
 portal.forms.error_upload_general: 'Er was een probleem bij het uploaden van dit bestand. Probeer het nogmaals.'
 portal.forms.error_upload_html_size: 'Het bestand is te groot.'
 portal.forms.error_upload_ini_size: 'Het bestand is te groot. Maximum toegestane grootte is {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Sorry, maar er was een fout bij het behandelen van uw aanvraag. Probeer het nogmaals.'
 portal.forms.label_add_attachment: 'Nog een bijlage toevoegen'
 portal.forms.label_captcha: 'Om te bewijzen dat u een mens bent, moet u vertellen welke tekst u ziet in de CAPTCHA-afbeelding'
 portal.forms.label_category: Categorie
@@ -907,7 +905,6 @@ user.email_subjects.download_sub_new_and_updated: 'Nieuwe en bijgewerkte downloa
 user.email_subjects.download_sub_updated: 'Bijgewerkte downloads'
 user.email_subjects.email-too-big: 'Uw email "{{subject}}"  werd niet aanvaard'
 user.email_subjects.email_new-confirm: 'Valideer uw e-mailadres'
-user.email_subjects.email_primary-confirm: 'Valideer uw e-mailadres'
 user.email_subjects.feedback_created_for_user: 'Bedankt voor je feedback'
 user.email_subjects.feedback_new: 'Bedankt voor het sturen van uw feedback'
 user.email_subjects.feedback_new-approved: 'Uw feedback is goedgekeurd'
@@ -931,9 +928,7 @@ user.email_subjects.register-welcome-byagent: 'Uw nieuwe helpdesk-account'
 user.email_subjects.remind_unresolved_final_subject: 'HERINNERING: {{subject}}'
 user.email_subjects.remind_unresolved_subject: 'HERINNERING: {{subject}}'
 user.email_subjects.ticket-rate: 'Beoordeel uw support ervaring op uw ticket "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Er is een nieuw persoon toegevoegd aan uw ticket'
 user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'LET OP: U heeft te veel e-mails verzonden'
 user.emails.auto-close: 'Uw ticket "{{ticket.subject}}" wordt automatisch afgesloten omdat je het de laatste tijd niet hebt bijgewerkt. Als u niet wilt dat uw ticket wordt afgesloten, voeg een nieuw antwoord toe, zodat onze medewerkers u verder kunnen helpen.'
 user.emails.chat_transcript: 'Bedankt voor het chatten met ons. Hierbij ontvangt u de kopie van het gesprek.'
 user.emails.chat_validate_email: 'Valideer uw e-mailadres door deze code "{{validation_code}}" in te vullen in het widgetformulier of door op deze link te klikken:'
@@ -1066,6 +1061,7 @@ user.knowledgebase.auto_action_on_date: 'Automatisch {{action}} op {{date}}'
 user.knowledgebase.creating_pending_article: 'Een conceptartikel aanmaken'
 user.lang.lang_title: Nederlands
 user.lang.lang_title_arabic: Arabisch
+user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Deens
 user.lang.lang_title_default: Engels
 user.lang.lang_title_dutch: Nederlands
@@ -1073,6 +1069,7 @@ user.lang.lang_title_english_gb: 'Engels (Brits)'
 user.lang.lang_title_french: Frans
 user.lang.lang_title_german: Duits
 user.lang.lang_title_hungarian: Hongaars
+user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italiaans
 user.lang.lang_title_japanese: Japans
 user.lang.lang_title_norwegian: Noors
