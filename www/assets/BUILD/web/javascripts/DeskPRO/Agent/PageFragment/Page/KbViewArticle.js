@@ -114,11 +114,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		};
 		propToggle('display');
 
-		$('.edit-fields-trigger', this.wrapper).on('click', function() {
+		$('.edit-fields-trigger', fieldsRendered).live('click', function() {
 			propToggle('edit');
 		});
 
-		$('.save-fields-trigger', this.wrapper).on('click', function() {
+		$('.save-fields-trigger', fieldsForm).live('click', function() {
 			var formData = $('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', fieldsForm);
 
 			$.ajax({
