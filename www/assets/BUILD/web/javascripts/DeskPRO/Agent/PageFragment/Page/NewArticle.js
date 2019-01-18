@@ -52,6 +52,8 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			self.updateUi();
 		}, 300);
 
+		this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+
 		this.activate();
 	},
 

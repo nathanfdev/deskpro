@@ -60,15 +60,15 @@
                     {% if custom['type'] == 'url' %}
                       <p><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></p>
                     {% elseif custom['type'] == 'file' %}
-                      {% for file in value %}
+
                         <div>
-                          <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
-                            {{ content_icon(file) }}
-                            {{ file.filename }}
-                            ({{ file.readableFilesize }})
+                          <a href="{{ custom['value'].downloadUrl }}{{ custom['value'].is_image ? '' : '?dl=1' }}" target="_blank">
+                            {{ content_icon(custom['value']) }}
+                            {{ custom['value'].filename }}
+                            ({{ custom['value'].readableFilesize }})
                           </a>
                         </div>
-                      {% endfor %}
+
                     {% else %}
                       <p>{{ custom['value'] }}</p>
                     {% endif %}

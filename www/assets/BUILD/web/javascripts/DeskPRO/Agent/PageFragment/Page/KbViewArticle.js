@@ -21,7 +21,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var self = this;
 		this.wrapper = el;
-
+		this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
 		setTimeout(this.deferredInit.bind(this), 0);
 	},
 
