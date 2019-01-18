@@ -27,9 +27,11 @@
 		</tr>
 	{% endfor %}
 		</tbody>
+	{% if article %}
 	<tfoot>
 		<tr colspan="2">
 			<td><button class="clean-white save-fields-trigger"><span>{{ phrase('agent.general.save') }}</span></button></td>
 		</tr>
 	</tfoot>
+	{% endif %}
 </table>
