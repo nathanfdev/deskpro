@@ -250,7 +250,14 @@ class ArticlesController extends AbstractController
                 continue;
             }
             if ($data = $article->getCustomDataForField($def)) {
-                $val = $this->get('data.custom_field_util')->getValueForCustomFormField($def, $data);
+                if (is_array($data)) {
+                    $val = [];
+                    foreach ($data as $datum) {
+                        $val[] = $this->get('data.custom_field_util')->getValueForCustomFormField($def, $datum);
+                    }
+                } else {
+                    $val = $this->get('data.custom_field_util')->getValueForCustomFormField($def, $data);
+                }
             } else {
                 $val = '';
             }

@@ -233,13 +233,21 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
             $fieldId = $fieldId['id'];
         }
 
+        $return = [];
+
         foreach ($this->custom_data as $data) {
             if ($data['field_id'] == $fieldId) {
-                return $data;
+                $return[] = $data;
             }
         }
 
-        return;
+        if (count($return) === 1 && $return[0]->getField()->getType() != 'file') {
+            $return = array_pop($return);
+        } elseif (empty($data)) {
+            $return = null;
+        }
+
+        return $return;
     }
 
     /**
