@@ -338,7 +338,6 @@ return [
         'subGroupId'  => 'participants',
         'name'        => 'DeskPRO:emails_user:ticket-add-cc.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:ticket_add_cc.html.twig',
-        'type'        => 'template',
         'viewModel'   => 'TicketAddCc',
     ],
     [
@@ -347,7 +346,6 @@ return [
         'subGroupId'  => 'participants',
         'name'        => 'DeskPRO:emails_user:ticket-participant.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:ticket_participant.html.twig',
-        'type'        => 'template',
         'viewModel'   => 'TicketParticipant',
     ],
 
