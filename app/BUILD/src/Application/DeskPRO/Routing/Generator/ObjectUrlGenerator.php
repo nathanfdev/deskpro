@@ -58,6 +58,14 @@ class ObjectUrlGenerator
             }
 
             return $object->getUrlSlug();
+        } elseif ($object instanceof \Application\DeskPRO\Entity\Topic) {
+            if ($context == 'agent') {
+                $params['topic_id'] = $object['id'];
+
+                return $this->generator->generate('agent_topic_view', $params);
+            }
+
+            return $object->getUrlSlug();
         } elseif ($object instanceof \Application\DeskPRO\Entity\Person) {
             if ($context == 'agent') {
                 $params['person_id'] = $object['id'];
