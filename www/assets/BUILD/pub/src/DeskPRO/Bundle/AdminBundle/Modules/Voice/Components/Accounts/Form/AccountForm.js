@@ -67,6 +67,11 @@ class AccountForm extends React.Component {
   };
 
   render() {
+
+    if (window.DP_IS_CLOUD) {
+      return this.renderCloud();
+    }
+
     const { saving, testing, deleting, account } = this.props;
     const { formData, displaySuccess } = this.state;
 
@@ -108,6 +113,41 @@ class AccountForm extends React.Component {
               Your settings are correct
             </div>
           }
+        </Fieldset>
+      </Form>
+    );
+  }
+
+  renderCloud() {
+    const { saving, testing, deleting, account } = this.props;
+    const { formData, displaySuccess } = this.state;
+
+    const fundError = formData.errorList["dpms_client.no_funds"];
+
+    return (
+      <Form onSubmit={this.onSubmit} formValue={formData}>
+        <Fieldset>
+          <p>
+            Deskpro Voice allows your agents to make and accept phone calls. Rent phone numbers in a wide range of countries,
+            set up queues and call trees, accept voicemail, and more. <a href="https://www.deskpro.com/product/voice/" target="_blank">Click here to read more about voice</a>.
+          </p>
+          <p>
+            To use Deskpro Voice, your account must be <em>in credit</em>. Go to your <a href="#/license">Billing Area</a> to add credit
+            to your account and enable auto-topup.
+          </p>
+
+          <br/><br/>
+
+          {fundError && (
+            <div>
+              Voice requires you to set up a credit card with auto-topup first.
+              Go to your <a href="#/license">Billing Area</a> to do this now.
+            </div>
+          )}
+
+          <button className={classNames('ui button', { loading: saving, disabled: testing || deleting })}>
+            Enable Voice
+          </button>
         </Fieldset>
       </Form>
     );
