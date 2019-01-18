@@ -100,7 +100,12 @@ class ContentSlugManager
      */
     private function slugifyTitle($title)
     {
-        return substr(Strings::slugifyTitle($title), 0, 94) ?: '';
+        $slug = substr(Strings::slugifyTitle($title), 0, 94) ?: '';
+        if (!is_numeric($slug)) {
+            return $slug;
+        }
+
+        return '';
     }
 
     /**
@@ -145,6 +150,10 @@ class ContentSlugManager
         }
 
         if ($history = $this->getSlugHistoryBySlug($newSlug, $content)) {
+            return false;
+        }
+
+        if (is_numeric($newSlug)) {
             return false;
         }
 
