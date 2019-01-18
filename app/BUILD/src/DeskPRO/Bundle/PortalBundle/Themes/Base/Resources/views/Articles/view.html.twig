@@ -70,7 +70,8 @@
                         </div>
                       {% endfor %}
                     {% else %}
-                      <p>{{ custom['value'] }}</p>
+
+                      <p>{% if custom['value'] is iterable %}{{ custom['value']|join(', ') }}{% else %}{{ custom['value'] }}{% endif %}</p>
                     {% endif %}
                   </li>
                 {% endif %}

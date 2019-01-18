@@ -97,7 +97,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.ownObject(this.miscContent);
 
 		var fieldsRendered = this.getEl('custom_fields_rendered');
-		var fieldsForm = this.getEl('custom_fields_editable');
+		var fieldsForm = this.getEl('custom_fields_form');
 
 		var propToggle = function(what) {
 			if (what == 'display') {
@@ -119,7 +119,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		$('.save-fields-trigger', fieldsForm).live('click', function() {
-			var formData = $('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', fieldsForm);
+			var formData = fieldsForm.serializeArray();
 
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save-custom-fields',

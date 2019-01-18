@@ -236,7 +236,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         $return = [];
 
         foreach ($this->custom_data as $data) {
-            if ($data['field_id'] == $fieldId) {
+            if ($data->getField()->getId() == $fieldId || $data->getRootField()->getId() == $fieldId) {
                 $return[] = $data;
             }
         }
