@@ -118,6 +118,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			propToggle('edit');
 		});
 
+		fieldsForm.on('submit', function(e){
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
 		$('.save-fields-trigger', fieldsForm).live('click', function() {
 			var formData = fieldsForm.serializeArray();
 
