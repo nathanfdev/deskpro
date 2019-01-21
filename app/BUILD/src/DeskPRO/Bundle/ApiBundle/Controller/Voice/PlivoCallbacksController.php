@@ -187,7 +187,7 @@ class PlivoCallbacksController extends BaseController
 
                     // join user to the conference
                     if ($phoneCall->getParticipants()->count() <= 2) {
-                        $this->get('dp.voice.provider_helper')->joinUserToConference(
+                        $this->get('dp.voice.provider_helper')->transferCall(
                             $phoneCall,
                             $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
                             'POST'

@@ -113,9 +113,9 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function joinUserToConference(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
+    public function transferCall(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
     {
-        return $this->getAdapter($phoneCall)->joinUserToConference($phoneCall, $callbackUrl, $callbackMethod);
+        return $this->getAdapter($phoneCall)->transferCall($phoneCall, $callbackUrl, $callbackMethod);
     }
 
     /**

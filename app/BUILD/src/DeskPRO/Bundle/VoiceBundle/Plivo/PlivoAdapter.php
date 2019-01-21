@@ -508,7 +508,7 @@ class PlivoAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function joinUserToConference(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
+    public function transferCall(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
     {
         $account = $phoneCall->getNumber()->getAccount();
         if (!$account || !$account instanceof PlivoVoiceAccount) {
