@@ -116,7 +116,7 @@ class DbAdapter implements StorageAdapterInterface
             )
             ->setParameter('activity', Worker::ACTIVITY_IDLE)
             ->setParameter('type', $type)
-            ->setParameter('date_last_active', new \DateTime('-10 seconds'))
+            ->setParameter('date_last_active', new \DateTime('-15 seconds'))
         ;
 
         $entities = $qb->getQuery()->getResult();

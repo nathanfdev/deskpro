@@ -164,8 +164,8 @@ class Boot
             $lowClass = 'DpSys\\LowScript\\TestPing';
         } elseif (substr($path, 0, 17) === '/get_messages.php' && (!isset($path[17]) || $path[17] === '/')) {
             $lowClass = 'DpSys\\LowScript\\GetMsgScript';
-        } elseif (substr($path, 0, 24) === '/agent/ping-voice-worker' && (!isset($path[24]) || $path[24] === '/')) {
-            $lowClass = 'DpSys\\LowScript\\PingVoiceWorker';
+        } elseif (substr($path, 0, 30) === '/agent/ping-task-router-worker' && (!isset($path[30]) || $path[30] === '/')) {
+            $lowClass = 'DpSys\\LowScript\\PingTaskRouterWorker';
         }
 
         if ($lowClass) {
