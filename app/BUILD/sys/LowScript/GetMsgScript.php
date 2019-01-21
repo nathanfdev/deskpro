@@ -3,6 +3,7 @@
 namespace DpSys\LowScript;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -143,6 +144,8 @@ class GetMsgScript extends LowScriptAbstract
                 WHERE id = ?
             ');
             $q->execute([date('Y-m-d H:i:s', time()), $agent_session['id']]);
+
+            $this->pingTaskRouterWorker();
 
             if (!empty($_REQUEST['recent_tabs'])) {
                 $post_recent_tabs = $_REQUEST['recent_tabs'];
@@ -647,5 +650,28 @@ SQL;
         }
 
         return $data;
+    }
+
+    protected function pingTaskRouterWorker()
+    {
+        // todo support other storages
+        $q = $this->getPdoRead()->prepare('
+            SELECT a.available_status
+            FROM agent_data a
+            JOIN people p ON p.agent_data_id = a.id
+            WHERE p.id = ?
+        ');
+
+        $q->execute([$this->_person_id]);
+
+        $status = $q->fetchColumn();
+        if ($status === AgentData::AVAILABLE_STATUS_IDLE) {
+            $q = $this->getVoicePdo()->prepare('
+            UPDATE voice_workers
+            SET date_last_active = ?
+            WHERE type = ? AND type_id = ?
+        ');
+            $q->execute([date('Y-m-d H:i:s', time()), 'agent', $this->_person_id]);
+        }
     }
 }

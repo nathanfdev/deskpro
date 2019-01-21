@@ -5,9 +5,9 @@ namespace DpSys\LowScript;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 
 /**
- * Class PingVoiceWorker.
+ * Class PingTaskRouterWorker.
  */
-class PingVoiceWorker extends LowScriptAbstract
+class PingTaskRouterWorker extends LowScriptAbstract
 {
     /**
      * {@inheritdoc}
