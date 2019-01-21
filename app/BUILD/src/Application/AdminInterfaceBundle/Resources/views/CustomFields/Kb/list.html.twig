@@ -20,9 +20,7 @@
         </header>
         <article>
             <ul class="dp-item-list" dp-max-height>
-                <li ng-repeat="field in fields"
-                    dp-state-mark="field!:portal.kb_custom_fields.edit.{{ ng_var('field.id|murmurhash') }}">
-
+                <li ng-repeat="field in fields" dp-state-mark="portal.kb_custom_fields.edit.{{ ng_var('field.id') }}">
                     <a href="{{ ng_href('portal.kb_custom_fields.edit', '{id: field.id}') }}">
                         <h4>
                             <span class="title-text" dp-label="field.title" style="display: inline-block; padding: 1% 2%; border-radius: 3px"></span>
