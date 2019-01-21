@@ -100,7 +100,8 @@ export class OmniSearch extends React.Component {
   };
 
   doSearch(newQuery, lastSearchLogId) {
-    if (!newQuery || newQuery.length < 2) {
+    const isNumericQuery = !isNaN(parseInt(newQuery, 10)) && !isNaN(newQuery - 0);
+    if (!newQuery || (newQuery.length < 3 && !isNumericQuery)) {
       // we need a query with a length of at least 2 for the server to do any real searching
       // so don't do a HTTP request if we don't at least have that
       return;
@@ -219,8 +220,11 @@ export class OmniSearch extends React.Component {
 
   render() {
     const { $input, $button } = this.props;
+    const { searchQuery } = this.state;
 
-    if (this.state.searchQuery.length < 2) {
+    const isNumericQuery = !isNaN(parseInt(searchQuery, 10)) && !isNaN(searchQuery - 0);
+
+    if (searchQuery.length < 3  && !isNumericQuery) {
       return null;
     }
 
