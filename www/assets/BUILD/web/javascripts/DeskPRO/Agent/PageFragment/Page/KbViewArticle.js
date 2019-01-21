@@ -99,7 +99,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var fieldsRendered = this.getEl('custom_fields_rendered');
 		var fieldsForm = this.getEl('custom_fields_form');
 
-		fieldsForm.find('.Date.customfield input').each(function() {
+		$('.Date.customfield input', fieldsForm).each(function() {
 			$(this).datetimepicker({
 				format: 'YYYY-MM-DD',
 				widgetParent: $(this).parent().css('position', 'relative'),

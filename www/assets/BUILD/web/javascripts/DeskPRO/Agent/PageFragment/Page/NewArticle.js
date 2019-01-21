@@ -54,6 +54,40 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
 
+		$('.Date.customfield input', this.wrapper).each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
+		$('.DateTime.customfield input', this.wrapper).each(function(){
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'far fa-clock',
+					date: 'far fa-calendar',
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
 		this.activate();
 	},
 
