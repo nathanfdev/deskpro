@@ -99,6 +99,40 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var fieldsRendered = this.getEl('custom_fields_rendered');
 		var fieldsForm = this.getEl('custom_fields_form');
 
+		fieldsForm.find('.Date.customfield input').each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
+		$('.DateTime.customfield input', fieldsForm).each(function(){
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'far fa-clock',
+					date: 'far fa-calendar',
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
 		var propToggle = function(what) {
 			if (what == 'display') {
 				$('.showing-editing-fields', this.wrapper).hide();
