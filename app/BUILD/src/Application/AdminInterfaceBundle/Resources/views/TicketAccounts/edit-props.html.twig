@@ -4,7 +4,7 @@
 	</div>
 	<div class="col-lg-9">
 		<div class="inner-group" dp-error-class="form_props.address">
-			<input type="text" class="form-control" name="address" ng-model="form.address" style="width: 50%;"
+			<input type="text" class="form-control" dp-server-validation="address.email_is_agent_email" name="address" ng-model="form.address" style="width: 50%;"
                    required autofocus />
 			<span class="help-block">
 				Enter the main email address for this account.
