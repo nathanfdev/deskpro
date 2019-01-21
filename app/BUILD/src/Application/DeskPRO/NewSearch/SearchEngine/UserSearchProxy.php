@@ -30,7 +30,11 @@ class UserSearchProxy implements UserSearchInterface
      */
     public function search(SearchContextInterface $context, $query, array $options = null)
     {
-        if ($this->c->getSetting('elastica.enabled')) {
+        // search with elastica if it's enabled, and query is not numeric and is not less than 3 chars
+        // otherwise use mysql to direct lookup
+        if ($this->c->getSetting('elastica.enabled')
+            && !($context->getOption(SearchContextInterface::SEARCH_BY_ID) && mb_strlen($query) < 3)
+        ) {
             try {
                 try {
                     return $this->es()->search($context, $query, $options);
