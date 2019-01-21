@@ -81,6 +81,7 @@ class PhoneInput extends React.Component {
       this.initInput();
 
       const $input = $(this.input);
+      $input.val('');
       $input.focus();
     });
   };
