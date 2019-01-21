@@ -12,7 +12,6 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\TaskQueue;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -163,10 +162,7 @@ class ChatWorkflow implements WorkflowInterface
                 $targets[] = $target;
             }
         } else {
-            $targets = $chatQueue->getTargets();
-            if ($targets instanceof ArrayCollection) {
-                $targets = $targets->toArray();
-            }
+            $targets = $chatQueue->getTargets()->toArray();
         }
 
         // sort targets by priority
