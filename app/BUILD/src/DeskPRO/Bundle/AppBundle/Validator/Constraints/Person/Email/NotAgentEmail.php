@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email;
 use Symfony\Component\Validator\Constraint;
 
 /**
- * Class ExistEmail.
+ * Class NotAgentEmail.
  *
  * @Annotation
  * @Target({"PROPERTY", "METHOD", "ANNOTATION"})
