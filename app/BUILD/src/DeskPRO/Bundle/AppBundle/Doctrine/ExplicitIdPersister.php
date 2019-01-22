@@ -52,5 +52,6 @@ class ExplicitIdPersister
         unset($persisters[$className]);
         $persistersRef->setValue($unitOfWork, $persisters);
         $persistersRef->setAccessible(false);
+        $em->refresh($entity);
     }
 }
