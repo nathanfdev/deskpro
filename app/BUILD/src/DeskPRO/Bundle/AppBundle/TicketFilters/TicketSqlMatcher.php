@@ -503,7 +503,7 @@ class TicketSqlMatcher extends AbstractMatcher
                             COALESCE(tickets.date_last_user_reply, '0000-00-00'),
                             tickets.date_created
                         )
-                    ");
+                    ", $order);
                     break;
                 case TicketSearchParams::ORDER_DATE_USER_WAITING:
                     $qb->addOrderBy('tickets.date_user_waiting', $order);
