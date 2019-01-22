@@ -56,7 +56,7 @@ class GuidesController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
-        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId(), 'guide_slug' => $guide->getSlug()]);
+        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId()]);
     }
 
     /**
@@ -77,7 +77,7 @@ class GuidesController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
-        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId(), 'guide_slug' => $guide->getSlug()]);
+        return $this->redirectToRoute('portal_guides_topic_permalink', ['slug' => $topic->getId()]);
     }
 
     /**
