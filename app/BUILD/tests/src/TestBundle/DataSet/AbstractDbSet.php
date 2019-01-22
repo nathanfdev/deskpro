@@ -8,6 +8,7 @@ namespace DpTestSrc\TestBundle\DataSet;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Brand;
+use DeskPRO\Component\Lock\PdoStore;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Util;
@@ -305,6 +306,9 @@ abstract class AbstractDbSet implements DataSetInterface
             $this->installDatabase('system');
             $this->installDatabase('audit');
             $this->installDatabase('voice');
+
+            $store = new PdoStore($this->getEm()->getConnection());
+            $store->createTable();
 
             self::$isStructureCreated = true;
         } else {
