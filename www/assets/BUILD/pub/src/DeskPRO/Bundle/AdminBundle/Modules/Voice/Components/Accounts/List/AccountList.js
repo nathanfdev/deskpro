@@ -16,21 +16,37 @@ class AccountList extends React.Component {
   renderEmpty() {
     const { onNewAccount } = this.props;
 
-    return (
-      <div className="page">
-        <SectionHeader title="General Settings" dividing />
+    if (window.DP_IS_CLOUD) {
+      return (
+        <div className="page">
+          <SectionHeader title="General Settings" dividing />
 
-        You currently have no accounts.
-        <br /><br />
+          Voice has not been enabled on your account yet.
+          <br /><br />
 
-        <button className="ui primary button" onClick={() => onNewAccount('twilio')}>
-          Add new Twilio account
-        </button>
-      </div>
-    );
+          <button className="ui primary button" onClick={() => onNewAccount('cloud')}>
+            Enable Voice
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div className="page">
+          <SectionHeader title="General Settings" dividing />
+
+          You currently have no accounts.
+          <br /><br />
+
+          <button className="ui primary button" onClick={() => onNewAccount('twilio')}>
+            Add new account
+          </button>
+        </div>
+      );
+    }
   }
 
   renderTable() {
+
     const { accounts = [], onEditAccount, settings, saveSettings } = this.props;
 
     return (
@@ -38,32 +54,35 @@ class AccountList extends React.Component {
         {/* disabled for now because we can just support only one account at the moment
         <button className="ui right floated basic button" onClick={onNewAccount} disabled="disabled">
           <i className="icon plus" />
-          Add new Twilio account
+          Add new account
         </button>*/}
         <SectionHeader title="General Settings" />
 
-        <div className="admin-list-table">
-          <div className="row header">
-            <div className="column account-name">Name/Note</div>
-            <div className="column sid">Account SID</div>
-            <div className="column date">Date Added</div>
-          </div>
-          {accounts.toArray().map((account, index) =>
-            <div className="row" key={index}>
-              <div className="info">
-                <div className="column account-name">{account.get('account_name')}</div>
-                <div className="column sid">{account.get('account_id')}</div>
-                <div className="column date">{account.get('date_created')}</div>
-                <div className="column options-button">
-                  <a onClick={(event) => { event.preventDefault(); onEditAccount(account); }}>
-                    <i className="fas fa-cog" />
-                  </a>
-                </div>
-                <div style={{ clear: 'both' }} />
-              </div>
+        {/* disable list on cloud -- we manage it */}
+        {!window.DP_IS_CLOUD && (
+          <div className="admin-list-table">
+            <div className="row header">
+              <div className="column account-name">Name/Note</div>
+              <div className="column sid">Account SID</div>
+              <div className="column date">Date Added</div>
             </div>
-          )}
-        </div>
+            {accounts.toArray().map((account, index) =>
+              <div className="row" key={index}>
+                <div className="info">
+                  <div className="column account-name">{account.get('account_name')}</div>
+                  <div className="column sid">{account.get('account_id')}</div>
+                  <div className="column date">{account.get('date_created')}</div>
+                  <div className="column options-button">
+                    <a onClick={(event) => { event.preventDefault(); onEditAccount(account); }}>
+                      <i className="fas fa-cog" />
+                    </a>
+                  </div>
+                  <div style={{ clear: 'both' }} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="admin-list-options">
           <div className="voice-general-settings-form">
