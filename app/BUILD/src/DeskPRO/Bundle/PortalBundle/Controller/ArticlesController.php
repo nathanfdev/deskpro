@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
+use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Notifications\NewCommentNotification;
@@ -243,10 +244,35 @@ class ArticlesController extends AbstractController
 
         // RENDER THEME
 
+        $customData = [];
+        foreach ($this->getEm()->getRepository(CustomDefArticle::class)->getEnabledUserFields() as $def) {
+            if ($def->getParent()) {
+                continue;
+            }
+            if ($data = $article->getCustomDataForField($def)) {
+                if (is_array($data)) {
+                    $val = [];
+                    foreach ($data as $datum) {
+                        $val[] = $this->get('data.custom_field_util')->getValueForCustomFormField($def, $datum);
+                    }
+                } else {
+                    $val = $this->get('data.custom_field_util')->getValueForCustomFormField($def, $data);
+                }
+            } else {
+                $val = '';
+            }
+            $customData[] = [
+                'type'  => $def->type,
+                'label' => $def->getTitle(),
+                'value' => $val,
+            ];
+        }
+
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             [
                 'article'            => $article,
+                'custom_data'        => $customData,
                 'rating'             => $rating,
                 'is_subscribed'      => $isSubscribed,
                 'category'           => $article->getPrimaryCategory(),

@@ -6546,31 +6546,44 @@ ul.categories-article-list {
     line-height: 1.7em;
   }
 
-  .article-content {
-    img {
-      margin: 10px;
-      padding: 5px;
-      border: 1px solid $hr-border;
-      max-width: 100%;
-    }
+  .article-content-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 
-    img.left {
-      float: $float-left;
-      @include margin-right(10px);
-      margin-bottom: 10px;
-      @include margin-left(0);
-    }
+    .article-content {
+      img {
+        margin: 10px;
+        padding: 5px;
+        border: 1px solid $hr-border;
+        max-width: 100%;
+      }
 
-    img.full {
-      margin: 0;
-      margin-bottom: 10px;
-      width: 100%;
-    }
+      img.left {
+        float: $float-left;
+        @include margin-right(10px);
+        margin-bottom: 10px;
+        @include margin-left(0);
+      }
 
-    h2 {
-      font-size: 1.15em;
+      img.full {
+        margin: 0;
+        margin-bottom: 10px;
+        width: 100%;
+      }
+
+      h2 {
+        font-size: 1.15em;
+      }
+    }
+    
+    .ticket-view-sidebar {
+      flex-shrink: 0;
+      width: 330px;
     }
   }
+
+
 
   .rate-article {
     margin: 30px 0;

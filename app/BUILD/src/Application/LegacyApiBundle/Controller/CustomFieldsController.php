@@ -40,6 +40,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
         'org'     => 'Organization',
         'ticket'  => 'Ticket',
         'billing' => 'TicketCharge',
+        'kb'      => 'Article',
     ];
 
     /**
@@ -281,6 +282,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             'organizations' => 'CustomDefOrganization',
             'people'        => 'CustomDefPerson',
             'chats'         => 'CustomDefChat',
+            'kb'            => 'CustomDefArticle',
         ];
 
         if (!$repClass = @$types[$this->in->getString('type')]) {

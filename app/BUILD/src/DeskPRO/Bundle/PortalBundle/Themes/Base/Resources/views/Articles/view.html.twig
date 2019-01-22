@@ -45,9 +45,44 @@
       {% endif %}
     </header>
 
-    <div class="article-content padded dpx-kb-article-content">
-      {{ article.translated_content|raw }}
+    <div class="article-content-wrapper">
+      <div class="article-content padded dpx-kb-article-content">
+        {{ article.translated_content|raw }}
+      </div>
+      {% if article.custom_data|length %}
+        <div class="ticket-view-sidebar">
+          <div class="ticket-sidebar-container ticket-sidebar-meta">
+            <ul>
+              {% for custom in custom_data %}
+                {% if custom['value'] %}
+                  <li>
+                    <h3>{{ custom['label'] }}</h3>
+                    {% if custom['type'] == 'url' %}
+                      <p><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></p>
+                    {% elseif custom['type'] == 'file' %}
+                      {% for file in custom['value'] %}
+                        <div>
+                          <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
+                            {{ content_icon(file) }}
+                            {{ file.filename }}
+                            ({{ file.readableFilesize }})
+                          </a>
+                        </div>
+                      {% endfor %}
+                    {% else %}
+
+                      <p>{% if custom['value'] is iterable %}{{ custom['value']|join(', ') }}{% else %}{{ custom['value'] }}{% endif %}</p>
+                    {% endif %}
+                  </li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      {% endif %}
     </div>
+
+
 
     {% if article.labels|length %}
       <div class="tag-list">

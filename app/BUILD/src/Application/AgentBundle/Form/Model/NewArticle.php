@@ -39,6 +39,9 @@ class NewArticle
     public $attach = [];
 
     /** @var array */
+    public $customFields = [];
+
+    /** @var array */
     public $blob_inline_ids = [];
 
     /** @var Article */
@@ -89,6 +92,11 @@ class NewArticle
         $this->_em->persist($article);
         $this->_em->flush();
 
+        if ($this->customFields) {
+            $fieldManager = App::getSystemService('article_fields_manager');
+            $fieldManager->saveFormToObject($this->customFields, $article);
+        }
+
         if ($this->labels) {
             $article->getLabelManager()->setLabelsArray($this->labels, $this->_em);
         }
@@ -110,6 +118,11 @@ class NewArticle
         $this->_em->flush();
         $this->_em->commit();
         $this->_article = $article;
+    }
+
+    public function setCustomFieldForm(array $form)
+    {
+        $this->customFields = isset($form['custom_fields']) ? $form['custom_fields'] : [];
     }
 
     public function getArticle()
