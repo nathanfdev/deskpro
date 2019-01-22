@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Log\Writer;
 
 use DeskPRO\Bundle\AppBundle\Entity\ApiLog;
+use Doctrine\Bundle\DoctrineBundle\Registry as Doctrine;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -16,11 +17,18 @@ class DbWriter implements WriterInterface
     protected $em;
 
     /**
-     * @param EntityManager $em
+     * @var Doctrine
      */
-    public function __construct(EntityManager $em)
+    protected $doctrine;
+
+    /**
+     * @param EntityManager $em
+     * @param Doctrine      $doctrine
+     */
+    public function __construct(EntityManager $em, Doctrine $doctrine)
     {
-        $this->em = $em;
+        $this->em       = $em;
+        $this->doctrine = $doctrine;
     }
 
     /**
@@ -30,6 +38,10 @@ class DbWriter implements WriterInterface
     {
         $key = $log->getKey();
         $log->setKey(null);
+        // this is an emergency case. We still need to log everything in DB even if it was DBAL exception.
+        if (!$this->em->isOpen()) {
+            $this->em = $this->doctrine->resetManager();
+        }
         $this->em->persist($log);
         $this->em->flush();
         if ($key && $key->getId()) {

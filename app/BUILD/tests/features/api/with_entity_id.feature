@@ -15,7 +15,9 @@ Feature: Set entity id explicitly
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.id" should be equal to 1000
+    When I send a GET request to "/api/v2/tickets/1000"
+    Then the response status code should be 200
+    And  the JSON node "data.id" should be equal to 1000
 
   Scenario: I create a person with specific id
     When I send a POST request to "/api/v2/people" with body:
@@ -27,7 +29,9 @@ Feature: Set entity id explicitly
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.id" should be equal to 1000
+    When I send a GET request to "/api/v2/people/1000"
+    Then the response status code should be 200
+    And  the JSON node "data.id" should be equal to 1000
 
   Scenario: I create an organization with specific id
     Given no Organization records exist
@@ -39,4 +43,6 @@ Feature: Set entity id explicitly
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.id" should be equal to 1000
+    When I send a GET request to "/api/v2/organizations/1000"
+    Then the response status code should be 200
+    And  the JSON node "data.id" should be equal to 1000
