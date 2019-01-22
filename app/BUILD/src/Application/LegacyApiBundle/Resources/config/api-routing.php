@@ -2836,7 +2836,7 @@ $collection->create(
 );
 
 $collection->create(
-    'api_kb_fields',
+    'api_kb_fields_old',
     [
         'path'       => '/kb/fields',
         'controller' => 'LegacyApiBundle:Kb:getFields',
@@ -5922,6 +5922,86 @@ $collection->create(
     [
         'path'       => '/chat_fields/display-order',
         'controller' => 'LegacyApiBundle:ChatFields:saveDisplayOrder',
+        'methods'    => ['POST'],
+    ]
+);
+
+//#######################################################################################################################
+// Kb Fields
+//#######################################################################################################################
+
+$collection->create(
+    'api_kb_fields_get',
+    [
+        'path'         => '/kb_fields/{id}',
+        'controller'   => 'LegacyApiBundle:ArticleFields:getCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_kb_fields_create',
+    [
+        'path'       => '/kb_fields',
+        'controller' => 'LegacyApiBundle:ArticleFields:saveCustomField',
+        'defaults'   => ['id' => '0'],
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
+    'api_kb_fields_delete',
+    [
+        'path'         => '/kb_fields/{id}',
+        'controller'   => 'LegacyApiBundle:ArticleFields:deleteCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['DELETE'],
+    ]
+);
+
+$collection->create(
+    'api_kb_fields_save',
+    [
+        'path'         => '/kb_fields/{id}',
+        'controller'   => 'LegacyApiBundle:ArticleFields:saveCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_kb_fields_save_batch',
+    [
+        'path'       => '/kb_fields/batch',
+        'controller' => 'LegacyApiBundle:ArticleFields:saveBatchCustomField',
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
+    'api_kb_fields',
+    [
+        'path'       => '/kb_fields',
+        'controller' => 'LegacyApiBundle:ArticleFields:list',
+        'methods'    => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_kb_fields_setenabled',
+    [
+        'path'       => '/kb_fields/set-enabled/{field_id}/{is_enabled}',
+        'controller' => 'LegacyApiBundle:ArticleFields:toggleField',
+        'methods'    => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_kb_fields_update_order',
+    [
+        'path'       => '/kb_fields/display-order',
+        'controller' => 'LegacyApiBundle:ArticleFields:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );

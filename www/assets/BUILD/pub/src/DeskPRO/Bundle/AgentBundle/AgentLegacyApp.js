@@ -35,6 +35,7 @@ import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
 import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
 import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersContainer';
 import { allNumbersSelector } from './Modules/Voice/Selectors/numbers';
+import { actionAlertsSelector } from './Modules/Application/Selectors/notifications';
 
 class AgentLegacyApp {
 
@@ -102,8 +103,8 @@ class AgentLegacyApp {
       this.store.dispatch(setOnlineUserChatAgents(event.online_agents));
     });
 
+    const state = this.store.getState();
     if (window.DP_HAS_VOICE) {
-      const state = this.store.getState();
       const voiceEnabled = isVoiceEnabledSelector(state);
 
       if (voiceEnabled) {
@@ -113,9 +114,18 @@ class AgentLegacyApp {
 
     if ((window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use']) || window.DP_HAS_VOICE) {
       api.sendPost('/api/v2/task_router/create_worker');
-      setInterval(() => {
-        api.sendGet('/agent/ping-voice-worker');
-      }, 5000);
+
+      // if pusher is enabled we need to use an another polling action
+      const actionAlerts = actionAlertsSelector(state);
+      const hasPusher = actionAlerts.clients.filter(notifyClient =>
+        notifyClient.type === 'pusher' || notifyClient.type === 'deskpro'
+      ).length > 0;
+
+      if (hasPusher) {
+        setInterval(() => {
+          api.sendGet('/agent/ping-task-router-worker');
+        }, 10000);
+      }
     }
 
    // let the app store know we finished the start sequence so

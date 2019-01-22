@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextFactory;
+use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchEngine;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
 use Application\DeskPRO\People\PersonGuest;
@@ -302,20 +303,27 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @param         $type
-     * @param         $q
-     * @param         $person
-     * @param         $curPage
-     * @param         $perPage
-     * @param         $context
+     * @param Request       $request
+     * @param string        $type
+     * @param mixed         $q
+     * @param Entity\Person $person
+     * @param int           $curPage
+     * @param int           $perPage
+     * @param               $context
      *
      * @throws \Exception
      *
      * @return array
      */
-    protected function doSearch(Request $request, $type, $q, $person, $curPage, $perPage, $context)
-    {
+    protected function doSearch(
+        Request $request,
+        $type,
+        $q,
+        Entity\Person $person,
+        $curPage,
+        $perPage,
+        SearchContextInterface $context
+    ) {
         $total   = 0;
         $results = [];
 
@@ -325,6 +333,10 @@ class SearchController extends AbstractController
 
             /** @var UserSearchInterface $userSearch */
             $userSearch = $se->getUserSearch();
+
+            if (is_numeric($q)) {
+                $context->setOption(SearchContextInterface::SEARCH_BY_ID, true);
+            }
 
             /** @var \Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet $resultSet */
             $resultSet = $userSearch->search(

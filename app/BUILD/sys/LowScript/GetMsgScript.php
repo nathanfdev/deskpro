@@ -3,6 +3,7 @@
 namespace DpSys\LowScript;
 
 use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -100,18 +101,6 @@ class GetMsgScript extends LowScriptAbstract
                 }
             }
 
-            // We save the last message we know a user got because we need to know
-            // to deliver offline messages (such as chats) the next time the user logs in
-            if ($new_since && $new_since > $last_since) {
-                $q = $this->getPdo()->prepare('
-                    REPLACE INTO people_prefs
-                        (person_id, name, value_str, value_array, date_expire)
-                    VALUES
-                        (?, ?, ?, NULL, NULL);
-                ');
-                $q->execute([$agent_session['person_id'], 'agent.ui.last_message_id', $new_since]);
-            }
-
             // See if we should update last activity time
             if ($activity_time && $activity_time > (time() - 330)) {
                 // This bit makes sure theres only one record per 5 minute block
@@ -119,14 +108,28 @@ class GetMsgScript extends LowScriptAbstract
                 list($hour, $minute) = explode(':', $date_active->format('H:i'));
                 $minute              = intval($minute / 5) * 5;
                 $date_active->setTime($hour, $minute, 0);
+                $dateString = $date_active->format('Y-m-d H:i:s');
 
-                $q = $this->getPdo()->prepare('
-                    INSERT IGNORE INTO agent_activity
-                        (agent_id, date_active)
-                    VALUES
-                        (?,?)
+                // checking if it exists with this select is cheaper
+                // then obtaining a write connection we might not need
+                $q = $this->getPdoRead()->prepare('
+                    SELECT agent_id
+                    FROM agent_activity
+                    WHERE agent_id = ? AND date_active = ?
+                    LIMIT 1
                 ');
-                $q->execute([$agent_session['person_id'], $date_active->format('Y-m-d H:i:s')]);
+                $q->execute([$agent_session['person_id'], $dateString]);
+                $doesExist = $q->fetchColumn(0);
+
+                if (!$doesExist) {
+                    $q = $this->getPdo()->prepare('
+                        INSERT IGNORE INTO agent_activity
+                            (agent_id, date_active)
+                        VALUES
+                            (?,?)
+                    ');
+                    $q->execute([$agent_session['person_id'], $dateString]);
+                }
             }
 
             $secret = $this->_getSetting('core.app_secret');
@@ -137,12 +140,44 @@ class GetMsgScript extends LowScriptAbstract
             $token                 = md5($agent_session['id'].$agent_session['auth'].$secret.'request_token');
             $data['request_token'] = Util::generateStaticSecurityToken($token, 10800);
 
-            $q = $this->getPdo()->prepare('
-                UPDATE sessions
-                SET date_last = ?
-                WHERE id = ?
-            ');
-            $q->execute([date('Y-m-d H:i:s', time()), $agent_session['id']]);
+            // Polling method
+            $defaultStrategy = $this->_getSetting('notification.settings.default_strategy');
+            if (is_string($defaultStrategy)) {
+                $defaultStrategy = unserialize($defaultStrategy);
+            }
+            $data['cm_strategy'] = isset($defaultStrategy['delivery'][0]) ? $defaultStrategy['delivery'][0] : 'db';
+
+            // every other ping, or if we're opening a write conn anyway
+            $performDbUpdates = !empty($_REQUEST['recent_tabs']) || !empty($_REQUEST['dismiss_alerts']) || ($count && $count % 2 === 0) || $count == 1;
+
+            // or if not using db for client msgs, then each poll is already reduced so every one should perform writes
+            if ($data['cm_strategy'] != 'db') {
+                $performDbUpdates = true;
+            }
+
+            if ($performDbUpdates) {
+                // We save the last message we know a user got because we need to know
+                // to deliver offline messages (such as chats) the next time the user logs in
+                if ($new_since && $new_since > $last_since) {
+                    $q = $this->getPdo()->prepare('
+                        REPLACE INTO people_prefs
+                            (person_id, name, value_str, value_array, date_expire)
+                        VALUES
+                            (?, ?, ?, NULL, NULL);
+                    ');
+                    $q->execute([$agent_session['person_id'], 'agent.ui.last_message_id', $new_since]);
+                }
+
+                $q = $this->getPdo()->prepare('
+                    UPDATE sessions
+                    SET date_last = ?
+                    WHERE id = ?
+                ');
+
+                $q->execute([date('Y-m-d H:i:s', time()), $agent_session['id']]);
+
+                $this->pingTaskRouterWorker();
+            }
 
             if (!empty($_REQUEST['recent_tabs'])) {
                 $post_recent_tabs = $_REQUEST['recent_tabs'];
@@ -289,13 +324,6 @@ class GetMsgScript extends LowScriptAbstract
             }
             $data['action_alerts'] = array_values($data['action_alerts']);
             $data['notifications'] = $readNotifications ? $this->getNotifications() : [];
-
-            // Polling method
-            $defaultStrategy = $this->_getSetting('notification.settings.default_strategy');
-            if (is_string($defaultStrategy)) {
-                $defaultStrategy = unserialize($defaultStrategy);
-            }
-            $data['cm_strategy'] = isset($defaultStrategy['delivery'][0]) ? $defaultStrategy['delivery'][0] : 'db';
 
             header('Content-Type: application/json');
             echo json_encode($data);
@@ -538,10 +566,17 @@ class GetMsgScript extends LowScriptAbstract
         } elseif (isset($this->_settings[$name])) {
             return $this->_settings[$name];
         }
-        // if not a config settings we fail over on regular settings
-        $this->_getContainer();
 
-        return App::getSetting($name, $default);
+        static $settingsFile = null;
+        if ($settingsFile === null) {
+            $settingsFile = require DP_APP_DIR.'/sys/config/settings.php';
+        }
+
+        if (isset($settingsFile[$name])) {
+            return $settingsFile[$name] ?: $default;
+        }
+
+        return $default;
     }
 
     protected $_container;
@@ -647,5 +682,28 @@ SQL;
         }
 
         return $data;
+    }
+
+    protected function pingTaskRouterWorker()
+    {
+        // todo support other storages
+        $q = $this->getPdoRead()->prepare('
+            SELECT a.available_status
+            FROM agent_data a
+            JOIN people p ON p.agent_data_id = a.id
+            WHERE p.id = ?
+        ');
+
+        $q->execute([$this->_person_id]);
+
+        $status = $q->fetchColumn();
+        if ($status === AgentData::AVAILABLE_STATUS_IDLE) {
+            $q = $this->getVoicePdo()->prepare('
+            UPDATE voice_workers
+            SET date_last_active = ?
+            WHERE type = ? AND type_id = ?
+        ');
+            $q->execute([date('Y-m-d H:i:s', time()), 'agent', $this->_person_id]);
+        }
     }
 }

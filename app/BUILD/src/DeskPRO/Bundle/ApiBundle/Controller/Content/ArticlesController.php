@@ -99,4 +99,16 @@ class ArticlesController extends AbstractContentController
             parent::applyListGroupBy($qb, $alias, $groupBy, $request);
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'person' => $this->getUser(),
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
 }

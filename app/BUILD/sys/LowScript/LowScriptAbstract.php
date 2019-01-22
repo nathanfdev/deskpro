@@ -131,8 +131,12 @@ abstract class LowScriptAbstract
             $container = $kernel->getContainer();
 
             // Set PDO now that we are connected...
-            $this->pdo      = $container->getDb();
-            $this->pdo_read = $container->getDb();
+            if (!$this->pdo) {
+                $this->pdo = $container->getDb();
+            }
+            if (!$this->pdo_read) {
+                $this->pdo_read = $container->getDbRead();
+            }
         }
 
         return $container;

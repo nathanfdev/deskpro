@@ -110,6 +110,13 @@ class UserSearch implements UserSearchInterface
 
         $params = [];
         $likes  = [];
+
+        // push numeric query
+        if ($context->getOption(SearchContextInterface::SEARCH_BY_ID)) {
+            $likes[]  = 'content_search.object_id = ?';
+            $params[] = (int) $query;
+        }
+
         foreach ($queryWords as $w) {
             if (strlen($w) <= 2) {
                 continue;
