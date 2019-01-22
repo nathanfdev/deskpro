@@ -9,11 +9,13 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class BaseMassActionsType.
@@ -26,13 +28,20 @@ class BaseMassActionsType extends AbstractType
     private $formFactory;
 
     /**
+     * @var ValidatorInterface
+     */
+    private $validator;
+
+    /**
      * Constructor.
      *
-     * @param FormFactory $formFactory
+     * @param FormFactory        $formFactory
+     * @param ValidatorInterface $validator
      */
-    public function __construct(FormFactory $formFactory)
+    public function __construct(FormFactory $formFactory, ValidatorInterface $validator)
     {
         $this->formFactory = $formFactory;
+        $this->validator   = $validator;
     }
 
     /**
@@ -62,8 +71,8 @@ class BaseMassActionsType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceRequiredFields']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onClearNotMappedErrors'], -1);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], -1);
     }
 
     /**
@@ -83,13 +92,14 @@ class BaseMassActionsType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onForceRequiredFields(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
         if (!is_array($data)) {
             return;
         }
 
+        // force required fields
         if (!isset($data['ids'])) {
             $data['ids'] = [];
         }
@@ -102,13 +112,35 @@ class BaseMassActionsType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onClearNotMappedErrors(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
+        $form = $event->getForm();
         $data = $event->getData();
         if (is_object($data) && $data->getId()) {
             return;
         }
 
-        FormValidatorChecker::clearFormErrors($event->getForm(), false);
+        // clear unmapped errors
+        FormValidatorChecker::clearFormErrors($form, false);
+
+        // check delete permissions
+        if ($form->get('params')->has('set_of_actions')) {
+            $actions = $form->get('params')->get('set_of_actions')->getData();
+            if (is_array($actions) && in_array('delete', $actions)) {
+                $violations = $this->validator->validate($form->get('ids')->getData(), new AppAssert\Permission([
+                    'action' => PermissionGroupVoter::DELETE,
+                ]));
+
+                foreach ($violations as $violation) {
+                    $form->get('ids')->addError(new FormError(
+                        $violation->getMessage(),
+                        $violation->getMessageTemplate(),
+                        $violation->getParameters(),
+                        $violation->getPlural(),
+                        $violation
+                    ));
+                }
+            }
+        }
     }
 }

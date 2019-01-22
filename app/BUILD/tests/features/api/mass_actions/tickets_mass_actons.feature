@@ -6,6 +6,8 @@ Feature: /mass_actions/tickets endpoint
 
   Background:
     Given I'm authenticated as admin
+    And  I add "admin" usergroup relation "agent_all_perms"
+    And I add "admin" usergroup relation "agent_all_safe_perms"
     And agent and user exist
     And I have only default brand
     And only the following TicketCategory records exist:
@@ -154,6 +156,20 @@ Feature: /mass_actions/tickets endpoint
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].status" should be equal to "hidden.deleted"
     And the JSON node "data[1].status" should be equal to "hidden.deleted"
+
+  Scenario: I try to delete tickets w/o permissions
+    Given  I remove "admin" usergroup relation "agent_all_perms"
+    When I send a POST request to "/api/v2/mass_actions/tickets" with body:
+    """
+{
+  "ids": [~t1~,~t2~],
+  "params":{
+     "set_of_actions": ["delete"]
+  }
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.ids.errors[0].code" should be equal to "no_delete_permission"
 
   Scenario: I unassign participants
     Given only the following TicketParticipant records exist:

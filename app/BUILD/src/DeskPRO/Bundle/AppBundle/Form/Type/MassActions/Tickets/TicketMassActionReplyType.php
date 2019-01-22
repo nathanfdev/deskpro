@@ -27,8 +27,8 @@ class TicketMassActionReplyType extends AbstractType
             ->add('is_agent_note', ApiBooleanType::class)
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureRequiredFields']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetPerson']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -51,9 +51,11 @@ class TicketMassActionReplyType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onEnsureRequiredFields(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
+
+        // ensure required fields
         if (is_array($data) && !array_key_exists('message', $data)) {
             $data['message'] = '';
             $event->setData($data);
@@ -65,11 +67,12 @@ class TicketMassActionReplyType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetPerson(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $data    = $event->getData();
         $options = $event->getForm()->getConfig()->getOptions();
 
+        // set person
         if ($data instanceof TicketMessage) {
             $data->setPerson($options['person']);
         }
