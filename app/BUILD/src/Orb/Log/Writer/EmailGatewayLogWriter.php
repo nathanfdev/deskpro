@@ -13,8 +13,10 @@ namespace Orb\Log\Writer;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\EmailSource;
+use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Entity\EmailAccountLog;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\LogItem;
 
@@ -26,12 +28,13 @@ use Orb\Log\LogItem;
 class EmailGatewayLogWriter extends AbstractWriter
 {
     /**
-     * Entity Manager.
-     *
-     * @var EntityManagerInterface
+     * @var Connection
      */
-    protected $entityManager;
+    protected $dbConnection;
 
+    /**
+     * @var DeskproBlobStorage
+     */
     protected $dpBlobStorage;
 
     /**
@@ -42,11 +45,11 @@ class EmailGatewayLogWriter extends AbstractWriter
     protected $emailAccount;
 
     /**
-     * Logger entity.
+     * EmailAccountLog record ID.
      *
-     * @var EmailAccountLog
+     * @var null|int
      */
-    protected $emailAccountLog;
+    protected $emailAccountLogId;
 
     /**
      * Log messages.
@@ -65,20 +68,20 @@ class EmailGatewayLogWriter extends AbstractWriter
     /**
      * EmailGatewayLog constructor.
      *
-     * @param EmailAccount           $emailAccount
-     * @param EntityManagerInterface $entityManager
-     * @param DeskproBlobStorage     $dpBlobStorage
+     * @param EmailAccount       $emailAccount
+     * @param Connection         $dbConnection
+     * @param DeskproBlobStorage $dpBlobStorage
      */
     public function __construct(
         EmailAccount $emailAccount,
-        EntityManagerInterface $entityManager,
+        Connection $dbConnection,
         DeskproBlobStorage $dpBlobStorage
     ) {
         // set email account
         $this->emailAccount = $emailAccount;
 
-        // set entity manager
-        $this->entityManager = $entityManager;
+        // set database connection
+        $this->dbConnection = $dbConnection;
 
         // set blob storage
         $this->dpBlobStorage = $dpBlobStorage;
@@ -98,24 +101,27 @@ class EmailGatewayLogWriter extends AbstractWriter
     }
 
     /**
-     * Get log writer entity.
+     * Get log enrty id. If does not exist, create new one.
      *
-     * @throws \InvalidArgumentException
-     *
-     * @return EmailAccountLog
+     * @return int
      */
-    public function getLoggerEntity()
+    public function getLogEntryId()
     {
-        if (!$this->emailAccountLog instanceof EmailAccountLog) {
-            $this->emailAccountLog = new EmailAccountLog(
-                $this->emailAccount, $this->emailAccount->incoming_account->getType()
+        if (is_null($this->emailAccountLogId)) {
+            // create new log entry as we don't have entry ID yet.
+            $this->dbConnection->insert(
+                'email_account_logs',
+                [
+                    'email_account_id' => $this->emailAccount->getId(),
+                    'protocol'         => $this->emailAccount->incoming_account->getType(),
+                    'date_created'     => Carbon::now('UTC')->toDateTimeString(),
+                ]
             );
-
-            $this->entityManager->persist($this->getLoggerEntity());
-            $this->entityManager->flush();
+            // get last insert id
+            $this->emailAccountLogId = $this->dbConnection->lastInsertId();
         }
 
-        return $this->emailAccountLog;
+        return $this->emailAccountLogId;
     }
 
     /**
@@ -145,13 +151,41 @@ class EmailGatewayLogWriter extends AbstractWriter
     }
 
     /**
+     * Attache email source to log entry.
+     *
+     * @param EmailSource $emailSource
+     */
+    public function attachLogEntityToEmailSource(EmailSource $emailSource)
+    {
+        if (!is_null($emailSource->getId())) {
+            $this->dbConnection->update(
+                'email_sources',
+                ['email_account_log_id' => $this->getLogEntryId()],
+                ['id'                   => $emailSource->getId()]
+            );
+        }
+    }
+
+    /**
      * Can be called manually to flush any cached entries.
      */
     public function flush()
     {
         try {
-            if (!$this->getLoggerEntity()->getBlob() instanceof Blob) {
-                $blob = $this->dpBlobStorage->createBlobRecordFromString(
+            // get entry id
+            $logEntryId = $this->getLogEntryId();
+
+            // get blob id from the log
+            $logEntry = $this->dbConnection
+                ->fetchAssoc(
+                    'SELECT id, blob_id FROM email_account_logs WHERE id = :id',
+                    ['id' => $logEntryId]
+                );
+
+            // create blob for this log entry, if it's not yet created
+            $logBlobId = null;
+            if (is_null($logEntry['blob_id'])) {
+                $logBlobId = $this->dpBlobStorage->createBlobRecordFromString(
                     implode(PHP_EOL, $this->messages),
                     'email-gateway-runner.account-'.$this->emailAccount->getId().'.log',
                     'plain/text',
@@ -159,15 +193,17 @@ class EmailGatewayLogWriter extends AbstractWriter
                         'prefer_gzipped' => true,
                         'tag'            => 'logs.email_gateway_runner_log',
                     ]
+                )->getId();
+
+                // update log entry
+                $this->dbConnection->update(
+                    'email_account_logs',
+                    [
+                        'blob_id'    => $logBlobId,
+                        'num_emails' => $this->totalfetchedSources,
+                    ],
+                    ['id' => $logEntryId]
                 );
-
-                if ($blob instanceof Blob) {
-                    $this->getLoggerEntity()->setBlob($blob);
-                    $this->getLoggerEntity()->setNumEmails($this->totalfetchedSources);
-
-                    $this->entityManager->persist($this->getLoggerEntity());
-                    $this->entityManager->flush();
-                }
             }
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);

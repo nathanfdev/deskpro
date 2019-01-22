@@ -731,7 +731,7 @@ BODY;
         // Email gateway log writer
         $emailGatewayLogWriter = new EmailGatewayLogWriter(
             $account,
-            $entityManager,
+            $dbConnection,
             App::$container->get('deskpro.blob_storage')
         );
         $this->logger->addWriter($emailGatewayLogWriter);
