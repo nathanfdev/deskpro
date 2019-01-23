@@ -165,7 +165,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                 SELECT tickets.id
                 FROM tickets
                 $extra_join
-                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'resolved', 'hidden'))
+                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
                 $extra_where
                 ORDER BY tickets.id DESC
                 LIMIT 20
@@ -195,7 +195,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                     SELECT tickets.id
                     FROM tickets
                     $extra_join
-                    WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'resolved', 'hidden'))
+                    WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
                     $extra_where
                     ORDER BY tickets.id DESC
                     LIMIT 20
@@ -281,7 +281,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
                 SELECT tickets.id
                 FROM tickets
                 $extra_join
-                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'resolved', 'hidden'))
+                WHERE ((tickets.subject = ? OR tickets.original_subject = ?) AND tickets.date_created > ? AND tickets.status NOT IN ('archived', 'hidden'))
                 $extra_where
                 ORDER BY tickets.id DESC
                 LIMIT 20
