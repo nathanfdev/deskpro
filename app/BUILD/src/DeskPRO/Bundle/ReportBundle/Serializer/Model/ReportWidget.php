@@ -112,6 +112,13 @@ class ReportWidget
     private $extendedQuery;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var array
+     */
+    private $reports;
+
+    /**
      * Constructor.
      *
      * @param ReportWidgetEntity $entity
@@ -146,5 +153,13 @@ class ReportWidget
     public function setRenderedResult($renderedResult)
     {
         $this->renderedResult = $renderedResult;
+    }
+
+    /**
+     * @param InlineCustomSideload $reports
+     */
+    public function setReports($reports)
+    {
+        $this->reports = $reports;
     }
 }

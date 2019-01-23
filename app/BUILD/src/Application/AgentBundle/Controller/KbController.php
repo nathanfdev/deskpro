@@ -6,12 +6,12 @@ use Application\AgentBundle\Controller\Helper\ArticleResults;
 use Application\DeskPRO\App;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleRevision;
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\Product;
@@ -58,6 +58,7 @@ class KbController extends AbstractController
         // Custom fields
         //------------------------------
 
+        /** @var FieldManager $field_manager */
         $field_manager = $this->container->getSystemService('article_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($article);
 
@@ -602,6 +603,7 @@ class KbController extends AbstractController
             throw $e;
         }
 
+        $field_manager = $this->container->getSystemService('article_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($article);
 
         return $this->render('AgentBundle:Kb:view-customfields-rendered-rows.html.twig', [
@@ -989,12 +991,16 @@ class KbController extends AbstractController
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
+        /** @var FieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('article_fields_manager');
+        $customfields = $fieldManager->getDisplayArrayForObject(new Article());
 
         return $this->render('AgentBundle:Kb:newarticle.html.twig', [
             'article_categories' => $articleCategories,
             'state'              => $state,
             'brands'             => $brands,
             'selected_brand_id'  => $brandId,
+            'custom_fields'      => $customfields,
         ]);
     }
 
@@ -1018,6 +1024,8 @@ class KbController extends AbstractController
                     'error_codes' => $validator->getErrorGroups(),
                 ]);
             }
+
+            $newArticle->setCustomFieldForm($request->request->all());
 
             $newArticle->save();
 

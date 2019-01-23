@@ -55,6 +55,14 @@ class CustomDataArticle extends CustomDataAbstract
     }
 
     /**
+     * @return CustomDefArticle
+     */
+    public function getField()
+    {
+        return $this->field;
+    }
+
+    /**
      * Set a root field.
      *
      * @param CustomDefArticle $field

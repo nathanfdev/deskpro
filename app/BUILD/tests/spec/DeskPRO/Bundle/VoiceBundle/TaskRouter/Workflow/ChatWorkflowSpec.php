@@ -16,6 +16,7 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use PhpSpec\ObjectBehavior;
 
@@ -287,6 +288,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         Task $task,
         UserChatQueue $queue,
         TaskQueue $taskQueue,
+        ArrayCollection $targets,
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
@@ -306,10 +308,12 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 4]);
         $target3->getSort()->willReturn(30);
 
+        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN);
         $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn([$target1, $target2, $target3]);
+        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -345,6 +349,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
+        ArrayCollection $targets,
         PersonRepo $personRepo,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage
@@ -361,10 +366,12 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 6]);
         $target3->getSort()->willReturn(30);
 
+        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN);
         $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn([$target1, $target2, $target3]);
+        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -400,6 +407,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
+        ArrayCollection $targets,
         PersonRepo $personRepo,
         AgentTeamRepo $agentTeamRepo,
         AgentTeam $agentTeam,
@@ -418,10 +426,12 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 4]);
         $target3->getSort()->willReturn(30);
 
+        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_ROUND_ROBIN);
         $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn([$target1, $target2, $target3]);
+        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -456,6 +466,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
+        ArrayCollection $targets,
         PersonRepo $personRepo,
         Person $agent1,
         Person $agent2,
@@ -475,6 +486,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->getSort()->willReturn(30);
         $target3->getAgent()->willReturn($agent3);
 
+        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+
         $agent1->getId()->willReturn(1);
         $agent2->getId()->willReturn(2);
         $agent3->getId()->willReturn(3);
@@ -482,7 +495,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_SIMULRING);
         $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn([$target1, $target2, $target3]);
+        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -505,6 +518,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
+        ArrayCollection $targets,
         PersonRepo $personRepo,
         Person $agent1,
         Person $agent2,
@@ -519,6 +533,8 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->getSort()->willReturn(30);
         $target3->getAgent()->willReturn($agent3);
 
+        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+
         $agent1->getId()->willReturn(1);
         $agent2->getId()->willReturn(2);
         $agent3->getId()->willReturn(3);
@@ -526,7 +542,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_SIMULRING);
         $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn([$target1, $target2, $target3]);
+        $queue->getTargets()->willReturn($targets);
         $queue->getAnswerTimeout()->willReturn(null);
 
         $personRepo->getActiveAgentIdsForUserChat()->willReturn([1, 2]);
@@ -552,6 +568,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
+        ArrayCollection $targets,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
@@ -569,10 +586,12 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
         $target3->getSort()->willReturn(30);
 
+        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_LEAST_UTILIZED);
         $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn([$target1, $target2, $target3]);
+        $queue->getTargets()->willReturn($targets);
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getAnswerTimeout()->willReturn(null);
 
@@ -599,6 +618,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
+        ArrayCollection $targets,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
@@ -616,10 +636,12 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
         $target3->getSort()->willReturn(30);
 
+        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_LEAST_UTILIZED);
         $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn([$target1, $target2, $target3]);
+        $queue->getTargets()->willReturn($targets);
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getAnswerTimeout()->willReturn(null);
 
@@ -659,6 +681,7 @@ class ChatWorkflowSpec extends ObjectBehavior
         UserChatQueueAgent $target1,
         UserChatQueueAgent $target2,
         UserChatQueueAgent $target3,
+        ArrayCollection $targets,
         ChatTaskHelper $taskHelper,
         StorageAdapterInterface $storage
     ) {
@@ -676,10 +699,12 @@ class ChatWorkflowSpec extends ObjectBehavior
         $target3->toArray()->willReturn(['type' => 'agent', 'id' => 3]);
         $target3->getSort()->willReturn(30);
 
+        $targets->toArray()->willReturn([$target1, $target2, $target3]);
+
         $queue->getId()->willReturn(1);
         $queue->getRoutingModel()->willReturn(UserChatQueue::ROUTING_MODEL_LEAST_UTILIZED);
         $queue->isAllAgents()->willReturn(false);
-        $queue->getTargets()->willReturn([$target1, $target2, $target3]);
+        $queue->getTargets()->willReturn($targets);
         $queue->getMaxQueueSize()->willReturn(2);
         $queue->getAnswerTimeout()->willReturn(null);
 

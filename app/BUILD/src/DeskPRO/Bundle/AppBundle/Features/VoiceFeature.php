@@ -20,7 +20,7 @@ class VoiceFeature extends AbstractBetaFeature
      */
     public function getTitle()
     {
-        return 'Voice';
+        return 'Voice (Beta)';
     }
 
     /**
@@ -28,7 +28,7 @@ class VoiceFeature extends AbstractBetaFeature
      */
     public function getShortDescription()
     {
-        return 'Voice integration.';
+        return 'Make and accept voice calls from Deskpro';
     }
 
     /**
@@ -36,7 +36,7 @@ class VoiceFeature extends AbstractBetaFeature
      */
     public function getEnableDescription()
     {
-        return 'Enable voice feature.';
+        return 'Enable voice feature. Please note that this is currently a BETA feature and should only be used for testing.';
     }
 
     /**
@@ -52,7 +52,7 @@ class VoiceFeature extends AbstractBetaFeature
      */
     public function getAvailability()
     {
-        return [self::AVAILABLE_AT_QA];
+        return [self::AVAILABLE_AT_QA, self::AVAILABLE_AT_CLOUD];
     }
 
     /**

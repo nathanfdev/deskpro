@@ -2,9 +2,13 @@
 	<div>
 		<div class="modal-header">
 			<button type="button" class="close" ng-click="dismiss()">&times;</button>
-			<h4 class="modal-title">{{ ng_var('tpl.name') }}</h4>
+      <h4 class="modal-title" ng-if="tpl.display_title">{{ ng_var('tpl.display_title') }}</h4>
+			<h4 class="modal-title" ng-if="!tpl.display_title">{{ ng_var('tpl.name') }}</h4>
 		</div>
 		<div class="modal-body">
+			<p ng-if="tpl.display_description">
+				{{ ng_var('tpl.display_description') }}
+			</p>
 			<div class="editor-row">
 				<div class="editor-wrap body">
 					<div class="editor" style="height: 500px;" ng-model="template_code" ui-ace="{

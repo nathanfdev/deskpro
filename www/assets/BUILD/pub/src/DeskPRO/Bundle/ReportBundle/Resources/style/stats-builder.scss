@@ -531,6 +531,20 @@
     }
   }
 
+  h6.report-view-used-map-header {
+    margin-top: 0;
+    margin-left: 10px;
+  }
+
+  .report-view-used-map {
+    list-style-type: none;
+    li {
+      padding: 0;
+      margin-left: -20px;
+    }
+
+  }
+
   .no-results {
     margin: 25px;
     padding: 25px;
@@ -771,4 +785,8 @@
       }
     }
   }
+}
+
+.widget-modal-stat-delete-confirmation {
+  left: 35%;
 }

@@ -21,7 +21,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		var self = this;
 		this.wrapper = el;
-
+		this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
 		setTimeout(this.deferredInit.bind(this), 0);
 	},
 
@@ -97,29 +97,68 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		this.ownObject(this.miscContent);
 
 		var fieldsRendered = this.getEl('custom_fields_rendered');
-		var fieldsForm = this.getEl('custom_fields_editable');
+		var fieldsForm = this.getEl('custom_fields_form');
 
-		var buttonsWrap = this.getEl('properties_controls');
+		$('.Date.customfield input', fieldsForm).each(function() {
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					up: 'fa fa-chevron-up',
+					down: 'fa fa-chevron-down',
+					previous: 'fa fa-chevron-left',
+					next: 'fa fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
+		$('.DateTime.customfield input', fieldsForm).each(function(){
+			$(this).datetimepicker({
+				format: 'YYYY-MM-DD HH:mm',
+				widgetParent: $(this).parent().css('position', 'relative'),
+				icons: {
+					time: 'far fa-clock',
+					date: 'far fa-calendar',
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
+				}
+			});
+			$(this).on('dp.change', function(){
+				$(this).trigger('change');
+			});
+		});
+
 		var propToggle = function(what) {
 			if (what == 'display') {
-				$('.showing-editing-fields', buttonsWrap).hide();
-				$('.showing-rendered-fields', buttonsWrap).show();
+				$('.showing-editing-fields', this.wrapper).hide();
+				$('.showing-rendered-fields', this.wrapper).show();
 				fieldsForm.hide();
 				fieldsRendered.show();
 			} else {
-				$('.showing-rendered-fields', buttonsWrap).hide();
-				$('.showing-editing-fields', buttonsWrap).show();
+				$('.showing-rendered-fields', this.wrapper).hide();
+				$('.showing-editing-fields', this.wrapper).show();
 				fieldsRendered.hide();
 				fieldsForm.show();
 			}
 		};
+		propToggle('display');
 
-		$('.edit-fields-trigger', buttonsWrap).on('click', function() {
+		$('.edit-fields-trigger', fieldsRendered).live('click', function() {
 			propToggle('edit');
 		});
 
-		$('.save-fields-trigger', buttonsWrap).on('click', function() {
-			var formData = $('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm);
+		fieldsForm.on('submit', function(e){
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
+		$('.save-fields-trigger', fieldsForm).live('click', function() {
+			var formData = fieldsForm.serializeArray();
 
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save-custom-fields',

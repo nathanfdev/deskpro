@@ -44,14 +44,15 @@ abstract class AbstractFetcher
     protected $maxSize = 0;
 
     /**
-     * Email account log writer
+     * Email account log writer.
+     *
      * @var EmailGatewayLogWriter
      */
     protected $gatewayLogWriter;
 
     /**
      * @param \Application\DeskPRO\Entity\EmailAccount $account
-     * @param int $maxSize The max size in bytes to read. 0 to disable
+     * @param int                                      $maxSize The max size in bytes to read. 0 to disable
      */
     public function __construct(EmailAccount $account, $maxSize = 0)
     {
@@ -62,15 +63,14 @@ abstract class AbstractFetcher
     }
 
     /**
-     * Init fetcher
-     * @return void
+     * Init fetcher.
      */
     protected function init()
     {
     }
 
     /**
-     * Destructor
+     * Destructor.
      */
     public function __destruct()
     {
@@ -88,7 +88,7 @@ abstract class AbstractFetcher
                 $this->storage = null;
             } catch (\Exception $exception) {
                 $this->logger->log(
-                    'An error has occured while closing connection to storage:' . $exception->getMessage(),
+                    'An error has occured while closing connection to storage:'.$exception->getMessage(),
                     'error'
                 );
             }
@@ -144,6 +144,7 @@ abstract class AbstractFetcher
 
     /**
      * @param Logger $logger
+     *
      * @return AbstractFetcher
      */
     public function setLogger(Logger $logger)
@@ -284,15 +285,6 @@ abstract class AbstractFetcher
 
             $source->blob = $blob;
 
-            // write EmailAccountLog to EmailSource
-            if ($this->gatewayLogWriter instanceof EmailGatewayLogWriter) {
-                $loggerEntity = $this->gatewayLogWriter->getLoggerEntity();
-                if ($loggerEntity instanceof EmailAccountLog) {
-                    $source->setEmailAccountLog($loggerEntity);
-                    $this->gatewayLogWriter->incrementTotalFetchedSources();
-                }
-            }
-
             App::getOrm()->persist($source);
             App::getOrm()->flush();
 
@@ -333,6 +325,12 @@ abstract class AbstractFetcher
 
         $source->_raw = $rawMessage->content;
 
+        // write EmailAccountLog to EmailSource
+        if ($this->gatewayLogWriter instanceof EmailGatewayLogWriter) {
+            $this->gatewayLogWriter->attachLogEntityToEmailSource($source);
+            $this->gatewayLogWriter->incrementTotalFetchedSources();
+        }
+
         return $source;
     }
 
@@ -348,9 +346,10 @@ abstract class AbstractFetcher
     }
 
     /**
-     * Set logger writer
+     * Set logger writer.
      *
      * @param EmailGatewayLogWriter $logWriter
+     *
      * @return AbstractFetcher
      */
     public function setEmailGatewayLogWriter(EmailGatewayLogWriter $logWriter)

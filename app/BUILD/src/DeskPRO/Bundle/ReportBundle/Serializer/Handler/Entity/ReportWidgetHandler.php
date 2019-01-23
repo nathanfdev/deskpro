@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Serializer\Handler\Entity;
 
+use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
@@ -14,6 +15,7 @@ use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use DeskPRO\Bundle\ReportBundle\Serializer\Model\ReportWidget as ReportWidgetModel;
+use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
 
 /**
@@ -42,23 +44,31 @@ class ReportWidgetHandler extends AbstractEntityHandler
     private $dashboardWidgetService;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * Constructor.
      *
      * @param DpqlCompiler            $compiler
      * @param ReportsRendererRegistry $rendererRegistry
      * @param Translate               $translate
      * @param DashboardWidgetManager  $dashboardWidgetService
+     * @param EntityManager           $em
      */
     public function __construct(
         DpqlCompiler $compiler,
         ReportsRendererRegistry $rendererRegistry,
         Translate $translate,
-        DashboardWidgetManager $dashboardWidgetService
+        DashboardWidgetManager $dashboardWidgetService,
+        EntityManager $em
     ) {
         $this->compiler               = $compiler;
         $this->rendererRegistry       = $rendererRegistry;
         $this->translate              = $translate;
         $this->dashboardWidgetService = $dashboardWidgetService;
+        $this->em                     = $em;
     }
 
     /**
@@ -104,6 +114,12 @@ class ReportWidgetHandler extends AbstractEntityHandler
             'rendered_result',
             $entity->getId(),
             new CallbackDeferredProperty([$this, 'getRenderedResult'], [$entity]),
+            $model
+        );
+        $sideloads->addCustomSideload(
+            'reports',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getReports'], [$entity]),
             $model
         );
 
@@ -160,5 +176,21 @@ class ReportWidgetHandler extends AbstractEntityHandler
 
             return;
         }
+    }
+
+    /**
+     * @param ReportWidgetEntity $entity
+     *
+     * @return array
+     */
+    public function getReports(ReportWidgetEntity $entity)
+    {
+        $reports = [];
+        $widgets = $this->em->getRepository(ReportDashboardWidget::class)->findBy(['widget' => $entity]);
+        foreach ($widgets as $widget) {
+            $reports[$widget->getId()] = $widget->getReport();
+        }
+
+        return array_values($reports);
     }
 }

@@ -44,6 +44,8 @@ define([
   'Admin/CustomFields/User/Ctrl/Edit',
   'Admin/CustomFields/Org/Ctrl/Edit',
   'Admin/CustomFields/Billing/Ctrl/Edit',
+  'Admin/CustomFields/Kb/Ctrl/Edit',
+  'Admin/CustomFields/Kb/Ctrl/List',
   'Admin/Labels/Ctrl/List',
   'Admin/Labels/Ctrl/Edit',
   'Admin/Languages/Ctrl/Edit',

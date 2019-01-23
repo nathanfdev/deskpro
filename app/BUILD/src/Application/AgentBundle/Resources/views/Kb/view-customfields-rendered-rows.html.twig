@@ -1,8 +1,26 @@
-{% for f in custom_fields %}
-	{% if f.hasValue %}
-		<dt class="">{{ f.title }}</dt>
-		<dd class="">
-			{{ render_custom_field(f) }}
-		</dd>
-	{% endif %}
-{% endfor %}
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table{% if errors|length %} error{% endif %}" id="{{ baseId }}_custom_fields_rendered">
+	{# Custom fields#}
+	<tbody class="kb_field_{{f.id}} custom-field item" data-field-type="kb_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
+	{% for f in custom_fields %}
+		<tr class="mode-display">
+			<th width="120">
+				<span class="custom-field edit-fields-trigger kb_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
+			</th>
+			<td>
+				<div class="custom-field content kb_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
+					{% if not article.hasCustomField(f.id) %}
+						{{ phrase('agent.general.none') }}
+					{% else %}
+						{{ render_custom_field(f) }}
+					{% endif %}
+				</div>
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+	<tfoot>
+	<tr colspan="2">
+		<td><button class="clean-white edit-fields-trigger"><span>{{ phrase('agent.general.edit') }}</span></button></td>
+	</tr>
+	</tfoot>
+</table>

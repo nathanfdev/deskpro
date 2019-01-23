@@ -17,9 +17,11 @@ class ExplicitIdPersister
      */
     public static function persistWithId(EntityManager $em, $entity, $explicitId, $persistFn)
     {
-        if ($explicitId) {
+        if (!$explicitId) {
             // default persist with id generator
             $persistFn($entity);
+
+            return;
         }
 
         $reflection = new \ReflectionClass($entity);
@@ -42,7 +44,11 @@ class ExplicitIdPersister
         unset($persisters[$className]);
         $persistersRef->setValue($unitOfWork, $persisters);
 
-        $persistFn($entity);
+        try {
+            $persistFn($entity);
+        } catch (\Exception $e) {
+            throw new \InvalidArgumentException('Given id already exists');
+        }
 
         $property->setAccessible(false);
         $metadata->setIdGenerator($generator);
@@ -52,5 +58,6 @@ class ExplicitIdPersister
         unset($persisters[$className]);
         $persistersRef->setValue($unitOfWork, $persisters);
         $persistersRef->setAccessible(false);
+        $em->refresh($entity);
     }
 }

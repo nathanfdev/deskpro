@@ -47,12 +47,12 @@ export class ApiRepository {
    *
    * @returns {Promise} promise
    */
-  loadAll(include = null) {
+  loadAll(include = null, inlineSideload) {
     if (!this.supportsLoadAll) {
       throw new Error(`${this.url} endpoint is not allowed to loadAll()`);
     }
 
-    const params = include ? `?${compileParams({ include })}` : '';
+    const params = include ? `?${compileParams({ include })}${inlineSideload ? '&inline_sideloads=true' : ''}`  : '';
     return this.api.sendGet(`DP_API/${this.url}${params}`);
   }
 

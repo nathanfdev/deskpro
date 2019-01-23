@@ -13,6 +13,7 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Log\Writer\DbWriter
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@doctrine"
 
   api_log.writer.file:
     class: DeskPRO\Bundle\ApiBundle\Log\Writer\FileWriter
