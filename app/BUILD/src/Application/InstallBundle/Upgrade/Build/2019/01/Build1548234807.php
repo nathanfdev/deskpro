@@ -4,7 +4,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use DeskPRO\Component\Lock\PdoStore;
 
-class Build1548161212 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1548234807 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
