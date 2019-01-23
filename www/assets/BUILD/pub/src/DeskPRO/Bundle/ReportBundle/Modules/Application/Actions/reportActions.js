@@ -51,7 +51,7 @@ export const deleteReport = createAction(
 
 export const runReport = createAction(
   'REPORTS_RUN_REPORT',
-  (reportId, report) => {
+  (reportId, report) => (dispatch) => {
     const data = {
       display_types: report.display_types,
       variables:     report.vars,
@@ -75,7 +75,26 @@ export const runReport = createAction(
       };
     }
 
-    return api.sendPost(`DP_API/report_widgets/test/${reportId}?include=rendered_result&inline_sideloads=1`, data);
+    const promise = api.sendPost(`DP_API/report_widgets/test/${reportId}?include=rendered_result,reports,report_dashboard&inline_sideloads=1`, data);
+    promise.success((response) => {
+      if (response.data.reports) {
+        const reports = {};
+        const ids = [];
+        const dashboards = {};
+        const dashboardIds = [];
+        response.data.reports.forEach((item) => {
+          reports[item.id] = item;
+          ids.push(item.id);
+          if (response.linked.report_dashboard[item.dashboard]) {
+            dashboards[item.dashboard] = response.linked.report_dashboard[item.dashboard];
+            dashboardIds.push(item.dashboard);
+          }
+        });
+        dispatch(addToCollection('DashboardReports', 'all', reports, ids));
+        dispatch(addToCollection('Dashboards', 'all', dashboards, dashboardIds));
+      }
+    });
+    return promise;
   });
 
 export const downloadReport = createAction(

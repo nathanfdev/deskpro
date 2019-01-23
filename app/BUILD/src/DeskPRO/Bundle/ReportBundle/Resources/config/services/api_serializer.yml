@@ -43,5 +43,6 @@ services:
       - "@reports.renderer_registry"
       - "@deskpro.core.translate"
       - "@reports.dashboard_widget.service"
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.subscribing_handler" }

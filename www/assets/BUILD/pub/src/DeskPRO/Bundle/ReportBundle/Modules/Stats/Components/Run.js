@@ -15,6 +15,7 @@ class Run extends React.Component {
 
   static propTypes = {
     report:                     PropTypes.object.isRequired,
+    dashboards:                 PropTypes.object.isRequired,
     reportLoading:              PropTypes.bool.isRequired,
     reportErrors:               PropTypes.object.isRequired,
     onChangeReportDisplayTypes: PropTypes.func.isRequired,
@@ -290,9 +291,27 @@ class Run extends React.Component {
             onChange={this.onChangeReportDisplayTypes}
           />
         </div>
+        { this.renderUsedMap() }
         { content }
       </div>
     );
+  }
+
+  renderUsedMap() {
+    const { dashboards, report } = this.props;
+    const map = report.get('reports').map(item => (
+      <li>
+        <a href={`#/dashboards/${dashboards.get(item.dashboard).get('id')}`}>{dashboards.get(item.dashboard).get('title')}</a>
+        {' -> '}
+        <a href={`#/dashboards/${dashboards.get(item.dashboard).get('id')}/${item.id}`}>{item.title}</a>
+      </li>
+    ));
+    return map.size ? ([
+      <h6 className="report-view-used-map-header">This stat used by next Dashboards and Reports</h6>,
+      (<ul className="report-view-used-map">
+        {map}
+      </ul>)
+    ]) : null;
   }
 
   render() {
