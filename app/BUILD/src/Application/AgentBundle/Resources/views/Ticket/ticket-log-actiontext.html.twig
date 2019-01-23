@@ -728,8 +728,8 @@
 {% elseif log.action_type == 'call.recording_downloaded' %}
 	<span class="type">
 		[{{ log.details.duration|date('H:i:s', '+00:00 GMT') }}] {{ phrase('agent.voice.recording_downloaded') }}
-        {% if ticket_perms.delete %}
-			<a class="delete-record" href="{{ path('voice_phone_call_delete_record', {'phoneCallId': log.id_object}) }}">({{ phrase('agent.voice.delete_record') }})</a>
+        {% if ticket_perms.modify_messages %}
+			<a class="delete-record" href="{{ path('voice_phone_call_delete_record', {'phoneCall': log.id_object}) }}">({{ phrase('agent.voice.delete_record') }})</a>
 		{% endif %}
 	</span>
 {% elseif log.action_type == 'call.recording_deleted' %}

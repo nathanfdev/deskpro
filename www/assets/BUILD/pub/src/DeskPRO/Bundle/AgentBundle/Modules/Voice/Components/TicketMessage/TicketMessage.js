@@ -22,18 +22,19 @@ class TicketMessage extends React.Component {
     phoneCall:            PropTypes.object,
     connection:           PropTypes.object,
     transcript:           PropTypes.string,
-    onCall:               PropTypes.func,
     outboundCallsEnabled: PropTypes.bool,
     dateCreatedFormatted: PropTypes.string,
     openTarget:           PropTypes.func,
+    openDialpad:          PropTypes.func,
     me:                   PropTypes.object,
     elid:                 PropTypes.string,
-    dispatch:             PropTypes.func
+    dispatch:             PropTypes.func,
+    canEditMessage:       PropTypes.bool
   };
 
   static defaultProps = {
-    onCall:         () => {},
-    onOpenSettings: () => {}
+    openDialpad:    () => {},
+    canEditMessage: false
   };
 
   constructor(props) {
@@ -70,8 +71,8 @@ class TicketMessage extends React.Component {
 
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
-    const { transcript, outboundCallsEnabled, dateCreatedFormatted } = this.props;
-    const { onCall, me, openTarget } = this.props;
+    const { transcript, outboundCallsEnabled, dateCreatedFormatted, canEditMessage } = this.props;
+    const { openDialpad, me, openTarget } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
     const recording = phoneCall.get('recording');
@@ -103,6 +104,7 @@ class TicketMessage extends React.Component {
                   : 'agent.voice.incoming_call_title'}
               />
             </span>
+            {canEditMessage &&
             <span className="voice-ticket-message-edit-menu" onClick={this.openMenu}>
               <i className="fas fa-cog" />
               <PopUp
@@ -118,7 +120,7 @@ class TicketMessage extends React.Component {
                   />
                 }
               />
-            </span>
+            </span>}
             <span className="voice-ticket-message-date">
               <time
                 data-stickytip-target={`#${this.props.elid}`}
@@ -135,7 +137,7 @@ class TicketMessage extends React.Component {
               </div>
             : <div className="voice-ticket-message-controls">
               {outboundCallsEnabled &&
-              <Button className="basic call-button" onClick={onCall}>
+              <Button className="basic call-button" onClick={openDialpad}>
                 <i className="icon call" /> Call {phoneCall.get('external_number')}
               </Button>}
               {recording && <MediaControls recording={recording} />}

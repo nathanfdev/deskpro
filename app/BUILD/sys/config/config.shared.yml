@@ -5,7 +5,6 @@ parameters:
   cache_warmer.class: DeskPRO\Bundle\AppBundle\HttpKernel\CacheWarmer\CacheWarmerServiceAggregate
   doctrine.dbal.connection_factory.class: DeskPRO\Bundle\AppBundle\Doctrine\ConnectionFactory
   templating.cache_warmer.template_paths.class: DeskPRO\Bundle\AppBundle\CacheWarmer\TemplatePathsCacheWarmer
-  jms_serializer.twig_extension.class: DeskPRO\Bundle\AppBundle\Twig\SerializerExtension
   jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
   validator.email.class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\EmailFormatValidator
   portal.session.name: sess_data
@@ -29,6 +28,14 @@ services:
     class: DeskPRO\Component\Doctrine\Common\Cache\FilesystemCache
     factory: [DeskPRO\Bundle\AppBundle\Doctrine\DoctrineMetadataCacheFactory, create]
     arguments: ["@deskpro.app_env"]
+
+  jms_serializer.twig_extension.serializer:
+    class: DeskPRO\Bundle\AppBundle\Twig\SerializerExtension
+    arguments:
+      - "@jms_serializer"
+      - "@service_container"
+    tags:
+      - { name: twig.extension }
 
 monolog:
   channels: # you MUST also update portal_config.yml if you change these

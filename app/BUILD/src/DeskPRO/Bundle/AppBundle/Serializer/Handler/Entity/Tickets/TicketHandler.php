@@ -4,10 +4,12 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketSla;
+use Application\DeskPRO\People\PermissionChecker\TicketChecker;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketExcerptDataService;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
@@ -250,6 +252,12 @@ class TicketHandler extends AbstractEntityHandler
             new CallbackDeferredProperty([$this, 'getExcerpt'], [$entity, $context]),
             $model
         );
+        $sideloads->addCustomSideload(
+            'ticket_permissions',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'getTicketPermissions'], [$entity, $context]),
+            $model
+        );
 
         // validation
         $sideloads->addCustomSideload(
@@ -376,5 +384,51 @@ class TicketHandler extends AbstractEntityHandler
         }
 
         return new ArrayCollection([]);
+    }
+
+    /**
+     * @param TicketEntity                 $ticket
+     * @param SideloadSerializationContext $context
+     *
+     * @return array
+     */
+    public function getTicketPermissions(TicketEntity $ticket, SideloadSerializationContext $context)
+    {
+        if (!$context->getUser() instanceof Person) {
+            return;
+        }
+
+        /** @var TicketChecker $checker */
+        $checker     = $context->getUser()->PermissionsManager->TicketChecker;
+        $permissions = [
+            'delete'              => $checker->canDelete($ticket),
+            'reply'               => $checker->canReply($ticket),
+            'modify_set_archived' => $checker->canSetArchived($ticket),
+            'modify_messages'     => $checker->canEditMessages($ticket),
+        ];
+
+        foreach ([
+                     'department',
+                     'slas',
+                     'fields',
+                     'assign_agent',
+                     'assign_team',
+                     'assign_self',
+                     'cc',
+                     'merge',
+                     'labels',
+                     'notes',
+                     'set_hold',
+                     'set_awaiting_agent',
+                     'set_awaiting_user',
+                     'set_resolved',
+                     'set_unresolved',
+                     'billing',
+                     'followed',
+                 ] as $p) {
+            $permissions["modify_$p"] = $checker->canModify($ticket, $p);
+        }
+
+        return $permissions;
     }
 }
