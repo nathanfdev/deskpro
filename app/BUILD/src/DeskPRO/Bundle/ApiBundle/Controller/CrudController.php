@@ -23,6 +23,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 /**
@@ -532,14 +533,18 @@ abstract class CrudController extends BaseController
         // if we're persisting a new model set id explicitly
         $explicitId = $request->attributes->get('with_entity_id');
         if ($explicitId && !$isModify) {
-            ExplicitIdPersister::persistWithId(
-                $this->getManager(),
-                $model,
-                $explicitId,
-                function ($entity) use ($form) {
-                    $this->persistModel($entity, $form);
-                }
-            );
+            try {
+                ExplicitIdPersister::persistWithId(
+                    $this->getManager(),
+                    $model,
+                    $explicitId,
+                    function ($entity) use ($form) {
+                        $this->persistModel($entity, $form);
+                    }
+                );
+            } catch (\Exception $e) {
+                throw new BadRequestHttpException($e->getMessage());
+            }
         } else {
             // default persist with id generator
             $this->persistModel($model, $form);
