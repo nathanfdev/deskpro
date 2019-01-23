@@ -83,13 +83,13 @@ class PdoStore implements StoreInterface
             throw new InvalidArgumentException(sprintf('"%s" requires PDO or Doctrine\DBAL\Connection instance or DSN string as first argument, "%s" given.', __CLASS__, \is_object($connOrDsn) ? \get_class($connOrDsn) : \gettype($connOrDsn)));
         }
 
-        $this->table             = $options['db_table'] ?? $this->table;
-        $this->idCol             = $options['db_id_col'] ?? $this->idCol;
-        $this->tokenCol          = $options['db_token_col'] ?? $this->tokenCol;
-        $this->expirationCol     = $options['db_expiration_col'] ?? $this->expirationCol;
-        $this->username          = $options['db_username'] ?? $this->username;
-        $this->password          = $options['db_password'] ?? $this->password;
-        $this->connectionOptions = $options['db_connection_options'] ?? $this->connectionOptions;
+        $this->table             = @$options['db_table'] ?: $this->table;
+        $this->idCol             = @$options['db_id_col'] ?: $this->idCol;
+        $this->tokenCol          = @$options['db_token_col'] ?: $this->tokenCol;
+        $this->expirationCol     = @$options['db_expiration_col'] ?: $this->expirationCol;
+        $this->username          = @$options['db_username'] ?: $this->username;
+        $this->password          = @$options['db_password'] ?: $this->password;
+        $this->connectionOptions = @$options['db_connection_options'] ?: $this->connectionOptions;
 
         $this->gcProbability = $gcProbability;
         $this->initialTtl    = $initialTtl;
