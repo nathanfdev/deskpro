@@ -2545,7 +2545,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       $selected.parent().find('.select-user-item-options').show();
     });
 
-    var searchbox = this.getEl('user_searchbox');
+		var searchbox = $('.select-user', this.wrapper).parent();
     searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
       $.ajax({
         type: 'GET',
@@ -2567,9 +2567,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         type: 'GET',
         success: function (response) {
           $('.ticket-person-holder', self.wrapper).html(response);
+					DeskPRO.ElementHandler_Exec($('.ticket-person-holder', self.wrapper));
           self._initSelectUser();
         }
       });
+		};
+
+    var setPerson = function(personId) {
+			$.ajax({
+				url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+				type: 'GET',
+				success: function(response) {
+					// existing user, change
+					if (response.data.primary_email) {
+						$.ajax({
+							url: BASE_URL + 'api/v2/tickets/' + self.meta.ticket_id,
+							type: 'PUT',
+							data: {
+								person: personId,
+							},
+							success: function () {
+								reloadPersonView();
+								self.meta.person_id = personId;
+							}
+						});
+					} else {
+						// voice user, merge
+						$.ajax({
+							url: BASE_URL + 'agent/people/' + personId + '/merge/' + self.meta.person_id,
+							type: 'POST',
+							success: function (response) {
+								if (response.success) {
+									reloadPersonView();
+									self.meta.person_id = personId;
+								}
+							}
+						});
+					}
+				}
+			});
 		};
 
 		$('.select-user-button', this.wrapper).on('click', function () {
@@ -2577,11 +2613,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       if (value === 'find_person') {
         var personId = $('input[name=select_user_find_id]', self.wrapper).val();
         if (personId) {
-          $.ajax({
-            url: BASE_URL + 'agent/people/' + personId + '/merge/' + self.meta.person_id,
-            type: 'POST',
-            success: reloadPersonView
-          });
+					setPerson(personId);
 				}
 			} else if (value === 'new_person') {
         $.ajax({
@@ -2619,11 +2651,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           success: reloadPersonView
         });
 			} else if (value) {
-        $.ajax({
-          url: BASE_URL + 'agent/people/' + value + '/merge/' + self.meta.person_id,
-          type: 'POST',
-          success: reloadPersonView
-        });
+				setPerson(value);
 			}
     });
 
@@ -2633,6 +2661,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         type: 'GET',
         success: function (response) {
           $('.ticket-person-holder', self.wrapper).html(response);
+					DeskPRO.ElementHandler_Exec($('.ticket-person-holder', self.wrapper));
           self._initSelectUser();
         }
       });
