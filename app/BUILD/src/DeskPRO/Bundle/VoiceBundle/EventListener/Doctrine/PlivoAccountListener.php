@@ -74,7 +74,7 @@ class PlivoAccountListener
 
         $userAppId = $this->plivoAdapter->createApplication(
             $account,
-            'DeskPRO User App',
+            'Deskpro User App',
             $answerUserUrl,
             'POST',
             $hangupUserUrl,
@@ -83,7 +83,7 @@ class PlivoAccountListener
 
         $agentAppId = $this->plivoAdapter->createApplication(
             $account,
-            'DeskPRO Agent App',
+            'Deskpro Agent App',
             $answerAgentUrl,
             'POST',
             $hangupAgentUrl,
