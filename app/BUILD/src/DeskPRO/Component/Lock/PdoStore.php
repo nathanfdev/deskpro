@@ -60,7 +60,7 @@ class PdoStore implements StoreInterface
      * @throws InvalidArgumentException When namespace contains invalid characters
      * @throws InvalidArgumentException When the initial ttl is not valid
      */
-    public function __construct($connOrDsn, array $options = [], float $gcProbability = 0.01, int $initialTtl = 300)
+    public function __construct($connOrDsn, array $options = [], $gcProbability = 0.01, $initialTtl = 300)
     {
         if ($gcProbability < 0 || $gcProbability > 1) {
             throw new InvalidArgumentException(sprintf('"%s" requires gcProbability between 0 and 1, "%f" given.', __METHOD__, $gcProbability));
