@@ -116,8 +116,10 @@ final class Features
      */
     public function hasVoice()
     {
-        return ($this->getLicense()->hasFlag('has_voice') || $this->getLicense()->hasFlag('is_dev'))
-            && $this->hasBeta('voice');
+        return (
+            ($this->getLicense()->hasFlag('has_voice') || $this->getLicense()->hasFlag('is_dev'))
+            || $this->getLicense()->isCloud()
+        ) && $this->hasBeta('voice');
     }
 
     /**
