@@ -277,14 +277,28 @@ class PlivoCallbacksController extends BaseController
                     $details
                 );
 
-                /** @var PlivoVoiceAccount $account */
-                $account = $phoneCall->getNumber()->getAccount();
-                $plivoXml->addConference($phoneCall->getConferenceName(), [
-                    'enterSound'     => false,
-                    'callbackUrl'    => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
-                    'callbackMethod' => 'POST',
-                    'record'         => true,
-                ]);
+                if ($phoneCall) {
+                    // join conference
+                    /** @var PlivoVoiceAccount $account */
+                    $account = $phoneCall->getNumber()->getAccount();
+                    $plivoXml->addConference($phoneCall->getConferenceName(), [
+                        'enterSound'     => false,
+                        'callbackUrl'    => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
+                        'callbackMethod' => 'POST',
+                        'record'         => true,
+                    ]);
+
+                    // join user to the conference
+                    if ($phoneCall->getParticipants()->count() <= 2) {
+                        $this->get('dp.voice.provider_helper')->transferCall(
+                            $phoneCall,
+                            $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
+                            'POST'
+                        );
+                    }
+                } else {
+                    $plivoXml->addHangup();
+                }
             } catch (OutOfServiceException $e) {
                 $plivoXml->addSpeak('Unable to answer the call.', [
                     'voice' => 'WOMAN',
