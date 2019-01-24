@@ -1,7 +1,7 @@
 {% import 'AgentBundle:Common:agent-macros.html.twig' as tools %}
 {% set replyBaseId = el_uid() %}
 <form
-	class="ticket-reply-form {% if not ticket_perms.reply or (draft and draft.extras.is_note) %}dp-note-on{% endif %}"
+	class="ticket-reply-form {% if not ticket_perms.reply or (draft and draft.extras.is_note) %}dp-note-on{% else %}dp-reply-on{% endif %}"
 	id="{{replyBaseId}}_reply_form"
 	method="post"
 	action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}"
@@ -128,6 +128,11 @@
 		</nav>
 	</header>
 	<section class="ticketreply">
+		<div class="ticket-select-voice-user-overlay">
+			<strong>
+				{{ phrase('agent.tickets.error_reply_select_voice_user') }}
+			</strong>
+		</div>
 		<article>
 			<section>
                 {# Forward #}
@@ -326,11 +331,12 @@
 		</article>
 	</section>
 	<footer>
+		{% set showSelectUserMenu = ticket.person.emails|length == 0 and not ticket.person.primary_email and ticket.person.phone_numbers|length > 0 and ticket.person.getPref('voice.unknown_caller') %}
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td valign="middle" style="vertical-align: middle;">
 				<div class="show-reply">
 					<div class="dp-btn-group dp-dropup" id="{{ replyBaseId }}_reply_btn_group" style="position: relative; z-index: 50;">
-						<a class="dp-btn dp-btn-primary submit-trigger">
+						<a class="dp-btn dp-btn-primary submit-trigger submit-reply-trigger" {% if showSelectUserMenu %}disabled="disabled"{% endif %}>
 							<i class="icon-share-alt"></i>&nbsp;
 
                             {% set defaultStatus = app.getSetting('core_tickets.reply_status') %}
@@ -358,7 +364,7 @@
                             {% endfor %}
 
 						</a>
-						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
+						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger status-reply-menu-trigger" {% if showSelectUserMenu %}disabled="disabled"{% endif %}><span class="dp-caret dp-caret-up"></span></a>
 					</div>
 				</div>
 				<div class="show-note" style="display: none">

@@ -2534,9 +2534,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     $type.first().parent().find('.select-user-item-options').show();
 
     if ($('.select-user-menu', this.wrapper).length) {
-			this.wrapper.addClass('field-error');
+			this.wrapper.addClass('select-voice-user-error');
+			this.wrapper.find('.submit-reply-trigger').attr('disabled', 'disabled');
+			this.wrapper.find('.status-reply-menu-trigger').attr('disabled', 'disabled');
 		} else if (!this.getEl('field_errors').hasClass('on')) {
-			this.wrapper.removeClass('field-error');
+			this.wrapper.removeClass('select-voice-user-error');
+			this.wrapper.find('.submit-reply-trigger').removeAttr('disabled');
+			this.wrapper.find('.status-reply-menu-trigger').removeAttr('disabled');
 		}
 
     $type.on('click', function () {

@@ -4047,6 +4047,7 @@ article.content-message .content .body-text .fade-bar {
 
 .ticketreply {
 	font-size: 11px;
+	position: relative;
 }
 
 .ticketreply > nav {
@@ -8185,6 +8186,35 @@ table.data-display-table tr th {
 			margin-top: 5px;
 		}
 	}
+
+	.ticket-select-voice-user-overlay {
+		display: none;
+		position: absolute;
+		top: 0;
+		right: 0;
+		left: 0;
+		bottom: 0;
+		.rounded(4px);
+
+		border: 1px solid darken(#AFB5B9, 10%);
+
+		background: rgb(203, 203, 203);
+		background: rgba(203, 203, 203, 0.65);
+		z-index: 100;
+
+		text-align: center;
+
+		strong {
+			display: block;
+			margin-top: 45px;
+			font-size: 12pt;
+			padding-top: 40px;
+		}
+	}
+}
+
+.select-voice-user-error .dp-reply-on .ticket-select-voice-user-overlay {
+	display: block;
 }
 
 .page-ticket li.urgency-item {

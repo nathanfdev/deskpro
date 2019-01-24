@@ -282,6 +282,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var replyMode = 'reply';
 
 		this.getElById('replybox_replytab_btn').on('click', function() {
+			self.el.addClass('dp-reply-on');
+
 			switch(replyMode) {
 				case 'note':
 					// process elements
@@ -299,6 +301,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				  self.clearFwd();
           self.getElById('replybox_fwdtab_btn').removeClass('on');
           self.getElById('fwd_body').html('');
+					self.el.removeClass('dp-fwd-on');
           self.fwdMessages = [];
           if (textarea.data('redactor')) {
             storedFWDText = textarea.getCode();
@@ -343,6 +346,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       switch(replyMode) {
         case 'reply':
           self.getElById('replybox_replytab_btn').removeClass('on');
+					self.el.removeClass('dp-reply-on');
           if (textarea.data('redactor')) {
             storedReplyText = textarea.getCode();
             textarea.setCode(storedNoteText || '');
@@ -352,6 +356,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           self.clearFwd();
           self.getElById('replybox_fwdtab_btn').removeClass('on');
           self.getElById('fwd_body').html('');
+					self.el.removeClass('dp-fwd-on');
           self.fwdMessages = [];
           if (textarea.data('redactor')) {
             storedFWDText = textarea.getCode();
@@ -390,6 +395,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       switch(replyMode) {
         case 'reply':
           self.getElById('replybox_replytab_btn').removeClass('on');
+					self.el.removeClass('dp-reply-on');
 
           if (textarea.data('redactor')) {
             storedReplyText = textarea.getCode();
@@ -944,6 +950,9 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			if (self.uploading) {
 				return;
 			}
+			if ($(this).attr('disabled')) {
+				return;
+			}
 			ev.preventDefault();
 			ev.stopPropagation();
 
@@ -1108,6 +1117,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 		statusMenuTrigger.on('click', function(ev) {
 			ev.preventDefault();
+			if ($(this).attr('disabled')) {
+				return;
+			}
+
       statusMenuMenu.open();
 		});
 

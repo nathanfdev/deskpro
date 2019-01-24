@@ -4784,6 +4784,7 @@ agent.tickets.email_user_tip: 'Send the user an email notification of this reply
 agent.tickets.error_merge_locked: 'One of merging tickets is locked. Can''t merge.'
 agent.tickets.error_merge_with_self: 'You cannot merge a ticket with itself.'
 agent.tickets.error_reply_badfields: 'There are errors with the ticket fields that you must correct before replying.'
+agent.tickets.error_reply_select_voice_user: 'You must set a person on the ticket before replying.'
 agent.tickets.explain_flags: 'Flags let you create personal collections of tickets. Double-click on a flag to change its title.'
 agent.tickets.explain_search_all_tickets: 'Search all tickets, including tickets that are resolved or archived'
 agent.tickets.export_to_csv: 'Export to CSV'
