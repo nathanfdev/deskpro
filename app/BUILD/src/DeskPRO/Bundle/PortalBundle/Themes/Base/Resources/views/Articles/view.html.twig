@@ -59,6 +59,10 @@
                     <h3>{{ custom['label'] }}</h3>
                     {% if custom['type'] == 'url' %}
                       <p><a href="{{ custom['value'] }}" target="_blank">{{ custom['value'] }}</a></p>
+                    {% elseif custom['type'] == 'date' %}
+                      <p>{{ custom['value']|date('full') }}</p>
+                    {% elseif custom['type'] == 'datetime' %}
+                      <p>{{ custom['value']|date('fulltime') }}</p>
                     {% elseif custom['type'] == 'file' %}
                       {% for file in custom['value'] %}
                         <div>
@@ -70,7 +74,6 @@
                         </div>
                       {% endfor %}
                     {% else %}
-
                       <p>{% if custom['value'] is iterable %}{{ custom['value']|join(', ') }}{% else %}{{ custom['value'] }}{% endif %}</p>
                     {% endif %}
                   </li>
