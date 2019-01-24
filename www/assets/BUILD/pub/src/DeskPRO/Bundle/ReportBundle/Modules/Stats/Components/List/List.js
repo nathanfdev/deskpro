@@ -38,6 +38,14 @@ class List extends React.Component {
     return (
       <div className="stat-list-wrapper" onScroll={() => console.log}>
         <ul className="stat-list">
+          {customReports.size > 0 ? (
+            <li className="stat-list-header">
+              <h1>
+                Custom Stats
+              </h1>
+            </li>
+            ) : null
+          }
           {customReports.map(
             report =>
               <ListItem
@@ -52,6 +60,11 @@ class List extends React.Component {
                 groupParams={groupParams}
               />
           ).toArray()}
+          <li className="stat-list-header">
+            <h1>
+              Built-in Stats
+            </h1>
+          </li>
           {builtInReports.map(
             report =>
               <ListItem
