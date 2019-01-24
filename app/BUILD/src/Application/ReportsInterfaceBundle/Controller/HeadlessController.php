@@ -46,8 +46,9 @@ class HeadlessController extends \Application\DeskPRO\Controller\AbstractControl
 
         return $this->render('ReportsInterfaceBundle:Headless:headless.html.twig', [
             'report' => [
-                'title'   => $report->getTitle(),
-                'widgets' => $widgets,
+                'title'        => $report->getTitle(),
+                'widgets'      => $widgets,
+                'date_created' => $report->getDateCreated()->format($this->container->getSetting('core.date_fulltime')),
             ],
             'printConfig' => $reportPdfGenerator->calculatePrintConfig($report),
         ]);
