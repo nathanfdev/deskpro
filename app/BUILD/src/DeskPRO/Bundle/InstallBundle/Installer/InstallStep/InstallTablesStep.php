@@ -8,7 +8,6 @@ use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
 use DeskPRO\Bundle\InstallBundle\Schema\Exception\SchemaInstallException;
 use DeskPRO\Bundle\InstallBundle\Schema\SchemaArray;
 use DeskPRO\Bundle\InstallBundle\Schema\SchemaInstaller;
-use DeskPRO\Component\Lock\PdoStore;
 use DeskPRO\Component\Util\StringUtils;
 use Symfony\Component\Process\ProcessBuilder;
 
@@ -145,13 +144,6 @@ class InstallTablesStep extends AbstractStep
         foreach ($schemasInfo as $item) {
             $this->installSchema($item['pdo'], $item['schema']);
         }
-
-        //------------------------------
-        // Install PDO lock table
-        //------------------------------
-
-        $store = new PdoStore($this->getSession()->getDbInfo()->getPdo());
-        $store->createTable();
 
         $this->getSession()->enableFlag('install_tables_ok');
     }
