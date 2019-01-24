@@ -391,7 +391,11 @@ class TwilioAdapter implements VoiceProviderInterface
                     }
                 }
             }
+
+            return true;
         }
+
+        return false;
     }
 
     /**

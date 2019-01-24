@@ -6,10 +6,12 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class VoiceProviderHelper.
@@ -17,25 +19,32 @@ use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 class VoiceProviderHelper implements VoiceProviderInterface
 {
     /**
-     * @var
+     * @var TwilioAdapter
      */
     private $twilioAdapter;
 
     /**
-     * @var
+     * @var PlivoAdapter
      */
     private $plivoAdapter;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
      * Constructor.
      *
-     * @param TwilioAdapter $twilioAdapter
-     * @param PlivoAdapter  $plivoAdapter
+     * @param TwilioAdapter            $twilioAdapter
+     * @param PlivoAdapter             $plivoAdapter
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(TwilioAdapter $twilioAdapter, PlivoAdapter $plivoAdapter)
+    public function __construct(TwilioAdapter $twilioAdapter, PlivoAdapter $plivoAdapter, EventDispatcherInterface $dispatcher)
     {
         $this->twilioAdapter = $twilioAdapter;
         $this->plivoAdapter  = $plivoAdapter;
+        $this->dispatcher    = $dispatcher;
     }
 
     /**
@@ -59,7 +68,17 @@ class VoiceProviderHelper implements VoiceProviderInterface
      */
     public function tryEndConference(VoicePhoneCall $phoneCall)
     {
-        $this->getAdapter($phoneCall)->tryEndConference($phoneCall);
+        $ended = $this->getAdapter($phoneCall)->tryEndConference($phoneCall);
+        if ($ended) {
+            $this->dispatcher->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.voice.call-ended', [
+                    'call_id' => $phoneCall->getId(),
+                ])
+            );
+        }
+
+        return $ended;
     }
 
     /**

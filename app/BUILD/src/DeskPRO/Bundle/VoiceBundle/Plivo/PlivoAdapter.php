@@ -342,7 +342,11 @@ class PlivoAdapter implements VoiceProviderInterface
                 } catch (\Exception $e) {
                 }
             }
+
+            return true;
         }
+
+        return false;
     }
 
     /**

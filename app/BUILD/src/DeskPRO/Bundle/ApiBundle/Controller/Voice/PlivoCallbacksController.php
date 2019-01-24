@@ -17,6 +17,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
@@ -296,6 +297,13 @@ class PlivoCallbacksController extends BaseController
                             'POST'
                         );
                     }
+
+                    $this->get('event_dispatcher')->dispatch(
+                        LegacySystemEvent::EVENT_NAME,
+                        new LegacySystemEvent('agent.voice.call-answered', [
+                            'call_id' => $phoneCall->getId(),
+                        ])
+                    );
                 } else {
                     $plivoXml->addHangup();
                 }
@@ -464,6 +472,12 @@ class PlivoCallbacksController extends BaseController
 
                 if ($task->isTimeout()) {
                     $plivoXml->addRedirect($this->getVoicemailUrl($account, $this->get('dp.voice.assets_helper')->getVoicemailAsset($taskId)));
+                    $this->get('event_dispatcher')->dispatch(
+                        LegacySystemEvent::EVENT_NAME,
+                        new LegacySystemEvent('agent.voice.reached-voicemail', [
+                            'call_id' => $phoneCall->getId(),
+                        ])
+                    );
                 } else {
                     // workers was just found
                     if (!$hadWorkers && $task->getWorkerIds()) {

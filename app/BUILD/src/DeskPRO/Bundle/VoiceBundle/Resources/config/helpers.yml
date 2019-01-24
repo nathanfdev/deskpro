@@ -35,3 +35,4 @@ services:
     arguments:
       - "@twilio_adapter"
       - "@plivo_adapter"
+      - "@event_dispatcher"

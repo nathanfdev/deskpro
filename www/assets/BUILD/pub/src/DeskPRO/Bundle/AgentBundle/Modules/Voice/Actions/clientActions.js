@@ -174,6 +174,15 @@ export const voiceBootstrap = createAction(
             }
           }));
         });
+        messageBroker.addMessageListener('agent.voice.reached-voicemail', (data) => {
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
+        });
+        messageBroker.addMessageListener('agent.voice.call-answered', (data) => {
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
+        });
+        messageBroker.addMessageListener('agent.voice.call-ended', (data) => {
+          dispatch(removeIncomingCall(Immutable.fromJS(data)));
+        });
         messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
           const data = event.data;
 

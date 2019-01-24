@@ -19,6 +19,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
@@ -215,6 +216,12 @@ class TwilioCallbacksController extends BaseController
 
                 if ($task->isTimeout()) {
                     $twiml->redirect($this->getVoicemailUrl($account, $this->get('dp.voice.assets_helper')->getVoicemailAsset($taskId)));
+                    $this->get('event_dispatcher')->dispatch(
+                        LegacySystemEvent::EVENT_NAME,
+                        new LegacySystemEvent('agent.voice.reached-voicemail', [
+                            'call_id' => $phoneCall->getId(),
+                        ])
+                    );
                 } else {
                     // workers was just found
                     if (!$hadWorkers && $task->getWorkerIds()) {
@@ -750,6 +757,13 @@ class TwilioCallbacksController extends BaseController
                         'POST'
                     );
                 }
+
+                $this->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.voice.call-answered', [
+                        'call_id' => $phoneCall->getId(),
+                    ])
+                );
             } else {
                 $twiml->hangup();
             }
