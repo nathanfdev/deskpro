@@ -6,7 +6,7 @@ import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { connectionsSelector, incomingCallSelector } from '../Selectors/client';
+import { connectionsSelector, incomingCallSelector, outgoingCallSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allVoiceAccountsSelector } from '../Selectors/accounts';
 import { allNumbersSelector } from '../Selectors/numbers';
@@ -242,6 +242,14 @@ export const voiceBootstrap = createAction(
               hold: !!data.hold
             }
           }));
+        });
+        messageBroker.addMessageListener('agent.voice.outgoing-provider-error', (errors) => {
+          const state = getState();
+          const outgoingCall = outgoingCallSelector(state);
+          if (outgoingCall) {
+            dispatch(resetOutgoingCall());
+            window.AgentVoiceDropdown.showProviderError(outgoingCall.get('callTo'), errors);
+          }
         });
       })
       .catch((e) => {

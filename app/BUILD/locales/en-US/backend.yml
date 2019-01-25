@@ -5565,6 +5565,8 @@ api.error_codes.unauthorized: 'You must be authenticated to make this request.'
 api.error_codes.unauthorized_check_server: 'Unauthorized. If you are using apache and feel that this is incorrect, please see this article for help: https://support.deskpro.com/kb/articles/415'
 api.error_codes.unique_entity: 'This value already exists in the system.'
 api.error_codes.voice_no_department_permission: 'Agent {{agent}} has no permission for department {{department}}.'
+api.error_codes.voice_permissions: 'Check your voice permissions.'
+api.error_codes.unverified_number: 'Verify this number or upgrade your account.'
 api.oauth.authorize_accept: Access
 api.oauth.authorize_reject: Deny
 api.oauth.authorize_title: 'Grant access to {{name}}'

@@ -19,6 +19,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
@@ -869,13 +870,14 @@ class TwilioCallbacksController extends BaseController
             ]);
         } catch (RestException $e) {
             if ($e->getStatusCode() === 400) {
-                $twiml->say(
-                    'Unable to make a call to this number.
-                     Please check your international permissions to make sure you can call to this country.',
-                    [
-                        'voice' => 'alice',
-                    ]
+                $this->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent(
+                        'agent.voice.outgoing-provider-error',
+                        $this->get('form_error.error_code_generator.api')->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to'])
+                    )
                 );
+
                 $twiml->hangup();
 
                 // mark phone call as ended

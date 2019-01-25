@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Error;
 
 use Symfony\Component\Form\FormError;
@@ -17,23 +13,23 @@ class FormErrorsGenerator
     /**
      * @var ErrorCodeFactory
      */
-    private $error_code_factory;
+    private $errorCodeFactory;
 
     /**
      * @var ErrorMessageFactory
      */
-    private $error_message_factory;
+    private $errorMessageFactory;
 
     /**
      * Constructor.
      *
-     * @param ErrorCodeFactory    $error_code_factory
-     * @param ErrorMessageFactory $error_message_factory
+     * @param ErrorCodeFactory    $errorCodeFactory
+     * @param ErrorMessageFactory $errorMessageFactory
      */
-    public function __construct(ErrorCodeFactory $error_code_factory, ErrorMessageFactory $error_message_factory)
+    public function __construct(ErrorCodeFactory $errorCodeFactory, ErrorMessageFactory $errorMessageFactory)
     {
-        $this->error_code_factory    = $error_code_factory;
-        $this->error_message_factory = $error_message_factory;
+        $this->errorCodeFactory    = $errorCodeFactory;
+        $this->errorMessageFactory = $errorMessageFactory;
     }
 
     /**
@@ -48,7 +44,7 @@ class FormErrorsGenerator
             $code   = $this->getFormErrorCode($error);
             $list[] = [
                 'code'    => $code,
-                'message' => $this->error_message_factory->createFormErrorMessage($code, $error),
+                'message' => $this->errorMessageFactory->createFormErrorMessage($code, $error),
             ];
         }
 
@@ -59,9 +55,9 @@ class FormErrorsGenerator
         $children = [];
         foreach ($form->all() as $child) {
             if ($child instanceof FormInterface) {
-                $child_errors = $this->generateFormErrors($child);
-                if ($child_errors) {
-                    $children[$child->getName()] = $child_errors;
+                $childErrors = $this->generateFormErrors($child);
+                if ($childErrors) {
+                    $children[$child->getName()] = $childErrors;
                 }
             }
         }
@@ -71,12 +67,12 @@ class FormErrorsGenerator
             !empty($children) // not empty
             && $this->needsPrefix($children)
         ) {
-            $prefix       = !is_numeric($form->getName()) ? $form->getName().'_' : 'field_';
-            $new_children = [];
+            $prefix      = !is_numeric($form->getName()) ? $form->getName().'_' : 'field_';
+            $newChildren = [];
             foreach ($children as $index => $value) {
-                $new_children[$prefix.$index] = $value;
+                $newChildren[$prefix.$index] = $value;
             }
-            $children = $new_children;
+            $children = $newChildren;
         }
 
         if ($children) {
@@ -116,6 +112,6 @@ class FormErrorsGenerator
      */
     protected function getFormErrorCode(FormError $error)
     {
-        return $this->error_code_factory->getErrorCodeForFormError($error);
+        return $this->errorCodeFactory->getErrorCodeForFormError($error);
     }
 }

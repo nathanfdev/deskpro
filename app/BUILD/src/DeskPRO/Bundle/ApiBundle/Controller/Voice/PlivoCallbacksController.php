@@ -17,6 +17,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
@@ -151,14 +152,24 @@ class PlivoCallbacksController extends BaseController
                     ]);
                 } else {
                     if ($exception instanceof UnverifiedException) {
-                        $plivoXml->addSpeak('Unable to make a call to this number. You need to verify this number or upgrade your account.', [
-                            'voice' => 'WOMAN',
-                        ]);
+                        $this->get('event_dispatcher')->dispatch(
+                            LegacySystemEvent::EVENT_NAME,
+                            new LegacySystemEvent(
+                                'agent.voice.outgoing-provider-error',
+                                $this->get('form_error.error_code_generator.api')->generateByErrorCode(ErrorsCodes::UNVERIFIED_NUMBER, [], ['call_to'])
+                            )
+                        );
                     } else {
-                        $plivoXml->addSpeak('Unable to make a call to this number. Please check your voice permissions.', [
-                            'voice' => 'WOMAN',
-                        ]);
+                        $this->get('event_dispatcher')->dispatch(
+                            LegacySystemEvent::EVENT_NAME,
+                            new LegacySystemEvent(
+                                'agent.voice.outgoing-provider-error',
+                                $this->get('form_error.error_code_generator.api')->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to'])
+                            )
+                        );
                     }
+
+                    $plivoXml->addHangup();
                 }
             } catch (OutOfServiceException $e) {
                 $plivoXml->addSpeak('Unable to make a call.', [

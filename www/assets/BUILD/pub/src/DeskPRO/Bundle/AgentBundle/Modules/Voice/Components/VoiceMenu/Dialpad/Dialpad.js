@@ -270,6 +270,19 @@ class Dialpad extends React.Component {
     });
   };
 
+  showProviderError = (errors) => {
+    const { formData } = this.state;
+    this.setState({
+      formData: createValue({
+        value:     formData.value,
+        errorList: errors,
+        onChange:  this.onChange
+      }),
+      submit:        false,
+      searchResults: Immutable.fromJS([])
+    });
+  };
+
   render() {
     const { numbers = Immutable.fromJS({}) } = this.props;
     const { formData, searchResults, submit, ticketId, ticketTitle } = this.state;

@@ -8,6 +8,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Error\FormErrorsGenerator
     arguments: ["@form_error.code_factory", "@form_error.message_factory.api"]
 
+  form_error.error_code_generator.api:
+    class: DeskPRO\Bundle\AppBundle\Form\Error\ExceptionErrorsGenerator
+    arguments: ["@form_error.message_factory.api"]
+
   form_error.message_factory.api:
     class: DeskPRO\Bundle\AppBundle\Form\Error\ErrorMessageFactory
     arguments: ["@deskpro.core.translate", "api.error_codes."]

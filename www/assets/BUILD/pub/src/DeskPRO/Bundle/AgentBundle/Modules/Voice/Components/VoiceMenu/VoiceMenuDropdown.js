@@ -76,6 +76,17 @@ class VoiceMenuDropdown extends React.Component {
     return <i className="ui call icon red voice-menu-icon" />;
   }
 
+  showProviderError = (outgoingNumber, errors) => {
+    this.popup.openPopup();
+    setTimeout(() => {
+      this.voiceMenu.changeTab('phone');
+      setTimeout(() => {
+        this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
+        setTimeout(() => { this.voiceMenu.dialpad.showProviderError(errors); }, 1);
+      }, 1);
+    }, 1);
+  };
+
   openUserMenu = (event) => {
     event.preventDefault();
 
