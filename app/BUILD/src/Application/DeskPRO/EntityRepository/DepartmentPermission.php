@@ -78,8 +78,8 @@ class DepartmentPermission extends AbstractEntityRepository
         if ($person_id && !empty($this->cache_by_agent[$person_id])) {
             if ($name) {
                 $found = !empty($this->cache_by_agent[$person_id][$name]) ? $this->cache_by_agent[$person_id][$name] : [];
-                if (!$found) {
-                    $found = !empty($this->cache_by_agent[$person_id]['full']) ? $this->cache_by_agent[$person_id]['full'] : [];
+                if ($name !== 'full' && !empty($this->cache_by_agent[$person_id]['full'])) {
+                    $found = array_merge($found, $this->cache_by_agent[$person_id]['full']);
                 }
             } else {
                 $found = !empty($this->cache_by_agent[$person_id]['ANY']) ? $this->cache_by_agent[$person_id]['ANY'] : [];
@@ -90,8 +90,8 @@ class DepartmentPermission extends AbstractEntityRepository
             foreach ($ug_ids as $ug_id) {
                 if ($name) {
                     $ug_found = !empty($this->cache_by_group[$ug_id][$name]) ? $this->cache_by_group[$ug_id][$name] : [];
-                    if (!$ug_found) {
-                        $ug_found = !empty($this->cache_by_group[$ug_id]['full']) ? $this->cache_by_group[$ug_id]['full'] : [];
+                    if ($name !== 'full' && !empty($this->cache_by_group[$ug_id]['full'])) {
+                        $ug_found = array_merge($ug_found, $this->cache_by_group[$ug_id]['full']);
                     }
                 } else {
                     $ug_found = !empty($this->cache_by_group[$ug_id]['ANY']) ? $this->cache_by_group[$ug_id]['ANY'] : [];
