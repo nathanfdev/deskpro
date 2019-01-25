@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import Immutable from 'immutable';
 import { AgentOnboarding } from 'DeskPRO/Bundle/AgentBundle/Modules/Onboarding/Components/AgentOnboarding';
-import { css } from '../../../decorators';
+import { css, redux } from '../../../decorators';
 
 const basicOnboarding = Immutable.Map({
   config: {
@@ -32,6 +32,7 @@ const basicOnboarding = Immutable.Map({
 
 storiesOf('App: onboarding', module)
   .addDecorator(story => css(story()))
+  .addDecorator(story => redux({}, story()))
   .add(
     'Simple', () =>
       <div>

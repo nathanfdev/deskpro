@@ -1084,11 +1084,13 @@ i.icon.fitted {
       .count-label {
         display: block;
         position: absolute;
-        top: 6px;
-        left: auto;
-        color: $dp-sonic-primary;
-        background-color: rgba(255, 255, 255, 0.7);
+        top: 0;
+        left: 16px;
         border-radius: 50%;
+        font-size: 10px;
+      }
+      svg {
+        font-size: 18px
       }
     }
     .title {
@@ -1098,13 +1100,13 @@ i.icon.fitted {
       color: $dp-greyscale-600;
     }
     .new-ticket {
-      margin-left: 20px;
+      margin-left: 30px;
       position: relative;
       &:after {
         content: '+';
         position: absolute;
-        top: 9px;
-        right: -6px;
+        top: 4px;
+        right: -7px;
         height: 10px;
         width: 10px;
         line-height: 10px;
@@ -1112,6 +1114,10 @@ i.icon.fitted {
         border-radius: 50%;
         color: $dp-greyscale-00;
         background-color: $dp-sonic-primary;
+        font-size: 11px;
+      }
+      svg {
+        font-size: 18px
       }
     }
     .person-tickets {
@@ -1224,7 +1230,7 @@ i.icon.fitted {
       }
     }
   }
-  .dp-section {
+  section {
     padding: 0;
     .dp-list h3 {
       position: relative;
@@ -1344,7 +1350,7 @@ i.icon.fitted {
   & div.token-field {
     min-width: 162px;
     height: 48px;
-    padding: 15px 0 5px 40px !important;
+    padding: 13px 0 13px 40px !important;
     color: #2b2f2f;
     margin-left: 2px;
     margin-right: 25px;
@@ -1365,6 +1371,12 @@ i.icon.fitted {
     .value {
       padding: 1px 5px 1px 8px;
     }
+    .scope {
+      margin-right: 25px;
+    }
+    .raw-text {
+      padding-top: 3px;
+    }
   }
   .isvg.close-icon {
     vertical-align: middle;
@@ -1379,6 +1391,44 @@ i.icon.fitted {
     padding: 5px 5px 5px 10px;
     border-left: 1px solid $dp-greyscale-250;
     cursor: pointer;
+  }
+}
+.token-field-input-tether .dp-select__content {
+  span.label {
+    padding: 0 3px;
+    border-radius: 5px;
+  }
+  .dp-input {
+    width: 100%;
+    padding-bottom: 5px;
+    input {
+      width: 96%;
+    }
+  }
+  .dp-selectable-list {
+    margin-bottom: 10px;
+    .dp-input {
+      input {
+        width: 100%;
+      }
+      .dp-icon {
+        top: calc(50% - 8px);
+      }
+    }
+  }
+  .dp-tabs__tab {
+    white-space: nowrap;
+  }
+  .dp-scrollbar > div:first-child {
+    overflow: auto !important;
+    overflow-y: scroll !important;
+  }
+}
+.token-field__popup {
+  .dp-scrollbar__view {
+    overflow: auto !important;
+    overflow-y: scroll !important;
+    margin-bottom: 0 !important;
   }
 }
 

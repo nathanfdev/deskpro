@@ -45,23 +45,25 @@ export const preloadData    = createAction(
   () => (dispatch, getState) => new Promise(
     (resolve) => {
       const batchComponents = {
-        agents:                  { endpoint: 'agents' },
-        languages:               { endpoint: 'languages', query: 'count=100' },
-        user_groups:             { endpoint: 'user_groups' },
-        settings:                { endpoint: 'helpdesk/agent-client/settings' },
-        info:                    { endpoint: 'helpdesk/agent-client/info' },
-        me:                      { endpoint: 'me' },
-        agent_teams:             { endpoint: 'agent_teams' },
-        my_agent_teams:          { endpoint: 'agent_teams', query: 'my=true' },
-        ticket_departments:      { endpoint: 'ticket_departments', query: 'include=department_agent_ids' },
-        my_ticket_departments:   { endpoint: 'ticket_departments', query: 'my=true&include=department_agent_ids' },
-        chat_departments:        { endpoint: 'chat_departments', query: 'include=department_agent_ids' },
-        onboardings:             { endpoint: 'people/onboarding/pending' },
-        alerts:                  { endpoint: 'notify/setup/action-alerts' },
-        user_chat_custom_fields: { endpoint: 'user_chat_custom_fields' },
-        person_custom_fields:    { endpoint: 'person_custom_fields' },
-        ticket_custom_fields:    { endpoint: 'ticket_custom_fields' },
-        discover:                { endpoint: 'helpdesk/discover' }
+        agents:                     { endpoint: 'agents' },
+        languages:                  { endpoint: 'languages', query: 'count=100' },
+        user_groups:                { endpoint: 'user_groups' },
+        settings:                   { endpoint: 'helpdesk/agent-client/settings' },
+        info:                       { endpoint: 'helpdesk/agent-client/info' },
+        me:                         { endpoint: 'me' },
+        agent_teams:                { endpoint: 'agent_teams' },
+        my_agent_teams:             { endpoint: 'agent_teams', query: 'my=true' },
+        ticket_departments:         { endpoint: 'ticket_departments', query: 'include=department_agent_ids' },
+        my_ticket_departments:      { endpoint: 'ticket_departments', query: 'my=true&include=department_agent_ids' },
+        chat_departments:           { endpoint: 'chat_departments', query: 'include=department_agent_ids' },
+        onboardings:                { endpoint: 'people/onboarding/pending' },
+        alerts:                     { endpoint: 'notify/setup/action-alerts' },
+        user_chat_custom_fields:    { endpoint: 'user_chat_custom_fields' },
+        person_custom_fields:       { endpoint: 'person_custom_fields' },
+        ticket_custom_fields:       { endpoint: 'ticket_custom_fields' },
+        organization_custom_fields: { endpoint: 'organization_custom_fields' },
+        slas:                       { endpoint: 'slas' },
+        discover:                   { endpoint: 'helpdesk/discover' }
       };
 
       if (window.DP_HAS_VOICE) {
@@ -99,6 +101,8 @@ export const preloadData    = createAction(
         dispatch(setCollection('UserChatCustomFields', 'all', data.user_chat_custom_fields));
         dispatch(setCollection('PersonCustomFields', 'all', data.person_custom_fields));
         dispatch(setCollection('TicketCustomFields', 'all', data.ticket_custom_fields));
+        dispatch(setCollection('OrganizationCustomFields', 'all', data.organization_custom_fields));
+        dispatch(setCollection('Slas', 'all', data.slas));
         dispatch(setupActionAlerts(data.alerts));
         dispatch(updateAgentStatus({ agent_ids: data.agents.filter(a => a.online_for_chat).map(a => a.id) }));
         dispatch(setOnlineAgents(data.agents.filter(a => a.online).map(a => a.id)));

@@ -1,12 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { Section } from '@deskpro/react-components';
-import { Organizations, People, Publishing, Tickets, TopTabs } from './SearchResults/';
+import { Organizations, People, Publishing, Tickets } from './SearchResults/';
 
 class SearchResults extends React.Component {
   static propTypes = {
-    results: PropTypes.object
+    results: PropTypes.object,
+    scopes:  PropTypes.array,
+  };
+
+  static defaultProps = {
+    scopes:  [],
+    results: {},
   };
 
   constructor(props) {
@@ -52,24 +57,60 @@ class SearchResults extends React.Component {
     return <Tickets tickets={results.tickets} />;
   };
 
-  render() {
+  renderPublishing = () => {
     const { results } = this.props;
-    const { activePane } = this.state;
-    return (
-      <div id="dp_search_results">
-        <h1><FormattedMessage id="agent.general.search_results" /></h1>
-        <TopTabs active={activePane} results={results} onChange={this.handleTabChange} />
-        <Section hidden={activePane !== 'publishing'}>
-          <Publishing results={results} />
-        </Section>
-        <Section hidden={activePane !== 'admin'}>
-          Admin
-        </Section>
-        {this.renderOrganizations()}
-        {this.renderPeople()}
-        {this.renderTickets()}
-      </div>
-    );
+    if (!results.tickets || results.tickets.length === 0) {
+      return null;
+    }
+    return <Publishing results={results} />;
+  };
+
+  render() {
+    const { scopes } = this.props;
+    console.log(scopes);
+    const scope = (scopes.length === 0 || scopes.length > 1) ? 'global' : scopes[0];
+    console.log(scope);
+    switch (scope) {
+      case 'Ticket':
+        return (
+          <div id="dp_search_results">
+            <h1><FormattedMessage id="agent.general.search_results" /></h1>
+            {this.renderTickets()}
+          </div>
+        );
+      case 'Person':
+        return (
+          <div id="dp_search_results">
+            <h1><FormattedMessage id="agent.general.search_results" /></h1>
+            {this.renderPeople()}
+          </div>
+        );
+      case 'Organization':
+        return (
+          <div id="dp_search_results">
+            <h1><FormattedMessage id="agent.general.search_results" /></h1>
+            {this.renderOrganizations()}
+          </div>
+        );
+      case 'Content':
+        return (
+          <div id="dp_search_results">
+            <h1><FormattedMessage id="agent.general.search_results" /></h1>
+            {this.renderPublishing()}
+          </div>
+        );
+      case 'global':
+      default:
+        return (
+          <div id="dp_search_results">
+            <h1><FormattedMessage id="agent.general.search_results" /></h1>
+            {this.renderOrganizations()}
+            {this.renderPeople()}
+            {this.renderTickets()}
+            {this.renderPublishing()}
+          </div>
+        );
+    }
   }
 }
 export default SearchResults;

@@ -1,10 +1,11 @@
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import { SideBar } from 'DeskPRO/Bundle/AgentBundle/Modules/SideBar/Components/SideBar';
-import { css } from '../../../decorators';
+import { css, redux } from '../../../decorators';
 
 storiesOf('App: side bar', module)
   .addDecorator(story => css(story()))
+  .addDecorator(story => redux({}, story()))
   .add(
     'Side bar',
     () => <div>

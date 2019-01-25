@@ -17,9 +17,12 @@ abstract class AbstractUserGroupsController extends CrudController
      */
     public static $isAgentGroup;
 
-    public static $exposeOnly = ['get', 'list', 'count'];
-    public static $entity     = Usergroup::class;
-    public static $listOrder  = 'asc';
+    public static $exposeOnly  = ['get', 'list', 'count'];
+    public static $entity      = Usergroup::class;
+    public static $sortOptions = [
+        'title' => 'title',
+    ];
+    public static $listOrder = 'asc';
 
     /**
      * {@inheritdoc}

@@ -23,8 +23,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class EmailAccountsController extends CrudController
 {
-    public static $exposeOnly = ['list'];
-    public static $entity     = EmailAccount::class;
+    public static $exposeOnly  = ['list'];
+    public static $sortOptions = [
+        'address'      => 'address',
+        'account_type' => 'account_type',
+    ];
+    public static $entity = EmailAccount::class;
 
     /**
      * Get resource with provided id.

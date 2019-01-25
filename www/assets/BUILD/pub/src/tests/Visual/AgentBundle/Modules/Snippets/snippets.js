@@ -14,7 +14,7 @@ import {
   chatDepartments
 } from 'DemoState/AgentBundle/Modules/Snippets/snippets';
 import { OwnershipSelect } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/Menus/OwnershipSelect';
-import { css } from '../../../decorators';
+import { css, redux } from '../../../decorators';
 
 window.DeskPRO_Window = {
   keyboardShortcuts: {
@@ -28,6 +28,7 @@ window.DESKPRO_PERSON_PERMS = {
 
 storiesOf('Agent: Snippets', module)
   .addDecorator(story => css(story()))
+  .addDecorator(story => redux({}, story()))
   .add(
     'Left menu',
     () => <SnippetsMenu
