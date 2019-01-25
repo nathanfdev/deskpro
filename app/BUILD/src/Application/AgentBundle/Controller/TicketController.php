@@ -5614,7 +5614,7 @@ CSS;
 
             if ($message->email_source && $message->email_source->getLogBlob()) {
                 $fileName = $tmpdir.'/message-'.$message->id.'.log';
-                if (strpos($fileName, 'gzip') !== false) {
+                if (strpos($message->email_source->getLogBlob()->getContentType(), 'gzip') !== false) {
                     $fileName .= '.gz';
                 }
                 $this->container->getBlobStorage()
