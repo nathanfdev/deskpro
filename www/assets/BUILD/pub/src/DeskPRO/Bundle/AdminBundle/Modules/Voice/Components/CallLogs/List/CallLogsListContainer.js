@@ -51,7 +51,9 @@ class CallLogsListContainer extends React.Component {
   onPageChange = ({ selected }) => {
     this.setState({
       currentPage: selected + 1
-    }, this.loadPageData);
+    }, () => {
+      setTimeout(() => this.loadPageData(), 1);
+    });
   };
 
   onToggleLiveUpdates = () => {
