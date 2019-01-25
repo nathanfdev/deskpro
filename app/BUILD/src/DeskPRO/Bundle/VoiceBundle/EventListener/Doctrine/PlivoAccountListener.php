@@ -14,6 +14,11 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class PlivoAccountListener
 {
+    // These app names must be constant. When configuring Plivo,
+    // we scan existing apps to see if they already exist.
+    const AGENT_APP_NAME = 'Deskpro Agent App';
+    const USER_APP_NAME  = 'Deskpro User App';
+
     /**
      * @var PlivoAdapter
      */
@@ -74,7 +79,7 @@ class PlivoAccountListener
 
         $userAppId = $this->plivoAdapter->createApplication(
             $account,
-            'Deskpro User App',
+            self::USER_APP_NAME,
             $answerUserUrl,
             'POST',
             $hangupUserUrl,
@@ -83,7 +88,7 @@ class PlivoAccountListener
 
         $agentAppId = $this->plivoAdapter->createApplication(
             $account,
-            'Deskpro Agent App',
+            self::AGENT_APP_NAME,
             $answerAgentUrl,
             'POST',
             $hangupAgentUrl,

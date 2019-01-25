@@ -76,6 +76,7 @@ class PlivoAdapter implements VoiceProviderInterface
             foreach ($client->applications->getList() as $application) {
                 if ($this->normalizeAppName($application->appName) === $this->normalizeAppName($appName)) {
                     $existApplication = $application;
+                    break;
                 }
             }
 
@@ -103,9 +104,9 @@ class PlivoAdapter implements VoiceProviderInterface
 
     private function normalizeAppName($name)
     {
-        // [XXX:YYY] Deskpro Agent App -> Deskpro Agent App
+        // [XXX::YYY] Deskpro Agent App -> deskpro agent app
         $name = preg_replace('/^\[[A-Z]+::[a-zA-Z0-9_\-]+\]\w*/', '', $name);
-        $name = strtolower($name);
+        $name = trim(strtolower($name));
 
         return $name;
     }
