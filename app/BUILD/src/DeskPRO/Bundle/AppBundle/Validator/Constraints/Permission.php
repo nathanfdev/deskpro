@@ -9,7 +9,8 @@ use Symfony\Component\Validator\Constraint;
  */
 class Permission extends Constraint
 {
-    const NO_PERMISSION = 'no_permission';
+    const NO_PERMISSION        = 'no_permission';
+    const NO_DELETE_PERMISSION = 'no_delete_permission';
 
     /**
      * @var string
@@ -19,5 +20,10 @@ class Permission extends Constraint
     /**
      * @var string
      */
-    public $message = 'You have no permission to modify "{{ value }}" object(s).';
+    public $modifyMessage = 'You have no permission to modify "{{ value }}" object(s).';
+
+    /**
+     * @var string
+     */
+    public $deleteMessage = 'You have no permission to delete "{{ value }}" object(s).';
 }

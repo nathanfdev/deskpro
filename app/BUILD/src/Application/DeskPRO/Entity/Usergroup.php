@@ -190,6 +190,14 @@ class Usergroup extends DomainObject
     /**
      * @return bool
      */
+    public function hasAllPermissions()
+    {
+        return $this->sys_name === self::AGENT_ALL_PERM;
+    }
+
+    /**
+     * @return bool
+     */
     public function hasAllSafePermissions()
     {
         return $this->sys_name === self::AGENT_ALL_SAFE_PERM || $this->sys_name === self::AGENT_ALL_PERM;

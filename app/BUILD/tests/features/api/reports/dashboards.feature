@@ -2,10 +2,15 @@
 Feature: /dashboards endpoint
 
   Background:
-    Given admin person exists
-    Given I'm authenticated as agent
+    Given no Person records exist
+    And admin person exists
+    And I'm authenticated as agent
     And "agent_2@deskpro.dev" agent exists
     And "admin_2@deskpro.dev" admin exists
+    And I remove "admin" usergroup relation "agent_all_perms"
+    And I remove "admin" usergroup relation "agent_all_safe_perms"
+    And I remove "agent" usergroup relation "agent_all_perms"
+    And I remove "agent" usergroup relation "agent_all_safe_perms"
     And the setting "beta_features.new_reports" is set to 1
     And only the following "AgentTeam" records exist:
       | #  | Name   | Members   |

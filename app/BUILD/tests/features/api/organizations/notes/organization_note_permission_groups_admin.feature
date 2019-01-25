@@ -1,11 +1,10 @@
 @new
 Feature: /organization_notes endpoint
 
-  Scenario: Admin is allmighty and they doesn't care about permission groups
-
+  Scenario: Admin has all permissions
     Given I'm authenticated as "admin"
     And I clear usergroup "registered" permissions
-    And I remove "admin" usergroup relation "agent_all_perms"
+    And I add "admin" usergroup relation "agent_all_perms"
     And I remove "admin" usergroup relation "agent_all_safe_perms"
     And the following "Organization" records exist:
       | #    | name       | summary                                    |

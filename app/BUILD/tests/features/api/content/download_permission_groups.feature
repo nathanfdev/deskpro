@@ -19,10 +19,20 @@ Feature: /downloads endpoint
     When I send a GET request to "/api/v2/downloads"
     Then the response status code should be 200
 
-  Scenario: Admin is allmighty and they doesn't care about permission groups
-    Given I'm authenticated as admin
+  Scenario: Agent has all safe permissions
+    Given I'm authenticated as agent
     And there are no "Permission" records
-    And I remove "admin" usergroup relation "agent_all_perms"
-    And I remove "admin" usergroup relation "agent_all_safe_perms"
+    And I remove "agent" usergroup relation "agent_all_perms"
+    And I add "agent" usergroup relation "agent_all_safe_perms"
+    And I set permission "downloads.use" = 0 for "registered" usergroup
+    When I send a GET request to "/api/v2/downloads"
+    Then the response status code should be 200
+
+  Scenario: Agent has all permissions
+    Given I'm authenticated as agent
+    And there are no "Permission" records
+    And I add "agent" usergroup relation "agent_all_perms"
+    And I remove "agent" usergroup relation "agent_all_safe_perms"
+    And I set permission "downloads.use" = 0 for "registered" usergroup
     When I send a GET request to "/api/v2/downloads"
     Then the response status code should be 200

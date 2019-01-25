@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -55,14 +56,25 @@ class PermissionValidator extends ConstraintValidator
         }
 
         if (count($failed)) {
-            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-            $context = $this->context;
-            $context
-                ->buildViolation($constraint->message)
-                ->setParameter('value', implode(', ', $failed))
-                ->setCode(Permission::NO_PERMISSION)
-                ->addViolation()
-            ;
+            if ($constraint->action === PermissionGroupVoter::DELETE) {
+                /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+                $context = $this->context;
+                $context
+                    ->buildViolation($constraint->deleteMessage)
+                    ->setParameter('value', implode(', ', $failed))
+                    ->setCode(Permission::NO_DELETE_PERMISSION)
+                    ->addViolation()
+                ;
+            } else {
+                /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+                $context = $this->context;
+                $context
+                    ->buildViolation($constraint->modifyMessage)
+                    ->setParameter('value', implode(', ', $failed))
+                    ->setCode(Permission::NO_PERMISSION)
+                    ->addViolation()
+                ;
+            }
         }
     }
 }

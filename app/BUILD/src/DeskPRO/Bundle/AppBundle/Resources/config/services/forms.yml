@@ -377,6 +377,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\MassActions\BaseMassActionsType
     arguments:
       - "@form.factory"
+      - "@validator"
     tags:
       - { name: form.type }
 

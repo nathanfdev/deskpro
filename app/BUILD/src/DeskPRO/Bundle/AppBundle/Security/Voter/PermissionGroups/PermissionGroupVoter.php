@@ -66,6 +66,8 @@ class PermissionGroupVoter extends Voter
      * {@inheritdoc}
      *
      * @param PermissionGroupContext $subject
+     *
+     * @throws \RuntimeException
      */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
@@ -74,8 +76,13 @@ class PermissionGroupVoter extends Voter
             return false;
         }
 
-        if ($user->isAdmin()) {
-            return true; // admin is allmighty, right?
+        foreach ($user->getPublicAgentgroups() as $usergroup) {
+            if ($usergroup->hasAllPermissions()) {
+                return true; // admin is allmighty, right?
+            }
+            if ($usergroup->hasAllSafePermissions() && in_array($attribute, [self::VIEW_LIST, self::VIEW])) {
+                return true;
+            }
         }
 
         $entityClass = $subject->getChildClass() ?: $subject->getParentClass();
