@@ -305,6 +305,14 @@ class TicketWithLayoutsContext
     }
 
     /**
+     * @return bool
+     */
+    public function ignoreUserFields()
+    {
+        return $this->getOption('ignore_user_fields');
+    }
+
+    /**
      * Returns "user" or "agent".
      *
      * @return string

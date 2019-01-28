@@ -1,11 +1,12 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
+use Application\DeskPRO\Entity\Person;
+
+/**
+ * Class EmailValidationRequiredException.
+ */
 class EmailValidationRequiredException extends \RuntimeException
 {
     /**
@@ -14,15 +15,29 @@ class EmailValidationRequiredException extends \RuntimeException
     private $email;
 
     /**
-     * @var null
+     * @var string
      */
     private $name;
 
-    public function __construct($email, $name = null)
+    /**
+     * @var Person
+     */
+    private $person;
+
+    /**
+     * Constructor.
+     *
+     * @param string $email
+     * @param string $name
+     * @param Person $person
+     */
+    public function __construct($email, $name = null, Person $person = null)
     {
         parent::__construct('email validation is required to perform this action');
-        $this->email = $email;
-        $this->name  = $name;
+
+        $this->email  = $email;
+        $this->name   = $name;
+        $this->person = $person;
     }
 
     /**
@@ -39,5 +54,13 @@ class EmailValidationRequiredException extends \RuntimeException
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
     }
 }

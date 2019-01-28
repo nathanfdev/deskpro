@@ -4,6 +4,8 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\FieldReso
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
@@ -169,6 +171,10 @@ class ApiFieldResolver extends AbstractFieldResolver
             'inline'          => true,
             'ticket'          => $context->getTicket(),
         ];
+
+        if ($context->ignoreUserFields() && ($def instanceof CustomDefPerson || $def instanceof CustomDefOrganization)) {
+            $options['mapped'] = false;
+        }
 
         return new FormField(CustomDataType::class, $options);
     }
