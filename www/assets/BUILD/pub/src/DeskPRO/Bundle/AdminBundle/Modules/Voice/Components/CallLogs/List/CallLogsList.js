@@ -50,6 +50,7 @@ class CallLogsList extends React.Component {
             <col width="5%" />
             <col width="5%" />
             <col width="5%" />
+            <col width="5%" />
             <col width="1%" />
             <col width="6%" />
           </colgroup>
@@ -64,6 +65,7 @@ class CallLogsList extends React.Component {
               <th>Ticket</th>
               <th>Type</th>
               <th>Duration</th>
+              <th>Cost</th>
               <th>Status</th>
               <th>Record</th>
             </tr>
@@ -134,6 +136,9 @@ class CallLogsList extends React.Component {
                   </td>
                   <td className="overflow-ellipsis">
                     <CallDuration call={call}  />
+                  </td>
+                  <td className="overflow-ellipsis">
+                    {call.get('cost') ? `${call.get('cost')} ${call.get('cost_currency') !== null ? call.get('cost_currency') : ''}` : '-'}
                   </td>
                   <CallStatus call={call} />
                   <td>

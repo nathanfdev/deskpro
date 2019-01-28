@@ -144,6 +144,20 @@ class VoicePhoneCall
     private $duration;
 
     /**
+     * @JMS\Type("string")
+     *
+     * @var float
+     */
+    private $cost;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $costCurrency;
+
+    /**
      * @JMS\Type("deferred<entity<Application\DeskPRO\Entity\Ticket>>")
      *
      * @var Ticket
@@ -175,6 +189,8 @@ class VoicePhoneCall
         $this->dateEnded          = $phoneCall->getDateEnded();
         $this->recording          = $phoneCall->getRecording();
         $this->duration           = $phoneCall->getDuration();
+        $this->cost               = number_format($phoneCall->getCost(), 3, '.', ',');
+        $this->costCurrency       = $phoneCall->getCostCurrency();
 
         if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {
             unset($this->data['RecordingUrl']);

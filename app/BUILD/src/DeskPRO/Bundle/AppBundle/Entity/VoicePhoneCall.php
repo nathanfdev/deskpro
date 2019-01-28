@@ -214,6 +214,20 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $duration;
 
     /**
+     * @ORM\Column(name="cost", type="string", nullable=true)
+     *
+     * @var float
+     */
+    private $cost;
+
+    /**
+     * @ORM\Column(name="cost_currency", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $costCurrency;
+
+    /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall", mappedBy="phoneCall")
      *
      * @var ArrayCollection|TicketMessageVoicePhoneCall[]
@@ -690,6 +704,58 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setDuration($duration)
     {
         $this->setModelField('duration', $duration);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * @param int $cost
+     *
+     * @return $this
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * @param int $price
+     *
+     * @return $this
+     */
+    public function addCost($price)
+    {
+        $this->cost = bcadd($this->cost, $price, 8);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCostCurrency()
+    {
+        return $this->costCurrency;
+    }
+
+    /**
+     * @param string $costCurrency
+     *
+     * @return $this
+     */
+    public function setCostCurrency($costCurrency)
+    {
+        $this->costCurrency = $costCurrency;
 
         return $this;
     }

@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as JMS;
 
 /**
  * Class VoicePhoneCallParticipant.
@@ -18,8 +17,6 @@ use JMS\Serializer\Annotation as JMS;
  *   "user" = "VoicePhoneCallParticipantUser",
  *   "agent" = "VoicePhoneCallParticipantAgent"
  * })
- *
- * @JMS\ExclusionPolicy("all")
  */
 abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, NotifyPropertyChanged
 {
@@ -31,9 +28,6 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
      *
      * @var int
      */
@@ -50,9 +44,6 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     /**
      * @ORM\Column(name="call_sid", type="string", length=50)
      *
-     * @JMS\Expose()
-     * @JMS\Type("string")
-     *
      * @var string
      */
     private $callSid;
@@ -61,18 +52,12 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
-     *
      * @var Person
      */
     private $person;
 
     /**
      * @ORM\Column(name="date_created", type="datetime")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */
@@ -81,9 +66,6 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     /**
      * @ORM\Column(name="date_joined", type="datetime", nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
-     *
      * @var \DateTime
      */
     private $dateJoined;
@@ -91,12 +73,23 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     /**
      * @ORM\Column(name="date_left", type="datetime", nullable=true)
      *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
-     *
      * @var \DateTime
      */
     private $dateLeft;
+
+    /**
+     * @ORM\Column(name="cost", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $cost;
+
+    /**
+     * @ORM\Column(name="cost_currency", type="string", nullable=true)
+     *
+     * @var string
+     */
+    private $costCurrency;
 
     /**
      * Constructor.
@@ -230,6 +223,58 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
     public function setDateLeft(\DateTime $dateLeft = null)
     {
         $this->setModelField('dateLeft', $dateLeft);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCost()
+    {
+        return $this->cost;
+    }
+
+    /**
+     * @param int $cost
+     *
+     * @return $this
+     */
+    public function setCost($cost)
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    /**
+     * @param int $price
+     *
+     * @return $this
+     */
+    public function addCost($price)
+    {
+        $this->cost = bcadd($this->cost, $price, 8);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCostCurrency()
+    {
+        return $this->costCurrency;
+    }
+
+    /**
+     * @param string $costCurrency
+     *
+     * @return $this
+     */
+    public function setCostCurrency($costCurrency)
+    {
+        $this->costCurrency = $costCurrency;
 
         return $this;
     }
