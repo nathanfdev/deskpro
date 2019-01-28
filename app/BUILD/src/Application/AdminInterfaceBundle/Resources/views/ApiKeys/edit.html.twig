@@ -77,6 +77,32 @@
 							<div class="form-group">
 								<div class="col-lg-2">
 									<h3>
+										API Version
+									</h3>
+								</div>
+								<div class="col-lg-10">
+									<div class="inner-group">
+										<div style="padding-top: 6px;">
+											<label style="font-weight: normal; display: block;">
+												<input type="radio" ng-model="EditCtrl.form.apiVersions" value="api_v1,api_v2">
+												Can use both APIv1 and APIv2
+											</label>
+											<label style="font-weight: normal; display: block;">
+												<input type="radio" ng-model="EditCtrl.form.apiVersions" value="api_v1">
+												Can only use APIv1
+											</label>
+											<label style="font-weight: normal; display: block;">
+												<input type="radio" ng-model="EditCtrl.form.apiVersions" value="api_v2">
+												Can only use APIv2
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-2">
+									<h3>
 										API Key Type
 										<button dp-inhelp-btn="admin.api_keys.edit.key_type"></button>
 									</h3>

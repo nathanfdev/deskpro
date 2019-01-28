@@ -9,6 +9,7 @@
 namespace Application\LegacyApiBundle\StaticLoader;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\ApiKey;
 
 class RequestKey
 {
@@ -40,7 +41,7 @@ class RequestKey
         }
 
         $api_key = $em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
-        if ($api_key) {
+        if ($api_key && $api_key->isFlagSet(ApiKey::FLAG_API_V1)) {
             return $api_key;
         }
 

@@ -119,7 +119,12 @@ class RequestAuth
             return;
         }
 
-        return $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
+        $apiKey = $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
+        if ($apiKey && !$apiKey->isFlagSet(ApiKey::FLAG_API_V1)) {
+            return;
+        }
+
+        return $apiKey;
     }
 
     /**
