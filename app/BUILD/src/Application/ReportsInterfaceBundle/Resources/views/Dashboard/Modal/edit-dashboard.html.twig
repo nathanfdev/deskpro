@@ -295,7 +295,7 @@
                 <div ng-if="reports.length > 0" class="bucket">
                     <label class="label">Default report tab to select</label>
                     <div class="bucket-column">
-                        <select ng-model="shareLink.default_report" ui-select2>
+                        <select class="shareable-link-report-selector" ng-model="shareLink.default_report" ui-select2>
                             <option ng-repeat="report in reports track by report.id" ng-value="report.id" ng-selected="shareLink.default_report == report.id">{{ ng_var('report.title') }}</option>
                         </select>
                     </div>
