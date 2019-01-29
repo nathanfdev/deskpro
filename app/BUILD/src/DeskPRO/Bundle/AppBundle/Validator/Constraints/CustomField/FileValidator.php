@@ -36,7 +36,7 @@ class FileValidator extends AbstractCustomDefConstraintValidator
         $validators = [];
 
         // required validator
-        if ($constraint->getCustomDefOption('required', true)) {
+        if ($constraint->check_required && $constraint->getCustomDefOption('required', true)) {
             $validators[] = new Assert\NotBlank();
         }
 

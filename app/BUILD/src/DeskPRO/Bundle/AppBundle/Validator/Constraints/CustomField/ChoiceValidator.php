@@ -19,8 +19,8 @@ class ChoiceValidator extends AbstractCustomDefConstraintValidator
         $validators = [];
 
         // Required validator
-        $is_required = $constraint->getCustomDefOption('required', true);
-        if ($is_required) {
+        $isRequired = $constraint->getCustomDefOption('required', true);
+        if ($constraint->check_required && $isRequired) {
             $validators[] = new Assert\NotBlank();
         }
 
@@ -36,23 +36,23 @@ class ChoiceValidator extends AbstractCustomDefConstraintValidator
         ]);
 
         // Count validator
-        $min_choices = (int) $constraint->getCustomDefOption('min_length', true);
-        $max_choices = (int) $constraint->getCustomDefOption('max_length', true);
+        $minChoices = (int) $constraint->getCustomDefOption('min_length', true);
+        $maxChoices = (int) $constraint->getCustomDefOption('max_length', true);
 
-        if (!$is_required && $min_choices === 1) {
+        if (!$isRequired && $minChoices === 1) {
             $validators[] = new Assert\NotBlank();
         }
 
-        $count_options = [];
+        $countOptions = [];
 
-        if ($min_choices > 1) {
-            $count_options['min'] = $min_choices;
+        if ($minChoices > 1) {
+            $countOptions['min'] = $minChoices;
         }
-        if ($max_choices > 1) {
-            $count_options['max'] = $max_choices;
+        if ($maxChoices > 1) {
+            $countOptions['max'] = $maxChoices;
         }
-        if (!empty($count_options)) {
-            $validators[] = new Assert\Count($count_options);
+        if (!empty($countOptions)) {
+            $validators[] = new Assert\Count($countOptions);
         }
 
         // Leaf nodes

@@ -10,5 +10,13 @@ class CustomData extends AbstractCustomDefConstraint
     const TARGET_COLLECTION = 'collection';
     const TARGET_FIELD      = 'field';
 
+    /**
+     * @var string
+     */
     public $target = self::TARGET_COLLECTION;
+
+    /**
+     * @var bool
+     */
+    public $check_required = true;
 }

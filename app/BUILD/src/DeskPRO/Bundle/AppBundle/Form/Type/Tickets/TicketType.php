@@ -352,6 +352,10 @@ class TicketType extends AbstractType
                     'agent_interface' => $options['agent_interface'],
                     'inline'          => true,
                     'ticket'          => $builder->getData(),
+
+                    // don't validate if custom field is required
+                    // because we don't use ticket layouts here in this form
+                    'check_required' => false,
                 ],
             ];
         }
