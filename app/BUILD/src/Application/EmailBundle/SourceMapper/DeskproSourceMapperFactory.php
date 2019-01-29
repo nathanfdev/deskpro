@@ -6,6 +6,7 @@
 
 namespace Application\EmailBundle\SourceMapper;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitFactory;
 use Application\EmailBundle\SourceMapper\PendingQueuer\CloudEmailPendingQueuer;
 use Application\EmailBundle\SourceMapper\PendingQueuer\RedisPendingQueuer;
@@ -36,7 +37,11 @@ class DeskproSourceMapperFactory
         //TODO shouldn't we make sure both settings are not enabled at the same time
 
         if ($queueUrl = $env->getConfig('settings.cloudemail_outgoing_sqs_queue')) {
-            $queuer = CloudEmailPendingQueuer::create($queueUrl);
+            /** @var SettingsResolver $resolver */
+            $resolver = $container->get("settings_resolver");
+            $apiKey = $resolver->getGlobalSettings()->get('api_auth.master_key', "");
+            $queuer = CloudEmailPendingQueuer::create($queueUrl, $apiKey);
+
             $external = new ExternalPendingQueue($source_mapper, $queuer);
             return $external;
         }

@@ -10,7 +10,11 @@ class CloudEmailPendingQueuer implements PendingQueuerInterface
     /** @var SqsClient */
     private $client;
 
+    /** @var string */
     private $queueUrl;
+
+    /** @var string */
+    private $apiKey;
 
     /**
      * @param string $region
@@ -28,11 +32,16 @@ class CloudEmailPendingQueuer implements PendingQueuerInterface
 
     /**
      * @param string $queueUrl the outgoing queue url, in this format https://sqs.<region>.amazonaws.com/<aws_account_id>/<queue_name>
+     * @param string $deskproAPIKey
      * @return CloudEmailPendingQueuer
      * @throws \Exception
      */
-    static public function create($queueUrl)
+    static public function create($queueUrl, $deskproAPIKey)
     {
+        if (empty($deskproAPIKey)) {
+            throw new \Exception("the deskpro api key can not be empty");
+        }
+
         $region = null;
         $urlComponents = parse_url($queueUrl, PHP_URL_HOST);
         if (!empty($urlComponents) && preg_match('/sqs\.([^.]+).+/',$urlComponents, $matches)) {
@@ -47,13 +56,20 @@ class CloudEmailPendingQueuer implements PendingQueuerInterface
         }
 
         $client = CloudEmailPendingQueuer::createSqsClient($region);
-        return new CloudEmailPendingQueuer($client, $queueUrl);
+        return new CloudEmailPendingQueuer($client, $queueUrl, $deskproAPIKey);
     }
 
-    public function __construct(SqsClient $client, $queueUrl)
+    /**
+     * CloudEmailPendingQueuer constructor.
+     * @param SqsClient $client
+     * @param string $queueUrl
+     * @param string $apiKey
+     */
+    public function __construct(SqsClient $client, $queueUrl, $apiKey)
     {
         $this->client = $client;
         $this->queueUrl = $queueUrl;
+        $this->apiKey = $apiKey;
     }
 
     /**
@@ -63,17 +79,19 @@ class CloudEmailPendingQueuer implements PendingQueuerInterface
      */
     public function queueMessageSource( array $source )
     {
-        //
-//        $data = [
-//            'id' => $source['id'],
-//        ];
+        //TODO find out where to get the build id
 
         $this->client->sendMessage([
             'DelaySeconds' => 0,
-            'MessageAttributes' => [
-                // ...
-            ],
-            'MessageBody' => '<string>', // REQUIRED
+//            'MessageAttributes' => [
+//                // ...
+//            ],
+            'MessageBody' => json_encode([
+                "id" => DPC_SITE_ID,
+                 "masterDomain" => DPC_SITE_DOMAIN,
+                 "buildId" => "0.0.0",
+                 "apiKey" => $this->apiKey
+            ]),
             'MessageDeduplicationId' => DPC_SITE_ID,
             'MessageGroupId' => 'sites',
             'QueueUrl' => $this->queueUrl, // REQUIRED
