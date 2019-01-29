@@ -90,7 +90,8 @@ class CloudEmailPendingQueuer implements PendingQueuerInterface
                 "id" => DPC_SITE_ID,
                  "masterDomain" => DPC_SITE_DOMAIN,
                  "buildId" => "0.0.0",
-                 "apiKey" => $this->apiKey
+                 "apiKey" => $this->apiKey,
+                 "secret" => $this->apiKey
             ]),
             'MessageDeduplicationId' => DPC_SITE_ID,
             'MessageGroupId' => 'sites',
