@@ -177,6 +177,7 @@ class AppStateController extends BaseController
      * @param $stateName
      * @param Request $request
      * @return View\View
+     * @throws \Exception
      */
     public function putStateAction(Entity\AppStore\AppInstance $application = null, $entityId, $stateName, Request $request)
     {

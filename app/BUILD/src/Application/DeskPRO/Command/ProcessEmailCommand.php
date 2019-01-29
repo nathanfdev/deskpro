@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Application\DeskPRO\Email\EmailSource\PropertyMapper;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\EmailSource;
@@ -117,41 +118,16 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 return 1;
             }
 
-            $rawSource = Strings::standardEol($rawSource);
+            $accountManager = $this->getContainer()->getEmailAccountManager();
+            $readerFactory = $this->getContainer()->getEmailEzcReaderFactory();
+            $mapper = new PropertyMapper($accountManager, $readerFactory);
 
-            $headerEnd = strpos($rawSource, "\n\n");
-            if ($headerEnd === false) {
-                // Means an empty body (eg message with only subject)
-                // But we trimmed above so the \n\n sep would be trimmed off
-                $rawSource .= "\n\n";
-                $headerEnd = strpos($rawSource, "\n\n");
-            }
-
-            $rawHeaders = trim(substr($rawSource, 0, $headerEnd));
-
-            if (isset($rawHeaders[4000])) {
-                $rawHeaders = substr($rawHeaders, 0, 4000);
-            }
-
-            $reader = $this->getContainer()->getEmailEzcReaderFactory()->create();
-            $reader->setRawSource($rawSource);
-            $account = $this->findEmailAccountFrom($reader);
-
-            $fromEmail = $reader->getFromAddress();
-            $source    = new EmailSource();
+            $reader = $mapper->createReader($rawSource);
+            $source = $mapper->read($reader, new EmailSource());
             $source->fromArray([
-                'email_account' => $account,
-                'headers'       => $rawHeaders,
-                'status'        => 'inserted',
-                'from_email'    => $fromEmail ? $fromEmail->getEmail() : null,
+                'status'         => EmailSource::STATUS_INSERTED,
+                'object_type'    => EmailSource::OBJ_TYPE_TICKET,
             ]);
-
-            // Rough matching, just for info purposes when browsing a list
-            $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $rawHeaders) ?: '';
-            $source->header_cc      = Strings::extractRegexMatch('#^Cc:\s*(.*?)$#m', $rawHeaders) ?: '';
-            $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $rawHeaders) ?: '';
-            $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $rawHeaders) ?: '';
-            $source->object_type    = 'ticket';
 
             $t = microtime(true);
             $output->writeln('<info>Saving blob...</info>');

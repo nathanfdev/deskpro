@@ -217,15 +217,19 @@ class QueueRunner
         return $count;
     }
 
+
     /**
      * Runs through the queue.
      *
-     * @return int
+     * @return QueueRunMetrics
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
      */
-    public function run()
+    public function runQueue()
     {
         $time_start = time();
-        $count      = 0;
+        $totalSent   = 0;
+        $totalBatches = 0;
 
         $this->logger->info(sprintf('Starting -- Limit: %d -- Max Time: %ds', $this->proc_limit, $this->proc_time_limit));
 
@@ -244,10 +248,9 @@ class QueueRunner
             if ($batch) {
                 while ($r = array_shift($batch)) {
                     $proc->process($r);
-                    ++$count;
                     ++$batch_count;
 
-                    if ($count >= $this->proc_limit) {
+                    if ($totalSent >= $this->proc_limit) {
                         $this->logger->info('Reached limit, breaking');
                         $did_break       = true;
                         $did_early_break = true;
@@ -261,6 +264,8 @@ class QueueRunner
                         break;
                     }
                 }
+                $totalSent = $totalSent + $batch_count;
+                ++$totalBatches;
             }
 
             if ($batch) {
@@ -281,7 +286,7 @@ class QueueRunner
         }
 
         $time_end = time();
-        $this->logger->info(sprintf('Processed %d records in %ds', $count, $time_end - $time_start));
+        $this->logger->info(sprintf('Processed %d records in %ds', $totalSent, $time_end - $time_start));
 
         // If we broke early then we may have messages stuck in the 'pending' state
         // we should re-queue the messages so they enter into the queue again and
@@ -306,7 +311,23 @@ class QueueRunner
             $this->logger->info(sprintf('Touched %d records for processing in another run', count($batch)));
         }
 
-        return $count;
+        return new QueueRunMetrics(
+            $totalSent,
+            $totalBatches
+        );
+    }
+
+    /**
+     * Runs through the queue.
+     *
+     * @return int
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Exception
+     */
+    public function run()
+    {
+        $metrics = $this->runQueue();
+        return $metrics->getTotalSent();
     }
 
     /**
