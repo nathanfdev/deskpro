@@ -67,9 +67,7 @@ class SearchResults extends React.Component {
 
   render() {
     const { scopes } = this.props;
-    console.log(scopes);
     const scope = (scopes.length === 0 || scopes.length > 1) ? 'global' : scopes[0];
-    console.log(scope);
     switch (scope) {
       case 'Ticket':
         return (

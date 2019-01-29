@@ -6,7 +6,6 @@ import Isvg from 'react-inlinesvg';
 import TokenField from '@deskpro/token-field/dist/index';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import fakeResults from 'tests/DemoState/AgentBundle/Modules/Search/result.json';
 import * as searchActions from '../Actions/searchActions';
 import SearchResults from './SearchResults';
 
@@ -52,8 +51,10 @@ class SearchContainer extends React.Component {
       menuStructure: [],
       focused:       false,
       results:       {},
-      style:         {},
-      scopes:        [],
+      style:         {
+        height: 48
+      },
+      scopes: [],
     };
   }
   componentWillMount = () => {
@@ -769,14 +770,12 @@ class SearchContainer extends React.Component {
   };
 
   handleChange = (value) => {
-    let results = {};
-    if (value.length > 2) {
-      results = fakeResults;
-    }
-    this.setState({
-      results
+    this.props.dispatch(searchActions.search(value)).then((results) => {
+      this.setState({
+        results
+      });
+      this.updateStyle(results);
     });
-    this.updateStyle(results);
   };
 
   handleScopesChange = (scopes) => {
