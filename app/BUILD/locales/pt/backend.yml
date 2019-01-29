@@ -18,7 +18,7 @@ adm.agents.perm_chat_delete: 'Pode apagar cópias de chats'
 adm.agents.perm_chat_use: 'Pode usar o chat'
 adm.agents.perm_chat_view_others: 'Can view chats assigned to others'
 adm.agents.perm_chat_view_transcripts: 'Pode ver cópias de chats antigas'
-adm.agents.perm_chat_view_unassigned: 'Can view unassigned chats'
+adm.agents.perm_chat_view_unassigned: 'Pode ver chats não designados'
 adm.agents.perm_general_picture: 'Pode configurar sua própria foto'
 adm.agents.perm_general_signature: 'Pode configurar sua própria assinatura'
 adm.agents.perm_org_create: 'Pode criar organizações'
@@ -1383,6 +1383,7 @@ admin.general.error_ssl_feature_tip: 'Esta função requer a extensão OpenSSL P
 admin.general.error_ssl_tip: 'Secure connections require the OpenSSL PHP extension which is currently not installed. Click now for more information.'
 admin.general.error_type: 'Erro Tipo'
 admin.general.event: Evento
+admin.general.fail: Fail
 admin.general.fields: Campos
 admin.general.file_uploads: 'Upload de arquivos'
 admin.general.first: Primeiro
@@ -3001,6 +3002,8 @@ agent.general.contact_address: 'Endereço do Contato'
 agent.general.contact_instant_messaging: 'Instant Messaging do Contato'
 agent.general.contact_phone: 'Telefone do Contato'
 agent.general.contains: Contém
+agent.general.content: Content
+agent.general.content_type: 'Content type'
 agent.general.content_matches_summary: 'Content matches: {{pattern}}'
 agent.general.continue: Continuar
 agent.general.copy_permalink: 'Copiar permalink'
@@ -3355,6 +3358,7 @@ agent.general.name: Name
 agent.general.name_az: 'Name (A-Z)'
 agent.general.name_is_summary: 'Name is {{name}}'
 agent.general.name_za: 'Name (Z-A)'
+agent.general.next: Next
 agent.general.never: Never
 agent.general.new: New
 agent.general.new_article: 'New Article'
@@ -3407,6 +3411,7 @@ agent.general.number_of_tickets: 'Number of tickets'
 agent.general.of: of
 agent.general.off: 'Off'
 agent.general.okay: Okay
+agent.general.ok: OK
 agent.general.on: 'On'
 agent.general.online_now: 'Onlne Now'
 agent.general.open: Open
@@ -3450,6 +3455,7 @@ agent.general.popularity: Popularity
 agent.general.portal: Portal
 agent.general.position: Position
 agent.general.prev: Prev
+agent.general.previous: Previous
 agent.general.print: Print
 agent.general.priorities: Priorities
 agent.general.priority: Priority
@@ -5527,6 +5533,7 @@ api.error_codes.missing_country_code: 'Country code is missing.'
 api.error_codes.missing_jwt_token: 'JWT token is required.'
 api.error_codes.no_default_dashboard_permission: 'can''t grant edit permission for agent to default dashboard'
 api.error_codes.no_permission: 'You have no permission to modify "{{value}}" object(s).'
+api.error_codes.no_delete_permission: 'You have no permission to delete "{{value}}" object(s).'
 api.error_codes.no_source_provided: 'Unable to fetch data, no report widget or js code provided.'
 api.error_codes.no_uploaded_file: 'Uploaded file was not found.'
 api.error_codes.not_an_image: 'Uploaded file is not an image'
