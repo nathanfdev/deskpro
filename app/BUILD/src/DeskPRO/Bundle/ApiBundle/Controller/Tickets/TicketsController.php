@@ -394,7 +394,10 @@ class TicketsController extends AbstractTicketsController
             'agent_interface'       => true,
             'person'                => $this->getUser(),
             'admin_api_key_request' => $this->isAdminApiKeyRequest(),
+            'context'               => $request->get('context'),
         ]);
+
+        $model->setCreationSystem(Ticket::CREATED_WEB_API);
 
         return parent::handleForm($model, $request, $options);
     }

@@ -27,6 +27,9 @@ abstract class AbstractTicketsController extends CrudController
         if ($form->has('suppress_user_notify')) {
             $options['suppress_user_notify'] = $form->get('suppress_user_notify')->getData();
         }
+        if ($form->has('context')) {
+            $options['context'] = $form->get('context')->getData();
+        }
 
         $this->saveTicket($entity, $options);
 

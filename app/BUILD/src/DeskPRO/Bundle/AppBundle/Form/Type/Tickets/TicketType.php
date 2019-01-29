@@ -149,6 +149,11 @@ class TicketType extends AbstractType
                 'widget'   => 'single_text',
                 'required' => false,
             ])
+            ->add('context', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => ['agent', 'user'],
+                'mapped'            => false,
+            ])
         ;
 
         if ($builder->getOption('admin_api_key_request')) {
@@ -240,8 +245,10 @@ class TicketType extends AbstractType
                 'agent_interface'       => false,
                 'admin_api_key_request' => false,
             ])
+            ->setDefined(['context'])
             ->setAllowedTypes('admin_api_key_request', 'bool')
             ->setAllowedTypes('person', Person::class)
+            ->setAllowedValues('context', ['agent', 'user', null])
         ;
     }
 
