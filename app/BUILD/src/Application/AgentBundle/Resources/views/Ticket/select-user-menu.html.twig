@@ -9,10 +9,12 @@
                 </li>
             {% endif %}
         {% endfor %}
+        {% if ticket.person.getPref('voice.unknown_caller') %}
         <li>
             <input type="radio" name="select_user" value="unknown_person">
             <label>Unknown Caller</label>
         </li>
+        {% endif %}
         <li>
             <input type="radio" name="select_user" value="find_person">
             <label>Find a different person</label>

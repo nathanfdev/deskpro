@@ -2620,29 +2620,53 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					setPerson(personId);
 				}
 			} else if (value === 'new_person') {
-        $.ajax({
-          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-          type: 'PUT',
-          data: {
-            name: $('input[name=select_user_name]', self.wrapper).val(),
-            primary_email: $('input[name=select_user_email]', self.wrapper).val(),
-            language: $('select[name=select_user_language]', self.wrapper).val(),
-          },
-          success: reloadPersonView,
-					error: function (response) {
-						var data = response.responseJSON;
-						var errors = data.errors;
-            var error;
+      	var submitData = {
+					name: $('input[name=select_user_name]', self.wrapper).val(),
+					primary_email: $('input[name=select_user_email]', self.wrapper).val(),
+					language: $('select[name=select_user_language]', self.wrapper).val(),
+				};
 
-						if (errors && errors.fields && errors.fields.primary_email) {
-							 error = errors.fields.primary_email.errors[0].message;
-						}
+      	var errorHandler = function (response) {
+					var data = response.responseJSON;
+					var errors = data.errors;
+					var error;
 
-						if (error) {
-							$('.error-message', self.wrapper).html(error);
+					if (errors && errors.fields && errors.fields.primary_email) {
+						error = errors.fields.primary_email.errors[0].message;
+					}
+
+					if (error) {
+						$('.error-message', self.wrapper).html(error);
+					}
+				};
+
+				$.ajax({
+					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+					type: 'GET',
+					success: function(response) {
+						// existing user, create a new person and change
+						if (response.data.primary_email) {
+							$.ajax({
+								url: BASE_URL + 'api/v2/people',
+								type: 'POST',
+								data: submitData,
+								success: function(response) {
+									setPerson(response.data.id);
+								},
+								error: errorHandler
+							});
+						} else {
+							// voice user, merge
+							$.ajax({
+								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+								type: 'PUT',
+								data: submitData,
+								success: reloadPersonView,
+								error: errorHandler
+							});
 						}
-          }
-        });
+					}
+				});
       } else if (value === 'unknown_person') {
         $.ajax({
           url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
