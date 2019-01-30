@@ -178,7 +178,7 @@ fos_rest:
             forms: false
     format_listener:
         rules:
-            - { path: '^/(b/[\w\d-]+/)?(\w+/)?portal/api/', priorities: ['json', 'js', 'jsonp'], fallback_format: json, prefer_extension: true }
+            - { path: '^/(b/[\w\d-]+/)?([\w-]+/)?portal/api/', priorities: ['json', 'js', 'jsonp'], fallback_format: json, prefer_extension: true }
             - { path: '^/', stop: true }
     exception:
         # disabled because this is portal and we want to use portal exception handler
