@@ -17,6 +17,7 @@ class ApiModes
      * @var array
      */
     protected $mode_alias = [
+        'master_key' => ['master_key'],
         'key'      => ['key'],
         'session'  => ['session'],
         'token'    => ['token'],

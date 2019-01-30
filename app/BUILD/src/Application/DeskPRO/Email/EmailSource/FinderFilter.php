@@ -137,6 +137,7 @@ class FinderFilter
     public function getValidStatuses()
     {
         static $valid = [
+            EmailSource::STATUS_INSERTING,
             EmailSource::STATUS_INSERTED,
             EmailSource::STATUS_PROCESSING,
             EmailSource::STATUS_COMPLETE,

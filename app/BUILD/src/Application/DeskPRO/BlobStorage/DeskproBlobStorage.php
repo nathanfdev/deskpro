@@ -788,6 +788,29 @@ class DeskproBlobStorage implements Loggable
     }
 
     /**
+     *
+     * Used mainly from cloud emails services and endpoints to bypass regular blob to string copying
+     *
+     * @param BlobEntity $blob
+     * @param bool $useCache
+     * @return null|string
+     * @throws \Exception
+     */
+    public function downloadBlobData( BlobEntity $blob, $useCache = true)
+    {
+        $data = $useCache ? $this->pickFromCache($blob) : null;
+        if (!empty($data)) {
+            return $data;
+        }
+
+        if ($blob['file_url']) {
+            return $this->downloadFileUrl($blob['file_url']);
+        }
+
+        throw new \Exception("the blob does not have a file_url");
+    }
+
+    /**
      * @param string $url
      *
      * @return null|string

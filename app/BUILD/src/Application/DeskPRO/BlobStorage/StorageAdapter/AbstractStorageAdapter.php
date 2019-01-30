@@ -44,6 +44,15 @@ abstract class AbstractStorageAdapter implements Loggable
         $this->init();
     }
 
+    /**
+     * @param string $optionName
+     * @return mixed
+     */
+    public function getOption($optionName)
+    {
+        return $this->options->get($optionName);
+    }
+
     protected function init()
     {
     }

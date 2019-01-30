@@ -1049,6 +1049,17 @@ return [
     'rate_limit.submit_ticket.guest.response'     => 'captcha',
 
     //###################################################################################################################
+    // cloudemail configuration
+    //###################################################################################################################
+
+    /*
+     * The url to an sqs queue which replaces the redis queue
+     * If this setting is enabled it WILL take precedence over settings.sendmail_redis_queue
+     *
+     */
+    // 'settings.cloudemail_outgoing_sqs_queue' => "https://sqs.<region>.amazonaws.com/<aws_account_id>/outgoing.fifo",
+
+    //###################################################################################################################
     // notification.settings
     //###################################################################################################################
 
@@ -1130,6 +1141,17 @@ return [
     'api_limits.key.hour'    => -1,
     'api_limits.key.day'     => -1,
     'api_limits.key.default' => -1,
+
+
+    //###################################################################################################################
+    // api_auth
+    //###################################################################################################################
+
+    /*
+     * The master token that can be used to authenticate any request
+     */
+    'api_auth.master_key' => '',
+
 
     //###################################################################################################################
     // audit_log

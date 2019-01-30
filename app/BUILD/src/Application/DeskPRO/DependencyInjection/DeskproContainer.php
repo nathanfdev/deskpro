@@ -549,6 +549,7 @@ class DeskproContainer extends Container
 
     /**
      * @return \Application\DeskPRO\BlobStorage\DeskproBlobStorage
+     * @throws \Exception
      */
     public function getBlobStorage()
     {

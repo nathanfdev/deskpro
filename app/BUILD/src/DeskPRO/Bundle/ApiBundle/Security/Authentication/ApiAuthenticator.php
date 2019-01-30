@@ -6,8 +6,10 @@ use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiMasterKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\LegacyRememberMeSecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
@@ -15,6 +17,8 @@ use Doctrine\ORM\EntityManager;
 use Orb\Util\Web;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
+use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\PreAuthenticatedToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
@@ -31,9 +35,15 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
      */
     private $em;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
+    public function __construct(EntityManager $em, SettingsResolver $settingsResolver)
     {
         $this->em = $em;
+        $this->settingsResolver = $settingsResolver;
     }
 
     public function createToken(Request $request, $providerKey)
@@ -146,13 +156,22 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
      * @param UserProviderInterface $user_provider
      * @param string                $providerKey
      *
-     * @return ApiKeySecurityToken
+     * @return AbstractToken
      */
     protected function authenticateApiKey(
         ApiKeySecurityToken $token,
         UserProviderInterface $user_provider,
         $providerKey
     ) {
+        $keyString = $token->getCredentials();
+        if (
+            !is_null($keyString)
+            && $keyString === $this->settingsResolver->getGlobalSettings()->get('api_auth.master_key', null)
+        ) {
+            return new AnonymousToken($keyString, $token->getUser(), ['ROLE_API']);
+        }
+
+
         /** @var \Application\DeskPRO\EntityRepository\ApiKey $keyRepo */
         $keyRepo = $this->em->getRepository(ApiKey::class);
         if (!$key = $keyRepo->findByKeyString($token->getCredentials())) {

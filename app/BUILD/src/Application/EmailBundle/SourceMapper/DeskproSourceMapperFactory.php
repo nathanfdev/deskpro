@@ -6,14 +6,21 @@
 
 namespace Application\EmailBundle\SourceMapper;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\EmailBundle\SourceMapper\EmailRateLimit\EmailRateLimitFactory;
+use Application\EmailBundle\SourceMapper\PendingQueuer\CloudEmailPendingQueuer;
 use Application\EmailBundle\SourceMapper\PendingQueuer\RedisPendingQueuer;
 use Predis;
 use Symfony\Component\DependencyInjection\Container;
 
 class DeskproSourceMapperFactory
 {
-    public static function getSourceMapper(Container $container)
+    /**
+     * @param Container $container
+     * @return DatabaseSourceMapper|ExternalPendingQueue
+     * @throws \Exception
+     */
+    public static function getSourceMapper( Container $container)
     {
         $source_mapper = new DatabaseSourceMapper(
             $container->get('database_connection'),
@@ -27,7 +34,18 @@ class DeskproSourceMapperFactory
 
         $env = $container->get('deskpro.app_env');
 
-        if ($info = $env->getConfig('settings.sendmail_redis_queue')) {
+        //TODO shouldn't we make sure both settings are not enabled at the same time
+
+        if ($queueUrl = $env->getConfig('settings.cloudemail_outgoing_sqs_queue')) {
+            /** @var SettingsResolver $resolver */
+            $resolver = $container->get("settings_resolver");
+            $apiKey = $resolver->getGlobalSettings()->get('api_auth.master_key', "");
+            $queuer = CloudEmailPendingQueuer::create($queueUrl, $apiKey);
+
+            $external = new ExternalPendingQueue($source_mapper, $queuer);
+            return $external;
+        }
+        else if ($info = $env->getConfig('settings.sendmail_redis_queue')) {
             // see https://github.com/nrk/predis/wiki/Connection-Parameters
             $client       = new Predis\Client($info);
             $redis_queuer = new RedisPendingQueuer($client, 'sendmail_queue');
@@ -35,7 +53,9 @@ class DeskproSourceMapperFactory
             $external = new ExternalPendingQueue($source_mapper, $redis_queuer);
 
             return $external;
-        } else {
+        }
+
+        else {
             return $source_mapper;
         }
     }

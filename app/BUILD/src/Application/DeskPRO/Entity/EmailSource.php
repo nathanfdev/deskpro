@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
+    const STATUS_INSERTING     = 'inserting';
     const STATUS_INSERTED      = 'inserted';
     const STATUS_RETRY         = 'retry';
     const STATUS_PROCESSING    = 'processing';

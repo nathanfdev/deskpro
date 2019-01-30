@@ -4,6 +4,7 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@settings_resolver"
 
   api_anon_authenticator:
     class: DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator
