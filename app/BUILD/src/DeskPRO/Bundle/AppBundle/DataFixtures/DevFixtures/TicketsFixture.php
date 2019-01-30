@@ -104,7 +104,7 @@ class TicketsFixture extends AbstractDpFixture implements OrderedFixtureInterfac
     /**
      * @var int[]
      */
-    private $ticketIds;
+    private $ticketIds = [];
 
     /**
      * @var \Application\DeskPRO\Entity\CustomDefTicket[]
@@ -545,7 +545,10 @@ class TicketsFixture extends AbstractDpFixture implements OrderedFixtureInterfac
                 'completed_time_taken' => $this->faker->numberBetween(60 * 60 * 24, 60 * 60 * 24 * 10),
             ];
         }
-        $this->db->batchInsert('ticket_slas', $batch, true);
+
+        if ($batch) {
+            $this->db->batchInsert('ticket_slas', $batch, true);
+        }
     }
 
     private function setParentTicket()

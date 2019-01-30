@@ -87,7 +87,7 @@ class TicketProfileFixture extends AbstractDpFixture implements OrderedFixtureIn
      */
     public function getOrder()
     {
-        return 90;
+        return 70;
     }
 
     /**
@@ -241,7 +241,7 @@ class TicketProfileFixture extends AbstractDpFixture implements OrderedFixtureIn
 
         /** @var CustomDefTicket[] $fields */
         $fields             = TicketFieldsFixture::$fields[$departmentRef];
-        $customDefGenerator = new CustomDataGenerator($this->faker);
+        $customDefGenerator = new CustomDataGenerator();
 
         $batch = [];
         foreach ($fields as $f) {
