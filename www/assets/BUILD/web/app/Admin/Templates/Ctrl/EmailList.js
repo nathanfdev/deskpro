@@ -1,84 +1,107 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Templates_Ctrl_EmailList extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Templates_Ctrl_EmailList'
-    @CTRL_AS   = 'ListCtrl'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Templates_Ctrl_EmailList extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Templates_Ctrl_EmailList';
+      this.CTRL_AS   = 'ListCtrl';
+    }
 
-    init: ->
-      parts = @$stateParams.groupName.split(':')
-      @typeId = parts.shift()
-      @groupId = parts.shift() || @typeId
+    init() {
+      const parts = this.$stateParams.groupName.split(':');
+      this.typeId = parts.shift();
+      return this.groupId = parts.shift() || this.typeId;
+    }
 
 
-    initialLoad: ->
-      promise = @Api.sendDataGet({
+    initialLoad() {
+      const promise = this.Api.sendDataGet({
         info: '/email-templates-info'
-      }).then( (res) =>
-        @templates = res.data.info.list[@typeId].groups[@groupId].templates
-      )
-      return promise
+      }).then( res => {
+        return this.templates = res.data.info.list[this.typeId].groups[this.groupId].templates;
+      });
+      return promise;
+    }
 
-    ###
-    # Open an editor
-    ###
-    openEditor: (tpl) ->
-      if !tpl.type || tpl.type == 'email'
-        modalInstance = @$modal.open({
-          templateUrl: @getTemplatePath('Templates/modal-email-editor.html'),
+    /*
+     * Open an editor
+     */
+    openEditor(tpl) {
+      let modalInstance;
+      if (!tpl.type || (tpl.type === 'email')) {
+        modalInstance = this.$modal.open({
+          templateUrl: this.getTemplatePath('Templates/modal-email-editor.html'),
           controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
           resolve: {
-            templateName: ->
-              return tpl.name
+            templateName() {
+              return tpl.name;
+            }
           }
-        }).result.then( (info) =>
-          if info.mode == 'custom'
-            tpl.is_custom = true
-          else if info.mode == 'revert'
-            tpl.is_custom = false
+        }).result.then( info => {
+          if (info.mode === 'custom') {
+            return tpl.is_custom = true;
+          } else if (info.mode === 'revert') {
+            tpl.is_custom = false;
 
-            # if this is a custom template group, then revert means delete
-            if @typeId == 'custom' and @groupId == 'custom'
-              @templates = @templates.filter((x) -> x != tpl)
-        )
-      else
-        modalInstance = @$modal.open({
-          templateUrl: @getTemplatePath('Templates/modal-template-editor.html'),
+            // if this is a custom template group, then revert means delete
+            if ((this.typeId === 'custom') && (this.groupId === 'custom')) {
+              return this.templates = this.templates.filter(x => x !== tpl);
+            }
+          }
+        });
+      } else {
+        modalInstance = this.$modal.open({
+          templateUrl: this.getTemplatePath('Templates/modal-template-editor.html'),
           controller: 'Admin_Templates_Ctrl_TemplateEditor',
           resolve: {
-            templateName: ->
-              return tpl.name
+            templateName() {
+              return tpl.name;
+            }
           }
-        }).result.then( (info) =>
-          if info.mode == 'custom'
-            tpl.is_custom = true
-          else if info.mode == 'revert'
-            tpl.is_custom = false
-        )
+        }).result.then( info => {
+          if (info.mode === 'custom') {
+            return tpl.is_custom = true;
+          } else if (info.mode === 'revert') {
+            return tpl.is_custom = false;
+          }
+        });
+      }
 
-      return modalInstance
+      return modalInstance;
+    }
 
-    ###
-      # Opens email editor in 'new' mode
-    ###
-    createNewEmailTemplate: ->
-      modalInstance = @$modal.open({
-        templateUrl: @getTemplatePath('Templates/modal-email-editor.html'),
+    /*
+      * Opens email editor in 'new' mode
+    */
+    createNewEmailTemplate() {
+      const modalInstance = this.$modal.open({
+        templateUrl: this.getTemplatePath('Templates/modal-email-editor.html'),
         controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
         resolve: {
-          templateName: ->
-            return null
+          templateName() {
+            return null;
+          }
         }
-      }).result.then( (info) =>
-        title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
-        tpl = {
-          typeId: @typeId,
-          groupId: @groupId,
+      }).result.then( info => {
+        const title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
+        const tpl = {
+          typeId: this.typeId,
+          groupId: this.groupId,
           name: info.templateName,
-          title: title
-        }
+          title
+        };
 
-        @templates.push(tpl)
-      )
+        return this.templates.push(tpl);
+      });
 
-      return modalInstance
+      return modalInstance;
+    }
+  }
+  Admin_Templates_Ctrl_EmailList.initClass();
 
-  Admin_Templates_Ctrl_EmailList.EXPORT_CTRL()
+  return Admin_Templates_Ctrl_EmailList.EXPORT_CTRL();
+});

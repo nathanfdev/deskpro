@@ -1,37 +1,46 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
 	'Admin/Main/Service/TemplateManager',
 	'AdminRouting'
 ], (
 	Admin_Main_Service_TemplateManager,
 	AdminRouting
-) ->
-	return (Module) ->
-		Module.service('dpTemplateManager', ['$templateCache', '$http', '$q', ($templateCache, $http, $q) ->
-			return new Admin_Main_Service_TemplateManager($templateCache, $http, $q)
-		])
+) =>
+	function(Module) {
+		Module.service('dpTemplateManager', ['$templateCache', '$http', '$q', ($templateCache, $http, $q) => new Admin_Main_Service_TemplateManager($templateCache, $http, $q)
+		]);
 
-		# Decorate the $templateCache so view names are always the 'short' names
-		# and not URLs
-		# e.g.  /deskpro/admin/load-view/Index/blank.html -> Index/blank.html
-		Module.config(['$provide', ($provide) ->
-			$provide.decorator('$templateCache', ['$delegate', ($delegate) ->
-				$delegate.ngGet = $delegate.get
-				$delegate.get = (view) ->
-					view = view.replace(/^.*?\/admin\/load\-view\//g, '')
-					return $delegate.ngGet(view)
+		// Decorate the $templateCache so view names are always the 'short' names
+		// and not URLs
+		// e.g.  /deskpro/admin/load-view/Index/blank.html -> Index/blank.html
+		Module.config(['$provide', $provide =>
+			$provide.decorator('$templateCache', ['$delegate', function($delegate) {
+				$delegate.ngGet = $delegate.get;
+				$delegate.get = function(view) {
+					view = view.replace(/^.*?\/admin\/load\-view\//g, '');
+					return $delegate.ngGet(view);
+				};
 
-				$delegate.ngPut = $delegate.put
-				$delegate.put = (view, value) ->
-					view = view.replace(/^.*?\/admin\/load\-view\//g, '')
-					return $delegate.ngPut(view, value)
+				$delegate.ngPut = $delegate.put;
+				$delegate.put = function(view, value) {
+					view = view.replace(/^.*?\/admin\/load\-view\//g, '');
+					return $delegate.ngPut(view, value);
+				};
 
-				return $delegate
+				return $delegate;
+			}
 			])
-		])
+		
+		]);
 
-		# Preload templates
-		Module.run(['dpTemplateManager', (dpTemplateManager) ->
-			templates = [
+		// Preload templates
+		return Module.run(['dpTemplateManager', function(dpTemplateManager) {
+			const templates = [
 				'Index/app-nav-portal.html',
 				'Index/app-nav-twitter.html',
 				'Index/modal-alert.html',
@@ -41,14 +50,17 @@ define [
 				'Index/blank.html',
 				'Index/home.html',
 				'Common/work-hours-directive.html',
-			]
+			];
 
-			for t in templates
-				dpTemplateManager.load(t)
+			for (let t of Array.from(templates)) {
+				dpTemplateManager.load(t);
+			}
 
-			dpTemplateManager.loadPending().then(->
-				window.setTimeout(->
-					window.DP_IS_BOOTED = true
+			return dpTemplateManager.loadPending().then(() =>
+				window.setTimeout(() => window.DP_IS_BOOTED = true
 				, 400)
-			)
-		])
+			);
+		}
+		]);
+	}
+);

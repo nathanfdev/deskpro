@@ -1,33 +1,50 @@
-define ->
-  class InterfaceTimer
-    constructor: (@logger) ->
-      @lastController = null
-      @isWithinLoad = false
-      @digestStart = null
-      @digestEnd = null
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  let InterfaceTimer;
+  return (InterfaceTimer = class InterfaceTimer {
+    constructor(logger) {
+      this.logger = logger;
+      this.lastController = null;
+      this.isWithinLoad = false;
+      this.digestStart = null;
+      this.digestEnd = null;
+    }
 
-    startControllerLoad: (controller) ->
-      @lastController = controller
-      @isWithinLoad = true
+    startControllerLoad(controller) {
+      this.lastController = controller;
+      return this.isWithinLoad = true;
+    }
 
-    startDigest: ->
-      @digestStart = new Date()
+    startDigest() {
+      return this.digestStart = new Date();
+    }
 
-    endDigest: ->
-      @digestEnd = new Date()
+    endDigest() {
+      this.digestEnd = new Date();
 
-      if @isWithinLoad
-        level = null
-        time = @digestEnd.getTime() - @digestStart.getTime()
-        if time > 500
-          level = 'notice'
-        if time > 750
-          level = 'warning'
+      if (this.isWithinLoad) {
+        let level = null;
+        const time = this.digestEnd.getTime() - this.digestStart.getTime();
+        if (time > 500) {
+          level = 'notice';
+        }
+        if (time > 750) {
+          level = 'warning';
+        }
 
-        if level
-          @logger[level](["[InterfaceTimer] (#{@lastController.constructor.CTRL_ID}) Load Digest Time: {0}ms", time])
+        if (level) {
+          this.logger[level]([`[InterfaceTimer] (${this.lastController.constructor.CTRL_ID}) Load Digest Time: {0}ms`, time]);
+        }
 
-        @isWithinLoad = false
+        return this.isWithinLoad = false;
+      }
+    }
 
-    endControllerLoad: ->
-      return
+    endControllerLoad() {
+    }
+  });
+});

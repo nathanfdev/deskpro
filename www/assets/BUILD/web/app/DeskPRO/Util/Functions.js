@@ -1,30 +1,40 @@
-define ->
-  class DeskPRO_Util_Functions
-    ###
-      # Returns a function that will be called wait ms after the last time it was
-      # invoked. E.g., if it was called 3 times in a row, it wouldnt actually be invoked
-    # 3 times because it happened before wait time had passed.
-      #
-      # @param {Function} fn
-      # @param {Integer} wait
-      # @param {bool} immediate
-    ###
-    debounce: (fn, wait, immediate) ->
-      timeout = null
-      res = null
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  class DeskPRO_Util_Functions {
+    /*
+      * Returns a function that will be called wait ms after the last time it was
+      * invoked. E.g., if it was called 3 times in a row, it wouldnt actually be invoked
+    * 3 times because it happened before wait time had passed.
+      *
+      * @param {Function} fn
+      * @param {Integer} wait
+      * @param {bool} immediate
+    */
+    debounce(fn, wait, immediate) {
+      let timeout = null;
+      let res = null;
 
-      return ->
-        self = this
-        args = arguments
+      return function() {
+        const self = this;
+        const args = arguments;
 
-        later = ->
-          timeout = null
-          if not immediate then res = fn.apply(self, args)
+        const later = function() {
+          timeout = null;
+          if (!immediate) { return res = fn.apply(self, args); }
+        };
 
-        callNow = immediate && !timeout
-        clearTimeout(timeout)
-        timeout = setTimeout(later, wait)
-        if callNow then res = fn.apply(self, args)
-        return res
+        const callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) { res = fn.apply(self, args); }
+        return res;
+      };
+    }
+  }
 
-  return new DeskPRO_Util_Functions()
+  return new DeskPRO_Util_Functions();
+});

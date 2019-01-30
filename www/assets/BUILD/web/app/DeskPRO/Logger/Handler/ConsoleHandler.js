@@ -1,44 +1,62 @@
-define [
-  'DeskPRO/Util/Util'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
+  'DeskPRO/Util/Util',
   'DeskPRO/Logger/Handler/AbstractProcessingHandler',
   'DeskPRO/Logger/Formatter/ConsoleFormatter',
-], (
+], function(
   Util,
   AbstractProcessingHandler,
   ConsoleFormatter
-) ->
-  class ConsoleHandler extends AbstractProcessingHandler
-    write: (record) ->
-      consoleName = null
-      if record.level_name == 'debug'
-        consoleName = 'debug'
-      else if record.level_name == 'info'
-        consoleName = 'info'
-      else if record.level_name in ['error', 'critical', 'alert', 'emergency']
-        consoleName = 'error'
-      else
-        consoleName = 'log'
+) {
+  let ConsoleHandler;
+  return (ConsoleHandler = class ConsoleHandler extends AbstractProcessingHandler {
+    write(record) {
+      let consoleName = null;
+      if (record.level_name === 'debug') {
+        consoleName = 'debug';
+      } else if (record.level_name === 'info') {
+        consoleName = 'info';
+      } else if (['error', 'critical', 'alert', 'emergency'].includes(record.level_name)) {
+        consoleName = 'error';
+      } else {
+        consoleName = 'log';
+      }
 
-      if window.console?[consoleName]?
-        format_args = record.formatted.args
-        format_args.unshift(record.formatted.format)
+      if ((window.console != null ? window.console[consoleName] : undefined) != null) {
+        const format_args = record.formatted.args;
+        format_args.unshift(record.formatted.format);
 
-        window.console[consoleName].apply(window.console, format_args)
+        return window.console[consoleName].apply(window.console, format_args);
+      }
+    }
 
-    _formatError: ->
-      if arg instanceof Error
-        if arg.stack
-          if arg.message and arg.stack.indexOf(arg.message) == -1
-            arg = 'Error: ' + arg.message + '\n' + arg.stack
-          else
-            arg = arg.stack
-        else if arg.sourceURL
-          arg = arg.message + '\n' + arg.sourceURL + ':' + arg.line
+    _formatError() {
+      let arg;
+      if (arg instanceof Error) {
+        if (arg.stack) {
+          if (arg.message && (arg.stack.indexOf(arg.message) === -1)) {
+            arg = `Error: ${arg.message}\n${arg.stack}`;
+          } else {
+            arg = arg.stack;
+          }
+        } else if (arg.sourceURL) {
+          arg = arg.message + '\n' + arg.sourceURL + ':' + arg.line;
+        }
+      }
 
-      return arg
+      return arg;
+    }
 
-    ###
-      # @return {Object}
-    ###
-    getDefaultFormatter: ->
-      return new ConsoleFormatter()
+    /*
+      * @return {Object}
+    */
+    getDefaultFormatter() {
+      return new ConsoleFormatter();
+    }
+  });
+});

@@ -1,5 +1,14 @@
-define ['angular'], (angular) ->
-  ###*
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['angular'], function(angular) {
+  /**
     * A model holds data about some kind of entity.
     * Our model class does nothing special except tries to make it easier
     * to dirty-check.
@@ -13,217 +22,312 @@ define ['angular'], (angular) ->
     * and these models are completely unaware of other models already loaded.
     * That means you could have two records with ID 5, or a record with a "parent" of 5 etc.
     * These models by themselves are not a repository.
-  ###
-  class Admin_Main_Model_Base
-    constructor: (type_id, id_prop = 'id') ->
-      @_obj_time   = (new Date()).getTime()
-      @_obj_refc   = 0
-      @_type_id    = type_id
-      @_id_prop    = id_prop
-      @_is_mult_id = angular.isArray(id_prop)
-      @_dp_uid     = dp_get_uid()
-      @_is_model   = true
-      @_data_checkpoints = []
+  */
+  let Admin_Main_Model_Base;
+  return (Admin_Main_Model_Base = class Admin_Main_Model_Base {
+    constructor(type_id, id_prop) {
+      if (id_prop == null) { id_prop = 'id'; }
+      this._obj_time   = (new Date()).getTime();
+      this._obj_refc   = 0;
+      this._type_id    = type_id;
+      this._id_prop    = id_prop;
+      this._is_mult_id = angular.isArray(id_prop);
+      this._dp_uid     = dp_get_uid();
+      this._is_model   = true;
+      this._data_checkpoints = [];
+    }
 
 
-    ###*
-      # Add to the ref counter
-      #
-      # @param {Object} obj Optionally set up auto-release on obj
-      ###
-    retain: (obj) ->
-      @_obj_refc += 1
-      @_obj_time  = (new Date()).getTime()
+    /**
+      * Add to the ref counter
+      *
+      * @param {Object} obj Optionally set up auto-release on obj
+      */
+    retain(obj) {
+      this._obj_refc += 1;
+      this._obj_time  = (new Date()).getTime();
 
-      if obj? and obj._configureAutoReleaseObject?
-        obj._configureAutoReleaseObject(obj)
-
-
-    ###*
-      # Remove from the ref counter
-      ###
-    release: ->
-      @_obj_refc -= 1
-      @_obj_time  = (new Date()).getTime()
+      if ((obj != null) && (obj._configureAutoReleaseObject != null)) {
+        return obj._configureAutoReleaseObject(obj);
+      }
+    }
 
 
-    ###*
-      # Copy properties from another model
-      ###
-    copyPropertiesFrom: (model) ->
-      @setData(mode.getData())
+    /**
+      * Remove from the ref counter
+      */
+    release() {
+      this._obj_refc -= 1;
+      return this._obj_time  = (new Date()).getTime();
+    }
 
 
-    ###*
+    /**
+      * Copy properties from another model
+      */
+    copyPropertiesFrom(model) {
+      return this.setData(mode.getData());
+    }
+
+
+    /**
       * Get the type of model this is
       *
       * @return {String}
-    ###
-    getTypeId: ->
-      return @_type_id
+    */
+    getTypeId() {
+      return this._type_id;
+    }
 
-    ###*
+    /**
       * Get the ID of the entity this object represents (typically a numeric ID)
       *
       * @return {Integer}
-    ###
-    getEntityId: ->
-      if @[@_id_prop]?
-        if @_is_mult_id
-          id_parts = []
-          for idp in @_id_prop
-            id_parts.push(idp)
-          return id_parts.join('::')
+    */
+    getEntityId() {
+      if (this[this._id_prop] != null) {
+        if (this._is_mult_id) {
+          const id_parts = [];
+          for (let idp of Array.from(this._id_prop)) {
+            id_parts.push(idp);
+          }
+          return id_parts.join('::');
 
-        else
-          return @[@_id_prop]
+        } else {
+          return this[this._id_prop];
+        }
+      }
 
-      return null
+      return null;
+    }
 
-    ###*
+    /**
       * Create a new checkpoint. Checkpoints allow you to revert data to previous states or compare
       * with previous states.
       *
       * @param {String} chk_id Optionally provide an ID to refer to the checkpoint later
-    ###
-    setCheckpoint: (chk_id = null, deep = false) ->
-      data = {}
-      for own key, value of @
-        if key.substr(0, 1) != '_'
-          if value? and value._is_model
-            if deep
-              value.setCheckpoint(chk_id, true)
-          else
-            data[key] = value
+    */
+    setCheckpoint(chk_id = null, deep) {
+      if (deep == null) { deep = false; }
+      const data = {};
+      for (let key of Object.keys(this || {})) {
+        const value = this[key];
+        if (key.substr(0, 1) !== '_') {
+          if ((value != null) && value._is_model) {
+            if (deep) {
+              value.setCheckpoint(chk_id, true);
+            }
+          } else {
+            data[key] = value;
+          }
+        }
+      }
 
-      @_data_checkpoints.push([chk_id, data])
+      return this._data_checkpoints.push([chk_id, data]);
+    }
 
 
-    ###*
+    /**
       * Get data for a checkpoint.
       *
       * @param {String} chk_id Optionally provide an ID, else the latest checkpoint is returned
-    ###
-    getCheckpoint: (chk_id = null) ->
-      if chk_id
-        for cp in @_data_checkpoints
-          return cp[1] if cp[0] == id
-      else
-        return @_data_checkpoints[@_data_checkpoints.length - 1][1]
+    */
+    getCheckpoint(chk_id = null) {
+      if (chk_id) {
+        for (let cp of Array.from(this._data_checkpoints)) {
+          if (cp[0] === id) { return cp[1]; }
+        }
+      } else {
+        return this._data_checkpoints[this._data_checkpoints.length - 1][1];
+      }
 
-      return null
+      return null;
+    }
 
 
-    ###*
+    /**
       * Revert to a previous checkpoint
       *
       * @param {String} chk_id Optionally provide an ID, else the latest checkpoint is returned
-    ###
-    revertCheckpoint: (chk_id = null, deep = false) ->
-      if chk_id
-        for cp, i in @_data_checkpoints
-          if cp[0] == chk_id
-            data = cp[1]
-            @_data_checkpoints = @_data_checkpoints.splice(i, 0)
-            break
+    */
+    revertCheckpoint(chk_id = null, deep) {
+      let data;
+      if (deep == null) { deep = false; }
+      if (chk_id) {
+        for (let i = 0; i < this._data_checkpoints.length; i++) {
+          const cp = this._data_checkpoints[i];
+          if (cp[0] === chk_id) {
+            data = cp[1];
+            this._data_checkpoints = this._data_checkpoints.splice(i, 0);
+            break;
+          }
+        }
 
-        if not data
-          throw new Error("No checkpoint found with that ID")
-      else
-        data = @_data_checkpoints.pop()
+        if (!data) {
+          throw new Error("No checkpoint found with that ID");
+        }
+      } else {
+        data = this._data_checkpoints.pop();
+      }
 
-      @setCheckpoint()
-      @setData(data)
+      this.setCheckpoint();
+      this.setData(data);
 
-      if deep
-        for own key, value of @
-          if key.substr(0,1) != '_'
-            if value? and value._is_model
-              value.revertCheckpoint(chk_id, true)
+      if (deep) {
+        return (() => {
+          const result = [];
+          for (let key of Object.keys(this || {})) {
+            const value = this[key];
+            if (key.substr(0,1) !== '_') {
+              if ((value != null) && value._is_model) {
+                result.push(value.revertCheckpoint(chk_id, true));
+              } else {
+                result.push(undefined);
+              }
+            } else {
+              result.push(undefined);
+            }
+          }
+          return result;
+        })();
+      }
+    }
 
 
-    ###*
+    /**
       * Revert to the first checkpoint (e.g., the initial data)
-    ###
-    revertAllCheckpoints: (deep = false) ->
-      data = @_data_checkpoints.shift()
-      @clearCheckpoints()
-      @setData(data)
+    */
+    revertAllCheckpoints(deep) {
+      if (deep == null) { deep = false; }
+      const data = this._data_checkpoints.shift();
+      this.clearCheckpoints();
+      this.setData(data);
 
-      if deep
-        for own key, value of @
-          if key.substr(0,1) != '_'
-            if value? and value._is_model
-              value.revertAllCheckpoints(true)
+      if (deep) {
+        return (() => {
+          const result = [];
+          for (let key of Object.keys(this || {})) {
+            const value = this[key];
+            if (key.substr(0,1) !== '_') {
+              if ((value != null) && value._is_model) {
+                result.push(value.revertAllCheckpoints(true));
+              } else {
+                result.push(undefined);
+              }
+            } else {
+              result.push(undefined);
+            }
+          }
+          return result;
+        })();
+      }
+    }
 
 
-    ###*
+    /**
       * Clears all checkpoints. The data set now is considered the initial data.
-    ###
-    clearCheckpoints: (deep) ->
-      @_data_checkpoints = []
-      @setCheckpoint()
+    */
+    clearCheckpoints(deep) {
+      this._data_checkpoints = [];
+      this.setCheckpoint();
 
-      if deep
-        for own key, value of @
-          if key.substr(0,1) != '_'
-            if value? and value._is_model
-              value.clearCheckpoints(true)
+      if (deep) {
+        return (() => {
+          const result = [];
+          for (let key of Object.keys(this || {})) {
+            const value = this[key];
+            if (key.substr(0,1) !== '_') {
+              if ((value != null) && value._is_model) {
+                result.push(value.clearCheckpoints(true));
+              } else {
+                result.push(undefined);
+              }
+            } else {
+              result.push(undefined);
+            }
+          }
+          return result;
+        })();
+      }
+    }
 
 
-    ###*
+    /**
       * Set data on this model
       *
       * @param {Object} data
-    ###
-    setData: (data) ->
-      for own key, value of data
-        @[key] = value
+    */
+    setData(data) {
+      for (let key of Object.keys(data || {})) {
+        const value = data[key];
+        this[key] = value;
+      }
 
-      if not @_data_checkpoints.length
-        @setCheckpoint()
+      if (!this._data_checkpoints.length) {
+        return this.setCheckpoint();
+      }
+    }
 
 
-    ###*
+    /**
       * Gets all data on this model.
       *
       * @return {Object}
-    ###
-    getData: ->
-      data = {}
-      for own key, value of @
-        if key.substr(0, 1) != '_'
-          data[key] = value
+    */
+    getData() {
+      const data = {};
+      for (let key of Object.keys(this || {})) {
+        const value = this[key];
+        if (key.substr(0, 1) !== '_') {
+          data[key] = value;
+        }
+      }
 
-      return data
+      return data;
+    }
 
 
-    ###*
+    /**
       * Return an array of field names that have changed.
       *
       * @return {Array}
-    ###
-    getChangedFields: (chk_id = null, deep = false) ->
-      changed = []
+    */
+    getChangedFields(chk_id = null, deep) {
+      if (deep == null) { deep = false; }
+      const changed = [];
 
-      last_data = @getCheckpoint(chk_id)
-      if not last_data
-        throw new Error("No checkpoint to compare against")
+      const last_data = this.getCheckpoint(chk_id);
+      if (!last_data) {
+        throw new Error("No checkpoint to compare against");
+      }
 
-      for own key, value of @
-        if key.substr(0,1) != '_'
-          if value? and value._is_model
-            if deep
-              model_changed = value.getChangedFields(chk_id, true)
-              if model_changed.length
-                for subchange in model_changed
-                  changed.push(key + '.' + subchange)
-          else
-            if value != last_data[key]
-              if key == 'id' or key.match(/_id$/)
-                if (parseInt(value)||0) != (parseInt(last_data[key])||0)
-                  changed.push(key)
-              else
-                changed.push(key)
+      for (let key of Object.keys(this || {})) {
+        const value = this[key];
+        if (key.substr(0,1) !== '_') {
+          if ((value != null) && value._is_model) {
+            if (deep) {
+              const model_changed = value.getChangedFields(chk_id, true);
+              if (model_changed.length) {
+                for (let subchange of Array.from(model_changed)) {
+                  changed.push(key + '.' + subchange);
+                }
+              }
+            }
+          } else {
+            if (value !== last_data[key]) {
+              if ((key === 'id') || key.match(/_id$/)) {
+                if ((parseInt(value)||0) !== (parseInt(last_data[key])||0)) {
+                  changed.push(key);
+                }
+              } else {
+                changed.push(key);
+              }
+            }
+          }
+        }
+      }
 
-      return changed
+      return changed;
+    }
+  });
+});

@@ -1,50 +1,68 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Settings_Ctrl_RegSettings extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Settings_Ctrl_RegSettings'
-    @CTRL_AS   = 'Settings'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_Settings_Ctrl_RegSettings extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Settings_Ctrl_RegSettings';
+      this.CTRL_AS   = 'Settings';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      @settings = null
+    init() {
+      return this.settings = null;
+    }
 
-    initialLoad: ->
-      data_promise = @Api.sendGet('/registration_settings', {rate_limit_context: 'user'}).then( (res) =>
-        @$scope.settings = res.data.registration_settings
-        @settings = angular.copy(@$scope.settings)
-        @$scope.rate_limit_settings = res.data.rate_limit_settings
-      )
+    initialLoad() {
+      const data_promise = this.Api.sendGet('/registration_settings', {rate_limit_context: 'user'}).then( res => {
+        this.$scope.settings = res.data.registration_settings;
+        this.settings = angular.copy(this.$scope.settings);
+        return this.$scope.rate_limit_settings = res.data.rate_limit_settings;
+      });
 
-      return @$q.all([data_promise])
+      return this.$q.all([data_promise]);
+    }
 
-    isDirtyState: ->
-      if not @settings then return false
-      if not angular.equals(@settings, @$scope.settings)
-        return true
-      else
-        return false
+    isDirtyState() {
+      if (!this.settings) { return false; }
+      if (!angular.equals(this.settings, this.$scope.settings)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
-    save: ->
-      postData = {
-        registration_settings: @$scope.settings
-        rate_limit_settings: @$scope.rate_limit_settings
+    save() {
+      let promise;
+      const postData = {
+        registration_settings: this.$scope.settings,
+        rate_limit_settings: this.$scope.rate_limit_settings,
         rate_limit_context: 'user'
+      };
+
+      if ((postData.registration_settings.reg_enabled === "1") || (postData.registration_settings.reg_enabled === 1) || (postData.registration_settings.reg_enabled === true)) {
+        postData.registration_settings.reg_enabled = true;
+      } else {
+        postData.registration_settings.reg_enabled = false;
       }
 
-      if postData.registration_settings.reg_enabled == "1" or postData.registration_settings.reg_enabled == 1 or postData.registration_settings.reg_enabled == true
-        postData.registration_settings.reg_enabled = true
-      else
-        postData.registration_settings.reg_enabled = false
+      this.startSpinner('saving');
+      return promise = this.Api.sendPostJson('/registration_settings', postData).success( () => {
+        this.settings = angular.copy(this.$scope.settings);
 
-      @startSpinner('saving')
-      promise = @Api.sendPostJson('/registration_settings', postData).success( =>
-        @settings = angular.copy(@$scope.settings)
+        return this.stopSpinner('saving').then(() => {
+          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+        });
+      }).error( (info, code) => {
+        this.stopSpinner('saving', true);
+        return this.applyErrorResponseToView(info);
+      });
+    }
+  }
+  Admin_Settings_Ctrl_RegSettings.initClass();
 
-        @stopSpinner('saving').then(=>
-          @Growl.success(@getRegisteredMessage('saved_settings'))
-        )
-      ).error( (info, code) =>
-        @stopSpinner('saving', true)
-        @applyErrorResponseToView(info)
-      )
-
-  Admin_Settings_Ctrl_RegSettings.EXPORT_CTRL()
+  return Admin_Settings_Ctrl_RegSettings.EXPORT_CTRL();
+});

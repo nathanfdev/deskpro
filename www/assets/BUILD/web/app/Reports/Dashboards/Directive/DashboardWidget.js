@@ -1,22 +1,31 @@
-define ->
-  Reports_Directive_Widget= ['DashboardWidgetService', (DashboardWidgetService) ->
-    return {
-      restrict: 'A'
-      replace: false
-      scope:
-        widgetId: '@'
-        options: '@'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  const Reports_Directive_Widget= ['DashboardWidgetService', DashboardWidgetService =>
+    ({
+      restrict: 'A',
+      replace: false,
+      scope: {
+        widgetId: '@',
+        options: '@',
         title: '@'
+      },
 
-      link: (scope) ->
-        scope.$on('gridster-item-transition-end', (item) =>
-          gridsterItem = item.targetScope.gridsterItem
-          gridsterItem.id = scope.widgetId
-          gridsterItem.title = scope.title
-          gridsterItem.options = scope.options
-          DashboardWidgetService.saveWidget(gridsterItem)
-        )
-    }
-  ]
+      link(scope) {
+        return scope.$on('gridster-item-transition-end', item => {
+          const { gridsterItem } = item.targetScope;
+          gridsterItem.id = scope.widgetId;
+          gridsterItem.title = scope.title;
+          gridsterItem.options = scope.options;
+          return DashboardWidgetService.saveWidget(gridsterItem);
+        });
+      }
+    })
+  
+  ];
 
-  return Reports_Directive_Widget
+  return Reports_Directive_Widget;
+});

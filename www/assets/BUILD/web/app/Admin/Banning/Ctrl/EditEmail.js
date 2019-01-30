@@ -1,54 +1,70 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_Banning_Ctrl_EditEmail extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Banning_Ctrl_EditEmail'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['$stateParams']
+) {
+  class Admin_Banning_Ctrl_EditEmail extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Banning_Ctrl_EditEmail';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['$stateParams'];
+    }
 
-    init: ->
-      @banData = @DataService.get('Bans')
-      @banData.setType('email')
-      @email_ban = null
+    init() {
+      this.banData = this.DataService.get('Bans');
+      this.banData.setType('email');
+      return this.email_ban = null;
+    }
 
-    ###
-  #
-  ###
+    /*
+  *
+  */
 
-    initialLoad: ->
-      promise = @banData.loadEditBanData(@$stateParams.ban || null).then( (data) =>
+    initialLoad() {
+      const promise = this.banData.loadEditBanData(this.$stateParams.ban || null).then( data => {
 
-        @email_ban = data.email_ban
-        @form = data.form
-      )
-      return promise
+        this.email_ban = data.email_ban;
+        return this.form = data.form;
+      });
+      return promise;
+    }
 
-    ###
-    #
-  ###
+    /*
+     *
+   */
 
-    saveForm: ->
+    saveForm() {
 
-      if not @$scope.form_props.$valid
-        return
+      if (!this.$scope.form_props.$valid) {
+        return;
+      }
 
-      is_new = !@$stateParams.ban
+      const is_new = !this.$stateParams.ban;
 
-      promise = @banData.saveFormModel(@email_ban, @form)
+      const promise = this.banData.saveFormModel(this.email_ban, this.form);
 
-      @startSpinner('saving')
-      promise.then( =>
-        @stopSpinner('saving', true).then( =>
-          @Growl.success("Saved")
-        )
+      this.startSpinner('saving');
+      return promise.then( () => {
+        this.stopSpinner('saving', true).then( () => {
+          return this.Growl.success("Saved");
+        });
 
-        @skipDirtyState()
-        if is_new
-          @$state.go('crm.banning.gocreate_email')
-        else
-          @$state.go('crm.banning.edit_email', {ban: @email_ban.banned_email})
-      )
+        this.skipDirtyState();
+        if (is_new) {
+          return this.$state.go('crm.banning.gocreate_email');
+        } else {
+          return this.$state.go('crm.banning.edit_email', {ban: this.email_ban.banned_email});
+        }
+      });
+    }
+  }
+  Admin_Banning_Ctrl_EditEmail.initClass();
 
-  Admin_Banning_Ctrl_EditEmail.EXPORT_CTRL()
+  return Admin_Banning_Ctrl_EditEmail.EXPORT_CTRL();
+});

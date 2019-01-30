@@ -1,42 +1,53 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Util/Util'
-], (
+], function(
   Util
-) ->
-  class ReportEditFormMapper
+) {
+  let ReportEditFormMapper;
+  return (ReportEditFormMapper = class ReportEditFormMapper {
 
-    ###
-      #
-    #
-    ###
-    getFormFromModel: (model) ->
+    /*
+      *
+    *
+    */
+    getFormFromModel(model) {
 
-      form = {}
-      form.id = model.report.id
-      form.title = model.report.title
-      form.description = model.report.description
+      const form = {};
+      form.id = model.report.id;
+      form.title = model.report.title;
+      form.description = model.report.description;
 
-      return form
-
-
-    ###
-      #
-      #
-    ###
-    applyFormToModel: (model, formModel) ->
-
-      model.title = formModel.title
+      return form;
+    }
 
 
-    ###
-      #
-      #
-    ###
-    getPostDataFromForm: (formModel) ->
+    /*
+      *
+      *
+    */
+    applyFormToModel(model, formModel) {
 
-      postData = {}
-      postData.id = formModel.id
-      postData.title = formModel.title
-      postData.description = formModel.description
+      return model.title = formModel.title;
+    }
 
-      return postData
+
+    /*
+      *
+      *
+    */
+    getPostDataFromForm(formModel) {
+
+      const postData = {};
+      postData.id = formModel.id;
+      postData.title = formModel.title;
+      postData.description = formModel.description;
+
+      return postData;
+    }
+  });
+});

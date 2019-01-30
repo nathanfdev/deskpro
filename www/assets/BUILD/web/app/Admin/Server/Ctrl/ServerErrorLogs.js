@@ -1,52 +1,68 @@
-define ['underscore','Admin/Main/Ctrl/Base'], (_, Admin_Ctrl_Base) ->
-  class Admin_ServerErrorLogs_Ctrl_ServerErrorLogs extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_ServerErrorLogs_Ctrl_ServerErrorLogs'
-    @CTRL_AS   = 'ServerErrorLogs'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['underscore','Admin/Main/Ctrl/Base'], function(_, Admin_Ctrl_Base) {
+  class Admin_ServerErrorLogs_Ctrl_ServerErrorLogs extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_ServerErrorLogs_Ctrl_ServerErrorLogs';
+      this.CTRL_AS   = 'ServerErrorLogs';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      @$scope.server_error_logs = null
-      @$scope.logs_size = 0
-      @logs_path = '';
+    init() {
+      this.$scope.server_error_logs = null;
+      this.$scope.logs_size = 0;
+      return this.logs_path = '';
+    }
 
-    initialLoad: ->
-      data_promise = @Api.sendGet('/server_error_logs').then( (res) =>
-        @logs_path = res.data.path
-        @$scope.server_error_logs = res.data.server_error_logs
-        if @$scope.server_error_logs?.logs
-          @$scope.server_error_logs.logs = @$scope.server_error_logs.logs.reverse()
-        @$scope.logs_size = _.size(@$scope.server_error_logs.logs)
-      )
+    initialLoad() {
+      const data_promise = this.Api.sendGet('/server_error_logs').then( res => {
+        this.logs_path = res.data.path;
+        this.$scope.server_error_logs = res.data.server_error_logs;
+        if (this.$scope.server_error_logs != null ? this.$scope.server_error_logs.logs : undefined) {
+          this.$scope.server_error_logs.logs = this.$scope.server_error_logs.logs.reverse();
+        }
+        return this.$scope.logs_size = _.size(this.$scope.server_error_logs.logs);
+      });
 
-      return @$q.all([data_promise])
+      return this.$q.all([data_promise]);
+    }
 
-    ###
-    # Show the clear dlg
-    ###
-    startClearAll: ->
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('Server/server-error-logs-delete-modal.html'),
-        controller: ['$scope', '$modalInstance',  ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close()
+    /*
+     * Show the clear dlg
+     */
+    startClearAll() {
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('Server/server-error-logs-delete-modal.html'),
+        controller: ['$scope', '$modalInstance',  function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
-      })
+      });
 
-      inst.result.then( () =>
-        @clearAll()
-      )
+      return inst.result.then( () => {
+        return this.clearAll();
+      });
+    }
 
-    ###
-    # Actually do the clear
-    ###
-    clearAll: ->
-      @Api.sendDelete('/server_error_logs').success( =>
-        @$scope.server_error_logs.logs = null
-      ).error(=>
-        @showAlert("Clearing the logs failed because the log file is not writable by the web server. You must make the " + @logs_path + "/error.log file writable before you can clear it.")
-      )
+    /*
+     * Actually do the clear
+     */
+    clearAll() {
+      return this.Api.sendDelete('/server_error_logs').success( () => {
+        return this.$scope.server_error_logs.logs = null;
+      }).error(() => {
+        return this.showAlert(`Clearing the logs failed because the log file is not writable by the web server. You must make the ${this.logs_path}/error.log file writable before you can clear it.`);
+      });
+    }
+  }
+  Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.initClass();
 
-  Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.EXPORT_CTRL()
+  return Admin_ServerErrorLogs_Ctrl_ServerErrorLogs.EXPORT_CTRL();
+});

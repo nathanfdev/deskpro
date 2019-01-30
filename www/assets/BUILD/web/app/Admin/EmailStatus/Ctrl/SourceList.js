@@ -1,152 +1,191 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS202: Simplify dynamic range loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/LocalStore',
   'moment'
-], (
+], function(
   Admin_Ctrl_Base,
   LocalStore,
-  moment) ->
-  class Admin_EmailStatus_Ctrl_SourceList extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_EmailStatus_Ctrl_SourceList'
-    @CTRL_AS = 'ListCtrl'
+  moment) {
+  class Admin_EmailStatus_Ctrl_SourceList extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_EmailStatus_Ctrl_SourceList';
+      this.CTRL_AS = 'ListCtrl';
+    }
 
-    init: ->
-      @storeFilterId = Admin_EmailStatus_Ctrl_SourceList.CTRL_ID+'.filter'
-      @filter = {
+    init() {
+      this.storeFilterId = Admin_EmailStatus_Ctrl_SourceList.CTRL_ID+'.filter';
+      this.filter = {
         account: "0",
         page: 1
+      };
+      this.results = [];
+      this.num_results = 0;
+      this.num_pages = 0;
+      this.page_nums = [1];
+      this.filter_date_mode = "none";
+      this.page = 1;
+      this.massActionsOp = "reprocess";
+
+      if (LocalStore.has(this.storeFilterId)) {
+        this.filter = LocalStore.getObject(this.storeFilterId, this.filter);
+        this.filter.page = 1;
+        this.$scope.filter_open = true;
       }
-      @results = []
-      @num_results = 0
-      @num_pages = 0
-      @page_nums = [1]
-      @filter_date_mode = "none"
-      @page = 1
-      @massActionsOp = "reprocess"
 
-      if LocalStore.has(@storeFilterId)
-        @filter = LocalStore.getObject(@storeFilterId, @filter)
-        @filter.page = 1
-        @$scope.filter_open = true
+      this.$scope.$watch('ListCtrl.page', (newVal, oldVal) => {
+        if (parseInt(newVal) === parseInt(oldVal)) {
+          return;
+        }
+        if (isNaN(parseInt(newVal))) {
+          return;
+        }
 
-      @$scope.$watch('ListCtrl.page', (newVal, oldVal) =>
-        if parseInt(newVal) == parseInt(oldVal)
-          return
-        if isNaN(parseInt(newVal))
-          return
+        return this.changePage();
+      });
 
-        @changePage()
-      )
-
-      @$scope.showStatusHelp = =>
-        modalInstance = @$modal.open({
-          templateUrl: @getTemplatePath('EmailStatus/emailsource-status-code-modal.html'),
-          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-            $scope.dismiss = ->
-              $modalInstance.dismiss()
+      return this.$scope.showStatusHelp = () => {
+        let modalInstance;
+        return modalInstance = this.$modal.open({
+          templateUrl: this.getTemplatePath('EmailStatus/emailsource-status-code-modal.html'),
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+            $scope.dismiss = () => $modalInstance.dismiss()
+          
           ]
-        })
+        });
+      };
+    }
 
-    initialLoad: ->
-      p1 = @loadResults()
-      p2 = @Api.sendGet('/email_accounts').success( (data) =>
-        @$scope.email_accounts = data.email_accounts
-      )
-      @Api.sendGet('/email_status/stats').success( (data) =>
-        @$scope.counts = {
+    initialLoad() {
+      const p1 = this.loadResults();
+      const p2 = this.Api.sendGet('/email_accounts').success( data => {
+        return this.$scope.email_accounts = data.email_accounts;
+      });
+      this.Api.sendGet('/email_status/stats').success( data => {
+        return this.$scope.counts = {
           status: data.by_status || {},
           account: data.by_account || {}
-        }
-      )
+        };
+      });
 
-      return @$q.all([p1, p2])
+      return this.$q.all([p1, p2]);
+    }
 
-    changePage: ->
-      if @filter.page == @page
-        return
+    changePage() {
+      if (this.filter.page === this.page) {
+        return;
+      }
 
-      @filter.page = @page
-      @loadResults(true)
+      this.filter.page = this.page;
+      return this.loadResults(true);
+    }
 
-    clearFilter: ->
-      @filter = {
+    clearFilter() {
+      this.filter = {
         account: "0",
         page: 1
+      };
+      this.$scope.filter_open = false;
+      this.updateFilter(true);
+      return LocalStore.remove(this.storeFilterId);
+    }
+
+    updateFilter(skipSave) {
+      this.page = 1;
+      this.filter.page = this.page;
+
+      this.filter.date_start = null;
+      this.filter.date_end = null;
+      if (this.filter_date_mode && (this.filter_date_mode !== 'none')) {
+        if (this.filter_date1 && ((this.filter_date_mode === 'between') || (this.filter_date_mode === 'after'))) {
+          this.filter.date_start = moment(this.filter_date1).format("YYYY-MM-DD");
+        }
+        if (this.filter_date2 && ((this.filter_date_mode === 'between') || (this.filter_date_mode === 'before'))) {
+          this.filter.date_end = moment(this.filter_date2).format("YYYY-MM-DD");
+        }
       }
-      @$scope.filter_open = false
-      @updateFilter(true)
-      LocalStore.remove(@storeFilterId)
 
-    updateFilter: (skipSave) ->
-      @page = 1
-      @filter.page = @page
+      if (!skipSave) {
+        LocalStore.setObject(this.storeFilterId, this.filter);
+      }
 
-      @filter.date_start = null
-      @filter.date_end = null
-      if @filter_date_mode and @filter_date_mode != 'none'
-        if @filter_date1 and (@filter_date_mode == 'between' || @filter_date_mode == 'after')
-          @filter.date_start = moment(@filter_date1).format("YYYY-MM-DD")
-        if @filter_date2 and (@filter_date_mode == 'between' || @filter_date_mode == 'before')
-          @filter.date_end = moment(@filter_date2).format("YYYY-MM-DD")
+      return this.loadResults();
+    }
 
-      if not skipSave
-        LocalStore.setObject(@storeFilterId, @filter)
+    loadResults(fallbackPrevPage) {
+      this.startSpinner('loading_page');
+      this.results = [];
+      const promise = this.Api.sendGet('/email_status/sources', {filter: this.filter}).success( data => {
+        this.stopSpinner('loading_page', true);
+        this.results     = data.email_sources;
+        this.filter.page = data.page;
+        this.page        = data.page;
+        this.num_pages   = data.num_pages;
+        this.num_results = data.count;
+        this.massActions = {};
+        this.massActionsAll = false;
+        this.massActionsLoading = false;
 
-      @loadResults()
+        this.page_nums = [];
+        for (let i = 1, end = this.num_pages, asc = 1 <= end; asc ? i <= end : i >= end; asc ? i++ : i--) {
+          this.page_nums.push(i);
+        }
 
-    loadResults: (fallbackPrevPage) ->
-      @startSpinner('loading_page')
-      @results = []
-      promise = @Api.sendGet('/email_status/sources', {filter: @filter}).success( (data) =>
-        @stopSpinner('loading_page', true)
-        @results     = data.email_sources
-        @filter.page = data.page
-        @page        = data.page
-        @num_pages   = data.num_pages
-        @num_results = data.count
-        @massActions = {}
-        @massActionsAll = false
-        @massActionsLoading = false
+        if (fallbackPrevPage && !this.results.length && (data.page > 1)) {
+          this.filter.page = data.page - 1;
+          return this.loadResults();
+        }
+      });
 
-        @page_nums = []
-        for i in [1..@num_pages]
-          @page_nums.push(i)
+      return promise;
+    }
 
-        if fallbackPrevPage and !@results.length and data.page > 1
-          @filter.page = data.page - 1;
-          @loadResults()
-      )
+    toggleMassActions() {
+      this.massActions = {};
+      if (this.massActionsAll) {
+        return Array.from(this.results).map((r) =>
+          (this.massActions[r.id] = true));
+      }
+    }
 
-      return promise
+    hasAnyMassActions() {
+      for (let r of Array.from(this.results)) {
+        if (this.massActions[r.id]) { return true; }
+      }
+      return false;
+    }
 
-    toggleMassActions: ->
-      @massActions = {}
-      if @massActionsAll
-        for r in @results
-          @massActions[r.id] = true
+    performMassActions() {
+      const url = `/email_status/sources/mass-actions/${this.massActionsOp}`;
+      this.massActionsLoading = true;
 
-    hasAnyMassActions: ->
-      for r in @results
-        return true if @massActions[r.id]
-      return false
+      const ids = [];
+      for (let r of Array.from(this.results)) {
+        if (this.massActions[r.id]) { ids.push(r.id); }
+      }
 
-    performMassActions: ->
-      url = "/email_status/sources/mass-actions/#{@massActionsOp}"
-      @massActionsLoading = true
+      return this.Api.sendPostJson(url, { ids }).then(() => {
+        this.Growl.success(this.getRegisteredMessage(`${this.massActionsOp}_done`));
+        return this.loadResults(true);
+      });
+    }
 
-      ids = []
-      for r in @results
-        if @massActions[r.id] then ids.push(r.id)
+    goPrevPage() {
+      return this.page--;
+    }
 
-      @Api.sendPostJson(url, { ids: ids }).then(=>
-        @Growl.success(@getRegisteredMessage("#{@massActionsOp}_done"))
-        @loadResults(true)
-      )
+    goNextPage() {
+      return this.page++;
+    }
+  }
+  Admin_EmailStatus_Ctrl_SourceList.initClass();
 
-    goPrevPage: ->
-      @page--
-
-    goNextPage: ->
-      @page++
-
-  Admin_EmailStatus_Ctrl_SourceList.EXPORT_CTRL()
+  return Admin_EmailStatus_Ctrl_SourceList.EXPORT_CTRL();
+});

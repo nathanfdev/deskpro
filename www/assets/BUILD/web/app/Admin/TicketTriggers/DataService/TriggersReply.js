@@ -1,10 +1,26 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/TicketTriggers/DataService/BaseTriggers'
-], (
+], function(
   BaseTriggers,
-)  ->
-  class Admin_TicketTriggers_DataService_TriggersReply extends BaseTriggers
-    @$inject = ['Api', '$q']
+)  {
+  let Admin_TicketTriggers_DataService_TriggersReply;
+  return Admin_TicketTriggers_DataService_TriggersReply = (function() {
+    Admin_TicketTriggers_DataService_TriggersReply = class Admin_TicketTriggers_DataService_TriggersReply extends BaseTriggers {
+      static initClass() {
+        this.$inject = ['Api', '$q'];
+      }
 
-    init: ->
-      @type = 'newreply'
+      init() {
+        return this.type = 'newreply';
+      }
+    };
+    Admin_TicketTriggers_DataService_TriggersReply.initClass();
+    return Admin_TicketTriggers_DataService_TriggersReply;
+  })();
+});

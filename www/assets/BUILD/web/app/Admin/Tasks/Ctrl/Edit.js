@@ -1,62 +1,98 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS001: Remove Babel/TypeScript constructor workaround
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_Tasks_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Tasks_Ctrl_Edit'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['$stateParams']
+) {
+  class Admin_Tasks_Ctrl_Edit extends Admin_Ctrl_Base {
+    constructor(...args) {
+      {
+        // Hack: trick Babel/TypeScript into allowing this before super.
+        if (false) { super(); }
+        let thisFn = (() => { return this; }).toString();
+        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        eval(`${thisName} = this;`);
+      }
+      this.updateAgents = this.updateAgents.bind(this);
+      super(...args);
+    }
 
-    init: ->
-      @map = {} # groups map
-      @service = @DataService.get('Tasks')
-      @$scope.settings = null
-      @$scope.updateAgents = @updateAgents
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Tasks_Ctrl_Edit';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['$stateParams'];
+    }
 
-      @$scope.$watch('settings', (newVal, oldVal) =>
-        @$scope.updateAgents() if parseInt(newVal?.enabled)
-      )
+    init() {
+      this.map = {}; // groups map
+      this.service = this.DataService.get('Tasks');
+      this.$scope.settings = null;
+      this.$scope.updateAgents = this.updateAgents;
 
-
-
-    initialLoad: ->
-      @service.load().then (settings) =>
-        @$scope.settings = settings
-        settings.groups.map (group) => @map[group.id] = group
-
-
-
-    # update agents checkboxes states
-    updateAgents: =>
-
-      @$scope.settings.agents.map (agent) =>
-
-        for group in agent.usergroups
-
-          if @map[group.id]?.perms.tasks.use
-            agent._checked = true
-            agent._disabled = true
-            return
-
-        agent._checked = agent.perms.tasks.use
-        agent._disabled = false
+      return this.$scope.$watch('settings', (newVal, oldVal) => {
+        if (parseInt(newVal != null ? newVal.enabled : undefined)) { return this.$scope.updateAgents(); }
+      });
+    }
 
 
 
-    save: ->
-      @startSpinner('saving')
-
-      for agent in @$scope.settings.agents
-        if !agent._disabled then agent.perms.tasks.use = agent._checked
-
-      @service.save().then(
-        =>
-          @stopSpinner('saving')
-        =>
-          @stopSpinner('saving')
-      )
+    initialLoad() {
+      return this.service.load().then(settings => {
+        this.$scope.settings = settings;
+        return settings.groups.map(group => { return this.map[group.id] = group; });
+      });
+    }
 
 
 
-  Admin_Tasks_Ctrl_Edit.EXPORT_CTRL()
+    // update agents checkboxes states
+    updateAgents() {
+
+      return this.$scope.settings.agents.map(agent => {
+
+        for (let group of Array.from(agent.usergroups)) {
+
+          if (this.map[group.id] != null ? this.map[group.id].perms.tasks.use : undefined) {
+            agent._checked = true;
+            agent._disabled = true;
+            return;
+          }
+        }
+
+        agent._checked = agent.perms.tasks.use;
+        return agent._disabled = false;
+      });
+    }
+
+
+
+    save() {
+      this.startSpinner('saving');
+
+      for (let agent of Array.from(this.$scope.settings.agents)) {
+        if (!agent._disabled) { agent.perms.tasks.use = agent._checked; }
+      }
+
+      return this.service.save().then(
+        () => {
+          return this.stopSpinner('saving');
+        },
+        () => {
+          return this.stopSpinner('saving');
+      });
+    }
+  }
+  Admin_Tasks_Ctrl_Edit.initClass();
+
+
+
+  return Admin_Tasks_Ctrl_Edit.EXPORT_CTRL();
+});

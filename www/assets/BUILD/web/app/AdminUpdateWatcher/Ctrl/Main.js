@@ -1,56 +1,80 @@
-define ->
-  class AdminUpdateWatcher_Ctrl_Main
-    @CTRL_AS   = 'Ctrl'
-    @CTRL_ID   = 'AdminUpdateWatcher_Ctrl_Main'
-    @DEPS      = ['$q', '$timeout', '$scope', '$http', '$interval']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  class AdminUpdateWatcher_Ctrl_Main {
+    static initClass() {
+      this.CTRL_AS   = 'Ctrl';
+      this.CTRL_ID   = 'AdminUpdateWatcher_Ctrl_Main';
+      this.DEPS      = ['$q', '$timeout', '$scope', '$http', '$interval'];
+    }
 
-    @EXPORT_CTRL: () ->
-      ctrl_def = @DEPS.slice(0)
-      ctrl_def.push(@)
-      if not window.DP_CTRL_REG
-        window.DP_CTRL_REG = []
+    static EXPORT_CTRL() {
+      const ctrl_def = this.DEPS.slice(0);
+      ctrl_def.push(this);
+      if (!window.DP_CTRL_REG) {
+        window.DP_CTRL_REG = [];
+      }
 
-      window.DP_CTRL_REG.push([@CTRL_ID, ctrl_def])
-      return this
+      window.DP_CTRL_REG.push([this.CTRL_ID, ctrl_def]);
+      return this;
+    }
 
-    constructor: (args...) ->
-      @ctrl_is_loading = true
-      if @constructor.DEPS.length != args.length
-        console.error("Dependencies are not the same as passed args: %o != %o", @constructor.DEPS, args)
-        return
+    constructor(...args) {
+      this.ctrl_is_loading = true;
+      if (this.constructor.DEPS.length !== args.length) {
+        console.error("Dependencies are not the same as passed args: %o != %o", this.constructor.DEPS, args);
+        return;
+      }
 
-      for arg, i in args
-        arg_name = @constructor.DEPS[i]
-        if arg_name
-          @[arg_name] = arg
+      for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+        const arg_name = this.constructor.DEPS[i];
+        if (arg_name) {
+          this[arg_name] = arg;
+        }
+      }
 
-      if @constructor.CTRL_AS
-        @$scope[@constructor.CTRL_AS] = @
+      if (this.constructor.CTRL_AS) {
+        this.$scope[this.constructor.CTRL_AS] = this;
+      }
 
 
-      @has_init = false
-      @init()
-      @has_init = true
+      this.has_init = false;
+      this.init();
+      this.has_init = true;
+    }
 
-    init: ->
-      @$scope.showFinishedNextInfo = false
-      @$scope.logUrl = window.DP_BASE_URL+'/__serverinfo/logs/updater?auth=' + window.DP_SERVERINFO_AUTH
-      @refreshStatus().then(=>
-        @$scope.initDone = true
-      )
+    init() {
+      this.$scope.showFinishedNextInfo = false;
+      this.$scope.logUrl = window.DP_BASE_URL+'/__serverinfo/logs/updater?auth=' + window.DP_SERVERINFO_AUTH;
+      this.refreshStatus().then(() => {
+        return this.$scope.initDone = true;
+      });
 
-      @timeId = @$interval(=>
-        @refreshStatus()
-      , 3500)
+      return this.timeId = this.$interval(() => {
+        return this.refreshStatus();
+      }
+      , 3500);
+    }
 
-    refreshStatus: ->
-      @$http.get(window.DP_BASE_URL+'/admin/updater-status/' +  window.DP_SERVERINFO_AUTH + '?status').then((res) =>
-        # if the status starts on anything but finished, then
-        # the UI should not show the 'next' notice
-        if @$scope.info?.status != 'finished'
-          @$scope.showFinishedNextInfo = true
+    refreshStatus() {
+      return this.$http.get(window.DP_BASE_URL+'/admin/updater-status/' +  window.DP_SERVERINFO_AUTH + '?status').then(res => {
+        // if the status starts on anything but finished, then
+        // the UI should not show the 'next' notice
+        if ((this.$scope.info != null ? this.$scope.info.status : undefined) !== 'finished') {
+          this.$scope.showFinishedNextInfo = true;
+        }
 
-        @$scope.info = res.data
-      )
+        return this.$scope.info = res.data;
+      });
+    }
+  }
+  AdminUpdateWatcher_Ctrl_Main.initClass();
 
-  AdminUpdateWatcher_Ctrl_Main.EXPORT_CTRL()
+  return AdminUpdateWatcher_Ctrl_Main.EXPORT_CTRL();
+});

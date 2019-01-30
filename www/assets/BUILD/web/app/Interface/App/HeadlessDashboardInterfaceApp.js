@@ -1,7 +1,13 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'angular',
 
-# Helpers
+// Helpers
   'Interface/App/Routing/StateCollection',
   'Interface/App/Routing/StateConfig',
 
@@ -14,7 +20,7 @@ define [
   'Interface/App/Service/TemplateManager',
   'Reports/App/Service/DashboardWidget',
 
-# angular modules
+// angular modules
   'angularAnimate',
   'angularSanitize',
   'angularBootstrap',
@@ -29,18 +35,18 @@ define [
   'DeskPRO/OptionBuilder/Module',
   'DeskPRO/CategoryBuilder/Module',
 
-# global deps
+// global deps
   'angularGridster',
 
   'jquery',
   'moment',
   'momentTimezone',
-], (
+], function(
   angular,
 
   StateCollection,
   StateConfig,
-  HeadlessDashboardRouting
+  HeadlessDashboardRouting,
 
   SetupDeskPROService,
   SetupControllers,
@@ -49,8 +55,8 @@ define [
   TemplateLoader,
   TemplateManager,
   Reports_App_Service_DashboardWidget
-) ->
-  HeadlessDashboardInterfaceApp = angular.module('DeskPRO.HeadlessDashboardInterfaceApp', [
+) {
+  const HeadlessDashboardInterfaceApp = angular.module('DeskPRO.HeadlessDashboardInterfaceApp', [
     'ngAnimate',
     'ngSanitize',
     'ui.router',
@@ -60,65 +66,66 @@ define [
     'angularMoment',
     'oc.lazyLoad',
     'gridster',
-  ])
+  ]);
 
-  SetupDeskPROService(HeadlessDashboardInterfaceApp)
+  SetupDeskPROService(HeadlessDashboardInterfaceApp);
 
-  SetupControllers(HeadlessDashboardInterfaceApp)
-  SetupDirectives(HeadlessDashboardInterfaceApp)
+  SetupControllers(HeadlessDashboardInterfaceApp);
+  SetupDirectives(HeadlessDashboardInterfaceApp);
 
-  isDone = false
-  HeadlessDashboardInterfaceApp.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
-    return if isDone
-    isDone = true
+  let isDone = false;
+  HeadlessDashboardInterfaceApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    if (isDone) { return; }
+    isDone = true;
 
-    $urlRouterProvider.otherwise("/")
+    $urlRouterProvider.otherwise("/");
 
-    reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.HeadlessDashboardInterfaceApp'))
-    HeadlessDashboardRouting(reportStates)
-    for w in reportStates.whens
-      $urlRouterProvider.when(w[0], w[1])
-    for r in reportStates.routes
-      r.applyToStateProvider($stateProvider)
-  ])
+    const reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.HeadlessDashboardInterfaceApp'));
+    HeadlessDashboardRouting(reportStates);
+    for (let w of Array.from(reportStates.whens)) {
+      $urlRouterProvider.when(w[0], w[1]);
+    }
+    return Array.from(reportStates.routes).map((r) =>
+      r.applyToStateProvider($stateProvider));
+  }
+  ]);
 
-  HeadlessDashboardInterfaceApp.service('AppConfig', -> return new AppConfig)
+  HeadlessDashboardInterfaceApp.service('AppConfig', () => new AppConfig);
 
-  HeadlessDashboardInterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', (AppConfig, $http, $q) ->
-    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q)
-    return window.DP_TEMPLATE_LOADER
-  ])
+  HeadlessDashboardInterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', function(AppConfig, $http, $q) {
+    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q);
+    return window.DP_TEMPLATE_LOADER;
+  }
+  ]);
 
-  HeadlessDashboardInterfaceApp.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) ->
-    return new TemplateManager(TemplateLoader, $templateCache, $q)
-  ])
-  HeadlessDashboardInterfaceApp.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
-    return new Reports_App_Service_DashboardWidget(Api, Api2, $q)
-  ])
+  HeadlessDashboardInterfaceApp.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) => new TemplateManager(TemplateLoader, $templateCache, $q)
+  ]);
+  HeadlessDashboardInterfaceApp.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) => new Reports_App_Service_DashboardWidget(Api, Api2, $q)
+  ]);
 
-  HeadlessDashboardInterfaceApp.run(['TemplateLoader', (TemplateLoader) -> ])
-  HeadlessDashboardInterfaceApp.run(['TemplateManager', (TemplateManager) -> ])
+  HeadlessDashboardInterfaceApp.run(['TemplateLoader', function(TemplateLoader) {} ]);
+  HeadlessDashboardInterfaceApp.run(['TemplateManager', function(TemplateManager) {} ]);
 
-  HeadlessDashboardInterfaceApp.factory('HttpTemplateInterceptor', [->
-    isTemplateUrl = (url) ->
-      return !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/)
-    getViewName = (url) ->
-      return url.replace(/^\//, '')
-    getLoadUrl = (view) ->
-      return window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1'
+  HeadlessDashboardInterfaceApp.factory('HttpTemplateInterceptor', [function() {
+    const isTemplateUrl = url => !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/);
+    const getViewName = url => url.replace(/^\//, '');
+    const getLoadUrl = view => window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1';
 
     return {
-      request: (config) ->
-        if isTemplateUrl(config.url)
-          config.url = getLoadUrl(getViewName(config.url))
-          config.dp_is_template = true
+      request(config) {
+        if (isTemplateUrl(config.url)) {
+          config.url = getLoadUrl(getViewName(config.url));
+          config.dp_is_template = true;
+        }
 
-        return config
-    }
-  ])
+        return config;
+      }
+    };
+  }
+  ]);
 
-  HeadlessDashboardInterfaceApp.config(['$httpProvider', ($httpProvider) ->
-    $httpProvider.interceptors.push('HttpTemplateInterceptor')
-  ])
+  HeadlessDashboardInterfaceApp.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('HttpTemplateInterceptor')
+  ]);
 
-  return HeadlessDashboardInterfaceApp
+  return HeadlessDashboardInterfaceApp;
+});

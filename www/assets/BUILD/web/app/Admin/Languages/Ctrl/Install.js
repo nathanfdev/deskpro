@@ -1,27 +1,42 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Languages_Ctrl_Install extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Languages_Ctrl_Install'
-    @CTRL_AS = 'EditCtrl'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Languages_Ctrl_Install extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Languages_Ctrl_Install';
+      this.CTRL_AS = 'EditCtrl';
+    }
 
-    init: ->
-      @id = @$stateParams.id.replace(/^install\-/, '')
+    init() {
+      return this.id = this.$stateParams.id.replace(/^install\-/, '');
+    }
 
-    initialLoad: ->
-      promise = @Api.sendGet("/langs/#{@id}").then( (result) =>
-        if result.data.language
-          @$state.go('setup.languages.edit', {id: @id})
-          return
+    initialLoad() {
+      const promise = this.Api.sendGet(`/langs/${this.id}`).then( result => {
+        if (result.data.language) {
+          this.$state.go('setup.languages.edit', {id: this.id});
+          return;
+        }
 
-        @pack = result.data.pack
-        @lang = result.data.language
-      )
-      return promise
+        this.pack = result.data.pack;
+        return this.lang = result.data.language;
+      });
+      return promise;
+    }
 
-    doInstall: ->
-      @startSpinner('saving')
-      @$scope.$parent.ListCtrl.installLang(@id).then(=>
-        @stopSpinner('saving', true)
-        @$state.go('setup.languages.edit', {id: @id})
-      )
+    doInstall() {
+      this.startSpinner('saving');
+      return this.$scope.$parent.ListCtrl.installLang(this.id).then(() => {
+        this.stopSpinner('saving', true);
+        return this.$state.go('setup.languages.edit', {id: this.id});
+      });
+    }
+  }
+  Admin_Languages_Ctrl_Install.initClass();
 
-  Admin_Languages_Ctrl_Install.EXPORT_CTRL()
+  return Admin_Languages_Ctrl_Install.EXPORT_CTRL();
+});

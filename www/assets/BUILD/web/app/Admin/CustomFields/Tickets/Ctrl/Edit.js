@@ -1,80 +1,115 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/CustomFields/Base/Ctrl/Edit',
-], (Admin_CustomFields_Base_Ctrl_Edit) ->
-  class Admin_CustomFields_Tickets_Ctrl_Edit extends Admin_CustomFields_Base_Ctrl_Edit
-    @CTRL_ID = 'Admin_CustomFields_Tickets_Ctrl_Edit'
-    @CTRL_AS = 'EditCtrl'
-    @DEPS = []
+], function(Admin_CustomFields_Base_Ctrl_Edit) {
+  class Admin_CustomFields_Tickets_Ctrl_Edit extends Admin_CustomFields_Base_Ctrl_Edit {
+    static initClass() {
+      this.CTRL_ID = 'Admin_CustomFields_Tickets_Ctrl_Edit';
+      this.CTRL_AS = 'EditCtrl';
+      this.DEPS = [];
+    }
 
-    init: ->
-      super
-      @showLayouts = false
-      @referencedByApp = { status: false, appName: "", appUrl: "#" }
-      return
+    init() {
+      super.init(...arguments);
+      this.showLayouts = false;
+      this.referencedByApp = { status: false, appName: "", appUrl: "#" };
+    }
 
-    initialLoadExtra: ->
-      return @Api.sendGet('/ticket_layouts/fields/ticket_field_' + (@field_id || '__undefined__')).success((data) =>
-        @user_layouts = data.user_layouts
-        @agent_layouts = data.agent_layouts
+    initialLoadExtra() {
+      return this.Api.sendGet(`/ticket_layouts/fields/ticket_field_${this.field_id || '__undefined__'}`).success(data => {
+        this.user_layouts = data.user_layouts;
+        this.agent_layouts = data.agent_layouts;
 
-        if !@field_id
-          for own l of @user_layouts
-            @user_layouts[l].enabled = true
-          for own l of @agent_layouts
-            @agent_layouts[l].enabled = true
+        if (!this.field_id) {
+          for (var l of Object.keys(this.user_layouts || {})) {
+            this.user_layouts[l].enabled = true;
+          }
+          return (() => {
+            const result = [];
+            for (l of Object.keys(this.agent_layouts || {})) {
+              result.push(this.agent_layouts[l].enabled = true);
+            }
+            return result;
+          })();
+        }
 
-      )
+      });
+    }
 
-    postLoad: (fieldData) ->
-      referencedByAppFilter = (reference) ->
-        reference.entity == 'app'
+    postLoad(fieldData) {
+      const referencedByAppFilter = reference => reference.entity === 'app';
 
-      referencingApps = if fieldData.referencedBy instanceof Array then fieldData.referencedBy.filter referencedByAppFilter else []
+      const referencingApps = fieldData.referencedBy instanceof Array ? fieldData.referencedBy.filter(referencedByAppFilter) : [];
 
-      isReferenced = referencingApps.length != 0
-      @showLayouts = !isReferenced
-      @showFieldType = !isReferenced
-      @showEnabled = !isReferenced
-      @showAgentOnly = !isReferenced
+      const isReferenced = referencingApps.length !== 0;
+      this.showLayouts = !isReferenced;
+      this.showFieldType = !isReferenced;
+      this.showEnabled = !isReferenced;
+      this.showAgentOnly = !isReferenced;
 
-      @referencedByApp  = {
+      this.referencedByApp  = {
         status: isReferenced,
-        appName: if isReferenced then referencingApps[0].appName else '',
-        appUrl: if isReferenced then  'apps/apps/v2_' + referencingApps[0].appId else '#'
+        appName: isReferenced ? referencingApps[0].appName : '',
+        appUrl: isReferenced ?  `apps/apps/v2_${referencingApps[0].appId}` : '#'
+      };
+
+    }
+
+    startDelete() {
+      if (this.referencedByApp.status) {
+        this.showAlert('This field can not be deleted until the app has been deleted');
+        return;
       }
+      return super.startDelete(...arguments);
+    }
 
-      return
-
-    startDelete: ->
-      if (@referencedByApp.status)
-        @showAlert('This field can not be deleted until the app has been deleted')
-        return
-      super
-
-    postSave: ->
-      postData = {
+    postSave() {
+      const postData = {
         enable_user_layouts:  [],
         enable_agent_layouts: []
+      };
+
+      if (this.form.is_enabled) {
+        let k, l;
+        if (!this.form.is_agent_field) {
+          for (k of Object.keys(this.user_layouts || {})) {
+            l = this.user_layouts[k];
+            if (l.enabled) {
+              postData.enable_user_layouts.push(l.department ? l.department.id : 0);
+            }
+          }
+        }
+        for (k of Object.keys(this.agent_layouts || {})) {
+          l = this.agent_layouts[k];
+          if (l.enabled) {
+            postData.enable_agent_layouts.push(l.department ? l.department.id : 0);
+          }
+        }
       }
 
-      if @form.is_enabled
-        if not @form.is_agent_field
-          for own k,l of @user_layouts
-            if l.enabled
-              postData.enable_user_layouts.push(if l.department then l.department.id else 0)
-        for own k,l of @agent_layouts
-          if l.enabled
-            postData.enable_agent_layouts.push(if l.department then l.department.id else 0)
+      return this.Api.sendPostJson(`/ticket_layouts/fields/ticket_field_${this.field_id}`, postData);
+    }
 
-      return @Api.sendPostJson('/ticket_layouts/fields/ticket_field_' + @field_id, postData)
+    getDataService() {
+      return this.DataService.get('TicketFields');
+    }
 
-    getDataService: ->
-      return @DataService.get('TicketFields')
+    getBaseRouteName() {
+      return "tickets.fields";
+    }
 
-    getBaseRouteName: ->
-      return "tickets.fields"
+    type() {
+      return 'tickets';
+    }
+  }
+  Admin_CustomFields_Tickets_Ctrl_Edit.initClass();
 
-    type: ->
-      'tickets'
-
-  Admin_CustomFields_Tickets_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_CustomFields_Tickets_Ctrl_Edit.EXPORT_CTRL();
+});

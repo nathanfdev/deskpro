@@ -1,15 +1,28 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Plugins_Ctrl_Install extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Plugins_Ctrl_Install'
-    @CTRL_AS = 'InstallCtrl'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Plugins_Ctrl_Install extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Plugins_Ctrl_Install';
+      this.CTRL_AS = 'InstallCtrl';
+    }
 
-    init: ->
-      @package = []
+    init() {
+      return this.package = [];
+    }
 
-    initialLoad: ->
-      promise = @Api.sendGet("/plugins/package/#{@$stateParams.name}/installer").then( (result) =>
-        @package = result.data.plugin_def
-      )
-      return promise
+    initialLoad() {
+      const promise = this.Api.sendGet(`/plugins/package/${this.$stateParams.name}/installer`).then( result => {
+        return this.package = result.data.plugin_def;
+      });
+      return promise;
+    }
+  }
+  Admin_Plugins_Ctrl_Install.initClass();
 
-  Admin_Plugins_Ctrl_Install.EXPORT_CTRL()
+  return Admin_Plugins_Ctrl_Install.EXPORT_CTRL();
+});

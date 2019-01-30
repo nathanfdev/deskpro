@@ -1,134 +1,158 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_ServerCron_Ctrl_Logs extends Admin_Ctrl_Base
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS202: Simplify dynamic range loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_ServerCron_Ctrl_Logs extends Admin_Ctrl_Base {
+    static initClass() {
+  
+      this.CTRL_ID   = 'Admin_ServerCron_Ctrl_Logs';
+      this.CTRL_AS   = 'LogsCtrl';
+      this.DEPS      = [];
+    }
 
-    @CTRL_ID   = 'Admin_ServerCron_Ctrl_Logs'
-    @CTRL_AS   = 'LogsCtrl'
-    @DEPS      = []
+    init() {
+      this.server_cron_logs = null;
+      this.page = 1;
+      this.num_pages = 0;
+      this.page_nums = [1];
 
-    init: ->
-      @server_cron_logs = null
-      @page = 1
-      @num_pages = 0
-      @page_nums = [1]
-
-      @filter = {
+      this.filter = {
         job_id: '',
         priority: '',
         page: 1
-      }
+      };
 
-      @initializeScopeWatching()
+      return this.initializeScopeWatching();
+    }
 
-    initialLoad: ->
+    initialLoad() {
 
-      return @loadResults()
+      return this.loadResults();
+    }
 
-    ###
-  #
-  ###
+    /*
+  *
+  */
 
-    loadResults: ->
+    loadResults() {
 
-      @startSpinner('paginating_server_cron_logs')
+      this.startSpinner('paginating_server_cron_logs');
 
-      data_promise = @Api.sendGet('/server_cron/logs', {
-        job_id: @filter.job_id,
-        priority: @filter.priority,
-        page: @filter.page
-      }).then((res) =>
+      const data_promise = this.Api.sendGet('/server_cron/logs', {
+        job_id: this.filter.job_id,
+        priority: this.filter.priority,
+        page: this.filter.page
+      }).then(res => {
 
-        @server_cron_logs = res.data.server_cron_logs
+        this.server_cron_logs = res.data.server_cron_logs;
 
-        @filter.page = res.data.server_cron_logs.page
-        @page = res.data.server_cron_logs.page
-        @num_pages = res.data.server_cron_logs.num_pages
+        this.filter.page = res.data.server_cron_logs.page;
+        this.page = res.data.server_cron_logs.page;
+        this.num_pages = res.data.server_cron_logs.num_pages;
 
-        @page_nums = []
+        this.page_nums = [];
 
-        for i in [0...@num_pages]
-          @page_nums.push(i + 1)
+        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+          this.page_nums.push(i + 1);
+        }
 
-        @stopSpinner('paginating_server_cron_logs', true)
-      )
+        return this.stopSpinner('paginating_server_cron_logs', true);
+      });
 
-      return @$q.all([data_promise])
+      return this.$q.all([data_promise]);
+    }
 
-    updateFilter: ->
+    updateFilter() {
 
-      @loadResults()
+      return this.loadResults();
+    }
 
-    ###
-    # Show the clear dlg
-    ###
+    /*
+     * Show the clear dlg
+     */
 
-    startClearAll: ->
+    startClearAll() {
 
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('Server/server-cron-delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close()
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('Server/server-cron-delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
       });
 
-      inst.result.then(() =>
-        @clearAll()
-      )
+      return inst.result.then(() => {
+        return this.clearAll();
+      });
+    }
 
-    ###
-    # Actually do the clear
-    ###
+    /*
+     * Actually do the clear
+     */
 
-    clearAll: ->
+    clearAll() {
 
-      @Api.sendDelete('/server_cron/logs').success( =>
+      return this.Api.sendDelete('/server_cron/logs').success( () => {
 
-        @server_cron_logs = null
-      )
+        return this.server_cron_logs = null;
+      });
+    }
 
-    ###
-    # Here we watching scope 'page' variable in order to load new page of results
-    ###
+    /*
+     * Here we watching scope 'page' variable in order to load new page of results
+     */
 
-    initializeScopeWatching: ->
+    initializeScopeWatching() {
 
-      @$scope.$watch('LogsCtrl.page', (newVal, oldVal) =>
+      return this.$scope.$watch('LogsCtrl.page', (newVal, oldVal) => {
 
-        if parseInt(newVal) == parseInt(oldVal)
-          return undefined
+        if (parseInt(newVal) === parseInt(oldVal)) {
+          return undefined;
+        }
 
-        if isNaN(parseInt(newVal))
-          return undefined
+        if (isNaN(parseInt(newVal))) {
+          return undefined;
+        }
 
-        @changePageCallback()
-      )
+        return this.changePageCallback();
+      });
+    }
 
-    ###
-    # This is executed after we chnaged the current page
-    ###
+    /*
+     * This is executed after we chnaged the current page
+     */
 
-    changePageCallback: ->
+    changePageCallback() {
 
-      @filter.page = @page
-      @loadResults()
+      this.filter.page = this.page;
+      return this.loadResults();
+    }
 
-    ###
-  #
-    ###
+    /*
+  *
+    */
 
-    goPrevPage: ->
+    goPrevPage() {
 
-      @page--
+      return this.page--;
+    }
 
-    ###
-    #
-    ###
+    /*
+     *
+     */
 
-    goNextPage: ->
+    goNextPage() {
 
-      @page++
+      return this.page++;
+    }
+  }
+  Admin_ServerCron_Ctrl_Logs.initClass();
 
-  Admin_ServerCron_Ctrl_Logs.EXPORT_CTRL()
+  return Admin_ServerCron_Ctrl_Logs.EXPORT_CTRL();
+});

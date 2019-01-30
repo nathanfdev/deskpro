@@ -1,105 +1,134 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) ->
-  class Admin_TicketFields_Ctrl_EditCategories extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketFields_Ctrl_EditCategories'
-    @CTRL_AS = 'TicketCats'
-    @DEPS    = []
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS103: Rewrite code to no longer use __guard__
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
+  class Admin_TicketFields_Ctrl_EditCategories extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketFields_Ctrl_EditCategories';
+      this.CTRL_AS = 'TicketCats';
+      this.DEPS    = [];
+    }
 
-    init: ->
-      @cats             = []
-      @default_id       = 0
-      @agent_required   = false
-      @user_required    = false
-      @cat_parent_list  = []
+    init() {
+      this.cats             = [];
+      this.default_id       = 0;
+      this.agent_required   = false;
+      this.user_required    = false;
+      this.cat_parent_list  = [];
 
-      @$scope.$watchCollection('TicketCats.cats', =>
-        @updateCatParentList()
-      , true)
-      return
+      this.$scope.$watchCollection('TicketCats.cats', () => {
+        return this.updateCatParentList();
+      }
+      , true);
+    }
 
-    updateCatParentList: ->
-      @cat_parent_list = []
+    updateCatParentList() {
+      this.cat_parent_list = [];
 
-      flat = Arrays.analyzeFlatCatStructure(@cats)
-      valid_ids = []
-      for cat in flat
-        if not cat.child_ids.length
-          valid_ids.push(cat.id)
-          @cat_parent_list.push({
+      const flat = Arrays.analyzeFlatCatStructure(this.cats);
+      const valid_ids = [];
+      for (let cat of Array.from(flat)) {
+        if (!cat.child_ids.length) {
+          valid_ids.push(cat.id);
+          this.cat_parent_list.push({
             id: cat.id,
             title: cat.full_title
-          })
-
-      if valid_ids.indexOf(@default_id) == -1
-        @default_id = 0
-
-    initialLoad: ->
-      data_promise = @Api.sendDataGet({
-        'info': '/ticket_cats',
-        'layouts': '/ticket_layouts/fields/category'
-      }).then( (res) =>
-        @cats           = res.data.info.categories
-        @default_id     = res.data.info.default_id
-        @agent_required = res.data.info.agent_required
-        @user_required  = res.data.info.user_required
-        @enabled        = res.data.info.enabled
-
-        @user_layouts  = res.data.layouts.user_layouts
-        @agent_layouts = res.data.layouts.agent_layouts
-
-        @updateCatParentList()
-      )
-
-      return data_promise
-
-    save: ->
-      if not @cats or not @cats.length
-        @enabled = false
-
-      postData = {
-        categories:     @cats,
-        default_id:     @default_id,
-        user_required:  @user_required,
-        agent_required: @agent_required,
-        enabled:        @enabled
+          });
+        }
       }
 
-      @startSpinner('saving')
-      promise = @Api.sendPostJson('/ticket_cats', postData).success( =>
-        @$scope.$parent?.TicketFieldsList?.saveLayoutData('category', @user_layouts, @agent_layouts)
-        @$scope.$parent?.TicketFieldsList?.setFieldEnabled('category', @enabled)
-        @settings = angular.copy(@$scope.settings)
+      if (valid_ids.indexOf(this.default_id) === -1) {
+        return this.default_id = 0;
+      }
+    }
 
-        @stopSpinner('saving').then(=>
-          @Growl.success(@getRegisteredMessage('saved_settings'))
-        )
-      ).error( (info, code) =>
-        @stopSpinner('saving', true)
-        @applyErrorResponseToView(info)
-      )
+    initialLoad() {
+      const data_promise = this.Api.sendDataGet({
+        'info': '/ticket_cats',
+        'layouts': '/ticket_layouts/fields/category'
+      }).then( res => {
+        this.cats           = res.data.info.categories;
+        this.default_id     = res.data.info.default_id;
+        this.agent_required = res.data.info.agent_required;
+        this.user_required  = res.data.info.user_required;
+        this.enabled        = res.data.info.enabled;
 
-    showConvert: (type) ->
-      self = @
-      @$modal.open({
-        templateUrl: @getTemplatePath('TicketFields/convert-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.type = 'Category'
-          $scope.plural_type = 'categories'
-          $scope.dismiss = -> $modalInstance.dismiss()
+        this.user_layouts  = res.data.layouts.user_layouts;
+        this.agent_layouts = res.data.layouts.agent_layouts;
 
-          $scope.doConvert = ->
-            $scope.is_loading = true
-            self.Api.sendPost('/ticket_fields/convert/categories').then(
-              (res) ->
-                $scope.is_loading = false
-                $scope.dismiss()
-                if res.data?.field?.id?
-                  ds = self.DataService.get 'TicketFields'
-                  ds.mergeDataModel res.data.field
-                  self.$state.go 'tickets.fields.edit', {id: res.data.field.id}
-              ->
-                $scope.is_loading = false
-            )
-        ]
+        return this.updateCatParentList();
       });
 
-  Admin_TicketFields_Ctrl_EditCategories.EXPORT_CTRL()
+      return data_promise;
+    }
+
+    save() {
+      let promise;
+      if (!this.cats || !this.cats.length) {
+        this.enabled = false;
+      }
+
+      const postData = {
+        categories:     this.cats,
+        default_id:     this.default_id,
+        user_required:  this.user_required,
+        agent_required: this.agent_required,
+        enabled:        this.enabled
+      };
+
+      this.startSpinner('saving');
+      return promise = this.Api.sendPostJson('/ticket_cats', postData).success( () => {
+        __guard__(this.$scope.$parent != null ? this.$scope.$parent.TicketFieldsList : undefined, x => x.saveLayoutData('category', this.user_layouts, this.agent_layouts));
+        __guard__(this.$scope.$parent != null ? this.$scope.$parent.TicketFieldsList : undefined, x1 => x1.setFieldEnabled('category', this.enabled));
+        this.settings = angular.copy(this.$scope.settings);
+
+        return this.stopSpinner('saving').then(() => {
+          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+        });
+      }).error( (info, code) => {
+        this.stopSpinner('saving', true);
+        return this.applyErrorResponseToView(info);
+      });
+    }
+
+    showConvert(type) {
+      const self = this;
+      return this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketFields/convert-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.type = 'Category';
+          $scope.plural_type = 'categories';
+          $scope.dismiss = () => $modalInstance.dismiss();
+
+          return $scope.doConvert = function() {
+            $scope.is_loading = true;
+            return self.Api.sendPost('/ticket_fields/convert/categories').then(
+              function(res) {
+                $scope.is_loading = false;
+                $scope.dismiss();
+                if (__guard__(res.data != null ? res.data.field : undefined, x => x.id) != null) {
+                  const ds = self.DataService.get('TicketFields');
+                  ds.mergeDataModel(res.data.field);
+                  return self.$state.go('tickets.fields.edit', {id: res.data.field.id});
+                }
+              },
+              () => $scope.is_loading = false);
+          };
+        }
+        ]
+      });
+    }
+  }
+  Admin_TicketFields_Ctrl_EditCategories.initClass();
+
+  return Admin_TicketFields_Ctrl_EditCategories.EXPORT_CTRL();
+});
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}

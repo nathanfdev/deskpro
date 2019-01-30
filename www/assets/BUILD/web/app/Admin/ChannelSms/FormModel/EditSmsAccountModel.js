@@ -1,41 +1,61 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Util/Util'
-], (Util) ->
-  class Admin_ChannelSms_FormModel_EditSmsAccountModel
-    constructor: (@account) ->
-      @form = {account: {}}
-      @form.account.id = @account.id || 0
-      @form.account.type = @account.type || "twilio"
-      @form.account.identifier = @account.identifier || ""
-      @form.account.phone_number = @account.phone_number || ""
-      @form.account.params = @account.params || {}
-      @form.account.is_enabled = if Util.isEmpty(@account.is_enabled) then false else @account.is_enabled
-      @form.account.is_connected = if Util.isEmpty(@account.is_connected) then false else @account.is_connected
-      @form.account.is_tested = if Util.isEmpty(@account.is_tested) then false else @account.is_tested
+], function(Util) {
+  let Admin_ChannelSms_FormModel_EditSmsAccountModel;
+  return (Admin_ChannelSms_FormModel_EditSmsAccountModel = class Admin_ChannelSms_FormModel_EditSmsAccountModel {
+    constructor(account) {
+      this.account = account;
+      this.form = {account: {}};
+      this.form.account.id = this.account.id || 0;
+      this.form.account.type = this.account.type || "twilio";
+      this.form.account.identifier = this.account.identifier || "";
+      this.form.account.phone_number = this.account.phone_number || "";
+      this.form.account.params = this.account.params || {};
+      this.form.account.is_enabled = Util.isEmpty(this.account.is_enabled) ? false : this.account.is_enabled;
+      this.form.account.is_connected = Util.isEmpty(this.account.is_connected) ? false : this.account.is_connected;
+      this.form.account.is_tested = Util.isEmpty(this.account.is_tested) ? false : this.account.is_tested;
+    }
 
-    setAccountData: (data) ->
-      @form.account = data
-      if Util.isEmpty(data.phone_number) and not Util.isEmpty(data.params?.numbers)
-        data.phone_number = data.params.numbers[0].number
+    setAccountData(data) {
+      this.form.account = data;
+      if (Util.isEmpty(data.phone_number) && !Util.isEmpty(data.params != null ? data.params.numbers : undefined)) {
+        return data.phone_number = data.params.numbers[0].number;
+      }
+    }
 
-    getFormData: ->
-      form = Util.clone(@form, true)
-      return form.account
+    getFormData() {
+      const form = Util.clone(this.form, true);
+      return form.account;
+    }
 
-    clearCredentials: ->
-      @markConnected(false)
+    clearCredentials() {
+      return this.markConnected(false);
+    }
 
-    markConnected: (isConnected) ->
-      @form.account.is_connected = isConnected
-      if not isConnected
-        @markTested(false)
-        @form.account.identifier = null
-        @form.account.is_enabled = false
+    markConnected(isConnected) {
+      this.form.account.is_connected = isConnected;
+      if (!isConnected) {
+        this.markTested(false);
+        this.form.account.identifier = null;
+        return this.form.account.is_enabled = false;
+      }
+    }
 
-    markTested: (isTested) ->
-      @form.account.is_tested = isTested
-      if not isTested
-        @form.account.is_enabled = false
+    markTested(isTested) {
+      this.form.account.is_tested = isTested;
+      if (!isTested) {
+        return this.form.account.is_enabled = false;
+      }
+    }
 
-    setFriendlyName: (name) ->
-      @form.account.identifier = name
+    setFriendlyName(name) {
+      return this.form.account.identifier = name;
+    }
+  });
+});

@@ -1,15 +1,24 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_TicketStatuses_Ctrl_EditHiddenSpam extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditHiddenSpam'
-    @CTRL_AS = 'TicketStatusEdit'
-    @DEPS = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_TicketStatuses_Ctrl_EditHiddenSpam extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditHiddenSpam';
+      this.CTRL_AS = 'TicketStatusEdit';
+      this.DEPS = [];
+    }
 
-    init: ->
-      @$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('hidden_spam')
-      @$scope.settings = {
+    init() {
+      this.$scope.getCount = () => (this.$scope.$parent.TicketStatusesList != null ? this.$scope.$parent.TicketStatusesList.getStatusCount('hidden_spam') : undefined);
+      this.$scope.settings = {
         auto_purge_time: 604800
-      }
-      @$scope.times = [
+      };
+      this.$scope.times = [
         {id: 86400, label: "1 day"},
         {id: 259200, label: "3 days"},
         {id: 432000, label: "5 days"},
@@ -23,43 +32,53 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         {id: 23328000, label: "9 months"},
         {id: 31536000, label: "1 year"},
         {id: 63072000, label: "2 years"}
-      ]
-      return
+      ];
+    }
 
-    initialLoad: ->
-      promise = @Api.sendGet("/ticket_statuses/spam").success( (data) =>
-        @$scope.settings.auto_purge_time = data.spam_info.auto_purge_time
-      );
-
-      return promise
-
-    saveSettings: ->
-      @startSpinner('saving_settings')
-      promise = @Api.sendPostJson('/ticket_statuses/spam/settings', @$scope.settings).then( =>
-        @stopSpinner('saving_settings')
-      )
-
-      return promise
-
-    startPurge: ->
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketStatuses/modal-purge-spam.html'),
-        controller: ['$scope', '$modalInstance', 'Api', ($scope, $modalInstance, Api) =>
-          $scope.dismiss = =>
-            $modalInstance.dismiss();
-
-          $scope.confirm = =>
-            purgeNow()
-
-          purgeNow = ->
-            $scope.is_loading = true
-            Api.sendDelete('/ticket_statuses/spam/purge').success( (data) ->
-              $scope.is_done = true
-              $scope.count = data.count
-            ).then( ->
-              $scope.is_loading = false
-            )
-        ]
+    initialLoad() {
+      const promise = this.Api.sendGet("/ticket_statuses/spam").success( data => {
+        return this.$scope.settings.auto_purge_time = data.spam_info.auto_purge_time;
       });
 
-  Admin_TicketStatuses_Ctrl_EditHiddenSpam.EXPORT_CTRL()
+      return promise;
+    }
+
+    saveSettings() {
+      this.startSpinner('saving_settings');
+      const promise = this.Api.sendPostJson('/ticket_statuses/spam/settings', this.$scope.settings).then( () => {
+        return this.stopSpinner('saving_settings');
+      });
+
+      return promise;
+    }
+
+    startPurge() {
+      let inst;
+      return inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketStatuses/modal-purge-spam.html'),
+        controller: ['$scope', '$modalInstance', 'Api', ($scope, $modalInstance, Api) => {
+          let purgeNow;
+          $scope.dismiss = () => {
+            return $modalInstance.dismiss();
+          };
+
+          $scope.confirm = () => {
+            return purgeNow();
+          };
+
+          return purgeNow = function() {
+            $scope.is_loading = true;
+            return Api.sendDelete('/ticket_statuses/spam/purge').success( function(data) {
+              $scope.is_done = true;
+              return $scope.count = data.count;
+            }).then( () => $scope.is_loading = false);
+          };
+        }
+        ]
+      });
+    }
+  }
+  Admin_TicketStatuses_Ctrl_EditHiddenSpam.initClass();
+
+  return Admin_TicketStatuses_Ctrl_EditHiddenSpam.EXPORT_CTRL();
+});

@@ -1,172 +1,209 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS104: Avoid inline assignments
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/Base',
   'Admin/Main/Model/Base',
   'Admin/Main/Collection/OrderedDictionary'
-], (
+], function(
   Admin_Main_DataService_Base,
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
-)  ->
-  class Admin_FeedbackCategories_DataService_FeedbackCategories extends Admin_Main_DataService_Base
-    constructor: (em, Api, $q) ->
-      super(em)
-      @$q   = $q
-      @Api  = Api
+)  {
+  let Admin_FeedbackCategories_DataService_FeedbackCategories;
+  return (Admin_FeedbackCategories_DataService_FeedbackCategories = class Admin_FeedbackCategories_DataService_FeedbackCategories extends Admin_Main_DataService_Base {
+    constructor(em, Api, $q) {
+      super(em);
+      this.$q   = $q;
+      this.Api  = Api;
 
-      @loadListPromise = null
-      @recs = new Admin_Main_Collection_OrderedDictionary()
+      this.loadListPromise = null;
+      this.recs = new Admin_Main_Collection_OrderedDictionary();
+    }
 
-    ###*
+    /**
     * Loads list of records
   *
   * @param reload - (optional) whether to reload list of records or no
   *
   * @return {Promise}
-    ###
+    */
 
-    loadList: (model, reload) ->
+    loadList(model, reload) {
 
-      if @loadListPromise
-        return @loadListPromise
+      if (this.loadListPromise) {
+        return this.loadListPromise;
+      }
 
-      deferred = @$q.defer()
+      const deferred = this.$q.defer();
 
-      if not reload and @recs.count()
+      if (!reload && this.recs.count()) {
 
-        deferred.resolve(@recs)
-        return deferred.promise
+        deferred.resolve(this.recs);
+        return deferred.promise;
+      }
 
-      @Api.sendGet('/feedback_categories').success( (data, status, headers, config) =>
+      this.Api.sendGet('/feedback_categories').success( (data, status, headers, config) => {
 
-        @_setListData(data.feedback_categories)
-        deferred.resolve(@recs)
+        this._setListData(data.feedback_categories);
+        return deferred.resolve(this.recs);
+      }
 
-      , (data, status, headers, config) ->
-        deferred.reject()
-      )
+      , (data, status, headers, config) => deferred.reject());
 
-      @loadListPromise = deferred.promise
+      this.loadListPromise = deferred.promise;
 
-      return @loadListPromise
+      return this.loadListPromise;
+    }
 
-    ###*
+    /**
         * Removes entity from entity manager
       *
       * @param id
-    ###
+    */
 
-    remove: (id) ->
+    remove(id) {
 
-      model = @em.getById('feedback_category', id)
+      const model = this.em.getById('feedback_category', id);
 
-      if model?
-        @recs.remove(id)
-        @em.removeById('feedback_category', 'id')
+      if (model != null) {
+        this.recs.remove(id);
+        this.em.removeById('feedback_category', 'id');
+      }
 
-      @_updateOrderOfData()
+      return this._updateOrderOfData();
+    }
 
-    ###
-    # Updates entity with new model data provided
-    # with new model provided. Or adds it to the list if it doesnt exist.
-    ###
-    updateModel: (model) ->
+    /*
+     * Updates entity with new model data provided
+     * with new model provided. Or adds it to the list if it doesnt exist.
+     */
+    updateModel(model) {
 
-      # case of 'no parent'
+      // case of 'no parent'
 
-      if not model.options
-        model.options = {parent_id: 0}
+      if (!model.options) {
+        model.options = {parent_id: 0};
+      }
 
-      if not model.options.parent_id or model.options.parent_id == "0"
-        model.options.parent_id = 0
+      if (!model.options.parent_id || (model.options.parent_id === "0")) {
+        model.options.parent_id = 0;
+      }
 
-      # this is due to the reason that in list it's stored as parent_id while in form it's stored in options.parent_id
-      model.parent_id = model.options.parent_id
+      // this is due to the reason that in list it's stored as parent_id while in form it's stored in options.parent_id
+      model.parent_id = model.options.parent_id;
 
-      new_model = @em.createEntity('feedback_category', 'id', model)
-      @recs.set(new_model.id, new_model)
+      const new_model = this.em.createEntity('feedback_category', 'id', model);
+      this.recs.set(new_model.id, new_model);
 
-      @_updateOrderOfData()
+      return this._updateOrderOfData();
+    }
 
-    ###
-    # Returns list of feedback_categories where feedback of specified feedback_category could be moved to
-    # @param model - specified feedback_category model
-    # @return array
-    ###
-    getListOfMovables: (model) ->
+    /*
+     * Returns list of feedback_categories where feedback of specified feedback_category could be moved to
+     * @param model - specified feedback_category model
+     * @return array
+     */
+    getListOfMovables(model) {
 
-      move_list = []
-      parent_id = model.parent_id
+      const move_list = [];
+      const { parent_id } = model;
 
-      @recs.forEach (key, val) =>
-        if !@hasChildren(val) && val.id != model.id
-          move_list.push val
+      this.recs.forEach((key, val) => {
+        if (!this.hasChildren(val) && (val.id !== model.id)) {
+          return move_list.push(val);
+        }
+      });
 
-      return move_list
+      return move_list;
+    }
 
-    ###
-    # Returns list of parent records
-    # @param model - specified model for which we want to know possible parent records
-    # @return array
-    ###
+    /*
+     * Returns list of parent records
+     * @param model - specified model for which we want to know possible parent records
+     * @return array
+     */
 
-    getListOfParents: (model) ->
+    getListOfParents(model) {
 
-      parent_list = [{
+      const parent_list = [{
         id: '',
         title: 'No Parent'
-      }]
+      }];
 
-      @recs.forEach( (key, val) =>
+      this.recs.forEach( (key, val) => {
 
-        if val.id != model.id and not val.parent_id
-          parent_list.push(val)
-      )
+        if ((val.id !== model.id) && !val.parent_id) {
+          return parent_list.push(val);
+        }
+      });
 
-      return parent_list
+      return parent_list;
+    }
 
-    ###
-    # Returns wherther spcified model has children or not
-    # @param model - specified model for which we want to know if it has children or not
-    # @return array
-    ###
+    /*
+     * Returns wherther spcified model has children or not
+     * @param model - specified model for which we want to know if it has children or not
+     * @return array
+     */
 
-    hasChildren: (model) ->
+    hasChildren(model) {
 
-      for rec in @recs.values()
+      for (let rec of Array.from(this.recs.values())) {
 
-        if ~~rec.parent_id == model.id
-          return true
+        if (~~rec.parent_id === model.id) {
+          return true;
+        }
+      }
 
-      return false
+      return false;
+    }
 
-    ###*
+    /**
         * Creates entities for feedback categories raw data
         *
         * @return {Promise}
-    ###
-    _setListData: (raw_recs) ->
+    */
+    _setListData(raw_recs) {
 
-      for rec in raw_recs
+      return (() => {
+        const result = [];
+        for (let rec of Array.from(raw_recs)) {
 
-        model = @em.createEntity('feedback_category', 'id', rec)
-        model.retain()
-        @recs.set(model.id, model)
+          const model = this.em.createEntity('feedback_category', 'id', rec);
+          model.retain();
+          result.push(this.recs.set(model.id, model));
+        }
+        return result;
+      })();
+    }
 
-    ###
-    # Reorders the data of this data service
-  # Useful for cases of drag&drop ordering of data
-    ###
+    /*
+    * Reorders the data of this data service
+  * Useful for cases of drag&drop ordering of data
+    */
 
-    _updateOrderOfData: ->
+    _updateOrderOfData() {
 
-      @recs.reorder((a, b) ->
-        order1 = a.display_order || 0
-        order2 = b.display_order || 0
+      this.recs.reorder(function(a, b) {
+        let left;
+        const order1 = a.display_order || 0;
+        const order2 = b.display_order || 0;
 
-        if order1 == order2
-          return 0
+        if (order1 === order2) {
+          return 0;
+        }
 
-        return (order1 < order2) ? -1: 1
-      )
+        return ((left = order1 < order2)) != null ? left : -{1: 1};
+      });
 
-      @recs.notifyListeners('changed')
+      return this.recs.notifyListeners('changed');
+    }
+  });
+});

@@ -1,52 +1,67 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_TicketBilling_Ctrl_Fields extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketBilling_Ctrl_Fields'
-    @CTRL_AS = 'ListCtrl'
-    @DEPS    = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_TicketBilling_Ctrl_Fields extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketBilling_Ctrl_Fields';
+      this.CTRL_AS = 'ListCtrl';
+      this.DEPS    = [];
+    }
 
 
 
-    init: ->
-      @fieldDataService = @DataService.get('BillingFields')
-      @custom_fields = []
-      @sortedListOptions = {
+    init() {
+      this.fieldDataService = this.DataService.get('BillingFields');
+      this.custom_fields = [];
+      this.sortedListOptions = {
         axis: 'y',
         handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest('ul')
-          displayOrders = []
+        update: (ev, data) => {
+          const $list = data.item.closest('ul');
+          const displayOrders = [];
 
-          $list.find('li').each(->
-            displayOrders.push(parseInt($(this).data('id')))
-          )
+          $list.find('li').each(function() {
+            return displayOrders.push(parseInt($(this).data('id')));
+          });
 
-          @fieldDataService.saveDisplayOrder(displayOrders)
-          @pingElement('display_orders')
-      }
+          this.fieldDataService.saveDisplayOrder(displayOrders);
+          return this.pingElement('display_orders');
+        }
+      };
 
-      data = @$state.current.data
-      @customFieldListOptions =
+      const { data } = this.$state.current;
+      this.customFieldListOptions = {
         axis: 'y',
         handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest 'ul'
-          displayOrders = []
+        update: (ev, data) => {
+          const $list = data.item.closest('ul');
+          const displayOrders = [];
 
-          $list.find('li').each -> displayOrders.push parseInt $(this).data('id')
+          $list.find('li').each(function() { return displayOrders.push(parseInt($(this).data('id'))); });
 
-          @service.saveDisplayOrder displayOrders
-          @pingElement 'display_orders'
+          this.service.saveDisplayOrder(displayOrders);
+          return this.pingElement('display_orders');
+        }
+      };
 
-      return
-
-
-
-    initialLoad: ->
-      promise = @fieldDataService.loadList()
-      promise.then (list) => @custom_fields = list
-
-      return promise
+    }
 
 
 
-  Admin_TicketBilling_Ctrl_Fields.EXPORT_CTRL()
+    initialLoad() {
+      const promise = this.fieldDataService.loadList();
+      promise.then(list => { return this.custom_fields = list; });
+
+      return promise;
+    }
+  }
+  Admin_TicketBilling_Ctrl_Fields.initClass();
+
+
+
+  return Admin_TicketBilling_Ctrl_Fields.EXPORT_CTRL();
+});

@@ -1,125 +1,157 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_CustomFields_Base_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_CustomFields_Base_Ctrl_Edit'
-    @CTRL_AS = 'EditCtrl'
-    @DEPS    = []
+) {
+  let Admin_CustomFields_Base_Ctrl_Edit;
+  return Admin_CustomFields_Base_Ctrl_Edit = (function() {
+    Admin_CustomFields_Base_Ctrl_Edit = class Admin_CustomFields_Base_Ctrl_Edit extends Admin_Ctrl_Base {
+      static initClass() {
+        this.CTRL_ID = 'Admin_CustomFields_Base_Ctrl_Edit';
+        this.CTRL_AS = 'EditCtrl';
+        this.DEPS    = [];
+      }
 
-    init: ->
-      @field_id = parseInt(@$stateParams.id || 0)
-      @field_type = '0'
-      @field_type_chooser = 'text'
-      @currencies = []
+      init() {
+        this.field_id = parseInt(this.$stateParams.id || 0);
+        this.field_type = '0';
+        this.field_type_chooser = 'text';
+        this.currencies = [];
 
-      @showFieldType = true
-      @showEnabled = true
-      @showAgentOnly = true
+        this.showFieldType = true;
+        this.showEnabled = true;
+        this.showAgentOnly = true;
 
-      @fieldDataService = @getDataService()
-      return
+        this.fieldDataService = this.getDataService();
+      }
 
-    postLoad: ->
-      return
+      postLoad() {
+      }
 
-    initialLoadExtra: ->
-      return
+      initialLoadExtra() {
+      }
 
-    initialLoad: ->
-      promises = []
-      promises.push @Api2.sendGet('/currencies').then (response) => @currencies = response.data.data
-      promises.push @fieldDataService.loadEditFieldData(@$stateParams.id || null).then( (data) =>
-        @field      = data.field
-        @field_type = data.field_type
-        @form       = data.form
-        @postLoad(data)
-      )
+      initialLoad() {
+        const promises = [];
+        promises.push(this.Api2.sendGet('/currencies').then(response => { return this.currencies = response.data.data; }));
+        promises.push(this.fieldDataService.loadEditFieldData(this.$stateParams.id || null).then( data => {
+          this.field      = data.field;
+          this.field_type = data.field_type;
+          this.form       = data.form;
+          return this.postLoad(data);
+        })
+        );
 
-      p = @initialLoadExtra()
-      if p
-        promises.push p
+        const p = this.initialLoadExtra();
+        if (p) {
+          promises.push(p);
+        }
 
-      return @$q.all(promises)
+        return this.$q.all(promises);
+      }
 
-    getDataService: ->
-      throw new Error("Not implemented")
+      getDataService() {
+        throw new Error("Not implemented");
+      }
 
-    getBaseRouteName: ->
-      throw new Error("Not implemented")
+      getBaseRouteName() {
+        throw new Error("Not implemented");
+      }
 
-    postSave: ->
-      return
+      postSave() {
+      }
 
-    saveForm: ->
-      is_new = !@field.id
+      saveForm() {
+        const is_new = !this.field.id;
 
-      @field.type_name = @field_type
-      promise = @fieldDataService.saveFormModel(@field, @form)
+        this.field.type_name = this.field_type;
+        const promise = this.fieldDataService.saveFormModel(this.field, this.form);
 
-      @startSpinner('saving')
+        this.startSpinner('saving');
 
-      successFn = =>
-        @stopSpinner('saving', true).then(=>
-          @Growl.success('Saved')
-        )
+        const successFn = () => {
+          this.stopSpinner('saving', true).then(() => {
+            return this.Growl.success('Saved');
+          });
 
-        @skipDirtyState()
+          this.skipDirtyState();
 
-        if is_new
-          @$state.go(@getBaseRouteName() + ".gocreate")
+          if (is_new) {
+            return this.$state.go(this.getBaseRouteName() + ".gocreate");
+          }
+        };
 
-      promise.success( (data) =>
+        promise.success( data => {
 
-        if not @field_id
-          @field.id = data.field_id
-          @field_id = data.field_id
+          if (!this.field_id) {
+            this.field.id = data.field_id;
+            this.field_id = data.field_id;
+          }
 
-        v = @postSave()
-        if v and v.then
-          v.then(-> successFn())
-        else
-          successFn()
-      )
+          const v = this.postSave();
+          if (v && v.then) {
+            return v.then(() => successFn());
+          } else {
+            return successFn();
+          }
+        });
 
-      promise.error((info, code) =>
-        @stopSpinner('saving', true)
-        @applyErrorResponseToView(info)
-        if info.error_message and info.error_message
-          @Growl.error info.error_message
-      )
+        return promise.error((info, code) => {
+          this.stopSpinner('saving', true);
+          this.applyErrorResponseToView(info);
+          if (info.error_message && info.error_message) {
+            return this.Growl.error(info.error_message);
+          }
+        });
+      }
 
-    startDelete: ->
-      if @field.choices?.length
-        message = @getRegisteredMessage 'remove_choices'
-        return @$modal.open(
-          templateUrl: @getTemplatePath 'Index/modal-alert.html'
-          controller:  ['$scope', '$modalInstance', '$state', ($scope, $modalInstance, $state) ->
-            $scope.message = message
-            $scope.dismiss = -> $modalInstance.dismiss()
+      startDelete() {
+        if (this.field.choices != null ? this.field.choices.length : undefined) {
+          const message = this.getRegisteredMessage('remove_choices');
+          return this.$modal.open({
+            templateUrl: this.getTemplatePath('Index/modal-alert.html'),
+            controller:  ['$scope', '$modalInstance', '$state', function($scope, $modalInstance, $state) {
+              $scope.message = message;
+              return $scope.dismiss = () => $modalInstance.dismiss();
+            }
+            ]
+          });
+        }
+
+        const doDelete = () => {
+          return this.fieldDataService.deleteFieldById(this.field_id);
+        };
+
+        const baseRouteName = this.getBaseRouteName();
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('CustomField/delete-modal.html'),
+          controller: ['$scope', '$modalInstance', '$state', function($scope, $modalInstance, $state) {
+            $scope.confirm = () =>
+              $scope.is_loading =
+              doDelete().then(function() {
+                const baseParts = baseRouteName.split('.');
+                $state.go(baseParts[0] + '.' + baseParts[1]);
+                return $modalInstance.dismiss();
+              })
+            ;
+
+            return $scope.dismiss = () => $modalInstance.dismiss();
+          }
           ]
-        )
+        });
+      }
 
-      doDelete = =>
-        @fieldDataService.deleteFieldById(@field_id)
-
-      baseRouteName = @getBaseRouteName()
-      @$modal.open({
-        templateUrl: @getTemplatePath('CustomField/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', '$state', ($scope, $modalInstance, $state) ->
-          $scope.confirm = ->
-            $scope.is_loading =
-            doDelete().then(->
-              baseParts = baseRouteName.split '.'
-              $state.go baseParts[0] + '.' + baseParts[1]
-              $modalInstance.dismiss()
-            )
-
-          $scope.dismiss = ->
-            $modalInstance.dismiss();
-        ]
-      });
-
-    type: ->
+      type() {}
+    };
+    Admin_CustomFields_Base_Ctrl_Edit.initClass();
+    return Admin_CustomFields_Base_Ctrl_Edit;
+  })();
+});
 

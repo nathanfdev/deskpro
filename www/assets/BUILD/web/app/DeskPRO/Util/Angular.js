@@ -1,40 +1,60 @@
-define ->
-  class DeskPRO_Util_Angular
-    ###
-      # Get an object of k=>v services injected into a constructor of object given an array of args.
-      #
-      # @param {Object} object An object annotated with $inject
-      # @param {Array} args    An array of args, typically args of a constructor
-      # @return {Object}
-    ###
-    getInjectedArgs: (object, args) ->
-      injectedArgs = {}
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  class DeskPRO_Util_Angular {
+    /*
+      * Get an object of k=>v services injected into a constructor of object given an array of args.
+      *
+      * @param {Object} object An object annotated with $inject
+      * @param {Array} args    An array of args, typically args of a constructor
+      * @return {Object}
+    */
+    getInjectedArgs(object, args) {
+      const injectedArgs = {};
 
-      injectedNames = null
-      if object.$inject
-        injectedNames = object.$inject
-      else if object.constructor.$inject
-        injectedNames = object.constructor.$inject
+      let injectedNames = null;
+      if (object.$inject) {
+        injectedNames = object.$inject;
+      } else if (object.constructor.$inject) {
+        injectedNames = object.constructor.$inject;
+      }
 
-      if not injectedNames then injectedArgs
+      if (!injectedNames) { injectedArgs; }
 
-      for arg, i in args
-        argName = injectedNames[i]
-        injectedArgs[argName] = arg
+      for (let i = 0; i < args.length; i++) {
+        const arg = args[i];
+        const argName = injectedNames[i];
+        injectedArgs[argName] = arg;
+      }
 
-      return injectedArgs
+      return injectedArgs;
+    }
 
 
-    ###
-      # Takes the objects injected (gotten via getInjectedArgs) and assigns them to properties
-      # on the object,
-      #
-      # @param {Object} object An object annotated with $inject
-      # @param {Array} args    An array of args, typically args of a constructor
-    ###
-    setInjectedProperties: (object, args) ->
-      injectedArgs = @getInjectedArgs(object, args)
-      for own k, v of injectedArgs
-        object[k] = v
+    /*
+      * Takes the objects injected (gotten via getInjectedArgs) and assigns them to properties
+      * on the object,
+      *
+      * @param {Object} object An object annotated with $inject
+      * @param {Array} args    An array of args, typically args of a constructor
+    */
+    setInjectedProperties(object, args) {
+      const injectedArgs = this.getInjectedArgs(object, args);
+      return (() => {
+        const result = [];
+        for (let k of Object.keys(injectedArgs || {})) {
+          const v = injectedArgs[k];
+          result.push(object[k] = v);
+        }
+        return result;
+      })();
+    }
+  }
 
-  return new DeskPRO_Util_Angular()
+  return new DeskPRO_Util_Angular();
+});

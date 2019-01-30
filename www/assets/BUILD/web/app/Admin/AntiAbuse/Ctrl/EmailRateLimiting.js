@@ -1,29 +1,48 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
- class Admin_AntiAbuse_Ctrl_EmailRateLimiting extends Admin_Ctrl_Base
-  @CTRL_ID = 'Admin_AntiAbuse_Ctrl_EmailRateLimiting'
-  @CTRL_AS = 'EmailRateLimiting'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+ var Admin_AntiAbuse_Ctrl_EmailRateLimiting = (function() {
+   let _url = undefined;
+   Admin_AntiAbuse_Ctrl_EmailRateLimiting = class Admin_AntiAbuse_Ctrl_EmailRateLimiting extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_AntiAbuse_Ctrl_EmailRateLimiting';
+      this.CTRL_AS = 'EmailRateLimiting';
+  
+      _url = '/email_accounts/settings';
+    }
 
-  _url = '/email_accounts/settings'
-
-  init: ->
-   @$scope.settings = null
-
-  initialLoad: ->
-   @Api.sendGet(_url).then (res) =>
-    @$scope.settings = res.data.email_settings
-
-  save: ->
-   postData = {
-    settings: @$scope.settings
+    init() {
+     return this.$scope.settings = null;
    }
 
-   @startSpinner('saving')
-   @Api.sendPutJson(_url, postData).success( =>
-    @stopSpinner('saving')
-    @Growl.success @getRegisteredMessage('saved_settings')
-   ).error( (info) =>
-    @stopSpinner('saving', true)
-    @applyErrorResponseToView(info)
-   )
+    initialLoad() {
+     return this.Api.sendGet(_url).then(res => {
+      return this.$scope.settings = res.data.email_settings;
+     });
+   }
 
- Admin_AntiAbuse_Ctrl_EmailRateLimiting.EXPORT_CTRL()
+    save() {
+     const postData = {
+      settings: this.$scope.settings
+     };
+
+     this.startSpinner('saving');
+     return this.Api.sendPutJson(_url, postData).success( () => {
+      this.stopSpinner('saving');
+      return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+     }).error( info => {
+      this.stopSpinner('saving', true);
+      return this.applyErrorResponseToView(info);
+     });
+   }
+  };
+   Admin_AntiAbuse_Ctrl_EmailRateLimiting.initClass();
+   return Admin_AntiAbuse_Ctrl_EmailRateLimiting;
+ })();
+
+ return Admin_AntiAbuse_Ctrl_EmailRateLimiting.EXPORT_CTRL();
+});

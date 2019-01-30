@@ -1,52 +1,72 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'underscore'
-], (
+], function(
   Admin_Ctrl_Base,
   _
-) ->
-  class Admin_TwitterAccounts_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_TwitterAccounts_Ctrl_Edit'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['$stateParams']
+) {
+  class Admin_TwitterAccounts_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TwitterAccounts_Ctrl_Edit';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['$stateParams'];
+    }
 
-    init: ->
-      @twitterAccountData = @DataService.get('TwitterAccounts')
-      @twitter_account = null
+    init() {
+      this.twitterAccountData = this.DataService.get('TwitterAccounts');
+      return this.twitter_account = null;
+    }
 
-    initialLoad: ->
-      promise = @twitterAccountData.loadEditTwitterAccountData(@$stateParams.id || null).then( (data) =>
+    initialLoad() {
+      const promise = this.twitterAccountData.loadEditTwitterAccountData(this.$stateParams.id || null).then( data => {
 
-        @twitter_account  = data.twitter_account
-        @form = data.form
-      )
-      return promise
+        this.twitter_account  = data.twitter_account;
+        return this.form = data.form;
+      });
+      return promise;
+    }
 
-    saveForm: ->
+    saveForm() {
 
-      @twitter_account.persons = []
+      this.twitter_account.persons = [];
 
-      for own key, value of @selected_agents
-        if value
-          agent = _.findWhere(@agents, {id: parseInt(key)})
-          @twitter_account.persons.push(agent.id) if agent
+      for (let key of Object.keys(this.selected_agents || {})) {
+        const value = this.selected_agents[key];
+        if (value) {
+          const agent = _.findWhere(this.agents, {id: parseInt(key)});
+          if (agent) { this.twitter_account.persons.push(agent.id); }
+        }
+      }
 
-      if not @$scope.form_props.$valid
-        return
+      if (!this.$scope.form_props.$valid) {
+        return;
+      }
 
-      is_new = !@twitter_account.id
+      const is_new = !this.twitter_account.id;
 
-      promise = @twitterAccountData.saveFormModel(@twitter_account, @form)
+      const promise = this.twitterAccountData.saveFormModel(this.twitter_account, this.form);
 
-      @startSpinner('saving')
-      promise.then( =>
-        @stopSpinner('saving', true).then(=>
-          @Growl.success("Saved")
-        )
+      this.startSpinner('saving');
+      return promise.then( () => {
+        this.stopSpinner('saving', true).then(() => {
+          return this.Growl.success("Saved");
+        });
 
-        @skipDirtyState()
-        if is_new
-          @$state.go('twitter.accounts.gocreate')
-      )
+        this.skipDirtyState();
+        if (is_new) {
+          return this.$state.go('twitter.accounts.gocreate');
+        }
+      });
+    }
+  }
+  Admin_TwitterAccounts_Ctrl_Edit.initClass();
 
-  Admin_TwitterAccounts_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_TwitterAccounts_Ctrl_Edit.EXPORT_CTRL();
+});

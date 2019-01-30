@@ -1,197 +1,222 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/Banning/IpBanEditFormMapper',
   'Admin/Banning/EmailBanEditFormMapper',
-], (
+], function(
   BaseListEdit,
   IpBanEditFormMapper,
   EmailBanEditFormMapper,
-)  ->
-  class Bans extends BaseListEdit
-    @$inject = ['Api', '$q']
-    @type = 'ip'
-
-    ###
-    #
-    ###
-
-    init: ->
-      @setSubLists ['ip_bans', 'email_bans']
-      @search_phrase = {
-        ip_ban: '',
-        email_ban: ''
-        email_wildcard: false
+)  {
+  let Bans;
+  return Bans = (function() {
+    Bans = class Bans extends BaseListEdit {
+      static initClass() {
+        this.$inject = ['Api', '$q'];
+        this.type = 'ip';
       }
 
-    ###
-  #
-  ###
+      /*
+       *
+       */
 
-    _doLoadList: ->
+      init() {
+        this.setSubLists(['ip_bans', 'email_bans']);
+        return this.search_phrase = {
+          ip_ban: '',
+          email_ban: '',
+          email_wildcard: false
+        };
+      }
 
-      deferred = @$q.defer()
+      /*
+    *
+    */
 
-      @Api.sendGet('/banning').success( (data) =>
+      _doLoadList() {
 
-        models = data.bans
-        deferred.resolve(models)
-      , (data, status, headers, config) ->
-        deferred.reject()
-      )
+        const deferred = this.$q.defer();
 
-      return deferred.promise
+        this.Api.sendGet('/banning').success( data => {
 
-    ###
-    #
-    ###
+          const models = data.bans;
+          return deferred.resolve(models);
+        }
+        , (data, status, headers, config) => deferred.reject());
 
-    _doRefreshList: () ->
+        return deferred.promise;
+      }
 
-      deferred = @$q.defer()
+      /*
+       *
+       */
 
-      @Api.sendGet('/banning', {
+      _doRefreshList() {
 
-        ip_ban_page: @pagination.ip_bans.page,
-        email_ban_page: @pagination.email_bans.page,
-        ip_ban_search_phrase: @search_phrase.ip_ban
-        email_ban_search_phrase: @search_phrase.email_ban
-        email_ban_wildcard: if @search_phrase.email_wildcard then 1 else 0
+        const deferred = this.$q.defer();
 
-      }).success( (data) =>
+        this.Api.sendGet('/banning', {
 
-        models = data.bans
-        deferred.resolve(models)
-      , (data, status, headers, config) ->
-        deferred.reject()
-      )
+          ip_ban_page: this.pagination.ip_bans.page,
+          email_ban_page: this.pagination.email_bans.page,
+          ip_ban_search_phrase: this.search_phrase.ip_ban,
+          email_ban_search_phrase: this.search_phrase.email_ban,
+          email_ban_wildcard: this.search_phrase.email_wildcard ? 1 : 0
 
-      return deferred.promise
+        }).success( data => {
 
-    ###
-  # Returns object representing the search string defined via user UI
-  ###
+          const models = data.bans;
+          return deferred.resolve(models);
+        }
+        , (data, status, headers, config) => deferred.reject());
 
-    getSearchPhrase: ->
+        return deferred.promise;
+      }
 
-      return @search_phrase
+      /*
+    * Returns object representing the search string defined via user UI
+    */
 
-    ###
-  # Sets type of ban that is used for create / update / delete operations
-    #
-  # @param {string} type
-  ###
+      getSearchPhrase() {
 
-    setType: (type) ->
+        return this.search_phrase;
+      }
 
-      @type = type
-      @idProp = if @type == 'email' then 'banned_' + @type else 'id'
+      /*
+    * Sets type of ban that is used for create / update / delete operations
+      *
+    * @param {string} type
+    */
 
-    ###
-    # Get the form mapper
-    #
-    # @return {IpBanEditFormMapper|EmailBanEditFormMapper}
-    ###
+      setType(type) {
 
-    getFormMapper: ->
+        this.type = type;
+        return this.idProp = this.type === 'email' ? `banned_${this.type}` : 'id';
+      }
 
-      if @type == 'ip' then @formMapper = new IpBanEditFormMapper()
-      if @type == 'email' then @formMapper = new EmailBanEditFormMapper()
+      /*
+       * Get the form mapper
+       *
+       * @return {IpBanEditFormMapper|EmailBanEditFormMapper}
+       */
 
-      return @formMapper
+      getFormMapper() {
 
-    ###
-    # Remove complete list
-    #
-    # @param {String} "email"|"ip"
-    # @return {promise}
-    ###
+        if (this.type === 'ip') { this.formMapper = new IpBanEditFormMapper(); }
+        if (this.type === 'email') { this.formMapper = new EmailBanEditFormMapper(); }
 
-    deleteBanByType: (type) ->
+        return this.formMapper;
+      }
 
-      @Api.sendDelete('/banning_' + type)
+      /*
+       * Remove complete list
+       *
+       * @param {String} "email"|"ip"
+       * @return {promise}
+       */
 
-    ###
-  # Remove a model
-  #
-  # @param {Integer} id
-  # @return {promise}
-    ###
+      deleteBanByType(type) {
 
-    deleteBanById: (id) ->
+        return this.Api.sendDelete(`/banning_${type}`);
+      }
 
-      promise = @Api.sendDelete('/banning_' + @type + '/' + window.encodeURIComponent(id)).success( =>
-        @removeListModelById(id)
-      )
+      /*
+    * Remove a model
+    *
+    * @param {Integer} id
+    * @return {promise}
+      */
 
-      return promise
+      deleteBanById(id) {
 
-    ###
-  # Get all data needed for the edit page
-  #
-  # @param {String} id
-  # @return {promise}
-    ###
+        const promise = this.Api.sendDelete(`/banning_${this.type}/${window.encodeURIComponent(id)}`).success( () => {
+          return this.removeListModelById(id);
+        });
 
-    loadEditBanData: (id) ->
+        return promise;
+      }
 
-      deferred = @$q.defer()
+      /*
+    * Get all data needed for the edit page
+    *
+    * @param {String} id
+    * @return {promise}
+      */
 
-      if id
+      loadEditBanData(id) {
 
-        @Api.sendGet('/banning_' + @type + '/' + window.encodeURIComponent(id)).then( (result) =>
+        const deferred = this.$q.defer();
 
-          data = {}
-          data[@type + '_ban'] = result.data[@type + '_ban']
-          data[@type + '_ban'].old_id = result.data[@type + '_ban'][@idProp]
+        if (id) {
 
-          data.form = @getFormMapper().getFormFromModel(data)
+          this.Api.sendGet(`/banning_${this.type}/${window.encodeURIComponent(id)}`).then( result => {
 
-          deferred.resolve(data)
-        , ->
-          deferred.reject()
-        )
+            const data = {};
+            data[this.type + '_ban'] = result.data[this.type + '_ban'];
+            data[this.type + '_ban'].old_id = result.data[this.type + '_ban'][this.idProp];
 
-      else
+            data.form = this.getFormMapper().getFormFromModel(data);
 
-        data = {}
-        data[@type + '_ban'] = {}
+            return deferred.resolve(data);
+          }
+          , () => deferred.reject());
 
-        data.form = @getFormMapper().getFormFromModel(data)
+        } else {
 
-        deferred.resolve(data)
+          const data = {};
+          data[this.type + '_ban'] = {};
 
-      return deferred.promise
+          data.form = this.getFormMapper().getFormFromModel(data);
 
-    ###
-  # Saves a form model and merges model with list data
-  #
-  # @param {Object} model
-  # @param {Object} formModel  The model representing the form
-  # @return {promise}
-    ###
+          deferred.resolve(data);
+        }
 
-    saveFormModel: (model, formModel) ->
+        return deferred.promise;
+      }
 
-      mapper = @getFormMapper()
+      /*
+    * Saves a form model and merges model with list data
+    *
+    * @param {Object} model
+    * @param {Object} formModel  The model representing the form
+    * @return {promise}
+      */
 
-      postData = mapper.getPostDataFromForm(formModel)
+      saveFormModel(model, formModel) {
 
-      sendData = {}
-      sendData[@type + '_ban'] = postData
+        let promise;
+        const mapper = this.getFormMapper();
+
+        const postData = mapper.getPostDataFromForm(formModel);
+
+        const sendData = {};
+        sendData[this.type + '_ban'] = postData;
       
-      if model['banned_' + @type]
-        url = '/banning_' + @type + '/' + window.encodeURIComponent(if @type == 'email' then model['banned_' + @type] else model['id'])
-        promise = @Api.sendPostJson(url, sendData).success((data) =>
-          model['banned_' + @type] = data['banned_' + @type]
-        )
-      else
-        promise = @Api.sendPutJson('/banning_' + @type, sendData).success( (data) =>
-          model['banned_' + @type] = data['banned_' + @type]
-        )
+        if (model[`banned_${this.type}`]) {
+          const url = `/banning_${this.type}/${window.encodeURIComponent(this.type === 'email' ? model[`banned_${this.type}`] : model['id'])}`;
+          promise = this.Api.sendPostJson(url, sendData).success(data => {
+            return model[`banned_${this.type}`] = data[`banned_${this.type}`];
+          });
+        } else {
+          promise = this.Api.sendPutJson(`/banning_${this.type}`, sendData).success( data => {
+            return model[`banned_${this.type}`] = data[`banned_${this.type}`];
+          });
+        }
 
-      promise.success( =>
-        mapper.applyFormToModel(model, formModel)
-        @mergeDataModel(model, null, @type + '_bans')
-      )
+        promise.success( () => {
+          mapper.applyFormToModel(model, formModel);
+          return this.mergeDataModel(model, null, this.type + '_bans');
+        });
 
-      return promise
+        return promise;
+      }
+    };
+    Bans.initClass();
+    return Bans;
+  })();
+});

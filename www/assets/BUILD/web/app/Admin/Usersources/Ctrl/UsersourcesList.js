@@ -1,92 +1,119 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'Admin/Usersources/Helper/UsersourceTypeDecider',
   'moment'
-], (
+], function(
   Admin_Ctrl_Base,
   Admin_Usersources_Helper_UsersourceTypeDecider,
   moment
-) ->
-  class Admin_Usersources_Ctrl_UsersourcesList extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Usersources_Ctrl_UsersourcesList'
-    @CTRL_AS = 'ListCtrl'
-    @DEPS = ['$state', 'Growl', '$q', '$interval']
+) {
+  class Admin_Usersources_Ctrl_UsersourcesList extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Usersources_Ctrl_UsersourcesList';
+      this.CTRL_AS = 'ListCtrl';
+      this.DEPS = ['$state', 'Growl', '$q', '$interval'];
+    }
 
-    init: ->
-      @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
-      @usersourcesDataService = @DataService.get('Usersources')
-      @show_sync_section = false
-      @show_url = if @usersourceType == 'user' then 'crm.usersources.id' else 'agents.usersources.id'
-      @sync_url = if @usersourceType == 'user' then 'crm.usersources.sync' else 'agents.usersources.sync'
-      @new_url = if @usersourceType == 'user' then 'crm.usersources.new' else 'agents.usersources.new'
-      @sync_status = null
-      @sortedListOptions = {
+    init() {
+      this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
+      this.usersourcesDataService = this.DataService.get('Usersources');
+      this.show_sync_section = false;
+      this.show_url = this.usersourceType === 'user' ? 'crm.usersources.id' : 'agents.usersources.id';
+      this.sync_url = this.usersourceType === 'user' ? 'crm.usersources.sync' : 'agents.usersources.sync';
+      this.new_url = this.usersourceType === 'user' ? 'crm.usersources.new' : 'agents.usersources.new';
+      this.sync_status = null;
+      this.sortedListOptions = {
         axis: 'y',
         handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest('ul')
-          displayOrders = []
-          $list.find('li').each(->
-            displayOrders.push(parseInt($(this).data('id')))
-          )
-          @usersourcesDataService.saveDisplayOrder(displayOrders)
-          @pingElement('display_orders')
+        update: (ev, data) => {
+          const $list = data.item.closest('ul');
+          const displayOrders = [];
+          $list.find('li').each(function() {
+            return displayOrders.push(parseInt($(this).data('id')));
+          });
+          this.usersourcesDataService.saveDisplayOrder(displayOrders);
+          return this.pingElement('display_orders');
+        }
+      };
+      return this.$scope.$on('$destroy', () => this.interval && this.$interval.cancel(this.interval));
+    }
+
+    initialLoad() {
+      const promise = this.refresh();
+
+      this.interval = this.$interval(() => {
+        return this.refresh();
       }
-      @$scope.$on '$destroy', => @interval && @$interval.cancel(@interval)
+      , 10000);
 
-    initialLoad: ->
-      promise = @refresh()
+      return promise;
+    }
 
-      @interval = @$interval(() =>
-        @refresh()
-      , 10000)
+    updateAppTitle(id, title) {
+      this.usersources.filter(x => (x.app != null ? x.app.id : undefined) === id).map(x => x.usersource.title = title);
+      return this.refresh();
+    }
 
-      return promise
+    refresh() {
+      const d = this.$q.defer();
 
-    updateAppTitle: (id, title) ->
-      @usersources.filter((x) -> x.app?.id == id).map((x) -> x.usersource.title = title)
-      @refresh()
-
-    refresh: ->
-      d = @$q.defer()
-
-      @Api.sendDataGet({
-        us: '/usersources/' + @usersourceType,
+      this.Api.sendDataGet({
+        us: `/usersources/${this.usersourceType}`,
         sync_status: '/usersources/sync/status'
-      }).then((result) =>
-        @sync_status = result.data.sync_status
-        if @sync_status.next_sync
-          @sync_next_text = moment(@sync_status.next_sync).format('MMM D, YYYY @ HH:mm')
-        else
-          @sync_next_text = 'scheduling'
-        @usersources = result.data.us.usersources
-        @show_sync_section = true
-        count_syncing = 0
-        for us in @usersources
-          if us.usersource.sync_enabled
-            count_syncing++
-        if count_syncing
-          @show_sync_section = true
-        else
-          @show_sync_section = false
+      }).then(result => {
+        this.sync_status = result.data.sync_status;
+        if (this.sync_status.next_sync) {
+          this.sync_next_text = moment(this.sync_status.next_sync).format('MMM D, YYYY @ HH:mm');
+        } else {
+          this.sync_next_text = 'scheduling';
+        }
+        this.usersources = result.data.us.usersources;
+        this.show_sync_section = true;
+        let count_syncing = 0;
+        for (let us of Array.from(this.usersources)) {
+          if (us.usersource.sync_enabled) {
+            count_syncing++;
+          }
+        }
+        if (count_syncing) {
+          this.show_sync_section = true;
+        } else {
+          this.show_sync_section = false;
+        }
 
-        d.resolve();
-      )
+        return d.resolve();
+      });
 
-      return d.promise
+      return d.promise;
+    }
 
-    startSync: ->
-      @Api.sendPost('/usersources/sync/start').then((result) =>
-        if result.data.success
-          @refresh()
-          @Growl.success(@getRegisteredMessage('usersource_sync_starting') || 'Starting sync job. It will begin shortly.')
-      )
+    startSync() {
+      return this.Api.sendPost('/usersources/sync/start').then(result => {
+        if (result.data.success) {
+          this.refresh();
+          return this.Growl.success(this.getRegisteredMessage('usersource_sync_starting') || 'Starting sync job. It will begin shortly.');
+        }
+      });
+    }
 
-    stopSync: ->
-      @Api.sendPost('/usersources/sync/stop').then((result) =>
-        if result.data.success
-          @refresh()
-          @Growl.success(@getRegisteredMessage('usersource_sync_stopping') || 'Aborted sync jobs.')
-      )
+    stopSync() {
+      return this.Api.sendPost('/usersources/sync/stop').then(result => {
+        if (result.data.success) {
+          this.refresh();
+          return this.Growl.success(this.getRegisteredMessage('usersource_sync_stopping') || 'Aborted sync jobs.');
+        }
+      });
+    }
+  }
+  Admin_Usersources_Ctrl_UsersourcesList.initClass();
 
-  Admin_Usersources_Ctrl_UsersourcesList.EXPORT_CTRL()
+  return Admin_Usersources_Ctrl_UsersourcesList.EXPORT_CTRL();
+});

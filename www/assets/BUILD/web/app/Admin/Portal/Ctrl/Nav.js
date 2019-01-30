@@ -1,16 +1,28 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Portal_Ctrl_Nav extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Portal_Ctrl_Nav'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$timeout', '$state', '$stateParams']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Portal_Ctrl_Nav extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Portal_Ctrl_Nav';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['$timeout', '$state', '$stateParams'];
+    }
 
-    init: ->
-      depth = @$state.current.name.split('.').length
-      if depth == 1
-        @$timeout(->
-          $('.dp-layout-appnav').find('li').first().find('a').first().click();
-        , 10)
-        return
+    init() {
+      const depth = this.$state.current.name.split('.').length;
+      if (depth === 1) {
+        this.$timeout(() => $('.dp-layout-appnav').find('li').first().find('a').first().click()
+        , 10);
+        return;
+      }
+    }
+  }
+  Admin_Portal_Ctrl_Nav.initClass();
 
 
-  Admin_Portal_Ctrl_Nav.EXPORT_CTRL()
+  return Admin_Portal_Ctrl_Nav.EXPORT_CTRL();
+});

@@ -1,8 +1,9 @@
-define [
+define([
   'angular',
   'angularBootstrap',
-], (
+], function(
   angular
-) ->
-  AdminUpdateWatcherModule = angular.module('AdminUpdateWatcher_App', ['ui.bootstrap'])
-  return AdminUpdateWatcherModule
+) {
+  const AdminUpdateWatcherModule = angular.module('AdminUpdateWatcher_App', ['ui.bootstrap']);
+  return AdminUpdateWatcherModule;
+});

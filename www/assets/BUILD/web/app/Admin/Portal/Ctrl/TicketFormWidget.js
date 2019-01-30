@@ -1,32 +1,50 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], (Admin_Ctrl_Base) ->
-  class Admin_Portal_Ctrl_TicketFormWidget extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Portal_Ctrl_TicketFormWidget'
-    @CTRL_AS = 'Ctrl'
-    @DEPS    = ['$http']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery'], function(Admin_Ctrl_Base) {
+  class Admin_Portal_Ctrl_TicketFormWidget extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Portal_Ctrl_TicketFormWidget';
+      this.CTRL_AS = 'Ctrl';
+      this.DEPS    = ['$http'];
+    }
 
-    init: ->
-      @$scope.code = ''
-      @$scope.language = ''
-      @$scope.department = ''
-      @$scope.width = 500
-      @$scope.departments = []
-      @$scope.languages = []
+    init() {
+      this.$scope.code = '';
+      this.$scope.language = '';
+      this.$scope.department = '';
+      this.$scope.width = 500;
+      this.$scope.departments = [];
+      return this.$scope.languages = [];
+    }
 
-    initialLoad: ->
-      @Api2.sendGet('/ticket_departments?selectable=1').then ({data}) =>
-        @$scope.departments = data.data || []
-      @Api2.sendGet('/languages').then ({data}) =>
-        @$scope.languages = data.data
-        @$scope.language = data.data[0].locale
+    initialLoad() {
+      this.Api2.sendGet('/ticket_departments?selectable=1').then(({data}) => {
+        return this.$scope.departments = data.data || [];
+    });
+      return this.Api2.sendGet('/languages').then(({data}) => {
+        this.$scope.languages = data.data;
+        return this.$scope.language = data.data[0].locale;
+      });
+    }
 
-    getCode: ->
-      params = {language: @$scope.language, department: @$scope.department, width: @$scope.width}
-      if params.department
-        params.hide_department = 1
-      httpParams = {
-        transformResponse: undefined
+    getCode() {
+      const params = {language: this.$scope.language, department: this.$scope.department, width: this.$scope.width};
+      if (params.department) {
+        params.hide_department = 1;
       }
-      @Api2.sendGet('/ticket-form-widget/code', params, httpParams).then (response) =>
-        @$scope.code = response.data
+      const httpParams = {
+        transformResponse: undefined
+      };
+      return this.Api2.sendGet('/ticket-form-widget/code', params, httpParams).then(response => {
+        return this.$scope.code = response.data;
+      });
+    }
+  }
+  Admin_Portal_Ctrl_TicketFormWidget.initClass();
 
-  Admin_Portal_Ctrl_TicketFormWidget.EXPORT_CTRL()
+  return Admin_Portal_Ctrl_TicketFormWidget.EXPORT_CTRL();
+});

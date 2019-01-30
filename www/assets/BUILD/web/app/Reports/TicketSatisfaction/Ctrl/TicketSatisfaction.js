@@ -1,73 +1,99 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS202: Simplify dynamic range loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Reports/Main/Ctrl/Base',
   'moment',
-], (
+], function(
   ReportsBaseCtrl,
   moment,
-) ->
-  class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl
-    @CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['Api', '$sce']
+) {
+  let Reports_TicketSatisfaction_Ctrl_TicketSatisfaction;
+  return Reports_TicketSatisfaction_Ctrl_TicketSatisfaction = (function() {
+    Reports_TicketSatisfaction_Ctrl_TicketSatisfaction = class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl {
+      static initClass() {
+        this.CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction';
+        this.CTRL_AS   = 'Ctrl';
+        this.DEPS      = ['Api', '$sce'];
+  
+        Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.EXPORT_CTRL();
+      }
 
-    init: ->
-      @feed_html = ''
-      @summary_html = ''
-      @page_nums = [1]
-      @num_pages = 0
-      @page = 1
-      @$scope.view_date = moment(@date).format("YYYY-MM")
-      @$scope.mode = 'feed'
+      init() {
+        this.feed_html = '';
+        this.summary_html = '';
+        this.page_nums = [1];
+        this.num_pages = 0;
+        this.page = 1;
+        this.$scope.view_date = moment(this.date).format("YYYY-MM");
+        return this.$scope.mode = 'feed';
+      }
 
-    initialLoad: ->
-      return @loadFeedResults()
+      initialLoad() {
+        return this.loadFeedResults();
+      }
 
-    switchToFeed: ->
-      @$scope.mode = 'feed'
-      @loadFeedResults()
+      switchToFeed() {
+        this.$scope.mode = 'feed';
+        return this.loadFeedResults();
+      }
 
-    switchToSummary: ->
-      @$scope.mode = 'summary'
-      @loadSummaryResults()
+      switchToSummary() {
+        this.$scope.mode = 'summary';
+        return this.loadSummaryResults();
+      }
 
-    loadFeedResults: ->
-      @startSpinner('loading_feed_results')
+      loadFeedResults() {
+        this.startSpinner('loading_feed_results');
 
-      promise = @Api.sendGet("/reports/ticket-satisfaction/" + @page).then((res) =>
-        @feed_html = @$sce.trustAsHtml(res.data.html)
+        const promise = this.Api.sendGet(`/reports/ticket-satisfaction/${this.page}`).then(res => {
+          this.feed_html = this.$sce.trustAsHtml(res.data.html);
 
-        @page = res.data.page || 1
-        @num_pages = res.data.num_pages || 1
+          this.page = res.data.page || 1;
+          this.num_pages = res.data.num_pages || 1;
 
-        @page_nums = []
+          this.page_nums = [];
 
-        for i in [0...@num_pages]
-          @page_nums.push(i + 1)
+          for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+            this.page_nums.push(i + 1);
+          }
 
-        @stopSpinner('loading_feed_results', true)
-      )
+          return this.stopSpinner('loading_feed_results', true);
+        });
 
-      return promise
+        return promise;
+      }
 
-    loadSummaryResults: ->
-      @startSpinner('loading_summary_results')
+      loadSummaryResults() {
+        this.startSpinner('loading_summary_results');
 
-      promise = @Api.sendGet("/reports/ticket-satisfaction/summary/" + @$scope.view_date).then((res) =>
-        @summary_html = @$sce.trustAsHtml(res.data.html)
-        @stopSpinner('loading_summary_results', true)
-      )
+        const promise = this.Api.sendGet(`/reports/ticket-satisfaction/summary/${this.$scope.view_date}`).then(res => {
+          this.summary_html = this.$sce.trustAsHtml(res.data.html);
+          return this.stopSpinner('loading_summary_results', true);
+        });
 
-      return promise
+        return promise;
+      }
 
-    changePage: ->
-      @loadFeedResults()
+      changePage() {
+        return this.loadFeedResults();
+      }
 
-    goPrevPage: ->
-      @page--
-      @changePage()
+      goPrevPage() {
+        this.page--;
+        return this.changePage();
+      }
 
-    goNextPage: ->
-      @page++
-      @changePage()
-
-    Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.EXPORT_CTRL()
+      goNextPage() {
+        this.page++;
+        return this.changePage();
+      }
+    };
+    Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.initClass();
+    return Reports_TicketSatisfaction_Ctrl_TicketSatisfaction;
+  })();
+});

@@ -1,25 +1,39 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Languages_Ctrl_PhraseList extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Languages_Ctrl_PhraseList'
-    @CTRL_AS = 'ListCtrl'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Languages_Ctrl_PhraseList extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Languages_Ctrl_PhraseList';
+      this.CTRL_AS = 'ListCtrl';
+    }
 
-    init: ->
-      @id = @$stateParams.id.replace(/^phrases\-/, '')
+    init() {
+      return this.id = this.$stateParams.id.replace(/^phrases\-/, '');
+    }
 
-    initialLoad: ->
-      promise = @Api.sendDataGet({
-        lang_info:     "/langs/#{@id}",
+    initialLoad() {
+      const promise = this.Api.sendDataGet({
+        lang_info:     `/langs/${this.id}`,
         phrase_groups: "/langs/phrases-groups"
-      }).then((result) =>
-        if not result.data.lang_info.language
-          @$state.go('setup.languages.install', {id: "install-#{@id}"})
-          return
+      }).then(result => {
+        if (!result.data.lang_info.language) {
+          this.$state.go('setup.languages.install', {id: `install-${this.id}`});
+          return;
+        }
 
-        @pack = result.data.lang_info.pack
-        @lang = result.data.lang_info.language
+        this.pack = result.data.lang_info.pack;
+        this.lang = result.data.lang_info.language;
 
-        @phraseGroups = result.data.phrase_groups.phrase_groups
-      )
-      return promise
+        return this.phraseGroups = result.data.phrase_groups.phrase_groups;
+      });
+      return promise;
+    }
+  }
+  Admin_Languages_Ctrl_PhraseList.initClass();
 
-  Admin_Languages_Ctrl_PhraseList.EXPORT_CTRL()
+  return Admin_Languages_Ctrl_PhraseList.EXPORT_CTRL();
+});

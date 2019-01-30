@@ -1,4 +1,9 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Directive/DpClickHref',
   'DeskPRO/Directive/DpTimeWithUnit',
   'DeskPRO/Directive/DpStateMark',
@@ -28,19 +33,21 @@ define [
   DeskPRO_Directive_DpShowSpinning,
   DeskPRO_Directive_DpSubmitForm,
   DeskPRO_Directive_DpErrorClass,
-) ->
-  return (Module) ->
-    Module.directive('dpClickHref',              DeskPRO_Directive_DpClickHref)
-    Module.directive('dpTimeWithUnit',           DeskPRO_Directive_DpTimeWithUnit)
-    Module.directive('dpStateMark',              DeskPRO_Directive_DpStateMark)
-    Module.directive('dpHelpPage',               DeskPRO_Directive_DpHelpPage)
-    Module.directive('dpNavSubnav',              DeskPRO_Directive_DpNavSubnav)
-    Module.directive('dpReportBuilderSelectBox', Reports_Directive_DpReportBuilderSelectBox)
-    Module.directive('dpReportBillingSelectBox', Reports_Directive_DpReportBillingSelectBox)
-    Module.directive('dpReportBuilderTitle',     Reports_Directive_DpReportBuilderTitle)
-    Module.directive('dpTabBody',                DeskPRO_Directive_DpTabBody)
-    Module.directive('dpTabBtn',                 DeskPRO_Directive_DpTabBtn)
-    Module.directive('dpHideSpinning',           DeskPRO_Directive_DpHideSpinning)
-    Module.directive('dpShowSpinning',           DeskPRO_Directive_DpShowSpinning)
-    Module.directive('dpSubmitForm',             DeskPRO_Directive_DpSubmitForm)
-    Module.directive('dpErrorClass',             DeskPRO_Directive_DpErrorClass)
+) =>
+  function(Module) {
+    Module.directive('dpClickHref',              DeskPRO_Directive_DpClickHref);
+    Module.directive('dpTimeWithUnit',           DeskPRO_Directive_DpTimeWithUnit);
+    Module.directive('dpStateMark',              DeskPRO_Directive_DpStateMark);
+    Module.directive('dpHelpPage',               DeskPRO_Directive_DpHelpPage);
+    Module.directive('dpNavSubnav',              DeskPRO_Directive_DpNavSubnav);
+    Module.directive('dpReportBuilderSelectBox', Reports_Directive_DpReportBuilderSelectBox);
+    Module.directive('dpReportBillingSelectBox', Reports_Directive_DpReportBillingSelectBox);
+    Module.directive('dpReportBuilderTitle',     Reports_Directive_DpReportBuilderTitle);
+    Module.directive('dpTabBody',                DeskPRO_Directive_DpTabBody);
+    Module.directive('dpTabBtn',                 DeskPRO_Directive_DpTabBtn);
+    Module.directive('dpHideSpinning',           DeskPRO_Directive_DpHideSpinning);
+    Module.directive('dpShowSpinning',           DeskPRO_Directive_DpShowSpinning);
+    Module.directive('dpSubmitForm',             DeskPRO_Directive_DpSubmitForm);
+    return Module.directive('dpErrorClass',             DeskPRO_Directive_DpErrorClass);
+  }
+);

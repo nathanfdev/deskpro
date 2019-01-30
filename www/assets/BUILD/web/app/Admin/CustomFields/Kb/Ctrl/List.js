@@ -1,13 +1,26 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_CustomFields_Kb_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_CustomFields_Kb_Ctrl_List'
-    @DEPS = []
-    @CTRL_AS = 'ListCtrl'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_CustomFields_Kb_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_CustomFields_Kb_Ctrl_List';
+      this.DEPS = [];
+      this.CTRL_AS = 'ListCtrl';
+    }
 
-    init: ->
-      @$scope.fields = []
+    init() {
+      return this.$scope.fields = [];
+    }
 
-    initialLoad: ->
-      @DataService.get('KbFields').loadList().then((list) => @$scope.fields = list);
+    initialLoad() {
+      return this.DataService.get('KbFields').loadList().then(list => { return this.$scope.fields = list; });
+    }
+  }
+  Admin_CustomFields_Kb_Ctrl_List.initClass();
 
-  Admin_CustomFields_Kb_Ctrl_List.EXPORT_CTRL()
+  return Admin_CustomFields_Kb_Ctrl_List.EXPORT_CTRL();
+});

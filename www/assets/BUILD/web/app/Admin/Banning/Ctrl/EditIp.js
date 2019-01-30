@@ -1,55 +1,71 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base', 'angular'
-], (
+], function(
   Admin_Ctrl_Base, angular
-) ->
-  class Admin_Banning_Ctrl_EditIp extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Banning_Ctrl_EditIp'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['$stateParams']
+) {
+  class Admin_Banning_Ctrl_EditIp extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Banning_Ctrl_EditIp';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['$stateParams'];
+    }
 
-    init: ->
-      @banData = @DataService.get('Bans')
-      @banData.setType('ip')
-      @ip_ban = null
+    init() {
+      this.banData = this.DataService.get('Bans');
+      this.banData.setType('ip');
+      return this.ip_ban = null;
+    }
 
-    ###
-  #
-  ###
+    /*
+  *
+  */
 
-    initialLoad: ->
-      promise = @banData.loadEditBanData(@$stateParams.ban || null).then( (data) =>
+    initialLoad() {
+      const promise = this.banData.loadEditBanData(this.$stateParams.ban || null).then( data => {
 
-        @ip_ban = data.ip_ban
-        @form = data.form
-      )
-      return promise
+        this.ip_ban = data.ip_ban;
+        return this.form = data.form;
+      });
+      return promise;
+    }
 
-    ###
-    #
-  ###
+    /*
+     *
+   */
 
-    saveForm: ->
+    saveForm() {
 
-      if not @$scope.form_props.$valid
-        return
+      if (!this.$scope.form_props.$valid) {
+        return;
+      }
 
-      is_new = !@$stateParams.ban
+      const is_new = !this.$stateParams.ban;
 
-      promise = @banData.saveFormModel(@ip_ban, @form)
+      const promise = this.banData.saveFormModel(this.ip_ban, this.form);
 
-      @startSpinner('saving')
-      promise.then( =>
-        @stopSpinner('saving', true).then(=>
-          @form = angular.copy(@ip_ban)
-          @Growl.success("Saved")
-        )
+      this.startSpinner('saving');
+      return promise.then( () => {
+        this.stopSpinner('saving', true).then(() => {
+          this.form = angular.copy(this.ip_ban);
+          return this.Growl.success("Saved");
+        });
 
-        @skipDirtyState()
-        if is_new
-          @$state.go('crm.banning.gocreate_ip')
-        else
-          @$state.go('crm.banning.edit_ip', {ban: @ip_ban.id})
-      )
+        this.skipDirtyState();
+        if (is_new) {
+          return this.$state.go('crm.banning.gocreate_ip');
+        } else {
+          return this.$state.go('crm.banning.edit_ip', {ban: this.ip_ban.id});
+        }
+      });
+    }
+  }
+  Admin_Banning_Ctrl_EditIp.initClass();
 
-  Admin_Banning_Ctrl_EditIp.EXPORT_CTRL()
+  return Admin_Banning_Ctrl_EditIp.EXPORT_CTRL();
+});

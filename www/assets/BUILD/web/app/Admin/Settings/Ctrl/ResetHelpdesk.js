@@ -1,37 +1,54 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Settings_Ctrl_ResetHelpdesk extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Settings_Ctrl_ResetHelpdesk'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$interval']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_Settings_Ctrl_ResetHelpdesk extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Settings_Ctrl_ResetHelpdesk';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['$interval'];
+    }
 
-    init: ->
-      @$scope.status = {}
-      @$scope.$on '$destroy', => @interval && @$interval.cancel(@interval)
-
-
-
-    initialLoad: ->
-      @Api.sendGet('/reset-helpdesk/status').then (res) => @status(res.data)
-
-
-
-    status: (data) ->
-      @$scope.status = data
-      if data.waiting && !@interval
-        refresh = => @Api.sendGet('/reset-helpdesk/status').then (res) => @status(res.data)
-        @interval = @$interval refresh, 5000
-      if !data.waiting && @interval
-        @$interval.cancel(@interval)
-        @interval = null
+    init() {
+      this.$scope.status = {};
+      return this.$scope.$on('$destroy', () => this.interval && this.$interval.cancel(this.interval));
+    }
 
 
 
-    save: ->
-      return if !@$scope.form_props || @$scope.form_props.$invalid
-      post = @$scope.form
-      @$scope.form = {}
-      @Api.sendPostJson('/reset-helpdesk', post).then (res) => @status(res.data)
+    initialLoad() {
+      return this.Api.sendGet('/reset-helpdesk/status').then(res => this.status(res.data));
+    }
 
 
 
-  Admin_Settings_Ctrl_ResetHelpdesk.EXPORT_CTRL()
+    status(data) {
+      this.$scope.status = data;
+      if (data.waiting && !this.interval) {
+        const refresh = () => this.Api.sendGet('/reset-helpdesk/status').then(res => this.status(res.data));
+        this.interval = this.$interval(refresh, 5000);
+      }
+      if (!data.waiting && this.interval) {
+        this.$interval.cancel(this.interval);
+        return this.interval = null;
+      }
+    }
+
+
+
+    save() {
+      if (!this.$scope.form_props || this.$scope.form_props.$invalid) { return; }
+      const post = this.$scope.form;
+      this.$scope.form = {};
+      return this.Api.sendPostJson('/reset-helpdesk', post).then(res => this.status(res.data));
+    }
+  }
+  Admin_Settings_Ctrl_ResetHelpdesk.initClass();
+
+
+
+  return Admin_Settings_Ctrl_ResetHelpdesk.EXPORT_CTRL();
+});

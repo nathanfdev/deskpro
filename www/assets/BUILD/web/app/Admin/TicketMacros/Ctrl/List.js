@@ -1,84 +1,103 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_TicketMacros_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketMacros_Ctrl_List'
-    @CTRL_AS = 'ListCtrl'
-    @DEPS = ['$state', '$stateParams', 'DataService']
+) {
+  class Admin_TicketMacros_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketMacros_Ctrl_List';
+      this.CTRL_AS = 'ListCtrl';
+      this.DEPS = ['$state', '$stateParams', 'DataService'];
+    }
 
-    init: ->
-      @list = []
-      @macroData = @DataService.get('TicketMacros')
-      @$scope.display_filter = {
+    init() {
+      this.list = [];
+      this.macroData = this.DataService.get('TicketMacros');
+      this.$scope.display_filter = {
         type:  "all",
         agent: "0"
+      };
+
+      return this.$scope.$watch('display_filter', () => {
+        return this.updateFilterList();
+      }
+      , true);
+    }
+
+    initialLoad() {
+      const promise = this.macroData.loadList();
+      promise.then( list => {
+        return this.list = list;
+      });
+
+      const data_promise = this.Api.sendDataGet({
+        agents: '/agents'
+      }).then( res => {
+        return this.agents = res.data.agents.agents;
+      });
+
+      const bothPromise = this.$q.all([promise, data_promise]);
+      bothPromise.then(() => {
+        return this.updateFilterList();
+      });
+
+      return bothPromise;
+    }
+
+    updateFilterList() {
+      let filterList = [];
+      const { display_filter } = this.$scope;
+
+      if (display_filter.type === 'all') {
+        filterList = this.list;
+      } else {
+        if (display_filter.type === 'global') {
+          filterList = this.list.filter(x => x.is_global);
+        } else if (display_filter.type === 'agent') {
+          const agentId = parseInt(display_filter.agent);
+          if (agentId) {
+            filterList = this.list.filter(x => !x.is_global && x.person && (x.person.id === agentId));
+          } else {
+            filterList = this.list.filter(x => !x.is_global && x.person);
+          }
+        } else if (display_filter.type === 'department') {
+          filterList = this.list.filter(x => !x.is_global && x.department);
+        }
       }
 
-      @$scope.$watch('display_filter', =>
-        @updateFilterList()
-      , true)
+      return this.$scope.filterList = filterList;
+    }
 
-    initialLoad: ->
-      promise = @macroData.loadList()
-      promise.then( (list) =>
-        @list = list
-      )
+    /*
+     * Show the delete dlg
+     */
+    startDelete(macro) {
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketMacros/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
 
-      data_promise = @Api.sendDataGet({
-        agents: '/agents'
-      }).then( (res) =>
-        @agents = res.data.agents.agents
-      )
-
-      bothPromise = @$q.all([promise, data_promise])
-      bothPromise.then(=>
-        @updateFilterList()
-      )
-
-      return bothPromise
-
-    updateFilterList: ->
-      filterList = []
-      display_filter = @$scope.display_filter
-
-      if display_filter.type == 'all'
-        filterList = @list
-      else
-        if display_filter.type == 'global'
-          filterList = @list.filter((x) -> x.is_global)
-        else if display_filter.type == 'agent'
-          agentId = parseInt(display_filter.agent)
-          if agentId
-            filterList = @list.filter((x) -> !x.is_global && x.person && x.person.id == agentId)
-          else
-            filterList = @list.filter((x) -> !x.is_global && x.person)
-        else if display_filter.type == 'department'
-          filterList = @list.filter((x) -> !x.is_global && x.department)
-
-      @$scope.filterList = filterList
-
-    ###
-    # Show the delete dlg
-    ###
-    startDelete: (macro) ->
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketMacros/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close();
-
-          $scope.dismiss = ->
-            $modalInstance.dismiss();
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
       });
 
-      inst.result.then( =>
-        @macroData.deleteMacroById(macro.id).then(=>
-          if @$state.current.name == 'tickets.ticket_macros.edit' and parseInt(@$state.params.id) == macro.id
-            @$state.go('tickets.ticket_macros')
-        )
-      )
+      return inst.result.then( () => {
+        return this.macroData.deleteMacroById(macro.id).then(() => {
+          if ((this.$state.current.name === 'tickets.ticket_macros.edit') && (parseInt(this.$state.params.id) === macro.id)) {
+            return this.$state.go('tickets.ticket_macros');
+          }
+        });
+      });
+    }
+  }
+  Admin_TicketMacros_Ctrl_List.initClass();
 
-  Admin_TicketMacros_Ctrl_List.EXPORT_CTRL()
+  return Admin_TicketMacros_Ctrl_List.EXPORT_CTRL();
+});

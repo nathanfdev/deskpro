@@ -1,93 +1,121 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_ServerFileCheck_Ctrl_ServerFileCheck extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_ServerFileCheck_Ctrl_ServerFileCheck'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_ServerFileCheck_Ctrl_ServerFileCheck extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_ServerFileCheck_Ctrl_ServerFileCheck';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      @server_file_check = null
+    init() {
+      this.server_file_check = null;
 
-      @total_checks = 0
-      @current_check = 0
-      @current_percentage = 0
+      this.total_checks = 0;
+      this.current_check = 0;
+      this.current_percentage = 0;
 
-      @check_started = false
-      @check_in_progress = false
-      @has_errors = false
+      this.check_started = false;
+      this.check_in_progress = false;
+      this.has_errors = false;
 
-      @show_log = false
-      @show_log_text = 'Show Log'
-      @logs = []
-      @error_logs = []
+      this.show_log = false;
+      this.show_log_text = 'Show Log';
+      this.logs = [];
+      return this.error_logs = [];
+    }
 
-    initialLoad: ->
-      data_promise = @Api.sendGet('/server_file_check').then( (res) =>
-        @server_file_check = res.data.server_file_check
-        @total_checks = @server_file_check.count
+    initialLoad() {
+      const data_promise = this.Api.sendGet('/server_file_check').then( res => {
+        this.server_file_check = res.data.server_file_check;
+        this.total_checks = this.server_file_check.count;
 
-        # the case when we have '/app/sys/Resources/distro-checksums.php' deleted
-        if @total_checks == 1
-          @current_check = -1
-          @doNextRequest()
-      )
+        // the case when we have '/app/sys/Resources/distro-checksums.php' deleted
+        if (this.total_checks === 1) {
+          this.current_check = -1;
+          return this.doNextRequest();
+        }
+      });
 
-      return @$q.all([data_promise])
-
-
-    ###
-    # Starting the process of integrity file check
-    ###
-    startCheck: ->
-      @current_check = 0
-      @current_percentage = 0
-      @check_started = true
-      @check_in_progress = true
-      @has_errors = false
-      @logs = []
-      @error_logs = []
-
-      @doNextRequest()
+      return this.$q.all([data_promise]);
+    }
 
 
-    ###
-    # Execute AJAX request to next batch of files
-    ###
-    doNextRequest: ->
-      @current_check++
-      @Api.sendGet('/server_file_check/' + (@current_check - 1)).then (res) =>
-        data = res.data.server_file_check
+    /*
+     * Starting the process of integrity file check
+     */
+    startCheck() {
+      this.current_check = 0;
+      this.current_percentage = 0;
+      this.check_started = true;
+      this.check_in_progress = true;
+      this.has_errors = false;
+      this.logs = [];
+      this.error_logs = [];
 
-        if data.okay
-          @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + data.okay.length + ' files verified'
-        if data.added
-          for file in data.added
-            @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' File added: ' + file
-
-        if data.changed and data.changed.length
-          for file in data.changed
-            @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' File changed: ' + file
-            @error_logs.push 'CHANGED: ' + file
-            @has_errors = true
-        if data.removed and data.removed.length
-          for file in data.removed
-            @logs.push 'Batch ' + @current_check + ' of ' + @total_checks + ': ' + ' Missing: ' + file
-            @error_logs.push 'MISSING: ' + file
-            @has_errors = true
-
-        @current_percentage = Math.ceil @current_check / @total_checks * 100
-
-        if @current_check < @total_checks
-          @doNextRequest()
-        else
-          @check_in_progress = false
-          @current_percentage = 100
-
-    ###
-    # Show / hide 'show log' button
-    ###
-    toggleLog: ->
-      @show_log = !@show_log
-      @show_log_text = if @show_log then 'Hide Log' else 'Show Log'
+      return this.doNextRequest();
+    }
 
 
-  Admin_ServerFileCheck_Ctrl_ServerFileCheck.EXPORT_CTRL()
+    /*
+     * Execute AJAX request to next batch of files
+     */
+    doNextRequest() {
+      this.current_check++;
+      return this.Api.sendGet(`/server_file_check/${this.current_check - 1}`).then(res => {
+        let file;
+        const data = res.data.server_file_check;
+
+        if (data.okay) {
+          this.logs.push(`Batch ${this.current_check} of ${this.total_checks}: ${data.okay.length} files verified`);
+        }
+        if (data.added) {
+          for (file of Array.from(data.added)) {
+            this.logs.push(`Batch ${this.current_check} of ${this.total_checks}:  File added: ${file}`);
+          }
+        }
+
+        if (data.changed && data.changed.length) {
+          for (file of Array.from(data.changed)) {
+            this.logs.push(`Batch ${this.current_check} of ${this.total_checks}:  File changed: ${file}`);
+            this.error_logs.push(`CHANGED: ${file}`);
+            this.has_errors = true;
+          }
+        }
+        if (data.removed && data.removed.length) {
+          for (file of Array.from(data.removed)) {
+            this.logs.push(`Batch ${this.current_check} of ${this.total_checks}:  Missing: ${file}`);
+            this.error_logs.push(`MISSING: ${file}`);
+            this.has_errors = true;
+          }
+        }
+
+        this.current_percentage = Math.ceil((this.current_check / this.total_checks) * 100);
+
+        if (this.current_check < this.total_checks) {
+          return this.doNextRequest();
+        } else {
+          this.check_in_progress = false;
+          return this.current_percentage = 100;
+        }
+      });
+    }
+
+    /*
+     * Show / hide 'show log' button
+     */
+    toggleLog() {
+      this.show_log = !this.show_log;
+      return this.show_log_text = this.show_log ? 'Hide Log' : 'Show Log';
+    }
+  }
+  Admin_ServerFileCheck_Ctrl_ServerFileCheck.initClass();
+
+
+  return Admin_ServerFileCheck_Ctrl_ServerFileCheck.EXPORT_CTRL();
+});

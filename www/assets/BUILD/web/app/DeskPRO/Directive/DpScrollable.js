@@ -1,50 +1,68 @@
-define ['DeskPRO/Util/Numbers', 'perfect-scrollbar'], (Numbers) ->
-  DeskPRO_Directive_DpScrollable = [ '$timeout', '$interval', ($timeout, $interval) ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Numbers', 'perfect-scrollbar'], function(Numbers) {
+  const DeskPRO_Directive_DpScrollable = [ '$timeout', '$interval', ($timeout, $interval) =>
+    ({
       restrict: 'A',
-      link: (scope, $el, attrs) ->
+      link(scope, $el, attrs) {
 
-        hasSetup = false
-        updateInterval = null
+        let hasSetup = false;
+        let updateInterval = null;
 
-        getOpts = ->
-          opt = {}
-          for i in [
+        const getOpts = function() {
+          const opt = {};
+          for (let i of [
             'wheelSpeed', 'wheelPropagation', 'minScrollbarLength', 'useBothWheelAxes',
             'useKeyboard', 'suppressScrollX', 'suppressScrollY', 'scrollXMarginOffset',
             'scrollYMarginOffset', 'includePadding'
-          ]
-            if attrs[i]?
-              opt[i] = attrs[i]
-              if Numbers.isNumeric(opt[i])
-                opt[i] = Numbers.parseNumber(attrs[i])
-              else if opt[i] == "1" or opt[i] == "on" or opt[i] == "yes"
-                opt[i] = true
-              else if opt[i] == "0" or opt[i] == "off" or opt[i] == "no"
-                opt[i] = false
+          ]) {
+            if (attrs[i] != null) {
+              opt[i] = attrs[i];
+              if (Numbers.isNumeric(opt[i])) {
+                opt[i] = Numbers.parseNumber(attrs[i]);
+              } else if ((opt[i] === "1") || (opt[i] === "on") || (opt[i] === "yes")) {
+                opt[i] = true;
+              } else if ((opt[i] === "0") || (opt[i] === "off") || (opt[i] === "no")) {
+                opt[i] = false;
+              }
+            }
+          }
 
-          return opt
+          return opt;
+        };
 
-        update = ->
-          return if not hasSetup
-          $el.perfectScrollbar('update');
+        const update = function() {
+          if (!hasSetup) { return; }
+          return $el.perfectScrollbar('update');
+        };
 
-        setup = ->
-          return if hasSetup
-          $el.perfectScrollbar(getOpts())
-          if attrs.autoUpdate && attrs.autoUpdate != "0" && attrs.autoUpdate != "false" && attrs.autoUpdate != "no"
-            updateInterval = $interval(update, 350)
-          hasSetup = true
+        const setup = function() {
+          if (hasSetup) { return; }
+          $el.perfectScrollbar(getOpts());
+          if (attrs.autoUpdate && (attrs.autoUpdate !== "0") && (attrs.autoUpdate !== "false") && (attrs.autoUpdate !== "no")) {
+            updateInterval = $interval(update, 350);
+          }
+          return hasSetup = true;
+        };
 
-        $timeout(setup)
+        $timeout(setup);
 
-        scope.$on('$destroy', ->
-          if hasSetup
-            $el.perfectScrollbar('destroy')
-            if updateInterval
-              $interval.cancel(updateInterval)
-        )
-    }
-  ]
+        return scope.$on('$destroy', function() {
+          if (hasSetup) {
+            $el.perfectScrollbar('destroy');
+            if (updateInterval) {
+              return $interval.cancel(updateInterval);
+            }
+          }
+        });
+      }
+    })
+  
+  ];
 
-  return DeskPRO_Directive_DpScrollable
+  return DeskPRO_Directive_DpScrollable;
+});

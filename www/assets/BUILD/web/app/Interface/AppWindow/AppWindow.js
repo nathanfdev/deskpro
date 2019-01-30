@@ -1,10 +1,10 @@
-define [
+define([
   'angular',
 
-  # Initial loader
+  // Initial loader
   'Interface/',
 
-  # angular modules
+  // angular modules
   'angularAnimate',
   'angularSanitize',
   'angularBootstrap',
@@ -12,16 +12,17 @@ define [
   'angularUiRouter',
   'angular-moment',
 
-  # global deps
+  // global deps
   'jquery',
   'moment',
   'momentTimezone',
-], (
+], function(
   angular
-) ->
-  AppWindow = angular.module('DeskPRO.InterfaceApp.AppWindow', [])
-  AppWindow.config(['$stateProvider', ($stateProvider) ->
+) {
+  const AppWindow = angular.module('DeskPRO.InterfaceApp.AppWindow', []);
+  AppWindow.config(['$stateProvider', function($stateProvider) {}
 
-  ])
+  ]);
 
-  return AppWindow
+  return AppWindow;
+});

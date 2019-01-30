@@ -1,48 +1,56 @@
-define ['datatables', "datatables.pageResize", "datatables.rowsGroup"], () ->
-  Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', '$timeout', ($sce, DashboardWidgetService, $timeout) ->
-    return {
-      restrict: 'E'
-      replace: true
-      scope:
-        tableData: '@'
-        jsCode: '@'
-        myIndex: '@'
-        widgetId: '@'
-        options: '@'
-        row: '@'
-        col: '@'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function() {
+  const Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', '$timeout', ($sce, DashboardWidgetService, $timeout) =>
+    ({
+      restrict: 'E',
+      replace: true,
+      scope: {
+        tableData: '@',
+        jsCode: '@',
+        myIndex: '@',
+        widgetId: '@',
+        options: '@',
+        row: '@',
+        col: '@',
         loaded: '@'
+      },
 
-      templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html")
+      templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html"),
 
-      link: (scope, element) ->
-        scope.loaded = false
-        scope.noData = false
+      link(scope, element) {
+        scope.loaded = false;
+        scope.noData = false;
 
-        el = $(element)
-        dt = null
-        box = el.parent()
-        tableData = if scope.tableData then JSON.parse(scope.tableData) else {}
+        const el = $(element);
+        let dt = null;
+        const box = el.parent();
+        const tableData = scope.tableData ? JSON.parse(scope.tableData) : {};
 
-        listItem = box.parent()
-        conf = scope.widgetId || 0
+        const listItem = box.parent();
+        const conf = scope.widgetId || 0;
 
-        initTable = (widget) ->
-          scope.loaded = true
+        const initTable = function(widget) {
+          let options;
+          scope.loaded = true;
 
-          scope.resetClick = () ->
-            dt.order([]).clear().rows.add(widget.data).draw()
+          scope.resetClick = () => dt.order([]).clear().rows.add(widget.data).draw();
 
-          scope.columns = widget.columns
+          scope.columns = widget.columns;
 
-          try
-            options = JSON.parse(scope.options)
-          catch e
-            options = {}
+          try {
+            options = JSON.parse(scope.options);
+          } catch (e) {
+            options = {};
+          }
 
-          drawn = false
+          let drawn = false;
 
-          defaultOptions = {
+          const defaultOptions = {
             data:           widget.data,
             columns:        widget.columns,
             rowsGroup:      widget.rowsGroup || [],
@@ -56,66 +64,82 @@ define ['datatables', "datatables.pageResize", "datatables.rowsGroup"], () ->
             scrollCollapse: true,
             autoWidth:      true,
             ordering:       true,
-            order:          []
-            fnDrawCallback: (settings) ->
-              if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
-                $(settings.nTableWrapper).find('.dataTables_paginate').hide()
-              else
-                $(settings.nTableWrapper).find('.dataTables_paginate').show()
-              if !drawn
+            order:          [],
+            fnDrawCallback(settings) {
+              if ((settings._iDisplayLength === -1) || (settings._iDisplayLength >= settings.fnRecordsDisplay())) {
+                $(settings.nTableWrapper).find('.dataTables_paginate').hide();
+              } else {
+                $(settings.nTableWrapper).find('.dataTables_paginate').show();
+              }
+              if (!drawn) {
                 $timeout(
-                  ->
-                    drawn = true
-                    scope.noData = false
-                    box.height(100)
-                , 100)
-                $timeout(
-                  ->
-                    box.height('auto')
-                , 105)
+                  function() {
+                    drawn = true;
+                    scope.noData = false;
+                    return box.height(100);
+                  }
+                , 100);
+                return $timeout(
+                  () => box.height('auto')
+                , 105);
+              }
+            }
+          };
+
+          dt = el.find('table').DataTable(Object.assign(defaultOptions, options));
+
+          return listItem
+            .find('.handle-e')
+            .remove;
+        };
+
+
+        if (tableData && (tableData.data != null)) {
+          tableData.noRedraw = true;
+          return $timeout(() => initTable(tableData)
+          ,1);
+        } else if (scope.jsCode) {
+          try {
+            eval(scope.jsCode);
+          } catch (error) {
+            const e = error;
+            console.log(e);
           }
 
-          dt = el.find('table').DataTable Object.assign(defaultOptions, options)
+          if (promise && promise.then) {
+            return promise.then(function(response) {
+              scope.loaded = true;
+              scope.noData = true;
 
-          listItem
-            .find '.handle-e'
-            .remove
+              if (response && response.data) {
+                return initTable(response);
+              }
+            });
+          }
+        } else if (DashboardWidgetService.widgetsResults && DashboardWidgetService.widgetsResults[scope.widgetId]) {
+          return DashboardWidgetService.widgetsResults[scope.widgetId].promise.then(function(renderedResult) {
+            scope.loaded = true;
+            scope.noData = true;
 
+            if (renderedResult && renderedResult.data) {
+              return initTable(renderedResult);
+            }
+          });
+        } else {
+          return DashboardWidgetService
+            .getWidget(conf).then(function(widget) {
+              scope.loaded = true;
+              scope.noData = true;
 
-        if tableData and tableData.data?
-          tableData.noRedraw = true
-          $timeout(->
-            initTable tableData
-          ,1)
-        else if scope.jsCode
-          try
-            eval(scope.jsCode)
-          catch e
-            console.log(e)
+              if (widget.rendered_result && widget.rendered_result.data) {
+                return initTable(widget.rendered_result);
+              }
+          });
+        }
+      }
+    })
+  
+  ];
 
-          if promise and promise.then
-            promise.then (response) ->
-              scope.loaded = true
-              scope.noData = true
-
-              if response and response.data
-                initTable response
-        else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
-          DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) ->
-            scope.loaded = true
-            scope.noData = true
-
-            if renderedResult and renderedResult.data
-              initTable renderedResult
-        else
-          DashboardWidgetService
-            .getWidget(conf).then (widget) ->
-              scope.loaded = true
-              scope.noData = true
-
-              if widget.rendered_result and widget.rendered_result.data
-                initTable widget.rendered_result
-    }
-  ]
-
-  return Reports_Directive_DashboardTable
+  return Reports_Directive_DashboardTable;
+});

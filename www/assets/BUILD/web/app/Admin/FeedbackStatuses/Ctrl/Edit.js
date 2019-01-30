@@ -1,80 +1,100 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_FeedbackStatuses_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_FeedbackStatuses_Ctrl_Edit'
-    @CTRL_AS = 'FeedbackStatusesEdit'
-    @DEPS    = ['Api', 'Growl', 'FeedbackStatusesData', '$stateParams', '$modal']
+) {
+  class Admin_FeedbackStatuses_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_FeedbackStatuses_Ctrl_Edit';
+      this.CTRL_AS = 'FeedbackStatusesEdit';
+      this.DEPS    = ['Api', 'Growl', 'FeedbackStatusesData', '$stateParams', '$modal'];
+    }
 
-    init: ->
+    init() {
 
-      @feedback_status = {}
+      this.feedback_status = {};
 
-      # @$stateParams.type will be defined in case of creation of new feedback status
+      // @$stateParams.type will be defined in case of creation of new feedback status
 
-      @statusType = @$stateParams.type
+      this.statusType = this.$stateParams.type;
 
-      if @statusType
-        @feedback_status.status_type = @statusType
+      if (this.statusType) {
+        this.feedback_status.status_type = this.statusType;
+      }
 
-      return
+    }
 
-    initialLoad: ->
+    initialLoad() {
 
-      promises = []
-      if @$stateParams.id
-        promises.push @Api.sendGet('/feedback_statuses/' + @$stateParams.id).then((result) =>
-          @feedback_status = result.data.feedback_status
-        )
+      const promises = [];
+      if (this.$stateParams.id) {
+        promises.push(this.Api.sendGet(`/feedback_statuses/${this.$stateParams.id}`).then(result => {
+          return this.feedback_status = result.data.feedback_status;
+        })
+        );
 
-        return @$q.all(promises)
+        return this.$q.all(promises);
+      }
+    }
 
-    ###
-      # Saves the current form
-      #
-      # @return {promise}
-    ###
-    saveFeedbackStatus: ->
+    /*
+      * Saves the current form
+      *
+      * @return {promise}
+    */
+    saveFeedbackStatus() {
 
-      @feedback_status.brand = @$stateParams.brandId
+      let is_new, promise;
+      this.feedback_status.brand = this.$stateParams.brandId;
 
-      if not @$scope.form_props.$valid
-        return
+      if (!this.$scope.form_props.$valid) {
+        return;
+      }
 
-      @startSpinner('saving_feedback_status')
+      this.startSpinner('saving_feedback_status');
 
-      if @feedback_status.id
-        is_new = false
-        promise = @Api.sendPostJson('/feedback_statuses/' + @feedback_status.id, {feedback_status: @feedback_status})
-      else
-        is_new = true
-        promise = @Api.sendPutJson('/feedback_statuses', {feedback_status: @feedback_status})
+      if (this.feedback_status.id) {
+        is_new = false;
+        promise = this.Api.sendPostJson(`/feedback_statuses/${this.feedback_status.id}`, {feedback_status: this.feedback_status});
+      } else {
+        is_new = true;
+        promise = this.Api.sendPutJson('/feedback_statuses', {feedback_status: this.feedback_status});
+      }
 
-      promise.success((result) =>
+      promise.success(result => {
 
-        @feedback_status.id = result.id
-        @feedback_status.brand = result.brand
+        this.feedback_status.id = result.id;
+        this.feedback_status.brand = result.brand;
 
-        @stopSpinner('saving_feedback_status', true).then(=>
-          @Growl.success(@getRegisteredMessage('saved_feedback_status'))
-        )
+        this.stopSpinner('saving_feedback_status', true).then(() => {
+          return this.Growl.success(this.getRegisteredMessage('saved_feedback_status'));
+        });
 
-        @FeedbackStatusesData.updateModel(@feedback_status)
+        this.FeedbackStatusesData.updateModel(this.feedback_status);
 
-        @skipDirtyState()
+        this.skipDirtyState();
 
-        if is_new
-          @$state.go('portal.feedback_statuses.gocreate', {type: @statusType})
-        else
-          @$state.go('portal.feedback_statuses')
-      )
-      promise.error((info, code) =>
-        @stopSpinner('saving_feedback_status', true)
-        @applyErrorResponseToView(info)
-      )
+        if (is_new) {
+          return this.$state.go('portal.feedback_statuses.gocreate', {type: this.statusType});
+        } else {
+          return this.$state.go('portal.feedback_statuses');
+        }
+      });
+      promise.error((info, code) => {
+        this.stopSpinner('saving_feedback_status', true);
+        return this.applyErrorResponseToView(info);
+      });
 
-      return promise
+      return promise;
+    }
+  }
+  Admin_FeedbackStatuses_Ctrl_Edit.initClass();
 
-  Admin_FeedbackStatuses_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_FeedbackStatuses_Ctrl_Edit.EXPORT_CTRL();
+});

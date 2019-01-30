@@ -1,46 +1,54 @@
-define [], () -> [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([], () => [
   '$scope',
   '$state',
   'DashboardService',
   '$modal',
-  (
+  function(
     $scope,
     $state,
     DashboardService,
     $modal
-  ) ->
+  ) {
 
-    $scope.hasAccessToBuiltIn = $scope.hasAccessToCustom = false
+    $scope.hasAccessToBuiltIn = ($scope.hasAccessToCustom = false);
 
-    $scope.canUseReports = () ->
-      return window.DESKPRO_PERSON_PERMS['agent_reports.use'];
+    $scope.canUseReports = () => window.DESKPRO_PERSON_PERMS['agent_reports.use'];
 
-    $scope.getDashboardList = () ->
-      DashboardService.getDashboards().then((dbs) ->
-        $scope.dashboards = dbs
-        $scope.hasAccessToBuiltIn = dbs.filter((db) => db.is_default).length >= 1
-        $scope.hasAccessToCustom = dbs.filter((db) => !db.is_default).length >= 1
-      )
+    $scope.getDashboardList = () =>
+      DashboardService.getDashboards().then(function(dbs) {
+        $scope.dashboards = dbs;
+        $scope.hasAccessToBuiltIn = dbs.filter(db => db.is_default).length >= 1;
+        return $scope.hasAccessToCustom = dbs.filter(db => !db.is_default).length >= 1;
+      })
+    ;
 
     $scope.$watch(
-      () -> DashboardService,
-      (dbinfo) -> $scope.getDashboardList(),
+      () => DashboardService,
+      dbinfo => $scope.getDashboardList(),
       true
-    )
+    );
 
-    $scope.getDashboardList(true)
+    $scope.getDashboardList(true);
 
-    $scope.defaultDashboardsFilter = (value) -> value.is_default
-    $scope.customDashboardsFilter  = (value) -> !value.is_default
+    $scope.defaultDashboardsFilter = value => value.is_default;
+    $scope.customDashboardsFilter  = value => !value.is_default;
 
-    $scope.openCreate = ->
-      $modal.open {
+    return $scope.openCreate = () =>
+      $modal.open({
         templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:edit-dashboard.html',
-        controller: 'Reports.Dashboards.Modals.EditDashboard'
-        resolve:
-          dashboard_id: -> null
-          modal_options: -> {
+        controller: 'Reports.Dashboards.Modals.EditDashboard',
+        resolve: {
+          dashboard_id() { return null; },
+          modal_options() { return {
             activeTab: 'info'
-          }
-      }
-]
+          }; }
+        }
+      })
+    ;
+  }
+] );

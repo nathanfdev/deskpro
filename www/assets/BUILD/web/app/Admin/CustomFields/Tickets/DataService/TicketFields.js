@@ -1,119 +1,145 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/CustomFields/FieldFormMapper',
-], (
+], function(
   BaseListEdit,
   FieldFormMapper
-)  ->
-  class TicketFields extends BaseListEdit
-    @$inject = ['Api', '$q']
-
-    init: ->
-      @field_enabled = {
-        category: true,
-        priority: true,
-        workflow: true,
-        product:  true
+)  {
+  let TicketFields;
+  return TicketFields = (function() {
+    TicketFields = class TicketFields extends BaseListEdit {
+      static initClass() {
+        this.$inject = ['Api', '$q'];
       }
 
-    _doLoadList: ->
+      init() {
+        return this.field_enabled = {
+          category: true,
+          priority: true,
+          workflow: true,
+          product:  true
+        };
+      }
 
-      deferred = @$q.defer()
+      _doLoadList() {
 
-      @Api.sendDataGet([
-        '/ticket_fields'
-      ]).then( (res) =>
-        for f in ['category', 'priority', 'workflow', 'product', 'label']
-          @field_enabled[f] = false
-          if res.data.api_ticket_fields[f + '_enabled']
-            @field_enabled[f] = true
+        const deferred = this.$q.defer();
 
-        custom_fields = []
-        for f in res.data.api_ticket_fields.custom_fields
-          custom_fields.push(f)
-
-        deferred.resolve(custom_fields)
-      )
-
-      return deferred.promise
-
-
-    ###
-      # Remove a field
-      #
-      # @param {Integer} id Filter id
-      # @return {promise}
-    ###
-    deleteFieldById: (id) ->
-      promise = @Api.sendDelete('/ticket_fields/' + id).then(=>
-        @removeListModelById(id)
-      )
-      return promise
-
-
-    ###
-      # Get all data needed for the edit field page
-      #
-      # @param {Integer} id Filter id
-      # @return {promise}
-    ###
-    loadEditFieldData: (id) ->
-      deferred = @$q.defer()
-
-      if id
-        @Api.sendGet("/ticket_fields/#{id}").then( (result) =>
-          data = {
-            field: result.data.field,
-            field_type: result.data.field.type_name,
-            form: @getFormMapper().getFormFromModel(result.data.field),
-            referencedBy: result.data.referencedBy || []
+        this.Api.sendDataGet([
+          '/ticket_fields'
+        ]).then( res => {
+          for (var f of ['category', 'priority', 'workflow', 'product', 'label']) {
+            this.field_enabled[f] = false;
+            if (res.data.api_ticket_fields[f + '_enabled']) {
+              this.field_enabled[f] = true;
+            }
           }
-          deferred.resolve(data)
-        )
-      else
-        data = {
-          field: {},
-          field_type: '0',
-          form: @getFormMapper().getFormFromModel(null)
+
+          const custom_fields = [];
+          for (f of Array.from(res.data.api_ticket_fields.custom_fields)) {
+            custom_fields.push(f);
+          }
+
+          return deferred.resolve(custom_fields);
+        });
+
+        return deferred.promise;
+      }
+
+
+      /*
+        * Remove a field
+        *
+        * @param {Integer} id Filter id
+        * @return {promise}
+      */
+      deleteFieldById(id) {
+        const promise = this.Api.sendDelete(`/ticket_fields/${id}`).then(() => {
+          return this.removeListModelById(id);
+        });
+        return promise;
+      }
+
+
+      /*
+        * Get all data needed for the edit field page
+        *
+        * @param {Integer} id Filter id
+        * @return {promise}
+      */
+      loadEditFieldData(id) {
+        const deferred = this.$q.defer();
+
+        if (id) {
+          this.Api.sendGet(`/ticket_fields/${id}`).then( result => {
+            const data = {
+              field: result.data.field,
+              field_type: result.data.field.type_name,
+              form: this.getFormMapper().getFormFromModel(result.data.field),
+              referencedBy: result.data.referencedBy || []
+            };
+            return deferred.resolve(data);
+          });
+        } else {
+          const data = {
+            field: {},
+            field_type: '0',
+            form: this.getFormMapper().getFormFromModel(null)
+          };
+          deferred.resolve(data);
         }
-        deferred.resolve(data)
 
-      return deferred.promise
-
-
-    ###
-      # Get the form mapper
-      #
-      # @return {FieldFormMapper}
-    ###
-    getFormMapper: ->
-      if @formMapper then return @formMapper
-      @formMapper = new FieldFormMapper()
-      return @formMapper
+        return deferred.promise;
+      }
 
 
-    ###
-      # Saves a form model and applies the form model to the field model
-      # once finished.
-      #
-      # @param {Object} fieldModel The field model
-      # @param {Object} formModel  The model representing the form
-      # @return {promise}
-    ###
-    saveFormModel: (fieldModel, formModel) ->
-      mapper = @getFormMapper()
-      postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel)
+      /*
+        * Get the form mapper
+        *
+        * @return {FieldFormMapper}
+      */
+      getFormMapper() {
+        if (this.formMapper) { return this.formMapper; }
+        this.formMapper = new FieldFormMapper();
+        return this.formMapper;
+      }
 
-      if fieldModel.id
-        promise = @Api.sendPostJson('/ticket_fields/' + fieldModel.id, postData)
-      else
-        promise = @Api.sendPutJson('/ticket_fields', postData).success( (data) ->
-          fieldModel.id = data.field_id
-        )
 
-      promise.success(=>
-        mapper.applyFormToModel(fieldModel, formModel)
-        @mergeDataModel(fieldModel)
-      )
+      /*
+        * Saves a form model and applies the form model to the field model
+        * once finished.
+        *
+        * @param {Object} fieldModel The field model
+        * @param {Object} formModel  The model representing the form
+        * @return {promise}
+      */
+      saveFormModel(fieldModel, formModel) {
+        let promise;
+        const mapper = this.getFormMapper();
+        const postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel);
 
-      return promise
+        if (fieldModel.id) {
+          promise = this.Api.sendPostJson(`/ticket_fields/${fieldModel.id}`, postData);
+        } else {
+          promise = this.Api.sendPutJson('/ticket_fields', postData).success( data => fieldModel.id = data.field_id);
+        }
+
+        promise.success(() => {
+          mapper.applyFormToModel(fieldModel, formModel);
+          return this.mergeDataModel(fieldModel);
+        });
+
+        return promise;
+      }
+    };
+    TicketFields.initClass();
+    return TicketFields;
+  })();
+});

@@ -1,69 +1,90 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Templates_Ctrl_TemplateEditor extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Templates_Ctrl_TemplateEditor'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$modalInstance', 'templateName']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Templates_Ctrl_TemplateEditor extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Templates_Ctrl_TemplateEditor';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['$modalInstance', 'templateName'];
+    }
 
-    init: ->
-      @$scope.dismiss = =>
-        @$modalInstance.dismiss('cancel')
+    init() {
+      this.$scope.dismiss = () => {
+        return this.$modalInstance.dismiss('cancel');
+      };
 
-      @$scope.save = =>
-        @$scope.saving_template = true
-        postData = {
+      this.$scope.save = () => {
+        this.$scope.saving_template = true;
+        const postData = {
           template: {
-            code: @editor.getValue()
+            code: this.editor.getValue()
           }
-        }
-        @Api.sendPostJson("/templates/#{@templateName}", postData).then(=>
-          @$scope.saving_template = false
-          @$modalInstance.close({
-            templateName: @templateName,
+        };
+        return this.Api.sendPostJson(`/templates/${this.templateName}`, postData).then(() => {
+          this.$scope.saving_template = false;
+          return this.$modalInstance.close({
+            templateName: this.templateName,
             mode: 'custom'
-          })
-        , (result) =>
-          @$scope.saving_template = false
-          @$scope.is_error = true
-          @$scope.syntax_error  = result.data.error_syntax || false
-          @$scope.syntax_line   = result.data.error_line || 0
-          @$scope.error_message = result.data.error_message || 'Unknown'
-        )
+          });
+        }
+        , result => {
+          this.$scope.saving_template = false;
+          this.$scope.is_error = true;
+          this.$scope.syntax_error  = result.data.error_syntax || false;
+          this.$scope.syntax_line   = result.data.error_line || 0;
+          return this.$scope.error_message = result.data.error_message || 'Unknown';
+        });
+      };
 
-      @$scope.revert = =>
-        @showConfirm('Are you sure you want to revert this template? Your changes will be completely lost and the template will be returned to the default.').result.then(=>
-          @$scope.saving_template = true
-          @Api.sendDelete("/templates/#{@templateName}").then(=>
-            @$scope.saving_template = false
-            @$modalInstance.close({
-              templateName: @templateName,
+      this.$scope.revert = () => {
+        return this.showConfirm('Are you sure you want to revert this template? Your changes will be completely lost and the template will be returned to the default.').result.then(() => {
+          this.$scope.saving_template = true;
+          return this.Api.sendDelete(`/templates/${this.templateName}`).then(() => {
+            this.$scope.saving_template = false;
+            return this.$modalInstance.close({
+              templateName: this.templateName,
               mode: 'revert'
-            })
-          )
-        )
+            });
+          });
+        });
+      };
 
-      @$scope.aceLoaded = (editor) =>
-        @editor = editor
-        maxH = $(editor.container).data('max-height') || 500
-        updateH = ->
-          newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth()
-          if newHeight > maxH
-            newHeight = maxH
-          if newHeight < 85
-            newHeight = 85
+      return this.$scope.aceLoaded = editor => {
+        this.editor = editor;
+        const maxH = $(editor.container).data('max-height') || 500;
+        const updateH = function() {
+          let newHeight = (editor.getSession().getScreenLength() * editor.renderer.lineHeight) + editor.renderer.scrollBar.getWidth();
+          if (newHeight > maxH) {
+            newHeight = maxH;
+          }
+          if (newHeight < 85) {
+            newHeight = 85;
+          }
 
-          $(editor.container).height(newHeight)
-          editor.resize()
+          $(editor.container).height(newHeight);
+          return editor.resize();
+        };
 
-        updateH()
+        updateH();
         editor.getSession().on('change', updateH);
-        editor.setShowPrintMargin(false)
+        return editor.setShowPrintMargin(false);
+      };
+    }
 
-    initialLoad: ->
-      promise = @Api.sendGet("/templates/#{@templateName}").success( (data) =>
-        @tpl = data
-        @$scope.tpl = @tpl
-        @$scope.template_code = data.template_code.code
-      )
-      return promise
+    initialLoad() {
+      const promise = this.Api.sendGet(`/templates/${this.templateName}`).success( data => {
+        this.tpl = data;
+        this.$scope.tpl = this.tpl;
+        return this.$scope.template_code = data.template_code.code;
+      });
+      return promise;
+    }
+  }
+  Admin_Templates_Ctrl_TemplateEditor.initClass();
 
-  Admin_Templates_Ctrl_TemplateEditor.EXPORT_CTRL()
+  return Admin_Templates_Ctrl_TemplateEditor.EXPORT_CTRL();
+});

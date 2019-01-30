@@ -1,6 +1,6 @@
-define [], () ->
-  Admin_Portal_Directive_Editor_CodeEditor = [ ->
-    return {
+define([], function() {
+  const Admin_Portal_Directive_Editor_CodeEditor = [ () =>
+    ({
       restrict: 'E',
       templateUrl: DP_BASE_ADMIN_URL + '/load-view/Portal/Editor/code-editor.html',
       scope: {
@@ -11,7 +11,9 @@ define [], () ->
         save: '&',
         revert: '&'
       }
-    }
-  ]
+    })
+  
+  ];
 
-  return Admin_Portal_Directive_Editor_CodeEditor
+  return Admin_Portal_Directive_Editor_CodeEditor;
+});

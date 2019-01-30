@@ -1,6 +1,13 @@
-define ['toastr', 'underscore'], (toastr, _) ->
-  class DeskPRO_Main_Service_Growl
-    constructor: (options) ->
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['toastr', 'underscore'], function(toastr, _) {
+  let DeskPRO_Main_Service_Growl;
+  return (DeskPRO_Main_Service_Growl = class DeskPRO_Main_Service_Growl {
+    constructor(options) {
       toastr.options = _.defaults(options || {}, {
         closeButton: true,
         positionClass: 'toast-bottom-right',
@@ -12,104 +19,118 @@ define ['toastr', 'underscore'], (toastr, _) ->
         hideEasing: "linear",
         showMethod: "slideDown",
         hideMethod: "fadeOut"
-      })
+      });
+    }
 
 
-    ###*
+    /**
     * Gets a title/message from a 'content' param
       *
       * @return {Array}
-    ###
-    _getContent: (content) ->
-      if _.isObject(content)
-        title = content.title || null
-        message = content.message || null
-      else
-        title   = null
-        message = content
+    */
+    _getContent(content) {
+      let message, title;
+      if (_.isObject(content)) {
+        title = content.title || null;
+        message = content.message || null;
+      } else {
+        title   = null;
+        message = content;
+      }
 
-      return [title, message]
+      return [title, message];
+    }
 
 
-    ###*
+    /**
     * Gets an options array from a 'options' param
       *
       * @return {Object}
-    ###
-    _getOptions: (options) ->
-      if not options then return {}
+    */
+    _getOptions(options) {
+      if (!options) { return {}; }
 
-      if _.isFunction(options)
+      if (_.isFunction(options)) {
         options = {
           onclick: options
-        }
+        };
+      }
 
-      return options
+      return options;
+    }
 
 
-    ###*
+    /**
     * Shows an error notif
       *
       * @param {String/Object} A string message, or an object with 'title' and 'message' properties
       * @param {Object/Function} An object of options, or a simple Function callback for a click handler
       * @return {notify}
-    ###
-    error: (content, options) ->
-      [title, message] = @_getContent(content)
-      options = @_getOptions(options)
-      return toastr.error(message, title, options)
+    */
+    error(content, options) {
+      const [title, message] = Array.from(this._getContent(content));
+      options = this._getOptions(options);
+      return toastr.error(message, title, options);
+    }
 
 
-    ###*
+    /**
     * Shows an info notif
       *
       * @param {String/Object} A string message, or an object with 'title' and 'message' properties
       * @param {Object/Function} An object of options, or a simple Function callback for a click handler
       * @return {notify}
-    ###
-    info: (content, options) ->
-      [title, message] = @_getContent(content)
-      options = @_getOptions(options)
-      return toastr.info(message, title, options)
+    */
+    info(content, options) {
+      const [title, message] = Array.from(this._getContent(content));
+      options = this._getOptions(options);
+      return toastr.info(message, title, options);
+    }
 
 
-    ###*
+    /**
     * Shows a success notif
       *
       * @param {String/Object} A string message, or an object with 'title' and 'message' properties
       * @param {Object/Function} An object of options, or a simple Function callback for a click handler
       * @return {notify}
-    ###
-    success: (content, options) ->
-      [title, message] = @_getContent(content)
-      options = @_getOptions(options)
-      return toastr.success(message, title, options)
+    */
+    success(content, options) {
+      const [title, message] = Array.from(this._getContent(content));
+      options = this._getOptions(options);
+      return toastr.success(message, title, options);
+    }
 
 
-    ###*
+    /**
     * Shows a warning notif
       *
       * @param {String/Object} A string message, or an object with 'title' and 'message' properties
       * @param {Object/Function} An object of options, or a simple Function callback for a click handler
       * @return {notify}
-    ###
-    warning: (content, options) ->
-      [title, message] = @_getContent(content)
-      options = @_getOptions(options)
-      return toastr.warning(message, title, options)
+    */
+    warning(content, options) {
+      const [title, message] = Array.from(this._getContent(content));
+      options = this._getOptions(options);
+      return toastr.warning(message, title, options);
+    }
 
 
-    ###*
+    /**
     * Clears all open notifs
-    ###
-    clearAll: ->
-      toastr.clear()
+    */
+    clearAll() {
+      return toastr.clear();
+    }
 
 
-    ###*
+    /**
     * Clears a specific notif
       *
       * @param {notify} notify
-    ###
-    clearNotif: (notify) ->
-      toastr.clear(notify)
+    */
+    clearNotif(notify) {
+      return toastr.clear(notify);
+    }
+  });
+});

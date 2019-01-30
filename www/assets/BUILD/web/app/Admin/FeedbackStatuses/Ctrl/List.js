@@ -1,136 +1,159 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_FeedbackStatuses_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_FeedbackStatuses_Ctrl_List'
-    @CTRL_AS = 'FeedbackStatusesList'
-    @DEPS    = ['$rootScope', '$scope', 'FeedbackStatusesData', 'em', 'Api', '$state', 'Growl']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_FeedbackStatuses_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_FeedbackStatuses_Ctrl_List';
+      this.CTRL_AS = 'FeedbackStatusesList';
+      this.DEPS    = ['$rootScope', '$scope', 'FeedbackStatusesData', 'em', 'Api', '$state', 'Growl'];
+    }
 
-    init: ->
+    init() {
 
-      @$scope.brand_id = @$stateParams.brandId
-      @$scope.activeType = 'active'
-      @$scope.closedType = 'closed'
+      this.$scope.brand_id = this.$stateParams.brandId;
+      this.$scope.activeType = 'active';
+      this.$scope.closedType = 'closed';
 
-      @feedback_active_statuses = [];
-      @feedback_closed_statuses = [];
+      this.feedback_active_statuses = [];
+      this.feedback_closed_statuses = [];
 
-      @sortedListOptions = {
+      return this.sortedListOptions = {
         axis: 'y',
         handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest('ul')
+        update: (ev, data) => {
+          const $list = data.item.closest('ul');
 
-          postData = {display_orders: []}
+          const postData = {display_orders: []};
 
-          x = 0
-          em = @em
+          let x = 0;
+          const { em } = this;
 
-          status_type = 'active'
+          let status_type = 'active';
 
-          $list.find('li').each(->
+          $list.find('li').each(function() {
 
-            x += 10
-            feedback_status_id = parseInt($(this).data('id'))
+            x += 10;
+            const feedback_status_id = parseInt($(this).data('id'));
 
-            if feedback_status_id
-              feedback_status = em.getById('feedback_status', feedback_status_id)
+            if (feedback_status_id) {
+              const feedback_status = em.getById('feedback_status', feedback_status_id);
 
-              if feedback_status
-                feedback_status.display_order = x
-                status_type = feedback_status.status_type
+              if (feedback_status) {
+                feedback_status.display_order = x;
+                ({ status_type } = feedback_status);
+              }
+            }
 
-            postData.display_orders.push(feedback_status_id)
-          )
+            return postData.display_orders.push(feedback_status_id);
+          });
 
-          promise = @Api.sendPostJson('/feedback_statuses/display_order', postData)
-          @pingElement('display_orders_' + status_type)
+          const promise = this.Api.sendPostJson('/feedback_statuses/display_order', postData);
+          return this.pingElement(`display_orders_${status_type}`);
+        }
+      };
+    }
+
+    sort(values) {
+      return (values || []).sort((a, b) => {
+        const orderA = parseInt(a.display_order);
+        const orderB = parseInt(b.display_order);
+        if (orderA < orderB) { return -1; }
+        if (orderA > orderB) { return 1; }
+        return 0;
+      });
+    }
+
+    initialLoad() {
+
+      const promises = [];
+      promises.push(this.FeedbackStatusesData.loadList().then( recs => {
+
+        this.feedback_active_statuses = this.sort(recs.active_statuses.values());
+        this.feedback_closed_statuses = this.sort(recs.closed_statuses.values());
+
+        this.addManagedListener(this.FeedbackStatusesData.recs.active_statuses, 'changed', () => {
+
+          this.feedback_active_statuses = this.sort(this.FeedbackStatusesData.recs.active_statuses.values());
+          return this.ngApply();
+        });
+
+        return this.addManagedListener(this.FeedbackStatusesData.recs.closed_statuses, 'changed', () => {
+
+          this.feedback_closed_statuses = this.sort(this.FeedbackStatusesData.recs.closed_statuses.values());
+          return this.ngApply();
+        });
+      })
+      );
+
+      return this.$q.all(promises);
+    }
+
+    /*
+  * Show the delete dlg
+  */
+
+    startDelete(feedback_status) {
+
+      const move_feedback_statuses_list = this.FeedbackStatusesData.getListOfMovables(feedback_status);
+
+      if (!move_feedback_statuses_list.length) {
+        this.showAlert('@no_delete_last');
+        return;
       }
 
-    sort: (values) ->
-      (values || []).sort (a, b) =>
-        orderA = parseInt(a.display_order)
-        orderB = parseInt(b.display_order)
-        return -1 if orderA < orderB
-        return 1 if orderA > orderB
-        return 0
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('FeedbackStatuses/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', 'move_feedback_statuses_list', function($scope, $modalInstance, move_feedback_statuses_list) {
 
-    initialLoad: ->
-
-      promises = []
-      promises.push @FeedbackStatusesData.loadList().then( (recs) =>
-
-        @feedback_active_statuses = @sort recs.active_statuses.values()
-        @feedback_closed_statuses = @sort recs.closed_statuses.values()
-
-        @addManagedListener(@FeedbackStatusesData.recs.active_statuses, 'changed', =>
-
-          @feedback_active_statuses = @sort @FeedbackStatusesData.recs.active_statuses.values()
-          @ngApply()
-        )
-
-        @addManagedListener(@FeedbackStatusesData.recs.closed_statuses, 'changed', =>
-
-          @feedback_closed_statuses = @sort @FeedbackStatusesData.recs.closed_statuses.values()
-          @ngApply()
-        )
-      )
-
-      return @$q.all(promises)
-
-    ###
-  # Show the delete dlg
-  ###
-
-    startDelete: (feedback_status) ->
-
-      move_feedback_statuses_list = @FeedbackStatusesData.getListOfMovables(feedback_status)
-
-      if not move_feedback_statuses_list.length
-        @showAlert('@no_delete_last');
-        return
-
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('FeedbackStatuses/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', 'move_feedback_statuses_list', ($scope, $modalInstance, move_feedback_statuses_list) ->
-
-          $scope.move_feedback_statuses_list = move_feedback_statuses_list
+          $scope.move_feedback_statuses_list = move_feedback_statuses_list;
           $scope.selected = {
             move_to_id: move_feedback_statuses_list[0].id
-          }
+          };
 
-          $scope.confirm = ->
-            $modalInstance.close($scope.selected.move_to_id);
+          $scope.confirm = () => $modalInstance.close($scope.selected.move_to_id);
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss();
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ],
         resolve: {
-          move_feedback_statuses_list: =>
-            return move_feedback_statuses_list
+          move_feedback_statuses_list: () => {
+            return move_feedback_statuses_list;
+          }
         }
       });
 
-      inst.result.then( (move_to) =>
-        @deleteFeedbackStatus(feedback_status, move_to)
-      )
+      return inst.result.then( move_to => {
+        return this.deleteFeedbackStatus(feedback_status, move_to);
+      });
+    }
 
-    ###
-    # Actually do the delete
-  # @param feedback_status - feedback status we want to delete
-  # @param move_to - to what status feedback should be moved
-    ###
+    /*
+    * Actually do the delete
+  * @param feedback_status - feedback status we want to delete
+  * @param move_to - to what status feedback should be moved
+    */
 
-    deleteFeedbackStatus: (feedback_status, move_to) ->
+    deleteFeedbackStatus(feedback_status, move_to) {
 
-      @Api.sendDelete('/feedback_statuses/' + feedback_status.id, {
-        move_to: move_to
-      }).success( =>
+      return this.Api.sendDelete(`/feedback_statuses/${feedback_status.id}`, {
+        move_to
+      }).success( () => {
 
-        @FeedbackStatusesData.remove(feedback_status.id)
-        @ngApply()
+        this.FeedbackStatusesData.remove(feedback_status.id);
+        this.ngApply();
 
-        # if currently viewing the deleted feedback status, then should need to switch state
-        if @$state.current.name == 'portal.feedback_statuses.edit' and parseInt(@$state.params.id) == feedback_status.id
-          @$state.go('portal.feedback_statuses')
-      )
+        // if currently viewing the deleted feedback status, then should need to switch state
+        if ((this.$state.current.name === 'portal.feedback_statuses.edit') && (parseInt(this.$state.params.id) === feedback_status.id)) {
+          return this.$state.go('portal.feedback_statuses');
+        }
+      });
+    }
+  }
+  Admin_FeedbackStatuses_Ctrl_List.initClass();
 
-  Admin_FeedbackStatuses_Ctrl_List.EXPORT_CTRL()
+  return Admin_FeedbackStatuses_Ctrl_List.EXPORT_CTRL();
+});

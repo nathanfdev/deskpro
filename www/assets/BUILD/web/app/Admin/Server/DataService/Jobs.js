@@ -1,63 +1,83 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/BaseListEdit',
   'moment'
-], (
+], function(
   BaseListEdit,
   moment
-)  ->
-  class Admin_Server_DataService_Jobs extends BaseListEdit
-    @$inject = ['Api2', '$q']
-
-    init: ->
-      @pagination = {
-        page: 1
+)  {
+  let Admin_Server_DataService_Jobs;
+  return Admin_Server_DataService_Jobs = (function() {
+    Admin_Server_DataService_Jobs = class Admin_Server_DataService_Jobs extends BaseListEdit {
+      static initClass() {
+        this.$inject = ['Api2', '$q'];
       }
 
-    _doLoadList: () ->
-      deferred = @$q.defer()
-
-      @Api2.sendGet('/jobs?page=' + @pagination.page)
-      .success((data) =>
-        models = @mutateData(data)
-        deferred.resolve models
-      )
-      .error( => deferred.reject() )
-
-      return deferred.promise
-
-    _doRefreshList: () ->
-      deferred = @$q.defer()
-      pagination = @getPagination()
-      @Api2.sendGet('/jobs', {
-        page: pagination.page
-      }).success((data) =>
-          models = @mutateData(data)
-          deferred.resolve(models)
-      , ->
-        deferred.reject()
-      )
-
-      return deferred.promise
-
-    mutateData: (data) ->
-      models = []
-      for model in data.data
-        models.push model
-      models.pagination = {
-        total: data.meta.pagination.total
-        num_pages: data.meta.pagination.total_pages-1
-        page: data.meta.pagination.current_page
+      init() {
+        return this.pagination = {
+          page: 1
+        };
       }
 
-      return models
+      _doLoadList() {
+        const deferred = this.$q.defer();
 
-    loadJob: (id) ->
-      deferred = @$q.defer()
+        this.Api2.sendGet(`/jobs?page=${this.pagination.page}`)
+        .success(data => {
+          const models = this.mutateData(data);
+          return deferred.resolve(models);
+        })
+        .error( () => deferred.reject() );
 
-      @Api2.sendGet('/jobs/' + id).success((data) =>
-        deferred.resolve(data.data)
-      , ->
-        deferred.reject()
-      )
+        return deferred.promise;
+      }
 
-      deferred.promise
+      _doRefreshList() {
+        const deferred = this.$q.defer();
+        const pagination = this.getPagination();
+        this.Api2.sendGet('/jobs', {
+          page: pagination.page
+        }).success(data => {
+            const models = this.mutateData(data);
+            return deferred.resolve(models);
+          }
+        , () => deferred.reject());
+
+        return deferred.promise;
+      }
+
+      mutateData(data) {
+        const models = [];
+        for (let model of Array.from(data.data)) {
+          models.push(model);
+        }
+        models.pagination = {
+          total: data.meta.pagination.total,
+          num_pages: data.meta.pagination.total_pages-1,
+          page: data.meta.pagination.current_page
+        };
+
+        return models;
+      }
+
+      loadJob(id) {
+        const deferred = this.$q.defer();
+
+        this.Api2.sendGet(`/jobs/${id}`).success(data => {
+          return deferred.resolve(data.data);
+        }
+        , () => deferred.reject());
+
+        return deferred.promise;
+      }
+    };
+    Admin_Server_DataService_Jobs.initClass();
+    return Admin_Server_DataService_Jobs;
+  })();
+});

@@ -1,122 +1,153 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'Admin/ChannelSms/FormModel/EditSmsAccountModel'
-], (
+], function(
   Admin_Ctrl_Base,
   Admin_ChannelSms_FormModel_EditSmsAccountModel
-) ->
-  class Admin_ChannelSms_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_ChannelSms_Ctrl_Edit'
-    @CTRL_AS = 'ChannelSmsEdit'
-    @DEPS    = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$state', '$timeout']
+) {
+  class Admin_ChannelSms_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_ChannelSms_Ctrl_Edit';
+      this.CTRL_AS = 'ChannelSmsEdit';
+      this.DEPS    = ['Api', 'Growl', 'SmsAccountsData', '$stateParams', '$state', '$timeout'];
+    }
 
-    init: ->
-      @accountId = parseInt(@$stateParams.id || 0)
+    init() {
+      return this.accountId = parseInt(this.$stateParams.id || 0);
+    }
 
-    getFormModel: ->
-      return new Admin_ChannelSms_FormModel_EditSmsAccountModel(@account || {})
+    getFormModel() {
+      return new Admin_ChannelSms_FormModel_EditSmsAccountModel(this.account || {});
+    }
 
-    initialLoad: ->
-      if @accountId
-        promise = @Api.sendGet("/channel/sms/account/#{@accountId}").then((result) =>
-          if result.data
-            @account = result.data
-            @form_model = @getFormModel()
-          @setFormOnScope()
-        )
-      else
-        @setFormOnScope()
-      return promise
+    initialLoad() {
+      let promise;
+      if (this.accountId) {
+        promise = this.Api.sendGet(`/channel/sms/account/${this.accountId}`).then(result => {
+          if (result.data) {
+            this.account = result.data;
+            this.form_model = this.getFormModel();
+          }
+          return this.setFormOnScope();
+        });
+      } else {
+        this.setFormOnScope();
+      }
+      return promise;
+    }
 
-    setFormOnScope: ->
-      if not @form_model
-        @form_model = @getFormModel()
-      @$scope.form = @form_model.form
+    setFormOnScope() {
+      if (!this.form_model) {
+        this.form_model = this.getFormModel();
+      }
+      return this.$scope.form = this.form_model.form;
+    }
 
-    clearCredentials: ->
-      @form_model.markConnected(false)
-      @$scope.connection_problem = false
+    clearCredentials() {
+      this.form_model.markConnected(false);
+      return this.$scope.connection_problem = false;
+    }
 
-    getPostData: ->
-      return {account: @form_model.getFormData()}
+    getPostData() {
+      return {account: this.form_model.getFormData()};
+    }
 
-    connect: ->
-      postData = @getPostData()
-      promise = @Api.sendPostJson("/channel/sms/connect_provider", postData)
-      promise.then( (result) =>
-        if result.data.success
-          @$scope.connection_problem = false
-          @account = result.data.account
-          @form_model.setAccountData(result.data.account)
-          if @accountId
-            @SmsAccountsData.updateModel(@account)
-          @ngApply()
-          @Growl.success(@getRegisteredMessage('connected'))
-        else
-          @$scope.connection_problem = true
-          @form_model.markConnected(false)
-          @Growl.error(@getRegisteredMessage('connected_fail'))
-        @stopSpinner('sms_connect_provider')
-      )
-      promise.error( (result) =>
-        @$scope.connection_problem = true
-        @form_model.markConnected(false)
-        @stopSpinner('sms_connect_provider')
-        @Growl.error(@getRegisteredMessage('connected_fail'))
-      )
-      @startSpinner('sms_connect_provider')
-      return promise
+    connect() {
+      const postData = this.getPostData();
+      const promise = this.Api.sendPostJson("/channel/sms/connect_provider", postData);
+      promise.then( result => {
+        if (result.data.success) {
+          this.$scope.connection_problem = false;
+          this.account = result.data.account;
+          this.form_model.setAccountData(result.data.account);
+          if (this.accountId) {
+            this.SmsAccountsData.updateModel(this.account);
+          }
+          this.ngApply();
+          this.Growl.success(this.getRegisteredMessage('connected'));
+        } else {
+          this.$scope.connection_problem = true;
+          this.form_model.markConnected(false);
+          this.Growl.error(this.getRegisteredMessage('connected_fail'));
+        }
+        return this.stopSpinner('sms_connect_provider');
+      });
+      promise.error( result => {
+        this.$scope.connection_problem = true;
+        this.form_model.markConnected(false);
+        this.stopSpinner('sms_connect_provider');
+        return this.Growl.error(this.getRegisteredMessage('connected_fail'));
+      });
+      this.startSpinner('sms_connect_provider');
+      return promise;
+    }
 
-    setupAndTest: ->
-      postData = @getPostData()
-      promise = @Api.sendPostJson("/channel/sms/setup-and-test/twilio", postData)
-      promise.then((result) =>
-        if result
-          checkTestStatus = =>
-            url = "/channel/sms/account/#{@accountId}"
-            @$timeout =>
-              @Api.sendGet(url).then((result) =>
-                if result.data.is_tested
-                  @stopSpinner('sms_test_provider')
-                  @account = result.data
-                  @form_model.setAccountData(result.data)
-                  @SmsAccountsData.updateModel(@account)
-                  @ngApply()
-                  @Growl.success(@getRegisteredMessage('setup_and_tested_success'))
-                else
-                  checkTestStatus()
-              )
-            , 1000
-          checkTestStatus()
-        else
-          @Growl.error(@getRegisteredMessage('connected_fail'))
-          @form_model.markTested(false)
-      )
-      promise.error((result) =>
-        @$scope.connection_problem = true
-        @Growl.error(@getRegisteredMessage('connected_fail'))
-        @stopSpinner('sms_test_provider')
-      )
-      @startSpinner('sms_test_provider')
-      return promise
+    setupAndTest() {
+      const postData = this.getPostData();
+      const promise = this.Api.sendPostJson("/channel/sms/setup-and-test/twilio", postData);
+      promise.then(result => {
+        if (result) {
+          var checkTestStatus = () => {
+            const url = `/channel/sms/account/${this.accountId}`;
+            return this.$timeout(() => {
+              return this.Api.sendGet(url).then(result => {
+                if (result.data.is_tested) {
+                  this.stopSpinner('sms_test_provider');
+                  this.account = result.data;
+                  this.form_model.setAccountData(result.data);
+                  this.SmsAccountsData.updateModel(this.account);
+                  this.ngApply();
+                  return this.Growl.success(this.getRegisteredMessage('setup_and_tested_success'));
+                } else {
+                  return checkTestStatus();
+                }
+              });
+            }
+            , 1000);
+          };
+          return checkTestStatus();
+        } else {
+          this.Growl.error(this.getRegisteredMessage('connected_fail'));
+          return this.form_model.markTested(false);
+        }
+      });
+      promise.error(result => {
+        this.$scope.connection_problem = true;
+        this.Growl.error(this.getRegisteredMessage('connected_fail'));
+        return this.stopSpinner('sms_test_provider');
+      });
+      this.startSpinner('sms_test_provider');
+      return promise;
+    }
 
-    saveAccount: ->
-      postData = @getPostData()
-      if @accountId
-        @Api.sendPostJson("/channel/sms/account/#{@accountId}", postData).then((result) =>
-          @account = result.data.account
-          @SmsAccountsData.updateModel(@account)
-          @Growl.success(@getRegisteredMessage('saved_account'))
-        )
-      else
-        @Api.sendPutJson("/channel/sms/account", postData).then( (result) =>
-          @account = result.data.account
-          @accountId = @account.id
-          @SmsAccountsData.addToList(@account)
-          @Growl.success(@getRegisteredMessage('saved_account'))
-          @$state.go('tickets.channel_sms.edit', { id: @accountId })
-        )
+    saveAccount() {
+      const postData = this.getPostData();
+      if (this.accountId) {
+        return this.Api.sendPostJson(`/channel/sms/account/${this.accountId}`, postData).then(result => {
+          this.account = result.data.account;
+          this.SmsAccountsData.updateModel(this.account);
+          return this.Growl.success(this.getRegisteredMessage('saved_account'));
+        });
+      } else {
+        return this.Api.sendPutJson("/channel/sms/account", postData).then( result => {
+          this.account = result.data.account;
+          this.accountId = this.account.id;
+          this.SmsAccountsData.addToList(this.account);
+          this.Growl.success(this.getRegisteredMessage('saved_account'));
+          return this.$state.go('tickets.channel_sms.edit', { id: this.accountId });
+        });
+      }
+    }
+  }
+  Admin_ChannelSms_Ctrl_Edit.initClass();
 
 
 
-  Admin_ChannelSms_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_ChannelSms_Ctrl_Edit.EXPORT_CTRL();
+});

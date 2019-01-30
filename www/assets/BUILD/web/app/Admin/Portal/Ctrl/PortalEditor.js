@@ -1,460 +1,603 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class AdminPortalCtrlPortalEditor extends Admin_Ctrl_Base
-    @CTRL_ID = 'AdminPortalCtrlPortalEditor'
-    @CTRL_AS = 'Portal'
-    @DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal', 'Growl']
+/*
+ * decaffeinate suggestions:
+ * DS001: Remove Babel/TypeScript constructor workaround
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class AdminPortalCtrlPortalEditor extends Admin_Ctrl_Base {
+    constructor(...args) {
+      {
+        // Hack: trick Babel/TypeScript into allowing this before super.
+        if (false) { super(); }
+        let thisFn = (() => { return this; }).toString();
+        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        eval(`${thisName} = this;`);
+      }
+      this.init = this.init.bind(this);
+      this.save = this.save.bind(this);
+      this.editTheme = this.editTheme.bind(this);
+      this.saveWelcomeBox = this.saveWelcomeBox.bind(this);
+      this.clearWelcomeBox = this.clearWelcomeBox.bind(this);
+      this.editWelcomeBox = this.editWelcomeBox.bind(this);
+      this.saveValues = this.saveValues.bind(this);
+      this.commit = this.commit.bind(this);
+      this.discard = this.discard.bind(this);
+      this.initialLoad = this.initialLoad.bind(this);
+      this.togglePanel = this.togglePanel.bind(this);
+      this.isOpen = this.isOpen.bind(this);
+      this.label = this.label.bind(this);
+      this.refreshPreviewUrl = this.refreshPreviewUrl.bind(this);
+      this.loadValues = this.loadValues.bind(this);
+      this.loadTemplateOptions = this.loadTemplateOptions.bind(this);
+      this.templateName = this.templateName.bind(this);
+      this.templateGroup = this.templateGroup.bind(this);
+      this.editTemplate = this.editTemplate.bind(this);
+      this.openTemplateEditor = this.openTemplateEditor.bind(this);
+      this.saveTemplateEditor = this.saveTemplateEditor.bind(this);
+      this.revertTemplateEditor = this.revertTemplateEditor.bind(this);
+      this.openCssEditor = this.openCssEditor.bind(this);
+      this.cancelCssEditor = this.cancelCssEditor.bind(this);
+      this.saveCssEditor = this.saveCssEditor.bind(this);
+      this.resetCssEditor = this.resetCssEditor.bind(this);
+      this.cancelTemplateEditor = this.cancelTemplateEditor.bind(this);
+      this.loadAdvancedEdits = this.loadAdvancedEdits.bind(this);
+      this.loadAssetFiles = this.loadAssetFiles.bind(this);
+      this.loadThemeSet = this.loadThemeSet.bind(this);
+      this.loadWelcomeBox = this.loadWelcomeBox.bind(this);
+      this.loadLogo = this.loadLogo.bind(this);
+      this.loadFavicon = this.loadFavicon.bind(this);
+      this.upload = this.upload.bind(this);
+      this.uploadLogo = this.uploadLogo.bind(this);
+      this.uploadFavicon = this.uploadFavicon.bind(this);
+      this.copyUrl = this.copyUrl.bind(this);
+      this.isDirtyState = this.isDirtyState.bind(this);
+      this.notifyUrlCopied = this.notifyUrlCopied.bind(this);
+      this.delete = this.delete.bind(this);
+      this.deleteLogo = this.deleteLogo.bind(this);
+      this.deleteFavicon = this.deleteFavicon.bind(this);
+      this.openAdvancedTab = this.openAdvancedTab.bind(this);
+      this.isAdvancedTab = this.isAdvancedTab.bind(this);
+      this.isAdvancedExpanded = this.isAdvancedExpanded.bind(this);
+      this.collapseAdvanced = this.collapseAdvanced.bind(this);
+      this.expandAdvanced = this.expandAdvanced.bind(this);
+      this.canPreview = this.canPreview.bind(this);
+      this.previewAs = this.previewAs.bind(this);
+      this.promptEmail = this.promptEmail.bind(this);
+      this.error = this.error.bind(this);
+      this.success = this.success.bind(this);
+      this.serverError = this.serverError.bind(this);
+      super(...args);
+    }
 
-    init: =>
-      @open_panels = ['theme', 'colors', 'advanced', 'expert']
-      @recompiling = false
-      @commiting = false
-      @savingMulti = false
-      @advanced = {main_scss: '', custom_scss: '', javascript: ''}
-      @available_themes = [
+    static initClass() {
+      this.CTRL_ID = 'AdminPortalCtrlPortalEditor';
+      this.CTRL_AS = 'Portal';
+      this.DEPS    = ['$http', '$scope', '$timeout', '$upload', '$modal', 'Growl'];
+    }
+
+    init() {
+      this.open_panels = ['theme', 'colors', 'advanced', 'expert'];
+      this.recompiling = false;
+      this.commiting = false;
+      this.savingMulti = false;
+      this.advanced = {main_scss: '', custom_scss: '', javascript: ''};
+      this.available_themes = [
         {id: "standard", title: "Standard"},
         {id: "sidebar", title: "Sidebar"}
-      ]
-      @$scope.brand_id = @$stateParams.brandId
+      ];
+      this.$scope.brand_id = this.$stateParams.brandId;
 
-      @$scope.welcome_box = {
+      this.$scope.welcome_box = {
         title: '',
         message: ''
-      }
-      @welcome_box = angular.copy(@$scope.welcome_box)
+      };
+      this.welcome_box = angular.copy(this.$scope.welcome_box);
 
-      @$scope.values = {}
-      @$scope.errors = {
-        favicon: false
+      this.$scope.values = {};
+      this.$scope.errors = {
+        favicon: false,
         logo: false
-      }
+      };
 
-      @values = angular.copy(@$scope.values)
+      this.values = angular.copy(this.$scope.values);
 
-      @advanced_tab = 'header'
-      @is_advanced_expanded = false
-      @asset_files = []
-      @custom_logo = null
-      @custom_favicon = null
-      @uploading_files_count = 0
-      @template_options = []
-      @selected_template = null
-      @selected_template_info = {}
-      @selected_template_info_loaded = false
-      @css_template_info = null
-      @css_template_selected = null
-      @preview_as_expanded = false
-      @preview_as = 'myself'
-      @preview_as_email = null
-      @selected_theme = null
-      @theme_set = null
+      this.advanced_tab = 'header';
+      this.is_advanced_expanded = false;
+      this.asset_files = [];
+      this.custom_logo = null;
+      this.custom_favicon = null;
+      this.uploading_files_count = 0;
+      this.template_options = [];
+      this.selected_template = null;
+      this.selected_template_info = {};
+      this.selected_template_info_loaded = false;
+      this.css_template_info = null;
+      this.css_template_selected = null;
+      this.preview_as_expanded = false;
+      this.preview_as = 'myself';
+      this.preview_as_email = null;
+      this.selected_theme = null;
+      return this.theme_set = null;
+    }
 
-    save: =>
-      promises = [@saveValues(), @editWelcomeBox()]
-      @savingMulti = true
-      all = @$q.all(promises)
-      all.then( =>
-        @$http({
+    save() {
+      const promises = [this.saveValues(), this.editWelcomeBox()];
+      this.savingMulti = true;
+      const all = this.$q.all(promises);
+      return all.then( () => {
+        return this.$http({
           method: 'PUT',
-          url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
-          data: @advanced
-        }).then( =>
-          @savingMulti = false
-          @refreshPreviewUrl()
-        , =>
-          @serverError()
-          @savingMulti = false
-        )
-      , =>
-        @serverError()
-        @savingMulti = false
-      )
-
-    editTheme: =>
-      request = @$http({
-        method: 'PUT',
-        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/info',
-        data: {
-          theme_id: @selected_theme
+          url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
+          data: this.advanced
+        }).then( () => {
+          this.savingMulti = false;
+          return this.refreshPreviewUrl();
         }
-      })
-      @recompiling = true
-      request.then(
-        () => @refreshPreviewUrl(); @recompiling = false,
-        () => @serverError(); @recompiling = false
-      )
+        , () => {
+          this.serverError();
+          return this.savingMulti = false;
+        });
+      }
+      , () => {
+        this.serverError();
+        return this.savingMulti = false;
+      });
+    }
 
-    saveWelcomeBox: =>
-      @editWelcomeBox().then(
-        () => if not @savingMulti then @refreshPreviewUrl()
-      )
-
-    clearWelcomeBox: =>
-       @welcome_box = {title: '', message: ''}
-       @saveWelcomeBox()
-
-    editWelcomeBox: =>
-      request = @$http({
+    editTheme() {
+      const request = this.$http({
         method: 'PUT',
-        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/welcome-message',
-        data: @$scope.welcome_box
-      })
-      @recompiling = true
-      request.then(
-        () => @recompiling = false; @welcome_box = angular.copy(@$scope.welcome_box),
-        () => @serverError(); @recompiling = false
-      )
+        url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/info',
+        data: {
+          theme_id: this.selected_theme
+        }
+      });
+      this.recompiling = true;
+      return request.then(
+        () => { this.refreshPreviewUrl(); return this.recompiling = false; },
+        () => { this.serverError(); return this.recompiling = false;
+       });
+    }
 
-    saveValues: =>
-      request = @$http({
+    saveWelcomeBox() {
+      return this.editWelcomeBox().then(
+        () => { if (!this.savingMulti) { return this.refreshPreviewUrl(); }
+       });
+    }
+
+    clearWelcomeBox() {
+       this.welcome_box = {title: '', message: ''};
+       return this.saveWelcomeBox();
+     }
+
+    editWelcomeBox() {
+      const request = this.$http({
         method: 'PUT',
-        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/variable-values',
-        data: @$scope.values
-      })
-      @recompiling = true
+        url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/welcome-message',
+        data: this.$scope.welcome_box
+      });
+      this.recompiling = true;
+      return request.then(
+        () => { this.recompiling = false; return this.welcome_box = angular.copy(this.$scope.welcome_box); },
+        () => { this.serverError(); return this.recompiling = false;
+       });
+    }
+
+    saveValues() {
+      const request = this.$http({
+        method: 'PUT',
+        url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/variable-values',
+        data: this.$scope.values
+      });
+      this.recompiling = true;
       request.then(
-        () => @recompiling = false; @values = angular.copy(@$scope.values),
-        (message) => @recompiling = false; @serverError(message)
-      )
-      return request
+        () => { this.recompiling = false; return this.values = angular.copy(this.$scope.values); },
+        message => { this.recompiling = false; return this.serverError(message);
+       });
+      return request;
+    }
 
-    commit: () =>
-      @showConfirm('Are you sure you want to apply this changes to the portal?', 'Confirm save').result.then(
-        () =>
-          @commiting = true
-          if @isDirtyState()
-            promises = [@saveValues(), @editWelcomeBox()]
-          else
-            promises = [true]
+    commit() {
+      return this.showConfirm('Are you sure you want to apply this changes to the portal?', 'Confirm save').result.then(
+        () => {
+          let promises;
+          this.commiting = true;
+          if (this.isDirtyState()) {
+            promises = [this.saveValues(), this.editWelcomeBox()];
+          } else {
+            promises = [true];
+          }
 
-          all = @$q.all(promises)
-          all.then(
-            () => @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/commit').then(
-              () => @success('Changes were applied to the portal'); @commiting = false,
-              () => @serverError(); @commiting = false),
-            () => @commiting = false
-          )
-      )
+          const all = this.$q.all(promises);
+          return all.then(
+            () => { return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/commit').then(
+              () => { this.success('Changes were applied to the portal'); return this.commiting = false; },
+              () => { this.serverError(); return this.commiting = false; }); },
+            () => { return this.commiting = false;
+           });
+      });
+    }
 
-    discard: () =>
-      @showConfirm('Are you sure you want to discard all changes you\'ve made?', 'Confirm discard').result.then(
-        () =>
-          @recompiling = true
-          request = @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/discard')
-          promises = [request, @loadAdvancedEdits(), @loadLogo(), @loadFavicon(), @loadValues()]
-          all = @$q.all(promises)
-          all.then(
-            () => new Promise( (resolve) => resolve(@refreshPreviewUrl())).then(() => @success('Changes were discarded'); @recompiling = false),
-            () => @serverError(); @recompiling = false
-          )
-      )
+    discard() {
+      return this.showConfirm('Are you sure you want to discard all changes you\'ve made?', 'Confirm discard').result.then(
+        () => {
+          this.recompiling = true;
+          const request = this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/discard');
+          const promises = [request, this.loadAdvancedEdits(), this.loadLogo(), this.loadFavicon(), this.loadValues()];
+          const all = this.$q.all(promises);
+          return all.then(
+            () => { return new Promise( resolve => resolve(this.refreshPreviewUrl())).then(() => { this.success('Changes were discarded'); return this.recompiling = false; }); },
+            () => { this.serverError(); return this.recompiling = false;
+           });
+      });
+    }
 
-    initialLoad: =>
-      d = @$q.defer()
-      @Api2.sendGet('brands/'+@$scope.brand_id).then (res) =>
-        @$scope.baseUrl  = window.DP_BASE_URL+'b/'+res.data.data.slug
-        @refreshPreviewUrl()
+    initialLoad() {
+      const d = this.$q.defer();
+      this.Api2.sendGet(`brands/${this.$scope.brand_id}`).then(res => {
+        this.$scope.baseUrl  = window.DP_BASE_URL+'b/'+res.data.data.slug;
+        this.refreshPreviewUrl();
 
-        @$q.all([
-          @$http.get(@$scope.baseUrl+'/portal/api/style/variable-groups').success((data) => @groups = data),
-          @loadValues(),
-          @loadAdvancedEdits(),
-          @loadAssetFiles(),
-          @loadLogo(),
-          @loadFavicon(),
-          @loadTemplateOptions(),
-          @loadThemeSet()
-          @loadWelcomeBox()
-        ]).then(->
-          d.resolve()
-        )
+        return this.$q.all([
+          this.$http.get(this.$scope.baseUrl+'/portal/api/style/variable-groups').success(data => { return this.groups = data; }),
+          this.loadValues(),
+          this.loadAdvancedEdits(),
+          this.loadAssetFiles(),
+          this.loadLogo(),
+          this.loadFavicon(),
+          this.loadTemplateOptions(),
+          this.loadThemeSet(),
+          this.loadWelcomeBox()
+        ]).then(() => d.resolve());
+      });
 
-      d.promise
+      return d.promise;
+    }
 
-    togglePanel: (name) =>
-      if name in @open_panels
-        @open_panels = @open_panels.filter (e) -> e != name
-      else
-        @open_panels.push name
+    togglePanel(name) {
+      if (Array.from(this.open_panels).includes(name)) {
+        return this.open_panels = this.open_panels.filter(e => e !== name);
+      } else {
+        return this.open_panels.push(name);
+      }
+    }
 
-    isOpen: (name) =>
-      name in @open_panels
+    isOpen(name) {
+      return Array.from(this.open_panels).includes(name);
+    }
 
-    label: (sys_name) =>
-      sys_name.replace(/[\-_]/g, ' ').replace(/^(.)|\s(.)/g, (v) -> v.toUpperCase())
+    label(sys_name) {
+      return sys_name.replace(/[\-_]/g, ' ').replace(/^(.)|\s(.)/g, v => v.toUpperCase());
+    }
 
-    refreshPreviewUrl: =>
-      preview_url = window.DP_BASE_URL+'admin-preview-'+@$scope.brand_id+'?anti-cache=' + (new Date()).getTime()
-      if @preview_as is 'user' or @preview_as is 'agent' then preview_url += '&_preview_as=' + @preview_as_email
-      if @preview_as is 'myself' then preview_url += '&_preview_as=_exit'
-      if @preview_as is 'guest' then preview_url += '&_preview_as=_anon'
-      @preview_url = preview_url
+    refreshPreviewUrl() {
+      let preview_url = window.DP_BASE_URL+'admin-preview-'+this.$scope.brand_id+'?anti-cache=' + (new Date()).getTime();
+      if ((this.preview_as === 'user') || (this.preview_as === 'agent')) { preview_url += `&_preview_as=${this.preview_as_email}`; }
+      if (this.preview_as === 'myself') { preview_url += '&_preview_as=_exit'; }
+      if (this.preview_as === 'guest') { preview_url += '&_preview_as=_anon'; }
+      return this.preview_url = preview_url;
+    }
 
-    loadValues: (success) =>
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/variable-values').success(
-        (values) =>
-          angular.extend(@$scope.values, values)
-          @values = angular.copy(@$scope.values)
+    loadValues(success) {
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/variable-values').success(
+        values => {
+          angular.extend(this.$scope.values, values);
+          this.values = angular.copy(this.$scope.values);
 
-          if success
-            success()
-      )
+          if (success) {
+            return success();
+          }
+      });
+    }
 
-    loadTemplateOptions: () =>
-      template_options = []
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/templates').success(
-        (templates) =>
-          for template in templates
+    loadTemplateOptions() {
+      const template_options = [];
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/templates').success(
+        templates => {
+          for (let template of Array.from(templates)) {
             template_options.push({
               value: template.name,
               custom: template.is_custom,
-              name: @templateName(template),
-              group: @templateGroup(template)
-            })
-          @template_options = template_options
-      )
+              name: this.templateName(template),
+              group: this.templateGroup(template)
+            });
+          }
+          return this.template_options = template_options;
+      });
+    }
 
-    templateName: (template) =>
-      name = template.name.split(':')[2].replace(/\.twig/, '')
-      if template.is_custom then name = '(*)' + name
-      return name
-    templateGroup: (template) =>
-      parts = template.name.split(':')
-      if parts[1] then parts[1] else parts[0]
+    templateName(template) {
+      let name = template.name.split(':')[2].replace(/\.twig/, '');
+      if (template.is_custom) { name = `(*)${name}`; }
+      return name;
+    }
+    templateGroup(template) {
+      const parts = template.name.split(':');
+      if (parts[1]) { return parts[1]; } else { return parts[0]; }
+    }
 
-    editTemplate: =>
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
-        @selected_template_info = {
+    editTemplate() {
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/template-info?template=' + this.selected_template).success(data => {
+        this.selected_template_info = {
           code: data.source,
           is_custom: data.is_custom
-        }
-        @selected_template_info_loaded = true
-      )
+        };
+        return this.selected_template_info_loaded = true;
+      });
+    }
 
-    openTemplateEditor: (tpl) =>
-      @selected_template = tpl
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/template-info?template=' + @selected_template).success((data) =>
-        @selected_template_info = {
+    openTemplateEditor(tpl) {
+      this.selected_template = tpl;
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/template-info?template=' + this.selected_template).success(data => {
+        this.selected_template_info = {
           code: data.source,
           is_custom: data.is_custom
-        }
-        @selected_template_info_loaded = true
-      )
+        };
+        return this.selected_template_info_loaded = true;
+      });
+    }
 
-    saveTemplateEditor: () =>
-      @$http({
+    saveTemplateEditor() {
+      return this.$http({
         method: 'PUT',
-        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
-        data: angular.toJson({code: @selected_template_info.code})
+        url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/template-sources?template=' + this.selected_template,
+        data: angular.toJson({code: this.selected_template_info.code})
       })
       .success(
-        () =>
-          @selected_template = null
-          @selected_template_info_loaded = false
-          @loadTemplateOptions()
-      )
-      .error(@serverError)
+        () => {
+          this.selected_template = null;
+          this.selected_template_info_loaded = false;
+          return this.loadTemplateOptions();
+      })
+      .error(this.serverError);
+    }
 
-    revertTemplateEditor: () =>
-      @$http({
+    revertTemplateEditor() {
+      this.$http({
         method: 'PUT',
-        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/template-sources?template=' + @selected_template,
+        url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/template-sources?template=' + this.selected_template,
         data: angular.toJson({revert: true})
       })
-      .error(@serverError)
+      .error(this.serverError);
 
-      @selected_template = null
-      @selected_template_info_loaded = false
+      this.selected_template = null;
+      return this.selected_template_info_loaded = false;
+    }
 
-    openCssEditor: (type) =>
-      @css_template_selected = true
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
-        @css_template_info = {
+    openCssEditor(type) {
+      this.css_template_selected = true;
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits').success(data => {
+        return this.css_template_info = {
           loaded: true,
-          type: type,
+          type,
           code: data[type],
           is_custom: true
-        }
-      )
+        };
+      });
+    }
 
-    cancelCssEditor: () =>
-      @css_template_selected = false
-      @css_template_info = false
+    cancelCssEditor() {
+      this.css_template_selected = false;
+      return this.css_template_info = false;
+    }
 
-    saveCssEditor: () =>
-      data = {}
-      data[@css_template_info.type] = @css_template_info.code
-      @advanced[@css_template_info.type] = @css_template_info.code
-      @recompiling = true
+    saveCssEditor() {
+      const data = {};
+      data[this.css_template_info.type] = this.css_template_info.code;
+      this.advanced[this.css_template_info.type] = this.css_template_info.code;
+      this.recompiling = true;
 
-      req = @$http({
+      const req = this.$http({
         method: 'PUT',
-        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
+        url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
         data: angular.toJson(data)
       })
-      .success(=> @recompiling = false)
-      .error((message) => @recompiling = false; @serverError(message))
+      .success(() => { return this.recompiling = false; })
+      .error(message => { this.recompiling = false; return this.serverError(message); });
 
-      @css_template_selected = null
-      @css_template_info = false
+      this.css_template_selected = null;
+      this.css_template_info = false;
 
-      return req
+      return req;
+    }
 
-    resetCssEditor: () =>
-      data = {}
-      data[@css_template_info.type] = true
-      req = @$http(
+    resetCssEditor() {
+      const data = {};
+      data[this.css_template_info.type] = true;
+      const req = this.$http({
         method: 'DELETE',
-        url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
-        data: angular.toJson(data)
-        headers:
+        url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits',
+        data: angular.toJson(data),
+        headers: {
           "Content-Type": "application/json"
-      )
-      .success(=> @recompiling = false)
-      .error((message) => @recompiling = false; @serverError(message))
+        }
+      })
+      .success(() => { return this.recompiling = false; })
+      .error(message => { this.recompiling = false; return this.serverError(message); });
 
-      @css_template_selected = null
-      @css_template_info = false
-      req
+      this.css_template_selected = null;
+      this.css_template_info = false;
+      return req;
+    }
 
-    cancelTemplateEditor: =>
-      @selected_template = null
-      @selected_template_info_loaded = false
+    cancelTemplateEditor() {
+      this.selected_template = null;
+      return this.selected_template_info_loaded = false;
+    }
 
-    loadAdvancedEdits: (success) =>
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits').success(
-        (advanced) =>
-          angular.extend(@advanced, advanced)
-          if success
-            success()
-      )
+    loadAdvancedEdits(success) {
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits').success(
+        advanced => {
+          angular.extend(this.advanced, advanced);
+          if (success) {
+            return success();
+          }
+      });
+    }
 
-    loadAssetFiles: () =>
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/assets').success(
-        (response) => angular.extend(@asset_files, response.data)
-      )
+    loadAssetFiles() {
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/assets').success(
+        response => angular.extend(this.asset_files, response.data)
+      );
+    }
 
-    loadThemeSet: () =>
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/info').success((data) =>
-        @theme_set = data
-        @selected_theme = @theme_set.theme_id
-      )
+    loadThemeSet() {
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/info').success(data => {
+        this.theme_set = data;
+        return this.selected_theme = this.theme_set.theme_id;
+      });
+    }
 
-    loadWelcomeBox: () =>
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/welcome-message').success((response) =>
-        @$scope.welcome_box = response.data
-        @welcome_box = angular.copy(@$scope.welcome_box)
-      )
+    loadWelcomeBox() {
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/welcome-message').success(response => {
+        this.$scope.welcome_box = response.data;
+        return this.welcome_box = angular.copy(this.$scope.welcome_box);
+      });
+    }
 
-    loadLogo: () =>
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/logo').success((response) => @custom_logo = response.data?.url)
+    loadLogo() {
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/logo').success(response => { return this.custom_logo = response.data != null ? response.data.url : undefined; });
+    }
 
-    loadFavicon: () =>
-      @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/favicon').success((response) => @custom_favicon = response.data?.url)
+    loadFavicon() {
+      return this.$http.get(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/favicon').success(response => { return this.custom_favicon = response.data != null ? response.data.url : undefined; });
+    }
 
-    upload: (files) =>
-      for file in files
-        @uploading_files_count++
-        @$upload.upload({
-          url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/assets',
-          file: file
-        }).then(
-          (response) =>
-            @uploading_files_count--
-            @asset_files.unshift(response.data.data)
-          ,
-          () => @error('Server error occurred. Unable to upload files.')
-        )
+    upload(files) {
+      return (() => {
+        const result = [];
+        for (let file of Array.from(files)) {
+          this.uploading_files_count++;
+          result.push(this.$upload.upload({
+            url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/assets',
+            file
+          }).then(
+            response => {
+              this.uploading_files_count--;
+              return this.asset_files.unshift(response.data.data);
+            }
+            ,
+            () => this.error('Server error occurred. Unable to upload files.')
+          ));
+        }
+        return result;
+      })();
+    }
 
-    uploadLogo: (files) =>
-      @$upload
-        .upload({url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/logo', file: files[0]})
+    uploadLogo(files) {
+      return this.$upload
+        .upload({url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/logo', file: files[0]})
         .then(
-          (response) =>
-            @$scope.errors.logo = false
-            @custom_logo = response.data.data.url
-          (response) =>
-            @$scope.errors.logo = response.data.fields.file.errors[0].message
-        )
-    uploadFavicon: (files) =>
-      @$upload
-        .upload({url: @$scope.baseUrl+'/portal/api/style/edit-theme-set/favicon', file: files[0]})
+          response => {
+            this.$scope.errors.logo = false;
+            return this.custom_logo = response.data.data.url;
+          },
+          response => {
+            return this.$scope.errors.logo = response.data.fields.file.errors[0].message;
+        });
+    }
+    uploadFavicon(files) {
+      return this.$upload
+        .upload({url: this.$scope.baseUrl+'/portal/api/style/edit-theme-set/favicon', file: files[0]})
         .then(
-          (response) =>
-            @$scope.errors.favicon = false
-            @custom_favicon = response.data.data.url
-          (response) =>
-            @$scope.errors.favicon = response.data.fields.file.errors[0].message
-        )
+          response => {
+            this.$scope.errors.favicon = false;
+            return this.custom_favicon = response.data.data.url;
+          },
+          response => {
+            return this.$scope.errors.favicon = response.data.fields.file.errors[0].message;
+        });
+    }
 
-    copyUrl: (file) =>
-      window.prompt('Copy this:', file.url)
-      return
+    copyUrl(file) {
+      window.prompt('Copy this:', file.url);
+    }
 
-    isDirtyState: =>
-      return true if not angular.equals(@welcome_box, @$scope.welcome_box)
-      return true if not angular.equals(@values, @$scope.values)
+    isDirtyState() {
+      if (!angular.equals(this.welcome_box, this.$scope.welcome_box)) { return true; }
+      if (!angular.equals(this.values, this.$scope.values)) { return true; }
 
-      return false
+      return false;
+    }
 
-    notifyUrlCopied: () =>
-      @Growl.success('File URL was copied to your clipboard')
-      return
+    notifyUrlCopied() {
+      this.Growl.success('File URL was copied to your clipboard');
+    }
 
-    delete: (file) =>
-      if window.confirm('Are you sure you want to remove ' + file.name + '?')
-        @$http.delete(@$scope.baseUrl+'/portal/api/style/edit-theme-set/assets/' + file.id).success(
-          () => @asset_files = @asset_files.filter (f) -> f isnt file
-        )
+    delete(file) {
+      if (window.confirm(`Are you sure you want to remove ${file.name}?`)) {
+        return this.$http.delete(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/assets/' + file.id).success(
+          () => { return this.asset_files = this.asset_files.filter(f => f !== file);
+         });
+      }
+    }
 
-    deleteLogo: () =>
-      @$http.delete(@$scope.baseUrl+'/portal/api/style/edit-theme-set/logo').success(() => @custom_logo = null)
+    deleteLogo() {
+      return this.$http.delete(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/logo').success(() => { return this.custom_logo = null; });
+    }
 
-    deleteFavicon: () =>
-      @$http.delete(@$scope.baseUrl+'/portal/api/style/edit-theme-set/favicon').success(() => @custom_favicon = null)
+    deleteFavicon() {
+      return this.$http.delete(this.$scope.baseUrl+'/portal/api/style/edit-theme-set/favicon').success(() => { return this.custom_favicon = null; });
+    }
 
-    openAdvancedTab: (tab) => @advanced_tab = tab
-    isAdvancedTab: (tab) => @advanced_tab == tab
+    openAdvancedTab(tab) { return this.advanced_tab = tab; }
+    isAdvancedTab(tab) { return this.advanced_tab === tab; }
 
-    isAdvancedExpanded: () => @is_advanced_expanded
-    collapseAdvanced: () => @is_advanced_expanded = false
-    expandAdvanced: () => @is_advanced_expanded = true
+    isAdvancedExpanded() { return this.is_advanced_expanded; }
+    collapseAdvanced() { return this.is_advanced_expanded = false; }
+    expandAdvanced() { return this.is_advanced_expanded = true; }
 
-    canPreview: =>
-      !@commiting and !@recompiling and !@savingMulti and (@preview_as is 'guest' or @preview_as is 'myself' or @preview_as_email)
+    canPreview() {
+      return !this.commiting && !this.recompiling && !this.savingMulti && ((this.preview_as === 'guest') || (this.preview_as === 'myself') || this.preview_as_email);
+    }
 
-    previewAs: (mode) =>
-      @preview_as = mode
-      if mode is 'user' or mode is 'agent' then @promptEmail()
-      @preview_as_expanded = false
-      @preview_as_email = null
-      @refreshPreviewUrl()
+    previewAs(mode) {
+      this.preview_as = mode;
+      if ((mode === 'user') || (mode === 'agent')) { this.promptEmail(); }
+      this.preview_as_expanded = false;
+      this.preview_as_email = null;
+      return this.refreshPreviewUrl();
+    }
 
-    promptEmail: =>
-      baseUrl = @$scope.baseUrl
+    promptEmail() {
+      const { baseUrl } = this.$scope;
 
-      modalInstance = @$modal.open({
-        templateUrl: @getTemplatePath('Portal/Editor/email-modal.html'),
-        controller: ['$scope', '$modalInstance', '$http', 'preview_as', ($scope, $modalInstance, $http, preview_as) ->
-          $scope.email = ''
-          $scope.preview_as = preview_as
-          $scope.ok = () -> $modalInstance.close(@email)
-          $scope.cancel = () -> $modalInstance.dismiss('cancel')
-          $scope.loadEmails = (val) ->
+      const modalInstance = this.$modal.open({
+        templateUrl: this.getTemplatePath('Portal/Editor/email-modal.html'),
+        controller: ['$scope', '$modalInstance', '$http', 'preview_as', function($scope, $modalInstance, $http, preview_as) {
+          $scope.email = '';
+          $scope.preview_as = preview_as;
+          $scope.ok = function() { return $modalInstance.close(this.email); };
+          $scope.cancel = () => $modalInstance.dismiss('cancel');
+          return $scope.loadEmails = val =>
             $http.get(baseUrl+'/portal/api/emails?term=' + val + '&target=' + preview_as)
-                 .then((response) => response.data)
+                 .then(response => response.data)
+          ;
+        }
         ],
         resolve: {
-          preview_as: () => @preview_as
+          preview_as: () => this.preview_as
         }
-      })
-      modalInstance.result.then((email) => @preview_as_email = email; @refreshPreviewUrl())
+      });
+      return modalInstance.result.then(email => { this.preview_as_email = email; return this.refreshPreviewUrl(); });
+    }
 
-    error: (message) => @showAlert(message, 'Changes were not applied')
-    success: (message) => @Growl.success(message)
-    serverError: (message) =>
-      if message and message.message
-        @error('Server error occurred. Unable to save data (' + message.message + ').')
-      else
-        @error('Server error occurred. Unable to save data.')
+    error(message) { return this.showAlert(message, 'Changes were not applied'); }
+    success(message) { return this.Growl.success(message); }
+    serverError(message) {
+      if (message && message.message) {
+        return this.error(`Server error occurred. Unable to save data (${message.message}).`);
+      } else {
+        return this.error('Server error occurred. Unable to save data.');
+      }
+    }
+  }
+  AdminPortalCtrlPortalEditor.initClass();
 
-  AdminPortalCtrlPortalEditor.EXPORT_CTRL()
+  return AdminPortalCtrlPortalEditor.EXPORT_CTRL();
+});

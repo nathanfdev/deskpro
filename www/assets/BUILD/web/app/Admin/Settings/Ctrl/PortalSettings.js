@@ -1,54 +1,73 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Settings_Ctrl_PortalSettings extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Settings_Ctrl_PortalSettings'
-    @CTRL_AS   = 'Settings'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_Settings_Ctrl_PortalSettings extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Settings_Ctrl_PortalSettings';
+      this.CTRL_AS   = 'Settings';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      @settings = null
+    init() {
+      return this.settings = null;
+    }
 
-    initialLoad: ->
-      data_promise = @Api.sendDataGet({
+    initialLoad() {
+      const data_promise = this.Api.sendDataGet({
         'settings': '/portal_settings'
-      }).then( (res) =>
-        @$scope.settings = res.data.settings.portal_settings
-        @$scope.show_ratings_opt = false
-        if @$scope.settings.show_ratings > 0
-          @$scope.show_ratings_opt = true
-        else
-          @$scope.settings.show_ratings = 1
+      }).then( res => {
+        this.$scope.settings = res.data.settings.portal_settings;
+        this.$scope.show_ratings_opt = false;
+        if (this.$scope.settings.show_ratings > 0) {
+          this.$scope.show_ratings_opt = true;
+        } else {
+          this.$scope.settings.show_ratings = 1;
+        }
 
-        @settings = angular.copy(@$scope.settings)
-      )
+        return this.settings = angular.copy(this.$scope.settings);
+      });
 
-      return @$q.all([data_promise])
+      return this.$q.all([data_promise]);
+    }
 
-    isDirtyState: ->
-      if not @settings then return false
-      if not angular.equals(@settings, @$scope.settings)
-        return true
-      else
-        return false
+    isDirtyState() {
+      if (!this.settings) { return false; }
+      if (!angular.equals(this.settings, this.$scope.settings)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
-    save: ->
+    save() {
 
-      if not @$scope.show_ratings_opt
-        @$scope.settings.show_ratings = 0
-
-      postData = {
-        portal_settings: @$scope.settings
+      let promise;
+      if (!this.$scope.show_ratings_opt) {
+        this.$scope.settings.show_ratings = 0;
       }
 
-      @startSpinner('saving')
-      promise = @Api.sendPostJson('/portal_settings', postData).success( =>
-        @settings = angular.copy(@$scope.settings)
+      const postData = {
+        portal_settings: this.$scope.settings
+      };
 
-        @stopSpinner('saving').then(=>
-          @Growl.success(@getRegisteredMessage('saved_settings'))
-        )
-      ).error( (info, code) =>
-        @stopSpinner('saving', true)
-        @applyErrorResponseToView(info)
-      )
+      this.startSpinner('saving');
+      return promise = this.Api.sendPostJson('/portal_settings', postData).success( () => {
+        this.settings = angular.copy(this.$scope.settings);
 
-  Admin_Settings_Ctrl_PortalSettings.EXPORT_CTRL()
+        return this.stopSpinner('saving').then(() => {
+          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+        });
+      }).error( (info, code) => {
+        this.stopSpinner('saving', true);
+        return this.applyErrorResponseToView(info);
+      });
+    }
+  }
+  Admin_Settings_Ctrl_PortalSettings.initClass();
+
+  return Admin_Settings_Ctrl_PortalSettings.EXPORT_CTRL();
+});

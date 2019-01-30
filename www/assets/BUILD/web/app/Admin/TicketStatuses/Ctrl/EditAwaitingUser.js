@@ -1,31 +1,47 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_TicketStatuses_Ctrl_EditAwaitingUser extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditAwaitingUser'
-    @CTRL_AS = 'TicketStatusEdit'
-    @DEPS = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_TicketStatuses_Ctrl_EditAwaitingUser extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditAwaitingUser';
+      this.CTRL_AS = 'TicketStatusEdit';
+      this.DEPS = [];
+    }
 
-    init: ->
-      @$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('awaiting_user')
+    init() {
+      this.$scope.getCount = () => (this.$scope.$parent.TicketStatusesList != null ? this.$scope.$parent.TicketStatusesList.getStatusCount('awaiting_user') : undefined);
 
-      @$scope.editTemplate = (esc) =>
-        @$modal.open({
+      return this.$scope.editTemplate = esc => {
+        return this.$modal.open({
           templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
           controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-          resolve:
-            templateName: -> 'DeskPRO:emails_user:ticket-rate.html.twig'
-        })
+          resolve: {
+            templateName() { return 'DeskPRO:emails_user:ticket-rate.html.twig'; }
+          }
+        });
+      };
+    }
 
 
 
-    save: ->
-      @Growl.success @getRegisteredMessage('saved_settings')
-      @$scope.$broadcast 'trigger.save'
-      @$timeout(
-        => @$state.go @$state.current, {}, {reload: true}
+    save() {
+      this.Growl.success(this.getRegisteredMessage('saved_settings'));
+      this.$scope.$broadcast('trigger.save');
+      return this.$timeout(
+        () => this.$state.go(this.$state.current, {}, {reload: true}),
         200
-      )
+      );
+    }
+  }
+  Admin_TicketStatuses_Ctrl_EditAwaitingUser.initClass();
 
 
 
 
-  Admin_TicketStatuses_Ctrl_EditAwaitingUser.EXPORT_CTRL()
+  return Admin_TicketStatuses_Ctrl_EditAwaitingUser.EXPORT_CTRL();
+});

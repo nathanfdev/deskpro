@@ -1,68 +1,91 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) ->
-  class Admin_ChannelFacebook_Ctrl_List extends Admin_Main_Ctrl_Base
-    @CTRL_ID = 'Admin_ChannelFacebook_Ctrl_List'
-    @CTRL_AS = 'ChannelFacebookList'
-    @CTRL_TYPE = 'list'
-    @DEPS = ['FacebookPagesData']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Main_Ctrl_Base) {
+  class Admin_ChannelFacebook_Ctrl_List extends Admin_Main_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_ChannelFacebook_Ctrl_List';
+      this.CTRL_AS = 'ChannelFacebookList';
+      this.CTRL_TYPE = 'list';
+      this.DEPS = ['FacebookPagesData'];
+    }
 
-    init: ->
-      @pages = []
+    init() {
+      return this.pages = [];
+    }
 
-    initialLoad: ->
-      list_promise = @FacebookPagesData.loadList().then((recs) =>
-        @pages = []
-        accounts = recs.values()
-        for acc in accounts
-          @pages.push acc
+    initialLoad() {
+      const list_promise = this.FacebookPagesData.loadList().then(recs => {
+        this.pages = [];
+        let accounts = recs.values();
+        for (var acc of Array.from(accounts)) {
+          this.pages.push(acc);
+        }
 
-        if @$state.current.name == 'tickets.channel_facebook'
-          if @pages[0]
-            @$state.go('tickets.channel_facebook.edit', {id: @pages[0].id})
-          else
-            @$state.go('tickets.channel_facebook.create')
+        if (this.$state.current.name === 'tickets.channel_facebook') {
+          if (this.pages[0]) {
+            this.$state.go('tickets.channel_facebook.edit', {id: this.pages[0].id});
+          } else {
+            this.$state.go('tickets.channel_facebook.create');
+          }
+        }
 
-        @addManagedListener(@FacebookPagesData.recs, 'changed', =>
-          @pages = []
-          accounts = @FacebookPagesData.recs.values()
-          for acc in accounts
-            acc.phone_number_region = acc.phone_number_region?.toLowerCase()
-            @pages.push acc
-          @ngApply()
-        )
-      )
+        return this.addManagedListener(this.FacebookPagesData.recs, 'changed', () => {
+          this.pages = [];
+          accounts = this.FacebookPagesData.recs.values();
+          for (acc of Array.from(accounts)) {
+            acc.phone_number_region = acc.phone_number_region != null ? acc.phone_number_region.toLowerCase() : undefined;
+            this.pages.push(acc);
+          }
+          return this.ngApply();
+        });
+      });
 
-      return @$q.all([list_promise]);
+      return this.$q.all([list_promise]);
+    }
 
-    startDelete: (for_acc_id) ->
-      for_acc = null
-      for v in @pages
-        if v.id == for_acc_id
-          for_acc = v
+    startDelete(for_acc_id) {
+      let for_acc = null;
+      for (let v of Array.from(this.pages)) {
+        if (v.id === for_acc_id) {
+          for_acc = v;
+        }
+      }
 
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('ChannelFacebook/delete-modal.html'),
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('ChannelFacebook/delete-modal.html'),
         controller: [
-          '$scope', '$modalInstance', ($scope, $modalInstance) ->
-            $scope.confirm = ->
-              $modalInstance.close();
+          '$scope', '$modalInstance', function($scope, $modalInstance) {
+            $scope.confirm = () => $modalInstance.close();
 
-            $scope.dismiss = ->
-              $modalInstance.dismiss();
+            return $scope.dismiss = () => $modalInstance.dismiss();
+          }
         ]
       });
 
-      inst.result.then(=>
-        @deleteAccount(for_acc)
-      )
+      return inst.result.then(() => {
+        return this.deleteAccount(for_acc);
+      });
+    }
 
-    deleteAccount: (acc) ->
-      @Api.sendDelete('/channel/facebook/page/' + acc.id).success(=>
-        @FacebookPagesData.remove(acc.id)
-        @ngApply()
+    deleteAccount(acc) {
+      return this.Api.sendDelete(`/channel/facebook/page/${acc.id}`).success(() => {
+        this.FacebookPagesData.remove(acc.id);
+        this.ngApply();
 
-        # if currently viewing the deleted account, then should need to switch state
-        if @$state.current.name == 'tickets.channel_facebook.edit' and parseInt(@$state.params.id) == acc.id
-          @$state.go('tickets.channel_facebook')
-      )
+        // if currently viewing the deleted account, then should need to switch state
+        if ((this.$state.current.name === 'tickets.channel_facebook.edit') && (parseInt(this.$state.params.id) === acc.id)) {
+          return this.$state.go('tickets.channel_facebook');
+        }
+      });
+    }
+  }
+  Admin_ChannelFacebook_Ctrl_List.initClass();
 
-  Admin_ChannelFacebook_Ctrl_List.EXPORT_CTRL()
+  return Admin_ChannelFacebook_Ctrl_List.EXPORT_CTRL();
+});

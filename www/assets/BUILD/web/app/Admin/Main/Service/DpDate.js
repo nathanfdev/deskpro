@@ -1,44 +1,57 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'moment'
-], (
+], function(
   moment
-) ->
-  ###
-  # Date formatter service
-  ###
-  class Admin_Main_Service_DpDate
+) {
+  /*
+   * Date formatter service
+   */
+  let Admin_Main_Service_DpDate;
+  return (Admin_Main_Service_DpDate = class Admin_Main_Service_DpDate {
 
-    constructor: () ->
+    constructor() {
 
-      # todo: get formats from App Settings
-      @formats =
-        full: 'ddd, Do MMM YYYY'
-        fulltime: 'ddd, Do MMM YYYY h:mma'
-        day: 'MMM D YYYY'
-        day_short: 'MMM D'
+      // todo: get formats from App Settings
+      this.formats = {
+        full: 'ddd, Do MMM YYYY',
+        fulltime: 'ddd, Do MMM YYYY h:mma',
+        day: 'MMM D YYYY',
+        day_short: 'MMM D',
         time: 'h:mm a'
+      };
 
-      @default = 'fulltime'
-
-
-
-    local: (date) ->
-      return date if !date
-
-      if 'string' == typeof date
-        date = moment.utc(date).toDate()
-      else if date instanceof Date
-        date = moment.utc(date.getTime()).toDate()
-
-      date
+      this.default = 'fulltime';
+    }
 
 
 
-    format: (date, format) ->
-      format = @default if !format
-      return null if !@formats[format]
+    local(date) {
+      if (!date) { return date; }
 
-      date = @local date
-      return null if !date
+      if ('string' === typeof date) {
+        date = moment.utc(date).toDate();
+      } else if (date instanceof Date) {
+        date = moment.utc(date.getTime()).toDate();
+      }
 
-      moment(date).format @formats[format]
+      return date;
+    }
+
+
+
+    format(date, format) {
+      if (!format) { format = this.default; }
+      if (!this.formats[format]) { return null; }
+
+      date = this.local(date);
+      if (!date) { return null; }
+
+      return moment(date).format(this.formats[format]);
+    }
+  });
+});

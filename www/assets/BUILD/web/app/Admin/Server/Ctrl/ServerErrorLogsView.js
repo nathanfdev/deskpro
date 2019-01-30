@@ -1,20 +1,33 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_ServerErrorLogs_Ctrl_View extends Admin_Ctrl_Base
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_ServerErrorLogs_Ctrl_View extends Admin_Ctrl_Base {
+    static initClass() {
+  
+      this.CTRL_ID   = 'Admin_ServerErrorLogs_Ctrl_View';
+      this.CTRL_AS   = 'ServerErrorLogsView';
+      this.DEPS      = [];
+    }
 
-    @CTRL_ID   = 'Admin_ServerErrorLogs_Ctrl_View'
-    @CTRL_AS   = 'ServerErrorLogsView'
-    @DEPS      = []
+    init() {
 
-    init: ->
+      return this.error_log = {};
+    }
 
-      @error_log = {}
+    initialLoad() {
+      const data_promise = this.Api.sendGet(`/server_error_logs/${this.$stateParams.id}`).then( res => {
 
-    initialLoad: ->
-      data_promise = @Api.sendGet('/server_error_logs/' + @$stateParams.id).then( (res) =>
+        return this.error_log = res.data.server_error_log;
+      });
 
-        @error_log = res.data.server_error_log
-      )
+      return this.$q.all([data_promise]);
+    }
+  }
+  Admin_ServerErrorLogs_Ctrl_View.initClass();
 
-      return @$q.all([data_promise])
-
-  Admin_ServerErrorLogs_Ctrl_View.EXPORT_CTRL()
+  return Admin_ServerErrorLogs_Ctrl_View.EXPORT_CTRL();
+});

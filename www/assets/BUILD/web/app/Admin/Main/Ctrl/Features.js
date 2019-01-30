@@ -1,44 +1,59 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_Main_Ctrl_Features extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Main_Ctrl_Features'
-    @CTRL_AS = 'Features'
-    @DEPS    = ['Api2', 'Growl', '$stateParams', '$sce', '$state']
+) {
+  class Admin_Main_Ctrl_Features extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Main_Ctrl_Features';
+      this.CTRL_AS = 'Features';
+      this.DEPS    = ['Api2', 'Growl', '$stateParams', '$sce', '$state'];
+    }
 
-    init: ->
-      @feature = {
-        id: @$stateParams.id
-      }
+    init() {
+      this.feature = {
+        id: this.$stateParams.id
+      };
 
-      return
+    }
 
-    initialLoad: ->
-      return new Promise( (resolve) =>
-        @Api2.sendGet('/features/' + @$stateParams.id).then( (res) =>
-          @feature = res.data.data;
-          @enable_description = @$sce.trustAsHtml(@feature.enable_description)
-          @disable_description = @$sce.trustAsHtml(@feature.disable_description)
+    initialLoad() {
+      return new Promise( resolve => {
+        return this.Api2.sendGet(`/features/${this.$stateParams.id}`).then( res => {
+          this.feature = res.data.data;
+          this.enable_description = this.$sce.trustAsHtml(this.feature.enable_description);
+          this.disable_description = this.$sce.trustAsHtml(this.feature.disable_description);
 
-          if @$state.current.name == 'features.enable' and @feature.enabled and @feature.route_path
-            window.location.hash = @feature.route_path
-          else
-            resolve()
-        )
-      )
+          if ((this.$state.current.name === 'features.enable') && this.feature.enabled && this.feature.route_path) {
+            return window.location.hash = this.feature.route_path;
+          } else {
+            return resolve();
+          }
+        });
+      });
+    }
 
-    disableFeature: ->
-      @Api2.sendPutJson('/features/' + @$stateParams.id + '/disable').then( =>
-        @Growl.success('Feature is under disabling process');
-        @$state.go('home');
-      );
+    disableFeature() {
+      return this.Api2.sendPutJson(`/features/${this.$stateParams.id}/disable`).then( () => {
+        this.Growl.success('Feature is under disabling process');
+        return this.$state.go('home');
+      });
+    }
 
-    enableFeature: ->
-      @Api2.sendPutJson('/features/' + @$stateParams.id + '/enable').then( =>
-        @Growl.success('Feature is under enabling process');
-        @$state.go('home');
-      );
+    enableFeature() {
+      return this.Api2.sendPutJson(`/features/${this.$stateParams.id}/enable`).then( () => {
+        this.Growl.success('Feature is under enabling process');
+        return this.$state.go('home');
+      });
+    }
+  }
+  Admin_Main_Ctrl_Features.initClass();
 
-  Admin_Main_Ctrl_Features.EXPORT_CTRL()
+  return Admin_Main_Ctrl_Features.EXPORT_CTRL();
+});

@@ -1,9 +1,18 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Reports/Builder/DataService/ReportBuiltInAbstract'
-], (
+], function(
   ReportsBuiltInAbstract,
-)  ->
-  class ReportWidgetBuiltIn extends ReportsBuiltInAbstract
+)  {
+  let ReportWidgetBuiltIn;
+  return (ReportWidgetBuiltIn = class ReportWidgetBuiltIn extends ReportsBuiltInAbstract {
 
-    getUrlPart: ->
-      return 'widget'
+    getUrlPart() {
+      return 'widget';
+    }
+  });
+});

@@ -1,82 +1,115 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS103: Rewrite code to no longer use __guard__
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/TicketEscalations/Ctrl/Edit'
-], (
+], function(
   Admin_TicketEscalations_Ctrl_Edit
-) ->
-  class Admin_TicketEscalations_Ctrl_EditSatisfaction extends Admin_TicketEscalations_Ctrl_Edit
-    @CTRL_ID   = 'Admin_TicketEscalations_Ctrl_EditSatisfaction'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams']
+) {
+  class Admin_TicketEscalations_Ctrl_EditSatisfaction extends Admin_TicketEscalations_Ctrl_Edit {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketEscalations_Ctrl_EditSatisfaction';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams'];
+    }
 
 
 
-    init: ->
-      @escData = @DataService.get 'TicketEscalations'
-      @esc = null
+    init() {
+      this.escData = this.DataService.get('TicketEscalations');
+      this.esc = null;
 
-      @criteriaTypeDef     = @dpObTypesDefTicketFilter
-      @actionsTypeDef      = @dpObTypesDefTicketActions
-      @$scope.criteriaOptionTypes = []
-      @$scope.actionOptionTypes   = []
+      this.criteriaTypeDef     = this.dpObTypesDefTicketFilter;
+      this.actionsTypeDef      = this.dpObTypesDefTicketActions;
+      this.$scope.criteriaOptionTypes = [];
+      this.$scope.actionOptionTypes   = [];
 
-      @criteriaTypeDef.setVar 'object_type', 'escalation'
-      @actionsTypeDef.setVar 'object_type', 'escalation'
+      this.criteriaTypeDef.setVar('object_type', 'escalation');
+      this.actionsTypeDef.setVar('object_type', 'escalation');
 
-      @criteriaTypeDef.setVar 'object_type', 'escalation'
-      @actionsTypeDef.setVar 'object_type', 'escalation'
+      this.criteriaTypeDef.setVar('object_type', 'escalation');
+      this.actionsTypeDef.setVar('object_type', 'escalation');
 
-      growl = @Growl
-      # we need to suppress alerts when process initiated by this event
-      @$scope.$on 'trigger.save', =>
-        @Growl =
-          success: =>
-          error: =>
-            # right, double 'then'
-        @saveForm().then().then => @Growl = growl
-
-
-
-    updateCriteriaOptionTypes: ->
-      set = @criteriaTypeDef.getOptionsForTypes()
-      @$scope.criteriaOptionTypes.length = 0
-      for opt in set
-        @$scope.criteriaOptionTypes.push(opt)
-
-      set = @actionsTypeDef.getOptionsForTypes([], {dynamicOptions: @customActions})
-      @$scope.actionOptionTypes.length = 0
-      for opt in set
-        @$scope.actionOptionTypes.push(opt)
+      const growl = this.Growl;
+      // we need to suppress alerts when process initiated by this event
+      return this.$scope.$on('trigger.save', () => {
+        this.Growl = {
+          success: () => {},
+          error: () => {}
+        };
+            // right, double 'then'
+        return this.saveForm().then().then(() => { return this.Growl = growl; });
+      });
+    }
 
 
 
-    initialLoad: ->
-      loadData = null
-      promise = @escData.loadEditSpecialEscalation('satisfaction', 0).then (data) =>
-        loadData = data
+    updateCriteriaOptionTypes() {
+      let set = this.criteriaTypeDef.getOptionsForTypes();
+      this.$scope.criteriaOptionTypes.length = 0;
+      for (var opt of Array.from(set)) {
+        this.$scope.criteriaOptionTypes.push(opt);
+      }
 
-      promise2 = @criteriaTypeDef.loadDataOptions()
-      promise3 = @actionsTypeDef.loadDataOptions()
-      promise4 = @Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then (result) =>
-        @customActions = result.data.customActions.action_defs
-      promises = [promise, promise2, promise3, promise4]
-
-      @$q.all(promises).then =>
-        @$timeout(=>
-          @updateCriteriaOptionTypes()
-          @$timeout(=>
-            @esc  = loadData.escalation
-            @form = loadData.form
-
-            @$scope.$watch(
-              =>
-                @$scope.settings?.satisfaction_enabled && @esc.is_enabled
-              (val) =>
-                return if undefined == val
-                @escData.saveEnabledStateById @esc.id, @$scope.$parent?.settings?.satisfaction_enabled && @esc.is_enabled
-            )
-          )
-        )
+      set = this.actionsTypeDef.getOptionsForTypes([], {dynamicOptions: this.customActions});
+      this.$scope.actionOptionTypes.length = 0;
+      return (() => {
+        const result = [];
+        for (opt of Array.from(set)) {
+          result.push(this.$scope.actionOptionTypes.push(opt));
+        }
+        return result;
+      })();
+    }
 
 
 
-  Admin_TicketEscalations_Ctrl_EditSatisfaction.EXPORT_CTRL()
+    initialLoad() {
+      let loadData = null;
+      const promise = this.escData.loadEditSpecialEscalation('satisfaction', 0).then(data => {
+        return loadData = data;
+      });
+
+      const promise2 = this.criteriaTypeDef.loadDataOptions();
+      const promise3 = this.actionsTypeDef.loadDataOptions();
+      const promise4 = this.Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then(result => {
+        return this.customActions = result.data.customActions.action_defs;
+      });
+      const promises = [promise, promise2, promise3, promise4];
+
+      return this.$q.all(promises).then(() => {
+        return this.$timeout(() => {
+          this.updateCriteriaOptionTypes();
+          return this.$timeout(() => {
+            this.esc  = loadData.escalation;
+            this.form = loadData.form;
+
+            return this.$scope.$watch(
+              () => {
+                return (this.$scope.settings != null ? this.$scope.settings.satisfaction_enabled : undefined) && this.esc.is_enabled;
+              },
+              val => {
+                if (undefined === val) { return; }
+                return this.escData.saveEnabledStateById(this.esc.id, __guard__(this.$scope.$parent != null ? this.$scope.$parent.settings : undefined, x => x.satisfaction_enabled) && this.esc.is_enabled);
+            });
+          });
+        });
+      });
+    }
+  }
+  Admin_TicketEscalations_Ctrl_EditSatisfaction.initClass();
+
+
+
+  return Admin_TicketEscalations_Ctrl_EditSatisfaction.EXPORT_CTRL();
+});
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}

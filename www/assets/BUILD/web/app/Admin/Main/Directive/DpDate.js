@@ -1,36 +1,47 @@
-define ['moment'], (moment)->
-  ###
-    # Description
-    # -----------
-    #
-    # This converts model datetime from UTC to local timezone when rendered and back when saved
-    #
-    ###
-  Admin_Main_Directive_DpDate = ['DpDateService', '$parse', (ds, $parse) ->
-    return {
-      restrict: 'A'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['moment'], function(moment){
+  /*
+    * Description
+    * -----------
+    *
+    * This converts model datetime from UTC to local timezone when rendered and back when saved
+    *
+    */
+  const Admin_Main_Directive_DpDate = ['DpDateService', '$parse', (ds, $parse) =>
+    ({
+      restrict: 'A',
       scope: {
         dpDate: "=dpDate"
       },
-      link: (scope, el, attr) ->
-        format = attr.format || "fulltime"
+      link(scope, el, attr) {
+        const format = attr.format || "fulltime";
 
-        update = ->
-          datestr = scope.dpDate
-          result  = null
+        const update = function() {
+          const datestr = scope.dpDate;
+          let result  = null;
 
-          if datestr
-            result = ds.format(datestr, format)
+          if (datestr) {
+            result = ds.format(datestr, format);
+          }
 
-          if result
-            el.text(ds.format(datestr, format))
-          else if datestr
-            el.text(datestr)
+          if (result) {
+            return el.text(ds.format(datestr, format));
+          } else if (datestr) {
+            return el.text(datestr);
+          }
+        };
 
-        update()
+        update();
 
-        scope.$watch('dpDate', -> update())
-    }
-  ]
+        return scope.$watch('dpDate', () => update());
+      }
+    })
+  
+  ];
 
-  return Admin_Main_Directive_DpDate
+  return Admin_Main_Directive_DpDate;
+});

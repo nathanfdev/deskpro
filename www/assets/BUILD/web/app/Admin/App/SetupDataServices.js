@@ -1,4 +1,9 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
 	'Admin/Main/DataService/EntityManager',
 
 	'Admin/FeedbackStatuses/DataService/FeedbackStatuses',
@@ -8,7 +13,7 @@ define [
 	'Admin/Brand/DataService/Brands',
 	'Admin/ChannelFacebook/DataService/FacebookPages',
 	'Admin/TicketAccounts/DataService/TicketAccounts',
-	'DeskPRO/Service/LabelDefinition'
+	'DeskPRO/Service/LabelDefinition',
 
 	'Admin/OptionBuilder/TypesDef/TicketCriteria',
 	'Admin/OptionBuilder/TypesDef/TicketActions',
@@ -24,63 +29,52 @@ define [
 	Admin_Brand_DataService_Brands,
 	Admin_ChannelFacebook_DataService_FacebookPages,
 	Admin_TicketAccounts_DataService_TicketAccounts,
-	DeskPRO_Service_LabelDefinition
+	DeskPRO_Service_LabelDefinition,
 
 	Admin_OptionBuilder_TypesDef_TicketCriteria,
 	Admin_OptionBuilder_TypesDef_TicketActions,
 	Admin_OptionBuilder_TypesDef_TicketFilter,
 
 	Admin_Main_Service_DataServiceManager
-) ->
-	return (Module) ->
-		Module.service('em', [ ->
-			return new Admin_Main_DataService_EntityManager()
-		])
+) =>
+	function(Module) {
+		Module.service('em', [ () => new Admin_Main_DataService_EntityManager()
+		]);
 
-		Module.service('FeedbackStatusesData', ['em', 'Api', '$q', (em, Api, $q) ->
-			return new Admin_FeedbackStatuses_DataService_FeedbackStatuses(em, Api, $q)
-		])
+		Module.service('FeedbackStatusesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_FeedbackStatuses_DataService_FeedbackStatuses(em, Api, $q)
+		]);
 	
-		Module.service('FeedbackTypesData', ['em', 'Api', '$q', (em, Api, $q) ->
-			return new Admin_FeedbackTypes_DataService_FeedbackTypes(em, Api, $q)
-		])
+		Module.service('FeedbackTypesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_FeedbackTypes_DataService_FeedbackTypes(em, Api, $q)
+		]);
 	
-		Module.service('FeedbackCategoriesData', ['em', 'Api', '$q', (em, Api, $q) ->
-			return new Admin_FeedbackCategories_DataService_FeedbackCategories(em, Api, $q)
-		])
+		Module.service('FeedbackCategoriesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_FeedbackCategories_DataService_FeedbackCategories(em, Api, $q)
+		]);
 
-		Module.service('SmsAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->
-			return new Admin_ChannelSms_DataService_SmsAccounts(em, Api, $q)
-		])
+		Module.service('SmsAccountsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_ChannelSms_DataService_SmsAccounts(em, Api, $q)
+		]);
 
-		Module.service('BrandData', ['em', 'Api', '$q', (em, Api, $q) ->
-			return new Admin_Brand_DataService_Brands(em, Api, $q)
-		])
+		Module.service('BrandData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_Brand_DataService_Brands(em, Api, $q)
+		]);
 
-		Module.service('FacebookPagesData', ['em', 'Api', '$q', (em, Api, $q) ->
-			return new Admin_ChannelFacebook_DataService_FacebookPages(em, Api, $q)
-		])
+		Module.service('FacebookPagesData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_ChannelFacebook_DataService_FacebookPages(em, Api, $q)
+		]);
 	
-		Module.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) ->
-			return new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
-		])
+		Module.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
+		]);
 	
-		Module.factory('dpObTypesDefTicketCriteria', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
-			return new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager)
-		])
+		Module.factory('dpObTypesDefTicketCriteria', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) => new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager)
+		]);
 	
-		Module.factory('dpObTypesDefTicketActions', [ '$q', 'Api', 'Api2', 'dpTemplateManager', ($q, Api, Api2, dpTemplateManager) ->
-			return new Admin_OptionBuilder_TypesDef_TicketActions($q, Api, Api2, dpTemplateManager)
-		])
+		Module.factory('dpObTypesDefTicketActions', [ '$q', 'Api', 'Api2', 'dpTemplateManager', ($q, Api, Api2, dpTemplateManager) => new Admin_OptionBuilder_TypesDef_TicketActions($q, Api, Api2, dpTemplateManager)
+		]);
 	
-		Module.factory('dpObTypesDefTicketFilter', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) ->
-			return new Admin_OptionBuilder_TypesDef_TicketFilter($q, Api, dpTemplateManager)
-		])
+		Module.factory('dpObTypesDefTicketFilter', [ '$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) => new Admin_OptionBuilder_TypesDef_TicketFilter($q, Api, dpTemplateManager)
+		]);
 	
-		Module.factory('DataService', [ '$injector', ($injector) ->
-			return new Admin_Main_Service_DataServiceManager($injector)
-		])
+		Module.factory('DataService', [ '$injector', $injector => new Admin_Main_Service_DataServiceManager($injector)
+		]);
 
-		Module.service('LabelDefinition', ['Api', '$q', (Api, $q) ->
-			return new DeskPRO_Service_LabelDefinition($q, Api.sendGet('/labels/definitions'))
-		])
+		return Module.service('LabelDefinition', ['Api', '$q', (Api, $q) => new DeskPRO_Service_LabelDefinition($q, Api.sendGet('/labels/definitions'))
+		]);
+	}
+);

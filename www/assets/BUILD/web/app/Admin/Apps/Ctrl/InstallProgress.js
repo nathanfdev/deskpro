@@ -1,16 +1,24 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strings) ->
-  class Admin_Apps_Ctrl_InstallProgress extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Apps_Ctrl_InstallProgress'
-    @CTRL_AS   = 'EmailTemplateEditor'
-    @DEPS      = ['$modalInstance', '$timeout', 'Api', 'pack', 'setting_values', 'usersourceType']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
+  class Admin_Apps_Ctrl_InstallProgress extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Apps_Ctrl_InstallProgress';
+      this.CTRL_AS   = 'EmailTemplateEditor';
+      this.DEPS      = ['$modalInstance', '$timeout', 'Api', 'pack', 'setting_values', 'usersourceType'];
+    }
 
-    init: ->
-      @$scope.pack = @pack
-      @isDone = false
-      @info = null
+    init() {
+      this.$scope.pack = this.pack;
+      this.isDone = false;
+      this.info = null;
 
-      @step = 0
-      @steps = [
+      this.step = 0;
+      this.steps = [
         {step: -1, percent: 0, timeout: 0},
         {step: 0, percent: 2, timeout: 1200},
         {step: 1, percent: 12, timeout: 1500},
@@ -18,55 +26,69 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
         {step: 3, percent: 60, timeout: 1500, wait: true},
         {step: 4, percent: 95, timeout: 1000 },
         {step: 5, percent: 100},
-      ]
+      ];
 
-      @stepTimeout = null
-      @incrementStep()
+      this.stepTimeout = null;
+      this.incrementStep();
 
-      @$scope.done = =>
-        @closeForSuccess(@info)
+      this.$scope.done = () => {
+        return this.closeForSuccess(this.info);
+      };
 
-      url = "/apps/packages/#{@pack.name}"
-      if @usersourceType then url += '?usersource_type=' + @usersourceType
-      @Api.sendPutJson(url, {settings: @setting_values}).success( (info) =>
-        @markAsDone(info)
-      , (info) =>
-        @closeForError(info)
-      )
+      let url = `/apps/packages/${this.pack.name}`;
+      if (this.usersourceType) { url += `?usersource_type=${this.usersourceType}`; }
+      return this.Api.sendPutJson(url, {settings: this.setting_values}).success( info => {
+        return this.markAsDone(info);
+      }
+      , info => {
+        return this.closeForError(info);
+      });
+    }
 
-    incrementStep: ->
-      currentStep = @steps[@step]
-      if currentStep.wait and !@isDone
-        @beginStepTimeout(100)
-        return
+    incrementStep() {
+      const currentStep = this.steps[this.step];
+      if (currentStep.wait && !this.isDone) {
+        this.beginStepTimeout(100);
+        return;
+      }
 
-      @step += 1
-      if not @steps[@step]
-        @$scope.stepsDone = true
-        return
+      this.step += 1;
+      if (!this.steps[this.step]) {
+        this.$scope.stepsDone = true;
+        return;
+      }
 
-      nextStep = @steps[@step]
-      @$scope.stepId = nextStep.step
-      @$scope.perc   = nextStep.percent
-      @beginStepTimeout(nextStep.timeout)
+      const nextStep = this.steps[this.step];
+      this.$scope.stepId = nextStep.step;
+      this.$scope.perc   = nextStep.percent;
+      return this.beginStepTimeout(nextStep.timeout);
+    }
 
-    beginStepTimeout: (ms) ->
-      @$timeout.cancel(@stepTimeout) if @stepTimeout
-      @stepTimeout = @$timeout(=>
-        @stepTimeout = null
-        @incrementStep()
-      , ms)
+    beginStepTimeout(ms) {
+      if (this.stepTimeout) { this.$timeout.cancel(this.stepTimeout); }
+      return this.stepTimeout = this.$timeout(() => {
+        this.stepTimeout = null;
+        return this.incrementStep();
+      }
+      , ms);
+    }
 
-    markAsDone: (info) ->
-      @isDone = true
-      @info = info
+    markAsDone(info) {
+      this.isDone = true;
+      return this.info = info;
+    }
 
-    closeForError: (info) ->
-      @$timeout.cancel(@stepTimeout) if @stepTimeout
-      @$modalInstance.dismiss(info)
+    closeForError(info) {
+      if (this.stepTimeout) { this.$timeout.cancel(this.stepTimeout); }
+      return this.$modalInstance.dismiss(info);
+    }
 
-    closeForSuccess: (info) ->
-      @$timeout.cancel(@stepTimeout) if @stepTimeout
-      @$modalInstance.close(info)
+    closeForSuccess(info) {
+      if (this.stepTimeout) { this.$timeout.cancel(this.stepTimeout); }
+      return this.$modalInstance.close(info);
+    }
+  }
+  Admin_Apps_Ctrl_InstallProgress.initClass();
 
-  Admin_Apps_Ctrl_InstallProgress.EXPORT_CTRL()
+  return Admin_Apps_Ctrl_InstallProgress.EXPORT_CTRL();
+});

@@ -1,53 +1,73 @@
-define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
-  class Admin_Languages_Ctrl_TranslateMapModal extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Languages_Ctrl_TranslateMapModal'
-    @CTRL_AS   = 'TranslateModal'
-    @DEPS      = ['$timeout', '$modalInstance', 'phrase_map', 'save_map', 'languages']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
+  class Admin_Languages_Ctrl_TranslateMapModal extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Languages_Ctrl_TranslateMapModal';
+      this.CTRL_AS   = 'TranslateModal';
+      this.DEPS      = ['$timeout', '$modalInstance', 'phrase_map', 'save_map', 'languages'];
+    }
 
-    init: ->
-      @active_lang = null
-      @active_trans = null
-      @hasPendingPromise = false
+    init() {
+      this.active_lang = null;
+      this.active_trans = null;
+      this.hasPendingPromise = false;
 
-      @$scope.dismiss = =>
-        @$modalInstance.dismiss('cancel')
+      this.$scope.dismiss = () => {
+        return this.$modalInstance.dismiss('cancel');
+      };
 
-      @$scope.save = =>
-        if @active_lang
-          @phrase_map[@active_lang] = @active_trans
+      this.$scope.save = () => {
+        if (this.active_lang) {
+          this.phrase_map[this.active_lang] = this.active_trans;
 
-          @save_map()
-          @$modalInstance.close()
+          this.save_map();
+          return this.$modalInstance.close();
+        }
+      };
 
-      @$scope.$watch(=>
-        return @active_lang
-      , (newLangId, oldLangId) =>
-        if not oldLangId then return
+      this.$scope.$watch(() => {
+        return this.active_lang;
+      }
+      , (newLangId, oldLangId) => {
+        if (!oldLangId) { return; }
 
-        @phrase_map[oldLangId] ||= {}
-        @phrase_map[oldLangId] = @active_trans
+        if (!this.phrase_map[oldLangId]) { this.phrase_map[oldLangId] = {}; }
+        this.phrase_map[oldLangId] = this.active_trans;
 
-        if @phrase_map[newLangId]
-          @active_trans = @phrase_map[newLangId]
-        else
-          @active_trans = ''
-      )
+        if (this.phrase_map[newLangId]) {
+          return this.active_trans = this.phrase_map[newLangId];
+        } else {
+          return this.active_trans = '';
+        }
+      });
 
-      @$scope.$watch(=>
-        return @active_trans
-      , =>
-        if not @active_lang then return
-        @phrase_map[@active_lang] = @active_trans
-      )
+      return this.$scope.$watch(() => {
+        return this.active_trans;
+      }
+      , () => {
+        if (!this.active_lang) { return; }
+        return this.phrase_map[this.active_lang] = this.active_trans;
+      });
+    }
 
-    initialLoad: ->
-      @ctrl_is_loading = false
-      @langs = @languages
+    initialLoad() {
+      this.ctrl_is_loading = false;
+      this.langs = this.languages;
 
-      @active_lang = @langs[0].id
-      if @phrase_map[@active_lang]
-        @active_trans = @phrase_map[@active_lang]
-      else
-        @active_trans = null
+      this.active_lang = this.langs[0].id;
+      if (this.phrase_map[this.active_lang]) {
+        return this.active_trans = this.phrase_map[this.active_lang];
+      } else {
+        return this.active_trans = null;
+      }
+    }
+  }
+  Admin_Languages_Ctrl_TranslateMapModal.initClass();
 
-  Admin_Languages_Ctrl_TranslateMapModal.EXPORT_CTRL()
+  return Admin_Languages_Ctrl_TranslateMapModal.EXPORT_CTRL();
+});

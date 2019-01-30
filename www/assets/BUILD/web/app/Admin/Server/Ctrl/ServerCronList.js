@@ -1,19 +1,32 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_ServerCron_Ctrl_List extends Admin_Ctrl_Base
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_ServerCron_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+  
+      this.CTRL_ID   = 'Admin_ServerCron_Ctrl_List';
+      this.CTRL_AS   = 'ListCtrl';
+      this.DEPS      = [];
+    }
 
-    @CTRL_ID   = 'Admin_ServerCron_Ctrl_List'
-    @CTRL_AS   = 'ListCtrl'
-    @DEPS      = []
+    init() {
+      return this.server_cron = null;
+    }
 
-    init: ->
-      @server_cron = null
+    initialLoad() {
+      const data_promise = this.Api.sendGet('/server_cron').then( res => {
 
-    initialLoad: ->
-      data_promise = @Api.sendGet('/server_cron').then( (res) =>
+        return this.server_cron = res.data.server_cron;
+      });
 
-        @server_cron = res.data.server_cron
-      )
+      return this.$q.all([data_promise]);
+    }
+  }
+  Admin_ServerCron_Ctrl_List.initClass();
 
-      return @$q.all([data_promise])
-
-  Admin_ServerCron_Ctrl_List.EXPORT_CTRL()
+  return Admin_ServerCron_Ctrl_List.EXPORT_CTRL();
+});

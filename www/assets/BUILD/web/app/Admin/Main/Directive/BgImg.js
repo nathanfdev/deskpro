@@ -1,25 +1,33 @@
-define ->
-  ###
-    # Description
-    # -----------
-    #
-    # This just adds a style background-image to an element using the evaluated value.
-    #
-    # Example
-    # -------
-    # <span bg-img="{{agent.picture_url}}"></span>
-  ###
-  Admin_Main_Directive_BgImg = [ ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  /*
+    * Description
+    * -----------
+    *
+    * This just adds a style background-image to an element using the evaluated value.
+    *
+    * Example
+    * -------
+    * <span bg-img="{{agent.picture_url}}"></span>
+  */
+  const Admin_Main_Directive_BgImg = [ () =>
+    ({
       restrict: 'A',
       scope: {
         'bgImg': '&'
       },
-      link: (scope, element, attrs) ->
-        element.css({
-          'background-image': 'url("' + scope.$eval(scope.bgImg) + '")'
-        })
-    }
-  ]
+      link(scope, element, attrs) {
+        return element.css({
+          'background-image': `url("${scope.$eval(scope.bgImg)}")`
+        });
+      }
+    })
+  
+  ];
 
-  return Admin_Main_Directive_BgImg
+  return Admin_Main_Directive_BgImg;
+});

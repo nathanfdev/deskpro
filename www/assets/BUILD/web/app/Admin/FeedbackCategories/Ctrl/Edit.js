@@ -1,116 +1,140 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_FeedbackCategories_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_FeedbackCategories_Ctrl_Edit'
-    @CTRL_AS = 'FeedbackCategoriesEdit'
-    @DEPS    = ['Api', 'Growl', 'FeedbackCategoriesData', '$stateParams', '$modal']
+) {
+  class Admin_FeedbackCategories_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_FeedbackCategories_Ctrl_Edit';
+      this.CTRL_AS = 'FeedbackCategoriesEdit';
+      this.DEPS    = ['Api', 'Growl', 'FeedbackCategoriesData', '$stateParams', '$modal'];
+    }
 
-    init: ->
+    init() {
 
-      @feedback_category = {}
-      @feedback_categories_parent_list = {}
+      this.feedback_category = {};
+      this.feedback_categories_parent_list = {};
 
-      @addManagedListener(@FeedbackCategoriesData.recs, 'changed', =>
-        @feedback_categories_parent_list = @FeedbackCategoriesData.getListOfParents(@feedback_category)
-        @ngApply()
-      )
-
-      return
-
-    initialLoad: ->
-      requests = [
-        @FeedbackCategoriesData.loadList(),
-        if @$stateParams.id
-          @Api.sendDataGet({
-            feedback_category: '/feedback_categories/' + @$stateParams.id
-          })
-      ]
-
-      promise = @$q.all(requests).then((result) =>
-        if @$stateParams.id
-          @feedback_category = result[1].data.feedback_category.feedback_category
-        @feedback_categories_parent_list = @FeedbackCategoriesData.getListOfParents @feedback_category
-      )
-
-      return promise
-
-    ###
-      # Saves the current form
-      #
-      # @return {promise}
-    ###
-    saveForm: ->
-
-      @feedback_category.brand = @$stateParams.brandId
-
-      if not @$scope.form_props.$valid
-        return
-
-      is_new = !@feedback_category.id
-
-      @startSpinner('saving_feedback_category')
-
-      if is_new
-        promise = @Api.sendPutJson('/feedback_categories', {feedback_category: @feedback_category})
-      else
-        promise = @Api.sendPostJson('/feedback_categories/' + @feedback_category.id, {feedback_category: @feedback_category})
-
-      promise.success((result) =>
-
-        @feedback_category.id = result.id
-        @feedback_category.brand = result.brand
-
-        @stopSpinner('saving_feedback_category', true).then(=>
-          @Growl.success(@getRegisteredMessage('saved_feedback_category'))
-        )
-
-        @FeedbackCategoriesData.updateModel(@feedback_category)
-
-        @skipDirtyState()
-
-        if is_new
-          @$state.go('portal.feedback_categories.gocreate')
-        else
-          @$state.go('portal.feedback_categories')
-      )
-
-      promise.error((info, code) =>
-        @stopSpinner('saving_feedback_category', true)
-        @applyErrorResponseToView(info)
-      )
-
-      return promise
-
-
-
-    showDelete: ->
-      id = @feedback_category?.id
-      return if !id
-
-      if @FeedbackCategoriesData.hasChildren @feedback_category
-        return @showAlert 'You cannot delete a category with sub-categories. Move or delete the sub-categories first.'
-
-      list = @FeedbackCategoriesData.getListOfMovables @feedback_category
-
-      deleteStart = (move_to) =>
-        @Api.sendDelete("/feedback_categories/#{id}?move_to=#{move_to || 0}").then =>
-          @FeedbackCategoriesData.remove id
-          @$state.go 'portal.feedback_categories'
-
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('FeedbackCategories/delete-modal.html'),
-        controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.move_feedback_categories_list = list
-          $scope.model = {move_to: list[0]?.id}
-          $scope.dismiss = -> $modalInstance.dismiss()
-          $scope.confirm = ->
-            deleteStart($scope.model.move_to).then -> $modalInstance.dismiss()
-        ]
+      this.addManagedListener(this.FeedbackCategoriesData.recs, 'changed', () => {
+        this.feedback_categories_parent_list = this.FeedbackCategoriesData.getListOfParents(this.feedback_category);
+        return this.ngApply();
       });
 
+    }
+
+    initialLoad() {
+      const requests = [
+        this.FeedbackCategoriesData.loadList(),
+        this.$stateParams.id ?
+          this.Api.sendDataGet({
+            feedback_category: `/feedback_categories/${this.$stateParams.id}`
+          }) : undefined
+      ];
+
+      const promise = this.$q.all(requests).then(result => {
+        if (this.$stateParams.id) {
+          this.feedback_category = result[1].data.feedback_category.feedback_category;
+        }
+        return this.feedback_categories_parent_list = this.FeedbackCategoriesData.getListOfParents(this.feedback_category);
+      });
+
+      return promise;
+    }
+
+    /*
+      * Saves the current form
+      *
+      * @return {promise}
+    */
+    saveForm() {
+
+      let promise;
+      this.feedback_category.brand = this.$stateParams.brandId;
+
+      if (!this.$scope.form_props.$valid) {
+        return;
+      }
+
+      const is_new = !this.feedback_category.id;
+
+      this.startSpinner('saving_feedback_category');
+
+      if (is_new) {
+        promise = this.Api.sendPutJson('/feedback_categories', {feedback_category: this.feedback_category});
+      } else {
+        promise = this.Api.sendPostJson(`/feedback_categories/${this.feedback_category.id}`, {feedback_category: this.feedback_category});
+      }
+
+      promise.success(result => {
+
+        this.feedback_category.id = result.id;
+        this.feedback_category.brand = result.brand;
+
+        this.stopSpinner('saving_feedback_category', true).then(() => {
+          return this.Growl.success(this.getRegisteredMessage('saved_feedback_category'));
+        });
+
+        this.FeedbackCategoriesData.updateModel(this.feedback_category);
+
+        this.skipDirtyState();
+
+        if (is_new) {
+          return this.$state.go('portal.feedback_categories.gocreate');
+        } else {
+          return this.$state.go('portal.feedback_categories');
+        }
+      });
+
+      promise.error((info, code) => {
+        this.stopSpinner('saving_feedback_category', true);
+        return this.applyErrorResponseToView(info);
+      });
+
+      return promise;
+    }
 
 
-  Admin_FeedbackCategories_Ctrl_Edit.EXPORT_CTRL()
+
+    showDelete() {
+      let inst;
+      const id = this.feedback_category != null ? this.feedback_category.id : undefined;
+      if (!id) { return; }
+
+      if (this.FeedbackCategoriesData.hasChildren(this.feedback_category)) {
+        return this.showAlert('You cannot delete a category with sub-categories. Move or delete the sub-categories first.');
+      }
+
+      const list = this.FeedbackCategoriesData.getListOfMovables(this.feedback_category);
+
+      const deleteStart = move_to => {
+        return this.Api.sendDelete(`/feedback_categories/${id}?move_to=${move_to || 0}`).then(() => {
+          this.FeedbackCategoriesData.remove(id);
+          return this.$state.go('portal.feedback_categories');
+        });
+      };
+
+      return inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('FeedbackCategories/delete-modal.html'),
+        controller:  ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.move_feedback_categories_list = list;
+          $scope.model = {move_to: (list[0] != null ? list[0].id : undefined)};
+          $scope.dismiss = () => $modalInstance.dismiss();
+          return $scope.confirm = () => deleteStart($scope.model.move_to).then(() => $modalInstance.dismiss());
+        }
+        ]
+      });
+    }
+  }
+  Admin_FeedbackCategories_Ctrl_Edit.initClass();
+
+
+
+  return Admin_FeedbackCategories_Ctrl_Edit.EXPORT_CTRL();
+});

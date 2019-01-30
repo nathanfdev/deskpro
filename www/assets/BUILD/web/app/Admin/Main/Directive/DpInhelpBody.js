@@ -1,37 +1,48 @@
-define ->
-  ###
-    # Description
-    # -----------
-    #
-    # This is the body portion of dp-inhelp-switch. See that directive for more information.
-    ###
-  Admin_Main_Directive_DpInhelpBody = [ 'InhelpState', '$rootScope', (InhelpState, $rootScope) ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  /*
+    * Description
+    * -----------
+    *
+    * This is the body portion of dp-inhelp-switch. See that directive for more information.
+    */
+  const Admin_Main_Directive_DpInhelpBody = [ 'InhelpState', '$rootScope', (InhelpState, $rootScope) =>
+    ({
       restrict: 'A',
-      link: (scope, element, attrs) ->
-        id = attrs['dpInhelpBody'].replace(/\./g, '_')
+      link(scope, element, attrs) {
+        const id = attrs['dpInhelpBody'].replace(/\./g, '_');
 
-        bodyId = 'dp_inhelp_' + id
-        element.attr('id', bodyId).addClass('inhelp-body')
+        const bodyId = `dp_inhelp_${id}`;
+        element.attr('id', bodyId).addClass('inhelp-body');
 
-        closeBtn = angular.element('<button class="inhelp-body-closebtn"><i></i></button>')
-        element.prepend(closeBtn)
+        const closeBtn = angular.element('<button class="inhelp-body-closebtn"><i></i></button>');
+        element.prepend(closeBtn);
 
-        closeBtn.on('click', (ev) ->
-          ev.preventDefault()
-          scope.$apply(->
-            if $rootScope.dp_ctrl_inhelp_state?[id]
-              $rootScope.dp_ctrl_inhelp_state[id] = false
-            else
-              $rootScope.dp_ctrl_inhelp_state?[id] = true
-          )
-        )
+        closeBtn.on('click', function(ev) {
+          ev.preventDefault();
+          return scope.$apply(function() {
+            if (($rootScope.dp_ctrl_inhelp_state != null ? $rootScope.dp_ctrl_inhelp_state[id] : undefined)) {
+              return $rootScope.dp_ctrl_inhelp_state[id] = false;
+            } else {
+              return ($rootScope.dp_ctrl_inhelp_state != null ? $rootScope.dp_ctrl_inhelp_state[id] = true : undefined);
+            }
+          });
+        });
 
-        if $rootScope.dp_ctrl_inhelp_state?[id]
-          element.show()
-        else
-          element.hide()
-    }
-  ]
+        if (($rootScope.dp_ctrl_inhelp_state != null ? $rootScope.dp_ctrl_inhelp_state[id] : undefined)) {
+          return element.show();
+        } else {
+          return element.hide();
+        }
+      }
+    })
+  
+  ];
 
-  return Admin_Main_Directive_DpInhelpBody
+  return Admin_Main_Directive_DpInhelpBody;
+});

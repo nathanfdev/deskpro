@@ -1,117 +1,141 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/CustomFields/FieldFormMapper',
-], (
+], function(
   BaseListEdit,
   FieldFormMapper
-)  ->
-  class BillingFields extends BaseListEdit
-    @$inject = ['Api', '$q']
+)  {
+  let BillingFields;
+  return BillingFields = (function() {
+    BillingFields = class BillingFields extends BaseListEdit {
+      static initClass() {
+        this.$inject = ['Api', '$q'];
+      }
 
-    init: ->
+      init() {}
 
-    _doLoadList: ->
+      _doLoadList() {
 
-      deferred = @$q.defer()
+        const deferred = this.$q.defer();
 
-      @Api.sendDataGet([
-        '/billing_fields'
-      ]).then( (res) =>
+        this.Api.sendDataGet([
+          '/billing_fields'
+        ]).then( res => {
 
-        custom_fields = []
-        for f in res.data.api_billing_fields.custom_fields
-          custom_fields.push(f)
+          const custom_fields = [];
+          for (let f of Array.from(res.data.api_billing_fields.custom_fields)) {
+            custom_fields.push(f);
+          }
 
-        deferred.resolve(custom_fields)
-      )
+          return deferred.resolve(custom_fields);
+        });
 
-      return deferred.promise
-
-
-    ###
-    # Update display orders
-    #
-    # @param {Array} Array of IDs in order
-    # @return {promise}
-    ###
-    saveDisplayOrder: (display_orders) ->
-      @Api.sendPostJson('/billing_fields/display-order', {display_orders: display_orders})
+        return deferred.promise;
+      }
 
 
-    ###
-      # Remove a field
-      #
-      # @param {Integer} id Filter id
-      # @return {promise}
-    ###
-    deleteFieldById: (id) ->
-      promise = @Api.sendDelete('/billing_fields/' + id).then(=>
-        @removeListModelById(id)
-      )
-      return promise
+      /*
+       * Update display orders
+       *
+       * @param {Array} Array of IDs in order
+       * @return {promise}
+       */
+      saveDisplayOrder(display_orders) {
+        return this.Api.sendPostJson('/billing_fields/display-order', {display_orders});
+      }
 
 
-    ###
-      # Get all data needed for the edit field page
-      #
-      # @param {Integer} id Filter id
-      # @return {promise}
-    ###
-    loadEditFieldData: (id) ->
-      deferred = @$q.defer()
+      /*
+        * Remove a field
+        *
+        * @param {Integer} id Filter id
+        * @return {promise}
+      */
+      deleteFieldById(id) {
+        const promise = this.Api.sendDelete(`/billing_fields/${id}`).then(() => {
+          return this.removeListModelById(id);
+        });
+        return promise;
+      }
 
-      if id
-        @Api.sendGet("/billing_fields/#{id}").then( (result) =>
-          data = {}
-          data.field = result.data.field
-          data.field_type = result.data.field.type_name
-          data.form = @getFormMapper().getFormFromModel(data.field)
-          deferred.resolve(data)
-        )
-      else
-        data = {
-          field: {},
-          field_type: '0',
-          form: @getFormMapper().getFormFromModel(null)
+
+      /*
+        * Get all data needed for the edit field page
+        *
+        * @param {Integer} id Filter id
+        * @return {promise}
+      */
+      loadEditFieldData(id) {
+        const deferred = this.$q.defer();
+
+        if (id) {
+          this.Api.sendGet(`/billing_fields/${id}`).then( result => {
+            const data = {};
+            data.field = result.data.field;
+            data.field_type = result.data.field.type_name;
+            data.form = this.getFormMapper().getFormFromModel(data.field);
+            return deferred.resolve(data);
+          });
+        } else {
+          const data = {
+            field: {},
+            field_type: '0',
+            form: this.getFormMapper().getFormFromModel(null)
+          };
+          deferred.resolve(data);
         }
-        deferred.resolve(data)
 
-      return deferred.promise
-
-
-    ###
-      # Get the form mapper
-      #
-      # @return {FieldFormMapper}
-    ###
-    getFormMapper: ->
-      if @formMapper then return @formMapper
-      @formMapper = new FieldFormMapper()
-      return @formMapper
+        return deferred.promise;
+      }
 
 
-    ###
-      # Saves a form model and applies the form model to the field model
-      # once finished.
-      #
-      # @param {Object} fieldModel The field model
-      # @param {Object} formModel  The model representing the form
-      # @return {promise}
-    ###
-    saveFormModel: (fieldModel, formModel) ->
-      mapper = @getFormMapper()
-      postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel)
+      /*
+        * Get the form mapper
+        *
+        * @return {FieldFormMapper}
+      */
+      getFormMapper() {
+        if (this.formMapper) { return this.formMapper; }
+        this.formMapper = new FieldFormMapper();
+        return this.formMapper;
+      }
 
-      if fieldModel.id
-        promise = @Api.sendPostJson('/billing_fields/' + fieldModel.id, postData)
-      else
-        promise = @Api.sendPutJson('/billing_fields', postData).success( (data) ->
-          fieldModel.id = data.field_id
-        )
 
-      promise.success(=>
-        mapper.applyFormToModel(fieldModel, formModel)
-        @mergeDataModel(fieldModel)
-      )
+      /*
+        * Saves a form model and applies the form model to the field model
+        * once finished.
+        *
+        * @param {Object} fieldModel The field model
+        * @param {Object} formModel  The model representing the form
+        * @return {promise}
+      */
+      saveFormModel(fieldModel, formModel) {
+        let promise;
+        const mapper = this.getFormMapper();
+        const postData = mapper.getPostDataFromForm(fieldModel.type_name, formModel);
 
-      return promise
+        if (fieldModel.id) {
+          promise = this.Api.sendPostJson(`/billing_fields/${fieldModel.id}`, postData);
+        } else {
+          promise = this.Api.sendPutJson('/billing_fields', postData).success( data => fieldModel.id = data.field_id);
+        }
+
+        promise.success(() => {
+          mapper.applyFormToModel(fieldModel, formModel);
+          return this.mergeDataModel(fieldModel);
+        });
+
+        return promise;
+      }
+    };
+    BillingFields.initClass();
+    return BillingFields;
+  })();
+});

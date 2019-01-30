@@ -1,171 +1,227 @@
-define ['DeskPRO/Util/Arrays'], (Arrays) ->
-  class DashboardWidgetService
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Arrays'], function(Arrays) {
+  let DashboardWidgetService;
+  return (DashboardWidgetService = class DashboardWidgetService {
 
-    constructor: (Api, Api2, $q) ->
-      @Api = Api
-      @Api2 = Api2
-      @$q = $q
-      @data = {}
-      @storage = {reports: [], labels: [], reportsByLabels: {}}
-      @groupParams = []
-      @widgets = {}
-      @widgetsResults = {}
+    constructor(Api, Api2, $q) {
+      this.Api = Api;
+      this.Api2 = Api2;
+      this.$q = $q;
+      this.data = {};
+      this.storage = {reports: [], labels: [], reportsByLabels: {}};
+      this.groupParams = [];
+      this.widgets = {};
+      this.widgetsResults = {};
+    }
 
-    loadGroupParams: () ->
-      @Api2.sendGet('report_widgets/group-params').then (response) =>
-        @groupParams = response.data
+    loadGroupParams() {
+      return this.Api2.sendGet('report_widgets/group-params').then(response => {
+        return this.groupParams = response.data;
+      });
+    }
 
-    getIndexById: (storage, id) ->
-      index = -1
-      index = Arrays.findIndex storage,
-        (v) ->
-          if v? and v.id is id
-            return true
-      return index
+    getIndexById(storage, id) {
+      let index = -1;
+      index = Arrays.findIndex(storage,
+        function(v) {
+          if ((v != null) && (v.id === id)) {
+            return true;
+          }
+      });
+      return index;
+    }
 
-    updateWidgetsSize: (widgets, cols) ->
-      ws = []
-      ws.push widget for widget, i in widgets when widget != 'last' and widget.size_x > cols
-      return ws
+    updateWidgetsSize(widgets, cols) {
+      const ws = [];
+      for (let i = 0; i < widgets.length; i++) { const widget = widgets[i]; if ((widget !== 'last') && (widget.size_x > cols)) { ws.push(widget); } }
+      return ws;
+    }
 
-    getReports: () ->
-      deferred = @$q.defer()
-      if @storage.reports.length == 0
-        @Api2
-          .sendGet "/report_widgets"
-          .then (result) =>
-            @storage.reports = result.data.data
-            @storage.labels = []
-            for report in result.data.data
-              for label in report.labels
-                if @storage.labels.indexOf(label) == -1
-                  @storage.labels.push(label)
-            deferred.resolve @storage
-            return deferred.promise
-      else
-        deferred.resolve @storage
-        return deferred.promise
+    getReports() {
+      const deferred = this.$q.defer();
+      if (this.storage.reports.length === 0) {
+        return this.Api2
+          .sendGet("/report_widgets")
+          .then(result => {
+            this.storage.reports = result.data.data;
+            this.storage.labels = [];
+            for (let report of Array.from(result.data.data)) {
+              for (let label of Array.from(report.labels)) {
+                if (this.storage.labels.indexOf(label) === -1) {
+                  this.storage.labels.push(label);
+                }
+              }
+            }
+            deferred.resolve(this.storage);
+            return deferred.promise;
+        });
+      } else {
+        deferred.resolve(this.storage);
+        return deferred.promise;
+      }
+    }
 
-    isActiveLabel: (storage, label) ->
-      index = -1
-      index = Arrays.findIndex storage,
-        (v) ->
-          return true if v? and v is label
-      if index > 0
-        return true
-      else
-        return false
+    isActiveLabel(storage, label) {
+      let index = -1;
+      index = Arrays.findIndex(storage,
+        function(v) {
+          if ((v != null) && (v === label)) { return true; }
+      });
+      if (index > 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
-    saveWidget: (widget) ->
-      @Api2.sendPutJson \
-        "/dashboard_report_widgets/#{widget.id}",
+    saveWidget(widget) {
+      return this.Api2.sendPutJson( 
+        `/dashboard_report_widgets/${widget.id}`,
         {
-          "size_x":  widget.sizeX
-          "size_y":  widget.sizeY
-          "col":     widget.col
-          "row":     widget.row
-          "title":   widget.title
+          "size_x":  widget.sizeX,
+          "size_y":  widget.sizeY,
+          "col":     widget.col,
+          "row":     widget.row,
+          "title":   widget.title,
           "options": widget.options
-        }
+        });
+    }
 
-    setDashboardService: (service) ->
-      @dashboardService = service
+    setDashboardService(service) {
+      return this.dashboardService = service;
+    }
 
-    addWidget: (report, widget) ->
-      widgetVars = []
-      for name,variable of widget.variables
-        variable.name = name
-        widgetVars.push(variable)
-
-      url = "/dashboard_report_widgets"
-      data = {
-        title: widget.title
-        type: widget.type
-        col: widget.col
-        row: widget.row
-        size_x: widget.sizeX
-        size_y: widget.sizeY
-        report: report.id
-        widget_variables: widgetVars
+    addWidget(report, widget) {
+      const widgetVars = [];
+      for (let name in widget.variables) {
+        const variable = widget.variables[name];
+        variable.name = name;
+        widgetVars.push(variable);
       }
 
-      if widget.widget_id == 'advanced'
-        data.js_code = widget.js_code
-      else
-        data.widget = widget.widget_id
+      const url = "/dashboard_report_widgets";
+      const data = {
+        title: widget.title,
+        type: widget.type,
+        col: widget.col,
+        row: widget.row,
+        size_x: widget.sizeX,
+        size_y: widget.sizeY,
+        report: report.id,
+        widget_variables: widgetVars
+      };
 
-      deferred = @$q.defer()
+      if (widget.widget_id === 'advanced') {
+        data.js_code = widget.js_code;
+      } else {
+        data.widget = widget.widget_id;
+      }
 
-      @Api2
-      .sendPostJson url, data
-      .then (response) =>
-        deferred.resolve(response.data.data)
-      .catch (response) =>
-        deferred.reject(response.data)
+      const deferred = this.$q.defer();
 
-      return deferred.promise
+      this.Api2
+      .sendPostJson(url, data)
+      .then(response => {
+        return deferred.resolve(response.data.data);
+    }).catch(response => {
+        return deferred.reject(response.data);
+      });
+
+      return deferred.promise;
+    }
 
 
-    testWidget: (reportWidget) ->
-      url = "/report_widgets/test/#{reportWidget.id}?include=rendered_result,report_widget&inline_sideloads=1"
-      dataToSend =
-        title:         'test widget'
-        display_types: reportWidget.display_types
-        variables:     reportWidget.variables
-        input_mode:    'form'
+    testWidget(reportWidget) {
+      const url = `/report_widgets/test/${reportWidget.id}?include=rendered_result,report_widget&inline_sideloads=1`;
+      const dataToSend = {
+        title:         'test widget',
+        display_types: reportWidget.display_types,
+        variables:     reportWidget.variables,
+        input_mode:    'form',
         query_parts:   reportWidget.query_parts
+      };
 
-      @Api2
-        .sendPostJson url, dataToSend
+      return this.Api2
+        .sendPostJson(url, dataToSend);
+    }
 
 
-    removeWidget: (widget) ->
-      @Api2.sendDelete "/dashboard_report_widgets/#{widget.id}"
+    removeWidget(widget) {
+      return this.Api2.sendDelete(`/dashboard_report_widgets/${widget.id}`);
+    }
 
-    getWidgets: (reportId) ->
-      deferred = @$q.defer()
-      @widgetsResults = {}
+    getWidgets(reportId) {
+      const deferred = this.$q.defer();
+      this.widgetsResults = {};
 
-      @Api2
-      .sendGet "/dashboard_reports/#{reportId}/widgets?include=report_widget&inline_sideloads=1"
-      .then (resp) =>
-        widgets = resp.data.data;
+      this.Api2
+      .sendGet(`/dashboard_reports/${reportId}/widgets?include=report_widget&inline_sideloads=1`)
+      .then(resp => {
+        const widgets = resp.data.data;
 
-        for widget in widgets
-          widget.sizeX = widget.size_x
-          widget.sizeY = widget.size_y
+        for (var widget of Array.from(widgets)) {
+          widget.sizeX = widget.size_x;
+          widget.sizeY = widget.size_y;
 
-          @widgetsResults[widget.id] = @$q.defer()
+          this.widgetsResults[widget.id] = this.$q.defer();
+        }
 
-        # load widget rendered results in batches
-        widgetIds = widgets.map((widget) => widget.id)
-        idBatches = (widgetIds.splice(0, 10) while widgetIds.length)
-        for idBatch in idBatches
-          @Api2
-            .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result,report_widget&inline_sideloads=1&ids=#{idBatch}"
-            .then (batchResp) =>
-              batchWidgets = batchResp.data.data;
-              for widget in batchWidgets
-                @widgetsResults[widget.id].resolve(widget.rendered_result)
+        // load widget rendered results in batches
+        const widgetIds = widgets.map(widget => widget.id);
+        const idBatches = ((() => {
+          const result = [];
+          while (widgetIds.length) {
+            result.push(widgetIds.splice(0, 10));
+          }
+          return result;
+        })());
+        for (let idBatch of Array.from(idBatches)) {
+          this.Api2
+            .sendGet(`/dashboard_reports/${reportId}/widgets?include=rendered_result,report_widget&inline_sideloads=1&ids=${idBatch}`)
+            .then(batchResp => {
+              const batchWidgets = batchResp.data.data;
+              return (() => {
+                const result1 = [];
+                for (widget of Array.from(batchWidgets)) {
+                  result1.push(this.widgetsResults[widget.id].resolve(widget.rendered_result));
+                }
+                return result1;
+              })();
+          });
+        }
 
-        deferred.resolve(widgets)
+        return deferred.resolve(widgets);
+      });
 
-      return deferred.promise
+      return deferred.promise;
+    }
 
-    getWidget: (id) ->
-      deferred = @$q.defer()
+    getWidget(id) {
+      const deferred = this.$q.defer();
 
-      @Api2
-        .sendGet "/dashboard_report_widgets/#{id}?include=rendered_result,report_widget&inline_sideloads=1"
-        .then (resp) =>
-          widget = resp.data.data;
-          widget.sizeX = widget.size_x
-          widget.sizeY = widget.size_y
+      this.Api2
+        .sendGet(`/dashboard_report_widgets/${id}?include=rendered_result,report_widget&inline_sideloads=1`)
+        .then(resp => {
+          const widget = resp.data.data;
+          widget.sizeX = widget.size_x;
+          widget.sizeY = widget.size_y;
 
-          if !(widget.rendered_result?) or widget.rendered_result == false or widget.rendered_result == ''
-            widget.rendered_result = null
+          if ((widget.rendered_result == null) || (widget.rendered_result === false) || (widget.rendered_result === '')) {
+            widget.rendered_result = null;
+          }
 
-          @widgetsResults[widget.id].resolve(widget.rendered_result)
+          this.widgetsResults[widget.id].resolve(widget.rendered_result);
 
-          deferred.resolve(widget)
-      return deferred.promise
+          return deferred.resolve(widget);
+      });
+      return deferred.promise;
+    }
+  });
+});

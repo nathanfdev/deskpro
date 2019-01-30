@@ -1,70 +1,93 @@
-define ->
-  DeskPRO_Directive_DpDropdown = ['$rootScope', '$document', ($rootScope, $document) ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  const DeskPRO_Directive_DpDropdown = ['$rootScope', '$document', ($rootScope, $document) =>
+    ({
       restrict: 'A',
-      scope:
-        dropdownId: "@dpDropdown"
-        openerId: "@dpDropdownOpener"
-        closerId: "@dpDropdownCloser"
+      scope: {
+        dropdownId: "@dpDropdown",
+        openerId: "@dpDropdownOpener",
+        closerId: "@dpDropdownCloser",
         useClass: "@dpDropdownUseClass"
+      },
 
-      link: (scope, element) ->
+      link(scope, element) {
 
-        scope.visible = false
+        let dropdown, opener;
+        scope.visible = false;
 
-        closeDropdown = () ->
-          scope.visible = false
-          processDropdown()
+        const closeDropdown = function() {
+          scope.visible = false;
+          return processDropdown();
+        };
 
-        toggleDropdown = () ->
-          scope.visible = !scope.visible
-          processDropdown()
+        const toggleDropdown = function() {
+          scope.visible = !scope.visible;
+          return processDropdown();
+        };
 
-        processDropdown = () ->
-          if scope.visible == true
-            dropdown.show()
-          else
-            dropdown.hide()
+        var processDropdown = function() {
+          if (scope.visible === true) {
+            return dropdown.show();
+          } else {
+            return dropdown.hide();
+          }
+        };
 
-        if scope.openerId?
-          if scope.useClass
-            opener = element.find(".#{scope.openerId}")
-          else
-            opener = element.find("##{scope.openerId}")
-        else
-          opener = element
+        if (scope.openerId != null) {
+          if (scope.useClass) {
+            opener = element.find(`.${scope.openerId}`);
+          } else {
+            opener = element.find(`#${scope.openerId}`);
+          }
+        } else {
+          opener = element;
+        }
 
-        if scope.closerId?
-          closer = element.find("##{scope.closerId}")
-          closer.bind 'click', (event) ->
-            event.stopPropagation()
-            closeDropdown()
+        if (scope.closerId != null) {
+          const closer = element.find(`#${scope.closerId}`);
+          closer.bind('click', function(event) {
+            event.stopPropagation();
+            return closeDropdown();
+          });
+        }
 
-        opener.bind 'click', toggleDropdown
-        if scope.useClass
-          dropdown = element.find(".#{scope.dropdownId}")
-        else
-          dropdown = element.find("##{scope.dropdownId}")
+        opener.bind('click', toggleDropdown);
+        if (scope.useClass) {
+          dropdown = element.find(`.${scope.dropdownId}`);
+        } else {
+          dropdown = element.find(`#${scope.dropdownId}`);
+        }
 
-        processDropdown()
-        $document.bind 'click', (event) ->
-          event.stopPropagation()
-          target = angular.element event.target
-          clickedSystem = element
+        processDropdown();
+        return $document.bind('click', function(event) {
+          event.stopPropagation();
+          const target = angular.element(event.target);
+          const clickedSystem = element
             .find(event.target)
             .length > 0;
 
 
 
-          if (clickedSystem)
-            if target.attr('dp-dropdown-item')?
-              closeDropdown()
-            else
-              scope.visible = true
-              processDropdown()
-          else
-            closeDropdown()
-    }
-  ]
+          if (clickedSystem) {
+            if (target.attr('dp-dropdown-item') != null) {
+              return closeDropdown();
+            } else {
+              scope.visible = true;
+              return processDropdown();
+            }
+          } else {
+            return closeDropdown();
+          }
+        });
+      }
+    })
+  
+  ];
 
-  return DeskPRO_Directive_DpDropdown
+  return DeskPRO_Directive_DpDropdown;
+});

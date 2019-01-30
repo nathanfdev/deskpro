@@ -1,68 +1,85 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Util/Util',
   'underscore'
-], (
+], function(
   Util,
   _
-) ->
-  class Admin_TwitterAccounts_TwitterAccountEditFormMapper
+) {
+  let Admin_TwitterAccounts_TwitterAccountEditFormMapper;
+  return (Admin_TwitterAccounts_TwitterAccountEditFormMapper = class Admin_TwitterAccounts_TwitterAccountEditFormMapper {
 
-    ###
-      #
-    #
-    ###
+    /*
+      *
+    *
+    */
 
-    getFormFromModel: (model) ->
+    getFormFromModel(model) {
 
-      form = {}
+      const form = {};
 
-      form.id = model.twitter_account.id
-      form.verified = model.twitter_account.verified
+      form.id = model.twitter_account.id;
+      form.verified = model.twitter_account.verified;
 
-      form.user = {}
-      form.user.profile_image_url = model.twitter_account.user.profile_image_url
-      form.user.name = model.twitter_account.user.name
-      form.user.screen_name = model.twitter_account.user.screen_name
-      form.user.agents = model.twitter_account.user.agents
+      form.user = {};
+      form.user.profile_image_url = model.twitter_account.user.profile_image_url;
+      form.user.name = model.twitter_account.user.name;
+      form.user.screen_name = model.twitter_account.user.screen_name;
+      form.user.agents = model.twitter_account.user.agents;
 
-      form.agents = model.all_agents
+      form.agents = model.all_agents;
 
-      form.selected_agents = {}
+      form.selected_agents = {};
 
-      ids = _.pluck(form.user.agents, 'id')
+      const ids = _.pluck(form.user.agents, 'id');
 
-      for id in ids
-        form.selected_agents[id] = true
+      for (let id of Array.from(ids)) {
+        form.selected_agents[id] = true;
+      }
 
-      return form
+      return form;
+    }
 
-    ###
-      #
-      #
-    ###
+    /*
+      *
+      *
+    */
 
-    applyFormToModel: (model, formModel) ->
+    applyFormToModel(model, formModel) {
 
-      model.id = formModel.id
+      return model.id = formModel.id;
+    }
 
-    ###
-      #
-      #
-    ###
+    /*
+      *
+      *
+    */
 
-    getPostDataFromForm: (formModel) ->
+    getPostDataFromForm(formModel) {
 
-      postData = {}
+      const postData = {};
 
-      postData.id = formModel.id
+      postData.id = formModel.id;
 
-      # instead of agents, resulting request should include persons
+      // instead of agents, resulting request should include persons
 
-      postData.persons = []
+      postData.persons = [];
 
-      for own key, value of formModel.selected_agents
-        if value
-          agent = _.findWhere(formModel.agents, {id: parseInt(key)})
-          postData.persons.push(agent.id) if agent
+      for (let key of Object.keys(formModel.selected_agents || {})) {
+        const value = formModel.selected_agents[key];
+        if (value) {
+          const agent = _.findWhere(formModel.agents, {id: parseInt(key)});
+          if (agent) { postData.persons.push(agent.id); }
+        }
+      }
 
-      return postData
+      return postData;
+    }
+  });
+});

@@ -1,89 +1,118 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_FeedbackCategories_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_FeedbackCategories_Ctrl_List'
-    @CTRL_AS = 'FeedbackCategoriesList'
-    @DEPS    = ['$rootScope', '$scope', 'FeedbackCategoriesData', 'em', 'Api', '$state', 'Growl']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_FeedbackCategories_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_FeedbackCategories_Ctrl_List';
+      this.CTRL_AS = 'FeedbackCategoriesList';
+      this.DEPS    = ['$rootScope', '$scope', 'FeedbackCategoriesData', 'em', 'Api', '$state', 'Growl'];
+    }
 
-    init: ->
+    init() {
 
-      @$scope.brand_id = @$stateParams.brandId
-      @feedback_categories = []
-      @parent_data = []
-      @child_data = {}
+      this.$scope.brand_id = this.$stateParams.brandId;
+      this.feedback_categories = [];
+      this.parent_data = [];
+      this.child_data = {};
 
-      @sortedListOptions = {
+      return this.sortedListOptions = {
 
         axis: 'y',
         handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest('ul')
+        update: (ev, data) => {
+          const $list = data.item.closest('ul');
 
-          postData = {display_orders: []}
+          const postData = {display_orders: []};
 
-          x = 0
-          em = @em
+          let x = 0;
+          const { em } = this;
 
-          $list.find('li').each(->
+          $list.find('li').each(function() {
 
-            x += 10
-            feedback_category_id = parseInt($(this).data('id'))
+            x += 10;
+            const feedback_category_id = parseInt($(this).data('id'));
 
-            if feedback_category_id
+            if (feedback_category_id) {
 
-              feedback_category = em.getById('feedback_category', feedback_category_id)
+              const feedback_category = em.getById('feedback_category', feedback_category_id);
 
-              if feedback_category
-                feedback_category.display_order = x
+              if (feedback_category) {
+                feedback_category.display_order = x;
+              }
+            }
 
-            postData.display_orders.push(feedback_category_id)
-          )
+            return postData.display_orders.push(feedback_category_id);
+          });
 
-          @Api.sendPostJson('/feedback_categories/display_order', postData)
-          @pingElement('display_orders')
-      }
+          this.Api.sendPostJson('/feedback_categories/display_order', postData);
+          return this.pingElement('display_orders');
+        }
+      };
+    }
 
-    sort: (values) ->
-      (values || []).sort (a, b) =>
-        orderA = parseInt(a.display_order)
-        orderB = parseInt(b.display_order)
-        return -1 if orderA < orderB
-        return 1 if orderA > orderB
-        return 0
+    sort(values) {
+      return (values || []).sort((a, b) => {
+        const orderA = parseInt(a.display_order);
+        const orderB = parseInt(b.display_order);
+        if (orderA < orderB) { return -1; }
+        if (orderA > orderB) { return 1; }
+        return 0;
+      });
+    }
 
-    initialLoad: ->
+    initialLoad() {
 
-      promises = []
-      promises.push @FeedbackCategoriesData.loadList().then( (recs) =>
+      const promises = [];
+      promises.push(this.FeedbackCategoriesData.loadList().then( recs => {
 
-        @initHierarchyData(@sort recs.values())
+        this.initHierarchyData(this.sort(recs.values()));
 
-        @addManagedListener(@FeedbackCategoriesData.recs, 'changed', =>
+        return this.addManagedListener(this.FeedbackCategoriesData.recs, 'changed', () => {
 
-          @initHierarchyData(@sort @FeedbackCategoriesData.recs.values())
-          @ngApply()
-        )
-      )
+          this.initHierarchyData(this.sort(this.FeedbackCategoriesData.recs.values()));
+          return this.ngApply();
+        });
+      })
+      );
 
-      return @$q.all(promises)
+      return this.$q.all(promises);
+    }
 
-    initHierarchyData: (feedback_categories) ->
+    initHierarchyData(feedback_categories) {
 
-      @feedback_categories = feedback_categories
-      @parent_data = []
-      @child_data = {}
+      this.feedback_categories = feedback_categories;
+      this.parent_data = [];
+      this.child_data = {};
 
-      for category in feedback_categories
+      return (() => {
+        const result = [];
+        for (let category of Array.from(feedback_categories)) {
 
-        if parseInt(category.parent_id, 10)
+          if (parseInt(category.parent_id, 10)) {
 
-          if not @child_data[category.parent_id]
-            @child_data[category.parent_id] = []
+            if (!this.child_data[category.parent_id]) {
+              this.child_data[category.parent_id] = [];
+            }
 
-          @child_data[category.parent_id].push(category)
+            result.push(this.child_data[category.parent_id].push(category));
 
-        else
+          } else {
 
-          @parent_data.push(category)
+            result.push(this.parent_data.push(category));
+          }
+        }
+        return result;
+      })();
+    }
+  }
+  Admin_FeedbackCategories_Ctrl_List.initClass();
 
 
-  Admin_FeedbackCategories_Ctrl_List.EXPORT_CTRL()
+  return Admin_FeedbackCategories_Ctrl_List.EXPORT_CTRL();
+});

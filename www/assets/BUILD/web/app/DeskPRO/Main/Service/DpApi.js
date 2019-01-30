@@ -1,130 +1,166 @@
-define ['DeskPRO/Util/Util'], (Util) ->
-  class DpApi
-    constructor: ($http, api_url, api_token, @Growl) ->
-      @$http     = $http
-      @api_token = api_token
-      @api_url   = api_url.replace(/\/$/, '')
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Util'], function(Util) {
+  let DpApi;
+  return (DpApi = class DpApi {
+    constructor($http, api_url, api_token, Growl) {
+      this.handleError = this.handleError.bind(this);
+      this.Growl = Growl;
+      this.$http     = $http;
+      this.api_token = api_token;
+      this.api_url   = api_url.replace(/\/$/, '');
+    }
 
-    ###
+    /*
     * Builds an endpoint URL.
-    ###
-    buildEndpointAPIUrl: (endpoint) -> "#{window.location.protocol}//#{window.location.host}#{@_getEndpointUrl(endpoint)}"
+    */
+    buildEndpointAPIUrl(endpoint) { return `${window.location.protocol}//${window.location.host}${this._getEndpointUrl(endpoint)}`; }
 
 
-    ###
+    /*
     * Retrieve the full endpoint URL.
-    ###
-    _getEndpointUrl: (endpoint) ->
-        "#{@api_url}/#{endpoint}"
+    */
+    _getEndpointUrl(endpoint) {
+        return `${this.api_url}/${endpoint}`;
+      }
 
-    ###*
+    /**
     * Format an endpoint with GET params to a full URL string.
       *
       * @param {String} endpoint
       * @param {Object/Array} Params to send in the query string
       * @return {String}
-    ###
-    formatUrl: (endpoint, params = null) ->
-      endpoint = endpoint.replace(/^\//, '')
-      url = @_getEndpointUrl(endpoint)
+    */
+    formatUrl(endpoint, params = null) {
+      endpoint = endpoint.replace(/^\//, '');
+      let url = this._getEndpointUrl(endpoint);
 
-      if params
-        if url.indexOf('?') == -1
-          url += '?'
-        else
-          url += '&'
+      if (params) {
+        if (url.indexOf('?') === -1) {
+          url += '?';
+        } else {
+          url += '&';
+        }
 
-        if Util.isArray(params)
-          for itm in params
-            k = encodeURIComponent(itm.name)
-            v = encodeURIComponent(itm.value)
-            url += "#{k}=#{v}&"
-        else
-          url += @_formatUrlObject(params)
+        if (Util.isArray(params)) {
+          for (let itm of Array.from(params)) {
+            const k = encodeURIComponent(itm.name);
+            const v = encodeURIComponent(itm.value);
+            url += `${k}=${v}&`;
+          }
+        } else {
+          url += this._formatUrlObject(params);
+        }
+      }
 
-      url = url.replace(/&$/, '')
+      url = url.replace(/&$/, '');
 
-      return url
+      return url;
+    }
 
-    _formatUrlObject: (obj, baseName = false) ->
-      url = ''
-      for own k, v of obj
-        if v == null then continue
-        if baseName
-          k = baseName + '[' + encodeURIComponent(k) + ']'
-        else
-          k = encodeURIComponent(k)
+    _formatUrlObject(obj, baseName) {
+      if (baseName == null) { baseName = false; }
+      let url = '';
+      for (let k of Object.keys(obj || {})) {
+        let v = obj[k];
+        if (v === null) { continue; }
+        if (baseName) {
+          k = baseName + '[' + encodeURIComponent(k) + ']';
+        } else {
+          k = encodeURIComponent(k);
+        }
 
-        if Util.isObject(v)
-          url += @_formatUrlObject(v, k)
-        else
-          v = encodeURIComponent(v)
-          url += "#{k}=#{v}&"
-      url
+        if (Util.isObject(v)) {
+          url += this._formatUrlObject(v, k);
+        } else {
+          v = encodeURIComponent(v);
+          url += `${k}=${v}&`;
+        }
+      }
+      return url;
+    }
 
-    ###*
+    /**
     * Uses the api-caller endpoint to fetch multiple data points at once.
       *
       * @param {Array/Object} paths An array of paths, or a hash of paths. The returned data will be keyed by API endpoint
       *                             name (if `paths` was an array), or by a string ID (the keys of `paths` if it was an object)
       * @param {Object} http_params The HTTP params to send with the request
       * @return {Promise}
-    ###
-    sendDataGet: (paths, http_params = {}) ->
-      params = []
-      if Util.isArray(paths)
-        for path in paths
-          if path == null then continue
+    */
+    sendDataGet(paths, http_params) {
+      let path;
+      if (http_params == null) { http_params = {}; }
+      const params = [];
+      if (Util.isArray(paths)) {
+        for (path of Array.from(paths)) {
+          if (path === null) { continue; }
           params.push({
             name: 'load_data[]',
-            value: @formatUrl(path)
-          })
-      else
-        for own save_key, path of paths
-          if path == null then continue
+            value: this.formatUrl(path)
+          });
+        }
+      } else {
+        for (let save_key of Object.keys(paths || {})) {
+          path = paths[save_key];
+          if (path === null) { continue; }
           params.push({
-            name: 'load_data[' + encodeURIComponent(save_key) + ']',
-            value: @formatUrl(path)
-          })
+            name: `load_data[${encodeURIComponent(save_key)}]`,
+            value: this.formatUrl(path)
+          });
+        }
+      }
 
-      return @sendGet('api_caller', params, http_params)
+      return this.sendGet('api_caller', params, http_params);
+    }
 
-    ###*
+    /**
     * Format an endpoint with GET params to a full URL string.
       *
       * @param {String} endpoint
       * @param {Object/Array} Params to send in the query string
       * @return {String}
-    ###
-    prepareHttpParams: (http_params = {}) ->
-      headers = http_params.headers || {}
-      headers["X-DeskPRO-API-Token"] = @api_token
+    */
+    prepareHttpParams(http_params) {
+      if (http_params == null) { http_params = {}; }
+      const headers = http_params.headers || {};
+      headers["X-DeskPRO-API-Token"] = this.api_token;
 
-      if not http_params.cache?
-        http_params.cache = false
+      if ((http_params.cache == null)) {
+        http_params.cache = false;
+      }
 
-      http_params.headers = headers
-      return http_params
+      http_params.headers = headers;
+      return http_params;
+    }
 
 
-    ###
+    /*
       * Sends a GET request
       *
       * @param {String} endpoint
       * @param {Object/Array} params to send in th query string
       * @return {Promise}
-    ###
-    sendGet: (endpoint, params = null, http_params = {}) ->
-      url = @formatUrl(endpoint, params)
+    */
+    sendGet(endpoint, params = null, http_params) {
+      if (http_params == null) { http_params = {}; }
+      const url = this.formatUrl(endpoint, params);
 
-      http_params.method = 'GET'
-      http_params.url    = url
-      @prepareHttpParams(http_params)
+      http_params.method = 'GET';
+      http_params.url    = url;
+      this.prepareHttpParams(http_params);
 
-      @sendRequest http_params
+      return this.sendRequest(http_params);
+    }
 
 
-    ###
+    /*
       * Sends a POST request with post_data as an encoded form.
       *
       * @param {String} endpoint
@@ -132,36 +168,44 @@ define ['DeskPRO/Util/Util'], (Util) ->
       * @param {Object/Array} params to send in th query string
       * @param {Object} http_params Params that will be written to
       * @return {Promise}
-    ###
-    sendPost: (endpoint, post_data = null, params = null, http_params = {}) ->
-      url = @formatUrl(endpoint, params)
+    */
+    sendPost(endpoint, post_data = null, params = null, http_params) {
+      if (http_params == null) { http_params = {}; }
+      const url = this.formatUrl(endpoint, params);
 
-      data_str = ''
-      if post_data
-        if Util.isArray(post_data)
-          for itm in post_data
-            k = encodeURIComponent(itm.name)
-            v = encodeURIComponent(itm.value)
-            data_str += "#{k}=#{v}&"
-        else
-          for own k, v of post_data
-            k = encodeURIComponent(k)
-            v = encodeURIComponent(v)
-            data_str += "#{k}=#{v}&"
+      let data_str = '';
+      if (post_data) {
+        let k, v;
+        if (Util.isArray(post_data)) {
+          for (let itm of Array.from(post_data)) {
+            k = encodeURIComponent(itm.name);
+            v = encodeURIComponent(itm.value);
+            data_str += `${k}=${v}&`;
+          }
+        } else {
+          for (k of Object.keys(post_data || {})) {
+            v = post_data[k];
+            k = encodeURIComponent(k);
+            v = encodeURIComponent(v);
+            data_str += `${k}=${v}&`;
+          }
+        }
 
-        data_str = data_str.replace(/&$/, '')
+        data_str = data_str.replace(/&$/, '');
+      }
 
-      http_params.method = 'POST'
-      http_params.url    = url
-      http_params.data   = data_str
-      @prepareHttpParams(http_params)
+      http_params.method = 'POST';
+      http_params.url    = url;
+      http_params.data   = data_str;
+      this.prepareHttpParams(http_params);
 
       http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
-      @sendRequest http_params
+      return this.sendRequest(http_params);
+    }
 
 
-    ###
+    /*
       * Sends a POST request with a JSON payload
       *
       * @param {String} endpoint
@@ -169,18 +213,20 @@ define ['DeskPRO/Util/Util'], (Util) ->
       * @param {Object/Array} params to send in th query string
       * @param {Object} http_params Params that will be written to
       * @return {Promise}
-    ###
-    sendPostJson: (endpoint, post_data = null, params = null, http_params = {}) ->
-      url = @formatUrl(endpoint, params)
-      http_params.method = 'POST'
-      http_params.url    = url
-      http_params.data   = post_data
-      @prepareHttpParams(http_params)
+    */
+    sendPostJson(endpoint, post_data = null, params = null, http_params) {
+      if (http_params == null) { http_params = {}; }
+      const url = this.formatUrl(endpoint, params);
+      http_params.method = 'POST';
+      http_params.url    = url;
+      http_params.data   = post_data;
+      this.prepareHttpParams(http_params);
 
-      @sendRequest http_params
+      return this.sendRequest(http_params);
+    }
 
 
-    ###
+    /*
       * Sends a PUT request with post_data as an encoded form
       *
       * @param {String} endpoint
@@ -188,36 +234,44 @@ define ['DeskPRO/Util/Util'], (Util) ->
       * @param {Object/Array} params to send in th query string
       * @param {Object} http_params Params that will be written to
       * @return {Promise}
-    ###
-    sendPut: (endpoint, post_data = null, params = null, http_params = {}) ->
-      url = @formatUrl(endpoint, params)
+    */
+    sendPut(endpoint, post_data = null, params = null, http_params) {
+      if (http_params == null) { http_params = {}; }
+      const url = this.formatUrl(endpoint, params);
 
-      data_str = ''
-      if post_data
-        if Util.isArray(params)
-          for itm in params
-            k = encodeURIComponent(itm.name)
-            v = encodeURIComponent(itm.value)
-            data_str += "#{k}=#{v}&"
-        else
-          for k, v of params
-            k = encodeURIComponent(k)
-            v = encodeURIComponent(v)
-            data_str += "#{k}=#{v}&"
+      let data_str = '';
+      if (post_data) {
+        let k, v;
+        if (Util.isArray(params)) {
+          for (let itm of Array.from(params)) {
+            k = encodeURIComponent(itm.name);
+            v = encodeURIComponent(itm.value);
+            data_str += `${k}=${v}&`;
+          }
+        } else {
+          for (k in params) {
+            v = params[k];
+            k = encodeURIComponent(k);
+            v = encodeURIComponent(v);
+            data_str += `${k}=${v}&`;
+          }
+        }
 
-        data_str = data_str.replace(/&$/, '')
+        data_str = data_str.replace(/&$/, '');
+      }
 
-      http_params.method = 'PUT'
-      http_params.url    = url
-      http_params.data   = data_str if post_data
-      @prepareHttpParams(http_params)
+      http_params.method = 'PUT';
+      http_params.url    = url;
+      if (post_data) { http_params.data   = data_str; }
+      this.prepareHttpParams(http_params);
 
       http_params.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 
-      @sendRequest http_params
+      return this.sendRequest(http_params);
+    }
 
 
-    ###
+    /*
       * Sends a PUT request with a JSON payload
       *
       * @param {String} endpoint
@@ -225,45 +279,54 @@ define ['DeskPRO/Util/Util'], (Util) ->
       * @param {Object/Array} params to send in th query string
       * @param {Object} http_params Params that will be written to
       * @return {Promise}
-    ###
-    sendPutJson: (endpoint, post_data = null, params = null, http_params = {}) ->
-      url = @formatUrl(endpoint, params)
-      http_params.method = 'PUT'
-      http_params.url    = url
-      http_params.data   = post_data
-      @prepareHttpParams(http_params)
+    */
+    sendPutJson(endpoint, post_data = null, params = null, http_params) {
+      if (http_params == null) { http_params = {}; }
+      const url = this.formatUrl(endpoint, params);
+      http_params.method = 'PUT';
+      http_params.url    = url;
+      http_params.data   = post_data;
+      this.prepareHttpParams(http_params);
 
-      @sendRequest http_params
+      return this.sendRequest(http_params);
+    }
 
 
-    ###
+    /*
       * Sends a DELETE request
       *
       * @param {String} endpoint
       * @param {Object/Array} params to send in th query string
       * @return {Promise}
-    ###
-    sendDelete: (endpoint, params = null, http_params = {}) ->
-      url = @formatUrl(endpoint, params)
+    */
+    sendDelete(endpoint, params = null, http_params) {
+      if (http_params == null) { http_params = {}; }
+      const url = this.formatUrl(endpoint, params);
 
-      http_params.method = 'DELETE'
-      http_params.url    = url
-      @prepareHttpParams(http_params)
+      http_params.method = 'DELETE';
+      http_params.url    = url;
+      this.prepareHttpParams(http_params);
 
-      @sendRequest http_params
+      return this.sendRequest(http_params);
+    }
 
 
 
-    sendRequest: (http_params) ->
-      result = @$http http_params
-      result.error @handleError
+    sendRequest(http_params) {
+      const result = this.$http(http_params);
+      result.error(this.handleError);
 
-      result
+      return result;
+    }
 
-    handleError: (data, status, headers, config) =>
-      if 500 == status && @Growl
-        @Growl.error 'There was a problem processing your last request. Please try again.'
-      else if 403 == status and data.error_code != 'insufficient_rights'
-        window.location.reload(true)
-      else if console
-        console.info data
+    handleError(data, status, headers, config) {
+      if ((500 === status) && this.Growl) {
+        return this.Growl.error('There was a problem processing your last request. Please try again.');
+      } else if ((403 === status) && (data.error_code !== 'insufficient_rights')) {
+        return window.location.reload(true);
+      } else if (console) {
+        return console.info(data);
+      }
+    }
+  });
+});

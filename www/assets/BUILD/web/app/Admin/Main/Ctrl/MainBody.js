@@ -1,6 +1,17 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Main_Ctrl_MainBody extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Main_Ctrl_MainBody'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Main_Ctrl_MainBody extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Main_Ctrl_MainBody';
+      this.DEPS      = [];
+    }
+  }
+  Admin_Main_Ctrl_MainBody.initClass();
 
-  Admin_Main_Ctrl_MainBody.EXPORT_CTRL()
+  return Admin_Main_Ctrl_MainBody.EXPORT_CTRL();
+});

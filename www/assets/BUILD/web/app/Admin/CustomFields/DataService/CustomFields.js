@@ -1,39 +1,57 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/BaseListEdit',
-], (
+], function(
   BaseListEdit
-)  ->
-  class Admin_CustomFields_DataService_CustomFields extends BaseListEdit
-    @$inject = ['Api', '$q']
+)  {
+  let Admin_CustomFields_DataService_CustomFields;
+  return Admin_CustomFields_DataService_CustomFields = (function() {
+    Admin_CustomFields_DataService_CustomFields = class Admin_CustomFields_DataService_CustomFields extends BaseListEdit {
+      static initClass() {
+        this.$inject = ['Api', '$q'];
+      }
 
 
 
-    init: (owner, context) ->
-      @_params = {owner: owner || null, context: context || null}
+      init(owner, context) {
+        return this._params = {owner: owner || null, context: context || null};
+      }
 
 
 
-    url: ->
-      '/custom_fields'
+      url() {
+        return '/custom_fields';
+      }
 
 
 
-    _doLoadList: ->
-      deferred = @$q.defer()
+      _doLoadList() {
+        const deferred = this.$q.defer();
 
-      @Api.sendGet(@url(), @_params).then (res) ->
-        deferred.resolve res.data || []
+        this.Api.sendGet(this.url(), this._params).then(res => deferred.resolve(res.data || []));
 
-      deferred.promise
+        return deferred.promise;
+      }
 
 
 
-    ###
-    # Update display orders
-    #
-    # @param {Array} Array of IDs in order
-    # @return {promise}
-    ###
-    saveDisplayOrder: (display_orders) ->
-      @Api.sendPostJson('/custom_fields/display-order', {display_orders: display_orders})
+      /*
+       * Update display orders
+       *
+       * @param {Array} Array of IDs in order
+       * @return {promise}
+       */
+      saveDisplayOrder(display_orders) {
+        return this.Api.sendPostJson('/custom_fields/display-order', {display_orders});
+      }
+    };
+    Admin_CustomFields_DataService_CustomFields.initClass();
+    return Admin_CustomFields_DataService_CustomFields;
+  })();
+});
 

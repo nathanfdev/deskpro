@@ -1,55 +1,77 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/BaseListEdit'
-], (
+], function(
   BaseListEdit
-)  ->
-  class Admin_ApiKeys_DataService_ApiKeys extends BaseListEdit
-    @$inject = ['Api', '$q']
-
-    url: ->'/api_keys'
-
-    init: ->
-      @limits = {
-        daily_limit: -1
-        hourly_limit: -1
+)  {
+  let Admin_ApiKeys_DataService_ApiKeys;
+  return Admin_ApiKeys_DataService_ApiKeys = (function() {
+    Admin_ApiKeys_DataService_ApiKeys = class Admin_ApiKeys_DataService_ApiKeys extends BaseListEdit {
+      static initClass() {
+        this.$inject = ['Api', '$q'];
       }
 
-      @Api.sendGet('/api_keys_settings')
-        .success((data) =>
-          @limits = data
-        )
+      url() { return '/api_keys'; }
 
-    replayLogEntry: (entry) ->
-      deferred = @$q.defer()
+      init() {
+        this.limits = {
+          daily_limit: -1,
+          hourly_limit: -1
+        };
 
-      @Api.sendGet("/api_keys/replay/#{entry.id}")
-      .success((data, status, headers, config) =>
-        @loadList true
-        deferred.resolve(data, status)
-      )
-      .error((data, status, headers, config) -> deferred.reject(data, status))
+        return this.Api.sendGet('/api_keys_settings')
+          .success(data => {
+            return this.limits = data;
+          });
+      }
 
-      deferred.promise
+      replayLogEntry(entry) {
+        const deferred = this.$q.defer();
 
-    getLogs: (entry) ->
-      deferred = @$q.defer()
+        this.Api.sendGet(`/api_keys/replay/${entry.id}`)
+        .success((data, status, headers, config) => {
+          this.loadList(true);
+          return deferred.resolve(data, status);
+        })
+        .error((data, status, headers, config) => deferred.reject(data, status));
 
-      @Api.sendGet("/api_keys/#{entry.id}/logs").success((data, status, headers, config) =>
-        deferred.resolve(data, status)
-      ).error((data, status, headers, config) -> deferred.reject(data, status))
+        return deferred.promise;
+      }
 
-      deferred.promise
+      getLogs(entry) {
+        const deferred = this.$q.defer();
 
-    getSettings: ->
-      deferred = @$q.defer
+        this.Api.sendGet(`/api_keys/${entry.id}/logs`).success((data, status, headers, config) => {
+          return deferred.resolve(data, status);
+        }).error((data, status, headers, config) => deferred.reject(data, status));
 
-    ###
-    # Generate new API key code
-    #
-    # @param {Object} model api_key model
-    # @return {promise}
-    ###
-    regenerateApiKey: (model) ->
-      @Api.sendPostJson('/api_keys/regenerate/' + model.id).success (data) =>
-        model.code = data.code
-        model.keyString = data.keyString
+        return deferred.promise;
+      }
+
+      getSettings() {
+        let deferred;
+        return deferred = this.$q.defer;
+      }
+
+      /*
+       * Generate new API key code
+       *
+       * @param {Object} model api_key model
+       * @return {promise}
+       */
+      regenerateApiKey(model) {
+        return this.Api.sendPostJson(`/api_keys/regenerate/${model.id}`).success(data => {
+          model.code = data.code;
+          return model.keyString = data.keyString;
+        });
+      }
+    };
+    Admin_ApiKeys_DataService_ApiKeys.initClass();
+    return Admin_ApiKeys_DataService_ApiKeys;
+  })();
+});

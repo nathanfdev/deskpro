@@ -1,34 +1,55 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_AntiAbuse_Ctrl_CaptchaSettings extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_AntiAbuse_Ctrl_CaptchaSettings'
-    @CTRL_AS = 'CaptchaSettings'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  var Admin_AntiAbuse_Ctrl_CaptchaSettings = (function() {
+    let _url = undefined;
+    Admin_AntiAbuse_Ctrl_CaptchaSettings = class Admin_AntiAbuse_Ctrl_CaptchaSettings extends Admin_Ctrl_Base {
+      static initClass() {
+        this.CTRL_ID = 'Admin_AntiAbuse_Ctrl_CaptchaSettings';
+        this.CTRL_AS = 'CaptchaSettings';
+  
+        _url = '/settings/anti_abuse/captcha';
+      }
 
-    _url = '/settings/anti_abuse/captcha'
+      init() {
+        this.$scope.settings = null;
+        return this.$scope.general_settings = null;
+      }
 
-    init: ->
-      @$scope.settings = null
-      @$scope.general_settings = null
+      initialLoad() {
+        const captchaPromise = this.Api2.sendGet(_url).then(res => {
+          return this.$scope.settings = res.data.data;
+        });
+        const generalPromise = this.Api.sendGet('/general_settings').then(res => {
+          return this.$scope.general_settings = res.data.general_settings;
+        });
 
-    initialLoad: ->
-      captchaPromise = @Api2.sendGet(_url).then (res) =>
-        @$scope.settings = res.data.data
-      generalPromise = @Api.sendGet('/general_settings').then (res) =>
-        @$scope.general_settings = res.data.general_settings
+        return this.$q.all([captchaPromise, generalPromise]);
+      }
 
-      return @$q.all([captchaPromise, generalPromise])
+      save() {
+        const captchaPromise = this.Api2.sendPutJson(_url, this.$scope.settings); 
+        const generalPromise = this.Api.sendPostJson('/general_settings', {
+          general_settings: this.$scope.general_settings
+        });
+        this.startSpinner('saving');
+        return this.$q.all([captchaPromise, generalPromise]).then( () => {
+          this.stopSpinner('saving');
+          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+        }
+        , info => {
+          this.stopSpinner('saving', true);
+          return this.applyErrorResponseToView(info);
+        });
+      }
+    };
+    Admin_AntiAbuse_Ctrl_CaptchaSettings.initClass();
+    return Admin_AntiAbuse_Ctrl_CaptchaSettings;
+  })();
 
-    save: ->
-      captchaPromise = @Api2.sendPutJson(_url, @$scope.settings) 
-      generalPromise = @Api.sendPostJson('/general_settings', {
-        general_settings: @$scope.general_settings
-      })
-      @startSpinner('saving')
-      @$q.all([captchaPromise, generalPromise]).then( =>
-        @stopSpinner('saving')
-        @Growl.success @getRegisteredMessage('saved_settings')
-      , (info) =>
-        @stopSpinner('saving', true)
-        @applyErrorResponseToView(info)
-      )
-
-  Admin_AntiAbuse_Ctrl_CaptchaSettings.EXPORT_CTRL()
+  return Admin_AntiAbuse_Ctrl_CaptchaSettings.EXPORT_CTRL();
+});

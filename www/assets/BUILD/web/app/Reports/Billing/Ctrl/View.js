@@ -1,27 +1,40 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Reports/Main/Ctrl/Base',
-], (
+], function(
   ReportsBaseCtrl,
-) ->
-  class Reports_Billing_Ctrl_View extends ReportsBaseCtrl
-    @CTRL_ID   = 'Reports_Billing_Ctrl_View'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$stateParams', '$sce', 'Api']
+) {
+  class Reports_Billing_Ctrl_View extends ReportsBaseCtrl {
+    static initClass() {
+      this.CTRL_ID   = 'Reports_Billing_Ctrl_View';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['$stateParams', '$sce', 'Api'];
+    }
 
-    init: ->
+    init() {
 
-      @rendered_result = null
+      return this.rendered_result = null;
+    }
 
-    ###
-  #
-  ###
-    initialLoad: ->
+    /*
+  *
+  */
+    initialLoad() {
 
-      promise = @Api.sendGet('/reports/billing/' + @$stateParams.id, {params: @$stateParams.params}).then( (res) =>
-        data = res.data
-        @rendered_result = @$sce.trustAsHtml(data.rendered_result)
-      )
+      const promise = this.Api.sendGet(`/reports/billing/${this.$stateParams.id}`, {params: this.$stateParams.params}).then( res => {
+        const { data } = res;
+        return this.rendered_result = this.$sce.trustAsHtml(data.rendered_result);
+      });
 
-      return promise
+      return promise;
+    }
+  }
+  Reports_Billing_Ctrl_View.initClass();
 
-  Reports_Billing_Ctrl_View.EXPORT_CTRL()
+  return Reports_Billing_Ctrl_View.EXPORT_CTRL();
+});

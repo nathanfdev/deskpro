@@ -1,73 +1,95 @@
-define [
-  'DeskPRO/Util/Arrays'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS103: Rewrite code to no longer use __guard__
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
+  'DeskPRO/Util/Arrays',
   'Admin/Main/Ctrl/Base',
   'Admin/TicketTriggers/TriggerEditFormMapper',
   'Admin/TicketTriggers/Ctrl/EditBase',
-], (
+], function(
   Arrays,
   Admin_Ctrl_Base,
   TriggerEditFormMapper,
   Admin_TicketTriggers_Ctrl_EditBase
-) ->
-  class Admin_TicketTriggers_Ctrl_EditDepartmentTrigger extends Admin_TicketTriggers_Ctrl_EditBase
-    @CTRL_ID   = 'Admin_TicketTriggers_Ctrl_EditDepartmentTrigger'
-    @CTRL_AS   = 'TicketTriggersEdit'
-    @DEPS      = ['dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions']
+) {
+  class Admin_TicketTriggers_Ctrl_EditDepartmentTrigger extends Admin_TicketTriggers_Ctrl_EditBase {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketTriggers_Ctrl_EditDepartmentTrigger';
+      this.CTRL_AS   = 'TicketTriggersEdit';
+      this.DEPS      = ['dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions'];
+    }
 
-    customInit: ->
-      @triggerId = 0
-      if @$stateParams.id.indexOf('department-changed-') != -1
-        @eventType = 'update'
-        @depId = @$stateParams.id.replace(/^department\-changed\-(\d+)$/, '$1')
-      else
-        @eventType = 'newticket'
-        @depId = @$stateParams.id.replace(/^department\-(\d+)$/, '$1')
-
-      @$scope.triggerType = @$stateParams.type
-      @$scope.triggerId   = 0
-      @$scope.depId       = @depId
-
-    ###
-    # Load the trigger
-    ###
-    initialLoad: ->
-      get = {
-        customActions: '/ticket_triggers/get-custom-actions',
-        depInfo:       "/ticket_deps/#{@depId}"
+    customInit() {
+      this.triggerId = 0;
+      if (this.$stateParams.id.indexOf('department-changed-') !== -1) {
+        this.eventType = 'update';
+        this.depId = this.$stateParams.id.replace(/^department\-changed\-(\d+)$/, '$1');
+      } else {
+        this.eventType = 'newticket';
+        this.depId = this.$stateParams.id.replace(/^department\-(\d+)$/, '$1');
       }
 
-      if @eventType == 'newticket'
-        get.trigger = "/ticket_triggers/departments/#{@depId}"
-      else
-        get.trigger = "/ticket_triggers/departments_changed/#{@depId}"
+      this.$scope.triggerType = this.$stateParams.type;
+      this.$scope.triggerId   = 0;
+      return this.$scope.depId       = this.depId;
+    }
 
-      promise = @Api.sendDataGet(get).then( (result) =>
+    /*
+     * Load the trigger
+     */
+    initialLoad() {
+      const get = {
+        customActions: '/ticket_triggers/get-custom-actions',
+        depInfo:       `/ticket_deps/${this.depId}`
+      };
 
-        @customActions = result.data.customActions.action_defs
+      if (this.eventType === 'newticket') {
+        get.trigger = `/ticket_triggers/departments/${this.depId}`;
+      } else {
+        get.trigger = `/ticket_triggers/departments_changed/${this.depId}`;
+      }
 
-        if result.data?.trigger?.trigger?
-          @trigger = result.data.trigger.trigger
-          @triggerId = @trigger.id
-        else
-          @trigger = {}
-          @triggerId = 0
+      const promise = this.Api.sendDataGet(get).then( result => {
 
-        @dep = result.data.depInfo.department
-        @$scope.form = @editFormMapper.getFormFromModel(@trigger)
-      )
+        this.customActions = result.data.customActions.action_defs;
 
-      promise2 = @criteraTypeDef.loadDataOptions()
-      promise3 = @actionsTypeDef.loadDataOptions()
+        if (__guard__(result.data != null ? result.data.trigger : undefined, x => x.trigger) != null) {
+          this.trigger = result.data.trigger.trigger;
+          this.triggerId = this.trigger.id;
+        } else {
+          this.trigger = {};
+          this.triggerId = 0;
+        }
 
-      promises = [promise, promise2, promise3]
+        this.dep = result.data.depInfo.department;
+        return this.$scope.form = this.editFormMapper.getFormFromModel(this.trigger);
+      });
 
-      return @$q.all(promises).then(=>
-        @updateCriteriaOptionTypes()
+      const promise2 = this.criteraTypeDef.loadDataOptions();
+      const promise3 = this.actionsTypeDef.loadDataOptions();
 
-        @$scope.$watch('form.typeForm', =>
-          @updateCriteriaOptionTypes()
-        , true)
-      )
+      const promises = [promise, promise2, promise3];
+
+      return this.$q.all(promises).then(() => {
+        this.updateCriteriaOptionTypes();
+
+        return this.$scope.$watch('form.typeForm', () => {
+          return this.updateCriteriaOptionTypes();
+        }
+        , true);
+      });
+    }
+  }
+  Admin_TicketTriggers_Ctrl_EditDepartmentTrigger.initClass();
 
 
-  Admin_TicketTriggers_Ctrl_EditDepartmentTrigger.EXPORT_CTRL()
+  return Admin_TicketTriggers_Ctrl_EditDepartmentTrigger.EXPORT_CTRL();
+});
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}

@@ -1,9 +1,16 @@
-define -> (States) ->
-#----------------------------------------
-# MAIN
-#----------------------------------------
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(() => States =>
+//----------------------------------------
+// MAIN
+//----------------------------------------
 
   States.add('headless-reports')
     .setUrl('/')
     .setTpl('AgentBundle:ReportsInterface:headless-frame.html')
-    .setCtrl('Reports.App.New.Headless');
+    .setCtrl('Reports.App.New.Headless')
+
+ );

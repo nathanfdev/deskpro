@@ -1,73 +1,84 @@
-define ->
-  DeskPRO_Directive_DpHelpPage = ['$rootScope', '$state', ($rootScope, $state) ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  const DeskPRO_Directive_DpHelpPage = ['$rootScope', '$state', ($rootScope, $state) =>
+    ({
       restrict: 'E',
       scope: {},
       replace: true,
       transclude: true,
-      template: """
-        <section class="dp-help-content-wrapper">
-          <div class="dp-help-content-outer">
-            <div class="dp-help-content-outer2">
-              <div class="dp-help-content" ng-transclude></div>
-              <div class="dp-arrow-wrap"><em><i class="fa fa-chevron-down down"></i><i class="fa fa-chevron-up up"></i></em></div>
-            </div>
-          </div>
-        </section>
-      """,
-      link: (scope, element, attrs) ->
-        isOpen = false
-        backdrop = null
-        element.find('header').first().prepend('<aside><i class="fa fa-question-circle"></i></aside>')
+      template: `\
+<section class="dp-help-content-wrapper">
+  <div class="dp-help-content-outer">
+    <div class="dp-help-content-outer2">
+      <div class="dp-help-content" ng-transclude></div>
+      <div class="dp-arrow-wrap"><em><i class="fa fa-chevron-down down"></i><i class="fa fa-chevron-up up"></i></em></div>
+    </div>
+  </div>
+</section>\
+`,
+      link(scope, element, attrs) {
+        let isOpen = false;
+        let backdrop = null;
+        element.find('header').first().prepend('<aside><i class="fa fa-question-circle"></i></aside>');
 
-        open = ->
-          return if isOpen
-          origH = element.height()
-          element.height(origH)
+        const open = function() {
+          if (isOpen) { return; }
+          const origH = element.height();
+          element.height(origH);
 
-          if not backdrop
-            backdrop = $('<div/>').addClass('dp-help-content-backdrop')
-            backdrop.on('click', (ev) ->
-              ev.preventDefault()
-              close()
-            )
-            backdrop.insertBefore(element)
+          if (!backdrop) {
+            backdrop = $('<div/>').addClass('dp-help-content-backdrop');
+            backdrop.on('click', function(ev) {
+              ev.preventDefault();
+              return close();
+            });
+            backdrop.insertBefore(element);
+          }
 
-          backdrop.show()
-          element.addClass('open')
-          article = element.find('.dp-help-content').find('article').first()
-          article.slideDown(200, 'linear')
-          isOpen = true
+          backdrop.show();
+          element.addClass('open');
+          const article = element.find('.dp-help-content').find('article').first();
+          article.slideDown(200, 'linear');
+          return isOpen = true;
+        };
 
-        close = ->
-          return if not isOpen
-          backdrop.hide()
-          article = element.find('.dp-help-content').find('article').first()
-          article.slideUp(200, 'linear', ->
-            element.removeClass('open')
-          )
-          isOpen = false
+        var close = function() {
+          if (!isOpen) { return; }
+          backdrop.hide();
+          const article = element.find('.dp-help-content').find('article').first();
+          article.slideUp(200, 'linear', () => element.removeClass('open'));
+          return isOpen = false;
+        };
 
-        toggle = ->
-          if not isOpen
-            open()
-          else
-            close()
+        const toggle = function() {
+          if (!isOpen) {
+            return open();
+          } else {
+            return close();
+          }
+        };
 
-        element.find('.dp-arrow-wrap').on('click', (ev) ->
+        element.find('.dp-arrow-wrap').on('click', function(ev) {
           ev.preventDefault();
-          toggle()
-        )
-        element.find('header').first().on('click', (ev) ->
+          return toggle();
+        });
+        element.find('header').first().on('click', function(ev) {
           ev.preventDefault();
-          toggle()
-        )
+          return toggle();
+        });
 
-        element.find('.dp-help-content-outer').on('click', (ev) ->
+        return element.find('.dp-help-content-outer').on('click', function(ev) {
           ev.stopPropagation();
-          open()
-        )
-    }
-  ]
+          return open();
+        });
+      }
+    })
+  
+  ];
 
-  return DeskPRO_Directive_DpHelpPage
+  return DeskPRO_Directive_DpHelpPage;
+});

@@ -1,48 +1,63 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_UserRules_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_UserRules_Ctrl_List'
-    @CTRL_AS = 'ListCtrl'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_UserRules_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_UserRules_Ctrl_List';
+      this.CTRL_AS = 'ListCtrl';
+    }
 
-    init: ->
-      @userRulesData = @DataService.get('UserRules')
+    init() {
+      return this.userRulesData = this.DataService.get('UserRules');
+    }
 
-    ###
-    # Loads the list
-    ###
-    initialLoad: ->
-      @userRulesData.loadList().then( (list) =>
-        @list = list
-      )
+    /*
+     * Loads the list
+     */
+    initialLoad() {
+      return this.userRulesData.loadList().then( list => {
+        return this.list = list;
+      });
+    }
 
-    ###
-    # Show the delete dlg
-    ###
-    startDelete: (for_rule_id) ->
-      rule = @userRulesData.findListModelById(for_rule_id)
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('UserRules/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close()
+    /*
+     * Show the delete dlg
+     */
+    startDelete(for_rule_id) {
+      const rule = this.userRulesData.findListModelById(for_rule_id);
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('UserRules/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
       });
 
-      inst.result.then( =>
-        @deleteUserRule(rule)
-      )
+      return inst.result.then( () => {
+        return this.deleteUserRule(rule);
+      });
+    }
 
-    ###
-    # Actually do the delete
-    ###
-    deleteUserRule: (for_rule) ->
-      @userRulesData.deleteUserRuleById(for_rule.id).success( =>
-        if @$state.current.name == 'crm.rules.edit' and parseInt(@$state.params.id) == for_rule.id
-          @$state.go('crm.rules')
-      ).error((info, code) =>
-        @applyErrorResponseToView(info)
-      )
+    /*
+     * Actually do the delete
+     */
+    deleteUserRule(for_rule) {
+      return this.userRulesData.deleteUserRuleById(for_rule.id).success( () => {
+        if ((this.$state.current.name === 'crm.rules.edit') && (parseInt(this.$state.params.id) === for_rule.id)) {
+          return this.$state.go('crm.rules');
+        }
+      }).error((info, code) => {
+        return this.applyErrorResponseToView(info);
+      });
+    }
+  }
+  Admin_UserRules_Ctrl_List.initClass();
 
-  Admin_UserRules_Ctrl_List.EXPORT_CTRL()
+  return Admin_UserRules_Ctrl_List.EXPORT_CTRL();
+});

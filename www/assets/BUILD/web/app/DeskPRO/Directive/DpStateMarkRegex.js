@@ -1,68 +1,86 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Strings'
-], (Util, Strings) ->
-  ###
-    # Description
-    # -----------
-    #
-    # Like DpStateMark except the attr is expected to be a regex pattern.
-    ###
-  DeskPRO_Directive_DpStateMarkRegex = ['$state', ($state) ->
-    return {
+], function(Util, Strings) {
+  /*
+    * Description
+    * -----------
+    *
+    * Like DpStateMark except the attr is expected to be a regex pattern.
+    */
+  const DeskPRO_Directive_DpStateMarkRegex = ['$state', $state =>
+    ({
       restrict: 'A',
-      link: (scope, element, attrs) ->
-        myStateId   = attrs.dpStateMarkRegex
-        currentStateVars = null
+      link(scope, element, attrs) {
+        const myStateId   = attrs.dpStateMarkRegex;
+        const currentStateVars = null;
 
-        myStateIdRe1 = new RegExp(myStateId)
+        const myStateIdRe1 = new RegExp(myStateId);
 
-        # This sets the active state immediately on click
-        # which makes the UI feel faster
-        element.on('click', ->
-          element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active')
-          element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active')
-          element.addClass('state-on active')
-        )
+        // This sets the active state immediately on click
+        // which makes the UI feel faster
+        element.on('click', function() {
+          element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active');
+          element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');
+          return element.addClass('state-on active');
+        });
 
-        updateMarker = ->
-          checkStateId = $state.current.name
-          checkStateId2 = null
+        const updateMarker = function() {
+          const checkStateId = $state.current.name;
+          let checkStateId2 = null;
 
-          if $state.current.data?.stateMarkId
-            checkStateId2 = $state.current.data.stateMarkId
+          if ($state.current.data != null ? $state.current.data.stateMarkId : undefined) {
+            checkStateId2 = $state.current.data.stateMarkId;
+          }
 
-          isOn = false
+          let isOn = false;
 
-          for currentStateId in [checkStateId, checkStateId2]
-            if isOn or not currentStateId then continue
+          for (let currentStateId of [checkStateId, checkStateId2]) {
+            if (isOn || !currentStateId) { continue; }
 
-            if currentStateVars
-              for v in currentStateVars
-                if $state.params[v]?
-                    currentStateId += '.' + $state.params[v]
-                else
-                  currentStateId += '.0'
-            else
-              if $state.params['id']?
-                currentStateId += '.' + $state.params['id']
+            if (currentStateVars) {
+              for (let v of Array.from(currentStateVars)) {
+                if ($state.params[v] != null) {
+                    currentStateId += `.${$state.params[v]}`;
+                } else {
+                  currentStateId += '.0';
+                }
+              }
+            } else {
+              if ($state.params['id'] != null) {
+                currentStateId += `.${$state.params['id']}`;
+              }
+            }
 
-            if currentStateId.match(myStateIdRe1)
-              isOn = true
+            if (currentStateId.match(myStateIdRe1)) {
+              isOn = true;
+            }
+          }
 
-          if isOn
-            element.addClass('state-on active')
-            if element.closest('[dp-nav-subnav]')
-              element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
-          else
-            element.removeClass('state-on active')
+          if (isOn) {
+            element.addClass('state-on active');
+            if (element.closest('[dp-nav-subnav]')) {
+              return element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open');
+            }
+          } else {
+            return element.removeClass('state-on active');
+          }
+        };
 
-        scope.$on('$stateChangeSuccess', ->
-          updateMarker()
-        );
+        scope.$on('$stateChangeSuccess', () => updateMarker());
 
-        updateMarker()
-    }
-  ]
+        return updateMarker();
+      }
+    })
+  
+  ];
 
-  return DeskPRO_Directive_DpStateMarkRegex
+  return DeskPRO_Directive_DpStateMarkRegex;
+});

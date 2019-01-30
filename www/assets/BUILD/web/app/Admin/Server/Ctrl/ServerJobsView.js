@@ -1,23 +1,39 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_ServerJobs_Ctrl_View extends Admin_Ctrl_Base
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_ServerJobs_Ctrl_View extends Admin_Ctrl_Base {
+    static initClass() {
+  
+      this.CTRL_ID   = 'Admin_ServerJobs_Ctrl_View';
+      this.CTRL_AS   = 'JobsViewCtrl';
+      this.DEPS      = ['$stateParams'];
+    }
 
-    @CTRL_ID   = 'Admin_ServerJobs_Ctrl_View'
-    @CTRL_AS   = 'JobsViewCtrl'
-    @DEPS      = ['$stateParams']
+    init() {
+      this.service = this.DataService.get('Jobs');
+      return this.job =
+        {id: this.$stateParams.id};
+    }
 
-    init: ->
-      @service = @DataService.get 'Jobs'
-      @job =
-        id: @$stateParams.id
+    initialLoad() {
+      return this.service.get(this.$stateParams.id).then(data => {
+        this.job = data;
+        return this.service.loadJob(this.job.id).then(data => {
+          return this.job = data;
+        });
+      });
+    }
 
-    initialLoad: ->
-      @service.get(@$stateParams.id).then (data) =>
-        @job = data
-        @service.loadJob(@job.id).then (data) =>
-          @job = data
-
-    getData: ->
-      return angular.toJson(@job.data, true)
+    getData() {
+      return angular.toJson(this.job.data, true);
+    }
+  }
+  Admin_ServerJobs_Ctrl_View.initClass();
 
 
-  Admin_ServerJobs_Ctrl_View.EXPORT_CTRL()
+  return Admin_ServerJobs_Ctrl_View.EXPORT_CTRL();
+});

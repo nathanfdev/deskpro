@@ -1,37 +1,55 @@
-define [
-  'DeskPRO/Util/Util'
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
+  'DeskPRO/Util/Util',
   'DeskPRO/Logger/Handler/AbstractHandler',
-], (
+], function(
   Util,
   AbstractHandler
-) ->
-  class AbstractProcessingHandler extends AbstractHandler
-    handle: (record) ->
-      if not @isHandling(record)
-        return false
+) {
+  let AbstractProcessingHandler;
+  return (AbstractProcessingHandler = class AbstractProcessingHandler extends AbstractHandler {
+    handle(record) {
+      if (!this.isHandling(record)) {
+        return false;
+      }
 
-      record = Util.clone(record, false)
-      record = @processRecord(record)
+      record = Util.clone(record, false);
+      record = this.processRecord(record);
 
-      formatter = @getFormatter()
-      if formatter
-        if formatter.format?
-          record.formatted = formatter.format(record)
-        else
-          record.formatted = formatter(record)
+      const formatter = this.getFormatter();
+      if (formatter) {
+        if (formatter.format != null) {
+          record.formatted = formatter.format(record);
+        } else {
+          record.formatted = formatter(record);
+        }
+      }
 
-      @write(record)
+      this.write(record);
 
-      return @bubble == false
+      return this.bubble === false;
+    }
 
-    write: (record) ->
-      throw new Error("Unimplemented")
+    write(record) {
+      throw new Error("Unimplemented");
+    }
 
-    processRecord: (record) ->
-      for proc in @processors
-        if proc.process?
-          record = proc.process(record)
-        else
-          record = proc(record)
+    processRecord(record) {
+      for (let proc of Array.from(this.processors)) {
+        if (proc.process != null) {
+          record = proc.process(record);
+        } else {
+          record = proc(record);
+        }
+      }
 
-      return record
+      return record;
+    }
+  });
+});

@@ -1,57 +1,72 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Reports/Main/Ctrl/Base',
   'moment',
-], (
+], function(
   ReportsBaseCtrl,
   moment,
-) ->
-  class Reports_AgentHours_Ctrl_AgentHours extends ReportsBaseCtrl
-    @CTRL_ID   = 'Reports_AgentHours_Ctrl_AgentHours'
-    @CTRL_AS   = 'AgentHours'
-    @DEPS      = ['Api', '$sce']
+) {
+  class Reports_AgentHours_Ctrl_AgentHours extends ReportsBaseCtrl {
+    static initClass() {
+      this.CTRL_ID   = 'Reports_AgentHours_Ctrl_AgentHours';
+      this.CTRL_AS   = 'AgentHours';
+      this.DEPS      = ['Api', '$sce'];
+    }
 
 
-    ###
-    # Initializing..
-    ###
-    init: ->
-      @html = ''
-      @date1 = new Date()
-      @date2 = new Date()
-      @filter = {}
-      @filter.date1 = moment(@date).format("YYYY-MM-DD")
-      @filter.date2 = moment(@date).format("YYYY-MM-DD")
+    /*
+     * Initializing..
+     */
+    init() {
+      this.html = '';
+      this.date1 = new Date();
+      this.date2 = new Date();
+      this.filter = {};
+      this.filter.date1 = moment(this.date).format("YYYY-MM-DD");
+      return this.filter.date2 = moment(this.date).format("YYYY-MM-DD");
+    }
 
 
-    ###
-    # Just doing all the necessary AJAX calls here
-    ###
-    initialLoad: ->
-      return @loadResults()
+    /*
+     * Just doing all the necessary AJAX calls here
+     */
+    initialLoad() {
+      return this.loadResults();
+    }
 
 
-    ###
-    # This method updates current parameters that are used for sending request to API
-    ###
-    updateFilter: ->
-      @filter.date1 = moment(@date1).format("YYYY-MM-DD")
-      @filter.date2 = moment(@date2).format("YYYY-MM-DD")
-      @loadResults()
+    /*
+     * This method updates current parameters that are used for sending request to API
+     */
+    updateFilter() {
+      this.filter.date1 = moment(this.date1).format("YYYY-MM-DD");
+      this.filter.date2 = moment(this.date2).format("YYYY-MM-DD");
+      return this.loadResults();
+    }
 
 
-    ###
-    # Loading the results of sending request to API
-    ###
-    loadResults: ->
-      @startSpinner('loading_results')
+    /*
+     * Loading the results of sending request to API
+     */
+    loadResults() {
+      this.startSpinner('loading_results');
 
-      promise = @Api.sendGet("/reports/agent-hours/" + @filter.date1 + "/" + @filter.date2).then((res) =>
-        @html = @$sce.trustAsHtml(res.data.html)
+      const promise = this.Api.sendGet(`/reports/agent-hours/${this.filter.date1}/${this.filter.date2}`).then(res => {
+        this.html = this.$sce.trustAsHtml(res.data.html);
 
-        @stopSpinner('loading_results', true)
-      )
+        return this.stopSpinner('loading_results', true);
+      });
 
-      return promise
+      return promise;
+    }
+  }
+  Reports_AgentHours_Ctrl_AgentHours.initClass();
 
 
-  Reports_AgentHours_Ctrl_AgentHours.EXPORT_CTRL()
+  return Reports_AgentHours_Ctrl_AgentHours.EXPORT_CTRL();
+});

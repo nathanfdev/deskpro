@@ -1,94 +1,117 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Agents_Ctrl_Logs extends Admin_Ctrl_Base
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS202: Simplify dynamic range loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Agents_Ctrl_Logs extends Admin_Ctrl_Base {
+    static initClass() {
+  
+      this.CTRL_ID   = 'Admin_Agents_Ctrl_Logs';
+      this.CTRL_AS   = 'LogsCtrl';
+      this.DEPS      = [];
+    }
 
-    @CTRL_ID   = 'Admin_Agents_Ctrl_Logs'
-    @CTRL_AS   = 'LogsCtrl'
-    @DEPS      = []
+    init() {
+      this.login_logs = null;
+      this.page = 1;
+      this.num_pages = 0;
+      this.page_nums = [1];
 
-    init: ->
-      @login_logs = null
-      @page = 1
-      @num_pages = 0
-      @page_nums = [1]
+      return this.initializeScopeWatching();
+    }
 
-      @initializeScopeWatching()
+    initialLoad() {
 
-    initialLoad: ->
+      return this.loadResults();
+    }
 
-      return @loadResults()
+    /*
+  *
+  */
 
-    ###
-  #
-  ###
+    loadResults() {
 
-    loadResults: ->
+      this.startSpinner('paginating_login_logs');
 
-      @startSpinner('paginating_login_logs')
+      const data_promise = this.Api.sendGet('/login_logs', {
+        page: this.page
+      }).then(res => {
 
-      data_promise = @Api.sendGet('/login_logs', {
-        page: @page
-      }).then((res) =>
+        this.login_logs = res.data.login_logs;
+        this.num_pages = res.data.login_logs.num_pages;
 
-        @login_logs = res.data.login_logs
-        @num_pages = res.data.login_logs.num_pages
+        this.page_nums = [];
 
-        @page_nums = []
+        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+          this.page_nums.push(i + 1);
+        }
 
-        for i in [0...@num_pages]
-          @page_nums.push(i + 1)
+        return this.stopSpinner('paginating_login_logs', true);
+      });
 
-        @stopSpinner('paginating_login_logs', true)
-      )
+      return this.$q.all([data_promise]);
+    }
 
-      return @$q.all([data_promise])
+    /*
+  *
+  */
 
-    ###
-  #
-  ###
+    updateFilter() {
 
-    updateFilter: ->
+      return this.loadResults();
+    }
 
-      @loadResults()
+    /*
+     * Here we watching scope 'page' variable in order to load new page of results
+     */
 
-    ###
-    # Here we watching scope 'page' variable in order to load new page of results
-    ###
+    initializeScopeWatching() {
 
-    initializeScopeWatching: ->
+      return this.$scope.$watch('LogsCtrl.page', (newVal, oldVal) => {
 
-      @$scope.$watch('LogsCtrl.page', (newVal, oldVal) =>
+        if (parseInt(newVal) === parseInt(oldVal)) {
+          return undefined;
+        }
 
-        if parseInt(newVal) == parseInt(oldVal)
-          return undefined
+        if (isNaN(parseInt(newVal))) {
+          return undefined;
+        }
 
-        if isNaN(parseInt(newVal))
-          return undefined
+        return this.changePageCallback();
+      });
+    }
 
-        @changePageCallback()
-      )
+    /*
+     * This is executed after we changed the current page
+     */
 
-    ###
-    # This is executed after we changed the current page
-    ###
+    changePageCallback() {
 
-    changePageCallback: ->
+      return this.loadResults();
+    }
 
-      @loadResults()
+    /*
+  *
+    */
 
-    ###
-  #
-    ###
+    goPrevPage() {
 
-    goPrevPage: ->
+      return this.page--;
+    }
 
-      @page--
+    /*
+     *
+     */
 
-    ###
-    #
-    ###
+    goNextPage() {
 
-    goNextPage: ->
+      return this.page++;
+    }
+  }
+  Admin_Agents_Ctrl_Logs.initClass();
 
-      @page++
-
-  Admin_Agents_Ctrl_Logs.EXPORT_CTRL()
+  return Admin_Agents_Ctrl_Logs.EXPORT_CTRL();
+});

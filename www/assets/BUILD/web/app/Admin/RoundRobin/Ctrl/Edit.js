@@ -1,184 +1,232 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) ->
-  class Admin_RoundRobin_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_RoundRobin_Ctrl_Edit'
-    @CTRL_AS = 'EditCtrl'
-    @DEPS = ['$stateParams', 'Growl', '$timeout']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
+  class Admin_RoundRobin_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_RoundRobin_Ctrl_Edit';
+      this.CTRL_AS = 'EditCtrl';
+      this.DEPS = ['$stateParams', 'Growl', '$timeout'];
+    }
 
 
 
-    init: ->
-      @robin = {}
-      @agents = []
-      @nextAgentInQueue = null
-      @bulk = null
-      @service = @DataService.get 'RoundRobin'
-      @serviceAgents = @DataService.get 'Agents'
-      @serviceDeps = @DataService.get 'TicketDeps'
-      @serviceGroups = @DataService.get 'AgentGroups'
-      @serviceTeams = @DataService.get 'AgentTeams'
+    init() {
+      this.robin = {};
+      this.agents = [];
+      this.nextAgentInQueue = null;
+      this.bulk = null;
+      this.service = this.DataService.get('RoundRobin');
+      this.serviceAgents = this.DataService.get('Agents');
+      this.serviceDeps = this.DataService.get('TicketDeps');
+      this.serviceGroups = this.DataService.get('AgentGroups');
+      this.serviceTeams = this.DataService.get('AgentTeams');
 
-      @groups = []
-      @teams = []
-      @deps = []
+      this.groups = [];
+      this.teams = [];
+      this.deps = [];
 
-      @sortedListOptions = {
+      return this.sortedListOptions = {
         axis: 'y',
-        items: 'li.sortable'
+        items: 'li.sortable',
         handle: '.drag-handle'
+      };
+    }
+
+
+
+    initialLoad() {
+      this.service.loadList(true);
+      const promises = [this.serviceAgents.all(), this.service.get(parseInt(this.$stateParams.id || 0)),
+                  this.serviceDeps.all(), this.serviceGroups.all(), this.serviceTeams.all(),];
+
+      return this.$q.all(promises).then(res => {
+        this.agents = res[0];
+        this.mapFormModel(res[1]);
+        this.deps = res[2];
+        this.groups = res[3];
+        return this.teams = res[4];
+    });
+    }
+
+
+
+    mapFormModel(model) {
+      this.robin.agents = [];
+      if ((model == null)) { return; }
+
+      this.robin.id = model.id;
+      this.robin.title = model.title;
+      this.robin.online_only = model.online_only;
+
+      if (model.next != null) { this.serviceAgents.get(model.next.id).then(agent => { return this.robin.next = agent; }); }
+      // remap agents to list models
+      const promises = [];
+      model.agents.map(data => {
+        const promise = this.serviceAgents.get(data.id).then(agent => this.robin.agents.push(agent));
+        return promises.push(promise);
+      });
+
+      return this.$q.all(promises).then(() => this.sortAgents());
+    }
+
+
+
+    sortAgents() {
+      return this.agents.sort((a, b) => {
+        const indexA = this.robin.agents.indexOf(a);
+        const indexB = this.robin.agents.indexOf(b);
+        if (indexA === indexB) { return 0; }
+        if (indexA === -1) { return 1; }
+        if (indexB === -1) { return -1; }
+        if (indexA < indexB) { return -1; } else { return 1; }
+      });
+    }
+
+
+
+    handleAgent(agent) {
+      if (this.agents.indexOf(agent) === -1) { return; }
+      const index = this.robin.agents.indexOf(agent);
+      if (index === -1) { return this.robin.agents.unshift(agent); } else { return this.robin.agents.splice(index, 1); }
+    }
+
+
+
+    handleBulk() {
+      if ((this.bulk == null)) { return; }
+      const params = this.bulk.split('.');
+
+      const findAgent = id => {
+        return Arrays.find(this.agents, a => a.id === id);
+      };
+
+      switch (params[0]) {
+        case 'd':
+          return this.Api.sendGet(`/ticket_deps/${params[1]}?with_agents_list=1`).success( data => {
+            if (!data || !data.agents_list) { return; }
+
+            return (() => {
+              const result = [];
+              for (let a of Array.from(data.agents_list)) {
+                const agent = findAgent(a.id);
+                if (agent) { this.handleAgent(agent); }
+                result.push(this.sortAgents());
+              }
+              return result;
+            })();
+          });
+
+        case 'g':
+          return this.Api.sendGet(`/agent_groups/${params[1]}`).success( data => {
+            if (!data || !data.group.members) { return; }
+
+            return (() => {
+              const result = [];
+              for (let a of Array.from(data.group.members)) {
+                const agent = findAgent(a.id);
+                if (agent) { this.handleAgent(agent); }
+                result.push(this.sortAgents());
+              }
+              return result;
+            })();
+          });
+
+        case 't':
+          return this.Api.sendGet(`/agent_teams/${params[1]}`).success( data => {
+            if (!data || !data.team.members) { return; }
+
+            return (() => {
+              const result = [];
+              for (let a of Array.from(data.team.members)) {
+                const agent = findAgent(a.id);
+                if (agent) { this.handleAgent(agent); }
+                result.push(this.sortAgents());
+              }
+              return result;
+            })();
+          });
       }
+    }
+
+
+    save() {
+      this.startSpinner('saving');
+      return this.service.set(this.robin).then(
+        model => {
+          this.stopSpinner('saving');
+          this.mapFormModel(model);
+          this.$state.go('tickets.roundrobin');
+          return this.Growl.success('Saved');
+        },
+        res => {
+          this.stopSpinner('saving');
+          return this.Growl.error(res.info);
+      });
+    }
 
 
 
-    initialLoad: ->
-      @service.loadList true
-      promises = [@serviceAgents.all(), @service.get(parseInt(@$stateParams.id || 0)),
-                  @serviceDeps.all(), @serviceGroups.all(), @serviceTeams.all(),]
-
-      @$q.all(promises).then (res) =>
-        @agents = res[0]
-        @mapFormModel res[1]
-        @deps = res[2]
-        @groups = res[3]
-        @teams = res[4]
-
-
-
-    mapFormModel: (model) ->
-      @robin.agents = []
-      return if !model?
-
-      @robin.id = model.id
-      @robin.title = model.title
-      @robin.online_only = model.online_only
-
-      @serviceAgents.get(model.next.id).then((agent) => @robin.next = agent) if model.next?
-      # remap agents to list models
-      promises = []
-      model.agents.map (data) =>
-        promise = @serviceAgents.get(data.id).then (agent) => @robin.agents.push agent
-        promises.push promise
-
-      @$q.all(promises).then => @sortAgents()
-
-
-
-    sortAgents: ->
-      @agents.sort (a, b) =>
-        indexA = @robin.agents.indexOf a
-        indexB = @robin.agents.indexOf b
-        return 0 if indexA == indexB
-        return 1 if indexA == -1
-        return -1 if indexB == -1
-        if indexA < indexB then return -1 else return 1
-
-
-
-    handleAgent: (agent) ->
-      return if @agents.indexOf(agent) == -1
-      index = @robin.agents.indexOf agent
-      if index == -1 then @robin.agents.unshift agent else @robin.agents.splice(index, 1)
-
-
-
-    handleBulk: ->
-      return if !@bulk?
-      params = @bulk.split '.'
-
-      findAgent = (id) =>
-        return Arrays.find(@agents, (a) -> a.id == id)
-
-      switch params[0]
-        when 'd'
-          @Api.sendGet("/ticket_deps/#{params[1]}?with_agents_list=1").success( (data) =>
-            return if not data || not data.agents_list
-
-            for a in data.agents_list
-              agent = findAgent(a.id)
-              if agent then @handleAgent(agent)
-              @sortAgents()
-          )
-
-        when 'g'
-          @Api.sendGet("/agent_groups/#{params[1]}").success( (data) =>
-            return if not data || not data.group.members
-
-            for a in data.group.members
-              agent = findAgent(a.id)
-              if agent then @handleAgent(agent)
-              @sortAgents()
-          )
-
-        when 't'
-          @Api.sendGet("/agent_teams/#{params[1]}").success( (data) =>
-            return if not data || not data.team.members
-
-            for a in data.team.members
-              agent = findAgent(a.id)
-              if agent then @handleAgent(agent)
-              @sortAgents()
-          )
-
-
-    save: ->
-      @startSpinner 'saving'
-      @service.set(@robin).then(
-        (model) =>
-          @stopSpinner 'saving'
-          @mapFormModel model
-          @$state.go 'tickets.roundrobin'
-          @Growl.success 'Saved'
-        (res) =>
-          @stopSpinner 'saving'
-          @Growl.error res.info
-      )
-
-
-
-    showLogs: ->
-      @Api.sendGet("/round_robin/#{@robin.id}/logs").then (res) =>
-        @$modal.open({
+    showLogs() {
+      return this.Api.sendGet(`/round_robin/${this.robin.id}/logs`).then(res => {
+        return this.$modal.open({
           template: res.data,
-          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-            $scope.dismiss = ->
-              $modalInstance.dismiss()
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+            $scope.dismiss = () => $modalInstance.dismiss()
+          
           ]
-        })
+        });
+      });
+    }
 
 
 
-    delete: ->
+    delete() {
 
-      @service.checkTriggers(@robin.id).then (data) =>
-        @active_triggers = data.active_triggers
+      return this.service.checkTriggers(this.robin.id).then(data => {
+        this.active_triggers = data.active_triggers;
 
-        @$timeout(
-          =>
-            title = @getRegisteredMessage 'modal_title'
-            msg = @getRegisteredMessage 'modal_message'
-            state = @$state
+        return this.$timeout(
+          () => {
+            const title = this.getRegisteredMessage('modal_title');
+            const msg = this.getRegisteredMessage('modal_message');
+            const state = this.$state;
 
-            _del = (modal) =>
-              @service.remove(@robin).then ->
-                modal.dismiss()
-                state.go 'tickets.roundrobin'
+            const _del = modal => {
+              return this.service.remove(this.robin).then(function() {
+                modal.dismiss();
+                return state.go('tickets.roundrobin');
+              });
+            };
 
-            @$modal.open({
-              templateUrl: @getTemplatePath('Index/modal-confirm.html'),
-              controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+            return this.$modal.open({
+              templateUrl: this.getTemplatePath('Index/modal-confirm.html'),
+              controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
-                $scope.title = title
-                $scope.message = msg
+                $scope.title = title;
+                $scope.message = msg;
 
-                $scope.dismiss = ->
-                  $modalInstance.dismiss()
+                $scope.dismiss = () => $modalInstance.dismiss();
 
-                $scope.confirm = ->
-                  _del $modalInstance
+                return $scope.confirm = () => _del($modalInstance);
+              }
               ]
-            })
+            });
+          },
           1
-        )
+        );
+      });
+    }
+  }
+  Admin_RoundRobin_Ctrl_Edit.initClass();
 
 
 
-  Admin_RoundRobin_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_RoundRobin_Ctrl_Edit.EXPORT_CTRL();
+});

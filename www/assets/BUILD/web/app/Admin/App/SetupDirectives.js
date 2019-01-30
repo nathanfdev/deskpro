@@ -1,4 +1,9 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Directive/DpClickHref',
   'DeskPRO/Directive/DpOpenPopover',
   'DeskPRO/Directive/DpClosestNumber',
@@ -126,200 +131,228 @@ define [
   Admin_Portal_Directive_Editor_FontForm,
   Admin_Portal_Directive_Editor_SizeForm,
   Admin_Portal_Directive_Editor_CodeEditor
-) ->
-  return (Module) ->
-    Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref)
-    Module.directive('dpOpenPopover',                  DeskPRO_Directive_DpOpenPopover)
-    Module.directive('dpClosestNumber',                DeskPRO_Directive_DpClosestNumber)
-    Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
-    Module.directive('dpFilesizeWithUnit',             DeskPRO_Directive_DpFilesizeWithUnit)
-    Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark)
-    Module.directive('dpStateMarkRegex',               DeskPRO_Directive_DpStateMarkRegex)
-    Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage)
-    Module.directive('dpNavSubnav',                    DeskPRO_Directive_DpNavSubnav)
-    Module.directive('dpTabBody',                      DeskPRO_Directive_DpTabBody)
-    Module.directive('dpTabBtn',                       DeskPRO_Directive_DpTabBtn)
-    Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning)
-    Module.directive('script',                         DeskPRO_Directive_DpJsonData)
-    Module.directive('script',                         DeskPRO_Directive_DpNgTemplate)
-    Module.directive('dpScrollable',                   DeskPRO_Directive_DpScrollable)
-    Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
-    Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm)
-    Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)
-    Module.directive('dpLabel',                        DeskPRO_Directive_DpLabel)
-    Module.directive('dpClipboard',                    DeskPRO_Directive_DpClipboard)
-    Module.directive('dpPersonActions',                DeskPRO_Directive_DpPersonActions)
+) =>
+  function(Module) {
+    Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref);
+    Module.directive('dpOpenPopover',                  DeskPRO_Directive_DpOpenPopover);
+    Module.directive('dpClosestNumber',                DeskPRO_Directive_DpClosestNumber);
+    Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit);
+    Module.directive('dpFilesizeWithUnit',             DeskPRO_Directive_DpFilesizeWithUnit);
+    Module.directive('dpStateMark',                    DeskPRO_Directive_DpStateMark);
+    Module.directive('dpStateMarkRegex',               DeskPRO_Directive_DpStateMarkRegex);
+    Module.directive('dpHelpPage',                     DeskPRO_Directive_DpHelpPage);
+    Module.directive('dpNavSubnav',                    DeskPRO_Directive_DpNavSubnav);
+    Module.directive('dpTabBody',                      DeskPRO_Directive_DpTabBody);
+    Module.directive('dpTabBtn',                       DeskPRO_Directive_DpTabBtn);
+    Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning);
+    Module.directive('script',                         DeskPRO_Directive_DpJsonData);
+    Module.directive('script',                         DeskPRO_Directive_DpNgTemplate);
+    Module.directive('dpScrollable',                   DeskPRO_Directive_DpScrollable);
+    Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning);
+    Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm);
+    Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass);
+    Module.directive('dpLabel',                        DeskPRO_Directive_DpLabel);
+    Module.directive('dpClipboard',                    DeskPRO_Directive_DpClipboard);
+    Module.directive('dpPersonActions',                DeskPRO_Directive_DpPersonActions);
 
-    Module.directive('autofocus',                      Admin_Main_Directive_Autofocus)
-    Module.directive('dpLiGroupSection',               Admin_Main_Directive_DpLiGroupSection)
-    Module.directive('bgImg',                          Admin_Main_Directive_BgImg)
-    Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated)
-    Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevBar)
-    Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody)
-    Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn)
-    Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload)
-    Module.directive('dpMaxHeight',                    Admin_Main_Directive_DpMaxHeight)
-    Module.directive('dpOnoffSwitch',                  Admin_Main_Directive_DpOnOffSwitch)
-    Module.directive('dpMatchMinHeight',               Admin_Main_Directive_DpMatchMinHeight)
-    Module.directive('dpOpenPhraseEditor',             Admin_Main_Directive_DpOpenPhraseEditor)
-    Module.directive('dpOpenPhraseMapEditor',          Admin_Main_Directive_DpOpenPhraseMapEditor)
-    Module.directive('dpOrderMenu',                    Admin_Main_Directive_DpOrderMenu)
-    Module.directive('dpPingFlash',                    Admin_Main_Directive_DpPingFlash)
-    Module.directive('dpRegisterMessage',              Admin_Main_Directive_DpRegisterMessage)
-    Module.directive('dpServerValidation',             Admin_Main_Directive_DpServerValidation)
-    Module.directive('dpSliderSwitch',                 Admin_Main_Directive_DpSliderSwitch)
-    Module.directive('dpStatusUpdate',                 Admin_Main_Directive_DpStatusUpdate)
-    Module.directive('dpToggleSwitch',                 Admin_Main_Directive_DpToggleSwitch)
-    Module.directive('dpTristateCheck',                Admin_Main_Directive_DpTristateCheck)
-    Module.directive('dpWorkingHours',                 Admin_Main_Directive_DpWorkingHours)
-    Module.directive('dpChange',                       Admin_Main_Directive_DpChange)
-    Module.directive('dpPhoneNumber',                  Admin_Main_Directive_DpPhoneNumber)
-    Module.directive('dpPhoneNumberNoExt',             Admin_Main_Directive_DpPhoneNumberNoExt)
-    Module.directive('dpRedactor',                     Admin_Main_Directive_DpRedactor)
-    Module.directive('dpDate',                         Admin_Main_Directive_DpDate)
-    Module.directive('dpReadFile',                     Admin_Main_Directive_DpReadFile)
-    Module.directive('dpSemanticLanguageButton',       Admin_Main_Directive_DpSemanticLanguageButton)
+    Module.directive('autofocus',                      Admin_Main_Directive_Autofocus);
+    Module.directive('dpLiGroupSection',               Admin_Main_Directive_DpLiGroupSection);
+    Module.directive('bgImg',                          Admin_Main_Directive_BgImg);
+    Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated);
+    Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevBar);
+    Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody);
+    Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn);
+    Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload);
+    Module.directive('dpMaxHeight',                    Admin_Main_Directive_DpMaxHeight);
+    Module.directive('dpOnoffSwitch',                  Admin_Main_Directive_DpOnOffSwitch);
+    Module.directive('dpMatchMinHeight',               Admin_Main_Directive_DpMatchMinHeight);
+    Module.directive('dpOpenPhraseEditor',             Admin_Main_Directive_DpOpenPhraseEditor);
+    Module.directive('dpOpenPhraseMapEditor',          Admin_Main_Directive_DpOpenPhraseMapEditor);
+    Module.directive('dpOrderMenu',                    Admin_Main_Directive_DpOrderMenu);
+    Module.directive('dpPingFlash',                    Admin_Main_Directive_DpPingFlash);
+    Module.directive('dpRegisterMessage',              Admin_Main_Directive_DpRegisterMessage);
+    Module.directive('dpServerValidation',             Admin_Main_Directive_DpServerValidation);
+    Module.directive('dpSliderSwitch',                 Admin_Main_Directive_DpSliderSwitch);
+    Module.directive('dpStatusUpdate',                 Admin_Main_Directive_DpStatusUpdate);
+    Module.directive('dpToggleSwitch',                 Admin_Main_Directive_DpToggleSwitch);
+    Module.directive('dpTristateCheck',                Admin_Main_Directive_DpTristateCheck);
+    Module.directive('dpWorkingHours',                 Admin_Main_Directive_DpWorkingHours);
+    Module.directive('dpChange',                       Admin_Main_Directive_DpChange);
+    Module.directive('dpPhoneNumber',                  Admin_Main_Directive_DpPhoneNumber);
+    Module.directive('dpPhoneNumberNoExt',             Admin_Main_Directive_DpPhoneNumberNoExt);
+    Module.directive('dpRedactor',                     Admin_Main_Directive_DpRedactor);
+    Module.directive('dpDate',                         Admin_Main_Directive_DpDate);
+    Module.directive('dpReadFile',                     Admin_Main_Directive_DpReadFile);
+    Module.directive('dpSemanticLanguageButton',       Admin_Main_Directive_DpSemanticLanguageButton);
 
-    Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor)
-    Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField)
+    Module.directive('dpTicketLayoutEditor',           Admin_TicketDeps_Directive_LayoutEditor);
+    Module.directive('dpTicketLayoutEditorField',      Admin_TicketDeps_Directive_LayoutEditorField);
 
-    Module.directive('dpLicensePaymentForm',           Admin_License_Directive_PaymentFormDirective)
+    Module.directive('dpLicensePaymentForm',           Admin_License_Directive_PaymentFormDirective);
 
-    Module.directive('dpPortalDesignerVariableForm',   Admin_Portal_Directive_Editor_VariableForm)
-    Module.directive('dpPortalDesignerColorForm',      Admin_Portal_Directive_Editor_ColorForm)
-    Module.directive('dpPortalDesignerFloatForm',      Admin_Portal_Directive_Editor_FloatForm)
-    Module.directive('dpPortalDesignerFontForm',       Admin_Portal_Directive_Editor_FontForm)
-    Module.directive('dpPortalDesignerSizeForm',       Admin_Portal_Directive_Editor_SizeForm)
-    Module.directive('dpCodeEditor',                   Admin_Portal_Directive_Editor_CodeEditor)
+    Module.directive('dpPortalDesignerVariableForm',   Admin_Portal_Directive_Editor_VariableForm);
+    Module.directive('dpPortalDesignerColorForm',      Admin_Portal_Directive_Editor_ColorForm);
+    Module.directive('dpPortalDesignerFloatForm',      Admin_Portal_Directive_Editor_FloatForm);
+    Module.directive('dpPortalDesignerFontForm',       Admin_Portal_Directive_Editor_FontForm);
+    Module.directive('dpPortalDesignerSizeForm',       Admin_Portal_Directive_Editor_SizeForm);
+    Module.directive('dpCodeEditor',                   Admin_Portal_Directive_Editor_CodeEditor);
 
-    Module.directive('dpToggleShowIds', [ ->
-      return {
+    Module.directive('dpToggleShowIds', [ () =>
+      ({
         restrict: 'A',
-        link: (scope, el, attrs) ->
+        link(scope, el, attrs) {
           window.DP_DO_SHOW_IDS = false;
-          scope.do_show_ids = false
+          scope.do_show_ids = false;
 
-          update = ->
-            if window.DP_DO_SHOW_IDS
-              scope.do_show_ids = true
-              $('body').addClass('show-title-ids')
-            else
-              scope.do_show_ids = false
-              $('body').removeClass('show-title-ids')
+          const update = function() {
+            if (window.DP_DO_SHOW_IDS) {
+              scope.do_show_ids = true;
+              return $('body').addClass('show-title-ids');
+            } else {
+              scope.do_show_ids = false;
+              return $('body').removeClass('show-title-ids');
+            }
+          };
 
-          update()
+          update();
 
-          el.on('click', (ev) ->
-            ev.stopPropagation()
-            ev.preventDefault()
-            window.DP_DO_SHOW_IDS = !window.DP_DO_SHOW_IDS
-            scope.$apply(-> update())
-          )
-      }
-    ])
+          return el.on('click', function(ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            window.DP_DO_SHOW_IDS = !window.DP_DO_SHOW_IDS;
+            return scope.$apply(() => update());
+          });
+        }
+      })
+    
+    ]);
 
-    Module.directive('dpGo', [ '$location', ($location) ->
-      return {
+    Module.directive('dpGo', [ '$location', $location =>
+      ({
         restrict: 'A',
-        link: (scope, el, attrs) ->
-          el.on('click', (ev) ->
+        link(scope, el, attrs) {
+          return el.on('click', function(ev) {
             ev.stopPropagation();
             ev.preventDefault();
 
-            path = attrs.dpGo.replace(/^#/, '')
-            search = scope.$eval(attrs.dpGoParams)
+            const path = attrs.dpGo.replace(/^#/, '');
+            const search = scope.$eval(attrs.dpGoParams);
 
-            scope.$apply(->
-              $location.path(path)
-              if search
-                $location.search(search)
-            )
-          )
-      }
-    ])
+            return scope.$apply(function() {
+              $location.path(path);
+              if (search) {
+                return $location.search(search);
+              }
+            });
+          });
+        }
+      })
+    
+    ]);
 
-    Module.directive('dpNoDrag', [ ->
-      return {
+    Module.directive('dpNoDrag', [ () =>
+      ({
         restrict: 'AC',
-        link: (scope, el, attrs) ->
-          el.get(0).draggable = false
-      }
-    ])
+        link(scope, el, attrs) {
+          return el.get(0).draggable = false;
+        }
+      })
+    
+    ]);
 
-    Module.directive('dpMoveListToPos', [ '$timeout', ($timeout) ->
-      return {
+    Module.directive('dpMoveListToPos', [ '$timeout', $timeout =>
+      ({
         restrict: 'A',
         scope: {},
-        link: (scope, element, attrs) ->
-          initial_run = false
-          is_running = false
-          run_again = false
-          scope.$on('resetDisplayOrders', ->
-            if not initial_run
-              initial_run = false
-              run_again = true
-              update()
-            else
-              $timeout(->
-                if is_running
-                  run_again = true
-                else
-                  update()
-              , 1)
-          )
+        link(scope, element, attrs) {
+          let update;
+          let initial_run = false;
+          let is_running = false;
+          let run_again = false;
+          scope.$on('resetDisplayOrders', function() {
+            if (!initial_run) {
+              initial_run = false;
+              run_again = true;
+              return update();
+            } else {
+              return $timeout(function() {
+                if (is_running) {
+                  return run_again = true;
+                } else {
+                  return update();
+                }
+              }
+              , 1);
+            }
+          });
 
-          update = ->
-            is_running = true
-            all_lis = element.find('> li').filter('[data-move-to-pos]')
+          return update = function() {
+            is_running = true;
+            const all_lis = element.find('> li').filter('[data-move-to-pos]');
 
-            all_lis.each(->
-              li = $(this)
-              toPos = parseInt(li.data('move-to-pos') || 0) || 0
-              if toPos == 0 || isNaN(toPos)
-                return
+            all_lis.each(function() {
+              const li = $(this);
+              const toPos = parseInt(li.data('move-to-pos') || 0) || 0;
+              if ((toPos === 0) || isNaN(toPos)) {
+                return;
+              }
 
-              use = null
-              element.find('> li').each(->
-                ro = parseInt($(this).attr('data-run-order') || 0) || 0
-                if ro == 0 || isNaN(ro)
-                  return
-                if ro < toPos and this != element[0]
-                  use = $(this)
-              )
-              li.detach()
-              if not use
-                li.detach().prependTo(element)
-              else
-                li.detach().insertAfter(use)
-            )
+              let use = null;
+              element.find('> li').each(function() {
+                const ro = parseInt($(this).attr('data-run-order') || 0) || 0;
+                if ((ro === 0) || isNaN(ro)) {
+                  return;
+                }
+                if ((ro < toPos) && (this !== element[0])) {
+                  return use = $(this);
+                }
+              });
+              li.detach();
+              if (!use) {
+                return li.detach().prependTo(element);
+              } else {
+                return li.detach().insertAfter(use);
+              }
+            });
 
-            if run_again
-              is_running = true
-              $timeout(->
-                run_again = false
-                update()
-              , 1)
-            else
-              is_running = false
-      }
-    ])
+            if (run_again) {
+              is_running = true;
+              return $timeout(function() {
+                run_again = false;
+                return update();
+              }
+              , 1);
+            } else {
+              return is_running = false;
+            }
+          };
+        }
+      })
+    
+    ]);
 
-    Module.directive('dpHtmlRenderVar', [ ->
-      return {
+    Module.directive('dpHtmlRenderVar', [ () =>
+      ({
         restrict: 'A',
-        link: (scope, element, attrs) ->
-          scope.$watch(attrs.dpHtmlRenderVar, (newVal) ->
-            element.html(newVal)
-          )
-      }
-    ])
+        link(scope, element, attrs) {
+          return scope.$watch(attrs.dpHtmlRenderVar, newVal => element.html(newVal));
+        }
+      })
+    
+    ]);
 
-    Module.directive('href', [ '$location', '$state', ($location, $state) ->
-      return {
+    return Module.directive('href', [ '$location', '$state', ($location, $state) =>
+      ({
         restrict: 'A',
-        link: (scope, element, attrs) ->
-          element.bind 'click', ->
-            if element[0] && element[0].href && element[0].href == $location.absUrl()
-              $state.go($state.current.name, $state.current.data, {reload: true})
-      }
-    ])
+        link(scope, element, attrs) {
+          return element.bind('click', function() {
+            if (element[0] && element[0].href && (element[0].href === $location.absUrl())) {
+              return $state.go($state.current.name, $state.current.data, {reload: true});
+            }
+          });
+        }
+      })
+    
+    ]);
+  }
+);

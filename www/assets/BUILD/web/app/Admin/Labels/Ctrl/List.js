@@ -1,39 +1,58 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Labels_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Labels_Ctrl_List'
-    @DEPS = ['em', '$rootScope', 'LabelDefinition']
-    @CTRL_AS = 'LabelsList'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Labels_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Labels_Ctrl_List';
+      this.DEPS = ['em', '$rootScope', 'LabelDefinition'];
+      this.CTRL_AS = 'LabelsList';
+    }
 
 
 
-    init: ->
-      @type = @$state.current.data.type
-      @$scope.order = 'label'
-      @$scope.orderReverse = false
-      @$scope.labels = {}
+    init() {
+      this.type = this.$state.current.data.type;
+      this.$scope.order = 'label';
+      this.$scope.orderReverse = false;
+      this.$scope.labels = {};
 
-      @$scope.countDefinitions = =>
-        count = 0
-        for own n of @$scope.labels
-          count++
-        count
+      this.$scope.countDefinitions = () => {
+        let count = 0;
+        for (let n of Object.keys(this.$scope.labels || {})) {
+          count++;
+        }
+        return count;
+      };
 
-      @$scope.$watch 'sortOrder', =>
-        if not @$scope.sortOrder then return
-        @$scope.order = @$scope.sortOrder.field
-        @$scope.orderReverse = @$scope.sortOrder.dir == 'DESC'
-
-
-
-    type: ->
-      throw new Exception 'This method must be implemented by a sub-class'
-
-
-
-    initialLoad: ->
-      @LabelDefinition.all(@type).then (definitions) =>
-        @$scope.labels = definitions
+      return this.$scope.$watch('sortOrder', () => {
+        if (!this.$scope.sortOrder) { return; }
+        this.$scope.order = this.$scope.sortOrder.field;
+        return this.$scope.orderReverse = this.$scope.sortOrder.dir === 'DESC';
+      });
+    }
 
 
 
-  Admin_Labels_Ctrl_List.EXPORT_CTRL()
+    type() {
+      throw new Exception('This method must be implemented by a sub-class');
+    }
+
+
+
+    initialLoad() {
+      return this.LabelDefinition.all(this.type).then(definitions => {
+        return this.$scope.labels = definitions;
+      });
+    }
+  }
+  Admin_Labels_Ctrl_List.initClass();
+
+
+
+  return Admin_Labels_Ctrl_List.EXPORT_CTRL();
+});

@@ -1,93 +1,128 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Agents_Ctrl_Import extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Agents_Ctrl_Import'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$http', '$upload', 'DpLicense']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_Agents_Ctrl_Import extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Agents_Ctrl_Import';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['$http', '$upload', 'DpLicense'];
+    }
 
-    init: ->
-      @busy = false
-      @restart()
-      @$scope.fileUploadOptions = {url: @$http.formatApiUrl('/import_csv_upload') }
-
-
-
-    uploadFiles: (files) ->
-      @busy = true
-      @page = 1
-
-      # expected only 1 file
-      for file in files
-        @$upload.upload({url: @$scope.fileUploadOptions.url, file: file}).then(
-          (data) =>
-            @sendEmails data.data.filename
-          () =>
-            @busy = false
-            console.error 'error'
-        )
+    init() {
+      this.busy = false;
+      this.restart();
+      return this.$scope.fileUploadOptions = {url: this.$http.formatApiUrl('/import_csv_upload') };
+    }
 
 
 
-    restart: ->
-      @page = 0 # import page layout number
-      @emails = []
-      @results = []
-      @invited = 0
+    uploadFiles(files) {
+      this.busy = true;
+      this.page = 1;
+
+      // expected only 1 file
+      return Array.from(files).map((file) =>
+        this.$upload.upload({url: this.$scope.fileUploadOptions.url, file}).then(
+          data => {
+            return this.sendEmails(data.data.filename);
+          },
+          () => {
+            this.busy = false;
+            return console.error('error');
+        }));
+    }
 
 
 
-    sendEmails: (filename) ->
-      @busy = true
-
-      agents = {}
-      @emails.map (email) =>
-        agents[email] = {email: email} # make unique
-
-      @Api.sendPostJson('/agents_bulk/check', {agents: agents, filename: filename}).then( (res) =>
-        @busy = false
-        if res.data.need_plan
-          @DpLicense.openUpgradeLicense('upgrade_plan').then(=>
-            @doSendEmails(filename)
-          )
-        else
-          @doSendEmails(filename)
-      , =>
-        @busy = false
-      )
-
-    doSendEmails: (filename) ->
-      @busy = true
-      @page = 1
-
-      agents = {}
-      @emails.map (email) =>
-        agents[email] = {email: email} # make unique
-
-      @Api.sendPostJson('/agents_bulk', {agents: agents, filename: filename}).then(
-        (data) =>
-          @busy = false
-
-          return if data.data.length? # catch array instead of object, possible if no results
-
-          for own email, entry of data.data
-            @invited++ if entry.person_id?
-
-            if 'validation_error' == entry.error_code
-              message = entry.error_message
-              if entry.errors?.errors?
-                message = ''
-                entry.errors.errors.map (error) -> message += (error.message + ' ')
-              entry = {error: message}
-
-            entry._email = email
-            @results.push entry
-
-        () =>
-          @busy = false
-      )
-
-    submitEmails: ->
-      if !@$scope.Form.$valid then return false
-      @sendEmails()
+    restart() {
+      this.page = 0; // import page layout number
+      this.emails = [];
+      this.results = [];
+      return this.invited = 0;
+    }
 
 
-  Admin_Agents_Ctrl_Import.EXPORT_CTRL()
+
+    sendEmails(filename) {
+      this.busy = true;
+
+      const agents = {};
+      this.emails.map(email => {
+        return agents[email] = {email};
+    }); // make unique
+
+      return this.Api.sendPostJson('/agents_bulk/check', {agents, filename}).then( res => {
+        this.busy = false;
+        if (res.data.need_plan) {
+          return this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => {
+            return this.doSendEmails(filename);
+          });
+        } else {
+          return this.doSendEmails(filename);
+        }
+      }
+      , () => {
+        return this.busy = false;
+      });
+    }
+
+    doSendEmails(filename) {
+      this.busy = true;
+      this.page = 1;
+
+      const agents = {};
+      this.emails.map(email => {
+        return agents[email] = {email};
+    }); // make unique
+
+      return this.Api.sendPostJson('/agents_bulk', {agents, filename}).then(
+        data => {
+          this.busy = false;
+
+          if (data.data.length != null) { return; } // catch array instead of object, possible if no results
+
+          return (() => {
+            const result = [];
+            for (let email of Object.keys(data.data || {})) {
+              let entry = data.data[email];
+              if (entry.person_id != null) { this.invited++; }
+
+              if ('validation_error' === entry.error_code) {
+                let message = entry.error_message;
+                if ((entry.errors != null ? entry.errors.errors : undefined) != null) {
+                  message = '';
+                  entry.errors.errors.map(error => message += (error.message + ' '));
+                }
+                entry = {error: message};
+              }
+
+              entry._email = email;
+              result.push(this.results.push(entry));
+            }
+            return result;
+          })();
+        },
+
+        () => {
+          return this.busy = false;
+      });
+    }
+
+    submitEmails() {
+      if (!this.$scope.Form.$valid) { return false; }
+      return this.sendEmails();
+    }
+  }
+  Admin_Agents_Ctrl_Import.initClass();
+
+
+  return Admin_Agents_Ctrl_Import.EXPORT_CTRL();
+});

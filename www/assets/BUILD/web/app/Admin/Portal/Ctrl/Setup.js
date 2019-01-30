@@ -1,261 +1,319 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Portal_Ctrl_Setup extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Portal_Ctrl_Setup'
-    @CTRL_AS = 'Ctrl'
-    @DEPS = ['$timeout']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Portal_Ctrl_Setup extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Portal_Ctrl_Setup';
+      this.CTRL_AS = 'Ctrl';
+      this.DEPS = ['$timeout'];
+    }
 
-    init: ->
-      @settings = {
+    init() {
+      this.settings = {
         deskpro_url: '',
         deskpro_name: '',
         deskpro_domain: '',
         domain_choice: 'default',
         orig_deskpro_url: null
+      };
+      this.portalSettings = this.DataService.get('PortalGeneralSettings');
+
+      this.$scope.brand_id = this.$stateParams.brandId;
+      this.$scope.brand = false;
+
+      this.Api2.sendGet('brands/default').then(res => {
+        return this.$scope.default_brand = res.data.data;
+      });
+
+      this.$scope.$on('icon.selected', (e, path) => this.selectIcon(path));
+
+      this.$scope.$watch('brand_id', () => {
+        this.portalSettings.setBrandId(this.$scope.brand_id);
+        return this.portalSettings.getSettings().then(s => { return this.settings = s; });
+      });
+
+      const tmpUpdate = () => this.portalSettings.updateSettingsTemporary(this.settings);
+      for (let i of ['apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads', 'iface_portal', 'iface_widget']) {
+        this.$scope.$watch(`Ctrl.settings.${i}`, tmpUpdate);
       }
-      @portalSettings = @DataService.get 'PortalGeneralSettings'
 
-      @$scope.brand_id = @$stateParams.brandId
-      @$scope.brand = false
+      if (window.DP_IS_CLOUD) {
+        const updateFn = () => {
+          if (!this.settings.deskpro_domain || (this.settings.deskpro_domain === '')) {
+            this.settings.deskpro_url = '';
+            return;
+          }
 
-      @Api2.sendGet('brands/default').then (res) =>
-        @$scope.default_brand = res.data.data
+          if (this.settings.domain_choice === 'default') {
+            return this.settings.deskpro_url = `https://${this.settings.deskpro_domain}.deskpro.com/`;
+          } else {
+            return this.settings.deskpro_url = `https://${this.settings.deskpro_domain}/`;
+          }
+        };
 
-      @$scope.$on 'icon.selected', (e, path) => @selectIcon path
+        return this.$scope.$watch('Ctrl.settings.deskpro_domain + Ctrl.settings.domain_choice', updateFn);
+      }
+    }
 
-      @$scope.$watch('brand_id', =>
-        @portalSettings.setBrandId(@$scope.brand_id)
-        @portalSettings.getSettings().then((s) => @settings = s)
-      )
+    setPortalMode(v) {
+      if (v === "publish") {
+        this.settings.portal_mode = "publish";
+        this.settings.apps_downloads = true;
+        this.settings.apps_feedback = true;
+        this.settings.apps_guides = true;
+        this.settings.apps_kb = true;
+        this.settings.apps_news = true;
+      } else {
+        this.settings.portal_mode = "tickets";
+        this.settings.apps_downloads = false;
+        this.settings.apps_feedback = false;
+        this.settings.apps_guides = false;
+        this.settings.apps_kb = false;
+        this.settings.apps_news = false;
+      }
 
-      tmpUpdate = => @portalSettings.updateSettingsTemporary(@settings)
-      for i in ['apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads', 'iface_portal', 'iface_widget']
-        @$scope.$watch('Ctrl.settings.'+i, tmpUpdate)
+      return this.portalSettings.updateSettingsTemporary(this.settings);
+    }
 
-      if window.DP_IS_CLOUD
-        updateFn = () =>
-          if !@settings.deskpro_domain or @settings.deskpro_domain == ''
-            @settings.deskpro_url = ''
-            return
+    initialLoad() {
+      const promises = [];
+      if (this.$scope.brand_id !== 'new') {
+        this.portalSettings.setBrandId(this.$scope.brand_id);
 
-          if @settings.domain_choice == 'default'
-            @settings.deskpro_url = 'https://' + @settings.deskpro_domain + '.deskpro.com/'
-          else
-            @settings.deskpro_url = 'https://' + @settings.deskpro_domain + '/'
-
-        @$scope.$watch('Ctrl.settings.deskpro_domain + Ctrl.settings.domain_choice', updateFn)
-
-    setPortalMode: (v) ->
-      if v == "publish"
-        @settings.portal_mode = "publish"
-        @settings.apps_downloads = true
-        @settings.apps_feedback = true
-        @settings.apps_guides = true
-        @settings.apps_kb = true
-        @settings.apps_news = true
-      else
-        @settings.portal_mode = "tickets"
-        @settings.apps_downloads = false
-        @settings.apps_feedback = false
-        @settings.apps_guides = false
-        @settings.apps_kb = false
-        @settings.apps_news = false
-
-      @portalSettings.updateSettingsTemporary(@settings)
-
-    initialLoad: ->
-      promises = []
-      if (@$scope.brand_id != 'new')
-        @portalSettings.setBrandId(@$scope.brand_id)
-
-        settingPromise = @portalSettings.getSettings()
+        const settingPromise = this.portalSettings.getSettings();
 
         settingPromise
-          .then((res) => @settings = res)
-        promises.push(settingPromise)
+          .then(res => { return this.settings = res; });
+        promises.push(settingPromise);
 
-        brandPromise = @Api2.sendGet('/brands/' + @$scope.brand_id)
-        brandPromise.then (res) =>
-          @$scope.brand = res.data.data
+        const brandPromise = this.Api2.sendGet(`/brands/${this.$scope.brand_id}`);
+        brandPromise.then(res => {
+          return this.$scope.brand = res.data.data;
+        });
 
-        promises.push(brandPromise)
-
-      @$q.all(promises)
-
-    cloudSetupHost: ->
-
-      @$scope.ma_error_message = null
-      @$scope.ma_pending_message = null
-
-      d = @$q.defer()
-
-      if !window.DP_IS_CLOUD
-        d.resolve()
-        return d.promise
-
-      input = @settings.deskpro_url
-
-      parser = document.createElement('a')
-      parser.href = input
-      domain = parser.hostname
-
-      if !domain
-        @Growl.error "You must specify a name and a url"
-        $('#helpdesk_name').focus()
-        r.reject()
-        return
-
-      @settings.deskpro_url = 'https://' + domain + '/'
-
-      if @settings.orig_deskpro_url == @settings.deskpro_url
-        d.resolve()
-        return d.promise
-
-      @$scope.ma_pending_message = 'Checking your custom domain'
-
-      @setupCustomDomain(domain).then(=>
-        d.resolve()
-      , =>
-        d.reject()
-      )
-
-      return d.promise
-
-    setupCustomDomain: (domain) ->
-      d = @$q.defer()
-
-      @Api.sendPostJson('/settings/cloud/setup-custom-domain?allowProvider', { domain: domain }).then( (res) =>
-        console.log(res)
-
-        if res.data.error
-          @$scope.ma_pending_message = null
-          @$scope.form_error = 'ma_error_message'
-          @$scope.ma_error_message = res.data.message
-          d.reject()
-        else if !res.data.error && !res.data.domain_id
-          @$scope.ma_error_message = null
-          @$scope.ma_pending_message = res.data.message
-          @$timeout(=>
-            @setupCustomDomain(domain).then(=>
-              d.resolve()
-            , =>
-              d.reject()
-            )
-          , 3000)
-        else
-          @$scope.ma_error_message = null
-          @$scope.ma_pending_message = 'Your custom domain has been configured. It might take a few minutes for your domain to become fully functional.'
-          d.resolve()
-      , =>
-        @$scope.form_error = 'server_error'
-        d.reject()
-      )
-
-      return d.promise
-
-    saveSettings: (skipCloudCheck) ->
-      if (!@settings.deskpro_name)
-        @Growl.error "You must specify a name"
-        $('#helpdesk_name').focus()
-        return false
-
-      if @settings.deskpro_url and !@settings.deskpro_url.match(/^https?:\/\//i)
-        @settings.deskpro_url = 'https://' + @settings.deskpro_url
-
-      @startSpinner()
-
-      if window.DP_IS_CLOUD
-        if skipCloudCheck
-          d = @$q.defer()
-          d.resolve()
-          checkP = d.promise
-        else
-          checkP = @cloudSetupHost()
-      else
-        d = @$q.defer()
-        d.resolve()
-        checkP = d.promise
-
-      checkP.then(=>
-        @portalSettings.updateSettings(@settings).then((s) =>
-          @settings = s
-          @originalUrl == @settings.deskpro_url
-          @stopSpinner()
-          @$scope.$emit 'dp-update-brands'
-        , =>
-          @stopSpinner()
-        )
-      , =>
-        @stopSpinner()
-      )
-
-    createBrand: ->
-      if !@settings.brand_name
-        if @settings.deskpro_name
-          @settings.brand_name = @settings.deskpro_name
-        else if @settings.deskpro_url
-          @settings.brand_name = @settings.deskpro_url.replace(/^https?:\/\//i, '').replace(/\/+$/, '')
-
-      if !@settings.deskpro_name
-        if @settings.brand_name
-          @settings.deskpro_name = @settings.brand_name
-        else if @settings.deskpro_url
-          @settings.deskpro_name = @settings.deskpro_url.replace(/^https?:\/\//i, '').replace(/\/+$/, '')
-
-      if (!@settings.deskpro_name)
-        @Growl.error "You must specify a name"
-        $('#helpdesk_name').focus()
-        return false
-
-      if @settings.deskpro_url and !@settings.deskpro_url.match(/^https?:\/\//i)
-        @settings.deskpro_url = 'https://' + @settings.deskpro_url
-
-      brand = {
-        name: @settings.deskpro_name,
-        slug: @settings.brand_slug
+        promises.push(brandPromise);
       }
 
-      if @settings.deskpro_url
-        brand.url = @settings.deskpro_url
+      return this.$q.all(promises);
+    }
 
-      @startSpinner()
+    cloudSetupHost() {
 
-      if window.DP_IS_CLOUD
-        checkP = @cloudSetupHost()
-      else
-        checkP = @Api2.sendPostJson('/brands/check_url', {url: @settings.deskpro_url})
+      this.$scope.ma_error_message = null;
+      this.$scope.ma_pending_message = null;
 
-      checkP.then( (res) =>
-        if !res || res.data.data.free
-          @Api2.sendPostJson('brands', brand).then (res) =>
-            @Growl.success "Brand created"
-            @$scope.brand_id = res.data.data.id
-            @portalSettings.setBrandId(res.data.data.id)
-            @brandId = res.data.data.id
-            @saveSettings(true).then(=>
-              @stopSpinner()
-              @$state.go 'portal.setup', {brandId: @brandId}
-            )
-          , (res) =>
-            @Growl.error res.data.message
-            @stopSpinner()
-        else if res.data.data.reason
-          @Growl.error res.data.data.reason
-          $('#helpdesk_url').focus()
-          @stopSpinner()
-        else
-          @Growl.error "Each brand need to have a different url"
-          $('#helpdesk_url').focus()
-          @stopSpinner()
-      , =>
-        @stopSpinner()
-        @Growl.error "We can't check this url. Try another one or contact your system administrator."
-      )
+      const d = this.$q.defer();
 
-    deleteBrand: ->
-      if confirm "Are you sure you want to delete this brand? Deleting the brand will re-assign tickets and chat to the default brand. Theme personalization and templates will be lost."
-        @Api2.sendDelete('brands/' + @$scope.brand_id).then  =>
-          @Growl.success("Brand deleted")
-          @$state.go 'portal.setup', {brandId: @$scope.default_brand.id}
-          @$scope.$emit 'dp-update-brands'
+      if (!window.DP_IS_CLOUD) {
+        d.resolve();
+        return d.promise;
+      }
 
-  Admin_Portal_Ctrl_Setup.EXPORT_CTRL()
+      const input = this.settings.deskpro_url;
+
+      const parser = document.createElement('a');
+      parser.href = input;
+      const domain = parser.hostname;
+
+      if (!domain) {
+        this.Growl.error("You must specify a name and a url");
+        $('#helpdesk_name').focus();
+        r.reject();
+        return;
+      }
+
+      this.settings.deskpro_url = `https://${domain}/`;
+
+      if (this.settings.orig_deskpro_url === this.settings.deskpro_url) {
+        d.resolve();
+        return d.promise;
+      }
+
+      this.$scope.ma_pending_message = 'Checking your custom domain';
+
+      this.setupCustomDomain(domain).then(() => {
+        return d.resolve();
+      }
+      , () => {
+        return d.reject();
+      });
+
+      return d.promise;
+    }
+
+    setupCustomDomain(domain) {
+      const d = this.$q.defer();
+
+      this.Api.sendPostJson('/settings/cloud/setup-custom-domain?allowProvider', { domain }).then( res => {
+        console.log(res);
+
+        if (res.data.error) {
+          this.$scope.ma_pending_message = null;
+          this.$scope.form_error = 'ma_error_message';
+          this.$scope.ma_error_message = res.data.message;
+          return d.reject();
+        } else if (!res.data.error && !res.data.domain_id) {
+          this.$scope.ma_error_message = null;
+          this.$scope.ma_pending_message = res.data.message;
+          return this.$timeout(() => {
+            return this.setupCustomDomain(domain).then(() => {
+              return d.resolve();
+            }
+            , () => {
+              return d.reject();
+            });
+          }
+          , 3000);
+        } else {
+          this.$scope.ma_error_message = null;
+          this.$scope.ma_pending_message = 'Your custom domain has been configured. It might take a few minutes for your domain to become fully functional.';
+          return d.resolve();
+        }
+      }
+      , () => {
+        this.$scope.form_error = 'server_error';
+        return d.reject();
+      });
+
+      return d.promise;
+    }
+
+    saveSettings(skipCloudCheck) {
+      let checkP, d;
+      if (!this.settings.deskpro_name) {
+        this.Growl.error("You must specify a name");
+        $('#helpdesk_name').focus();
+        return false;
+      }
+
+      if (this.settings.deskpro_url && !this.settings.deskpro_url.match(/^https?:\/\//i)) {
+        this.settings.deskpro_url = `https://${this.settings.deskpro_url}`;
+      }
+
+      this.startSpinner();
+
+      if (window.DP_IS_CLOUD) {
+        if (skipCloudCheck) {
+          d = this.$q.defer();
+          d.resolve();
+          checkP = d.promise;
+        } else {
+          checkP = this.cloudSetupHost();
+        }
+      } else {
+        d = this.$q.defer();
+        d.resolve();
+        checkP = d.promise;
+      }
+
+      return checkP.then(() => {
+        return this.portalSettings.updateSettings(this.settings).then(s => {
+          this.settings = s;
+          this.originalUrl === this.settings.deskpro_url;
+          this.stopSpinner();
+          return this.$scope.$emit('dp-update-brands');
+        }
+        , () => {
+          return this.stopSpinner();
+        });
+      }
+      , () => {
+        return this.stopSpinner();
+      });
+    }
+
+    createBrand() {
+      let checkP;
+      if (!this.settings.brand_name) {
+        if (this.settings.deskpro_name) {
+          this.settings.brand_name = this.settings.deskpro_name;
+        } else if (this.settings.deskpro_url) {
+          this.settings.brand_name = this.settings.deskpro_url.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+        }
+      }
+
+      if (!this.settings.deskpro_name) {
+        if (this.settings.brand_name) {
+          this.settings.deskpro_name = this.settings.brand_name;
+        } else if (this.settings.deskpro_url) {
+          this.settings.deskpro_name = this.settings.deskpro_url.replace(/^https?:\/\//i, '').replace(/\/+$/, '');
+        }
+      }
+
+      if (!this.settings.deskpro_name) {
+        this.Growl.error("You must specify a name");
+        $('#helpdesk_name').focus();
+        return false;
+      }
+
+      if (this.settings.deskpro_url && !this.settings.deskpro_url.match(/^https?:\/\//i)) {
+        this.settings.deskpro_url = `https://${this.settings.deskpro_url}`;
+      }
+
+      const brand = {
+        name: this.settings.deskpro_name,
+        slug: this.settings.brand_slug
+      };
+
+      if (this.settings.deskpro_url) {
+        brand.url = this.settings.deskpro_url;
+      }
+
+      this.startSpinner();
+
+      if (window.DP_IS_CLOUD) {
+        checkP = this.cloudSetupHost();
+      } else {
+        checkP = this.Api2.sendPostJson('/brands/check_url', {url: this.settings.deskpro_url});
+      }
+
+      return checkP.then( res => {
+        if (!res || res.data.data.free) {
+          return this.Api2.sendPostJson('brands', brand).then(res => {
+            this.Growl.success("Brand created");
+            this.$scope.brand_id = res.data.data.id;
+            this.portalSettings.setBrandId(res.data.data.id);
+            this.brandId = res.data.data.id;
+            return this.saveSettings(true).then(() => {
+              this.stopSpinner();
+              return this.$state.go('portal.setup', {brandId: this.brandId});
+            });
+          }
+          , res => {
+            this.Growl.error(res.data.message);
+            return this.stopSpinner();
+          });
+        } else if (res.data.data.reason) {
+          this.Growl.error(res.data.data.reason);
+          $('#helpdesk_url').focus();
+          return this.stopSpinner();
+        } else {
+          this.Growl.error("Each brand need to have a different url");
+          $('#helpdesk_url').focus();
+          return this.stopSpinner();
+        }
+      }
+      , () => {
+        this.stopSpinner();
+        return this.Growl.error("We can't check this url. Try another one or contact your system administrator.");
+      });
+    }
+
+    deleteBrand() {
+      if (confirm("Are you sure you want to delete this brand? Deleting the brand will re-assign tickets and chat to the default brand. Theme personalization and templates will be lost.")) {
+        return this.Api2.sendDelete(`brands/${this.$scope.brand_id}`).then(() => {
+          this.Growl.success("Brand deleted");
+          this.$state.go('portal.setup', {brandId: this.$scope.default_brand.id});
+          return this.$scope.$emit('dp-update-brands');
+        });
+      }
+    }
+  }
+  Admin_Portal_Ctrl_Setup.initClass();
+
+  return Admin_Portal_Ctrl_Setup.EXPORT_CTRL();
+});

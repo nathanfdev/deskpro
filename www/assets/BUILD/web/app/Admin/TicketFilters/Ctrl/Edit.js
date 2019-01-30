@@ -1,120 +1,157 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/Util'
-], (
+], function(
   Admin_Ctrl_Base,
   Util
-) ->
-  class Admin_TicketFilters_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_TicketFilters_Ctrl_Edit'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['dpObTypesDefTicketFilter', '$stateParams', '$timeout']
+) {
+  class Admin_TicketFilters_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketFilters_Ctrl_Edit';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['dpObTypesDefTicketFilter', '$stateParams', '$timeout'];
+    }
 
-    init: ->
-      @filterId = parseInt(@$stateParams.id || 0)
-      @filterData = @DataService.get('TicketFilters')
-      @filter = null
+    init() {
+      this.filterId = parseInt(this.$stateParams.id || 0);
+      this.filterData = this.DataService.get('TicketFilters');
+      this.filter = null;
 
-      @filter_criteria = {}
-      @criteriaTypeDef = @dpObTypesDefTicketFilter
-      @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
+      this.filter_criteria = {};
+      this.criteriaTypeDef = this.dpObTypesDefTicketFilter;
+      return this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
+    }
 
-    initialLoad: ->
-      p = @filterData.loadEditFilterData(@filterId).then( (data) =>
-        @agents = data.agents
-        @teams = data.teams
-        if not @teams[0]
-          @teams = null
+    initialLoad() {
+      const p = this.filterData.loadEditFilterData(this.filterId).then( data => {
+        this.agents = data.agents;
+        this.teams = data.teams;
+        if (!this.teams[0]) {
+          this.teams = null;
+        }
 
-        if data.filter
-          @filter = data.filter
-        else
-          @filter = {
+        if (data.filter) {
+          return this.filter = data.filter;
+        } else {
+          return this.filter = {
             is_global: true
-          }
-      )
+          };
+        }
+      });
 
-      p2 = @criteriaTypeDef.loadDataOptions().then(=>
-        @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
-      )
+      const p2 = this.criteriaTypeDef.loadDataOptions().then(() => {
+        return this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
+      });
 
-      return @$q.all([p, p2]).then(=>
-        @form = @getFormFromModel(@filter)
+      return this.$q.all([p, p2]).then(() => {
+        this.form = this.getFormFromModel(this.filter);
 
-        @filter_criteria = {}
-        if @filter.terms
-          for term in @filter.terms.terms
-            rowId = Util.uid('term')
-            @filter_criteria[rowId] = term
-      )
+        this.filter_criteria = {};
+        if (this.filter.terms) {
+          return (() => {
+            const result = [];
+            for (let term of Array.from(this.filter.terms.terms)) {
+              const rowId = Util.uid('term');
+              result.push(this.filter_criteria[rowId] = term);
+            }
+            return result;
+          })();
+        }
+      });
+    }
 
-    getFormFromModel: (filterModel) ->
-      form = {}
-      form.title = filterModel.title || ''
+    getFormFromModel(filterModel) {
+      const form = {};
+      form.title = filterModel.title || '';
 
-      if filterModel.is_global
-        form.perm_type = 'global'
-      else if filterModel.agent_team and @teams[0]
-        form.perm_type = 'team'
-      else
-        form.perm_type = 'agent'
+      if (filterModel.is_global) {
+        form.perm_type = 'global';
+      } else if (filterModel.agent_team && this.teams[0]) {
+        form.perm_type = 'team';
+      } else {
+        form.perm_type = 'agent';
+      }
 
-      if @filter.person
-        form.agent_id = @filter.person.id + ""
-      else
-        form.agent_id = @agents[0].id + ""
+      if (this.filter.person) {
+        form.agent_id = this.filter.person.id + "";
+      } else {
+        form.agent_id = this.agents[0].id + "";
+      }
 
-      form.team_id = null
-      if @teams
-        if @filter.agent_team
-          form.team_id = @filter.agent_team.id + ""
-        else
-          form.team_id = @teams[0].id + ""
-
-      return form
-
-    saveForm: ->
-      if not @$scope.form_props.$valid then return
-
-      if @filterId
-        method = 'POST'
-        url = "/ticket_filters/#{@filterId}"
-      else
-        method = 'PUT'
-        url = "/ticket_filters"
-
-      postData = {
-        filter: {
-          title: @form.title,
-          is_global:     @form.perm_type == 'global',
-          person_id:     if @form.perm_type == 'agent' then parseInt(@form.agent_id) || null else null,
-          agent_team_id: if @form.perm_type == 'team' then parseInt(@form.team_id) || null else null
+      form.team_id = null;
+      if (this.teams) {
+        if (this.filter.agent_team) {
+          form.team_id = this.filter.agent_team.id + "";
+        } else {
+          form.team_id = this.teams[0].id + "";
         }
       }
-      postData.filter.terms = @filter_criteria
 
-      @sendFormSaveApiCall(method, url, postData).then(
-        (res) =>
-          @Growl.success(@getRegisteredMessage('saved_filter'))
+      return form;
+    }
 
-          @filter.title = @form.title
-          if res.data.filter_id
-            @filter.id = res.data.filter_id
+    saveForm() {
+      let method, url;
+      if (!this.$scope.form_props.$valid) { return; }
 
-          @filter.is_global = @form.perm_type == 'global'
-          @filter.person = null
-          @filter.agent_team = null
+      if (this.filterId) {
+        method = 'POST';
+        url = `/ticket_filters/${this.filterId}`;
+      } else {
+        method = 'PUT';
+        url = "/ticket_filters";
+      }
 
-          if @form.perm_type == 'agent'
-            @filter.person = @agents.filter((x) => x.id == parseInt(@form.agent_id))[0]
-          if @form.perm_type == 'team'
-            @filter.agent_team = @teams.filter((x) => x.id == parseInt(@form.team_id))[0]
+      const postData = {
+        filter: {
+          title: this.form.title,
+          is_global:     this.form.perm_type === 'global',
+          person_id:     this.form.perm_type === 'agent' ? parseInt(this.form.agent_id) || null : null,
+          agent_team_id: this.form.perm_type === 'team' ? parseInt(this.form.team_id) || null : null
+        }
+      };
+      postData.filter.terms = this.filter_criteria;
 
-          @filterData.loadList(true).then =>
-            @$state.go('tickets.ticket_filters.gocreate') if !@filterId
+      return this.sendFormSaveApiCall(method, url, postData).then(
+        res => {
+          this.Growl.success(this.getRegisteredMessage('saved_filter'));
 
-        (res) =>
-          @Growl.error res.data?.error_message if res.data?.error_message
-      )
+          this.filter.title = this.form.title;
+          if (res.data.filter_id) {
+            this.filter.id = res.data.filter_id;
+          }
 
-  Admin_TicketFilters_Ctrl_Edit.EXPORT_CTRL()
+          this.filter.is_global = this.form.perm_type === 'global';
+          this.filter.person = null;
+          this.filter.agent_team = null;
+
+          if (this.form.perm_type === 'agent') {
+            this.filter.person = this.agents.filter(x => x.id === parseInt(this.form.agent_id))[0];
+          }
+          if (this.form.perm_type === 'team') {
+            this.filter.agent_team = this.teams.filter(x => x.id === parseInt(this.form.team_id))[0];
+          }
+
+          return this.filterData.loadList(true).then(() => {
+            if (!this.filterId) { return this.$state.go('tickets.ticket_filters.gocreate'); }
+          });
+        },
+
+        res => {
+          if (res.data != null ? res.data.error_message : undefined) { return this.Growl.error(res.data != null ? res.data.error_message : undefined); }
+      });
+    }
+  }
+  Admin_TicketFilters_Ctrl_Edit.initClass();
+
+  return Admin_TicketFilters_Ctrl_Edit.EXPORT_CTRL();
+});

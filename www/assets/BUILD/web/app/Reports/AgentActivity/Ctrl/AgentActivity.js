@@ -1,64 +1,81 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Reports/Main/Ctrl/Base',
   'moment',
-], (
+], function(
   ReportsBaseCtrl,
   moment,
-) ->
-  class Reports_AgentActivity_Ctrl_AgentActivity extends ReportsBaseCtrl
-    @CTRL_ID   = 'Reports_AgentActivity_Ctrl_AgentActivity'
-    @CTRL_AS   = 'AgentActivity'
-    @DEPS      = ['Api', '$sce']
+) {
+  class Reports_AgentActivity_Ctrl_AgentActivity extends ReportsBaseCtrl {
+    static initClass() {
+      this.CTRL_ID   = 'Reports_AgentActivity_Ctrl_AgentActivity';
+      this.CTRL_AS   = 'AgentActivity';
+      this.DEPS      = ['Api', '$sce'];
+    }
 
 
-    ###
-    # Initializing..
-    ###
-    init: ->
-      @html = ''
-      @all_agents = []
-      @agent_teams = []
-      @filter = {}
-      @filter.date = new Date()
-      @filter.agent_or_team = '0'
+    /*
+     * Initializing..
+     */
+    init() {
+      this.html = '';
+      this.all_agents = [];
+      this.agent_teams = [];
+      this.filter = {};
+      this.filter.date = new Date();
+      this.filter.agent_or_team = '0';
 
-      @$scope.$watch('AgentActivity.filter.agent_or_team', =>
-        @html = ''
-      )
-      @$scope.$watch('AgentActivity.filter.date', =>
-        @html = ''
-      )
-
-
-    ###
-    # Just doing all the necessary AJAX calls here
-    ###
-    initialLoad: ->
-      date = moment(@filter.date).format("YYYY-MM-DD")
-      @Api.sendGet("/reports/agent-activity/0/${date}").then (res) =>
-        @html = @$sce.trustAsHtml(res.data.html)
-        @all_agents = res.data.all_agents
-        @agent_teams = res.data.agent_teams
+      this.$scope.$watch('AgentActivity.filter.agent_or_team', () => {
+        return this.html = '';
+      });
+      return this.$scope.$watch('AgentActivity.filter.date', () => {
+        return this.html = '';
+      });
+    }
 
 
-    ###
-    # This method updates current parameters that are used for sending request to API
-    ###
-    updateFilter: ->
-      @filter.date = new Date() if !@filter.date
-      @loadResults()
+    /*
+     * Just doing all the necessary AJAX calls here
+     */
+    initialLoad() {
+      const date = moment(this.filter.date).format("YYYY-MM-DD");
+      return this.Api.sendGet("/reports/agent-activity/0/${date}").then(res => {
+        this.html = this.$sce.trustAsHtml(res.data.html);
+        this.all_agents = res.data.all_agents;
+        return this.agent_teams = res.data.agent_teams;
+      });
+    }
 
 
-    ###
-    # Loading the results of sending request to API
-    ###
-    loadResults: ->
-      @startSpinner 'loading_results'
-      date = moment(@filter.date).format("YYYY-MM-DD")
-      @Api.sendGet("/reports/agent-activity/#{@filter.agent_or_team}/#{date}").then (res) =>
-        @html = @$sce.trustAsHtml(res.data.html)
-        @stopSpinner 'loading_results', true
+    /*
+     * This method updates current parameters that are used for sending request to API
+     */
+    updateFilter() {
+      if (!this.filter.date) { this.filter.date = new Date(); }
+      return this.loadResults();
+    }
+
+
+    /*
+     * Loading the results of sending request to API
+     */
+    loadResults() {
+      this.startSpinner('loading_results');
+      const date = moment(this.filter.date).format("YYYY-MM-DD");
+      return this.Api.sendGet(`/reports/agent-activity/${this.filter.agent_or_team}/${date}`).then(res => {
+        this.html = this.$sce.trustAsHtml(res.data.html);
+        return this.stopSpinner('loading_results', true);
+      });
+    }
+  }
+  Reports_AgentActivity_Ctrl_AgentActivity.initClass();
 
 
 
-  Reports_AgentActivity_Ctrl_AgentActivity.EXPORT_CTRL()
+  return Reports_AgentActivity_Ctrl_AgentActivity.EXPORT_CTRL();
+});

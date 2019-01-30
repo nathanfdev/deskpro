@@ -1,4 +1,10 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Util/Strings',
   'Admin/CustomFields/Tickets/DataService/TicketFields',
   'Admin/CustomFields/Chat/DataService/ChatFields',
@@ -19,7 +25,7 @@ define [
 
   'Admin/TicketWebhooks/DataService/Webhooks',
 
-  'Admin/TicketProblems/DataService/Problems'
+  'Admin/TicketProblems/DataService/Problems',
   'Admin/TwitterAccounts/DataService/TwitterAccounts',
   'Admin/ApiKeys/DataService/ApiKeys',
   'Admin/ApiKeys/DataService/ApiLogs',
@@ -33,9 +39,9 @@ define [
   'Admin/AgentTeams/DataService/AgentTeams',
   'Admin/Tasks/DataService/Tasks',
   'Admin/Usersources/DataService/Usersources',
-  'Admin/Portal/DataService/PortalGeneralSettings'
+  'Admin/Portal/DataService/PortalGeneralSettings',
   'Admin/Server/DataService/Jobs'
-], (
+], function(
   Strings,
   DataService_TicketFields,
   DataService_ChatFields,
@@ -56,7 +62,7 @@ define [
 
   DataService_Webhooks,
 
-  DataService_Problems
+  DataService_Problems,
   DataService_TwitterAccounts,
   DataService_ApiKeys,
   DataService_ApiLogs,
@@ -70,46 +76,55 @@ define [
   DataService_AgentTeams,
   DataService_Tasks,
   DataService_Usersources,
-  DataService_PortalGeneralSettings
+  DataService_PortalGeneralSettings,
   DataService_Jobs
-) ->
-  ###
-  # A simple wrapper around the data services
-  ###
-  class Admin_Main_Service_DataServiceManager
-    constructor: (@$injector) ->
-      @ds_cache = {}
-      @registered = {}
+) {
+  /*
+   * A simple wrapper around the data services
+   */
+  let Admin_Main_Service_DataServiceManager;
+  return (Admin_Main_Service_DataServiceManager = class Admin_Main_Service_DataServiceManager {
+    constructor($injector) {
+      this.$injector = $injector;
+      this.ds_cache = {};
+      this.registered = {};
+    }
 
-    get: (serviceId, args...) ->
-      cacheKey = serviceId
+    get(serviceId, ...args) {
+      let obj;
+      let cacheKey = serviceId;
 
       cacheKey = args.reduce(
-        (prev, current) -> prev + '_' + current.toString()
+        (prev, current) => prev + '_' + current.toString(),
         cacheKey
-      )
+      );
 
-      if @ds_cache[cacheKey]
-        obj = @ds_cache[cacheKey]
-      else
-        obj = @factory.apply @, arguments
-        @ds_cache[cacheKey] = obj
+      if (this.ds_cache[cacheKey]) {
+        obj = this.ds_cache[cacheKey];
+      } else {
+        obj = this.factory.apply(this, arguments);
+        this.ds_cache[cacheKey] = obj;
+      }
 
-      obj
+      return obj;
+    }
 
 
 
-    factory: (serviceId) ->
-# If this class has a custom initXXX method, call that
-# instead uf the default
-      initName = 'init' + Strings.ucFirst(Strings.toCamelCase(serviceId))
-      return @[initName]() if @[initName]?
+    factory(serviceId) {
+// If this class has a custom initXXX method, call that
+// instead uf the default
+      const initName = `init${Strings.ucFirst(Strings.toCamelCase(serviceId))}`;
+      if (this[initName] != null) { return this[initName](); }
 
-      name = 'DataService_' + serviceId
-      eval("constructor = #{name};")
+      const name = `DataService_${serviceId}`;
+      eval(`constructor = ${name};`);
 
-      throw new Error("Invalid data service name: " + name) if !constructor
+      if (!constructor) { throw new Error(`Invalid data service name: ${name}`); }
 
-      obj = @$injector.instantiate(constructor)
-      obj.init.apply obj, Array.prototype.slice.call(arguments, 1) if obj.init?
-      obj
+      const obj = this.$injector.instantiate(constructor);
+      if (obj.init != null) { obj.init.apply(obj, Array.prototype.slice.call(arguments, 1)); }
+      return obj;
+    }
+  });
+});

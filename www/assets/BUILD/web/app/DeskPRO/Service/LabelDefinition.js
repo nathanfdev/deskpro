@@ -1,64 +1,98 @@
-define ['angular'], (angular) ->
-  class DeskPRO_Service_LabelDefinition
-    loadDefinitions = null
-    updateColorForLabel = null
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['angular'], function(angular) {
+  let DeskPRO_Service_LabelDefinition;
+  return DeskPRO_Service_LabelDefinition = (function() {
+    let loadDefinitions = undefined;
+    let updateColorForLabel = undefined;
+    DeskPRO_Service_LabelDefinition = class DeskPRO_Service_LabelDefinition {
+      static initClass() {
+        loadDefinitions = null;
+        updateColorForLabel = null;
+      }
 
-    constructor: (@$q, definitionsPromise) ->
-      loadPromise = null
-      @definitions =
-        tickets: {}
-        people: {}
-        organizations: {}
-        news: {}
-        kb: {}
-        feedback: {}
-        downloads: {}
-        chat: {}
+      constructor($q, definitionsPromise) {
+        this.all = this.all.bind(this);
+        this.$q = $q;
+        let loadPromise = null;
+        this.definitions = {
+          tickets: {},
+          people: {},
+          organizations: {},
+          news: {},
+          kb: {},
+          feedback: {},
+          downloads: {},
+          chat: {}
+        };
 
-      loadDefinitions = =>
-        return loadPromise if loadPromise
-        d = @$q.defer()
+        loadDefinitions = () => {
+          if (loadPromise) { return loadPromise; }
+          const d = this.$q.defer();
 
-        definitionsPromise.then (data) =>
+          definitionsPromise.then(data => {
 
-          for def in data.data
-            continue if !def.label? || !def.label_type?
-            label = def.label.toLowerCase()
-            @definitions[def.label_type] = @definitions[def.label_type] || {}
-            @definitions[def.label_type][label] = angular.copy def
+            for (let def of Array.from(data.data)) {
+              if ((def.label == null) || (def.label_type == null)) { continue; }
+              const label = def.label.toLowerCase();
+              this.definitions[def.label_type] = this.definitions[def.label_type] || {};
+              this.definitions[def.label_type][label] = angular.copy(def);
+            }
 
-          d.resolve @definitions
+            return d.resolve(this.definitions);
+          });
 
-        loadPromise = d.promise
+          return loadPromise = d.promise;
+        };
+      }
 
-    all: (label_type) =>
-      d = @$q.defer()
-      loadDefinitions().then => d.resolve @definitions[label_type]
-      d.promise
+      all(label_type) {
+        const d = this.$q.defer();
+        loadDefinitions().then(() => d.resolve(this.definitions[label_type]));
+        return d.promise;
+      }
 
-    get: (label_type, label) ->
-      d = @$q.defer()
-      label = (label || '').toLowerCase()
-      loadDefinitions().then(=>
-        if @definitions[label_type]
-          val = @definitions[label_type][label]
-        else
-          val = null
-        d.resolve(val)
-      )
-      d.promise
+      get(label_type, label) {
+        const d = this.$q.defer();
+        label = (label || '').toLowerCase();
+        loadDefinitions().then(() => {
+          let val;
+          if (this.definitions[label_type]) {
+            val = this.definitions[label_type][label];
+          } else {
+            val = null;
+          }
+          return d.resolve(val);
+        });
+        return d.promise;
+      }
 
-    update: (_old, _new) ->
-      return if !_new.label || !_new.label_type
-      label = _new.label.toLowerCase()
+      update(_old, _new) {
+        if (!_new.label || !_new.label_type) { return; }
+        const label = _new.label.toLowerCase();
 
-      if _old
-        delete @definitions[_old.label_type][_old.label.toLowerCase()]
+        if (_old) {
+          delete this.definitions[_old.label_type][_old.label.toLowerCase()];
+        }
 
-      @definitions[_new.label_type] = @definitions[_new.label_type] || {}
-      @definitions[_new.label_type][label] = _new
+        this.definitions[_new.label_type] = this.definitions[_new.label_type] || {};
+        return this.definitions[_new.label_type][label] = _new;
+      }
 
-    remove: (def) ->
-      return if !def.label || !def.label_type
-      if @definitions[def.label_type]?[def.label.toLowerCase()]?
-        delete @definitions[def.label_type][def.label.toLowerCase()]
+      remove(def) {
+        if (!def.label || !def.label_type) { return; }
+        if ((this.definitions[def.label_type] != null ? this.definitions[def.label_type][def.label.toLowerCase()] : undefined) != null) {
+          return delete this.definitions[def.label_type][def.label.toLowerCase()];
+        }
+      }
+    };
+    DeskPRO_Service_LabelDefinition.initClass();
+    return DeskPRO_Service_LabelDefinition;
+  })();
+});

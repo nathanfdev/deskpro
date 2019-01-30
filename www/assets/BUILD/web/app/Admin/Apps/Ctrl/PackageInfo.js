@@ -1,52 +1,78 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Apps_Ctrl_PackageInfo extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Apps_Ctrl_PackageInfo'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$http']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_Apps_Ctrl_PackageInfo extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Apps_Ctrl_PackageInfo';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['$http'];
+    }
 
-    init: ->
-      @packageName = @$stateParams.name;
-      return
+    init() {
+      this.packageName = this.$stateParams.name;
+    }
 
-    initialLoad: ->
-      promise = @Api.sendDataGet({
-        pack: '/apps/packages/' + @packageName,
-      }).then( (result) =>
-        @pack = result.data.pack['package']
-        if @pack.is_usersource_app
-          for the_app in @pack.apps
-            if the_app.user_usersource
-              @pack.user_usersource_app = the_app
-            if the_app.agent_usersource
-              @pack.agent_usersource_app = the_app
-
-      )
-
-      return promise
-
-    startDelete: ->
-      doDelete = =>
-        @Api.sendDelete('/apps/packages/' + @pack.name).success( =>
-          @$state.go('apps.go_apps')
-        )
-
-      @$modal.open({
-        templateUrl: @getTemplatePath('Apps/package-delete-modal.html'),
-        controller: ['pack', '$scope', '$modalInstance', (pack, $scope, $modalInstance) ->
-          $scope.pack = pack
-          $scope.dismiss = ->
-            $modalInstance.close();
-
-          $scope.confirm = ->
-            $scope.is_loading = true
-            doDelete().then(->
-              $modalInstance.close();
-            )
-        ],
-        resolve: {
-          pack: =>
-            return @pack
+    initialLoad() {
+      const promise = this.Api.sendDataGet({
+        pack: `/apps/packages/${this.packageName}`,
+      }).then( result => {
+        this.pack = result.data.pack['package'];
+        if (this.pack.is_usersource_app) {
+          return (() => {
+            const result1 = [];
+            for (let the_app of Array.from(this.pack.apps)) {
+              if (the_app.user_usersource) {
+                this.pack.user_usersource_app = the_app;
+              }
+              if (the_app.agent_usersource) {
+                result1.push(this.pack.agent_usersource_app = the_app);
+              } else {
+                result1.push(undefined);
+              }
+            }
+            return result1;
+          })();
         }
+
       });
 
-  Admin_Apps_Ctrl_PackageInfo.EXPORT_CTRL()
+      return promise;
+    }
+
+    startDelete() {
+      const doDelete = () => {
+        return this.Api.sendDelete(`/apps/packages/${this.pack.name}`).success( () => {
+          return this.$state.go('apps.go_apps');
+        });
+      };
+
+      return this.$modal.open({
+        templateUrl: this.getTemplatePath('Apps/package-delete-modal.html'),
+        controller: ['pack', '$scope', '$modalInstance', function(pack, $scope, $modalInstance) {
+          $scope.pack = pack;
+          $scope.dismiss = () => $modalInstance.close();
+
+          return $scope.confirm = function() {
+            $scope.is_loading = true;
+            return doDelete().then(() => $modalInstance.close());
+          };
+        }
+        ],
+        resolve: {
+          pack: () => {
+            return this.pack;
+          }
+        }
+      });
+    }
+  }
+  Admin_Apps_Ctrl_PackageInfo.initClass();
+
+  return Admin_Apps_Ctrl_PackageInfo.EXPORT_CTRL();
+});

@@ -1,7 +1,13 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'angular',
 
-# Helpers
+// Helpers
   'Interface/App/Routing/StateCollection',
   'Interface/App/Routing/StateConfig',
 
@@ -13,7 +19,7 @@ define [
   'Interface/App/Service/TemplateLoader',
   'Interface/App/Service/TemplateManager',
 
-# angular modules
+// angular modules
   'angularAnimate',
   'angularSanitize',
   'angularBootstrap',
@@ -28,18 +34,18 @@ define [
   'DeskPRO/OptionBuilder/Module',
   'DeskPRO/CategoryBuilder/Module',
 
-# global deps
+// global deps
   'angularGridster',
 
   'jquery',
   'moment',
   'momentTimezone',
-], (
+], function(
   angular,
 
   StateCollection,
   StateConfig,
-  HeadlessRouting
+  HeadlessRouting,
 
   SetupDeskPROService,
   SetupControllers,
@@ -47,8 +53,8 @@ define [
   AppConfig,
   TemplateLoader,
   TemplateManager,
-) ->
-  HeadlessInterfaceApp = angular.module('DeskPRO.HeadlessInterfaceApp', [
+) {
+  const HeadlessInterfaceApp = angular.module('DeskPRO.HeadlessInterfaceApp', [
     'ngAnimate',
     'ngSanitize',
     'ui.router',
@@ -58,64 +64,66 @@ define [
     'angularMoment',
     'oc.lazyLoad',
     'gridster',
-  ])
+  ]);
 
-  SetupDeskPROService(HeadlessInterfaceApp)
+  SetupDeskPROService(HeadlessInterfaceApp);
 
-  SetupControllers(HeadlessInterfaceApp)
-  SetupDirectives(HeadlessInterfaceApp)
+  SetupControllers(HeadlessInterfaceApp);
+  SetupDirectives(HeadlessInterfaceApp);
 
-  isDone = false
-  HeadlessInterfaceApp.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
-    return if isDone
-    isDone = true
+  let isDone = false;
+  HeadlessInterfaceApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    if (isDone) { return; }
+    isDone = true;
 
-    $urlRouterProvider.otherwise("/")
+    $urlRouterProvider.otherwise("/");
 
-    reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.HeadlessInterfaceApp'))
-    HeadlessRouting(reportStates)
-    for w in reportStates.whens
-      $urlRouterProvider.when(w[0], w[1])
-    for r in reportStates.routes
-      r.applyToStateProvider($stateProvider)
-  ])
+    const reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.HeadlessInterfaceApp'));
+    HeadlessRouting(reportStates);
+    for (let w of Array.from(reportStates.whens)) {
+      $urlRouterProvider.when(w[0], w[1]);
+    }
+    return Array.from(reportStates.routes).map((r) =>
+      r.applyToStateProvider($stateProvider));
+  }
+  ]);
 
-  HeadlessInterfaceApp.service('AppConfig', -> return new AppConfig)
+  HeadlessInterfaceApp.service('AppConfig', () => new AppConfig);
 
-  HeadlessInterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', (AppConfig, $http, $q) ->
-    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q)
-    return window.DP_TEMPLATE_LOADER
-  ])
+  HeadlessInterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', function(AppConfig, $http, $q) {
+    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q);
+    return window.DP_TEMPLATE_LOADER;
+  }
+  ]);
 
-  HeadlessInterfaceApp.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) ->
-    return new TemplateManager(TemplateLoader, $templateCache, $q)
-  ])
+  HeadlessInterfaceApp.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) => new TemplateManager(TemplateLoader, $templateCache, $q)
+  ]);
 
-  HeadlessInterfaceApp.run(['TemplateLoader', (TemplateLoader) -> ])
-  HeadlessInterfaceApp.run(['TemplateManager', (TemplateManager) -> ])
+  HeadlessInterfaceApp.run(['TemplateLoader', function(TemplateLoader) {} ]);
+  HeadlessInterfaceApp.run(['TemplateManager', function(TemplateManager) {} ]);
 
-  HeadlessInterfaceApp.factory('HttpTemplateInterceptor', [->
-    isTemplateUrl = (url) ->
-      return !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/)
-    getViewName = (url) ->
-      return url.replace(/^\//, '')
-    getLoadUrl = (view) ->
-      return window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1'
+  HeadlessInterfaceApp.factory('HttpTemplateInterceptor', [function() {
+    const isTemplateUrl = url => !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/);
+    const getViewName = url => url.replace(/^\//, '');
+    const getLoadUrl = view => window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1';
 
     return {
-      request: (config) ->
-        if isTemplateUrl(config.url)
-          config.url = getLoadUrl(getViewName(config.url))
-          config.dp_is_template = true
+      request(config) {
+        if (isTemplateUrl(config.url)) {
+          config.url = getLoadUrl(getViewName(config.url));
+          config.dp_is_template = true;
+        }
 
-        return config
-    }
-  ])
+        return config;
+      }
+    };
+  }
+  ]);
 
-  HeadlessInterfaceApp.config(['$httpProvider', ($httpProvider) ->
-    $httpProvider.interceptors.push('HttpTemplateInterceptor')
-  ])
+  HeadlessInterfaceApp.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('HttpTemplateInterceptor')
+  ]);
 
-  HeadlessInterfaceApp.service('DashboardWidgetService', [() -> ])
+  HeadlessInterfaceApp.service('DashboardWidgetService', [function() {} ]);
 
-  return HeadlessInterfaceApp
+  return HeadlessInterfaceApp;
+});

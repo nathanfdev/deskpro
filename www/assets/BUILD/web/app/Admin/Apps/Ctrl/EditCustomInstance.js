@@ -1,174 +1,210 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
-  class Admin_Apps_Ctrl_EditCustomInstance extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Apps_Ctrl_EditCustomInstance'
-    @CTRL_AS = 'Ctrl'
-    @DEPS = []
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
+  class Admin_Apps_Ctrl_EditCustomInstance extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Apps_Ctrl_EditCustomInstance';
+      this.CTRL_AS = 'Ctrl';
+      this.DEPS = [];
+    }
 
-    init: ->
-      @$scope.setting_values = {}
-      @instanceId = parseInt(@$stateParams.custom_id.replace(/^custom_/, ''))
+    init() {
+      this.$scope.setting_values = {};
+      this.instanceId = parseInt(this.$stateParams.custom_id.replace(/^custom_/, ''));
 
-      @$scope.aceLoaded = (editor) ->
-        maxH = 500
-        updateH = ->
-          newHeight = editor.getSession().getScreenLength() * editor.renderer.lineHeight + editor.renderer.scrollBar.getWidth()
-          if newHeight > maxH
-            newHeight = maxH
-          if newHeight < 100
-            newHeight = 100
+      this.$scope.aceLoaded = function(editor) {
+        const maxH = 500;
+        const updateH = function() {
+          let newHeight = (editor.getSession().getScreenLength() * editor.renderer.lineHeight) + editor.renderer.scrollBar.getWidth();
+          if (newHeight > maxH) {
+            newHeight = maxH;
+          }
+          if (newHeight < 100) {
+            newHeight = 100;
+          }
 
-          $(editor.container).height(newHeight)
-          editor.resize()
+          $(editor.container).height(newHeight);
+          return editor.resize();
+        };
 
-        updateH()
+        updateH();
         editor.getSession().on('change', updateH);
-        editor.setShowPrintMargin(false)
+        editor.setShowPrintMargin(false);
 
-        $(editor.container).closest('div.editor').data('ace-editor', editor).addClass('with-ace-editor')
+        return $(editor.container).closest('div.editor').data('ace-editor', editor).addClass('with-ace-editor');
+      };
 
-      return
+    }
 
-    initialLoad: ->
-      d = @$q.defer()
+    initialLoad() {
+      const d = this.$q.defer();
 
-      @Api.sendDataGet({
-        app: '/apps/instances/' + @instanceId
-      }).then((result) =>
-        @app = result.data.app.app;
+      this.Api.sendDataGet({
+        app: `/apps/instances/${this.instanceId}`
+      }).then(result => {
+        this.app = result.data.app.app;
 
-        @$scope.$parent.ListCtrl.ensureCustomAppInList(@app)
+        this.$scope.$parent.ListCtrl.ensureCustomAppInList(this.app);
 
-        @Api.sendDataGet({
-          pack: '/apps/packages/' + @app.package_name,
-          assets: '/apps/custom/' + @instanceId + '/assets'
-        }).then((result) =>
-          @pack = result.data.pack['package']
+        return this.Api.sendDataGet({
+          pack: `/apps/packages/${this.app.package_name}`,
+          assets: `/apps/custom/${this.instanceId}/assets`
+        }).then(result => {
+          this.pack = result.data.pack['package'];
 
-          assets = result.data.assets.assets
+          const { assets } = result.data.assets;
 
-          asset_groups = {
+          const asset_groups = {
             "main": [],
             "ticket": [],
             "user": [],
             "org": []
           };
 
-          app_js = assets.filter((x) -> x.tag == 'app_js')[0]
-          if app_js
+          const app_js = assets.filter(x => x.tag === 'app_js')[0];
+          if (app_js) {
             asset_groups.main.push({
               title: "App Definition",
               js: app_js.file_content,
               js_id: app_js.id,
               js_name: app_js.name
-            })
+            });
+          }
 
-          asset_groups.ticket = @_getGroupedAssets(assets.filter((x) -> x.name.indexOf('Ticket/') != -1))
-          asset_groups.user = @_getGroupedAssets(assets.filter((x) -> x.name.indexOf('User/') != -1))
-          asset_groups.org = @_getGroupedAssets(assets.filter((x) -> x.name.indexOf('Org/') != -1))
+          asset_groups.ticket = this._getGroupedAssets(assets.filter(x => x.name.indexOf('Ticket/') !== -1));
+          asset_groups.user = this._getGroupedAssets(assets.filter(x => x.name.indexOf('User/') !== -1));
+          asset_groups.org = this._getGroupedAssets(assets.filter(x => x.name.indexOf('Org/') !== -1));
 
-          @asset_groups = asset_groups
+          this.asset_groups = asset_groups;
 
-          d.resolve()
-        )
-      )
+          return d.resolve();
+        });
+      });
 
-      d.promise.then(=>
-        @$scope.pack = @pack
-        @$scope.setting_values = @app.settings
+      d.promise.then(() => {
+        this.$scope.pack = this.pack;
+        this.$scope.setting_values = this.app.settings;
 
-        if not @$scope.setting_values or Util.isArray(@$scope.setting_values)
-          @$scope.setting_values = {}
+        if (!this.$scope.setting_values || Util.isArray(this.$scope.setting_values)) {
+          this.$scope.setting_values = {};
+        }
 
-        @$scope.setting_values.dp_app = {title: @app.title}
-      )
+        return this.$scope.setting_values.dp_app = {title: this.app.title};
+      });
 
-      d.promise
+      return d.promise;
+    }
 
-    _getGroupedAssets: (assets) ->
-      groups = []
+    _getGroupedAssets(assets) {
+      const groups = [];
 
-      app_context = assets.filter((x) -> x.tag == 'js' && x.name.indexOf('Context.js') != -1)[0]
-      if app_context
+      const app_context = assets.filter(x => (x.tag === 'js') && (x.name.indexOf('Context.js') !== -1))[0];
+      if (app_context) {
         groups.push({
           title: "JS Controller",
           js: app_context.file_content,
           js_id: app_context.id,
           js_name: app_context.name
-        })
+        });
+      }
 
-      for asset in assets
-        if app_context == asset then continue
-        if not (asset.tag == 'js' and asset.metadata.group_name) then continue
-        html_asset = assets.filter((x) -> x.tag == 'html' and x.metadata?.group_name == asset.metadata.group_name)[0]
+      for (var asset of Array.from(assets)) {
+        if (app_context === asset) { continue; }
+        if (!((asset.tag === 'js') && asset.metadata.group_name)) { continue; }
+        const html_asset = assets.filter(x => (x.tag === 'html') && ((x.metadata != null ? x.metadata.group_name : undefined) === asset.metadata.group_name))[0];
 
         groups.push({
           title: asset.metadata.group_name.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1'),
           js: asset.file_content,
           js_id: asset.id,
-          js_name: asset.name
-          html: if html_asset then html_asset.file_content else null,
-          html_id: if html_asset then html_asset.id else null
-          html_name: if html_asset then html_asset.name else null
-        })
-
-      return groups
-
-    saveSettings: ->
-      postData = {
-        settings: @$scope.setting_values
-        save_assets: []
+          js_name: asset.name,
+          html: html_asset ? html_asset.file_content : null,
+          html_id: html_asset ? html_asset.id : null,
+          html_name: html_asset ? html_asset.name : null
+        });
       }
 
-      for own _x, group of @asset_groups
-        for asset in group
-          if asset.js_id
-            postData.save_assets.push({id: asset.js_id, content: asset.js})
-          if asset.html_id
-            postData.save_assets.push({id: asset.html_id, content: asset.html})
+      return groups;
+    }
 
-      @startSpinner('saving_settings')
-      @Api.sendPostJson("/apps/instances/#{@instanceId}", postData).then(=>
-        @stopSpinner('saving_settings').then(=>
-          @$scope.$parent.ListCtrl.updateAppTitle(@instanceId, @$scope.setting_values.dp_app.title)
-          @Growl.success(@getRegisteredMessage('saved_settings'))
-        )
-      , ->
-        @stopSpinner('saving_settings')
-      )
+    saveSettings() {
+      const postData = {
+        settings: this.$scope.setting_values,
+        save_assets: []
+      };
 
-    ###
-    # SHow delete modal
-    ###
-    startDelete: ->
-      doDelete = =>
-        @Api.sendDelete('/apps/instances/' + @app.id).success(=>
+      for (let _x of Object.keys(this.asset_groups || {})) {
+        const group = this.asset_groups[_x];
+        for (let asset of Array.from(group)) {
+          if (asset.js_id) {
+            postData.save_assets.push({id: asset.js_id, content: asset.js});
+          }
+          if (asset.html_id) {
+            postData.save_assets.push({id: asset.html_id, content: asset.html});
+          }
+        }
+      }
 
-          # If we are viewing with the parent list, we need to remove this
-          # app from the list
-          if @$scope.$parent?.ListCtrl?
-            @$scope.$parent?.ListCtrl.removeAppInstance(@app.id)
+      this.startSpinner('saving_settings');
+      return this.Api.sendPostJson(`/apps/instances/${this.instanceId}`, postData).then(() => {
+        return this.stopSpinner('saving_settings').then(() => {
+          this.$scope.$parent.ListCtrl.updateAppTitle(this.instanceId, this.$scope.setting_values.dp_app.title);
+          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+        });
+      }
+      , function() {
+        return this.stopSpinner('saving_settings');
+      });
+    }
 
-          # close this view
-          @$state.go('apps.apps')
-        )
+    /*
+     * SHow delete modal
+     */
+    startDelete() {
+      const doDelete = () => {
+        return this.Api.sendDelete(`/apps/instances/${this.app.id}`).success(() => {
 
-      @$modal.open({
-        templateUrl: @getTemplatePath('Apps/instance-delete-modal.html'),
-        controller: ['app', '$scope', '$modalInstance', (app, $scope, $modalInstance) ->
-          $scope.app = app
-          $scope.dismiss = ->
-            $modalInstance.close();
+          // If we are viewing with the parent list, we need to remove this
+          // app from the list
+          if ((this.$scope.$parent != null ? this.$scope.$parent.ListCtrl : undefined) != null) {
+            if (this.$scope.$parent != null) {
+              this.$scope.$parent.ListCtrl.removeAppInstance(this.app.id);
+            }
+          }
 
-          $scope.confirm = ->
-            $scope.is_loading = true
-            doDelete().then(->
-              $modalInstance.close();
-            )
+          // close this view
+          return this.$state.go('apps.apps');
+        });
+      };
+
+      return this.$modal.open({
+        templateUrl: this.getTemplatePath('Apps/instance-delete-modal.html'),
+        controller: ['app', '$scope', '$modalInstance', function(app, $scope, $modalInstance) {
+          $scope.app = app;
+          $scope.dismiss = () => $modalInstance.close();
+
+          return $scope.confirm = function() {
+            $scope.is_loading = true;
+            return doDelete().then(() => $modalInstance.close());
+          };
+        }
         ],
         resolve: {
-          app: =>
-            return @app
+          app: () => {
+            return this.app;
+          }
         }
       });
+    }
+  }
+  Admin_Apps_Ctrl_EditCustomInstance.initClass();
 
-  Admin_Apps_Ctrl_EditCustomInstance.EXPORT_CTRL()
+  return Admin_Apps_Ctrl_EditCustomInstance.EXPORT_CTRL();
+});

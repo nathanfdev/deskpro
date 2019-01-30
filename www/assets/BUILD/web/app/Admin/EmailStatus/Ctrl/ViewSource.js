@@ -1,106 +1,129 @@
-define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
-  class Admin_EmailStatus_Ctrl_ViewSource extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_EmailStatus_Ctrl_ViewSource'
-    @CTRL_AS = 'ViewSource'
-    @DEPS    = ['$state', '$modal', 'DpDateService', '$sce']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
+  class Admin_EmailStatus_Ctrl_ViewSource extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_EmailStatus_Ctrl_ViewSource';
+      this.CTRL_AS = 'ViewSource';
+      this.DEPS    = ['$state', '$modal', 'DpDateService', '$sce'];
+    }
 
-    init: ->
-      @sourceId = parseInt(@$stateParams.id)
-      @$scope.ds = @DpDateService
-      @$scope.render_type = 'raw'
-      @rendered = {
+    init() {
+      this.sourceId = parseInt(this.$stateParams.id);
+      this.$scope.ds = this.DpDateService;
+      this.$scope.render_type = 'raw';
+      this.rendered = {
         summary_loaded: false,
         rendered_loaded: false
-      }
+      };
 
-      @$scope.$watch('render_type', => @updateRenderType())
+      this.$scope.$watch('render_type', () => this.updateRenderType());
 
-      @$scope.showStatusHelp = =>
-        @$modal.open({
-          templateUrl: @getTemplatePath('EmailStatus/emailsource-status-code-modal.html'),
-          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-            $scope.dismiss = ->
-              $modalInstance.dismiss()
+      this.$scope.showStatusHelp = () => {
+        return this.$modal.open({
+          templateUrl: this.getTemplatePath('EmailStatus/emailsource-status-code-modal.html'),
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+            $scope.dismiss = () => $modalInstance.dismiss()
+          
           ]
-        })
+        });
+      };
 
-      return
+    }
 
-    initialLoad: ->
-      @Api.sendGet("/email_status/sources/#{@sourceId}?with_raw=1").then( (res) =>
-        @source         = res.data.source
-        @source_raw     = res.data.source_raw
-        @source_log     = res.data.source_log
-        @account_log    = res.data.account_log
-        @source_info    = res.data.source_info
-        @ticket         = res.data.ticket
-        @ticket_message = res.data.ticket_message
-      )
+    initialLoad() {
+      return this.Api.sendGet(`/email_status/sources/${this.sourceId}?with_raw=1`).then( res => {
+        this.source         = res.data.source;
+        this.source_raw     = res.data.source_raw;
+        this.source_log     = res.data.source_log;
+        this.account_log    = res.data.account_log;
+        this.source_info    = res.data.source_info;
+        this.ticket         = res.data.ticket;
+        return this.ticket_message = res.data.ticket_message;
+      });
+    }
 
-    updateRenderType: ->
-      type = @$scope.render_type
-      @$scope.loading_render_type = false
+    updateRenderType() {
+      const type = this.$scope.render_type;
+      this.$scope.loading_render_type = false;
 
-      switch type
-        when 'raw' then return
-        when 'summary'
-          return if @rendered.summary_loaded
-          @$scope.loading_render_type = true
-          @Api.sendGet("/email_status/sources/#{@sourceId}/summary").success( (data) =>
-            @$scope.loading_render_type = false
-            @rendered.summary_loaded = true
-            @rendered.summary = data.summary
-          )
-        when 'rendered'
-          return if @rendered.rendered_loaded
-          @$scope.loading_render_type = true
-          @Api.sendGet("/email_status/sources/#{@sourceId}/rendered").success( (data) =>
-            @$scope.loading_render_type  = false
-            @rendered.rendered_loaded    = true
-            @rendered.text               = data.text || null
-            @rendered.html               = if data.html then @$sce.trustAsHtml(data.html) else null
-          )
+      switch (type) {
+        case 'raw': return;
+        case 'summary':
+          if (this.rendered.summary_loaded) { return; }
+          this.$scope.loading_render_type = true;
+          return this.Api.sendGet(`/email_status/sources/${this.sourceId}/summary`).success( data => {
+            this.$scope.loading_render_type = false;
+            this.rendered.summary_loaded = true;
+            return this.rendered.summary = data.summary;
+          });
+        case 'rendered':
+          if (this.rendered.rendered_loaded) { return; }
+          this.$scope.loading_render_type = true;
+          return this.Api.sendGet(`/email_status/sources/${this.sourceId}/rendered`).success( data => {
+            this.$scope.loading_render_type  = false;
+            this.rendered.rendered_loaded    = true;
+            this.rendered.text               = data.text || null;
+            return this.rendered.html               = data.html ? this.$sce.trustAsHtml(data.html) : null;
+          });
+      }
+    }
 
-    delete: ->
-      @Api.sendDelete("/email_status/sources/#{@sourceId}")
+    delete() {
+      return this.Api.sendDelete(`/email_status/sources/${this.sourceId}`);
+    }
 
-    reprocess: ->
-      @Api.sendPost("/email_status/sources/#{@sourceId}/reprocess")
+    reprocess() {
+      return this.Api.sendPost(`/email_status/sources/${this.sourceId}/reprocess`);
+    }
 
-    startDelete: ->
-      doDelete = =>
-        @delete().then( =>
-          @$state.go('emails.ticket_accounts.emailsources')
-        )
+    startDelete() {
+      const doDelete = () => {
+        return this.delete().then( () => {
+          return this.$state.go('emails.ticket_accounts.emailsources');
+        });
+      };
 
-      @$modal.open({
-        templateUrl: @getTemplatePath('EmailStatus/emailsource-delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+      return this.$modal.open({
+        templateUrl: this.getTemplatePath('EmailStatus/emailsource-delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.dismiss = () => $modalInstance.dismiss();
 
-          $scope.doDelete = ->
-            $scope.is_loading = true
-            doDelete().then(-> $modalInstance.dismiss())
+          return $scope.doDelete = function() {
+            $scope.is_loading = true;
+            return doDelete().then(() => $modalInstance.dismiss());
+          };
+        }
         ]
       });
+    }
 
-    startReprocess: ->
-      doReprocess = =>
-        @reprocess().then( =>
-          @$state.go('emails.ticket_accounts.goemailsourcesview', {id: @sourceId})
-        )
+    startReprocess() {
+      const doReprocess = () => {
+        return this.reprocess().then( () => {
+          return this.$state.go('emails.ticket_accounts.goemailsourcesview', {id: this.sourceId});
+        });
+      };
 
-      @$modal.open({
-        templateUrl: @getTemplatePath('EmailStatus/emailsource-reprocess-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+      return this.$modal.open({
+        templateUrl: this.getTemplatePath('EmailStatus/emailsource-reprocess-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.dismiss = () => $modalInstance.dismiss();
 
-          $scope.doReprocess = ->
-            $scope.is_loading = true
-            doReprocess().then(-> $modalInstance.dismiss())
+          return $scope.doReprocess = function() {
+            $scope.is_loading = true;
+            return doReprocess().then(() => $modalInstance.dismiss());
+          };
+        }
         ]
       });
+    }
+  }
+  Admin_EmailStatus_Ctrl_ViewSource.initClass();
 
-  Admin_EmailStatus_Ctrl_ViewSource.EXPORT_CTRL()
+  return Admin_EmailStatus_Ctrl_ViewSource.EXPORT_CTRL();
+});

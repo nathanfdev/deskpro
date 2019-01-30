@@ -1,66 +1,85 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Util, Arrays) ->
-  class Admin_TicketSettings_Ctrl_FwdSettings extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_TicketSettings_Ctrl_FwdSettings'
-    @CTRL_AS   = 'Fwd'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Util, Arrays) {
+  class Admin_TicketSettings_Ctrl_FwdSettings extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketSettings_Ctrl_FwdSettings';
+      this.CTRL_AS   = 'Fwd';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      @default_fwd_regex = '/^(FW|FWD|VL|WG|FS|VB|RV|VS|TR):/i'
-      @email_accounts = []
-      @$scope.$watch('settings.use_account', (accId) =>
-        accId = parseInt(accId)
-        a = Arrays.find(@email_accounts, (a) -> a.id == accId)
-        @$scope.use_account_address = if a then a.address else "noreply@example.com"
-      )
+    init() {
+      this.default_fwd_regex = '/^(FW|FWD|VL|WG|FS|VB|RV|VS|TR):/i';
+      this.email_accounts = [];
+      return this.$scope.$watch('settings.use_account', accId => {
+        accId = parseInt(accId);
+        const a = Arrays.find(this.email_accounts, a => a.id === accId);
+        return this.$scope.use_account_address = a ? a.address : "noreply@example.com";
+      });
+    }
 
-    initialLoad: ->
-      data_promise = @Api.sendDataGet({
+    initialLoad() {
+      const data_promise = this.Api.sendDataGet({
         'settings': '/ticket_settings/fwd',
         'accounts': '/email_accounts'
-      }).then( (res) =>
-        @email_accounts = res.data.accounts.email_accounts
-        @$scope.settings = res.data.settings.ticket_fwd_settings
+      }).then( res => {
+        this.email_accounts = res.data.accounts.email_accounts;
+        this.$scope.settings = res.data.settings.ticket_fwd_settings;
 
-        if @$scope.settings.agent_fwd_subject_regex
-          @$scope.use_agent_fwd_subject_regex = true
-        else
-          @$scope.use_agent_fwd_subject_regex = false
-          @$scope.settings.agent_fwd_subject_regex = @default_fwd_regex
+        if (this.$scope.settings.agent_fwd_subject_regex) {
+          this.$scope.use_agent_fwd_subject_regex = true;
+        } else {
+          this.$scope.use_agent_fwd_subject_regex = false;
+          this.$scope.settings.agent_fwd_subject_regex = this.default_fwd_regex;
+        }
 
-        @settings = Util.clone(@$scope.settings)
+        this.settings = Util.clone(this.$scope.settings);
 
-        @$scope.settings.use_account = (@$scope.settings.use_account || 0)+""
-      )
+        return this.$scope.settings.use_account = (this.$scope.settings.use_account || 0)+"";
+      });
 
-      return @$q.all([data_promise])
+      return this.$q.all([data_promise]);
+    }
 
-    isDirtyState: ->
-      return false
-      if not @settings then return false
-      if not Util.equals(@settings, @$scope.settings)
-        return true
-      else
-        return false
+    isDirtyState() {
+      return false;
+      if (!this.settings) { return false; }
+      if (!Util.equals(this.settings, this.$scope.settings)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
-    save: ->
+    save() {
 
-      postData = {
-        ticket_fwd_settings: Util.clone(@$scope.settings)
+      let promise;
+      const postData = {
+        ticket_fwd_settings: Util.clone(this.$scope.settings)
+      };
+
+      if (!this.$scope.use_agent_fwd_subject_regex || (this.$scope.settings.agent_fwd_subject_regex === this.default_fwd_regex)) {
+        postData.ticket_fwd_settings.agent_fwd_subject_regex = null;
       }
 
-      if not @$scope.use_agent_fwd_subject_regex or @$scope.settings.agent_fwd_subject_regex == @default_fwd_regex
-        postData.ticket_fwd_settings.agent_fwd_subject_regex = null
+      this.startSpinner('saving');
+      return promise = this.Api.sendPostJson('/ticket_settings/fwd', postData).success( () => {
+        this.settings = Util.clone(this.$scope.settings);
 
-      @startSpinner('saving')
-      promise = @Api.sendPostJson('/ticket_settings/fwd', postData).success( =>
-        @settings = Util.clone(@$scope.settings)
+        return this.stopSpinner('saving').then(() => {
+          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+        });
+      }).error( (info, code) => {
+        this.stopSpinner('saving', true);
+        return this.applyErrorResponseToView(info);
+      });
+    }
+  }
+  Admin_TicketSettings_Ctrl_FwdSettings.initClass();
 
-        @stopSpinner('saving').then(=>
-          @Growl.success(@getRegisteredMessage('saved_settings'))
-        )
-      ).error( (info, code) =>
-        @stopSpinner('saving', true)
-        @applyErrorResponseToView(info)
-      )
-
-  Admin_TicketSettings_Ctrl_FwdSettings.EXPORT_CTRL()
+  return Admin_TicketSettings_Ctrl_FwdSettings.EXPORT_CTRL();
+});

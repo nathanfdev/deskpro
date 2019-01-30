@@ -1,81 +1,103 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/UsersourceTypeDecider', 'moment']
-, (Admin_Ctrl_Base, Util, Admin_Usersources_Helper_UsersourceTypeDecider, moment) ->
-  class Admin_Usersources_Ctrl_SyncInformation extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Usersources_Ctrl_SyncInformation'
-    @CTRL_AS = 'Ctrl'
-    @DEPS = ['$http', 'dpTemplateManager', '$interval']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/UsersourceTypeDecider', 'moment']
+, function(Admin_Ctrl_Base, Util, Admin_Usersources_Helper_UsersourceTypeDecider, moment) {
+  class Admin_Usersources_Ctrl_SyncInformation extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Usersources_Ctrl_SyncInformation';
+      this.CTRL_AS = 'Ctrl';
+      this.DEPS = ['$http', 'dpTemplateManager', '$interval'];
+    }
 
 
-    init: ->
-      @instanceId = @$stateParams.id
-      @permission_groups = [];
-      @$scope.getController = => return this
-      @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
-      @$scope.enableCustomFooter = false
-      @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
-      @presaveCallback = null
-      @app = null
-      @$scope.$on '$destroy', => @interval && @$interval.cancel(@interval)
+    init() {
+      this.instanceId = this.$stateParams.id;
+      this.permission_groups = [];
+      this.$scope.getController = () => { return this; };
+      this.$scope.setPresaveCallback = callback => { return this.presaveCallback = callback; };
+      this.$scope.enableCustomFooter = false;
+      this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
+      this.presaveCallback = null;
+      this.app = null;
+      return this.$scope.$on('$destroy', () => this.interval && this.$interval.cancel(this.interval));
+    }
 
 
-    initialLoad: ->
-      promise = @refresh()
+    initialLoad() {
+      const promise = this.refresh();
 
-      @interval = @$interval(() =>
-        @refresh()
-      , 10000)
+      this.interval = this.$interval(() => {
+        return this.refresh();
+      }
+      , 10000);
 
-      return promise
+      return promise;
+    }
 
-    refresh: ->
-      d = @$q.defer()
-      d2 = @$q.defer()
+    refresh() {
+      const d = this.$q.defer();
+      const d2 = this.$q.defer();
 
-      @Api.sendDataGet({
-        app: '/apps/instances/' + @instanceId
-      }).then((result) =>
-        @app = result.data.app?.app;
+      this.Api.sendDataGet({
+        app: `/apps/instances/${this.instanceId}`
+      }).then(result => {
+        this.app = result.data.app != null ? result.data.app.app : undefined;
 
-        @$scope.app = @app
-        @$scope.appId = @app?.id
+        this.$scope.app = this.app;
+        this.$scope.appId = this.app != null ? this.app.id : undefined;
 
-        @Api.sendDataGet({
-          extra_info: '/usersources/' + @usersourceType + '/app-' + @instanceId + '/extra-details',
-          sync_info: '/usersources/sync/info/' + @instanceId,
-          pack: '/apps/packages/' + @app.package_name
-        }).then((result) =>
-          @pack = result.data.pack['package']
-          @$scope.usersource_details = result.data.extra_info?.usersource_details
-          @packageName = @pack.name
-          @$scope.pack = @pack
-          @$scope.setting_values = @app.settings
-          if not @$scope.setting_values || Util.isArray(@$scope.setting_values)
-            @$scope.setting_values = {}
-          @$scope.setting_values.dp_app = {title: @app.title}
+        return this.Api.sendDataGet({
+          extra_info: `/usersources/${this.usersourceType}/app-${this.instanceId}/extra-details`,
+          sync_info: `/usersources/sync/info/${this.instanceId}`,
+          pack: `/apps/packages/${this.app.package_name}`
+        }).then(result => {
+          this.pack = result.data.pack['package'];
+          this.$scope.usersource_details = result.data.extra_info != null ? result.data.extra_info.usersource_details : undefined;
+          this.packageName = this.pack.name;
+          this.$scope.pack = this.pack;
+          this.$scope.setting_values = this.app.settings;
+          if (!this.$scope.setting_values || Util.isArray(this.$scope.setting_values)) {
+            this.$scope.setting_values = {};
+          }
+          this.$scope.setting_values.dp_app = {title: this.app.title};
 
-          sync_log = result.data.sync_info.sync_log
+          const { sync_log } = result.data.sync_info;
 
-          if sync_log
-            if not sync_log.phase_1_running
-              sync_log.phase_1_time_readable = moment(sync_log.date_start).from(sync_log.date_end, true)
-            else
-              sync_log.phase_1_time_readable = '-'
+          if (sync_log) {
+            if (!sync_log.phase_1_running) {
+              sync_log.phase_1_time_readable = moment(sync_log.date_start).from(sync_log.date_end, true);
+            } else {
+              sync_log.phase_1_time_readable = '-';
+            }
 
-            if sync_log.phase_2_show
-              if not sync_log.phase_2_running
-                sync_log.phase_2_time_readable = moment(sync_log.date_phase_2_start).from(sync_log.date_phase_2_end, true)
-              else
-                sync_log.phase_2_time_readable = '-'
+            if (sync_log.phase_2_show) {
+              if (!sync_log.phase_2_running) {
+                sync_log.phase_2_time_readable = moment(sync_log.date_phase_2_start).from(sync_log.date_phase_2_end, true);
+              } else {
+                sync_log.phase_2_time_readable = '-';
+              }
+            }
+          }
 
-          @$scope.sync_log = sync_log
-          @$scope.ListCtrl = @listCtrl()
+          this.$scope.sync_log = sync_log;
+          this.$scope.ListCtrl = this.listCtrl();
 
-          d.resolve()
-        )
-      )
-      return d.promise
+          return d.resolve();
+        });
+      });
+      return d.promise;
+    }
 
-    listCtrl: ->
-      return @$scope.$parent?.ListCtrl || {running_now: false, refresh: =>}
+    listCtrl() {
+      return (this.$scope.$parent != null ? this.$scope.$parent.ListCtrl : undefined) || {running_now: false, refresh: () => {}};
+    }
+  }
+  Admin_Usersources_Ctrl_SyncInformation.initClass();
 
-  Admin_Usersources_Ctrl_SyncInformation.EXPORT_CTRL()
+  return Admin_Usersources_Ctrl_SyncInformation.EXPORT_CTRL();
+});

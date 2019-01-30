@@ -1,4 +1,13 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Interface/App/Routing/StateCollection',
   'Interface/App/Routing/StateConfig',
   'Reports/App/ReportsRouting',
@@ -22,9 +31,9 @@ define [
 ], (
   StateCollection,
   StateConfig,
-  ReportsRouting
+  ReportsRouting,
 
-  # Services
+  // Services
   AppConfig,
   TemplateLoader,
   TemplateManager,
@@ -32,7 +41,7 @@ define [
   AgentActivity,
   AgentHours,
   TicketSatisfaction,
-  # DASHBOARDS SPECIFIC DIRECTIVES
+  // DASHBOARDS SPECIFIC DIRECTIVES
   Admin_Main_DataService_EntityManager,
   Reports_App_Service_DataServiceManager,
   Reports_App_Service_Dashboard,
@@ -42,196 +51,216 @@ define [
   Reports_Main_Service_SessionPing,
   Util,
   DeskPRO_Main_Service_Growl,
-) ->
-  return (Module) ->
-    Module.service('AppConfig', -> return new AppConfig)
+) =>
+  function(Module) {
+    Module.service('AppConfig', () => new AppConfig);
 
-    Module.service('TemplateLoader', [ 'AppConfig', '$http', '$q', (AppConfig, $http, $q) ->
-      window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q)
-      return window.DP_TEMPLATE_LOADER
-    ])
+    Module.service('TemplateLoader', [ 'AppConfig', '$http', '$q', function(AppConfig, $http, $q) {
+      window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q);
+      return window.DP_TEMPLATE_LOADER;
+    }
+    ]);
 
-    Module.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) ->
-      return new TemplateManager(TemplateLoader, $templateCache, $q)
-    ])
+    Module.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) => new TemplateManager(TemplateLoader, $templateCache, $q)
+    ]);
 
-    Module.run(['TemplateLoader', (TemplateLoader) -> ])
+    Module.run(['TemplateLoader', function(TemplateLoader) {} ]);
 
-    Module.run(['TemplateManager', (TemplateManager) ->
-      templates = [
+    Module.run(['TemplateManager', function(TemplateManager) {
+      const templates = [
         'ReportsInterfaceBundle:Dashboard/Modal:add-widget-variables.html',
-      ]
+      ];
 
-      reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.InterfaceApp'))
-      ReportsRouting(reportStates)
+      const reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.InterfaceApp'));
+      ReportsRouting(reportStates);
 
-      # just copy paste from old-style reports
-      for route in reportStates.routes
-        if route.tpl
-          templates.push(route.tpl)
+      // just copy paste from old-style reports
+      for (let route of Array.from(reportStates.routes)) {
+        if (route.tpl) {
+          templates.push(route.tpl);
+        }
+      }
 
-      for t in templates
-        TemplateManager.load(t)
+      for (let t of Array.from(templates)) {
+        TemplateManager.load(t);
+      }
 
-      TemplateManager.loadPending()
-    ])
+      return TemplateManager.loadPending();
+    }
+    ]);
 
-    Module.factory('HttpTemplateInterceptor', [->
-      isTemplateUrl = (url) ->
-        return !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/)
-      getViewName = (url) ->
-        return url.replace(/^\//, '')
-      getLoadUrl = (view) ->
-        return window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1'
+    Module.factory('HttpTemplateInterceptor', [function() {
+      const isTemplateUrl = url => !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/);
+      const getViewName = url => url.replace(/^\//, '');
+      const getLoadUrl = view => window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1';
 
       return {
-        request: (config) ->
-          if isTemplateUrl(config.url)
-            config.url = getLoadUrl(getViewName(config.url))
-            config.dp_is_template = true
+        request(config) {
+          if (isTemplateUrl(config.url)) {
+            config.url = getLoadUrl(getViewName(config.url));
+            config.dp_is_template = true;
+          }
 
-          return config
-      }
-    ])
+          return config;
+        }
+      };
+    }
+    ]);
 
-    Module.factory('dpHttpInterceptor', ['$q', ($q) ->
-      return {
-        request: (config) ->
-          if window.DP_SESSION_ID
-            config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
-          if window.DP_REQUEST_TOKEN
-            config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN
+    Module.factory('dpHttpInterceptor', ['$q', $q =>
+      ({
+        request(config) {
+          if (window.DP_SESSION_ID) {
+            config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID;
+          }
+          if (window.DP_REQUEST_TOKEN) {
+            config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN;
+          }
 
-          return config
+          return config;
+        },
 
-        response: (response) ->
-          return response
+        response(response) {
+          return response;
+        },
 
-        requestError: (rejection) ->
-          return $q.reject(rejection)
+        requestError(rejection) {
+          return $q.reject(rejection);
+        },
 
-        responseError: (rejection) ->
-          return $q.reject(rejection)
-      }
-    ])
+        responseError(rejection) {
+          return $q.reject(rejection);
+        }
+      })
+    
+    ]);
 
-    Module.config(['$provide', ($provide) ->
-      $provide.decorator('$http', ($delegate) ->
+    Module.config(['$provide', $provide =>
+      $provide.decorator('$http', function($delegate) {
 
-        formatUrlObject = (obj, baseName = false) ->
-          url = ''
-          for own k, v of obj
-            if v == null then continue
-            if baseName
-              k = baseName + '[' + encodeURIComponent(k) + ']'
-            else
-              k = encodeURIComponent(k)
+        var formatUrlObject = function(obj, baseName) {
+          if (baseName == null) { baseName = false; }
+          let url = '';
+          return (() => {
+            const result = [];
+            for (let k of Object.keys(obj || {})) {
+              let v = obj[k];
+              if (v === null) { continue; }
+              if (baseName) {
+                k = baseName + '[' + encodeURIComponent(k) + ']';
+              } else {
+                k = encodeURIComponent(k);
+              }
 
-            if Util.isObject(v)
-              url += formatUrlObject(v, k)
-            else
-              v = encodeURIComponent(v)
-              url += "#{k}=#{v}&"
+              if (Util.isObject(v)) {
+                result.push(url += formatUrlObject(v, k));
+              } else {
+                v = encodeURIComponent(v);
+                result.push(url += `${k}=${v}&`);
+              }
+            }
+            return result;
+          })();
+        };
 
-        $delegate.formatApiUrl = (endpoint, params, signed = true) ->
-          endpoint = endpoint.replace(/^\//, '')
-          url = "#{window.DP_BASE_API_URL}/#{endpoint}"
+        $delegate.formatApiUrl = function(endpoint, params, signed) {
+          if (signed == null) { signed = true; }
+          endpoint = endpoint.replace(/^\//, '');
+          let url = `${window.DP_BASE_API_URL}/${endpoint}`;
 
-          if params
-            url += if url.indexOf('?') == -1 then '?' else '&'
-            if Util.isArray(params)
-              for itm in params
-                k = encodeURIComponent(itm.name)
-                v = encodeURIComponent(itm.value)
-                url += "#{k}=#{v}&"
-            else
-              url += formatUrlObject(params)
+          if (params) {
+            url += url.indexOf('?') === -1 ? '?' : '&';
+            if (Util.isArray(params)) {
+              for (let itm of Array.from(params)) {
+                const k = encodeURIComponent(itm.name);
+                const v = encodeURIComponent(itm.value);
+                url += `${k}=${v}&`;
+              }
+            } else {
+              url += formatUrlObject(params);
+            }
+          }
 
-          url = url.replace(/&$/, '')
+          url = url.replace(/&$/, '');
 
-          if signed then url = this.signUrl(url)
+          if (signed) { url = this.signUrl(url); }
 
-          return url
+          return url;
+        };
 
-        $delegate.formatApi2Url = (endpoint, params) ->
-          endpoint = endpoint.replace(/^\//, '')
-          url = "#{window.DP_BASE_API_URL}/v2/#{endpoint}"
+        $delegate.formatApi2Url = function(endpoint, params) {
+          endpoint = endpoint.replace(/^\//, '');
+          let url = `${window.DP_BASE_API_URL}/v2/${endpoint}`;
 
-          if params
-            url += if url.indexOf('?') == -1 then '?' else '&'
-            if Util.isArray(params)
-              for itm in params
-                k = encodeURIComponent(itm.name)
-                v = encodeURIComponent(itm.value)
-                url += "#{k}=#{v}&"
-            else
-              url += formatUrlObject(params)
+          if (params) {
+            url += url.indexOf('?') === -1 ? '?' : '&';
+            if (Util.isArray(params)) {
+              for (let itm of Array.from(params)) {
+                const k = encodeURIComponent(itm.name);
+                const v = encodeURIComponent(itm.value);
+                url += `${k}=${v}&`;
+              }
+            } else {
+              url += formatUrlObject(params);
+            }
+          }
 
-          url = url.replace(/&$/, '')
+          url = url.replace(/&$/, '');
 
-          return url
+          return url;
+        };
 
-        $delegate.signUrl = (url) ->
-          url += if url.indexOf('?') == -1 then '?' else '&'
-          url += 'XDEBUG_SESSION_START=PHPSTORM&API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
-          return url
+        $delegate.signUrl = function(url) {
+          url += url.indexOf('?') === -1 ? '?' : '&';
+          url += `XDEBUG_SESSION_START=PHPSTORM&API-TOKEN=${window.DP_API_TOKEN}&SESSION-ID=${window.DP_SESSION_ID}&REQUEST-TOKEN=${window.DP_REQUEST_TOKEN}`;
+          return url;
+        };
 
-        return $delegate
-      )
-    ])
+        return $delegate;
+      })
+    
+    ]);
 
-    ###
-    # Config section
-    ###
-    Module.config(['$httpProvider', ($httpProvider) ->
-      $httpProvider.interceptors.push('dpHttpInterceptor');
-    ])
+    /*
+     * Config section
+     */
+    Module.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('dpHttpInterceptor')
+    ]);
 
-    Module.config(['$httpProvider', ($httpProvider) ->
-      $httpProvider.interceptors.push('HttpTemplateInterceptor')
-    ])
-    Module.service('em', [ ->
-      return new Admin_Main_DataService_EntityManager()
-    ])
+    Module.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('HttpTemplateInterceptor')
+    ]);
+    Module.service('em', [ () => new Admin_Main_DataService_EntityManager()
+    ]);
   
-    Module.factory('DataService', [ '$injector', ($injector) ->
-      return new Reports_App_Service_DataServiceManager($injector)
-    ])
+    Module.factory('DataService', [ '$injector', $injector => new Reports_App_Service_DataServiceManager($injector)
+    ]);
   
-    Module.service('DashboardService', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
-      return new Reports_App_Service_Dashboard(Api, Api2, $q)
-    ])
-    Module.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
-      return new Reports_App_Service_DashboardWidget(Api, Api2, $q)
-    ])
-    Module.service('DashboardsInfo', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
-      return new Reports_App_Service_DashboardsInfo(Api, Api2, $q)
-    ])
-    Module.service('ReportsOverviewService', ['Api', '$q', (Api, $q) ->
-      return new ReportsOverview(Api, $q)
-    ])
-    Module.service('AgentActivityService', ['Api', '$sce', (Api, $sce) ->
-      return new AgentActivity(Api, $sce)
-    ])
-    Module.service('AgentHoursService', ['Api', '$sce', '$q', (Api, $sce, $q) ->
-      return new AgentHours(Api, $sce, $q)
-    ])
-    Module.service('TicketSatisfactionService', ['Api', '$sce', '$q', '$timeout', (Api, $sce, $q, $timeout) ->
-      return new TicketSatisfaction(Api, $sce, $q, $timeout)
-    ])
+    Module.service('DashboardService', ['Api', 'Api2', '$q', (Api, Api2, $q) => new Reports_App_Service_Dashboard(Api, Api2, $q)
+    ]);
+    Module.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) => new Reports_App_Service_DashboardWidget(Api, Api2, $q)
+    ]);
+    Module.service('DashboardsInfo', ['Api', 'Api2', '$q', (Api, Api2, $q) => new Reports_App_Service_DashboardsInfo(Api, Api2, $q)
+    ]);
+    Module.service('ReportsOverviewService', ['Api', '$q', (Api, $q) => new ReportsOverview(Api, $q)
+    ]);
+    Module.service('AgentActivityService', ['Api', '$sce', (Api, $sce) => new AgentActivity(Api, $sce)
+    ]);
+    Module.service('AgentHoursService', ['Api', '$sce', '$q', (Api, $sce, $q) => new AgentHours(Api, $sce, $q)
+    ]);
+    Module.service('TicketSatisfactionService', ['Api', '$sce', '$q', '$timeout', (Api, $sce, $q, $timeout) => new TicketSatisfaction(Api, $sce, $q, $timeout)
+    ]);
 
-    Module.service('SessionPing', ['Api', (Api) ->
-      return new Reports_Main_Service_SessionPing(Api)
-    ])
-    Module.run(['SessionPing', (SessionPing) ->
-      window.setTimeout(->
-        SessionPing.startInterval()
+    Module.service('SessionPing', ['Api', Api => new Reports_Main_Service_SessionPing(Api)
+    ]);
+    Module.run(['SessionPing', SessionPing =>
+      window.setTimeout(() => SessionPing.startInterval()
       , 20000)
-    ])
-    Module.run(['DashboardWidgetService', (DashboardWidgetService) ->
-      DashboardWidgetService.loadGroupParams()
-    ])
+    
+    ]);
+    Module.run(['DashboardWidgetService', DashboardWidgetService => DashboardWidgetService.loadGroupParams()
+    ]);
 
-    Module.service('Growl', [ ->
-      return new DeskPRO_Main_Service_Growl()
-    ])
+    return Module.service('Growl', [ () => new DeskPRO_Main_Service_Growl()
+    ]);
+  }
+);

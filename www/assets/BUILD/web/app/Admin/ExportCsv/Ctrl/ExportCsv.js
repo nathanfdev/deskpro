@@ -1,61 +1,87 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_ExportCsv_Ctrl_ExportCsv extends Admin_Ctrl_Base
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_ExportCsv_Ctrl_ExportCsv extends Admin_Ctrl_Base {
+    static initClass() {
+  
+      this.CTRL_ID   = 'Admin_ExportCsv_Ctrl_ExportCsv';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['Api', '$interval'];
+    }
 
-    @CTRL_ID   = 'Admin_ExportCsv_Ctrl_ExportCsv'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['Api', '$interval']
 
 
+    init() {
+      this.$scope.status = null;
+      this.$scope.offset = 0;
+      this.$scope.files = [];
 
-    init: ->
-      @$scope.status = null
-      @$scope.offset = 0
-      @$scope.files = []
+      this.$scope.start = () => {
+        return this.Api.sendPost('/export/start').then(data => {
+          this.$scope.status = data.data.status;
+          return this.$scope.offset = data.data.offset;
+        });
+      };
 
-      @$scope.start = =>
-        @Api.sendPost('/export/start').then (data) =>
-          @$scope.status = data.data.status
-          @$scope.offset = data.data.offset
+      this.$scope.stop = () => {
+        return this.Api.sendPost('/export/stop').then(data => {
+          this.$scope.status = data.data.status;
+          return this.$scope.offset = data.data.offset;
+        });
+      };
 
-      @$scope.stop = =>
-        @Api.sendPost('/export/stop').then (data) =>
-          @$scope.status = data.data.status
-          @$scope.offset = data.data.offset
+      return this.$scope.$watch('status', val => {
 
-      @$scope.$watch 'status', (val) =>
-
-        if 'running' == val || 'queued' == val
-          if !@interval
-            @interval = @$interval(
-              => @getStatus()
+        if (('running' === val) || ('queued' === val)) {
+          if (!this.interval) {
+            this.interval = this.$interval(
+              () => this.getStatus(),
               5000
-            )
-        else
-          if @interval
-            @$interval.cancel @interval
-            @interval = null
+            );
+          }
+        } else {
+          if (this.interval) {
+            this.$interval.cancel(this.interval);
+            this.interval = null;
+          }
+        }
 
-        @getFiles() if 'completed' == val
-
-
-
-    initialLoad: ->
-      @getStatus()
-      @getFiles()
-
-
-
-    getStatus: ->
-      @Api.sendGet('/export/status').then (data) =>
-        @$scope.status = data.data?.status
-        @$scope.offset = data.data?.offset
+        if ('completed' === val) { return this.getFiles(); }
+      });
+    }
 
 
 
-    getFiles: ->
-      @Api.sendGet('/export/list').then (data) =>
-        @$scope.files = data.data || []
+    initialLoad() {
+      this.getStatus();
+      return this.getFiles();
+    }
 
 
 
-  Admin_ExportCsv_Ctrl_ExportCsv.EXPORT_CTRL()
+    getStatus() {
+      return this.Api.sendGet('/export/status').then(data => {
+        this.$scope.status = data.data != null ? data.data.status : undefined;
+        return this.$scope.offset = data.data != null ? data.data.offset : undefined;
+      });
+    }
+
+
+
+    getFiles() {
+      return this.Api.sendGet('/export/list').then(data => {
+        return this.$scope.files = data.data || [];
+    });
+    }
+  }
+  Admin_ExportCsv_Ctrl_ExportCsv.initClass();
+
+
+
+  return Admin_ExportCsv_Ctrl_ExportCsv.EXPORT_CTRL();
+});

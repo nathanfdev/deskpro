@@ -1,77 +1,107 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'AdminRouting',
   'Admin/Cloud/App/RouteMutator'
 ], (
   AdminRouting,
   Admin_Cloud_App_RouteMutator
-) ->
-  return (Module) ->
-    Module.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
-      $urlRouterProvider.otherwise("/")
+) =>
+  Module =>
+    Module.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+      let routeMutator;
+      $urlRouterProvider.otherwise("/");
 
-      # Load templates through the dpTemplateManager
-      # so we can take advantage of our preloading scheme
-      makeProvider = (view) ->
-        return ['dpTemplateManager', (dpTemplateManager) ->
-          return dpTemplateManager.get(view)
+      // Load templates through the dpTemplateManager
+      // so we can take advantage of our preloading scheme
+      const makeProvider = view =>
+        ['dpTemplateManager', dpTemplateManager => dpTemplateManager.get(view)
         ]
+      ;
 
-      if window.DP_IS_CLOUD
-        routeMutator = new Admin_Cloud_App_RouteMutator()
+      if (window.DP_IS_CLOUD) {
+        routeMutator = new Admin_Cloud_App_RouteMutator();
+      }
 
-      procRoute = (route) ->
-        id = route.id
-        url = route.url
+      const procRoute = function(route) {
+        const { id } = route;
+        const { url } = route;
 
-        if route.templateName?
-          route.templateProvider = makeProvider(route.templateName)
-
-        opts = {
-          url: url,
-          data: route.data || null
+        if (route.templateName != null) {
+          route.templateProvider = makeProvider(route.templateName);
         }
 
-        if route.resolve
-          opts.resolve = route.resolve
+        const opts = {
+          url,
+          data: route.data || null
+        };
 
-        if route.views
-          opts.views = route.views
-        else if route.abstract
-          opts.abstract = true
-          opts.template = '<ui-view/>'
-        else
-          opts.views = {}
+        if (route.resolve) {
+          opts.resolve = route.resolve;
+        }
 
-          v = {}
-          if route.templateProvider
-            v.templateProvider = route.templateProvider
-          else if route.templateName
-            v.templateName = route.templateName
-          if route.controller
-            v.controller = route.controller
+        if (route.views) {
+          opts.views = route.views;
+        } else if (route.abstract) {
+          opts.abstract = true;
+          opts.template = '<ui-view/>';
+        } else {
+          let viewName;
+          opts.views = {};
 
-          if route.target
-            viewName = route.target
-          else
-            # An app-level (tickets.ticket_deps)
-            # Is always added to the appbody
-            if id.split('.').length == 2
-              viewName = "appbody"
-            else
-              viewName = ""
+          const v = {};
+          if (route.templateProvider) {
+            v.templateProvider = route.templateProvider;
+          } else if (route.templateName) {
+            v.templateName = route.templateName;
+          }
+          if (route.controller) {
+            v.controller = route.controller;
+          }
 
-          opts.views[viewName] = v
+          if (route.target) {
+            viewName = route.target;
+          } else {
+            // An app-level (tickets.ticket_deps)
+            // Is always added to the appbody
+            if (id.split('.').length === 2) {
+              viewName = "appbody";
+            } else {
+              viewName = "";
+            }
+          }
 
-        $stateProvider.state(id, opts)
+          opts.views[viewName] = v;
+        }
 
-      for route in AdminRouting
-        if routeMutator
-          route = routeMutator.processRoute(route)
-          continue if not route
+        return $stateProvider.state(id, opts);
+      };
 
-        procRoute(route)
+      for (var route of Array.from(AdminRouting)) {
+        if (routeMutator) {
+          route = routeMutator.processRoute(route);
+          if (!route) { continue; }
+        }
 
-      if routeMutator
-        for route in routeMutator.getExtraRoutes()
-          procRoute(route)
+        procRoute(route);
+      }
+
+      if (routeMutator) {
+        return (() => {
+          const result = [];
+          for (route of Array.from(routeMutator.getExtraRoutes())) {
+            result.push(procRoute(route));
+          }
+          return result;
+        })();
+      }
+    }
     ])
+  
+);

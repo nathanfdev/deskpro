@@ -1,25 +1,37 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_TicketUrgencies_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketUrgencies_Ctrl_List'
-    @CTRL_AS = 'TicketUrgenciesList'
-    @DEPS = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_TicketUrgencies_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketUrgencies_Ctrl_List';
+      this.CTRL_AS = 'TicketUrgenciesList';
+      this.DEPS = [];
+    }
 
-    init: ->
-      @urgency_counts = {}
-      @urgencies = []
-      return
+    init() {
+      this.urgency_counts = {};
+      this.urgencies = [];
+    }
 
-    initialLoad: ->
-      promise = @Api.sendGet("/ticket_urgencies").success( (data) =>
-        @urgency_counts = data.urgency_counts
+    initialLoad() {
+      const promise = this.Api.sendGet("/ticket_urgencies").success( data => {
+        this.urgency_counts = data.urgency_counts;
 
-        for num in [1..10]
-          @urgencies.push({
-            num: num,
-            ticket_count: if @urgency_counts[num] then @urgency_counts[num] else 0
-          })
-      );
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) =>
+          this.urgencies.push({
+            num,
+            ticket_count: this.urgency_counts[num] ? this.urgency_counts[num] : 0
+          }));
+      });
 
-      return promise
+      return promise;
+    }
+  }
+  Admin_TicketUrgencies_Ctrl_List.initClass();
 
-  Admin_TicketUrgencies_Ctrl_List.EXPORT_CTRL()
+  return Admin_TicketUrgencies_Ctrl_List.EXPORT_CTRL();
+});

@@ -1,55 +1,62 @@
-define ['DeskPRO/Util/Functions'], (Functions) ->
-  ###
-    # Description
-    # -----------
-    #
-    # This enables a calculated 'max-height' on an element based on the height of the screen.
-    #
-    # Example
-    # -------
-    # <div dp-max-height="40">...</div>
-  ###
-  Admin_Main_Directive_DpMaxHeight = [ '$timeout', '$interval', ($timeout, $interval) ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Functions'], function(Functions) {
+  /*
+    * Description
+    * -----------
+    *
+    * This enables a calculated 'max-height' on an element based on the height of the screen.
+    *
+    * Example
+    * -------
+    * <div dp-max-height="40">...</div>
+  */
+  const Admin_Main_Directive_DpMaxHeight = [ '$timeout', '$interval', ($timeout, $interval) =>
+    ({
       restrict: 'A',
       priority: -10,
-      link: (scope, element, attrs) ->
-        add = if attrs.dpHeightAdd then parseInt(attrs.dpHeightAdd || 0) else -100
-        min = if attrs.dpMinHeight then parseInt(attrs.dpMinHeight || 0) else 300
-        perc = parseInt(attrs.dpMaxHeight || 100)/100;
+      link(scope, element, attrs) {
+        const add = attrs.dpHeightAdd ? parseInt(attrs.dpHeightAdd || 0) : -100;
+        const min = attrs.dpMinHeight ? parseInt(attrs.dpMinHeight || 0) : 300;
+        const perc = parseInt(attrs.dpMaxHeight || 100)/100;
 
         element.addClass('with-dp-max-height');
 
-        resize = ->
-          top = element.offset().top + $('.dp-layout-appbody').scrollTop()
-          winH = $(window).height()
-          setH = (Math.ceil(winH * perc) - top) + add
-          if setH < min then setH = min
-          element.css('max-height', setH)
+        const resize = function() {
+          const top = element.offset().top + $('.dp-layout-appbody').scrollTop();
+          const winH = $(window).height();
+          let setH = (Math.ceil(winH * perc) - top) + add;
+          if (setH < min) { setH = min; }
+          return element.css('max-height', setH);
+        };
 
-        resizeDebounce = Functions.debounce(resize, 100, true)
+        const resizeDebounce = Functions.debounce(resize, 100, true);
 
-        interval = $interval( ->
-          resize()
-        , 500)
+        const interval = $interval( () => resize()
+        , 500);
 
-        $(window).on('resize', resizeDebounce)
-        scope.$on('$destroy', ->
-          $(window).off('resize', resizeDebounce)
-          $interval.cancel(interval)
-        )
+        $(window).on('resize', resizeDebounce);
+        scope.$on('$destroy', function() {
+          $(window).off('resize', resizeDebounce);
+          return $interval.cancel(interval);
+        });
 
-        resize()
-        $timeout(->
-          resize()
-          $timeout(
-            -> resize()
+        resize();
+        return $timeout(function() {
+          resize();
+          return $timeout(
+            () => resize(),
             $timeout(
-              -> resize()
-            )
-          )
-        )
+              () => resize())
+          );
+        });
       }
-  ]
+      })
+  
+  ];
 
-  return Admin_Main_Directive_DpMaxHeight
+  return Admin_Main_Directive_DpMaxHeight;
+});

@@ -1,253 +1,293 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Reports/Main/Ctrl/Base',
-], (
+], function(
   ReportsBaseCtrl,
-) ->
-  class Reports_Builder_Ctrl_Edit extends ReportsBaseCtrl
-    @CTRL_ID   = 'Reports_Builder_Ctrl_Edit'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['$stateParams', '$sce', 'Api', '$window', '$http']
+) {
+  class Reports_Builder_Ctrl_Edit extends ReportsBaseCtrl {
+    static initClass() {
+      this.CTRL_ID   = 'Reports_Builder_Ctrl_Edit';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['$stateParams', '$sce', 'Api', '$window', '$http'];
+    }
 
-    init: ->
-      if @$stateParams.type == 'builtIn'
-        @reportData = @DataService.get('ReportBuilderBuiltIn')
-        @customList = @DataService.get('ReportBuilderCustom')
-        @reportType = 'builtIn'
-      if @$stateParams.type == 'custom'
-        @reportData = @DataService.get('ReportBuilderCustom')
-        @reportType = 'custom'
+    init() {
+      if (this.$stateParams.type === 'builtIn') {
+        this.reportData = this.DataService.get('ReportBuilderBuiltIn');
+        this.customList = this.DataService.get('ReportBuilderCustom');
+        this.reportType = 'builtIn';
+      }
+      if (this.$stateParams.type === 'custom') {
+        this.reportData = this.DataService.get('ReportBuilderCustom');
+        this.reportType = 'custom';
+      }
 
-      @report = null
-      @query_parts = null
-      @rendered_result = null
-      @query_error = null
-      @show_query_editor = false
-      @editor_mode = 'builder'
-      @query_parts_synced = true
+      this.report = null;
+      this.query_parts = null;
+      this.rendered_result = null;
+      this.query_error = null;
+      this.show_query_editor = false;
+      this.editor_mode = 'builder';
+      return this.query_parts_synced = true;
+    }
 
-    initialLoad: ->
-      promise = @reportData.loadEditReportData(@$stateParams.id || null, @$stateParams.params || null).then( (data) =>
-        @rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
-        @group_params = @$scope.$parent.ListCtrl.group_params
-        @query_parts = data.query_parts
-        @report  = data.report
-        @form = data.form
-        @query_parts_synced = true
-      )
-      return promise
-
-
-    ###
-    # Shows / hides query editor
-    ###
-    toggleQueryEditor: ->
-      @show_query_editor = !@show_query_editor
-
-
-    ###
-    # This method is called when user clicks button named 'Test' in query builder form
-    ###
-    testReport: ->
-      @startSpinner('builder_loading')
-      @startSpinner('query_loading')
-
-      run = =>
-        promise = @Api.sendPostJson('/reports/builder/test/' + @report.id, {
-          parts: @query_parts,
-          params: @$stateParams.params
-        })
-
-        promise.success((data) =>
-          if data.error
-            @query_error = data.error
-
-          else
-            if data.rendered_result
-              @query_error = null
-              @rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
-            else
-              @query_error = null
-              @rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
-
-          @stopSpinner('builder_loading', true)
-          @stopSpinner('query_loading', true)
-        )
-
-      if @query_parts_synced
-        run()
-      else
-        @syncQueryParts().then(run)
+    initialLoad() {
+      const promise = this.reportData.loadEditReportData(this.$stateParams.id || null, this.$stateParams.params || null).then( data => {
+        this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
+        this.group_params = this.$scope.$parent.ListCtrl.group_params;
+        this.query_parts = data.query_parts;
+        this.report  = data.report;
+        this.form = data.form;
+        return this.query_parts_synced = true;
+      });
+      return promise;
+    }
 
 
-    ###
-    # This method is called when user clicks on 'Query' tab inside query builder form
-    ###
-    switchToQuery: ->
-      @startSpinner('query_loading')
-
-      @editor_mode = 'query'
-      @query_parts_synced = false
-      promise = @Api.sendPostJson('/reports/builder/parse', {
-        currentType: 'builder'
-        inputType: 'builder'
-        newType: 'query'
-        query: @report.query
-        parts: @query_parts
-      })
-
-      promise.success((data) =>
-        if data.error then @query_error = data.error
-
-        if data.query
-          @query_error = null
-          @report.query = data.query
-
-        @stopSpinner('query_loading', true)
-      )
+    /*
+     * Shows / hides query editor
+     */
+    toggleQueryEditor() {
+      return this.show_query_editor = !this.show_query_editor;
+    }
 
 
-    ###
-    # This method is called when user clicks on 'Builder' tab inside query builder form
-    ###
-    switchToBuilder: ->
-      @startSpinner('builder_loading')
+    /*
+     * This method is called when user clicks button named 'Test' in query builder form
+     */
+    testReport() {
+      this.startSpinner('builder_loading');
+      this.startSpinner('query_loading');
 
-      @editor_mode = 'builder'
-      @syncQueryParts().then(=>
-        @stopSpinner('builder_loading', true)
-      )
+      const run = () => {
+        const promise = this.Api.sendPostJson(`/reports/builder/test/${this.report.id}`, {
+          parts: this.query_parts,
+          params: this.$stateParams.params
+        });
 
-    ###
-      # Syncs the report query with the query parts form
-      ###
-    syncQueryParts: ->
-      promise = @Api.sendPostJson('/reports/builder/parse', {
-        currentType: 'query'
-        inputType: 'query'
-        newType: 'builder'
-        query: @report.query
-        parts: @query_parts
-      })
+        return promise.success(data => {
+          if (data.error) {
+            this.query_error = data.error;
 
-      promise.success((data) =>
-        if data.error then @query_error = data.error
+          } else {
+            if (data.rendered_result) {
+              this.query_error = null;
+              this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
+            } else {
+              this.query_error = null;
+              this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
+            }
+          }
 
-        if data.parts
-          @query_error = null
-          @query_parts = data.parts
+          this.stopSpinner('builder_loading', true);
+          return this.stopSpinner('query_loading', true);
+        });
+      };
 
-        @query_parts_synced = true
-      )
-
-      return promise
-
-    ###
-    # This method is called when user clicks on 'CSV' button
-    ###
-    downloadCsv: ->
-      window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id +  '/csv', {params: @$stateParams.params}))
+      if (this.query_parts_synced) {
+        return run();
+      } else {
+        return this.syncQueryParts().then(run);
+      }
+    }
 
 
-    ###
-    # This method is called when user clicks on 'PDF' button
-    ###
-    downloadPdf: ->
-      window.open(@$http.formatApiUrl('/reports/builder/download/' + @report.id + '/pdf', {params: @$stateParams.params}))
+    /*
+     * This method is called when user clicks on 'Query' tab inside query builder form
+     */
+    switchToQuery() {
+      this.startSpinner('query_loading');
+
+      this.editor_mode = 'query';
+      this.query_parts_synced = false;
+      const promise = this.Api.sendPostJson('/reports/builder/parse', {
+        currentType: 'builder',
+        inputType: 'builder',
+        newType: 'query',
+        query: this.report.query,
+        parts: this.query_parts
+      });
+
+      return promise.success(data => {
+        if (data.error) { this.query_error = data.error; }
+
+        if (data.query) {
+          this.query_error = null;
+          this.report.query = data.query;
+        }
+
+        return this.stopSpinner('query_loading', true);
+      });
+    }
 
 
-    ###
-    # This method is called when user clicks on 'print' button
-    ###
-    print: ->
-      window.print()
+    /*
+     * This method is called when user clicks on 'Builder' tab inside query builder form
+     */
+    switchToBuilder() {
+      this.startSpinner('builder_loading');
+
+      this.editor_mode = 'builder';
+      return this.syncQueryParts().then(() => {
+        return this.stopSpinner('builder_loading', true);
+      });
+    }
+
+    /*
+      * Syncs the report query with the query parts form
+      */
+    syncQueryParts() {
+      const promise = this.Api.sendPostJson('/reports/builder/parse', {
+        currentType: 'query',
+        inputType: 'query',
+        newType: 'builder',
+        query: this.report.query,
+        parts: this.query_parts
+      });
+
+      promise.success(data => {
+        if (data.error) { this.query_error = data.error; }
+
+        if (data.parts) {
+          this.query_error = null;
+          this.query_parts = data.parts;
+        }
+
+        return this.query_parts_synced = true;
+      });
+
+      return promise;
+    }
+
+    /*
+     * This method is called when user clicks on 'CSV' button
+     */
+    downloadCsv() {
+      return window.open(this.$http.formatApiUrl(`/reports/builder/download/${this.report.id}/csv`, {params: this.$stateParams.params}));
+    }
 
 
-    ###
-    # Saving report
-    ###
-    saveReport: ->
-
-      if !@report.is_custom then throw new Error('Only custom reports could be saved')
-
-      if not @$scope.form_props.$valid
-        return
-
-      is_new = !@report.id
-
-      run = =>
-        promise = @reportData.saveFormModel(@report, @form, @query_parts)
-
-        @startSpinner('builder_loading')
-        @startSpinner('query_loading')
-        @startSpinner('saving')
-
-        promise.then( (res) =>
-
-          data = res.data
-
-          if data.error
-            @stopSpinner('builder_loading', true)
-            @stopSpinner('query_loading', true)
-            @stopSpinner('saving', true)
-            @query_error = data.error
-            if !@show_query_editor then @show_query_editor = true
-            return
-
-          if data.rendered_result
-            @query_error = null
-            @rendered_result = @$sce.trustAsHtml(data.rendered_result || '')
-
-          if is_new
-            @$state.go 'builder.edit', {id: data.id, type: 'custom', params: ''}
-
-          @stopSpinner('builder_loading', true)
-          @stopSpinner('query_loading', true)
-          @stopSpinner('saving', true).then( =>
-            @Growl.success("Saved")
-          )
-        )
-
-      if @query_parts_synced
-        run()
-      else
-        @syncQueryParts().then(run)
+    /*
+     * This method is called when user clicks on 'PDF' button
+     */
+    downloadPdf() {
+      return window.open(this.$http.formatApiUrl(`/reports/builder/download/${this.report.id}/pdf`, {params: this.$stateParams.params}));
+    }
 
 
-    ###
-    # Cloning the report
-    ###
-    saveToClone: ->
-      @startSpinner('builder_loading')
-      @startSpinner('query_loading')
-      @startSpinner('saving')
+    /*
+     * This method is called when user clicks on 'print' button
+     */
+    print() {
+      return window.print();
+    }
 
-      run = =>
-        promise = @Api.sendPostJson('/reports/builder/clone/' + @report.id, {
-          parts: @query_parts,
-          title: @form.title,
-          description: @form.description
-        })
 
-        promise.success((data) =>
+    /*
+     * Saving report
+     */
+    saveReport() {
 
-          proms = [@reportData.loadList(true)]
+      if (!this.report.is_custom) { throw new Error('Only custom reports could be saved'); }
 
-          if @customList
-            proms.push(@customList.loadList(true))
+      if (!this.$scope.form_props.$valid) {
+        return;
+      }
 
-          @$q.all(proms).then(=>
-            @stopSpinner('builder_loading', true)
-            @stopSpinner('query_loading', true)
-            @stopSpinner('saving', true).then(=>
-              @Growl.success("Cloning Done")
-              @$state.go('builder.edit', {type: 'custom', id: data.id, params: ''})
-            )
-          )
-        )
+      const is_new = !this.report.id;
 
-      if @query_parts_synced
-        run()
-      else
-        @syncQueryParts().then(run)
+      const run = () => {
+        const promise = this.reportData.saveFormModel(this.report, this.form, this.query_parts);
 
-  Reports_Builder_Ctrl_Edit.EXPORT_CTRL()
+        this.startSpinner('builder_loading');
+        this.startSpinner('query_loading');
+        this.startSpinner('saving');
+
+        return promise.then( res => {
+
+          const { data } = res;
+
+          if (data.error) {
+            this.stopSpinner('builder_loading', true);
+            this.stopSpinner('query_loading', true);
+            this.stopSpinner('saving', true);
+            this.query_error = data.error;
+            if (!this.show_query_editor) { this.show_query_editor = true; }
+            return;
+          }
+
+          if (data.rendered_result) {
+            this.query_error = null;
+            this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
+          }
+
+          if (is_new) {
+            this.$state.go('builder.edit', {id: data.id, type: 'custom', params: ''});
+          }
+
+          this.stopSpinner('builder_loading', true);
+          this.stopSpinner('query_loading', true);
+          return this.stopSpinner('saving', true).then( () => {
+            return this.Growl.success("Saved");
+          });
+        });
+      };
+
+      if (this.query_parts_synced) {
+        return run();
+      } else {
+        return this.syncQueryParts().then(run);
+      }
+    }
+
+
+    /*
+     * Cloning the report
+     */
+    saveToClone() {
+      this.startSpinner('builder_loading');
+      this.startSpinner('query_loading');
+      this.startSpinner('saving');
+
+      const run = () => {
+        const promise = this.Api.sendPostJson(`/reports/builder/clone/${this.report.id}`, {
+          parts: this.query_parts,
+          title: this.form.title,
+          description: this.form.description
+        });
+
+        return promise.success(data => {
+
+          const proms = [this.reportData.loadList(true)];
+
+          if (this.customList) {
+            proms.push(this.customList.loadList(true));
+          }
+
+          return this.$q.all(proms).then(() => {
+            this.stopSpinner('builder_loading', true);
+            this.stopSpinner('query_loading', true);
+            return this.stopSpinner('saving', true).then(() => {
+              this.Growl.success("Cloning Done");
+              return this.$state.go('builder.edit', {type: 'custom', id: data.id, params: ''});
+            });
+          });
+        });
+      };
+
+      if (this.query_parts_synced) {
+        return run();
+      } else {
+        return this.syncQueryParts().then(run);
+      }
+    }
+  }
+  Reports_Builder_Ctrl_Edit.initClass();
+
+  return Reports_Builder_Ctrl_Edit.EXPORT_CTRL();
+});

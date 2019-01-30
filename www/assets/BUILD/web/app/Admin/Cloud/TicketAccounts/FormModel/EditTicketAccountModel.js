@@ -1,41 +1,68 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS001: Remove Babel/TypeScript constructor workaround
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Util/Util',
   'Admin/TicketAccounts/FormModel/EditTicketAccountModel',
-], (Util, BaseFormModel) ->
-  class Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel extends BaseFormModel
-    constructor: (@account, deps, trigger, brands) ->
-      super(@account, deps, trigger, brands)
+], function(Util, BaseFormModel) {
+  let Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel;
+  return (Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel = class Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel extends BaseFormModel {
+    constructor(account, deps, trigger, brands) {
+      {
+        // Hack: trick Babel/TypeScript into allowing this before super.
+        if (false) { super(); }
+        let thisFn = (() => { return this; }).toString();
+        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        eval(`${thisName} = this;`);
+      }
+      this.account = account;
+      super(this.account, deps, trigger, brands);
 
-      if @form.address and @form.address.indexOf('@') != -1
-        @form.address_name = @form.address.split('@')[0]
+      if (this.form.address && (this.form.address.indexOf('@') !== -1)) {
+        this.form.address_name = this.form.address.split('@')[0];
+      }
 
-      @form.use_custom_email_address = false
+      this.form.use_custom_email_address = false;
 
-      if @account.other_addresses and @account.other_addresses.length and @account.options.custom_email_address
-        @form.custom_email_address = @account.other_addresses.shift()
-        @form.use_custom_email_address = true
+      if (this.account.other_addresses && this.account.other_addresses.length && this.account.options.custom_email_address) {
+        this.form.custom_email_address = this.account.other_addresses.shift();
+        this.form.use_custom_email_address = true;
+      }
 
-      if @account.other_addresses and @account.other_addresses.length
-        @form.with_email_aliases = true
-        @form.other_addresses = @account.other_addresses.join(', ')
-      else
-        @form.with_email_aliases = false
-        @form.other_addresses = ''
+      if (this.account.other_addresses && this.account.other_addresses.length) {
+        this.form.with_email_aliases = true;
+        this.form.other_addresses = this.account.other_addresses.join(', ');
+      } else {
+        this.form.with_email_aliases = false;
+        this.form.other_addresses = '';
+      }
+    }
 
-    getFormData: ->
-      form = super()
+    getFormData() {
+      const form = super.getFormData();
 
-      if not form.with_email_aliases
-        form.other_addresses = ''
+      if (!form.with_email_aliases) {
+        form.other_addresses = '';
+      }
 
-      return form
+      return form;
+    }
 
-    apply: ->
-      @account.address = @form.address_name + '@' + window.DPC_SITE_DOMAIN
-      if not @account.options?
-        @account.options = {}
+    apply() {
+      this.account.address = this.form.address_name + '@' + window.DPC_SITE_DOMAIN;
+      if ((this.account.options == null)) {
+        this.account.options = {};
+      }
 
-      if @form.use_custom_email_address and @form.custom_email_address
-        @account.options.custom_email_address = @form.custom_email_address
-      else
-        @account.options.custom_email_address = null
+      if (this.form.use_custom_email_address && this.form.custom_email_address) {
+        return this.account.options.custom_email_address = this.form.custom_email_address;
+      } else {
+        return this.account.options.custom_email_address = null;
+      }
+    }
+  });
+});

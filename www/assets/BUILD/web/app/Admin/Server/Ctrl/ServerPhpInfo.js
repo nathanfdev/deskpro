@@ -1,18 +1,31 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_ServerPhpInfo_Ctrl_ServerPhpInfo extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_ServerPhpInfo_Ctrl_ServerPhpInfo'
-    @CTRL_AS   = 'ServerPhpInfo'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_ServerPhpInfo_Ctrl_ServerPhpInfo extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_ServerPhpInfo_Ctrl_ServerPhpInfo';
+      this.CTRL_AS   = 'ServerPhpInfo';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      @$scope.server_php_info = null
+    init() {
+      return this.$scope.server_php_info = null;
+    }
 
-    initialLoad: ->
-      data_promise = @Api.sendGet('/server_php_info').then( (res) =>
+    initialLoad() {
+      const data_promise = this.Api.sendGet('/server_php_info').then( res => {
 
-        @$scope.server_php_info = res.data.server_php_info
-      )
+        return this.$scope.server_php_info = res.data.server_php_info;
+      });
 
-      return @$q.all([data_promise])
+      return this.$q.all([data_promise]);
+    }
+  }
+  Admin_ServerPhpInfo_Ctrl_ServerPhpInfo.initClass();
 
-  Admin_ServerPhpInfo_Ctrl_ServerPhpInfo.EXPORT_CTRL()
+  return Admin_ServerPhpInfo_Ctrl_ServerPhpInfo.EXPORT_CTRL();
+});

@@ -1,366 +1,437 @@
-define ['DeskPRO/Util/Arrays'], (Arrays) ->
-  class DashboardService
-    constructor: (Api, Api2, $q) ->
-      @Api = Api
-      @Api2 = Api2
-      @$q = $q
-      @data = {}
-      @storage = { dbs: [], reports: [] }
-      @lastDashboard = null
-      @lastReport = null
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Arrays'], function(Arrays) {
+  let DashboardService;
+  return (DashboardService = class DashboardService {
+    constructor(Api, Api2, $q) {
+      this.getShareableLinks = this.getShareableLinks.bind(this);
+      this.Api = Api;
+      this.Api2 = Api2;
+      this.$q = $q;
+      this.data = {};
+      this.storage = { dbs: [], reports: [] };
+      this.lastDashboard = null;
+      this.lastReport = null;
+    }
 
-    getDbIndexById: (dbs, id) ->
-      index = -1
-      index = Arrays.findIndex dbs,
-      (v) ->
-        if v? and v.id is id
-          return true
-      return index
+    getDbIndexById(dbs, id) {
+      let index = -1;
+      index = Arrays.findIndex(dbs,
+      function(v) {
+        if ((v != null) && (v.id === id)) {
+          return true;
+        }
+      });
+      return index;
+    }
 
-    findReportIndex: (report, reports) ->
-      index = -1
-      index = Arrays.findIndex reports,
-        (v) ->
-          if v? and v.id is report.id
-            return true
-      return index
+    findReportIndex(report, reports) {
+      let index = -1;
+      index = Arrays.findIndex(reports,
+        function(v) {
+          if ((v != null) && (v.id === report.id)) {
+            return true;
+          }
+      });
+      return index;
+    }
 
 
-    ###
-    # Operations about dashboards
-    ###
-    saveDashboard: (dashboard) ->
-      deferred = @$q.defer()
-      data =
-        title: dashboard.title
-        reports: dashboard.reports
-        permissions: dashboard.permissions
+    /*
+     * Operations about dashboards
+     */
+    saveDashboard(dashboard) {
+      const deferred = this.$q.defer();
+      const data = {
+        title: dashboard.title,
+        reports: dashboard.reports,
+        permissions: dashboard.permissions,
         is_agent: dashboard.is_agent
+      };
 
-      if dashboard.id
-        @Api2
-          .sendPutJson "/dashboards/#{dashboard.id}", data
-          .then (response) =>
-            deferred.resolve response
-          .catch (response) =>
-            deferred.reject(response.data)
-      else
-        @Api2
-          .sendPostJson '/dashboards', data
-          .then (response) =>
-            if(response)
-              dashboard.id = response.data.data.id
-              dashboard.reports = response.data.data.reports
-              dashboard.permissions = response.data.data.permissions
-              @storage.dbs.push(dashboard)
-              deferred.resolve dashboard
-          .catch (response) =>
-            deferred.reject(response.data)
-
-      deferred.promise
-
-    fillReportData: (report, data) ->
-      name = "report#{report.id}"
-      data[name] =
-        deleted: report.deleted
-        title: report.title
-        id: report.id
-
-
-    cloneDashboard: (dashboard) ->
-      deferred = @$q.defer()
-      url = "/dashboards#{dashboard.id}/clone"
-      @Api2
-        .sendPost url
-        .then (response) =>
-          if(response)
-            clonedOne = response.data.data
-            @storage.dbs.push clonedOne
-            deferred.resolve clonedOne
-        , () ->
-          console.error 'something goes wrong!'
-      deferred.promise
-
-    getDashboards: () ->
-      deferred = @$q.defer()
-      if @storage.dbs.length == 0
-        @getDashboardsData().then \
-          (resp) =>
-            dbs = []
-            if resp? and resp.data.data.length > 0
-
-              dbs.push element for element in resp.data.data
-            @storage.dbs = dbs;
-            deferred.resolve(@storage.dbs)
-      else deferred.resolve(@storage.dbs)
-
-      return deferred.promise
-
-    getDashboardById: (id) ->
-      deferred = @$q.defer()
-
-      id = parseInt(id)
-
-      if @lastDashboard and @lastDashboard.id == id
-        deferred.resolve(@lastDashboard)
-        return deferred.promise
-
-      @getDashboards().then((dbs) =>
-        db = dbs.find((x) -> x.id == id)
-        if not db
-          deferred.reject()
-        else
-          @getDashboard(db).then((real_db) ->
-            @lastDashboard = real_db
-            deferred.resolve(real_db)
-          )
-      , -> deferred.reject())
-
-      return deferred.promise
-
-    getDashboard: (dashboard) ->
-      deferred = @$q.defer()
-      dashboardIndex = Arrays.findIndex @storage.dbs
-      , (v, i) ->
-        if v.id is dashboard.id then true else false
-      @Api2
-        .sendGet "/dashboards/#{dashboard.id}?include=reports&inline_sideloads=true"
-        .then (resp) =>
-          @storage.dbs[dashboardIndex] = resp.data.data
-          deferred.resolve(resp.data.data)
-      return deferred.promise
-
-    getDashboardsData: () ->
-      @Api2.sendGet('/dashboards?include=reports&inline_sideloads=true')
-
-    deleteDashboard: (dashboard) ->
-      promise = @Api2.sendDelete("/dashboards/#{dashboard.id}")
-      promise.then () =>
-        @storage.dbs.splice(@storage.dbs.indexOf(dashboard), 1)
-        return promise
-
-      return promise
-
-    ###
-    # Operations about reports
-    ###
-
-    getReportById: (id) ->
-      deferred = @$q.defer()
-      id = parseInt(id)
-
-      if @lastReport and @lastReport.id == id
-        deferred.resolve(@lastReport)
-        return deferred.promise
-
-      @getReport({id: id}).then((r) =>
-        @lastReport = r
-        deferred.resolve(@lastReport)
-      , -> deferred.reject())
-
-      return deferred.promise
-
-    getReport: (report) ->
-      deferred = @$q.defer()
-      reportIndex = Arrays.findIndex @storage.reports
-      , (v, i) ->
-        if v.id is report.id then true else false
-      if(!report.loaded)
-        @Api2
-          .sendGet("/reports/#{report.id}")
-          .then (resp) =>
-            @storage.reports[reportIndex] = resp.data.data
-            deferred.resolve @storage.reports[reportIndex]
-            return deferred.promise
-      else
-        deferred.resolve @storage.reports[reportIndex]
-        return deferred.promise
-
-
-    getReportsData: () ->
-      @Api2.sendGet('/dashboard_reports')
-
-    getReports: () ->
-      deferred = @$q.defer()
-      if @storage.reports.length == 0
-        @getReportsData().then \
-          (resp) =>
-            reports = []
-            if resp? and resp.data.length > 0
-              reports.push = (element for element in resp.data)
-            @storage.reports = reports
-            deferred.resolve(reports)
-      else deferred.resolve(@storage.reports)
-
-    removeReport: (report) ->
-      deferred = @$q.defer()
-      url = "/dashboard_reports/#{report.id}"
-      @Api2
-      .sendDelete url
-      .then (response) =>
-        if(response)
-          db_id = @getDbIndexById @storage.dbs, report.dashboard_id
-          Arrays.removeValue @storage.dbs[db_id].reports, report
-          deferred.resolve @storage.dbs[db_id].reports
-      , () ->
-        console.error('something goes wrong!')
-      deferred.promise
-
-    createReport: (report) ->
-      deferred = @$q.defer()
-      url = "/dashboard_reports"
-
-      newReport =
-        dashboard: report.dashboard_id
-        title: report.title
-
-      @Api2
-      .sendPost url, newReport
-      .then (response) =>
-        if(response)
-          @storage.reports.push response.data.data
-          deferred.resolve response.data.data
-      , () ->
-        console.error 'something goes wrong!'
-      deferred.promise
-
-    saveReport: (report) ->
-      deferred = @$q.defer()
-      url = "/dashboard_reports/#{report.id}"
-      data = {
-        title: report.title
-        variables: report.variables
+      if (dashboard.id) {
+        this.Api2
+          .sendPutJson(`/dashboards/${dashboard.id}`, data)
+          .then(response => {
+            return deferred.resolve(response);
+        }).catch(response => {
+            return deferred.reject(response.data);
+        });
+      } else {
+        this.Api2
+          .sendPostJson('/dashboards', data)
+          .then(response => {
+            if(response) {
+              dashboard.id = response.data.data.id;
+              dashboard.reports = response.data.data.reports;
+              dashboard.permissions = response.data.data.permissions;
+              this.storage.dbs.push(dashboard);
+              return deferred.resolve(dashboard);
+            }
+        }).catch(response => {
+            return deferred.reject(response.data);
+        });
       }
 
-      @Api2
-      .sendPutJson url, data
-      .then () ->
-        deferred.resolve()
-        return
-      , () ->
-        deferred.reject()
-        console.error 'something goes wrong!'
-      deferred.promise
+      return deferred.promise;
+    }
+
+    fillReportData(report, data) {
+      const name = `report${report.id}`;
+      return data[name] = {
+        deleted: report.deleted,
+        title: report.title,
+        id: report.id
+      };
+    }
 
 
-    saveReportVars: (report, saveForCurrentAgent) ->
-      d = @$q.defer()
+    cloneDashboard(dashboard) {
+      const deferred = this.$q.defer();
+      const url = `/dashboards${dashboard.id}/clone`;
+      this.Api2
+        .sendPost(url)
+        .then(response => {
+          if(response) {
+            const clonedOne = response.data.data;
+            this.storage.dbs.push(clonedOne);
+            return deferred.resolve(clonedOne);
+          }
+        }
+        , () => console.error('something goes wrong!'));
+      return deferred.promise;
+    }
 
-      @Api2.sendPostJson \
-        "/dashboard_reports/#{report.id}/variables",
+    getDashboards() {
+      const deferred = this.$q.defer();
+      if (this.storage.dbs.length === 0) {
+        this.getDashboardsData().then( 
+          resp => {
+            const dbs = [];
+            if ((resp != null) && (resp.data.data.length > 0)) {
+
+              for (let element of Array.from(resp.data.data)) { dbs.push(element); }
+            }
+            this.storage.dbs = dbs;
+            return deferred.resolve(this.storage.dbs);
+        });
+      } else { deferred.resolve(this.storage.dbs); }
+
+      return deferred.promise;
+    }
+
+    getDashboardById(id) {
+      const deferred = this.$q.defer();
+
+      id = parseInt(id);
+
+      if (this.lastDashboard && (this.lastDashboard.id === id)) {
+        deferred.resolve(this.lastDashboard);
+        return deferred.promise;
+      }
+
+      this.getDashboards().then(dbs => {
+        const db = dbs.find(x => x.id === id);
+        if (!db) {
+          return deferred.reject();
+        } else {
+          return this.getDashboard(db).then(function(real_db) {
+            this.lastDashboard = real_db;
+            return deferred.resolve(real_db);
+          });
+        }
+      }
+      , () => deferred.reject());
+
+      return deferred.promise;
+    }
+
+    getDashboard(dashboard) {
+      const deferred = this.$q.defer();
+      const dashboardIndex = Arrays.findIndex(this.storage.dbs
+      , function(v, i) {
+        if (v.id === dashboard.id) { return true; } else { return false; }
+      });
+      this.Api2
+        .sendGet(`/dashboards/${dashboard.id}?include=reports&inline_sideloads=true`)
+        .then(resp => {
+          this.storage.dbs[dashboardIndex] = resp.data.data;
+          return deferred.resolve(resp.data.data);
+      });
+      return deferred.promise;
+    }
+
+    getDashboardsData() {
+      return this.Api2.sendGet('/dashboards?include=reports&inline_sideloads=true');
+    }
+
+    deleteDashboard(dashboard) {
+      const promise = this.Api2.sendDelete(`/dashboards/${dashboard.id}`);
+      promise.then(() => {
+        this.storage.dbs.splice(this.storage.dbs.indexOf(dashboard), 1);
+        return promise;
+      });
+
+      return promise;
+    }
+
+    /*
+     * Operations about reports
+     */
+
+    getReportById(id) {
+      const deferred = this.$q.defer();
+      id = parseInt(id);
+
+      if (this.lastReport && (this.lastReport.id === id)) {
+        deferred.resolve(this.lastReport);
+        return deferred.promise;
+      }
+
+      this.getReport({id}).then(r => {
+        this.lastReport = r;
+        return deferred.resolve(this.lastReport);
+      }
+      , () => deferred.reject());
+
+      return deferred.promise;
+    }
+
+    getReport(report) {
+      const deferred = this.$q.defer();
+      const reportIndex = Arrays.findIndex(this.storage.reports
+      , function(v, i) {
+        if (v.id === report.id) { return true; } else { return false; }
+      });
+      if(!report.loaded) {
+        return this.Api2
+          .sendGet(`/reports/${report.id}`)
+          .then(resp => {
+            this.storage.reports[reportIndex] = resp.data.data;
+            deferred.resolve(this.storage.reports[reportIndex]);
+            return deferred.promise;
+        });
+      } else {
+        deferred.resolve(this.storage.reports[reportIndex]);
+        return deferred.promise;
+      }
+    }
+
+
+    getReportsData() {
+      return this.Api2.sendGet('/dashboard_reports');
+    }
+
+    getReports() {
+      const deferred = this.$q.defer();
+      if (this.storage.reports.length === 0) {
+        return this.getReportsData().then( 
+          resp => {
+            const reports = [];
+            if ((resp != null) && (resp.data.length > 0)) {
+              reports.push = (Array.from(resp.data));
+            }
+            this.storage.reports = reports;
+            return deferred.resolve(reports);
+        });
+      } else { return deferred.resolve(this.storage.reports); }
+    }
+
+    removeReport(report) {
+      const deferred = this.$q.defer();
+      const url = `/dashboard_reports/${report.id}`;
+      this.Api2
+      .sendDelete(url)
+      .then(response => {
+        if(response) {
+          const db_id = this.getDbIndexById(this.storage.dbs, report.dashboard_id);
+          Arrays.removeValue(this.storage.dbs[db_id].reports, report);
+          return deferred.resolve(this.storage.dbs[db_id].reports);
+        }
+      }
+      , () => console.error('something goes wrong!'));
+      return deferred.promise;
+    }
+
+    createReport(report) {
+      const deferred = this.$q.defer();
+      const url = "/dashboard_reports";
+
+      const newReport = {
+        dashboard: report.dashboard_id,
+        title: report.title
+      };
+
+      this.Api2
+      .sendPost(url, newReport)
+      .then(response => {
+        if(response) {
+          this.storage.reports.push(response.data.data);
+          return deferred.resolve(response.data.data);
+        }
+      }
+      , () => console.error('something goes wrong!'));
+      return deferred.promise;
+    }
+
+    saveReport(report) {
+      const deferred = this.$q.defer();
+      const url = `/dashboard_reports/${report.id}`;
+      const data = {
+        title: report.title,
+        variables: report.variables
+      };
+
+      this.Api2
+      .sendPutJson(url, data)
+      .then(function() {
+        deferred.resolve();
+      }
+      , function() {
+        deferred.reject();
+        return console.error('something goes wrong!');
+      });
+      return deferred.promise;
+    }
+
+
+    saveReportVars(report, saveForCurrentAgent) {
+      const d = this.$q.defer();
+
+      this.Api2.sendPostJson( 
+        `/dashboard_reports/${report.id}/variables`,
         {
           variables: report.variables,
           saveForCurrentAgent: !!saveForCurrentAgent
-        }
-        .then( (resp) ->
-          d.resolve(resp.data)
-          return d.promise
-        )
+        })
+        .then( function(resp) {
+          d.resolve(resp.data);
+          return d.promise;
+        });
 
-      return d.promise
+      return d.promise;
+    }
 
-    cloneReport: (report, dashboard_id) ->
-      deferred = @$q.defer()
-      url = "/dashboard_reports/{report.id}/clone"
-      newReport =
-        title: report.title
-        loaded: false
+    cloneReport(report, dashboard_id) {
+      const deferred = this.$q.defer();
+      const url = "/dashboard_reports/{report.id}/clone";
+      const newReport = {
+        title: report.title,
+        loaded: false,
         widgets: []
+      };
 
-      @Api2
-      .sendPost url, newReport
-      .then (response) =>
-        if(response)
-          clonedOne = response.data.data
-          clonedOne.dashboard_id = dashboard_id
-          clonedOne.cloned = true
-          @storage.reports.push clonedOne
-          deferred.resolve clonedOne
-      , () ->
-        console.error 'something goes wrong!'
-      deferred.promise
+      this.Api2
+      .sendPost(url, newReport)
+      .then(response => {
+        if(response) {
+          const clonedOne = response.data.data;
+          clonedOne.dashboard_id = dashboard_id;
+          clonedOne.cloned = true;
+          this.storage.reports.push(clonedOne);
+          return deferred.resolve(clonedOne);
+        }
+      }
+      , () => console.error('something goes wrong!'));
+      return deferred.promise;
+    }
 
-    scheduleReport: (report, schedule, enabled) ->
-      deferred = @$q.defer()
-      if parseInt(enabled, 10) == 1
+    scheduleReport(report, schedule, enabled) {
+      let data;
+      const deferred = this.$q.defer();
+      if (parseInt(enabled, 10) === 1) {
         data = {
           schedule: {
-            frequency: schedule.frequency
-            send_to: (schedule.send_to || '').split(',')
+            frequency: schedule.frequency,
+            send_to: (schedule.send_to || '').split(','),
             when: {
               time: schedule.when.time
             }
           }
-        }
+        };
 
-        if schedule.frequency == 'weekly'
-          data.schedule.when.weekday = schedule.when.weekday
-        else if schedule.frequency == 'monthly'
-          data.schedule.when.monthday = schedule.when.monthday
-        else if schedule.frequency == 'bimonthly'
-          data.schedule.when.monthday = schedule.when.monthday
-          data.schedule.when.monthday2 = schedule.when.monthday2
-      else
+        if (schedule.frequency === 'weekly') {
+          data.schedule.when.weekday = schedule.when.weekday;
+        } else if (schedule.frequency === 'monthly') {
+          data.schedule.when.monthday = schedule.when.monthday;
+        } else if (schedule.frequency === 'bimonthly') {
+          data.schedule.when.monthday = schedule.when.monthday;
+          data.schedule.when.monthday2 = schedule.when.monthday2;
+        }
+      } else {
         data = {
           schedule: null
+        };
+      }
+
+      const url = `/dashboard_reports/${report.id}`;
+      this.Api2.sendPutJson(url, data)
+      .then(() => deferred.resolve());
+      return deferred.promise;
+    }
+
+    getShareableLinks(dashboardId) {
+      const d = this.$q.defer();
+      this.Api2.sendGet(`/dashboards/${dashboardId}/shareable_links`).then( function(res) {
+        const links = res.data.data;
+        for (let link of Array.from(links)) {
+          link.ip_whitelist = link.ip_whitelist.join(',');
         }
 
-      url = "/dashboard_reports/#{report.id}"
-      @Api2.sendPutJson url, data
-      .then () ->
-        deferred.resolve()
-      deferred.promise
+        return d.resolve(links);
+      });
 
-    getShareableLinks: (dashboardId) =>
-      d = @$q.defer()
-      @Api2.sendGet("/dashboards/#{dashboardId}/shareable_links").then( (res) ->
-        links = res.data.data
-        for link in links
-          link.ip_whitelist = link.ip_whitelist.join(',')
+      return d.promise;
+    }
 
-        d.resolve(links)
-      )
-
-      return d.promise
-
-    createShareLink: (sharedLink) ->
-      data = {
-        title: sharedLink.title
-        dashboard: sharedLink.dashboard
-        default_report: sharedLink.default_report
-        who_can_use: sharedLink.who_can_use
+    createShareLink(sharedLink) {
+      const data = {
+        title: sharedLink.title,
+        dashboard: sharedLink.dashboard,
+        default_report: sharedLink.default_report,
+        who_can_use: sharedLink.who_can_use,
         ip_whitelist: sharedLink.ip_whitelist
-      }
+      };
 
-      d = @$q.defer()
-      @Api2.sendPostJson("/dashboard_shareable_links", data)
-        .success (res) -> d.resolve(res.data)
-        .catch (res) -> d.reject(res.data)
+      const d = this.$q.defer();
+      this.Api2.sendPostJson("/dashboard_shareable_links", data)
+        .success(res => d.resolve(res.data))
+        .catch(res => d.reject(res.data));
 
-      return d.promise
+      return d.promise;
+    }
 
-    updateShareLink: (sharedLink) ->
-      data = {
-        title: sharedLink.title
-        default_report: sharedLink.default_report
-        who_can_use: sharedLink.who_can_use
+    updateShareLink(sharedLink) {
+      const data = {
+        title: sharedLink.title,
+        default_report: sharedLink.default_report,
+        who_can_use: sharedLink.who_can_use,
         ip_whitelist: sharedLink.ip_whitelist
-      }
+      };
 
-      d = @$q.defer()
-      @Api2.sendPutJson("/dashboard_shareable_links/#{sharedLink.id}", data)
-        .success (res) -> d.resolve(res.data)
-        .catch (res) -> d.reject(res.data)
+      const d = this.$q.defer();
+      this.Api2.sendPutJson(`/dashboard_shareable_links/${sharedLink.id}`, data)
+        .success(res => d.resolve(res.data))
+        .catch(res => d.reject(res.data));
 
-      return d.promise
+      return d.promise;
+    }
 
-    deleteDashboardShareableLink: (sharedLink) ->
-      @Api2.sendDelete("/dashboard_shareable_links/#{sharedLink.id}")
+    deleteDashboardShareableLink(sharedLink) {
+      return this.Api2.sendDelete(`/dashboard_shareable_links/${sharedLink.id}`);
+    }
 
-    createShortUrlForShareLink: (sharedLink) ->
-      d = @$q.defer()
-      @Api2.sendPostJson("/dashboard_shareable_links/#{sharedLink.id}/create_short_url").then ( (res) ->
-        d.resolve(res.data.data)
-      )
+    createShortUrlForShareLink(sharedLink) {
+      const d = this.$q.defer();
+      this.Api2.sendPostJson(`/dashboard_shareable_links/${sharedLink.id}/create_short_url`).then(( res => d.resolve(res.data.data))
+      );
 
-      return d.promise
+      return d.promise;
+    }
+  });
+});

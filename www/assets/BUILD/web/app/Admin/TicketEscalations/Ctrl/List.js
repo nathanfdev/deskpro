@@ -1,83 +1,105 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_TicketEscalations_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketEscalations_Ctrl_List'
-    @CTRL_AS = 'ListCtrl'
-    @DEPS = ['$state', '$stateParams', 'DataService']
+) {
+  class Admin_TicketEscalations_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketEscalations_Ctrl_List';
+      this.CTRL_AS = 'ListCtrl';
+      this.DEPS = ['$state', '$stateParams', 'DataService'];
+    }
 
-    init: ->
-      @list = []
-      @list_satisfaction = []
-      @list_statuses = []
-      @escData = @DataService.get('TicketEscalations')
-
-
-
-    initialLoad: ->
-      @loadList().then((list) =>
-        if @$state.current.name == 'tickets.ticket_escalations'
-          if @list[0]
-            @$state.go('tickets.ticket_escalations.edit', {id: @list[0].id})
-          else
-            @$state.go('tickets.ticket_escalations.create')
-      )
+    init() {
+      this.list = [];
+      this.list_satisfaction = [];
+      this.list_statuses = [];
+      return this.escData = this.DataService.get('TicketEscalations');
+    }
 
 
 
-    loadList:    ->
-      d = @$q.defer()
-      @escData.loadList().then (list) =>
-        @list.length = 0
-        @list_satisfaction.length = 0
-        @list_statuses.length = 0
-        return d.resolve([]) if !list
-
-        list.map (item) =>
-          if 'satisfaction' == item.sys_type
-            @list_satisfaction.push item
-          else if 'statuses' == item.sys_type
-            @list_statuses.push item
-          else
-            @list.push item
-        d.resolve list
-      d.promise
+    initialLoad() {
+      return this.loadList().then(list => {
+        if (this.$state.current.name === 'tickets.ticket_escalations') {
+          if (this.list[0]) {
+            return this.$state.go('tickets.ticket_escalations.edit', {id: this.list[0].id});
+          } else {
+            return this.$state.go('tickets.ticket_escalations.create');
+          }
+        }
+      });
+    }
 
 
 
-    ###
-    # Show the delete dlg
-    ###
-    startDelete: (esc) ->
-      return if esc?.sys_name?
+    loadList() {
+      const d = this.$q.defer();
+      this.escData.loadList().then(list => {
+        this.list.length = 0;
+        this.list_satisfaction.length = 0;
+        this.list_statuses.length = 0;
+        if (!list) { return d.resolve([]); }
 
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketEscalations/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close();
+        list.map(item => {
+          if ('satisfaction' === item.sys_type) {
+            return this.list_satisfaction.push(item);
+          } else if ('statuses' === item.sys_type) {
+            return this.list_statuses.push(item);
+          } else {
+            return this.list.push(item);
+          }
+        });
+        return d.resolve(list);
+      });
+      return d.promise;
+    }
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss();
+
+
+    /*
+     * Show the delete dlg
+     */
+    startDelete(esc) {
+      if ((esc != null ? esc.sys_name : undefined) != null) { return; }
+
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketEscalations/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
+
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
       });
 
-      inst.result.then( =>
-        @escData.deleteEscalationById(esc.id).then(=>
-          @list = @list.filter (item) -> esc.id != item.id
-          @list_satisfaction = @list_satisfaction.filter (item) -> esc.id != item.id
-          @list_statuses = @list_statuses.filter (item) -> esc.id != item.id
-          if @$state.current.name == 'tickets.ticket_escalations.edit' and parseInt(@$state.params.id) == esc.id
-            @$state.go('tickets.ticket_escalations')
-        )
-      )
+      return inst.result.then( () => {
+        return this.escData.deleteEscalationById(esc.id).then(() => {
+          this.list = this.list.filter(item => esc.id !== item.id);
+          this.list_satisfaction = this.list_satisfaction.filter(item => esc.id !== item.id);
+          this.list_statuses = this.list_statuses.filter(item => esc.id !== item.id);
+          if ((this.$state.current.name === 'tickets.ticket_escalations.edit') && (parseInt(this.$state.params.id) === esc.id)) {
+            return this.$state.go('tickets.ticket_escalations');
+          }
+        });
+      });
+    }
 
-    ###
-    # Update the enabled state of a esc
-    ###
-    updateEscEnabledState: (esc) ->
-      return @escData.saveEnabledStateById(esc.id, esc.is_enabled)
+    /*
+     * Update the enabled state of a esc
+     */
+    updateEscEnabledState(esc) {
+      return this.escData.saveEnabledStateById(esc.id, esc.is_enabled);
+    }
+  }
+  Admin_TicketEscalations_Ctrl_List.initClass();
 
-  Admin_TicketEscalations_Ctrl_List.EXPORT_CTRL()
+  return Admin_TicketEscalations_Ctrl_List.EXPORT_CTRL();
+});

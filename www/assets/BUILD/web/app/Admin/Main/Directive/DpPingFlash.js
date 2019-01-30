@@ -1,40 +1,49 @@
-define ->
-  ###
-    # Description
-    # -----------
-    #
-    # This adds an element that can be flashed from the controller when it is pinged.
-    #
-    # Example View
-    # ------------
-    # <span dp-ping-flash="order_saved">Saved</button>
-    #
-    # Example Controller
-    # ------------------
-    # someAction: ->
-    #     @pingElement('order_saved')
-    #
-    # @see Admin_Main_Ctrl_Base.pingElement()
-    ###
-  Admin_Main_Directive_DpPingFlash = [ ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  /*
+    * Description
+    * -----------
+    *
+    * This adds an element that can be flashed from the controller when it is pinged.
+    *
+    * Example View
+    * ------------
+    * <span dp-ping-flash="order_saved">Saved</button>
+    *
+    * Example Controller
+    * ------------------
+    * someAction: ->
+    *     @pingElement('order_saved')
+    *
+    * @see Admin_Main_Ctrl_Base.pingElement()
+    */
+  const Admin_Main_Directive_DpPingFlash = [ () =>
+    ({
       restrict: 'A',
       scope: false,
-      link: (scope, element, attrs) ->
-        element.addClass('dp-ping-flash')
-        id = 'dp_ctrl_elemnt_ping.' + attrs['dpPingFlash'];
+      link(scope, element, attrs) {
+        element.addClass('dp-ping-flash');
+        const id = `dp_ctrl_elemnt_ping.${attrs['dpPingFlash']}`;
 
-        scope.$watch(id, (newVal) ->
-          if not newVal then return
-          element.stop().fadeIn(500, ->
-            window.setTimeout(->
-              if (element)
-                element.stop().fadeOut(400)
+        scope.$watch(id, function(newVal) {
+          if (!newVal) { return; }
+          return element.stop().fadeIn(500, () =>
+            window.setTimeout(function() {
+              if (element) {
+                return element.stop().fadeOut(400);
+              }
+            }
             , 400)
-          )
-        )
-        return
-    }
-  ]
+          );
+        });
+      }
+    })
+  
+  ];
 
-  return Admin_Main_Directive_DpPingFlash
+  return Admin_Main_Directive_DpPingFlash;
+});

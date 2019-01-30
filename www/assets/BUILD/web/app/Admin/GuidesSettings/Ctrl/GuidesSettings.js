@@ -1,23 +1,37 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_GuidesSettings_Ctrl_GuidesSettings extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_GuidesSettings_Ctrl_GuidesSettings'
-    @CTRL_AS = 'Ctrl'
-    @DEPS    = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_GuidesSettings_Ctrl_GuidesSettings extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_GuidesSettings_Ctrl_GuidesSettings';
+      this.CTRL_AS = 'Ctrl';
+      this.DEPS    = [];
+    }
 
-    init: ->
-      @$scope.brand_id = @$stateParams.brandId
+    init() {
+      return this.$scope.brand_id = this.$stateParams.brandId;
+    }
 
-    initialLoad: ->
-      @Api2.sendGet('/settings/brands/'+@$scope.brand_id+'/portal/guides').then( (res) =>
-        @$scope.settings = res.data.data
-      )
+    initialLoad() {
+      return this.Api2.sendGet(`/settings/brands/${this.$scope.brand_id}/portal/guides`).then( res => {
+        return this.$scope.settings = res.data.data;
+      });
+    }
 
-    save: ->
-      @startSpinner('saving')
-      @Api2.sendPostJson('/settings/brands/'+@$scope.brand_id+'/portal/guides', @$scope.settings).then( =>
-        @Growl.success("Settings saved")
-        @stopSpinner('saving')
-      )
+    save() {
+      this.startSpinner('saving');
+      return this.Api2.sendPostJson(`/settings/brands/${this.$scope.brand_id}/portal/guides`, this.$scope.settings).then( () => {
+        this.Growl.success("Settings saved");
+        return this.stopSpinner('saving');
+      });
+    }
+  }
+  Admin_GuidesSettings_Ctrl_GuidesSettings.initClass();
 
 
-  Admin_GuidesSettings_Ctrl_GuidesSettings.EXPORT_CTRL()
+  return Admin_GuidesSettings_Ctrl_GuidesSettings.EXPORT_CTRL();
+});

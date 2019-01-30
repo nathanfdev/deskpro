@@ -1,120 +1,139 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/TwitterAccounts/TwitterAccountEditFormMapper'
-], (
+], function(
   BaseListEdit,
   TwitterAccountEditFormMapper
-)  ->
-  class Admin_TwitterAccounts_DataService_TwitterAccounts extends BaseListEdit
-    @$inject = ['Api', '$q']
+)  {
+  let Admin_TwitterAccounts_DataService_TwitterAccounts;
+  return Admin_TwitterAccounts_DataService_TwitterAccounts = (function() {
+    Admin_TwitterAccounts_DataService_TwitterAccounts = class Admin_TwitterAccounts_DataService_TwitterAccounts extends BaseListEdit {
+      static initClass() {
+        this.$inject = ['Api', '$q'];
+      }
 
-    _doLoadList: ->
-      deferred = @$q.defer()
+      _doLoadList() {
+        const deferred = this.$q.defer();
 
-      @Api.sendGet('/twitter_accounts').success( (data) =>
+        this.Api.sendGet('/twitter_accounts').success( data => {
 
-        models = data.twitter_accounts
-        deferred.resolve(models)
-      , (data, status, headers, config) ->
-        deferred.reject()
-      )
+          const models = data.twitter_accounts;
+          return deferred.resolve(models);
+        }
+        , (data, status, headers, config) => deferred.reject());
 
-      return deferred.promise
+        return deferred.promise;
+      }
 
-    ###
-      # Remove a model
-      #
-      # @param {Integer} id twitter_account id
-      # @return {promise}
-    ###
-    deleteTwitterAccountById: (id) ->
+      /*
+        * Remove a model
+        *
+        * @param {Integer} id twitter_account id
+        * @return {promise}
+      */
+      deleteTwitterAccountById(id) {
 
-      promise = @Api.sendDelete('/twitter_accounts/' + id).then(=>
-        @removeListModelById(id)
-      )
+        const promise = this.Api.sendDelete(`/twitter_accounts/${id}`).then(() => {
+          return this.removeListModelById(id);
+        });
 
-      return promise
+        return promise;
+      }
 
-    ###
-       # Get the form mapper
-       #
-       # @return {TwitterAccountEditFormMapper}
-    ###
-    getFormMapper: ->
+      /*
+         * Get the form mapper
+         *
+         * @return {TwitterAccountEditFormMapper}
+      */
+      getFormMapper() {
 
-      if @formMapper then return @formMapper
-      @formMapper = new TwitterAccountEditFormMapper()
-      return @formMapper
+        if (this.formMapper) { return this.formMapper; }
+        this.formMapper = new TwitterAccountEditFormMapper();
+        return this.formMapper;
+      }
 
-    ###
-      # Get all data needed for the edit page
-      #
-      # @param {Integer} id twitter_account id
-      # @return {promise}
-    ###
-    loadEditTwitterAccountData: (id) ->
+      /*
+        * Get all data needed for the edit page
+        *
+        * @param {Integer} id twitter_account id
+        * @return {promise}
+      */
+      loadEditTwitterAccountData(id) {
 
-      deferred = @$q.defer()
+        const deferred = this.$q.defer();
 
-      if id
+        if (id) {
 
-        @Api.sendGet('/twitter_accounts/' + id).then( (result) =>
+          this.Api.sendGet(`/twitter_accounts/${id}`).then( result => {
 
-          data = {}
-          data.twitter_account = result.data.twitter_account
-          data.all_agents = result.data.twitter_account.all_agents
+            const data = {};
+            data.twitter_account = result.data.twitter_account;
+            data.all_agents = result.data.twitter_account.all_agents;
 
-          data.form = @getFormMapper().getFormFromModel(data)
+            data.form = this.getFormMapper().getFormFromModel(data);
 
-          deferred.resolve(data)
-        , ->
-          deferred.reject()
-        )
-
-      else
-
-        data = {}
-        data.twitter_account = {
-          id: null,
-          verified: false,
-          user: {
-            profile_image_url: '',
-            name: '',
-            screen_name: '',
-            agents: {}
+            return deferred.resolve(data);
           }
+          , () => deferred.reject());
+
+        } else {
+
+          const data = {};
+          data.twitter_account = {
+            id: null,
+            verified: false,
+            user: {
+              profile_image_url: '',
+              name: '',
+              screen_name: '',
+              agents: {}
+            }
+          };
+
+          data.form = this.getFormMapper().getFormFromModel(data);
+
+          deferred.resolve(data);
         }
 
-        data.form = @getFormMapper().getFormFromModel(data)
-
-        deferred.resolve(data)
-
-      return deferred.promise
+        return deferred.promise;
+      }
 
 
-    ###
-      # Saves a form model and merges model with list data
-      #
-      # @param {Object} model twitter_account model
-        # @param {Object} formModel  The model representing the form
-      # @return {promise}
-    ###
-    saveFormModel: (model, formModel) ->
+      /*
+        * Saves a form model and merges model with list data
+        *
+        * @param {Object} model twitter_account model
+          * @param {Object} formModel  The model representing the form
+        * @return {promise}
+      */
+      saveFormModel(model, formModel) {
 
-      mapper = @getFormMapper()
+        let promise;
+        const mapper = this.getFormMapper();
 
-      postData = mapper.getPostDataFromForm(formModel)
+        const postData = mapper.getPostDataFromForm(formModel);
 
-      if model.id
-        promise = @Api.sendPostJson('/twitter_accounts/' + model.id, {twitter_account: postData})
-      else
-        promise = @Api.sendPutJson('/twitter_accounts', {twitter_account: postData}).success( (data) ->
-          model.id = data.id
-        )
+        if (model.id) {
+          promise = this.Api.sendPostJson(`/twitter_accounts/${model.id}`, {twitter_account: postData});
+        } else {
+          promise = this.Api.sendPutJson('/twitter_accounts', {twitter_account: postData}).success( data => model.id = data.id);
+        }
 
-      promise.success(=>
-        mapper.applyFormToModel(model, formModel)
-        @mergeDataModel(model)
-      )
+        promise.success(() => {
+          mapper.applyFormToModel(model, formModel);
+          return this.mergeDataModel(model);
+        });
 
-      return promise
+        return promise;
+      }
+    };
+    Admin_TwitterAccounts_DataService_TwitterAccounts.initClass();
+    return Admin_TwitterAccounts_DataService_TwitterAccounts;
+  })();
+});

@@ -1,37 +1,52 @@
-define ->
-  Reports_Directive_DpReportVariables = ['$state', '$compile', '$sce', '$http', 'TemplateManager', ($state, $compile, $sce, $http, TemplateManager) ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  const Reports_Directive_DpReportVariables = ['$state', '$compile', '$sce', '$http', 'TemplateManager', ($state, $compile, $sce, $http, TemplateManager) =>
+    ({
       restrict: 'AE',
       replace: true,
-      scope:
-        widget: "=widget"
-        changeParams: "&changeWidgetParams"
-        report: "=report"
+      scope: {
+        widget: "=widget",
+        changeParams: "&changeWidgetParams",
+        report: "=report",
         possibleValues: "=possibleValues"
+      },
 
-      link: (scope, element, attrs) ->
-        templateUrl = "ReportsInterfaceBundle:Dashboard/Modal:add-widget-variables.html"
-        scope.type = attrs.type || 'builtIn'
-        scope.vars = {}
+      link(scope, element, attrs) {
+        const templateUrl = "ReportsInterfaceBundle:Dashboard/Modal:add-widget-variables.html";
+        scope.type = attrs.type || 'builtIn';
+        scope.vars = {};
 
-        for value in scope.report.variables
-          if value.default then scope.vars[value.name] = value.default
+        for (var value of Array.from(scope.report.variables)) {
+          if (value.default) { scope.vars[value.name] = value.default; }
+        }
 
-        TemplateManager.get(templateUrl).then (response) ->
-          tpl = $sce.trustAsHtml response
-          template = $sce.getTrustedHtml tpl
-          linkFn = $compile(template)
-          content = linkFn(scope)
-          element.replaceWith(content)
+        TemplateManager.get(templateUrl).then(function(response) {
+          const tpl = $sce.trustAsHtml(response);
+          const template = $sce.getTrustedHtml(tpl);
+          const linkFn = $compile(template);
+          const content = linkFn(scope);
+          return element.replaceWith(content);
+        });
 
-        scope.changeValue = () ->
-            vars = {}
-            for key, value of scope.vars
-              vars[key] = {'value': value}
-            scope.changeParams {params: vars, reportWidget: scope.report}
+        scope.changeValue = function() {
+            const vars = {};
+            for (let key in scope.vars) {
+              value = scope.vars[key];
+              vars[key] = {'value': value};
+            }
+            return scope.changeParams({params: vars, reportWidget: scope.report});
+          };
 
-        scope.changeValue()
-    }
-  ]
+        return scope.changeValue();
+      }
+    })
+  
+  ];
 
-  return Reports_Directive_DpReportVariables
+  return Reports_Directive_DpReportVariables;
+});

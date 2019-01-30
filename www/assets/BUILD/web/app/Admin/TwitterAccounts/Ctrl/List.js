@@ -1,54 +1,71 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_TwitterAccounts_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TwitterAccounts_Ctrl_List'
-    @CTRL_AS = 'ListCtrl'
-    @DEPS = ['$state', '$stateParams', 'DataService']
+) {
+  class Admin_TwitterAccounts_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TwitterAccounts_Ctrl_List';
+      this.CTRL_AS = 'ListCtrl';
+      this.DEPS = ['$state', '$stateParams', 'DataService'];
+    }
 
-    init: ->
-      @list = []
-      @twitterAccountData = @DataService.get('TwitterAccounts')
+    init() {
+      this.list = [];
+      return this.twitterAccountData = this.DataService.get('TwitterAccounts');
+    }
 
-    initialLoad: ->
-      promise = @twitterAccountData.loadList()
-      promise.then( (list) =>
+    initialLoad() {
+      const promise = this.twitterAccountData.loadList();
+      promise.then( list => {
 
-        @list = list
-      )
+        return this.list = list;
+      });
 
-      return promise
+      return promise;
+    }
 
 
-    ###
-    # Show the delete dlg
-    ###
-    startDelete: (twitter_account_id) ->
+    /*
+     * Show the delete dlg
+     */
+    startDelete(twitter_account_id) {
 
-      twitter_account = null
-      for v in @list
-        if v.id == twitter_account_id
-          twitter_account = v
-          break
+      let twitter_account = null;
+      for (let v of Array.from(this.list)) {
+        if (v.id === twitter_account_id) {
+          twitter_account = v;
+          break;
+        }
+      }
 
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('TwitterAccounts/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close();
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TwitterAccounts/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss();
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
       });
 
-      inst.result.then( =>
-        @twitterAccountData.deleteTwitterAccountById(twitter_account.id).then(=>
-          if @$state.current.name == 'twitter.accounts.edit' and parseInt(@$state.params.id) == twitter_account.id
-            @$state.go('twitter.accounts')
-        )
-      )
+      return inst.result.then( () => {
+        return this.twitterAccountData.deleteTwitterAccountById(twitter_account.id).then(() => {
+          if ((this.$state.current.name === 'twitter.accounts.edit') && (parseInt(this.$state.params.id) === twitter_account.id)) {
+            return this.$state.go('twitter.accounts');
+          }
+        });
+      });
+    }
+  }
+  Admin_TwitterAccounts_Ctrl_List.initClass();
 
-  Admin_TwitterAccounts_Ctrl_List.EXPORT_CTRL()
+  return Admin_TwitterAccounts_Ctrl_List.EXPORT_CTRL();
+});

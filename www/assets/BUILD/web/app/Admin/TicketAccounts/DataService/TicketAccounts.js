@@ -1,81 +1,106 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/Base',
   'Admin/Main/Model/Base',
   'Admin/Main/Collection/OrderedDictionary'
-], (
+], function(
   Admin_Main_DataService_Base,
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
-)  ->
-  class Admin_TicketAccounts_DataService_TicketAccounts extends Admin_Main_DataService_Base
-    constructor: (em, Api, $q) ->
-      super(em)
-      @$q   = $q
-      @Api  = Api
+)  {
+  let Admin_TicketAccounts_DataService_TicketAccounts;
+  return (Admin_TicketAccounts_DataService_TicketAccounts = class Admin_TicketAccounts_DataService_TicketAccounts extends Admin_Main_DataService_Base {
+    constructor(em, Api, $q) {
+      super(em);
+      this.$q   = $q;
+      this.Api  = Api;
 
-      @loadListPromise = null
-      @recs = new Admin_Main_Collection_OrderedDictionary()
+      this.loadListPromise = null;
+      this.recs = new Admin_Main_Collection_OrderedDictionary();
 
-      @recs.orderFn = (a, b) ->
-        cmpa = a.address
-        cmpb = b.address
-        return if cmpa < cmpb then -1 else 1
+      this.recs.orderFn = function(a, b) {
+        const cmpa = a.address;
+        const cmpb = b.address;
+        if (cmpa < cmpb) { return -1; } else { return 1; }
+      };
+    }
 
-    ###*
+    /**
     * Loads list of accounts
       *
       * @return {Promise}
-    ###
-    loadList: (reload) ->
+    */
+    loadList(reload) {
 
-      if @loadListPromise
-        return @loadListPromise
+      if (this.loadListPromise) {
+        return this.loadListPromise;
+      }
 
-      deferred = @$q.defer()
-      if not reload and @recs.count()
-        deferred.resolve(@recs)
-        return deferred.promise
+      const deferred = this.$q.defer();
+      if (!reload && this.recs.count()) {
+        deferred.resolve(this.recs);
+        return deferred.promise;
+      }
 
-      http_def = @Api.sendGet('/email_accounts').success( (data, status, headers, config) =>
-        @_setListData(data.email_accounts)
-        deferred.resolve(@recs)
-      , (data, status, headers, config) ->
-        deferred.reject()
-      )
+      const http_def = this.Api.sendGet('/email_accounts').success( (data, status, headers, config) => {
+        this._setListData(data.email_accounts);
+        return deferred.resolve(this.recs);
+      }
+      , (data, status, headers, config) => deferred.reject());
 
-      @loadListPromise = deferred.promise
+      this.loadListPromise = deferred.promise;
 
-      return @loadListPromise
+      return this.loadListPromise;
+    }
 
-    remove: (id) ->
-      @recs.remove(id)
-      @em.removeById('ticket_account', 'id')
+    remove(id) {
+      this.recs.remove(id);
+      return this.em.removeById('ticket_account', 'id');
+    }
 
-    _setListData: (raw_recs) ->
-      for rec in raw_recs
-        model = @em.createEntity('ticket_account', 'id', rec)
-        model.retain()
-        @recs.set(model.id, model)
+    _setListData(raw_recs) {
+      return (() => {
+        const result = [];
+        for (let rec of Array.from(raw_recs)) {
+          const model = this.em.createEntity('ticket_account', 'id', rec);
+          model.retain();
+          result.push(this.recs.set(model.id, model));
+        }
+        return result;
+      })();
+    }
 
-    ###
-      # Updates the first-class model (title, etc)
-      # with account provided. Or adds it to the list if it doesnt exist.
-      ###
-    updateModel: (account) ->
-      new_model = @em.createEntity('ticket_account', 'id', account)
-      @recs.set(new_model.id, new_model)
-      return new_model
+    /*
+      * Updates the first-class model (title, etc)
+      * with account provided. Or adds it to the list if it doesnt exist.
+      */
+    updateModel(account) {
+      const new_model = this.em.createEntity('ticket_account', 'id', account);
+      this.recs.set(new_model.id, new_model);
+      return new_model;
+    }
 
-    ###*
+    /**
     * Adds a new model to the existing list (eg was just created)
       *
       * @return {Admin_Main_Model_Base}
-    ###
-    addToList: (rec) ->
-      if not rec._is_model
-        model = @em.createEntity('ticket_account', 'id', dep)
-      else
-        model = @em.add(rec, true)
+    */
+    addToList(rec) {
+      let model;
+      if (!rec._is_model) {
+        model = this.em.createEntity('ticket_account', 'id', dep);
+      } else {
+        model = this.em.add(rec, true);
+      }
 
-      @recs.set(model.id, model)
-      return model
+      this.recs.set(model.id, model);
+      return model;
+    }
+  });
+});

@@ -1,129 +1,158 @@
-define ['Admin/Main/Ctrl/Base', '../../../../bower_components/moment/moment'], (Admin_Ctrl_Base, moment) ->
-  class Admin_AgentAuditLogs_Ctrl_AuditLogs extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_AgentAuditLogs_Ctrl_AuditLogs'
-    @CTRL_AS   = 'AuditLogs'
-    @DEPS      = ['Api2']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS202: Simplify dynamic range loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', '../../../../bower_components/moment/moment'], function(Admin_Ctrl_Base, moment) {
+  class Admin_AgentAuditLogs_Ctrl_AuditLogs extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_AgentAuditLogs_Ctrl_AuditLogs';
+      this.CTRL_AS   = 'AuditLogs';
+      this.DEPS      = ['Api2'];
+    }
 
-    init: ->
-      @filters = {
-        performer_id: ''
-        performer_name: ''
-        date_created_to: null
-        date_created_from: null
-        object_type: ''
-        object_id: ''
-        object_name: ''
-        action: ''
+    init() {
+      this.filters = {
+        performer_id: '',
+        performer_name: '',
+        date_created_to: null,
+        date_created_from: null,
+        object_type: '',
+        object_id: '',
+        object_name: '',
+        action: '',
         api_key: ''
-      }
-      @logs = []
-      @purge = 'day';
-      @pagination = {
-        total: 0
-        count: 0
-        per_page: 50
-        current_page: 1
-        virtual_current_page: 1
-        total_pages: 1
-        page_nums: [1]
+      };
+      this.logs = [];
+      this.purge = 'day';
+      return this.pagination = {
+        total: 0,
+        count: 0,
+        per_page: 50,
+        current_page: 1,
+        virtual_current_page: 1,
+        total_pages: 1,
+        page_nums: [1],
         plain: false
+      };
+    }
+
+    initialLoad() {
+      return this.updateFilter();
+    }
+
+    newSearch() {
+      this.pagination.current_page = (this.pagination.virtual_current_page = 1);
+      return this.updateFilter();
+    }
+
+    updateFilter() {
+      this.is_loading = true;
+      const params = {};
+      for (let key of Array.from(Object.keys(this.filters))) {
+        if (this.filters[key]) { params[key] = this.filters[key]; }
+      }
+      params.count = this.pagination.per_page;
+      params.page = this.pagination.current_page;
+
+      if(params.date_created_from) {
+        params.date_created_from = moment(params.date_created_from).format("YYYY-MM-DD");
       }
 
-    initialLoad: ->
-      @updateFilter()
+      if(params.date_created_to) {
+        params.date_created_to = moment(params.date_created_to).format("YYYY-MM-DD");
+      }
 
-    newSearch: ->
-      @pagination.current_page = @pagination.virtual_current_page = 1;
-      @updateFilter()
+      return this.Api2.sendGet('/audit_logs', params).then(
+        response => {
+          this.logs = response.data.data;
+          this.pagination = response.data.meta.pagination;
+          this.pagination.virtual_current_page = this.pagination.current_page;
+          const page_nums = [];
+          if(this.pagination.total_pages > 250) {
+            this.pagination.plain = true;
+            this.is_loading = false;
+            return;
+          }
 
-    updateFilter: ->
-      @is_loading = true
-      params = {}
-      for key in Object.keys(@filters)
-        if @filters[key] then params[key] = @filters[key]
-      params.count = @pagination.per_page
-      params.page = @pagination.current_page
+          for (let i = 0, end = this.pagination.total_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+            page_nums.push(i + 1);
+          }
+          this.pagination.page_nums = page_nums;
+          return this.is_loading = false;
+      });
+    }
 
-      if(params.date_created_from)
-        params.date_created_from = moment(params.date_created_from).format("YYYY-MM-DD")
+    purgeLogs() {
+      this.is_loading = true;
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('Agents/audit-logs-delete-modal.html'),
+        controller: ['$scope', '$modalInstance',  function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
 
-      if(params.date_created_to)
-        params.date_created_to = moment(params.date_created_to).format("YYYY-MM-DD")
-
-      @Api2.sendGet('/audit_logs', params).then(
-        (response) =>
-          @logs = response.data.data
-          @pagination = response.data.meta.pagination
-          @pagination.virtual_current_page = @pagination.current_page
-          page_nums = []
-          if(@pagination.total_pages > 250)
-            @pagination.plain = true
-            @is_loading = false
-            return
-
-          for i in [0...@pagination.total_pages]
-            page_nums.push(i + 1)
-          @pagination.page_nums = page_nums
-          @is_loading = false
-      )
-
-    purgeLogs: ->
-      @is_loading = true
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('Agents/audit-logs-delete-modal.html'),
-        controller: ['$scope', '$modalInstance',  ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close()
-
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
       });
 
-      inst.result.then( () =>
-        @Api2.sendPostJson('/audit_logs/purge', {period: @purge}).then(
-          () =>
-            @clearFilter()
-            @is_loading = false
-        )
-      ).catch ( () => @is_loading = false );
+      return inst.result.then( () => {
+        return this.Api2.sendPostJson('/audit_logs/purge', {period: this.purge}).then(
+          () => {
+            this.clearFilter();
+            return this.is_loading = false;
+        });
+      }).catch(( () => { return this.is_loading = false;  }));
+    }
 
 
-    goPrevPage: ->
-      @pagination.current_page = @pagination.virtual_current_page = parseInt(@pagination.current_page) - 1
-      if (@pagination.current_page < 0)
-        @pagination.current_page = @pagination.virtual_current_page = 0
-      @updateFilter()
-
-    goNextPage: ->
-      @pagination.current_page = @pagination.virtual_current_page = parseInt(@pagination.current_page) + 1
-      if (@pagination.current_page > @pagination.total_pages)
-        @pagination.current_page = @pagination.virtual_current_page = @pagination.total_pages
-      @updateFilter()
-
-    goCurrentPage: () ->
-      @pagination.current_page = parseInt(@pagination.virtual_current_page)
-      if (@pagination.current_page > @pagination.total_pages)
-        @pagination.current_page = @pagination.virtual_current_page = @pagination.total_pages
-      else if(@pagination.current_page < 0)
-        @pagination.current_page = @pagination.virtual_current_page = 0
-      @updateFilter()
-      return false
-
-    clearFilter: ->
-      @filters = {
-        performer_id: ''
-        performer_name: ''
-        date_created_to: null
-        date_created_from: null
-        object_type: ''
-        object_id: ''
-        object_name: ''
-        action: ''
-        api_key: ''
+    goPrevPage() {
+      this.pagination.current_page = (this.pagination.virtual_current_page = parseInt(this.pagination.current_page) - 1);
+      if (this.pagination.current_page < 0) {
+        this.pagination.current_page = (this.pagination.virtual_current_page = 0);
       }
-      @pagination.current_page = 1
-      @pagination.virtual_current_page = 1
-      @updateFilter()
+      return this.updateFilter();
+    }
 
-  Admin_AgentAuditLogs_Ctrl_AuditLogs.EXPORT_CTRL()
+    goNextPage() {
+      this.pagination.current_page = (this.pagination.virtual_current_page = parseInt(this.pagination.current_page) + 1);
+      if (this.pagination.current_page > this.pagination.total_pages) {
+        this.pagination.current_page = (this.pagination.virtual_current_page = this.pagination.total_pages);
+      }
+      return this.updateFilter();
+    }
+
+    goCurrentPage() {
+      this.pagination.current_page = parseInt(this.pagination.virtual_current_page);
+      if (this.pagination.current_page > this.pagination.total_pages) {
+        this.pagination.current_page = (this.pagination.virtual_current_page = this.pagination.total_pages);
+      } else if(this.pagination.current_page < 0) {
+        this.pagination.current_page = (this.pagination.virtual_current_page = 0);
+      }
+      this.updateFilter();
+      return false;
+    }
+
+    clearFilter() {
+      this.filters = {
+        performer_id: '',
+        performer_name: '',
+        date_created_to: null,
+        date_created_from: null,
+        object_type: '',
+        object_id: '',
+        object_name: '',
+        action: '',
+        api_key: ''
+      };
+      this.pagination.current_page = 1;
+      this.pagination.virtual_current_page = 1;
+      return this.updateFilter();
+    }
+  }
+  Admin_AgentAuditLogs_Ctrl_AuditLogs.initClass();
+
+  return Admin_AgentAuditLogs_Ctrl_AuditLogs.EXPORT_CTRL();
+});

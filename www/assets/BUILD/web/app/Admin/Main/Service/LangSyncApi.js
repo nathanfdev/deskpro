@@ -1,52 +1,70 @@
-define ['DeskPRO/Util/Util'], (Util) ->
-  class LangSyncApi
-    constructor: ($http, api_url, @Growl) ->
-      @$http     = $http
-      @api_url   = api_url.replace(/\/$/, '')
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Util'], function(Util) {
+  let LangSyncApi;
+  return (LangSyncApi = class LangSyncApi {
+    constructor($http, api_url, Growl) {
+      this.handleError = this.handleError.bind(this);
+      this.Growl = Growl;
+      this.$http     = $http;
+      this.api_url   = api_url.replace(/\/$/, '');
+    }
 
-    ###
+    /*
     * Retrieve the full endpoint URL.
-    ###
-    _getEndpointUrl: (endpoint) ->
-        "#{@api_url}/#{endpoint}"
-
-    formatUrl: (endpoint) ->
-      endpoint = endpoint.replace(/^\//, '')
-      url = @_getEndpointUrl(endpoint)
-      url = url.replace(/&$/, '')
-
-      return url
-
-    getManifest: () ->
-      url = @formatUrl('/locales/manifest.json');
-
-      http_params = {
-        method: 'GET',
-        url: url,
-        isCorsRequest: true
+    */
+    _getEndpointUrl(endpoint) {
+        return `${this.api_url}/${endpoint}`;
       }
 
-      @sendRequest http_params
+    formatUrl(endpoint) {
+      endpoint = endpoint.replace(/^\//, '');
+      let url = this._getEndpointUrl(endpoint);
+      url = url.replace(/&$/, '');
 
-    getPhrases: (locale, type) ->
-      url = @formatUrl("/locales/#{locale}/#{type}.json");
+      return url;
+    }
 
-      http_params = {
+    getManifest() {
+      const url = this.formatUrl('/locales/manifest.json');
+
+      const http_params = {
         method: 'GET',
-        url: url,
+        url,
         isCorsRequest: true
+      };
+
+      return this.sendRequest(http_params);
+    }
+
+    getPhrases(locale, type) {
+      const url = this.formatUrl(`/locales/${locale}/${type}.json`);
+
+      const http_params = {
+        method: 'GET',
+        url,
+        isCorsRequest: true
+      };
+
+      return this.sendRequest(http_params);
+    }
+
+    sendRequest(http_params) {
+      const result = this.$http(http_params);
+      result.error(this.handleError);
+
+      return result;
+    }
+
+    handleError(data, status, headers, config) {
+      if ((500 === status) && this.Growl) {
+        return this.Growl.error('There was a problem processing your last request. Please try again.');
+      } else if (console) {
+        return console.info(data);
       }
-
-      @sendRequest http_params
-
-    sendRequest: (http_params) ->
-      result = @$http http_params
-      result.error @handleError
-
-      result
-
-    handleError: (data, status, headers, config) =>
-      if 500 == status && @Growl
-        @Growl.error 'There was a problem processing your last request. Please try again.'
-      else if console
-        console.info data
+    }
+  });
+});

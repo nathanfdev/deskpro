@@ -1,81 +1,97 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Reports/Main/Ctrl/Base',
   'DeskPRO/Util/Util',
-], (
+], function(
   ReportsBaseCtrl,
   Util,
-) ->
-  class Reports_Builder_Ctrl_List extends ReportsBaseCtrl
-    @CTRL_ID = 'Reports_Builder_Ctrl_List'
-    @CTRL_AS = 'ListCtrl'
-    @DEPS    = ['Api', '$timeout']
+) {
+  class Reports_Builder_Ctrl_List extends ReportsBaseCtrl {
+    static initClass() {
+      this.CTRL_ID = 'Reports_Builder_Ctrl_List';
+      this.CTRL_AS = 'ListCtrl';
+      this.DEPS    = ['Api', '$timeout'];
+    }
 
-    init: ->
-      @customData = @DataService.get('ReportBuilderCustom')
-      @builtInData = @DataService.get('ReportBuilderBuiltIn')
+    init() {
+      this.customData = this.DataService.get('ReportBuilderCustom');
+      return this.builtInData = this.DataService.get('ReportBuilderBuiltIn');
+    }
 
       
-    ###
-    # Loads 2 lists - first with custom reports, second with built-in reports
-    ###
-    initialLoad: ->
+    /*
+     * Loads 2 lists - first with custom reports, second with built-in reports
+     */
+    initialLoad() {
 
-      d = @$q.defer()
+      const d = this.$q.defer();
 
-      custom_promise = @customData.loadList().then( (list) =>
-        @custom_data_list = list
-      )
-      built_in_promise = @builtInData.loadList().then( (list) =>
-        @built_in_data_list = list
-      )
-      group_params_promise = @Api.sendGet('/reports/builder/group-params').then( (data) =>
-        @group_params = data.data
-      )
+      const custom_promise = this.customData.loadList().then( list => {
+        return this.custom_data_list = list;
+      });
+      const built_in_promise = this.builtInData.loadList().then( list => {
+        return this.built_in_data_list = list;
+      });
+      const group_params_promise = this.Api.sendGet('/reports/builder/group-params').then( data => {
+        return this.group_params = data.data;
+      });
 
-      @$q.all([custom_promise, built_in_promise, group_params_promise]).then(=>
-        # small delay gives chance for select2 boxes to set up, reduces visual jitter
-        @$timeout(=>
-          d.resolve()
-        , 350)
-      )
+      this.$q.all([custom_promise, built_in_promise, group_params_promise]).then(() => {
+        // small delay gives chance for select2 boxes to set up, reduces visual jitter
+        return this.$timeout(() => {
+          return d.resolve();
+        }
+        , 350);
+      });
 
-      return d.promise
+      return d.promise;
+    }
 
 
-    ###
-    # Show the delete dlg
-    ###
-    startDelete: (for_report_id) ->
-      report = @customData.findListModelById(for_report_id)
+    /*
+     * Show the delete dlg
+     */
+    startDelete(for_report_id) {
+      const report = this.customData.findListModelById(for_report_id);
 
-      if not report.is_custom then throw new Error('Report you are going to delete should be custom report')
+      if (!report.is_custom) { throw new Error('Report you are going to delete should be custom report'); }
 
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('Builder/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close()
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('Builder/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
       });
 
-      inst.result.then(=>
-        @deleteReport(report)
-      )
+      return inst.result.then(() => {
+        return this.deleteReport(report);
+      });
+    }
 
 
-    ###
-    # Actually do the delete
-    ###
-    deleteReport: (for_report) ->
-      @customData.deleteReportById(for_report.id).success(=>
-        if @$state.current.name == 'builder.edit' and parseInt(@$state.params.id) == for_report.id
-          @$state.go('builder')
+    /*
+     * Actually do the delete
+     */
+    deleteReport(for_report) {
+      return this.customData.deleteReportById(for_report.id).success(() => {
+        if ((this.$state.current.name === 'builder.edit') && (parseInt(this.$state.params.id) === for_report.id)) {
+          return this.$state.go('builder');
+        }
 
-      ).error((info, code) =>
-        @applyErrorResponseToView(info)
-      )
+      }).error((info, code) => {
+        return this.applyErrorResponseToView(info);
+      });
+    }
+  }
+  Reports_Builder_Ctrl_List.initClass();
 
-  Reports_Builder_Ctrl_List.EXPORT_CTRL()
+  return Reports_Builder_Ctrl_List.EXPORT_CTRL();
+});

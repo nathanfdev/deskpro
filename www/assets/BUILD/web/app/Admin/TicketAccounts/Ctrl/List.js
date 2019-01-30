@@ -1,70 +1,92 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_TicketAccounts_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketAccounts_Ctrl_List'
-    @CTRL_AS = 'TicketAccountsList'
-    @DEPS    = ['TicketAccountsData']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_TicketAccounts_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketAccounts_Ctrl_List';
+      this.CTRL_AS = 'TicketAccountsList';
+      this.DEPS    = ['TicketAccountsData'];
+    }
 
-    init: ->
-      @accounts = []
+    init() {
+      return this.accounts = [];
+    }
 
-    initialLoad: ->
-      list_promise = @TicketAccountsData.loadList().then( (recs) =>
-        @accounts = recs.values()
+    initialLoad() {
+      const list_promise = this.TicketAccountsData.loadList().then( recs => {
+        this.accounts = recs.values();
 
-        if @$state.current.name == 'emails.ticket_accounts'
-          if @accounts[0]
-            @$state.go('emails.ticket_accounts.edit', { id: @accounts[0].id })
-          else
-            @$state.go('emails.ticket_accounts.create')
+        if (this.$state.current.name === 'emails.ticket_accounts') {
+          if (this.accounts[0]) {
+            this.$state.go('emails.ticket_accounts.edit', { id: this.accounts[0].id });
+          } else {
+            this.$state.go('emails.ticket_accounts.create');
+          }
+        }
 
-        @addManagedListener(@TicketAccountsData.recs, 'changed', =>
-          @TicketAccountsData.recs.reorder()
-          @accounts = @TicketAccountsData.recs.values()
-          @ngApply()
-        )
-      )
+        return this.addManagedListener(this.TicketAccountsData.recs, 'changed', () => {
+          this.TicketAccountsData.recs.reorder();
+          this.accounts = this.TicketAccountsData.recs.values();
+          return this.ngApply();
+        });
+      });
 
-      return @$q.all([list_promise]);
+      return this.$q.all([list_promise]);
+    }
 
-    ###
-    # Show the delete dlg
-    ###
-    startDelete: (for_acc_id) ->
+    /*
+     * Show the delete dlg
+     */
+    startDelete(for_acc_id) {
 
-      for_acc = null
-      for v in @accounts
-        if v.id == for_acc_id
-          for_acc = v
+      let for_acc = null;
+      for (let v of Array.from(this.accounts)) {
+        if (v.id === for_acc_id) {
+          for_acc = v;
+        }
+      }
 
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketAccounts/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.confirm = ->
-            $modalInstance.close();
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketAccounts/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.confirm = () => $modalInstance.close();
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss();
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ]
       });
 
-      inst.result.then(=>
-        @deleteAccount(for_acc)
-      )
+      return inst.result.then(() => {
+        return this.deleteAccount(for_acc);
+      });
+    }
 
-    ###for_acc
-    # Actually do th edelete
-    ###
-    deleteAccount: (acc) ->
-      @Api.sendDelete('/email_accounts/' + acc.id).success( =>
-        @TicketAccountsData.remove(acc.id)
-        @ngApply()
+    /*for_acc
+     * Actually do th edelete
+     */
+    deleteAccount(acc) {
+      return this.Api.sendDelete(`/email_accounts/${acc.id}`).success( () => {
+        this.TicketAccountsData.remove(acc.id);
+        this.ngApply();
 
-        # if currently viewing the deleted account, then should need to switch state
-        if @$state.current.name == 'emails.ticket_accounts.edit' and parseInt(@$state.params.id) == acc.id
-          @$state.go('emails.ticket_accounts')
-      )
-        .error (res) =>
-          if res.error_message
-            @Growl.error res.error_message
+        // if currently viewing the deleted account, then should need to switch state
+        if ((this.$state.current.name === 'emails.ticket_accounts.edit') && (parseInt(this.$state.params.id) === acc.id)) {
+          return this.$state.go('emails.ticket_accounts');
+        }
+      })
+        .error(res => {
+          if (res.error_message) {
+            return this.Growl.error(res.error_message);
+          }
+      });
+    }
+  }
+  Admin_TicketAccounts_Ctrl_List.initClass();
 
-  Admin_TicketAccounts_Ctrl_List.EXPORT_CTRL()
+  return Admin_TicketAccounts_Ctrl_List.EXPORT_CTRL();
+});

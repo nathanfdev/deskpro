@@ -1,24 +1,37 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'Admin/Apps/Ctrl/EditInstance',
   'Admin/Usersources/Helper/UsersourceTypeDecider'
-], (
+], function(
   Admin_Ctrl_Base, Admin_Apps_Ctrl_EditInstance, Admin_Usersources_Helper_UsersourceTypeDecider
-) ->
-  class Admin_Usersources_Ctrl_Edit extends Admin_Apps_Ctrl_EditInstance
-    @CTRL_ID = 'Admin_Usersources_Ctrl_Edit'
-    @CTRL_AS = 'EditCtrl'
-    @DEPS = ['$stateParams']
+) {
+  class Admin_Usersources_Ctrl_Edit extends Admin_Apps_Ctrl_EditInstance {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Usersources_Ctrl_Edit';
+      this.CTRL_AS = 'EditCtrl';
+      this.DEPS = ['$stateParams'];
+    }
 
-    init: ->
-      @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
-      @usersourcesDataService = @DataService.get('Usersources')
-      @usersourceId = @$stateParams.id
+    init() {
+      this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
+      this.usersourcesDataService = this.DataService.get('Usersources');
+      return this.usersourceId = this.$stateParams.id;
+    }
 
-    initialLoad: ->
-      promise = @Api.sendGet('/usersources/' + @usersourceType + '/' + @usersourceId).then((result) =>
-        @usersource = result.data.usersource
-      )
-      return promise
+    initialLoad() {
+      const promise = this.Api.sendGet(`/usersources/${this.usersourceType}/${this.usersourceId}`).then(result => {
+        return this.usersource = result.data.usersource;
+      });
+      return promise;
+    }
+  }
+  Admin_Usersources_Ctrl_Edit.initClass();
 
-  Admin_Usersources_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_Usersources_Ctrl_Edit.EXPORT_CTRL();
+});

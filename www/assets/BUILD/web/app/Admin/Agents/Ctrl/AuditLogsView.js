@@ -1,20 +1,34 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_AgentAuditLogs_Ctrl_AuditLogsView extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_AgentAuditLogs_Ctrl_AuditLogsView'
-    @CTRL_AS   = 'AuditLogsView'
-    @DEPS      = ['Api2']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_AgentAuditLogs_Ctrl_AuditLogsView extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_AgentAuditLogs_Ctrl_AuditLogsView';
+      this.CTRL_AS   = 'AuditLogsView';
+      this.DEPS      = ['Api2'];
+    }
 
-    init: ->
-      @log = {}
+    init() {
+      return this.log = {};
+    }
 
-    initialLoad: ->
-      @Api2.sendGet('/audit_logs/' + @$stateParams.id).then(
-        (response) =>
-          @log = response.data.data
-      )
+    initialLoad() {
+      return this.Api2.sendGet(`/audit_logs/${this.$stateParams.id}`).then(
+        response => {
+          return this.log = response.data.data;
+      });
+    }
 
-    getChangeSet: ->
-      return angular.toJson(@log.data, true)
+    getChangeSet() {
+      return angular.toJson(this.log.data, true);
+    }
+  }
+  Admin_AgentAuditLogs_Ctrl_AuditLogsView.initClass();
 
 
-  Admin_AgentAuditLogs_Ctrl_AuditLogsView.EXPORT_CTRL()
+  return Admin_AgentAuditLogs_Ctrl_AuditLogsView.EXPORT_CTRL();
+});

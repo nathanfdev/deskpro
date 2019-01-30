@@ -1,17 +1,30 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_UserGroups_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_UserGroups_Ctrl_List'
-    @CTRL_AS = 'ListCtrl'
-    @DEPS = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_UserGroups_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_UserGroups_Ctrl_List';
+      this.CTRL_AS = 'ListCtrl';
+      this.DEPS = [];
+    }
 
-    init: ->
-      @ugData = @DataService.get('UserGroups')
+    init() {
+      return this.ugData = this.DataService.get('UserGroups');
+    }
 
-    initialLoad: ->
-      promise = @ugData.loadList().then( (list) =>
-        @list = list
-      )
+    initialLoad() {
+      const promise = this.ugData.loadList().then( list => {
+        return this.list = list;
+      });
 
-      return promise
+      return promise;
+    }
+  }
+  Admin_UserGroups_Ctrl_List.initClass();
 
-  Admin_UserGroups_Ctrl_List.EXPORT_CTRL()
+  return Admin_UserGroups_Ctrl_List.EXPORT_CTRL();
+});

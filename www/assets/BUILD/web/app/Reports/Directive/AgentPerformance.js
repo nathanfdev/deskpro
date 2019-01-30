@@ -1,41 +1,54 @@
-define ['DeskPRO/Util/Strings'], (Strings) ->
-  Reports_Directive_AgentPerformance = ['$compile', '$sce', 'AgentActivityService', 'AgentHoursService', '$http', ($compile, $sce, AgentActivityService, AgentHoursService, $http) ->
-    return {
-    restrict: 'E'
-    replace: true
-    scope:
-      innerType: '@'
-      myIndex: '@'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Strings'], function(Strings) {
+  const Reports_Directive_AgentPerformance = ['$compile', '$sce', 'AgentActivityService', 'AgentHoursService', '$http', ($compile, $sce, AgentActivityService, AgentHoursService, $http) =>
+    ({
+    restrict: 'E',
+    replace: true,
+    scope: {
+      innerType: '@',
+      myIndex: '@',
       outerType: '@'
-    # OMG this is REALLY TERRIBLE, but I have no idea for now how can I refactor this :(
-    controller: ($scope, $element) ->
-      templateUrl = "ReportsInterfaceBundle:AgentPerformance:#{$scope.innerType}-wrapper.html"
-      service = switch $scope.innerType
-        when 'agent_activity' then AgentActivityService
-        when 'agent_hours' then AgentHoursService
-        else null
+    },
+    // OMG this is REALLY TERRIBLE, but I have no idea for now how can I refactor this :(
+    controller($scope, $element) {
+      const templateUrl = `ReportsInterfaceBundle:AgentPerformance:${$scope.innerType}-wrapper.html`;
+      const service = (() => { switch ($scope.innerType) {
+        case 'agent_activity': return AgentActivityService;
+        case 'agent_hours': return AgentHoursService;
+        default: return null;
+      } })();
 
-      if service
-        $scope.service = service
-        service.loadResults()
-        $http.get(templateUrl).then (response) ->
-          tpl = $sce.trustAsHtml response.data
-          template = $sce.getTrustedHtml tpl
-          linkFn = $compile(template)
-          content = linkFn($scope)
-          $element.replaceWith(content)
-      else
-        console.error "No such service for #{$scope.innerType} type"
+      if (service) {
+        $scope.service = service;
+        service.loadResults();
+        return $http.get(templateUrl).then(function(response) {
+          const tpl = $sce.trustAsHtml(response.data);
+          const template = $sce.getTrustedHtml(tpl);
+          const linkFn = $compile(template);
+          const content = linkFn($scope);
+          return $element.replaceWith(content);
+        });
+      } else {
+        return console.error(`No such service for ${$scope.innerType} type`);
+      }
 
-      ### $scope.updateFilter = () ->
+      /* $scope.updateFilter = () ->
         service.updateFilter().then (response) ->
           template = "#{$sce.getTrustedHtml(service.html)}"
           linkFn = $compile(template)
           content = linkFn($scope)
           $element.find('.append_here').html(content)
-      ###
-
+      */
     }
-  ]
 
-  return Reports_Directive_AgentPerformance
+    })
+  
+  ];
+
+  return Reports_Directive_AgentPerformance;
+});

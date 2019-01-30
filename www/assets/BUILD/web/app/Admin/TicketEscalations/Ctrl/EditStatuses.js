@@ -1,99 +1,132 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/TicketEscalations/Ctrl/Edit'
-], (
+], function(
   Admin_TicketEscalations_Ctrl_Edit
-) ->
-  class Admin_TicketEscalations_Ctrl_EditStatuses extends Admin_TicketEscalations_Ctrl_Edit
-    @CTRL_ID   = 'Admin_TicketEscalations_Ctrl_EditStatuses'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams']
+) {
+  class Admin_TicketEscalations_Ctrl_EditStatuses extends Admin_TicketEscalations_Ctrl_Edit {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketEscalations_Ctrl_EditStatuses';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams'];
+    }
 
 
 
-    init: ->
-      @escData = @DataService.get 'TicketEscalations'
-      @esc = null
-      @id = @$stateParams.id
+    init() {
+      this.escData = this.DataService.get('TicketEscalations');
+      this.esc = null;
+      this.id = this.$stateParams.id;
 
-      @criteriaTypeDef     = @dpObTypesDefTicketFilter
-      @actionsTypeDef      = @dpObTypesDefTicketActions
-      @$scope.criteriaOptionTypes = []
-      @$scope.actionOptionTypes   = []
+      this.criteriaTypeDef     = this.dpObTypesDefTicketFilter;
+      this.actionsTypeDef      = this.dpObTypesDefTicketActions;
+      this.$scope.criteriaOptionTypes = [];
+      this.$scope.actionOptionTypes   = [];
 
-      @criteriaTypeDef.setVar 'object_type', 'escalation'
-      @actionsTypeDef.setVar 'object_type', 'escalation'
+      this.criteriaTypeDef.setVar('object_type', 'escalation');
+      this.actionsTypeDef.setVar('object_type', 'escalation');
 
-      @criteriaTypeDef.setVar 'object_type', 'escalation'
-      @actionsTypeDef.setVar 'object_type', 'escalation'
+      this.criteriaTypeDef.setVar('object_type', 'escalation');
+      this.actionsTypeDef.setVar('object_type', 'escalation');
 
-      @$scope.initWith = (id) =>
-        @id = id
-        @initialLoad()
+      this.$scope.initWith = id => {
+        this.id = id;
+        return this.initialLoad();
+      };
 
-      growl = @Growl
-      # we need to suppress alerts when process initiated by this event
-      @$scope.$on 'trigger.save', =>
-        @Growl =
-          success: =>
-          error: =>
-            # right, double 'then'
-        @saveForm().then().then => @Growl = growl
-
-
-
-    updateCriteriaOptionTypes: ->
-      set = @criteriaTypeDef.getOptionsForTypes()
-      @$scope.criteriaOptionTypes.length = 0
-      for opt in set
-        @$scope.criteriaOptionTypes.push(opt)
-
-      set = @actionsTypeDef.getOptionsForTypes([], {dynamicOptions: @customActions})
-      @$scope.actionOptionTypes.length = 0
-      for opt in set
-        @$scope.actionOptionTypes.push(opt)
+      const growl = this.Growl;
+      // we need to suppress alerts when process initiated by this event
+      return this.$scope.$on('trigger.save', () => {
+        this.Growl = {
+          success: () => {},
+          error: () => {}
+        };
+            // right, double 'then'
+        return this.saveForm().then().then(() => { return this.Growl = growl; });
+      });
+    }
 
 
 
-    initialLoad: ->
-      return if !@id
-      loadData = null
-      promise = @escData.loadEditSpecialEscalation('statuses', @id).then (data) =>
-        loadData = data
+    updateCriteriaOptionTypes() {
+      let set = this.criteriaTypeDef.getOptionsForTypes();
+      this.$scope.criteriaOptionTypes.length = 0;
+      for (var opt of Array.from(set)) {
+        this.$scope.criteriaOptionTypes.push(opt);
+      }
 
-      promise2 = @criteriaTypeDef.loadDataOptions()
-      promise3 = @actionsTypeDef.loadDataOptions()
-      promise4 = @Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then (result) =>
-        @customActions = result.data.customActions.action_defs
-
-      promises = [promise, promise2, promise3, promise4]
-
-      @$q.all(promises).then =>
-        @updateCriteriaOptionTypes()
-
-        @esc  = loadData.escalation
-        @form = loadData.form
-
-        if !@esc.actions.actions? || @esc.actions.actions.length != 1
-          return @esc.is_default_action = false
-        if 'SendUserNewEmail' == @esc.actions.actions[0].type && 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig' == @esc.actions.actions[0].options.template
-          @esc.is_default_action = true
-        else if 3 == @esc.sys_num && 'SetStatus' == @esc.actions.actions[0].type && 'resolved' == @esc.actions.actions[0].options.status
-          @esc.is_default_action = true
-        else if (4 == @esc.sys_num || 5 == @esc.sys_num) && 'SetStatus' == @esc.actions.actions[0].type && 'archived' == @esc.actions.actions[0].options.status
-          @esc.is_default_action = true
-        else
-          @esc.is_default_action = false
+      set = this.actionsTypeDef.getOptionsForTypes([], {dynamicOptions: this.customActions});
+      this.$scope.actionOptionTypes.length = 0;
+      return (() => {
+        const result = [];
+        for (opt of Array.from(set)) {
+          result.push(this.$scope.actionOptionTypes.push(opt));
+        }
+        return result;
+      })();
+    }
 
 
 
-    saveForm: ->
-      return if @$scope.form_props? and not @$scope.form_props.$valid
+    initialLoad() {
+      if (!this.id) { return; }
+      let loadData = null;
+      const promise = this.escData.loadEditSpecialEscalation('statuses', this.id).then(data => {
+        return loadData = data;
+      });
 
-      promise = @escData.saveFormModel @esc, @form
-      @startSpinner 'saving'
-      promise.then =>
-        @stopSpinner('saving', true).then => @Growl.success("Saved")
-        @skipDirtyState()
+      const promise2 = this.criteriaTypeDef.loadDataOptions();
+      const promise3 = this.actionsTypeDef.loadDataOptions();
+      const promise4 = this.Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then(result => {
+        return this.customActions = result.data.customActions.action_defs;
+      });
+
+      const promises = [promise, promise2, promise3, promise4];
+
+      return this.$q.all(promises).then(() => {
+        this.updateCriteriaOptionTypes();
+
+        this.esc  = loadData.escalation;
+        this.form = loadData.form;
+
+        if ((this.esc.actions.actions == null) || (this.esc.actions.actions.length !== 1)) {
+          return this.esc.is_default_action = false;
+        }
+        if (('SendUserNewEmail' === this.esc.actions.actions[0].type) && ('DeskPRO:emails_user:ticket-awaiting-warn.html.twig' === this.esc.actions.actions[0].options.template)) {
+          return this.esc.is_default_action = true;
+        } else if ((3 === this.esc.sys_num) && ('SetStatus' === this.esc.actions.actions[0].type) && ('resolved' === this.esc.actions.actions[0].options.status)) {
+          return this.esc.is_default_action = true;
+        } else if (((4 === this.esc.sys_num) || (5 === this.esc.sys_num)) && ('SetStatus' === this.esc.actions.actions[0].type) && ('archived' === this.esc.actions.actions[0].options.status)) {
+          return this.esc.is_default_action = true;
+        } else {
+          return this.esc.is_default_action = false;
+        }
+      });
+    }
 
 
-  Admin_TicketEscalations_Ctrl_EditStatuses.EXPORT_CTRL()
+
+    saveForm() {
+      if ((this.$scope.form_props != null) && !this.$scope.form_props.$valid) { return; }
+
+      const promise = this.escData.saveFormModel(this.esc, this.form);
+      this.startSpinner('saving');
+      return promise.then(() => {
+        this.stopSpinner('saving', true).then(() => this.Growl.success("Saved"));
+        return this.skipDirtyState();
+      });
+    }
+  }
+  Admin_TicketEscalations_Ctrl_EditStatuses.initClass();
+
+
+  return Admin_TicketEscalations_Ctrl_EditStatuses.EXPORT_CTRL();
+});

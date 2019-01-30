@@ -1,19 +1,32 @@
-define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
-  class AdminStart_Ctrl_Finish extends StartBase
-    @CTRL_ID = 'AdminStart_Ctrl_Finish'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['AdminStart/Ctrl/StartBase'], function(StartBase) {
+  class AdminStart_Ctrl_Finish extends StartBase {
+    static initClass() {
+      this.CTRL_ID = 'AdminStart_Ctrl_Finish';
+    }
 
-    init: ->
-      @done_set = true
-      @set_prom = @Api.sendPost('/start-settings/set-initial').success(=>
-        @done_set = true
-      )
-      return
+    init() {
+      this.done_set = true;
+      this.set_prom = this.Api.sendPost('/start-settings/set-initial').success(() => {
+        return this.done_set = true;
+      });
+    }
 
-    goAgent: (ev, el) ->
-      if not @done_set
-        ev.preventDefault()
-        @set_prom.success(=>
-          el.click()
-        )
+    goAgent(ev, el) {
+      if (!this.done_set) {
+        ev.preventDefault();
+        return this.set_prom.success(() => {
+          return el.click();
+        });
+      }
+    }
+  }
+  AdminStart_Ctrl_Finish.initClass();
 
-  AdminStart_Ctrl_Finish.EXPORT_CTRL()
+  return AdminStart_Ctrl_Finish.EXPORT_CTRL();
+});

@@ -1,86 +1,114 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS103: Rewrite code to no longer use __guard__
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_TicketEscalations_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_TicketEscalations_Ctrl_Edit'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams', '$q']
+) {
+  class Admin_TicketEscalations_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketEscalations_Ctrl_Edit';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams', '$q'];
+    }
 
-    init: ->
-      @escData = @DataService.get('TicketEscalations')
-      @esc = null
+    init() {
+      this.escData = this.DataService.get('TicketEscalations');
+      this.esc = null;
 
-      @criteriaTypeDef     = @dpObTypesDefTicketFilter
-      @actionsTypeDef      = @dpObTypesDefTicketActions
-      @$scope.criteriaOptionTypes = []
-      @$scope.actionOptionTypes   = []
+      this.criteriaTypeDef     = this.dpObTypesDefTicketFilter;
+      this.actionsTypeDef      = this.dpObTypesDefTicketActions;
+      this.$scope.criteriaOptionTypes = [];
+      this.$scope.actionOptionTypes   = [];
 
-      @criteriaTypeDef.setVar('object_type', 'escalation')
-      @actionsTypeDef.setVar('object_type', 'escalation')
+      this.criteriaTypeDef.setVar('object_type', 'escalation');
+      this.actionsTypeDef.setVar('object_type', 'escalation');
 
-      @criteriaTypeDef.setVar('object_type', 'escalation')
-      @actionsTypeDef.setVar('object_type', 'escalation')
+      this.criteriaTypeDef.setVar('object_type', 'escalation');
+      return this.actionsTypeDef.setVar('object_type', 'escalation');
+    }
 
-    updateCriteriaOptionTypes: ->
-      set = @criteriaTypeDef.getOptionsForTypes()
-      @$scope.criteriaOptionTypes.length = 0
-      for opt in set
-        @$scope.criteriaOptionTypes.push(opt)
+    updateCriteriaOptionTypes() {
+      let set = this.criteriaTypeDef.getOptionsForTypes();
+      this.$scope.criteriaOptionTypes.length = 0;
+      for (var opt of Array.from(set)) {
+        this.$scope.criteriaOptionTypes.push(opt);
+      }
 
-      set = @actionsTypeDef.getOptionsForTypes([], {dynamicOptions: @customActions})
-      @$scope.actionOptionTypes.length = 0
-      for opt in set
-        @$scope.actionOptionTypes.push(opt)
+      set = this.actionsTypeDef.getOptionsForTypes([], {dynamicOptions: this.customActions});
+      this.$scope.actionOptionTypes.length = 0;
+      for (opt of Array.from(set)) {
+        this.$scope.actionOptionTypes.push(opt);
+      }
 
-      # filter out usergroup 'Everyone'
-      # doesn't make sense to use it in Escalations
-      options_data = @criteriaTypeDef.options_data;
-      if options_data?.usergroups
-        options_data.usergroups = options_data.usergroups.filter((group) -> group.sys_name != 'everyone');
+      // filter out usergroup 'Everyone'
+      // doesn't make sense to use it in Escalations
+      const { options_data } = this.criteriaTypeDef;
+      if (options_data != null ? options_data.usergroups : undefined) {
+        return options_data.usergroups = options_data.usergroups.filter(group => group.sys_name !== 'everyone');
+      }
+    }
 
-    initialLoad: ->
-      loadData = null
-      promise = @escData.loadEditEscalationData(@$stateParams.id || null).then (data) =>
-        loadData = data
+    initialLoad() {
+      let loadData = null;
+      const promise = this.escData.loadEditEscalationData(this.$stateParams.id || null).then(data => {
+        return loadData = data;
+      });
 
-      promise2 = @criteriaTypeDef.loadDataOptions()
-      promise3 = @actionsTypeDef.loadDataOptions()
-      promise4 = @Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then (result) =>
-        @customActions = result.data.customActions.action_defs
+      const promise2 = this.criteriaTypeDef.loadDataOptions();
+      const promise3 = this.actionsTypeDef.loadDataOptions();
+      const promise4 = this.Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then(result => {
+        return this.customActions = result.data.customActions.action_defs;
+      });
 
-      promises = [promise, promise2, promise3, promise4]
+      const promises = [promise, promise2, promise3, promise4];
 
-      return @$q.all(promises).then(=>
-        @$timeout(=>
-          @updateCriteriaOptionTypes()
-          @$timeout(=>
-            @esc  = loadData.escalation
-            @form = loadData.form
-          )
-        )
-      )
+      return this.$q.all(promises).then(() => {
+        return this.$timeout(() => {
+          this.updateCriteriaOptionTypes();
+          return this.$timeout(() => {
+            this.esc  = loadData.escalation;
+            return this.form = loadData.form;
+          });
+        });
+      });
+    }
 
-    saveForm: ->
+    saveForm() {
 
-      if not @$scope.form_props.$valid
-        return
+      if (!this.$scope.form_props.$valid) {
+        return;
+      }
 
-      is_new = !@esc.id
+      const is_new = !this.esc.id;
 
-      promise = @escData.saveFormModel(@esc, @form)
+      const promise = this.escData.saveFormModel(this.esc, this.form);
 
-      @startSpinner('saving')
-      promise.then( =>
-        @stopSpinner('saving', true).then(=>
-          @Growl.success("Saved")
-        )
+      this.startSpinner('saving');
+      return promise.then( () => {
+        this.stopSpinner('saving', true).then(() => {
+          return this.Growl.success("Saved");
+        });
 
-        @skipDirtyState()
-        @$scope.$parent?.ListCtrl?.loadList()
-        if is_new
-          @$state.go('tickets.ticket_escalations.gocreate')
-      )
+        this.skipDirtyState();
+        __guard__(this.$scope.$parent != null ? this.$scope.$parent.ListCtrl : undefined, x => x.loadList());
+        if (is_new) {
+          return this.$state.go('tickets.ticket_escalations.gocreate');
+        }
+      });
+    }
+  }
+  Admin_TicketEscalations_Ctrl_Edit.initClass();
 
-  Admin_TicketEscalations_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_TicketEscalations_Ctrl_Edit.EXPORT_CTRL();
+});
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}

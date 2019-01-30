@@ -1,52 +1,69 @@
-define ->
-  class Agent_App_Service_CurrentUserData
-    @$inject = ['$http', '$q']
-    constructor: (@$http, @$q) ->
-      @userInfo    = null
-      @userPerms   = null
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  class Agent_App_Service_CurrentUserData {
+    static initClass() {
+      this.$inject = ['$http', '$q'];
+    }
+    constructor($http, $q) {
+      this.$http = $http;
+      this.$q = $q;
+      this.userInfo    = null;
+      this.userPerms   = null;
 
-      @httpPromise = null
+      this.httpPromise = null;
+    }
 
-    getUserInfo: ->
-      return @promise if @promise
+    getUserInfo() {
+      if (this.promise) { return this.promise; }
 
-      d = @$q.deferred()
+      const d = this.$q.deferred();
 
-      if @userInfo
-        d.resolve(@userInfo)
-      else
-        @loadData().then( ->
-          d.resolve(@userInfo)
-        , (data, status) ->
-          d.reject(data, status)
-        )
+      if (this.userInfo) {
+        d.resolve(this.userInfo);
+      } else {
+        this.loadData().then( function() {
+          return d.resolve(this.userInfo);
+        }
+        , (data, status) => d.reject(data, status));
+      }
 
-      return d.promise
+      return d.promise;
+    }
 
-    getUserPermissions: ->
-      return @promise if @promise
+    getUserPermissions() {
+      if (this.promise) { return this.promise; }
 
-      d = @$q.defer()
+      const d = this.$q.defer();
 
-      if @userPerms
-        d.resolve(@userPerms)
-      else
-        @loadData().then( ->
-          d.resolve(@userPerms)
-        , (data, status) ->
-          d.reject(data, status)
-        )
+      if (this.userPerms) {
+        d.resolve(this.userPerms);
+      } else {
+        this.loadData().then( function() {
+          return d.resolve(this.userPerms);
+        }
+        , (data, status) => d.reject(data, status));
+      }
 
-      return d.promise
+      return d.promise;
+    }
 
-    loadData: ->
-      return @httpPromise if @httpPromise
+    loadData() {
+      if (this.httpPromise) { return this.httpPromise; }
 
-      @httpPromise = @$http.get('DP_URL/agent/me/info.js').success( (data) ->
-        @userInfo  = data.agent
-        @userPerms = data.perms
-      )
+      this.httpPromise = this.$http.get('DP_URL/agent/me/info.js').success( function(data) {
+        this.userInfo  = data.agent;
+        return this.userPerms = data.perms;
+      });
 
-      return @httpPromise
+      return this.httpPromise;
+    }
+  }
+  Agent_App_Service_CurrentUserData.initClass();
 
   return Agent_App_Service_CurrentUserData;
+});

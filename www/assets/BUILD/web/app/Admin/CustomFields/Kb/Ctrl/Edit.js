@@ -1,20 +1,34 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/CustomFields/Base/Ctrl/Edit',
-], (
+], function(
   Admin_CustomFields_Base_Ctrl_Edit
-) ->
-  class Admin_CustomFields_Kb_Ctrl_Edit extends Admin_CustomFields_Base_Ctrl_Edit
-    @CTRL_ID = 'Admin_CustomFields_Kb_Ctrl_Edit'
-    @CTRL_AS = 'EditCtrl'
-    @DEPS    = []
+) {
+  class Admin_CustomFields_Kb_Ctrl_Edit extends Admin_CustomFields_Base_Ctrl_Edit {
+    static initClass() {
+      this.CTRL_ID = 'Admin_CustomFields_Kb_Ctrl_Edit';
+      this.CTRL_AS = 'EditCtrl';
+      this.DEPS    = [];
+    }
 
-    getDataService: ->
-      return @DataService.get('KbFields')
+    getDataService() {
+      return this.DataService.get('KbFields');
+    }
 
-    getBaseRouteName: ->
-      return "portal.kb_custom_fields"
+    getBaseRouteName() {
+      return "portal.kb_custom_fields";
+    }
 
-    type: ->
-      'kb'
+    type() {
+      return 'kb';
+    }
+  }
+  Admin_CustomFields_Kb_Ctrl_Edit.initClass();
 
-  Admin_CustomFields_Kb_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_CustomFields_Kb_Ctrl_Edit.EXPORT_CTRL();
+});

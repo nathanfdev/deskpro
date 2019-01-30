@@ -1,48 +1,63 @@
-define ['DeskPRO/Util/Strings'], (Strings) ->
-  class PhraseSaver
-    constructor: (@Api, @$q) ->
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Strings'], function(Strings) {
+  let PhraseSaver;
+  return (PhraseSaver = class PhraseSaver {
+    constructor(Api, $q) {
+      this.Api = Api;
+      this.$q = $q;
+    }
 
-    ###
-      # Saves an array of phrases
-      #
-      # @param {Array} phrases
-      # @return {promise}
-    ###
-    savePhrases: (langId, phrases) ->
-      savePhrases = []
+    /*
+      * Saves an array of phrases
+      *
+      * @param {Array} phrases
+      * @return {promise}
+    */
+    savePhrases(langId, phrases) {
+      const savePhrases = [];
 
-      for p in phrases
-        setVal = p.set
+      for (let p of Array.from(phrases)) {
+        let setVal = p.set;
 
-        if setVal
-          p.set = Strings.trim(p.set)
+        if (setVal) {
+          p.set = Strings.trim(p.set);
+        }
 
-        if not setVal or p.set == "" or p.set == p.lang_default
-          setVal = null
+        if (!setVal || (p.set === "") || (p.set === p.lang_default)) {
+          setVal = null;
+        }
 
-        if setVal == null
-          p.set = p.lang_default
+        if (setVal === null) {
+          p.set = p.lang_default;
+        }
 
         savePhrases.push({
           name: p.id,
           phrase: setVal
-        })
+        });
+      }
 
-      deferred = @$q.defer()
-      if not savePhrases.length
-        deferred.resolve([])
-        return deferred.promise
+      const deferred = this.$q.defer();
+      if (!savePhrases.length) {
+        deferred.resolve([]);
+        return deferred.promise;
+      }
 
-      phrases = []
-      for n in savePhrases
-        phrases.push n if 'user.general.helpdesk_by' != n.name
+      phrases = [];
+      for (let n of Array.from(savePhrases)) {
+        if ('user.general.helpdesk_by' !== n.name) { phrases.push(n); }
+      }
 
-      @Api.sendPostJson("/langs/#{langId}/phrases", {
-        phrases: phrases
-      }).success(->
-        deferred.resolve(savePhrases)
-      ).error(->
-        deferred.reject()
-      )
+      this.Api.sendPostJson(`/langs/${langId}/phrases`, {
+        phrases
+      }).success(() => deferred.resolve(savePhrases)).error(() => deferred.reject());
 
-      return deferred.promise
+      return deferred.promise;
+    }
+  });
+});

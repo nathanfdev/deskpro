@@ -1,114 +1,149 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/Util',
   'Admin/TicketSlas/SlaFormMapper'
-], (
+], function(
   Admin_Ctrl_Base,
   Util,
   SlaFormMapper
-) ->
-  class Admin_TicketSlas_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_TicketSlas_Ctrl_Edit'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['dpObTypesDefTicketActions', 'dpObTypesDefTicketCriteria']
+) {
+  class Admin_TicketSlas_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketSlas_Ctrl_Edit';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['dpObTypesDefTicketActions', 'dpObTypesDefTicketCriteria'];
+    }
 
-    init: ->
-      @formMapper = new SlaFormMapper()
-      @slaData    = @DataService.get('TicketSlas')
-      @sla        = null
-      @form       = @getFormFromModel({})
+    init() {
+      this.formMapper = new SlaFormMapper();
+      this.slaData    = this.DataService.get('TicketSlas');
+      this.sla        = null;
+      this.form       = this.getFormFromModel({});
 
-      @actionsTypeDef = @dpObTypesDefTicketActions
-      @criteraTypeDef = @dpObTypesDefTicketCriteria
+      this.actionsTypeDef = this.dpObTypesDefTicketActions;
+      this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
 
-      @$scope.criteriaOptionTypes = []
-      @$scope.actionOptionTypes   = []
+      this.$scope.criteriaOptionTypes = [];
+      this.$scope.actionOptionTypes   = [];
 
-      @updateCriteriaOptionTypes()
+      return this.updateCriteriaOptionTypes();
+    }
 
-    updateCriteriaOptionTypes: ->
-      types = []
-      setActionOptions = @actionsTypeDef.getOptionsForTypes(types, {dynamicOptions: @customActions})
-      @$scope.actionOptionTypes.length = 0
-      for opt in setActionOptions
-        @$scope.actionOptionTypes.push(opt)
+    updateCriteriaOptionTypes() {
+      let types = [];
+      const setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, {dynamicOptions: this.customActions});
+      this.$scope.actionOptionTypes.length = 0;
+      for (var opt of Array.from(setActionOptions)) {
+        this.$scope.actionOptionTypes.push(opt);
+      }
 
       types = [
         'web', 'web.user', 'email', 'email.user', 'api', 'api.user',
         'web.agent', 'email.agent', 'api.agent'
-      ]
-      setCritOptions = @criteraTypeDef.getOptionsForTypes(types)
-      @$scope.criteriaOptionTypes.length = 0
-      for opt in setCritOptions
-        @$scope.criteriaOptionTypes.push(opt)
+      ];
+      const setCritOptions = this.criteraTypeDef.getOptionsForTypes(types);
+      this.$scope.criteriaOptionTypes.length = 0;
+      return (() => {
+        const result = [];
+        for (opt of Array.from(setCritOptions)) {
+          result.push(this.$scope.criteriaOptionTypes.push(opt));
+        }
+        return result;
+      })();
+    }
 
-    initialLoad: ->
-      proms = []
+    initialLoad() {
+      const proms = [];
 
-      if @$stateParams.id
-        proms.push @slaData.loadEditSlaData(@$stateParams.id).then( (data) =>
-          @sla = data.sla
-          @form = @getFormFromModel(@sla)
-          @origForm = Util.clone(@form, true)
-        )
-      else
-        @macro = {}
-        @sla = {}
-        @form = @getFormFromModel({})
-        @origForm = Util.clone(@form, true)
-
-      proms.push @actionsTypeDef.loadDataOptions()
-      proms.push @criteraTypeDef.loadDataOptions()
-      proms.push @Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then (result) =>
-        @customActions = result.data.customActions.action_defs
-
-      @$q.all(proms).then =>
-        @updateCriteriaOptionTypes()
-
-
-
-    getFormFromModel: (slaModel) ->
-      return @formMapper.getFormFromModel(slaModel)
-
-    saveForm: ->
-      postData = @formMapper.getPostDataFromFormModel(@form)
-
-      @startSpinner('saving')
-      if @sla.id
-        is_new = false
-        promise = @Api.sendPostJson("/ticket_slas/#{@sla.id}", postData)
-      else
-        is_new = true
-        promise = @Api.sendPutJson('/ticket_slas', postData)
-
-      promise.success( (result) =>
-        @sla.id = result.sla_id
-
-        if is_new
-          @sla.is_enabled = true
-
-        @sla.title = postData.title
-
-        @stopSpinner('saving', true).then(=>
-          @Growl.success("Saved")
-        )
-
-        @slaData.mergeDataModel({
-          id: @sla.id,
-          title: @sla.title
+      if (this.$stateParams.id) {
+        proms.push(this.slaData.loadEditSlaData(this.$stateParams.id).then( data => {
+          this.sla = data.sla;
+          this.form = this.getFormFromModel(this.sla);
+          return this.origForm = Util.clone(this.form, true);
         })
+        );
+      } else {
+        this.macro = {};
+        this.sla = {};
+        this.form = this.getFormFromModel({});
+        this.origForm = Util.clone(this.form, true);
+      }
 
-        @skipDirtyState()
-        if is_new
-          @$state.go('tickets.slas.gocreate')
-      )
-      promise.error( (info, code) =>
-        @stopSpinner('saving', true)
-        @applyErrorResponseToView(info)
-        if info?.error_message
-          @Growl.error info?.error_message
-      )
+      proms.push(this.actionsTypeDef.loadDataOptions());
+      proms.push(this.criteraTypeDef.loadDataOptions());
+      proms.push(this.Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then(result => {
+        return this.customActions = result.data.customActions.action_defs;
+      })
+      );
 
-      return promise
+      return this.$q.all(proms).then(() => {
+        return this.updateCriteriaOptionTypes();
+      });
+    }
 
-  Admin_TicketSlas_Ctrl_Edit.EXPORT_CTRL()
+
+
+    getFormFromModel(slaModel) {
+      return this.formMapper.getFormFromModel(slaModel);
+    }
+
+    saveForm() {
+      let is_new, promise;
+      const postData = this.formMapper.getPostDataFromFormModel(this.form);
+
+      this.startSpinner('saving');
+      if (this.sla.id) {
+        is_new = false;
+        promise = this.Api.sendPostJson(`/ticket_slas/${this.sla.id}`, postData);
+      } else {
+        is_new = true;
+        promise = this.Api.sendPutJson('/ticket_slas', postData);
+      }
+
+      promise.success( result => {
+        this.sla.id = result.sla_id;
+
+        if (is_new) {
+          this.sla.is_enabled = true;
+        }
+
+        this.sla.title = postData.title;
+
+        this.stopSpinner('saving', true).then(() => {
+          return this.Growl.success("Saved");
+        });
+
+        this.slaData.mergeDataModel({
+          id: this.sla.id,
+          title: this.sla.title
+        });
+
+        this.skipDirtyState();
+        if (is_new) {
+          return this.$state.go('tickets.slas.gocreate');
+        }
+      });
+      promise.error( (info, code) => {
+        this.stopSpinner('saving', true);
+        this.applyErrorResponseToView(info);
+        if (info != null ? info.error_message : undefined) {
+          return this.Growl.error(info != null ? info.error_message : undefined);
+        }
+      });
+
+      return promise;
+    }
+  }
+  Admin_TicketSlas_Ctrl_Edit.initClass();
+
+  return Admin_TicketSlas_Ctrl_Edit.EXPORT_CTRL();
+});

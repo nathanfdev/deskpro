@@ -1,111 +1,143 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Base, Util, angular) ->
-  class Admin_TicketSettings_Ctrl_TicketSettings extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings'
-    @CTRL_AS   = 'TicketSettings'
-    @DEPS      = ['$modal']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_Ctrl_Base, Util, angular) {
+  class Admin_TicketSettings_Ctrl_TicketSettings extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings';
+      this.CTRL_AS   = 'TicketSettings';
+      this.DEPS      = ['$modal'];
+    }
 
-    init: ->
-      @settings = null
-      @$scope.escalation_days = 3
+    init() {
+      this.settings = null;
+      this.$scope.escalation_days = 3;
 
-      @$scope.editSatisfactionTemplate = =>
-        console.log
-        if window.DP_HAS_NEW_EMAILS
-          @$modal.open({
+      this.$scope.editSatisfactionTemplate = () => {
+        console.log;
+        if (window.DP_HAS_NEW_EMAILS) {
+          return this.$modal.open({
             templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
             size: 'lg',
             controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
-            resolve:
-              templateName: -> 'SendmailBundle:emails_user:ticket_rate.html.twig'
-          })
-        else
-          @$modal.open({
+            resolve: {
+              templateName() { return 'SendmailBundle:emails_user:ticket_rate.html.twig'; }
+            }
+          });
+        } else {
+          return this.$modal.open({
             templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
             controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-            resolve:
-              templateName: -> 'DeskPRO:emails_user:ticket-rate.html.twig'
-          })
+            resolve: {
+              templateName() { return 'DeskPRO:emails_user:ticket-rate.html.twig'; }
+            }
+          });
+        }
+      };
 
-      @$scope.$watch(
-        =>
-          @$scope.settings?.timelog_autostart
-        , (newVal, oldVal) =>
-          @$scope.settings.billing_on_reply = false if newVal == false
-      )
+      this.$scope.$watch(
+        () => {
+          return (this.$scope.settings != null ? this.$scope.settings.timelog_autostart : undefined);
+        }
+        , (newVal, oldVal) => {
+          if (newVal === false) { return this.$scope.settings.billing_on_reply = false; }
+      });
 
-      @$scope.digits = []
-      for i in [0..8]
-        if (i != 1)
-          @$scope.digits.push {id: i, label: i + " digits"}
-        else
-          @$scope.digits.push {id: i, label: i + " digit"}
+      this.$scope.digits = [];
+      return [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) =>
+        (i !== 1) ?
+          this.$scope.digits.push({id: i, label: i + " digits"})
+        :
+          this.$scope.digits.push({id: i, label: i + " digit"}));
+    }
 
 
-    initialLoad: ->
-      data_promise = @Api.sendDataGet({
+    initialLoad() {
+      const data_promise = this.Api.sendDataGet({
         'settings': '/ticket_settings'
-      }).then( (res) =>
-        settings = res.data.settings.ticket_settings
-        for own k, v of settings.agent_defaults
-          if not v then settings.agent_defaults[k] = "0"
+      }).then( res => {
+        const settings = res.data.settings.ticket_settings;
+        for (let k of Object.keys(settings.agent_defaults || {})) {
+          const v = settings.agent_defaults[k];
+          if (!v) { settings.agent_defaults[k] = "0"; }
+        }
 
-        days = [null, false, false, false, false, false, false, false]
-        for day in settings.working_hours.work_days
-          days[day] = true
+        const days = [null, false, false, false, false, false, false, false];
+        for (let day of Array.from(settings.working_hours.work_days)) {
+          days[day] = true;
+        }
 
-        settings.working_hours.work_days = days
+        settings.working_hours.work_days = days;
 
-        @$scope.settings = settings
-        @settings = angular.copy(@$scope.settings)
-      )
+        this.$scope.settings = settings;
+        return this.settings = angular.copy(this.$scope.settings);
+      });
 
-      @headerSortList =
+      this.headerSortList = {
         axis: 'y',
         handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest('ul')
+        update: (ev, data) => {
+          const $list = data.item.closest('ul');
 
-          newOrder = []
-          $list.find('li').each(->
-            newOrder.push($(this).data('value'))
-          )
+          const newOrder = [];
+          $list.find('li').each(function() {
+            return newOrder.push($(this).data('value'));
+          });
 
-          @$scope.settings.from_email_headers = newOrder
+          return this.$scope.settings.from_email_headers = newOrder;
+        }
+      };
 
-      @$q.all [data_promise]
+      return this.$q.all([data_promise]);
+    }
 
-    isDirtyState: ->
-      return false
-      if not @settings then return false
-      if not angular.equals(@settings, @$scope.settings)
-        return true
-      else
-        return false
+    isDirtyState() {
+      return false;
+      if (!this.settings) { return false; }
+      if (!angular.equals(this.settings, this.$scope.settings)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
-    save: ->
-      postData = {
-        ticket_settings: Util.clone(@$scope.settings, true)
+    save() {
+      const postData = {
+        ticket_settings: Util.clone(this.$scope.settings, true)
+      };
+
+      const work_days = [];
+      for (let day = 0; day < this.$scope.settings.working_hours.work_days.length; day++) {
+        const enabled = this.$scope.settings.working_hours.work_days[day];
+        if (enabled) {
+          work_days.push(day);
+        }
       }
 
-      work_days = []
-      for enabled, day in @$scope.settings.working_hours.work_days
-        if enabled
-          work_days.push(day)
+      postData.ticket_settings.working_hours.work_days = work_days;
 
-      postData.ticket_settings.working_hours.work_days = work_days
+      this.startSpinner('saving');
+      const promise = this.Api.sendPostJson('/ticket_settings', postData).success( () => {
+        this.settings = angular.copy(this.$scope.settings);
 
-      @startSpinner('saving')
-      promise = @Api.sendPostJson('/ticket_settings', postData).success( =>
-        @settings = angular.copy(@$scope.settings)
+        return this.stopSpinner('saving').then(() => {
+          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+        });
+      }).error( (info, code) => {
+        this.stopSpinner('saving', true);
+        return this.applyErrorResponseToView(info);
+      });
 
-        @stopSpinner('saving').then(=>
-          @Growl.success(@getRegisteredMessage('saved_settings'))
-        )
-      ).error( (info, code) =>
-        @stopSpinner('saving', true)
-        @applyErrorResponseToView(info)
-      )
+      return this.$scope.$broadcast('trigger.save');
+    }
+  }
+  Admin_TicketSettings_Ctrl_TicketSettings.initClass();
 
-      @$scope.$broadcast 'trigger.save'
-
-  Admin_TicketSettings_Ctrl_TicketSettings.EXPORT_CTRL()
+  return Admin_TicketSettings_Ctrl_TicketSettings.EXPORT_CTRL();
+});

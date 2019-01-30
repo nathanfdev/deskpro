@@ -1,10 +1,15 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'angular',
   'DeskPRO/Directive/DpDateTimePicker'
-], (
+], function(
   angular
-) ->
-  ReportsModule = angular.module('Reports_App', [
+) {
+  const ReportsModule = angular.module('Reports_App', [
     'ngAnimate',
     'ngSanitize',
     'ui.router',
@@ -16,12 +21,14 @@ define [
     'deskpro.option_builder',
     'deskpro.category_builder',
     'dp.datetimepicker'
-  ])
+  ]);
 
-  ReportsModule.config(['datepickerConfig', 'datepickerPopupConfig', (datepickerConfig, datepickerPopupConfig) ->
-    datepickerConfig.showWeeks = false
-    datepickerPopupConfig.showWeeks = false
-    datepickerPopupConfig.dateFormat = 'dd MMMM yyyy'
-  ])
+  ReportsModule.config(['datepickerConfig', 'datepickerPopupConfig', function(datepickerConfig, datepickerPopupConfig) {
+    datepickerConfig.showWeeks = false;
+    datepickerPopupConfig.showWeeks = false;
+    return datepickerPopupConfig.dateFormat = 'dd MMMM yyyy';
+  }
+  ]);
 
-  return ReportsModule
+  return ReportsModule;
+});

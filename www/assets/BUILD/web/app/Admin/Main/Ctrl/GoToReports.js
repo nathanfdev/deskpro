@@ -1,12 +1,25 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_Main_Ctrl_GoToReports extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Main_Ctrl_GoToReports'
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_Main_Ctrl_GoToReports extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Main_Ctrl_GoToReports';
+    }
 
-    init: ->
-      if not window.parent || not window.parent.DP_FRAME_OVERLAYS || not window.parent.DP_FRAME_OVERLAYS.reports
-        window.location.href = window.DP_BASE_URL + 'reports/';
-      else
-        window.parent.DP_FRAME_OVERLAYS.reports.open()
-        window.parent.DP_FRAME_OVERLAYS.admin.close()
+    init() {
+      if (!window.parent || !window.parent.DP_FRAME_OVERLAYS || !window.parent.DP_FRAME_OVERLAYS.reports) {
+        return window.location.href = window.DP_BASE_URL + 'reports/';
+      } else {
+        window.parent.DP_FRAME_OVERLAYS.reports.open();
+        return window.parent.DP_FRAME_OVERLAYS.admin.close();
+      }
+    }
+  }
+  Admin_Main_Ctrl_GoToReports.initClass();
 
-  Admin_Main_Ctrl_GoToReports.EXPORT_CTRL()
+  return Admin_Main_Ctrl_GoToReports.EXPORT_CTRL();
+});

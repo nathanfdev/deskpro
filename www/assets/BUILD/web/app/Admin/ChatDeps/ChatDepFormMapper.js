@@ -1,118 +1,151 @@
-define [
-  'Admin/Main/Model/DepAgentPermMatrix'
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
+  'Admin/Main/Model/DepAgentPermMatrix',
   'DeskPRO/Util/Util'
-], (
+], function(
   DepAgentPermMatrix,
   Util
-) ->
-  class ChatDepFormMapper
+) {
+  let ChatDepFormMapper;
+  return (ChatDepFormMapper = class ChatDepFormMapper {
 
-    ###
-    #
-    ###
+    /*
+     *
+     */
 
-    getFormFromModel: (dep, depPerms, agents, brands, agentgroups, usergroups) ->
-      form = {
+    getFormFromModel(dep, depPerms, agents, brands, agentgroups, usergroups) {
+      const form = {
         title: '',
         user_title: '',
         parent_id: '0',
         chat_queue_id: '0',
         enable_user_title: false,
         brands: [],
+      };
+
+      if (dep.id) {
+        form.title = dep.title;
+        form.brands = dep.brands;
+
+        if (!Util.isBlank(dep.user_title)) {
+          form.user_title = dep.user_title;
+          form.enable_user_title = true;
+        }
+
+        if (!Util.isBlank(dep.parent_id)) {
+          form.parent_id = dep.parent_id + "";
+        }
+        if (!Util.isBlank(dep.chat_queue_id)) {
+          form.chat_queue_id = dep.chat_queue_id + "";
+        }
+      } else {
+        for (let brand of Array.from(brands)) {
+          form.brands.push(brand.id);
+        }
       }
 
-      if dep.id
-        form.title = dep.title
-        form.brands = dep.brands
+      const matrix = new DepAgentPermMatrix();
+      for (let group of Array.from(agentgroups)) {
+        matrix.addGroup(group, []);
+      }
+      for (let agent of Array.from(agents)) {
+        matrix.addAgent(agent, []);
+      }
 
-        if not Util.isBlank(dep.user_title)
-          form.user_title = dep.user_title
-          form.enable_user_title = true
+      matrix.initPerms(depPerms.agentgroups, depPerms.agents);
+      form.agent_perms = matrix;
 
-        if not Util.isBlank(dep.parent_id)
-          form.parent_id = dep.parent_id + ""
-        if not Util.isBlank(dep.chat_queue_id)
-          form.chat_queue_id = dep.chat_queue_id + ""
-      else
-        for brand in brands
-          form.brands.push(brand.id)
+      form.usergroup_perms = {};
+      for (let u of Array.from(usergroups)) {
+        form.usergroup_perms[u.id] = { full: false };
+      }
 
-      matrix = new DepAgentPermMatrix()
-      for group in agentgroups
-        matrix.addGroup(group, [])
-      for agent in agents
-        matrix.addAgent(agent, [])
+      if (depPerms.usergroups) {
+        for (let p of Array.from(depPerms.usergroups)) {
+          if ((form.usergroup_perms[p.usergroup_id] == null)) {
+            form.usergroup_perms[p.usergroup_id] = {};
+          }
 
-      matrix.initPerms(depPerms.agentgroups, depPerms.agents)
-      form.agent_perms = matrix
+          form.usergroup_perms[p.usergroup_id][p.perm_name] = true;
+        }
+      }
 
-      form.usergroup_perms = {}
-      for u in usergroups
-        form.usergroup_perms[u.id] = { full: false }
+      return form;
+    }
 
-      if depPerms.usergroups
-        for p in depPerms.usergroups
-          if not form.usergroup_perms[p.usergroup_id]?
-            form.usergroup_perms[p.usergroup_id] = {}
+    /*
+  *
+    */
 
-          form.usergroup_perms[p.usergroup_id][p.perm_name] = true
+    getPostDataFromForm(formModel) {
+      let chatQueueId = formModel.chat_queue_id;
+      if (!chatQueueId || (chatQueueId === "0")) {
+        chatQueueId = null;
+      }
 
-      return form
+      const depData = {};
 
-    ###
-  #
-    ###
+      depData.title           = formModel.title;
+      depData.parent          = formModel.parent_id || "0";
+      depData.chat_queue      = chatQueueId;
+      depData.move_tickets_to = 'self';
+      depData.avatar          = formModel.avatar;
+      depData.brands          = formModel.brands;
 
-    getPostDataFromForm: (formModel) ->
-      chatQueueId = formModel.chat_queue_id
-      if !chatQueueId || chatQueueId == "0"
-        chatQueueId = null
+      if (Util.isBlank(depData.parent)) {
+        depData.parent = null;
+      }
 
-      depData = {}
+      if (formModel.enable_user_title) {
+        depData.user_title = formModel.user_title;
+      }
 
-      depData.title           = formModel.title
-      depData.parent          = formModel.parent_id || "0"
-      depData.chat_queue      = chatQueueId
-      depData.move_tickets_to = 'self'
-      depData.avatar          = formModel.avatar
-      depData.brands          = formModel.brands
+      const permData = formModel.agent_perms.getPermsData();
 
-      if Util.isBlank(depData.parent)
-        depData.parent = null
-
-      if formModel.enable_user_title
-        depData.user_title = formModel.user_title
-
-      permData = formModel.agent_perms.getPermsData()
-
-      for own uid,usergroup of formModel.usergroup_perms
-        if usergroup.full
+      for (let uid of Object.keys(formModel.usergroup_perms || {})) {
+        const usergroup = formModel.usergroup_perms[uid];
+        if (usergroup.full) {
           permData.push({
             usergroup_id: uid,
             name: 'full',
             value: 1
-          })
-
-
-      postData = {
-        department: depData,
-        permissions: permData
+          });
+        }
       }
 
-      return postData
 
-    ###
-    #
-    ###
+      const postData = {
+        department: depData,
+        permissions: permData
+      };
 
-    applyFormToModel: (dep, formModel) ->
+      return postData;
+    }
 
-      dep.title = formModel.title
+    /*
+     *
+     */
 
-      if not dep.display_order?
-        dep.display_order = 0
+    applyFormToModel(dep, formModel) {
 
-      if Util.isBlank(formModel.parent_id)
-        dep.parent_id = null
-      else
-        dep.parent_id = parseInt(formModel.parent_id)
+      dep.title = formModel.title;
+
+      if ((dep.display_order == null)) {
+        dep.display_order = 0;
+      }
+
+      if (Util.isBlank(formModel.parent_id)) {
+        return dep.parent_id = null;
+      } else {
+        return dep.parent_id = parseInt(formModel.parent_id);
+      }
+    }
+  });
+});

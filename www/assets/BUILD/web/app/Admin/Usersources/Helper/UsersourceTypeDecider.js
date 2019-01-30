@@ -1,9 +1,17 @@
-define [], ->
-  class Admin_Usersources_Helper_UsersourceTypeDecider
-    constructor: ->
-      return
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([], function() {
+  class Admin_Usersources_Helper_UsersourceTypeDecider {
+    constructor() {
+    }
 
-    decide: ($state) ->
-      if $state.includes('crm') then 'user' else if $state.includes('agents') then 'agent' else null
+    decide($state) {
+      if ($state.includes('crm')) { return 'user'; } else if ($state.includes('agents')) { return 'agent'; } else { return null; }
+    }
+  }
 
-  return new Admin_Usersources_Helper_UsersourceTypeDecider()
+  return new Admin_Usersources_Helper_UsersourceTypeDecider();
+});

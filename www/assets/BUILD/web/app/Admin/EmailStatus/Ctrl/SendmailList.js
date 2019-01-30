@@ -1,138 +1,178 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS202: Simplify dynamic range loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/LocalStore',
   'moment'
-], (
+], function(
   Admin_Ctrl_Base,
   LocalStore,
-  moment) ->
-  class Admin_EmailStatus_Ctrl_SendmailList extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_EmailStatus_Ctrl_SendmailList'
-    @CTRL_AS = 'ListCtrl'
-    @DEPS    = ['DpDateService']
+  moment) {
+  class Admin_EmailStatus_Ctrl_SendmailList extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_EmailStatus_Ctrl_SendmailList';
+      this.CTRL_AS = 'ListCtrl';
+      this.DEPS    = ['DpDateService'];
+    }
 
-    init: ->
-      @storeFilterId = Admin_EmailStatus_Ctrl_SendmailList.CTRL_ID+'.filter'
-      @filter = {
+    init() {
+      this.storeFilterId = Admin_EmailStatus_Ctrl_SendmailList.CTRL_ID+'.filter';
+      this.filter = {
         page: 1
+      };
+      this.results = [];
+      this.num_results = 0;
+      this.num_pages = 0;
+      this.page_nums = [1];
+      this.filter_date_mode = "none";
+      this.page = 1;
+      this.massActionsOp = "resend";
+
+      if (LocalStore.has(this.storeFilterId)) {
+        this.filter = LocalStore.getObject(this.storeFilterId, this.filter);
+        this.filter.page = 1;
+        this.$scope.filter_open = true;
       }
-      @results = []
-      @num_results = 0
-      @num_pages = 0
-      @page_nums = [1]
-      @filter_date_mode = "none"
-      @page = 1
-      @massActionsOp = "resend"
 
-      if LocalStore.has(@storeFilterId)
-        @filter = LocalStore.getObject(@storeFilterId, @filter)
-        @filter.page = 1
-        @$scope.filter_open = true
+      return this.$scope.$watch('ListCtrl.page', (newVal, oldVal) => {
+        if (parseInt(newVal) === parseInt(oldVal)) {
+          return;
+        }
+        if (isNaN(parseInt(newVal))) {
+          return;
+        }
 
-      @$scope.$watch('ListCtrl.page', (newVal, oldVal) =>
-        if parseInt(newVal) == parseInt(oldVal)
-          return
-        if isNaN(parseInt(newVal))
-          return
+        return this.changePage();
+      });
+    }
 
-        @changePage()
-      )
+    initialLoad() {
+      return this.loadResults();
+    }
 
-    initialLoad: ->
-      return @loadResults()
+    changePage() {
+      if (this.filter.page === this.page) {
+        return;
+      }
 
-    changePage: ->
-      if @filter.page == @page
-        return
+      this.filter.page = this.page;
+      return this.loadResults(true);
+    }
 
-      @filter.page = @page
-      @loadResults(true)
-
-    clearFilter: ->
-      @filter = {
+    clearFilter() {
+      this.filter = {
         page: 1
+      };
+      this.$scope.filter_open = false;
+      this.updateFilter(true);
+      return LocalStore.remove(this.storeFilterId);
+    }
+
+    updateFilter(skipSave) {
+      this.page = 1;
+      this.filter.page = this.page;
+
+      this.filter.date_start = null;
+      this.filter.date_end = null;
+      if (this.filter_date_mode && (this.filter_date_mode !== 'none')) {
+        if (this.filter_date1 && ((this.filter_date_mode === 'between') || (this.filter_date_mode === 'after'))) {
+          this.filter.date_start = moment(this.filter_date1).format("YYYY-MM-DD");
+        }
+        if (this.filter_date2 && ((this.filter_date_mode === 'between') || (this.filter_date_mode === 'before'))) {
+          this.filter.date_end = moment(this.filter_date2).format("YYYY-MM-DD");
+        }
       }
-      @$scope.filter_open = false
-      @updateFilter(true)
-      LocalStore.remove(@storeFilterId)
 
-    updateFilter: (skipSave) ->
-      @page = 1
-      @filter.page = @page
+      if (!skipSave) {
+        LocalStore.setObject(this.storeFilterId, this.filter);
+      }
 
-      @filter.date_start = null
-      @filter.date_end = null
-      if @filter_date_mode and @filter_date_mode != 'none'
-        if @filter_date1 and (@filter_date_mode == 'between' || @filter_date_mode == 'after')
-          @filter.date_start = moment(@filter_date1).format("YYYY-MM-DD")
-        if @filter_date2 and (@filter_date_mode == 'between' || @filter_date_mode == 'before')
-          @filter.date_end = moment(@filter_date2).format("YYYY-MM-DD")
+      return this.loadResults();
+    }
 
-      if not skipSave
-        LocalStore.setObject(@storeFilterId, @filter)
+    loadResults(fallbackPrevPage) {
+      this.startSpinner('loading_page');
+      this.results = [];
+      const promise = this.Api.sendGet('/email_status/sendmail', {filter: this.filter}).success( data => {
+        this.stopSpinner('loading_page', true);
+        this.$scope.tracking_enabled = data.tracking_enabled;
+        this.results     = data.sendmail_queue;
+        this.page        = data.page;
+        this.num_pages   = data.num_pages;
+        this.num_results = data.count;
+        this.massActions = {};
+        this.massActionsAll = false;
+        this.massActionsLoading = false;
 
-      @loadResults()
+        this.page_nums = [];
+        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+          this.page_nums.push(i+1);
+        }
 
-    loadResults: (fallbackPrevPage) ->
-      @startSpinner('loading_page')
-      @results = []
-      promise = @Api.sendGet('/email_status/sendmail', {filter: @filter}).success( (data) =>
-        @stopSpinner('loading_page', true)
-        @$scope.tracking_enabled = data.tracking_enabled
-        @results     = data.sendmail_queue
-        @page        = data.page
-        @num_pages   = data.num_pages
-        @num_results = data.count
-        @massActions = {}
-        @massActionsAll = false
-        @massActionsLoading = false
+        this.results.map(res => {
+          res.date_created = this.DpDateService.local(res.date_created);
+          if (res.date_sent) {
+            res.date_sent = this.DpDateService.local(res.date_sent);
+          }
+          if (res.date_next_attempt) {
+            return res.date_next_attempt = this.DpDateService.local(res.date_next_attempt);
+          }
+        });
 
-        @page_nums = []
-        for i in [0...@num_pages]
-          @page_nums.push(i+1)
+        if (fallbackPrevPage && !this.results.length && (data.page > 1)) {
+          this.filter.page = data.page - 1;
+          return this.loadResults();
+        }
+      });
 
-        @results.map (res) =>
-          res.date_created = @DpDateService.local res.date_created
-          if res.date_sent
-            res.date_sent = @DpDateService.local res.date_sent
-          if res.date_next_attempt
-            res.date_next_attempt = @DpDateService.local res.date_next_attempt
+      return promise;
+    }
 
-        if fallbackPrevPage and !@results.length and data.page > 1
-          @filter.page = data.page - 1;
-          @loadResults()
-      )
+    toggleMassActions() {
+      this.massActions = {};
+      if (this.massActionsAll) {
+        return Array.from(this.results).map((r) =>
+          (this.massActions[r.id] = true));
+      }
+    }
 
-      return promise
+    hasAnyMassActions() {
+      for (let r of Array.from(this.results)) {
+        if (this.massActions[r.id]) { return true; }
+      }
+      return false;
+    }
 
-    toggleMassActions: ->
-      @massActions = {}
-      if @massActionsAll
-        for r in @results
-          @massActions[r.id] = true
+    performMassActions() {
+      const url = `/email_status/sendmail/mass-actions/${this.massActionsOp}`;
+      this.massActionsLoading = true;
 
-    hasAnyMassActions: ->
-      for r in @results
-        return true if @massActions[r.id]
-      return false
+      const ids = [];
+      for (let r of Array.from(this.results)) {
+        if (this.massActions[r.id]) { ids.push(r.id); }
+      }
 
-    performMassActions: ->
-      url = "/email_status/sendmail/mass-actions/#{@massActionsOp}"
-      @massActionsLoading = true
+      return this.Api.sendPostJson(url, { ids }).then(() => {
+        this.Growl.success(this.getRegisteredMessage(`${this.massActionsOp}_done`));
+        return this.loadResults(true);
+      });
+    }
 
-      ids = []
-      for r in @results
-        if @massActions[r.id] then ids.push(r.id)
+    goPrevPage() {
+      return this.page--;
+    }
 
-      @Api.sendPostJson(url, { ids: ids }).then(=>
-        @Growl.success(@getRegisteredMessage("#{@massActionsOp}_done"))
-        @loadResults(true)
-      )
+    goNextPage() {
+      return this.page++;
+    }
+  }
+  Admin_EmailStatus_Ctrl_SendmailList.initClass();
 
-    goPrevPage: ->
-      @page--
-
-    goNextPage: ->
-      @page++
-
-  Admin_EmailStatus_Ctrl_SendmailList.EXPORT_CTRL()
+  return Admin_EmailStatus_Ctrl_SendmailList.EXPORT_CTRL();
+});

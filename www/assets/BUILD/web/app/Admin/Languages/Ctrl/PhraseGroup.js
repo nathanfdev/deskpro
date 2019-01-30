@@ -1,69 +1,85 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'Admin/Languages/PhraseSaver'
-], (
+], function(
   Admin_Ctrl_Base,
   PhraseSaver
-) ->
-  class Admin_Languages_Ctrl_PhraseGroup extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Languages_Ctrl_PhraseGroup'
-    @CTRL_AS = 'EditCtrl'
+) {
+  class Admin_Languages_Ctrl_PhraseGroup extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Languages_Ctrl_PhraseGroup';
+      this.CTRL_AS = 'EditCtrl';
+    }
 
-    init: ->
-      @langId  = @$stateParams.id.replace(/^phrases\-/, '')
-      @groupId = @$stateParams.groupId
+    init() {
+      this.langId  = this.$stateParams.id.replace(/^phrases\-/, '');
+      return this.groupId = this.$stateParams.groupId;
+    }
 
-    initialLoad: ->
-      promise = @Api.sendDataGet({
-        phrase_info: "/langs/#{@langId}/#{@groupId}"
-      }).then((result) =>
-        @phrases = result.data.phrase_info.phrases
-      )
-      return promise
+    initialLoad() {
+      const promise = this.Api.sendDataGet({
+        phrase_info: `/langs/${this.langId}/${this.groupId}`
+      }).then(result => {
+        return this.phrases = result.data.phrase_info.phrases;
+      });
+      return promise;
+    }
 
-    doSave: ->
-      @startSpinner('saving')
-      saver = new PhraseSaver(@Api, @$q)
-      saver.savePhrases(@langId, @phrases).then(=>
-        @stopSpinner('saving')
-      )
+    doSave() {
+      this.startSpinner('saving');
+      const saver = new PhraseSaver(this.Api, this.$q);
+      return saver.savePhrases(this.langId, this.phrases).then(() => {
+        return this.stopSpinner('saving');
+      });
+    }
 
-    ###
-      # Opens new phrase modal
-    ###
-    openNewPhrase: ->
-      langId  = @langId
-      groupId = @groupId
-      phrasesCollection = @phrases
+    /*
+      * Opens new phrase modal
+    */
+    openNewPhrase() {
+      const { langId }  = this;
+      const { groupId } = this;
+      const phrasesCollection = this.phrases;
 
-      @$modal.open({
-        templateUrl: @getTemplatePath('Languages/modal-new-phrase.html'),
-        controller: [ '$modalInstance', '$scope', 'Api', '$state', ($modalInstance, $scope, Api, $state) ->
+      return this.$modal.open({
+        templateUrl: this.getTemplatePath('Languages/modal-new-phrase.html'),
+        controller: [ '$modalInstance', '$scope', 'Api', '$state', function($modalInstance, $scope, Api, $state) {
 
-          $scope.phrase = {name: '', phrase: ''}
+          $scope.phrase = {name: '', phrase: ''};
 
-          $scope.$watch('phrase.name', ->
-            $scope.phrase.name = $scope.phrase.name.toLowerCase()
-            $scope.phrase.name = $scope.phrase.name.replace(/\s/g, '-')
-            $scope.phrase.name = $scope.phrase.name.replace(/[^a-z0-9\.\-_]/g, '')
-          )
+          $scope.$watch('phrase.name', function() {
+            $scope.phrase.name = $scope.phrase.name.toLowerCase();
+            $scope.phrase.name = $scope.phrase.name.replace(/\s/g, '-');
+            return $scope.phrase.name = $scope.phrase.name.replace(/[^a-z0-9\.\-_]/g, '');
+          });
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss('cancel')
+          $scope.dismiss = () => $modalInstance.dismiss('cancel');
 
-          $scope.save = ->
-            $scope.is_loading = true
+          return $scope.save = function() {
+            $scope.is_loading = true;
 
-            postData = {
-              phrases: [{ name: 'custom.' + $scope.phrase.name, phrase: $scope.phrase.phrase}]
-            }
-            Api.sendPostJson("/langs/#{langId}/phrases", postData).then(->
-              $modalInstance.close()
-              $state.go('setup.phrases_go_viewgroup', {path: 'phrases-go-' + langId + '-' + groupId})
-            )
+            const postData = {
+              phrases: [{ name: `custom.${$scope.phrase.name}`, phrase: $scope.phrase.phrase}]
+            };
+            return Api.sendPostJson(`/langs/${langId}/phrases`, postData).then(function() {
+              $modalInstance.close();
+              return $state.go('setup.phrases_go_viewgroup', {path: `phrases-go-${langId}-${groupId}`});
+            });
+          };
+        }
         ],
-      }).result.then( (newPhrase) =>
-        if not newPhrase then return
-      )
+      }).result.then( newPhrase => {
+        if (!newPhrase) { return; }
+      });
+    }
+  }
+  Admin_Languages_Ctrl_PhraseGroup.initClass();
 
-  Admin_Languages_Ctrl_PhraseGroup.EXPORT_CTRL()
+  return Admin_Languages_Ctrl_PhraseGroup.EXPORT_CTRL();
+});

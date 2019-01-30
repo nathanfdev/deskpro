@@ -1,45 +1,62 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Util/Strings',
   'Reports/Builder/DataService/ReportBuilderCustom',
   'Reports/Builder/DataService/ReportBuilderBuiltIn',
   'Reports/Builder/DataService/ReportWidgetBuiltIn',
   'Reports/Builder/DataService/ReportWidgetCustom',
-], (
+], function(
   Strings,
   DataService_ReportBuilderCustom,
   DataService_ReportBuilderBuiltIn,
   DataService_ReportWidgetBuiltIn,
   DataService_ReportWidgetCustom,
-) ->
-  ###
-  # A simple wrapper around the data services
-  ###
-  class Admin_Main_Service_DataServiceManager
-    constructor: (@$injector) ->
-      @ds_cache = {}
-      @registered = {}
+) {
+  /*
+   * A simple wrapper around the data services
+   */
+  let Admin_Main_Service_DataServiceManager;
+  return (Admin_Main_Service_DataServiceManager = class Admin_Main_Service_DataServiceManager {
+    constructor($injector) {
+      this.$injector = $injector;
+      this.ds_cache = {};
+      this.registered = {};
+    }
 
-    get: (serviceId) ->
-      if @ds_cache[serviceId]
-        obj = @ds_cache[serviceId]
-      else
-        obj = null
+    get(serviceId) {
+      let obj;
+      if (this.ds_cache[serviceId]) {
+        obj = this.ds_cache[serviceId];
+      } else {
+        obj = null;
 
-        # If this class has a custom initXXX method, call that
-        # instead uf the default
-        initName = 'init' + Strings.ucFirst(Strings.toCamelCase(serviceId))
-        if @[initName]?
-          obj = @[initName]()
+        // If this class has a custom initXXX method, call that
+        // instead uf the default
+        const initName = `init${Strings.ucFirst(Strings.toCamelCase(serviceId))}`;
+        if (this[initName] != null) {
+          obj = this[initName]();
+        }
 
-        if not obj
-          name = 'DataService_' + serviceId
-          eval("constructor = #{name};")
+        if (!obj) {
+          const name = `DataService_${serviceId}`;
+          eval(`constructor = ${name};`);
 
-          if not constructor
-            throw new Error("Invalid data service name: " + name)
+          if (!constructor) {
+            throw new Error(`Invalid data service name: ${name}`);
+          }
 
-          obj = @$injector.instantiate(constructor)
+          obj = this.$injector.instantiate(constructor);
+        }
 
-        @ds_cache[serviceId] = obj
+        this.ds_cache[serviceId] = obj;
+      }
 
-      return obj
+      return obj;
+    }
+  });
+});

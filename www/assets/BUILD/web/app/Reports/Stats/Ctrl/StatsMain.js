@@ -1,30 +1,42 @@
-define [], () -> [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([], () => [
   '$scope', '$state',
-  ($scope, $state) ->
-    $scope.loaded = false
+  function($scope, $state) {
+    $scope.loaded = false;
 
-    routePath = $state.current.url;
-    if (routePath[0] != '/')
-      routePath = '/' + routePath;
-
-    parts = routePath.split('/');
-
-    for part, index in parts
-      if part.indexOf(':') != -1
-        newPart = part.replace(/(\{|\})/, () -> '');
-        params = newPart.split(':')
-        if($state.params[params[0]])
-          parts[index] = $state.params[params[0]]
-
-
-
-    routePath = parts.join('/')
-    if routePath.indexOf('/stats') == -1
-      routePath = '/stats' + routePath
-
-    reactProps = {
-      routePath: routePath
+    let routePath = $state.current.url;
+    if (routePath[0] !== '/') {
+      routePath = `/${routePath}`;
     }
 
-    window.ReportBundle.render(reactProps, document.getElementById('report_react_component'));
-  ]
+    const parts = routePath.split('/');
+
+    for (let index = 0; index < parts.length; index++) {
+      const part = parts[index];
+      if (part.indexOf(':') !== -1) {
+        const newPart = part.replace(/(\{|\})/, () => '');
+        const params = newPart.split(':');
+        if($state.params[params[0]]) {
+          parts[index] = $state.params[params[0]];
+        }
+      }
+    }
+
+
+
+    routePath = parts.join('/');
+    if (routePath.indexOf('/stats') === -1) {
+      routePath = `/stats${routePath}`;
+    }
+
+    const reactProps = {
+      routePath
+    };
+
+    return window.ReportBundle.render(reactProps, document.getElementById('report_react_component'));
+  }
+  ] );

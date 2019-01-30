@@ -1,115 +1,133 @@
-define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
-  class AdminStart_Ctrl_Home extends StartBase
-    @CTRL_ID = 'AdminStart_Ctrl_Home'
-    @DEPS    = ['$modal', '$location', 'AppState']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['AdminStart/Ctrl/StartBase'], function(StartBase) {
+  class AdminStart_Ctrl_Home extends StartBase {
+    static initClass() {
+      this.CTRL_ID = 'AdminStart_Ctrl_Home';
+      this.DEPS    = ['$modal', '$location', 'AppState'];
+    }
 
-    init: ->
-      @$scope.opt = {
+    init() {
+      this.$scope.opt = {
         deskpro_url: '',
         deskpro_name: 'Helpdesk',
         timezone: 'UTC',
         has_lic: 'has_lic'
-      }
-      @$scope.opt.deskpro_url = (window.location.href+"").replace(/\/admin\/start(.*?)$/, '')+"/"
-      @$scope.opt.deskpro_url = @$scope.opt.deskpro_url.replace(/\/index\.php\/?(.*?)$/, '')
-      @$scope.opt.deskpro_url = @$scope.opt.deskpro_url.replace(/\/$/, '') + "/"
+      };
+      this.$scope.opt.deskpro_url = (window.location.href+"").replace(/\/admin\/start(.*?)$/, '')+"/";
+      this.$scope.opt.deskpro_url = this.$scope.opt.deskpro_url.replace(/\/index\.php\/?(.*?)$/, '');
+      this.$scope.opt.deskpro_url = this.$scope.opt.deskpro_url.replace(/\/$/, '') + "/";
 
-      tz = jstz.determine()
-      if tz and tz.name()
-        console.log("Detected timezone: %s", tz.name())
-        @$scope.opt.timezone = tz.name()
-      else
-        console.log("Could not detect timezone")
+      const tz = jstz.determine();
+      if (tz && tz.name()) {
+        console.log("Detected timezone: %s", tz.name());
+        this.$scope.opt.timezone = tz.name();
+      } else {
+        console.log("Could not detect timezone");
+      }
 
       $('body').addClass('done-load');
-      return
+    }
 
-    saveAndContinue: (isValid) ->
-      @$scope.has_submit = true
-      @$scope.lic_error = false
-      return if not isValid
+    saveAndContinue(isValid) {
+      this.$scope.has_submit = true;
+      this.$scope.lic_error = false;
+      if (!isValid) { return; }
 
-      @$scope.is_loading = true
-      @Api.sendPostJson('/start-settings', @$scope.opt).success((data) =>
-        @$location.path('/email')
-      ).error( (data) =>
-        @$scope.is_loading = false
-        if 'form_error' == data?.error_code
-          @$scope.error_message = data.error_message
-        else
-          @$scope.lic_error = data.error_code || 'generic'
+      this.$scope.is_loading = true;
+      return this.Api.sendPostJson('/start-settings', this.$scope.opt).success(data => {
+        return this.$location.path('/email');
+      }).error( data => {
+        this.$scope.is_loading = false;
+        if ('form_error' === (data != null ? data.error_code : undefined)) {
+          return this.$scope.error_message = data.error_message;
+        } else {
+          return this.$scope.lic_error = data.error_code || 'generic';
+        }
 
-      )
+      });
+    }
 
-    showRequestDemo: ->
-      url   = @$scope.opt.deskpro_url
-      name  = if @$scope.opt.first_name then @$scope.opt.first_name + ' ' + (@$scope.opt.last_name+'')
-      email = @$scope.opt.email || ''
+    showRequestDemo() {
+      let url   = this.$scope.opt.deskpro_url;
+      const name  = this.$scope.opt.first_name ? this.$scope.opt.first_name + ' ' + (this.$scope.opt.last_name+'') : undefined;
+      const email = this.$scope.opt.email || '';
 
-      @$modal.open({
+      return this.$modal.open({
         templateUrl: 'AdminInterface/Start/get-demo-modal.html',
-        controller: ['$scope', '$modalInstance', '$http', 'Api', ($scope, $modalInstance, $http, Api) =>
+        controller: ['$scope', '$modalInstance', '$http', 'Api', ($scope, $modalInstance, $http, Api) => {
 
-          $scope.mode = 'auto'
+          $scope.mode = 'auto';
           $scope.form_vals = {
             phone_country: '1',
             org_url: url
-          }
+          };
 
-          $scope.setInitialVals = (vals) ->
-            $scope.form_vals.user_name = name || vals.user_name
-            $scope.form_vals.email_address = email || vals.email_address
-            $scope.form_vals.org_name = if vals.org_name != 'Example' then vals.org_name else ''
-            $scope.vals = vals
+          $scope.setInitialVals = function(vals) {
+            $scope.form_vals.user_name = name || vals.user_name;
+            $scope.form_vals.email_address = email || vals.email_address;
+            $scope.form_vals.org_name = vals.org_name !== 'Example' ? vals.org_name : '';
+            return $scope.vals = vals;
+          };
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+          $scope.dismiss = () => $modalInstance.dismiss();
 
-          $scope.tryAgain = ->
-            $scope.errors = {}
-            $scope.is_done    = false
-            $scope.is_error   = false
-            $scope.is_success = false
-            $scope.is_loading = false
+          $scope.tryAgain = function() {
+            $scope.errors = {};
+            $scope.is_done    = false;
+            $scope.is_error   = false;
+            $scope.is_success = false;
+            return $scope.is_loading = false;
+          };
 
-          $scope.showManual = ->
-            $scope.errors = {}
-            $scope.is_done    = false
-            $scope.is_error   = false
-            $scope.is_success = false
-            $scope.is_loading = false
+          $scope.showManual = function() {
+            $scope.errors = {};
+            $scope.is_done    = false;
+            $scope.is_error   = false;
+            $scope.is_success = false;
+            $scope.is_loading = false;
 
-            $scope.manual_requested = true
-            if (!$scope.form.email_address.$error.required && !$scope.form.email_address.$error.email)
-              $scope.mode = 'manual'
-            else
-              return
+            $scope.manual_requested = true;
+            if (!$scope.form.email_address.$error.required && !$scope.form.email_address.$error.email) {
+              return $scope.mode = 'manual';
+            } else {
+              return;
+            }
+          };
 
-          $scope.showAuto = ->
-            $scope.errors = {}
-            $scope.is_done    = false
-            $scope.is_error   = false
-            $scope.is_success = false
-            $scope.is_loading = false
-            $scope.mode = 'auto'
+          $scope.showAuto = function() {
+            $scope.errors = {};
+            $scope.is_done    = false;
+            $scope.is_error   = false;
+            $scope.is_success = false;
+            $scope.is_loading = false;
+            return $scope.mode = 'auto';
+          };
 
-          $scope.keyfile = ->
-            url = Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN + '&email_address=' + $scope.form_vals.email_address
-            if not window.open(url)
-              window.location = url
+          $scope.keyfile = function() {
+            url = Api.formatUrl('dp_license/keyfile.txt') + '?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN + '&email_address=' + $scope.form_vals.email_address;
+            if (!window.open(url)) {
+              return window.location = url;
+            }
+          };
 
-          $scope.doGetLicense = (isValid) ->
-            $scope.errors      = {}
-            $scope.is_done    = false
-            $scope.is_error   = false
-            $scope.is_success = false
+          return $scope.doGetLicense = function(isValid) {
+            $scope.errors      = {};
+            $scope.is_done    = false;
+            $scope.is_error   = false;
+            $scope.is_success = false;
 
-            $scope.has_submit = true
-            return if not isValid
+            $scope.has_submit = true;
+            if (!isValid) { return; }
 
-            $scope.is_loading = true
+            $scope.is_loading = true;
 
-            postData = {
+            const postData = {
               build:         $scope.vals.build,
               install_key:   $scope.vals.install_key || "",
               install_token: $scope.vals.install_token || "",
@@ -121,25 +139,32 @@ define ['AdminStart/Ctrl/StartBase'], (StartBase) ->
               phone:         $scope.form_vals.phone || "",
               phone_ext:     $scope.form_vals.phone_ext || "",
               callback:      "JSON_CALLBACK"
-            }
+            };
 
-            $http.jsonp($scope.vals.ma_server, { params: postData }).success( (data) ->
-              $scope.is_loading = false
-              $scope.is_done = true
+            return $http.jsonp($scope.vals.ma_server, { params: postData }).success( function(data) {
+              $scope.is_loading = false;
+              $scope.is_done = true;
 
-              if data.success
-                $scope.is_success = true
-              else
-                $scope.is_error = true
-                $scope.errors = { unknown_request_error: true }
+              if (data.success) {
+                return $scope.is_success = true;
+              } else {
+                $scope.is_error = true;
+                return $scope.errors = { unknown_request_error: true };
+              }
 
-            ).error( (data) ->
-              $scope.is_loading = false
-              $scope.is_done    = true
-              $scope.is_error   = true
-              $scope.errors = { unknown_request_error: true }
-            )
+            }).error( function(data) {
+              $scope.is_loading = false;
+              $scope.is_done    = true;
+              $scope.is_error   = true;
+              return $scope.errors = { unknown_request_error: true };
+            });
+          };
+        }
         ]
       });
+    }
+  }
+  AdminStart_Ctrl_Home.initClass();
 
-  AdminStart_Ctrl_Home.EXPORT_CTRL()
+  return AdminStart_Ctrl_Home.EXPORT_CTRL();
+});

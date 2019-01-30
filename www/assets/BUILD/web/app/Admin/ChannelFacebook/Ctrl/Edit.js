@@ -1,106 +1,130 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'Admin/ChannelFacebook/FormModel/EditFacebookPageModel',
   'DeskPRO/Util/Util'
-], (
+], function(
   Admin_Ctrl_Base,
   Admin_ChannelFacebook_FormModel_EditFacebookPageModel,
   Util
-) ->
-  class Admin_ChannelFacebook_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_ChannelFacebook_Ctrl_Edit'
-    @CTRL_AS = 'ChannelFacebookEdit'
-    @DEPS    = ['Api', 'Growl', 'FacebookPagesData', '$stateParams', '$state', '$timeout']
+) {
+  class Admin_ChannelFacebook_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_ChannelFacebook_Ctrl_Edit';
+      this.CTRL_AS = 'ChannelFacebookEdit';
+      this.DEPS    = ['Api', 'Growl', 'FacebookPagesData', '$stateParams', '$state', '$timeout'];
+    }
 
-    init: ->
-      @pageId = parseInt(@$stateParams.id || 0)
-      @page = null
-      @form_model = null
+    init() {
+      this.pageId = parseInt(this.$stateParams.id || 0);
+      this.page = null;
+      return this.form_model = null;
+    }
 
-    initialLoad: ->
-      promise = @Api.sendGet("/channel/facebook/page/#{@pageId}").then((result) =>
-        if result.data
-          @page = result.data
-          @form_model = new Admin_ChannelFacebook_FormModel_EditFacebookPageModel(@page || {})
-          @setFormOnScope()
-      )
+    initialLoad() {
+      const promise = this.Api.sendGet(`/channel/facebook/page/${this.pageId}`).then(result => {
+        if (result.data) {
+          this.page = result.data;
+          this.form_model = new Admin_ChannelFacebook_FormModel_EditFacebookPageModel(this.page || {});
+          return this.setFormOnScope();
+        }
+      });
 
-      return promise
+      return promise;
+    }
 
-    setFormOnScope: ->
-      @$scope.form = @form_model.form
+    setFormOnScope() {
+      return this.$scope.form = this.form_model.form;
+    }
 
-    savePage: ->
-      @startSpinner('saving_page')
-      postData = { page: @form_model.getFormData() }
-      @Api.sendPostJson("/channel/facebook/page/#{@pageId}", postData).then((result) =>
-        @page = result.data
-        @FacebookPagesData.updateModel(@page)
-        @Growl.success(@getRegisteredMessage('saved_page'))
-        @stopSpinner('saving_page')
-        @$scope.$parent.ChannelFacebookList.pingElement('save_page')
-      )
+    savePage() {
+      this.startSpinner('saving_page');
+      const postData = { page: this.form_model.getFormData() };
+      return this.Api.sendPostJson(`/channel/facebook/page/${this.pageId}`, postData).then(result => {
+        this.page = result.data;
+        this.FacebookPagesData.updateModel(this.page);
+        this.Growl.success(this.getRegisteredMessage('saved_page'));
+        this.stopSpinner('saving_page');
+        return this.$scope.$parent.ChannelFacebookList.pingElement('save_page');
+      });
+    }
 
-    connect: ->
-      postData = @getPostData()
-      promise = @Api.sendPostJson("/channel/facebook/connect_provider", postData)
-      promise.then( (result) =>
-        if result.data.success
-          @$scope.connection_problem = false
-          @page = result.data.account
-          @form_model.setAccountData(result.data.account)
-          if @pageId
-            @FacebookPagesData.updateModel(@page)
-          @ngApply()
-          @Growl.success(@getRegisteredMessage('connected'))
-        else
-          @$scope.connection_problem = true
-          @form_model.markConnected(false)
-          @Growl.error(@getRegisteredMessage('connected_fail'))
-        @stopSpinner('sms_connect_provider')
-      )
-      promise.error( (result) =>
-        @$scope.connection_problem = true
-        @form_model.markConnected(false)
-        @stopSpinner('sms_connect_provider')
-        @Growl.error(@getRegisteredMessage('connected_fail'))
-      )
-      @startSpinner('sms_connect_provider')
-      return promise
+    connect() {
+      const postData = this.getPostData();
+      const promise = this.Api.sendPostJson("/channel/facebook/connect_provider", postData);
+      promise.then( result => {
+        if (result.data.success) {
+          this.$scope.connection_problem = false;
+          this.page = result.data.account;
+          this.form_model.setAccountData(result.data.account);
+          if (this.pageId) {
+            this.FacebookPagesData.updateModel(this.page);
+          }
+          this.ngApply();
+          this.Growl.success(this.getRegisteredMessage('connected'));
+        } else {
+          this.$scope.connection_problem = true;
+          this.form_model.markConnected(false);
+          this.Growl.error(this.getRegisteredMessage('connected_fail'));
+        }
+        return this.stopSpinner('sms_connect_provider');
+      });
+      promise.error( result => {
+        this.$scope.connection_problem = true;
+        this.form_model.markConnected(false);
+        this.stopSpinner('sms_connect_provider');
+        return this.Growl.error(this.getRegisteredMessage('connected_fail'));
+      });
+      this.startSpinner('sms_connect_provider');
+      return promise;
+    }
 
-    setupAndTest: ->
-      postData = @getPostData()
-      promise = @Api.sendPostJson("/channel/facebook/setup-and-test/twilio", postData)
-      promise.then((result) =>
-        if result
-          checkTestStatus = =>
-            url = "/channel/facebook/page/#{@pageId}"
-            @$timeout =>
-              @Api.sendGet(url).then((result) =>
-                if result.data.is_tested
-                  @stopSpinner('sms_test_provider')
-                  @page = result.data
-                  @form_model.setAccountData(result.data)
-                  @FacebookPagesData.updateModel(@page)
-                  @ngApply()
-                  @Growl.success(@getRegisteredMessage('setup_and_tested_success'))
-                else
-                  checkTestStatus()
-              )
-            , 1000
-          checkTestStatus()
-        else
-          @Growl.error(@getRegisteredMessage('connected_fail'))
-          @form_model.markTested(false)
-      )
-      promise.error((result) =>
-        @$scope.connection_problem = true
-        @Growl.error(@getRegisteredMessage('connected_fail'))
-        @stopSpinner('sms_test_provider')
-      )
-      @startSpinner('sms_test_provider')
-      return promise
+    setupAndTest() {
+      const postData = this.getPostData();
+      const promise = this.Api.sendPostJson("/channel/facebook/setup-and-test/twilio", postData);
+      promise.then(result => {
+        if (result) {
+          var checkTestStatus = () => {
+            const url = `/channel/facebook/page/${this.pageId}`;
+            return this.$timeout(() => {
+              return this.Api.sendGet(url).then(result => {
+                if (result.data.is_tested) {
+                  this.stopSpinner('sms_test_provider');
+                  this.page = result.data;
+                  this.form_model.setAccountData(result.data);
+                  this.FacebookPagesData.updateModel(this.page);
+                  this.ngApply();
+                  return this.Growl.success(this.getRegisteredMessage('setup_and_tested_success'));
+                } else {
+                  return checkTestStatus();
+                }
+              });
+            }
+            , 1000);
+          };
+          return checkTestStatus();
+        } else {
+          this.Growl.error(this.getRegisteredMessage('connected_fail'));
+          return this.form_model.markTested(false);
+        }
+      });
+      promise.error(result => {
+        this.$scope.connection_problem = true;
+        this.Growl.error(this.getRegisteredMessage('connected_fail'));
+        return this.stopSpinner('sms_test_provider');
+      });
+      this.startSpinner('sms_test_provider');
+      return promise;
+    }
+  }
+  Admin_ChannelFacebook_Ctrl_Edit.initClass();
 
 
 
-  Admin_ChannelFacebook_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_ChannelFacebook_Ctrl_Edit.EXPORT_CTRL();
+});

@@ -1,50 +1,68 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Server_Ctrl_ServerEnc extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Server_Ctrl_ServerEnc'
-    @CTRL_AS   = 'ServerEnc'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_Server_Ctrl_ServerEnc extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Server_Ctrl_ServerEnc';
+      this.CTRL_AS   = 'ServerEnc';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      return
+    init() {
+    }
 
-    loadStatus: ->
-      return @Api.sendGet('/server/encryption/status').then((res) =>
-        @$scope.status = res.data;
-      );
+    loadStatus() {
+      return this.Api.sendGet('/server/encryption/status').then(res => {
+        return this.$scope.status = res.data;
+      });
+    }
 
-    reloadStatus: ->
-      @startSpinner('saving')
-      @loadStatus().then(=>
-        @stopSpinner('saving', true)
-      )
+    reloadStatus() {
+      this.startSpinner('saving');
+      return this.loadStatus().then(() => {
+        return this.stopSpinner('saving', true);
+      });
+    }
 
-    enable: ->
-      @startSpinner('saving')
-      @$scope.error_info = null
-      @Api.sendPost('/server/encryption/enable').success((res) =>
-        @loadStatus().then(=>
-          @stopSpinner('saving', true)
-        )
-      ).error((info, code) =>
-        @stopSpinner('saving', true)
-        if info.error_code
-          @$scope.error_info = info
-      )
+    enable() {
+      this.startSpinner('saving');
+      this.$scope.error_info = null;
+      return this.Api.sendPost('/server/encryption/enable').success(res => {
+        return this.loadStatus().then(() => {
+          return this.stopSpinner('saving', true);
+        });
+      }).error((info, code) => {
+        this.stopSpinner('saving', true);
+        if (info.error_code) {
+          return this.$scope.error_info = info;
+        }
+      });
+    }
 
-    disable: ->
-      @startSpinner('saving')
-      @$scope.error_info = null
-      @Api.sendPost('/server/encryption/disable').success((res) =>
-        @loadStatus().then(=>
-          @stopSpinner('saving', true)
-        )
-      ).error((info, code) =>
-        @stopSpinner('saving', true)
-        if info.error_code
-          @$scope.error_info = info
-      )
+    disable() {
+      this.startSpinner('saving');
+      this.$scope.error_info = null;
+      return this.Api.sendPost('/server/encryption/disable').success(res => {
+        return this.loadStatus().then(() => {
+          return this.stopSpinner('saving', true);
+        });
+      }).error((info, code) => {
+        this.stopSpinner('saving', true);
+        if (info.error_code) {
+          return this.$scope.error_info = info;
+        }
+      });
+    }
 
-    initialLoad: ->
-      return @loadStatus()
+    initialLoad() {
+      return this.loadStatus();
+    }
+  }
+  Admin_Server_Ctrl_ServerEnc.initClass();
 
-  Admin_Server_Ctrl_ServerEnc.EXPORT_CTRL()
+  return Admin_Server_Ctrl_ServerEnc.EXPORT_CTRL();
+});

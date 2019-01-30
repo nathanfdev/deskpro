@@ -1,155 +1,208 @@
-define [
-    'Admin/Main/Ctrl/Base'
+/*
+ * decaffeinate suggestions:
+ * DS001: Remove Babel/TypeScript constructor workaround
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
+    'Admin/Main/Ctrl/Base',
     'angular'
-], (
-    Admin_Ctrl_Base
+], function(
+    Admin_Ctrl_Base,
     angular
-) ->
-  class Admin_ApiKeys_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_ApiKeys_Ctrl_Edit'
-    @CTRL_AS = 'EditCtrl'
-    @DEPS = ['$stateParams']
+) {
+  class Admin_ApiKeys_Ctrl_Edit extends Admin_Ctrl_Base {
+    constructor(...args) {
+      {
+        // Hack: trick Babel/TypeScript into allowing this before super.
+        if (false) { super(); }
+        let thisFn = (() => { return this; }).toString();
+        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        eval(`${thisName} = this;`);
+      }
+      this.updateChildren = this.updateChildren.bind(this);
+      super(...args);
+    }
 
-    init: ->
-      @agents = []
-      @form = {isSuperUser: false, flags: []}
+    static initClass() {
+      this.CTRL_ID = 'Admin_ApiKeys_Ctrl_Edit';
+      this.CTRL_AS = 'EditCtrl';
+      this.DEPS = ['$stateParams'];
+    }
 
-      @service =
-        keys:   @DataService.get 'ApiKeys'
-        agents: @DataService.get 'Agents'
-        tags:   @DataService.get 'ApiTags'
+    init() {
+      this.agents = [];
+      this.form = {isSuperUser: false, flags: []};
 
-      @$scope.replayLogEntry = (entry) =>
-        return if !entry?.id?
-        entry.response = null
-        @service.keys.replayLogEntry(entry).then(
-          (data) => entry.response = data
-          => entry.response = {status: null, content: null}
-        )
+      this.service = {
+        keys:   this.DataService.get('ApiKeys'),
+        agents: this.DataService.get('Agents'),
+        tags:   this.DataService.get('ApiTags')
+      };
 
-      @$scope.toggle = (scope) ->
-        scope.toggle()
+      this.$scope.replayLogEntry = entry => {
+        if (((entry != null ? entry.id : undefined) == null)) { return; }
+        entry.response = null;
+        return this.service.keys.replayLogEntry(entry).then(
+          data => { return entry.response = data; },
+          () => { return entry.response = {status: null, content: null};
+         });
+      };
 
-      @$scope.enable = (node) =>
-        node.value = 1
-        @updateChildren node.nodes, node.value if node.nodes
-        @service.tags.updateTags(node.path, node.value, @form.id)
+      this.$scope.toggle = scope => scope.toggle();
 
-
-      @$scope.default = (node) =>
-        node.value = 0
-        @updateChildren node.nodes, node.value if node.nodes
-        @service.tags.updateTags(node.path, node.value, @form.id)
-
-      @$scope.disable = (node) =>
-        node.value = -1
-        @updateChildren node.nodes, node.value if node.nodes
-        @service.tags.updateTags(node.path, node.value, @form.id)
-
-    updateChildren: (nodes, value) =>
-      for node in nodes
-        node.value = value
-        @updateChildren node.nodes, value if node.nodes
-
-    initialLoad: ->
-      @form.daily_limit = @service.keys.limits.daily_limit
-      @form.hourly_limit = @service.keys.limits.hourly_limit
-
-      p1 = @service.keys.get(@$stateParams.id || null).then (model) =>
-        return if !model?
-        @form = angular.copy model
-        @form.flags = @form.flags || []
-        @form.isSuperUser = @form.flags.indexOf('super') > -1
-        @form.isAdminManage = @form.flags.indexOf('admin_manage') > -1
-        @form.daily_limit = @service.keys.limits.daily_limit if !@form.daily_limit
-        @form.hourly_limit = @service.keys.limits.hourly_limit if !@form.hourly_limit
+      this.$scope.enable = node => {
+        node.value = 1;
+        if (node.nodes) { this.updateChildren(node.nodes, node.value); }
+        return this.service.tags.updateTags(node.path, node.value, this.form.id);
+      };
 
 
-      p2 = @service.agents.all().then (agents) => @agents = agents
+      this.$scope.default = node => {
+        node.value = 0;
+        if (node.nodes) { this.updateChildren(node.nodes, node.value); }
+        return this.service.tags.updateTags(node.path, node.value, this.form.id);
+      };
 
-      # Load logs separately
-      if @$stateParams.id
-        @service.tags.getTags(@$stateParams.id).then((data) =>
-          @tags = data.join(',')
-        )
+      return this.$scope.disable = node => {
+        node.value = -1;
+        if (node.nodes) { this.updateChildren(node.nodes, node.value); }
+        return this.service.tags.updateTags(node.path, node.value, this.form.id);
+      };
+    }
 
-        @service.keys.getLogs({id: @$stateParams.id}).then((data) =>
-          @logs = data.logs
-        )
-      else
-        @tags = '*'
+    updateChildren(nodes, value) {
+      return (() => {
+        const result = [];
+        for (let node of Array.from(nodes)) {
+          node.value = value;
+          if (node.nodes) { result.push(this.updateChildren(node.nodes, value)); } else {
+            result.push(undefined);
+          }
+        }
+        return result;
+      })();
+    }
+
+    initialLoad() {
+      this.form.daily_limit = this.service.keys.limits.daily_limit;
+      this.form.hourly_limit = this.service.keys.limits.hourly_limit;
+
+      const p1 = this.service.keys.get(this.$stateParams.id || null).then(model => {
+        if ((model == null)) { return; }
+        this.form = angular.copy(model);
+        this.form.flags = this.form.flags || [];
+        this.form.isSuperUser = this.form.flags.indexOf('super') > -1;
+        this.form.isAdminManage = this.form.flags.indexOf('admin_manage') > -1;
+        if (!this.form.daily_limit) { this.form.daily_limit = this.service.keys.limits.daily_limit; }
+        if (!this.form.hourly_limit) { return this.form.hourly_limit = this.service.keys.limits.hourly_limit; }
+      });
 
 
-      return @$q.all([p1, p2])
+      const p2 = this.service.agents.all().then(agents => { return this.agents = agents; });
+
+      // Load logs separately
+      if (this.$stateParams.id) {
+        this.service.tags.getTags(this.$stateParams.id).then(data => {
+          return this.tags = data.join(',');
+        });
+
+        this.service.keys.getLogs({id: this.$stateParams.id}).then(data => {
+          return this.logs = data.logs;
+        });
+      } else {
+        this.tags = '*';
+      }
 
 
-
-    saveForm: ->
-      is_new = !@form.id
-      @form.flags = []
-
-      if @form.isSuperUser
-        @form.flags.push 'super'
-      if @form.isAdminManage
-        @form.flags.push 'admin_manage'
-
-      @startSpinner 'saving'
-      @service.keys.set(@form).then(
-        (data) =>
-          @form = data
-          @form.flags = @form.flags || []
-          @form.isSuperUser = @form.flags.indexOf('super') > -1
-          @form.isAdminManage = @form.flags.indexOf('admin_manage') > -1
-          @form
-        =>
-          @stopSpinner 'saving', true
-          @Growl.error 'Error'
-      ).then(
-        (form) =>
-          @service.tags.updateTags(@tags, form.id).then(
-            (data) =>
-              @stopSpinner 'saving', true
-              @Growl.success 'Saved'
-              @skipDirtyState()
-              if is_new then @$state.go 'apps.api_keys.gocreate'
-            (reason) =>
-              @stopSpinner 'saving', true
-              @Growl.error 'Error'
-          )
-      )
+      return this.$q.all([p1, p2]);
+    }
 
 
 
-    ###
-    # Show the delete dlg
-    ###
-    startDelete: (for_key_id) ->
-      @service.keys.get(for_key_id).then (key) =>
-        return if !key?
+    saveForm() {
+      const is_new = !this.form.id;
+      this.form.flags = [];
 
-        inst = @$modal.open({
-          templateUrl: @getTemplatePath('ApiKeys/delete-modal.html'),
-          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-            $scope.confirm = ->
-              $modalInstance.close()
+      if (this.form.isSuperUser) {
+        this.form.flags.push('super');
+      }
+      if (this.form.isAdminManage) {
+        this.form.flags.push('admin_manage');
+      }
 
-            $scope.dismiss = ->
-              $modalInstance.dismiss()
+      this.startSpinner('saving');
+      return this.service.keys.set(this.form).then(
+        data => {
+          this.form = data;
+          this.form.flags = this.form.flags || [];
+          this.form.isSuperUser = this.form.flags.indexOf('super') > -1;
+          this.form.isAdminManage = this.form.flags.indexOf('admin_manage') > -1;
+          return this.form;
+        },
+        () => {
+          this.stopSpinner('saving', true);
+          return this.Growl.error('Error');
+      }).then(
+        form => {
+          return this.service.tags.updateTags(this.tags, form.id).then(
+            data => {
+              this.stopSpinner('saving', true);
+              this.Growl.success('Saved');
+              this.skipDirtyState();
+              if (is_new) { return this.$state.go('apps.api_keys.gocreate'); }
+            },
+            reason => {
+              this.stopSpinner('saving', true);
+              return this.Growl.error('Error');
+          });
+      });
+    }
+
+
+
+    /*
+     * Show the delete dlg
+     */
+    startDelete(for_key_id) {
+      return this.service.keys.get(for_key_id).then(key => {
+        if ((key == null)) { return; }
+
+        const inst = this.$modal.open({
+          templateUrl: this.getTemplatePath('ApiKeys/delete-modal.html'),
+          controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+            $scope.confirm = () => $modalInstance.close();
+
+            return $scope.dismiss = () => $modalInstance.dismiss();
+          }
           ]
         });
 
-        inst.result.then =>
-          @service.keys.remove(key).then(
-            =>
-              @$state.go 'apps.api_keys'
-            (data) =>
-              @applyErrorResponseToView data
-          )
+        return inst.result.then(() => {
+          return this.service.keys.remove(key).then(
+            () => {
+              return this.$state.go('apps.api_keys');
+            },
+            data => {
+              return this.applyErrorResponseToView(data);
+          });
+        });
+      });
+    }
 
 
 
-    regenerateApiKey: ->
-      @service.keys.regenerateApiKey(@form).success =>
-        @Growl.success("API Key regenerated")
+    regenerateApiKey() {
+      return this.service.keys.regenerateApiKey(this.form).success(() => {
+        return this.Growl.success("API Key regenerated");
+      });
+    }
+  }
+  Admin_ApiKeys_Ctrl_Edit.initClass();
 
-  Admin_ApiKeys_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_ApiKeys_Ctrl_Edit.EXPORT_CTRL();
+});

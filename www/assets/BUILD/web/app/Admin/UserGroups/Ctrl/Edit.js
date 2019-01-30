@@ -1,200 +1,293 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_UserGroups_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_UserGroups_Ctrl_Edit'
-    @CTRL_AS = 'EditCtrl'
-    @DEPS    = ['$stateParams', '$q']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS103: Rewrite code to no longer use __guard__
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_UserGroups_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_UserGroups_Ctrl_Edit';
+      this.CTRL_AS = 'EditCtrl';
+      this.DEPS    = ['$stateParams', '$q'];
+    }
 
-    init: ->
-      @groupId = parseInt(@$stateParams.id) || 0
-      @ugData = @DataService.get('UserGroups')
+    init() {
+      this.groupId = parseInt(this.$stateParams.id) || 0;
+      this.ugData = this.DataService.get('UserGroups');
 
-      @service =
-        ticketDeps: @DataService.get 'TicketDeps'
-        chatDeps: @DataService.get 'ChatDeps'
+      this.service = {
+        ticketDeps: this.DataService.get('TicketDeps'),
+        chatDeps: this.DataService.get('ChatDeps')
+      };
 
-      @all_perms =
-        perms: {}
-        deps_perms:
-          tickets: {full: false}
+      this.all_perms = {
+        perms: {},
+        deps_perms: {
+          tickets: {full: false},
           chat: {full: false}
-        all_tickets_locked: false
+        },
+        all_tickets_locked: false,
         all_chat_locked: false
+      };
 
-      @group = null
+      return this.group = null;
+    }
 
-    initialLoad: ->
-      groupPromise = @ugData.loadEditUserGroupData(@$stateParams.id || null);
-      promises = [groupPromise, @service.ticketDeps.all(true), @service.chatDeps.all(true)]
+    initialLoad() {
+      const groupPromise = this.ugData.loadEditUserGroupData(this.$stateParams.id || null);
+      const promises = [groupPromise, this.service.ticketDeps.all(true), this.service.chatDeps.all(true)];
 
-      @$q.all(promises).then (res) =>
-        @group             = res[0].group
-        @everyoneGroup     = res[0].everyone_group;
-        @registeredGroup   = res[0].reg_group;
-        @form              = res[0].form
-        @perm_form         = @group.perms
-        @perm_form.options = {}
+      return this.$q.all(promises).then(res => {
+        let subdep;
+        this.group             = res[0].group;
+        this.everyoneGroup     = res[0].everyone_group;
+        this.registeredGroup   = res[0].reg_group;
+        this.form              = res[0].form;
+        this.perm_form         = this.group.perms;
+        this.perm_form.options = {};
 
-        if @group.sys_name == 'everyone'
-          @perm_form_everyone = null
-          @perm_form_reg      = null
-        else if @group.sys_name == 'registered'
-          @perm_form_everyone = if res[0].everyone_group.is_enabled then res[0].everyone_group.perms else null
-          @perm_form_reg      = null
-        else
-          @perm_form_everyone = if res[0].everyone_group.is_enabled then res[0].everyone_group.perms else null
-          @perm_form_reg      = if res[0].reg_group.is_enabled     then res[0].reg_group.perms       else null
+        if (this.group.sys_name === 'everyone') {
+          this.perm_form_everyone = null;
+          this.perm_form_reg      = null;
+        } else if (this.group.sys_name === 'registered') {
+          this.perm_form_everyone = res[0].everyone_group.is_enabled ? res[0].everyone_group.perms : null;
+          this.perm_form_reg      = null;
+        } else {
+          this.perm_form_everyone = res[0].everyone_group.is_enabled ? res[0].everyone_group.perms : null;
+          this.perm_form_reg      = res[0].reg_group.is_enabled     ? res[0].reg_group.perms       : null;
+        }
 
-        if @perm_form?.ticket?.reopen_resolved_createnew || @perm_form_reg?.ticket?.reopen_resolved_createnew
-          @perm_form.options.reopen_resolved_createnew = 'new_ticket'
-        else
-          @perm_form.options.reopen_resolved_createnew = 'reject'
+        if (__guard__(this.perm_form != null ? this.perm_form.ticket : undefined, x => x.reopen_resolved_createnew) || __guard__(this.perm_form_reg != null ? this.perm_form_reg.ticket : undefined, x1 => x1.reopen_resolved_createnew)) {
+          this.perm_form.options.reopen_resolved_createnew = 'new_ticket';
+        } else {
+          this.perm_form.options.reopen_resolved_createnew = 'reject';
+        }
 
-        # deps need to be flattened to show in the table
-        @chatDeps = []
-        for dep in res[2]
-          @chatDeps.push(dep)
-          if dep.children
-            for subdep in dep.children
-              subdep.depth = 1
-              @chatDeps.push(subdep)
+        // deps need to be flattened to show in the table
+        this.chatDeps = [];
+        for (var dep of Array.from(res[2])) {
+          this.chatDeps.push(dep);
+          if (dep.children) {
+            for (subdep of Array.from(dep.children)) {
+              subdep.depth = 1;
+              this.chatDeps.push(subdep);
+            }
+          }
+        }
 
 
-        # deps need to be flattened to show in the table
-        @ticketDeps = []
-        for dep in res[1]
-          @ticketDeps.push(dep)
-          if dep.children
-            for subdep in dep.children
-              subdep.depth = 1
-              @ticketDeps.push(subdep)
+        // deps need to be flattened to show in the table
+        this.ticketDeps = [];
+        for (dep of Array.from(res[1])) {
+          this.ticketDeps.push(dep);
+          if (dep.children) {
+            for (subdep of Array.from(dep.children)) {
+              subdep.depth = 1;
+              this.ticketDeps.push(subdep);
+            }
+          }
+        }
 
-        @assignDepsPerms @everyoneGroup
-        @assignDepsPerms @registeredGroup
-        @assignDepsPerms @group
+        this.assignDepsPerms(this.everyoneGroup);
+        this.assignDepsPerms(this.registeredGroup);
+        this.assignDepsPerms(this.group);
 
-        if @group.deps_perms.tickets.length
-          if (Object.keys(@group.deps_perms.tickets).reduce (x, y) => x && @isLocked(y, 'tickets')) then @all_perms.all_tickets_locked = true;
-        if @group.deps_perms.chat.length
-          if (Object.keys(@group.deps_perms.chat).reduce (x, y) => x && @isLocked(y, 'chat')) then @all_perms.all_chat_locked = true;
+        if (this.group.deps_perms.tickets.length) {
+          if (Object.keys(this.group.deps_perms.tickets).reduce((x, y) => x && this.isLocked(y, 'tickets'))) { this.all_perms.all_tickets_locked = true; }
+        }
+        if (this.group.deps_perms.chat.length) {
+          if (Object.keys(this.group.deps_perms.chat).reduce((x, y) => x && this.isLocked(y, 'chat'))) { this.all_perms.all_chat_locked = true; }
+        }
 
-        @updateAllPermsState()
+        return this.updateAllPermsState();
+      });
+    }
 
-    saveForm: ->
-      if not @$scope.form_props.$valid
-        return
+    saveForm() {
+      if (!this.$scope.form_props.$valid) {
+        return;
+      }
 
-      is_new = !@group.id
-      promise = @ugData.saveFormModel(@group, @form, @perm_form)
+      const is_new = !this.group.id;
+      const promise = this.ugData.saveFormModel(this.group, this.form, this.perm_form);
 
-      @startSpinner('saving')
-      promise.then( =>
-        @stopSpinner('saving', true).then(=>
-          @Growl.success("Saved")
-        )
+      this.startSpinner('saving');
+      return promise.then( () => {
+        this.stopSpinner('saving', true).then(() => {
+          return this.Growl.success("Saved");
+        });
 
-        @skipDirtyState()
-        if is_new
-          @$state.go('crm.groups.gocreate')
-      )
+        this.skipDirtyState();
+        if (is_new) {
+          return this.$state.go('crm.groups.gocreate');
+        }
+      });
+    }
 
-    ###
-      # Shows the copy settings modal
-      ###
-    showDelete: ->
-      deleteGroup = =>
-        p = @ugData.removeGroupById(@groupId)
-        p.then(=>
-          @$state.go('crm.groups')
-        )
-        return p
+    /*
+      * Shows the copy settings modal
+      */
+    showDelete() {
+      let inst;
+      const deleteGroup = () => {
+        const p = this.ugData.removeGroupById(this.groupId);
+        p.then(() => {
+          return this.$state.go('crm.groups');
+        });
+        return p;
+      };
 
-      group = @group
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('UserGroups/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-          $scope.group = group
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+      const { group } = this;
+      return inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('UserGroups/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          $scope.group = group;
+          $scope.dismiss = () => $modalInstance.dismiss();
 
-          $scope.doDelete = (options) ->
-            $scope.is_loading = true
-            deleteGroup().then(-> $modalInstance.dismiss())
+          return $scope.doDelete = function(options) {
+            $scope.is_loading = true;
+            return deleteGroup().then(() => $modalInstance.dismiss());
+          };
+        }
         ]
       });
+    }
 
 
-    assignDepsPerms: (group) ->
+    assignDepsPerms(group) {
 
+      let full, u;
       group.deps_perms = {
         tickets: {},
         chat: {}
+      };
+
+      for (var dep of Array.from(this.ticketDeps)) {
+        full = false;
+        if (dep.permissions != null ? dep.permissions.usergroups : undefined) {
+          u = dep.permissions.usergroups.filter(x => x.id === group.id)[0];
+          if (group.sys_name === 'everyone') {
+            if (u) { full = true; }
+          } else if (group.sys_name === 'registered') {
+            if (u || (this.everyoneGroup.deps_perms.tickets[dep.id].full === true)) { full = true; }
+          } else {
+            if (u || (this.everyoneGroup.deps_perms.tickets[dep.id].full === true) || (this.registeredGroup.deps_perms.tickets[dep.id].full === true)) { full = true; }
+          }
+
+          u = dep.permissions.usergroups.filter(x => x.sys_name === group.id)[0];
+        }
+
+        group.deps_perms.tickets[dep.id] = { full };
       }
 
-      for dep in @ticketDeps
-        full = false
-        if dep.permissions?.usergroups
-          u = dep.permissions.usergroups.filter((x) => x.id == group.id)[0]
-          if group.sys_name == 'everyone'
-            if u then full = true
-          else if group.sys_name == 'registered'
-            if u || @everyoneGroup.deps_perms.tickets[dep.id].full == true then full = true
-          else
-            if u || @everyoneGroup.deps_perms.tickets[dep.id].full == true || @registeredGroup.deps_perms.tickets[dep.id].full == true then full = true
+      return (() => {
+        const result = [];
+        for (dep of Array.from(this.chatDeps)) {
+          full = false;
+          if (dep.permissions != null ? dep.permissions.usergroups : undefined) {
+            u = dep.permissions.usergroups.filter(x => x.id === group.id)[0];
+            if (group.sys_name === 'everyone') {
+              if (u) { full = true; }
+            } else if (group.sys_name === 'registered') {
+              if (u || (this.everyoneGroup.deps_perms.chat[dep.id].full === true)) { full = true; }
+            } else {
+              if (u || (this.everyoneGroup.deps_perms.chat[dep.id].full === true) || (this.registeredGroup.deps_perms.chat[dep.id].full === true)) { full = true; }
+            }
+          }
 
-          u = dep.permissions.usergroups.filter((x) => x.sys_name == group.id)[0]
+          result.push(group.deps_perms.chat[dep.id] = { full });
+        }
+        return result;
+      })();
+    }
 
-        group.deps_perms.tickets[dep.id] = { full: full }
+    updateAllPermsState() {
+      let enabled;
+      if ((this.group == null)) { return; }
 
-      for dep in @chatDeps
-        full = false
-        if dep.permissions?.usergroups
-          u = dep.permissions.usergroups.filter((x) => x.id == group.id)[0]
-          if group.sys_name == 'everyone'
-            if u then full = true
-          else if group.sys_name == 'registered'
-            if u || @everyoneGroup.deps_perms.chat[dep.id].full == true then full = true
-          else
-            if u || @everyoneGroup.deps_perms.chat[dep.id].full == true || @registeredGroup.deps_perms.chat[dep.id].full == true then full = true
+      for (var section of Object.keys(this.group.perms || {})) {
+        const perms = this.group.perms[section];
+        enabled = true;
+        for (let perm of Object.keys(perms || {})) {
+          if (!perms[perm]) {
+            enabled = false;
+            break;
+          }
+        }
+        this.all_perms.perms[section] = enabled;
+      }
 
-        group.deps_perms.chat[dep.id] = { full: full }
+      if (!this.group.deps_perms) { return; }
+      return (() => {
+        const result = [];
+        for (var type of Object.keys(this.all_perms.deps_perms || {})) {
+          var sections = this.all_perms.deps_perms[type];
+          result.push((() => {
+            const result1 = [];
+            for (section of Object.keys(sections || {})) {
+              enabled = true;
+              for (let dep of Object.keys(this.group.deps_perms[type] || {})) {
+                if (!this.group.deps_perms[type][dep][section]) {
+                  enabled = false;
+                }
+              }
+              result1.push(this.all_perms.deps_perms[type][section] = enabled);
+            }
+            return result1;
+          })());
+        }
+        return result;
+      })();
+    }
 
-    updateAllPermsState: ->
-      return if !@group?
+    changeAllPerms(type) {
+      if ((this.group == null)) { return; }
 
-      for own section, perms of @group.perms
-        enabled = true
-        for own perm of perms
-          if !perms[perm]
-            enabled = false
-            break
-        @all_perms.perms[section] = enabled
+      if (('deps_perms_tickets' === type) && this.group.deps_perms.tickets) {
+        return (() => {
+          const result = [];
+          for (let dep of Object.keys(this.group.deps_perms.tickets || {})) {
+            if(!this.isLocked(dep, 'tickets')) {
+              result.push(this.group.deps_perms.tickets[dep].full = this.all_perms.deps_perms.tickets.full);
+            } else {
+              result.push(undefined);
+            }
+          }
+          return result;
+        })();
 
-      return if !@group.deps_perms
-      for own type, sections of @all_perms.deps_perms
-        for own section of sections
-          enabled = true
-          for own dep of @group.deps_perms[type]
-            if !@group.deps_perms[type][dep][section]
-              enabled = false
-          @all_perms.deps_perms[type][section] = enabled
+      } else if (('deps_perms_chat' === type) && this.group.deps_perms.chat) {
+        return (() => {
+          const result1 = [];
+          for (let dep of Object.keys(this.group.deps_perms.chat || {})) {
+            if(!this.isLocked(dep, 'chat')) {
+              result1.push(this.group.deps_perms.chat[dep].full = this.all_perms.deps_perms.chat.full);
+            } else {
+              result1.push(undefined);
+            }
+          }
+          return result1;
+        })();
+      }
+    }
 
-    changeAllPerms: (type) ->
-      return if !@group?
-
-      if 'deps_perms_tickets' == type and @group.deps_perms.tickets
-        for own dep of @group.deps_perms.tickets
-          if(!@isLocked(dep, 'tickets'))
-            @group.deps_perms.tickets[dep].full = @all_perms.deps_perms.tickets.full
-
-      else if 'deps_perms_chat' == type and @group.deps_perms.chat
-        for own dep of @group.deps_perms.chat
-          if(!@isLocked(dep, 'chat'))
-            @group.deps_perms.chat[dep].full = @all_perms.deps_perms.chat.full
-
-    isLocked: (depId, type) ->
-      if @group.sys_name == 'everyone' then return false
-      else if @group.sys_name == 'registered' then return @everyoneGroup.deps_perms[type][depId].full == true
-      else return @everyoneGroup.deps_perms[type][depId].full == true || @registeredGroup.deps_perms[type][depId].full == true
+    isLocked(depId, type) {
+      if (this.group.sys_name === 'everyone') { return false;
+      } else if (this.group.sys_name === 'registered') { return this.everyoneGroup.deps_perms[type][depId].full === true;
+      } else { return (this.everyoneGroup.deps_perms[type][depId].full === true) || (this.registeredGroup.deps_perms[type][depId].full === true); }
+    }
+  }
+  Admin_UserGroups_Ctrl_Edit.initClass();
 
 
-  Admin_UserGroups_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_UserGroups_Ctrl_Edit.EXPORT_CTRL();
+});
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}

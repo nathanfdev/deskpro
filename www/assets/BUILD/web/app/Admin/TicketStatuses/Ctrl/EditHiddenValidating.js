@@ -1,11 +1,23 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_TicketStatuses_Ctrl_EditHiddenValidating extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditHiddenValidating'
-    @CTRL_AS = 'TicketStatusEdit'
-    @DEPS = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_TicketStatuses_Ctrl_EditHiddenValidating extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditHiddenValidating';
+      this.CTRL_AS = 'TicketStatusEdit';
+      this.DEPS = [];
+    }
 
-    init: ->
-      @$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('hidden_validating')
-      return
+    init() {
+      this.$scope.getCount = () => (this.$scope.$parent.TicketStatusesList != null ? this.$scope.$parent.TicketStatusesList.getStatusCount('hidden_validating') : undefined);
+    }
+  }
+  Admin_TicketStatuses_Ctrl_EditHiddenValidating.initClass();
 
-  Admin_TicketStatuses_Ctrl_EditHiddenValidating.EXPORT_CTRL()
+  return Admin_TicketStatuses_Ctrl_EditHiddenValidating.EXPORT_CTRL();
+});

@@ -1,91 +1,116 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_Icons_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Icons_Ctrl_List'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_Icons_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Icons_Ctrl_List';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      @busy = false
-      @categories = {}
+    init() {
+      this.busy = false;
+      return this.categories = {};
+    }
 
 
 
-    initialLoad: ->
-      @initCategories()
+    initialLoad() {
+      return this.initCategories();
+    }
 
 
 
-    initCategories: ->
+    initCategories() {
 
-      @busy = true
-      def = @$q.defer()
+      this.busy = true;
+      const def = this.$q.defer();
 
-      @$timeout(
-        =>
-          for stylesheet in document.styleSheets
-            continue if !stylesheet or (!stylesheet.href? || -1 == stylesheet.href.indexOf 'icons-style.css')
+      this.$timeout(
+        () => {
+          for (let stylesheet of Array.from(document.styleSheets)) {
+            if (!stylesheet || ((stylesheet.href == null) || (-1 === stylesheet.href.indexOf('icons-style.css')))) { continue; }
 
-            rules = stylesheet.cssRules || stylesheet.rules || [];
-            continue if !rules || !rules.length;
+            const rules = stylesheet.cssRules || stylesheet.rules || [];
+            if (!rules || !rules.length) { continue; }
 
-            current = null
-            category = null
-            path = null
+            let current = null;
+            let category = null;
+            let path = null;
 
-            for rule in rules
-              if rule instanceof CSSFontFaceRule
-                if rule.style.getPropertyValue
-                  current = rule.style.getPropertyValue('font-family')
-                  content = rule.style.cssText
-                else
-                  current = rule.style['font-family']
-                  content = rule.style['src']
+            for (let rule of Array.from(rules)) {
+              if (rule instanceof CSSFontFaceRule) {
+                var content;
+                if (rule.style.getPropertyValue) {
+                  current = rule.style.getPropertyValue('font-family');
+                  content = rule.style.cssText;
+                } else {
+                  current = rule.style['font-family'];
+                  content = rule.style['src'];
+                }
 
-                if !content then content = ''
-                re = content.match(/url\((.*?)\)/)
+                if (!content) { content = ''; }
+                const re = content.match(/url\((.*?)\)/);
 
-                if not current or not content or not re
-                  current = null
-                  content = null
-                  continue
+                if (!current || !content || !re) {
+                  current = null;
+                  content = null;
+                  continue;
+                }
 
-                path = re[1]
-                path = path.substr(path.indexOf('vendor/'))
-                path = path.substr(0, path.lastIndexOf('/'))
-                path = 'ASSET_DIR/' + path
+                path = re[1];
+                path = path.substr(path.indexOf('vendor/'));
+                path = path.substr(0, path.lastIndexOf('/'));
+                path = `ASSET_DIR/${path}`;
 
                 current = current.replace(/^['"\-]+/, '');
                 current = current.replace(/['"\-]+$/, '');
 
-                category = current.charAt(9).toUpperCase() + current.slice(10)
-                @categories[category] = []
-                continue
+                category = current.charAt(9).toUpperCase() + current.slice(10);
+                this.categories[category] = [];
+                continue;
+              }
 
-              continue if !current? || !rule.selectorText? || 0 != rule.selectorText.indexOf('.'+current)
+              if ((current == null) || (rule.selectorText == null) || (0 !== rule.selectorText.indexOf(`.${current}`))) { continue; }
 
-              iconClass = rule.selectorText.substr(1, rule.selectorText.length - 9)
-              iconImage = path + '/png/' + iconClass.substr(current.length + 1) + '.png'
-              imageId   = 'dp_file:icons:' + iconImage
+              const iconClass = rule.selectorText.substr(1, rule.selectorText.length - 9);
+              const iconImage = path + '/png/' + iconClass.substr(current.length + 1) + '.png';
+              const imageId   = `dp_file:icons:${iconImage}`;
 
-              @categories[category].push
-                class: iconClass
-                image: iconImage
-                imageId: imageId
+              this.categories[category].push({
+                class: iconClass,
+                image: iconImage,
+                imageId
+              });
+            }
+          }
 
-          @busy = false
-          def.resolve()
+          this.busy = false;
+          return def.resolve();
+        },
         10
-      )
+      );
 
-      def.promise
-
-
-
-    # ?
-    selectIcon: (path) ->
-      @$scope.$emit('icon.selected', path)
-      @$scope.$dismiss()
+      return def.promise;
+    }
 
 
 
-  Admin_Icons_Ctrl_List.EXPORT_CTRL()
+    // ?
+    selectIcon(path) {
+      this.$scope.$emit('icon.selected', path);
+      return this.$scope.$dismiss();
+    }
+  }
+  Admin_Icons_Ctrl_List.initClass();
+
+
+
+  return Admin_Icons_Ctrl_List.EXPORT_CTRL();
+});

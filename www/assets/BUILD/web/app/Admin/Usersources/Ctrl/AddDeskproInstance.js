@@ -1,25 +1,34 @@
-define ['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
-, (Admin_Usersources_Ctrl_EditDeskproInstance, Util) ->
-  class Admin_Usersources_Ctrl_AddDeskproInstance extends Admin_Usersources_Ctrl_EditDeskproInstance
-    @CTRL_ID   = 'Admin_Usersources_Ctrl_AddDeskproInstance'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$http', 'dpTemplateManager']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
+, function(Admin_Usersources_Ctrl_EditDeskproInstance, Util) {
+  class Admin_Usersources_Ctrl_AddDeskproInstance extends Admin_Usersources_Ctrl_EditDeskproInstance {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Usersources_Ctrl_AddDeskproInstance';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['$http', 'dpTemplateManager'];
+    }
 
-    getInstanceId: -> null
-    initialLoad: ->
-      @usersource = {
-        title: 'Deskpro'
-        is_disabled: false
+    getInstanceId() { return null; }
+    initialLoad() {
+      this.usersource = {
+        title: 'Deskpro',
+        is_disabled: false,
         options: {
           reg_enabled: true
         }
-      }
+      };
 
-      super()
+      return super.initialLoad();
+    }
 
-    loadPasswordSettings: ->
-      @Api.sendGet('/password_settings', {rate_limit_context: 'user'}).then( (res) =>
-        @$scope.policy_settings = {
+    loadPasswordSettings() {
+      return this.Api.sendGet('/password_settings', {rate_limit_context: 'user'}).then( res => {
+        this.$scope.policy_settings = {
           sessions_lifetime:              res.data.settings.sessions_lifetime,
           session_keepalive_require_page: res.data.settings.session_keepalive_require_page,
           ip_security_enabled:            res.data.settings.ip_security_enabled,
@@ -29,101 +38,114 @@ define ['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
           enable_agent_rememberme:        res.data.settings.enable_agent_rememberme,
           enable_user_rememberme:         res.data.settings.enable_user_rememberme,
           agent_enable_kb_shortcuts:      res.data.settings.agent_enable_kb_shortcuts,
-        }
+        };
 
-        @$scope.rate_limit_settings = res.data.rate_limit_settings
+        this.$scope.rate_limit_settings = res.data.rate_limit_settings;
 
-        @$scope.policy_agent = res.data.settings.agent
-        @$scope.policy_user  = res.data.settings.user
+        this.$scope.policy_agent = res.data.settings.agent;
+        this.$scope.policy_user  = res.data.settings.user;
 
-        @$scope.policy_agent.standard_policy = @$scope.policy_agent.min_length == 5 and
-            !@$scope.policy_agent.max_age and
-            !@$scope.policy_agent.forbid_reuse and
-            !@$scope.policy_agent.require_num_uppercase and
-            !@$scope.policy_agent.require_num_lowercase and
-            !@$scope.policy_agent.require_num_number and
-            !@$scope.policy_agent.require_num_symbol
+        this.$scope.policy_agent.standard_policy = (this.$scope.policy_agent.min_length === 5) &&
+            !this.$scope.policy_agent.max_age &&
+            !this.$scope.policy_agent.forbid_reuse &&
+            !this.$scope.policy_agent.require_num_uppercase &&
+            !this.$scope.policy_agent.require_num_lowercase &&
+            !this.$scope.policy_agent.require_num_number &&
+            !this.$scope.policy_agent.require_num_symbol;
 
-        @$scope.policy_user.standard_policy = @$scope.policy_user.min_length == 5 and
-            !@$scope.policy_user.max_age and
-            !@$scope.policy_user.forbid_reuse and
-            !@$scope.policy_user.require_num_uppercase and
-            !@$scope.policy_user.require_num_lowercase and
-            !@$scope.policy_user.require_num_number and
-            !@$scope.policy_user.require_num_symbol
-      )
+        return this.$scope.policy_user.standard_policy = (this.$scope.policy_user.min_length === 5) &&
+            !this.$scope.policy_user.max_age &&
+            !this.$scope.policy_user.forbid_reuse &&
+            !this.$scope.policy_user.require_num_uppercase &&
+            !this.$scope.policy_user.require_num_lowercase &&
+            !this.$scope.policy_user.require_num_number &&
+            !this.$scope.policy_user.require_num_symbol;
+      });
+    }
 
-    loadRegSettings: ->
-      @Api.sendGet('/registration_settings', {rate_limit_context: 'user'}).then( (res) =>
-        @$scope.settings = res.data.registration_settings
-        @settings = angular.copy(@$scope.settings)
-        @$scope.rate_limit_settings = res.data.rate_limit_settings
-      )
+    loadRegSettings() {
+      return this.Api.sendGet('/registration_settings', {rate_limit_context: 'user'}).then( res => {
+        this.$scope.settings = res.data.registration_settings;
+        this.settings = angular.copy(this.$scope.settings);
+        return this.$scope.rate_limit_settings = res.data.rate_limit_settings;
+      });
+    }
 
-    savePolicySettings: ->
+    savePolicySettings() {
 
-      settings = @$scope.policy_settings
-      settings.agent = Util.clone(@$scope.policy_agent, true)
-      settings.user  = Util.clone(@$scope.policy_user, true)
+      const settings = this.$scope.policy_settings;
+      settings.agent = Util.clone(this.$scope.policy_agent, true);
+      settings.user  = Util.clone(this.$scope.policy_user, true);
 
-      if settings.agent.standard_policy
-        settings.agent.min_length = 5
-        settings.agent.max_age = 0
-        settings.agent.forbid_reuse = false
-        settings.agent.require_num_uppercase = 0
-        settings.agent.require_num_lowercase = 0
-        settings.agent.require_num_number = 0
-        settings.agent.require_num_symbol = 0
-      if settings.user.standard_policy
-        settings.user.min_length = 5
-        settings.user.max_age = 0
-        settings.user.forbid_reuse = false
-        settings.user.require_num_uppercase = 0
-        settings.user.require_num_lowercase = 0
-        settings.user.require_num_number = 0
-        settings.user.require_num_symbol = 0
+      if (settings.agent.standard_policy) {
+        settings.agent.min_length = 5;
+        settings.agent.max_age = 0;
+        settings.agent.forbid_reuse = false;
+        settings.agent.require_num_uppercase = 0;
+        settings.agent.require_num_lowercase = 0;
+        settings.agent.require_num_number = 0;
+        settings.agent.require_num_symbol = 0;
+      }
+      if (settings.user.standard_policy) {
+        settings.user.min_length = 5;
+        settings.user.max_age = 0;
+        settings.user.forbid_reuse = false;
+        settings.user.require_num_uppercase = 0;
+        settings.user.require_num_lowercase = 0;
+        settings.user.require_num_number = 0;
+        settings.user.require_num_symbol = 0;
+      }
 
-      delete settings.agent.standard_policy
-      delete settings.user.standard_policy
+      delete settings.agent.standard_policy;
+      delete settings.user.standard_policy;
 
-      post =
-        settings: settings
-        rate_limit_settings: @$scope.rate_limit_settings
+      const post = {
+        settings,
+        rate_limit_settings: this.$scope.rate_limit_settings,
         rate_limit_context: 'agent'
+      };
 
-      @Api.sendPostJson('/password_settings', post)
+      return this.Api.sendPostJson('/password_settings', post);
+    }
 
-    saveRegSettings: ->
-      postData = {
-        registration_settings: @$scope.settings
-        rate_limit_settings: @$scope.rate_limit_settings
+    saveRegSettings() {
+      const postData = {
+        registration_settings: this.$scope.settings,
+        rate_limit_settings: this.$scope.rate_limit_settings,
         rate_limit_context: 'user'
+      };
+
+      return this.Api.sendPostJson('/registration_settings', postData);
+    }
+
+    doSaveUsersource() {
+      this.usersource.is_enabled = !this.usersource.is_disabled;
+      if (this.usersource.options.reg_enabled) {
+        this.usersource.is_enabled = true;
       }
 
-      @Api.sendPostJson('/registration_settings', postData)
+      const postData = {
+        title: this.usersource.title || 'Deskpro',
+        is_enabled: this.usersource.is_enabled,
+        options: this.usersource.options,
+        brands: this.$scope.usersource_detailsv2.brands,
+        is_all_brands: this.$scope.usersource_detailsv2.is_all_brands
+      };
 
-    doSaveUsersource: ->
-      @usersource.is_enabled = !@usersource.is_disabled;
-      if @usersource.options.reg_enabled
-        @usersource.is_enabled = true
+      const p = this.Api2.sendPostJson(`/user_sources/${this.usersourceType}`, postData).then(
+        () => {
+          this.listCtrl().refresh();
+          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
+        },
+        res => {
+          const msg = this.getRegisteredMessage(res.data.error_code) || res.data.error_message || '';
+          return this.Growl.error(msg);
+      });
 
-      postData = {
-        title: @usersource.title || 'Deskpro',
-        is_enabled: @usersource.is_enabled
-        options: @usersource.options
-        brands: @$scope.usersource_detailsv2.brands
-        is_all_brands: @$scope.usersource_detailsv2.is_all_brands
-      }
+      return this.$q.all([p, this.savePolicySettings(), this.saveRegSettings()]);
+    }
+  }
+  Admin_Usersources_Ctrl_AddDeskproInstance.initClass();
 
-      p = @Api2.sendPostJson('/user_sources/' + @usersourceType, postData).then(
-        =>
-          @listCtrl().refresh()
-          @Growl.success @getRegisteredMessage 'saved_settings'
-        (res) =>
-          msg = @getRegisteredMessage(res.data.error_code) || res.data.error_message || ''
-          @Growl.error msg
-      )
-
-      @$q.all([p, @savePolicySettings(), @saveRegSettings()])
-
-  Admin_Usersources_Ctrl_AddDeskproInstance.EXPORT_CTRL()
+  return Admin_Usersources_Ctrl_AddDeskproInstance.EXPORT_CTRL();
+});

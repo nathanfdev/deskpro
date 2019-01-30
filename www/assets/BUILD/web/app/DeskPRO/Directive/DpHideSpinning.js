@@ -1,34 +1,41 @@
-define ->
-  ###
-    # Description
-    # -----------
-    #
-    # Check out dp-show-spinning, this is the opposite.
-  ###
-  DeskPRO_Directive_DpHideSpinning = [ ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  /*
+    * Description
+    * -----------
+    *
+    * Check out dp-show-spinning, this is the opposite.
+  */
+  const DeskPRO_Directive_DpHideSpinning = [ () =>
+    ({
       restrict: 'A',
-      link: (scope, element, attrs) ->
-        id = attrs['dpHideSpinning']
-        scopeName = 'dp_spin_els.' + id
+      link(scope, element, attrs) {
+        const id = attrs['dpHideSpinning'];
+        const scopeName = `dp_spin_els.${id}`;
 
-        update = ->
-          if not scope.dp_spin_els?[id]
-            element.show()
-          else if scope.dp_spin_els[id].doneTime and scope.dp_spin_els[id].doneSpin
-            element.show()
-          else
-            element.hide()
+        const update = function() {
+          if (!(scope.dp_spin_els != null ? scope.dp_spin_els[id] : undefined)) {
+            return element.show();
+          } else if (scope.dp_spin_els[id].doneTime && scope.dp_spin_els[id].doneSpin) {
+            return element.show();
+          } else {
+            return element.hide();
+          }
+        };
 
-        update()
+        update();
 
-        scope.$watch(scopeName+'.doneSpin', ->
-          update()
-        )
-        scope.$watch(scopeName+'.doneTime', ->
-          update()
-        )
-    }
-  ]
+        scope.$watch(scopeName+'.doneSpin', () => update());
+        return scope.$watch(scopeName+'.doneTime', () => update());
+      }
+    })
+  
+  ];
 
-  return DeskPRO_Directive_DpHideSpinning
+  return DeskPRO_Directive_DpHideSpinning;
+});

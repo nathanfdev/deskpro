@@ -1,22 +1,35 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo extends Admin_Ctrl_Base
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo extends Admin_Ctrl_Base {
+    static initClass() {
+  
+      this.CTRL_ID   = 'Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo';
+      this.CTRL_AS   = 'ServerMysqlInfo';
+      this.DEPS      = [];
+    }
 
-    @CTRL_ID   = 'Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo'
-    @CTRL_AS   = 'ServerMysqlInfo'
-    @DEPS      = []
-
-    init: ->
-      @$scope.is_loading_schemadiff = true
+    init() {
+      return this.$scope.is_loading_schemadiff = true;
+    }
 
 
-    initialLoad: ->
-      @Api.sendGet('/server_mysql_info/schema-diff').then( (res) =>
-        @$scope.schema_diff = res.data.mysql_schema_diff
-        @$scope.is_loading_schemadiff = false
-      )
+    initialLoad() {
+      this.Api.sendGet('/server_mysql_info/schema-diff').then( res => {
+        this.$scope.schema_diff = res.data.mysql_schema_diff;
+        return this.$scope.is_loading_schemadiff = false;
+      });
 
-      return @Api.sendGet('/server_mysql_info').then( (res) =>
-        @$scope.server_mysql_info = res.data.server_mysql_info
-      )
+      return this.Api.sendGet('/server_mysql_info').then( res => {
+        return this.$scope.server_mysql_info = res.data.server_mysql_info;
+      });
+    }
+  }
+  Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo.initClass();
 
-  Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo.EXPORT_CTRL()
+  return Admin_ServerMysqlInfo_Ctrl_ServerMysqlInfo.EXPORT_CTRL();
+});

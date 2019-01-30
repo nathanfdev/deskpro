@@ -1,31 +1,48 @@
-define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
-  class Admin_Templates_Ctrl_TemplateGroupList extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Templates_Ctrl_TemplateGroupList'
-    @CTRL_AS   = 'ListCtrl'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
+  class Admin_Templates_Ctrl_TemplateGroupList extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Templates_Ctrl_TemplateGroupList';
+      this.CTRL_AS   = 'ListCtrl';
+      this.DEPS      = [];
+    }
 
-    init: ->
+    init() {}
 
 
-    initialLoad: ->
-      promise = @Api.sendDataGet({
+    initialLoad() {
+      let promise;
+      return promise = this.Api.sendDataGet({
         info: '/templates-info'
-      }).then( (res) =>
-        @groups = []
+      }).then( res => {
+        let title;
+        this.groups = [];
 
-        for own groupName, tplList of res.data.info.list.UserBundle
-          title = groupName
-          if title == 'TOP' then title = 'Layout'
+        for (let groupName of Object.keys(res.data.info.list.UserBundle || {})) {
+          const tplList = res.data.info.list.UserBundle[groupName];
+          title = groupName;
+          if (title === 'TOP') { title = 'Layout'; }
 
-          @groups.push({
-            id: "UserBundle:#{groupName}"
-            title: title
-          })
+          this.groups.push({
+            id: `UserBundle:${groupName}`,
+            title
+          });
+        }
 
-        @groups.push({
-          id: "DeskPRO:custom_fields"
+        return this.groups.push({
+          id: "DeskPRO:custom_fields",
           title: 'CustomFields'
-        })
-      )
+        });
+      });
+    }
+  }
+  Admin_Templates_Ctrl_TemplateGroupList.initClass();
 
-  Admin_Templates_Ctrl_TemplateGroupList.EXPORT_CTRL()
+  return Admin_Templates_Ctrl_TemplateGroupList.EXPORT_CTRL();
+});

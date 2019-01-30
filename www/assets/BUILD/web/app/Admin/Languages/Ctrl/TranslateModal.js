@@ -1,118 +1,151 @@
-define ['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) ->
-  class Admin_Languages_Ctrl_TranslateModal extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Languages_Ctrl_TranslateModal'
-    @CTRL_AS   = 'TranslateModal'
-    @DEPS      = ['$timeout', '$modalInstance', 'phraseId', 'editorOptions']
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
+  class Admin_Languages_Ctrl_TranslateModal extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Languages_Ctrl_TranslateModal';
+      this.CTRL_AS   = 'TranslateModal';
+      this.DEPS      = ['$timeout', '$modalInstance', 'phraseId', 'editorOptions'];
+    }
 
-    init: ->
-      @phrase_map = {}
-      @active_lang = null
-      @active_trans = null
-      @hasPendingPromise = false
-      @options = @editorOptions
+    init() {
+      this.phrase_map = {};
+      this.active_lang = null;
+      this.active_trans = null;
+      this.hasPendingPromise = false;
+      this.options = this.editorOptions;
 
-      @$scope.dismiss = =>
-        @$modalInstance.dismiss('cancel')
+      this.$scope.dismiss = () => {
+        return this.$modalInstance.dismiss('cancel');
+      };
 
-      @$scope.save = =>
-        if @active_lang
-          @phrase_map[@active_lang] = @active_trans
+      this.$scope.save = () => {
+        if (this.active_lang) {
+          this.phrase_map[this.active_lang] = this.active_trans;
+        }
 
-        @savePhrases().then(=>
-          @$modalInstance.close()
-        )
+        return this.savePhrases().then(() => {
+          return this.$modalInstance.close();
+        });
+      };
 
-      @$scope.$watch(=>
-        return @active_lang
-      , (newLangId, oldLangId) =>
-        if not oldLangId then return
+      this.$scope.$watch(() => {
+        return this.active_lang;
+      }
+      , (newLangId, oldLangId) => {
+        if (!oldLangId) { return; }
 
-        @phrase_map[oldLangId] = @active_trans
+        this.phrase_map[oldLangId] = this.active_trans;
 
-        if @phrase_map[newLangId]
-          @active_trans = @phrase_map[newLangId]
-        else
-          @active_trans = ''
-      )
+        if (this.phrase_map[newLangId]) {
+          return this.active_trans = this.phrase_map[newLangId];
+        } else {
+          return this.active_trans = '';
+        }
+      });
 
-      @$scope.$watch(=>
-        return @active_trans
-      , =>
-        if not @active_lang then return
-        @phrase_map[@active_lang] = @active_trans
-      )
+      return this.$scope.$watch(() => {
+        return this.active_trans;
+      }
+      , () => {
+        if (!this.active_lang) { return; }
+        return this.phrase_map[this.active_lang] = this.active_trans;
+      });
+    }
 
-    initialLoad: ->
-      p = @Api.sendDataGet({
+    initialLoad() {
+      const p = this.Api.sendDataGet({
         langs: '/langs',
-        lang_phrases: '/langs/phrases/' + @phraseId
-      }).success( (data) =>
-        @ctrl_is_loading = false
-        if @options.exclude_own or @options.exclude_default
-          @langs = []
-          for l in data.langs.languages
-            if @options.exclude_own and DP_PERSON_LANG_ID == l.id
-              continue
-            if @options.exclude_default and l.id == data.langs.default_lang_id
+        lang_phrases: `/langs/phrases/${this.phraseId}`
+      }).success( data => {
+        this.ctrl_is_loading = false;
+        if (this.options.exclude_own || this.options.exclude_default) {
+          this.langs = [];
+          for (let l of Array.from(data.langs.languages)) {
+            if (this.options.exclude_own && (DP_PERSON_LANG_ID === l.id)) {
               continue;
+            }
+            if (this.options.exclude_default && (l.id === data.langs.default_lang_id)) {
+              continue;
+            }
 
-            @langs.push(l)
-        else
-          @langs = data.langs.languages
+            this.langs.push(l);
+          }
+        } else {
+          this.langs = data.langs.languages;
+        }
 
-        first = null
-        for phrase in data.lang_phrases.lang_phrases
-          if not first then first = phrase
-          lang_id = phrase.language.id
-          @phrase_map[lang_id] = phrase.phrase
+        let first = null;
+        for (let phrase of Array.from(data.lang_phrases.lang_phrases)) {
+          if (!first) { first = phrase; }
+          const lang_id = phrase.language.id;
+          this.phrase_map[lang_id] = phrase.phrase;
+        }
 
-        if first
-          @active_lang  = first.language.id
-          @active_trans = first.phrase
-        else
-          @active_lang = @langs[0].id
-          @active_trans = null
-      )
+        if (first) {
+          this.active_lang  = first.language.id;
+          return this.active_trans = first.phrase;
+        } else {
+          this.active_lang = this.langs[0].id;
+          return this.active_trans = null;
+        }
+      });
 
-      return p
+      return p;
+    }
 
-    savePhrases: ->
-      phrase_map = angular.copy(@phrase_map)
-      phrase_id = @phraseId
+    savePhrases() {
+      let p, ret;
+      const phrase_map = angular.copy(this.phrase_map);
+      const phrase_id = this.phraseId;
 
-      api = @Api
-      saveInfo = {
-        phrase_id: phrase_id,
-        phrase_map: phrase_map,
-        saver: (phrase_id, phrase_map) ->
-          postData = {'lang_phrases': []}
+      const api = this.Api;
+      const saveInfo = {
+        phrase_id,
+        phrase_map,
+        saver(phrase_id, phrase_map) {
+          const postData = {'lang_phrases': []};
 
-          for own k, v of phrase_map
+          for (let k of Object.keys(phrase_map || {})) {
+            const v = phrase_map[k];
             postData.lang_phrases.push({
               phrase: v || '',
               language_id: k
-            })
+            });
+          }
 
-          return api.sendPostJson('/langs/phrases/' + phrase_id, postData)
+          return api.sendPostJson(`/langs/phrases/${phrase_id}`, postData);
+        }
+      };
+
+      saveInfo.save = () => saveInfo.saver(saveInfo.phrase_id, saveInfo.phrase_map);
+
+      if (this.editorOptions.saveHandler) {
+        ret = this.editorOptions.saveHandler(saveInfo.phrase_id, saveInfo.phrase_map, saveInfo.saver);
+      } else {
+        ret = saveInfo.save();
       }
 
-      saveInfo.save = ->
-        saveInfo.saver(saveInfo.phrase_id, saveInfo.phrase_map)
+      if (ret.then) {
+        p = ret;
+        this.$scope.is_loading = true;
+        ret.then(() => { return this.$scope.is_loading = false; });
+      } else {
+        const defer = this.$q.defer();
+        defer.resolve();
+        p = defer.promise;
+      }
 
-      if @editorOptions.saveHandler
-        ret = @editorOptions.saveHandler(saveInfo.phrase_id, saveInfo.phrase_map, saveInfo.saver)
-      else
-        ret = saveInfo.save()
+      return p;
+    }
+  }
+  Admin_Languages_Ctrl_TranslateModal.initClass();
 
-      if ret.then
-        p = ret
-        @$scope.is_loading = true
-        ret.then(=> @$scope.is_loading = false)
-      else
-        defer = @$q.defer()
-        defer.resolve()
-        p = defer.promise
-
-      return p
-
-  Admin_Languages_Ctrl_TranslateModal.EXPORT_CTRL()
+  return Admin_Languages_Ctrl_TranslateModal.EXPORT_CTRL();
+});

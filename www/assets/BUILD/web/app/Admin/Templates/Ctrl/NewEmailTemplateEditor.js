@@ -1,67 +1,98 @@
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strings) ->
-  class Admin_Templates_Ctrl_NewEmailTemplateEditor extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Templates_Ctrl_NewEmailTemplateEditor'
-    @CTRL_AS   = 'NewEmailTemplateEditor'
-    @DEPS      = ['$modalInstance', 'templateName', 'dpTemplateManager', 'dpObTypesDefTicketActions', 'dpObTypesDefTicketCriteria']
+/*
+ * decaffeinate suggestions:
+ * DS001: Remove Babel/TypeScript constructor workaround
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
+  class Admin_Templates_Ctrl_NewEmailTemplateEditor extends Admin_Ctrl_Base {
+    constructor(...args) {
+      {
+        // Hack: trick Babel/TypeScript into allowing this before super.
+        if (false) { super(); }
+        let thisFn = (() => { return this; }).toString();
+        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        eval(`${thisName} = this;`);
+      }
+      this.mountReactComponent = this.mountReactComponent.bind(this);
+      this.onSave = this.onSave.bind(this);
+      super(...args);
+    }
 
-    init: ->
-      @$scope.display_title = @templateName
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Templates_Ctrl_NewEmailTemplateEditor';
+      this.CTRL_AS   = 'NewEmailTemplateEditor';
+      this.DEPS      = ['$modalInstance', 'templateName', 'dpTemplateManager', 'dpObTypesDefTicketActions', 'dpObTypesDefTicketCriteria'];
+    }
 
-      @$scope.is_new_email = @templateName == null
+    init() {
+      this.$scope.display_title = this.templateName;
 
-      @$scope.dismiss = =>
-        @$modalInstance.dismiss('cancel')
+      this.$scope.is_new_email = this.templateName === null;
 
-      @mountReactComponent()
+      this.$scope.dismiss = () => {
+        return this.$modalInstance.dismiss('cancel');
+      };
 
-    mountReactComponent: =>
-      element = document.getElementById('new-email-template-editor')
+      return this.mountReactComponent();
+    }
+
+    mountReactComponent() {
+      const element = document.getElementById('new-email-template-editor');
 
 
-      if (element == null)
-        setTimeout @mountReactComponent, 1
-        return
-
-      modal = document.getElementById('new-email-template-editor-modal')
-
-      modal.parentNode.parentNode.style.width = document.body.clientWidth * 0.9 + "px"
-      modal.parentNode.parentNode.parentNode.style.zIndex = 10;
-
-      backdrop = document.getElementsByClassName('modal-backdrop')[0]
-      backdrop.style.zIndex = 10
-      element.style.height = (document.body.clientHeight * 0.9 - 51) + "px"
-
-      reactProps = {
-        routePath:   'emails/templates_editor/' + @templateName,
-        template:    @templateName,
-        newTemplate: @templateName == null
-        onSave:      @onSave
+      if (element === null) {
+        setTimeout(this.mountReactComponent, 1);
+        return;
       }
 
-      window.AdminBundle.render(reactProps, element)
+      const modal = document.getElementById('new-email-template-editor-modal');
 
-      @$scope.$on('$destroy', ->
-        window.AdminBundle.unmount(element);
-      )
+      modal.parentNode.parentNode.style.width = (document.body.clientWidth * 0.9) + "px";
+      modal.parentNode.parentNode.parentNode.style.zIndex = 10;
 
-    onSave: (name) =>
-      if (@$scope.is_new_email)
-        tpl = {
-          name: name,
+      const backdrop = document.getElementsByClassName('modal-backdrop')[0];
+      backdrop.style.zIndex = 10;
+      element.style.height = ((document.body.clientHeight * 0.9) - 51) + "px";
+
+      const reactProps = {
+        routePath:   `emails/templates_editor/${this.templateName}`,
+        template:    this.templateName,
+        newTemplate: this.templateName === null,
+        onSave:      this.onSave
+      };
+
+      window.AdminBundle.render(reactProps, element);
+
+      return this.$scope.$on('$destroy', () => window.AdminBundle.unmount(element));
+    }
+
+    onSave(name) {
+      if (this.$scope.is_new_email) {
+        const tpl = {
+          name,
           title: name.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+        };
+        if (this.dpObTypesDefTicketActions.options_data) {
+          this.dpObTypesDefTicketActions.options_data.custom_email_tpls.push(tpl);
         }
-        if @dpObTypesDefTicketActions.options_data
-          @dpObTypesDefTicketActions.options_data.custom_email_tpls.push(tpl)
-        if @dpObTypesDefTicketCriteria.options_data
-          @dpObTypesDefTicketCriteria.options_data.custom_email_tpls.push(tpl)
+        if (this.dpObTypesDefTicketCriteria.options_data) {
+          this.dpObTypesDefTicketCriteria.options_data.custom_email_tpls.push(tpl);
+        }
 
-        @$modalInstance.close({
+        return this.$modalInstance.close({
           templateName: name,
-          isNewEmail:   @$scope.is_new_email,
+          isNewEmail:   this.$scope.is_new_email,
           mode:         'custom'
-        })
-      else
-        @$scope.dismiss()
+        });
+      } else {
+        return this.$scope.dismiss();
+      }
+    }
+  }
+  Admin_Templates_Ctrl_NewEmailTemplateEditor.initClass();
 
 
-  Admin_Templates_Ctrl_NewEmailTemplateEditor.EXPORT_CTRL()
+  return Admin_Templates_Ctrl_NewEmailTemplateEditor.EXPORT_CTRL();
+});

@@ -1,97 +1,127 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/Util'
-], (
+], function(
   Admin_Ctrl_Base,
   Util
-) ->
-  class Admin_TicketWebhooks_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_TicketWebhooks_Ctrl_Edit'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['dpObTypesDefTicketFilter', '$stateParams', 'Api2']
+) {
+  class Admin_TicketWebhooks_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketWebhooks_Ctrl_Edit';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['dpObTypesDefTicketFilter', '$stateParams', 'Api2'];
+    }
 
-    init: ->
-      @webhook     = null
-      @webhookId   = parseInt(@$stateParams.id || 0)
+    init() {
+      this.webhook     = null;
+      this.webhookId   = parseInt(this.$stateParams.id || 0);
 
-      @form = {}
-      @filter_criteria = {}
-      @criteriaTypeDef = @dpObTypesDefTicketFilter
-      @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
-      @webhookUrl = null
+      this.form = {};
+      this.filter_criteria = {};
+      this.criteriaTypeDef = this.dpObTypesDefTicketFilter;
+      this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
+      this.webhookUrl = null;
 
-      return
+    }
 
-    ###
-    # Load the trigger
-    ###
-    initialLoad: ->
-      promise = Promise.resolve()
-      if @webhookId
-        promise = @Api2.sendGet("/webhooks/tickets/#{@webhookId}").then(
-          (result) =>
-            @webhook = result.data.data
-            @webhookUrl = @Api2.buildEndpointAPIUrl("webhooks/#{@webhook.auth_id}/invocation")
+    /*
+     * Load the trigger
+     */
+    initialLoad() {
+      let promise = Promise.resolve();
+      if (this.webhookId) {
+        promise = this.Api2.sendGet(`/webhooks/tickets/${this.webhookId}`).then(
+          result => {
+            this.webhook = result.data.data;
+            this.webhookUrl = this.Api2.buildEndpointAPIUrl(`webhooks/${this.webhook.auth_id}/invocation`);
 
-            @form = @getFormFromModel(result.data.data)
-            @filter_criteria = {}
-            if @webhook.search_terms?.length
-              for term in @webhook.search_terms
-                rowId = Util.uid('term')
-                @filter_criteria[rowId] = term
-        )
-
-      promise2 = @criteriaTypeDef.loadDataOptions().then(=>
-        @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
-      )
-      promises = [promise, promise2]
-      return @$q.all(promises)
-
-    copyWebhookUrl: () ->
-      ev.preventDefault();
-
-    getFormFromModel: (model) ->
-      form = {}
-      form.title = model.title || ''
-      form.payload_decoder = model.payload_decoder || ''
-
-      form.terms_set = {}
-      if model.search_terms?.length
-        setId = _.uniqueId('termset')
-        form.terms_set[setId] = {}
-
-        for term in model.search_terms
-          rowId = _.uniqueId('term')
-          form.terms_set[setId][rowId] = term
-
-      return form
-
-    saveForm: ->
-      if not @$scope.form_props.$valid then return
-
-      data = {
-        title: @form.title,
-        search_terms: Object.keys(@filter_criteria).map (key) => @filter_criteria[key]
+            this.form = this.getFormFromModel(result.data.data);
+            this.filter_criteria = {};
+            if (this.webhook.search_terms != null ? this.webhook.search_terms.length : undefined) {
+              return (() => {
+                const result1 = [];
+                for (let term of Array.from(this.webhook.search_terms)) {
+                  const rowId = Util.uid('term');
+                  result1.push(this.filter_criteria[rowId] = term);
+                }
+                return result1;
+              })();
+            }
+        });
       }
 
-      if @form.payload_decoder?.length
-        data.payload_decoder = @form.payload_decoder
+      const promise2 = this.criteriaTypeDef.loadDataOptions().then(() => {
+        return this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
+      });
+      const promises = [promise, promise2];
+      return this.$q.all(promises);
+    }
 
-      p = null
-      if @webhookId
-        p = @Api2.sendPutJson("/webhooks/tickets/#{@webhookId}", data)
-      else
-        p = @Api2.sendPostJson("/webhooks/tickets", data)
+    copyWebhookUrl() {
+      return ev.preventDefault();
+    }
 
-        p.then((res) =>
-          if not @webhookId
-            @webhook = res.data.data
-            @webhookId = @webhook.id
-          @$scope.$parent.List.onWebhookAdded(@webhook)
-          @Growl.success(@getRegisteredMessage('saved_filter'))
-        ).catch((res) =>
-          @Growl.error res.data?.error_message if res.data?.error_message
-        )
+    getFormFromModel(model) {
+      const form = {};
+      form.title = model.title || '';
+      form.payload_decoder = model.payload_decoder || '';
+
+      form.terms_set = {};
+      if (model.search_terms != null ? model.search_terms.length : undefined) {
+        const setId = _.uniqueId('termset');
+        form.terms_set[setId] = {};
+
+        for (let term of Array.from(model.search_terms)) {
+          const rowId = _.uniqueId('term');
+          form.terms_set[setId][rowId] = term;
+        }
+      }
+
+      return form;
+    }
+
+    saveForm() {
+      if (!this.$scope.form_props.$valid) { return; }
+
+      const data = {
+        title: this.form.title,
+        search_terms: Object.keys(this.filter_criteria).map(key => this.filter_criteria[key])
+      };
+
+      if (this.form.payload_decoder != null ? this.form.payload_decoder.length : undefined) {
+        data.payload_decoder = this.form.payload_decoder;
+      }
+
+      let p = null;
+      if (this.webhookId) {
+        return p = this.Api2.sendPutJson(`/webhooks/tickets/${this.webhookId}`, data);
+      } else {
+        p = this.Api2.sendPostJson("/webhooks/tickets", data);
+
+        return p.then(res => {
+          if (!this.webhookId) {
+            this.webhook = res.data.data;
+            this.webhookId = this.webhook.id;
+          }
+          this.$scope.$parent.List.onWebhookAdded(this.webhook);
+          return this.Growl.success(this.getRegisteredMessage('saved_filter'));
+        }).catch(res => {
+          if (res.data != null ? res.data.error_message : undefined) { return this.Growl.error(res.data != null ? res.data.error_message : undefined); }
+        });
+      }
+    }
+  }
+  Admin_TicketWebhooks_Ctrl_Edit.initClass();
 
 
-  Admin_TicketWebhooks_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_TicketWebhooks_Ctrl_Edit.EXPORT_CTRL();
+});

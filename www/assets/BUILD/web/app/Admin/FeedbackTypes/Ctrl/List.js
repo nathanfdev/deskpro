@@ -1,125 +1,148 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_FeedbackTypes_Ctrl_List extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_FeedbackTypes_Ctrl_List'
-    @CTRL_AS = 'FeedbackTypesList'
-    @DEPS    = ['$rootScope', '$scope', 'FeedbackTypesData', 'em', 'Api', '$state', 'Growl']
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_FeedbackTypes_Ctrl_List extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_FeedbackTypes_Ctrl_List';
+      this.CTRL_AS = 'FeedbackTypesList';
+      this.DEPS    = ['$rootScope', '$scope', 'FeedbackTypesData', 'em', 'Api', '$state', 'Growl'];
+    }
 
-    init: ->
+    init() {
 
-      @$scope.brand_id = @$stateParams.brandId
-      @feedback_types = [];
-      @brands = [];
+      this.$scope.brand_id = this.$stateParams.brandId;
+      this.feedback_types = [];
+      this.brands = [];
 
-      @sortedListOptions = {
+      return this.sortedListOptions = {
 
         axis: 'y',
         handle: '.drag-handle',
-        update: (ev, data) =>
-          $list = data.item.closest('ul')
+        update: (ev, data) => {
+          const $list = data.item.closest('ul');
 
-          postData = {display_orders: []}
+          const postData = {display_orders: []};
 
-          x = 0
-          em = @em
+          let x = 0;
+          const { em } = this;
 
-          $list.find('li').each(->
+          $list.find('li').each(function() {
 
-            x += 10
-            feedback_type_id = parseInt($(this).data('id'))
+            x += 10;
+            const feedback_type_id = parseInt($(this).data('id'));
 
-            if feedback_type_id
+            if (feedback_type_id) {
 
-              feedback_type = em.getById('feedback_type', feedback_type_id)
+              const feedback_type = em.getById('feedback_type', feedback_type_id);
 
-              if feedback_type
-                feedback_type.display_order = x
+              if (feedback_type) {
+                feedback_type.display_order = x;
+              }
+            }
 
-            postData.display_orders.push(feedback_type_id)
-          )
+            return postData.display_orders.push(feedback_type_id);
+          });
 
-          promise = @Api.sendPostJson('/feedback_types/display_order', postData)
-          @pingElement('display_orders')
+          const promise = this.Api.sendPostJson('/feedback_types/display_order', postData);
+          return this.pingElement('display_orders');
+        }
+      };
+    }
+
+    sort(values) {
+      return (values || []).sort((a, b) => {
+        const orderA = parseInt(a.display_order);
+        const orderB = parseInt(b.display_order);
+        if (orderA < orderB) { return -1; }
+        if (orderA > orderB) { return 1; }
+        return 0;
+      });
+    }
+
+    initialLoad() {
+
+      const promises = [];
+      promises.push(this.FeedbackTypesData.loadList().then( recs => {
+
+        this.feedback_types = this.sort(recs.values());
+
+        return this.addManagedListener(this.FeedbackTypesData.recs, 'changed', () => {
+
+          this.feedback_types = this.sort(this.FeedbackTypesData.recs.values());
+          return this.ngApply();
+        });
+      })
+      );
+
+      return this.$q.all(promises);
+    }
+
+    /*
+  * Show the delete dlg
+  */
+
+    startDelete(feedback_type) {
+
+      const move_feedback_types_list = this.FeedbackTypesData.getListOfMovables(feedback_type);
+
+      if (!move_feedback_types_list.length) {
+        this.showAlert('@no_delete_last');
+        return;
       }
 
-    sort: (values) ->
-      (values || []).sort (a, b) =>
-        orderA = parseInt(a.display_order)
-        orderB = parseInt(b.display_order)
-        return -1 if orderA < orderB
-        return 1 if orderA > orderB
-        return 0
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('FeedbackTypes/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', 'move_feedback_types_list', function($scope, $modalInstance, move_feedback_types_list) {
 
-    initialLoad: ->
-
-      promises = []
-      promises.push @FeedbackTypesData.loadList().then( (recs) =>
-
-        @feedback_types = @sort recs.values()
-
-        @addManagedListener(@FeedbackTypesData.recs, 'changed', =>
-
-          @feedback_types = @sort @FeedbackTypesData.recs.values()
-          @ngApply()
-        )
-      )
-
-      return @$q.all(promises)
-
-    ###
-  # Show the delete dlg
-  ###
-
-    startDelete: (feedback_type) ->
-
-      move_feedback_types_list = @FeedbackTypesData.getListOfMovables(feedback_type)
-
-      if not move_feedback_types_list.length
-        @showAlert('@no_delete_last');
-        return
-
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('FeedbackTypes/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', 'move_feedback_types_list', ($scope, $modalInstance, move_feedback_types_list) ->
-
-          $scope.move_feedback_types_list = move_feedback_types_list
+          $scope.move_feedback_types_list = move_feedback_types_list;
           $scope.selected = {
             move_to_id: move_feedback_types_list[0].id
-          }
+          };
 
-          $scope.confirm = ->
-            $modalInstance.close($scope.selected.move_to_id);
+          $scope.confirm = () => $modalInstance.close($scope.selected.move_to_id);
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss();
+          return $scope.dismiss = () => $modalInstance.dismiss();
+        }
         ],
         resolve: {
-          move_feedback_types_list: =>
-            return move_feedback_types_list
+          move_feedback_types_list: () => {
+            return move_feedback_types_list;
+          }
         }
       });
 
-      inst.result.then( (move_to) =>
-        @deleteFeedbackType(feedback_type, move_to)
-      )
+      return inst.result.then( move_to => {
+        return this.deleteFeedbackType(feedback_type, move_to);
+      });
+    }
 
-    ###
-    # Actually do the delete
-  # @param feedback_type - feedback type we want to delete
-  # @param move_to - to what type feedback should be moved
-    ###
+    /*
+    * Actually do the delete
+  * @param feedback_type - feedback type we want to delete
+  * @param move_to - to what type feedback should be moved
+    */
 
-    deleteFeedbackType: (feedback_type, move_to) ->
+    deleteFeedbackType(feedback_type, move_to) {
 
-      @Api.sendDelete('/feedback_types/' + feedback_type.id, {
-        move_to: move_to
-      }).success( =>
+      return this.Api.sendDelete(`/feedback_types/${feedback_type.id}`, {
+        move_to
+      }).success( () => {
 
-        @FeedbackTypesData.remove(feedback_type.id)
-        @ngApply()
+        this.FeedbackTypesData.remove(feedback_type.id);
+        this.ngApply();
 
-        # if currently viewing the deleted feedback type, then should need to switch state
-        if @$state.current.name == 'portal.feedback_types.edit' and parseInt(@$state.params.id) == feedback_type.id
-          @$state.go('portal.feedback_types')
-      )
+        // if currently viewing the deleted feedback type, then should need to switch state
+        if ((this.$state.current.name === 'portal.feedback_types.edit') && (parseInt(this.$state.params.id) === feedback_type.id)) {
+          return this.$state.go('portal.feedback_types');
+        }
+      });
+    }
+  }
+  Admin_FeedbackTypes_Ctrl_List.initClass();
 
-  Admin_FeedbackTypes_Ctrl_List.EXPORT_CTRL()
+  return Admin_FeedbackTypes_Ctrl_List.EXPORT_CTRL();
+});

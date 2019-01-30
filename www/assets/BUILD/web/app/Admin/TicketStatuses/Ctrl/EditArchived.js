@@ -1,16 +1,25 @@
-define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_TicketStatuses_Ctrl_EditArchived extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditArchived'
-    @CTRL_AS = 'TicketStatusEdit'
-    @DEPS = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+  class Admin_TicketStatuses_Ctrl_EditArchived extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditArchived';
+      this.CTRL_AS = 'TicketStatusEdit';
+      this.DEPS = [];
+    }
 
-    init: ->
-      @$scope.getCount = => @$scope.$parent.TicketStatusesList?.getStatusCount('archived')
-      @$scope.settings = {
+    init() {
+      this.$scope.getCount = () => (this.$scope.$parent.TicketStatusesList != null ? this.$scope.$parent.TicketStatusesList.getStatusCount('archived') : undefined);
+      this.$scope.settings = {
         enabled: false,
         auto_archive_time: 2419200
-      }
-      @$scope.times = [
+      };
+      this.$scope.times = [
         {id: 86400, label: "1 day"},
         {id: 259200, label: "3 days"},
         {id: 432000, label: "5 days"},
@@ -24,31 +33,38 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         {id: 23328000, label: "9 months"},
         {id: 31536000, label: "1 year"},
         {id: 63072000, label: "2 years"}
-      ]
-      return
+      ];
+    }
 
-    initialLoad: ->
-      promise = @Api.sendGet("/ticket_statuses/archived").success( (data) =>
-        @$scope.settings.enabled = data.archived_info.enabled
-        @$scope.settings.auto_archive_time = parseInt(data.archived_info.auto_archive_time)
-      );
+    initialLoad() {
+      const promise = this.Api.sendGet("/ticket_statuses/archived").success( data => {
+        this.$scope.settings.enabled = data.archived_info.enabled;
+        return this.$scope.settings.auto_archive_time = parseInt(data.archived_info.auto_archive_time);
+      });
 
-      return promise
+      return promise;
+    }
 
-    saveSettings: ->
-      @startSpinner('saving_settings')
-      promise = @Api.sendPostJson('/ticket_statuses/archived/settings', @$scope.settings).then( =>
-        @stopSpinner('saving_settings')
-      )
-      return promise
+    saveSettings() {
+      this.startSpinner('saving_settings');
+      const promise = this.Api.sendPostJson('/ticket_statuses/archived/settings', this.$scope.settings).then( () => {
+        return this.stopSpinner('saving_settings');
+      });
+      return promise;
+    }
 
-    resetSearchTables: ->
-      @startSpinner('is_resetting')
-      @Api.sendPost('/ticket_statuses/archived/reset-search-tables').then(=>
-        @$scope.reset_done = true
-        @stopSpinner('is_resetting')
-      , =>
-        @stopSpinner('is_resetting')
-      )
+    resetSearchTables() {
+      this.startSpinner('is_resetting');
+      return this.Api.sendPost('/ticket_statuses/archived/reset-search-tables').then(() => {
+        this.$scope.reset_done = true;
+        return this.stopSpinner('is_resetting');
+      }
+      , () => {
+        return this.stopSpinner('is_resetting');
+      });
+    }
+  }
+  Admin_TicketStatuses_Ctrl_EditArchived.initClass();
 
-  Admin_TicketStatuses_Ctrl_EditArchived.EXPORT_CTRL()
+  return Admin_TicketStatuses_Ctrl_EditArchived.EXPORT_CTRL();
+});

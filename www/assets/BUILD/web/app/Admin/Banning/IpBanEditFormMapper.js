@@ -1,40 +1,51 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Util/Util'
-], (
+], function(
   Util
-) ->
-  class IpBanEditFormMapper
+) {
+  let IpBanEditFormMapper;
+  return (IpBanEditFormMapper = class IpBanEditFormMapper {
 
-    ###
-      #
-    #
-    ###
+    /*
+      *
+    *
+    */
 
-    getFormFromModel: (model) ->
+    getFormFromModel(model) {
 
-      form = {}
+      const form = {};
 
-      form.banned_ip = model.ip_ban.banned_ip
+      form.banned_ip = model.ip_ban.banned_ip;
 
-      return form
+      return form;
+    }
 
-    ###
-      #
-      #
-    ###
+    /*
+      *
+      *
+    */
 
-    applyFormToModel: (model, formModel) ->
-      formModel = model
+    applyFormToModel(model, formModel) {
+      return formModel = model;
+    }
 
-    ###
-      #
-      #
-    ###
+    /*
+      *
+      *
+    */
 
-    getPostDataFromForm: (formModel) ->
+    getPostDataFromForm(formModel) {
 
-      postData = {}
+      const postData = {};
 
-      postData.banned_ip = formModel.banned_ip
+      postData.banned_ip = formModel.banned_ip;
 
-      return postData
+      return postData;
+    }
+  });
+});

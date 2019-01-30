@@ -1,81 +1,101 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base'
-], (
+], function(
   Admin_Ctrl_Base
-) ->
-  class Admin_TicketMacros_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_TicketMacros_Ctrl_Edit'
-    @CTRL_AS   = 'EditCtrl'
-    @DEPS      = ['dpObTypesDefTicketActions', '$stateParams']
+) {
+  class Admin_TicketMacros_Ctrl_Edit extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_TicketMacros_Ctrl_Edit';
+      this.CTRL_AS   = 'EditCtrl';
+      this.DEPS      = ['dpObTypesDefTicketActions', '$stateParams'];
+    }
 
-    init: ->
-      @macroData  = @DataService.get('TicketMacros')
-      @$scope.me_id = window.DP_PERSON_ID
+    init() {
+      this.macroData  = this.DataService.get('TicketMacros');
+      this.$scope.me_id = window.DP_PERSON_ID;
 
-      @macroId = parseInt(@$stateParams.id)
-      @permType = 'global'
-      @macro  = null
-      @agents = null
-      @departments = null
-      @form   = null
-      @form   = null
+      this.macroId = parseInt(this.$stateParams.id);
+      this.permType = 'global';
+      this.macro  = null;
+      this.agents = null;
+      this.departments = null;
+      this.form   = null;
+      this.form   = null;
 
-      @actionsTypeDef    = @dpObTypesDefTicketActions
-      @actionOptionTypes = @actionsTypeDef.getOptionsForTypes()
+      this.actionsTypeDef    = this.dpObTypesDefTicketActions;
+      this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
 
-      @$scope.$watch('EditCtrl.form.person_id', (id) =>
-        id = parseInt(id)
-        name = 'unknown agent'
-        if id && !isNaN(id)
-          a = @agents.filter((a) -> a.id == id)
-          if a[0] then name = a[0].display_name
+      return this.$scope.$watch('EditCtrl.form.person_id', id => {
+        id = parseInt(id);
+        let name = 'unknown agent';
+        if (id && !isNaN(id)) {
+          const a = this.agents.filter(a => a.id === id);
+          if (a[0]) { name = a[0].display_name; }
+        }
 
-        @$scope.for_agent_name = name
-      )
+        return this.$scope.for_agent_name = name;
+      });
+    }
 
-    initialLoad: ->
-      promises = []
-      promise = @macroData.loadEditMacroData(@macroId || null).then( (data) =>
-        @macro  = data.macro
-        @agents = data.agents
-        @form   = data.form
+    initialLoad() {
+      const promises = [];
+      let promise = this.macroData.loadEditMacroData(this.macroId || null).then( data => {
+        this.macro  = data.macro;
+        this.agents = data.agents;
+        this.form   = data.form;
 
-        switch
-          when @form.is_global then @permType = 'global'
-          when @form.person_id then @permType = 'agent'
-          when @form.department_id then @permType = 'department'
-      )
-      promises.push(promise)
+        switch (false) {
+          case !this.form.is_global: return this.permType = 'global';
+          case !this.form.person_id: return this.permType = 'agent';
+          case !this.form.department_id: return this.permType = 'department';
+        }
+      });
+      promises.push(promise);
 
-      promise = @Api2.sendGet('/ticket_departments?selectable=1')
-      promise.then (res) =>
-        @departments = res.data.data
-      promises.push(promise)
+      promise = this.Api2.sendGet('/ticket_departments?selectable=1');
+      promise.then(res => {
+        return this.departments = res.data.data;
+      });
+      promises.push(promise);
 
-      return @$q.all(promises)
+      return this.$q.all(promises);
+    }
 
-    changePermType: ->
-      @form.is_global = 0
-      @form.person_id = null
-      @form.department_id = null
+    changePermType() {
+      this.form.is_global = 0;
+      this.form.person_id = null;
+      this.form.department_id = null;
 
-      switch @permType
-        when 'global' then @form.is_global = 1
-        when 'agent' then @form.person_id = @agents[0].id
-        when 'department' then @form.department_id = @departments[0].id
+      switch (this.permType) {
+        case 'global': return this.form.is_global = 1;
+        case 'agent': return this.form.person_id = this.agents[0].id;
+        case 'department': return this.form.department_id = this.departments[0].id;
+      }
+    }
 
-    saveForm: ->
-      @form.agents = @agents
-      @form.departments = @departments
-      promise = @macroData.saveFormModel(@macro, @form)
+    saveForm() {
+      this.form.agents = this.agents;
+      this.form.departments = this.departments;
+      const promise = this.macroData.saveFormModel(this.macro, this.form);
 
-      @startSpinner('saving')
-      promise.then( =>
-        @stopSpinner('saving')
+      this.startSpinner('saving');
+      return promise.then( () => {
+        this.stopSpinner('saving');
 
-        @skipDirtyState()
-        if !@macroId
-          @$state.go('tickets.macros.gocreate')
-      )
+        this.skipDirtyState();
+        if (!this.macroId) {
+          return this.$state.go('tickets.macros.gocreate');
+        }
+      });
+    }
+  }
+  Admin_TicketMacros_Ctrl_Edit.initClass();
 
-  Admin_TicketMacros_Ctrl_Edit.EXPORT_CTRL()
+  return Admin_TicketMacros_Ctrl_Edit.EXPORT_CTRL();
+});

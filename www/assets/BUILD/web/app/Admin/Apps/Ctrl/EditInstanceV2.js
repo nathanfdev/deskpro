@@ -1,134 +1,163 @@
-parseParams = (search)->
-  params = {}
-  if search == ""
-    return params
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+const parseParams = function(search){
+  let m;
+  const params = {};
+  if (search === "") {
+    return params;
+  }
 
-  d = (str)-> decodeURIComponent str.replace /\+/g, ' '
-  query = search.substring 1
-  regex = /(.*?)=([^\&]*)&?/g
+  const d = str=> decodeURIComponent(str.replace(/\+/g, ' '));
+  const query = search.substring(1);
+  const regex = /(.*?)=([^\&]*)&?/g;
 
-  params[d(m[1])] = d(m[2]) while m = regex.exec query
-  params
+  while ((m = regex.exec(query))) { params[d(m[1])] = d(m[2]); }
+  return params;
+};
 
-define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
-  class Admin_Apps_Ctrl_EditInstanceV2 extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_Apps_Ctrl_EditInstanceV2'
-    @CTRL_AS   = 'Ctrl'
-    @DEPS      = ['$http', 'dpTemplateManager', '$q']
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
+  class Admin_Apps_Ctrl_EditInstanceV2 extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_Apps_Ctrl_EditInstanceV2';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['$http', 'dpTemplateManager', '$q'];
+    }
 
-    init: ->
+    init() {
 
-      configuration = parseParams(@$stateParams.configuration)
+      const configuration = parseParams(this.$stateParams.configuration);
 
-      @instanceId = parseInt(@$stateParams.instanceId)
-      @$scope.getController = => return this
-      @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
-      @$scope.enableCustomFooter = => @$scope.has_own_footer = true
-      @presaveCallback = null
-      @devUrl = '#'
-      @settings = {
-        showInOwnTab: false
-        forceConfiguration: configuration.forceConfiguration == 'yes'
-      }
+      this.instanceId = parseInt(this.$stateParams.instanceId);
+      this.$scope.getController = () => { return this; };
+      this.$scope.setPresaveCallback = callback => { return this.presaveCallback = callback; };
+      this.$scope.enableCustomFooter = () => { return this.$scope.has_own_footer = true; };
+      this.presaveCallback = null;
+      this.devUrl = '#';
+      this.settings = {
+        showInOwnTab: false,
+        forceConfiguration: configuration.forceConfiguration === 'yes'
+      };
 
-      return
+    }
 
-    initialLoad: ->
-      d = @$q.defer()
+    initialLoad() {
+      const d = this.$q.defer();
 
-      @Api2.sendGet('/apps/' + @instanceId + '?include=app&inline_sideloads=true').then( (result) =>
-        @app = result.data.data
-        @$scope.appId = @app.id
+      this.Api2.sendGet(`/apps/${this.instanceId}?include=app&inline_sideloads=true`).then( result => {
+        let e;
+        this.app = result.data.data;
+        this.$scope.appId = this.app.id;
 
-        # todo import the url building logic from the apps module
-        devUrlQueryParams = [
+        // todo import the url building logic from the apps module
+        const devUrlQueryParams = [
           'appstore.environment=development',
-          "appstore.instanceId=#{@instanceId}",
-          "appstore.applicationId=#{@app.application_id}",
+          `appstore.instanceId=${this.instanceId}`,
+          `appstore.applicationId=${this.app.application_id}`,
           "appstore.storageadapter=fetch"
-        ]
-        @devUrl = "/agent" + '?' + devUrlQueryParams.join('&')
+        ];
+        this.devUrl = `/agent?${devUrlQueryParams.join('&')}`;
 
-        try
-          @showChangeSettings = 0 < @app.app.manifest.settings.length
-        catch e
-          @showChangeSettings = false;
+        try {
+          this.showChangeSettings = 0 < this.app.app.manifest.settings.length;
+        } catch (error) {
+          e = error;
+          this.showChangeSettings = false;
+        }
 
-        try
-          @settings.showInOwnTab = @app.settings.showInTab == "own-tab"
-        catch e
-          @settings.showInOwnTab = false
+        try {
+          this.settings.showInOwnTab = this.app.settings.showInTab === "own-tab";
+        } catch (error1) {
+          e = error1;
+          this.settings.showInOwnTab = false;
+        }
 
-        @pack = @app.app
-        @packageName = @pack.name
-        @pack.icon_48 = @pack.icon_url + '?s=48'
+        this.pack = this.app.app;
+        this.packageName = this.pack.name;
+        this.pack.icon_48 = this.pack.icon_url + '?s=48';
 
-        d.resolve()
-      )
+        return d.resolve();
+      });
 
-      return d.promise
+      return d.promise;
+    }
 
 
-    ###
-    # Shows readme modal window
-    ###
-    showReadme: ->
-      @$modal.open({
-        templateUrl: @getTemplatePath('Apps/readme-modal.html'),
-        controller: ['$scope', '$modalInstance', 'pack', ($scope, $modalInstance, pack) ->
-          $scope.dismiss = ->
-            $modalInstance.dismiss()
+    /*
+     * Shows readme modal window
+     */
+    showReadme() {
+      return this.$modal.open({
+        templateUrl: this.getTemplatePath('Apps/readme-modal.html'),
+        controller: ['$scope', '$modalInstance', 'pack', function($scope, $modalInstance, pack) {
+          $scope.dismiss = () => $modalInstance.dismiss();
 
-          $scope.pack = pack
+          return $scope.pack = pack;
+        }
         ],
         resolve: {
-          pack: =>
-            return @pack
-        }
-      })
-
-
-    toggleShowInOwnTab: ->
-      @Api2.sendPutJson('/apps/' + @instanceId, {
-          settings: {
-            showInTab : if @settings.showInOwnTab then "own-tab" else "default"
+          pack: () => {
+            return this.pack;
           }
-      })
+        }
+      });
+    }
 
-    ###
-    # SHow delete modal
-    ###
-    startDelete: ->
-      doDelete = =>
-        @Api2.sendDelete('/apps/' + @app.id).success( =>
 
-          # If we are viewing with the parent list, we need to remove this
-          # app from the list
-          if @$scope.$parent?.ListCtrl?
-            @$scope.$parent?.ListCtrl.removeAppInstance(@app.id, true)
+    toggleShowInOwnTab() {
+      return this.Api2.sendPutJson(`/apps/${this.instanceId}`, {
+          settings: {
+            showInTab : this.settings.showInOwnTab ? "own-tab" : "default"
+          }
+      });
+    }
 
-          # close this view
-          window.location.hash = '/apps/apps'
-          @$state.go('apps.apps')
-        )
+    /*
+     * SHow delete modal
+     */
+    startDelete() {
+      const doDelete = () => {
+        return this.Api2.sendDelete(`/apps/${this.app.id}`).success( () => {
 
-      @$modal.open({
-        templateUrl: @getTemplatePath('Apps/instance-delete-modal.html'),
-        controller: ['app', '$scope', '$modalInstance', (app, $scope, $modalInstance) ->
-          $scope.app = app
-          $scope.dismiss = ->
-            $modalInstance.close()
+          // If we are viewing with the parent list, we need to remove this
+          // app from the list
+          if ((this.$scope.$parent != null ? this.$scope.$parent.ListCtrl : undefined) != null) {
+            if (this.$scope.$parent != null) {
+              this.$scope.$parent.ListCtrl.removeAppInstance(this.app.id, true);
+            }
+          }
 
-          $scope.confirm = ->
-            $scope.is_loading = true
-            doDelete().then(->
-              $modalInstance.close()
-            )
+          // close this view
+          window.location.hash = '/apps/apps';
+          return this.$state.go('apps.apps');
+        });
+      };
+
+      return this.$modal.open({
+        templateUrl: this.getTemplatePath('Apps/instance-delete-modal.html'),
+        controller: ['app', '$scope', '$modalInstance', function(app, $scope, $modalInstance) {
+          $scope.app = app;
+          $scope.dismiss = () => $modalInstance.close();
+
+          return $scope.confirm = function() {
+            $scope.is_loading = true;
+            return doDelete().then(() => $modalInstance.close());
+          };
+        }
         ],
         resolve: {
-          app: =>
-            return @app
+          app: () => {
+            return this.app;
+          }
         }
-      })
+      });
+    }
+  }
+  Admin_Apps_Ctrl_EditInstanceV2.initClass();
 
-  Admin_Apps_Ctrl_EditInstanceV2.EXPORT_CTRL()
+  return Admin_Apps_Ctrl_EditInstanceV2.EXPORT_CTRL();
+});

@@ -1,65 +1,93 @@
-define ['DeskPRO/Util/Util'], (Util) ->
-  class EditAgentNotifPrefs
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['DeskPRO/Util/Util'], function(Util) {
+  let EditAgentNotifPrefs;
+  return (EditAgentNotifPrefs = class EditAgentNotifPrefs {
 
 
 
-    constructor: (prefsTable) ->
-      @prefsTable = prefsTable
+    constructor(prefsTable) {
+      this.prefsTable = prefsTable;
+    }
 
 
 
-    getFilterSubs: ->
-      filterSubs = {}
+    getFilterSubs() {
+      const filterSubs = {};
 
-      getFilterSubObj = (id) ->
-        if filterSubs[id] then return filterSubs[id]
-        filterSubs[id] =
+      const getFilterSubObj = function(id) {
+        if (filterSubs[id]) { return filterSubs[id]; }
+        return filterSubs[id] = {
           filter_id: id,
           email: [],
           alert: []
+        };
+      };
 
-      for groupName in ['sys_filters', 'custom_filters']
-        for typeName in ['email', 'alert']
-          if not @prefsTable.subs["#{groupName}_#{typeName}"]? then continue
+      for (let groupName of ['sys_filters', 'custom_filters']) {
+        for (let typeName of ['email', 'alert']) {
+          if ((this.prefsTable.subs[`${groupName}_${typeName}`] == null)) { continue; }
 
-          for row in @prefsTable.subs["#{groupName}_#{typeName}"].rows
-            subObj = getFilterSubObj(row.filter.id)
+          for (let row of Array.from(this.prefsTable.subs[`${groupName}_${typeName}`].rows)) {
+            const subObj = getFilterSubObj(row.filter.id);
 
-            for col in row.cols
-              for opt in col
-                if opt.value
-                  subObj[typeName].push(opt.name)
+            for (let col of Array.from(row.cols)) {
+              for (let opt of Array.from(col)) {
+                if (opt.value) {
+                  subObj[typeName].push(opt.name);
+                }
+              }
+            }
+          }
+        }
+      }
 
-      vals = Util.values(filterSubs)
-      vals.filter((a) -> return true if a != "" and a != false and a != 0)
+      const vals = Util.values(filterSubs);
+      return vals.filter(function(a) { if ((a !== "") && (a !== false) && (a !== 0)) { return true; } });
+    }
 
 
 
-    getOtherSubs: ->
-      appSubs = {}
+    getOtherSubs() {
+      const appSubs = {};
 
-      getAppSubObj = (id) ->
-        if appSubs[id] then return appSubs[id]
-        appSubs[id] = {
+      const getAppSubObj = function(id) {
+        if (appSubs[id]) { return appSubs[id]; }
+        return appSubs[id] = {
           type: id,
           email: [],
           alert: []
+        };
+      };
+
+      for (let groupName of ['chat', 'crm', 'feedback', 'publish', 'task', 'twitter', 'account']) {
+        if ((this.prefsTable.subs[groupName] == null)) { continue; }
+
+        for (let row of Array.from(this.prefsTable.subs[groupName].rows)) {
+          const subObj = getAppSubObj(groupName);
+
+          for (let opt of Array.from(row.cols)) {
+            if (opt.value) {
+              var shortName;
+              if (opt.name.match(/_email$/)) {
+                shortName = opt.name.replace(/_email$/, '');
+                subObj.email.push(shortName);
+              } else {
+                shortName = opt.name.replace(/_alert$/, '');
+                subObj.alert.push(shortName);
+              }
+            }
+          }
         }
+      }
 
-      for groupName in ['chat', 'crm', 'feedback', 'publish', 'task', 'twitter', 'account']
-        if not @prefsTable.subs[groupName]? then continue
-
-        for row in @prefsTable.subs[groupName].rows
-          subObj = getAppSubObj(groupName)
-
-          for opt in row.cols
-            if opt.value
-              if opt.name.match(/_email$/)
-                shortName = opt.name.replace(/_email$/, '')
-                subObj.email.push(shortName)
-              else
-                shortName = opt.name.replace(/_alert$/, '')
-                subObj.alert.push(shortName)
-
-      vals = Util.values(appSubs)
-      vals.filter((a) -> return true if a != "" and a != false and a != 0)
+      const vals = Util.values(appSubs);
+      return vals.filter(function(a) { if ((a !== "") && (a !== false) && (a !== 0)) { return true; } });
+    }
+  });
+});

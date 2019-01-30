@@ -1,113 +1,141 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'DeskPRO/Logger/Logger',
   'DeskPRO/Logger/Formatter/LineFormatter',
-], (
+], function(
   Logger,
   LineFormatter
-) ->
-  class AbstractHandler
-    constructor: (@level = Logger.DEBUG, @bubble = true) ->
-      @processors = []
-      @formatter = null
+) {
+  let AbstractHandler;
+  return (AbstractHandler = class AbstractHandler {
+    constructor(level, bubble) {
+      if (level == null) { level = Logger.DEBUG; }
+      this.level = level;
+      if (bubble == null) { bubble = true; }
+      this.bubble = bubble;
+      this.processors = [];
+      this.formatter = null;
+    }
 
 
-    ###
-      # @param {Object} record
-      # @return {bool}
-      ###
-    isHandling: (record) ->
-      return record.level >= @level
+    /*
+      * @param {Object} record
+      * @return {bool}
+      */
+    isHandling(record) {
+      return record.level >= this.level;
+    }
 
 
-    ###
-      # Handle a number of records at once
-      #
-      # @param {Array} records
-      ###
-    handleBatch: (records) ->
-      for rec in records
-        @handle(rec)
+    /*
+      * Handle a number of records at once
+      *
+      * @param {Array} records
+      */
+    handleBatch(records) {
+      return Array.from(records).map((rec) =>
+        this.handle(rec));
+    }
 
 
-    ###
-      # Handle the log record
-      #
-      # @param {Object} record
-      # @return {bool}
-      ###
-    handle: (record) ->
-      throw new Error("Unimplemented")
+    /*
+      * Handle the log record
+      *
+      * @param {Object} record
+      * @return {bool}
+      */
+    handle(record) {
+      throw new Error("Unimplemented");
+    }
 
 
-    ###
-      # @return {Function}
-    ###
-    pushProcessor: (processor) ->
-      @processors.unshift(processor)
-      return @
+    /*
+      * @return {Function}
+    */
+    pushProcessor(processor) {
+      this.processors.unshift(processor);
+      return this;
+    }
 
 
-    ###
-      # @return {Object}
-    ###
-    popProcessor: ->
-      return @processors.shift()
+    /*
+      * @return {Object}
+    */
+    popProcessor() {
+      return this.processors.shift();
+    }
 
-    ###
-      # Sets the formatter
-      #
-      # @param {Object} formatter
-    ###
-    setFormatter: (formatter) ->
-      @formatter = formatter
-      return @
-
-
-    ###
-      # @return {Object}
-    ###
-    getFormatter: ->
-      if @formatter == null
-        @formatter = @getDefaultFormatter()
-
-      return @formatter
+    /*
+      * Sets the formatter
+      *
+      * @param {Object} formatter
+    */
+    setFormatter(formatter) {
+      this.formatter = formatter;
+      return this;
+    }
 
 
-    ###
-      # @return {Object}
-    ###
-    getDefaultFormatter: ->
-      return new LineFormatter()
+    /*
+      * @return {Object}
+    */
+    getFormatter() {
+      if (this.formatter === null) {
+        this.formatter = this.getDefaultFormatter();
+      }
+
+      return this.formatter;
+    }
 
 
-    ###
-      # @return {Integer}
-    ###
-    getLevel: ->
-      return @level
-
-    ###
-      # Sets the level
-      #
-      # @param {Integer} level
-    ###
-    setLevel: (level) ->
-      @level = level
-      return @
+    /*
+      * @return {Object}
+    */
+    getDefaultFormatter() {
+      return new LineFormatter();
+    }
 
 
-    ###
-      # @return {bool}
-    ###
-    getBubble: ->
-      return @bubble
+    /*
+      * @return {Integer}
+    */
+    getLevel() {
+      return this.level;
+    }
+
+    /*
+      * Sets the level
+      *
+      * @param {Integer} level
+    */
+    setLevel(level) {
+      this.level = level;
+      return this;
+    }
 
 
-    ###
-      # Enable/disable bubble
-      #
-      # @param {bool} bubble
-    ###
-    setBubble: (bubble) ->
-      @bubble = bubble
-      return @
+    /*
+      * @return {bool}
+    */
+    getBubble() {
+      return this.bubble;
+    }
+
+
+    /*
+      * Enable/disable bubble
+      *
+      * @param {bool} bubble
+    */
+    setBubble(bubble) {
+      this.bubble = bubble;
+      return this;
+    }
+  });
+});

@@ -1,25 +1,38 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'Admin/Usersources/Helper/UsersourceTypeDecider'
-], (
+], function(
   Admin_Ctrl_Base,
   Admin_Usersources_Helper_UsersourceTypeDecider
-) ->
-  class Admin_Usersources_Ctrl_New extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_Usersources_Ctrl_New'
-    @CTRL_AS = 'NewCtrl'
-    @DEPS = ['$state']
+) {
+  class Admin_Usersources_Ctrl_New extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID = 'Admin_Usersources_Ctrl_New';
+      this.CTRL_AS = 'NewCtrl';
+      this.DEPS = ['$state'];
+    }
 
-    init: ->
-      @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
-      @$scope.install_url = if @usersourceType == 'user' then 'crm.usersources.install' else 'agents.usersources.install'
-      @$scope.install_deskpro_url = if @usersourceType == 'user' then 'crm.usersources.install_deskpro' else 'agents.usersources.install_deskpro'
+    init() {
+      this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
+      this.$scope.install_url = this.usersourceType === 'user' ? 'crm.usersources.install' : 'agents.usersources.install';
+      return this.$scope.install_deskpro_url = this.usersourceType === 'user' ? 'crm.usersources.install_deskpro' : 'agents.usersources.install_deskpro';
+    }
 
-    initialLoad: ->
-      url = '/usersources/available/app-packages/' + @usersourceType
+    initialLoad() {
+      const url = `/usersources/available/app-packages/${this.usersourceType}`;
 
-      @Api.sendGet(url).then((res) =>
-        @packages = res.data
-      )
+      return this.Api.sendGet(url).then(res => {
+        return this.packages = res.data;
+      });
+    }
+  }
+  Admin_Usersources_Ctrl_New.initClass();
 
-  Admin_Usersources_Ctrl_New.EXPORT_CTRL()
+  return Admin_Usersources_Ctrl_New.EXPORT_CTRL();
+});

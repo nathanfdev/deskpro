@@ -1,85 +1,102 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/DataService/BaseListEdit',
   'Reports/Builder/ReportEditFormMapper'
-], (
+], function(
   BaseListEdit,
   ReportEditFormMapper
-)  ->
-  class ReportBuiltInAbstract extends BaseListEdit
-    @$inject = ['Api', '$q']
+)  {
+  let ReportBuiltInAbstract;
+  return ReportBuiltInAbstract = (function() {
+    ReportBuiltInAbstract = class ReportBuiltInAbstract extends BaseListEdit {
+      static initClass() {
+        this.$inject = ['Api', '$q'];
+      }
 
-    ###
-    #
-    ###
-    init: ->
+      /*
+       *
+       */
+      init() {}
 
-    getUrlPart: ->
-      return ''
+      getUrlPart() {
+        return '';
+      }
 
-    ###
-    #
-    ###
-    _doLoadList: ->
-      deferred = @$q.defer()
-      @Api.sendGet('/reports/' + @getUrlPart() + '/builtIn').success( (data) =>
+      /*
+       *
+       */
+      _doLoadList() {
+        const deferred = this.$q.defer();
+        this.Api.sendGet(`/reports/${this.getUrlPart()}/builtIn`).success( data => {
 
-        models = data.reports
-        deferred.resolve(models)
-      , (data, status, headers, config) ->
-        deferred.reject()
-      )
+          const models = data.reports;
+          return deferred.resolve(models);
+        }
+        , (data, status, headers, config) => deferred.reject());
 
-      return deferred.promise
+        return deferred.promise;
+      }
 
 
-    ###
-    # Get the form mapper
-    #
-    # @return {ReportEditFormMapper}
-    ###
-    getFormMapper: ->
+      /*
+       * Get the form mapper
+       *
+       * @return {ReportEditFormMapper}
+       */
+      getFormMapper() {
 
-      if @formMapper then return @formMapper
-      @formMapper = new ReportEditFormMapper()
-      return @formMapper
+        if (this.formMapper) { return this.formMapper; }
+        this.formMapper = new ReportEditFormMapper();
+        return this.formMapper;
+      }
 
-    ###
-    # Get all data needed for the edit page
-    #
-    # @param {Integer} id
-    # @return {promise}
-    ###
-    loadEditReportData: (id, params) ->
+      /*
+       * Get all data needed for the edit page
+       *
+       * @param {Integer} id
+       * @return {promise}
+       */
+      loadEditReportData(id, params) {
 
-      deferred = @$q.defer()
-      if id
+        const deferred = this.$q.defer();
+        if (id) {
 
-        @Api.sendGet('/reports/' + @getUrlPart() + '/' + id, {params: params}).then( (result) =>
+          this.Api.sendGet(`/reports/${this.getUrlPart()}/${id}`, {params}).then( result => {
 
-          if result.data.type != 'builtIn' then throw new Error('Report you are loading should be built-in report')
+            if (result.data.type !== 'builtIn') { throw new Error('Report you are loading should be built-in report'); }
 
-          data = {}
-          data.report = result.data.report
-          data.rendered_result = result.data.rendered_result
-          data.query_parts = result.data.query_parts
-          data.form = @getFormMapper().getFormFromModel(data)
+            const data = {};
+            data.report = result.data.report;
+            data.rendered_result = result.data.rendered_result;
+            data.query_parts = result.data.query_parts;
+            data.form = this.getFormMapper().getFormFromModel(data);
 
-          deferred.resolve(data)
-        , ->
-          deferred.reject()
-        )
+            return deferred.resolve(data);
+          }
+          , () => deferred.reject());
 
-      else
+        } else {
 
-        @Api.sendGet('/reports/' + @getUrlPart()).then( (result) =>
+          this.Api.sendGet(`/reports/${this.getUrlPart()}`).then( result => {
 
-          data = {}
-          data.report = {user: {}}
-          data.form = @getFormMapper().getFormFromModel(data)
+            const data = {};
+            data.report = {user: {}};
+            data.form = this.getFormMapper().getFormFromModel(data);
 
-          deferred.resolve(data)
-        , ->
-          deferred.reject()
-        )
+            return deferred.resolve(data);
+          }
+          , () => deferred.reject());
+        }
 
-      return deferred.promise
+        return deferred.promise;
+      }
+    };
+    ReportBuiltInAbstract.initClass();
+    return ReportBuiltInAbstract;
+  })();
+});

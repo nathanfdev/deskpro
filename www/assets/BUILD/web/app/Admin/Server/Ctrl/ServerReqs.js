@@ -1,17 +1,30 @@
-define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
-  class Admin_ServerReqs_Ctrl_ServerReqs extends Admin_Ctrl_Base
-    @CTRL_ID   = 'Admin_ServerReqs_Ctrl_ServerReqs'
-    @CTRL_AS   = 'ServerReqs'
-    @DEPS      = []
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+  class Admin_ServerReqs_Ctrl_ServerReqs extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_ServerReqs_Ctrl_ServerReqs';
+      this.CTRL_AS   = 'ServerReqs';
+      this.DEPS      = [];
+    }
 
-    init: ->
-      @$scope.server_reqs = null
+    init() {
+      return this.$scope.server_reqs = null;
+    }
 
-    initialLoad: ->
-      data_promise = @Api.sendGet('/server_reqs').then( (res) =>
-        @$scope.check_requirements_url = res.data.check_requirements_url
-      )
+    initialLoad() {
+      const data_promise = this.Api.sendGet('/server_reqs').then( res => {
+        return this.$scope.check_requirements_url = res.data.check_requirements_url;
+      });
 
-      return @$q.all([data_promise])
+      return this.$q.all([data_promise]);
+    }
+  }
+  Admin_ServerReqs_Ctrl_ServerReqs.initClass();
 
-  Admin_ServerReqs_Ctrl_ServerReqs.EXPORT_CTRL()
+  return Admin_ServerReqs_Ctrl_ServerReqs.EXPORT_CTRL();
+});

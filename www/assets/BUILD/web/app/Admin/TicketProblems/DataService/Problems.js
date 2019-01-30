@@ -1,32 +1,51 @@
-define ->
-  class Problems
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS206: Consider reworking classes to avoid initClass
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  let Problems;
+  return Problems = (function() {
+    let _url = undefined;
+    Problems = class Problems {
+      static initClass() {
+  
+        _url = '/problems/settings';
+      }
 
-    _url = '/problems/settings'
+      constructor(Api, $q) {
+        this.Api = Api;
+        this.$q = $q;
+        this.settings = {};
+      }
 
-    constructor: (@Api, @$q) ->
-      @settings = {}
 
+      load() {
+        const deferred = this.$q.defer();
 
-    load: ->
-      deferred = @$q.defer()
+        this.Api.sendGet(_url).success(
+          data => {
+            this.settings = data;
+            return deferred.resolve(this.settings);
+          },
+          (data, status, headers, config) => deferred.reject());
 
-      @Api.sendGet(_url).success(
-        (data) =>
-          @settings = data
-          deferred.resolve @settings
-        (data, status, headers, config) ->
-          deferred.reject()
-      )
+        return deferred.promise;
+      }
 
-      deferred.promise
+      save() {
+        const deferred = this.$q.defer();
 
-    save: ->
-      deferred = @$q.defer()
+        this.Api.sendPutJson(_url, this.settings).success( data => {
+          return deferred.resolve();
+        }
+        , (data, status, headers, config) => deferred.reject());
 
-      @Api.sendPutJson(_url, @settings).success( (data) =>
-        deferred.resolve()
-      , (data, status, headers, config) ->
-        deferred.reject()
-      )
-
-      deferred.promise
+        return deferred.promise;
+      }
+    };
+    Problems.initClass();
+    return Problems;
+  })();
+});

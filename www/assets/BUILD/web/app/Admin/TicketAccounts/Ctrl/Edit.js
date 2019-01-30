@@ -1,425 +1,531 @@
-define [
+/*
+ * decaffeinate suggestions:
+ * DS001: Remove Babel/TypeScript constructor workaround
+ * DS101: Remove unnecessary use of Array.from
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS103: Rewrite code to no longer use __guard__
+ * DS203: Remove `|| {}` from converted for-own loops
+ * DS205: Consider reworking code to avoid use of IIFEs
+ * DS206: Consider reworking classes to avoid initClass
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define([
   'Admin/Main/Ctrl/Base',
   'Admin/TicketAccounts/FormModel/EditTicketAccountModel',
   'underscore'
-], (
+], function(
   Admin_Ctrl_Base,
   EditTicketAccountModel,
   _
-) ->
-  class Admin_TicketAccounts_Ctrl_Edit extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit'
-    @CTRL_AS = 'TicketAccountsEdit'
-    @DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions', '$location', '$upload', '$http', 'Api2']
+) {
+  class Admin_TicketAccounts_Ctrl_Edit extends Admin_Ctrl_Base {
+    constructor(...args) {
+      {
+        // Hack: trick Babel/TypeScript into allowing this before super.
+        if (false) { super(); }
+        let thisFn = (() => { return this; }).toString();
+        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        eval(`${thisName} = this;`);
+      }
+      this.getAccessToken = this.getAccessToken.bind(this);
+      this.setCertificate = this.setCertificate.bind(this);
+      this.setKey = this.setKey.bind(this);
+      this.deleteCertificate = this.deleteCertificate.bind(this);
+      this.deleteKey = this.deleteKey.bind(this);
+      super(...args);
+    }
 
-    init: ->
-      @actionsTypeDef = @dpObTypesDefTicketActions
-      @$scope.actionOptionTypes = []
-      @$scope.actions_form = {}
-      @$scope.message_count = null
+    static initClass() {
+      this.CTRL_ID = 'Admin_TicketAccounts_Ctrl_Edit';
+      this.CTRL_AS = 'TicketAccountsEdit';
+      this.DEPS    = ['Api', 'Growl', 'TicketAccountsData', '$stateParams', '$modal', 'dpObTypesDefTicketActions', '$location', '$upload', '$http', 'Api2'];
+    }
 
-      @accountId = parseInt(@$stateParams.id || 0)
-      @didPassTest = false
-      @testMessageCount = 0
-      @didConfirmExistingMessages = false
-      @test_email = {
+    init() {
+      this.actionsTypeDef = this.dpObTypesDefTicketActions;
+      this.$scope.actionOptionTypes = [];
+      this.$scope.actions_form = {};
+      this.$scope.message_count = null;
+
+      this.accountId = parseInt(this.$stateParams.id || 0);
+      this.didPassTest = false;
+      this.testMessageCount = 0;
+      this.didConfirmExistingMessages = false;
+      this.test_email = {
         to: window.DP_PERSON_EMAIL,
         from: '',
         subject: 'Test email',
         message: 'This is a test. If you see this email in your inbox, your outgoing email account settings are correct.'
-      }
-      @$scope.path = @$location.path()
-      @deferredData = {}
+      };
+      this.$scope.path = this.$location.path();
+      return this.deferredData = {};
+    }
 
-    updateCriteriaOptionTypes: ->
-      types = ['web', 'web.user']
-      setActionOptions = @actionsTypeDef.getOptionsForTypes(types, { dynamicOptions: @customActions })
-      @$scope.actionOptionTypes.length = 0
-      for opt in setActionOptions
-        @$scope.actionOptionTypes.push(opt)
+    updateCriteriaOptionTypes() {
+      const types = ['web', 'web.user'];
+      const setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, { dynamicOptions: this.customActions });
+      this.$scope.actionOptionTypes.length = 0;
+      return Array.from(setActionOptions).map((opt) =>
+        this.$scope.actionOptionTypes.push(opt));
+    }
 
-    getFormModel: ->
-      return new EditTicketAccountModel(@account || {}, @deps || [], @trigger || {}, @brands || {})
+    getFormModel() {
+      return new EditTicketAccountModel(this.account || {}, this.deps || [], this.trigger || {}, this.brands || {});
+    }
 
-    initialLoad: ->
-      dep_promise = @DataService.get('TicketDeps').loadList().then( (list) =>
-        @deps = list
-      )
+    initialLoad() {
+      const dep_promise = this.DataService.get('TicketDeps').loadList().then( list => {
+        return this.deps = list;
+      });
 
-      brands_promise = @Api2.sendGet('brands').then( (res) =>
-        @brands = res.data.data
-      )
+      const brands_promise = this.Api2.sendGet('brands').then( res => {
+        return this.brands = res.data.data;
+      });
 
-      get = {
+      const get = {
         customActions: '/ticket_triggers/get-custom-actions'
+      };
+      if (this.accountId) {
+        get.trigger = `/ticket_triggers/email_accounts/${this.accountId}`;
+      } else {
+        get.trigger = "/ticket_triggers/newticket";
       }
-      if @accountId
-        get.trigger = "/ticket_triggers/email_accounts/#{@accountId}"
-      else
-        get.trigger = "/ticket_triggers/newticket"
 
-      trigger_promise = @Api.sendDataGet(get).then( (result) =>
-        @customActions = result.data.customActions.action_defs
+      const trigger_promise = this.Api.sendDataGet(get).then( result => {
+        this.customActions = result.data.customActions.action_defs;
 
-        if result.data && result.data.trigger
-          if result.data.trigger.trigger
-            @trigger = result.data.trigger.trigger
-            @triggerId = @trigger.id
+        if (result.data && result.data.trigger) {
+          if (result.data.trigger.trigger) {
+            this.trigger = result.data.trigger.trigger;
+            this.triggerId = this.trigger.id;
 
-            if @trigger.actions?.actions?.length
-              @$scope.actions_form = {}
-              for action in @trigger.actions.actions
-                rowId = _.uniqueId('action')
-                @$scope.actions_form[rowId] = action
-          else
-            @trigger = result.data.trigger
-            @triggerId = 0
-        else
-          @trigger = {}
-          @triggerId = 0
-      )
+            if (__guard__(this.trigger.actions != null ? this.trigger.actions.actions : undefined, x => x.length)) {
+              this.$scope.actions_form = {};
+              return (() => {
+                const result1 = [];
+                for (let action of Array.from(this.trigger.actions.actions)) {
+                  const rowId = _.uniqueId('action');
+                  result1.push(this.$scope.actions_form[rowId] = action);
+                }
+                return result1;
+              })();
+            }
+          } else {
+            this.trigger = result.data.trigger;
+            return this.triggerId = 0;
+          }
+        } else {
+          this.trigger = {};
+          return this.triggerId = 0;
+        }
+      });
 
-      trigger_data_promise = @actionsTypeDef.loadDataOptions()
+      const trigger_data_promise = this.actionsTypeDef.loadDataOptions();
 
-      proms = [trigger_promise, trigger_data_promise, dep_promise, brands_promise]
+      const proms = [trigger_promise, trigger_data_promise, dep_promise, brands_promise];
 
-      if not @accountId
-        @account = {is_enabled: true, is_all_brands: true}
-        @trigger = {}
-      else
-        data_promise = @Api.sendDataGet({
-          'email_account': '/email_accounts/' + @accountId
-        }).then( (result) =>
-          @account = result.data.email_account.email_account
-          @trigger = result.data.email_account.trigger
-        )
+      if (!this.accountId) {
+        this.account = {is_enabled: true, is_all_brands: true};
+        this.trigger = {};
+      } else {
+        const data_promise = this.Api.sendDataGet({
+          'email_account': `/email_accounts/${this.accountId}`
+        }).then( result => {
+          this.account = result.data.email_account.email_account;
+          return this.trigger = result.data.email_account.trigger;
+        });
 
-        proms.push(data_promise)
+        proms.push(data_promise);
+      }
 
-      final_promise = @$q.all(proms)
+      const final_promise = this.$q.all(proms);
 
-      final_promise.then(=>
-        @form_model = @getFormModel()
-        if @deferredData.gmail?
-          for type in ['in', 'out']
-            for v in ['clientId', 'clientSecret', 'token', 'refreshToken']
-              @form_model.form[type + '_gmail_account'][v] = @deferredData.gmail[v]
+      final_promise.then(() => {
+        this.form_model = this.getFormModel();
+        if (this.deferredData.gmail != null) {
+          for (let type of ['in', 'out']) {
+            for (let v of ['clientId', 'clientSecret', 'token', 'refreshToken']) {
+              this.form_model.form[type + '_gmail_account'][v] = this.deferredData.gmail[v];
+            }
+          }
+        }
 
-        @$scope.form = @form_model.form
+        this.$scope.form = this.form_model.form;
 
-        if not @accountId
-          @$scope.form.incoming_type = ''
-          @$scope.form.outgoing_type = 'smtp'
+        if (!this.accountId) {
+          this.$scope.form.incoming_type = '';
+          this.$scope.form.outgoing_type = 'smtp';
+        }
 
-        if not @$scope.form.outgoing_type
-          @$scope.form.outgoing_type = 'php_mail'
+        if (!this.$scope.form.outgoing_type) {
+          this.$scope.form.outgoing_type = 'php_mail';
+        }
 
-        @updateCriteriaOptionTypes()
+        this.updateCriteriaOptionTypes();
 
-        if @$scope.form.encryption_enabled
-          @$scope.show_adv = true
-      )
-      return final_promise
+        if (this.$scope.form.encryption_enabled) {
+          return this.$scope.show_adv = true;
+        }
+      });
+      return final_promise;
+    }
 
 
-    ###
-    # Saves the current form
-    #
-    # @return {promise}
-    ###
-    saveAccount: ->
-      return if @$scope.form_props.$invalid
+    /*
+     * Saves the current form
+     *
+     * @return {promise}
+     */
+    saveAccount() {
+      let is_new, promise;
+      if (this.$scope.form_props.$invalid) { return; }
 
-      if not @account.id and not @new_is_confirmed and @$scope.form.account_type != 'outgoing'
-        @showNewAccountConfirm()
-        return
+      if (!this.account.id && !this.new_is_confirmed && (this.$scope.form.account_type !== 'outgoing')) {
+        this.showNewAccountConfirm();
+        return;
+      }
 
-      postData = @form_model.getFormData()
+      let postData = this.form_model.getFormData();
 
-      triggerSaver = =>
+      const triggerSaver = () => {
         postData = {
           actions:       []
+        };
+        if (this.$scope.actions_form) {
+          for (let _x of Object.keys(this.$scope.actions_form || {})) {
+            const act = this.$scope.actions_form[_x];
+            if (act.type) {
+              postData.actions.push(act);
+            }
+          }
         }
-        if @$scope.actions_form
-          for own _x, act of @$scope.actions_form
-            if act.type
-              postData.actions.push(act)
-        @Api.sendPostJson('/ticket_triggers/email_accounts/' + @account.id, postData)
+        return this.Api.sendPostJson(`/ticket_triggers/email_accounts/${this.account.id}`, postData);
+      };
 
-      @startSpinner('saving_account')
-      if @account.id
-        is_new = false
-        promise = @Api.sendPostJson('/email_accounts/' + @account.id, postData)
-      else
-        is_new = true
-        promise = @Api.sendPutJson('/email_accounts', postData)
+      this.startSpinner('saving_account');
+      if (this.account.id) {
+        is_new = false;
+        promise = this.Api.sendPostJson(`/email_accounts/${this.account.id}`, postData);
+      } else {
+        is_new = true;
+        promise = this.Api.sendPutJson('/email_accounts', postData);
+      }
 
-      promise.success( (result) =>
-        @account.id = result.email_account_id || @account.id
-        @account.is_enabled = @$scope.form.is_enabled
-        triggerSaver().then(=>
-          @stopSpinner('saving_account', true).then(=>
-            @Growl.success(@getRegisteredMessage('saved_account'))
-          )
-          @form_model.apply()
-          @TicketAccountsData.updateModel(@account)
-          @uploadFiles().then(=>
-              @skipDirtyState()
-              if is_new
-                @$state.go('emails.ticket_accounts.gocreate')
-              else
-                @$state.go('emails.ticket_accounts')
-            , (err) =>
-              @Growl.error(err)
-          )
-        )
-      )
-      promise.error( (info, code) =>
-        @stopSpinner('saving_account', true)
-        if info?.error_code == 'invalid_data' and info?.error_message
-          @showAlert(info.error_message)
-        else
-          @applyErrorResponseToView(info)
-      )
+      promise.success( result => {
+        this.account.id = result.email_account_id || this.account.id;
+        this.account.is_enabled = this.$scope.form.is_enabled;
+        return triggerSaver().then(() => {
+          this.stopSpinner('saving_account', true).then(() => {
+            return this.Growl.success(this.getRegisteredMessage('saved_account'));
+          });
+          this.form_model.apply();
+          this.TicketAccountsData.updateModel(this.account);
+          return this.uploadFiles().then(() => {
+              this.skipDirtyState();
+              if (is_new) {
+                return this.$state.go('emails.ticket_accounts.gocreate');
+              } else {
+                return this.$state.go('emails.ticket_accounts');
+              }
+            }
+            , err => {
+              return this.Growl.error(err);
+          });
+        });
+      });
+      promise.error( (info, code) => {
+        this.stopSpinner('saving_account', true);
+        if (((info != null ? info.error_code : undefined) === 'invalid_data') && (info != null ? info.error_message : undefined)) {
+          return this.showAlert(info.error_message);
+        } else {
+          return this.applyErrorResponseToView(info);
+        }
+      });
 
-      return promise
-
-
-    ###
-    # Test current account settings
-    #
-    # @return {promise}
-    ###
-    loadAccountTest: ->
-      return @Api.sendPostJson('/email_accounts/test-account', @form_model.getFormData()).success( (result) =>
-        @didPassTest = result.is_success
-      )
+      return promise;
+    }
 
 
-    ###
-    # Test current outgoing settings with message details from @test_email object.
-    #
-    # @return {promise}
-    ###
-    loadOutgoingAccountTest: ->
-      form_data = @form_model.getFormData()
-      form_data.test_email = @test_email
+    /*
+     * Test current account settings
+     *
+     * @return {promise}
+     */
+    loadAccountTest() {
+      return this.Api.sendPostJson('/email_accounts/test-account', this.form_model.getFormData()).success( result => {
+        return this.didPassTest = result.is_success;
+      });
+    }
 
-      return @Api.sendPostJson('/email_accounts/test-outgoing-account', form_data, null, { timeout: 12000})
+
+    /*
+     * Test current outgoing settings with message details from @test_email object.
+     *
+     * @return {promise}
+     */
+    loadOutgoingAccountTest() {
+      const form_data = this.form_model.getFormData();
+      form_data.test_email = this.test_email;
+
+      return this.Api.sendPostJson('/email_accounts/test-outgoing-account', form_data, null, { timeout: 12000});
+    }
 
 
-    ###
-    # Show the test account modal
-    ###
-    testAccountModal: ->
-      me = @
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketAccounts/test-account-modal.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
-          $scope.dismiss = =>
-            $modalInstance.dismiss();
+    /*
+     * Show the test account modal
+     */
+    testAccountModal() {
+      let inst;
+      const me = this;
+      return inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketAccounts/test-account-modal.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) => {
+          $scope.dismiss = () => {
+            return $modalInstance.dismiss();
+          };
 
-          $scope.showLog = =>
-            $scope.showing_log = true
+          $scope.showLog = () => {
+            return $scope.showing_log = true;
+          };
 
-          testNow = =>
-            $scope.showing_log = false
-            $scope.is_testing = true
-            @loadAccountTest().success( (result) =>
-              $scope.is_testing    = false
-              $scope.is_success    = result.is_success
-              $scope.log           = result.log
-              $scope.message_count = result.message_count
-              me.$scope.message_count = result.message_count
-            ).error(=>
-              $scope.showing_log   = true
-              $scope.is_testing    = false
-              $scope.is_success    = false
-              $scope.log           = "Server Error"
-              $scope.message_count = 0
-              me.$scope.message_count = null
-            )
+          const testNow = () => {
+            $scope.showing_log = false;
+            $scope.is_testing = true;
+            return this.loadAccountTest().success( result => {
+              $scope.is_testing    = false;
+              $scope.is_success    = result.is_success;
+              $scope.log           = result.log;
+              $scope.message_count = result.message_count;
+              return me.$scope.message_count = result.message_count;
+            }).error(() => {
+              $scope.showing_log   = true;
+              $scope.is_testing    = false;
+              $scope.is_success    = false;
+              $scope.log           = "Server Error";
+              $scope.message_count = 0;
+              return me.$scope.message_count = null;
+            });
+          };
 
           testNow();
 
-          $scope.testNow = ->
-            testNow()
+          return $scope.testNow = () => testNow();
+        }
+        ]
+      });
+    }
+
+    showNewAccountConfirm() {
+      const me = this;
+      const inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketAccounts/new-account-confirm.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) => {
+
+          $scope.message_count = me.$scope.message_count;
+
+          $scope.dismiss = () => $modalInstance.dismiss();
+
+          return $scope.confirm = () => $modalInstance.close(true);
+        }
         ]
       });
 
-    showNewAccountConfirm: ->
-      me = @
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketAccounts/new-account-confirm.html'),
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+      return inst.result.then( r => {
+        if (r) {
+          this.new_is_confirmed = true;
+          return this.saveAccount();
+        }
+      });
+    }
 
-          $scope.message_count = me.$scope.message_count
+    setupTestModalScope($scope) {
+    }
 
-          $scope.dismiss = ->
-            $modalInstance.dismiss();
-
-          $scope.confirm = ->
-            $modalInstance.close(true);
-        ]
-      })
-
-      inst.result.then( (r) =>
-        if r
-          @new_is_confirmed = true
-          @saveAccount()
-      )
-
-    setupTestModalScope: ($scope) ->
-      return
-
-    ###
-      # Show the test account modal
-    ###
-    testOutgoingModal: ->
-      me = @
-      inst = @$modal.open({
-        templateUrl: @getTemplatePath('TicketAccounts/test-outgoing-modal.html'),
+    /*
+      * Show the test account modal
+    */
+    testOutgoingModal() {
+      let inst;
+      const me = this;
+      return inst = this.$modal.open({
+        templateUrl: this.getTemplatePath('TicketAccounts/test-outgoing-modal.html'),
         resolve: {
-          test_email: =>
-            @test_email.from = @form_model.form.address
-            return @test_email
+          test_email: () => {
+            this.test_email.from = this.form_model.form.address;
+            return this.test_email;
+          }
         },
-        controller: ['$scope', '$modalInstance', 'test_email', ($scope, $modalInstance, test_email) =>
-          $scope.dismiss = =>
-            $modalInstance.dismiss();
+        controller: ['$scope', '$modalInstance', 'test_email', ($scope, $modalInstance, test_email) => {
+          $scope.dismiss = () => {
+            return $modalInstance.dismiss();
+          };
 
-          $scope.showLog = =>
-            $scope.showing_log = true
+          $scope.showLog = () => {
+            return $scope.showing_log = true;
+          };
 
-          $scope.test_email = test_email
-          me.setupTestModalScope($scope)
+          $scope.test_email = test_email;
+          me.setupTestModalScope($scope);
 
-          testNow = =>
-            $scope.testing_started = true
-            $scope.showing_log = false
-            $scope.is_testing = true
+          const testNow = () => {
+            $scope.testing_started = true;
+            $scope.showing_log = false;
+            $scope.is_testing = true;
 
-            if not test_email.from
-              test_email.from = me.form_model.form.address
+            if (!test_email.from) {
+              test_email.from = me.form_model.form.address;
+            }
 
-            me.loadOutgoingAccountTest().success( (result) =>
-              $scope.is_testing    = false
-              $scope.is_success    = result.is_success
-              $scope.log           = result.log
-              $scope.message_count = result.message_count
-            ).error( (result) =>
-              if result.status == 0 or result.status == 524
-                $scope.showing_log   = true
-                $scope.is_testing    = false
-                $scope.is_success    = false
-                $scope.log           = "The test failed due to a network problem. For example, the test may have timed out due to a firewall blocking it."
-                $scope.message_count = 0
-              else
-                $scope.showing_log   = true
-                $scope.is_testing    = false
-                $scope.is_success    = false
-                $scope.log           = "Server Error"
-                $scope.message_count = 0
-            )
+            return me.loadOutgoingAccountTest().success( result => {
+              $scope.is_testing    = false;
+              $scope.is_success    = result.is_success;
+              $scope.log           = result.log;
+              return $scope.message_count = result.message_count;
+            }).error( result => {
+              if ((result.status === 0) || (result.status === 524)) {
+                $scope.showing_log   = true;
+                $scope.is_testing    = false;
+                $scope.is_success    = false;
+                $scope.log           = "The test failed due to a network problem. For example, the test may have timed out due to a firewall blocking it.";
+                return $scope.message_count = 0;
+              } else {
+                $scope.showing_log   = true;
+                $scope.is_testing    = false;
+                $scope.is_success    = false;
+                $scope.log           = "Server Error";
+                return $scope.message_count = 0;
+              }
+            });
+          };
 
-          resetTest = =>
-            $scope.testing_started = false
+          const resetTest = () => {
+            return $scope.testing_started = false;
+          };
 
-          $scope.testNow = ->
-            testNow()
-          $scope.resetTest = ->
-            resetTest()
+          $scope.testNow = () => testNow();
+          return $scope.resetTest = () => resetTest();
+        }
         ]
       });
+    }
 
-    handleBrand: (brandId, e) ->
-      index = @form_model.form.brands.indexOf brandId
-      if index == -1
-        @form_model.form.brands.unshift brandId
-      else
-        if (@form_model.form.brands.length > 1)
-          @form_model.form.brands.splice(index, 1)
-        else
-          alert "Account needs to be linked to at least one Brand"
-          $(e.target).prop("checked", true)
-          return true
+    handleBrand(brandId, e) {
+      const index = this.form_model.form.brands.indexOf(brandId);
+      if (index === -1) {
+        return this.form_model.form.brands.unshift(brandId);
+      } else {
+        if (this.form_model.form.brands.length > 1) {
+          return this.form_model.form.brands.splice(index, 1);
+        } else {
+          alert("Account needs to be linked to at least one Brand");
+          $(e.target).prop("checked", true);
+          return true;
+        }
+      }
+    }
 
-    getCode: (url) ->
-      newWindow = window.open(url, 'name', 'height=600,width=450');
-      if window.focus then newWindow.focus()
-
-
-
-    getAccessToken: (url, type) =>
-      if !(@$scope.form["#{type}_gmail_account"].code || '').length then return
-      url = url + '?code=' + encodeURIComponent(@$scope.form["#{type}_gmail_account"].code)
-      @$http({method: 'GET', url: url }).then (res) =>
-        if res.data?.error
-          @Growl.error(res.data.error)
-        else
-          @$scope.form["#{type}_gmail_account"].token = res.data.access_token
-          @$scope.form["#{type}_gmail_account"].refreshToken = res.data.refresh_token
-
-
-    onFileSelect: (files, type) ->
-      if (!@$scope.files)
-        @$scope.files = {}
-      @$scope.files[type] = files[0]
-      if (type == 'certificate')
-        @$scope.form.cert_file = files[0].name
-      else if (type == 'key')
-        @$scope.form.key_file = files[0].name
-
-    uploadFiles: () ->
-      return new Promise( (resolve, reject) =>
-        if (!@$scope.files || (!@$scope.files.certificate && !@$scope.files.key))
-          return resolve()
-        if (!@$scope.files.certificate || !@$scope.files.key)
-          return reject('You must add a certificate and a key')
-        @$upload.upload({
-          url: @Api2.formatUrl('/email_accounts/'+@form_model.account.id+'/encryption'),
-          data:{ cert: @$scope.files.certificate, key: @$scope.files.key, pass_phrase: @form_model.form.key_pass_phrase }
-        }).success( (data) =>
-          @setCertificate data.data.cert_blob
-          @setKey data.data.key_blob
-          return resolve()
-        ).error( (data) =>
-          return reject(data?.error_message || 'Error')
-        )
-      )
-
-    setCertificate: (blob) =>
-      if !blob?
-        @$scope.form.cert_file = null
-      else
-        @$scope.form.cert_file = blob.filename
-
-    setKey: (blob) =>
-      if !blob?
-        @$scope.form.key_file = null
-      else
-        @$scope.form.key_file = blob.filename
-
-    deleteCertificate: () =>
-      if @form_model.account.cert_blob
-        @Api2.sendDelete('/email_accounts/'+@form_model.account.id+'/certificate').success(() =>
-          @$scope.form.cert_file = null
-        )
-      else
-        @$scope.files.certificate = null
-        @$scope.form.cert_file = null
-
-
-    deleteKey: () =>
-      if @form_model.account.cert_blob
-        @Api2.sendDelete('/email_accounts/'+@form_model.account.id+'/key').success(() =>
-          @$scope.form.key_file = null
-        )
-      else
-        @$scope.files.key = null
-        @$scope.form.key_file = null
+    getCode(url) {
+      const newWindow = window.open(url, 'name', 'height=600,width=450');
+      if (window.focus) { return newWindow.focus(); }
+    }
 
 
 
+    getAccessToken(url, type) {
+      if (!(this.$scope.form[`${type}_gmail_account`].code || '').length) { return; }
+      url = url + '?code=' + encodeURIComponent(this.$scope.form[`${type}_gmail_account`].code);
+      return this.$http({method: 'GET', url }).then(res => {
+        if (res.data != null ? res.data.error : undefined) {
+          return this.Growl.error(res.data.error);
+        } else {
+          this.$scope.form[`${type}_gmail_account`].token = res.data.access_token;
+          return this.$scope.form[`${type}_gmail_account`].refreshToken = res.data.refresh_token;
+        }
+      });
+    }
 
-  Admin_TicketAccounts_Ctrl_Edit.EXPORT_CTRL()
+
+    onFileSelect(files, type) {
+      if (!this.$scope.files) {
+        this.$scope.files = {};
+      }
+      this.$scope.files[type] = files[0];
+      if (type === 'certificate') {
+        return this.$scope.form.cert_file = files[0].name;
+      } else if (type === 'key') {
+        return this.$scope.form.key_file = files[0].name;
+      }
+    }
+
+    uploadFiles() {
+      return new Promise( (resolve, reject) => {
+        if (!this.$scope.files || (!this.$scope.files.certificate && !this.$scope.files.key)) {
+          return resolve();
+        }
+        if (!this.$scope.files.certificate || !this.$scope.files.key) {
+          return reject('You must add a certificate and a key');
+        }
+        return this.$upload.upload({
+          url: this.Api2.formatUrl(`/email_accounts/${this.form_model.account.id}/encryption`),
+          data:{ cert: this.$scope.files.certificate, key: this.$scope.files.key, pass_phrase: this.form_model.form.key_pass_phrase }
+        }).success( data => {
+          this.setCertificate(data.data.cert_blob);
+          this.setKey(data.data.key_blob);
+          return resolve();
+        }).error( data => {
+          return reject((data != null ? data.error_message : undefined) || 'Error');
+        });
+      });
+    }
+
+    setCertificate(blob) {
+      if ((blob == null)) {
+        return this.$scope.form.cert_file = null;
+      } else {
+        return this.$scope.form.cert_file = blob.filename;
+      }
+    }
+
+    setKey(blob) {
+      if ((blob == null)) {
+        return this.$scope.form.key_file = null;
+      } else {
+        return this.$scope.form.key_file = blob.filename;
+      }
+    }
+
+    deleteCertificate() {
+      if (this.form_model.account.cert_blob) {
+        return this.Api2.sendDelete(`/email_accounts/${this.form_model.account.id}/certificate`).success(() => {
+          return this.$scope.form.cert_file = null;
+        });
+      } else {
+        this.$scope.files.certificate = null;
+        return this.$scope.form.cert_file = null;
+      }
+    }
+
+
+    deleteKey() {
+      if (this.form_model.account.cert_blob) {
+        return this.Api2.sendDelete(`/email_accounts/${this.form_model.account.id}/key`).success(() => {
+          return this.$scope.form.key_file = null;
+        });
+      } else {
+        this.$scope.files.key = null;
+        return this.$scope.form.key_file = null;
+      }
+    }
+  }
+  Admin_TicketAccounts_Ctrl_Edit.initClass();
+
+
+
+
+  return Admin_TicketAccounts_Ctrl_Edit.EXPORT_CTRL();
+});
+
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}

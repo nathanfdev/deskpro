@@ -1,116 +1,147 @@
-define ->
-  Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', '$timeout', ($state, DashboardWidgetService, $timeout) ->
-    return {
+/*
+ * decaffeinate suggestions:
+ * DS102: Remove unnecessary code created because of implicit returns
+ * DS207: Consider shorter variations of null checks
+ * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
+ */
+define(function() {
+  const Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', '$timeout', ($state, DashboardWidgetService, $timeout) =>
+    ({
     restrict: 'E',
     replace: true,
-    scope:
-      widgetId: '@'
+    scope: {
+      widgetId: '@',
       loaded: '@'
-    template: """
-      <div style="height: auto">
-        <div ng-hide='loaded' class="stat-value no-data">loading...</div>
-        <div ng-show='loaded && noData' class="box stat-box"><div class="stat-value no-data">no data</div></div>
-        <div ng-show='loaded' class="stat">
-            <div class="stat-value"></div>
-            <div class="stat-description"></div>
-        </div>
-      </div>
-    """
-    link: (scope, element, attrs) ->
-      scope.loaded = false
+    },
+    template: `\
+<div style="height: auto">
+  <div ng-hide='loaded' class="stat-value no-data">loading...</div>
+  <div ng-show='loaded && noData' class="box stat-box"><div class="stat-value no-data">no data</div></div>
+  <div ng-show='loaded' class="stat">
+      <div class="stat-value"></div>
+      <div class="stat-description"></div>
+  </div>
+</div>\
+`,
+    link(scope, element, attrs) {
+      scope.loaded = false;
 
-      initValue = (result) ->
-        scope.loaded = true
+      const initValue = function(result) {
+        let options;
+        scope.loaded = true;
 
-        el = $(element)
-        box = el.parent()
+        const el = $(element);
+        const box = el.parent();
 
-        if !result
-          return
+        if (!result) {
+          return;
+        }
 
-        scope.noData = false
+        scope.noData = false;
 
-        try
-          options = if result.options then JSON.parse(result.options) else {}
-        catch e
-          options = {}
-          console.warn("invalid options")
-          console.log(e)
+        try {
+          options = result.options ? JSON.parse(result.options) : {};
+        } catch (e) {
+          options = {};
+          console.warn("invalid options");
+          console.log(e);
+        }
 
-        data = if result.data then JSON.parse(result.data) else []
+        const data = result.data ? JSON.parse(result.data) : [];
 
-        if options.click_url?
-          vars = {};
-          matches = options?.click_url.match(/\$\{([a-zA-z0-9_]+)\}/)
-          url = options.click_url
+        if (options.click_url != null) {
+          const vars = {};
+          const matches = options != null ? options.click_url.match(/\$\{([a-zA-z0-9_]+)\}/) : undefined;
+          let url = options.click_url;
 
-          for match, index in matches
-            if index % 2 == 1
-              vars[match] = matches[index - 1]
-            for key, variable of vars
-              if data[key]?
-                url = url.replace(variable, data[key])
+          for (let index = 0; index < matches.length; index++) {
+            const match = matches[index];
+            if ((index % 2) === 1) {
+              vars[match] = matches[index - 1];
+            }
+            for (let key in vars) {
+              const variable = vars[key];
+              if (data[key] != null) {
+                url = url.replace(variable, data[key]);
+              }
+            }
+          }
 
-          box.css {cursor: 'pointer'}
-          box.click () -> window.open url
+          box.css({cursor: 'pointer'});
+          box.click(() => window.open(url));
+        }
 
-        valueElement = el.find('.stat-value')
-        valueElement.html(result.value)
-        if result.description
-          el.find('.stat-description').html(result.description)
-        else
-          el.find('.stat-description').remove()
+        const valueElement = el.find('.stat-value');
+        valueElement.html(result.value);
+        if (result.description) {
+          return el.find('.stat-description').html(result.description);
+        } else {
+          return el.find('.stat-description').remove();
+        }
+      };
 
-      if attrs.jsCode
-        try
-          eval(attrs.jsCode)
-        catch e
-          console.log(e)
+      if (attrs.jsCode) {
+        try {
+          eval(attrs.jsCode);
+        } catch (error) {
+          const e = error;
+          console.log(e);
+        }
 
-        if promise and promise.then
-          promise.then (response) ->
-            scope.loaded = true
-            scope.noData = true
-            $timeout(->
-              initValue(response)
-            ,1)
-      else if attrs.value
-        $timeout(->
-          initValue(attrs)
-        ,1)
-      else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
-        DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
-          scope.loaded = true
-          scope.noData = true
-          if renderedResult
-            initValue(renderedResult)
-      else
+        if (promise && promise.then) {
+          promise.then(function(response) {
+            scope.loaded = true;
+            scope.noData = true;
+            return $timeout(() => initValue(response)
+            ,1);
+          });
+        }
+      } else if (attrs.value) {
+        $timeout(() => initValue(attrs)
+        ,1);
+      } else if (DashboardWidgetService.widgetsResults && DashboardWidgetService.widgetsResults[scope.widgetId]) {
+        DashboardWidgetService.widgetsResults[scope.widgetId].promise.then(renderedResult => {
+          scope.loaded = true;
+          scope.noData = true;
+          if (renderedResult) {
+            return initValue(renderedResult);
+          }
+        });
+      } else {
         DashboardWidgetService
           .getWidget(scope.widgetId || 0)
-          .then (widget) =>
-            scope.loaded = true
-            scope.noData = true
-            if widget? && widget.rendered_result
-              initValue(widget.rendered_result)
+          .then(widget => {
+            scope.loaded = true;
+            scope.noData = true;
+            if ((widget != null) && widget.rendered_result) {
+              return initValue(widget.rendered_result);
+            }
+        });
+      }
 
-      # dynamic handler position
-      el = $(element)
-      box = el.parent()
-      listItem = box.parent()
+      // dynamic handler position
+      const el = $(element);
+      const box = el.parent();
+      const listItem = box.parent();
 
-      listItem.scroll () ->
+      return listItem.scroll(function() {
 
-        valueElementTop = box.offset().top - 47 - listItem.offset().top
+        const valueElementTop = box.offset().top - 47 - listItem.offset().top;
 
-        resHandlers = listItem.find('.gridster-item-resizable-handler')
+        const resHandlers = listItem.find('.gridster-item-resizable-handler');
 
-        resHandlers.each (index, element) ->
-          h = $(this)
-          c = 1 + valueElementTop
-          h[0].style.bottom = "#{c}px"
-
-
+        return resHandlers.each(function(index, element) {
+          const h = $(this);
+          const c = 1 + valueElementTop;
+          return h[0].style.bottom = `${c}px`;
+        });
+      });
     }
-  ]
 
-  return Reports_Directive_DashboardStat
+
+    })
+  
+  ];
+
+  return Reports_Directive_DashboardStat;
+});
