@@ -71,7 +71,8 @@ define [
         @pollTimer = null
         res.data.data.forEach((feature) =>
           if @features[feature.id].processing == true && feature.processing == false
-            @Growl.success 'Feature ' + feature.title + ' successfully ' + if feature.enabled then 'enabled' else 'disabled' + '!'
+            enDisStr = if feature.enabled then 'enabled' else 'disabled'
+            @Growl.success 'Feature ' + feature.title + ' successfully ' + enDisStr + '!'
           if feature.processing then @pollFeatures()
           @features[feature.id] = feature
         )

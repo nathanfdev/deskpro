@@ -137,7 +137,8 @@ define [
         @pollTimer = null
         res.data.data.forEach((feature) =>
           if @features[feature.id].processing == true && feature.processing == false
-            @Growl.success 'Feature ' + feature.title + ' successfully ' + if feature.enabled then 'enabled' else 'disabled' + '!'
+            enDisStr = if feature.enabled then 'enabled' else 'disabled'
+            @Growl.success 'Feature ' + feature.title + ' successfully ' + enDisStr + '!'
           if feature.processing then @pollFeatures()
           @features[feature.id] = feature
         )
@@ -193,7 +194,12 @@ define [
     loadConfigPhpTest: ->
       checkUrl = DP_BASE_URL + 'app/run/test_ping.html'
 
-      @$scope.config_php_url = location.protocol+'//'+location.hostname+(if location.port then ':' + location.port else '')+checkUrl
+      if location.port
+        portStr = ':'
+        portStr += location.port
+      else
+        portStr = ''
+      @$scope.config_php_url = location.protocol+'//'+location.hostname+portStr+checkUrl
 
       @$http({
         method: 'GET',
@@ -227,8 +233,11 @@ define [
         })
 
         p.success( (res) ->
-          if not res then res = ''
-          if res.indexOf("HTTP_METHOD_#{typeU}") != -1
+          if not res
+            res = ''
+          method = "HTTP_METHOD_"
+          method += typeU
+          if res.indexOf(method) != -1
             http_method[type] = true
           else
             http_method[type] = false
