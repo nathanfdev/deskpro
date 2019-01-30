@@ -8,10 +8,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
@@ -19,7 +16,6 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Handles active phone call controls panel.
@@ -106,6 +102,12 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
+
+        // if call target is an agent, redirect to voicemail immediately
+        $task = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
+        if ($task && $this->get('dp.voice.voice_task_helper')->getWorkerAgent($task)) {
+            $this->get('dp.voice.voicemail_helper')->transferToVoicemail($phoneCall);
+        }
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -473,14 +475,7 @@ class VoiceClientPhoneCallController extends BaseController
         // try to end call for cold transfer
         // redirect user to voicemail
         if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
-            $this->get('dp.voice.provider_helper')->transferCall(
-                $phoneCall,
-                $this->getVoicemailUrl(
-                    $phoneCall->getNumber()->getAccount(),
-                    $this->get('dp.voice.assets_helper')->getVoicemailAsset($phoneCall->getTaskSid())
-                ),
-                'POST'
-            );
+            $this->get('dp.voice.voicemail_helper')->transferToVoicemail($phoneCall);
         }
 
         return new View($this->wrap($phoneCall));
@@ -537,30 +532,5 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         return $agent;
-    }
-
-    /**
-     * @param mixed              $account
-     * @param AbstractVoiceAsset $asset
-     *
-     * @throws \RuntimeException
-     *
-     * @return string
-     */
-    private function getVoicemailUrl($account, AbstractVoiceAsset $asset = null)
-    {
-        if ($account instanceof TwilioVoiceAccount) {
-            $route = 'twilio_voicemail';
-        } elseif ($account instanceof PlivoVoiceAccount) {
-            $route = 'plivo_voicemail';
-        } else {
-            throw new \RuntimeException('Unknown account type');
-        }
-
-        return $this->get('router')->generate($route, [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-            'asset'       => $asset ? $asset->getId() : null,
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 }

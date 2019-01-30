@@ -13,6 +13,7 @@ services:
       - "@dp.voice.worker_helper"
       - "@dp.voice.task_router.storage"
       - "@event_dispatcher"
+      - "@router"
 
   dp.voice.assets_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceAssetHelper
@@ -36,3 +37,10 @@ services:
       - "@twilio_adapter"
       - "@plivo_adapter"
       - "@event_dispatcher"
+
+  dp.voice.voicemail_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoicemailHelper
+    arguments:
+      - "@router"
+      - "@dp.voice.assets_helper"
+      - "@dp.voice.provider_helper"

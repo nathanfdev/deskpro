@@ -7,14 +7,12 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceOutboundCallType;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles client actions.
@@ -51,35 +49,6 @@ class VoiceClientController extends BaseController
         );
 
         return new View($this->wrap($clientTokens));
-    }
-
-    /**
-     * @ApiDoc(
-     *     description="Declines and ignores incoming phone call",
-     *     statusCodes={
-     *         204="Returned if everything is ok"
-     *     },
-     *     noInput=true
-     * )
-     *
-     * @Rest\Put("/reject_call/{taskSid}")
-     *
-     * @param string $taskSid
-     *
-     * @return View
-     */
-    public function rejectCallAction($taskSid)
-    {
-        $phoneCall = $this->getManager()->getRepository(VoicePhoneCall::class)->findOneBy([
-            'taskSid' => $taskSid,
-        ]);
-
-        if ($phoneCall) {
-            $this->get('dp.voice.callbacks_helper')->rejectIncomingPhoneCall($phoneCall, $this->getUser());
-            $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
-        }
-
-        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**
