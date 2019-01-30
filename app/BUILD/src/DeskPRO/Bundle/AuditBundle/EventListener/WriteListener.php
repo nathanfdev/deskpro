@@ -41,6 +41,14 @@ class WriteListener
     }
 
     /**
+     * @param LogEvent $event
+     */
+    public function onFinishAll()
+    {
+        $this->getLogService()->finishWriting();
+    }
+
+    /**
      * @param PostFlushEventArgs $event
      */
     public function postFlush(PostFlushEventArgs $event)

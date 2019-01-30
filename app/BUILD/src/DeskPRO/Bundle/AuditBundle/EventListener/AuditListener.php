@@ -146,6 +146,7 @@ class AuditListener
             }
             $this->doProcess(self::INSERT, $entity);
         }
+        $this->dispatcher->dispatch(LogEvent::FINISH_ALL_EVENT);
     }
 
     private function processDeletions()
@@ -156,6 +157,7 @@ class AuditListener
             }
             $this->doProcess(self::REMOVE, $entity);
         }
+        $this->dispatcher->dispatch(LogEvent::FINISH_ALL_EVENT);
     }
 
     private function processUpdates()
@@ -166,6 +168,7 @@ class AuditListener
             }
             $this->doProcess(self::UPDATE, $entity);
         }
+        $this->dispatcher->dispatch(LogEvent::FINISH_ALL_EVENT);
     }
 
     /**

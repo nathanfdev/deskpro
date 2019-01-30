@@ -16,6 +16,8 @@ interface StorageInterface
      */
     public function write(LoggableInterface $log);
 
+    public function finishWriting();
+
     /**
      * @param mixed $id
      *

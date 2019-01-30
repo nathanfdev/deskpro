@@ -66,6 +66,11 @@ class AuditLogService
         return $concreteLog;
     }
 
+    public function finishWriting()
+    {
+        $this->storage->finishWriting();
+    }
+
     /**
      * @param $id
      *
