@@ -245,10 +245,8 @@ class TicketType extends AbstractType
                 'agent_interface'       => false,
                 'admin_api_key_request' => false,
             ])
-            ->setDefined(['context'])
             ->setAllowedTypes('admin_api_key_request', 'bool')
             ->setAllowedTypes('person', Person::class)
-            ->setAllowedValues('context', ['agent', 'user', null])
         ;
     }
 
