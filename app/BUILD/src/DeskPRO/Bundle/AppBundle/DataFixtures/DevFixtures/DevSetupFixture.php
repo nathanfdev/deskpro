@@ -104,7 +104,9 @@ class DevSetupFixture extends AbstractDpFixture implements OrderedFixtureInterfa
         $key->person = $person;
         $key->code   = 'dev-admin-code';
         $key->note   = 'dev-admin-code';
-        $keyAction   = new ApiKeyAction();
+        $key->addFlag(ApiKey::FLAG_API_V1);
+        $key->addFlag(ApiKey::FLAG_API_V2);
+        $keyAction = new ApiKeyAction();
         $keyAction->setKey($key)->setAction('*');
         $manager->persist($key);
         $manager->persist($keyAction);
