@@ -137,6 +137,13 @@ class VoicePhoneCall
     private $recording;
 
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $recordingDeleted;
+
+    /**
      * @JMS\Type("integer")
      *
      * @var int
@@ -174,6 +181,7 @@ class VoicePhoneCall
         $this->dateStarted        = $phoneCall->getDateStarted();
         $this->dateEnded          = $phoneCall->getDateEnded();
         $this->recording          = $phoneCall->getRecording();
+        $this->recordingDeleted   = $phoneCall->isRecordingDeleted();
         $this->duration           = $phoneCall->getDuration();
 
         if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {

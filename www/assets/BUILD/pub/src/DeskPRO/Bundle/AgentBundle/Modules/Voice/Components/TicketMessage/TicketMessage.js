@@ -141,7 +141,8 @@ class TicketMessage extends React.Component {
                 <i className="icon call" /> Call {phoneCall.get('external_number')}
               </Button>}
               {recording && <MediaControls recording={recording} />}
-              {!recording && recordingEnabled ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
+              {!recording && recordingEnabled && !phoneCall.get('recording_deleted') ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
+              {phoneCall.get('recording_deleted') && 'This call recording has been deleted.'}
               {recordingProcessed && !recording && !recordingEnabled ? 'This call was not recorded.' : ''}
             </div>}
           {transcript &&

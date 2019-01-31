@@ -200,6 +200,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $recording;
 
     /**
+     * @ORM\Column(name="recording_deleted", type="boolean")
+     *
+     * @var bool
+     */
+    private $recordingDeleted = false;
+
+    /**
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord", mappedBy="phoneCall")
      *
      * @var VoicemailRecord
@@ -670,6 +677,26 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function setRecording(Blob $recording = null)
     {
         $this->setModelField('recording', $recording);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRecordingDeleted()
+    {
+        return $this->recordingDeleted;
+    }
+
+    /**
+     * @param bool $recordingDeleted
+     *
+     * @return $this
+     */
+    public function setRecordingDeleted($recordingDeleted)
+    {
+        $this->setModelField('recordingDeleted', $recordingDeleted);
 
         return $this;
     }

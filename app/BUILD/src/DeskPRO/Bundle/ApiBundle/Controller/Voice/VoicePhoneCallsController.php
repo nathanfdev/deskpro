@@ -73,6 +73,7 @@ class VoicePhoneCallsController extends CrudController
         $recording = $phoneCall->getRecording();
         if ($recording) {
             $phoneCall->setRecording(null);
+            $phoneCall->setRecordingDeleted(true);
             $em->persist($phoneCall);
 
             $ticketLog = new TicketLog();
