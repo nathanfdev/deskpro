@@ -294,7 +294,7 @@ class ContentTypes
         // first 100 chars enough to detect mime type
         $dataUrl = substr($dataUrl, 0, 100);
 
-        $regexp  = '/^(data:)([\w\/\+]+);(charset=[\w-]+|base64).*,(.*)/i';
+        $regexp  = '/^(data:)(\/\/)?([a-zA-Z0-9\-\/]+)(;|,)/i';
         $matches = [];
 
         $res = preg_match($regexp, $dataUrl, $matches);
@@ -302,7 +302,7 @@ class ContentTypes
             return;
         }
 
-        return $matches[2];
+        return $matches[3];
     }
 
     /**
