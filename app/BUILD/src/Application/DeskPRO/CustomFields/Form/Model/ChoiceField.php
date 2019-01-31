@@ -243,6 +243,8 @@ class ChoiceField extends CustomFieldAbstract
             $ch = $choices[$cinfo['id']];
             if ($cinfo['parent_id'] && isset($choices[$cinfo['parent_id']]) && $ch->getOption('parent_id') != $choices[$cinfo['parent_id']]->id) {
                 $ch->setOption('parent_id', $choices[$cinfo['parent_id']]->id);
+            } elseif (array_key_exists($cinfo['parent_id']) && $cinfo['parent_id'] === null) {
+                $ch->setOption('parent_id', null);
             }
 
             if (!empty($cinfo['title']) && $cinfo['title'] != $ch->title) {
