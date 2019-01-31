@@ -147,7 +147,7 @@ class MarkdownEditor extends React.Component {
       this.importHtml(data.getData('text/html'));
       event.preventDefault();
     } else {
-      this.getItemsToUpload(data.items);
+      this.getItemsToUpload(data.items, event);
     }
   };
 
@@ -172,7 +172,7 @@ class MarkdownEditor extends React.Component {
     return this.codeMirror;
   }
 
-  getItemsToUpload = (items) => {
+  getItemsToUpload = (items, event) => {
     for (const item of Array.values(items)) {
       if ((item.kind === 'file') && (item.type.match('^image/'))) {
         // Drag data item is an image file
@@ -183,8 +183,8 @@ class MarkdownEditor extends React.Component {
           formData.append('name', blob.name);
 
           const reader = new FileReader();
-          reader.onload = (event) => {
-            formData.append('file', event.target.result);
+          reader.onload = (e) => {
+            formData.append('file', e.target.result);
             this.props.onAddFile(formData, this.appendImage);
           };
           reader.readAsDataURL(blob);

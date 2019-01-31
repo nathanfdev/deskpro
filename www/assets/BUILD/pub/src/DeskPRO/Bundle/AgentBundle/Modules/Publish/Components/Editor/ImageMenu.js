@@ -81,7 +81,7 @@ class ImageMenu extends React.Component {
 
   renderImage = () => {
     if (this.state.image) {
-      return <img className="preview-image" src={`/file.php/${this.state.image}`} width={300} role="presentation" />;
+      return <img className="preview-image" src={`/file.php/${this.state.image}`} role="presentation" />;
     }
     return null;
   };

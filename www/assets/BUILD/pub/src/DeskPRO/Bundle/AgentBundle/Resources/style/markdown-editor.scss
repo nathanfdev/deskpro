@@ -100,6 +100,8 @@ $button-gutter: 4px;
 #markdown-add-image {
   .preview-image {
     margin-top: 5px;
+    max-width: 300px;
+    max-height: 200px;
   }
   .upload_topic_image {
     display: none;
