@@ -43,8 +43,11 @@ trait TicketSaveTrait
         }
 
         $person = $this->getPersonForExecutorContext($ticket, $options);
-        if (($person && $person->isAgent()) || $eventMethod === ExecutorContext::METHOD_MOBILE || $ticket->getId()) {
-            $context = $manager->createAgentExecutorContext($person, $event, $eventMethod, ['api_v2' => true]);
+        if (($person && $person->isAgent())
+            || $eventMethod === ExecutorContext::METHOD_MOBILE
+            || in_array($event, [ExecutorContext::EVENT_UPDATE, ExecutorContext::EVENT_DELETE])
+        ) {
+            $context = $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod, ['api_v2' => true]);
         } else {
             $context = $manager->createUserExecutorContext($person, $event, $eventMethod, ['api_v2' => true]);
         }

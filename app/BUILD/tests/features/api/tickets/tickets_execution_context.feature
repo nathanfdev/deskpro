@@ -64,7 +64,7 @@ Feature: /tickets endpoint
     """
     And the response status code should be 204
     And the "{t1}" ticket should have "action_starter" log with detail "event" = "update"
-    And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "user"
+    And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
 
   Scenario: I add ticket message as Agent
     Given only the following Ticket records exist:
