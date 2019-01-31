@@ -225,7 +225,12 @@ class LanguageController extends AbstractApiController
         }
 
         $translatedPhrases = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
-            return [$id, $translate->phrase($id, [], $language)];
+            $phraseText = $translate->phrase($id, [], $language);
+            if (!$phraseText && $translate->hasPhrasePlural($id, $language)) {
+                $phraseText = $translate->getPhrasePluralTexts($id, $language);
+            }
+
+            return [$id, $this->convertToIcu($phraseText ?: "!$id!")];
         });
 
         $serialized = $this->get('serializer')->toArray(new WidgetPhrases($translatedPhrases, $language));
@@ -242,5 +247,26 @@ class LanguageController extends AbstractApiController
         // - when langs are updated (need some global uid that changes when admin edits phrase)
 
         return $response;
+    }
+
+    private function convertToIcu($phrase)
+    {
+        // plural categories case
+        if (is_array($phrase)) {
+            $res = '{count, plural,';
+            foreach ($phrase as $cat => $phraseText) {
+                $phraseText = str_replace('{{', '{', $phraseText);
+                $phraseText = str_replace('}}', '}', $phraseText);
+                $res .= "\n{$cat} {{$phraseText}}";
+            }
+            $res .= "\n}";
+
+            return $res;
+        }
+
+        $phrase = str_replace('{{', '{', $phrase);
+        $phrase = str_replace('}}', '}', $phrase);
+
+        return $phrase;
     }
 }

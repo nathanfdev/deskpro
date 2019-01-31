@@ -14,6 +14,10 @@ class PortalPhrases {
     this.direction = phrases.direction || 'LTR';
   }
 
+  getPhrases() {
+    return this.phrases;
+  }
+
   get(phraseId, vars) {
     // Prevent to complain before getting any translation
     if (Object.keys(this.phrases).length === 0) {
