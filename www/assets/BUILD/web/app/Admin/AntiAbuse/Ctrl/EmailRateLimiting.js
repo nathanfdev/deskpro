@@ -1,11 +1,3 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   const _url = '/email_accounts/settings';
   class Admin_AntiAbuse_Ctrl_EmailRateLimiting extends Admin_Ctrl_Base {

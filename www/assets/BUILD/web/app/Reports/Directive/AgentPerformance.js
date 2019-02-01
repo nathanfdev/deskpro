@@ -1,11 +1,3 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 define(['DeskPRO/Util/Strings'], function(Strings) {
   const Reports_Directive_AgentPerformance = ['$compile', '$sce', 'AgentActivityService', 'AgentHoursService', '$http', ($compile, $sce, AgentActivityService, AgentHoursService, $http) =>
     ({

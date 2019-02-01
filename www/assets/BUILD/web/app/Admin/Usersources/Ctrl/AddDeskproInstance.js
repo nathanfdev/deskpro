@@ -1,11 +1,3 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS206: Consider reworking classes to avoid initClass
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
 , function(Admin_Usersources_Ctrl_EditDeskproInstance, Util) {
   class Admin_Usersources_Ctrl_AddDeskproInstance extends Admin_Usersources_Ctrl_EditDeskproInstance {
