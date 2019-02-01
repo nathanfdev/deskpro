@@ -1,9 +1,9 @@
 define([
   'Reports/Main/Ctrl/Base',
-  'moment',
+  'moment'
 ], function(
   ReportsBaseCtrl,
-  moment,
+  moment
 ) {
   class Reports_AgentHours_Ctrl_AgentHours extends ReportsBaseCtrl {
     static initClass() {

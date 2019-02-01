@@ -5,7 +5,7 @@ define([
   'DeskPRO/Main/Service/DpApi',
   'DeskPRO/Main/Service/DpApi2',
   'DeskPRO/Main/Service/Growl',
-  'DeskPRO/Main/Service/InhelpState',
+  'DeskPRO/Main/Service/InhelpState'
 ], (
   Util,
   Strings,
@@ -13,7 +13,7 @@ define([
   DeskPRO_Main_Service_DpApi,
   DeskPRO_Main_Service_DpApi2,
   DeskPRO_Main_Service_Growl,
-  DeskPRO_Main_Service_InhelpState,
+  DeskPRO_Main_Service_InhelpState
 ) =>
   function(Module) {
     Module.service('AppState', ['$rootScope', '$state', ($rootScope, $state) => new DeskPRO_Main_Service_AppState($rootScope, $state)
@@ -26,7 +26,7 @@ define([
         window.DP_API_TOKEN,
         Growl
       )
-    
+
     ]);
 
     Module.service('Api2', ['$http', 'Growl', ($http, Growl) =>
@@ -36,7 +36,7 @@ define([
           window.DP_API_TOKEN,
           Growl
         )
-      
+
     ]);
 
     Module.service('InhelpState', ['Api', Api => new DeskPRO_Main_Service_InhelpState(Api)
@@ -47,12 +47,12 @@ define([
 
     Module.filter('escape_url', [ () =>
       text => encodeURIComponent(text)
-    
+
     ]);
 
     Module.filter('murmurhash', [ () =>
       text => Strings.murmurhash3(text)
-    
+
     ]);
 
     Module.filter('filesize_display', [ () =>
@@ -86,12 +86,12 @@ define([
 
         return result;
       }
-    
+
     ]);
 
     Module.filter('fulltime', ['$filter', $filter =>
       timestamp => $filter('date')(timestamp, 'EEEE, MMMM d, y h:mm a')
-    
+
     ]);
 
     // Add fcall() to $q service (like Kris Kowal's Q: https://github.com/kriskowal/q)
@@ -109,7 +109,7 @@ define([
         return $delegate;
       }
       ])
-    
+
     ]);
 
     return Module.config(['$provide', $provide =>
@@ -157,7 +157,7 @@ define([
         return $delegate;
       }
       ])
-    
+
     ]);
   }
 );

@@ -1,9 +1,9 @@
 define([
   'Reports/Main/Ctrl/Base',
-  'DeskPRO/Util/Util',
+  'DeskPRO/Util/Util'
 ], function(
   ReportsBaseCtrl,
-  Util,
+  Util
 ) {
   class Reports_Billing_Ctrl_List extends ReportsBaseCtrl {
     static initClass() {
@@ -33,7 +33,7 @@ define([
       ];
     }
 
-      
+
     /*
      * Loads 2 lists - first with custom reports, second with built-in reports
      */

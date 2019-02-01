@@ -2,12 +2,12 @@ define([
   'DeskPRO/Util/Angular',
   'DeskPRO/Util/Arrays',
   'DeskPRO/Util/Util',
-  'angular',
+  'angular'
 ], function(
   Util_Angular,
   Arrays,
   Util,
-  angular,
+  angular
 ) {
   /*
    * This is a simple base data service that implements some default functionality for

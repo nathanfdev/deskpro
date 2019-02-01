@@ -18,7 +18,7 @@ define([
 
   'Reports/Main/Service/SessionPing',
   'DeskPRO/Util/Util',
-  'DeskPRO/Main/Service/Growl',
+  'DeskPRO/Main/Service/Growl'
 ], (
   StateCollection,
   StateConfig,
@@ -41,7 +41,7 @@ define([
 
   Reports_Main_Service_SessionPing,
   Util,
-  DeskPRO_Main_Service_Growl,
+  DeskPRO_Main_Service_Growl
 ) =>
   function(Module) {
     Module.service('AppConfig', () => new AppConfig);
@@ -123,7 +123,7 @@ define([
           return $q.reject(rejection);
         }
       })
-    
+
     ]);
 
     Module.config(['$provide', $provide =>
@@ -209,7 +209,7 @@ define([
 
         return $delegate;
       })
-    
+
     ]);
 
     /*
@@ -222,10 +222,10 @@ define([
     ]);
     Module.service('em', [ () => new Admin_Main_DataService_EntityManager()
     ]);
-  
+
     Module.factory('DataService', [ '$injector', $injector => new Reports_App_Service_DataServiceManager($injector)
     ]);
-  
+
     Module.service('DashboardService', ['Api', 'Api2', '$q', (Api, Api2, $q) => new Reports_App_Service_Dashboard(Api, Api2, $q)
     ]);
     Module.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) => new Reports_App_Service_DashboardWidget(Api, Api2, $q)
@@ -246,7 +246,7 @@ define([
     Module.run(['SessionPing', SessionPing =>
       window.setTimeout(() => SessionPing.startInterval()
       , 20000)
-    
+
     ]);
     Module.run(['DashboardWidgetService', DashboardWidgetService => DashboardWidgetService.loadGroupParams()
     ]);

@@ -7,4 +7,4 @@ define([
   if (window.DP_IS_CLOUD) {
     console.info("Cloud Mode Enabled");
   }
-})
+});

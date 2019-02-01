@@ -16,7 +16,7 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
    $modal,
    DashboardsInfo,
    DashboardWidgetService,
-   DashboardService,
+   DashboardService
   ) {
     $scope.loaded = false;
     $scope.report = {

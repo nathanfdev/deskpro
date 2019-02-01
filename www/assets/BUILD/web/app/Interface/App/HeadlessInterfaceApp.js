@@ -33,7 +33,7 @@ define([
 
   'jquery',
   'moment',
-  'momentTimezone',
+  'momentTimezone'
 ], function(
   angular,
 
@@ -46,7 +46,7 @@ define([
   SetupDirectives,
   AppConfig,
   TemplateLoader,
-  TemplateManager,
+  TemplateManager
 ) {
   const HeadlessInterfaceApp = angular.module('DeskPRO.HeadlessInterfaceApp', [
     'ngAnimate',

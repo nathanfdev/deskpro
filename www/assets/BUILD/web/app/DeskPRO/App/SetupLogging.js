@@ -1,11 +1,11 @@
 define([
   'DeskPRO/Logger/Logger',
   'DeskPRO/Logger/Handler/ConsoleHandler',
-  'DeskPRO/Logger/Logging/InterfaceTimer',
+  'DeskPRO/Logger/Logging/InterfaceTimer'
 ], (
   Logger,
   Logger_ConsoleHandler,
-  DeskPRO_Logging_InterfaceTimer,
+  DeskPRO_Logging_InterfaceTimer
 ) =>
   function(Module) {
 
@@ -51,7 +51,7 @@ define([
           throw exception;
         }
       }
-    
+
     ]);
 
     Module.factory('dpInterfaceTimer', [ '$log', $log => new DeskPRO_Logging_InterfaceTimer($log)
@@ -63,7 +63,7 @@ define([
         return logger;
       }
       ])
-    
+
     ]);
   }
 );

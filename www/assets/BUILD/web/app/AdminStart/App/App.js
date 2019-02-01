@@ -6,13 +6,13 @@ define([
   'DeskPRO/Directive/DpNgTemplate',
 
   'angularRoute',
-  'angularBootstrap',
+  'angularBootstrap'
 ], function(
   angular,
   DeskPRO_Main_Service_DpApi,
   AppState,
   DeskPRO_Directive_DpJsonData,
-  DeskPRO_Directive_DpNgTemplate,
+  DeskPRO_Directive_DpNgTemplate
 ) {
   const AdminStartModule = angular.module('AdminStart_App', ['ngRoute', 'ui.bootstrap']);
 
@@ -41,7 +41,7 @@ define([
         return $q.reject(rejection);
       }
     })
-  
+
   ]);
 
   AdminStartModule.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('dpHttpInterceptor')
@@ -53,7 +53,7 @@ define([
       window.DP_BASE_API_URL,
       window.DP_API_TOKEN
     )
-  
+
   ]);
 
   AdminStartModule.service('AppState', ['Api', Api => new AppState(Api)
@@ -67,9 +67,9 @@ define([
           return window.DP_SESSION_ID = data.session_id;
         }
       })
-    
+
     , 30000)
-  
+
   ]);
 
   AdminStartModule.directive('script', DeskPRO_Directive_DpJsonData);
@@ -88,7 +88,7 @@ define([
     }).otherwise({
       redirectTo: '/'
     })
-  
+
   ]);
 
   return AdminStartModule;

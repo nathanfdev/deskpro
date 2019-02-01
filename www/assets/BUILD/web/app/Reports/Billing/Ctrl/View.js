@@ -1,7 +1,7 @@
 define([
-  'Reports/Main/Ctrl/Base',
+  'Reports/Main/Ctrl/Base'
 ], function(
-  ReportsBaseCtrl,
+  ReportsBaseCtrl
 ) {
   class Reports_Billing_Ctrl_View extends ReportsBaseCtrl {
     static initClass() {

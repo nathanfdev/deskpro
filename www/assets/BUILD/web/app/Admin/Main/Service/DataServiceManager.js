@@ -157,5 +157,5 @@ define([
     }
   }
 
-  return Admin_Main_Service_DataServiceManager
+  return Admin_Main_Service_DataServiceManager;
 });

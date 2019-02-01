@@ -1,9 +1,9 @@
 define([
   'Reports/Main/Ctrl/Base',
-  'moment',
+  'moment'
 ], function(
   ReportsBaseCtrl,
-  moment,
+  moment
 ) {
   class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl {
     static initClass() {

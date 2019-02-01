@@ -6,7 +6,7 @@ define(['Agent/AppPlatform/Context/TabContext/TabContext'], function(TabContext)
       return [
         ['$ticket', this.getFragment().meta.api_data],
         ['$person', this.getFragment().meta.api_data.person]
-      ]
+      ];
     },
 
     getTicketData: function() {

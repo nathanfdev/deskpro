@@ -16,7 +16,7 @@ define([
       log: function(){},
       warn: function(){},
       error: function(){}
-    }
+    };
   }
 
   return {
@@ -131,5 +131,5 @@ define([
         window.DeskPRO_Window.initAppPlatform(window.AppPlatform);
       }
     }
-  }
+  };
 });

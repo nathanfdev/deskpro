@@ -144,5 +144,5 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
       return formData;
     }
   }
-  return EditAgentModel
+  return EditAgentModel;
 });

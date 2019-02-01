@@ -3,13 +3,13 @@ define([
   'Reports/Builder/DataService/ReportBuilderCustom',
   'Reports/Builder/DataService/ReportBuilderBuiltIn',
   'Reports/Builder/DataService/ReportWidgetBuiltIn',
-  'Reports/Builder/DataService/ReportWidgetCustom',
+  'Reports/Builder/DataService/ReportWidgetCustom'
 ], function(
   Strings,
   DataService_ReportBuilderCustom,
   DataService_ReportBuilderBuiltIn,
   DataService_ReportWidgetBuiltIn,
-  DataService_ReportWidgetCustom,
+  DataService_ReportWidgetCustom
 ) {
   const serviceMap = {
     "DataService_ReportBuilderCustom": DataService_ReportBuilderCustom,

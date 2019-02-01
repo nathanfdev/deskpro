@@ -87,5 +87,5 @@ define([
 		}
 	}
 
-	return Admin_Brand_DataService_Brands
+	return Admin_Brand_DataService_Brands;
 });

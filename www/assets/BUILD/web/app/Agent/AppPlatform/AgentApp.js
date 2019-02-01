@@ -91,11 +91,11 @@ define([
 					config.url = assetPath;
 					config.dpIsAppAsset = true;
 				} else {
-					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/')
+					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/');
 				}
 
 				if (!config.headers) {
-					config.headers = {}
+					config.headers = {};
 				}
 				config.headers['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 
@@ -124,7 +124,7 @@ define([
 			}
 
 			return m.fromNow();
-		}
+		};
 	});
 
 	AgentApp.filter('formatTimestampCalendar', function() {
@@ -138,7 +138,7 @@ define([
 			}
 
 			return m.calendar();
-		}
+		};
 	});
 
 	AgentApp.filter('formatTimestamp', function() {
@@ -181,7 +181,7 @@ define([
 			}
 
 			return m.format(format);
-		}
+		};
 	});
 
 	AgentApp.filter('formatSeconds', function() {
@@ -191,7 +191,7 @@ define([
 			var nowTs = Date.now() / 1000;
 			var dt = new Date((nowTs - seconds) * 1000);
       return Orb.Util.TimeAgo.get(dt);
-		}
+		};
 	});
 
 	AgentApp.directive('dpTimeago', ['$interval', '$filter', function($interval, $filter) {
@@ -262,7 +262,7 @@ define([
 						}
             lastAnswer = timeago;
 					}
-        }
+        };
 
         if (!window.DP_DISABLE_RELATIVE_TIMES) {
           element.on('$destroy', function() {
@@ -305,7 +305,7 @@ define([
 
 	AgentApp.directive('dpTpl', ['$compile', '$timeout', function($compile, $timeout) {
 		var cache = {};
-		var errorHits = {}
+		var errorHits = {};
 		return {
 			restrict: 'AE',
 			replace: true,
@@ -346,7 +346,7 @@ define([
 						try {
 							newHtml = tpl.call(scope, scope);
 						} catch (e) {
-							console.error("Error rendering template: " + e + "\n" + (e.stack ? e.stack : 'no trace'))
+							console.error("Error rendering template: " + e + "\n" + (e.stack ? e.stack : 'no trace'));
 
 							if (!errorHits[attrs['tplId']]) {
 								errorHits[attrs['tplId']] = true;
@@ -575,7 +575,7 @@ define([
 					scope.$eval(attr.dpRemoved);
 				});
 			}
-		}
+		};
 	}]);
 
 	AgentApp.directive('dragToDownload', [function() {
@@ -584,7 +584,7 @@ define([
 				element.addClass('dragout');
 				DeskPRO_Window.util.filedownload(element);
 			}
-		}
+		};
 	}]);
 
 	AgentApp.directive('dpTextOverflow', [function() {
@@ -601,10 +601,10 @@ define([
 					};
 
 					if (attr['overflowAppendString']) {
-						options['ellipsis'] = attr['overflowAppendString']
+						options['ellipsis'] = attr['overflowAppendString'];
 					}
 					if (attr['overflowWrapType']) {
-						options['wrap'] = attr['overflowWrapType']
+						options['wrap'] = attr['overflowWrapType'];
 					}
 					if (typeof attr['overflowWatch'] != 'undefined') {
 						if (attr['overflowWatch'] == 'window') {
@@ -617,7 +617,7 @@ define([
 						options['height'] = parseInt(attr['overflowHeight']);
 					}
 					if (attr['overflowTolerance']) {
-						options['tolerance'] = attr['overflowTolerance']
+						options['tolerance'] = attr['overflowTolerance'];
 					}
 					if (attr['overflowCallback']) {
 						options['callback'] = scope.$eval(attr['overflowCallback']);
@@ -641,7 +641,7 @@ define([
 					init();
 				}
 			}
-		}
+		};
 	}]);
 
 	AgentApp.directive('dpSettableTable', ['$timeout', '$interval', function($timeout, $interval) {
@@ -675,7 +675,7 @@ define([
 				};
 
 				var updateDebounce = Functions.debounce(function() {
-					update()
+					update();
 				}, 300);
 
 				var updateIfChanged = function() {
@@ -721,7 +721,7 @@ define([
 					$(window).off('resize', updateDebounce);
 				});
 			}
-		}
+		};
 	}]);
 
 	AgentApp.directive('dpOmnibox', ['$http', '$timeout', function($http, $timeout) {
@@ -739,7 +739,7 @@ define([
 				var $input = $el.find('input');
 				var $results = $el.find('.dp-omnibox-results');
 				var $listPane = $('#dp_list');
-				var $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">')
+				var $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">');
 				var lastUpdateTime = null;
 
 				scope.notifsOpen = false;
@@ -858,7 +858,7 @@ define([
 				});
 
 				var debouncedUpdateSearch = Functions.debounce(function() {
-					updateSearch()
+					updateSearch();
 				}, 300);
 
 				scope.touchSearch = function() {
@@ -947,7 +947,7 @@ define([
 				};
 
 				var updateSearch = function() {
-					var t = (new Date()).getTime()
+					var t = (new Date()).getTime();
 
 					scope.isMainLoading = true;
 					$http({
@@ -1095,7 +1095,7 @@ define([
           DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_organization_id: org.id}, isBackgroundLoad: true});
         };
 			}
-		}
+		};
 	}]);
 
 	AgentApp.config(['$locationProvider', function($locationProvider) {

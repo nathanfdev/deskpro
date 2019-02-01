@@ -18,7 +18,7 @@ define([
   // Stats controllers
   'Reports/Stats/Ctrl/StatsMain',
   'Reports/Stats/Ctrl/StatsHome',
-  'Reports/Stats/Ctrl/WidgetView',
+  'Reports/Stats/Ctrl/WidgetView'
 ], (
   Reports_Main_New_Nav,
   Reports_Main_Ctrl_Headless,
@@ -39,7 +39,7 @@ define([
   // Stats controller
   Reports_Stats_Ctrl_StatsMain,
   Reports_Stats_Ctrl_StatsHome,
-  Reports_Stats_Ctrl_WidgetView,
+  Reports_Stats_Ctrl_WidgetView
 ) =>
   function(Module) {
     Module.controller('Reports.App.New.Nav',               Reports_Main_New_Nav);

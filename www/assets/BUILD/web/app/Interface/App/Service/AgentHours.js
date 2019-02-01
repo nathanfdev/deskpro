@@ -1,9 +1,9 @@
 define([
   'Reports/App/Service/BaseService',
-  'moment',
+  'moment'
 ], function(
   BaseService,
-  moment,
+  moment
 ) {
   class AgentHours extends BaseService {
     constructor(Api, $sce, $q) {

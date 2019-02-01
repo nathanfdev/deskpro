@@ -197,5 +197,5 @@ define([
     }
   }
 
-  return Admin_FeedbackCategories_DataService_FeedbackCategories
+  return Admin_FeedbackCategories_DataService_FeedbackCategories;
 });

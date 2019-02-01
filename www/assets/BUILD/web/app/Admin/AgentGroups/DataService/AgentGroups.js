@@ -1,7 +1,7 @@
 define([
-  'Admin/Main/DataService/BaseListEdit',
+  'Admin/Main/DataService/BaseListEdit'
 ], function(
-  Admin_Main_DataService_BaseListEdit,
+  Admin_Main_DataService_BaseListEdit
 )  {
   class Admin_AgentGroups_DataService_AgentGroups extends Admin_Main_DataService_BaseListEdit {
     static initClass() {

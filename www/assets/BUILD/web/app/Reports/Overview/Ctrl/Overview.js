@@ -1,9 +1,9 @@
 define([
   'Reports/Main/Ctrl/Base',
-  'DeskPRO/Util/Util',
+  'DeskPRO/Util/Util'
 ], function(
   ReportsBaseCtrl,
-  Util,
+  Util
 ) {
   class Reports_Overview_Ctrl_Overview extends ReportsBaseCtrl {
     static initClass() {

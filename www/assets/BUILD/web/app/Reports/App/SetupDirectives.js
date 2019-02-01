@@ -12,7 +12,7 @@ define([
   'DeskPRO/Directive/DpHideSpinning',
   'DeskPRO/Directive/DpShowSpinning',
   'DeskPRO/Directive/DpSubmitForm',
-  'DeskPRO/Directive/DpErrorClass',
+  'DeskPRO/Directive/DpErrorClass'
 ], (
   DeskPRO_Directive_DpClickHref,
   DeskPRO_Directive_DpTimeWithUnit,
@@ -27,7 +27,7 @@ define([
   DeskPRO_Directive_DpHideSpinning,
   DeskPRO_Directive_DpShowSpinning,
   DeskPRO_Directive_DpSubmitForm,
-  DeskPRO_Directive_DpErrorClass,
+  DeskPRO_Directive_DpErrorClass
 ) =>
   function(Module) {
     Module.directive('dpClickHref',              DeskPRO_Directive_DpClickHref);

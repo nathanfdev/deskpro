@@ -235,7 +235,7 @@ define(function() {
     url: '/{path:phrases\\-go\\-[a-zA-Z0-9\\._]+\\-[a-zA-Z0-9\\._]+}',
     templateName: 'Index/blank.html',
     controller: ['$state', '$stateParams', function ($state, $stateParams) {
-      var m = $stateParams.path.match(/^phrases\-go\-(.*?)\-(.*?)$/)
+      var m = $stateParams.path.match(/^phrases\-go\-(.*?)\-(.*?)$/);
       $state.go('setup.phrases.viewgroup', {id: 'phrases-' + m[1], groupId: m[2]});
     }]
   });
@@ -748,7 +748,7 @@ define(function() {
     url: '/view/{id:[0-9]+}',
     templateName: 'TicketFilterViews/edit.html',
     controller: 'Admin_TicketFilters_Ctrl_EditView'
-  })
+  });
 
   //###
   //# Satisfaction

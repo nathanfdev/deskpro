@@ -1,7 +1,7 @@
 define([
-  'Reports/Main/Ctrl/Base',
+  'Reports/Main/Ctrl/Base'
 ], function(
-  ReportsBaseCtrl,
+  ReportsBaseCtrl
 ) {
   class Reports_Builder_Ctrl_Edit extends ReportsBaseCtrl {
     static initClass() {

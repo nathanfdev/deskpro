@@ -1,7 +1,7 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
 ], function(
-  BaseListEdit,
+  BaseListEdit
 )  {
   class Admin_TicketTriggers_DataService_BaseTriggers extends BaseListEdit {
     static initClass() {

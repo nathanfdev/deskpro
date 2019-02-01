@@ -1,7 +1,7 @@
 define([
-  'moment',
+  'moment'
 ], function(
-  moment,
+  moment
 ) {
   class AgentActivity {
     constructor(Api, $sce) {

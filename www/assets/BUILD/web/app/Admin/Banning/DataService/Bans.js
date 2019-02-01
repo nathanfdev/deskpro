@@ -1,11 +1,11 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/Banning/IpBanEditFormMapper',
-  'Admin/Banning/EmailBanEditFormMapper',
+  'Admin/Banning/EmailBanEditFormMapper'
 ], function(
   BaseListEdit,
   IpBanEditFormMapper,
-  EmailBanEditFormMapper,
+  EmailBanEditFormMapper
 )  {
   class Bans extends BaseListEdit {
     static initClass() {

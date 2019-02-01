@@ -101,7 +101,7 @@
       }
 
       return undefined;
-    }
+    };
   }
 
   if (!Array.prototype.find)
@@ -123,6 +123,6 @@
       }
 
       return undefined;
-    }
+    };
   }
 })();

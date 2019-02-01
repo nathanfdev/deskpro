@@ -1,7 +1,7 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
 ], function(
-  BaseListEdit,
+  BaseListEdit
 )  {
   class Admin_TicketFilters_DataService_TicketFilters extends BaseListEdit {
     static initClass() {

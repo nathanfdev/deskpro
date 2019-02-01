@@ -35,7 +35,7 @@ define([
   'momentTimezone',
   'DeskPRO/Directive/DpDateTimePicker',
   'customEventPolyfill',
-  'toastr',
+  'toastr'
 ], function(
   angular,
 
@@ -46,7 +46,7 @@ define([
   SetupDeskPROService,
   SetupControllers,
   SetupServices,
-  SetupDirectives,
+  SetupDirectives
 ) {
   const InterfaceApp = angular.module('DeskPRO.InterfaceApp', [
     'ngAnimate',
@@ -105,7 +105,7 @@ define([
             return window.parent.DP_FRAME_OVERLAYS['reports-interface'].setHash(window.location.hash);
           }
         })
-      
+
       ]);
     }
   } catch (e) {

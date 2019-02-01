@@ -1,7 +1,7 @@
 define([
   'Admin/TicketTriggers/DataService/BaseTriggers'
 ], function(
-  BaseTriggers,
+  BaseTriggers
 )  {
   class Admin_TicketTriggers_DataService_TriggersReply extends BaseTriggers {
     static initClass() {

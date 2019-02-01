@@ -58,9 +58,9 @@ define([
         appContext = new contextClass(appInstanceInfo);
       } else {
         if (typeof contextClass.Extends == 'undefined') {
-          contextClass.Extends = AppContext
+          contextClass.Extends = AppContext;
         }
-        contextClass = new Orb.Class(contextClass)
+        contextClass = new Orb.Class(contextClass);
         appContext = new contextClass(appInstanceInfo);
       }
 

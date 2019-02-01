@@ -1,7 +1,7 @@
 define([
   'Reports/Builder/DataService/ReportBuiltInAbstract'
 ], function(
-  ReportsBuiltInAbstract,
+  ReportsBuiltInAbstract
 )  {
   class ReportBuilderBuiltIn extends ReportsBuiltInAbstract {
 

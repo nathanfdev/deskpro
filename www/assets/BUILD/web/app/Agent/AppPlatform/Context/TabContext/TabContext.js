@@ -230,7 +230,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
           }
         }, function() {
           deferred.reject();
-        })
+        });
       }]);
 
       return runner.deferred.promise;
@@ -338,7 +338,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
         locationPlace,
         self = this;
 
-      location = this.getElementLocationDef(location)
+      location = this.getElementLocationDef(location);
       locationSelector = location[0];
       locationPlace = location[1];
 
@@ -368,7 +368,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
             tplScope.$broadcast.apply(tplScope, arguments);
           });
 
-          ctrlLocals = ctrlLocals || {}
+          ctrlLocals = ctrlLocals || {};
           if (!ctrlLocals.containerElementId) {
             ctrlLocals.containerElementId = Orb.getUniqueId('app_context_');
           }
@@ -387,9 +387,9 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
           }
 
           element = angular.element('<div class="dp-app-context"></div>');
-          element.attr('id', ctrlLocals.containerElementId)
+          element.attr('id', ctrlLocals.containerElementId);
 
-          ctrlLocals.$el = $(element)
+          ctrlLocals.$el = $(element);
 
           tplCtrl = $controller(ctrl, ctrlLocals);
 
@@ -496,7 +496,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 
       // @some.location is shorthand for named positions in the source
       locationSelector = locationSelector.replace(/(?:^|\b)@([a-zA-Z0-9\-\._]+)\b/g, function (match, aliasName) {
-        return '#TAB_' + aliasName.replace(/[^a-zA-Z0-9_]/g, '_')
+        return '#TAB_' + aliasName.replace(/[^a-zA-Z0-9_]/g, '_');
       });
 
       // If it's using an ID, we need to prefix the tab uid to it

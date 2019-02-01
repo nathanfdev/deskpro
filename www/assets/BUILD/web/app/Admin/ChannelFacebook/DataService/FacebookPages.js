@@ -97,5 +97,5 @@ define([
     }
   }
 
-  return Admin_ChannelFacebook_DataService_FacebookPages
+  return Admin_ChannelFacebook_DataService_FacebookPages;
 });

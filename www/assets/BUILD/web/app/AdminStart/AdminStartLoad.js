@@ -14,7 +14,7 @@ define([
       log: function(){},
       warn: function(){},
       error: function(){}
-    }
+    };
   }
 
   return {
@@ -38,5 +38,5 @@ define([
         angular.bootstrap($html, ['AdminStart_App']);
       });
     }
-  }
+  };
 });

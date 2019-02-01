@@ -100,7 +100,7 @@ define([
       var fullPath = this._packageName + '/res/' + path.replace(/^\//, '');
 
       if (this._assets[fullPath]) {
-        return this._assets[fullPath] + '?v=' + (window.DP_BUILD_TIME || '')
+        return this._assets[fullPath] + '?v=' + (window.DP_BUILD_TIME || '');
       } else {
         return null;
       }
@@ -169,7 +169,7 @@ define([
 
         if (baseClass) {
           context.Extends = baseClass;
-          context = Orb.Class(context)
+          context = Orb.Class(context);
         }
       }
 
