@@ -26,6 +26,8 @@ class DownloadsLinkGenerator extends AbstractContentLinkGenerator
     protected function getBrand(ContentAbstract $object)
     {
         /* @var Download $object */
-        return $object->getCategory()->getBrand();
+        $category = $object->getCategory();
+
+        return $category ? $category->getBrand() : null;
     }
 }
