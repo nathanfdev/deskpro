@@ -2,10 +2,10 @@ define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/LocalStore',
   'moment'
-], function(
+], (
   Admin_Ctrl_Base,
   LocalStore,
-  moment) {
+  moment) => {
   class Admin_EmailStatus_Ctrl_SendmailList extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_EmailStatus_Ctrl_SendmailList';
@@ -14,7 +14,7 @@ define([
     }
 
     init() {
-      this.storeFilterId = Admin_EmailStatus_Ctrl_SendmailList.CTRL_ID+'.filter';
+      this.storeFilterId = `${Admin_EmailStatus_Ctrl_SendmailList.CTRL_ID}.filter`;
       this.filter = {
         page: 1
       };
@@ -22,9 +22,9 @@ define([
       this.num_results = 0;
       this.num_pages = 0;
       this.page_nums = [1];
-      this.filter_date_mode = "none";
+      this.filter_date_mode = 'none';
       this.page = 1;
-      this.massActionsOp = "resend";
+      this.massActionsOp = 'resend';
 
       if (LocalStore.has(this.storeFilterId)) {
         this.filter = LocalStore.getObject(this.storeFilterId, this.filter);
@@ -74,10 +74,10 @@ define([
       this.filter.date_end = null;
       if (this.filter_date_mode && (this.filter_date_mode !== 'none')) {
         if (this.filter_date1 && ((this.filter_date_mode === 'between') || (this.filter_date_mode === 'after'))) {
-          this.filter.date_start = moment(this.filter_date1).format("YYYY-MM-DD");
+          this.filter.date_start = moment(this.filter_date1).format('YYYY-MM-DD');
         }
         if (this.filter_date2 && ((this.filter_date_mode === 'between') || (this.filter_date_mode === 'before'))) {
-          this.filter.date_end = moment(this.filter_date2).format("YYYY-MM-DD");
+          this.filter.date_end = moment(this.filter_date2).format('YYYY-MM-DD');
         }
       }
 
@@ -91,7 +91,7 @@ define([
     loadResults(fallbackPrevPage) {
       this.startSpinner('loading_page');
       this.results = [];
-      const promise = this.Api.sendGet('/email_status/sendmail', {filter: this.filter}).success( data => {
+      const promise = this.Api.sendGet('/email_status/sendmail', { filter: this.filter }).success((data) => {
         this.stopSpinner('loading_page', true);
         this.$scope.tracking_enabled = data.tracking_enabled;
         this.results     = data.sendmail_queue;
@@ -103,11 +103,11 @@ define([
         this.massActionsLoading = false;
 
         this.page_nums = [];
-        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
-          this.page_nums.push(i+1);
+        for (let i = 0, end = this.num_pages, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
+          this.page_nums.push(i + 1);
         }
 
-        this.results.map(res => {
+        this.results.map((res) => {
           res.date_created = this.DpDateService.local(res.date_created);
           if (res.date_sent) {
             res.date_sent = this.DpDateService.local(res.date_sent);
@@ -129,13 +129,13 @@ define([
     toggleMassActions() {
       this.massActions = {};
       if (this.massActionsAll) {
-        return Array.from(this.results).map((r) =>
+        return Array.from(this.results).map(r =>
           (this.massActions[r.id] = true));
       }
     }
 
     hasAnyMassActions() {
-      for (let r of Array.from(this.results)) {
+      for (const r of Array.from(this.results)) {
         if (this.massActions[r.id]) { return true; }
       }
       return false;
@@ -146,7 +146,7 @@ define([
       this.massActionsLoading = true;
 
       const ids = [];
-      for (let r of Array.from(this.results)) {
+      for (const r of Array.from(this.results)) {
         if (this.massActions[r.id]) { ids.push(r.id); }
       }
 

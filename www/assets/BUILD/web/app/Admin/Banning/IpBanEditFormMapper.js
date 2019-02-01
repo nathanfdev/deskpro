@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Util/Util'
-], function(
+], (
   Util
-) {
+) => {
   class IpBanEditFormMapper {
 
     /*
@@ -11,7 +11,6 @@ define([
     */
 
     getFormFromModel(model) {
-
       const form = {};
 
       form.banned_ip = model.ip_ban.banned_ip;
@@ -34,7 +33,6 @@ define([
     */
 
     getPostDataFromForm(formModel) {
-
       const postData = {};
 
       postData.banned_ip = formModel.banned_ip;

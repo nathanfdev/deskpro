@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_Settings_Ctrl_ResetHelpdesk extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Settings_Ctrl_ResetHelpdesk';
@@ -12,11 +12,9 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
 
-
     initialLoad() {
       return this.Api.sendGet('/reset-helpdesk/status').then(res => this.status(res.data));
     }
-
 
 
     status(data) {
@@ -32,7 +30,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
 
-
     save() {
       if (!this.$scope.form_props || this.$scope.form_props.$invalid) { return; }
       const post = this.$scope.form;
@@ -41,7 +38,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
   }
   Admin_Settings_Ctrl_ResetHelpdesk.initClass();
-
 
 
   return Admin_Settings_Ctrl_ResetHelpdesk.EXPORT_CTRL();

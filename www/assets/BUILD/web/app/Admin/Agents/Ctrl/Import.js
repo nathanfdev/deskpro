@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_Agents_Ctrl_Import extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Agents_Ctrl_Import';
@@ -9,9 +9,8 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     init() {
       this.busy = false;
       this.restart();
-      return this.$scope.fileUploadOptions = {url: this.$http.formatApiUrl('/import_csv_upload') };
+      return this.$scope.fileUploadOptions = { url: this.$http.formatApiUrl('/import_csv_upload') };
     }
-
 
 
     uploadFiles(files) {
@@ -19,17 +18,14 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.page = 1;
 
       // expected only 1 file
-      return Array.from(files).map((file) =>
-        this.$upload.upload({url: this.$scope.fileUploadOptions.url, file}).then(
-          data => {
-            return this.sendEmails(data.data.filename);
-          },
+      return Array.from(files).map(file =>
+        this.$upload.upload({ url: this.$scope.fileUploadOptions.url, file }).then(
+          data => this.sendEmails(data.data.filename),
           () => {
             this.busy = false;
             return console.error('error');
-        }));
+          }));
     }
-
 
 
     restart() {
@@ -40,28 +36,20 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
 
-
     sendEmails(filename) {
       this.busy = true;
 
       const agents = {};
-      this.emails.map(email => {
-        return agents[email] = {email};
-    }); // make unique
+      this.emails.map(email => agents[email] = { email }); // make unique
 
-      return this.Api.sendPostJson('/agents_bulk/check', {agents, filename}).then( res => {
+      return this.Api.sendPostJson('/agents_bulk/check', { agents, filename }).then((res) => {
         this.busy = false;
         if (res.data.need_plan) {
-          return this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => {
-            return this.doSendEmails(filename);
-          });
-        } else {
-          return this.doSendEmails(filename);
+          return this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => this.doSendEmails(filename));
         }
+        return this.doSendEmails(filename);
       }
-      , () => {
-        return this.busy = false;
-      });
+      , () => this.busy = false);
     }
 
     doSendEmails(filename) {
@@ -69,29 +57,27 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.page = 1;
 
       const agents = {};
-      this.emails.map(email => {
-        return agents[email] = {email};
-    }); // make unique
+      this.emails.map(email => agents[email] = { email }); // make unique
 
-      return this.Api.sendPostJson('/agents_bulk', {agents, filename}).then(
-        data => {
+      return this.Api.sendPostJson('/agents_bulk', { agents, filename }).then(
+        (data) => {
           this.busy = false;
 
           if (data.data.length != null) { return; } // catch array instead of object, possible if no results
 
           return (() => {
             const result = [];
-            for (let email of Object.keys(data.data || {})) {
+            for (const email of Object.keys(data.data || {})) {
               let entry = data.data[email];
               if (entry.person_id != null) { this.invited++; }
 
-              if ('validation_error' === entry.error_code) {
+              if (entry.error_code === 'validation_error') {
                 let message = entry.error_message;
                 if ((entry.errors != null ? entry.errors.errors : undefined) != null) {
                   message = '';
-                  entry.errors.errors.map(error => message += (error.message + ' '));
+                  entry.errors.errors.map(error => message += (`${error.message} `));
                 }
-                entry = {error: message};
+                entry = { error: message };
               }
 
               entry._email = email;
@@ -101,9 +87,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
           })();
         },
 
-        () => {
-          return this.busy = false;
-      });
+        () => this.busy = false);
     }
 
     submitEmails() {

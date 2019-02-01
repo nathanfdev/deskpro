@@ -3,12 +3,12 @@ define([
   'Admin/Main/Ctrl/Base',
   'Admin/TicketTriggers/TriggerEditFormMapper',
   'Admin/TicketTriggers/Ctrl/EditBase',
-], function(
+], (
   Arrays,
   Admin_Ctrl_Base,
   TriggerEditFormMapper,
   Admin_TicketTriggers_Ctrl_EditBase
-) {
+) => {
   class Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger extends Admin_TicketTriggers_Ctrl_EditBase {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger';
@@ -39,7 +39,7 @@ define([
       this.criteraTypeDef.setVar('object_type', 'trigger');
       this.actionsTypeDef.setVar('object_type', 'trigger');
 
-      this.dpTriggers.loadList().then( list => { return this.allTriggers = list; });
+      this.dpTriggers.loadList().then(list => this.allTriggers = list);
 
       this.$scope.types = {
         0: 'negative',
@@ -47,7 +47,7 @@ define([
         2: 'positive'
       };
 
-      this.$scope.setCtrlParams = id => {
+      this.$scope.setCtrlParams = (id) => {
         this.id = id;
         return this.initialLoad();
       };
@@ -57,10 +57,10 @@ define([
       return this.$scope.$on('trigger.save', () => {
         this.Growl = {
           success: () => {},
-          error: () => {}
+          error:   () => {}
         };
         // right, double 'then'
-        return this.saveTrigger().then().then(() => { return this.Growl = growl; });
+        return this.saveTrigger().then().then(() => this.Growl = growl);
       });
     }
 
@@ -75,19 +75,17 @@ define([
         trigger:       `/ticket_triggers/satisfaction/${this.id}`
       };
 
-      const promise = this.Api.sendDataGet(get).then(result => {
+      const promise = this.Api.sendDataGet(get).then((result) => {
         this.customActions = result.data.customActions.action_defs;
         if (__guard__(result.data != null ? result.data.trigger : undefined, x => x.trigger) != null) {
           this.trigger = result.data.trigger.trigger;
           this.triggerId = this.trigger.id;
           this.$scope.$watch(
-            () => {
-              return __guard__(this.$scope.$parent != null ? this.$scope.$parent.settings : undefined, x1 => x1.satisfaction_enabled) && this.trigger.is_enabled;
-            },
-            val => {
+            () => __guard__(this.$scope.$parent != null ? this.$scope.$parent.settings : undefined, x1 => x1.satisfaction_enabled) && this.trigger.is_enabled,
+            (val) => {
               if (undefined === val) { return; }
               return this.dpTriggers.saveEnabledStateById(this.trigger.id, __guard__(this.$scope.$parent != null ? this.$scope.$parent.settings : undefined, x1 => x1.satisfaction_enabled) && this.trigger.is_enabled);
-          });
+            });
         } else {
           this.trigger = {};
           this.triggerId = 0;
@@ -102,7 +100,6 @@ define([
     }
   }
   Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger.initClass();
-
 
 
   return Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger.EXPORT_CTRL();

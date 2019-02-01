@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -15,10 +15,10 @@ define(function() {
     * someAction: ->
     *     @Growl.success(@getRegisteredMessage('department_saved'))
     */
-  const Admin_Main_Directive_DpRegisterMessage = [ () =>
+  const Admin_Main_Directive_DpRegisterMessage = [() =>
     ({
       restrict: 'A',
-      scope: false,
+      scope:    false,
       link(scope, element, attrs) {
         element.hide();
 
@@ -26,11 +26,10 @@ define(function() {
           scope._element_messages = {};
         }
 
-        scope._element_messages[attrs['dpRegisterMessage']] = () => element.html();
-
+        scope._element_messages[attrs.dpRegisterMessage] = () => element.html();
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpRegisterMessage;

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   const _url = '/settings/anti_abuse/captcha';
   class Admin_AntiAbuse_Ctrl_CaptchaSettings extends Admin_Ctrl_Base {
     static initClass() {
@@ -12,12 +12,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const captchaPromise = this.Api2.sendGet(_url).then(res => {
-        return this.$scope.settings = res.data.data;
-      });
-      const generalPromise = this.Api.sendGet('/general_settings').then(res => {
-        return this.$scope.general_settings = res.data.general_settings;
-      });
+      const captchaPromise = this.Api2.sendGet(_url).then(res => this.$scope.settings = res.data.data);
+      const generalPromise = this.Api.sendGet('/general_settings').then(res => this.$scope.general_settings = res.data.general_settings);
 
       return this.$q.all([captchaPromise, generalPromise]);
     }
@@ -28,11 +24,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         general_settings: this.$scope.general_settings
       });
       this.startSpinner('saving');
-      return this.$q.all([captchaPromise, generalPromise]).then( () => {
+      return this.$q.all([captchaPromise, generalPromise]).then(() => {
         this.stopSpinner('saving');
         return this.Growl.success(this.getRegisteredMessage('saved_settings'));
       }
-      , info => {
+      , (info) => {
         this.stopSpinner('saving', true);
         return this.applyErrorResponseToView(info);
       });

@@ -1,11 +1,11 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strings) => {
   class Admin_Templates_Ctrl_NewEmailTemplateEditor extends Admin_Ctrl_Base {
     constructor(...args) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.mountReactComponent = this.mountReactComponent.bind(this);
@@ -24,9 +24,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
 
       this.$scope.is_new_email = this.templateName === null;
 
-      this.$scope.dismiss = () => {
-        return this.$modalInstance.dismiss('cancel');
-      };
+      this.$scope.dismiss = () => this.$modalInstance.dismiss('cancel');
 
       return this.mountReactComponent();
     }
@@ -42,12 +40,12 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
 
       const modal = document.getElementById('new-email-template-editor-modal');
 
-      modal.parentNode.parentNode.style.width = (document.body.clientWidth * 0.9) + "px";
+      modal.parentNode.parentNode.style.width = `${document.body.clientWidth * 0.9}px`;
       modal.parentNode.parentNode.parentNode.style.zIndex = 10;
 
       const backdrop = document.getElementsByClassName('modal-backdrop')[0];
       backdrop.style.zIndex = 10;
-      element.style.height = ((document.body.clientHeight * 0.9) - 51) + "px";
+      element.style.height = `${(document.body.clientHeight * 0.9) - 51}px`;
 
       const reactProps = {
         routePath:   `emails/templates_editor/${this.templateName}`,
@@ -79,9 +77,8 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
           isNewEmail:   this.$scope.is_new_email,
           mode:         'custom'
         });
-      } else {
-        return this.$scope.dismiss();
       }
+      return this.$scope.dismiss();
     }
   }
   Admin_Templates_Ctrl_NewEmailTemplateEditor.initClass();

@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -12,7 +12,7 @@ define(function() {
     *     ng-model="my_state"
     * ></button>
     */
-  const Admin_Main_Directive_DpOnOffSwitch = [ () =>
+  const Admin_Main_Directive_DpOnOffSwitch = [() =>
     ({
       restrict: 'A',
       require:  ['ngModel', '^?form'],
@@ -26,7 +26,6 @@ define(function() {
 `,
       replace: true,
       link(scope, element, attrs, ctrls) {
-
         const ngModel = ctrls[0];
         const formCtrl = ctrls[1] || null;
 
@@ -44,18 +43,17 @@ define(function() {
 
         ngModel.$viewChangeListeners.push(() => ngModel.$render());
 
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           const val = ngModel.$viewValue;
           if (val) {
             element.addClass('switch-on');
             return element.removeClass('switch-off');
-          } else {
-            element.removeClass('switch-on');
-            return element.addClass('switch-off');
           }
+          element.removeClass('switch-on');
+          return element.addClass('switch-off');
         };
 
-        return element.on('click', function(ev) {
+        return element.on('click', (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
 
@@ -63,7 +61,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpOnOffSwitch;

@@ -1,4 +1,4 @@
-define(["jquery", "intl-tel-input"] , function($, intlTelInput) {
+define(['jquery', 'intl-tel-input'], ($, intlTelInput) => {
   /*
     * Description
     * -----------
@@ -23,16 +23,16 @@ define(["jquery", "intl-tel-input"] , function($, intlTelInput) {
 		*			 start-phone-number="{{ ng_var('EditCtrl.form.primary_phone.number') }} ext. {{ ng_var('EditCtrl.form.primary_phone.ext') }}">
 		*		</div>
   */
-  const Admin_Main_Directive_DpPhoneNumber = [ '$rootScope', '$timeout', '$q', ($rootScope, $timeout, $q) =>
+  const Admin_Main_Directive_DpPhoneNumber = ['$rootScope', '$timeout', '$q', ($rootScope, $timeout, $q) =>
     ({
       restrict: 'A',
-      scope: {
-        defaultRegion: '@',
+      scope:    {
+        defaultRegion:    '@',
         startPhoneNumber: '@',
-        phone: '='
+        phone:            '='
       },
       template: '<div><input type="tel" class=".user_input" style="min-width: 250px" class="form-control" name="primary_phone" style="width:80%" /><input type="hidden" class=".hidden_ext" ng-model="phone.ext"><input type="hidden" class=".hidden_number" ng-model="phone.number"></div>',
-      replace: true,
+      replace:  true,
       link($scope, $element, $attrs) {
         const $elements = $element.find('input');
         const $main = $($elements[0]);
@@ -49,7 +49,7 @@ define(["jquery", "intl-tel-input"] , function($, intlTelInput) {
         const defer2 = $q.defer();
 
         let didNotRun = true;
-        $attrs.$observe('defaultRegion', region => {
+        $attrs.$observe('defaultRegion', (region) => {
           if (didNotRun && region) {
             didNotRun = false;
             return defer1.resolve(region);
@@ -57,12 +57,11 @@ define(["jquery", "intl-tel-input"] , function($, intlTelInput) {
         });
 
         let didNotRun2 = true;
-        $attrs.$observe('startPhoneNumber', startPhoneNumber => {
-          const raw_input = startPhoneNumber.split("ext.");
-          $timeout(() => {
+        $attrs.$observe('startPhoneNumber', (startPhoneNumber) => {
+          const raw_input = startPhoneNumber.split('ext.');
+          $timeout(() =>
             // we need to resolve this after a timeout, for cases where there is no start phone number coming
-            return defer2.resolve(['']);
-          }
+             defer2.resolve([''])
           , 3300);
           if (didNotRun2 && (raw_input.length > 0) && ($.trim(raw_input[0]).length > 0)) {
             didNotRun2 = false;
@@ -70,20 +69,20 @@ define(["jquery", "intl-tel-input"] , function($, intlTelInput) {
           }
         });
 
-        return $q.all([defer1.promise, defer2.promise]).then(theResolved => {
+        return $q.all([defer1.promise, defer2.promise]).then((theResolved) => {
           const region = theResolved[0];
           let raw_input = theResolved[1];
           $main.intlTelInput({
-              defaultCountry: region.toLowerCase(),
-              autoPlaceholder: true,
-              utilsScript: window.DP_ASSET_URL.replace(/web\//, 'pub/') + 'build/phonenumber_utils.js',
-              allowExtensions: true,
-              nationalMode: true
-            });
+            defaultCountry:  region.toLowerCase(),
+            autoPlaceholder: true,
+            utilsScript:     `${window.DP_ASSET_URL.replace(/web\//, 'pub/')}build/phonenumber_utils.js`,
+            allowExtensions: true,
+            nationalMode:    true
+          });
           $main.intlTelInput('utilsLoaded');
-          $main.bind('change keyup', function() {
+          $main.bind('change keyup', () => {
             const main_val = $main.val();
-            for (let dcode of Object.keys(dialCodes || {})) {
+            for (const dcode of Object.keys(dialCodes || {})) {
               const isocode = dialCodes[dcode];
               const dial_code = `+${dcode}`;
               const shouldRemoveDialCode = (main_val.indexOf(dial_code) === 0) && (main_val.length > (dial_code.length + 1));
@@ -93,12 +92,12 @@ define(["jquery", "intl-tel-input"] , function($, intlTelInput) {
               }
             }
 
-            raw_input = $main.val().split("ext.");
+            raw_input = $main.val().split('ext.');
             if (((raw_input.length > 1) && ($.trim(raw_input[1]).length === 0)) || (raw_input.length === 1)) {
               $main.intlTelInput('setNumber', raw_input[0].replace(/\s/g, ''));
             }
 
-            $scope.phone = {number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension')};
+            $scope.phone = { number: $main.intlTelInput('getNumber'), ext: $main.intlTelInput('getExtension') };
 
             if (!$.trim($main.intlTelInput('getExtension'))) {
               $main.intlTelInput('setNumber', $.trim(raw_input[0]));
@@ -115,7 +114,7 @@ define(["jquery", "intl-tel-input"] , function($, intlTelInput) {
       }
 
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpPhoneNumber;

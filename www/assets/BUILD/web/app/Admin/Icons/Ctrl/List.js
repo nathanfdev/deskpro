@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_Icons_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Icons_Ctrl_List';
@@ -12,22 +12,19 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
 
-
     initialLoad() {
       return this.initCategories();
     }
 
 
-
     initCategories() {
-
       this.busy = true;
       const def = this.$q.defer();
 
       this.$timeout(
         () => {
-          for (let stylesheet of Array.from(document.styleSheets)) {
-            if (!stylesheet || ((stylesheet.href == null) || (-1 === stylesheet.href.indexOf('icons-style.css')))) { continue; }
+          for (const stylesheet of Array.from(document.styleSheets)) {
+            if (!stylesheet || ((stylesheet.href == null) || (stylesheet.href.indexOf('icons-style.css') === -1))) { continue; }
 
             const rules = stylesheet.cssRules || stylesheet.rules || [];
             if (!rules || !rules.length) { continue; }
@@ -36,7 +33,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
             let category = null;
             let path = null;
 
-            for (let rule of Array.from(rules)) {
+            for (const rule of Array.from(rules)) {
               if (rule instanceof CSSFontFaceRule) {
                 var content;
                 if (rule.style.getPropertyValue) {
@@ -44,7 +41,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
                   content = rule.style.cssText;
                 } else {
                   current = rule.style['font-family'];
-                  content = rule.style['src'];
+                  content = rule.style.src;
                 }
 
                 if (!content) { content = ''; }
@@ -69,10 +66,10 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
                 continue;
               }
 
-              if ((current == null) || (rule.selectorText == null) || (0 !== rule.selectorText.indexOf(`.${current}`))) { continue; }
+              if ((current == null) || (rule.selectorText == null) || (rule.selectorText.indexOf(`.${current}`) !== 0)) { continue; }
 
               const iconClass = rule.selectorText.substr(1, rule.selectorText.length - 9);
-              const iconImage = path + '/png/' + iconClass.substr(current.length + 1) + '.png';
+              const iconImage = `${path}/png/${iconClass.substr(current.length + 1)}.png`;
               const imageId   = `dp_file:icons:${iconImage}`;
 
               this.categories[category].push({
@@ -93,7 +90,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
 
-
     // ?
     selectIcon(path) {
       this.$scope.$emit('icon.selected', path);
@@ -101,7 +97,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
   }
   Admin_Icons_Ctrl_List.initClass();
-
 
 
   return Admin_Icons_Ctrl_List.EXPORT_CTRL();

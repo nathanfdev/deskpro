@@ -3,12 +3,12 @@ define([
   'DeskPRO/Util/Arrays',
   'DeskPRO/Util/Util',
   'angular'
-], function(
+], (
   Util_Angular,
   Arrays,
   Util,
   angular
-) {
+) => {
   /*
    * This is a simple base data service that implements some default functionality for
    * loading the "list" collection, and some methods for keeping the list up to date.
@@ -71,15 +71,13 @@ define([
       deferred = this.$q.defer();
       this.loadListPromise = deferred.promise;
 
-      this._doLoadList(params).then( models => {
+      this._doLoadList(params).then((models) => {
         this.isListLoaded = true;
         this._setListData(models);
         this._setPaginationData(models);
         return deferred.resolve(this.listModels);
       }
-      , () => {
-        return deferred.reject();
-      });
+      , () => deferred.reject());
 
       return this.loadListPromise;
     }
@@ -88,14 +86,12 @@ define([
       const deferred = this.$q.defer();
       this.loadListPromise = deferred.promise;
 
-      this._doRefreshList().then(models => {
+      this._doRefreshList().then((models) => {
         this._setListData(models);
         this._setPaginationData(models);
         return deferred.resolve(this.listModels);
       }
-      , () => {
-        return deferred.reject();
-      });
+      , () => deferred.reject());
       return this.loadListPromise;
     }
 
@@ -129,7 +125,7 @@ define([
             if (listModels[subModel]) {
               result.push((() => {
                 const result1 = [];
-                for (let model of Array.from(listModels[subModel])) {
+                for (const model of Array.from(listModels[subModel])) {
                   result1.push(this.listModels[subModel].push(model));
                 }
                 return result1;
@@ -140,15 +136,14 @@ define([
           }
           return result;
         })();
-      } else {
-        return (() => {
-          const result2 = [];
-          for (let model of Array.from(listModels)) {
-            result2.push(this._addModel(model));
-          }
-          return result2;
-        })();
       }
+      return (() => {
+        const result2 = [];
+        for (const model of Array.from(listModels)) {
+          result2.push(this._addModel(model));
+        }
+        return result2;
+      })();
     }
 
 
@@ -158,7 +153,6 @@ define([
      * @param {Object} listModels - object representing the list
      */
     _setPaginationData(listModels) {
-
       if (!listModels) { return; }
 
       // we assume that backend returned appropriate pagination info and doesn't check its correctness here
@@ -170,11 +164,11 @@ define([
         return (() => {
           const result = [];
           for (var subModel of Array.from(this.subLists)) {
-            this.pagination[subModel].page = this.pagination[subModel].page || "1";
+            this.pagination[subModel].page = this.pagination[subModel].page || '1';
             this.pagination[subModel].page_nums = [];
             result.push((() => {
               const result1 = [];
-              for (let i = 0, end = this.pagination[subModel].num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+              for (let i = 0, end = this.pagination[subModel].num_pages, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
                 result1.push(this.pagination[subModel].page_nums.push(i + 1));
               }
               return result1;
@@ -182,17 +176,15 @@ define([
           }
           return result;
         })();
-
-      } else {
-        this.pagination.page_nums = [];
-        return (() => {
-          const result2 = [];
-          for (let i = 0, end1 = this.pagination.num_pages, asc1 = 0 <= end1; asc1 ? i <= end1 : i >= end1; asc1 ? i++ : i--) {
-            result2.push(this.pagination.page_nums.push(i + 1));
-          }
-          return result2;
-        })();
       }
+      this.pagination.page_nums = [];
+      return (() => {
+        const result2 = [];
+        for (let i = 0, end1 = this.pagination.num_pages, asc1 = end1 >= 0; asc1 ? i <= end1 : i >= end1; asc1 ? i++ : i--) {
+          result2.push(this.pagination.page_nums.push(i + 1));
+        }
+        return result2;
+      })();
     }
 
     /*
@@ -211,21 +203,20 @@ define([
     findListModelById(id) {
       let model;
       if (this.subLists.length) {
-        for (let subModel of Array.from(this.subLists)) {
+        for (const subModel of Array.from(this.subLists)) {
           for (model of Array.from(this.listModels[subModel])) {
             if (model[this.idProp] === id) {
               return model;
             }
           }
         }
-
       } else {
         for (model of Array.from(this.listModels)) {
           if (model[this.idProp] === id) {
             return model;
           }
           if (model.children) {
-            for (let child of Array.from(model.children)) {
+            for (const child of Array.from(model.children)) {
               if (child[this.idProp] === id) {
                 return child;
               }
@@ -243,9 +234,8 @@ define([
      * @param {Integet} id - id of children we want to search
      */
     findChildModelById(obj, id) {
-
       if (obj.children) {
-        for (let model of Array.from(obj.children)) {
+        for (const model of Array.from(obj.children)) {
           if (model[this.idProp] === id) {
             return model;
           }
@@ -262,9 +252,7 @@ define([
      * @return {Object}
      */
     returnIndexForModel(obj) {
-
       for (let idx = 0; idx < this.listModels.length; idx++) {
-
         const model = this.listModels[idx];
         if (model[this.idProp] === obj[this.idProp]) {
           return idx;
@@ -281,7 +269,6 @@ define([
      * @return {Boolean}
      */
     hasChildren(obj) {
-
       const model = this.findListModelById(obj.id);
 
       if (model && model.children && model.children.length) {
@@ -323,8 +310,9 @@ define([
      * @param {String} subList Optional parameter in case we want to update only sub list
      */
     mergeDataModel(dataModel, dataMapper = null, subList = null) {
-
-      let idx, model, parent;
+      let idx,
+        model,
+        parent;
       if (!this.isListLoaded) { return; }
 
       let listModel = null;
@@ -342,7 +330,6 @@ define([
             break;
           }
         }
-
       } else {
         for (idx = 0; idx < this.listModels.length; idx++) {
           model = this.listModels[idx];
@@ -356,7 +343,7 @@ define([
           }
 
           if (model.children) {
-            for (let child of Array.from(model.children)) {
+            for (const child of Array.from(model.children)) {
               if (child[this.idProp] === dataModel[this.idProp]) {
                 oldParent = model;
                 listModel = child;
@@ -370,7 +357,7 @@ define([
       // if this model is already in list then we some options
       if (listModel !== null) {
         let removeIdx;
-        for (let k of Object.keys(listModel || {})) {
+        for (const k of Object.keys(listModel || {})) {
           const v = listModel[k];
           if (dataModel[k] !== undefined) {
             listModel[k] = dataModel[k];
@@ -382,9 +369,9 @@ define([
           for (idx = 0; idx < oldParent.children.length; idx++) {
             model = oldParent.children[idx];
             if (model[this.idProp] === dataModel[this.idProp]) {
-                removeIdx = idx;
-                break;
-              }
+              removeIdx = idx;
+              break;
+            }
           }
 
           if (removeIdx != null) {
@@ -394,41 +381,34 @@ define([
           if (dataModel.parent_id != null) {
             parent = this.findListModelById(dataModel.parent_id);
             parent.children.push(dataModel);
-
           } else {
             this.listModels.push(dataModel);
           }
 
         // case of changing the parent AND if model previously didn't have a parent - should add this model as child
-        } else {
-          if (dataModel.parent_id != null) {
+        } else if (dataModel.parent_id != null) {
             // first - add new model as child to the parent model (if it's not already there - this is for cases when parent not changed)
-            parent = this.findListModelById(dataModel.parent_id);
-            const existingChild =  this.findChildModelById(parent, dataModel.id);
+          parent = this.findListModelById(dataModel.parent_id);
+          const existingChild =  this.findChildModelById(parent, dataModel.id);
 
-            if (!existingChild) { parent.children.push(dataModel); }
+          if (!existingChild) { parent.children.push(dataModel); }
 
             // second - delete this child from top-level list
-            removeIdx = this.returnIndexForModel(dataModel);
-            if (Util.isNumber(removeIdx)) { this.listModels.splice(removeIdx, 1); }
-          }
+          removeIdx = this.returnIndexForModel(dataModel);
+          if (Util.isNumber(removeIdx)) { this.listModels.splice(removeIdx, 1); }
         }
-
       } else {
         // this is case of model that doesn't exist in the list yet
         let newListModel;
         if (dataMapper) {
           newListModel = dataMapper(dataModel);
+        } else if (dataModel.parent_id != null) {
+          parent = this.findListModelById(dataModel.parent_id);
+          if (!parent.children) { parent.children = []; }
+          parent.children.push(dataModel);
         } else {
-          if (dataModel.parent_id != null) {
-            parent = this.findListModelById(dataModel.parent_id);
-            if (!parent.children) { parent.children = []; }
-            parent.children.push(dataModel);
-
-          } else {
-            newListModel = dataModel;
-            newListModel.children = [];
-          }
+          newListModel = dataModel;
+          newListModel.children = [];
         }
 
         if (newListModel && !subList) { this.listModels.push(newListModel); }
@@ -445,15 +425,15 @@ define([
      * @return {Object/null} The removed object or null if object could not be found
      */
     removeListModelById(id) {
-
-      let idx, model;
+      let idx,
+        model;
       if (!this.isListLoaded) { return; }
 
       let removeIdx = null;
       let subModelIdx = null;
 
       if (this.subLists.length) {
-        for (let subModel of Array.from(this.subLists)) {
+        for (const subModel of Array.from(this.subLists)) {
           for (idx = 0; idx < this.listModels[subModel].length; idx++) {
             model = this.listModels[subModel][idx];
             if (model[this.idProp] === id) {
@@ -463,7 +443,6 @@ define([
             }
           }
         }
-
       } else {
         for (idx = 0; idx < this.listModels.length; idx++) {
           model = this.listModels[idx];
@@ -492,8 +471,10 @@ define([
     reorderList() {
       if (!this.isListLoaded) { return; }
 
-      this.listModels.sort( (data1, data2) => {
-        let left, o1, o2;
+      this.listModels.sort((data1, data2) => {
+        let left,
+          o1,
+          o2;
         if (data1[this.orderField]) {
           o1 = data1[this.orderField];
         } else {
@@ -510,11 +491,10 @@ define([
           return 0;
         }
 
-        return ((left = o1 < o2)) != null ? left : -{1 : 1};
+        return ((left = o1 < o2)) != null ? left : -{ 1: 1 };
       });
       return this.listModels.reverse();
     }
-
 
 
     // add new model to list/map
@@ -534,7 +514,6 @@ define([
     }
 
 
-
     // remove model from list/map
     _removeModel(model) {
       if ((model[this.idProp] == null)) { return null; }
@@ -547,12 +526,10 @@ define([
     }
 
 
-
     // simple proxy
     all(reload, params) {
       return this.loadList(reload, params);
     }
-
 
 
     // simple proxy
@@ -562,13 +539,10 @@ define([
         if (!id) { deferred.resolve(null); }
         return deferred.resolve(this.map[id]);
       }
-      , () => {
-        return deferred.resolve(this.map[id] || null);
-      });
+      , () => deferred.resolve(this.map[id] || null));
 
       return deferred.promise;
     }
-
 
 
     // update/create model
@@ -576,16 +550,11 @@ define([
       const def = this.$q.defer();
 
       this._doSave(data).then(
-        data => {
-          return def.resolve(this._addModel(data));
-        },
-        res => {
-          return def.reject(res);
-      });
+        data => def.resolve(this._addModel(data)),
+        res => def.reject(res));
 
       return def.promise;
     }
-
 
 
     // remove model
@@ -593,16 +562,11 @@ define([
       const def = this.$q.defer();
 
       this._doRemove(model).then(
-        () => {
-          return def.resolve(this._removeModel(model));
-        },
-        res => {
-          return def.reject(res);
-      });
+        () => def.resolve(this._removeModel(model)),
+        res => def.reject(res));
 
       return def.promise;
     }
-
 
 
     url() {
@@ -610,11 +574,9 @@ define([
     }
 
 
-
     resolveResponse(response) {
       return response;
     }
-
 
 
     // overriden by child classes for back compatibiliy
@@ -622,13 +584,10 @@ define([
       const deferred = this.$q.defer();
       if ((params == null)) { params = {}; }
 
-      this.Api.sendGet(this.url(), params).success(data => {
-        return deferred.resolve(this.resolveResponse(data));
-    }).error((data, status, headers, config) => deferred.reject(data));
+      this.Api.sendGet(this.url(), params).success(data => deferred.resolve(this.resolveResponse(data))).error((data, status, headers, config) => deferred.reject(data));
 
       return deferred.promise;
     }
-
 
 
     _doSave(model) {
@@ -637,32 +596,23 @@ define([
       if ((model[this.idProp] != null) && model[this.idProp]) { method = 'sendPostJson'; }
 
       const id = model[this.idProp] || 0;
-      this.Api[method](this.url() + `/${id}`, model).success(data => {
-        return deferred.resolve(this.resolveResponse(data));
-    }).error((data, status, headers, config) => {
-          return deferred.reject({
-            info: data.error_message,
-            status
-          });
-      });
+      this.Api[method](`${this.url()}/${id}`, model).success(data => deferred.resolve(this.resolveResponse(data))).error((data, status, headers, config) => deferred.reject({
+        info: data.error_message,
+        status
+      }));
 
       return deferred.promise;
     }
-
 
 
     _doRemove(model) {
       const deferred = this.$q.defer();
 
       const id = model[this.idProp] || 0;
-      this.Api.sendDelete(this.url() + `/${id}`).success(() => {
-        return deferred.resolve();
-    }).error((data, status, headers, config) => {
-          return deferred.reject({
-            info: data.error_message,
-            status
-          });
-      });
+      this.Api.sendDelete(`${this.url()}/${id}`).success(() => deferred.resolve()).error((data, status, headers, config) => deferred.reject({
+        info: data.error_message,
+        status
+      }));
 
       return deferred.promise;
     }

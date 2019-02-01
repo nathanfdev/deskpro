@@ -3,19 +3,19 @@ define([
   'Admin/Main/Ctrl/Base',
   'Admin/Agents/FormModel/EditAgentModel',
   'Admin/Agents/FormModel/EditAgentNotifPrefs'
-], function(
+], (
   Strings,
   Admin_Ctrl_Base,
   EditAgentModel,
   EditAgentNotifPrefs
-) {
+) => {
   class Admin_Agents_Ctrl_Edit extends Admin_Ctrl_Base {
     constructor(...args) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.clearPermOverrides = this.clearPermOverrides.bind(this);
@@ -33,29 +33,28 @@ define([
       window.AGENT_CTRL = this;
       this.agentId = parseInt(this.$stateParams.id);
       this.created_agent = this.$stateParams.created_agent;
-      this.form = {email_primary: '', emails_list: []};
+      this.form = { email_primary: '', emails_list: [] };
       this.hasPermOverrides = false;
       this.hasDepOverrides = false;
       this.default_phone_number_region = 'US';
       this.service =
-        {agents: this.DataService.get('Agents')};
+        { agents: this.DataService.get('Agents') };
       this.all_perms = {
-        perms: {},
+        perms:      {},
         deps_perms: {
-          tickets: {assign: true, full: true},
-          chat: {full: true}
+          tickets: { assign: true, full: true },
+          chat:    { full: true }
         }
       };
 
-      this.$scope.$watch('EditCtrl.form.emails_list', emails_list => {
+      this.$scope.$watch('EditCtrl.form.emails_list', (emails_list) => {
         this.email_sysaccount_error = false;
         if (!emails_list) { return; }
         if (!this.form.email_primary || (this.form.email_primary === '') || (emails_list.indexOf(this.form.email_primary) === -1)) {
           if (emails_list.length) {
             return this.form.email_primary = emails_list[0];
-          } else {
-            return this.form.email_primary = '';
           }
+          return this.form.email_primary = '';
         }
       });
 
@@ -73,44 +72,43 @@ define([
       this.$scope.selectedFilter = show_selected =>
         itm => !show_selected || itm.value
       ;
-
     }
 
     initialLoad() {
       let promise;
       if (this.agentId) {
         promise = this.Api.sendDataGet({
-          agent: `/agents/${this.agentId}?extended=1`,
-          teams: "/agent_teams",
-          groups: "/agent_groups",
-          groupPerms: "/agent_groups/all/permissions",
+          agent:             `/agents/${this.agentId}?extended=1`,
+          teams:             '/agent_teams',
+          groups:            '/agent_groups',
+          groupPerms:        '/agent_groups/all/permissions',
           notif_prefs_table: `/agents/${this.agentId}/notify-prefs/get-tables`,
-          ticketDeps: "/ticket_deps?with_perms=1",
-          chatDeps: "/chat_deps?with_perms=1",
-          default_country: "/settings/values/core.default_country_code"
+          ticketDeps:        '/ticket_deps?with_perms=1',
+          chatDeps:          '/chat_deps?with_perms=1',
+          default_country:   '/settings/values/core.default_country_code'
         });
       } else {
         promise = this.Api.sendDataGet({
-          teams: "/agent_teams",
-          groups: "/agent_groups",
-          groupPerms: "/agent_groups/all/permissions",
-          notif_prefs_table: "/agents/0/notify-prefs/get-tables",
-          ticketDeps: "/ticket_deps?with_perms=1",
-          chatDeps: "/chat_deps?with_perms=1",
-          default_country: "/settings/values/core.default_country_code"
+          teams:             '/agent_teams',
+          groups:            '/agent_groups',
+          groupPerms:        '/agent_groups/all/permissions',
+          notif_prefs_table: '/agents/0/notify-prefs/get-tables',
+          ticketDeps:        '/ticket_deps?with_perms=1',
+          chatDeps:          '/chat_deps?with_perms=1',
+          default_country:   '/settings/values/core.default_country_code'
         });
       }
 
-      promise.then( result => {
+      promise.then((result) => {
         if (this.agentId) {
           this.agent = result.data.agent.agent;
           this.perm_form = result.data.agent.perm_overrides;
         } else {
           this.agent = {
-            id: 0,
-            name: '',
-            email: {},
-            teams: [],
+            id:         0,
+            name:       '',
+            email:      {},
+            teams:      [],
             usergroups: []
           };
           this.perm_form = null;
@@ -155,8 +153,8 @@ define([
     }
 
     hasAnyDepTicketsPerms() {
-      for (let perm of Object.keys(this.deps_perms['tickets'] || {})) {
-        const obj = this.deps_perms['tickets'][perm];
+      for (const perm of Object.keys(this.deps_perms.tickets || {})) {
+        const obj = this.deps_perms.tickets[perm];
         if (obj.assign) {
           return true;
         }
@@ -165,14 +163,14 @@ define([
     }
 
     canCreateNewTicket() {
-      return this.perm_form && (this.perm_form['ticket'] != null) && this.perm_form['ticket'].create;
+      return this.perm_form && (this.perm_form.ticket != null) && this.perm_form.ticket.create;
     }
 
     changeUse(type) {
-      if ((this.perm_form[type] == null) || (true === this.perm_form[type].use)) { return; }
+      if ((this.perm_form[type] == null) || (this.perm_form[type].use === true)) { return; }
       return (() => {
         const result = [];
-        for (let perm of Object.keys(this.perm_form[type] || {})) {
+        for (const perm of Object.keys(this.perm_form[type] || {})) {
           result.push(this.perm_form[type][perm] = false);
         }
         return result;
@@ -180,30 +178,27 @@ define([
     }
 
 
-
     changeAllPerms(type, section) {
       let dep;
       if ((this.perm_form == null) || (this.deps_perms == null)) { return; }
 
-      if ('perms' === type) {
-        for (let perm of Object.keys(this.perm_form[section] || {})) {
+      if (type === 'perms') {
+        for (const perm of Object.keys(this.perm_form[section] || {})) {
           if (((this.ugEffectivePerms[section] != null ? this.ugEffectivePerms[section][perm] : undefined) == null) || !this.ugEffectivePerms[section][perm]) {
             this.perm_form[section][perm] = this.all_perms[type][section];
           }
         }
 
-        if ('people' === section) {
+        if (section === 'people') {
           this.changeAllPerms('perms', 'org');
         }
-
-      } else if ('deps_perms_tickets' === type) {
+      } else if (type === 'deps_perms_tickets') {
         for (dep of Object.keys(this.deps_perms.tickets || {})) {
           if (((this.ugEffectiveDepPerms.tickets[dep] != null ? this.ugEffectiveDepPerms.tickets[dep][section] : undefined) == null) || !this.ugEffectiveDepPerms.tickets[dep][section]) {
             this.deps_perms.tickets[dep][section] = this.all_perms.deps_perms.tickets[section];
           }
         }
-
-      } else if ('deps_perms_chat' === type) {
+      } else if (type === 'deps_perms_chat') {
         for (dep of Object.keys(this.deps_perms.chat || {})) {
           if (((this.ugEffectiveDepPerms.chat[dep] != null ? this.ugEffectiveDepPerms.chat[dep][section] : undefined) == null) || !this.ugEffectiveDepPerms.chat[dep][section]) {
             this.deps_perms.chat[dep][section] = this.all_perms.deps_perms.chat[section];
@@ -215,16 +210,17 @@ define([
     }
 
 
-
     updateAllPermsState() {
-      let enabled, perm, perms;
+      let enabled,
+        perm,
+        perms;
       if ((this.perm_form == null)) { return; }
 
       // check "use" state first
       for (var section of Object.keys(this.perm_form || {})) {
         perms = this.perm_form[section];
         for (perm of Object.keys(perms || {})) {
-          if (('use' !== perm) && (perms.use != null) && (perms[perm] || (this.ugEffectivePerms[section] != null ? this.ugEffectivePerms[section][perm] : undefined))) {
+          if ((perm !== 'use') && (perms.use != null) && (perms[perm] || (this.ugEffectivePerms[section] != null ? this.ugEffectivePerms[section][perm] : undefined))) {
             perms.use = true;
             break;
           }
@@ -252,7 +248,7 @@ define([
             const result1 = [];
             for (section of Object.keys(sections || {})) {
               enabled = true;
-              for (let dep of Object.keys(this.deps_perms[type] || {})) {
+              for (const dep of Object.keys(this.deps_perms[type] || {})) {
                 if (!this.deps_perms[type][dep][section] && !this.ugEffectiveDepPerms[type][dep][section]) {
                   enabled = false;
                 }
@@ -267,35 +263,35 @@ define([
     }
 
 
-
     /*
      * When usergroups are changed, we need to update the effective list of permissions
      */
     updateEffectiveUgPerms() {
-
       // todo this map should be loaded from server
-      let full, p, perms;
+      let full,
+        p,
+        perms;
       this.ugEffectivePerms = {
-        ticket: {},
-        people: {},
-        org: {},
-        chat: {},
-        publish: {},
-        general: {},
-        tasks: {},
+        ticket:   {},
+        people:   {},
+        org:      {},
+        chat:     {},
+        publish:  {},
+        general:  {},
+        tasks:    {},
         problems: {},
-        snippet: {}
+        snippet:  {}
       };
 
       this.ugEffectiveDepPerms = {
         tickets: {},
-        chat: {}
+        chat:    {}
       };
 
       if (!this.form.agent_groups) { return; }
 
       const groupIds = [];
-      for (let group of Array.from(this.form.agent_groups)) {
+      for (const group of Array.from(this.form.agent_groups)) {
         if (group.value) {
           groupIds.push(group.id);
         }
@@ -338,7 +334,7 @@ define([
                 perms = info.perms[type];
                 result1.push((() => {
                   const result2 = [];
-                  for (let pname of Object.keys(perms || {})) {
+                  for (const pname of Object.keys(perms || {})) {
                     const pval = perms[pname];
                     if (pval) {
                       result2.push(this.ugEffectivePerms[type][pname] = pval);
@@ -360,7 +356,8 @@ define([
     }
 
     hasSomePerms(typename, permname) {
-      let name, val;
+      let name,
+        val;
       const prefix = permname.replace(/(^.*?_).*?$/, '$1');
       const suffix = permname.replace(/^.*?(_.*?)$/, '$1');
       if (!suffix || !(((this.ugEffectivePerms != null ? this.ugEffectivePerms[typename] : undefined) != null) || ((this.perm_form != null ? this.perm_form[typename] : undefined) != null))) { return; }
@@ -396,9 +393,9 @@ define([
 
       this.hasPermOverrides = false;
       let run = () => {
-        for (let type of Object.keys(this.perm_form || {})) {
+        for (const type of Object.keys(this.perm_form || {})) {
           const perms = this.perm_form[type];
-          for (let permName of Object.keys(perms || {})) {
+          for (const permName of Object.keys(perms || {})) {
             const value = perms[permName];
             if (value) {
               if (((this.ugEffectivePerms[type] != null ? this.ugEffectivePerms[type][permName] : undefined) == null) || !this.ugEffectivePerms[type][permName] || !this.form.agent_groups.length) {
@@ -414,10 +411,10 @@ define([
       this.hasDepOverrides = false;
       run = () => {
         if (!this.deps_perms || !this.deps_perms.tickets) { return; }
-        for (let app of ['tickets', 'chat']) {
-          for (let depId of Object.keys(this.deps_perms[app] || {})) {
+        for (const app of ['tickets', 'chat']) {
+          for (const depId of Object.keys(this.deps_perms[app] || {})) {
             const perms = this.deps_perms[app][depId];
-            for (let perm of Object.keys(perms || {})) {
+            for (const perm of Object.keys(perms || {})) {
               const value = perms[perm];
               if (value) {
                 if (!this.ugEffectiveDepPerms[app][depId][perm] || !this.form.agent_groups.length) {
@@ -439,9 +436,9 @@ define([
       * This does the actual removal of all perm overrides
     */
     clearPermOverrides() {
-      for (let type of Object.keys(this.perm_form || {})) {
+      for (const type of Object.keys(this.perm_form || {})) {
         const perms = this.perm_form[type];
-        for (let permName of Object.keys(perms || {})) {
+        for (const permName of Object.keys(perms || {})) {
           const value = perms[permName];
           perms[permName] = false;
         }
@@ -453,10 +450,10 @@ define([
       * This does the actual removal of all depoverrides
     */
     clearDepOverrides() {
-      for (let app of ['tickets', 'chat']) {
-        for (let depId of Object.keys(this.deps_perms[app] || {})) {
+      for (const app of ['tickets', 'chat']) {
+        for (const depId of Object.keys(this.deps_perms[app] || {})) {
           const perms = this.deps_perms[app][depId];
-          for (let perm of Object.keys(perms || {})) {
+          for (const perm of Object.keys(perms || {})) {
             const value = perms[perm];
             this.deps_perms[app][depId][perm] = false;
           }
@@ -470,7 +467,7 @@ define([
       * Shows the password reset modal
       */
     showResetPassword() {
-      const doReset = setPassword => {
+      const doReset = (setPassword) => {
         if (!setPassword || !Strings.trim(setPassword)) {
           setPassword = '';
         }
@@ -481,35 +478,34 @@ define([
       };
 
       const inst = this.$modal.open({
-        templateUrl: this.getTemplatePath(`Agents/reset-password-modal.html?${(new Date()).getTime()}` ),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        templateUrl: this.getTemplatePath(`Agents/reset-password-modal.html?${(new Date()).getTime()}`),
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.password = {
-            mode: 'random',
+            mode:   'random',
             manual: ''
           };
 
           $scope.dismiss = () => $modalInstance.dismiss();
 
-          return $scope.saveResetPassword = function() {
+          return $scope.saveResetPassword = function () {
             $scope.is_saving = true;
             $scope.error = null;
 
             if ($scope.password.mode === 'set') {
               return doReset($scope.password.manual).then(
                 () => $modalInstance.close(),
-                res => {
+                (res) => {
                   $scope.is_saving = false;
                   $scope.error = res.data.error_message;
                   return $scope.error_code = res.data.error_info.error_code;
-              });
-            } else {
-              return doReset(false).then(
+                });
+            }
+            return doReset(false).then(
                 () => $modalInstance.close(),
-                res => {
+                (res) => {
                   $scope.is_saving = false;
                   return $scope.error = res.data.error_message;
-              });
-            }
+                });
           };
         }
         ]
@@ -522,7 +518,6 @@ define([
       * Shows the copy settings modal
       */
     showCopySettings() {
-
       //------------------------------
       // Get agent options
       //------------------------------
@@ -544,14 +539,19 @@ define([
       // Function callback that loads and applies the settings
       //------------------------------
 
-      const copySettings = settings => {
+      const copySettings = (settings) => {
         const promise = this.Api.sendDataGet({
-          agent: `/agents/${settings.agent_id}?extended=1`,
+          agent:             `/agents/${settings.agent_id}?extended=1`,
           notif_prefs_table: `/agents/${settings.agent_id}/notify-prefs/get-tables`,
-          teams: "/agent_teams",
-          groups: "/agent_groups"
-        }).then( result => {
-          let n, r, rkey, subc, subckey, val;
+          teams:             '/agent_teams',
+          groups:            '/agent_groups'
+        }).then((result) => {
+          let n,
+            r,
+            rkey,
+            subc,
+            subckey,
+            val;
           const { agent }  = result.data.agent;
           const teams  = result.data.teams.agent_teams;
           const { groups } = result.data.groups;
@@ -649,21 +649,21 @@ define([
 
       return inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Agents/copy-settings-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.dismiss = () => $modalInstance.dismiss();
 
           $scope.agents = agents;
           $scope.options = {
-            agent_id: agents[0].id+"",
-            zones: false,
-            teams: false,
-            groups: false,
-            perms: false,
+            agent_id:      `${agents[0].id}`,
+            zones:         false,
+            teams:         false,
+            groups:        false,
+            perms:         false,
             ticket_notifs: false,
-            other_notifs: false
+            other_notifs:  false
           };
 
-          return $scope.doCopySettings = function(settings) {
+          return $scope.doCopySettings = function (settings) {
             $scope.is_loading = true;
             return copySettings(settings).then(() => $modalInstance.dismiss());
           };
@@ -683,13 +683,13 @@ define([
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Agents/login-as-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.dismiss = () => $modalInstance.dismiss();
 
           $scope.agentName = agentName;
           $scope.is_loading = true;
 
-          return Api.sendGet(`/agents/${agentId}/login-token`).then( function(res) {
+          return Api.sendGet(`/agents/${agentId}/login-token`).then((res) => {
             $scope.is_loading = false;
             return $scope.login_token = res.data.login_token;
           });
@@ -710,7 +710,7 @@ define([
       let inst;
       const isSelf = this.isSelf();
 
-      const deleteAgent = settings => {
+      const deleteAgent = (settings) => {
         let target;
         if (settings.method === 'user') {
           target = `/agents/${this.agentId}/delete/to-user`;
@@ -721,9 +721,7 @@ define([
         const p = this.Api.sendDelete(target);
         p.then(() => {
           // todo
-          this.service.agents.get(this.agentId).then(agent => {
-            return this.service.agents._removeModel(agent);
-          });
+          this.service.agents.get(this.agentId).then(agent => this.service.agents._removeModel(agent));
           if (this.$scope.$parent != null) {
             this.$scope.$parent.ListCtrl.deletedCount++;
           }
@@ -735,7 +733,7 @@ define([
 
       return inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Agents/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.dismiss = () => $modalInstance.dismiss();
 
           $scope.options = {
@@ -744,7 +742,7 @@ define([
 
           $scope.isSelf = isSelf;
 
-          return $scope.doDelete = function(options) {
+          return $scope.doDelete = function (options) {
             $scope.is_loading = true;
             return deleteAgent(options).then(() => $modalInstance.dismiss());
           };
@@ -759,28 +757,23 @@ define([
     showEditProfile() {
       return this.$modal.open({
         templateUrl: this.getTemplatePath('Agents/edit-profile-modal.html'),
-        controller: 'Admin_Agents_Ctrl_EditProfile',
-        resolve: {
-          agent: () => {
-            return this.agent;
-          },
-          saveMethod: () => {
-            return (data, from) => {
-              if (from.new_image) {
-                this.agent.picture_blob = from.new_image;
-              } else if (from.form.picture_set === 'default') {
-                this.agent.picture_blob = null;
-              }
+        controller:  'Admin_Agents_Ctrl_EditProfile',
+        resolve:     {
+          agent:      () => this.agent,
+          saveMethod: () => (data, from) => {
+            if (from.new_image) {
+              this.agent.picture_blob = from.new_image;
+            } else if (from.form.picture_set === 'default') {
+              this.agent.picture_blob = null;
+            }
 
-              this.agent.timezone = from.form.timeone;
-              this.agent.signature_html = from.form.signature_html;
+            this.agent.timezone = from.form.timeone;
+            this.agent.signature_html = from.form.signature_html;
 
-              if (this.agentId) {
-                return this.Api.sendPostJson(`/agents/${this.agentId}/profile`, data);
-              } else {
-                return this.pendingProfileData = data;
-              }
-            };
+            if (this.agentId) {
+              return this.Api.sendPostJson(`/agents/${this.agentId}/profile`, data);
+            }
+            return this.pendingProfileData = data;
           }
         }
       });
@@ -788,12 +781,12 @@ define([
 
     mergeDupePerson(personId) {
       const merge = new window.parent.DeskPRO.Agent.Widget.Merge({
-        tabType: 'person',
-        metaId: this.agentId,
+        tabType:    'person',
+        metaId:     this.agentId,
         metaIdName: 'person_id',
-        overlayUrl: DP_BASE_URL + 'agent/people/{id}/merge-overlay/{other}',
-        mergeUrl: DP_BASE_URL + 'agent/people/{id}/merge/{other}',
-        loadRoute: `person:${DP_BASE_URL}agent/people/{id}`
+        overlayUrl: `${DP_BASE_URL}agent/people/{id}/merge-overlay/{other}`,
+        mergeUrl:   `${DP_BASE_URL}agent/people/{id}/merge/{other}`,
+        loadRoute:  `person:${DP_BASE_URL}agent/people/{id}`
       });
 
       return merge.openWithId(personId);
@@ -826,30 +819,26 @@ define([
 
       if (this.agentId) {
         return this.doSaveAgent();
-      } else {
-        const d = this.$q.defer();
-
-        this.startSpinner('saving');
-
-        this.DpLicense.getLicInfo(true).then( licInfo => {
-          this.stopSpinner('saving', true);
-          if (licInfo.limits.remain_agents !== 0) {
-            return this.doSaveAgent().then(() => d.resolve()
-            , () => d.reject());
-          } else {
-            return this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => {
-              return this.doSaveAgent().then(() => d.resolve()
-              , () => d.reject());
-            });
-          }
-        }
-        , () => {
-          this.stopSpinner('saving', true);
-          return d.reject();
-        });
-
-        return d.promise;
       }
+      const d = this.$q.defer();
+
+      this.startSpinner('saving');
+
+      this.DpLicense.getLicInfo(true).then((licInfo) => {
+        this.stopSpinner('saving', true);
+        if (licInfo.limits.remain_agents !== 0) {
+          return this.doSaveAgent().then(() => d.resolve()
+            , () => d.reject());
+        }
+        return this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => this.doSaveAgent().then(() => d.resolve()
+              , () => d.reject()));
+      }
+        , () => {
+        this.stopSpinner('saving', true);
+        return d.reject();
+      });
+
+      return d.promise;
     }
 
     /*
@@ -875,21 +864,21 @@ define([
       if (this.agentId) {
         promise = this.Api.sendPostJson(`/agents/${this.agentId}`, postData);
       } else {
-        promise = this.Api.sendPutJson("/agents", postData);
+        promise = this.Api.sendPutJson('/agents', postData);
       }
 
-      promise.then( res => {
+      promise.then((res) => {
         this.agent.display_name = this.form.name;
         this.service.agents.mergeDataModel(this.agent);
 
         if (!this.agentId) {
           this.service.agents.all(true);
-          this.$state.go('agents.agents.edit', {id: res.data.person_id, created_agent: 1});
+          this.$state.go('agents.agents.edit', { id: res.data.person_id, created_agent: 1 });
         }
 
         return this.stopSpinner('saving');
       }
-      , res => {
+      , (res) => {
         if (__guard__(res != null ? res.data : undefined, x => x.error_code) === 'dupe_email') {
           this.email_dupe_error = res.data.error_info.existing;
         }
@@ -897,19 +886,17 @@ define([
           this.email_sysaccount_error = res.data.error_info.emails.join(', ');
         }
         if (__guard__(res != null ? res.data : undefined, x2 => x2.error_code) === 'invalid_phone_number') {
-          this.invalid_phone_error = res.data.error_message + ': ' + (res.data.error_info != null ? res.data.error_info.primary_phone : undefined);
+          this.invalid_phone_error = `${res.data.error_message}: ${res.data.error_info != null ? res.data.error_info.primary_phone : undefined}`;
         }
         if (__guard__(__guard__(res != null ? res.data : undefined, x4 => x4.errors), x3 => x3.errors)) {
-          res.data.errors.errors.map(error => {
-            if ('agent.primary_phone.number' === error.prop) {
+          res.data.errors.errors.map((error) => {
+            if (error.prop === 'agent.primary_phone.number') {
               return this.invalid_phone_error = error.message;
             }
           });
         }
         if (__guard__(res != null ? res.data : undefined, x5 => x5.error_code) === 'license_exceeded') {
-          this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => {
-            return this.doSaveAgent();
-          });
+          this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => this.doSaveAgent());
         }
 
         this.stopSpinner('saving', true);
@@ -920,18 +907,17 @@ define([
     }
 
 
-
     isSelf() {
       return window.DP_PERSON_ID === this.agentId;
     }
 
 
-
     parseDepPermOverrides(agentId, ticketDeps, chatDeps) {
-      let full, u;
+      let full,
+        u;
       const overrides = {
         tickets: {},
-        chat: {}
+        chat:    {}
       };
 
       for (var dep of Array.from(ticketDeps)) {

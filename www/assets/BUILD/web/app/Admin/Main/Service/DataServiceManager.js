@@ -35,7 +35,7 @@ define([
   'Admin/Usersources/DataService/Usersources',
   'Admin/Portal/DataService/PortalGeneralSettings',
   'Admin/Server/DataService/Jobs'
-], function(
+], (
   Strings,
   DataService_TicketFields,
   DataService_ChatFields,
@@ -72,41 +72,41 @@ define([
   DataService_Usersources,
   DataService_PortalGeneralSettings,
   DataService_Jobs
-) {
+) => {
   const serviceMap = {
-    "DataService_TicketFields": DataService_TicketFields,
-    "DataService_ChatFields": DataService_ChatFields,
-    "DataService_UserFields": DataService_UserFields,
-    "DataService_OrgFields": DataService_OrgFields,
-    "DataService_BillingFields": DataService_BillingFields,
-    "DataService_KbFields": DataService_KbFields,
-    "DataService_CustomFields": DataService_CustomFields,
-    "DataService_TicketFilters": DataService_TicketFilters,
-    "DataService_TicketDeps": DataService_TicketDeps,
-    "DataService_ChatDeps": DataService_ChatDeps,
-    "DataService_TicketEscalations": DataService_TicketEscalations,
-    "DataService_TicketMacros": DataService_TicketMacros,
-    "DataService_TicketSlas": DataService_TicketSlas,
-    "DataService_TriggersNew": DataService_TriggersNew,
-    "DataService_TriggersReply": DataService_TriggersReply,
-    "DataService_TriggersUpdate": DataService_TriggersUpdate,
-    "DataService_Webhooks": DataService_Webhooks,
-    "DataService_Problems": DataService_Problems,
-    "DataService_TwitterAccounts": DataService_TwitterAccounts,
-    "DataService_ApiKeys": DataService_ApiKeys,
-    "DataService_ApiLogs": DataService_ApiLogs,
-    "DataService_ApiTags": DataService_ApiTags,
-    "DataService_Bans": DataService_Bans,
-    "DataService_UserGroups": DataService_UserGroups,
-    "DataService_UserRules": DataService_UserRules,
-    "DataService_Agents": DataService_Agents,
-    "DataService_RoundRobin": DataService_RoundRobin,
-    "DataService_AgentGroups": DataService_AgentGroups,
-    "DataService_AgentTeams": DataService_AgentTeams,
-    "DataService_Tasks": DataService_Tasks,
-    "DataService_Usersources": DataService_Usersources,
-    "DataService_PortalGeneralSettings": DataService_PortalGeneralSettings,
-    "DataService_Jobs": DataService_Jobs
+    DataService_TicketFields,
+    DataService_ChatFields,
+    DataService_UserFields,
+    DataService_OrgFields,
+    DataService_BillingFields,
+    DataService_KbFields,
+    DataService_CustomFields,
+    DataService_TicketFilters,
+    DataService_TicketDeps,
+    DataService_ChatDeps,
+    DataService_TicketEscalations,
+    DataService_TicketMacros,
+    DataService_TicketSlas,
+    DataService_TriggersNew,
+    DataService_TriggersReply,
+    DataService_TriggersUpdate,
+    DataService_Webhooks,
+    DataService_Problems,
+    DataService_TwitterAccounts,
+    DataService_ApiKeys,
+    DataService_ApiLogs,
+    DataService_ApiTags,
+    DataService_Bans,
+    DataService_UserGroups,
+    DataService_UserRules,
+    DataService_Agents,
+    DataService_RoundRobin,
+    DataService_AgentGroups,
+    DataService_AgentTeams,
+    DataService_Tasks,
+    DataService_Usersources,
+    DataService_PortalGeneralSettings,
+    DataService_Jobs
   };
 
   /*
@@ -124,7 +124,7 @@ define([
       let cacheKey = serviceId;
 
       cacheKey = args.reduce(
-        (prev, current) => prev + '_' + current.toString(),
+        (prev, current) => `${prev}_${current.toString()}`,
         cacheKey
       );
 
@@ -139,7 +139,6 @@ define([
     }
 
 
-
     factory(serviceId) {
       // If this class has a custom initXXX method, call that
       // instead uf the default
@@ -152,7 +151,7 @@ define([
       if (!constructor) { throw new Error(`Invalid data service name: ${name}`); }
 
       const obj = this.$injector.instantiate(constructor);
-      if (obj.init != null) { obj.init.apply(obj, Array.prototype.slice.call(arguments, 1)); }
+      if (obj.init != null) { obj.init(...Array.prototype.slice.call(arguments, 1)); }
       return obj;
     }
   }

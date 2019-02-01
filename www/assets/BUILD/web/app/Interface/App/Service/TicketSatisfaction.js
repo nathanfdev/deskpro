@@ -1,17 +1,17 @@
 define([
   'Reports/App/Service/BaseService',
   'moment'
-], function(
+], (
   BaseService,
   moment
-) {
+) => {
   class TicketSatisfaction extends BaseService {
     constructor(Api, $sce, $q, $timeout) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.Api = Api;
@@ -23,14 +23,14 @@ define([
       this.page_nums = [1];
       this.num_pages = 0;
       this.page = 1;
-      this.view_date = moment(this.date).format("YYYY-MM");
+      this.view_date = moment(this.date).format('YYYY-MM');
       this.dp_spin_els = {};
     }
 
     loadFeedResults() {
       this.startSpinner('loading_feed_results');
 
-      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/${this.page}`).then(res => {
+      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/${this.page}`).then((res) => {
         this.feed_html = this.$sce.trustAsHtml(res.data.html);
 
         this.page = res.data.page || 1;
@@ -38,7 +38,7 @@ define([
 
         this.page_nums = [];
 
-        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+        for (let i = 0, end = this.num_pages, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
           this.page_nums.push(i + 1);
         }
 
@@ -51,7 +51,7 @@ define([
     loadSummaryResults() {
       this.startSpinner('loading_summary_results');
 
-      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/summary/${this.view_date}`).then(res => {
+      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/summary/${this.view_date}`).then((res) => {
         this.summary_html = this.$sce.trustAsHtml(res.data.html);
         return this.stopSpinner('loading_summary_results', true);
       });

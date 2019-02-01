@@ -1,11 +1,10 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_RoundRobin_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_RoundRobin_Ctrl_List';
       this.DEPS = ['$timeout'];
       this.CTRL_AS = 'ListCtrl';
     }
-
 
 
     init() {
@@ -15,16 +14,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
 
-
     initialLoad() {
-      this.service.all().then(robins => {
-        return this.robins = robins;
-      });
-      return this.service.getSettings().then(settings => {
-        return this.settings = settings;
-      });
+      this.service.all().then(robins => this.robins = robins);
+      return this.service.getSettings().then(settings => this.settings = settings);
     }
-
 
 
     save($event) {
@@ -35,15 +28,15 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         return this.service.saveSettings();
       }
 
-      return this.service.checkTriggers().then(data => {
+      return this.service.checkTriggers().then(data =>
 
         // need angular timeout to update template message
-        return this.$timeout(
+         this.$timeout(
           () => {
             this.settings.active_triggers = data.active_triggers;
             this.$scope.$digest();
 
-            if (0 === this.settings.active_triggers) {
+            if (this.settings.active_triggers === 0) {
               this.settings.enabled = false;
               return this.service.saveSettings();
             }
@@ -55,14 +48,13 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
             return this.$modal.open({
               templateUrl: this.getTemplatePath('Index/modal-confirm.html'),
-              controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-
+              controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
                 $scope.title = title;
                 $scope.message = msg;
 
                 $scope.dismiss = () => $modalInstance.dismiss();
 
-                return $scope.confirm = function() {
+                return $scope.confirm = function () {
                   settings.enabled = !settings.enabled;
                   service.saveSettings();
                   return $modalInstance.dismiss();
@@ -72,8 +64,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
             });
           },
           1
-        );
-      });
+        ));
     }
   }
   Admin_RoundRobin_Ctrl_List.initClass();

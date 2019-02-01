@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class TemplateManager {
     constructor(TemplateLoader, $templateCache, $q) {
       this.TemplateLoader = TemplateLoader;
@@ -57,8 +57,8 @@ define(function() {
         this.sendPending[k] = preloadTpls;
       }
 
-      preloadTpls.then( data => {
-        for (let tpl of Array.from(data)) {
+      preloadTpls.then((data) => {
+        for (const tpl of Array.from(data)) {
           this.$templateCache.put(tpl.id, tpl.source);
         }
 
@@ -120,7 +120,7 @@ define(function() {
       let d;
       view = this.commonName(view);
       const exist = this.$templateCache.get(view);
-      if (exist || (exist === "")) {
+      if (exist || (exist === '')) {
         d = this.$q.defer();
         d.resolve(this.$templateCache.get(view));
         return d.promise;
@@ -128,9 +128,7 @@ define(function() {
 
       if (this.sendPending[view]) {
         d = this.$q.defer();
-        this.sendPending[view].then(() => {
-          return d.resolve(this.$templateCache.get(view));
-        });
+        this.sendPending[view].then(() => d.resolve(this.$templateCache.get(view)));
         return d.promise;
       }
 
@@ -139,12 +137,11 @@ define(function() {
 
       promise.then(() => {
         const tpl = this.$templateCache.get(view);
-        if (tpl || (tpl === "")) {
+        if (tpl || (tpl === '')) {
           return defer.resolve(tpl);
-        } else {
-          console.log("Failed to load %s", view);
-          return defer.reject("failed");
         }
+        console.log('Failed to load %s', view);
+        return defer.reject('failed');
       });
 
       return defer.promise;

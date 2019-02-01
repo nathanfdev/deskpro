@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_AgentAuditLogs_Ctrl_AuditLogsView extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_AgentAuditLogs_Ctrl_AuditLogsView';
@@ -12,9 +12,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     initialLoad() {
       return this.Api2.sendGet(`/audit_logs/${this.$stateParams.id}`).then(
-        response => {
-          return this.log = response.data.data;
-      });
+        response => this.log = response.data.data);
     }
 
     getChangeSet() {

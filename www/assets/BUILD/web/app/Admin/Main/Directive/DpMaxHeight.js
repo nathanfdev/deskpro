@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Functions'], function(Functions) {
+define(['DeskPRO/Util/Functions'], (Functions) => {
   /*
     * Description
     * -----------
@@ -9,18 +9,18 @@ define(['DeskPRO/Util/Functions'], function(Functions) {
     * -------
     * <div dp-max-height="40">...</div>
   */
-  const Admin_Main_Directive_DpMaxHeight = [ '$timeout', '$interval', ($timeout, $interval) =>
+  const Admin_Main_Directive_DpMaxHeight = ['$timeout', '$interval', ($timeout, $interval) =>
     ({
       restrict: 'A',
       priority: -10,
       link(scope, element, attrs) {
         const add = attrs.dpHeightAdd ? parseInt(attrs.dpHeightAdd || 0) : -100;
         const min = attrs.dpMinHeight ? parseInt(attrs.dpMinHeight || 0) : 300;
-        const perc = parseInt(attrs.dpMaxHeight || 100)/100;
+        const perc = parseInt(attrs.dpMaxHeight || 100) / 100;
 
         element.addClass('with-dp-max-height');
 
-        const resize = function() {
+        const resize = function () {
           const top = element.offset().top + $('.dp-layout-appbody').scrollTop();
           const winH = $(window).height();
           let setH = (Math.ceil(winH * perc) - top) + add;
@@ -30,17 +30,17 @@ define(['DeskPRO/Util/Functions'], function(Functions) {
 
         const resizeDebounce = Functions.debounce(resize, 100, true);
 
-        const interval = $interval( () => resize()
+        const interval = $interval(() => resize()
         , 500);
 
         $(window).on('resize', resizeDebounce);
-        scope.$on('$destroy', function() {
+        scope.$on('$destroy', () => {
           $(window).off('resize', resizeDebounce);
           return $interval.cancel(interval);
         });
 
         resize();
-        return $timeout(function() {
+        return $timeout(() => {
           resize();
           return $timeout(
             () => resize(),
@@ -49,8 +49,8 @@ define(['DeskPRO/Util/Functions'], function(Functions) {
           );
         });
       }
-      })
-  
+    })
+
   ];
 
   return Admin_Main_Directive_DpMaxHeight;

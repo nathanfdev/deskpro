@@ -2,9 +2,9 @@ define([
   'Admin/Main/Ctrl/Base',
   'Admin/Apps/Ctrl/EditInstance',
   'Admin/Usersources/Helper/UsersourceTypeDecider'
-], function(
+], (
   Admin_Ctrl_Base, Admin_Apps_Ctrl_EditInstance, Admin_Usersources_Helper_UsersourceTypeDecider
-) {
+) => {
   class Admin_Usersources_Ctrl_Edit extends Admin_Apps_Ctrl_EditInstance {
     static initClass() {
       this.CTRL_ID = 'Admin_Usersources_Ctrl_Edit';
@@ -19,9 +19,7 @@ define([
     }
 
     initialLoad() {
-      const promise = this.Api.sendGet(`/usersources/${this.usersourceType}/${this.usersourceId}`).then(result => {
-        return this.usersource = result.data.usersource;
-      });
+      const promise = this.Api.sendGet(`/usersources/${this.usersourceType}/${this.usersourceId}`).then(result => this.usersource = result.data.usersource);
       return promise;
     }
   }

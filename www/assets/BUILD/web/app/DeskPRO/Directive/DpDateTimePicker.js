@@ -1,30 +1,29 @@
-define(['angular', 'moment'], function(angular, moment) {
+define(['angular', 'moment'], (angular, moment) => {
   angular.module('dp.datetimepicker', ['template/dp/datetime.html', 'ui.bootstrap'])
 
   .constant('dpDatetimeConfig', {
-    format: 'DD.MM.YYYY HH:mm', // moment formats
+    format:              'DD.MM.YYYY HH:mm', // moment formats
     dayViewHeaderFormat: 'MMMM YYYY',
-    minDate: false,
-    maxDate: false,
-    locale: moment.locale()
+    minDate:             false,
+    maxDate:             false,
+    locale:              moment.locale()
   }
   )
 
   .directive('dpDatetimePopup', ['$compile', '$document', '$position', 'dpDatetimeConfig', ($compile, $document, $position, defaults) =>
       ({
-        require: 'ngModel',
+        require:  'ngModel',
         restrict: 'A',
-        scope: {
-          format: '@dpDatetimePopup',
-          date: '=ngModel',
-          minView: '@',
-          minDate: '@',
-          maxDate: '@',
+        scope:    {
+          format:   '@dpDatetimePopup',
+          date:     '=ngModel',
+          minView:  '@',
+          minDate:  '@',
+          maxDate:  '@',
           appendTo: '@'
         },
         link($scope, $el, $attr, ngModelCtrl) {
-
-          ngModelCtrl.$formatters.push(function(val) {
+          ngModelCtrl.$formatters.push((val) => {
             if (!val) { return ''; }
             return moment(val).format($scope.format || defaults.format);
           });
@@ -33,14 +32,14 @@ define(['angular', 'moment'], function(angular, moment) {
           //          because we change the value programmatically (through the DatePicker)
           //          and $parsers are not called when the bound ngModel expression changes programmatically
           //          this parser called only if user manually type date in input
-          ngModelCtrl.$parsers.push(function(val) {
+          ngModelCtrl.$parsers.push((val) => {
             if (!val) { return null; }
             return moment(val).toDate();
           });
 
           // todo should be always in body, only one instance of dpDatetime for all dpDatetimePopup
           // todo as we have multiple instances of datetime directive for now
-          const appendToBody = 'body' === $scope.appendTo;
+          const appendToBody = $scope.appendTo === 'body';
 
           const $popupEl = angular.element(`\
 <div ng-style="{display: (isOpen && 'block') || 'none', top: position.top+'px', left: position.left+'px'}">
@@ -50,21 +49,21 @@ define(['angular', 'moment'], function(angular, moment) {
           );
           $popupEl.addClass('bootstrap-datetimepicker-widget dropdown-menu');
           $popupEl.css({
-            width: '280px',
+            width:      '280px',
             userSelect: 'none',
-            zIndex: 10000
+            zIndex:     10000
           });
           const $popup = $compile($popupEl)($scope);
           $popupEl.remove();
           if (appendToBody) { $document.find('body').append($popup); } else { $el.after($popup); }
 
-          $popup.on('click', function(e) {
+          $popup.on('click', (e) => {
             e.preventDefault();
             return e.stopPropagation();
           });
 
           const documentHandler = event =>
-            $scope.$apply(function() {
+            $scope.$apply(() => {
               if ($scope.isOpen && (event.target !== $el[0])) {
                 return $scope.isOpen = false;
               }
@@ -74,29 +73,29 @@ define(['angular', 'moment'], function(angular, moment) {
           $el.on('click', () => $scope.$apply(() => $scope.isOpen = true));
           $document.on('click', documentHandler);
 
-          $scope.$watch('isOpen', function(val) {
+          $scope.$watch('isOpen', (val) => {
             if (!val) { return; }
             $scope.position = appendToBody ? $position.offset($el) : $position.position($el);
             return $scope.position.top = $scope.position.top + $el.prop('offsetHeight');
           });
 
-          return $scope.$on('$destroy', function() {
+          return $scope.$on('$destroy', () => {
             $popup.remove();
             return $document.off('click', documentHandler);
           });
         }
       })
-    
-    ])
+
+  ])
 
   .directive('dpDatetime', ['dpDatetimeConfig', defaults =>
     ({
-      restrict: 'E',
-      replace: true,
+      restrict:    'E',
+      replace:     true,
       templateUrl: 'template/dp/datetime.html',
-      scope: {
-        date: '=ngModel',
-        format: '@',
+      scope:       {
+        date:    '=ngModel',
+        format:  '@',
         minView: '@',
         minDate: '@',
         maxDate: '@'
@@ -104,17 +103,18 @@ define(['angular', 'moment'], function(angular, moment) {
       controller() {},
 
       link($scope, $el) {
-        let format, modes;
+        let format,
+          modes;
         let date = ($scope.date != null) && ($scope.date !== 'undefined') ? moment($scope.date) : moment();
         const today = moment();
 
         $scope.modes = (modes = {
           minute: 0,
-          hour: 1,
-          time: 2,
-          day: 3,
-          month: 4,
-          year: 5
+          hour:   1,
+          time:   2,
+          day:    3,
+          month:  4,
+          year:   5
         });
         $scope.days = [];
         $scope.months = [];
@@ -140,7 +140,7 @@ define(['angular', 'moment'], function(angular, moment) {
           m() { return format.indexOf('m') !== -1; },
           s() { return format.indexOf('s') !== -1; }
         };
-        const isEnabled = function(granularity) {
+        const isEnabled = function (granularity) {
           const func = granularities[granularity];
           if (!func) { return false; }
           return func(granularity);
@@ -154,7 +154,7 @@ define(['angular', 'moment'], function(angular, moment) {
         if (!isEnabled('h')) { date.hours(0); }
         if (!isEnabled('m')) { date.minutes(0); }
 
-        const isValid = function(targetMoment, granularity) {
+        const isValid = function (targetMoment, granularity) {
           if (!targetMoment.isValid()) { return false; }
           if (($scope.minDate != null) && ($scope.minDate !== 'undefined') && targetMoment.isBefore($scope.minDate, granularity)) { return false; }
           if (($scope.maxDate != null) && ($scope.maxDate !== 'undefined') && targetMoment.isAfter($scope.maxDate, granularity)) { return false; }
@@ -162,7 +162,7 @@ define(['angular', 'moment'], function(angular, moment) {
         };
 
         const renderers = {};
-        const render = function(mode) {
+        const render = function (mode) {
           if ((renderers[mode] == null)) { return; }
           const i = mode === modes.year ? 12 : 1;
           const g = mode > modes.day ? 'Y' : 'M';
@@ -172,12 +172,12 @@ define(['angular', 'moment'], function(angular, moment) {
           return renderers[mode]();
         };
 
-        renderers[modes.year] = function() {
+        renderers[modes.year] = function () {
           const startY = date.clone().subtract(5, 'y');
           const endY = date.clone().add(6, 'y');
           $scope.years.length = 0;
           $scope.headerDisabled = true;
-          $scope.header = startY.year() + '-' + endY.year();
+          $scope.header = `${startY.year()}-${endY.year()}`;
           return (() => {
             const result = [];
             while (date.isValid() && !startY.isAfter(endY, 'y')) {
@@ -187,7 +187,7 @@ define(['angular', 'moment'], function(angular, moment) {
             return result;
           })();
         };
-        renderers[modes.month] = function() {
+        renderers[modes.month] = function () {
           $scope.months.length = 0;
           $scope.header = date.year();
           const monthsShort = date.clone().startOf('y').hour(12);
@@ -195,7 +195,7 @@ define(['angular', 'moment'], function(angular, moment) {
             const result = [];
             while (monthsShort.isSame(date, 'y')) {
               $scope.months.push({
-                date: monthsShort.format('MMM'),
+                date:   monthsShort.format('MMM'),
                 active: monthsShort.isSame(date, 'M')
               });
               result.push(monthsShort.add(1, 'M'));
@@ -203,7 +203,7 @@ define(['angular', 'moment'], function(angular, moment) {
             return result;
           })();
         };
-        renderers[modes.day] = function() {
+        renderers[modes.day] = function () {
           if (!(isEnabled('y') || isEnabled('M') || isEnabled('d'))) { return; }
           let row = [];
           $scope.days.length = 0;
@@ -212,17 +212,17 @@ define(['angular', 'moment'], function(angular, moment) {
           return (() => {
             const result = [];
             while (date.isValid() && !date.clone().endOf('M').endOf('w').isBefore(currentDate, 'd')) {
-              if (0 === currentDate.weekday()) {
+              if (currentDate.weekday() === 0) {
                 row = [];
                 $scope.days.push(row);
               }
               const day = {
-                date: currentDate.date(),
-                old: currentDate.isBefore(date, 'M'),
-                new: currentDate.isAfter(date, 'M'),
-                today: currentDate.isSame(today, 'd'),
+                date:     currentDate.date(),
+                old:      currentDate.isBefore(date, 'M'),
+                new:      currentDate.isAfter(date, 'M'),
+                today:    currentDate.isSame(today, 'd'),
                 disabled: !isValid(currentDate, 'd'),
-                active: $scope.active.isSame(currentDate, 'd')
+                active:   $scope.active.isSame(currentDate, 'd')
               };
               row.push(day);
               result.push(currentDate.add(1, 'd'));
@@ -230,16 +230,16 @@ define(['angular', 'moment'], function(angular, moment) {
             return result;
           })();
         };
-        renderers[modes.time] = function() {};
+        renderers[modes.time] = function () {};
           // do nothing
-        renderers[modes.hour] = function() {
+        renderers[modes.hour] = function () {
           $scope.hours.length = 0;
-          for (let n = 0, end = $scope.use24 ? 23 : 11, asc = 0 <= end; asc ? n <= end : n >= end; asc ? n++ : n--) {
+          for (let n = 0, end = $scope.use24 ? 23 : 11, asc = end >= 0; asc ? n <= end : n >= end; asc ? n++ : n--) {
             $scope.hours.push(n);
           }
           if (!$scope.use24) { return $scope.hours[0] = 12; }
         };
-        renderers[modes.minute] = function() {
+        renderers[modes.minute] = function () {
           $scope.minutes.length = 0;
           return (() => {
             const result = [];
@@ -253,7 +253,7 @@ define(['angular', 'moment'], function(angular, moment) {
           })();
         };
 
-        const setDatetime = function(dt) {
+        const setDatetime = function (dt) {
           dt.locale(defaults.locale);
           if (!isValid(dt)) { return; }
           $scope.date = dt;
@@ -265,7 +265,7 @@ define(['angular', 'moment'], function(angular, moment) {
           return render($scope.mode);
         };
 
-        $scope.selectDay = function(day) {
+        $scope.selectDay = function (day) {
           if (day.disabled) { return; }
           const dt = date.clone();
           if (day.old) { dt.subtract(1, 'M'); }
@@ -274,38 +274,38 @@ define(['angular', 'moment'], function(angular, moment) {
           return setDatetime(dt);
         };
 
-        $scope.selectMonth = function(month) {
+        $scope.selectMonth = function (month) {
           date.month(month.date);
           return $scope.mode = modes.day;
         };
 
-        $scope.selectYear = function(year) {
+        $scope.selectYear = function (year) {
           date.year(year);
           return $scope.mode = modes.month;
         };
 
-        $scope.selectHour = function(hour) {
+        $scope.selectHour = function (hour) {
           const dt = date.clone();
           dt.hour(hour);
           setDatetime(dt);
           return $scope.mode = modes.time;
         };
 
-        $scope.selectMinute = function(minute) {
+        $scope.selectMinute = function (minute) {
           const dt = date.clone();
           dt.minutes(minute);
           setDatetime(dt);
           return $scope.mode = modes.time;
         };
 
-        $scope.togglePeriod = function() {
+        $scope.togglePeriod = function () {
           const hours = date.hours() >= 12 ? -12 : 12;
           return setDatetime(date.clone().add(hours, 'h'));
         };
 
         $scope.isModeAvailable = mode => (mode >= $scope.minMode) && (mode <= modes.year);
 
-        $scope.switchMode = function(mode) {
+        $scope.switchMode = function (mode) {
           if ($scope.headerDisabled) { return; }
           if (!$scope.isModeAvailable(mode)) { return; }
           return $scope.mode = mode;
@@ -315,7 +315,7 @@ define(['angular', 'moment'], function(angular, moment) {
 
         $scope.decrement = g => setDatetime(date.clone().subtract(1, g));
 
-        $scope.go = function(dir) {
+        $scope.go = function (dir) {
           if (!$scope[dir]) { return; }
           let i = 1;
           let g = null;
@@ -328,7 +328,7 @@ define(['angular', 'moment'], function(angular, moment) {
             i = 12;
           }
           if (!g) { return; }
-          const method = 'next' === dir ? 'add' : 'subtract';
+          const method = dir === 'next' ? 'add' : 'subtract';
           date[method](i, g);
           return render($scope.mode);
         };
@@ -336,11 +336,11 @@ define(['angular', 'moment'], function(angular, moment) {
         return $scope.$watch('mode', val => render(val));
       }
     })
-  
+
   ]);
 
 
-  return angular.module('template/dp/datetime.html', []).run(["$templateCache", $templateCache =>
+  return angular.module('template/dp/datetime.html', []).run(['$templateCache', $templateCache =>
     $templateCache.put(
       'template/dp/datetime.html',
         `\
@@ -481,7 +481,7 @@ define(['angular', 'moment'], function(angular, moment) {
 </ul>\
 `
     )
-  
+
   ]);
 });
 

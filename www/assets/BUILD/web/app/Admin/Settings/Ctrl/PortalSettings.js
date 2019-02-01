@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_Settings_Ctrl_PortalSettings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Settings_Ctrl_PortalSettings';
@@ -12,8 +12,8 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     initialLoad() {
       const data_promise = this.Api.sendDataGet({
-        'settings': '/portal_settings'
-      }).then( res => {
+        settings: '/portal_settings'
+      }).then((res) => {
         this.$scope.settings = res.data.settings.portal_settings;
         this.$scope.show_ratings_opt = false;
         if (this.$scope.settings.show_ratings > 0) {
@@ -32,13 +32,11 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       if (!this.settings) { return false; }
       if (!angular.equals(this.settings, this.$scope.settings)) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
 
     save() {
-
       let promise;
       if (!this.$scope.show_ratings_opt) {
         this.$scope.settings.show_ratings = 0;
@@ -49,13 +47,11 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       };
 
       this.startSpinner('saving');
-      return promise = this.Api.sendPostJson('/portal_settings', postData).success( () => {
+      return promise = this.Api.sendPostJson('/portal_settings', postData).success(() => {
         this.settings = angular.copy(this.$scope.settings);
 
-        return this.stopSpinner('saving').then(() => {
-          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
-        });
-      }).error( (info, code) => {
+        return this.stopSpinner('saving').then(() => this.Growl.success(this.getRegisteredMessage('saved_settings')));
+      }).error((info, code) => {
         this.stopSpinner('saving', true);
         return this.applyErrorResponseToView(info);
       });

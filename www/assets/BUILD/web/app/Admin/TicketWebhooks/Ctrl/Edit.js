@@ -1,10 +1,10 @@
 define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/Util'
-], function(
+], (
   Admin_Ctrl_Base,
   Util
-) {
+) => {
   class Admin_TicketWebhooks_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketWebhooks_Ctrl_Edit';
@@ -21,7 +21,6 @@ define([
       this.criteriaTypeDef = this.dpObTypesDefTicketFilter;
       this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
       this.webhookUrl = null;
-
     }
 
     /*
@@ -31,7 +30,7 @@ define([
       let promise = Promise.resolve();
       if (this.webhookId) {
         promise = this.Api2.sendGet(`/webhooks/tickets/${this.webhookId}`).then(
-          result => {
+          (result) => {
             this.webhook = result.data.data;
             this.webhookUrl = this.Api2.buildEndpointAPIUrl(`webhooks/${this.webhook.auth_id}/invocation`);
 
@@ -40,19 +39,17 @@ define([
             if (this.webhook.search_terms != null ? this.webhook.search_terms.length : undefined) {
               return (() => {
                 const result1 = [];
-                for (let term of Array.from(this.webhook.search_terms)) {
+                for (const term of Array.from(this.webhook.search_terms)) {
                   const rowId = Util.uid('term');
                   result1.push(this.filter_criteria[rowId] = term);
                 }
                 return result1;
               })();
             }
-        });
+          });
       }
 
-      const promise2 = this.criteriaTypeDef.loadDataOptions().then(() => {
-        return this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
-      });
+      const promise2 = this.criteriaTypeDef.loadDataOptions().then(() => this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes());
       const promises = [promise, promise2];
       return this.$q.all(promises);
     }
@@ -71,7 +68,7 @@ define([
         const setId = _.uniqueId('termset');
         form.terms_set[setId] = {};
 
-        for (let term of Array.from(model.search_terms)) {
+        for (const term of Array.from(model.search_terms)) {
           const rowId = _.uniqueId('term');
           form.terms_set[setId][rowId] = term;
         }
@@ -84,7 +81,7 @@ define([
       if (!this.$scope.form_props.$valid) { return; }
 
       const data = {
-        title: this.form.title,
+        title:        this.form.title,
         search_terms: Object.keys(this.filter_criteria).map(key => this.filter_criteria[key])
       };
 
@@ -95,20 +92,19 @@ define([
       let p = null;
       if (this.webhookId) {
         return p = this.Api2.sendPutJson(`/webhooks/tickets/${this.webhookId}`, data);
-      } else {
-        p = this.Api2.sendPostJson("/webhooks/tickets", data);
-
-        return p.then(res => {
-          if (!this.webhookId) {
-            this.webhook = res.data.data;
-            this.webhookId = this.webhook.id;
-          }
-          this.$scope.$parent.List.onWebhookAdded(this.webhook);
-          return this.Growl.success(this.getRegisteredMessage('saved_filter'));
-        }).catch(res => {
-          if (res.data != null ? res.data.error_message : undefined) { return this.Growl.error(res.data != null ? res.data.error_message : undefined); }
-        });
       }
+      p = this.Api2.sendPostJson('/webhooks/tickets', data);
+
+      return p.then((res) => {
+        if (!this.webhookId) {
+          this.webhook = res.data.data;
+          this.webhookId = this.webhook.id;
+        }
+        this.$scope.$parent.List.onWebhookAdded(this.webhook);
+        return this.Growl.success(this.getRegisteredMessage('saved_filter'));
+      }).catch((res) => {
+        if (res.data != null ? res.data.error_message : undefined) { return this.Growl.error(res.data != null ? res.data.error_message : undefined); }
+      });
     }
   }
   Admin_TicketWebhooks_Ctrl_Edit.initClass();

@@ -3,12 +3,12 @@ define([
   'Admin/Main/Ctrl/Base',
   'Admin/TicketTriggers/TriggerEditFormMapper',
   'Admin/TicketTriggers/Ctrl/EditBase',
-], function(
+], (
   Arrays,
   Admin_Ctrl_Base,
   TriggerEditFormMapper,
   Admin_TicketTriggers_Ctrl_EditBase
-) {
+) => {
   class Admin_TicketWebhooks_Ctrl_TriggerEdit extends Admin_TicketTriggers_Ctrl_EditBase {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketWebhooks_Ctrl_TriggerEdit';
@@ -27,9 +27,9 @@ define([
     getPostData() {
       const legacyPostData = super.getPostData();
       const postData = {
-        title: legacyPostData.title,
+        title:   legacyPostData.title,
         actions: {
-          version:1,
+          version: 1,
           actions: legacyPostData.actions
         },
         terms: legacyPostData.criteria_sets
@@ -46,8 +46,8 @@ define([
       this.trigger.has_delete_ticket_action = has_delete_ticket_action;
 
       return this.dpTriggers.mergeDataModel({
-        id: this.trigger.id,
-        title: this.trigger.title,
+        id:         this.trigger.id,
+        title:      this.trigger.title,
         is_enabled: this.trigger.is_enabled,
         has_stop_triggers_action,
         has_delete_ticket_action
@@ -73,20 +73,20 @@ define([
         promise = this.Api2.sendPutJson(`/${['webhooks', this.webhookId, 'triggers', this.trigger.id].join('/')}`, triggerData);
       }
 
-      promise = promise.success(response => {
-          const trigger = response.data;
-          this.onTriggerSave(trigger);
-          return trigger;
-        }).success( trigger => {
-          this.skipDirtyState();
-          this.stopSpinner('saving', true).then( () => this.Growl.success("Saved"));
-          if (is_new) {
+      promise = promise.success((response) => {
+        const trigger = response.data;
+        this.onTriggerSave(trigger);
+        return trigger;
+      }).success((trigger) => {
+        this.skipDirtyState();
+        this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
+        if (is_new) {
             // close this view
-            window.location.hash = '/webhooks';
-            this.$state.go('tickets.webhooks');
-            return this.$scope.$parent.List.onTriggerAdded(trigger, this.webhookId);
-          }
-      }).error( (result, code) => {
+          window.location.hash = '/webhooks';
+          this.$state.go('tickets.webhooks');
+          return this.$scope.$parent.List.onTriggerAdded(trigger, this.webhookId);
+        }
+      }).error((result, code) => {
         this.stopSpinner('saving', true);
         if ((result != null ? result.error_code : undefined) === 'invalid') {
           return this.showErrors(result.error_info);

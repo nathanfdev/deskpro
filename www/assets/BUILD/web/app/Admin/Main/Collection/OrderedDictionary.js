@@ -1,4 +1,4 @@
-define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsMixin, Numbers) {
+define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], (EventsMixin, Numbers) => {
   /**
   * Save an ordered k=>v
   */
@@ -16,7 +16,7 @@ define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsM
       * Clears all data from the collection
       */
     clear() {
-      for (let key of Array.from(this.order)) {
+      for (const key of Array.from(this.order)) {
         delete this.data[key];
       }
       return this.order.length = 0;
@@ -32,7 +32,7 @@ define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsM
       callback = callback || this.orderFn;
       if (!callback) { return; }
 
-      return this.order.sort( (k1, k2) => {
+      return this.order.sort((k1, k2) => {
         const v1 = this.data[k1];
         const v2 = this.data[k2];
 
@@ -61,7 +61,7 @@ define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsM
       if (id_prop == null) { id_prop = 'id'; }
       return (() => {
         const result = [];
-        for (let r of Array.from(array)) {
+        for (const r of Array.from(array)) {
           const id = r[id_prop];
           if (id != null) { result.push(this.set(id, r)); } else {
             result.push(undefined);
@@ -159,7 +159,7 @@ define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsM
     forEach(fn) {
       return (() => {
         const result = [];
-        for (let key of Array.from(this.order)) {
+        for (const key of Array.from(this.order)) {
           const val = this.data[key];
           const ret = fn(key, val);
           if (ret === false) {
@@ -180,7 +180,7 @@ define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsM
       */
     getOrderedPair() {
       const ret = [];
-      for (let key of Array.from(this.order)) {
+      for (const key of Array.from(this.order)) {
         const val = this.data[key];
         ret.push([key, val]);
       }
@@ -206,7 +206,7 @@ define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsM
     */
     values() {
       const ret = [];
-      for (let key of Array.from(this.order)) {
+      for (const key of Array.from(this.order)) {
         const val = this.data[key];
         ret.push(val);
       }

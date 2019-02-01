@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Util/Util'
-], function(
+], (
   Util
-) {
+) => {
   class ReportEditFormMapper {
 
     /*
@@ -10,7 +10,6 @@ define([
     *
     */
     getFormFromModel(model) {
-
       const form = {};
       form.id = model.report.id;
       form.title = model.report.title;
@@ -25,7 +24,6 @@ define([
       *
     */
     applyFormToModel(model, formModel) {
-
       return model.title = formModel.title;
     }
 
@@ -35,7 +33,6 @@ define([
       *
     */
     getPostDataFromForm(formModel) {
-
       const postData = {};
       postData.id = formModel.id;
       postData.title = formModel.title;

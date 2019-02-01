@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -23,7 +23,7 @@ define(function() {
     *     locked-tip="This is locked because the 'full' permission is enabled"
     * ></button>
     */
-  const Admin_Main_Directive_DpToggleSwitch = [ () =>
+  const Admin_Main_Directive_DpToggleSwitch = [() =>
     ({
       restrict: 'A',
       require:  ['ngModel', '^?form'],
@@ -34,7 +34,6 @@ define(function() {
 `,
       replace: true,
       link(scope, element, attrs, ctrls) {
-
         const ngModel = ctrls[0];
         const formCtrl = ctrls[1] || null;
 
@@ -46,18 +45,17 @@ define(function() {
 
         ngModel.$viewChangeListeners.push(() => ngModel.$render());
 
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           const val = ngModel.$viewValue;
           if (val) {
             element.addClass('switch-on');
             return element.removeClass('switch-off');
-          } else {
-            element.removeClass('switch-on');
-            return element.addClass('switch-off');
           }
+          element.removeClass('switch-on');
+          return element.addClass('switch-off');
         };
 
-        element.on('click', function(ev) {
+        element.on('click', (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
 
@@ -69,12 +67,11 @@ define(function() {
         });
 
         if (attrs.lockedModel) {
-          scope.$watch(attrs.lockedModel, function(newVal) {
+          scope.$watch(attrs.lockedModel, (newVal) => {
             if (newVal) {
               return element.addClass('locked');
-            } else {
-              return element.removeClass('locked');
             }
+            return element.removeClass('locked');
           });
         }
 
@@ -84,13 +81,13 @@ define(function() {
           tipTarget.appendTo(element);
           return tipTarget.tooltip({
             placement: 'auto top',
-            trigger: 'hover',
+            trigger:   'hover',
             container: 'body'
           });
         }
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpToggleSwitch;

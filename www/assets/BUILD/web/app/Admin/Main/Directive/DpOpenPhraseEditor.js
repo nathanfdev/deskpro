@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -13,16 +13,16 @@ define(function() {
     ({
       restrict: 'A',
       link(scope, element, attrs) {
-        element.on('click', function(ev) {
+        element.on('click', (ev) => {
           let modalInstance;
           ev.preventDefault();
 
           const editorOptions = scope.$eval(attrs.dpOpenPhraseEditor);
 
           return modalInstance = $modal.open({
-            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Languages/modal-translate-phrase.html',
-            controller: 'Admin_Languages_Ctrl_TranslateModal',
-            resolve: {
+            templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Languages/modal-translate-phrase.html`,
+            controller:  'Admin_Languages_Ctrl_TranslateModal',
+            resolve:     {
               phraseId() {
                 return editorOptions.phraseId || null;
               },
@@ -35,7 +35,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpOpenPhraseEditor;

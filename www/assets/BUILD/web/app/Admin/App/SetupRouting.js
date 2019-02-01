@@ -6,9 +6,9 @@ define([
   Admin_Cloud_App_RouteMutator
 ) =>
   Module =>
-    Module.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    Module.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
       let routeMutator;
-      $urlRouterProvider.otherwise("/");
+      $urlRouterProvider.otherwise('/');
 
       // Load templates through the dpTemplateManager
       // so we can take advantage of our preloading scheme
@@ -21,7 +21,7 @@ define([
         routeMutator = new Admin_Cloud_App_RouteMutator();
       }
 
-      const procRoute = function(route) {
+      const procRoute = function (route) {
         const { id } = route;
         const { url } = route;
 
@@ -63,9 +63,9 @@ define([
             // An app-level (tickets.ticket_deps)
             // Is always added to the appbody
             if (id.split('.').length === 2) {
-              viewName = "appbody";
+              viewName = 'appbody';
             } else {
-              viewName = "";
+              viewName = '';
             }
           }
 
@@ -95,5 +95,5 @@ define([
       }
     }
     ])
-  
+
 );

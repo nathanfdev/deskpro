@@ -1,10 +1,10 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/CustomFields/FieldFormMapper',
-], function(
+], (
   BaseListEdit,
   FieldFormMapper
-)  {
+) => {
   class BillingFields extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -13,15 +13,13 @@ define([
     init() {}
 
     _doLoadList() {
-
       const deferred = this.$q.defer();
 
       this.Api.sendDataGet([
         '/billing_fields'
-      ]).then( res => {
-
+      ]).then((res) => {
         const custom_fields = [];
-        for (let f of Array.from(res.data.api_billing_fields.custom_fields)) {
+        for (const f of Array.from(res.data.api_billing_fields.custom_fields)) {
           custom_fields.push(f);
         }
 
@@ -39,7 +37,7 @@ define([
      * @return {promise}
      */
     saveDisplayOrder(display_orders) {
-      return this.Api.sendPostJson('/billing_fields/display-order', {display_orders});
+      return this.Api.sendPostJson('/billing_fields/display-order', { display_orders });
     }
 
 
@@ -50,9 +48,7 @@ define([
       * @return {promise}
     */
     deleteFieldById(id) {
-      const promise = this.Api.sendDelete(`/billing_fields/${id}`).then(() => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/billing_fields/${id}`).then(() => this.removeListModelById(id));
       return promise;
     }
 
@@ -67,7 +63,7 @@ define([
       const deferred = this.$q.defer();
 
       if (id) {
-        this.Api.sendGet(`/billing_fields/${id}`).then( result => {
+        this.Api.sendGet(`/billing_fields/${id}`).then((result) => {
           const data = {};
           data.field = result.data.field;
           data.field_type = result.data.field.type_name;
@@ -76,9 +72,9 @@ define([
         });
       } else {
         const data = {
-          field: {},
+          field:      {},
           field_type: '0',
-          form: this.getFormMapper().getFormFromModel(null)
+          form:       this.getFormMapper().getFormFromModel(null)
         };
         deferred.resolve(data);
       }
@@ -115,7 +111,7 @@ define([
       if (fieldModel.id) {
         promise = this.Api.sendPostJson(`/billing_fields/${fieldModel.id}`, postData);
       } else {
-        promise = this.Api.sendPutJson('/billing_fields', postData).success( data => fieldModel.id = data.field_id);
+        promise = this.Api.sendPutJson('/billing_fields', postData).success(data => fieldModel.id = data.field_id);
       }
 
       promise.success(() => {

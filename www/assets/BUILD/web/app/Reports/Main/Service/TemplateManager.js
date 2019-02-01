@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class Reports_Main_Service_TemplateManager {
     constructor($templateCache, $http, $q) {
       this.$templateCache = $templateCache;
@@ -50,7 +50,7 @@ define(function() {
       }
 
       let qs = [];
-      for (let t of Array.from(this.pending)) {
+      for (const t of Array.from(this.pending)) {
         qs.push(`views[]=${encodeURIComponent(t)}`);
       }
       qs.push(`v=${window.DP_BUILD_TIME}`);
@@ -62,7 +62,7 @@ define(function() {
 
       const preloadTpls = this.$http({
         method: 'GET',
-        url: DP_BASE_REPORTS_URL + '/load-view/multi?' + qs
+        url:    `${DP_BASE_REPORTS_URL}/load-view/multi?${qs}`
       });
 
       for (var k of Object.keys(this.sendPending || {})) {
@@ -70,8 +70,8 @@ define(function() {
         this.sendPending[k] = preloadTpls;
       }
 
-      preloadTpls.success( data => {
-        for (let tpl of Array.from(data)) {
+      preloadTpls.success((data) => {
+        for (const tpl of Array.from(data)) {
           this.$templateCache.put(tpl.id, tpl.source);
         }
 
@@ -118,7 +118,7 @@ define(function() {
       let d;
       view = this.commonName(view);
       const exist = this.$templateCache.get(view);
-      if (exist || (exist === "")) {
+      if (exist || (exist === '')) {
         d = this.$q.defer();
         d.resolve(this.$templateCache.get(view));
         return d.promise;
@@ -126,9 +126,7 @@ define(function() {
 
       if (this.sendPending[view]) {
         d = this.$q.defer();
-        this.sendPending[view].then(() => {
-          return d.resolve(this.$templateCache.get(view));
-        });
+        this.sendPending[view].then(() => d.resolve(this.$templateCache.get(view)));
         return d.promise;
       }
 
@@ -138,12 +136,11 @@ define(function() {
 
       promise.then(() => {
         const tpl = this.$templateCache.get(view);
-        if (tpl || (tpl === "")) {
+        if (tpl || (tpl === '')) {
           return defer.resolve(tpl);
-        } else {
-          console.log("Failed to load %s", view);
-          return defer.reject("failed");
         }
+        console.log('Failed to load %s', view);
+        return defer.reject('failed');
       });
 
       return defer.promise;

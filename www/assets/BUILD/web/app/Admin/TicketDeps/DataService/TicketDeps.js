@@ -3,12 +3,12 @@ define([
   'Admin/TicketDeps/TicketDepFormMapper',
   'DeskPRO/Util/Arrays',
   'DeskPRO/Util/Util'
-], function(
+], (
   BaseListEdit,
   TicketDepFormMapper,
   Arrays,
   Util
-)  {
+) => {
   class TicketDeps extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', 'Api2', '$q'];
@@ -19,7 +19,7 @@ define([
     resolveResponse(response) { return response.departments; }
 
     all(reload) {
-      return super.all(reload, {with_perms: 1});
+      return super.all(reload, { with_perms: 1 });
     }
 
     _doLoadList(params) {
@@ -27,13 +27,13 @@ define([
       params = params || {};
 
       // maybe should init query params as method argument
-      this.Api.sendGet(this.url(), params).success( (data, status, headers, config) => {
+      this.Api.sendGet(this.url(), params).success((data, status, headers, config) => {
         this.deps = data.departments;
-        var proc = function(parent) {
+        var proc = function (parent) {
           const list = [];
 
           const parent_id = parent ? parent.id : null;
-          for (let d of Array.from(data.departments)) {
+          for (const d of Array.from(data.departments)) {
             if (d.parent_id === parent_id) {
               d.parent = parent;
               d.children = proc(d);
@@ -81,7 +81,7 @@ define([
           ticketAccountsInfo: '/email_accounts',
           defaultLayoutInfo:  '/ticket_layouts/default',
           customLayoutInfo:   `/ticket_layouts/${id}`,
-          layoutStats:        "/ticket_layouts/stats"
+          layoutStats:        '/ticket_layouts/stats'
         });
       } else {
         promise = this.Api.sendDataGet({
@@ -90,14 +90,14 @@ define([
           usergroupsInfo:     '/user_groups',
           ticketAccountsInfo: '/email_accounts',
           defaultLayoutInfo:  '/ticket_layouts/default',
-          layoutStats:        "/ticket_layouts/stats"
+          layoutStats:        '/ticket_layouts/stats'
         });
       }
 
       const brandPromise = this.Api2.sendGet('brands');
       const deferred = this.$q.defer();
 
-      const allPromise = this.$q.all([promise, this.loadList(), brandPromise]).then( result => {
+      const allPromise = this.$q.all([promise, this.loadList(), brandPromise]).then((result) => {
         const brands = result[2].data.data;
 
         result = result[0].data;
@@ -110,9 +110,9 @@ define([
         } else {
           data.dep = {};
           data.depPerms = {
-            usergroup_ids: [],
+            usergroup_ids:  [],
             agentgroup_ids: [],
-            agent_ids: []
+            agent_ids:      []
           };
         }
 
@@ -139,7 +139,7 @@ define([
         const layouts = {
           default_layout:    result.defaultLayoutInfo.layout,
           custom_layout:     result.customLayoutInfo ? result.customLayoutInfo.layout : null,
-          use_custom_layout: result.customLayoutInfo && !result.customLayoutInfo.is_default ? true : false
+          use_custom_layout: !!(result.customLayoutInfo && !result.customLayoutInfo.is_default)
         };
 
         data.form = this.getFormMapper().getFormFromModel(
@@ -168,14 +168,13 @@ define([
      * @return {Array}
      */
     getLeafOptionsArray(exclude_id) {
-
       const list = [];
 
       var proc = (coll, title_seg) =>
 
         (() => {
           const result = [];
-          for (let d of Array.from(coll)) {
+          for (const d of Array.from(coll)) {
             if (exclude_id && (d.id === exclude_id)) { continue; }
 
             if (!title_seg) { title_seg = []; }
@@ -186,8 +185,8 @@ define([
               proc(d.children, title_seg);
             } else {
               list.push({
-                id: d.id,
-                title: title_seg.join(" > ")
+                id:    d.id,
+                title: title_seg.join(' > ')
               });
             }
 
@@ -208,8 +207,8 @@ define([
      * @return {Object/null} The removed object or null if object could not be found
      */
     removeListModelById(id) {
-
-      let idx, model;
+      let idx,
+        model;
       if (!this.isListLoaded) { return; }
       super.removeListModelById(id);
 
@@ -265,9 +264,7 @@ define([
     deleteDepartmentById(id, move_to) {
       const promise = this.Api.sendDelete(`/ticket_deps/${id}`, {
         move_to
-      }).success(() => {
-        return this.removeListModelById(id);
-      });
+      }).success(() => this.removeListModelById(id));
 
       return promise;
     }
@@ -280,7 +277,7 @@ define([
       * @return {promise}
     */
     saveDisplayOrders(orders) {
-      const postData = {display_orders: []};
+      const postData = { display_orders: [] };
 
       for (let order = 0; order < orders.length; order++) {
         const id = orders[order];
@@ -312,7 +309,7 @@ define([
       if (dep.id) {
         promise = this.Api.sendPostJson(`/ticket_deps/${dep.id}`, postData);
       } else {
-        promise = this.Api.sendPutJson('/ticket_deps', postData).success( data => dep.id = data.id);
+        promise = this.Api.sendPutJson('/ticket_deps', postData).success(data => dep.id = data.id);
       }
 
       promise.success(() => {

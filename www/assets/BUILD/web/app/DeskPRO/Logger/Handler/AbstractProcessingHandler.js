@@ -1,10 +1,10 @@
 define([
   'DeskPRO/Util/Util',
   'DeskPRO/Logger/Handler/AbstractHandler',
-], function(
+], (
   Util,
   AbstractHandler
-) {
+) => {
   class AbstractProcessingHandler extends AbstractHandler {
     handle(record) {
       if (!this.isHandling(record)) {
@@ -29,11 +29,11 @@ define([
     }
 
     write(record) {
-      throw new Error("Unimplemented");
+      throw new Error('Unimplemented');
     }
 
     processRecord(record) {
-      for (let proc of Array.from(this.processors)) {
+      for (const proc of Array.from(this.processors)) {
         if (proc.process != null) {
           record = proc.process(record);
         } else {

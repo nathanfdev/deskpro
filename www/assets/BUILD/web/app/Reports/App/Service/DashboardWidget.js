@@ -1,30 +1,28 @@
-define(['DeskPRO/Util/Arrays'], function(Arrays) {
+define(['DeskPRO/Util/Arrays'], (Arrays) => {
   class DashboardWidgetService {
     constructor(Api, Api2, $q) {
       this.Api = Api;
       this.Api2 = Api2;
       this.$q = $q;
       this.data = {};
-      this.storage = {reports: [], labels: [], reportsByLabels: {}};
+      this.storage = { reports: [], labels: [], reportsByLabels: {} };
       this.groupParams = [];
       this.widgets = {};
       this.widgetsResults = {};
     }
 
     loadGroupParams() {
-      return this.Api2.sendGet('report_widgets/group-params').then(response => {
-        return this.groupParams = response.data;
-      });
+      return this.Api2.sendGet('report_widgets/group-params').then(response => this.groupParams = response.data);
     }
 
     getIndexById(storage, id) {
       let index = -1;
       index = Arrays.findIndex(storage,
-        function(v) {
+        (v) => {
           if ((v != null) && (v.id === id)) {
             return true;
           }
-      });
+        });
       return index;
     }
 
@@ -38,12 +36,12 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
       const deferred = this.$q.defer();
       if (this.storage.reports.length === 0) {
         return this.Api2
-          .sendGet("/report_widgets")
-          .then(result => {
+          .sendGet('/report_widgets')
+          .then((result) => {
             this.storage.reports = result.data.data;
             this.storage.labels = [];
-            for (let report of Array.from(result.data.data)) {
-              for (let label of Array.from(report.labels)) {
+            for (const report of Array.from(result.data.data)) {
+              for (const label of Array.from(report.labels)) {
                 if (this.storage.labels.indexOf(label) === -1) {
                   this.storage.labels.push(label);
                 }
@@ -51,36 +49,34 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
             }
             deferred.resolve(this.storage);
             return deferred.promise;
-        });
-      } else {
-        deferred.resolve(this.storage);
-        return deferred.promise;
+          });
       }
+      deferred.resolve(this.storage);
+      return deferred.promise;
     }
 
     isActiveLabel(storage, label) {
       let index = -1;
       index = Arrays.findIndex(storage,
-        function(v) {
+        (v) => {
           if ((v != null) && (v === label)) { return true; }
-      });
+        });
       if (index > 0) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
 
     saveWidget(widget) {
-      return this.Api2.sendPutJson( 
+      return this.Api2.sendPutJson(
         `/dashboard_report_widgets/${widget.id}`,
         {
-          "size_x":  widget.sizeX,
-          "size_y":  widget.sizeY,
-          "col":     widget.col,
-          "row":     widget.row,
-          "title":   widget.title,
-          "options": widget.options
+          size_x:  widget.sizeX,
+          size_y:  widget.sizeY,
+          col:     widget.col,
+          row:     widget.row,
+          title:   widget.title,
+          options: widget.options
         });
     }
 
@@ -90,21 +86,21 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
     addWidget(report, widget) {
       const widgetVars = [];
-      for (let name in widget.variables) {
+      for (const name in widget.variables) {
         const variable = widget.variables[name];
         variable.name = name;
         widgetVars.push(variable);
       }
 
-      const url = "/dashboard_report_widgets";
+      const url = '/dashboard_report_widgets';
       const data = {
-        title: widget.title,
-        type: widget.type,
-        col: widget.col,
-        row: widget.row,
-        size_x: widget.sizeX,
-        size_y: widget.sizeY,
-        report: report.id,
+        title:            widget.title,
+        type:             widget.type,
+        col:              widget.col,
+        row:              widget.row,
+        size_x:           widget.sizeX,
+        size_y:           widget.sizeY,
+        report:           report.id,
         widget_variables: widgetVars
       };
 
@@ -118,11 +114,7 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
       this.Api2
       .sendPostJson(url, data)
-      .then(response => {
-        return deferred.resolve(response.data.data);
-    }).catch(response => {
-        return deferred.reject(response.data);
-      });
+      .then(response => deferred.resolve(response.data.data)).catch(response => deferred.reject(response.data));
 
       return deferred.promise;
     }
@@ -153,7 +145,7 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
       this.Api2
       .sendGet(`/dashboard_reports/${reportId}/widgets?include=report_widget&inline_sideloads=1`)
-      .then(resp => {
+      .then((resp) => {
         const widgets = resp.data.data;
 
         for (var widget of Array.from(widgets)) {
@@ -172,10 +164,10 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
           }
           return result;
         })());
-        for (let idBatch of Array.from(idBatches)) {
+        for (const idBatch of Array.from(idBatches)) {
           this.Api2
             .sendGet(`/dashboard_reports/${reportId}/widgets?include=rendered_result,report_widget&inline_sideloads=1&ids=${idBatch}`)
-            .then(batchResp => {
+            .then((batchResp) => {
               const batchWidgets = batchResp.data.data;
               return (() => {
                 const result1 = [];
@@ -184,7 +176,7 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
                 }
                 return result1;
               })();
-          });
+            });
         }
 
         return deferred.resolve(widgets);
@@ -198,7 +190,7 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
       this.Api2
         .sendGet(`/dashboard_report_widgets/${id}?include=rendered_result,report_widget&inline_sideloads=1`)
-        .then(resp => {
+        .then((resp) => {
           const widget = resp.data.data;
           widget.sizeX = widget.size_x;
           widget.sizeY = widget.size_y;
@@ -210,7 +202,7 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
           this.widgetsResults[widget.id].resolve(widget.rendered_result);
 
           return deferred.resolve(widget);
-      });
+        });
       return deferred.promise;
     }
   }

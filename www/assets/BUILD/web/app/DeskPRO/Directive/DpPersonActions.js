@@ -1,19 +1,18 @@
 define(['angular'], angular =>
-  function(DataService) {
-
+  function (DataService) {
     const agentGroups = [];
     const teams  = [];
     const userGroups = [];
-    DataService.get('AgentGroups').all().then(_groups => _groups.map(group => agentGroups.push({value: group.id.toString(), label: group.title})));
-    DataService.get('AgentTeams').all().then(_teams => _teams.map(team => teams.push({value: team.id.toString(), label: team.name})));
-    DataService.get('UserGroups').all().then(_groups => _groups.map(function(group) { if ((group.sys_name !== 'everyone') && (group.sys_name !== 'registered')) { return userGroups.push({value: group.id.toString(), label: group.title}); } }));
+    DataService.get('AgentGroups').all().then(_groups => _groups.map(group => agentGroups.push({ value: group.id.toString(), label: group.title })));
+    DataService.get('AgentTeams').all().then(_teams => _teams.map(team => teams.push({ value: team.id.toString(), label: team.name })));
+    DataService.get('UserGroups').all().then(_groups => _groups.map((group) => { if ((group.sys_name !== 'everyone') && (group.sys_name !== 'registered')) { return userGroups.push({ value: group.id.toString(), label: group.title }); } }));
 
     return {
       restrict: 'E',
-      replace: true,
-      scope: {
+      replace:  true,
+      scope:    {
         ngModel: '=',
-        title: '@title'
+        title:   '@title'
       },
       template: `\
 <div>
@@ -95,15 +94,15 @@ define(['angular'], angular =>
       controller($scope) {
         $scope.ngModel = $scope.ngModel || [];
         $scope.onChangeActionType = action => action.data = null;
-        $scope.addAction = function() {
-          const action = $scope.defaultAction ? {type: $scope.defaultAction} : {};
+        $scope.addAction = function () {
+          const action = $scope.defaultAction ? { type: $scope.defaultAction } : {};
           return $scope.ngModel.push(action);
         };
-        $scope.removeAction = function(action) {
+        $scope.removeAction = function (action) {
           const index = $scope.ngModel.indexOf(action);
           if (index !== -1) { return $scope.ngModel.splice(index, 1); }
         };
-        return $scope.changeFilter = function(action) {
+        return $scope.changeFilter = function (action) {
           if (!action.filter_enabled) { return action.filter = ''; }
         };
       },

@@ -1,8 +1,8 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
-], function(
+], (
   BaseListEdit
-)  {
+) => {
   class Admin_TicketTriggers_DataService_BaseTriggers extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -11,7 +11,7 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet(`/ticket_triggers/${this.type}`).success( data => {
+      this.Api.sendGet(`/ticket_triggers/${this.type}`).success((data) => {
         const models = data.triggers;
         this.department_triggers_enabled   = data.department_triggers_enabled || false;
         this.emailaccount_triggers_enabled = data.emailaccount_triggers_enabled || false;
@@ -29,10 +29,9 @@ define([
       * @return {promise}
     */
     loadEditTriggerData(id) {
-
       const deferred = this.$q.defer();
 
-      this.Api.sendGet(`/ticket_triggers/${id}`).then( result =>
+      this.Api.sendGet(`/ticket_triggers/${id}`).then(result =>
         deferred.resolve({
           trigger: result.data.trigger
         })
@@ -53,9 +52,8 @@ define([
     saveEnabledStateById(triggerId, isEnabled) {
       if (isEnabled) {
         return this.Api.sendPost(`/ticket_triggers/${triggerId}/enable`);
-      } else {
-        return this.Api.sendPost(`/ticket_triggers/${triggerId}/disable`);
       }
+      return this.Api.sendPost(`/ticket_triggers/${triggerId}/disable`);
     }
 
 

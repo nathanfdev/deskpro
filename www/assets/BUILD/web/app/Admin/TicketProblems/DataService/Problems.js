@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   const _url = '/problems/settings';
   class Problems {
     constructor(Api, $q) {
@@ -12,7 +12,7 @@ define(function() {
       const deferred = this.$q.defer();
 
       this.Api.sendGet(_url).success(
-        data => {
+        (data) => {
           this.settings = data;
           return deferred.resolve(this.settings);
         },
@@ -24,9 +24,7 @@ define(function() {
     save() {
       const deferred = this.$q.defer();
 
-      this.Api.sendPutJson(_url, this.settings).success( data => {
-        return deferred.resolve();
-      }
+      this.Api.sendPutJson(_url, this.settings).success(data => deferred.resolve()
       , (data, status, headers, config) => deferred.reject());
 
       return deferred.promise;

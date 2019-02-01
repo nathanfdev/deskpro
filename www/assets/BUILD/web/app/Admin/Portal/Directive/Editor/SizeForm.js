@@ -1,11 +1,11 @@
-define([], function() {
-  const Admin_Portal_Directive_Editor_SizeForm = [ () =>
+define([], () => {
+  const Admin_Portal_Directive_Editor_SizeForm = [() =>
     ({
-      restrict: 'E',
-      templateUrl: DP_BASE_ADMIN_URL + '/load-view/Portal/Editor/size-form.html',
-      scope: {
+      restrict:    'E',
+      templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Portal/Editor/size-form.html`,
+      scope:       {
         variable: '=',
-        values: '='
+        values:   '='
       },
       link(scope, element, attrs, ngModel) {
         if (!scope.values[scope.variable.name]) {
@@ -13,7 +13,7 @@ define([], function() {
         }
       }
     })
-  
+
   ];
 
   return Admin_Portal_Directive_Editor_SizeForm;

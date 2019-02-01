@@ -1,10 +1,10 @@
 define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/Util'
-], function(
+], (
   Admin_Ctrl_Base,
   Util
-) {
+) => {
   class Admin_TicketFilters_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketFilters_Ctrl_Edit';
@@ -23,7 +23,7 @@ define([
     }
 
     initialLoad() {
-      const p = this.filterData.loadEditFilterData(this.filterId).then( data => {
+      const p = this.filterData.loadEditFilterData(this.filterId).then((data) => {
         this.agents = data.agents;
         this.teams = data.teams;
         if (!this.teams[0]) {
@@ -32,16 +32,13 @@ define([
 
         if (data.filter) {
           return this.filter = data.filter;
-        } else {
-          return this.filter = {
-            is_global: true
-          };
         }
+        return this.filter = {
+          is_global: true
+        };
       });
 
-      const p2 = this.criteriaTypeDef.loadDataOptions().then(() => {
-        return this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes();
-      });
+      const p2 = this.criteriaTypeDef.loadDataOptions().then(() => this.criteriaOptionTypes = this.criteriaTypeDef.getOptionsForTypes());
 
       return this.$q.all([p, p2]).then(() => {
         this.form = this.getFormFromModel(this.filter);
@@ -50,7 +47,7 @@ define([
         if (this.filter.terms) {
           return (() => {
             const result = [];
-            for (let term of Array.from(this.filter.terms.terms)) {
+            for (const term of Array.from(this.filter.terms.terms)) {
               const rowId = Util.uid('term');
               result.push(this.filter_criteria[rowId] = term);
             }
@@ -73,17 +70,17 @@ define([
       }
 
       if (this.filter.person) {
-        form.agent_id = this.filter.person.id + "";
+        form.agent_id = `${this.filter.person.id}`;
       } else {
-        form.agent_id = this.agents[0].id + "";
+        form.agent_id = `${this.agents[0].id}`;
       }
 
       form.team_id = null;
       if (this.teams) {
         if (this.filter.agent_team) {
-          form.team_id = this.filter.agent_team.id + "";
+          form.team_id = `${this.filter.agent_team.id}`;
         } else {
-          form.team_id = this.teams[0].id + "";
+          form.team_id = `${this.teams[0].id}`;
         }
       }
 
@@ -91,7 +88,8 @@ define([
     }
 
     saveForm() {
-      let method, url;
+      let method,
+        url;
       if (!this.$scope.form_props.$valid) { return; }
 
       if (this.filterId) {
@@ -99,12 +97,12 @@ define([
         url = `/ticket_filters/${this.filterId}`;
       } else {
         method = 'PUT';
-        url = "/ticket_filters";
+        url = '/ticket_filters';
       }
 
       const postData = {
         filter: {
-          title: this.form.title,
+          title:         this.form.title,
           is_global:     this.form.perm_type === 'global',
           person_id:     this.form.perm_type === 'agent' ? parseInt(this.form.agent_id) || null : null,
           agent_team_id: this.form.perm_type === 'team' ? parseInt(this.form.team_id) || null : null
@@ -113,7 +111,7 @@ define([
       postData.filter.terms = this.filter_criteria;
 
       return this.sendFormSaveApiCall(method, url, postData).then(
-        res => {
+        (res) => {
           this.Growl.success(this.getRegisteredMessage('saved_filter'));
 
           this.filter.title = this.form.title;
@@ -137,9 +135,9 @@ define([
           });
         },
 
-        res => {
+        (res) => {
           if (res.data != null ? res.data.error_message : undefined) { return this.Growl.error(res.data != null ? res.data.error_message : undefined); }
-      });
+        });
     }
   }
   Admin_TicketFilters_Ctrl_Edit.initClass();

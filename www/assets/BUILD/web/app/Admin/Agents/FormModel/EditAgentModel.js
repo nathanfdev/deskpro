@@ -1,7 +1,8 @@
-define(['DeskPRO/Util/Strings'], function(Strings) {
+define(['DeskPRO/Util/Strings'], (Strings) => {
   class EditAgentModel {
     constructor(agent, groups, teams, primary_phone_number_region) {
-      let check, enabled;
+      let check,
+        enabled;
       this.form = {};
       //--------------------
       // Basic props
@@ -12,13 +13,13 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
         this.form.primary_phone = {
           region: agent.primary_phone.region || primary_phone_number_region,
           number: agent.primary_phone.number || '',
-          ext: agent.primary_phone.ext || ''
+          ext:    agent.primary_phone.ext || ''
         };
       } else {
         this.form.primary_phone = {
-          region:  primary_phone_number_region,
-          number:  '',
-          ext: ''
+          region: primary_phone_number_region,
+          number: '',
+          ext:    ''
         };
       }
       this.form.primary_team = agent.primary_team;
@@ -34,7 +35,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
       }
 
       this.form.zones = {
-        admin: agent.can_admin,
+        admin:   agent.can_admin,
         reports: agent.can_reports
       };
 
@@ -46,7 +47,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
       this.form.email_primary = (agent.primary_email != null ? agent.primary_email.email : undefined) || '';
 
       if (agent && agent.emails && agent.emails.length) {
-        for (let email of Array.from(agent.emails)) {
+        for (const email of Array.from(agent.emails)) {
           this.form.emails_list.push(email.email);
         }
       }
@@ -56,7 +57,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
       //--------------------
 
       this.form.teams = [];
-      for (let t of Array.from(teams)) {
+      for (const t of Array.from(teams)) {
         enabled = false;
         for (check of Array.from(agent.teams)) {
           if (check.id === t.id) {
@@ -77,7 +78,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
       //--------------------
 
       this.form.agent_groups = [];
-      for (let g of Array.from(groups)) {
+      for (const g of Array.from(groups)) {
         enabled = false;
         for (check of Array.from(agent.usergroups)) {
           if (check.id === g.id) {
@@ -100,7 +101,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
     getFormData() {
       const formData = {};
       formData.name = this.form.name;
-      formData.primary_phone = {number: this.form.primary_phone.number, ext: this.form.primary_phone.ext};
+      formData.primary_phone = { number: this.form.primary_phone.number, ext: this.form.primary_phone.ext };
       if (!formData.primary_phone.number) {
         formData.primary_phone = null;
       }
@@ -117,7 +118,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
       const primary_email = this.form.email_primary;
 
       // the primary email goes first
-      formData.emails.sort( function(a, b) {
+      formData.emails.sort((a, b) => {
         if (a === primary_email) { return -1; }
         if (b === primary_email) { return 1; }
         return 0;
@@ -128,14 +129,14 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
       if (this.form.zones.reports) { formData.zones.push('reports'); }
 
       formData.teams = [];
-      for (let t of Array.from(this.form.teams)) {
+      for (const t of Array.from(this.form.teams)) {
         if (t.value) {
           formData.teams.push(t.id);
         }
       }
 
       formData.agent_groups = [];
-      for (let g of Array.from(this.form.agent_groups)) {
+      for (const g of Array.from(this.form.agent_groups)) {
         if (g.value) {
           formData.agent_groups.push(g.id);
         }

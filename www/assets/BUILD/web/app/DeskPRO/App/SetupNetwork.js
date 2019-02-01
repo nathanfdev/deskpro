@@ -1,13 +1,13 @@
 define(['DeskPRO/Util/Util'], Util =>
-  function(Module) {
-    Module.factory('dpHttpInterceptor', ['$q', function($q) {
+  function (Module) {
+    Module.factory('dpHttpInterceptor', ['$q', function ($q) {
       const updateTimes = [];
 
       // This var is used in browser tests so we can
       // properly wait for a page to be finished loading
       window.DP_AJAX_RUNNINGCOUNT = 0;
       const addRunningCount = () => window.DP_AJAX_RUNNINGCOUNT++;
-      const subRunningCount = function() {
+      const subRunningCount = function () {
         window.DP_AJAX_RUNNINGCOUNT--;
         if (window.DP_AJAX_RUNNINGCOUNT < 0) {
           return window.DP_AJAX_RUNNINGCOUNT = 0;
@@ -41,10 +41,10 @@ define(['DeskPRO/Util/Util'], Util =>
               }
             }
 
-                //timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_')
-                //config.url += "__dp_reqtime=#{next.requestId}_t#{timeEnc}"
+                // timeEnc = ((next.timeTaken / 1000) + "").replace(/\./, '_')
+                // config.url += "__dp_reqtime=#{next.requestId}_t#{timeEnc}"
 
-            config.url = config.url.replace(/^DP_URL\//g, window.DP_BASE_URL.replace(/\/+$/, '')+'/');
+            config.url = config.url.replace(/^DP_URL\//g, `${window.DP_BASE_URL.replace(/\/+$/, '')}/`);
           }
 
           return config;
@@ -80,19 +80,18 @@ define(['DeskPRO/Util/Util'], Util =>
     }
     ]);
 
-    Module.config(['$httpProvider', 'fileUploadProvider', function($httpProvider, fileUploadProvider) {
+    Module.config(['$httpProvider', 'fileUploadProvider', function ($httpProvider, fileUploadProvider) {
       $httpProvider.interceptors.push('dpHttpInterceptor');
 
       return angular.extend(fileUploadProvider.defaults, {
-        headers: {'X-DeskPRO-API-Token': window.DP_API_TOKEN}
+        headers: { 'X-DeskPRO-API-Token': window.DP_API_TOKEN }
       });
     }
     ]);
 
     return Module.config(['$provide', $provide =>
-      $provide.decorator('$http', function($delegate) {
-
-        var formatUrlObject = function(obj, baseName) {
+      $provide.decorator('$http', ($delegate) => {
+        var formatUrlObject = function (obj, baseName) {
           if (baseName == null) { baseName = false; }
           let url = '';
           return (() => {
@@ -101,7 +100,7 @@ define(['DeskPRO/Util/Util'], Util =>
               let v = obj[k];
               if (v === null) { continue; }
               if (baseName) {
-                k = baseName + '[' + encodeURIComponent(k) + ']';
+                k = `${baseName}[${encodeURIComponent(k)}]`;
               } else {
                 k = encodeURIComponent(k);
               }
@@ -117,7 +116,7 @@ define(['DeskPRO/Util/Util'], Util =>
           })();
         };
 
-        $delegate.formatApiUrl = function(endpoint, params, signed) {
+        $delegate.formatApiUrl = function (endpoint, params, signed) {
           if (signed == null) { signed = true; }
           endpoint = endpoint.replace(/^\//, '');
           let url = `${window.DP_BASE_API_URL}/${endpoint}`;
@@ -125,7 +124,7 @@ define(['DeskPRO/Util/Util'], Util =>
           if (params) {
             url += url.indexOf('?') === -1 ? '?' : '&';
             if (Util.isArray(params)) {
-              for (let itm of Array.from(params)) {
+              for (const itm of Array.from(params)) {
                 const k = encodeURIComponent(itm.name);
                 const v = encodeURIComponent(itm.value);
                 url += `${k}=${v}&`;
@@ -142,14 +141,14 @@ define(['DeskPRO/Util/Util'], Util =>
           return url;
         };
 
-        $delegate.formatApi2Url = function(endpoint, params) {
+        $delegate.formatApi2Url = function (endpoint, params) {
           endpoint = endpoint.replace(/^\//, '');
           let url = `${window.DP_BASE_API_URL}/v2/${endpoint}`;
 
           if (params) {
             url += url.indexOf('?') === -1 ? '?' : '&';
             if (Util.isArray(params)) {
-              for (let itm of Array.from(params)) {
+              for (const itm of Array.from(params)) {
                 const k = encodeURIComponent(itm.name);
                 const v = encodeURIComponent(itm.value);
                 url += `${k}=${v}&`;
@@ -164,7 +163,7 @@ define(['DeskPRO/Util/Util'], Util =>
           return url;
         };
 
-        $delegate.signUrl = function(url) {
+        $delegate.signUrl = function (url) {
           url += url.indexOf('?') === -1 ? '?' : '&';
           url += `API-TOKEN=${window.DP_API_TOKEN}&SESSION-ID=${window.DP_SESSION_ID}&REQUEST-TOKEN=${window.DP_REQUEST_TOKEN}`;
           return url;
@@ -172,7 +171,7 @@ define(['DeskPRO/Util/Util'], Util =>
 
         return $delegate;
       })
-    
+
     ]);
   }
 );

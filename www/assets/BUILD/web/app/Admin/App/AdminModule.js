@@ -41,15 +41,14 @@ define([
   'DeskPRO/OptionBuilder/Module',
   'DeskPRO/CategoryBuilder/Module',
   'DeskPRO/Directive/DpDateTimePicker'
-], function(angular
-) {
-
+], (angular
+) => {
   // Set path for ace editor
   if (ace) {
-    ace.config.set("basePath",   DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict");
-    ace.config.set("modePath",   DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict");
-    ace.config.set("themePath",  DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict");
-    ace.config.set("workerPath", DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict");
+    ace.config.set('basePath',   `${DP_ASSET_URL}/bower_components/ace-builds/src-min-noconflict`);
+    ace.config.set('modePath',   `${DP_ASSET_URL}/bower_components/ace-builds/src-min-noconflict`);
+    ace.config.set('themePath',  `${DP_ASSET_URL}/bower_components/ace-builds/src-min-noconflict`);
+    ace.config.set('workerPath', `${DP_ASSET_URL}/bower_components/ace-builds/src-min-noconflict`);
   }
 
   const AdminModule = angular.module('Admin_App', [
@@ -73,7 +72,7 @@ define([
     'angularSpectrumColorpicker'
   ]);
 
-  AdminModule.config(['datepickerConfig', 'datepickerPopupConfig', function(datepickerConfig, datepickerPopupConfig) {
+  AdminModule.config(['datepickerConfig', 'datepickerPopupConfig', function (datepickerConfig, datepickerPopupConfig) {
     datepickerConfig.showWeeks = false;
     datepickerPopupConfig.showWeeks = false;
     return datepickerPopupConfig.dateFormat = 'dd MMMM yyyy';

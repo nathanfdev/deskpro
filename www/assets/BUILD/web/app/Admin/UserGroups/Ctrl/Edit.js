@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_UserGroups_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_UserGroups_Ctrl_Edit';
@@ -12,17 +12,17 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       this.service = {
         ticketDeps: this.DataService.get('TicketDeps'),
-        chatDeps: this.DataService.get('ChatDeps')
+        chatDeps:   this.DataService.get('ChatDeps')
       };
 
       this.all_perms = {
-        perms: {},
+        perms:      {},
         deps_perms: {
-          tickets: {full: false},
-          chat: {full: false}
+          tickets: { full: false },
+          chat:    { full: false }
         },
         all_tickets_locked: false,
-        all_chat_locked: false
+        all_chat_locked:    false
       };
 
       return this.group = null;
@@ -32,7 +32,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       const groupPromise = this.ugData.loadEditUserGroupData(this.$stateParams.id || null);
       const promises = [groupPromise, this.service.ticketDeps.all(true), this.service.chatDeps.all(true)];
 
-      return this.$q.all(promises).then(res => {
+      return this.$q.all(promises).then((res) => {
         let subdep;
         this.group             = res[0].group;
         this.everyoneGroup     = res[0].everyone_group;
@@ -107,10 +107,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       const promise = this.ugData.saveFormModel(this.group, this.form, this.perm_form);
 
       this.startSpinner('saving');
-      return promise.then( () => {
-        this.stopSpinner('saving', true).then(() => {
-          return this.Growl.success("Saved");
-        });
+      return promise.then(() => {
+        this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
 
         this.skipDirtyState();
         if (is_new) {
@@ -126,20 +124,18 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       let inst;
       const deleteGroup = () => {
         const p = this.ugData.removeGroupById(this.groupId);
-        p.then(() => {
-          return this.$state.go('crm.groups');
-        });
+        p.then(() => this.$state.go('crm.groups'));
         return p;
       };
 
       const { group } = this;
       return inst = this.$modal.open({
         templateUrl: this.getTemplatePath('UserGroups/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.group = group;
           $scope.dismiss = () => $modalInstance.dismiss();
 
-          return $scope.doDelete = function(options) {
+          return $scope.doDelete = function (options) {
             $scope.is_loading = true;
             return deleteGroup().then(() => $modalInstance.dismiss());
           };
@@ -150,11 +146,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
 
     assignDepsPerms(group) {
-
-      let full, u;
+      let full,
+        u;
       group.deps_perms = {
         tickets: {},
-        chat: {}
+        chat:    {}
       };
 
       for (var dep of Array.from(this.ticketDeps)) {
@@ -165,9 +161,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
             if (u) { full = true; }
           } else if (group.sys_name === 'registered') {
             if (u || (this.everyoneGroup.deps_perms.tickets[dep.id].full === true)) { full = true; }
-          } else {
-            if (u || (this.everyoneGroup.deps_perms.tickets[dep.id].full === true) || (this.registeredGroup.deps_perms.tickets[dep.id].full === true)) { full = true; }
-          }
+          } else if (u || (this.everyoneGroup.deps_perms.tickets[dep.id].full === true) || (this.registeredGroup.deps_perms.tickets[dep.id].full === true)) { full = true; }
 
           u = dep.permissions.usergroups.filter(x => x.sys_name === group.id)[0];
         }
@@ -185,9 +179,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
               if (u) { full = true; }
             } else if (group.sys_name === 'registered') {
               if (u || (this.everyoneGroup.deps_perms.chat[dep.id].full === true)) { full = true; }
-            } else {
-              if (u || (this.everyoneGroup.deps_perms.chat[dep.id].full === true) || (this.registeredGroup.deps_perms.chat[dep.id].full === true)) { full = true; }
-            }
+            } else if (u || (this.everyoneGroup.deps_perms.chat[dep.id].full === true) || (this.registeredGroup.deps_perms.chat[dep.id].full === true)) { full = true; }
           }
 
           result.push(group.deps_perms.chat[dep.id] = { full });
@@ -203,7 +195,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       for (var section of Object.keys(this.group.perms || {})) {
         const perms = this.group.perms[section];
         enabled = true;
-        for (let perm of Object.keys(perms || {})) {
+        for (const perm of Object.keys(perms || {})) {
           if (!perms[perm]) {
             enabled = false;
             break;
@@ -221,7 +213,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
             const result1 = [];
             for (section of Object.keys(sections || {})) {
               enabled = true;
-              for (let dep of Object.keys(this.group.deps_perms[type] || {})) {
+              for (const dep of Object.keys(this.group.deps_perms[type] || {})) {
                 if (!this.group.deps_perms[type][dep][section]) {
                   enabled = false;
                 }
@@ -238,11 +230,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     changeAllPerms(type) {
       if ((this.group == null)) { return; }
 
-      if (('deps_perms_tickets' === type) && this.group.deps_perms.tickets) {
+      if ((type === 'deps_perms_tickets') && this.group.deps_perms.tickets) {
         return (() => {
           const result = [];
-          for (let dep of Object.keys(this.group.deps_perms.tickets || {})) {
-            if(!this.isLocked(dep, 'tickets')) {
+          for (const dep of Object.keys(this.group.deps_perms.tickets || {})) {
+            if (!this.isLocked(dep, 'tickets')) {
               result.push(this.group.deps_perms.tickets[dep].full = this.all_perms.deps_perms.tickets.full);
             } else {
               result.push(undefined);
@@ -250,12 +242,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           }
           return result;
         })();
-
-      } else if (('deps_perms_chat' === type) && this.group.deps_perms.chat) {
+      } else if ((type === 'deps_perms_chat') && this.group.deps_perms.chat) {
         return (() => {
           const result1 = [];
-          for (let dep of Object.keys(this.group.deps_perms.chat || {})) {
-            if(!this.isLocked(dep, 'chat')) {
+          for (const dep of Object.keys(this.group.deps_perms.chat || {})) {
+            if (!this.isLocked(dep, 'chat')) {
               result1.push(this.group.deps_perms.chat[dep].full = this.all_perms.deps_perms.chat.full);
             } else {
               result1.push(undefined);
@@ -267,9 +258,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     isLocked(depId, type) {
-      if (this.group.sys_name === 'everyone') { return false;
-      } else if (this.group.sys_name === 'registered') { return this.everyoneGroup.deps_perms[type][depId].full === true;
-      } else { return (this.everyoneGroup.deps_perms[type][depId].full === true) || (this.registeredGroup.deps_perms[type][depId].full === true); }
+      if (this.group.sys_name === 'everyone') {
+        return false;
+      } else if (this.group.sys_name === 'registered') {
+        return this.everyoneGroup.deps_perms[type][depId].full === true;
+      }  return (this.everyoneGroup.deps_perms[type][depId].full === true) || (this.registeredGroup.deps_perms[type][depId].full === true);
     }
   }
   Admin_UserGroups_Ctrl_Edit.initClass();

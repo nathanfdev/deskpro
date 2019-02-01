@@ -10,7 +10,7 @@ define([
   'DeskPRO/App/SetupServices',
   'Reports/App/SetupTemplates',
   'Reports/Main/Service/SessionPing',
-], function(
+], (
   angular,
   ReportsModule,
 
@@ -23,8 +23,7 @@ define([
   SetupTemplates,
 
   Reports_Main_Service_SessionPing
-) {
-
+) => {
   SetupServices(ReportsModule);
   SetupLogging(ReportsModule);
   SetupDataServices(ReportsModule);
@@ -36,14 +35,13 @@ define([
   ReportsModule.factory('dpHttpSessionInterceptor', ['$q', $q =>
     ({
       responseError(rejection) {
-        if ((rejection.status != null) && ((rejection.data != null ? rejection.data.error : undefined) != null) && (rejection.status === 403) && (rejection.data.error === "session_expired")) {
-          return window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'reports/' + window.location.hash);
-        } else {
-          return $q.reject(rejection);
+        if ((rejection.status != null) && ((rejection.data != null ? rejection.data.error : undefined) != null) && (rejection.status === 403) && (rejection.data.error === 'session_expired')) {
+          return window.location = `${window.DP_BASE_URL}agent/login?timeout=1&return=${encodeURIComponent(`${window.DP_BASE_URL}reports/${window.location.hash}`)}`;
         }
+        return $q.reject(rejection);
       }
     })
-  
+
   ]);
   ReportsModule.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('dpHttpSessionInterceptor')
   ]);
@@ -53,21 +51,21 @@ define([
   ReportsModule.run(['SessionPing', SessionPing =>
     window.setTimeout(() => SessionPing.startInterval()
     , 20000)
-  
+
   ]);
 
   // IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
   document.domain = document.domain;
 
   if (window.parent === window.self) {
-    window.location.href = window.DP_BASE_URL + 'agent/#reports:' + (window.location.hash.replace(/^#/, '') || '/');
+    window.location.href = `${window.DP_BASE_URL}agent/#reports:${window.location.hash.replace(/^#/, '') || '/'}`;
   } else {
     // open agent links in parent window when clicking in iframe
-    $(document).on('click', e => {
+    $(document).on('click', (e) => {
       const href = $(e.target).attr('href');
-      if (!href || (0 !== href.indexOf('/agent/#'))) { return; }
+      if (!href || (href.indexOf('/agent/#') !== 0)) { return; }
       e.preventDefault();
-      const event = new CustomEvent('dpHashChange', { detail: { hash: href.replace(/.+(#.+)/, "$1") } } );
+      const event = new CustomEvent('dpHashChange', { detail: { hash: href.replace(/.+(#.+)/, '$1') } });
       return window.parent.document.dispatchEvent(event);
     });
   }
@@ -75,12 +73,12 @@ define([
   try {
     if (__guard__(window.parent != null ? window.parent.DP_FRAME_OVERLAYS : undefined, x => x.reports)) {
       ReportsModule.run(['$rootScope', $rootScope =>
-        $rootScope.$on('$stateChangeSuccess', function() {
+        $rootScope.$on('$stateChangeSuccess', () => {
           if (window.parent.DP_FRAME_OVERLAYS.reports.opened) {
             return window.parent.DP_FRAME_OVERLAYS.reports.setHash(window.location.hash);
           }
         })
-      
+
       ]);
     }
   } catch (error) {

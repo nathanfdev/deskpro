@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -19,7 +19,7 @@ define(function() {
     * </div>
     * <a href="..." dp-list-autoload autoload-priority="2">If all above links were removed, this link would run</a>
   */
-  const Admin_Main_Directive_DpListAutoload = [ () =>
+  const Admin_Main_Directive_DpListAutoload = [() =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
@@ -42,12 +42,12 @@ define(function() {
 
         return scope._autoload_links.push({
           element,
-          select:  select || 'a',
+          select: select || 'a',
           pri
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpListAutoload;

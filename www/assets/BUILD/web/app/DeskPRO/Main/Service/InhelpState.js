@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class DeskPRO_Main_Service_InhelpState {
     constructor(Api) {
       this.Api = Api;
@@ -23,7 +23,6 @@ define(function() {
     }
 
     setState(id, state) {
-
       if (state) {
         state = 'open';
       } else {

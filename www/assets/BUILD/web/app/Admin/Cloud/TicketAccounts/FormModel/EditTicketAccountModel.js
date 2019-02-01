@@ -1,14 +1,14 @@
 define([
   'DeskPRO/Util/Util',
   'Admin/TicketAccounts/FormModel/EditTicketAccountModel',
-], function(Util, BaseFormModel) {
+], (Util, BaseFormModel) => {
   class Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel extends BaseFormModel {
     constructor(account, deps, trigger, brands) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.account = account;
@@ -45,16 +45,15 @@ define([
     }
 
     apply() {
-      this.account.address = this.form.address_name + '@' + window.DPC_SITE_DOMAIN;
+      this.account.address = `${this.form.address_name}@${window.DPC_SITE_DOMAIN}`;
       if ((this.account.options == null)) {
         this.account.options = {};
       }
 
       if (this.form.use_custom_email_address && this.form.custom_email_address) {
         return this.account.options.custom_email_address = this.form.custom_email_address;
-      } else {
-        return this.account.options.custom_email_address = null;
       }
+      return this.account.options.custom_email_address = null;
     }
   }
 

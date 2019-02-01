@@ -6,10 +6,10 @@ define([
   DeskPRO_CategoryBuilder_Controller
 ) =>
   angular.module('deskpro.category_builder', [])
-    .directive('dpCategoryBuilder', [ () =>
+    .directive('dpCategoryBuilder', [() =>
       ({
         restrict: 'E',
-        require: 'ngModel',
+        require:  'ngModel',
         template: `\
 <div class="dp-category-builder">
   <ul class="dp-cb-root" ui-sortable="sortedListOptions"></ul>
@@ -28,18 +28,18 @@ define([
   </div>
 </div>\
 `,
-        replace: true,
-        controller: DeskPRO_CategoryBuilder_Controller.FACTORY,
+        replace:      true,
+        controller:   DeskPRO_CategoryBuilder_Controller.FACTORY,
         controllerAs: 'CategoryBuilder',
-        scope: {
+        scope:        {
           saveFlatArray: '=',
-          fieldName: '@fieldName',
-          fieldType: '='
+          fieldName:     '@fieldName',
+          fieldType:     '='
         },
         link(scope, iElement, iAttrs, ngModel) {
           return scope.categoryBuilder.setModel(ngModel);
         }
       })
-    
-  ])
+
+    ])
 );

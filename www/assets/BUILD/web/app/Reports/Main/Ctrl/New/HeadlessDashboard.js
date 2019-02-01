@@ -7,7 +7,7 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
   '$modal',
   'Api2',
   'DashboardWidgetService',
-  function($scope,
+  function ($scope,
     $state,
     $stateParams,
     $q,
@@ -19,16 +19,16 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
     $scope.widgets = [];
     $scope.groupParams = {};
     $scope.gridsterOptions = {
-      margins: [13, 13],
-      width: 10000,
-      columns: 150,
-      colWidth: 50,
-      pushing: false,
-      floating: false,
-      swapping: true,
+      margins:   [13, 13],
+      width:     10000,
+      columns:   150,
+      colWidth:  50,
+      pushing:   false,
+      floating:  false,
+      swapping:  true,
       draggable: {
         enabled: false,
-        handle: '.box-header'
+        handle:  '.box-header'
       },
       resizable: {
         enabled: false,
@@ -36,15 +36,15 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
       }
     };
 
-    $scope.loadReport = function() {
+    $scope.loadReport = function () {
       $scope.loaded = false;
-      const getWidgets = function() {
+      const getWidgets = function () {
         const deferred = $q.defer();
         DashboardWidgetService.widgetsResults = {};
 
         Api2
           .sendGet(`/dashboard_view/${window.DP_AUTH_CODE}/reports/${$scope.report.id}/widgets`)
-          .then(resp => {
+          .then((resp) => {
             const widgets = resp.data.data;
 
             for (var widget of Array.from(widgets)) {
@@ -63,10 +63,10 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
               }
               return result;
             })());
-            for (let idBatch of Array.from(idBatches)) {
+            for (const idBatch of Array.from(idBatches)) {
               Api2
                 .sendGet(`/dashboard_view/${window.DP_AUTH_CODE}/reports/${$scope.report.id}/widgets?include=rendered_result&inline_sideloads=1&ids=${idBatch}`)
-                .then(batchResp => {
+                .then((batchResp) => {
                   const batchWidgets = batchResp.data.data;
                   return (() => {
                     const result1 = [];
@@ -75,11 +75,11 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
                     }
                     return result1;
                   })();
-              });
+                });
             }
 
             return deferred.resolve(widgets);
-        });
+          });
 
         return deferred.promise;
       };
@@ -91,7 +91,7 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
       return $q.all(load_promises).then(() => $scope.loaded = true);
     };
 
-    for (let report of Array.from($scope.dashboard.reports)) {
+    for (const report of Array.from($scope.dashboard.reports)) {
       if ($scope.report_id === report.id) {
         $scope.report = report;
       }
@@ -99,27 +99,24 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
 
     $scope.loadReport();
 
-    $scope.changeReport = function(report) {
+    $scope.changeReport = function (report) {
       $scope.report = report;
       return $scope.loadReport();
     };
 
     $scope.refreshDashboardReport = () => $scope.loadReport();
 
-    return $scope.toggleAutoRefreshReport = function() {
+    return $scope.toggleAutoRefreshReport = function () {
       $scope.autoRefresh = !$scope.autoRefresh;
       const newVal = $scope.autoRefresh ? 1 : 0;
       localStorage.setItem(`dp.dashboard.autoRefresh.${$scope.report_id}`, newVal);
 
       if ($scope.autoRefresh) {
-        return $scope.refreshInterval = setInterval(() => {
-          return $scope.refreshDashboardReport();
-        }
-        , 10*60*1000);
-      } else {
-        return clearInterval($scope.refreshInterval);
+        return $scope.refreshInterval = setInterval(() => $scope.refreshDashboardReport()
+        , 10 * 60 * 1000);
       }
+      return clearInterval($scope.refreshInterval);
     };
   }
 
-] );
+]);

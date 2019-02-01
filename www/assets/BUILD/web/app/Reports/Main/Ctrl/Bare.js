@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Main/Ctrl/Base'
-], function(
+], (
   DeskPROBaseCtrl
-) {
+) => {
   class Reports_Main_Ctrl_Bare extends DeskPROBaseCtrl {
     static initClass() {
       this.CTRL_ID = 'Reports_Main_Ctrl_Bare';

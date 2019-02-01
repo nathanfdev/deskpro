@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base) => {
   class Admin_Settings_Ctrl_UpdaterSettings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Settings_Ctrl_UpdaterSettings';
@@ -11,17 +11,13 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base) {
       this.info = null;
       this.didManualSet = false;
       return this.manualForm = {
-        delay: "60"
+        delay: '60'
       };
     }
 
     initialLoad() {
-      const p1 = this.Api2.sendGet('/helpdesk/updater/settings').then( response => {
-        return this.settings = response.data.data;
-      });
-      const p2 = this.Api2.sendGet('/helpdesk/updater/status').then( response => {
-        return this.info = response.data.data;
-      });
+      const p1 = this.Api2.sendGet('/helpdesk/updater/settings').then(response => this.settings = response.data.data);
+      const p2 = this.Api2.sendGet('/helpdesk/updater/status').then(response => this.info = response.data.data);
       return this.$q.all([p1, p2]);
     }
 
@@ -29,13 +25,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base) {
       const postData = this.settings;
 
       this.startSpinner('saving');
-      return this.Api2.sendPutJson('/helpdesk/updater/settings', postData).success( () => {
-        return this.initialLoad().then( () => {
-          return this.stopSpinner('saving').then(() => {
-            return this.Growl.success(this.getRegisteredMessage('saved_settings'));
-          });
-        });
-      }).error((info, code) => {
+      return this.Api2.sendPutJson('/helpdesk/updater/settings', postData).success(() => this.initialLoad().then(() => this.stopSpinner('saving').then(() => this.Growl.success(this.getRegisteredMessage('saved_settings'))))).error((info, code) => {
         this.stopSpinner('saving', true);
         return this.applyErrorResponseToView(info);
       });
@@ -47,14 +37,10 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base) {
       };
 
       this.startSpinner('saving_manual');
-      return this.Api2.sendPostJson('/helpdesk/updater/manual-schedule', postData).success( () => {
-        return this.initialLoad().then( () => {
-          this.didManualSet = true;
-          return this.stopSpinner('saving_manual').then(() => {
-            return this.Growl.success(this.getRegisteredMessage('saved_settings'));
-          });
-        });
-      }).error((info, code) => {
+      return this.Api2.sendPostJson('/helpdesk/updater/manual-schedule', postData).success(() => this.initialLoad().then(() => {
+        this.didManualSet = true;
+        return this.stopSpinner('saving_manual').then(() => this.Growl.success(this.getRegisteredMessage('saved_settings')));
+      })).error((info, code) => {
         this.stopSpinner('saving_manual', true);
         return this.applyErrorResponseToView(info);
       });

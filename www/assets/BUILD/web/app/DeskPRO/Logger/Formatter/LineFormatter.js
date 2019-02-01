@@ -1,12 +1,11 @@
 define([
   'DeskPRO/Util/Strings'
-], function(
+], (
   Strings
-) {
+) => {
   class LineFormatter {
     static initClass() {
-
-      this.SIMPLE_FORMAT = "[%dateStr%] %channel%.%level_name%: %message% %context% %extra%\n";
+      this.SIMPLE_FORMAT = '[%dateStr%] %channel%.%level_name%: %message% %context% %extra%\n';
     }
     constructor(formatString) {
       this.formatString = formatString;
@@ -22,11 +21,11 @@ define([
 
       for (var k in record.extra) {
         v = record.extra[k];
-        output = output.replace(new RegExp(Strings.escapeRegex(`%extra.${k}%`), 'g'), v + "");
+        output = output.replace(new RegExp(Strings.escapeRegex(`%extra.${k}%`), 'g'), `${v}`);
       }
       for (k in record) {
         v = record[k];
-        output = output.replace(new RegExp(Strings.escapeRegex(`%${k}%`), 'g'), v + "");
+        output = output.replace(new RegExp(Strings.escapeRegex(`%${k}%`), 'g'), `${v}`);
       }
 
       return output;

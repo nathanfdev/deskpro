@@ -1,10 +1,10 @@
 define([
   'DeskPRO/Logger/Logger',
   'DeskPRO/Logger/Formatter/LineFormatter',
-], function(
+], (
   Logger,
   LineFormatter
-) {
+) => {
   class AbstractHandler {
     constructor(level, bubble) {
       if (level == null) { level = Logger.DEBUG; }
@@ -31,7 +31,7 @@ define([
       * @param {Array} records
       */
     handleBatch(records) {
-      return Array.from(records).map((rec) =>
+      return Array.from(records).map(rec =>
         this.handle(rec));
     }
 
@@ -43,7 +43,7 @@ define([
       * @return {bool}
       */
     handle(record) {
-      throw new Error("Unimplemented");
+      throw new Error('Unimplemented');
     }
 
 

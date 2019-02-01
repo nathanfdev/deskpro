@@ -1,10 +1,10 @@
 define([
   'Admin/Main/Ctrl/Base',
   'underscore'
-], function(
+], (
   Admin_Ctrl_Base,
   _
-) {
+) => {
   class Admin_TwitterAccounts_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TwitterAccounts_Ctrl_Edit';
@@ -18,8 +18,7 @@ define([
     }
 
     initialLoad() {
-      const promise = this.twitterAccountData.loadEditTwitterAccountData(this.$stateParams.id || null).then( data => {
-
+      const promise = this.twitterAccountData.loadEditTwitterAccountData(this.$stateParams.id || null).then((data) => {
         this.twitter_account  = data.twitter_account;
         return this.form = data.form;
       });
@@ -27,13 +26,12 @@ define([
     }
 
     saveForm() {
-
       this.twitter_account.persons = [];
 
-      for (let key of Object.keys(this.selected_agents || {})) {
+      for (const key of Object.keys(this.selected_agents || {})) {
         const value = this.selected_agents[key];
         if (value) {
-          const agent = _.findWhere(this.agents, {id: parseInt(key)});
+          const agent = _.findWhere(this.agents, { id: parseInt(key) });
           if (agent) { this.twitter_account.persons.push(agent.id); }
         }
       }
@@ -47,10 +45,8 @@ define([
       const promise = this.twitterAccountData.saveFormModel(this.twitter_account, this.form);
 
       this.startSpinner('saving');
-      return promise.then( () => {
-        this.stopSpinner('saving', true).then(() => {
-          return this.Growl.success("Saved");
-        });
+      return promise.then(() => {
+        this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
 
         this.skipDirtyState();
         if (is_new) {

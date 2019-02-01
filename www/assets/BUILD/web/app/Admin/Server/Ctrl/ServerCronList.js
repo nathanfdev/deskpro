@@ -1,7 +1,6 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_ServerCron_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
-  
       this.CTRL_ID   = 'Admin_ServerCron_Ctrl_List';
       this.CTRL_AS   = 'ListCtrl';
       this.DEPS      = [];
@@ -12,10 +11,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const data_promise = this.Api.sendGet('/server_cron').then( res => {
-
-        return this.server_cron = res.data.server_cron;
-      });
+      const data_promise = this.Api.sendGet('/server_cron').then(res => this.server_cron = res.data.server_cron);
 
       return this.$q.all([data_promise]);
     }

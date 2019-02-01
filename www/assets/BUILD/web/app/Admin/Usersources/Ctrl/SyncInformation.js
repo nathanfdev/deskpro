@@ -1,5 +1,5 @@
 define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/UsersourceTypeDecider', 'moment']
-, function(Admin_Ctrl_Base, Util, Admin_Usersources_Helper_UsersourceTypeDecider, moment) {
+, (Admin_Ctrl_Base, Util, Admin_Usersources_Helper_UsersourceTypeDecider, moment) => {
   class Admin_Usersources_Ctrl_SyncInformation extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Usersources_Ctrl_SyncInformation';
@@ -11,8 +11,8 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
     init() {
       this.instanceId = this.$stateParams.id;
       this.permission_groups = [];
-      this.$scope.getController = () => { return this; };
-      this.$scope.setPresaveCallback = callback => { return this.presaveCallback = callback; };
+      this.$scope.getController = () => this;
+      this.$scope.setPresaveCallback = callback => this.presaveCallback = callback;
       this.$scope.enableCustomFooter = false;
       this.usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(this.$state);
       this.presaveCallback = null;
@@ -24,9 +24,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
     initialLoad() {
       const promise = this.refresh();
 
-      this.interval = this.$interval(() => {
-        return this.refresh();
-      }
+      this.interval = this.$interval(() => this.refresh()
       , 10000);
 
       return promise;
@@ -38,7 +36,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
       this.Api.sendDataGet({
         app: `/apps/instances/${this.instanceId}`
-      }).then(result => {
+      }).then((result) => {
         this.app = result.data.app != null ? result.data.app.app : undefined;
 
         this.$scope.app = this.app;
@@ -46,10 +44,10 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
         return this.Api.sendDataGet({
           extra_info: `/usersources/${this.usersourceType}/app-${this.instanceId}/extra-details`,
-          sync_info: `/usersources/sync/info/${this.instanceId}`,
-          pack: `/apps/packages/${this.app.package_name}`
-        }).then(result => {
-          this.pack = result.data.pack['package'];
+          sync_info:  `/usersources/sync/info/${this.instanceId}`,
+          pack:       `/apps/packages/${this.app.package_name}`
+        }).then((result) => {
+          this.pack = result.data.pack.package;
           this.$scope.usersource_details = result.data.extra_info != null ? result.data.extra_info.usersource_details : undefined;
           this.packageName = this.pack.name;
           this.$scope.pack = this.pack;
@@ -57,7 +55,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           if (!this.$scope.setting_values || Util.isArray(this.$scope.setting_values)) {
             this.$scope.setting_values = {};
           }
-          this.$scope.setting_values.dp_app = {title: this.app.title};
+          this.$scope.setting_values.dp_app = { title: this.app.title };
 
           const { sync_log } = result.data.sync_info;
 
@@ -87,7 +85,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
     }
 
     listCtrl() {
-      return (this.$scope.$parent != null ? this.$scope.$parent.ListCtrl : undefined) || {running_now: false, refresh: () => {}};
+      return (this.$scope.$parent != null ? this.$scope.$parent.ListCtrl : undefined) || { running_now: false, refresh: () => {} };
     }
   }
   Admin_Usersources_Ctrl_SyncInformation.initClass();

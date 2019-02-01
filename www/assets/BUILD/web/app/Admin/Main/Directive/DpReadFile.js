@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -13,15 +13,15 @@ define(function() {
     '$parse', $parse =>
       ({
         restrict: 'A',
-        scope: false,
+        scope:    false,
         link(scope, element, attrs) {
           const fn = $parse(attrs.dpReadFile);
 
-          return element.on('change', function(onChangeEvent) {
+          return element.on('change', (onChangeEvent) => {
             const reader = new FileReader();
 
             reader.onload = onLoadEvent =>
-              scope.$apply(() => fn(scope, {$fileContent: (onLoadEvent.target != null ? onLoadEvent.target.result : undefined) || onLoadEvent.result}))
+              scope.$apply(() => fn(scope, { $fileContent: (onLoadEvent.target != null ? onLoadEvent.target.result : undefined) || onLoadEvent.result }))
             ;
 
 
@@ -30,7 +30,7 @@ define(function() {
           });
         }
       })
-    
+
   ];
 
   return Admin_Main_Directive_DpReadFile;

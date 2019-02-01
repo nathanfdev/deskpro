@@ -1,8 +1,8 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
-], function(
+], (
   BaseListEdit
-)  {
+) => {
   class Admin_ApiKeys_DataService_ApiKeys extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -12,14 +12,12 @@ define([
 
     init() {
       this.limits = {
-        daily_limit: -1,
+        daily_limit:  -1,
         hourly_limit: -1
       };
 
       return this.Api.sendGet('/api_keys_settings')
-        .success(data => {
-          return this.limits = data;
-        });
+        .success(data => this.limits = data);
     }
 
     replayLogEntry(entry) {
@@ -38,9 +36,7 @@ define([
     getLogs(entry) {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet(`/api_keys/${entry.id}/logs`).success((data, status, headers, config) => {
-        return deferred.resolve(data, status);
-      }).error((data, status, headers, config) => deferred.reject(data, status));
+      this.Api.sendGet(`/api_keys/${entry.id}/logs`).success((data, status, headers, config) => deferred.resolve(data, status)).error((data, status, headers, config) => deferred.reject(data, status));
 
       return deferred.promise;
     }
@@ -57,7 +53,7 @@ define([
      * @return {promise}
      */
     regenerateApiKey(model) {
-      return this.Api.sendPostJson(`/api_keys/regenerate/${model.id}`).success(data => {
+      return this.Api.sendPostJson(`/api_keys/regenerate/${model.id}`).success((data) => {
         model.code = data.code;
         return model.keyString = data.keyString;
       });

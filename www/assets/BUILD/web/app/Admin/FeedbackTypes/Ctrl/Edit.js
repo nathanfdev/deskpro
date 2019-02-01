@@ -1,10 +1,10 @@
 define([
   'Admin/Main/Ctrl/Base',
   'underscore'
-], function(
+], (
   Admin_Ctrl_Base,
   _
-) {
+) => {
   class Admin_FeedbackTypes_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_FeedbackTypes_Ctrl_Edit';
@@ -13,29 +13,24 @@ define([
     }
 
     init() {
-
       this.feedback_type = {};
       this.usergroups = [];
       return this.selected_usergroups = {};
     }
 
 
-
-
     initialLoad() {
       const promises = [];
-      promises.push(this.Api.sendDataGet({usergroups: '/user_groups'}).then(result => {
-        return this.usergroups = result.data.usergroups.groups;
-      })
+      promises.push(this.Api.sendDataGet({ usergroups: '/user_groups' }).then(result => this.usergroups = result.data.usergroups.groups)
       );
 
       if (this.$stateParams.id) {
         promises.push(this.Api.sendDataGet({
           feedback_type: `/feedback_types/${this.$stateParams.id}`,
-        }).then(result => {
+        }).then((result) => {
           this.feedback_type = result.data.feedback_type.feedback_type;
           const ids = _.pluck(this.feedback_type.usergroups, 'id');
-          return Array.from(ids).map((id) =>
+          return Array.from(ids).map(id =>
             (this.selected_usergroups[id] = true));
         })
         );
@@ -45,22 +40,21 @@ define([
     }
 
 
-
     /*
       * Saves the current form
       *
       * @return {promise}
     */
     saveFeedbackType() {
-
-      let is_new, promise;
+      let is_new,
+        promise;
       this.feedback_type.brand = this.$stateParams.brandId;
       this.feedback_type.usergroups = [];
 
-      for (let key of Object.keys(this.selected_usergroups || {})) {
+      for (const key of Object.keys(this.selected_usergroups || {})) {
         const value = this.selected_usergroups[key];
         if (value) {
-          const usergroup = _.findWhere(this.usergroups, {id: parseInt(key)});
+          const usergroup = _.findWhere(this.usergroups, { id: parseInt(key) });
           if (usergroup) { this.feedback_type.usergroups.push(usergroup.id); }
         }
       }
@@ -73,20 +67,17 @@ define([
 
       if (this.feedback_type.id) {
         is_new = false;
-        promise = this.Api.sendPostJson(`/feedback_types/${this.feedback_type.id}`, {feedback_type: this.feedback_type});
+        promise = this.Api.sendPostJson(`/feedback_types/${this.feedback_type.id}`, { feedback_type: this.feedback_type });
       } else {
         is_new = true;
-        promise = this.Api.sendPutJson('/feedback_types', {feedback_type: this.feedback_type});
+        promise = this.Api.sendPutJson('/feedback_types', { feedback_type: this.feedback_type });
       }
 
-      promise.success(result => {
-
+      promise.success((result) => {
         this.feedback_type.id = result.id;
         this.feedback_type.brand = result.brand;
 
-        this.stopSpinner('saving_feedback_type', true).then(() => {
-          return this.Growl.success(this.getRegisteredMessage('saved_feedback_type'));
-        });
+        this.stopSpinner('saving_feedback_type', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_feedback_type')));
 
         this.FeedbackTypesData.updateModel(this.feedback_type);
 
@@ -94,9 +85,8 @@ define([
 
         if (is_new) {
           return this.$state.go('portal.feedback_types.gocreate');
-        } else {
-          return this.$state.go('portal.feedback_types');
         }
+        return this.$state.go('portal.feedback_types');
       });
       promise.error((info, code) => {
         this.stopSpinner('saving_feedback_type', true);

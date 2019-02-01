@@ -1,11 +1,11 @@
-define(function() {
+define(() => {
   const DeskPRO_Directive_DpHelpPage = ['$rootScope', '$state', ($rootScope, $state) =>
     ({
-      restrict: 'E',
-      scope: {},
-      replace: true,
+      restrict:   'E',
+      scope:      {},
+      replace:    true,
       transclude: true,
-      template: `\
+      template:   `\
 <section class="dp-help-content-wrapper">
   <div class="dp-help-content-outer">
     <div class="dp-help-content-outer2">
@@ -20,14 +20,14 @@ define(function() {
         let backdrop = null;
         element.find('header').first().prepend('<aside><i class="fa fa-question-circle"></i></aside>');
 
-        const open = function() {
+        const open = function () {
           if (isOpen) { return; }
           const origH = element.height();
           element.height(origH);
 
           if (!backdrop) {
             backdrop = $('<div/>').addClass('dp-help-content-backdrop');
-            backdrop.on('click', function(ev) {
+            backdrop.on('click', (ev) => {
               ev.preventDefault();
               return close();
             });
@@ -41,7 +41,7 @@ define(function() {
           return isOpen = true;
         };
 
-        var close = function() {
+        var close = function () {
           if (!isOpen) { return; }
           backdrop.hide();
           const article = element.find('.dp-help-content').find('article').first();
@@ -49,30 +49,29 @@ define(function() {
           return isOpen = false;
         };
 
-        const toggle = function() {
+        const toggle = function () {
           if (!isOpen) {
             return open();
-          } else {
-            return close();
           }
+          return close();
         };
 
-        element.find('.dp-arrow-wrap').on('click', function(ev) {
+        element.find('.dp-arrow-wrap').on('click', (ev) => {
           ev.preventDefault();
           return toggle();
         });
-        element.find('header').first().on('click', function(ev) {
+        element.find('header').first().on('click', (ev) => {
           ev.preventDefault();
           return toggle();
         });
 
-        return element.find('.dp-help-content-outer').on('click', function(ev) {
+        return element.find('.dp-help-content-outer').on('click', (ev) => {
           ev.stopPropagation();
           return open();
         });
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpHelpPage;

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_Agents_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Agents_Ctrl_List';
@@ -8,19 +8,15 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     init() {
       this.service =
-        {agents: this.DataService.get('Agents')};
+        { agents: this.DataService.get('Agents') };
     }
 
     initialLoad() {
-      this.service.agents.all().then(agents => {
-        return this.agents = agents;
-      });
+      this.service.agents.all().then(agents => this.agents = agents);
 
       const promise = this.Api.sendDataGet({
         deleted_agents: '/agents/deleted'
-      }).then( result => {
-        return this.deletedCount = result.data.deleted_agents.agents.length;
-      });
+      }).then(result => this.deletedCount = result.data.deleted_agents.agents.length);
       return promise;
     }
 

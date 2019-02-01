@@ -1,11 +1,11 @@
-define(function() {
-  let _persons = [];
-  let _maps = {
-    ids: {},
-    agents: {},
+define(() => {
+  const _persons = [];
+  const _maps = {
+    ids:      {},
+    agents:   {},
     disabled: {},
-    deleted: {},
-    online: {}
+    deleted:  {},
+    online:   {}
   };
   class DeskPRO_Service_Person {
     constructor($http, $q) {
@@ -14,25 +14,23 @@ define(function() {
     }
 
 
-
     _load() {
       const d = this.$q.defer();
 
       if (_persons.length) {
         d.resolve(_persons);
       } else {
-        this.$http.get(BASE_URL + 'agent/person', {params: {is_agent: true}})
+        this.$http.get(`${BASE_URL}agent/person`, { params: { is_agent: true } })
         .success((data, status, headers, config) => {
-
           data = data || [];
-          data.map(person => {
+          data.map((person) => {
             const i = _persons.length;
             _persons.push(person);
             _maps.ids[person.id] = i;
             return _maps.agents[person.id] = i;
           }); // we load only agents for now
           return d.resolve(_persons);
-      }).error((data, status, headers, config) => {
+        }).error((data, status, headers, config) => {
           console.error(data, status);
           return d.reject();
         });
@@ -40,8 +38,6 @@ define(function() {
 
       return d.promise;
     }
-
-
 
 
     find(term, limit) {
@@ -52,7 +48,7 @@ define(function() {
 
       this._load().then(() => {
         const res = [];
-        for (let person of Array.from(_persons)) {
+        for (const person of Array.from(_persons)) {
           if (res.length >= limit) { break; }
           if (!term.length || (person.display_name.toLowerCase().indexOf(term) > -1)) { res.push(person); }
         }
@@ -64,7 +60,6 @@ define(function() {
     }
 
 
-
     get(id) {
       const d = this.$q.defer();
       this._load().then(() => d.resolve(_persons[_maps.ids[id]] || null));
@@ -73,6 +68,4 @@ define(function() {
   }
   return DeskPRO_Service_Person;
 });
-
-
 

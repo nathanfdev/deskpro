@@ -1,11 +1,9 @@
 define([
   'ReportsRouting',
-], (
-  ReportsRouting
-) =>
+], ReportsRouting =>
   Module =>
-    Module.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-      $urlRouterProvider.otherwise("/");
+    Module.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+      $urlRouterProvider.otherwise('/');
 
       // Load templates through the dpTemplateManager
       // so we can take advantage of our preloading scheme
@@ -16,7 +14,7 @@ define([
 
       return (() => {
         const result = [];
-        for (let route of Array.from(ReportsRouting)) {
+        for (const route of Array.from(ReportsRouting)) {
           const { id } = route;
           const { url } = route;
 
@@ -51,9 +49,9 @@ define([
               // An app-level (tickets.ticket_deps)
               // Is always added to the appbody
               if (id.split('.').length === 2) {
-                viewName = "rightpane";
+                viewName = 'rightpane';
               } else {
-                viewName = "";
+                viewName = '';
               }
             }
 
@@ -66,5 +64,5 @@ define([
       })();
     }
     ])
-  
+
 );

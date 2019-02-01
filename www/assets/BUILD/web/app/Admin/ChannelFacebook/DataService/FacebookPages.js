@@ -2,9 +2,9 @@ define([
   'Admin/Main/DataService/Base',
   'Admin/Main/Model/Base',
   'Admin/Main/Collection/OrderedDictionary'
-], function(Admin_Main_DataService_Base,
+], (Admin_Main_DataService_Base,
   Admin_Main_Model_Base,
-  Admin_Main_Collection_OrderedDictionary)  {
+  Admin_Main_Collection_OrderedDictionary) => {
   class Admin_ChannelFacebook_DataService_FacebookPages extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
@@ -50,7 +50,7 @@ define([
     _setListData(raw_recs) {
       return (() => {
         const result = [];
-        for (let rec of Array.from(raw_recs)) {
+        for (const rec of Array.from(raw_recs)) {
           const model = this.em.createEntity('facebook_page', 'id', rec);
           model.retain();
           result.push(this.recs.set(model.id, model));
@@ -61,7 +61,7 @@ define([
 
     checkExistsByGraphId(graph_id) {
       let found_it = false;
-      this.recs.forEach( function(id, rec) {
+      this.recs.forEach((id, rec) => {
         if (rec.graph_id === graph_id) {
           return found_it = true;
         }

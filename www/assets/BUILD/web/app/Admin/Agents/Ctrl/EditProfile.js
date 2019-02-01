@@ -1,10 +1,10 @@
 define([
   'DeskPRO/Util/Strings',
   'Admin/Main/Ctrl/Base'
-], function(
+], (
   Strings,
   Admin_Ctrl_Base
-) {
+) => {
   class Admin_Agents_Ctrl_EditProfile extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Agents_Ctrl_EditProfile';
@@ -14,16 +14,12 @@ define([
 
     init() {
       this.form = {};
-      this.$scope.dismiss = () => {
-        return this.$modalInstance.dismiss();
-      };
+      this.$scope.dismiss = () => this.$modalInstance.dismiss();
 
       this.form.timezone = this.agent.timezone || 'UTC';
       this.form.signature_html = 'Loading...';
 
-      this.Api.sendGet(`/agents/${this.agent.id}?extended=1`).success(data => {
-        return this.form.signature_html = data.signature_html;
-      });
+      this.Api.sendGet(`/agents/${this.agent.id}?extended=1`).success(data => this.form.signature_html = data.signature_html);
 
       if (this.agent.picture_blob) {
         this.form.picture_set = 'current';
@@ -32,21 +28,21 @@ define([
       }
 
       const me = this;
-      this.uploadPictureCtrl = ['$scope', '$upload', '$http', function($iscope, $upload, $http) {
+      this.uploadPictureCtrl = ['$scope', '$upload', '$http', function ($iscope, $upload, $http) {
         $iscope.$watch('new_image', new_image => me.new_image = new_image);
-        return $iscope.onFileSelect = function(files) {
+        return $iscope.onFileSelect = function (files) {
           $iscope.is_loading_img = true;
           $iscope.error = false;
           $iscope.error_message = false;
           const file = files[0];
           return $upload.upload({
-            url: $http.formatApiUrl('/misc/upload'),
+            url:  $http.formatApiUrl('/misc/upload'),
             data: { is_image: true },
             file
-          }).success( function(data) {
+          }).success((data) => {
             $iscope.is_loading_img = false;
             return $iscope.new_image = data.blob;
-          }).error( function(data) {
+          }).error((data) => {
             $iscope.is_loading_img = false;
             $iscope.error = true;
             return $iscope.error_message = (data != null ? data.error_message : undefined) || null;
@@ -76,15 +72,12 @@ define([
             return this.$modalInstance.dismiss();
           }
           , 500);
-        } else {
-          return p.then(() => {
-            this.$scope.is_loading = false;
-            return this.$modalInstance.dismiss();
-          }
-          , () => {
-            return this.$scope.is_loading = false;
-          });
         }
+        return p.then(() => {
+          this.$scope.is_loading = false;
+          return this.$modalInstance.dismiss();
+        }
+          , () => this.$scope.is_loading = false);
       };
     }
   }

@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], function(Util) {
+define(['DeskPRO/Util/Util'], (Util) => {
   /*
   * The dpOptionBuilder directive is a component that handles a form that adds/removes rows
   * (e.g., a search builder, an option builder etc)
@@ -52,8 +52,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
   */
   class DeskPRO_OptionBuilder_Controller {
     static initClass() {
-
-      this.FACTORY = [ '$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', '$injector', '$timeout', ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout) => new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout)
+      this.FACTORY = ['$scope', '$element', '$attrs', '$transclude', 'dpTemplateManager', '$compile', '$q', '$injector', '$timeout', ($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout) => new DeskPRO_OptionBuilder_Controller($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout)
       ];
     }
     constructor($scope, $element, $attrs, $transclude, dpTemplateManager, $compile, $q, $injector, $timeout) {
@@ -74,7 +73,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       this.els = {};
 
-      $transclude( clone => {
+      $transclude((clone) => {
         const select = $('<select/>').css('width', '100%');
 
         const addBtnLabel = clone.filter('add-btn-label');
@@ -125,26 +124,23 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       this.updateOptionTypes();
 
-      this.$scope.$watchCollection('optionTypes', () => {
-        return this.updateOptionTypes();
-      });
+      this.$scope.$watchCollection('optionTypes', () => this.updateOptionTypes());
 
       // This is a shallow-watch on purpose
       // This builder isnt designed for full model-value syncing like ngModel
       // So this is looking for the actual saveTarget being changed (eg a new object)
       // Otherwise, the object is fully managed internally
-      return this.$scope.$watch('saveTarget', () => {
-        return this.reset();
-      });
+      return this.$scope.$watch('saveTarget', () => this.reset());
     }
 
     reset() {
-      let rowId, term;
+      let rowId,
+        term;
       this.resetTime = (new Date()).getTime();
       if (!this.hasLoaded) { return; }
       this.rowsCount = 0;
 
-      for (let id in this.rows) {
+      for (const id in this.rows) {
         const row = this.rows[id];
         row.element.remove();
         row.scope.$destroy();
@@ -155,7 +151,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       const alreadyDone = {};
       if (this.options.fixedExpanded) {
-        for (let f of Array.from(this.options.fixedExpanded)) {
+        for (const f of Array.from(this.options.fixedExpanded)) {
           let exist = null;
           let existId = null;
           for (rowId of Object.keys(this.$scope.saveTarget || {})) {
@@ -197,11 +193,11 @@ define(['DeskPRO/Util/Util'], function(Util) {
       this.els.select.append($('<option value="0" />'));
       return (() => {
         const result = [];
-        for (let item of Array.from(this.$scope.optionTypes)) {
+        for (const item of Array.from(this.$scope.optionTypes)) {
           var opt;
           if (item.subOptions != null) {
             const optgroup = $('<optgroup/>').attr('label', item.title);
-            for (let subItem of Array.from(item.subOptions)) {
+            for (const subItem of Array.from(item.subOptions)) {
               opt = $('<option/>').val(subItem.value).text(subItem.title);
               optgroup.append(opt);
             }
@@ -244,7 +240,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
       const placeholder = $('<div/>');
       this.els.optionList.append(placeholder);
 
-      const rowIdx = this.rowsCount+1;
+      const rowIdx = this.rowsCount + 1;
       this.rowsCount += 1;
 
       const time = (new Date()).getTime();
@@ -257,16 +253,14 @@ define(['DeskPRO/Util/Util'], function(Util) {
         let option_title = null;
         for (var v of Array.from(this.$scope.optionTypes)) {
           if (v.subOptions) {
-            for (let sb of Array.from(v.subOptions)) {
+            for (const sb of Array.from(v.subOptions)) {
               if (type === sb.value) {
                 option_title = sb.title;
                 break;
               }
             }
-          } else {
-            if (type === v.value) {
-              option_title = v.title;
-            }
+          } else if (type === v.value) {
+            option_title = v.title;
           }
           if (option_title) { break; }
         }
@@ -275,7 +269,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
         // so we need to wait a bit then try again so we
         // can show the proper title
         if (!option_title && (!isRetry || (isRetry < 20))) {
-          this.$timeout(() => run(tpl, data, !isRetry ? 1 : isRetry+1)
+          this.$timeout(() => run(tpl, data, !isRetry ? 1 : isRetry + 1)
           , 140);
           return;
         }
@@ -308,12 +302,10 @@ define(['DeskPRO/Util/Util'], function(Util) {
             if (rowScope.rowOpts.rowEnabled) {
               this.$scope.saveTarget[rowId].DP_DISABLED = false;
               return delete this.$scope.saveTarget[rowId].DP_DISABLED;
-            } else {
-              return this.$scope.saveTarget[rowId].DP_DISABLED = true;
             }
+            return this.$scope.saveTarget[rowId].DP_DISABLED = true;
           }
           , true);
-
         } else {
           rowScope.model = {};
           rowScope.value = rowScope.model;
@@ -325,9 +317,8 @@ define(['DeskPRO/Util/Util'], function(Util) {
             if (rowScope.rowOpts.rowEnabled) {
               this.$scope.saveTarget[rowId].DP_DISABLED = false;
               return delete this.$scope.saveTarget[rowId].DP_DISABLED;
-            } else {
-              return this.$scope.saveTarget[rowId].DP_DISABLED = true;
             }
+            return this.$scope.saveTarget[rowId].DP_DISABLED = true;
           }
           , true);
         }
@@ -341,7 +332,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
         if (scopeInit) {
           this.$injector.invoke(scopeInit, this, {
-            '$scope': rowScope
+            $scope: rowScope
           });
         }
 
@@ -366,9 +357,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
         const element = this.$compile(tpl)(rowScope);
 
         rowScope.rowFn = {};
-        rowScope.rowFn.removeRow = () => {
-          return this.removeRow(element);
-        };
+        rowScope.rowFn.removeRow = () => this.removeRow(element);
 
         if (rowScope.rowOpts.withCheckId) {
           element.find('.row-label').attr('for', rowScope.rowOpts.withCheckId);
@@ -391,20 +380,19 @@ define(['DeskPRO/Util/Util'], function(Util) {
           if (rowScope.rowOpts.rowEnabled) {
             this.$scope.saveTarget[rowId] = rowScope.value;
           } else {
-            this.$scope.saveTarget[rowId] = {DP_DISABLED: true};
+            this.$scope.saveTarget[rowId] = { DP_DISABLED: true };
           }
 
-          return rowScope.$watch('rowOpts.rowEnabled', rowEnabled => {
+          return rowScope.$watch('rowOpts.rowEnabled', (rowEnabled) => {
             if (rowEnabled) {
               return delete rowScope.value.DP_DISABLED;
-            } else {
-              return rowScope.value.DP_DISABLED = true;
             }
+            return rowScope.value.DP_DISABLED = true;
           });
         }
       };
 
-      return this.$q.all([tplPromise, dataPromise]).then( returns => {
+      return this.$q.all([tplPromise, dataPromise]).then((returns) => {
         const tpl  = returns[0];
         const data = returns[1];
         return run(tpl, data);
@@ -433,7 +421,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
       delete this.rows[scopeId];
       delete this.$scope.saveTarget[scopeId];
 
-      row.scope.$emit('rowRemoved', this, row.element, row.scope, this.rowsCount-1);
+      row.scope.$emit('rowRemoved', this, row.element, row.scope, this.rowsCount - 1);
 
       row.element.remove();
       row.scope.$destroy();
@@ -443,7 +431,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
         this.els.noOptionsMessage.show();
       } else {
         let idx = 1;
-        for (let k of Object.keys(this.rows || {})) {
+        for (const k of Object.keys(this.rows || {})) {
           row = this.rows[k];
           row.scope.rowOpts.rowIdx = idx;
           idx++;

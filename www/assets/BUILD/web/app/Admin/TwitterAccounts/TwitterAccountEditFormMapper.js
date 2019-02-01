@@ -1,13 +1,12 @@
 define([
   'DeskPRO/Util/Util',
   'underscore'
-], function(
+], (
   Util,
   _
-) {
+) => {
   class Admin_TwitterAccounts_TwitterAccountEditFormMapper {
     getFormFromModel(model) {
-
       const form = {};
 
       form.id = model.twitter_account.id;
@@ -25,7 +24,7 @@ define([
 
       const ids = _.pluck(form.user.agents, 'id');
 
-      for (let id of Array.from(ids)) {
+      for (const id of Array.from(ids)) {
         form.selected_agents[id] = true;
       }
 
@@ -38,7 +37,6 @@ define([
     */
 
     applyFormToModel(model, formModel) {
-
       return model.id = formModel.id;
     }
 
@@ -48,7 +46,6 @@ define([
     */
 
     getPostDataFromForm(formModel) {
-
       const postData = {};
 
       postData.id = formModel.id;
@@ -57,10 +54,10 @@ define([
 
       postData.persons = [];
 
-      for (let key of Object.keys(formModel.selected_agents || {})) {
+      for (const key of Object.keys(formModel.selected_agents || {})) {
         const value = formModel.selected_agents[key];
         if (value) {
-          const agent = _.findWhere(formModel.agents, {id: parseInt(key)});
+          const agent = _.findWhere(formModel.agents, { id: parseInt(key) });
           if (agent) { postData.persons.push(agent.id); }
         }
       }

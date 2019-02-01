@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_TicketStatuses_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketStatuses_Ctrl_List';
@@ -11,9 +11,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      return this.Api.sendGet('/ticket_statuses/stats').then( res => {
-        return this.stats = res.data.status_stats;
-      });
+      return this.Api.sendGet('/ticket_statuses/stats').then(res => this.stats = res.data.status_stats);
     }
 
     getStatusCount(status) {

@@ -1,8 +1,8 @@
 define([
   'Reports/Main/Ctrl/Base'
-], function(
+], (
   ReportsBaseCtrl
-) {
+) => {
   class Reports_Billing_Ctrl_View extends ReportsBaseCtrl {
     static initClass() {
       this.CTRL_ID   = 'Reports_Billing_Ctrl_View';
@@ -11,7 +11,6 @@ define([
     }
 
     init() {
-
       return this.rendered_result = null;
     }
 
@@ -19,8 +18,7 @@ define([
   *
   */
     initialLoad() {
-
-      const promise = this.Api.sendGet(`/reports/billing/${this.$stateParams.id}`, {params: this.$stateParams.params}).then( res => {
+      const promise = this.Api.sendGet(`/reports/billing/${this.$stateParams.id}`, { params: this.$stateParams.params }).then((res) => {
         const { data } = res;
         return this.rendered_result = this.$sce.trustAsHtml(data.rendered_result);
       });

@@ -1,4 +1,4 @@
-define(() => function(States) {
+define(() => function (States) {
   //----------------------------------------
   // MAIN
   //----------------------------------------
@@ -11,7 +11,7 @@ define(() => function(States) {
   States.when('', '/dashboards/');
   States.when('/', '/dashboards/');
   States.when('/dashboards', '/dashboards/');
-  States.when(/^\/dashboards\/[0-9]+\/?$/, ['$stateParams', $stateParams => `/dashboards/${$stateParams.dashboard_id}/` ]);
+  States.when(/^\/dashboards\/[0-9]+\/?$/, ['$stateParams', $stateParams => `/dashboards/${$stateParams.dashboard_id}/`]);
 
   //----------------------------------------
   // DASHBOARDS
@@ -25,16 +25,15 @@ define(() => function(States) {
   States.add('reports.dashboards.index')
     .setUrl('/')
     .setCtrl(['$state', 'DashboardsInfo', ($state, DashboardsInfo) =>
-      DashboardsInfo.getDashboardList().then(function(dbs) {
+      DashboardsInfo.getDashboardList().then((dbs) => {
         const db = dbs[0];
 
         if ((db.reports != null ? db.reports.length : undefined) > 0) {
           return $state.go('reports.dashboards.view.report', { dashboard_id: db.id, report_id: db.reports[0].id });
-        } else {
-          return $state.go('reports.dashboards.view.index', { dashboard_id: db.id });
         }
+        return $state.go('reports.dashboards.view.index', { dashboard_id: db.id });
       })
-    
+
     ]);
 
   States.add('reports.dashboards.view')
@@ -46,15 +45,14 @@ define(() => function(States) {
   States.add('reports.dashboards.view.index')
     .setUrl('/')
     .setCtrl(['$state', '$stateParams', 'DashboardsInfo', ($state, $stateParams, DashboardsInfo) =>
-      DashboardsInfo.getReportsList($stateParams.dashboard_id).then(function(reports) {
+      DashboardsInfo.getReportsList($stateParams.dashboard_id).then((reports) => {
         if (!reports.length) {
           return $state.go('reports.dashboards.view.empty');
-        } else {
-          return $state.go('reports.dashboards.view.report', { dashboard_id: $stateParams.dashboard_id, report_id: reports[0].id });
         }
+        return $state.go('reports.dashboards.view.report', { dashboard_id: $stateParams.dashboard_id, report_id: reports[0].id });
       }
       , () => $state.go('reports'))
-    
+
     ]);
 
   States.add('reports.dashboards.view.empty')
@@ -115,11 +113,11 @@ define(() => function(States) {
 
 
   // open agent links in parent window when clicking in iframe
-  $(document).on('click', e => {
+  $(document).on('click', (e) => {
     const href = $(e.target).attr('href');
-    if (!href || (0 !== href.indexOf('/agent/#'))) { return; }
+    if (!href || (href.indexOf('/agent/#') !== 0)) { return; }
     e.preventDefault();
-    const event = new CustomEvent('dpHashChange', { detail: { hash: href.replace(/.+(#.+)/, "$1") } } );
+    const event = new CustomEvent('dpHashChange', { detail: { hash: href.replace(/.+(#.+)/, '$1') } });
     return window.parent.document.dispatchEvent(event);
   });
 

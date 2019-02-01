@@ -1,4 +1,4 @@
-define(['angular'], function(angular) {
+define(['angular'], (angular) => {
   /*
     * Description
     * -----------
@@ -6,7 +6,7 @@ define(['angular'], function(angular) {
     * Just like using 'text/ng-template' except this expects the template to be an inner JSON object with
     * 'name' and 'template' properties. This has the added benefit of allowing you to have templates with <script> tags inside.
   */
-  const DeskPRO_Directive_DpJsonData = [ '$templateCache', $templateCache =>
+  const DeskPRO_Directive_DpJsonData = ['$templateCache', $templateCache =>
     ({
       restrict: 'E',
       terminal: true,
@@ -21,13 +21,13 @@ define(['angular'], function(angular) {
         try {
           data = angular.fromJson(element[0].text);
         } catch (err) {
-          console.error("Error parsing JSON in dp-ng-template");
+          console.error('Error parsing JSON in dp-ng-template');
           console.debug(element);
           return;
         }
 
         if (!id && !data.name) {
-          console.error("No template name in dp-ng-template");
+          console.error('No template name in dp-ng-template');
           console.debug(element);
           return;
         }
@@ -37,7 +37,7 @@ define(['angular'], function(angular) {
         }
 
         if (!data.template) {
-          console.error("No template code in dp-ng-template");
+          console.error('No template code in dp-ng-template');
           console.debug(element);
           return;
         }
@@ -47,7 +47,7 @@ define(['angular'], function(angular) {
         return null;
       }
     })
-  
+
 
   ];
 

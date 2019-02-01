@@ -1,8 +1,8 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
-], function(
+], (
   BaseListEdit
-)  {
+) => {
   class Admin_TicketFilters_DataService_TicketFilters extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -11,7 +11,7 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/ticket_filters').success( data => {
+      this.Api.sendGet('/ticket_filters').success((data) => {
         const models = data.filters;
         return deferred.resolve(models);
       }
@@ -48,9 +48,7 @@ define([
       * @return {promise}
     */
     deleteFilterId(id) {
-      const promise = this.Api.sendDelete(`/ticket_filters/${id}`).then(() => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/ticket_filters/${id}`).then(() => this.removeListModelById(id));
       return promise;
     }
 
@@ -62,7 +60,6 @@ define([
       * @return {promise}
     */
     loadEditFilterData(id) {
-
       const deferred = this.$q.defer();
 
       const types = {};
@@ -73,7 +70,7 @@ define([
       types.agents = '/agents';
       types.teams = '/agent_teams';
 
-      this.Api.sendDataGet(types).then( function(res) {
+      this.Api.sendDataGet(types).then((res) => {
         const data = {};
         if (res.data.filter) {
           data.filter = res.data.filter.filter;

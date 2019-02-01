@@ -1,10 +1,10 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/UserGroups/UserGroupEditFormMapper'
-], function(
+], (
   BaseListEdit,
   UserGroupEditFormMapper
-)  {
+) => {
   class UserGroups extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -13,7 +13,7 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/user_groups').success( data => {
+      this.Api.sendGet('/user_groups').success((data) => {
         const models = data.groups;
         return deferred.resolve(models);
       }
@@ -30,9 +30,7 @@ define([
      * @return {promise}
      */
     deleteUserGroupById(id) {
-      const promise = this.Api.sendDelete(`/user_groups/${id}`).success( () => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/user_groups/${id}`).success(() => this.removeListModelById(id));
       return promise;
     }
 
@@ -66,7 +64,7 @@ define([
         sendTypes.group = `/user_groups/${id}`;
       }
 
-      this.Api.sendDataGet(sendTypes).then( result => {
+      this.Api.sendDataGet(sendTypes).then((result) => {
         const data = {};
 
         data.everyone_group = result.data.everyone_group.group;
@@ -76,7 +74,7 @@ define([
           data.group = result.data.group.group;
           data.form = this.getFormMapper().getFormFromModel(data);
         } else {
-          data.group = { id: null, title: '', is_enabled: true};
+          data.group = { id: null, title: '', is_enabled: true };
           data.group.perms = {};
           data.form = this.getFormMapper().getFormFromModel(data);
         }
@@ -103,12 +101,12 @@ define([
       const postData = mapper.getPostDataFromForm(formModel, formPermsModel);
 
       if (model.id) {
-        promise = this.Api.sendPostJson(`/user_groups/${model.id}`, {group: postData});
+        promise = this.Api.sendPostJson(`/user_groups/${model.id}`, { group: postData });
       } else {
-        promise = this.Api.sendPutJson('/user_groups', {group: postData}).success( data => model.id = data.id);
+        promise = this.Api.sendPutJson('/user_groups', { group: postData }).success(data => model.id = data.id);
       }
 
-      promise.success( () => {
+      promise.success(() => {
         mapper.applyFormToModel(model, formModel);
         return this.mergeDataModel(model);
       });
@@ -125,9 +123,7 @@ define([
     */
     removeGroupById(groupId) {
       const p = this.Api.sendDelete(`/user_groups/${groupId}`);
-      p.then(() => {
-        return this.removeListModelById(groupId);
-      });
+      p.then(() => this.removeListModelById(groupId));
 
       return p;
     }

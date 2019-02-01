@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -28,7 +28,7 @@ define(function() {
     *     locked-tip="This is locked because the 'full' permission is enabled"
     * />
     */
-  const Admin_Main_Directive_DpToggleSwitch = [ () =>
+  const Admin_Main_Directive_DpToggleSwitch = [() =>
     ({
       restrict: 'A',
       require:  'ngModel',
@@ -39,8 +39,7 @@ define(function() {
 `,
       replace: true,
       link(scope, element, attrs, ngModel) {
-
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           const val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false };
           if (val.on || val.checked) {
             element.addClass('switch-on');
@@ -55,12 +54,11 @@ define(function() {
 
           if (val.locked) {
             return element.addClass('locked');
-          } else {
-            return element.removeClass('locked');
           }
+          return element.removeClass('locked');
         };
 
-        ngModel.$formatters.push( function(modelValue) {
+        ngModel.$formatters.push((modelValue) => {
           const val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false };
           if (modelValue) {
             val.checked = true;
@@ -71,15 +69,14 @@ define(function() {
           return val;
         });
 
-        ngModel.$parsers.push( function(viewValue) {
+        ngModel.$parsers.push((viewValue) => {
           if (viewValue && viewValue.checked) {
             return true;
-          } else {
-            return false;
           }
+          return false;
         });
 
-        element.on('click', function(ev) {
+        element.on('click', (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
 
@@ -94,7 +91,7 @@ define(function() {
         });
 
         if (attrs.isLocked) {
-          scope.$watch(attrs.isLocked, function(newVal) {
+          scope.$watch(attrs.isLocked, (newVal) => {
             const val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false };
             val.locked = newVal;
             ngModel.$setViewValue(val);
@@ -103,7 +100,7 @@ define(function() {
         }
 
         if (attrs.isOn) {
-          scope.$watch(attrs.isOn, function(newVal) {
+          scope.$watch(attrs.isOn, (newVal) => {
             const val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false };
             val.on = newVal;
             ngModel.$setViewValue(val);
@@ -112,7 +109,7 @@ define(function() {
         }
 
         if (attrs.isSome) {
-          scope.$watch(attrs.isSome, function(newVal) {
+          scope.$watch(attrs.isSome, (newVal) => {
             const val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false };
             val.some = !!newVal;
             ngModel.$setViewValue(val);
@@ -120,7 +117,7 @@ define(function() {
           });
         }
 
-        scope.$watch(attrs.ngModel, function(newVal) {
+        scope.$watch(attrs.ngModel, (newVal) => {
           const val = ngModel.$viewValue || { checked: false, on: false, locked: false, some: false };
           val.checked = newVal;
           ngModel.$setViewValue(val);
@@ -132,20 +129,19 @@ define(function() {
           tipTarget.appendTo(element);
           return tipTarget.tooltip({
             placement: 'auto top',
-            trigger: 'hover',
+            trigger:   'hover',
             container: 'body',
             title() {
               if (attrs.lockedTipE) {
                 return scope.$eval(attrs.lockedTipE);
-              } else {
-                return attrs.lockedTip;
               }
+              return attrs.lockedTip;
             }
           });
         }
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpToggleSwitch;

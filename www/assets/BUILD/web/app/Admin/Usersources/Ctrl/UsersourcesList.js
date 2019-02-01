@@ -2,11 +2,11 @@ define([
   'Admin/Main/Ctrl/Base',
   'Admin/Usersources/Helper/UsersourceTypeDecider',
   'moment'
-], function(
+], (
   Admin_Ctrl_Base,
   Admin_Usersources_Helper_UsersourceTypeDecider,
   moment
-) {
+) => {
   class Admin_Usersources_Ctrl_UsersourcesList extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Usersources_Ctrl_UsersourcesList';
@@ -23,12 +23,12 @@ define([
       this.new_url = this.usersourceType === 'user' ? 'crm.usersources.new' : 'agents.usersources.new';
       this.sync_status = null;
       this.sortedListOptions = {
-        axis: 'y',
+        axis:   'y',
         handle: '.drag-handle',
         update: (ev, data) => {
           const $list = data.item.closest('ul');
           const displayOrders = [];
-          $list.find('li').each(function() {
+          $list.find('li').each(function () {
             return displayOrders.push(parseInt($(this).data('id')));
           });
           this.usersourcesDataService.saveDisplayOrder(displayOrders);
@@ -41,9 +41,7 @@ define([
     initialLoad() {
       const promise = this.refresh();
 
-      this.interval = this.$interval(() => {
-        return this.refresh();
-      }
+      this.interval = this.$interval(() => this.refresh()
       , 10000);
 
       return promise;
@@ -58,9 +56,9 @@ define([
       const d = this.$q.defer();
 
       this.Api.sendDataGet({
-        us: `/usersources/${this.usersourceType}`,
+        us:          `/usersources/${this.usersourceType}`,
         sync_status: '/usersources/sync/status'
-      }).then(result => {
+      }).then((result) => {
         this.sync_status = result.data.sync_status;
         if (this.sync_status.next_sync) {
           this.sync_next_text = moment(this.sync_status.next_sync).format('MMM D, YYYY @ HH:mm');
@@ -70,7 +68,7 @@ define([
         this.usersources = result.data.us.usersources;
         this.show_sync_section = true;
         let count_syncing = 0;
-        for (let us of Array.from(this.usersources)) {
+        for (const us of Array.from(this.usersources)) {
           if (us.usersource.sync_enabled) {
             count_syncing++;
           }
@@ -88,7 +86,7 @@ define([
     }
 
     startSync() {
-      return this.Api.sendPost('/usersources/sync/start').then(result => {
+      return this.Api.sendPost('/usersources/sync/start').then((result) => {
         if (result.data.success) {
           this.refresh();
           return this.Growl.success(this.getRegisteredMessage('usersource_sync_starting') || 'Starting sync job. It will begin shortly.');
@@ -97,7 +95,7 @@ define([
     }
 
     stopSync() {
-      return this.Api.sendPost('/usersources/sync/stop').then(result => {
+      return this.Api.sendPost('/usersources/sync/stop').then((result) => {
         if (result.data.success) {
           this.refresh();
           return this.Growl.success(this.getRegisteredMessage('usersource_sync_stopping') || 'Aborted sync jobs.');

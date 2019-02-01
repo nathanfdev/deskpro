@@ -1,14 +1,14 @@
 define([
   'DeskPRO/Util/Util'
-], function(Util) {
+], (Util) => {
   class Admin_ChannelSms_FormModel_EditSmsAccountModel {
     constructor(account) {
       this.account = account;
-      this.form = {account: {}};
+      this.form = { account: {} };
       this.form.account.id = this.account.id || 0;
-      this.form.account.type = this.account.type || "twilio";
-      this.form.account.identifier = this.account.identifier || "";
-      this.form.account.phone_number = this.account.phone_number || "";
+      this.form.account.type = this.account.type || 'twilio';
+      this.form.account.identifier = this.account.identifier || '';
+      this.form.account.phone_number = this.account.phone_number || '';
       this.form.account.params = this.account.params || {};
       this.form.account.is_enabled = Util.isEmpty(this.account.is_enabled) ? false : this.account.is_enabled;
       this.form.account.is_connected = Util.isEmpty(this.account.is_connected) ? false : this.account.is_connected;

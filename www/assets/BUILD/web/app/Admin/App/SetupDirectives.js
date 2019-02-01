@@ -127,7 +127,7 @@ define([
   Admin_Portal_Directive_Editor_SizeForm,
   Admin_Portal_Directive_Editor_CodeEditor
 ) =>
-  function(Module) {
+  function (Module) {
     Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref);
     Module.directive('dpOpenPopover',                  DeskPRO_Directive_DpOpenPopover);
     Module.directive('dpClosestNumber',                DeskPRO_Directive_DpClosestNumber);
@@ -154,7 +154,7 @@ define([
     Module.directive('dpLiGroupSection',               Admin_Main_Directive_DpLiGroupSection);
     Module.directive('bgImg',                          Admin_Main_Directive_BgImg);
     Module.directive('dpCommaSeparated',               Admin_Main_Directive_DpCommaSeparated);
-    Module.directive('dpDevbar'        ,               Admin_Main_Directive_DpDevBar);
+    Module.directive('dpDevbar',               Admin_Main_Directive_DpDevBar);
     Module.directive('dpInhelpBody',                   Admin_Main_Directive_DpInhelpBody);
     Module.directive('dpInhelpBtn',                    Admin_Main_Directive_DpInhelpBtn);
     Module.directive('dpListAutoload',                 Admin_Main_Directive_DpListAutoload);
@@ -192,26 +192,25 @@ define([
     Module.directive('dpPortalDesignerSizeForm',       Admin_Portal_Directive_Editor_SizeForm);
     Module.directive('dpCodeEditor',                   Admin_Portal_Directive_Editor_CodeEditor);
 
-    Module.directive('dpToggleShowIds', [ () =>
+    Module.directive('dpToggleShowIds', [() =>
       ({
         restrict: 'A',
         link(scope, el, attrs) {
           window.DP_DO_SHOW_IDS = false;
           scope.do_show_ids = false;
 
-          const update = function() {
+          const update = function () {
             if (window.DP_DO_SHOW_IDS) {
               scope.do_show_ids = true;
               return $('body').addClass('show-title-ids');
-            } else {
-              scope.do_show_ids = false;
-              return $('body').removeClass('show-title-ids');
             }
+            scope.do_show_ids = false;
+            return $('body').removeClass('show-title-ids');
           };
 
           update();
 
-          return el.on('click', function(ev) {
+          return el.on('click', (ev) => {
             ev.stopPropagation();
             ev.preventDefault();
             window.DP_DO_SHOW_IDS = !window.DP_DO_SHOW_IDS;
@@ -219,21 +218,21 @@ define([
           });
         }
       })
-    
+
     ]);
 
-    Module.directive('dpGo', [ '$location', $location =>
+    Module.directive('dpGo', ['$location', $location =>
       ({
         restrict: 'A',
         link(scope, el, attrs) {
-          return el.on('click', function(ev) {
+          return el.on('click', (ev) => {
             ev.stopPropagation();
             ev.preventDefault();
 
             const path = attrs.dpGo.replace(/^#/, '');
             const search = scope.$eval(attrs.dpGoParams);
 
-            return scope.$apply(function() {
+            return scope.$apply(() => {
               $location.path(path);
               if (search) {
                 return $location.search(search);
@@ -242,50 +241,48 @@ define([
           });
         }
       })
-    
+
     ]);
 
-    Module.directive('dpNoDrag', [ () =>
+    Module.directive('dpNoDrag', [() =>
       ({
         restrict: 'AC',
         link(scope, el, attrs) {
           return el.get(0).draggable = false;
         }
       })
-    
+
     ]);
 
-    Module.directive('dpMoveListToPos', [ '$timeout', $timeout =>
+    Module.directive('dpMoveListToPos', ['$timeout', $timeout =>
       ({
         restrict: 'A',
-        scope: {},
+        scope:    {},
         link(scope, element, attrs) {
           let update;
           let initial_run = false;
           let is_running = false;
           let run_again = false;
-          scope.$on('resetDisplayOrders', function() {
+          scope.$on('resetDisplayOrders', () => {
             if (!initial_run) {
               initial_run = false;
               run_again = true;
               return update();
-            } else {
-              return $timeout(function() {
-                if (is_running) {
-                  return run_again = true;
-                } else {
-                  return update();
-                }
-              }
-              , 1);
             }
+            return $timeout(() => {
+              if (is_running) {
+                return run_again = true;
+              }
+              return update();
+            }
+              , 1);
           });
 
-          return update = function() {
+          return update = function () {
             is_running = true;
             const all_lis = element.find('> li').filter('[data-move-to-pos]');
 
-            all_lis.each(function() {
+            all_lis.each(function () {
               const li = $(this);
               const toPos = parseInt(li.data('move-to-pos') || 0) || 0;
               if ((toPos === 0) || isNaN(toPos)) {
@@ -293,7 +290,7 @@ define([
               }
 
               let use = null;
-              element.find('> li').each(function() {
+              element.find('> li').each(function () {
                 const ro = parseInt($(this).attr('data-run-order') || 0) || 0;
                 if ((ro === 0) || isNaN(ro)) {
                   return;
@@ -305,49 +302,47 @@ define([
               li.detach();
               if (!use) {
                 return li.detach().prependTo(element);
-              } else {
-                return li.detach().insertAfter(use);
               }
+              return li.detach().insertAfter(use);
             });
 
             if (run_again) {
               is_running = true;
-              return $timeout(function() {
+              return $timeout(() => {
                 run_again = false;
                 return update();
               }
               , 1);
-            } else {
-              return is_running = false;
             }
+            return is_running = false;
           };
         }
       })
-    
+
     ]);
 
-    Module.directive('dpHtmlRenderVar', [ () =>
+    Module.directive('dpHtmlRenderVar', [() =>
       ({
         restrict: 'A',
         link(scope, element, attrs) {
           return scope.$watch(attrs.dpHtmlRenderVar, newVal => element.html(newVal));
         }
       })
-    
+
     ]);
 
-    return Module.directive('href', [ '$location', '$state', ($location, $state) =>
+    return Module.directive('href', ['$location', '$state', ($location, $state) =>
       ({
         restrict: 'A',
         link(scope, element, attrs) {
-          return element.bind('click', function() {
+          return element.bind('click', () => {
             if (element[0] && element[0].href && (element[0].href === $location.absUrl())) {
-              return $state.go($state.current.name, $state.current.data, {reload: true});
+              return $state.go($state.current.name, $state.current.data, { reload: true });
             }
           });
         }
       })
-    
+
     ]);
   }
 );

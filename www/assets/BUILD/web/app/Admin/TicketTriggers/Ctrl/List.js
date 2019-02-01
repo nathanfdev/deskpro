@@ -1,10 +1,10 @@
 define([
   'Admin/Main/Ctrl/Base',
   'Admin/Main/Collection/OrderedDictionary',
-], function(
+], (
   Admin_Ctrl_Base,
   OrderedDictionary
-) {
+) => {
   class Admin_TicketTriggers_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketTriggers_Ctrl_List';
@@ -35,14 +35,14 @@ define([
       this.depData = this.DataService.get('TicketDeps');
 
       this.sortedListOptions = {
-        axis: 'y',
+        axis:   'y',
         handle: '.drag-handle',
         update: (ev, data) => {
           const $list = data.item.closest('ul');
           const runOrders = [];
 
           const { eventType } = this;
-          $list.find('li').each(function() {
+          $list.find('li').each(function () {
             let id = $(this).data('trigger-id');
             if (id) {
               if (id === 'departments') {
@@ -50,9 +50,8 @@ define([
                 return runOrders.push(id);
               } else if (id === 'emailaccounts') {
                 return runOrders.push(id);
-              } else {
-                return runOrders.push(parseInt(id));
               }
+              return runOrders.push(parseInt(id));
             }
           });
 
@@ -61,9 +60,7 @@ define([
         }
       };
 
-      return this.$scope.$watch('List.all_triggers', () => {
-        return this.sortTriggers();
-      }
+      return this.$scope.$watch('List.all_triggers', () => this.sortTriggers()
       , true);
     }
 
@@ -73,12 +70,10 @@ define([
     initialLoad() {
       const promises = [];
 
-      promises.push(this.Api.sendGet('/ticket_settings').then(res => {
-        return this.$scope.$parent.settings = res.data.ticket_settings;
-      })
+      promises.push(this.Api.sendGet('/ticket_settings').then(res => this.$scope.$parent.settings = res.data.ticket_settings)
       );
 
-      promises.push(this.dpTriggers.loadList(true).then( list => {
+      promises.push(this.dpTriggers.loadList(true).then((list) => {
         window.all_triggers = list;
         this.all_triggers = list;
 
@@ -93,7 +88,7 @@ define([
 
         return (() => {
           const result = [];
-          for (let t of Array.from(this.all_triggers)) {
+          for (const t of Array.from(this.all_triggers)) {
             if (!this.$scope.dep_order && t.department) {
               this.$scope.dep_order = t.run_order;
             }
@@ -112,14 +107,12 @@ define([
       );
 
       if ((this.eventType === 'newticket') || (this.eventType === 'update')) {
-        promises.push(this.depData.loadList(true).then( list => {
-          return this.depList = list;
-        })
+        promises.push(this.depData.loadList(true).then(list => this.depList = list)
         );
       }
 
       if (this.eventType === 'newticket') {
-        promises.push(this.TicketAccountsData.loadList(true).then( recs => {
+        promises.push(this.TicketAccountsData.loadList(true).then((recs) => {
           this.accounts = recs.values();
           return this.accounts = this.accounts.filter(x => x.account_type !== 'outgoing');
         })
@@ -128,9 +121,9 @@ define([
 
       if (this.eventType === 'update') {
         this.satisfactions = [
-          {id: 0, title: 'negative'},
-          {id: 1, title: 'neutral'},
-          {id: 2, title: 'positive'}
+          { id: 0, title: 'negative' },
+          { id: 1, title: 'neutral' },
+          { id: 2, title: 'positive' }
         ];
       }
 
@@ -139,14 +132,12 @@ define([
       // run re-order stuff (from dpMoveListToPos)
       // while loading indicator is still spinning,
       // eliminates the visual stutter
-      this.$q.all(promises).then(() => {
-        return this.$timeout(() => {
-          this.$scope.$broadcast('resetDisplayOrders');
-          return this.$timeout(() => d.resolve()
+      this.$q.all(promises).then(() => this.$timeout(() => {
+        this.$scope.$broadcast('resetDisplayOrders');
+        return this.$timeout(() => d.resolve()
           , 1);
-        }
-        , 1);
-      });
+      }
+        , 1));
 
       return d.promise;
     }
@@ -166,7 +157,7 @@ define([
 
       return (() => {
         const result = [];
-        for (let tr of Array.from(this.all_triggers)) {
+        for (const tr of Array.from(this.all_triggers)) {
           if (tr.department) {
             this.dep_triggers.push(tr);
             result.push(this.$scope.department_trigger_ids[tr.department.id] = tr.id);
@@ -204,7 +195,7 @@ define([
      */
     startTriggerDelete(trigger_id) {
       let trigger = null;
-      for (let v of Array.from(this.triggers)) {
+      for (const v of Array.from(this.triggers)) {
         if (v.id === trigger_id) {
           trigger = v;
           break;
@@ -213,7 +204,7 @@ define([
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('TicketTriggers/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.confirm = () => $modalInstance.close();
 
           return $scope.dismiss = () => $modalInstance.dismiss();
@@ -221,12 +212,10 @@ define([
         ]
       });
 
-      return inst.result.then( () => {
-        return this.dpTriggers.deleteTriggerById(trigger.id).then(() => {
-          this.sortTriggers();
-          return this.$state.go('tickets.triggers', {type: this.$stateParams.type});
-        });
-      });
+      return inst.result.then(() => this.dpTriggers.deleteTriggerById(trigger.id).then(() => {
+        this.sortTriggers();
+        return this.$state.go('tickets.triggers', { type: this.$stateParams.type });
+      }));
     }
   }
   Admin_TicketTriggers_Ctrl_List.initClass();

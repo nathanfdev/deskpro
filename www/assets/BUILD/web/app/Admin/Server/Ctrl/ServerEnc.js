@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_Server_Ctrl_ServerEnc extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Server_Ctrl_ServerEnc';
@@ -10,26 +10,18 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     loadStatus() {
-      return this.Api.sendGet('/server/encryption/status').then(res => {
-        return this.$scope.status = res.data;
-      });
+      return this.Api.sendGet('/server/encryption/status').then(res => this.$scope.status = res.data);
     }
 
     reloadStatus() {
       this.startSpinner('saving');
-      return this.loadStatus().then(() => {
-        return this.stopSpinner('saving', true);
-      });
+      return this.loadStatus().then(() => this.stopSpinner('saving', true));
     }
 
     enable() {
       this.startSpinner('saving');
       this.$scope.error_info = null;
-      return this.Api.sendPost('/server/encryption/enable').success(res => {
-        return this.loadStatus().then(() => {
-          return this.stopSpinner('saving', true);
-        });
-      }).error((info, code) => {
+      return this.Api.sendPost('/server/encryption/enable').success(res => this.loadStatus().then(() => this.stopSpinner('saving', true))).error((info, code) => {
         this.stopSpinner('saving', true);
         if (info.error_code) {
           return this.$scope.error_info = info;
@@ -40,11 +32,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     disable() {
       this.startSpinner('saving');
       this.$scope.error_info = null;
-      return this.Api.sendPost('/server/encryption/disable').success(res => {
-        return this.loadStatus().then(() => {
-          return this.stopSpinner('saving', true);
-        });
-      }).error((info, code) => {
+      return this.Api.sendPost('/server/encryption/disable').success(res => this.loadStatus().then(() => this.stopSpinner('saving', true))).error((info, code) => {
         this.stopSpinner('saving', true);
         if (info.error_code) {
           return this.$scope.error_info = info;

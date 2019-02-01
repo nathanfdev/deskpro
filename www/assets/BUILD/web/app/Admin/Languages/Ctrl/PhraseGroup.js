@@ -1,10 +1,10 @@
 define([
   'Admin/Main/Ctrl/Base',
   'Admin/Languages/PhraseSaver'
-], function(
+], (
   Admin_Ctrl_Base,
   PhraseSaver
-) {
+) => {
   class Admin_Languages_Ctrl_PhraseGroup extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Languages_Ctrl_PhraseGroup';
@@ -19,18 +19,14 @@ define([
     initialLoad() {
       const promise = this.Api.sendDataGet({
         phrase_info: `/langs/${this.langId}/${this.groupId}`
-      }).then(result => {
-        return this.phrases = result.data.phrase_info.phrases;
-      });
+      }).then(result => this.phrases = result.data.phrase_info.phrases);
       return promise;
     }
 
     doSave() {
       this.startSpinner('saving');
       const saver = new PhraseSaver(this.Api, this.$q);
-      return saver.savePhrases(this.langId, this.phrases).then(() => {
-        return this.stopSpinner('saving');
-      });
+      return saver.savePhrases(this.langId, this.phrases).then(() => this.stopSpinner('saving'));
     }
 
     /*
@@ -43,11 +39,10 @@ define([
 
       return this.$modal.open({
         templateUrl: this.getTemplatePath('Languages/modal-new-phrase.html'),
-        controller: [ '$modalInstance', '$scope', 'Api', '$state', function($modalInstance, $scope, Api, $state) {
+        controller:  ['$modalInstance', '$scope', 'Api', '$state', function ($modalInstance, $scope, Api, $state) {
+          $scope.phrase = { name: '', phrase: '' };
 
-          $scope.phrase = {name: '', phrase: ''};
-
-          $scope.$watch('phrase.name', function() {
+          $scope.$watch('phrase.name', () => {
             $scope.phrase.name = $scope.phrase.name.toLowerCase();
             $scope.phrase.name = $scope.phrase.name.replace(/\s/g, '-');
             return $scope.phrase.name = $scope.phrase.name.replace(/[^a-z0-9\.\-_]/g, '');
@@ -55,20 +50,20 @@ define([
 
           $scope.dismiss = () => $modalInstance.dismiss('cancel');
 
-          return $scope.save = function() {
+          return $scope.save = function () {
             $scope.is_loading = true;
 
             const postData = {
-              phrases: [{ name: `custom.${$scope.phrase.name}`, phrase: $scope.phrase.phrase}]
+              phrases: [{ name: `custom.${$scope.phrase.name}`, phrase: $scope.phrase.phrase }]
             };
-            return Api.sendPostJson(`/langs/${langId}/phrases`, postData).then(function() {
+            return Api.sendPostJson(`/langs/${langId}/phrases`, postData).then(() => {
               $modalInstance.close();
-              return $state.go('setup.phrases_go_viewgroup', {path: `phrases-go-${langId}-${groupId}`});
+              return $state.go('setup.phrases_go_viewgroup', { path: `phrases-go-${langId}-${groupId}` });
             });
           };
         }
         ],
-      }).result.then( newPhrase => {
+      }).result.then((newPhrase) => {
         if (!newPhrase) { return; }
       });
     }

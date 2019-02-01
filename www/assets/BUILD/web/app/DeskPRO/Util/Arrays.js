@@ -1,8 +1,8 @@
 define([
   'underscore'
-], function(
+], (
   _
-) {
+) => {
   class Arrays {
     /*
       * Analyze a flat array of categories that have structure defined like:
@@ -21,13 +21,13 @@ define([
     */
     analyzeFlatCatStructure(cats) {
       const ret = [];
-      var fnProc = function(parent_id, parent_ids, title_segs) {
+      var fnProc = function (parent_id, parent_ids, title_segs) {
         if (parent_ids == null) { parent_ids = []; }
         if (title_segs == null) { title_segs = []; }
         let child_ids = [];
         return (() => {
           const result = [];
-          for (let cat of Array.from(cats)) {
+          for (const cat of Array.from(cats)) {
             let doAdd = false;
             if (!parent_id && !cat.parent_id) {
               doAdd = true;
@@ -103,8 +103,8 @@ define([
      * @return {Array}
      */
     append(array, ...arrays) {
-      for (let arr of Array.from(arrays)) {
-        for (let v of Array.from(arr)) {
+      for (const arr of Array.from(arrays)) {
+        for (const v of Array.from(arr)) {
           array.push(v);
         }
       }
@@ -122,7 +122,7 @@ define([
      */
     replaceArray(array, newArray) {
       array.length = 0;
-      for (let v of Array.from(newArray)) {
+      for (const v of Array.from(newArray)) {
         array.push(v);
       }
 
@@ -248,7 +248,7 @@ define([
     */
     setTo(array, values) {
       array.length = 0;
-      for (let v of Array.from(values)) {
+      for (const v of Array.from(values)) {
         array.push(v);
       }
 

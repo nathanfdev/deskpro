@@ -1,10 +1,10 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/CustomFields/FieldFormMapper',
-], function(
+], (
   BaseListEdit,
   FieldFormMapper
-)  {
+) => {
   class TicketFields extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -20,15 +20,14 @@ define([
     }
 
     _doLoadList() {
-
       const deferred = this.$q.defer();
 
       this.Api.sendDataGet([
         '/ticket_fields'
-      ]).then( res => {
+      ]).then((res) => {
         for (var f of ['category', 'priority', 'workflow', 'product', 'label']) {
           this.field_enabled[f] = false;
-          if (res.data.api_ticket_fields[f + '_enabled']) {
+          if (res.data.api_ticket_fields[`${f}_enabled`]) {
             this.field_enabled[f] = true;
           }
         }
@@ -52,9 +51,7 @@ define([
       * @return {promise}
     */
     deleteFieldById(id) {
-      const promise = this.Api.sendDelete(`/ticket_fields/${id}`).then(() => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/ticket_fields/${id}`).then(() => this.removeListModelById(id));
       return promise;
     }
 
@@ -69,20 +66,20 @@ define([
       const deferred = this.$q.defer();
 
       if (id) {
-        this.Api.sendGet(`/ticket_fields/${id}`).then( result => {
+        this.Api.sendGet(`/ticket_fields/${id}`).then((result) => {
           const data = {
-            field: result.data.field,
-            field_type: result.data.field.type_name,
-            form: this.getFormMapper().getFormFromModel(result.data.field),
+            field:        result.data.field,
+            field_type:   result.data.field.type_name,
+            form:         this.getFormMapper().getFormFromModel(result.data.field),
             referencedBy: result.data.referencedBy || []
           };
           return deferred.resolve(data);
         });
       } else {
         const data = {
-          field: {},
+          field:      {},
           field_type: '0',
-          form: this.getFormMapper().getFormFromModel(null)
+          form:       this.getFormMapper().getFormFromModel(null)
         };
         deferred.resolve(data);
       }
@@ -119,7 +116,7 @@ define([
       if (fieldModel.id) {
         promise = this.Api.sendPostJson(`/ticket_fields/${fieldModel.id}`, postData);
       } else {
-        promise = this.Api.sendPutJson('/ticket_fields', postData).success( data => fieldModel.id = data.field_id);
+        promise = this.Api.sendPutJson('/ticket_fields', postData).success(data => fieldModel.id = data.field_id);
       }
 
       promise.success(() => {

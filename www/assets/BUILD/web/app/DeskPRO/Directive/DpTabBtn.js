@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -34,7 +34,7 @@ define(function() {
     *     <div dp-tab-body="subtabs.tab2">Subtab Content 2</div>
     * </section>
     */
-  const DeskPRO_Directive_DpTabBtn = [ () =>
+  const DeskPRO_Directive_DpTabBtn = [() =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
@@ -42,7 +42,7 @@ define(function() {
           scope.dp_tab_ids = {};
         }
 
-        let id_segs = attrs['dpTabBtn'];
+        let id_segs = attrs.dpTabBtn;
         if (!id_segs) {
           return;
         }
@@ -55,23 +55,22 @@ define(function() {
           scope.dp_tab_ids[tab_group] = tab_val;
         }
 
-        element.on('click', function(ev) {
+        element.on('click', (ev) => {
           ev.preventDefault();
           scope.dp_tab_ids[tab_group] = tab_val;
           return scope.$apply();
         });
 
         return scope.$watch(() => scope.dp_tab_ids[tab_group]
-        , function(newVal) {
+        , (newVal) => {
           if (newVal === tab_val) {
             return element.addClass('active');
-          } else {
-            return element.removeClass('active');
           }
+          return element.removeClass('active');
         });
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpTabBtn;

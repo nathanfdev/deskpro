@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class AdminUpdateWatcher_Ctrl_Main {
     static initClass() {
       this.CTRL_AS   = 'Ctrl';
@@ -20,7 +20,7 @@ define(function() {
     constructor(...args) {
       this.ctrl_is_loading = true;
       if (this.constructor.DEPS.length !== args.length) {
-        console.error("Dependencies are not the same as passed args: %o != %o", this.constructor.DEPS, args);
+        console.error('Dependencies are not the same as passed args: %o != %o', this.constructor.DEPS, args);
         return;
       }
 
@@ -44,19 +44,15 @@ define(function() {
 
     init() {
       this.$scope.showFinishedNextInfo = false;
-      this.$scope.logUrl = window.DP_BASE_URL+'/__serverinfo/logs/updater?auth=' + window.DP_SERVERINFO_AUTH;
-      this.refreshStatus().then(() => {
-        return this.$scope.initDone = true;
-      });
+      this.$scope.logUrl = `${window.DP_BASE_URL}/__serverinfo/logs/updater?auth=${window.DP_SERVERINFO_AUTH}`;
+      this.refreshStatus().then(() => this.$scope.initDone = true);
 
-      return this.timeId = this.$interval(() => {
-        return this.refreshStatus();
-      }
+      return this.timeId = this.$interval(() => this.refreshStatus()
       , 3500);
     }
 
     refreshStatus() {
-      return this.$http.get(window.DP_BASE_URL+'/admin/updater-status/' +  window.DP_SERVERINFO_AUTH + '?status').then(res => {
+      return this.$http.get(`${window.DP_BASE_URL}/admin/updater-status/${window.DP_SERVERINFO_AUTH}?status`).then((res) => {
         // if the status starts on anything but finished, then
         // the UI should not show the 'next' notice
         if ((this.$scope.info != null ? this.$scope.info.status : undefined) !== 'finished') {

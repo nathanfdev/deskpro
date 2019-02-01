@@ -1,8 +1,8 @@
 define([
   'Reports/Main/Ctrl/Base'
-], function(
+], (
   ReportsBaseCtrl
-) {
+) => {
   class Reports_Builder_Ctrl_Edit extends ReportsBaseCtrl {
     static initClass() {
       this.CTRL_ID   = 'Reports_Builder_Ctrl_Edit';
@@ -31,7 +31,7 @@ define([
     }
 
     initialLoad() {
-      const promise = this.reportData.loadEditReportData(this.$stateParams.id || null, this.$stateParams.params || null).then( data => {
+      const promise = this.reportData.loadEditReportData(this.$stateParams.id || null, this.$stateParams.params || null).then((data) => {
         this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
         this.group_params = this.$scope.$parent.ListCtrl.group_params;
         this.query_parts = data.query_parts;
@@ -60,22 +60,19 @@ define([
 
       const run = () => {
         const promise = this.Api.sendPostJson(`/reports/builder/test/${this.report.id}`, {
-          parts: this.query_parts,
+          parts:  this.query_parts,
           params: this.$stateParams.params
         });
 
-        return promise.success(data => {
+        return promise.success((data) => {
           if (data.error) {
             this.query_error = data.error;
-
+          } else if (data.rendered_result) {
+            this.query_error = null;
+            this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
           } else {
-            if (data.rendered_result) {
-              this.query_error = null;
-              this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
-            } else {
-              this.query_error = null;
-              this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
-            }
+            this.query_error = null;
+            this.rendered_result = this.$sce.trustAsHtml(data.rendered_result || '');
           }
 
           this.stopSpinner('builder_loading', true);
@@ -85,9 +82,8 @@ define([
 
       if (this.query_parts_synced) {
         return run();
-      } else {
-        return this.syncQueryParts().then(run);
       }
+      return this.syncQueryParts().then(run);
     }
 
 
@@ -101,13 +97,13 @@ define([
       this.query_parts_synced = false;
       const promise = this.Api.sendPostJson('/reports/builder/parse', {
         currentType: 'builder',
-        inputType: 'builder',
-        newType: 'query',
-        query: this.report.query,
-        parts: this.query_parts
+        inputType:   'builder',
+        newType:     'query',
+        query:       this.report.query,
+        parts:       this.query_parts
       });
 
-      return promise.success(data => {
+      return promise.success((data) => {
         if (data.error) { this.query_error = data.error; }
 
         if (data.query) {
@@ -127,9 +123,7 @@ define([
       this.startSpinner('builder_loading');
 
       this.editor_mode = 'builder';
-      return this.syncQueryParts().then(() => {
-        return this.stopSpinner('builder_loading', true);
-      });
+      return this.syncQueryParts().then(() => this.stopSpinner('builder_loading', true));
     }
 
     /*
@@ -138,13 +132,13 @@ define([
     syncQueryParts() {
       const promise = this.Api.sendPostJson('/reports/builder/parse', {
         currentType: 'query',
-        inputType: 'query',
-        newType: 'builder',
-        query: this.report.query,
-        parts: this.query_parts
+        inputType:   'query',
+        newType:     'builder',
+        query:       this.report.query,
+        parts:       this.query_parts
       });
 
-      promise.success(data => {
+      promise.success((data) => {
         if (data.error) { this.query_error = data.error; }
 
         if (data.parts) {
@@ -162,7 +156,7 @@ define([
      * This method is called when user clicks on 'CSV' button
      */
     downloadCsv() {
-      return window.open(this.$http.formatApiUrl(`/reports/builder/download/${this.report.id}/csv`, {params: this.$stateParams.params}));
+      return window.open(this.$http.formatApiUrl(`/reports/builder/download/${this.report.id}/csv`, { params: this.$stateParams.params }));
     }
 
 
@@ -170,7 +164,7 @@ define([
      * This method is called when user clicks on 'PDF' button
      */
     downloadPdf() {
-      return window.open(this.$http.formatApiUrl(`/reports/builder/download/${this.report.id}/pdf`, {params: this.$stateParams.params}));
+      return window.open(this.$http.formatApiUrl(`/reports/builder/download/${this.report.id}/pdf`, { params: this.$stateParams.params }));
     }
 
 
@@ -186,7 +180,6 @@ define([
      * Saving report
      */
     saveReport() {
-
       if (!this.report.is_custom) { throw new Error('Only custom reports could be saved'); }
 
       if (!this.$scope.form_props.$valid) {
@@ -202,8 +195,7 @@ define([
         this.startSpinner('query_loading');
         this.startSpinner('saving');
 
-        return promise.then( res => {
-
+        return promise.then((res) => {
           const { data } = res;
 
           if (data.error) {
@@ -221,22 +213,19 @@ define([
           }
 
           if (is_new) {
-            this.$state.go('builder.edit', {id: data.id, type: 'custom', params: ''});
+            this.$state.go('builder.edit', { id: data.id, type: 'custom', params: '' });
           }
 
           this.stopSpinner('builder_loading', true);
           this.stopSpinner('query_loading', true);
-          return this.stopSpinner('saving', true).then( () => {
-            return this.Growl.success("Saved");
-          });
+          return this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
         });
       };
 
       if (this.query_parts_synced) {
         return run();
-      } else {
-        return this.syncQueryParts().then(run);
       }
+      return this.syncQueryParts().then(run);
     }
 
 
@@ -250,13 +239,12 @@ define([
 
       const run = () => {
         const promise = this.Api.sendPostJson(`/reports/builder/clone/${this.report.id}`, {
-          parts: this.query_parts,
-          title: this.form.title,
+          parts:       this.query_parts,
+          title:       this.form.title,
           description: this.form.description
         });
 
-        return promise.success(data => {
-
+        return promise.success((data) => {
           const proms = [this.reportData.loadList(true)];
 
           if (this.customList) {
@@ -267,8 +255,8 @@ define([
             this.stopSpinner('builder_loading', true);
             this.stopSpinner('query_loading', true);
             return this.stopSpinner('saving', true).then(() => {
-              this.Growl.success("Cloning Done");
-              return this.$state.go('builder.edit', {type: 'custom', id: data.id, params: ''});
+              this.Growl.success('Cloning Done');
+              return this.$state.go('builder.edit', { type: 'custom', id: data.id, params: '' });
             });
           });
         });
@@ -276,9 +264,8 @@ define([
 
       if (this.query_parts_synced) {
         return run();
-      } else {
-        return this.syncQueryParts().then(run);
       }
+      return this.syncQueryParts().then(run);
     }
   }
   Reports_Builder_Ctrl_Edit.initClass();

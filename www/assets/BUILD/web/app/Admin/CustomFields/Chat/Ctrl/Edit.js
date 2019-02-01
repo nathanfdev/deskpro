@@ -1,8 +1,8 @@
 define([
   'Admin/CustomFields/Base/Ctrl/Edit',
-], function(
+], (
   Admin_CustomFields_Base_Ctrl_Edit
-) {
+) => {
   class Admin_CustomFields_Chat_Ctrl_Edit extends Admin_CustomFields_Base_Ctrl_Edit {
     static initClass() {
       this.CTRL_ID = 'Admin_CustomFields_Chat_Ctrl_Edit';
@@ -15,7 +15,7 @@ define([
     }
 
     getBaseRouteName() {
-      return "chat.fields";
+      return 'chat.fields';
     }
 
     type() {

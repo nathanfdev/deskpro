@@ -1,7 +1,7 @@
 define([
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Strings'
-], function(Util, Strings) {
+], (Util, Strings) => {
   /*
     * Description
     * -----------
@@ -52,7 +52,7 @@ define([
           currentStateVars = [];
           for (let p of Array.from(m[1].split(','))) {
             if (p.substr(-1) === '!') {
-              p = p.substr(0, p.length-1);
+              p = p.substr(0, p.length - 1);
               hashParams[p] = true;
             }
             currentStateVars.push(p);
@@ -65,21 +65,20 @@ define([
 
         // This sets the active state immediately on click
         // which makes the UI feel faster
-        element.on('click', function() {
+        element.on('click', () => {
           if (element.hasClass('group') && element.hasClass('state-on')) {
             return element.removeClass('state-on active');
-          } else {
-            element.closest('.dp-layout-appnav').find('.state-on').each(function(index, e) {
-              if (myStateId.indexOf($(e).attr('dp-state-mark')) !== 0) {
-                return $(e).removeClass('state-on active');
-              }
-            });
-            element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');
-            return element.addClass('state-on active');
           }
+          element.closest('.dp-layout-appnav').find('.state-on').each((index, e) => {
+            if (myStateId.indexOf($(e).attr('dp-state-mark')) !== 0) {
+              return $(e).removeClass('state-on active');
+            }
+          });
+          element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');
+          return element.addClass('state-on active');
         });
 
-        const updateMarker = function() {
+        const updateMarker = function () {
           const checkStateId = $state.current.name;
           let checkStateId2 = null;
 
@@ -93,7 +92,7 @@ define([
             if (isOn || !currentStateId) { continue; }
 
             if (currentStateVars) {
-              for (let v of Array.from(currentStateVars)) {
+              for (const v of Array.from(currentStateVars)) {
                 if ($state.params[v] != null) {
                   if (hashParams[v]) {
                     currentStateId += `.${Strings.murmurhash3($state.params[v])}`;
@@ -104,10 +103,8 @@ define([
                   currentStateId += '.0';
                 }
               }
-            } else {
-              if ($state.params['id'] != null) {
-                currentStateId += `.${$state.params['id']}`;
-              }
+            } else if ($state.params.id != null) {
+              currentStateId += `.${$state.params.id}`;
             }
 
             if (currentStateId.match(myStateIdRe1) || currentStateId.match(myStateIdRe2)) {
@@ -130,7 +127,7 @@ define([
         return updateMarker();
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpStateMark;

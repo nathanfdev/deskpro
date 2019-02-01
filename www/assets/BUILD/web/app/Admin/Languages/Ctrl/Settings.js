@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Languages_Ctrl_Settings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Languages_Ctrl_Settings';
@@ -24,12 +24,12 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         auto_install: '/settings/values/core.lang_auto_install',
         auto_detect:  '/settings/values/core.lang_auto_detect',
         lang:         '/langs'
-      }).then( res => {
-        this.form.lang_auto_install = parseInt(res.data.auto_install.value) ? true : false;
-        this.form.lang_auto_detect = parseInt(res.data.auto_detect.value) ? true : false;
+      }).then((res) => {
+        this.form.lang_auto_install = !!parseInt(res.data.auto_install.value);
+        this.form.lang_auto_detect = !!parseInt(res.data.auto_detect.value);
 
         this.langChoices  = [];
-        for (let pack of Array.from(res.data.lang.packs)) {
+        for (const pack of Array.from(res.data.lang.packs)) {
           if (pack.is_installed) {
             this.langChoices.push({
               id:          pack.installed_language_id,
@@ -59,9 +59,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       })
       );
 
-      return this.$q.all(promises).then(() => {
-        return this.stopSpinner('saving_settings');
-      });
+      return this.$q.all(promises).then(() => this.stopSpinner('saving_settings'));
     }
 
     doMassTicketMove() {
@@ -71,9 +69,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           from_lang: this.form.tickets_move_from,
           to_lang:   this.form.tickets_move_to
         };
-        return this.Api.sendPost('/langs/tools/mass-update-tickets', postData).then(() => {
-          return this.stopSpinner('saving_tickets');
-        });
+        return this.Api.sendPost('/langs/tools/mass-update-tickets', postData).then(() => this.stopSpinner('saving_tickets'));
       });
     }
 
@@ -84,22 +80,19 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           from_lang: this.form.users_move_from,
           to_lang:   this.form.users_move_to
         };
-        return this.Api.sendPost('/langs/tools/mass-update-users', postData).then(() => {
-          return this.stopSpinner('saving_users');
-        });
+        return this.Api.sendPost('/langs/tools/mass-update-users', postData).then(() => this.stopSpinner('saving_users'));
       });
     }
 
     doDownloadLanguages() {
-
       const syncLanguage = (nameId, locale) => {
         console.log('[Language sync] Process: ', locale);
         this.syncLog += `Downloading ${locale} ...\n`;
         return this.$q.all([
           this.LangSyncApi.getPhrases(locale, 'backend'),
           this.LangSyncApi.getPhrases(locale, 'user')
-        ]).then(res => {
-          //combine user and backend phrases
+        ]).then((res) => {
+          // combine user and backend phrases
           const postData = {
             phrases: Object.assign({}, res[0].data, res[1].data)
           };
@@ -115,12 +108,12 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         this.syncLog = '';
         this.showLog = true;
 
-        this.syncLog += "Downloading Manifest ...\n";
-        return this.LangSyncApi.getManifest().then(result => {
+        this.syncLog += 'Downloading Manifest ...\n';
+        return this.LangSyncApi.getManifest().then((result) => {
           const manifest = result.data;
           let langs = this.langChoices;
           if (this.form.download_language !== 'all') {
-            langs = [{system_name: this.form.download_language}];
+            langs = [{ system_name: this.form.download_language }];
           }
 
           langs = langs.map(l => l.system_name);
@@ -128,8 +121,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           const deferred = this.$q.defer();
           let res = deferred.promise;
 
-          //queue promises to process languages sync one by one
-          manifest.forEach(function(lang) {
+          // queue promises to process languages sync one by one
+          manifest.forEach((lang) => {
             if (langs.indexOf(lang.id) !== -1) {
               return res = res.then(() => syncLanguage(lang.id, lang.locale));
             }
@@ -137,32 +130,29 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           deferred.resolve();
 
-          //execute chained promises
+          // execute chained promises
           return res
             .then(() => {
               this.stopSpinner('update_languages');
-              return this.syncLog += "Done.\n";
+              return this.syncLog += 'Done.\n';
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
-              this.syncLog += "Error. Please check the console.\n";
+              this.syncLog += 'Error. Please check the console.\n';
               return this.stopSpinner('update_languages');
             });
-        }).catch( error => {
+        }).catch((error) => {
           console.log(error);
-          this.syncLog += "Error. Please check the console.\n";
+          this.syncLog += 'Error. Please check the console.\n';
           return this.stopSpinner('update_languages');
         });
       });
     }
 
     doResetManagedPhrases() {
-
       return this.showConfirm('@confirm_reset_managed_phrases').result.then(() => {
         this.startSpinner('update_languages');
-        return this.Api.sendPostJson("/langs/phrases/reset-managed", {}).then( result => {
-          return this.stopSpinner('update_languages');
-        });
+        return this.Api.sendPostJson('/langs/phrases/reset-managed', {}).then(result => this.stopSpinner('update_languages'));
       });
     }
   }

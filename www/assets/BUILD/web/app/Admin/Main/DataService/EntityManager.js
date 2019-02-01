@@ -2,10 +2,10 @@ define([
   'Admin/Main/DataService/Base',
   'Admin/Main/Model/Base',
   'Admin/Main/Collection/OrderedDictionary'
-], function(
+], (
   Admin_Main_DataService_Base,
   Admin_Main_Model_Base
-)  {
+) => {
   class Admin_Main_DataService_EntityManager {
     constructor() {
       this.entity_cache = {};
@@ -56,10 +56,10 @@ define([
       const entity_type = entity.getTypeId();
       let entity_id   = entity.getEntityId();
 
-      if (!entity_type) { throw new Error("entity must have a type_id"); }
-      if (!entity_id) {   throw new Error("entity must have a id_prop"); }
+      if (!entity_type) { throw new Error('entity must have a type_id'); }
+      if (!entity_id) {   throw new Error('entity must have a id_prop'); }
 
-      entity_id = entity_id+"";
+      entity_id += '';
       if ((this.entity_cache[entity_type] == null)) {
         this.entity_cache[entity_type] = {};
       }
@@ -68,13 +68,13 @@ define([
       if (this.entity_cache[entity_type][entity_id] != null) {
         exist_entity = this.entity_cache[entity_type][entity_id];
         if (!merge) {
-          throw new Error("entity already exists in the manager");
+          throw new Error('entity already exists in the manager');
         }
       }
 
       if (exist_entity) {
         const object = entity.getData();
-        for (let k of Object.keys(object || {})) {
+        for (const k of Object.keys(object || {})) {
           const v = object[k];
           exist_entity[k] = v;
         }
@@ -102,11 +102,11 @@ define([
       const entity_type = entity.getTypeId();
       let entity_id   = entity.getEntityId();
 
-      if (!entity_type) { throw new Error("entity must have a type_id"); }
-      if (!entity_id) {   throw new Error("entity must have a id_prop"); }
+      if (!entity_type) { throw new Error('entity must have a type_id'); }
+      if (!entity_id) {   throw new Error('entity must have a id_prop'); }
 
-      entity_id = entity_id+"";
-      if (((this.entity_cache[entity_type] != null ? this.entity_cache[entity_type][entity_id] : undefined) == null)) { throw new Error("entity does not exist in manager"); }
+      entity_id += '';
+      if (((this.entity_cache[entity_type] != null ? this.entity_cache[entity_type][entity_id] : undefined) == null)) { throw new Error('entity does not exist in manager'); }
 
       return this.entity_cache[entity_type][entity_id];
     }
@@ -119,11 +119,11 @@ define([
       * @return {Admin_Main_Model_Base}
     */
     getById(entity_type, entity_id) {
-      if (!entity_type) { throw new Error("entity must have a type_id"); }
-      if (!entity_id) {   throw new Error("entity must have a id_prop"); }
-      entity_id = entity_id+"";
+      if (!entity_type) { throw new Error('entity must have a type_id'); }
+      if (!entity_id) {   throw new Error('entity must have a id_prop'); }
+      entity_id += '';
 
-      if (((this.entity_cache[entity_type] != null ? this.entity_cache[entity_type][entity_id] : undefined) == null)) { throw new Error("entity does not exist in manager"); }
+      if (((this.entity_cache[entity_type] != null ? this.entity_cache[entity_type][entity_id] : undefined) == null)) { throw new Error('entity does not exist in manager'); }
 
       return this.entity_cache[entity_type][entity_id];
     }
@@ -138,9 +138,9 @@ define([
       const entity_type = entity.getTypeId();
       let entity_id   = entity.getEntityId();
 
-      if (!entity_type) { throw new Error("entity must have a type_id"); }
-      if (!entity_id) {   throw new Error("entity must have a id_prop"); }
-      entity_id = entity_id+"";
+      if (!entity_type) { throw new Error('entity must have a type_id'); }
+      if (!entity_id) {   throw new Error('entity must have a id_prop'); }
+      entity_id += '';
 
       if ((this.entity_cache[entity_type] != null ? this.entity_cache[entity_type][entity_id] : undefined) != null) {
         return delete this.entity_cache[entity_type][entity_id];
@@ -154,7 +154,7 @@ define([
       * @param {Admin_Main_Model_Base} entity
     */
     removeById(entity_type, entity_id) {
-      entity_id = entity_id+"";
+      entity_id += '';
 
       if ((this.entity_cache[entity_type] != null ? this.entity_cache[entity_type][entity_id] : undefined) != null) {
         return delete this.entity_cache[entity_type][entity_id];
@@ -169,7 +169,7 @@ define([
       * @return {Boolean}
     */
     hasById(entity_type, entity_id) {
-      entity_id = entity_id+"";
+      entity_id += '';
 
       if ((this.entity_cache[entity_type] != null ? this.entity_cache[entity_type][entity_id] : undefined) != null) {
         return true;
@@ -189,9 +189,9 @@ define([
       const entity_type = entity.getTypeId();
       let entity_id   = entity.getEntityId();
 
-      if (!entity_type) { throw new Error("entity must have a type_id"); }
-      if (!entity_id) {   throw new Error("entity must have a id_prop and valid ID"); }
-      entity_id = entity_id+"";
+      if (!entity_type) { throw new Error('entity must have a type_id'); }
+      if (!entity_id) {   throw new Error('entity must have a id_prop and valid ID'); }
+      entity_id += '';
 
       if ((this.entity_cache[entity_type] != null ? this.entity_cache[entity_type][entity_id] : undefined) != null) {
         return true;
@@ -212,7 +212,7 @@ define([
           var entities = this.entity_cache[type];
           result.push((() => {
             const result1 = [];
-            for (let ent_id of Object.keys(entities || {})) {
+            for (const ent_id of Object.keys(entities || {})) {
               const ent = entities[ent_id];
               if ((ent._obj_refc < 1) && (ent._obj_time < time_cut)) {
                 result1.push(delete this.entity_cache[type][ent_id]);
@@ -236,9 +236,8 @@ define([
     clear(type = null) {
       if (type) {
         return delete this.entity_cache[type];
-      } else {
-        return this.entity_cache = {};
       }
+      return this.entity_cache = {};
     }
   }
 

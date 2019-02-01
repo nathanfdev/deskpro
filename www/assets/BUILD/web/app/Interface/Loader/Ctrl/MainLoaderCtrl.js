@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class MainLoaderCtrl {
     static initClass() {
       this.$inject = ['$scope'];

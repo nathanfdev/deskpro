@@ -29,7 +29,7 @@ define([
   DeskPRO_Directive_DpSubmitForm,
   DeskPRO_Directive_DpErrorClass
 ) =>
-  function(Module) {
+  function (Module) {
     Module.directive('dpClickHref',              DeskPRO_Directive_DpClickHref);
     Module.directive('dpTimeWithUnit',           DeskPRO_Directive_DpTimeWithUnit);
     Module.directive('dpStateMark',              DeskPRO_Directive_DpStateMark);

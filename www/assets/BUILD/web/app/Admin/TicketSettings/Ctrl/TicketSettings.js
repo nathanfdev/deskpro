@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_Ctrl_Base, Util, angular) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Base, Util, angular) => {
   class Admin_TicketSettings_Ctrl_TicketSettings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings';
@@ -14,53 +14,50 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
         console.log;
         if (window.DP_HAS_NEW_EMAILS) {
           return this.$modal.open({
-            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
-            size: 'lg',
-            controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
-            resolve: {
+            templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-new-email-editor.html`,
+            size:        'lg',
+            controller:  'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+            resolve:     {
               templateName() { return 'SendmailBundle:emails_user:ticket_rate.html.twig'; }
             }
           });
-        } else {
-          return this.$modal.open({
-            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-            controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-            resolve: {
-              templateName() { return 'DeskPRO:emails_user:ticket-rate.html.twig'; }
-            }
-          });
         }
+        return this.$modal.open({
+          templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-email-editor.html`,
+          controller:  'Admin_Templates_Ctrl_EmailTemplateEditor',
+          resolve:     {
+            templateName() { return 'DeskPRO:emails_user:ticket-rate.html.twig'; }
+          }
+        });
       };
 
       this.$scope.$watch(
-        () => {
-          return (this.$scope.settings != null ? this.$scope.settings.timelog_autostart : undefined);
-        }
+        () => (this.$scope.settings != null ? this.$scope.settings.timelog_autostart : undefined)
         , (newVal, oldVal) => {
           if (newVal === false) { return this.$scope.settings.billing_on_reply = false; }
-      });
+        });
 
       this.$scope.digits = [];
-      return [0, 1, 2, 3, 4, 5, 6, 7, 8].map((i) =>
+      return [0, 1, 2, 3, 4, 5, 6, 7, 8].map(i =>
         (i !== 1) ?
-          this.$scope.digits.push({id: i, label: i + " digits"})
+          this.$scope.digits.push({ id: i, label: `${i} digits` })
         :
-          this.$scope.digits.push({id: i, label: i + " digit"}));
+          this.$scope.digits.push({ id: i, label: `${i} digit` }));
     }
 
 
     initialLoad() {
       const data_promise = this.Api.sendDataGet({
-        'settings': '/ticket_settings'
-      }).then( res => {
+        settings: '/ticket_settings'
+      }).then((res) => {
         const settings = res.data.settings.ticket_settings;
-        for (let k of Object.keys(settings.agent_defaults || {})) {
+        for (const k of Object.keys(settings.agent_defaults || {})) {
           const v = settings.agent_defaults[k];
-          if (!v) { settings.agent_defaults[k] = "0"; }
+          if (!v) { settings.agent_defaults[k] = '0'; }
         }
 
         const days = [null, false, false, false, false, false, false, false];
-        for (let day of Array.from(settings.working_hours.work_days)) {
+        for (const day of Array.from(settings.working_hours.work_days)) {
           days[day] = true;
         }
 
@@ -71,13 +68,13 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
       });
 
       this.headerSortList = {
-        axis: 'y',
+        axis:   'y',
         handle: '.drag-handle',
         update: (ev, data) => {
           const $list = data.item.closest('ul');
 
           const newOrder = [];
-          $list.find('li').each(function() {
+          $list.find('li').each(function () {
             return newOrder.push($(this).data('value'));
           });
 
@@ -93,9 +90,8 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
       if (!this.settings) { return false; }
       if (!angular.equals(this.settings, this.$scope.settings)) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     }
 
     save() {
@@ -114,13 +110,11 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
       postData.ticket_settings.working_hours.work_days = work_days;
 
       this.startSpinner('saving');
-      const promise = this.Api.sendPostJson('/ticket_settings', postData).success( () => {
+      const promise = this.Api.sendPostJson('/ticket_settings', postData).success(() => {
         this.settings = angular.copy(this.$scope.settings);
 
-        return this.stopSpinner('saving').then(() => {
-          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
-        });
-      }).error( (info, code) => {
+        return this.stopSpinner('saving').then(() => this.Growl.success(this.getRegisteredMessage('saved_settings')));
+      }).error((info, code) => {
         this.stopSpinner('saving', true);
         return this.applyErrorResponseToView(info);
       });

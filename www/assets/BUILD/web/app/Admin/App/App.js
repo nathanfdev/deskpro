@@ -12,7 +12,7 @@ define([
   'Admin/App/SetupServices',
   'Admin/App/SetupTemplates',
   'DeskPRO/Util/Util'
-], function(
+], (
   angular,
   moment,
   AdminModule,
@@ -27,8 +27,7 @@ define([
   SetupTemplates,
 
   Util
-) {
-
+) => {
   SetupServices(AdminModule);
   AdminSetupServices(AdminModule);
   SetupLogging(AdminModule);
@@ -38,7 +37,7 @@ define([
     ({
       responseError(rejection) {
         if ((rejection.status != null) && (rejection.status === 403)) {
-          window.location = window.DP_BASE_URL + 'agent/login?timeout=1&return=' + encodeURIComponent(window.DP_BASE_URL + 'admin/' + window.location.hash);
+          window.location = `${window.DP_BASE_URL}agent/login?timeout=1&return=${encodeURIComponent(`${window.DP_BASE_URL}admin/${window.location.hash}`)}`;
         }
         return $q.reject(rejection);
       },
@@ -52,7 +51,7 @@ define([
       }
 
     })
-  
+
   ]);
   AdminModule.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('dpHttpSessionInterceptor')
   ]);
@@ -66,16 +65,15 @@ define([
   SetupTemplates(AdminModule);
 
   if (window.DP_REDIRECT_TO_LICENSE) {
-    console.log("Redirect to license");
+    console.log('Redirect to license');
     window.location.hash = '/license';
   }
 
   try {
     if (__guard__(window.parent != null ? window.parent.DP_FRAME_OVERLAYS : undefined, x => x.admin)) {
-      AdminModule.run(['$rootScope', function($rootScope) {
-
+      AdminModule.run(['$rootScope', function ($rootScope) {
         if (!window.DP_REDIRECT_TO_LICENSE) {
-          return $rootScope.$on('$stateChangeSuccess', function() {
+          return $rootScope.$on('$stateChangeSuccess', () => {
             if (window.parent.DP_FRAME_OVERLAYS.admin.opened) {
               return window.parent.DP_FRAME_OVERLAYS.admin.setHash(window.location.hash);
             }

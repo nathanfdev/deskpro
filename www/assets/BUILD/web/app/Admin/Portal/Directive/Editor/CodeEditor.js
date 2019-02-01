@@ -1,18 +1,18 @@
-define([], function() {
-  const Admin_Portal_Directive_Editor_CodeEditor = [ () =>
+define([], () => {
+  const Admin_Portal_Directive_Editor_CodeEditor = [() =>
     ({
-      restrict: 'E',
-      templateUrl: DP_BASE_ADMIN_URL + '/load-view/Portal/Editor/code-editor.html',
-      scope: {
-        info: '=',
-        syntax: '@',
+      restrict:    'E',
+      templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Portal/Editor/code-editor.html`,
+      scope:       {
+        info:    '=',
+        syntax:  '@',
         visible: '=',
-        cancel: '&',
-        save: '&',
-        revert: '&'
+        cancel:  '&',
+        save:    '&',
+        revert:  '&'
       }
     })
-  
+
   ];
 
   return Admin_Portal_Directive_Editor_CodeEditor;

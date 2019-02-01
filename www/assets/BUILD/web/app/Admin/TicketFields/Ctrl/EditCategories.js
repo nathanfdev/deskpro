@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) => {
   class Admin_TicketFields_Ctrl_EditCategories extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketFields_Ctrl_EditCategories';
@@ -13,9 +13,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
       this.user_required    = false;
       this.cat_parent_list  = [];
 
-      this.$scope.$watchCollection('TicketCats.cats', () => {
-        return this.updateCatParentList();
-      }
+      this.$scope.$watchCollection('TicketCats.cats', () => this.updateCatParentList()
       , true);
     }
 
@@ -24,11 +22,11 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
 
       const flat = Arrays.analyzeFlatCatStructure(this.cats);
       const valid_ids = [];
-      for (let cat of Array.from(flat)) {
+      for (const cat of Array.from(flat)) {
         if (!cat.child_ids.length) {
           valid_ids.push(cat.id);
           this.cat_parent_list.push({
-            id: cat.id,
+            id:    cat.id,
             title: cat.full_title
           });
         }
@@ -41,9 +39,9 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
 
     initialLoad() {
       const data_promise = this.Api.sendDataGet({
-        'info': '/ticket_cats',
-        'layouts': '/ticket_layouts/fields/category'
-      }).then( res => {
+        info:    '/ticket_cats',
+        layouts: '/ticket_layouts/fields/category'
+      }).then((res) => {
         this.cats           = res.data.info.categories;
         this.default_id     = res.data.info.default_id;
         this.agent_required = res.data.info.agent_required;
@@ -74,15 +72,13 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
       };
 
       this.startSpinner('saving');
-      return promise = this.Api.sendPostJson('/ticket_cats', postData).success( () => {
+      return promise = this.Api.sendPostJson('/ticket_cats', postData).success(() => {
         __guard__(this.$scope.$parent != null ? this.$scope.$parent.TicketFieldsList : undefined, x => x.saveLayoutData('category', this.user_layouts, this.agent_layouts));
         __guard__(this.$scope.$parent != null ? this.$scope.$parent.TicketFieldsList : undefined, x1 => x1.setFieldEnabled('category', this.enabled));
         this.settings = angular.copy(this.$scope.settings);
 
-        return this.stopSpinner('saving').then(() => {
-          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
-        });
-      }).error( (info, code) => {
+        return this.stopSpinner('saving').then(() => this.Growl.success(this.getRegisteredMessage('saved_settings')));
+      }).error((info, code) => {
         this.stopSpinner('saving', true);
         return this.applyErrorResponseToView(info);
       });
@@ -92,21 +88,21 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
       const self = this;
       return this.$modal.open({
         templateUrl: this.getTemplatePath('TicketFields/convert-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.type = 'Category';
           $scope.plural_type = 'categories';
           $scope.dismiss = () => $modalInstance.dismiss();
 
-          return $scope.doConvert = function() {
+          return $scope.doConvert = function () {
             $scope.is_loading = true;
             return self.Api.sendPost('/ticket_fields/convert/categories').then(
-              function(res) {
+              (res) => {
                 $scope.is_loading = false;
                 $scope.dismiss();
                 if (__guard__(res.data != null ? res.data.field : undefined, x => x.id) != null) {
                   const ds = self.DataService.get('TicketFields');
                   ds.mergeDataModel(res.data.field);
-                  return self.$state.go('tickets.fields.edit', {id: res.data.field.id});
+                  return self.$state.go('tickets.fields.edit', { id: res.data.field.id });
                 }
               },
               () => $scope.is_loading = false);

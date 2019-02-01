@@ -1,8 +1,8 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
-], function(
+], (
   BaseListEdit
-) {
+) => {
   class Usersources extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -17,7 +17,7 @@ define([
      * @return {promise}
      */
     saveDisplayOrder(display_orders) {
-      return this.Api.sendPostJson('/usersources/display-order', {display_orders});
+      return this.Api.sendPostJson('/usersources/display-order', { display_orders });
     }
   }
   Usersources.initClass();

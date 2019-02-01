@@ -1,7 +1,7 @@
 define([
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Strings'
-], function(Util, Strings) {
+], (Util, Strings) => {
   /*
     * Description
     * -----------
@@ -19,13 +19,13 @@ define([
 
         // This sets the active state immediately on click
         // which makes the UI feel faster
-        element.on('click', function() {
+        element.on('click', () => {
           element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active');
           element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active');
           return element.addClass('state-on active');
         });
 
-        const updateMarker = function() {
+        const updateMarker = function () {
           const checkStateId = $state.current.name;
           let checkStateId2 = null;
 
@@ -39,17 +39,15 @@ define([
             if (isOn || !currentStateId) { continue; }
 
             if (currentStateVars) {
-              for (let v of Array.from(currentStateVars)) {
+              for (const v of Array.from(currentStateVars)) {
                 if ($state.params[v] != null) {
-                    currentStateId += `.${$state.params[v]}`;
+                  currentStateId += `.${$state.params[v]}`;
                 } else {
                   currentStateId += '.0';
                 }
               }
-            } else {
-              if ($state.params['id'] != null) {
-                currentStateId += `.${$state.params['id']}`;
-              }
+            } else if ($state.params.id != null) {
+              currentStateId += `.${$state.params.id}`;
             }
 
             if (currentStateId.match(myStateIdRe1)) {
@@ -72,7 +70,7 @@ define([
         return updateMarker();
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpStateMarkRegex;

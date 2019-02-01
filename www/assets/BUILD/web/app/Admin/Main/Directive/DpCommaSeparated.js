@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -16,25 +16,24 @@ define(function() {
     *    <span ng-if="something3">value3</span>
     * </span>
   */
-  const Admin_Main_Directive_DpCommaSeparated = [ '$timeout', $timeout =>
+  const Admin_Main_Directive_DpCommaSeparated = ['$timeout', $timeout =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
-        return $timeout(function() {
+        return $timeout(() => {
           // removes appearance of any whitespace between the tags
 
           var cleanWhitespace = el =>
-            $(el).contents().filter(function() {
+            $(el).contents().filter(function () {
               if (this.nodeType !== 3) {
                 cleanWhitespace(this);
                 return false;
-              } else {
-                this.textContent = $.trim(this.textContent);
-                if (!/\S/.test(this.nodeValue)) {
-                  return true;
-                }
-                return false;
               }
+              this.textContent = $.trim(this.textContent);
+              if (!/\S/.test(this.nodeValue)) {
+                return true;
+              }
+              return false;
             }).remove()
           ;
 
@@ -46,7 +45,7 @@ define(function() {
 
           return (() => {
             const result = [];
-            for (let el of Array.from(list)) {
+            for (const el of Array.from(list)) {
               const comma = $('<span class="dp-comma-list-item dp-comma">,</span>');
               result.push(comma.insertAfter(el));
             }
@@ -55,7 +54,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpCommaSeparated;

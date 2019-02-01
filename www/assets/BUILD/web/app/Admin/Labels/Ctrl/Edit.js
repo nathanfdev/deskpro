@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_Labels_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Labels_Ctrl_Edit';
@@ -16,7 +16,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         '#e11d21', '#eb6420', '#fbca04', '#009800', '#006b75', '#207de5', '#0052cc', '#5319e7',
         '#f7c6c7', '#fad8c7', '#fef2c0', '#bfe5bf', '#bfdadc', '#c7def8', '#bfd4f2', '#d4c5f9'
       ];
-      this.$scope.form = {label: '', color: "", label_type: this.type};
+      this.$scope.form = { label: '', color: '', label_type: this.type };
       return this.$scope.startDelete = () => this.startDelete();
     }
 
@@ -27,7 +27,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     initialLoad() {
       if (this.$stateParams.label) {
-        return this.LabelDefinition.get(this.type, this.$stateParams.label).then(def => {
+        return this.LabelDefinition.get(this.type, this.$stateParams.label).then((def) => {
           if (!def) { return; }
           this.definition = def || {};
           return this.$scope.form = angular.copy(def);
@@ -50,7 +50,8 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     saveLabel() {
-      let method, sendData;
+      let method,
+        sendData;
       if (!this.$scope.form.label) { return false; }
       if (this.definition && (this.definition.label === this.$scope.form.label) && (this.definition.color === this.$scope.form.color)) { return false; }
 
@@ -61,7 +62,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       this.startSpinner('saving_label');
 
       if (this.definition) {
-        sendData = {old: this.definition || {}, new: this.$scope.form};
+        sendData = { old: this.definition || {}, new: this.$scope.form };
         method = 'sendPutJson';
       } else {
         sendData = this.$scope.form;
@@ -70,28 +71,20 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
       return this.Api[method](this.endpoint, sendData)
 
-      .success(data => {
-        this.stopSpinner('saving_label', true).then(() => {
-          return this.Growl.success(this.getRegisteredMessage('saved_label'));
-        });
+      .success((data) => {
+        this.stopSpinner('saving_label', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_label')));
 
         this.LabelDefinition.update(this.definition, data);
         this.definition = data;
 
         if (this.$scope.isNew) {
           return this.$state.go(this.state('gocreate'));
-        } else {
-          return this.$state.go(this.state('edit'), {label: data.label});
         }
-    })
+        return this.$state.go(this.state('edit'), { label: data.label });
+      })
 
-      .error(() => {
-        return this.Growl.error(this.getRegisteredMessage('not_saved_label'));
-    }).finally(() => {
-        return this.stopSpinner('saving_label', true);
-      });
+      .error(() => this.Growl.error(this.getRegisteredMessage('not_saved_label'))).finally(() => this.stopSpinner('saving_label', true));
     }
-
 
 
     startDelete() {
@@ -99,7 +92,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Labels/delete-modal.html'),
-        controller:  ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.confirm = () => $modalInstance.close();
 
           return $scope.dismiss = () => $modalInstance.dismiss();
@@ -107,22 +100,15 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         ]
       });
 
-      return inst.result.then(() => {
-        return this.Api.sendDelete(this.endpoint, this.definition)
+      return inst.result.then(() => this.Api.sendDelete(this.endpoint, this.definition)
 
         .success(() => {
           this.LabelDefinition.remove(this.definition);
           return this.$state.go(this.state(''));
-      }).error(() => {
-          return this.$state.go(this.state(''));
-        }).finally(() => {
-          return this.$state.go(this.state(''));
-        });
-      });
+        }).error(() => this.$state.go(this.state(''))).finally(() => this.$state.go(this.state(''))));
     }
   }
   Admin_Labels_Ctrl_Edit.initClass();
-
 
 
   return Admin_Labels_Ctrl_Edit.EXPORT_CTRL();

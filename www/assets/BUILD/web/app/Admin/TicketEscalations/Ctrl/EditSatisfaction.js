@@ -1,15 +1,14 @@
 define([
   'Admin/TicketEscalations/Ctrl/Edit'
-], function(
+], (
   Admin_TicketEscalations_Ctrl_Edit
-) {
+) => {
   class Admin_TicketEscalations_Ctrl_EditSatisfaction extends Admin_TicketEscalations_Ctrl_Edit {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketEscalations_Ctrl_EditSatisfaction';
       this.CTRL_AS   = 'EditCtrl';
       this.DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams'];
     }
-
 
 
     init() {
@@ -32,13 +31,12 @@ define([
       return this.$scope.$on('trigger.save', () => {
         this.Growl = {
           success: () => {},
-          error: () => {}
+          error:   () => {}
         };
             // right, double 'then'
-        return this.saveForm().then().then(() => { return this.Growl = growl; });
+        return this.saveForm().then().then(() => this.Growl = growl);
       });
     }
-
 
 
     updateCriteriaOptionTypes() {
@@ -48,7 +46,7 @@ define([
         this.$scope.criteriaOptionTypes.push(opt);
       }
 
-      set = this.actionsTypeDef.getOptionsForTypes([], {dynamicOptions: this.customActions});
+      set = this.actionsTypeDef.getOptionsForTypes([], { dynamicOptions: this.customActions });
       this.$scope.actionOptionTypes.length = 0;
       return (() => {
         const result = [];
@@ -60,42 +58,32 @@ define([
     }
 
 
-
     initialLoad() {
       let loadData = null;
-      const promise = this.escData.loadEditSpecialEscalation('satisfaction', 0).then(data => {
-        return loadData = data;
-      });
+      const promise = this.escData.loadEditSpecialEscalation('satisfaction', 0).then(data => loadData = data);
 
       const promise2 = this.criteriaTypeDef.loadDataOptions();
       const promise3 = this.actionsTypeDef.loadDataOptions();
-      const promise4 = this.Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then(result => {
-        return this.customActions = result.data.customActions.action_defs;
-      });
+      const promise4 = this.Api.sendDataGet({ customActions: '/ticket_triggers/get-custom-actions' }).then(result => this.customActions = result.data.customActions.action_defs);
       const promises = [promise, promise2, promise3, promise4];
 
-      return this.$q.all(promises).then(() => {
+      return this.$q.all(promises).then(() => this.$timeout(() => {
+        this.updateCriteriaOptionTypes();
         return this.$timeout(() => {
-          this.updateCriteriaOptionTypes();
-          return this.$timeout(() => {
-            this.esc  = loadData.escalation;
-            this.form = loadData.form;
+          this.esc  = loadData.escalation;
+          this.form = loadData.form;
 
-            return this.$scope.$watch(
-              () => {
-                return (this.$scope.settings != null ? this.$scope.settings.satisfaction_enabled : undefined) && this.esc.is_enabled;
-              },
-              val => {
+          return this.$scope.$watch(
+              () => (this.$scope.settings != null ? this.$scope.settings.satisfaction_enabled : undefined) && this.esc.is_enabled,
+              (val) => {
                 if (undefined === val) { return; }
                 return this.escData.saveEnabledStateById(this.esc.id, __guard__(this.$scope.$parent != null ? this.$scope.$parent.settings : undefined, x => x.satisfaction_enabled) && this.esc.is_enabled);
-            });
-          });
+              });
         });
-      });
+      }));
     }
   }
   Admin_TicketEscalations_Ctrl_EditSatisfaction.initClass();
-
 
 
   return Admin_TicketEscalations_Ctrl_EditSatisfaction.EXPORT_CTRL();

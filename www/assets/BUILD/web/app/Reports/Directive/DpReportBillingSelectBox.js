@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
    * Description
    * -----------
@@ -19,7 +19,7 @@ define(function() {
   const Reports_Directive_DpReportBillingSelectBox = ['$state', $state =>
     ({
       restrict: 'AE',
-      replace: true,
+      replace:  true,
       template: `\
 <a href="{{ state_path('billing.view', {id: reportId, params: defaultLinkParams}) }}">
   <span ng-repeat="text in texts" style="margin-left: 5px">
@@ -33,7 +33,6 @@ define(function() {
 </a>\
 `,
       link(scope, element, attrs) {
-
         /*
 
       Below variables will look like following
@@ -52,8 +51,7 @@ define(function() {
         scope.selected = [];
         scope.defaultLinkParams = '';
 
-        scope.$watch(attrs.possibleValues, newVal => {
-
+        scope.$watch(attrs.possibleValues, (newVal) => {
           if (typeof newVal === 'undefined') { return; }
           const valueToDecorate = scope.$eval(attrs.valueToDecorate);
           if (!valueToDecorate) { return; }
@@ -69,8 +67,7 @@ define(function() {
       * The reason for doing so - problems with inner directives that were compiled with $compile() functionality
         */
 
-        var buildDirectiveVariables = function(value) {
-
+        var buildDirectiveVariables = function (value) {
           let match;
           let lastPiece = value;
           const regex = /([\w\s\&,]*)(<(\d+:.+?)>)/g;
@@ -96,9 +93,10 @@ define(function() {
          * Returning select box options that was rendered according to 'input' parameter
        */
 
-        var collectSelectOptions = function(input) {
-
-          let extrasMatch, type, value;
+        var collectSelectOptions = function (input) {
+          let extrasMatch,
+            type,
+            value;
           const possibleValues = scope.$eval(attrs.possibleValues);
           let choices = {};
           const extras = {};
@@ -141,9 +139,9 @@ define(function() {
 
           // constructing selects...
 
-          for (let key of Object.keys(choices || {})) {
+          for (const key of Object.keys(choices || {})) {
             value = choices[key];
-            options.push({value: key, label: value[0]});
+            options.push({ value: key, label: value[0] });
           }
 
           return {
@@ -156,13 +154,13 @@ define(function() {
       * Going to correponding route after changing selected options inside select box
         */
 
-        return scope.changeLinkParams = function() {
+        return scope.changeLinkParams = function () {
           const linkParams = scope.selected.join(',');
-          return $state.go('billing.view', {id: scope.reportId, params:linkParams});
+          return $state.go('billing.view', { id: scope.reportId, params: linkParams });
         };
       }
     })
-  
+
   ];
 
   return Reports_Directive_DpReportBillingSelectBox;

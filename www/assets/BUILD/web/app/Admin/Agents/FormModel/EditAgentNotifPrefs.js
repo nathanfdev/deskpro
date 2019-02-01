@@ -1,6 +1,5 @@
-define(['DeskPRO/Util/Util'], function(Util) {
+define(['DeskPRO/Util/Util'], (Util) => {
   class EditAgentNotifPrefs {
-
 
 
     constructor(prefsTable) {
@@ -8,28 +7,27 @@ define(['DeskPRO/Util/Util'], function(Util) {
     }
 
 
-
     getFilterSubs() {
       const filterSubs = {};
 
-      const getFilterSubObj = function(id) {
+      const getFilterSubObj = function (id) {
         if (filterSubs[id]) { return filterSubs[id]; }
         return filterSubs[id] = {
           filter_id: id,
-          email: [],
-          alert: []
+          email:     [],
+          alert:     []
         };
       };
 
-      for (let groupName of ['sys_filters', 'custom_filters']) {
-        for (let typeName of ['email', 'alert']) {
+      for (const groupName of ['sys_filters', 'custom_filters']) {
+        for (const typeName of ['email', 'alert']) {
           if ((this.prefsTable.subs[`${groupName}_${typeName}`] == null)) { continue; }
 
-          for (let row of Array.from(this.prefsTable.subs[`${groupName}_${typeName}`].rows)) {
+          for (const row of Array.from(this.prefsTable.subs[`${groupName}_${typeName}`].rows)) {
             const subObj = getFilterSubObj(row.filter.id);
 
-            for (let col of Array.from(row.cols)) {
-              for (let opt of Array.from(col)) {
+            for (const col of Array.from(row.cols)) {
+              for (const opt of Array.from(col)) {
                 if (opt.value) {
                   subObj[typeName].push(opt.name);
                 }
@@ -40,30 +38,29 @@ define(['DeskPRO/Util/Util'], function(Util) {
       }
 
       const vals = Util.values(filterSubs);
-      return vals.filter(function(a) { if ((a !== "") && (a !== false) && (a !== 0)) { return true; } });
+      return vals.filter((a) => { if ((a !== '') && (a !== false) && (a !== 0)) { return true; } });
     }
-
 
 
     getOtherSubs() {
       const appSubs = {};
 
-      const getAppSubObj = function(id) {
+      const getAppSubObj = function (id) {
         if (appSubs[id]) { return appSubs[id]; }
         return appSubs[id] = {
-          type: id,
+          type:  id,
           email: [],
           alert: []
         };
       };
 
-      for (let groupName of ['chat', 'crm', 'feedback', 'publish', 'task', 'twitter', 'account']) {
+      for (const groupName of ['chat', 'crm', 'feedback', 'publish', 'task', 'twitter', 'account']) {
         if ((this.prefsTable.subs[groupName] == null)) { continue; }
 
-        for (let row of Array.from(this.prefsTable.subs[groupName].rows)) {
+        for (const row of Array.from(this.prefsTable.subs[groupName].rows)) {
           const subObj = getAppSubObj(groupName);
 
-          for (let opt of Array.from(row.cols)) {
+          for (const opt of Array.from(row.cols)) {
             if (opt.value) {
               var shortName;
               if (opt.name.match(/_email$/)) {
@@ -79,7 +76,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
       }
 
       const vals = Util.values(appSubs);
-      return vals.filter(function(a) { if ((a !== "") && (a !== false) && (a !== 0)) { return true; } });
+      return vals.filter((a) => { if ((a !== '') && (a !== false) && (a !== 0)) { return true; } });
     }
   }
 });

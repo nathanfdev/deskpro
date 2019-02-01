@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strings) => {
   class Admin_License_Ctrl_UpgradeLicenseModal extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_License_Ctrl_UpgradeLicenseModal';
@@ -8,7 +8,9 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
 
     init() {
       let i;
-      let asc, end, start;
+      let asc,
+        end,
+        start;
       this.$scope.upgradeType     = this.upgradeType;
       this.$scope.upgradeOptions  = this.upgradeOptions;
       this.$scope.initial_loading = true;
@@ -27,19 +29,19 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
       // DEBUG
       this.$scope.paymentForm.mode = 'new';
       this.$scope.paymentForm.new_card = {
-        number: '',
-        cv2: '',
-        name: '',
+        number:    '',
+        cv2:       '',
+        name:      '',
         expire_yy: '',
         expire_mm: '',
-        type: ''
+        type:      ''
       };
       this.$scope.paymentForm.address = {
-        country: '',
-        city: '',
-        state: '',
+        country:   '',
+        city:      '',
+        state:     '',
         post_code: '',
-        address: ''
+        address:   ''
       };
 
       this.$scope.month_opts = [];
@@ -48,8 +50,8 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
       }
 
       this.$scope.year_opts = [];
-      for (start = new Date().getFullYear(), i = start, end = (new Date().getFullYear())+10, asc = start <= end; asc ? i <= end : i >= end; asc ? i++ : i--) {
-        this.$scope.year_opts.push((i+"").substr(2));
+      for (start = new Date().getFullYear(), i = start, end = (new Date().getFullYear()) + 10, asc = start <= end; asc ? i <= end : i >= end; asc ? i++ : i--) {
+        this.$scope.year_opts.push((`${i}`).substr(2));
       }
 
       this.$scope.$watch('paymentForm.new_card', () => {
@@ -71,7 +73,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
       }
 
       this.currentPlan = null;
-      this.$scope.planChanged = newPlan => {
+      this.$scope.planChanged = (newPlan) => {
         if (!this.currentPlan || (this.currentPlan === parseInt(newPlan))) { return; }
         return this.refreshForm(newPlan);
       };
@@ -82,9 +84,8 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
     refreshForm(plan) {
       if (this.upgradeType === 'extend') {
         return this.refreshRenewForm(plan);
-      } else {
-        return this.refreshPlanForm(plan);
       }
+      return this.refreshPlanForm(plan);
     }
 
     refreshPlanForm(plan) {
@@ -92,7 +93,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
       this.planInfo = null;
       this.currentPlan = null;
 
-      return this.DpLicense.getPlanUpgradeInfo(plan || 0).then(info => {
+      return this.DpLicense.getPlanUpgradeInfo(plan || 0).then((info) => {
         let name;
         if (info.error_code) {
           console.error(`License server error code: ${info.error_code}`);
@@ -105,8 +106,8 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
         this.$scope.initial_loading = false;
         this.$scope.paymentForm.exist_card = info.card_details || null;
         this.$scope.paymentForm.invoice = info.invoice || null;
-        this.$scope.availablePlans = info.available_plans.map( x => ({ num: x+"", title: x }));
-        this.$scope.toPlan = info.next_plan.agents+"";
+        this.$scope.availablePlans = info.available_plans.map(x => ({ num: `${x}`, title: x }));
+        this.$scope.toPlan = `${info.next_plan.agents}`;
         this.currentPlan = info.next_plan.agents;
 
         if (info.currency_pref === 'usd') {
@@ -116,7 +117,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
         }
 
         this.$scope.paymentSummary = {
-          line_title:         `Upgrade license to ${info.next_plan.agents} agents`,
+          line_title:             `Upgrade license to ${info.next_plan.agents} agents`,
           cost:                   info.next_plan.upgrade_cost,
           cost_display:           info.next_plan.upgrade_cost_display,
           cost_vat:               info.next_plan.upgrade_cost_vat,
@@ -153,7 +154,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
       this.planInfo = null;
       this.currentPlan = null;
 
-      return this.DpLicense.getRenewInfo(plan || 0).then(info => {
+      return this.DpLicense.getRenewInfo(plan || 0).then((info) => {
         let name;
         if (info.error_code) {
           console.error(`License server error code: ${info.error_code}`);
@@ -167,8 +168,8 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
         this.$scope.paymentForm.exist_card = info.card_details || null;
         this.$scope.paymentForm.address = info.address_info || {};
         this.$scope.paymentForm.invoice = info.invoice || null;
-        this.$scope.availablePlans = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map( x => ({ num: x+"", title: x }));
-        this.$scope.toPlan = info.next_plan.years+"";
+        this.$scope.availablePlans = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(x => ({ num: `${x}`, title: x }));
+        this.$scope.toPlan = `${info.next_plan.years}`;
         this.currentPlan = info.next_plan.years;
 
         if (info.currency_pref === 'usd') {
@@ -260,22 +261,21 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
       this.$scope.stepId = 0;
       this.$scope.error_code = null;
 
-      return this.DpLicense.sendPayInvoiceRequest(this.$scope.paymentForm.mode, this.$scope.paymentForm.new_card, this.$scope.paymentForm.address, this.planInfo.invoice.id, this.planInfo.invoice.auth).then( data => {
-
+      return this.DpLicense.sendPayInvoiceRequest(this.$scope.paymentForm.mode, this.$scope.paymentForm.new_card, this.$scope.paymentForm.address, this.planInfo.invoice.id, this.planInfo.invoice.auth).then((data) => {
         if (!data.success) {
           this.$scope.phase = 1;
           this.$scope.loading = false;
           if (data.error_message) {
             this.$scope.formErrors = [data.error_message];
           } else {
-            this.$scope.formErrors = ["There was a problem processing your payment. Please try agian."];
+            this.$scope.formErrors = ['There was a problem processing your payment. Please try agian.'];
           }
           return;
         }
 
         this.$scope.stepId = 1;
 
-        return this.DpLicense.getNewLicenseKey().then( res => {
+        return this.DpLicense.getNewLicenseKey().then((res) => {
           this.$scope.stepId = 2;
 
           return this.DpLicense.setNewLicenseCode(res.license_code).then(() => {
@@ -283,21 +283,21 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
             this.$scope.phase = 3;
             return this.$scope.show_done = true;
           }
-          , function() {
+          , function () {
             this.$scope.loading = false;
             return this.$scope.error_code = 'failed_get_lic_key';
           });
         }
-        , function() {
+        , function () {
           this.$scope.loading = false;
           return this.$scope.error_code = 'failed_get_lic_key';
         });
       }
 
-      , data => {
+      , (data) => {
         this.$scope.loading = false;
         this.$scope.phase = 1;
-        return this.$scope.formErrors = ["There was a problem processing your payment."];
+        return this.$scope.formErrors = ['There was a problem processing your payment.'];
       });
     }
   }

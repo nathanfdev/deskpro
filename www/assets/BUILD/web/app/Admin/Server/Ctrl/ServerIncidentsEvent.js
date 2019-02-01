@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_ServerIncidents_Ctrl_Event extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_ServerIncidents_Ctrl_Event';
@@ -13,8 +13,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     initialLoad() {
       return this.Api2.sendGet(`/system/events/${this.$stateParams.id}`).then(
-        ({data}) => { return this.event = data.data;
-       });
+        ({ data }) => this.event = data.data);
     }
   }
   Admin_ServerIncidents_Ctrl_Event.initClass();

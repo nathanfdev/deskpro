@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -12,7 +12,7 @@ define(function() {
     * ------------
     * <section dp-tab-body="edit.main">...</section>
     */
-  const DeskPRO_Directive_DpTabBody = [ () =>
+  const DeskPRO_Directive_DpTabBody = [() =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
@@ -23,7 +23,7 @@ define(function() {
           scope.dp_tabs_state = {};
         }
 
-        let id_segs = attrs['dpTabBody'];
+        let id_segs = attrs.dpTabBody;
         if (!id_segs) {
           return;
         }
@@ -42,7 +42,7 @@ define(function() {
         }
 
         return scope.$watch(() => scope.dp_tab_ids[tab_group]
-        , function(newVal) {
+        , (newVal) => {
           if (newVal === tab_val) {
             element.show();
             scope.dp_tabs_state[full] = true;
@@ -51,18 +51,17 @@ define(function() {
             // is loaded, then its possible it may be blank when trying to load it.
             // This is a workaround to the bug that refreshes the ui when the tab becomes
             // active.
-            return element.find('.with-ace-editor').each(function() {
+            return element.find('.with-ace-editor').each(function () {
               const editor = $(this).data('ace-editor');
               return editor.renderer.updateFull();
             });
-          } else {
-            element.hide();
-            return scope.dp_tabs_state[full] = false;
           }
+          element.hide();
+          return scope.dp_tabs_state[full] = false;
         });
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpTabBody;

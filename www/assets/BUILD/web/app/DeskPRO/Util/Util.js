@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Util/Strings'
-], function(
+], (
   Strings
-) {
+) => {
   class DeskPRO_Util_Util {
     static initClass() {
       this.UID_COUNTER = 0;
@@ -61,7 +61,7 @@ define([
      */
     keyValuePair(obj) {
       const pairs = [];
-      for (let k of Object.keys(obj || {})) {
+      for (const k of Object.keys(obj || {})) {
         const v = obj[k];
         pairs.push([k, v]);
       }
@@ -79,15 +79,14 @@ define([
     keys(obj) {
       if (this.nativeObjKeys) {
         return obj.keys();
-      } else {
-        const keys = [];
-        for (let k of Object.keys(obj || {})) {
-          const v = obj[k];
-          keys.push(k);
-        }
-
-        return keys;
       }
+      const keys = [];
+      for (const k of Object.keys(obj || {})) {
+        const v = obj[k];
+        keys.push(k);
+      }
+
+      return keys;
     }
 
 
@@ -99,7 +98,7 @@ define([
      */
     values(obj) {
       const values = [];
-      for (let k of Object.keys(obj || {})) {
+      for (const k of Object.keys(obj || {})) {
         const v = obj[k];
         values.push(v);
       }
@@ -117,9 +116,8 @@ define([
     isFunction(obj) {
       if (this.optIsfunc) {
         return typeof obj === 'function';
-      } else {
-        return Object.prototype.toString.call(obj) === '[object Function]';
       }
+      return Object.prototype.toString.call(obj) === '[object Function]';
     }
 
 
@@ -225,7 +223,7 @@ define([
         return false;
       }
 
-      for (let k of Object.keys(obj || {})) {
+      for (const k of Object.keys(obj || {})) {
         const v = obj[k];
         return false;
       }
@@ -242,7 +240,7 @@ define([
       */
     isBlankObject(obj) {
       let any = false;
-      for (let k of Object.keys(obj || {})) {
+      for (const k of Object.keys(obj || {})) {
         const v = obj[k];
         if (v) {
           if (this.isString(v)) {
@@ -272,7 +270,7 @@ define([
 
       if (this.isString(obj)) {
         obj = Strings.trim(obj);
-        if ((obj === "") || (obj === "0")) { return true; }
+        if ((obj === '') || (obj === '0')) { return true; }
       }
 
       if (this.isNumber(obj)) {
@@ -307,9 +305,8 @@ define([
     isArray(obj) {
       if (this.nativeIsArray) {
         return Array.isArray(obj);
-      } else {
-        return Object.prototype.toString.call(obj) === '[object Array]';
       }
+      return Object.prototype.toString.call(obj) === '[object Array]';
     }
 
 
@@ -321,8 +318,8 @@ define([
      * @return {Object}
      */
     extend(destObj, ...other_objects) {
-      for (let other_obj of Array.from(other_objects)) {
-        for (let k of Object.keys(other_obj || {})) {
+      for (const other_obj of Array.from(other_objects)) {
+        for (const k of Object.keys(other_obj || {})) {
           const v = other_obj[k];
           destObj[k] = v;
         }
@@ -353,7 +350,8 @@ define([
      * @return {Object}
      */
     clone(obj, deep) {
-      let result, value;
+      let result,
+        value;
       if (deep == null) { deep = false; }
       if (!this.isObject(obj)) { return obj; }
       if (this.isArray(obj)) {
@@ -366,7 +364,7 @@ define([
         }
       } else {
         result = {};
-        for (let key of Object.keys(obj || {})) {
+        for (const key of Object.keys(obj || {})) {
           value = obj[key];
           if (deep) {
             result[key] = this.clone(value, true);
@@ -403,7 +401,8 @@ define([
       }
 
       if (this.isObject(obj1)) {
-        let k, v;
+        let k,
+          v;
         if (this.isArray(obj1)) {
           if (!this.isArray(obj2)) {
             return false;
@@ -421,32 +420,31 @@ define([
           }
 
           return true;
-        } else {
-          for (k of Object.keys(obj1 || {})) {
-            v = obj1[k];
-            if ((k === '__proto__') || (k === 'prototype')) { continue; }
-            if (ignorePrivate) {
-              if ((k.substr(0, 1) === '_') || (k.substr(0, 2) === '$$')) { continue; }
-            }
-
-            if (!this.equals(obj1[k], obj2[k])) {
-              return false;
-            }
-          }
-          for (k of Object.keys(obj2 || {})) {
-            v = obj2[k];
-            if ((k === '__proto__') || (k === 'prototype')) { continue; }
-            if (ignorePrivate) {
-              if ((k.substr(0, 1) === '_') || (k.substr(0, 2) === '$$')) { continue; }
-            }
-
-            if (!this.equals(obj1[k], obj2[k])) {
-              return false;
-            }
-          }
-
-          return true;
         }
+        for (k of Object.keys(obj1 || {})) {
+          v = obj1[k];
+          if ((k === '__proto__') || (k === 'prototype')) { continue; }
+          if (ignorePrivate) {
+            if ((k.substr(0, 1) === '_') || (k.substr(0, 2) === '$$')) { continue; }
+          }
+
+          if (!this.equals(obj1[k], obj2[k])) {
+            return false;
+          }
+        }
+        for (k of Object.keys(obj2 || {})) {
+          v = obj2[k];
+          if ((k === '__proto__') || (k === 'prototype')) { continue; }
+          if (ignorePrivate) {
+            if ((k.substr(0, 1) === '_') || (k.substr(0, 2) === '$$')) { continue; }
+          }
+
+          if (!this.equals(obj1[k], obj2[k])) {
+            return false;
+          }
+        }
+
+        return true;
       }
 
       return false;
@@ -463,7 +461,7 @@ define([
       if (maxLvl == null) { maxLvl = 5; }
       if (_rlvl == null) { _rlvl = 0; }
       let out = '';
-      out += Strings.repeat("\t", _rlvl);
+      out += Strings.repeat('\t', _rlvl);
 
       if (obj === null) {
         out += 'null';
@@ -476,55 +474,54 @@ define([
       } else if (this.isString(obj)) {
         out += `string:${obj}`;
       } else if (this.isBoolean(obj)) {
-        out += `bool:${obj ? "true" : "false"}`;
-      } else if (typeof obj === "undefined") {
-        out += "undefined";
-      } else if (typeof obj === "function") {
-        out += "function";
+        out += `bool:${obj ? 'true' : 'false'}`;
+      } else if (typeof obj === 'undefined') {
+        out += 'undefined';
+      } else if (typeof obj === 'function') {
+        out += 'function';
       } else if (obj instanceof Date) {
         out += `Date(${obj})`;
       } else if (obj instanceof RegExp) {
         out += `RegExp(${obj})`;
+      } else if (_visited && (_visited.indexOf(obj) !== -1)) {
+        out += 'object(*RECURSION*)';
       } else {
-        if (_visited && (_visited.indexOf(obj) !== -1)) {
-          out += "object(*RECURSION*)";
+        if (!_visited) {
+          _visited = [];
+        }
+
+        _visited.push(obj);
+
+        if (_rlvl >= maxLvl) {
+          if (this.isArray(obj)) {
+            out += 'array:*MAX LEVEL REACHED*';
+          } else {
+            out += 'object:*MAX LEVEL REACHED*';
+          }
         } else {
-          if (!_visited) {
-            _visited = [];
+          let v,
+            vis;
+          if (_visited && _visited.length) {
+            vis = this.clone(_visited);
+          } else {
+            vis = [];
           }
 
-          _visited.push(obj);
-
-          if (_rlvl >= maxLvl) {
-            if (this.isArray(obj)) {
-              out += "array:*MAX LEVEL REACHED*";
-            } else {
-              out += "object:*MAX LEVEL REACHED*";
+          if (this.isArray(obj)) {
+            out += `array:${obj.length}`;
+            if (obj.length) {
+              out += '\n';
+              for (v of Array.from(obj)) {
+                out += this.dump(v, maxLvl, _rlvl + 1, vis);
+                out += ',\n';
+              }
             }
           } else {
-            let v, vis;
-            if (_visited && _visited.length) {
-              vis = this.clone(_visited);
-            } else {
-              vis = [];
-            }
-
-            if (this.isArray(obj)) {
-              out += `array:${obj.length}`;
-              if (obj.length) {
-                out += "\n";
-                for (v of Array.from(obj)) {
-                  out += this.dump(v, maxLvl, _rlvl+1, vis);
-                  out += ",\n";
-                }
-              }
-            } else {
-              out += "object:\n";
-              for (let k of Object.keys(obj || {})) {
-                v = obj[k];
-                const subs = this.dump(v, maxLvl, _rlvl+1, vis);
-                out += Strings.repeat("\t", _rlvl+1) + `${k}: ` + Strings.trim(subs) + ",\n";
-              }
+            out += 'object:\n';
+            for (const k of Object.keys(obj || {})) {
+              v = obj[k];
+              const subs = this.dump(v, maxLvl, _rlvl + 1, vis);
+              out += `${Strings.repeat('\t', _rlvl + 1)}${k}: ${Strings.trim(subs)},\n`;
             }
           }
         }

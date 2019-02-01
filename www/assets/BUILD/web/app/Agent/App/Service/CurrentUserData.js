@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class Agent_App_Service_CurrentUserData {
     static initClass() {
       this.$inject = ['$http', '$q'];
@@ -20,7 +20,7 @@ define(function() {
       if (this.userInfo) {
         d.resolve(this.userInfo);
       } else {
-        this.loadData().then( function() {
+        this.loadData().then(function () {
           return d.resolve(this.userInfo);
         }
         , (data, status) => d.reject(data, status));
@@ -37,7 +37,7 @@ define(function() {
       if (this.userPerms) {
         d.resolve(this.userPerms);
       } else {
-        this.loadData().then( function() {
+        this.loadData().then(function () {
           return d.resolve(this.userPerms);
         }
         , (data, status) => d.reject(data, status));
@@ -49,7 +49,7 @@ define(function() {
     loadData() {
       if (this.httpPromise) { return this.httpPromise; }
 
-      this.httpPromise = this.$http.get('DP_URL/agent/me/info.js').success( function(data) {
+      this.httpPromise = this.$http.get('DP_URL/agent/me/info.js').success(function (data) {
         this.userInfo  = data.agent;
         return this.userPerms = data.perms;
       });

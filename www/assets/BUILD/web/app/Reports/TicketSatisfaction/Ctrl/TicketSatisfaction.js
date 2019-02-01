@@ -1,10 +1,10 @@
 define([
   'Reports/Main/Ctrl/Base',
   'moment'
-], function(
+], (
   ReportsBaseCtrl,
   moment
-) {
+) => {
   class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl {
     static initClass() {
       this.CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction';
@@ -20,7 +20,7 @@ define([
       this.page_nums = [1];
       this.num_pages = 0;
       this.page = 1;
-      this.$scope.view_date = moment(this.date).format("YYYY-MM");
+      this.$scope.view_date = moment(this.date).format('YYYY-MM');
       return this.$scope.mode = 'feed';
     }
 
@@ -41,7 +41,7 @@ define([
     loadFeedResults() {
       this.startSpinner('loading_feed_results');
 
-      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/${this.page}`).then(res => {
+      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/${this.page}`).then((res) => {
         this.feed_html = this.$sce.trustAsHtml(res.data.html);
 
         this.page = res.data.page || 1;
@@ -49,7 +49,7 @@ define([
 
         this.page_nums = [];
 
-        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+        for (let i = 0, end = this.num_pages, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
           this.page_nums.push(i + 1);
         }
 
@@ -62,7 +62,7 @@ define([
     loadSummaryResults() {
       this.startSpinner('loading_summary_results');
 
-      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/summary/${this.$scope.view_date}`).then(res => {
+      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/summary/${this.$scope.view_date}`).then((res) => {
         this.summary_html = this.$sce.trustAsHtml(res.data.html);
         return this.stopSpinner('loading_summary_results', true);
       });

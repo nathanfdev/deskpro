@@ -3,12 +3,12 @@ define([
   'Admin/Main/Ctrl/Base',
   'Admin/TicketTriggers/TriggerEditFormMapper',
   'Admin/TicketTriggers/Ctrl/EditBase',
-], function(
+], (
   Arrays,
   Admin_Ctrl_Base,
   TriggerEditFormMapper,
   Admin_TicketTriggers_Ctrl_EditBase
-) {
+) => {
   class Admin_TicketTriggers_Ctrl_Edit extends Admin_TicketTriggers_Ctrl_EditBase {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketTriggers_Ctrl_Edit';

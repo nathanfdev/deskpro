@@ -1,8 +1,8 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
-], function(
+], (
   BaseListEdit
-)  {
+) => {
   class Admin_TicketWebhooks_DataService_Webhooks extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q', 'Api2'];
@@ -20,12 +20,10 @@ define([
       const deferred = this.$q.defer();
 
       this.Api2.sendGet('/webhooks/tickets?include=ticket_trigger&inline_sideloads=1').then(
-        response => {
+        (response) => {
           const webhooks = response.data.data;
           return deferred.resolve(webhooks);
-      }).catch(res => {
-        return deferred.reject();
-      });
+        }).catch(res => deferred.reject());
 
       return deferred.promise;
     }
@@ -33,7 +31,7 @@ define([
     deleteTriggerById(triggerId) {
       let webhook = null;
       let trigger = null;
-      for (let model of Array.from(this.listModels)) {
+      for (const model of Array.from(this.listModels)) {
         for (trigger of Array.from(model.triggers)) {
           if (trigger[this.idProp] === triggerId) {
             webhook = model;
@@ -52,8 +50,7 @@ define([
       this.Api2.sendDelete(`/webhooks/${webhook[this.idProp]}/triggers/${triggerId}`).success(
         () => {
           webhook.triggers = webhook.triggers.filter(
-            t => { return t[this.idProp] !== triggerId;
-           });
+            t => t[this.idProp] !== triggerId);
           return deferred.resolve(trigger);
         }
       ,
@@ -66,11 +63,11 @@ define([
       const deferred = this.$q.defer();
 
       const id = model[this.idProp] || 0;
-      this.Api2.sendDelete(this.url() + `/${id}`).success(
+      this.Api2.sendDelete(`${this.url()}/${id}`).success(
         () => deferred.resolve()
         ,
         (data, status, headers, config) => deferred.reject(
-          {info: data.error_message, status}
+          { info: data.error_message, status }
         )
 
        );
@@ -84,15 +81,13 @@ define([
       if ((model[this.idProp] != null) && model[this.idProp]) { method = 'sendPutJson'; }
 
       const id = model[this.idProp] || 0;
-      this.Api2[method](this.url() + `/${id}`, model).then(
-        response => {
+      this.Api2[method](`${this.url()}/${id}`, model).then(
+        (response) => {
           console.log('after save ', response);
           return deferred.resolve(response.data.data);
-      }).catch(res => {
+        }).catch(res =>
         // data, status, headers, config
-        return deferred.reject();
-      });
-
+         deferred.reject());
 
 
       return deferred.promise;
@@ -101,5 +96,4 @@ define([
   Admin_TicketWebhooks_DataService_Webhooks.initClass();
   return Admin_TicketWebhooks_DataService_Webhooks;
 });
-
 

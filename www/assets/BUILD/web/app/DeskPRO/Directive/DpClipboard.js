@@ -1,23 +1,23 @@
-define(['clipboard'], function(Clipboard) {
-  const DeskPRO_Directive_DpClipboard = [ () =>
+define(['clipboard'], (Clipboard) => {
+  const DeskPRO_Directive_DpClipboard = [() =>
     ({
       restrict: 'A',
-      scope: {
+      scope:    {
         ngclipboardSuccess: '&',
-        ngclipboardError: '&'
+        ngclipboardError:   '&'
       },
       link($scope, $el) {
         const clipboard = new Clipboard($el.get(0));
         clipboard.on('success', e =>
-          $scope.$apply(() => $scope.ngclipboardSuccess({e}))
+          $scope.$apply(() => $scope.ngclipboardSuccess({ e }))
         );
 
         return clipboard.on('error', e =>
-          $scope.$apply(() => scope.ngclipboardError({e}))
+          $scope.$apply(() => scope.ngclipboardError({ e }))
         );
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpClipboard;

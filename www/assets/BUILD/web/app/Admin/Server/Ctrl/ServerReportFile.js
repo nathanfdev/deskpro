@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_ServerReportFile_Ctrl_ServerReportFile extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_ServerReportFile_Ctrl_ServerReportFile';
@@ -22,7 +22,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const data_promise = this.Api.sendGet('/server_file_check').then( res => {
+      const data_promise = this.Api.sendGet('/server_file_check').then((res) => {
         this.server_file_check = res.data.server_file_check;
         this.total_checks = this.server_file_check.count;
 
@@ -55,7 +55,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.current_check++;
 
       if ((this.current_check <= this.total_checks) && this.$scope.with_file_check && (this.file_check_results.length < 153600)) {
-        return this.Api.sendGet(`/server_file_check/${this.current_check-1}`).then(res => {
+        return this.Api.sendGet(`/server_file_check/${this.current_check - 1}`).then((res) => {
           let file;
           const data = res.data.server_file_check;
 
@@ -85,25 +85,22 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           return this.doNextRequest();
         });
-      } else {
-        if (this.file_check_results >= 153600) {
-          this.file_check_results = this.file_check_results.substring(0, 153600) + "\n\n(Too many changes detected, results truncated)";
-        }
-
-        this.check_in_progress = false;
-        this.current_percentage = 100;
-        this.server_file_check_done = true;
-        return this.redirectToReportFile();
       }
+      if (this.file_check_results >= 153600) {
+        this.file_check_results = `${this.file_check_results.substring(0, 153600)}\n\n(Too many changes detected, results truncated)`;
+      }
+
+      this.check_in_progress = false;
+      this.current_percentage = 100;
+      this.server_file_check_done = true;
+      return this.redirectToReportFile();
     }
 
     /*
      * After we've donw with file integrity checking we coudl redirect user to actual report file
      */
     redirectToReportFile() {
-      return this.Api.sendPost('/server_report_file/file_check_results', {file_check_results: this.file_check_results}).then( res => {
-        return this.$scope.download_link = window.DP_BASE_API_URL + '/server_report_file?API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN;
-      });
+      return this.Api.sendPost('/server_report_file/file_check_results', { file_check_results: this.file_check_results }).then(res => this.$scope.download_link = `${window.DP_BASE_API_URL}/server_report_file?API-TOKEN=${window.DP_API_TOKEN}&SESSION-ID=${window.DP_SESSION_ID}&REQUEST-TOKEN=${window.DP_REQUEST_TOKEN}`);
     }
   }
   Admin_ServerReportFile_Ctrl_ServerReportFile.initClass();

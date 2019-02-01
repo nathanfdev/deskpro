@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Plugins_Ctrl_Install extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Plugins_Ctrl_Install';
@@ -10,9 +10,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const promise = this.Api.sendGet(`/plugins/package/${this.$stateParams.name}/installer`).then( result => {
-        return this.package = result.data.plugin_def;
-      });
+      const promise = this.Api.sendGet(`/plugins/package/${this.$stateParams.name}/installer`).then(result => this.package = result.data.plugin_def);
       return promise;
     }
   }

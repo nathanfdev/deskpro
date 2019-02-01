@@ -1,5 +1,5 @@
 define(['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
-, function(Admin_Usersources_Ctrl_EditInstance, Util) {
+, (Admin_Usersources_Ctrl_EditInstance, Util) => {
   class Admin_Usersources_Ctrl_EditDeskproInstance extends Admin_Usersources_Ctrl_EditInstance {
     static initClass() {
       this.CTRL_ID   = 'Admin_Usersources_Ctrl_EditDeskproInstance';
@@ -11,9 +11,7 @@ define(['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
     initialLoad() {
       this.is_local = true;
       const p = super.initialLoad();
-      return this.$q.all([p, this.loadPasswordSettings(), this.loadRegSettings()]).then( () => {
-        return this.usersource.is_disabled = !this.usersource.is_enabled;
-      });
+      return this.$q.all([p, this.loadPasswordSettings(), this.loadRegSettings()]).then(() => this.usersource.is_disabled = !this.usersource.is_enabled);
     }
 
     doSaveUsersource() {
@@ -26,13 +24,13 @@ define(['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
     }
 
     loadPasswordSettings() {
-      return this.Api.sendGet('/password_settings', {rate_limit_context: 'user'}).then( res => {
+      return this.Api.sendGet('/password_settings', { rate_limit_context: 'user' }).then((res) => {
         this.$scope.policy_settings = {
           sessions_lifetime:              res.data.settings.sessions_lifetime,
           session_keepalive_require_page: res.data.settings.session_keepalive_require_page,
           ip_security_enabled:            res.data.settings.ip_security_enabled,
           ip_security_mode:               res.data.settings.ip_security_mode || 'admins',
-          ip_security_whitelist_lifetime: res.data.settings.ip_security_whitelist_lifetime + "",
+          ip_security_whitelist_lifetime: `${res.data.settings.ip_security_whitelist_lifetime}`,
           disable_notifications:          res.data.settings.disable_notifications,
           enable_agent_rememberme:        res.data.settings.enable_agent_rememberme,
           enable_user_rememberme:         res.data.settings.enable_user_rememberme,
@@ -63,7 +61,7 @@ define(['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
     }
 
     loadRegSettings() {
-      return this.Api.sendGet('/registration_settings', {rate_limit_context: 'user'}).then( res => {
+      return this.Api.sendGet('/registration_settings', { rate_limit_context: 'user' }).then((res) => {
         this.$scope.settings = res.data.registration_settings;
         this.settings = angular.copy(this.$scope.settings);
         return this.$scope.rate_limit_settings = res.data.rate_limit_settings;
@@ -71,7 +69,6 @@ define(['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
     }
 
     savePolicySettings() {
-
       const settings = this.$scope.policy_settings;
       settings.agent = Util.clone(this.$scope.policy_agent, true);
       settings.user  = Util.clone(this.$scope.policy_user, true);
@@ -101,7 +98,7 @@ define(['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
       const post = {
         settings,
         rate_limit_settings: this.$scope.rate_limit_settings,
-        rate_limit_context: 'agent'
+        rate_limit_context:  'agent'
       };
 
       return this.Api.sendPostJson('/password_settings', post);
@@ -110,8 +107,8 @@ define(['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
     saveRegSettings() {
       const postData = {
         registration_settings: this.$scope.settings,
-        rate_limit_settings: this.$scope.rate_limit_settings,
-        rate_limit_context: 'user'
+        rate_limit_settings:   this.$scope.rate_limit_settings,
+        rate_limit_context:    'user'
       };
 
       return this.Api.sendPostJson('/registration_settings', postData);
@@ -125,34 +122,29 @@ define(['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
         $event.preventDefault();
       }
 
-      const doDelete = () => {
-        return this.Api2.sendDelete(`user_sources/${this.usersourceType}/${this.getApp2Id()}`).success( () => {
-
+      const doDelete = () => this.Api2.sendDelete(`user_sources/${this.usersourceType}/${this.getApp2Id()}`).success(() => {
           // If we are viewing with the parent list, we need to remove this
           // app from the list
-          this.listCtrl().refresh();
+        this.listCtrl().refresh();
 
           // close this view
-          return this.$state.go('^');
-        });
-      };
+        return this.$state.go('^');
+      });
 
       return this.$modal.open({
         templateUrl: this.getTemplatePath('Usersources/deskpro-delete-modal.html'),
-        controller: ['app', '$scope', '$modalInstance', function(app, $scope, $modalInstance) {
+        controller:  ['app', '$scope', '$modalInstance', function (app, $scope, $modalInstance) {
           $scope.app = app;
           $scope.dismiss = () => $modalInstance.close();
 
-          return $scope.confirm = function() {
+          return $scope.confirm = function () {
             $scope.is_loading = true;
             return doDelete().then(() => $modalInstance.close());
           };
         }
         ],
         resolve: {
-          app: () => {
-            return this.app;
-          }
+          app: () => this.app
         }
       });
     }

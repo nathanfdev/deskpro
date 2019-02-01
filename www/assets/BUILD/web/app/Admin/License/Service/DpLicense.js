@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class Admin_License_Service_DpLicense {
     constructor(Api, $modal, $http, $q) {
       this.Api = Api;
@@ -12,7 +12,7 @@ define(function() {
       if (this.licGetting && !reload) { return this.licGetting.promise; }
       this.licGetting = this.$q.defer();
 
-      this.Api.sendGet('/dp_license').success( data => {
+      this.Api.sendGet('/dp_license').success((data) => {
         this.info = data;
         this.licInfo = data.license;
         this.licInfo.licenseCode = this.licInfo.licenseCode.replace(/\s/g, '');
@@ -28,7 +28,7 @@ define(function() {
     }
 
     getLicServerParams() {
-      return { 'license_id': this.licInfo.licenseId, 'license_code': this.licInfo.licenseCode, 'callback': 'JSON_CALLBACK', 'email': window.DP_PERSON_EMAIL };
+      return { license_id: this.licInfo.licenseId, license_code: this.licInfo.licenseCode, callback: 'JSON_CALLBACK', email: window.DP_PERSON_EMAIL };
     }
 
     getPlanUpgradeInfo(num_agents) {
@@ -38,10 +38,10 @@ define(function() {
         const params = this.getLicServerParams();
         params.num_agents = num_agents || 0;
 
-        return this.$http.jsonp(DP_SECURE_LIC_SERVER + '/api/license/plan-info', {
+        return this.$http.jsonp(`${DP_SECURE_LIC_SERVER}/api/license/plan-info`, {
           params,
           timeout: 25000,
-          cache: false
+          cache:   false
         }).then(x => d.resolve(x.data, x)
         , x => d.reject(x.data, x));
       }
@@ -57,10 +57,10 @@ define(function() {
         const params = this.getLicServerParams();
         params.num_years = num_years || 0;
 
-        return this.$http.jsonp(DP_SECURE_LIC_SERVER + '/api/license/renew-info', {
+        return this.$http.jsonp(`${DP_SECURE_LIC_SERVER}/api/license/renew-info`, {
           params,
           timeout: 25000,
-          cache: false
+          cache:   false
         }).then(x => d.resolve(x.data, x)
         , x => d.reject(x.data, x));
       }
@@ -71,20 +71,17 @@ define(function() {
 
     getNewLicenseKey() {
       const d = this.$q.defer();
-      this.getLicInfo().then(() => {
-        return this.$http.jsonp(DP_SECURE_LIC_SERVER + '/api/license/renew-key', {
-          params: this.getLicServerParams(),
-          timeout: 25000,
-          cache: false
-        }).then(function(x) {
-          if ((x.data != null ? x.data.error_code : undefined)) {
-            return d.reject(x.data, x);
-          } else {
-            return d.resolve(x.data, x);
-          }
+      this.getLicInfo().then(() => this.$http.jsonp(`${DP_SECURE_LIC_SERVER}/api/license/renew-key`, {
+        params:  this.getLicServerParams(),
+        timeout: 25000,
+        cache:   false
+      }).then((x) => {
+        if ((x.data != null ? x.data.error_code : undefined)) {
+          return d.reject(x.data, x);
         }
-        , x => d.reject(x.data, x));
+        return d.resolve(x.data, x);
       }
+        , x => d.reject(x.data, x))
       , x => d.reject(x));
 
       return d.promise;
@@ -97,12 +94,10 @@ define(function() {
 
       const d = this.$q.defer();
 
-      this.Api.sendPost("dp_license", postData).success(() => {
+      this.Api.sendPost('dp_license', postData).success(() => {
         this.getLicInfo(true);
-        return d.resolve({success: true, lic_code});
-      }).error( data => {
-        return d.reject({success: false, lic_code, error_code: (data != null ? data.error_code : undefined)});
-      });
+        return d.resolve({ success: true, lic_code });
+      }).error(data => d.reject({ success: false, lic_code, error_code: (data != null ? data.error_code : undefined) }));
 
       return d.promise;
     }
@@ -110,13 +105,12 @@ define(function() {
     sendPayInvoiceRequest(mode, card_info, address_info, invoice_id, invoice_auth) {
       const d = this.$q.defer();
       this.getLicInfo().then(() => {
-
         const params = {
-          'callback': 'JSON_CALLBACK',
-          'email': window.DP_PERSON_EMAIL,
-          'mode': mode,
-          'invoice_id': invoice_id,
-          'invoice_auth': invoice_auth
+          callback: 'JSON_CALLBACK',
+          email:    window.DP_PERSON_EMAIL,
+          mode,
+          invoice_id,
+          invoice_auth
         };
 
         if (mode === 'new') {
@@ -134,10 +128,10 @@ define(function() {
           params.addy_post_code = address_info.post_code;
         }
 
-        return this.$http.jsonp(DP_SECURE_LIC_SERVER + '/api/license/pay-invoice', {
+        return this.$http.jsonp(`${DP_SECURE_LIC_SERVER}/api/license/pay-invoice`, {
           params,
           timeout: 25000,
-          cache: false
+          cache:   false
         }).then(x => d.resolve(x.data, x)
         , x => d.reject(x.data, x));
       }
@@ -150,8 +144,8 @@ define(function() {
       if (options == null) { options = {}; }
       const modalInstance = this.$modal.open({
         templateUrl: '/admin/load-view/License/upgrade-license-modal.html',
-        controller: 'Admin_License_Ctrl_UpgradeLicenseModal',
-        resolve: {
+        controller:  'Admin_License_Ctrl_UpgradeLicenseModal',
+        resolve:     {
           upgradeType() {
             return upgradeType;
           },
@@ -167,8 +161,8 @@ define(function() {
       if (options == null) { options = {}; }
       const modalInstance = this.$modal.open({
         templateUrl: '/admin/load-view/License/upgrade-license-modal.html',
-        controller: 'Admin_License_Ctrl_UpgradeLicenseModal',
-        resolve: {
+        controller:  'Admin_License_Ctrl_UpgradeLicenseModal',
+        resolve:     {
           upgradeType() {
             return 'extend';
           },

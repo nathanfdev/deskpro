@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -11,21 +11,21 @@ define(function() {
     */
   const Admin_Main_Directive_DpSemanticLanguageButton = [() =>
     ({
-      restrict: 'E',
-      templateUrl: DP_BASE_ADMIN_URL + '/load-view/Main/language-button.html',
-      scope: {
+      restrict:    'E',
+      templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Main/language-button.html`,
+      scope:       {
         translations: '=',
-        key: '@',
-        languages: '='
+        key:          '@',
+        languages:    '='
       },
       link(scope, element, attrs) {
         if (!scope.languages) { scope.languages = []; }
-        const calcDone = function() {
+        const calcDone = function () {
           if (!scope.translations) {
             return 0;
           }
           let nb = 0;
-          for (let l of Array.from(scope.translations)) {
+          for (const l of Array.from(scope.translations)) {
             if (l[scope.key] && (l[scope.key] !== '')) {
               nb++;
             }
@@ -33,14 +33,14 @@ define(function() {
           return nb;
         };
 
-        scope.getProgress = function() {
+        scope.getProgress = function () {
           if (!scope.languages) {
             return '';
           }
-          return calcDone() + '/' + scope.languages.length;
+          return `${calcDone()}/${scope.languages.length}`;
         };
 
-        return scope.getPercent = function() {
+        return scope.getPercent = function () {
           if (!scope.languages) {
             return 0;
           }
@@ -48,7 +48,7 @@ define(function() {
         };
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpSemanticLanguageButton;

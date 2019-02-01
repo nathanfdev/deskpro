@@ -1,8 +1,8 @@
 define([
   'Admin/OptionBuilder/TypesDef/BaseCriteriaTypesDef',
-], function(
+], (
   BaseCriteriaTypesDef
-) {
+) => {
   class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseCriteriaTypesDef {
     init() {
       return this.options_data = null;
@@ -157,7 +157,7 @@ define([
       });
 
       set_options.push({
-        title: 'Ticket Criteria',
+        title:      'Ticket Criteria',
         subOptions: options
       });
 
@@ -177,7 +177,7 @@ define([
 
         if (options.length) {
           set_options.push({
-            title: 'Ticket Fields',
+            title:      'Ticket Fields',
             subOptions: options
           });
         }
@@ -199,7 +199,7 @@ define([
 
         if (options.length) {
           set_options.push({
-            title: 'Person Fields',
+            title:      'Person Fields',
             subOptions: options
           });
         }
@@ -221,7 +221,7 @@ define([
 
         if (options.length) {
           set_options.push({
-            title: 'Organization Fields',
+            title:      'Organization Fields',
             subOptions: options
           });
         }
@@ -294,7 +294,7 @@ define([
       });
 
       set_options.push({
-        title: 'User Criteria',
+        title:      'User Criteria',
         subOptions: options
       });
 
@@ -350,7 +350,7 @@ define([
       });
 
       set_options.push({
-        title: 'Organization Criteria',
+        title:      'Organization Criteria',
         subOptions: options
       });
 
@@ -366,45 +366,45 @@ define([
       if (!this.loadDataPromise) {
         this.loadDataPromise = this.Api.sendDataGet({
           agents:          '/agents',
-          agent_teams:      '/agent_teams',
-          ticket_brands:      '/ticket_brands',
-          ticket_deps:      '/ticket_deps',
-          ticket_cats:      '/ticket_cats',
-          ticket_prods:     '/ticket_prods',
-          ticket_pris:      '/ticket_pris',
-          ticket_works:     '/ticket_works',
-          ticket_fields:    '/ticket_fields',
-          ticket_slas:      '/ticket_slas',
-          ticket_labels:    '/labels/definitions/tickets',
-          user_fields:      '/user_fields',
-          user_labels:      '/labels/definitions/people',
-          org_fields:       '/org_fields',
-          org_labels:       '/labels/definitions/organizations',
-          ticket_accounts:  '/email_accounts',
-          usergroups:       '/user_groups',
-          organizations:    '/organizations?per_page=250'
-        }).then( result => {
+          agent_teams:     '/agent_teams',
+          ticket_brands:   '/ticket_brands',
+          ticket_deps:     '/ticket_deps',
+          ticket_cats:     '/ticket_cats',
+          ticket_prods:    '/ticket_prods',
+          ticket_pris:     '/ticket_pris',
+          ticket_works:    '/ticket_works',
+          ticket_fields:   '/ticket_fields',
+          ticket_slas:     '/ticket_slas',
+          ticket_labels:   '/labels/definitions/tickets',
+          user_fields:     '/user_fields',
+          user_labels:     '/labels/definitions/people',
+          org_fields:      '/org_fields',
+          org_labels:      '/labels/definitions/organizations',
+          ticket_accounts: '/email_accounts',
+          usergroups:      '/user_groups',
+          organizations:   '/organizations?per_page=250'
+        }).then((result) => {
           let f;
           const { data } = result;
           const options_data = {};
-          options_data['agents']            = data.agents.agents;
-          options_data['agent_teams']       = data.agent_teams.agent_teams;
-          options_data['ticket_brands']     = data.ticket_brands.brands;
-          options_data['ticket_deps']       = data.ticket_deps.departments;
-          options_data['ticket_cats']       = data.ticket_cats.categories;
-          options_data['ticket_pris']       = data.ticket_pris.priorities;
-          options_data['ticket_works']      = data.ticket_works.workflows;
-          options_data['ticket_fields']     = data.ticket_fields != null ? data.ticket_fields.custom_fields : undefined;
-          options_data['ticket_slas']       = data.ticket_slas;
-          options_data['ticket_labels']     = data.ticket_labels;
-          options_data['org_fields']        = data.org_fields != null ? data.org_fields.custom_fields : undefined;
-          options_data['org_labels']        = data.org_labels;
-          options_data['user_fields']       = data.user_fields != null ? data.user_fields.custom_fields : undefined;
-          options_data['user_labels']       = data.user_labels;
-          options_data['ticket_prods']      = data.ticket_prods != null ? data.ticket_prods.products : undefined;
-          options_data['ticket_accounts']   = data.ticket_accounts.email_accounts;
-          options_data['usergroups']        = data.usergroups.groups;
-          options_data['organizations']     = data.organizations.organizations;
+          options_data.agents            = data.agents.agents;
+          options_data.agent_teams       = data.agent_teams.agent_teams;
+          options_data.ticket_brands     = data.ticket_brands.brands;
+          options_data.ticket_deps       = data.ticket_deps.departments;
+          options_data.ticket_cats       = data.ticket_cats.categories;
+          options_data.ticket_pris       = data.ticket_pris.priorities;
+          options_data.ticket_works      = data.ticket_works.workflows;
+          options_data.ticket_fields     = data.ticket_fields != null ? data.ticket_fields.custom_fields : undefined;
+          options_data.ticket_slas       = data.ticket_slas;
+          options_data.ticket_labels     = data.ticket_labels;
+          options_data.org_fields        = data.org_fields != null ? data.org_fields.custom_fields : undefined;
+          options_data.org_labels        = data.org_labels;
+          options_data.user_fields       = data.user_fields != null ? data.user_fields.custom_fields : undefined;
+          options_data.user_labels       = data.user_labels;
+          options_data.ticket_prods      = data.ticket_prods != null ? data.ticket_prods.products : undefined;
+          options_data.ticket_accounts   = data.ticket_accounts.email_accounts;
+          options_data.usergroups        = data.usergroups.groups;
+          options_data.organizations     = data.organizations.organizations;
 
           this.options_data = options_data;
 
@@ -438,7 +438,7 @@ define([
       options.propName = 'workflow_ids';
       options.dataName = 'ticket_works';
       options.extraOptions = [
-        {title: 'None', value: 0}
+        { title: 'None', value: 0 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -450,7 +450,7 @@ define([
       options.type_title = 'Labels';
       options.tags = true;
       options.options = [];
-      this.options_data.ticket_labels.map(def => options.options.push({title: def.label, value: def.label}));
+      this.options_data.ticket_labels.map(def => options.options.push({ title: def.label, value: def.label }));
       options.operators = ['contains', 'notcontains'];
       const def = this.getStandardSelect(options);
       return def;
@@ -469,7 +469,7 @@ define([
       options.propName = 'priority_ids';
       options.dataName = 'ticket_pris';
       options.extraOptions = [
-        {title: 'None', value: 0}
+        { title: 'None', value: 0 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -517,7 +517,7 @@ define([
             getViewValue(value, data) {
               if (value == null) { value = {}; }
               return {
-                op: 'is',
+                op:    'is',
                 value: (value.options != null ? value.options.is_hold : undefined) ? '1' : '0'
               };
             },
@@ -527,7 +527,7 @@ define([
               value.type = 'FilterHoldStatus';
               value.op = model.op;
               value.options = {
-                is_hold: parseInt(model.value) === 1 ? true : false
+                is_hold: parseInt(model.value) === 1
               };
               return value;
             }
@@ -540,7 +540,7 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'sla_id';
       options.dataName = 'ticket_slas';
-      options.optionsFormatter = res => (res.slas || []).map(item => ({title: item.title, value: item.id}));
+      options.optionsFormatter = res => (res.slas || []).map(item => ({ title: item.title, value: item.id }));
       return this.getStandardSelect(options);
     }
 
@@ -554,15 +554,16 @@ define([
 
         getData() {
           const defer = me.$q.defer();
-          me.loadDataOptions().then(function() {
+          me.loadDataOptions().then(() => {
             options = [];
-            for (let sla of Array.from((me.options_data.ticket_slas != null ? me.options_data.ticket_slas.slas : undefined))) {
+            for (const sla of Array.from((me.options_data.ticket_slas != null ? me.options_data.ticket_slas.slas : undefined))) {
               options.push({
                 title: sla.title,
                 value: sla.id
               });
             }
-            return defer.resolve({options});});
+            return defer.resolve({ options });
+          });
           return defer.promise;
         },
 
@@ -572,16 +573,16 @@ define([
               if (value == null) { value = {}; }
               options = value.options || {};
               return {
-                op:           value.op || 'is',
-                sla_status:   options.sla_status || 'fail',
-                sla_id:       options.sla_id || 0
+                op:         value.op || 'is',
+                sla_status: options.sla_status || 'fail',
+                sla_id:     options.sla_id || 0
               };
             },
             getValue(model, data) {
               if (model == null) { model = {}; }
               return {
-                type:         'FilterSlaStatus',
-                op:           model.op,
+                type:    'FilterSlaStatus',
+                op:      model.op,
                 options: {
                   sla_status: model.sla_status || 'fail',
                   sla_id:     model.sla_id || 0
@@ -684,8 +685,8 @@ define([
       options.propName = 'agent_ids';
       options.dataName = 'agents';
       options.extraOptions = [
-        {title: 'Unassigned', value: 0},
-        {title: 'Current Agent', value: -1}
+        { title: 'Unassigned', value: 0 },
+        { title: 'Current Agent', value: -1 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -696,7 +697,7 @@ define([
       options.propName = 'agent_ids';
       options.dataName = 'agents';
       options.extraOptions = [
-        {title: 'Current Agent', value: -1}
+        { title: 'Current Agent', value: -1 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -707,8 +708,8 @@ define([
       options.propName = 'team_ids';
       options.dataName = 'agent_teams';
       options.extraOptions = [
-        {title: 'No Team', value: 0},
-        {title: 'Current Agent\'s Team', value: -1}
+        { title: 'No Team', value: 0 },
+        { title: 'Current Agent\'s Team', value: -1 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -719,7 +720,7 @@ define([
       options.propName = 'product_ids';
       options.dataName = 'ticket_prods';
       options.extraOptions = [
-        {title: 'None', value: 0}
+        { title: 'None', value: 0 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -729,10 +730,10 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'email_account_ids';
       options.dataName = 'ticket_accounts';
-      options.optionsFormatter = function(options) {
+      options.optionsFormatter = function (options) {
         const opts = [];
 
-        for (let acc of Array.from(options)) {
+        for (const acc of Array.from(options)) {
           opts.push({
             value: acc.id,
             title: acc.use_email_address || acc.address
@@ -837,7 +838,7 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'labels';
       options.options = [];
-      this.options_data.user_labels.map(def => options.options.push({title: def.label, value: def.label}));
+      this.options_data.user_labels.map(def => options.options.push({ title: def.label, value: def.label }));
       options.operators = ['contains', 'notcontains'];
       const def = this.getStandardSelect(options);
       return def;
@@ -909,21 +910,21 @@ define([
       options.operators = ['is', 'not'];
       options.url = '/organizations';
       options.isMulti = true;
-      options.map = data => ({id: data.organization.id, name: data.organization.name});
-      const format = item => item['name'];
+      options.map = data => ({ id: data.organization.id, name: data.organization.name });
+      const format = item => item.name;
       options.inputOptions = {
-        formatResult: format,
+        formatResult:    format,
         formatSelection: format,
-        ajax: {
+        ajax:            {
           data(term, page) { return { name: term, limit: 10 }; },
           results(data, page) {
             const results = [];
             const obj = data.data != null ? data.data.organizations : undefined;
-            for (let k of Object.keys(obj || {})) {
+            for (const k of Object.keys(obj || {})) {
               const v = obj[k];
-              results.push({id: v.id, name: v.name});
+              results.push({ id: v.id, name: v.name });
             }
-            return {results};
+            return { results };
           }
         }
       };
@@ -942,7 +943,7 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'labels';
       options.options = [];
-      this.options_data.org_labels.map(def => options.options.push({title: def.label, value: def.label}));
+      this.options_data.org_labels.map(def => options.options.push({ title: def.label, value: def.label }));
       options.operators = ['contains', 'notcontains'];
       const def = this.getStandardSelect(options);
       return def;
@@ -999,32 +1000,32 @@ define([
       if (options == null) { options = {}; }
       const me = this;
       return {
-      getTemplate() {
-        return me.dpTemplateManager.get('OptionBuilder/type-criteria-dayofweek.html');
-      },
+        getTemplate() {
+          return me.dpTemplateManager.get('OptionBuilder/type-criteria-dayofweek.html');
+        },
 
-      getData() {
-        return {
-
-        };
-      },
-
-      getDataFormatter() {
-        return {
-        getViewValue(value, data) {
-          if (value == null) { value = {}; }
+        getData() {
           return {
-            op: value.op || 'is'
+
           };
         },
 
-        getValue(model, data) {
-          if (model == null) { model = {}; }
-          const value = {};
-          return value;
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              return {
+                op: value.op || 'is'
+              };
+            },
+
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              return value;
+            }
+          };
         }
-        };
-      }
       };
     }
 
@@ -1032,32 +1033,32 @@ define([
       if (options == null) { options = {}; }
       const me = this;
       return {
-      getTemplate() {
-        return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html');
-      },
+        getTemplate() {
+          return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html');
+        },
 
-      getData() {
-        return {
-
-        };
-      },
-
-      getDataFormatter() {
-        return {
-        getViewValue(value, data) {
-          if (value == null) { value = {}; }
+        getData() {
           return {
-          op: value.op || 'is'
+
           };
         },
 
-        getValue(model, data) {
-          if (model == null) { model = {}; }
-          const value = {};
-          return value;
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              return {
+                op: value.op || 'is'
+              };
+            },
+
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              return value;
+            }
+          };
         }
-        };
-      }
       };
     }
 
@@ -1084,11 +1085,11 @@ define([
               };
             },
 
-          getValue(model, data) {
-            if (model == null) { model = {}; }
-            const value = {};
-            return value;
-          }
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const value = {};
+              return value;
+            }
           };
         }
       };

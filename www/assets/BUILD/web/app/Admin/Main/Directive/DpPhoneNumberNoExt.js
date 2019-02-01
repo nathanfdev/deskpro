@@ -1,4 +1,4 @@
-define(["jquery", "intl-tel-input"], function($, intlTelInput) {
+define(['jquery', 'intl-tel-input'], ($, intlTelInput) => {
   /*
     * Description
     * -----------
@@ -29,34 +29,34 @@ define(["jquery", "intl-tel-input"], function($, intlTelInput) {
   */
   const Admin_Main_Directive_DpPhoneNumberNoExt = ['$rootScope', '$timeout', ($rootScope, $timeout) =>
     ({
-    require: 'ngModel',
-    restrict: 'A',
-    scope: {
-      region: '@dpPhoneNumberNoExt'
-    },
-    link(scope, element, attr, ngModel) {
+      require:  'ngModel',
+      restrict: 'A',
+      scope:    {
+        region: '@dpPhoneNumberNoExt'
+      },
+      link(scope, element, attr, ngModel) {
       // when we get the dpPhoneNumber attribute value, setup intlTelInput
-      return attr.$observe('dpPhoneNumberNoExt', function(reg) {
-        element.intlTelInput({
-          defaultCountry: reg.toLowerCase(),
-          autoPlaceholder: true,
-          utilsScript: window.DP_ASSET_URL.replace(/web\//, 'pub/') + 'build/phonenumber_utils.js',
-          nationalMode: true
-        });
+        return attr.$observe('dpPhoneNumberNoExt', (reg) => {
+          element.intlTelInput({
+            defaultCountry:  reg.toLowerCase(),
+            autoPlaceholder: true,
+            utilsScript:     `${window.DP_ASSET_URL.replace(/web\//, 'pub/')}build/phonenumber_utils.js`,
+            nationalMode:    true
+          });
 
-        $timeout(() => element.intlTelInput("setNumber", element.val())
+          $timeout(() => element.intlTelInput('setNumber', element.val())
         , 1);
 
-        element.intlTelInput('utilsLoaded');
-        return element.bind('blur keyup change input', () =>
+          element.intlTelInput('utilsLoaded');
+          return element.bind('blur keyup change input', () =>
           scope.$apply(() => ngModel.$setViewValue(element.intlTelInput('getNumber')))
         );
-      });
-    }
+        });
+      }
 
 
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpPhoneNumberNoExt;

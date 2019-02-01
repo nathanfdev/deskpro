@@ -3,12 +3,12 @@ define([
   'Admin/Main/Ctrl/Base',
   'Admin/TicketTriggers/TriggerEditFormMapper',
   'Admin/TicketTriggers/Ctrl/EditBase',
-], function(
+], (
   Arrays,
   Admin_Ctrl_Base,
   TriggerEditFormMapper,
   Admin_TicketTriggers_Ctrl_EditBase
-) {
+) => {
   class Admin_TicketTriggers_Ctrl_EditEmailAccountTrigger extends Admin_TicketTriggers_Ctrl_EditBase {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketTriggers_Ctrl_EditEmailAccountTrigger';
@@ -35,8 +35,7 @@ define([
         trigger:       `/ticket_triggers/email_accounts/${this.accountId}`
       };
 
-      const promise = this.Api.sendDataGet(get).then( result => {
-
+      const promise = this.Api.sendDataGet(get).then((result) => {
         this.customActions = result.data.customActions.action_defs;
 
         if (__guard__(result.data != null ? result.data.trigger : undefined, x => x.trigger) != null) {
@@ -59,9 +58,7 @@ define([
       return this.$q.all(promises).then(() => {
         this.updateCriteriaOptionTypes();
 
-        return this.$scope.$watch('form.typeForm', () => {
-          return this.updateCriteriaOptionTypes();
-        }
+        return this.$scope.$watch('form.typeForm', () => this.updateCriteriaOptionTypes()
         , true);
       });
     }

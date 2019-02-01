@@ -1,8 +1,8 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
-], function(
+], (
   BaseListEdit
-)  {
+) => {
   class Admin_TicketFilters_DataService_TicketSlas extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -11,7 +11,7 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/ticket_slas').success( data => {
+      this.Api.sendGet('/ticket_slas').success((data) => {
         const models = data.slas;
         return deferred.resolve(models);
       }
@@ -28,9 +28,7 @@ define([
       * @return {promise}
     */
     deleteSlaById(id) {
-      const promise = this.Api.sendDelete(`/ticket_slas/${id}`).then(() => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/ticket_slas/${id}`).then(() => this.removeListModelById(id));
       return promise;
     }
 
@@ -42,10 +40,9 @@ define([
       * @return {promise}
     */
     loadEditSlaData(id) {
-
       const deferred = this.$q.defer();
 
-      this.Api.sendGet(`/ticket_slas/${id}`).then( result =>
+      this.Api.sendGet(`/ticket_slas/${id}`).then(result =>
         deferred.resolve({
           sla: result.data.sla
         })

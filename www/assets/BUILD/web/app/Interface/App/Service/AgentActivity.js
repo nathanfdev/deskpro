@@ -1,8 +1,8 @@
 define([
   'moment'
-], function(
+], (
   moment
-) {
+) => {
   class AgentActivity {
     constructor(Api, $sce) {
       this.Api = Api;
@@ -12,7 +12,7 @@ define([
       this.all_agents = [];
       this.agent_teams = [];
       this.filter = {};
-      this.filter.date = moment(this.date).format("YYYY-MM-DD");
+      this.filter.date = moment(this.date).format('YYYY-MM-DD');
       this.filter.agent_or_team = 'all';
     }
 
@@ -21,7 +21,7 @@ define([
      * This method updates current parameters that are used for sending request to API
      */
     updateFilter() {
-      this.filter.date = moment(this.date).format("YYYY-MM-DD");
+      this.filter.date = moment(this.date).format('YYYY-MM-DD');
       return this.loadResults();
     }
 
@@ -32,7 +32,7 @@ define([
     loadResults() {
 //      @startSpinner('loading_results')
 
-      const promise = this.Api.sendGet(`/reports/agent-activity/${this.filter.agent_or_team}/${this.filter.date}`).then(res => {
+      const promise = this.Api.sendGet(`/reports/agent-activity/${this.filter.agent_or_team}/${this.filter.date}`).then((res) => {
         this.html = this.$sce.trustAsHtml(res.data.html);
         this.all_agents = res.data.all_agents;
         return this.agent_teams = res.data.agent_teams;

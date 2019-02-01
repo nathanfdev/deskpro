@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Cloud_License_Ctrl_License extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Cloud_License_Ctrl_License';
@@ -11,7 +11,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      this.Api.sendGet('/dp_license/cloud/billing-login-token').then( result => {
+      this.Api.sendGet('/dp_license/cloud/billing-login-token').then((result) => {
         this.$scope.iframe_loading = false;
         return this.$scope.iframe_code    = `<iframe src="${result.data.ma_url}" frameborder="0"></iframe>`;
       });

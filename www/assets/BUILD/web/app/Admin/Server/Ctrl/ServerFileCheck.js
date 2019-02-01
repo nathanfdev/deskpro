@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_ServerFileCheck_Ctrl_ServerFileCheck extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_ServerFileCheck_Ctrl_ServerFileCheck';
@@ -24,7 +24,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const data_promise = this.Api.sendGet('/server_file_check').then( res => {
+      const data_promise = this.Api.sendGet('/server_file_check').then((res) => {
         this.server_file_check = res.data.server_file_check;
         this.total_checks = this.server_file_check.count;
 
@@ -60,7 +60,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
     doNextRequest() {
       this.current_check++;
-      return this.Api.sendGet(`/server_file_check/${this.current_check - 1}`).then(res => {
+      return this.Api.sendGet(`/server_file_check/${this.current_check - 1}`).then((res) => {
         let file;
         const data = res.data.server_file_check;
 
@@ -92,10 +92,9 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
         if (this.current_check < this.total_checks) {
           return this.doNextRequest();
-        } else {
-          this.check_in_progress = false;
-          return this.current_percentage = 100;
         }
+        this.check_in_progress = false;
+        return this.current_percentage = 100;
       });
     }
 

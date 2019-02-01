@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class DeskPRO_Util_Angular {
     /*
       * Get an object of k=>v services injected into a constructor of object given an array of args.
@@ -40,7 +40,7 @@ define(function() {
       const injectedArgs = this.getInjectedArgs(object, args);
       return (() => {
         const result = [];
-        for (let k of Object.keys(injectedArgs || {})) {
+        for (const k of Object.keys(injectedArgs || {})) {
           const v = injectedArgs[k];
           result.push(object[k] = v);
         }

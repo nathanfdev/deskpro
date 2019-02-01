@@ -1,8 +1,8 @@
 define([
   'Admin/Main/Ctrl/Base'
-], function(
+], (
   Admin_Ctrl_Base
-) {
+) => {
   class Admin_FeedbackCategories_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_FeedbackCategories_Ctrl_Edit';
@@ -11,7 +11,6 @@ define([
     }
 
     init() {
-
       this.feedback_category = {};
       this.feedback_categories_parent_list = {};
 
@@ -19,7 +18,6 @@ define([
         this.feedback_categories_parent_list = this.FeedbackCategoriesData.getListOfParents(this.feedback_category);
         return this.ngApply();
       });
-
     }
 
     initialLoad() {
@@ -31,7 +29,7 @@ define([
           }) : undefined
       ];
 
-      const promise = this.$q.all(requests).then(result => {
+      const promise = this.$q.all(requests).then((result) => {
         if (this.$stateParams.id) {
           this.feedback_category = result[1].data.feedback_category.feedback_category;
         }
@@ -47,7 +45,6 @@ define([
       * @return {promise}
     */
     saveForm() {
-
       let promise;
       this.feedback_category.brand = this.$stateParams.brandId;
 
@@ -60,19 +57,16 @@ define([
       this.startSpinner('saving_feedback_category');
 
       if (is_new) {
-        promise = this.Api.sendPutJson('/feedback_categories', {feedback_category: this.feedback_category});
+        promise = this.Api.sendPutJson('/feedback_categories', { feedback_category: this.feedback_category });
       } else {
-        promise = this.Api.sendPostJson(`/feedback_categories/${this.feedback_category.id}`, {feedback_category: this.feedback_category});
+        promise = this.Api.sendPostJson(`/feedback_categories/${this.feedback_category.id}`, { feedback_category: this.feedback_category });
       }
 
-      promise.success(result => {
-
+      promise.success((result) => {
         this.feedback_category.id = result.id;
         this.feedback_category.brand = result.brand;
 
-        this.stopSpinner('saving_feedback_category', true).then(() => {
-          return this.Growl.success(this.getRegisteredMessage('saved_feedback_category'));
-        });
+        this.stopSpinner('saving_feedback_category', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_feedback_category')));
 
         this.FeedbackCategoriesData.updateModel(this.feedback_category);
 
@@ -80,9 +74,8 @@ define([
 
         if (is_new) {
           return this.$state.go('portal.feedback_categories.gocreate');
-        } else {
-          return this.$state.go('portal.feedback_categories');
         }
+        return this.$state.go('portal.feedback_categories');
       });
 
       promise.error((info, code) => {
@@ -92,7 +85,6 @@ define([
 
       return promise;
     }
-
 
 
     showDelete() {
@@ -106,18 +98,16 @@ define([
 
       const list = this.FeedbackCategoriesData.getListOfMovables(this.feedback_category);
 
-      const deleteStart = move_to => {
-        return this.Api.sendDelete(`/feedback_categories/${id}?move_to=${move_to || 0}`).then(() => {
-          this.FeedbackCategoriesData.remove(id);
-          return this.$state.go('portal.feedback_categories');
-        });
-      };
+      const deleteStart = move_to => this.Api.sendDelete(`/feedback_categories/${id}?move_to=${move_to || 0}`).then(() => {
+        this.FeedbackCategoriesData.remove(id);
+        return this.$state.go('portal.feedback_categories');
+      });
 
       return inst = this.$modal.open({
         templateUrl: this.getTemplatePath('FeedbackCategories/delete-modal.html'),
-        controller:  ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.move_feedback_categories_list = list;
-          $scope.model = {move_to: (list[0] != null ? list[0].id : undefined)};
+          $scope.model = { move_to: (list[0] != null ? list[0].id : undefined) };
           $scope.dismiss = () => $modalInstance.dismiss();
           return $scope.confirm = () => deleteStart($scope.model.move_to).then(() => $modalInstance.dismiss());
         }
@@ -126,7 +116,6 @@ define([
     }
   }
   Admin_FeedbackCategories_Ctrl_Edit.initClass();
-
 
 
   return Admin_FeedbackCategories_Ctrl_Edit.EXPORT_CTRL();

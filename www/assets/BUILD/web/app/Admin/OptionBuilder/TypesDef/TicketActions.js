@@ -2,11 +2,11 @@ define([
   'Admin/OptionBuilder/TypesDef/BaseActionTypesDef',
   'DeskPRO/Util/Numbers',
   '../../../../bower_components/moment/moment'
-], function(
+], (
   BaseActionTypesDef,
   Numbers,
   moment
-) {
+) => {
   class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef {
     init() {
       return this.options_data = null;
@@ -45,7 +45,7 @@ define([
       });
 
       set_options.push({
-        title: 'Ticket Assignment',
+        title:      'Ticket Assignment',
         subOptions: options
       });
 
@@ -126,7 +126,7 @@ define([
       });
 
       set_options.push({
-        title: 'Ticket Properties',
+        title:      'Ticket Properties',
         subOptions: options
       });
 
@@ -147,7 +147,7 @@ define([
       });
 
       set_options.push({
-        title: 'Ticket SLAs',
+        title:      'Ticket SLAs',
         subOptions: options
       });
 
@@ -208,7 +208,7 @@ define([
       });
 
       set_options.push({
-        title: 'Ticket Actions',
+        title:      'Ticket Actions',
         subOptions: options
       });
 
@@ -251,7 +251,7 @@ define([
       }
 
       set_options.push({
-        title: 'Send Email',
+        title:      'Send Email',
         subOptions: options
       });
 
@@ -268,7 +268,7 @@ define([
         });
 
         set_options.push({
-          title: 'JIRA Actions',
+          title:      'JIRA Actions',
           subOptions: options
         });
       }
@@ -310,7 +310,7 @@ define([
       });
 
       set_options.push({
-        title: 'Trigger Control',
+        title:      'Trigger Control',
         subOptions: options
       });
 
@@ -339,7 +339,7 @@ define([
 
       if (options.length) {
         set_options.push({
-          title: 'Ticket Fields',
+          title:      'Ticket Fields',
           subOptions: options
         });
       }
@@ -360,7 +360,7 @@ define([
 
         if (options.length) {
           set_options.push({
-            title: 'Person Fields',
+            title:      'Person Fields',
             subOptions: options
           });
         }
@@ -379,7 +379,7 @@ define([
         });
 
         set_options.push({
-          title: 'Tasks',
+          title:      'Tasks',
           subOptions: options
         });
       }
@@ -389,7 +389,6 @@ define([
       //------------------------------
 
       if ((typesData != null ? typesData.dynamicOptions : undefined) != null) {
-
         options = [];
 
         for (var opt of Array.from(typesData.dynamicOptions)) {
@@ -410,9 +409,8 @@ define([
           //------------------------------
           // Dynamic Options - All except for "SendSms" actions above
           //------------------------------
-
           } else {
-            this[typeFunc] = function(options) {
+            this[typeFunc] = function (options) {
               if (options == null) { options = {}; }
               const me = this;
               return {
@@ -444,7 +442,7 @@ define([
 
         if (options.length) {
           set_options.push({
-            title: 'Other Actions',
+            title:      'Other Actions',
             subOptions: options
           });
         }
@@ -454,18 +452,18 @@ define([
     }
 
     generateSmsAction(app_title, opt) {
-      return function(options) {
+      return function (options) {
         if (options == null) { options = {}; }
         let me = this;
         return {
-          scopeInit: [ '$scope', function($scope) {
+          scopeInit: ['$scope', function ($scope) {
             $scope.sms_num_characters = 0;
             $scope.sms_vars = [];
             $scope.sms_app_name = app_title;
 
             me = this;
             // TODO: Make this reusable in other areas of the admin area
-            return $scope.calculateCharacterLength = function() {
+            return $scope.calculateCharacterLength = function () {
               let proposed_length;
               const tmp_string = $scope.model.message;
 
@@ -511,8 +509,8 @@ define([
                     agent_ids[aid] = true;
                   }
                 } else {
-                  agent_ids['followers'] = false;
-                  agent_ids['assigned'] = false;
+                  agent_ids.followers = false;
+                  agent_ids.assigned = false;
                 }
 
                 const team_ids = {};
@@ -522,28 +520,29 @@ define([
                     team_ids[tid] = true;
                   }
                 } else {
-                  team_ids['assigned'] = false;
+                  team_ids.assigned = false;
                 }
 
                 return {
-                  agents: options.agents || [],
+                  agents:      options.agents || [],
                   agent_ids,
                   agent_teams: team_ids,
                   department_ids,
-                  to_number: options.to_number || '',
-                  message: options.message || ''
+                  to_number:   options.to_number || '',
+                  message:     options.message || ''
                 };
               },
               getValue(model, data) {
-                let k, v;
+                let k,
+                  v;
                 if (model == null) { model = {}; }
                 options = {
-                  agents: model.agents || [],
-                  agent_teams: [],
+                  agents:         model.agents || [],
+                  agent_teams:    [],
                   department_ids: [],
-                  to_number: model.to_number || '',
-                  message: model.message || '',
-                  agent_ids: []
+                  to_number:      model.to_number || '',
+                  message:        model.message || '',
+                  agent_ids:      []
                 };
 
                 if (model.department_ids) {
@@ -600,28 +599,28 @@ define([
     loadDataOptions() {
       if (!this.loadDataPromise) {
         const apiV1 = this.Api.sendDataGet({
-          agents:             '/agents',
-          agent_teams:        '/agent_teams',
-          ticket_brands:      '/ticket_brands',
-          ticket_deps:        '/ticket_deps',
-          ticket_cats:        '/ticket_cats',
-          ticket_prods:       '/ticket_prods',
-          ticket_pris:        '/ticket_pris',
-          ticket_works:       '/ticket_works',
-          ticket_fields:      '/ticket_fields',
-          ticket_labels:      '/labels/definitions/tickets',
-          user_fields:        '/user_fields',
-          org_fields:         '/org_fields',
-          ticket_slas:        '/ticket_slas',
-          email_accounts:     '/email_accounts',
-          usergroups:         '/user_groups',
-          langs:              '/langs',
-          email_tpls:         '/email-templates-info',
-          round_robin:        '/round_robin/settings',
-          round_robins:       '/round_robin',
-          tasks:              '/tasks/settings',
-          contextual_fields:  '/custom_fields',
-          jira_settings:      '/apps/jira'
+          agents:            '/agents',
+          agent_teams:       '/agent_teams',
+          ticket_brands:     '/ticket_brands',
+          ticket_deps:       '/ticket_deps',
+          ticket_cats:       '/ticket_cats',
+          ticket_prods:      '/ticket_prods',
+          ticket_pris:       '/ticket_pris',
+          ticket_works:      '/ticket_works',
+          ticket_fields:     '/ticket_fields',
+          ticket_labels:     '/labels/definitions/tickets',
+          user_fields:       '/user_fields',
+          org_fields:        '/org_fields',
+          ticket_slas:       '/ticket_slas',
+          email_accounts:    '/email_accounts',
+          usergroups:        '/user_groups',
+          langs:             '/langs',
+          email_tpls:        '/email-templates-info',
+          round_robin:       '/round_robin/settings',
+          round_robins:      '/round_robin',
+          tasks:             '/tasks/settings',
+          contextual_fields: '/custom_fields',
+          jira_settings:     '/apps/jira'
         });
 
         this.loadDataPromise = this.$q.defer();
@@ -633,49 +632,49 @@ define([
           promises.push(apiV2);
         }
 
-        this.$q.all(promises).then( result => {
+        this.$q.all(promises).then((result) => {
           let f;
           const { data } = result[0];
           const options_data = {};
-          options_data['agents']            = data.agents.agents;
-          options_data['agent_teams']       = data.agent_teams.agent_teams;
-          options_data['ticket_brands']     = data.ticket_brands.brands;
-          options_data['ticket_deps']       = data.ticket_deps.departments;
-          options_data['ticket_cats']       = data.ticket_cats.categories;
-          options_data['ticket_pris']       = data.ticket_pris.priorities;
-          options_data['ticket_works']      = data.ticket_works.workflows;
-          options_data['ticket_prods']      = data.ticket_prods != null ? data.ticket_prods.products : undefined;
-          options_data['ticket_fields']     = data.ticket_fields != null ? data.ticket_fields.custom_fields : undefined;
-          options_data['org_fields']        = data.org_fields != null ? data.org_fields.custom_fields : undefined;
-          options_data['user_fields']       = data.user_fields != null ? data.user_fields.custom_fields : undefined;
-          options_data['ticket_slas']       = data.ticket_slas != null ? data.ticket_slas.slas : undefined;
-          options_data['email_accounts']    = data.email_accounts.email_accounts;
-          options_data['usergroups']        = data.usergroups.groups;
-          options_data['langs']             = data.langs != null ? data.langs.languages : undefined;
-          options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates;
-          options_data['round_robin']       = data.round_robin;
-          options_data['round_robins']      = data.round_robins;
-          options_data['tasks']             = data.tasks;
-          options_data['contextual_fields'] = data.contextual_fields;
-          options_data['jira_settings']     = data.jira_settings;
-          options_data['ticket_labels']     = data.ticket_labels;
+          options_data.agents            = data.agents.agents;
+          options_data.agent_teams       = data.agent_teams.agent_teams;
+          options_data.ticket_brands     = data.ticket_brands.brands;
+          options_data.ticket_deps       = data.ticket_deps.departments;
+          options_data.ticket_cats       = data.ticket_cats.categories;
+          options_data.ticket_pris       = data.ticket_pris.priorities;
+          options_data.ticket_works      = data.ticket_works.workflows;
+          options_data.ticket_prods      = data.ticket_prods != null ? data.ticket_prods.products : undefined;
+          options_data.ticket_fields     = data.ticket_fields != null ? data.ticket_fields.custom_fields : undefined;
+          options_data.org_fields        = data.org_fields != null ? data.org_fields.custom_fields : undefined;
+          options_data.user_fields       = data.user_fields != null ? data.user_fields.custom_fields : undefined;
+          options_data.ticket_slas       = data.ticket_slas != null ? data.ticket_slas.slas : undefined;
+          options_data.email_accounts    = data.email_accounts.email_accounts;
+          options_data.usergroups        = data.usergroups.groups;
+          options_data.langs             = data.langs != null ? data.langs.languages : undefined;
+          options_data.custom_email_tpls = data.email_tpls.list.custom.groups.custom.templates;
+          options_data.round_robin       = data.round_robin;
+          options_data.round_robins      = data.round_robins;
+          options_data.tasks             = data.tasks;
+          options_data.contextual_fields = data.contextual_fields;
+          options_data.jira_settings     = data.jira_settings;
+          options_data.ticket_labels     = data.ticket_labels;
 
-          options_data['ticket_dep_options'] = this.standardOptionsFormatter(options_data['ticket_deps']);
-          options_data['flags'] = [
-            {title: 'none', value: ''},
-            {title: 'Red', value: 'red'},
-            {title: 'Blue', value: 'blue'},
-            {title: 'Green', value: 'green'},
-            {title: 'Yellow', value: 'yellow'},
-            {title: 'Orange', value: 'orange'},
-            {title: 'Purple', value: 'purple'},
-            {title: 'Pink', value: 'pink'}
+          options_data.ticket_dep_options = this.standardOptionsFormatter(options_data.ticket_deps);
+          options_data.flags = [
+            { title: 'none', value: '' },
+            { title: 'Red', value: 'red' },
+            { title: 'Blue', value: 'blue' },
+            { title: 'Green', value: 'green' },
+            { title: 'Yellow', value: 'yellow' },
+            { title: 'Orange', value: 'orange' },
+            { title: 'Purple', value: 'purple' },
+            { title: 'Pink', value: 'pink' }
           ];
 
           if (window.DP_HAS_NEW_EMAILS) {
-            const v2data = result[1].data['data'];
+            const v2data = result[1].data.data;
 
-            options_data['new_custom_email_tpls'] = v2data.list['custom'].groups['custom'].subGroups['primary'].templates;
+            options_data.new_custom_email_tpls = v2data.list.custom.groups.custom.subGroups.primary.templates;
           }
 
           this.options_data = options_data;
@@ -709,8 +708,8 @@ define([
       options.propName = 'agent_id';
       options.dataName = 'agents';
       options.extraOptions = [
-        {title: 'Unassign', value: 0},
-        {title: 'Current Agent', value: -1}
+        { title: 'Unassign', value: 0 },
+        { title: 'Current Agent', value: -1 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -730,7 +729,7 @@ define([
       options.dataName = 'agents';
       options.isMulti = true;
       options.extraOptions = [
-        {title: 'Current Agent', value: -1}
+        { title: 'Current Agent', value: -1 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -741,9 +740,9 @@ define([
       options.propName = 'agent_team_id';
       options.dataName = 'agent_teams';
       options.extraOptions = [
-        {title: 'No Team', value: 0},
-        {title: 'Current Agent\'s Team', value: -1},
-        {title: 'Team of currently assigned agent', value: -2}
+        { title: 'No Team', value: 0 },
+        { title: 'Current Agent\'s Team', value: -1 },
+        { title: 'Team of currently assigned agent', value: -2 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -754,7 +753,7 @@ define([
       options.propName = 'workflow_id';
       options.dataName = 'ticket_works';
       options.extraOptions = [
-        {title: 'None', value: 0}
+        { title: 'None', value: 0 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -772,8 +771,8 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'is_hold';
       options.options = [
-        {title: "Put ticket on hold", value: "1"},
-        {title: "Take ticket off hold", value: "0"}
+        { title: 'Put ticket on hold', value: '1' },
+        { title: 'Take ticket off hold', value: '0' }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -784,7 +783,7 @@ define([
       options.propName = 'priority_id';
       options.dataName = 'ticket_pris';
       options.extraOptions = [
-        {title: 'None', value: 0}
+        { title: 'None', value: 0 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -795,7 +794,7 @@ define([
       options.propName = 'category_id';
       options.dataName = 'ticket_cats';
       options.extraOptions = [
-        {title: 'None', value: 0}
+        { title: 'None', value: 0 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -818,16 +817,16 @@ define([
               }
 
               const viewValue = {
-                add_labels:       options.add_labels || [],
-                remove_labels:    options.remove_labels || [],
-                select2_add: {
-                  multiple:     true,
-                  simple_tags:  true,
+                add_labels:    options.add_labels || [],
+                remove_labels: options.remove_labels || [],
+                select2_add:   {
+                  multiple:    true,
+                  simple_tags: true,
                   tags
                 },
                 select2_remove: {
-                  multiple:     true,
-                  simple_tags:  true,
+                  multiple:    true,
+                  simple_tags: true,
                   tags
                 }
               };
@@ -864,7 +863,7 @@ define([
               if (value == null) { value = {}; }
               options = (value != null ? value.options : undefined) || {};
               return {
-                subject: options.subject || '',
+                subject:        options.subject || '',
                 with_formatter: options.with_formatter || false
               };
             },
@@ -911,7 +910,7 @@ define([
       options.propName = 'product_id';
       options.dataName = 'ticket_prods';
       options.extraOptions = [
-        {title: 'None', value: 0}
+        { title: 'None', value: 0 }
       ];
       const def = this.getStandardSelect(options);
       return def;
@@ -921,10 +920,10 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'email_account_id';
       options.dataName = 'email_accounts';
-      options.optionsFormatter = function(options) {
+      options.optionsFormatter = function (options) {
         const opts = [];
 
-        for (let acc of Array.from(options)) {
+        for (const acc of Array.from(options)) {
           opts.push({
             value: acc.id,
             title: acc.use_email_address || acc.address
@@ -966,7 +965,7 @@ define([
 
               return {
                 value: options.urgency,
-                op: mode,
+                op:    mode,
                 only_if_lower
               };
             },
@@ -1039,8 +1038,8 @@ define([
               if (value == null) { value = {}; }
               const agent_ids = {};
               if (value.options != null ? value.options.agent_ids : undefined) {
-                for (let aid of Array.from((value.options != null ? value.options.agent_ids : undefined))) {
-                  agent_ids[aid+""] = true;
+                for (const aid of Array.from((value.options != null ? value.options.agent_ids : undefined))) {
+                  agent_ids[`${aid}`] = true;
                 }
               }
 
@@ -1058,7 +1057,7 @@ define([
               value.options.agent_ids = [];
 
               if (model.agent_ids) {
-                for (let k of Object.keys(model.agent_ids || {})) {
+                for (const k of Object.keys(model.agent_ids || {})) {
                   const v = model.agent_ids[k];
                   if (v) {
                     if (Numbers.isNumeric(k)) {
@@ -1118,7 +1117,7 @@ define([
               if (value == null) { value = {}; }
               options = (value != null ? value.options : undefined) || {};
               return {
-                name: options.name || '',
+                name:  options.name || '',
                 value: options.value || ''
               };
             },
@@ -1127,7 +1126,7 @@ define([
               const value = {};
               value.type = 'ModSetUserVar';
               value.options = {
-                name: model.name || '',
+                name:  model.name || '',
                 value: model.value || ''
               };
               return value;
@@ -1169,8 +1168,8 @@ define([
 
               const agent_ids = {};
               if (options.agent_ids) {
-                for (let aid of Array.from(options.agent_ids)) {
-                  agent_ids[aid+""] = true;
+                for (const aid of Array.from(options.agent_ids)) {
+                  agent_ids[`${aid}`] = true;
                 }
               }
 
@@ -1185,7 +1184,7 @@ define([
               };
 
               if (model.agent_ids) {
-                for (let k of Object.keys(model.agent_ids || {})) {
+                for (const k of Object.keys(model.agent_ids || {})) {
                   const v = model.agent_ids[k];
                   if (v) {
                     if (Numbers.isNumeric(k)) {
@@ -1227,21 +1226,21 @@ define([
           return me.loadDataOptions();
         },
 
-        scopeInit: [ '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-          $scope.handleTemplateChange = function() {
+        scopeInit: ['$scope', '$modal', '$timeout', function ($scope, $modal, $timeout) {
+          $scope.handleTemplateChange = function () {
             if ($scope.model.template === 'CREATE') {
               $scope.model.template = null;
               $scope.is_creating = true;
               return $modal.open({
-                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
-                size: 'lg',
-                controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
-                resolve: {
+                templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-new-email-editor.html`,
+                size:        'lg',
+                controller:  'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+                resolve:     {
                   templateName() {
                     return null;
                   }
                 }
-              }).result.then( function(info) {
+              }).result.then((info) => {
                 if (info.templateName) {
                   const title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
                   const tpl = {
@@ -1254,14 +1253,13 @@ define([
                   }
 
                   $scope.model.template = info.templateName;
-                  return $timeout(function() {
+                  return $timeout(() => {
                     $scope.model.template = info.templateName;
                     return $scope.is_creating = false;
                   }
                   , 100);
-                } else {
-                  return $scope.is_creating = false;
                 }
+                return $scope.is_creating = false;
               }
               , () => $scope.is_creating = false);
             }
@@ -1269,10 +1267,10 @@ define([
 
           return $scope.editTemplate = () =>
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
-              size: 'lg',
-              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
-              resolve: {
+              templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-new-email-editor.html`,
+              size:        'lg',
+              controller:  'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+              resolve:     {
                 templateName() {
                   return $scope.model.template;
                 }
@@ -1285,7 +1283,8 @@ define([
         getDataFormatter() {
           return {
             getViewValue(value, data) {
-              let from_name, from_name_custom;
+              let from_name,
+                from_name_custom;
               if (value == null) { value = {}; }
               options = (value != null ? value.options : undefined) || {};
 
@@ -1302,16 +1301,16 @@ define([
               }
 
               const view_model = {
-                template: options.template || '',
-                do_cc_users: options.do_cc_users ? "all" : "owner",
+                template:     options.template || '',
+                do_cc_users:  options.do_cc_users ? 'all' : 'owner',
                 from_name,
                 from_name_custom,
-                from_account: (parseInt(options.from_account || 0) || 0)+'',
-                headers: options.headers || [],
-                simple_mode: false
+                from_account: `${parseInt(options.from_account || 0) || 0}`,
+                headers:      options.headers || [],
+                simple_mode:  false
               };
 
-              if ((view_model.do_cc_users === "owner") && (view_model.from_name === 'helpdesk_name') && (view_model.from_account === "0") && !view_model.headers.length) {
+              if ((view_model.do_cc_users === 'owner') && (view_model.from_name === 'helpdesk_name') && (view_model.from_account === '0') && !view_model.headers.length) {
                 view_model.simple_mode = true;
               }
 
@@ -1319,14 +1318,13 @@ define([
             },
 
             getValue(model, data) {
-
               if (model == null) { model = {}; }
               options = {
-                template: model.template || '',
-                do_cc_users: model.do_cc_users && (model.do_cc_users === "all"),
-                from_name: '',
+                template:     model.template || '',
+                do_cc_users:  model.do_cc_users && (model.do_cc_users === 'all'),
+                from_name:    '',
                 from_account: parseInt(model.from_account || 0),
-                headers: model.headers.filter(header => header.name)
+                headers:      model.headers.filter(header => header.name)
               };
 
               if (model.from_name === 'custom') {
@@ -1357,20 +1355,20 @@ define([
           return me.loadDataOptions();
         },
 
-        scopeInit: [ '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-          $scope.handleTemplateChange = function() {
+        scopeInit: ['$scope', '$modal', '$timeout', function ($scope, $modal, $timeout) {
+          $scope.handleTemplateChange = function () {
             if ($scope.model.template === 'CREATE') {
               $scope.model.template = null;
               $scope.is_creating = true;
               return $modal.open({
-                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-                controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-                resolve: {
+                templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-email-editor.html`,
+                controller:  'Admin_Templates_Ctrl_EmailTemplateEditor',
+                resolve:     {
                   templateName() {
                     return null;
                   }
                 }
-              }).result.then( function(info) {
+              }).result.then((info) => {
                 if (info.templateName) {
                   const title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
                   const tpl = {
@@ -1383,14 +1381,13 @@ define([
                   }
 
                   $scope.model.template = info.templateName;
-                  return $timeout(function() {
+                  return $timeout(() => {
                     $scope.model.template = info.templateName;
                     return $scope.is_creating = false;
                   }
                   , 100);
-                } else {
-                  return $scope.is_creating = false;
                 }
+                return $scope.is_creating = false;
               }
               , () => $scope.is_creating = false);
             }
@@ -1398,9 +1395,9 @@ define([
 
           return $scope.editTemplate = () =>
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-              controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-              resolve: {
+              templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-email-editor.html`,
+              controller:  'Admin_Templates_Ctrl_EmailTemplateEditor',
+              resolve:     {
                 templateName() {
                   return $scope.model.template;
                 }
@@ -1413,7 +1410,8 @@ define([
         getDataFormatter() {
           return {
             getViewValue(value, data) {
-              let from_name, from_name_custom;
+              let from_name,
+                from_name_custom;
               if (value == null) { value = {}; }
               options = (value != null ? value.options : undefined) || {};
 
@@ -1430,16 +1428,16 @@ define([
               }
 
               const view_model = {
-                template: options.template || '',
-                do_cc_users: options.do_cc_users ? "all" : "owner",
+                template:     options.template || '',
+                do_cc_users:  options.do_cc_users ? 'all' : 'owner',
                 from_name,
                 from_name_custom,
-                from_account: (parseInt(options.from_account || 0) || 0)+'',
-                headers: options.headers || [],
-                simple_mode: false
+                from_account: `${parseInt(options.from_account || 0) || 0}`,
+                headers:      options.headers || [],
+                simple_mode:  false
               };
 
-              if ((view_model.do_cc_users === "owner") && (view_model.from_name === 'helpdesk_name') && (view_model.from_account === "0") && !view_model.headers.length) {
+              if ((view_model.do_cc_users === 'owner') && (view_model.from_name === 'helpdesk_name') && (view_model.from_account === '0') && !view_model.headers.length) {
                 view_model.simple_mode = true;
               }
 
@@ -1447,14 +1445,13 @@ define([
             },
 
             getValue(model, data) {
-
               if (model == null) { model = {}; }
               options = {
-                template: model.template || '',
-                do_cc_users: model.do_cc_users && (model.do_cc_users === "all"),
-                from_name: '',
+                template:     model.template || '',
+                do_cc_users:  model.do_cc_users && (model.do_cc_users === 'all'),
+                from_name:    '',
                 from_account: parseInt(model.from_account || 0),
-                headers: model.headers.filter(header => header.name)
+                headers:      model.headers.filter(header => header.name)
               };
 
               if (model.from_name === 'custom') {
@@ -1485,37 +1482,36 @@ define([
           return me.loadDataOptions();
         },
 
-        scopeInit: [ '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-
+        scopeInit: ['$scope', '$modal', '$timeout', function ($scope, $modal, $timeout) {
           $scope.$watch(
             () => $scope.model.agent_ids.all_agents,
-            function(newVal, oldVal) {
+            (newVal, oldVal) => {
               if (!newVal) { return; }
               return (() => {
                 const result = [];
-                for (let k of Object.keys($scope.model.agent_ids || {})) {
+                for (const k of Object.keys($scope.model.agent_ids || {})) {
                   const v = $scope.model.agent_ids[k];
-                  if ('all_agents' === k) { continue; }
+                  if (k === 'all_agents') { continue; }
                   result.push($scope.model.agent_ids[k] = false);
                 }
                 return result;
               })();
-          });
+            });
 
-          $scope.handleTemplateChange = function() {
+          $scope.handleTemplateChange = function () {
             if ($scope.model.template === 'CREATE') {
               $scope.model.template = null;
               $scope.is_creating = true;
               return $modal.open({
-                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
-                size: 'lg',
-                controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
-                resolve: {
+                templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-new-email-editor.html`,
+                size:        'lg',
+                controller:  'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+                resolve:     {
                   templateName() {
                     return null;
                   }
                 }
-              }).result.then( function(info) {
+              }).result.then((info) => {
                 if (info.templateName) {
                   const title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
                   const tpl = {
@@ -1528,14 +1524,13 @@ define([
                   }
 
                   $scope.model.template = info.templateName;
-                  return $timeout(function() {
+                  return $timeout(() => {
                     $scope.model.template = info.templateName;
                     return $scope.is_creating = false;
                   }
                   , 100);
-                } else {
-                  return $scope.is_creating = false;
                 }
+                return $scope.is_creating = false;
               }
               , () => $scope.is_creating = false);
             }
@@ -1543,10 +1538,10 @@ define([
 
           return $scope.editTemplate = () =>
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
-              size: 'lg',
-              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
-              resolve: {
+              templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-new-email-editor.html`,
+              size:        'lg',
+              controller:  'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+              resolve:     {
                 templateName() {
                   return $scope.model.template;
                 }
@@ -1559,7 +1554,8 @@ define([
         getDataFormatter() {
           return {
             getViewValue(value, data) {
-              let from_name, from_name_custom;
+              let from_name,
+                from_name_custom;
               if (value == null) { value = {}; }
               options = (value != null ? value.options : undefined) || {};
 
@@ -1577,28 +1573,28 @@ define([
 
               const agent_ids = {};
               if (options.agent_ids) {
-                for (let aid of Array.from(options.agent_ids)) {
-                  agent_ids[aid+""] = true;
+                for (const aid of Array.from(options.agent_ids)) {
+                  agent_ids[`${aid}`] = true;
                 }
               }
 
               return {
-                template: options.template || '',
+                template:     options.template || '',
                 agent_ids,
                 from_name,
                 from_name_custom,
-                from_account: (parseInt(options.from_account || 0) || 0)+'',
-                headers: options.headers || []
+                from_account: `${parseInt(options.from_account || 0) || 0}`,
+                headers:      options.headers || []
               };
             },
             getValue(model, data) {
               if (model == null) { model = {}; }
               options = {
-                template: model.template || '',
-                agent_ids: [],
-                from_name: '',
+                template:     model.template || '',
+                agent_ids:    [],
+                from_name:    '',
                 from_account: parseInt(model.from_account || 0),
-                headers: model.headers.filter(header => header.name)
+                headers:      model.headers.filter(header => header.name)
               };
 
               if (model.from_name === 'custom') {
@@ -1608,7 +1604,7 @@ define([
               }
 
               if (model.agent_ids) {
-                for (let k of Object.keys(model.agent_ids || {})) {
+                for (const k of Object.keys(model.agent_ids || {})) {
                   const v = model.agent_ids[k];
                   if (v) {
                     if (Numbers.isNumeric(k)) {
@@ -1642,36 +1638,35 @@ define([
           return me.loadDataOptions();
         },
 
-        scopeInit: [ '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-
+        scopeInit: ['$scope', '$modal', '$timeout', function ($scope, $modal, $timeout) {
           $scope.$watch(
             () => $scope.model.agent_ids.all_agents,
-            function(newVal, oldVal) {
+            (newVal, oldVal) => {
               if (!newVal) { return; }
               return (() => {
                 const result = [];
-                for (let k of Object.keys($scope.model.agent_ids || {})) {
+                for (const k of Object.keys($scope.model.agent_ids || {})) {
                   const v = $scope.model.agent_ids[k];
-                  if ('all_agents' === k) { continue; }
+                  if (k === 'all_agents') { continue; }
                   result.push($scope.model.agent_ids[k] = false);
                 }
                 return result;
               })();
-          });
+            });
 
-          $scope.handleTemplateChange = function() {
+          $scope.handleTemplateChange = function () {
             if ($scope.model.template === 'CREATE') {
               $scope.model.template = null;
               $scope.is_creating = true;
               return $modal.open({
-                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-                controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-                resolve: {
+                templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-email-editor.html`,
+                controller:  'Admin_Templates_Ctrl_EmailTemplateEditor',
+                resolve:     {
                   templateName() {
                     return null;
                   }
                 }
-              }).result.then( function(info) {
+              }).result.then((info) => {
                 if (info.templateName) {
                   const title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
                   const tpl = {
@@ -1684,14 +1679,13 @@ define([
                   }
 
                   $scope.model.template = info.templateName;
-                  return $timeout(function() {
+                  return $timeout(() => {
                     $scope.model.template = info.templateName;
                     return $scope.is_creating = false;
                   }
                   , 100);
-                } else {
-                  return $scope.is_creating = false;
                 }
+                return $scope.is_creating = false;
               }
               , () => $scope.is_creating = false);
             }
@@ -1699,9 +1693,9 @@ define([
 
           return $scope.editTemplate = () =>
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-              controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-              resolve: {
+              templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-email-editor.html`,
+              controller:  'Admin_Templates_Ctrl_EmailTemplateEditor',
+              resolve:     {
                 templateName() {
                   return $scope.model.template;
                 }
@@ -1714,7 +1708,8 @@ define([
         getDataFormatter() {
           return {
             getViewValue(value, data) {
-              let from_name, from_name_custom;
+              let from_name,
+                from_name_custom;
               if (value == null) { value = {}; }
               options = (value != null ? value.options : undefined) || {};
 
@@ -1732,28 +1727,28 @@ define([
 
               const agent_ids = {};
               if (options.agent_ids) {
-                for (let aid of Array.from(options.agent_ids)) {
-                  agent_ids[aid+""] = true;
+                for (const aid of Array.from(options.agent_ids)) {
+                  agent_ids[`${aid}`] = true;
                 }
               }
 
               return {
-                template: options.template || '',
+                template:     options.template || '',
                 agent_ids,
                 from_name,
                 from_name_custom,
-                from_account: (parseInt(options.from_account || 0) || 0)+'',
-                headers: options.headers || []
+                from_account: `${parseInt(options.from_account || 0) || 0}`,
+                headers:      options.headers || []
               };
             },
             getValue(model, data) {
               if (model == null) { model = {}; }
               options = {
-                template: model.template || '',
-                agent_ids: [],
-                from_name: '',
+                template:     model.template || '',
+                agent_ids:    [],
+                from_name:    '',
                 from_account: parseInt(model.from_account || 0),
-                headers: model.headers.filter(header => header.name)
+                headers:      model.headers.filter(header => header.name)
               };
 
               if (model.from_name === 'custom') {
@@ -1763,7 +1758,7 @@ define([
               }
 
               if (model.agent_ids) {
-                for (let k of Object.keys(model.agent_ids || {})) {
+                for (const k of Object.keys(model.agent_ids || {})) {
                   const v = model.agent_ids[k];
                   if (v) {
                     if (Numbers.isNumeric(k)) {
@@ -1797,21 +1792,21 @@ define([
           return me.loadDataOptions();
         },
 
-        scopeInit: [ '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-          $scope.handleTemplateChange = function() {
+        scopeInit: ['$scope', '$modal', '$timeout', function ($scope, $modal, $timeout) {
+          $scope.handleTemplateChange = function () {
             if ($scope.model.template === 'CREATE') {
               $scope.model.template = null;
               $scope.is_creating = true;
               return $modal.open({
-                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
-                size: 'lg',
-                controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
-                resolve: {
+                templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-new-email-editor.html`,
+                size:        'lg',
+                controller:  'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+                resolve:     {
                   templateName() {
                     return null;
                   }
                 }
-              }).result.then( function(info) {
+              }).result.then((info) => {
                 if (info.templateName) {
                   const title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
                   const tpl = {
@@ -1824,14 +1819,13 @@ define([
                   }
 
                   $scope.model.template = info.templateName;
-                  return $timeout(function() {
+                  return $timeout(() => {
                     $scope.model.template = info.templateName;
                     return $scope.is_creating = false;
                   }
                   , 100);
-                } else {
-                  return $scope.is_creating = false;
                 }
+                return $scope.is_creating = false;
               }
               , () => $scope.is_creating = false);
             }
@@ -1839,10 +1833,10 @@ define([
 
           return $scope.editTemplate = () =>
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
-              size: 'lg',
-              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
-              resolve: {
+              templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-new-email-editor.html`,
+              size:        'lg',
+              controller:  'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+              resolve:     {
                 templateName() {
                   return $scope.model.template;
                 }
@@ -1855,7 +1849,8 @@ define([
         getDataFormatter() {
           return {
             getViewValue(value, data) {
-              let from_name, from_name_custom;
+              let from_name,
+                from_name_custom;
               if (value == null) { value = {}; }
               options = (value != null ? value.options : undefined) || {};
 
@@ -1874,21 +1869,21 @@ define([
 
               return {
                 emails,
-                template: options.template || '',
+                template:     options.template || '',
                 from_name,
                 from_name_custom,
-                from_account: (parseInt(options.from_account || 0) || 0)+'',
-                headers: options.headers || []
+                from_account: `${parseInt(options.from_account || 0) || 0}`,
+                headers:      options.headers || []
               };
             },
             getValue(model, data) {
               if (model == null) { model = {}; }
               options = {
-                emails: model.emails,
-                template: model.template || '',
-                from_name: '',
+                emails:       model.emails,
+                template:     model.template || '',
+                from_name:    '',
                 from_account: parseInt(model.from_account || 0),
-                headers: model.headers.filter(header => header.name)
+                headers:      model.headers.filter(header => header.name)
               };
 
               if (model.from_name === 'custom') {
@@ -1919,20 +1914,20 @@ define([
           return me.loadDataOptions();
         },
 
-        scopeInit: [ '$scope', '$modal', '$timeout', function($scope, $modal, $timeout) {
-          $scope.handleTemplateChange = function() {
+        scopeInit: ['$scope', '$modal', '$timeout', function ($scope, $modal, $timeout) {
+          $scope.handleTemplateChange = function () {
             if ($scope.model.template === 'CREATE') {
               $scope.model.template = null;
               $scope.is_creating = true;
               return $modal.open({
-                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-                controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-                resolve: {
+                templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-email-editor.html`,
+                controller:  'Admin_Templates_Ctrl_EmailTemplateEditor',
+                resolve:     {
                   templateName() {
                     return null;
                   }
                 }
-              }).result.then( function(info) {
+              }).result.then((info) => {
                 if (info.templateName) {
                   const title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html');
                   const tpl = {
@@ -1945,14 +1940,13 @@ define([
                   }
 
                   $scope.model.template = info.templateName;
-                  return $timeout(function() {
+                  return $timeout(() => {
                     $scope.model.template = info.templateName;
                     return $scope.is_creating = false;
                   }
                   , 100);
-                } else {
-                  return $scope.is_creating = false;
                 }
+                return $scope.is_creating = false;
               }
               , () => $scope.is_creating = false);
             }
@@ -1960,9 +1954,9 @@ define([
 
           return $scope.editTemplate = () =>
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-              controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-              resolve: {
+              templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Templates/modal-email-editor.html`,
+              controller:  'Admin_Templates_Ctrl_EmailTemplateEditor',
+              resolve:     {
                 templateName() {
                   return $scope.model.template;
                 }
@@ -1975,7 +1969,8 @@ define([
         getDataFormatter() {
           return {
             getViewValue(value, data) {
-              let from_name, from_name_custom;
+              let from_name,
+                from_name_custom;
               if (value == null) { value = {}; }
               options = (value != null ? value.options : undefined) || {};
 
@@ -1994,21 +1989,21 @@ define([
 
               return {
                 emails,
-                template: options.template || '',
+                template:     options.template || '',
                 from_name,
                 from_name_custom,
-                from_account: (parseInt(options.from_account || 0) || 0)+'',
-                headers: options.headers || []
+                from_account: `${parseInt(options.from_account || 0) || 0}`,
+                headers:      options.headers || []
               };
             },
             getValue(model, data) {
               if (model == null) { model = {}; }
               options = {
-                emails: model.emails,
-                template: model.template || '',
-                from_name: '',
+                emails:       model.emails,
+                template:     model.template || '',
+                from_name:    '',
                 from_account: parseInt(model.from_account || 0),
-                headers: model.headers.filter(header => header.name)
+                headers:      model.headers.filter(header => header.name)
               };
 
               if (model.from_name === 'custom') {
@@ -2097,9 +2092,9 @@ define([
 
         getData() {
           const defer = me.$q.defer();
-          me.loadDataOptions().then( function() {
+          me.loadDataOptions().then(() => {
             options = [];
-            for (let sla of Array.from(me.options_data['ticket_slas'])) {
+            for (const sla of Array.from(me.options_data.ticket_slas)) {
               options.push({
                 title: sla.title,
                 value: sla.id
@@ -2120,7 +2115,7 @@ define([
               if (value == null) { value = {}; }
               options = value.options || {};
               return {
-                add_slas: options.add_sla_ids || [],
+                add_slas:    options.add_sla_ids || [],
                 remove_slas: options.remove_sla_ids || []
               };
             },
@@ -2161,11 +2156,11 @@ define([
                 by_agent_id = data.agents[0].id;
               }
 
-              by_agent_id = by_agent_id + "";
+              by_agent_id += '';
 
               return {
-                type: 'AddAgentReply',
-                text: opt.reply_text || '',
+                type:              'AddAgentReply',
+                text:              opt.reply_text || '',
                 by_assigned_agent: opt.by_assigned_agent || false,
                 by_agent_id
               };
@@ -2209,11 +2204,11 @@ define([
                 by_agent_id = data.agents[0].id;
               }
 
-              by_agent_id = by_agent_id + "";
+              by_agent_id += '';
 
               return {
-                type: 'AddAgentNote',
-                text: opt.note_text || '',
+                type:              'AddAgentNote',
+                text:              opt.note_text || '',
                 by_assigned_agent: opt.by_assigned_agent || false,
                 by_agent_id
               };
@@ -2244,9 +2239,9 @@ define([
 
         getData() {
           const defer = me.$q.defer();
-          me.loadDataOptions().then(function() {
+          me.loadDataOptions().then(() => {
             options = [];
-            for (let sla of Array.from(me.options_data['ticket_slas'])) {
+            for (const sla of Array.from(me.options_data.ticket_slas)) {
               options.push({
                 title: sla.title,
                 value: sla.id
@@ -2268,7 +2263,7 @@ define([
               options = value.options || {};
 
               return {
-                sla_ids: options.sla_ids || [],
+                sla_ids:    options.sla_ids || [],
                 sla_status: options.sla_status || 'ok'
               };
             },
@@ -2278,7 +2273,7 @@ define([
               const value = {};
               value.type = 'SetSlasComplete';
               value.options = {
-                sla_ids: model.sla_ids,
+                sla_ids:    model.sla_ids,
                 sla_status: model.sla_status || 'ok'
               };
               return value;
@@ -2305,26 +2300,26 @@ define([
             getViewValue(value, data) {
               if (value == null) { value = {}; }
               options = value.options || {};
-              const agents = [{id: -1, display_name: 'Current Agent'}];
-              data.tasks.agents.map(function(agent) { if (__guard__(agent.perms != null ? agent.perms.tasks : undefined, x => x.use)) { return agents.push(agent); } });
+              const agents = [{ id: -1, display_name: 'Current Agent' }];
+              data.tasks.agents.map((agent) => { if (__guard__(agent.perms != null ? agent.perms.tasks : undefined, x => x.use)) { return agents.push(agent); } });
               let _public = options.public;
               if ((_public == null)) { _public = true; }
               const timezones = [];
               for (let i = -12, asc = -12 <= 12; asc ? i <= 12 : i >= 12; asc ? i++ : i--) {
-                timezones.push({id: i, title: `UTC ${i >= 0 ? '+' : ''}${i}:00`});
+                timezones.push({ id: i, title: `UTC ${i >= 0 ? '+' : ''}${i}:00` });
               }
 
               return {
                 agents,
-                teams: data.agent_teams,
-                title: options.title,
+                teams:    data.agent_teams,
+                title:    options.title,
                 date_due: options.date_due,
-                public: _public,
-                creator: options.creator,
+                public:   _public,
+                creator:  options.creator,
                 assignee: options.assignee,
                 timezones,
-                offset: options.offset,
-                link: options.link
+                offset:   options.offset,
+                link:     options.link
               };
             },
 
@@ -2333,15 +2328,15 @@ define([
               if (model == null) { model = {}; }
               if (model.date_due) { date = moment(model.date_due).format('YYYY-MM-DD HH:mm'); }
               return {
-                type: 'CreateTask',
+                type:    'CreateTask',
                 options: {
-                  title: model.title,
+                  title:    model.title,
                   date_due: (date != null) ? date : undefined,
-                  public: !!model.public,
-                  creator: model.creator,
+                  public:   !!model.public,
+                  creator:  model.creator,
                   assignee: model.assignee,
-                  offset: model.offset,
-                  link: !!model.link
+                  offset:   model.offset,
+                  link:     !!model.link
                 }
               };
             }
@@ -2361,11 +2356,11 @@ define([
             getViewValue(value, data) {
               if (value == null) { value = {}; }
               const opt = value.options || {};
-              const by_agent_id = (opt.by_agent_id || data.agents[0].id) + "";
+              const by_agent_id = `${opt.by_agent_id || data.agents[0].id}`;
 
               return {
-                type: 'AddJIRAComment',
-                text: opt.note_text || '',
+                type:              'AddJIRAComment',
+                text:              opt.note_text || '',
                 by_assigned_agent: opt.by_assigned_agent || false,
                 by_agent_id
               };
@@ -2374,11 +2369,11 @@ define([
             getValue(model, data) {
               if (model == null) { model = {}; }
               return {
-                type: 'AddJIRAComment',
+                type:    'AddJIRAComment',
                 options: {
-                  note_text: model.text,
+                  note_text:         model.text,
                   by_assigned_agent: model.by_assigned_agent || false,
-                  by_agent_id: parseInt(model.by_agent_id || 0) || 0
+                  by_agent_id:       parseInt(model.by_agent_id || 0) || 0
                 }
               };
             }
@@ -2434,10 +2429,10 @@ define([
               const value = {};
               value.type = 'DeleteAttachments';
               value.options = {
-                must_match: model.must_match ? model.must_match_value : '',
+                must_match:     model.must_match ? model.must_match_value : '',
                 must_not_match: model.must_not_match ? model.must_not_match_value : '',
-                at_least: model.at_least ? parseInt(model.at_least_value) || 0 : '',
-                skip_inline: model.skip_inline
+                at_least:       model.at_least ? parseInt(model.at_least_value) || 0 : '',
+                skip_inline:    model.skip_inline
               };
               return value;
             }
@@ -2498,8 +2493,8 @@ define([
               const value = {};
               value.type = 'DeleteVoicePhoneCallRecords';
               value.options = {
-                at_least: model.at_least ? parseInt(model.at_least) || 0 : 0,
-                longer_than: model.longer_than ? parseInt(model.longer_than) || 0 : 0,
+                at_least:     model.at_least ? parseInt(model.at_least) || 0 : 0,
+                longer_than:  model.longer_than ? parseInt(model.longer_than) || 0 : 0,
                 shorter_than: model.shorter_than ? parseInt(model.shorter_than) || 0 : 0
               };
               return value;

@@ -1,10 +1,10 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/UserRules/UserRuleEditFormMapper'
-], function(
+], (
   BaseListEdit,
   UserRuleEditFormMapper
-)  {
+) => {
   class UserRules extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -13,7 +13,7 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/user_rules').success( data => {
+      this.Api.sendGet('/user_rules').success((data) => {
         const models = data.user_rules;
         return deferred.resolve(models);
       }
@@ -29,9 +29,7 @@ define([
      * @return {promise}
      */
     deleteUserRuleById(id) {
-      const promise = this.Api.sendDelete(`/user_rules/${id}`).success( () => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/user_rules/${id}`).success(() => this.removeListModelById(id));
 
       return promise;
     }
@@ -42,7 +40,6 @@ define([
      * @return {UserRuleEditFormMapper}
      */
     getFormMapper() {
-
       if (this.formMapper) { return this.formMapper; }
       this.formMapper = new UserRuleEditFormMapper();
       return this.formMapper;
@@ -59,9 +56,9 @@ define([
 
       if (id) {
         this.Api.sendDataGet({
-          user_rule: `/user_rules/${id}`,
+          user_rule:  `/user_rules/${id}`,
           usergroups: '/non_sys_usergroups'
-        }).then( result => {
+        }).then((result) => {
           const data = {};
           data.user_rule = result.data.user_rule.user_rule;
           data.all_usergroups = result.data.usergroups.groups;
@@ -70,7 +67,7 @@ define([
         }
         , () => deferred.reject());
       } else {
-        this.Api.sendGet('/non_sys_usergroups').then( result => {
+        this.Api.sendGet('/non_sys_usergroups').then((result) => {
           const data = {};
           data.user_rule = {};
           data.all_usergroups = result.data.groups;
@@ -97,9 +94,9 @@ define([
       const postData = mapper.getPostDataFromForm(formModel);
 
       if (model.id) {
-        promise = this.Api.sendPostJson(`/user_rules/${model.id}`, {user_rule: postData});
+        promise = this.Api.sendPostJson(`/user_rules/${model.id}`, { user_rule: postData });
       } else {
-        promise = this.Api.sendPutJson('/user_rules', {user_rule: postData}).success( data => model.id = data.id);
+        promise = this.Api.sendPutJson('/user_rules', { user_rule: postData }).success(data => model.id = data.id);
       }
 
       promise.success(() => {

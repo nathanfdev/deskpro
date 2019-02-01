@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
    * Description
    * -----------
@@ -15,11 +15,11 @@ define(function() {
   const Reports_Directive_DpReportTitle = ['$state', '$location', ($state, $location) =>
     ({
       restrict: 'AE',
-      replace: true,
-      scope: {
-        possibleValues: '=',
+      replace:  true,
+      scope:    {
+        possibleValues:  '=',
         valueToDecorate: '=',
-        reportId: '='
+        reportId:        '='
       },
       template: `\
 <h3 style="font-weight:bold;">
@@ -34,7 +34,6 @@ define(function() {
 </h3>\
 `,
       link(scope, element, attrs) {
-
         /*
 
         Below variables will look like following
@@ -54,8 +53,7 @@ define(function() {
         scope.defaultLinkParams = '';
         scope.type = attrs.type || 'builtIn';
 
-        scope.$watch('possibleValues', newVal => {
-
+        scope.$watch('possibleValues', (newVal) => {
           if (typeof newVal === 'undefined') { return; }
           const { valueToDecorate } = scope;
           if (!valueToDecorate) { return; }
@@ -69,8 +67,7 @@ define(function() {
          * This function builds directive by constructing it on 'the fly' using DOM operations
          * The reason for doing so - problems with inner directives that were compiled with $compile() functionality
          */
-        var buildDirectiveVariables = function(value) {
-
+        var buildDirectiveVariables = function (value) {
           let match;
           let key = 0;
           const params = $state.params.params.split(',');
@@ -99,9 +96,9 @@ define(function() {
         /*
          * Returning select box options that was rendered according to 'input' parameter
          */
-        var collectSelectOptions = function(input) {
-
-          let extrasMatch, type;
+        var collectSelectOptions = function (input) {
+          let extrasMatch,
+            type;
           const { possibleValues } = scope;
           let choices = {};
           const extras = {};
@@ -134,9 +131,9 @@ define(function() {
 
           // constructing selects...
 
-          for (let key of Object.keys(choices || {})) {
+          for (const key of Object.keys(choices || {})) {
             const value = choices[key];
-            options.push({value: key, label: value[0]});
+            options.push({ value: key, label: value[0] });
           }
 
           return {
@@ -149,16 +146,16 @@ define(function() {
          */
         return scope.changeLinkParams = () =>
           // this timeout prevents select2 errors (I dont know why)
-          window.setTimeout(function() {
+          window.setTimeout(() => {
             const linkParams = scope.selected.join(',');
-            const href = $state.href('builder.edit', {id: scope.reportId, params: linkParams, type: scope.type});
+            const href = $state.href('builder.edit', { id: scope.reportId, params: linkParams, type: scope.type });
             return window.location.hash = href;
           }
           , 100)
         ;
       }
     })
-  
+
   ];
 
   return Reports_Directive_DpReportTitle;

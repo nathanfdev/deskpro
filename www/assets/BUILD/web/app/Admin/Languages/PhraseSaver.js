@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings'], function(Strings) {
+define(['DeskPRO/Util/Strings'], (Strings) => {
   class PhraseSaver {
     constructor(Api, $q) {
       this.Api = Api;
@@ -14,14 +14,14 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
     savePhrases(langId, phrases) {
       const savePhrases = [];
 
-      for (let p of Array.from(phrases)) {
+      for (const p of Array.from(phrases)) {
         let setVal = p.set;
 
         if (setVal) {
           p.set = Strings.trim(p.set);
         }
 
-        if (!setVal || (p.set === "") || (p.set === p.lang_default)) {
+        if (!setVal || (p.set === '') || (p.set === p.lang_default)) {
           setVal = null;
         }
 
@@ -30,7 +30,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
         }
 
         savePhrases.push({
-          name: p.id,
+          name:   p.id,
           phrase: setVal
         });
       }
@@ -42,8 +42,8 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
       }
 
       phrases = [];
-      for (let n of Array.from(savePhrases)) {
-        if ('user.general.helpdesk_by' !== n.name) { phrases.push(n); }
+      for (const n of Array.from(savePhrases)) {
+        if (n.name !== 'user.general.helpdesk_by') { phrases.push(n); }
       }
 
       this.Api.sendPostJson(`/langs/${langId}/phrases`, {

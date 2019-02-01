@@ -36,7 +36,7 @@ define([
   'DeskPRO/Directive/DpDateTimePicker',
   'customEventPolyfill',
   'toastr'
-], function(
+], (
   angular,
 
   StateCollection,
@@ -47,7 +47,7 @@ define([
   SetupControllers,
   SetupServices,
   SetupDirectives
-) {
+) => {
   const InterfaceApp = angular.module('DeskPRO.InterfaceApp', [
     'ngAnimate',
     'ngSanitize',
@@ -68,18 +68,18 @@ define([
   SetupDirectives(InterfaceApp);
 
   let isDone = false;
-  InterfaceApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+  InterfaceApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     if (isDone) { return; }
     isDone = true;
 
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
 
     const reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.InterfaceApp'));
     ReportsRouting(reportStates);
-    for (let w of Array.from(reportStates.whens)) {
+    for (const w of Array.from(reportStates.whens)) {
       $urlRouterProvider.when(w[0], w[1]);
     }
-    return Array.from(reportStates.routes).map((r) =>
+    return Array.from(reportStates.routes).map(r =>
       r.applyToStateProvider($stateProvider));
   }
   ]);
@@ -91,7 +91,7 @@ define([
   ]);
 
   if (window.parent) {
-    const event = new CustomEvent('dpIframeLoaded', { 'detail': { id: 'reports-interface' } });
+    const event = new CustomEvent('dpIframeLoaded', { detail: { id: 'reports-interface' } });
     if (window && window.parent && window.parent.document && window.parent.document.dispatchEvent) {
       window.parent.document.dispatchEvent(event);
     }
@@ -100,7 +100,7 @@ define([
   try {
     if (__guard__(window.parent != null ? window.parent.DP_FRAME_OVERLAYS : undefined, x => x['reports-interface'])) {
       InterfaceApp.run(['$rootScope', $rootScope =>
-        $rootScope.$on('$locationChangeSuccess', function() {
+        $rootScope.$on('$locationChangeSuccess', () => {
           if (window.parent.DP_FRAME_OVERLAYS['reports-interface'].opened) {
             return window.parent.DP_FRAME_OVERLAYS['reports-interface'].setHash(window.location.hash);
           }

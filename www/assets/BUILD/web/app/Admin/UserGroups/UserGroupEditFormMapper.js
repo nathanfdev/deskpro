@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Util/Util'
-], function(
+], (
   Util
-) {
+) => {
   class UserGroupEditFormMapper {
     getFormFromModel(model) {
       const form = {};

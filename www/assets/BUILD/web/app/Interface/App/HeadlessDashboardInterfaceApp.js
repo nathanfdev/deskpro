@@ -35,7 +35,7 @@ define([
   'jquery',
   'moment',
   'momentTimezone',
-], function(
+], (
   angular,
 
   StateCollection,
@@ -49,7 +49,7 @@ define([
   TemplateLoader,
   TemplateManager,
   Reports_App_Service_DashboardWidget
-) {
+) => {
   const HeadlessDashboardInterfaceApp = angular.module('DeskPRO.HeadlessDashboardInterfaceApp', [
     'ngAnimate',
     'ngSanitize',
@@ -68,26 +68,26 @@ define([
   SetupDirectives(HeadlessDashboardInterfaceApp);
 
   let isDone = false;
-  HeadlessDashboardInterfaceApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+  HeadlessDashboardInterfaceApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     if (isDone) { return; }
     isDone = true;
 
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
 
     const reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.HeadlessDashboardInterfaceApp'));
     HeadlessDashboardRouting(reportStates);
-    for (let w of Array.from(reportStates.whens)) {
+    for (const w of Array.from(reportStates.whens)) {
       $urlRouterProvider.when(w[0], w[1]);
     }
-    return Array.from(reportStates.routes).map((r) =>
+    return Array.from(reportStates.routes).map(r =>
       r.applyToStateProvider($stateProvider));
   }
   ]);
 
-  HeadlessDashboardInterfaceApp.service('AppConfig', () => new AppConfig);
+  HeadlessDashboardInterfaceApp.service('AppConfig', () => new AppConfig());
 
-  HeadlessDashboardInterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', function(AppConfig, $http, $q) {
-    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q);
+  HeadlessDashboardInterfaceApp.service('TemplateLoader', ['AppConfig', '$http', '$q', function (AppConfig, $http, $q) {
+    window.DP_TEMPLATE_LOADER = new TemplateLoader(`${AppConfig.getBaseUrl()}agent/viewer/load-views`, $http, $q);
     return window.DP_TEMPLATE_LOADER;
   }
   ]);
@@ -97,13 +97,13 @@ define([
   HeadlessDashboardInterfaceApp.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) => new Reports_App_Service_DashboardWidget(Api, Api2, $q)
   ]);
 
-  HeadlessDashboardInterfaceApp.run(['TemplateLoader', function(TemplateLoader) {} ]);
-  HeadlessDashboardInterfaceApp.run(['TemplateManager', function(TemplateManager) {} ]);
+  HeadlessDashboardInterfaceApp.run(['TemplateLoader', function (TemplateLoader) {}]);
+  HeadlessDashboardInterfaceApp.run(['TemplateManager', function (TemplateManager) {}]);
 
-  HeadlessDashboardInterfaceApp.factory('HttpTemplateInterceptor', [function() {
+  HeadlessDashboardInterfaceApp.factory('HttpTemplateInterceptor', [function () {
     const isTemplateUrl = url => !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/);
     const getViewName = url => url.replace(/^\//, '');
-    const getLoadUrl = view => window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1';
+    const getLoadUrl = view => `${window.DP_TEMPLATE_LOADER.getLoadUrl([view])}&intercepted=1`;
 
     return {
       request(config) {

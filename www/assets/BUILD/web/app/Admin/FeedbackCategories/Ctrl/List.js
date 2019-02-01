@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_FeedbackCategories_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_FeedbackCategories_Ctrl_List';
@@ -7,7 +7,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     init() {
-
       this.$scope.brand_id = this.$stateParams.brandId;
       this.feedback_categories = [];
       this.parent_data = [];
@@ -15,23 +14,21 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       return this.sortedListOptions = {
 
-        axis: 'y',
+        axis:   'y',
         handle: '.drag-handle',
         update: (ev, data) => {
           const $list = data.item.closest('ul');
 
-          const postData = {display_orders: []};
+          const postData = { display_orders: [] };
 
           let x = 0;
           const { em } = this;
 
-          $list.find('li').each(function() {
-
+          $list.find('li').each(function () {
             x += 10;
             const feedback_category_id = parseInt($(this).data('id'));
 
             if (feedback_category_id) {
-
               const feedback_category = em.getById('feedback_category', feedback_category_id);
 
               if (feedback_category) {
@@ -59,14 +56,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-
       const promises = [];
-      promises.push(this.FeedbackCategoriesData.loadList().then( recs => {
-
+      promises.push(this.FeedbackCategoriesData.loadList().then((recs) => {
         this.initHierarchyData(this.sort(recs.values()));
 
         return this.addManagedListener(this.FeedbackCategoriesData.recs, 'changed', () => {
-
           this.initHierarchyData(this.sort(this.FeedbackCategoriesData.recs.values()));
           return this.ngApply();
         });
@@ -77,25 +71,20 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initHierarchyData(feedback_categories) {
-
       this.feedback_categories = feedback_categories;
       this.parent_data = [];
       this.child_data = {};
 
       return (() => {
         const result = [];
-        for (let category of Array.from(feedback_categories)) {
-
+        for (const category of Array.from(feedback_categories)) {
           if (parseInt(category.parent_id, 10)) {
-
             if (!this.child_data[category.parent_id]) {
               this.child_data[category.parent_id] = [];
             }
 
             result.push(this.child_data[category.parent_id].push(category));
-
           } else {
-
             result.push(this.parent_data.push(category));
           }
         }

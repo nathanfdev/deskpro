@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class DeskPRO_Util_Numbers {
     /*
       * Get the value in <var>numbers</var> that is closest to <var>value</var>.
@@ -29,7 +29,7 @@ define(function() {
     */
     parseNumber(value) {
       let n;
-      if (value && ((value+"").indexOf('.') !== -1)) {
+      if (value && ((`${value}`).indexOf('.') !== -1)) {
         n = parseFloat(value);
       } else {
         n = parseInt(value);

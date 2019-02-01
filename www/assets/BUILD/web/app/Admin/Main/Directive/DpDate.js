@@ -1,4 +1,4 @@
-define(['moment'], function(moment){
+define(['moment'], (moment) => {
   /*
     * Description
     * -----------
@@ -9,13 +9,13 @@ define(['moment'], function(moment){
   const Admin_Main_Directive_DpDate = ['DpDateService', '$parse', (ds, $parse) =>
     ({
       restrict: 'A',
-      scope: {
-        dpDate: "=dpDate"
+      scope:    {
+        dpDate: '=dpDate'
       },
       link(scope, el, attr) {
-        const format = attr.format || "fulltime";
+        const format = attr.format || 'fulltime';
 
-        const update = function() {
+        const update = function () {
           const datestr = scope.dpDate;
           let result  = null;
 
@@ -35,7 +35,7 @@ define(['moment'], function(moment){
         return scope.$watch('dpDate', () => update());
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpDate;

@@ -1,4 +1,4 @@
-define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
+define(['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) => {
   class Admin_Templates_Ctrl_TemplateGroupList extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Templates_Ctrl_TemplateGroupList';
@@ -13,11 +13,11 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
       let promise;
       return promise = this.Api.sendDataGet({
         info: '/templates-info'
-      }).then( res => {
+      }).then((res) => {
         let title;
         this.groups = [];
 
-        for (let groupName of Object.keys(res.data.info.list.UserBundle || {})) {
+        for (const groupName of Object.keys(res.data.info.list.UserBundle || {})) {
           const tplList = res.data.info.list.UserBundle[groupName];
           title = groupName;
           if (title === 'TOP') { title = 'Layout'; }
@@ -29,7 +29,7 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
         }
 
         return this.groups.push({
-          id: "DeskPRO:custom_fields",
+          id:    'DeskPRO:custom_fields',
           title: 'CustomFields'
         });
       });

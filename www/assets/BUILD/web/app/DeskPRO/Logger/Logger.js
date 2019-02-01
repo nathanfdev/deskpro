@@ -1,14 +1,12 @@
 define([
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Strings'
-], function(
+], (
   Util,
   Strings
-){
+) => {
   class Logger {
     static initClass() {
-
-
       this.DEBUG     = 100;
       this.INFO      = 200;
       this.NOTICE    = 250;
@@ -85,7 +83,8 @@ define([
       * @return {bool}
     */
     addRecord(level, message, context) {
-      let messageConsole, messageString;
+      let messageConsole,
+        messageString;
       if (context == null) { context = {}; }
       if (!this.handlers.length) {
         return false;
@@ -98,13 +97,13 @@ define([
         const stringArgs = [];
         const consoleArgs = [];
 
-        for (let v of Array.from(message)) {
+        for (const v of Array.from(message)) {
           if (Util.isString(v) || Util.isNumber(v)) {
-            stringArgs.push(v + "");
-            consoleArgs.push("%s");
+            stringArgs.push(`${v}`);
+            consoleArgs.push('%s');
           } else {
             stringArgs.push(Util.dump(v));
-            consoleArgs.push("%o");
+            consoleArgs.push('%o');
           }
         }
 
@@ -116,30 +115,30 @@ define([
         messageConsole = [message];
       } else {
         messageString  = Util.dump(message);
-        messageConsole = ["{0}", message];
+        messageConsole = ['{0}', message];
       }
 
       const date = new Date();
 
-      const dateStr = date.getUTCFullYear() + '-' +
-        Strings.prePad(date.getUTCMonth()+1, '0', 2) + '-' +
-        Strings.prePad(date.getUTCDate(), '0', 2) + ' ' +
-        Strings.prePad(date.getUTCHours(), '0', 2) + ':' +
-        Strings.prePad(date.getUTCMinutes(), '0', 2) + ':' +
-        Strings.prePad(date.getUTCSeconds(), '0', 2) + '.' +
-        Strings.prePad(date.getUTCMilliseconds(), '0', 3);
+      const dateStr = `${date.getUTCFullYear()}-${
+        Strings.prePad(date.getUTCMonth() + 1, '0', 2)}-${
+        Strings.prePad(date.getUTCDate(), '0', 2)} ${
+        Strings.prePad(date.getUTCHours(), '0', 2)}:${
+        Strings.prePad(date.getUTCMinutes(), '0', 2)}:${
+        Strings.prePad(date.getUTCSeconds(), '0', 2)}.${
+        Strings.prePad(date.getUTCMilliseconds(), '0', 3)}`;
 
       let record = {
-        message:        messageString,
+        message:    messageString,
         messageRaw,
         messageConsole,
         context,
         level,
-        level_name:     Logger.LEVELS[level],
-        channel:        this.name,
+        level_name: Logger.LEVELS[level],
+        channel:    this.name,
         date,
         dateStr,
-        extra:          {}
+        extra:      {}
       };
 
       let handlerKey = null;
@@ -155,7 +154,7 @@ define([
         return false;
       }
 
-      for (let proc of Array.from(this.processors)) {
+      for (const proc of Array.from(this.processors)) {
         if (proc.process != null) {
           record = proc.process(record);
         } else {

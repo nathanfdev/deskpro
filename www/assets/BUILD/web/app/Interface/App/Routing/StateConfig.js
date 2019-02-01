@@ -1,7 +1,7 @@
-define(function() {
+define(() => {
   class StateConfig {
     static createFactory(module) {
-      return function(id = null) {
+      return function (id = null) {
         const c = new StateConfig(module, id);
         return c;
       };

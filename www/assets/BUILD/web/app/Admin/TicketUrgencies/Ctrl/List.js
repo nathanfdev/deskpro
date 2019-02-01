@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_TicketUrgencies_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketUrgencies_Ctrl_List';
@@ -12,10 +12,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const promise = this.Api.sendGet("/ticket_urgencies").success( data => {
+      const promise = this.Api.sendGet('/ticket_urgencies').success((data) => {
         this.urgency_counts = data.urgency_counts;
 
-        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) =>
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(num =>
           this.urgencies.push({
             num,
             ticket_count: this.urgency_counts[num] ? this.urgency_counts[num] : 0

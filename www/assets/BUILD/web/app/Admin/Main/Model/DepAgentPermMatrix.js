@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class Admin_Main_Model_DepAgentPermMatrix {
     constructor() {
       this.agents = [];
@@ -16,9 +16,8 @@ define(function() {
       * @param {Array}  perms_array  Array of current perm values
     */
     addGroup(group, perms_array) {
-
       const perms = {};
-      for (let p of Array.from(perms_array)) {
+      for (const p of Array.from(perms_array)) {
         perms[p.name] = { state: false, set_state: p.state, soft_state: false, locked: false };
       }
 
@@ -41,9 +40,8 @@ define(function() {
       * @param {Array}  perms_array  Array of current perm values
     */
     addAgent(agent, perms_array) {
-
       const perms = {};
-      for (let p of Array.from(perms_array)) {
+      for (const p of Array.from(perms_array)) {
         perms[p.name] = { state: false, set_state: p.state, soft_state: true, locked: false };
       }
 
@@ -58,14 +56,12 @@ define(function() {
     }
 
 
-
     /**
     * After all perm values are added to the matrix,
       * this should be called to propogate values from ug's to
       * agents and set the proper locked state.
     */
     initPerms(group_perms, agent_perms) {
-
       let p;
       if (group_perms) {
         for (p of Array.from(group_perms)) {
@@ -91,13 +87,13 @@ define(function() {
 
       // Init group_to_agents map
       // And fill/correct missing perms
-      for (let agentObj of Array.from(this.agents)) {
+      for (const agentObj of Array.from(this.agents)) {
         const agent = agentObj.model;
         const agentPerms = agentObj.perms;
 
         if (!agent.agentgroup_ids) { continue; }
 
-        for (let gid of Array.from(agent.agentgroup_ids)) {
+        for (const gid of Array.from(agent.agentgroup_ids)) {
           if (!this.groups_map[gid]) { continue; }
           this.groups_map[gid].aids.push(agent.id);
         }
@@ -154,7 +150,7 @@ define(function() {
           if (groupPerms.full.state || groupPerms.assign.state) {
             result.push((() => {
               const result1 = [];
-              for (let aid of Array.from(groupObj.aids)) {
+              for (const aid of Array.from(groupObj.aids)) {
                 if (groupPerms.full.state) {
                   this.agents_map[aid].perms.full.soft_state   = true;
                   this.agents_map[aid].perms.full.state        = true;
@@ -185,7 +181,6 @@ define(function() {
     * Refreshes permissions on agents based on current group permssions
     */
     refreshAgentGroupPerms(aid = null) {
-
       let agents;
       if (aid) {
         agents = [this.agents_map[aid]];
@@ -195,7 +190,7 @@ define(function() {
 
       return (() => {
         const result = [];
-        for (let agentObj of Array.from(agents)) {
+        for (const agentObj of Array.from(agents)) {
           const agent = agentObj.model;
           const agentPerms = agentObj.perms;
 
@@ -206,7 +201,7 @@ define(function() {
           agentPerms.assign.locked     = false;
 
           // Then process usergroups on them
-          for (let gid of Array.from(agent.agentgroup_ids)) {
+          for (const gid of Array.from(agent.agentgroup_ids)) {
             const groupPerms = this.groups_map[gid].perms;
 
             if (groupPerms.full.state) {
@@ -274,12 +269,10 @@ define(function() {
             groupPerms.assign.state = false;
           }
         }
+      } else if (groupPerms[name].set_state || groupPerms[name].soft_state) {
+        groupPerms[name].state = true;
       } else {
-        if (groupPerms[name].set_state || groupPerms[name].soft_state) {
-          groupPerms[name].state = true;
-        } else {
-          groupPerms[name].state = false;
-        }
+        groupPerms[name].state = false;
       }
 
       return this.refreshAgentGroupPerms();
@@ -318,12 +311,10 @@ define(function() {
             agentPerms.assign.state = false;
           }
         }
+      } else if (agentPerms[name].set_state || agentPerms[name].soft_state) {
+        agentPerms[name].state = true;
       } else {
-        if (agentPerms[name].set_state || agentPerms[name].soft_state) {
-          agentPerms[name].state = true;
-        } else {
-          agentPerms[name].state = false;
-        }
+        agentPerms[name].state = false;
       }
 
       return this.refreshAgentGroupPerms(aid);
@@ -338,34 +329,34 @@ define(function() {
     getPermsData() {
       const perms = [];
 
-      for (let agentObj of Array.from(this.agents)) {
+      for (const agentObj of Array.from(this.agents)) {
         if (agentObj.perms.full.state) {
           perms.push({
             person_id: agentObj.model.id,
-            name: 'full',
-            value: 1
+            name:      'full',
+            value:     1
           });
         } else if (agentObj.perms.assign.state) {
           perms.push({
             person_id: agentObj.model.id,
-            name: 'assign',
-            value: 1
+            name:      'assign',
+            value:     1
           });
         }
       }
 
-      for (let groupObj of Array.from(this.groups)) {
+      for (const groupObj of Array.from(this.groups)) {
         if (groupObj.perms.full.state) {
           perms.push({
             usergroup_id: groupObj.model.id,
-            name: 'full',
-            value: 1
+            name:         'full',
+            value:        1
           });
         } else if (groupObj.perms.assign.state) {
           perms.push({
             usergroup_id: groupObj.model.id,
-            name: 'assign',
-            value: 1
+            name:         'assign',
+            value:        1
           });
         }
       }

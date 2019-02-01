@@ -1,4 +1,4 @@
-define(['jquery'], function($) {
+define(['jquery'], ($) => {
   /*
    * Description
    * -----------
@@ -31,8 +31,7 @@ define(['jquery'], function($) {
     ({
       restrict: 'A',
       link(scope, element, attrs) {
-
-        const id = attrs['dpInhelpBtn'].replace(/\./g, '_');
+        const id = attrs.dpInhelpBtn.replace(/\./g, '_');
         const scopedId = `dp_ctrl_inhelp_state.${id}`;
 
         if (!$rootScope.dp_ctrl_inhelp_state) {
@@ -40,7 +39,7 @@ define(['jquery'], function($) {
         }
 
         let defaultState = true;
-        if ((attrs['defaultState'] != null) === 'closed') {
+        if ((attrs.defaultState != null) === 'closed') {
           defaultState = false;
         }
 
@@ -50,7 +49,7 @@ define(['jquery'], function($) {
         }
 
         const bodyId = `dp_inhelp_${id}`;
-        const btnId  = bodyId + '_btn';
+        const btnId  = `${bodyId}_btn`;
 
         const icon = angular.element('<i></i>');
         element.prepend(icon);
@@ -61,7 +60,7 @@ define(['jquery'], function($) {
         // Change the elements current display state
         //---
 
-        const updateState = function() {
+        const updateState = function () {
           if ($rootScope.dp_ctrl_inhelp_state != null ? $rootScope.dp_ctrl_inhelp_state[id] : undefined) {
             element.fadeOut(200);
             $(`#${bodyId}`).slideDown(200);
@@ -80,14 +79,13 @@ define(['jquery'], function($) {
 
         $rootScope.$watch(scopedId, newVal => updateState(newVal));
 
-        element.on('click', function(ev) {
+        element.on('click', (ev) => {
           ev.preventDefault();
-          return scope.$apply(function() {
+          return scope.$apply(() => {
             if (($rootScope.dp_ctrl_inhelp_state != null ? $rootScope.dp_ctrl_inhelp_state[id] : undefined)) {
               return $rootScope.dp_ctrl_inhelp_state[id] = false;
-            } else {
-              return ($rootScope.dp_ctrl_inhelp_state != null ? $rootScope.dp_ctrl_inhelp_state[id]  = true : undefined);
             }
+            return ($rootScope.dp_ctrl_inhelp_state != null ? $rootScope.dp_ctrl_inhelp_state[id]  = true : undefined);
           });
         });
 
@@ -99,13 +97,12 @@ define(['jquery'], function($) {
         if ($rootScope.dp_ctrl_inhelp_state[id]) {
           element.hide();
           return $(`#${bodyId}`).show();
-        } else {
-          element.show();
-          return $(`#${bodyId}`).hide();
         }
+        element.show();
+        return $(`#${bodyId}`).hide();
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpInhelpBtn;

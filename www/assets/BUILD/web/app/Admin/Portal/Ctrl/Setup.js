@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Portal_Ctrl_Setup extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Portal_Ctrl_Setup';
@@ -8,10 +8,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     init() {
       this.settings = {
-        deskpro_url: '',
-        deskpro_name: '',
-        deskpro_domain: '',
-        domain_choice: 'default',
+        deskpro_url:      '',
+        deskpro_name:     '',
+        deskpro_domain:   '',
+        domain_choice:    'default',
         orig_deskpro_url: null
       };
       this.portalSettings = this.DataService.get('PortalGeneralSettings');
@@ -19,19 +19,17 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.$scope.brand_id = this.$stateParams.brandId;
       this.$scope.brand = false;
 
-      this.Api2.sendGet('brands/default').then(res => {
-        return this.$scope.default_brand = res.data.data;
-      });
+      this.Api2.sendGet('brands/default').then(res => this.$scope.default_brand = res.data.data);
 
       this.$scope.$on('icon.selected', (e, path) => this.selectIcon(path));
 
       this.$scope.$watch('brand_id', () => {
         this.portalSettings.setBrandId(this.$scope.brand_id);
-        return this.portalSettings.getSettings().then(s => { return this.settings = s; });
+        return this.portalSettings.getSettings().then(s => this.settings = s);
       });
 
       const tmpUpdate = () => this.portalSettings.updateSettingsTemporary(this.settings);
-      for (let i of ['apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads', 'iface_portal', 'iface_widget']) {
+      for (const i of ['apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads', 'iface_portal', 'iface_widget']) {
         this.$scope.$watch(`Ctrl.settings.${i}`, tmpUpdate);
       }
 
@@ -44,9 +42,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
           if (this.settings.domain_choice === 'default') {
             return this.settings.deskpro_url = `https://${this.settings.deskpro_domain}.deskpro.com/`;
-          } else {
-            return this.settings.deskpro_url = `https://${this.settings.deskpro_domain}/`;
           }
+          return this.settings.deskpro_url = `https://${this.settings.deskpro_domain}/`;
         };
 
         return this.$scope.$watch('Ctrl.settings.deskpro_domain + Ctrl.settings.domain_choice', updateFn);
@@ -54,15 +51,15 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     setPortalMode(v) {
-      if (v === "publish") {
-        this.settings.portal_mode = "publish";
+      if (v === 'publish') {
+        this.settings.portal_mode = 'publish';
         this.settings.apps_downloads = true;
         this.settings.apps_feedback = true;
         this.settings.apps_guides = true;
         this.settings.apps_kb = true;
         this.settings.apps_news = true;
       } else {
-        this.settings.portal_mode = "tickets";
+        this.settings.portal_mode = 'tickets';
         this.settings.apps_downloads = false;
         this.settings.apps_feedback = false;
         this.settings.apps_guides = false;
@@ -81,13 +78,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         const settingPromise = this.portalSettings.getSettings();
 
         settingPromise
-          .then(res => { return this.settings = res; });
+          .then(res => this.settings = res);
         promises.push(settingPromise);
 
         const brandPromise = this.Api2.sendGet(`/brands/${this.$scope.brand_id}`);
-        brandPromise.then(res => {
-          return this.$scope.brand = res.data.data;
-        });
+        brandPromise.then(res => this.$scope.brand = res.data.data);
 
         promises.push(brandPromise);
       }
@@ -96,7 +91,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     cloudSetupHost() {
-
       this.$scope.ma_error_message = null;
       this.$scope.ma_pending_message = null;
 
@@ -114,7 +108,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       const domain = parser.hostname;
 
       if (!domain) {
-        this.Growl.error("You must specify a name and a url");
+        this.Growl.error('You must specify a name and a url');
         $('#helpdesk_name').focus();
         r.reject();
         return;
@@ -129,12 +123,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       this.$scope.ma_pending_message = 'Checking your custom domain';
 
-      this.setupCustomDomain(domain).then(() => {
-        return d.resolve();
-      }
-      , () => {
-        return d.reject();
-      });
+      this.setupCustomDomain(domain).then(() => d.resolve()
+      , () => d.reject());
 
       return d.promise;
     }
@@ -142,7 +132,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     setupCustomDomain(domain) {
       const d = this.$q.defer();
 
-      this.Api.sendPostJson('/settings/cloud/setup-custom-domain?allowProvider', { domain }).then( res => {
+      this.Api.sendPostJson('/settings/cloud/setup-custom-domain?allowProvider', { domain }).then((res) => {
         console.log(res);
 
         if (res.data.error) {
@@ -153,20 +143,13 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         } else if (!res.data.error && !res.data.domain_id) {
           this.$scope.ma_error_message = null;
           this.$scope.ma_pending_message = res.data.message;
-          return this.$timeout(() => {
-            return this.setupCustomDomain(domain).then(() => {
-              return d.resolve();
-            }
-            , () => {
-              return d.reject();
-            });
-          }
+          return this.$timeout(() => this.setupCustomDomain(domain).then(() => d.resolve()
+            , () => d.reject())
           , 3000);
-        } else {
-          this.$scope.ma_error_message = null;
-          this.$scope.ma_pending_message = 'Your custom domain has been configured. It might take a few minutes for your domain to become fully functional.';
-          return d.resolve();
         }
+        this.$scope.ma_error_message = null;
+        this.$scope.ma_pending_message = 'Your custom domain has been configured. It might take a few minutes for your domain to become fully functional.';
+        return d.resolve();
       }
       , () => {
         this.$scope.form_error = 'server_error';
@@ -177,9 +160,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     saveSettings(skipCloudCheck) {
-      let checkP, d;
+      let checkP,
+        d;
       if (!this.settings.deskpro_name) {
-        this.Growl.error("You must specify a name");
+        this.Growl.error('You must specify a name');
         $('#helpdesk_name').focus();
         return false;
       }
@@ -204,20 +188,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         checkP = d.promise;
       }
 
-      return checkP.then(() => {
-        return this.portalSettings.updateSettings(this.settings).then(s => {
-          this.settings = s;
-          this.originalUrl === this.settings.deskpro_url;
-          this.stopSpinner();
-          return this.$scope.$emit('dp-update-brands');
-        }
-        , () => {
-          return this.stopSpinner();
-        });
+      return checkP.then(() => this.portalSettings.updateSettings(this.settings).then((s) => {
+        this.settings = s;
+        this.originalUrl === this.settings.deskpro_url;
+        this.stopSpinner();
+        return this.$scope.$emit('dp-update-brands');
       }
-      , () => {
-        return this.stopSpinner();
-      });
+        , () => this.stopSpinner())
+      , () => this.stopSpinner());
     }
 
     createBrand() {
@@ -239,7 +217,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       }
 
       if (!this.settings.deskpro_name) {
-        this.Growl.error("You must specify a name");
+        this.Growl.error('You must specify a name');
         $('#helpdesk_name').focus();
         return false;
       }
@@ -262,22 +240,22 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       if (window.DP_IS_CLOUD) {
         checkP = this.cloudSetupHost();
       } else {
-        checkP = this.Api2.sendPostJson('/brands/check_url', {url: this.settings.deskpro_url});
+        checkP = this.Api2.sendPostJson('/brands/check_url', { url: this.settings.deskpro_url });
       }
 
-      return checkP.then( res => {
+      return checkP.then((res) => {
         if (!res || res.data.data.free) {
-          return this.Api2.sendPostJson('brands', brand).then(res => {
-            this.Growl.success("Brand created");
+          return this.Api2.sendPostJson('brands', brand).then((res) => {
+            this.Growl.success('Brand created');
             this.$scope.brand_id = res.data.data.id;
             this.portalSettings.setBrandId(res.data.data.id);
             this.brandId = res.data.data.id;
             return this.saveSettings(true).then(() => {
               this.stopSpinner();
-              return this.$state.go('portal.setup', {brandId: this.brandId});
+              return this.$state.go('portal.setup', { brandId: this.brandId });
             });
           }
-          , res => {
+          , (res) => {
             this.Growl.error(res.data.message);
             return this.stopSpinner();
           });
@@ -285,11 +263,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           this.Growl.error(res.data.data.reason);
           $('#helpdesk_url').focus();
           return this.stopSpinner();
-        } else {
-          this.Growl.error("Each brand need to have a different url");
-          $('#helpdesk_url').focus();
-          return this.stopSpinner();
         }
+        this.Growl.error('Each brand need to have a different url');
+        $('#helpdesk_url').focus();
+        return this.stopSpinner();
       }
       , () => {
         this.stopSpinner();
@@ -298,10 +275,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     deleteBrand() {
-      if (confirm("Are you sure you want to delete this brand? Deleting the brand will re-assign tickets and chat to the default brand. Theme personalization and templates will be lost.")) {
+      if (confirm('Are you sure you want to delete this brand? Deleting the brand will re-assign tickets and chat to the default brand. Theme personalization and templates will be lost.')) {
         return this.Api2.sendDelete(`brands/${this.$scope.brand_id}`).then(() => {
-          this.Growl.success("Brand deleted");
-          this.$state.go('portal.setup', {brandId: this.$scope.default_brand.id});
+          this.Growl.success('Brand deleted');
+          this.$state.go('portal.setup', { brandId: this.$scope.default_brand.id });
           return this.$scope.$emit('dp-update-brands');
         });
       }

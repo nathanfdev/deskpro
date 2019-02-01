@@ -3,12 +3,12 @@ define([
   'Admin/ChatDeps/ChatDepFormMapper',
   'DeskPRO/Util/Arrays',
   'DeskPRO/Util/Util'
-], function(
+], (
   BaseListEdit,
   ChatDepFormMapper,
   Arrays,
   Util
-)  {
+) => {
   class ChatDeps extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', 'Api2', '$q'];
@@ -19,7 +19,7 @@ define([
     resolveResponse(response) { return response.departments; }
 
     all(reload) {
-      return super.all(reload, {with_perms: 1});
+      return super.all(reload, { with_perms: 1 });
     }
 
     _doLoadList(params) {
@@ -27,14 +27,14 @@ define([
       params = params || {};
 
       // maybe should init query params as method argument
-      this.Api.sendGet(this.url(), params).success( data => {
+      this.Api.sendGet(this.url(), params).success((data) => {
         this.deps = data.departments;
 
-        var proc = function(parent) {
+        var proc = function (parent) {
           const list = [];
 
           const parent_id = parent ? parent.id : null;
-          for (let d of Array.from(data.departments)) {
+          for (const d of Array.from(data.departments)) {
             if (d.parent_id === parent_id) {
               d.parent = parent;
               d.children = proc(d);
@@ -77,16 +77,16 @@ define([
       let promise;
       if (id) {
         promise = this.Api.sendDataGet({
-          depInfo:            `/chat_deps/${id}`,
-          agentsInfo:         '/agents',
-          agentgroupsInfo:    '/agent_groups',
-          usergroupsInfo:     '/user_groups',
+          depInfo:         `/chat_deps/${id}`,
+          agentsInfo:      '/agents',
+          agentgroupsInfo: '/agent_groups',
+          usergroupsInfo:  '/user_groups',
         });
       } else {
         promise = this.Api.sendDataGet({
-          agentsInfo:         '/agents',
-          agentgroupsInfo:    '/agent_groups',
-          usergroupsInfo:     '/user_groups',
+          agentsInfo:      '/agents',
+          agentgroupsInfo: '/agent_groups',
+          usergroupsInfo:  '/user_groups',
         });
       }
 
@@ -94,7 +94,7 @@ define([
       const brandPromise = this.Api2.sendGet('brands');
       const chatQueuesPromise = this.Api2.sendGet('user_chat_queues');
 
-      const allPromise = this.$q.all([promise, this.loadList(), brandPromise, chatQueuesPromise]).then( result => {
+      const allPromise = this.$q.all([promise, this.loadList(), brandPromise, chatQueuesPromise]).then((result) => {
         const brands = result[2].data.data;
         const chatQueues = result[3].data.data;
         result = result[0].data;
@@ -107,9 +107,9 @@ define([
         } else {
           data.dep = {};
           data.depPerms = {
-            usergroup_ids: [],
+            usergroup_ids:  [],
             agentgroup_ids: [],
-            agent_ids: []
+            agent_ids:      []
           };
         }
 
@@ -155,7 +155,7 @@ define([
     */
 
     saveDisplayOrders(orders) {
-      const postData = {display_orders: []};
+      const postData = { display_orders: [] };
 
       for (let order = 0; order < orders.length; order++) {
         const id = orders[order];
@@ -181,7 +181,6 @@ define([
     */
 
     saveFormModel(dep, formModel) {
-
       let promise;
       const mapper = this.getFormMapper();
       const postData = mapper.getPostDataFromForm(formModel);
@@ -189,10 +188,10 @@ define([
       if (dep.id) {
         promise = this.Api.sendPostJson(`/chat_deps/${dep.id}`, postData);
       } else {
-        promise = this.Api.sendPutJson('/chat_deps', postData).success( data => dep.id = data.id);
+        promise = this.Api.sendPutJson('/chat_deps', postData).success(data => dep.id = data.id);
       }
 
-      promise.success( () => {
+      promise.success(() => {
         mapper.applyFormToModel(dep, formModel);
         return this.mergeDataModel(dep);
       });
@@ -208,14 +207,13 @@ define([
   */
 
     getLeafOptionsArray(exclude_id) {
-
       const list = [];
 
       var proc = (coll, title_seg) =>
 
         (() => {
           const result = [];
-          for (let d of Array.from(coll)) {
+          for (const d of Array.from(coll)) {
             if (exclude_id && (d.id === exclude_id)) { continue; }
 
             if (!title_seg) { title_seg = []; }
@@ -226,8 +224,8 @@ define([
               proc(d.children, title_seg);
             } else {
               list.push({
-                id: d.id,
-                title: title_seg.join(" > ")
+                id:    d.id,
+                title: title_seg.join(' > ')
               });
             }
 
@@ -249,8 +247,8 @@ define([
     */
 
     removeListModelById(id) {
-
-      let idx, model;
+      let idx,
+        model;
       if (!this.isListLoaded) { return; }
       super.removeListModelById(id);
 
@@ -306,12 +304,9 @@ define([
     */
 
     deleteDepartmentById(id, move_to) {
-
       const promise = this.Api.sendDelete(`/chat_deps/${id}`, {
         move_to
-      }).success( () => {
-        return this.removeListModelById(id);
-      });
+      }).success(() => this.removeListModelById(id));
 
       return promise;
     }

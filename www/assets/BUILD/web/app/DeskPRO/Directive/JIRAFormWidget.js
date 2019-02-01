@@ -1,14 +1,13 @@
 define(() =>
 
-  function($compile) {
-
+  function ($compile) {
     const templates = {
-      'com.atlassian.jira.plugin.system.customfieldtypes:textfield': `\
+      'com.atlassian.jira.plugin.system.customfieldtypes:textfield': '\
 <input type="text" ng-model="value" ng-required="field.required" />\
-`,
-      'com.atlassian.jira.plugin.system.customfieldtypes:textarea': `\
+',
+      'com.atlassian.jira.plugin.system.customfieldtypes:textarea': '\
 <textarea ng-model="value" ng-required="field.required"></textarea>\
-`,
+',
       'com.atlassian.jira.plugin.system.customfieldtypes:select': `\
 <select  ui-select2 ng-model="value" style="min-width: 200px;" ng-required="field.required" data-placeholder="Choose one">
   <option value=""></option>
@@ -35,36 +34,36 @@ define(() =>
   {{ field.schema.system ? val.name : val.value }}
 </label>\
 `,
-      'com.atlassian.jira.plugin.system.customfieldtypes:labels': `\
+      'com.atlassian.jira.plugin.system.customfieldtypes:labels': '\
 <input type="text" ui-select2="{multiple: true, simple_tags: true, tags: []}" ng-model="value" ng-required="field.required" />\
-`,
-      'com.atlassian.jira.plugin.system.customfieldtypes:datepicker': `\
+',
+      'com.atlassian.jira.plugin.system.customfieldtypes:datepicker': '\
 <input name="{{ field.id }}" type="text" ng-model="value" dp-datetime-popup="DD MMM YYYY" append-to="body" readonly />\
-`,
-      'com.atlassian.jira.plugin.system.customfieldtypes:datetime': `\
+',
+      'com.atlassian.jira.plugin.system.customfieldtypes:datetime': '\
 <input name="{{ field.id }}" type="text" ng-model="value" dp-datetime-popup="DD MMM YYYY HH:mm" append-to="body" readonly />\
-`
+'
     };
 
     const remap = {
-      description: 'com.atlassian.jira.plugin.system.customfieldtypes:textarea',
-      duedate: 'com.atlassian.jira.plugin.system.customfieldtypes:datepicker',
-      labels: 'com.atlassian.jira.plugin.system.customfieldtypes:labels',
-      priority: 'com.atlassian.jira.plugin.system.customfieldtypes:select',
-      resolution: 'com.atlassian.jira.plugin.system.customfieldtypes:select',
+      description:    'com.atlassian.jira.plugin.system.customfieldtypes:textarea',
+      duedate:        'com.atlassian.jira.plugin.system.customfieldtypes:datepicker',
+      labels:         'com.atlassian.jira.plugin.system.customfieldtypes:labels',
+      priority:       'com.atlassian.jira.plugin.system.customfieldtypes:select',
+      resolution:     'com.atlassian.jira.plugin.system.customfieldtypes:select',
       resolutiondate: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
-      created: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
-      updated: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
-      components: 'com.atlassian.jira.plugin.system.customfieldtypes:multiselect',
-      versions:   'com.atlassian.jira.plugin.system.customfieldtypes:multiselect'
+      created:        'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
+      updated:        'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
+      components:     'com.atlassian.jira.plugin.system.customfieldtypes:multiselect',
+      versions:       'com.atlassian.jira.plugin.system.customfieldtypes:multiselect'
     };
 
     return {
       restrict: 'AE',
-      scope: {
+      scope:    {
         getField: '&field',
-        model: '=ngModel',
-        error: '='
+        model:    '=ngModel',
+        error:    '='
       },
 
       link($scope, $el, $attr) {
@@ -87,15 +86,15 @@ define(() =>
 
         // map value back from model format
         const types = {
-          'com.atlassian.jira.plugin.system.customfieldtypes:multiselect': 'array_objects',
+          'com.atlassian.jira.plugin.system.customfieldtypes:multiselect':     'array_objects',
           'com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes': 'array_objects',
-          'com.atlassian.jira.plugin.system.customfieldtypes:select': 'object',
-          'com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons': 'object',
-          'com.atlassian.jira.plugin.system.customfieldtypes:float': 'float',
-          'com.atlassian.jira.plugin.system.customfieldtypes:datepicker': 'date',
-          'com.atlassian.jira.plugin.system.customfieldtypes:datetime': 'date',
-          priority: 'object',
-          resolution: 'object',
+          'com.atlassian.jira.plugin.system.customfieldtypes:select':          'object',
+          'com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons':    'object',
+          'com.atlassian.jira.plugin.system.customfieldtypes:float':           'float',
+          'com.atlassian.jira.plugin.system.customfieldtypes:datepicker':      'date',
+          'com.atlassian.jira.plugin.system.customfieldtypes:datetime':        'date',
+          priority:                                                            'object',
+          resolution:                                                          'object',
           parent(val) { if (val) { return val.key; } }
         };
 
@@ -117,7 +116,7 @@ define(() =>
               break;
           }
 
-          if ('function' === typeof type) {
+          if (typeof type === 'function') {
             value = type(value);
           }
         }
@@ -128,20 +127,20 @@ define(() =>
 
       controller($scope) {
         const types = {
-          'com.atlassian.jira.plugin.system.customfieldtypes:multiselect': 'array_objects',
+          'com.atlassian.jira.plugin.system.customfieldtypes:multiselect':     'array_objects',
           'com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes': 'array_objects',
-          'com.atlassian.jira.plugin.system.customfieldtypes:select': 'object',
-          'com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons': 'object',
-          'com.atlassian.jira.plugin.system.customfieldtypes:float': 'float',
-          'com.atlassian.jira.plugin.system.customfieldtypes:datepicker': 'date',
-          'com.atlassian.jira.plugin.system.customfieldtypes:datetime': 'datetime',
-          duedate: 'date',
-          priority: 'object',
-          resolution: 'object',
+          'com.atlassian.jira.plugin.system.customfieldtypes:select':          'object',
+          'com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons':    'object',
+          'com.atlassian.jira.plugin.system.customfieldtypes:float':           'float',
+          'com.atlassian.jira.plugin.system.customfieldtypes:datepicker':      'date',
+          'com.atlassian.jira.plugin.system.customfieldtypes:datetime':        'datetime',
+          duedate:                                                             'date',
+          priority:                                                            'object',
+          resolution:                                                          'object',
           parent(val) { return { key: val }; }
         };
 
-        const mapModel = function(val) {
+        const mapModel = function (val) {
           if ((val == null)) { return $scope.model = val; }
 
           const { schema } = $scope.getField();
@@ -169,7 +168,7 @@ define(() =>
               break;
           }
 
-          if ('function' === typeof type) {
+          if (typeof type === 'function') {
             val = type(val);
           }
 
@@ -178,7 +177,7 @@ define(() =>
 
         $scope.$watch('value', mapModel);
 
-        return $scope.checkboxToggle = function(val) {
+        return $scope.checkboxToggle = function (val) {
           if ((val == null)) { return; }
           const idx = $scope.value.indexOf(val);
           if (idx > -1) { $scope.value.splice(idx, 1); } else { $scope.value.push(val); }

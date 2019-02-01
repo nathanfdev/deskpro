@@ -1,10 +1,10 @@
 define([
   'Admin/Main/Ctrl/Base',
   'Admin/Languages/PhraseSaver'
-], function(
+], (
   Admin_Ctrl_Base,
   PhraseSaver
-) {
+) => {
   class Admin_Languages_Ctrl_PhraseResGroup extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Languages_Ctrl_PhraseResGroup';
@@ -19,11 +19,11 @@ define([
     initialLoad() {
       const promise = this.Api.sendDataGet({
         phrase_info: `/langs/${this.langId}/${this.groupId}`
-      }).then(result => {
+      }).then((result) => {
         let phrase;
         const { phrases } = result.data.phrase_info;
 
-        for (let p of Array.from(phrases)) {
+        for (const p of Array.from(phrases)) {
           if (p.depth) {
             p.depth_items = Array.from(Array(p.depth).keys());
           }
@@ -42,7 +42,7 @@ define([
             } else {
               if (fieldPhrasesCnt) {
                 phrasesWithHeaders.push({
-                  type: '_header',
+                  type:  '_header',
                   title: prevPhrase.default
                 });
               }
@@ -54,7 +54,7 @@ define([
         }
         if (prevPhrase && fieldPhrasesCnt) {
           phrasesWithHeaders.push({
-            type: '_header',
+            type:  '_header',
             title: prevPhrase.default
           });
         }
@@ -67,9 +67,7 @@ define([
     doSave() {
       this.startSpinner('saving');
       const saver = new PhraseSaver(this.Api, this.$q);
-      return saver.savePhrases(this.langId, this.phrases.filter(x => x.type !== '_header')).then(() => {
-        return this.stopSpinner('saving');
-      });
+      return saver.savePhrases(this.langId, this.phrases.filter(x => x.type !== '_header')).then(() => this.stopSpinner('saving'));
     }
   }
   Admin_Languages_Ctrl_PhraseResGroup.initClass();

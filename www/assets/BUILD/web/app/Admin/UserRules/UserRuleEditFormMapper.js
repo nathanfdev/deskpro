@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Util/Util'
-], function(
+], (
   Util
-) {
+) => {
   class UserRuleEditFormMapper {
     getFormFromModel(model) {
       let title;
@@ -11,9 +11,9 @@ define([
       form.id = model.user_rule.id;
       form.email_patterns = model.user_rule.email_patterns;
       form.usergroups = [];
-      for (let id of Object.keys(model.all_usergroups || {})) {
+      for (const id of Object.keys(model.all_usergroups || {})) {
         title = model.all_usergroups[id];
-        form.usergroups.push({id, title});
+        form.usergroups.push({ id, title });
       }
 
       if (model.user_rule.usergroup) {

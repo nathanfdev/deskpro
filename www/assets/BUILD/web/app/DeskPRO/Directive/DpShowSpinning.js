@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -15,30 +15,29 @@ define(function() {
     * ...
     * @stopSpinner('enableSpinner')
   */
-  const DeskPRO_Directive_DpShowSpinning = [ () =>
+  const DeskPRO_Directive_DpShowSpinning = [() =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
-        const id = attrs['dpShowSpinning'];
+        const id = attrs.dpShowSpinning;
         const scopeName = `dp_spin_els.${id}`;
 
-        const update = function() {
+        const update = function () {
           if (!(scope.dp_spin_els != null ? scope.dp_spin_els[id] : undefined)) {
             return element.hide();
           } else if (scope.dp_spin_els[id].doneTime && scope.dp_spin_els[id].doneSpin) {
             return element.hide();
-          } else {
-            return element.show();
           }
+          return element.show();
         };
 
         update();
 
-        scope.$watch(scopeName+'.doneSpin', () => update());
-        return scope.$watch(scopeName+'.doneTime', () => update());
+        scope.$watch(`${scopeName}.doneSpin`, () => update());
+        return scope.$watch(`${scopeName}.doneTime`, () => update());
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpShowSpinning;

@@ -1,8 +1,8 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
-], function(
+], (
   Admin_Main_DataService_BaseListEdit
-)  {
+) => {
   class Admin_AgentTeams_DataService_AgentTeams extends Admin_Main_DataService_BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -12,7 +12,7 @@ define([
     url() { return '/agent_teams'; }
 
     resolveResponse(response) { return response.agent_teams; }
-  };
+  }
   Admin_AgentTeams_DataService_AgentTeams.initClass();
   return Admin_AgentTeams_DataService_AgentTeams;
 });

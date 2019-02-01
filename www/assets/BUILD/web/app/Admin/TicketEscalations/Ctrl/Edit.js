@@ -1,8 +1,8 @@
 define([
   'Admin/Main/Ctrl/Base'
-], function(
+], (
   Admin_Ctrl_Base
-) {
+) => {
   class Admin_TicketEscalations_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketEscalations_Ctrl_Edit';
@@ -33,7 +33,7 @@ define([
         this.$scope.criteriaOptionTypes.push(opt);
       }
 
-      set = this.actionsTypeDef.getOptionsForTypes([], {dynamicOptions: this.customActions});
+      set = this.actionsTypeDef.getOptionsForTypes([], { dynamicOptions: this.customActions });
       this.$scope.actionOptionTypes.length = 0;
       for (opt of Array.from(set)) {
         this.$scope.actionOptionTypes.push(opt);
@@ -49,31 +49,24 @@ define([
 
     initialLoad() {
       let loadData = null;
-      const promise = this.escData.loadEditEscalationData(this.$stateParams.id || null).then(data => {
-        return loadData = data;
-      });
+      const promise = this.escData.loadEditEscalationData(this.$stateParams.id || null).then(data => loadData = data);
 
       const promise2 = this.criteriaTypeDef.loadDataOptions();
       const promise3 = this.actionsTypeDef.loadDataOptions();
-      const promise4 = this.Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then(result => {
-        return this.customActions = result.data.customActions.action_defs;
-      });
+      const promise4 = this.Api.sendDataGet({ customActions: '/ticket_triggers/get-custom-actions' }).then(result => this.customActions = result.data.customActions.action_defs);
 
       const promises = [promise, promise2, promise3, promise4];
 
-      return this.$q.all(promises).then(() => {
+      return this.$q.all(promises).then(() => this.$timeout(() => {
+        this.updateCriteriaOptionTypes();
         return this.$timeout(() => {
-          this.updateCriteriaOptionTypes();
-          return this.$timeout(() => {
-            this.esc  = loadData.escalation;
-            return this.form = loadData.form;
-          });
+          this.esc  = loadData.escalation;
+          return this.form = loadData.form;
         });
-      });
+      }));
     }
 
     saveForm() {
-
       if (!this.$scope.form_props.$valid) {
         return;
       }
@@ -83,10 +76,8 @@ define([
       const promise = this.escData.saveFormModel(this.esc, this.form);
 
       this.startSpinner('saving');
-      return promise.then( () => {
-        this.stopSpinner('saving', true).then(() => {
-          return this.Growl.success("Saved");
-        });
+      return promise.then(() => {
+        this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
 
         this.skipDirtyState();
         __guard__(this.$scope.$parent != null ? this.$scope.$parent.ListCtrl : undefined, x => x.loadList());

@@ -1,13 +1,13 @@
 define([
   'DeskPRO/Util/Strings'
-], function(Strings) {
-  const Admin_Main_Directive_DpOrderMenu = [ () =>
+], (Strings) => {
+  const Admin_Main_Directive_DpOrderMenu = [() =>
     ({
-      restrict: 'AE',
-      replace: true,
-      require: 'ngModel',
+      restrict:   'AE',
+      replace:    true,
+      require:    'ngModel',
       transclude: true,
-      template: `\
+      template:   `\
 <span class="dp-order-ctrl dropdown">
   <div class="orig" style="display: none;" ng-transclude></div>
   <a class="title dropdown-toggle" data-toggle="dropdown">Order by: {{title}} <i class="fas fa-sort-alpha-up" ng-show="sortDir == 'DESC'"></i><i class="fa fa-sort-alpha-asc" ng-show="sortDir == 'ASC'"></i></a>
@@ -29,7 +29,7 @@ define([
 
         const orderPrefs = attrs.orderDirPrefs ? scope.$eval(attrs.orderDirPrefs) : {};
 
-        element.find('.orig').find('option').each(function() {
+        element.find('.orig').find('option').each(function () {
           return scope.options.push({
             title: Strings.trim($(this).text()),
             value: $(this).val()
@@ -39,17 +39,17 @@ define([
         scope.setSortField = field => scope.sortField = field;
         scope.setSortDirection = dir => scope.sortDir = dir;
 
-        ngModel.$parsers.push( viewValue => viewValue);
+        ngModel.$parsers.push(viewValue => viewValue);
 
-        ngModel.$formatters.push( modelValue => modelValue);
+        ngModel.$formatters.push(modelValue => modelValue);
 
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           scope.sortField = (ngModel.$viewValue != null ? ngModel.$viewValue.field : undefined) || scope.options[0].value;
           scope.sortDir   = (ngModel.$viewValue != null ? ngModel.$viewValue.dir : undefined) || 'ASC';
 
           return (() => {
             const result = [];
-            for (let v of Array.from(scope.options)) {
+            for (const v of Array.from(scope.options)) {
               if (v.value === scope.sortField) {
                 scope.title = v.title;
                 break;
@@ -61,15 +61,15 @@ define([
           })();
         };
 
-        const update = function() {
+        const update = function () {
           ngModel.$setViewValue({
             field: scope.sortField,
-            dir: scope.sortDir
+            dir:   scope.sortDir
           });
 
           return (() => {
             const result = [];
-            for (let v of Array.from(scope.options)) {
+            for (const v of Array.from(scope.options)) {
               if (v.value === scope.sortField) {
                 scope.title = v.title;
                 break;
@@ -81,7 +81,7 @@ define([
           })();
         };
 
-        scope.$watch('sortField', function() {
+        scope.$watch('sortField', () => {
           if (orderPrefs[scope.sortField]) {
             scope.sortDir = orderPrefs[scope.sortField];
           }
@@ -92,7 +92,7 @@ define([
         return scope.$watch('sortDir', () => update());
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpOrderMenu;

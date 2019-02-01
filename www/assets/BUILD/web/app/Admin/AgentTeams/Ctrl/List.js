@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_AgentTeams_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_AgentTeams_Ctrl_List';
@@ -10,9 +10,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     initialLoad() {
-      const promise = this.Api.sendGet('/agent_teams').then( result => {
-        return this.teams = result.data.agent_teams;
-      });
+      const promise = this.Api.sendGet('/agent_teams').then(result => this.teams = result.data.agent_teams);
       return promise;
     }
 

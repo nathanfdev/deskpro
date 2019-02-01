@@ -1,15 +1,15 @@
 define(() =>
-  function(baseObj) {
+  function (baseObj) {
     baseObj._dp_listeners = {};
 
-    baseObj.notifyListeners = function(event_name, args) {
+    baseObj.notifyListeners = function (event_name, args) {
       if (args == null) { args = []; }
       let notified = 0;
       if (!baseObj._dp_listeners[event_name]) {
         return 0;
       }
 
-      for (let listener of Array.from(baseObj._dp_listeners[event_name])) {
+      for (const listener of Array.from(baseObj._dp_listeners[event_name])) {
         listener.apply(listener, args);
         notified += 1;
       }
@@ -17,7 +17,7 @@ define(() =>
       return notified;
     };
 
-    baseObj.addListener = function(event_name, listener) {
+    baseObj.addListener = function (event_name, listener) {
       if (baseObj.hasListener(listener, event_name)) {
         return false;
       }
@@ -30,7 +30,7 @@ define(() =>
       return true;
     };
 
-    baseObj.hasListener = function(event_name, listener) {
+    baseObj.hasListener = function (event_name, listener) {
       if (!baseObj._dp_listeners[event_name]) {
         return false;
       }
@@ -38,7 +38,7 @@ define(() =>
       return baseObj._dp_listeners[event_name].indexOf(listener) !== -1;
     };
 
-    return baseObj.removeListener = function(event_name, listener) {
+    return baseObj.removeListener = function (event_name, listener) {
       if (!baseObj._dp_listeners[event_name]) {
         return false;
       }

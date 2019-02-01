@@ -2,11 +2,11 @@ define([
   'DeskPRO/Util/Arrays',
   'Admin/Main/Ctrl/Base',
   'Admin/TicketTriggers/TriggerEditFormMapper',
-], function(
+], (
   Arrays,
   Admin_Ctrl_Base,
   TriggerEditFormMapper
-) {
+) => {
   class Admin_TicketTriggers_Ctrl_EditBase extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketTriggers_Ctrl_Edit';
@@ -60,7 +60,7 @@ define([
       this.criteraTypeDef.setVar('object_type', 'trigger');
       this.actionsTypeDef.setVar('object_type', 'trigger');
 
-      this.dpTriggers.loadList().then( list => { return this.allTriggers = list; });
+      this.dpTriggers.loadList().then(list => this.allTriggers = list);
 
       this.customInit();
     }
@@ -136,8 +136,7 @@ define([
         get.trigger = `/ticket_triggers/${this.triggerId}`;
       }
 
-      const promise = this.Api.sendDataGet(get).then( result => {
-
+      const promise = this.Api.sendDataGet(get).then((result) => {
         this.customActions = result.data.customActions.action_defs;
 
         if (__guard__(result.data.appEvents != null ? result.data.appEvents.app_events : undefined, x => x.length)) {
@@ -163,19 +162,16 @@ define([
       return this.$q.all(promises).then(() => {
         this.updateCriteriaOptionTypes();
 
-        return this.$scope.$watch('form.typeForm', () => {
-          return this.updateCriteriaOptionTypes();
-        }
+        return this.$scope.$watch('form.typeForm', () => this.updateCriteriaOptionTypes()
         , true);
       });
     }
 
     getPostActionsDetails() {
-
       let has_stop_triggers_action = false;
       let has_delete_ticket_action = false;
       if (this.$scope.form.actions) {
-        for (let _x of Object.keys(this.$scope.form.actions || {})) {
+        for (const _x of Object.keys(this.$scope.form.actions || {})) {
           const act = this.$scope.form.actions[_x];
           if (act.type === 'ModStopTriggers') {
             has_stop_triggers_action = true;
@@ -193,7 +189,8 @@ define([
     }
 
     getPostData() {
-      let enabled, mode;
+      let enabled,
+        mode;
       this.resetErrors();
 
       const postData = {
@@ -263,7 +260,8 @@ define([
      * Save the trigger
      */
     saveTrigger() {
-      let is_new, promise;
+      let is_new,
+        promise;
       if (this.$scope.form_props.$invalid) { return; }
 
       this.resetErrors();
@@ -280,7 +278,7 @@ define([
         promise = this.Api.sendPutJson('/ticket_triggers', postData);
       }
 
-      promise.success( result => {
+      promise.success((result) => {
         this.trigger.id = result.trigger_id;
 
         if (is_new) {
@@ -291,13 +289,11 @@ define([
         this.trigger.has_stop_triggers_action = has_stop_triggers_action;
         this.trigger.has_delete_ticket_action = has_delete_ticket_action;
 
-        this.stopSpinner('saving', true).then(() => {
-          return this.Growl.success("Saved");
-        });
+        this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
 
         this.dpTriggers.mergeDataModel({
-          id: this.trigger.id,
-          title: this.trigger.title,
+          id:         this.trigger.id,
+          title:      this.trigger.title,
           is_enabled: this.trigger.is_enabled,
           has_stop_triggers_action,
           has_delete_ticket_action
@@ -308,7 +304,7 @@ define([
           return this.$state.go('tickets.triggers.gocreate');
         }
       });
-      promise.error( (result, code) => {
+      promise.error((result, code) => {
         this.stopSpinner('saving', true);
         if ((result != null ? result.error_code : undefined) === 'invalid') {
           return this.showErrors(result.error_info);
@@ -320,18 +316,16 @@ define([
 
     findCriteriaTypeTitle(type) {
       let option_title = null;
-      for (let v of Array.from(this.$scope.criteriaOptionTypes)) {
+      for (const v of Array.from(this.$scope.criteriaOptionTypes)) {
         if (v.subOptions) {
-          for (let sb of Array.from(v.subOptions)) {
+          for (const sb of Array.from(v.subOptions)) {
             if (type === sb.value) {
               option_title = sb.title;
               break;
             }
           }
-        } else {
-          if (type === v.value) {
-            option_title = v.title;
-          }
+        } else if (type === v.value) {
+          option_title = v.title;
         }
         if (option_title) { break; }
       }
@@ -341,18 +335,16 @@ define([
 
     findActionTypeTitle(type) {
       let option_title = null;
-      for (let v of Array.from(this.$scope.actionOptionTypes)) {
+      for (const v of Array.from(this.$scope.actionOptionTypes)) {
         if (v.subOptions) {
-          for (let sb of Array.from(v.subOptions)) {
+          for (const sb of Array.from(v.subOptions)) {
             if (type === sb.value) {
               option_title = sb.title;
               break;
             }
           }
-        } else {
-          if (type === v.value) {
-            option_title = v.title;
-          }
+        } else if (type === v.value) {
+          option_title = v.title;
         }
         if (option_title) { break; }
       }
@@ -394,7 +386,7 @@ define([
       const mode        = this.$stateParams.type;
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('TicketTriggers/copy-trigger-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.dismiss = () => $modalInstance.dismiss();
 
           $scope.doCopySettings = () => $modalInstance.close($scope.triggerId);
@@ -415,15 +407,11 @@ define([
         ]
       });
 
-      return inst.result.then(triggerId => {
-        return this.copyTrigger(triggerId);
-      });
+      return inst.result.then(triggerId => this.copyTrigger(triggerId));
     }
 
     copyTrigger(triggerId) {
-
-      const promise = this.Api.sendGet(`/ticket_triggers/${triggerId}`).then( result => {
-
+      const promise = this.Api.sendGet(`/ticket_triggers/${triggerId}`).then((result) => {
         const triggerToCopy = result.data.trigger;
         triggerToCopy.id = this.$scope.form.id;
         triggerToCopy.title = (this.$scope.form.title != null) ? this.$scope.form.title : triggerToCopy.title;
@@ -435,9 +423,7 @@ define([
 
       const promises = [promise, promise2, promise3];
 
-      return this.$q.all(promises).then(() => {
-        return this.updateCriteriaOptionTypes();
-      });
+      return this.$q.all(promises).then(() => this.updateCriteriaOptionTypes());
     }
   }
   Admin_TicketTriggers_Ctrl_EditBase.initClass();

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Apps_Ctrl_Resync extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Apps_Ctrl_Resync';
@@ -15,11 +15,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     beginResync() {
       this.$scope.state = 'running';
-      return this.Api.sendPost("/apps/resync-packages").then(result => {
+      return this.Api.sendPost('/apps/resync-packages').then((result) => {
         this.$scope.state = 'done';
         return this.$scope.log = result.data.log;
       }
-      , result => {
+      , (result) => {
         this.$scope.state = 'done';
         return this.$scope.log = 'There was an error. Please try again.';
       });

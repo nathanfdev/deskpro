@@ -2,11 +2,11 @@ define([
   'Admin/Main/Ctrl/Base',
   'DeskPRO/Util/Util',
   'Admin/TicketSlas/SlaFormMapper'
-], function(
+], (
   Admin_Ctrl_Base,
   Util,
   SlaFormMapper
-) {
+) => {
   class Admin_TicketSlas_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketSlas_Ctrl_Edit';
@@ -31,7 +31,7 @@ define([
 
     updateCriteriaOptionTypes() {
       let types = [];
-      const setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, {dynamicOptions: this.customActions});
+      const setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, { dynamicOptions: this.customActions });
       this.$scope.actionOptionTypes.length = 0;
       for (var opt of Array.from(setActionOptions)) {
         this.$scope.actionOptionTypes.push(opt);
@@ -56,7 +56,7 @@ define([
       const proms = [];
 
       if (this.$stateParams.id) {
-        proms.push(this.slaData.loadEditSlaData(this.$stateParams.id).then( data => {
+        proms.push(this.slaData.loadEditSlaData(this.$stateParams.id).then((data) => {
           this.sla = data.sla;
           this.form = this.getFormFromModel(this.sla);
           return this.origForm = Util.clone(this.form, true);
@@ -71,16 +71,11 @@ define([
 
       proms.push(this.actionsTypeDef.loadDataOptions());
       proms.push(this.criteraTypeDef.loadDataOptions());
-      proms.push(this.Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then(result => {
-        return this.customActions = result.data.customActions.action_defs;
-      })
+      proms.push(this.Api.sendDataGet({ customActions: '/ticket_triggers/get-custom-actions' }).then(result => this.customActions = result.data.customActions.action_defs)
       );
 
-      return this.$q.all(proms).then(() => {
-        return this.updateCriteriaOptionTypes();
-      });
+      return this.$q.all(proms).then(() => this.updateCriteriaOptionTypes());
     }
-
 
 
     getFormFromModel(slaModel) {
@@ -88,7 +83,8 @@ define([
     }
 
     saveForm() {
-      let is_new, promise;
+      let is_new,
+        promise;
       const postData = this.formMapper.getPostDataFromFormModel(this.form);
 
       this.startSpinner('saving');
@@ -100,7 +96,7 @@ define([
         promise = this.Api.sendPutJson('/ticket_slas', postData);
       }
 
-      promise.success( result => {
+      promise.success((result) => {
         this.sla.id = result.sla_id;
 
         if (is_new) {
@@ -109,12 +105,10 @@ define([
 
         this.sla.title = postData.title;
 
-        this.stopSpinner('saving', true).then(() => {
-          return this.Growl.success("Saved");
-        });
+        this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
 
         this.slaData.mergeDataModel({
-          id: this.sla.id,
+          id:    this.sla.id,
           title: this.sla.title
         });
 
@@ -123,7 +117,7 @@ define([
           return this.$state.go('tickets.slas.gocreate');
         }
       });
-      promise.error( (info, code) => {
+      promise.error((info, code) => {
         this.stopSpinner('saving', true);
         this.applyErrorResponseToView(info);
         if (info != null ? info.error_message : undefined) {

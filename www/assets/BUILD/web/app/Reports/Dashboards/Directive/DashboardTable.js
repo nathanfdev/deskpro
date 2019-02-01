@@ -1,20 +1,20 @@
-define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function() {
+define(['datatables', 'datatables.pageResize', 'datatables.rowsGroup'], () => {
   const Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', '$timeout', ($sce, DashboardWidgetService, $timeout) =>
     ({
       restrict: 'E',
-      replace: true,
-      scope: {
+      replace:  true,
+      scope:    {
         tableData: '@',
-        jsCode: '@',
-        myIndex: '@',
-        widgetId: '@',
-        options: '@',
-        row: '@',
-        col: '@',
-        loaded: '@'
+        jsCode:    '@',
+        myIndex:   '@',
+        widgetId:  '@',
+        options:   '@',
+        row:       '@',
+        col:       '@',
+        loaded:    '@'
       },
 
-      templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html"),
+      templateUrl: $sce.trustAsResourceUrl('ReportsInterfaceBundle:Dashboard/Widget:table_dt.html'),
 
       link(scope, element) {
         scope.loaded = false;
@@ -28,7 +28,7 @@ define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function
         const listItem = box.parent();
         const conf = scope.widgetId || 0;
 
-        const initTable = function(widget) {
+        const initTable = function (widget) {
           let options;
           scope.loaded = true;
 
@@ -48,7 +48,7 @@ define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function
             data:           widget.data,
             columns:        widget.columns,
             rowsGroup:      widget.rowsGroup || [],
-            pagingType:     "first_last_numbers",
+            pagingType:     'first_last_numbers',
             pageResize:     true,
             searching:      false,
             bJQueryUI:      true,
@@ -67,7 +67,7 @@ define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function
               }
               if (!drawn) {
                 $timeout(
-                  function() {
+                  () => {
                     drawn = true;
                     scope.noData = false;
                     return box.height(100);
@@ -91,7 +91,7 @@ define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function
         if (tableData && (tableData.data != null)) {
           tableData.noRedraw = true;
           return $timeout(() => initTable(tableData)
-          ,1);
+          , 1);
         } else if (scope.jsCode) {
           try {
             eval(scope.jsCode);
@@ -101,7 +101,7 @@ define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function
           }
 
           if (promise && promise.then) {
-            return promise.then(function(response) {
+            return promise.then((response) => {
               scope.loaded = true;
               scope.noData = true;
 
@@ -111,7 +111,7 @@ define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function
             });
           }
         } else if (DashboardWidgetService.widgetsResults && DashboardWidgetService.widgetsResults[scope.widgetId]) {
-          return DashboardWidgetService.widgetsResults[scope.widgetId].promise.then(function(renderedResult) {
+          return DashboardWidgetService.widgetsResults[scope.widgetId].promise.then((renderedResult) => {
             scope.loaded = true;
             scope.noData = true;
 
@@ -121,18 +121,18 @@ define(['datatables', "datatables.pageResize", "datatables.rowsGroup"], function
           });
         } else {
           return DashboardWidgetService
-            .getWidget(conf).then(function(widget) {
+            .getWidget(conf).then((widget) => {
               scope.loaded = true;
               scope.noData = true;
 
               if (widget.rendered_result && widget.rendered_result.data) {
                 return initTable(widget.rendered_result);
               }
-          });
+            });
         }
       }
     })
-  
+
   ];
 
   return Reports_Directive_DashboardTable;

@@ -16,11 +16,11 @@ define([
   'jquery',
   'moment',
   'momentTimezone',
-], function(
+], (
   angular
-) {
+) => {
   const AppWindow = angular.module('DeskPRO.InterfaceApp.AppWindow', []);
-  AppWindow.config(['$stateProvider', function($stateProvider) {}
+  AppWindow.config(['$stateProvider', function ($stateProvider) {}
 
   ]);
 

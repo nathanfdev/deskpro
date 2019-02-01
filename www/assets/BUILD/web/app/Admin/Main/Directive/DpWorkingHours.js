@@ -1,22 +1,24 @@
-define(['DeskPRO/Data/TzData'], function(TzData) {
-  const Admin_Main_Directive_DpWorkingHours = [ () =>
+define(['DeskPRO/Data/TzData'], (TzData) => {
+  const Admin_Main_Directive_DpWorkingHours = [() =>
     ({
-      restrict: 'E',
-      require: 'ngModel',
-      replace: true,
-      templateUrl: DP_BASE_ADMIN_URL+'/load-view/Common/work-hours-directive.html',
-      scope: {},
+      restrict:    'E',
+      require:     'ngModel',
+      replace:     true,
+      templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Common/work-hours-directive.html`,
+      scope:       {},
       link(scope, element, attrs, ngModel) {
-
-        let i, row;
-        let asc, end;
-        let asc1, end1;
+        let i,
+          row;
+        let asc,
+          end;
+        let asc1,
+          end1;
         scope.timezone       = 'UTC';
         scope.start_hour     = 9;
         scope.start_min      = 0;
         scope.end_hour       = 18;
         scope.end_min        = 0;
-        scope.work_days      = [null, true, true, true, true, true, false, false]; //0=null because valid idx is 1-7 for ISO-8601 days
+        scope.work_days      = [null, true, true, true, true, true, false, false]; // 0=null because valid idx is 1-7 for ISO-8601 days
         scope.hol_year       = (new Date()).getFullYear();
         scope.hol_new_month  = 1;
         scope.hol_new_day    = 1;
@@ -25,28 +27,27 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
 
         scope.minutes = [];
         for (i = 0; i <= 59; i++) {
-          scope.minutes.push({id: i, label: (`0${i}`).slice(-2)});
+          scope.minutes.push({ id: i, label: (`0${i}`).slice(-2) });
         }
         scope.hours = [];
         for (i = 0; i <= 23; i++) {
-          scope.hours.push({id: i, label: (`0${i}`).slice(-2)});
+          scope.hours.push({ id: i, label: (`0${i}`).slice(-2) });
         }
 
         scope.days = [];
         for (i = 1; i <= 31; i++) {
-          scope.days.push({id: i, label: (`0${i}`).slice(-2)});
+          scope.days.push({ id: i, label: (`0${i}`).slice(-2) });
         }
         scope.months = [];
         for (i = 1; i <= 12; i++) {
-          scope.months.push({id: i, label: (`0${i}`).slice(-2)});
+          scope.months.push({ id: i, label: (`0${i}`).slice(-2) });
         }
 
         const currentYear = new Date().getFullYear();
         scope.years = [];
-        for (i = currentYear, end = currentYear+9, asc = currentYear <= end; asc ? i <= end : i >= end; asc ? i++ : i--) {
-          scope.years.push({id: i, label: i + ""});
+        for (i = currentYear, end = currentYear + 9, asc = currentYear <= end; asc ? i <= end : i >= end; asc ? i++ : i--) {
+          scope.years.push({ id: i, label: `${i}` });
         }
-
 
 
         //------------------------------
@@ -76,7 +77,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
         // Adding/removing holidays
         //------------------------------
 
-        const holExists = function(hol1, hol2) {
+        const holExists = function (hol1, hol2) {
           if (hol1.year !== hol2.year) {
             return false;
           }
@@ -92,7 +93,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
           return true;
         };
 
-        scope.addHoliday = function($event) {
+        scope.addHoliday = function ($event) {
           $event.preventDefault();
           $event.stopPropagation();
 
@@ -113,7 +114,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
           let exists = false;
           const hol = { year, month, day, name: title };
 
-          for (let checkHol of Array.from(scope.holidays)) {
+          for (const checkHol of Array.from(scope.holidays)) {
             if (holExists(hol, checkHol)) {
               exists = true;
               break;
@@ -140,8 +141,9 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
           return updateYearList();
         };
 
-        var drawHoliday = function(hol) {
-          let rowContainer, y_str;
+        var drawHoliday = function (hol) {
+          let rowContainer,
+            y_str;
           row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-times-circle"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
 
           ({ year }   = hol);
@@ -170,10 +172,10 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
         };
 
         element.find('.add-btn').on('click', ev =>
-          scope.$apply( () => scope.addHoliday(ev))
+          scope.$apply(() => scope.addHoliday(ev))
         );
 
-        element.on('click', '.remove-btn', function(ev) {
+        element.on('click', '.remove-btn', function (ev) {
           ev.preventDefault();
           row = $(this).closest('.hol-row');
           const holRec = row.data('hol-rec');
@@ -198,7 +200,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
           })();
         });
 
-        var updateYearList = function() {
+        var updateYearList = function () {
           let any = false;
           if (els.hol_wrap.find('.year-repeat').find('.hol-row')[0]) {
             any = true;
@@ -220,24 +222,24 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
 
         element.find('.holiday-years').on('change', () => updateYearList());
 
-        const updateViewValue = function() {
+        const updateViewValue = function () {
           let startHour = 9;
           let endHour = 18;
-          if(scope.start_hour || (scope.start_hour === 0)) {
+          if (scope.start_hour || (scope.start_hour === 0)) {
             startHour = scope.start_hour;
           }
-          if(scope.end_hour || (scope.end_hour === 0)) {
+          if (scope.end_hour || (scope.end_hour === 0)) {
             endHour = scope.end_hour;
           }
-            
+
           return ngModel.$setViewValue({
-            timezone       : scope.timezone || 'UTC',
-            start_hour     : startHour,
-            start_min      : scope.start_min || 0,
-            end_hour       : endHour,
-            end_min        : scope.end_min || 0,
-            holidays       : scope.holidays || [],
-            work_days      : scope.work_days || [null, false, true, true, true, true, true, false]
+            timezone:   scope.timezone || 'UTC',
+            start_hour: startHour,
+            start_min:  scope.start_min || 0,
+            end_hour:   endHour,
+            end_min:    scope.end_min || 0,
+            holidays:   scope.holidays || [],
+            work_days:  scope.work_days || [null, false, true, true, true, true, true, false]
           });
         };
 
@@ -248,7 +250,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
         scope.$watch('end_min',    () => updateViewValue());
         scope.$watch('holidays',   () => updateViewValue());
 
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           let viewValue;
           element.find('.holiday-year-rows').empty();
           if (ngModel.$viewValue) {
@@ -256,16 +258,16 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
           } else {
             viewValue = {
               start_hour: null,
-              end_hour: null
+              end_hour:   null
             };
           }
 
           let startHour = 9;
           let endHour = 18;
-          if(viewValue.start_hour || (viewValue.start_hour === 0)) {
+          if (viewValue.start_hour || (viewValue.start_hour === 0)) {
             startHour = viewValue.start_hour;
           }
-          if(viewValue.end_hour || (viewValue.end_hour === 0)) {
+          if (viewValue.end_hour || (viewValue.end_hour === 0)) {
             endHour = viewValue.end_hour;
           }
 
@@ -286,7 +288,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
           }
 
           if (scope.holidays.length) {
-            for (let hol of Array.from(scope.holidays)) {
+            for (const hol of Array.from(scope.holidays)) {
               drawHoliday(hol);
             }
           }
@@ -297,7 +299,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
         return ngModel.$render();
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpWorkingHours;

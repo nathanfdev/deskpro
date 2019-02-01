@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Languages_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Languages_Ctrl_List';
@@ -18,7 +18,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const promise = this.Api.sendGet('/langs').then( result => {
+      const promise = this.Api.sendGet('/langs').then((result) => {
         this.packs = result.data.packs;
         this.installedPacks = [];
         this.availablePacks = [];
@@ -36,7 +36,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       * @return {Object}
       */
     _getPackByPackId(packId) {
-      for (let pack of Array.from(this.packs)) {
+      for (const pack of Array.from(this.packs)) {
         if (pack.id === packId) {
           return pack;
         }
@@ -54,8 +54,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       return (() => {
         const result = [];
-        for (let pack of Array.from(this.packs)) {
-          pack.flag_image = DP_ASSET_URL + '/images/flags/' + pack.show_flag;
+        for (const pack of Array.from(this.packs)) {
+          pack.flag_image = `${DP_ASSET_URL}/images/flags/${pack.show_flag}`;
 
           if (pack.is_installed) {
             result.push(this.installedPacks.push(pack));
@@ -74,7 +74,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     * @return promise
     */
     installLang(pack_id) {
-      const promise = this.Api.sendPost(`/langs/${pack_id}/install`).then( result => {
+      const promise = this.Api.sendPost(`/langs/${pack_id}/install`).then((result) => {
         const pack = this._getPackByPackId(result.data.pack_id);
         pack.is_installed = true;
         return this.resortPacks();
@@ -90,7 +90,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       * @return promise
     */
     uninstallLang(id) {
-      const promise = this.Api.sendPost(`/langs/${id}/uninstall`).then( result => {
+      const promise = this.Api.sendPost(`/langs/${id}/uninstall`).then((result) => {
         const pack = this._getPackByPackId(result.data.old_pack_id);
         pack.is_installed = false;
         return this.resortPacks();
@@ -111,7 +111,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         language: details
       };
 
-      const promise = this.Api.sendPostJson(`/langs/${id}`, postData).then( result => {
+      const promise = this.Api.sendPostJson(`/langs/${id}`, postData).then((result) => {
         pack.show_title = details.title;
         pack.locale     = details.locale;
         pack.show_flag  = details.flag_image;
@@ -124,9 +124,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     updateDefaultLang() {
       if (this.default_lang_id && this.hasLoaded()) {
         this.startSpinner('saving_default_lang');
-        return this.Api.sendPost(`/langs/${this.default_lang_id}/set-default`).then(() => {
-          return this.stopSpinner('saving_default_lang');
-        });
+        return this.Api.sendPost(`/langs/${this.default_lang_id}/set-default`).then(() => this.stopSpinner('saving_default_lang'));
       }
     }
   }

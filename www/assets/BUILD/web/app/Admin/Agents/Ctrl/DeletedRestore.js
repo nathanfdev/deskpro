@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Agents_Ctrl_DeletedRestore extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Agents_Ctrl_DeletedRestore';
@@ -16,9 +16,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         agent: `/agents/deleted/${this.agentId}`
       });
 
-      promise.then( result => {
-        return this.agent = result.data.agent.agent;
-      });
+      promise.then(result => this.agent = result.data.agent.agent);
       return promise;
     }
 
@@ -26,17 +24,15 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.startSpinner('saving');
 
       const promise = this.Api.sendPost(`/agents/deleted/${this.agentId}/undelete`);
-      promise.then( () => {
+      promise.then(() => {
         this.stopSpinner('saving', true);
         this.service.all(true);
-        return this.$state.go('agents.agents.edit', {id: this.agentId});
+        return this.$state.go('agents.agents.edit', { id: this.agentId });
       }
-      , res => {
+      , (res) => {
         this.stopSpinner('saving', true);
         if (res.data.error_code && (res.data.error_code === 'license_exceeded')) {
-          return this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => {
-            return this.restoreAgent();
-          });
+          return this.DpLicense.openUpgradeLicense('upgrade_plan').then(() => this.restoreAgent());
         }
       });
       return promise;
@@ -45,7 +41,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     convertToUser() {
       this.startSpinner('saving_convert');
       const promise = this.Api.sendDelete(`/agents/${this.agentId}/delete/to-user`);
-      promise.then( () => {
+      promise.then(() => {
         this.stopSpinner('saving_convert', true);
         return this.$state.go('agents.agents');
       });

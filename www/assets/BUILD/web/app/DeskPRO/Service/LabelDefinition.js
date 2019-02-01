@@ -1,5 +1,5 @@
-define(['angular'], function(angular) {
-  let updateColorForLabel = null;
+define(['angular'], (angular) => {
+  const updateColorForLabel = null;
   let loadDefinitions = null;
   class DeskPRO_Service_LabelDefinition {
     constructor($q, definitionsPromise) {
@@ -7,23 +7,22 @@ define(['angular'], function(angular) {
       this.$q = $q;
       let loadPromise = null;
       this.definitions = {
-        tickets: {},
-        people: {},
+        tickets:       {},
+        people:        {},
         organizations: {},
-        news: {},
-        kb: {},
-        feedback: {},
-        downloads: {},
-        chat: {}
+        news:          {},
+        kb:            {},
+        feedback:      {},
+        downloads:     {},
+        chat:          {}
       };
 
       loadDefinitions = () => {
         if (loadPromise) { return loadPromise; }
         const d = this.$q.defer();
 
-        definitionsPromise.then(data => {
-
-          for (let def of Array.from(data.data)) {
+        definitionsPromise.then((data) => {
+          for (const def of Array.from(data.data)) {
             if ((def.label == null) || (def.label_type == null)) { continue; }
             const label = def.label.toLowerCase();
             this.definitions[def.label_type] = this.definitions[def.label_type] || {};

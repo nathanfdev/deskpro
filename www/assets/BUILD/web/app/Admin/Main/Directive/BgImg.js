@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -9,11 +9,11 @@ define(function() {
     * -------
     * <span bg-img="{{agent.picture_url}}"></span>
   */
-  const Admin_Main_Directive_BgImg = [ () =>
+  const Admin_Main_Directive_BgImg = [() =>
     ({
       restrict: 'A',
-      scope: {
-        'bgImg': '&'
+      scope:    {
+        bgImg: '&'
       },
       link(scope, element, attrs) {
         return element.css({
@@ -21,7 +21,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_BgImg;

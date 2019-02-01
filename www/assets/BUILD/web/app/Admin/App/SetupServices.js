@@ -13,7 +13,7 @@ define([
   Admin_Cloud_App_CloudService,
   angular
 ) =>
-  function(Module) {
+  function (Module) {
     Module.service('SessionPing', ['Api', Api => new Admin_Main_Service_SessionPing(Api)
     ]);
 
@@ -22,7 +22,7 @@ define([
 
     Module.service('DpDateService', Admin_Main_Service_DpDate);
 
-    Module.service('Cloud', [ () => new Admin_Cloud_App_CloudService()
+    Module.service('Cloud', [() => new Admin_Cloud_App_CloudService()
     ]);
 
     Module.service('LangSyncApi', ['$http', 'Growl', ($http, Growl) =>
@@ -31,18 +31,18 @@ define([
         window.DP_LANGUAGE_SYNC_API,
         Growl
       )
-    
+
     ]);
 
     Module.run(['SessionPing', SessionPing =>
       // start pinging after 20 seconds
       window.setTimeout(() => SessionPing.startInterval()
       , 20000)
-    
+
     ]);
 
-    Module.run(['$rootScope', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions', 'dpObTypesDefTicketFilter', function($rootScope, dpObTypesDefTicketCriteria, dpObTypesDefTicketActions, dpObTypesDefTicketFilter) {
-      const getAppStateName = function(name) {
+    Module.run(['$rootScope', 'dpObTypesDefTicketCriteria', 'dpObTypesDefTicketActions', 'dpObTypesDefTicketFilter', function ($rootScope, dpObTypesDefTicketCriteria, dpObTypesDefTicketActions, dpObTypesDefTicketFilter) {
+      const getAppStateName = function (name) {
         const parts = name.split('.');
         while (parts.length > 2) {
           parts.pop();
@@ -50,7 +50,7 @@ define([
         return parts.join('.');
       };
 
-      return $rootScope.$on('$stateChangeSuccess', function(event, toState, toParams, fromState, fromParams) {
+      return $rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) => {
         if (!fromState || !toState) {
           return;
         }
@@ -68,12 +68,12 @@ define([
     ]);
 
     return Module.filter('orderObjectBy', () =>
-      function(items, field, reverse) {
+      function (items, field, reverse) {
         const filtered = [];
         angular.forEach(items, item => filtered.push(item));
 
-        filtered.sort(function(a, b) {
-          if (a[field] > b[field]) { return 1; } else { return -1; }
+        filtered.sort((a, b) => {
+          if (a[field] > b[field]) { return 1; }  return -1;
         });
 
         reverse && filtered.reverse();

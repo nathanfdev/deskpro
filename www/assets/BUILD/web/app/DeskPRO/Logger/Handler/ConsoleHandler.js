@@ -2,11 +2,11 @@ define([
   'DeskPRO/Util/Util',
   'DeskPRO/Logger/Handler/AbstractProcessingHandler',
   'DeskPRO/Logger/Formatter/ConsoleFormatter',
-], function(
+], (
   Util,
   AbstractProcessingHandler,
   ConsoleFormatter
-) {
+) => {
   class ConsoleHandler extends AbstractProcessingHandler {
     write(record) {
       let consoleName = null;
@@ -38,7 +38,7 @@ define([
             arg = arg.stack;
           }
         } else if (arg.sourceURL) {
-          arg = arg.message + '\n' + arg.sourceURL + ':' + arg.line;
+          arg = `${arg.message}\n${arg.sourceURL}:${arg.line}`;
         }
       }
 

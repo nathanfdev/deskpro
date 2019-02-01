@@ -2,18 +2,18 @@ define([
   'Admin/Main/Ctrl/Base',
   'Admin/Main/Model/DepAgentPermMatrix',
   'DeskPRO/Util/Util'
-], function(
+], (
   Admin_Ctrl_Base,
   Admin_Main_Model_DepAgentPermMatrix,
   Util
-) {
+) => {
   class Admin_ChatDeps_Ctrl_Edit extends Admin_Ctrl_Base {
     constructor(...args) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.setAvatar = this.setAvatar.bind(this);
@@ -33,7 +33,6 @@ define([
   */
 
     init() {
-
       this.depData = this.DataService.get('ChatDeps');
       this.$scope.icon_image = null;
       this.$scope.$on('icon.selected', (e, path) => this.selectIcon(path));
@@ -41,8 +40,8 @@ define([
 
       this.initializeScopeWatching();
       return this.all_perms = {
-        user_full:    true,
-        agent_full:   true
+        user_full:  true,
+        agent_full: true
       };
     }
 
@@ -52,7 +51,6 @@ define([
    */
 
     resetForm() {
-
       return this.form = Util.clone(this.origForm, true);
     }
 
@@ -61,9 +59,7 @@ define([
   */
 
     initialLoad() {
-
-      const promise = this.depData.getEditDepartmentData(this.$stateParams.id || null).then( data => {
-
+      const promise = this.depData.getEditDepartmentData(this.$stateParams.id || null).then((data) => {
         this.dep  = data.dep;
         this.form = data.form;
         this.origForm = Util.clone(this.form, true);
@@ -80,9 +76,9 @@ define([
         for (var group of Array.from(this.usergroups)) {
           if ((group.sys_name !== 'everyone') && (group.sys_name !== 'registered')) { continue; }
           this[`group_${group.sys_name}_id`] = group.id;
-          (group => {
+          ((group) => {
             this[`group_${group.sys_name}_perm`] = this.form.usergroup_perms[group.id].full;
-            return this.$scope.$watch((() => { return this.form.usergroup_perms[group.id].full; }), newVal => {
+            return this.$scope.$watch((() => this.form.usergroup_perms[group.id].full), (newVal) => {
               this[`group_${group.sys_name}_perm`] = newVal;
               return (() => {
                 const result = [];
@@ -91,12 +87,13 @@ define([
                   id = parseInt(id);
                   if (id === this.group_everyone_id) { continue; }
                   g.full = this.group_everyone_perm || this.group_registered_perm || g.full;
-                  if (id === this.group_registered_id) { result.push(this.$scope.usergroups_locked[id] = this.group_everyone_perm);
+                  if (id === this.group_registered_id) {
+                    result.push(this.$scope.usergroups_locked[id] = this.group_everyone_perm);
                   } else { result.push(this.$scope.usergroups_locked[id] = this.group_everyone_perm || this.group_registered_perm); }
                 }
                 return result;
               })();
-          });
+            });
           }
           )(group);
         }
@@ -141,7 +138,6 @@ define([
      */
 
     saveAll() {
-
       const is_new = !this.dep.id;
 
       if (!this.$scope.form_props.$valid) {
@@ -151,7 +147,7 @@ define([
       // @form is used due to the reason that upon clicking on submit button parent_id still has old value
 
       if (this.depData.hasChildrenAndChangedParent(this.dep, this.form)) {
-        this.showAlert("You cannot change parent of this department as it has sub-departments. Move or delete the sub-departments first.");
+        this.showAlert('You cannot change parent of this department as it has sub-departments. Move or delete the sub-departments first.');
         return;
       }
 
@@ -164,21 +160,17 @@ define([
       }
       const promise = this.depData.saveFormModel(this.dep, this.form);
 
-      promise.success( () => {
-
+      promise.success(() => {
         this.origForm = Util.clone(this.form, true);
 
-        this.stopSpinner('saving_dep', true).then( () => {
-          return this.Growl.success(this.getRegisteredMessage('saved_dep'));
-        });
+        this.stopSpinner('saving_dep', true).then(() => this.Growl.success(this.getRegisteredMessage('saved_dep')));
 
         if (is_new) {
           return this.$state.go('chat.chat_deps.gocreate');
         }
       });
 
-      promise.error( (info, code) => {
-
+      promise.error((info, code) => {
         this.stopSpinner('saving_dep');
         this.applyErrorResponseToView(info);
         if (info != null ? info.error_message : undefined) { return this.Growl.error(info != null ? info.error_message : undefined); }
@@ -193,9 +185,7 @@ define([
     */
 
     initializeScopeWatching() {
-
-      return this.$scope.$watch('EditCtrl.form.parent_id', newVal => {
-
+      return this.$scope.$watch('EditCtrl.form.parent_id', (newVal) => {
         newVal = parseInt(newVal);
 
         if (!newVal) {
@@ -207,9 +197,8 @@ define([
 
         if (parent && parent.children && !parent.children.length) {
           return this.$scope.show_parent_warning = parent;
-        } else {
-          return this.$scope.show_parent_warning = false;
         }
+        return this.$scope.show_parent_warning = false;
       });
     }
 
@@ -218,7 +207,6 @@ define([
     */
 
     propogatePermission(obj, perm) {
-
       if (this._propogatePermission_running) { return; }
 
       this._propogatePermission_running = true;
@@ -232,18 +220,15 @@ define([
     }
 
 
-
     setAvatar(blob) {
       this.dep.avatar = blob;
       if ((blob == null)) {
         this.$scope.icon_image = null;
         return this.form.enable_avatar = false;
-      } else {
-        this.$scope.icon_image = blob.thumbnail_url_50;
-        return this.form.enable_avatar = true;
       }
+      this.$scope.icon_image = blob.thumbnail_url_50;
+      return this.form.enable_avatar = true;
     }
-
 
 
     onFileSelect(files) {
@@ -251,32 +236,29 @@ define([
       const file = files[0];
 
       return this.$upload.upload({
-        url: this.$http.formatApiUrl('/misc/upload'),
+        url:  this.$http.formatApiUrl('/misc/upload'),
         data: { is_image: true },
         file
-      }).success( data => {
+      }).success((data) => {
         this.$scope.uploading = false;
         return this.setAvatar(data.blob);
-      }).error( data => {
+      }).error((data) => {
         this.$scope.uploading = false;
         return this.Growl.error((data != null ? data.error_message : undefined) || 'Error');
       });
     }
 
 
-
     selectIcon(image) {
       if ((image == null)) { setAvatar(null); }
 
       this.$scope.uploading = true;
-      return this.Api.sendPostJson('/misc/upload', {path: image, is_image: true}).then(
-        data => {
+      return this.Api.sendPostJson('/misc/upload', { path: image, is_image: true }).then(
+        (data) => {
           this.$scope.uploading = false;
           return this.setAvatar(data.data.blob);
         },
-        () => {
-          return this.$scope.uploading = false;
-      });
+        () => this.$scope.uploading = false);
     }
 
 
@@ -284,31 +266,29 @@ define([
       const index = this.form.brands.indexOf(brandId);
       if (index === -1) {
         return this.form.brands.unshift(brandId);
-      } else {
-        if (this.form.brands.length > 1) {
-          return this.form.brands.splice(index, 1);
-        } else {
-          alert("Departments need to be linked to at least one Brand");
-          $(e.target).prop("checked", true);
-          return true;
-        }
       }
+      if (this.form.brands.length > 1) {
+        return this.form.brands.splice(index, 1);
+      }
+      alert('Departments need to be linked to at least one Brand');
+      $(e.target).prop('checked', true);
+      return true;
     }
 
 
     changeAllPerms(group) {
       let id;
-      const _perm = this.all_perms[group + '_full'];
-      if ('user' === group) {
+      const _perm = this.all_perms[`${group}_full`];
+      if (group === 'user') {
         for (id of Object.keys(this.form.usergroup_perms || {})) {
           group = this.form.usergroup_perms[id];
           group.full = _perm;
         }
       }
-      if ('agent' === group) {
+      if (group === 'agent') {
         for (id of Object.keys(this.form.agent_perms.groups || {})) {
           group = this.form.agent_perms.groups[id];
-          if (!group.perms.full.locked && ('agent_all_perms' !== group.model.sys_name) && ('agent_all_safe_perms' !== group.model.sys_name)) { group.perms.full.state = _perm; }
+          if (!group.perms.full.locked && (group.model.sys_name !== 'agent_all_perms') && (group.model.sys_name !== 'agent_all_safe_perms')) { group.perms.full.state = _perm; }
         }
         return (() => {
           const result = [];
@@ -324,7 +304,6 @@ define([
     }
   }
   Admin_ChatDeps_Ctrl_Edit.initClass();
-
 
 
   return Admin_ChatDeps_Ctrl_Edit.EXPORT_CTRL();

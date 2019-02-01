@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class Admin_TicketMacros_MacroEditFormMapper {
     getFormFromModel(macroModel) {
       const form = {};
@@ -9,11 +9,11 @@ define(function() {
       form.actions   = (macroModel.actions != null ? macroModel.actions.actions : undefined) || {};
 
       if (macroModel.person) {
-        form.person_id = macroModel.person.id + "";
+        form.person_id = `${macroModel.person.id}`;
       }
 
       if (macroModel.department) {
-        form.department_id = macroModel.department.id + "";
+        form.department_id = `${macroModel.department.id}`;
       }
 
       return form;
@@ -25,9 +25,9 @@ define(function() {
 
     getPostDataFromForm(formModel) {
       const postData = {
-        title: formModel.title,
-        is_global: formModel.is_global,
-        person: formModel.person_id,
+        title:      formModel.title,
+        is_global:  formModel.is_global,
+        person:     formModel.person_id,
         department: formModel.department_id
       };
 

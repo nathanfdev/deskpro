@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Templates_Ctrl_TemplateEditor extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Templates_Ctrl_TemplateEditor';
@@ -7,9 +7,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     init() {
-      this.$scope.dismiss = () => {
-        return this.$modalInstance.dismiss('cancel');
-      };
+      this.$scope.dismiss = () => this.$modalInstance.dismiss('cancel');
 
       this.$scope.save = () => {
         this.$scope.saving_template = true;
@@ -22,10 +20,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           this.$scope.saving_template = false;
           return this.$modalInstance.close({
             templateName: this.templateName,
-            mode: 'custom'
+            mode:         'custom'
           });
         }
-        , result => {
+        , (result) => {
           this.$scope.saving_template = false;
           this.$scope.is_error = true;
           this.$scope.syntax_error  = result.data.error_syntax || false;
@@ -34,23 +32,21 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         });
       };
 
-      this.$scope.revert = () => {
-        return this.showConfirm('Are you sure you want to revert this template? Your changes will be completely lost and the template will be returned to the default.').result.then(() => {
-          this.$scope.saving_template = true;
-          return this.Api.sendDelete(`/templates/${this.templateName}`).then(() => {
-            this.$scope.saving_template = false;
-            return this.$modalInstance.close({
-              templateName: this.templateName,
-              mode: 'revert'
-            });
+      this.$scope.revert = () => this.showConfirm('Are you sure you want to revert this template? Your changes will be completely lost and the template will be returned to the default.').result.then(() => {
+        this.$scope.saving_template = true;
+        return this.Api.sendDelete(`/templates/${this.templateName}`).then(() => {
+          this.$scope.saving_template = false;
+          return this.$modalInstance.close({
+            templateName: this.templateName,
+            mode:         'revert'
           });
         });
-      };
+      });
 
-      return this.$scope.aceLoaded = editor => {
+      return this.$scope.aceLoaded = (editor) => {
         this.editor = editor;
         const maxH = $(editor.container).data('max-height') || 500;
-        const updateH = function() {
+        const updateH = function () {
           let newHeight = (editor.getSession().getScreenLength() * editor.renderer.lineHeight) + editor.renderer.scrollBar.getWidth();
           if (newHeight > maxH) {
             newHeight = maxH;
@@ -70,7 +66,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const promise = this.Api.sendGet(`/templates/${this.templateName}`).success( data => {
+      const promise = this.Api.sendGet(`/templates/${this.templateName}`).success((data) => {
         this.tpl = data;
         this.$scope.tpl = this.tpl;
         return this.$scope.template_code = data.template_code.code;

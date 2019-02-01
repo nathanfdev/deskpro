@@ -1,25 +1,16 @@
-define(['DeskPRO/Util/Util'], function(Util) {
+define(['DeskPRO/Util/Util'], (Util) => {
   class LayoutEditorField {
     constructor(scope, element, attrs, ngModel, $modal, dpObTypesDefTicketCriteria, TicketFields, UserFields, $q, $timeout, TicketFieldsPerPerson, TicketFieldsPerOrg, OrgFields) {
-
       this.scope = scope;
       this.element = element;
       this.attrs = attrs;
       this.ngModel = ngModel;
       this.$modal = $modal;
       this.dpObTypesDefTicketCriteria = dpObTypesDefTicketCriteria;
-      this.scope.ticketFieldTitleFilter = f => {
-        return (this.scope.field.field_type === 'ticket_field') && ((f.id+'') === (this.scope.field.field_id+''));
-      };
-      this.scope.userFieldTitleFilter = f => {
-        return (this.scope.field.field_type === 'user_field') && ((f.id+'') === (this.scope.field.field_id+''));
-      };
-      this.scope.orgFieldTitleFilter = f => {
-        return (this.scope.field.field_type === 'org_field') && ((f.id+'') === (this.scope.field.field_id+''));
-      };
-      this.scope.CustomFieldTitleFilter = f => {
-        return (this.scope.field.field_type === 'custom_field') && ((f.id+'') === (this.scope.field.field_id+''));
-      };
+      this.scope.ticketFieldTitleFilter = f => (this.scope.field.field_type === 'ticket_field') && ((`${f.id}`) === (`${this.scope.field.field_id}`));
+      this.scope.userFieldTitleFilter = f => (this.scope.field.field_type === 'user_field') && ((`${f.id}`) === (`${this.scope.field.field_id}`));
+      this.scope.orgFieldTitleFilter = f => (this.scope.field.field_type === 'org_field') && ((`${f.id}`) === (`${this.scope.field.field_id}`));
+      this.scope.CustomFieldTitleFilter = f => (this.scope.field.field_type === 'custom_field') && ((`${f.id}`) === (`${this.scope.field.field_id}`));
 
       $q.all([
         TicketFields.loadList(),
@@ -28,16 +19,14 @@ define(['DeskPRO/Util/Util'], function(Util) {
         TicketFieldsPerOrg.all(),
         OrgFields.loadList(),
         this.dpObTypesDefTicketCriteria.loadDataOptions()
-      ]).then(results => {
+      ]).then((results) => {
         this.scope.custom_ticket_fields     = results[0];
         this.scope.custom_user_fields       = results[1];
         this.scope.ticket_fields_per_person = results[2];
         this.scope.ticket_fields_per_org    = results[3];
         this.scope.custom_org_fields        = results[4];
 
-        return $timeout(() => {
-          return this._initEvents();
-        }
+        return $timeout(() => this._initEvents()
         , 1);
       });
     }
@@ -45,26 +34,25 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
     _initEvents() {
       if (!this.scope.isSticky) {
-        this.element.find('.opt_btn').on('click', ev => {
+        this.element.find('.opt_btn').on('click', (ev) => {
           ev.preventDefault();
           return this.openOptions();
         });
 
-        return this.element.find('.remove_btn').on('click', ev => {
+        return this.element.find('.remove_btn').on('click', (ev) => {
           ev.preventDefault();
           if (this.scope.removeRow != null) {
             return this.scope.removeRow();
-          } else {
-            return this.scope.$destroy();
           }
+          return this.scope.$destroy();
         });
-      } else {
-        return this.element.find('nav').remove();
       }
+      return this.element.find('nav').remove();
     }
 
     openOptions() {
-      let inst, tpl;
+      let inst,
+        tpl;
       if (this.scope.type === 'user') {
         tpl = 'ticketdeps_layouteditor_user_options';
       } else {
@@ -79,7 +67,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       return inst = this.$modal.open({
         templateUrl: tpl,
-        controller: ['$scope', '$modalInstance', 'options', 'typeDef', 'dpObTypesDefTicketCriteria', function($scope, $modalInstance, options, typeDef, types) {
+        controller:  ['$scope', '$modalInstance', 'options', 'typeDef', 'dpObTypesDefTicketCriteria', function ($scope, $modalInstance, options, typeDef, types) {
           let terms;
           if ((options.criteria == null)) { options.criteria = {}; }
           if (!(options.criteria != null ? options.criteria.terms : undefined)) { options.criteria.terms = {}; }
@@ -91,13 +79,13 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
           if (Util.isArray(options.criteria.terms)) {
             terms = {};
-            for (let t of Array.from(options.criteria.terms)) {
+            for (const t of Array.from(options.criteria.terms)) {
               terms[Util.uid('t')] = t;
             }
             options.criteria.terms = terms;
           }
 
-          for (let _x of Object.keys(options.criteria.terms || {})) {
+          for (const _x of Object.keys(options.criteria.terms || {})) {
             $scope.formOptions.with_criteria = true;
             break;
           }
@@ -110,23 +98,23 @@ define(['DeskPRO/Util/Util'], function(Util) {
             value: 'CheckDepartment'
           });
           $scope.criteriaOptions.push({
-             title: 'Product',
-             value: 'CheckProduct'
+            title: 'Product',
+            value: 'CheckProduct'
           });
           $scope.criteriaOptions.push({
-             title: 'Category',
-             value: 'CheckCategory'
+            title: 'Category',
+            value: 'CheckCategory'
           });
           $scope.criteriaOptions.push({
-             title: 'Priority',
-             value: 'CheckPriority'
+            title: 'Priority',
+            value: 'CheckPriority'
           });
           $scope.criteriaOptions.push({
             title: 'Workflow',
             value: 'CheckWorkflow'
           });
 
-          const initFieldGetter = function(base_name, f) {
+          const initFieldGetter = function (base_name, f) {
             options = {};
             options.type_name = f.type_name;
             if (f.type_name === 'choice') {
@@ -142,7 +130,8 @@ define(['DeskPRO/Util/Util'], function(Util) {
           };
 
           types.loadDataOptions().then(() => {
-            let f, sub_options;
+            let f,
+              sub_options;
             if (types.options_data != null ? types.options_data.ticket_fields : undefined) {
               sub_options = [];
 
@@ -164,7 +153,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
               if (sub_options.length) {
                 $scope.criteriaOptions.push({
-                  title: 'Ticket Fields',
+                  title:      'Ticket Fields',
                   subOptions: sub_options
                 });
               }
@@ -182,7 +171,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
               if (sub_options.length) {
                 $scope.criteriaOptions.push({
-                  title: 'Person Fields',
+                  title:      'Person Fields',
                   subOptions: sub_options
                 });
               }
@@ -200,7 +189,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
               if (sub_options.length) {
                 return $scope.criteriaOptions.push({
-                  title: 'Organization Fields',
+                  title:      'Organization Fields',
                   subOptions: sub_options
                 });
               }
@@ -211,7 +200,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
           $scope.dismiss = () => $modalInstance.dismiss();
 
-          return $scope.done = function() {
+          return $scope.done = function () {
             if (!$scope.formOptions.with_criteria) {
               $scope.options.criteria.terms = {};
             }
@@ -221,23 +210,19 @@ define(['DeskPRO/Util/Util'], function(Util) {
         }
         ],
         resolve: {
-          options: () => {
-            return this.scope.field.options;
-          },
+          options: () => this.scope.field.options,
 
-          typeDef: () => {
-            return this.dpObTypesDefTicketCriteria;
-          }
+          typeDef: () => this.dpObTypesDefTicketCriteria
         }
       });
     }
   }
 
-  return [ '$modal', 'dpObTypesDefTicketCriteria', 'DataService', '$q', '$timeout', function($modal, dpObTypesDefTicketCriteria, DataService, $q, $timeout) {
+  return ['$modal', 'dpObTypesDefTicketCriteria', 'DataService', '$q', '$timeout', function ($modal, dpObTypesDefTicketCriteria, DataService, $q, $timeout) {
     const directive = {};
     directive.restrict    = 'E';
     directive.replace     = true;
-    directive.templateUrl = "TicketDeps/layout-editor-field.html";
+    directive.templateUrl = 'TicketDeps/layout-editor-field.html';
 
     const TicketFields          = DataService.get('TicketFields');
     const UserFields            = DataService.get('UserFields');
@@ -245,7 +230,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
     const TicketFieldsPerPerson = DataService.get('CustomFields', 'ticket', 'person');
     const TicketFieldsPerOrg    = DataService.get('CustomFields', 'ticket', 'organization');
 
-    directive.link = function(scope, element, attrs, ngModel) {
+    directive.link = function (scope, element, attrs, ngModel) {
       let handler;
       if (!scope.field.options) {                 scope.field.options = {}; }
       if ((scope.field.options.criteria == null)) {       scope.field.options.criteria = {}; }

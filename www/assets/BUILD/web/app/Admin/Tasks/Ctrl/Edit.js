@@ -1,15 +1,15 @@
 define([
   'Admin/Main/Ctrl/Base'
-], function(
+], (
   Admin_Ctrl_Base
-) {
+) => {
   class Admin_Tasks_Ctrl_Edit extends Admin_Ctrl_Base {
     constructor(...args) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.updateAgents = this.updateAgents.bind(this);
@@ -34,23 +34,18 @@ define([
     }
 
 
-
     initialLoad() {
-      return this.service.load().then(settings => {
+      return this.service.load().then((settings) => {
         this.$scope.settings = settings;
-        return settings.groups.map(group => { return this.map[group.id] = group; });
+        return settings.groups.map(group => this.map[group.id] = group);
       });
     }
 
 
-
     // update agents checkboxes states
     updateAgents() {
-
-      return this.$scope.settings.agents.map(agent => {
-
-        for (let group of Array.from(agent.usergroups)) {
-
+      return this.$scope.settings.agents.map((agent) => {
+        for (const group of Array.from(agent.usergroups)) {
           if (this.map[group.id] != null ? this.map[group.id].perms.tasks.use : undefined) {
             agent._checked = true;
             agent._disabled = true;
@@ -64,25 +59,19 @@ define([
     }
 
 
-
     save() {
       this.startSpinner('saving');
 
-      for (let agent of Array.from(this.$scope.settings.agents)) {
+      for (const agent of Array.from(this.$scope.settings.agents)) {
         if (!agent._disabled) { agent.perms.tasks.use = agent._checked; }
       }
 
       return this.service.save().then(
-        () => {
-          return this.stopSpinner('saving');
-        },
-        () => {
-          return this.stopSpinner('saving');
-      });
+        () => this.stopSpinner('saving'),
+        () => this.stopSpinner('saving'));
     }
   }
   Admin_Tasks_Ctrl_Edit.initClass();
-
 
 
   return Admin_Tasks_Ctrl_Edit.EXPORT_CTRL();

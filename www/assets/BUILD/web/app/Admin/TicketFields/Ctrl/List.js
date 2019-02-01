@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_TicketFields_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketFields_Ctrl_List';
@@ -14,7 +14,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     initialLoad() {
       const promise = this.ticket_fields.loadList();
-      return promise.then(list => {
+      return promise.then((list) => {
         this.custom_fields = list;
         return this.field_enabled = this.ticket_fields.field_enabled;
       });
@@ -27,7 +27,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     saveLayoutData(id, user_layouts, agent_layouts) {
       let l;
       const postData = {
-        enable_user_layouts: [],
+        enable_user_layouts:  [],
         enable_agent_layouts: []
       };
 

@@ -1,10 +1,10 @@
 define([
   'angular',
   'DeskPRO/Util/Arrays'
-], function(
+], (
   angular,
   Arrays
-) {
+) => {
   class InterfaceHandler {
     constructor(scope, element, attr, ngModel, $compile, TicketFields, UserFields, $q, $timeout, logger, TicketFieldsPerPerson, TicketFieldsPerOrg, OrgFields) {
       this.scope    = scope;
@@ -22,13 +22,15 @@ define([
       this.els.agent_worksheet = this.els.agent_tab.find('.form-worksheet');
 
       this.required_fields = {
-        user: [],
+        user:  [],
         agent: []
       };
 
-      this.ngModel.$formatters.push( modelValue => {
+      this.ngModel.$formatters.push((modelValue) => {
         // Make sure the basic data structure exists
-        let f, has, i;
+        let f,
+          has,
+          i;
         if (!modelValue) {
           modelValue = {};
         }
@@ -98,16 +100,12 @@ define([
       }
       , 1);
 
-      this.ngModel.$parsers.push( viewModel => {
-        return viewModel;
-      });
+      this.ngModel.$parsers.push(viewModel => viewModel);
 
-      this.ngModel.$render = () => {
-        return this.render();
-      };
+      this.ngModel.$render = () => this.render();
 
       $q.all([TicketFields.loadList(), UserFields.loadList(), TicketFieldsPerPerson.all(), TicketFieldsPerOrg.all(), OrgFields.loadList()])
-      .then( results => {
+      .then((results) => {
         this.scope.field_status             = TicketFields.field_enabled;
         this.scope.custom_ticket_fields     = results[0];
         this.scope.custom_user_fields       = results[1];
@@ -127,14 +125,14 @@ define([
 
     _reInitTab(tabType, tab) {
       // moves disabled items to end of the list
-      tab.find('.form-elements').find('li.disabled').not('.done-init').each(function() {
+      tab.find('.form-elements').find('li.disabled').not('.done-init').each(function () {
         const el = $(this);
         const parent = el.closest('ul');
         return el.detach().appendTo(parent);
       });
       return tab.find('.form-elements').find('li').not('.disabled').draggable({
-        appendTo: 'body',
-        helper: 'clone',
+        appendTo:          'body',
+        helper:            'clone',
         connectToSortable: tab.find('.form-worksheet').find('ul')
       });
     }
@@ -144,28 +142,28 @@ define([
       const { ngModel } = this;
 
       const requiredFields = this.required_fields[tabType];
-      tab.find('.dp-layout-editor-layout-field').filter('[data-is-required]').each(function() {
+      tab.find('.dp-layout-editor-layout-field').filter('[data-is-required]').each(function () {
         return requiredFields.push($(this).data('field-type'));
       });
 
       // moves disabled items to end of the list
-      tab.find('.form-elements').find('li.disabled').each(function() {
+      tab.find('.form-elements').find('li.disabled').each(function () {
         const el = $(this);
         const parent = el.closest('ul');
         return el.detach().appendTo(parent);
       }).addClass('done-init');
 
       tab.find('.form-elements').find('li').not('.disabled').draggable({
-        appendTo: 'body',
-        helper: 'clone',
+        appendTo:          'body',
+        helper:            'clone',
         connectToSortable: tab.find('.form-worksheet').find('ul')
       }).addClass('done-init');
 
       return tab.find('.form-worksheet').find('ul').sortable({
-        items: "> li",
-        axis: 'y',
+        items:  '> li',
+        axis:   'y',
         handle: '.drag_handle',
-        stop: (event, ui) => {
+        stop:   (event, ui) => {
           if (ui.item != null ? ui.item.hasClass('dp-layout-editor-layout-field') : undefined) {
             const fieldType = ui.item.data('field-type');
             const fieldId   = ui.item.data('field-id') || null;
@@ -186,9 +184,7 @@ define([
           }
         },
 
-        update: () => {
-          return this.updateOrder(tabType, tab);
-        }
+        update: () => this.updateOrder(tabType, tab)
       });
     }
 
@@ -196,12 +192,12 @@ define([
     updateOrder(tabType, tab) {
       const { ngModel } = this;
       const orderMap = {};
-      tab.find('.form-worksheet').find('ul').find('li').each( function(i) {
+      tab.find('.form-worksheet').find('ul').find('li').each(function (i) {
         const fid = $(this).data('field-id');
         if (fid) { return orderMap[fid] = i; }
       });
       if (ngModel.$modelValue[tabType] && ngModel.$modelValue[tabType].length) {
-        return Array.from(ngModel.$modelValue[tabType]).map((f) =>
+        return Array.from(ngModel.$modelValue[tabType]).map(f =>
           (f.display_order = orderMap[f.id] || 0));
       }
     }
@@ -225,7 +221,7 @@ define([
 
       const field = this.createFieldValue(fieldType, fieldId || null);
 
-      for (let f of Array.from(viewValue[tabType])) {
+      for (const f of Array.from(viewValue[tabType])) {
         // Already has field of this type,
         // so we will ignore this drop
         if (f.id === field.id) {
@@ -276,15 +272,15 @@ define([
 
       const layoutField = {
         id,
-        field_type:    fieldType,
-        field_id:      fieldId,
-        options: {
-          on_newticket: true,
-          on_viewticket: true,
-          on_viewticket_mode: "always",
-          on_editticket: true,
-          criteria: {
-            mode: "all",
+        field_type: fieldType,
+        field_id:   fieldId,
+        options:    {
+          on_newticket:       true,
+          on_viewticket:      true,
+          on_viewticket_mode: 'always',
+          on_editticket:      true,
+          criteria:           {
+            mode:  'all',
             terms: []
           }
         }
@@ -325,7 +321,7 @@ define([
       };
 
       if (Array.from(this.required_fields[tabType]).includes(fid)) {
-        fieldScope.removeRow = function() {
+        fieldScope.removeRow = function () {
         };
         fieldScope.isSticky = true;
       }
@@ -348,30 +344,32 @@ define([
         { typeName: 'agent', worksheetName: 'agent_worksheet' }
       ];
 
-      return Array.from(forms).map((form) =>
+      return Array.from(forms).map(form =>
         this.renderForm(form));
     }
 
     renderForm(form) {
-      let fieldEl, nameCheck, order;
+      let fieldEl,
+        nameCheck,
+        order;
       let prevField   = null;
       let prevFieldEl = null;
       const { typeName }    = form;
       const form_model  = this.ngModel.$viewValue[form.typeName];
       const worksheetEl = this.els[form.worksheetName];
-      const tabEl       = this.els[form.typeName + '_tab'];
+      const tabEl       = this.els[`${form.typeName}_tab`];
       const listEl      = worksheetEl.find('ul').first();
 
       let layoutFieldEls = worksheetEl.find('.layout-field');
 
       const validNames = [];
-      tabEl.find('.form-elements').find('.layout-field').each(function() {
-        return validNames.push($(this).data('field-type') + '_' + ($(this).data('field-id') || '0'));
+      tabEl.find('.form-elements').find('.layout-field').each(function () {
+        return validNames.push(`${$(this).data('field-type')}_${$(this).data('field-id') || '0'}`);
       });
 
       const use_form_model = [];
       for (var field of Array.from(form_model)) {
-        nameCheck = field.field_type + '_' + (field.field_id || '0');
+        nameCheck = `${field.field_type}_${field.field_id || '0'}`;
         if (validNames.indexOf(nameCheck) !== -1) {
           use_form_model.push(field);
         }
@@ -379,12 +377,12 @@ define([
 
       const draggableEls = tabEl.find('.form-elements');
       draggableEls.show();
-      draggableEls.find('li').each( function() {
+      draggableEls.find('li').each(function () {
         let fid;
         const $el = $(this);
         const field_id = $el.data('field-id') || null;
         if (field_id) {
-          fid = $el.data('field-type') + '_' + field_id;
+          fid = `${$el.data('field-type')}_${field_id}`;
         } else {
           fid = $el.data('field-type');
         }
@@ -411,7 +409,7 @@ define([
       }
 
       // Remove elements
-      layoutFieldEls.each( function() {
+      layoutFieldEls.each(function () {
         const fieldId = $(this).data('field-id');
         if (!elementMap[fieldId]) {
           return $(this).remove();
@@ -422,7 +420,7 @@ define([
       for (field of Array.from(newFields)) {
         field.id = this.getFieldId(field);
 
-        nameCheck = field.field_type + '_' + (field.field_id || '0');
+        nameCheck = `${field.field_type}_${field.field_id || '0'}`;
         if (validNames.indexOf(nameCheck) === -1) {
           continue;
         }
@@ -434,7 +432,7 @@ define([
         if (order === 0) {
           listEl.prepend(fieldRow);
         } else {
-          prevField = use_form_model[order-1];
+          prevField = use_form_model[order - 1];
           if (prevField && elementMap[prevField.id]) {
             prevFieldEl = elementMap[prevField.id];
             fieldRow.insertAfter(prevFieldEl);
@@ -447,7 +445,7 @@ define([
       // Verify order
       let doReorder = false;
       layoutFieldEls = worksheetEl.find('.layout-field');
-      layoutFieldEls.each( function(currentOrder) {
+      layoutFieldEls.each(function (currentOrder) {
         const fieldId = $(this).data('field-id');
         const expectedOrder = orderMap[fieldId] || 0;
 
@@ -467,7 +465,7 @@ define([
 
       return (() => {
         const result = [];
-        for (let f of Array.from(use_form_model)) {
+        for (const f of Array.from(use_form_model)) {
           const fid = this.getFieldId(f);
           result.push(draggableEls.find(`[data-fid=\"${fid}\"]`).hide());
         }
@@ -481,7 +479,7 @@ define([
 
       const field_id = field.field_id || null;
       if (field_id) {
-        fid = field.field_type + '_' + field_id;
+        fid = `${field.field_type}_${field_id}`;
       } else {
         fid = field.field_type;
       }
@@ -491,16 +489,15 @@ define([
     }
   }
 
-  return ['$compile', 'LoggerManager', 'DataService', '$q', '$timeout', function($compile, LoggerManager, DataService, $q, $timeout) {
-
+  return ['$compile', 'LoggerManager', 'DataService', '$q', '$timeout', function ($compile, LoggerManager, DataService, $q, $timeout) {
     const directive = {};
     directive.restrict    = 'E';
     directive.require     = 'ngModel';
-    directive.templateUrl = "TicketDeps/layout-editor.html";
+    directive.templateUrl = 'TicketDeps/layout-editor.html';
     directive.replace     = true;
     directive.scope       = {};
 
-    directive.link = function(scope, element, attrs, ngModel) {
+    directive.link = function (scope, element, attrs, ngModel) {
       let interfaceHandler;
       const logger = LoggerManager.get('directive.dpLayoutEditor');
 

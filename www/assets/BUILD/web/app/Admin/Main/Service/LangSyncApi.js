@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], function(Util) {
+define(['DeskPRO/Util/Util'], (Util) => {
   class LangSyncApi {
     constructor($http, api_url, Growl) {
       this.handleError = this.handleError.bind(this);
@@ -11,8 +11,8 @@ define(['DeskPRO/Util/Util'], function(Util) {
     * Retrieve the full endpoint URL.
     */
     _getEndpointUrl(endpoint) {
-        return `${this.api_url}/${endpoint}`;
-      }
+      return `${this.api_url}/${endpoint}`;
+    }
 
     formatUrl(endpoint) {
       endpoint = endpoint.replace(/^\//, '');
@@ -26,7 +26,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
       const url = this.formatUrl('/locales/manifest.json');
 
       const http_params = {
-        method: 'GET',
+        method:        'GET',
         url,
         isCorsRequest: true
       };
@@ -38,7 +38,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
       const url = this.formatUrl(`/locales/${locale}/${type}.json`);
 
       const http_params = {
-        method: 'GET',
+        method:        'GET',
         url,
         isCorsRequest: true
       };
@@ -54,7 +54,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
     }
 
     handleError(data, status, headers, config) {
-      if ((500 === status) && this.Growl) {
+      if ((status === 500) && this.Growl) {
         return this.Growl.error('There was a problem processing your last request. Please try again.');
       } else if (console) {
         return console.info(data);

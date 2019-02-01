@@ -1,11 +1,11 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) => {
   class Admin_Settings_Ctrl_PasswordSettings extends Admin_Ctrl_Base {
     constructor(...args) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.initPolicy = this.initPolicy.bind(this);
@@ -23,28 +23,24 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, 
     }
 
     initialLoad() {
-      this.Api.sendGet('/general_settings/blob').then(res => {
-        return this.$scope.logo_blob = res.data;
-      });
+      this.Api.sendGet('/general_settings/blob').then(res => this.$scope.logo_blob = res.data);
 
-      const data_promise = this.Api.sendGet('/password_settings', {rate_limit_context: 'agent'}).then( res => {
-        return this.initPolicy(res.data);
-      });
+      const data_promise = this.Api.sendGet('/password_settings', { rate_limit_context: 'agent' }).then(res => this.initPolicy(res.data));
 
       this.$scope.ip_white_listing_times = [
-        {id: 86400, label: "1 day"},
-        {id: 259200, label: "3 days"},
-        {id: 432000, label: "5 days"},
-        {id: 604800, label: "1 week"},
-        {id: 1209600, label: "2 weeks"},
-        {id: 1814400, label: "3 weeks"},
-        {id: 2592000, label: "1 month"},
-        {id: 5184000, label: "2 months"},
-        {id: 7776000, label: "3 months"},
-        {id: 15552000, label: "6 months"},
-        {id: 23328000, label: "9 months"},
-        {id: 31536000, label: "1 year"},
-        {id: 63072000, label: "2 years"}
+        { id: 86400, label: '1 day' },
+        { id: 259200, label: '3 days' },
+        { id: 432000, label: '5 days' },
+        { id: 604800, label: '1 week' },
+        { id: 1209600, label: '2 weeks' },
+        { id: 1814400, label: '3 weeks' },
+        { id: 2592000, label: '1 month' },
+        { id: 5184000, label: '2 months' },
+        { id: 7776000, label: '3 months' },
+        { id: 15552000, label: '6 months' },
+        { id: 23328000, label: '9 months' },
+        { id: 31536000, label: '1 year' },
+        { id: 63072000, label: '2 years' }
       ];
 
       return data_promise;
@@ -57,11 +53,11 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, 
         session_keepalive_require_page: data.settings.session_keepalive_require_page,
         ip_security_enabled:            data.settings.ip_security_enabled,
         ip_security_mode:               data.settings.ip_security_mode || 'admins',
-        ip_security_whitelist_lifetime: data.settings.ip_security_whitelist_lifetime + "",
+        ip_security_whitelist_lifetime: `${data.settings.ip_security_whitelist_lifetime}`,
         disable_notifications:          data.settings.disable_notifications,
         enable_agent_rememberme:        data.settings.enable_agent_rememberme,
         enable_user_rememberme:         data.settings.enable_user_rememberme,
-        agent_enable_kb_shortcuts: data.settings.agent_enable_kb_shortcuts,
+        agent_enable_kb_shortcuts:      data.settings.agent_enable_kb_shortcuts,
       };
 
       this.$scope.rate_limit_settings = data.rate_limit_settings;
@@ -119,18 +115,14 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, 
       const post = {
         settings,
         rate_limit_settings: this.$scope.rate_limit_settings,
-        rate_limit_context: 'agent'
+        rate_limit_context:  'agent'
       };
 
-      return this.Api.sendPostJson('/password_settings', post).success(data => {
-        return this.stopSpinner('saving').then(() => {
-          this.initPolicy(data);
-          const message = this.getRegisteredMessage('saved_settings');
-          if (message && message.length) { return this.Growl.success(message); }
-        });
-      }).error( (info, code) => {
-        return this.stopSpinner('saving', true);
-      });
+      return this.Api.sendPostJson('/password_settings', post).success(data => this.stopSpinner('saving').then(() => {
+        this.initPolicy(data);
+        const message = this.getRegisteredMessage('saved_settings');
+        if (message && message.length) { return this.Growl.success(message); }
+      })).error((info, code) => this.stopSpinner('saving', true));
     }
 
 
@@ -141,12 +133,10 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, 
       return this.$upload.upload({
         url: this.$http.formatApiUrl('/blobs'),
         file
-      }).success( data => {
+      }).success((data) => {
         this.$scope.logo_uploading = false;
-        return this.Api.sendPost('/general_settings/blob', {blob_id: data.blob.id}).then(res => {
-          return this.$scope.logo_blob = res.data;
-      });
-      }).error( data => {
+        return this.Api.sendPost('/general_settings/blob', { blob_id: data.blob.id }).then(res => this.$scope.logo_blob = res.data);
+      }).error((data) => {
         this.$scope.logo_uploading = false;
         return this.Growl.error((data != null ? data.error_message : undefined) || 'Error');
       });

@@ -1,10 +1,10 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/TwitterAccounts/TwitterAccountEditFormMapper'
-], function(
+], (
   BaseListEdit,
   TwitterAccountEditFormMapper
-)  {
+) => {
   class Admin_TwitterAccounts_DataService_TwitterAccounts extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -13,8 +13,7 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/twitter_accounts').success( data => {
-
+      this.Api.sendGet('/twitter_accounts').success((data) => {
         const models = data.twitter_accounts;
         return deferred.resolve(models);
       }
@@ -30,10 +29,7 @@ define([
       * @return {promise}
     */
     deleteTwitterAccountById(id) {
-
-      const promise = this.Api.sendDelete(`/twitter_accounts/${id}`).then(() => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/twitter_accounts/${id}`).then(() => this.removeListModelById(id));
 
       return promise;
     }
@@ -44,7 +40,6 @@ define([
        * @return {TwitterAccountEditFormMapper}
     */
     getFormMapper() {
-
       if (this.formMapper) { return this.formMapper; }
       this.formMapper = new TwitterAccountEditFormMapper();
       return this.formMapper;
@@ -57,13 +52,10 @@ define([
       * @return {promise}
     */
     loadEditTwitterAccountData(id) {
-
       const deferred = this.$q.defer();
 
       if (id) {
-
-        this.Api.sendGet(`/twitter_accounts/${id}`).then( result => {
-
+        this.Api.sendGet(`/twitter_accounts/${id}`).then((result) => {
           const data = {};
           data.twitter_account = result.data.twitter_account;
           data.all_agents = result.data.twitter_account.all_agents;
@@ -73,18 +65,16 @@ define([
           return deferred.resolve(data);
         }
         , () => deferred.reject());
-
       } else {
-
         const data = {};
         data.twitter_account = {
-          id: null,
+          id:       null,
           verified: false,
-          user: {
+          user:     {
             profile_image_url: '',
-            name: '',
-            screen_name: '',
-            agents: {}
+            name:              '',
+            screen_name:       '',
+            agents:            {}
           }
         };
 
@@ -105,16 +95,15 @@ define([
       * @return {promise}
     */
     saveFormModel(model, formModel) {
-
       let promise;
       const mapper = this.getFormMapper();
 
       const postData = mapper.getPostDataFromForm(formModel);
 
       if (model.id) {
-        promise = this.Api.sendPostJson(`/twitter_accounts/${model.id}`, {twitter_account: postData});
+        promise = this.Api.sendPostJson(`/twitter_accounts/${model.id}`, { twitter_account: postData });
       } else {
-        promise = this.Api.sendPutJson('/twitter_accounts', {twitter_account: postData}).success( data => model.id = data.id);
+        promise = this.Api.sendPutJson('/twitter_accounts', { twitter_account: postData }).success(data => model.id = data.id);
       }
 
       promise.success(() => {

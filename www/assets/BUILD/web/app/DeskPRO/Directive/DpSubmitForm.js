@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -11,11 +11,11 @@ define(function() {
     * ------------
     * <button dp-submit-form>Save</button>
     */
-  const DeskPRO_Directive_DpSubmitForm = [ () =>
+  const DeskPRO_Directive_DpSubmitForm = [() =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
-        return element.on('click', function(ev) {
+        return element.on('click', (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
 
@@ -25,7 +25,7 @@ define(function() {
           form.submit();
           scope[formName].$attempted = true;
 
-          for (let k of Object.keys(scope[formName] || {})) {
+          for (const k of Object.keys(scope[formName] || {})) {
             const v = scope[formName][k];
             if (k.substring(0, 1) === '$') { continue; }
             if (!v.$name || !v.$viewChangeListeners) { continue; }
@@ -37,7 +37,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpSubmitForm;

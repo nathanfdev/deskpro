@@ -41,7 +41,7 @@ define([
   Reports_Stats_Ctrl_StatsHome,
   Reports_Stats_Ctrl_WidgetView
 ) =>
-  function(Module) {
+  function (Module) {
     Module.controller('Reports.App.New.Nav',               Reports_Main_New_Nav);
     Module.controller('Reports.App.New.Headless',          Reports_Main_Ctrl_Headless);
     Module.controller('Reports.App.New.HeadlessDashboard', Reports_Main_Ctrl_HeadlessDashboard);
@@ -56,9 +56,9 @@ define([
     Module.controller('Reports.Dashboards.Modals.AddReport',     Reports_Dashboards_ModalCtrl_AddReport);
     Module.controller('Reports.Dashboards.Modals.EditReport',    Reports_Dashboards_ModalCtrl_EditReport);
 
-    Module.controller('Reports.TicketSatisfaction', function() {} );
-    Module.controller('Reports.AgentActivity',      function() {} );
-    Module.controller('Reports.AgentHours',         function() {} );
+    Module.controller('Reports.TicketSatisfaction', () => {});
+    Module.controller('Reports.AgentActivity',      () => {});
+    Module.controller('Reports.AgentHours',         () => {});
 
     Module.controller('Reports.Stats.StatsMain',  Reports_Stats_Ctrl_StatsMain);
     Module.controller('Reports.Stats.StatsHome',  Reports_Stats_Ctrl_StatsHome);

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_TicketStatuses_Ctrl_EditHiddenSpam extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketStatuses_Ctrl_EditHiddenSpam';
@@ -12,35 +12,31 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         auto_purge_time: 604800
       };
       this.$scope.times = [
-        {id: 86400, label: "1 day"},
-        {id: 259200, label: "3 days"},
-        {id: 432000, label: "5 days"},
-        {id: 604800, label: "1 week"},
-        {id: 1209600, label: "2 weeks"},
-        {id: 1814400, label: "3 weeks"},
-        {id: 2592000, label: "1 month"},
-        {id: 5184000, label: "2 months"},
-        {id: 7776000, label: "3 months"},
-        {id: 15552000, label: "6 months"},
-        {id: 23328000, label: "9 months"},
-        {id: 31536000, label: "1 year"},
-        {id: 63072000, label: "2 years"}
+        { id: 86400, label: '1 day' },
+        { id: 259200, label: '3 days' },
+        { id: 432000, label: '5 days' },
+        { id: 604800, label: '1 week' },
+        { id: 1209600, label: '2 weeks' },
+        { id: 1814400, label: '3 weeks' },
+        { id: 2592000, label: '1 month' },
+        { id: 5184000, label: '2 months' },
+        { id: 7776000, label: '3 months' },
+        { id: 15552000, label: '6 months' },
+        { id: 23328000, label: '9 months' },
+        { id: 31536000, label: '1 year' },
+        { id: 63072000, label: '2 years' }
       ];
     }
 
     initialLoad() {
-      const promise = this.Api.sendGet("/ticket_statuses/spam").success( data => {
-        return this.$scope.settings.auto_purge_time = data.spam_info.auto_purge_time;
-      });
+      const promise = this.Api.sendGet('/ticket_statuses/spam').success(data => this.$scope.settings.auto_purge_time = data.spam_info.auto_purge_time);
 
       return promise;
     }
 
     saveSettings() {
       this.startSpinner('saving_settings');
-      const promise = this.Api.sendPostJson('/ticket_statuses/spam/settings', this.$scope.settings).then( () => {
-        return this.stopSpinner('saving_settings');
-      });
+      const promise = this.Api.sendPostJson('/ticket_statuses/spam/settings', this.$scope.settings).then(() => this.stopSpinner('saving_settings'));
 
       return promise;
     }
@@ -49,22 +45,18 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       let inst;
       return inst = this.$modal.open({
         templateUrl: this.getTemplatePath('TicketStatuses/modal-purge-spam.html'),
-        controller: ['$scope', '$modalInstance', 'Api', ($scope, $modalInstance, Api) => {
+        controller:  ['$scope', '$modalInstance', 'Api', ($scope, $modalInstance, Api) => {
           let purgeNow;
-          $scope.dismiss = () => {
-            return $modalInstance.dismiss();
-          };
+          $scope.dismiss = () => $modalInstance.dismiss();
 
-          $scope.confirm = () => {
-            return purgeNow();
-          };
+          $scope.confirm = () => purgeNow();
 
-          return purgeNow = function() {
+          return purgeNow = function () {
             $scope.is_loading = true;
-            return Api.sendDelete('/ticket_statuses/spam/purge').success( function(data) {
+            return Api.sendDelete('/ticket_statuses/spam/purge').success((data) => {
               $scope.is_done = true;
               return $scope.count = data.count;
-            }).then( () => $scope.is_loading = false);
+            }).then(() => $scope.is_loading = false);
           };
         }
         ]

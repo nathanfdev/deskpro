@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Util/Util'
-], function(
+], (
   Util
-) {
+) => {
   class SlaFormMapper {
     /*
       * Converts a model we get from the API into a form model that we can use in our page
@@ -11,7 +11,8 @@ define([
       * @return {Object}
     */
     getFormFromModel(model) {
-      let action, rowId;
+      let action,
+        rowId;
       const form = {};
       form.title         = model.title || '';
       form.sla_type      = model.sla_type || 'first_response';
@@ -26,7 +27,7 @@ define([
 
       if (model.active_time === 'custom') {
         const days = [null, false, false, false, false, false, false, false];
-        for (let day of Array.from(model.work_days)) {
+        for (const day of Array.from(model.work_days)) {
           days[day] = true;
         }
 
@@ -64,12 +65,12 @@ define([
       }
 
       if (__guard__(model.apply_terms != null ? model.apply_terms.terms : undefined, x2 => x2.length)) {
-        for (let termSet of Array.from(model.apply_terms.terms)) {
+        for (const termSet of Array.from(model.apply_terms.terms)) {
           if (!termSet.set_terms || !termSet.set_terms.length) { continue; }
           const setId = Util.uid('termset');
           form.apply_terms[setId] = {};
 
-          for (let term of Array.from(termSet.set_terms)) {
+          for (const term of Array.from(termSet.set_terms)) {
             rowId = Util.uid('term');
             form.apply_terms[setId][rowId] = term;
           }
@@ -88,7 +89,8 @@ define([
       * @return {Object}
     */
     getPostDataFromFormModel(form) {
-      let _x, act;
+      let _x,
+        act;
       const postData = {
         title:          form.title,
         sla_type:       form.sla_type,

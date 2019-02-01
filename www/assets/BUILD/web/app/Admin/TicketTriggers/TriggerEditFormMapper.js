@@ -1,8 +1,8 @@
 define([
   'underscore'
-], function(
+], (
   _
-) {
+) => {
   class Admin_TicketTriggers_TriggerEditFormMapper {
     getFormFromModel(model, forceModeMapping) {
       let rowId;
@@ -13,20 +13,20 @@ define([
       if (model.id || (forceModeMapping === true)) {
         let x;
         form.typeForm = {
-          by_user: false,
-          by_agent: false,
-          by_app: false,
+          by_user:       false,
+          by_agent:      false,
+          by_app:        false,
           by_agent_mode: {
-            web: false,
+            web:   false,
             email: false,
-            api: false
+            api:   false
           },
           by_user_mode: {
             portal: false,
             widget: false,
-            form: false,
-            email: false,
-            api: false
+            form:   false,
+            email:  false,
+            api:    false
           },
           by_app_mode: {}
         };
@@ -51,20 +51,20 @@ define([
         }
       } else {
         form.typeForm = {
-          by_user: true,
-          by_agent: true,
-          by_app: false,
+          by_user:       true,
+          by_agent:      true,
+          by_app:        false,
           by_agent_mode: {
-            web: true,
+            web:   true,
             email: true,
-            api: true
+            api:   true
           },
           by_user_mode: {
             portal: true,
             widget: true,
-            form: true,
-            email: true,
-            api: true
+            form:   true,
+            email:  true,
+            api:    true
           },
           by_app_mode: {}
         };
@@ -81,12 +81,12 @@ define([
       form.actions = {};
 
       if (__guard__(model.terms != null ? model.terms.terms : undefined, x2 => x2.length)) {
-        for (let termSet of Array.from(model.terms.terms)) {
+        for (const termSet of Array.from(model.terms.terms)) {
           if (!termSet.set_terms || !termSet.set_terms.length) { continue; }
           const setId = _.uniqueId('termset');
           form.terms_set[setId] = {};
 
-          for (let term of Array.from(termSet.set_terms)) {
+          for (const term of Array.from(termSet.set_terms)) {
             rowId = _.uniqueId('term');
             form.terms_set[setId][rowId] = term;
           }
@@ -94,7 +94,7 @@ define([
       }
 
       if (__guard__(model.actions != null ? model.actions.actions : undefined, x3 => x3.length)) {
-        for (let action of Array.from(model.actions.actions)) {
+        for (const action of Array.from(model.actions.actions)) {
           rowId = _.uniqueId('action');
           form.actions[rowId] = action;
         }

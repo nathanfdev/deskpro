@@ -1,7 +1,6 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Agents_Ctrl_Logs extends Admin_Ctrl_Base {
     static initClass() {
-  
       this.CTRL_ID   = 'Admin_Agents_Ctrl_Logs';
       this.CTRL_AS   = 'LogsCtrl';
       this.DEPS      = [];
@@ -17,7 +16,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-
       return this.loadResults();
     }
 
@@ -26,19 +24,17 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   */
 
     loadResults() {
-
       this.startSpinner('paginating_login_logs');
 
       const data_promise = this.Api.sendGet('/login_logs', {
         page: this.page
-      }).then(res => {
-
+      }).then((res) => {
         this.login_logs = res.data.login_logs;
         this.num_pages = res.data.login_logs.num_pages;
 
         this.page_nums = [];
 
-        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+        for (let i = 0, end = this.num_pages, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
           this.page_nums.push(i + 1);
         }
 
@@ -53,7 +49,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   */
 
     updateFilter() {
-
       return this.loadResults();
     }
 
@@ -62,9 +57,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     initializeScopeWatching() {
-
       return this.$scope.$watch('LogsCtrl.page', (newVal, oldVal) => {
-
         if (parseInt(newVal) === parseInt(oldVal)) {
           return undefined;
         }
@@ -82,7 +75,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     changePageCallback() {
-
       return this.loadResults();
     }
 
@@ -91,7 +83,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     */
 
     goPrevPage() {
-
       return this.page--;
     }
 
@@ -100,7 +91,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     goNextPage() {
-
       return this.page++;
     }
   }

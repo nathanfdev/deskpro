@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
    * Description
    * -----------
@@ -39,7 +39,6 @@ define(function() {
       restrict: 'AE',
       template: "<i class='spinner-xsmall' ng-show='update_in_progress'></i>{{status_update_message}}",
       link(scope, element, attrs) {
-
         const statusUpdateUrl = attrs.dpStatusUpdate;
         const updateInterval = attrs.statusUpdateInterval ? attrs.statusUpdateInterval : 5000;
         const defaultMessage = attrs.statusUpdateDefaultMessage ? attrs.statusUpdateDefaultMessage : '';
@@ -56,13 +55,11 @@ define(function() {
         const validStatuses = ['pending', 'progress'];
 
         return scope.$watch(attrs.statusUpdateConditions, (newVal, oldVal) => {
-
           scope.update_in_progress = true;
 
           const doGetRequest = immediate =>
 
-            Api.sendGet(statusUpdateUrl).then(res => {
-
+            Api.sendGet(statusUpdateUrl).then((res) => {
               const { data } = res;
 
               const { status } = data;
@@ -72,7 +69,6 @@ define(function() {
               scope.$emit('dp-status-update', data);
 
               if (validStatuses.indexOf(status) === -1) {
-
                 if (!immediate && updateCompletedGrowlMessage && (status === 'completed')) { Growl.success(updateCompletedGrowlMessage); }
                 scope.update_in_progress = false;
                 return clearInterval(interval);
@@ -86,7 +82,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpStatusUpdate;

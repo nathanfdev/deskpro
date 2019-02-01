@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -22,7 +22,7 @@ define(function() {
     */
   const Admin_Main_Directive_DpServerValidation = [() =>
     ({
-      require: 'ngModel',
+      require:  'ngModel',
       restrict: 'A',
       link(scope, elm, attrs, ngModel) {
         ngModel.dpServerValidationKeys = attrs.dpServerValidation.split(',');
@@ -33,12 +33,12 @@ define(function() {
 
         // Server-side validation errors always reset
         // when we re-validate on the client (e.g., so they can re-submit)
-        return ngModel.$parsers.unshift( function(viewValue) {
-          for (let error_code of Object.keys(ngModel.$error || {})) {
+        return ngModel.$parsers.unshift((viewValue) => {
+          for (const error_code of Object.keys(ngModel.$error || {})) {
             const is_error = ngModel.$error[error_code];
             if (!is_error) { continue; }
 
-            for (let code of Array.from(ngModel.dpServerValidationKeys)) {
+            for (const code of Array.from(ngModel.dpServerValidationKeys)) {
               var code_safe;
               if (code.indexOf('.') !== -1) {
                 code_safe = code.replace(/^.*\.(.*)$/, '$1');
@@ -66,7 +66,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpServerValidation;

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Banning_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Banning_Ctrl_List';
@@ -8,7 +8,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
     init() {
       this.banData = this.DataService.get('Bans');
-      this.$scope.fileUploadOptions = {url: this.$http.formatApiUrl('/banning/import_emails') };
+      this.$scope.fileUploadOptions = { url: this.$http.formatApiUrl('/banning/import_emails') };
       this.$scope.exportUrl = this.$http.formatApiUrl('/banning/export_emails');
 
       this.$scope.$on('fileuploaddone', (e, data) => {
@@ -27,9 +27,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     initialLoad() {
-
-      const promise = this.banData.loadList().then( list => {
-
+      const promise = this.banData.loadList().then((list) => {
         this.list = list;
         this.pagination = this.banData.getPagination();
         this.search_phrase = this.banData.getSearchPhrase();
@@ -46,9 +44,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     initializeScopeWatching() {
-
       return this.$scope.$watch('ListCtrl.pagination', (newVal, oldVal) => {
-
         const ip_bans_page_old = parseInt(oldVal.ip_bans.page);
         const ip_bans_page_new = parseInt(newVal.ip_bans.page);
         const email_bans_page_old = parseInt(newVal.email_bans.page);
@@ -76,11 +72,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     */
 
     reloadList(reload_ip, reload_email) {
-
       if (reload_ip) { this.startSpinner('paginating_ip_bans'); }
       if (reload_email) { this.startSpinner('paginating_email_bans'); }
 
-      return this.banData.refreshList().then(list => {
+      return this.banData.refreshList().then((list) => {
         if (reload_ip) { this.stopSpinner('paginating_ip_bans', true); }
         if (reload_email) { this.stopSpinner('paginating_email_bans', true); }
 
@@ -94,7 +89,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   */
 
     goNextIpBanPage() {
-
       return this.pagination.ip_bans.page++;
     }
 
@@ -103,7 +97,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     goPrevIpBanPage() {
-
       return this.pagination.ip_bans.page--;
     }
 
@@ -112,7 +105,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     goFirstIpBanPage() {
-
       return this.pagination.ip_bans.page = 0;
     }
 
@@ -121,7 +113,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     goNextEmailBanPage() {
-
       return this.pagination.email_bans.page++;
     }
 
@@ -130,7 +121,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     goPrevEmailBanPage() {
-
       return this.pagination.email_bans.page--;
     }
 
@@ -139,7 +129,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     goFirstEmailBanPage() {
-
       return this.pagination.email_bans.page = 0;
     }
 
@@ -148,12 +137,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     startDelete(for_ban_id) {
-
       const key = this.banData.findListModelById(for_ban_id);
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Banning/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.confirm = () => $modalInstance.close();
 
           return $scope.dismiss = () => $modalInstance.dismiss();
@@ -161,9 +149,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         ]
       });
 
-      return inst.result.then(() => {
-        return this.deleteBan(key);
-      });
+      return inst.result.then(() => this.deleteBan(key));
     }
 
     /*
@@ -171,20 +157,16 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     deleteBan(for_ban) {
-
-      let key, prop;
+      let key,
+        prop;
       if (for_ban.banned_ip) { key = 'ip'; prop = 'id'; }
       if (for_ban.banned_email) { key = 'email'; prop = 'banned_email'; }
 
-      return this.banData.deleteBanById(for_ban[prop]).success( () => {
-
+      return this.banData.deleteBanById(for_ban[prop]).success(() => {
         if ((this.$state.current.name === (`crm.banning.edit_${key}`)) && (this.$state.params.ban === for_ban[prop])) {
           return this.$state.go('crm.banning');
         }
-
-      }).error((info, code) => {
-        return this.applyErrorResponseToView(info);
-      });
+      }).error((info, code) => this.applyErrorResponseToView(info));
     }
 
     /*
@@ -192,10 +174,9 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     deleteList(list) {
-
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Banning/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.multiple = true;
           $scope.confirm = () => $modalInstance.close();
 
@@ -206,16 +187,15 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       return inst.result.then(() => {
         if (list === this.list.email_bans) {
-          return this.banData.deleteBanByType('email').then( () => {
+          return this.banData.deleteBanByType('email').then(() => {
             this.reloadList(false, true);
             return this.$state.go('crm.banning');
           });
-        } else {
-          return this.banData.deleteBanByType('ip').then( () => {
-            this.reloadList(true);
-            return this.$state.go('crm.banning');
-          });
         }
+        return this.banData.deleteBanByType('ip').then(() => {
+          this.reloadList(true);
+          return this.$state.go('crm.banning');
+        });
       });
     }
   }

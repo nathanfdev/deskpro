@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_ChatDeps_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_ChatDeps_Ctrl_List';
@@ -9,13 +9,13 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.depData = this.DataService.get('ChatDeps');
 
       return this.sortedListOptions = {
-        axis: 'y',
+        axis:   'y',
         handle: '.drag-handle',
         update: (ev, data) => {
           const $list = data.item.closest('ul');
 
           const order = [];
-          $list.find('li').each(function() {
+          $list.find('li').each(function () {
             return order.push(parseInt($(this).data('id')));
           });
 
@@ -40,8 +40,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     initialLoad() {
-
-      const promise = this.depData.loadList().then( list => {
+      const promise = this.depData.loadList().then((list) => {
         this.depList = this.sort(list);
         return this.deps = this.depData.listModels;
       });
@@ -54,11 +53,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     startDelete(for_dep_id) {
-
       const dep = this.depData.findListModelById(for_dep_id);
 
       if (dep.children && dep.children.length) {
-        this.showAlert("You cannot delete a department with sub-departments. Move or delete the sub-departments first.");
+        this.showAlert('You cannot delete a department with sub-departments. Move or delete the sub-departments first.');
         return;
       }
 
@@ -71,7 +69,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('ChatDeps/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', 'move_deps_list', function($scope, $modalInstance, move_deps_list) {
+        controller:  ['$scope', '$modalInstance', 'move_deps_list', function ($scope, $modalInstance, move_deps_list) {
           $scope.move_deps_list = move_deps_list;
           $scope.selected = {
             move_to_id: move_deps_list[0].id
@@ -83,15 +81,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         }
         ],
         resolve: {
-          move_deps_list: () => {
-            return move_deps_list;
-          }
+          move_deps_list: () => move_deps_list
         }
       });
 
-      return inst.result.then( move_to => {
-        return this.deleteDepartment(dep, move_to);
-      });
+      return inst.result.then(move_to => this.deleteDepartment(dep, move_to));
     }
 
     /*
@@ -99,14 +93,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     deleteDepartment(for_dep, move_to) {
-
-      return this.depData.deleteDepartmentById(for_dep.id, move_to).success( () => {
-
+      return this.depData.deleteDepartmentById(for_dep.id, move_to).success(() => {
         if ((this.$state.current.name === 'chat.chat_deps.edit') && (parseInt(this.$state.params.id) === for_dep.id)) {
           return this.$state.go('chat.chat_deps');
         }
-
-      }).error( (info, code) => {
+      }).error((info, code) => {
         if (info != null ? info.error_message : undefined) { this.Growl.error(info != null ? info.error_message : undefined); }
         return this.applyErrorResponseToView(info);
       });

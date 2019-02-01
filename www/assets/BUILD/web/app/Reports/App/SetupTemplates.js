@@ -5,7 +5,7 @@ define([
   Reports_Main_Service_TemplateManager,
   ReportsRouting
 ) =>
-  function(Module) {
+  function (Module) {
     Module.service('dpTemplateManager', ['$templateCache', '$http', '$q', ($templateCache, $http, $q) => new Reports_Main_Service_TemplateManager($templateCache, $http, $q)
     ]);
 
@@ -13,15 +13,15 @@ define([
     // and not URLs
     // e.g.  /deskpro/reports/load-view/Index/blank.html -> Index/blank.html
     Module.config(['$provide', $provide =>
-      $provide.decorator('$templateCache', ['$delegate', function($delegate) {
+      $provide.decorator('$templateCache', ['$delegate', function ($delegate) {
         $delegate.ngGet = $delegate.get;
-        $delegate.get = function(view) {
+        $delegate.get = function (view) {
           view = view.replace(/^.*?\/reports\/load\-view\//g, '');
           return $delegate.ngGet(view);
         };
 
         $delegate.ngPut = $delegate.put;
-        $delegate.put = function(view, value) {
+        $delegate.put = function (view, value) {
           view = view.replace(/^.*?\/reports\/load\-view\//g, '');
           return $delegate.ngPut(view, value);
         };
@@ -29,11 +29,11 @@ define([
         return $delegate;
       }
       ])
-    
+
     ]);
 
     // Preload templates
-    return Module.run(['dpTemplateManager', function(dpTemplateManager) {
+    return Module.run(['dpTemplateManager', function (dpTemplateManager) {
       const templates = [
         'Index/modal-alert.html',
         'Index/modal-confirm.html',
@@ -41,14 +41,14 @@ define([
         'Index/blank.html',
       ];
 
-      for (let _x of Object.keys(ReportsRouting || {})) {
+      for (const _x of Object.keys(ReportsRouting || {})) {
         const route = ReportsRouting[_x];
         if (route.templateName) {
           templates.push(route.templateName);
         }
       }
 
-      for (let t of Array.from(templates)) {
+      for (const t of Array.from(templates)) {
         dpTemplateManager.load(t);
       }
 

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strings) => {
   class Admin_Apps_Ctrl_InstallProgress extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Apps_Ctrl_InstallProgress';
@@ -13,30 +13,24 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
 
       this.step = 0;
       this.steps = [
-        {step: -1, percent: 0, timeout: 0},
-        {step: 0, percent: 2, timeout: 1200},
-        {step: 1, percent: 12, timeout: 1500},
-        {step: 2, percent: 35, timeout: 800},
-        {step: 3, percent: 60, timeout: 1500, wait: true},
-        {step: 4, percent: 95, timeout: 1000 },
-        {step: 5, percent: 100},
+        { step: -1, percent: 0, timeout: 0 },
+        { step: 0, percent: 2, timeout: 1200 },
+        { step: 1, percent: 12, timeout: 1500 },
+        { step: 2, percent: 35, timeout: 800 },
+        { step: 3, percent: 60, timeout: 1500, wait: true },
+        { step: 4, percent: 95, timeout: 1000 },
+        { step: 5, percent: 100 },
       ];
 
       this.stepTimeout = null;
       this.incrementStep();
 
-      this.$scope.done = () => {
-        return this.closeForSuccess(this.info);
-      };
+      this.$scope.done = () => this.closeForSuccess(this.info);
 
       let url = `/apps/packages/${this.pack.name}`;
       if (this.usersourceType) { url += `?usersource_type=${this.usersourceType}`; }
-      return this.Api.sendPutJson(url, {settings: this.setting_values}).success( info => {
-        return this.markAsDone(info);
-      }
-      , info => {
-        return this.closeForError(info);
-      });
+      return this.Api.sendPutJson(url, { settings: this.setting_values }).success(info => this.markAsDone(info)
+      , info => this.closeForError(info));
     }
 
     incrementStep() {

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_ServerPhpInfo_Ctrl_ServerPhpInfo extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_ServerPhpInfo_Ctrl_ServerPhpInfo';
@@ -11,10 +11,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     initialLoad() {
-      const data_promise = this.Api.sendGet('/server_php_info').then( res => {
-
-        return this.$scope.server_php_info = res.data.server_php_info;
-      });
+      const data_promise = this.Api.sendGet('/server_php_info').then(res => this.$scope.server_php_info = res.data.server_php_info);
 
       return this.$q.all([data_promise]);
     }

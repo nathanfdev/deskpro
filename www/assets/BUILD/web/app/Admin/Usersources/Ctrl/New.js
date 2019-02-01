@@ -1,10 +1,10 @@
 define([
   'Admin/Main/Ctrl/Base',
   'Admin/Usersources/Helper/UsersourceTypeDecider'
-], function(
+], (
   Admin_Ctrl_Base,
   Admin_Usersources_Helper_UsersourceTypeDecider
-) {
+) => {
   class Admin_Usersources_Ctrl_New extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Usersources_Ctrl_New';
@@ -21,9 +21,7 @@ define([
     initialLoad() {
       const url = `/usersources/available/app-packages/${this.usersourceType}`;
 
-      return this.Api.sendGet(url).then(res => {
-        return this.packages = res.data;
-      });
+      return this.Api.sendGet(url).then(res => this.packages = res.data);
     }
   }
   Admin_Usersources_Ctrl_New.initClass();

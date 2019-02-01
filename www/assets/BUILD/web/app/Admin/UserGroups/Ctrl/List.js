@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_UserGroups_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_UserGroups_Ctrl_List';
@@ -11,9 +11,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const promise = this.ugData.loadList().then( list => {
-        return this.list = list;
-      });
+      const promise = this.ugData.loadList().then(list => this.list = list);
 
       return promise;
     }

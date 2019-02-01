@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strings) => {
   class Admin_ServerFileUploads_Ctrl_ServerFileUploads extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_ServerFileUploads_Ctrl_ServerFileUploads';
@@ -19,7 +19,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
 
 
     initialLoad() {
-      const data_promise = this.Api.sendGet('/server_file_uploads').then( res => {
+      const data_promise = this.Api.sendGet('/server_file_uploads').then((res) => {
         this.$scope.data = res.data.server_file_uploads;
         return this.$scope.fileUploadOptions.url = this.$http.signUrl(res.data.server_file_uploads.file_uploader_url);
       });
@@ -36,17 +36,15 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
 
       this.$scope.$on('fileuploadfail', (e, data) => {
         this.$scope.fileUploadResults = {
-          upload_failed: true,
-          error_message: data.errorThrown,
-          upload_status: 413,
+          upload_failed:    true,
+          error_message:    data.errorThrown,
+          upload_status:    413,
           response_headers: data.jqXHR.getAllResponseHeaders()
         };
         return this.$scope.fileSelected = false;
       });
 
-      return this.$scope.$on('fileuploadchange', (e, data) => {
-        return this.$scope.fileSelected = true;
-      });
+      return this.$scope.$on('fileuploadchange', (e, data) => this.$scope.fileSelected = true);
     }
 
 
@@ -57,20 +55,20 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
       const { data } = this.$scope;
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Server/server-file-uploads-switch-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.data = data;
           $scope.options = {
-            method:      data.filestorage_method,
-            s3_bucket:   data.s3_bucket,
-            s3_key:      data.s3_key,
-            s3_secret:   data.s3_secret,
-            s3_region:   data.s3_region,
-            s3_endpoint: data.s3_endpoint,
-            s3_file_url_template: data.s3_file_url_template,
+            method:                data.filestorage_method,
+            s3_bucket:             data.s3_bucket,
+            s3_key:                data.s3_key,
+            s3_secret:             data.s3_secret,
+            s3_region:             data.s3_region,
+            s3_endpoint:           data.s3_endpoint,
+            s3_file_url_template:  data.s3_file_url_template,
             s3_credentials_source: data.s3_credentials_source
           };
 
-          $scope.bucketNameTrans = function() {
+          $scope.bucketNameTrans = function () {
             let key = $scope.options.s3_bucket || '';
             key = key.replace(/\s+/g, '-');
             key = key.replace(/[^a-zA-Z0-9\.\-]/g, '');
@@ -80,7 +78,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
           };
 
           // see https://aws.amazon.com/articles/Amazon-S3/1904 "Naming Buckets and Keys"
-          const validateS3Bucket = function() {
+          const validateS3Bucket = function () {
             $scope.invalid_bucket_name = false;
             $scope.invalid_bucket_region = false;
             $scope.invalid_access_key = false;
@@ -113,15 +111,15 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
               }
             }
 
-            $scope.form_invalid = $scope.invalid_bucket_name || $scope.invalid_bucket_region 
+            $scope.form_invalid = $scope.invalid_bucket_name || $scope.invalid_bucket_region
                                   || $scope.invalid_access_key || $scope.invalid_access_secret;
-            
+
             return !$scope.form_invalid;
           };
 
           $scope.isAccessKeysEnabled = () => !$scope.options.s3_credentials_source || ($scope.options.s3_credentials_source.toLowerCase() !== 'ec2');
 
-          $scope.confirm = function() {
+          $scope.confirm = function () {
             if ($scope.options.method === 's3') {
               if (!validateS3Bucket()) { return; }
             }
@@ -134,9 +132,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
         ]
       });
 
-      return inst.result.then(res => {
-        return this.switchStorage(res);
-      });
+      return inst.result.then(res => this.switchStorage(res));
     }
 
 
@@ -149,7 +145,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Bas
         options.s3_endpoint = `https://${options.s3_endpoint}`;
       }
 
-      return this.Api.sendPostJson('/server_file_uploads/switch', {options}).then( () => {
+      return this.Api.sendPostJson('/server_file_uploads/switch', { options }).then(() => {
         this.$scope.updating_method = false;
         this.$scope.data.filestorage_method = options.method;
         this.$scope.data.s3_bucket   = options.s3_bucket;

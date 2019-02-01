@@ -1,7 +1,6 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_ServerJobs_Ctrl_View extends Admin_Ctrl_Base {
     static initClass() {
-  
       this.CTRL_ID   = 'Admin_ServerJobs_Ctrl_View';
       this.CTRL_AS   = 'JobsViewCtrl';
       this.DEPS      = ['$stateParams'];
@@ -10,15 +9,13 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     init() {
       this.service = this.DataService.get('Jobs');
       return this.job =
-        {id: this.$stateParams.id};
+        { id: this.$stateParams.id };
     }
 
     initialLoad() {
-      return this.service.get(this.$stateParams.id).then(data => {
+      return this.service.get(this.$stateParams.id).then((data) => {
         this.job = data;
-        return this.service.loadJob(this.job.id).then(data => {
-          return this.job = data;
-        });
+        return this.service.loadJob(this.job.id).then(data => this.job = data);
       });
     }
 

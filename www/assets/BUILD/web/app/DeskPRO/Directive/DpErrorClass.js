@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -20,11 +20,11 @@ define(function() {
     *    <input type="text" ng-model="myfield" name="myfield" required />
     * </div>
   */
-  const DeskPRO_Directive_DpErrorClass = [ () =>
+  const DeskPRO_Directive_DpErrorClass = [() =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
-        const updateClass = function() {
+        const updateClass = function () {
           const formProp = scope.$eval(attrs.dpErrorClass);
           if (!formProp) { return; }
 
@@ -35,24 +35,23 @@ define(function() {
 
           if (set_errorclass) {
             return element.addClass('has-error');
-          } else {
-            return element.removeClass('has-error');
           }
+          return element.removeClass('has-error');
         };
 
         const watch_vars = [
-          attrs.dpErrorClass+'.$invalid',
-          attrs.dpErrorClass+'.$dirty',
-          attrs.dpErrorClass+'.$attempted'
+          `${attrs.dpErrorClass}.$invalid`,
+          `${attrs.dpErrorClass}.$dirty`,
+          `${attrs.dpErrorClass}.$attempted`
         ];
         return scope.$watch('dpErrorClass', () =>
-          Array.from(watch_vars).map((varname) =>
+          Array.from(watch_vars).map(varname =>
             scope.$watch(varname, () => updateClass()
             , true))
         );
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpErrorClass;

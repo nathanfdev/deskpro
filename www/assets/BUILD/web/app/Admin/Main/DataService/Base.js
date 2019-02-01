@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /**
   * A DataService class handles fetching data from the datastore (API),
     * keeping it, and updating it.
@@ -54,7 +54,7 @@ define(function() {
     */
     cleanup() {
       if (this.reg_ctrl.length) {
-        throw new Error("Cannot cleanup when there are still registered controllers");
+        throw new Error('Cannot cleanup when there are still registered controllers');
       }
 
       return this._cleanup();

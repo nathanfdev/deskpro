@@ -15,7 +15,7 @@ define([
   DeskPRO_Main_Service_Growl,
   DeskPRO_Main_Service_InhelpState
 ) =>
-  function(Module) {
+  function (Module) {
     Module.service('AppState', ['$rootScope', '$state', ($rootScope, $state) => new DeskPRO_Main_Service_AppState($rootScope, $state)
     ]);
 
@@ -42,21 +42,21 @@ define([
     Module.service('InhelpState', ['Api', Api => new DeskPRO_Main_Service_InhelpState(Api)
     ]);
 
-    Module.service('Growl', [ () => new DeskPRO_Main_Service_Growl()
+    Module.service('Growl', [() => new DeskPRO_Main_Service_Growl()
     ]);
 
-    Module.filter('escape_url', [ () =>
+    Module.filter('escape_url', [() =>
       text => encodeURIComponent(text)
 
     ]);
 
-    Module.filter('murmurhash', [ () =>
+    Module.filter('murmurhash', [() =>
       text => Strings.murmurhash3(text)
 
     ]);
 
-    Module.filter('filesize_display', [ () =>
-      function(bytes, precision) {
+    Module.filter('filesize_display', [() =>
+      function (bytes, precision) {
         if (precision == null) { precision = 2; }
         if (!bytes) {
           bytes = 0;
@@ -97,8 +97,8 @@ define([
     // Add fcall() to $q service (like Kris Kowal's Q: https://github.com/kriskowal/q)
     // Add isPromise
     Module.config(['$provide', $provide =>
-      $provide.decorator('$q', ['$delegate', function($delegate) {
-        $delegate.fcall = function(fn) {
+      $provide.decorator('$q', ['$delegate', function ($delegate) {
+        $delegate.fcall = function (fn) {
           const d = $delegate.defer();
           d.resolve(fn());
           return d.promise;
@@ -113,7 +113,7 @@ define([
     ]);
 
     return Module.config(['$provide', $provide =>
-      $provide.decorator('$state', ['$delegate', '$stateParams', function($delegate, $stateParams) {
+      $provide.decorator('$state', ['$delegate', '$stateParams', function ($delegate, $stateParams) {
         /*
          * Checks to see if a certain state is currently active
          *
@@ -121,7 +121,7 @@ define([
          *                         if the id exists anywhere in the current state. E.g., shorter to write '.create' than 'x.y.z.create'
          * @param {Object} stateParams If provided, then the params specified must also match
          */
-        $delegate.isStateActive = function(stateId, stateParams = null) {
+        $delegate.isStateActive = function (stateId, stateParams = null) {
           if (!$delegate.current) { return false; }
 
           if (stateParams) {
@@ -129,14 +129,12 @@ define([
               if ($delegate.current.name.indexOf(stateId) === -1) {
                 return false;
               }
-            } else {
-              if ($delegate.current.name !== stateId) {
-                return false;
-              }
+            } else if ($delegate.current.name !== stateId) {
+              return false;
             }
 
             if (!$delegate.$current.params) { return false; }
-            for (let k of Object.keys(stateParams || {})) {
+            for (const k of Object.keys(stateParams || {})) {
               const v = stateParams[k];
               if (($stateParams[k] == null) || ($stateParams[k] !== v)) {
                 return false;
@@ -144,14 +142,11 @@ define([
             }
 
             return true;
-
-          } else {
-            if (stateId.charAt(0) === '.') {
-              return $delegate.current.name.indexOf(stateId) !== -1;
-            } else {
-              return $delegate.current.name === stateId;
-            }
           }
+          if (stateId.charAt(0) === '.') {
+            return $delegate.current.name.indexOf(stateId) !== -1;
+          }
+          return $delegate.current.name === stateId;
         };
 
         return $delegate;

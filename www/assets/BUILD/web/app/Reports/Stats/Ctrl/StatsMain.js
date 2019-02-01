@@ -1,6 +1,6 @@
 define([], () => [
   '$scope', '$state',
-  function($scope, $state) {
+  function ($scope, $state) {
     $scope.loaded = false;
 
     let routePath = $state.current.url;
@@ -15,12 +15,11 @@ define([], () => [
       if (part.indexOf(':') !== -1) {
         const newPart = part.replace(/(\{|\})/, () => '');
         const params = newPart.split(':');
-        if($state.params[params[0]]) {
+        if ($state.params[params[0]]) {
           parts[index] = $state.params[params[0]];
         }
       }
     }
-
 
 
     routePath = parts.join('/');
@@ -34,4 +33,4 @@ define([], () => [
 
     return window.ReportBundle.render(reactProps, document.getElementById('report_react_component'));
   }
-  ] );
+]);

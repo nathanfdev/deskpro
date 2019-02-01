@@ -1,11 +1,10 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) => {
   class Admin_RoundRobin_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_RoundRobin_Ctrl_Edit';
       this.CTRL_AS = 'EditCtrl';
       this.DEPS = ['$stateParams', 'Growl', '$timeout'];
     }
-
 
 
     init() {
@@ -24,28 +23,26 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
       this.deps = [];
 
       return this.sortedListOptions = {
-        axis: 'y',
-        items: 'li.sortable',
+        axis:   'y',
+        items:  'li.sortable',
         handle: '.drag-handle'
       };
     }
 
 
-
     initialLoad() {
       this.service.loadList(true);
       const promises = [this.serviceAgents.all(), this.service.get(parseInt(this.$stateParams.id || 0)),
-                  this.serviceDeps.all(), this.serviceGroups.all(), this.serviceTeams.all(),];
+        this.serviceDeps.all(), this.serviceGroups.all(), this.serviceTeams.all(),];
 
-      return this.$q.all(promises).then(res => {
+      return this.$q.all(promises).then((res) => {
         this.agents = res[0];
         this.mapFormModel(res[1]);
         this.deps = res[2];
         this.groups = res[3];
         return this.teams = res[4];
-    });
+      });
     }
-
 
 
     mapFormModel(model) {
@@ -56,17 +53,16 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
       this.robin.title = model.title;
       this.robin.online_only = model.online_only;
 
-      if (model.next != null) { this.serviceAgents.get(model.next.id).then(agent => { return this.robin.next = agent; }); }
+      if (model.next != null) { this.serviceAgents.get(model.next.id).then(agent => this.robin.next = agent); }
       // remap agents to list models
       const promises = [];
-      model.agents.map(data => {
+      model.agents.map((data) => {
         const promise = this.serviceAgents.get(data.id).then(agent => this.robin.agents.push(agent));
         return promises.push(promise);
       });
 
       return this.$q.all(promises).then(() => this.sortAgents());
     }
-
 
 
     sortAgents() {
@@ -76,36 +72,32 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
         if (indexA === indexB) { return 0; }
         if (indexA === -1) { return 1; }
         if (indexB === -1) { return -1; }
-        if (indexA < indexB) { return -1; } else { return 1; }
+        if (indexA < indexB) { return -1; }  return 1;
       });
     }
-
 
 
     handleAgent(agent) {
       if (this.agents.indexOf(agent) === -1) { return; }
       const index = this.robin.agents.indexOf(agent);
-      if (index === -1) { return this.robin.agents.unshift(agent); } else { return this.robin.agents.splice(index, 1); }
+      if (index === -1) { return this.robin.agents.unshift(agent); }  return this.robin.agents.splice(index, 1);
     }
-
 
 
     handleBulk() {
       if ((this.bulk == null)) { return; }
       const params = this.bulk.split('.');
 
-      const findAgent = id => {
-        return Arrays.find(this.agents, a => a.id === id);
-      };
+      const findAgent = id => Arrays.find(this.agents, a => a.id === id);
 
       switch (params[0]) {
         case 'd':
-          return this.Api.sendGet(`/ticket_deps/${params[1]}?with_agents_list=1`).success( data => {
+          return this.Api.sendGet(`/ticket_deps/${params[1]}?with_agents_list=1`).success((data) => {
             if (!data || !data.agents_list) { return; }
 
             return (() => {
               const result = [];
-              for (let a of Array.from(data.agents_list)) {
+              for (const a of Array.from(data.agents_list)) {
                 const agent = findAgent(a.id);
                 if (agent) { this.handleAgent(agent); }
                 result.push(this.sortAgents());
@@ -115,12 +107,12 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
           });
 
         case 'g':
-          return this.Api.sendGet(`/agent_groups/${params[1]}`).success( data => {
+          return this.Api.sendGet(`/agent_groups/${params[1]}`).success((data) => {
             if (!data || !data.group.members) { return; }
 
             return (() => {
               const result = [];
-              for (let a of Array.from(data.group.members)) {
+              for (const a of Array.from(data.group.members)) {
                 const agent = findAgent(a.id);
                 if (agent) { this.handleAgent(agent); }
                 result.push(this.sortAgents());
@@ -130,12 +122,12 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
           });
 
         case 't':
-          return this.Api.sendGet(`/agent_teams/${params[1]}`).success( data => {
+          return this.Api.sendGet(`/agent_teams/${params[1]}`).success((data) => {
             if (!data || !data.team.members) { return; }
 
             return (() => {
               const result = [];
-              for (let a of Array.from(data.team.members)) {
+              for (const a of Array.from(data.team.members)) {
                 const agent = findAgent(a.id);
                 if (agent) { this.handleAgent(agent); }
                 result.push(this.sortAgents());
@@ -150,37 +142,32 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
     save() {
       this.startSpinner('saving');
       return this.service.set(this.robin).then(
-        model => {
+        (model) => {
           this.stopSpinner('saving');
           this.mapFormModel(model);
           this.$state.go('tickets.roundrobin');
           return this.Growl.success('Saved');
         },
-        res => {
+        (res) => {
           this.stopSpinner('saving');
           return this.Growl.error(res.info);
-      });
+        });
     }
-
 
 
     showLogs() {
-      return this.Api.sendGet(`/round_robin/${this.robin.id}/logs`).then(res => {
-        return this.$modal.open({
-          template: res.data,
-          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
+      return this.Api.sendGet(`/round_robin/${this.robin.id}/logs`).then(res => this.$modal.open({
+        template:   res.data,
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) =>
             $scope.dismiss = () => $modalInstance.dismiss()
-          
-          ]
-        });
-      });
+
+        ]
+      }));
     }
 
 
-
     delete() {
-
-      return this.service.checkTriggers(this.robin.id).then(data => {
+      return this.service.checkTriggers(this.robin.id).then((data) => {
         this.active_triggers = data.active_triggers;
 
         return this.$timeout(
@@ -189,17 +176,14 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
             const msg = this.getRegisteredMessage('modal_message');
             const state = this.$state;
 
-            const _del = modal => {
-              return this.service.remove(this.robin).then(function() {
-                modal.dismiss();
-                return state.go('tickets.roundrobin');
-              });
-            };
+            const _del = modal => this.service.remove(this.robin).then(() => {
+              modal.dismiss();
+              return state.go('tickets.roundrobin');
+            });
 
             return this.$modal.open({
               templateUrl: this.getTemplatePath('Index/modal-confirm.html'),
-              controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
-
+              controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
                 $scope.title = title;
                 $scope.message = msg;
 
@@ -216,7 +200,6 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
     }
   }
   Admin_RoundRobin_Ctrl_Edit.initClass();
-
 
 
   return Admin_RoundRobin_Ctrl_Edit.EXPORT_CTRL();

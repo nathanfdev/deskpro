@@ -3,19 +3,18 @@ define([
   'DeskPRO/Util/Arrays',
   'DeskPRO/Util/Util',
   'angular'
-], function(
+], (
   Util_Angular,
   Arrays,
   Util,
   angular
-) {
+) => {
   /*
    * This is a simple base data service that implements some default functionality for
    * loading object model
    */
   class Admin_Main_DataService_BaseModel {
     static initClass() {
-
       this.$inject = ['Api', '$q'];
     }
 
@@ -33,19 +32,16 @@ define([
     }
 
 
-
     // model res endpoint
     url() {
-      throw "This method must be implemented by a sub-class";
+      throw 'This method must be implemented by a sub-class';
     }
-
 
 
     // map model from response
     resolveResponse(response) {
       return response;
     }
-
 
 
     // get model promise
@@ -58,29 +54,23 @@ define([
       }
 
       this._doGet().then(
-        data => {
+        (data) => {
           this.loaded = true;
           return deferred.resolve(angular.copy(data, this.model));
         },
-        res => {
-          return deferred.reject(res);
-      });
+        res => deferred.reject(res));
 
       return deferred.promise;
     }
-
 
 
     // load model api call
     _doGet() {
       const deferred = this.$q.defer();
-      this.Api.sendGet(this.url()).success(data => {
-        return deferred.resolve(this.resolveResponse(data));
-    }).error((data, status, headers, config) => deferred.reject(data));
+      this.Api.sendGet(this.url()).success(data => deferred.resolve(this.resolveResponse(data))).error((data, status, headers, config) => deferred.reject(data));
 
       return deferred.promise;
     }
-
 
 
     // update model
@@ -89,30 +79,21 @@ define([
 
       const deferred = this.$q.defer();
       this._doSet().then(
-        data => {
-          return deferred.resolve(angular.copy(data, this.model));
-        },
-        res => {
-          return deferred.reject(res);
-      });
+        data => deferred.resolve(angular.copy(data, this.model)),
+        res => deferred.reject(res));
 
       return deferred.promise;
     }
-
 
 
     // update model api call
     _doSet() {
       const deferred = this.$q.defer();
 
-      this.Api.sendPutJson(this.url(), this.model).success(data => {
-        return deferred.resolve(this.resolveResponse(data));
-    }).error((data, status, headers, config) => {
-        return deferred.reject({
-          info: data.error_message,
-          status
-        });
-      });
+      this.Api.sendPutJson(this.url(), this.model).success(data => deferred.resolve(this.resolveResponse(data))).error((data, status, headers, config) => deferred.reject({
+        info: data.error_message,
+        status
+      }));
 
       return deferred.promise;
     }

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], function(Admin_Ctrl_Base, Functions) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], (Admin_Ctrl_Base, Functions) => {
   class AdminPortalCtrlWidgetEditor extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'AdminPortalCtrlWidgetEditor';
@@ -36,27 +36,23 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       this.$scope.brand_id = this.$stateParams.brandId;
 
       return this.chatFieldsSortOptions = {
-        axis: 'y',
+        axis:   'y',
         handle: '.drag-handle',
-        update: (ev, data) => {
-          return this.$scope.$apply(() => {
-            let displayOrder = 0;
-            return $('.chat-custom-fields').children().each((i, item) => {
-              return (() => {
-                const result = [];
-                for (let field of Array.from(this.$scope.brand_settings.chat.custom_fields)) {
-                  if (field.id === parseInt($(item).data('id'))) {
-                    field.display_order = displayOrder;
-                    result.push(displayOrder += 10);
-                  } else {
-                    result.push(undefined);
-                  }
-                }
-                return result;
-              })();
-            });
-          });
-        }
+        update: (ev, data) => this.$scope.$apply(() => {
+          let displayOrder = 0;
+          return $('.chat-custom-fields').children().each((i, item) => (() => {
+            const result = [];
+            for (const field of Array.from(this.$scope.brand_settings.chat.custom_fields)) {
+              if (field.id === parseInt($(item).data('id'))) {
+                field.display_order = displayOrder;
+                result.push(displayOrder += 10);
+              } else {
+                result.push(undefined);
+              }
+            }
+            return result;
+          })());
+        })
       };
     }
 
@@ -64,7 +60,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       // setup watchers
       // we should update live demo on form change
       if (reset == null) { reset = false; }
-      const updateLiveDemoDebounce = Functions.debounce( () => {
+      const updateLiveDemoDebounce = Functions.debounce(() => {
         this.$scope.formErrors = {};
         return this.updateLiveDemo();
       }
@@ -83,7 +79,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       let savedSettings = localStorage.getItem(`dpWidgetSettings${this.$scope.brand_id}`);
 
       let promise = this.Api2.sendGet(`/settings/brands/${this.$scope.brand_id}/widget/setup`);
-      promise.then(response => {
+      promise.then((response) => {
         const { data } = response.data;
         this.$scope.remote_settings = JSON.parse(JSON.stringify(data.settings));
         this.$scope.remote_settings.enabled_on_portal = data.enabled_on_portal;
@@ -112,7 +108,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         this.$scope.jwt_settings = data.jwt_settings;
 
         this.$scope.saving_code = true;
-        return this.loadCode().then(codeResponse => {
+        return this.loadCode().then((codeResponse) => {
           this.$scope.code = codeResponse.data.data;
           return this.$scope.saving_code = false;
         });
@@ -120,37 +116,27 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       promises.push(promise);
 
       promise = this.Api2.sendGet('/languages');
-      promise.then(res => {
-        return this.$scope.languages = res.data.data;
-      });
+      promise.then(res => this.$scope.languages = res.data.data);
       promises.push(promise);
 
       promise = this.Api2.sendGet('/user_chat_custom_fields?is_enabled=-1');
-      promise.then(res => {
-        return this.$scope.chat_custom_fields = res.data.data;
-      });
+      promise.then(res => this.$scope.chat_custom_fields = res.data.data);
       promises.push(promise);
 
       promise = this.Api2.sendGet('/ticket_departments?selectable=1');
-      promise.then(res => {
-        return this.$scope.departments = res.data.data;
-      });
+      promise.then(res => this.$scope.departments = res.data.data);
       promises.push(promise);
 
       promise = this.Api2.sendGet('/chat_departments?selectable=1');
-      promise.then(res => {
-        return this.$scope.chat_departments = res.data.data;
-      });
+      promise.then(res => this.$scope.chat_departments = res.data.data);
       promises.push(promise);
 
       promise = this.Api2.sendGet('/widget/live_demo/sample_state');
-      promise.then(res => {
-        return this.$scope.sample_state = res.data.data;
-      });
+      promise.then(res => this.$scope.sample_state = res.data.data);
       promises.push(promise);
 
       promise = this.Api2.sendGet('/user_groups');
-      promise.then(res => {
+      promise.then((res) => {
         this.$scope.user_groups = res.data.data;
 
         // global user group permissions
@@ -163,7 +149,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
           }
 
           this.$scope.user_group_permission[group.id] = false;
-          for (let permission of Array.from(group.permissions)) {
+          for (const permission of Array.from(group.permissions)) {
             if (permission.name === 'chat.use') {
               this.$scope.user_group_permission[group.id] = (permission.value && permission.is_active);
             }
@@ -193,7 +179,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         this.updateLiveDemo();
 
         // order custom fields by brand display order
-        for (let field of Array.from(this.$scope.chat_custom_fields)) {
+        for (const field of Array.from(this.$scope.chat_custom_fields)) {
           const brandField = this.getBrandCustomField(field.id);
           if (brandField) {
             field.display_order = brandField.display_order;
@@ -222,7 +208,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
     getOptions(liveDemo) {
       if (liveDemo == null) { liveDemo = false; }
-      const options = $.extend(true, {company: this.$scope.company}, this.$scope.brand_settings);
+      const options = $.extend(true, { company: this.$scope.company }, this.$scope.brand_settings);
       if ((liveDemo != null) && (options != null ? options.widget : undefined)) {
         options.widget.live_demo = true;
       }
@@ -234,17 +220,19 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       return this.getFrameNode().contentWindow.DpWidget;
     }
 
-    getWidgetSaveData() { return {
-      enabled_on_portal: this.$scope.enabled_on_portal,
-      settings: {
-        global: this.$scope.global_settings,
-        brand: this.$scope.brand_settings
-      },
-      jwt_settings: this.$scope.jwt_settings
-    }; }
+    getWidgetSaveData() {
+      return {
+        enabled_on_portal: this.$scope.enabled_on_portal,
+        settings:          {
+          global: this.$scope.global_settings,
+          brand:  this.$scope.brand_settings
+        },
+        jwt_settings: this.$scope.jwt_settings
+      };
+    }
 
     getBrandCustomField(fieldId) {
-      for (let field of Array.from(this.$scope.brand_settings.chat.custom_fields)) {
+      for (const field of Array.from(this.$scope.brand_settings.chat.custom_fields)) {
         if (field.id === parseInt(fieldId)) {
           return field;
         }
@@ -252,7 +240,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
     }
 
     getLanguage(translation) {
-      for (let language of Array.from(this.$scope.languages)) {
+      for (const language of Array.from(this.$scope.languages)) {
         if (translation.language === language.id) {
           return language;
         }
@@ -260,12 +248,12 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
     }
 
     filterUsedLanguages(translations) {
-      return function(language) {
+      return function (language) {
         if (!translations) {
           return true;
         }
 
-        for (let translation of Array.from(translations)) {
+        for (const translation of Array.from(translations)) {
           if (language.id === translation.language) {
             return false;
           }
@@ -286,7 +274,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
       return this.$scope.brand_settings.button.translations.push({
         language: parseInt(languageId),
-        name: ''
+        name:     ''
       });
     }
 
@@ -297,28 +285,22 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
 
       return this.$scope.brand_settings.chat.popup.translations.push({
         language: parseInt(languageId),
-        title: '',
-        message: ''
+        title:    '',
+        message:  ''
       });
     }
 
     discard() {
-      if (confirm("Current edit on the settings will be overridden. Are your sure?")) {
+      if (confirm('Current edit on the settings will be overridden. Are your sure?')) {
         localStorage.removeItem(`dpWidgetSettings${this.$scope.brand_id}`);
-        return this.initialLoad(true).then(() => {
-          return this.Growl.success("Settings reseted");
-        });
+        return this.initialLoad(true).then(() => this.Growl.success('Settings reseted'));
       }
     }
 
     reset() {
-      if (confirm("Current edit on the settings will be reseted. Are your sure?")) {
+      if (confirm('Current edit on the settings will be reseted. Are your sure?')) {
         localStorage.removeItem(`dpWidgetSettings${this.$scope.brand_id}`);
-        return this.Api2.sendDelete(`settings/brands/${this.$scope.brand_id}/widget/setup`).then(() => {
-          return this.initialLoad(true).then(() => {
-            return this.Growl.success("Settings reseted");
-          });
-        });
+        return this.Api2.sendDelete(`settings/brands/${this.$scope.brand_id}/widget/setup`).then(() => this.initialLoad(true).then(() => this.Growl.success('Settings reseted')));
       }
     }
 
@@ -341,31 +323,31 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       const index = this.$scope.brand_settings.chat.user_groups.indexOf(group.id);
       if (index !== -1) {
         return this.$scope.brand_settings.chat.user_groups.splice(index, 1);
-      } else {
-        let g, i;
-        this.$scope.brand_settings.chat.user_groups.push(group.id);
+      }
+      let g,
+        i;
+      this.$scope.brand_settings.chat.user_groups.push(group.id);
 
-        const everyone = this.$scope.everyone_group.id;
-        const reg = this.$scope.reg_group.id;
-        if (group.id === everyone) {
-          for (i of Object.keys(this.$scope.user_groups || {})) {
-            g = this.$scope.user_groups[i];
-            if ((g.id !== everyone) && (this.$scope.brand_settings.chat.user_groups.indexOf(g.id) === -1)) {
-              this.$scope.brand_settings.chat.user_groups.push(g.id);
-            }
+      const everyone = this.$scope.everyone_group.id;
+      const reg = this.$scope.reg_group.id;
+      if (group.id === everyone) {
+        for (i of Object.keys(this.$scope.user_groups || {})) {
+          g = this.$scope.user_groups[i];
+          if ((g.id !== everyone) && (this.$scope.brand_settings.chat.user_groups.indexOf(g.id) === -1)) {
+            this.$scope.brand_settings.chat.user_groups.push(g.id);
           }
-          return true;
-        } else if (group.id === reg) {
-          for (i of Object.keys(this.$scope.user_groups || {})) {
-            g = this.$scope.user_groups[i];
-            if ((g.id !== everyone) && (g.id !== reg) && (this.$scope.brand_settings.chat.user_groups.indexOf(g.id) === -1)) {
-              this.$scope.brand_settings.chat.user_groups.push(g.id);
-            }
+        }
+        return true;
+      } else if (group.id === reg) {
+        for (i of Object.keys(this.$scope.user_groups || {})) {
+          g = this.$scope.user_groups[i];
+          if ((g.id !== everyone) && (g.id !== reg) && (this.$scope.brand_settings.chat.user_groups.indexOf(g.id) === -1)) {
+            this.$scope.brand_settings.chat.user_groups.push(g.id);
           }
-          return true;
         }
         return true;
       }
+      return true;
     }
 
     hasChanged() {
@@ -388,42 +370,42 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       this.$scope.saving_code = true;
 
       const promises = [];
-      const promise = this.Api2.sendPostJson(`/settings/brands/${this.$scope.brand_id}/widget/setup`, this.getWidgetSaveData(), null, {headers: {'X-Agent-Request': 'true'}});
+      const promise = this.Api2.sendPostJson(`/settings/brands/${this.$scope.brand_id}/widget/setup`, this.getWidgetSaveData(), null, { headers: { 'X-Agent-Request': 'true' } });
       promise.then(
-        () => { return this.loadCode().then(codeResponse => {
+        () => this.loadCode().then((codeResponse) => {
           this.$scope.code = codeResponse.data.data;
           return this.$scope.saving_code = false;
-        }); }
+        })
         ,
-        response => {
+        (response) => {
           this.$scope.formErrors = __guard__(response.data != null ? response.data.errors : undefined, x => x.fields);
           return this.$scope.saving_code = false;
-      });
+        });
 
       promises.push(promise);
 
       this.startSpinner('saving');
-      return this.$q.all(promises).then( () => {
+      return this.$q.all(promises).then(() => {
         this.stopSpinner('saving');
         const widgetData = this.getWidgetSaveData();
         this.$scope.remote_settings = {
-          global: angular.copy(widgetData.settings.global),
-          brand: angular.copy(widgetData.settings.brand),
+          global:            angular.copy(widgetData.settings.global),
+          brand:             angular.copy(widgetData.settings.brand),
           enabled_on_portal: angular.copy(widgetData.enabled_on_portal),
-          jwt: angular.copy(widgetData.jwt_settings)
+          jwt:               angular.copy(widgetData.jwt_settings)
         };
         this.$scope.flag_has_changed = this.hasChanged();
         localStorage.removeItem(`dpWidgetSettings${this.$scope.brand_id}`);
-        return this.Growl.success("Settings saved");
+        return this.Growl.success('Settings saved');
       }
-      , info => {
+      , (info) => {
         this.stopSpinner('saving', true);
         return this.applyErrorResponseToView(info);
       });
     }
 
     initLiveDemo() {
-      (window.parent || window).addEventListener('message', event => {
+      (window.parent || window).addEventListener('message', (event) => {
         if ((event.data != null ? event.data.type : undefined) === 'widgetStatus') {
           return this.$scope.$apply(() => {
             this.$scope.widgetLoaded = true;
@@ -436,15 +418,13 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
             return this.updateLiveDemo();
           });
         } else if ((event.data != null ? event.data.type : undefined) === 'widgetDemoStage') {
-          return this.$scope.$apply(() => {
-            return this.$scope.demo_state = event.data != null ? event.data.options : undefined;
-          });
+          return this.$scope.$apply(() => this.$scope.demo_state = event.data != null ? event.data.options : undefined);
         }
       }
       , false);
 
-      return this.loadLiveDemoCode().then(codeResponse => {
-        const code = codeResponse.data.data.replace(/widget": {/, "widget\": {\n\"live_demo\": true,");
+      return this.loadLiveDemoCode().then((codeResponse) => {
+        const code = codeResponse.data.data.replace(/widget": {/, 'widget": {\n"live_demo": true,');
 
         const demoDocument = this.getLiveDemoDocument();
         demoDocument.write(`<body>${code}</body>`);
@@ -474,11 +454,9 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       return this.Api2
         .sendPostJson(`/settings/brands/${this.$stateParams.brandId}/widget/send-instructions`, { email: this.$scope.emailSendInstructions })
         .success(() => {
-          this.Growl.success("Email sent successfully");
+          this.Growl.success('Email sent successfully');
           return this.$scope.emailSendInstructions = '';
-      }).error(() => {
-          return this.Growl.error("An error occurred while sending instructions. Try again.");
-      });
+        }).error(() => this.Growl.error('An error occurred while sending instructions. Try again.'));
     }
   }
   AdminPortalCtrlWidgetEditor.initClass();

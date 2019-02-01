@@ -1,15 +1,14 @@
 define([
   'Admin/TicketEscalations/Ctrl/Edit'
-], function(
+], (
   Admin_TicketEscalations_Ctrl_Edit
-) {
+) => {
   class Admin_TicketEscalations_Ctrl_EditStatuses extends Admin_TicketEscalations_Ctrl_Edit {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketEscalations_Ctrl_EditStatuses';
       this.CTRL_AS   = 'EditCtrl';
       this.DEPS      = ['dpObTypesDefTicketFilter', 'dpObTypesDefTicketActions', '$stateParams'];
     }
-
 
 
     init() {
@@ -28,7 +27,7 @@ define([
       this.criteriaTypeDef.setVar('object_type', 'escalation');
       this.actionsTypeDef.setVar('object_type', 'escalation');
 
-      this.$scope.initWith = id => {
+      this.$scope.initWith = (id) => {
         this.id = id;
         return this.initialLoad();
       };
@@ -38,13 +37,12 @@ define([
       return this.$scope.$on('trigger.save', () => {
         this.Growl = {
           success: () => {},
-          error: () => {}
+          error:   () => {}
         };
             // right, double 'then'
-        return this.saveForm().then().then(() => { return this.Growl = growl; });
+        return this.saveForm().then().then(() => this.Growl = growl);
       });
     }
-
 
 
     updateCriteriaOptionTypes() {
@@ -54,7 +52,7 @@ define([
         this.$scope.criteriaOptionTypes.push(opt);
       }
 
-      set = this.actionsTypeDef.getOptionsForTypes([], {dynamicOptions: this.customActions});
+      set = this.actionsTypeDef.getOptionsForTypes([], { dynamicOptions: this.customActions });
       this.$scope.actionOptionTypes.length = 0;
       return (() => {
         const result = [];
@@ -66,19 +64,14 @@ define([
     }
 
 
-
     initialLoad() {
       if (!this.id) { return; }
       let loadData = null;
-      const promise = this.escData.loadEditSpecialEscalation('statuses', this.id).then(data => {
-        return loadData = data;
-      });
+      const promise = this.escData.loadEditSpecialEscalation('statuses', this.id).then(data => loadData = data);
 
       const promise2 = this.criteriaTypeDef.loadDataOptions();
       const promise3 = this.actionsTypeDef.loadDataOptions();
-      const promise4 = this.Api.sendDataGet({customActions: '/ticket_triggers/get-custom-actions'}).then(result => {
-        return this.customActions = result.data.customActions.action_defs;
-      });
+      const promise4 = this.Api.sendDataGet({ customActions: '/ticket_triggers/get-custom-actions' }).then(result => this.customActions = result.data.customActions.action_defs);
 
       const promises = [promise, promise2, promise3, promise4];
 
@@ -91,18 +84,16 @@ define([
         if ((this.esc.actions.actions == null) || (this.esc.actions.actions.length !== 1)) {
           return this.esc.is_default_action = false;
         }
-        if (('SendUserNewEmail' === this.esc.actions.actions[0].type) && ('DeskPRO:emails_user:ticket-awaiting-warn.html.twig' === this.esc.actions.actions[0].options.template)) {
+        if ((this.esc.actions.actions[0].type === 'SendUserNewEmail') && (this.esc.actions.actions[0].options.template === 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig')) {
           return this.esc.is_default_action = true;
-        } else if ((3 === this.esc.sys_num) && ('SetStatus' === this.esc.actions.actions[0].type) && ('resolved' === this.esc.actions.actions[0].options.status)) {
+        } else if ((this.esc.sys_num === 3) && (this.esc.actions.actions[0].type === 'SetStatus') && (this.esc.actions.actions[0].options.status === 'resolved')) {
           return this.esc.is_default_action = true;
-        } else if (((4 === this.esc.sys_num) || (5 === this.esc.sys_num)) && ('SetStatus' === this.esc.actions.actions[0].type) && ('archived' === this.esc.actions.actions[0].options.status)) {
+        } else if (((this.esc.sys_num === 4) || (this.esc.sys_num === 5)) && (this.esc.actions.actions[0].type === 'SetStatus') && (this.esc.actions.actions[0].options.status === 'archived')) {
           return this.esc.is_default_action = true;
-        } else {
-          return this.esc.is_default_action = false;
         }
+        return this.esc.is_default_action = false;
       });
     }
-
 
 
     saveForm() {
@@ -111,7 +102,7 @@ define([
       const promise = this.escData.saveFormModel(this.esc, this.form);
       this.startSpinner('saving');
       return promise.then(() => {
-        this.stopSpinner('saving', true).then(() => this.Growl.success("Saved"));
+        this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
         return this.skipDirtyState();
       });
     }

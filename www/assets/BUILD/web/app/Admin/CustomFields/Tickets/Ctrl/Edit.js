@@ -1,6 +1,6 @@
 define([
   'Admin/CustomFields/Base/Ctrl/Edit',
-], function(Admin_CustomFields_Base_Ctrl_Edit) {
+], (Admin_CustomFields_Base_Ctrl_Edit) => {
   class Admin_CustomFields_Tickets_Ctrl_Edit extends Admin_CustomFields_Base_Ctrl_Edit {
     static initClass() {
       this.CTRL_ID = 'Admin_CustomFields_Tickets_Ctrl_Edit';
@@ -11,11 +11,11 @@ define([
     init() {
       super.init(...arguments);
       this.showLayouts = false;
-      this.referencedByApp = { status: false, appName: "", appUrl: "#" };
+      this.referencedByApp = { status: false, appName: '', appUrl: '#' };
     }
 
     initialLoadExtra() {
-      return this.Api.sendGet(`/ticket_layouts/fields/ticket_field_${this.field_id || '__undefined__'}`).success(data => {
+      return this.Api.sendGet(`/ticket_layouts/fields/ticket_field_${this.field_id || '__undefined__'}`).success((data) => {
         this.user_layouts = data.user_layouts;
         this.agent_layouts = data.agent_layouts;
 
@@ -31,7 +31,6 @@ define([
             return result;
           })();
         }
-
       });
     }
 
@@ -47,11 +46,10 @@ define([
       this.showAgentOnly = !isReferenced;
 
       this.referencedByApp  = {
-        status: isReferenced,
+        status:  isReferenced,
         appName: isReferenced ? referencingApps[0].appName : '',
-        appUrl: isReferenced ?  `apps/apps/v2_${referencingApps[0].appId}` : '#'
+        appUrl:  isReferenced ?  `apps/apps/v2_${referencingApps[0].appId}` : '#'
       };
-
     }
 
     startDelete() {
@@ -69,7 +67,8 @@ define([
       };
 
       if (this.form.is_enabled) {
-        let k, l;
+        let k,
+          l;
         if (!this.form.is_agent_field) {
           for (k of Object.keys(this.user_layouts || {})) {
             l = this.user_layouts[k];
@@ -94,7 +93,7 @@ define([
     }
 
     getBaseRouteName() {
-      return "tickets.fields";
+      return 'tickets.fields';
     }
 
     type() {

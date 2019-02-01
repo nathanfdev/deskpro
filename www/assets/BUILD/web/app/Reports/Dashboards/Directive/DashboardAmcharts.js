@@ -1,20 +1,20 @@
-define(['handlebars'], function(Handlebars) {
+define(['handlebars'], (Handlebars) => {
   const Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', '$timeout', ($compile, $state, DashboardWidgetService, $timeout) =>
     ({
       restrict: 'E',
-      replace: true,
-      scope: {
-        widgetId: '@',
-        chartData: '@',
-        jsCode: '@',
+      replace:  true,
+      scope:    {
+        widgetId:        '@',
+        chartData:       '@',
+        jsCode:          '@',
         reportLevelVars: '@',
-        renderType: '@',
-        options: '@',
-        version: '@',
-        widgetType: '@',
-        chartType: '@',
-        loaded: '@',
-        control: '='
+        renderType:      '@',
+        options:         '@',
+        version:         '@',
+        widgetType:      '@',
+        chartType:       '@',
+        loaded:          '@',
+        control:         '='
       },
 
       link(scope, element) {
@@ -35,7 +35,6 @@ define(['handlebars'], function(Handlebars) {
         scope.noData = false;
 
 
-
         const chartDiv    = angular.element(document.getElementById(`ch${scope.widgetId}`));
         const chartParent = chartDiv.parent().parent();
         const chartHeader = chartDiv.parent().siblings('.box-header');
@@ -44,23 +43,23 @@ define(['handlebars'], function(Handlebars) {
         let drawn       = false;
         let interval    = false;
 
-        scope.control.print = function() {
+        scope.control.print = function () {
           if (chart) {
             return chart.export.capture(
               {},
-              function() {
+              function () {
                 return this.toPRINT();
-            });
+              });
           }
         };
 
-        scope.$watch('chartData', function(n) {
+        scope.$watch('chartData', (n) => {
           if (!drawn) { return; }
           chartData = n ? JSON.parse(n) : [];
           return initChart();
         });
 
-        scope.$watch('options', function(n) {
+        scope.$watch('options', (n) => {
           let newOptions;
           if (!drawn) { return; }
           try {
@@ -74,7 +73,7 @@ define(['handlebars'], function(Handlebars) {
           }
         });
 
-        var initChart = function() {
+        var initChart = function () {
           if (scope.widgetType !== 'graph') {
             return;
           }
@@ -91,7 +90,7 @@ define(['handlebars'], function(Handlebars) {
             }
 
             if (promise && promise.then) {
-              return promise.then(function(response) {
+              return promise.then((response) => {
                 scope.loaded = true;
                 scope.noData = true;
 
@@ -99,7 +98,7 @@ define(['handlebars'], function(Handlebars) {
               });
             }
           } else if (DashboardWidgetService.widgetsResults && DashboardWidgetService.widgetsResults[scope.widgetId]) {
-            return DashboardWidgetService.widgetsResults[scope.widgetId].promise.then(renderedResult => {
+            return DashboardWidgetService.widgetsResults[scope.widgetId].promise.then((renderedResult) => {
               scope.loaded = true;
               scope.noData = true;
               if (renderedResult && (renderedResult.dataProvider || (__guard__(renderedResult.axes != null ? renderedResult.axes[0] : undefined, x1 => x1.bands) != null))) {
@@ -109,19 +108,19 @@ define(['handlebars'], function(Handlebars) {
           } else {
             return DashboardWidgetService
               .getWidget(scope.widgetId || 0)
-              .then(widget => {
+              .then((widget) => {
                 scope.loaded = true;
                 scope.noData = true;
 
                 if ((widget != null) && widget.rendered_result && (widget.rendered_result.dataProvider || (__guard__(widget.rendered_result.axes != null ? widget.rendered_result.axes[0] : undefined, x1 => x1.bands) != null))) {
                   return drawWidget(widget.rendered_result);
                 }
-            });
+              });
           }
         };
 
         var drawWidget = widget =>
-          $timeout(function() {
+          $timeout(() => {
             scope.loaded = true;
             scope.noData = false;
             return doDrawWidget(widget);
@@ -129,7 +128,7 @@ define(['handlebars'], function(Handlebars) {
           , 1)
         ;
 
-        var doDrawWidget = function(widget) {
+        var doDrawWidget = function (widget) {
           let dataItem;
           drawn = true;
           if (interval) { clearInterval(interval); }
@@ -143,7 +142,7 @@ define(['handlebars'], function(Handlebars) {
             options = scope.options ? JSON.parse(scope.options) : {};
           } catch (e) {
             options = {};
-            console.warn("invalid options");
+            console.warn('invalid options');
             console.log(e);
           }
 
@@ -154,7 +153,7 @@ define(['handlebars'], function(Handlebars) {
           }
 
           if (widget.valueAxes && widget.valueAxes[0] && (widget.valueAxes[0].hash || widget.valueAxes[0].labelTemplate)) {
-            widget.valueAxes[0].labelFunction = function(value) {
+            widget.valueAxes[0].labelFunction = function (value) {
               const { hash } = widget.valueAxes[0];
               let finalValue = value;
               if (hash && hash[value]) {
@@ -162,7 +161,7 @@ define(['handlebars'], function(Handlebars) {
               }
               if (widget.valueAxes[0].labelTemplate) {
                 template = Handlebars.compile(widget.valueAxes[0].labelTemplate);
-                finalValue = template({ 'value': finalValue });
+                finalValue = template({ value: finalValue });
               }
 
               return finalValue;
@@ -170,23 +169,23 @@ define(['handlebars'], function(Handlebars) {
           }
 
           if (widget.valueAxes && widget.valueAxes[1] && widget.valueAxes[1].hash) {
-            widget.valueAxes[1].labelFunction = function(value) {
+            widget.valueAxes[1].labelFunction = function (value) {
               const { hash } = widget.valueAxes[1];
-              if (hash[value]) { return hash[value]; } else { return ''; }
+              if (hash[value]) { return hash[value]; }  return '';
             };
           }
 
           if (widget.categoryAxis && widget.categoryAxis.labelTemplate) {
-            widget.categoryAxis.labelFunction = function(value) {
+            widget.categoryAxis.labelFunction = function (value) {
               template = Handlebars.compile(widget.categoryAxis.labelTemplate);
               return template({ category: value });
             };
           }
 
           if (widget.graphs) {
-            widget.graphs = widget.graphs.map(function(g) {
+            widget.graphs = widget.graphs.map((g) => {
               if (g.balloonTextTemplate) {
-                g.balloonFunction = function(item, graph) {
+                g.balloonFunction = function (item, graph) {
                   const vars = { item, graph };
                   Object.keys(item.dataContext).forEach(k => vars[k] = item.dataContext[k]);
                   if (!vars.value && graph.valueField) {
@@ -212,13 +211,13 @@ define(['handlebars'], function(Handlebars) {
           const mergedData = lodashMerge(widget, options);
           if (!widget.dataProvider) {
             if (options.allGraphs && widget.graphs) {
-              widget.graphs = widget.graphs.map(function(g) {
+              widget.graphs = widget.graphs.map((g) => {
                 g = lodashMerge(g, options.allGraphs);
                 return g;
               });
             }
             if (options.allValueAxis && widget.valueAxis) {
-              widget.valueAxis = widget.valueAxis.map(function(va) {
+              widget.valueAxis = widget.valueAxis.map((va) => {
                 va = lodashMerge(va, options.allValueAxis);
                 return va;
               });
@@ -236,7 +235,6 @@ define(['handlebars'], function(Handlebars) {
           chart.validateData();
 
           if (options.click_url != null) {
-
             let eventType;
             if (widget.type === 'pie') {
               eventType = 'clickSlice';
@@ -255,9 +253,9 @@ define(['handlebars'], function(Handlebars) {
               }
             }
 
-            chart.addListener(eventType, function(event) {
+            chart.addListener(eventType, (event) => {
               let url = options.click_url;
-              for (let key in vars) {
+              for (const key in vars) {
                 const variable = vars[key];
                 if (event[dataItem].dataContext[key]) {
                   url = url.replace(variable, event[dataItem].dataContext[key]);
@@ -265,10 +263,9 @@ define(['handlebars'], function(Handlebars) {
               }
               return window.open(url);
             });
-
           } else if (widget.multiplePies != null) {
             const defaultDataProvider = widget.dataProvider;
-            chart.addListener("clickSlice", function(event) {
+            chart.addListener('clickSlice', (event) => {
               let selected;
               if (event.dataItem.dataContext.id !== undefined) {
                 selected = event.dataItem.dataContext.id;
@@ -277,15 +274,14 @@ define(['handlebars'], function(Handlebars) {
               }
               if (selected != null) {
                 const data = [];
-                angular.forEach(defaultDataProvider, function(element, index) {
+                angular.forEach(defaultDataProvider, (element, index) => {
                   if (index === selected) {
-                    return angular.forEach(widget.pies[selected].dataProvider, function(pie) {
-                      pie.color = `#${Math.floor(Math.random()*16777215).toString(16)}`;
+                    return angular.forEach(widget.pies[selected].dataProvider, (pie) => {
+                      pie.color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
                       return data.push(pie);
                     });
-                  } else {
-                    return data.push(element);
                   }
+                  return data.push(element);
                 });
                 chart.dataProvider = data;
               } else {
@@ -298,8 +294,8 @@ define(['handlebars'], function(Handlebars) {
           let width = chartParent.height();
           let height = chartParent.width();
 
-          return interval = setInterval( 
-            function() {
+          return interval = setInterval(
+            () => {
               const w = chartParent.width();
               const h = chartParent.height();
 
@@ -317,7 +313,7 @@ define(['handlebars'], function(Handlebars) {
         return initChart();
       }
     })
-  
+
   ];
 
   return Reports_Directive_Amcharts;

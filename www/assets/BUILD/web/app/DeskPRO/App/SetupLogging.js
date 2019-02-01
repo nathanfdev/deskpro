@@ -7,9 +7,8 @@ define([
   Logger_ConsoleHandler,
   DeskPRO_Logging_InterfaceTimer
 ) =>
-  function(Module) {
-
-    Module.factory('LoggerManager', [ function() {
+  function (Module) {
+    Module.factory('LoggerManager', [function () {
       class LoggerManager {
         constructor() {
           this.loggers = {};
@@ -37,28 +36,27 @@ define([
     }
     ]);
 
-    Module.factory('$exceptionHandler', [ () =>
-      function(exception, cause) {
+    Module.factory('$exceptionHandler', [() =>
+      function (exception, cause) {
         if (window.trackJs) {
           return window.trackJs.track(exception);
-        } else {
-          if (exception.stack) {
-            console.error(exception.stack);
-          } else if (exception.message) {
-            console.error(exception.message);
-          }
-
-          throw exception;
         }
+        if (exception.stack) {
+          console.error(exception.stack);
+        } else if (exception.message) {
+          console.error(exception.message);
+        }
+
+        throw exception;
       }
 
     ]);
 
-    Module.factory('dpInterfaceTimer', [ '$log', $log => new DeskPRO_Logging_InterfaceTimer($log)
+    Module.factory('dpInterfaceTimer', ['$log', $log => new DeskPRO_Logging_InterfaceTimer($log)
     ]);
 
     return Module.config(['$provide', $provide =>
-      $provide.decorator('$log', ['LoggerManager', '$delegate', function(LoggerManager, $delegate) {
+      $provide.decorator('$log', ['LoggerManager', '$delegate', function (LoggerManager, $delegate) {
         const logger = LoggerManager.get('main');
         return logger;
       }

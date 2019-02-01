@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], function(Util)  {
+define(['DeskPRO/Util/Util'], (Util) => {
   class Admin_Portal_Service_PortalGeneralSettings {
     static initClass() {
       this.$inject = ['Api2', '$q', 'Growl'];
@@ -48,7 +48,7 @@ define(['DeskPRO/Util/Util'], function(Util)  {
       } else if (this.settings && (this.settings.brand === this.brandId)) {
         d.resolve(Util.clone(this.settings, true));
       } else {
-        this._loadSettings().then(function(r) {
+        this._loadSettings().then((r) => {
           if (r.data) {
             return d.resolve(Util.clone(r.data.data, true));
           }
@@ -72,7 +72,7 @@ define(['DeskPRO/Util/Util'], function(Util)  {
       const me = this;
 
       if (this.brandId && (this.brandId !== 'new')) {
-        p = this.Api2.sendGet(`/settings/brands/${this.brandId}/portal/general`).success(function(res) {
+        p = this.Api2.sendGet(`/settings/brands/${this.brandId}/portal/general`).success((res) => {
           if (me.brandId === 'new') {
             res.data.deskpro_url = '';
             res.data.deskpro_name = '';
@@ -100,16 +100,16 @@ define(['DeskPRO/Util/Util'], function(Util)  {
           me.settings.orig_deskpro_url = me.settings.deskpro_url;
           d.resolve(me.settings);
           return me.settingPromise[me.brandId] = null;
-        }).error(function(data, status) {
+        }).error((data, status) => {
           d.reject(data, status);
           return me.settingPromise[me.brandId] = null;
         });
       } else {
         p = this.$q.when({
-          deskpro_url: '',
-          deskpro_name: '',
-          deskpro_domain: '',
-          domain_choice: 'default',
+          deskpro_url:      '',
+          deskpro_name:     '',
+          deskpro_domain:   '',
+          domain_choice:    'default',
           orig_deskpro_url: null
         });
       }

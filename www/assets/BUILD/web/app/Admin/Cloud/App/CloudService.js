@@ -1,8 +1,8 @@
 define([
 
-], function(
+], (
 
-) {
+) => {
   class CloudServiceOn {
     isCloud() { return true; }
   }
@@ -13,7 +13,6 @@ define([
 
   if (window.DP_IS_CLOUD) {
     return CloudServiceOn;
-  } else {
-    return CloudServiceOff;
   }
+  return CloudServiceOff;
 });

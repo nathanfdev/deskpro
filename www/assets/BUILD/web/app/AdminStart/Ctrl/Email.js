@@ -1,4 +1,4 @@
-define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketAccountModel'], function(StartBase, EditTicketAccountModel) {
+define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketAccountModel'], (StartBase, EditTicketAccountModel) => {
   class AdminStart_Ctrl_Email extends StartBase {
     static initClass() {
       this.CTRL_ID = 'AdminStart_Ctrl_Email';
@@ -8,21 +8,21 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
     init() {
       this.$scope.TicketAccountsEdit = this;
       this.test_email = {
-        to: '',
-        from: '',
+        to:      '',
+        from:    '',
         subject: 'Test email',
         message: 'This is a test. If you see this email in your inbox, your outgoing email account settings are correct.'
       };
 
       this.account = {
-        email_address: '',
-        connection_type: '',
-        other_addresses: [],
-        in_pop3_account: {},
-        in_imap_account: {},
+        email_address:    '',
+        connection_type:  '',
+        other_addresses:  [],
+        in_pop3_account:  {},
+        in_imap_account:  {},
         in_gmial_account: {},
         linked_transport: {
-          transport_type: '',
+          transport_type:    '',
           transport_options: {}
         }
       };
@@ -51,12 +51,12 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
       this.$scope.is_loading = true;
       const promise = this.Api.sendPostJson('/email_accounts', postData);
 
-      promise.success( result => {
+      promise.success((result) => {
         this.account.id = result.email_account_id || this.account.id;
         this.account.is_enabled = true;
         return this.$location.path('/finish');
       });
-      promise.error( (info, code) => {
+      promise.error((info, code) => {
         this.$scope.is_loading = false;
         return this.$scope.email_is_error = 'general';
       });
@@ -71,9 +71,7 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
       * @return {promise}
     */
     loadAccountTest() {
-      return this.Api.sendPostJson('/email_accounts/test-account', this.form_model.getFormData()).success( result => {
-        return this.didPassTest = result.is_success;
-      });
+      return this.Api.sendPostJson('/email_accounts/test-account', this.form_model.getFormData()).success(result => this.didPassTest = result.is_success);
     }
 
 
@@ -97,19 +95,15 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
       let inst;
       return inst = this.$modal.open({
         templateUrl: 'AdminInterface/TicketAccounts/test-account-modal.html',
-        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) => {
-          $scope.dismiss = () => {
-            return $modalInstance.dismiss();
-          };
+        controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) => {
+          $scope.dismiss = () => $modalInstance.dismiss();
 
-          $scope.showLog = () => {
-            return $scope.showing_log = true;
-          };
+          $scope.showLog = () => $scope.showing_log = true;
 
           const testNow = () => {
             $scope.showing_log = false;
             $scope.is_testing = true;
-            return this.loadAccountTest().success( result => {
+            return this.loadAccountTest().success((result) => {
               $scope.is_testing    = false;
               $scope.is_success    = result.is_success;
               $scope.log           = result.log;
@@ -118,7 +112,7 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
               $scope.showing_log   = true;
               $scope.is_testing    = false;
               $scope.is_success    = false;
-              $scope.log           = "Server Error";
+              $scope.log           = 'Server Error';
               return $scope.message_count = 0;
             });
           };
@@ -140,20 +134,16 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
       const me = this;
       return inst = this.$modal.open({
         templateUrl: 'AdminInterface/TicketAccounts/test-outgoing-modal.html',
-        resolve: {
+        resolve:     {
           test_email: () => {
             this.test_email.from = this.form_model.form.address;
             return this.test_email;
           }
         },
         controller: ['$scope', '$modalInstance', 'test_email', ($scope, $modalInstance, test_email) => {
-          $scope.dismiss = () => {
-            return $modalInstance.dismiss();
-          };
+          $scope.dismiss = () => $modalInstance.dismiss();
 
-          $scope.showLog = () => {
-            return $scope.showing_log = true;
-          };
+          $scope.showLog = () => $scope.showing_log = true;
 
           $scope.test_email = test_email;
 
@@ -166,7 +156,7 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
               test_email.from = me.form_model.form.address;
             }
 
-            return me.loadOutgoingAccountTest().success( result => {
+            return me.loadOutgoingAccountTest().success((result) => {
               $scope.is_testing    = false;
               $scope.is_success    = result.is_success;
               $scope.log           = result.log;
@@ -175,14 +165,12 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
               $scope.showing_log   = true;
               $scope.is_testing    = false;
               $scope.is_success    = false;
-              $scope.log           = "Server Error";
+              $scope.log           = 'Server Error';
               return $scope.message_count = 0;
             });
           };
 
-          const resetTest = () => {
-            return $scope.testing_started = false;
-          };
+          const resetTest = () => $scope.testing_started = false;
 
           $scope.testNow = () => testNow();
           return $scope.resetTest = () => resetTest();

@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class DeskPRO_Util_Functions {
     /*
       * Returns a function that will be called wait ms after the last time it was
@@ -13,11 +13,11 @@ define(function() {
       let timeout = null;
       let res = null;
 
-      return function() {
+      return function () {
         const self = this;
         const args = arguments;
 
-        const later = function() {
+        const later = function () {
           timeout = null;
           if (!immediate) { return res = fn.apply(self, args); }
         };

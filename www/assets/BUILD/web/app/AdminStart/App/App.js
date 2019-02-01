@@ -7,13 +7,13 @@ define([
 
   'angularRoute',
   'angularBootstrap'
-], function(
+], (
   angular,
   DeskPRO_Main_Service_DpApi,
   AppState,
   DeskPRO_Directive_DpJsonData,
   DeskPRO_Directive_DpNgTemplate
-) {
+) => {
   const AdminStartModule = angular.module('AdminStart_App', ['ngRoute', 'ui.bootstrap']);
 
   AdminStartModule.factory('dpHttpInterceptor', ['$q', $q =>
@@ -61,7 +61,7 @@ define([
 
   AdminStartModule.run(['Api', Api =>
     window.setInterval(() =>
-      Api.sendGet('/my/session/renew-request-token').success( function(data) {
+      Api.sendGet('/my/session/renew-request-token').success((data) => {
         if (data.request_token) {
           window.DP_REQUEST_TOKEN = data.request_token;
           return window.DP_SESSION_ID = data.session_id;
@@ -78,13 +78,13 @@ define([
   AdminStartModule.config(['$routeProvider', $routeProvider =>
     $routeProvider.when('/', {
       templateUrl: 'AdminInterface/Start/home.html',
-      controller: 'AdminStart_Ctrl_Home'
+      controller:  'AdminStart_Ctrl_Home'
     }).when('/email', {
       templateUrl: 'AdminInterface/Start/email.html',
-      controller: 'AdminStart_Ctrl_Email'
+      controller:  'AdminStart_Ctrl_Email'
     }).when('/finish', {
       templateUrl: 'AdminInterface/Start/finish.html',
-      controller: 'AdminStart_Ctrl_Finish'
+      controller:  'AdminStart_Ctrl_Finish'
     }).otherwise({
       redirectTo: '/'
     })

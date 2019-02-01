@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -9,7 +9,7 @@ define(function() {
     * -------
     * <input autofocus>
   */
-  const Admin_Main_Directive_Autofocus = [ '$rootScope', '$timeout', ($rootScope, $timeout) =>
+  const Admin_Main_Directive_Autofocus = ['$rootScope', '$timeout', ($rootScope, $timeout) =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
@@ -22,7 +22,7 @@ define(function() {
         , 250);
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_Autofocus;

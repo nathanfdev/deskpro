@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -13,7 +13,7 @@ define(function() {
     ({
       restrict: 'A',
       link(scope, element, attrs) {
-        element.on('click', function(ev) {
+        element.on('click', (ev) => {
           let modalInstance;
           ev.preventDefault();
 
@@ -24,7 +24,7 @@ define(function() {
             phrase_map[l.language] = l[editorOptions.key];
           }
 
-          const save_map = function() {
+          const save_map = function () {
             for (l of Array.from(editorOptions.phrase_map)) {
               if (phrase_map[l.language]) {
                 l[editorOptions.key] = phrase_map[l.language];
@@ -35,7 +35,7 @@ define(function() {
             if (Object.keys(phrase_map).length) {
               return (() => {
                 const result = [];
-                for (let id of Object.keys(phrase_map || {})) {
+                for (const id of Object.keys(phrase_map || {})) {
                   l = phrase_map[id];
                   if (l) {
                     const lang = {};
@@ -52,9 +52,9 @@ define(function() {
           };
 
           return modalInstance = $modal.open({
-            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Languages/modal-translate-phrase.html',
-            controller: 'Admin_Languages_Ctrl_TranslateMapModal',
-            resolve: {
+            templateUrl: `${DP_BASE_ADMIN_URL}/load-view/Languages/modal-translate-phrase.html`,
+            controller:  'Admin_Languages_Ctrl_TranslateMapModal',
+            resolve:     {
               phrase_map() {
                 return phrase_map;
               },
@@ -71,7 +71,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpOpenPhraseMapEditor;

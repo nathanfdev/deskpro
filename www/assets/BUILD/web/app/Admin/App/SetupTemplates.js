@@ -1,60 +1,60 @@
 define([
-	'Admin/Main/Service/TemplateManager',
-	'AdminRouting'
+  'Admin/Main/Service/TemplateManager',
+  'AdminRouting'
 ], (
 	Admin_Main_Service_TemplateManager,
 	AdminRouting
 ) =>
-	function(Module) {
-		Module.service('dpTemplateManager', ['$templateCache', '$http', '$q', ($templateCache, $http, $q) => new Admin_Main_Service_TemplateManager($templateCache, $http, $q)
-		]);
+	function (Module) {
+  Module.service('dpTemplateManager', ['$templateCache', '$http', '$q', ($templateCache, $http, $q) => new Admin_Main_Service_TemplateManager($templateCache, $http, $q)
+  ]);
 
 		// Decorate the $templateCache so view names are always the 'short' names
 		// and not URLs
 		// e.g.  /deskpro/admin/load-view/Index/blank.html -> Index/blank.html
-		Module.config(['$provide', $provide =>
-			$provide.decorator('$templateCache', ['$delegate', function($delegate) {
-				$delegate.ngGet = $delegate.get;
-				$delegate.get = function(view) {
-					view = view.replace(/^.*?\/admin\/load\-view\//g, '');
-					return $delegate.ngGet(view);
-				};
+  Module.config(['$provide', $provide =>
+			$provide.decorator('$templateCache', ['$delegate', function ($delegate) {
+  $delegate.ngGet = $delegate.get;
+  $delegate.get = function (view) {
+    view = view.replace(/^.*?\/admin\/load\-view\//g, '');
+    return $delegate.ngGet(view);
+  };
 
-				$delegate.ngPut = $delegate.put;
-				$delegate.put = function(view, value) {
-					view = view.replace(/^.*?\/admin\/load\-view\//g, '');
-					return $delegate.ngPut(view, value);
-				};
+  $delegate.ngPut = $delegate.put;
+  $delegate.put = function (view, value) {
+    view = view.replace(/^.*?\/admin\/load\-view\//g, '');
+    return $delegate.ngPut(view, value);
+  };
 
-				return $delegate;
-			}
-			])
-		
-		]);
+  return $delegate;
+}
+])
+
+  ]);
 
 		// Preload templates
-		return Module.run(['dpTemplateManager', function(dpTemplateManager) {
-			const templates = [
-				'Index/app-nav-portal.html',
-				'Index/app-nav-twitter.html',
-				'Index/modal-alert.html',
-				'Index/modal-confirm-leavetab.html',
-				'Index/modal-confirm.html',
-				'Languages/modal-translate-phrase.html',
-				'Index/blank.html',
-				'Index/home.html',
-				'Common/work-hours-directive.html',
-			];
+  return Module.run(['dpTemplateManager', function (dpTemplateManager) {
+    const templates = [
+      'Index/app-nav-portal.html',
+      'Index/app-nav-twitter.html',
+      'Index/modal-alert.html',
+      'Index/modal-confirm-leavetab.html',
+      'Index/modal-confirm.html',
+      'Languages/modal-translate-phrase.html',
+      'Index/blank.html',
+      'Index/home.html',
+      'Common/work-hours-directive.html',
+    ];
 
-			for (let t of Array.from(templates)) {
-				dpTemplateManager.load(t);
-			}
+    for (const t of Array.from(templates)) {
+      dpTemplateManager.load(t);
+    }
 
-			return dpTemplateManager.loadPending().then(() =>
+    return dpTemplateManager.loadPending().then(() =>
 				window.setTimeout(() => window.DP_IS_BOOTED = true
 				, 400)
 			);
-		}
-		]);
-	}
+  }
+  ]);
+}
 );

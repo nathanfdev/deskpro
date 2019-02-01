@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -25,7 +25,7 @@ define(function() {
     * <dp-time-with-unit model-type="num:time_unit" ng-model="my_model" />
     * (Renders as "4 hours")
     */
-  const DeskPRO_Directive_DpTimeWithUnit = [ () =>
+  const DeskPRO_Directive_DpTimeWithUnit = [() =>
     ({
       restrict: 'E',
       template: `\
@@ -45,11 +45,10 @@ define(function() {
   </select>
 </div>\
 `,
-      scope: {},
+      scope:   {},
       require: 'ngModel',
       replace: true,
       link(scope, iElement, iAttrs, ngModel) {
-
         scope.time_num = '';
         scope.time_unit = 'minutes';
 
@@ -68,17 +67,17 @@ define(function() {
         if (!unitPhrases) {
           unitPhrases = {
             minutes: 'minutes',
-            hours: 'hours',
-            days: 'days',
-            weeks: 'weeks',
-            months: 'months',
-            years: 'years'
+            hours:   'hours',
+            days:    'days',
+            weeks:   'weeks',
+            months:  'months',
+            years:   'years'
           };
         }
 
         scope.phrases = unitPhrases;
 
-        for (let v of Array.from(availableUnits)) {
+        for (const v of Array.from(availableUnits)) {
           scope[`has_${v}`] = true;
         }
 
@@ -102,13 +101,13 @@ define(function() {
         }
 
         const multiplierMap = {
-          seconds:   1,
-          minutes:   60,
-          hours:  3600,
-          days:   86400,
-          weeks:  604800,
-          months: 2419200,
-          years:  31536000
+          seconds: 1,
+          minutes: 60,
+          hours:   3600,
+          days:    86400,
+          weeks:   604800,
+          months:  2419200,
+          years:   31536000
         };
 
         const multiplierTypes = [
@@ -123,17 +122,17 @@ define(function() {
 
         multiplierTypes.reverse();
 
-        ngModel.$parsers.push( function(viewValue) {
+        ngModel.$parsers.push((viewValue) => {
           const unit = viewValue.unit || 'minutes';
           const num  = viewValue.num || 1;
 
           switch (modelType) {
-            case "object":
+            case 'object':
               var obj = {};
               obj[objModelKeys[0]] = num;
               obj[objModelKeys[1]] = unit;
               return obj;
-            case "array":
+            case 'array':
               var arr = [num, unit];
               return arr;
             default:
@@ -142,12 +141,12 @@ define(function() {
           }
         });
 
-        ngModel.$formatters.push( function(modelValue) {
+        ngModel.$formatters.push((modelValue) => {
           let unit = 'minutes';
           let num  = '';
 
           switch (modelType) {
-            case "object":
+            case 'object':
               if ((modelValue != null ? modelValue[objModelKeys[0]] : undefined) != null) {
                 unit = modelValue[objModelKeys[0]];
               }
@@ -155,7 +154,7 @@ define(function() {
                 num = modelValue[objModelKeys[1]];
               }
               break;
-            case "array":
+            case 'array':
               if ((modelValue != null ? modelValue[1] : undefined) != null) {
                 unit = modelValue[1];
               }
@@ -166,7 +165,7 @@ define(function() {
             default:
               modelValue = parseInt(modelValue || 0);
 
-              for (let unitName of Array.from(multiplierTypes)) {
+              for (const unitName of Array.from(multiplierTypes)) {
                 if ((modelValue % multiplierMap[unitName]) === 0) {
                   unit = unitName;
                   break;
@@ -205,7 +204,7 @@ define(function() {
           };
         });
 
-        scope.$watch('time_unit + time_num', function() {
+        scope.$watch('time_unit + time_num', () => {
           if (scope.time_unit && scope.time_num) {
             return ngModel.$setViewValue({
               unit: scope.time_unit,
@@ -214,7 +213,7 @@ define(function() {
           }
         });
 
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           const viewValue = ngModel.$viewValue;
           if (viewValue) {
             scope.time_num  = viewValue.num;
@@ -226,7 +225,7 @@ define(function() {
         return ngModel.$render();
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpTimeWithUnit;

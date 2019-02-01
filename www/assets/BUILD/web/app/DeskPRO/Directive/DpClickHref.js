@@ -1,10 +1,10 @@
-define(function() {
-  const DeskPRO_Directive_DpClickHref = [ () =>
+define(() => {
+  const DeskPRO_Directive_DpClickHref = [() =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
-        const clickHref = attrs['dpClickHref'];
-        return element.on('click', function(ev) {
+        const clickHref = attrs.dpClickHref;
+        return element.on('click', (ev) => {
           let a;
           if (element.is('a')) {
             a = element;
@@ -19,7 +19,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpClickHref;

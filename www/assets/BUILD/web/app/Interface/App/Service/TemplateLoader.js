@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class TemplateLoader {
     constructor(loadUrl, $http, $q) {
       this.loadUrl = loadUrl;
@@ -13,7 +13,7 @@ define(function() {
     getLoadUrl(views) {
       let qs = [];
 
-      for (let t of Array.from(views)) {
+      for (const t of Array.from(views)) {
         qs.push(`views[]=${encodeURIComponent(t)}`);
       }
 
@@ -23,7 +23,7 @@ define(function() {
 
       qs = qs.join('&');
 
-      return this.loadUrl + '?' + qs;
+      return `${this.loadUrl}?${qs}`;
     }
 
     load(views) {
@@ -31,8 +31,8 @@ define(function() {
 
       this.$http({
         method: 'GET',
-        url: this.getLoadUrl(views)
-      }).success( data => d.resolve(data)
+        url:    this.getLoadUrl(views)
+      }).success(data => d.resolve(data)
       , (data, status) => d.reject(data, status));
 
       return d.promise;

@@ -1,8 +1,8 @@
 define([
   'Admin/Main/DataService/BaseListEdit'
-], function(
+], (
   Admin_Main_DataService_BaseListEdit
-)  {
+) => {
   class Admin_Agents_DataService_Agents extends Admin_Main_DataService_BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -12,7 +12,7 @@ define([
 
     resolveResponse(response) {
       const models = [];
-      for (let data of Array.from(response.agents)) {
+      for (const data of Array.from(response.agents)) {
         models.push(data);
       }
 
@@ -20,7 +20,7 @@ define([
     }
 
     all(reload) {
-      return super.all((reload), {basic: 1});
+      return super.all((reload), { basic: 1 });
     }
   }
   Admin_Agents_DataService_Agents.initClass();

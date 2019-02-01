@@ -1,14 +1,14 @@
-define(['redactor', 'jquery'], function(redactor, $) {
+define(['redactor', 'jquery'], (redactor, $) => {
   /*
    * Description
    * -----------
    * textarea editor, moved from agent iface
    *
    */
-  const Admin_Main_Directive_DpRedactor = [ ('$timeout'), $timeout =>
+  const Admin_Main_Directive_DpRedactor = [('$timeout'), $timeout =>
     ({
       restrict: 'A',
-      require: 'ngModel',
+      require:  'ngModel',
       link(scope, element, attrs, ngModel) {
         let api = null;
 
@@ -22,16 +22,16 @@ define(['redactor', 'jquery'], function(redactor, $) {
           )
         ;
 
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           if (api) { return $timeout(() => api.setCode(ngModel.$viewValue || '')); }
         };
 
-        return $timeout( function() {
+        return $timeout(() => {
           element.redactor(defaults);
           api = element.data('redactor');
 
           const origSyncCode = api.syncCode;
-          api.syncCode = function() {
+          api.syncCode = function () {
             origSyncCode.call(api);
             return updateModel(api.getCode());
           };
@@ -40,7 +40,7 @@ define(['redactor', 'jquery'], function(redactor, $) {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpRedactor;

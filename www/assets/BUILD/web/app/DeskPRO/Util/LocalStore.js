@@ -1,11 +1,11 @@
-define(['json3'], function(JSON) {
+define(['json3'], (JSON) => {
   /*
    * Thin wrapper around localStorage. Does nothing if localStorage is not supported.
    */
   class DeskPRO_Util_LocalStore {
     isSupported() {
       try {
-        return (window['localStorage'] != null) && (window['localStorage'] !== null);
+        return (window.localStorage != null) && (window.localStorage !== null);
       } catch (e) {
         return false;
       }

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_ServerReqs_Ctrl_ServerReqs extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_ServerReqs_Ctrl_ServerReqs';
@@ -11,9 +11,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     initialLoad() {
-      const data_promise = this.Api.sendGet('/server_reqs').then( res => {
-        return this.$scope.check_requirements_url = res.data.check_requirements_url;
-      });
+      const data_promise = this.Api.sendGet('/server_reqs').then(res => this.$scope.check_requirements_url = res.data.check_requirements_url);
 
       return this.$q.all([data_promise]);
     }

@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -22,7 +22,7 @@ define(function() {
     * <dp-filesize-with-unit ng-model="my_model" />
     * (1024 will render as "1 kb")
     */
-  const DeskPRO_Directive_DpFilesizeWithUnit = [ () =>
+  const DeskPRO_Directive_DpFilesizeWithUnit = [() =>
     ({
       restrict: 'E',
       template: `\
@@ -40,11 +40,10 @@ define(function() {
   </select>
 </div>\
 `,
-      scope: {},
+      scope:   {},
       require: 'ngModel',
       replace: true,
       link(scope, iElement, iAttrs, ngModel) {
-
         scope.size_num = '';
         scope.size_unit = 'mb';
 
@@ -68,11 +67,11 @@ define(function() {
         }
 
         const multiplierMap = {
-          b:   1,
-          kb:  1024,
-          mb:  1048576,
-          gb:  1073741824,
-          tb:  1099511627776
+          b:  1,
+          kb: 1024,
+          mb: 1048576,
+          gb: 1073741824,
+          tb: 1099511627776
         };
 
         const multiplierTypes = [
@@ -84,17 +83,17 @@ define(function() {
         ];
         multiplierTypes.reverse();
 
-        ngModel.$parsers.push( function(viewValue) {
+        ngModel.$parsers.push((viewValue) => {
           const unit = viewValue.unit || 'kb';
           const num  = viewValue.num || 1;
 
           switch (modelType) {
-            case "object":
+            case 'object':
               var obj = {};
               obj[objModelKeys[0]] = num;
               obj[objModelKeys[1]] = unit;
               return obj;
-            case "array":
+            case 'array':
               var arr = [num, unit];
               return arr;
             default:
@@ -103,16 +102,16 @@ define(function() {
           }
         });
 
-        ngModel.$formatters.push( function(modelValue) {
+        ngModel.$formatters.push((modelValue) => {
           let unit = false;
           let num  = 0;
 
-          if ((modelType === null) || (modelType === "") || !modelType || isNaN(modelType)) {
+          if ((modelType === null) || (modelType === '') || !modelType || isNaN(modelType)) {
             modelType = 0;
           }
 
           switch (modelType) {
-            case "object":
+            case 'object':
               if ((modelValue != null ? modelValue[objModelKeys[0]] : undefined) != null) {
                 unit = modelValue[objModelKeys[0]];
               }
@@ -120,7 +119,7 @@ define(function() {
                 num = modelValue[objModelKeys[1]];
               }
               break;
-            case "array":
+            case 'array':
               if ((modelValue != null ? modelValue[1] : undefined) != null) {
                 unit = modelValue[1];
               }
@@ -163,11 +162,11 @@ define(function() {
 
           return {
             unit,
-            num:  parseFloat(num).toFixed(2)
+            num: parseFloat(num).toFixed(2)
           };
         });
 
-        scope.$watch('size_unit + size_num', function() {
+        scope.$watch('size_unit + size_num', () => {
           if (scope.size_unit && scope.size_num) {
             return ngModel.$setViewValue({
               unit: scope.size_unit,
@@ -176,7 +175,7 @@ define(function() {
           }
         });
 
-        ngModel.$render = function() {
+        ngModel.$render = function () {
           const viewValue = ngModel.$viewValue;
           if (viewValue) {
             scope.size_num  = viewValue.num;
@@ -188,7 +187,7 @@ define(function() {
         return ngModel.$render();
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpFilesizeWithUnit;

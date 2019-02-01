@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], function(Util) {
+define(['DeskPRO/Util/Util'], (Util) => {
   class BaseService {
     constructor() {
       this.dp_spin_els = {};
@@ -25,8 +25,8 @@ define(['DeskPRO/Util/Util'], function(Util) {
       const deferred = this.$q.defer();
 
       var desc = {
-        doneTime: false,
-        doneSpin: false,
+        doneTime:       false,
+        doneSpin:       false,
         setTimeoutDone: () => {
           desc.doneTime = true;
           if (desc._timeout) {
@@ -36,19 +36,15 @@ define(['DeskPRO/Util/Util'], function(Util) {
           if (desc.doneSpin) {
             return deferred.resolve();
           }
-        }
-        ,
+        },
         setSpinDone: () => {
           desc.doneSpin = true;
           if (desc.doneTime) {
             return deferred.resolve();
           }
-        }
-        ,
+        },
         _promise: deferred.promise,
-        _timeout: this.$timeout(() => {
-          return desc.setTimeoutDone();
-        }
+        _timeout: this.$timeout(() => desc.setTimeoutDone()
         , minTime)
       };
 

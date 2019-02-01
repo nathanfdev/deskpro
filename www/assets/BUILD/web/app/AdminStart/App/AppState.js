@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class AppState {
     constructor(Api) {
       this.Api = Api;

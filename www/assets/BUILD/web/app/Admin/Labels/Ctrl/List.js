@@ -1,11 +1,10 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Labels_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Labels_Ctrl_List';
       this.DEPS = ['em', '$rootScope', 'LabelDefinition'];
       this.CTRL_AS = 'LabelsList';
     }
-
 
 
     init() {
@@ -16,7 +15,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       this.$scope.countDefinitions = () => {
         let count = 0;
-        for (let n of Object.keys(this.$scope.labels || {})) {
+        for (const n of Object.keys(this.$scope.labels || {})) {
           count++;
         }
         return count;
@@ -30,21 +29,16 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
 
-
     type() {
       throw new Exception('This method must be implemented by a sub-class');
     }
 
 
-
     initialLoad() {
-      return this.LabelDefinition.all(this.type).then(definitions => {
-        return this.$scope.labels = definitions;
-      });
+      return this.LabelDefinition.all(this.type).then(definitions => this.$scope.labels = definitions);
     }
   }
   Admin_Labels_Ctrl_List.initClass();
-
 
 
   return Admin_Labels_Ctrl_List.EXPORT_CTRL();

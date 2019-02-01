@@ -1,9 +1,9 @@
 define([
   'angular',
   'DeskPRO/Directive/DpDateTimePicker'
-], function(
+], (
   angular
-) {
+) => {
   const ReportsModule = angular.module('Reports_App', [
     'ngAnimate',
     'ngSanitize',
@@ -18,7 +18,7 @@ define([
     'dp.datetimepicker'
   ]);
 
-  ReportsModule.config(['datepickerConfig', 'datepickerPopupConfig', function(datepickerConfig, datepickerPopupConfig) {
+  ReportsModule.config(['datepickerConfig', 'datepickerPopupConfig', function (datepickerConfig, datepickerPopupConfig) {
     datepickerConfig.showWeeks = false;
     datepickerPopupConfig.showWeeks = false;
     return datepickerPopupConfig.dateFormat = 'dd MMMM yyyy';

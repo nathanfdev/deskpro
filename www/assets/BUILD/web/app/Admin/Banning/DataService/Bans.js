@@ -2,11 +2,11 @@ define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/Banning/IpBanEditFormMapper',
   'Admin/Banning/EmailBanEditFormMapper'
-], function(
+], (
   BaseListEdit,
   IpBanEditFormMapper,
   EmailBanEditFormMapper
-)  {
+) => {
   class Bans extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -20,8 +20,8 @@ define([
     init() {
       this.setSubLists(['ip_bans', 'email_bans']);
       return this.search_phrase = {
-        ip_ban: '',
-        email_ban: '',
+        ip_ban:         '',
+        email_ban:      '',
         email_wildcard: false
       };
     }
@@ -31,11 +31,9 @@ define([
   */
 
     _doLoadList() {
-
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/banning').success( data => {
-
+      this.Api.sendGet('/banning').success((data) => {
         const models = data.bans;
         return deferred.resolve(models);
       }
@@ -49,19 +47,17 @@ define([
      */
 
     _doRefreshList() {
-
       const deferred = this.$q.defer();
 
       this.Api.sendGet('/banning', {
 
-        ip_ban_page: this.pagination.ip_bans.page,
-        email_ban_page: this.pagination.email_bans.page,
-        ip_ban_search_phrase: this.search_phrase.ip_ban,
+        ip_ban_page:             this.pagination.ip_bans.page,
+        email_ban_page:          this.pagination.email_bans.page,
+        ip_ban_search_phrase:    this.search_phrase.ip_ban,
         email_ban_search_phrase: this.search_phrase.email_ban,
-        email_ban_wildcard: this.search_phrase.email_wildcard ? 1 : 0
+        email_ban_wildcard:      this.search_phrase.email_wildcard ? 1 : 0
 
-      }).success( data => {
-
+      }).success((data) => {
         const models = data.bans;
         return deferred.resolve(models);
       }
@@ -75,7 +71,6 @@ define([
   */
 
     getSearchPhrase() {
-
       return this.search_phrase;
     }
 
@@ -86,7 +81,6 @@ define([
   */
 
     setType(type) {
-
       this.type = type;
       return this.idProp = this.type === 'email' ? `banned_${this.type}` : 'id';
     }
@@ -98,7 +92,6 @@ define([
      */
 
     getFormMapper() {
-
       if (this.type === 'ip') { this.formMapper = new IpBanEditFormMapper(); }
       if (this.type === 'email') { this.formMapper = new EmailBanEditFormMapper(); }
 
@@ -113,7 +106,6 @@ define([
      */
 
     deleteBanByType(type) {
-
       return this.Api.sendDelete(`/banning_${type}`);
     }
 
@@ -125,10 +117,7 @@ define([
     */
 
     deleteBanById(id) {
-
-      const promise = this.Api.sendDelete(`/banning_${this.type}/${window.encodeURIComponent(id)}`).success( () => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/banning_${this.type}/${window.encodeURIComponent(id)}`).success(() => this.removeListModelById(id));
 
       return promise;
     }
@@ -141,27 +130,22 @@ define([
     */
 
     loadEditBanData(id) {
-
       const deferred = this.$q.defer();
 
       if (id) {
-
-        this.Api.sendGet(`/banning_${this.type}/${window.encodeURIComponent(id)}`).then( result => {
-
+        this.Api.sendGet(`/banning_${this.type}/${window.encodeURIComponent(id)}`).then((result) => {
           const data = {};
-          data[this.type + '_ban'] = result.data[this.type + '_ban'];
-          data[this.type + '_ban'].old_id = result.data[this.type + '_ban'][this.idProp];
+          data[`${this.type}_ban`] = result.data[`${this.type}_ban`];
+          data[`${this.type}_ban`].old_id = result.data[`${this.type}_ban`][this.idProp];
 
           data.form = this.getFormMapper().getFormFromModel(data);
 
           return deferred.resolve(data);
         }
         , () => deferred.reject());
-
       } else {
-
         const data = {};
-        data[this.type + '_ban'] = {};
+        data[`${this.type}_ban`] = {};
 
         data.form = this.getFormMapper().getFormFromModel(data);
 
@@ -180,29 +164,24 @@ define([
     */
 
     saveFormModel(model, formModel) {
-
       let promise;
       const mapper = this.getFormMapper();
 
       const postData = mapper.getPostDataFromForm(formModel);
 
       const sendData = {};
-      sendData[this.type + '_ban'] = postData;
+      sendData[`${this.type}_ban`] = postData;
 
       if (model[`banned_${this.type}`]) {
-        const url = `/banning_${this.type}/${window.encodeURIComponent(this.type === 'email' ? model[`banned_${this.type}`] : model['id'])}`;
-        promise = this.Api.sendPostJson(url, sendData).success(data => {
-          return model[`banned_${this.type}`] = data[`banned_${this.type}`];
-        });
+        const url = `/banning_${this.type}/${window.encodeURIComponent(this.type === 'email' ? model[`banned_${this.type}`] : model.id)}`;
+        promise = this.Api.sendPostJson(url, sendData).success(data => model[`banned_${this.type}`] = data[`banned_${this.type}`]);
       } else {
-        promise = this.Api.sendPutJson(`/banning_${this.type}`, sendData).success( data => {
-          return model[`banned_${this.type}`] = data[`banned_${this.type}`];
-        });
+        promise = this.Api.sendPutJson(`/banning_${this.type}`, sendData).success(data => model[`banned_${this.type}`] = data[`banned_${this.type}`]);
       }
 
-      promise.success( () => {
+      promise.success(() => {
         mapper.applyFormToModel(model, formModel);
-        return this.mergeDataModel(model, null, this.type + '_bans');
+        return this.mergeDataModel(model, null, `${this.type}_bans`);
       });
 
       return promise;

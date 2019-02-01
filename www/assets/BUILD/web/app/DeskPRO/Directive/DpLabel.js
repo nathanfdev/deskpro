@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings'], function(Strings) {
+define(['DeskPRO/Util/Strings'], (Strings) => {
   /*
     * Description
     * -----------
@@ -10,35 +10,34 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
     * <span dp-label="myticket.labels[0]"></span>
     *
   */
-  const DeskPRO_Directive_DpLabel = function($parse, LabelDefinition) {
-
-    const getContrast = function(hexcolor) {
+  const DeskPRO_Directive_DpLabel = function ($parse, LabelDefinition) {
+    const getContrast = function (hexcolor) {
       hexcolor = hexcolor.toString();
-      const r = parseInt(hexcolor.substr(0,2),16);
-      const g = parseInt(hexcolor.substr(2,2),16);
-      const b = parseInt(hexcolor.substr(4,2),16);
-      const yiq = ((r*299)+(g*587)+(b*114))/1000;
-      if (yiq >= 128) { return 'black'; } else { return 'white'; }
+      const r = parseInt(hexcolor.substr(0, 2), 16);
+      const g = parseInt(hexcolor.substr(2, 2), 16);
+      const b = parseInt(hexcolor.substr(4, 2), 16);
+      const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
+      if (yiq >= 128) { return 'black'; }  return 'white';
     };
 
     return {
       restrict: 'A',
       link(scope, element, attr) {
-        const updateLabelElement = function(data) {
+        const updateLabelElement = function (data) {
           if ((data == null)) { return; }
           const color = data.color || null;
           if (color) {
             element.css({
               backgroundColor: color,
-              color: getContrast(color.substr(1)),
-              textShadow: 'none',
+              color:           getContrast(color.substr(1)),
+              textShadow:      'none',
               backgroundImage: 'none'
             });
           } else {
             element.css({
               backgroundColor: '',
-              color: '',
-              textShadow: 'none',
+              color:           '',
+              textShadow:      'none',
               backgroundImage: 'none'
             });
           }
@@ -56,7 +55,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
           label.label_type = attr.dpLabelType;
         }
 
-        if (attr.dpLabel && (typeof attr.dpLabel === "string") && (attr.dpLabel.length > 0)) {
+        if (attr.dpLabel && (typeof attr.dpLabel === 'string') && (attr.dpLabel.length > 0)) {
           try {
             const labelParsed = $parse(attr.dpLabel)(scope);
             if (labelParsed) {
@@ -66,7 +65,7 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
               if (labelParsed.label_type != null) {
                 label.label_type = labelParsed.label_type;
               }
-              if (typeof labelParsed === "string") {
+              if (typeof labelParsed === 'string') {
                 label.label = labelParsed;
               }
 
@@ -81,10 +80,8 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
         if (!label.label || !label.label_type || Strings.isBlank(label.label) || Strings.isBlank(label.label_type)) { return; }
 
-        return LabelDefinition.get(label.label_type, label.label).then(def => {
-          scope.$watch(def, newVal => {
-            return updateLabelElement(newVal);
-          });
+        return LabelDefinition.get(label.label_type, label.label).then((def) => {
+          scope.$watch(def, newVal => updateLabelElement(newVal));
           return updateLabelElement(def);
         });
       }

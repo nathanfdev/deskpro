@@ -1,10 +1,10 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
   'Admin/TicketEscalations/EscalationEditFormMapper'
-], function(
+], (
   BaseListEdit,
   EscalationEditFormMapper
-)  {
+) => {
   class Admin_TicketFilters_DataService_TicketEscalations extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -13,7 +13,7 @@ define([
     _doLoadList() {
       const deferred = this.$q.defer();
 
-      this.Api.sendGet('/ticket_escalations').success( data => {
+      this.Api.sendGet('/ticket_escalations').success((data) => {
         const models = data.escalations;
         return deferred.resolve(models);
       }
@@ -33,9 +33,8 @@ define([
     saveEnabledStateById(escId, isEnabled) {
       if (isEnabled) {
         return this.Api.sendPost(`/ticket_escalations/${escId}/enable`);
-      } else {
-        return this.Api.sendPost(`/ticket_escalations/${escId}/disable`);
       }
+      return this.Api.sendPost(`/ticket_escalations/${escId}/disable`);
     }
 
     saveEnabledState(esc) {
@@ -69,9 +68,7 @@ define([
       * @return {promise}
     */
     deleteEscalationById(id) {
-      const promise = this.Api.sendDelete(`/ticket_escalations/${id}`).then(() => {
-        return this.removeListModelById(id);
-      });
+      const promise = this.Api.sendDelete(`/ticket_escalations/${id}`).then(() => this.removeListModelById(id));
       return promise;
     }
 
@@ -94,11 +91,10 @@ define([
       * @return {promise}
     */
     loadEditEscalationData(id) {
-
       const deferred = this.$q.defer();
 
       if (id) {
-        this.Api.sendGet(`/ticket_escalations/${id}`).then( result => {
+        this.Api.sendGet(`/ticket_escalations/${id}`).then((result) => {
           const data = {};
           data.escalation = result.data.escalation;
           data.form = this.getFormMapper().getFormFromModel(data.escalation);
@@ -108,7 +104,7 @@ define([
       } else {
         const data = {};
         data.escalation = {
-          id: null,
+          id:    null,
           title: ''
         };
         data.form = this.getFormMapper().getFormFromModel(data.escalation);
@@ -122,10 +118,10 @@ define([
       const deferred = this.$q.defer();
 
       this.Api.sendGet(`/ticket_escalations/${type}/${id}`).then(
-        result => {
+        (result) => {
           const data = {
             escalation: result.data.escalation,
-            form: this.getFormMapper().getFormFromModel(result.data.escalation)
+            form:       this.getFormMapper().getFormFromModel(result.data.escalation)
           };
           return deferred.resolve(data);
         }
@@ -151,7 +147,7 @@ define([
       if (escModel.id) {
         promise = this.Api.sendPostJson(`/ticket_escalations/${escModel.id}`, postData);
       } else {
-        promise = this.Api.sendPutJson('/ticket_escalations', postData).success( data => escModel.id = data.escalation_id);
+        promise = this.Api.sendPutJson('/ticket_escalations', postData).success(data => escModel.id = data.escalation_id);
       }
 
       promise.success(() => {

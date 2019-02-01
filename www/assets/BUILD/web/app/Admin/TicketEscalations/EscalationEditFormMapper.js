@@ -1,13 +1,14 @@
 define([
   'DeskPRO/Util/Util',
   'underscore'
-], function(
+], (
   Util,
   _
-) {
+) => {
   class Admin_TicketEscalations_EscalationEditFormMapper {
     getFormFromModel(escModel) {
-      let rowId, term;
+      let rowId,
+        term;
       const form = {};
       form.title              = escModel.title || '';
       form.event_trigger      = escModel.event_trigger || 'time.open';
@@ -33,7 +34,7 @@ define([
       }
 
       if (__guard__(escModel.actions != null ? escModel.actions.actions : undefined, x2 => x2.length)) {
-        for (let action of Array.from(escModel.actions.actions)) {
+        for (const action of Array.from(escModel.actions.actions)) {
           rowId = _.uniqueId('action');
           form.actions[rowId] = action;
         }

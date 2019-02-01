@@ -43,11 +43,11 @@ define([
   Util,
   DeskPRO_Main_Service_Growl
 ) =>
-  function(Module) {
-    Module.service('AppConfig', () => new AppConfig);
+  function (Module) {
+    Module.service('AppConfig', () => new AppConfig());
 
-    Module.service('TemplateLoader', [ 'AppConfig', '$http', '$q', function(AppConfig, $http, $q) {
-      window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q);
+    Module.service('TemplateLoader', ['AppConfig', '$http', '$q', function (AppConfig, $http, $q) {
+      window.DP_TEMPLATE_LOADER = new TemplateLoader(`${AppConfig.getBaseUrl()}agent/viewer/load-views`, $http, $q);
       return window.DP_TEMPLATE_LOADER;
     }
     ]);
@@ -55,9 +55,9 @@ define([
     Module.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) => new TemplateManager(TemplateLoader, $templateCache, $q)
     ]);
 
-    Module.run(['TemplateLoader', function(TemplateLoader) {} ]);
+    Module.run(['TemplateLoader', function (TemplateLoader) {}]);
 
-    Module.run(['TemplateManager', function(TemplateManager) {
+    Module.run(['TemplateManager', function (TemplateManager) {
       const templates = [
         'ReportsInterfaceBundle:Dashboard/Modal:add-widget-variables.html',
       ];
@@ -66,13 +66,13 @@ define([
       ReportsRouting(reportStates);
 
       // just copy paste from old-style reports
-      for (let route of Array.from(reportStates.routes)) {
+      for (const route of Array.from(reportStates.routes)) {
         if (route.tpl) {
           templates.push(route.tpl);
         }
       }
 
-      for (let t of Array.from(templates)) {
+      for (const t of Array.from(templates)) {
         TemplateManager.load(t);
       }
 
@@ -80,10 +80,10 @@ define([
     }
     ]);
 
-    Module.factory('HttpTemplateInterceptor', [function() {
+    Module.factory('HttpTemplateInterceptor', [function () {
       const isTemplateUrl = url => !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/);
       const getViewName = url => url.replace(/^\//, '');
-      const getLoadUrl = view => window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1';
+      const getLoadUrl = view => `${window.DP_TEMPLATE_LOADER.getLoadUrl([view])}&intercepted=1`;
 
       return {
         request(config) {
@@ -127,9 +127,8 @@ define([
     ]);
 
     Module.config(['$provide', $provide =>
-      $provide.decorator('$http', function($delegate) {
-
-        var formatUrlObject = function(obj, baseName) {
+      $provide.decorator('$http', ($delegate) => {
+        var formatUrlObject = function (obj, baseName) {
           if (baseName == null) { baseName = false; }
           let url = '';
           return (() => {
@@ -138,7 +137,7 @@ define([
               let v = obj[k];
               if (v === null) { continue; }
               if (baseName) {
-                k = baseName + '[' + encodeURIComponent(k) + ']';
+                k = `${baseName}[${encodeURIComponent(k)}]`;
               } else {
                 k = encodeURIComponent(k);
               }
@@ -154,7 +153,7 @@ define([
           })();
         };
 
-        $delegate.formatApiUrl = function(endpoint, params, signed) {
+        $delegate.formatApiUrl = function (endpoint, params, signed) {
           if (signed == null) { signed = true; }
           endpoint = endpoint.replace(/^\//, '');
           let url = `${window.DP_BASE_API_URL}/${endpoint}`;
@@ -162,7 +161,7 @@ define([
           if (params) {
             url += url.indexOf('?') === -1 ? '?' : '&';
             if (Util.isArray(params)) {
-              for (let itm of Array.from(params)) {
+              for (const itm of Array.from(params)) {
                 const k = encodeURIComponent(itm.name);
                 const v = encodeURIComponent(itm.value);
                 url += `${k}=${v}&`;
@@ -179,14 +178,14 @@ define([
           return url;
         };
 
-        $delegate.formatApi2Url = function(endpoint, params) {
+        $delegate.formatApi2Url = function (endpoint, params) {
           endpoint = endpoint.replace(/^\//, '');
           let url = `${window.DP_BASE_API_URL}/v2/${endpoint}`;
 
           if (params) {
             url += url.indexOf('?') === -1 ? '?' : '&';
             if (Util.isArray(params)) {
-              for (let itm of Array.from(params)) {
+              for (const itm of Array.from(params)) {
                 const k = encodeURIComponent(itm.name);
                 const v = encodeURIComponent(itm.value);
                 url += `${k}=${v}&`;
@@ -201,7 +200,7 @@ define([
           return url;
         };
 
-        $delegate.signUrl = function(url) {
+        $delegate.signUrl = function (url) {
           url += url.indexOf('?') === -1 ? '?' : '&';
           url += `XDEBUG_SESSION_START=PHPSTORM&API-TOKEN=${window.DP_API_TOKEN}&SESSION-ID=${window.DP_SESSION_ID}&REQUEST-TOKEN=${window.DP_REQUEST_TOKEN}`;
           return url;
@@ -220,10 +219,10 @@ define([
 
     Module.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('HttpTemplateInterceptor')
     ]);
-    Module.service('em', [ () => new Admin_Main_DataService_EntityManager()
+    Module.service('em', [() => new Admin_Main_DataService_EntityManager()
     ]);
 
-    Module.factory('DataService', [ '$injector', $injector => new Reports_App_Service_DataServiceManager($injector)
+    Module.factory('DataService', ['$injector', $injector => new Reports_App_Service_DataServiceManager($injector)
     ]);
 
     Module.service('DashboardService', ['Api', 'Api2', '$q', (Api, Api2, $q) => new Reports_App_Service_Dashboard(Api, Api2, $q)
@@ -251,7 +250,7 @@ define([
     Module.run(['DashboardWidgetService', DashboardWidgetService => DashboardWidgetService.loadGroupParams()
     ]);
 
-    return Module.service('Growl', [ () => new DeskPRO_Main_Service_Growl()
+    return Module.service('Growl', [() => new DeskPRO_Main_Service_Growl()
     ]);
   }
 );

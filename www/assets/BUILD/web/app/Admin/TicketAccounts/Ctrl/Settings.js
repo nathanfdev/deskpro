@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   const _url = '/email_accounts/settings';
   class Admin_TicketAccounts_Ctrl_Settings extends Admin_Ctrl_Base {
     static initClass() {
@@ -12,7 +12,7 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
     }
 
     initialLoad() {
-      return this.Api.sendGet(_url).then(res => {
+      return this.Api.sendGet(_url).then((res) => {
         this.$scope.settings = res.data.email_settings;
         this.$scope.maxUploadSize = res.data.max_filesize;
 
@@ -41,7 +41,6 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         }
       });
     }
-
 
 
     save() {
@@ -84,10 +83,10 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
       };
 
       this.startSpinner('saving');
-      return this.Api.sendPutJson(_url, postData).success( () => {
+      return this.Api.sendPutJson(_url, postData).success(() => {
         this.stopSpinner('saving');
         return this.Growl.success(this.getRegisteredMessage('saved_settings'));
-      }).error( (info, code) => {
+      }).error((info, code) => {
         this.stopSpinner('saving', true);
         return this.applyErrorResponseToView(info);
       });

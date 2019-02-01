@@ -1,8 +1,8 @@
 define([
   'Admin/Main/Ctrl/Base'
-], function(
+], (
   Admin_Ctrl_Base
-) {
+) => {
   class Admin_TwitterAccounts_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TwitterAccounts_Ctrl_List';
@@ -17,10 +17,7 @@ define([
 
     initialLoad() {
       const promise = this.twitterAccountData.loadList();
-      promise.then( list => {
-
-        return this.list = list;
-      });
+      promise.then(list => this.list = list);
 
       return promise;
     }
@@ -30,9 +27,8 @@ define([
      * Show the delete dlg
      */
     startDelete(twitter_account_id) {
-
       let twitter_account = null;
-      for (let v of Array.from(this.list)) {
+      for (const v of Array.from(this.list)) {
         if (v.id === twitter_account_id) {
           twitter_account = v;
           break;
@@ -41,7 +37,7 @@ define([
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('TwitterAccounts/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.confirm = () => $modalInstance.close();
 
           return $scope.dismiss = () => $modalInstance.dismiss();
@@ -49,13 +45,11 @@ define([
         ]
       });
 
-      return inst.result.then( () => {
-        return this.twitterAccountData.deleteTwitterAccountById(twitter_account.id).then(() => {
-          if ((this.$state.current.name === 'twitter.accounts.edit') && (parseInt(this.$state.params.id) === twitter_account.id)) {
-            return this.$state.go('twitter.accounts');
-          }
-        });
-      });
+      return inst.result.then(() => this.twitterAccountData.deleteTwitterAccountById(twitter_account.id).then(() => {
+        if ((this.$state.current.name === 'twitter.accounts.edit') && (parseInt(this.$state.params.id) === twitter_account.id)) {
+          return this.$state.go('twitter.accounts');
+        }
+      }));
     }
   }
   Admin_TwitterAccounts_Ctrl_List.initClass();

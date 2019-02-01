@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Main_Ctrl_BackToAgent extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Main_Ctrl_BackToAgent';
@@ -14,14 +14,12 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       if (!window.parent || !window.parent.DP_FRAME_OVERLAYS || !window.parent.DP_FRAME_OVERLAYS.admin) {
         if (route) {
           return window.location.href = window.DP_BASE_URL + decodeURIComponent(route);
-        } else {
-          return window.location.href = window.DP_BASE_URL + 'agent/';
         }
-      } else {
-        window.parent.DP_FRAME_OVERLAYS.admin.close();
-        if (route) {
-          return window.parent.DeskPRO_Window.loadPage(window.DP_BASE_URL + decodeURIComponent(route), {focus: true, noToggle: true});
-        }
+        return window.location.href = `${window.DP_BASE_URL}agent/`;
+      }
+      window.parent.DP_FRAME_OVERLAYS.admin.close();
+      if (route) {
+        return window.parent.DeskPRO_Window.loadPage(window.DP_BASE_URL + decodeURIComponent(route), { focus: true, noToggle: true });
       }
     }
   }

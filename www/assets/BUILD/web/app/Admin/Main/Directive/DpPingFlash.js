@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -16,18 +16,18 @@ define(function() {
     *
     * @see Admin_Main_Ctrl_Base.pingElement()
     */
-  const Admin_Main_Directive_DpPingFlash = [ () =>
+  const Admin_Main_Directive_DpPingFlash = [() =>
     ({
       restrict: 'A',
-      scope: false,
+      scope:    false,
       link(scope, element, attrs) {
         element.addClass('dp-ping-flash');
-        const id = `dp_ctrl_elemnt_ping.${attrs['dpPingFlash']}`;
+        const id = `dp_ctrl_elemnt_ping.${attrs.dpPingFlash}`;
 
-        scope.$watch(id, function(newVal) {
+        scope.$watch(id, (newVal) => {
           if (!newVal) { return; }
           return element.stop().fadeIn(500, () =>
-            window.setTimeout(function() {
+            window.setTimeout(() => {
               if (element) {
                 return element.stop().fadeOut(400);
               }
@@ -37,7 +37,7 @@ define(function() {
         });
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpPingFlash;

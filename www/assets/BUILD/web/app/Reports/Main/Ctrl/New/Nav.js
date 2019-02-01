@@ -3,19 +3,18 @@ define([], () => [
   '$state',
   'DashboardService',
   '$modal',
-  function(
+  function (
     $scope,
     $state,
     DashboardService,
     $modal
   ) {
-
     $scope.hasAccessToBuiltIn = ($scope.hasAccessToCustom = false);
 
     $scope.canUseReports = () => window.DESKPRO_PERSON_PERMS['agent_reports.use'];
 
     $scope.getDashboardList = () =>
-      DashboardService.getDashboards().then(function(dbs) {
+      DashboardService.getDashboards().then((dbs) => {
         $scope.dashboards = dbs;
         $scope.hasAccessToBuiltIn = dbs.filter(db => db.is_default).length >= 1;
         return $scope.hasAccessToCustom = dbs.filter(db => !db.is_default).length >= 1;
@@ -36,14 +35,16 @@ define([], () => [
     return $scope.openCreate = () =>
       $modal.open({
         templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:edit-dashboard.html',
-        controller: 'Reports.Dashboards.Modals.EditDashboard',
-        resolve: {
+        controller:  'Reports.Dashboards.Modals.EditDashboard',
+        resolve:     {
           dashboard_id() { return null; },
-          modal_options() { return {
-            activeTab: 'info'
-          }; }
+          modal_options() {
+            return {
+              activeTab: 'info'
+            };
+          }
         }
       })
     ;
   }
-] );
+]);

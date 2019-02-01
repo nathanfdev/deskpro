@@ -1,4 +1,4 @@
-define(['angular'], function(angular) {
+define(['angular'], (angular) => {
   /**
     * A model holds data about some kind of entity.
     * Our model class does nothing special except tries to make it easier
@@ -78,14 +78,12 @@ define(['angular'], function(angular) {
       if (this[this._id_prop] != null) {
         if (this._is_mult_id) {
           const id_parts = [];
-          for (let idp of Array.from(this._id_prop)) {
+          for (const idp of Array.from(this._id_prop)) {
             id_parts.push(idp);
           }
           return id_parts.join('::');
-
-        } else {
-          return this[this._id_prop];
         }
+        return this[this._id_prop];
       }
 
       return null;
@@ -100,7 +98,7 @@ define(['angular'], function(angular) {
     setCheckpoint(chk_id = null, deep) {
       if (deep == null) { deep = false; }
       const data = {};
-      for (let key of Object.keys(this || {})) {
+      for (const key of Object.keys(this || {})) {
         const value = this[key];
         if (key.substr(0, 1) !== '_') {
           if ((value != null) && value._is_model) {
@@ -124,7 +122,7 @@ define(['angular'], function(angular) {
     */
     getCheckpoint(chk_id = null) {
       if (chk_id) {
-        for (let cp of Array.from(this._data_checkpoints)) {
+        for (const cp of Array.from(this._data_checkpoints)) {
           if (cp[0] === id) { return cp[1]; }
         }
       } else {
@@ -154,7 +152,7 @@ define(['angular'], function(angular) {
         }
 
         if (!data) {
-          throw new Error("No checkpoint found with that ID");
+          throw new Error('No checkpoint found with that ID');
         }
       } else {
         data = this._data_checkpoints.pop();
@@ -166,9 +164,9 @@ define(['angular'], function(angular) {
       if (deep) {
         return (() => {
           const result = [];
-          for (let key of Object.keys(this || {})) {
+          for (const key of Object.keys(this || {})) {
             const value = this[key];
-            if (key.substr(0,1) !== '_') {
+            if (key.substr(0, 1) !== '_') {
               if ((value != null) && value._is_model) {
                 result.push(value.revertCheckpoint(chk_id, true));
               } else {
@@ -196,9 +194,9 @@ define(['angular'], function(angular) {
       if (deep) {
         return (() => {
           const result = [];
-          for (let key of Object.keys(this || {})) {
+          for (const key of Object.keys(this || {})) {
             const value = this[key];
-            if (key.substr(0,1) !== '_') {
+            if (key.substr(0, 1) !== '_') {
               if ((value != null) && value._is_model) {
                 result.push(value.revertAllCheckpoints(true));
               } else {
@@ -224,9 +222,9 @@ define(['angular'], function(angular) {
       if (deep) {
         return (() => {
           const result = [];
-          for (let key of Object.keys(this || {})) {
+          for (const key of Object.keys(this || {})) {
             const value = this[key];
-            if (key.substr(0,1) !== '_') {
+            if (key.substr(0, 1) !== '_') {
               if ((value != null) && value._is_model) {
                 result.push(value.clearCheckpoints(true));
               } else {
@@ -248,7 +246,7 @@ define(['angular'], function(angular) {
       * @param {Object} data
     */
     setData(data) {
-      for (let key of Object.keys(data || {})) {
+      for (const key of Object.keys(data || {})) {
         const value = data[key];
         this[key] = value;
       }
@@ -266,7 +264,7 @@ define(['angular'], function(angular) {
     */
     getData() {
       const data = {};
-      for (let key of Object.keys(this || {})) {
+      for (const key of Object.keys(this || {})) {
         const value = this[key];
         if (key.substr(0, 1) !== '_') {
           data[key] = value;
@@ -288,30 +286,28 @@ define(['angular'], function(angular) {
 
       const last_data = this.getCheckpoint(chk_id);
       if (!last_data) {
-        throw new Error("No checkpoint to compare against");
+        throw new Error('No checkpoint to compare against');
       }
 
-      for (let key of Object.keys(this || {})) {
+      for (const key of Object.keys(this || {})) {
         const value = this[key];
-        if (key.substr(0,1) !== '_') {
+        if (key.substr(0, 1) !== '_') {
           if ((value != null) && value._is_model) {
             if (deep) {
               const model_changed = value.getChangedFields(chk_id, true);
               if (model_changed.length) {
-                for (let subchange of Array.from(model_changed)) {
-                  changed.push(key + '.' + subchange);
+                for (const subchange of Array.from(model_changed)) {
+                  changed.push(`${key}.${subchange}`);
                 }
               }
             }
-          } else {
-            if (value !== last_data[key]) {
-              if ((key === 'id') || key.match(/_id$/)) {
-                if ((parseInt(value)||0) !== (parseInt(last_data[key])||0)) {
-                  changed.push(key);
-                }
-              } else {
+          } else if (value !== last_data[key]) {
+            if ((key === 'id') || key.match(/_id$/)) {
+              if ((parseInt(value) || 0) !== (parseInt(last_data[key]) || 0)) {
                 changed.push(key);
               }
+            } else {
+              changed.push(key);
             }
           }
         }

@@ -1,10 +1,10 @@
 define([
   'Reports/Main/Ctrl/Base',
   'DeskPRO/Util/Util'
-], function(
+], (
   ReportsBaseCtrl,
   Util
-) {
+) => {
   class Reports_Overview_Ctrl_Overview extends ReportsBaseCtrl {
     static initClass() {
       this.CTRL_ID   = 'Reports_Overview_Ctrl_Overview';
@@ -21,7 +21,7 @@ define([
      */
     initialLoad() {
       this.$scope.getStats = this.getStats;
-      const agentTeamsPromise = this.Api2.sendGet('/agent_teams').then( res => {
+      const agentTeamsPromise = this.Api2.sendGet('/agent_teams').then((res) => {
         const teams = res.data.data;
         if (teams.length) {
           teams.unshift({ id: 0, name: 'All' });
@@ -45,7 +45,7 @@ define([
         tickets_sla_status:        `/reports/overview/data/tickets_sla_status${queryParams}`,
         tickets_opened_hour:       `/reports/overview/data/tickets_opened_hour${queryParams}`,
         chats_created:             `/reports/overview/data/chats_created${queryParams}`
-      }).then( res => {
+      }).then((res) => {
         this.$scope.tickets_status            = res.data.tickets_status;
         this.$scope.tickets_awaiting_agent    = res.data.tickets_awaiting_agent;
         this.$scope.tickets_user_waiting_time = res.data.tickets_user_waiting_time;
@@ -78,11 +78,11 @@ define([
 
       const promise = this.Api.sendGet(`/reports/overview/get-stats/${data_key}`, {
         grouping_field: this.$scope[data_key].grouping_field,
-        date_choice: this.$scope[data_key].date_choice,
-        sla_id: this.$scope[data_key].sla_id
+        date_choice:    this.$scope[data_key].date_choice,
+        sla_id:         this.$scope[data_key].sla_id
       });
 
-      return promise.success(data => {
+      return promise.success((data) => {
         this.toggleLoadingState(data_key);
         this.$scope[data_key] = data;
 
@@ -90,12 +90,10 @@ define([
           return this.setDataForTableWithBarGraphs(data_key);
         } else if (data_key === 'tickets_opened_hour') {
           return this.setDataForTicketsOpenedHours();
-        } else {
-          return this.setDataForBarGraphs(data_key);
         }
+        return this.setDataForBarGraphs(data_key);
       });
     }
-
 
 
     /*
@@ -117,16 +115,15 @@ define([
 
       return (() => {
         const result = [];
-        for (let key in this.$scope[data_key].titles) {
-
+        for (const key in this.$scope[data_key].titles) {
           if (this.$scope[data_key].values[key]) {
             let percentage = (this.$scope[data_key].values[key] / denominator) * 100;
             if (percentage < 1) { percentage = 1; }
 
             result.push(this.$scope[data_key].stats.push({
-              title: this.$scope[data_key].titles[key],
-              value: this.$scope[data_key].values[key] || 0,
-              left_percentage: percentage,
+              title:            this.$scope[data_key].titles[key],
+              value:            this.$scope[data_key].values[key] || 0,
+              left_percentage:  percentage,
               right_percentage: 100 - percentage
             }));
           }
@@ -148,10 +145,8 @@ define([
 
       return (() => {
         const result = [];
-        for (let key in this.$scope.tickets_opened_hour.titles) {
-
+        for (const key in this.$scope.tickets_opened_hour.titles) {
           if (this.$scope.tickets_opened_hour.values[key]) {
-
             let percentage = (this.$scope.tickets_opened_hour.values[key] / denominator) * 100;
             if (percentage < 1) { percentage = 1; }
 
@@ -186,15 +181,13 @@ define([
 
       return (() => {
         const result = [];
-        for (let key in this.$scope[data_key].titles) {
-
+        for (const key in this.$scope[data_key].titles) {
           let percentage = (this.$scope[data_key].values[key] / denominator) * 100;
           if (percentage < 1) { percentage = 1; }
 
           // case of simple data without sub-data
 
           if (!this.$scope[data_key].sub_titles) {
-
             if (this.$scope[data_key].values[key]) {
               result.push(this.$scope[data_key].stats.push({
                 title: this.$scope[data_key].titles[key],
@@ -206,9 +199,7 @@ define([
                 title: this.$scope[data_key].titles[key]
               }));
             }
-
           } else {
-
             // case of more sophisticated case with sub-data
 
             percentage = (this.$scope[data_key].group_total[key] / denominator) * 100;
@@ -217,13 +208,13 @@ define([
             if (this.$scope[data_key].group_total[key]) {
               const sub_stats = [];
 
-              for (let subid in this.$scope[data_key].sub_titles) {
+              for (const subid in this.$scope[data_key].sub_titles) {
                 const subtitle = this.$scope[data_key].sub_titles[subid];
                 if (this.$scope[data_key].values[key][subid]) {
                   let sub_percentage = (this.$scope[data_key].values[key][subid] / this.$scope[data_key].group_total[key]) * 100;
                   if (sub_percentage < 1) { sub_percentage = 1; }
                   sub_stats.push({
-                    title: subtitle + ' (' + this.$scope[data_key].values[key][subid] + ')',
+                    title:      `${subtitle} (${this.$scope[data_key].values[key][subid]})`,
                     percentage: sub_percentage,
                     background: this.$scope[data_key].group_keys[subid]
                   });

@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -9,14 +9,14 @@ define(function() {
     * -------
     * <input dp-change="submit" />
     */
-  const Admin_Main_Directive_DpChange = [ () =>
+  const Admin_Main_Directive_DpChange = [() =>
     ({
       restrict: 'A',
       link(scope, element, attrs) {
         return element.bind('change', () => scope.$eval(attrs.dpChange));
       }
     })
-  
+
   ];
 
   return Admin_Main_Directive_DpChange;

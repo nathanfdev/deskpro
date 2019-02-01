@@ -2,11 +2,11 @@ define([
   'Admin/Main/DataService/Base',
   'Admin/Main/Model/Base',
   'Admin/Main/Collection/OrderedDictionary'
-], function(
+], (
   Admin_Main_DataService_Base,
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
-)  {
+) => {
   class Admin_TicketAccounts_DataService_TicketAccounts extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
@@ -16,10 +16,10 @@ define([
       this.loadListPromise = null;
       this.recs = new Admin_Main_Collection_OrderedDictionary();
 
-      this.recs.orderFn = function(a, b) {
+      this.recs.orderFn = function (a, b) {
         const cmpa = a.address;
         const cmpb = b.address;
-        if (cmpa < cmpb) { return -1; } else { return 1; }
+        if (cmpa < cmpb) { return -1; }  return 1;
       };
     }
 
@@ -29,7 +29,6 @@ define([
       * @return {Promise}
     */
     loadList(reload) {
-
       if (this.loadListPromise) {
         return this.loadListPromise;
       }
@@ -40,7 +39,7 @@ define([
         return deferred.promise;
       }
 
-      const http_def = this.Api.sendGet('/email_accounts').success( (data, status, headers, config) => {
+      const http_def = this.Api.sendGet('/email_accounts').success((data, status, headers, config) => {
         this._setListData(data.email_accounts);
         return deferred.resolve(this.recs);
       }
@@ -59,7 +58,7 @@ define([
     _setListData(raw_recs) {
       return (() => {
         const result = [];
-        for (let rec of Array.from(raw_recs)) {
+        for (const rec of Array.from(raw_recs)) {
           const model = this.em.createEntity('ticket_account', 'id', rec);
           model.retain();
           result.push(this.recs.set(model.id, model));

@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Util/Util'
-], function(
+], (
   Util
-) {
+) => {
   class EmailBanEditFormMapper {
 
     /*
@@ -11,7 +11,6 @@ define([
     */
 
     getFormFromModel(model) {
-
       const form = {};
 
       form.banned_email = model.email_ban.banned_email;
@@ -34,7 +33,6 @@ define([
     */
 
     getPostDataFromForm(formModel) {
-
       const postData = {};
 
       postData.banned_email = formModel.banned_email;

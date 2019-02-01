@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
+define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
   class Admin_Settings_Ctrl_AdvancedSettings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Settings_Ctrl_AdvancedSettings';
@@ -12,10 +12,8 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
 
     initialLoad() {
       const data_promise = this.Api.sendDataGet({
-        'settings': '/all_settings_raw'
-      }).then( res => {
-        return this.$scope.settings = res.data.settings.all_settings;
-      });
+        settings: '/all_settings_raw'
+      }).then(res => this.$scope.settings = res.data.settings.all_settings);
 
       return this.$q.all([data_promise]);
     }
@@ -26,16 +24,12 @@ define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
         all_settings: {}
       };
 
-      for (let setting of Array.from(this.$scope.settings)) {
+      for (const setting of Array.from(this.$scope.settings)) {
         postData.all_settings[setting.name] = setting.value;
       }
 
       this.startSpinner('saving');
-      return promise = this.Api.sendPostJson('/all_settings_raw', postData).success( () => {
-        return this.stopSpinner('saving').then(() => {
-          return this.Growl.success(this.getRegisteredMessage('saved_settings'));
-        });
-      }).error( (info, code) => {
+      return promise = this.Api.sendPostJson('/all_settings_raw', postData).success(() => this.stopSpinner('saving').then(() => this.Growl.success(this.getRegisteredMessage('saved_settings')))).error((info, code) => {
         this.stopSpinner('saving', true);
         return this.applyErrorResponseToView(info);
       });

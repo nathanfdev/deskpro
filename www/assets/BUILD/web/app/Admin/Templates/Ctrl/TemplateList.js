@@ -1,4 +1,4 @@
-define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
+define(['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) => {
   class Admin_Templates_Ctrl_TemplateList extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Templates_Ctrl_TemplateList';
@@ -15,9 +15,7 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
     initialLoad() {
       const promise = this.Api.sendDataGet({
         info: '/templates-info'
-      }).then( res => {
-        return this.templates = res.data.info.list[this.bundle][this.tplDir].templates;
-      });
+      }).then(res => this.templates = res.data.info.list[this.bundle][this.tplDir].templates);
       return promise;
     }
 
@@ -27,13 +25,13 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
     openEditor(tpl) {
       const modalInstance = this.$modal.open({
         templateUrl: this.getTemplatePath('Templates/modal-template-editor.html'),
-        controller: 'Admin_Templates_Ctrl_TemplateEditor',
-        resolve: {
+        controller:  'Admin_Templates_Ctrl_TemplateEditor',
+        resolve:     {
           templateName() {
             return tpl.name;
           }
         }
-      }).result.then( info => {
+      }).result.then((info) => {
         if (info.mode === 'custom') {
           return tpl.is_custom = true;
         } else if (info.mode === 'revert') {

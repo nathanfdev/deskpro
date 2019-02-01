@@ -1,22 +1,22 @@
 define([
   'Admin/Main/Model/DepAgentPermMatrix',
   'DeskPRO/Util/Util'
-], function(
+], (
   DepAgentPermMatrix,
   Util
-) {
+) => {
   class TicketDepFormMapper {
     getFormFromModel(dep, trigger, layouts, depPerms, agents, brands, agentgroups, usergroups, email_accounts) {
       const form = {
-        title: '',
-        user_title: '',
-        parent_id: '0',
+        title:             '',
+        user_title:        '',
+        parent_id:         '0',
         enable_user_title: false,
-        default_layout: {},
-        custom_layout: {},
-        brands: [],
+        default_layout:    {},
+        custom_layout:     {},
+        brands:            [],
         use_custom_layout: false,
-        trigger_actions: {
+        trigger_actions:   {
           SetEmailAccount: {
             options: {
               email_account_id: '0'
@@ -39,20 +39,20 @@ define([
         }
 
         if (!Util.isBlank(dep.parent_id)) {
-          form.parent_id = dep.parent_id+'';
+          form.parent_id = `${dep.parent_id}`;
         }
       } else {
-        for (let brand of Array.from(brands)) {
+        for (const brand of Array.from(brands)) {
           form.brands.push(brand.id);
         }
       }
 
       if (email_accounts.length) {
-        form.trigger_actions.SetEmailAccount.options.email_account_id = email_accounts[0].id+'';
+        form.trigger_actions.SetEmailAccount.options.email_account_id = `${email_accounts[0].id}`;
       }
 
       if (trigger && __guard__(trigger.actions != null ? trigger.actions.actions : undefined, x => x.length)) {
-        for (let act of Array.from(trigger.actions.actions)) {
+        for (const act of Array.from(trigger.actions.actions)) {
           if (act.type === 'SetEmailAccount') {
             form.trigger_actions.SetEmailAccount.options = act.options;
           } else if (act.type === 'SendUserNewEmail') {
@@ -69,7 +69,7 @@ define([
 
       if (!form.trigger_actions.SendUserNewEmail.enabled) {
         form.trigger_actions.SendUserNewEmail.options = {
-          template: 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+          template:  'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
           from_name: 'helpdesk_name'
         };
       }
@@ -95,15 +95,15 @@ define([
       }
 
       const matrix = new DepAgentPermMatrix();
-      for (let group of Array.from(agentgroups)) {
+      for (const group of Array.from(agentgroups)) {
         matrix.addGroup(group, []);
 
         // initialize new deps with all perms
         if (!dep.id) {
-          depAgentGroupPerms.push({ usergroup_id: group.id, perm_name: 'full'});
+          depAgentGroupPerms.push({ usergroup_id: group.id, perm_name: 'full' });
         }
       }
-      for (let agent of Array.from(agents)) {
+      for (const agent of Array.from(agents)) {
         matrix.addAgent(agent, []);
       }
 
@@ -111,7 +111,7 @@ define([
       form.agent_perms = matrix;
 
       form.usergroup_perms = {};
-      for (let u of Array.from(usergroups)) {
+      for (const u of Array.from(usergroups)) {
         // if the dep exists, initialize default to false because real perms are applied below
         if (dep.id) {
           form.usergroup_perms[u.id] = { full: false };
@@ -123,7 +123,7 @@ define([
       }
 
       if (depPerms.usergroups) {
-        for (let p of Array.from(depPerms.usergroups)) {
+        for (const p of Array.from(depPerms.usergroups)) {
           if ((form.usergroup_perms[p.usergroup_id] == null)) {
             form.usergroup_perms[p.usergroup_id] = {};
           }
@@ -140,8 +140,8 @@ define([
       const depData = {};
 
       depData.title           = formModel.title;
-      depData.parent          = formModel.parent_id || "0";
-      depData.email_gateway   = formModel.email_gateway_id || "0";
+      depData.parent          = formModel.parent_id || '0';
+      depData.email_gateway   = formModel.email_gateway_id || '0';
       depData.move_tickets_to = 'self';
       depData.avatar          = formModel.avatar;
       depData.brands          = formModel.brands;
@@ -161,13 +161,13 @@ define([
       if (typeof formModel.agent_perms.getPermsData === 'function') {
         permData = formModel.agent_perms.getPermsData();
       }
-      for (let uid of Object.keys(formModel.usergroup_perms || {})) {
+      for (const uid of Object.keys(formModel.usergroup_perms || {})) {
         const usergroup = formModel.usergroup_perms[uid];
         if (usergroup.full) {
           permData.push({
             usergroup_id: uid,
-            name: 'full',
-            value: 1
+            name:         'full',
+            value:        1
           });
         }
       }
@@ -176,7 +176,7 @@ define([
       const email_account_id = parseInt(__guard__(formModel.trigger_actions.SetEmailAccount != null ? formModel.trigger_actions.SetEmailAccount.options : undefined, x => x.email_account_id) || 0);
       if (email_account_id) {
         trigger_actions.push({
-          type: 'SetEmailAccount',
+          type:    'SetEmailAccount',
           options: {
             email_account_id
           }
@@ -186,18 +186,18 @@ define([
         const { options } = formModel.trigger_actions.SendUserNewEmail;
 
         trigger_actions.push({
-          type: 'SendUserNewEmail',
+          type:    'SendUserNewEmail',
           options: {
-            template:  options.template || 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
-            from_name: options.from_name === 'custom' ? (options.from_name_custom || '') : (options.from_name || ''),
-            do_cc_users: true,
+            template:     options.template || 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+            from_name:    options.from_name === 'custom' ? (options.from_name_custom || '') : (options.from_name || ''),
+            do_cc_users:  true,
             from_account: 0
           }
         });
       }
 
       const postData = {
-        department: depData,
+        department:  depData,
         trigger_actions,
         permissions: permData
       };
@@ -221,9 +221,8 @@ define([
 
       if (formModel.use_custom_layout) {
         return dep.has_layout = true;
-      } else {
-        return dep.has_layout = false;
       }
+      return dep.has_layout = false;
     }
   }
   return TicketDepFormMapper;

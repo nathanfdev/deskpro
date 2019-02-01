@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class AppConfig {
     getBaseUrl() { return window.DP_BASE_URL; }
   }

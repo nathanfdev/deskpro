@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
    * Description
    * -----------
@@ -19,7 +19,7 @@ define(function() {
   const Reports_Directive_DpReportBuilderSelectBox = ['$state', $state =>
     ({
       restrict: 'AE',
-      replace: true,
+      replace:  true,
       template: `\
 <a ng-href="{{report_link}}">
   <span ng-repeat="text in texts" style="margin-left: 5px">
@@ -33,7 +33,6 @@ define(function() {
 </a>\
 `,
       link(scope, element, attrs) {
-
         /*
          * Below variables will look like following
          *
@@ -50,7 +49,7 @@ define(function() {
         scope.defaultLinkParams = '';
         scope.type              = attrs.type || 'builtIn';
 
-        scope.$watch(attrs.possibleValues, function(newVal) {
+        scope.$watch(attrs.possibleValues, (newVal) => {
           if (typeof newVal === 'undefined') { return; }
           const valueToDecorate = scope.$eval(attrs.valueToDecorate);
           if (!valueToDecorate) { return; }
@@ -66,7 +65,7 @@ define(function() {
          * This function builds directive by constructing it on 'the fly' using DOM operations
          * The reason for doing so - problems with inner directives that were compiled with $compile() functionality
          */
-        var buildDirectiveVariables = function(value) {
+        var buildDirectiveVariables = function (value) {
           let match;
           let lastPiece = value;
           const regex = /(.*?)(<(\d+:.+?)>)/g;
@@ -91,8 +90,10 @@ define(function() {
         /*
          * Returning select box options that was rendered according to 'input' parameter
          */
-        var collectSelectOptions = function(input) {
-          let extrasMatch, type, value;
+        var collectSelectOptions = function (input) {
+          let extrasMatch,
+            type,
+            value;
           const possibleValues = scope.$eval(attrs.possibleValues);
           let choices = {};
           const extras = {};
@@ -135,7 +136,7 @@ define(function() {
 
           // constructing selects...
 
-          for (let key of Object.keys(choices || {})) {
+          for (const key of Object.keys(choices || {})) {
             value = choices[key];
             options.push({ value: key, label: value[0] });
           }
@@ -150,26 +151,26 @@ define(function() {
           };
         };
 
-        var updateLink = function() {
+        var updateLink = function () {
           const linkParams = scope.selected.join(',');
           return scope.report_link = $state.href('builder.edit', {
-              id: scope.reportId,
-              params: linkParams,
-              type: scope.type
-            });
+            id:     scope.reportId,
+            params: linkParams,
+            type:   scope.type
+          });
         };
 
         /*
          * Going to corresponding route after changing selected options inside select box
          */
-        return scope.changeLinkParams = function() {
+        return scope.changeLinkParams = function () {
           updateLink();
           const linkParams = scope.selected.join(',');
           return $state.go('builder.edit', { id: scope.reportId, params: linkParams, type: scope.type });
         };
       }
     })
-  
+
   ];
 
   return Reports_Directive_DpReportBuilderSelectBox;

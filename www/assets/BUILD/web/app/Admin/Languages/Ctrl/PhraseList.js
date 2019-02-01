@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_Languages_Ctrl_PhraseList extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_Languages_Ctrl_PhraseList';
@@ -12,10 +12,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     initialLoad() {
       const promise = this.Api.sendDataGet({
         lang_info:     `/langs/${this.id}`,
-        phrase_groups: "/langs/phrases-groups"
-      }).then(result => {
+        phrase_groups: '/langs/phrases-groups'
+      }).then((result) => {
         if (!result.data.lang_info.language) {
-          this.$state.go('setup.languages.install', {id: `install-${this.id}`});
+          this.$state.go('setup.languages.install', { id: `install-${this.id}` });
           return;
         }
 

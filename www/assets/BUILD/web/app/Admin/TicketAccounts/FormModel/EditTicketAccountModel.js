@@ -1,6 +1,6 @@
 define([
   'DeskPRO/Util/Util'
-], function(Util) {
+], (Util) => {
   class Admin_TicketAccounts_FormModel_EditTicketAccountModel {
     constructor(account, deps, trigger, brands) {
       this.account = account;
@@ -10,9 +10,9 @@ define([
       this.form.is_enabled          = this.account.is_enabled;
       this.form.incoming_type       = 'pop3';
       this.form.in_gmail_account    = {
-        mode: "read",
-        read_mailbox_type: "inbox",
-        type: 'pop3'
+        mode:              'read',
+        read_mailbox_type: 'inbox',
+        type:              'pop3'
       };
       this.form.in_pop3_account     = {};
       this.form.in_imap_account     = {};
@@ -21,18 +21,18 @@ define([
 
       this.form.outgoing_type     = 'php_mail';
       this.form.out_gmail_account =
-        {type: 'password'};
+        { type: 'password' };
       this.form.out_smtp_account  = {};
       this.form.out_exchange_account  = {};
       this.form.out_office365_account  = {};
 
-      this.form.in_pop3_account.secure_mode = "ssl";
-      this.form.in_imap_account.secure_mode = "ssl";
-      this.form.in_imap_account.mode = "read";
-      this.form.in_imap_account.read_mailbox_type = "inbox";
-      this.form.in_exchange_account.mode = "read";
-      this.form.in_exchange_account.read_mailbox_type = "inbox";
-      this.form.out_smtp_account.secure_mode = "ssl";
+      this.form.in_pop3_account.secure_mode = 'ssl';
+      this.form.in_imap_account.secure_mode = 'ssl';
+      this.form.in_imap_account.mode = 'read';
+      this.form.in_imap_account.read_mailbox_type = 'inbox';
+      this.form.in_exchange_account.mode = 'read';
+      this.form.in_exchange_account.read_mailbox_type = 'inbox';
+      this.form.out_smtp_account.secure_mode = 'ssl';
       this.form.in_pop3_account.port = 110;
       this.form.out_smtp_account.port = 25;
 
@@ -77,11 +77,11 @@ define([
       };
 
       if (deps && deps.length) {
-        this.form.trigger_actions.SetDepartment.options.department_id = deps[0].id+'';
+        this.form.trigger_actions.SetDepartment.options.department_id = `${deps[0].id}`;
       }
 
       if (trigger && __guard__(trigger.actions != null ? trigger.actions.actions : undefined, x => x.length)) {
-        for (let act of Array.from(trigger.actions.actions)) {
+        for (const act of Array.from(trigger.actions.actions)) {
           if (act.type === 'SetDepartment') {
             this.form.trigger_actions.SetDepartment.options = act.options;
           } else if (act.type === 'SendUserNewEmail') {
@@ -98,7 +98,7 @@ define([
 
       if (!this.form.trigger_actions.SendUserNewEmail.enabled) {
         this.form.trigger_actions.SendUserNewEmail.options = {
-          template: 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+          template:  'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
           from_name: 'helpdesk_name'
         };
       }
@@ -219,9 +219,7 @@ define([
     }
 
 
-
     getFormData() {
-
       const form = Util.clone(this.form, true);
 
       if (!form.with_email_aliases) {
@@ -307,7 +305,7 @@ define([
       const department_id = parseInt(__guard__(this.form.trigger_actions.SetDepartment != null ? this.form.trigger_actions.SetDepartment.options : undefined, x => x.department_id) || 0);
       if (department_id) {
         trigger_actions.push({
-          type: 'SetDepartment',
+          type:    'SetDepartment',
           options: {
             department_id
           }
@@ -317,11 +315,11 @@ define([
         const { options } = this.form.trigger_actions.SendUserNewEmail;
 
         trigger_actions.push({
-          type: 'SendUserNewEmail',
+          type:    'SendUserNewEmail',
           options: {
-            template:  options.template || 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
-            from_name: options.from_name === 'custom' ? (options.from_name_custom || '') : (options.from_name || ''),
-            do_cc_users: true,
+            template:     options.template || 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+            from_name:    options.from_name === 'custom' ? (options.from_name_custom || '') : (options.from_name || ''),
+            do_cc_users:  true,
             from_account: 0
           }
         });

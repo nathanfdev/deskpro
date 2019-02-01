@@ -2,11 +2,11 @@ define([
   'Admin/Main/DataService/Base',
   'Admin/Main/Model/Base',
   'Admin/Main/Collection/OrderedDictionary'
-], function(
+], (
   Admin_Main_DataService_Base,
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
-)  {
+) => {
   class Admin_FeedbackCategories_DataService_FeedbackCategories extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
@@ -26,7 +26,6 @@ define([
     */
 
     loadList(model, reload) {
-
       if (this.loadListPromise) {
         return this.loadListPromise;
       }
@@ -34,13 +33,11 @@ define([
       const deferred = this.$q.defer();
 
       if (!reload && this.recs.count()) {
-
         deferred.resolve(this.recs);
         return deferred.promise;
       }
 
-      this.Api.sendGet('/feedback_categories').success( (data, status, headers, config) => {
-
+      this.Api.sendGet('/feedback_categories').success((data, status, headers, config) => {
         this._setListData(data.feedback_categories);
         return deferred.resolve(this.recs);
       }
@@ -59,7 +56,6 @@ define([
     */
 
     remove(id) {
-
       const model = this.em.getById('feedback_category', id);
 
       if (model != null) {
@@ -75,14 +71,13 @@ define([
      * with new model provided. Or adds it to the list if it doesnt exist.
      */
     updateModel(model) {
-
       // case of 'no parent'
 
       if (!model.options) {
-        model.options = {parent_id: 0};
+        model.options = { parent_id: 0 };
       }
 
-      if (!model.options.parent_id || (model.options.parent_id === "0")) {
+      if (!model.options.parent_id || (model.options.parent_id === '0')) {
         model.options.parent_id = 0;
       }
 
@@ -101,7 +96,6 @@ define([
      * @return array
      */
     getListOfMovables(model) {
-
       const move_list = [];
       const { parent_id } = model;
 
@@ -121,14 +115,12 @@ define([
      */
 
     getListOfParents(model) {
-
       const parent_list = [{
-        id: '',
+        id:    '',
         title: 'No Parent'
       }];
 
-      this.recs.forEach( (key, val) => {
-
+      this.recs.forEach((key, val) => {
         if ((val.id !== model.id) && !val.parent_id) {
           return parent_list.push(val);
         }
@@ -144,9 +136,7 @@ define([
      */
 
     hasChildren(model) {
-
-      for (let rec of Array.from(this.recs.values())) {
-
+      for (const rec of Array.from(this.recs.values())) {
         if (~~rec.parent_id === model.id) {
           return true;
         }
@@ -161,11 +151,9 @@ define([
         * @return {Promise}
     */
     _setListData(raw_recs) {
-
       return (() => {
         const result = [];
-        for (let rec of Array.from(raw_recs)) {
-
+        for (const rec of Array.from(raw_recs)) {
           const model = this.em.createEntity('feedback_category', 'id', rec);
           model.retain();
           result.push(this.recs.set(model.id, model));
@@ -180,8 +168,7 @@ define([
     */
 
     _updateOrderOfData() {
-
-      this.recs.reorder(function(a, b) {
+      this.recs.reorder((a, b) => {
         let left;
         const order1 = a.display_order || 0;
         const order2 = b.display_order || 0;
@@ -190,7 +177,7 @@ define([
           return 0;
         }
 
-        return ((left = order1 < order2)) != null ? left : -{1: 1};
+        return ((left = order1 < order2)) != null ? left : -{ 1: 1 };
       });
 
       return this.recs.notifyListeners('changed');

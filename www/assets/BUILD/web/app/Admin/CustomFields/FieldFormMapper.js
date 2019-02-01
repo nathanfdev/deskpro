@@ -1,4 +1,4 @@
-define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
+define(['moment', 'DeskPRO/Util/Util'], (moment, Util) => {
   class FieldFormMapper {
     /*
      * Get a form model for an existing field
@@ -7,18 +7,17 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
      * @return {Object}
      */
     getFormFromModel(fieldModel) {
-
       let formTypeOpts;
       fieldModel = fieldModel || {};
       fieldModel.options = fieldModel.options || {};
 
       // Default structure
       const form = {
-        title: '',
-        alias: '',
+        title:       '',
+        alias:       '',
         description: '',
-        is_enabled: true,
-        text: {
+        is_enabled:  true,
+        text:        {
           user_validation:          '0',
           min_length:               '1',
           max_length:               '',
@@ -33,45 +32,45 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           clickable_links:          false
         },
         toggle: {
-          label_text: '',
-          unchecked_text: '',
-          user_validation:           '0',
-          agent_validation:          '0',
-          agent_validation_resolve:  false
+          label_text:               '',
+          unchecked_text:           '',
+          user_validation:          '0',
+          agent_validation:         '0',
+          agent_validation_resolve: false
         },
         choice: {
-          field_type:              'select',
+          field_type:               'select',
           options:                  [],
           user_validation:          '0',
           agent_validation:         '0',
           agent_validation_resolve: false
         },
         date: {
-          default_mode:              (fieldModel != null ? fieldModel.default_value : undefined) ? 'date' : '0',
-          default_value:             (fieldModel != null ? fieldModel.default_value : undefined) ? moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() : new Date(),
-          valid_weekdays:            [true, true, true, true, true, true, true],
-          calendar:                  'gregorian',
-          valid_dates_mode:          '0',
-          valid_date_date1:          '',
-          valid_date_date2:          '',
-          valid_date_range1:         '',
-          valid_date_range2:         '',
-          user_validation:           '0',
-          agent_validation:          '0',
-          agent_validation_resolve:  false
+          default_mode:             (fieldModel != null ? fieldModel.default_value : undefined) ? 'date' : '0',
+          default_value:            (fieldModel != null ? fieldModel.default_value : undefined) ? moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() : new Date(),
+          valid_weekdays:           [true, true, true, true, true, true, true],
+          calendar:                 'gregorian',
+          valid_dates_mode:         '0',
+          valid_date_date1:         '',
+          valid_date_date2:         '',
+          valid_date_range1:        '',
+          valid_date_range2:        '',
+          user_validation:          '0',
+          agent_validation:         '0',
+          agent_validation_resolve: false
         },
         datetime: {
-          default_mode:              (fieldModel != null ? fieldModel.default_value : undefined) ? 'date' : '0',
-          default_value:             (fieldModel != null ? fieldModel.default_value : undefined) ? moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() : new Date(),
-          valid_weekdays:            [true, true, true, true, true, true, true],
-          valid_dates_mode:          '0',
-          valid_date_date1:          '',
-          valid_date_date2:          '',
-          valid_date_range1:         '',
-          valid_date_range2:         '',
-          user_validation:           '0',
-          agent_validation:          '0',
-          agent_validation_resolve:  false
+          default_mode:             (fieldModel != null ? fieldModel.default_value : undefined) ? 'date' : '0',
+          default_value:            (fieldModel != null ? fieldModel.default_value : undefined) ? moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() : new Date(),
+          valid_weekdays:           [true, true, true, true, true, true, true],
+          valid_dates_mode:         '0',
+          valid_date_date1:         '',
+          valid_date_date2:         '',
+          valid_date_range1:        '',
+          valid_date_range2:        '',
+          user_validation:          '0',
+          agent_validation:         '0',
+          agent_validation_resolve: false
         },
         display: {
           html: ''
@@ -83,15 +82,15 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         },
         data: {
           usersource_id: '0',
-          field_name: ''
+          field_name:    ''
         },
         datajson: {
           usersource_id: '0',
-          field_name: ''
+          field_name:    ''
         },
         datalist: {
           usersource_id: '0',
-          field_name: ''
+          field_name:    ''
         },
         url: {
           allow_file:               false,
@@ -127,7 +126,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         form.description = fieldModel.description;
 
         if (fieldModel.type_name === 'textarea') {
-          formTypeOpts = form['text'];
+          formTypeOpts = form.text;
         } else {
           formTypeOpts = form[fieldModel.type_name];
         }
@@ -142,7 +141,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         }
 
         switch (fieldModel.type_name) {
-          case "text": case "textarea":
+          case 'text': case 'textarea':
             if (fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex) {
               if (fieldModel.options.min_length) {
                 formTypeOpts.user_validation = 'required';
@@ -183,19 +182,17 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
             break;
 
-          case "choice":
+          case 'choice':
             if (fieldModel.options.expanded) {
               if (fieldModel.options.multiple) {
                 formTypeOpts.field_type = 'checkbox';
               } else {
                 formTypeOpts.field_type = 'radio';
               }
+            } else if (fieldModel.options.multiple) {
+              formTypeOpts.field_type = 'multi_select';
             } else {
-              if (fieldModel.options.multiple) {
-                formTypeOpts.field_type = 'multi_select';
-              } else {
-                formTypeOpts.field_type = 'select';
-              }
+              formTypeOpts.field_type = 'select';
             }
 
             if (fieldModel.options.required || fieldModel.options.min_length) {
@@ -221,7 +218,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             formTypeOpts.default_value = fieldModel.default_value;
             break;
 
-          case "toggle":
+          case 'toggle':
             formTypeOpts.label_text = fieldModel.options.label_text || '';
             formTypeOpts.unchecked_text = fieldModel.options.unchecked_text || '';
 
@@ -240,10 +237,10 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
             break;
 
-          case "date": case "datetime":
+          case 'date': case 'datetime':
             if ((fieldModel.options != null ? fieldModel.options.date_valid_dow : undefined) != null) {
               formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false];
-              for (let day of Object.keys(fieldModel.options.date_valid_dow || {})) {
+              for (const day of Object.keys(fieldModel.options.date_valid_dow || {})) {
                 formTypeOpts.valid_weekdays[day] = true;
               }
             }
@@ -253,12 +250,12 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
 
             if (fieldModel.options.date_valid_type != null) {
-              if (fieldModel.options.date_valid_type === "date") {
+              if (fieldModel.options.date_valid_type === 'date') {
                 formTypeOpts.valid_dates_mode = 'date';
                 if (fieldModel.options.date_valid_date1 != null) { formTypeOpts.date_valid_date1 = moment(fieldModel.options.date_valid_date1, 'YYYY-MM-DD').toDate(); }
                 if (fieldModel.options.date_valid_date2 != null) { formTypeOpts.date_valid_date2 = moment(fieldModel.options.date_valid_date2, 'YYYY-MM-DD').toDate(); }
               }
-              if (fieldModel.options.date_valid_type === "range") {
+              if (fieldModel.options.date_valid_type === 'range') {
                 if (fieldModel.options.date_valid_range1 != null) { formTypeOpts.date_valid_range1 = fieldModel.options.date_valid_range1; }
                 if (fieldModel.options.date_valid_range2 != null) { formTypeOpts.date_valid_range2 = fieldModel.options.date_valid_range2; }
               }
@@ -275,11 +272,11 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
             break;
 
-          case "display":
+          case 'display':
             formTypeOpts.html = fieldModel.options.html;
             break;
 
-          case "hidden":
+          case 'hidden':
             formTypeOpts.cookie_name   = fieldModel.options.cookie_name   || '';
             formTypeOpts.param_name    = fieldModel.options.param_name    || '';
             formTypeOpts.default_value = fieldModel.options.default_value || '';
@@ -289,12 +286,12 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
             break;
 
-          case "data": case "datajson": case "datalist":
-            formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + "";
+          case 'data': case 'datajson': case 'datalist':
+            formTypeOpts.usersource_id = `${parseInt(fieldModel.options.usersource_id || '0') || 0}`;
             formTypeOpts.field_name    = fieldModel.options.field_name || '';
             break;
 
-          case "url":
+          case 'url':
             formTypeOpts.allow_file = !!fieldModel.options.allow_file;
 
             if (fieldModel.options.required) {
@@ -308,7 +305,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
             break;
 
-          case "currency":
+          case 'currency':
             formTypeOpts.currency_id = fieldModel.options.currency_id;
 
             if (fieldModel.options.required) {
@@ -322,7 +319,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
             break;
 
-          case "file":
+          case 'file':
             formTypeOpts.multiple                    = !!fieldModel.options.multiple;
             formTypeOpts.user_validation             = !!fieldModel.options.required;
             formTypeOpts.user_extensions_limit_mode  = fieldModel.options.user_extensions_limit_mode;
@@ -365,21 +362,21 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
     getPostDataFromForm(fieldType, formModel) {
       let formTypeOpts;
       const postData = {
-        title: formModel.title,
-        alias: formModel.alias,
-        description: formModel.description,
+        title:          formModel.title,
+        alias:          formModel.alias,
+        description:    formModel.description,
         is_agent_field: formModel.is_agent_field,
-        is_enabled: formModel.is_enabled
+        is_enabled:     formModel.is_enabled
       };
 
       if (fieldType === 'textarea') {
-        formTypeOpts = formModel['text'];
+        formTypeOpts = formModel.text;
       } else {
         formTypeOpts = formModel[fieldType];
       }
 
       switch (fieldType) {
-        case "text": case "textarea":
+        case 'text': case 'textarea':
           if (fieldType === 'text') {
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
           } else {
@@ -410,7 +407,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           }
           break;
 
-        case "choice":
+        case 'choice':
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
           postData.field_type = formTypeOpts.field_type;
           postData.choices_structure = formTypeOpts.options;
@@ -433,7 +430,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           }
           break;
 
-        case "toggle":
+        case 'toggle':
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle';
           postData.default_value = formTypeOpts.default_value;
           postData.label_text = formTypeOpts.label_text;
@@ -447,9 +444,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           }
           break;
 
-        case "date": case "datetime":
+        case 'date': case 'datetime':
           var format = 'YYYY-MM-DD';
-          if ('date' === fieldType) {
+          if (fieldType === 'date') {
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date';
           } else {
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime';
@@ -498,25 +495,25 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           }
           break;
 
-        case "display":
+        case 'display':
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Display';
           postData.html = formTypeOpts.html;
           break;
 
-        case "hidden":
+        case 'hidden':
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden';
           postData.cookie_name = formTypeOpts.cookie_name;
           postData.param_name = formTypeOpts.param_name;
           postData.default_value = formTypeOpts.default_value;
           break;
 
-        case "data":
+        case 'data':
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Data';
           postData.usersource_id = parseInt(formTypeOpts.usersource_id) || 0;
           postData.field_name    = formTypeOpts.field_name;
           break;
 
-        case "url":
+        case 'url':
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Url';
           postData.allow_file    = formTypeOpts.allow_file;
 
@@ -528,7 +525,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           }
           break;
 
-        case "currency":
+        case 'currency':
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Currency';
           postData.currency_id = formTypeOpts.currency_id;
 
@@ -540,7 +537,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           }
           break;
 
-        case "file":
+        case 'file':
           postData.handler_class               = 'Application\\DeskPRO\\CustomFields\\Handler\\File';
           postData.multiple                    = formTypeOpts.multiple;
           postData.user_extensions_limit_mode  = formTypeOpts.user_extensions_limit_mode;

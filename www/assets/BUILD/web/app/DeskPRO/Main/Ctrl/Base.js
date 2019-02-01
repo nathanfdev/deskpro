@@ -1,4 +1,4 @@
-define(['angular', 'underscore'], function(angular, _) {
+define(['angular', 'underscore'], (angular, _) => {
   /**
   * The base controller class is mainly to make it easier to define controllers with angular.
     *
@@ -82,7 +82,7 @@ define(['angular', 'underscore'], function(angular, _) {
       let arg;
       this.ctrl_is_loading = true;
       if (this.constructor.DEPS.length !== args.length) {
-        console.error("Dependencies are not the same as passed args: %o != %o", this.constructor.DEPS, args);
+        console.error('Dependencies are not the same as passed args: %o != %o', this.constructor.DEPS, args);
         return;
       }
 
@@ -98,8 +98,8 @@ define(['angular', 'underscore'], function(angular, _) {
       for (arg of Array.from(args)) {
         if (arg && (arg._is_ds_class != null)) {
           arg.registerCtrl(this);
-          this.$scope.$on('$destroy', function() {}
-            //arg.unregisterCtrl(me)
+          this.$scope.$on('$destroy', () => {}
+            // arg.unregisterCtrl(me)
           );
         }
       }
@@ -111,12 +111,12 @@ define(['angular', 'underscore'], function(angular, _) {
       this._managed_listeners = [];
       this.$scope.Growl = this.Growl;
       this.$scope._autoload_links = [];
-      this.$scope.$on('$destroy', ev => {
+      this.$scope.$on('$destroy', (ev) => {
         return;
         if (ev.targetScope.$id !== this.$scope.$id) { return; }
 
         if (!this._managed_listeners.length) { return; }
-        for (let info of Array.from(this._managed_listeners)) {
+        for (const info of Array.from(this._managed_listeners)) {
           info.object.removeListener(info.event_name, info.fn);
         }
 
@@ -184,9 +184,7 @@ define(['angular', 'underscore'], function(angular, _) {
           const resetHash = this.$state.href(fromState, fromParams);
           this._state_cont_ignore = true;
           window.location.hash = resetHash;
-          setTimeout(() => {
-              return this._state_cont_ignore = false;
-            }
+          setTimeout(() => this._state_cont_ignore = false
             , 140);
 
           this._state_cont_state = toState.name;
@@ -210,15 +208,13 @@ define(['angular', 'underscore'], function(angular, _) {
       if (ret && (ret.then != null)) {
         this.$scope.state_loading = true;
         this.dpInterfaceTimer.startControllerLoad(this);
-        ret.then( () => {
+        ret.then(() => {
           this.dpInterfaceTimer.endControllerLoad(this);
           this.$scope.state_loading = false;
           this._has_loaded = true;
 
           if ((this.$state.current.name.split('.').length === 2) && this.$scope._autoload_links) {
-            return this.$timeout(() => {
-              return this.runNextAutoload();
-            });
+            return this.$timeout(() => this.runNextAutoload());
           }
         });
       } else {
@@ -234,7 +230,7 @@ define(['angular', 'underscore'], function(angular, _) {
         return;
       }
 
-      this.$scope._autoload_links.sort( function(a, b) {
+      this.$scope._autoload_links.sort((a, b) => {
         const o1 = a.pri || 0;
         const o2 = b.pri || 0;
 
@@ -243,14 +239,13 @@ define(['angular', 'underscore'], function(angular, _) {
         }
         if (o1 < o2) {
           return -1;
-        } else {
-          return 1;
         }
+        return 1;
       });
 
       return (() => {
         const result = [];
-        for (let al of Array.from(this.$scope._autoload_links)) {
+        for (const al of Array.from(this.$scope._autoload_links)) {
           var link;
           if (!al.element.closest('body')[0]) {
             continue;
@@ -306,8 +301,8 @@ define(['angular', 'underscore'], function(angular, _) {
       const deferred = this.$q.defer();
 
       var desc = {
-        doneTime: false,
-        doneSpin: false,
+        doneTime:       false,
+        doneSpin:       false,
         setTimeoutDone: () => {
           desc.doneTime = true;
           if (desc._timeout) {
@@ -317,15 +312,13 @@ define(['angular', 'underscore'], function(angular, _) {
           if (desc.doneSpin) {
             return deferred.resolve();
           }
-        }
-        ,
+        },
         setSpinDone() {
           desc.doneSpin = true;
           if (desc.doneTime) {
             return deferred.resolve();
           }
-        }
-        ,
+        },
         _promise: deferred.promise,
         _timeout: this.$timeout(() => desc.setTimeoutDone()
           , minTime)
@@ -419,7 +412,6 @@ define(['angular', 'underscore'], function(angular, _) {
      * a validation error that we want to show in the form.
      */
     applyErrorResponseToView(result) {
-
       // passed the full result object rather than just data
       let code;
       if ((result != null ? result.data : undefined) && (result != null ? result.config : undefined)) {
@@ -440,19 +432,18 @@ define(['angular', 'underscore'], function(angular, _) {
         }
       }
 
-      console.log("applyErrorResponseToView error_codes: %o", error_codes);
+      console.log('applyErrorResponseToView error_codes: %o', error_codes);
       const handled_codes = [];
 
-      for (let form_key of Object.keys(this.$scope || {})) {
+      for (const form_key of Object.keys(this.$scope || {})) {
         const form = this.$scope[form_key];
         if (form_key.indexOf('form_') !== 0) { continue; }
 
-        for (let field_title of Object.keys(form || {})) {
-
+        for (const field_title of Object.keys(form || {})) {
           const field = form[field_title];
           if ((field.dpServerValidationKeys == null)) { continue; }
           for (code of Array.from(error_codes)) {
-            for (let check_code of Array.from(field.dpServerValidationKeys)) {
+            for (const check_code of Array.from(field.dpServerValidationKeys)) {
               if (check_code.indexOf(code) === 0) {
                 var code_safe;
                 const code_segs = code.split('.');
@@ -480,7 +471,7 @@ define(['angular', 'underscore'], function(angular, _) {
       }
 
       if (error_codes.length !== handled_codes.length) {
-        return console.error("One or more unhandled errors: %o", error_codes);
+        return console.error('One or more unhandled errors: %o', error_codes);
       }
     }
 
@@ -512,12 +503,12 @@ define(['angular', 'underscore'], function(angular, _) {
           return this.$scope.$apply(fn);
         } catch (e) {
           return window.setTimeout(() => {
-              try {
-                return this.ngApply();
-              } catch (e) {
-                return;
-              }
+            try {
+              return this.ngApply();
+            } catch (e) {
+              return;
             }
+          }
             , 100);
         }
       }
@@ -532,10 +523,8 @@ define(['angular', 'underscore'], function(angular, _) {
     _configureAutoReleaseObject(obj) {
       if ((this._autoReleaseObjects == null)) {
         this._autoReleaseObjects = [];
-        this.$scope.$on('$destroy', () => {
-          return Array.from(this._autoReleaseObjects).map((i) =>
-            i.release());
-        });
+        this.$scope.$on('$destroy', () => Array.from(this._autoReleaseObjects).map(i =>
+            i.release()));
       }
 
       return this._autoReleaseObjects.push(obj);
@@ -574,10 +563,10 @@ define(['angular', 'underscore'], function(angular, _) {
       const parentCtrl = this;
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Index/modal-confirm-leavetab.html'),
-        controller: ['$scope', '$modalInstance', '$state', function($scope, $modalInstance, $state) {
+        controller:  ['$scope', '$modalInstance', '$state', function ($scope, $modalInstance, $state) {
           $scope.dismiss = () => $modalInstance.dismiss();
 
-          return $scope.continue = function() {
+          return $scope.continue = function () {
             parentCtrl._state_cont_go = true;
             $modalInstance.dismiss();
             return $state.go(parentCtrl._state_cont_state, parentCtrl._state_cont_state_params);
@@ -597,7 +586,6 @@ define(['angular', 'underscore'], function(angular, _) {
      * @return {Object}
      */
     showAlert(message, title) {
-
       if (title == null) { title = 'Alert'; }
       if (message.match(/^@[a-zA-Z0-9\._]+$/)) {
         message = this.getRegisteredMessage(message.substr(1));
@@ -609,7 +597,7 @@ define(['angular', 'underscore'], function(angular, _) {
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Index/modal-alert.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.title   = title;
           $scope.message = message;
 
@@ -629,7 +617,6 @@ define(['angular', 'underscore'], function(angular, _) {
     * @return {Object}
     */
     showConfirm(message, title) {
-
       if (title == null) { title = 'Confirm'; }
       if (message.match(/^@[a-zA-Z0-9\._]+$/)) {
         message = this.getRegisteredMessage(message.substr(1));
@@ -641,7 +628,7 @@ define(['angular', 'underscore'], function(angular, _) {
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Index/modal-confirm.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.title   = title;
           $scope.message = message;
 
@@ -656,9 +643,7 @@ define(['angular', 'underscore'], function(angular, _) {
     }
 
     getWaitEntityPromiseView(id) {
-      return () => {
-        return this.getWaitEntityPromise(id);
-      };
+      return () => this.getWaitEntityPromise(id);
     }
 
     getWaitEntityPromise(id) {
@@ -711,14 +696,12 @@ define(['angular', 'underscore'], function(angular, _) {
         case 'POST':    method = 'sendPostJson'; break;
         case 'PUT':     method = 'sendPutJson'; break;
         case 'DELETE':  method = 'sendDelete'; break;
-        default: throw new Exception("Invalid method type");
+        default: throw new Exception('Invalid method type');
       }
 
       const promise = this.Api[method](url, data);
-      promise.then( res => {
-          return this.stopSpinner(spinner_name);
-        }
-        , res => {
+      promise.then(res => this.stopSpinner(spinner_name)
+        , (res) => {
           this.stopSpinner(spinner_name, true);
           if ((res.data != null ? res.data.error_code : undefined) === 'validation_error') {
             return this.applyErrorResponseToView(res.data);

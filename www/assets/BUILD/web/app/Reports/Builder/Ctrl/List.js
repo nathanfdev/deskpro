@@ -1,10 +1,10 @@
 define([
   'Reports/Main/Ctrl/Base',
   'DeskPRO/Util/Util'
-], function(
+], (
   ReportsBaseCtrl,
   Util
-) {
+) => {
   class Reports_Builder_Ctrl_List extends ReportsBaseCtrl {
     static initClass() {
       this.CTRL_ID = 'Reports_Builder_Ctrl_List';
@@ -22,26 +22,16 @@ define([
      * Loads 2 lists - first with custom reports, second with built-in reports
      */
     initialLoad() {
-
       const d = this.$q.defer();
 
-      const custom_promise = this.customData.loadList().then( list => {
-        return this.custom_data_list = list;
-      });
-      const built_in_promise = this.builtInData.loadList().then( list => {
-        return this.built_in_data_list = list;
-      });
-      const group_params_promise = this.Api.sendGet('/reports/builder/group-params').then( data => {
-        return this.group_params = data.data;
-      });
+      const custom_promise = this.customData.loadList().then(list => this.custom_data_list = list);
+      const built_in_promise = this.builtInData.loadList().then(list => this.built_in_data_list = list);
+      const group_params_promise = this.Api.sendGet('/reports/builder/group-params').then(data => this.group_params = data.data);
 
-      this.$q.all([custom_promise, built_in_promise, group_params_promise]).then(() => {
+      this.$q.all([custom_promise, built_in_promise, group_params_promise]).then(() =>
         // small delay gives chance for select2 boxes to set up, reduces visual jitter
-        return this.$timeout(() => {
-          return d.resolve();
-        }
-        , 350);
-      });
+         this.$timeout(() => d.resolve()
+        , 350));
 
       return d.promise;
     }
@@ -57,7 +47,7 @@ define([
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Builder/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.confirm = () => $modalInstance.close();
 
           return $scope.dismiss = () => $modalInstance.dismiss();
@@ -65,9 +55,7 @@ define([
         ]
       });
 
-      return inst.result.then(() => {
-        return this.deleteReport(report);
-      });
+      return inst.result.then(() => this.deleteReport(report));
     }
 
 
@@ -79,10 +67,7 @@ define([
         if ((this.$state.current.name === 'builder.edit') && (parseInt(this.$state.params.id) === for_report.id)) {
           return this.$state.go('builder');
         }
-
-      }).error((info, code) => {
-        return this.applyErrorResponseToView(info);
-      });
+      }).error((info, code) => this.applyErrorResponseToView(info));
     }
   }
   Reports_Builder_Ctrl_List.initClass();

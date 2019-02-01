@@ -1,7 +1,6 @@
-define(function() {
+define(() => {
   class TzData {
     static initClass() {
-  
       this.tzData = [
         { id: 'Africa/Abidjan', parent_title: 'Africa', title: 'Abidjan' },
         { id: 'Africa/Accra', parent_title: 'Africa', title: 'Accra' },
@@ -435,7 +434,7 @@ define(function() {
       const ret = [];
       return (() => {
         const result = [];
-        for (let tz of Array.from(TzData.tzData)) {
+        for (const tz of Array.from(TzData.tzData)) {
           var title;
           if (tz.title === 'UTC') {
             title = 'UTC';
@@ -462,8 +461,9 @@ define(function() {
       const ret = [];
       const group_map = {};
 
-      for (let tz of Array.from(TzData.tzData)) {
-        var parent_obj, parent_title;
+      for (const tz of Array.from(TzData.tzData)) {
+        var parent_obj,
+          parent_title;
         if (tz.title === 'UTC') {
           parent_title = 'Other';
         } else {
@@ -472,7 +472,7 @@ define(function() {
 
         if (!group_map[parent_title]) {
           parent_obj = {
-            title: parent_title,
+            title:   parent_title,
             options: []
           };
           ret.push(parent_obj);

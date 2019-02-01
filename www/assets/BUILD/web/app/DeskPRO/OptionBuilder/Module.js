@@ -8,24 +8,24 @@ define([
   Arrays
 ) =>
   angular.module('deskpro.option_builder', [])
-    .directive('dpOptionBuilder', [ () =>
+    .directive('dpOptionBuilder', [() =>
       ({
-        restrict: 'E',
-        templateUrl: DP_BASE_ADMIN_URL+'/load-view/OptionBuilder/control.html',
-        replace: true,
-        transclude: true,
-        controller: DeskPRO_OptionBuilder_Controller.FACTORY,
+        restrict:     'E',
+        templateUrl:  `${DP_BASE_ADMIN_URL}/load-view/OptionBuilder/control.html`,
+        replace:      true,
+        transclude:   true,
+        controller:   DeskPRO_OptionBuilder_Controller.FACTORY,
         controllerAs: 'OptionBuilder',
-        scope: {
+        scope:        {
           getTypesDef: '&typesDef',
           getOptions:  '&options',
           optionTypes: '=optionTypes',
-          saveTarget: '=saveTarget'
+          saveTarget:  '=saveTarget'
         }
       })
-    
+
     ])
-    .directive('dpOptionbuilderRow', [ '$timeout', $timeout =>
+    .directive('dpOptionbuilderRow', ['$timeout', $timeout =>
       ({
         restrict: 'E',
         template: `\
@@ -47,11 +47,11 @@ define([
   </table>
 </div>\
 `,
-        replace: true,
+        replace:    true,
         transclude: true,
         link(scope, element, attrs) {
           const tagWrap = element.find('.dp-ob-row-tag-wrap');
-          const updateTag = function() {
+          const updateTag = function () {
             let tag = tagWrap.find('.dp-ob-row-tag');
             if (((scope.rowOpts != null ? scope.rowOpts.rowIdx : undefined) > 1) && (scope.rowOpts != null ? scope.rowOpts.tagString : undefined)) {
               if (!tag[0]) {
@@ -61,10 +61,9 @@ define([
 
               tag.text(scope.rowOpts != null ? scope.rowOpts.tagString : undefined);
               return tagWrap.addClass('with-tag');
-            } else {
-              if (tag[0]) { tag.remove(); }
-              return tagWrap.addClass('without-tag');
             }
+            if (tag[0]) { tag.remove(); }
+            return tagWrap.addClass('without-tag');
           };
 
           scope.$watch('rowOpts.rowIdx', () => updateTag());
@@ -75,53 +74,51 @@ define([
           );
         }
       })
-    
-    ]).directive('dpOptionBuilderSet', [ '$compile', '$templateCache', ($compile, $templateCache) =>
+
+    ]).directive('dpOptionBuilderSet', ['$compile', '$templateCache', ($compile, $templateCache) =>
       ({
-      restrict: 'A',
-      link(scope, iElement, iAttrs) {
-
-        let rows = [];
-        let opts = scope.$eval(iAttrs.dpOptionBuilderSet);
-        scope.setCount = 0;
-        let lastEmpty = null;
-        const containRow = iElement.find('.dp-ob-addition-setrow');
-
-        const reset = function(withSet) {
-          opts = scope.$eval(iAttrs.dpOptionBuilderSet);
+        restrict: 'A',
+        link(scope, iElement, iAttrs) {
+          let rows = [];
+          let opts = scope.$eval(iAttrs.dpOptionBuilderSet);
           scope.setCount = 0;
-          lastEmpty = null;
-          containRow.empty();
-          rows = [];
+          let lastEmpty = null;
+          const containRow = iElement.find('.dp-ob-addition-setrow');
 
-          let any = false;
-          for (let setId of Object.keys(withSet || {})) {
-            const set = withSet[setId];
-            addRow(setId);
-            any = true;
-          }
+          const reset = function (withSet) {
+            opts = scope.$eval(iAttrs.dpOptionBuilderSet);
+            scope.setCount = 0;
+            lastEmpty = null;
+            containRow.empty();
+            rows = [];
 
-          if (!any) {
-            return addRow();
-          }
-        };
+            let any = false;
+            for (const setId of Object.keys(withSet || {})) {
+              const set = withSet[setId];
+              addRow(setId);
+              any = true;
+            }
 
-        scope.$watch(iAttrs.setsObject, newVal => reset(newVal));
+            if (!any) {
+              return addRow();
+            }
+          };
 
-        const recountRows = () =>
+          scope.$watch(iAttrs.setsObject, newVal => reset(newVal));
+
+          const recountRows = () =>
           (() => {
             const result = [];
             for (var i = 0; i < rows.length; i++) {
               var row = rows[i];
-              if (row.rowScope.setIndex !== (i+1)) {
-                result.push(row.rowScope.$apply(function() {
-                  row.rowScope.setIndex = i+1;
+              if (row.rowScope.setIndex !== (i + 1)) {
+                result.push(row.rowScope.$apply(() => {
+                  row.rowScope.setIndex = i + 1;
 
                   if (row.rowScope.setIndex === 1) {
                     return row.element.find('.remove-btn-wrap').hide();
-                  } else {
-                    return row.element.find('.remove-btn-wrap').show();
                   }
+                  return row.element.find('.remove-btn-wrap').show();
                 }));
               } else {
                 result.push(undefined);
@@ -131,93 +128,93 @@ define([
           })()
         ;
 
-        var addRow = function(useExistSetId) {
-          let setId;
-          const tpl = $templateCache.get(opts.template);
-          const rowScope = scope.$new();
+          var addRow = function (useExistSetId) {
+            let setId;
+            const tpl = $templateCache.get(opts.template);
+            const rowScope = scope.$new();
 
-          let setsObject = scope.$eval(iAttrs.setsObject);
-          if (!setsObject) {
-            setsObject = {};
-          }
-
-          if (useExistSetId) {
-            setId = useExistSetId;
-          } else {
-            setId = rowScope.$id;
-            setsObject[setId] = {};
-          }
-
-          rowScope.criteria_typedef = opts.typedef;
-          rowScope.criteria_set_row = setsObject[setId];
-          rowScope.option_types     = opts.option_types;
-
-          rowScope.$on('rowAdded', function() {
-            if ((element.hasClass('empty') || (scope.setCount <= 1)) && (lastEmpty === element)) {
-              addRow();
+            let setsObject = scope.$eval(iAttrs.setsObject);
+            if (!setsObject) {
+              setsObject = {};
             }
 
-            return element.removeClass('empty');
-          });
-          rowScope.$on('rowRemoved', function(ev, ctrl, e, s, rowsCount) {
-            if (rowsCount === 0) {
-              if (scope.setCount === 1) {
-                return element.addClass('empty');
+            if (useExistSetId) {
+              setId = useExistSetId;
+            } else {
+              setId = rowScope.$id;
+              setsObject[setId] = {};
+            }
+
+            rowScope.criteria_typedef = opts.typedef;
+            rowScope.criteria_set_row = setsObject[setId];
+            rowScope.option_types     = opts.option_types;
+
+            rowScope.$on('rowAdded', () => {
+              if ((element.hasClass('empty') || (scope.setCount <= 1)) && (lastEmpty === element)) {
+                addRow();
               }
+
+              return element.removeClass('empty');
+            });
+            rowScope.$on('rowRemoved', (ev, ctrl, e, s, rowsCount) => {
+              if (rowsCount === 0) {
+                if (scope.setCount === 1) {
+                  return element.addClass('empty');
+                }
+              }
+            });
+            rowScope.setIndex = rows.length + 1;
+
+            var element = $compile(tpl)(rowScope);
+
+            rows.push({
+              rowScope,
+              element
+            });
+
+            if (scope.setCount >= 1) {
+              element.addClass('empty');
             }
-          });
-          rowScope.setIndex = rows.length+1;
 
-          var element = $compile(tpl)(rowScope);
+            if (rowScope.setIndex === 1) {
+              element.find('.remove-btn-wrap').hide();
+            } else {
+              element.find('.remove-btn-wrap').show();
+            }
 
-          rows.push({
-            rowScope,
-            element
-          });
+            element.find('.removerow_btn').on('click', (ev) => {
+              ev.preventDefault();
+              rowScope.$destroy();
+              scope.setCount -= 1;
+              element.remove();
 
-          if (scope.setCount >= 1) {
-            element.addClass('empty');
-          }
-
-          if (rowScope.setIndex === 1) {
-            element.find('.remove-btn-wrap').hide();
-          } else {
-            element.find('.remove-btn-wrap').show();
-          }
-
-          element.find('.removerow_btn').on('click', function(ev) {
-            ev.preventDefault();
-            rowScope.$destroy();
-            scope.setCount -= 1;
-            element.remove();
-
-            Arrays.findAndRemove(rows, v => v.rowScope === rowScope);
+              Arrays.findAndRemove(rows, v => v.rowScope === rowScope);
 
             // unset options that were on the set so the model is updated
-            for (let k of Object.keys(rowScope.criteria_set_row || {})) {
-              const v = rowScope.criteria_set_row[k];
-              delete rowScope.criteria_set_row[k];
-            }
+              for (const k of Object.keys(rowScope.criteria_set_row || {})) {
+                const v = rowScope.criteria_set_row[k];
+                delete rowScope.criteria_set_row[k];
+              }
 
-            recountRows();
-            if (scope.setCount === 0) {
-              return addRow();
-            }
+              recountRows();
+              if (scope.setCount === 0) {
+                return addRow();
+              }
+            });
+
+            containRow.append(element);
+            scope.setCount += 1;
+            return lastEmpty = element;
+          };
+
+          iElement.find('.add_btn').on('click', (ev) => {
+            ev.preventDefault();
+            return addRow();
           });
 
-          containRow.append(element);
-          scope.setCount += 1;
-          return lastEmpty = element;
-        };
-
-        iElement.find('.add_btn').on('click', function(ev) {
-          ev.preventDefault();
-          return addRow();
-        });
-
-        return reset();
-      }
+          return reset();
+        }
       })
-    
+
     ])
 );

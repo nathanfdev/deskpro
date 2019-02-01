@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Arrays'], function(Arrays) {
+define(['DeskPRO/Util/Arrays'], (Arrays) => {
   class DashboardService {
     constructor(Api, Api2, $q) {
       this.getShareableLinks = this.getShareableLinks.bind(this);
@@ -14,7 +14,7 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
     getDbIndexById(dbs, id) {
       let index = -1;
       index = Arrays.findIndex(dbs,
-      function(v) {
+      (v) => {
         if ((v != null) && (v.id === id)) {
           return true;
         }
@@ -25,11 +25,11 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
     findReportIndex(report, reports) {
       let index = -1;
       index = Arrays.findIndex(reports,
-        function(v) {
+        (v) => {
           if ((v != null) && (v.id === report.id)) {
             return true;
           }
-      });
+        });
       return index;
     }
 
@@ -40,34 +40,28 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
     saveDashboard(dashboard) {
       const deferred = this.$q.defer();
       const data = {
-        title: dashboard.title,
-        reports: dashboard.reports,
+        title:       dashboard.title,
+        reports:     dashboard.reports,
         permissions: dashboard.permissions,
-        is_agent: dashboard.is_agent
+        is_agent:    dashboard.is_agent
       };
 
       if (dashboard.id) {
         this.Api2
           .sendPutJson(`/dashboards/${dashboard.id}`, data)
-          .then(response => {
-            return deferred.resolve(response);
-        }).catch(response => {
-            return deferred.reject(response.data);
-        });
+          .then(response => deferred.resolve(response)).catch(response => deferred.reject(response.data));
       } else {
         this.Api2
           .sendPostJson('/dashboards', data)
-          .then(response => {
-            if(response) {
+          .then((response) => {
+            if (response) {
               dashboard.id = response.data.data.id;
               dashboard.reports = response.data.data.reports;
               dashboard.permissions = response.data.data.permissions;
               this.storage.dbs.push(dashboard);
               return deferred.resolve(dashboard);
             }
-        }).catch(response => {
-            return deferred.reject(response.data);
-        });
+          }).catch(response => deferred.reject(response.data));
       }
 
       return deferred.promise;
@@ -77,8 +71,8 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
       const name = `report${report.id}`;
       return data[name] = {
         deleted: report.deleted,
-        title: report.title,
-        id: report.id
+        title:   report.title,
+        id:      report.id
       };
     }
 
@@ -88,8 +82,8 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
       const url = `/dashboards${dashboard.id}/clone`;
       this.Api2
         .sendPost(url)
-        .then(response => {
-          if(response) {
+        .then((response) => {
+          if (response) {
             const clonedOne = response.data.data;
             this.storage.dbs.push(clonedOne);
             return deferred.resolve(clonedOne);
@@ -102,16 +96,15 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
     getDashboards() {
       const deferred = this.$q.defer();
       if (this.storage.dbs.length === 0) {
-        this.getDashboardsData().then( 
-          resp => {
+        this.getDashboardsData().then(
+          (resp) => {
             const dbs = [];
             if ((resp != null) && (resp.data.data.length > 0)) {
-
-              for (let element of Array.from(resp.data.data)) { dbs.push(element); }
+              for (const element of Array.from(resp.data.data)) { dbs.push(element); }
             }
             this.storage.dbs = dbs;
             return deferred.resolve(this.storage.dbs);
-        });
+          });
       } else { deferred.resolve(this.storage.dbs); }
 
       return deferred.promise;
@@ -127,16 +120,15 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
         return deferred.promise;
       }
 
-      this.getDashboards().then(dbs => {
+      this.getDashboards().then((dbs) => {
         const db = dbs.find(x => x.id === id);
         if (!db) {
           return deferred.reject();
-        } else {
-          return this.getDashboard(db).then(function(real_db) {
-            this.lastDashboard = real_db;
-            return deferred.resolve(real_db);
-          });
         }
+        return this.getDashboard(db).then(function (real_db) {
+          this.lastDashboard = real_db;
+          return deferred.resolve(real_db);
+        });
       }
       , () => deferred.reject());
 
@@ -146,15 +138,15 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
     getDashboard(dashboard) {
       const deferred = this.$q.defer();
       const dashboardIndex = Arrays.findIndex(this.storage.dbs
-      , function(v, i) {
-        if (v.id === dashboard.id) { return true; } else { return false; }
+      , (v, i) => {
+        if (v.id === dashboard.id) { return true; }  return false;
       });
       this.Api2
         .sendGet(`/dashboards/${dashboard.id}?include=reports&inline_sideloads=true`)
-        .then(resp => {
+        .then((resp) => {
           this.storage.dbs[dashboardIndex] = resp.data.data;
           return deferred.resolve(resp.data.data);
-      });
+        });
       return deferred.promise;
     }
 
@@ -185,7 +177,7 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
         return deferred.promise;
       }
 
-      this.getReport({id}).then(r => {
+      this.getReport({ id }).then((r) => {
         this.lastReport = r;
         return deferred.resolve(this.lastReport);
       }
@@ -197,21 +189,20 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
     getReport(report) {
       const deferred = this.$q.defer();
       const reportIndex = Arrays.findIndex(this.storage.reports
-      , function(v, i) {
-        if (v.id === report.id) { return true; } else { return false; }
+      , (v, i) => {
+        if (v.id === report.id) { return true; }  return false;
       });
-      if(!report.loaded) {
+      if (!report.loaded) {
         return this.Api2
           .sendGet(`/reports/${report.id}`)
-          .then(resp => {
+          .then((resp) => {
             this.storage.reports[reportIndex] = resp.data.data;
             deferred.resolve(this.storage.reports[reportIndex]);
             return deferred.promise;
-        });
-      } else {
-        deferred.resolve(this.storage.reports[reportIndex]);
-        return deferred.promise;
+          });
       }
+      deferred.resolve(this.storage.reports[reportIndex]);
+      return deferred.promise;
     }
 
 
@@ -222,16 +213,16 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
     getReports() {
       const deferred = this.$q.defer();
       if (this.storage.reports.length === 0) {
-        return this.getReportsData().then( 
-          resp => {
+        return this.getReportsData().then(
+          (resp) => {
             const reports = [];
             if ((resp != null) && (resp.data.length > 0)) {
               reports.push = (Array.from(resp.data));
             }
             this.storage.reports = reports;
             return deferred.resolve(reports);
-        });
-      } else { return deferred.resolve(this.storage.reports); }
+          });
+      }  return deferred.resolve(this.storage.reports);
     }
 
     removeReport(report) {
@@ -239,8 +230,8 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
       const url = `/dashboard_reports/${report.id}`;
       this.Api2
       .sendDelete(url)
-      .then(response => {
-        if(response) {
+      .then((response) => {
+        if (response) {
           const db_id = this.getDbIndexById(this.storage.dbs, report.dashboard_id);
           Arrays.removeValue(this.storage.dbs[db_id].reports, report);
           return deferred.resolve(this.storage.dbs[db_id].reports);
@@ -252,17 +243,17 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
     createReport(report) {
       const deferred = this.$q.defer();
-      const url = "/dashboard_reports";
+      const url = '/dashboard_reports';
 
       const newReport = {
         dashboard: report.dashboard_id,
-        title: report.title
+        title:     report.title
       };
 
       this.Api2
       .sendPost(url, newReport)
-      .then(response => {
-        if(response) {
+      .then((response) => {
+        if (response) {
           this.storage.reports.push(response.data.data);
           return deferred.resolve(response.data.data);
         }
@@ -275,16 +266,16 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
       const deferred = this.$q.defer();
       const url = `/dashboard_reports/${report.id}`;
       const data = {
-        title: report.title,
+        title:     report.title,
         variables: report.variables
       };
 
       this.Api2
       .sendPutJson(url, data)
-      .then(function() {
+      .then(() => {
         deferred.resolve();
       }
-      , function() {
+      , () => {
         deferred.reject();
         return console.error('something goes wrong!');
       });
@@ -295,13 +286,13 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
     saveReportVars(report, saveForCurrentAgent) {
       const d = this.$q.defer();
 
-      this.Api2.sendPostJson( 
+      this.Api2.sendPostJson(
         `/dashboard_reports/${report.id}/variables`,
         {
-          variables: report.variables,
+          variables:           report.variables,
           saveForCurrentAgent: !!saveForCurrentAgent
         })
-        .then( function(resp) {
+        .then((resp) => {
           d.resolve(resp.data);
           return d.promise;
         });
@@ -311,17 +302,17 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
     cloneReport(report, dashboard_id) {
       const deferred = this.$q.defer();
-      const url = "/dashboard_reports/{report.id}/clone";
+      const url = '/dashboard_reports/{report.id}/clone';
       const newReport = {
-        title: report.title,
-        loaded: false,
+        title:   report.title,
+        loaded:  false,
         widgets: []
       };
 
       this.Api2
       .sendPost(url, newReport)
-      .then(response => {
-        if(response) {
+      .then((response) => {
+        if (response) {
           const clonedOne = response.data.data;
           clonedOne.dashboard_id = dashboard_id;
           clonedOne.cloned = true;
@@ -340,8 +331,8 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
         data = {
           schedule: {
             frequency: schedule.frequency,
-            send_to: (schedule.send_to || '').split(','),
-            when: {
+            send_to:   (schedule.send_to || '').split(','),
+            when:      {
               time: schedule.when.time
             }
           }
@@ -369,9 +360,9 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
     getShareableLinks(dashboardId) {
       const d = this.$q.defer();
-      this.Api2.sendGet(`/dashboards/${dashboardId}/shareable_links`).then( function(res) {
+      this.Api2.sendGet(`/dashboards/${dashboardId}/shareable_links`).then((res) => {
         const links = res.data.data;
-        for (let link of Array.from(links)) {
+        for (const link of Array.from(links)) {
           link.ip_whitelist = link.ip_whitelist.join(',');
         }
 
@@ -383,15 +374,15 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
     createShareLink(sharedLink) {
       const data = {
-        title: sharedLink.title,
-        dashboard: sharedLink.dashboard,
+        title:          sharedLink.title,
+        dashboard:      sharedLink.dashboard,
         default_report: sharedLink.default_report,
-        who_can_use: sharedLink.who_can_use,
-        ip_whitelist: sharedLink.ip_whitelist
+        who_can_use:    sharedLink.who_can_use,
+        ip_whitelist:   sharedLink.ip_whitelist
       };
 
       const d = this.$q.defer();
-      this.Api2.sendPostJson("/dashboard_shareable_links", data)
+      this.Api2.sendPostJson('/dashboard_shareable_links', data)
         .success(res => d.resolve(res.data))
         .catch(res => d.reject(res.data));
 
@@ -400,10 +391,10 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
     updateShareLink(sharedLink) {
       const data = {
-        title: sharedLink.title,
+        title:          sharedLink.title,
         default_report: sharedLink.default_report,
-        who_can_use: sharedLink.who_can_use,
-        ip_whitelist: sharedLink.ip_whitelist
+        who_can_use:    sharedLink.who_can_use,
+        ip_whitelist:   sharedLink.ip_whitelist
       };
 
       const d = this.$q.defer();
@@ -420,7 +411,7 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
     createShortUrlForShareLink(sharedLink) {
       const d = this.$q.defer();
-      this.Api2.sendPostJson(`/dashboard_shareable_links/${sharedLink.id}/create_short_url`).then(( res => d.resolve(res.data.data))
+      this.Api2.sendPostJson(`/dashboard_shareable_links/${sharedLink.id}/create_short_url`).then((res => d.resolve(res.data.data))
       );
 
       return d.promise;

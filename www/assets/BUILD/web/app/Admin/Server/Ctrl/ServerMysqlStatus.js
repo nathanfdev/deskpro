@@ -1,7 +1,6 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_ServerMysqlStatus_Ctrl_ServerMysqlStatus extends Admin_Ctrl_Base {
     static initClass() {
-  
       this.CTRL_ID   = 'Admin_ServerMysqlStatus_Ctrl_ServerMysqlStatus';
       this.CTRL_AS   = 'ServerMysqlStatus';
       this.DEPS      = [];
@@ -12,10 +11,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const data_promise = this.Api.sendGet('/server_mysql_status').then( res => {
-
-        return this.$scope.server_mysql_status = res.data.server_mysql_status;
-      });
+      const data_promise = this.Api.sendGet('/server_mysql_status').then(res => this.$scope.server_mysql_status = res.data.server_mysql_status);
 
       return this.$q.all([data_promise]);
     }

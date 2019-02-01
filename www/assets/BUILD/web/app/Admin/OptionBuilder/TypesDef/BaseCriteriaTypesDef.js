@@ -4,20 +4,20 @@ define([
   'Admin/OptionBuilder/TypesDef/BaseTypesDef',
   'underscore',
   'moment'
-], function(
+], (
   Util,
   Arrays,
   BaseTypesDef,
   _,
   moment
-) {
+) => {
   class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef {
     constructor($q, Api, dpTemplateManager) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.$q = $q;
@@ -47,30 +47,29 @@ define([
       const typeFunc = `get${typeName}`;
       if (this[typeFunc] != null) {
         return this[typeFunc](options);
-      } else {
-        console.error(`Bad type with no definition getter: ${typeFunc}`);
-        const me = this;
-        return {
-          getTemplate() {
-            return me.dpTemplateManager.get(me.inputTemplate);
-          },
-          getData() {
-            return {};
-          },
-          getDataFormatter() {
-            return {
-              getViewValue(value, data) {
-                if (value == null) { value = {}; }
-                return {};
-              },
-              getValue(model, data) {
-                if (model == null) { model = {}; }
-                return null;
-              }
-            };
-          }
-        };
       }
+      console.error(`Bad type with no definition getter: ${typeFunc}`);
+      const me = this;
+      return {
+        getTemplate() {
+          return me.dpTemplateManager.get(me.inputTemplate);
+        },
+        getData() {
+          return {};
+        },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              return {};
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              return null;
+            }
+          };
+        }
+      };
     }
 
     /*
@@ -92,11 +91,11 @@ define([
 
       if (field.type_name === 'choice') {
         options.operators = options.operators || ['is', 'not', 'isset', 'not_isset', 'touched', 'nottouched'];
-        options.options = field.choices.map( o => ({title: o.title, value: o.id, parent_id: o.parent_id}));
+        options.options = field.choices.map(o => ({ title: o.title, value: o.id, parent_id: o.parent_id }));
         return this.getStandardSelect(options, field);
       } else if (field.type_name === 'toggle') {
         options.operators = options.operators || ['isset', 'not_isset', 'touched', 'nottouched'];
-        options.options = [{title: 'On', value: "1"}, {title: "Off", value: "0"}];
+        options.options = [{ title: 'On', value: '1' }, { title: 'Off', value: '0' }];
         options.single = true;
         return this.getStandardSelect(options, field);
       } else if ((field.type_name === 'date') || (field.type_name === 'datetime')) {
@@ -105,10 +104,9 @@ define([
       } else if (field.type_name === 'currency') {
         options.operators = options.operators || ['is', 'not', 'lte', 'gte', 'between'];
         return this.getStandardInput(options, field);
-      } else {
-        if (!options.operators) { options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']; }
-        return this.getStandardInput(options, field);
       }
+      if (!options.operators) { options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']; }
+      return this.getStandardInput(options, field);
     }
 
     /*
@@ -123,7 +121,7 @@ define([
       const fname = base_name + f.id;
 
       if (!this[`get${fname}`] || (force != null)) {
-        this[`get${fname}`] = options => {
+        this[`get${fname}`] = (options) => {
           if (options == null) { options = {}; }
           if (base_options.operators) {
             options.operators = base_options.operators;
@@ -153,9 +151,7 @@ define([
       const extraOptions = options.extraOptions || null;
 
       if (!options_formatter) {
-        options_formatter = options => {
-          return this.standardOptionsFormatter(options, extraOptions);
-        };
+        options_formatter = options => this.standardOptionsFormatter(options, extraOptions);
       }
 
       const me = this;
@@ -178,27 +174,24 @@ define([
             return {
               fieldOptions: options,
               operators,
-              options: options_formatter ? options_formatter(options.options) : options.options,
-              multiselect: !options.single
+              options:      options_formatter ? options_formatter(options.options) : options.options,
+              multiselect:  !options.single
             };
           } else if (data_name) {
             const defer = me.$q.defer();
-            me.loadDataOptions().then(() => {
-              return defer.resolve({
-                operators,
-                fieldOptions: options,
-                options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
-                multiselect: !options.single
-              });
-            });
+            me.loadDataOptions().then(() => defer.resolve({
+              operators,
+              fieldOptions: options,
+              options:      options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
+              multiselect:  !options.single
+            }));
 
             return defer.promise;
-          } else {
-            return {
-              operators,
-              fieldOptions: options
-            };
           }
+          return {
+            operators,
+            fieldOptions: options
+          };
         },
 
         getDataFormatter() {
@@ -221,7 +214,7 @@ define([
 
               return {
                 value: val,
-                op: value.op || _.first(data.operators)
+                op:    value.op || _.first(data.operators)
               };
             },
             getValue(model, data) {
@@ -265,7 +258,7 @@ define([
               if (value == null) { value = {}; }
               return {
                 value: true,
-                op: 'is'
+                op:    'is'
               };
             },
             getValue(model, data) {
@@ -321,11 +314,10 @@ define([
 
               return {
                 value: val,
-                op: value.op || _.first(data.operators)
+                op:    value.op || _.first(data.operators)
               };
             },
             getValue(model, data) {
-
               if (model == null) { model = {}; }
               let val = model.value || '';
               if (options.tags) {
@@ -343,7 +335,7 @@ define([
 
               return value;
             }
-            };
+          };
         }
       };
     }
@@ -366,26 +358,25 @@ define([
 
         getDataFormatter() {
           return {
-          getViewValue(value, data) {
-            if (value == null) { value = {}; }
-            const val = (value.options != null ? value.options[prop_name] : undefined) || [1, 'days'];
-            return {
-              op: value.op || _.first(operators),
-              value: val
-            };
-          },
-          getValue(model, data) {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              const val = (value.options != null ? value.options[prop_name] : undefined) || [1, 'days'];
+              return {
+                op:    value.op || _.first(operators),
+                value: val
+              };
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              const val = model.value || [1, 'days'];
 
-            if (model == null) { model = {}; }
-            const val = model.value || [1, 'days'];
-
-            const value = {};
-            value.type = type;
-            value.op = model.op;
-            value.options = {};
-            value.options[prop_name] = val;
-            return value;
-          }
+              const value = {};
+              value.type = type;
+              value.op = model.op;
+              value.options = {};
+              value.options[prop_name] = val;
+              return value;
+            }
           };
         }
       };

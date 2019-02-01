@@ -1,6 +1,6 @@
 define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
   '$scope', '$q', '$modal', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo', 'DashboardService', 'Growl',
-  function($scope, $q, $modal, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService, Growl) {
+  function ($scope, $q, $modal, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService, Growl) {
     let doSaveDashboard;
     $scope.loaded = false;
     $scope.dashboard = null;
@@ -14,31 +14,31 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
 
     $scope.did_edit_reports = false;
 
-    //###################################################################################################################
+    // ###################################################################################################################
     // LOADING
-    //###################################################################################################################
+    // ###################################################################################################################
 
     if (modal_options.activeTab) {
       $scope.activeTab = modal_options.activeTab;
     }
 
     const load_promises = [];
-    load_promises.push(DashboardsInfo.getDashboardList(true).then( dbs => $scope.dashboards = dbs)
+    load_promises.push(DashboardsInfo.getDashboardList(true).then(dbs => $scope.dashboards = dbs)
     );
-    load_promises.push(DashboardsInfo.getAgents().then( agents => $scope.agents = agents)
+    load_promises.push(DashboardsInfo.getAgents().then(agents => $scope.agents = agents)
     );
-    load_promises.push(DashboardsInfo.getAgentTeams().then( teams => $scope.teams = teams)
+    load_promises.push(DashboardsInfo.getAgentTeams().then(teams => $scope.teams = teams)
     );
-    load_promises.push(DashboardsInfo.getDepartments().then( departments => $scope.departments = departments)
+    load_promises.push(DashboardsInfo.getDepartments().then(departments => $scope.departments = departments)
     );
 
     if (dashboard_id) {
-      load_promises.push(DashboardsInfo.getDashboardDetail(dashboard_id).then( function(db) {
+      load_promises.push(DashboardsInfo.getDashboardDetail(dashboard_id).then((db) => {
         $scope.dashboard = angular.copy(db);
-        $scope.dashboard.permissions = {agent: [], department: [], team: [], all: ''};
+        $scope.dashboard.permissions = { agent: [], department: [], team: [], all: '' };
         return (() => {
           const result = [];
-          for (let permission of Array.from(db.permissions)) {
+          for (const permission of Array.from(db.permissions)) {
             if (!permission.person && !permission.department && !permission.team) {
               result.push($scope.dashboard.permissions.all = permission.name);
             } else if (permission.person) {
@@ -53,42 +53,41 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
           }
           return result;
         })();
-
       })
       );
-      load_promises.push(DashboardsInfo.getReportsList(dashboard_id).then( reports => $scope.reports = reports)
+      load_promises.push(DashboardsInfo.getReportsList(dashboard_id).then(reports => $scope.reports = reports)
       );
-      load_promises.push(DashboardService.getShareableLinks(dashboard_id).then( shareableLinks => $scope.shareLinks = shareableLinks)
+      load_promises.push(DashboardService.getShareableLinks(dashboard_id).then(shareableLinks => $scope.shareLinks = shareableLinks)
       );
     } else {
       $scope.is_new = true;
       $scope.dashboard = {
-        title: '',
-        reports: [],
-        is_default: false,
-        is_agent: false,
-        permissions: {agent: [], team: [], department: [], all: ''}
+        title:       '',
+        reports:     [],
+        is_default:  false,
+        is_agent:    false,
+        permissions: { agent: [], team: [], department: [], all: '' }
       };
     }
 
     $q.all(load_promises).then(() => $scope.loaded = true);
 
-    //###################################################################################################################
+    // ###################################################################################################################
     // Sortable config
-    //###################################################################################################################
+    // ###################################################################################################################
 
     $scope.sortableOptions = {
-      axis: 'y',
+      axis:   'y',
       handle: '.drag-handle',
       update() {}
 
     };
 
-    //###################################################################################################################
+    // ###################################################################################################################
     // UI handlers
-    //###################################################################################################################
+    // ###################################################################################################################
 
-    $scope.getInitials = function(agent) {
+    $scope.getInitials = function (agent) {
       if ((agent == null)) { return '?'; }
       const first    = agent.first_name;
       const last     = agent.last_name;
@@ -102,7 +101,7 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
     /*
      * Removes a report from the dashboard
      */
-    $scope.removeReport = function(report) {
+    $scope.removeReport = function (report) {
       $scope.did_edit_reports = true;
       return $scope.reports = $scope.reports.filter(r => r.id !== report.id);
     };
@@ -110,14 +109,14 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
     /*
      * Adds a blank report to the dashboard
      */
-    $scope.addReport = function(reportTitle) {
+    $scope.addReport = function (reportTitle) {
       if (reportTitle == null) { reportTitle = ''; }
       $scope.did_edit_reports = true;
       return $scope.reports.push({
-        id: Util.uid('new'),
-        isNew: true,
+        id:      Util.uid('new'),
+        isNew:   true,
         isAdded: true,
-        title: reportTitle
+        title:   reportTitle
       });
     };
 
@@ -128,10 +127,10 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
     /*
      * Clones all reports from specified dashboard
      */
-    $scope.cloneDashboard = function(db) {
+    $scope.cloneDashboard = function (db) {
       $scope.show_clone_menu = false;
-      return DashboardsInfo.getReportsList(db.id).then( reports =>
-        Array.from(reports).map((r) =>
+      return DashboardsInfo.getReportsList(db.id).then(reports =>
+        Array.from(reports).map(r =>
          $scope.cloneReport(db, r))
       );
     };
@@ -139,14 +138,14 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
     /*
      * Clones a report from an existing dashboard
      */
-    $scope.cloneReport = function(db, r) {
+    $scope.cloneReport = function (db, r) {
       $scope.did_edit_reports = true;
       $scope.show_clone_menu = false;
       return $scope.reports.push({
-        id: Util.uid('new'),
-        cloneId: r.id,
-        isAdded: true,
-        title: r.title,
+        id:                 Util.uid('new'),
+        cloneId:            r.id,
+        isAdded:            true,
+        title:              r.title,
         fromDashboardTitle: db.title
       });
     };
@@ -164,10 +163,10 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
     /*
      * Save the form
      */
-    $scope.saveDashboard = function() {
+    $scope.saveDashboard = function () {
       $scope.saving = true;
-      return doSaveDashboard().then( 
-        function() {
+      return doSaveDashboard().then(
+        () => {
           DashboardsInfo.resetData();
           if (!$scope.is_new) {
             $scope.dashboard.version_id++;
@@ -185,7 +184,7 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
 
     $scope.canAllAgentsEditDashboard = () => ($scope.dashboard.permissions.all != null) === 'full';
 
-    $scope.toggleAllAgentsViewDashboard = function() {
+    $scope.toggleAllAgentsViewDashboard = function () {
       if ($scope.dashboard.permissions.all) {
         // turn off
         $scope.dashboard.permissions.all = '';
@@ -198,15 +197,14 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
       }
     };
 
-    $scope.toggleAllAgentsEditDashboard = function() {
+    $scope.toggleAllAgentsEditDashboard = function () {
       if ($scope.dashboard.permissions.all === 'full') {
         // turn off
         $scope.dashboard.permissions.all = 'view';
         return;
-      } else {
-        $scope.dashboard.permissions.all = 'full';
-        return;
       }
+      $scope.dashboard.permissions.all = 'full';
+      return;
     };
 
     // Agents
@@ -214,7 +212,7 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
 
     $scope.canAgentEditDashboard = agentId => (($scope.dashboard.permissions.agent || []).filter(permission => (permission.person === agentId) && (permission.name === 'full')).length > 0) || ($scope.dashboard.permissions.all === 'full');
 
-    $scope.canViewAllAgents = function(agentId) {
+    $scope.canViewAllAgents = function (agentId) {
       const permission = ($scope.dashboard.permissions.agent || []).filter(permission => permission.person === agentId)[0];
       if (!permission) {
         return false;
@@ -223,16 +221,15 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
       return permission.view_all;
     };
 
-    $scope.toggleAgentViewDashboard = function(agentId) {
+    $scope.toggleAgentViewDashboard = function (agentId) {
       const permission = $scope.dashboard.permissions.agent.filter(permission => permission.person === agentId)[0];
       if (!permission) {
         return $scope.addAgentViewDashboard(agentId, permission);
-      } else {
-        return $scope.removeAgentViewDashboard(agentId, permission);
       }
+      return $scope.removeAgentViewDashboard(agentId, permission);
     };
 
-    $scope.removeAgentViewDashboard = function(agentId, permission) {
+    $scope.removeAgentViewDashboard = function (agentId, permission) {
       if (permission == null) { permission = false; }
       if ($scope.dashboard.permissions.all) {
         return;
@@ -245,7 +242,7 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
       }
     };
 
-    $scope.addAgentViewDashboard = function(agentId, permission) {
+    $scope.addAgentViewDashboard = function (agentId, permission) {
       if (permission == null) { permission = false; }
       if ($scope.dashboard.permissions.all !== '') {
         return;
@@ -255,23 +252,23 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
       }
       if (!permission) {
         return $scope.dashboard.permissions.agent.push({
-          name: 'view',
-          person: agentId,
-          view_all: false,
-          team: null,
+          name:       'view',
+          person:     agentId,
+          view_all:   false,
+          team:       null,
           department: null
         });
       }
     };
 
-    $scope.toggleAgentEditDashboard = function(agentId) {
+    $scope.toggleAgentEditDashboard = function (agentId) {
       const permission = $scope.dashboard.permissions.agent.filter(permission => permission.person === agentId)[0];
       if (!permission) {
         return $scope.dashboard.permissions.agent.push({
-          name: 'full',
-          person: agentId,
-          view_all: false,
-          team: null,
+          name:       'full',
+          person:     agentId,
+          view_all:   false,
+          team:       null,
           department: null
         });
       } else if (permission.name === 'view') {
@@ -281,19 +278,18 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
       }
     };
 
-    $scope.toggleViewAllAgents = function(agentId) {
+    $scope.toggleViewAllAgents = function (agentId) {
       const permission = $scope.dashboard.permissions.filter(permission => permission.person === agentId)[0];
       if (!permission) {
         return $scope.dashboard.permissions.agent.push({
-          name: 'view',
-          person: agentId,
-          team: null,
+          name:       'view',
+          person:     agentId,
+          team:       null,
           department: null,
-          view_all: true
+          view_all:   true
         });
-      } else {
-        return permission.view_all = !permission.view_all;
       }
+      return permission.view_all = !permission.view_all;
     };
 
 
@@ -302,56 +298,55 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
 
     $scope.canTeamEditDashboard = teamId => ($scope.dashboard.permissions.team || []).filter(permission => (permission.team === teamId) && (permission.name === 'full')).length > 0;
 
-    $scope.toggleTeamViewDashboard = function(teamId) {
+    $scope.toggleTeamViewDashboard = function (teamId) {
       const permission = $scope.dashboard.permissions.team.filter(permission => permission.team === teamId)[0];
       if (!permission) {
         return $scope.dashboard.permissions.team.push({
-          name: 'view',
-          person: null,
+          name:       'view',
+          person:     null,
           department: null,
-          team: teamId
+          team:       teamId
         });
-      } else {
-        return $scope.dashboard.permissions.team.splice($scope.dashboard.permissions.team.indexOf(permission), 1);
       }
+      return $scope.dashboard.permissions.team.splice($scope.dashboard.permissions.team.indexOf(permission), 1);
     };
 
-    $scope.toggleTeamEditDashboard = function(teamId) {
+    $scope.toggleTeamEditDashboard = function (teamId) {
       const permission = $scope.dashboard.permissions.team.filter(permission => permission.team === teamId)[0];
       if (!permission) {
         return $scope.dashboard.permissions.team.push({
-          name: 'full',
-          person: null,
+          name:       'full',
+          person:     null,
           department: null,
-          team: teamId
+          team:       teamId
         });
       } else if (permission.name === 'view') {
         return permission.name = 'full';
       }
     };
 
-    $scope.openNewShareLinkForm = function() {
+    $scope.openNewShareLinkForm = function () {
       $scope.shareLink = {
-        dashboard: $scope.dashboard.id,
-        title: '',
+        dashboard:      $scope.dashboard.id,
+        title:          '',
         default_report: null,
-        who_can_use: 'anyone',
-        ip_whitelist: ''
+        who_can_use:    'anyone',
+        ip_whitelist:   ''
       };
       return $scope.shareLinkView = 'new';
     };
 
-    $scope.openShareLinkForm = function(shareLink) {
+    $scope.openShareLinkForm = function (shareLink) {
       $scope.shareLink = angular.copy(shareLink);
       return $scope.shareLinkView = 'share';
     };
 
-    $scope.openEditShareLinkForm = function(shareLink) {
+    $scope.openEditShareLinkForm = function (shareLink) {
       $scope.shareLink = shareLink;
       return $scope.shareLinkView = 'edit';
     };
 
-    $scope.saveShareLink = function() {
+    $scope.saveShareLink = function () {
       let promise;
       $scope.saving = true;
       if (!$scope.shareLink) {
@@ -365,24 +360,24 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
       }
 
       return promise.then(
-        function() {
+        () => {
           $scope.shareLink = null;
           $scope.shareLinkView = null;
           $scope.saving = false;
           return Growl.success('Shared link is saved');
         },
-        function(response) {
+        (response) => {
           if (__guard__(__guard__(response.errors != null ? response.errors.fields : undefined, x1 => x1.title), x => x.errors[0])) {
             $scope.error = 'Title could not be blank';
           }
           return $scope.saving = false;
-      });
+        });
     };
-      
-    $scope.deleteShareLink = function(shareLink) {
+
+    $scope.deleteShareLink = function (shareLink) {
       const modalInstance = $modal.open({
-        templateUrl: "ReportsInterfaceBundle:Index:modal-confirm.html",
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        templateUrl: 'ReportsInterfaceBundle:Index:modal-confirm.html',
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.title   = 'Confirm discard';
           $scope.message = 'Are you sure you want to delete this link?';
 
@@ -393,17 +388,15 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
         ]
       });
       return modalInstance.result.then(
-        () => {
-          return DashboardService.deleteDashboardShareableLink(shareLink).then(() => Arrays.removeValue($scope.shareLinks, shareLink));
-      });
+        () => DashboardService.deleteDashboardShareableLink(shareLink).then(() => Arrays.removeValue($scope.shareLinks, shareLink)));
     };
 
     $scope.createShortUrlForShareLink = shareLink =>
-      DashboardService.createShortUrlForShareLink(shareLink).then( function(shortUrl) {
+      DashboardService.createShortUrlForShareLink(shareLink).then((shortUrl) => {
         shareLink.short_url = shortUrl;
         return (() => {
           const result = [];
-          for (let link of Array.from($scope.shareLinks)) {
+          for (const link of Array.from($scope.shareLinks)) {
             if (link.id === shareLink.id) {
               result.push(link.short_url = shortUrl);
             } else {
@@ -417,16 +410,16 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
 
     $scope.successAlert = message => Growl.success(message);
 
-    //###################################################################################################################
+    // ###################################################################################################################
     // SAVE
-    //###################################################################################################################
+    // ###################################################################################################################
 
-    return doSaveDashboard = function() {
+    return doSaveDashboard = function () {
       const d = $q.defer();
 
       const data = angular.copy($scope.dashboard);
       data.reports = [];
-      for (let report of Array.from($scope.reports)) {
+      for (const report of Array.from($scope.reports)) {
         const reportData = {
           title: report.title
         };
@@ -446,26 +439,26 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
       for (permission of Array.from($scope.dashboard.permissions.team)) { data.permissions.push(permission); }
       for (permission of Array.from($scope.dashboard.permissions.department)) { data.permissions.push(permission); }
       if ($scope.dashboard.permissions.all) {
-        data.permissions.push({person: null, team: null, department: null, name: $scope.dashboard.permissions.all});
+        data.permissions.push({ person: null, team: null, department: null, name: $scope.dashboard.permissions.all });
       }
 
       DashboardService
       .saveDashboard(data)
-      .then( 
-        function(saved) {
+      .then(
+        (saved) => {
           $scope.error = null;
           return d.resolve(saved);
         }
-        , function(response) {
+        , (response) => {
           if (__guard__(__guard__(response.errors != null ? response.errors.fields : undefined, x1 => x1.title), x => x.errors[0])) {
             $scope.error = 'Dashboard title could not be blank';
           }
           return d.reject();
-      });
+        });
       return d.promise;
     };
   }
-  ] );
+]);
 function __guard__(value, transform) {
   return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
 }

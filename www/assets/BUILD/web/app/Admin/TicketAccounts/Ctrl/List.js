@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_TicketAccounts_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketAccounts_Ctrl_List';
@@ -11,7 +11,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     initialLoad() {
-      const list_promise = this.TicketAccountsData.loadList().then( recs => {
+      const list_promise = this.TicketAccountsData.loadList().then((recs) => {
         this.accounts = recs.values();
 
         if (this.$state.current.name === 'emails.ticket_accounts') {
@@ -36,9 +36,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      * Show the delete dlg
      */
     startDelete(for_acc_id) {
-
       let for_acc = null;
-      for (let v of Array.from(this.accounts)) {
+      for (const v of Array.from(this.accounts)) {
         if (v.id === for_acc_id) {
           for_acc = v;
         }
@@ -46,7 +45,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('TicketAccounts/delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.confirm = () => $modalInstance.close();
 
           return $scope.dismiss = () => $modalInstance.dismiss();
@@ -54,16 +53,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         ]
       });
 
-      return inst.result.then(() => {
-        return this.deleteAccount(for_acc);
-      });
+      return inst.result.then(() => this.deleteAccount(for_acc));
     }
 
-    /*for_acc
+    /* for_acc
      * Actually do th edelete
      */
     deleteAccount(acc) {
-      return this.Api.sendDelete(`/email_accounts/${acc.id}`).success( () => {
+      return this.Api.sendDelete(`/email_accounts/${acc.id}`).success(() => {
         this.TicketAccountsData.remove(acc.id);
         this.ngApply();
 
@@ -72,11 +69,11 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           return this.$state.go('emails.ticket_accounts');
         }
       })
-        .error(res => {
+        .error((res) => {
           if (res.error_message) {
             return this.Growl.error(res.error_message);
           }
-      });
+        });
     }
   }
   Admin_TicketAccounts_Ctrl_List.initClass();

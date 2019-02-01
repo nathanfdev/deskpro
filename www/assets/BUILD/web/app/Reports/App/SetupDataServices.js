@@ -5,12 +5,11 @@ define([
   Admin_Main_DataService_EntityManager,
   Reports_Main_Service_DataServiceManager
 ) =>
-  function(Module) {
-
-    Module.service('em', [ () => new Admin_Main_DataService_EntityManager()
+  function (Module) {
+    Module.service('em', [() => new Admin_Main_DataService_EntityManager()
     ]);
 
-    return Module.factory('DataService', [ '$injector', $injector => new Reports_Main_Service_DataServiceManager($injector)
+    return Module.factory('DataService', ['$injector', $injector => new Reports_Main_Service_DataServiceManager($injector)
     ]);
   }
 );

@@ -1,8 +1,8 @@
 define([
   'Admin/Main/Ctrl/Base'
-], function(
+], (
   Admin_Ctrl_Base
-) {
+) => {
   class Admin_Banning_Ctrl_EditEmail extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Banning_Ctrl_EditEmail';
@@ -21,8 +21,7 @@ define([
   */
 
     initialLoad() {
-      const promise = this.banData.loadEditBanData(this.$stateParams.ban || null).then( data => {
-
+      const promise = this.banData.loadEditBanData(this.$stateParams.ban || null).then((data) => {
         this.email_ban = data.email_ban;
         return this.form = data.form;
       });
@@ -34,7 +33,6 @@ define([
    */
 
     saveForm() {
-
       if (!this.$scope.form_props.$valid) {
         return;
       }
@@ -44,17 +42,14 @@ define([
       const promise = this.banData.saveFormModel(this.email_ban, this.form);
 
       this.startSpinner('saving');
-      return promise.then( () => {
-        this.stopSpinner('saving', true).then( () => {
-          return this.Growl.success("Saved");
-        });
+      return promise.then(() => {
+        this.stopSpinner('saving', true).then(() => this.Growl.success('Saved'));
 
         this.skipDirtyState();
         if (is_new) {
           return this.$state.go('crm.banning.gocreate_email');
-        } else {
-          return this.$state.go('crm.banning.edit_email', {ban: this.email_ban.banned_email});
         }
+        return this.$state.go('crm.banning.edit_email', { ban: this.email_ban.banned_email });
       });
     }
   }

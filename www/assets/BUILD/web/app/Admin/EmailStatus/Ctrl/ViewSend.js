@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
+define(['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) => {
   class Admin_EmailStatus_Ctrl_ViewSend extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_EmailStatus_Ctrl_ViewSend';
@@ -11,16 +11,15 @@ define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
       this.$scope.ds = this.DpDateService;
       this.$scope.render_type = 'raw';
       this.rendered = {
-        summary_loaded: false,
+        summary_loaded:  false,
         rendered_loaded: false
       };
 
       this.$scope.$watch('render_type', () => this.updateRenderType());
-
     }
 
     initialLoad() {
-      return this.Api.sendGet(`/email_status/sendmail/${this.sendmailId}?with_raw=1`).then( res => {
+      return this.Api.sendGet(`/email_status/sendmail/${this.sendmailId}?with_raw=1`).then((res) => {
         this.sendmail     = res.data.sendmail;
         this.sendmail_raw = res.data.sendmail_raw;
         this.statuses     = res.data.statuses;
@@ -44,7 +43,7 @@ define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
         case 'summary':
           if (this.rendered.summary_loaded) { return; }
           this.$scope.loading_render_type = true;
-          return this.Api.sendGet(`/email_status/sendmail/${this.sendmailId}/summary`).success( data => {
+          return this.Api.sendGet(`/email_status/sendmail/${this.sendmailId}/summary`).success((data) => {
             this.$scope.loading_render_type = false;
             this.rendered.summary_loaded = true;
             return this.rendered.summary = data.summary;
@@ -52,7 +51,7 @@ define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
         case 'rendered':
           if (this.rendered.rendered_loaded) { return; }
           this.$scope.loading_render_type = true;
-          return this.Api.sendGet(`/email_status/sendmail/${this.sendmailId}/rendered`).success( data => {
+          return this.Api.sendGet(`/email_status/sendmail/${this.sendmailId}/rendered`).success((data) => {
             this.$scope.loading_render_type  = false;
             this.rendered.rendered_loaded    = true;
             this.rendered.text               = data.text || null;
@@ -70,18 +69,14 @@ define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
     }
 
     startDelete() {
-      const doDelete = () => {
-        return this.delete().then( () => {
-          return this.$state.go('emails.ticket_accounts.sendmailqueue');
-        });
-      };
+      const doDelete = () => this.delete().then(() => this.$state.go('emails.ticket_accounts.sendmailqueue'));
 
       return this.$modal.open({
         templateUrl: this.getTemplatePath('EmailStatus/sendmail-delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.dismiss = () => $modalInstance.dismiss();
 
-          return $scope.doDelete = function() {
+          return $scope.doDelete = function () {
             $scope.is_loading = true;
             return doDelete().then(() => $modalInstance.dismiss());
           };
@@ -91,18 +86,14 @@ define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
     }
 
     startResend() {
-      const doResend = () => {
-        return this.resend().then( () => {
-          return this.$state.go('emails.ticket_accounts.gosendmailview', {id: this.sendmailId});
-        });
-      };
+      const doResend = () => this.resend().then(() => this.$state.go('emails.ticket_accounts.gosendmailview', { id: this.sendmailId }));
 
       return this.$modal.open({
         templateUrl: this.getTemplatePath('EmailStatus/sendmail-resend-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.dismiss = () => $modalInstance.dismiss();
 
-          return $scope.doResend = function() {
+          return $scope.doResend = function () {
             $scope.is_loading = true;
             return doResend().then(() => $modalInstance.dismiss());
           };

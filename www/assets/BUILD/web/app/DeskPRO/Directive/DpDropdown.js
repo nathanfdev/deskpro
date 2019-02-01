@@ -1,35 +1,34 @@
-define(function() {
+define(() => {
   const DeskPRO_Directive_DpDropdown = ['$rootScope', '$document', ($rootScope, $document) =>
     ({
       restrict: 'A',
-      scope: {
-        dropdownId: "@dpDropdown",
-        openerId: "@dpDropdownOpener",
-        closerId: "@dpDropdownCloser",
-        useClass: "@dpDropdownUseClass"
+      scope:    {
+        dropdownId: '@dpDropdown',
+        openerId:   '@dpDropdownOpener',
+        closerId:   '@dpDropdownCloser',
+        useClass:   '@dpDropdownUseClass'
       },
 
       link(scope, element) {
-
-        let dropdown, opener;
+        let dropdown,
+          opener;
         scope.visible = false;
 
-        const closeDropdown = function() {
+        const closeDropdown = function () {
           scope.visible = false;
           return processDropdown();
         };
 
-        const toggleDropdown = function() {
+        const toggleDropdown = function () {
           scope.visible = !scope.visible;
           return processDropdown();
         };
 
-        var processDropdown = function() {
+        var processDropdown = function () {
           if (scope.visible === true) {
             return dropdown.show();
-          } else {
-            return dropdown.hide();
           }
+          return dropdown.hide();
         };
 
         if (scope.openerId != null) {
@@ -44,7 +43,7 @@ define(function() {
 
         if (scope.closerId != null) {
           const closer = element.find(`#${scope.closerId}`);
-          closer.bind('click', function(event) {
+          closer.bind('click', (event) => {
             event.stopPropagation();
             return closeDropdown();
           });
@@ -58,7 +57,7 @@ define(function() {
         }
 
         processDropdown();
-        return $document.bind('click', function(event) {
+        return $document.bind('click', (event) => {
           event.stopPropagation();
           const target = angular.element(event.target);
           const clickedSystem = element
@@ -66,21 +65,18 @@ define(function() {
             .length > 0;
 
 
-
           if (clickedSystem) {
             if (target.attr('dp-dropdown-item') != null) {
               return closeDropdown();
-            } else {
-              scope.visible = true;
-              return processDropdown();
             }
-          } else {
-            return closeDropdown();
+            scope.visible = true;
+            return processDropdown();
           }
+          return closeDropdown();
         });
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpDropdown;

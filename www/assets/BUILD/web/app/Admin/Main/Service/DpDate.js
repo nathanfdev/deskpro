@@ -1,33 +1,31 @@
 define([
   'moment'
-], function(
+], (
   moment
-) {
+) => {
   /*
    * Date formatter service
    */
   class Admin_Main_Service_DpDate {
 
     constructor() {
-
       // todo: get formats from App Settings
       this.formats = {
-        full: 'ddd, Do MMM YYYY',
-        fulltime: 'ddd, Do MMM YYYY h:mma',
-        day: 'MMM D YYYY',
+        full:      'ddd, Do MMM YYYY',
+        fulltime:  'ddd, Do MMM YYYY h:mma',
+        day:       'MMM D YYYY',
         day_short: 'MMM D',
-        time: 'h:mm a'
+        time:      'h:mm a'
       };
 
       this.default = 'fulltime';
     }
 
 
-
     local(date) {
       if (!date) { return date; }
 
-      if ('string' === typeof date) {
+      if (typeof date === 'string') {
         date = moment.utc(date).toDate();
       } else if (date instanceof Date) {
         date = moment.utc(date.getTime()).toDate();
@@ -35,7 +33,6 @@ define([
 
       return date;
     }
-
 
 
     format(date, format) {

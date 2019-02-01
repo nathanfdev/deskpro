@@ -1,10 +1,10 @@
 define([
   'Admin/Main/DataService/BaseListEdit',
   'Reports/Builder/ReportEditFormMapper'
-], function(
+], (
   BaseListEdit,
   ReportEditFormMapper
-)  {
+) => {
   class ReportBuiltInAbstract extends BaseListEdit {
     static initClass() {
       this.$inject = ['Api', '$q'];
@@ -24,8 +24,7 @@ define([
      */
     _doLoadList() {
       const deferred = this.$q.defer();
-      this.Api.sendGet(`/reports/${this.getUrlPart()}/builtIn`).success( data => {
-
+      this.Api.sendGet(`/reports/${this.getUrlPart()}/builtIn`).success((data) => {
         const models = data.reports;
         return deferred.resolve(models);
       }
@@ -41,7 +40,6 @@ define([
      * @return {ReportEditFormMapper}
      */
     getFormMapper() {
-
       if (this.formMapper) { return this.formMapper; }
       this.formMapper = new ReportEditFormMapper();
       return this.formMapper;
@@ -54,12 +52,9 @@ define([
      * @return {promise}
      */
     loadEditReportData(id, params) {
-
       const deferred = this.$q.defer();
       if (id) {
-
-        this.Api.sendGet(`/reports/${this.getUrlPart()}/${id}`, {params}).then( result => {
-
+        this.Api.sendGet(`/reports/${this.getUrlPart()}/${id}`, { params }).then((result) => {
           if (result.data.type !== 'builtIn') { throw new Error('Report you are loading should be built-in report'); }
 
           const data = {};
@@ -71,13 +66,10 @@ define([
           return deferred.resolve(data);
         }
         , () => deferred.reject());
-
       } else {
-
-        this.Api.sendGet(`/reports/${this.getUrlPart()}`).then( result => {
-
+        this.Api.sendGet(`/reports/${this.getUrlPart()}`).then((result) => {
           const data = {};
-          data.report = {user: {}};
+          data.report = { user: {} };
           data.form = this.getFormMapper().getFormFromModel(data);
 
           return deferred.resolve(data);

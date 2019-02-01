@@ -1,4 +1,4 @@
-define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
+define(['angular', 'Admin/Main/Ctrl/Base'], (angular, Admin_Ctrl_Base) => {
   class Admin_Languages_Ctrl_TranslateModal extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Languages_Ctrl_TranslateModal';
@@ -13,23 +13,17 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
       this.hasPendingPromise = false;
       this.options = this.editorOptions;
 
-      this.$scope.dismiss = () => {
-        return this.$modalInstance.dismiss('cancel');
-      };
+      this.$scope.dismiss = () => this.$modalInstance.dismiss('cancel');
 
       this.$scope.save = () => {
         if (this.active_lang) {
           this.phrase_map[this.active_lang] = this.active_trans;
         }
 
-        return this.savePhrases().then(() => {
-          return this.$modalInstance.close();
-        });
+        return this.savePhrases().then(() => this.$modalInstance.close());
       };
 
-      this.$scope.$watch(() => {
-        return this.active_lang;
-      }
+      this.$scope.$watch(() => this.active_lang
       , (newLangId, oldLangId) => {
         if (!oldLangId) { return; }
 
@@ -37,14 +31,11 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
 
         if (this.phrase_map[newLangId]) {
           return this.active_trans = this.phrase_map[newLangId];
-        } else {
-          return this.active_trans = '';
         }
+        return this.active_trans = '';
       });
 
-      return this.$scope.$watch(() => {
-        return this.active_trans;
-      }
+      return this.$scope.$watch(() => this.active_trans
       , () => {
         if (!this.active_lang) { return; }
         return this.phrase_map[this.active_lang] = this.active_trans;
@@ -53,13 +44,13 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
 
     initialLoad() {
       const p = this.Api.sendDataGet({
-        langs: '/langs',
+        langs:        '/langs',
         lang_phrases: `/langs/phrases/${this.phraseId}`
-      }).success( data => {
+      }).success((data) => {
         this.ctrl_is_loading = false;
         if (this.options.exclude_own || this.options.exclude_default) {
           this.langs = [];
-          for (let l of Array.from(data.langs.languages)) {
+          for (const l of Array.from(data.langs.languages)) {
             if (this.options.exclude_own && (DP_PERSON_LANG_ID === l.id)) {
               continue;
             }
@@ -74,7 +65,7 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
         }
 
         let first = null;
-        for (let phrase of Array.from(data.lang_phrases.lang_phrases)) {
+        for (const phrase of Array.from(data.lang_phrases.lang_phrases)) {
           if (!first) { first = phrase; }
           const lang_id = phrase.language.id;
           this.phrase_map[lang_id] = phrase.phrase;
@@ -83,17 +74,17 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
         if (first) {
           this.active_lang  = first.language.id;
           return this.active_trans = first.phrase;
-        } else {
-          this.active_lang = this.langs[0].id;
-          return this.active_trans = null;
         }
+        this.active_lang = this.langs[0].id;
+        return this.active_trans = null;
       });
 
       return p;
     }
 
     savePhrases() {
-      let p, ret;
+      let p,
+        ret;
       const phrase_map = angular.copy(this.phrase_map);
       const phrase_id = this.phraseId;
 
@@ -102,12 +93,12 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
         phrase_id,
         phrase_map,
         saver(phrase_id, phrase_map) {
-          const postData = {'lang_phrases': []};
+          const postData = { lang_phrases: [] };
 
-          for (let k of Object.keys(phrase_map || {})) {
+          for (const k of Object.keys(phrase_map || {})) {
             const v = phrase_map[k];
             postData.lang_phrases.push({
-              phrase: v || '',
+              phrase:      v || '',
               language_id: k
             });
           }
@@ -127,7 +118,7 @@ define(['angular', 'Admin/Main/Ctrl/Base'], function(angular, Admin_Ctrl_Base) {
       if (ret.then) {
         p = ret;
         this.$scope.is_loading = true;
-        ret.then(() => { return this.$scope.is_loading = false; });
+        ret.then(() => this.$scope.is_loading = false);
       } else {
         const defer = this.$q.defer();
         defer.resolve();

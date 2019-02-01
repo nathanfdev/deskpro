@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], function(Util) {
+define(['DeskPRO/Util/Util'], (Util) => {
   class DpApi {
     constructor($http, api_url, api_token, Growl) {
       this.handleError = this.handleError.bind(this);
@@ -18,8 +18,8 @@ define(['DeskPRO/Util/Util'], function(Util) {
     * Retrieve the full endpoint URL.
     */
     _getEndpointUrl(endpoint) {
-        return `${this.api_url}/${endpoint}`;
-      }
+      return `${this.api_url}/${endpoint}`;
+    }
 
     /**
     * Format an endpoint with GET params to a full URL string.
@@ -40,7 +40,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
         }
 
         if (Util.isArray(params)) {
-          for (let itm of Array.from(params)) {
+          for (const itm of Array.from(params)) {
             const k = encodeURIComponent(itm.name);
             const v = encodeURIComponent(itm.value);
             url += `${k}=${v}&`;
@@ -62,7 +62,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
         let v = obj[k];
         if (v === null) { continue; }
         if (baseName) {
-          k = baseName + '[' + encodeURIComponent(k) + ']';
+          k = `${baseName}[${encodeURIComponent(k)}]`;
         } else {
           k = encodeURIComponent(k);
         }
@@ -93,16 +93,16 @@ define(['DeskPRO/Util/Util'], function(Util) {
         for (path of Array.from(paths)) {
           if (path === null) { continue; }
           params.push({
-            name: 'load_data[]',
+            name:  'load_data[]',
             value: this.formatUrl(path)
           });
         }
       } else {
-        for (let save_key of Object.keys(paths || {})) {
+        for (const save_key of Object.keys(paths || {})) {
           path = paths[save_key];
           if (path === null) { continue; }
           params.push({
-            name: `load_data[${encodeURIComponent(save_key)}]`,
+            name:  `load_data[${encodeURIComponent(save_key)}]`,
             value: this.formatUrl(path)
           });
         }
@@ -121,7 +121,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
     prepareHttpParams(http_params) {
       if (http_params == null) { http_params = {}; }
       const headers = http_params.headers || {};
-      headers["X-DeskPRO-API-Token"] = this.api_token;
+      headers['X-DeskPRO-API-Token'] = this.api_token;
 
       if ((http_params.cache == null)) {
         http_params.cache = false;
@@ -166,9 +166,10 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       let data_str = '';
       if (post_data) {
-        let k, v;
+        let k,
+          v;
         if (Util.isArray(post_data)) {
-          for (let itm of Array.from(post_data)) {
+          for (const itm of Array.from(post_data)) {
             k = encodeURIComponent(itm.name);
             v = encodeURIComponent(itm.value);
             data_str += `${k}=${v}&`;
@@ -232,9 +233,10 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       let data_str = '';
       if (post_data) {
-        let k, v;
+        let k,
+          v;
         if (Util.isArray(params)) {
-          for (let itm of Array.from(params)) {
+          for (const itm of Array.from(params)) {
             k = encodeURIComponent(itm.name);
             v = encodeURIComponent(itm.value);
             data_str += `${k}=${v}&`;
@@ -302,7 +304,6 @@ define(['DeskPRO/Util/Util'], function(Util) {
     }
 
 
-
     sendRequest(http_params) {
       const result = this.$http(http_params);
       result.error(this.handleError);
@@ -311,9 +312,9 @@ define(['DeskPRO/Util/Util'], function(Util) {
     }
 
     handleError(data, status, headers, config) {
-      if ((500 === status) && this.Growl) {
+      if ((status === 500) && this.Growl) {
         return this.Growl.error('There was a problem processing your last request. Please try again.');
-      } else if ((403 === status) && (data.error_code !== 'insufficient_rights')) {
+      } else if ((status === 403) && (data.error_code !== 'insufficient_rights')) {
         return window.location.reload(true);
       } else if (console) {
         return console.info(data);

@@ -3,17 +3,17 @@ define([
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Arrays',
   'Admin/OptionBuilder/TypesDef/BaseTypesDef'
-], function(_,
+], (_,
   Util,
   Arrays,
-  BaseTypesDef) {
+  BaseTypesDef) => {
   class Admin_OptionBuilder_TypesDef_BaseActionTypesDef extends BaseTypesDef {
     constructor($q, Api, Api2, dpTemplateManager) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.$q = $q;
@@ -42,30 +42,29 @@ define([
       const typeFunc = `get${typeName}`;
       if (this[typeFunc] != null) {
         return this[typeFunc](options);
-      } else {
-        console.error(`Bad type with no definition getter: ${typeFunc}`);
-        const me = this;
-        return {
-          getTemplate() {
-            return me.dpTemplateManager.get(me.inputTemplate);
-          },
-          getData() {
-            return {};
-          },
-          getDataFormatter() {
-            return {
-              getViewValue(value, data) {
-                if (value == null) { value = {}; }
-                return {};
-              },
-              getValue(model, data) {
-                if (model == null) { model = {}; }
-                return null;
-              }
-            };
-          }
-        };
       }
+      console.error(`Bad type with no definition getter: ${typeFunc}`);
+      const me = this;
+      return {
+        getTemplate() {
+          return me.dpTemplateManager.get(me.inputTemplate);
+        },
+        getData() {
+          return {};
+        },
+        getDataFormatter() {
+          return {
+            getViewValue(value, data) {
+              if (value == null) { value = {}; }
+              return {};
+            },
+            getValue(model, data) {
+              if (model == null) { model = {}; }
+              return null;
+            }
+          };
+        }
+      };
     }
 
 
@@ -81,9 +80,7 @@ define([
       const extraOptions = options.extraOptions || null;
 
       if (!options_formatter) {
-        options_formatter = options => {
-          return this.standardOptionsFormatter(options, extraOptions);
-        };
+        options_formatter = options => this.standardOptionsFormatter(options, extraOptions);
       }
 
       const me = this;
@@ -97,27 +94,24 @@ define([
           const operators = options.operators || [];
           if (options.options) {
             return {
-              options: options_formatter ? options_formatter(options.options) : options.options,
+              options:     options_formatter ? options_formatter(options.options) : options.options,
               multiselect: is_multi,
               operators
             };
           }
           if (data_name) {
             const defer = me.$q.defer();
-            me.loadDataOptions().then(() => {
-              return defer.resolve({
-                options: options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
-                multiselect: is_multi,
-                operators
-              });
-            });
+            me.loadDataOptions().then(() => defer.resolve({
+              options:     options_formatter ? options_formatter(me.options_data[data_name]) : me.options_data[data_name],
+              multiselect: is_multi,
+              operators
+            }));
 
             return defer.promise;
-          } else {
-            return {
-              operators
-            };
           }
+          return {
+            operators
+          };
         },
 
         getDataFormatter() {
@@ -131,7 +125,7 @@ define([
 
               return {
                 value: val,
-                op: (value.options != null ? value.options.op : undefined) || value.op || _.first(data.operators)
+                op:    (value.options != null ? value.options.op : undefined) || value.op || _.first(data.operators)
               };
             },
             getValue(model, data) {
@@ -173,8 +167,8 @@ define([
               if (value == null) { value = {}; }
               return {
                 value: true,
-                op: 'is',
-                icon: icon || false
+                op:    'is',
+                icon:  icon || false
               };
             },
             getValue(model, data) {
@@ -219,8 +213,8 @@ define([
               let val = (value.options != null ? value.options[prop_name] : undefined) || '';
               if (Util.isArray(val)) { val = val.join(','); }
               return {
-                value: val,
-                op: (value.options != null ? value.options.op : undefined) || value.op || _.first(data.operators),
+                value:          val,
+                op:             (value.options != null ? value.options.op : undefined) || value.op || _.first(data.operators),
                 with_formatter: (value.options != null ? value.options.with_formatter : undefined) || false
               };
             },
@@ -256,19 +250,18 @@ define([
 
       options.operators = ['set', 'unset'];
       if (field.type_name === 'choice') {
-        options.options  = field.choices.map(o => ({ title: o.title, value: o.id + "" }));
+        options.options  = field.choices.map(o => ({ title: o.title, value: `${o.id}` }));
         options.template = 'OptionBuilder/type-actions-custom-select.html';
         options.isMulti  = !!field.options.multiple;
         return this.getStandardSelect(options);
       } else if (field.type_name === 'toggle') {
-        options.options  = [{ title: 'On', value: "1" }, { title: "Off", value: "0" }];
+        options.options  = [{ title: 'On', value: '1' }, { title: 'Off', value: '0' }];
         options.template = 'OptionBuilder/type-actions-custom-select.html';
         return this.getStandardSelect(options);
-      } else {
-        options.template = 'OptionBuilder/type-actions-custom-input.html';
-        options.with_formatter = true;
-        return this.getStandardInput(options);
       }
+      options.template = 'OptionBuilder/type-actions-custom-input.html';
+      options.with_formatter = true;
+      return this.getStandardInput(options);
     }
 
 
@@ -283,7 +276,7 @@ define([
       const fname = base_name + f.id;
 
       if (!this[`get${fname}`] || (force != null)) {
-        this[`get${fname}`] = options => {
+        this[`get${fname}`] = (options) => {
           if (options == null) { options = {}; }
           options.type = base_name + f.id;
           return this.getStandardForFieldDef(f, options);

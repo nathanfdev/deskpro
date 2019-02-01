@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Numbers'], function(Numbers) {
+define(['DeskPRO/Util/Numbers'], (Numbers) => {
   /*
     * Description
     * -----------
@@ -28,29 +28,28 @@ define(['DeskPRO/Util/Numbers'], function(Numbers) {
     * </select>
     * (Will render with option 10)
     */
-  const DeskPRO_Directive_DpClosestNumber = [ () =>
+  const DeskPRO_Directive_DpClosestNumber = [() =>
     ({
       restrict: 'A',
-      require: 'ngModel',
+      require:  'ngModel',
       link(scope, iElement, iAttrs, ngModel) {
-
         const valuesExpr = (iAttrs.numberValues != null) && iAttrs.numberValues ? iAttrs.numberValues : null;
 
-        const getValues = function() {
+        const getValues = function () {
           let values;
           if (valuesExpr) {
             values = scope.$eval(valuesExpr).map(n => parseInt(n));
           } else {
             values = [];
-            iElement.find('option').each(function() { return values.push(parseInt(this.value.replace(/^number:/, ''))); });
+            iElement.find('option').each(function () { return values.push(parseInt(this.value.replace(/^number:/, ''))); });
           }
           return values;
         };
 
-        return ngModel.$formatters.push( modelValue => Numbers.closest(modelValue, getValues()));
+        return ngModel.$formatters.push(modelValue => Numbers.closest(modelValue, getValues()));
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpClosestNumber;

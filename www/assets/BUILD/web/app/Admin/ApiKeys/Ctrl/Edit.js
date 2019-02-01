@@ -1,17 +1,17 @@
 define([
-    'Admin/Main/Ctrl/Base',
-    'angular'
-], function(
+  'Admin/Main/Ctrl/Base',
+  'angular'
+], (
     Admin_Ctrl_Base,
     angular
-) {
+) => {
   class Admin_ApiKeys_Ctrl_Edit extends Admin_Ctrl_Base {
     constructor(...args) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
-        let thisFn = (() => { return this; }).toString();
-        let thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
+        const thisFn = (() => this).toString();
+        const thisName = thisFn.slice(thisFn.indexOf('return') + 6 + 1, thisFn.indexOf(';')).trim();
         eval(`${thisName} = this;`);
       }
       this.updateChildren = this.updateChildren.bind(this);
@@ -26,7 +26,7 @@ define([
 
     init() {
       this.agents = [];
-      this.form = {isSuperUser: false, flags: []};
+      this.form = { isSuperUser: false, flags: [] };
 
       this.service = {
         keys:   this.DataService.get('ApiKeys'),
@@ -34,31 +34,30 @@ define([
         tags:   this.DataService.get('ApiTags')
       };
 
-      this.$scope.replayLogEntry = entry => {
+      this.$scope.replayLogEntry = (entry) => {
         if (((entry != null ? entry.id : undefined) == null)) { return; }
         entry.response = null;
         return this.service.keys.replayLogEntry(entry).then(
-          data => { return entry.response = data; },
-          () => { return entry.response = {status: null, content: null};
-         });
+          data => entry.response = data,
+          () => entry.response = { status: null, content: null });
       };
 
       this.$scope.toggle = scope => scope.toggle();
 
-      this.$scope.enable = node => {
+      this.$scope.enable = (node) => {
         node.value = 1;
         if (node.nodes) { this.updateChildren(node.nodes, node.value); }
         return this.service.tags.updateTags(node.path, node.value, this.form.id);
       };
 
 
-      this.$scope.default = node => {
+      this.$scope.default = (node) => {
         node.value = 0;
         if (node.nodes) { this.updateChildren(node.nodes, node.value); }
         return this.service.tags.updateTags(node.path, node.value, this.form.id);
       };
 
-      return this.$scope.disable = node => {
+      return this.$scope.disable = (node) => {
         node.value = -1;
         if (node.nodes) { this.updateChildren(node.nodes, node.value); }
         return this.service.tags.updateTags(node.path, node.value, this.form.id);
@@ -68,7 +67,7 @@ define([
     updateChildren(nodes, value) {
       return (() => {
         const result = [];
-        for (let node of Array.from(nodes)) {
+        for (const node of Array.from(nodes)) {
           node.value = value;
           if (node.nodes) { result.push(this.updateChildren(node.nodes, value)); } else {
             result.push(undefined);
@@ -82,7 +81,7 @@ define([
       this.form.daily_limit = this.service.keys.limits.daily_limit;
       this.form.hourly_limit = this.service.keys.limits.hourly_limit;
 
-      const p1 = this.service.keys.get(this.$stateParams.id || null).then(model => {
+      const p1 = this.service.keys.get(this.$stateParams.id || null).then((model) => {
         if ((model == null)) { return; }
         this.form = angular.copy(model);
         this.form.flags = this.form.flags || [];
@@ -93,17 +92,13 @@ define([
       });
 
 
-      const p2 = this.service.agents.all().then(agents => { return this.agents = agents; });
+      const p2 = this.service.agents.all().then(agents => this.agents = agents);
 
       // Load logs separately
       if (this.$stateParams.id) {
-        this.service.tags.getTags(this.$stateParams.id).then(data => {
-          return this.tags = data.join(',');
-        });
+        this.service.tags.getTags(this.$stateParams.id).then(data => this.tags = data.join(','));
 
-        this.service.keys.getLogs({id: this.$stateParams.id}).then(data => {
-          return this.logs = data.logs;
-        });
+        this.service.keys.getLogs({ id: this.$stateParams.id }).then(data => this.logs = data.logs);
       } else {
         this.tags = '*';
       }
@@ -111,7 +106,6 @@ define([
 
       return this.$q.all([p1, p2]);
     }
-
 
 
     saveForm() {
@@ -127,7 +121,7 @@ define([
 
       this.startSpinner('saving');
       return this.service.keys.set(this.form).then(
-        data => {
+        (data) => {
           this.form = data;
           this.form.flags = this.form.flags || [];
           this.form.isSuperUser = this.form.flags.indexOf('super') > -1;
@@ -137,34 +131,31 @@ define([
         () => {
           this.stopSpinner('saving', true);
           return this.Growl.error('Error');
-      }).then(
-        form => {
-          return this.service.tags.updateTags(this.tags, form.id).then(
-            data => {
+        }).then(
+        form => this.service.tags.updateTags(this.tags, form.id).then(
+            (data) => {
               this.stopSpinner('saving', true);
               this.Growl.success('Saved');
               this.skipDirtyState();
               if (is_new) { return this.$state.go('apps.api_keys.gocreate'); }
             },
-            reason => {
+            (reason) => {
               this.stopSpinner('saving', true);
               return this.Growl.error('Error');
-          });
-      });
+            }));
     }
-
 
 
     /*
      * Show the delete dlg
      */
     startDelete(for_key_id) {
-      return this.service.keys.get(for_key_id).then(key => {
+      return this.service.keys.get(for_key_id).then((key) => {
         if ((key == null)) { return; }
 
         const inst = this.$modal.open({
           templateUrl: this.getTemplatePath('ApiKeys/delete-modal.html'),
-          controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+          controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
             $scope.confirm = () => $modalInstance.close();
 
             return $scope.dismiss = () => $modalInstance.dismiss();
@@ -172,24 +163,15 @@ define([
           ]
         });
 
-        return inst.result.then(() => {
-          return this.service.keys.remove(key).then(
-            () => {
-              return this.$state.go('apps.api_keys');
-            },
-            data => {
-              return this.applyErrorResponseToView(data);
-          });
-        });
+        return inst.result.then(() => this.service.keys.remove(key).then(
+            () => this.$state.go('apps.api_keys'),
+            data => this.applyErrorResponseToView(data)));
       });
     }
 
 
-
     regenerateApiKey() {
-      return this.service.keys.regenerateApiKey(this.form).success(() => {
-        return this.Growl.success("API Key regenerated");
-      });
+      return this.service.keys.regenerateApiKey(this.form).success(() => this.Growl.success('API Key regenerated'));
     }
   }
   Admin_ApiKeys_Ctrl_Edit.initClass();

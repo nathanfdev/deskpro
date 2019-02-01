@@ -1,7 +1,6 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_ServerCron_Ctrl_Logs extends Admin_Ctrl_Base {
     static initClass() {
-  
       this.CTRL_ID   = 'Admin_ServerCron_Ctrl_Logs';
       this.CTRL_AS   = 'LogsCtrl';
       this.DEPS      = [];
@@ -14,16 +13,15 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.page_nums = [1];
 
       this.filter = {
-        job_id: '',
+        job_id:   '',
         priority: '',
-        page: 1
+        page:     1
       };
 
       return this.initializeScopeWatching();
     }
 
     initialLoad() {
-
       return this.loadResults();
     }
 
@@ -32,15 +30,13 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   */
 
     loadResults() {
-
       this.startSpinner('paginating_server_cron_logs');
 
       const data_promise = this.Api.sendGet('/server_cron/logs', {
-        job_id: this.filter.job_id,
+        job_id:   this.filter.job_id,
         priority: this.filter.priority,
-        page: this.filter.page
-      }).then(res => {
-
+        page:     this.filter.page
+      }).then((res) => {
         this.server_cron_logs = res.data.server_cron_logs;
 
         this.filter.page = res.data.server_cron_logs.page;
@@ -49,7 +45,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
         this.page_nums = [];
 
-        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+        for (let i = 0, end = this.num_pages, asc = end >= 0; asc ? i < end : i > end; asc ? i++ : i--) {
           this.page_nums.push(i + 1);
         }
 
@@ -60,7 +56,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     updateFilter() {
-
       return this.loadResults();
     }
 
@@ -69,10 +64,9 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     startClearAll() {
-
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('Server/server-cron-delete-modal.html'),
-        controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
           $scope.confirm = () => $modalInstance.close();
 
           return $scope.dismiss = () => $modalInstance.dismiss();
@@ -80,9 +74,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         ]
       });
 
-      return inst.result.then(() => {
-        return this.clearAll();
-      });
+      return inst.result.then(() => this.clearAll());
     }
 
     /*
@@ -90,11 +82,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     clearAll() {
-
-      return this.Api.sendDelete('/server_cron/logs').success( () => {
-
-        return this.server_cron_logs = null;
-      });
+      return this.Api.sendDelete('/server_cron/logs').success(() => this.server_cron_logs = null);
     }
 
     /*
@@ -102,9 +90,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     initializeScopeWatching() {
-
       return this.$scope.$watch('LogsCtrl.page', (newVal, oldVal) => {
-
         if (parseInt(newVal) === parseInt(oldVal)) {
           return undefined;
         }
@@ -122,7 +108,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     changePageCallback() {
-
       this.filter.page = this.page;
       return this.loadResults();
     }
@@ -132,7 +117,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     */
 
     goPrevPage() {
-
       return this.page--;
     }
 
@@ -141,7 +125,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
      */
 
     goNextPage() {
-
       return this.page++;
     }
   }

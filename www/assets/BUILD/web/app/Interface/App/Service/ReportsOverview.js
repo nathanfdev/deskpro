@@ -1,11 +1,11 @@
-define(['DeskPRO/Util/Util'], function(Util) {
+define(['DeskPRO/Util/Util'], (Util) => {
   class ReportsOverview {
     constructor(Api, $q) {
       this.overviewUrl = '/reports/overview/data/';
       this.statsUrl = '/reports/overview/get-stats/';
       this.Api = Api;
       this.$q = $q;
-      //just a stub, have to be refactored
+      // just a stub, have to be refactored
       this.$scope = {};
     }
 
@@ -13,7 +13,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
       dataKey = dataKey.replace(/\-/g, '_');
 
       const promise = this.Api.sendGet(`${this.overviewUrl}${dataKey}`);
-      return promise.then(data => {
+      return promise.then((data) => {
         this.$scope[dataKey] = data.data;
         if ((dataKey === 'tickets_user_waiting_time') || (dataKey === 'tickets_response_time')) {
           this.setDataForTableWithBarGraphs(dataKey);
@@ -23,11 +23,8 @@ define(['DeskPRO/Util/Util'], function(Util) {
           this.setDataForBarGraphs(dataKey);
         }
         return this.$scope[dataKey];
-    });
+      });
     }
-
-
-
 
 
     /*
@@ -41,11 +38,11 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       const promise = this.Api.sendGet(`/reports/overview/get-stats/${dataKey}`, {
         grouping_field: this.$scope[dataKey].grouping_field,
-        date_choice: this.$scope[dataKey].date_choice,
-        sla_id: this.$scope[dataKey].sla_id
+        date_choice:    this.$scope[dataKey].date_choice,
+        sla_id:         this.$scope[dataKey].sla_id
       });
 
-      return promise.success(data => {
+      return promise.success((data) => {
 //        @toggleLoadingState(dataKey)
         this.$scope[dataKey] = data;
 
@@ -56,9 +53,9 @@ define(['DeskPRO/Util/Util'], function(Util) {
         } else {
           this.setDataForBarGraphs(dataKey);
         }
-          
+
         return this.$scope[dataKey];
-    });
+      });
     }
 
     /*
@@ -74,16 +71,15 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       return (() => {
         const result = [];
-        for (let key in this.$scope[dataKey].titles) {
-
+        for (const key in this.$scope[dataKey].titles) {
           if (this.$scope[dataKey].values[key]) {
             let percentage = (this.$scope[dataKey].values[key] / denominator) * 100;
             if (percentage < 1) { percentage = 1; }
 
             result.push(this.$scope[dataKey].stats.push({
-              title: this.$scope[dataKey].titles[key],
-              value: this.$scope[dataKey].values[key] || 0,
-              left_percentage: percentage,
+              title:            this.$scope[dataKey].titles[key],
+              value:            this.$scope[dataKey].values[key] || 0,
+              left_percentage:  percentage,
               right_percentage: 100 - percentage
             }));
           }
@@ -105,10 +101,8 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       return (() => {
         const result = [];
-        for (let key in this.$scope.tickets_opened_hour.titles) {
-
+        for (const key in this.$scope.tickets_opened_hour.titles) {
           if (this.$scope.tickets_opened_hour.values[key]) {
-
             let percentage = (this.$scope.tickets_opened_hour.values[key] / denominator) * 100;
             if (percentage < 1) { percentage = 1; }
 
@@ -138,22 +132,20 @@ define(['DeskPRO/Util/Util'], function(Util) {
      */
     setDataForTableWithBarGraphs(dataKey) {
       dataKey = dataKey.replace(/\-/g, '_');
-      
+
       if (Util.isEmpty(this.$scope[dataKey].values)) { this.$scope[dataKey].empty = true; }
       this.$scope[dataKey].stats = [];
       const denominator = this.$scope[dataKey].max || 1;
 
       return (() => {
         const result = [];
-        for (let key in this.$scope[dataKey].titles) {
-
+        for (const key in this.$scope[dataKey].titles) {
           let percentage = (this.$scope[dataKey].values[key] / denominator) * 100;
           if (percentage < 1) { percentage = 1; }
 
           // case of simple data without sub-data
 
           if (!this.$scope[dataKey].sub_titles) {
-
             if (this.$scope[dataKey].values[key]) {
               result.push(this.$scope[dataKey].stats.push({
                 title: this.$scope[dataKey].titles[key],
@@ -165,9 +157,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
                 title: this.$scope[dataKey].titles[key]
               }));
             }
-
           } else {
-
   // case of more sophisticated case with sub-data
 
             percentage = (this.$scope[dataKey].group_total[key] / denominator) * 100;
@@ -176,13 +166,13 @@ define(['DeskPRO/Util/Util'], function(Util) {
             if (this.$scope[dataKey].group_total[key]) {
               const sub_stats = [];
 
-              for (let subid in this.$scope[dataKey].sub_titles) {
+              for (const subid in this.$scope[dataKey].sub_titles) {
                 const subtitle = this.$scope[dataKey].sub_titles[subid];
                 if (this.$scope[dataKey].values[key][subid]) {
                   let sub_percentage = (this.$scope[dataKey].values[key][subid] / this.$scope[dataKey].group_total[key]) * 100;
                   if (sub_percentage < 1) { sub_percentage = 1; }
                   sub_stats.push({
-                    title: subtitle + ' (' + this.$scope[dataKey].values[key][subid] + ')',
+                    title:      `${subtitle} (${this.$scope[dataKey].values[key][subid]})`,
                     percentage: sub_percentage,
                     background: this.$scope[dataKey].group_keys[subid]
                   });

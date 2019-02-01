@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   class AdminStart_Ctrl_StartBase {
     static initClass() {
       this.CTRL_AS   = 'Card';
@@ -36,7 +36,7 @@ define(function() {
     constructor(...args) {
       this.ctrl_is_loading = true;
       if (this.constructor.DEPS.length !== args.length) {
-        console.error("Dependencies are not the same as passed args: %o != %o", this.constructor.DEPS, args);
+        console.error('Dependencies are not the same as passed args: %o != %o', this.constructor.DEPS, args);
         return;
       }
 

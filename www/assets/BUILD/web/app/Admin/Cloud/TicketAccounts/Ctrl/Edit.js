@@ -1,10 +1,10 @@
 define([
   'Admin/Cloud/TicketAccounts/FormModel/EditTicketAccountModel',
   'Admin/TicketAccounts/Ctrl/Edit',
-], function(
+], (
   EditTicketAccountModel,
   BaseEdit
-) {
+) => {
   class Admin_Cloud_TicketAccounts_Ctrl_Edit extends BaseEdit {
     static initClass() {
       this.CTRL_ID = 'Admin_Cloud_TicketAccounts_Ctrl_Edit';

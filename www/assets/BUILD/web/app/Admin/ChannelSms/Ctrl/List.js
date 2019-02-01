@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Main_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) => {
   class Admin_ChannelSms_Ctrl_List extends Admin_Main_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_ChannelSms_Ctrl_List';
@@ -12,7 +12,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Main_Ctrl_Base) {
     }
 
     initialLoad() {
-      const list_promise = this.SmsAccountsData.loadList().then(recs => {
+      const list_promise = this.SmsAccountsData.loadList().then((recs) => {
         this.accounts = [];
         let accounts = recs.values();
         for (var acc of Array.from(accounts)) {
@@ -23,7 +23,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Main_Ctrl_Base) {
 
         if (this.$state.current.name === 'tickets.channel_sms') {
           if (this.accounts[0]) {
-            this.$state.go('tickets.channel_sms.edit', {id: this.accounts[0].id});
+            this.$state.go('tickets.channel_sms.edit', { id: this.accounts[0].id });
           } else {
             this.$state.go('tickets.channel_sms.create');
           }
@@ -45,7 +45,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Main_Ctrl_Base) {
 
     startDelete(for_acc_id) {
       let for_acc = null;
-      for (let v of Array.from(this.accounts)) {
+      for (const v of Array.from(this.accounts)) {
         if (v.id === for_acc_id) {
           for_acc = v;
         }
@@ -53,8 +53,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Main_Ctrl_Base) {
 
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('ChannelSms/delete-modal.html'),
-        controller: [
-          '$scope', '$modalInstance', function($scope, $modalInstance) {
+        controller:  [
+          '$scope', '$modalInstance', function ($scope, $modalInstance) {
             $scope.confirm = () => $modalInstance.close();
 
             return $scope.dismiss = () => $modalInstance.dismiss();
@@ -62,9 +62,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Main_Ctrl_Base) {
         ]
       });
 
-      return inst.result.then(() => {
-        return this.deleteAccount(for_acc);
-      });
+      return inst.result.then(() => this.deleteAccount(for_acc));
     }
 
     deleteAccount(acc) {

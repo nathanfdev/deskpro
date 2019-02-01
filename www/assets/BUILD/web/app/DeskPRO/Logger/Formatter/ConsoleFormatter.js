@@ -1,12 +1,11 @@
 define([
   'DeskPRO/Util/Strings'
-], function(
+], (
   Strings
-) {
+) => {
   class ConsoleFormatter {
     static initClass() {
-
-      this.SIMPLE_FORMAT = "[%dateStr%] (%channel%.%level_name%) %console_format%";
+      this.SIMPLE_FORMAT = '[%dateStr%] (%channel%.%level_name%) %console_format%';
     }
     constructor(formatString) {
       this.formatString = formatString;
@@ -17,7 +16,9 @@ define([
 
 
     format(record) {
-      let console_args, console_format, v;
+      let console_args,
+        console_format,
+        v;
       let format_string = this.formatString;
       if (record.messageConsole) {
         console_args = record.messageConsole;
@@ -29,18 +30,18 @@ define([
 
       for (var k in record.extra) {
         v = record.extra[k];
-        format_string = format_string.replace(new RegExp(Strings.escapeRegex(`%extra.${k}%`), 'g'), v + "");
+        format_string = format_string.replace(new RegExp(Strings.escapeRegex(`%extra.${k}%`), 'g'), `${v}`);
       }
       for (k in record) {
         v = record[k];
-        format_string = format_string.replace(new RegExp(Strings.escapeRegex(`%${k}%`), 'g'), v + "");
+        format_string = format_string.replace(new RegExp(Strings.escapeRegex(`%${k}%`), 'g'), `${v}`);
       }
 
       format_string = format_string.replace(/%console_format%/g, console_format);
 
       return {
         format: format_string,
-        args: console_args
+        args:   console_args
       };
     }
   }

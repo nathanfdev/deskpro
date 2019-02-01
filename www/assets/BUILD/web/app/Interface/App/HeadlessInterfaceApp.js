@@ -34,7 +34,7 @@ define([
   'jquery',
   'moment',
   'momentTimezone'
-], function(
+], (
   angular,
 
   StateCollection,
@@ -47,7 +47,7 @@ define([
   AppConfig,
   TemplateLoader,
   TemplateManager
-) {
+) => {
   const HeadlessInterfaceApp = angular.module('DeskPRO.HeadlessInterfaceApp', [
     'ngAnimate',
     'ngSanitize',
@@ -66,26 +66,26 @@ define([
   SetupDirectives(HeadlessInterfaceApp);
 
   let isDone = false;
-  HeadlessInterfaceApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+  HeadlessInterfaceApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
     if (isDone) { return; }
     isDone = true;
 
-    $urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise('/');
 
     const reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.HeadlessInterfaceApp'));
     HeadlessRouting(reportStates);
-    for (let w of Array.from(reportStates.whens)) {
+    for (const w of Array.from(reportStates.whens)) {
       $urlRouterProvider.when(w[0], w[1]);
     }
-    return Array.from(reportStates.routes).map((r) =>
+    return Array.from(reportStates.routes).map(r =>
       r.applyToStateProvider($stateProvider));
   }
   ]);
 
-  HeadlessInterfaceApp.service('AppConfig', () => new AppConfig);
+  HeadlessInterfaceApp.service('AppConfig', () => new AppConfig());
 
-  HeadlessInterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', function(AppConfig, $http, $q) {
-    window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'agent/viewer/load-views', $http, $q);
+  HeadlessInterfaceApp.service('TemplateLoader', ['AppConfig', '$http', '$q', function (AppConfig, $http, $q) {
+    window.DP_TEMPLATE_LOADER = new TemplateLoader(`${AppConfig.getBaseUrl()}agent/viewer/load-views`, $http, $q);
     return window.DP_TEMPLATE_LOADER;
   }
   ]);
@@ -93,13 +93,13 @@ define([
   HeadlessInterfaceApp.service('TemplateManager', ['TemplateLoader', '$templateCache', '$q', (TemplateLoader, $templateCache, $q) => new TemplateManager(TemplateLoader, $templateCache, $q)
   ]);
 
-  HeadlessInterfaceApp.run(['TemplateLoader', function(TemplateLoader) {} ]);
-  HeadlessInterfaceApp.run(['TemplateManager', function(TemplateManager) {} ]);
+  HeadlessInterfaceApp.run(['TemplateLoader', function (TemplateLoader) {}]);
+  HeadlessInterfaceApp.run(['TemplateManager', function (TemplateManager) {}]);
 
-  HeadlessInterfaceApp.factory('HttpTemplateInterceptor', [function() {
+  HeadlessInterfaceApp.factory('HttpTemplateInterceptor', [function () {
     const isTemplateUrl = url => !!url.replace(/^\//, '').match(/^(AgentBundle|InterfaceBundle|ReportsInterfaceBundle):/);
     const getViewName = url => url.replace(/^\//, '');
-    const getLoadUrl = view => window.DP_TEMPLATE_LOADER.getLoadUrl([view]) + '&intercepted=1';
+    const getLoadUrl = view => `${window.DP_TEMPLATE_LOADER.getLoadUrl([view])}&intercepted=1`;
 
     return {
       request(config) {
@@ -117,7 +117,7 @@ define([
   HeadlessInterfaceApp.config(['$httpProvider', $httpProvider => $httpProvider.interceptors.push('HttpTemplateInterceptor')
   ]);
 
-  HeadlessInterfaceApp.service('DashboardWidgetService', [function() {} ]);
+  HeadlessInterfaceApp.service('DashboardWidgetService', [function () {}]);
 
   return HeadlessInterfaceApp;
 });

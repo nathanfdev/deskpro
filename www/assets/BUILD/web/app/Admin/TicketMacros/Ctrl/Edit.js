@@ -1,8 +1,8 @@
 define([
   'Admin/Main/Ctrl/Base'
-], function(
+], (
   Admin_Ctrl_Base
-) {
+) => {
   class Admin_TicketMacros_Ctrl_Edit extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketMacros_Ctrl_Edit';
@@ -25,7 +25,7 @@ define([
       this.actionsTypeDef    = this.dpObTypesDefTicketActions;
       this.actionOptionTypes = this.actionsTypeDef.getOptionsForTypes();
 
-      return this.$scope.$watch('EditCtrl.form.person_id', id => {
+      return this.$scope.$watch('EditCtrl.form.person_id', (id) => {
         id = parseInt(id);
         let name = 'unknown agent';
         if (id && !isNaN(id)) {
@@ -39,7 +39,7 @@ define([
 
     initialLoad() {
       const promises = [];
-      let promise = this.macroData.loadEditMacroData(this.macroId || null).then( data => {
+      let promise = this.macroData.loadEditMacroData(this.macroId || null).then((data) => {
         this.macro  = data.macro;
         this.agents = data.agents;
         this.form   = data.form;
@@ -53,9 +53,7 @@ define([
       promises.push(promise);
 
       promise = this.Api2.sendGet('/ticket_departments?selectable=1');
-      promise.then(res => {
-        return this.departments = res.data.data;
-      });
+      promise.then(res => this.departments = res.data.data);
       promises.push(promise);
 
       return this.$q.all(promises);
@@ -79,7 +77,7 @@ define([
       const promise = this.macroData.saveFormModel(this.macro, this.form);
 
       this.startSpinner('saving');
-      return promise.then( () => {
+      return promise.then(() => {
         this.stopSpinner('saving');
 
         this.skipDirtyState();

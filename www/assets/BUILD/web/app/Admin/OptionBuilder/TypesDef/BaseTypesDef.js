@@ -2,17 +2,18 @@ define([
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Arrays',
   'underscore'
-], function(
+], (
   Util,
   Arrays,
   _
-) {
+) => {
   class Admin_OptionBuilder_TypesDef_BaseTypesDef {
     standardOptionsFormatter(options, extraOptions) {
-      const getRenderOpt = function(opt, parentTitleSegs) {
-        let title, val;
+      const getRenderOpt = function (opt, parentTitleSegs) {
+        let title,
+          val;
         if (parentTitleSegs == null) { parentTitleSegs = []; }
-        const pTitle = parentTitleSegs.join(" > ");
+        const pTitle = parentTitleSegs.join(' > ');
 
         if (opt.title) {
           ({ title } = opt);
@@ -33,26 +34,25 @@ define([
         }
 
         if (pTitle.length) {
-          title = pTitle + " > " + title;
+          title = `${pTitle} > ${title}`;
         }
 
         if ((title !== null) && (val !== null)) {
           return {
-          title,
-          value: val
+            title,
+            value: val
           };
-        } else {
-          return null;
         }
+        return null;
       };
 
-      var addTree = function(options, parent_id, toOpts, parentTitleSegs) {
+      var addTree = function (options, parent_id, toOpts, parentTitleSegs) {
         if (parentTitleSegs == null) { parentTitleSegs = []; }
         parent_id = parseInt(parent_id);
         if (options) {
           return (() => {
             const result = [];
-            for (let opt of Array.from(options)) {
+            for (const opt of Array.from(options)) {
               if (((parent_id != null) && (parseInt(opt.parent_id) === parent_id)) || ((parent_id === 0) && (!opt.parent_id || !parseInt(opt.parent_id)))) {
                 const o = getRenderOpt(opt, parentTitleSegs);
 
@@ -70,10 +70,8 @@ define([
 
                 if (childOps.length) {
                   result.push(Arrays.append(toOpts, childOps));
-                } else {
-                  if (o) { result.push(toOpts.push(o)); } else {
-                    result.push(undefined);
-                  }
+                } else if (o) { result.push(toOpts.push(o)); } else {
+                  result.push(undefined);
                 }
               } else {
                 result.push(undefined);
@@ -87,7 +85,7 @@ define([
       const opts = [];
 
       if (extraOptions) {
-        for (let opt of Array.from(extraOptions)) {
+        for (const opt of Array.from(extraOptions)) {
           opts.push(opt);
         }
       }
@@ -134,9 +132,9 @@ define([
                   return `Please enter ${min} or more characters`;
                 },
                 minimumInputLength: 1,
-                multiple: options.isMulti,
+                multiple:           options.isMulti,
                 initSelection(item) { return item; },
-                ajax: {
+                ajax:               {
                   data(term, page) { return { query: term }; },
                   quietMillis: 200,
                   transport(query) { return me.Api.sendGet(options.url, query.data).then(query.success); },
@@ -149,28 +147,27 @@ define([
 
               const ret = {
                 valueString: value.options[prop_name] || '',
-                op: value.op || _.first(data.operators),
+                op:          value.op || _.first(data.operators),
                 inputOptions
               };
 
               if (options.isMulti || ((value.options[prop_name] != null ? value.options[prop_name].map : undefined) != null)) {
                 ret.value = [];
-                ((value.options[prop_name] != null ? value.options[prop_name].map : undefined) != null) && (value.options[prop_name] != null ? value.options[prop_name].map(function(id) {
+                ((value.options[prop_name] != null ? value.options[prop_name].map : undefined) != null) && (value.options[prop_name] != null ? value.options[prop_name].map((id) => {
                   if (options.hardcodedSkipLoadById) {
                     return ret.value.push(options.map(id));
-                  } else {
-                    return me.Api.sendGet(options.url + '/' + id).then(function(res) {
-                      if (!options.map) { return ret.value.push(res.data); }
-                      return ret.value.push(options.map(res.data));
-                    });
                   }
+                  return me.Api.sendGet(`${options.url}/${id}`).then((res) => {
+                    if (!options.map) { return ret.value.push(res.data); }
+                    return ret.value.push(options.map(res.data));
+                  });
                 }) : undefined);
               } else {
                 if (!value.options[prop_name]) { return ret; }
                 if (options.hardcodedSkipLoadById) {
                   ret.value = options.map(value.options[prop_name]);
                 } else {
-                  me.Api.sendGet(options.url + '/' + value.options[prop_name]).then(function(res) {
+                  me.Api.sendGet(`${options.url}/${value.options[prop_name]}`).then((res) => {
                     if (!options.map) { return res.data; }
                     return ret.value = options.map(res.data);
                   });

@@ -1,5 +1,5 @@
 define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
-, function(Admin_Usersources_Ctrl_EditDeskproInstance, Util) {
+, (Admin_Usersources_Ctrl_EditDeskproInstance, Util) => {
   class Admin_Usersources_Ctrl_AddDeskproInstance extends Admin_Usersources_Ctrl_EditDeskproInstance {
     static initClass() {
       this.CTRL_ID   = 'Admin_Usersources_Ctrl_AddDeskproInstance';
@@ -10,9 +10,9 @@ define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
     getInstanceId() { return null; }
     initialLoad() {
       this.usersource = {
-        title: 'Deskpro',
+        title:       'Deskpro',
         is_disabled: false,
-        options: {
+        options:     {
           reg_enabled: true
         }
       };
@@ -21,13 +21,13 @@ define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
     }
 
     loadPasswordSettings() {
-      return this.Api.sendGet('/password_settings', {rate_limit_context: 'user'}).then( res => {
+      return this.Api.sendGet('/password_settings', { rate_limit_context: 'user' }).then((res) => {
         this.$scope.policy_settings = {
           sessions_lifetime:              res.data.settings.sessions_lifetime,
           session_keepalive_require_page: res.data.settings.session_keepalive_require_page,
           ip_security_enabled:            res.data.settings.ip_security_enabled,
           ip_security_mode:               res.data.settings.ip_security_mode || 'admins',
-          ip_security_whitelist_lifetime: res.data.settings.ip_security_whitelist_lifetime + "",
+          ip_security_whitelist_lifetime: `${res.data.settings.ip_security_whitelist_lifetime}`,
           disable_notifications:          res.data.settings.disable_notifications,
           enable_agent_rememberme:        res.data.settings.enable_agent_rememberme,
           enable_user_rememberme:         res.data.settings.enable_user_rememberme,
@@ -58,7 +58,7 @@ define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
     }
 
     loadRegSettings() {
-      return this.Api.sendGet('/registration_settings', {rate_limit_context: 'user'}).then( res => {
+      return this.Api.sendGet('/registration_settings', { rate_limit_context: 'user' }).then((res) => {
         this.$scope.settings = res.data.registration_settings;
         this.settings = angular.copy(this.$scope.settings);
         return this.$scope.rate_limit_settings = res.data.rate_limit_settings;
@@ -66,7 +66,6 @@ define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
     }
 
     savePolicySettings() {
-
       const settings = this.$scope.policy_settings;
       settings.agent = Util.clone(this.$scope.policy_agent, true);
       settings.user  = Util.clone(this.$scope.policy_user, true);
@@ -96,7 +95,7 @@ define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
       const post = {
         settings,
         rate_limit_settings: this.$scope.rate_limit_settings,
-        rate_limit_context: 'agent'
+        rate_limit_context:  'agent'
       };
 
       return this.Api.sendPostJson('/password_settings', post);
@@ -105,8 +104,8 @@ define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
     saveRegSettings() {
       const postData = {
         registration_settings: this.$scope.settings,
-        rate_limit_settings: this.$scope.rate_limit_settings,
-        rate_limit_context: 'user'
+        rate_limit_settings:   this.$scope.rate_limit_settings,
+        rate_limit_context:    'user'
       };
 
       return this.Api.sendPostJson('/registration_settings', postData);
@@ -119,10 +118,10 @@ define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
       }
 
       const postData = {
-        title: this.usersource.title || 'Deskpro',
-        is_enabled: this.usersource.is_enabled,
-        options: this.usersource.options,
-        brands: this.$scope.usersource_detailsv2.brands,
+        title:         this.usersource.title || 'Deskpro',
+        is_enabled:    this.usersource.is_enabled,
+        options:       this.usersource.options,
+        brands:        this.$scope.usersource_detailsv2.brands,
         is_all_brands: this.$scope.usersource_detailsv2.is_all_brands
       };
 
@@ -131,10 +130,10 @@ define(['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
           this.listCtrl().refresh();
           return this.Growl.success(this.getRegisteredMessage('saved_settings'));
         },
-        res => {
+        (res) => {
           const msg = this.getRegisteredMessage(res.data.error_code) || res.data.error_message || '';
           return this.Growl.error(msg);
-      });
+        });
 
       return this.$q.all([p, this.savePolicySettings(), this.saveRegSettings()]);
     }

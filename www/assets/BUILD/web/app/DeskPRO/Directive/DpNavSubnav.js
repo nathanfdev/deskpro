@@ -1,4 +1,4 @@
-define(function() {
+define(() => {
   /*
     * Description
     * -----------
@@ -23,22 +23,20 @@ define(function() {
       link(scope, element, attrs) {
         const $parent = element.parent();
         const $toggler = $parent.find('> a');
-        $toggler.on('click', function(ev) {
+        $toggler.on('click', (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
 
           if ($parent.hasClass('sublist-open')) {
             $parent.removeClass('sublist-open');
             return element.slideUp();
-          } else {
-            $parent.addClass('sublist-open');
-            return element.slideDown();
           }
-
+          $parent.addClass('sublist-open');
+          return element.slideDown();
         });
       }
     })
-  
+
   ];
 
   return DeskPRO_Directive_DpNavSubnav;

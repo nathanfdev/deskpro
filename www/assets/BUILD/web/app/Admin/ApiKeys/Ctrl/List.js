@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
   class Admin_ApiKeys_Ctrl_List extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_ApiKeys_Ctrl_List';
@@ -10,16 +10,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
 
-
     /*
      * Loads the list
      */
     initialLoad() {
-      return this.service.all().then(list => { return this.list = list; });
+      return this.service.all().then(list => this.list = list);
     }
   }
   Admin_ApiKeys_Ctrl_List.initClass();
-
 
 
   return Admin_ApiKeys_Ctrl_List.EXPORT_CTRL();

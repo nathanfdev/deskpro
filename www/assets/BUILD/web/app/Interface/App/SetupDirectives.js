@@ -47,7 +47,7 @@ define([
   Reports_App_Directive_DpTabBtn,
   DeskPRO_Directive_DpClipboard
 ) =>
-  function(Module) {
+  function (Module) {
     /*
      * Dashboards specific directives
      */

@@ -3,15 +3,14 @@ define([
   'DeskPRO/Util/Strings',
   'DeskPRO/Util/Arrays',
   'DeskPRO/Util/Numbers'
-], function(
+], (
   Util,
   Strings,
   Arrays,
   Numbers
-) {
+) => {
   class DeskPRO_CategoryBuilder_Controller {
     static initClass() {
-
       this.FACTORY = ['$scope', '$element', '$attrs', '$compile', '$q', '$injector',
         ($scope, $element, $attrs, $compile, $q, $injector) => new DeskPRO_CategoryBuilder_Controller($scope, $element, $attrs, $compile, $q, $injector)
       ];
@@ -28,18 +27,16 @@ define([
       this.$scope.new_cat_parent = '0';
       this.$scope.parent_cat_list = [];
       this.$scope.sortedListOptions = {
-        axis: 'y',
+        axis:   'y',
         handle: '.dp-cb-row-move',
-        update: (ev, data) => {
-          return this.updateOrder();
-        }
+        update: (ev, data) => this.updateOrder()
       };
 
       this.addRowEl = this.$element.find('.dp-cb-newrow');
       this.rootListEl = this.$element.find('.dp-cb-root');
 
       const me = this;
-      this.$element.on('click', '.dp-cb-addbtn', function(ev) {
+      this.$element.on('click', '.dp-cb-addbtn', function (ev) {
         ev.preventDefault();
         return me.addNewCatFromTrigger(this);
       });
@@ -54,7 +51,7 @@ define([
         this.addRowEl.find('.dp-cb-select-wrap').hide();
       }
 
-      this.$element.on('click', '.remove-trigger', function(ev) {
+      this.$element.on('click', '.remove-trigger', function (ev) {
         let Api;
         ev.preventDefault();
         const row = $(this).closest('li');
@@ -62,15 +59,15 @@ define([
         let id = row.data('catId');
         const removeIds = [id];
         const doRemoveIds = [];
-        ('cb_' !== id.toString().substr(0, 3)) && doRemoveIds.push(id);
+        (id.toString().substr(0, 3) !== 'cb_') && doRemoveIds.push(id);
 
-        row.find('li').each(function() {
+        row.find('li').each(function () {
           id = $(this).data('catId');
           removeIds.push(id);
-          return ('cb_' !== id.toString().substr(0, 3)) && doRemoveIds.push(id);
+          return (id.toString().substr(0, 3) !== 'cb_') && doRemoveIds.push(id);
         });
 
-        const doRemove = function() {
+        const doRemove = function () {
           const viewValue = me.ngModel.$viewValue || [];
           for (id of Array.from(removeIds)) {
             delete me.cat_rows[id];
@@ -88,7 +85,7 @@ define([
           }
 
           return row.slideUp(200, () =>
-            me.$scope.$apply(function() {
+            me.$scope.$apply(() => {
               row.remove();
               me.ngModel.$setViewValue(viewValue);
               return me.updateView(viewValue);
@@ -109,16 +106,15 @@ define([
           return doRemove();
         }
 
-        return Api.sendDelete('/custom_fields/option', {step: 1, type: me.$scope.fieldType, ids: doRemoveIds}).then(
-          function(res) {
+        return Api.sendDelete('/custom_fields/option', { step: 1, type: me.$scope.fieldType, ids: doRemoveIds }).then(
+          (res) => {
             // if nothing to do, just delete
             if (!res.data.success || (res.data.options == null)) { return doRemove(); }
 
             return $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL + '/load-view/' + 'CustomFields/Common/delete-option-modal.html',
-              controller:  ['$scope', '$modalInstance', function($scope, $modalInstance) {
-
-                for (let k in res.data.options) {
+              templateUrl: `${DP_BASE_ADMIN_URL}/load-view/` + 'CustomFields/Common/delete-option-modal.html',
+              controller:  ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+                for (const k in res.data.options) {
                   const v = res.data.options[k];
                   if (!me.cat_rows[k]) { delete res.data.options[k]; }
                 }
@@ -130,7 +126,7 @@ define([
                 $scope.type = me.$scope.fieldType;
                 $scope.name = row.children('div').children('input').val();
 
-                return $scope.confirm = function() {
+                return $scope.confirm = function () {
                   if ($scope.mode) {
                     $scope.busy = true;
                     const data = {
@@ -145,9 +141,9 @@ define([
                   return $scope.dismiss();
                 };
               }
-              ]});
+              ] });
           },
-          function() {}
+          () => {}
         );
       });
     }
@@ -155,7 +151,7 @@ define([
     updateOrder() {
       let order = 10;
       const { cat_rows } = this;
-      this.$element.find('.dp-cb-row').each(function() {
+      this.$element.find('.dp-cb-row').each(function () {
         const rowId = $(this).data('cat-id');
         if (!rowId || !cat_rows[rowId]) { return; }
         cat_rows[rowId].display_order = order;
@@ -163,7 +159,7 @@ define([
       });
 
       const viewValue = this.ngModel.$viewValue || [];
-      for (let row of Array.from(viewValue)) {
+      for (const row of Array.from(viewValue)) {
         const rowId = row.id;
         if (rowId && cat_rows[rowId]) {
           row.display_order = cat_rows[rowId].display_order;
@@ -176,13 +172,11 @@ define([
     setModel(ngModel) {
       this.ngModel = ngModel;
       this.cat_rows = {};
-      this.ngModel.$render = () => {
-        return this.updateView(this.ngModel.$modelValue);
-      };
+      this.ngModel.$render = () => this.updateView(this.ngModel.$modelValue);
 
-      this.ngModel.$parsers.push( viewValue => viewValue || []);
+      this.ngModel.$parsers.push(viewValue => viewValue || []);
 
-      return this.ngModel.$formatters.push( modelValue => modelValue);
+      return this.ngModel.$formatters.push(modelValue => modelValue);
     }
 
     updateView(cats) {
@@ -190,7 +184,7 @@ define([
         cats = [];
       }
 
-      for (let cat of Array.from(cats)) {
+      for (const cat of Array.from(cats)) {
         if (this.cat_rows[cat.id] != null) {
           this.cat_rows[cat.id][0].detach();
         } else {
@@ -205,7 +199,7 @@ define([
       const old_p = this.rootListEl.parent();
       this.rootListEl.detach();
       this._procCats(cats, this.rootListEl, 0);
-      this.rootListEl.find('.dp-cb-addrow').each(function() {
+      this.rootListEl.find('.dp-cb-addrow').each(function () {
         const list = this.parentNode;
         return $(this).detach().appendTo(list);
       });
@@ -213,9 +207,9 @@ define([
       this.$scope.new_cat_parent = old_parent_opt;
 
       if (this.$attrs.saveFlatArray) {
-        var proc = function(parent_id, title_segs) {
+        var proc = function (parent_id, title_segs) {
           const select_options = [];
-          for (let opt of Array.from(cats)) {
+          for (const opt of Array.from(cats)) {
             if (opt.parent_id === parent_id) {
               title_segs.push(opt.title);
               const sub_options = proc(opt.id, title_segs);
@@ -224,7 +218,7 @@ define([
                 Arrays.append(select_options, sub_options);
               } else {
                 select_options.push({
-                  id: opt.id,
+                  id:    opt.id,
                   title: title_segs.join(' > ')
                 });
               }
@@ -245,7 +239,7 @@ define([
       if (depth == null) { depth = 0; }
       return (() => {
         const result = [];
-        for (let cat of Array.from(cats)) {
+        for (const cat of Array.from(cats)) {
           var full_title;
           let do_add = false;
           if (!parent_id && !cat.parent_id) {
@@ -259,14 +253,14 @@ define([
           if (!do_add) { continue; }
 
           if (parent_titles.length) {
-            full_title = parent_titles + ' > ' + cat.title;
+            full_title = `${parent_titles} > ${cat.title}`;
           } else {
             full_title = cat.title;
           }
 
-          if ((depth+1) < this.maxDepth) {
+          if ((depth + 1) < this.maxDepth) {
             this.$scope.parent_cat_list.push({
-              id: cat.id,
+              id:    cat.id,
               title: full_title
             });
           }
@@ -317,8 +311,8 @@ define([
       let max = 10;
 
       const viewValue = this.ngModel.$viewValue || [];
-      for (let row of Array.from(viewValue)) {
-        if ((parentId && ((row.parent_id != null) && ((row.parent_id+"") === (parentId+"")))) || !parentId) {
+      for (const row of Array.from(viewValue)) {
+        if ((parentId && ((row.parent_id != null) && ((`${row.parent_id}`) === (`${parentId}`)))) || !parentId) {
           if (row.display_order >= max) {
             max = row.display_order + 10;
           }
@@ -337,15 +331,15 @@ define([
       }
 
       let parent_id = this.$scope.new_cat_parent;
-      if (!parent_id || (parent_id === "") || (parent_id === "0") || (parent_id === 0)) {
+      if (!parent_id || (parent_id === '') || (parent_id === '0') || (parent_id === 0)) {
         parent_id = null;
       } else if (Numbers.isNumeric(parent_id)) {
         parent_id = parseInt(parent_id);
       }
 
       const catData = {
-        id:        Util.uid('cb_'),
-        "@is_new": true,
+        id:            Util.uid('cb_'),
+        '@is_new':     true,
         title,
         parent_id,
         display_order: this.getMaxDisplayOrder(parent_id)
@@ -357,9 +351,7 @@ define([
 
       this.$scope.new_cat_title = '';
 
-      return this.$scope.$apply( () => {
-        return this.addCat(catData);
-      });
+      return this.$scope.$apply(() => this.addCat(catData));
     }
 
 

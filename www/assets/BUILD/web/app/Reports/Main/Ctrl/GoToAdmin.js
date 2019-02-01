@@ -1,4 +1,4 @@
-define(['Reports/Main/Ctrl/Base'], function(Reports_Main_Ctrl_Bare) {
+define(['Reports/Main/Ctrl/Base'], (Reports_Main_Ctrl_Bare) => {
   class Reports_Main_Ctrl_GoToAdmin extends Reports_Main_Ctrl_Bare {
     static initClass() {
       this.CTRL_ID   = 'Reports_Main_Ctrl_GoToAdmin';
@@ -7,11 +7,10 @@ define(['Reports/Main/Ctrl/Base'], function(Reports_Main_Ctrl_Bare) {
 
     init() {
       if (!window.parent || !window.parent.DP_FRAME_OVERLAYS || !window.parent.DP_FRAME_OVERLAYS.admin) {
-        return window.location.href = window.DP_BASE_URL + 'admin/';
-      } else {
-        window.parent.DP_FRAME_OVERLAYS.admin.open();
-        return window.parent.DP_FRAME_OVERLAYS.reports.close();
+        return window.location.href = `${window.DP_BASE_URL}admin/`;
       }
+      window.parent.DP_FRAME_OVERLAYS.admin.open();
+      return window.parent.DP_FRAME_OVERLAYS.reports.close();
     }
   }
   Reports_Main_Ctrl_GoToAdmin.initClass();

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) => {
   class Admin_ApiKeys_Ctrl_Logs extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_ApiKeys_Ctrl_Logs';
@@ -20,11 +20,9 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
      * Loads the list
      */
     initialLoad() {
-      this.service.getOptions().then(data => {
-        return this.options = data;
-      });
+      this.service.getOptions().then(data => this.options = data);
 
-      return this.service.loadList(null, {page: 1}).then( data => {
+      return this.service.loadList(null, { page: 1 }).then((data) => {
         this.list = data;
         this.pagination = this.service.getPagination();
         return this.initializeScopeWatching();
@@ -39,19 +37,13 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
       return this.service.updateOptions(this.options).then(
         () => {
           this.Growl.success('Successfully saved your new settings');
-          return this.service.getOptions().then(data => {
-            return this.options = data;
-          });
+          return this.service.getOptions().then(data => this.options = data);
         },
-        () => {
-          return this.Growl.error('Error while saving');
-      });
+        () => this.Growl.error('Error while saving'));
     }
 
     initializeScopeWatching() {
-
       return this.$scope.$watch('LogsCtrl.pagination', (newVal, oldVal) => {
-
         const old_page = parseInt(oldVal.page);
         const new_page = parseInt(newVal.page);
 
@@ -59,7 +51,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
           return undefined;
         }
 
-        return this.service.refreshList().then( data => {
+        return this.service.refreshList().then((data) => {
           this.list = data;
           return this.pagination = this.service.getPagination();
         });
@@ -69,7 +61,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base
 
     refreshList() {
       this.startSpinner('loading');
-      return this.service.refreshList().then( () => this.stopSpinner('loading'));
+      return this.service.refreshList().then(() => this.stopSpinner('loading'));
     }
   }
   Admin_ApiKeys_Ctrl_Logs.initClass();
