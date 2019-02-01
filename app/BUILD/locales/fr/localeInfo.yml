@@ -1,6 +1,6 @@
 id: french
 name: French
-nameLocal: 'Anglais (US)'
+nameLocal: Français
 locale: fr
 isRtl: false
 pluralRules:
