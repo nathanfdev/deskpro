@@ -2737,6 +2737,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				name: 'ban',
 				value: 1
 			});
+      this.doBanInProgress = true;
 		}
 
 		var self = this;
@@ -2762,7 +2763,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					DeskPRO_Window.removePage(self);
 					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
 				}
-			}
+			},
+      complete: function(jqXHR, textStatus) {
+        this.doBanInProgress = false;
+      }
 		});
 	},
 
@@ -3438,6 +3442,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.doTicketUpdateRunning.abort();
 			this.doTicketUpdateRunning = null;
 		}
+
+    // if ticket purge in progess don't update ticket view to prevent NotFound alert
+    if (this.doBanInProgress) {
+      return;
+    }
 
 		var formData = [];
 		formData.push({
