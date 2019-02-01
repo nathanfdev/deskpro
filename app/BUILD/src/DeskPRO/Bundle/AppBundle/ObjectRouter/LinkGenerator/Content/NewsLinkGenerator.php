@@ -26,6 +26,8 @@ class NewsLinkGenerator extends AbstractContentLinkGenerator
     protected function getBrand(ContentAbstract $object)
     {
         /* @var News $object */
-        return $object->getCategory()->getBrand();
+        $category = $object->getCategory();
+
+        return $category ? $category->getBrand() : null;
     }
 }
