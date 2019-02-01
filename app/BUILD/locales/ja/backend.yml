@@ -1339,6 +1339,7 @@ admin.general.error_ssl_feature_tip: 'This feature requires the OpenSSL PHP exte
 admin.general.error_ssl_tip: 'Secure connections require the OpenSSL PHP extension which is currently not installed. Click now for more information.'
 admin.general.error_type: 'Error Type'
 admin.general.event: Event
+admin.general.fail: Fail
 admin.general.fields: Fields
 admin.general.file_uploads: 'File Uploads'
 admin.general.first: First
@@ -2930,6 +2931,8 @@ agent.general.contact_address: 'Contact Address'
 agent.general.contact_instant_messaging: 'Contact Instant Messaging'
 agent.general.contact_phone: 'Contact Phone'
 agent.general.contains: contains
+agent.general.content: Content
+agent.general.content_type: 'Content type'
 agent.general.content_matches_summary: 'Content matches: {{pattern}}'
 agent.general.continue: Continue
 agent.general.copy_permalink: 'Copy permalink'
@@ -3281,6 +3284,7 @@ agent.general.name: Name
 agent.general.name_az: 'Name (A-Z)'
 agent.general.name_is_summary: 'Name is {{name}}'
 agent.general.name_za: 'Name (Z-A)'
+agent.general.next: Next
 agent.general.never: Never
 agent.general.new: New
 agent.general.new_article: 'New Article'
@@ -3333,6 +3337,7 @@ agent.general.number_of_tickets: 'Number of tickets'
 agent.general.of: of
 agent.general.off: 'Off'
 agent.general.okay: Okay
+agent.general.ok: OK
 agent.general.on: 'On'
 agent.general.online_now: 'Onlne Now'
 agent.general.open: Open
@@ -3376,6 +3381,7 @@ agent.general.popularity: Popularity
 agent.general.portal: Portal
 agent.general.position: Position
 agent.general.prev: Prev
+agent.general.previous: Previous
 agent.general.print: Print
 agent.general.priorities: Priorities
 agent.general.priority: Priority
@@ -4724,7 +4730,7 @@ agent.tickets.kbd_awaiting_agent: '<span class="show-key-shortcut">エ</span>ー
 agent.tickets.kbd_awaiting_user: '<span class="show-key-shortcut">ユ</span>ーザを待っています'
 agent.tickets.kbd_resolved: 'Resolve<span class="show-key-shortcut">d</span>'
 agent.tickets.kbd_send_awaiting_agent: '待っている返信を送信<span class="show-key-shortcut">エ</span>ージェント'
-agent.tickets.kbd_send_awaiting_user: '待っている返信を送信<span class="show-key-shortcut">ユ</span>ーザ'
+agent.tickets.kbd_send_awaiting_user: '<span class="show-key-shortcut">ユ</span>ーザ待ちとして返信する'
 agent.tickets.kbd_send_resolved: 'Send Reply as Resolve<span class="show-key-shortcut">d</span>'
 agent.tickets.lables: ラベル
 agent.tickets.last_agent_reply: 最後のエージェントの返信
@@ -5415,6 +5421,7 @@ api.error_codes.missing_country_code: 'Country code is missing.'
 api.error_codes.missing_jwt_token: 'JWT token is required.'
 api.error_codes.no_default_dashboard_permission: 'can''t grant edit permission for agent to default dashboard'
 api.error_codes.no_permission: 'You have no permission to modify "{{value}}" object(s).'
+api.error_codes.no_delete_permission: 'You have no permission to delete "{{value}}" object(s).'
 api.error_codes.no_source_provided: 'Unable to fetch data, no report widget or js code provided.'
 api.error_codes.no_uploaded_file: 'Uploaded file was not found.'
 api.error_codes.not_an_image: 'Uploaded file is not an image'
