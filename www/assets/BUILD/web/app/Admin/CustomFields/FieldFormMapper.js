@@ -8,8 +8,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
-  let FieldFormMapper;
-  return (FieldFormMapper = class FieldFormMapper {
+  class FieldFormMapper {
     /*
      * Get a form model for an existing field
      *
@@ -587,5 +586,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
       fieldModel.is_enabled = formModel.is_enabled;
       return fieldModel;
     }
-  });
+  }
+
+  return FieldFormMapper;
 });

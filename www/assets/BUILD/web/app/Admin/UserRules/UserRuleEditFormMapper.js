@@ -11,8 +11,7 @@ define([
 ], function(
   Util
 ) {
-  let UserRuleEditFormMapper;
-  return (UserRuleEditFormMapper = class UserRuleEditFormMapper {
+  class UserRuleEditFormMapper {
     getFormFromModel(model) {
       let title;
       const form = {};
@@ -45,5 +44,7 @@ define([
       postData.add_usergroup = formModel.usergroup.id;
       return postData;
     }
-  });
+  }
+
+  return UserRuleEditFormMapper;
 });

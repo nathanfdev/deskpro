@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let Admin_TicketMacros_MacroEditFormMapper;
-  return (Admin_TicketMacros_MacroEditFormMapper = class Admin_TicketMacros_MacroEditFormMapper {
+  class Admin_TicketMacros_MacroEditFormMapper {
     getFormFromModel(macroModel) {
       const form = {};
       form.title = macroModel.title || '';
@@ -46,5 +45,7 @@ define(function() {
 
       return postData;
     }
-  });
+  }
+
+  return Admin_TicketMacros_MacroEditFormMapper;
 });

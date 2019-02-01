@@ -16,8 +16,7 @@ define([
   Util,
   Arrays,
   BaseTypesDef) {
-  let Admin_OptionBuilder_TypesDef_BaseActionTypesDef;
-  return (Admin_OptionBuilder_TypesDef_BaseActionTypesDef = class Admin_OptionBuilder_TypesDef_BaseActionTypesDef extends BaseTypesDef {
+  class Admin_OptionBuilder_TypesDef_BaseActionTypesDef extends BaseTypesDef {
     constructor($q, Api, Api2, dpTemplateManager) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
@@ -302,5 +301,6 @@ define([
 
       return fname;
     }
-  });
+  }
+  return Admin_OptionBuilder_TypesDef_BaseActionTypesDef;
 });

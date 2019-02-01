@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let Admin_Main_Service_SessionPing;
-  return (Admin_Main_Service_SessionPing = class Admin_Main_Service_SessionPing {
+  class Admin_Main_Service_SessionPing {
     constructor(Api) {
       this.Api = Api;
       this.paused = false;
@@ -52,5 +51,7 @@ define(function() {
       });
       return p;
     }
-  });
+  }
+
+  return Admin_Main_Service_SessionPing;
 });

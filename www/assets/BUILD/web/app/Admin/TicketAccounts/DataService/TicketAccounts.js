@@ -16,8 +16,7 @@ define([
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
 )  {
-  let Admin_TicketAccounts_DataService_TicketAccounts;
-  return (Admin_TicketAccounts_DataService_TicketAccounts = class Admin_TicketAccounts_DataService_TicketAccounts extends Admin_Main_DataService_Base {
+  class Admin_TicketAccounts_DataService_TicketAccounts extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
       this.$q   = $q;
@@ -104,5 +103,6 @@ define([
       this.recs.set(model.id, model);
       return model;
     }
-  });
+  }
+  return Admin_TicketAccounts_DataService_TicketAccounts;
 });

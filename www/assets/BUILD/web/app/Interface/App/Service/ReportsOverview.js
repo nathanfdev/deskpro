@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Util'], function(Util) {
-  let ReportsOverview;
-  return (ReportsOverview = class ReportsOverview {
+  class ReportsOverview {
     constructor(Api, $q) {
       this.overviewUrl = '/reports/overview/data/';
       this.statsUrl = '/reports/overview/get-stats/';
@@ -214,5 +213,6 @@ define(['DeskPRO/Util/Util'], function(Util) {
         return result;
       })();
     }
-  });
+  }
+  return ReportsOverview;
 });

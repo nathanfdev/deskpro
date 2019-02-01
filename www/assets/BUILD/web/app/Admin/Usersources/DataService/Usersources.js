@@ -11,26 +11,23 @@ define([
 ], function(
   BaseListEdit
 ) {
-  let Usersources;
-  return Usersources = (function() {
-    Usersources = class Usersources extends BaseListEdit {
-      static initClass() {
-        this.$inject = ['Api', '$q'];
-      }
+  class Usersources extends BaseListEdit {
+    static initClass() {
+      this.$inject = ['Api', '$q'];
+    }
 
-      init() {}
+    init() {}
 
-      /*
-       * Update display orders
-       *
-       * @param {Array} Array of IDs in order
-       * @return {promise}
-       */
-      saveDisplayOrder(display_orders) {
-        return this.Api.sendPostJson('/usersources/display-order', {display_orders});
-      }
-    };
-    Usersources.initClass();
-    return Usersources;
-  })();
+    /*
+     * Update display orders
+     *
+     * @param {Array} Array of IDs in order
+     * @return {promise}
+     */
+    saveDisplayOrder(display_orders) {
+      return this.Api.sendPostJson('/usersources/display-order', {display_orders});
+    }
+  }
+  Usersources.initClass();
+  return Usersources;
 });

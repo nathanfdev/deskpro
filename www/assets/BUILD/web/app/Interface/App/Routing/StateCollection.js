@@ -6,8 +6,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let StateCollection;
-  return (StateCollection = class StateCollection {
+  class StateCollection {
     constructor(factory) {
       this.factory = factory;
       this.routes = [];
@@ -24,5 +23,6 @@ define(function() {
       this.whens.push([path, to_path]);
       return null;
     }
-  });
+  }
+  return StateCollection;
 });

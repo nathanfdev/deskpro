@@ -14,8 +14,7 @@ define([
   Logger,
   LineFormatter
 ) {
-  let AbstractHandler;
-  return (AbstractHandler = class AbstractHandler {
+  class AbstractHandler {
     constructor(level, bubble) {
       if (level == null) { level = Logger.DEBUG; }
       this.level = level;
@@ -139,5 +138,6 @@ define([
       this.bubble = bubble;
       return this;
     }
-  });
+  }
+  return AbstractHandler;
 });

@@ -11,18 +11,15 @@ define([
 ], function(
   BaseTriggers,
 )  {
-  let Admin_TicketTriggers_DataService_TriggersUpdate;
-  return Admin_TicketTriggers_DataService_TriggersUpdate = (function() {
-    Admin_TicketTriggers_DataService_TriggersUpdate = class Admin_TicketTriggers_DataService_TriggersUpdate extends BaseTriggers {
-      static initClass() {
-        this.$inject = ['Api', '$q'];
-      }
+  class Admin_TicketTriggers_DataService_TriggersUpdate extends BaseTriggers {
+    static initClass() {
+      this.$inject = ['Api', '$q'];
+    }
 
-      init() {
-        return this.type = 'update';
-      }
-    };
-    Admin_TicketTriggers_DataService_TriggersUpdate.initClass();
-    return Admin_TicketTriggers_DataService_TriggersUpdate;
-  })();
+    init() {
+      return this.type = 'update';
+    }
+  }
+  Admin_TicketTriggers_DataService_TriggersUpdate.initClass();
+  return Admin_TicketTriggers_DataService_TriggersUpdate;
 });

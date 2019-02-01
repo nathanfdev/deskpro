@@ -10,8 +10,7 @@ define([
 ], function(
   moment,
 ) {
-  let AgentActivity;
-  return (AgentActivity = class AgentActivity {
+  class AgentActivity {
     constructor(Api, $sce) {
       this.Api = Api;
       this.$sce = $sce;
@@ -50,5 +49,6 @@ define([
 
       return promise;
     }
-  });
+  }
+  return AgentActivity;
 });

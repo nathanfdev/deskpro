@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let TemplateLoader;
-  return (TemplateLoader = class TemplateLoader {
+  class TemplateLoader {
     constructor(loadUrl, $http, $q) {
       this.loadUrl = loadUrl;
       this.$http = $http;
@@ -46,5 +45,6 @@ define(function() {
 
       return d.promise;
     }
-  });
+  }
+  return TemplateLoader;
 });

@@ -6,10 +6,10 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let AppState;
-  return (AppState = class AppState {
+  class AppState {
     constructor(Api) {
       this.Api = Api;
     }
-  });
+  }
+  return AppState;
 });

@@ -16,8 +16,7 @@ define([
   DepAgentPermMatrix,
   Util
 ) {
-  let TicketDepFormMapper;
-  return (TicketDepFormMapper = class TicketDepFormMapper {
+  class TicketDepFormMapper {
     getFormFromModel(dep, trigger, layouts, depPerms, agents, brands, agentgroups, usergroups, email_accounts) {
       const form = {
         title: '',
@@ -237,7 +236,8 @@ define([
         return dep.has_layout = false;
       }
     }
-  });
+  }
+  return TicketDepFormMapper;
 });
 
 function __guard__(value, transform) {

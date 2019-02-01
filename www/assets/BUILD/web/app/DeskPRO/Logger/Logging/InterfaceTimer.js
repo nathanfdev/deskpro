@@ -6,8 +6,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let InterfaceTimer;
-  return (InterfaceTimer = class InterfaceTimer {
+  class InterfaceTimer {
     constructor(logger) {
       this.logger = logger;
       this.lastController = null;
@@ -48,5 +47,6 @@ define(function() {
 
     endControllerLoad() {
     }
-  });
+  }
+  return InterfaceTimer;
 });

@@ -18,8 +18,7 @@ define([
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
 )  {
-  let Admin_FeedbackTypes_DataService_FeedbackTypes;
-  return (Admin_FeedbackTypes_DataService_FeedbackTypes = class Admin_FeedbackTypes_DataService_FeedbackTypes extends Admin_Main_DataService_Base {
+  class Admin_FeedbackTypes_DataService_FeedbackTypes extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
       this.$q   = $q;
@@ -153,5 +152,7 @@ define([
 
       return this.recs.notifyListeners('changed');
     }
-  });
+  }
+
+  return Admin_FeedbackTypes_DataService_FeedbackTypes;
 });

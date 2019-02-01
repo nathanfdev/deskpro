@@ -12,8 +12,7 @@ define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsM
   /**
   * Save an ordered k=>v
   */
-  let Admin_Main_Collection_OrderedDictionary;
-  return (Admin_Main_Collection_OrderedDictionary = class Admin_Main_Collection_OrderedDictionary {
+  class Admin_Main_Collection_OrderedDictionary {
     constructor() {
       EventsMixin(this);
       this._touch = (new Date()).getTime();
@@ -224,5 +223,7 @@ define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsM
 
       return ret;
     }
-  });
+  }
+
+  return Admin_Main_Collection_OrderedDictionary;
 });

@@ -14,14 +14,7 @@ define([
   Util,
   _
 ) {
-  let Admin_TwitterAccounts_TwitterAccountEditFormMapper;
-  return (Admin_TwitterAccounts_TwitterAccountEditFormMapper = class Admin_TwitterAccounts_TwitterAccountEditFormMapper {
-
-    /*
-      *
-    *
-    */
-
+  class Admin_TwitterAccounts_TwitterAccountEditFormMapper {
     getFormFromModel(model) {
 
       const form = {};
@@ -83,5 +76,6 @@ define([
 
       return postData;
     }
-  });
+  }
+  return Admin_TwitterAccounts_TwitterAccountEditFormMapper;
 });

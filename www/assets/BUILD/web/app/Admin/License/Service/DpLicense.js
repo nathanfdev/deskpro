@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let Admin_License_Service_DpLicense;
-  return (Admin_License_Service_DpLicense = class Admin_License_Service_DpLicense {
+  class Admin_License_Service_DpLicense {
     constructor(Api, $modal, $http, $q) {
       this.Api = Api;
       this.$modal = $modal;
@@ -188,5 +187,7 @@ define(function() {
       });
       return modalInstance.result;
     }
-  });
+  }
+
+  return Admin_License_Service_DpLicense;
 });

@@ -8,8 +8,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(Arrays, Util) {
-  let DashboardsInfo;
-  return (DashboardsInfo = class DashboardsInfo {
+  class DashboardsInfo {
     constructor(Api, Api2, $q) {
       // this is just a cheap way that controllers
       // can listen on to refresh their state if we change
@@ -22,6 +21,7 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(Arrays, Util) {
       this.$q = $q;
       this.version_id = 0;
 
+      this.agents               = null;
       this.dashboardList        = [];
       this.dashboardListPromise = null;
       this.lastDashboardDetail  = null;
@@ -215,5 +215,6 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(Arrays, Util) {
 
       return d.promise;
     }
-  });
+  }
+  return DashboardsInfo;
 });

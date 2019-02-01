@@ -9,8 +9,7 @@
 define([
   'DeskPRO/Util/Util'
 ], function(Util) {
-  let Admin_ChannelSms_FormModel_EditSmsAccountModel;
-  return (Admin_ChannelSms_FormModel_EditSmsAccountModel = class Admin_ChannelSms_FormModel_EditSmsAccountModel {
+  class Admin_ChannelSms_FormModel_EditSmsAccountModel {
     constructor(account) {
       this.account = account;
       this.form = {account: {}};
@@ -59,5 +58,6 @@ define([
     setFriendlyName(name) {
       return this.form.account.identifier = name;
     }
-  });
+  }
+  return Admin_ChannelSms_FormModel_EditSmsAccountModel;
 });

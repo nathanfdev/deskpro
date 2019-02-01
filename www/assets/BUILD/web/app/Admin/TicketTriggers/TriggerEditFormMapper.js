@@ -13,8 +13,7 @@ define([
 ], function(
   _
 ) {
-  let Admin_TicketTriggers_TriggerEditFormMapper;
-  return (Admin_TicketTriggers_TriggerEditFormMapper = class Admin_TicketTriggers_TriggerEditFormMapper {
+  class Admin_TicketTriggers_TriggerEditFormMapper {
     getFormFromModel(model, forceModeMapping) {
       let rowId;
       if (forceModeMapping == null) { forceModeMapping = false; }
@@ -113,7 +112,8 @@ define([
 
       return form;
     }
-  });
+  }
+  return Admin_TicketTriggers_TriggerEditFormMapper;
 });
 function __guard__(value, transform) {
   return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;

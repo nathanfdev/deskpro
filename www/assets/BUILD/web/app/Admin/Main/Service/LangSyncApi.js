@@ -6,8 +6,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Util'], function(Util) {
-  let LangSyncApi;
-  return (LangSyncApi = class LangSyncApi {
+  class LangSyncApi {
     constructor($http, api_url, Growl) {
       this.handleError = this.handleError.bind(this);
       this.Growl = Growl;
@@ -68,5 +67,7 @@ define(['DeskPRO/Util/Util'], function(Util) {
         return console.info(data);
       }
     }
-  });
+  }
+
+  return LangSyncApi;
 });

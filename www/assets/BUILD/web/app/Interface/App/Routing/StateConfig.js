@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let StateConfig;
-  return (StateConfig = class StateConfig {
+  class StateConfig {
     static createFactory(module) {
       return function(id = null) {
         const c = new StateConfig(module, id);
@@ -59,5 +58,6 @@ define(function() {
 
       return $stateProvider.state(this.id, options);
     }
-  });
+  }
+  return StateConfig;
 });

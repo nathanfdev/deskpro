@@ -14,8 +14,7 @@ define([
 ], function(
   Util
 ) {
-  let SlaFormMapper;
-  return (SlaFormMapper = class SlaFormMapper {
+  class SlaFormMapper {
     /*
       * Converts a model we get from the API into a form model that we can use in our page
       *
@@ -172,7 +171,9 @@ define([
 
       return postData;
     }
-  });
+  }
+
+  return SlaFormMapper;
 });
 
 function __guard__(value, transform) {

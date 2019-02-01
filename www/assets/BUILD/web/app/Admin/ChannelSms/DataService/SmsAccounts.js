@@ -14,8 +14,7 @@ define([
 ], function(Admin_Main_DataService_Base,
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary)  {
-  let Admin_ChannelSms_DataService_SmsAccounts;
-  return (Admin_ChannelSms_DataService_SmsAccounts = class Admin_ChannelSms_DataService_SmsAccounts extends Admin_Main_DataService_Base {
+  class Admin_ChannelSms_DataService_SmsAccounts extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
       this.$q = $q;
@@ -95,5 +94,7 @@ define([
       this.recs.set(model.id, model);
       return model;
     }
-  });
+  }
+
+  return Admin_ChannelSms_DataService_SmsAccounts;
 });

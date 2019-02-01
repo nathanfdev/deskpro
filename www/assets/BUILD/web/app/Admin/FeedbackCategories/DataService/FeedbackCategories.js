@@ -18,8 +18,7 @@ define([
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
 )  {
-  let Admin_FeedbackCategories_DataService_FeedbackCategories;
-  return (Admin_FeedbackCategories_DataService_FeedbackCategories = class Admin_FeedbackCategories_DataService_FeedbackCategories extends Admin_Main_DataService_Base {
+  class Admin_FeedbackCategories_DataService_FeedbackCategories extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
       this.$q   = $q;
@@ -207,5 +206,7 @@ define([
 
       return this.recs.notifyListeners('changed');
     }
-  });
+  }
+
+  return Admin_FeedbackCategories_DataService_FeedbackCategories
 });

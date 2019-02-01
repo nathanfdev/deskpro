@@ -14,8 +14,7 @@ define([
   BaseService,
   moment,
 ) {
-  let TicketSatisfaction;
-  return (TicketSatisfaction = class TicketSatisfaction extends BaseService {
+  class TicketSatisfaction extends BaseService {
     constructor(Api, $sce, $q, $timeout) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
@@ -82,5 +81,6 @@ define([
       this.page++;
       return this.changePage();
     }
-  });
+  }
+  return TicketSatisfaction;
 });

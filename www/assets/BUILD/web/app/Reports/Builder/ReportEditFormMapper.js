@@ -10,8 +10,7 @@ define([
 ], function(
   Util
 ) {
-  let ReportEditFormMapper;
-  return (ReportEditFormMapper = class ReportEditFormMapper {
+  class ReportEditFormMapper {
 
     /*
       *
@@ -51,5 +50,6 @@ define([
 
       return postData;
     }
-  });
+  }
+  return ReportEditFormMapper;
 });

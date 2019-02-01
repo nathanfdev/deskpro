@@ -7,17 +7,14 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let MainLoaderCtrl;
-  return MainLoaderCtrl = (function() {
-    MainLoaderCtrl = class MainLoaderCtrl {
-      static initClass() {
-        this.$inject = ['$scope'];
-      }
-      constructor($scope) {
-        this.$scope = $scope;
-      }
-    };
-    MainLoaderCtrl.initClass();
-    return MainLoaderCtrl;
-  })();
+  class MainLoaderCtrl {
+    static initClass() {
+      this.$inject = ['$scope'];
+    }
+    constructor($scope) {
+      this.$scope = $scope;
+    }
+  }
+  MainLoaderCtrl.initClass();
+  return MainLoaderCtrl;
 });

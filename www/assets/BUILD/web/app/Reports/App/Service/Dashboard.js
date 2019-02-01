@@ -8,8 +8,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Arrays'], function(Arrays) {
-  let DashboardService;
-  return (DashboardService = class DashboardService {
+  class DashboardService {
     constructor(Api, Api2, $q) {
       this.getShareableLinks = this.getShareableLinks.bind(this);
       this.Api = Api;
@@ -435,5 +434,6 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
 
       return d.promise;
     }
-  });
+  }
+  return DashboardService;
 });

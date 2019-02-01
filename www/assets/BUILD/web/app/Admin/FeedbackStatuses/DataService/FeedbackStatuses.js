@@ -18,8 +18,7 @@ define([
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary
 )  {
-  let Admin_FeedbackStatuses_DataService_FeedbackStatuses;
-  return (Admin_FeedbackStatuses_DataService_FeedbackStatuses = class Admin_FeedbackStatuses_DataService_FeedbackStatuses extends Admin_Main_DataService_Base {
+  class Admin_FeedbackStatuses_DataService_FeedbackStatuses extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
       this.$q   = $q;
@@ -181,5 +180,7 @@ define([
 
       return this.recs.closed_statuses.notifyListeners('changed');
     }
-  });
+  }
+
+  return Admin_FeedbackStatuses_DataService_FeedbackStatuses;
 });

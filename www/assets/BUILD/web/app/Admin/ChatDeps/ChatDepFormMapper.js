@@ -15,8 +15,7 @@ define([
   DepAgentPermMatrix,
   Util
 ) {
-  let ChatDepFormMapper;
-  return (ChatDepFormMapper = class ChatDepFormMapper {
+  class ChatDepFormMapper {
 
     /*
      *
@@ -149,5 +148,7 @@ define([
         return dep.parent_id = parseInt(formModel.parent_id);
       }
     }
-  });
+  }
+
+  return ChatDepFormMapper;
 });

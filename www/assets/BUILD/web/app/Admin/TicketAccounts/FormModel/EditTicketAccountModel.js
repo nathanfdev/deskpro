@@ -11,8 +11,7 @@
 define([
   'DeskPRO/Util/Util'
 ], function(Util) {
-  let Admin_TicketAccounts_FormModel_EditTicketAccountModel;
-  return (Admin_TicketAccounts_FormModel_EditTicketAccountModel = class Admin_TicketAccounts_FormModel_EditTicketAccountModel {
+  class Admin_TicketAccounts_FormModel_EditTicketAccountModel {
     constructor(account, deps, trigger, brands) {
       this.account = account;
       this.form = {};
@@ -346,7 +345,8 @@ define([
     apply() {
       return this.account.address = this.form.address;
     }
-  });
+  }
+  return Admin_TicketAccounts_FormModel_EditTicketAccountModel;
 });
 
 function __guard__(value, transform) {

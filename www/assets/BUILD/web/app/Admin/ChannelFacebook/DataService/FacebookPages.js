@@ -14,8 +14,7 @@ define([
 ], function(Admin_Main_DataService_Base,
   Admin_Main_Model_Base,
   Admin_Main_Collection_OrderedDictionary)  {
-  let Admin_ChannelFacebook_DataService_FacebookPages;
-  return (Admin_ChannelFacebook_DataService_FacebookPages = class Admin_ChannelFacebook_DataService_FacebookPages extends Admin_Main_DataService_Base {
+  class Admin_ChannelFacebook_DataService_FacebookPages extends Admin_Main_DataService_Base {
     constructor(em, Api, $q) {
       super(em);
       this.$q = $q;
@@ -105,5 +104,7 @@ define([
       this.recs.set(model.id, model);
       return model;
     }
-  });
+  }
+
+  return Admin_ChannelFacebook_DataService_FacebookPages
 });

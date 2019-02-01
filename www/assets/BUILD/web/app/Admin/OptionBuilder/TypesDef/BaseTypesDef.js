@@ -17,8 +17,7 @@ define([
   Arrays,
   _
 ) {
-  let Admin_OptionBuilder_TypesDef_BaseTypesDef;
-  return (Admin_OptionBuilder_TypesDef_BaseTypesDef = class Admin_OptionBuilder_TypesDef_BaseTypesDef {
+  class Admin_OptionBuilder_TypesDef_BaseTypesDef {
     standardOptionsFormatter(options, extraOptions) {
       const getRenderOpt = function(opt, parentTitleSegs) {
         let title, val;
@@ -213,6 +212,7 @@ define([
         }
       };
     }
-  });
+  }
+  return Admin_OptionBuilder_TypesDef_BaseTypesDef;
 });
 

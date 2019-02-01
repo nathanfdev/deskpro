@@ -1,11 +1,3 @@
-// TODO: This file was created by bulk-decaffeinate.
-// Sanity-check the conversion and remove this comment.
-/*
- * decaffeinate suggestions:
- * DS102: Remove unnecessary code created because of implicit returns
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
- */
 define([
   'DeskPRO/Util/Strings',
   'Admin/CustomFields/Tickets/DataService/TicketFields',
@@ -81,11 +73,46 @@ define([
   DataService_PortalGeneralSettings,
   DataService_Jobs
 ) {
+  const serviceMap = {
+    "DataService_TicketFields": DataService_TicketFields,
+    "DataService_ChatFields": DataService_ChatFields,
+    "DataService_UserFields": DataService_UserFields,
+    "DataService_OrgFields": DataService_OrgFields,
+    "DataService_BillingFields": DataService_BillingFields,
+    "DataService_KbFields": DataService_KbFields,
+    "DataService_CustomFields": DataService_CustomFields,
+    "DataService_TicketFilters": DataService_TicketFilters,
+    "DataService_TicketDeps": DataService_TicketDeps,
+    "DataService_ChatDeps": DataService_ChatDeps,
+    "DataService_TicketEscalations": DataService_TicketEscalations,
+    "DataService_TicketMacros": DataService_TicketMacros,
+    "DataService_TicketSlas": DataService_TicketSlas,
+    "DataService_TriggersNew": DataService_TriggersNew,
+    "DataService_TriggersReply": DataService_TriggersReply,
+    "DataService_TriggersUpdate": DataService_TriggersUpdate,
+    "DataService_Webhooks": DataService_Webhooks,
+    "DataService_Problems": DataService_Problems,
+    "DataService_TwitterAccounts": DataService_TwitterAccounts,
+    "DataService_ApiKeys": DataService_ApiKeys,
+    "DataService_ApiLogs": DataService_ApiLogs,
+    "DataService_ApiTags": DataService_ApiTags,
+    "DataService_Bans": DataService_Bans,
+    "DataService_UserGroups": DataService_UserGroups,
+    "DataService_UserRules": DataService_UserRules,
+    "DataService_Agents": DataService_Agents,
+    "DataService_RoundRobin": DataService_RoundRobin,
+    "DataService_AgentGroups": DataService_AgentGroups,
+    "DataService_AgentTeams": DataService_AgentTeams,
+    "DataService_Tasks": DataService_Tasks,
+    "DataService_Usersources": DataService_Usersources,
+    "DataService_PortalGeneralSettings": DataService_PortalGeneralSettings,
+    "DataService_Jobs": DataService_Jobs
+  };
+
   /*
    * A simple wrapper around the data services
    */
-  let Admin_Main_Service_DataServiceManager;
-  return (Admin_Main_Service_DataServiceManager = class Admin_Main_Service_DataServiceManager {
+  class Admin_Main_Service_DataServiceManager {
     constructor($injector) {
       this.$injector = $injector;
       this.ds_cache = {};
@@ -114,13 +141,13 @@ define([
 
 
     factory(serviceId) {
-// If this class has a custom initXXX method, call that
-// instead uf the default
+      // If this class has a custom initXXX method, call that
+      // instead uf the default
       const initName = `init${Strings.ucFirst(Strings.toCamelCase(serviceId))}`;
       if (this[initName] != null) { return this[initName](); }
 
       const name = `DataService_${serviceId}`;
-      eval(`constructor = ${name};`);
+      const constructor = serviceMap[name];
 
       if (!constructor) { throw new Error(`Invalid data service name: ${name}`); }
 
@@ -128,5 +155,7 @@ define([
       if (obj.init != null) { obj.init.apply(obj, Array.prototype.slice.call(arguments, 1)); }
       return obj;
     }
-  });
+  }
+
+  return Admin_Main_Service_DataServiceManager
 });

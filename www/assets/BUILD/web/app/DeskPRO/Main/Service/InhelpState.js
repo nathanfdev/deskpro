@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let DeskPRO_Main_Service_InhelpState;
-  return (DeskPRO_Main_Service_InhelpState = class DeskPRO_Main_Service_InhelpState {
+  class DeskPRO_Main_Service_InhelpState {
     constructor(Api) {
       this.Api = Api;
 
@@ -43,5 +42,6 @@ define(function() {
         return this.Api.sendPost(`/profile/inhelp/${id}/${state}`);
       }
     }
-  });
+  }
+  return DeskPRO_Main_Service_InhelpState;
 });

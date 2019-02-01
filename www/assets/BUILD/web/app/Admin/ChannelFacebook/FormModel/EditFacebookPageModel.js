@@ -8,8 +8,7 @@
 define([
   'DeskPRO/Util/Util'
 ], function(Util) {
-  let Admin_ChannelFacebook_FormModel_EditFacebookPageModel;
-  return (Admin_ChannelFacebook_FormModel_EditFacebookPageModel = class Admin_ChannelFacebook_FormModel_EditFacebookPageModel {
+  class Admin_ChannelFacebook_FormModel_EditFacebookPageModel {
     constructor(page) {
       this.page = page;
 
@@ -47,5 +46,6 @@ define([
       const form = Util.clone(this.form, true);
       return form.page;
     }
-  });
+  }
+  return Admin_ChannelFacebook_FormModel_EditFacebookPageModel;
 });

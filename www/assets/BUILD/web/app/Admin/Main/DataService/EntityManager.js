@@ -16,8 +16,7 @@ define([
   Admin_Main_DataService_Base,
   Admin_Main_Model_Base
 )  {
-  let Admin_Main_DataService_EntityManager;
-  return (Admin_Main_DataService_EntityManager = class Admin_Main_DataService_EntityManager {
+  class Admin_Main_DataService_EntityManager {
     constructor() {
       this.entity_cache = {};
     }
@@ -251,5 +250,7 @@ define([
         return this.entity_cache = {};
       }
     }
-  });
+  }
+
+  return Admin_Main_DataService_EntityManager;
 });

@@ -25,8 +25,7 @@ define(['angular'], function(angular) {
     * That means you could have two records with ID 5, or a record with a "parent" of 5 etc.
     * These models by themselves are not a repository.
   */
-  let Admin_Main_Model_Base;
-  return (Admin_Main_Model_Base = class Admin_Main_Model_Base {
+  class Admin_Main_Model_Base {
     constructor(type_id, id_prop) {
       if (id_prop == null) { id_prop = 'id'; }
       this._obj_time   = (new Date()).getTime();
@@ -331,5 +330,6 @@ define(['angular'], function(angular) {
 
       return changed;
     }
-  });
+  }
+  return Admin_Main_Model_Base;
 });

@@ -10,8 +10,7 @@ define([
 ], function(
   Util
 ) {
-  let UserGroupEditFormMapper;
-  return (UserGroupEditFormMapper = class UserGroupEditFormMapper {
+  class UserGroupEditFormMapper {
     getFormFromModel(model) {
       const form = {};
 
@@ -47,5 +46,6 @@ define([
 
       return postData;
     }
-  });
+  }
+  return UserGroupEditFormMapper;
 });

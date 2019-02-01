@@ -8,8 +8,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Util'], function(Util) {
-  let EditAgentNotifPrefs;
-  return (EditAgentNotifPrefs = class EditAgentNotifPrefs {
+  class EditAgentNotifPrefs {
 
 
 
@@ -91,5 +90,5 @@ define(['DeskPRO/Util/Util'], function(Util) {
       const vals = Util.values(appSubs);
       return vals.filter(function(a) { if ((a !== "") && (a !== false) && (a !== 0)) { return true; } });
     }
-  });
+  }
 });

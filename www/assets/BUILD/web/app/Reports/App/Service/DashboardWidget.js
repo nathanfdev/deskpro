@@ -9,9 +9,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Arrays'], function(Arrays) {
-  let DashboardWidgetService;
-  return (DashboardWidgetService = class DashboardWidgetService {
-
+  class DashboardWidgetService {
     constructor(Api, Api2, $q) {
       this.Api = Api;
       this.Api2 = Api2;
@@ -225,5 +223,6 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
       });
       return deferred.promise;
     }
-  });
+  }
+  return DashboardWidgetService;
 });

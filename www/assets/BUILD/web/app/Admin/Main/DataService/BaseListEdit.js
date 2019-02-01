@@ -27,8 +27,7 @@ define([
    * loading the "list" collection, and some methods for keeping the list up to date.
    */
   // todo update models after reload instead of creating new
-  let Admin_Main_DataService_BaseListEdit;
-  return (Admin_Main_DataService_BaseListEdit = class Admin_Main_DataService_BaseListEdit {
+  class Admin_Main_DataService_BaseListEdit {
     constructor() {
       Util_Angular.setInjectedProperties(this, arguments);
       this.map = {};
@@ -680,5 +679,7 @@ define([
 
       return deferred.promise;
     }
-  });
+  }
+
+  return Admin_Main_DataService_BaseListEdit;
 });

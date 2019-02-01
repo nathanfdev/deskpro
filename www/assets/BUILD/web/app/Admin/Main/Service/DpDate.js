@@ -13,8 +13,7 @@ define([
   /*
    * Date formatter service
    */
-  let Admin_Main_Service_DpDate;
-  return (Admin_Main_Service_DpDate = class Admin_Main_Service_DpDate {
+  class Admin_Main_Service_DpDate {
 
     constructor() {
 
@@ -55,5 +54,6 @@ define([
 
       return moment(date).format(this.formats[format]);
     }
-  });
+  }
+  return Admin_Main_Service_DpDate;
 });

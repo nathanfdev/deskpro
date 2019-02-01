@@ -9,8 +9,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let Admin_Main_Model_DepAgentPermMatrix;
-  return (Admin_Main_Model_DepAgentPermMatrix = class Admin_Main_Model_DepAgentPermMatrix {
+  class Admin_Main_Model_DepAgentPermMatrix {
     constructor() {
       this.agents = [];
       this.groups = [];
@@ -383,5 +382,7 @@ define(function() {
 
       return perms;
     }
-  });
+  }
+
+  return Admin_Main_Model_DepAgentPermMatrix;
 });

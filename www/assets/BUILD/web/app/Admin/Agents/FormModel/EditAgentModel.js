@@ -8,8 +8,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Strings'], function(Strings) {
-  let EditAgentModel;
-  return (EditAgentModel = class EditAgentModel {
+  class EditAgentModel {
     constructor(agent, groups, teams, primary_phone_number_region) {
       let check, enabled;
       this.form = {};
@@ -153,5 +152,6 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
       return formData;
     }
-  });
+  }
+  return EditAgentModel
 });

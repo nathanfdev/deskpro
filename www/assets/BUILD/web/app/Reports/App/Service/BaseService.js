@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Util'], function(Util) {
-  let BaseService;
-  return (BaseService = class BaseService {
+  class BaseService {
     constructor() {
       this.dp_spin_els = {};
     }
@@ -92,5 +91,6 @@ define(['DeskPRO/Util/Util'], function(Util) {
 
       return this.dp_spin_els[id]._promise;
     }
-  });
+  }
+  return BaseService;
 });

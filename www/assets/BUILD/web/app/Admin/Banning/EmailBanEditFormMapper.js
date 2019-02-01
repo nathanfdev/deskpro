@@ -10,8 +10,7 @@ define([
 ], function(
   Util
 ) {
-  let EmailBanEditFormMapper;
-  return (EmailBanEditFormMapper = class EmailBanEditFormMapper {
+  class EmailBanEditFormMapper {
 
     /*
       *
@@ -49,5 +48,6 @@ define([
 
       return postData;
     }
-  });
+  }
+  return EmailBanEditFormMapper;
 });

@@ -10,10 +10,10 @@ define([
 ], function(
   ReportCustomAbstract
 )  {
-  let ReportBuilderCustom;
-  return (ReportBuilderCustom = class ReportBuilderCustom extends ReportCustomAbstract {
+  class ReportBuilderCustom extends ReportCustomAbstract {
     getUrlPart() {
       return 'builder';
     }
-  });
+  }
+  return ReportBuilderCustom;
 });

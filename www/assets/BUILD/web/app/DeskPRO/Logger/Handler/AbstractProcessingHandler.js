@@ -14,8 +14,7 @@ define([
   Util,
   AbstractHandler
 ) {
-  let AbstractProcessingHandler;
-  return (AbstractProcessingHandler = class AbstractProcessingHandler extends AbstractHandler {
+  class AbstractProcessingHandler extends AbstractHandler {
     handle(record) {
       if (!this.isHandling(record)) {
         return false;
@@ -53,5 +52,6 @@ define([
 
       return record;
     }
-  });
+  }
+  return AbstractProcessingHandler;
 });

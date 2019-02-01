@@ -13,9 +13,7 @@ define([
   BaseService,
   moment,
 ) {
-  let AgentHours;
-  return (AgentHours = class AgentHours extends BaseService {
-
+  class AgentHours extends BaseService {
     constructor(Api, $sce, $q) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
@@ -58,5 +56,6 @@ define([
 
       return promise;
     }
-  });
+  }
+  return AgentHours;
 });

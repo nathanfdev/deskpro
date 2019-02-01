@@ -10,10 +10,10 @@ define([
 ], function(
   ReportCustomAbstract
 )  {
-  let ReportWidgetCustom;
-  return (ReportWidgetCustom = class ReportWidgetCustom extends ReportCustomAbstract {
+  class ReportWidgetCustom extends ReportCustomAbstract {
     getUrlPart() {
       return 'widget';
     }
-  });
+  }
+  return ReportWidgetCustom;
 });

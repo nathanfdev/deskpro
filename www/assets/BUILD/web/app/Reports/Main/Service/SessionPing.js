@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let Reports_Main_Service_SessionPing;
-  return (Reports_Main_Service_SessionPing = class Reports_Main_Service_SessionPing {
+  class Reports_Main_Service_SessionPing {
     constructor(Api) {
       this.Api = Api;
       this.paused = false;
@@ -52,5 +51,6 @@ define(function() {
       });
       return p;
     }
-  });
+  }
+  return Reports_Main_Service_SessionPing;
 });

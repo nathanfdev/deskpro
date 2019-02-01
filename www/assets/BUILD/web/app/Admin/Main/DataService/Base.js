@@ -10,8 +10,7 @@ define(function() {
   * A DataService class handles fetching data from the datastore (API),
     * keeping it, and updating it.
   */
-  let Admin_Main_DataService_Base;
-  return (Admin_Main_DataService_Base = class Admin_Main_DataService_Base {
+  class Admin_Main_DataService_Base {
     constructor(em) {
       this._is_ds_class = true;
       this.reg_ctrl = [];
@@ -75,5 +74,6 @@ define(function() {
     */
     _cleanup() {
     }
-  });
+  }
+  return Admin_Main_DataService_Base;
 });

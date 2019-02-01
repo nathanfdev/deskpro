@@ -11,19 +11,16 @@ define([
 ], function(
   Admin_Main_DataService_BaseListEdit,
 )  {
-  let Admin_AgentTeams_DataService_AgentTeams;
-  return Admin_AgentTeams_DataService_AgentTeams = (function() {
-    Admin_AgentTeams_DataService_AgentTeams = class Admin_AgentTeams_DataService_AgentTeams extends Admin_Main_DataService_BaseListEdit {
-      static initClass() {
-        this.$inject = ['Api', '$q'];
-      }
+  class Admin_AgentTeams_DataService_AgentTeams extends Admin_Main_DataService_BaseListEdit {
+    static initClass() {
+      this.$inject = ['Api', '$q'];
+    }
 
 
-      url() { return '/agent_teams'; }
+    url() { return '/agent_teams'; }
 
-      resolveResponse(response) { return response.agent_teams; }
-    };
-    Admin_AgentTeams_DataService_AgentTeams.initClass();
-    return Admin_AgentTeams_DataService_AgentTeams;
-  })();
+    resolveResponse(response) { return response.agent_teams; }
+  };
+  Admin_AgentTeams_DataService_AgentTeams.initClass();
+  return Admin_AgentTeams_DataService_AgentTeams;
 });

@@ -14,8 +14,7 @@ define([
 ], function(
   BaseCriteriaTypesDef
 ) {
-  let Admin_OptionBuilder_TypesDef_TicketFilter;
-  return (Admin_OptionBuilder_TypesDef_TicketFilter = class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseCriteriaTypesDef {
+  class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseCriteriaTypesDef {
     init() {
       return this.options_data = null;
     }
@@ -1105,5 +1104,6 @@ define([
         }
       };
     }
-  });
+  }
+  return Admin_OptionBuilder_TypesDef_TicketFilter;
 });

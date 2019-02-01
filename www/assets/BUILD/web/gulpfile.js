@@ -1,20 +1,15 @@
-var gulp         = require('gulp'),
+const gulp     = require('gulp'),
   gutil        = require('gulp-util'),
+  babel        = require('gulp-babel'),
   cache        = require('gulp-cached'),
-  coffee       = require('gulp-coffee'),
   less         = require('gulp-less'),
   sass         = require('gulp-sass'),
   sourcemaps   = require('gulp-sourcemaps'),
-  watch        = require('gulp-watch'),
   finclude     = require('gulp-file-include'),
-  path         = require('path'),
-  rename       = require('gulp-rename'),
   rjs          = require('gulp-requirejs'),
   plumber      = require('gulp-plumber'),
-  debug        = require('gulp-debug'),
   using        = require('gulp-using'),
   gulpif       = require('gulp-if'),
-  lazypipe     = require('lazypipe'),
   clean        = require('gulp-clean'),
   sassdoc      = require('sassdoc'),
   fs           = require('fs'),
@@ -30,20 +25,23 @@ var gulp         = require('gulp'),
 //######################################################################################################################
 
 gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader'], function() {
-  // hacking coffee here to run after all others
-  // because something in the other tasks corrupts
-  // the stream and causes coffee compile to fail
-  // randomly sometimes
-  return deskpro.taskGen.coffeeScript([
-    './app/Admin*/**/*.coffee',
-    './app/Agent*/**/*.coffee',
-    './app/Reports*/**/*.coffee',
-    './app/Interface*/**/*.coffee',
-    './app/DeskPRO*/**/*.coffee'
+  return deskpro.taskGen.babel([
+    './app/Admin*/**/*.js',
+    './app/Agent*/**/*.js',
+    './app/Reports*/**/*.js',
+    './app/Interface*/**/*.js',
+    './app/DeskPRO*/**/*.js'
   ]);
 });
-gulp.task('prod', ['coffee', 'less', 'sass', 'sassdoc', 'cpjs', 'semantic-copy-prod', 'less-dp-semantic', 'loader', 'rjs']);
-
+gulp.task('prod', ['less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader'], function() {
+  return deskpro.taskGen.babel([
+    './app/Admin*/**/*.js',
+    './app/Agent*/**/*.js',
+    './app/Reports*/**/*.js',
+    './app/Interface*/**/*.js',
+    './app/DeskPRO*/**/*.js'
+  ]);
+}, ['rjs']);
 
 //######################################################################################################################
 //# Setup
@@ -56,11 +54,11 @@ deskpro.isWatching = false;
 //------------------------------
 
 deskpro.watches = [
-  ['./app/Admin*/**/*.coffee', ['coffee-admin']],
-  ['./app/Agent*/**/*.coffee', ['coffee-agent']],
-  ['./app/Reports/**/*.coffee', ['coffee-reports']],
-  ['./app/Interface/**/*.coffee', ['coffee-interface']],
-  ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
+  ['./app/Admin*/**/*.js', ['babel-admin']],
+  ['./app/Agent*/**/*.js', ['babel-agent']],
+  ['./app/Reports/**/*.js', ['babel-reports']],
+  ['./app/Interface/**/*.js', ['babel-interface']],
+  ['./app/DeskPRO/**/*.js', ['babel-deskpro']],
   ['./app/**/Resources/style/*.less', ['less-app']],
   ['./app/**/Resources/style/*.scss', ['sass-app']],
   ['./app/**/*.js', ['cpjs-all']],
@@ -90,8 +88,8 @@ deskpro.util.sourceMapRoot = function (file) {
   return up + 'app/' + ns;
 };
 
-deskpro.util.coffeeError = function (e) {
-  gutil.log(gutil.colors.white.bgRed('Coffee Error:'), e.name, ' ', e.message);
+deskpro.util.babelError = function (e) {
+  gutil.log(gutil.colors.white.bgRed('Babel Error:'), e.name, ' ', e.message);
 
   var shortName = (e.filename || "").replace(/.*?\/web\/app\//, 'web/app/');
   gutil.log('              ' + shortName, ' Line: ' + e.location.first_line);
@@ -99,7 +97,7 @@ deskpro.util.coffeeError = function (e) {
 
   // workaround for gulp not returning error status
   if (!deskpro.isWatching) {
-    throw "CoffeeScript Error";
+    throw "Babel Error";
   }
 };
 
@@ -107,7 +105,7 @@ deskpro.util.coffeeError = function (e) {
 // Task Methods
 //------------------------------
 
-deskpro.taskGen.coffeeScript = function(glob, target_dir) {
+deskpro.taskGen.babel = function(glob, target_dir) {
 
   if (!target_dir) {
     target_dir = './app-build/';
@@ -118,7 +116,7 @@ deskpro.taskGen.coffeeScript = function(glob, target_dir) {
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
-    .pipe(coffee().on('error', deskpro.util.coffeeError))
+    .pipe(babel().on('error', deskpro.util.babelError))
     .pipe(sourcemaps.write({includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
@@ -179,46 +177,46 @@ deskpro.taskGen.loaderTpl = function(glob, target_dir) {
 //######################################################################################################################
 
 //------------------------------
-// Coffeescript
+// Babel
 //------------------------------
 
-gulp.task('coffee-admin', function () {
-  return deskpro.taskGen.coffeeScript('./app/Admin*/**/*.coffee');
+gulp.task('babel-admin', function () {
+  return deskpro.taskGen.babel('./app/Admin*/**/*.js');
 });
 
-gulp.task('coffee-agent', function () {
-  return deskpro.taskGen.coffeeScript('./app/Agent*/**/*.coffee');
+gulp.task('babel-agent', function () {
+  return deskpro.taskGen.babel('./app/Agent*/**/*.js');
 });
 
-gulp.task('coffee-interface', function () {
-  return deskpro.taskGen.coffeeScript('./app/Interface*/**/*.coffee');
+gulp.task('babel-interface', function () {
+  return deskpro.taskGen.babel('./app/Interface*/**/*.js');
 });
 
-gulp.task('coffee-reports', function () {
-  return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee');
+gulp.task('babel-reports', function () {
+  return deskpro.taskGen.babel('./app/Reports*/**/*.js');
 });
 
-gulp.task('coffee-deskpro', function () {
-  return deskpro.taskGen.coffeeScript('./app/DeskPRO*/**/*.coffee');
+gulp.task('babel-deskpro', function () {
+  return deskpro.taskGen.babel('./app/DeskPRO*/**/*.js');
 });
 
-gulp.task('coffee', ['clean'], function() {
-  return deskpro.taskGen.coffeeScript([
-    './app/Admin*/**/*.coffee',
-    './app/Agent*/**/*.coffee',
-    './app/Reports*/**/*.coffee',
-    './app/Interface*/**/*.coffee',
-    './app/DeskPRO*/**/*.coffee'
+gulp.task('babel', ['clean'], function() {
+  return deskpro.taskGen.babel([
+    './app/Admin*/**/*.js',
+    './app/Agent*/**/*.js',
+    './app/Reports*/**/*.js',
+    './app/Interface*/**/*.js',
+    './app/DeskPRO*/**/*.js'
   ]);
 });
 
-gulp.task('dirty-coffee', function() {
-  return deskpro.taskGen.coffeeScript([
-    './app/Admin*/**/*.coffee',
-    './app/Agent*/**/*.coffee',
-    './app/Reports*/**/*.coffee',
-    './app/Interface*/**/*.coffee',
-    './app/DeskPRO*/**/*.coffee'
+gulp.task('dirty-babel', function() {
+  return deskpro.taskGen.babel([
+    './app/Admin*/**/*.js',
+    './app/Agent*/**/*.js',
+    './app/Reports*/**/*.js',
+    './app/Interface*/**/*.js',
+    './app/DeskPRO*/**/*.js'
   ]);
 });
 
@@ -452,12 +450,12 @@ function addRjsTask(rjsBundle) {
       break;
   }
 
-  gulp.task(taskName, ['coffee', 'loader'], function () {
+  gulp.task(taskName, ['babel', 'loader'], function () {
     var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
     rjsConfig.out  =  target;
     rjsConfig.name = bundleName;
 
-    if (bundleName == 'AgentLoad') {
+    if (bundleName === 'AgentLoad') {
       rjsConfig.paths.jquery = "empty:";
     }
 

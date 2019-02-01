@@ -6,8 +6,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Main/Service/DpApi'], function(DpApi) {
-  let DpApi2;
-  return (DpApi2 = class DpApi2 extends DpApi {
+  class DpApi2 extends DpApi {
     _getEndpointUrl(endpoint) {
       return `${this.api_url}/v2/${endpoint}`;
     }
@@ -19,5 +18,6 @@ define(['DeskPRO/Main/Service/DpApi'], function(DpApi) {
         return console.error(data);
       }
     }
-  });
+  }
+  return DpApi2;
 });

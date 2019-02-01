@@ -10,8 +10,7 @@ define([
 ], function(
   ReportsBuiltInAbstract,
 )  {
-  let ReportBuilderBuiltIn;
-  return (ReportBuilderBuiltIn = class ReportBuilderBuiltIn extends ReportsBuiltInAbstract {
+  class ReportBuilderBuiltIn extends ReportsBuiltInAbstract {
 
     init() {
       return this.setSubLists(['Tickets', 'Chats', 'Ideas', 'People & Organizations', 'Knowledgebase', 'News', 'Downloads',
@@ -21,5 +20,6 @@ define([
     getUrlPart() {
       return 'builder';
     }
-  });
+  }
+  return ReportBuilderBuiltIn;
 });

@@ -11,8 +11,7 @@ define([
   'DeskPRO/Util/Util',
   'Admin/TicketAccounts/FormModel/EditTicketAccountModel',
 ], function(Util, BaseFormModel) {
-  let Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel;
-  return (Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel = class Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel extends BaseFormModel {
+  class Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel extends BaseFormModel {
     constructor(account, deps, trigger, brands) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
@@ -66,5 +65,7 @@ define([
         return this.account.options.custom_email_address = null;
       }
     }
-  });
+  }
+
+  return Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel;
 });

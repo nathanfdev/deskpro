@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['toastr', 'underscore'], function(toastr, _) {
-  let DeskPRO_Main_Service_Growl;
-  return (DeskPRO_Main_Service_Growl = class DeskPRO_Main_Service_Growl {
+  class DeskPRO_Main_Service_Growl {
     constructor(options) {
       toastr.options = _.defaults(options || {}, {
         closeButton: true,
@@ -134,5 +133,7 @@ define(['toastr', 'underscore'], function(toastr, _) {
     clearNotif(notify) {
       return toastr.clear(notify);
     }
-  });
+  }
+
+  return DeskPRO_Main_Service_Growl;
 });

@@ -7,8 +7,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['DeskPRO/Util/Strings'], function(Strings) {
-  let PhraseSaver;
-  return (PhraseSaver = class PhraseSaver {
+  class PhraseSaver {
     constructor(Api, $q) {
       this.Api = Api;
       this.$q = $q;
@@ -61,5 +60,6 @@ define(['DeskPRO/Util/Strings'], function(Strings) {
 
       return deferred.promise;
     }
-  });
+  }
+  return PhraseSaver;
 });

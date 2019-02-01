@@ -20,8 +20,7 @@ define([
   Numbers,
   moment
 ) {
-  let Admin_OptionBuilder_TypesDef_TicketFilter;
-  return (Admin_OptionBuilder_TypesDef_TicketFilter = class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef {
+  class Admin_OptionBuilder_TypesDef_TicketFilter extends BaseActionTypesDef {
     init() {
       return this.options_data = null;
     }
@@ -2522,7 +2521,8 @@ define([
         }
       };
     }
-  });
+  }
+  return Admin_OptionBuilder_TypesDef_TicketFilter;
 });
 function __guard__(value, transform) {
   return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;

@@ -15,8 +15,7 @@ define([
   AbstractProcessingHandler,
   ConsoleFormatter
 ) {
-  let ConsoleHandler;
-  return (ConsoleHandler = class ConsoleHandler extends AbstractProcessingHandler {
+  class ConsoleHandler extends AbstractProcessingHandler {
     write(record) {
       let consoleName = null;
       if (record.level_name === 'debug') {
@@ -60,5 +59,6 @@ define([
     getDefaultFormatter() {
       return new ConsoleFormatter();
     }
-  });
+  }
+  return ConsoleHandler;
 });

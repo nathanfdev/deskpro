@@ -7,25 +7,22 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
- var Admin_AntiAbuse_Ctrl_EmailRateLimiting = (function() {
-   let _url = undefined;
-   Admin_AntiAbuse_Ctrl_EmailRateLimiting = class Admin_AntiAbuse_Ctrl_EmailRateLimiting extends Admin_Ctrl_Base {
+  const _url = '/email_accounts/settings';
+  class Admin_AntiAbuse_Ctrl_EmailRateLimiting extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_AntiAbuse_Ctrl_EmailRateLimiting';
       this.CTRL_AS = 'EmailRateLimiting';
-  
-      _url = '/email_accounts/settings';
     }
 
     init() {
      return this.$scope.settings = null;
-   }
+    }
 
     initialLoad() {
      return this.Api.sendGet(_url).then(res => {
       return this.$scope.settings = res.data.email_settings;
      });
-   }
+    }
 
     save() {
      const postData = {
@@ -40,11 +37,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.stopSpinner('saving', true);
       return this.applyErrorResponseToView(info);
      });
-   }
-  };
-   Admin_AntiAbuse_Ctrl_EmailRateLimiting.initClass();
-   return Admin_AntiAbuse_Ctrl_EmailRateLimiting;
- })();
-
- return Admin_AntiAbuse_Ctrl_EmailRateLimiting.EXPORT_CTRL();
+    }
+  }
+  Admin_AntiAbuse_Ctrl_EmailRateLimiting.initClass();
+  return Admin_AntiAbuse_Ctrl_EmailRateLimiting.EXPORT_CTRL();
 });

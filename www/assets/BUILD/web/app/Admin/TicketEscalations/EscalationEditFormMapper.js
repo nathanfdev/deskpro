@@ -16,8 +16,7 @@ define([
   Util,
   _
 ) {
-  let Admin_TicketEscalations_EscalationEditFormMapper;
-  return (Admin_TicketEscalations_EscalationEditFormMapper = class Admin_TicketEscalations_EscalationEditFormMapper {
+  class Admin_TicketEscalations_EscalationEditFormMapper {
     getFormFromModel(escModel) {
       let rowId, term;
       const form = {};
@@ -85,7 +84,8 @@ define([
 
       return postData;
     }
-  });
+  }
+  return Admin_TicketEscalations_EscalationEditFormMapper;
 });
 function __guard__(value, transform) {
   return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;

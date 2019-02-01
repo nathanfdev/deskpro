@@ -14,88 +14,85 @@ define([
   ReportsBaseCtrl,
   moment,
 ) {
-  let Reports_TicketSatisfaction_Ctrl_TicketSatisfaction;
-  return Reports_TicketSatisfaction_Ctrl_TicketSatisfaction = (function() {
-    Reports_TicketSatisfaction_Ctrl_TicketSatisfaction = class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl {
-      static initClass() {
-        this.CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction';
-        this.CTRL_AS   = 'Ctrl';
-        this.DEPS      = ['Api', '$sce'];
-  
-        Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.EXPORT_CTRL();
-      }
+  class Reports_TicketSatisfaction_Ctrl_TicketSatisfaction extends ReportsBaseCtrl {
+    static initClass() {
+      this.CTRL_ID   = 'Reports_TicketSatisfaction_Ctrl_TicketSatisfaction';
+      this.CTRL_AS   = 'Ctrl';
+      this.DEPS      = ['Api', '$sce'];
 
-      init() {
-        this.feed_html = '';
-        this.summary_html = '';
-        this.page_nums = [1];
-        this.num_pages = 0;
-        this.page = 1;
-        this.$scope.view_date = moment(this.date).format("YYYY-MM");
-        return this.$scope.mode = 'feed';
-      }
+      Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.EXPORT_CTRL();
+    }
 
-      initialLoad() {
-        return this.loadFeedResults();
-      }
+    init() {
+      this.feed_html = '';
+      this.summary_html = '';
+      this.page_nums = [1];
+      this.num_pages = 0;
+      this.page = 1;
+      this.$scope.view_date = moment(this.date).format("YYYY-MM");
+      return this.$scope.mode = 'feed';
+    }
 
-      switchToFeed() {
-        this.$scope.mode = 'feed';
-        return this.loadFeedResults();
-      }
+    initialLoad() {
+      return this.loadFeedResults();
+    }
 
-      switchToSummary() {
-        this.$scope.mode = 'summary';
-        return this.loadSummaryResults();
-      }
+    switchToFeed() {
+      this.$scope.mode = 'feed';
+      return this.loadFeedResults();
+    }
 
-      loadFeedResults() {
-        this.startSpinner('loading_feed_results');
+    switchToSummary() {
+      this.$scope.mode = 'summary';
+      return this.loadSummaryResults();
+    }
 
-        const promise = this.Api.sendGet(`/reports/ticket-satisfaction/${this.page}`).then(res => {
-          this.feed_html = this.$sce.trustAsHtml(res.data.html);
+    loadFeedResults() {
+      this.startSpinner('loading_feed_results');
 
-          this.page = res.data.page || 1;
-          this.num_pages = res.data.num_pages || 1;
+      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/${this.page}`).then(res => {
+        this.feed_html = this.$sce.trustAsHtml(res.data.html);
 
-          this.page_nums = [];
+        this.page = res.data.page || 1;
+        this.num_pages = res.data.num_pages || 1;
 
-          for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
-            this.page_nums.push(i + 1);
-          }
+        this.page_nums = [];
 
-          return this.stopSpinner('loading_feed_results', true);
-        });
+        for (let i = 0, end = this.num_pages, asc = 0 <= end; asc ? i < end : i > end; asc ? i++ : i--) {
+          this.page_nums.push(i + 1);
+        }
 
-        return promise;
-      }
+        return this.stopSpinner('loading_feed_results', true);
+      });
 
-      loadSummaryResults() {
-        this.startSpinner('loading_summary_results');
+      return promise;
+    }
 
-        const promise = this.Api.sendGet(`/reports/ticket-satisfaction/summary/${this.$scope.view_date}`).then(res => {
-          this.summary_html = this.$sce.trustAsHtml(res.data.html);
-          return this.stopSpinner('loading_summary_results', true);
-        });
+    loadSummaryResults() {
+      this.startSpinner('loading_summary_results');
 
-        return promise;
-      }
+      const promise = this.Api.sendGet(`/reports/ticket-satisfaction/summary/${this.$scope.view_date}`).then(res => {
+        this.summary_html = this.$sce.trustAsHtml(res.data.html);
+        return this.stopSpinner('loading_summary_results', true);
+      });
 
-      changePage() {
-        return this.loadFeedResults();
-      }
+      return promise;
+    }
 
-      goPrevPage() {
-        this.page--;
-        return this.changePage();
-      }
+    changePage() {
+      return this.loadFeedResults();
+    }
 
-      goNextPage() {
-        this.page++;
-        return this.changePage();
-      }
-    };
-    Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.initClass();
-    return Reports_TicketSatisfaction_Ctrl_TicketSatisfaction;
-  })();
+    goPrevPage() {
+      this.page--;
+      return this.changePage();
+    }
+
+    goNextPage() {
+      this.page++;
+      return this.changePage();
+    }
+  }
+  Reports_TicketSatisfaction_Ctrl_TicketSatisfaction.initClass();
+  return Reports_TicketSatisfaction_Ctrl_TicketSatisfaction;
 });

@@ -9,8 +9,7 @@
  * Full docs: https://github.com/decaffeinate/decaffeinate/blob/master/docs/suggestions.md
  */
 define(function() {
-  let TemplateManager;
-  return (TemplateManager = class TemplateManager {
+  class TemplateManager {
     constructor(TemplateLoader, $templateCache, $q) {
       this.TemplateLoader = TemplateLoader;
       this.$templateCache = $templateCache;
@@ -160,5 +159,6 @@ define(function() {
 
       return defer.promise;
     }
-  });
+  }
+  return TemplateManager;
 });

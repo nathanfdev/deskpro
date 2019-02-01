@@ -11,25 +11,22 @@ define([
 ], function(
   DeskPROBaseCtrl
 ) {
-  let Reports_Ctrl_Base;
-  return Reports_Ctrl_Base = (function() {
-    Reports_Ctrl_Base = class Reports_Ctrl_Base extends DeskPROBaseCtrl {
-      static initClass() {
-        this.CTRL_AS   = null;
-        this.CTRL_ID   = 'Reports_Main_Ctrl_Base';
-        this.DEPS      = [];
-      }
+  class Reports_Ctrl_Base extends DeskPROBaseCtrl {
+    static initClass() {
+      this.CTRL_AS   = null;
+      this.CTRL_ID   = 'Reports_Main_Ctrl_Base';
+      this.DEPS      = [];
+    }
 
-      /**
-      * Get the URL to the template
-      *
-      * @return {String}
-      */
-      getTemplatePath(path) {
-        return DP_BASE_REPORTS_URL + '/load-view/' + path;
-      }
-    };
-    Reports_Ctrl_Base.initClass();
-    return Reports_Ctrl_Base;
-  })();
+    /**
+    * Get the URL to the template
+    *
+    * @return {String}
+    */
+    getTemplatePath(path) {
+      return DP_BASE_REPORTS_URL + '/load-view/' + path;
+    }
+  }
+  Reports_Ctrl_Base.initClass();
+  return Reports_Ctrl_Base;
 });

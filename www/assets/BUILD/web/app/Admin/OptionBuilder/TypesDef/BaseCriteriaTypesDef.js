@@ -20,8 +20,7 @@ define([
   _,
   moment
 ) {
-  let Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef;
-  return (Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef = class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef {
+  class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef {
     constructor($q, Api, dpTemplateManager) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
@@ -498,5 +497,6 @@ define([
         }
       };
     }
-  });
+  }
+  return Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef;
 });

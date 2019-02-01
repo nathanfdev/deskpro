@@ -10,11 +10,10 @@ define([
 ], function(
   ReportsBuiltInAbstract,
 )  {
-  let ReportWidgetBuiltIn;
-  return (ReportWidgetBuiltIn = class ReportWidgetBuiltIn extends ReportsBuiltInAbstract {
-
+  class ReportWidgetBuiltIn extends ReportsBuiltInAbstract {
     getUrlPart() {
       return 'widget';
     }
-  });
+  }
+  return ReportWidgetBuiltIn;
 });

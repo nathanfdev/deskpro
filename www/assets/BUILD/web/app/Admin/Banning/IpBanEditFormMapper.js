@@ -10,8 +10,7 @@ define([
 ], function(
   Util
 ) {
-  let IpBanEditFormMapper;
-  return (IpBanEditFormMapper = class IpBanEditFormMapper {
+  class IpBanEditFormMapper {
 
     /*
       *
@@ -49,5 +48,6 @@ define([
 
       return postData;
     }
-  });
+  }
+  return IpBanEditFormMapper;
 });

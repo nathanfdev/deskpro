@@ -19,11 +19,18 @@ define([
   DataService_ReportWidgetBuiltIn,
   DataService_ReportWidgetCustom,
 ) {
+
+  const serviceMap = {
+    "DataService_ReportBuilderCustom": DataService_ReportBuilderCustom,
+    "DataService_ReportBuilderBuiltIn": DataService_ReportBuilderBuiltIn,
+    "DataService_ReportWidgetBuiltIn": DataService_ReportWidgetBuiltIn,
+    "DataService_ReportWidgetCustom": DataService_ReportWidgetCustom
+  };
+
   /*
    * A simple wrapper around the data services
    */
-  let Admin_Main_Service_DataServiceManager;
-  return (Admin_Main_Service_DataServiceManager = class Admin_Main_Service_DataServiceManager {
+  class Admin_Main_Service_DataServiceManager {
     constructor($injector) {
       this.$injector = $injector;
       this.ds_cache = {};
@@ -46,7 +53,7 @@ define([
 
         if (!obj) {
           const name = `DataService_${serviceId}`;
-          eval(`constructor = ${name};`);
+          const constructor = serviceMap[name];
 
           if (!constructor) {
             throw new Error(`Invalid data service name: ${name}`);
@@ -60,5 +67,6 @@ define([
 
       return obj;
     }
-  });
+  }
+  return Admin_Main_Service_DataServiceManager;
 });
