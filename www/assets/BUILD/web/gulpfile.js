@@ -33,15 +33,7 @@ gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-s
     './app/DeskPRO*/**/*.js'
   ]);
 });
-gulp.task('prod', ['less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader'], function() {
-  return deskpro.taskGen.babel([
-    './app/Admin*/**/*.js',
-    './app/Agent*/**/*.js',
-    './app/Reports*/**/*.js',
-    './app/Interface*/**/*.js',
-    './app/DeskPRO*/**/*.js'
-  ]);
-}, ['rjs']);
+gulp.task('prod', ['babel', 'less', 'sass', 'semantic-copy', 'less-legacy', 'less-dp-semantic', 'sassdoc', 'cpjs', 'loader', 'rjs']);
 
 //######################################################################################################################
 //# Setup
@@ -226,7 +218,7 @@ gulp.task('dirty-babel', function() {
 
 gulp.task('cpjs-all', function() {
 
-  var glob       = './app/**/*.js';
+  var glob       = './app/**/{amcharts27,routing.js}.js';
   var target_dir = './app-build/';
 
   return gulp.src(glob)
@@ -238,7 +230,7 @@ gulp.task('cpjs-all', function() {
 
 gulp.task('cpjs', ['clean', 'cpjs-clipboard'], function() {
 
-  var glob       = './app/**/*.js';
+  var glob       = './app/**/{amcharts27,routing.js}.js';
   var target_dir = './app-build/';
 
   return gulp.src(glob)
@@ -412,13 +404,13 @@ gulp.task('loader', ['clean'], function () {
 //------------------------------
 
 var rjsLoadFiles = [
-  './app/Admin/AdminLoad.js',
-  './app/Admin/Cloud/CloudAdminLoad.js',
-  './app/AdminStart/AdminStartLoad.js',
-  './app/AdminUpdateWatcher/AdminUpdateWatcherLoad.js',
-  './app/Reports/ReportsLoad.js',
-  './app/Interface/InterfaceLoad.js',
-  './app/Agent/AgentLoad.js'
+  './app-build/Admin/AdminLoad.js',
+  './app-build/Admin/Cloud/CloudAdminLoad.js',
+  './app-build/AdminStart/AdminStartLoad.js',
+  './app-build/AdminUpdateWatcher/AdminUpdateWatcherLoad.js',
+  './app-build/Reports/ReportsLoad.js',
+  './app-build/Interface/InterfaceLoad.js',
+  './app-build/Agent/AgentLoad.js'
 ];
 
 function addRjsTask(rjsBundle) {
