@@ -79,4 +79,5 @@ define(['DeskPRO/Util/Util'], (Util) => {
       return vals.filter((a) => { if ((a !== '') && (a !== false) && (a !== 0)) { return true; } });
     }
   }
+  return EditAgentNotifPrefs;
 });
