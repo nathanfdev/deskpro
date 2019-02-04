@@ -19,10 +19,10 @@ define([
   'angularUiSortable',
   'ngContextMenu',
   'angularSanitize',
-	'jquery.ui.i18n',
+  'jquery.ui.i18n',
   'DeskPRO/Directive/DpDateTimePicker',
-	'clipboard'
-], function(
+  'clipboard'
+], (
   angular,
   Functions,
   Strings,
@@ -35,37 +35,37 @@ define([
   DeskPRO_Service_Person,
   DeskPRO_Service_AgentTeam,
   DpCategoryBuilder
-) {
-  var AgentApp = angular.module('AgentApp', [
-	'ngAnimate',
-	'ui.bootstrap',
-	'ui.sortable',
-	'ng-context-menu',
-	'deskpro.category_builder',
-	'ui.select2',
-  'ngSanitize',
-  'dp.datetimepicker'
+) => {
+  const AgentApp = angular.module('AgentApp', [
+    'ngAnimate',
+    'ui.bootstrap',
+    'ui.sortable',
+    'ng-context-menu',
+    'deskpro.category_builder',
+    'ui.select2',
+    'ngSanitize',
+    'dp.datetimepicker'
   ]);
 
 	// set default locale for UI DatePicker
-	if ($.datepicker) {
-		var regional = $.datepicker.regional[''];
-		if (window.DESKPRO_DEFAULT_LANG) {
-			var parts = window.DESKPRO_DEFAULT_LANG.split('_');
+  if ($.datepicker) {
+    let regional = $.datepicker.regional[''];
+    if (window.DESKPRO_DEFAULT_LANG) {
+      const parts = window.DESKPRO_DEFAULT_LANG.split('_');
 
-			if ($.datepicker.regional[parts[0] + '-' + parts[1]]) {
-				regional = $.datepicker.regional[parts[0] + '-' + parts[1]];
-			} else if ($.datepicker.regional[parts[0]]) {
-				regional = $.datepicker.regional[parts[0]];
-			}
-		}
-		$.datepicker.setDefaults(regional);
-	}
+      if ($.datepicker.regional[`${parts[0]}-${parts[1]}`]) {
+        regional = $.datepicker.regional[`${parts[0]}-${parts[1]}`];
+      } else if ($.datepicker.regional[parts[0]]) {
+        regional = $.datepicker.regional[parts[0]];
+      }
+    }
+    $.datepicker.setDefaults(regional);
+  }
 
 	// set default locale for moment.js
-	if (window.DESKPRO_DEFAULT_LANG) {
-		moment.locale(window.DESKPRO_DEFAULT_LANG.toLowerCase().replace('_', '-'));
-	}
+  if (window.DESKPRO_DEFAULT_LANG) {
+    moment.locale(window.DESKPRO_DEFAULT_LANG.toLowerCase().replace('_', '-'));
+  }
 
 
 	//-------------------------------------------------------------------------
@@ -78,149 +78,143 @@ define([
 	// But that file obviously doesn't exist. We use the interceptor to rewrite it
 	// to the real file.php/xxx/some-template.html file.
 
-	AgentApp.factory('dpAppAssetInterceptor', [function() {
-		return  {
-			request: function(config) {
-				if (!window.AppPlatform) {
-					return config;
-				}
+  AgentApp.factory('dpAppAssetInterceptor', [function () {
+    return  {
+      request(config) {
+        if (!window.AppPlatform) {
+          return config;
+        }
 
-				var assetPath = window.AppPlatform.getAssetPath(config.url);
-				if (assetPath) {
-					console.log("[dpAppAssetInterceptor] %s -> %s", config.url, assetPath);
-					config.url = assetPath;
-					config.dpIsAppAsset = true;
-				} else {
-					config.url = config.url.replace(/DP_URL\//g, window.BASE_URL.replace(/\/+$/, '')+'/')
-				}
+        const assetPath = window.AppPlatform.getAssetPath(config.url);
+        if (assetPath) {
+          console.log('[dpAppAssetInterceptor] %s -> %s', config.url, assetPath);
+          config.url = assetPath;
+          config.dpIsAppAsset = true;
+        } else {
+          config.url = config.url.replace(/DP_URL\//g, `${window.BASE_URL.replace(/\/+$/, '')}/`);
+        }
 
-				if (!config.headers) {
-					config.headers = {}
-				}
-				config.headers['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
+        if (!config.headers) {
+          config.headers = {};
+        }
+        config.headers['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 
-				return config;
-			}
-		};
-	}]);
+        return config;
+      }
+    };
+  }]);
 
-	AgentApp.config(['$httpProvider', '$provide', function($httpProvider, $provide) {
-		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-		$httpProvider.interceptors.push('dpAppAssetInterceptor');
-	}]);
+  AgentApp.config(['$httpProvider', '$provide', function ($httpProvider, $provide) {
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    $httpProvider.interceptors.push('dpAppAssetInterceptor');
+  }]);
 
-	AgentApp.run(['$rootScope', function($rootScope) {
-		$rootScope.DP_ASSET_URL = window.ASSETS_BASE_URL;
-	}]);
+  AgentApp.run(['$rootScope', function ($rootScope) {
+    $rootScope.DP_ASSET_URL = window.ASSETS_BASE_URL;
+  }]);
 
-	AgentApp.filter('formatTimestampAgo', function() {
-		return function(ts) {
-			var m;
+  AgentApp.filter('formatTimestampAgo', () => function (ts) {
+    let m;
 
-			if (ts._isAMomentObject) {
-				m = ts;
-			} else {
-				m = moment.unix(ts);
-			}
+    if (ts._isAMomentObject) {
+      m = ts;
+    } else {
+      m = moment.unix(ts);
+    }
 
-			return m.fromNow();
-		}
-	});
+    return m.fromNow();
+  });
 
-	AgentApp.filter('formatTimestampCalendar', function() {
-		return function(ts) {
-			var m;
+  AgentApp.filter('formatTimestampCalendar', () => function (ts) {
+    let m;
 
-			if (ts._isAMomentObject) {
-				m = ts;
-			} else {
-				m = moment.unix(ts);
-			}
+    if (ts._isAMomentObject) {
+      m = ts;
+    } else {
+      m = moment.unix(ts);
+    }
 
-			return m.calendar();
-		}
-	});
+    return m.calendar();
+  });
 
-	AgentApp.filter('formatTimestamp', function() {
-		if (!window.DESKPRO_DATE_FORMATS) {
-			window.DESKPRO_DATE_FORMATS = {};
-		}
-		return function(ts, format) {
-			var m;
-			if (!format) format = 'fulltime';
-			switch (format) {
-				case 'full':
-					format = window.DESKPRO_DATE_FORMATS.full;
-					break;
+  AgentApp.filter('formatTimestamp', () => {
+    if (!window.DESKPRO_DATE_FORMATS) {
+      window.DESKPRO_DATE_FORMATS = {};
+    }
+    return function (ts, format) {
+      let m;
+      if (!format) format = 'fulltime';
+      switch (format) {
+        case 'full':
+          format = window.DESKPRO_DATE_FORMATS.full;
+          break;
 
-				case 'fulltime':
-					format = window.DESKPRO_DATE_FORMATS.fulltime;
-					break;
+        case 'fulltime':
+          format = window.DESKPRO_DATE_FORMATS.fulltime;
+          break;
 
-				case 'day':
-					format = window.DESKPRO_DATE_FORMATS.day;
-					break;
+        case 'day':
+          format = window.DESKPRO_DATE_FORMATS.day;
+          break;
 
-				case 'day_short':
-					format = window.DESKPRO_DATE_FORMATS.day_short;
-					break;
+        case 'day_short':
+          format = window.DESKPRO_DATE_FORMATS.day_short;
+          break;
 
-				case 'time':
-					format = window.DESKPRO_DATE_FORMATS.time;
-					break;
-			}
+        case 'time':
+          format = window.DESKPRO_DATE_FORMATS.time;
+          break;
+      }
 
-			if (!format) {
-				format = 'ddd, D MMM YYYY HH:mm:ss';
-			}
+      if (!format) {
+        format = 'ddd, D MMM YYYY HH:mm:ss';
+      }
 
-			if (ts._isAMomentObject) {
-				m = ts;
-			} else {
-				m = moment.unix(ts);
-			}
+      if (ts._isAMomentObject) {
+        m = ts;
+      } else {
+        m = moment.unix(ts);
+      }
 
-			return m.format(format);
-		}
-	});
+      return m.format(format);
+    };
+  });
 
-	AgentApp.filter('formatSeconds', function() {
-		return function(seconds) {
-			if (!seconds) seconds = 0;
+  AgentApp.filter('formatSeconds', () => function (seconds) {
+    if (!seconds) seconds = 0;
 
-			var nowTs = Date.now() / 1000;
-			var dt = new Date((nowTs - seconds) * 1000);
-      return Orb.Util.TimeAgo.get(dt);
-		}
-	});
+    const nowTs = Date.now() / 1000;
+    const dt = new Date((nowTs - seconds) * 1000);
+    return Orb.Util.TimeAgo.get(dt);
+  });
 
-	AgentApp.directive('dpTimeago', ['$interval', '$filter', function($interval, $filter) {
-    var TimeAgo = Orb.Util.TimeAgo;
-		return {
-			restrict: 'AE',
-			template: '<time class="dp-timeago"></time>',
-			replace: true,
-			scope: {
-				timestamp: '@timestamp',
-				seconds: '@seconds'
-			},
-			link: function(scope, element, attrs) {
-				var timeoutId,
-					lastAnswer,
-					noSuffix = attrs['noSuffix'];
+  AgentApp.directive('dpTimeago', ['$interval', '$filter', function ($interval, $filter) {
+    const TimeAgo = Orb.Util.TimeAgo;
+    return {
+      restrict: 'AE',
+      template: '<time class="dp-timeago"></time>',
+      replace:  true,
+      scope:    {
+        timestamp: '@timestamp',
+        seconds:   '@seconds'
+      },
+      link(scope, element, attrs) {
+        let timeoutId,
+          lastAnswer,
+          noSuffix = attrs.noSuffix;
 
-				if (typeof noSuffix != 'undefined') {
-					noSuffix = true;
-				} else {
-					noSuffix = false;
-				}
+        if (typeof noSuffix !== 'undefined') {
+          noSuffix = true;
+        } else {
+          noSuffix = false;
+        }
 
-				if (scope.seconds) {
-					noSuffix = true;
-				}
+        if (scope.seconds) {
+          noSuffix = true;
+        }
 
-				var getTimestamp = function() {
-          var ts;
+        const getTimestamp = function () {
+          let ts;
           if (!scope.timestamp && !scope.seconds) {
             return;
           }
@@ -232,588 +226,591 @@ define([
           }
 
           return ts;
-				};
+        };
 
-				var update = function() {
-          var time, ts, now, timeago;
+        const update = function () {
+          let time,
+            ts,
+            now,
+            timeago;
 
           ts = getTimestamp();
           if (!ts) {
           	return;
-					}
+          }
 
           time = moment.unix(ts / 1000);
 
-					if (!time || !time.isValid()) {
-						return;
-					}
+          if (!time || !time.isValid()) {
+            return;
+          }
 
-					now = moment().subtract(1, 'seconds');
-					if (time.toDate() > now.toDate()) {
-						time = now;
-					}
+          now = moment().subtract(1, 'seconds');
+          if (time.toDate() > now.toDate()) {
+            time = now;
+          }
 
           if (window.DP_DISABLE_RELATIVE_TIMES) {
             element.text($filter('formatTimestamp')(time, 'fulltime'));
-					} else {
+          } else {
             timeago = TimeAgo.get(time.toDate(), !noSuffix);
             if (!lastAnswer || lastAnswer !== timeago) {
               element.text(timeago).attr('title', $filter('formatTimestamp')(time, 'fulltime'));
-						}
+            }
             lastAnswer = timeago;
-					}
-        }
+          }
+        };
 
         if (!window.DP_DISABLE_RELATIVE_TIMES) {
-          element.on('$destroy', function() {
+          element.on('$destroy', () => {
             if (timeoutId) {
               $interval.cancel(timeoutId);
               timeoutId = null;
             }
           });
 
-          if (typeof attrs['autoUpdate'] != 'undefined') {
-          	var interval = null;
-          	var ts = getTimestamp() / 1000;
-          	var tsNow = Date.now() / 1000;
-          	var diff = Math.abs(tsNow - ts);
+          if (typeof attrs.autoUpdate !== 'undefined') {
+          	let interval = null;
+          	const ts = getTimestamp() / 1000;
+          	const tsNow = Date.now() / 1000;
+          	const diff = Math.abs(tsNow - ts);
 
           	if (diff < 7200) {
           		interval = 20000;
-						} else if (diff < 28800) {
+          } else if (diff < 28800) {
           		interval = 90000;
-						} else {
+          } else {
           		// unlikely to change in realtime
-						}
+          }
 
-						if (interval) {
-              timeoutId = $interval(function () {
+            if (interval) {
+              timeoutId = $interval(() => {
                 update();
               }, interval);
             }
 
-            scope.$watch('timestamp', function() {
+            scope.$watch('timestamp', () => {
               update();
             });
           }
         }
 
-				update();
-			}
-		};
-	}]);
+        update();
+      }
+    };
+  }]);
 
-	AgentApp.directive('dpTpl', ['$compile', '$timeout', function($compile, $timeout) {
-		var cache = {};
-		var errorHits = {}
-		return {
-			restrict: 'AE',
-			replace: true,
-			transclude: false,
-			compile: function(element, attrs) {
-				var elType = attrs['dpTpl'] || 'div';
+  AgentApp.directive('dpTpl', ['$compile', '$timeout', function ($compile, $timeout) {
+    const cache = {};
+    const errorHits = {};
+    return {
+      restrict:   'AE',
+      replace:    true,
+      transclude: false,
+      compile(element, attrs) {
+        const elType = attrs.dpTpl || 'div';
 
-				if (attrs['tplId'] && cache[attrs['tplId']]) {
-					tpl = cache[attrs['tplId']];
-				} else {
-					tpl = Strings.simpleTemplate(element.html(), { isAngular: true });
-					if (attrs['tplId']) {
-						cache[attrs['tplId']] = tpl;
-					}
-				}
+        if (attrs.tplId && cache[attrs.tplId]) {
+          tpl = cache[attrs.tplId];
+        } else {
+          tpl = Strings.simpleTemplate(element.html(), { isAngular: true });
+          if (attrs.tplId) {
+            cache[attrs.tplId] = tpl;
+          }
+        }
 
-				if (elType != '@parent') {
-					var newElement = '<' + elType + ' class="dp-tpl"></' + elType + '>', tpl;
-					element.replaceWith(newElement);
-				} else {
-					element.remove();
-					element = element.parent();
-					element.addClass('dp-tpl');
-				}
+        if (elType != '@parent') {
+          var newElement = `<${elType} class="dp-tpl"></${elType}>`,
+            tpl;
+          element.replaceWith(newElement);
+        } else {
+          element.remove();
+          element = element.parent();
+          element.addClass('dp-tpl');
+        }
 
-				return function(scope, element, attrs) {
-					var watch = attrs['watchVars'] ? scope.$eval(attrs['watchVars']) : null;
-					var deepWatch = attrs['watchVarsDeep'] ? scope.$eval(attrs['watchVarsDeep']) : null;
+        return function (scope, element, attrs) {
+          const watch = attrs.watchVars ? scope.$eval(attrs.watchVars) : null;
+          const deepWatch = attrs.watchVarsDeep ? scope.$eval(attrs.watchVarsDeep) : null;
 
-					scope._isDirty = false;
+          scope._isDirty = false;
 
-					function render() {
-						var oldHtml,
-							newHtml;
+          function render() {
+            let oldHtml,
+              newHtml;
 
-						oldHtml = element.data('oldTplHtml');
+            oldHtml = element.data('oldTplHtml');
 
-						try {
-							newHtml = tpl.call(scope, scope);
-						} catch (e) {
-							console.error("Error rendering template: " + e + "\n" + (e.stack ? e.stack : 'no trace'))
+            try {
+              newHtml = tpl.call(scope, scope);
+            } catch (e) {
+              console.error(`Error rendering template: ${e}\n${e.stack ? e.stack : 'no trace'}`);
 
-							if (!errorHits[attrs['tplId']]) {
-								errorHits[attrs['tplId']] = true;
-								console.log("----- TEMPLATE SOURCE :: " + attrs['tplId'] + " -----\n" + tpl.source);
-							}
+              if (!errorHits[attrs.tplId]) {
+                errorHits[attrs.tplId] = true;
+                console.log(`----- TEMPLATE SOURCE :: ${attrs.tplId} -----\n${tpl.source}`);
+              }
 
-							newHtml = '';
-						}
+              newHtml = '';
+            }
 
 						// Prevents re-compiling the element with angular needlessly
-						if (oldHtml != newHtml) {
-							element.html(newHtml);
-							element.data('oldTplHtml', newHtml);
-							$compile(element.contents())(scope);
-						}
+            if (oldHtml != newHtml) {
+              element.html(newHtml);
+              element.data('oldTplHtml', newHtml);
+              $compile(element.contents())(scope);
+            }
 
-						scope._isDirty = false;
-					}
+            scope._isDirty = false;
+          }
 
-					if (watch && watch.length) {
-						watch.forEach(function(name) {
-							scope.$watch(name, function() {
-								scope._isDirty = true;
-							});
-						});
-					}
-					if (deepWatch && deepWatch.length) {
-						deepWatch.forEach(function(name) {
-							scope.$watch(name, function() {
-								scope._isDirty = true;
-							}, true);
-						});
-					}
+          if (watch && watch.length) {
+            watch.forEach((name) => {
+              scope.$watch(name, () => {
+                scope._isDirty = true;
+              });
+            });
+          }
+          if (deepWatch && deepWatch.length) {
+            deepWatch.forEach((name) => {
+              scope.$watch(name, () => {
+                scope._isDirty = true;
+              }, true);
+            });
+          }
 
-					scope.$watch('_isDirty', function(isDirty) {
-						$timeout(function() {
-							if (isDirty) {
-								render();
-							}
-						}, 10);
-					});
-					render();
-				};
-			}
-		};
-	}]);
+          scope.$watch('_isDirty', (isDirty) => {
+            $timeout(() => {
+              if (isDirty) {
+                render();
+              }
+            }, 10);
+          });
+          render();
+        };
+      }
+    };
+  }]);
 
-	AgentApp.directive('dpStickyTip', ['$timeout', function($timeout) {
-		return {
-			restrict: 'AE',
-			template: '<div class="dp-stickytip" ng-transclude></div>',
-			replace: true,
-			transclude: true,
-			link: function(scope, element, attrs) {
-				var timeoutId,
-					hideTimeoutId,
-					timeoutMs      = parseInt(attrs['timeout']) || 350,
-					hideTimeoutMs  = parseInt(attrs['hideTimeout']) || 100,
-					targetEl       = element.parent(),
-					targetSel      = attrs['trigger'],
-					offsetTop      = parseInt(attrs['offsetTop']) || 15,
-					offsetLeft     = parseInt(attrs['offsetLeft']) || 0,
-					rightAlign     = typeof attrs['rightAlign'] != 'undefined',
-					topAlign       = typeof attrs['topAlign'] != 'undefined',
-					maxWidthCalc   = attrs['maxWidthCalc'] ? scope.$eval(attrs['maxWidthCalc']) : null,
-					maxWidth       = attrs['maxWidth'] ? attrs['maxWidth'] : null,
-					widthCalc      = attrs['widthCalc'] ? scope.$eval(attrs['widthCalc']) : null,
-					width          = attrs['width'] ? attrs['width'] : null,
-					noHoverTip     = typeof attrs['noHoverTip'] != 'undefined',
-					hasInit        = false,
-					m;
+  AgentApp.directive('dpStickyTip', ['$timeout', function ($timeout) {
+    return {
+      restrict:   'AE',
+      template:   '<div class="dp-stickytip" ng-transclude></div>',
+      replace:    true,
+      transclude: true,
+      link(scope, element, attrs) {
+        let timeoutId,
+          hideTimeoutId,
+          timeoutMs      = parseInt(attrs.timeout) || 350,
+          hideTimeoutMs  = parseInt(attrs.hideTimeout) || 100,
+          targetEl       = element.parent(),
+          targetSel      = attrs.trigger,
+          offsetTop      = parseInt(attrs.offsetTop) || 15,
+          offsetLeft     = parseInt(attrs.offsetLeft) || 0,
+          rightAlign     = typeof attrs.rightAlign !== 'undefined',
+          topAlign       = typeof attrs.topAlign !== 'undefined',
+          maxWidthCalc   = attrs.maxWidthCalc ? scope.$eval(attrs.maxWidthCalc) : null,
+          maxWidth       = attrs.maxWidth ? attrs.maxWidth : null,
+          widthCalc      = attrs.widthCalc ? scope.$eval(attrs.widthCalc) : null,
+          width          = attrs.width ? attrs.width : null,
+          noHoverTip     = typeof attrs.noHoverTip !== 'undefined',
+          hasInit        = false,
+          m;
 
-				if (targetSel) {
-					while ((m = targetSel.match(/^@parent/))) {
-						targetEl = targetEl.parent();
-						targetSel = targetSel.replace(/^@parent\s*/, '');
-					}
+        if (targetSel) {
+          while ((m = targetSel.match(/^@parent/))) {
+            targetEl = targetEl.parent();
+            targetSel = targetSel.replace(/^@parent\s*/, '');
+          }
 
-					if (targetSel.length) {
-						targetEl = targetEl.find(targetSel).first();
-					}
-				}
+          if (targetSel.length) {
+            targetEl = targetEl.find(targetSel).first();
+          }
+        }
 
-				if (!targetEl || !targetEl[0]) {
-					return;
-				}
+        if (!targetEl || !targetEl[0]) {
+          return;
+        }
 
-				if (attrs['style']) {
-					element.attr('style', attrs['style']);
-				}
-				if (attrs['class']) {
-					element.addClass(attrs['class']);
-				}
+        if (attrs.style) {
+          element.attr('style', attrs.style);
+        }
+        if (attrs.class) {
+          element.addClass(attrs.class);
+        }
 
-				element.hide();
+        element.hide();
 
-				function show() {
-					if (!hasInit) {
-						element.detach().appendTo('body');
-						hasInit = true;
-					}
+        function show() {
+          if (!hasInit) {
+            element.detach().appendTo('body');
+            hasInit = true;
+          }
 
-					var pos = targetEl.offset(), left, top;
-					left = pos.left + offsetLeft;
-					top = pos.top + offsetTop;
+          let pos = targetEl.offset(),
+            left,
+            top;
+          left = pos.left + offsetLeft;
+          top = pos.top + offsetTop;
 
-					if (rightAlign) {
-						left -= element.width();
-						left += targetEl.width();
-					}
-					if (topAlign) {
-						top -= element.height();
-					}
+          if (rightAlign) {
+            left -= element.width();
+            left += targetEl.width();
+          }
+          if (topAlign) {
+            top -= element.height();
+          }
 
-					element.css({
-						left: left,
-						top: top,
+          element.css({
+            left,
+            top,
 
 						// Make it invisble but display:block
 						// so whatever maxWidthCalc might do can use
 						// the proper offset()'s
-						visibility: 'hidden',
-						display: 'block'
-					});
+            visibility: 'hidden',
+            display:    'block'
+          });
 
-					if (width) {
-						element.css('width', maxWidth);
-					} else if (widthCalc) {
-						element.css('width', widthCalc(element, targetEl, attrs, scope));
-					} else if (maxWidth) {
-						element.css('max-width', maxWidth);
-					} else if (maxWidthCalc) {
-						element.css('max-width', maxWidthCalc(element, targetEl, attrs, scope));
-					}
+          if (width) {
+            element.css('width', maxWidth);
+          } else if (widthCalc) {
+            element.css('width', widthCalc(element, targetEl, attrs, scope));
+          } else if (maxWidth) {
+            element.css('max-width', maxWidth);
+          } else if (maxWidthCalc) {
+            element.css('max-width', maxWidthCalc(element, targetEl, attrs, scope));
+          }
 
 					// Compatibility with the dpTextOverflow directive
-					element.find('.with-dp-text-overflow').trigger('init.dptextoverflow').trigger('update.dot');
+          element.find('.with-dp-text-overflow').trigger('init.dptextoverflow').trigger('update.dot');
 
 					// If it's overflowing the window, align it above instead
-					if ((element.offset().top + element.height()) > $(window).height()) {
-						top = pos.top;
-						top -= element.height();
-						element.css('top', top);
-					}
+          if ((element.offset().top + element.height()) > $(window).height()) {
+            top = pos.top;
+            top -= element.height();
+            element.css('top', top);
+          }
 
-					element.trigger('preshow.dpstickytip');
-					element.css('visibility', 'visible');
-					element.trigger('postshow.dpstickytip');
-				};
+          element.trigger('preshow.dpstickytip');
+          element.css('visibility', 'visible');
+          element.trigger('postshow.dpstickytip');
+        }
 
-				function hide() {
-					element.hide();
-				};
+        function hide() {
+          element.hide();
+        }
 
-				$timeout(function() {
-					targetEl.on('mouseover', function () {
-						if (hideTimeoutId) {
-							$timeout.cancel(hideTimeoutId);
-							hideTimeoutId = null;
-						}
-					});
+        $timeout(() => {
+          targetEl.on('mouseover', () => {
+            if (hideTimeoutId) {
+              $timeout.cancel(hideTimeoutId);
+              hideTimeoutId = null;
+            }
+          });
 
-					if (!noHoverTip) {
-						element.on('mouseover', function () {
-							if (hideTimeoutId) {
-								$timeout.cancel(hideTimeoutId);
-								hideTimeoutId = null;
-							}
-						});
-					}
+          if (!noHoverTip) {
+            element.on('mouseover', () => {
+              if (hideTimeoutId) {
+                $timeout.cancel(hideTimeoutId);
+                hideTimeoutId = null;
+              }
+            });
+          }
 
-					targetEl.on('mouseout', function () {
-						if (timeoutId) {
-							$timeout.cancel(timeoutId);
-							timeoutId = null;
-						}
-						if (hideTimeoutId) {
-							$timeout.cancel(hideTimeoutId);
-						}
-						hideTimeoutId = $timeout(function () {
-							hide();
-						}, hideTimeoutMs);
-					});
+          targetEl.on('mouseout', () => {
+            if (timeoutId) {
+              $timeout.cancel(timeoutId);
+              timeoutId = null;
+            }
+            if (hideTimeoutId) {
+              $timeout.cancel(hideTimeoutId);
+            }
+            hideTimeoutId = $timeout(() => {
+              hide();
+            }, hideTimeoutMs);
+          });
 
-					if (!noHoverTip) {
-						element.on('mouseout', function () {
-							if (hideTimeoutId) {
-								$timeout.cancel(hideTimeoutId);
-							}
-							hideTimeoutId = $timeout(function () {
-								hide();
-							}, hideTimeoutMs);
-						});
-					}
+          if (!noHoverTip) {
+            element.on('mouseout', () => {
+              if (hideTimeoutId) {
+                $timeout.cancel(hideTimeoutId);
+              }
+              hideTimeoutId = $timeout(() => {
+                hide();
+              }, hideTimeoutMs);
+            });
+          }
 
-					targetEl.on('mouseover', function () {
-						if (timeoutId) return;
-						timeoutId = $timeout(function () {
-							timeoutId = null;
-							show();
-						}, timeoutMs);
-					});
-				});
+          targetEl.on('mouseover', () => {
+            if (timeoutId) return;
+            timeoutId = $timeout(() => {
+              timeoutId = null;
+              show();
+            }, timeoutMs);
+          });
+        });
 
-				scope.$on('$destroy', function() {
-					if (timeoutId) {
-						$timeout.cancel(timeoutId);
-						timeoutId = null;
-					}
-					if (hideTimeoutId) {
-						$timeout.cancel(hideTimeoutId);
-						hideTimeoutId = null;
-					}
-					if (hasInit) {
-						element.remove();
-					}
-				});
-			}
-		};
-	}]);
+        scope.$on('$destroy', () => {
+          if (timeoutId) {
+            $timeout.cancel(timeoutId);
+            timeoutId = null;
+          }
+          if (hideTimeoutId) {
+            $timeout.cancel(hideTimeoutId);
+            hideTimeoutId = null;
+          }
+          if (hasInit) {
+            element.remove();
+          }
+        });
+      }
+    };
+  }]);
 
-	AgentApp.directive('dpRemoved', [function() {
-		return {
-			link: function(scope, element, attr) {
-				element.on('$destroy', function() {
-					scope.$eval(attr.dpRemoved);
-				});
-			}
-		}
-	}]);
+  AgentApp.directive('dpRemoved', [function () {
+    return {
+      link(scope, element, attr) {
+        element.on('$destroy', () => {
+          scope.$eval(attr.dpRemoved);
+        });
+      }
+    };
+  }]);
 
-	AgentApp.directive('dragToDownload', [function() {
-		return {
-			link: function(scope, element, attr) {
-				element.addClass('dragout');
-				DeskPRO_Window.util.filedownload(element);
-			}
-		}
-	}]);
+  AgentApp.directive('dragToDownload', [function () {
+    return {
+      link(scope, element, attr) {
+        element.addClass('dragout');
+        DeskPRO_Window.util.filedownload(element);
+      }
+    };
+  }]);
 
-	AgentApp.directive('dpTextOverflow', [function() {
-		return {
-			restrict: 'A',
-			link: function(scope, element, attr) {
-				var hasInit = false;
-				function init() {
-					if (hasInit) return;
-					hasInit = true;
-					var options = {
-						ellipsis: '...',
-						wrap: 'letter'
-					};
+  AgentApp.directive('dpTextOverflow', [function () {
+    return {
+      restrict: 'A',
+      link(scope, element, attr) {
+        let hasInit = false;
+        function init() {
+          if (hasInit) return;
+          hasInit = true;
+          const options = {
+            ellipsis: '...',
+            wrap:     'letter'
+          };
 
-					if (attr['overflowAppendString']) {
-						options['ellipsis'] = attr['overflowAppendString']
-					}
-					if (attr['overflowWrapType']) {
-						options['wrap'] = attr['overflowWrapType']
-					}
-					if (typeof attr['overflowWatch'] != 'undefined') {
-						if (attr['overflowWatch'] == 'window') {
-							options['watch'] = 'window';
-						} else {
-							options['watch'] = true;
-						}
-					}
-					if (attr['overflowHeight']) {
-						options['height'] = parseInt(attr['overflowHeight']);
-					}
-					if (attr['overflowTolerance']) {
-						options['tolerance'] = attr['overflowTolerance']
-					}
-					if (attr['overflowCallback']) {
-						options['callback'] = scope.$eval(attr['overflowCallback']);
-					}
+          if (attr.overflowAppendString) {
+            options.ellipsis = attr.overflowAppendString;
+          }
+          if (attr.overflowWrapType) {
+            options.wrap = attr.overflowWrapType;
+          }
+          if (typeof attr.overflowWatch !== 'undefined') {
+            if (attr.overflowWatch == 'window') {
+              options.watch = 'window';
+            } else {
+              options.watch = true;
+            }
+          }
+          if (attr.overflowHeight) {
+            options.height = parseInt(attr.overflowHeight);
+          }
+          if (attr.overflowTolerance) {
+            options.tolerance = attr.overflowTolerance;
+          }
+          if (attr.overflowCallback) {
+            options.callback = scope.$eval(attr.overflowCallback);
+          }
 
-					element.dotdotdot(options);
+          element.dotdotdot(options);
 
-					element.on('preshow', function() {
-						element.trigger('update.dot');
-					});
+          element.on('preshow', () => {
+            element.trigger('update.dot');
+          });
 
-					scope.$on('$destroy', function() {
-						element.trigger('destroy');
-					});
-				}
+          scope.$on('$destroy', () => {
+            element.trigger('destroy');
+          });
+        }
 
-				element.addClass('with-dp-text-overflow');
-				element.on('init.dptextoverflow', function() { init(); });
+        element.addClass('with-dp-text-overflow');
+        element.on('init.dptextoverflow', () => { init(); });
 
-				if (typeof attr['overflowManualInit'] == 'undefined') {
-					init();
-				}
-			}
-		}
-	}]);
+        if (typeof attr.overflowManualInit === 'undefined') {
+          init();
+        }
+      }
+    };
+  }]);
 
-	AgentApp.directive('dpSettableTable', ['$timeout', '$interval', function($timeout, $interval) {
-		return {
-			restrict: 'A',
-			link: function (scope, $el, attr) {
-				$el.addClass('is-settable');
+  AgentApp.directive('dpSettableTable', ['$timeout', '$interval', function ($timeout, $interval) {
+    return {
+      restrict: 'A',
+      link(scope, $el, attr) {
+        $el.addClass('is-settable');
 
-				var isRunning = false;
-				var count = 0;
-				var colCount = 0;
-				var vis = DeskPRO_Window.getPaneVisNum();
-				var interval;
-				var update = function() {
-					if (isRunning) return;
-					isRunning = true;
-					$el.removeClass('with-set');
-					$timeout(function() {
-						var tr = $el.find('th').first().closest('tr');
-						var tds = tr.find('th');
-						tds.css('width', 'auto').attr('width', '');
-						$timeout(function() {
-							tds.each(function() {
-								var w = $(this).width();
-								$(this).css('width', w).attr('width', w);
-							});
-							$el.addClass('with-set');
-							isRunning = false;
-						},10);
-					});
-				};
+        let isRunning = false;
+        let count = 0;
+        let colCount = 0;
+        let vis = DeskPRO_Window.getPaneVisNum();
+        let interval;
+        const update = function () {
+          if (isRunning) return;
+          isRunning = true;
+          $el.removeClass('with-set');
+          $timeout(() => {
+            const tr = $el.find('th').first().closest('tr');
+            const tds = tr.find('th');
+            tds.css('width', 'auto').attr('width', '');
+            $timeout(() => {
+              tds.each(function () {
+                const w = $(this).width();
+                $(this).css('width', w).attr('width', w);
+              });
+              $el.addClass('with-set');
+              isRunning = false;
+            }, 10);
+          });
+        };
 
-				var updateDebounce = Functions.debounce(function() {
-					update()
-				}, 300);
+        const updateDebounce = Functions.debounce(() => {
+          update();
+        }, 300);
 
-				var updateIfChanged = function() {
-					var newCount = $el.find('tr').length;
-					var newColCount = $el.find('tr').first().find('td').length;
-					var newVis = DeskPRO_Window.getPaneVisNum();
-					var doUpdate = false;
+        const updateIfChanged = function () {
+          const newCount = $el.find('tr').length;
+          const newColCount = $el.find('tr').first().find('td').length;
+          const newVis = DeskPRO_Window.getPaneVisNum();
+          let doUpdate = false;
 
-					if (newCount != count) {
-						count = newCount;
-						doUpdate = true;
-					}
-					if (newColCount != colCount) {
-						colCount = newColCount;
-						doUpdate = true;
-					}
-					if (newVis != vis) {
-						vis = newVis;
-						doUpdate = true;
-					}
+          if (newCount != count) {
+            count = newCount;
+            doUpdate = true;
+          }
+          if (newColCount != colCount) {
+            colCount = newColCount;
+            doUpdate = true;
+          }
+          if (newVis != vis) {
+            vis = newVis;
+            doUpdate = true;
+          }
 
-					if (doUpdate) {
+          if (doUpdate) {
             updateDebounce();
-					}
-				};
+          }
+        };
 
-				$timeout(function() {
-					$timeout(function() {
+        $timeout(() => {
+          $timeout(() => {
             updateDebounce();
-						interval = $interval(function() {
-							updateIfChanged();
-						}, 750);
-						$timeout(function() {
+            interval = $interval(() => {
+              updateIfChanged();
+            }, 750);
+            $timeout(() => {
               updateDebounce();
-						}, 200);
-					});
-				});
+            }, 200);
+          });
+        });
 
-				$(window).on('resize', updateDebounce);
+        $(window).on('resize', updateDebounce);
 
-				scope.$on('$destroy', function() {
-					$interval.cancel(interval);
-					$(window).off('resize', updateDebounce);
-				});
-			}
-		}
-	}]);
+        scope.$on('$destroy', () => {
+          $interval.cancel(interval);
+          $(window).off('resize', updateDebounce);
+        });
+      }
+    };
+  }]);
 
-	AgentApp.directive('dpOmnibox', ['$http', '$timeout', function($http, $timeout) {
-		return {
-			restrict: 'A',
-			link: function(scope, $el, attr) {
+  AgentApp.directive('dpOmnibox', ['$http', '$timeout', function ($http, $timeout) {
+    return {
+      restrict: 'A',
+      link(scope, $el, attr) {
+        window.DP_CLOSE_SEARCH = function () {
+          scope.$safeApply(() => {
+            scope.isActive = false;
+          });
+        };
 
-				window.DP_CLOSE_SEARCH = function() {
-					scope.$safeApply(function() {
-						scope.isActive = false;
-					});
-				};
+        const $headerBg = $('#dp_header_listpane_aligned');
+        const $input = $el.find('input');
+        const $results = $el.find('.dp-omnibox-results');
+        const $listPane = $('#dp_list');
+        const $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">');
+        let lastUpdateTime = null;
 
-				var $headerBg = $('#dp_header_listpane_aligned');
-				var $input = $el.find('input');
-				var $results = $el.find('.dp-omnibox-results');
-				var $listPane = $('#dp_list');
-				var $backdrop = $('<div class="backdrop search-menu-backdrop" style="top: 40px;">')
-				var lastUpdateTime = null;
+        scope.notifsOpen = false;
+        scope.recentOpen = false;
+        scope.searchQuery = '';
+        scope.isActive = false;
+        scope.mode = 'search';
+        scope.expanded = {};
+        scope.elasticOrder = 'score';
 
-				scope.notifsOpen = false;
-				scope.recentOpen = false;
-				scope.searchQuery = '';
-				scope.isActive = false;
-				scope.mode = 'search';
-				scope.expanded = {};
-				scope.elasticOrder = 'score';
+        scope.setOrder = function (order) {
+          scope.elasticOrder = order;
+          if (scope.resultGroups.length) {
+            updateSearch();
+          }
+        };
 
-				scope.setOrder = function(order) {
-					scope.elasticOrder = order;
-					if (scope.resultGroups.length) {
-						updateSearch();
-					}
-				};
+        const closeAll = function () {
+          $backdrop.hide();
+          $('#dp_header_notify_wrap').hide();
+          $('#recent_tabs_menu').hide();
+          $('#dp_omnibox_results').hide();
 
-				var closeAll = function() {
-					$backdrop.hide();
-					$('#dp_header_notify_wrap').hide();
-					$('#recent_tabs_menu').hide();
-					$('#dp_omnibox_results').hide();
+          scope.isActive = false;
+          scope.mode = 'search';
 
-					scope.isActive = false;
-					scope.mode = 'search';
+          $timeout(() => {
+            scope.isActive = false;
+            scope.mode = 'search';
+            updateMode();
+          });
+        };
 
-					$timeout(function() {
-						scope.isActive = false;
-						scope.mode = 'search';
-						updateMode();
-					});
-				};
+        $('#dp_header_notify_wrap, #recent_tabs_menu, #dp_omnibox').on('dpClose', () => {
+          closeAll();
+        });
 
-				$('#dp_header_notify_wrap, #recent_tabs_menu, #dp_omnibox').on('dpClose', function() {
-					closeAll();
-				});
-
-				var getContext = function() {
-					var context = [document];
-					$('iframe').each(function(i, iframe) {
-						try {
-							context.push(iframe.contentWindow.document);
-						} catch (e) {
+        const getContext = function () {
+          const context = [document];
+          $('iframe').each((i, iframe) => {
+            try {
+              context.push(iframe.contentWindow.document);
+            } catch (e) {
 							// cross origin frame
-						}
-					});
-					return context;
-				};
+            }
+          });
+          return context;
+        };
 
-				window.document.addEventListener('dpPopupOpen', function () {
-					var events = $.data(getContext(), 'events');
-					if (events) {
-						events.click = events.click || [];
-						events.click.sort(function(a, b) {
-							return b.guid - a.guid;
-						});
+        window.document.addEventListener('dpPopupOpen', () => {
+          const events = $.data(getContext(), 'events');
+          if (events) {
+            events.click = events.click || [];
+            events.click.sort((a, b) => b.guid - a.guid);
 
-						$.data(getContext(), 'events', events);
-					}
+            $.data(getContext(), 'events', events);
+          }
 
-					$(getContext()).on('click touchend', function closePopup(ev) {
-						if (!ev.target ||
+          $(getContext()).on('click touchend', function closePopup(ev) {
+            if (!ev.target ||
 							!($(ev.target).closest('.dp-omnibox-wrap')[0] || $(ev.target).closest('.legacy-omnibox')[0])) {
-							closeAll();
-						}
-						$(getContext()).off('click touchend', closePopup);
-					});
+              closeAll();
+            }
+            $(getContext()).off('click touchend', closePopup);
+          });
 
-					$backdrop.on('click', function() {
-						closeAll();
-					});
-				});
+          $backdrop.on('click', () => {
+            closeAll();
+          });
+        });
 
-        $('body').on('mousedown mouseup click', function(ev) {
+        $('body').on('mousedown mouseup click', (ev) => {
           if (!ev.target ||
             !($(ev.target).closest('.dp-omnibox-wrap')[0] || $(ev.target).closest('.legacy-omnibox')[0])) {
             closeAll();
@@ -821,247 +818,242 @@ define([
         });
 
 
-				scope.$watch('isActive', function(isActive) {
-					if (isActive) {
-						resizeDebounced();
-						$headerBg.addClass('with-search-active');
-						$backdrop.show();
-					} else {
-						$headerBg.removeClass('with-search-active');
-						$results.hide();
-						$backdrop.hide();
-					}
-				});
+        scope.$watch('isActive', (isActive) => {
+          if (isActive) {
+            resizeDebounced();
+            $headerBg.addClass('with-search-active');
+            $backdrop.show();
+          } else {
+            $headerBg.removeClass('with-search-active');
+            $results.hide();
+            $backdrop.hide();
+          }
+        });
 
-				$input.on('focus', function() {
-					if (scope.mode == 'search') {
-						$timeout(function () {
-							if (scope.mode == 'search') {
-								scope.isActive = true;
-								if (scope.searchQuery != "") {
-									$results.show();
-									resetResultsPos();
-								}
-							}
-						});
-					}
-				});
+        $input.on('focus', () => {
+          if (scope.mode == 'search') {
+            $timeout(() => {
+              if (scope.mode == 'search') {
+                scope.isActive = true;
+                if (scope.searchQuery != '') {
+                  $results.show();
+                  resetResultsPos();
+                }
+              }
+            });
+          }
+        });
 
-				$input.on('keyup', function(ev) {
-					if (ev.keyCode == 27) {
-						$timeout(function() {
-							scope.isActive = false;
-							scope.mode = 'search';
-							$input.blur();
-						});
-					}
-				});
+        $input.on('keyup', (ev) => {
+          if (ev.keyCode == 27) {
+            $timeout(() => {
+              scope.isActive = false;
+              scope.mode = 'search';
+              $input.blur();
+            });
+          }
+        });
 
-				var debouncedUpdateSearch = Functions.debounce(function() {
-					updateSearch()
-				}, 300);
+        const debouncedUpdateSearch = Functions.debounce(() => {
+          updateSearch();
+        }, 300);
 
-				scope.touchSearch = function() {
-					if ($.trim(scope.searchQuery) === "") {
-						scope.isActive = false;
-					} else {
-						debouncedUpdateSearch();
-					}
-				};
+        scope.touchSearch = function () {
+          if ($.trim(scope.searchQuery) === '') {
+            scope.isActive = false;
+          } else {
+            debouncedUpdateSearch();
+          }
+        };
 
-				scope.toggleMode = function(mode) {
-					if (!mode) {
-						scope.mode = 'search';
-					} else {
-						if (scope.mode == mode) {
-							scope.mode = 'search';
-						} else {
-							scope.mode = mode;
-						}
-					}
+        scope.toggleMode = function (mode) {
+          if (!mode) {
+            scope.mode = 'search';
+          } else if (scope.mode == mode) {
+            scope.mode = 'search';
+          } else {
+            scope.mode = mode;
+          }
 
-					updateMode();
-				};
+          updateMode();
+        };
 
-				scope.clearSearch = function() {
-					scope.searchQuery = '';
-					scope.expandedPerson = null;
-					closeAll();
-					$timeout(function() {
-						scope.searchQuery = '';
-						scope.expandedPerson = null;
-						closeAll();
-					});
-				};
+        scope.clearSearch = function () {
+          scope.searchQuery = '';
+          scope.expandedPerson = null;
+          closeAll();
+          $timeout(() => {
+            scope.searchQuery = '';
+            scope.expandedPerson = null;
+            closeAll();
+          });
+        };
 
-				var updateMode = function() {
-					if (scope.recentOpen) {
-						scope.recentOpen = false;
-						$('#recent_tabs_menu').hide().removeClass('active');
-					}
-					if (scope.notifsOpen) {
-						scope.notifsOpen = false;
-						$('#dp_header_notify_wrap').hide().removeClass('active');
-					}
+        var updateMode = function () {
+          if (scope.recentOpen) {
+            scope.recentOpen = false;
+            $('#recent_tabs_menu').hide().removeClass('active');
+          }
+          if (scope.notifsOpen) {
+            scope.notifsOpen = false;
+            $('#dp_header_notify_wrap').hide().removeClass('active');
+          }
 
-					if (scope.mode == 'search') {
-					} else if (scope.mode == 'recent') {
-						$results.hide();
-						showRecent();
-					} else if (scope.mode == 'notif') {
-						$results.hide();
-						showNotifs();
-					}
-				};
+          if (scope.mode == 'search') {
+          } else if (scope.mode == 'recent') {
+            $results.hide();
+            showRecent();
+          } else if (scope.mode == 'notif') {
+            $results.hide();
+            showNotifs();
+          }
+        };
 
-				var showRecent = function() {
-					scope.recentOpen = true;
-					var wrap = $('#recent_tabs_menu');
-					wrap.addClass('active').show();
-					wrap.width(Math.max($el.width() - 2, 560));
-					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
+        var showRecent = function () {
+          scope.recentOpen = true;
+          const wrap = $('#recent_tabs_menu');
+          wrap.addClass('active').show();
+          wrap.width(Math.max($el.width() - 2, 560));
+          Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
-					var closeFn = function() {
-						scope.$apply(function() {
-							scope.toggleMode('recent');
-						});
-					};
+          const closeFn = function () {
+            scope.$apply(() => {
+              scope.toggleMode('recent');
+            });
+          };
 
-					$timeout(function() {
-						$('#recent_tabs_list_filter').focus();
-					});
+          $timeout(() => {
+            $('#recent_tabs_list_filter').focus();
+          });
 
-					$backdrop.show();
-				};
+          $backdrop.show();
+        };
 
-				var showNotifs = function() {
-					scope.notifsOpen = true;
-					var wrap = $('#dp_header_notify_wrap');
-					wrap.addClass('active').show();
-					wrap.width(Math.max($el.width() - 2, 450));
-					Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
+        var showNotifs = function () {
+          scope.notifsOpen = true;
+          const wrap = $('#dp_header_notify_wrap');
+          wrap.addClass('active').show();
+          wrap.width(Math.max($el.width() - 2, 450));
+          Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
-					DeskPRO_Window.notifications.resetElements();
+          DeskPRO_Window.notifications.resetElements();
 
-					$backdrop.show();
-				};
+          $backdrop.show();
+        };
 
-				var updateSearch = function() {
-					var t = (new Date()).getTime()
+        var updateSearch = function () {
+          const t = (new Date()).getTime();
 
-					scope.isMainLoading = true;
-					$http({
-						method: 'GET',
-						params: { q: scope.searchQuery || '', sort: scope.elasticOrder },
-						url: 'DP_URL/agent/quick-search.json'
-					}).success(function(data) {
-						scope.isMainLoading = false;
+          scope.isMainLoading = true;
+          $http({
+            method: 'GET',
+            params: { q: scope.searchQuery || '', sort: scope.elasticOrder },
+            url:    'DP_URL/agent/quick-search.json'
+          }).success((data) => {
+            scope.isMainLoading = false;
 
-						if (lastUpdateTime && lastUpdateTime > t) {
+            if (lastUpdateTime && lastUpdateTime > t) {
 							// ignore this response, we have a newer one
-							return;
-						}
+              return;
+            }
 
-						scope.expanded = {};
+            scope.expanded = {};
 
-						lastUpdateTime = t;
-						scope.resultGroups = data.grouped_results || [];
-						scope.resultGroups = scope.resultGroups.filter(function(v) { return v.results && v.results.length; });
-						scope.index_running = data.index_running || false;
-						scope.is_elastic    = data.is_elastic || false;
+            lastUpdateTime = t;
+            scope.resultGroups = data.grouped_results || [];
+            scope.resultGroups = scope.resultGroups.filter(v => v.results && v.results.length);
+            scope.index_running = data.index_running || false;
+            scope.is_elastic    = data.is_elastic || false;
 
-						var initialShow = {
-							organization: 3,
-							person: 3,
-							ticket: 10,
-							feedback: 5,
-							article: 5,
-							download: 5,
-							news: 5,
-							chat_conversation: 3
-						};
-						var sortOrder = {
-							organization: 0,
-							person: 1,
-							ticket: 2,
-							feedback: 3,
-							article: 4,
-							download: 5,
-							news: 6,
-							chat_conversation: 7
-						};
-						for (var i = 0; i < scope.resultGroups.length; i++) {
-							scope.resultGroups[i].initialShow = initialShow[scope.resultGroups[i].type] || 5;
-						}
-						scope.resultGroups = scope.resultGroups.sort(function(a, b) {
-							return sortOrder[a.type] < sortOrder[b.type] ? -1 : 1;
-						});
+            const initialShow = {
+              organization:      3,
+              person:            3,
+              ticket:            10,
+              feedback:          5,
+              article:           5,
+              download:          5,
+              news:              5,
+              chat_conversation: 3
+            };
+            const sortOrder = {
+              organization:      0,
+              person:            1,
+              ticket:            2,
+              feedback:          3,
+              article:           4,
+              download:          5,
+              news:              6,
+              chat_conversation: 7
+            };
+            for (let i = 0; i < scope.resultGroups.length; i++) {
+              scope.resultGroups[i].initialShow = initialShow[scope.resultGroups[i].type] || 5;
+            }
+            scope.resultGroups = scope.resultGroups.sort((a, b) => sortOrder[a.type] < sortOrder[b.type] ? -1 : 1);
 
-						if (!scope.resultGroups.length && !scope.searchQuery.length) {
-							scope.clearSearch();
-						}
+            if (!scope.resultGroups.length && !scope.searchQuery.length) {
+              scope.clearSearch();
+            }
+          }).error(() => {
+            scope.isMainLoading = false;
+          });
 
-					}).error(function() {
-						scope.isMainLoading = false;
-					});
+          resetResultsPos();
+        };
 
-					resetResultsPos();
-				};
+        var resetResultsPos = function () {
+          const pos = $listPane.offset();
+          let width = $listPane.width();
+          if (width < 560) {
+            width = 560;
+          }
+          if (width > 900) {
+            width = 900;
+          }
 
-				var resetResultsPos = function() {
-					var pos = $listPane.offset();
-					var width = $listPane.width();
-					if (width < 560) {
-						width = 560;
-					}
-					if (width > 900) {
-						width = 900;
-					}
+          const maxHeight = $(window).height() - 40 - 75;
 
-					var maxHeight = $(window).height() - 40 - 75;
+          $results.css({
+            top:          50,
+            left:         55,
+            width:        width - 7,
+            'max-height': maxHeight
+          }).show();
+        };
 
-					$results.css({
-						top: 50,
-						left: 55,
-						width: width - 7,
-						'max-height': maxHeight
-					}).show();
-				};
+        var resizeDebounced = Functions.debounce(() => {
+          window.setTimeout(() => { resetResultsPos(); }, 10);
+        }, 300);
 
-				var resizeDebounced = Functions.debounce(function() {
-					window.setTimeout(function() { resetResultsPos(); }, 10);
-				}, 300);
+        $(window).on('resize', () => {
+          if (scope.isActive) {
+            resizeDebounced();
+          }
+        });
 
-				$(window).on('resize', function() {
-					if (scope.isActive) {
-						resizeDebounced();
-					}
-				});
+        scope.loadPersonTickets = function (person) {
+          if (person === scope.expandedPerson) {
+            return scope.expandedPerson = null;
+          }
 
-				scope.loadPersonTickets = function(person) {
-					if (person === scope.expandedPerson) {
-						return scope.expandedPerson = null;
-					}
+          scope.expandedPerson = person;
+          if (person.tickets) {
+            return;
+          }
 
-					scope.expandedPerson = person;
-					if (person.tickets) {
-						return;
-					}
+          $http({
+            method: 'GET',
+            params: { person_id: person.id },
+            url:    'DP_URL/agent/quick-search/get-person-tickets.json'
+          }).success((data) => {
+            if (data.results) {
+              person.tickets = data.results;
+            }
+          }).error(() => {
 
-					$http({
-						method: 'GET',
-						params: { person_id: person.id },
-						url: 'DP_URL/agent/quick-search/get-person-tickets.json'
-					}).success(function(data) {
-						if (data.results) {
-							person.tickets = data.results;
-						}
-					}).error(function() {
+          });
+        };
 
-					});
-				};
-
-        scope.loadOrgMembers = function(org) {
+        scope.loadOrgMembers = function (org) {
           if (org === scope.expandedOrg) {
             return scope.expandedOrg = null;
           }
@@ -1075,82 +1067,79 @@ define([
           $http({
             method: 'GET',
             params: { org_id: org.id },
-            url: 'DP_URL/agent/quick-search/get-org-members.json'
-          }).success(function(data) {
+            url:    'DP_URL/agent/quick-search/get-org-members.json'
+          }).success((data) => {
             if (data.results) {
               org.members_data = data.results;
             }
-          }).error(function() {
+          }).error(() => {
 
           });
         };
 
-				scope.openAllTickets = function(person) {
-					scope.clearSearch();
-					DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_person_id: person.id}, isBackgroundLoad: true});
-				};
-
-        scope.openAllMembers = function(org) {
+        scope.openAllTickets = function (person) {
           scope.clearSearch();
-          DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_organization_id: org.id}, isBackgroundLoad: true});
+          DeskPRO_Window.loadListPane(scope.search_url, { postData: { search_person_id: person.id }, isBackgroundLoad: true });
         };
-			}
-		}
-	}]);
 
-	AgentApp.config(['$locationProvider', function($locationProvider) {
-		$locationProvider.html5Mode(true).hashPrefix('');
-	}]);
+        scope.openAllMembers = function (org) {
+          scope.clearSearch();
+          DeskPRO_Window.loadListPane(scope.search_url, { postData: { search_organization_id: org.id }, isBackgroundLoad: true });
+        };
+      }
+    };
+  }]);
 
-	AgentApp.controller('ListPanePagination', ['$scope', '$http', function($scope, $http){
+  AgentApp.config(['$locationProvider', function ($locationProvider) {
+    $locationProvider.html5Mode(true).hashPrefix('');
+  }]);
 
-		$scope.page = $scope.page || 1;
-		$scope.perPage = $scope.perPage || 0;
-		$scope.ids = $scope.ids || [];
-		$scope.total = $scope.total || 0;
-		$scope.displayFields = $scope.displayFields || [];
-		$scope.isLoading = false;
-		$scope.Math = window.Math;
+  AgentApp.controller('ListPanePagination', ['$scope', '$http', function ($scope, $http) {
+    $scope.page = $scope.page || 1;
+    $scope.perPage = $scope.perPage || 0;
+    $scope.ids = $scope.ids || [];
+    $scope.total = $scope.total || 0;
+    $scope.displayFields = $scope.displayFields || [];
+    $scope.isLoading = false;
+    $scope.Math = window.Math;
 
 
-		$scope.fetchPage = function(page){
+    $scope.fetchPage = function (page) {
+      if ($scope.isLoading) return;
+      if (page < 1 || page > Math.ceil($scope.total / $scope.perPage)) return;
 
-			if ($scope.isLoading) return;
-			if (page < 1 || page > Math.ceil($scope.total / $scope.perPage)) return;
+      $scope.isLoading = true;
+      $http({
+        url:    $scope.url,
+        method: 'GET',
+        params: {
+          'result_ids[]':     $scope.ids.slice((page - 1) * $scope.perPage, (page - 1) * $scope.perPage + $scope.perPage),
+          'display_fields[]': $scope.displayFields,
+          page,
+          view_type:          'json'
+        }
+      }).then((data) => {
+        $scope.isLoading = false;
+        $scope.$parent[$scope.listName].length = 0;
+        if (!data.data) data.data = [];
+        data.data.each((item) => { $scope.$parent[$scope.listName].push(item); });
+        $scope.page = page;
+      }, () => {
+        $scope.isLoading = false;
+      });
+    };
+  }]);
 
-			$scope.isLoading = true;
-			$http({
-				url: $scope.url,
-				method: 'GET',
-				params: {
-					'result_ids[]': $scope.ids.slice((page - 1) * $scope.perPage, (page - 1) * $scope.perPage + $scope.perPage),
-					'display_fields[]': $scope.displayFields,
-					page: page,
-					view_type: 'json'
-				}
-			}).then(function(data){
-				$scope.isLoading = false;
-				$scope.$parent[$scope.listName].length = 0;
-				if (!data.data) data.data = [];
-				data.data.each(function(item){ $scope.$parent[$scope.listName].push(item); });
-				$scope.page = page;
-			}, function(){
-				$scope.isLoading = false;
-			});
-		};
-	}]);
+  AgentApp.directive('dpMenu', ['$compile', function ($compile) {
+    return {
+      restrict: 'A',
+      link(scope, $el, attr) {
+        let $backdrop = $('#dp-menu-backdrop'),
+          $popover = $('#dp-menu-popover'),
+          $inner = $popover.children(),
+          $tpl = $(`#${attr.dpMenu}`);
 
-	AgentApp.directive('dpMenu', ['$compile', function($compile) {
-		return {
-			restrict: 'A',
-			link: function(scope, $el, attr) {
-
-				var $backdrop = $('#dp-menu-backdrop'),
-					$popover = $('#dp-menu-popover'),
-					$inner = $popover.children(),
-					$tpl = $('#' + attr.dpMenu);
-
-				var onClick = function(e){
+        const onClick = function (e) {
           scope.$broadcast('dp-menu.opened');
           $inner.empty();
           $inner.html($tpl.html());
@@ -1160,51 +1149,51 @@ define([
           $backdrop.show();
           $inner.css('max-height', parseInt($(window).height() / 2 - 40));
           $popover.position({
-            of: $el,
-            my: 'center top',
-            at: 'center bottom',
+            of:        $el,
+            my:        'center top',
+            at:        'center bottom',
             collision: 'flipfit'
           });
         };
 
-				var onBackdropClick = function(){
+        const onBackdropClick = function () {
           $backdrop.hide();
           $popover.removeClass('open');
           $inner.children().remove();
         };
 
-				if (!$backdrop.length) {
-					$backdrop = $('<div id="dp-menu-backdrop" class="dp-popover-backdrop"></div>')
+        if (!$backdrop.length) {
+          $backdrop = $('<div id="dp-menu-backdrop" class="dp-popover-backdrop"></div>')
 						.appendTo('body').hide()
 						.on('click', onBackdropClick);
-				}
-				if (!$popover.length) {
-					$popover = $('<div id="dp-menu-popover" class="dp-popover"><div class="dp-popover-inner"></div></div>')
+        }
+        if (!$popover.length) {
+          $popover = $('<div id="dp-menu-popover" class="dp-popover"><div class="dp-popover-inner"></div></div>')
 						.appendTo($backdrop);
-					$inner = $popover.children();
-				}
+          $inner = $popover.children();
+        }
 
-				$el.on('click', onClick);
+        $el.on('click', onClick);
 
-				scope.$on('$destroy', function(){
+        scope.$on('$destroy', () => {
           $backdrop.off('click', onBackdropClick);
-				});
-			}
-		};
-	}]);
+        });
+      }
+    };
+  }]);
 
 
-	AgentApp.service('LabelDefinition', ['$http', '$q', function($http, $q){
-		return new DeskPRO_Service_LabelDefinition($q, $http.get('DP_URL/agent/labels/definitions'));
-	}]);
-	AgentApp.service('PersonService', DeskPRO_Service_Person);
-	AgentApp.service('AgentTeamService', DeskPRO_Service_AgentTeam);
+  AgentApp.service('LabelDefinition', ['$http', '$q', function ($http, $q) {
+    return new DeskPRO_Service_LabelDefinition($q, $http.get('DP_URL/agent/labels/definitions'));
+  }]);
+  AgentApp.service('PersonService', DeskPRO_Service_Person);
+  AgentApp.service('AgentTeamService', DeskPRO_Service_AgentTeam);
 
-	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
-	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
-	AgentApp.directive('dpSubmitForm', DeskPRO_Directive_DpSubmitForm);
-	AgentApp.directive('jiraFormWidget', DeskPRO_Directive_JIRAFormWidget);
-	AgentApp.directive('clipboard', DeskPRO_Directive_DpClipboard);
+  AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
+  AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
+  AgentApp.directive('dpSubmitForm', DeskPRO_Directive_DpSubmitForm);
+  AgentApp.directive('jiraFormWidget', DeskPRO_Directive_JIRAFormWidget);
+  AgentApp.directive('clipboard', DeskPRO_Directive_DpClipboard);
 
-	return AgentApp;
+  return AgentApp;
 });

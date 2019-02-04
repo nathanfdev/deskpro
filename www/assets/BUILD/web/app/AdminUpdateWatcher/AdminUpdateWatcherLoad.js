@@ -3,30 +3,29 @@ define([
 
   'AdminUpdateWatcher/App/App',
   'AdminUpdateWatcher/Ctrl/Main'
-], function(angular) {
-
+], (angular) => {
   if (!window.console) {
     window.console = {
-      log: function(){},
-      warn: function(){},
-      error: function(){}
-    }
+      log() {},
+      warn() {},
+      error() {}
+    };
   }
 
   return {
-    start: function() {
+    start() {
       window.DP_UID_COUNTER = 0;
-      window.dp_get_uid = function() {
+      window.dp_get_uid = function () {
         return window.DP_UID_COUNTER++;
       };
-      var $html = angular.element(document.getElementsByTagName('html')[0]);
+      const $html = angular.element(document.getElementsByTagName('html')[0]);
 
-      angular.element().ready(function() {
+      angular.element().ready(() => {
         $html.addClass('ng-app');
 
         if (window.DP_CTRL_REG) {
-          var module = angular.module('AdminUpdateWatcher_App');
-          for (var x = 0; x < window.DP_CTRL_REG.length; x++) {
+          const module = angular.module('AdminUpdateWatcher_App');
+          for (let x = 0; x < window.DP_CTRL_REG.length; x++) {
             module.controller(window.DP_CTRL_REG[x][0], window.DP_CTRL_REG[x][1]);
           }
         }
@@ -34,5 +33,5 @@ define([
         angular.bootstrap($html, ['AdminUpdateWatcher_App']);
       });
     }
-  }
+  };
 });

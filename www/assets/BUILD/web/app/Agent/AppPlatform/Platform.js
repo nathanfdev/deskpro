@@ -2,32 +2,31 @@ define([
   'Agent/AppPlatform/Context/AppContext',
   'Agent/AppPlatform/Context/TabContext/TabContext',
   'Agent/AppPlatform/Context/TabContext/TicketTabContext',
-], function(AppContext) {
-  return new Orb.Class({
-    initialize: function(ngModule, appsConfig) {
-      this.ngModule      = ngModule;
-      this.apps          = [];
-      this.packageToApps = {};
-      this.assetPaths    = {};
-      this.isStarted     = false;
+], AppContext => new Orb.Class({
+  initialize(ngModule, appsConfig) {
+    this.ngModule      = ngModule;
+    this.apps          = [];
+    this.packageToApps = {};
+    this.assetPaths    = {};
+    this.isStarted     = false;
 
-      if (appsConfig) {
-        for (var i = 0; i < appsConfig.length; i++) {
-          this.registerApp(appsConfig[i].contextClass, appsConfig[i]);
-        }
+    if (appsConfig) {
+      for (let i = 0; i < appsConfig.length; i++) {
+        this.registerApp(appsConfig[i].contextClass, appsConfig[i]);
       }
-    },
+    }
+  },
 
-    start: function() {
-      var i;
+  start() {
+    let i;
 
-      if (this.isStarted) return;
-      this.isStarted = true;
+    if (this.isStarted) return;
+    this.isStarted = true;
 
-      for (i = 0; i < this.apps.length; i++) {
-        this.apps[i]._dp_init();
-      }
-    },
+    for (i = 0; i < this.apps.length; i++) {
+      this.apps[i]._dp_init();
+    }
+  },
 
 
     /**
@@ -37,56 +36,57 @@ define([
      * @param {Object} appInstanceInfo
      * @return {AppContext}
      */
-    registerApp: function(contextClass, appInstanceInfo) {
-      var appContext, i;
+  registerApp(contextClass, appInstanceInfo) {
+    let appContext,
+      i;
 
-      if (appInstanceInfo.contextClass) {
-        delete appInstanceInfo.contextClass;
-      }
+    if (appInstanceInfo.contextClass) {
+      delete appInstanceInfo.contextClass;
+    }
 
-      appInstanceInfo.platform = this;
+    appInstanceInfo.platform = this;
 
       // Handled specially because Orb.Class can't
       // have properties, only methods, but `run` might
       // be an array (Angular injection)
-      if (contextClass.run) {
-        appInstanceInfo.run = contextClass.run;
-        delete contextClass.run;
+    if (contextClass.run) {
+      appInstanceInfo.run = contextClass.run;
+      delete contextClass.run;
+    }
+
+    if (typeof contextClass === 'function') {
+      appContext = new contextClass(appInstanceInfo);
+    } else {
+      if (typeof contextClass.Extends === 'undefined') {
+        contextClass.Extends = AppContext;
+      }
+      contextClass = new Orb.Class(contextClass);
+      appContext = new contextClass(appInstanceInfo);
+    }
+
+    this.apps.push(appContext);
+
+    if (appInstanceInfo.packageName) {
+      if (!this.packageToApps[appInstanceInfo.packageName]) {
+        this.packageToApps[appInstanceInfo.packageName] = [];
       }
 
-      if (typeof contextClass == 'function') {
-        appContext = new contextClass(appInstanceInfo);
-      } else {
-        if (typeof contextClass.Extends == 'undefined') {
-          contextClass.Extends = AppContext
-        }
-        contextClass = new Orb.Class(contextClass)
-        appContext = new contextClass(appInstanceInfo);
-      }
-
-      this.apps.push(appContext);
-
-      if (appInstanceInfo.packageName) {
-        if (!this.packageToApps[appInstanceInfo.packageName]) {
-          this.packageToApps[appInstanceInfo.packageName] = [];
-        }
-
-        this.packageToApps[appInstanceInfo.packageName].push(appContext);
-      }
+      this.packageToApps[appInstanceInfo.packageName].push(appContext);
+    }
 
       // Copy assets to our local assetsPath
-      for (i in appInstanceInfo.assets) {
-        if (appInstanceInfo.assets.hasOwnProperty(i)) {
-          this.assetPaths[i] = appInstanceInfo.assets[i];
-        }
+    for (i in appInstanceInfo.assets) {
+      if (appInstanceInfo.assets.hasOwnProperty(i)) {
+        this.assetPaths[i] = appInstanceInfo.assets[i];
       }
+    }
 
-      if (this.isStarted) {
-        appContext._dp_init();
-      }
+    if (this.isStarted) {
+      appContext._dp_init();
+    }
 
-      return appContext;
-    },
+    return appContext;
+  },
 
 
     /**
@@ -95,37 +95,37 @@ define([
      * @param packageName
      * @returns {AppContext}
      */
-    getPackageApp: function(packageName) {
-      if (!this.packageToApps[packageName]) {
-        return null;
-      }
+  getPackageApp(packageName) {
+    if (!this.packageToApps[packageName]) {
+      return null;
+    }
 
-      return this.packageToApps[packageName][0];
-    },
+    return this.packageToApps[packageName][0];
+  },
 
 
     /**
      * Called when a new fragment is created
      * @param {Object} fragment
      */
-    onFragmentStarted: function(fragment) {
-      var i;
-      for (i = 0; i < this.apps.length; i++) {
-        this.apps[i].startFragmentContexts(fragment);
-      }
-    },
+  onFragmentStarted(fragment) {
+    let i;
+    for (i = 0; i < this.apps.length; i++) {
+      this.apps[i].startFragmentContexts(fragment);
+    }
+  },
 
 
     /**
      * Called when a fragment is closed.
      * @param {Object} fragment
      */
-    onFragmentEnded: function(fragment) {
-      var i;
-      for (i = 0; i < this.apps.length; i++) {
-        this.apps[i].cleanupFragmentContexts(fragment);
-      }
-    },
+  onFragmentEnded(fragment) {
+    let i;
+    for (i = 0; i < this.apps.length; i++) {
+      this.apps[i].cleanupFragmentContexts(fragment);
+    }
+  },
 
 
     /**
@@ -133,30 +133,29 @@ define([
      * @param {String} aliasPath
      * @returns {String}
      */
-    getAssetPath: function(aliasPath) {
-      if (!this.assetPaths[aliasPath]) {
-        return null;
-      }
+  getAssetPath(aliasPath) {
+    if (!this.assetPaths[aliasPath]) {
+      return null;
+    }
 
-      return this.assetPaths[aliasPath];
-    },
+    return this.assetPaths[aliasPath];
+  },
 
 
     /**
      * Get the angular module
      * @returns {Object}
      */
-    getNgModule: function() {
-      return this.ngModule;
-    },
+  getNgModule() {
+    return this.ngModule;
+  },
 
 
     /**
      * Get the angular injector
      * @returns {injector}
      */
-    getNgInjector: function() {
-      return this.ngModule.dpInjector;
-    }
-  });
-});
+  getNgInjector() {
+    return this.ngModule.dpInjector;
+  }
+}));

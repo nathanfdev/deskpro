@@ -1,16 +1,14 @@
-define(['Agent/AppPlatform/Context/TabContext/TabContext'], function(TabContext) {
-  return new Orb.Class({
-    Extends: TabContext,
+define(['Agent/AppPlatform/Context/TabContext/TabContext'], TabContext => new Orb.Class({
+  Extends: TabContext,
 
-    getInjectables: function() {
-      return [
+  getInjectables() {
+    return [
         ['$person', this.getFragment().meta.api_data],
         ['$user', this.getFragment().meta.api_data],  // alias
-      ]
-    },
+    ];
+  },
 
-    getPersonData: function() {
-      return this.getFragment().meta.api_data;
-    }
-  });
-});
+  getPersonData() {
+    return this.getFragment().meta.api_data;
+  }
+}));

@@ -1,0 +1,22 @@
+define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
+  class Admin_ServerIncidents_Ctrl_Event extends Admin_Ctrl_Base {
+    static initClass() {
+      this.CTRL_ID   = 'Admin_ServerIncidents_Ctrl_Event';
+      this.CTRL_AS   = 'View';
+      this.DEPS      = ['Api2', '$sce'];
+    }
+
+    init() {
+      this.event = {};
+      return this.instructions_html = '';
+    }
+
+    initialLoad() {
+      return this.Api2.sendGet(`/system/events/${this.$stateParams.id}`).then(
+        ({ data }) => this.event = data.data);
+    }
+  }
+  Admin_ServerIncidents_Ctrl_Event.initClass();
+
+  return Admin_ServerIncidents_Ctrl_Event.EXPORT_CTRL();
+});

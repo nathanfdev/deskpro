@@ -1,37 +1,36 @@
-define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
-  return new Orb.Class({
-    initialize: function(contextParams, params) {
-      this._appContext  = contextParams.appContext;
-      this._fragment    = contextParams.fragment;
-      this._params      = params || {};
-      this.init();
-    },
+define(['angular', 'DeskPRO/Util/Strings'], (angular, Strings) => new Orb.Class({
+  initialize(contextParams, params) {
+    this._appContext  = contextParams.appContext;
+    this._fragment    = contextParams.fragment;
+    this._params      = params || {};
+    this.init();
+  },
 
 
     /**
      * Called when the controller is initiated
      */
-    init: function() {
+  init() {
 
-    },
+  },
 
 
     /**
      * Gets the app contexr
      * @returns {AppContext}
      */
-    getApp: function() {
-      return this._appContext;
-    },
+  getApp() {
+    return this._appContext;
+  },
 
 
     /**
      * Gets the fragment
      * @returns {Object}
      */
-    getFragment: function() {
-      return this._fragment;
-    },
+  getFragment() {
+    return this._fragment;
+  },
 
 
     /**
@@ -40,18 +39,18 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param event_name
      * @param fn
      */
-    addFragmentEventHandler: function(event_name, fn) {
-      this.getFragment().addEvent(event_name, fn);
-    },
+  addFragmentEventHandler(event_name, fn) {
+    this.getFragment().addEvent(event_name, fn);
+  },
 
 
     /**
      * Gets the fragment root element
      * @returns {HTMLElement}
      */
-    getFragmentElement: function() {
-      return this._fragment.wrapper;
-    },
+  getFragmentElement() {
+    return this._fragment.wrapper;
+  },
 
 
     /**
@@ -61,12 +60,12 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param {mixed} defaultValue
      * @returns {mixed}
      */
-    getParameter: function(name, defaultValue) {
-      if (typeof this._params.packageName[name] == 'undefined') {
-        return defaultValue;
-      }
-      return this._params.packageName[name];
-    },
+  getParameter(name, defaultValue) {
+    if (typeof this._params.packageName[name] === 'undefined') {
+      return defaultValue;
+    }
+    return this._params.packageName[name];
+  },
 
 
     /**
@@ -75,31 +74,31 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param {String} tplName
      * @return {promise} Promise that resolves to the template contents
      */
-    loadTemplate: function (tplName) {
-      var $injector = this.getApp().getPlatform().getNgInjector(),
-        runner;
+  loadTemplate(tplName) {
+    let $injector = this.getApp().getPlatform().getNgInjector(),
+      runner;
 
-      tplName = Strings.trim(tplName);
+    tplName = Strings.trim(tplName);
 
       // Prepend the package name if it isn't already
       // eg "html/my-template.html" needs to be "com.example.app/html/my-template"
-      if (tplName.indexOf(this.getApp().getPackageName()) === -1) {
-        tplName = this.getApp().getPackageName() + '/html/' + tplName;
-      }
+    if (tplName.indexOf(this.getApp().getPackageName()) === -1) {
+      tplName = `${this.getApp().getPackageName()}/html/${tplName}`;
+    }
 
-      runner = $injector.instantiate(['$http', '$templateCache', '$q', function($http, $templateCache, $q) {
-        var deferred = $q.defer();
-        this.deferred = deferred;
+    runner = $injector.instantiate(['$http', '$templateCache', '$q', function ($http, $templateCache, $q) {
+      const deferred = $q.defer();
+      this.deferred = deferred;
 
-        $http.get(tplName, { cache: $templateCache } ).then(function(response) {
-          deferred.resolve(response.data);
-        }, function() {
-          deferred.reject();
-        });
-      }]);
+      $http.get(tplName, { cache: $templateCache }).then((response) => {
+        deferred.resolve(response.data);
+      }, () => {
+        deferred.reject();
+      });
+    }]);
 
-      return runner.deferred.promise;
-    },
+    return runner.deferred.promise;
+  },
 
 
     /**
@@ -133,31 +132,32 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param {Object}                    ctrlLocals
      * @return {promise}
      */
-    renderTemplateTab: function(location, tabTitle, tplName, ctrl, ctrlLocals) {
-      var self = this,
-        $injector = this.getApp().getPlatform().getNgInjector(),
-        tabTplName,
-        tabTplNameMatch,
-        tabTplHtml,
-        runner;
+  renderTemplateTab(location, tabTitle, tplName, ctrl, ctrlLocals) {
+    let self = this,
+      $injector = this.getApp().getPlatform().getNgInjector(),
+      tabTplName,
+      tabTplNameMatch,
+      tabTplHtml,
+      runner;
 
-      tabTplNameMatch = tabTitle.match(/^template:(.*?)$/);
+    tabTplNameMatch = tabTitle.match(/^template:(.*?)$/);
+    if (tabTplNameMatch) {
+      tabTplName = tabTplNameMatch[1];
+    } else {
+      tabTplNameMatch = tabTitle.match(/^html:(.*?)$/);
       if (tabTplNameMatch) {
-        tabTplName = tabTplNameMatch[1];
+        tabTplHtml = tabTplNameMatch[1];
       } else {
-        tabTplNameMatch = tabTitle.match(/^html:(.*?)$/);
-        if (tabTplNameMatch) {
-          tabTplHtml = tabTplNameMatch[1];
-        } else {
-          tabTplHtml = Strings.escapeHtml(tabTitle);
-        }
+        tabTplHtml = Strings.escapeHtml(tabTitle);
       }
+    }
 
-      runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', function($rootScope, $controller, $compile, $q) {
-        var tplDeferred, tplPromise,
-          deferred = $q.defer();
+    runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', function ($rootScope, $controller, $compile, $q) {
+      let tplDeferred,
+        tplPromise,
+        deferred = $q.defer();
 
-        this.deferred = deferred;
+      this.deferred = deferred;
 
         // Load both templates
         // We call this twice, the first time will do
@@ -165,76 +165,76 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
         // when we have both templates.
         // The secondtime they are cached, so their loads will be
         // instant. We just do it so we can syncronise the loading
-        if (tabTplName) {
-          tplDeferred = $q.defer();
-          tplDeferred.all([
-            self.loadTemplate(tabTplName),
-            self.loadTemplate(tplName)
-          ]);
-          tplPromise = tplDeferred.promise;
-        } else {
-          tplPromise = self.loadTemplate(tplName);
-        }
+      if (tabTplName) {
+        tplDeferred = $q.defer();
+        tplDeferred.all([
+          self.loadTemplate(tabTplName),
+          self.loadTemplate(tplName)
+        ]);
+        tplPromise = tplDeferred.promise;
+      } else {
+        tplPromise = self.loadTemplate(tplName);
+      }
 
-        tplPromise.then(function() {
-          var containerId = Orb.getUniqueId('app_context_');
+      tplPromise.then(() => {
+        const containerId = Orb.getUniqueId('app_context_');
 
-          var createTab = function(tplSource) {
-            var tplScope,
-              tplCtrl,
-              tabElement;
+        const createTab = function (tplSource) {
+          let tplScope,
+            tplCtrl,
+            tabElement;
 
-            tplScope = $rootScope.$new();
-            tplCtrl = $controller(function() {}, { $scope: tplScope });
+          tplScope = $rootScope.$new();
+          tplCtrl = $controller(() => {}, { $scope: tplScope });
 
-            tabElement = angular.element('<li data-tab-for="#'+containerId+'"></li>');
+          tabElement = angular.element(`<li data-tab-for="#${containerId}"></li>`);
 
-            tabElement.html(tplSource);
-            tabElement.children().data('$ngControllerController', tplCtrl);
-            $compile(tabElement.contents())(tplScope);
+          tabElement.html(tplSource);
+          tabElement.children().data('$ngControllerController', tplCtrl);
+          $compile(tabElement.contents())(tplScope);
 
             // Then render the usual content box
-            ctrlLocals = ctrlLocals || {};
-            ctrlLocals.containerElementId = containerId;
-            ctrlLocals.hiddenByDefault = true;
-            ctrlLocals.$tabScope   = tplScope;
+          ctrlLocals = ctrlLocals || {};
+          ctrlLocals.containerElementId = containerId;
+          ctrlLocals.hiddenByDefault = true;
+          ctrlLocals.$tabScope   = tplScope;
 
-            self.renderTemplate(location, tplName, ctrl, ctrlLocals).then(function(info) {
-              var nav = info.element.closest('.dp-simpletab-container').find('.dp-with-simpletabs').first();
-              if (nav[0]) {
-                nav.find('ul').append(tabElement);
-                nav.data('simpletabs').addTriggerElement(tabElement);
-              }
+          self.renderTemplate(location, tplName, ctrl, ctrlLocals).then((info) => {
+            const nav = info.element.closest('.dp-simpletab-container').find('.dp-with-simpletabs').first();
+            if (nav[0]) {
+              nav.find('ul').append(tabElement);
+              nav.data('simpletabs').addTriggerElement(tabElement);
+            }
 
-              tplScope.content = info.scope;
-              info.scope.$watch('tab', function(newVal) {
-                tplScope.tab = newVal;
-              }, true);
+            tplScope.content = info.scope;
+            info.scope.$watch('tab', (newVal) => {
+              tplScope.tab = newVal;
+            }, true);
 
-              if (!info.scope.tab) {
-                info.scope.tab = {};
-              }
+            if (!info.scope.tab) {
+              info.scope.tab = {};
+            }
 
-              deferred.resolve(info);
-            }, function() { deferred.reject(); });
-          };
+            deferred.resolve(info);
+          }, () => { deferred.reject(); });
+        };
 
           // Always render tab itself first
           // because its scope is passed as an injectable to the main content controller
-          if (tabTplName) {
-            self.loadTemplate(tabTplName).then(function(tabHtml) {
-              createTab(tabHtml);
-            }, function() { deferred.reject(); });
-          } else {
-            createTab(tabTplHtml);
-          }
-        }, function() {
-          deferred.reject();
-        })
-      }]);
+        if (tabTplName) {
+          self.loadTemplate(tabTplName).then((tabHtml) => {
+            createTab(tabHtml);
+          }, () => { deferred.reject(); });
+        } else {
+          createTab(tabTplHtml);
+        }
+      }, () => {
+        deferred.reject();
+      });
+    }]);
 
-      return runner.deferred.promise;
-    },
+    return runner.deferred.promise;
+  },
 
 
     /**
@@ -245,81 +245,82 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param {Object}                    ctrlLocals
      * @return {promise}
      */
-    renderAppTemplate: function(tplName, ctrl, ctrlLocals) {
-      var self = this,
-        $injector = this.getApp().getPlatform().getNgInjector(),
-        runner;
+  renderAppTemplate(tplName, ctrl, ctrlLocals) {
+    let self = this,
+      $injector = this.getApp().getPlatform().getNgInjector(),
+      runner;
 
-      runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', '$timeout', function($rootScope, $controller, $compile, $q, $timeout) {
-        var tplDeferred, tplPromise,
-          deferred = $q.defer();
+    runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', '$timeout', function ($rootScope, $controller, $compile, $q, $timeout) {
+      let tplDeferred,
+        tplPromise,
+        deferred = $q.defer();
 
-        this.deferred = deferred;
+      this.deferred = deferred;
 
-        self.loadTemplate(tplName).then(function(tplSource) {
-          var containerId = Orb.getUniqueId('app_context_'),
-            tplScope,
-            tplCtrl,
-            tabElement,
-            updateClassFn;
+      self.loadTemplate(tplName).then((tplSource) => {
+        let containerId = Orb.getUniqueId('app_context_'),
+          tplScope,
+          tplCtrl,
+          tabElement,
+          updateClassFn;
 
-          tplScope = $rootScope.$new();
+        tplScope = $rootScope.$new();
 
           // proxy DeskPRO App events
-          $rootScope.$on('deskpro_app', function($event, name, data){
-            [].splice.call(arguments, 0, 2, name);
-            tplScope.$broadcast.apply(tplScope, arguments);
-          });
+        $rootScope.$on('deskpro_app', function ($event, name, data) {
+          [].splice.call(arguments, 0, 2, name);
+          tplScope.$broadcast(...arguments);
+        });
 
-          tplScope.btnClass   = {'is-enabled': true};
-          tplScope.btnImg     = null;
-          tplScope.btnBadge   = null;
-          tplScope.btnText    = null;
-          tplScope.enabled    = true;
-          tplCtrl = $controller(function() {}, { $scope: tplScope });
+        tplScope.btnClass   = { 'is-enabled': true };
+        tplScope.btnImg     = null;
+        tplScope.btnBadge   = null;
+        tplScope.btnText    = null;
+        tplScope.enabled    = true;
+        tplCtrl = $controller(() => {}, { $scope: tplScope });
 
-          tabElement = angular.element('<li data-for="#'+containerId+'" id="'+containerId+'_tab"><span ng-if="btnBadge !== null" class="badge">{{btnBadge}}</span><img ng-if="btnImg !== null" ng-src="{{btnImg}}" /><span ng-if="btnText !== null" ng-bind="btnText"></span></li>');
+        tabElement = angular.element(`<li data-for="#${containerId}" id="${containerId}_tab"><span ng-if="btnBadge !== null" class="badge">{{btnBadge}}</span><img ng-if="btnImg !== null" ng-src="{{btnImg}}" /><span ng-if="btnText !== null" ng-bind="btnText"></span></li>`);
 
-          tplScope.$watch('enabled', function(n) {
-            tplScope.btnClass['is-enabled'] = !!n;
-            $timeout(function() { self.getFragment().updateAppsSidebar(); });
-          });
+        tplScope.$watch('enabled', (n) => {
+          tplScope.btnClass['is-enabled'] = !!n;
+          $timeout(() => { self.getFragment().updateAppsSidebar(); });
+        });
 
           // Need to do this 'manually' because the scope is being applied to children, not the el itself
-          updateClassFn = function(btnClass) {
-            tabElement.removeClass();
-            for (var i in btnClass) {
-              if (btnClass.hasOwnProperty(i)) {
-                if (btnClass[i]) {
-                  tabElement.addClass(i);
-                }
+        updateClassFn = function (btnClass) {
+          tabElement.removeClass();
+          for (const i in btnClass) {
+            if (btnClass.hasOwnProperty(i)) {
+              if (btnClass[i]) {
+                tabElement.addClass(i);
               }
             }
-          };
+          }
+        };
 
-          tplScope.$watch('btnClass', updateClassFn, true);
+        tplScope.$watch('btnClass', updateClassFn, true);
 
-          tabElement.children().data('$ngControllerController', tplCtrl);
-          $compile(tabElement.contents())(tplScope);
+        tabElement.children().data('$ngControllerController', tplCtrl);
+        $compile(tabElement.contents())(tplScope);
 
           // Then render the usual content box
-          ctrlLocals = ctrlLocals || {};
-          ctrlLocals.containerElementId = containerId;
-          ctrlLocals.$tabScope = tplScope;
+        ctrlLocals = ctrlLocals || {};
+        ctrlLocals.containerElementId = containerId;
+        ctrlLocals.$tabScope = tplScope;
 
-          self.renderTemplate('#TAB_layout_sidebar .layout-sidebar__legacy-widget-list', tplName, ctrl, ctrlLocals).then(function(info) {
-            updateClassFn(tplScope.btnClass);
-            $('#' + self.getFragment().meta.baseId + '_layout_sidebar_icons').find('> ul').first().append(tabElement);
-            deferred.resolve(info);
-            $timeout(function() { self.getFragment().updateAppsSidebar(); });
-          }, function() { deferred.reject(); });
-        }, function() {
-          deferred.reject();
-        });
-      }]);
+        self.renderTemplate('#TAB_layout_sidebar .layout-sidebar__legacy-widget-list', tplName, ctrl, ctrlLocals).then((info) => {
+          updateClassFn(tplScope.btnClass);
+          $(`#${self.getFragment().meta.baseId}_layout_sidebar_icons`).find('> ul').first().append(tabElement);
+          deferred.resolve(info);
+          $timeout(() => { self.getFragment().updateAppsSidebar(); });
+        }, () => { deferred.reject(); });
+      }, () => {
+        deferred.reject();
+      });
+    }]);
 
-      return runner.deferred.promise;
-    },
+    return runner.deferred.promise;
+  },
 
 
     /**
@@ -331,116 +332,116 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param {Object}                    ctrlLocals
      * @return {promise}
      */
-    renderTemplate: function(location, tplName, ctrl, ctrlLocals) {
-      var $injector = this.getApp().getPlatform().getNgInjector(),
-        runner,
-        locationSelector,
-        locationPlace,
-        self = this;
+  renderTemplate(location, tplName, ctrl, ctrlLocals) {
+    let $injector = this.getApp().getPlatform().getNgInjector(),
+      runner,
+      locationSelector,
+      locationPlace,
+      self = this;
 
-      location = this.getElementLocationDef(location)
-      locationSelector = location[0];
-      locationPlace = location[1];
+    location = this.getElementLocationDef(location);
+    locationSelector = location[0];
+    locationPlace = location[1];
 
-      console.log("[TabContext] Rendering %s into %s<%s>", tplName, locationSelector, locationPlace);
+    console.log('[TabContext] Rendering %s into %s<%s>', tplName, locationSelector, locationPlace);
 
-      if (!ctrl) {
-        ctrl = function() { };
-      }
+    if (!ctrl) {
+      ctrl = function () { };
+    }
 
-      runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', function($rootScope, $controller, $compile, $q) {
-        var tplScope,
-          tplCtrl,
-          element,
-          locationEl,
-          injectables,
-          i,
-          deferred = $q.defer();
+    runner = $injector.instantiate(['$rootScope', '$controller', '$compile', '$q', function ($rootScope, $controller, $compile, $q) {
+      let tplScope,
+        tplCtrl,
+        element,
+        locationEl,
+        injectables,
+        i,
+        deferred = $q.defer();
 
-        this.deferred = deferred;
+      this.deferred = deferred;
 
-        self.loadTemplate(tplName).then(function(tplSource) {
-          tplScope = $rootScope.$new();
+      self.loadTemplate(tplName).then((tplSource) => {
+        tplScope = $rootScope.$new();
 
           // proxy DeskPRO App events
-          $rootScope.$on('deskpro_app', function($event, name){
-            [].splice.call(arguments, 0, 2, name);
-            tplScope.$broadcast.apply(tplScope, arguments);
-          });
+        $rootScope.$on('deskpro_app', function ($event, name) {
+          [].splice.call(arguments, 0, 2, name);
+          tplScope.$broadcast(...arguments);
+        });
 
-          ctrlLocals = ctrlLocals || {}
-          if (!ctrlLocals.containerElementId) {
-            ctrlLocals.containerElementId = Orb.getUniqueId('app_context_');
+        ctrlLocals = ctrlLocals || {};
+        if (!ctrlLocals.containerElementId) {
+          ctrlLocals.containerElementId = Orb.getUniqueId('app_context_');
+        }
+
+        ctrlLocals.$scope = tplScope;
+
+        ctrlLocals.$context  = self;
+        ctrlLocals.$app      = self.getApp();
+        ctrlLocals.$platform = self.getApp().getPlatform();
+
+        injectables = self.getInjectables();
+        if (injectables) {
+          for (i = 0; i < injectables.length; i++) {
+            ctrlLocals[injectables[i][0]] = injectables[i][1];
           }
+        }
 
-          ctrlLocals.$scope = tplScope;
+        element = angular.element('<div class="dp-app-context"></div>');
+        element.attr('id', ctrlLocals.containerElementId);
 
-          ctrlLocals.$context  = self;
-          ctrlLocals.$app      = self.getApp();
-          ctrlLocals.$platform = self.getApp().getPlatform();
+        ctrlLocals.$el = $(element);
 
-          injectables = self.getInjectables();
-          if (injectables) {
-            for (i = 0; i < injectables.length; i++) {
-              ctrlLocals[injectables[i][0]] = injectables[i][1];
-            }
-          }
+        tplCtrl = $controller(ctrl, ctrlLocals);
 
-          element = angular.element('<div class="dp-app-context"></div>');
-          element.attr('id', ctrlLocals.containerElementId)
-
-          ctrlLocals.$el = $(element)
-
-          tplCtrl = $controller(ctrl, ctrlLocals);
-
-          if (ctrlLocals.hiddenByDefault) {
-            element.hide();
-          }
+        if (ctrlLocals.hiddenByDefault) {
+          element.hide();
+        }
 
           // Automatically insert the widget into the DOM
           // Poll the dom every 100ms at most 5 times for the location to be available since the location is probably
           // rendered by react and it is possible that this code is executed before that element is inserted into the dom
           // so far this 'synchronization' choice seems to be enough
-          if (locationSelector) {
-            var
-              nrTries = 0,
-              maxTries = 4,
-              interval = 100,
-              locationReady = function () {
-                var el = angular.element(locationSelector).first();
-                return !!el[0];
-              },
-              moveElementWhenLocationReady = function() {
-                if (nrTries < maxTries) {
-                  nrTries++;
-                  if (locationReady()) {
-                    locationEl = self.moveElementTo(element, locationSelector, locationPlace, true);
-                  } else {
-                    setTimeout(moveElementWhenLocationReady, interval);
-                  }
+        if (locationSelector) {
+          var
+            nrTries = 0,
+            maxTries = 4,
+            interval = 100,
+            locationReady = function () {
+              const el = angular.element(locationSelector).first();
+              return !!el[0];
+            },
+            moveElementWhenLocationReady = function () {
+              if (nrTries < maxTries) {
+                nrTries++;
+                if (locationReady()) {
+                  locationEl = self.moveElementTo(element, locationSelector, locationPlace, true);
+                } else {
+                  setTimeout(moveElementWhenLocationReady, interval);
                 }
-              };
+              }
+            };
 
-            moveElementWhenLocationReady();
-          }
+          moveElementWhenLocationReady();
+        }
 
-          element.html(tplSource);
-          element.children().data('$ngControllerController', tplCtrl);
-          $compile(element.contents())(tplScope);
+        element.html(tplSource);
+        element.children().data('$ngControllerController', tplCtrl);
+        $compile(element.contents())(tplScope);
 
           // Add with-app-contexts to the parent container,
           // as well as any parent context container
-          element.parent().addClass('with-app-contexts')
+        element.parent().addClass('with-app-contexts')
             .closest('.dp-app-context-container').addClass('with-app-contexts');
 
-          deferred.resolve({ template: tplName, controller: tplCtrl, scope: tplScope, element: element, locationEl: locationEl });
-        }, function() {
-          deferred.reject();
-        });
-      }]);
+        deferred.resolve({ template: tplName, controller: tplCtrl, scope: tplScope, element, locationEl });
+      }, () => {
+        deferred.reject();
+      });
+    }]);
 
-      return runner.deferred.promise;
-    },
+    return runner.deferred.promise;
+  },
 
 
     /**
@@ -456,32 +457,34 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param {String/Array} location
      * @returns {Array}
      */
-    getElementLocationDef: function(location) {
-      var locationSelector, locationPlace, placeMatch;
+  getElementLocationDef(location) {
+    let locationSelector,
+      locationPlace,
+      placeMatch;
 
-      if (typeof location == 'string') {
-        location = Strings.trim(location);
+    if (typeof location === 'string') {
+      location = Strings.trim(location);
 
-        placeMatch = location.match(/^(append|prepend|after|before|replace)\s+(.*?)$/);
-        if (placeMatch) {
-          locationSelector = placeMatch[2];
-          locationPlace = placeMatch[1];
-        } else {
-          locationSelector = location;
-          locationPlace = 'append';
-        }
-
-        locationSelector = this.cleanElementLocationSelector(locationSelector);
-      } else if (typeof location.jquery != 'undefined' || typeof location.tagName != 'undefined') {
+      placeMatch = location.match(/^(append|prepend|after|before|replace)\s+(.*?)$/);
+      if (placeMatch) {
+        locationSelector = placeMatch[2];
+        locationPlace = placeMatch[1];
+      } else {
         locationSelector = location;
         locationPlace = 'append';
-      } else {
-        locationSelector = this.cleanElementLocationSelector(location[0]);
-        locationPlace = location[1];
       }
 
-      return [locationSelector, locationPlace];
-    },
+      locationSelector = this.cleanElementLocationSelector(locationSelector);
+    } else if (typeof location.jquery !== 'undefined' || typeof location.tagName !== 'undefined') {
+      locationSelector = location;
+      locationPlace = 'append';
+    } else {
+      locationSelector = this.cleanElementLocationSelector(location[0]);
+      locationPlace = location[1];
+    }
+
+    return [locationSelector, locationPlace];
+  },
 
 
     /**
@@ -491,21 +494,19 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param locationSelector
      * @returns {XML|string}
      */
-    cleanElementLocationSelector: function(locationSelector) {
-      locationSelector = Strings.trim(locationSelector);
+  cleanElementLocationSelector(locationSelector) {
+    locationSelector = Strings.trim(locationSelector);
 
       // @some.location is shorthand for named positions in the source
-      locationSelector = locationSelector.replace(/(?:^|\b)@([a-zA-Z0-9\-\._]+)\b/g, function (match, aliasName) {
-        return '#TAB_' + aliasName.replace(/[^a-zA-Z0-9_]/g, '_')
-      });
+    locationSelector = locationSelector.replace(/(?:^|\b)@([a-zA-Z0-9\-\._]+)\b/g, (match, aliasName) => `#TAB_${aliasName.replace(/[^a-zA-Z0-9_]/g, '_')}`);
 
       // If it's using an ID, we need to prefix the tab uid to it
       // eg #TAB_page_header is really #dp_rs00ey5_page_header
-      locationSelector = locationSelector.replace(/(?:^|\b)#TAB_(.*?)\b/g, '#' + this.getFragment().meta.baseId + '_$1');
-      locationSelector = locationSelector.replace(/(?:^|\b)#TAB\b/g, '#' + this.getFragmentElement().attr('id'));
+    locationSelector = locationSelector.replace(/(?:^|\b)#TAB_(.*?)\b/g, `#${this.getFragment().meta.baseId}_$1`);
+    locationSelector = locationSelector.replace(/(?:^|\b)#TAB\b/g, `#${this.getFragmentElement().attr('id')}`);
 
-      return locationSelector;
-    },
+    return locationSelector;
+  },
 
 
     /**
@@ -516,72 +517,69 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @param fallbackToBody
      * @returns {*}
      */
-    moveElementTo: function(element, locationSelector, locationPlace, fallbackToBody) {
-      var locationEl = angular.element(locationSelector).first(), realLocationEl;
-      if (locationEl[0]) {
-
+  moveElementTo(element, locationSelector, locationPlace, fallbackToBody) {
+    let locationEl = angular.element(locationSelector).first(),
+      realLocationEl;
+    if (locationEl[0]) {
         // - context containers might optionally have an app target
         //   this allows, for example, an app location to have surrounding markup (eg box, buttons etc)
         // - this matters because the container itself is often hidden by default, and then displayed
         //   when there are contexts. so this way we have the same logic of a container being hidden/shown
         //   but allowed to specify a sub element as the actual target.
-        if (locationEl.hasClass('dp-app-context-container')) {
-          realLocationEl = locationEl.find('.dp-app-context-target').first();
-          if (!realLocationEl[0]) {
-            realLocationEl = locationEl;
-          }
-        } else {
+      if (locationEl.hasClass('dp-app-context-container')) {
+        realLocationEl = locationEl.find('.dp-app-context-target').first();
+        if (!realLocationEl[0]) {
           realLocationEl = locationEl;
         }
-
-        switch (locationPlace) {
-          case 'append':
-            realLocationEl.append(element);
-            break;
-          case 'prepend':
-            realLocationEl.prepend(element);
-            break;
-          case 'after':
-            realLocationEl.after(element);
-            break;
-          case 'before':
-            realLocationEl.before(element);
-            break;
-          case 'replace':
-            realLocationEl.replaceWith(element);
-            break;
-          default:
-            console.warn("Invalid locationPlace in %s<%s> (will append)", locationSelector, locationPlace);
-            realLocationEl.append(element);
-        }
-        return locationEl;
       } else {
-        if (fallbackToBody) {
-          console.warn("Invalid locationSelector in %s<%s> (will append to body)", locationSelector, locationPlace);
-          locationEl = angular.element('body');
-          locationEl.append(element);
-          return locationEl;
-        } else {
-          return null;
-        }
+        realLocationEl = locationEl;
       }
-    },
+
+      switch (locationPlace) {
+        case 'append':
+          realLocationEl.append(element);
+          break;
+        case 'prepend':
+          realLocationEl.prepend(element);
+          break;
+        case 'after':
+          realLocationEl.after(element);
+          break;
+        case 'before':
+          realLocationEl.before(element);
+          break;
+        case 'replace':
+          realLocationEl.replaceWith(element);
+          break;
+        default:
+          console.warn('Invalid locationPlace in %s<%s> (will append)', locationSelector, locationPlace);
+          realLocationEl.append(element);
+      }
+      return locationEl;
+    }
+    if (fallbackToBody) {
+      console.warn('Invalid locationSelector in %s<%s> (will append to body)', locationSelector, locationPlace);
+      locationEl = angular.element('body');
+      locationEl.append(element);
+      return locationEl;
+    }
+    return null;
+  },
 
 
     /**
      * Get an array of [name, object] to inject on created angular controllers
      * @returns {Array}
      */
-    getInjectables: function() {
-      return null;
-    },
+  getInjectables() {
+    return null;
+  },
 
 
     /**
      * Called when the controller is being destroyed
      */
-    destroy: function() {
+  destroy() {
 
-    }
-  });
-});
+  }
+}));

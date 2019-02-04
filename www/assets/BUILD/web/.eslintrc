@@ -1,12 +1,118 @@
 {
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": false
+  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
+  "env": {
+    "browser": true,
+    "mocha": true,
+    "node": true,
+    "jest": true,
+    "jasmine": true,
+    "amd": true
+  },
+  "parser": "babel-eslint",
+  "rules": {
+    "max-len": [
+      1,
+      {
+        "code": 120,
+        "ignoreComments": true,
+        "ignoreUrls": true,
+        "ignorePattern": "^import\\s.+"
+      }
+    ],
+    "no-restricted-syntax": 0,
+    "react/no-multi-comp": 0,
+    "react/no-danger": 0,
+    "jsx-quotes": [
+      2,
+      "prefer-double"
+    ],
+    "key-spacing": [
+      2,
+      {
+        "singleLine": {
+          "beforeColon": false,
+          "afterColon": true
+        },
+        "multiLine": {
+          "beforeColon": false,
+          "afterColon": true,
+          "align": "value"
+        }
+      }
+    ],
+    "no-multi-spaces": [
+      0,
+      {
+        "exceptions": {
+          "VariableDeclarator": true
+        }
+      }
+    ],
+    "react/prefer-stateless-function": 0,
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "react/jsx-uses-react": 2,
+    "react/jsx-uses-vars": 2,
+    "react/react-in-jsx-scope": 2,
+    "no-var": 2,
+    "vars-on-top": 0,
+    "comma-dangle": 0,
+    "new-cap": 0,
+    "no-console": 0,
+    "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+    "indent": [
+      2,
+      2,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "valid-jsdoc": 0,
+    "import/no-extraneous-dependencies": ["off"],
+    "jsx-a11y/no-static-element-interactions": 0,
+    "react/forbid-prop-types": [
+      "error",
+      {"forbid": ["any"]}
+    ],
+    "import/prefer-default-export": "off",
+    "react/no-unused-prop-types": [2, { "skipShapeProps": true }],
+    "class-methods-use-this": [
+      "error",
+      { "exceptMethods": [
+        "renderWidget",
+        "render",
+        "componentWillReceiveProps",
+        "componentDidMount"
+      ] }
+    ],
+    "jsx-a11y/tabindex-no-positive": 0,
+    "jsx-a11y/label-has-for": 1,
+    "strict": 0,
+    "no-param-reassign": [
+      "error",
+      {"props": false}
+    ],
+    "no-mixed-operators": "off",
+    "camelcase": "off"
+  },
+  "plugins": [
+    "react",
+    "jsx-a11y"
+  ],
+  "settings": {
+    "import/resolver": {
+      "babel-namespace": {  },
+      "node": {
+        "paths": ["src", "src/DeskPRO/Component"]
+      }
+    },
+    "react": {
+      "version": "15.1.0"
+      // React version, default to the latest React stable release
     }
   },
-  "rules": {
-    "semi": 2
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
   }
 }

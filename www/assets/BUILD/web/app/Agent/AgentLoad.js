@@ -7,30 +7,31 @@ define([
   'DeskPRO/Util/Util',
   'angularSelect2',
   'clipboard'
-], function(angular, AgentApp, AppPlatformClass, AppPlatformConfig, AppContext, Util, angularSelect2, Clipboard) {
-
+], (angular, AgentApp, AppPlatformClass, AppPlatformConfig, AppContext, Util, angularSelect2, Clipboard) => {
   window.Clipboard = Clipboard;
 
   if (!window.console) {
     window.console = {
-      log: function(){},
-      warn: function(){},
-      error: function(){}
-    }
+      log() {},
+      warn() {},
+      error() {}
+    };
   }
 
   return {
-    start: function() {
-      var loadModules = [], self = this;
-      for (var i = 0; i < AppPlatformConfig.length; i++) {
+    start() {
+      let loadModules = [],
+        self = this;
+      for (let i = 0; i < AppPlatformConfig.length; i++) {
         if (AppPlatformConfig[i].moduleName) {
           loadModules.push(AppPlatformConfig[i].moduleName);
         }
       }
 
       if (loadModules.length) {
-        require(loadModules, function() {
-          var mods, i;
+        require(loadModules, function () {
+          let mods,
+            i;
           for (i = 0; i < arguments.length; i++) {
             if (arguments[i]) {
               mods = arguments[i];
@@ -38,7 +39,7 @@ define([
                 mods = [mods];
               }
 
-              mods.forEach(function(m) {
+              mods.forEach((m) => {
                 AgentApp.requires.push(m.name);
               });
             }
@@ -51,15 +52,15 @@ define([
       }
     },
 
-    startNg: function() {
-      var $html = angular.element(document.getElementsByTagName('html')[0]),
-          loadContexts = [],
-          loadingConfigs = [],
-          donePackageServices = {},
-          i,
-          self = this;
+    startNg() {
+      let $html = angular.element(document.getElementsByTagName('html')[0]),
+        loadContexts = [],
+        loadingConfigs = [],
+        donePackageServices = {},
+        i,
+        self = this;
 
-      AppPlatformConfig.forEach(function(appConfig) {
+      AppPlatformConfig.forEach((appConfig) => {
         if (appConfig.contextName != 'Agent/AppPlatform/Context/AppContext') {
           loadContexts.push(appConfig.contextName);
           loadingConfigs.push(appConfig);
@@ -70,15 +71,15 @@ define([
         // Register each AppContext as a service
         if (!donePackageServices[appConfig.packageName]) {
           donePackageServices[appConfig.packageName] = true;
-          AgentApp.factory('$' + appConfig.packageName, function() {
+          AgentApp.factory(`$${appConfig.packageName}`, () => {
             if (!window.AppPlatform) {
-              throw "The app platform is not initialized yet.";
+              throw 'The app platform is not initialized yet.';
             }
 
-            var a = window.AppPlatform.getPackageApp(appConfig.packageName);
+            const a = window.AppPlatform.getPackageApp(appConfig.packageName);
 
             if (!a) {
-              throw "The app platform is not initialized yet.";
+              throw 'The app platform is not initialized yet.';
             }
 
             return a;
@@ -86,26 +87,25 @@ define([
         }
       });
 
-      angular.element().ready(function() {
-
+      angular.element().ready(() => {
         window.AppPlatform = new AppPlatformClass(AgentApp);
 
         $html.addClass('ng-app');
 
         if (window.DP_CTRL_REG) {
-          for (var x = 0; x < window.DP_CTRL_REG.length; x++) {
+          for (let x = 0; x < window.DP_CTRL_REG.length; x++) {
             AgentApp.controller(window.DP_CTRL_REG[x][0], window.DP_CTRL_REG[x][1]);
           }
         }
 
-        AgentApp.run(['$injector', function($injector) {
+        AgentApp.run(['$injector', function ($injector) {
           // Legacy vars
           AgentApp.dpInjector = $injector;
           self.startPage();
         }]);
 
         if (loadContexts.length) {
-          require(loadContexts, function() {
+          require(loadContexts, function () {
             for (var i = 0; i < loadContexts.length; i++) {
               loadingConfigs[i].contextClass = arguments[i];
             }
@@ -124,12 +124,12 @@ define([
       });
     },
 
-    startPage: function() {
+    startPage() {
       window.DP_ONLOAD();
 
       if (window.DeskPRO_Window) {
         window.DeskPRO_Window.initAppPlatform(window.AppPlatform);
       }
     }
-  }
+  };
 });

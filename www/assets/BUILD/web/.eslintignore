@@ -1,2 +1,8 @@
-app/*.js
 javascripts/*.js
+bin/*
+app/Reports/amcharts27.js
+**/dist/*
+**/node_modules/*
+**/webpack.config*.js
+**/*_Reducers.js
+**/vendor/*

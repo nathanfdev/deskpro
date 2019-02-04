@@ -24,23 +24,22 @@ define([
   'DeskPRO/CategoryBuilder/Module',
   window.DP_REPORT_BUNDLE_PATH
 
-], function(angular, HeadlessInterfaceApp) {
-
+], (angular, HeadlessInterfaceApp) => {
   if (!window.console) {
     window.console = {
-      log: function(){},
-      warn: function(){},
-      error: function(){}
+      log() {},
+      warn() {},
+      error() {}
     };
   }
 
   return {
-    start: function() {
-      var self = this;
+    start() {
+      const self = this;
       this.isDocReady = false;
       this.isAppReady = false;
 
-      angular.element().ready(function() {
+      angular.element().ready(() => {
         self.isDocReady = true;
         self.bootReady();
       });
@@ -49,14 +48,14 @@ define([
       this.bootReady();
     },
 
-    bootReady: function() {
+    bootReady() {
       if (this.isDocReady && this.isAppReady && !this.isDoneBoot) {
         this.boot();
         $('#dp_loading').remove();
       }
     },
 
-    boot: function() {
+    boot() {
       this.isDoneBoot = true;
       angular.bootstrap(document.getElementById('dp_win'), ['DeskPRO.HeadlessInterfaceApp']);
     }

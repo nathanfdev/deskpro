@@ -2,39 +2,38 @@ define([
   'Agent/AppPlatform/Context/TabContext/TicketTabContext',
   'Agent/AppPlatform/Context/TabContext/UserTabContext',
   'Agent/AppPlatform/Context/TabContext/OrgTabContext',
-], function(
+], (
   TicketTabContext,
   UserTabContext,
   OrgTabContext
-) {
-  return new Orb.Class({
-    initialize: function(contextParams) {
-      this._appId          = contextParams.id;
-      this._platform       = contextParams.platform;
-      this._packageName    = contextParams.packageName;
-      this._scopeName      = contextParams.scope;
-      this._settings       = contextParams.settings;
-      this._assets         = contextParams.assets || {};
-      this._run            = contextParams.run || null;
-      this._regControllers = {};
-      this._createdControllers = {};
-    },
+) => new Orb.Class({
+  initialize(contextParams) {
+    this._appId          = contextParams.id;
+    this._platform       = contextParams.platform;
+    this._packageName    = contextParams.packageName;
+    this._scopeName      = contextParams.scope;
+    this._settings       = contextParams.settings;
+    this._assets         = contextParams.assets || {};
+    this._run            = contextParams.run || null;
+    this._regControllers = {};
+    this._createdControllers = {};
+  },
 
 
     /**
      * Called automatically when the context is created
      */
-    init: function() {
+  init() {
 
-    },
+  },
 
-    _dp_init: function() {
-      this.init();
+  _dp_init() {
+    this.init();
 
-      if (this._run) {
-        return this.getPlatform().getNgInjector().invoke(this._run, this);
-      }
-    },
+    if (this._run) {
+      return this.getPlatform().getNgInjector().invoke(this._run, this);
+    }
+  },
 
 
     /**
@@ -42,9 +41,9 @@ define([
      *
      * @return {Integer}
      */
-    getAppId: function() {
-      return this._appId;
-    },
+  getAppId() {
+    return this._appId;
+  },
 
 
     /**
@@ -52,18 +51,18 @@ define([
      *
      * @returns {String}
      */
-    getPackageName: function() {
-      return this._packageName;
-    },
+  getPackageName() {
+    return this._packageName;
+  },
 
 
     /**
      * Get the platform
      * @returns {Platform}
      */
-    getPlatform: function() {
-      return this._platform;
-    },
+  getPlatform() {
+    return this._platform;
+  },
 
 
     /**
@@ -71,9 +70,9 @@ define([
      *
      * @return {String}
      */
-    getScopeName: function() {
-      return this._scopeName;
-    },
+  getScopeName() {
+    return this._scopeName;
+  },
 
 
     /**
@@ -82,12 +81,12 @@ define([
      * @param {mixed} defaultValue
      * @return {mixed}
      */
-    getSetting: function(name, defaultValue) {
-      if (typeof this._settings[name] == 'undefined') {
-        return defaultValue;
-      }
-      return this._settings[name];
-    },
+  getSetting(name, defaultValue) {
+    if (typeof this._settings[name] === 'undefined') {
+      return defaultValue;
+    }
+    return this._settings[name];
+  },
 
 
     /**
@@ -96,15 +95,14 @@ define([
      * @param {String} path
      * @returns {String|null}
      */
-    getResourcePath: function(path) {
-      var fullPath = this._packageName + '/res/' + path.replace(/^\//, '');
+  getResourcePath(path) {
+    const fullPath = `${this._packageName}/res/${path.replace(/^\//, '')}`;
 
-      if (this._assets[fullPath]) {
-        return this._assets[fullPath] + '?v=' + (window.DP_BUILD_TIME || '')
-      } else {
-        return null;
-      }
-    },
+    if (this._assets[fullPath]) {
+      return `${this._assets[fullPath]}?v=${window.DP_BUILD_TIME || ''}`;
+    }
+    return null;
+  },
 
 
     /**
@@ -114,29 +112,29 @@ define([
      * @param {String}    action Optional sub-action to pass to the handler in the context
      * @return {String}
      */
-    getRequestHandlerUrl: function(type, action, params) {
-      var url;
-      if (type != 'agent') {
-        throw "Invalid `type` (must be 'agent')";
-      }
+  getRequestHandlerUrl(type, action, params) {
+    let url;
+    if (type != 'agent') {
+      throw "Invalid `type` (must be 'agent')";
+    }
 
-      url = window.BASE_URL + type + "/apps/" + this.getAppId();
-      if (action) {
-        action = action.replace(/^\/+/, '');
-        url += "/" + action;
-      }
+    url = `${window.BASE_URL + type}/apps/${this.getAppId()}`;
+    if (action) {
+      action = action.replace(/^\/+/, '');
+      url += `/${action}`;
+    }
 
-      if (params) {
-        url += '?';
-        for (var i in params) {
-          if (params.hasOwnProperty(i)) {
-            url += encodeURIComponent(i) + '=' + encodeURIComponent(params[i]) + '&';
-          }
+    if (params) {
+      url += '?';
+      for (const i in params) {
+        if (params.hasOwnProperty(i)) {
+          url += `${encodeURIComponent(i)}=${encodeURIComponent(params[i])}&`;
         }
       }
+    }
 
-      return url;
-    },
+    return url;
+  },
 
 
     /**
@@ -147,40 +145,40 @@ define([
      * @param {Object} params
      * @return {TabContext}
      */
-    register: function(type, context, params) {
-      var baseClass;
+  register(type, context, params) {
+    let baseClass;
 
-      if (typeof context != 'function') {
-        switch (type) {
-          case 'ticket':
-            baseClass = TicketTabContext;
-            break;
-          case 'user':
-          case 'person':
-            type = 'person';
-            baseClass = UserTabContext;
-            break;
-          case 'organization':
-          case 'org':
-            type = 'organization';
-            baseClass = OrgTabContext;
-            break;
-        }
-
-        if (baseClass) {
-          context.Extends = baseClass;
-          context = Orb.Class(context)
-        }
+    if (typeof context !== 'function') {
+      switch (type) {
+        case 'ticket':
+          baseClass = TicketTabContext;
+          break;
+        case 'user':
+        case 'person':
+          type = 'person';
+          baseClass = UserTabContext;
+          break;
+        case 'organization':
+        case 'org':
+          type = 'organization';
+          baseClass = OrgTabContext;
+          break;
       }
 
-      if (!this._regControllers[type]) {
-        this._regControllers[type] = [];
+      if (baseClass) {
+        context.Extends = baseClass;
+        context = Orb.Class(context);
       }
+    }
 
-      this._regControllers[type].push([context, params || null]);
+    if (!this._regControllers[type]) {
+      this._regControllers[type] = [];
+    }
 
-      return context;
-    },
+    this._regControllers[type].push([context, params || null]);
+
+    return context;
+  },
 
 
     /**
@@ -191,13 +189,13 @@ define([
      * @param {Object} params
      * @return {TabContext}
      */
-    registerAppWidget: function(type, templateName, controller, params) {
-      return this.register(type, {
-        init: function() {
-          this.renderAppTemplate(templateName, controller, params);
-        }
-      }, params);
-    },
+  registerAppWidget(type, templateName, controller, params) {
+    return this.register(type, {
+      init() {
+        this.renderAppTemplate(templateName, controller, params);
+      }
+    }, params);
+  },
 
 
     /**
@@ -209,13 +207,13 @@ define([
      * @param {Object} params
      * @return {TabContext}
      */
-    registerWidget: function(type, location, templateName, controller, params) {
-      return this.register(type, {
-        init: function() {
-          this.renderTemplate(location, templateName, controller, params);
-        }
-      }, params);
-    },
+  registerWidget(type, location, templateName, controller, params) {
+    return this.register(type, {
+      init() {
+        this.renderTemplate(location, templateName, controller, params);
+      }
+    }, params);
+  },
 
 
     /**
@@ -227,13 +225,13 @@ define([
      * @param {Object} params
      * @return {TabContext}
      */
-    registerWidgetTab: function(type, location, tabTitle, templateName, controller, params) {
-      return this.register(type, {
-        init: function() {
-          this.renderTemplateTab(location, tabTitle, templateName, controller, params);
-        }
-      }, params);
-    },
+  registerWidgetTab(type, location, tabTitle, templateName, controller, params) {
+    return this.register(type, {
+      init() {
+        this.renderTemplateTab(location, tabTitle, templateName, controller, params);
+      }
+    }, params);
+  },
 
 
     /**
@@ -243,33 +241,37 @@ define([
      * @param {Object} frag The fragment that was opened
      * @returns {Array} Array of contorllers that were created
      */
-    startFragmentContexts: function(frag) {
-      var i, contextParams, ctrl, created = [], type = frag.TYPENAME;
+  startFragmentContexts(frag) {
+    let i,
+      contextParams,
+      ctrl,
+      created = [],
+      type = frag.TYPENAME;
 
-      if (!this._regControllers[type]) {
-        return created;
-      }
+    if (!this._regControllers[type]) {
+      return created;
+    }
 
-      this._createdControllers[frag.OBJ_ID] = [];
+    this._createdControllers[frag.OBJ_ID] = [];
 
-      contextParams = {
-        appContext: this,
-        fragment: frag
-      };
+    contextParams = {
+      appContext: this,
+      fragment:   frag
+    };
 
-      for (i = 0; i < this._regControllers[type].length; i++) {
+    for (i = 0; i < this._regControllers[type].length; i++) {
         // 0 = class, 1 = params
-        ctrl = new this._regControllers[type][i][0](
+      ctrl = new this._regControllers[type][i][0](
           contextParams,
           this._regControllers[type][i][1]
         );
 
-        created.push(ctrl);
-        this._createdControllers[frag.OBJ_ID].push(ctrl);
-      }
+      created.push(ctrl);
+      this._createdControllers[frag.OBJ_ID].push(ctrl);
+    }
 
-      return created;
-    },
+    return created;
+  },
 
 
     /**
@@ -279,43 +281,43 @@ define([
      * @param {Object} frag The fragment that was closed
      * @returns {Array} Array of controllers that were cleaned up
      */
-    cleanupFragmentContexts: function(frag) {
-      var i, controllers;
-      if (!this._createdControllers[frag.OBJ_ID]) {
-        return [];
-      }
+  cleanupFragmentContexts(frag) {
+    let i,
+      controllers;
+    if (!this._createdControllers[frag.OBJ_ID]) {
+      return [];
+    }
 
-      controllers = this._createdControllers[frag.OBJ_ID];
-      delete this._createdControllers[frag.OBJ_ID];
+    controllers = this._createdControllers[frag.OBJ_ID];
+    delete this._createdControllers[frag.OBJ_ID];
 
-      for (i = 0; i < controllers.length; i++) {
-        controllers[i].destroy();
-      }
+    for (i = 0; i < controllers.length; i++) {
+      controllers[i].destroy();
+    }
 
-      return controllers;
-    },
+    return controllers;
+  },
 
 
     /**
      * @return $http
      */
-    getHttp: function() {
-      return this.getPlatform().getNgInjector().get('$http');
-    },
+  getHttp() {
+    return this.getPlatform().getNgInjector().get('$http');
+  },
 
     /**
      * @return $q
      */
-    getQ: function() {
-      return this.getPlatform().getNgInjector().get('$q');
-    },
+  getQ() {
+    return this.getPlatform().getNgInjector().get('$q');
+  },
 
 
     /**
      * @return {deferred}
      */
-    createDeferred: function() {
-      return this.getQ().defer();
-    }
-  });
-});
+  createDeferred() {
+    return this.getQ().defer();
+  }
+}));
