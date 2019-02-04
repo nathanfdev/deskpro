@@ -161,9 +161,17 @@ class AppEnv implements AppEnvInterface
 
         $binRootDir = $useAppDir ? $this->getAppDir() : $this->getDpRoot();
 
+        // php_bin_args -- an array
+        // php_bin_args_fn -- a function
+        $binArgs = $this->getConfig('env.php_bin_args') ?: [];
+        if ($fn = $this->getConfig('env.php_bin_args_fn')) {
+            $binArgs = array_merge($binArgs, call_user_func($fn, $params, $this) ?: []);
+        }
+
         $cmd = escapeshellarg($this->getConfig('paths.php_path')).' '
             .escapeshellarg($binRootDir.DIRECTORY_SEPARATOR.'bin'.DIRECTORY_SEPARATOR.'console').' '
             .(defined('DP_PHP_BIN_ARGS') ? DP_PHP_BIN_ARGS.' ' : '')
+            .(!empty($binArgs) ? implode(' ', $binArgs).' ' : '')
             .$params;
 
         return $cmd;
