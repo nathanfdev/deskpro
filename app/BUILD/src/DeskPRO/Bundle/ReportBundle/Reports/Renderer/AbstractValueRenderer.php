@@ -107,8 +107,8 @@ abstract class AbstractValueRenderer
                     'time'     => 'core.date_time',
                 ];
 
-                $tz     = $metadata->getPerson() ? $metadata->getPerson()->getTimezone() : 'UTC';
-                $offset = $metadata->getPerson() ? $metadata->getPerson()->getTimezoneOffsetSeconds() : '0';
+                $tz     = $metadata->getContext() ? $metadata->getContext()->getTimezone()->getName() : 'UTC';
+                $offset = $metadata->getContext() ? $metadata->getContext()->getTimezoneOffsetSeconds() : '0';
                 try {
                     if ($value instanceof \DateTime) {
                         $date = clone $value;

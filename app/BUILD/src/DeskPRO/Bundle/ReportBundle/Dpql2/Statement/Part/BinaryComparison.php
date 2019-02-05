@@ -113,8 +113,8 @@ class BinaryComparison extends AbstractPart
 
         if ($rhs instanceof Placeholder || $rhs instanceof BinaryInterval) {
             $intervals = [];
-            if ($rhs instanceof Placeholder && $this->context->getPerson()) {
-                $tzOffset = $this->context->getPerson()->getTimezoneOffsetSeconds();
+            if ($rhs instanceof Placeholder) {
+                $tzOffset = $this->context->getTimezoneOffsetSeconds();
                 if ($tzOffset) {
                     $intervalsOperator = $tzOffset > 0 ? Parser::T_OP_MINUS : $intervalsOperator = Parser::T_OP_PLUS;
                     $intervals[]       = new BinaryInterval($intervalsOperator, $lhs, abs($tzOffset), 'seconds');
