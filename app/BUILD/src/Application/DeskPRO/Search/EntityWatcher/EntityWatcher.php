@@ -215,13 +215,13 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     private function replaceEntity($entity)
     {
         if ($entity instanceof LabelArticle) {
-            return $entity->article;
+            return $entity->getArticle();
         } elseif ($entity instanceof LabelNews) {
-            return $entity->news;
+            return $entity->getNews();
         } elseif ($entity instanceof LabelDownload) {
-            return $entity->download;
+            return $entity->getDownload();
         } elseif ($entity instanceof LabelFeedback) {
-            return $entity->feedback;
+            return $entity->getFeedback();
         } elseif ($entity instanceof TicketMessage) {
             return $entity->getTicket();
         } elseif ($entity instanceof PersonEmail) {

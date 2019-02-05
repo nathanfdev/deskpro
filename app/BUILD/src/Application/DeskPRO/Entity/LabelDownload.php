@@ -23,6 +23,14 @@ class LabelDownload extends LabelAssocAbstract
      */
     protected $download;
 
+    /**
+     * @return Article
+     */
+    public function getDownload()
+    {
+        return $this->download;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
