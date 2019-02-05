@@ -158,9 +158,11 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => {
       if (this.agents) {
         d.resolve(this.agents);
       } else {
-        this.Api2.sendGet('/agents/extended').then(function (res) {
+        this.Api2.sendGet('/agents/extended').then((res) => {
           const agents = res.data.data;
-          agents.map(agent => agent.avatar.url = (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20));
+          agents.forEach((agent) => {
+            agent.avatar.url = (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20);
+          });
           this.agents = agents;
 
           return d.resolve(this.agents);
@@ -175,9 +177,11 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => {
       if (this.teams) {
         d.resolve(this.teams);
       } else {
-        this.Api2.sendGet('/agent_teams').then(function (res) {
+        this.Api2.sendGet('/agent_teams').then((res) => {
           const teams = res.data.data;
-          teams.map(team => team.avatar.url = (team.avatar.url_pattern || team.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20));
+          teams.forEach((team) => {
+            team.avatar.url = (team.avatar.url_pattern || team.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20);
+          });
           this.teams = teams;
           return d.resolve(this.teams);
         });
@@ -191,7 +195,7 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => {
       if (this.departments) {
         d.resolve(this.departments);
       } else {
-        this.Api2.sendGet('/ticket_departments').then(function (res) {
+        this.Api2.sendGet('/ticket_departments').then((res) => {
           this.departments = res.data.data;
           return d.resolve(this.departments);
         });
