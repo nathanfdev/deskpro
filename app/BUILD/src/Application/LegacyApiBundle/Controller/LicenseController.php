@@ -11,6 +11,7 @@ use Application\DeskPRO\Service\LicenseService;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\License;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Dates;
 use Orb\Validator\StringEmail;
 
@@ -239,6 +240,7 @@ FILE;
                 'build_name'   => $instanceStatus->getLatestRelease()->getName(),
             ];
         } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
             $versionInfo = null;
         }
 
