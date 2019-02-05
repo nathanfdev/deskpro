@@ -43,15 +43,17 @@ define(['handlebars'], (Handlebars) => {
         let drawn       = false;
         let interval    = false;
 
-        scope.control.print = function () {
-          if (chart) {
-            return chart.export.capture(
-              {},
-              function () {
-                return this.toPRINT();
-              });
-          }
-        };
+        if (scope.control) {
+          scope.control.print = function () {
+            if (chart) {
+              return chart.export.capture(
+                {},
+                function () {
+                  return this.toPRINT();
+                });
+            }
+          };
+        }
 
         scope.$watch('chartData', (n) => {
           if (!drawn) { return; }
