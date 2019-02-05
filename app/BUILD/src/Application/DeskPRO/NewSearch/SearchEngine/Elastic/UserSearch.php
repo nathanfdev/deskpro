@@ -49,6 +49,8 @@ class UserSearch implements UserSearchInterface
         $search = $this->index->createSearch();
         $filter = new Query\BoolQuery();
 
+        $customTerms = new Query\Terms();
+
         $limitTypes = isset($options['limit_types']) ? $options['limit_types'] : null;
         if ($limitTypes && !is_array($limitTypes)) {
             $limitTypes = explode(',', $limitTypes);
@@ -163,8 +165,27 @@ class UserSearch implements UserSearchInterface
         $stickyMatch->setFieldBoost('sticky_words', 2);
         $boolQuery->addShould($stickyMatch);
 
+        $customBool  = new Query\BoolQuery();
+        $customMatch = new Query\Match();
+        $customMatch
+            ->setFieldQuery('custom_data.value', $query)
+            ->setFieldBoost('custom_data.value', 10);
+
+        $customNested = new Query\Nested();
+        $customNested
+            ->setPath('custom_data')
+            ->setQuery(
+                $customBool
+                    ->addMust($customMatch)
+            );
+
         $filteredQuery = new Query\BoolQuery();
-        $filteredQuery->addMust($boolQuery);
+
+        $orQuery = new Query\BoolQuery();
+        $orQuery->addShould($boolQuery);
+        $orQuery->addShould($customNested);
+
+        $filteredQuery->addMust($orQuery);
         $filteredQuery->addFilter($filter);
 
         $res     = $search->search($filteredQuery, ['limit' => self::LIMIT]);
