@@ -398,7 +398,7 @@ portal.feedback.none: 'هیچ بازخوردی  وجود ندارد'
 portal.feedback.rate_forbidden: 'You are not allowed to vote'
 portal.feedback.recent-feedback: 'Recent Feedback'
 portal.feedback.search-title: 'انتقادات و پیشنهادات'
-portal.feedback.section-desc: 'These feedback items have been submitted by customers like you; we encourage you to discuss and vote on those you agree with, and to submit your own feedback if the idea is not already listed.'
+portal.feedback.section-desc: "انتقادات و پیشنهادات توسط کاربرانی مانند شما ارائه شده است .\nما شما را تشویق می کنیم که با کسانی که با آنها موافق هستید صحبت کنید و رای بدهید و نظرات خود را ارائه دهید."
 portal.feedback.section-title: 'انتقادات و پیشنهادات'
 portal.feedback.sort_comments: نظرات
 portal.feedback.sort_date: تاریخ
