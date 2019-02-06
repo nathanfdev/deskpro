@@ -1774,7 +1774,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var renderVoiceComponent = function($el) {
 			var $rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter($el);
 
-			$el.hide();
+			$el.remove();
 			window.AgentLegacyBundle.renderVoiceMessage(
 				$rElement.get(0),
 				$el.data('message'),
