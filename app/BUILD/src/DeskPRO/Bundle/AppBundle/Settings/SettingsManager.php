@@ -69,14 +69,17 @@ class SettingsManager
      */
     private function getIMSettings()
     {
+        $preference = $this->em->getRepository(PersonPref::class)->findOneBy([
+            'name' => 'agent.ui.im.chats_order', 'person' => $this->user,
+        ]);
+
+        $order = [];
+        if ($preference && is_array($preference->getValue())) {
+            $order = $preference->getValue();
+        }
+
         $settings = new IMSettings();
-
-        $chatsOrderPreference = $this
-            ->em
-            ->getRepository(PersonPref::class)
-            ->findOneBy(['name' => 'agent.ui.im.chats_order', 'person' => $this->user]);
-
-        $settings->setChatsOrder($chatsOrderPreference ? $chatsOrderPreference->getValue() : []);
+        $settings->setChatsOrder($order);
 
         return $settings;
     }
