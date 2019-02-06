@@ -47,6 +47,11 @@ class SearchContext implements SearchContextInterface
     private $options;
 
     /**
+     * @var array
+     */
+    private $allowedFields;
+
+    /**
      * SearchContext constructor.
      */
     public function __construct()
@@ -187,5 +192,25 @@ class SearchContext implements SearchContextInterface
     public function setGuideIds($guide_ids)
     {
         $this->guide_ids = $guide_ids;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedFields()
+    {
+        return $this->allowedFields;
+    }
+
+    /**
+     * @param array $allowedFields
+     *
+     * @return $this
+     */
+    public function setAllowedFields($allowedFields)
+    {
+        $this->allowedFields = $allowedFields;
+
+        return $this;
     }
 }
