@@ -1,0 +1,10 @@
+#!/usr/bin/env php
+<?php
+
+if (empty($_SERVER['argv'][1]) || !preg_match('/^[a-zA-Z0-9_\-]+$/', $_SERVER['argv'][1])) {
+    echo "invlaid utility\n";
+    exit(1);
+}
+
+define('DP_RUN_BIN_SCRIPT', 'util' . DIRECTORY_SEPARATOR . $_SERVER['argv'][1] . '.php');
+require __DIR__.'/../app/run/targets/php_bin_script.php';
