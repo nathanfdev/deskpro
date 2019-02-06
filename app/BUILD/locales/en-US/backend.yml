@@ -4982,6 +4982,7 @@ agent.tickets.please_choose_or_create_user: 'Please choose or create a user'
 agent.tickets.please_enter_subject: 'Please enter a subject'
 agent.tickets.preview_created_ticket: 'created ticket'
 agent.tickets.preview_replied: replied
+agent.tickets.preview_phone_call: made a phone call
 agent.tickets.preview_wrote_note: 'wrote a note'
 agent.tickets.priority_highestlowest: 'Priority (Highest-Lowest)'
 agent.tickets.priority_lowesthighest: 'Priority (Lowest-Highest)'

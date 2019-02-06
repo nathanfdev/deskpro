@@ -351,6 +351,7 @@ class TicketListRenderer
                     'date_created'    => $m['date_created']->format('Y-m-d H:i:s'),
                     'date_created_ts' => $m['date_created']->getTimestamp(),
                     'status'          => $m['status'],
+                    'is_voice_call'   => $m['is_voice_call'],
                 ],
                 'person' => [
                     'id'             => $m['person_id'],
