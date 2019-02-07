@@ -998,17 +998,17 @@ class PlivoCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $callSid = $request->get('CallUUID');
-        $callId  = $request->get('callId');
-        $details = $request->request->all();
+        $callSid    = $request->get('CallUUID');
+        $callId     = $request->get('callId');
+        $callStatus = $request->get('CallStatus');
+        $details    = $request->request->all();
 
         $plivoXml = new PlivoXML();
 
-        $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid);
-
-        if ($request->get('CallStatus') === 'busy') {
+        if ($callStatus === 'busy') {
             $this->get('dp.voice.callbacks_helper')->callBusyByUser($callSid, $details);
-        } else {
+        } elseif ($callStatus === 'in-progress') {
+            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid);
             $this->get('dp.voice.callbacks_helper')->createTicketForOutgoingPhoneCall($callId);
             $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
 
@@ -1019,6 +1019,8 @@ class PlivoCallbacksController extends BaseController
                 'callbackMethod'      => 'POST',
                 'record'              => true,
             ]);
+        } elseif ($callStatus === 'completed') {
+            $this->get('dp.voice.callbacks_helper')->callHangupByAgent($callSid, $details);
         }
 
         $response = new Response($plivoXml->toXML());
