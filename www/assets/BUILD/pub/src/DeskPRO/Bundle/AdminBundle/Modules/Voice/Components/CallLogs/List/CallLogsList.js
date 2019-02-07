@@ -57,7 +57,7 @@ class CallLogsList extends React.Component {
             <tr>
               <th>ID</th>
               <th>Date</th>
-              <th>Caller</th>
+              <th>User</th>
               <th>Callee(s)</th>
               <th>From Number</th>
               <th>To Number</th>

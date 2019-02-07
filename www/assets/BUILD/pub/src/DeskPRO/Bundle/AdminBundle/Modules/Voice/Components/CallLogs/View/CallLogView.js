@@ -58,7 +58,7 @@ class CallLogView extends React.Component {
               <CallStatus call={call} showDateEnded />
             </tr>
             <tr>
-              <th>Caller</th>
+              <th>User</th>
               <td>
                 <a onClick={() => openPerson(call.get('person'))}>
                   <PersonName id={call.get('person')} />
