@@ -74,10 +74,16 @@ class Topic extends React.Component {
     if (!Object.values(topic.children).length) {
       expandable = false;
     }
+
+    let baseUrl = window.DESKPRO_BASE_URL;
+    if (baseUrl) {
+      baseUrl = baseUrl.replace(/\/+$/, '');
+    }
+
     return (
       <li className="topic-item" key={topic.slug}>
         {clickable ?
-          <Link to={`${window.DESKPRO_BASE_URL}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
+          <Link to={`${baseUrl}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
             {topic.title}
             {expandable ? <i
               className={classNames(
