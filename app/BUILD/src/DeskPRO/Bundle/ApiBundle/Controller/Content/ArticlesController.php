@@ -105,8 +105,14 @@ class ArticlesController extends AbstractContentController
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
+        $noClean = false;
+        if ($request->request->get('no_clean')) {
+            $noClean = true;
+            $request->request->remove('no_clean');
+        }
         $options = array_merge($options, [
-            'person' => $this->getUser(),
+            'person'       => $this->getUser(),
+            'filter_clean' => !($this->getUser()->isAdmin() && $noClean),
         ]);
 
         return parent::handleForm($model, $request, $options);
