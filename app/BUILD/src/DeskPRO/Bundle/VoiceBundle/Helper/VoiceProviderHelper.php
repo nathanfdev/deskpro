@@ -11,6 +11,7 @@ use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -18,6 +19,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class VoiceProviderHelper implements VoiceProviderInterface
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
     /**
      * @var TwilioAdapter
      */
@@ -36,12 +42,18 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * Constructor.
      *
+     * @param EntityManager            $em
      * @param TwilioAdapter            $twilioAdapter
      * @param PlivoAdapter             $plivoAdapter
      * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(TwilioAdapter $twilioAdapter, PlivoAdapter $plivoAdapter, EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        EntityManager            $em,
+        TwilioAdapter            $twilioAdapter,
+        PlivoAdapter             $plivoAdapter,
+        EventDispatcherInterface $dispatcher
+    ) {
+        $this->em            = $em;
         $this->twilioAdapter = $twilioAdapter;
         $this->plivoAdapter  = $plivoAdapter;
         $this->dispatcher    = $dispatcher;
@@ -70,6 +82,9 @@ class VoiceProviderHelper implements VoiceProviderInterface
     {
         $ended = $this->getAdapter($phoneCall)->tryEndConference($phoneCall);
         if ($ended) {
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+            $this->em->flush($phoneCall);
+
             $this->dispatcher->dispatch(
                 LegacySystemEvent::EVENT_NAME,
                 new LegacySystemEvent('agent.voice.call-ended', [

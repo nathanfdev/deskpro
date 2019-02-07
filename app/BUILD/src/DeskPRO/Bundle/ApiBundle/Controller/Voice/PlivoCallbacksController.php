@@ -974,7 +974,7 @@ class PlivoCallbacksController extends BaseController
      * User answered an incoming call.
      *
      * @ApiDoc(
-     *     description="Outgoing callback",
+     *     description="User accepted an incoming call.",
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
@@ -992,7 +992,7 @@ class PlivoCallbacksController extends BaseController
      *
      * @return Response
      */
-    public function outgoingCallbackAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
+    public function outgoingUserCallbackAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
     {
         if ($account->getAccountAuth() !== $accountAuth) {
             throw $this->createAccessDeniedException();
@@ -1020,7 +1020,7 @@ class PlivoCallbacksController extends BaseController
                 'record'              => true,
             ]);
         } elseif ($callStatus === 'completed') {
-            $this->get('dp.voice.callbacks_helper')->callHangupByAgent($callSid, $details);
+            $this->get('dp.voice.callbacks_helper')->callHangupByUser($callSid, $details);
         }
 
         $response = new Response($plivoXml->toXML());
