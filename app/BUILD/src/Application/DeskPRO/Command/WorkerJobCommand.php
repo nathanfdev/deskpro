@@ -367,17 +367,6 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         //------------------------------
 
         $time_start = microtime(true);
-        if (!defined('DP_DISABLE_DBCRONLOG')) {
-            App::getDb()->insert('log_items', [
-                'log_name'      => 'worker_job.cron_runner',
-                'session_name'  => 'cron_runner.'.$time_start,
-                'flag'          => 'cron_start',
-                'priority'      => 6,
-                'priority_name' => 'INFO',
-                'message'       => 'Cron runner started',
-                'date_created'  => date('Y-m-d H:i:s'),
-            ]);
-        }
         App::getDb()->replace('settings', ['name' => 'core.last_cron_start', 'value' => time()]);
 
         $GLOBALS['DP_CRON_ID'] = $cron_id;
@@ -393,28 +382,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     if ($input->getOption('verbose')) {
                         $output->writeln(sprintf("[%s] $cron_id is still active. Running for {$diff} (since ".date('Y-m-d H:i:s', $date).')', date('Y-m-d H:i:s')));
                     }
-                    App::getDb()->insert('log_items', [
-                        'log_name'      => 'worker_job.cron_runner',
-                        'session_name'  => 'cron_runner.'.$time_start,
-                        'flag'          => 'cron_abort',
-                        'priority'      => 6,
-                        'priority_name' => 'INFO',
-                        'message'       => 'Cron runner aborted (still running)',
-                        'date_created'  => date('Y-m-d H:i:s'),
-                    ]);
 
                     return 0;
                 } else {
-                    App::getDb()->insert('log_items', [
-                        'log_name'      => 'worker_job.cron_runner',
-                        'session_name'  => 'cron_runner.'.$time_start,
-                        'flag'          => 'cron_resume',
-                        'priority'      => 3,
-                        'priority_name' => 'ERR',
-                        'message'       => "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.",
-                        'date_created'  => date('Y-m-d H:i:s'),
-                    ]);
-
                     $title = "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.";
 
                     $text = "Cron ($cron_id) has been marked as active for {$diff} (since ".date('Y-m-d H:i:s', $date).").\n\n"
@@ -482,19 +452,6 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         App::getDb()->delete('settings', ['name' => 'core.croncheck.'.$cron_id]);
         App::getDb()->replace('settings', ['name' => 'core.last_cron_run', 'value' => time()]);
-
-        $done_time = microtime(true);
-        if (!defined('DP_DISABLE_DBCRONLOG')) {
-            App::getDb()->insert('log_items', [
-                'log_name'      => 'worker_job.cron_runner',
-                'session_name'  => 'cron_runner.'.$time_start,
-                'flag'          => 'cron_end',
-                'priority'      => 6,
-                'priority_name' => 'INFO',
-                'message'       => sprintf('Cron runner done. Took %.4f seconds.', $done_time - $time_start),
-                'date_created'  => date('Y-m-d H:i:s'),
-            ]);
-        }
 
         unset($GLOBALS['DP_CRON_ID']);
 

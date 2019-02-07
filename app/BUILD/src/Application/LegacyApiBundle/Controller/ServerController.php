@@ -246,53 +246,6 @@ class ServerController extends AbstractController implements ProtectedController
     }
 
     //###################################################################################################################
-    // logs Cron
-    //###################################################################################################################
-
-    public function logsCronAction()
-    {
-        /** @var ServerCron $serverCron */
-        $serverCron = $this->container->getSystemService('server_cron');
-
-        $priority = $this->in->getUint('priority');
-        $jobId    = $this->in->getString('job_id');
-        $page     = $this->in->getUint('page');
-
-        // this is for case when we just cleared cron logs
-
-        if ($page == 0) {
-            $page = 1;
-        }
-
-        $returnedData['page']      = $page;
-        $returnedData['num_pages'] = $serverCron->getPagesCount($jobId, $priority);
-        $returnedData['priority']  = $priority;
-        $returnedData['job_id']    = $jobId;
-
-        $returnedData['logs'] = $serverCron->getLogs($jobId, $priority, $page);
-        $returnedData['jobs'] = $serverCron->getAllForApi();
-
-        return $this->createApiResponse(
-            [
-                'server_cron_logs' => $returnedData,
-            ]
-        );
-    }
-
-    //###################################################################################################################
-    // remove Cron
-    //###################################################################################################################
-
-    public function removeCronAction()
-    {
-        /** @var ServerCron $serverCron */
-        $serverCron = $this->container->getSystemService('server_cron');
-        $serverCron->clearAllLogs();
-
-        return $this->createSuccessResponse();
-    }
-
-    //###################################################################################################################
     // get File Uploads
     //###################################################################################################################
 
