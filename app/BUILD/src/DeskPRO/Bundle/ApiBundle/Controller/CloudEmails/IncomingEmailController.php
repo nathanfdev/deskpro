@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\CloudEmails;
 
+use Application\DeskPRO\BlobStorage\StorageAdapter\AmazonS3Storage;
 use Application\DeskPRO\Email\EmailSource\PropertyMapper;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\Blob;
@@ -70,13 +71,17 @@ class IncomingEmailController extends BaseController
         $this->getContainer()->getEm()->persist($source);
         $this->getContainer()->getEm()->flush();
 
+        // TODO the source id should not replace the message id
         $dto->setMessageId($source->getId());
+
+        /** @var AmazonS3Storage $s3Adapter */
+        $s3Adapter = $blobStorage->getAdapter("s3");
         $location = new DTOMessageLocationS3();
         $location->setBucketName(
-            $blobStorage->getAdapter("s3")->getOption("bucket")
+            $s3Adapter->getOption("bucket")
         );
         $location->setObjectKey(
-            $blob->getSavePath()
+            $s3Adapter->resolvePath($blob->getSavePath())
         );
         $dto->setLocation($location);
 
@@ -97,7 +102,11 @@ class IncomingEmailController extends BaseController
 
         // read the raw source to refresh some fields on the email source and adjust the blob size
         $blob = $source->getBlob();
+
         $rawSource = $this->getContainer()->getBlobStorage()->downloadBlobData($blob);
+        if (empty($rawSource)) {
+            throw new \Exception("Unexpected empty email source. Maybe downloading failed");
+        }
         $blob->setFilesize(strlen($rawSource));
 
         $accountManager = $this->getContainer()->getEmailAccountManager();
