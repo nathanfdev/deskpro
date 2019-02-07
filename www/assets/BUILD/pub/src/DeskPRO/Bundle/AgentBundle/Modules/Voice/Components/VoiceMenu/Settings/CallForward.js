@@ -45,7 +45,7 @@ class CallForward extends BaseForm {
     return {
       agent_data: {
         agent_can_use_forwarding: me ? me.getIn(['agent_data', 'agent_can_use_forwarding']) : false,
-        forwarding_number:        me ? me.getIn(['agent_data', 'forwarding_number']) : ''
+        forwarding_number:        (me && me.getIn(['agent_data', 'forwarding_number'])) || ''
       }
     };
   }
