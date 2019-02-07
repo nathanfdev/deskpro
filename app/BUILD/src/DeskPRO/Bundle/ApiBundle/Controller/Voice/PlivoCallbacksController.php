@@ -247,14 +247,15 @@ class PlivoCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $callId  = $request->query->get('CallId');
-        $agentId = $request->query->get('AgentId');
-        $callSid = $request->get('CallUUID');
-        $details = $request->request->all();
+        $callId     = $request->query->get('CallId');
+        $agentId    = $request->query->get('AgentId');
+        $callSid    = $request->get('CallUUID');
+        $callStatus = $request->get('CallStatus');
+        $details    = $request->request->all();
 
         $plivoXml = new PlivoXML();
 
-        if ($request->get('CallStatus') === 'busy') {
+        if ($callStatus === 'busy') {
             if ($agentId && $callId) {
                 $agent     = $this->getManager()->getRepository(Person::class)->find($agentId);
                 $phoneCall = $this->getManager()->getRepository(VoicePhoneCall::class)->find($callId);
@@ -264,7 +265,7 @@ class PlivoCallbacksController extends BaseController
                     $this->get('dp.voice.callbacks_helper')->rejectIncomingPhoneCall($phoneCall, $agent);
                 }
             }
-        } else {
+        } elseif ($callStatus === 'in-progress') {
             if (!$callId || !$phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId)) {
                 throw $this->createBadRequestException('Phone call not found');
             }
@@ -323,6 +324,8 @@ class PlivoCallbacksController extends BaseController
                     'voice' => 'WOMAN',
                 ]);
             }
+        } elseif ($callStatus === 'completed') {
+            $this->get('dp.voice.callbacks_helper')->callHangupByAgent($callSid, $details);
         }
 
         $response = new Response($plivoXml->toXML());
