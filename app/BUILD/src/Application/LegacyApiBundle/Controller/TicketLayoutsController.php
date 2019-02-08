@@ -5,7 +5,6 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
@@ -65,10 +64,7 @@ class TicketLayoutsController extends AbstractController implements ProtectedCon
             $ticketLayout = new TicketLayout(null);
         }
 
-        $filter = new LayoutFieldFilter(
-            $this->container->getTicketFieldManager(),
-            $this->container->getPersonFieldManager()
-        );
+        $filter = $this->container->get('ticket_layout_fields_filter');
         $filter->filterInvalid($ticketLayout->user_layout);
         $filter->filterInvalid($ticketLayout->agent_layout);
 

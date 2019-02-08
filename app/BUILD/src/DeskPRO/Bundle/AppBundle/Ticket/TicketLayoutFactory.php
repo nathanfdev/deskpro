@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutCollection;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 use DeskPRO\Bundle\AppBundle\DataService\AbstractDataService;
 use DeskPRO\Bundle\AppBundle\Form\FormFields;
 use DeskPRO\Bundle\PortalBundle\Form\Captcha\CaptchaDecider;
@@ -19,6 +20,11 @@ use Doctrine\ORM\EntityManager;
 class TicketLayoutFactory extends AbstractDataService
 {
     /**
+     * @var LayoutFieldFilter
+     */
+    private $layoutFieldFilter;
+
+    /**
      * @var CaptchaDecider
      */
     private $captchaDecider;
@@ -26,13 +32,16 @@ class TicketLayoutFactory extends AbstractDataService
     /**
      * Constructor.
      *
-     * @param EntityManager  $em
-     * @param CaptchaDecider $captchaDecider
+     * @param EntityManager     $em
+     * @param LayoutFieldFilter $layoutFieldFilter
+     * @param CaptchaDecider    $captchaDecider
      */
-    public function __construct(EntityManager $em, CaptchaDecider $captchaDecider = null)
+    public function __construct(EntityManager $em, LayoutFieldFilter $layoutFieldFilter, CaptchaDecider $captchaDecider = null)
     {
         parent::__construct($em);
-        $this->captchaDecider = $captchaDecider;
+
+        $this->layoutFieldFilter = $layoutFieldFilter;
+        $this->captchaDecider    = $captchaDecider;
     }
 
     /**
@@ -67,6 +76,10 @@ class TicketLayoutFactory extends AbstractDataService
             ],
             function () use ($department, $forApi) {
                 $layout = $this->getLayout($department);
+
+                // verify invalid fields
+                $this->layoutFieldFilter->filterInvalid($layout->getUserLayout());
+                $this->layoutFieldFilter->filterInvalid($layout->getAgentLayout());
 
                 // verify that the user layout has a subject, message, and user email
                 $this->verifyRequiredFields($layout->getUserLayout(), $forApi);

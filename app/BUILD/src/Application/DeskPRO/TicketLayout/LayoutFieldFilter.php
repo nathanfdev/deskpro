@@ -1,36 +1,44 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\TicketLayout;
 
+use Application\DeskPRO\CustomFields\OrganizationFieldManager;
 use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\CustomFields\TicketFieldManager;
 
+/**
+ * Class LayoutFieldFilter.
+ */
 class LayoutFieldFilter
 {
     /**
-     * @var \Application\DeskPRO\CustomFields\TicketFieldManager
+     * @var TicketFieldManager
      */
-    private $ticket_fields;
+    private $ticketFields;
 
     /**
-     * @var \Application\DeskPRO\CustomFields\PersonFieldManager
+     * @var PersonFieldManager
      */
-    private $user_fields;
+    private $userFields;
 
     /**
-     * @param TicketFieldManager $ticket_fields
-     * @param PersonFieldManager $user_fields
+     * @var OrganizationFieldManager
      */
-    public function __construct(TicketFieldManager $ticket_fields, PersonFieldManager $user_fields)
-    {
-        $this->ticket_fields = $ticket_fields;
-        $this->user_fields   = $user_fields;
+    private $orgFields;
+
+    /**
+     * @param TicketFieldManager       $ticketFields
+     * @param PersonFieldManager       $userFields
+     * @param OrganizationFieldManager $orgFields
+     */
+    public function __construct(
+        TicketFieldManager       $ticketFields,
+        PersonFieldManager       $userFields,
+        OrganizationFieldManager $orgFields
+    ) {
+        $this->ticketFields = $ticketFields;
+        $this->userFields   = $userFields;
+        $this->orgFields    = $orgFields;
     }
 
     /**
@@ -42,25 +50,31 @@ class LayoutFieldFilter
     {
         switch ($field->getFieldType()) {
             case 'ticket_field':
-                if (!$this->ticket_fields->getFieldFromId($field->getFieldId())) {
+                if (!$this->ticketFields->getFieldFromId($field->getFieldId())) {
                     return false;
                 }
                 break;
 
             case 'user_field':
-                if (!$this->user_fields->getFieldFromId($field->getFieldId())) {
+                if (!$this->userFields->getFieldFromId($field->getFieldId())) {
+                    return false;
+                }
+                break;
+
+            case 'org_field':
+                if (!$this->orgFields->getFieldFromId($field->getFieldId())) {
                     return false;
                 }
                 break;
 
             case 'category':
-                return $this->ticket_fields->isCategoryEnabled();
+                return $this->ticketFields->isCategoryEnabled();
             case 'priority':
-                return $this->ticket_fields->isPriorityEnabled();
+                return $this->ticketFields->isPriorityEnabled();
             case 'workflow':
-                return $this->ticket_fields->isWorkflowEnabled();
+                return $this->ticketFields->isWorkflowEnabled();
             case 'product':
-                return $this->ticket_fields->isProductEnabled();
+                return $this->ticketFields->isProductEnabled();
         }
 
         return true;
