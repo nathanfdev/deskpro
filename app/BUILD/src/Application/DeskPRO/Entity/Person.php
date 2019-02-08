@@ -268,7 +268,7 @@ class Person extends DomainObject implements
      *
      * @var string
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups="CheckName")
      */
     protected $name = '';
 
@@ -375,7 +375,7 @@ class Person extends DomainObject implements
      * The primary email address used by this account.
      *
      * @var PersonEmail
-     * @Assert\NotNull()
+     * @Assert\NotNull(groups="CheckEmail")
      */
     protected $primary_email;
 
@@ -383,7 +383,7 @@ class Person extends DomainObject implements
      * @var ArrayCollection|PersonEmail[]
      *
      * @Assert\Valid()
-     * @Assert\Count(min=1)
+     * @Assert\Count(min=1, groups="CheckEmail")
      */
     protected $emails;
 
@@ -4946,6 +4946,11 @@ class Person extends DomainObject implements
             $groups[] = 'Agent';
         } else {
             $groups[] = 'User';
+        }
+
+        if (!$this->getPref('voice.unknown_caller')) {
+            $groups[] = 'CheckEmail';
+            $groups[] = 'CheckName';
         }
 
         return $groups;

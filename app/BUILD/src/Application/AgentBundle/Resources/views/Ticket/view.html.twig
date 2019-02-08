@@ -49,7 +49,11 @@
   pageMeta.viewOrgUrl = '{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}';
   {% endif %}
 
-  {% set baseId = el_uid() %}
+  {% if ticket.getProperty('voice_phone_number') %}
+  pageMeta.voicePhoneNumber = '{{ ticket.getProperty('voice_phone_number') }}';
+  {% endif %}
+
+          {% set baseId = el_uid() %}
   pageMeta.baseId = '{{ baseId }}';
 
   pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};

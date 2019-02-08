@@ -308,6 +308,7 @@ class VoiceCallbacksHelper
             $ticket->setSubject('Call from '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($agent);
+            $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
             $ticket->addMessage($ticketMessage);
 
             // set ticket department
@@ -466,6 +467,7 @@ class VoiceCallbacksHelper
             $ticket->setSubject('Call to '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($agent);
+            $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
         }
 
         $ticket->addMessage($ticketMessage);
@@ -577,6 +579,7 @@ class VoiceCallbacksHelper
                 $ticket->disableAutoTicketProcess();
                 $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
                 $ticket->setPerson($phoneCall->getPerson());
+                $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
             }
 
             $ticket->addMessage($ticketMessage);

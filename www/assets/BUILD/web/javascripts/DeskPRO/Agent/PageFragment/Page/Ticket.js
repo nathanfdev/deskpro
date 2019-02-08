@@ -2668,16 +2668,41 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}
 				});
       } else if (value === 'unknown_person') {
-        $.ajax({
-          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
-          type: 'PUT',
-          data: {
-            preferences: {
-            	'voice.unknown_caller': 0
-						},
-          },
-          success: reloadPersonView
-        });
+				$.ajax({
+					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+					type: 'GET',
+					success: function (response) {
+						// existing user, create a new person and change
+						if (response.data.primary_email) {
+							$.ajax({
+								url: BASE_URL + 'api/v2/people',
+								type: 'POST',
+								data: {
+									phone_numbers: [
+										{number: self.meta.voicePhoneNumber}
+									],
+									preferences: {
+										'voice.unknown_caller': 1
+									},
+								},
+								success: function(response) {
+									setPerson(response.data.id);
+								}
+							});
+						} else {
+							$.ajax({
+								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+								type: 'PUT',
+								data: {
+									preferences: {
+										'voice.unknown_caller': 0
+									},
+								},
+								success: reloadPersonView
+							});
+						}
+					}
+				});
 			} else if (value) {
 				setPerson(value);
 			}
