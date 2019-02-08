@@ -320,6 +320,8 @@ class GuideController extends PublishController
             $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guides[0]);
         }
 
+        $topics = $this->shortenTitles($topics);
+
         array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
         return $this->render('AgentBundle:Guide:new-topic.html.twig', [
@@ -470,6 +472,18 @@ class GuideController extends PublishController
         }
 
         return $guides;
+    }
+
+    private function shortenTitles($topics)
+    {
+        return array_map(function ($topic) {
+            $topic['title'] = mb_strimwidth($topic['title'], 0, 70, '...');
+            if (count($topic['children'])) {
+                $topic['children'] = $this->shortenTitles($topic['children']);
+            }
+
+            return $topic;
+        }, $topics);
     }
 
     //###########################################################################
