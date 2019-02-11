@@ -33,7 +33,7 @@ class ServerCron
      */
     public function getAllForApi()
     {
-        $jobs = $this->em->getRepository('DeskPRO:WorkerJob')->getAll();
+        $jobs = $this->em->getRepository('DeskPRO:WorkerJob')->findAll();
 
         $resData = [];
 
