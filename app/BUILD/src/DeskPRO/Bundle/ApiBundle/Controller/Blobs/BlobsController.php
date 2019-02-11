@@ -18,7 +18,6 @@ use FOS\RestBundle\View\View;
 use Orb\Data\ContentTypes;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -123,29 +122,24 @@ class BlobsController extends CrudController
      */
     public function postLoadRemoteImagesAction(Request $request)
     {
-        $fs = new Filesystem();
-
-        $images    = $request->get('images');
-        $tmpDir    = $this->get('deskpro.app_env')->getUserTmpDir();
-        $fileId    = uniqid('remote_images', true);
-        $tmpFolder = $tmpDir.DIRECTORY_SEPARATOR.'remote_images'.DIRECTORY_SEPARATOR.$fileId.DIRECTORY_SEPARATOR;
-        mkdir($tmpFolder, 0777, true);
+        $images = $request->get('images');
         foreach ($images as &$image) {
-            $filename = basename($image['source']);
-            $mimeType = ContentTypes::getContentTypeFromFilename($filename);
-            if (!$mimeType) {
-                $mimeType = ContentTypes::getContentTypeFromDataUrl($image['source']);
+
+            // must be a data url
+            if (!preg_match('#^data:#i', $image['source'])) {
+                throw $this->createBadRequestException();
             }
 
-            file_put_contents($tmpFolder.$filename, fopen($image['source'], 'r'));
-            $blob = $this->get('blob.storage')->createBlobRecordFromFile(
-                $tmpFolder.$filename,
+            $filename = 'file';
+            $mimeType = ContentTypes::getContentTypeFromDataUrl($image['source']) ?: 'application/octet-stream';
+
+            $blob = $this->get('blob.storage')->createBlobRecordFromString(
+                file_get_contents($image['source']),
                 $filename,
                 $mimeType
             );
             $image['blob'] = $blob;
         }
-        $fs->remove($tmpFolder);
 
         return View::create($this->wrap($images), Response::HTTP_CREATED);
     }

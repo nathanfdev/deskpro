@@ -414,13 +414,18 @@ class ViewTopic extends React.Component {
         (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
       ).shift();
 
+      let baseUrl = window.DESKPRO_BASE_URL;
+      if (baseUrl) {
+        baseUrl = baseUrl.replace(/\/+$/, '');
+      }
+
       if (Object.values(topic.children).length) {
         const child = Object.values(topic.children).sort(
           (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
         ).shift();
-        browserHistory.push(`${window.DESKPRO_BASE_URL}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
+        browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
       } else {
-        browserHistory.push(`${window.DESKPRO_BASE_URL}/guides/${guide.slug}/${topic.slug}`);
+        browserHistory.push(`${baseUrl}/guides/${guide.slug}/${topic.slug}`);
       }
     });
   };
