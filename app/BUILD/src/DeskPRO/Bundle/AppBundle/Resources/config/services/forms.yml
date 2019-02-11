@@ -30,9 +30,19 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager
     arguments: ["@doctrine.orm.default_entity_manager", "@brand_stack"]
 
+  ticket_layout_fields_filter:
+    class: Application\DeskPRO\TicketLayout\LayoutFieldFilter
+    arguments:
+      - "@=service('service_container').getSystemService('ticket_fields_manager')"
+      - "@=service('service_container').getSystemService('person_fields_manager')"
+      - "@=service('service_container').getSystemService('org_fields_manager')"
+
   ticket_layout_factory:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketLayoutFactory
-    arguments: ["@doctrine.orm.default_entity_manager", "@?captcha_decider"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@ticket_layout_fields_filter"
+      - "@?captcha_decider"
 
   ticket_field_settings:
     class: DeskPRO\Bundle\AppBundle\Ticket\TicketFieldSettings
