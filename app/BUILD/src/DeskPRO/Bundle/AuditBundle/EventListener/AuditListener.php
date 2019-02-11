@@ -12,6 +12,7 @@ use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\UnitOfWork;
+use Orb\Util\Arrays;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -146,6 +147,7 @@ class AuditListener
             }
             $this->doProcess(self::INSERT, $entity);
         }
+        $this->dispatcher->dispatch(LogEvent::FINISH_ALL_EVENT);
     }
 
     private function processDeletions()
@@ -156,6 +158,7 @@ class AuditListener
             }
             $this->doProcess(self::REMOVE, $entity);
         }
+        $this->dispatcher->dispatch(LogEvent::FINISH_ALL_EVENT);
     }
 
     private function processUpdates()
@@ -166,6 +169,7 @@ class AuditListener
             }
             $this->doProcess(self::UPDATE, $entity);
         }
+        $this->dispatcher->dispatch(LogEvent::FINISH_ALL_EVENT);
     }
 
     /**
@@ -177,7 +181,9 @@ class AuditListener
     private function doProcess($action, $entity)
     {
         $changeSet = $this->getChangesSet($action, $entity);
-
+        if (!$this->checkChangeSet($changeSet)) {
+            return; // don't process this update if change set is false positive
+        }
         $context  = $this->createContext($entity, $action, $changeSet);
         $logEvent = new LogEvent($context);
 
@@ -232,6 +238,19 @@ class AuditListener
                 }
             }
         }
+    }
+
+    private function checkChangeSet($changeSet)
+    {
+        foreach ($changeSet as $set) {
+            if (is_array($set[0]) && is_array($set[1]) && !empty(Arrays::arrayDiffAssocRecursive($set[0], $set[1]))) {
+                return true;
+            } elseif ($set[0] !== $set[1]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

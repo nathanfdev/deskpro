@@ -484,7 +484,7 @@ class Arrays
 
         foreach ($array1 as $key => $value) {
             if (is_array($value)) {
-                if (array_key_exists($key, $array2) || !is_array($array2[$key])) {
+                if (!array_key_exists($key, $array2) || !is_array($array2[$key])) {
                     $diff[$key] = $value;
                 } else {
                     $new_diff = self::arrayDiffAssocRecursive($value, $array2[$key]);
@@ -2499,7 +2499,8 @@ class Arrays
     /**
      * Determine whether the given value is array accessible.
      *
-     * @param  mixed  $value
+     * @param mixed $value
+     *
      * @return bool
      */
     public static function accessible($value)
@@ -2510,8 +2511,9 @@ class Arrays
     /**
      * Determine if the given key exists in the provided array.
      *
-     * @param  \ArrayAccess|array  $array
-     * @param  string|int  $key
+     * @param \ArrayAccess|array $array
+     * @param string|int         $key
+     *
      * @return bool
      */
     public static function exists($array, $key)
@@ -2526,14 +2528,15 @@ class Arrays
     /**
      * Get an item from an array using "dot" notation.
      *
-     * @param  \ArrayAccess|array  $array
-     * @param  string  $key
-     * @param  mixed   $default
+     * @param \ArrayAccess|array $array
+     * @param string             $key
+     * @param mixed              $default
+     *
      * @return mixed
      */
     public static function get($array, $key, $default = null)
     {
-        if (! static::accessible($array)) {
+        if (!static::accessible($array)) {
             return $default;
         }
 
@@ -2563,7 +2566,8 @@ class Arrays
     /**
      * Collapse an array of arrays into a single array.
      *
-     * @param  array  $array
+     * @param array $array
+     *
      * @return array
      */
     public static function collapse($array)
@@ -2573,7 +2577,7 @@ class Arrays
         foreach ($array as $values) {
             if ($values instanceof Collection) {
                 $values = $values->toArray();
-            } elseif (! is_array($values)) {
+            } elseif (!is_array($values)) {
                 continue;
             }
 
