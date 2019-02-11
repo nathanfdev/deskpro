@@ -33,7 +33,7 @@ class ServerCron
      */
     public function getAllForApi()
     {
-        $jobs = $this->em->getRepository('DeskPRO:WorkerJob')->getAll();
+        $jobs = $this->em->getRepository('DeskPRO:WorkerJob')->findAll();
 
         $resData = [];
 
@@ -79,53 +79,6 @@ class ServerCron
             'time_since_start'          => (int) $time_since_start,
             'time_since_start_readable' => Dates::secsToReadable($time_since_start),
         ];
-    }
-
-    /**
-     * @param string $job_id
-     * @param int    $priority
-     * @param int    $page
-     *
-     * @return array
-     */
-    public function getLogs($job_id = null, $priority = null, $page = 1)
-    {
-        $params = $this->initializeParams($job_id, $priority);
-        $from   = ($page - 1) * $this->per_page;
-
-        return $this->em->getRepository('DeskPRO:LogItem')->getCronLogs(
-            $params['job_id'],
-            $params['priority'],
-            $from,
-            $this->per_page
-        );
-    }
-
-    /**
-     * @param string $job_id
-     * @param int    $priority
-     *
-     * @return int
-     */
-    public function getPagesCount($job_id = null, $priority = null)
-    {
-        $params = $this->initializeParams($job_id, $priority);
-
-        return $this->em->getRepository('DeskPRO:LogItem')->getCronPagesCount(
-            $params['job_id'],
-            $params['priority'],
-            $this->per_page
-        );
-    }
-
-    /**
-     * @return bool
-     */
-    public function clearAllLogs()
-    {
-        $this->em->getRepository('DeskPRO:WorkerJob')->clearAllLogs();
-
-        return true;
     }
 
     /**

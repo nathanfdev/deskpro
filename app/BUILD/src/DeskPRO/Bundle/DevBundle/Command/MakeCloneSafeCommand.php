@@ -135,7 +135,6 @@ class MakeCloneSafeCommand extends ContainerAwareCommand
                 'email_uids',
                 'hit_record',
                 'jobs',
-                'log_items',
                 'login_log',
                 'page_view_log',
                 'password_history',

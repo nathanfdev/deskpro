@@ -27,7 +27,6 @@ class CleanupDaily extends AbstractJob
 
     private function doRun()
     {
-        $this->_cleanupLogItems();
         $this->_cleanupAgentAlerts();
         $this->_cleanupUsersourceSyncLog();
         $this->_cleanupResultCaches();
@@ -50,19 +49,6 @@ class CleanupDaily extends AbstractJob
             if (file_exists($path) && filesize($path) > 104857600) {
                 $this->logStatus("Clearing big log $path");
                 @file_put_contents($path, '');
-            }
-        }
-    }
-
-    private function _cleanupLogItems()
-    {
-        $lastId = App::getDb()->fetchColumn('SELECT id FROM log_items ORDER BY id DESC LIMIT 1');
-        if ($lastId) {
-            $deleteBeforeId = $lastId - 25000; // approx 10 days worth of cron logs
-            $num            = App::getDb()->executeUpdate("DELETE FROM log_items WHERE id < $deleteBeforeId");
-
-            if ($num) {
-                $this->logStatus("Cleaned up $num cron log items");
             }
         }
     }

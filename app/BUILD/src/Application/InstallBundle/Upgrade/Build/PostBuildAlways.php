@@ -15,7 +15,7 @@ class PostBuildAlways extends AbstractBuild
 
         $this->out('Clear tables');
         $tablesByConn = [
-            'default' => ['cache', 'log_items', 'result_cache'],
+            'default' => ['cache', 'result_cache'],
             'system'  => ['notification_system_event', 'system_alerts_events', 'system_alerts_incident_events', 'system_alerts_incidents'],
         ];
         foreach ($tablesByConn as $connName => $tables) {

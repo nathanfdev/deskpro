@@ -5744,24 +5744,6 @@ $collection->create(
     ]
 );
 
-$collection->create(
-    'api_server_cron_logs',
-    [
-        'path'       => '/server_cron/logs',
-        'controller' => 'LegacyApiBundle:Server:logsCron',
-        'methods'    => ['GET'],
-    ]
-);
-
-$collection->create(
-    'api_server_cron_logs_delete',
-    [
-        'path'       => '/server_cron/logs',
-        'controller' => 'LegacyApiBundle:Server:removeCron',
-        'methods'    => ['DELETE'],
-    ]
-);
-
 //#######################################################################################################################
 // Server File Uploads
 //#######################################################################################################################
