@@ -347,11 +347,8 @@ class SelectPart
         $this->setSelect($select);
         $this->setFrom($from);
 
-        $context = $this->contextStorage->getContext();
-        $person  = $context && $context->getPerson() instanceof Person ? $context->getPerson() : null;
-
         $this->sql              = new SqlSelect($this->em->getConnection());
-        $this->resultMetadata   = new ResultMetadata($person);
+        $this->resultMetadata   = new ResultMetadata($this->contextStorage->getContext());
         $this->sqlSelectContext = new SqlSelectContext($this->reportsConnection, $this->resultMetadata, [
             new HierarchyPlugin(
                 $this->reportsConnection,
@@ -1085,30 +1082,7 @@ class SelectPart
             return 0;
         }
 
-        $user = $context->getPerson();
-        if (!$user instanceof Person) {
-            return 0;
-        }
-
-        return $user->getTimezoneOffset() * 3600;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserTimezone()
-    {
-        $context = $this->contextStorage->getContext();
-        if (!$context) {
-            return 'UTC';
-        }
-
-        $user = $context->getPerson();
-        if (!$user instanceof Person) {
-            return 'UTC';
-        }
-
-        return $user->getTimezone();
+        return $context->getTimezoneOffsetSeconds();
     }
 
     /**
