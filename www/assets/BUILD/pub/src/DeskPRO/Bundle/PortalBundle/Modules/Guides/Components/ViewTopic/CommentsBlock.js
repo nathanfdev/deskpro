@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CommentForm } from '../index';
 
 class Comment extends React.Component {
@@ -78,7 +78,7 @@ class CommentsBlock extends React.Component {
     return (
       <div className="comment-box" id="comments">
         <div className="titled-header">
-          <h1>{portalPhrases.get('portal.general.comments-title', { '{count}': this.props.count }) }</h1>
+          <h1><FormattedMessage id="portal.general.comments-title" values={{ count: this.props.count }} /></h1>
         </div>
         {comments}
         {flashMessage}

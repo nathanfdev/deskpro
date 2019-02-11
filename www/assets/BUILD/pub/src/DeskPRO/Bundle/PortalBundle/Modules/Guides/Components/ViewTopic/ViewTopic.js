@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import moment from 'moment';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import browserHistory from 'react-router/lib/browserHistory';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { TopicList, TopicSummary, GuideSelector, Anchor, CodeBlock, CommentsBlock } from '../index';
 
 class ViewTopic extends React.Component {
@@ -443,11 +443,11 @@ class ViewTopic extends React.Component {
           <header className="section-header">
             <h1>{topic.title}</h1>
             <span id="publication-date" className="publication_date">
-              <label htmlFor="publication-date">{portalPhrases.get('portal.general.published')}: </label>
+              <label htmlFor="publication-date"><FormattedMessage id="portal.general.published" />: </label>
               {moment(topic.date_published).format('DD/MM/YYYY')}
             </span>
             <span id="last-update-date" className="last_update_date">
-              <label htmlFor="last-update-date">{portalPhrases.get('portal.general.updated')}: </label>
+              <label htmlFor="last-update-date"><FormattedMessage id="portal.general.updated" />: </label>
               {moment(topic.date_updated).format('DD/MM/YYYY')}
             </span>
             <hr />

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import { getErrorsByErrorPath } from 'DeskPRO/Component/Form/FormErrors';
-import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { FormattedMessage } from 'react-intl';
 
 class CommentForm extends React.Component {
   static propTypes = {
@@ -163,7 +163,7 @@ class CommentForm extends React.Component {
             <span className="avatar">
               <span className="agent-avatar agent-avatar-tiny"><i className="fa fa-user" /></span>
             </span>
-            <span className="author">{portalPhrases.get('portal.general.add-comment')}</span>
+            <span className="author"><FormattedMessage id="portal.general.add-comment" /></span>
           </div>
           <div className="comment-content">
             <div className="blurb">
@@ -171,7 +171,7 @@ class CommentForm extends React.Component {
                 <div className="column-full">
                   <div className={classNames('bucket', { error: this.hasError('content_real') })}>
                     <label className="title title required" htmlFor="comment_content_real">
-                      {portalPhrases.get('portal.forms.label_comment')} *
+                      <FormattedMessage id="portal.forms.label_comment" /> *
                     </label>
                     <textarea
                       id="comment_content_real"
@@ -187,7 +187,7 @@ class CommentForm extends React.Component {
                 {this.getCaptchaField()}
                 <div className="bucket form-widget">
                   <button type="submit" onClick={this.onSubmit} disabled={this.state.loading}>
-                    {portalPhrases.get('portal.general.comment_btn_save')}&nbsp;
+                    <FormattedMessage id="portal.general.comment_btn_save" />&nbsp;
                     {this.state.loading ? <i className="fa fa-spinner fa-pulse" /> : '' }
                   </button>
                 </div>
