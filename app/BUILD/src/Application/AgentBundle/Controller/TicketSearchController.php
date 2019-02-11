@@ -1574,7 +1574,7 @@ class TicketSearchController extends AbstractController
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="tickets.csv"');
 
-        $display_fields = [
+        $displayFields = [
             'id',
             'language_id',
             'department_id',
@@ -1616,16 +1616,16 @@ class TicketSearchController extends AbstractController
             'labels',
         ];
 
-        $field_manager = $this->container->getSystemService('ticket_fields_manager');
-        foreach ($field_manager->getFields() as $f) {
-            $display_fields[] = 'ticket_fields['.$f->id.']';
+        $fieldManager = $this->container->getSystemService('ticket_fields_manager');
+        foreach ($fieldManager->getFields() as $f) {
+            $displayFields[] = 'ticket_fields['.$f->id.']';
         }
 
         $temp = fopen('php://memory', 'rw');
         $row  = [];
 
-        foreach ($display_fields as $display_field) {
-            switch ($display_field) {
+        foreach ($displayFields as $displayField) {
+            switch ($displayField) {
                 case 'id':
                     $row[] = 'ticket_id';
                     break;
@@ -1636,54 +1636,57 @@ class TicketSearchController extends AbstractController
                 case 'workflow_id':
                 case 'product_id':
                 case 'email_account_id':
-                    $row[] = $display_field;
-                    $row[] = preg_replace('/id$/', 'title', $display_field);
+                    $row[] = $displayField;
+                    $row[] = preg_replace('/id$/', 'title', $displayField);
                     break;
                 case 'person_id':
                 case 'agent_id':
                 case 'agent_team_id':
                 case 'organization_id':
-                    $row[] = $display_field;
-                    $row[] = preg_replace('/id$/', 'name', $display_field);
+                    $row[] = $displayField;
+                    $row[] = preg_replace('/id$/', 'name', $displayField);
                     break;
                 case 'person_email_id':
-                    $row[] = $display_field;
-                    $row[] = preg_replace('/_id$/', '', $display_field);
+                    $row[] = $displayField;
+                    $row[] = preg_replace('/_id$/', '', $displayField);
                     break;
                 default:
-                    if ($field_id = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $display_field)) {
-                        $row[] = $field_manager->getFieldFromId($field_id)->title;
+                    if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
+                        $row[] = $fieldManager->getFieldFromId($fieldId)->title;
                     } else {
-                        $row[] = $display_field;
+                        $row[] = $displayField;
                     }
                     break;
             }
         }
 
+        // Add Utf-8 BOM to fix encoding in excel
+        fwrite($temp, chr(239).chr(187).chr(191));
+
         fputcsv($temp, $row);
         rewind($temp);
         $response->setContent(fgets($temp));
         ftruncate($temp, 0);
-        $chunk_size = 1024;
-        $page       = 1;
+        $chunkSize = 1024;
+        $page      = 1;
 
         // This behaves unexpectly. If the total number of tickets is less than the page size it will always return all
         // of the tickets regardless of the page setting.
         if ($vars['is_grouped_result']) {
-            $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page, $chunk_size);
+            $tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('grouping_option'), $page, $chunkSize);
         } else {
-            $tickets = $results_helper->getTicketsForPage($page, $chunk_size);
+            $tickets = $results_helper->getTicketsForPage($page, $chunkSize);
         }
         $vars['ticket_display'] = new TicketResultsDisplay($tickets);
         $vars['ticket_display']->setPersonContext($this->person);
 
         while (!empty($tickets)) {
-            $ticket           = array_shift($tickets);
-            $custom_text_data = $field_manager->getRenderedToTextForObject($ticket);
-            $row              = [];
+            $ticket         = array_shift($tickets);
+            $customTextData = $fieldManager->getRenderedToTextForObject($ticket);
+            $row            = [];
 
-            foreach ($display_fields as $display_field) {
-                switch ($display_field) {
+            foreach ($displayFields as $displayField) {
+                switch ($displayField) {
                     case 'language_id':
                     case 'department_id':
                     case 'priority_id':
@@ -1691,7 +1694,7 @@ class TicketSearchController extends AbstractController
                     case 'workflow_id':
                     case 'product_id':
                     case 'email_account_id':
-                        preg_match('/^(.*)_id$/', $display_field, $matches);
+                        preg_match('/^(.*)_id$/', $displayField, $matches);
                         list(, $name) = $matches;
                         $entity       = null;
 
@@ -1700,7 +1703,7 @@ class TicketSearchController extends AbstractController
                         }
 
                         if ($entity) {
-                            if ($display_field == 'email_account_id') {
+                            if ($displayField == 'email_account_id') {
                                 $row[] = $entity->id;
                                 $row[] = $entity->address;
                             } elseif ($entity) {
@@ -1713,7 +1716,7 @@ class TicketSearchController extends AbstractController
                         break;
                     case 'person_id':
                     case 'agent_id':
-                        preg_match('/^(.*)_id$/', $display_field, $matches);
+                        preg_match('/^(.*)_id$/', $displayField, $matches);
                         list(, $name) = $matches;
                         $entity       = $ticket->{$name};
 
@@ -1727,7 +1730,7 @@ class TicketSearchController extends AbstractController
                         break;
                     case 'agent_team_id':
                     case 'organization_id':
-                        preg_match('/^(.*)_id$/', $display_field, $matches);
+                        preg_match('/^(.*)_id$/', $displayField, $matches);
                         list(, $name) = $matches;
                         $entity       = $ticket->{$name};
 
@@ -1740,7 +1743,7 @@ class TicketSearchController extends AbstractController
                         }
                         break;
                     case 'person_email_id':
-                        preg_match('/^(.*)_id$/', $display_field, $matches);
+                        preg_match('/^(.*)_id$/', $displayField, $matches);
                         list(, $name) = $matches;
                         $entity       = $ticket->{$name};
 
@@ -1756,13 +1759,13 @@ class TicketSearchController extends AbstractController
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
                     default:
-                        if ($field_id = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $display_field)) {
-                            if (isset($custom_text_data[$field_id])) {
-                                $row[] = $custom_text_data[$field_id]['rendered'];
+                        if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
+                            if (isset($customTextData[$fieldId])) {
+                                $row[] = $customTextData[$fieldId]['rendered'];
                             } else {
                                 $row[] = '';
                             }
-                        } elseif (preg_match('/^(.*)_id$/', $display_field, $matches)) {
+                        } elseif (preg_match('/^(.*)_id$/', $displayField, $matches)) {
                             list(, $name) = $matches;
                             $entity       = $ticket->{$name};
 
@@ -1772,8 +1775,8 @@ class TicketSearchController extends AbstractController
                                 $row[] = '';
                             }
                         } else {
-                            if (isset($ticket[$display_field])) {
-                                $value = $ticket[$display_field];
+                            if (isset($ticket[$displayField])) {
+                                $value = $ticket[$displayField];
                             } else {
                                 $value = null;
                             }
