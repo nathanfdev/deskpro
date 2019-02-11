@@ -137,15 +137,12 @@ $voice-green-border-color: #47BF61;
 }
 
 .voice-menu-popup {
+  position: relative;
 
   .status {
-    position: relative;
-    margin-right: 10px;
-
-    .spinner-flat {
-      position: absolute;
-      right: -20px;
-    }
+    width: 60px;
+    text-align: center;
+    right: -13px;
   }
 
   .voice-menu {
