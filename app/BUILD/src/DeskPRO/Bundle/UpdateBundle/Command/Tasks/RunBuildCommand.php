@@ -62,7 +62,7 @@ class RunBuildCommand extends ContainerAwareCommand
         }
 
         try {
-            $buildRunner->runBuild($buildId);
+            $build = $buildRunner->runBuild($buildId);
         } catch (\Exception $e) {
             $logger->error("Build {$buildId} failed");
 
@@ -70,5 +70,13 @@ class RunBuildCommand extends ContainerAwareCommand
         }
 
         $buildStatus->markBuildHasRun($buildId);
+
+        if ($build->getExceptions()) {
+            $logger->warn('Warning: There were exceptions during this build step.');
+
+            return 1;
+        }
+
+        return 0;
     }
 }
