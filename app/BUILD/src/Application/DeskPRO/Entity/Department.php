@@ -381,7 +381,7 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection|null
+     * @return \Doctrine\Common\Collections\ArrayCollection|Department[]
      */
     public function getChildren()
     {
