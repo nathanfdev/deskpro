@@ -13,6 +13,11 @@ class PersonTest extends DeskProTestCase
     /**
      * @testWith ["Tianna Cole", "Tianna", "Cole"]
      *           ["孝博　向吉", "孝博", "向吉"]
+     *           ["Philip Seymour Hoffman", "Philip Seymour", "Hoffman"]
+     *           ["One Two Three Four", "One Two Three", "Four"]
+     *           ["Philip", "Philip", ""]
+     *           ["", "", ""]
+     *           [null, "", ""]
      *
      * @param string $name
      * @param string $expFirstName
