@@ -12,6 +12,7 @@ use Application\DeskPRO\Monolog\NullLogger;
 use DeskPRO\Component\Util\MapUtils;
 use Doctrine\DBAL\Connection;
 use DpRun\LowUtil;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 use Psr\Log\LoggerInterface;
@@ -35,6 +36,11 @@ abstract class AbstractBuild
     protected $logger;
 
     /**
+     * @var \Exception[]
+     */
+    protected $exceptions = [];
+
+    /**
      * @param DeskproContainer $container
      * @param LoggerInterface  $logger
      */
@@ -47,6 +53,30 @@ abstract class AbstractBuild
         $this->logger = $logger;
 
         $this->container = $container;
+    }
+
+    /**
+     * @param \Exception $e
+     * @param string     $comment
+     */
+    public function recordException(\Exception $e, $comment = null)
+    {
+        $this->exceptions = $e;
+
+        if ($comment) {
+            $this->logger->error($comment);
+        }
+
+        $this->logger->error('Error: '.$e->getMessage());
+        SystemErrorHandler::logException($e);
+    }
+
+    /**
+     * @return \Exception[]
+     */
+    public function getExceptions()
+    {
+        return $this->exceptions;
     }
 
     /**
@@ -206,10 +236,11 @@ abstract class AbstractBuild
         try {
             return $this->container->getDb()->exec($sql);
         } catch (\Exception $e) {
-            $this->logger->info('SQL: '.$sql);
-            $this->logger->info('Ignored: '.$e->getMessage());
             if (!$ignore_err) {
-                throw $e;
+                $this->recordException($e, 'SQL: '.$sql);
+            } else {
+                $this->logger->info('SQL: '.$sql);
+                $this->logger->info('Ignored: '.$e->getMessage());
             }
         }
     }
@@ -232,9 +263,7 @@ abstract class AbstractBuild
         try {
             return $db->exec($sql);
         } catch (\Exception $e) {
-            $this->logger->info('SQL['.$connName.']: '.$sql);
-            $this->logger->info('Error: '.$e->getMessage());
-            throw $e;
+            $this->recordException($e, 'SQL['.$connName.']: '.$sql);
         }
     }
 
@@ -288,7 +317,7 @@ abstract class AbstractBuild
             return;
         } catch (\Exception $e) {
             $this->logger->info('SQL['.$connName.']: '.$sql);
-            $this->logger->info('Error: '.$e->getMessage());
+            $this->logger->info('Ignored Error: '.$e->getMessage());
 
             return $e;
         }
@@ -406,7 +435,8 @@ abstract class AbstractBuild
 
             if (!$proc->isSuccessful()) {
                 $logger->critical('!!!!!!!!!!!!!!!');
-                throw new \RuntimeException('LIVE run failed with status: '.$proc->getExitCode());
+                $e = new \RuntimeException('LIVE run failed with status: '.$proc->getExitCode());
+                $this->recordException($e);
             }
         } else {
             $sql = "ALTER TABLE `$table` $alter";
@@ -432,10 +462,14 @@ abstract class AbstractBuild
         try {
             $this->execSlowAlterTable($table, $alter, $smart);
         } catch (\Exception $e) {
-            // check the table still exists
-            // If this throws, it will propagate up
-            $db = $this->container->get('doctrine')->getConnection('default');
-            $db->fetchColumn("SELECT 'val' AS test FROM `$table` LIMIT 1");
+            try {
+                // check the table still exists
+                // If this throws, it will propagate up, because its never okay if the swap failed
+                $db = $this->container->get('doctrine')->getConnection('default');
+                $db->fetchColumn("SELECT 'val' AS test FROM `$table` LIMIT 1");
+            } catch (\Exception $e) {
+                $this->recordException($e);
+            }
         }
     }
 
