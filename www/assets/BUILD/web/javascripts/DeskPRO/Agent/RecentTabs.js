@@ -240,8 +240,11 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
     var d = new Date(item[4]*1000);
 
+    var timeAgo = Orb.Util.TimeAgo.get(d);
+
 		var rowHtml = '<li>\n' +
       '<a data-route="page:'+item[3]+'" route-notabreload="1">\n' +
+      '  <time datetime="' + d.toISOString() + '">' + timeAgo + '</time>' +
       '  <div class="title">\n' +
       '    <i class="icon-envelope fa dp-icon-placeholder"></i>\n' +
       '    <strong>'+item[1]+'</strong>\n' +
