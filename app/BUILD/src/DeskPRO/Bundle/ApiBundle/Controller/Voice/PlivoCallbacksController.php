@@ -19,6 +19,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
@@ -151,23 +152,19 @@ class PlivoCallbacksController extends BaseController
                         'record'         => true,
                     ]);
                 } else {
+                    $errorCodeGen = $this->get('form_error.error_code_generator.api');
                     if ($exception instanceof UnverifiedException) {
-                        $this->get('event_dispatcher')->dispatch(
-                            LegacySystemEvent::EVENT_NAME,
-                            new LegacySystemEvent(
-                                'agent.voice.outgoing-provider-error',
-                                $this->get('form_error.error_code_generator.api')->generateByErrorCode(ErrorsCodes::UNVERIFIED_NUMBER, [], ['call_to'])
-                            )
-                        );
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::UNVERIFIED_NUMBER, [], ['call_to']);
+                    } elseif ($exception instanceof InsufficientBalanceException) {
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
                     } else {
-                        $this->get('event_dispatcher')->dispatch(
-                            LegacySystemEvent::EVENT_NAME,
-                            new LegacySystemEvent(
-                                'agent.voice.outgoing-provider-error',
-                                $this->get('form_error.error_code_generator.api')->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to'])
-                            )
-                        );
+                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
                     }
+
+                    $this->get('event_dispatcher')->dispatch(
+                        LegacySystemEvent::EVENT_NAME,
+                        new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
+                    );
 
                     $plivoXml->addHangup();
                 }

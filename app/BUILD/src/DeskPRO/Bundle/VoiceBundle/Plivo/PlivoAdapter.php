@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoAvailableNumber;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoExistingNumber;
@@ -268,6 +269,8 @@ class PlivoAdapter implements VoiceProviderInterface
         } catch (PlivoRestException $e) {
             if (strpos($e->getErrorMessage(), '"Destination Phone numbers need to be verified.') === 0) {
                 $exception = new UnverifiedException();
+            } elseif (strpos($e->getErrorMessage(), '"insufficient balance"') === 0) {
+                $exception = new InsufficientBalanceException();
             } else {
                 $exception = $e;
             }

@@ -67,6 +67,7 @@ final class ErrorsCodes
     const NOT_AN_IMAGE                = 'not_an_image';
     const MISMATCH_VALUES             = 'mismatch_values';
     const UNVERIFIED_NUMBER           = 'unverified_number';
+    const INSUFFICIENT_BALANCE        = 'insufficient_balance';
     const VOICE_PERMISSIONS           = 'voice_permissions';
 
     /** Term Engine Specific */
