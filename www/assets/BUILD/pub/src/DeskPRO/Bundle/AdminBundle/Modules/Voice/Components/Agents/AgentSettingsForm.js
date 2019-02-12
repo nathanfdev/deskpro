@@ -26,7 +26,7 @@ class AgentSettingsForm extends BaseForm {
       <div className="agent-settings-form">
         <Form onSubmit={this.onSubmit} formValue={formData}>
           <Fieldset>
-            <Field select="agent_voicemail_timeout" label="Agent Voicemail Timeout">
+            <Field select="agent_voicemail_timeout" label="Agent Voicemail Timeout (in Seconds)">
               <Input select="agent_voicemail_timeout" type="number" />
             </Field>
 

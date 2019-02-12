@@ -78,6 +78,7 @@ class VoiceQueueType extends AbstractType
             ->add('voicemail_timeout', IntegerType::class, [
                 'required'      => false,
                 'property_path' => 'voicemailTimeout',
+                'empty_data'    => '30',
             ])
             ->add('routing_model', ChoiceType::class, [
                 'required'          => true,

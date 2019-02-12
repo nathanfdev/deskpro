@@ -62,6 +62,14 @@ class QueueForm extends BaseForm {
     };
   }
 
+  transformSubmitData(data) { // eslint-disable-line
+    if (!data.voicemail_timeout) {
+      data.voicemail_timeout = 30;
+    }
+
+    return data;
+  }
+
   render() {
     const { queueId, agents, agentTeams, ticketDepartments, onCancel } = this.props;
     const { formData, saving } = this.state;
@@ -100,7 +108,7 @@ class QueueForm extends BaseForm {
               <AudioWidgetFormContainer />
             </Field>
 
-            <Field select="voicemail_timeout" className="voice-voicemail-timeout" label="Voicemail timeout *">
+            <Field select="voicemail_timeout" className="voice-voicemail-timeout" label="Voicemail timeout (in Seconds)">
               <Input type="number" />
             </Field>
 
