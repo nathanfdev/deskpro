@@ -355,6 +355,27 @@ class PlivoAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function endConference(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $conference = $this->getConference($account, $phoneCall->getConferenceName());
+        $conference->delete();
+
+        foreach ($phoneCall->getParticipants() as $participant) {
+            try {
+                $this->getClient($account)->calls->delete($participant->getCallSid());
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute)
     {
         $account = $phoneCall->getNumber()->getAccount();

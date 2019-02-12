@@ -23,8 +23,15 @@ interface VoiceProviderInterface
 
     /**
      * @param VoicePhoneCall $phoneCall
+     *
+     * @return bool
      */
     public function tryEndConference(VoicePhoneCall $phoneCall);
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     */
+    public function endConference(VoicePhoneCall $phoneCall);
 
     /**
      * @param VoicePhoneCall $phoneCall

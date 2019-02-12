@@ -401,6 +401,25 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function endConference(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof TwilioVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
+        foreach ($participants as $participant) {
+            try {
+                $participant->delete();
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
     {
         $account = $phoneCall->getNumber()->getAccount();

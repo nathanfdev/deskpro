@@ -372,7 +372,7 @@ class PlivoCallbacksController extends BaseController
             'callSid' => $callSid,
         ]);
         if ($phoneCall) {
-            $this->get('dp.voice.provider_helper')->tryEndConference($phoneCall);
+            $this->get('dp.voice.provider_helper')->endConference($phoneCall);
         }
 
         $plivoXml = new PlivoXML();
@@ -1020,6 +1020,9 @@ class PlivoCallbacksController extends BaseController
                 'record'              => true,
             ]);
         } elseif ($callStatus === 'completed') {
+            // in case the call was hanged up immediately
+            // try to set user participant here as well before hanging up the phone call
+            $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid);
             $this->get('dp.voice.callbacks_helper')->callHangupByUser($callSid, $details);
         }
 

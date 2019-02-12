@@ -99,6 +99,20 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function endConference(VoicePhoneCall $phoneCall)
+    {
+        $this->getAdapter($phoneCall)->endConference($phoneCall);
+        $this->dispatcher->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent('agent.voice.call-ended', [
+                'call_id' => $phoneCall->getId(),
+            ])
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
     {
         $this->getAdapter($phoneCall)->holdConferenceEndUser($phoneCall, $isHold);

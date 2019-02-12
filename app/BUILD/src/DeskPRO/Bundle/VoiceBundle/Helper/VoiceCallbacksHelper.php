@@ -410,15 +410,17 @@ class VoiceCallbacksHelper
             throw new OutOfServiceException();
         }
 
-        // create user participant
-        $participant = new VoicePhoneCallParticipantUser();
-        $participant->setCallSid($callSid);
-        $participant->setPerson($phoneCall->getPerson());
+        if (!$phoneCall->getParticipantByCallSid($callSid)) {
+            // create user participant
+            $participant = new VoicePhoneCallParticipantUser();
+            $participant->setCallSid($callSid);
+            $participant->setPerson($phoneCall->getPerson());
 
-        $phoneCall->addParticipant($participant);
+            $phoneCall->addParticipant($participant);
 
-        $this->em->persist($phoneCall);
-        $this->em->flush();
+            $this->em->persist($phoneCall);
+            $this->em->flush();
+        }
     }
 
     /**
@@ -527,6 +529,9 @@ class VoiceCallbacksHelper
 
         // cancel all ringing forwarding calls
         $this->voiceProviderHelper->cancelForwardingCalls($phoneCall);
+
+        // end conference
+        $this->voiceProviderHelper->endConference($phoneCall);
 
         // mark the phone call as finished
         $phoneCall->setDateEnded(new \DateTime());
