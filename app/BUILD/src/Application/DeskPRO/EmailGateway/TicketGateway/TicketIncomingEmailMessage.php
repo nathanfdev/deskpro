@@ -11,6 +11,7 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
+use Application\DeskPRO\EmailGateway\LinkedImages;
 use Application\DeskPRO\Entity\Ticket;
 use Orb\Input\Cleaner\Cleaner;
 use Orb\Log\Logger;
@@ -427,6 +428,11 @@ class TicketIncomingEmailMessage
         // Replace inline image tags with tokens
         $this->body      = $inline_images->processTokens($this->body);
         $this->body_full = $inline_images2->processTokens($this->body_full);
+
+        $linkedImages = new LinkedImages($this->logger);
+
+        $this->body      = $linkedImages->importReplaceLinkedImages($this->body);
+        $this->body_full = $linkedImages->importReplaceLinkedImages($this->body_full);
 
         if ($process_blobs_callback) {
             // We need to call ProcessAbstract::processBlobs

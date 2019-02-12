@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\LinkedImages;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -157,7 +158,8 @@ class ProcessReply extends ProcessAbstract
             return;
         }
 
-        $email_info->body = $this->importReplaceLinkedImages($email_info->body);
+        $linkedImages     = new LinkedImages($this->logger);
+        $email_info->body = $linkedImages->importReplaceLinkedImages($email_info->body);
 
         $message               = new TicketMessage($this->reader->getId());
         $message->email_reader = $this->reader;
