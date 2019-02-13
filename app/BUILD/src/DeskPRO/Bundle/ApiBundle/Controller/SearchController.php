@@ -196,11 +196,16 @@ class SearchController extends BaseController
     }
 
     /**
+     * New agent search endpoint.
+     *
      * @ApiDoc(
      *     section="Search",
-     *     resourceDescription="",
+     *     resourceDescription="New agent search endpoint",
      *     statusCodes={
      *         200="Returned if everything is ok"
+     *     },
+     *     parameters={
+     *         {"name"="search", "description"="Search payload", "dataType"="array", "required"=true}
      *     },
      *     output="array"
      * )

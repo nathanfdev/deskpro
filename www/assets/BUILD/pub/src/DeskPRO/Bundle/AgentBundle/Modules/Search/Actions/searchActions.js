@@ -148,7 +148,7 @@ export const loadUserGroups = createAction(
 export const search = createAction(
   'SEARCH_RUN_QUERY',
   (params = {}) => new Promise((resolve) => {
-    api.sendPost('DP_API/search/new_search', params).success((response) => {
+    api.sendPost('DP_API/search/new_search', { search: params }).success((response) => {
       resolve(response);
     });
   })

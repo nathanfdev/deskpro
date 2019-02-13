@@ -770,12 +770,14 @@ class SearchContainer extends React.Component {
   };
 
   handleChange = (value) => {
-    this.props.dispatch(searchActions.search(value)).then((results) => {
-      this.setState({
-        results
+    if (value.length !== 0) {
+      this.props.dispatch(searchActions.search(value)).then((results) => {
+        this.setState({
+          results
+        });
+        this.updateStyle(results);
       });
-      this.updateStyle(results);
-    });
+    }
   };
 
   handleScopesChange = (scopes) => {
