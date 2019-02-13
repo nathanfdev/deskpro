@@ -184,7 +184,13 @@ export const voiceBootstrap = createAction(
           dispatch(removeIncomingCall(Immutable.fromJS(data)));
         });
         messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
+          const state = getState();
+          const me = meSelector(state);
           const data = event.data;
+
+          if (data.data.agent !== me.get('id')) {
+            return;
+          }
 
           dispatch(addToCollection('VoicemailRecord', 'all', [data.data]));
 

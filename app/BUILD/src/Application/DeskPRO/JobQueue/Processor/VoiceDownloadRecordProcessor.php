@@ -77,6 +77,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
         $callId = $data['call_id'];
 
         try {
+            /** @var VoicePhoneCall $phoneCall */
             $phoneCall = $this->em->getRepository(VoicePhoneCall::class)->find($callId);
             if (!$phoneCall) {
                 throw new \Exception('Phone call not found');
@@ -100,10 +101,11 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
 
                 $this->eventDispatcher->dispatch(
                     LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent(
-                        'agent.voice.voicemail.new-message',
-                        ['data' => $serializedData]
-                ));
+                    new LegacySystemEvent('agent.voice.voicemail.new-message', [
+                        'data'   => $serializedData,
+                        'target' => $phoneCall->getVoicemailRecord()->getAgent()->getId(),
+                    ])
+                );
             } else {
                 $serializedData = $this->serializer->toArray(
                     new ApiWrapper($phoneCall),
@@ -125,8 +127,8 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
             $log->setPhoneCall($phoneCall);
 
             $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-                'phoneCall' => $phoneCall, ]
-            );
+                'phoneCall' => $phoneCall,
+            ]);
 
             if ($messageAttribute) {
                 $ticketLog = new TicketLog();
@@ -134,7 +136,9 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                     ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DOWNLOADED)
                     ->setTicket($messageAttribute->getMessage()->getTicket())
                     ->setIdObject($phoneCall->getId())
-                    ->setDetails(['duration' => $phoneCall->getDuration()]);
+                    ->setDetails(['duration' => $phoneCall->getDuration()])
+                ;
+
                 $this->em->persist($ticketLog);
             }
 
