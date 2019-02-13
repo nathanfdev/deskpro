@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketMessageTranslated;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
+use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
@@ -5484,6 +5485,9 @@ class TicketController extends AbstractController
             exit;
         }
 
+        $emailSettings = new EmailAccountsSettings($this->get('deskpro.core.settings'));
+        file_put_contents($tmpdir.'/email_accounts_settings.json', json_encode($emailSettings->toArray()));
+
         $d = new TicketTriggerData();
         file_put_contents($tmpdir.'/triggers.json', json_encode($d->getData()));
 
@@ -5609,9 +5613,13 @@ CSS;
             }
 
             if ($message->email_source && $message->email_source->getLogBlob()) {
+                $fileName = $tmpdir.'/message-'.$message->id.'.log';
+                if (strpos($message->email_source->getLogBlob()->getContentType(), 'gzip') !== false) {
+                    $fileName .= '.gz';
+                }
                 $this->container->getBlobStorage()
                     ->copyBlobRecordToFile(
-                        $tmpdir.'/message-'.$message->id.'.log',
+                        $fileName,
                         $message->email_source->getLogBlob()
                     );
             }
