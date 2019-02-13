@@ -170,7 +170,7 @@ class EmailSender
         }
         $message->setEncoder(\Swift_Encoding::getQpEncoding());
         $message->setBody($emailCode->getBody(), 'text/html');
-        $message->setSubject(html_entity_decode($emailCode->getSubject()));
+        $message->setSubject(htmlspecialchars_decode($emailCode->getSubject(), ENT_QUOTES));
         foreach ($emailCode->getAttachments() as $blob) {
             $message->attachBlob($blob);
         }
