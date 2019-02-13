@@ -1,5 +1,5 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
-import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';
+import { api, repository } from 'DeskPRO/Bundle/AppBundle/DAL';
 
 export const loadProducts = createAction(
   'SEARCH_LOAD_PRODUCTS',
@@ -141,6 +141,15 @@ export const loadUserGroups = createAction(
       const res = promise.getData();
 
       resolve(res.data);
+    });
+  })
+);
+
+export const search = createAction(
+  'SEARCH_RUN_QUERY',
+  (params = {}) => new Promise((resolve) => {
+    api.sendPost('DP_API/search/new_search', { search: params }).success((response) => {
+      resolve(response);
     });
   })
 );

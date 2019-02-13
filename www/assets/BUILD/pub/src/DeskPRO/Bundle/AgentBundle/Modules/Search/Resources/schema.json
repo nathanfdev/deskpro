@@ -8,7 +8,8 @@
       { "$ref": "#/definitions/set" },
       { "$ref": "#/definitions/exactValue" },
       { "$ref": "#/definitions/dateTime" },
-      { "$ref": "#/definitions/numericRange" }
+      { "$ref": "#/definitions/numericRange" },
+      { "$ref": "#/definitions/array" }
     ],
     "required": ["type", "value"]
   },
@@ -50,6 +51,9 @@
         },
         "op": {
           "enum": ["ISSET", "NOT_ISSET"]
+        },
+        "scope": {
+          "$ref": "#/definitions/scope"
         }
       },
       "additionalProperties": false
@@ -71,6 +75,9 @@
         },
         "op": {
           "enum": ["EQ", "NEQ", "LT", "LTE", "GT", "GTE", "IN", "NOT_IN"]
+        },
+        "scope": {
+          "$ref": "#/definitions/scope"
         },
         "meta": {
           "type": "array"
@@ -94,6 +101,9 @@
         },
         "op": {
           "enum": ["EQ", "NEQ", "LT", "LTE", "GT", "GTE", "IN", "NOT_IN"]
+        },
+        "scope": {
+          "$ref": "#/definitions/scope"
         }
       },
       "additionalProperties": false,
@@ -129,13 +139,50 @@
           "type": "string"
         },
         "value": {
-          "type": "array",
-          "items": {
-            "type": "number"
+          "type": "object",
+          "properties": {
+            "range": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
           }
+        },
+        "scope": {
+          "$ref": "#/definitions/scope"
         }
       },
       "additionalProperties": false
+    },
+    "array": {
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
+        },
+        "scope": {
+          "$ref": "#/definitions/scope"
+        }
+      },
+      "required": ["type", "value"]
+    },
+    "scope": {
+      "enum": ["ticket", "chat", "agent","organization", "person", "content"]
     }
   }
 }
