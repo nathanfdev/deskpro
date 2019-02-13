@@ -364,7 +364,9 @@ define([
 
     loadDataOptions() {
       if (!this.loadDataPromise) {
-        this.loadDataPromise = this.Api.sendDataGet({
+        this.loadDataPromise = this.$q.defer();
+
+        const apiV1 = this.Api.sendDataGet({
           agents:          '/agents',
           agent_teams:     '/agent_teams',
           ticket_brands:   '/ticket_brands',
@@ -383,9 +385,14 @@ define([
           ticket_accounts: '/email_accounts',
           usergroups:      '/user_groups',
           organizations:   '/organizations?per_page=250'
-        }).then((result) => {
+        });
+
+        const promises = [apiV1];
+        promises.push(this.Api2.sendGet('/ticket_statuses'));
+
+        this.$q.all(promises).then((result) => {
           let f;
-          const { data } = result;
+          const { data } = result[0];
           const options_data = {};
           options_data.agents            = data.agents.agents;
           options_data.agent_teams       = data.agent_teams.agent_teams;
@@ -406,6 +413,9 @@ define([
           options_data.usergroups        = data.usergroups.groups;
           options_data.organizations     = data.organizations.organizations;
 
+          // ApiV2 results
+          options_data['ticket_statuses'] =result[1].data.data;
+
           this.options_data = options_data;
 
           if (this.options_data != null ? this.options_data.ticket_fields : undefined) {
@@ -419,18 +429,16 @@ define([
             }
           }
           if (this.options_data != null ? this.options_data.org_fields : undefined) {
-            return (() => {
-              const result1 = [];
-              for (f of Array.from(this.options_data.org_fields)) {
-                result1.push(this.initFieldGetter('FilterOrgField', f, true));
-              }
-              return result1;
-            })();
+            for (f of Array.from(this.options_data.org_fields)) {
+              this.initFieldGetter('FilterOrgField', f, true);
+            }
           }
+
+          return this.loadDataPromise.resolve(options_data);
         });
       }
 
-      return this.loadDataPromise;
+      return this.loadDataPromise.promise;
     }
 
     getFilterWorkflow(options) {
@@ -495,6 +503,8 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'status';
       options.template = 'OptionBuilder/type-filter-status.html';
+      options.options = this.options_data.ticket_statuses.filter(status => !isNaN(status.id));
+      options.optionsFormatter = opt => opt;
       options.noArchive = true;
       const def = this.getStandardSelect(options);
       return def;

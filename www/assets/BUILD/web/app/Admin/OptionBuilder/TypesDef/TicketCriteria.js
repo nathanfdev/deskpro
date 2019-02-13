@@ -544,7 +544,9 @@ define([
 
     loadDataOptions() {
       if (!this.loadDataPromise) {
-        this.loadDataPromise = this.Api.sendDataGet({
+        this.loadDataPromise = this.$q.defer();
+
+        const apiV1 = this.Api.sendDataGet({
           agents:            '/agents',
           agent_teams:       '/agent_teams',
           ticket_brands:     '/ticket_brands',
@@ -566,9 +568,14 @@ define([
           ticket_settings:   '/ticket_settings',
           contextual_fields: '/custom_fields',
           jira_settings:     '/apps/jira'
-        }).then((result) => {
+        });
+
+        const promises = [apiV1];
+        promises.push(this.Api2.sendGet('/ticket_statuses'));
+
+        this.$q.all(promises).then((result) => {
           let f;
-          const { data } = result;
+          const { data } = result[0];
           const options_data = {};
           options_data.agents            = data.agents.agents;
           options_data.agent_teams       = data.agent_teams.agent_teams;
@@ -591,6 +598,10 @@ define([
           options_data.contextual_fields = data.contextual_fields;
           options_data.jira_settings     = data.jira_settings;
           options_data.ticket_labels     = data.ticket_labels;
+
+          // ApiV2 results
+          options_data['ticket_statuses'] =result[1].data.data;
+
           this.options_data = options_data;
 
           if (this.options_data != null ? this.options_data.ticket_fields : undefined) {
@@ -609,18 +620,16 @@ define([
             }
           }
           if (this.options_data != null ? this.options_data.org_fields : undefined) {
-            return (() => {
-              const result1 = [];
-              for (f of Array.from(this.options_data.org_fields)) {
-                result1.push(this.initFieldGetter('CheckOrgField', f, true));
-              }
-              return result1;
-            })();
+            for (f of Array.from(this.options_data.org_fields)) {
+              this.initFieldGetter('CheckOrgField', f, true);
+            }
           }
+
+          return this.loadDataPromise.resolve(options_data);
         });
       }
 
-      return this.loadDataPromise;
+      return this.loadDataPromise.promise;
     }
 
     getCheckWorkflow(options) {
@@ -1032,6 +1041,8 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'status';
       options.template = 'OptionBuilder/type-criteria-status.html';
+      options.options = this.options_data.ticket_statuses.filter(status => !isNaN(status.id));
+      options.optionsFormatter = opt => opt;
       const def = this.getStandardSelect(options);
       return def;
     }
