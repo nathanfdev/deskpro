@@ -73,7 +73,18 @@ class QueueItem extends React.Component {
   render() {
     const { agents, onlineAgents, queue, active, saving } = this.props;
     const queueAgentIds = queue.get('agents').map(voiceAgent => voiceAgent.get('agent')) || Immutable.fromJS([]);
-    const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id')));
+    const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id'))).sort((a, b) => {
+      if (onlineAgents.contains(a)) {
+        return -1;
+      } else if (onlineAgents.contains(b)) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    const displayQueueAgents = queueAgents.slice(0, 15);
+    const hiddenQueueAgents = queueAgents.slice(15);
 
     return (
       <div className="queue-item">
@@ -88,15 +99,24 @@ class QueueItem extends React.Component {
           {queue.get('name')}
         </div>
         <div className="queue-agents">
-          {queueAgents.size} agents
-          {queueAgents.toArray().map((agent, index) =>
-            <Avatar
-              key={index}
-              person={agent}
-              active={onlineAgents.contains(agent)}
-              size={20}
-            />
-          )}
+          <div className="queue-agents-count">
+            {queueAgents.size} agents
+          </div>
+          <div>
+            {displayQueueAgents.toArray().map((agent, index) =>
+              <Avatar
+                key={index}
+                person={agent}
+                active={onlineAgents.contains(agent)}
+                size={20}
+              />
+            )}
+            {hiddenQueueAgents.size > 0 &&
+            <span className="more-text">
+                + {hiddenQueueAgents.size} more
+              </span>
+            }
+          </div>
         </div>
         {/* <div className="queue-users">
           3 users in queue (average wait 2m)

@@ -1037,8 +1037,25 @@ $voice-green-border-color: #47BF61;
   max-height: 250px;
 
   .queue-item {
-    padding: 20px;
+    padding: 10px 20px 5px 20px;
     border-bottom: 1px solid #E6E6E6;
+
+    label {
+      margin-top: -2px;
+    }
+
+    .more-button {
+      display: inline-block;
+      margin-left: 5px;
+      position: relative;
+
+      .voice-popup-avatars {
+        width: 200px;
+        padding: 5px 5px 3px;
+        border: 1px solid #3A8DDE;
+        background-color: #FFFFFF;
+      }
+    }
 
     &:last-child {
       border-bottom: 0;
@@ -1061,6 +1078,15 @@ $voice-green-border-color: #47BF61;
       font-size: 14px;
       color: $dp-greyscale-850;
       margin-bottom: 10px;
+      display: flex;
+    }
+
+    .queue-agents-count {
+      white-space: nowrap;
+    }
+
+    .more-text {
+      margin-left: 5px;
     }
 
     .avatar {
