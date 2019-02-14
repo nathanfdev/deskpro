@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
@@ -11,6 +7,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\Usergroup;
 use Doctrine\ORM\EntityManager;
 
@@ -37,6 +34,11 @@ class NewPerson
     public $brand_ids = [];
     /** @var array */
     public $custom_fields = [];
+
+    /**
+     * @var PersonPhoneNumber[]
+     */
+    public $phone_numbers = [];
 
     /** @var string */
     public $timezone;
@@ -111,6 +113,16 @@ class NewPerson
             $brand = $this->em->find(Brand::class, $brandId);
             if ($brand) {
                 $person->addBrand($brand);
+            }
+        }
+
+        if ($this->phone_numbers) {
+            /** @var PersonPhoneNumber $phoneNumber */
+            foreach ($this->phone_numbers as $phoneNumber) {
+                if ($phoneNumber) {
+                    $phoneNumber->setPerson($person);
+                    $person->getPhoneNumbers()->add($phoneNumber);
+                }
             }
         }
 

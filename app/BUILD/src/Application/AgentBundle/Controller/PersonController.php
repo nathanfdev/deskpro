@@ -45,6 +45,7 @@ use Application\EmailBundle\SwiftMailer\Mailer;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\PersonCreatedEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Orb\Validator\StringEmail;
@@ -1503,6 +1504,16 @@ class PersonController extends AbstractController
             $defaultBrandId = $brands[0]->getId();
         }
 
+        $contactData['phone_numbers'] = $this->createForm('collection', new ArrayCollection(), [
+            'type'         => new PhoneNumberType(),
+            'allow_add'    => true,
+            'allow_delete' => true,
+            'options'      => [
+                'label'            => false,
+                'show_phone_label' => true,
+            ],
+        ])->createView();
+
         return $this->render('AgentBundle:Person:newperson.html.twig', [
             'state'            => $state,
             'custom_fields'    => $custom_fields,
@@ -1510,6 +1521,7 @@ class PersonController extends AbstractController
             'usergroup_names'  => $usergroup_names,
             'brands'           => $brands,
             'default_brand_id' => $defaultBrandId,
+            'contact_data'     => $contactData,
 
             'custom_fields_definitions' => $custom_fields_definitions->createView(),
         ]);

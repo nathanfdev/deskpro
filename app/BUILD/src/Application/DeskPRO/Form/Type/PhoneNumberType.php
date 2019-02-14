@@ -46,8 +46,9 @@ class PhoneNumberType extends AbstractType
 
         if ($options['show_phone_label']) {
             $builder->add('label', 'text', [
-                'label' => false,
-                'attr'  => [
+                'required' => false,
+                'label'    => false,
+                'attr'     => [
                     'class' => 'phone_label',
                 ],
             ]);

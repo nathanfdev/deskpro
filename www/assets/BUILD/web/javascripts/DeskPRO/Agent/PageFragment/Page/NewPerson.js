@@ -144,6 +144,81 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
 
     this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.phone_numbers = new DeskPRO.UI.PhoneNumberInputs();
+		this.phone_numbers.renderPhoneInputs();
+
+		var checkFields = function(rowTypeEl) {
+			var row = $('li', rowTypeEl).last();
+
+			var show = row.length > 0;
+
+			if (show) {
+				$('.with-some', rowTypeEl).show();
+				$('.with-none', rowTypeEl).hide();
+			} else {
+				$('.with-some', rowTypeEl).hide();
+				$('.with-none', rowTypeEl).show();
+			}
+		};
+
+		this.wrapper.on('click', '.add-trigger', function(ev) {
+			var rowTypeEl = $(this).closest('.row-type');
+
+			var tpl = DeskPRO_Window.util.getPlainTpl($('.tpl-new-row', rowTypeEl)),
+				index = $('ul', rowTypeEl).children().length;
+			tpl = tpl.replace(/%id%/g, Orb.uuid());
+			// symfony form support
+			tpl = tpl.replace(/__name__/g, index);
+
+			var el = $(tpl);
+			el.addClass('new');
+			el.appendTo($('ul', rowTypeEl));
+			self.phone_numbers.renderPhoneInputs();
+
+			DeskPRO_Window.initInterfaceServices(el);
+			checkFields(rowTypeEl);
+			rowTypeEl.addClass('with-values');
+		});
+
+		this.wrapper.on('click', '.remove', function(ev) {
+			var rowTypeEl = $(this).closest('.row-type');
+			var row = $(this).closest('li');
+			var doRemove = function(row, rowTypeEl) {
+				var removeName = row.data('remove-name');
+				var removeVal  = row.data('remove-value');
+
+
+				if (removeName && removeVal) {
+					var input = $('<input type="hidden" />');
+					input.attr('name', removeName);
+					input.val(removeVal);
+
+					input.appendTo(self.contactEditor);
+				}
+
+				row.fadeOut('fast', function() {
+					row.remove();
+					checkFields(rowTypeEl);
+
+					var lis = $('li', rowTypeEl);
+					if (lis.length < 1) { /* two because the fade is going now and it hasnt been removed yet */
+						rowTypeEl.removeClass('with-values');
+					}
+				});
+			};
+
+			if (row.data('confirm')) {
+				DeskPRO_Window.showConfirm(row.data('confirm'), function() {
+					doRemove(row, rowTypeEl);
+				});
+			} else {
+				doRemove(row, rowTypeEl);
+			}
+		});
+
+		this.wrapper.find('.row-type').each(function () {
+			checkFields($(this));
+		});
 	},
 
 	markForReload: function() {
