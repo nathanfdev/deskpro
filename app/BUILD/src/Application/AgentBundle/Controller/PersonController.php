@@ -45,6 +45,7 @@ use Application\EmailBundle\SwiftMailer\Mailer;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\PersonCreatedEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
@@ -1564,34 +1565,65 @@ class PersonController extends AbstractController
                 ]);
             }
 
-            $new_email = $fields['emails'][0];
+            $newEmail = $fields['emails'][0];
         } else {
-            $new_email = $this->in->getString('newperson.email');
+            $newEmail = $this->in->getString('newperson.email');
         }
 
-        $account_manager = App::$container->getEmailAccountManager();
+        $phoneNumbers = $this->in->getArrayValue('newperson.phone_numbers');
 
-        // Check for dupe email address
-        if (!$new_email || !StringEmail::isValueValid($new_email)) {
-            return $this->createJsonResponse([
-                'success'        => false,
-                'error_messages' => ['Please enter a valid email address'],
-            ]);
-        } elseif ($account_manager->findAccountForEmailAddress($new_email)) {
-            return $this->createJsonResponse([
-                'success'        => false,
-                'error_messages' => ['That email address is in use by a ticket account'],
-            ]);
-        } else {
-            /** @var PersonRepository $personRepository */
-            $personRepository = $this->em->getRepository(Person::class);
-            $check_exists     = $personRepository->findOneByEmail($new_email);
-            if ($check_exists) {
+        // if email address is set
+        // then check for dupe email address
+        if ($newEmail) {
+            $accountManager = App::$container->getEmailAccountManager();
+
+            if (!StringEmail::isValueValid($newEmail)) {
                 return $this->createJsonResponse([
                     'success'        => false,
-                    'error_messages' => ['The email address you entered already belongs to an existing user'],
+                    'error_messages' => ['Please enter a valid email address'],
                 ]);
+            } elseif ($accountManager->findAccountForEmailAddress($newEmail)) {
+                return $this->createJsonResponse([
+                    'success'        => false,
+                    'error_messages' => ['That email address is in use by a ticket account'],
+                ]);
+            } else {
+                /** @var PersonRepository $personRepository */
+                $personRepository = $this->em->getRepository(Person::class);
+                $check_exists     = $personRepository->findOneByEmail($newEmail);
+                if ($check_exists) {
+                    return $this->createJsonResponse([
+                        'success'        => false,
+                        'error_messages' => ['The email address you entered already belongs to an existing user'],
+                    ]);
+                }
             }
+        }
+
+        // validate phone numbers
+        if (count($phoneNumbers)) {
+            foreach ($phoneNumbers as $phoneNumber) {
+                if (isset($phoneNumber['number'])) {
+                    $errors = $this->container->get('validator')->validate($phoneNumber['number'], [
+                        new AppAssert\PhoneNumber(),
+                    ]);
+
+                    if (count($errors)) {
+                        return $this->createJsonResponse([
+                            'success'        => false,
+                            'error_messages' => ["Phone number {$phoneNumber['number']} is not valid"],
+                        ]);
+                    }
+                }
+            }
+        }
+
+        // phone number or email should be set
+        if (!$newEmail && !count($phoneNumbers)) {
+            return $this->createJsonResponse([
+                'success'        => false,
+                'error_messages' => ['Please enter a valid email address or phone add at lease one phone number'],
+            ]);
         }
 
         if ($language = $this->in->getUInt('newperson.language')) {
