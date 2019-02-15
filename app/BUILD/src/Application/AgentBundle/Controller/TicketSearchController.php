@@ -1759,6 +1759,9 @@ class TicketSearchController extends AbstractController
                     case 'labels':
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
+                    case 'status':
+                        $row[] = $ticket->getStatusCode();
+                        break;
                     default:
                         if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
                             if (isset($customTextData[$fieldId])) {
