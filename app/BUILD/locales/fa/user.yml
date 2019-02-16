@@ -961,7 +961,7 @@ user.emails.feedback_votes:
   one: 'Your feedback currently has <strong>1</strong> vote. View your feedback online at:'
   other: 'Your feedback currently has <strong>{{count}}</strong> votes. View your feedback online at:'
 user.emails.greeting: '{{to_name}} عزیز,'
-user.emails.kb-explain: 'You are receiving this email because you are subscribed to our knowledgebase at <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Don''t want these emails anymore? <a href="{{unsubscribe_url}}">Click here to unsubscribe from all knowledgebase notifications.</a>'
+user.emails.kb-explain: "شما این ایمیل را دریافت می کنید زیرا شما در مرکز آموزش ما در\n       <a href=\"{{deskpro_url}}\">{{deskpro_url}}</a>.<br />\n      آیا تمایل به دریافت ایمیل ها ندارید؟\n      <a href=\"{{unsubscribe_url}}\"></a>\n\n\n"
 user.emails.kb-new-articles:
   one: '1 New Article'
   other: '{{count}} New Articles'
