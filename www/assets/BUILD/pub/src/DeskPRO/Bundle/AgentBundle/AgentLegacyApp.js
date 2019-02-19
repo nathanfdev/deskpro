@@ -113,7 +113,7 @@ class AgentLegacyApp {
     }
 
     if ((window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use']) || window.DP_HAS_VOICE) {
-      api.sendPost('/api/v2/task_router/create_worker');
+      api.sendPost('DP_API/task_router/create_worker');
 
       // if pusher is enabled we need to use an another polling action
       const actionAlerts = actionAlertsSelector(state);
@@ -123,7 +123,7 @@ class AgentLegacyApp {
 
       if (hasPusher) {
         setInterval(() => {
-          api.sendGet('/agent/ping-task-router-worker');
+          api.sendGet(`${window.DP_BASE_URL}agent/ping-task-router-worker`);
         }, 10000);
       }
     }
