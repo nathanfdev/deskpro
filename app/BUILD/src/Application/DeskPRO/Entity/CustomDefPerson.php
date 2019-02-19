@@ -88,7 +88,6 @@ class CustomDefPerson extends CustomDefAbstract
      */
     public function removeAlias(CustomPeopleFieldDefinitionAlias $alias)
     {
-        $alias->setObject(null);
         $this->aliases->removeElement($alias);
 
         return $this;

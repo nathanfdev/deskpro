@@ -92,7 +92,6 @@ class CustomDefTicket extends CustomDefAbstract
      */
     public function removeAlias(CustomTicketFieldDefinitionAlias $alias)
     {
-        $alias->setObject(null);
         $this->aliases->removeElement($alias);
 
         return $this;

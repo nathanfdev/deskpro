@@ -199,10 +199,16 @@ abstract class CustomFieldAbstract
         }
 
         foreach ($removals as $alias) {
+            if (method_exists($this->_field, 'removeAlias')) {
+                $this->_field->removeAlias($alias);
+            }
             $this->_em->remove($alias);
         }
 
         foreach ($additions as $alias) {
+            if (method_exists($this->_field, 'addAlias')) {
+                $this->_field->addAlias($alias);
+            }
             $this->_em->persist($alias);
         }
     }
@@ -216,6 +222,9 @@ abstract class CustomFieldAbstract
             if (!$this->isNewField()) { // we are removing all existing aliases
                 $existingAliasList = $this->_field->getAliases();
                 foreach ($existingAliasList as $existingAlias) {
+                    if (method_exists($this->_field, 'removeAlias')) {
+                        $this->_field->removeAlias($existingAlias);
+                    }
                     $this->_em->remove($existingAlias);
                 }
             }
@@ -234,10 +243,16 @@ abstract class CustomFieldAbstract
 
             // replace all other aliases with the new one
             foreach ($existingAliasList as $existingAlias) {
+                if (method_exists($this->_field, 'removeAlias')) {
+                    $this->_field->removeAlias($existingAlias);
+                }
                 $this->_em->remove($existingAlias);
             }
         }
 
+        if (method_exists($this->_field, 'addAlias')) {
+            $this->_field->addAlias($alias);
+        }
         $this->_em->persist($alias);
     }
 

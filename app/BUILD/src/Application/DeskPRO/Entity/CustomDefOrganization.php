@@ -90,7 +90,6 @@ class CustomDefOrganization extends CustomDefAbstract
      */
     public function removeAlias(CustomOrganizationFieldDefinitionAlias $alias)
     {
-        $alias->setObject(null);
         $this->aliases->removeElement($alias);
 
         return $this;
