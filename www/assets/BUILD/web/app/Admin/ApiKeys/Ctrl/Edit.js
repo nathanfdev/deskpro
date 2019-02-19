@@ -26,7 +26,7 @@ define([
 
     init() {
       this.agents = [];
-      this.form = { isSuperUser: false, flags: [] };
+      this.form = { isSuperUser: false, flags: [], apiVersions: 'api_v1,api_v2' };
 
       this.service = {
         keys:   this.DataService.get('ApiKeys'),
@@ -89,6 +89,15 @@ define([
         this.form.isAdminManage = this.form.flags.indexOf('admin_manage') > -1;
         if (!this.form.daily_limit) { this.form.daily_limit = this.service.keys.limits.daily_limit; }
         if (!this.form.hourly_limit) { return this.form.hourly_limit = this.service.keys.limits.hourly_limit; }
+
+        const apiVersions = [];
+        if (this.form.flags.indexOf('api_v1') > -1 ) {
+          apiVersions.push('api_v1');
+        }
+        if (this.form.flags.indexOf('api_v2') > -1 ) {
+          apiVersions.push('api_v2');
+        }
+        this.form.apiVersions = apiVersions.length ? apiVersions.join(',') : 'api_v1,api_v2';
       });
 
 
@@ -118,6 +127,12 @@ define([
       if (this.form.isAdminManage) {
         this.form.flags.push('admin_manage');
       }
+      if (this.form.apiVersions.includes('api_v1')) {
+        this.form.flags.push('api_v1');
+      }
+      if (this.form.apiVersions.includes('api_v2')) {
+        this.form.flags.push('api_v2');
+      }
 
       this.startSpinner('saving');
       return this.service.keys.set(this.form).then(
@@ -126,6 +141,15 @@ define([
           this.form.flags = this.form.flags || [];
           this.form.isSuperUser = this.form.flags.indexOf('super') > -1;
           this.form.isAdminManage = this.form.flags.indexOf('admin_manage') > -1;
+          
+          const apiVersions = [];
+          if (this.form.flags.indexOf('api_v1') > -1) {
+            apiVersions.push('api_v1');
+          }
+          if (this.form.flags.indexOf('api_v2') > -1) {
+            apiVersions.push('api_v2');
+          }
+          this.form.apiVersions = apiVersions.length ? apiVersions.join(',') : 'api_v1,api_v2';
           return this.form;
         },
         () => {

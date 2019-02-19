@@ -199,6 +199,19 @@ class AuthContext extends BaseContext
     }
 
     /**
+     * @Given I remove a flag :flag from ApiKey
+     */
+    public function removeFlagFromApiKey($flag)
+    {
+        $key   = DataContext::getReference('apiKey');
+        $flags = array_filter($key->flags, function ($value) use ($flag) {
+            return $value !== $flag;
+        });
+        $key->flags = $flags;
+        $this->persistAndFlush($key);
+    }
+
+    /**
      * @Given the agent session auth :session_id is valid for :who and referenced as :ref
      */
     public function theAgentSessionIsValidForPerson($session_id, $who, $ref)
@@ -327,6 +340,7 @@ class AuthContext extends BaseContext
             $key         = new ApiKey();
             $key->code   = $code;
             $key->person = $person;
+            $key->addFlag(ApiKey::FLAG_API_V2);
             if ($super) {
                 $key->addFlag(ApiKey::FLAG_SUPER_KEY);
             }
@@ -354,6 +368,11 @@ class AuthContext extends BaseContext
                 if ($super) {
                     $key->addFlag(ApiKey::FLAG_SUPER_KEY);
                 }
+                $this->persistAndFlush($key);
+            }
+
+            if (!in_array(ApiKey::FLAG_API_V2, $key->flags)) {
+                $key->addFlag(ApiKey::FLAG_API_V2);
                 $this->persistAndFlush($key);
             }
 
