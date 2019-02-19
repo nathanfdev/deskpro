@@ -173,16 +173,26 @@ class UseSectionVoterSpec extends ObjectBehavior
         $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
 
         $person_permission_bag->get('articles.use')->willReturn(false);
+        $person_permission_bag->getAllowedArticleCategories()->willReturn([]);
         $person_permission_bag->get('feedback.use')->willReturn(false);
+        $person_permission_bag->getAllowedFeedbackCategoryIds()->willReturn([]);
         $person_permission_bag->get('downloads.use')->willReturn(false);
+        $person_permission_bag->getAllowedDownloadCategories()->willReturn([]);
         $person_permission_bag->get('news.use')->willReturn(false);
+        $person_permission_bag->getAllowedNewsCategories()->willReturn([]);
         $person_permission_bag->get('guides.use')->willReturn(false);
+        $person_permission_bag->getAllowedGuides()->willReturn([]);
 
         $guest_permission_bag->get('articles.use')->willReturn(false);
+        $guest_permission_bag->getAllowedArticleCategories()->willReturn([]);
         $guest_permission_bag->get('feedback.use')->willReturn(false);
+        $guest_permission_bag->getAllowedFeedbackCategoryIds()->willReturn([]);
         $guest_permission_bag->get('downloads.use')->willReturn(false);
+        $guest_permission_bag->getAllowedDownloadCategories()->willReturn([]);
         $guest_permission_bag->get('news.use')->willReturn(false);
+        $guest_permission_bag->getAllowedNewsCategories()->willReturn([]);
         $guest_permission_bag->get('guides.use')->willReturn(false);
+        $guest_permission_bag->getAllowedGuides()->willReturn([]);
 
         $this->verifyDeniedVote(UseSectionVoter::USE_ARTICLES, $token);
         $this->verifyDeniedVote(UseSectionVoter::USE_FEEDBACK, $token);
@@ -221,6 +231,54 @@ class UseSectionVoterSpec extends ObjectBehavior
         $guest_permission_bag->get('downloads.use')->willReturn(true);
         $guest_permission_bag->get('news.use')->willReturn(true);
         $guest_permission_bag->get('guides.use')->willReturn(true);
+
+        $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $token);
+
+        $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_DOWNLOADS, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_NEWS, $guest_token);
+        $this->verifyGrantedVote(UseSectionVoter::USE_GUIDES, $guest_token);
+    }
+
+    public function it_grants_content_if_token_user_has_allowed_categories(
+        TokenInterface $token,
+        PermissionsBag $person_permission_bag,
+        TokenInterface $guest_token,
+        PermissionsBag $guest_permission_bag,
+        BrandContainer $brand_container
+    ) {
+        $brand_container->getSetting('core.apps_kb', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_feedback', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_downloads', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_news', Argument::any())->willReturn(true);
+        $brand_container->getSetting('core.apps_guides', Argument::any())->willReturn(true);
+
+        $person_permission_bag->get('articles.use')->willReturn(false);
+        $person_permission_bag->getAllowedArticleCategories()->willReturn([1, 2]);
+        $person_permission_bag->get('feedback.use')->willReturn(false);
+        $person_permission_bag->getAllowedFeedbackCategoryIds()->willReturn([1, 2]);
+        $person_permission_bag->get('downloads.use')->willReturn(false);
+        $person_permission_bag->getAllowedDownloadCategories()->willReturn([1, 2]);
+        $person_permission_bag->get('news.use')->willReturn(false);
+        $person_permission_bag->getAllowedNewsCategories()->willReturn([1, 2]);
+        $person_permission_bag->get('guides.use')->willReturn(false);
+        $person_permission_bag->getAllowedGuides()->willReturn([1, 2]);
+
+        $guest_permission_bag->get('articles.use')->willReturn(false);
+        $guest_permission_bag->getAllowedArticleCategories()->willReturn([1, 2]);
+        $guest_permission_bag->get('feedback.use')->willReturn(false);
+        $guest_permission_bag->getAllowedFeedbackCategoryIds()->willReturn([1, 2]);
+        $guest_permission_bag->get('downloads.use')->willReturn(false);
+        $guest_permission_bag->getAllowedDownloadCategories()->willReturn([1, 2]);
+        $guest_permission_bag->get('news.use')->willReturn(false);
+        $guest_permission_bag->getAllowedNewsCategories()->willReturn([1, 2]);
+        $guest_permission_bag->get('guides.use')->willReturn(false);
+        $guest_permission_bag->getAllowedGuides()->willReturn([1, 2]);
 
         $this->verifyGrantedVote(UseSectionVoter::USE_ARTICLES, $token);
         $this->verifyGrantedVote(UseSectionVoter::USE_FEEDBACK, $token);
