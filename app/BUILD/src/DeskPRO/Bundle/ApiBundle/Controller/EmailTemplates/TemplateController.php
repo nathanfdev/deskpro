@@ -292,7 +292,7 @@ class TemplateController extends BaseController
         $to             = $request->request->get('to');
         $extraTemplates = $request->request->get('extraTemplates');
 
-        $code = '<dp:subject>'.$subject.'</dp:subject>'."\n\n".$body;
+        $code = EmailTemplateCode::SUBJ_TOKEN_START.$subject.EmailTemplateCode::SUBJ_TOKEN_END."\n\n".$body;
 
         /** @var Message $message */
         $message   = $this->get('mailer')->createMessage();

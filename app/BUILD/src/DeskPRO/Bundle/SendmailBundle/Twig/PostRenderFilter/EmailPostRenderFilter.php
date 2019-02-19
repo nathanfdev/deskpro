@@ -6,6 +6,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Twig\PostRenderFilter;
 
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use Orb\Util\Strings;
 use Pelago\Emogrifier;
 
@@ -22,9 +23,9 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 
         // Separate out subject
         $subj = null;
-        if (preg_match('#<dp:subject>(.*?)</dp:subject>#s', $code, $matches)) {
+        if (preg_match('#'.EmailTemplateCode::SUBJ_TOKEN_START.'(.*?)'.EmailTemplateCode::SUBJ_TOKEN_END.'#s', $code, $matches)) {
             $subj = $matches[0];
-            $code = preg_replace('#<dp:subject>(.*?)</dp:subject>#s', '', $code);
+            $code = preg_replace('#'.EmailTemplateCode::SUBJ_TOKEN_START.'(.*?)'.EmailTemplateCode::SUBJ_TOKEN_END.'#s', '', $code);
         }
 
         // Dont run emog on messages, only on the email template
