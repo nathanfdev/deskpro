@@ -597,7 +597,12 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
 }
 
 .column-half-plus {
-  .guides div.topic {
-    width: 568px;
+  .guides {
+    div.topic {
+      width: 568px;
+    }
+    .content-summary {
+      display: none;
+    }
   }
 }
