@@ -37,8 +37,9 @@ class CustomDataValidator extends ConstraintValidator
 
         $validators     = [];
         $handlerOptions = [
-            'custom_def' => $customDef,
-            'context'    => $constraint->context,
+            'custom_def'     => $customDef,
+            'context'        => $constraint->context,
+            'check_required' => $constraint->check_required,
         ];
 
         switch ($customDef->getType()) {

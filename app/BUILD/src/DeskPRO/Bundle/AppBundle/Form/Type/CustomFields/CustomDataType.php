@@ -316,9 +316,10 @@ class CustomDataType extends AbstractType
         }
 
         $violations = $this->validator->validate($form->getData(), new AppAssert\CustomField\CustomData([
-            'context'    => $context,
-            'custom_def' => $customDef,
-            'target'     => AppAssert\CustomField\CustomData::TARGET_FIELD,
+            'context'        => $context,
+            'custom_def'     => $customDef,
+            'target'         => AppAssert\CustomField\CustomData::TARGET_FIELD,
+            'check_required' => $options['check_required'],
         ]));
 
         foreach ($violations as $violation) {
@@ -360,6 +361,7 @@ class CustomDataType extends AbstractType
                 'inline'         => false,
                 'error_bubbling' => false,
                 'ticket'         => false,
+                'check_required' => true,
             ])
             ->setRequired([
                 'custom_def',
@@ -368,6 +370,7 @@ class CustomDataType extends AbstractType
             ->setAllowedTypes('custom_def', CustomDefAbstract::class)
             ->setAllowedTypes('agent_interface', 'bool')
             ->setAllowedTypes('inline', 'bool')
+            ->setAllowedTypes('check_required', 'bool')
             ->setAllowedTypes('ticket', ['bool', Ticket::class])
         ;
     }

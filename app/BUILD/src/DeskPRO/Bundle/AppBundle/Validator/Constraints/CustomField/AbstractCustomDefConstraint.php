@@ -23,6 +23,11 @@ abstract class AbstractCustomDefConstraint extends Constraint
     public $custom_def;
 
     /**
+     * @var bool
+     */
+    public $check_required = true;
+
+    /**
      * @param string $name
      * @param bool   $usePrefix
      *

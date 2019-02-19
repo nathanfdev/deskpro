@@ -532,3 +532,17 @@ Feature: /tickets endpoint
     And the JSON node "data[0].ticket" should be equal to "{lastCreatedId}"
     And the JSON node "data[0].message" should be equal to "Some message"
     And the JSON node "data[0].date_created" should not be null
+
+  Scenario: I check custom fields are not required
+    Given only the following custom ticket fields exist:
+      | #  | Type | Title      | Options                                    |
+      | f1 | text | Text field | {"agent_required": true, "required": true} |
+
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~
+}
+    """
+    Then the response status code should be 201
