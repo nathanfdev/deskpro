@@ -3493,7 +3493,7 @@ class TicketController extends AbstractController
             $person       = $ticket->getPerson();
             $edit_manager = $this->container->getSystemService('person_edit_manager');
             $edit_manager->setPersonContext($this->person);
-            $edit_manager->deleteUser($person);
+            $edit_manager->deleteUser($person, $this->container->get('blob.storage'));
         }
 
         $hidden_data = $this->_getHiddenBarData($ticket);
