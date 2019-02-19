@@ -14,9 +14,9 @@
           </div>
         </td>
         <td {% if not tfl.ticket.agent %}colspan="2"{% endif %}>
-          <div class="status-pill status urgency-{{ tfl.ticket.urgency }} {{ tfl.ticket.status_code|replace({'.': '_'}) }}" style="float: right; position: relative; top: 0px;">
-            <label>{{ phrase('agent.tickets.status_' ~ tfl.ticket.status_code|replace({'.': '_'})) }}</label>
-            {% if tfl.ticket.status == 'awaiting_agent' %}<i class="ticket-urgency" data-urgency="{{ tfl.ticket.urgency }}">{{ tfl.ticket.urgency }}</i>{% endif %}
+          <div class="status-pill status urgency-{{ tfl.ticket.urgency }} {% if tfl.ticket.status == 'pending' %} awaiting_agent {% endif %} {{tfl.ticket.status}} {{ tfl.ticket.status}}_{{ticket.hidden_status }}" style="float: right; position: relative; top: 0px;">
+            <label>{{ tfl.ticket.ticketStatus.displayTitle }}</label>
+            {% if tfl.ticket.status == 'awaiting_agent' or  tfl.ticket.status == 'pending'%}<i class="ticket-urgency" data-urgency="{{ tfl.ticket.urgency }}">{{ tfl.ticket.urgency }}</i>{% endif %}
           </div>
         </td>
         {% if tfl.ticket.agent %}

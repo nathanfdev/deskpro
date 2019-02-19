@@ -540,6 +540,34 @@ define(() => {
     controller:   'Admin_TicketStatuses_Ctrl_EditHiddenSpam'
   });
 
+  routes.push({
+    id: 'tickets.statuses.pending',
+    url: '/statuses/pending',
+    templateName: 'TicketStatuses/status-pending.html',
+    controller: 'Admin_TicketStatuses_Ctrl_EditPending'
+  });
+
+  routes.push({
+    id: 'tickets.statuses.gocreate',
+    url: '/statuses/go-create',
+    template: '',
+    controller: ['$state', function ($state) { $state.go('tickets.statuses.create'); }]
+  });
+
+  routes.push({
+    id: 'tickets.statuses.create',
+    url: '/statuses/create',
+    templateName: 'TicketStatuses/edit.html',
+    controller: 'Admin_TicketStatuses_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'tickets.statuses.edit',
+    url: '/{id:[0-9]+}',
+    templateName: 'TicketStatuses/edit.html',
+    controller: 'Admin_TicketStatuses_Ctrl_Edit'
+  });
+  
   // ###
   // # Urgency
   // ###

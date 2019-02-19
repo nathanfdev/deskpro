@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetUseLogRepository;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
@@ -293,7 +294,7 @@ class TicketsController extends AbstractController
         $person = $this->getUser();
 
         if ('POST' === $request->getMethod()) {
-            $ticket->setStatus(Ticket::STATUS_RESOLVED);
+            $ticket->setStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_RESOLVED));
             $this->saveEditedTicket($ticket, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
 
@@ -585,7 +586,7 @@ class TicketsController extends AbstractController
             return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 
-        $ticket->setStatus(Ticket::STATUS_AWAITING_AGENT);
+        $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
         $this->saveEditedTicket($ticket, $person);
         $this->addFlash('success', $this->phrase('portal.flashes.ticket_re_opened'));
 
@@ -728,11 +729,11 @@ class TicketsController extends AbstractController
             if (in_array(
                 $ticket->getStatusCode(),
                 [
-                    Ticket::STATUS_AWAITING_USER,
-                    Ticket::STATUS_RESOLVED,
+                    TicketStatus::STATUS_TYPE_AWAITING_USER,
+                    TicketStatus::STATUS_TYPE_RESOLVED,
                 ]
             )) {
-                $ticket->setStatus(Ticket::STATUS_AWAITING_AGENT);
+                $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
             }
 
             if ($person->getId() && !$ticket->hasParticipantPerson($person)) {

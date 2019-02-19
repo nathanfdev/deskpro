@@ -132,7 +132,8 @@ class FilterData extends AbstractDefaultData
             ],
         ];
 
-        $filters[] = [
+        $spamStatusId = (int) $this->getDb()->fetchColumn("SELECT id FROM ticket_statuses where sys_id = 'spam'");
+        $filters[]    = [
             'title'    => 'Spam',
             'sys_name' => 'archive_spam',
             'order_by' => 'ticket.urgency:desc',
@@ -140,12 +141,13 @@ class FilterData extends AbstractDefaultData
                 [
                     'type'    => 'status',
                     'op'      => 'is',
-                    'options' => ['status' => 'hidden.spam'],
+                    'options' => ['status' => 'hidden.'.$spamStatusId],
                 ],
             ],
         ];
 
-        $filters[] = [
+        $deletedStatusId = (int) $this->getDb()->fetchColumn("SELECT id FROM ticket_statuses where sys_id = 'deleted'");
+        $filters[]       = [
             'title'    => 'Deleted',
             'sys_name' => 'archive_deleted',
             'order_by' => 'ticket.urgency:desc',
@@ -153,7 +155,7 @@ class FilterData extends AbstractDefaultData
                 [
                     'type'    => 'status',
                     'op'      => 'is',
-                    'options' => ['status' => 'hidden.deleted'],
+                    'options' => ['status' => 'hidden.'.$deletedStatusId],
                 ],
             ],
         ];
@@ -186,6 +188,9 @@ class FilterData extends AbstractDefaultData
                 if ($is_hold) {
                     $f['title'] .= ' (Hold)';
                     $f['sys_name'] .= '_w_hold';
+                    $f['terms'] = array_filter($f['terms'], function ($term) {
+                        return $term['type'] != 'status';
+                    });
                 }
 
                 if (!$is_archive) {

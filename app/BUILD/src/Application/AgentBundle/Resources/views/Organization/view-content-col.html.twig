@@ -189,10 +189,10 @@
                                 </td>
                                 <td {% if not ticket.agent %}colspan="2"{% endif %} valign="bottom"
                                     style="vertical-align: bottom">
-                                    <div class="status-pill status urgency-{{ ticket.urgency }} {{ ticket.status_code|replace({'.': '_'}) }}"
+                                    <div class="status-pill status urgency-{{ ticket.urgency }} {% if ticket.status == 'pending' %} awaiting_agent {% endif %} {{ticket.status}} {{ ticket.status}}_{{ticket.hidden_status }}"
                                          style="float: right; position: relative; top: 0px;">
-                                        <label>{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}</label>
-                                        {% if ticket.status == 'awaiting_agent' %}<i class="ticket-urgency"
+                                        <label>{{ ticket.ticketStatus.displayTitle }}</label>
+                                        {% if ticket.status == 'awaiting_agent' or  ticket.status == 'pending' %}<i class="ticket-urgency"
                                                                                      data-urgency="{{ ticket.urgency }}">{{ ticket.urgency }}</i>{% endif %}
                                     </div>
                                 </td>

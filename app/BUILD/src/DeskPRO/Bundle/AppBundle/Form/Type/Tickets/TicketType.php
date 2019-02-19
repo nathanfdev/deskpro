@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use DeskPRO\Bundle\AppBundle\Form\BrandFormHelper;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
@@ -62,17 +63,28 @@ class TicketType extends AbstractType
     private $em;
 
     /**
+     * @var TicketStatusDataService
+     */
+    private $ticketStatuses;
+
+    /**
      * Constructor.
      *
-     * @param CustomFieldManager $fieldManager
-     * @param BrandFormHelper    $helper
-     * @param EntityManager      $em
+     * @param CustomFieldManager      $fieldManager
+     * @param BrandFormHelper         $helper
+     * @param EntityManager           $em
+     * @param TicketStatusDataService $ticketStatuses
      */
-    public function __construct(CustomFieldManager $fieldManager, BrandFormHelper $helper, EntityManager $em)
+    public function __construct(
+        CustomFieldManager $fieldManager,
+        BrandFormHelper $helper,
+        EntityManager $em,
+        TicketStatusDataService $ticketStatuses)
     {
-        $this->fieldManager = $fieldManager;
-        $this->helper       = $helper;
-        $this->em           = $em;
+        $this->ticketStatuses = $ticketStatuses;
+        $this->fieldManager   = $fieldManager;
+        $this->helper         = $helper;
+        $this->em             = $em;
     }
 
     /**
@@ -119,7 +131,8 @@ class TicketType extends AbstractType
             ])
             ->add('status', ChoiceType::class, [
                 'choices_as_values' => true,
-                'choices'           => Ticket::getTicketStatuses(),
+                'choices'           => $this->getAllTicketStatusCodes(),
+                'mapped'            => false,
             ])
             ->add('is_hold', ApiBooleanType::class)
             ->add('urgency', NumberType::class)
@@ -226,6 +239,7 @@ class TicketType extends AbstractType
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
     }
 
     /**
@@ -332,6 +346,23 @@ class TicketType extends AbstractType
     }
 
     /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        /** @var Ticket $ticket */
+        $ticket = $event->getData();
+
+        $status = $form->get('status')->getData();
+        if ($status) {
+            $ticket->setTicketStatus($this->ticketStatuses->findStatusOrException($status));
+        }
+    }
+
+    /**
      * @param FormBuilderInterface $builder
      * @param array                $options
      *
@@ -375,5 +406,15 @@ class TicketType extends AbstractType
             : DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE;
 
         return $this->helper->getDefaultDepartment($type);
+    }
+
+    /**
+     * @return array
+     */
+    private function getAllTicketStatusCodes()
+    {
+        return array_map(function ($item) {
+            return $item['value'];
+        }, $this->ticketStatuses->getFormOptions());
     }
 }

@@ -15,7 +15,7 @@ class ReportWidgetData extends AbstractDefaultData
             'display_types' => 'simple_stat',
             'display_order' => 40,
             'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'ticket waiting\', \'tickets waiting\') as \'stat_description\'
-            FROM tickets WHERE tickets.status = \'awaiting_agent\'',
+            FROM tickets WHERE tickets.status IN (\'awaiting_agent\', \'pending\')',
             'variables' => '[]',
         ],
         'agents-online' => [
@@ -646,7 +646,7 @@ GROUP BY DPQL_MATRIX(${ticket}, ${ticket_2})',
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
-WHERE tickets.status = \'awaiting_agent\'
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\')
 GROUP BY DPQL_MATRIX(DPQL_ALIAS(DPQL_DATE_OFFSET_GROUP(DPQL_NOW(), tickets.date_user_waiting), \'Time Waiting\'), ${ticket})',
                 'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets","default":"none"}]',
             ],
@@ -659,7 +659,7 @@ GROUP BY DPQL_MATRIX(DPQL_ALIAS(DPQL_DATE_OFFSET_GROUP(DPQL_NOW(), tickets.date_
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
-WHERE tickets.status = \'awaiting_agent\'
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\')
 GROUP BY DPQL_MATRIX(DPQL_ALIAS(DPQL_DATE_OFFSET_GROUP(tickets.total_user_waiting), \'Time Waiting\'), ${ticket})',
                 'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets","default":"none"}]',
             ],
@@ -822,7 +822,7 @@ GROUP BY tickets.ticket_slas.sla_status',
                 'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
 FROM tickets
-WHERE tickets.status = \'awaiting_agent\'
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\')
 SPLIT BY ${ticket}
 ORDER BY ${ticket_2}
 LIMIT 100',
@@ -880,7 +880,7 @@ LIMIT 100',
                 'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
 FROM tickets
-WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\')
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\')
 SPLIT BY ${ticket}
 ORDER BY ${ticket_2}
 LIMIT 100',
@@ -893,9 +893,9 @@ LIMIT 100',
                 'display_types' => 'table',
                 'display_order' => 220,
                 'query'         => '
-SELECT DPQL_COUNT() AS \'Total\', DPQL_COUNT(tickets.status = \'awaiting_agent\') AS \'Total Awaiting Agent\', DPQL_COUNT(tickets.status = \'awaiting_user\') AS \'Total Awaiting User\'
+SELECT DPQL_COUNT() AS \'Total\', DPQL_COUNT(tickets.status IN (\'awaiting_agent\', \'pending\')) AS \'Total Awaiting Agent\', DPQL_COUNT(tickets.status = \'awaiting_user\') AS \'Total Awaiting User\'
 FROM tickets
-WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\') AND tickets.date_created < %PAST_7_DAYS%',
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\') AND tickets.date_created < %PAST_7_DAYS%',
                 'variables' => '[]',
             ],
         'unresolved-high-priority-tickets' => [
@@ -907,7 +907,7 @@ WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\') AND tickets.date
                 'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.priority
 FROM tickets
-WHERE tickets.priority.priority = 1 AND tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+WHERE tickets.priority.priority = 1 AND tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\')
 ORDER BY tickets.date_created
 LIMIT 100',
                 'variables' => '[]',
@@ -921,7 +921,7 @@ LIMIT 100',
                 'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.count_agent_replies AS \'Agent Replies\'
 FROM tickets
-WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\') AND tickets.count_agent_replies >= 10
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\') AND tickets.count_agent_replies >= 10
 ORDER BY tickets.date_created
 LIMIT 100',
                 'variables' => '[]',
@@ -935,7 +935,7 @@ LIMIT 100',
                 'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.urgency
 FROM tickets
-WHERE tickets.urgency > 7 AND tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+WHERE tickets.urgency > 7 AND tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\')
 ORDER BY tickets.date_created
 LIMIT 100',
                 'variables' => '[]',
@@ -949,7 +949,7 @@ LIMIT 100',
                 'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
-WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
+WHERE tickets.status IN (\'awaiting_agent\', \'pending\', \'awaiting_user\')
 GROUP BY tickets.person
 ORDER BY DPQL_COUNT() DESC
 LIMIT 100',

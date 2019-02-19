@@ -32,6 +32,7 @@ use Application\DeskPRO\UI\RuleBuilder;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -1758,6 +1759,9 @@ class TicketSearchController extends AbstractController
                     case 'labels':
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
+                    case 'status':
+                        $row[] = $ticket->getStatusCode();
+                        break;
                     default:
                         if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
                             if (isset($customTextData[$fieldId])) {
@@ -2173,7 +2177,7 @@ class TicketSearchController extends AbstractController
 
                         if (count($this->getTicketLayoutErrors($ticket))
                             && $collection->hasActionType('Status')
-                            && strpos($collection->getActionType('Status')->getFullStatus(), Ticket::STATUS_HIDDEN) === false
+                            && strpos($collection->getActionType('Status')->getFullStatus(), TicketStatus::STATUS_TYPE_HIDDEN) === false
                         ) {
                             $validationErrors[] = $ticket->getId();
                             continue;
@@ -2271,13 +2275,14 @@ class TicketSearchController extends AbstractController
         $ticket_options['custom_people_fields'] = $customPersonFieldsHandler->getFieldsDisplayArray($person_field_defs);
 
         return $this->render('AgentBundle:TicketSearch:filter-massactions-overlay.html.twig', [
-            'agents'               => $agents,
-            'agent_teams'          => $agent_teams,
-            'brands'               => $brands,
-            'macros'               => $macros,
-            'agent_signature'      => $this->person->getSignature(),
-            'agent_signature_html' => $this->person->getSignatureHtml(),
-            'ticket_options'       => $ticket_options,
+            'agents'                  => $agents,
+            'agent_teams'             => $agent_teams,
+            'brands'                  => $brands,
+            'macros'                  => $macros,
+            'agent_signature'         => $this->person->getSignature(),
+            'agent_signature_html'    => $this->person->getSignatureHtml(),
+            'ticket_options'          => $ticket_options,
+            'ticket_statuses_service' => App::getContainer()->getTicketStatuses(),
         ]);
     }
 

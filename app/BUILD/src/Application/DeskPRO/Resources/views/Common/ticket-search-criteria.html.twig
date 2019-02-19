@@ -1,3 +1,10 @@
+{% macro substatuses_options(substatuses, parent_title) %}
+  {% for status in substatuses %}
+    <option value="{{ status.statusCode }}">{{ parent_title }}&nbsp;>&nbsp;{{ status.title }}</option>
+  {% endfor %}
+{% endmacro %}
+{% import _self as self_macro %}
+
 {% if id or classname %}
 	{# if given an id or classname then we want a wrapper #}
 	<div {% if id %}id="{{ id }}"{% endif %} class="{{ classname }}" style="display:none">
@@ -318,14 +325,16 @@
 		<div class="builder-options">
 			<select name="status[]" multiple="multiple">
 				<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+        {{ self_macro.substatuses_options(ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent')) }}
 				<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+        {{ self_macro.substatuses_options(ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user')) }}
 				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+        {{ self_macro.substatuses_options(ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved')) }}
 				{% if search_context != 'filter' %}
 					<option value="archived">{{ phrase('agent.tickets.status_archived') }}</option>
 					<optgroup label="Hidden Tickets">
 						<option value="hidden">Any Hidden Ticket</option>
-						<option value="hidden.deleted">Deleted</option>
-						<option value="hidden.spam">Spam</option>
+            {{ self_macro.substatuses_options(ticket_statuses['hidden'].getChildren(), phrase('agent.tickets.status_hidden')) }}
 					</optgroup>
 				{% endif %}
 			</select>

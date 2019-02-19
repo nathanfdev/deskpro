@@ -527,6 +527,9 @@ abstract class CrudController extends BaseController
             throw new InvalidFormException($form);
         }
 
+        // in some cases entity will be created in form
+        $model = $form->getData();
+
         $this->additionalValidation($model, $request);
 
         // we have an explicit id

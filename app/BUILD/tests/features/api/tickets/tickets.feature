@@ -23,13 +23,18 @@ Feature: /tickets endpoint
     And only the following Organization records exist:
       | #         | Name                  |
       | microsoft | Microsoft Corporation |
+    And only the following TicketStatus records exist:
+      | #   | StatusType     | SysId        | Title    |
+      | ts1 | hidden         | spam         | Spam     |
+      | ts2 | hidden         | deleted      | Deleted  |
     And only the following Ticket records exist:
-      | #       | Subject            | Agent   | Organization | Status         | Hidden status |
+      | #       | Subject            | Agent   | Organization | Status         | TicketSTatus  |
       | ticket1 | First Demo Ticket  | {admin} | {microsoft}  | awaiting_user  |               |
       | ticket2 | Second Demo Ticket | {agent} |              | awaiting_agent |               |
       | ticket3 | Third Demo Ticket  | {agent} |              | resolved       |               |
       | ticket4 | Fourth Demo Ticket | {agent} |              | archived       |               |
-      | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | deleted       |
+      | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | {ts2}         |
+      | ticket6 | Six Demo Ticket    | {agent} |              | hidden         | {ts1}         |
     And there are no custom ticket fields defined
 
   Scenario: I create a ticket
@@ -37,7 +42,7 @@ Feature: /tickets endpoint
       | #  | Title     |
       | p1 | Product 1 |
       | p2 | Product 2 |
-    When I send a POST request to "/api/v2/tickets" with body:
+    When I send a POST request to "/api/v2/tickets?XDEBUG_SESSION_START=netbeans-xdebug" with body:
     """
 {
   "subject": "Test Ticket",
@@ -65,6 +70,18 @@ Feature: /tickets endpoint
     And the JSON node "data.cc[1]" should be equal to "{agent}"
     And the JSON node "data.cc[2]" should be equal to "{admin}"
     And the JSON node "data.star" should be equal to the string "green"
+
+  Scenario: I create a ticket with substatus
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Test Ticket",
+  "status": "hidden.~ts2~"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.subject" should be equal to "Test Ticket"
+    And the JSON node "data.status" should be equal to "hidden.{ts2}"
 
   Scenario: I modify a ticket
     When I send a PUT request to "/api/v2/tickets/{ticket1}" with body:
@@ -146,14 +163,14 @@ Feature: /tickets endpoint
     Given I send a DELETE request to "/api/v2/tickets/{ticket1}"
     When I send a GET request to "/api/v2/tickets/{ticket1}"
     Then the response status code should be 200
-    And the JSON node "data.status" should be equal to "hidden.deleted"
+    And the JSON node "data.status" should be equal to "hidden.{ts2}"
 
   Scenario: I delete a ticket by ref then verify it's properly soft-deleted
     Given I have a Ticket record referenced as ticket_for_del
     When I send a DELETE request to "/api/v2/tickets/ref:{ticket_for_del:ref}"
     Then I send a GET request to "/api/v2/tickets/ref:{ticket_for_del:ref}"
     Then the response status code should be 200
-    And the JSON node "data.status" should be equal to "hidden.deleted"
+    And the JSON node "data.status" should be equal to "hidden.{ts2}"
 
   Scenario: I retrieve a ticket
     When I send a GET request to "/api/v2/tickets/{ticket1}"
@@ -189,8 +206,34 @@ Feature: /tickets endpoint
   Scenario: I retrieve list of hidden and archived tickets
     When I send a GET request to "/api/v2/tickets?status[]=hidden&status[]=archived"
     Then the response status code should be 200
-    And the JSON node "data" should have 2 elements
+    And the JSON node "data" should have 3 elements
     And the JSON node "linked" should have 0 elements
+
+  Scenario: I test filter by status
+    When I send a GET request to "/api/v2/tickets?status[]=hidden.{ts2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 elements
+    And the JSON node "data[0].id" should be equal to "{ticket5}"
+
+    When I send a GET request to "/api/v2/tickets?status[]=hidden.{ts2}&status[]=hidden.{ts1}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{ticket5}"
+    And the JSON node "data[1].id" should be equal to "{ticket6}"
+
+    When I send a GET request to "/api/v2/tickets?not_status[]=hidden"
+    Then the response status code should be 200
+    And the JSON node "data" should have 4 elements
+
+    When I send a GET request to "/api/v2/tickets?not_status[]=hidden.{ts2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 5 elements
+
+    When I send a GET request to "/api/v2/tickets?status[]=awaiting_user&status[]=hidden.{ts2}"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{ticket1}"
+    And the JSON node "data[1].id" should be equal to "{ticket5}"
 
   Scenario: I retrieve a ticket side loading people and organizations
     When I send a GET request to "/api/v2/tickets/{ticket1}?include=person,organization"
@@ -505,7 +548,7 @@ Feature: /tickets endpoint
     And the JSON node "data.date_first_agent_assign" should be equal to "2018-01-01T23:59:59+0000"
     And the JSON node "data.date_on_hold" should be equal to "2018-01-01T23:59:59+0000"
 
-  Scenario: I create a ticket with specific date_first_agent_assign and date_on_hold, this should not be an error
+  Scenario: I create a ticket with specific date_first_agent_assign and date_on_hold, this should not be an error2
     Given "admin_for_tickets@deskpro.dev" admin exists
     And I'm authenticated as person with email "admin_for_tickets@deskpro.dev" with super key
     When I send a POST request to "/api/v2/tickets" with body:

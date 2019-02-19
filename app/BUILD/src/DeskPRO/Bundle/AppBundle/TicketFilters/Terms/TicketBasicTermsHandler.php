@@ -51,6 +51,7 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
                 ->addField(TermFieldIds::TICKET_ID, Query::commonIdOperators())
                 ->addField(TermFieldIds::ORG_ID, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_STATUS, Query::commonStringValueOperators())
+                ->addField(TermFieldIds::TICKET_TICKET_STATUS_ID, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_DEPARTMENT, Query::commonIdOperators())
                 ->addField(TermFieldIds::TICKET_AGENT, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_AGENT_TEAM, Query::commonIdReferenceOperators())
@@ -162,6 +163,9 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
             case TermFieldIds::TICKET_STATUS:
                 $column = '{tickets}.status';
                 break;
+            case TermFieldIds::TICKET_TICKET_STATUS_ID:
+                $column = '{tickets}.ticket_status_id';
+                break;
             case TermFieldIds::TICKET_DEPARTMENT:
                 $column = '{tickets}.department_id';
                 break;
@@ -193,7 +197,7 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
                 $column = '{tickets}.email_account_id';
                 break;
             case TermFieldIds::TICKET_IS_HOLD:
-                $column = '{tickets}.is_hold';
+                $column = '{tickets}.status';
                 break;
             default:
                 $column = null;

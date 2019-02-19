@@ -15,6 +15,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\ORM\StateChange\Ticket\ChangeSplitFrom;
 use Application\DeskPRO\ORM\StateChange\Ticket\ChangeSplitTo;
 use Application\DeskPRO\People\PersonContextInterface;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 
 /**
  * Splits a ticket from one message and on into a new ticket.
@@ -173,8 +174,8 @@ class TicketSplit implements PersonContextInterface
         $new_ticket->date_resolved           = $this->ticket->date_resolved;
         $new_ticket->date_archived           = $this->ticket->date_archived;
         $new_ticket->date_status             = new \DateTime();
-        $new_ticket->date_agent_waiting      = Ticket::STATUS_AWAITING_USER === $this->ticket->status ? new \DateTime() : null;
-        $new_ticket->date_user_waiting       = Ticket::STATUS_AWAITING_AGENT === $this->ticket->status ? new \DateTime() : null;
+        $new_ticket->date_agent_waiting      = TicketStatus::STATUS_TYPE_AWAITING_USER === $this->ticket->status ? new \DateTime() : null;
+        $new_ticket->date_user_waiting       = TicketStatus::STATUS_TYPE_AWAITING_AGENT === $this->ticket->status ? new \DateTime() : null;
         $new_ticket->total_to_first_reply    = $firstAgent ? $firstAgent->date_created->getTimestamp() - $first->date_created->getTimestamp() : 0;
         $new_ticket->total_user_waiting      = $new_ticket->total_to_first_reply ?: 0;
 

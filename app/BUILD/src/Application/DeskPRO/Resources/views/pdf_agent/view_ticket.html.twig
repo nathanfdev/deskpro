@@ -70,7 +70,7 @@
     {{ _self.row('ref', phrase('agent.general.ticket_ref'), ticket.ref) }}
     {% if brands|length > 1 %}{{ _self.row('brand', phrase('agent.general.brand'), ticket.brand.name) }}{% endif %}
     {{ _self.row('urgency', phrase('agent.general.urgency'), ticket.urgency) }}
-    {{ _self.row('status', phrase('agent.general.status'), phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'}))) }}
+    {{ _self.row('status', phrase('agent.general.status'), ticket.ticketStatus.displayTitle) }}
     {{ _self.row('department', phrase('agent.general.department'), ticket.department.title) }}
 
     {% if ticket_flagged %}

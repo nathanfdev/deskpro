@@ -28,12 +28,8 @@ DeskPRO.Agent.Ticket.Property.Hold = new Class({
 
 		if (value) {
 			this.ticketPage.getEl('hold_message').show();
-			this.ticketPage.getEl('menu_set_hold').hide();
-			this.ticketPage.getEl('menu_unset_hold').show();
 		} else {
 			this.ticketPage.getEl('hold_message').hide();
-			this.ticketPage.getEl('menu_set_hold').show();
-			this.ticketPage.getEl('menu_unset_hold').hide();
 		}
 	},
 

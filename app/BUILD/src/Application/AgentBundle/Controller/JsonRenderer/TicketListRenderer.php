@@ -205,6 +205,7 @@ class TicketListRenderer
             'agent_team',
             'organization',
             'locked_by_agent',
+            'ticket_status',
         ];
 
         foreach ($relationFields as $field) {
@@ -245,6 +246,15 @@ class TicketListRenderer
                             'name' => $brand->getName(),
                         ];
                     }
+                    break;
+
+                case 'ticket_status':
+                    $ticketStatus          = $ticket->getTicketStatus();
+                    $data['ticket_status'] = [
+                        'id'            => $ticketStatus->getId(),
+                        'title'         => $ticketStatus->getTitle(),
+                        'display_title' => $ticketStatus->getDisplayTitle(),
+                    ];
                     break;
 
                 case 'organization':

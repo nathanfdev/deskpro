@@ -626,10 +626,10 @@ define([
         this.loadDataPromise = this.$q.defer();
 
         const promises = [apiV1];
+        promises.push(this.Api2.sendGet('/ticket_statuses'));
 
         if (window.DP_HAS_NEW_EMAILS) {
-          const apiV2 = this.Api2.sendGet('/email_templates/info');
-          promises.push(apiV2);
+          promises.push(this.Api2.sendGet('/email_templates/info'));
         }
 
         this.$q.all(promises).then((result) => {
@@ -671,8 +671,11 @@ define([
             { title: 'Pink', value: 'pink' }
           ];
 
+          // ApiV2 results
+          options_data['ticket_statuses'] = result[1].data.data
+
           if (window.DP_HAS_NEW_EMAILS) {
-            const v2data = result[1].data.data;
+            const v2data = result[2].data.data;
 
             options_data.new_custom_email_tpls = v2data.list.custom.groups.custom.subGroups.primary.templates;
           }
@@ -885,6 +888,8 @@ define([
       if (options == null) { options = {}; }
       options.propName = 'status';
       options.template = 'OptionBuilder/type-actions-status.html';
+      options.options = this.options_data.ticket_statuses.filter(status => !isNaN(status.id));
+      options.optionsFormatter = opt => opt;
       const def = this.getStandardSelect(options);
       return def;
     }

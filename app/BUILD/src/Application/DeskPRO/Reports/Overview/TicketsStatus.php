@@ -26,15 +26,10 @@ class TicketsStatus extends AbstractTableOverviewStat
             'resolved'       => 'Resolved',
             'archived'       => 'Archived',
             'hidden'         => 'Hidden',
+            'pending'        => 'Pending (On Hold)',
         ];
 
-        $return = [];
-        foreach ($s as $k => $v) {
-            $return[$k]         = $v;
-            $return[$k.'_hold'] = $v.' (On Hold)';
-        }
-
-        return $return;
+        return $s;
     }
 
     /**
@@ -53,7 +48,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 
         $sql = '
             SELECT tickets.status, COUNT(*)
-            FROM tickets AS tickets WHERE is_hold = 0
+            FROM tickets AS tickets WHERE status != "pending" 
             '.($this->agentTeam ? ' AND agent_team_id = :team_id ' : '').'
             GROUP BY tickets.status
         ';
@@ -64,8 +59,8 @@ class TicketsStatus extends AbstractTableOverviewStat
         $this->logger->logTotalTime('TicketsStatus');
 
         $sql = "
-            SELECT CONCAT(tickets.status, '_hold'), COUNT(*)
-            FROM tickets AS tickets WHERE is_hold = 1
+            SELECT tickets.status, COUNT(*)
+            FROM tickets AS tickets WHERE status == 'pending' 
             GROUP BY tickets.status
         ";
 

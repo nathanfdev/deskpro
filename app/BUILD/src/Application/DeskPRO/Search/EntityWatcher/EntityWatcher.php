@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\Topic;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 
 class EntityWatcher implements \Doctrine\Common\EventSubscriber
@@ -187,7 +188,7 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
                 $id   = $ent->getId();
 
                 $changeSet = $uow->getEntityChangeSet($ent);
-                if ($ent instanceof Ticket && isset($changeSet['status'][1]) && Ticket::STATUS_HIDDEN == $changeSet['status'][1]) {
+                if ($ent instanceof Ticket && isset($changeSet['status'][1]) && TicketStatus::STATUS_TYPE_HIDDEN == $changeSet['status'][1]) {
                     $action = 'deletes';
                 } else {
                     $action = 'updates';

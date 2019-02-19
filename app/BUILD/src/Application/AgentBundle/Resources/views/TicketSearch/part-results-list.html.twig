@@ -22,7 +22,7 @@
 				</td>
 			{% elseif field == 'status' %}
 				<td class="subject">
-					{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}
+					{{ ticket.ticketStatus.displayTitle }}
 				</td>
 			{% elseif field == 'user' %}
 				<td>

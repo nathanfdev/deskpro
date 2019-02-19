@@ -394,11 +394,13 @@ class SettingsController extends AbstractController
         $custom_fields                        = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
         $term_options['custom_ticket_fields'] = $custom_fields;
         $brands                               = $this->getAgentBrands();
+        $ticketStatuses                       = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', [
-            'term_options' => $term_options,
-            'filter'       => $filter,
-            'brands'       => $brands,
+            'term_options'    => $term_options,
+            'filter'          => $filter,
+            'brands'          => $brands,
+            'ticket_statuses' => $ticketStatuses,
         ]);
     }
 
@@ -490,11 +492,13 @@ class SettingsController extends AbstractController
         $ticket_options['people_organizations'] = $this->em->getRepository(Entity\Organization::class)->getOrganizationNames();
         $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
         $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
+        $ticketStatuses                         = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         return $this->render('AgentBundle:Settings:ticket-macro-edit.html.twig', [
-            'ticket_options' => $ticket_options,
-            'macro'          => $macro,
-            'is_new'         => $is_new,
+            'ticket_options'  => $ticket_options,
+            'macro'           => $macro,
+            'is_new'          => $is_new,
+            'ticket_statuses' => $ticketStatuses,
         ]);
     }
 

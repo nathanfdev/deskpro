@@ -141,6 +141,9 @@ Feature: /mass_actions/tickets endpoint
       | department | Department     |
 
   Scenario: I delete tickets
+    Given only the following TicketStatus records exist:
+      | #   | StatusType     | SysId        | Title    |
+      | ts1 | hidden         | deleted      | Deleted  |
     When I send a POST request to "/api/v2/mass_actions/tickets" with body:
     """
 {
@@ -154,8 +157,8 @@ Feature: /mass_actions/tickets endpoint
 
     When I send a GET request to "/api/v2/tickets?status=hidden"
     Then the JSON node "data" should have 2 elements
-    And the JSON node "data[0].status" should be equal to "hidden.deleted"
-    And the JSON node "data[1].status" should be equal to "hidden.deleted"
+    And the JSON node "data[0].status" should be equal to "hidden.{ts1}"
+    And the JSON node "data[1].status" should be equal to "hidden.{ts1}"
 
   Scenario: I try to delete tickets w/o permissions
     Given  I remove "admin" usergroup relation "agent_all_perms"

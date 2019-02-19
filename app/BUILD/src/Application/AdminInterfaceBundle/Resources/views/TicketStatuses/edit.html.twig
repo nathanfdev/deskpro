@@ -1,0 +1,72 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>Status Type</h3>
+							</div>
+							<div class="col-lg-10" ng-if="!EditCtrl.status.id">
+								<select ng-model="EditCtrl.form.status_type" style="min-width: 200px;" ui-select2="{dropdownAutoWidth:true}">
+                  <option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+                  <option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+                  <option value="pending">{{ phrase('agent.tickets.status_pending') }}</option>
+                  <option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+								</select>
+							</div>
+							<div class="col-lg-10" ng-if="EditCtrl.status.id"
+                  ng-init="
+                    EditCtrl.statusTrans.awaiting_agent='{{ phrase('agent.tickets.status_awaiting_agent') }}';
+                    EditCtrl.statusTrans.awaiting_user='{{ phrase('agent.tickets.status_awaiting_user') }}';
+                    EditCtrl.statusTrans.pending='{{ phrase('agent.tickets.status_pending') }}';
+                    EditCtrl.statusTrans.resolved='{{ phrase('agent.tickets.status_resolved') }}';
+                  ">
+                {{ ng_var('EditCtrl.statusTrans[EditCtrl.status.status_type]') }}
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>{{ phrase('agent.general.title') }} *</h3>
+							</div>
+							<div class="col-lg-10">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title" style="width: 50%;" required autofocus />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{phrase('adm.general.please_correct_errors')}}</strong></p>
+						<ul>
+                            <li ng-show="form_props.title.$error.required">
+                                {{ phrase('adm.validation.required_title') }}
+                            </li>
+						</ul>
+					</div>
+					<div class="dp-delete-control" ng-if="EditCtrl.status.id && !EditCtrl.status.sys_id"
+                         ng-hide="form_props.$attempted && form_props.$invalid">
+						<button class="btn btn-danger"
+                                ng-click="$event.preventDefault(); EditCtrl.startDelete();">
+                            Delete
+                        </button>
+					</div>
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{phrase('agent.general.save')}}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+{% endblock %}

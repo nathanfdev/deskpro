@@ -163,7 +163,7 @@ services:
 
   form.ticket:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
-    arguments: ["@custom_field_manager", "@brand_form_helper", "@doctrine.orm.default_entity_manager"]
+    arguments: ["@custom_field_manager", "@brand_form_helper", "@doctrine.orm.default_entity_manager", "@tickets.statuses"]
     tags:
       - { name: form.type }
 
@@ -294,6 +294,7 @@ services:
       - "@security.token_storage"
       - "@doctrine.orm.default_entity_manager"
       - "@attachment_helper"
+      - "@tickets.statuses"
       - "@?api_client_info"
     tags:
       - { name: form.type }

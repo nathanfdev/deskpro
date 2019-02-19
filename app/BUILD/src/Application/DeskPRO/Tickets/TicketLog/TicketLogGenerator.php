@@ -18,6 +18,7 @@ use Application\DeskPRO\ORM\StateChange\ChangeData;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Orb\Util\Util;
 
 /**
@@ -312,25 +313,6 @@ class TicketLogGenerator
                 return $data;
                 break;
 
-            case 'hidden_status':
-                return [
-                    'action_type' => 'changed_hidden_status',
-                    'old_status'  => $old ? $old : null,
-                    'new_status'  => $new ? $new : null,
-                ];
-                break;
-
-            case 'is_hold':
-                return [
-                    'action_type' => 'changed_hold',
-                    'id_before'   => $old ? 1 : 0,
-                    'id_after'    => $new ? 0 : 1,
-
-                    'was_hold' => (bool) $old,
-                    'is_hold'  => (bool) $new,
-                ];
-                break;
-
             case 'labels':
                 return [
                     'action_type' => 'changed_labels',
@@ -548,13 +530,52 @@ class TicketLogGenerator
                 break;
 
             case 'status':
-                return [
+                $logSet = [];
+
+                $logSet[] = [
                     'action_type' => 'changed_status',
                     'id_before'   => Ticket::getStatusInt($old) ?: null,
                     'id_after'    => Ticket::getStatusInt($new) ?: null,
 
                     'old_status' => $old,
                     'new_status' => $new,
+                ];
+
+                if ($new == TicketStatus::STATUS_TYPE_PENDING) {
+                    $logSet[] = [
+                        'action_type' => 'changed_hold',
+                        'id_before'   => 0,
+                        'id_after'    => 1,
+
+                        'was_hold' => false,
+                        'is_hold'  => true,
+                    ];
+                }
+
+                if ($old == TicketStatus::STATUS_TYPE_PENDING) {
+                    $logSet[] = [
+                        'action_type' => 'changed_hold',
+                        'id_before'   => 1,
+                        'id_after'    => 0,
+
+                        'was_hold' => true,
+                        'is_hold'  => false,
+                    ];
+                }
+
+                return $logSet;
+                break;
+
+            case 'ticket_status':
+                return [
+                    'action_type' => 'changed_ticket_status',
+                    'id_before'   => $old ? $old->getId() : null,
+                    'id_after'    => $new ? $new->getId() : null,
+
+                    'old_title'       => $old ? $old->getTitle() : null,
+                    'new_title'       => $new ? $new->getTitle() : null,
+                    'old_status_code' => $old ? $old->getStatusCode() : null,
+                    'new_status_code' => $new ? $new->getStatusCode() : null,
                 ];
                 break;
 

@@ -18,6 +18,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Orb\Types\NoValue;
 
 class ProcessReply extends ProcessAbstract
@@ -342,12 +343,13 @@ class ProcessReply extends ProcessAbstract
         //------------------------------
 
         if (!$this->ticket_email->is_bounce && !$message->is_agent_note && $did_add_message && !isset($this->ticket_email->reply_actions['status'])) {
+            $ticketStatuses = App::$container->getTicketStatuses();
             if ($this->person['is_agent'] && $context == 'agent') {
                 $this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
-                $this->ticket['status'] = Ticket::STATUS_AWAITING_USER;
+                $this->ticket->setTicketStatus($ticketStatuses->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_USER));
             } else {
                 $this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_agent');
-                $this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
+                $this->ticket->setTicketStatus($ticketStatuses->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
             }
         }
 

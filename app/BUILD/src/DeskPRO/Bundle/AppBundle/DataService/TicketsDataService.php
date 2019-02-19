@@ -9,6 +9,7 @@ namespace DeskPRO\Bundle\AppBundle\DataService;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Model\TicketFilter;
 use Doctrine\ORM\EntityManager;
@@ -80,7 +81,7 @@ class TicketsDataService extends AbstractDataService
                 $qb->select('t')
                     ->from(Ticket::class, 't')
                     ->join('t.person', 'p')
-                    ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN)
+                    ->where('t.status != :hidden')->setParameter('hidden', TicketStatus::STATUS_TYPE_HIDDEN)
                     ->andWhere('t.brand = :brand')->setParameter('brand', $brand);
 
                 if ($ignoreOnlyNotes) {
@@ -125,16 +126,16 @@ class TicketsDataService extends AbstractDataService
                 switch ($filter->getCategory()) {
 
                     case TicketFilter::CATEGORY_AWAITING_AGENT:
-                        $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_AWAITING_AGENT);
+                        $qb->andWhere('t.status = :status')->setParameter('status', TicketStatus::STATUS_TYPE_AWAITING_AGENT);
                         break;
 
                     case TicketFilter::CATEGORY_RESOLVED:
-                        $qb->andWhere('t.status IN (:status)')->setParameter('status', [Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED]);
+                        $qb->andWhere('t.status IN (:status)')->setParameter('status', [TicketStatus::STATUS_TYPE_RESOLVED, TicketStatus::STATUS_TYPE_ARCHIVED]);
                         break;
 
                     case TicketFilter::CATEGORY_AWAITING_USER:
                     default:
-                        $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_AWAITING_USER);
+                        $qb->andWhere('t.status = :status')->setParameter('status', TicketStatus::STATUS_TYPE_AWAITING_USER);
                         break;
 
                 }
@@ -224,17 +225,17 @@ class TicketsDataService extends AbstractDataService
                 $this->logger->debug('[TicketsDataService] Count started');
                 if ('open' === $status) {
                     $statusList = [
-                        Ticket::STATUS_AWAITING_AGENT,
-                        Ticket::STATUS_AWAITING_USER,
+                        TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                        TicketStatus::STATUS_TYPE_AWAITING_USER,
                     ];
                 } elseif ('all' !== $status) {
                     $statusList = [$status];
                 } else {
                     $statusList = [
-                        Ticket::STATUS_AWAITING_AGENT,
-                        Ticket::STATUS_RESOLVED,
-                        Ticket::STATUS_ARCHIVED,
-                        Ticket::STATUS_AWAITING_USER,
+                        TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                        TicketStatus::STATUS_TYPE_RESOLVED,
+                        TicketStatus::STATUS_TYPE_ARCHIVED,
+                        TicketStatus::STATUS_TYPE_AWAITING_USER,
                     ];
                 }
 
@@ -327,16 +328,16 @@ class TicketsDataService extends AbstractDataService
 
                 if ('open' === $status) {
                     $statusList = [
-                        Ticket::STATUS_AWAITING_AGENT,
-                        Ticket::STATUS_AWAITING_USER,
+                        TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                        TicketStatus::STATUS_TYPE_AWAITING_USER,
                     ];
                 } elseif ('all' !== $status) {
                     $statusList = [$status];
                 } else {
                     $statusList = [
-                        Ticket::STATUS_AWAITING_AGENT,
-                        Ticket::STATUS_RESOLVED,
-                        Ticket::STATUS_AWAITING_USER,
+                        TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                        TicketStatus::STATUS_TYPE_RESOLVED,
+                        TicketStatus::STATUS_TYPE_AWAITING_USER,
                     ];
                 }
 
@@ -379,7 +380,7 @@ class TicketsDataService extends AbstractDataService
             function () use ($em, $count, $ignoreOnlyNotes) {
                 $qb = $em->createQueryBuilder();
 
-                $statusList = [Ticket::STATUS_RESOLVED];
+                $statusList = [TicketStatus::STATUS_TYPE_RESOLVED];
 
                 $qb->select('t')
                     ->from(Ticket::class, 't')

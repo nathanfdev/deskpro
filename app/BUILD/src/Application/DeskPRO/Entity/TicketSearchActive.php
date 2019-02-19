@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -30,7 +31,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property string    $creation_system
  * @property string    $creation_system_option
  * @property string    $status
- * @property bool      $is_hold
+ * @property TicketStatus $ticket_status
  * @property int       $urgency
  * @property int       $feedback_rating
  * @property \DateTime $date_feedback_rating
@@ -149,11 +150,9 @@ class TicketSearchActive extends DomainObject
     protected $status;
 
     /**
-     * Is the ticket on hold?
-     *
-     * @var bool
+     * @var TicketStatus
      */
-    protected $is_hold = false;
+    protected $ticket_status = null;
 
     /**
      * @var int
@@ -240,6 +239,8 @@ class TicketSearchActive extends DomainObject
      */
     protected $original_subject = '';
 
+    protected $is_hold = false;
+
     /**
      * @return array
      */
@@ -249,7 +250,7 @@ class TicketSearchActive extends DomainObject
             'id', 'ref', 'language_id', 'brand_id', 'department_id', 'category_id',
             'workflow_id', 'priority_id', 'product_id', 'person_id', 'person_email_id',
             'agent_id', 'agent_team_id', 'organization_id', 'email_account_id', 'creation_system', 'creation_system_option',
-            'status', 'is_hold', 'urgency', 'feedback_rating', 'date_feedback_rating',
+            'status', 'ticket_status_id', 'urgency', 'feedback_rating', 'date_feedback_rating',
             'date_created', 'date_resolved', 'date_on_hold', 'date_first_agent_assign', 'date_first_agent_reply',
             'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status',
             'total_user_waiting', 'total_to_first_reply',
@@ -318,7 +319,7 @@ class TicketSearchActive extends DomainObject
             'name'    => 'tickets_search_active',
             'indexes' => [
                 'date_created_idx' => ['columns' => ['date_created']],
-                'status_idx'       => ['columns' => ['status']],
+                'status_idx'       => ['columns' => ['status', 'ticket_status_id']],
                 'person_idx'       => ['columns' => ['person_id']],
                 'agent_idx'        => ['columns' => ['agent_id']],
                 'ref_idx'          => ['columns' => ['ref']],
@@ -445,12 +446,20 @@ class TicketSearchActive extends DomainObject
             'length'     => 30,
             'nullable'   => false,
         ]);
-        $metadata->mapField([
-            'fieldName'  => 'is_hold',
-            'columnName' => 'is_hold',
-            'type'       => 'boolean',
-            'nullable'   => false,
-        ]);
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'ticket_status',
+                'targetEntity' => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketStatus',
+                'joinColumns'  => [
+                    [
+                        'name'                 => 'ticket_status_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                    ],
+                ],
+            ]
+        );
         $metadata->mapField([
             'fieldName'  => 'urgency',
             'columnName' => 'urgency',
@@ -553,6 +562,13 @@ class TicketSearchActive extends DomainObject
             'columnName' => 'original_subject',
             'type'       => 'string',
             'length'     => 255,
+            'nullable'   => false,
+        ]);
+
+        $metadata->mapField([
+            'fieldName'  => 'is_hold',
+            'columnName' => 'is_hold',
+            'type'       => 'boolean',
             'nullable'   => false,
         ]);
     }

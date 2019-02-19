@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketTerms;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -418,7 +419,7 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_DELETED:
                         $this->affected_fields[] = 'ticket.status';
-                        $this->affected_fields[] = 'ticket.hidden_status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
                         break;
                     case self::TERM_CATEGORY:
                         $this->affected_fields[] = 'ticket.category_id';
@@ -479,12 +480,14 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_STATUS:
                         $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
                         break;
                     case self::TERM_HIDDEN_STATUS:
-                        $this->affected_fields[] = 'ticket.hidden_status';
+                        $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
                         break;
                     case self::TERM_HOLD:
-                        $this->affected_fields[] = 'ticket.is_hold';
+                        $this->affected_fields[] = 'ticket.status';
                         break;
                     case self::TERM_ORGANIZATION:
                         $this->affected_fields[] = 'ticket.organization_id';
@@ -1467,11 +1470,16 @@ class TicketSearch extends SearcherAbstract
 
                     case self::TERM_DELETED:
                         $this->affected_fields[] = 'ticket.status';
-                        $this->affected_fields[] = 'ticket.hidden_status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
+                        $set_status              = true;
 
-                        $set_status = true;
-                        $wheres[]   = $this->_choiceMatch("$tickets_table.status", self::OP_IS, 'hidden');
-                        $wheres[]   = $this->_choiceMatch("$tickets_table.hidden_status", self::OP_IS, 'deleted');
+                        $joins[] = [
+                            'ticket_statuses',
+                            "INNER JOIN ticket_statuses AS $join_name ON ($join_name.id = $tickets_table.ticket_status_id)",
+                        ];
+
+                        $wheres[] = $this->_choiceMatch("$tickets_table.status", self::OP_IS, 'hidden');
+                        $wheres[] = $this->_choiceMatch("$join_name.sys_id", self::OP_IS, 'deleted');
 
                         $this->enableArchiveSearch();
 
@@ -1899,58 +1907,85 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_STATUS:
 
                         $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
                         $set_status              = true;
 
-                        $show_status   = [];
-                        $hidden_status = [];
-
-                        $choice_str = [];
+                        $statuses     = [];
+                        $sub_statuses = [];
 
                         foreach ((array) $choice as $c) {
+
+                            // fallback for old status codes
                             if (strpos($c, '.') !== false) {
-                                list($status, $hstatus) = explode('.', $c, 2);
-                                $hidden_status[]        = $hstatus;
-                                if ($status == 'hidden' && $tr->hasPhrase('agent.tickets.hidden_status_'.$hstatus)) {
-                                    $choice_str[] = $tr->phrase('agent.tickets.hidden_status_'.$hstatus);
+                                list($status, $statusId) = explode('.', $c, 2);
+                                if (!is_numeric($statusId)) {
+                                    $c = App::getContainer()->getTicketStatuses()->findStatusOrException($c, false, true)->getStatusCode();
                                 }
-                                $this->enableArchiveSearch();
+                            }
+
+                            if (strpos($c, '.') !== false) {
+                                $sub_statuses[] = explode('.', $c, 2);
                             } else {
-                                $show_status[] = $show_status;
-                                $choice_str[]  = $tr->phrase('agent.tickets.status_'.$c);
+                                $statuses[] = $c;
                                 if ($c != 'awaiting_agent' && $c != 'awaiting_user' && $c != 'resolved') {
                                     $this->enableArchiveSearch();
                                 }
                             }
                         }
 
-                        $choice_str = implode(' or ', $choice_str);
-
-                        $w = '(';
-                        if ($show_status) {
-                            $w .= '(';
-                            $w .= $this->_choiceMatch("$tickets_table.status", $op, $choice);
-                            $w .= ')';
-                        } else {
-                            $w .= '(';
-                            $w .= "$tickets_table.status = 'hidden' AND ";
-                            $w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $hidden_status);
-                            $this->enableArchiveSearch();
-                            $w .= ')';
+                        $w = '';
+                        if ($statuses) {
+                            $w .= $this->_choiceMatch("$tickets_table.status", $op, $statuses);
                         }
-                        $w .= ')';
+                        foreach ($sub_statuses as $item) {
+                            if (!in_array($item[0], [
+                                TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                                TicketStatus::STATUS_TYPE_AWAITING_USER,
+                                TicketStatus::STATUS_TYPE_RESOLVED, ])) {
+                                $this->enableArchiveSearch();
+                            }
 
-                        $wheres[] = $w;
+                            if ($w) {
+                                $w .= ($op == self::OP_IS ? ' OR ' : ' AND ');
+                            }
+
+                            $w .= sprintf('(%s %s %s)',
+                                $this->_choiceMatch("$tickets_table.status", $op, $item[0]),
+                                $op == self::OP_IS ? 'AND' : 'OR',
+                                $this->_choiceMatch("$tickets_table.ticket_status_id", $op, $item[1])
+                            );
+                        }
+
+                        if ($w) {
+                            $wheres[] = '('.$w.')';
+                        }
                         break;
                     case self::TERM_HIDDEN_STATUS:
-                        $this->affected_fields[] = 'ticket.hidden_status';
+                        $this->affected_fields[] = 'ticket.status';
+                        $this->affected_fields[] = 'ticket.ticket_status_id';
+                        $set_status              = true;
 
-                        $choice_str = [];
-                        foreach ((array) $choice as $c) {
-                            $choice_str[] = $tr->phrase('agent.tickets.hidden_status_'.$c);
+                        $choiceForCheck = is_array($choice) ? $choice[0] : $choice;
+                        if (is_numeric($choiceForCheck)) {
+                            $w = '(';
+                            $w .= $this->_choiceMatch("$tickets_table.status", self::OP_IS, TicketStatus::STATUS_TYPE_HIDDEN);
+                            $w .= ' AND ';
+                            $w .= $this->_choiceMatch("$tickets_table.ticket_status_id", $op, $choice);
+                            $w .= ')';
+                        } else {
+                            $joins[] = [
+                                'ticket_statuses',
+                                "INNER JOIN ticket_statuses AS $join_name ON ($join_name.id = $tickets_table.ticket_status_id)",
+                            ];
+
+                            $w = '(';
+                            $w .= $this->_choiceMatch("$tickets_table.status", self::OP_IS, TicketStatus::STATUS_TYPE_HIDDEN);
+                            $w .= ' AND ';
+                            $w .= $this->_choiceMatch("$join_name.sys_id", $op, $choice);
+                            $w .= ')';
                         }
-                        $choice_str = implode(', ', $choice_str);
 
-                        $wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
+                        $wheres[] = $w;
                         $this->enableArchiveSearch();
 
                         break;
@@ -1961,9 +1996,9 @@ class TicketSearch extends SearcherAbstract
                         // Op is irrelevant. or, it's always "is", and choice is yes/no
 
                         if ($choice) {
-                            $wheres[] = 'tickets.is_hold = 1';
+                            $wheres[] = 'tickets.status = "'.TicketStatus::STATUS_TYPE_PENDING.'"';
                         } else {
-                            $wheres[] = 'tickets.is_hold = 0';
+                            $wheres[] = 'tickets.status != "'.TicketStatus::STATUS_TYPE_PENDING.'"';
                         }
 
                         break;
@@ -2954,7 +2989,7 @@ class TicketSearch extends SearcherAbstract
                 break;
 
             case self::TERM_DATE_ARCHIVED:
-                if ($ticket->getStatus() != Ticket::STATUS_ARCHIVED) {
+                if ($ticket->getStatus() != TicketStatus::STATUS_TYPE_ARCHIVED) {
                     return false;
                 }
                 if (!$this->_testDateMatch($ticket->getDateArchived(), $op, $choice)) {
@@ -3201,11 +3236,11 @@ class TicketSearch extends SearcherAbstract
             // not means the real applicable statuses are the opposite
             if ($op === self::OP_NOT || $op === self::OP_NOTCONTAINS) {
                 $status = array_diff([
-                    Ticket::STATUS_AWAITING_AGENT,
-                    Ticket::STATUS_AWAITING_USER,
-                    Ticket::STATUS_RESOLVED,
-                    Ticket::STATUS_ARCHIVED,
-                    Ticket::STATUS_HIDDEN,
+                    TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                    TicketStatus::STATUS_TYPE_AWAITING_USER,
+                    TicketStatus::STATUS_TYPE_RESOLVED,
+                    TicketStatus::STATUS_TYPE_ARCHIVED,
+                    TicketStatus::STATUS_TYPE_HIDDEN,
                 ], $status);
             }
         }
@@ -3215,18 +3250,18 @@ class TicketSearch extends SearcherAbstract
             // all tickets inc archive
             if ($this->is_archive) {
                 return [
-                    Ticket::STATUS_AWAITING_AGENT,
-                    Ticket::STATUS_AWAITING_USER,
-                    Ticket::STATUS_RESOLVED,
-                    Ticket::STATUS_ARCHIVED,
-                    Ticket::STATUS_HIDDEN,
+                    TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                    TicketStatus::STATUS_TYPE_AWAITING_USER,
+                    TicketStatus::STATUS_TYPE_RESOLVED,
+                    TicketStatus::STATUS_TYPE_ARCHIVED,
+                    TicketStatus::STATUS_TYPE_HIDDEN,
                 ];
             // just active
             } else {
                 return [
-                    Ticket::STATUS_AWAITING_AGENT,
-                    Ticket::STATUS_AWAITING_USER,
-                    Ticket::STATUS_RESOLVED,
+                    TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                    TicketStatus::STATUS_TYPE_AWAITING_USER,
+                    TicketStatus::STATUS_TYPE_RESOLVED,
                 ];
             }
         }

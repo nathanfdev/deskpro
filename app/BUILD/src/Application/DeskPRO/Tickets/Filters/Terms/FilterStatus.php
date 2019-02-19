@@ -51,6 +51,7 @@ class FilterStatus extends AbstractFilterTerm
 
         $statuses        = [];
         $hidden_statuses = [];
+        $join_statuses   = [];
 
         foreach ($opt as $s) {
             if (!preg_match('#^[a-zA-Z0-9_\-\.]+$#', $s)) {
@@ -59,16 +60,27 @@ class FilterStatus extends AbstractFilterTerm
             if (strpos($s, '.') === false) {
                 $statuses[] = $s;
             } else {
-                list(, $hs)        = explode('.', $s, 2);
-                $hidden_statuses[] = $hs;
+                list($statusType, $hs) = explode('.', $s, 2);
+                if (is_numeric($hs)) {
+                    $hidden_statuses[] = [$statusType, $hs];
+                } else {
+                    // fallback to hidden.deleted | hidden.spam
+                    $join_statuses[] = [$statusType, $hs];
+                }
             }
         }
 
         if ($statuses) {
-            $query->orWhere("status IN ('".implode("','", $statuses).')');
+            $query->orWhere("tickets.status IN ('".implode("','", $statuses)."')");
         }
-        if ($hidden_statuses) {
-            $query->orWhere("(status = 'hidden' AND hidden_status IN ('".implode("','", $hidden_statuses).'))');
+        foreach ($hidden_statuses as $item) {
+            $query->orWhere(sprintf("tickets.status = '%s' AND tickets.ticket_status_id = %s", $item[0], $item[1]));
+        }
+        if ($join_statuses) {
+            $query->addJoin('tickets.ticket_status', 'ticket_statuses', 'ticket_statuses', 'ticket_statuses.id = tickets.ticket_status_id');
+            foreach ($join_statuses as $item) {
+                $query->orWhere(sprintf("tickets.status = '%s' AND ticket_statuses.sys_id = '%s'", $item[0], $item[1]));
+            }
         }
 
         return $query;

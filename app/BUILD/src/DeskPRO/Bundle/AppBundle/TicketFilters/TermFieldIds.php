@@ -9,6 +9,7 @@ class TermFieldIds
 {
     const TICKET_ID                    = 'ticket.id';
     const TICKET_STATUS                = 'ticket.status';
+    const TICKET_TICKET_STATUS_ID      = 'ticket.ticket_status';
     const TICKET_STARRED               = 'ticket.starred';
     const TICKET_DEPARTMENT            = 'ticket.department';
     const TICKET_AGENT                 = 'ticket.agent';

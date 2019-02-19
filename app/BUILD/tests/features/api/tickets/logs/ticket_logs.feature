@@ -70,8 +70,12 @@ Feature: Ticket logs
     And the "{demo_ticket}" ticket should have "changed_user_participants" log
 
   Scenario: I delete a ticket and check its' logs
+    Given only the following TicketStatus records exist:
+      | #   | StatusType     | SysId        | Title    |
+      | ts1 | hidden         | deleted      | Deleted  |
+
     When I send a DELETE request to "/api/v2/tickets/{demo_ticket}"
     Then the "{demo_ticket}" ticket should have the following logs:
       | type                  |
       | changed_status        |
-      | changed_hidden_status |
+      | changed_ticket_status |

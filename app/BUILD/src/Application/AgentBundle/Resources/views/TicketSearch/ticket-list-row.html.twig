@@ -37,30 +37,9 @@
             </span>
             <% } %>
 			<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
-			<div class="status-pill status urgency-<%= ticket_display.urgency %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
-				<% if (ticket_display.status == 'awaiting_agent') { %>
-					<label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
-				<% } %>
-				<% if (ticket_display.status == 'awaiting_user') { %>
-					<label>{{ phrase('agent.tickets.status_awaiting_user') }}</label>
-				<% } %>
-				<% if (ticket_display.status == 'resolved') { %>
-					<label>{{ phrase('agent.tickets.status_resolved') }}</label>
-				<% } %>
-				<% if (ticket_display.status == 'archived') { %>
-					<label>{{ phrase('agent.tickets.status_archived') }}</label>
-				<% } %>
-				<% if (ticket_display.status == 'hidden' && !ticket_display.hidden_status) { %>
-					<label>{{ phrase('agent.tickets.status_hidden') }}</label>
-				<% } %>
-				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'deleted') { %>
-					<label>{{ phrase('agent.tickets.status_hidden_deleted') }}</label>
-				<% } %>
-				<% if (ticket_display.status == 'hidden' && ticket_display.hidden_status == 'spam') { %>
-					<label>{{ phrase('agent.tickets.status_hidden_spam') }}</label>
-				<% } %>
-
-				<% if (ticket_display.status == 'awaiting_agent') { %>
+			<div class="status-pill status urgency-<%= ticket_display.urgency %> <% if (ticket_display.status == 'pending') { %>awaiting_agent<% } %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
+        <label><%= ticket_display.ticket_status.display_title %></label>
+				<% if (ticket_display.status == 'awaiting_agent' || ticket_display.status == 'pending') { %>
 					<i class="ticket-urgency"><%= ticket_display.urgency %></i>
 				<% } %>
 			</div>

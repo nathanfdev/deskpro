@@ -108,6 +108,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueue;
 use DeskPRO\Bundle\AppBundle\Entity\UserChatQueueAgent;
@@ -332,6 +333,7 @@ class ObjectsManager
             'TicketSla'                        => [Factory\SimpleFactory::class, 'create', TicketSla::class],
             'TicketLog'                        => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'TicketFollowUp'                   => [Factory\SimpleFactory::class, 'create', TicketFollowUp::class],
+            'TicketStatus'                     => [Factory\CommonFactories::class, 'ticketStatus'],
             'TicketCharge'                     => [Factory\SimpleFactory::class, 'create', TicketCharge::class],
             'Sla'                              => [Factory\CommonFactories::class, 'sla'],
             'SLA'                              => [Factory\CommonFactories::class, 'sla'],
@@ -439,6 +441,7 @@ class ObjectsManager
             'TicketFilterSet'                  => [$this, 'find', TicketFilterSet::class],
             'TicketFilterSetAssoc'             => [$this, 'find', TicketFilterSetAssoc::class],
             'TicketFollowUp'                   => [$this, 'find', TicketFollowUp::class],
+            'TicketStatus'                     => [$this, 'find', TicketStatus::class],
             'TicketCharge'                     => [$this, 'find', TicketCharge::class],
             'SLA'                              => [$this, 'find', Sla::class],
             'Organization'                     => [$this, 'find', Organization::class],

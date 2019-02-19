@@ -679,6 +679,7 @@ adm.ticket_slas.delete_confirm: 'Are you sure you want to delete this SLA? All d
 adm.ticket_slas.no_slas: 'You have not created any SLAs yet.'
 adm.ticket_slas.slas: SLAs
 adm.ticket_slas.title_explain: 'This title will be displayed in the agent interface when listing SLAs.'
+adm.ticket_statuses.delete_confirm: 'Are you sure? Any tickets using this status will have their sub-status unset, but will remain'
 adm.ticket_triggers.copy_trigger: 'Copy another trigger'
 adm.ticket_triggers.copy_trigger_modal_title: 'Copy Trigger'
 adm.ticket_triggers.count_dep_triggers:
@@ -5089,6 +5090,7 @@ agent.tickets.status_resolved_deleted: Deleted
 agent.tickets.status_resolved_spam: Spam
 agent.tickets.status_resolved_temp: Temporary
 agent.tickets.status_resolved_validating: 'Awaiting Validation'
+agent.tickets.status_pending: Pending
 agent.tickets.stop_later_triggers_action: 'Stop processing later triggers'
 agent.tickets.subject_changed: 'Subject changed'
 agent.tickets.subject_changed_from: 'Subject changed from'

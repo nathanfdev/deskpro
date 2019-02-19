@@ -32,15 +32,16 @@ class HardDeleteTickets extends AbstractJob
         // find tickets to proc
         //------------------------------
 
-        $ticket_ids = App::getDb()->fetchAllCol("
+        $deletedStatusId = (int) App::getContainer()->getTicketStatuses()->getDeletedStatus()->getId();
+        $ticket_ids      = App::getDb()->fetchAllCol('
             SELECT tickets_deleted.ticket_id
             FROM tickets_deleted
             LEFT JOIN tickets ON (tickets.id = tickets_deleted.ticket_id)
             WHERE tickets_deleted.date_created < ?
             AND tickets.id IS NOT NULL
-            AND tickets.hidden_status = 'deleted'
+            AND tickets.ticket_status_id = ?
             LIMIT 5000
-        ", [$date_cut]);
+        ', [$date_cut, $deletedStatusId]);
 
         foreach ($ticket_ids as $ticket_id) {
             App::getDb()->beginTransaction();

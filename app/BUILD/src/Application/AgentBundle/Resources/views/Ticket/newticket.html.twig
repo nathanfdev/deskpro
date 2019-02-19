@@ -710,32 +710,26 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 	<section>
 		<div class="dp-menu-area dp-menu-area-primary">
 			<label class="hide-note">{{ phrase('agent.tickets.reply_and_set_status') }}</label>
-			<label class="hide-reply">{{ phrase('agent.tickets.save_note_and_set_status') }}</label>
+			<label class="hide-reply" style="display: none">{{ phrase('agent.tickets.save_note_and_set_status') }}</label>
 			<ul>
-				<li
-					data-type="awaiting_user"
-					data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_user')}) }}"
-					data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_user')}) }}"
-				>
-					<div class="on-icon"><i class="fas fa-check"></i></div>
-					{{ phrase('agent.tickets.kbd_awaiting_user') }}
-				</li>
-				<li
-					data-type="awaiting_agent"
-					data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_agent')}) }}"
-					data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_agent')}) }}"
-				>
-					<div class="on-icon"><i class="fas fa-check"></i></div>
-					{{ phrase('agent.tickets.kbd_awaiting_agent') }}
-				</li>
-				<li
-					data-type="resolved"
-					data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_resolved')}) }}"
-					data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_resolved')}) }}"
-				>
-					<div class="on-icon"><i class="fas fa-check"></i></div>
-					{{ phrase('agent.tickets.kbd_resolved') }}
-				</li>
+        {% for status in ['awaiting_user', 'awaiting_agent', 'resolved'] %}
+          <li data-type="{{ status }}" 
+              data-label="{{ phrase('agent.tickets.send_reply_as_x', {'status': phrase('agent.tickets.status_' ~ status)}) }}"
+              data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_' ~ status)}) }}"
+          >
+              <div class="on-icon"><i class="fas fa-check"></i></div>
+              {{ phrase('agent.tickets.kbd_' ~ status) }}
+          </li>
+          {% for substatus in ticket_statuses[status].getChildren() %}
+            <li data-type="{{ substatus.statusCode }}" 
+                data-label="{{ phrase('agent.tickets.send_reply_as_x', {'status': substatus.title}) }}"
+                data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': substatus.title}) }}"
+            >
+                <div class="on-icon"><i class="fas fa-check"></i></div>
+                {{ phrase('agent.tickets.kbd_' ~ status) }}&nbsp;>&nbsp;{{ substatus.title }}
+            </li>
+          {% endfor %}
+        {% endfor %}
 			</ul>
 		</div>
 	</section>

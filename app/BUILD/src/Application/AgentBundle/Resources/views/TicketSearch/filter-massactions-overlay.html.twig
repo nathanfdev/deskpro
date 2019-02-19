@@ -40,11 +40,11 @@
 				<span class="radio-title">{{ phrase('agent.tickets.set_awaiting_agent') }}</span>
 			</label>
 			<label class="radio-item" data-attach-class="status status-hidden_delete">
-				<input type="radio" name="actions[status]" value="hidden.deleted" class="button-toggle" />
+				<input type="radio" name="actions[status]" value="{{ ticket_statuses_service.getDeletedStatus().getStatusCode() }}" class="button-toggle" />
 				<span class="radio-title">{{ phrase('agent.tickets.set_delete') }}</span>
 			</label>
 			<label class="radio-item" data-attach-class="status status-hidden_spam">
-				<input type="radio" name="actions[status]" value="hidden.spam" class="button-toggle" />
+				<input type="radio" name="actions[status]" value="{{ ticket_statuses_service.getSpamStatus().getStatusCode() }}" class="button-toggle" />
 				<span class="radio-title">{{ phrase('agent.general.mark_spam') }}</span>
 			</label>
 		</dd>
@@ -296,7 +296,7 @@
 							</div>
 							<div class="term add-term-row" style="display:none"><span class="add-term">+</span> {{ phrase('agent.general.add_action_term') }}</div>
 						</div>
-						{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options } %}
+						{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-builder-tpl', 'term_options': ticket_options, 'ticket_statuses': ticket_statuses_service.getTopLevelStatuses(true) } %}
 					</div>
 				</div>
 			</div>

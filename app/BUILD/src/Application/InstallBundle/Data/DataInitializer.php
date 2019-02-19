@@ -11,6 +11,7 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 
 class DataInitializer
 {
@@ -224,7 +225,7 @@ class DataInitializer
         $ticket->agent           = $for_agent;
         $ticket->department      = $department;
         $ticket->subject         = 'Welcome to DeskPRO';
-        $ticket->status          = Ticket::STATUS_AWAITING_AGENT;
+        $ticket->setTicketStatus($this->container->getTicketStatuses()->find(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
         $ticket->setProperty('send_reply_service', 'https://support.deskpro.com/api/open/tickets/new-ticket-message');
         $ticket->setProperty('allow_send_reply_service', true);
 

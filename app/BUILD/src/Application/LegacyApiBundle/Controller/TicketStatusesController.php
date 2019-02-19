@@ -10,6 +10,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketPurger;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Orb\Util\Arrays;
 
 /**
@@ -60,10 +61,11 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         ');
 
         $h_stats = $this->db->fetchAllKeyValue("
-            SELECT hidden_status, COUNT(*)
-            FROM tickets
-            WHERE status = 'hidden' AND hidden_status IS NOT NULL
-            GROUP BY hidden_status
+            SELECT ts.sys_id, COUNT(*)
+            FROM tickets t
+            INNER JOIN ticket_statuses ts ON t.ticket_status_id = ts.id
+            WHERE t.status = 'hidden' AND ts.sys_id IN ('spam', 'deleted')
+            GROUP BY ts.sys_id
         ");
         foreach ($h_stats as $s => $c) {
             $stats['hidden_'.$s] = $c;
@@ -146,7 +148,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
                 UPDATE tickets
                 SET status = ?
                 WHERE status = ?
-            ', [Ticket::STATUS_RESOLVED, Ticket::STATUS_ARCHIVED]);
+            ', [TicketStatus::STATUS_TYPE_RESOLVED, TicketStatus::STATUS_TYPE_ARCHIVED]);
             $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
         }
 
