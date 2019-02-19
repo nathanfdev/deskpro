@@ -233,6 +233,19 @@ class Boot
      */
     public static function bootCli(\DpRun\DpEnv $env, array $commandClasses = [])
     {
+        $argv = $_SERVER['argv'];
+        array_shift($argv); // shift off ourselves
+        $namedUtil = array_shift($argv);
+
+        if ($namedUtil && preg_match('/^[a-zA-Z0-9_\-]+$/', $namedUtil)) {
+            $path = implode(DIRECTORY_SEPARATOR, [$env->getAppDir(), 'bin', 'util', $namedUtil.'.php']);
+            if (file_exists($path)) {
+                global $DP_ENV;
+                require $path;
+                exit;
+            }
+        }
+
         $tasks = [
             'CliVerifyRequirements',
             'Loader',
