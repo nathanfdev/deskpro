@@ -4,7 +4,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Doctrine\DBAL\Connection;
 
-class Build1543391025 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1550595922 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {

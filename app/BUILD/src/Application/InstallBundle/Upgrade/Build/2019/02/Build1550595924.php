@@ -5,7 +5,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 /**
  * Do not implement SkipPostBuildInterface here to reload Default FilterData.
  */
-class Build1543397095 extends AbstractBuild implements OnlineBuildInterface
+class Build1550595924 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
