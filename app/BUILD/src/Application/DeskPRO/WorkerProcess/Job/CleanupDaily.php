@@ -287,6 +287,8 @@ class CleanupDaily extends AbstractJob
 
         $tables = [
             'agent_alerts',
+            'notify_action_alerts',
+            'notify_notifications',
         ];
 
         $threshold = 2145000000;
