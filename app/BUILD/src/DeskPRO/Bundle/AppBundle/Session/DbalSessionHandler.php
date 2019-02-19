@@ -111,7 +111,7 @@ class DbalSessionHandler implements \SessionHandlerInterface
     public function gc($maxlifetime)
     {
         // delete the session records that have expired
-        $sql = "DELETE FROM $this->table WHERE $this->timeCol < :time";
+        $sql = "DELETE FROM $this->table WHERE $this->timeCol < :time LIMIT 1000";
 
         try {
             $stmt = $this->con->prepare($sql);

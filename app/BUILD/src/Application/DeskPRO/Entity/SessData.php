@@ -39,6 +39,7 @@ class SessData extends \Application\DeskPRO\Domain\DomainObject
         $builder = new ClassMetadataBuilder($metadata);
 
         $builder->setTable('sess_data');
+        $builder->addIndex(['sess_time'], 'sess_time_idx');
 
         $builder->createField('sess_id', 'string', [
                 'nullable' => false,
