@@ -581,11 +581,44 @@ class TicketController extends AbstractController
             $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
         }
 
-        $ticket_perms['modify_messages'] = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket);
+        $ticket_perms['modify_messages']  = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket);
+        $ticket_perms['convert_messages'] = $this->person->PermissionsManager
+            ->TicketChecker->canModifyMessages($ticket, 'convert_messages');
+        $ticket_perms['convert_notes'] = $this->person->PermissionsManager
+            ->TicketChecker->canModifyMessages($ticket, 'convert_notes');
+        $ticket_perms['delete_recordings'] = $this->person->PermissionsManager
+            ->TicketChecker->canModifyMessages($ticket, 'delete_voice_recordings');
 
         $this->ticketPermsCache[$ticket->getId()] = $ticket_perms;
 
         return $ticket_perms;
+    }
+
+    /**
+     * [
+     *    message_id => [
+     *        'edit' => true/false
+     *        'delete' => true/false
+     *    ]
+     * ].
+     *
+     * @param Entity\TicketMessage[] $messages
+     *
+     * @return array
+     */
+    protected function _getTicketMessagesPerms($messages)
+    {
+        $perms   = [];
+        $checker = $this->person->PermissionsManager->TicketChecker;
+
+        foreach ($messages as $message) {
+            $perms[$message->getId()] = [
+                'edit'   => $checker->canEditMessage($message),
+                'delete' => $checker->canDeleteMessage($message),
+            ];
+        }
+
+        return $perms;
     }
 
     public function loadTicketLogsAction($ticket_id)
@@ -757,6 +790,8 @@ class TicketController extends AbstractController
         /** @var TicketMessage[] $ticket_messages */
         $ticket_messages = $ticketMessageRepo->getByIds($message_ids);
 
+        $permissions = $this->_getTicketMessagesPerms($ticket_messages);
+
         usort(
             $ticket_messages,
             function (TicketMessage $a, TicketMessage $b) {
@@ -860,6 +895,7 @@ class TicketController extends AbstractController
                     'message_page'               => $page,
                     'message_count'              => $message_count,
                     'message_page_count'         => $num_pages,
+                    'perms'                      => $permissions,
                 ]
             );
         }

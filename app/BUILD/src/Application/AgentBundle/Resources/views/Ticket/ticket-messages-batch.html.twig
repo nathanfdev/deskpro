@@ -19,7 +19,7 @@
 				{% endfor %}
 			{% endif %}
 		{% endif %}
-		{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {message: message, message_num: ticket_messages_num[message.id] } %}
+		{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {message: message, message_num: ticket_messages_num[message.id], perms: perms[message.id] } %}
 		{% if not app.user.getPref('agent.ticket_reverse_order') %}
 			{% if ticket_message_logs[message.id] %}
 				{% if app.user.getPref('agent.ticket_reverse_order') %}{% set logs = ticket_message_logs[message.id]|reverse %}{% else %}{% set logs = ticket_message_logs[message.id] %}{% endif %}

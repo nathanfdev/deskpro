@@ -1166,6 +1166,14 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function isVoiceMessage()
+    {
+        return (bool) $this->getAttribute('voice_phone_call');
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function __call($name, $arguments)

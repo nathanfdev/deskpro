@@ -10,6 +10,7 @@ namespace Application\DeskPRO\People\PermissionChecker;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\Helpers\AgentPermissions;
 
 /**
@@ -431,6 +432,117 @@ class TicketChecker extends AbstractChecker
         }
 
         return true;
+    }
+
+    public function canEditMessage(TicketMessage $message)
+    {
+        if (!$this->canView($message->getTicket())) {
+            return false;
+        }
+
+        $permissionsToCheck = [];
+
+        if ($message->isAgentNote()) {
+            $permissionsToCheck = ['edit_notes'];
+            // Can Edit Notes (Time Limit, 1 hour)
+            if (time() - $message->getDateCreated()->getTimestamp() <= 3600) {
+                $permissionsToCheck[] = 'edit_timelimited_notes';
+            }
+        } else {
+            $permissionsToCheck = ['edit'];
+        }
+
+        return array_reduce($permissionsToCheck, function ($carry, $item) use ($message) {
+            return $carry || $this->canModifyMessages($message->getTicket(), $item);
+        });
+    }
+
+    public function canDeleteMessage(TicketMessage $message)
+    {
+        if (!$this->canView($message->getTicket())) {
+            return false;
+        }
+
+        $permissionsToCheck = [];
+
+        if ($message->isAgentNote()) {
+            $permissionsToCheck = ['delete_notes'];
+            // Can Edit Notes (Time Limit, 1 hour)
+            if (time() - $message->getDateCreated()->getTimestamp() <= 3600) {
+                $permissionsToCheck[] = 'delete_timelimited_notes';
+            }
+        } else {
+            $permissionsToCheck = ['delete'];
+        }
+
+        $res = array_reduce($permissionsToCheck, function ($carry, $item) use ($message) {
+            return $carry || $this->canModifyMessages($message->getTicket(), $item);
+        });
+
+        if ($res && $message->isVoiceMessage()) {
+            $res = $this->canModifyMessages($message->getTicket(), 'delete_voice_messages');
+        }
+
+        return $res;
+    }
+
+    /**
+     * Check if modify message permission is enabled
+     * There is top level permission that checked always agent_tickets.modify_messages_{suffix}
+     * if this permission is true - all sub-permissions assumed as true.
+     *
+     * @param Ticket $ticket
+     * @param string $op
+     *
+     * @return bool
+     */
+    public function canModifyMessages(Ticket $ticket, $op)
+    {
+        if (!$this->canView($ticket)) {
+            return false;
+        }
+
+        // own/unassigned/other
+        $setSuffix = $this->getPermissionsSetSuffix($ticket);
+
+        $permissionsToCheck = [
+            'agent_tickets.modify_messages_'.$setSuffix,
+            'agent_tickets.modify_messages_'.$op.'_'.$setSuffix,
+        ];
+
+        if ($ticket->hasParticipantPerson($this->person)) {
+            $permissionsToCheck[] = 'agent_tickets.modify_messages_followed';
+            $permissionsToCheck[] = 'agent_tickets.modify_messages_'.$op.'_followed';
+        }
+
+        return array_reduce($permissionsToCheck, [$this, 'permissionsReducer'], false);
+    }
+
+    /**
+     * Figure out which set of permissions
+     * the current ticket falls into.
+     *
+     * @param Ticket $ticket
+     */
+    protected function getPermissionsSetSuffix(Ticket $ticket)
+    {
+        $agent     = $ticket->getAgent();
+        $agentTeam = $ticket->getAgentTeam();
+
+        // Other
+        $suffix = 'others';
+        // Own tickets
+        if (
+            ($agent && $agent === $this->person)
+            || ($agentTeam && $this->agents->isAgentMemberOfTeam($this->person, $agentTeam))
+        ) {
+            $suffix = 'own';
+        // Unassigned tickets
+        } elseif (!$agent && !$agentTeam) {
+            $suffix = 'unassigned';
+        }
+
+        return $suffix;
     }
 
     /**

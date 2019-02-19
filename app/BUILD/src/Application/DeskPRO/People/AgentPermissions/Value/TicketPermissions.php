@@ -55,6 +55,26 @@ class TicketPermissions implements PermissionValueInterface
     /** @var bool */
     public $modify_messages_own = false;
     /** @var bool */
+    public $modify_messages_edit_own = false;
+    /** @var bool */
+    public $modify_messages_delete_own = false;
+    /** @var bool */
+    public $modify_messages_delete_voice_messages_own = false;
+    /** @var bool */
+    public $modify_messages_delete_voice_recordings_own = false;
+    /** @var bool */
+    public $modify_messages_edit_timelimited_notes_own = false;
+    /** @var bool */
+    public $modify_messages_edit_notes_own = false;
+    /** @var bool */
+    public $modify_messages_delete_timelimited_notes_own = false;
+    /** @var bool */
+    public $modify_messages_delete_notes_own = false;
+    /** @var bool */
+    public $modify_messages_convert_notes_own = false;
+    /** @var bool */
+    public $modify_messages_convert_messages_own = false;
+    /** @var bool */
     public $modify_billing_own = false;
     /** @var bool */
     public $delete_own = false;
@@ -94,6 +114,26 @@ class TicketPermissions implements PermissionValueInterface
     public $modify_set_unresolved_followed = false;
     /** @var bool */
     public $modify_messages_followed = false;
+    /** @var bool */
+    public $modify_messages_edit_followed = false;
+    /** @var bool */
+    public $modify_messages_delete_followed = false;
+    /** @var bool */
+    public $modify_messages_delete_voice_messages_followed = false;
+    /** @var bool */
+    public $modify_messages_delete_voice_recordings_followed = false;
+    /** @var bool */
+    public $modify_messages_edit_timelimited_notes_followed = false;
+    /** @var bool */
+    public $modify_messages_edit_notes_followed = false;
+    /** @var bool */
+    public $modify_messages_delete_timelimited_notes_followed = false;
+    /** @var bool */
+    public $modify_messages_delete_notes_followed = false;
+    /** @var bool */
+    public $modify_messages_convert_notes_followed = false;
+    /** @var bool */
+    public $modify_messages_convert_messages_followed = false;
     /** @var bool */
     public $modify_billing_followed = false;
     /** @var bool */
@@ -137,6 +177,26 @@ class TicketPermissions implements PermissionValueInterface
     /** @var bool */
     public $modify_messages_unassigned = false;
     /** @var bool */
+    public $modify_messages_edit_unassigned = false;
+    /** @var bool */
+    public $modify_messages_delete_unassigned = false;
+    /** @var bool */
+    public $modify_messages_delete_voice_messages_unassigned = false;
+    /** @var bool */
+    public $modify_messages_delete_voice_recordings_unassigned = false;
+    /** @var bool */
+    public $modify_messages_edit_timelimited_notes_unassigned = false;
+    /** @var bool */
+    public $modify_messages_edit_notes_unassigned = false;
+    /** @var bool */
+    public $modify_messages_delete_timelimited_notes_unassigned = false;
+    /** @var bool */
+    public $modify_messages_delete_notes_unassigned = false;
+    /** @var bool */
+    public $modify_messages_convert_notes_unassigned = false;
+    /** @var bool */
+    public $modify_messages_convert_messages_unassigned = false;
+    /** @var bool */
     public $modify_billing_unassigned = false;
     /** @var bool */
     public $delete_unassigned = false;
@@ -179,6 +239,26 @@ class TicketPermissions implements PermissionValueInterface
     /** @var bool */
     public $modify_messages_others = false;
     /** @var bool */
+    public $modify_messages_edit_others = false;
+    /** @var bool */
+    public $modify_messages_delete_others = false;
+    /** @var bool */
+    public $modify_messages_delete_voice_messages_others = false;
+    /** @var bool */
+    public $modify_messages_delete_voice_recordings_others = false;
+    /** @var bool */
+    public $modify_messages_edit_timelimited_notes_others = false;
+    /** @var bool */
+    public $modify_messages_edit_notes_others = false;
+    /** @var bool */
+    public $modify_messages_delete_timelimited_notes_others = false;
+    /** @var bool */
+    public $modify_messages_delete_notes_others = false;
+    /** @var bool */
+    public $modify_messages_convert_notes_others = false;
+    /** @var bool */
+    public $modify_messages_convert_messages_others = false;
+    /** @var bool */
     public $delete_others = false;
     /** @var bool */
     public $modify_billing_others = false;
@@ -208,18 +288,24 @@ class TicketPermissions implements PermissionValueInterface
             'use', 'create', 'reply_mass', 'modify_set_archived',
             'reply_own', 'modify_own', 'modify_department_own', 'modify_fields_own', 'modify_assign_agent_own', 'modify_assign_team_own',
             'modify_assign_self_own', 'modify_cc_own', 'modify_merge_own', 'modify_labels_own', 'modify_slas_own', 'modify_notes_own',
-            'modify_set_hold_own', 'modify_set_awaiting_user_own', 'modify_set_awaiting_agent_own', 'modify_set_resolved_own', 'modify_set_unresolved_own', 'modify_messages_own', 'modify_billing_own', 'delete_own',
+            'modify_set_hold_own', 'modify_set_awaiting_user_own', 'modify_set_awaiting_agent_own', 'modify_set_resolved_own', 'modify_set_unresolved_own',
+            'modify_messages_own', 'modify_messages_edit_own', 'modify_messages_delete_own', 'modify_messages_delete_voice_messages_own', 'modify_messages_delete_voice_recordings_own', 'modify_messages_edit_timelimited_notes_own', 'modify_messages_edit_notes_own',
+            'modify_messages_delete_timelimited_notes_own', 'modify_messages_delete_notes_own', 'modify_messages_convert_notes_own', 'modify_messages_convert_messages_own', 'modify_billing_own', 'delete_own',
             'reply_to_followed', 'modify_followed', 'modify_department_followed', 'modify_fields_followed', 'modify_assign_agent_followed',
             'modify_assign_team_followed', 'modify_assign_self_followed', 'modify_cc_followed', 'modify_merge_followed', 'modify_labels_followed', 'modify_slas_followed',
             'modify_notes_followed', 'modify_set_hold_followed', 'modify_set_awaiting_user_followed', 'modify_set_awaiting_agent_followed',
-            'modify_set_resolved_followed', 'modify_set_unresolved_followed', 'modify_messages_followed', 'modify_billing_followed', 'delete_followed', 'view_unassigned', 'reply_unassigned', 'modify_unassigned',
+            'modify_set_resolved_followed', 'modify_set_unresolved_followed', 'modify_messages_followed', 'modify_messages_edit_followed', 'modify_messages_delete_followed', 'modify_messages_delete_voice_messages_followed', 'modify_messages_delete_voice_recordings_followed', 'modify_messages_edit_timelimited_notes_followed', 'modify_messages_edit_notes_followed',
+            'modify_messages_delete_timelimited_notes_followed', 'modify_messages_delete_notes_followed', 'modify_messages_convert_notes_followed', 'modify_messages_convert_messages_followed', 'modify_billing_followed', 'delete_followed', 'view_unassigned', 'reply_unassigned', 'modify_unassigned',
             'modify_department_unassigned', 'modify_fields_unassigned', 'modify_assign_agent_unassigned', 'modify_assign_team_unassigned',
             'modify_assign_self_unassigned', 'modify_cc_unassigned', 'modify_merge_unassigned', 'modify_labels_unassigned', 'modify_slas_unassigned',
             'modify_notes_unassigned', 'modify_set_hold_unassigned', 'modify_set_awaiting_user_unassigned', 'modify_set_awaiting_agent_unassigned',
-            'modify_set_resolved_unassigned', 'modify_set_unresolved_unassigned', 'modify_messages_unassigned', 'modify_billing_unassigned', 'delete_unassigned', 'view_others', 'reply_others', 'modify_others',
+            'modify_set_resolved_unassigned', 'modify_set_unresolved_unassigned', 'modify_messages_unassigned', 'modify_messages_edit_unassigned', 'modify_messages_delete_unassigned', 'modify_messages_delete_voice_messages_unassigned', 'modify_messages_delete_voice_recordings_unassigned', 'modify_messages_edit_timelimited_notes_unassigned', 'modify_messages_edit_notes_unassigned',
+            'modify_messages_delete_timelimited_notes_unassigned', 'modify_messages_delete_notes_unassigned', 'modify_messages_convert_notes_unassigned', 'modify_messages_convert_messages_unassigned', 'modify_billing_unassigned', 'delete_unassigned', 'view_others', 'reply_others', 'modify_others',
             'modify_department_others', 'modify_fields_others', 'modify_assign_agent_others', 'modify_assign_team_others', 'modify_assign_self_others',
             'modify_cc_others', 'modify_merge_others', 'modify_labels_others', 'modify_slas_others', 'modify_notes_others', 'modify_set_hold_others',
-            'modify_set_awaiting_user_others', 'modify_set_awaiting_agent_others', 'modify_set_resolved_others', 'modify_set_unresolved_others', 'modify_messages_others', 'delete_others', 'modify_billing_others',
+            'modify_set_awaiting_user_others', 'modify_set_awaiting_agent_others', 'modify_set_resolved_others', 'modify_set_unresolved_others',
+            'modify_messages_others', 'modify_messages_edit_others', 'modify_messages_delete_others', 'modify_messages_delete_voice_messages_others', 'modify_messages_delete_voice_recordings_others', 'modify_messages_edit_timelimited_notes_others', 'modify_messages_edit_notes_others',
+            'modify_messages_delete_timelimited_notes_others', 'modify_messages_delete_notes_others', 'modify_messages_convert_notes_others', 'modify_messages_convert_messages_others', 'delete_others', 'modify_billing_others',
             'create_labels', 'associate_problem_own', 'associate_problem_followed', 'associate_problem_unassigned', 'associate_problem_others',
             'disassociate_problem_own', 'disassociate_problem_followed', 'disassociate_problem_unassigned', 'disassociate_problem_others',
         ];
