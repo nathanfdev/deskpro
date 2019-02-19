@@ -708,6 +708,8 @@ BODY;
         $lockStore   = new RetryTillSaveStore(new PdoStore(App::$container->get('doctrine.dbal.default_connection')));
         $lockFactory = new LockFactory($lockStore);
 
+        // there could be only one instance of email gateway runner
+        // make sure there is no race conditions
         $lock = $lockFactory->createLock(
             'email-gateway-runner.'.$account->getId(),
             IncomingEmailSupervisor::TIMEOUT_INTERVAL

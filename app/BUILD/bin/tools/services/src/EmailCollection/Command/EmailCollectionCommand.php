@@ -99,6 +99,10 @@ class EmailCollectionCommand extends Command
 
         if ($stopTime) {
             //TODO - accounts staying marked as active when they shouldnt
+
+            // cron running interval could be less than stop time interval in settings
+            // so check 'stop_time' interval and reset account reading flag if only account seems to be stuck
+            // to avoid waiting for the email gateway supervisor interval (1500s)
             $dateCut = new \DateTime("-{$stopTime} seconds");
 
             $db = Database::getDbIfClosed($this->dpEnv->getConfig('database'));
