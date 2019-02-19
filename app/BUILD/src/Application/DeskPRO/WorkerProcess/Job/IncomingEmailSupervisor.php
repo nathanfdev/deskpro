@@ -11,6 +11,7 @@ use Application\DeskPRO\App;
 class IncomingEmailSupervisor extends AbstractJob
 {
     const DEFAULT_INTERVAL = 300;
+    const TIMEOUT_INTERVAL = 1500;
 
     /**
      * @var array
@@ -85,7 +86,7 @@ class IncomingEmailSupervisor extends AbstractJob
         // Check for timeouts
         //------------------------------
 
-        $cutoff = date('Y-m-d H:i:s', time() - 1500);
+        $cutoff = date('Y-m-d H:i:s', time() - self::TIMEOUT_INTERVAL);
 
         $ids = $db->fetchAllCol('
             SELECT id
