@@ -207,7 +207,7 @@ class TaskRunner
             if ($this->processor->status($c) !== ProcessorInterface::STATUS_RUNNING) {
                 $this->_markTaskHandlerDone($c, true);
             // Check for timeout and terminate any that are too old
-            } elseif ($this->options['task_timeout'] && (microtime() - $c->getStartTime()) > $this->options['task_timeout']) {
+            } elseif ((int) $this->options['task_timeout'] && (microtime(true) - $c->getStartTime()) > (int) $this->options['task_timeout']) {
                 $this->logger->alert(
                     sprintf('[Task %s] Timed out after %s seconds; terminating', $c->getTask()->getId(), $this->options['task_timeout']),
                     ['task' => $c->getTask(), 'log_event' => self::LOG_EV_TASK_TIMEOUT]

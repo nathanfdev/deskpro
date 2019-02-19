@@ -17,9 +17,11 @@ use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Log\DelegateLogger;
+use Application\DeskPRO\WorkerProcess\Job\IncomingEmailSupervisor;
 use Carbon\Carbon;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailFailureEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\IncomingEmailSuccessEvent;
+use DeskPRO\Component\Lock\PdoStore;
 use DeskPRO\Component\Util\MathUtils;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
@@ -31,6 +33,8 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\OptionsArray;
 use Orb\Util\Util;
+use Symfony\Component\Lock\Factory as LockFactory;
+use Symfony\Component\Lock\Store\RetryTillSaveStore;
 
 /**
  * This runs collection and processsing in accounts.
@@ -694,12 +698,40 @@ BODY;
      * limit will be exceeded (e.g., time limit of 10, message starts processing at 9 seconds so it continues).
      *
      * @param \Application\DeskPRO\Entity\EmailAccount $account
-     * @param int                                      $time_limit  The max time spent processing email before we break
+     * @param int                                      $timeLimit   The max time spent processing email before we break
      * @param bool                                     $onlyCollect Only collect and save the emails, don't process them now
      *
      * @throws \Exception
      */
-    public function executeAccount(EmailAccount $account, $time_limit = 0, $onlyCollect = false)
+    public function executeAccount(EmailAccount $account, $timeLimit = 0, $onlyCollect = false)
+    {
+        $lockStore   = new RetryTillSaveStore(new PdoStore(App::$container->get('doctrine.dbal.default_connection')));
+        $lockFactory = new LockFactory($lockStore);
+
+        // there could be only one instance of email gateway runner
+        // make sure there is no race conditions
+        $lock = $lockFactory->createLock(
+            'email-gateway-runner.'.$account->getId(),
+            IncomingEmailSupervisor::TIMEOUT_INTERVAL
+        );
+
+        $lock->acquire(true);
+
+        try {
+            $this->doExecuteAccount($account, $timeLimit, $onlyCollect);
+        } finally {
+            $lock->release();
+        }
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\EmailAccount $account
+     * @param int                                      $timeLimit   The max time spent processing email before we break
+     * @param bool                                     $onlyCollect Only collect and save the emails, don't process them now
+     *
+     * @throws \Exception
+     */
+    private function doExecuteAccount(EmailAccount $account, $timeLimit = 0, $onlyCollect = false)
     {
         /* @var \DpRun\DpEnv $DP_ENV */
         global $DP_ENV;
@@ -1060,7 +1092,7 @@ BODY;
             $this->logger->log(sprintf('Memory usage: %.2f MB (total: %.2f MB)', $mDiff / 1024 / 1024, $mEnd / 1024 / 1024), 'debug');
 
             $timeSoFar = time() - $execStart;
-            if ($time_limit && $timeSoFar >= $time_limit) {
+            if ($timeLimit && $timeSoFar >= $timeLimit) {
                 $this->logger->logInfo('Hit time limit, breaking');
                 break;
             }

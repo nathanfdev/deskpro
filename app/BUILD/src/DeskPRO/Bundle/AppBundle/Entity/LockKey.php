@@ -21,6 +21,7 @@ class LockKey implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var string
+     *
      * @ORM\Id()
      * @ORM\Column(name="key_id", type="string", length=64, nullable=false)
      */
@@ -28,13 +29,14 @@ class LockKey implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var string
-     * @ORM\Id()
+     *
      * @ORM\Column(name="key_token", type="string", length=44, nullable=false)
      */
     protected $keyToken;
 
     /**
      * @var string
+     *
      * @ORM\Column(name="key_expiration", type="integer", length=10)
      */
     protected $keyExpiration;
