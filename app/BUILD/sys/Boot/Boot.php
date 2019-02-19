@@ -238,11 +238,38 @@ class Boot
         $namedUtil = array_shift($argv);
 
         if ($namedUtil && preg_match('/^[a-zA-Z0-9_\-]+$/', $namedUtil)) {
-            $path = implode(DIRECTORY_SEPARATOR, [$env->getAppDir(), 'bin', 'util', $namedUtil.'.php']);
-            if (file_exists($path)) {
-                global $DP_ENV;
-                require $path;
-                exit;
+            if ($namedUtil === 'dputils') {
+                $dputilsPath = implode(DIRECTORY_SEPARATOR, [$env->getAppDir(), 'bin', 'dputils']);
+                if (!is_executable($dputilsPath)) {
+                    echo "Missing dputils at: $dputilsPath\n";
+                    exit(1);
+                }
+
+                $cmd = [
+                    escapeshellcmd($dputilsPath),
+                ];
+                if (!in_array('--php', $argv)) {
+                    $cmd[] = '--php';
+                    $cmd[] = escapeshellarg($env->getConfig('paths.php_path'));
+                }
+                if (!in_array('--deskpro', $argv)) {
+                    $cmd[] = '--deskpro';
+                    $cmd[] = escapeshellarg($env->getDpRoot());
+                }
+
+                $cmd = array_merge($cmd, $argv);
+                $cmd = implode(' ', $cmd);
+
+                set_time_limit(0);
+                passthru($cmd, $r);
+                exit($r);
+            } else {
+                $path = implode(DIRECTORY_SEPARATOR, [$env->getAppDir(), 'bin', 'util', $namedUtil.'.php']);
+                if (file_exists($path)) {
+                    global $DP_ENV;
+                    require $path;
+                    exit;
+                }
             }
         }
 
