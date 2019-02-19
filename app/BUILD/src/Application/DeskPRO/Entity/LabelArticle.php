@@ -23,6 +23,14 @@ class LabelArticle extends LabelAssocAbstract
      */
     protected $article;
 
+    /**
+     * @return Article
+     */
+    public function getArticle()
+    {
+        return $this->article;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

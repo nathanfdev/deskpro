@@ -23,6 +23,14 @@ class LabelNews extends LabelAssocAbstract
      */
     protected $news;
 
+    /**
+     * @return News
+     */
+    public function getNews()
+    {
+        return $this->news;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

@@ -5,13 +5,11 @@ namespace Application\DeskPRO\NewSearch\Transformer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Elastica\Document;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use Orb\Util\Arrays;
 
 /**
  * Class ArticleToElasticaTransformer.
  */
-class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterface
+class ArticleToElasticaTransformer extends AbstractToElasticaTransformer
 {
     /**
      * {@inheritdoc}
@@ -46,13 +44,6 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
             $document->set('category_ids', $cat_ids);
         }
 
-        if ($object->getLabels()) {
-            $labels = Arrays::map(function ($l) {
-                return $l->label;
-            }, $object->getLabels());
-            $document->set('labels', array_values($labels));
-        }
-
         $sticky_words = App::$container->getDb()->fetchAllCol('
             SELECT word
             FROM search_sticky_result
@@ -64,6 +55,9 @@ class ArticleToElasticaTransformer implements ModelToElasticaTransformerInterfac
 
         $document->set('date_created', $object->getDateCreated()->format('Y-m-d H:i:s'));
         $document->set('date_active', date('Y-m-d H:i:s'));
+
+        $this->transformCustomData($object, $document);
+        $this->transformLabels($object, $document);
 
         return $document;
     }

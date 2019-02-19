@@ -12,6 +12,12 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\CustomDataArticle;
+use Application\DeskPRO\Entity\CustomDataChat;
+use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\CustomDataOrganization;
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\LabelArticle;
@@ -34,25 +40,31 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
 {
     /** @var array */
     public static $watched_entities = [
-        Article::class               => 1,
-        LabelArticle::class          => 1,
-        Download::class              => 1,
-        LabelDownload::class         => 1,
-        Feedback::class              => 1,
-        LabelFeedback::class         => 1,
-        News::class                  => 1,
-        LabelNews::class             => 1,
-        Ticket::class                => 1,
-        TicketMessage::class         => 1,
-        Topic::class                 => 1,
-        Person::class                => 1,
-        PersonEmail::class           => 1,
-        PersonPhoneNumber::class     => 1,
-        Organization::class          => 1,
-        ChatConversation::class      => 1,
-        ChatMessage::class           => 1,
-        ObjectLang::class            => 1,
-        PersonUsersourceAssoc::class => 1,
+        Article::class                => 1,
+        LabelArticle::class           => 1,
+        Download::class               => 1,
+        LabelDownload::class          => 1,
+        Feedback::class               => 1,
+        LabelFeedback::class          => 1,
+        News::class                   => 1,
+        LabelNews::class              => 1,
+        Ticket::class                 => 1,
+        TicketMessage::class          => 1,
+        Topic::class                  => 1,
+        Person::class                 => 1,
+        PersonEmail::class            => 1,
+        PersonPhoneNumber::class      => 1,
+        Organization::class           => 1,
+        ChatConversation::class       => 1,
+        ChatMessage::class            => 1,
+        ObjectLang::class             => 1,
+        PersonUsersourceAssoc::class  => 1,
+        CustomDataTicket::class       => 1,
+        CustomDataPerson::class       => 1,
+        CustomDataFeedback::class     => 1,
+        CustomDataOrganization::class => 1,
+        CustomDataArticle::class      => 1,
+        CustomDataChat::class         => 1,
     ];
 
     /**
@@ -196,32 +208,32 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
     }
 
     /**
-     * @param object $ent
+     * @param object $entity
      *
      * @return object
      */
-    private function replaceEntity($ent)
+    private function replaceEntity($entity)
     {
-        if ($ent instanceof LabelArticle) {
-            return $ent->article;
-        } elseif ($ent instanceof LabelNews) {
-            return $ent->news;
-        } elseif ($ent instanceof LabelDownload) {
-            return $ent->download;
-        } elseif ($ent instanceof LabelFeedback) {
-            return $ent->feedback;
-        } elseif ($ent instanceof TicketMessage) {
-            return $ent->ticket;
-        } elseif ($ent instanceof PersonEmail) {
-            return $ent->person;
-        } elseif ($ent instanceof PersonPhoneNumber) {
-            return $ent->person;
-        } elseif ($ent instanceof ChatMessage) {
-            return $ent->conversation;
-        } elseif ($ent instanceof ObjectLang) {
+        if ($entity instanceof LabelArticle) {
+            return $entity->getArticle();
+        } elseif ($entity instanceof LabelNews) {
+            return $entity->getNews();
+        } elseif ($entity instanceof LabelDownload) {
+            return $entity->getDownload();
+        } elseif ($entity instanceof LabelFeedback) {
+            return $entity->getFeedback();
+        } elseif ($entity instanceof TicketMessage) {
+            return $entity->getTicket();
+        } elseif ($entity instanceof PersonEmail) {
+            return $entity->getPerson();
+        } elseif ($entity instanceof PersonPhoneNumber) {
+            return $entity->getPerson();
+        } elseif ($entity instanceof ChatMessage) {
+            return $entity->getConversation();
+        } elseif ($entity instanceof ObjectLang) {
             $em      = $this->container->getEm();
-            $refId   = $ent->getRefId();
-            $refType = $ent->getRefType();
+            $refId   = $entity->getRefId();
+            $refType = $entity->getRefType();
 
             if (!$refId) {
                 return;
@@ -232,11 +244,23 @@ class EntityWatcher implements \Doctrine\Common\EventSubscriber
             } else {
                 return;
             }
-        } elseif ($ent instanceof PersonUsersourceAssoc) {
-            return $ent->getPerson();
+        } elseif ($entity instanceof PersonUsersourceAssoc) {
+            return $entity->getPerson();
+        } elseif ($entity instanceof CustomDataTicket) {
+            return $entity->getTicket();
+        } elseif ($entity instanceof CustomDataPerson) {
+            return $entity->getPerson();
+        } elseif ($entity instanceof CustomDataFeedback) {
+            return $entity->getFeedback();
+        } elseif ($entity instanceof CustomDataOrganization) {
+            return $entity->getOrganization();
+        } elseif ($entity instanceof CustomDataArticle) {
+            return $entity->getArticle();
+        } elseif ($entity instanceof CustomDataChat) {
+            return $entity->getConversation();
         }
 
-        return $ent;
+        return $entity;
     }
 
     /**

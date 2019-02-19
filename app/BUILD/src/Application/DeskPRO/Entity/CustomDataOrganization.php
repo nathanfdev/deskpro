@@ -39,6 +39,14 @@ class CustomDataOrganization extends CustomDataAbstract
         return $this;
     }
 
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
     public function getOrganizationId()
     {
         return $this->organization['id'];
