@@ -1520,6 +1520,91 @@ $gridster-box-header-height: 40px;
   }
 }
 
+.popup {
+  .shareable-links-list {
+    color: #707070;
+
+    .new-shareable-link {
+      margin-top: 20px;
+      text-align: right;
+      text-decoration: underline;
+    }
+
+    table {
+      width: 100%;
+      font-size: 1em;
+      margin-top: 10px;
+      display: block;
+
+      thead {
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.8em;
+
+        th {
+          border-left: 0;
+          padding: 0 5px 5px;
+          color: #ababab;
+        }
+      }
+
+      th, td {
+        padding: 5px;
+        width: 15%;
+        border-bottom: 1px solid #dcddde;
+        border-left: 1px solid #dcddde;
+        height: 36px;
+
+        &:first-child {
+          border-left: 0;
+        }
+
+        &.shareable-link-options {
+          padding-left: 10px;
+          a {
+            margin-right: 10px;
+            text-decoration: underline;
+            color: #707070;
+          }
+        }
+      }
+    }
+  }
+
+  .shareable-link-form {
+    .bucket {
+      clear: both;
+    }
+
+    .radio {
+      label {
+        display: inline-block;
+        padding-left: 5px;
+      }
+    }
+
+    .shareable-link-report-selector {
+      min-width: 120px;
+    }
+
+    .select2-container {
+      margin-top: 14px;
+    }
+
+    .create-short-url {
+      display: block;
+      margin-bottom: 10px;
+      text-decoration: underline;
+    }
+
+    .copy-to-clipboard {
+      position: absolute;
+      right: 150px;
+      top: 10px;
+    }
+  }
+}
+
 .reports-list-form {
   .report-row {
     margin-top: 10px;
