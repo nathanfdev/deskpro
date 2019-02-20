@@ -1,4 +1,9 @@
 <div class="app-container report-wrapper" id="dp_app_container" style="left: 0;">
+    <header class="reports-header ng-scope">
+        <div class="left">
+            Report "{{ ng_var('report.title') }}", created {{ ng_var('report.date_created') }}
+        </div>
+    </header>
     <div class="list-group">
         <div gridster="gridsterOptions" class="dashboard">
             <div class="dp-gridster-wrap">

@@ -152,7 +152,9 @@
 <body>
 
 <div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
-<div id="dp_win" ng-init='report = {{ report|json_encode()|raw|replace({"'":"\\'"}) }}' ui-view></div>
+<div id="dp_win" ng-init='report = {{ report|json_encode()|raw|replace({"'":"\\'"}) }}' ui-view>
+
+</div>
 
 <script>
   (function() {
