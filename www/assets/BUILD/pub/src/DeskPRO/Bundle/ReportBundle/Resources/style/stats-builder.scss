@@ -348,7 +348,15 @@
       overflow: auto;
 
       .stat-list {
-        li { padding-left: 10px; }
+        li {
+          padding-left: 10px;
+          &.stat-list-header {
+            h1 {
+              font-weight: bold;
+              font-size: 1.1em;
+            }
+          }
+        }
         .mark { display: none; }
         a {
           color: #333;
