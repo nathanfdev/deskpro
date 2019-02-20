@@ -10,7 +10,7 @@
     "@deskpro/react-components": "1.4.5-beta.5",
     "@deskpro/react-forms": "^2.0.0-beta41",
     "@deskpro/react-loader": "^2.4.2",
-    "@deskpro/redux-components": "1.0.5",
+    "@deskpro/redux-components": "1.1.0",
     "@deskpro/token-field": "0.8.4-beta.10",
     "@fortawesome/fontawesome-svg-core": "1.2.4",
     "@fortawesome/free-regular-svg-icons": "5.4.1",

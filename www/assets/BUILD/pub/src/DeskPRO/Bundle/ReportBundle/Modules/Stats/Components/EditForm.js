@@ -9,14 +9,16 @@ import { varTypes } from './helper';
 class VarsFieldComponent extends React.PureComponent {
 
   static defaultProps = {
-    vars: []
+    vars:     [],
+    isCustom: true
   };
 
   static propTypes = {
     groupParams: PropTypes.object.isRequired,
     fields:      PropTypes.object.isRequired,
     vars:        PropTypes.array,
-    change:      PropTypes.func
+    change:      PropTypes.func,
+    isCustom:    PropTypes.bool
   };
 
   static validateVarName(name) {
@@ -29,7 +31,7 @@ class VarsFieldComponent extends React.PureComponent {
     return undefined;
   }
 
-  static renderDateField(name, dates) {
+  static renderDateField(name, dates, isCustom) {
     if (!dates) {
       return null;
     }
@@ -39,10 +41,10 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select label="Default Value" onChange={() => {}} key={name} name={name} options={choices} />);
+    return (<reduxForm.Select disabled={!isCustom} label="Default Value" onChange={() => {}} key={name} name={name} options={choices} />);
   }
 
-  static renderTypeField(name, values) {
+  static renderTypeField(name, values, isCustom) {
     if (!values) {
       return null;
     }
@@ -52,10 +54,10 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select onChange={() => {}} label="Record Type" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select disabled={!isCustom} onChange={() => {}} label="Record Type" key={name} name={name} options={choices} />);
   }
 
-  static renderTypeValueField(name, values) {
+  static renderTypeValueField(name, values, isCustom) {
     if (!values) {
       return null;
     }
@@ -65,7 +67,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select onChange={() => {}} label="Default Value" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select disabled={!isCustom} onChange={() => {}} label="Default Value" key={name} name={name} options={choices} />);
   }
 
   constructor(props) {
@@ -130,7 +132,7 @@ class VarsFieldComponent extends React.PureComponent {
   }
 
   render() {
-    const { fields, groupParams, vars } = this.props;
+    const { fields, groupParams, vars, isCustom } = this.props;
 
     return (
       <div className="varsfield-wrap">
@@ -148,37 +150,41 @@ class VarsFieldComponent extends React.PureComponent {
             }
 
             return (<div className="varsfield-item" key={key}>
-              <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="far fa-trash-alt" /></div>
+              {isCustom ? <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="far fa-trash-alt" /></div> : null }
               <reduxForm.Input
+                disabled={!isCustom}
                 onChange={() => {}}
                 label={hint}
                 name={`${varName}.name`}
                 validate={[VarsFieldComponent.validateVarName]}
               />
               <reduxForm.Select
+                disabled={!isCustom}
                 onChange={() => {}}
                 label="Type"
                 options={varTypes}
                 name={`${varName}.type`}
               />
               { this.isDateType(variable) &&
-                VarsFieldComponent.renderDateField(`${varName}.default`, groupParams.dates) }
+                VarsFieldComponent.renderDateField(`${varName}.default`, groupParams.dates, isCustom) }
               { this.isVarType(variable) &&
-                VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]) }
-              { this.isVarType(variable) && this.renderCheckbox(variable.name, varName)}
+                VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type], isCustom) }
+              { this.isVarType(variable) && this.renderCheckbox(variable.name, varName, isCustom)}
               { this.state.usesCustomTable[variable.name] ? <reduxForm.Input
                 onChange={() => {}}
+                disabled={!isCustom}
                 name={`${varName}.table`}
               /> : null }
               { this.varTypeHasValue(variable) &&
                 VarsFieldComponent.renderTypeValueField(
                   `${varName}.default`,
-                  groupParams[variable.type][variable.field_type]
+                  groupParams[variable.type][variable.field_type],
+                  isCustom
                 ) }
             </div>);
           })}
         </div>
-        <Button onClick={this.onAddButtonClick} type="secondary" size="medium">Add Variable</Button>
+        {isCustom ? <Button onClick={this.onAddButtonClick} type="secondary" size="medium">Add Variable</Button> : null }
       </div>
     );
   }
@@ -345,7 +351,12 @@ export class EditFormComponent extends React.Component {
 
     const errors = { ...formErrors, ...this.state.formErrors };
 
-    const renderVars = field => <VarsField change={this.props.change} fields={field.fields} groupParams={groupParams || {}} />;
+    const renderVars = field => <VarsField
+      change={this.props.change}
+      fields={field.fields}
+      groupParams={groupParams || {}}
+      isCustom={isCustom}
+    />;
     const renderLabels = field => <LabelsField fields={field.fields} options={labels} isCustom={isCustom} />;
 
     return (
@@ -359,12 +370,14 @@ export class EditFormComponent extends React.Component {
             : null
           }
           <reduxForm.Input
+            disabled={!isCustom}
             onChange={() => {}}
             label="Title"
             id="title"
             name="title"
             validate={reduxForm.validators.required}
           />
+          <reduxForm.Textarea disabled={!isCustom} autosize onChange={() => {}} label="Description" name="description" id="description" />
           <FieldArray name="labels" component={renderLabels} />
           <Field component="input" type="hidden" name="query_input_mode" />
           <div className="query-builder-input">
@@ -375,30 +388,31 @@ export class EditFormComponent extends React.Component {
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <reduxForm.Textarea autosize onChange={() => {}} label="SELECT" name="select" />
-                  <reduxForm.Textarea autosize onChange={() => {}} label="FROM" name="from" />
-                  <reduxForm.Textarea autosize onChange={() => {}} label="WHERE" name="where" />
-                  <reduxForm.Textarea autosize onChange={() => {}} label="ORDER BY" name="order_by" />
-                  <reduxForm.Textarea autosize onChange={() => {}} label="SPLIT BY" name="split_by" />
-                  <reduxForm.Textarea autosize onChange={() => {}} label="GROUP BY" name="group_by" />
+                  <reduxForm.Textarea disabled={!isCustom} autosize onChange={() => {}} label="SELECT" name="select" />
+                  <reduxForm.Textarea disabled={!isCustom} autosize onChange={() => {}} label="FROM" name="from" />
+                  <reduxForm.Textarea disabled={!isCustom} autosize onChange={() => {}} label="WHERE" name="where" />
+                  <reduxForm.Textarea disabled={!isCustom} autosize onChange={() => {}} label="ORDER BY" name="order_by" />
+                  <reduxForm.Textarea disabled={!isCustom} autosize onChange={() => {}} label="SPLIT BY" name="split_by" />
+                  <reduxForm.Textarea disabled={!isCustom} autosize onChange={() => {}} label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/dpql_count\(.*\)/i) && groupBy.length)
                     })}
                   >
                     <reduxForm.Checkbox
+                      disabled={!isCustom}
                       className="rollup"
                       label="WITH ROLLUP - Adds a Total column to grouped COUNT queries made against hierarchies"
                       name="with_rollup"
                     />
                   </div>
                   <div style={{ width: '150px' }}>
-                    <reduxForm.Input onChange={() => {}} label="LIMIT" name="limit" />
-                    <reduxForm.Input onChange={() => {}} label="OFFSET" name="offset" />
+                    <reduxForm.Input disabled={!isCustom} onChange={() => {}} label="LIMIT" name="limit" />
+                    <reduxForm.Input disabled={!isCustom} onChange={() => {}} label="OFFSET" name="offset" />
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
-                  <reduxForm.Textarea name="raw" autosize />
+                  <reduxForm.Textarea disabled={!isCustom} onChange={() => {}} name="raw" autosize />
                 </Section>
               </FormSection>
               <div className="vars-wrap">

@@ -109,6 +109,11 @@
         opacity: 0.5;
       }
 
+      h1 .help-block {
+        font-size: 10px;
+        color: $dp-greyscale-650;
+      }
+
       &:last-child {
         border-bottom: 0;
       }

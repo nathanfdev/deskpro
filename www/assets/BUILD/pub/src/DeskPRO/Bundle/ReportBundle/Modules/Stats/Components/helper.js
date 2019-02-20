@@ -30,7 +30,7 @@ export function transformReportData(report) {
     query:          report.get('query', ''),
     title:          report.get('title'),
     labels:         report.get('labels', Immutable.List()).toArray(),
-    desc:           report.get('description', ''),
+    description:    report.get('description', ''),
     display_types:  report.get('display_types', Immutable.List()).toJS(),
     select:         queryParts.get('select', ''),
     from:           queryParts.get('from', ''),
@@ -54,7 +54,7 @@ export function transformReportDataToApi(reportData, error = false) {
 
   if (!reportData.displayOnly) {
     data.title         = reportData.title;
-    data.description   = reportData.desc;
+    data.description   = reportData.description;
     data.display_types = reportData.display_types;
     data.variables     = reportData.vars;
     data.labels        = reportData.labels;
