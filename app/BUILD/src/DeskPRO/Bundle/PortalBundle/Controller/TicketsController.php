@@ -294,7 +294,7 @@ class TicketsController extends AbstractController
         $person = $this->getUser();
 
         if ('POST' === $request->getMethod()) {
-            $ticket->setStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_RESOLVED));
+            $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_RESOLVED));
             $this->saveEditedTicket($ticket, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
 
