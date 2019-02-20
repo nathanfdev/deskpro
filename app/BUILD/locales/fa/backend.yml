@@ -4353,7 +4353,7 @@ agent.publish.pending_approval_list_title:
   other: '{{count}} articles pending approval'
 agent.publish.pending_articles: 'Pending Articles'
 agent.publish.permalink_copy_prompt: 'The permalink to this download on the website is:'
-agent.publish.please_choose_file: 'Please choose a file'
+agent.publish.please_choose_file: 'لطفا یک فایل انتخاب کنید'
 agent.publish.please_enter_title: 'Please enter a title'
 agent.publish.please_select_category: 'Please select a category'
 agent.publish.please_select_guide: 'Please select a guide'

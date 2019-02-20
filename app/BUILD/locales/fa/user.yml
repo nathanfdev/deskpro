@@ -540,7 +540,7 @@ portal.forms.label_add_attachment: 'Add Another Attachment'
 portal.forms.label_captcha: 'لطفا کد امنیتی را وارد نمایید'
 portal.forms.label_category: دسته
 portal.forms.label_cc: CCs
-portal.forms.label_choose: 'Choose a file'
+portal.forms.label_choose: 'انتخاب فایل'
 portal.forms.label_comment: 'ایا نظری ندارید؟'
 portal.forms.label_content: محتوا
 portal.forms.label_current_password: 'رمز عبور فعلی'
