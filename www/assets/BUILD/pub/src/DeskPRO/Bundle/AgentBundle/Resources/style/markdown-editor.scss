@@ -100,6 +100,8 @@ $button-gutter: 4px;
 #markdown-add-image {
   .preview-image {
     margin-top: 5px;
+    max-width: 300px;
+    max-height: 200px;
   }
   .upload_topic_image {
     display: none;
@@ -107,5 +109,8 @@ $button-gutter: 4px;
   .drop-info {
     margin-top: 5px;
     font-size: 12px;
+  }
+  .dp-scrollbar__view {
+    margin-bottom: -16px !important;
   }
 }
