@@ -4,6 +4,7 @@ namespace Application\DeskPRO\Usersource\Sync;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
@@ -156,6 +157,18 @@ class SyncerHelper
 
         if (!empty($user_info['picture_data']) && $usersource->getOption('syncProfilePictures', false)) {
             $this->updatePictureData($person, $user_info['picture_data']);
+        }
+
+        // add brands from usersource
+        if ($usersource->isAllBrands()) {
+            $brands = $this->em->getRepository(Brand::class)->findAll();
+            foreach ($brands as $brand) {
+                $person->addBrand($brand);
+            }
+        } else {
+            foreach ($usersource->getBrands() as $brand) {
+                $person->addBrand($brand);
+            }
         }
 
         try {
