@@ -47,7 +47,6 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		});
 
 		$('#' + this.meta.baseId + '_parent').on('change', function() {
-			console.log(this.value);
 			if (this.value !== '0') {
 				$('#' + self.meta.baseId + '_content_section').show();
 				$('#' + self.meta.baseId + '_topic_submit').show();
