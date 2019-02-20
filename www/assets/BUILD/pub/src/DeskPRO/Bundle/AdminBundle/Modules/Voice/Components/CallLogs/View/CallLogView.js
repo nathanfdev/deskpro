@@ -111,6 +111,31 @@ class CallLogView extends React.Component {
               </td>
             </tr>
             <tr>
+              <th>Cost</th>
+              <td>
+                <table className="table">
+                  <tr>
+                    <td><b>Total</b></td>
+                    <td><b>{call.get('cost') ? `${call.get('cost')} ${call.get('cost_currency') !== null ? call.get('cost_currency') : ''}` : '-'}</b></td>
+                  </tr>
+                  {call.get('participants').map((participant) => {
+                    const person = people.get(participant.get('person')) || Immutable.fromJS({});
+
+                    return (
+                      <tr>
+                        <td width="500">
+                          <a data-route={`person:/agent/people/${person.get('id')}`}>
+                            {person.get('name') || `ID-${person.get('id')}`} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
+                          </a>
+                        </td>
+                        <td>{participant.get('cost') ? `${participant.get('cost')} ${participant.get('cost_currency') !== null ? participant.get('cost_currency') : ''}` : '-'}</td>
+                      </tr>
+                    );
+                  })}
+                </table>
+              </td>
+            </tr>
+            <tr>
               <th>Ticket</th>
               <td>
                 <i className="fa fa-envelope" />
