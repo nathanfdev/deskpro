@@ -298,8 +298,14 @@ class TicketsController extends AbstractController
             $this->saveEditedTicket($ticket, $person);
             $this->addFlash('success', $this->phrase('portal.flashes.ticket_resolved'));
 
-            return $this->redirectToRoute('portal_tickets_feedback', [
-                'auth'       => $ticket->getAuth(),
+            if ($this->get('settings_resolver')->getGlobalSettings()->get('core_tickets.enable_feedback')) {
+                return $this->redirectToRoute('portal_tickets_feedback', [
+                    'auth'       => $ticket->getAuth(),
+                    'ticket_ref' => $ticket->getRef(),
+                ]);
+            }
+
+            return $this->redirectToRoute('portal_tickets_view', [
                 'ticket_ref' => $ticket->getRef(),
             ]);
         }
