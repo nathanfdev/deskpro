@@ -397,6 +397,8 @@ class TicketsController extends AbstractTicketsController
             'admin_api_key_request' => $this->isAdminApiKeyRequest(),
         ]);
 
+        $model->setCreationSystem(Ticket::CREATED_WEB_API);
+
         return parent::handleForm($model, $request, $options);
     }
 

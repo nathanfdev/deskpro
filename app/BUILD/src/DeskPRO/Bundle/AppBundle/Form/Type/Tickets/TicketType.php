@@ -162,6 +162,11 @@ class TicketType extends AbstractType
                 'widget'   => 'single_text',
                 'required' => false,
             ])
+            ->add('context', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => ['agent', 'user'],
+                'mapped'            => false,
+            ])
         ;
 
         if ($builder->getOption('admin_api_key_request')) {
