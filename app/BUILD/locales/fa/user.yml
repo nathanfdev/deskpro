@@ -684,7 +684,7 @@ portal.general.show_x_more: 'Show {num} more'
 portal.general.software_provided_by: 'Helpdesk software provided by'
 portal.general.start-chat: 'Start a chat session'
 portal.general.submit-feedback: 'ارسال انتقاد و پیشنهاد'
-portal.general.submit-feedback-desc: 'Feedback and suggestions submitted by customers like you'
+portal.general.submit-feedback-desc: 'انتقادات و پیشنهادات ارائه شده توسط مشتریان '
 portal.general.tagged_with: 'tagged with'
 portal.general.tags: Tags
 portal.general.toggle_off: 'off'
