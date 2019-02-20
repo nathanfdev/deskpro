@@ -3,10 +3,6 @@
 body {
 }
 
-.pull-right {
-  float: right !important;
-}
-
 .edit-zone {
   height: 40px;
   width: 100%;
@@ -29,17 +25,10 @@ input[type='radio'].active {
 
 .box-header {
   background-color: #eee;
-  padding: 0 30px 0 10px;
+  padding: 0 10px 0 10px;
   border-bottom: 1px solid #ccc;
   cursor: move;
   position: relative;
-}
-
-.box-header-btns {
-  top: 15px;
-  left: 10px;
-  cursor: pointer;
-  position: absolute;
 }
 
 .box-header h3 {
@@ -1439,23 +1428,33 @@ $gridster-box-header-height: 40px;
       border: none;
 
       .box-header-btns {
-        top: 11px;
         display: none;
+        height: 100%;
+        align-items: center;
         a {
+          &:nth-child(2) {
+            margin-left: auto;
+          }
           margin-right: 8px;
           color: #bbb;
-          display: inline-block !important;
+          display: block !important;
+
 
           span {
             padding-left: 3px;
             font-size: 11px;
           }
         }
+        &.editing {
+          a:nth-child(2) {
+            margin-left: 0;
+          }
+        }
       }
 
       &:hover {
         .box-header-btns {
-          display: block;
+          display: flex;
         }
         h3 {
           display: none;

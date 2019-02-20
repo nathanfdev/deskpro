@@ -108,7 +108,7 @@
             <div class="dp-gridster-wrap">
                 <div ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in widgets" class="dp-gridster-item">
                     <div class="box-header">
-                        <div class="box-header-btns pull-right">
+                        <div ng-class="{'box-header-btns': true, 'editing': layoutEditing}">
                             <a ng-if="layoutEditing && !dashboard.is_default" title="Edit widget" ng-click="openEditWidget(widget)"><i class="fa fa-cog"></i><span>Edit</span></a>
                             <a ng-if="layoutEditing && !dashboard.is_default" title="Remove widget" ng-click="removeWidget(widget)"><i class="fa fa-times"></i><span>Delete</span></a>
                             <a ng-if="!layoutEditing" title="{{ ng_var('widget.widget.description') }}"><span>{{ ng_var('widget.title') }}</span></a>
