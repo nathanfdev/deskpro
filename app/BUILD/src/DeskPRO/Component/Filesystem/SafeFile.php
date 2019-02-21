@@ -117,10 +117,6 @@ class SafeFile
                 $p = rtrim($p, '/').'/';
             }
 
-            // C:/foo/bar -> /C/foo/bar
-            if (PHP_OS === 'Windows') {
-                $p = preg_replace('/([A-Za-z]+):/', '/$1', $p);
-            }
             $p = strtolower($p);
 
             return $p;
@@ -203,11 +199,12 @@ class SafeFile
                 $whitelist = [$whitelist];
             }
 
-            $whitelist = self::normalizePath($whitelist);
+            $whitelist  = self::normalizePath($whitelist);
+            $normalPath = self::normalizePath($path);
 
             // Exact match whitelist filename
             foreach ($whitelist as $wp) {
-                if ($wp === $path) {
+                if ($wp === $normalPath) {
                     return false;
                 }
             }
@@ -268,6 +265,66 @@ class SafeFile
     }
 
     /**
+     * Get the real canonicalized path to a file.
+     *
+     * @param string $path
+     *
+     * @return string
+     */
+    private static function tryResolvePath($path)
+    {
+        // Not a local file, nothing to do
+        if (preg_match('/^(https?:\/\/|data:)/i', $path) || null !== parse_url($path, PHP_URL_SCHEME)) {
+            return $path;
+        }
+
+        // Existing file, can use realpath
+        $real = realpath($path);
+        if ($real !== false) {
+            return $real;
+        }
+
+        // At least dir exists, return that
+        $dirname  = dirname($path);
+        $filename = basename($path);
+
+        $realDir = realpath($dirname);
+        if ($realDir !== false) {
+            return $realDir.DIRECTORY_SEPARATOR.$filename;
+        }
+
+        // Otherwise we can try to unwind it...
+        $isAbsolute = strspn($path, '/\\', 0, 1)
+            || (\strlen($path) > 3 && ctype_alpha($path[0])
+                && ':' === substr($path, 1, 1)
+                && strspn($path, '/\\', 2, 1)
+            );
+
+        // Normalise slashes
+        $path = str_replace('\\', '/', $path);
+
+        // Drive letter
+        $drive = '';
+        if (\strlen($path) > 2 && ':' === $path[1] && '/' === $path[2] && ctype_alpha($path[0])) {
+            $drive = substr($path, 0, 2);
+            $path  = substr($path, 2);
+        }
+
+        $pathSegments = explode('/', trim($path, '/'));
+        $result       = [];
+
+        foreach ($pathSegments as $segment) {
+            if ('..' === $segment && ($isAbsolute || \count($result))) {
+                array_pop($result);
+            } elseif ('.' !== $segment) {
+                $result[] = $segment;
+            }
+        }
+
+        return implode(DIRECTORY_SEPARATOR, $result);
+    }
+
+    /**
      * Wrapper for file_get_contents().
      *
      * @param string          $path
@@ -278,7 +335,7 @@ class SafeFile
     public static function fileGetContents($path, $whitelist)
     {
         $orig_path = $path;
-        $path      = realpath($path);
+        $path      = self::tryResolvePath($path);
 
         if (!$path || !self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
@@ -315,7 +372,7 @@ class SafeFile
     public static function file($path, $whitelist)
     {
         $orig_path = $path;
-        $path      = realpath($path);
+        $path      = self::tryResolvePath($path);
 
         if (!$path || !self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
@@ -340,9 +397,9 @@ class SafeFile
     public static function fileOpen($path, $mode, $whitelist)
     {
         $orig_path = $path;
-        $path      = realpath($path);
+        $path      = self::tryResolvePath($path);
 
-        if (!self::isValid($path, $whitelist)) {
+        if (!$path || !self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
                 trigger_error("SafeFile::fileOpen($orig_path) is not valid", E_USER_WARNING);
             }

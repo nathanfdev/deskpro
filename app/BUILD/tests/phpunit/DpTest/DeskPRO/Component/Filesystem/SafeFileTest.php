@@ -8,47 +8,11 @@ namespace DpTest\DeskPRO\Component\Filesystem;
 
 use DeskPRO\Component\Filesystem\SafeFile;
 use DpTest\DeskProTestCase;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
 
 class SafeFileTest extends DeskProTestCase
 {
-    /**
-     * @var vfsStreamDirectory
-     */
-    private $root;
-
     public function setUp()
     {
-        $this->root = vfsStream::setup('instance_test');
-        vfsStream::create([
-            'var' => [
-                'etc' => [
-                    'mysql' => [
-                        'my.cnf' => 'xxx',
-                    ],
-                ],
-                'log' => [
-                    'nginx' => [
-                        'access.log',
-                    ],
-                    'mail.log' => 'xxx',
-                ],
-                'www' => [
-                    'deskpro' => [
-                        'attachments' => [
-                            'example.txt' => 'xxx',
-                        ],
-                        'var' => [
-                            'cache' => [
-                                'example.txt' => 'xxx',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ], $this->root);
-
         SafeFile::resetBlacklist();
         SafeFile::addBlacklistDir('/etc/');
         SafeFile::addBlacklistDir('/var/log/');
@@ -62,9 +26,11 @@ class SafeFileTest extends DeskProTestCase
         $this->assertTrue(SafeFile::isValid('/var/www/deskpro/var/cache/dontexist', SafeFile::ANY));
         $this->assertTrue(SafeFile::isValid('/tmp/foo', SafeFile::ANY));
         $this->assertTrue(SafeFile::isValid('/var/etc/mysql/my.cnf', SafeFile::ANY));
+        $this->assertTrue(SafeFile::isValid('/var/etc/mysql/../../etc/mysql/my.cnf', SafeFile::ANY));
 
         $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/example.txt', SafeFile::ANY));
         $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/dontexist', SafeFile::ANY));
+        $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/../attachments/dontexist', SafeFile::ANY));
     }
 
     public function testException()
