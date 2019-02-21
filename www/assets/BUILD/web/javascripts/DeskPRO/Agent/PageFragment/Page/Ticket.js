@@ -3161,6 +3161,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       menuElement: menuElement,
       onBeforeMenuOpened: function(info) {
         var message = $(info.menu.getOpenTriggerElement()).closest('article.message');
+        var perms = message.data('perms');
+
         if(message.data('messageHasSource') == false) {
           menuElement.find('li.email-download').remove();
           menuElement.find('li.email-delete').remove();
@@ -3177,6 +3179,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           menuElement.find('li.delete-attachments-link').show();
         } else {
           menuElement.find('li.delete-attachments-link').hide();
+        }
+
+        console.log(perms);
+        console.log(perms.edit == true);
+        console.log(menuElement.find('li.edit').length);
+
+        menuElement.find('li.edit').toggle(perms.edit == true);
+        menuElement.find('li.delete-link').toggle(perms.delete == true);
+        menuElement.find('li.email_delete').toggle(perms.delete == true);
+        menuElement.find('li.delete-attachments-link').toggle(perms.delete == true);
+        if (message.hasClass('note-message')) {
+          menuElement.find('li.set-as-message').toggle(perms.convert == true);
+        } else {
+          menuElement.find('li.set-as-note').toggle(perms.convert == true);
         }
       },
       onItemClicked: function(info) {

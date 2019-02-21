@@ -581,13 +581,7 @@ class TicketController extends AbstractController
             $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
         }
 
-        $ticket_perms['modify_messages']  = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket);
-        $ticket_perms['convert_messages'] = $this->person->PermissionsManager
-            ->TicketChecker->canModifyMessages($ticket, 'convert_messages');
-        $ticket_perms['convert_notes'] = $this->person->PermissionsManager
-            ->TicketChecker->canModifyMessages($ticket, 'convert_notes');
-        $ticket_perms['delete_recordings'] = $this->person->PermissionsManager
-            ->TicketChecker->canModifyMessages($ticket, 'delete_voice_recordings');
+        $ticket_perms['modify_messages'] = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket);
 
         $this->ticketPermsCache[$ticket->getId()] = $ticket_perms;
 
@@ -602,20 +596,33 @@ class TicketController extends AbstractController
      *    ]
      * ].
      *
+     * @param Entity\Ticket          $ticket
      * @param Entity\TicketMessage[] $messages
      *
      * @return array
      */
-    protected function _getTicketMessagesPerms($messages)
+    protected function _getTicketMessagesPerms(Ticket $ticket, $messages)
     {
         $perms   = [];
         $checker = $this->person->PermissionsManager->TicketChecker;
 
+        // global perms, same for all messages
+        $convertMessages  = $checker->canModifyMessages($ticket, 'convert_messages');
+        $convertNotes     = $checker->canModifyMessages($ticket, 'convert_notes');
+        $deleteRecordings = $checker->canModifyMessages($ticket, 'delete_voice_recordings');
+
+        // fill perms for each message
         foreach ($messages as $message) {
             $perms[$message->getId()] = [
-                'edit'   => $checker->canEditMessage($message),
-                'delete' => $checker->canDeleteMessage($message),
+                'edit'                    => $checker->canEditMessage($message),
+                'delete'                  => $checker->canDeleteMessage($message),
+                'delete_voice_recordings' => $deleteRecordings,
             ];
+            if ($message->isAgentNote()) {
+                $perms[$message->getId()]['convert'] = $convertNotes;
+            } else {
+                $perms[$message->getId()]['convert'] = $convertMessages;
+            }
         }
 
         return $perms;
@@ -790,7 +797,7 @@ class TicketController extends AbstractController
         /** @var TicketMessage[] $ticket_messages */
         $ticket_messages = $ticketMessageRepo->getByIds($message_ids);
 
-        $permissions = $this->_getTicketMessagesPerms($ticket_messages);
+        $msgPerms = $this->_getTicketMessagesPerms($ticket, $ticket_messages);
 
         usort(
             $ticket_messages,
@@ -885,6 +892,7 @@ class TicketController extends AbstractController
                 [
                     'ticket'                     => $ticket,
                     'ticket_perms'               => $this->_getTicketPerms($ticket),
+                    'msg_perms'                  => $msgPerms,
                     'ticket_messages'            => $ticket_messages,
                     'ticket_messages_translated' => $ticket_messages_translated,
                     'ticket_messages_num'        => $ticket_messages_num,
@@ -895,7 +903,6 @@ class TicketController extends AbstractController
                     'message_page'               => $page,
                     'message_count'              => $message_count,
                     'message_page_count'         => $num_pages,
-                    'perms'                      => $permissions,
                 ]
             );
         }
