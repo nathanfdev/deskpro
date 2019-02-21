@@ -267,30 +267,45 @@ class SafeFile
     /**
      * Get the real canonicalized path to a file.
      *
+     * @internal
+     *
      * @param string $path
      *
      * @return string
      */
-    private static function tryResolvePath($path)
+    public static function tryResolvePath($path)
     {
         // Not a local file, nothing to do
-        if (preg_match('/^(https?:\/\/|data:)/i', $path) || null !== parse_url($path, PHP_URL_SCHEME)) {
+        if (
+            preg_match('/^(https?:\/\/|data:)/i', $path)
+            || (
+                // must not be a windows path
+                !(\strlen($path) > 2 && ':' === $path[1] && '\\' === $path[2] && ctype_alpha($path[0]))
+                // must not be a protocol
+                && null !== parse_url($path, PHP_URL_SCHEME)
+            )
+        ) {
             return $path;
         }
+
+        // Normalise slashes
+        $path = str_replace('\\', '/', $path);
 
         // Existing file, can use realpath
         $real = realpath($path);
         if ($real !== false) {
-            return $real;
+            return str_replace('\\', '/', $real);
         }
 
         // At least dir exists, return that
         $dirname  = dirname($path);
         $filename = basename($path);
 
-        $realDir = realpath($dirname);
-        if ($realDir !== false) {
-            return $realDir.DIRECTORY_SEPARATOR.$filename;
+        if ($dirname && $dirname !== '.') {
+            $realDir = realpath($dirname);
+            if ($realDir !== false) {
+                return str_replace('\\', '/', $realDir.DIRECTORY_SEPARATOR.$filename);
+            }
         }
 
         // Otherwise we can try to unwind it...
@@ -299,9 +314,6 @@ class SafeFile
                 && ':' === substr($path, 1, 1)
                 && strspn($path, '/\\', 2, 1)
             );
-
-        // Normalise slashes
-        $path = str_replace('\\', '/', $path);
 
         // Drive letter
         $drive = '';
@@ -313,6 +325,10 @@ class SafeFile
         $pathSegments = explode('/', trim($path, '/'));
         $result       = [];
 
+        if ($isAbsolute) {
+            $result[] = '';
+        }
+
         foreach ($pathSegments as $segment) {
             if ('..' === $segment && ($isAbsolute || \count($result))) {
                 array_pop($result);
@@ -321,7 +337,7 @@ class SafeFile
             }
         }
 
-        return implode(DIRECTORY_SEPARATOR, $result);
+        return $drive.implode('/', $result);
     }
 
     /**

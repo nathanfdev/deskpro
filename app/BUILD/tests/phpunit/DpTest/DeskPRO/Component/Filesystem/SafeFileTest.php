@@ -78,4 +78,15 @@ class SafeFileTest extends DeskProTestCase
         $this->assertFalse(SafeFile::isValid('ftp://var/log/mail.log', SafeFile::DATA));
         $this->assertTrue(SafeFile::isValid($testFile, SafeFile::DATA));
     }
+
+    public function testResolve()
+    {
+        $this->assertEquals('/x/var/log/mail.log', SafeFile::tryResolvePath('/x/var/./log/nginx/../mail.log'));
+        $this->assertEquals('C:/x/Windows/etc/hosts', SafeFile::tryResolvePath('C:\\x\\Windows\\etc\\..\\etc\\hosts'));
+
+        $this->assertEquals('http://foo.com/', SafeFile::tryResolvePath('http://foo.com/'));
+
+        $testFile = 'data:text/plain;charset=utf-8;base64,VEVTVA==';
+        $this->assertEquals($testFile, SafeFile::tryResolvePath($testFile));
+    }
 }
