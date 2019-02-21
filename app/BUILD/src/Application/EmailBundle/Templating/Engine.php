@@ -8,6 +8,7 @@ namespace Application\EmailBundle\Templating;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\ResourceScanner\TemplateFiles;
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
 use Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine as BaseEngine;
 
 class Engine extends BaseEngine
@@ -156,7 +157,7 @@ class Engine extends BaseEngine
             'source' => $source,
         ];
 
-        if (preg_match('#<dp:subject>(.*?)</dp:subject>#is', $source, $m)) {
+        if (preg_match('#'.EmailTemplateCode::SUBJ_TOKEN_START.'(.*?)'.EmailTemplateCode::SUBJ_TOKEN_END.'#is', $source, $m)) {
             $parts['subject'] = trim($m[1]);
             $parts['body']    = trim(str_replace($m[0], '', $source));
         }
