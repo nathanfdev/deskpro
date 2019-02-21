@@ -541,7 +541,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.on('click', '.remove-attach-trigger', function() {
-      var blobId = $(this).prev('input').val();
+      var blobId = parseInt($(this).prev('input').val(), 10);
       var row = $(this).closest('li');
       self.removeBlob(blobId, row);
 		});
@@ -1703,8 +1703,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     row.fadeOut('fast', function() {
 			row.remove();
 			var blobIndex = self.fwdAttachments.indexOf(blobId);
-			if(-1 !== blobIndex) {
-			  delete(self.fwdAttachments[index]);
+			if (blobIndex !== -1) {
+			  delete(self.fwdAttachments[blobIndex]);
       }
 			var rows = $('ul.files li', self.getElById('attach_row'));
       if (!rows.length) {
