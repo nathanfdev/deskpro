@@ -31,6 +31,21 @@ namespace DeskPRO\Component\Filesystem;
 class SafeFile
 {
     /**
+     * Use as whitelist to indicate any path is OK (i.e. only checks blacklist).
+     */
+    const ANY = '*';
+
+    /**
+     * Use as whitelist to indicate the path is expected to be an http path.
+     */
+    const HTTP = 'http://';
+
+    /**
+     * Use as a whitelist to indicate the path is expected to be a data path.
+     */
+    const DATA = 'data://';
+
+    /**
      * @var array
      */
     private static $blacklist = [];
@@ -90,7 +105,9 @@ class SafeFile
         if (is_array($path)) {
             $res = [];
             foreach ($path as $p) {
-                $res[] = self::normalizePath($p);
+                if (is_string($p) && $p !== '') {
+                    $res[] = self::normalizePath($p);
+                }
             }
 
             return $res;
@@ -98,6 +115,11 @@ class SafeFile
             $p = str_replace('\\', '/', $path);
             if (@is_dir($p)) {
                 $p = rtrim($p, '/').'/';
+            }
+
+            // C:/foo/bar -> /C/foo/bar
+            if (PHP_OS === 'Windows') {
+                $p = preg_replace('/([A-Za-z]+):/', '/$1', $p);
             }
             $p = strtolower($p);
 
@@ -115,12 +137,20 @@ class SafeFile
      */
     public static function matchesList($path, $list)
     {
+        if ($list === self::ANY) {
+            return true;
+        }
+
         if (!$list) {
             return false;
         }
 
         if (!is_array($list)) {
             $list = [$list];
+        }
+
+        if (in_array(self::ANY, $list, true)) {
+            return true;
         }
 
         $list = self::normalizePath($list);
@@ -130,6 +160,16 @@ class SafeFile
         foreach ($list as $p) {
             if ($p === $path_test) {
                 return true;
+            }
+            if ($p === self::HTTP) {
+                if (preg_match('/^https?:\/\//i', $path_test)) {
+                    return true;
+                }
+            }
+            if ($p === self::DATA) {
+                if (preg_match('/^data:/', $path_test)) {
+                    return true;
+                }
             }
             if (substr($p, -1, 1) === '/') {
                 if ($path_test === $p || $path_test.'/' === $p || strpos($path_test, $p) === 0) {
@@ -165,11 +205,31 @@ class SafeFile
 
             $whitelist = self::normalizePath($whitelist);
 
+            // Exact match whitelist filename
+            foreach ($whitelist as $wp) {
+                if ($wp === $path) {
+                    return false;
+                }
+            }
+
             $bl = array_filter($bl, function ($p) use ($whitelist) {
                 foreach ($whitelist as $wp) {
+                    // whitelist path exactly overwrites bl
+                    if ($wp === $p) {
+                        return false;
+                    }
+
                     // A more specific whitelisted directory
                     // overwrites the blacklisted one
-                    if (substr($p, -1, 1) === '/' && substr($wp, -1, 1) === '/' && strpos($wp, $p) === 0 && strlen($wp) > strlen($p)) {
+                    if (
+                        $wp !== self::ANY
+                        && $wp !== self::HTTP
+                        && $wp !== self::DATA
+                        && substr($p, -1, 1) === '/'
+                        && substr($wp, -1, 1) === '/'
+                        && strpos($wp, $p) === 0
+                        && strlen($wp) > strlen($p)
+                    ) {
                         return false;
                     }
                 }
@@ -189,9 +249,22 @@ class SafeFile
      *
      * @return bool
      */
-    public static function isValid($path, $whitelist = [])
+    public static function isValid($path, $whitelist)
     {
         return !self::matchesBlacklist($path, $whitelist) && self::matchesList($path, $whitelist);
+    }
+
+    /**
+     * Throws an exception if a path is not valid.
+     *
+     * @param string          $path
+     * @param string[]|string $whitelist
+     */
+    public static function assertValid($path, $whitelist)
+    {
+        if (!self::isValid($path, $whitelist)) {
+            throw new \InvalidArgumentException('Invalid file path');
+        }
     }
 
     /**
@@ -202,7 +275,7 @@ class SafeFile
      *
      * @return bool|string
      */
-    public static function fileGetContents($path, $whitelist = [])
+    public static function fileGetContents($path, $whitelist)
     {
         $orig_path = $path;
         $path      = realpath($path);
@@ -219,6 +292,19 @@ class SafeFile
     }
 
     /**
+     * Wrapper for file_get_contents().
+     *
+     * @param string          $path
+     * @param string[]|string $whitelist
+     *
+     * @return bool|string
+     */
+    public static function file_get_contents($path, $whitelist)
+    {
+        return self::fileGetContents($path, $whitelist);
+    }
+
+    /**
      * Wrapper for file().
      *
      * @param string          $path
@@ -226,7 +312,7 @@ class SafeFile
      *
      * @return bool|string
      */
-    public static function file($path, $whitelist = [])
+    public static function file($path, $whitelist)
     {
         $orig_path = $path;
         $path      = realpath($path);
@@ -251,12 +337,12 @@ class SafeFile
      *
      * @return bool|resource
      */
-    public static function fileOpen($path, $mode, $whitelist = [])
+    public static function fileOpen($path, $mode, $whitelist)
     {
         $orig_path = $path;
         $path      = realpath($path);
 
-        if (!$path || !self::isValid($path, $whitelist)) {
+        if (!self::isValid($path, $whitelist)) {
             if (self::$emit_warnings) {
                 trigger_error("SafeFile::fileOpen($orig_path) is not valid", E_USER_WARNING);
             }
@@ -265,5 +351,19 @@ class SafeFile
         }
 
         return fopen($path, $mode);
+    }
+
+    /**
+     * Wrapper for fopen().
+     *
+     * @param string          $path
+     * @param string          $mode
+     * @param string[]|string $whitelist
+     *
+     * @return bool|resource
+     */
+    public static function fopen($path, $mode, $whitelist)
+    {
+        return self::fileOpen($path, $mode, $whitelist);
     }
 }

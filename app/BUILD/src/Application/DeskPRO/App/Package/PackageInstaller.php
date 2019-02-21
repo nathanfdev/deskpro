@@ -307,6 +307,7 @@ class PackageInstaller
      */
     private function compileHtmlTemplate(Package $package, array $asset_info)
     {
+        SafeFile::assertValid($asset_info['real_path'], '*');
         $content = file_get_contents($asset_info['real_path']);
         $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
             $path = @realpath($package->getPath().'/html/'.$m[1]);
