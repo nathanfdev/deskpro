@@ -133,7 +133,8 @@ class ReportWidgetType extends AbstractType
         if ($form->has('input_mode')) {
             if (isset($data['input_mode']) && $data['input_mode'] === 'dpql') {
                 $form->add('query', TextareaType::class, [
-                    'required' => true,
+                    'required'          => true,
+                    'filter_clean_type' => 'basic_string',
                 ]);
             } else {
                 $form->add('query_parts', DpqlPartsType::class, [

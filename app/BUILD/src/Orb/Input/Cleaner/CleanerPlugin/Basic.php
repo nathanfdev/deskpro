@@ -48,6 +48,7 @@ class Basic implements CleanerPlugin
             'unum',
             'str',
             'string',
+            'basic_string',
             'str_notrim',
             'str_nohtml',
             'nohtml',
@@ -127,6 +128,7 @@ class Basic implements CleanerPlugin
 
             case 'str':
             case 'string':
+            case 'basic_string':
                 if (!is_scalar($value)) {
                     $value = '';
                 }
