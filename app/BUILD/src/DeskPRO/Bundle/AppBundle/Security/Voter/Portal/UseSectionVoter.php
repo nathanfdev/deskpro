@@ -54,11 +54,14 @@ class UseSectionVoter extends AbstractVoter
 
         switch ($attribute) {
             case static::USE_ARTICLES:
-                return $this->getActiveBrandSetting('core.apps_kb') && $permissionBag->get('articles.use');
+                return $this->getActiveBrandSetting('core.apps_kb')
+                    && ($permissionBag->get('articles.use') || $permissionBag->getAllowedArticleCategories());
             case static::USE_FEEDBACK:
-                return $this->getActiveBrandSetting('core.apps_feedback') && $permissionBag->get('feedback.use');
+                return $this->getActiveBrandSetting('core.apps_feedback')
+                    && ($permissionBag->get('feedback.use') || $permissionBag->getAllowedFeedbackCategoryIds());
             case static::USE_GUIDES:
-                return $this->getActiveBrandSetting('core.apps_guides') && $permissionBag->get('guides.use');
+                return $this->getActiveBrandSetting('core.apps_guides')
+                    && ($permissionBag->get('guides.use') || $permissionBag->getAllowedGuides());
             case static::USE_CHAT:
                 // check global settings
                 if (!$this->getActiveBrandSetting('core.apps_chat')
@@ -91,14 +94,19 @@ class UseSectionVoter extends AbstractVoter
 
                 return $brandPermissionBag->get('chat.use');
             case static::USE_DOWNLOADS:
-                return $this->getActiveBrandSetting('core.apps_downloads') && $permissionBag->get('downloads.use');
+                return $this->getActiveBrandSetting('core.apps_downloads')
+                    && ($permissionBag->get('downloads.use') || $permissionBag->getAllowedDownloadCategories());
             case static::USE_NEWS:
-                return $this->getActiveBrandSetting('core.apps_news') && $permissionBag->get('news.use');
+                return $this->getActiveBrandSetting('core.apps_news')
+                    && ($permissionBag->get('news.use') || $permissionBag->getAllowedNewsCategories());
             case static::USE_TICKETS:
                 return $permissionBag->get('tickets.use');
             case static::VIEW_TICKETS_LINK:
                 return $permissionBag->get('tickets.use')
-                    || $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use');
+                    || (
+                        $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use')
+                        && $this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()
+                    );
         }
 
         return false;
