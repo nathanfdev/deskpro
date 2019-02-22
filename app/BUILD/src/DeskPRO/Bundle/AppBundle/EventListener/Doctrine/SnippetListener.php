@@ -23,7 +23,7 @@ class SnippetListener
     private $container;
 
     /**
-     * ActionAlertsListener constructor.
+     * SnippetListener constructor.
      *
      * @param ContainerInterface $container
      */

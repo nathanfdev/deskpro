@@ -4,11 +4,13 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets;
 
 use Application\DeskPRO\Entity\CustomDataBilling;
 use Application\DeskPRO\Entity\CustomDefBilling;
+use Application\DeskPRO\Entity\TicketCharge;
 use Application\DeskPRO\Entity\TicketCharge as TicketChargeEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketCharge as TicketChargeModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -30,6 +32,11 @@ class TicketChargeHandler extends AbstractEntityHandler
      * @var string[]
      */
     private $comments;
+
+    /**
+     * @var array
+     */
+    private $customData;
 
     /**
      * Constructor.
@@ -60,6 +67,7 @@ class TicketChargeHandler extends AbstractEntityHandler
 
         $model = new TicketChargeModel($entity);
         $model->setComment(new CallbackDeferredProperty([$this, 'getComment'], [$entity]));
+        $model->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]));
 
         return $model;
     }
@@ -92,5 +100,30 @@ class TicketChargeHandler extends AbstractEntityHandler
         }
 
         return '';
+    }
+
+    /**
+     * @param TicketCharge $entity
+     *
+     * @return CustomDataBilling[]|ArrayCollection
+     */
+    public function getCustomData(TicketCharge $entity)
+    {
+        if (null === $this->customData) {
+            $result = $this->em->getRepository(CustomDataBilling::class)->findBy([
+                'ticket_charge' => $this->chargeIds,
+            ]);
+
+            $this->customData = [];
+            foreach ($result as $customData) {
+                $this->customData[$customData->getTicketCharge()->getId()][] = $customData;
+            }
+        }
+
+        if (isset($this->customData[$entity->getId()])) {
+            return new ArrayCollection($this->customData[$entity->getId()]);
+        }
+
+        return new ArrayCollection([]);
     }
 }
