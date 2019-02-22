@@ -240,12 +240,13 @@ class Boot
         if ($namedUtil && preg_match('/^[a-zA-Z0-9_\-]+$/', $namedUtil)) {
             if ($namedUtil === 'dputils') {
                 $dputilsPath = implode(DIRECTORY_SEPARATOR, [$env->getAppDir(), 'bin', 'dputils']);
-                if (!is_executable($dputilsPath)) {
+                if (!is_file($dputilsPath)) {
                     echo "Missing dputils at: $dputilsPath\n";
                     exit(1);
                 }
 
                 $cmd = [
+                    $env->getConfig('paths.php_path'),
                     escapeshellcmd($dputilsPath),
                 ];
                 if (!in_array('--php', $argv)) {
