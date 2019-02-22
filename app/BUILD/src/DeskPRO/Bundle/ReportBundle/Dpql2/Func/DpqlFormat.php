@@ -71,7 +71,7 @@ class DpqlFormat extends AbstractDpqlFunc
             switch (strtolower($typeLiteral)) {
                 case 'number':
                     if ($argLiterals) {
-                        return $valueRenderer->escapeValue(number_format($value, $argLiterals[0]));
+                        return $valueRenderer->escapeValue(number_format((float) $value, $argLiterals[0]));
                     }
                     break;
 
