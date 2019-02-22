@@ -55,4 +55,16 @@ interface SearchContextInterface
      * @return mixed
      */
     public function getOption($name);
+
+    /**
+     * @param array $allowedFields
+     *
+     * @return $this
+     */
+    public function setAllowedFields($allowedFields);
+
+    /**
+     * @return array
+     */
+    public function getAllowedFields();
 }

@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketMessageTranslated;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 use Application\DeskPRO\People\PermissionChecker\TicketChecker;
+use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
@@ -59,6 +60,7 @@ use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
@@ -565,6 +567,8 @@ class TicketController extends AbstractController
             $this->em->persist($ticket);
             $this->em->flush();
         }
+
+        $vars['ticket_statuses'] = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         return $this->render('AgentBundle:Ticket:view.html.twig', $vars);
     }
@@ -1367,23 +1371,28 @@ class TicketController extends AbstractController
             $setStatus = $actionType;
         }
 
+        // macro fallback status will fail here
+        $ticketStatuses = $this->getContainer()->getTicketStatuses();
+        /** @var TicketStatus $setStatus */
+        $setStatus = $ticketStatuses->findStatusOrException($setStatus);
+
         if ($setStatus) {
             /** @var TicketChecker $tcheck */
             $tcheck = $this->person->PermissionsManager->TicketChecker;
-            switch ($setStatus) {
+            switch ($setStatus->getStatusType()) {
                 case 'resolved':
                     if (!$tcheck->canModify($ticket, 'set_resolved')) {
-                        $setStatus = $ticket['status'];
+                        $setStatus = $ticket->getTicketStatus();
                     }
                     break;
                 case 'awaiting_agent':
                     if (!$tcheck->canModify($ticket, 'set_awaiting_agent')) {
-                        $setStatus = $ticket['status'];
+                        $setStatus = $ticket->getTicketStatus();
                     }
                     break;
                 case 'awaiting_user':
                     if (!$tcheck->canModify($ticket, 'set_awaiting_user')) {
-                        $setStatus = $ticket['status'];
+                        $setStatus = $ticket->getTicketStatus();
                     }
                     break;
             }
@@ -1635,7 +1644,7 @@ class TicketController extends AbstractController
 
             if (!$message['is_agent_note'] || $macro) {
                 if ($actionType != 'macro') {
-                    $ticket['status'] = $setStatus;
+                    $ticket->setTicketStatus($setStatus);
                 }
 
                 if ($this->in->getBool('options.do_kbpending')) {
@@ -1757,7 +1766,7 @@ class TicketController extends AbstractController
         $data['active_drafts'] = $this->_renderActiveDrafts($ticket, $drafts);
 
         $errorMessages = [];
-        if ($setStatus == 'resolved') {
+        if ($setStatus->getStatusType() == 'resolved') {
             $newticket = new NewTicket($this->em, $this->person);
             $newticket->setValuesFromTicket($ticket);
             $validator = new NewTicketValidator();
@@ -1877,7 +1886,7 @@ class TicketController extends AbstractController
                 'replybox_html'                  => $replybox,
                 'agent_id'                       => $ticket['agent_id'],
                 'agent_team_id'                  => $ticket['agent_team_id'],
-                'status'                         => $ticket['status'],
+                'status'                         => $ticket->getStatusCode(),
                 'close_tab'                      => false,
                 'api_data'                       => $ticket->toApiData(),
                 'active_drafts'                  => $activeDrafts,
@@ -2318,7 +2327,8 @@ class TicketController extends AbstractController
 
         $perms_before = $this->_getTicketPerms($ticket);
 
-        $was_hidden = $ticket->status == 'hidden';
+        $was_hidden  = $ticket->status == 'hidden';
+        $was_pending = $ticket->status == 'pending';
 
         $macro_id = $this->in->getUInt('macro_id');
         if ($macro_id) {
@@ -2559,6 +2569,9 @@ class TicketController extends AbstractController
         }
 
         if ($was_hidden && $ticket->status != 'hidden') {
+            $data['data']['refresh'] = true;
+        }
+        if ($was_pending && $ticket->status != 'pending') {
             $data['data']['refresh'] = true;
         }
 
@@ -3469,7 +3482,7 @@ class TicketController extends AbstractController
 
         try {
             $this->em->getConnection()->beginTransaction();
-            $ticket->setStatus('hidden.deleted');
+            $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->getDeletedStatus());
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -3492,7 +3505,7 @@ class TicketController extends AbstractController
             $person       = $ticket->getPerson();
             $edit_manager = $this->container->getSystemService('person_edit_manager');
             $edit_manager->setPersonContext($this->person);
-            $edit_manager->deleteUser($person);
+            $edit_manager->deleteUser($person, $this->container->get('blob.storage'));
         }
 
         $hidden_data = $this->_getHiddenBarData($ticket);
@@ -3531,7 +3544,7 @@ class TicketController extends AbstractController
         $this->em->getConnection()->beginTransaction();
 
         try {
-            $ticket->setStatus('hidden.spam');
+            $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->getSpamStatus());
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -3574,7 +3587,7 @@ class TicketController extends AbstractController
     {
         $hard_delete_time = null;
         $ticket_deleted   = false;
-        if ($ticket['hidden_status'] == 'deleted') {
+        if ($ticket->getTicketStatus()->isDeleted()) {
             $ticket_deleted = $ticket->getDeletionRecord();
 
             $date_deleted = $ticket['date_created'];
@@ -3586,7 +3599,7 @@ class TicketController extends AbstractController
                     'core_tickets.hard_delete_time'
                 );
             $hard_delete_time = max(0, $hard_delete_time - time());
-        } elseif ($ticket['hidden_status'] == 'spam') {
+        } elseif ($ticket->getTicketStatus()->isSpam()) {
             $hard_delete_time = $ticket->date_status->getTimestamp() + $this->container->getSetting(
                     'core_tickets.spam_delete_time'
                 );
@@ -4728,6 +4741,7 @@ class TicketController extends AbstractController
                 'brands'               => $brands,
                 'default_brand'        => $this->get('brand_stack')->getDefaultBrand()->getId(),
                 'default_departments'  => $defaultDepartments,
+                'ticket_statuses'      => App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true),
             ]
         );
     }
@@ -5484,6 +5498,9 @@ class TicketController extends AbstractController
             exit;
         }
 
+        $emailSettings = new EmailAccountsSettings($this->get('deskpro.core.settings'));
+        file_put_contents($tmpdir.'/email_accounts_settings.json', json_encode($emailSettings->toArray()));
+
         $d = new TicketTriggerData();
         file_put_contents($tmpdir.'/triggers.json', json_encode($d->getData()));
 
@@ -5609,9 +5626,13 @@ CSS;
             }
 
             if ($message->email_source && $message->email_source->getLogBlob()) {
+                $fileName = $tmpdir.'/message-'.$message->id.'.log';
+                if (strpos($message->email_source->getLogBlob()->getContentType(), 'gzip') !== false) {
+                    $fileName .= '.gz';
+                }
                 $this->container->getBlobStorage()
                     ->copyBlobRecordToFile(
-                        $tmpdir.'/message-'.$message->id.'.log',
+                        $fileName,
                         $message->email_source->getLogBlob()
                     );
             }

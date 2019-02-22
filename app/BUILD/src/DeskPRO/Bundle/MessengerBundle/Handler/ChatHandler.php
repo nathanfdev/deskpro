@@ -10,7 +10,9 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
@@ -72,6 +74,11 @@ class ChatHandler
     private $brandStack;
 
     /**
+     * @var TicketStatusDataService
+     */
+    private $ticketStatuses;
+    
+    /**
      * @var AttachmentHelper
      */
     private $attachmentHelper;
@@ -90,13 +97,15 @@ class ChatHandler
         EntityManager $em,
         EventDispatcherInterface $eventDispatcher,
         BrandStack $brandStack,
-        AttachmentHelper $attachmentHelper
+        AttachmentHelper $attachmentHelper,
+        TicketStatusDataService $ticketStatuses
     ) {
         $this->chatMapper       = $mapper;
         $this->em               = $em;
         $this->eventDispatcher  = $eventDispatcher;
         $this->brandStack       = $brandStack;
         $this->attachmentHelper = $attachmentHelper;
+        $this->ticketStatuses   = $ticketStatuses;
     }
 
     /**
@@ -397,7 +406,7 @@ class ChatHandler
             ->setCreationSystem(Ticket::CREATED_MESSENGER_UNANSWERED)
             ->setDepartment($department)
             ->setPerson($person)
-            ->setStatus(Ticket::STATUS_AWAITING_AGENT)
+            ->setTicketStatus($this->ticketStatuses->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT))
             ->setBrand($this->brandStack->getActive()->getBrand())
             ->linked_chat = $chat;
 

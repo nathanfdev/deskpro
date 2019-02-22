@@ -10,6 +10,7 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
+use Application\DeskPRO\EmailGateway\LinkedImages;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
@@ -135,7 +136,8 @@ class ProcessNew extends ProcessAbstract
             $emailInfo->body      = $inlineImages->processTokens($emailInfo->body);
             $emailInfo->body_full = '';
 
-            $emailInfo->body = $this->importReplaceLinkedImages($emailInfo->body);
+            $linkedImages    = new LinkedImages($this->logger);
+            $emailInfo->body = $linkedImages->importReplaceLinkedImages($emailInfo->body);
 
             if ($emailInfo->body_is_html) {
                 // The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace

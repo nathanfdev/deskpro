@@ -10,6 +10,7 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
+use Application\DeskPRO\EmailGateway\LinkedImages;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\Attachment;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
@@ -404,7 +405,8 @@ class ProcessAgentFwd extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] (Agent) Reading html');
             $agentReply = $this->reader->getBodyHtml()->body_utf8;
 
-            $agentReply = $this->importReplaceLinkedImages($agentReply);
+            $linkedImages = new LinkedImages($this->logger);
+            $agentReply   = $linkedImages->importReplaceLinkedImages($agentReply);
 
             $agentReply = $this->cleaner->clean($agentReply, 'html_email_preclean');
             $agentReply = $this->cleaner->clean($agentReply, 'html_email_basicclean');
@@ -532,7 +534,8 @@ class ProcessAgentFwd extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] (User) Reading html');
             $body = $userReader->getBodyHtml()->body_utf8;
 
-            $body = $this->importReplaceLinkedImages($body);
+            $linkedImages = new LinkedImages($this->logger);
+            $body         = $linkedImages->importReplaceLinkedImages($body);
 
             $body = $this->cleaner->clean($body, 'html_email_preclean');
             $body = $this->cleaner->clean($body, 'html_email_basicclean');

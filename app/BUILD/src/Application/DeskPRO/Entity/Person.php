@@ -3201,7 +3201,17 @@ class Person extends DomainObject implements
         $name = preg_replace('# {2,}#', ' ', $name);
         $this->setModelField('name', $name);
 
-        $parts = Strings::rexplode(' ', $name, 2);
+        // Split lastname from the right of name
+        $parts = preg_split("/\s+/u", $name);
+        $len   = count($parts);
+        if ($len > 2) {
+            $offset = $len - 1;
+            $parts  = array_merge(
+                [implode(' ', array_slice($parts, 0, $offset))],
+                array_slice($parts, $offset)
+            );
+        }
+
         $this->setModelField('first_name', $parts[0]);
         $this->setModelField('last_name', isset($parts[1]) ? $parts[1] : '');
 

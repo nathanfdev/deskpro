@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Reports;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
 use DeskPRO\Component\Util\ListUtils;
 
 /**
@@ -80,18 +81,18 @@ class ResultMetadata
     private $flags = [];
 
     /**
-     * @var Person
+     * @var DpqlContext
      */
-    private $person;
+    private $context;
 
     /**
      * Constructor.
      *
-     * @param Person|null $person
+     * @param DpqlContext $context
      */
-    public function __construct(Person $person = null)
+    public function __construct(DpqlContext $context = null)
     {
-        $this->person = $person;
+        $this->context = $context;
     }
 
     /**
@@ -274,10 +275,18 @@ class ResultMetadata
     }
 
     /**
+     * @return DpqlContext
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
      * @return Person|null
      */
     public function getPerson()
     {
-        return $this->person;
+        return $this->context ? $this->context->getPerson() : null;
     }
 }

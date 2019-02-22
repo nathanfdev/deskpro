@@ -75,7 +75,7 @@ class CleanupHourly extends AbstractJob
     private function _cleanupSessions()
     {
         $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-        $num      = App::getDb()->executeUpdate('DELETE FROM sessions WHERE date_last < ?', [$datetime]);
+        $num      = App::getDb()->executeUpdate('DELETE FROM sessions WHERE date_last < ? LIMIT 1000', [$datetime]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num stale sessions");

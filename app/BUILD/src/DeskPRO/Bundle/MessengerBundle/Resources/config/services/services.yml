@@ -16,6 +16,7 @@ services:
       - "@event_dispatcher"
       - "@brand_stack"
       - "@attachment_helper"
+      - "@tickets.statuses"
 
   messenger.service.action_alerts:
     class: DeskPRO\Bundle\MessengerBundle\Service\ActionAlertsService

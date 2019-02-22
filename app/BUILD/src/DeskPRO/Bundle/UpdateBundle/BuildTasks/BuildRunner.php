@@ -64,6 +64,8 @@ class BuildRunner
      *
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
+     *
+     * @return AbstractBuild
      */
     public function runBuild($buildId)
     {
@@ -78,6 +80,8 @@ class BuildRunner
 
         $this->logger->info(sprintf('.......... #%s :: %s :: Done in %.3fs', $buildId, TypeUtils::getBaseTypeName($build), microtime(true) - $ts));
         $this->logger->info('');
+
+        return $build;
     }
 
     /**

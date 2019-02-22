@@ -1,6 +1,7 @@
 import React from 'react';
 import Isvg from 'react-inlinesvg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faImage } from '@fortawesome/free-solid-svg-icons/faImage';
 import { faTable } from '@fortawesome/pro-solid-svg-icons';
 
 export const bold = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/editor/bold.svg`} />;
@@ -12,5 +13,5 @@ export const quote = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle
 export const info = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/editor/info.svg`} />;
 export const warning = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/editor/warning.svg`} />;
 export const error = <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/editor/error.svg`} />;
-export const image = <FontAwesomeIcon icon="image" />;
+export const image = <FontAwesomeIcon icon={faImage} />;
 export const table = <FontAwesomeIcon icon={faTable} />;

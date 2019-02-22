@@ -23,7 +23,7 @@ class RunCommand extends ContainerAwareCommand
             ->addOption('partial-online', null, InputOption::VALUE_OPTIONAL, 'Runs pending ONLINE upgrade scripts. This will stop at the first blocking script unless you use --partial-online=FORCE', false)
             ->addOption('fast-sync', null, InputOption::VALUE_OPTIONAL, 'After a full upgrade, attempt to use fast post-build sync scripts. This is just a hint unless you use --fast-sync=FORCE', false)
             ->addOption('preview', null, InputOption::VALUE_NONE, 'Do not run any commands, just show a preview of what will happen')
-            ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Continue even if a build task returns an error status')
+            ->addOption('ignore-errors', null, InputOption::VALUE_OPTIONAL, 'Continue even if a build task returns an error status.', 'auto')
             ->addOption('skip-fk-checks', null, InputOption::VALUE_NONE, 'Skip foreign keys constraints check')
             ->addOption('skip-refresh-signal', null, InputOption::VALUE_NONE, 'Do not send refresh signal')
         ;
@@ -35,11 +35,13 @@ class RunCommand extends ContainerAwareCommand
             return $ret;
         }
 
+        /*
         if (
             !$input->getOption('skip-fk-checks')
             && ($ret = $this->FKConstraintsCheck($output))) {
             // nothing -- for now, not preventing, just showing warning
         }
+        */
 
         if ($ret = $this->legacyVersionCheck($output)) {
             return $ret;
@@ -63,7 +65,22 @@ class RunCommand extends ContainerAwareCommand
         $buildStatus    = $this->getContainer()->get('dp.build_tasks.build_status');
         $manifestReader = $this->getContainer()->get('dp.build_tasks.manifest_reader');
         $isPreview      = $input->getOption('preview');
-        $ignoreErrors   = $input->getOption('ignore-errors');
+        $ignoreErrors   = true;
+
+        if ($this->getContainer()->get('deskpro.app_env')->getConfig('upgrader.errors_are_fatal')) {
+            $ignoreErrors = false;
+        }
+
+        $v = $input->getOption('ignore-errors');
+        if ($v !== 'auto') {
+            if (in_array($v, ['0', 'n', 'no', 'f', 'false', 'off'])) {
+                $ignoreErrors = false;
+            } elseif ($v === '' || in_array($v, ['1', 'y', 'yes', 't', 'true', 'on'])) {
+                $ignoreErrors = true;
+            } else {
+                $output->writeln('<error>Unknown value for --ignore-errors specified</error>');
+            }
+        }
 
         //------------------------------
         // Options
@@ -99,6 +116,7 @@ class RunCommand extends ContainerAwareCommand
         //------------------------------
 
         $currentBuildId = $buildStatus->getSchemaBuild();
+        $hasErrors      = false;
 
         $logger->debug("Current Build #$currentBuildId (".date('Y-m-d', $currentBuildId).')');
 
@@ -148,6 +166,8 @@ class RunCommand extends ContainerAwareCommand
             if ($ret) {
                 $logger->notice("--> Error status: $ret");
 
+                $hasErrors = true;
+
                 if (!$ignoreErrors) {
                     return $ret;
                 }
@@ -196,6 +216,7 @@ class RunCommand extends ContainerAwareCommand
             passthru($cmd, $ret);
 
             if ($ret) {
+                $hasErrors = true;
                 $logger->warn("--> dp:update:tasks:run-sync exited with error status: $ret");
             }
         }
@@ -240,6 +261,23 @@ class RunCommand extends ContainerAwareCommand
         }
 
         $logger->info('Upgrade complete');
+
+        if ($hasErrors) {
+            $logger->warn('');
+            $logger->warn(str_repeat('!', 60));
+            $logstr = <<<'LOGSTR'
+WARNING: One or more errors were raised during the upgrade process.
+
+The system has finished the upgrade process and your helpdesk has been put back online. However, you should send the
+log to us at support@deskpro.com so our agents can review it to determine what the issue was.
+
+If you experience significant issues after this upgrade, you may wish to revert to your pre-upgrade database backup:
+https://support.deskpro.com/en/guides/sysadmin-guide/backups/restoring-from-backup
+LOGSTR;
+            $logger->warn($logstr);
+            $logger->warn(str_repeat('!', 60));
+            $logger->warn('');
+        }
 
         return 0;
     }

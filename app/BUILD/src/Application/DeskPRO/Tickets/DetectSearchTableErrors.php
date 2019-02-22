@@ -106,7 +106,7 @@ class DetectSearchTableErrors
             `creation_system`,
             `status`,
             `urgency`,
-            `is_hold`,
+            `ticket_status_id`,
             `date_created`,
             `date_first_agent_reply`,
             `date_last_agent_reply`,

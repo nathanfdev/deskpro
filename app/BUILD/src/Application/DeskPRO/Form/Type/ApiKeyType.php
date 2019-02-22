@@ -36,7 +36,12 @@ class ApiKeyType extends AbstractType
         );
 
         $builder->add('flags', 'choice', [
-            'choices'  => [ApiKey::FLAG_SUPER_KEY => ApiKey::FLAG_SUPER_KEY, ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE],
+            'choices' => [
+                ApiKey::FLAG_SUPER_KEY    => ApiKey::FLAG_SUPER_KEY,
+                ApiKey::FLAG_ADMIN_MANAGE => ApiKey::FLAG_ADMIN_MANAGE,
+                ApiKey::FLAG_API_V1       => ApiKey::FLAG_API_V1,
+                ApiKey::FLAG_API_V2       => ApiKey::FLAG_API_V2,
+            ],
             'multiple' => true, // an array
             'required' => false,
         ]);

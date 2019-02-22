@@ -14,9 +14,9 @@
 			{% set action = phrase('agent.emails.ticket_action_status_user') %}
 		{% elseif ticket.status == 'resolved' %}
 			{% set action = phrase('agent.emails.ticket_action_status_resolved') %}
-		{% elseif ticket.status_code == 'hidden.deleted' %}
+		{% elseif ticket.ticket_status.isDeleted() %}
 			{% set action = phrase('agent.emails.ticket_action_deleted') %}
-		{% elseif ticket.status_code == 'hidden.spam' %}
+		{% elseif ticket.ticket_status.isSpam() %}
 			{% set action = phrase('agent.emails.ticket_action_spam') %}
 		{% else %}
 			{% set action = phrase('agent.emails.ticket_action_updated') %}

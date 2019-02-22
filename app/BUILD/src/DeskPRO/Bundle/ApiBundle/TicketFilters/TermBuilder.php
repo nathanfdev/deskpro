@@ -87,11 +87,16 @@ class TermBuilder
                     $searchField = TermFieldIds::TICKET_STARRED;
                     break;
                 case 'status':
-                    $searchField = TermFieldIds::TICKET_STATUS;
+                    $query = $this->getStatusFilterQuery($value, false);
+                    if ($query) {
+                        $searchQueryParts[] = $query;
+                    }
                     break;
                 case 'not_status':
-                    $op          = '!=';
-                    $searchField = TermFieldIds::TICKET_STATUS;
+                    $query = $this->getStatusFilterQuery($value, true);
+                    if ($query) {
+                        $searchQueryParts[] = $query;
+                    }
                     break;
                 case 'agent':
                     $searchField = TermFieldIds::TICKET_AGENT;
@@ -328,5 +333,60 @@ class TermBuilder
         } catch (\Exception $e) {
             throw new \InvalidArgumentException($e->getMessage());
         }
+    }
+
+    /**
+     * @param mixed $value
+     * @param bool  $isNot
+     *
+     * @return string|null
+     */
+    private function getStatusFilterQuery($value, $isNot = false)
+    {
+        if (!is_array($value)) {
+            $value = (array) $value;
+        }
+
+        $myParts = [];
+        foreach ($value as $status) {
+            if (!$value) {
+                continue;
+            }
+
+            if (strpos($status, '.') !== false) {
+                list($status, $statusId) = explode('.', $status, 2);
+                if ($isNot) {
+                    $part = sprintf(
+                        '(%s != %s OR %s IS NULL)',
+                        TermFieldIds::TICKET_TICKET_STATUS_ID,
+                        $statusId,
+                        TermFieldIds::TICKET_TICKET_STATUS_ID
+                    );
+                } else {
+                    $part = sprintf(
+                        "(%s = '%s' AND %s = %s)",
+                        TermFieldIds::TICKET_STATUS, $status,
+                        TermFieldIds::TICKET_TICKET_STATUS_ID, $statusId
+                    );
+                }
+                $myParts[] = $part;
+            } else {
+                $op        = $isNot ? '!=' : '=';
+                $myParts[] = sprintf("(%s %s '%s')", TermFieldIds::TICKET_STATUS, $op, $status);
+            }
+        }
+
+        if (!$myParts) {
+            return null;
+        }
+
+        if (count($myParts) > 1) {
+            $op    = $isNot ? ' AND ' : ' OR ';
+            $query = '('.implode($op, $myParts).')';
+        } else {
+            $query = $myParts[0];
+        }
+
+        return $query;
     }
 }

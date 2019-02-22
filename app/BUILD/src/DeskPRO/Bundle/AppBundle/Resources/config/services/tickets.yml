@@ -30,3 +30,8 @@ services:
       - "@ticket_layout_factory"
       - "@custom_field_manager"
       - "@brand_aware_settings_resolver"
+
+  tickets.statuses:
+    class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService
+    arguments:
+      - "@doctrine.orm.default_entity_manager"

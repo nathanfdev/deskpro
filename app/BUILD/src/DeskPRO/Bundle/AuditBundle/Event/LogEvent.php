@@ -15,6 +15,7 @@ class LogEvent extends Event
     const PRE_LOG_EVENT    = 'audit_log.pre_log';
     const START_LOG_EVENT  = 'audit_log.start_log';
     const FINISH_LOG_EVENT = 'audit_log.finish_log';
+    const FINISH_ALL_EVENT = 'audit_log.finish_all';
 
     /**
      * @var bool

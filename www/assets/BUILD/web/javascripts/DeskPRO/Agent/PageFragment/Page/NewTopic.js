@@ -46,6 +46,22 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 			self.updateTopics();
 		});
 
+		$('#' + this.meta.baseId + '_parent').on('change', function() {
+			if (this.value !== '0') {
+				$('#' + self.meta.baseId + '_content_section').show();
+				$('#' + self.meta.baseId + '_topic_submit').show();
+				$('#' + self.meta.baseId + '_section_submit').hide();
+				$('#' + self.meta.baseId + '_topic_title').show();
+				$('#' + self.meta.baseId + '_section_title').hide();
+			} else {
+				$('#' + self.meta.baseId + '_content_section').hide();
+				$('#' + self.meta.baseId + '_topic_submit').hide();
+				$('#' + self.meta.baseId + '_section_submit').show();
+				$('#' + self.meta.baseId + '_topic_title').hide();
+				$('#' + self.meta.baseId + '_section_title').show();
+			}
+		});
+
 		window.setTimeout(function() {
 			if (self.OBJ_DESTROYED) return;
 

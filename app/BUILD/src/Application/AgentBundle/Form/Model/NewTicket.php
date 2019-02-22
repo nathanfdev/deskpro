@@ -192,7 +192,7 @@ class NewTicket
             $t->setCategoryId($this->category_id);
         }
         if ($this->status) {
-            $t->setStatus($this->status);
+            $t->setTicketStatus(App::$container->getTicketStatuses()->findStatusOrException($this->status));
         }
 
         $t->person       = $p;
@@ -215,7 +215,7 @@ class NewTicket
             $this->product_id    = $ticket->getProductId();
             $this->priority_id   = $ticket->getPriorityId();
             $this->category_id   = $ticket->getCategoryId();
-            $this->status        = $ticket->status;
+            $this->status        = $ticket->getStatusCode();
 
             $field_manager       = App::getSystemService('ticket_fields_manager');
             $this->ticket_fields = $field_manager->createFormArrayForObject($ticket);
@@ -371,14 +371,16 @@ class NewTicket
             $ticket->person_email = $this->_email;
         }
 
-        $standard = [
-            'subject', 'status', 'agent_id', 'agent_team_id', 'brand_id',
-            'department_id', 'category_id', 'priority_id', 'workflow_id',
-            'product_id', 'notify_template',
-        ];
         if (!$this->status) {
             $this->status = 'awaiting_agent';
         }
+        $ticket->setTicketStatus(App::$container->getTicketStatuses()->findStatusOrException($this->status));
+
+        $standard = [
+            'subject', 'agent_id', 'agent_team_id', 'brand_id',
+            'department_id', 'category_id', 'priority_id', 'workflow_id',
+            'product_id', 'notify_template',
+        ];
 
         foreach ($standard as $k) {
             $ticket[$k] = $this->$k;

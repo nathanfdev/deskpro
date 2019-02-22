@@ -174,11 +174,38 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
                     $this->_allowed_ids[$r['app']] = [];
                 }
 
-                $this->_allowed_ids[$r['app']][] = $r['department_id'];
-
                 $dep = $departmentDataService->get($r['department_id']);
+                if (!$dep) {
+                    continue;
+                }
+
+                $this->_allowed_ids[$r['app']][$dep->getId()] = $dep->getId();
+
                 if ($dep && $dep->getParent()) {
-                    $this->_allowed_ids[$r['app']][] = $dep->getParent()->getId();
+                    $this->_allowed_ids[$r['app']][$dep->getParent()->getId()] = $dep->getParent()->getId();
+                }
+            }
+
+            foreach (['tickets', 'chat'] as $filterContext) {
+                if (isset($this->_allowed_ids[$filterContext])) {
+                    // check if parent department has children
+                    foreach ($this->_allowed_ids[$filterContext] as $depId) {
+                        $dep = $departmentDataService->get($depId);
+                        if (!$dep->isLeaf()) {
+                            $hasAllowedChild = false;
+                            foreach ($dep->getChildren() as $childDep) {
+                                if (isset($this->_allowed_ids[$filterContext][$childDep->getId()])) {
+                                    $hasAllowedChild = true;
+                                }
+                            }
+
+                            if (!$hasAllowedChild) {
+                                unset($this->_allowed_ids[$filterContext][$dep->getId()]);
+                            }
+                        }
+                    }
+
+                    $this->_allowed_ids[$filterContext] = array_values($this->_allowed_ids[$filterContext]);
                 }
             }
         }

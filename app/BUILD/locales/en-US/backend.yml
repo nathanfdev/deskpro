@@ -679,6 +679,7 @@ adm.ticket_slas.delete_confirm: 'Are you sure you want to delete this SLA? All d
 adm.ticket_slas.no_slas: 'You have not created any SLAs yet.'
 adm.ticket_slas.slas: SLAs
 adm.ticket_slas.title_explain: 'This title will be displayed in the agent interface when listing SLAs.'
+adm.ticket_statuses.delete_confirm: 'Are you sure? Any tickets using this status will have their sub-status unset, but will remain'
 adm.ticket_triggers.copy_trigger: 'Copy another trigger'
 adm.ticket_triggers.copy_trigger_modal_title: 'Copy Trigger'
 adm.ticket_triggers.count_dep_triggers:
@@ -3029,6 +3030,7 @@ agent.general.create_deal: 'Create Deal'
 agent.general.create_download: 'Create Download'
 agent.general.create_feedback: 'Create Feedback'
 agent.general.create_news: 'Create News Post'
+agent.general.create_section: 'Create Section'
 agent.general.create_status: 'Create Status'
 agent.general.create_task: 'Create Task'
 agent.general.create_ticket: 'Create Ticket'
@@ -3529,6 +3531,7 @@ agent.general.search: Search
 agent.general.search_results: 'Search results'
 agent.general.search_terms: 'Search Terms'
 agent.general.seconds: seconds
+agent.general.section_title: 'Section Title'
 agent.general.select: Select
 agent.general.select_a_brand: 'Select a brand'
 agent.general.select_a_department: 'Select a department'
@@ -5091,6 +5094,7 @@ agent.tickets.status_resolved_deleted: Deleted
 agent.tickets.status_resolved_spam: Spam
 agent.tickets.status_resolved_temp: Temporary
 agent.tickets.status_resolved_validating: 'Awaiting Validation'
+agent.tickets.status_pending: Pending
 agent.tickets.stop_later_triggers_action: 'Stop processing later triggers'
 agent.tickets.subject_changed: 'Subject changed'
 agent.tickets.subject_changed_from: 'Subject changed from'

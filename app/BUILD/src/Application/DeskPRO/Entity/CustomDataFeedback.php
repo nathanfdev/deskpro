@@ -38,6 +38,14 @@ class CustomDataFeedback extends CustomDataAbstract
     }
 
     /**
+     * @return Feedback
+     */
+    public function getFeedback()
+    {
+        return $this->feedback;
+    }
+
+    /**
      * Set a field.
      *
      * @param CustomDefFeedback $field

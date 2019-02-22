@@ -466,7 +466,7 @@ class PersonController extends AbstractController implements ProtectedController
 
         $edit_manager = $this->container->getSystemService('person_edit_manager');
         $edit_manager->setPersonContext($this->person);
-        $edit_manager->deleteUser($person);
+        $edit_manager->deleteUser($person, $this->container->get('blob.storage'));
 
         return $this->createSuccessResponse();
     }

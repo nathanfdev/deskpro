@@ -155,7 +155,7 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
     };
 
     $scope.download = function (widget) {
-      window.open($http.formatApi2Url(`/dashboard_report_widgets/${widget.id}/download/csv`));
+      window.location = $http.formatApi2Url(`/dashboard_report_widgets/${widget.id}/download/csv`);
       return true;
     };
 
@@ -163,7 +163,7 @@ define(['DeskPRO/Util/Arrays'], Arrays => [
       if (widget.widget_type === 'graph') {
         widget.print();
       } else {
-        window.open($http.formatApi2Url(`/dashboard_report_widgets/${widget.id}/download/pdf`));
+        window.location = $http.formatApi2Url(`/dashboard_report_widgets/${widget.id}/download/pdf`);
       }
       return true;
     };

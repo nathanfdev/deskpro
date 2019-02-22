@@ -24,7 +24,9 @@ class ContentAbstractType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
-            ->add('content', TextareaType::class)
+            ->add('content', TextareaType::class, [
+                'filter_clean' => isset($options['filter_clean']) ? $options['filter_clean'] : true,
+            ])
             ->add('person', PersonAssignType::class, ['required' => false])
             ->add('language', EntityType::class, [
                 'class'    => Language::class,

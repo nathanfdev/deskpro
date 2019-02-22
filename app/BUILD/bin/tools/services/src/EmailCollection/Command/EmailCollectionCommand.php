@@ -44,7 +44,7 @@ class EmailCollectionCommand extends Command
     {
         $output->writeln('Email collection starting ...');
 
-        $stop_time    = (int) $input->getOption('max-time') ?: 0;
+        $stopTime     = (int) $input->getOption('max-time') ?: 0;
         $task_timeout = 600;
         $interval     = (int) $input->getOption('connect-interval') ?: 30;
         $max_tasks    = (int) $input->getOption('max-processes') ?: 999;
@@ -53,7 +53,7 @@ class EmailCollectionCommand extends Command
             $config = $this->dpEnv->getConfig('async_email_processing');
 
             if (!$input->getOption('max-time') && isset($config['collect']['max_time'])) {
-                $stop_time = (int) $config['collect']['max_time'];
+                $stopTime = (int) $config['collect']['max_time'];
             }
             if (!$input->getOption('max-processes') && isset($config['collect']['max_processes'])) {
                 $max_tasks = (int) $config['collect']['max_processes'];
@@ -90,17 +90,25 @@ class EmailCollectionCommand extends Command
         $options = [
             'task_timeout'    => $task_timeout,
             'max_tasks'       => $max_tasks,
-            'stop_after_time' => $stop_time,
+            'stop_after_time' => $stopTime,
             'tick_time'       => 5.0,
             'reader'          => $reader,
             'processor'       => $processor,
             'logger'          => $logger,
         ];
 
-        if ($stop_time) {
+        if ($stopTime) {
             //TODO - accounts staying marked as active when they shouldnt
+
+            // cron running interval could be less than stop time interval in settings
+            // so check 'stop_time' interval and reset account reading flag if only account seems to be stuck
+            // to avoid waiting for the email gateway supervisor interval (1500s)
+            $dateCut = new \DateTime("-{$stopTime} seconds");
+
             $db = Database::getDbIfClosed($this->dpEnv->getConfig('database'));
-            $db->update('email_accounts', ['is_read_active' => 0], ['is_read_active' => 1]);
+            $db->executeUpdate('UPDATE email_accounts SET is_read_active = 0 WHERE is_read_active = 1 AND date_read_start < :date_read_start', [
+                'date_read_start' => $dateCut->format('Y-m-d H:i:s'),
+            ]);
         }
 
         $runner = new TaskRunner($options);

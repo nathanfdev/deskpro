@@ -692,6 +692,16 @@ SQL
         "
         );
 
+        // TicketStatuses test data----------------------------------------------------------------------------
+        $this->getDb()->exec(
+            "
+            INSERT INTO `ticket_statuses` (`status_type`, `sys_id`, `title`)
+            VALUES
+              ('hidden', 'deleted', 'Deleted'),
+              ('hidden', 'spam', 'Spam')
+        "
+        );
+
         // AgentAlerts test data ------------------------------------------------------------------------------
         $this->getDb()->exec(
             "

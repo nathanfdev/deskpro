@@ -119,7 +119,9 @@
                             </label>
                         </label>
                         <span class="help-block">
-                            This allows you to restrict the agent and team selections on reports to only the currently logged-in agent.
+                            This allows you to restrict the agent and team selections on reports to only the currently logged-in agent.<br/>
+                            For more information on agent dashboards, <a href="https://support.deskpro.com/kb/articles/682">refer to this knowledgebase article</a>.
+
                         </span>
                     </div>
                 </div>
@@ -283,9 +285,9 @@
                 </div>
 
                 <div class="bucket">
-                    <label class="label">Description</label>
+                    <label class="label">Title</label>
                     <div class="bucket-column">
-                        <input type="text" ng-model="shareLink.title" placeholder="Share link description">
+                        <input type="text" ng-model="shareLink.title" placeholder="Share link title">
                     </div>
                     <div ng-if="error" class="alert alert-error">
                         {{ ng_var('error') }}
@@ -295,7 +297,7 @@
                 <div ng-if="reports.length > 0" class="bucket">
                     <label class="label">Default report tab to select</label>
                     <div class="bucket-column">
-                        <select ng-model="shareLink.default_report" ui-select2>
+                        <select class="shareable-link-report-selector" ng-model="shareLink.default_report" ui-select2>
                             <option ng-repeat="report in reports track by report.id" ng-value="report.id" ng-selected="shareLink.default_report == report.id">{{ ng_var('report.title') }}</option>
                         </select>
                     </div>

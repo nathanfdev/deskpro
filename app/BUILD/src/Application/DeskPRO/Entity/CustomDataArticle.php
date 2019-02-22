@@ -41,6 +41,14 @@ class CustomDataArticle extends CustomDataAbstract
     }
 
     /**
+     * @return Article
+     */
+    public function getArticle()
+    {
+        return $this->article;
+    }
+
+    /**
      * Set a field.
      *
      * @param CustomDefArticle $field

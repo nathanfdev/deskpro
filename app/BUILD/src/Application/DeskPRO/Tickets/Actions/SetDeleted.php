@@ -22,7 +22,7 @@ class SetDeleted extends AbstractContainerAwareAction implements ActionInterface
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $ticket->setStatus('hidden.deleted');
+        $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->getDeletedStatus());
         $context->getVars()->set('stop_triggers', true);
         $this->getContainer()->getDb()->replace('tickets_deleted', [
             'ticket_id'     => $ticket->id,
@@ -38,7 +38,7 @@ class SetDeleted extends AbstractContainerAwareAction implements ActionInterface
      */
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
-        if ($ticket->getStatusCode() == 'hidden.deleted') {
+        if ($ticket->getTicketStatus()->isDeleted()) {
             return true;
         }
 

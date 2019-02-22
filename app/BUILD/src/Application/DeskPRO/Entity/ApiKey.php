@@ -31,6 +31,8 @@ class ApiKey extends DomainObject
 {
     const FLAG_ADMIN_MANAGE = 'admin_manage';
     const FLAG_SUPER_KEY    = 'super';
+    const FLAG_API_V1       = 'api_v1';
+    const FLAG_API_V2       = 'api_v2';
 
     /**
      * @var int
@@ -140,6 +142,8 @@ class ApiKey extends DomainObject
         $data              = parent::toApiData($primary, false, $visited);
         $data['keyString'] = $this->getKeyString();
         $data['person']    = $this->person ? $this->person['id'] : null;
+        // always return flags array with consecutive key, so js converts to an Array object
+        $data['flags'] = array_values($this->flags);
         foreach ($this->flags as $f) {
             $data[$f] = true;
         }

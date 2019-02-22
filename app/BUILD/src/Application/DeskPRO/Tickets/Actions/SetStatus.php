@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
@@ -18,8 +19,20 @@ use Orb\Util\CheckedOptionsArray;
  *
  * @option string status
  */
-class SetStatus extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class SetStatus extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct(array $options = [])
+    {
+        // Have to overwrite constructor to set container before main initialization
+        // we need container in isValidStatus that is called during object creation
+        $this->setContainer(App::getContainer());
+
+        parent::__construct($options);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -43,12 +56,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
      */
     public function isValidStatus($status)
     {
-        static $valid_statuses = [
-            'awaiting_agent', 'awaiting_user', 'resolved', 'archived',
-            'hidden.spam', 'hidden.deleted',
-        ];
-
-        return in_array($status, $valid_statuses);
+        return $this->getContainer()->getTicketStatuses()->isValidStatusCode($status, true);
     }
 
     /**
@@ -61,7 +69,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
             return;
         }
 
-        $ticket->setStatus($set_status);
+        $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException($set_status, false, true));
         $context->getLogger()->debug("[SetStatus] Setting status $set_status");
     }
 
@@ -84,7 +92,7 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
     public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         $set_status = $this->getActionOption('status');
-        if (($set_status == 'hidden.deleted' || $set_status == 'hidden.spam') && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+        if ($this->isDeletedOrSpamStatus($set_status) && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
             return ['delete'];
         }
         if ($set_status == 'awaiting_agent' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
@@ -106,5 +114,20 @@ class SetStatus extends AbstractAction implements ActionInterface, MacroActionIn
     public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
     {
         $this->applyAction($ticket, $context);
+    }
+
+    /**
+     * @param string $statusCode
+     *
+     * @return bool
+     */
+    protected function isDeletedOrSpamStatus($statusCode)
+    {
+        $statuses = $this->getContainer()->getTicketStatuses();
+
+        return in_array($statusCode, [
+            $statuses->getDeletedStatus()->getStatusCode(),
+            $statuses->getSpamStatus()->getStatusCode(),
+        ]);
     }
 }

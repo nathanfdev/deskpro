@@ -183,7 +183,7 @@ class TicketLayoutsController extends BaseController
     {
         $contextLayout = $context === 'agent' ? $ticketLayout->getAgentLayout() : $ticketLayout->getUserLayout();
 
-        $this->getLayoutFieldFilter()->filterInvalid($contextLayout);
+        $this->get('ticket_layout_fields_filter')->filterInvalid($contextLayout);
 
         $layoutFactory = $this->get('ticket_layout_factory');
         $layoutFactory->verifyRequiredFields($contextLayout, true);
@@ -204,20 +204,5 @@ class TicketLayoutsController extends BaseController
         $department    = $department ?: $ticketLayout->getDepartment();
 
         return new TicketLayoutModel($contextLayout, $context, $department);
-    }
-
-    /**
-     * @return LayoutFieldFilter
-     */
-    protected function getLayoutFieldFilter()
-    {
-        if (!$this->filter) {
-            $this->filter = new LayoutFieldFilter(
-                $this->getContainer()->getTicketFieldManager(),
-                $this->getContainer()->getPersonFieldManager()
-            );
-        }
-
-        return $this->filter;
     }
 }

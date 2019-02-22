@@ -223,12 +223,21 @@ class TicketEdit implements PersonContextInterface
                         if ($action == 'awaiting_user' && !$tcheck->canModify($this->ticket, 'set_awaiting_user')) {
                             $status = null;
                         }
+                        if ($action == 'pending' && !$tcheck->canModify($this->ticket, 'set_hold')) {
+                            $status = null;
+                        }
                         if (!$status) {
                             $this->perm_errors[] = 'status';
                             break;
                         }
+                        if (isset($actions['hidden_status'])) {
+                            $action .= '.'.$actions['hidden_status'];
+                        }
+
+                        $status = App::getcontainer()->getTicketStatuses()->findStatusOrException($action);
                     }
-                    $this->ticket['status'] = $action;
+
+                    $this->ticket->setTicketStatus($status);
                     break;
 
                 case 'is_hold':

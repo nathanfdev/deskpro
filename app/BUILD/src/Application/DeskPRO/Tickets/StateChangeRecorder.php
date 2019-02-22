@@ -18,6 +18,7 @@ use Application\DeskPRO\Entity\TicketCharge;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder as BaseStateChangeRecorder;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\OrgModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
@@ -189,7 +190,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         $cur->agent      = $this->ticket->agent ? $this->ticket->agent->getId() : 0;
         $cur->agent_team = $this->ticket->agent_team ? $this->ticket->agent_team->getId() : 0;
         $cur->department = $this->ticket->department ? $this->ticket->department->getId() : 0;
-        $cur->urgency    = $this->ticket->status === Ticket::STATUS_AWAITING_AGENT ? $this->ticket->urgency : 0;
+        $cur->urgency    = $this->ticket->status === TicketStatus::STATUS_TYPE_AWAITING_AGENT ? $this->ticket->urgency : 0;
         $cur->status     = $this->ticket->getStatusCode();
         $cur->is_hold    = $this->ticket->is_hold;
         $cur->person     = $this->ticket->person ? $this->makePersonModel($this->ticket->person) : null;

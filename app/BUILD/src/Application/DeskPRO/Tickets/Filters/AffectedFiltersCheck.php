@@ -143,7 +143,7 @@ class AffectedFiltersCheck
         }
 
         $is_hidden_change = false;
-        if (isset($changed_fields['ticket.hidden_status'])) {
+        if (isset($changed_fields['ticket.ticket_status_id'])) {
             $is_hidden_change = true;
         }
 

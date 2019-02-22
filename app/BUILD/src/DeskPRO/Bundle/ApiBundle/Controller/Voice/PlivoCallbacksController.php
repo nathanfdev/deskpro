@@ -252,6 +252,7 @@ class PlivoCallbacksController extends BaseController
 
         $plivoXml = new PlivoXML();
 
+        /* @var VoicePhoneCall$phoneCall */
         if ($callStatus === 'busy') {
             if ($agentId && $callId) {
                 $agent     = $this->getManager()->getRepository(Person::class)->find($agentId);
@@ -359,6 +360,7 @@ class PlivoCallbacksController extends BaseController
 
         $callSid    = $request->get('CallUUID');
         $callStatus = $request->get('CallStatus');
+        $totalCost  = $request->get('TotalCost');
         $details    = $request->request->all();
 
         if ($callStatus === 'completed') {
@@ -368,12 +370,23 @@ class PlivoCallbacksController extends BaseController
         }
 
         // need to end conference
+        /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
             'callSid' => $callSid,
         ]);
         if ($phoneCall) {
             $this->get('dp.voice.provider_helper')->endConference($phoneCall);
         }
+
+        // store call price
+        $phoneCall->addCost($totalCost);
+        $phoneCall->setCostCurrency('USD');
+
+        $participant = $phoneCall->getParticipantByCallSid($callSid);
+        $participant->addCost($totalCost);
+        $participant->setCostCurrency('USD');
+
+        $this->getManager()->flush();
 
         $plivoXml = new PlivoXML();
         $response = new Response($plivoXml->toXML());
@@ -410,10 +423,24 @@ class PlivoCallbacksController extends BaseController
 
         $callSid    = $request->get('CallUUID');
         $callStatus = $request->get('CallStatus');
+        $totalCost  = $request->get('TotalCost');
         $details    = $request->request->all();
 
         if ($callStatus === 'completed') {
             $this->get('dp.voice.callbacks_helper')->callHangupByAgent($callSid, $details);
+        }
+
+        // store call price
+        $phoneCall = $this->getManager()->getRepository(VoicePhoneCall::class)->findByParticipantSid($callSid);
+        if ($phoneCall instanceof VoicePhoneCall) {
+            $phoneCall->addCost($totalCost);
+            $phoneCall->setCostCurrency('USD');
+
+            $participant = $phoneCall->getParticipantByCallSid($callSid);
+            $participant->addCost($totalCost);
+            $participant->setCostCurrency('USD');
+
+            $this->getManager()->flush();
         }
 
         $plivoXml = new PlivoXML();

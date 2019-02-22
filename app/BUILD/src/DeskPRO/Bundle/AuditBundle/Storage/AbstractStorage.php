@@ -32,6 +32,10 @@ abstract class AbstractStorage implements StorageInterface
     public function write(LoggableInterface $log)
     {
         $this->manager->persist($log);
+    }
+
+    public function finishWriting()
+    {
         $this->manager->flush();
     }
 

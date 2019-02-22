@@ -533,6 +533,11 @@ we detect that the user has replied to a message inline rather than above the cu
                         'type'        => 'DateTime',
                         'attribute'   => 'date_on_hold',
                     ],
+                    'ticket_status' => [
+                        'description' => 'Ticket status.',
+                        'type'        => 'string',
+                        'attribute'   => 'ticket_status',
+                    ],
                 ],
             ],
             'ticket_person' => [

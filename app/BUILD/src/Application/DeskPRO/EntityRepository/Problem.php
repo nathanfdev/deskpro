@@ -10,6 +10,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 
 class Problem extends AbstractEntityRepository
 {
@@ -76,7 +77,7 @@ class Problem extends AbstractEntityRepository
         }
 
         $where .= ' AND p.id IN ('.implode(',', $ids).')';
-        $where .= sprintf(' AND (t.hidden_status is null or t.hidden_status NOT IN ("%s", "%s"))', Entity\Ticket::HIDDEN_STATUS_DELETED, Entity\Ticket::HIDDEN_STATUS_SPAM);
+        $where .= sprintf(' AND (t.status != "%s")', TicketStatus::STATUS_TYPE_HIDDEN);
 
         $results = $this->getEntityManager()->getConnection()->fetchAll(
             "

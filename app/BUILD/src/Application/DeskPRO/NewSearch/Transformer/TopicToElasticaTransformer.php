@@ -5,12 +5,11 @@ namespace Application\DeskPRO\NewSearch\Transformer;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Topic;
 use Elastica\Document;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
 
 /**
  * Class TopicToElasticaTransformer.
  */
-class TopicToElasticaTransformer implements ModelToElasticaTransformerInterface
+class TopicToElasticaTransformer extends AbstractToElasticaTransformer
 {
     /**
      * {@inheritdoc}

@@ -8,6 +8,10 @@ Feature: /tickets/{id}/messages endpoint
     Given I'm authenticated as admin
     And there are no Blob records in the DB
     And no TicketMessage records exist
+    And only the following TicketStatus records exist:
+      | #   | StatusType     | SysId        | Title    |
+      | ts1 | hidden         | spam         | Spam     |
+      | ts2 | hidden         | deleted      | Deleted  |
     And only the following Ticket records exist:
       | #  | Subject  | Status         |
       | t1 | Ticket 1 | awaiting_agent |
@@ -266,6 +270,19 @@ Feature: /tickets/{id}/messages endpoint
 
     When I send a GET request to "/api/v2/tickets/{t1}"
     Then the JSON node "data.status" should be equal to the string "resolved"
+
+  Scenario: I reply to a ticket and change its status to substatus
+    When I send a POST request to "/api/v2/tickets/{t1}/messages" with body:
+    """
+{
+  "message": "my message",
+  "status": "hidden.~ts2~"
+}
+    """
+    Then the response status code should be 201
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the JSON node "data.status" should be equal to "hidden.{ts2}"
 
   Scenario: I retrieve a ticket message attachments empty list
     Given only the following TicketMessage records exist:

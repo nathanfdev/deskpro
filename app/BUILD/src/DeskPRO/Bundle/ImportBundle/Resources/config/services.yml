@@ -38,7 +38,7 @@ services:
   dp.importer.entity_persister:
     class: DeskPRO\Bundle\ImportBundle\Writer\EntityPersister
     arguments:
-      - "@doctrine.orm.entity_manager"
+      - "@doctrine.orm.default_entity_manager"
       - "@ticket_manager"
       - "@dp.importer_validator"
       - "@dp.importer.writer.mapper.import_map"

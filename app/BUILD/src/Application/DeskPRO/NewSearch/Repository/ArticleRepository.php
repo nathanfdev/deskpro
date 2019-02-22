@@ -18,7 +18,7 @@ class ArticleRepository extends AbstractRepository
      */
     protected function getQueryFields()
     {
-        return ['title', 'labels', 'content'];
+        return ['title', 'labels', 'content', 'custom_data'];
     }
 
     /**

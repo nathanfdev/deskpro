@@ -66,6 +66,8 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      */
     protected $downloadCategories;
 
+    protected $allowedFields;
+
     /**
      * @var array allow guides
      */
@@ -82,6 +84,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
      * @param array        $articleCategoryIds
      * @param array        $downloadCategoryIds
      * @param array        $guides
+     * @param array        $fields
      */
     public function __construct(
         array $permissions = [],
@@ -91,7 +94,8 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         array $newsCategoryIds = [],
         array $articleCategoryIds = [],
         array $downloadCategoryIds = [],
-        array $guides = []
+        array $guides = [],
+        array $fields = []
     ) {
         $this->setArray($permissions);
         $this->setAllowedTicketDepartmentIds($departmentTicketIds);
@@ -102,6 +106,7 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $this->setAllowedArticleCategories($articleCategoryIds);
         $this->setAllowedDownloadCategories($downloadCategoryIds);
         $this->setAllowedGuides($guides);
+        $this->allowedFields = $fields;
     }
 
     /**
@@ -366,6 +371,14 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         $this->guides = $guides;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedFields()
+    {
+        return $this->allowedFields;
     }
 
     /**

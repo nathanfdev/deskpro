@@ -7,7 +7,7 @@ import Immutable from 'immutable';
 import Handlebars from 'handlebars';
 import Modal from 'DeskPRO/Component/Semantic/Modal';
 import TitleWithVars from './TitleWithVars';
-import { displayTypes } from './helper';
+import { displayTypes, initHandlebars } from './helper';
 import DataTable from './DataTables';
 import SimpleStat from './SimpleStat';
 
@@ -128,6 +128,7 @@ class Run extends React.Component {
 
   constructor(props) {
     super(props);
+    initHandlebars(Handlebars);
     this.state = {
       displayTypes:       props.report.get('display_types', Immutable.List()).toJS(),
       deleteConfirmation: false

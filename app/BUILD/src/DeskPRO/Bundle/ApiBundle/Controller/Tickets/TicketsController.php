@@ -10,6 +10,7 @@ use DeskPRO\Bundle\ApiBundle\Traits\ApiKeyAwareTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
@@ -396,6 +397,8 @@ class TicketsController extends AbstractTicketsController
             'admin_api_key_request' => $this->isAdminApiKeyRequest(),
         ]);
 
+        $model->setCreationSystem(Ticket::CREATED_WEB_API);
+
         return parent::handleForm($model, $request, $options);
     }
 
@@ -407,7 +410,7 @@ class TicketsController extends AbstractTicketsController
     protected function deleteEntity($entity)
     {
         $entity->disableAutoTicketProcess();
-        $entity->setHiddenStatus(Ticket::HIDDEN_STATUS_DELETED);
+        $entity->setHiddenStatus(TicketStatus::SYS_ID_DELETED);
 
         $this->saveTicket($entity);
         $entity->deleteTicket($this->getUser(), '', false);

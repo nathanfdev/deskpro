@@ -565,7 +565,7 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->getConnection()->beginTransaction();
 
         try {
-            $ticket->setStatus('hidden.deleted');
+            $ticket->setTicketStatus($this->container->getTicketStatuses()->getDeletedStatus());
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -965,7 +965,7 @@ class TicketController extends AbstractController implements ProtectedController
         $this->em->getConnection()->beginTransaction();
 
         try {
-            $ticket->setStatus('hidden.spam');
+            $ticket->setTicketStatus($this->container->getTicketStatuses()->getSpamStatus());
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

@@ -74,6 +74,12 @@
                             <div class="on-icon"><i class="fas fa-check"></i></div>
                             {{ phrase('agent.tickets.kbd_' ~ status) }}
                         </li>
+                        {% for substatus in ticket_statuses[status].getChildren() %}
+                          <li data-type="{{ substatus.statusCode }}" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: substatus.title}) }}">
+                              <div class="on-icon"><i class="fas fa-check"></i></div>
+                              {{ phrase('agent.tickets.kbd_' ~ status) }}&nbsp;>&nbsp;{{ substatus.title }}
+                          </li>
+                        {% endfor %}
                     {% endif %}
                 {% endfor %}
 			</ul>

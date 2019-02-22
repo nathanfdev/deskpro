@@ -61,6 +61,8 @@ class SearchContextFactory
             $context->setGuideIds($ids);
         }
 
+        $context->setAllowedFields($permissionBag->getAllowedFields());
+
         return $context;
     }
 }

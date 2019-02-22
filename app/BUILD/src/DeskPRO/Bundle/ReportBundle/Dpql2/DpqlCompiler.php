@@ -114,6 +114,7 @@ class DpqlCompiler
             $context = new DpqlContext($person);
         }
 
+        $context->setDefaultTimezone($this->settingsResolver->getGlobalSettings()->get('core.default_timezone'));
         $this->contextStorage->setContext($context);
 
         $input = preg_replace('/DISPLAY [^\n]+\n/', '', $input);
@@ -256,11 +257,10 @@ class DpqlCompiler
             $input
         );
 
-        $settingsResolver = $this->settingsResolver;
-        $input            = preg_replace_callback(
+        $input = preg_replace_callback(
             '/%SETTING:([^:%]+)%/',
-            function ($match) use ($settingsResolver) {
-                $value = $settingsResolver->getGlobalSettings()->get($match[1], null);
+            function ($match) {
+                $value = $this->settingsResolver->getGlobalSettings()->get($match[1], null);
 
                 return $value ?: 'NULL';
             },

@@ -2,7 +2,9 @@
 
 namespace DpTest\DeskPRO\Bundle\ImportBundle\Writer\EntityHandler;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus as TicketStatusEntity;
 use DeskPRO\Bundle\ImportBundle\Model;
 
 /**
@@ -23,6 +25,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->clearTable('products');
         $this->clearTable('people');
         $this->clearTable('organizations');
+        $this->clearTable('ticket_statuses');
 
         parent::setUp();
     }
@@ -369,7 +372,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $message1->setPerson(1);
 
         $model = $this->createBaseModel();
-        $model->setStatus(Entity\Ticket::STATUS_ARCHIVED);
+        $model->setStatus(TicketStatusEntity::STATUS_TYPE_ARCHIVED);
         $model->addMessage($message1);
 
         $this->writer->writeModel($model);
@@ -377,6 +380,31 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
 
         $entity = $this->getBaseEntity();
         $this->assertTrue($entity->isArchived());
+    }
+
+    public function test_deleted_status()
+    {
+        App::$container = $this->getContainer();
+        $deletedStatus  = new TicketStatusEntity(TicketStatusEntity::STATUS_TYPE_HIDDEN);
+        $deletedStatus->setSysId(TicketStatusEntity::SYS_ID_DELETED);
+        $deletedStatus->setTitle('Deleted');
+        $this->em()->persist($deletedStatus);
+        $this->em()->flush();
+
+        $message1 = new Model\TicketMessage();
+        $message1->setOid(1);
+        $message1->setMessage('message');
+        $message1->setPerson(1);
+
+        $model = $this->createBaseModel();
+        $model->setStatus('hidden.deleted');
+        $model->addMessage($message1);
+
+        $this->writer->writeModel($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertTrue($entity->isDeleted());
     }
 
     public function test_write_logs()

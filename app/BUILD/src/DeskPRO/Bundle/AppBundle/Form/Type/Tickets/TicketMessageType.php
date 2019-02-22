@@ -13,6 +13,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
@@ -67,6 +68,11 @@ class TicketMessageType extends AbstractType
     private $em;
 
     /**
+     * @var TicketStatusDataService
+     */
+    private $ticketStatuses;
+    
+    /**
      * @var AttachmentHelper
      */
     private $attachmentHelper;
@@ -85,12 +91,14 @@ class TicketMessageType extends AbstractType
         TokenStorage $tokenStorage,
         EntityManager $em,
         AttachmentHelper $attachmentHelper,
+        TicketStatusDataService $ticketStatuses,
         ApiClientInfo $apiClientInfo = null
     ) {
         $this->languageManager  = $languageManager;
         $this->tokenStorage     = $tokenStorage;
         $this->em               = $em;
         $this->attachmentHelper = $attachmentHelper;
+        $this->ticketStatuses   = $ticketStatuses;
         $this->apiClientInfo    = $apiClientInfo;
     }
 
@@ -158,7 +166,7 @@ class TicketMessageType extends AbstractType
         if ($options['allow_set_status']) {
             $builder->add('status', ChoiceType::class, [
                 'choices_as_values' => true,
-                'choices'           => Ticket::getTicketStatuses(),
+                'choices'           => $this->getAllTicketStatusCodes(),
                 'mapped'            => false,
                 'required'          => false,
             ]);
@@ -457,7 +465,7 @@ class TicketMessageType extends AbstractType
         $ticket = $config->getOption('ticket');
         $status = $form->get('status')->getData();
         if ($status) {
-            $ticket->setStatus($status);
+            $ticket->setTicketStatus($this->ticketStatuses->findStatusOrException($status));
         }
     }
 
@@ -518,5 +526,15 @@ class TicketMessageType extends AbstractType
 
             $actions->apply($ticket->getTicketLogger(), $ticket, $person);
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function getAllTicketStatusCodes()
+    {
+        return array_map(function ($item) {
+            return $item['value'];
+        }, $this->ticketStatuses->getFormOptions());
     }
 }

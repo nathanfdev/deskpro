@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Tickets\Filters\Terms;
 
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -32,14 +33,17 @@ class FilterHoldStatus extends AbstractFilterTerm
      */
     public function getFilterQuery(ExecutorContextInterface $context = null)
     {
-        $query = new FilterQuery();
-        $query->setParameter('hold', $this->getTermOptions()->get('is_hold') ? 1 : 0);
+        $query  = new FilterQuery();
+        $isHold = $this->getTermOptions()->get('is_hold') ? 1 : 0;
 
         switch ($this->getTermOperator()) {
             case self::OP_IS:
-                $query->andWhere('tickets.is_hold = {param.hold}');
+                $op = $isHold ? '=' : '!=';
+                $query->andWhere(sprintf('tickets.is_hold %s "%s"', $op, TicketStatus::STATUS_TYPE_PENDING));
+                break;
             case self::OP_NOT:
-                $query->andWhere('tickets.is_hold != {param.hold}');
+                $op = $isHold ? '!=' : '=';
+                $query->andWhere(sprintf('tickets.is_hold %s "%s"', $op, TicketStatus::STATUS_TYPE_PENDING));
                 break;
             default:
                 throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");

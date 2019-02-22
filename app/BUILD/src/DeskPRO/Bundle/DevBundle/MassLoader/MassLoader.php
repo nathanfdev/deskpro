@@ -6,6 +6,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\People\PasswordScheme\Bcrypt;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Doctrine\ORM\EntityManager;
 use Faker\Factory;
 use Faker\Generator;
@@ -390,9 +391,9 @@ class MassLoader
         $refs     = [];
         $tickets  = [];
         $statuses = [
-            Ticket::STATUS_AWAITING_AGENT,
-            Ticket::STATUS_AWAITING_USER,
-            Ticket::STATUS_RESOLVED,
+            TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+            TicketStatus::STATUS_TYPE_AWAITING_USER,
+            TicketStatus::STATUS_TYPE_RESOLVED,
         ];
 
         $allDepartmentIds = $this->connection->fetchAllCol('SELECT id FROM departments WHERE is_tickets_enabled = 1');

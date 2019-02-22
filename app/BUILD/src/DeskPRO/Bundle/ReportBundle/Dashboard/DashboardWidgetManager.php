@@ -102,9 +102,14 @@ class DashboardWidgetManager
      * @param EntityManager           $em
      * @param DpqlCompiler            $compiler
      * @param ReportsRendererRegistry $rendererRegistry
+     * @param LoggerInterface         $logger
      */
-    public function __construct(EntityManager $em, DpqlCompiler $compiler, ReportsRendererRegistry $rendererRegistry, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        EntityManager           $em,
+        DpqlCompiler            $compiler,
+        ReportsRendererRegistry $rendererRegistry,
+        LoggerInterface         $logger = null
+    ) {
         $this->em               = $em;
         $this->compiler         = $compiler;
         $this->rendererRegistry = $rendererRegistry;

@@ -595,3 +595,14 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     white-space: normal;
   }
 }
+
+.column-half-plus {
+  .guides {
+    div.topic {
+      width: 568px;
+    }
+    .content-summary {
+      display: none;
+    }
+  }
+}

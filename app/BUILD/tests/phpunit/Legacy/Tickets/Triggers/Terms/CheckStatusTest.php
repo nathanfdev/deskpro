@@ -2,16 +2,21 @@
 
 namespace DpUnitTests\DeskPRO\Tickets\Triggers\Terms;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckStatus;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DpTest\DeskProTestCase;
+use DpTestSrc\TestBundle\Mock\ContainerMock;
+use Mockery as m;
 
 require_once 'AbstractTicketEntityCheckTest.php';
 
 class CheckStatusTest extends DeskProTestCase
 {
-    public function testStatus()
+    public function _testStatus()
     {
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
@@ -25,8 +30,24 @@ class CheckStatusTest extends DeskProTestCase
         $this->assertFalse($check->isTriggerMatch($ticket, $exec));
     }
 
-    public function testStatusCode()
+    public function testStatusCode_SupportOldStyle()
     {
+        // GIVEN
+        $deletedStatus = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
+        $deletedStatus->setSysId(TicketStatus::SYS_ID_DELETED);
+        $deletedStatus->setId(2);
+        $spamStatus = new TicketStatus(TicketStatus::STATUS_TYPE_HIDDEN);
+        $spamStatus->setSysId(TicketStatus::SYS_ID_SPAM);
+        $spamStatus->setId(1);
+
+        $statusesMock = m::mock(TicketStatusDataService::class);
+        $statusesMock->shouldReceive('isValidStatusCode')->andReturn(true);
+        $statusesMock->shouldReceive('findStatusOrException')->with('hidden.deleted')->andReturn($deletedStatus);
+        $statusesMock->shouldReceive('findStatusOrException')->with('hidden.spam')->andReturn($spamStatus);
+        App::$container = ContainerMock::create()
+            ->withNullEm()
+            ->withTicketStatusesMock($statusesMock)->get();
+
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 

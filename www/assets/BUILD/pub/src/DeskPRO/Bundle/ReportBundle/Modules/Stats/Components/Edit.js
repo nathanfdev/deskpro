@@ -36,9 +36,10 @@ class EditContainer extends React.Component {
   static getStateFromReport(report) {
     const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
     const initialFormValue = {
-      title:  report.get('title'),
-      labels: report.get('labels', Immutable.List()).toArray(),
-      query:  {
+      title:       report.get('title'),
+      labels:      report.get('labels', Immutable.List()).toArray(),
+      description: report.get('description', ''),
+      query:       {
         raw:         report.get('query'),
         select:      queryParts.get('select', ''),
         from:        queryParts.get('from', ''),
@@ -98,6 +99,7 @@ class EditContainer extends React.Component {
     const reportData = {
       id:            this.props.report.get('id') || null,
       title:         formData.title,
+      description:   formData.description,
       display_types: displayTypes.length ? displayTypes : ['table'],
       vars:          formData.vars,
       inputMode:     formData.query_input_mode,

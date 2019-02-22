@@ -1,5 +1,27 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
+
+{% macro substatuses_options(ticket, substatuses, parent_title) %}
+  {% for status in substatuses %}
+    <option 
+      value="{{ status.statusCode }}"
+      {% if ticket.status_code == status.statusCode %}selected="selected"{% endif %}
+    >
+      {{ parent_title }}&nbsp;>&nbsp;{{ status.title }}
+    </option>
+  {% endfor %}
+{% endmacro %}
+{% macro ticket_status_to_class_name(ticketStatus) %}
+    {% if ticketStatus.isDeleted() %}
+      {{ 'hidden_deleted' }}
+    {% elseif ticketStatus.isSpam() %}
+      {{ 'hidden_spam' }}
+    {% else %}
+      {{ ticketStatus.statusType }} {% if ticketStatus.statusType == 'pending' %} awaiting_agent {% endif %}
+    {% endif%}
+{% endmacro %}
+{% import _self as self_macro %}
+
 <script>
   pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
   pageMeta.title = {{ ticket.subject|json_encode|raw }};
@@ -56,9 +78,14 @@
           {% set baseId = el_uid() %}
   pageMeta.baseId = '{{ baseId }}';
 
-  pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};
-  pageMeta.isArchived = {% if ticket.status == 'archived' %}true{% else %}false{% endif %};
-  pageMeta.isSpam = {% if ticket.hidden_status == 'spam' %}true{% else %}false{% endif %};
+  pageMeta.isDeleted = {% if ticket.isDeleted() %}true{% else %}false{% endif %};
+  pageMeta.isArchived = {% if ticket.isArchived() %}true{% else %}false{% endif %};
+  pageMeta.isSpam = {% if ticket.isSpam() %}true{% else %}false{% endif %};
+  pageMeta.deletedTicketStatusId = {% for s in ticket_statuses['hidden'].getChildren() if s.isDeleted() %}{{ s.id }}{% endfor %};
+  pageMeta.spamTicketStatusId = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}{{ s.id }}{% endfor %};
+  pageMeta.deletedTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isDeleted() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
+  pageMeta.spamTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
+  pageMeta.pendingTicketStatusTitle = "{{ phrase('agent.tickets.status_pending')}}";
   pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
   pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
   pageMeta.lang = {{ {
@@ -82,7 +109,7 @@
 {#<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>#}
 
 <div id="{{ baseId }}_controls_react_container"></div>
-<div id="{{ baseId }}_layout_content" class="layout-content page-ticket {% if ticket.hasLock() %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
+<div id="{{ baseId }}_layout_content" class="layout-content page-ticket {% if ticket.hasLock() %}locked{% endif %} {{ self_macro.ticket_status_to_class_name(ticket.ticketStatus)}} urgency-{{ ticket.urgency }}">
 
     <div class="dp-page-content">
         {% set locked_self = ticket.hasLock() and not ticket.isLocked(app.user) %}
@@ -103,7 +130,7 @@
                    value="{{ ticket.language.id|default(app.languages.getDefaultId()) }}" />
             <input type="hidden" name="is_hold" class="is_hold" value="{{ ticket.is_hold|default(0) }}" />
             <input type="hidden" name="status" class="status" value="{{ ticket.status }}" />
-            <input type="hidden" name="hidden_status" class="hidden_status" value="{{ ticket.hidden_status }}" />
+            {#<input type="hidden" name="hidden_status" class="hidden_status" value="{{ ticket.hidden_status }}" />#}
         </form>
 
         {% if ticket.status == 'hidden' %}
@@ -305,27 +332,36 @@
                         {% if ticket.status == 'hidden' %}
                             <option value="" selected="selected">{{ phrase('agent.general.hidden') }}</option>
                         {% endif %}
-                        {% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_agent %}
+                        {% if ticket.status_code == 'awaiting_agent' or ticket_perms.modify_set_awaiting_agent %}
                             <option value="awaiting_agent"
                                     {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+                            {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent')) }}
                         {% endif %}
                         {% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
                             <option value="awaiting_user"
                                     {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+                            {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user')) }}
                         {% endif %}
                         {% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
                             <option value="resolved"
                                     {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_resolved') }}</option>
+                            {{ self_macro.substatuses_options(ticket, ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved')) }}
                         {% endif %}
                         {% if ticket.status_code == 'archived' %}
                             <option value="archived"
                                     {% if ticket.status_code == 'archived' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_archived') }}</option>
                         {% endif %}
+                        {% if ticket.status_code == 'pending' or (ticket.status == 'awaiting_agent' and ticket_perms.modify_set_hold) %}
+                            <option value="pending"
+                                    {% if ticket.status_code == 'pending' %}selected="selected"{% endif %}
+                            >{{ phrase('agent.tickets.status_pending') }}</option>
+                        {% endif %}
+
                     </select>
 
                     <span id="{{ baseId }}_status_txt" class="urgency-text">
-				{{ phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'})) }}
-			</span>
+                      {% if ticket.ticketStatus.id %}{{phrase('agent.tickets.status_' ~ ticket.ticketStatus.statusType)}}&nbsp;>&nbsp;{% endif %}{{ ticket.ticketStatus.title }}
+                    </span>
 
                     <span class="dp-caret"></span>
                 </li>
@@ -712,7 +748,7 @@
                     <span class="dp-caret"></span>
                 </li>
                 {% if ticket_perms.delete %}
-                    {% if not (ticket.hidden_status in ['deleted', 'spam'] ) %}
+                    {% if ticket.status != 'hidden' %}
                         <li id="{{ baseId }}_remove_menu_trigger" data-btn-id="remove-menu">
                             <i class="fas fa-trash-alt"></i>
                             {{ phrase('agent.general.remove') }}
@@ -746,10 +782,6 @@
 
         <ul style="display:none" id="{{ baseId }}_actions_menu">
             <li data-action="change-user">{{ phrase('agent.tickets.change_user_btn') }}</li>
-            <li style="{% if ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_set_hold"
-                data-action="set-hold">{{ phrase('agent.tickets.hold_btn') }}</li>
-            <li style="{% if not ticket.is_hold %}display: none;{% endif %}" id="{{ baseId }}_menu_unset_hold"
-                data-action="unset-hold">{{ phrase('agent.tickets.unhold_btn') }}</li>
             {% if ticket_perms.modify_merge %}
                 <li data-action="split">{{ phrase('agent.tickets.split_messages_into_ticket') }}</li>{% endif %}
             {% if app.user.hasPerm('agent_tickets.create') %}
@@ -780,7 +812,7 @@
                     <div style="position:relative;" class="ticket_reverse_order">
                         <div class="lock-overlay"{% if not ticket.isLocked(app.user) %} style="display: none;"{% endif %}></div>
                         <div id="{{ baseId }}_replybox_wrap" class="replybox-wrap">
-                            {% include 'AgentBundle:Ticket:replybox.html.twig' %}
+                            {% include 'AgentBundle:Ticket:replybox.html.twig' with {ticket_statuses: ticket_statuses} %}
                         </div>
                     </div>
                     {{ dp_app_loc(baseId, 'replybox.after') }}
@@ -1034,7 +1066,7 @@
                     <div style="position:relative;">
                         <div class="lock-overlay"{% if not ticket.isLocked(app.user) %} style="display: none;"{% endif %}></div>
                         <div id="{{ baseId }}_replybox_wrap" class="replybox-wrap">
-                            {% include 'AgentBundle:Ticket:replybox.html.twig' %}
+                            {% include 'AgentBundle:Ticket:replybox.html.twig' with {ticket_statuses: ticket_statuses} %}
                         </div>
                     </div>
                     {{ dp_app_loc(baseId, 'replybox.after') }}

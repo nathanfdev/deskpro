@@ -41,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 					<div class="search-terms"></div>
 					<div class="term"><span class="add-term">+</span> {{ phrase('agent.general.add_criteria_term') }}</div>
 				</div>
-				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_criteria_tpl', 'term_options': term_options, 'search_context': 'filter' } %}
+				{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': baseId ~ '_criteria_tpl', 'term_options': term_options, 'search_context': 'filter', 'ticket_statuses': ticket_statuses } %}
 			</div>
 		</div>
 	</div>

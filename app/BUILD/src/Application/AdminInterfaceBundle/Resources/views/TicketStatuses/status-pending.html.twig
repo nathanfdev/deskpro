@@ -1,0 +1,14 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+{% block editpane_content %}
+	<section class="dp-paneblock dp-editpane">
+		<article>
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<p>
+						You currently have <strong>{{ ng_var('getCount()') }}</strong> tickets in pending status.
+					</p>
+				</div>
+			</div>
+		</article>
+	</section>
+{% endblock %}

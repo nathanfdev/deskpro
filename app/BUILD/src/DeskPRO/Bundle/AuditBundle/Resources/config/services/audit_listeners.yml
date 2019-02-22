@@ -65,6 +65,7 @@ services:
       - "@service_container"
     tags:
       - { name: kernel.event_listener, event: audit_log.finish_log, method: onFinish }
+      - { name: kernel.event_listener, event: audit_log.finish_all, method: onFinishAll }
       - { name: doctrine.event_listener, connection: default, event: postFlush, priority: -1 }
 
   audit_log.naming_strategy.theme:

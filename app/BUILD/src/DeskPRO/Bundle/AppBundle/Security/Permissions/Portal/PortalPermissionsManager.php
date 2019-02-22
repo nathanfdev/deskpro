@@ -4,6 +4,13 @@ namespace DeskPRO\Bundle\AppBundle\Security\Permissions\Portal;
 
 use Application\DeskPRO\Cache\CacheAdapterInterface;
 use Application\DeskPRO\Cache\ConvenientCache;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Permission;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
@@ -201,6 +208,8 @@ class PortalPermissionsManager
         ]));
 
         if (!isset($this->permissionBagCache[$cacheKey])) {
+            $fieldsPermissions = $this->getFieldsPermissions();
+
             $this->permissionBagCache[$cacheKey] = new PermissionsBag(
                 $permissions,
                 $this->permissionsLoader->getAllowedTicketDepartments($userGroups),
@@ -209,7 +218,8 @@ class PortalPermissionsManager
                 $this->permissionsLoader->getAllowedNewsCategories($userGroups),
                 $this->permissionsLoader->getAllowedArticleCategories($userGroups),
                 $this->permissionsLoader->getAllowedDownloadCategories($userGroups),
-                $this->permissionsLoader->getAllowedGuides($userGroups)
+                $this->permissionsLoader->getAllowedGuides($userGroups),
+                $fieldsPermissions
             );
         }
 
@@ -233,5 +243,40 @@ class PortalPermissionsManager
         $params['timestamp'] = $settings->get(static::CACHE_TIMESTAMP_SETTING_NAME);
 
         return $isCacheDisabled ? $callable() : $this->cache->get($hashGenerator->generateHash($params), $callable);
+    }
+
+    /**
+     * @return array
+     */
+    private function getFieldsPermissions()
+    {
+        return [
+            'chat'         => $this->fetchFields(CustomDefChat::class),
+            'article'      => $this->fetchFields(CustomDefArticle::class),
+            'ticket'       => $this->fetchFields(CustomDefTicket::class),
+            'feedback'     => $this->fetchFields(CustomDefFeedback::class),
+            'person'       => $this->fetchFields(CustomDefPerson::class),
+            'organization' => $this->fetchFields(CustomDefOrganization::class),
+        ];
+    }
+
+    /**
+     * @param $entity
+     *
+     * @return array
+     */
+    private function fetchFields($entity)
+    {
+        $condition = ['is_user_enabled' => 1, 'is_enabled' => 1, 'is_agent_field' => 0];
+        $defs      = $this->em->getRepository($entity)->findBy($condition);
+
+        return array_map(
+            function (CustomDefAbstract $def) {
+                return $def->getId();
+            },
+            array_filter($defs, function (CustomDefAbstract $def) {
+                return in_array($def->getType(), ['text', 'textarea']);
+            })
+        );
     }
 }

@@ -57,13 +57,13 @@ define([
   Module.service('TicketAccountsData', ['em', 'Api', '$q', (em, Api, $q) => new Admin_TicketAccounts_DataService_TicketAccounts(em, Api, $q)
   ]);
 
-  Module.factory('dpObTypesDefTicketCriteria', ['$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) => new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, dpTemplateManager)
+  Module.factory('dpObTypesDefTicketCriteria', ['$q', 'Api', 'Api2', 'dpTemplateManager', ($q, Api, Api2, dpTemplateManager) => new Admin_OptionBuilder_TypesDef_TicketCriteria($q, Api, Api2, dpTemplateManager)
   ]);
 
   Module.factory('dpObTypesDefTicketActions', ['$q', 'Api', 'Api2', 'dpTemplateManager', ($q, Api, Api2, dpTemplateManager) => new Admin_OptionBuilder_TypesDef_TicketActions($q, Api, Api2, dpTemplateManager)
   ]);
 
-  Module.factory('dpObTypesDefTicketFilter', ['$q', 'Api', 'dpTemplateManager', ($q, Api, dpTemplateManager) => new Admin_OptionBuilder_TypesDef_TicketFilter($q, Api, dpTemplateManager)
+  Module.factory('dpObTypesDefTicketFilter', ['$q', 'Api', 'Api2', 'dpTemplateManager', ($q, Api, Api2, dpTemplateManager) => new Admin_OptionBuilder_TypesDef_TicketFilter($q, Api, Api2, dpTemplateManager)
   ]);
 
   Module.factory('DataService', ['$injector', $injector => new Admin_Main_Service_DataServiceManager($injector)

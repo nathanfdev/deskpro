@@ -1,3 +1,13 @@
+{% macro substatuses_options(status_type, parent_title, ngIf) %}
+  <option
+    {% if ngIf %} ng-if="{{ ngIf }}"{% endif %}
+    value="{{ ng_var('opt.status_code') }}"
+    ng-repeat="opt in options | filter:{status_type:'{{status_type}}'}">
+      {% if parent_title %}{{ parent_title }}&nbsp;>&nbsp;{% endif %}{{ ng_var('opt.title') }}
+  </option>
+{% endmacro %}
+{% import _self as self_macro %}
+
 <dp-optionbuilder-row>
 	<div class="dp-ob-standard-row">
 		<table class="display-table" width="100%">
@@ -10,12 +20,15 @@
                     </select>
 					<select ui-select2 ng-model="model.value" style="min-width: 140px" multiple="multiple">
 						<option value="awaiting_agent">Awaiting Agent</option>
+              {{ self_macro.substatuses_options('awaiting_agent', phrase('agent.tickets.status_awaiting_agent')) }}
 						<option value="awaiting_user">Awaiting User</option>
+              {{ self_macro.substatuses_options('awaiting_user', phrase('agent.tickets.status_awaiting_user')) }}
 						<option value="resolved">Resolved</option>
+              {{ self_macro.substatuses_options('resolved', phrase('agent.tickets.status_resolved')) }}
 						<option value="archived" ng-if="!fieldOptions.noArchive">Archived</option>
+              {{ self_macro.substatuses_options('archived', phrase('agent.tickets.status_archived'), '!fieldOptions.noArchive') }}
 						<optgroup label="Hidden">
-							<option value="hidden.deleted">Delete</option>
-							<option value="hidden.spam">Spam</option>
+              {{ self_macro.substatuses_options('hidden') }}
 						</optgroup>
 					</select>
 				</td>

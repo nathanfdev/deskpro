@@ -8,10 +8,14 @@ define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
 
     init() {
       this.stats = {};
+      this.list = [];
+      this.statusData = this.DataService.get('TicketStatuses');
     }
 
     initialLoad() {
-      return this.Api.sendGet('/ticket_statuses/stats').then(res => this.stats = res.data.status_stats);
+      this.Api.sendGet('/ticket_statuses/stats').then(res => this.stats = res.data.status_stats);
+      const promise = this.statusData.loadList();
+      promise.then(list => this.list = list);
     }
 
     getStatusCount(status) {

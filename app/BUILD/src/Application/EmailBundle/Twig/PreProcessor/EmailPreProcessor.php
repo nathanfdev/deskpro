@@ -6,6 +6,8 @@
 
 namespace Application\EmailBundle\Twig\PreProcessor;
 
+use Application\EmailBundle\Templating\Templates\EmailTemplateCode;
+
 /**
  * Runs through the simplified syntax for email templates.
  */
@@ -23,10 +25,10 @@ class EmailPreProcessor extends AbstractPreProcessor
             return $source;
         }
 
-        if (strpos($source, '{% extends') === false && strpos($source, '<dp:subject>') !== false) {
+        if (strpos($source, '{% extends') === false && strpos($source, EmailTemplateCode::SUBJ_TOKEN_START) !== false) {
             $source = $this->getPrepend().$source;
         } else {
-            $source = preg_replace('#<dp:subject>\s*</dp:subject>#is', '', $source);
+            $source = preg_replace('#'.EmailTemplateCode::SUBJ_TOKEN_START.'\s*'.EmailTemplateCode::SUBJ_TOKEN_END.'#is', '', $source);
         }
 
         $source = $this->processTagAsBlock($source, 'subject', 'email_subject');

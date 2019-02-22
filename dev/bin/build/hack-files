@@ -78,3 +78,48 @@ foreach ($files as $f) {
 
 unset($f, $content, $newContent);
 echo ".. Done\n";
+
+//
+// Apply patch on zend-mail
+// https://github.com/zendframework/zend-mail/issues/33
+//
+echo "Patching Zend\Mail\Header\HeaderWrap.php\n";
+    $from = <<<'EOF'
+    public static function canBeEncoded($value)
+    {
+        $encoded = iconv_mime_encode('x-test', $value, ['scheme' => 'Q']);
+
+        return (false !== $encoded);
+    }
+EOF;
+    $to = <<<'EOF'
+    public static function canBeEncoded($value)
+    {
+        // avoid any wrapping by specifying line length long enough
+        // "test" -> 4
+        // "x-test: =?ISO-8859-1?B?dGVzdA==?=" -> 33
+        //  8       +2          +3         +3  -> 16
+        $charset = 'UTF-8';
+        $lineLength = strlen($value) * 4 + strlen($charset) + 16;
+        $preferences = [
+            'scheme' => 'Q',
+            'input-charset' => $charset,
+            'output-charset' => $charset,
+            'line-length' => $lineLength,
+        ];
+        $encoded = iconv_mime_encode('x-test', $value, $preferences);
+        return (false !== $encoded);
+    }
+EOF;
+$f          = $DP_DIR.'/app/BUILD/vendor/zendframework/zend-mail/src/Header/HeaderWrap.php';
+$content    = file_get_contents($f);
+$newContent = str_replace(
+    $from,
+    $to,
+    $content
+);
+file_put_contents($f, $newContent);
+
+unset($f, $content, $newContent);
+
+echo ".. Done\n";

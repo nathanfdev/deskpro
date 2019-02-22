@@ -42,8 +42,15 @@ class FormTypeParser extends \Nelmio\ApiDocBundle\Parser\FormTypeParser
         if (!empty($item['options'])) {
             foreach ($item['options'] as &$option) {
                 if (is_string($option) && class_exists($option)) {
-                    $reflection = new \ReflectionClass($option);
-                    $option     = $reflection->newInstance();
+                    $reflection  = new \ReflectionClass($option);
+                    $constructor = $reflection->getConstructor();
+
+                    // this fallback may lead to runtime exception, but try hard to generate the docs
+                    if ($constructor && $constructor->getNumberOfRequiredParameters() > 0) {
+                        $option = $reflection->newInstanceWithoutConstructor();
+                    } else {
+                        $option = $reflection->newInstance();
+                    }
                 }
             }
         }

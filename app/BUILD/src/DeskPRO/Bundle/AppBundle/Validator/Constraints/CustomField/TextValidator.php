@@ -18,31 +18,34 @@ class TextValidator extends AbstractSingleValueValidator
         $validators = [];
 
         // Required validator
-        if ($constraint->getCustomDefOption('required', true) || $constraint->getCustomDefOption('regex_required', true)) {
+        if ($constraint->check_required && (
+            $constraint->getCustomDefOption('required', true)
+            || $constraint->getCustomDefOption('regex_required', true)
+        )) {
             $validators[] = new Assert\NotBlank();
         }
 
         // Length validator
-        $min_length = (int) $constraint->getCustomDefOption('min_length', true);
-        $max_length = (int) $constraint->getCustomDefOption('max_length', true);
+        $minLength = (int) $constraint->getCustomDefOption('min_length', true);
+        $maxLength = (int) $constraint->getCustomDefOption('max_length', true);
 
-        $length_options = [];
-        if ($min_length) {
-            $length_options['min'] = $min_length;
+        $lengthOptions = [];
+        if ($minLength) {
+            $lengthOptions['min'] = $minLength;
         }
-        if ($max_length) {
-            $length_options['max'] = $max_length;
+        if ($maxLength) {
+            $lengthOptions['max'] = $maxLength;
         }
 
-        if (!empty($length_options)) {
-            $validators[] = new Assert\Length($length_options);
+        if (!empty($lengthOptions)) {
+            $validators[] = new Assert\Length($lengthOptions);
         }
 
         // Regex
-        $regex_pattern = $constraint->getCustomDefOption('regex', true);
-        if ($regex_pattern) {
+        $regexPattern = $constraint->getCustomDefOption('regex', true);
+        if ($regexPattern) {
             $validators[] = new Assert\Regex([
-                'pattern' => Strings::getInputRegexPattern($regex_pattern),
+                'pattern' => Strings::getInputRegexPattern($regexPattern),
             ]);
         }
 

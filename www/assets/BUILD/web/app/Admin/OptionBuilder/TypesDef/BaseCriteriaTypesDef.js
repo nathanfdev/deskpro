@@ -12,7 +12,7 @@ define([
   moment
 ) => {
   class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef {
-    constructor($q, Api, dpTemplateManager) {
+    constructor($q, Api, Api2, dpTemplateManager) {
       {
         // Hack: trick Babel/TypeScript into allowing this before super.
         if (false) { super(); }
@@ -22,6 +22,7 @@ define([
       }
       this.$q = $q;
       this.Api = Api;
+      this.Api2 = Api2;
       this.dpTemplateManager = dpTemplateManager;
       this.options_data        = null;
       this.inputTemplate       = 'OptionBuilder/type-criteria-input.html';

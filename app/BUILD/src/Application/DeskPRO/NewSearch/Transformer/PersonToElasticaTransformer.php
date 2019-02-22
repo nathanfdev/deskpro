@@ -4,13 +4,11 @@ namespace Application\DeskPRO\NewSearch\Transformer;
 
 use Application\DeskPRO\Entity\Person;
 use Elastica\Document;
-use FOS\ElasticaBundle\Transformer\ModelToElasticaTransformerInterface;
-use Orb\Util\Arrays;
 
 /**
  * Person To Elastica Transformer.
  */
-class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
+class PersonToElasticaTransformer extends AbstractToElasticaTransformer
 {
     /**
      * {@inheritdoc}
@@ -21,9 +19,9 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
     {
         $document = new Document();
         $document->setId($object->getId());
-        $document->set('name', $object->name);
-        $document->set('first_name', $object->first_name);
-        $document->set('last_name', $object->last_name);
+        $document->set('name', $object->getName());
+        $document->set('first_name', $object->getFirstName());
+        $document->set('last_name', $object->getLastName());
         $document->set('is_agent', $object->isAgent());
 
         $emails       = [];
@@ -41,7 +39,7 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
         }
 
         $phones = [];
-        foreach ($object->phone_numbers as $p) {
+        foreach ($object->getPhoneNumbers() as $p) {
             $pn = $p->getPhoneNumber();
             if ($pn) {
                 $phones[] = '+'.$pn->getCountryCode().' '.preg_replace('#[^0-9]#', '', $pn->getNationalNumber());
@@ -49,16 +47,11 @@ class PersonToElasticaTransformer implements ModelToElasticaTransformerInterface
         }
 
         $document->set('phone_numbers', $phones);
-
-        if ($object->labels) {
-            $labels = Arrays::map(function ($l) {
-                return $l->label;
-            }, $object->labels);
-            $document->set('labels', array_values($labels));
-        }
-
-        $document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
+        $document->set('date_created', $object->getDateCreated()->format('Y-m-d H:i:s'));
         $document->set('date_active', date('Y-m-d H:i:s'));
+
+        $this->transformCustomData($object, $document);
+        $this->transformLabels($object, $document);
 
         return $document;
     }

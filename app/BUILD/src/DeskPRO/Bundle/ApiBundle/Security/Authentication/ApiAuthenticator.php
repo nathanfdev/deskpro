@@ -178,6 +178,10 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             $this->throwUnauthorized(ErrorsCodes::INVALID_API_KEY);
         }
 
+        if (!$key->isFlagSet(ApiKey::FLAG_API_V2)) {
+            $this->throwUnauthorized(ErrorsCodes::INVALID_API_KEY);
+        }
+
         if (!$key->getPerson()) {
             $this->throwUnauthorized(ErrorsCodes::INVALID_API_KEY);
         }

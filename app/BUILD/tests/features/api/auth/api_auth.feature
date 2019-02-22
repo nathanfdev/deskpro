@@ -95,6 +95,21 @@ Feature: API Authentication
     And the JSON node "data.client_version" should be equal to 0
     And I should have an authenticated token with the role ROLE_API
 
+  Scenario: Auth fails if ApiKey has no flag api_v2
+    Given there are no User records
+    And "smith@deskpro.dev" agent exists
+    And a valid api key exists with the code "XYZ123" for agent
+    When I add Authorization header of my Api Key
+    And I send a GET request to "/api/v2/me"
+    Then the response status code should be 200
+
+    When I remove a flag 'api_v2' from ApiKey
+    And I add Authorization header of my Api Key
+    And I send a GET request to "/api/v2/me"
+    Then the response status code should be 401
+    Then the JSON node "status" should be equal to 401
+    Then the JSON node "code" should be equal to "invalid_api_key"
+
   Scenario: I have a valid api token (user "agent" id=2 in the "api" data set)
     Given "smith@deskpro.dev" agent exists
     And there are no "ApiToken" records
