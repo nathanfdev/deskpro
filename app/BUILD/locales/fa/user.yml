@@ -649,15 +649,15 @@ portal.general.no-search-results-general: 'ما هیچ نتیجه ای پیدا 
 portal.general.on: روی
 portal.general.or: یا
 portal.general.prop_comments_asc: 'Least comments first'
-portal.general.prop_comments_desc: 'Most comments first'
+portal.general.prop_comments_desc: 'بیشترین نظرات'
 portal.general.prop_date_asc: 'قدیمی ترین '
 portal.general.prop_date_desc: جدیدترین
 portal.general.prop_popularity_asc: 'کمترین محبوبیت'
 portal.general.prop_popularity_desc: 'بیشترین محبوبیت'
 portal.general.prop_rating_asc: 'کمترین امتیاز'
 portal.general.prop_rating_desc: 'بیشترین امتیاز'
-portal.general.prop_views_asc: 'Least views first'
-portal.general.prop_views_desc: 'Most views first'
+portal.general.prop_views_asc: 'کمترین بازدیدها'
+portal.general.prop_views_desc: 'بیشترین بازدید'
 portal.general.published: Published
 portal.general.rate-page: 'به کیفیت این صفحه امتیاز بده'
 portal.general.rate-page-negative: 'این صفحه مفید نبود'
