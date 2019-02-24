@@ -648,7 +648,7 @@ portal.general.no-search-results: 'We couldn''t find any results for "{{query}}"
 portal.general.no-search-results-general: 'ما هیچ نتیجه ای پیدا نکردیم'
 portal.general.on: روی
 portal.general.or: یا
-portal.general.prop_comments_asc: 'Least comments first'
+portal.general.prop_comments_asc: 'کمترین نظرات'
 portal.general.prop_comments_desc: 'بیشترین نظرات'
 portal.general.prop_date_asc: 'قدیمی ترین '
 portal.general.prop_date_desc: جدیدترین
