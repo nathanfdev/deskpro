@@ -387,10 +387,10 @@ portal.feedback.filter_open_items: 'ایتم های باز'
 portal.feedback.form_attach_files: 'فایل های ضمیمه '
 portal.feedback.form_btn_submit: 'نظرات خود را اضافه کنید'
 portal.feedback.form_email_not_shown: 'ایمیل شما (به صورت عمومی نمایش داده نمی شود)'
-portal.feedback.form_i_have_a: 'I have a'
+portal.feedback.form_i_have_a: موضوع
 portal.feedback.form_logged_in_as: "ورود با نام کاربری <span>{{name}}</span>\nاز ایمیل  <span>{{email}}</span>."
 portal.feedback.form_logout: 'شما نیستید؟'
-portal.feedback.form_tell_us_more: 'بیشتر به ما بگویید'
+portal.feedback.form_tell_us_more: 'توضیح بیشتر'
 portal.feedback.form_title: عنوان
 portal.feedback.module_forbidden: 'You don''t have access to this module'
 portal.feedback.no_matching: 'No matching feedback'
@@ -646,7 +646,7 @@ portal.general.no-agents-available: 'با عرض پوزش، هیچ کارشنا�
 portal.general.no-search-query: 'لطفا یک کلمه را در کادر جستجو تایپ کنید.'
 portal.general.no-search-results: 'We couldn''t find any results for "{{query}}"'
 portal.general.no-search-results-general: 'ما هیچ نتیجه ای پیدا نکردیم'
-portal.general.on: روی
+portal.general.on: در
 portal.general.or: یا
 portal.general.prop_comments_asc: 'کمترین نظرات'
 portal.general.prop_comments_desc: 'بیشترین نظرات'
