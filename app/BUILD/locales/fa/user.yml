@@ -1,7 +1,7 @@
 portal.account.automatically_join_org_tickets: 'به صورت خودکار به پیام{{org_name}} پیوست؟'
 portal.account.change-password: 'تغییر رمز عبور'
 portal.account.change-password-btn: 'به روزرسانی رمز عبور'
-portal.account.comment-lockout: 'شما نظرات بسیاری را ارسال کرده اید. لطفا منتظر بمانید تا بیشتر ارسال شود'
+portal.account.comment-lockout: 'شما نظرات بسیاری را ارسال کرده اید. لطفا منتظر بمانید'
 portal.account.email-add: 'اضافه کردن ایمیل'
 portal.account.email-add-description: 'آدرس های ایمیل اضافی را به حساب خود اضافه کنید. شما می توانید پیام ها  را از این آدرس ایمیل ارسال کنید و سیستم آنها را تحت یک حساب پیگیری می کند.'
 portal.account.email-btn-make-primary: ابتدا
