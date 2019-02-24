@@ -650,8 +650,8 @@ portal.general.on: روی
 portal.general.or: یا
 portal.general.prop_comments_asc: 'Least comments first'
 portal.general.prop_comments_desc: 'Most comments first'
-portal.general.prop_date_asc: 'Oldest first'
-portal.general.prop_date_desc: 'Newest first'
+portal.general.prop_date_asc: 'قدیمی ترین '
+portal.general.prop_date_desc: جدیدترین
 portal.general.prop_popularity_asc: 'Least popular first'
 portal.general.prop_popularity_desc: 'Most popular first'
 portal.general.prop_rating_asc: 'Lowest rated first'
