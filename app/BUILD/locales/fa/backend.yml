@@ -3318,7 +3318,7 @@ agent.general.log_in_with_azure: 'Log In with Office365'
 agent.general.log_in_with_google: 'Log In with Google'
 agent.general.log_in_with_linkedin: 'Log In with Linkedin'
 agent.general.log_out: 'Log Out'
-agent.general.logged_in_as: 'Logged in as'
+agent.general.logged_in_as: 'ورود با نام کاربری'
 agent.general.lost: Lost
 agent.general.lost_field: 'Lost {{field}}'
 agent.general.lost_password: 'Lost Password'

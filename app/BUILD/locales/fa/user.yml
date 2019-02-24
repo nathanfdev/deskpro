@@ -388,7 +388,7 @@ portal.feedback.form_attach_files: 'فایل های ضمیمه '
 portal.feedback.form_btn_submit: 'نظرات خود را اضافه کنید'
 portal.feedback.form_email_not_shown: 'ایمیل شما (به صورت عمومی نمایش داده نمی شود)'
 portal.feedback.form_i_have_a: 'I have a'
-portal.feedback.form_logged_in_as: 'Logged in as: <span>{{name}}</span>, from email <span>{{email}}</span>.'
+portal.feedback.form_logged_in_as: "ورود با نام کاربری <span>{{name}}</span>\nاز ایمیل  <span>{{email}}</span>."
 portal.feedback.form_logout: 'شما نیستید؟'
 portal.feedback.form_tell_us_more: 'بیشتر به ما بگویید'
 portal.feedback.form_title: عنوان
