@@ -245,7 +245,7 @@ define([
       const form_data = this.form_model.getFormData();
       form_data.test_email = this.test_email;
 
-      return this.Api.sendPostJson('/email_accounts/test-outgoing-account', form_data, null, { timeout: 12000 });
+      return this.Api.sendPostJson('/email_accounts/test-outgoing-account', form_data, null, { timeout: 45000 });
     }
 
 
@@ -351,11 +351,11 @@ define([
               $scope.log           = result.log;
               return $scope.message_count = result.message_count;
             }).error((result) => {
-              if ((result.status === 0) || (result.status === 524)) {
+              if (!result || result.status === 0 || result.status === 524) {
                 $scope.showing_log   = true;
                 $scope.is_testing    = false;
                 $scope.is_success    = false;
-                $scope.log           = 'The test failed due to a network problem. For example, the test may have timed out due to a firewall blocking it.';
+                $scope.log           = 'The test failed due to a network problem. For example, the test may have timed out or the remote server might be refusing the connections.';
                 return $scope.message_count = 0;
               }
               $scope.showing_log   = true;
