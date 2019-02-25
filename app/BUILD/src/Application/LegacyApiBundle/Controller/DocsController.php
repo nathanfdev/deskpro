@@ -7,6 +7,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -106,6 +107,6 @@ class DocsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        return $this->createJsonResponse(file_get_contents($path));
+        return $this->createJsonResponse(SafeFile::file_get_contents($path, DP_ROOT.'/src/Application/LegacyApiBundle/Resources/views/SwaggerDocs/'));
     }
 }

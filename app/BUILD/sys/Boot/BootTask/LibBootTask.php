@@ -59,6 +59,11 @@ class LibBootTask implements BootTaskInterface
         SafeFile::addBlacklistDir($env->getDpRoot().DIRECTORY_SEPARATOR.'config');
         SafeFile::addBlacklistDir($env->getUserBackupsDir());
         SafeFile::addBlacklistDir($env->getUserFilesDir());
+        SafeFile::addBlacklistDir('/etc');
+        SafeFile::addBlacklistDir('/dev');
+        SafeFile::addBlacklistDir('/proc');
+        SafeFile::addBlacklistDir('/run');
+        SafeFile::addBlacklistDir('/var/log');
 
         if ($env->getConfig('env.load_lib_fn')) {
             call_user_func($env->getConfig('env.load_lib_fn'), $env, $GLOBALS['DP_AUTOLOADER']);
