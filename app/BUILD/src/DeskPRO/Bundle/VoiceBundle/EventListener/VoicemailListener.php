@@ -7,9 +7,9 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketManager;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
+use DeskPRO\Bundle\VoiceBundle\Helper\VoicemailHelper;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
@@ -42,23 +42,31 @@ class VoicemailListener implements EventSubscriberInterface
     private $ticketManager;
 
     /**
+     * @var VoicemailHelper
+     */
+    private $voicemailHelper;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
      * @param VoiceTaskHelper       $taskHelper
      * @param VoiceSettingsResolver $settingsResolver
      * @param TicketManager         $ticketManager
+     * @param VoicemailHelper       $voicemailHelper
      */
     public function __construct(
         EntityManager         $em,
         VoiceTaskHelper       $taskHelper,
         VoiceSettingsResolver $settingsResolver,
-        TicketManager         $ticketManager
+        TicketManager         $ticketManager,
+        VoicemailHelper       $voicemailHelper
     ) {
         $this->em               = $em;
         $this->taskHelper       = $taskHelper;
         $this->settingsResolver = $settingsResolver;
         $this->ticketManager    = $ticketManager;
+        $this->voicemailHelper  = $voicemailHelper;
     }
 
     /**
@@ -98,7 +106,10 @@ class VoicemailListener implements EventSubscriberInterface
         if ($task->getAttribute('queue')) {
             $this->voicemailForQueue($phoneCall, $task);
         } elseif ($task->getAttribute('agent')) {
-            $this->voicemailForAgent($phoneCall, $task);
+            $agent = $this->taskHelper->getWorkerAgent($task);
+            if ($agent) {
+                $this->voicemailHelper->voicemailForAgent($phoneCall, $agent);
+            }
         }
     }
 
@@ -177,26 +188,5 @@ class VoicemailListener implements EventSubscriberInterface
         }
 
         $this->ticketManager->saveTicket($ticket, $context);
-    }
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     * @param Task           $task
-     */
-    private function voicemailForAgent(VoicePhoneCall $phoneCall, Task $task)
-    {
-        $agent = $this->taskHelper->getWorkerAgent($task);
-        if (!$agent) {
-            return;
-        }
-
-        $voicemailRecord = new VoicemailRecord();
-        $voicemailRecord
-            ->setPhoneCall($phoneCall)
-            ->setAgent($agent)
-        ;
-
-        $this->em->persist($voicemailRecord);
-        $this->em->flush();
     }
 }

@@ -20,6 +20,7 @@ services:
       - "@dp.voice.voice_task_helper"
       - "@voice_settings_resolver"
       - "@ticket_manager"
+      - "@dp.voice.voicemail_helper"
     tags:
       - { name: dp.voice.event_subscriber }
 

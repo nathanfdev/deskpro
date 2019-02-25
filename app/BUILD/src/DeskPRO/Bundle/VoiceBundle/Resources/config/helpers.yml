@@ -42,6 +42,7 @@ services:
   dp.voice.voicemail_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoicemailHelper
     arguments:
+      - "@doctrine.orm.entity_manager"
       - "@router"
       - "@dp.voice.assets_helper"
       - "@dp.voice.provider_helper"

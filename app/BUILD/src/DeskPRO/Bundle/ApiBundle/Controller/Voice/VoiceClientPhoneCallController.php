@@ -105,7 +105,8 @@ class VoiceClientPhoneCallController extends BaseController
 
         // if call target is an agent, redirect to voicemail immediately
         $task = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
-        if ($task && $this->get('dp.voice.voice_task_helper')->getWorkerAgent($task)) {
+        if ($task && $agent = $this->get('dp.voice.voice_task_helper')->getWorkerAgent($task)) {
+            $this->get('dp.voice.voicemail_helper')->voicemailForAgent($phoneCall, $agent);
             $this->get('dp.voice.voicemail_helper')->transferToVoicemail($phoneCall);
         }
 
@@ -475,6 +476,7 @@ class VoiceClientPhoneCallController extends BaseController
         // try to end call for cold transfer
         // redirect user to voicemail
         if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
+            $this->get('dp.voice.voicemail_helper')->voicemailForAgent($phoneCall, $person);
             $this->get('dp.voice.voicemail_helper')->transferToVoicemail($phoneCall);
         }
 
