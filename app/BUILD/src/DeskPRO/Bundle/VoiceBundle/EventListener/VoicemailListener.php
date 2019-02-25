@@ -158,6 +158,7 @@ class VoicemailListener implements EventSubscriberInterface
             $ticket->disableAutoTicketProcess();
             $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
+            $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
 
             // set asset properties
             if ($queue->getVoicemailAgent()) {

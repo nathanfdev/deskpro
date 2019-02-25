@@ -45,6 +45,8 @@ class VoicemailRecordsController extends CrudController
      *
      * @param VoicemailRecord $record
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function markListenedToAction(VoicemailRecord $record)
@@ -74,6 +76,8 @@ class VoicemailRecordsController extends CrudController
      * @Rest\Put("/{record}/create_ticket")
      *
      * @param VoicemailRecord $record
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -113,6 +117,7 @@ class VoicemailRecordsController extends CrudController
             $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($this->getUser());
+            $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
             $ticket->addMessage($ticketMessage);
 
             $this->saveTicket($ticket);
@@ -157,6 +162,8 @@ class VoicemailRecordsController extends CrudController
      * {@inheritdoc}
      *
      * @param VoicemailRecord $entity
+     *
+     * @throws \Exception
      */
     protected function deleteEntity($entity)
     {
