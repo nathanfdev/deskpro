@@ -22,21 +22,21 @@ class SafeFileTest extends DeskProTestCase
 
     public function testSafeFileAny()
     {
-        $this->assertTrue(SafeFile::isValid('/var/www/deskpro/var/cache/example.txt', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('/var/www/deskpro/var/cache/dontexist', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('/tmp/foo', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('/var/etc/mysql/my.cnf', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('/var/etc/mysql/../../etc/mysql/my.cnf', SafeFile::ANY));
+        $this->assertTrue(SafeFile::isValid('/var/www/deskpro/var/cache/example.txt', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('/var/www/deskpro/var/cache/dontexist', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('/tmp/foo', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('/var/etc/mysql/my.cnf', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('/var/etc/mysql/../../etc/mysql/my.cnf', SafeFile::UNSPECIFIED));
 
-        $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/example.txt', SafeFile::ANY));
-        $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/dontexist', SafeFile::ANY));
-        $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/../attachments/dontexist', SafeFile::ANY));
+        $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/example.txt', SafeFile::UNSPECIFIED));
+        $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/dontexist', SafeFile::UNSPECIFIED));
+        $this->assertFalse(SafeFile::isValid('/var/www/deskpro/attachments/../attachments/dontexist', SafeFile::UNSPECIFIED));
     }
 
     public function testException()
     {
         $this->setExpectedException(\InvalidArgumentException::class);
-        SafeFile::assertValid('/var/www/deskpro/attachments/example.txt', SafeFile::ANY);
+        SafeFile::assertValid('/var/www/deskpro/attachments/example.txt', SafeFile::UNSPECIFIED);
     }
 
     public function testSafeFileWhitelist()

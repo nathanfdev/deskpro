@@ -59,10 +59,10 @@ class SafeFileReadTest extends DeskProTestCase
 
     public function testSafeFileRead()
     {
-        $this->assertEquals('xxx', SafeFile::fileGetContents($this->root->url().'/var/www/deskpro/var/cache/example.txt', SafeFile::ANY));
-        $this->assertEquals('xxx', SafeFile::fileGetContents($this->root->url().'/var/etc/mysql/my.cnf', SafeFile::ANY));
-        $this->assertEquals(false, SafeFile::fileGetContents($this->root->url().'/var/www/deskpro/attachments/noexist.txt', SafeFile::ANY));
-        $this->assertEquals(false, SafeFile::fileGetContents($this->root->url().'/var/www/deskpro/attachments/example.txt', SafeFile::ANY));
-        $this->assertEquals(false, SafeFile::fileGetContents($this->root->url().'/var/www/deskpro/attachments/noexist.txt', SafeFile::ANY));
+        $this->assertEquals('xxx', SafeFile::fileGetContents($this->root->url().'/var/www/deskpro/var/cache/example.txt', SafeFile::UNSPECIFIED));
+        $this->assertEquals('xxx', SafeFile::fileGetContents($this->root->url().'/var/etc/mysql/my.cnf', SafeFile::UNSPECIFIED));
+        $this->assertEquals(false, SafeFile::fileGetContents($this->root->url().'/var/www/deskpro/attachments/noexist.txt', SafeFile::UNSPECIFIED));
+        $this->assertEquals(false, SafeFile::fileGetContents($this->root->url().'/var/www/deskpro/attachments/example.txt', SafeFile::UNSPECIFIED));
+        $this->assertEquals(false, SafeFile::fileGetContents($this->root->url().'/var/www/deskpro/attachments/noexist.txt', SafeFile::UNSPECIFIED));
     }
 }

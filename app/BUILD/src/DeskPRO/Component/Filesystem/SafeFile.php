@@ -31,9 +31,18 @@ namespace DeskPRO\Component\Filesystem;
 class SafeFile
 {
     /**
-     * Use as whitelist to indicate any path is OK (i.e. only checks blacklist).
+     * Use this as the whitelist when you don't care where a file is read from. In other words, this option
+     * makes SafeFile only verify the file is not in the blacklist.
+     *
+     * You should avoid using this option because it means SafeFile can only verify the file is not in
+     * the blacklist, but "not blacklisted" is not the same thing as being safe. The real safety provided
+     * by SafeFile is when you know where a file should be, and SafeFile can validate that.
+     *
+     * So if you need to use UNSPECIFIED, or see it in a code review, you should challenge it. There are few cases
+     * where you "don't know" where a file should be. E.g. if it's a cache file, then you know it should come from the
+     * cache directory; if it's a temp file, you know it should come from the temp directory; etc.
      */
-    const ANY = '*';
+    const UNSPECIFIED = '?';
 
     /**
      * Use as whitelist to indicate the path is expected to be an http path.
@@ -133,7 +142,7 @@ class SafeFile
      */
     public static function matchesList($path, $list)
     {
-        if ($list === self::ANY) {
+        if ($list === self::UNSPECIFIED) {
             return true;
         }
 
@@ -145,7 +154,7 @@ class SafeFile
             $list = [$list];
         }
 
-        if (in_array(self::ANY, $list, true)) {
+        if (in_array(self::UNSPECIFIED, $list, true)) {
             return true;
         }
 
@@ -219,7 +228,7 @@ class SafeFile
                     // A more specific whitelisted directory
                     // overwrites the blacklisted one
                     if (
-                        $wp !== self::ANY
+                        $wp !== self::UNSPECIFIED
                         && $wp !== self::HTTP
                         && $wp !== self::DATA
                         && substr($p, -1, 1) === '/'

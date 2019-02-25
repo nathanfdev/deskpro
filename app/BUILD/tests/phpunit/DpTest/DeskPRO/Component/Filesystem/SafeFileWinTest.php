@@ -18,30 +18,30 @@ class SafeFileWinTest extends DeskProTestCase
 
     public function testSafeFileAny()
     {
-        $this->assertTrue(SafeFile::isValid('C:\\var\\www\\deskpro\\var\\cache\\example.txt', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('C:\\var\\www\\deskpro\\var\\cache\\dontexist', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('C:\\tmp\\foo', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('C:\\var\\etc\\mysql\\my.cnf', SafeFile::ANY));
+        $this->assertTrue(SafeFile::isValid('C:\\var\\www\\deskpro\\var\\cache\\example.txt', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('C:\\var\\www\\deskpro\\var\\cache\\dontexist', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('C:\\tmp\\foo', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('C:\\var\\etc\\mysql\\my.cnf', SafeFile::UNSPECIFIED));
 
-        $this->assertFalse(SafeFile::isValid('C:\\var\\www\\deskpro\\attachments\\example.txt', SafeFile::ANY));
-        $this->assertFalse(SafeFile::isValid('C:\\var\\www\\deskpro\\attachments\\dontexist', SafeFile::ANY));
+        $this->assertFalse(SafeFile::isValid('C:\\var\\www\\deskpro\\attachments\\example.txt', SafeFile::UNSPECIFIED));
+        $this->assertFalse(SafeFile::isValid('C:\\var\\www\\deskpro\\attachments\\dontexist', SafeFile::UNSPECIFIED));
     }
 
     public function testSafeFileReverseSlashAny()
     {
-        $this->assertTrue(SafeFile::isValid('C:/var/www/deskpro/var/cache/example.txt', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('C:/var/www/deskpro/var/cache/dontexist', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('C:/tmp/foo', SafeFile::ANY));
-        $this->assertTrue(SafeFile::isValid('C:/var/etc/mysql/my.cnf', SafeFile::ANY));
+        $this->assertTrue(SafeFile::isValid('C:/var/www/deskpro/var/cache/example.txt', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('C:/var/www/deskpro/var/cache/dontexist', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('C:/tmp/foo', SafeFile::UNSPECIFIED));
+        $this->assertTrue(SafeFile::isValid('C:/var/etc/mysql/my.cnf', SafeFile::UNSPECIFIED));
 
-        $this->assertFalse(SafeFile::isValid('C:/var/www/deskpro/attachments/example.txt', SafeFile::ANY));
-        $this->assertFalse(SafeFile::isValid('C:/var/www/deskpro/attachments/dontexist', SafeFile::ANY));
+        $this->assertFalse(SafeFile::isValid('C:/var/www/deskpro/attachments/example.txt', SafeFile::UNSPECIFIED));
+        $this->assertFalse(SafeFile::isValid('C:/var/www/deskpro/attachments/dontexist', SafeFile::UNSPECIFIED));
     }
 
     public function testException()
     {
         $this->setExpectedException(\InvalidArgumentException::class);
-        SafeFile::assertValid('C:\\var\\www\\deskpro\\attachments\\example.txt', SafeFile::ANY);
+        SafeFile::assertValid('C:\\var\\www\\deskpro\\attachments\\example.txt', SafeFile::UNSPECIFIED);
     }
 
     public function testSafeFileWhitelist()
