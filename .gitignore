@@ -25,6 +25,14 @@ yarn-error.log
 /dev/dev_config
 bin/deskpro-importer-tools
 
+# dputils
+/app/BUILD/bin/dputils-builds.bz2
+/app/BUILD/bin/dputils_darwin_amd64
+/app/BUILD/bin/dputils_linux_386
+/app/BUILD/bin/dputils_linux_amd64
+/app/BUILD/bin/dputils_windows_386.exe
+/app/BUILD/bin/dputils_windows_amd64.exe
+
 # generated via gen-lic-list
 /www/assets/BUILD/docs/third-party/composer-lic-info.json
 /www/assets/BUILD/docs/third-party/npm-lic-info.json
