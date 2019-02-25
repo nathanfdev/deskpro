@@ -21,7 +21,15 @@ class CallForward extends BaseForm {
     const initPhoneCallbacks = () => {
       setTimeout(() => {
         const $phone = $('input[type=text]', this.node);
-        $phone.on('blur', () => setTimeout(this.onSubmit, 1));
+        $phone.on('blur', () => setTimeout(() => {
+          const { formData } = this.state;
+          const oldVal = `${formData.value.agent_data.forwarding_number}`.replace(/^sip:/, '');
+          const newVal = `${$phone.val()}`.replace(/^sip:/, '');
+
+          if (newVal !== oldVal) {
+            this.onSubmit();
+          }
+        }, 1));
         $phone.on('keydown', (event) => {
           const code = event.keyCode || event.which;
 
