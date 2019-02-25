@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Orb\Util\Strings;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -93,7 +94,7 @@ class GuidesController extends AbstractController
     public function guidePdfAction(Guide $guide)
     {
         $filename = DP_DIR.'/attachments/guides/pdf/'.$guide->getSlug().'.pdf';
-        if (!file_exists($filename)) {
+        if (!file_exists($filename) || !SafeFile::isValid($filename, DP_DIR.'/attachments/guides/pdf/')) {
             return $this->createNotFoundException();
         }
         $response = new StreamedResponse();

@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Attachments\AcceptAttachmentType;
 use DeskPRO\Bundle\AppBundle\Form\Type\BlobAuthType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Pagerfanta\LimitedPager;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -74,19 +75,19 @@ class BlobsController extends CrudController
     public function postFormDataAction(Request $request)
     {
         if ($request->request->has('file') && $request->request->has('name')) {
-            $dataUri  = $request->request->get('file');
-            $mimeType = 'application/octet-stream';
-            if (preg_match('|data:([^;]*);|', $dataUri, $matches)) {
-                $mimeType = $matches[1];
+            $dataUri = $request->request->get('file');
+
+            // must be a data url
+            if (SafeFile::isValid($dataUri, SafeFile::DATA)) {
+                throw $this->createBadRequestException();
             }
-            $binary = file_get_contents($dataUri);
-            $name   = $request->request->get('name');
-            if ($name === 'undefined' && preg_match('|^image/(.*)|', $mimeType, $matches)) {
-                $name = 'image.'.$matches[1];
-            }
+
+            $filename = $request->request->get('name') ?: 'file';
+            $mimeType = ContentTypes::getContentTypeFromDataUrl($dataUri) ?: 'application/octet-stream';
+
             $blob = $this->get('blob.storage')->createBlobRecordFromString(
-                $binary,
-                $name,
+                file_get_contents($dataUri),
+                $filename,
                 $mimeType
             );
 
@@ -126,7 +127,7 @@ class BlobsController extends CrudController
         foreach ($images as &$image) {
 
             // must be a data url
-            if (!preg_match('#^data:#i', $image['source'])) {
+            if (!SafeFile::isValid($image['source'], SafeFile::DATA)) {
                 throw $this->createBadRequestException();
             }
 

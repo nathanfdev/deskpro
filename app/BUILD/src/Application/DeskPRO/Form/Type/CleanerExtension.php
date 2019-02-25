@@ -48,9 +48,11 @@ class CleanerExtension extends AbstractTypeExtension
 
         $resolver
             ->setDefaults([
-                'filter_clean' => true,
+                'filter_clean'      => true,
+                'filter_clean_type' => 'string',
             ])
             ->setAllowedTypes('filter_clean', 'bool')
+            ->setAllowedTypes('filter_clean_type', 'string')
         ;
     }
 
@@ -112,7 +114,8 @@ class CleanerExtension extends AbstractTypeExtension
                     if (is_array($data)) {
                         $cleaned = $this->cleanCompoundData($data, $childForm);
                     } else {
-                        $cleaned = $this->cleanNonCompoundData($data);
+                        $cleanType = $childForm->getConfig()->getOption('filter_clean_type', 'string');
+                        $cleaned   = $this->cleanNonCompoundData($data, $cleanType);
                     }
 
                     $cleanData[$formName] = $cleaned;
@@ -130,14 +133,15 @@ class CleanerExtension extends AbstractTypeExtension
     }
 
     /**
-     * @param mixed $rawData
+     * @param mixed  $rawData
+     * @param string $cleanType
      *
      * @return mixed
      */
-    public function cleanNonCompoundData($rawData)
+    public function cleanNonCompoundData($rawData, $cleanType)
     {
         if (is_string($rawData)) {
-            $cleaned = $this->cleaner->clean($rawData, 'string');
+            $cleaned = $this->cleaner->clean($rawData, $cleanType);
         } else {
             $cleaned = $rawData;
         }

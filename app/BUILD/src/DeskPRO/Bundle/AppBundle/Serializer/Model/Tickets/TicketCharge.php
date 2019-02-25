@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 
+use Application\DeskPRO\Entity\CustomDataBilling;
 use Application\DeskPRO\Entity\TicketCharge as TicketChargeEntity;
 use JMS\Serializer\Annotation as JMS;
 
@@ -78,6 +79,15 @@ class TicketCharge
     private $comment;
 
     /**
+     * Custom persons data.
+     *
+     * @JMS\Type("deferred<custom_data<array>>")
+     *
+     * @var CustomDataBilling[]
+     */
+    protected $fields;
+
+    /**
      * Constructor.
      *
      * @param TicketChargeEntity $entity
@@ -100,5 +110,10 @@ class TicketCharge
     public function setComment($comment)
     {
         $this->comment = $comment;
+    }
+
+    public function setCustomData($customData)
+    {
+        $this->fields = $customData;
     }
 }

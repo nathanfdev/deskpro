@@ -1,6 +1,6 @@
 define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
-  '$scope', '$q', '$modal', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo', 'DashboardService', 'Growl',
-  function ($scope, $q, $modal, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService, Growl) {
+  '$scope', '$state', '$q', '$modal', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo', 'DashboardService', 'Growl',
+  function ($scope, $state, $q, $modal, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService, Growl) {
     let doSaveDashboard;
     $scope.loaded = false;
     $scope.dashboard = null;
@@ -166,7 +166,7 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
     $scope.saveDashboard = function () {
       $scope.saving = true;
       return doSaveDashboard().then(
-        () => {
+        (data) => {
           DashboardsInfo.resetData();
           if (!$scope.is_new) {
             $scope.dashboard.version_id++;
@@ -174,7 +174,8 @@ define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => [
           }
 
           $scope.saving = false;
-          return $modalInstance.close();
+          $modalInstance.close();
+          $state.go('reports.dashboards.view', { dashboard_id: data.id });
         }
         , () => $scope.saving = false);
     };

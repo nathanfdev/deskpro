@@ -36,31 +36,40 @@ class DpqlPartsType extends AbstractType
     {
         $builder
             ->add('select', TextType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
             ->add('from', TextType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
             ->add('where', TextType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
             ->add('split_by', TextType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
             ->add('group_by', TextType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
             ->add('with_rollup', ApiBooleanType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
             ->add('order_by', TextType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
             ->add('limit', TextType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
             ->add('offset', TextType::class, [
-                'required' => true,
+                'required'          => true,
+                'filter_clean_type' => 'basic_string',
             ])
         ;
 

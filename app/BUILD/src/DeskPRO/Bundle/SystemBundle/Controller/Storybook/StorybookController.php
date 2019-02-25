@@ -6,6 +6,7 @@
 
 namespace DeskPRO\Bundle\SystemBundle\Controller\Storybook;
 
+use DeskPRO\Component\Filesystem\SafeFile;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +27,7 @@ class StorybookController extends Controller
         }
 
         return new Response(
-            file_get_contents(DP_WEB_ROOT.'/pub/build/storybook/'.$path),
+            SafeFile::file_get_contents(DP_WEB_ROOT.'/pub/build/storybook/'.$path, DP_WEB_ROOT.'/pub/build/storybook/'),
             Response::HTTP_OK,
             ['Content-Type' => stripos(strrev($path), strrev('.js')) === 0 ? 'application/javascript' : 'text/html']
         );

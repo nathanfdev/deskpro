@@ -208,15 +208,28 @@ Feature: /report_widgets endpoint
     And the JSON node "data.labels[3]" should be equal to "Feedback"
 
 
-    Scenario: I fetch group-params which would be used as vars
-      When I send a GET request to "/api/v2/report_widgets/group-params"
-      Then the JSON node "" should have 13 elements
-      And the JSON node "fields" should exist
-      And the JSON node "dates" should exist
-      And the JSON node "statuses" should exist
-      And the JSON node "orders" should exist
-      And the JSON node "values" should exist
-      And the JSON node "values.agent" should exist
-      And the JSON node "values.team" should exist
-      And the JSON node "values.department" should exist
-      And the JSON node "values.organization" should exist
+  Scenario: I fetch group-params which would be used as vars
+    When I send a GET request to "/api/v2/report_widgets/group-params"
+    Then the JSON node "" should have 13 elements
+    And the JSON node "fields" should exist
+    And the JSON node "dates" should exist
+    And the JSON node "statuses" should exist
+    And the JSON node "orders" should exist
+    And the JSON node "values" should exist
+    And the JSON node "values.agent" should exist
+    And the JSON node "values.team" should exist
+    And the JSON node "values.department" should exist
+    And the JSON node "values.organization" should exist
+
+  Scenario: I check basic clean filter doesn't corrupt query
+    When I send a POST request to "/api/v2/report_widgets" with body:
+    """
+{
+  "display_types": ["table"],
+  "title": "My widget",
+  "input_mode": "dpql",
+  "query": "SELECT tickets.id, tickets.ref FROM tickets WHERE tickets.subject LIKE '%DACH%'"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.query_parts.where" should be equal to "tickets.subject LIKE '%DACH%'"
