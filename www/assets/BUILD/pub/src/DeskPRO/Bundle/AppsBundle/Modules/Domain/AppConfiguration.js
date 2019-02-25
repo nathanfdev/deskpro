@@ -18,6 +18,7 @@ export class AppConfiguration extends PropertyBag {
       title,
       packageName:   name,
       version:       appVersion,
+      locale:        window.DP_LOCALE,
       bundleUpdatedAt
     });
   }
@@ -31,11 +32,12 @@ export class AppConfiguration extends PropertyBag {
    * @param {String} title
    * @param {String} packageName
    * @param {String} version
+   * @param {String} locale
    * @param {Number} bundleUpdatedAt
    * @param undeclared
    */
-  constructor({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, bundleUpdatedAt, ...undeclared }) {
-    super({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, bundleUpdatedAt, ...undeclared });
+  constructor({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, locale, bundleUpdatedAt, ...undeclared }) {
+    super({ instanceId, applicationId, settings, targets, baseUrl, title, packageName, version, locale, bundleUpdatedAt, ...undeclared });
   }
 
   /**
@@ -79,6 +81,11 @@ export class AppConfiguration extends PropertyBag {
   get version() { return this.props.version; }
 
   /**
+   * @return {String}
+   */
+  get locale() { return this.props.locale; }
+
+  /**
    * @return {Number}
    */
   get bundleUpdatedAt() { return this.props.bundleUpdatedAt; }
@@ -114,13 +121,14 @@ export class AppConfiguration extends PropertyBag {
    * @return {InstanceProps}
    */
   toWidgetProps() {
-    const { instanceId, applicationId, applicationTitle, applicationPackageName } = this;
+    const { instanceId, applicationId, applicationTitle, applicationPackageName, locale } = this;
 
     return new InstanceProps({
       appId:          applicationId.toString(),
       appTitle:       applicationTitle.toString(),
       appPackageName: applicationPackageName.toString(),
-      instanceId:     instanceId.toString()
+      instanceId:     instanceId.toString(),
+      locale:         locale.toString(),
     });
   }
 
