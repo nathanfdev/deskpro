@@ -105,10 +105,19 @@ class VoiceClientPhoneCallController extends BaseController
 
         // if call target is an agent, redirect to voicemail immediately
         $task = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
-        if ($task && $agent = $this->get('dp.voice.voice_task_helper')->getWorkerAgent($task)) {
-            $this->get('dp.voice.voicemail_helper')->voicemailForAgent($phoneCall, $agent);
+        if ($task && $taskAgent = $this->get('dp.voice.voice_task_helper')->getWorkerAgent($task)) {
+            $this->get('dp.voice.voicemail_helper')->voicemailForAgent($phoneCall, $taskAgent);
             $this->get('dp.voice.voicemail_helper')->transferToVoicemail($phoneCall);
         }
+
+        // log that agent rejected the incoming call
+        $log = new VoicePhoneCallLog();
+        $log->setPerson($agent);
+        $log->setActionType(VoicePhoneCallLog::ACTION_REJECTED);
+        $log->setPhoneCall($phoneCall);
+
+        $this->getManager()->persist($log);
+        $this->getManager()->flush();
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
