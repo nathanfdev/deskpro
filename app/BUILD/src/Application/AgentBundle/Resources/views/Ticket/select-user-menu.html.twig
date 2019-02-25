@@ -1,8 +1,8 @@
 <div class="select-user-menu">
     <label class="select-user-menu-header">Select the person who made this call:</label>
     <ul>
-        {% for person in person_repo.findByPhoneNumber(ticket.person.phone_numbers[0].number) %}
-            {% if ticket.person.id != person.id %}
+        {% for person in person_repo.findByPhoneNumber(ticket.person.phone_numbers[0].number, 1) %}
+            {% if ticket.person.id != person.id and person.emails|length > 0 %}
                 <li>
                     <input type="radio" name="select_user" value="{{ person.id }}">
                     <label>{{ person.getDisplayName() }}</label>
