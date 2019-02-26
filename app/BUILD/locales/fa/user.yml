@@ -707,7 +707,7 @@ portal.sidebar.agents_none: 'None of our agents are online right now. You can st
 portal.sidebar.agents_x_online:
   one: '{{count}} online'
   other: '{{count}} online'
-portal.sidebar.article_posted_by: 'Posted by {{name}}'
+portal.sidebar.article_posted_by: 'ارسال شده توسط {{name}}'
 portal.sidebar.news_title: اخبار
 portal.sidebar.satisfied_customers: 'مشتریان راضی'
 portal.sidebar.top_articles_title: 'مقاله های برتر'
