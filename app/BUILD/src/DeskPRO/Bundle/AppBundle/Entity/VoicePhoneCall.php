@@ -92,6 +92,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $forwardingRequestIds = [];
 
     /**
+     * @ORM\Column(name="outgoing_request_ids", type="json_array")
+     *
+     * @var array[]
+     */
+    private $outgoingRequestIds = [];
+
+    /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
      * @ORM\JoinColumn(name="voice_queue_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      *
@@ -894,6 +901,29 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         }
 
         $this->setModelField('forwardingRequestIds', $requestIds);
+
+        return $this;
+    }
+
+    /**
+     * @return array[]
+     */
+    public function getOutgoingRequestIds()
+    {
+        return $this->outgoingRequestIds;
+    }
+
+    /**
+     * @param int $requestId
+     *
+     * @return $this
+     */
+    public function addOutgoingRequestId($requestId)
+    {
+        $requestIds   = $this->outgoingRequestIds;
+        $requestIds[] = $requestId;
+
+        $this->setModelField('outgoingRequestIds', $requestIds);
 
         return $this;
     }

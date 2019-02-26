@@ -127,6 +127,7 @@ class PlivoCallbacksController extends BaseController
 
         if ($request->request->get('X-PH-Outbound')) {
             try {
+                /** @var VoicePhoneCall $phoneCall */
                 $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
                 if (!$phoneCall) {
                     throw $this->createBadRequestException('Phone call not found');
@@ -144,6 +145,9 @@ class PlivoCallbacksController extends BaseController
                 );
 
                 if ($callRequestId) {
+                    $phoneCall->addOutgoingRequestId($callRequestId);
+                    $this->getManager()->flush();
+
                     // create and join a new conference
                     $plivoXml->addConference($phoneCall->getConferenceName(), [
                         'enterSound'     => false,

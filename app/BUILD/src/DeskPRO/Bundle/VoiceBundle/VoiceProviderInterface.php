@@ -23,6 +23,11 @@ interface VoiceProviderInterface
 
     /**
      * @param VoicePhoneCall $phoneCall
+     */
+    public function cancelOutgoingCalls(VoicePhoneCall $phoneCall);
+
+    /**
+     * @param VoicePhoneCall $phoneCall
      *
      * @return bool
      */

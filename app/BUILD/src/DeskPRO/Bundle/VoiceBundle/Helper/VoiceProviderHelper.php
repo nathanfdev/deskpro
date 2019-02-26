@@ -87,10 +87,20 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function cancelOutgoingCalls(VoicePhoneCall $phoneCall)
+    {
+        $this->getAdapter($phoneCall)->cancelOutgoingCalls($phoneCall);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function tryEndConference(VoicePhoneCall $phoneCall)
     {
         $ended = $this->getAdapter($phoneCall)->tryEndConference($phoneCall);
         if ($ended) {
+            $this->cancelOutgoingCalls($phoneCall);
+
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
             $this->em->flush($phoneCall);
 

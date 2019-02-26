@@ -307,6 +307,30 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function cancelOutgoingCalls(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof TwilioVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $client = $this->getClient($account);
+        foreach ($phoneCall->getOutgoingRequestIds() as $requestId) {
+            try {
+                $forwardingCall = $client->calls($requestId)->fetch();
+                if ($forwardingCall->status === 'ringing') {
+                    $forwardingCall->update([
+                        'status' => 'canceled',
+                    ]);
+                }
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
      * @param TwilioVoiceAccount $account
      * @param string             $conferenceSid
      *

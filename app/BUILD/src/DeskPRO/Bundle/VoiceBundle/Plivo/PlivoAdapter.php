@@ -295,9 +295,9 @@ class PlivoAdapter implements VoiceProviderInterface
 
         /** @var Call[] $forwardingCalls */
         $client = $this->getClient($account);
-        foreach ($phoneCall->getAgentForwardingRequestIds($person->getId()) as $forwardingRequestId) {
+        foreach ($phoneCall->getAgentForwardingRequestIds($person->getId()) as $requestId) {
             try {
-                $client->calls->cancel($forwardingRequestId);
+                $client->calls->cancel($requestId);
             } catch (\Exception $e) {
             }
         }
@@ -314,12 +314,31 @@ class PlivoAdapter implements VoiceProviderInterface
         }
 
         $client = $this->getClient($account);
-        foreach ($phoneCall->getForwardingRequestIds() as $agentId => $forwardingRequestIds) {
-            foreach ($forwardingRequestIds as $forwardingRequestId) {
+        foreach ($phoneCall->getForwardingRequestIds() as $agentId => $requestId) {
+            foreach ($requestId as $forwardingRequestId) {
                 try {
                     $client->calls->cancel($forwardingRequestId);
                 } catch (\Exception $e) {
                 }
+            }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function cancelOutgoingCalls(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $client = $this->getClient($account);
+        foreach ($phoneCall->getOutgoingRequestIds() as $requestId) {
+            try {
+                $client->calls->cancel($requestId);
+            } catch (\Exception $e) {
             }
         }
     }
