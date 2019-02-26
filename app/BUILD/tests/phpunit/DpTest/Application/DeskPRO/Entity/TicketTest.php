@@ -36,7 +36,7 @@ class TicketTest extends PortalTestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage is not an agent
      */
-    public function _testSetNotAgentForNewTicket()
+    public function testSetNotAgentForNewTicket()
     {
         $this->installDataSet('fresh', true);
 
@@ -56,7 +56,7 @@ class TicketTest extends PortalTestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage is not an agent
      */
-    public function _testSetNotAgentOnTicketUpdate()
+    public function testSetNotAgentOnTicketUpdate()
     {
         $this->installDataSet('fresh', true);
 
