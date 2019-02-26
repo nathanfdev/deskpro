@@ -759,18 +759,22 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
       self.tabBarOverflow.debouncedUpdate();
     });
 
+    if (data.wrapper) {
+      data.wrapper.hide();
+    }
+
     var doRemove = function () {
       if (typeof data.callback_remove_content !== 'undefined') {
         data.callback_remove_content(data, $('#' + data.wrapperId), this);
       }
 
+      if (data.page.destroyEvents) {
+        data.page.destroyEvents();
+      }
+
       if (data.wrapper) {
         data.wrapper.remove();
         data.wrapper = null;
-      }
-
-      if (data.page.destroyEvents) {
-        data.page.destroyEvents();
       }
 
       if (tab.page) {
