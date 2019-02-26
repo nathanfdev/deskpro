@@ -764,7 +764,7 @@ portal.tickets.related_articles_desc: 'We found the following articles that may 
 portal.tickets.related_articles_title: 'مقالات مرتبط'
 portal.tickets.resolve_my_ticket_btn: 'پیام من را ببند'
 portal.tickets.resolve_ticket: 'Resolve Ticket: {{subject}}'
-portal.tickets.resolve_ticket_explain: 'Are you sure you want to resolve your ticket? Once your ticket is resolved, our agents will no longer respond.'
+portal.tickets.resolve_ticket_explain: 'آیا مطمئن هستید که میخواهید تیکت خود را ببندید؟ هنگامی که تیکت شما بسته شود، کارشناسان ما دیگر پاسخ نخواهند داد.'
 portal.tickets.search-last-activity: 'اخرین فعالیت'
 portal.tickets.search-title: 'پیام ها'
 portal.tickets.section-title: 'پیام ها'
