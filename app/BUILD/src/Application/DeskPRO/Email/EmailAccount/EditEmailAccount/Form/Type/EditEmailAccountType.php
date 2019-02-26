@@ -42,11 +42,11 @@ class EditEmailAccountType extends AbstractType
             ],
             'required' => true,
         ]);
-        $builder->add('in_gmail_account', new IncomingAccount\GmailAccountType());
-        $builder->add('in_pop3_account', new IncomingAccount\Pop3AccountType());
-        $builder->add('in_imap_account', new IncomingAccount\ImapAccountType());
-        $builder->add('in_exchange_account', new IncomingAccount\ExchangeAccountType());
-        $builder->add('in_office365_account', new IncomingAccount\Office365AccountType());
+        $builder->add('in_gmail_account', IncomingAccount\GmailAccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('in_pop3_account', IncomingAccount\Pop3AccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('in_imap_account', IncomingAccount\ImapAccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('in_exchange_account', IncomingAccount\ExchangeAccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('in_office365_account', IncomingAccount\Office365AccountType::class, ['allow_extra_fields' => true]);
 
         $builder->add('outgoing_type', 'choice', [
             'choices' => [
@@ -58,16 +58,17 @@ class EditEmailAccountType extends AbstractType
             ],
             'required' => true,
         ]);
-        $builder->add('out_gmail_account', new OutgoingAccount\GmailAccountType());
-        $builder->add('out_smtp_account', new OutgoingAccount\SmtpAccountType());
-        $builder->add('out_exchange_account', new OutgoingAccount\ExchangeAccountType());
-        $builder->add('out_office365_account', new OutgoingAccount\Office365AccountType());
+        $builder->add('out_gmail_account', OutgoingAccount\GmailAccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('out_smtp_account', OutgoingAccount\SmtpAccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('out_exchange_account', OutgoingAccount\ExchangeAccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('out_office365_account', OutgoingAccount\Office365AccountType::class, ['allow_extra_fields' => true]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => EditEmailAccount::class,
+            'data_class'         => EditEmailAccount::class,
+            'allow_extra_fields' => true,
         ]);
     }
 

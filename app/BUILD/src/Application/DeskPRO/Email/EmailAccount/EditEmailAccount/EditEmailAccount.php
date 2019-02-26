@@ -169,7 +169,11 @@ class EditEmailAccount
         }
 
         if ($save_incoming) {
-            $this->account->incoming_account = $this->getIncomingAccountConfig();
+            if ($this->account_type === 'tickets') {
+                $this->account->incoming_account = $this->getIncomingAccountConfig();
+            } else {
+                $this->account->incoming_account = null;
+            }
             if (!$this->account->incoming_account) {
                 $this->account->account_type = EmailAccount::TYPE_OUT;
             }
@@ -251,38 +255,18 @@ class EditEmailAccount
     {
         switch ($this->incoming_type) {
             case 'pop3':
-                if (!$this->in_pop3_account->user) {
-                    return;
-                }
-
                 return $this->in_pop3_account;
 
             case 'imap':
-                if (!$this->in_imap_account->user) {
-                    return;
-                }
-
                 return $this->in_imap_account;
 
             case 'exchange':
-                if (!$this->in_exchange_account->user) {
-                    return;
-                }
-
                 return $this->in_exchange_account;
 
             case 'gmail':
-                if (!$this->in_gmail_account->user) {
-                    return;
-                }
-
                 return $this->in_gmail_account;
 
             case 'office365':
-                if (!$this->in_office365_account->user) {
-                    return;
-                }
-
                 return $this->in_office365_account;
 
             case 'noop':

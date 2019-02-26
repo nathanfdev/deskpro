@@ -251,8 +251,10 @@ class IncomingAccountTester
                     $this->logger->logError('Unknown error. Details:');
             }
 
-            $this->logger->logError('Last request: '.$storage->getLastRequest());
-            $this->logger->logError('Last response: '.$storage->getLastResponse());
+            if (isset($storage) && $storage) {
+                $this->logger->logError('Last request: '.$storage->getLastRequest());
+                $this->logger->logError('Last response: '.$storage->getLastResponse());
+            }
             $this->logger->logError(str_repeat('-', 35));
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
