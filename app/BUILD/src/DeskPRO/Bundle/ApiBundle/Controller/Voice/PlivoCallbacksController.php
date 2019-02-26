@@ -376,17 +376,17 @@ class PlivoCallbacksController extends BaseController
         ]);
         if ($phoneCall) {
             $this->get('dp.voice.provider_helper')->endConference($phoneCall);
+
+            // store call price
+            $phoneCall->addCost($totalCost);
+            $phoneCall->setCostCurrency('USD');
+
+            $participant = $phoneCall->getParticipantByCallSid($callSid);
+            $participant->addCost($totalCost);
+            $participant->setCostCurrency('USD');
+
+            $this->getManager()->flush();
         }
-
-        // store call price
-        $phoneCall->addCost($totalCost);
-        $phoneCall->setCostCurrency('USD');
-
-        $participant = $phoneCall->getParticipantByCallSid($callSid);
-        $participant->addCost($totalCost);
-        $participant->setCostCurrency('USD');
-
-        $this->getManager()->flush();
 
         $plivoXml = new PlivoXML();
         $response = new Response($plivoXml->toXML());
@@ -583,12 +583,13 @@ class PlivoCallbacksController extends BaseController
         }
 
         $callSid       = $request->request->get('CallUUID');
+        $memberId      = $request->request->get('ConferenceMemberID');
         $conferenceSid = $request->request->get('ConferenceUUID');
         $details       = $request->request->all();
         $eventName     = $request->request->get('ConferenceAction');
 
         if ($eventName === 'enter') {
-            $this->get('dp.voice.callbacks_helper')->joinConference($phoneCall, $callSid, $conferenceSid, $details);
+            $this->get('dp.voice.callbacks_helper')->joinConference($phoneCall, $callSid, $conferenceSid, $details, $memberId);
         } elseif ($eventName === 'record') {
             $recordUrl      = $request->request->get('RecordUrl');
             $recordDuration = $request->request->get('RecordingDuration');
@@ -633,6 +634,7 @@ class PlivoCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
+        /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
             'callSid' => $request->request->get('CallUUID'),
         ]);
@@ -1043,7 +1045,7 @@ class PlivoCallbacksController extends BaseController
             $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
 
             $plivoXml->addConference($phoneCall->getConferenceName(), [
-                'endConferenceOnExit' => true,
+                'endConferenceOnExit' => false,
                 'enterSound'          => false,
                 'callbackUrl'         => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
                 'callbackMethod'      => 'POST',
@@ -1091,16 +1093,51 @@ class PlivoCallbacksController extends BaseController
         $plivoXml = new PlivoXML();
         $callId   = $request->get('callId');
         if ($callId) {
+            /** @var VoicePhoneCall $phoneCall */
             $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
             if ($phoneCall) {
                 $plivoXml->addConference($phoneCall->getConferenceName(), [
-                    'endConferenceOnExit' => true,
+                    'endConferenceOnExit' => false,
                     'callbackUrl'         => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
                     'callbackMethod'      => 'POST',
                     'record'              => true,
                 ]);
             }
         }
+
+        $response = new Response($plivoXml->toXML());
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Put user on hold",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/put_user_on_hold_callback", name="plivo_user_put_on_hold_callback")
+     *
+     * @param PlivoVoiceAccount $account
+     * @param string            $accountAuth
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function putUserOnHoldCallbackAction(PlivoVoiceAccount $account, $accountAuth)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $plivoXml = new PlivoXML();
+        $plivoXml->addPlay('http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3');
 
         $response = new Response($plivoXml->toXML());
         $response->headers->set('Content-Type', 'text/xml');

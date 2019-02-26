@@ -729,8 +729,9 @@ class VoiceCallbacksHelper
      * @param string         $callSid
      * @param string         $conferenceSid
      * @param array          $details
+     * @param string         $memberId
      */
-    public function joinConference(VoicePhoneCall $phoneCall, $callSid, $conferenceSid, array $details)
+    public function joinConference(VoicePhoneCall $phoneCall, $callSid, $conferenceSid, array $details, $memberId = null)
     {
         // if didn't get the phone call by conference sid then the initial caller didn't join the conference yet
         // store conference sid on its join callback
@@ -740,31 +741,36 @@ class VoiceCallbacksHelper
         }
 
         $participant = $phoneCall->getParticipantByCallSid($callSid);
-        if ($participant instanceof VoicePhoneCallParticipantAgent) {
-            // set participant join event time
-            $participant->setDateJoined(new \DateTime());
+        if ($participant) {
+            $participant->setMemberId($memberId);
             $this->em->flush();
 
-            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
-                // mark the phone call as started
-                $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
-
+            if ($participant instanceof VoicePhoneCallParticipantAgent) {
+                // set participant join event time
+                $participant->setDateJoined(new \DateTime());
                 $this->em->flush();
-            }
 
-            // log participant join event
-            $log = new VoicePhoneCallLog();
-            $log->setDetails($details);
-            $log->setPhoneCall($phoneCall);
-            $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_JOINED);
-            if ($participant->getPerson()) {
-                $log->setPerson($participant->getPerson());
-            }
+                if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
+                    // mark the phone call as started
+                    $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
 
-            $this->em->persist($log);
-            $this->em->flush();
-        } elseif ($participant instanceof VoicePhoneCallParticipantUser) {
-            $this->logConferenceStart($phoneCall, $details);
+                    $this->em->flush();
+                }
+
+                // log participant join event
+                $log = new VoicePhoneCallLog();
+                $log->setDetails($details);
+                $log->setPhoneCall($phoneCall);
+                $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_JOINED);
+                if ($participant->getPerson()) {
+                    $log->setPerson($participant->getPerson());
+                }
+
+                $this->em->persist($log);
+                $this->em->flush();
+            } elseif ($participant instanceof VoicePhoneCallParticipantUser) {
+                $this->logConferenceStart($phoneCall, $details);
+            }
         }
     }
 
@@ -782,7 +788,9 @@ class VoiceCallbacksHelper
         unset($statusParams['phone_call']['ticket']);
 
         // is conference on hold
-        $statusParams['hold'] = $this->voiceProviderHelper->isConferenceOnHold($phoneCall);
+        $statusParams['hold'] = $phoneCall->getUserParticipants()->count()
+            ? $phoneCall->getUserParticipants()->first()->isOnHold()
+            : false;
 
         // all active participants
         $statusParams['agent_participants'] = array_map(function (Person $person) {

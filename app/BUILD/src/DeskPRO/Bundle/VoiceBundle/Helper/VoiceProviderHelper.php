@@ -13,6 +13,7 @@ use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class VoiceProviderHelper.
@@ -23,6 +24,11 @@ class VoiceProviderHelper implements VoiceProviderInterface
      * @var EntityManager
      */
     private $em;
+
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $router;
 
     /**
      * @var TwilioAdapter
@@ -43,17 +49,20 @@ class VoiceProviderHelper implements VoiceProviderInterface
      * Constructor.
      *
      * @param EntityManager            $em
+     * @param UrlGeneratorInterface    $router
      * @param TwilioAdapter            $twilioAdapter
      * @param PlivoAdapter             $plivoAdapter
      * @param EventDispatcherInterface $dispatcher
      */
     public function __construct(
         EntityManager            $em,
+        UrlGeneratorInterface    $router,
         TwilioAdapter            $twilioAdapter,
         PlivoAdapter             $plivoAdapter,
         EventDispatcherInterface $dispatcher
     ) {
         $this->em            = $em;
+        $this->router        = $router;
         $this->twilioAdapter = $twilioAdapter;
         $this->plivoAdapter  = $plivoAdapter;
         $this->dispatcher    = $dispatcher;
@@ -113,9 +122,28 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
+    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = [])
     {
-        $this->getAdapter($phoneCall)->holdConferenceEndUser($phoneCall, $isHold);
+        $adapter = $this->getAdapter($phoneCall);
+        if ($adapter instanceof PlivoAdapter) {
+            $account = $phoneCall->getNumber()->getAccount();
+            if (!$account || !$account instanceof PlivoVoiceAccount) {
+                throw new \RuntimeException('Voice number does not have an account reference.');
+            }
+
+            $params['holdUrl'] = $this->router->generate('plivo_user_put_on_hold_callback', [
+                'account'     => $account->getId(),
+                'accountAuth' => $account->getAccountAuth(),
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+            $params['joinUrl'] = $this->router->generate('plivo_user_joins_conference_callback', [
+                'account'     => $account->getId(),
+                'accountAuth' => $account->getAccountAuth(),
+                'callId'      => $phoneCall->getId(),
+            ], UrlGeneratorInterface::ABSOLUTE_URL);
+        }
+
+        $this->getAdapter($phoneCall)->holdConferenceEndUser($phoneCall, $isHold, $params);
     }
 
     /**
@@ -132,14 +160,6 @@ class VoiceProviderHelper implements VoiceProviderInterface
     public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
     {
         return $this->getAdapter($phoneCall)->getActivePhoneCallParticipants($phoneCall);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isConferenceOnHold(VoicePhoneCall $phoneCall)
-    {
-        return $this->getAdapter($phoneCall)->isConferenceOnHold($phoneCall);
     }
 
     /**

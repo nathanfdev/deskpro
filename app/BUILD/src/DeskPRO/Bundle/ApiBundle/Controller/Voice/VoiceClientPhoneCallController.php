@@ -8,6 +8,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
@@ -264,6 +265,15 @@ class VoiceClientPhoneCallController extends BaseController
         $isHold = $request->request->get('hold');
 
         $this->get('dp.voice.provider_helper')->holdConferenceEndUser($phoneCall, $isHold);
+
+        $phoneCall->getUserParticipants()->map(function (AbstractVoicePhoneCallParticipant $participant) use ($isHold) {
+            $participant->setOnHold($isHold);
+        });
+
+        $em = $this->getManager();
+        $em->persist($phoneCall);
+        $em->flush();
+
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.hold',
             [
@@ -284,12 +294,8 @@ class VoiceClientPhoneCallController extends BaseController
             $log->setActionType(VoicePhoneCallLog::ACTION_UNHOLD);
         }
 
-        $em = $this->getManager();
         $em->persist($log);
         $em->flush();
-
-        // send conference status
-        $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

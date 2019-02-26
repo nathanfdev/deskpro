@@ -341,7 +341,7 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
+    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = [])
     {
         $account = $phoneCall->getNumber()->getAccount();
         if (!$account || !$account instanceof TwilioVoiceAccount) {
@@ -441,26 +441,6 @@ class TwilioAdapter implements VoiceProviderInterface
         }
 
         return $agents;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isConferenceOnHold(VoicePhoneCall $phoneCall)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
-        foreach ($participants as $participant) {
-            if ($participant->callSid === $phoneCall->getCallSid()) {
-                return $participant->hold;
-            }
-        }
-
-        return false;
     }
 
     /**

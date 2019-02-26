@@ -6,7 +6,6 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoAvailableNumber;
@@ -23,7 +22,7 @@ use Plivo\Exceptions\PlivoResponseException;
 use Plivo\Exceptions\PlivoRestException;
 use Plivo\Resources\Call\Call;
 use Plivo\Resources\Call\CallCreateResponse;
-use Plivo\Resources\Conference\ConferenceMember;
+use Plivo\Resources\Conference\ConferenceInterface;
 use Plivo\Resources\Endpoint\Endpoint;
 use Plivo\Resources\Number\Number;
 use Plivo\Resources\PhoneNumber\PhoneNumber;
@@ -339,7 +338,16 @@ class PlivoAdapter implements VoiceProviderInterface
         if ($conference && count($conference->members) < 2) {
             $conference->delete();
 
-            foreach ($phoneCall->getUserParticipants() as $participant) {
+            foreach ($phoneCall->getParticipants() as $participant) {
+                try {
+                    $this->getClient($account)->calls->delete($participant->getCallSid());
+                } catch (\Exception $e) {
+                }
+            }
+
+            return true;
+        } elseif (!$conference) {
+            foreach ($phoneCall->getParticipants() as $participant) {
                 try {
                     $this->getClient($account)->calls->delete($participant->getCallSid());
                 } catch (\Exception $e) {
@@ -388,55 +396,28 @@ class PlivoAdapter implements VoiceProviderInterface
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        foreach ($conference->members as $member) {
-            /** @var ConferenceMember $member */
-            if ($member['call_uuid'] === $callSid) {
-                if ($mute) {
-                    $conference->muteMember([$member['member_id']]);
-                } else {
-                    $conference->UnMuteMember([$member['member_id']]);
-                }
-            }
+        $conference  = new ConferenceInterface($this->getClient($account)->client, $account->getAccountId());
+        $participant = $phoneCall->getParticipantByCallSid($callSid);
+        if (!$participant) {
+            return;
+        }
+
+        if ($mute) {
+            $conference->muteMember($phoneCall->getConferenceName(), [$participant->getMemberId()]);
+        } else {
+            $conference->unMuteMember($phoneCall->getConferenceName(), [$participant->getMemberId()]);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold)
+    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = [])
     {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account instanceof PlivoVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $userParticipants = $phoneCall->getUserParticipants()->map(function (VoicePhoneCallParticipantUser $participant) {
-            return $participant->getCallSid();
-        })->toArray();
-
-        $memberIds  = [];
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        if ($conference) {
-            foreach ($conference->members as $member) {
-                /** @var ConferenceMember $member */
-                if (in_array($member['call_uuid'], $userParticipants)) {
-                    $memberIds[] = $member['member_id'];
-                }
-            }
-
-            try {
-                if ($isHold) {
-                    $conference->createDeaf($memberIds);
-                    $conference->muteMember($memberIds);
-                    $conference->startPlaying($memberIds, 'http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3');
-                } else {
-                    $conference->deleteDeaf($memberIds);
-                    $conference->UnMuteMember($memberIds);
-                    $conference->stopPlaying($memberIds);
-                }
-            } catch (\Exception $e) {
-            }
+        if ($isHold) {
+            $this->transferCall($phoneCall, $params['holdUrl'], 'POST');
+        } else {
+            $this->transferCall($phoneCall, $params['joinUrl'], 'POST');
         }
     }
 
@@ -466,29 +447,6 @@ class PlivoAdapter implements VoiceProviderInterface
         }
 
         return $agents;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function isConferenceOnHold(VoicePhoneCall $phoneCall)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof PlivoVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        if ($conference) {
-            foreach ($conference->members as $member) {
-                /** @var ConferenceMember $member */
-                if ($member['call_uuid'] === $phoneCall->getCallSid()) {
-                    return $member['deaf'];
-                }
-            }
-        }
-
-        return false;
     }
 
     /**

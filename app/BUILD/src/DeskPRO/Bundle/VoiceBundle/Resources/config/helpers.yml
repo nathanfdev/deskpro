@@ -35,6 +35,7 @@ services:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceProviderHelper
     arguments:
       - "@doctrine.orm.entity_manager"
+      - "@router"
       - "@twilio_adapter"
       - "@plivo_adapter"
       - "@event_dispatcher"

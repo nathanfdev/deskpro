@@ -36,8 +36,9 @@ interface VoiceProviderInterface
     /**
      * @param VoicePhoneCall $phoneCall
      * @param bool           $isHold
+     * @param array          $params
      */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold);
+    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = []);
 
     /**
      * @param VoicePhoneCall $phoneCall
@@ -55,15 +56,6 @@ interface VoiceProviderInterface
      * @return Person[]
      */
     public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall);
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     *
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function isConferenceOnHold(VoicePhoneCall $phoneCall);
 
     /**
      * @param VoicePhoneCall $phoneCall
