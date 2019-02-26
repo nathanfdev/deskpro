@@ -1561,7 +1561,7 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_DATE_ON_HOLD:
                         $this->affected_fields[] = 'ticket.date_on_hold';
                         $wheres[]                = $this->_dateMatch("$tickets_table.date_on_hold", $op, $choice);
-                        $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['awaiting_agent']);
+                        $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', [TicketStatus::STATUS_TYPE_PENDING]);
                         break;
                     case self::TERM_DATE_ARCHIVED:
                         $this->affected_fields[] = 'ticket.date_archived';
@@ -1927,7 +1927,11 @@ class TicketSearch extends SearcherAbstract
                                 $sub_statuses[] = explode('.', $c, 2);
                             } else {
                                 $statuses[] = $c;
-                                if ($c != 'awaiting_agent' && $c != 'awaiting_user' && $c != 'resolved') {
+                                if (!in_array($c, [
+                                    TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                                    TicketStatus::STATUS_TYPE_AWAITING_USER,
+                                    TicketStatus::STATUS_TYPE_RESOLVED,
+                                    TicketStatus::STATUS_TYPE_PENDING, ])) {
                                     $this->enableArchiveSearch();
                                 }
                             }
@@ -1941,7 +1945,8 @@ class TicketSearch extends SearcherAbstract
                             if (!in_array($item[0], [
                                 TicketStatus::STATUS_TYPE_AWAITING_AGENT,
                                 TicketStatus::STATUS_TYPE_AWAITING_USER,
-                                TicketStatus::STATUS_TYPE_RESOLVED, ])) {
+                                TicketStatus::STATUS_TYPE_RESOLVED,
+                                TicketStatus::STATUS_TYPE_PENDING, ])) {
                                 $this->enableArchiveSearch();
                             }
 

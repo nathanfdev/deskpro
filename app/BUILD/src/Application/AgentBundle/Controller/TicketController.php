@@ -1011,18 +1011,19 @@ class TicketController extends AbstractController
         }
 
         if ($this->in->checkIsset('status')) {
-            $status = $this->in->checkIsset('status');
-            if ($status == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
+            /** @var TicketStatus $setStatus */
+            $status = $this->getContainer()->getTicketStatuses()->findStatusOrException($this->in->checkIsset('status'));
+            if ($status->getStatusType() == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
                 $status = null;
             }
-            if ($status == 'awaiting_agent' && !$tcheck->canModify($ticket, 'set_awaiting_agent')) {
+            if ($status && $status->getStatusType() == 'awaiting_agent' && !$tcheck->canModify($ticket, 'set_awaiting_agent')) {
                 $status = null;
             }
-            if ($status == 'awaiting_user' && !$tcheck->canModify($ticket, 'set_awaiting_user')) {
+            if ($status && $status->getStatusType() == 'awaiting_user' && !$tcheck->canModify($ticket, 'set_awaiting_user')) {
                 $status = null;
             }
             if ($status) {
-                $ticket['status'] = $this->in->getString('status');
+                $ticket->setTicketStatus($status);
             }
         }
 
