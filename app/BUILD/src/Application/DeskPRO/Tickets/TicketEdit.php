@@ -208,22 +208,23 @@ class TicketEdit implements PersonContextInterface
 
                 case 'status':
                     if ($this->person_context) {
-                        $status = true;
+                        $status       = true;
+                        $ticketStatus = App::getcontainer()->getTicketStatuses()->findStatusOrException($action);
 
                         // Switching to or from archived
-                        if (($action == 'archived' || $this->ticket->status == 'archived') && !$tcheck->canSetArchived($this->ticket)) {
+                        if (($ticketStatus->getStatusType() == 'archived' || $this->ticket->status == 'archived') && !$tcheck->canSetArchived($this->ticket)) {
                             $status = null;
                         }
-                        if ($action == 'resolved' && !$tcheck->canModify($this->ticket, 'set_resolved')) {
+                        if ($ticketStatus->getStatusType() == 'resolved' && !$tcheck->canModify($this->ticket, 'set_resolved')) {
                             $status = null;
                         }
-                        if ($action == 'awaiting_agent' && !$tcheck->canModify($this->ticket, 'set_awaiting_agent')) {
+                        if ($ticketStatus->getStatusType() == 'awaiting_agent' && !$tcheck->canModify($this->ticket, 'set_awaiting_agent')) {
                             $status = null;
                         }
-                        if ($action == 'awaiting_user' && !$tcheck->canModify($this->ticket, 'set_awaiting_user')) {
+                        if ($ticketStatus->getStatusType() == 'awaiting_user' && !$tcheck->canModify($this->ticket, 'set_awaiting_user')) {
                             $status = null;
                         }
-                        if ($action == 'pending' && !$tcheck->canModify($this->ticket, 'set_hold')) {
+                        if ($ticketStatus->getStatusType() == 'pending' && !$tcheck->canModify($this->ticket, 'set_hold')) {
                             $status = null;
                         }
                         if (!$status) {
@@ -234,10 +235,10 @@ class TicketEdit implements PersonContextInterface
                             $action .= '.'.$actions['hidden_status'];
                         }
 
-                        $status = App::getcontainer()->getTicketStatuses()->findStatusOrException($action);
+                        $ticketStatus = App::getcontainer()->getTicketStatuses()->findStatusOrException($action);
                     }
 
-                    $this->ticket->setTicketStatus($status);
+                    $this->ticket->setTicketStatus($ticketStatus);
                     break;
 
                 case 'is_hold':

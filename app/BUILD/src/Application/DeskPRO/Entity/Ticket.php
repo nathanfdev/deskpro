@@ -3194,6 +3194,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             }
         }
 
+        if ($status === TicketStatus::STATUS_TYPE_PENDING && $old_status !== $status) {
+            $this->setDateOnHold(new \DateTime('now'));
+        }
+
         return $this;
     }
 

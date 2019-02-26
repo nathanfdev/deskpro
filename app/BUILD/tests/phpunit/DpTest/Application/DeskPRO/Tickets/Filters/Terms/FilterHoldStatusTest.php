@@ -12,10 +12,10 @@ use DpTest\DeskProTestCase;
 class FilterHoldStatusTest extends DeskProTestCase
 {
     /**
-     * @testWith    ["is", 1, "((tickets.is_hold = \"pending\"))"]
-     *              ["is", 0, "((tickets.is_hold != \"pending\"))"]
-     *              ["not", 1, "((tickets.is_hold != \"pending\"))"]
-     *              ["not", 0, "((tickets.is_hold = \"pending\"))"]
+     * @testWith    ["is", 1, "((tickets.status = \"pending\"))"]
+     *              ["is", 0, "((tickets.status != \"pending\"))"]
+     *              ["not", 1, "((tickets.status != \"pending\"))"]
+     *              ["not", 0, "((tickets.status = \"pending\"))"]
      */
     public function testGetFilterQuery($op, $isHold, $expectedWhere)
     {

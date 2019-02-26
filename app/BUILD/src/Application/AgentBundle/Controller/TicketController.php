@@ -2370,10 +2370,14 @@ class TicketController extends AbstractController
                     $newticket->custom_org_fields = $_REQUEST['custom_org_fields'];
                 }
 
-                if ($this->in->getString('actions.status') == 'resolved') {
-                    $newticket->status = 'resolved';
-                } else {
-                    $newticket->status = '';
+                if ($this->in->getString('actions.status')) {
+                    $ticketStatus = $this->getContainer()->getTicketStatuses()
+                        ->findStatusOrException($this->in->getString('actions.status'));
+                    if ($ticketStatus->getStatusType() == 'resolved') {
+                        $newticket->status = 'resolved';
+                    } else {
+                        $newticket->status = '';
+                    }
                 }
 
                 $validator = new NewTicketValidator();

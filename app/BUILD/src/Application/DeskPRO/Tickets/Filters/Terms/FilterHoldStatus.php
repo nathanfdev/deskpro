@@ -39,11 +39,11 @@ class FilterHoldStatus extends AbstractFilterTerm
         switch ($this->getTermOperator()) {
             case self::OP_IS:
                 $op = $isHold ? '=' : '!=';
-                $query->andWhere(sprintf('tickets.is_hold %s "%s"', $op, TicketStatus::STATUS_TYPE_PENDING));
+                $query->andWhere(sprintf('tickets.status %s "%s"', $op, TicketStatus::STATUS_TYPE_PENDING));
                 break;
             case self::OP_NOT:
                 $op = $isHold ? '!=' : '=';
-                $query->andWhere(sprintf('tickets.is_hold %s "%s"', $op, TicketStatus::STATUS_TYPE_PENDING));
+                $query->andWhere(sprintf('tickets.status %s "%s"', $op, TicketStatus::STATUS_TYPE_PENDING));
                 break;
             default:
                 throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");

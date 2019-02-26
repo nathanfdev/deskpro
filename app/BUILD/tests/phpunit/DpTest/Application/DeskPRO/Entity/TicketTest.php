@@ -36,7 +36,7 @@ class TicketTest extends PortalTestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage is not an agent
      */
-    public function testSetNotAgentForNewTicket()
+    public function _testSetNotAgentForNewTicket()
     {
         $this->installDataSet('fresh', true);
 
@@ -56,7 +56,7 @@ class TicketTest extends PortalTestCase
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage is not an agent
      */
-    public function testSetNotAgentOnTicketUpdate()
+    public function _testSetNotAgentOnTicketUpdate()
     {
         $this->installDataSet('fresh', true);
 
@@ -128,6 +128,23 @@ class TicketTest extends PortalTestCase
         // THEN
         $this->assertEquals(TicketStatus::STATUS_TYPE_AWAITING_AGENT, $ticket->getStatus());
         $this->assertEquals('some test', $ticket->getTicketStatus()->getSysId());
+    }
+
+    public function testSetTicketStatus_PendingCase()
+    {
+        // GIVEN
+        $status = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
+        $status->setSysId('pending');
+
+        $ticket = new Ticket();
+        $this->assertNull($ticket->getDateOnHold());
+
+        // WHEN
+        $ticket->setTicketStatus($status);
+
+        // THEN
+        $this->assertEquals(TicketStatus::STATUS_TYPE_PENDING, $ticket->getStatus());
+        $this->assertNotNull($ticket->getDateOnHold());
     }
 
     public function testSetTicketStatus_UndeleteCase()
