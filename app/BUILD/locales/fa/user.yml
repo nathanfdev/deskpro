@@ -367,11 +367,11 @@ portal.emails.validate-email: 'لطفا آدرس ایمیل خود را از ط�
 portal.emails.view_full_history_online: 'مشاهده آنلاین تمام تیکت ها'
 portal.error.400-desc: 'با عرض پوزش، درخواست شما ناقص بود'
 portal.error.400-title: 'Bad Request'
-portal.error.403-desc: 'Sorry, but you do not have access to view this page.'
+portal.error.403-desc: "با عرض پوزش، اما شما برای مشاهده این صفحه دسترسی ندارید\n"
 portal.error.403-title: 'عدم دسترسی'
 portal.error.404-desc: 'Sorry, but we couldn''t find this page.'
 portal.error.404-title: 'یافت نشد'
-portal.error.contact: 'If you feel that this is an error, please contact us.'
+portal.error.contact: "اگر احساس می کنید این یک خطا است، لطفا با ما تماس بگیرید.\n"
 portal.error.general-desc: "متاسفیم، ولی یک مشکل رخ داده است. لطفا بعدا دوباره امتحان کنید یا با ما تماس بگیرید\n"
 portal.error.general-title: 'یک خطا رخ داد'
 portal.feedback.attachments: 'فایل پیوست'
@@ -783,7 +783,7 @@ portal.tickets.timeline_opened: 'این پیام باز شد'
 portal.tickets.timeline_re_opened: 'این پیام مجدد باز شده است'
 portal.tickets.timeline_wrote: 'نوشته شده:'
 portal.tickets.view_assigned_agent: 'Assigned agent:'
-portal.tickets.view_awaiting_user: 'An agent is waiting for you to reply to a message.'
+portal.tickets.view_awaiting_user: 'یک  کارشناس در انتظار شما برای پاسخ به یک پیام است.'
 portal.tickets.view_btn_add_cc: 'Add a CC''ed user'
 portal.tickets.view_btn_add_to_ticket: 'Add To Ticket'
 portal.tickets.view_btn_edit: ویرایش
@@ -805,7 +805,7 @@ portal.tickets.view_participants: 'Also on this ticket:'
 portal.tickets.view_reply: 'اضافه کردن پاسخ'
 portal.tickets.view_reply_errors: 'برخی از خطاها با ارسال شما وجود دارد.'
 portal.tickets.view_reply_or_close: 'Add a reply or <a href="{{close_url}}" class="close-ticket-trigger">close the ticket</a>'
-portal.tickets.view_scroll_reply: 'برای حرکت به پایین به فرم، اینجا را کلیک کنید.'
+portal.tickets.view_scroll_reply: 'جهت رفتن به قسمت پایین به فرم، اینجا را کلیک کنید.'
 portal.tickets.view_ticket_info: 'اطلاعات پیام:'
 portal.tickets.view_unassigned: Unassigned
 portal.tickets.view_unassigned_more: 'An agent will be assigned'
