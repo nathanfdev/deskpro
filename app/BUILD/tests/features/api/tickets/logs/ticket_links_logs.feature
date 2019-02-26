@@ -3,12 +3,13 @@ Feature: Ticket logs when manipulating ticket relations
 
   Background:
     Given I'm authenticated as admin
+    And agent and user exist
     And only the following Ticket records exist:
-      | #        | Subject      | Parent ticket |
-      | ticket_1 | Ticket One   |               |
-      | ticket_2 | Ticket Two   |               |
-      | ticket_3 | Ticket Three | {ticket_1}    |
-      | ticket_4 | Ticket Four  | {ticket_1}    |
+      | #        | Subject      | Parent ticket | Person |
+      | ticket_1 | Ticket One   |               | {user} |
+      | ticket_2 | Ticket Two   |               | {user} |
+      | ticket_3 | Ticket Three | {ticket_1}    | {user} |
+      | ticket_4 | Ticket Four  | {ticket_1}    | {user} |
 
   Scenario: I link two tickets as child and check logs
     Given I reset the "{ticket_1}" ticket logs

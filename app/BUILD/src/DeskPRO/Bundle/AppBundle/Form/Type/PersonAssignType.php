@@ -143,7 +143,11 @@ class PersonAssignType extends AbstractType
     public function onSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        if ($data instanceof Person && !$data->getEmailAddress()) {
+        if ($data instanceof Person
+            // should be at least phone number or email
+            && !$data->getEmailAddress()
+            && !$data->getPhoneNumbers()->count() > 0
+        ) {
             $event->setData(null);
         }
     }

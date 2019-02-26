@@ -4958,7 +4958,7 @@ class Person extends DomainObject implements
             $groups[] = 'User';
         }
 
-        if (!$this->getPref('voice.unknown_caller')) {
+        if (!$this->phone_numbers->count()) {
             $groups[] = 'CheckEmail';
             $groups[] = 'CheckName';
         }

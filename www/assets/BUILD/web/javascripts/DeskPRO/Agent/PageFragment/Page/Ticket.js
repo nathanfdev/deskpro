@@ -2665,10 +2665,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								data: {
 									phone_numbers: [
 										{number: self.meta.voicePhoneNumber}
-									],
-									preferences: {
-										'voice.unknown_caller': 1
-									},
+									]
 								},
 								success: function(response) {
 									setPerson(response.data.id);

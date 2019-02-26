@@ -9,13 +9,13 @@ Feature: Ticket link endpoint
     And I have an AgentTeam record with name equal to "Demo team" which is referenced as agent_team
     And I create an Organization with name equal to "Demo organization" and reference it as organization
     And only the following Ticket records exist:
-      | #        | Subject      | Organization   | Agent team   | Agent   |
-      | ticket_1 | Ticket One   |                |              | {agent} |
-      | ticket_2 | Ticket Two   | {organization} | {agent_team} | {admin} |
-      | ticket_3 | Ticket Three |                |              |         |
-      | ticket_4 | Ticket Four  |                |              |         |
-      | ticket_5 | Ticket Five  |                |              |         |
-      | ticket_6 | Ticket Six   |                |              |         |
+      | #        | Subject      | Organization   | Agent team   | Agent   | Person |
+      | ticket_1 | Ticket One   |                |              | {agent} | {user} |
+      | ticket_2 | Ticket Two   | {organization} | {agent_team} | {admin} | {user} |
+      | ticket_3 | Ticket Three |                |              |         | {user} |
+      | ticket_4 | Ticket Four  |                |              |         | {user} |
+      | ticket_5 | Ticket Five  |                |              |         | {user} |
+      | ticket_6 | Ticket Six   |                |              |         | {user} |
 
   Scenario: I link two tickets (add children ticket)
     When I send a "POST" request to "/api/v2/tickets/{ticket_1}/links" with body:
