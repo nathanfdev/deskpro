@@ -412,7 +412,7 @@ portal.feedback.submit_feedback: 'ارسال انتقاد و پیشنهاد'
 portal.feedback.view-x-feedback:
   one: 'View 1 feedback'
   other: 'View {{count}} feedback'
-portal.flashes.article_cat_subscribe: 'You have successfully subscribed to this category. You will be notified when new articles are posted.'
+portal.flashes.article_cat_subscribe: 'شما با موفقیت به این دسته اضافه شده اید. هنگامی که مقالات جدید ارسال می شود، شما مطلع خواهید شد.'
 portal.flashes.article_cat_unsubscribe: 'You have successfully unsubscribed from this category.'
 portal.flashes.article_subscribe: "شما با موفقیت به این مقاله مشترکید هنگامی که به روزرسانی می شود یا زمانی که یک نظر جدید وجود دارد مطلع می شوید.\n"
 portal.flashes.article_unsubscribe: 'شما با موفقیت از این مقاله لغو شده است.'
