@@ -538,7 +538,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
     }
 
-    self.wrapper.addClass('with-apps-sidebar-pinned');
+    this.wrapper.addClass('with-apps-sidebar-pinned');
 
     var sidebarEl   = this.getEl('layout_sidebar');
     sidebarEl.addClass('sidebar-pinned');
@@ -552,14 +552,17 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
     }
 
-    self.wrapper.removeClass('with-apps-sidebar-pinned');
+    this.wrapper.removeClass('with-apps-sidebar-pinned');
 
     var sidebarEl   = this.getEl('layout_sidebar');
     sidebarEl.removeClass('sidebar-pinned');
   },
 
   _initAppsSidebar: function() {
-    if (this._hasInitAppsSidebar) return;
+    if (this._hasInitAppsSidebar) {
+      return;
+    }
+
     this._hasInitAppsSidebar = true;
 
     DeskPRO_Window.getMessageBroker().addMessageListener(['apps-column.togglePin', this.pageUid].join('.'), this.togglePinAppsColumn, this);
