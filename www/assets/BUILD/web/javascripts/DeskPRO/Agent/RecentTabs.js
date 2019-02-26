@@ -155,7 +155,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		this.recent.unshift([type, id, title, url, ts]);
 		this.recentTabIds[idString] = true;
 
-		while (this.recent.length > 350) {
+		while (this.recent.length > 150) {
 			var last = this.recent.pop();
 			this.list.find('li.' + last[0] + '-' + last[1]).remove();
 		}
@@ -215,7 +215,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 			}
 		};
 
-    while (this.recent.length > 350) {
+    while (this.recent.length > 150) {
       var last = this.recent.pop();
       removeIds.push(last[0] + '-' + last[1]);
     }

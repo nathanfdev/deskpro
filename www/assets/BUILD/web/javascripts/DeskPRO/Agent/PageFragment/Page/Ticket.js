@@ -3816,13 +3816,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       return;
     }
     var self = this;
-
-    var countEl = self.getEl('follow_up_count');
     var data = {
       ticketId:    self.meta.ticket_id,
       ticketPerms: self.meta.ticket_perms,
     	updateCount: function(op, count) {
-    		DeskPRO_Window.util.modCountEl(countEl, op, count);
+    		DeskPRO_Window.util.modCountEl(self.getEl('follow_up_count'), op, count);
 			}
   	};
 

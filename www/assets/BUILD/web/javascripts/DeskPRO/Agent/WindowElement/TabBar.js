@@ -710,8 +710,14 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
     }
 
     if (!silent) {
-      if (data.tabBtn) data.tabBtn.remove();
-      if (data.tabBtn2) data.tabBtn2.remove();
+      if (data.tabBtn) {
+        data.tabBtn.remove();
+        data.tabBtn = null;
+      }
+      if (data.tabBtn2) {
+        data.tabBtn2.remove();
+        data.tabBtn2 = null;
+      }
     }
 
     if (data.page) {
@@ -767,6 +773,10 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
         data.page.destroyEvents();
       }
 
+      if (tab.page) {
+        tab.page = null;
+      }
+
       data.callback_render = null;
       data.callback_remove_content = null;
       data.callback_activate = null;
@@ -776,9 +786,11 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
       self._checkOpenedItemsDebounce();
     };
 
-    window.requestIdleCallback ?
-      window.requestIdleCallback(doRemove, {timeout: 10000}) :
-      window.setTimeout(doRemove, 1000);
+    window.setTimeout(function() {
+      window.requestIdleCallback ?
+        window.requestIdleCallback(doRemove, {timeout: 25000}) :
+        doRemove();
+    }, 3500);
   },
 
 
