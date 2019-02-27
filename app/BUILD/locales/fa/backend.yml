@@ -1166,7 +1166,7 @@ admin.emailtpl_desc.deskpro_emails_user_feedback-updated_html_twig_title: 'Feedb
 admin.emailtpl_desc.deskpro_emails_user_gateway-autoresponse-warn_html_twig_desc: 'This is the warning email sent to the user when they have sent to many emails in a short amount of time.'
 admin.emailtpl_desc.deskpro_emails_user_gateway-autoresponse-warn_html_twig_title: 'Autoresponder Warning'
 admin.emailtpl_desc.deskpro_emails_user_kb-subscription_html_twig_desc: 'This email is sent the user to notify them of new articles in a subscribed category.'
-admin.emailtpl_desc.deskpro_emails_user_kb-subscription_html_twig_title: 'New Article'
+admin.emailtpl_desc.deskpro_emails_user_kb-subscription_html_twig_title: 'مقاله جدید'
 admin.emailtpl_desc.deskpro_emails_user_login-alert_html_twig_desc: 'This email is sent to users to notify them of logins or attempted logins using their account.'
 admin.emailtpl_desc.deskpro_emails_user_login-alert_html_twig_title: 'Login Alert'
 admin.emailtpl_desc.deskpro_emails_user_new-email-validate_html_twig_desc: 'This email is sent to the user when they add an additional email address on their account and need to validate it.'
@@ -2598,7 +2598,7 @@ agent.chrome.chat_online-users:
   other: '<span class="userchat-online-users-count">{{count}}</span> Users'
 agent.chrome.chat_sign-in: 'Sign in to chat'
 agent.chrome.chat_sign-out: 'Sign out of chat'
-agent.chrome.create_new-article: 'New Article'
+agent.chrome.create_new-article: 'مقاله جدید'
 agent.chrome.create_new-download: 'New Download'
 agent.chrome.create_new-feedback: 'New Feedback'
 agent.chrome.create_new-news: 'New News Post'
@@ -3363,7 +3363,7 @@ agent.general.name_za: 'Name (Z-A)'
 agent.general.next: Next
 agent.general.never: Never
 agent.general.new: New
-agent.general.new_article: 'New Article'
+agent.general.new_article: 'مقاله جدید'
 agent.general.new_comment: 'New Comment'
 agent.general.new_download: 'New Download'
 agent.general.new_feedback: 'New Feedback'

@@ -963,8 +963,8 @@ user.emails.feedback_votes:
 user.emails.greeting: '{{to_name}} عزیز,'
 user.emails.kb-explain: "شما این ایمیل را دریافت می کنید زیرا شما در مرکز آموزش ما در\n       <a href=\"{{deskpro_url}}\">{{deskpro_url}}</a>.<br />\n      آیا تمایل به دریافت ایمیل ها ندارید؟\n      <a href=\"{{unsubscribe_url}}\"></a>\n\n\n"
 user.emails.kb-new-articles:
-  one: '1 New Article'
-  other: '{{count}} New Articles'
+  one: 'یک مقاله جدید'
+  other: '{{count}} مقاله جدید'
 user.emails.kb-updated-articles:
   one: '1 Updated Article'
   other: '{{count}} Updated Articles'
