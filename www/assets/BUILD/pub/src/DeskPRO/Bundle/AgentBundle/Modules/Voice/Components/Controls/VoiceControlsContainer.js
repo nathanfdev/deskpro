@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { voiceParticipantsSelector } from '../../Selectors/agents';
 import VoiceControls from './VoiceControls';
-import { hangup, toggleMute, toggleHold, addAgent, transferCall, cancelInvite } from '../../Actions/clientActions';
+import { hangup, toggleMute, toggleHold, warmAddAgent, warmTransferCall, coldTransferCall, cancelInvite } from '../../Actions/clientActions';
 import { connectionsSelector, connectionStatesSelector } from '../../Selectors/client';
 import { onlineAgentsSelector } from '../../../Agent/Selectors/agents';
 
@@ -162,7 +162,7 @@ class VoiceControlsContainer extends React.Component {
       return;
     }
 
-    dispatch(addAgent(connection, target, type));
+    dispatch(warmAddAgent(connection, target));
     this.setState({
       addTarget:     target,
       addTargetType: type
@@ -235,7 +235,12 @@ class VoiceControlsContainer extends React.Component {
       return;
     }
 
-    dispatch(transferCall(connection, target, type));
+    if (type === 'cold') {
+      dispatch(coldTransferCall(connection, target, type));
+    } else {
+      dispatch(warmTransferCall(connection, target, type));
+    }
+
     this.setState({
       transferTarget:     target,
       transferTargetType: type
@@ -273,8 +278,8 @@ class VoiceControlsContainer extends React.Component {
         toggleHold={this.toggleHold}
         sendDigits={this.sendDigits}
         onAddAgent={this.addAgent}
-        onTransferCall={this.transferCall}
-        onCancelInvite={this.cancelInvite}
+        transferCall={this.transferCall}
+        cancelInvite={this.cancelInvite}
         baseId={baseId}
       />
     );

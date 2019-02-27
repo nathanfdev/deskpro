@@ -41,4 +41,12 @@ class TwilioVoiceAccount extends AbstractVoiceAccount
 
         return $this;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRouterPrefix()
+    {
+        return 'twilio';
+    }
 }

@@ -64,6 +64,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $taskSid;
 
     /**
+     * @ORM\Column(name="task_sids", type="json_array", nullable=true)
+     *
+     * @var string[]
+     */
+    private $taskSids = [];
+
+    /**
      * @ORM\Column(name="call_sid", type="string", length=50, nullable=true)
      *
      * @var string
@@ -302,9 +309,21 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      */
     public function setTaskSid($taskSid)
     {
+        $taskSids   = $this->taskSids;
+        $taskSids[] = $taskSid;
+
         $this->setModelField('taskSid', $taskSid);
+        $this->setModelField('taskSids', $taskSids);
 
         return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTaskSids()
+    {
+        return $this->taskSids;
     }
 
     /**
@@ -428,6 +447,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isColdTransfer()
+    {
+        return $this->status === self::STATUS_COLD_TRANSFER;
     }
 
     /**

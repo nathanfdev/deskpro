@@ -512,25 +512,28 @@ export const toggleMute = createAction(
   }
 );
 
-export const addAgent = createAction(
+export const warmAddAgent = createAction(
   'VOICE_AGENT_ADD',
-  (connection, agent, type) =>
-    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/add/${agent.get('id')}/${type}`)
+  (connection, agent) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_add/${agent.get('id')}`)
 );
 
-export const transferCall = createAction(
+export const warmTransferCall = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, agent, type) => (dispatch) => {
+  (connection, agent) => (dispatch) => {
     dispatch(toggleHold(connection.callId, true));
-
-    return api
-      .sendPut(`DP_API/voice_client/phone_call/${connection.callId}/transfer/${agent.get('id')}/${type}`)
-      .success(() => {
-        if (type === 'cold') {
-          hangupConnection(connection);
-        }
-      });
+    return api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_transfer/${agent.get('id')}`);
   }
+);
+
+export const coldTransferCall = createAction(
+  'VOICE_AGENT_TRANSFER_CALL',
+  (connection, agent) =>
+     api
+      .sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/${agent.get('id')}`)
+      .success(() => {
+        hangupConnection(connection);
+      })
 );
 
 export const cancelInvite = createAction(

@@ -326,7 +326,7 @@ class Active extends React.Component {
           zIndex={1000}
         >
           <ClickOut onClickOut={this.closeTransferMenu}>
-            <TransferList {...this.props} />
+            <TransferList {...this.props} closeMenu={this.closeTransferMenu} />
           </ClickOut>
         </Detached>
         <Detached

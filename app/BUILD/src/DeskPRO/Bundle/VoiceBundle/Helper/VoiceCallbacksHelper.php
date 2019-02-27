@@ -613,6 +613,7 @@ class VoiceCallbacksHelper
             return;
         }
 
+        /** @var VoicePhoneCallParticipantAgent $participant */
         $participant = $this->em->getRepository(VoicePhoneCallParticipantAgent::class)->findOneBy([
             'callSid' => $callSid,
         ]);
@@ -641,15 +642,17 @@ class VoiceCallbacksHelper
         $this->em->persist($log);
         $this->em->flush();
 
-        if ($phoneCall->getStatus() !== VoicePhoneCall::STATUS_COLD_TRANSFER) {
+        if (!$phoneCall->isColdTransfer()) {
             $this->voiceProviderHelper->tryEndConference($phoneCall);
         }
 
-        $this->taskRouter->completeTaskForWorker(
-            $phoneCall->getTaskSid(),
-            'agent',
-            $participant->getPerson()->getId()
-        );
+        foreach ($phoneCall->getTaskSids() as $taskSid) {
+            $this->taskRouter->completeTaskForWorker(
+                $taskSid,
+                'agent',
+                $participant->getPerson()->getId()
+            );
+        }
     }
 
     /**
@@ -750,7 +753,7 @@ class VoiceCallbacksHelper
                 $participant->setDateJoined(new \DateTime());
                 $this->em->flush();
 
-                if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_COLD_TRANSFER) {
+                if ($phoneCall->isColdTransfer()) {
                     // mark the phone call as started
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
 

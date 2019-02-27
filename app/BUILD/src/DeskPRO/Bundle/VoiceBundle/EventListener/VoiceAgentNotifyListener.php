@@ -97,6 +97,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
                 'queue_id'           => $task->getAttribute('queue'),
                 'agent_id'           => $task->getAttribute('agent'),
                 'related_people_ids' => $task->getAttribute('related_people'),
+                'call_type'          => $task->getAttribute('transfer') ? 'transfer' : null,
                 'target'             => array_map(function (Worker $worker) {
                     return $worker->getTypeId();
                 }, $this->storage->getWorkers($task->getWorkerIds())),

@@ -16,13 +16,15 @@ class TransferList extends React.Component {
     onlineAgents:       PropTypes.object,
     participants:       PropTypes.array,
     connection:         PropTypes.object,
-    onTransferCall:     PropTypes.func,
-    onCancelInvite:     PropTypes.func
+    transferCall:       PropTypes.func,
+    cancelInvite:       PropTypes.func,
+    closeMenu:          PropTypes.func
   };
 
   static defaultProps = {
     onTransferCall: () => {},
-    onCancelInvite: () => {}
+    onCancelInvite: () => {},
+    closeMenu:      () => {}
   };
 
   constructor(props) {
@@ -42,29 +44,30 @@ class TransferList extends React.Component {
   };
 
   onWarmTransfer = () => {
-    const { onTransferCall } = this.props;
+    const { transferCall } = this.props;
     const { selectedTarget } = this.state;
     this.setState({
       selectedTarget: null
     });
 
-    setTimeout(() => onTransferCall(selectedTarget, 'warm'), 1);
+    setTimeout(() => transferCall(selectedTarget, 'warm'), 1);
   };
 
   onColdTransfer = () => {
-    const { onTransferCall } = this.props;
+    const { transferCall, closeMenu } = this.props;
     const { selectedTarget } = this.state;
     this.setState({
       selectedTarget: null
     });
 
-    setTimeout(() => onTransferCall(selectedTarget, 'cold'), 1);
+    setTimeout(() => transferCall(selectedTarget, 'cold'), 1);
+    closeMenu();
   };
 
   onCancel = (target, type) => {
-    const { onCancelInvite } = this.props;
+    const { cancelInvite } = this.props;
 
-    setTimeout(() => onCancelInvite(target, type), 1);
+    setTimeout(() => cancelInvite(target, type), 1);
   };
 
   renderList() {
