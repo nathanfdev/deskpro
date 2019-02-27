@@ -757,7 +757,7 @@ portal.tickets.not-allowed_title: 'We''ll be right back'
 portal.tickets.please_login_to_reply: 'Log in to reply.'
 portal.tickets.rate-intro: '{{name}} helped you with your ticket "{{subject}}"'
 portal.tickets.rate-negative: Kötü
-portal.tickets.rate-neutral: Bitmiştir
+portal.tickets.rate-neutral: Sorunsuzdu
 portal.tickets.rate-positive: Harika
 portal.tickets.rate-question: 'Almış olduğunuz destek hizmetini değerlendirebilir misiniz ?'
 portal.tickets.related_articles_desc: 'We found the following articles that may solve your problem.'
