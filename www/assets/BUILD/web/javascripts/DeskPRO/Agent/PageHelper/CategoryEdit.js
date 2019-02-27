@@ -276,7 +276,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 
 		rawData.forEach(function(item) {
 
-			Object.each(item, function(v,k) {
+			Object.entries(item).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				if (k == 'isNew') {
 					if (v) v = 1;
 					else v = 0;

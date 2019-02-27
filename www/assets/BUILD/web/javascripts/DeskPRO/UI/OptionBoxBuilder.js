@@ -176,7 +176,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			}
 
 			if (opt.extraData) {
-				Object.each(opt.extraData, function(v,k) {
+				Object.entries(opt.extraData).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 					li.data(k, v);
 				});
 			}

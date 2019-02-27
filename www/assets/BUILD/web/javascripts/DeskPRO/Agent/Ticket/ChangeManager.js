@@ -138,7 +138,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 	 */
 	applyChanges: function() {
 
-		Object.each(this.changes, function (change) {
+		Object.values(this.changes).forEach(function(change) {
 			var property = change[0];
 			var newValue = change[1];
 
@@ -168,7 +168,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 	 * Revert all queuued changes in the interface to their previuos values
 	 */
 	revertChanges: function() {
-		Object.each(this.changes, function (change) {
+		Object.values(this.changes).forEach(function(change) {
 			var property = change[0];
 			var name = property.getName();
 
@@ -289,7 +289,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 
 		var saveReply = false;
 
-		Object.each(this.changes, function (change) {
+		Object.values(this.changes).forEach(function(change) {
 			var property = change[0];
 			var name = property.getName();
 
@@ -358,7 +358,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 					this.oldValues = {};
 
 					if (data && data.properties) {
-						Object.each(data, function (returnValue, type) {
+						Object.entries(data).forEach(function(_vk) { var type = _vk[0], returnValue = _vk[1];
 							var property = this.getPropertyManager(type);
 							property.setIncomingValue(returnValue);
 						}, this);
@@ -432,7 +432,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 
 		// A k:v pair of items
 		} else if (typeOf(propertyValue) == 'object') {
-			Object.each(propertyValue, function(v, k) {
+			Object.entries(propertyValue).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				data.push({
 					name: 'actions['+name+']['+k+']',
 					value: v

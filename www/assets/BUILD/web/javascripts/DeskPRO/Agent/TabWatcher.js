@@ -268,7 +268,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	findTabType: function(typename) {
 		var tabs = [];
 
-		Object.each(this.tabManager.getTabs(), function(tab) {
+		Object.values(this.tabManager.getTabs()).forEach(function(tab) {
 			if (this.getTabType(tab) == typename) {
 				tabs.push(tab);
 			}
@@ -288,7 +288,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	findTab: function(typename, filter) {
 
 		var found = null;
-		Object.each(this.tabManager.getTabs(), function(tab) {
+		Object.values(this.tabManager.getTabs()).forEach(function(tab) {
 			if (!typename || this.getTabType(tab) == typename) {
 				if (!filter || filter(tab)) {
 					found = tab;
@@ -309,7 +309,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	 */
 	findTabs: function(typename, filter) {
 		var tabs = [];
-		Object.each(this.tabManager.getTabs(), function(tab) {
+		Object.values(this.tabManager.getTabs()).forEach(function(tab) {
 			if (!typename || this.getTabType(tab) == typename) {
 				if (!filter || filter(tab)) {
 					tabs.push(tab);

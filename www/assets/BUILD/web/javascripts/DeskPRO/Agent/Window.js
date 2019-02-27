@@ -1284,7 +1284,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (activateSection) {
 			var activateSectionId = null;
-			Object.each(this.sections, function(section, id) {
+			Object.entries(this.sections).forEach(function(_vk) { var id = _vk[0], section = _vk[1];
 				if (section.urlFragmentName && section.urlFragmentName == activateSection) {
 					activateSectionId = id;
 					return false;
@@ -1460,7 +1460,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var url = window.DESKPRO_URL_REGISTRY[name];
 		if (vars) {
-			Object.each(vars, function(v,k) {
+			Object.entries(vars).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				url = url.replace('{'+k+'}', v);
 			});
 		}
@@ -1818,7 +1818,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			data = Object.merge(extraData, data);
 		}
 
-		Object.each(this.routePrefixes, function(listeners, prefix) {
+		Object.entries(this.routePrefixes).forEach(function(_vk) { var prefix = _vk[0], listeners = _vk[1];
 			if (route.indexOf(prefix) == 0) {
 				listeners.forEach(function(callback) {
 					callback(data);
@@ -2008,7 +2008,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadPage(routeData.url, routeData);
 				if (this.isSingleColMode()) {
 					$('#dp_omnibox').trigger('dpClose');
-					Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(i) {
+					Object.values(DeskPRO.Agent.PageHelper.Popover_Instances).forEach(function(i) {
 						i.close();
 					});
 				}
@@ -3270,7 +3270,7 @@ DeskPRO.Agent.Window = new Orb.Class({
         // If this was a list-pane and we have an open popover,
         // we need to close the popover so the listpane can actually load
         if ($(this).data('route').indexOf('listpane:') === 0) {
-          Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
+          Object.values(DeskPRO.Agent.PageHelper.Popover_Instances).forEach(function(inst) {
             if (inst.isOpen()) {
               inst.close();
             }
@@ -3559,7 +3559,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				self.loadingSections = {};
 			},
 			success: function(data) {
-				Object.each(data, function(sectionData, sectionId) {
+				Object.entries(data).forEach(function(_vk) { var sectionId = _vk[0], sectionData = _vk[1];
           self.loadingSections[sectionId] = false;
 					if (sectionData === null || !sectionData.section_html) {
 						// Means an error, send it normally
@@ -3690,7 +3690,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
       var agentMapLower = {}, hasAgents = false;
       var notifyAgentMap = window.notifyAgentMap || [];
-      Object.each(notifyAgentMap, function(data, agentId) {
+      Object.entries(notifyAgentMap).forEach(function(_vk) { var agentId = _vk[0], data = _vk[1];
         hasAgents = true;
         agentMapLower[agentId] = data.name.toLowerCase();
       });
@@ -3872,7 +3872,7 @@ DeskPRO.Agent.Window = new Orb.Class({
           var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
 
           if (afterAt.length >= 2 && afterAt.length < 75) {
-            Object.each(notifyAgentMap, function(data, agentId) {
+            Object.entries(notifyAgentMap).forEach(function(_vk) { var agentId = _vk[0], data = _vk[1];
               if (agentMapLower[agentId].indexOf(afterAt) == 0) {
                 matches.push(agentId);
               }

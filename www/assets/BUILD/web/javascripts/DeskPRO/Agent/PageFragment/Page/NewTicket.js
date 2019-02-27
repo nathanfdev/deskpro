@@ -327,7 +327,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			var fieldDisplay = self.fieldDisplayFetch.getFields(depSel.val());
 			var newFields = [];
 
-			Object.each(fieldDisplay, function(fields, section) {
+			Object.entries(fieldDisplay).forEach(function(_vk) { var section = _vk[0], fields = _vk[1];
 				fields.forEach(function(f) {
 					var classname;
 					if (f.field_type === 'ticket_field') {

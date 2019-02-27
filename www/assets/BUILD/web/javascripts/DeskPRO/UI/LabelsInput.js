@@ -44,7 +44,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				tagSource = DeskPRO.UI.LabelsInput_Grouped[this.options.type];
 			} else if (window.DESKPRO_DATA_REGISTRY && window.DESKPRO_DATA_REGISTRY.labels) {
 				tagSource = [];
-				Object.each(window.DESKPRO_DATA_REGISTRY.labels, function(types, label) {
+				Object.entries(window.DESKPRO_DATA_REGISTRY.labels).forEach(function(_vk) { var label = _vk[0], types = _vk[1];
 					if (types.indexOf(this.options.type) != -1) {
 						tagSource.push(label);
 					}

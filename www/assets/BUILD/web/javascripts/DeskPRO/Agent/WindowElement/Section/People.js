@@ -59,7 +59,7 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 		}
 
 		if (typeof countData.usergroup_counts != 'undefined') {
-			Object.each(countData.usergroup_counts, function(count, uid) {
+			Object.entries(countData.usergroup_counts).forEach(function(_vk) { var uid = _vk[0], count = _vk[1];
 				var el = $('#people_nav_ug_' + uid);
 				el.find('span.list-counter').text(count+'');
 

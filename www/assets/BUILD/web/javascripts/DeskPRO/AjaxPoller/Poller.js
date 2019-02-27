@@ -208,7 +208,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			if (typeOf(item_data) == 'array') {
 				send_data.append(item_data);
 			} else {
-				Object.each(item_data, function(v, k) {
+				Object.entries(item_data).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 					send_data.push({ name: k, value: v });
 				});
 			}

@@ -479,10 +479,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getPoller().addData(
 			function() {
 				var filters_data_counts = {};
-				Object.each(self.filterTicketIds, function(v, k) {
+				Object.entries(self.filterTicketIds).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 					filters_data_counts[k] = v.length;
 				});
-				Object.each(self.filterCounts, function(v, k) {
+				Object.entries(self.filterCounts).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 					if (!filters_data_counts[k]) {
 						filters_data_counts[k] = v;
 					}
@@ -731,13 +731,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		// The message only contains a list when the counts are off
 		// So unchanged filters dont send a large payload
-		Object.each(this.filterTicketIds, function(v, k) {
+		Object.entries(this.filterTicketIds).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 			if (!data[k]) {
 				data[k] = v;
 			}
 		});
 
-		Object.each(data, function(ticketIds, filterId) {
+		Object.entries(data).forEach(function(_vk) { var filterId = _vk[0], ticketIds = _vk[1];
 			filterId = parseInt(filterId);
 
 			var oldCount = 0;
@@ -761,7 +761,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		}, this);
 
-		Object.each(datacounts, function(count, filterId) {
+		Object.entries(datacounts).forEach(function(_vk) { var filterId = _vk[0], count = _vk[1];
 			filterId = parseInt(filterId);
 
 			var oldCount = 0;
@@ -944,7 +944,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				countEls.removeClass('loading');
 			},
 			success: function(batches) {
-				Object.each(batches, function(html,filterId) {
+				Object.entries(batches).forEach(function(_vk) { var filterId = _vk[0], html = _vk[1];
 
 					var filterEl = $('.filter-' + filterId, this.sectionEl);
 					var name = filterEl.data('filter-name');
@@ -1216,7 +1216,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		$('ol#ticket_flagged_list span.list-counter').html('0');
 
-		Object.each(counts, (function (count, flag) {
+		Object.entries(counts).forEach((function (_vk) {
+			var flag = _vk[0], count = _vk[1];
 			this.updateFlagCountFor(flag, count);
 		}).bind(this));
 	},
@@ -1291,7 +1292,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		header.data('sla-filter', data.sla_filter);
 		this.updateSlaDescription();
 
-		Object.each(data.counts, function (counts, sla_id) {
+		Object.entries(data.counts).forEach(function(_vk) { var sla_id = _vk[0], counts = _vk[1];
 			this.setSlaCounts(sla_id, counts.ok, counts.warning, counts.fail);
 		}, this);
 	},

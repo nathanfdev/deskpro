@@ -106,7 +106,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 	 */
 	revertChanges: function() {
 
-		Object.each(this.changes, function (changes, ticketId) {
+		Object.entries(this.changes).forEach(function(_vk) { var ticketId = _vk[0], changes = _vk[1];
 			changes.forEach(function (change) {
 				this.revertChangeForEntry(change);
 			}, this);
@@ -145,7 +145,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 	 */
 	commitChanges: function() {
 		Object.values(this.changes).forEach(function (changes) {
-			Object.each(changes, function(change) {
+			Object.values(changes).forEach(function(change) {
 				var property = change.property;
 				property.unhighlightInterfaceElement();
 			}, this);

@@ -102,7 +102,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 
 		var typeSel = $(html);
 
-		Object.each(groups, function(info, group) {
+		Object.entries(groups).forEach(function(_vk) { var group = _vk[0], info = _vk[1];
 			var ul = $('optgroup.' + info.id, typeSel);
 			var lis = [];
 			info.types.forEach(function(type) {
@@ -126,7 +126,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 	},
 
 	destroy: function() {
-		Object.each(this.rowDestroy, function (rowDestroy) {
+		Object.values(this.rowDestroy).forEach(function(rowDestroy) {
 			rowDesotry.forEach(function (item) {
 				if (item.destroy) {
 					item.destroy();
@@ -223,7 +223,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 				}
 			} else {
 				// Otherwise we'll assume its a k=>v array
-				Object.each(existing.options, function(val, name) {
+				Object.entries(existing.options).forEach(function(_vk) { var name = _vk[0], val = _vk[1];
 					if (!name || !name.length) return;
 
 					var name_safe = name.replace(/\[/, '\\[').replace(/\]/, '\\]');
@@ -239,12 +239,12 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 							el.attr('checked', !!val).change();
 						}
 					} else if (typeOf(val) == 'object') {
-						Object.each(val, function(subval, subname) {
+						Object.entries(val).forEach(function(_vk) { var subname = _vk[0], subval = _vk[1];
 							var sub_name = name_safe + "["+subname+"]";
 							var sub_name_safe = name_safe + "\\["+subname+"\\]";
 
 							if (typeOf(subval) == 'object') {
-								Object.each(subval, function(v, k) {
+								Object.entries(subval).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 									var k_name = sub_name + "[" + k + "]";
 									var el = $('[name$="'+this.makeArrayName(k_name,true)+'"]', new_row).first();
 									if (el.is(':checkbox')) {

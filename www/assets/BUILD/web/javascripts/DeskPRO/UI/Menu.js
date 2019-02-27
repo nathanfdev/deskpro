@@ -236,7 +236,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		// Close all other instances (only matters for parent instances)
 		if (!this.parentMenu) {
-			Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup], function(v, k) {
+			Object.entries(DeskPRO.UI.Menu_Instances[this.options.objectGroup]).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				if (!v) return;
 				if (v.isMenuOpen()) {
 					v.closeMenu();

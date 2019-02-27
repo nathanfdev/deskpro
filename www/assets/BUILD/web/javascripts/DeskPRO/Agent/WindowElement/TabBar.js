@@ -98,7 +98,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
   },
 
   preInitTabsNow: function () {
-    Object.each(this.tabs, (function (data) {
+    Object.values(this.tabs).forEach((function (data) {
       var preInit = (function () {
         this.preInitWait--;
         if (this.preInitWait < 0) {
@@ -336,7 +336,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
   findTabByFragment: function (fragment) {
     var retTab = null;
 
-    Object.each(this.tabs, function (tab) {
+    Object.values(this.tabs).forEach(function(tab) {
       if (tab.page && tab.page.getMetaData('url_fragment') == fragment) {
         retTab = tab;
         return false;
@@ -356,7 +356,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
   findTabByRouteUrl: function (routeUrl) {
     var retTab = null;
 
-    Object.each(this.tabs, function (tab) {
+    Object.values(this.tabs).forEach(function(tab) {
       if (tab.page.getMetaData('routeUrl') == routeUrl) {
         retTab = tab;
         return false;

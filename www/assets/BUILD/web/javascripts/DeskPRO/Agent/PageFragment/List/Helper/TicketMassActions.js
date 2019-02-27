@@ -148,7 +148,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       groupedRadios[name].push(this);
     });
 
-    Object.each(groupedRadios, function(els) {
+    Object.values(groupedRadios).forEach(function(els) {
       var newEls = [];
       els = $(els);
 

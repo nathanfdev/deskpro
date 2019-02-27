@@ -1426,7 +1426,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				if (result.notified_agents && DeskPRO.Agent.Widget.AgentChatWin_Registry) {
 					result.notified_agents.forEach(function(aid) {
 						aid = parseInt(aid);
-						Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(v,k) {
+						Object.entries(DeskPRO.Agent.Widget.AgentChatWin_Registry).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 							if (v.agentIds.length == 1 && v.agentIds.indexOf(aid) !== -1) {
 								v.loadLastConvo();
 							}

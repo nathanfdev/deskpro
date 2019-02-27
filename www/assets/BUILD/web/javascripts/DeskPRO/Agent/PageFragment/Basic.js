@@ -318,7 +318,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
     var url = this.meta.urls[name];
     if (vars) {
-      Object.each(vars, function(v,k) {
+      Object.entries(vars).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
         url = url.replace('{'+k+'}', v);
       });
     }
