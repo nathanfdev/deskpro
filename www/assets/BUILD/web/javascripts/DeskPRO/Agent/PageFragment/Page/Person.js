@@ -253,12 +253,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				var titletxt = editName.find('input[name=title_prefix]').first();
 				var postxt  = editOrgpos.find('input').first();
 
-				var setName = nametxt.val().trim();
-				var setTitle = titletxt.val().trim();
+				var setName = $.trim(nametxt.val());
+				var setTitle = $.trim(titletxt.val());
 				if (postxt) {
 					var setPos  = '';
 				} else {
-					var setPos  = postxt.val().trim();
+					var setPos  = $.trim(postxt.val());
 				}
 
 				if(!setName) {
@@ -987,15 +987,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 			postData.push({
 				name: 'name',
-				value: $('.org-name', self.getEl('org_edit_wrap')).val().trim()
+				value: $('.org-name', self.getEl('org_edit_wrap')).val()
 			});
 			postData.push({
 				name: 'id',
-				value: $('.org-id', self.getEl('org_edit_wrap')).val().trim()
+				value: $('.org-id', self.getEl('org_edit_wrap')).val()
 			});
 			postData.push({
 				name: 'position',
-				value: $('.org-pos-set', self.getEl('org_edit_wrap')).val().trim()
+				value: $('.org-pos-set', self.getEl('org_edit_wrap')).val()
 			});
 
 			postData.push({

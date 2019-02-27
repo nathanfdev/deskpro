@@ -174,7 +174,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       els.each(function() {
 
         var wrapper = $(this).parent();
-        var title = $('.radio-title', wrapper).text().trim();
+        var title = $.trim($('.radio-title', wrapper).text());
 
         var newEl = $(tpl);
         newEl.addClass($(this).data('attach-class'));

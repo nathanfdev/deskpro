@@ -55,8 +55,8 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
 
         if (current.length) {
           var personId = current.data('person-id');
-          var name = $('.user-name', current).text().trim();
-          var email = $('.user-email', current).text().trim();
+          var name = $.trim($('.user-name', current).text());
+          var email = $.trim($('.user-email', current).text());
 
           self.termInput.val(email);
           self.el.trigger('personsearchboxclick', [personId, name, email, self]);
@@ -123,7 +123,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
 
     this.resultsList.on('click', 'li', function (ev) {
       ev.preventDefault();
-      var email = $('.user-email', this).text().trim();
+      var email = $.trim($('.user-email', this).text());
 
       self.termInput.val(email);
       self.addButton.click();
@@ -171,7 +171,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
    * @return {String}
    */
   getTerm: function () {
-    return this.termInput.val().trim();
+    return $.trim(this.termInput.val());
   },
 
 

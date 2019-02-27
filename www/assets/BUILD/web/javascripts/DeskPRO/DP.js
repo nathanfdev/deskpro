@@ -110,7 +110,7 @@ var DP = {
 			var withFullTitle = el.find('option[data-full-title]');
 			if (withFullTitle[0]) {
 				withFullTitle.each(function() {
-					$(this).data('single-title', $(this).text().trim());
+					$(this).data('single-title', $.trim($(this).text()));
 					$(this).text($(this).data('full-title'));
 				});
 

@@ -35,7 +35,7 @@ DeskPRO.Form.LengthValidator = new Orb.Class({
 		if (this.el.is('select')) {
 			if (this.excludeBlank) {
 				$('option:selected', this.el).each(function() {
-					if ($(this).val() != '0' && $(this).val().trim() !== '') {
+					if ($(this).val() !== '0' && $.trim($(this).val()) !== '') {
 						len++;
 					}
 				});
@@ -44,7 +44,7 @@ DeskPRO.Form.LengthValidator = new Orb.Class({
 			}
 
 		} else {
-			len = this.el.val().trim().length;
+			len = $.trim(this.el.val()).length;
 		}
 
 		var errorCodes = [];

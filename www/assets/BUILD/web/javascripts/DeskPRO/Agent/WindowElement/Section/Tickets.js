@@ -337,7 +337,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						if (self.hasInitialGroupingLoaded && $(this).val()) {
 							var countEl = filterEl.find('.counter').first();
 
-							if (parseInt(countEl.text().trim()) == 0) {
+							if (parseInt($.trim(countEl.text())) === 0) {
 								var noteEl = filterEl.find('.none-yet');
 								noteEl.show();
 								window.setTimeout(function() {
@@ -805,7 +805,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			if (!hasIds || this.archiveFilterIds.indexOf(filterId) != -1) {
 				this.modFilterCount(filterId, 'add');
 			} else {
-				this.filterTicketIds[filterId].include(ticketId);
+				Orb.arrPushUnique(this.filterTicketIds[filterId], ticketId);
 
 				var count = this.filterTicketIds[filterId].length;
 				this.setFilterCount(filterId, count);
@@ -821,7 +821,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			if (!hasIds || this.archiveFilterIds.indexOf(filterId) != -1) {
 				this.modFilterCount(filterId, 'del');
 			} else {
-				this.filterTicketIds[filterId].erase(ticketId);
+				Orb.arrRemoveValue(this.filterTicketIds[filterId], ticketId);
 
 				var count = this.filterTicketIds[filterId].length;
 				this.setFilterCount(filterId, count);
@@ -874,7 +874,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var setFilterIds = [];
 			filterIds.forEach(function(filterId) {
 				if (this.runningRefreshFilterGrouping.indexOf(filterId) !== -1) {
-					this.rerunRefreshFilterGrouping.include(filterId);
+					Orb.arrPushUnique(this.rerunRefreshFilterGrouping, filterId);
 				} else {
 					setFilterIds.push(filterId);
 				}
@@ -1038,7 +1038,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			subgroupEl.hide();
 		}
 
-		this.changedFilterGrouping.erase(parseInt(filterId));
+		Orb.arrRemoveValue(this.changedFilterGrouping, parseInt(filterId));
 
 		if ($(this).data('grouping-option') != '') {
 			li.find('.item-form').hide();
@@ -1069,10 +1069,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				selectedIndex = i;
 			}
 
-			var val1 = parseInt($(this).text().trim());
-			var val2 = parseInt(other.text().trim());
+			var val1 = parseInt($.trim($(this).text()));
+			var val2 = parseInt($.trim(other.text()));
 
-			if (val1 != val2) {
+			if (val1 !== val2) {
 				$('.list-counter', $(this).parent().parent()).each(function() {
 					els.push(this);
 				});
@@ -1180,7 +1180,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 			var closeFn = function() {
 
-				var newTitle = inputEl.val().trim();
+				var newTitle = $.trim(inputEl.val());
 				if (newTitle.length) {
 					$.ajax({
 						type: 'POST',
@@ -1204,11 +1204,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			backdrop.appendTo('body');
 			backdrop.on('click', closeFn);
 
-			inputEl.val(labelEl.text().trim());
+			inputEl.val(labelEl.text());
 
 			labelEl.hide();
 			inputEl.show();
-			inputEl.focus().val(labelEl.text().trim()).focus();
+			inputEl.focus().val(labelEl.text()).focus();
 		});
 	},
 

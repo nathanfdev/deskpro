@@ -129,7 +129,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		var formData = this.form.serializeArray();
 
 		if (this.labelsInput) {
-			formData.append(this.labelsInput.getFormData());
+			formData.push(this.labelsInput.getFormData());
 		}
 
 		$('div.error.section', this.wrapper).removeClass('error');

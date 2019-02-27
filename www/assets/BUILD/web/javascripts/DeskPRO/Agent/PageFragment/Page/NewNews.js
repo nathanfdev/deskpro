@@ -159,7 +159,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		var self = this;
 
 		var fn = function() {
-			if ($(this).val().trim() == '') {
+			if ($.trim($(this).val()) === '') {
 				self.getEl('title_section').removeClass('done');
 			} else {
 				self.getEl('title_section').addClass('done');
@@ -167,7 +167,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		};
 
 		this.getEl('title').on('change', fn).on('keypress', fn).on('change', function() {
-			var val = $(this).val().trim().toLowerCase();
+			var val = $.trim($(this).val()).toLowerCase();
 			val = val.replace(/[^a-z0-9\-_]/g, '-');
 			val = val.replace(/-{2,}/g, '-');
 

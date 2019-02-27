@@ -47,13 +47,13 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 			var event_name = channel + '-' + event_name;
 		});
 
-		this._add_subs.include(channel);
+		Orb.arrPushUnique(this._add_subs, channel);
 
 		if (this._add_subs_timeout) {
 			window.clearTimout(this._add_subs_timeout);
 		}
 
-		this._add_subs_timeout = this._sendSubscribeChannels.delay(200, this);
+		this._add_subs_timeout = Orb.fnDelay(this._sendSubscribeChannels, 200, this);
 
 		if (callback) {
 			this.messageBroker.addMessageListener(channel, callback);
@@ -90,13 +90,13 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 	},
 
 	unsubscribeChannel: function(channel) {
-		this._del_subs.include(channel);
+		Orb.arrPushUnique(this._del_subs, channel);
 
 		if (this._del_subs_timeout) {
 			window.clearTimout(this._del_subs_timeout);
 		}
 
-		this._del_subs_timeout = this._sendUnsubscribeChannels.delay(200, this);
+		this._del_subs_timeout = Orb.fnDelay(this._sendUnsubscribeChannels, 200, this);
 	},
 
 	_sendUnsubscribeChannels: function() {

@@ -79,7 +79,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				return Orb.escapeHtml(result.text);
 			},
 			matcher: function(term, text) {
-				if (typeOf(text)  != 'string' || typeOf(term) != 'string') {
+				if (Orb.typeOf(text)  != 'string' || Orb.typeOf(term) != 'string') {
 					return;
 				}
 

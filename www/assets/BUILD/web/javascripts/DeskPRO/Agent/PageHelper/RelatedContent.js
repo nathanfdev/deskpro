@@ -150,11 +150,11 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 
 		if (el.data('route')) {
 			var route = el.data('route');
-			var title = el.text().trim();
+			var title = el.text();
 		} else {
 			var routeEl = $('[data-route]:first', el);
 			var route = routeEl.data('route');
-			var title = routeEl.text().trim();
+			var title = routeEl.text();
 		}
 
 		if (el.data('route-title')) {
@@ -163,7 +163,7 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 				title = el.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
 			} else if (title == '@title') {
 				title = el.attr('title');
-			} else if (title.test(/^@selector\((.*?)\)$/)) {
+			} else if (title.match(/^@selector\((.*?)\)$/)) {
 				var sel = title.match(/^@selector\((.*?)\)$/)[1];
 				var titleEl = null;
 				if (sel[0] == "#") {
@@ -173,9 +173,9 @@ DeskPRO.Agent.PageHelper.RelatedContent = new Orb.Class({
 				}
 
 				if (titleEl && titleEl.length) {
-					title = titleEl.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+					title = $.trim(titleEl.text()).replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
 				} else {
-					title = el.text().trim();
+					title = $.trim(el.text());
 				}
 			}
 		}

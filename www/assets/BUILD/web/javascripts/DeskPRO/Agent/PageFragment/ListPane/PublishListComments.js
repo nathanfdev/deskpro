@@ -127,7 +127,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishListComments = new Orb.Class({
 		this.wrapper.on('click', '.comment-editsave-trigger', function(ev) {
 			var info = findRowInfo(this);
 
-			var commentText = $('textarea', info.editRow).val().trim();
+			var commentText = $.trim($('textarea', info.editRow).val());
 			if (!commentText.length) {
 				info.row.show();
 				info.editRow.hide();

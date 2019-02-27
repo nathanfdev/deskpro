@@ -259,8 +259,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
    */
   setMetaData: function(name, value) {
     // Assigning multiple values from a hash
-    if (value === undefined && typeOf(name) == 'object') {
-      this.meta = Object.merge(this.meta, name);
+    if (value === undefined && Orb.typeOf(name) == 'object') {
+      this.meta = $.extend(true, this.meta, name);
       this.initMetaData();
     } else {
       this.meta[name] = value;

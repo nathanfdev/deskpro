@@ -42,7 +42,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 
 		postData = Orb.serializeFormElements(this.el.find('.add-to-search'), visitedEls);
 		this.formPanels.forEach(function(panel) {
-			postData = postData.append(Orb.serializeFormElements(panel.el.find('.add-to-search'), visitedEls));
+			postData = postData.push(Orb.serializeFormElements(panel.el.find('.add-to-search'), visitedEls));
 		});
 
 		return postData;

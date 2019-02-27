@@ -321,7 +321,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 				if (this.hasSentAjax) return false;
 				this.hasSentAjax = true;
 
-				var ajaxConfig = Object.merge(this.options.contentAjax, {
+				var ajaxConfig = $.extend(true, {}, this.options.contentAjax, {
 					success: this._handleAjaxSuccess.bind(this)
 				});
 

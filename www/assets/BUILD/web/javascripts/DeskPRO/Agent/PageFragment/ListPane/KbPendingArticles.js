@@ -149,7 +149,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 
 	saveNewPendingArticle: function() {
 		var formWrap = this.getEl('add_new_overlay');
-		var val = $('textarea', this.getEl('add_new_overlay')).val().trim();
+		var val = $.trim($('textarea', this.getEl('add_new_overlay')).val());
 
 		if (!val) {
 			formWrap.slideUp();

@@ -91,7 +91,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				if (!num && num !== 0) num = 1;
 
-				var count = parseInt(el.text().trim());
+				var count = parseInt($.trim(el.text()));
 
 				if (op == '-' || op == 'rem' || op == 'del' || op == 'sub') {
 					count -= num;
@@ -102,7 +102,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					count = num;
 				}
 
-				el.text(el.text().trim().replace(/(\d+)/, count));
+				el.text($.trim(el.text()).replace(/(\d+)/, count));
 
 				if (el.data('tag')) {
 					$('i.' + el.data('tag')).text(count);
@@ -1815,7 +1815,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var data = this.parseRoute(route);
 		if (extraData) {
-			data = Object.merge(extraData, data);
+			data = $.extend(true, {}, extraData, data);
 		}
 
 		Object.entries(this.routePrefixes).forEach(function(_vk) { var prefix = _vk[0], listeners = _vk[1];
@@ -1908,10 +1908,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (el.data('route-title')) {
 			extraData.title = el.data('route-title');
 			if (extraData.title == '@text') {
-				extraData.title = el.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+				extraData.title = $.trim(el.text()).replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
 			} else if (extraData.title == '@title') {
 				extraData.title = el.attr('title');
-			} else if (extraData.title.test(/^@selector\((.*?)\)$/)) {
+			} else if (extraData.title.match(/^@selector\((.*?)\)$/)) {
 				var sel = extraData.title.match(/^@selector\((.*?)\)$/)[1];
 				var titleEl = null;
 				if (sel[0] == "#") {
@@ -1921,7 +1921,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				if (titleEl && titleEl.length) {
-					extraData.title = titleEl.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+					extraData.title = $.trim(titleEl.text()).replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
 				} else {
 					delete extraData.title;
 				}

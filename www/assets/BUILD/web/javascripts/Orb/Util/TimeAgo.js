@@ -42,13 +42,13 @@ Orb.Util.TimeAgo = {
 	/**
 	 * Apply to an array of elements.
 	 *
-	 * @param $els
+	 * @param els
 	 */
 	applyToElements: function(els) {
 
 		var self = this;
 
-		els.each(function(el) {
+		$.each(els, function(idx, el) {
 			$(el).addClass('timeago-auto-update');
 		});
 		self.refreshElements();
@@ -74,7 +74,7 @@ Orb.Util.TimeAgo = {
 
 		var self = this;
 
-		els.each(function(el) {
+		$.each(els, function(el) {
 
 			// Could be removed, just skip it
 			// might be reinserted later

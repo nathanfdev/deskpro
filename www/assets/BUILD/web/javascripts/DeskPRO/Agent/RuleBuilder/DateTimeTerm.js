@@ -202,7 +202,7 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
       // Erase any calendar time we mightve set before
       this.date1Input.val('');
 
-      if ($('.relative-input', relative1).val().trim().length) {
+      if ($.trim($('.relative-input', relative1).val()).length) {
         str1 = $('.relative-input', relative1).val() + ' ' + $('.relative-type', relative1).val() + ' ago';
       }
 
@@ -218,7 +218,7 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
       $('.date2-relative-type', this.rowEl).val($('.relative-type', relative2).val());
       this.date2Input.val('');
 
-      if ($('.relative-input', relative2).val().trim().length) {
+      if ($.trim($('.relative-input', relative2).val()).length) {
         str2 = $('.relative-input', relative2).val() + ' ' + $('.relative-type', relative2).val() + ' ago';
       }
     } else {

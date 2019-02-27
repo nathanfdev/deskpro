@@ -53,7 +53,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			var is_sub = false;
 			selectoptions.each(function(index, el) {
 				el = $(el);
-				var label = el.text().trim();
+				var label = el.text();
 
 				if (el.parent().is('optgroup')) {
 					label = el.parent().attr('label') + ' > ' + label;
@@ -72,7 +72,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 					if (label.indexOf('--------------') !== -1) child_depth = 7;
 					label = label.replace(/^\-\-/, '').trim();
 				} else {
-					has_child = (el.next().text().trim().indexOf('--') !== -1);
+					has_child = ($.trim(el.next().text()).indexOf('--') !== -1);
 				}
 
 				if (!selected_text || el.is(':selected')) {
@@ -138,9 +138,9 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 
 				var opt = $('option:selected', this);
 				if (opt.data('full-title')) {
-					var text = opt.data('full-title').trim();
+					var text = opt.data('full-title');
 				} else {
-					var text = opt.text().trim();
+					var text = $.trim(opt.text());
 				}
 				if (!text.length) text = options.noValText || 'Choose...';
 				else {

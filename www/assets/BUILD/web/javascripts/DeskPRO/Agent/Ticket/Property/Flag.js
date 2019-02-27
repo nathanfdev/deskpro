@@ -35,7 +35,7 @@ DeskPRO.Agent.Ticket.Property.Flag = new Orb.Class({
 		var winCountEl = $('#ticket_flag_'+value+'_count');
 		DeskPRO_Window.util.modCountEl(winCountEl, '+', 1);
 
-		var label = winCountEl.closest('li').find('.flag-label').text().trim();
+		var label = winCountEl.closest('li').find('.flag-label').text();
 		this.ticketPage.getEl('flagicon').get(0).className = this.ticketPage.getEl('flagicon').get(0).className.replace(/flag\-color\-\w+/g, '');
 		if (value) {
 			this.ticketPage.getEl('flagicon').addClass('flag-color-' + value);

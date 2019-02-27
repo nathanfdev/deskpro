@@ -57,7 +57,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		this.triggerEls = this.options.triggerElements;
 
-		if (typeOf(this.triggerEls) == 'string') {
+		if (Orb.typeOf(this.triggerEls) == 'string') {
 			this.triggerEls = $(this.triggerEls, this.options.context);
 		}
 

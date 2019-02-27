@@ -1144,7 +1144,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			}, 3000);
 		} else {
 			var messageTextarea = this.getEl('replybox_txt');
-			var msg = messageTextarea.val().trim();
+			var msg = messageTextarea.val();
 
 			if (self.typingTimeout && msg === '<p><br></p>') {
 				self.typingTimeout = null;
@@ -1252,7 +1252,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 				var part_ids = [];
 				selections.followers.forEach(function(part_id) {
-					var label = $('.agent-part-label-' + part_id, ob.getElement()).first().text().trim();
+					var label = $('.agent-part-label-' + part_id, ob.getElement()).first().text();
 
 					var li = $('<li />');
 					var span = $('<span />');
@@ -1431,7 +1431,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		}
 
 		this._labelsData = this.labelsInput.getFormData();
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		this._saveLabelsTimeout = Orb.fnDelay(this._doSaveLabels, 2000, this);
 	},
 
 	_doSaveLabels: function() {

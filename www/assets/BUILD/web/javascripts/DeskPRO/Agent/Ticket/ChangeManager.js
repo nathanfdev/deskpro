@@ -92,7 +92,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 
 
 	hasChanges: function() {
-		if (Object.getLength(this.changes)) {
+		if (Object.keys(this.changes).length) {
 			return true;
 		}
 
@@ -212,9 +212,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 		var classname = 'saving-' + property.getName().replace('.', '_');
 		this.ticketPage.wrapper.addClass(classname);
 
-		(function() {
+		Orb.fnDelay(function() {
 			this.ticketPage.wrapper.removeClass(classname);
-		}).delay(650, this);
+		}, 650, this);
 
 		var self = this;
 
@@ -255,7 +255,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 
 						data.data.perm_errors.forEach(function(err) {
 							var li = $('<li/>');
-							li.text(err.capitalize());
+							li.text(err);
 							li.appendTo(list);
 						});
 
@@ -313,12 +313,12 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 
 		this.mode = 'single';
 
-		(function() {
+		Orb.fnDelay(function() {
 			var classname = '';
 			while (classname = saving_classes.pop()) {
 				this.ticketPage.wrapper.removeClass(classname);
 			}
-		}).delay(650, this);
+		}, 650, this);
 
 		var self = this;
 
@@ -402,20 +402,20 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 	_addPropertyValueToData: function(data, name, propertyValue) {
 
 		// An array of items
-		if (typeOf(propertyValue) == 'array') {
+		if (Orb.typeOf(propertyValue) == 'array') {
 			for (var x = 0; x < propertyValue.length; x++) {
 				var val = propertyValue[x];
 
 				// Specific name means its taking care of the actions[] array prefix itself,
 				// used when theres a composite field like status/hidden_status
-				if (typeOf(val) == 'object' && val.full_name !== undefined) {
+				if (Orb.typeOf(val) == 'object' && val.full_name !== undefined) {
 					data.push({
 						name: val.full_name,
 						value: val.value
 					});
 
 				// Looks like its already a k:v like from serializeArray
-				} else if (typeOf(val) == 'object' && val.name !== undefined) {
+				} else if (Orb.typeOf(val) == 'object' && val.name !== undefined) {
 					data.push({
 						name: 'actions['+name+']['+val.name+']',
 						value: val.value
@@ -431,7 +431,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 			}
 
 		// A k:v pair of items
-		} else if (typeOf(propertyValue) == 'object') {
+		} else if (Orb.typeOf(propertyValue) == 'object') {
 			Object.entries(propertyValue).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				data.push({
 					name: 'actions['+name+']['+k+']',
@@ -470,7 +470,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 	 * Called when we detect if a value was updated automatically from somewhere.
 	 */
 	setPropertyUpdated: function(property, newValue) {
-		if (typeOf(property) == 'string') {
+		if (Orb.typeOf(property) == 'string') {
 			property = this.getPropertyManager(property);
 		}
 

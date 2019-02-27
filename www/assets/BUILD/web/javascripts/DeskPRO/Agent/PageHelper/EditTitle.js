@@ -16,7 +16,7 @@ DeskPRO.Agent.PageFragment.Page.EditTitle = new Orb.Class({
 
 		var stopEditable = function() {
 			var nametxt = editName.find('input').first();
-			var setName = nametxt.val().trim();
+			var setName = $.trim(nametxt.val());
 
 			if(!setName) {
 				return;
@@ -28,7 +28,7 @@ DeskPRO.Agent.PageFragment.Page.EditTitle = new Orb.Class({
 			stopBtn.hide();
 			namef.text(setName);
 
-			var postData = data ? Array.clone(data) : [];
+			var postData = data ? Array.slice(data) : [];
 			postData.push({
 				name: 'action',
 				value: 'title'

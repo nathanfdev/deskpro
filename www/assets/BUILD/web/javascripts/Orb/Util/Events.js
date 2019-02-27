@@ -58,7 +58,7 @@ Orb.Util.Events = {
 		return this;
 	},
 
-	fireEvent: function(type, args, delay){
+	fireEvent: function(type, args){
 		var defaultContext, fn_info;
 
 		if (!this.__events) {
@@ -81,18 +81,10 @@ Orb.Util.Events = {
 
 		for (var i = 0; i < this.__events[type].length; i++) {
 			fn_info = this.__events[type][i];
-			if (delay) {
-				try {
-					fn_info[0].delay(delay, fn_info[1] || defaultContext, argsArr);
-				} catch (e) {
-					console.error("Event Error %s: %o %s", type, e, e.stack || '');
-				}
-			} else {
-				try {
-					fn_info[0].apply(fn_info[1] || defaultContext, argsArr);
-				} catch (e) {
-					console.error("Event Error %s: %o %s", type, e, e.stack || '');
-				}
+			try {
+				fn_info[0].apply(fn_info[1] || defaultContext, argsArr);
+			} catch (e) {
+				console.error("Event Error %s: %o %s", type, e, e.stack || '');
 			}
 		}
 

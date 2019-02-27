@@ -99,7 +99,7 @@ Orb.uuidRand = function() {
  * @retrun {HTMLElement}
  */
 Orb.getEl = function(el) {
-	if (typeOf(el) == 'element') {
+	if (Orb.typeOf(el) == 'element') {
 		return el;
 	}
 
@@ -139,9 +139,9 @@ Orb.findHighestZindex = function(els) {
 Orb.escapeHtml = function(string) {
 	string = string||'';
 
-	if (typeOf(string) == 'element') {
+	if (Orb.typeOf(string) == 'element') {
 		string = $(string).text();
-	} else if (typeOf(string) != 'string') {
+	} else if (Orb.typeOf(string) != 'string') {
 		if (string.toString) {
 			string = string.toString();
 		}
@@ -363,6 +363,60 @@ Orb.getSelectionCoords = function(sel) {
 	}
 
 	return null;
+};
+
+Orb.fnPass = function(fn, args, bind) {
+	if (args) {
+		args = Array.from(args);
+	}
+	return function() {
+		return fn.apply(bind, args || arguments);
+	};
+};
+
+Orb.fnDelay = function(fn, delay, bind, args) {
+	return setTimeout(Orb.fnPass(fn, args, bind), delay);
+};
+
+Orb.arrPushUnique = function(arr, val) {
+	if (arr.indexOf(val) === -1) {
+		arr.push(val);
+	}
+};
+
+Orb.arrRemoveValue = function(arr, val) {
+	var what, a = arguments, L = a.length, ax;
+	while (L > 1 && arr.length) {
+		what = a[--L];
+		while ((ax= arr.indexOf(what)) !== -1) {
+			arr.splice(ax, 1);
+		}
+	}
+	return arr;
+};
+
+Orb.typeOf = function(i) {
+	if (i == null) {
+		return "null";
+	}
+	if (i.nodeName) {
+		if (i.nodeType === 1) {
+			return "element";
+		}
+		if (i.nodeType === 3) {
+			return (/\S/).test(i.nodeValue) ? "textnode" : "whitespace";
+		}
+	} else {
+		if (Array.isArray(i)) {
+			return "array";
+		}
+		if (typeof i.length == "number") {
+			if (i.callee) {
+				return "arguments";
+			}
+		}
+	}
+	return typeof i;
 };
 
 /**

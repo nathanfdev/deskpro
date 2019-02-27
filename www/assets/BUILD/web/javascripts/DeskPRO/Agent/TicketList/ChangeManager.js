@@ -134,7 +134,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 
 		delete this.changes[ticketId];
 
-		if (Object.getLength(this.changes) == 0) {
+		if (Object.keys(this.changes).length === 0) {
 			this.revertChanges();
 		}
 	},
@@ -164,7 +164,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 	 * Called when we detect if a value was updated automatically from somewhere.
 	 */
 	setPropertyUpdated: function(property, newValue) {
-		if (typeOf(property) == 'string') {
+		if (Orb.typeOf(property) == 'string') {
 			property = this.ticketPage.getPropertyManager(property);
 		}
 

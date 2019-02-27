@@ -101,3 +101,9 @@ if (!Date.prototype.toISOString) {
 			+ pad(this.getUTCSeconds()) + 'Z';
 	};
 }
+
+if (!Array.isArray) {
+	Array.isArray = function(arg) {
+		return Object.prototype.toString.call(arg) === '[object Array]';
+	};
+}

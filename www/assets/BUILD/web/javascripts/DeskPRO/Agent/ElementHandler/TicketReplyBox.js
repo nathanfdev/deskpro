@@ -465,7 +465,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
         $('.cc-saverow-trigger', cc_row).on('click', function(ev) {
 			var user_row = $(self.ccRowTpl);
-			var email = $('input.user-part', cc_row).val().trim();
+			var email = $.trim($('input.user-part', cc_row).val());
 			var parts = email.split('@');
 
 			if(email == ''
@@ -871,7 +871,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					self.getElById('ticket_do_status').val(0);
 					statusDetailEl.removeClass('changed');
 				} else {
-					$('.new-val-label', statusDetailEl).text(item.text().trim());
+					$('.new-val-label', statusDetailEl).text($.trim(item.text()));
 					self.getElById('ticket_do_status').val(1);
 					self.getElById('ticket_status').val(val);
 					statusDetailEl.addClass('changed');
@@ -1326,7 +1326,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 								api.syncCode();
 							} else {
 								var text = $('<div>' + html + '</div>');
-								text = text.text().trim();
+								text = $.trim(text.text());
 								textarea.val($.trim(textarea.val() + "\n\n" + text));
 							}
 						}
@@ -1420,7 +1420,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var val = textarea.val();
 		}
 
-		if (val.trim().length) {
+		if ($.trim(val).length) {
 
 			// Always put it before the signature
 			// (if have sig and val ends with sig)

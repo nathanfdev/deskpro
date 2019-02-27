@@ -42,7 +42,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
     this.tabCount = 0;
 
     this.showListIfNoTabs = _.debounce((function () {
-      var last_tab_id = Object.keys(this.tabs).getLast();
+      var last_tab_id = Object.keys(this.tabs).slice(-1)[0];
       if (!last_tab_id) {
         this.$timeout((function () {
           this.$scope.showList();
@@ -82,7 +82,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
       // Otherwise go to the last
     } else {
-      var last_tab_id = Object.keys(this.tabs).getLast();
+      var last_tab_id = Object.keys(this.tabs).slice(-1)[0];
       if (last_tab_id) {
         this.activateTabById(last_tab_id);
       } else {
@@ -153,7 +153,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
     var getCloseAll = function () {
       var tabs = [];
-      self._tabs.each(function (tab) {
+      self._tabs.forEach(function (tab) {
         if (tab.locked) {
           return;
         }

@@ -75,7 +75,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 			var form = self.getEl('form');
 			var postData = form.serializeArray();
 
-			if (!$('input[name="filter[title]"]').val().trim().length) {
+			if (!$.trim($('input[name="filter[title]"]').val()).length) {
 				alert('Enter a filter title');
 				return;
 			}

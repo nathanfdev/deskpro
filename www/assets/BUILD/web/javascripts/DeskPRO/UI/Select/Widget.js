@@ -145,7 +145,7 @@ DeskPRO.UI.Select.Widget = new Orb.Class({
 		}
 
 		if (this.options.menu) {
-			if (typeOf(this.options.menu) == 'function') {
+			if (Orb.typeOf(this.options.menu) == 'function') {
 				this.menu = this.options.menu();
 			}
 		}
@@ -332,7 +332,7 @@ DeskPRO.UI.Select.Widget = new Orb.Class({
 			var optVal = $(this).val();
 			var selected = false;
 
-			if (typeOf(values) == 'array') {
+			if (Orb.typeOf(values) == 'array') {
 				values.forEach(function(val) {
 					if (optVal == val) {
 						selected = true;

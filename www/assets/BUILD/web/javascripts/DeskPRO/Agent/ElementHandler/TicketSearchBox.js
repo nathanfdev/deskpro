@@ -64,7 +64,7 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 				var current = $('li.on', self.resultsList);
 				if (current.length) {
 					var ticketId = current.data('ticket-id');
-					var subject  = $('.ticket-subject', current).text().trim();
+					var subject  = $.trim($('.ticket-subject', current).text());
 
 					self.termInput.val(subject);
 
@@ -130,7 +130,7 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 			if (self.exclude.indexOf(ticketId) > -1) {
 				return;
 			}
-			var subject = $('.ticket-subject', this).text().trim();
+			var subject = $.trim($('.ticket-subject', this).text());
 
 			self.el.trigger('ticketsearchboxclick', [ticketId, subject, self]);
 		});
@@ -147,7 +147,7 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 				this.boundEl = $(boundDesc);
 			} else if (boundDesc == '@self') {
 				this.boundEl = this.el;
-			} else if (boundDesc.test(/^@parent\((.*?)\)$/)) {
+			} else if (boundDesc.match(/^@parent\((.*?)\)$/)) {
 				var sel = boundDesc.match(/^@parent\((.*?)\)$/)[1];
 				this.boundEl = this.el.closest(sel);
 			} else {
@@ -198,7 +198,7 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 	 * @return {String}
 	 */
 	getTerm: function() {
-		return this.termInput.val().trim();
+		return $.trim(this.termInput.val());
 	},
 
 

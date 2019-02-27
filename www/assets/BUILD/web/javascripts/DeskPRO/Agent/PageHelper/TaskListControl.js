@@ -103,7 +103,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 
 			$(this).on('change', function() {
 				var val = $(this).val();
-				var label = $(this).find(':selected').text().trim();
+				var label = $(this).find(':selected').text();
 
 				if (!val) {
 					val = '';
@@ -312,14 +312,14 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				$('.new-comment', row).hide();
 			};
 
-			if (!commentTxt.val().trim().length) {
+			if (!$.trim(commentTxt.val()).length) {
 				return;
 			}
 
 			var postData = [];
 			postData.push({
 				name: 'comment',
-				value: commentTxt.val().trim()
+				value: commentTxt.val()
 			});
 
 			row.addClass('loading');

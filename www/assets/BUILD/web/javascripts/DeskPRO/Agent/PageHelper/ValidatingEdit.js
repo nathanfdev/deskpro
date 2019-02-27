@@ -64,7 +64,7 @@ DeskPRO.Agent.PageHelper.ValidatingEdit = new Orb.Class({
 
 	disapproveEdit: function() {
 
-		var reason = $('.validating-bar .disapprove-reason', this.page.wrapper).val().trim();
+		var reason = $('.validating-bar .disapprove-reason', this.page.wrapper).val();
 		if (!this.triggers.inAction) {
 			this.triggers.inAction = true;
 			$.ajax({

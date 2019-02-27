@@ -28,8 +28,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	_activateTab: function(tab, containerEl, tabManager) {
 		var id = tab.id;
 
-		this.selectionHistory.erase(id);
-		this.selectionHistory.push(id);
+		Orb.arrPushUnique(this.selectionHistory, id);
 
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
@@ -78,7 +77,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	},
 
 	_removeTab: function(tab, tabManager) {
-		this.selectionHistory.erase(tab.id);
+		Orb.arrRemoveValue(this.selectionHistory, tab.id);
 
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
@@ -127,7 +126,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 			return;
 		}
 
-		this.watchedTypes[typename].erase(watcher);
+		Orb.arrRemoveValue(this.watchedTypes[typename], watcher);
 	},
 
 

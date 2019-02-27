@@ -55,7 +55,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 				var item = $(info.itemEl);
 
 				var prop = item.data('order-by');
-				var label = item.text().trim();
+				var label = $.trim(item.text());
 
 				// Change the displayed label for some visual feedback
 				$('.label', sortMenuBtn).text(label);

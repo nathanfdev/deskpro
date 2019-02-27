@@ -296,7 +296,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 	},
 
 	updateFilter: function(filterEl) {
-		var filter = filterEl.val().trim().toLowerCase();
+		var filter = filterEl.val().toLowerCase();
 		var section = this._findSection(filterEl);
 		var lis = $('li', section);
 

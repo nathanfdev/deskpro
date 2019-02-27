@@ -301,7 +301,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			menuElement: $('.end-action-menu', optWrap),
 			onItemClicked: function(info) {
 				var val = $(info.itemEl).data('action');
-				var label = $(info.itemEl).text().trim();
+				var label = $.trim($(info.itemEl).text());
 
 				endOpt.data('val', val);
 				endOpt.text(label);
@@ -572,7 +572,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		}
 
 		this._labelsData = this.labelsInput.getFormData();
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		this._saveLabelsTimeout = Orb.fnDelay(this._doSaveLabels, 2000, this);
 	},
 
 	_doSaveLabels: function() {

@@ -74,8 +74,8 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 				var current = $('li.on', self.resultsList);
 				if (current.length) {
 					var personId = current.data('person-id');
-					var name  = $('.user-name', current).text().trim();
-					var email = $('.user-email', current).text().trim();
+					var name  = $.trim($('.user-name', current).text());
+					var email = $.trim($('.user-email', current).text());
 
 					self.termInput.val(email);
 
@@ -150,8 +150,8 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
 			var personId = $(this).data('person-id');
-			var name  = $('.user-name', this).text().trim();
-			var email = $('.user-email', this).text().trim();
+			var name  = $.trim($('.user-name', this).text());
+			var email = $.trim($('.user-email', this).text());
 
 			self.el.trigger('personsearchboxclick', [personId, name, email, self]);
 		});
@@ -174,7 +174,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 				this.boundEl = $(boundDesc);
 			} else if (boundDesc == '@self') {
 				this.boundEl = this.el;
-			} else if (boundDesc.test(/^@parent\((.*?)\)$/)) {
+			} else if (boundDesc.match(/^@parent\((.*?)\)$/)) {
 				var sel = boundDesc.match(/^@parent\((.*?)\)$/)[1];
 				this.boundEl = this.el.closest(sel);
 			} else {
@@ -228,7 +228,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 * @return {String}
 	 */
 	getTerm: function() {
-		return this.termInput.val().trim();
+		return $.trim(this.termInput.val());
 	},
 
 

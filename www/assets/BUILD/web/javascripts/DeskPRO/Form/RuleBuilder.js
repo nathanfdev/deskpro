@@ -214,7 +214,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 				.addClass('op')
 				.change();
 
-			if (typeof existing.options == 'string' || typeof existing.options == 'number' || typeOf(existing.options) != 'object') {
+			if (typeof existing.options == 'string' || typeof existing.options == 'number' || Orb.typeOf(existing.options) != 'object') {
 				// If its just one item, then we'll just assume its the first field
 				var els = $(':input, textarea, select', new_row).filter(':not(.op, .type)').first().val(existing.options);
 
@@ -238,12 +238,12 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 						} else if (el.is(':checkbox')) {
 							el.attr('checked', !!val).change();
 						}
-					} else if (typeOf(val) == 'object') {
+					} else if (Orb.typeOf(val) == 'object') {
 						Object.entries(val).forEach(function(_vk) { var subname = _vk[0], subval = _vk[1];
 							var sub_name = name_safe + "["+subname+"]";
 							var sub_name_safe = name_safe + "\\["+subname+"\\]";
 
-							if (typeOf(subval) == 'object') {
+							if (Orb.typeOf(subval) == 'object') {
 								Object.entries(subval).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 									var k_name = sub_name + "[" + k + "]";
 									var el = $('[name$="'+this.makeArrayName(k_name,true)+'"]', new_row).first();
@@ -253,7 +253,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 										el.val(v).change();
 									}
 								}, this);
-							} else if (typeOf(subval) == 'array') {
+							} else if (Orb.typeOf(subval) == 'array') {
 								subval.forEach(function(v) {
 									var k_name = sub_name + "[]";
 									var el = $('[name$="'+this.makeArrayName(k_name,true)+'"]', new_row);
@@ -280,7 +280,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 								}
 							}
 						}, this);
-					} else if (typeOf(val) == 'array') {
+					} else if (Orb.typeOf(val) == 'array') {
 						if (name == 'labels') {
 							var texts = [];
 							var labelval = $('.builder-options select.label-values', new_row);

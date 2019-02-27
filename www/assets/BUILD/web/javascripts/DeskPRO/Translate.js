@@ -113,7 +113,7 @@ DeskPRO.Translate = new Orb.Class({
 	testInterval: function(number, interval) {
 		var x = 0;
 		var number = parseInt(number);
-		interval = interval.trim();
+		interval = $.trim(interval);
 
 		var leftDelimIndex  = 1;
 		var leftIndex       = 2;

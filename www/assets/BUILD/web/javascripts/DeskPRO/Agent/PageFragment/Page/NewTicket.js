@@ -768,7 +768,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 								api.syncCode();
 							} else {
 								var text = $('<div>' + html + '</div>');
-								text = text.text().trim();
+								text = $.trim(text.text());
 								textarea.val($.trim(textarea.val() + "\n\n" + text));
 							}
 						}
@@ -806,7 +806,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						this.getEl('close_tab_opt').prop('checked', true);
 					}
 
-					var setSubject = actionsRowList.find('.with-set-subject').text().trim();
+					var setSubject = $.trim(actionsRowList.find('.with-set-subject').text());
 					if (setSubject) {
 						this.getEl('subject').val(setSubject);
 					}

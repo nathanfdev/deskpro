@@ -251,7 +251,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 	_fireSendMessage: function() {
 		var txt = $('textarea', this.wrapper);
-		var msg = txt.val().trim();
+		var msg = $.trim(txt.val());
 		txt.val('');
 
 		if (!msg.length) {

@@ -184,7 +184,7 @@ DeskPRO.Form.InlineEdit = new Orb.Class({
 
 		if (data.length) {
 			var self = this;
-			var ajax_options = Object.merge({
+			var ajax_options = $.extend(true, {
 				success: function(data, textStatus, XMLHttpRequest) {
 					console.log('ajax-save data: %o', data);
 					self.handleAjaxSuccess(ajax_id, data);

@@ -24,7 +24,7 @@ DeskPRO.Agent.ElementHandler.PhoneCountryCode = new Orb.Class({
 				return;
 			}
 
-			var val = countryCodeSel.val().trim();
+			var val = $.trim(countryCodeSel.val());
 			var cc = null;
 			if (val) {
 				options.forEach(function(opt) {
@@ -46,7 +46,7 @@ DeskPRO.Agent.ElementHandler.PhoneCountryCode = new Orb.Class({
 		countryCodeSel.autocomplete({
 			minLength: 0,
 			source: function(req, callback) {
-				var term = req.term.trim();
+				var term = $.trim(req.term);
 
 				if (term === '') {
 					return options;

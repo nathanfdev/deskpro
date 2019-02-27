@@ -447,7 +447,7 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 	 */
 	removeResultId: function(resultId) {
 		if (this.resultIds) {
-			this.resultIds.erase(resultId);
+			Orb.arrRemoveValue(this.resultIds, resultId);
 		}
 	},
 

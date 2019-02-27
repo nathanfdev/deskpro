@@ -182,7 +182,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						ev.preventDefault();;
 						var item = $(this);
 						var emailId = item.data('email-id');
-						var text = item.text().trim();
+						var text = item.text();
 
 						self.getEl('user_email_text').text(text);
 						closeEmailChangeMenu();
@@ -2200,7 +2200,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		this._labelsData = this.labelsInput.getFormData();
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		this._saveLabelsTimeout = Orb.fnDelay(this._doSaveLabels, 2000, this);
 	},
 
 	_doSaveLabels: function() {
@@ -2911,7 +2911,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					textarea.data('redactor').restoreSelection();
 				}
 
-				this.insertTextInReply(quote.trim() + "\n");
+				this.insertTextInReply($.trim(quote) + "\n");
 
 				// Scroll down
 				if (!this.meta.ticket_reverse_order) {
@@ -3528,7 +3528,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			$(this).on('change', function() {
 				var val = $(this).val();
-				var label = $(this).find(':selected').text().trim();
+				var label = $(this).find(':selected').text();
 
 				if (!val) {
 					val = '';
@@ -3742,7 +3742,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 						$(this).on('change', function() {
 							var val = $(this).val();
-							var label = $(this).find(':selected').text().trim();
+							var label = $(this).find(':selected').text();
 
 							if (!val) {
 								val = '';
@@ -4019,7 +4019,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var stopEditable = function() {
 			var nametxt = editName.find('input').first();
 
-			var setName = nametxt.val().trim();
+			var setName = $.trim(nametxt.val());
 			if(!setName) {
 				return;
 			}

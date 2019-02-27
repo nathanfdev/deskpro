@@ -80,7 +80,7 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 					$(this).data('field-validators-inst', null);
 				}
 
-				var className = names[i].trim();
+				var className = $.trim(names[i]);
 				var classObj = Orb.getNamespacedObject(className);
 
 				if (!classObj) {

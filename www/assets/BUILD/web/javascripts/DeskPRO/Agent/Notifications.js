@@ -159,7 +159,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 	dismissAlertId: function(alertId) {
 
 		alertId = parseInt(alertId);
-		this.dismissedIds.include(alertId);
+		Orb.arrPushUnique(this.dismissedIds, alertId);
 		DeskPRO_Window.dismissAlertQueue.push(alertId);
 
 		if (this.dismissedIds.length > 1000) {

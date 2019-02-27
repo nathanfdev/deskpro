@@ -65,7 +65,7 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
     } else {
       this.ticketPage.getEl('status_code').select2('val', status_code);
       this.ticketPage.getEl('status_code').val(status_code);
-      var txt = this.ticketPage.getEl('status_code').find('option:selected').text().trim();
+      var txt = this.ticketPage.getEl('status_code').find('option:selected').text();
       this.getInterfaceElement().text(txt);
     }
 
