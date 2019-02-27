@@ -57,7 +57,7 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 		// Run all the rules to fetch on/off of each item in display
 		//------------------------------
 
-		Array.each(depItems, function(item) {
+		depItems.forEach(function(item) {
 			var section = 'default';
 			if (!items[section]) {
 				items[section] = [];

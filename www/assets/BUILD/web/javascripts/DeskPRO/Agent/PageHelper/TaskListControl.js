@@ -38,7 +38,7 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 				DeskPRO_Window.util.modCountEl(completeCountEl, op, -1);
 			}
 
-			Array.each(els, function(el) {
+			els.forEach(function(el) {
 				DeskPRO_Window.util.modCountEl($(el), op);
 			});
 

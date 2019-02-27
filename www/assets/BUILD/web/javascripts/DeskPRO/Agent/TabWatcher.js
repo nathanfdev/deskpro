@@ -33,12 +33,12 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
-			Array.each(this.watchedTypes[typename], function(watcher) {
+			this.watchedTypes[typename].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabActivated', [tab]);
 			});
 		}
 		if (this.watchedTypes['*']) {
-			Array.each(this.watchedTypes['*'], function(watcher) {
+			this.watchedTypes['*'].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabActivated', [tab]);
 			});
 		}
@@ -47,12 +47,12 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	_addTab: function(tab, containerEl, tabManager) {
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
-			Array.each(this.watchedTypes[typename], function(watcher) {
+			this.watchedTypes[typename].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabAdded', [tab]);
 			});
 		}
 		if (this.watchedTypes['*']) {
-			Array.each(this.watchedTypes['*'], function(watcher) {
+			this.watchedTypes['*'].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabAdded', [tab]);
 			});
 		}
@@ -66,12 +66,12 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		}
 
 		if (this.watchedTypes[typename]) {
-			Array.each(this.watchedTypes[typename], function(watcher) {
+			this.watchedTypes[typename].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabDeactivated', [tab, isLast]);
 			});
 		}
 		if (this.watchedTypes['*']) {
-			Array.each(this.watchedTypes['*'], function(watcher) {
+			this.watchedTypes['*'].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabDeactivated', [tab, isLast]);
 			});
 		}
@@ -82,12 +82,12 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
-			Array.each(this.watchedTypes[typename], function(watcher) {
+			this.watchedTypes[typename].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabRemoved', [tab]);
 			});
 		}
 		if (this.watchedTypes['*']) {
-			Array.each(this.watchedTypes['*'], function(watcher) {
+			this.watchedTypes['*'].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabRemoved', [tab]);
 			});
 		}
@@ -109,7 +109,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		this.watchedTypes[typename].push(watcher);
 
 		if (notifyOfExisting) {
-			Array.each(DeskPRO_Window.getTabWatcher().findTabType(typename), function(tab) {
+			DeskPRO_Window.getTabWatcher().findTabType(typename).forEach(function(tab) {
 				watcher.fireEvent('watchedTabAdded', tab);
 			});
 		}
@@ -250,7 +250,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	getSelectionHistory: function() {
 		var tabs = [];
 
-		Array.each(this.selectionHistory, function(id) {
+		this.selectionHistory.forEach(function(id) {
 			tabs.push(this.getTab(id));
 		}, this);
 

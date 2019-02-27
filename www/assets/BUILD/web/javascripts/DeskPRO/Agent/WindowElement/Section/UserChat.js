@@ -194,7 +194,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			self.onlineAgentIds = [];
 
 			if (info.online_agents && info.online_agents.length) {
-				Array.each(info.online_agents, function(agent_id) {
+				info.online_agents.forEach(function(agent_id) {
 					self.onlineAgentIds.push(parseInt(agent_id));
 				});
 			}
@@ -264,7 +264,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var hasme = false;
 		list.find('li').hide().removeClass('on last');
 
-		Array.each(this.onlineAgentIds, function(agent_id) {
+		this.onlineAgentIds.forEach(function(agent_id) {
 			if (parseInt(agent_id) === DESKPRO_PERSON_ID) {
 				hasme = true;
 			}
@@ -310,7 +310,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.onlineAgentsListGrouped.find('li.dep').hide();
 		this.onlineAgentsListGrouped.find('ul').empty();
 
-		Array.each(this.onlineAgentIds, function(agentId) {
+		this.onlineAgentIds.forEach(function(agentId) {
 			var li = this.onlineAgentsList.find('li.agent-' + agentId);
 			var depIds = (li.data('department-ids') || '') + '';
 			depIds = depIds.split(',');
@@ -515,7 +515,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	isChatOpen: function(convoId) {
 		var chatTabs = DeskPRO_Window.getTabWatcher().findTabType('userchat');
 		var isOpen = false;
-		Array.each(chatTabs, function(tab) {
+		chatTabs.forEach(function(tab) {
 			if (parseInt(tab.page.meta.conversation_id) == parseInt(convoId)) {
 				isOpen = tab;
 				return false;
@@ -788,7 +788,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		// but the user came back
 		var chatTabs = DeskPRO_Window.getTabWatcher().findTabType('userchat');
 		var found = false;
-		Array.each(chatTabs, function(t) {
+		chatTabs.forEach(function(t) {
 			if (t.meta && t.meta.conversation_id && parseInt(t.meta.conversation_id) == parseInt(conversation_id)) {
 				found = t;
 				return false;

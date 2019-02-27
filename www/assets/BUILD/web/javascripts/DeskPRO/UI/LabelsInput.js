@@ -130,7 +130,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		var field = this.options.fieldName;
 
 		var postData = [];
-		Array.each(tags, function(x) {
+		tags.forEach(function(x) {
 			postData.push({
 				name: field + '[]',
 				value: x

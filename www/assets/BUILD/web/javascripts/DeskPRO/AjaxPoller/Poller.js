@@ -105,7 +105,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		while (nameparts.pop()) {
 			cur_name = nameparts.join('.') + '.*';
 			if (this.dataTransformers[cur_name] !== undefined) {
-				this.dataTransformers[cur_name].each(function(callback) {
+				this.dataTransformers[cur_name].forEach(function(callback) {
 					data = callback(data, options, name);
 				});
 			}

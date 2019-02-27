@@ -156,7 +156,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 		if (selectEl && selectEl.attr('name')) {
 			name = selectEl.attr('name').replace(/[^a-zA-Z_]/, '_');
 		}
-		Array.each(options.values, function(opt) {
+		options.values.forEach(function(opt) {
 			if (options.selectType == 'radio') {
 				var li = $('<li><input type="radio" name="'+name+'" /><label></label></li>');
 			} else {

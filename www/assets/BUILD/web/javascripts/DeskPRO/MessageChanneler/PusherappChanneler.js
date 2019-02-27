@@ -62,7 +62,7 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 
 	_sendSubscribeChannels: function() {
 		var data = [];
-		Array.each(this._add_subs, function(v){
+		this._add_subs.forEach(function(v){
 			data.push({ name: 'channels[]', value: v });
 		});
 		this._add_subs = [];
@@ -76,7 +76,7 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 			success: function(data) {
 				this._doneSubscribeChannels(data.subscribed_channels);
 
-				Array.each(data.subscribed_channels, function(channel_name) {
+				data.subscribed_channels.forEach(function(channel_name) {
 					channel_name = this.channelToPusherapp(channel_name);
 					var channel = this.socket.subscribe(channel_name);
 					var self = this;
@@ -101,7 +101,7 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 
 	_sendUnsubscribeChannels: function() {
 		var data = [];
-		Array.each(this._del_subs, function(v){
+		this._del_subs.forEach(function(v){
 			data.push({ name: 'channels[]', value: v });
 		});
 		this._del_subs = [];
@@ -115,7 +115,7 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 			success: function(data) {
 				this._doneUnsubscribeChannels(data.unsubscribed_channels);
 
-				Array.each(data.subscribed_channels, function(channel_name) {
+				data.subscribed_channels.forEach(function(channel_name) {
 					channel_name = this.channelToPusherapp(channel_name);
 					this.socket.unsubscribe(channel);
 				});

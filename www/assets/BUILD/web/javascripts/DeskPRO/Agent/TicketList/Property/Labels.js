@@ -33,7 +33,7 @@ DeskPRO.Agent.TicketList.Property.Labels = new Orb.Class({
 
 		var text = this.displayCaption + ': ';
 
-		Array.each(values, function(val) {
+		values.forEach(function(val) {
 			text += ' '+val;
 		}, this);
 

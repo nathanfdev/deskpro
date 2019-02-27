@@ -105,7 +105,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		Object.each(groups, function(info, group) {
 			var ul = $('optgroup.' + info.id, typeSel);
 			var lis = [];
-			Array.each(info.types, function(type) {
+			info.types.forEach(function(type) {
 				lis.push('<option value="' + type[0] + '">' + type[1] + '</option>');
 			});
 
@@ -127,7 +127,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 
 	destroy: function() {
 		Object.each(this.rowDestroy, function (rowDestroy) {
-			Array.each(rowDesotry, function (item) {
+			rowDesotry.forEach(function (item) {
 				if (item.destroy) {
 					item.destroy();
 				} else if (item.remove) {
@@ -254,7 +254,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 									}
 								}, this);
 							} else if (typeOf(subval) == 'array') {
-								Array.each(subval, function(v) {
+								subval.forEach(function(v) {
 									var k_name = sub_name + "[]";
 									var el = $('[name$="'+this.makeArrayName(k_name,true)+'"]', new_row);
 									if (el.is('select')) {
@@ -284,14 +284,14 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 						if (name == 'labels') {
 							var texts = [];
 							var labelval = $('.builder-options select.label-values', new_row);
-							Array.each(val, function(subval) {
+							val.forEach(function(subval) {
 								texts.push(subval);
 							});
 
 							$('.builder-options .menu-trigger', new_row).text(texts.join(', ')).data('select-texts', texts);
 						}
 
-						Array.each(val, function(subval) {
+						val.forEach(function(subval) {
 							var el = $('option[value="'+subval+'"]', new_row).first().get(0);
 							if (el) el.selected = true;
 						}, this);
@@ -463,7 +463,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 	destroyRow: function(row) {
 		var rowId = row.data('row-id');
 		if (this.rowDestroy[rowId]) {
-			Array.each(this.rowDestroy[rowId], function(item) {
+			this.rowDestroy[rowId].forEach(function(item) {
 				if (item.destroy) {
 					item.destroy();
 				} else if (item.remove) {

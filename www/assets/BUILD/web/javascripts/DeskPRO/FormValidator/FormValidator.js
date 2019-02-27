@@ -74,7 +74,7 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 			for (i = 0; i < names.length; i++) {
 
 				if ($(this).data('field-validators-inst')) {
-					Array.each($(this).data('field-validators-inst'), function(v) {
+					$(this).data('field-validators-inst').forEach(function(v) {
 						v.destroy();
 					});
 					$(this).data('field-validators-inst', null);

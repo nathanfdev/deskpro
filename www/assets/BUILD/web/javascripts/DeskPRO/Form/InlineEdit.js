@@ -245,7 +245,7 @@ DeskPRO.Form.InlineEdit = new Orb.Class({
 			if (!html) {
 				var value_arr = $('input[type="text"], textarea, select', editinfo.form_elements).serializeArray();
 				var value_bits = [];
-				value_arr.each(function (v) {
+				value_arr.forEach(function (v) {
 					value_bits.push(v.value);
 				});
 

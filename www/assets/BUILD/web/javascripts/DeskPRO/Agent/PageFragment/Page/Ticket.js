@@ -411,7 +411,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				var refreshOpenTickets = function() {
 					var append = [];
-					Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
+					DeskPRO_Window.getTabWatcher().findTabType('ticket').forEach(function(tab) {
 						var id = tab.page.getMetaData('ticket_id');
 						if (id && id != self.meta.ticket_id) {
 							var row = renderTicketOption({
@@ -441,7 +441,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             withActionAlerts: true,
 						success: function(data) {
 							var append = [];
-							Array.each(data, function(t) {
+							data.forEach(function(t) {
 								if (t.id && t.id != self.meta.ticket_id) {
 									var row = renderTicketOption(t);
 									append.push(row);
@@ -1392,7 +1392,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					self.changeManager.setInstantChange(prop, 'awaiting_agent');
 
 					var list = self.getEl('field_errors').find('ul').empty();
-					Array.each(result.error_messages, function(msg) {
+					result.error_messages.forEach(function(msg) {
 						var li = $('<li/>');
 						li.text(msg);
 						li.appendTo(list);
@@ -1424,7 +1424,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         }
 
 				if (result.notified_agents && DeskPRO.Agent.Widget.AgentChatWin_Registry) {
-					Array.each(result.notified_agents, function(aid) {
+					result.notified_agents.forEach(function(aid) {
 						aid = parseInt(aid);
 						Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(v,k) {
 							if (v.agentIds.length == 1 && v.agentIds.indexOf(aid) !== -1) {
@@ -1696,7 +1696,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			props.push('agent_team_id');
 		}
 
-		Array.each(props, function(propId) {
+		props.forEach(function(propId) {
 			var val = '0';
 			if (data[propId]) {
 				val = data[propId];

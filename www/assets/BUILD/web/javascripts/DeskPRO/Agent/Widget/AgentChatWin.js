@@ -58,7 +58,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid] = this;
 
 		this.agentIds = [];
-		Array.each(this.options.agentIds, function(i) {
+		this.options.agentIds.forEach(function(i) {
 			this.agentIds.push(parseInt(i));
 		}, this);
 
@@ -194,7 +194,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 	loadLastConvo: function() {
 		var data = [];
-		Array.each(this.agentIds, function(id) {
+		this.agentIds.forEach(function(id) {
 			data.push({
 				name: 'agent_ids[]',
 				value: id
@@ -212,7 +212,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 				}
 
 				if (data.messages) {
-					Array.each(data.messages, function(messageInfo) {
+					data.messages.forEach(function(messageInfo) {
 						if (messageInfo.agent_id == DESKPRO_PERSON_ID) {
 							this.showMyMessage({
 								id: messageInfo.id,
@@ -303,7 +303,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			value: this.uuid
 		});
 
-		Array.each(this.agentIds, function(id) {
+		this.agentIds.forEach(function(id) {
 			data.push({
 				name: 'agent_ids[]',
 				value: id

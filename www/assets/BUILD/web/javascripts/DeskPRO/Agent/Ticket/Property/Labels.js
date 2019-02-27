@@ -20,11 +20,11 @@ DeskPRO.Agent.Ticket.Property.Labels = new Orb.Class({
 	setValue: function(values) {
 		this._values = values;
 		if (this.mode == 'add') {
-			Array.each(values, function(val) {
+			values.forEach(function(val) {
 				this.ticketPage.labelsInput.tagit.add(val, '<span class="new">'+val+'</span>');
 			}, this);
 		} else {
-			Array.each(values, function(val) {
+			values.forEach(function(val) {
 				var el = $('input[value="'+val+'"]', this.getInterfaceElement());
 				if (el.length) {
 					el = el.parent(); // input -> li
@@ -52,7 +52,7 @@ DeskPRO.Agent.Ticket.Property.Labels = new Orb.Class({
 		if (this.mode == 'add') {
 			$('li:has(span.new)', this.getInterfaceElement()).remove();
 		} else {
-			Array.each(values, function(val) {
+			values.forEach(function(val) {
 				var el = $('input[value="'+val+'"]', this.getInterfaceElement());
 				if (el.length) {
 					el = el.parent(); // input -> li

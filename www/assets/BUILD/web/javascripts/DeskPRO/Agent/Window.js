@@ -1175,7 +1175,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		DeskPRO_Window.TabBar.options.activateNew = false;
 
-		Array.each(segments, function (hash, i) {
+		segments.forEach(function (hash, i) {
 
 			var m;
 			if (m = hash.match(/app\.([a-zA-Z]+)/)) {
@@ -1820,7 +1820,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		Object.each(this.routePrefixes, function(listeners, prefix) {
 			if (route.indexOf(prefix) == 0) {
-				Array.each(listeners, function(callback) {
+				listeners.forEach(function(callback) {
 					callback(data);
 					found_listener = true;
 				});
@@ -2415,7 +2415,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 		html.push('>');
 
-		Array.each(files, function(f) {
+		files.forEach(function(f) {
 			html.push('<source src="' + f.path + '" type="' + f.type + '" />');
 		});
 
@@ -2716,7 +2716,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Add chats we're looking at right now
 		this.messageChanneler.poller.addData((function () {
 			var chatIdsData = [];
-			Array.each(this.getTabWatcher().findTabType('userchat'), function(t) {
+			this.getTabWatcher().findTabType('userchat').forEach(function(t) {
 				chatIdsData.push({
 					name: 'chat_ids[]',
 					value: t.page.meta.conversation_id
@@ -3520,7 +3520,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var callback_map = {};
 		var data = [];
-		Array.each(sectionDataQueued, function(info) {
+		sectionDataQueued.forEach(function(info) {
       if (info[0] === 'tickets_section') {
         // tickets done itself
         self.loadingSections['tickets_section'] = false;

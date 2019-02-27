@@ -605,7 +605,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
 						var agentText, defaultText, wantText, useText;
 
-						Array.each(options, function(info) {
+						options.forEach(function(info) {
 							if (info[value_prop]) {
 								if (info[lang_id_prop] == ticketLangId) {
 									wantText = info[value_prop];
@@ -635,7 +635,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 					useText = selectText(snippetCode, 'value', 'language_id');
 
-					Array.each(['department', 'product', 'category', 'workflow', 'priority'], function(prop) {
+					['department', 'product', 'category', 'workflow', 'priority'].forEach(function(prop) {
 						if (vars[prop] && vars[prop]['title_translated']) {
 							vars[prop]['title'] = selectText(vars[prop]['title_translated'], 'title', 'language_id', vars[prop]['title']);
 						}
@@ -784,7 +784,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 									var useText;
 									var result;
 
-									Array.each(snippetCode, function (info) {
+									snippetCode.forEach(function (info) {
 										if (info.language_id == ticketLangId) {
 											wantText = info.value;
 										}
@@ -1113,7 +1113,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.onMacrosUpdated = function(ev) {
-      Array.each(ev.macroItems, function (info) {
+      ev.macroItems.forEach(function (info) {
         var has = statusMacroList.find('.res-ticketmacro-' + info.id);
         if (has[0]) {
           return;
@@ -1277,7 +1277,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					actionsRowList.empty();
-					Array.each(data.descriptions, function(desc) {
+					data.descriptions.forEach(function(desc) {
 						var li = $('<li />');
 						li.html(desc);
 
@@ -1485,7 +1485,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
       var agentText, defaultText, wantText, useText;
 
-      Array.each(options, function(info) {
+      options.forEach(function(info) {
         if (info[value_prop]) {
           if (info[lang_id_prop] == parseInt(ticketLangId, 10)) {
             wantText = info[value_prop];
@@ -1513,7 +1513,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       return useText;
     };
 
-    Array.each(['department', 'product', 'category', 'workflow', 'priority'], function(prop) {
+    ['department', 'product', 'category', 'workflow', 'priority'].forEach(function(prop) {
       if (vars[prop] && vars[prop]['title_translated']) {
         vars[prop]['title'] = selectText(vars[prop]['title_translated'], 'title', 'language_id', vars[prop]['title']);
       }
@@ -1534,7 +1534,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
   attachBlobs: function(blobs, source) {
     var self = this;
     var $attachRow = this.getElById('attach_row');
-    Array.each(blobs, function (info) {
+    blobs.forEach(function (info) {
       var blob = source[info];
       if (blob) {
         var html = window.tmpl($('.template-download', self.page.wrapper).attr('id'))({files: [blob]});

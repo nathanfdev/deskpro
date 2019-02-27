@@ -323,7 +323,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
                     var useText;
                     var result;
 
-                    Array.each(snippetCode, function (info) {
+                    snippetCode.forEach(function (info) {
                       if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
                         defaultText = info.value;
                       }
@@ -441,7 +441,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
           var useText;
           var result;
 
-          Array.each(snippetCode, function (info) {
+          snippetCode.forEach(function (info) {
             if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
               defaultText = info.value;
             }
@@ -667,7 +667,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     // before sending them
     var self = this;
     var $attachRow = this.getEl('attach_row');
-    Array.each(blobs, function (info) {
+    blobs.forEach(function (info) {
       var blob = source[info];
       if (blob) {
         var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
@@ -827,7 +827,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (!parts.lenght) {
 			ul.append('<li class="agent-0">None</li>');
 		} else {
-			Array.each(parts, function(agent_id) {
+			parts.forEach(function(agent_id) {
 				var name = DeskPRO_Window.getDisplayName('agent', agent_id);
 				ul.append('<li class="agent-'+agent_id+'">'+name+'</li>');
 			});
@@ -860,7 +860,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
-		Array.each(data.message_ids, function (message_id) {
+		data.message_ids.forEach(function (message_id) {
 			this.getEl('messages_box').find('.message-' + message_id).addClass('user-ack');
 		}, this);
 	},
@@ -918,7 +918,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 	syncPars: function(agent_ids) {
 		var postData = [];
-		Array.each(agent_ids, function(id) {
+		agent_ids.forEach(function(id) {
 			postData.push({ name: 'agent_ids[]', value: id });
 		});
 		DeskPRO_Window.util.ajaxWithClientMessages({
@@ -1251,7 +1251,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				var selections = ob.getAllSelected();
 
 				var part_ids = [];
-				Array.each(selections.followers, function(part_id) {
+				selections.followers.forEach(function(part_id) {
 					var label = $('.agent-part-label-' + part_id, ob.getElement()).first().text().trim();
 
 					var li = $('<li />');

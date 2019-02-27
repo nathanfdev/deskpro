@@ -37,7 +37,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.FilterEdit = new Orb.Class({
 		var count = 0;
 		var terms = this.meta.terms;
 		if (terms) {
-			Array.each(terms, function(info, x) {
+			terms.forEach(function(info, x) {
 				var basename = 'terms[initial_' + x + ']';
 				editor.addNewRow($('.search-terms', critList), basename, {
 					type: info.type,

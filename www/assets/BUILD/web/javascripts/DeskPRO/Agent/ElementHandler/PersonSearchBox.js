@@ -271,7 +271,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 					this.resultsBox.removeClass('loading');
 				}
 
-				Array.each(data, function(user) {
+				data.forEach(function(user) {
 					var row = $(this.tplHtml);
 
 					row.data('person-id', user.id);

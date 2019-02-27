@@ -200,7 +200,7 @@ DeskPRO.Agent.ElementHandler.SimpleAutoComplete = new Orb.Class({
         var currentPersonId = parseInt($('li.on', this.resultsList).data('person-id')) || 0;
         this.resultsList.empty();
 
-        Array.each(data, function (user) {
+        data.forEach(function (user) {
           var row = $(this.tplHtml);
 
           row.data('person-id', user.id);

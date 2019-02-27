@@ -169,14 +169,14 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
     };
 
     this.$scope.closeAll = function () {
-      getCloseAll().each(function (tab) {
+      getCloseAll().forEach(function (tab) {
         self.removeTab(tab);
       });
     };
 
     var getCloseOthers = function () {
       var tabs = [], active = self.getActiveTab();
-      self._tabs.each(function (tab) {
+      self._tabs.forEach(function (tab) {
         if (tab === active || tab.locked) {
           return;
         }
@@ -192,7 +192,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
     };
 
     this.$scope.closeOthers = function () {
-      getCloseOthers().each(function (tab) {
+      getCloseOthers().forEach(function (tab) {
         self.removeTab(tab);
       });
     };
@@ -235,7 +235,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
   _checkOpenedItems: function () {
     var self = this;
 
-    this.$scope.listItems.each(function (item) {
+    this.$scope.listItems.forEach(function (item) {
       item.open = false;
       for (var i = 0; i < self._tabs.length; i++) {
         var tab = self._tabs[i];

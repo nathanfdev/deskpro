@@ -23,7 +23,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			$scope.mergeItems.open.length = 0;
 			$scope.mergeItems.filter.length = 0;
 
-			$scope.listItems.each(function(item){
+			$scope.listItems.forEach(function(item){
 				if ('person' !== item.type) return;
 				if (item.identity === self.meta.pageIdentity) return;
 				var _item = angular.copy(item);
@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 			var tabStrip = DeskPRO_Window.getTabStrip();
 			if (tabStrip && tabStrip.$scope && tabStrip.$scope.tabs && tabStrip.$scope.tabs.length > 1) {
-				tabStrip.$scope.tabs.each(function(item) {
+				tabStrip.$scope.tabs.forEach(function(item) {
 					if (item.page && item.page === self) return;
 					var _item = {
 						id: item.page.meta.person_id,
@@ -868,7 +868,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				success: function() {
 					// remove old tabs, theyre outdated
           // @TODO: how to get Id of curent tab to avoid below foreach?
-					Array.each(DeskPRO_Window.getTabWatcher().findTabType('person'), function(tab) {
+					DeskPRO_Window.getTabWatcher().findTabType('person').forEach(function(tab) {
 						var id = tab.page.getMetaData('person_id');
 						if (id == self.meta.person_id) {
 							DeskPRO_Window.TabBar.removeTabById(tab.id);

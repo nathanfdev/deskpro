@@ -83,7 +83,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback = new Orb.Class({
 					success: function(data) {
 
             // remove tabs with linked feedback, they are outdated
-            Array.each(DeskPRO_Window.getTabWatcher().findTabType('feedback'), function(tab) {
+            DeskPRO_Window.getTabWatcher().findTabType('feedback').forEach(function(tab) {
               if (feedbackId == tab.page.getMetaData('feedback_id')) {
                 DeskPRO_Window.TabBar.removeTabById(tab.id);
               }

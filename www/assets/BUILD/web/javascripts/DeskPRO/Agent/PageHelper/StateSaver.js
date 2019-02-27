@@ -129,7 +129,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 			value: this.options.expireTime
 		});
 		if (typeOf(setData) == 'array') {
-			Array.each(setData, function(x) {
+			setData.forEach(function(x) {
 				data.push({
 					name: 'prefs[agent.ui.state.'+this.options.stateId+']' + namePart(x.name),
 					value: x.value

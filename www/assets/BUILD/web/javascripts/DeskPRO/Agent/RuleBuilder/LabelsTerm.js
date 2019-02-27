@@ -34,7 +34,7 @@ DeskPRO.Agent.RuleBuilder.LabelsTerm = new Orb.Class({
 		window.setTimeout(function() {
 			var vals = self.currentValue.data('select-texts');
 			if (vals) {
-				Array.each(vals, function(val) {
+				vals.forEach(function(val) {
 					var input = $('<option value="" selected="selected" />');
 					input.val(val);
 
@@ -57,7 +57,7 @@ DeskPRO.Agent.RuleBuilder.LabelsTerm = new Orb.Class({
 		this.values.empty();
 
 		if (labels.length) {
-			Array.each(labels, function(label) {
+			labels.forEach(function(label) {
 				var input = $('<option value="" selected="selected" />');
 				input.val(label);
 

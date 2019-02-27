@@ -232,7 +232,7 @@ DeskPRO.Agent.ElementHandler.TicketSearchBox = new Orb.Class({
 				var currentTicketId = parseInt($('li.on', this.resultsList).data('ticket-id')) || 0;
 				this.resultsList.empty();
 
-				Array.each(data, function(ticket) {
+				data.forEach(function(ticket) {
 					var row = $(this.tplHtml);
 
 					row.data('ticket-id', ticket.id);

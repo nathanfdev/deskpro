@@ -129,7 +129,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 			success: function(data) {
 
 				if (data.error) {
-					Array.each(data.error_codes, function(code) {
+					data.error_codes.forEach(function(code) {
 						this.showErrorCode(code);
 					}, this);
 					this.updateUi();

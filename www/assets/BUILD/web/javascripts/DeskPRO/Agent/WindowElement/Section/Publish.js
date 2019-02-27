@@ -160,7 +160,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 
 		if (this.expanded_ids && this.expanded_ids.length) {
-			Array.each(this.expanded_ids, function(id) {
+			this.expanded_ids.forEach(function(id) {
 				var el = $('#' + id);
 				if (el.is('li')) {
 					var $me = el.find('> i');

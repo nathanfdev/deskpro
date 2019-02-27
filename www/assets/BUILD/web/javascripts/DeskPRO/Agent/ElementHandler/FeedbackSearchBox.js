@@ -230,7 +230,7 @@ DeskPRO.Agent.ElementHandler.FeedbackSearchBox = new Orb.Class({
 				var currentFeedbackId = parseInt($('li.on', this.resultsList).data('feedback-id')) || 0;
 				this.resultsList.empty();
 
-				Array.each(data, function(feedback) {
+				data.forEach(function(feedback) {
 					var row = $(this.tplHtml);
 
 					row.data('feedback-id', feedback.id);

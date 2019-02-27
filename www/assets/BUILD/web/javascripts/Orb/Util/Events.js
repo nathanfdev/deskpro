@@ -117,7 +117,7 @@ Orb.Util.Events = {
 			context = null;
 		}
 
-		Array.each(this.__events[type], function(fn_info){
+		this.__events[type].forEach(function(fn_info){
 			if (fn_info[0] == fn && fn_info[1] == context) {
 				hasChange = true;
 			} else {
@@ -139,7 +139,7 @@ Orb.Util.Events = {
 
 		if (!this.__events_tagged[tag]) return;
 
-		Array.each(this.__events_tagged[tag], function (x) {
+		this.__events_tagged[tag].forEach(function (x) {
 			this.removeEvent(x[0], x[1], x[2]);
 		}, this);
 

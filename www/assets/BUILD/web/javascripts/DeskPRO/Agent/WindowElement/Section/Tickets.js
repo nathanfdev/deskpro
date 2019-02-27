@@ -840,7 +840,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	refreshFilterGrouping: function(filterIds) {
 		if (filterIds && filterIds.length) {
-			Array.each(filterIds, function(i) {
+			filterIds.forEach(function(i) {
 				this.queueRefreshFilterGrouping.push(parseInt(i));
 			}, this);
 
@@ -859,7 +859,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		filterIds = filterIds || [];
 
 		if (this.queueRefreshFilterGrouping.length) {
-			Array.each(this.queueRefreshFilterGrouping, function(i) {
+			this.queueRefreshFilterGrouping.forEach(function(i) {
 				filterIds.push(i);
 			});
 		}
@@ -872,7 +872,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		if (this.runningRefreshFilterGrouping && this.runningRefreshFilterGrouping.length) {
 			var setFilterIds = [];
-			Array.each(filterIds, function(filterId) {
+			filterIds.forEach(function(filterId) {
 				if (this.runningRefreshFilterGrouping.indexOf(filterId) !== -1) {
 					this.rerunRefreshFilterGrouping.include(filterId);
 				} else {
@@ -886,7 +886,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		}
 
-		Array.each(filterIds, function(filterId) {
+		filterIds.forEach(function(filterId) {
 			filterId = parseInt(filterId);
 			var filterEl = $('li.filter-' + filterId, this.sectionEl);
 			els.push(filterEl.get(0));

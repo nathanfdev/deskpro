@@ -84,8 +84,8 @@ DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 		$('tr.on').removeClass('faded');
 		$('table:first', this.ticketPage.contentWrapper).addClass('preview-mode');
 
-		Array.each(this.ticketIdsBatch, function (ticketId) {
-			Array.each(this.changes[ticketId], function (change) {
+		this.ticketIdsBatch.forEach(function (ticketId) {
+			this.changes[ticketId].forEach(function (change) {
 				this.applyChangeForEntry(change);
 			}, this);
 		}, this);
@@ -107,7 +107,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 	revertChanges: function() {
 
 		Object.each(this.changes, function (changes, ticketId) {
-			Array.each(changes, function (change) {
+			changes.forEach(function (change) {
 				this.revertChangeForEntry(change);
 			}, this);
 		}, this);
@@ -124,7 +124,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 	revertChangesForTicketId: function(ticketId) {
 		if (!this.changes[ticketId]) return;
 
-		Array.each(this.changes[ticketId], function (change) {
+		this.changes[ticketId].forEach(function (change) {
 			this.revertChangeForEntry(change);
 		}, this);
 
@@ -144,7 +144,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 	 * Just updates the UI to show we accepted the changes
 	 */
 	commitChanges: function() {
-		Array.each(Object.values(this.changes), function (changes) {
+		Object.values(this.changes).forEach(function (changes) {
 			Object.each(changes, function(change) {
 				var property = change.property;
 				property.unhighlightInterfaceElement();

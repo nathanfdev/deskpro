@@ -252,10 +252,10 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
     $scope.getDisplayableFields = function () {
       var fields = [];
-      self.fixed_fields.each(function (v) {
+      self.fixed_fields.forEach(function (v) {
         fields.push(v);
       });
-      $scope.displayFields.each(function (v) {
+      $scope.displayFields.forEach(function (v) {
         if (fields.indexOf(v) > -1) return;
         fields.push(v);
       });

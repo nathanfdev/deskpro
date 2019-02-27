@@ -862,7 +862,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = null;
 
-		Array.each(this.subMenus, function(menuInfo) {
+		this.subMenus.forEach(function(menuInfo) {
 			if (!menuInfo.OBJ_DESTROYED) {
 				menuInfo.destroy();
 			}

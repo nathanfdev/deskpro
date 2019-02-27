@@ -114,10 +114,10 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 
         $scope.getDisplayableFields = function() {
             var fields = [];
-            self.fixed_fields.each(function(v){
+            self.fixed_fields.forEach(function(v){
                 fields.push(v);
             });
-            $scope.displayFields.each(function(v){
+            $scope.displayFields.forEach(function(v){
                 if (fields.indexOf(v) > -1) return;
                 fields.push(v);
             });
@@ -142,7 +142,7 @@ DeskPRO.Agent.PageFragment.ListPane.OrganizationList = new Orb.Class({
 		if (!self.IS_ACTIVE) return;
 		$scope.listItems.length = 0;
 
-		$scope.organizations.each(function(org){
+		$scope.organizations.forEach(function(org){
 			$scope.addListItem('organization', 'organization:'+org.id, org.name, routeTemplate.replace('0000', org.id));
 		});
 	},

@@ -231,7 +231,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 						property.setValue(oldVal);
 
 						var list = self.ticketPage.getEl('field_errors').find('ul').empty();
-						Array.each(data.error_messages, function(msg) {
+						data.error_messages.forEach(function(msg) {
 							var li = $('<li/>');
 							li.text(msg);
 							li.appendTo(list);
@@ -253,7 +253,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 						var list = $('<ul />');
 						list.appendTo(div);
 
-						Array.each(data.data.perm_errors, function(err) {
+						data.data.perm_errors.forEach(function(err) {
 							var li = $('<li/>');
 							li.text(err.capitalize());
 							li.appendTo(list);
@@ -337,7 +337,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 
 					if (data.error_messages) {
 						var list = self.ticketPage.getEl('field_errors').find('ul').empty();
-						Array.each(data.error_messages, function(msg) {
+						data.error_messages.forEach(function(msg) {
 							var li = $('<li/>');
 							li.text(msg);
 							li.appendTo(list);
@@ -375,7 +375,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 						var list = $('<ul />');
 						list.appendTo(div);
 
-						Array.each(data.data.perm_errors, function(err) {
+						data.data.perm_errors.forEach(function(err) {
 							var li = $('<li/>');
 							li.text(err.capitalize());
 							li.appendTo(list);

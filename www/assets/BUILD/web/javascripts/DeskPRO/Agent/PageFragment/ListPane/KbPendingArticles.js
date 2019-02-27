@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 				var els = [];
 
 				var formData = [];
-				Array.each(ids, function(id) {
+				ids.forEach(function(id) {
 					formData.push({
 						name: 'ids[]',
 						value: id

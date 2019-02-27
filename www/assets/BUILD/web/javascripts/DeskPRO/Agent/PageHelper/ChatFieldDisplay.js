@@ -54,7 +54,7 @@ DeskPRO.Agent.PageHelper.ChatFieldDisplay = new Orb.Class({
 		// Run all the rules to fetch on/off of each item in display
 		//------------------------------
 
-		Array.each(depItems, function(item) {
+		depItems.forEach(function(item) {
 			if (!items[item.section]) {
 				items[item.section] = [];
 			}

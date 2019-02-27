@@ -27,7 +27,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 
 	reset: function() {
 		this.el.html(this.origHtml);
-		Array.each(this.formPanels, function(formPanel) {
+		this.formPanels.forEach(function(formPanel) {
 			formPanel.destroy();
 		});
 		this.formPanels = [];
@@ -41,7 +41,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 		var visitedEls = [];
 
 		postData = Orb.serializeFormElements(this.el.find('.add-to-search'), visitedEls);
-		Array.each(this.formPanels, function(panel) {
+		this.formPanels.forEach(function(panel) {
 			postData = postData.append(Orb.serializeFormElements(panel.el.find('.add-to-search'), visitedEls));
 		});
 
@@ -184,7 +184,7 @@ DeskPRO.Agent.SourcePane.SearchForm = new Orb.Class({
 	 * Destroys els that were detached
 	 */
 	destroy: function() {
-		Array.each(this.formPanels, function(formPanel) {
+		this.formPanels.forEach(function(formPanel) {
 			formPanel.destroy();
 		});
 		this.formPanels = [];
@@ -293,7 +293,7 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 		var texts = [];
 
 		if (this.searchBuilderLists.length) {
-			Array.each(this.searchBuilderLists, function(o_el) {
+			this.searchBuilderLists.forEach(function(o_el) {
 				$.trim($(o_el).find('.builder-type-choice').each(function() {
 					var el = $(this);
 					var type = $.trim($(el).find('select').find('option').filter(':selected').text());
@@ -435,7 +435,7 @@ DeskPRO.Agent.SourcePane.SearchFormPanel = new Orb.Class({
 			this.el.detach();
 			this.shim.detach();
 
-			Array.each(this.widgets, function(w) {
+			this.widgets.forEach(function(w) {
 				w.destroy();
 			});
 		}

@@ -280,14 +280,14 @@ DeskPRO.Agent.PageHelper.Results = new Orb.Class({
 
 			var data = [];
 			if (this.resultIds) {
-				Array.each(this.getPageIds(pageNum), function(i) {
+				this.getPageIds(pageNum).forEach(function(i) {
 					data.push({name: 'result_ids[]', value: i});
 				});
 			} else {
 				data.push({name: 'page', value: pageNum});
 			}
 			if (this.displayOptions) {
-				Array.each(this.displayOptions.getDisplayFields(), function(i) {
+				this.displayOptions.getDisplayFields().forEach(function(i) {
 					data.push({name: 'display_fields[]', value: i });
 				});
 			}

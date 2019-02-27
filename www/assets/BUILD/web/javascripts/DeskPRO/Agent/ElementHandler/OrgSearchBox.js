@@ -221,7 +221,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 			success: function(data) {
 				this.resultsList.empty();
 
-				Array.each(data, function(org) {
+				data.forEach(function(org) {
 					var row = $(this.tplHtml);
 
 					row.data('org-id', org.id);

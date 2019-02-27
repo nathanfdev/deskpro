@@ -35,7 +35,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.MacroEdit = new Orb.Class({
 		var count = 0;
 		var actions = this.meta.actions;
 		if (actions) {
-			Array.each(actions, function(info, x) {
+			actions.forEach(function(info, x) {
 				var basename = 'actions[initial_' + x + ']';
 				editor.addNewRow($('.search-terms', actList), basename, {
 					type: info.type,
@@ -61,7 +61,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.MacroEdit = new Orb.Class({
 					if (data.form_errors) {
 
 						$('.form-errors', form).find('li').hide();
-						Array.each(data.form_errors, function (code) {
+						data.form_errors.forEach(function (code) {
 							var classname = code.replace(/\./g, '_');
 							$('.form-errors', form).find('li.' + classname).show();
 						});

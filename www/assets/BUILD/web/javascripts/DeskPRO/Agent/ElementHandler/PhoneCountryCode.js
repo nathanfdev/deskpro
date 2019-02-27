@@ -27,7 +27,7 @@ DeskPRO.Agent.ElementHandler.PhoneCountryCode = new Orb.Class({
 			var val = countryCodeSel.val().trim();
 			var cc = null;
 			if (val) {
-				Array.each(options, function(opt) {
+				options.forEach(function(opt) {
 					if ((opt.value+'') == (val+'')) {
 						cc = opt.country_code;
 					}
@@ -53,7 +53,7 @@ DeskPRO.Agent.ElementHandler.PhoneCountryCode = new Orb.Class({
 				}
 
 				var ret = [];
-				Array.each(options, function(opt) {
+				options.forEach(function(opt) {
 					if ((opt.value+'').indexOf(term) === 0) {
 						ret.push(opt);
 					}

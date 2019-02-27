@@ -62,7 +62,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			$('#agent_chat_online_icons').find('li').not('.agent-me').hide();
 			self.onlineCountEl.html('0');
 
-			Array.each(info.online_agents, function(agent_id) {
+			info.online_agents.forEach(function(agent_id) {
 				self.addOnlineAgent(agent_id);
 			});
 
