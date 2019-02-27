@@ -377,7 +377,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			});
 
 			w += (1 * cols.length);  // border/margin on the cols
-			DP.console.log('setting w %i', w);
+			console.log('setting w %i', w);
 
 			this.el.width(w);
 		}

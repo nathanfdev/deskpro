@@ -1,32 +1,6 @@
 if (typeof DP_DEBUG == 'undefined' || !DP_DEBUG) DP_DEBUG = false;
 
 var DP = {
-	console: {
-		error: function() {},
-		log: function() {},
-		warn: function() {},
-		info: function() {},
-		debug: function() {},
-		trace: function() {}
-	},
-
-	init: function() {
-		if (typeof window.console != 'undefined') {
-			DP.console = window.console;
-		}
-		['error', 'log', 'warn', 'info', 'debug', 'trace'].each(function(v) {
-			if (!DP.console[v]) {
-				DP.console[v] = function() {};
-			}
-		});
-
-		delete DP.init;
-	},
-
-  rteTextarea: function(field, options) {
-    console.warn('Function deprecated, please use window.LegacyRteTextarea.init()');
-  },
-
 	convertTextToWysiwygHtml: function(text, pOneLine) {
 		if (!text.length) {
 			return '';
@@ -46,27 +20,6 @@ var DP = {
 		}
 
 		return text;
-	},
-
-	drawBox: function(w, h) {
-		if (this.lastBox) {
-			this.lastBox.remove();
-			this.lastBox = null;
-		}
-		this.lastBox = $('<div style="background-color: #263343; position: absolute; width: '+w+'px; height: '+h+'px; z-index: 99999999;"></div>');
-
-		var left = ($(window).width() / 2) - (w/2);
-		var top  = ($(window).height() / 2) - (h/2);
-
-		this.lastBox.css({left: left, top: top}).appendTo('body').show();
-		return this.lastBox;
-	},
-
-	removeDrawnBox: function() {
-		if (this.lastBox) {
-			this.lastBox.remove();
-			this.lastBox = null;
-		}
 	},
 
 	select: function(el, options) {
@@ -406,4 +359,3 @@ var DP = {
 		el.select2(options);
 	}
 };
-DP.init();

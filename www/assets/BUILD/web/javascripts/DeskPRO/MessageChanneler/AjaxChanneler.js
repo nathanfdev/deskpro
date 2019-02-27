@@ -123,7 +123,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 				try {
 					this.sendMessage(d[1], d[2]);
 				} catch (err) {
-					DpErrorLog.logError('[AjaxChanneler] ' + err, err.stack || '', err.fileName || '', err.lineNumber || '');
+					console.error('[AjaxChanneler] ' + err, err.stack || '', err.fileName || '', err.lineNumber || '');
 				}
 			}
 		}

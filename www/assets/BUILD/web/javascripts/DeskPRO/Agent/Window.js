@@ -120,7 +120,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			getPlainTpl: function(el) {
 
 				if (!el) {
-					DP.console.error('Invalid template element passed %o', el);
+					console.error('Invalid template element passed %o', el);
 					return '';
 				}
 
@@ -128,7 +128,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 
 				if (!el.length) {
-					DP.console.error('No template element passed %o', el);
+					console.error('No template element passed %o', el);
 					return '';
 				}
 
@@ -745,7 +745,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!window.DeskPRO_FragmentRouter) {
-			DP.console.warn('window.DeskPRO_FragmentRouter is missing. Using empty router.');
+			console.warn('window.DeskPRO_FragmentRouter is missing. Using empty router.');
 			window.DeskPRO_FragmentRouter = {
 				baseUrl: '',
 				setBaseUrl: function(x) { this.baseUrl = x; },
@@ -1414,7 +1414,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	getDisplayName: function(type, id) {
 		if (!window.DESKPRO_NAME_REGISTRY[type] || !window.DESKPRO_NAME_REGISTRY[type][id]) {
 			if (!window.DESKPRO_NAME_REGISTRY[type]) {
-				DP.console.warn('Unknown name type %s', type);
+				console.warn('Unknown name type %s', type);
 			}
 
 			return null;
@@ -1435,7 +1435,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var agentEl = $('#agent_offline_list .agent-' + agent_id);
 
 		if (!agentEl.length) {
-			DP.console.warn('Unknown agent %i', agent_id);
+			console.warn('Unknown agent %i', agent_id);
 			return null;
 		}
 
@@ -1454,7 +1454,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	getUrl: function(name, vars) {
 		if (!window.DESKPRO_URL_REGISTRY[name]) {
-			DP.console.error('Unknown url name %s', name);
+			console.error('Unknown url name %s', name);
 			return null;
 		}
 
@@ -1475,7 +1475,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	getData: function(name) {
 		if (!window.DESKPRO_DATA_REGISTRY || !window.DESKPRO_DATA_REGISTRY[name]) {
-			DP.console.error('Unknown data name %s', name);
+			console.error('Unknown data name %s', name);
 			return null;
 		}
 
@@ -1714,7 +1714,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//#################################################################
 
 	addListPage: function(page) {
-		DP.console.warn('Invalid call to addListPage for %o', page);
+		console.warn('Invalid call to addListPage for %o', page);
 		this.setListPage(page);
 	},
 
@@ -1751,7 +1751,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!handler) {
-			DP.console.warn('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
+			console.warn('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
 			return;
 		}
 
@@ -1831,7 +1831,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}, this);
 
 		if (!found_listener) {
-			DP.console.error('Unknown route: %s', route);
+			console.error('Unknown route: %s', route);
 		}
 	},
 
@@ -1898,8 +1898,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!el.data('route')) {
-			DP.console.warn('Element has no route: %o', el);
-			DP.console.trace();
+			console.warn('Element has no route: %o', el);
+			console.trace();
 			return;
 		}
 
@@ -2204,7 +2204,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		routeData = routeData || {};
 		if (!url) {
-			DP.console.warn('No URL provided! routeData: %o', routeData);
+			console.warn('No URL provided! routeData: %o', routeData);
 			return;
 		}
 
@@ -2311,7 +2311,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return page;
 		}
 
-		//DP.console.debug('PageFragment class: %s', pageMeta.fragmentClass);
+		//console.debug('PageFragment class: %s', pageMeta.fragmentClass);
 		var fragment_class = Orb.getNamespacedObject(pageMeta.fragmentClass);
 
 		var page = new fragment_class(html);
@@ -2596,16 +2596,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				} else {
 					// On cloud, a 403 generally means CF is blocking the request because it thinks we are a bot.
 					if (DPC_IS_CLOUD) {
-						if (DpErrorLog) {
-							DpErrorLog.hasSentReport = true; // dont ask to report, just send it
-							DpErrorLog.logError(
-								"CloudFlare Network Error: " + message,
-								'URL: ' + ajaxOptions.url,
-								'agent',
-								1,
-								true
-							);
-						}
 						// Try reloading the interface
 						// In case of CF blocks, this would result in the user seeing a "challenge" response
 						// which will let them whitelist themselves
@@ -2682,15 +2672,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (DPC_IS_CLOUD) {
 			if (message.indexOf('http://www.cloudflare.com/') !== -1 && message.indexOf('<title>Website is currently unreachable</title>') !== -1) {
-				if (DpErrorLog) {
-					DpErrorLog.hasSentReport = true; // dont ask to report
-					DpErrorLog.logError(
-						"CloudFlare Network Error: " + message,
-						'',
-						'agent',
-						1
-					);
-				}
 				return;
 			}
 		}
@@ -3059,12 +3040,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	switchToSection: function(section_id, no_load_list) {
 
-		DP.console.debug('Switching to %s', section_id);
+		console.debug('Switching to %s', section_id);
 
 		var handler = this.sections[section_id];
 		if (!handler) {
 			if (section_id != 'test_section') {
-				DP.console.warn('Invalid section: %s', section_id);
+				console.warn('Invalid section: %s', section_id);
 			}
 			return;
 		}
@@ -3302,13 +3283,13 @@ DeskPRO.Agent.Window = new Orb.Class({
         ev.stopPropagation();
 
         var agentId = $(this).data('agent-id');
-        DP.console.log('Agent click %i', agentId);
+        console.log('Agent click %i', agentId);
         if (!agentId || agentId === '0' || agentId === '' || agentId == DESKPRO_PERSON_ID) {
           return;
         }
 
         if (!DeskPRO_Window.sections.agent_chat_section) {
-          DP.console.warn('The agent chat section is not enabled');
+          console.warn('The agent chat section is not enabled');
           return;
         }
 
@@ -3481,7 +3462,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!url) {
-			DP.console.warn('getSectionData: Unknown section %s', section_id);
+			console.warn('getSectionData: Unknown section %s', section_id);
 			return;
 		}
 

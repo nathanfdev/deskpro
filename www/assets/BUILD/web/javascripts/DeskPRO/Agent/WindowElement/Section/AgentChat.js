@@ -287,7 +287,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var origLi = $('.agent-' + agent_id, this.offlineListEl);
 
 		if (!origLi.length) {
-			DP.console.log('No agent element for %i', agent_id);
+			console.log('No agent element for %i', agent_id);
 			return;
 		}
 

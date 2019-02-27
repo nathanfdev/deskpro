@@ -341,7 +341,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			return;
 		}
 
-		DP.console.log('Applying macro %d', this.macroId);
+		console.log('Applying macro %d', this.macroId);
 
 		var url = BASE_URL + 'agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json',
       self = this;

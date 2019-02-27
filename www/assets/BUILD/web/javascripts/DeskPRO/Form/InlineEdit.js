@@ -186,11 +186,11 @@ DeskPRO.Form.InlineEdit = new Orb.Class({
 			var self = this;
 			var ajax_options = Object.merge({
 				success: function(data, textStatus, XMLHttpRequest) {
-					DP.console.log('ajax-save data: %o', data);
+					console.log('ajax-save data: %o', data);
 					self.handleAjaxSuccess(ajax_id, data);
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
-					DP.console.log('ajax-save error: %s', textStatus);
+					console.log('ajax-save error: %s', textStatus);
 					self.handleAjaxFailure(ajax_id);
 				},
 				context: this,
@@ -198,8 +198,8 @@ DeskPRO.Form.InlineEdit = new Orb.Class({
 				data: data
 			}, this.options['ajax']);
 
-			DP.console.log('ajax-save: %s', ajax_options.url);
-			DP.console.log('ajax-save data: %o', ajax_options.data);
+			console.log('ajax-save: %s', ajax_options.url);
+			console.log('ajax-save data: %o', ajax_options.data);
 
 			$.ajax(ajax_options);
 		} else {

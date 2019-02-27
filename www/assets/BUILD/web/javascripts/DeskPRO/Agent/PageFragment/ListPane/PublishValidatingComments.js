@@ -98,7 +98,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			};
 
 			var editRow = $('div.edit-' + info.contentType + '-' + info.commentId, self.wrapper);
-			DP.console.log(editRow);
+			console.log(editRow);
 			info.editRow = editRow;
 
 			return info;

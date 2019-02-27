@@ -64,7 +64,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 
 		if (!this.options.callback) {
 			this.options.callback = function() {};
-			DP.console.warn('No callback for state save');
+			console.warn('No callback for state save');
 		}
 
 		this.doRestartTimer = false;

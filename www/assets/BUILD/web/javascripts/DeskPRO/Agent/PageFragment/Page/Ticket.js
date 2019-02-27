@@ -2164,7 +2164,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	getPropertyManager: function(type, type_id) {
 
-		DP.console.error('Depreciated');
+		console.error('Depreciated');
 		return this.changeManager.getPropertyManager(type, type_id);
 	},
 
@@ -3350,7 +3350,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					if (!self.messageEditOverlay.hasInitRte) {
 						self.messageEditOverlay.hasInitRte = true;
 						overlayEl.find('textarea.message_text').height(overlayEl.find('.overlay-content').height() - 50);
-						//DP.rteTextarea(overlayEl.find('textarea.message_text'), {});
 						DeskPRO_Window.initRteAgentReply(overlayEl.find('textarea.message_text'), {
 							autoresize: false
 						});

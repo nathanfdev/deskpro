@@ -9,10 +9,6 @@ Orb.Util.Events = {
 		}
 	},
 
-	setDefaultEventContext: function(context) {
-		this.__events_default_context = context;
-	},
-
 	normalizeEventName: function(type) {
 		return type.toLowerCase().replace(/^on/, '');
 	},
@@ -24,7 +20,7 @@ Orb.Util.Events = {
 
 		type = this.normalizeEventName(type);
 		if (!context) {
-			context = this.__events_default_context;
+			context = undefined;
 		}
 
 		if (!this.__events[type]) {
@@ -62,15 +58,12 @@ Orb.Util.Events = {
 		return this;
 	},
 
-	addEvents: function(events, context, tags){
-		for (var type in events) {
-			this.addEvent(type, events[type], context, tags);
-		}
-		return this;
-	},
-
 	fireEvent: function(type, args, delay){
 		var defaultContext, fn_info;
+
+		if (!this.__events) {
+			return this;
+		}
 
 		this.__initEventsObj();
 
@@ -109,6 +102,10 @@ Orb.Util.Events = {
 	removeEvent: function(type, fn, context){
 		var newFns = [], hasChange = false;
 
+		if (!this.__events) {
+			return this;
+		}
+
 		this.__initEventsObj();
 
 		type = this.normalizeEventName(type);
@@ -135,30 +132,11 @@ Orb.Util.Events = {
 		return this;
 	},
 
-	removeEvents: function(events){
-		var type;
-		var self = this;
-		if (!events) {
-			events = [];
-		}
-		if (events.length === undefined) {
-			events = [events];
-		}
-
-		this.__initEventsObj();
-
-		events.forEach(function(type) {
-      var fns = self.__events[type];
-      if (!fns) return;
-      for (var i = 0; i < fns.length; i++) {
-        self.removeEvent(type, fns[i][0], fns[i][1]);
-      }
-		});
-
-		return this;
-	},
-
 	removeTaggedEvents: function(tag) {
+		if (!this.__events) {
+			return this;
+		}
+
 		if (!this.__events_tagged[tag]) return;
 
 		Array.each(this.__events_tagged[tag], function (x) {
@@ -170,7 +148,7 @@ Orb.Util.Events = {
 	},
 
 	destroyEvents: function() {
-		this.__events = {};
-		this.__events_tagged = {};
+		this.__events = null;
+		this.__events_tagged = null;
 	}
 };

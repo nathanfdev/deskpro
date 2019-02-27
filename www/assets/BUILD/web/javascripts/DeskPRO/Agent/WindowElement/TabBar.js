@@ -642,7 +642,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
     var data = this.tabs[this.currentTabId];
     data.isActive = false;
 
-    DP.console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
+    console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
     $('#' + data.wrapperId).hide();
 
     if (data.callback_deactivate !== undefined) {
@@ -814,8 +814,8 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
   removeTabById: function (id) {
     var tab = this.getTab(id);
     if (!tab) {
-      DP.console.log("Cannot remove, unknown tab %s", id);
-      DP.console.trace();
+      console.log("Cannot remove, unknown tab %s", id);
+      console.trace();
       return null;
     }
     this.removeTab(tab);
@@ -830,7 +830,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
   activateTabById: function (id) {
     var tab = this.getTab(id);
     if (!tab) {
-      DP.console.log("Cannot activate, unknown tab %s", id);
+      console.log("Cannot activate, unknown tab %s", id);
     }
     this.activateTab(tab);
   },
@@ -844,7 +844,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
     var tab = this.getTab(id);
 
     if (!tab) {
-      DP.console.log("Cannot activate, unknown tab %s", id);
+      console.log("Cannot activate, unknown tab %s", id);
     }
 
     var otherTab = null;

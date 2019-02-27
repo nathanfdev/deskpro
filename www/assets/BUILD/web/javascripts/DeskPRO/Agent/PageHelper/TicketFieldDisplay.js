@@ -12,7 +12,7 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 
 	getFields: function(department_id) {
 		department_id = parseInt(department_id);
-		DP.console.log('[TicketFieldDisplay] department %i', department_id);
+		console.log('[TicketFieldDisplay] department %i', department_id);
 
 		var depItems = [], layout, filterFn;
 		if (window.DESKPRO_TICKET_DISPLAY) {
@@ -36,10 +36,10 @@ DeskPRO.Agent.PageHelper.TicketFieldDisplay = new Orb.Class({
 			}
 		}
 
-		DP.console.log('[TicketFieldDisplay] depItems %o', depItems);
+		console.log('[TicketFieldDisplay] depItems %o', depItems);
 
 		var items = this.runRules(depItems);
-		DP.console.log('[TicketFieldDisplay] items %o', items);
+		console.log('[TicketFieldDisplay] items %o', items);
 
 		return items;
 	},

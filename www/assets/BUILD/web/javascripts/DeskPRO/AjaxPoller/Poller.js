@@ -308,7 +308,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		// Start auto timer
 		this.autoSendTimeout = this.send.delay(this.options.interval, this);
 
-		DP.console.warn("Polling Error %s for %o", textStatus, xhr);
+		console.warn("Polling Error %s for %o", textStatus, xhr);
 
 		this.fireEvent('ajaxError', [xhr, textStatus, errorThrown]);
 	},
