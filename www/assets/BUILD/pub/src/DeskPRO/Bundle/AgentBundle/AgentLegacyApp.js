@@ -92,8 +92,7 @@ class AgentLegacyApp {
     }
     window.$('#dp_loading').remove();
 
-    window.LegacyStoreProvider = new LegacyStoreProvider();
-    window.LegacyStoreProvider.init(this.store);
+    window.LegacyStoreProvider = new LegacyStoreProvider(this);
 
     const messageBroker = window.DeskPRO_Window.getMessageBroker();
     messageBroker.addMessageListener('agent.online-agents', (event) => {
@@ -132,12 +131,16 @@ class AgentLegacyApp {
     DeskproAppStore.onAgentLegacyAppReady(this.store, window, api, messageBroker);
   }
 
+  getStore() {
+    return this.store;
+  }
+
   renderPiece(piece, piecePlace, timeout = 1000) {
     if (this.rendered[piecePlace]) {
       return;
     }
 
-    const element = React.createElement(piece, { store: this.store });
+    const element = React.createElement(piece, { store: f });
     const elementPlace = piecePlace.replace(/([A-Z])/g, $1 => `_${$1.toLowerCase()}`);
     const node = document.getElementById(`react_dp${elementPlace}`);
 
@@ -214,7 +217,9 @@ class AgentLegacyApp {
   }
 
   unmountVoiceControls(node) { // eslint-disable-line
-    ReactDOM.unmountComponentAtNode(node);
+    try {
+      ReactDOM.unmountComponentAtNode(node);
+    } catch (e) {}
   }
 
   renderVoiceMessage(node, data, dateCreatedFormatted, elid) {

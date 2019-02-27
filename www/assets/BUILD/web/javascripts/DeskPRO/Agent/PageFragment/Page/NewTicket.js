@@ -200,6 +200,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 
     this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.ownObject(this.customFieldsUpload);
 
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
 			ev.preventDefault();
@@ -2235,6 +2236,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     this.openStatusMenu = null;
     this.statusMenu && this.statusMenu.remove(); // detached
     this.statusMenu = null;
+		this.statusMenuMenu && this.statusMenuMenu.remove(); // detached
+		this.statusMenu = null;
     this.statusBackdrop && this.statusBackdrop.remove(); // detached
     this.statusBackdrop = null;
 

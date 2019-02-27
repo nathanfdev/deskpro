@@ -482,6 +482,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					});
 
           this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(fieldsForm);
+					this.ownObject(this.customFieldsUpload);
           $('.File.customfield input', fieldsForm).each(function() {
             var $el = $(this);
             if (!$el.val()) {

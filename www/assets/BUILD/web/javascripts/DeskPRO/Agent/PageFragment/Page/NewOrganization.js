@@ -30,6 +30,7 @@ DeskPRO.Agent.PageFragment.Page.NewOrganization = new Orb.Class({
 		});
 		this.ownObject(this.stateSaver);
     this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.ownObject(this.customFieldsUpload);
 	},
 
 	markForReload: function() {

@@ -53,6 +53,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		}, 300);
 
 		this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.ownObject(this.customFieldsUpload);
 
 		$('.Date.customfield input', this.wrapper).each(function() {
 			$(this).datetimepicker({

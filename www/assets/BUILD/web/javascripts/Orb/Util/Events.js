@@ -6,7 +6,6 @@ Orb.Util.Events = {
 		if (!this.__events) {
 			this.__events = {};
 			this.__events_tagged = {};
-			this.__preventCleanupTagged = false;
 		}
 	},
 
@@ -148,8 +147,6 @@ Orb.Util.Events = {
 
 		this.__initEventsObj();
 
-		this.__preventCleanupTagged = true;
-
 		events.forEach(function(type) {
       var fns = self.__events[type];
       if (!fns) return;
@@ -158,14 +155,11 @@ Orb.Util.Events = {
       }
 		});
 
-		this.__preventCleanupTagged = false;
 		return this;
 	},
 
 	removeTaggedEvents: function(tag) {
 		if (!this.__events_tagged[tag]) return;
-		
-		this.__preventCleanupTagged = true;
 
 		Array.each(this.__events_tagged[tag], function (x) {
 			this.removeEvent(x[0], x[1], x[2]);
@@ -173,11 +167,11 @@ Orb.Util.Events = {
 
     this.__events_tagged[tag] = null;
     delete this.__events_tagged[tag];
-
-		this.__preventCleanupTagged = false;
 	},
 
 	destroyEvents: function() {
     this.__events && this.removeEvents(Object.keys(this.__events));
+		this.__events = {};
+		this.__events_tagged = {};
 	}
 };

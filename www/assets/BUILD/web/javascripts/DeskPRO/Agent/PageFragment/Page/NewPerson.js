@@ -144,6 +144,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
 
     this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.ownObject(this.customFieldsUpload);
 	},
 
 	markForReload: function() {

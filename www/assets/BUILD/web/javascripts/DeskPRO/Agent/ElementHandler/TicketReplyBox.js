@@ -450,6 +450,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var cc_user_rows = this.getElById('cc_user_rows');
 
         cc_row.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(cc_row);
+        this.cc_row_autoCompleteElement = cc_row.autoCompleteElement;
         this.ccRowTpl = '';
         var ccRemoveFunction = function() {
 			var row = $(this).closest('.cc-user-row');
@@ -714,7 +715,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var ed = textarea.getEditor();
 			var api = textarea.data('redactor');
 
-			var te = new DeskPRO.TextExpander({
+			this.textExpander = new DeskPRO.TextExpander({
 				textarea: ed,
 				onCombo: function(combo, ev) {
 					combo = combo.replace(/%/g, '');
@@ -1604,15 +1605,24 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			this.agentNotifyList.remove();
       this.agentNotifyList = null;
 		}
-		if (this.snippetsViewer) {
-			this.snippetsViewer.destroy();
-		}
 		if (window.DP_HAS_NEW_SNIPPETS) {
       if (self.isSnippetOpen) {
         var event = new CustomEvent('dpLeftDrawerClose');
         window.document.dispatchEvent(event);
       }
     }
+		if (this.snippetsViewer) {
+			this.snippetsViewer.destroy();
+			this.snippetsViewer = null;
+		}
+		if (this.cc_row_autoCompleteElement) {
+			this.cc_row_autoCompleteElement.destroy();
+			this.cc_row_autoCompleteElement = null;
+		}
+		if (this.textExpander) {
+			this.textExpander.destroy();
+			this.textExpander = null;
+		}
 		if (this.statusMenu) {
 			this.statusMenu.destroy();
 			this.statusMenu = null;
