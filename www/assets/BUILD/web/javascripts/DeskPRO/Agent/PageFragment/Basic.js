@@ -201,11 +201,16 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
           }
         });
       }
-      if (self.wrapper) {
-        self.wrapper.empty();
-        self.wrapper.removeData();
-        self.wrapper.off();
-        self.wrapper = null;
+      // TabBar removes wrapper when its rendered in a tab
+      if (!self.meta || !self.meta.tabId) {
+        window.setTimeout(function() {
+          if (self.wrapper) {
+            self.wrapper.empty();
+            self.wrapper.removeData();
+            self.wrapper.off();
+            self.wrapper = null;
+          }
+        }, 10000);
       }
     });
     this.addEvent('destroy', this.destroy);

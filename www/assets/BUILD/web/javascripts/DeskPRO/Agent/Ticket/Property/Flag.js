@@ -1,12 +1,10 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.Flag = new Class({
+DeskPRO.Agent.Ticket.Property.Flag = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
-	optionName: 'flag',
-
 	init: function() {
-
+		this.optionName = 'flag';
 	},
 
 	getName: function() {

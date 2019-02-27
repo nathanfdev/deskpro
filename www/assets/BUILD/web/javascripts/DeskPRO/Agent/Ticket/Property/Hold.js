@@ -1,12 +1,10 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.Hold = new Class({
+DeskPRO.Agent.Ticket.Property.Hold = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
-	optionName: 'is_hold',
-
 	init: function() {
-
+		this.optionName = 'is_hold';
 	},
 
 	getName: function() {
@@ -33,7 +31,6 @@ DeskPRO.Agent.Ticket.Property.Hold = new Class({
 		}
 	},
 
-	_formEl: null,
 	getFormEl: function() {
 		return $('input.is_hold:first', this.ticketPage.valueForm);
 	}

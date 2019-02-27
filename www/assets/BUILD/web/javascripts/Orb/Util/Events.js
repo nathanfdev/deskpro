@@ -170,7 +170,6 @@ Orb.Util.Events = {
 	},
 
 	destroyEvents: function() {
-    this.__events && this.removeEvents(Object.keys(this.__events));
 		this.__events = {};
 		this.__events_tagged = {};
 	}

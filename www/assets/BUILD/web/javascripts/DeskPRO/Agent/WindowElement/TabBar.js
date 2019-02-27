@@ -772,13 +772,21 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
         data.page.destroyEvents();
       }
 
-      if (data.wrapper) {
-        data.wrapper.remove();
-        data.wrapper = null;
+      // checks if the page wrapper still exists and is still attached
+      if (data.page.wrapper && data.page.wrapper.parent()[0]) {
+        data.page.wrapper.empty();
+        data.page.wrapper.removeData();
+        data.page.wrapper.off();
+        data.page.wrapper.remove();
+        data.page.wrapper = null;
       }
 
-      if (tab.page) {
-        tab.page = null;
+      if (data.wrapper && data.wrapper.parent()[0]) {
+        data.wrapper.empty();
+        data.wrapper.removeData();
+        data.wrapper.off();
+        data.wrapper.remove();
+        data.wrapper = null;
       }
 
       data.callback_render = null;

@@ -131,16 +131,12 @@ class AgentLegacyApp {
     DeskproAppStore.onAgentLegacyAppReady(this.store, window, api, messageBroker);
   }
 
-  getStore() {
-    return this.store;
-  }
-
   renderPiece(piece, piecePlace, timeout = 1000) {
     if (this.rendered[piecePlace]) {
       return;
     }
 
-    const element = React.createElement(piece, { store: f });
+    const element = React.createElement(piece, { store: this.store });
     const elementPlace = piecePlace.replace(/([A-Z])/g, $1 => `_${$1.toLowerCase()}`);
     const node = document.getElementById(`react_dp${elementPlace}`);
 
@@ -216,10 +212,15 @@ class AgentLegacyApp {
     this.store.dispatch(openDialpad(number));
   }
 
-  unmountVoiceControls(node) { // eslint-disable-line
+  unmountEmbeddedReactNode(node) { // eslint-disable-line
+    if (!node) {
+      return;
+    }
     try {
       ReactDOM.unmountComponentAtNode(node);
-    } catch (e) {}
+    } catch (e) {
+      console.warn(e);
+    }
   }
 
   renderVoiceMessage(node, data, dateCreatedFormatted, elid) {

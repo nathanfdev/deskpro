@@ -1,12 +1,11 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.Agent = new Class({
+DeskPRO.Agent.Ticket.Property.Agent = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
-	optionName: 'agent_id',
-
 	init: function() {
-
+		this.optionName = 'agent_id';
+		this._formEl = null;
 	},
 
 	getName: function() {
@@ -34,7 +33,6 @@ DeskPRO.Agent.Ticket.Property.Agent = new Class({
 		return this.ticketPage.getEl('agent_sel');
 	},
 
-	_formEl: null,
 	getFormEl: function() {
 		return $('input.agent_id:first', this.ticketPage.valueForm);
 	}

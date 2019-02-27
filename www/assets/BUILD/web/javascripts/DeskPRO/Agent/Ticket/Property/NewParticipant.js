@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.NewParticipant = new Class({
+DeskPRO.Agent.Ticket.Property.NewParticipant = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
 	getName: function() {

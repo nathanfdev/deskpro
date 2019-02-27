@@ -3,29 +3,24 @@ Orb.createNamespace('DeskPRO.Agent.Ticket');
 /**
  * Handles changes to a ticket.
  */
-DeskPRO.Agent.Ticket.ChangeManager = new Class({
+DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 
-	Implements: [Events],
-
-	ticketPage: null,
-	ticketId: null,
-	updateUrl: null,
-
-	mode: 'single',
-	oldValues: {},
-	changes: {},
+	Implements: [Orb.Util.Events],
 
 	/**
 	 * @param {DeskPRO.Agent.PageFragment.Page.Ticket} ticketPage
 	 */
 	initialize: function(ticketPage) {
+		this.mode = 'single';
+		this.oldValues = {};
+		this.changes = {};
+		this.propertyManagers = {};
+
 		this.ticketPage = ticketPage;
 		this.ticketId   = ticketPage.getMetaData('ticket_id');
 		this.updateUrl  = ticketPage.getMetaData('saveActionsUrl');
     this.dataholdersUrl = ticketPage.getMetaData('getDataholdersUrl');
 	},
-
-	propertyManagers: {},
 
 	getPropertyManager: function(type, type_id) {
 
@@ -150,7 +145,6 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			this.applyChangeForProperty(property, newValue);
 		}, this);
 
-		this.fireEvent('changesApplied', [{ changes: this.changes }]);
 		window.setTimeout(this.ticketPage.updateUi.bind(this.ticketPage), 450);
 	},
 
@@ -214,8 +208,6 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		var data = [];
 		this._addPropertyValueToData(data, property.getName(), property.getValue());
-
-		this.fireEvent('changesApplied', [{ changes: [property, newValue] }]);
 
 		var classname = 'saving-' + property.getName().replace('.', '_');
 		this.ticketPage.wrapper.addClass(classname);
@@ -487,6 +479,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	},
 
 	destroy: function() {
+		this.destroyEvents();
 		this.ticketPage = null;
 	}
 });

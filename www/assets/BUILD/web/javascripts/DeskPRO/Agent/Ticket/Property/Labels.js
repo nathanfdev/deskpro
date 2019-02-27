@@ -1,13 +1,12 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.Labels = new Class({
+DeskPRO.Agent.Ticket.Property.Labels = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
-
-	optionName: 'labels',
-	mode: 'add',
 
 	init: function() {
 		this.mode = this.options.mode;
+		this.optionName = 'labels';
+		this._values = null;
 	},
 
 	getName: function() {
@@ -17,8 +16,6 @@ DeskPRO.Agent.Ticket.Property.Labels = new Class({
 	getValue: function() {
 		return this._values;
 	},
-
-	_values: null,
 
 	setValue: function(values) {
 		this._values = values;

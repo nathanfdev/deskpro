@@ -1454,7 +1454,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	destroyPage: function() {
     if (this.deletedTicketMessageListener) {
-      DeskPRO_Window.getMessageBroker().removeMessageListener('tickets.deleted', this.deletedTicketMessageListener, this.pageUid);
+      DeskPRO_Window.getMessageBroker().removeMessageListener('tickets.deleted', this.deletedTicketMessageListener);
       this.deletedTicketMessageListener = null;
     }
     if (this.lockedStatusListener) {
@@ -1470,7 +1470,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     	this.reloadListener = null;
 		}
 		if (this.slaUpdatedListener) {
-      DeskPRO_Window.getMessageBroker().removeMessageListener('agent.ticket-sla-updated', this.slaUpdatedListener, this.pageUid);
+      DeskPRO_Window.getMessageBroker().removeMessageListener('agent.ticket-sla-updated', this.slaUpdatedListener);
       this.slaUpdatedListener = null;
     }
 
@@ -1521,7 +1521,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.controls) {
       this.controls = null;
       var node = document.getElementById(this.meta.baseId + '_controls_react_container');
-      window.AgentLegacyBundle.unmountVoiceControls(node);
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(node);
 		}
 		if (this.closeTicketOnFail) {
     	window.clearTimeout(this.closeTicketOnFailTimeout);
@@ -1529,7 +1529,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
     if (window.DP_HAS_FOLLOW_UP) {
-      window.AgentLegacyBundle.unmountVoiceControls(self.getEl('follow_ups_wrap')[0]);
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(self.getEl('follow_ups_wrap')[0]);
     }
 
     this.valueForm = null;

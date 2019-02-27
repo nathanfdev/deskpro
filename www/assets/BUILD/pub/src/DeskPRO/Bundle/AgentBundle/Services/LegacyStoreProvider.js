@@ -6,15 +6,15 @@ class LegacyStoreProvider {
   }
 
   getState() {
-    return this.agentLegacyApp.getStore().getState();
+    return this.agentLegacyApp.store.getState();
   }
 
   getSnippets() {
-    return allSnippetsSelector(this.agentLegacyApp.getStore().getState());
+    return allSnippetsSelector(this.agentLegacyApp.store.getState());
   }
 
   getSnippetBlobs() {
-    return allSnippetBlobsSelector(this.agentLegacyApp.getStore().getState());
+    return allSnippetBlobsSelector(this.agentLegacyApp.store.getState());
   }
 }
 export default LegacyStoreProvider;
