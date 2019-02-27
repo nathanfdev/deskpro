@@ -132,7 +132,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				$('#agent_status_menu_me_list').removeClass('dp-loading-on');
 
 				if (!is_available) {
-					Orb.arrPushUnique(self.onlineAgentIds, DESKPRO_PERSON_ID);
+					Orb.arrRemoveValue(self.onlineAgentIds, DESKPRO_PERSON_ID);
 				} else {
 					Orb.arrPushUnique(self.onlineAgentIds, DESKPRO_PERSON_ID);
 				}
