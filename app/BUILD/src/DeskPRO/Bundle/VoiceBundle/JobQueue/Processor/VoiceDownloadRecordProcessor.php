@@ -1,9 +1,10 @@
 <?php
 
-namespace Application\DeskPRO\JobQueue\Processor;
+namespace DeskPRO\Bundle\VoiceBundle\JobQueue\Processor;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
@@ -80,7 +81,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
             /** @var VoicePhoneCall $phoneCall */
             $phoneCall = $this->em->getRepository(VoicePhoneCall::class)->find($callId);
             if (!$phoneCall) {
-                throw new \Exception('Phone call not found');
+                return;
             }
 
             $blob = $this->getBlob('call_record_'.$callId, $phoneCall->getData());

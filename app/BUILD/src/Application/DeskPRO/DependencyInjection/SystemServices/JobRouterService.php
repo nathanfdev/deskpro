@@ -16,11 +16,12 @@ use Application\DeskPRO\JobQueue\Processor\OutgoingFacebookFeedProcessor;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
 use Application\DeskPRO\JobQueue\Processor\Reset\UsersImportProcessor;
 use Application\DeskPRO\JobQueue\Processor\UsersourceSyncProcessor;
-use Application\DeskPRO\JobQueue\Processor\VoiceDownloadRecordProcessor;
 use Application\DeskPRO\Sms\Detector\PersonDetector;
 use Application\DeskPRO\Sms\Detector\SmsAccountDetector;
 use Application\DeskPRO\Sms\Detector\TicketDetector;
 use Application\LegacyApiBundle\Controller\ResetHelpdeskController;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceCallCostProcessor;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceDownloadRecordProcessor;
 
 class JobRouterService
 {
@@ -91,7 +92,7 @@ class JobRouterService
 
         $router->addProcessor(new UsersImportProcessor($container));
 
-        // voice records processor
+        // voice processors
         $router->addProcessor(
             new VoiceDownloadRecordProcessor(
                 $conn,
@@ -99,6 +100,13 @@ class JobRouterService
                 $container->getBlobStorage(),
                 $container->get('serializer'),
                 $container->get('event_dispatcher')
+            )
+        );
+
+        $router->addProcessor(
+            new VoiceCallCostProcessor(
+                $conn,
+                $container->getEm()
             )
         );
 

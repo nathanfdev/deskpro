@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -22,6 +23,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceCallCostProcessor;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Plivo\XML\Response as PlivoXML;
@@ -382,14 +384,11 @@ class PlivoCallbacksController extends BaseController
             $this->get('dp.voice.provider_helper')->endConference($phoneCall);
 
             // store call price
-            $phoneCall->addCost($totalCost);
-            $phoneCall->setCostCurrency('USD');
-
-            $participant = $phoneCall->getParticipantByCallSid($callSid);
-            $participant->addCost($totalCost);
-            $participant->setCostCurrency('USD');
-
-            $this->getManager()->flush();
+            $this->get('job.queue')->addJob(new Job(VoiceCallCostProcessor::JOB_TYPE, [
+                'call_sid' => $callSid,
+                'cost'     => $totalCost,
+                'currency' => 'USD',
+            ]));
         }
 
         $plivoXml = new PlivoXML();
@@ -437,18 +436,15 @@ class PlivoCallbacksController extends BaseController
         // store call price
         $phoneCall = $this->getManager()->getRepository(VoicePhoneCall::class)->findByParticipantSid($callSid);
         if ($phoneCall instanceof VoicePhoneCall) {
-            $phoneCall->addCost($totalCost);
-            $phoneCall->setCostCurrency('USD');
-
-            $participant = $phoneCall->getParticipantByCallSid($callSid);
-            $participant->addCost($totalCost);
-            $participant->setCostCurrency('USD');
-
-            $this->getManager()->flush();
+            // store call price
+            $this->get('job.queue')->addJob(new Job(VoiceCallCostProcessor::JOB_TYPE, [
+                'call_sid' => $callSid,
+                'cost'     => $totalCost,
+                'currency' => 'USD',
+            ]));
         }
 
         $plivoXml = new PlivoXML();
-
         $response = new Response($plivoXml->toXML());
         $response->headers->set('Content-Type', 'text/xml');
 

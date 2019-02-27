@@ -4,11 +4,11 @@ namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\JobQueue;
-use Application\DeskPRO\JobQueue\Processor\VoiceDownloadRecordProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceDownloadRecordProcessor;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

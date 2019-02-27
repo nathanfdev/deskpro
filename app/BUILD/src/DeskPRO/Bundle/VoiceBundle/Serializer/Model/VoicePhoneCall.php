@@ -197,7 +197,7 @@ class VoicePhoneCall
         $this->recording          = $phoneCall->getRecording();
         $this->recordingDeleted   = $phoneCall->isRecordingDeleted();
         $this->duration           = $phoneCall->getDuration();
-        $this->cost               = number_format($phoneCall->getCost(), 3, '.', ',');
+        $this->cost               = $phoneCall->getCost() ? number_format($phoneCall->getCost(), 3, '.', ',') : null;
         $this->costCurrency       = $phoneCall->getCostCurrency();
 
         if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {
