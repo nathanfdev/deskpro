@@ -6,6 +6,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Form\StringObject;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AliasesOwner;
 use DeskPRO\Bundle\AppBundle\ObjectAlias\Comparators;
 
 abstract class CustomFieldAbstract
@@ -198,11 +199,19 @@ abstract class CustomFieldAbstract
             }
         }
 
+        $isAliasesOwner = $this->_field instanceof AliasesOwner;
+
         foreach ($removals as $alias) {
+            if ($isAliasesOwner) {
+                $this->_field->removeAlias($alias);
+            }
             $this->_em->remove($alias);
         }
 
         foreach ($additions as $alias) {
+            if ($isAliasesOwner) {
+                $this->_field->addAlias($alias);
+            }
             $this->_em->persist($alias);
         }
     }
@@ -215,7 +224,11 @@ abstract class CustomFieldAbstract
         if (is_null($alias)) {
             if (!$this->isNewField()) { // we are removing all existing aliases
                 $existingAliasList = $this->_field->getAliases();
+                $isAliasesOwner    = $this->_field instanceof AliasesOwner;
                 foreach ($existingAliasList as $existingAlias) {
+                    if ($isAliasesOwner) {
+                        $this->_field->removeAlias($existingAlias);
+                    }
                     $this->_em->remove($existingAlias);
                 }
             }
@@ -232,12 +245,20 @@ abstract class CustomFieldAbstract
                 }
             }
 
+            $isAliasesOwner = $this->_field instanceof AliasesOwner;
+
             // replace all other aliases with the new one
             foreach ($existingAliasList as $existingAlias) {
+                if ($isAliasesOwner) {
+                    $this->_field->removeAlias($existingAlias);
+                }
                 $this->_em->remove($existingAlias);
             }
         }
 
+        if ($isAliasesOwner) {
+            $this->_field->addAlias($alias);
+        }
         $this->_em->persist($alias);
     }
 
