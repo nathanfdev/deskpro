@@ -1,14 +1,12 @@
 Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
 
-DeskPRO.Agent.TicketList.Property.Labels = new Class({
+DeskPRO.Agent.TicketList.Property.Labels = new Orb.Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
 
-	optionName: 'labels',
-	displayCaption: 'Flag',
-
-	mode: 'add',
-
 	init: function() {
+		this.optionName = 'labels';
+		this.displayCaption = 'Flag';
+		this._values = null;
 		this.mode = this.options.mode;
 
 		if (this.mode == 'add') {
@@ -29,8 +27,6 @@ DeskPRO.Agent.TicketList.Property.Labels = new Class({
 	getValue: function() {
 		return this._values;
 	},
-
-	_values: null,
 
 	setValue: function(values) {
 		this._values = values;

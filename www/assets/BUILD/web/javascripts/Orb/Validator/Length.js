@@ -1,6 +1,6 @@
 Orb.createNamespace('Orb.Validator');
 
-Orb.Validator.Length = new Class({
+Orb.Validator.Length = new Orb.Class({
 	Extends: Orb.Validator.AbstractValidator,
 	
 	_setDefaultOptions: function() {

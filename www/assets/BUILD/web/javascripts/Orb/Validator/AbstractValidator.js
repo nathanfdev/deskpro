@@ -3,21 +3,11 @@ Orb.createNamespace('Orb.Validator');
 /**
  * Validator validates some value
  */
-Orb.Validator.AbstractValidator = new Class({
-	Implements: Options,
-	
-	/**
-	 * An array of error codes
-	 * @var {Array}
-	 */
-	errors: [],
-	
-	/**
-	 * @var {Object}
-	 */
-	options: {},
+Orb.Validator.AbstractValidator = new Orb.Class({
+	Implements: [Orb.Util.Options],
 	
 	initialize: function(options) {
+		this.errors = [];
 		this._setDefaultOptions();
 		this.setOptions(options);
 		this._init();

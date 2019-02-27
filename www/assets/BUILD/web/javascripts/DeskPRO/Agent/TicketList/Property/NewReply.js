@@ -3,10 +3,12 @@ Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
 /**
  * New reply area
  */
-DeskPRO.Agent.TicketList.Property.NewReply = new Class({
+DeskPRO.Agent.TicketList.Property.NewReply = new Orb.Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
 
-	displayCaption: 'Reply',
+	init() {
+		this.displayCaption = 'Reply';
+	},
 
 	getName: function() {
 		return 'new_reply';
@@ -32,7 +34,6 @@ DeskPRO.Agent.TicketList.Property.NewReply = new Class({
 	},
 
 	_getInterfaceElement: function() {
-		el = this.getSublineElement();
-		return el;
+		return this.getSublineElement();
 	}
 });

@@ -5,48 +5,26 @@ Orb.createNamespace('DeskPRO.Form');
  * @option {String} editableClass The class that denotes an editable thing
  * @option {Object} ajax The AJAX options to pass to jQuery.ajax. Only the ajax.url item is required.
  */
-DeskPRO.Form.InlineEdit = new Class({
-	Implements: Options,
-
-	/**
-	 * Hash of options
-	 * @var {Object}
-	 */
-	options: {
-		baseElement: window.document,
-		editableClass: 'editable',
-		triggers: null,
-		ajax: {
-			timeout: 20000,
-			type: 'POST',
-			url: ''
-		},
-		saveFinishCallback: function() { }
-	},
-
-	/**
-	 * An array of 'editinfo's that are currently open
-	 * @var {Array}
-	 */
-	activeEdits: [],
-
-	/**
-	 * ajax_id=>editinfo of changes that are currenly being sent via ajax
-	 * @var {Object}
-	 */
-	sendingEdits: {},
-
-	/**
-	 * If a document click should send open edits. This is used
-	 * with the double-click. Also controls if the Escape key cancels.
-	 * @var {Boolean}
-	 */
-	documentClickSubmitOn: false,
-
-
+DeskPRO.Form.InlineEdit = new Orb.Class({
+	Implements: [Orb.Util.Options],
 
 	initialize: function (options) {
 
+		this.activeEdits = [];
+		this.sendingEdits = {};
+		this.documentClickSubmitOn = false;
+
+		this.options = {
+			baseElement: window.document,
+				editableClass: 'editable',
+				triggers: null,
+				ajax: {
+				timeout: 20000,
+					type: 'POST',
+					url: ''
+			},
+			saveFinishCallback: function() { }
+		};
 		this.setOptions(options);
 
 		this.options.baseElement = $(this.options.baseElement);
@@ -61,7 +39,7 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		$(document).on('keydown', function(ev) {
 			// Escape key
-			if (ev.keyCode == 27) {
+			if (ev.keyCode === 27) {
 				self.closeEditables();
 			}
 		});

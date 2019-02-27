@@ -5,21 +5,17 @@ Orb.createNamespace('DeskPRO.Agent.TicketList');
  * except we work with many tickets at a time, and we only care about updating the UI and not about
  * getting current values.
  */
-DeskPRO.Agent.TicketList.ChangeManager = new Class({
+DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 
-	Implements: [Events],
-
-	ticketPage: null,
-
-	hasChanges: false,
-	changes: {}, // changes are { ticketId: [ [property, newValue, hasApplied] ] }
-
-	ticketIdsBatch: null,
+	Implements: [Orb.Util.Events],
 
 	/**
 	 * @param {DeskPRO.Agent.PageFragment.Page.BasicTicketResults} ticketPage
 	 */
 	initialize: function(ticketPage) {
+		this.hasChanges = false;
+		this.changes = {};
+		this.ticketIdsBatch = null;
 		this.ticketPage = ticketPage;
 	},
 
