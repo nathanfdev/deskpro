@@ -1008,7 +1008,7 @@ user.emails.ticket_flood: 'Yardım masamıza eposta gönderdiniz.<br /><br />Oto
 user.emails.ticket_message_title: '{{date}} - {{time}}, {{author}} yazdı:'
 user.emails.ticket_no-autoresponse: 'Uyarı: Onaylama epostası kapatıldı'
 user.emails.ticket_rate-negative: Hayır
-user.emails.ticket_rate-neutral: Bitmiştir
+user.emails.ticket_rate-neutral: Sorunsuzdu
 user.emails.ticket_rate-positive: Evet
 user.emails.ticket_rate-question: 'Bu mesaj yardımcı oldu mu?'
 user.emails.ticket_rate-request: 'How would you rate the support you received on your ticket "{{ticket.subject}}"?'
