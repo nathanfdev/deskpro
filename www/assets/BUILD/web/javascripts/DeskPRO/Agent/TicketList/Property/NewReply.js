@@ -6,7 +6,7 @@ Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
 DeskPRO.Agent.TicketList.Property.NewReply = new Orb.Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
 
-	init() {
+	init: function() {
 		this.displayCaption = 'Reply';
 	},
 
