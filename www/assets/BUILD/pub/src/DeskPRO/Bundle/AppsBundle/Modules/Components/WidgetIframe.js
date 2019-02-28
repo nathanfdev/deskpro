@@ -10,7 +10,12 @@ class WidgetIframe extends React.PureComponent {
     onWindowReady: PropTypes.func
   };
 
-  onWindowReady = (iframe) => {
+  constructor(props) {
+    super(props);
+    this.iframeRef = React.createRef();
+  }
+
+  onWindowReady(iframe) {
     if (iframe) {
       this.props.onWindowReady(iframe.contentWindow);
     } else {
@@ -18,11 +23,15 @@ class WidgetIframe extends React.PureComponent {
     }
   };
 
+  componentDidMount() {
+    this.onWindowReady(this.iframeRef.current);
+  }
+
   render()  {
     return (
       <div id={this.props.id} className={this.props.isFullscreen ? 'apps-window apps-window--is-fullscreen dp-AppPanel' : 'apps-window'}>
         <iframe
-          ref={this.onWindowReady}
+          ref={this.iframeRef}
           scrolling={'no'}
           frameBorder={'0'}
           src={this.props.url}

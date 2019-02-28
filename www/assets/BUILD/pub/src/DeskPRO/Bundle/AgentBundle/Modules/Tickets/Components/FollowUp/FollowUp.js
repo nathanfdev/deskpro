@@ -32,15 +32,21 @@ export class FollowUpContainer extends React.Component {
     this.loadFollowUps();
   }
 
-  componentWillMount = () => {
-    window.document.addEventListener('dpFollowUpUpdate', (e) => {
-      if (e.detail.ticketId === this.props.ticketId) {
-        this.loadFollowUps();
-      }
-    });
+  dpFollowUpUpdate = (e) => {
+    if (e.detail.ticketId === this.props.ticketId) {
+      this.loadFollowUps();
+    }
   };
 
-  loadFollowUps = () => {
+  componentWillMount() {
+    window.document.addEventListener('dpFollowUpUpdate', this.dpFollowUpUpdate);
+  };
+
+  componentWillUnmount() {
+    window.document.removeEventListener('dpFollowUpUpdate', this.dpFollowUpUpdate);
+  }
+
+  loadFollowUps() {
     this.props.dispatch(followUpActions.loadFollowUps(this.props.ticketId))
       .then((res) => {
         const followUps = Immutable.fromJS(res.data);

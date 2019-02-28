@@ -191,7 +191,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 
 			agent_sel.on('change', function() {
 				var val = $(this).val();
-				var label = $(this).find(':selected').text().trim();
+				var label = $.trim($(this).find(':selected').text());
 
 				if (!val) {
 					val = '';
@@ -208,7 +208,7 @@ DeskPRO.Agent.PageFragment.Page.NewTask = new Orb.Class({
 			visibility_sel.val(1);
 			visibility_sel.on('change', function() {
 				var val = $(this).val();
-				var label = $(this).find(':selected').text().trim();
+				var label = $.trim($(this).find(':selected').text());
 
 				if (!val) {
 					val = '';

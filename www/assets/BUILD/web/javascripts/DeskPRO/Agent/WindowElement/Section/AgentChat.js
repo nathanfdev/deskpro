@@ -62,7 +62,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			$('#agent_chat_online_icons').find('li').not('.agent-me').hide();
 			self.onlineCountEl.html('0');
 
-			Array.each(info.online_agents, function(agent_id) {
+			info.online_agents.forEach(function(agent_id) {
 				self.addOnlineAgent(agent_id);
 			});
 
@@ -133,7 +133,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			ev.stopPropagation();
 			var agentIds = $(this).data('member-ids') || '';
 			agentIds = (agentIds+"").split(',');
-			agentIds.include(window.DESKPRO_PERSON_ID);
+			Orb.arrPushUnique(agentIds, window.DESKPRO_PERSON_ID);
 			agentIds = agentIds.filter(function(x) {
 				if (x) return true;
 			});
@@ -147,7 +147,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			ev.stopPropagation();
 			var agentIds = $(this).data('member-ids') || '';
 			agentIds = (agentIds+"").split(',');
-			agentIds.include(window.DESKPRO_PERSON_ID);
+			Orb.arrPushUnique(agentIds, window.DESKPRO_PERSON_ID);
 			agentIds = agentIds.filter(function(x) {
 				if (x) return true;
 			});
@@ -287,7 +287,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var origLi = $('.agent-' + agent_id, this.offlineListEl);
 
 		if (!origLi.length) {
-			DP.console.log('No agent element for %i', agent_id);
+			console.log('No agent element for %i', agent_id);
 			return;
 		}
 

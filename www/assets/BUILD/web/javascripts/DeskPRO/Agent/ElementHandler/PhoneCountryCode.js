@@ -24,10 +24,10 @@ DeskPRO.Agent.ElementHandler.PhoneCountryCode = new Orb.Class({
 				return;
 			}
 
-			var val = countryCodeSel.val().trim();
+			var val = $.trim(countryCodeSel.val());
 			var cc = null;
 			if (val) {
-				Array.each(options, function(opt) {
+				options.forEach(function(opt) {
 					if ((opt.value+'') == (val+'')) {
 						cc = opt.country_code;
 					}
@@ -46,14 +46,14 @@ DeskPRO.Agent.ElementHandler.PhoneCountryCode = new Orb.Class({
 		countryCodeSel.autocomplete({
 			minLength: 0,
 			source: function(req, callback) {
-				var term = req.term.trim();
+				var term = $.trim(req.term);
 
 				if (term === '') {
 					return options;
 				}
 
 				var ret = [];
-				Array.each(options, function(opt) {
+				options.forEach(function(opt) {
 					if ((opt.value+'').indexOf(term) === 0) {
 						ret.push(opt);
 					}

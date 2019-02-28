@@ -337,7 +337,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 						if (self.hasInitialGroupingLoaded && $(this).val()) {
 							var countEl = filterEl.find('.counter').first();
 
-							if (parseInt(countEl.text().trim()) == 0) {
+							if (parseInt($.trim(countEl.text())) === 0) {
 								var noteEl = filterEl.find('.none-yet');
 								noteEl.show();
 								window.setTimeout(function() {
@@ -479,10 +479,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getPoller().addData(
 			function() {
 				var filters_data_counts = {};
-				Object.each(self.filterTicketIds, function(v, k) {
+				Object.entries(self.filterTicketIds).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 					filters_data_counts[k] = v.length;
 				});
-				Object.each(self.filterCounts, function(v, k) {
+				Object.entries(self.filterCounts).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 					if (!filters_data_counts[k]) {
 						filters_data_counts[k] = v;
 					}
@@ -731,13 +731,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		// The message only contains a list when the counts are off
 		// So unchanged filters dont send a large payload
-		Object.each(this.filterTicketIds, function(v, k) {
+		Object.entries(this.filterTicketIds).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 			if (!data[k]) {
 				data[k] = v;
 			}
 		});
 
-		Object.each(data, function(ticketIds, filterId) {
+		Object.entries(data).forEach(function(_vk) { var filterId = _vk[0], ticketIds = _vk[1];
 			filterId = parseInt(filterId);
 
 			var oldCount = 0;
@@ -761,7 +761,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		}, this);
 
-		Object.each(datacounts, function(count, filterId) {
+		Object.entries(datacounts).forEach(function(_vk) { var filterId = _vk[0], count = _vk[1];
 			filterId = parseInt(filterId);
 
 			var oldCount = 0;
@@ -805,7 +805,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			if (!hasIds || this.archiveFilterIds.indexOf(filterId) != -1) {
 				this.modFilterCount(filterId, 'add');
 			} else {
-				this.filterTicketIds[filterId].include(ticketId);
+				Orb.arrPushUnique(this.filterTicketIds[filterId], ticketId);
 
 				var count = this.filterTicketIds[filterId].length;
 				this.setFilterCount(filterId, count);
@@ -821,7 +821,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			if (!hasIds || this.archiveFilterIds.indexOf(filterId) != -1) {
 				this.modFilterCount(filterId, 'del');
 			} else {
-				this.filterTicketIds[filterId].erase(ticketId);
+				Orb.arrRemoveValue(this.filterTicketIds[filterId], ticketId);
 
 				var count = this.filterTicketIds[filterId].length;
 				this.setFilterCount(filterId, count);
@@ -840,7 +840,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 	refreshFilterGrouping: function(filterIds) {
 		if (filterIds && filterIds.length) {
-			Array.each(filterIds, function(i) {
+			filterIds.forEach(function(i) {
 				this.queueRefreshFilterGrouping.push(parseInt(i));
 			}, this);
 
@@ -859,7 +859,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		filterIds = filterIds || [];
 
 		if (this.queueRefreshFilterGrouping.length) {
-			Array.each(this.queueRefreshFilterGrouping, function(i) {
+			this.queueRefreshFilterGrouping.forEach(function(i) {
 				filterIds.push(i);
 			});
 		}
@@ -872,9 +872,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		if (this.runningRefreshFilterGrouping && this.runningRefreshFilterGrouping.length) {
 			var setFilterIds = [];
-			Array.each(filterIds, function(filterId) {
+			filterIds.forEach(function(filterId) {
 				if (this.runningRefreshFilterGrouping.indexOf(filterId) !== -1) {
-					this.rerunRefreshFilterGrouping.include(filterId);
+					Orb.arrPushUnique(this.rerunRefreshFilterGrouping, filterId);
 				} else {
 					setFilterIds.push(filterId);
 				}
@@ -886,7 +886,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		}
 
-		Array.each(filterIds, function(filterId) {
+		filterIds.forEach(function(filterId) {
 			filterId = parseInt(filterId);
 			var filterEl = $('li.filter-' + filterId, this.sectionEl);
 			els.push(filterEl.get(0));
@@ -944,7 +944,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				countEls.removeClass('loading');
 			},
 			success: function(batches) {
-				Object.each(batches, function(html,filterId) {
+				Object.entries(batches).forEach(function(_vk) { var filterId = _vk[0], html = _vk[1];
 
 					var filterEl = $('.filter-' + filterId, this.sectionEl);
 					var name = filterEl.data('filter-name');
@@ -1038,7 +1038,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			subgroupEl.hide();
 		}
 
-		this.changedFilterGrouping.erase(parseInt(filterId));
+		Orb.arrRemoveValue(this.changedFilterGrouping, parseInt(filterId));
 
 		if ($(this).data('grouping-option') != '') {
 			li.find('.item-form').hide();
@@ -1069,10 +1069,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				selectedIndex = i;
 			}
 
-			var val1 = parseInt($(this).text().trim());
-			var val2 = parseInt(other.text().trim());
+			var val1 = parseInt($.trim($(this).text()));
+			var val2 = parseInt($.trim(other.text()));
 
-			if (val1 != val2) {
+			if (val1 !== val2) {
 				$('.list-counter', $(this).parent().parent()).each(function() {
 					els.push(this);
 				});
@@ -1180,7 +1180,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 			var closeFn = function() {
 
-				var newTitle = inputEl.val().trim();
+				var newTitle = $.trim(inputEl.val());
 				if (newTitle.length) {
 					$.ajax({
 						type: 'POST',
@@ -1204,11 +1204,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			backdrop.appendTo('body');
 			backdrop.on('click', closeFn);
 
-			inputEl.val(labelEl.text().trim());
+			inputEl.val(labelEl.text());
 
 			labelEl.hide();
 			inputEl.show();
-			inputEl.focus().val(labelEl.text().trim()).focus();
+			inputEl.focus().val(labelEl.text()).focus();
 		});
 	},
 
@@ -1216,7 +1216,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		$('ol#ticket_flagged_list span.list-counter').html('0');
 
-		Object.each(counts, (function (count, flag) {
+		Object.entries(counts).forEach((function (_vk) {
+			var flag = _vk[0], count = _vk[1];
 			this.updateFlagCountFor(flag, count);
 		}).bind(this));
 	},
@@ -1291,7 +1292,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		header.data('sla-filter', data.sla_filter);
 		this.updateSlaDescription();
 
-		Object.each(data.counts, function (counts, sla_id) {
+		Object.entries(data.counts).forEach(function(_vk) { var sla_id = _vk[0], counts = _vk[1];
 			this.setSlaCounts(sla_id, counts.ok, counts.warning, counts.fail);
 		}, this);
 	},

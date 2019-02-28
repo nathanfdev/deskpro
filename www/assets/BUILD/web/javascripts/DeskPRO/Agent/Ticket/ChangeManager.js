@@ -3,29 +3,24 @@ Orb.createNamespace('DeskPRO.Agent.Ticket');
 /**
  * Handles changes to a ticket.
  */
-DeskPRO.Agent.Ticket.ChangeManager = new Class({
+DeskPRO.Agent.Ticket.ChangeManager = new Orb.Class({
 
-	Implements: [Events],
-
-	ticketPage: null,
-	ticketId: null,
-	updateUrl: null,
-
-	mode: 'single',
-	oldValues: {},
-	changes: {},
+	Implements: [Orb.Util.Events],
 
 	/**
 	 * @param {DeskPRO.Agent.PageFragment.Page.Ticket} ticketPage
 	 */
 	initialize: function(ticketPage) {
+		this.mode = 'single';
+		this.oldValues = {};
+		this.changes = {};
+		this.propertyManagers = {};
+
 		this.ticketPage = ticketPage;
 		this.ticketId   = ticketPage.getMetaData('ticket_id');
 		this.updateUrl  = ticketPage.getMetaData('saveActionsUrl');
     this.dataholdersUrl = ticketPage.getMetaData('getDataholdersUrl');
 	},
-
-	propertyManagers: {},
 
 	getPropertyManager: function(type, type_id) {
 
@@ -97,7 +92,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 
 	hasChanges: function() {
-		if (Object.getLength(this.changes)) {
+		if (Object.keys(this.changes).length) {
 			return true;
 		}
 
@@ -143,14 +138,13 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 */
 	applyChanges: function() {
 
-		Object.each(this.changes, function (change) {
+		Object.values(this.changes).forEach(function(change) {
 			var property = change[0];
 			var newValue = change[1];
 
 			this.applyChangeForProperty(property, newValue);
 		}, this);
 
-		this.fireEvent('changesApplied', [{ changes: this.changes }]);
 		window.setTimeout(this.ticketPage.updateUi.bind(this.ticketPage), 450);
 	},
 
@@ -174,7 +168,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 * Revert all queuued changes in the interface to their previuos values
 	 */
 	revertChanges: function() {
-		Object.each(this.changes, function (change) {
+		Object.values(this.changes).forEach(function(change) {
 			var property = change[0];
 			var name = property.getName();
 
@@ -215,14 +209,12 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		var data = [];
 		this._addPropertyValueToData(data, property.getName(), property.getValue());
 
-		this.fireEvent('changesApplied', [{ changes: [property, newValue] }]);
-
 		var classname = 'saving-' + property.getName().replace('.', '_');
 		this.ticketPage.wrapper.addClass(classname);
 
-		(function() {
+		Orb.fnDelay(function() {
 			this.ticketPage.wrapper.removeClass(classname);
-		}).delay(650, this);
+		}, 650, this);
 
 		var self = this;
 
@@ -239,7 +231,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 						property.setValue(oldVal);
 
 						var list = self.ticketPage.getEl('field_errors').find('ul').empty();
-						Array.each(data.error_messages, function(msg) {
+						data.error_messages.forEach(function(msg) {
 							var li = $('<li/>');
 							li.text(msg);
 							li.appendTo(list);
@@ -261,9 +253,9 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 						var list = $('<ul />');
 						list.appendTo(div);
 
-						Array.each(data.data.perm_errors, function(err) {
+						data.data.perm_errors.forEach(function(err) {
 							var li = $('<li/>');
-							li.text(err.capitalize());
+							li.text(err);
 							li.appendTo(list);
 						});
 
@@ -297,7 +289,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		var saveReply = false;
 
-		Object.each(this.changes, function (change) {
+		Object.values(this.changes).forEach(function(change) {
 			var property = change[0];
 			var name = property.getName();
 
@@ -321,12 +313,12 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		this.mode = 'single';
 
-		(function() {
+		Orb.fnDelay(function() {
 			var classname = '';
 			while (classname = saving_classes.pop()) {
 				this.ticketPage.wrapper.removeClass(classname);
 			}
-		}).delay(650, this);
+		}, 650, this);
 
 		var self = this;
 
@@ -345,7 +337,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 					if (data.error_messages) {
 						var list = self.ticketPage.getEl('field_errors').find('ul').empty();
-						Array.each(data.error_messages, function(msg) {
+						data.error_messages.forEach(function(msg) {
 							var li = $('<li/>');
 							li.text(msg);
 							li.appendTo(list);
@@ -366,7 +358,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 					this.oldValues = {};
 
 					if (data && data.properties) {
-						Object.each(data, function (returnValue, type) {
+						Object.entries(data).forEach(function(_vk) { var type = _vk[0], returnValue = _vk[1];
 							var property = this.getPropertyManager(type);
 							property.setIncomingValue(returnValue);
 						}, this);
@@ -383,7 +375,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 						var list = $('<ul />');
 						list.appendTo(div);
 
-						Array.each(data.data.perm_errors, function(err) {
+						data.data.perm_errors.forEach(function(err) {
 							var li = $('<li/>');
 							li.text(err.capitalize());
 							li.appendTo(list);
@@ -410,20 +402,20 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	_addPropertyValueToData: function(data, name, propertyValue) {
 
 		// An array of items
-		if (typeOf(propertyValue) == 'array') {
+		if (Orb.typeOf(propertyValue) == 'array') {
 			for (var x = 0; x < propertyValue.length; x++) {
 				var val = propertyValue[x];
 
 				// Specific name means its taking care of the actions[] array prefix itself,
 				// used when theres a composite field like status/hidden_status
-				if (typeOf(val) == 'object' && val.full_name !== undefined) {
+				if (Orb.typeOf(val) == 'object' && val.full_name !== undefined) {
 					data.push({
 						name: val.full_name,
 						value: val.value
 					});
 
 				// Looks like its already a k:v like from serializeArray
-				} else if (typeOf(val) == 'object' && val.name !== undefined) {
+				} else if (Orb.typeOf(val) == 'object' && val.name !== undefined) {
 					data.push({
 						name: 'actions['+name+']['+val.name+']',
 						value: val.value
@@ -439,8 +431,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			}
 
 		// A k:v pair of items
-		} else if (typeOf(propertyValue) == 'object') {
-			Object.each(propertyValue, function(v, k) {
+		} else if (Orb.typeOf(propertyValue) == 'object') {
+			Object.entries(propertyValue).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				data.push({
 					name: 'actions['+name+']['+k+']',
 					value: v
@@ -478,7 +470,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 * Called when we detect if a value was updated automatically from somewhere.
 	 */
 	setPropertyUpdated: function(property, newValue) {
-		if (typeOf(property) == 'string') {
+		if (Orb.typeOf(property) == 'string') {
 			property = this.getPropertyManager(property);
 		}
 
@@ -487,6 +479,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	},
 
 	destroy: function() {
+		this.destroyEvents();
 		this.ticketPage = null;
 	}
 });

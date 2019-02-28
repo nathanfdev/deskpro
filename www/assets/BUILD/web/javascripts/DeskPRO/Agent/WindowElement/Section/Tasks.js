@@ -35,7 +35,7 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 	refresh: function() {
 		var countmap = {};
 		$('span.list-counter', this.contentEl).each(function() {
-			countmap[$(this).attr('id')] = $(this).text().trim();
+			countmap[$(this).attr('id')] = $.trim($(this).text());
 		});
 
 		var selected = $('.nav-selected', this.contentEl);
@@ -54,7 +54,7 @@ DeskPRO.Agent.WindowElement.Section.Tasks = new Orb.Class({
 
 			if (selectedCountId) {
 				var countEl = $('#' + selectedCountId);
-				var newCount = countEl.text().trim();
+				var newCount = $.trim(countEl.text());
 				var nav = countEl.closest('.is-nav-item');
 
 				// Re-select the proper nav item

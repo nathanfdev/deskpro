@@ -47,7 +47,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 			insertPosition = false;
 		}
 
-		Array.each(DeskPRO_Window.getTabWatcher().findTabType(this.options.tabType), function(tab) {
+		DeskPRO_Window.getTabWatcher().findTabType(this.options.tabType).forEach(function(tab) {
 			var id = tab.page.getMetaData(self.options.metaIdName);
 			if (id && id != self.options.metaId) {
 				var li = $('<li />').addClass('tab-reference').data('merge-id', id).text(tab.title);
@@ -267,7 +267,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 			success: function(data) {
 				if (data.success) {
 					// remove old tabs, theyre outdated
-					Array.each(DeskPRO_Window.getTabWatcher().findTabType(self.options.tabType), function(tab) {
+					DeskPRO_Window.getTabWatcher().findTabType(self.options.tabType).forEach(function(tab) {
 						var id = tab.page.getMetaData(self.options.metaIdName);
 						if (id == data.old_id || id == data.id) {
 							DeskPRO_Window.TabBar.removeTabById(tab.id);

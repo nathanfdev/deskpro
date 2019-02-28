@@ -61,7 +61,7 @@ DeskPRO.Agent.ElementHandler.FeedbackSearchBox = new Orb.Class({
 				var current = $('li.on', self.resultsList);
 				if (current.length) {
 					var feedbackId = current.data('feedback-id');
-					var title  = $('.feedback-title', current).text().trim();
+					var title  = $.trim($('.feedback-title', current).text());
 
 					self.termInput.val(title);
 
@@ -127,7 +127,7 @@ DeskPRO.Agent.ElementHandler.FeedbackSearchBox = new Orb.Class({
 			if (self.exclude.indexOf(feedbackId) > -1) {
 				return;
 			}
-			var title = $('.feedback-title', this).text().trim();
+			var title = $.trim($('.feedback-title', this).text());
       self.termInput.val(title);
 
 			self.el.trigger('feedbacksearchboxclick', [feedbackId, title, self]);
@@ -145,7 +145,7 @@ DeskPRO.Agent.ElementHandler.FeedbackSearchBox = new Orb.Class({
 				this.boundEl = $(boundDesc);
 			} else if (boundDesc == '@self') {
 				this.boundEl = this.el;
-			} else if (boundDesc.test(/^@parent\((.*?)\)$/)) {
+			} else if (boundDesc.match(/^@parent\((.*?)\)$/)) {
 				var sel = boundDesc.match(/^@parent\((.*?)\)$/)[1];
 				this.boundEl = this.el.closest(sel);
 			} else {
@@ -154,7 +154,7 @@ DeskPRO.Agent.ElementHandler.FeedbackSearchBox = new Orb.Class({
 		}
 
 		if (!this.boundEl || !this.boundEl.length) {
-			DP.console.warn('Could not find position-bound element %s on %o', this.el.data('position-bound'), this);
+			console.warn('Could not find position-bound element %s on %o', this.el.data('position-bound'), this);
 		}
 
 		this.resultsBox.detach().hide().appendTo('body');
@@ -196,7 +196,7 @@ DeskPRO.Agent.ElementHandler.FeedbackSearchBox = new Orb.Class({
 	 * @return {String}
 	 */
 	getTerm: function() {
-		return this.termInput.val().trim();
+		return $.trim(this.termInput.val());
 	},
 
 
@@ -230,7 +230,7 @@ DeskPRO.Agent.ElementHandler.FeedbackSearchBox = new Orb.Class({
 				var currentFeedbackId = parseInt($('li.on', this.resultsList).data('feedback-id')) || 0;
 				this.resultsList.empty();
 
-				Array.each(data, function(feedback) {
+				data.forEach(function(feedback) {
 					var row = $(this.tplHtml);
 
 					row.data('feedback-id', feedback.id);

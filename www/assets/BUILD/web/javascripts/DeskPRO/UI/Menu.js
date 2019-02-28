@@ -134,7 +134,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 				this.addEvent('itemClicked', function(ev) {
 					var itemEl = $(ev.itemEl);
-					var text = itemEl.text().trim();
+					var text = $.trim(itemEl.text());
 					if (!text.length) text = self.options.noValText || 'Choose...';
 					else {
 						var prefix = $(ev.itemEl).data('prefix');
@@ -158,7 +158,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 			if (spanEl) {
 				this.origMenuElement.on('change', function() {
 					var opt = $('option:selected', this);
-					var text = opt.text().trim();
+					var text = $.trim(opt.text());
 					if (!text.length) text = self.options.noValText || 'Choose...';
 					else {
 						var prefix = $(this).data('prefix');
@@ -236,7 +236,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		// Close all other instances (only matters for parent instances)
 		if (!this.parentMenu) {
-			Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup], function(v, k) {
+			Object.entries(DeskPRO.UI.Menu_Instances[this.options.objectGroup]).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				if (!v) return;
 				if (v.isMenuOpen()) {
 					v.closeMenu();
@@ -862,7 +862,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = null;
 
-		Array.each(this.subMenus, function(menuInfo) {
+		this.subMenus.forEach(function(menuInfo) {
 			if (!menuInfo.OBJ_DESTROYED) {
 				menuInfo.destroy();
 			}

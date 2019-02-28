@@ -59,7 +59,7 @@
       $('#do_send_lost').on('submit', function(ev) {
         ev.preventDefault();
 
-        var email = $('#lost_email').val().trim();
+        var email = $.trim($('#lost_email').val());
         var postData = $('#lost_form').find('input').serializeArray();
 
         if (!email || email.indexOf('@') === -1) {

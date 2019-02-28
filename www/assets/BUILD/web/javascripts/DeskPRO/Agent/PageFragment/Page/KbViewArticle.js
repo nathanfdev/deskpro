@@ -22,6 +22,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		var self = this;
 		this.wrapper = el;
 		this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.ownObject(this.customFieldsUpload);
 		setTimeout(this.deferredInit.bind(this), 0);
 	},
 
@@ -540,7 +541,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		}
 
 		this._labelsData = this.labelsInput.getFormData();
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		this._saveLabelsTimeout = Orb.fnDelay(this._doSaveLabels, 2000, this);
 	},
 
 	_doSaveLabels: function() {
@@ -601,7 +602,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			menuElement: $('.end-action-menu', optWrap),
 			onItemClicked: function(info) {
 				var val = $(info.itemEl).data('action');
-				var label = $(info.itemEl).text().trim();
+				var label = $.trim($(info.itemEl).text());
 
 				endOpt.data('val', val);
 				endOpt.text(label);

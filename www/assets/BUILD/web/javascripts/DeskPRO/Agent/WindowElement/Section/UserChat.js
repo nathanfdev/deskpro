@@ -132,9 +132,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				$('#agent_status_menu_me_list').removeClass('dp-loading-on');
 
 				if (!is_available) {
-					self.onlineAgentIds.erase(DESKPRO_PERSON_ID);
+					Orb.arrRemoveValue(self.onlineAgentIds, DESKPRO_PERSON_ID);
 				} else {
-					self.onlineAgentIds.include(DESKPRO_PERSON_ID);
+					Orb.arrPushUnique(self.onlineAgentIds, DESKPRO_PERSON_ID);
 				}
 
 				self.refreshOnlineAgentsList();
@@ -170,9 +170,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		// message and we all sync our status properly
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.user-chat-status', function(info) {
 			if (info.is_online) {
-				self.onlineAgentIds.include(DESKPRO_PERSON_ID);
+				Orb.arrPushUnique(self.onlineAgentIds, DESKPRO_PERSON_ID);
 			} else {
-				self.onlineAgentIds.erase(DESKPRO_PERSON_ID);
+				Orb.arrRemoveValue(self.onlineAgentIds, DESKPRO_PERSON_ID);
 			}
 		});
 
@@ -194,7 +194,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			self.onlineAgentIds = [];
 
 			if (info.online_agents && info.online_agents.length) {
-				Array.each(info.online_agents, function(agent_id) {
+				info.online_agents.forEach(function(agent_id) {
 					self.onlineAgentIds.push(parseInt(agent_id));
 				});
 			}
@@ -264,7 +264,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		var hasme = false;
 		list.find('li').hide().removeClass('on last');
 
-		Array.each(this.onlineAgentIds, function(agent_id) {
+		this.onlineAgentIds.forEach(function(agent_id) {
 			if (parseInt(agent_id) === DESKPRO_PERSON_ID) {
 				hasme = true;
 			}
@@ -310,7 +310,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this.onlineAgentsListGrouped.find('li.dep').hide();
 		this.onlineAgentsListGrouped.find('ul').empty();
 
-		Array.each(this.onlineAgentIds, function(agentId) {
+		this.onlineAgentIds.forEach(function(agentId) {
 			var li = this.onlineAgentsList.find('li.agent-' + agentId);
 			var depIds = (li.data('department-ids') || '') + '';
 			depIds = depIds.split(',');
@@ -515,7 +515,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	isChatOpen: function(convoId) {
 		var chatTabs = DeskPRO_Window.getTabWatcher().findTabType('userchat');
 		var isOpen = false;
-		Array.each(chatTabs, function(tab) {
+		chatTabs.forEach(function(tab) {
 			if (parseInt(tab.page.meta.conversation_id) == parseInt(convoId)) {
 				isOpen = tab;
 				return false;
@@ -590,7 +590,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handlePartsUpdated: function(data) {
 		DeskPRO_Window.getMessageBroker().sendMessage('chat_user_agent.chat-parts-updated-' + data.conversation_id, data);
 
-		if (data && data.participant_ids && data.participant_ids.contains(DESKPRO_PERSON_ID)) {
+		if (data && data.participant_ids && data.participant_ids.indexOf(DESKPRO_PERSON_ID) !== -1) {
 			if (!this.isChatOpen(data.conversation_id)) {
 				DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
 			}
@@ -777,7 +777,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		this.refreshOpenCounts();
 
-		if (!this.onlineAgentIds.contains(DESKPRO_PERSON_ID)) {
+		if (this.onlineAgentIds.indexOf(DESKPRO_PERSON_ID) !== -1) {
 			return;
 		}
 
@@ -788,7 +788,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		// but the user came back
 		var chatTabs = DeskPRO_Window.getTabWatcher().findTabType('userchat');
 		var found = false;
-		Array.each(chatTabs, function(t) {
+		chatTabs.forEach(function(t) {
 			if (t.meta && t.meta.conversation_id && parseInt(t.meta.conversation_id) == parseInt(conversation_id)) {
 				found = t;
 				return false;
@@ -933,7 +933,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	getNewChatTitles: function() {
 		var titles = [];
 		$('body > section.new-user-chat-alert').each(function() {
-			titles.push($(this).find('span.label-by-name').text().trim());
+			titles.push($(this).find('span.label-by-name').text());
 		});
 
 		return titles;

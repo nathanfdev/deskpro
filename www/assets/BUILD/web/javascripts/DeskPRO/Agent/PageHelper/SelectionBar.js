@@ -151,7 +151,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 			var checked = window.sessionStorage[this.options.saveSelectionRealId].split(',');
 			if (checked.length) {
 				$(this.options.checkSelector, this.page.wrapper).each(function() {
-					if (this.value && checked.contains(this.value)) {
+					if (this.value && checked.indexOf(this.value) !== -1) {
 						this.checked = true;
 					}
 				});

@@ -13,7 +13,7 @@ DeskPRO.Form.RegexValidator = new Orb.Class({
 
 	validate: function(action) {
 		var len = 0;
-		var val = this.el.val().trim();
+		var val = $.trim(this.el.val());
 
 		if (!this.regex) {
 			if (this.el.data('regex-modifiers')) {

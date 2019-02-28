@@ -148,7 +148,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       groupedRadios[name].push(this);
     });
 
-    Object.each(groupedRadios, function(els) {
+    Object.values(groupedRadios).forEach(function(els) {
       var newEls = [];
       els = $(els);
 
@@ -174,7 +174,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       els.each(function() {
 
         var wrapper = $(this).parent();
-        var title = $('.radio-title', wrapper).text().trim();
+        var title = $.trim($('.radio-title', wrapper).text());
 
         var newEl = $(tpl);
         newEl.addClass($(this).data('attach-class'));
@@ -682,7 +682,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         var ul = macroEl.find('ul.actions-list');
         ul.empty();
 
-        Array.each(data.descriptions, function(desc) {
+        data.descriptions.forEach(function(desc) {
           var li = $('<li />');
           li.html(desc);
 
@@ -720,7 +720,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
   attachBlobs: function(blobs, source) {
     var self = this;
     var $attachRow = this.getElById('attach_row');
-    Array.each(blobs, function (info) {
+    blobs.forEach(function (info) {
       var blob = source[info];
       if (blob) {
         var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
@@ -886,7 +886,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         var useText;
         var result;
 
-        Array.each(snippetCode, function(info) {
+        snippetCode.forEach(function(info) {
           if (info.value) {
             if (info.language_id === DESKPRO_PERSON_LANG_ID) {
               agentText = info.value;
@@ -994,7 +994,7 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
                   var wantText;
                   var useText;
 
-                  Array.each(snippetCode, function (info) {
+                  snippetCode.forEach(function (info) {
                     if (info.language_id == ticketLangId) {
                       wantText = info.value;
                     }

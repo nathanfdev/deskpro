@@ -59,7 +59,7 @@ DeskPRO.Agent.UI.OmniSearch.SearchBox = new Orb.Class({
 					$('option', sel).each(function() {
 						var li = $('<li />');
 						li.data('prop-val', sel.val());
-						li.text($(this).text().trim());
+						li.text($.trim($(this).text()));
 
 						menuEl.append(li);
 					});

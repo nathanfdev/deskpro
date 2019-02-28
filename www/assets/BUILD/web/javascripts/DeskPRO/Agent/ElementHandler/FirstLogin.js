@@ -20,7 +20,7 @@ DeskPRO.Agent.ElementHandler.FirstLogin = new Orb.Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 
-			var name = el.find('input.name').val().trim();
+			var name = $.trim(el.find('input.name').val());
 			if (!name) {
 				alert('Please enter your name');
 				return;

@@ -110,7 +110,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 			var el = $(this);
 			var depth = parseInt(el.data('depth'));
 			var catId = el.data('cat-id');
-			var title = el.text().trim();
+			var title = el.text();
 
 			if (depth) {
 				title = Orb.strRepeat('--', depth) + ' ' + title;
@@ -154,7 +154,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 	 */
 	addNewToList: function() {
 		var parentId = this.newParent.val();
-		var title = this.newTitle.val().trim();
+		var title = $.trim(this.newTitle.val());
 
 		if (!title.length) {
 			return;
@@ -202,7 +202,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 	 */
 	enableEditTitle: function(titleEl) {
 		var input = $('<input />');
-		input.val(titleEl.text().trim());
+		input.val(titleEl.text());
 
 		titleEl.empty().append(input);
 
@@ -274,9 +274,9 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 		var data = [];
 		var count = 0;
 
-		Array.each(rawData, function(item) {
+		rawData.forEach(function(item) {
 
-			Object.each(item, function(v,k) {
+			Object.entries(item).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				if (k == 'isNew') {
 					if (v) v = 1;
 					else v = 0;

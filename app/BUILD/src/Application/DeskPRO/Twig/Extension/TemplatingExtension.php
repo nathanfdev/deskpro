@@ -572,25 +572,39 @@ class TemplatingExtension extends \Twig_Extension
 
             switch ($type) {
                 case 'js':
-                    $html[] = '<script type="text/javascript" src="'.$url.'"></script>';
+                    if (isset($options['prefetch'])) {
+                        $html[] = '<link rel="prefetch" type="text/javascript" as="script" href="'.$url.'" />';
+                    } else {
+                        $html[] = '<script type="text/javascript" src="'.$url.'"></script>';
+                    }
                     break;
                 case 'css':
-                    if (!isset($options['media'])) {
-                        $options['media'] = 'screen,print';
+                    if (isset($options['prefetch'])) {
+                        $html[] = '<link rel="prefetch" type="text/css" as="style" href="'.$url.'" />';
+                    } else {
+                        if (!isset($options['media'])) {
+                            $options['media'] = 'screen,print';
+                        }
+                        $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                     }
-                    $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
                     break;
                 case 'less':
                     if (!isset($options['media'])) {
                         $options['media'] = 'screen,print';
                     }
 
-                    if (!$use_less && strpos($url, '/stylesheets-less/') !== false) {
+                    if (isset($options['prefetch'])) {
                         $url    = str_replace('/stylesheets-less/', '/stylesheets/', $url);
                         $url    = str_replace('.less', '.css', $url);
-                        $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
+                        $html[] = '<link rel="prefetch" type="text/css" as="style" href="'.$url.'" />';
                     } else {
-                        $html[] = '<link rel="stylesheet/less" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
+                        if (!$use_less && strpos($url, '/stylesheets-less/') !== false) {
+                            $url    = str_replace('/stylesheets-less/', '/stylesheets/', $url);
+                            $url    = str_replace('.less', '.css', $url);
+                            $html[] = '<link rel="stylesheet" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
+                        } else {
+                            $html[] = '<link rel="stylesheet/less" type="text/css" media="'.$options['media'].'" href="'.$url.'" />';
+                        }
                     }
                     break;
             }

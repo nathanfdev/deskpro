@@ -88,13 +88,6 @@
 			}
 		{% endif %}
 
-		if (DP_DEBUG) {
-			DpErrorLog.saveUrl = null;
-		} else {
-			DpErrorLog.saveUrl = '{{ app.request.getBaseUrl() }}/dp/log-js-error.json';
-		}
-		DpErrorLog.init();
-
 		$('pane_list_content').css('display', '');
 		$('pane_content').css('display', '');
 

@@ -74,17 +74,17 @@ DeskPRO.Form.FormValidator = new Orb.Class({
 			for (i = 0; i < names.length; i++) {
 
 				if ($(this).data('field-validators-inst')) {
-					Array.each($(this).data('field-validators-inst'), function(v) {
+					$(this).data('field-validators-inst').forEach(function(v) {
 						v.destroy();
 					});
 					$(this).data('field-validators-inst', null);
 				}
 
-				var className = names[i].trim();
+				var className = $.trim(names[i]);
 				var classObj = Orb.getNamespacedObject(className);
 
 				if (!classObj) {
-					DP.console.error("Unknown form validator `%s` on element %o", className, this);
+					console.error("Unknown form validator `%s` on element %o", className, this);
 					continue;
 				}
 

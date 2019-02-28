@@ -201,11 +201,16 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
           }
         });
       }
-      if (self.wrapper) {
-        self.wrapper.empty();
-        self.wrapper.removeData();
-        self.wrapper.off();
-        self.wrapper = null;
+      // TabBar removes wrapper when its rendered in a tab
+      if (!self.meta || !self.meta.tabId) {
+        window.setTimeout(function() {
+          if (self.wrapper) {
+            self.wrapper.empty();
+            self.wrapper.removeData();
+            self.wrapper.off();
+            self.wrapper = null;
+          }
+        }, 10000);
       }
     });
     this.addEvent('destroy', this.destroy);
@@ -254,8 +259,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
    */
   setMetaData: function(name, value) {
     // Assigning multiple values from a hash
-    if (value === undefined && typeOf(name) == 'object') {
-      this.meta = Object.merge(this.meta, name);
+    if (value === undefined && Orb.typeOf(name) == 'object') {
+      this.meta = $.extend(true, this.meta, name);
       this.initMetaData();
     } else {
       this.meta[name] = value;
@@ -302,18 +307,18 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
   getUrl: function(name, vars) {
 
     if (!this.meta.urls) {
-      DP.console.error('Unknown url name %s (no urls set)', name);
+      console.error('Unknown url name %s (no urls set)', name);
       return null;
     }
 
     if (!this.meta.urls[name]) {
-      DP.console.error('Unknown url name %s', name);
+      console.error('Unknown url name %s', name);
       return null;
     }
 
     var url = this.meta.urls[name];
     if (vars) {
-      Object.each(vars, function(v,k) {
+      Object.entries(vars).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
         url = url.replace('{'+k+'}', v);
       });
     }

@@ -570,6 +570,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
   initFileCustomFields: function() {
     this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.display);
+		this.page.ownObject(this.customFieldsUpload);
 
     var self = this;
     self.display.find('.File.customfield input[type="hidden"]').each(function() {
@@ -630,5 +631,6 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     this.$scope && this.$scope.$destroy();
     this.$scope = null;
     this.display = null;
+		this.customFieldsUpload = null;
 	}
 });

@@ -42,13 +42,13 @@ Orb.Util.TimeAgo = {
 	/**
 	 * Apply to an array of elements.
 	 *
-	 * @param $els
+	 * @param els
 	 */
 	applyToElements: function(els) {
 
 		var self = this;
 
-		els.each(function(el) {
+		$.each(els, function(idx, el) {
 			$(el).addClass('timeago-auto-update');
 		});
 		self.refreshElements();
@@ -74,7 +74,7 @@ Orb.Util.TimeAgo = {
 
 		var self = this;
 
-		els.each(function(el) {
+		$.each(els, function(el) {
 
 			// Could be removed, just skip it
 			// might be reinserted later
@@ -87,7 +87,7 @@ Orb.Util.TimeAgo = {
 
 			if (!el.data("timeago")) {
 
-				var isTime = el.get(0).tagName.toLowerCase() == 'time';
+				var isTime = el.get(0).tagName.toLowerCase() === 'time';
 				var iso8601 = isTime && el.attr('datetime') ? el.attr('datetime') : el.attr('title');
 
 				if (!iso8601 || typeof iso8601 != 'string') {
@@ -108,7 +108,7 @@ Orb.Util.TimeAgo = {
 			var data = el.data('timeago');
 			if (!isNaN(data.datetime)) {
 				var ago = true;
-				if (el.data('timeago-no-ago') == "1") {
+				if (el.data('timeago-no-ago') === "1") {
 					ago = false;
 				} else {
 					if (data.datetime > (new Date())) {

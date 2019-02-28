@@ -482,6 +482,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					});
 
           this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(fieldsForm);
+					this.ownObject(this.customFieldsUpload);
           $('.File.customfield input', fieldsForm).each(function() {
             var $el = $(this);
             if (!$el.val()) {
@@ -621,7 +622,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		this.emailDomainOverlay = null;
 
 		var updateNew = function() {
-			if (newInput.val().trim()) {
+			if ($.trim(newInput.val())) {
 				$('.controls .save', newContain).show();
 			} else {
 				$('.controls .save', newContain).hide();
@@ -647,7 +648,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 					$.ajax({
 						url: BASE_URL + 'agent/organizations/' + self.meta.org_id + '/assign-domain',
 						type: 'POST',
-						data: { domain: newInput.val().trim() },
+						data: { domain: $.trim(newInput.val()) },
 						dataType: 'html',
 						success: function(newDisplayHtml) {
 							if (newDisplayHtml.match(/data\-error\-code/)) {

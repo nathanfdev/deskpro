@@ -70,7 +70,7 @@ DeskPRO.Agent.RteEditor = {
 			defaultOptions.interval = 5;
 		}
 
-		options = Object.merge(defaultOptions, options);
+		options = $.extend(true, {}, defaultOptions, options);
 
 		var autosaveUrl = options.autosave,
 			autosaveInterval = options.interval || 5,

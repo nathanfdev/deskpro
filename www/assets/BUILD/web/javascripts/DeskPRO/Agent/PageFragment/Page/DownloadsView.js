@@ -359,7 +359,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 		}
 
 		this._labelsData = this.labelsInput.getFormData();
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		this._saveLabelsTimeout = Orb.fnDelay(this._doSaveLabels, 2000, this);
 	},
 
 	_doSaveLabels: function() {

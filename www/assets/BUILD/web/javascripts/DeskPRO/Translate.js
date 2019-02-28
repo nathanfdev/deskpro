@@ -60,7 +60,7 @@ DeskPRO.Translate = new Orb.Class({
 				text = this.choosePlural(text, vars.count);
 			}
 
-			Object.each(vars, function (value, key) {
+			Object.entries(vars).forEach(function(_vk) { var key = _vk[0], value = _vk[1];
 				var re = new RegExp('\{\{\s*' + Orb.regexQuote(key) + '\s*\}\}' , 'g');
 
 				if (text) {
@@ -113,7 +113,7 @@ DeskPRO.Translate = new Orb.Class({
 	testInterval: function(number, interval) {
 		var x = 0;
 		var number = parseInt(number);
-		interval = interval.trim();
+		interval = $.trim(interval);
 
 		var leftDelimIndex  = 1;
 		var leftIndex       = 2;

@@ -92,8 +92,7 @@ class AgentLegacyApp {
     }
     window.$('#dp_loading').remove();
 
-    window.LegacyStoreProvider = new LegacyStoreProvider();
-    window.LegacyStoreProvider.init(this.store);
+    window.LegacyStoreProvider = new LegacyStoreProvider(this);
 
     const messageBroker = window.DeskPRO_Window.getMessageBroker();
     messageBroker.addMessageListener('agent.online-agents', (event) => {
@@ -213,8 +212,15 @@ class AgentLegacyApp {
     this.store.dispatch(openDialpad(number));
   }
 
-  unmountVoiceControls(node) { // eslint-disable-line
-    ReactDOM.unmountComponentAtNode(node);
+  unmountEmbeddedReactNode(node) { // eslint-disable-line
+    if (!node) {
+      return;
+    }
+    try {
+      ReactDOM.unmountComponentAtNode(node);
+    } catch (e) {
+      console.warn(e);
+    }
   }
 
   renderVoiceMessage(node, data, dateCreatedFormatted, elid) {

@@ -109,7 +109,7 @@ DeskPRO.Agent.PageFragment.Page.PersonHelper.ContactEditor = new Orb.Class({
 						var div = $('<div>There were errors with the following changes:</div>');
 						var ul = $('<ul></ul>');
 
-						Array.each(data.errors, function(e) {
+						data.errors.forEach(function(e) {
 							var li = $('<li />');
 							li.text(e);
 							li.appendTo(ul);

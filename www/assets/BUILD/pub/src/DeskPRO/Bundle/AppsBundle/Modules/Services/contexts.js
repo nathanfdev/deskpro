@@ -132,7 +132,9 @@ export function mountContextStrategy(context, windowObject) {
   function strategy({ store, context, config, widgetsConfigList })  { // eslint-disable-line no-shadow
     if (widgetsConfigList.length && ['ticket-sidebar', 'person-sidebar', 'org-sidebar'].indexOf(context.locationId) > -1) {
       const tab = windowObject.DeskPRO_Window.TabBar.getTab(context.tabId);
-      tab.page.updateAppsSidebar();
+      if (tab && tab.page) {
+        tab.page.updateAppsSidebar();
+      }
     }
 
     ReactDOM.render(renderer({ store, context, config, widgetsConfigList }), mountAtNode);

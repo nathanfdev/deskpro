@@ -294,7 +294,7 @@ DeskPRO.UI.Menu2 = new Orb.Class({
 	},
 
   destroy: function() {
-    this.detachedElements.each(function(el) {
+    this.detachedElements.forEach(function(el) {
     	el.remove();
 		});
     this.detachedElements = [];

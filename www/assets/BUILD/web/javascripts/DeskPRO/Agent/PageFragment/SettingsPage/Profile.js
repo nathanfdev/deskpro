@@ -108,7 +108,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 					if (data.form_errors) {
 
 						$('#agent_settings_win_errors').find('li').hide();
-						Array.each(data.form_errors, function (code) {
+						data.form_errors.forEach(function (code) {
 							var classname = code.replace(/\./g, '_');
 							$('#agent_settings_win_errors').find('li.' + classname).show();
 						});

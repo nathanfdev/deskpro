@@ -66,8 +66,8 @@ DeskPRO.Agent.WindowElement.Section.Feedback = new Orb.Class({
 
 	recountBadge: function() {
 		var count = 0;
-		count += parseInt($('#feedback_validating_count').text().trim()) || 0;
-		count += parseInt($('#feedback_comments_validating_count').text().trim()) || 0;
+		count += parseInt($.trim($('#feedback_validating_count').text())) || 0;
+		count += parseInt($.trim($('#feedback_comments_validating_count').text())) || 0;
 		this.updateBadge(count);
 	}
 

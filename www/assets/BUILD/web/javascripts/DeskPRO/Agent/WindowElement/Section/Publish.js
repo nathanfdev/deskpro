@@ -160,7 +160,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 
 		if (this.expanded_ids && this.expanded_ids.length) {
-			Array.each(this.expanded_ids, function(id) {
+			this.expanded_ids.forEach(function(id) {
 				var el = $('#' + id);
 				if (el.is('li')) {
 					var $me = el.find('> i');
@@ -239,9 +239,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 	recountBadge: function() {
 		var count = 0;
-		count += parseInt($('#kb_pending_count').text().trim()) || 0;
-		count += parseInt($('#publish_validating_count').text().trim()) || 0;
-		count += parseInt($('#publish_validating_comments_count').text().trim()) || 0;
+		count += parseInt($.trim($('#kb_pending_count').text())) || 0;
+		count += parseInt($.trim($('#publish_validating_count').text())) || 0;
+		count += parseInt($.trim($('#publish_validating_comments_count').text())) || 0;
 		this.updateBadge(count);
 	},
 
@@ -349,7 +349,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				return Orb.escapeHtml(result.text);
 			},
 			matcher: function(term, text) {
-				if (typeOf(text)  != 'string' || typeOf(term) != 'string') {
+				if (Orb.typeOf(text)  != 'string' || Orb.typeOf(term) != 'string') {
 					return;
 				}
 
@@ -380,7 +380,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				return Orb.escapeHtml(result.text);
 			},
 			matcher: function(term, text) {
-				if (typeOf(text)  != 'string' || typeOf(term) != 'string') {
+				if (Orb.typeOf(text)  != 'string' || Orb.typeOf(term) != 'string') {
 					return;
 				}
 
@@ -406,7 +406,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		}
 		data.push({
 			name: 'definition',
-			value: $('textarea.definition', this.addDlg.elements.wrapperOuter).val().trim()
+			value: $('textarea.definition', this.addDlg.elements.wrapperOuter).val()
 		});
 		data.push({
 			name: 'brand_id',
@@ -446,7 +446,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		data.push({
 			name: 'definition',
-			value: $('textarea.definition', this.editDlg.elements.wrapperOuter).val().trim()
+			value: $('textarea.definition', this.editDlg.elements.wrapperOuter).val()
 		});
 		data.push({
 			name: 'brand_id',

@@ -4,13 +4,14 @@ Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
  * These standard options are simple values taken from a menu. Since
  * they're so similar, this single property class can handle all of them.
  */
-DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
+DeskPRO.Agent.Ticket.Property.StandardOption = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
-	optionName: null,
-	displayNameType: 'standardOption',
-
 	init: function() {
+		this.optionName = null;
+		this.displayNameType = 'standardOption';
+		this._formEl = null;
+
     var valid_options = ['language_id', 'category_id', 'product_id', 'priority_id', 'workflow_id', 'problem_id', 'create_problem'];
 
 		if (valid_options.indexOf(this.options.optionName) == -1) {
@@ -112,7 +113,6 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 		return $('.prop-val.'+this.optionName, this.ticketPage.wrapper).first();
 	},
 
-	_formEl: null,
 	getFormEl: function() {
 		if (this._formEl !== null) return this._formEl;
 

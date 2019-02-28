@@ -115,6 +115,7 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
     });
 
     this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.display);
+		this.page.ownObject(this.customFieldsUpload);
 
 		// Make sure field tab is selected
 		this.page.getEl('fields_display_main_wrap_tab').click();

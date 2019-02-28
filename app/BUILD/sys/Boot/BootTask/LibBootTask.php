@@ -34,6 +34,10 @@ class LibBootTask implements BootTaskInterface
             ini_set('display_errors', 0);
         }
 
+        if (function_exists('newrelic_disable_autorum')) {
+            @newrelic_disable_autorum();
+        }
+
         // Normalise some env
         @setlocale(LC_CTYPE, 'C');
         @date_default_timezone_set('UTC');

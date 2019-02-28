@@ -56,6 +56,10 @@ export class WidgetContainer extends React.PureComponent {
     this.listeners.forEach(listener => listener.cancel());
     this.listeners = [];
     this.props.unregister(this.props.configuration);
+
+    if (this.window) {
+      postRobot.cleanUpWindow(this.window);
+    }
   }
 
   onWindowReady = (wnd) =>  {
@@ -135,7 +139,6 @@ export class WidgetContainer extends React.PureComponent {
       id={configuration.canonicId}
       url={configuration.getUrl()}
       onWindowReady={this.onWindowReady}
-
     />);
   }
 

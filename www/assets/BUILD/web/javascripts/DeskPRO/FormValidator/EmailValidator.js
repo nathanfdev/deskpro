@@ -13,7 +13,7 @@ DeskPRO.Form.EmailValidator = new Orb.Class({
 
 	validate: function(action) {
 		var len = 0;
-		var val = this.el.val().trim();
+		var val = $.trim(this.el.val());
 
 		if (val.length < 3 || val.indexOf('@') < 1) {
 			this.setErrorCodes(['invalid_email']);

@@ -1,20 +1,20 @@
 import { allSnippetsSelector, allSnippetBlobsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Selectors/snippets';
 
 class LegacyStoreProvider {
-  init(store) {
-    this.store = store;
+  constructor(agentLegacyApp) {
+    this.agentLegacyApp = agentLegacyApp;
   }
 
   getState() {
-    return this.store.getState();
+    return this.agentLegacyApp.store.getState();
   }
 
   getSnippets() {
-    return allSnippetsSelector(this.store.getState());
+    return allSnippetsSelector(this.agentLegacyApp.store.getState());
   }
 
   getSnippetBlobs() {
-    return allSnippetBlobsSelector(this.store.getState());
+    return allSnippetBlobsSelector(this.agentLegacyApp.store.getState());
   }
 }
 export default LegacyStoreProvider;

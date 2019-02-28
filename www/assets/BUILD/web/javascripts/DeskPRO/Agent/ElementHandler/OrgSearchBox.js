@@ -120,7 +120,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 		this.resultsList.on('click', 'li', function(ev) {
 			ev.preventDefault();
 			var orgId = $(this).data('org-id');
-			var name  = $('.org-name', this).text().trim();
+			var name  = $.trim($('.org-name', this).text());
 
 			self.termInput.val(name);
 			self.idInput.val(orgId);
@@ -144,7 +144,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 				this.boundEl = $(boundDesc);
 			} else if (boundDesc == '@self') {
 				this.boundEl = this.el;
-			} else if (boundDesc.test(/^@parent\((.*?)\)$/)) {
+			} else if (boundDesc.match(/^@parent\((.*?)\)$/)) {
 				var sel = boundDesc.match(/^@parent\((.*?)\)$/)[1];
 				this.boundEl = this.el.closest(sel);
 			} else {
@@ -153,7 +153,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 		}
 
 		if (!this.boundEl || !this.boundEl.length) {
-			DP.console.warn('Could not find position-bound element %s on %o', this.el.data('position-bound'), this);
+			console.warn('Could not find position-bound element %s on %o', this.el.data('position-bound'), this);
 		}
 
 		this.resultsBox.detach().hide().appendTo('body');
@@ -191,7 +191,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 	 * @return {String}
 	 */
 	getTerm: function() {
-		return this.termInput.val().trim();
+		return $.trim(this.termInput.val());
 	},
 
 
@@ -221,7 +221,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 			success: function(data) {
 				this.resultsList.empty();
 
-				Array.each(data, function(org) {
+				data.forEach(function(org) {
 					var row = $(this.tplHtml);
 
 					row.data('org-id', org.id);
@@ -274,7 +274,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 		}
 
 		if (!this.wasSet) {
-			if (!this.termInput.val().trim().length) {
+			if (!$.trim(this.termInput.val()).length) {
 				this.idInput.val('0');
 				this.el.removeClass('is-new').removeClass('is-set');
 				this.el.trigger('orgsearchboxcleared', [this]);

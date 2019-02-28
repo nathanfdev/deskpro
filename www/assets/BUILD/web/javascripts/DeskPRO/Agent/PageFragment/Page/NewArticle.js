@@ -53,6 +53,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		}, 300);
 
 		this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.ownObject(this.customFieldsUpload);
 
 		$('.Date.customfield input', this.wrapper).each(function() {
 			$(this).datetimepicker({
@@ -128,7 +129,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		var formData = this.form.serializeArray();
 
 		if (this.labelsInput) {
-			formData.append(this.labelsInput.getFormData());
+			formData.push(this.labelsInput.getFormData());
 		}
 
 		$('div.error.section', this.wrapper).removeClass('error');
@@ -150,7 +151,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			success: function(data) {
 
 				if (data.error) {
-					Array.each(data.error_codes, function(code) {
+					data.error_codes.forEach(function(code) {
 						this.showErrorCode(code);
 					}, this);
 					this.updateUi();

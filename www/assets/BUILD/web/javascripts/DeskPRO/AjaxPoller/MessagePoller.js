@@ -27,7 +27,7 @@ DeskPRO.AjaxPoller.MessagePoller = new Orb.Class({
 
 	_sendMessages: function(data) {
 
-		if (data.messages === undefined || typeOf(data.messages) != 'array') {
+		if (data.messages === undefined || Orb.typeOf(data.messages) != 'array') {
 			return;
 		}
 

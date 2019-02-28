@@ -4,10 +4,8 @@ Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
  * These standard options are simple values taken from a menu. Since
  * they're so similar, this single property class can handle all of them.
  */
-DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
+DeskPRO.Agent.TicketList.Property.StandardOption = new Orb.Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
-
-	optionName: null,
 
 	init: function() {
     var valid_options = ['department', 'category', 'product', 'priority', 'workflow', 'status', 'agent', 'agent_team', 'problem_id'];

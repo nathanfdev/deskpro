@@ -60,7 +60,7 @@ DeskPRO.Agent.PageFragment.Page.Content.StickyWords = new Orb.Class({
 		}
 
 		var data = [];
-		Array.each(labels, function(w) {
+		labels.forEach(function(w) {
 			data.push({
 				name: 'words[]',
 				value: w

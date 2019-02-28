@@ -144,6 +144,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 		});
 
     this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.ownObject(this.customFieldsUpload);
 	},
 
 	markForReload: function() {
@@ -229,7 +230,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                 var errorMessages = $('<div/>');
                 errorMessages.append('<p>Please correct the following errors with your form:</p>');
 
-                Array.each(data.error_messages, function(msg) {
+                data.error_messages.forEach(function(msg) {
                         errorMessages.append('<div>&bull; ' + msg + '</div>');
                 });
                 DeskPRO_Window.showAlert(errorMessages, 'error');

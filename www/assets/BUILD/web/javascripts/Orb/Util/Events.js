@@ -6,12 +6,7 @@ Orb.Util.Events = {
 		if (!this.__events) {
 			this.__events = {};
 			this.__events_tagged = {};
-			this.__preventCleanupTagged = false;
 		}
-	},
-
-	setDefaultEventContext: function(context) {
-		this.__events_default_context = context;
 	},
 
 	normalizeEventName: function(type) {
@@ -25,7 +20,7 @@ Orb.Util.Events = {
 
 		type = this.normalizeEventName(type);
 		if (!context) {
-			context = this.__events_default_context;
+			context = undefined;
 		}
 
 		if (!this.__events[type]) {
@@ -63,15 +58,12 @@ Orb.Util.Events = {
 		return this;
 	},
 
-	addEvents: function(events, context, tags){
-		for (var type in events) {
-			this.addEvent(type, events[type], context, tags);
-		}
-		return this;
-	},
-
-	fireEvent: function(type, args, delay){
+	fireEvent: function(type, args){
 		var defaultContext, fn_info;
+
+		if (!this.__events) {
+			return this;
+		}
 
 		this.__initEventsObj();
 
@@ -89,18 +81,10 @@ Orb.Util.Events = {
 
 		for (var i = 0; i < this.__events[type].length; i++) {
 			fn_info = this.__events[type][i];
-			if (delay) {
-				try {
-					fn_info[0].delay(delay, fn_info[1] || defaultContext, argsArr);
-				} catch (e) {
-					console.error("Event Error %s: %o %s", type, e, e.stack || '');
-				}
-			} else {
-				try {
-					fn_info[0].apply(fn_info[1] || defaultContext, argsArr);
-				} catch (e) {
-					console.error("Event Error %s: %o %s", type, e, e.stack || '');
-				}
+			try {
+				fn_info[0].apply(fn_info[1] || defaultContext, argsArr);
+			} catch (e) {
+				console.error("Event Error %s: %o %s", type, e, e.stack || '');
 			}
 		}
 
@@ -109,6 +93,10 @@ Orb.Util.Events = {
 
 	removeEvent: function(type, fn, context){
 		var newFns = [], hasChange = false;
+
+		if (!this.__events) {
+			return this;
+		}
 
 		this.__initEventsObj();
 
@@ -121,7 +109,7 @@ Orb.Util.Events = {
 			context = null;
 		}
 
-		Array.each(this.__events[type], function(fn_info){
+		this.__events[type].forEach(function(fn_info){
 			if (fn_info[0] == fn && fn_info[1] == context) {
 				hasChange = true;
 			} else {
@@ -136,48 +124,23 @@ Orb.Util.Events = {
 		return this;
 	},
 
-	removeEvents: function(events){
-		var type;
-		var self = this;
-		if (!events) {
-			events = [];
-		}
-		if (events.length === undefined) {
-			events = [events];
-		}
-
-		this.__initEventsObj();
-
-		this.__preventCleanupTagged = true;
-
-		events.forEach(function(type) {
-      var fns = self.__events[type];
-      if (!fns) return;
-      for (var i = 0; i < fns.length; i++) {
-        self.removeEvent(type, fns[i][0], fns[i][1]);
-      }
-		});
-
-		this.__preventCleanupTagged = false;
-		return this;
-	},
-
 	removeTaggedEvents: function(tag) {
-		if (!this.__events_tagged[tag]) return;
-		
-		this.__preventCleanupTagged = true;
+		if (!this.__events) {
+			return this;
+		}
 
-		Array.each(this.__events_tagged[tag], function (x) {
+		if (!this.__events_tagged[tag]) return;
+
+		this.__events_tagged[tag].forEach(function (x) {
 			this.removeEvent(x[0], x[1], x[2]);
 		}, this);
 
     this.__events_tagged[tag] = null;
     delete this.__events_tagged[tag];
-
-		this.__preventCleanupTagged = false;
 	},
 
 	destroyEvents: function() {
-    this.__events && this.removeEvents(Object.keys(this.__events));
+		this.__events = null;
+		this.__events_tagged = null;
 	}
 };

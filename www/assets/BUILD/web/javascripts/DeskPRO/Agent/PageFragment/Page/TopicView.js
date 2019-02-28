@@ -305,7 +305,7 @@ DeskPRO.Agent.PageFragment.Page.TopicView = new Orb.Class({
 			menuElement: $('.end-action-menu', optWrap),
 			onItemClicked: function(info) {
 				var val = $(info.itemEl).data('action');
-				var label = $(info.itemEl).text().trim();
+				var label = $(info.itemEl).text();
 
 				endOpt.data('val', val);
 				endOpt.text(label);

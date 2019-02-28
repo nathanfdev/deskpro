@@ -89,7 +89,7 @@ $(document).ready(function() {
 	var count = 0;
 	var actions = {{macro.actions|json_encode|raw}};
 	if (actions) {
-		Array.each(actions, function(info, x) {
+		actions.forEach(function(info, x) {
 			var basename = 'actions[initial_' + x + ']';
 			editor.addNewRow($('.search-form .action-terms'), basename, {
 				type: info.type,

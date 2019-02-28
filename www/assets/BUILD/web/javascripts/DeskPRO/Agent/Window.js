@@ -91,7 +91,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				if (!num && num !== 0) num = 1;
 
-				var count = parseInt(el.text().trim());
+				var count = parseInt($.trim(el.text()));
 
 				if (op == '-' || op == 'rem' || op == 'del' || op == 'sub') {
 					count -= num;
@@ -102,7 +102,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					count = num;
 				}
 
-				el.text(el.text().trim().replace(/(\d+)/, count));
+				el.text($.trim(el.text()).replace(/(\d+)/, count));
 
 				if (el.data('tag')) {
 					$('i.' + el.data('tag')).text(count);
@@ -120,7 +120,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			getPlainTpl: function(el) {
 
 				if (!el) {
-					DP.console.error('Invalid template element passed %o', el);
+					console.error('Invalid template element passed %o', el);
 					return '';
 				}
 
@@ -128,7 +128,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 
 				if (!el.length) {
-					DP.console.error('No template element passed %o', el);
+					console.error('No template element passed %o', el);
 					return '';
 				}
 
@@ -745,7 +745,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!window.DeskPRO_FragmentRouter) {
-			DP.console.warn('window.DeskPRO_FragmentRouter is missing. Using empty router.');
+			console.warn('window.DeskPRO_FragmentRouter is missing. Using empty router.');
 			window.DeskPRO_FragmentRouter = {
 				baseUrl: '',
 				setBaseUrl: function(x) { this.baseUrl = x; },
@@ -1175,7 +1175,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		DeskPRO_Window.TabBar.options.activateNew = false;
 
-		Array.each(segments, function (hash, i) {
+		segments.forEach(function (hash, i) {
 
 			var m;
 			if (m = hash.match(/app\.([a-zA-Z]+)/)) {
@@ -1284,7 +1284,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (activateSection) {
 			var activateSectionId = null;
-			Object.each(this.sections, function(section, id) {
+			Object.entries(this.sections).forEach(function(_vk) { var id = _vk[0], section = _vk[1];
 				if (section.urlFragmentName && section.urlFragmentName == activateSection) {
 					activateSectionId = id;
 					return false;
@@ -1414,7 +1414,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	getDisplayName: function(type, id) {
 		if (!window.DESKPRO_NAME_REGISTRY[type] || !window.DESKPRO_NAME_REGISTRY[type][id]) {
 			if (!window.DESKPRO_NAME_REGISTRY[type]) {
-				DP.console.warn('Unknown name type %s', type);
+				console.warn('Unknown name type %s', type);
 			}
 
 			return null;
@@ -1435,7 +1435,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var agentEl = $('#agent_offline_list .agent-' + agent_id);
 
 		if (!agentEl.length) {
-			DP.console.warn('Unknown agent %i', agent_id);
+			console.warn('Unknown agent %i', agent_id);
 			return null;
 		}
 
@@ -1454,13 +1454,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	getUrl: function(name, vars) {
 		if (!window.DESKPRO_URL_REGISTRY[name]) {
-			DP.console.error('Unknown url name %s', name);
+			console.error('Unknown url name %s', name);
 			return null;
 		}
 
 		var url = window.DESKPRO_URL_REGISTRY[name];
 		if (vars) {
-			Object.each(vars, function(v,k) {
+			Object.entries(vars).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 				url = url.replace('{'+k+'}', v);
 			});
 		}
@@ -1475,7 +1475,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	getData: function(name) {
 		if (!window.DESKPRO_DATA_REGISTRY || !window.DESKPRO_DATA_REGISTRY[name]) {
-			DP.console.error('Unknown data name %s', name);
+			console.error('Unknown data name %s', name);
 			return null;
 		}
 
@@ -1714,7 +1714,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//#################################################################
 
 	addListPage: function(page) {
-		DP.console.warn('Invalid call to addListPage for %o', page);
+		console.warn('Invalid call to addListPage for %o', page);
 		this.setListPage(page);
 	},
 
@@ -1751,7 +1751,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!handler) {
-			DP.console.warn('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
+			console.warn('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
 			return;
 		}
 
@@ -1815,12 +1815,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var data = this.parseRoute(route);
 		if (extraData) {
-			data = Object.merge(extraData, data);
+			data = $.extend(true, {}, extraData, data);
 		}
 
-		Object.each(this.routePrefixes, function(listeners, prefix) {
+		Object.entries(this.routePrefixes).forEach(function(_vk) { var prefix = _vk[0], listeners = _vk[1];
 			if (route.indexOf(prefix) == 0) {
-				Array.each(listeners, function(callback) {
+				listeners.forEach(function(callback) {
 					callback(data);
 					found_listener = true;
 				});
@@ -1831,7 +1831,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}, this);
 
 		if (!found_listener) {
-			DP.console.error('Unknown route: %s', route);
+			console.error('Unknown route: %s', route);
 		}
 	},
 
@@ -1898,8 +1898,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!el.data('route')) {
-			DP.console.warn('Element has no route: %o', el);
-			DP.console.trace();
+			console.warn('Element has no route: %o', el);
+			console.trace();
 			return;
 		}
 
@@ -1908,10 +1908,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (el.data('route-title')) {
 			extraData.title = el.data('route-title');
 			if (extraData.title == '@text') {
-				extraData.title = el.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+				extraData.title = $.trim(el.text()).replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
 			} else if (extraData.title == '@title') {
 				extraData.title = el.attr('title');
-			} else if (extraData.title.test(/^@selector\((.*?)\)$/)) {
+			} else if (extraData.title.match(/^@selector\((.*?)\)$/)) {
 				var sel = extraData.title.match(/^@selector\((.*?)\)$/)[1];
 				var titleEl = null;
 				if (sel[0] == "#") {
@@ -1921,7 +1921,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				if (titleEl && titleEl.length) {
-					extraData.title = titleEl.text().trim().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
+					extraData.title = $.trim(titleEl.text()).replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ');
 				} else {
 					delete extraData.title;
 				}
@@ -2008,7 +2008,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadPage(routeData.url, routeData);
 				if (this.isSingleColMode()) {
 					$('#dp_omnibox').trigger('dpClose');
-					Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(i) {
+					Object.values(DeskPRO.Agent.PageHelper.Popover_Instances).forEach(function(i) {
 						i.close();
 					});
 				}
@@ -2204,7 +2204,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		routeData = routeData || {};
 		if (!url) {
-			DP.console.warn('No URL provided! routeData: %o', routeData);
+			console.warn('No URL provided! routeData: %o', routeData);
 			return;
 		}
 
@@ -2311,7 +2311,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return page;
 		}
 
-		//DP.console.debug('PageFragment class: %s', pageMeta.fragmentClass);
+		//console.debug('PageFragment class: %s', pageMeta.fragmentClass);
 		var fragment_class = Orb.getNamespacedObject(pageMeta.fragmentClass);
 
 		var page = new fragment_class(html);
@@ -2415,7 +2415,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 		html.push('>');
 
-		Array.each(files, function(f) {
+		files.forEach(function(f) {
 			html.push('<source src="' + f.path + '" type="' + f.type + '" />');
 		});
 
@@ -2596,16 +2596,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				} else {
 					// On cloud, a 403 generally means CF is blocking the request because it thinks we are a bot.
 					if (DPC_IS_CLOUD) {
-						if (DpErrorLog) {
-							DpErrorLog.hasSentReport = true; // dont ask to report, just send it
-							DpErrorLog.logError(
-								"CloudFlare Network Error: " + message,
-								'URL: ' + ajaxOptions.url,
-								'agent',
-								1,
-								true
-							);
-						}
 						// Try reloading the interface
 						// In case of CF blocks, this would result in the user seeing a "challenge" response
 						// which will let them whitelist themselves
@@ -2682,15 +2672,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		if (DPC_IS_CLOUD) {
 			if (message.indexOf('http://www.cloudflare.com/') !== -1 && message.indexOf('<title>Website is currently unreachable</title>') !== -1) {
-				if (DpErrorLog) {
-					DpErrorLog.hasSentReport = true; // dont ask to report
-					DpErrorLog.logError(
-						"CloudFlare Network Error: " + message,
-						'',
-						'agent',
-						1
-					);
-				}
 				return;
 			}
 		}
@@ -2735,7 +2716,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Add chats we're looking at right now
 		this.messageChanneler.poller.addData((function () {
 			var chatIdsData = [];
-			Array.each(this.getTabWatcher().findTabType('userchat'), function(t) {
+			this.getTabWatcher().findTabType('userchat').forEach(function(t) {
 				chatIdsData.push({
 					name: 'chat_ids[]',
 					value: t.page.meta.conversation_id
@@ -3059,12 +3040,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	switchToSection: function(section_id, no_load_list) {
 
-		DP.console.debug('Switching to %s', section_id);
+		console.debug('Switching to %s', section_id);
 
 		var handler = this.sections[section_id];
 		if (!handler) {
 			if (section_id != 'test_section') {
-				DP.console.warn('Invalid section: %s', section_id);
+				console.warn('Invalid section: %s', section_id);
 			}
 			return;
 		}
@@ -3289,7 +3270,7 @@ DeskPRO.Agent.Window = new Orb.Class({
         // If this was a list-pane and we have an open popover,
         // we need to close the popover so the listpane can actually load
         if ($(this).data('route').indexOf('listpane:') === 0) {
-          Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
+          Object.values(DeskPRO.Agent.PageHelper.Popover_Instances).forEach(function(inst) {
             if (inst.isOpen()) {
               inst.close();
             }
@@ -3302,13 +3283,13 @@ DeskPRO.Agent.Window = new Orb.Class({
         ev.stopPropagation();
 
         var agentId = $(this).data('agent-id');
-        DP.console.log('Agent click %i', agentId);
+        console.log('Agent click %i', agentId);
         if (!agentId || agentId === '0' || agentId === '' || agentId == DESKPRO_PERSON_ID) {
           return;
         }
 
         if (!DeskPRO_Window.sections.agent_chat_section) {
-          DP.console.warn('The agent chat section is not enabled');
+          console.warn('The agent chat section is not enabled');
           return;
         }
 
@@ -3481,7 +3462,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (!url) {
-			DP.console.warn('getSectionData: Unknown section %s', section_id);
+			console.warn('getSectionData: Unknown section %s', section_id);
 			return;
 		}
 
@@ -3539,7 +3520,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var callback_map = {};
 		var data = [];
-		Array.each(sectionDataQueued, function(info) {
+		sectionDataQueued.forEach(function(info) {
       if (info[0] === 'tickets_section') {
         // tickets done itself
         self.loadingSections['tickets_section'] = false;
@@ -3578,7 +3559,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				self.loadingSections = {};
 			},
 			success: function(data) {
-				Object.each(data, function(sectionData, sectionId) {
+				Object.entries(data).forEach(function(_vk) { var sectionId = _vk[0], sectionData = _vk[1];
           self.loadingSections[sectionId] = false;
 					if (sectionData === null || !sectionData.section_html) {
 						// Means an error, send it normally
@@ -3709,7 +3690,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
       var agentMapLower = {}, hasAgents = false;
       var notifyAgentMap = window.notifyAgentMap || [];
-      Object.each(notifyAgentMap, function(data, agentId) {
+      Object.entries(notifyAgentMap).forEach(function(_vk) { var agentId = _vk[0], data = _vk[1];
         hasAgents = true;
         agentMapLower[agentId] = data.name.toLowerCase();
       });
@@ -3891,7 +3872,7 @@ DeskPRO.Agent.Window = new Orb.Class({
           var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
 
           if (afterAt.length >= 2 && afterAt.length < 75) {
-            Object.each(notifyAgentMap, function(data, agentId) {
+            Object.entries(notifyAgentMap).forEach(function(_vk) { var agentId = _vk[0], data = _vk[1];
               if (agentMapLower[agentId].indexOf(afterAt) == 0) {
                 matches.push(agentId);
               }

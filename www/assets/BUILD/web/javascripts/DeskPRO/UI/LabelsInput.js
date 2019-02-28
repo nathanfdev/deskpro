@@ -44,7 +44,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				tagSource = DeskPRO.UI.LabelsInput_Grouped[this.options.type];
 			} else if (window.DESKPRO_DATA_REGISTRY && window.DESKPRO_DATA_REGISTRY.labels) {
 				tagSource = [];
-				Object.each(window.DESKPRO_DATA_REGISTRY.labels, function(types, label) {
+				Object.entries(window.DESKPRO_DATA_REGISTRY.labels).forEach(function(_vk) { var label = _vk[0], types = _vk[1];
 					if (types.indexOf(this.options.type) != -1) {
 						tagSource.push(label);
 					}
@@ -79,7 +79,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				return Orb.escapeHtml(result.text);
 			},
 			matcher: function(term, text) {
-				if (typeOf(text)  != 'string' || typeOf(term) != 'string') {
+				if (Orb.typeOf(text)  != 'string' || Orb.typeOf(term) != 'string') {
 					return;
 				}
 
@@ -130,7 +130,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		var field = this.options.fieldName;
 
 		var postData = [];
-		Array.each(tags, function(x) {
+		tags.forEach(function(x) {
 			postData.push({
 				name: field + '[]',
 				value: x

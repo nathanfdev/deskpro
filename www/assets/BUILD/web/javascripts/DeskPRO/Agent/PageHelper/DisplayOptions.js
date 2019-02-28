@@ -45,7 +45,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
           var item = $(info.itemEl);
 
           var prop  = item.data('field');
-          var label = item.text().trim();
+          var label = item.text();
 
           $('.label', menuBtn).text(label);
 

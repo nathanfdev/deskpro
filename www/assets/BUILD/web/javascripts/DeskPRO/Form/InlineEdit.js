@@ -5,48 +5,26 @@ Orb.createNamespace('DeskPRO.Form');
  * @option {String} editableClass The class that denotes an editable thing
  * @option {Object} ajax The AJAX options to pass to jQuery.ajax. Only the ajax.url item is required.
  */
-DeskPRO.Form.InlineEdit = new Class({
-	Implements: Options,
-
-	/**
-	 * Hash of options
-	 * @var {Object}
-	 */
-	options: {
-		baseElement: window.document,
-		editableClass: 'editable',
-		triggers: null,
-		ajax: {
-			timeout: 20000,
-			type: 'POST',
-			url: ''
-		},
-		saveFinishCallback: function() { }
-	},
-
-	/**
-	 * An array of 'editinfo's that are currently open
-	 * @var {Array}
-	 */
-	activeEdits: [],
-
-	/**
-	 * ajax_id=>editinfo of changes that are currenly being sent via ajax
-	 * @var {Object}
-	 */
-	sendingEdits: {},
-
-	/**
-	 * If a document click should send open edits. This is used
-	 * with the double-click. Also controls if the Escape key cancels.
-	 * @var {Boolean}
-	 */
-	documentClickSubmitOn: false,
-
-
+DeskPRO.Form.InlineEdit = new Orb.Class({
+	Implements: [Orb.Util.Options],
 
 	initialize: function (options) {
 
+		this.activeEdits = [];
+		this.sendingEdits = {};
+		this.documentClickSubmitOn = false;
+
+		this.options = {
+			baseElement: window.document,
+				editableClass: 'editable',
+				triggers: null,
+				ajax: {
+				timeout: 20000,
+					type: 'POST',
+					url: ''
+			},
+			saveFinishCallback: function() { }
+		};
 		this.setOptions(options);
 
 		this.options.baseElement = $(this.options.baseElement);
@@ -61,7 +39,7 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		$(document).on('keydown', function(ev) {
 			// Escape key
-			if (ev.keyCode == 27) {
+			if (ev.keyCode === 27) {
 				self.closeEditables();
 			}
 		});
@@ -206,13 +184,13 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		if (data.length) {
 			var self = this;
-			var ajax_options = Object.merge({
+			var ajax_options = $.extend(true, {
 				success: function(data, textStatus, XMLHttpRequest) {
-					DP.console.log('ajax-save data: %o', data);
+					console.log('ajax-save data: %o', data);
 					self.handleAjaxSuccess(ajax_id, data);
 				},
 				error: function(XMLHttpRequest, textStatus, errorThrown) {
-					DP.console.log('ajax-save error: %s', textStatus);
+					console.log('ajax-save error: %s', textStatus);
 					self.handleAjaxFailure(ajax_id);
 				},
 				context: this,
@@ -220,8 +198,8 @@ DeskPRO.Form.InlineEdit = new Class({
 				data: data
 			}, this.options['ajax']);
 
-			DP.console.log('ajax-save: %s', ajax_options.url);
-			DP.console.log('ajax-save data: %o', ajax_options.data);
+			console.log('ajax-save: %s', ajax_options.url);
+			console.log('ajax-save data: %o', ajax_options.data);
 
 			$.ajax(ajax_options);
 		} else {
@@ -267,7 +245,7 @@ DeskPRO.Form.InlineEdit = new Class({
 			if (!html) {
 				var value_arr = $('input[type="text"], textarea, select', editinfo.form_elements).serializeArray();
 				var value_bits = [];
-				value_arr.each(function (v) {
+				value_arr.forEach(function (v) {
 					value_bits.push(v.value);
 				});
 

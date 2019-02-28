@@ -1,12 +1,10 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.Flag = new Class({
+DeskPRO.Agent.Ticket.Property.Flag = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
-	optionName: 'flag',
-
 	init: function() {
-
+		this.optionName = 'flag';
 	},
 
 	getName: function() {
@@ -37,7 +35,7 @@ DeskPRO.Agent.Ticket.Property.Flag = new Class({
 		var winCountEl = $('#ticket_flag_'+value+'_count');
 		DeskPRO_Window.util.modCountEl(winCountEl, '+', 1);
 
-		var label = winCountEl.closest('li').find('.flag-label').text().trim();
+		var label = winCountEl.closest('li').find('.flag-label').text();
 		this.ticketPage.getEl('flagicon').get(0).className = this.ticketPage.getEl('flagicon').get(0).className.replace(/flag\-color\-\w+/g, '');
 		if (value) {
 			this.ticketPage.getEl('flagicon').addClass('flag-color-' + value);

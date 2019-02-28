@@ -296,7 +296,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 	},
 
 	updateFilter: function(filterEl) {
-		var filter = filterEl.val().trim().toLowerCase();
+		var filter = filterEl.val().toLowerCase();
 		var section = this._findSection(filterEl);
 		var lis = $('li', section);
 
@@ -377,7 +377,7 @@ DeskPRO.UI.OptionBox = new Orb.Class({
 			});
 
 			w += (1 * cols.length);  // border/margin on the cols
-			DP.console.log('setting w %i', w);
+			console.log('setting w %i', w);
 
 			this.el.width(w);
 		}

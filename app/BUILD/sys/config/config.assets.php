@@ -5,7 +5,7 @@
  * listed here declare how the 'assetic' build works.
  *
  * In templates, you can the template function dp_asset_html() to include the HTML
- * to add an asset to the page. For example, to include vendors (jquery, mootools etc):
+ * to add an asset to the page. For example, to include vendors (jquery, etc):
  *
  *     {{ dp_asset_html('agent_vendors') }}
  *
@@ -85,7 +85,7 @@ $CONFIG['agent_vendors'] = [
         'vendor/jquery/fileupload/jquery.fileupload-ui.js',
         'vendor/jquery/fileupload/jquery.iframe-transport.js',
         'vendor/jquery/qtip/jquery.qtip.min.js',
-        'vendor/mootools/mootools-core.min.js',
+//        'vendor/mootools/mootools-core.min.js',
         'javascripts/DeskPRO/tinycon.js',
         'vendor/select2/select2.js',
         'bower_components/moment/min/moment-with-locales.min.js',
@@ -265,22 +265,16 @@ $CONFIG['agent_common'] = [
     'files' => [
         'javascripts/DeskPRO/Agent/TouchClicker.js',
         'javascripts/DeskPRO/DP.js',
-        'javascripts/DeskPRO/ErrorLogger.js',
         'javascripts/Orb/Orb.js',
         'javascripts/Orb/Class.js',
         'javascripts/Orb/Util/Options.js',
         'javascripts/Orb/Util/Events.js',
-        'javascripts/Orb/Util/EventObj.js',
         'javascripts/Orb/Util/TimeAgo.js',
         'javascripts/Orb/Util/CallQueue.js',
         'javascripts/Orb/Compat.js',
         'javascripts/DeskPRO/ElementHandler.js',
-        'javascripts/DeskPRO/ElementHandler/ListRadio.js',
         'javascripts/DeskPRO/ElementHandler/SimpleTabs.js',
-        'javascripts/DeskPRO/ElementHandler/CheckboxToggle.js',
-        'javascripts/DeskPRO/ElementHandler/CheckboxCallUrl.js',
         'javascripts/DeskPRO/MessageBroker.js',
-        'javascripts/DeskPRO/IntervalCaller.js',
         'javascripts/DeskPRO/TouchCaller.js',
         'javascripts/DeskPRO/WordHighlighter.js',
         'javascripts/DeskPRO/AjaxPoller/Poller.js',
@@ -326,8 +320,6 @@ $CONFIG['agent_deskpro_ui'] = [
         'javascripts/DeskPRO/UI/Menu.js',
         'javascripts/DeskPRO/UI/Menu2.js',
         'javascripts/DeskPRO/UI/SimpleTabs.js',
-        'javascripts/DeskPRO/UI/DateChooser.js',
-        'javascripts/DeskPRO/UI/CatListEditor.js',
         'javascripts/DeskPRO/UI/Select/Widget.js',
         'javascripts/DeskPRO/UI/Select/Menu.js',
         'javascripts/DeskPRO/UI/Select/WidgetSimple.js',
@@ -376,75 +368,6 @@ $CONFIG['agent_misc'] = [
         'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
         'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
         'javascripts/DeskPRO/UI/MultiLevelSelect.js',
-    ],
-];
-
-$CONFIG['user'] = [
-    'out'          => 'js/user-all.js',
-    'post_filters' => ['yui_simple'],
-    'references'   => [
-        'user_vendors',
-        'user_common',
-    ],
-];
-
-$CONFIG['user_portaladmin'] = [
-    'out'   => 'js/user-portaladmin.js',
-    'files' => [
-        'javascripts/DeskPRO/UserPortalAdmin/PortalAdmin.js',
-    ],
-];
-
-$CONFIG['user_common'] = [
-    'out'   => 'js/user-common.js',
-    'files' => [
-        'javascripts/Orb/Orb.js',
-        'javascripts/DeskPRO/DP.js',
-        'javascripts/Orb/Class.js',
-        'javascripts/Orb/Util/Options.js',
-        'javascripts/Orb/Util/Events.js',
-        'javascripts/Orb/Util/TimeAgo.js',
-        'javascripts/Orb/Compat.js',
-        'javascripts/DeskPRO/IntervalCaller.js',
-        'javascripts/DeskPRO/MessageBroker.js',
-        'javascripts/DeskPRO/BasicWindow.js',
-        'javascripts/DeskPRO/UI/SimpleTabs.js',
-        'javascripts/DeskPRO/UI/TwoLevelSelect.js',
-        'javascripts/DeskPRO/UI/MultiLevelSelect.js',
-        'javascripts/DeskPRO/UI/Overlay.js',
-        'javascripts/DeskPRO/TouchCaller.js',
-        'javascripts/DeskPRO/Translate.js',
-        'javascripts/DeskPRO/FormValidator/FormValidator.js',
-        'javascripts/DeskPRO/FormValidator/FieldValidator.js',
-        'javascripts/DeskPRO/FormValidator/LengthValidator.js',
-        'javascripts/DeskPRO/FormValidator/EmailValidator.js',
-        'javascripts/DeskPRO/FormValidator/RegexValidator.js',
-        'javascripts/DeskPRO/FormValidator/TwoLevelSelectValidator.js',
-    ],
-];
-
-$CONFIG['user_vendors'] = [
-    'out'   => 'js/user-vendors.js',
-    'files' => [
-        'vendor/modernizr.min.js',
-        'vendor/html5shiv.min.js',
-        'javascripts/Orb/modernizr-ext.js',
-        'vendor/jquery/jquery.min.js',
-        'vendor/jquery/jquery-migrate.min.js',
-        'vendor/jquery.patch.js',
-        'vendor/jquery/jquery-ui/jquery-ui.min.js',
-        'vendor/jquery/jquery.cookie.js',
-        'vendor/jquery/jquery.history.js',
-        'vendor/jquery/tmpl.min.js',
-        'vendor/jquery/jquery.sizes.min.js',
-        'vendor/jquery/jquery.uniform.min.js',
-        'vendor/jquery/fileupload/jquery.fileupload.js',
-        'vendor/jquery/fileupload/jquery.fileupload-ui.js',
-        'vendor/jquery/fileupload/jquery.iframe-transport.js',
-        'vendor/mootools/mootools-core.min.js',
-        'vendor/bootstrap/bootstrap-custom.js',
-        'bower_components/moment/min/moment-with-locales.min.js',
-        'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
     ],
 ];
 

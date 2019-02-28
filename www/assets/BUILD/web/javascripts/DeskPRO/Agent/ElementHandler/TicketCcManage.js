@@ -21,7 +21,7 @@ DeskPRO.Agent.ElementHandler.TicketCcManage = new Orb.Class({
 
 			addRow.on('click', '.cc-saverow-trigger', function(ev) {
 				var btn = $(this);
-				var email = $('input', addRow).val().trim();
+				var email = $.trim($('input', addRow).val());
 
 				if (!email) {
 					return;

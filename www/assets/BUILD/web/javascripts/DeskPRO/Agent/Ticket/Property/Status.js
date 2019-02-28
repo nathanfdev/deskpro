@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.Status = new Class({
+DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
 	setValue: function(value) {
@@ -65,7 +65,7 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
     } else {
       this.ticketPage.getEl('status_code').select2('val', status_code);
       this.ticketPage.getEl('status_code').val(status_code);
-      var txt = this.ticketPage.getEl('status_code').find('option:selected').text().trim();
+      var txt = this.ticketPage.getEl('status_code').find('option:selected').text();
       this.getInterfaceElement().text(txt);
     }
 

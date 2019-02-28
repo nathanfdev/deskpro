@@ -1,11 +1,10 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.Department = new Class({
+DeskPRO.Agent.Ticket.Property.Department = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
-	optionName: 'department_id',
-
 	init: function() {
+		this.optionName = 'department_id';
 		this._formEl = null;
 	},
 
@@ -21,7 +20,7 @@ DeskPRO.Agent.Ticket.Property.Department = new Class({
 
 		// They are the same value,
 		// dont try and trigger changes
-		if (parseInt(value) == parseInt(this.ticketPage.getEl('value_form').find('.department_id').val())) {
+		if (parseInt(value) === parseInt(this.ticketPage.getEl('value_form').find('.department_id').val())) {
 			return;
 		}
 

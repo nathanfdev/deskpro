@@ -200,6 +200,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 
     this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
+		this.ownObject(this.customFieldsUpload);
 
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
 			ev.preventDefault();
@@ -326,8 +327,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			var fieldDisplay = self.fieldDisplayFetch.getFields(depSel.val());
 			var newFields = [];
 
-			Object.each(fieldDisplay, function(fields, section) {
-				Array.each(fields, function(f) {
+			Object.entries(fieldDisplay).forEach(function(_vk) { var section = _vk[0], fields = _vk[1];
+				fields.forEach(function(f) {
 					var classname;
 					if (f.field_type === 'ticket_field') {
 						classname = 'ticket-field-' + f.field_id;
@@ -513,7 +514,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 
 		this.onMacrosUpdated = function(ev) {
-			Array.each(ev.macroItems, function (info) {
+			ev.macroItems.forEach(function (info) {
 				var has = statusMacroList.find('.res-ticketmacro-' + info.id);
 				if (has[0]) {
 					return;
@@ -740,7 +741,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					actionsRowList.empty();
-					Array.each(data.descriptions, function(desc) {
+					data.descriptions.forEach(function(desc) {
 						var li = $('<li />');
 						li.html(desc);
 
@@ -767,7 +768,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 								api.syncCode();
 							} else {
 								var text = $('<div>' + html + '</div>');
-								text = text.text().trim();
+								text = $.trim(text.text());
 								textarea.val($.trim(textarea.val() + "\n\n" + text));
 							}
 						}
@@ -805,7 +806,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						this.getEl('close_tab_opt').prop('checked', true);
 					}
 
-					var setSubject = actionsRowList.find('.with-set-subject').text().trim();
+					var setSubject = $.trim(actionsRowList.find('.with-set-subject').text());
 					if (setSubject) {
 						this.getEl('subject').val(setSubject);
 					}
@@ -894,14 +895,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
               function() {
               }, 'View Existing Ticket', 'hidden');
           } else {
-						Array.each(data.error_codes, function(code) {
+						data.error_codes.forEach(function(code) {
 							this.showErrorCode(code);
 						}, this);
 
 						if (data.error_messages) {
 							this.showErrorCode('free');
 							var free = $('<div/>');
-							Array.each(data.error_messages, function(msg) {
+							data.error_messages.forEach(function(msg) {
 								var x = $('<div/>');
 								x.text('- ' + msg);
 								free.append(x);
@@ -1537,7 +1538,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
                     var useText;
                     var result;
 
-                    Array.each(snippetCode, function (info) {
+                    snippetCode.forEach(function (info) {
                       if (info.value) {
                         if (info.language_id === ticketLangId) {
                           wantText = info.value;
@@ -1666,7 +1667,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var useText;
 				var result;
 
-				Array.each(snippetCode, function(info) {
+				snippetCode.forEach(function(info) {
 					if (info.value) {
 						if (info.language_id === ticketLangId) {
 							wantText = info.value;
@@ -1820,7 +1821,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	attachBlobs: function(blobs, source) {
 		var self = this;
     var $attachRow = self.getEl('attach_row');
-    Array.each(blobs, function (info) {
+    blobs.forEach(function (info) {
       var blob = source[info];
       if (blob) {
         self.draft.addAttachment(blob);
@@ -2233,10 +2234,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     }
 
     this.openStatusMenu = null;
-    this.statusMenu && this.statusMenu.remove(); // detached
-    this.statusMenu = null;
-    this.statusBackdrop && this.statusBackdrop.remove(); // detached
-    this.statusBackdrop = null;
+		this.statusMenuMenu && this.statusMenuMenu.destroy();
 
     $('#settingswin').off('dp_macros_updated', this.onDpMacrosUpdated);
     this.onDpMacrosUpdated = null;

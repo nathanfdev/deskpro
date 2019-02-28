@@ -139,7 +139,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		// re-added to the front of the array
 		if (this.recentTabIds[idString]) {
 			delete this.recentTabIds[idString];
-			Array.each(this.recent, function(item, i) {
+			this.recent.forEach(function(item, i) {
 				if ((item[0] + '-' + item[1]) == idString) {
 					idx = i;
 					return false;
@@ -155,7 +155,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		this.recent.unshift([type, id, title, url, ts]);
 		this.recentTabIds[idString] = true;
 
-		while (this.recent.length > 350) {
+		while (this.recent.length > 150) {
 			var last = this.recent.pop();
 			this.list.find('li.' + last[0] + '-' + last[1]).remove();
 		}
@@ -215,7 +215,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 			}
 		};
 
-    while (this.recent.length > 350) {
+    while (this.recent.length > 150) {
       var last = this.recent.pop();
       removeIds.push(last[0] + '-' + last[1]);
     }

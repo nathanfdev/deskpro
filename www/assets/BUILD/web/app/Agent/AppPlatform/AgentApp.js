@@ -899,11 +899,11 @@ define([
             $('#dp_header_notify_wrap').hide().removeClass('active');
           }
 
-          if (scope.mode == 'search') {
-          } else if (scope.mode == 'recent') {
+          if (scope.mode === 'search') {
+          } else if (scope.mode === 'recent') {
             $results.hide();
             showRecent();
-          } else if (scope.mode == 'notif') {
+          } else if (scope.mode === 'notif') {
             $results.hide();
             showNotifs();
           }
@@ -912,9 +912,9 @@ define([
         var showRecent = function () {
           scope.recentOpen = true;
           const wrap = $('#recent_tabs_menu');
+          Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
           wrap.addClass('active').show();
           wrap.width(Math.max($el.width() - 2, 560));
-          Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
           const closeFn = function () {
             scope.$apply(() => {
