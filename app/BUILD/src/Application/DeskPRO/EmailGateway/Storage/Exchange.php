@@ -584,7 +584,9 @@ class Exchange
      */
     public function getLastRequest()
     {
-        return $this->service->getClient()->__getLastRequest() ?: '';
+        $c = $this->getClientIfSet();
+
+        return $c ? ($c->__getLastRequest() ?: '') : '';
     }
 
     /**
@@ -592,6 +594,21 @@ class Exchange
      */
     public function getLastResponse()
     {
-        return $this->service->getClient()->__getLastResponse() ?: '';
+        $c = $this->getClientIfSet();
+
+        return $c ? ($c->__getLastResponse() ?: '') : '';
+    }
+
+    private function getClientIfSet()
+    {
+        if (!$this->service) {
+            return null;
+        }
+
+        $r = new \ReflectionObject($this->service);
+        $p = $r->getProperty('soap');
+        $p->setAccessible(true);
+
+        return $p->getValue($this->service) ?: null;
     }
 }
