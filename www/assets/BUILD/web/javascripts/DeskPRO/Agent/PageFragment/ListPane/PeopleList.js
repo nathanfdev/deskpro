@@ -280,7 +280,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		if (!self.IS_ACTIVE) return;
 		$scope.listItems.length = 0;
 
-		$scope.persons.each(function(person){
+		$scope.persons.forEach(function(person){
 			$scope.addListItem('person', 'person:'+person.id, person.name_with_title, routeTemplate.replace('0000', person.id));
 		});
 	},
