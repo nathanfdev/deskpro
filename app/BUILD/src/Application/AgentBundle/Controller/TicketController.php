@@ -1440,7 +1440,7 @@ class TicketController extends AbstractController
             }
         }
 
-        $blobs = $this->get('attachment_helper')->processInlineBlobs($message, $this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
+        $blobs = $this->get('attachment_helper')->processInlineBlobs($message->getMessageHtml(), $this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
         foreach ($blobs as $blob) {
             $attach            = new Entity\TicketAttachment();
             $attach['blob']    = $blob;
