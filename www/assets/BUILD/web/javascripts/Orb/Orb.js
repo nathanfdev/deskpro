@@ -134,23 +134,24 @@ Orb.findHighestZindex = function(els) {
 /**
  * Escape special HTML characters.
  *
- * @param string
+ * @param str
  */
-Orb.escapeHtml = function(string) {
-	string = string||'';
+Orb.escapeHtml = function(str) {
+	str = str || '';
 
-	if (Orb.typeOf(string) == 'element') {
-		string = $(string).text();
-	} else if (Orb.typeOf(string) != 'string') {
-		if (string.toString) {
-			string = string.toString();
-		}
-		console.error("Invalid type passed to Orb.escapeHtml: %o", string);
+	if (Orb.typeOf(str) === 'element') {
+		str = $(str).text();
+	} else if (Orb.typeOf(str) !== 'string') {
+		console.error("Invalid type passed to Orb.escapeHtml: %o", str);
 		console.trace();
-		return (typeof string) + '';
+		if (str.toString) {
+			str = str.toString();
+		} else {
+			str = (typeof str) + '';
+		}
 	}
 
-	return string.replace(/&/g, "&amp;")
+	return str.replace(/&/g, "&amp;")
 		.replace(/>/g, "&gt;")
 		.replace(/</g, "&lt;")
 		.replace(/"/g, "&quot;");
@@ -160,22 +161,22 @@ Orb.escapeHtml = function(string) {
 /**
  * Convert newlines into HTML breaks
  *
- * @param string
+ * @param str
  * @return string
  */
-Orb.nl2br = function(string) {
-	return string.replace(/\r\n|\n/g, "<br />\n");
+Orb.nl2br = function(str) {
+	return str.replace(/\r\n|\n/g, "<br />\n");
 };
 
 
 /**
  * Link URLs in texts
  *
- * @param string
+ * @param str
  */
-Orb.linkUrls = function(string) {
-	string = string||'';
-	return string.replace(/\b(https?:\/\/|www\.)([^\s]+)\b(.?)/gi, function(match, o1, o2, o3, offset, s) {
+Orb.linkUrls = function(str) {
+	str = str||'';
+	return str.replace(/\b(https?:\/\/|www\.)([^\s]+)\b(.?)/gi, function(match, o1, o2, o3, offset, s) {
 		if (o3 && o3 == '/') {
 			o2 += '/';
 		}
