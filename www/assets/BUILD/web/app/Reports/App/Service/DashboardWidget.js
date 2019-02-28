@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Arrays'], (Arrays) => {
+define(['DeskPRO/Util/Arrays'], function(Arrays) {
   class DashboardWidgetService {
     constructor(Api, Api2, $q) {
       this.Api = Api;

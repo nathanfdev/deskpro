@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], (Util) => {
+define(['DeskPRO/Util/Util'], function(Util) {
   class DpApi {
     constructor($http, api_url, api_token, Growl) {
       this.handleError = this.handleError.bind(this);

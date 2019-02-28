@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings'], (Strings) => {
+define(['DeskPRO/Util/Strings'], function(Strings) {
   class PhraseSaver {
     constructor(Api, $q) {
       this.Api = Api;

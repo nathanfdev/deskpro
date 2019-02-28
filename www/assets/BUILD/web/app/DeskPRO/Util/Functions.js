@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class DeskPRO_Util_Functions {
     /*
       * Returns a function that will be called wait ms after the last time it was

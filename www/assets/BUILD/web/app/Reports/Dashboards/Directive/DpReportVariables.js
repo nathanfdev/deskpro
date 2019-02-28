@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const Reports_Directive_DpReportVariables = ['$state', '$compile', '$sce', '$http', 'TemplateManager', ($state, $compile, $sce, $http, TemplateManager) =>
     ({
       restrict: 'AE',

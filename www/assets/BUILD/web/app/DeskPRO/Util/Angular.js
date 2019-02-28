@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class DeskPRO_Util_Angular {
     /*
       * Get an object of k=>v services injected into a constructor of object given an array of args.

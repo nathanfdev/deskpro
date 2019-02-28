@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Numbers', 'perfect-scrollbar'], (Numbers) => {
+define(['DeskPRO/Util/Numbers', 'perfect-scrollbar'], function(Numbers) {
   const DeskPRO_Directive_DpScrollable = ['$timeout', '$interval', ($timeout, $interval) =>
     ({
       restrict: 'A',

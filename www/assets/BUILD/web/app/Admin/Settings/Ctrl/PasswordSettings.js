@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) => {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
   class Admin_Settings_Ctrl_PasswordSettings extends Admin_Ctrl_Base {
     constructor(...args) {
       {

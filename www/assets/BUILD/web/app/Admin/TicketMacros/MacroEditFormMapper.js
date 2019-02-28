@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class Admin_TicketMacros_MacroEditFormMapper {
     getFormFromModel(macroModel) {
       const form = {};

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], (Admin_Main_Ctrl_Base) => {
+define(['Admin/Main/Ctrl/Base'], function(Admin_Main_Ctrl_Base) {
   class Admin_ChannelFacebook_Ctrl_List extends Admin_Main_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_ChannelFacebook_Ctrl_List';

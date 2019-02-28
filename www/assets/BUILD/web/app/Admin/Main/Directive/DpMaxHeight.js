@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Functions'], (Functions) => {
+define(['DeskPRO/Util/Functions'], function(Functions) {
   /*
     * Description
     * -----------

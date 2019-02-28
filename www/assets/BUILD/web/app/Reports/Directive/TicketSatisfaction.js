@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings'], (Strings) => {
+define(['DeskPRO/Util/Strings'], function(Strings) {
   const Reports_Directive_TicketSatisfaction = ['$compile', 'TicketSatisfactionService', '$sce', '$http', ($compile, TicketSatisfactionService, $sce, $http) =>
     ({
       restrict: 'E',

@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], (Util) => {
+define(['DeskPRO/Util/Util'], function(Util) {
   class BaseService {
     constructor() {
       this.dp_spin_els = {};

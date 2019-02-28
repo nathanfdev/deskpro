@@ -1,8 +1,8 @@
 define([
   'DeskPRO/Util/Strings'
-], (
+], function(
   Strings
-) => {
+) {
   class DeskPRO_Util_Util {
     static initClass() {
       this.UID_COUNTER = 0;

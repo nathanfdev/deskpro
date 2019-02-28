@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strings) => {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], function(Admin_Ctrl_Base, Strings) {
   class Admin_Apps_Ctrl_InstallProgress extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Apps_Ctrl_InstallProgress';

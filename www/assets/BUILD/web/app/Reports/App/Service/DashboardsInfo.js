@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) => {
+define(['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], function(Arrays, Util) {
   class DashboardsInfo {
     constructor(Api, Api2, $q) {
       // this is just a cheap way that controllers

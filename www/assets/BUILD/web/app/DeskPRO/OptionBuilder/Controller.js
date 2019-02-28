@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], (Util) => {
+define(['DeskPRO/Util/Util'], function(Util) {
   /*
   * The dpOptionBuilder directive is a component that handles a form that adds/removes rows
   * (e.g., a search builder, an option builder etc)

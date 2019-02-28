@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const _teams = [];
   const _maps = { ids: {} };
   class DeskPRO_Service_AgentTeam {

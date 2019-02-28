@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class Admin_Main_Model_DepAgentPermMatrix {
     constructor() {
       this.agents = [];

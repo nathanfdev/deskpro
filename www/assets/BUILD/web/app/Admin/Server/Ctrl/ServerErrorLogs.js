@@ -1,4 +1,4 @@
-define(['underscore', 'Admin/Main/Ctrl/Base'], (_, Admin_Ctrl_Base) => {
+define(['underscore', 'Admin/Main/Ctrl/Base'], function(_, Admin_Ctrl_Base) {
   class Admin_ServerErrorLogs_Ctrl_ServerErrorLogs extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_ServerErrorLogs_Ctrl_ServerErrorLogs';

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', '../../../../bower_components/moment/moment'], (Admin_Ctrl_Base, moment) => {
+define(['Admin/Main/Ctrl/Base', '../../../../bower_components/moment/moment'], function(Admin_Ctrl_Base, moment) {
   class Admin_AgentAuditLogs_Ctrl_AuditLogs extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_AgentAuditLogs_Ctrl_AuditLogs';

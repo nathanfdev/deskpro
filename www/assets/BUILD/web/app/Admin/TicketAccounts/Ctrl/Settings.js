@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
   const _url = '/email_accounts/settings';
   class Admin_TicketAccounts_Ctrl_Settings extends Admin_Ctrl_Base {
     static initClass() {

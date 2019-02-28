@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class AdminStart_Ctrl_StartBase {
     static initClass() {
       this.CTRL_AS   = 'Card';

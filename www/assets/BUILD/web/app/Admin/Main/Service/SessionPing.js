@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class Admin_Main_Service_SessionPing {
     constructor(Api) {
       this.Api = Api;

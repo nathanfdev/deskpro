@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class TzData {
     static initClass() {
       this.tzData = [

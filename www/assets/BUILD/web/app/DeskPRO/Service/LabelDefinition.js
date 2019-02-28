@@ -1,4 +1,4 @@
-define(['angular'], (angular) => {
+define(['angular'], function(angular) {
   const updateColorForLabel = null;
   let loadDefinitions = null;
   class DeskPRO_Service_LabelDefinition {

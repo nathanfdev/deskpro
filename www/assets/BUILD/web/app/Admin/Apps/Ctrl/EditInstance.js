@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) => {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], function(Admin_Ctrl_Base, Util) {
   class Admin_Apps_Ctrl_EditInstance extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Apps_Ctrl_EditInstance';
