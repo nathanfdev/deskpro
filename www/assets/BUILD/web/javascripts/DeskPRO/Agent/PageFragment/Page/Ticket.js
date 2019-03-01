@@ -135,18 +135,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		});
 
-		this._initTicketActionsMenu();
-		this._initMessageActionsMenu();
 		this._initLabels();
 		this._initTicketLocking();
-		this._initTasks();
-		this._initFollowUps();
-		this._initEditName();
-		this._initSlas();
-    this._initProblems();
 		this._initVoice();
-		this._initForward();
-		this._initSelectUser();
 
 		// Change email menu
 		var emailChangeTrig = this.getEl('user_email_menu_trigger');
@@ -215,7 +206,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       onBeforeBillingChange: this.onBeforeBillingChange.bind(this),
       onAfterBillingChange: this.onAfterBillingChange.bind(this),
 		});
-		this.updateBillingTabTitle();
+
+		[
+			this._initTicketActionsMenu,
+			this._initMessageActionsMenu,
+			this._initEditName,
+			this._initSelectUser,
+			this._initTasks,
+			this._initFollowUps,
+			this._initSlas,
+			this._initProblems,
+			this._initForward,
+			this.updateBillingTabTitle
+		].forEach(function(fn) {
+			window.requestIdleCallback(fn.bind(self), {timeout: 5000});
+		});
 
 		this.addEvent('deactivate', function() {
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).trigger('page_deactivate');

@@ -115,7 +115,7 @@ if (!window.requestAnimationFrame) {
 	window.cancelAnimationFrame = window.clearTimeout;
 }
 
-if (!window.requestAnimationFrame) {
+if (!window.requestIdleCallback) {
 	window.requestIdleCallback = function(fn, opt) {
 		return window.setTimeout(fn, opt && opt.timeout ? opt.timeout*0.5 : 250);
 	};
