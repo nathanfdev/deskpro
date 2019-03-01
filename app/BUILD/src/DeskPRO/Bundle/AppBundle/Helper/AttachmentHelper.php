@@ -47,18 +47,22 @@ class AttachmentHelper
      */
     public function processInlineBlobs($content, $blobIds = [])
     {
+        $allBlobs = [];
+
         $matchConfig = new MatchConfig(
             $this->router->generate('serve_blob', ['blob_auth_id' => '00000', 'filename' => '11111']),
             '00000',
             '11111'
         );
+
         $blobAuthcodes = StringUtils::gatherInlineAttachments($content, $matchConfig);
         /** @var BlobRepository $blobRepository */
         $blobRepository = $this->em->getRepository(Blob::class);
         // these we found via html
-        $allBlobs = $inlineBlobsInMessage = $blobRepository->getByAuthCodes($blobAuthcodes) ?: [];
+        $inlineBlobsInMessage = $blobRepository->getByAuthCodes($blobAuthcodes) ?: [];
         foreach ($inlineBlobsInMessage as $blob) {
             $this->em->persist($blob->setIsTemp(false));
+            $allBlobs[$blob->getId()] = $blob;
         }
 
         // Message Attachments
@@ -68,14 +72,12 @@ class AttachmentHelper
                 /** @var Blob $blob */
                 if (StringUtils::ensureAttachment($blob, $content)) {
                     $this->em->persist($blob->setIsTemp(false));
+                    $allBlobs[$blob->getId()] = $blob;
                 }
             }
-            $allBlobs = array_merge($allBlobs, $inlineBlobs);
         }
 
-        return array_filter($allBlobs, function (Blob $blob) {
-            return !$blob->isTemp();
-        });
+        return $allBlobs;
     }
 
     /**
