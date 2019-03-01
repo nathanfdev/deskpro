@@ -308,7 +308,7 @@ class EscalationTicketMatcher
                 break;
 
             case TicketEscalation::EVENT_TYPE_TIME_ON_HOLD:
-                $searcher->addTerm('status', 'is', ['awaiting_agent']);
+                $searcher->addTerm('status', 'is', ['pending']);
                 $searcher->addTerm('date_on_hold', 'lte', ['date1' => new \DateTime('-'.$time_secs.' seconds')]);
 
                 break;

@@ -478,7 +478,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
      */
     public function getTicketStatusString($ticket)
     {
-        switch ($ticket->status_code) {
+        switch ($ticket->staus) {
             case TicketStatus::STATUS_TYPE_RESOLVED:
                 return 'Resolved';
             case TicketStatus::STATUS_TYPE_AWAITING_AGENT:

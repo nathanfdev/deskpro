@@ -46,16 +46,6 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
 
 		$('input.status:first', this.ticketPage.valueForm).val(status_code);
 
-		// Hold is automatically taken off on PHP side when not awaiting user,
-		// so need to reshow the 'set hold' button now incase user toggles status back to awaiting agent
-		if (value == 'awaiting_agent') {
-			this.ticketPage.getEl('hold_container').css('display', 'inline');
-		} else {
-			this.ticketPage.getEl('hold_container').css('display', 'none');
-			this.ticketPage.getEl('hold_container').find('.hold').show();
-			this.ticketPage.getEl('hold_container').find('.unhold').hide();
-		}
-
     if (hidden_status) {
       this.getInterfaceElement().text(
         status_id == this.ticketPage.meta.deletedTicketStatusId
@@ -70,13 +60,13 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
     }
 
     if (value == 'awaiting_agent') {
-      this.addPendingOption();
+      this.addPendingOptions();
     } else if (value != 'pending') {
-      this.removePendingOption();
+      this.removePendingOptions();
     }
 	},
 
-  addPendingOption: function() {
+  addPendingOptions: function() {
     if (this.ticketPage.getEl('status_code').find('option[value="pending"]').length) {
       return;
     }
@@ -85,12 +75,12 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
       return;
     }
 
-    this.ticketPage.getEl('status_code')
-      .append('<option value="pending">'+ this.ticketPage.meta.pendingTicketStatusTitle  +'</option>');
+    var options = this.ticketPage.getEl('penging_statuses_options_template').find("select > option").clone();
+    this.ticketPage.getEl('status_code').append(options);
   },
 
-  removePendingOption: function() {
-    this.ticketPage.getEl('status_code').find('option[value="pending"]').remove();
+  removePendingOptions: function() {
+    this.ticketPage.getEl('status_code').find('option[value^="pending"]').remove();
   },
 
 	getValue: function() {

@@ -1011,18 +1011,19 @@ class TicketController extends AbstractController
         }
 
         if ($this->in->checkIsset('status')) {
-            $status = $this->in->checkIsset('status');
-            if ($status == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
+            /** @var TicketStatus $setStatus */
+            $status = $this->getContainer()->getTicketStatuses()->findStatusOrException($this->in->checkIsset('status'));
+            if ($status->getStatusType() == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
                 $status = null;
             }
-            if ($status == 'awaiting_agent' && !$tcheck->canModify($ticket, 'set_awaiting_agent')) {
+            if ($status && $status->getStatusType() == 'awaiting_agent' && !$tcheck->canModify($ticket, 'set_awaiting_agent')) {
                 $status = null;
             }
-            if ($status == 'awaiting_user' && !$tcheck->canModify($ticket, 'set_awaiting_user')) {
+            if ($status && $status->getStatusType() == 'awaiting_user' && !$tcheck->canModify($ticket, 'set_awaiting_user')) {
                 $status = null;
             }
             if ($status) {
-                $ticket['status'] = $this->in->getString('status');
+                $ticket->setTicketStatus($status);
             }
         }
 
@@ -2370,10 +2371,14 @@ class TicketController extends AbstractController
                     $newticket->custom_org_fields = $_REQUEST['custom_org_fields'];
                 }
 
-                if ($this->in->getString('actions.status') == 'resolved') {
-                    $newticket->status = 'resolved';
-                } else {
-                    $newticket->status = '';
+                if ($this->in->getString('actions.status')) {
+                    $ticketStatus = $this->getContainer()->getTicketStatuses()
+                        ->findStatusOrException($this->in->getString('actions.status'));
+                    if ($ticketStatus->getStatusType() == 'resolved') {
+                        $newticket->status = 'resolved';
+                    } else {
+                        $newticket->status = '';
+                    }
                 }
 
                 $validator = new NewTicketValidator();
