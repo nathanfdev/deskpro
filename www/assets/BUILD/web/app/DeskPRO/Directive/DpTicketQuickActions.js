@@ -1,4 +1,4 @@
-define(['angular'], (angular) => {
+define(['angular'], function(angular) {
   let DeskPRO_Directive_DpTicketQuickActions;
   return DeskPRO_Directive_DpTicketQuickActions = function ($timeout, PersonService, AgentTeamService) {
     const options = {

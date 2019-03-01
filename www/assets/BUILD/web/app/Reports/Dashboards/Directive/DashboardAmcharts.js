@@ -1,4 +1,4 @@
-define(['handlebars'], (Handlebars) => {
+define(['handlebars'], function(Handlebars) {
   const Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', '$timeout', ($compile, $state, DashboardWidgetService, $timeout) =>
     ({
       restrict: 'E',

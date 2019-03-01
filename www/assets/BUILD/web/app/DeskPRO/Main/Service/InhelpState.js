@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class DeskPRO_Main_Service_InhelpState {
     constructor(Api) {
       this.Api = Api;

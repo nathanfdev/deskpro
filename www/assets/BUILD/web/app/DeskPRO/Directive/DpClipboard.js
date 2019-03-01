@@ -1,4 +1,4 @@
-define(['clipboard'], (Clipboard) => {
+define(['clipboard'], function(Clipboard) {
   const DeskPRO_Directive_DpClipboard = [() =>
     ({
       restrict: 'A',

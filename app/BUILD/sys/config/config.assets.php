@@ -100,6 +100,7 @@ $CONFIG['agent_vendors'] = [
         'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic.js',
         'bower_components/kbw-calendars/dist/js/jquery.calendars.islamic-ar.js',
         'node_modules/jquery-colorbox/jquery.colorbox-min.js',
+        'node_modules/css-element-queries/src/ResizeSensor.js',
     ],
 ];
 

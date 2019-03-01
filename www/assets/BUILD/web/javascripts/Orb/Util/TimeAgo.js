@@ -7,7 +7,7 @@ Orb.Util.TimeAgo = {
 	/**
 	 * How often to update the elements
 	 */
-	refreshPeriod: 60000,//1min
+	refreshPeriod: 120000,//2min
 
 	phrases: {
 		'sec_less': '1 second',
@@ -54,7 +54,22 @@ Orb.Util.TimeAgo = {
 		self.refreshElements();
 
 		if (this._watchTimer === null) {
-			this._watchTimer = window.setInterval(this.refreshElements.bind(this), this.refreshPeriod);
+			this.autoRefreshElements = (function() {
+				if (document.visibilityState && document.visibilityState !== 'visible') {
+					return;
+				}
+
+				var now = (new Date()).getTime();
+				if (this.lastAutoRefresh && (now-this.lastAutoRefresh) < this.refreshPeriod) {
+					return;
+				}
+
+				this.lastAutoRefresh = now;
+				window.requestIdleCallback(this.autoRefreshElements, {timeout: 8000});
+			}).bind(this);
+
+			this._watchTimer = window.setInterval(this.autoRefreshElements, this.refreshPeriod);
+			document.addEventListener("visibilitychange", this.autoRefreshElements);
 		}
 	},
 
@@ -68,17 +83,22 @@ Orb.Util.TimeAgo = {
 		this.applyToElements($els.toArray());
 	},
 
-
 	refreshElements: function(els) {
-		if (!els) els = $('.timeago-auto-update').toArray();
+		if (!els) els = document.getElementsByClassName('timeago-auto-update');
 
 		var self = this;
 
-		$.each(els, function(el) {
+		var deferNodes = [];
+		$.each(els, function(idx, el) {
 
 			// Could be removed, just skip it
 			// might be reinserted later
 			if (!el || !el.parentNode) {
+				return;
+			}
+
+			if (idx > 50) {
+				deferNodes.push(el);
 				return;
 			}
 
@@ -123,6 +143,15 @@ Orb.Util.TimeAgo = {
 				el.removeClass('timeago-auto-update');
 			}
 		});
+
+		if (deferNodes.length) {
+			var runDefer = (function() {
+				this.refreshElements(deferNodes);
+			}).bind(this);
+			window.requestIdleCallback ?
+				window.requestIdleCallback(runDefer, {timeout: 2000}) :
+				window.setTimeout(runDefer, 350);
+		}
 	},
 
 

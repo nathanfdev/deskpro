@@ -271,7 +271,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			};
 
 			window.requestIdleCallback ?
-				window.requestIdleCallback(cleanup, {timeout: 5000}) :
+				window.requestIdleCallback(cleanup, {timeout: 10000}) :
 				window.setTimeout(cleanup, 1000);
 
 			this.listPage = null;

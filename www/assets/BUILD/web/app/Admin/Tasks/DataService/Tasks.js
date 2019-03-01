@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const _url = '/tasks/settings';
   class Tasks {
     constructor(Api, $q) {

@@ -952,9 +952,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			url: BASE_URL + 'agent/chat/leave/' + this.meta.conversation_id,
 			data: {
 				action: action
-			},
-			success: function() {
-        DeskPRO_Window.faviconBadge.disableCrazyMode();
 			}
 		});
 	},
@@ -1119,8 +1116,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		if (notify && !this.quitting) {
 			this.alertTab();
-
-			DeskPRO_Window.faviconBadge.enableCrazyMode(titleMsg);
 
 			// Add 'pop' sound if its not us
 			var alertEl = $.tmpl('user_chat_newmsg_sound');

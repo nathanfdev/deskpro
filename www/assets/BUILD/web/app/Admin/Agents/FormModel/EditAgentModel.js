@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings'], (Strings) => {
+define(['DeskPRO/Util/Strings'], function(Strings) {
   class EditAgentModel {
     constructor(agent, groups, teams, primary_phone_number_region) {
       let check,

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   class Admin_Templates_Ctrl_EmailGroupList extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Templates_Ctrl_EmailGroupList';

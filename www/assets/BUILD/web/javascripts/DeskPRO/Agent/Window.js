@@ -2800,7 +2800,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				doanim = true;
 			}
 
-			self.faviconBadge.updateBadge(count, true);
+			self.faviconBadge.updateBadge(count);
 		});
 
 		var autostart = false;

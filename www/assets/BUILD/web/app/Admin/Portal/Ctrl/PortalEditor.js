@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
   class AdminPortalCtrlPortalEditor extends Admin_Ctrl_Base {
     constructor(...args) {
       {

@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class InterfaceTimer {
     constructor(logger) {
       this.logger = logger;

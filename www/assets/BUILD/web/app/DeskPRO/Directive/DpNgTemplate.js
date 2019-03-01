@@ -1,4 +1,4 @@
-define(['angular'], (angular) => {
+define(['angular'], function(angular) {
   /*
     * Description
     * -----------

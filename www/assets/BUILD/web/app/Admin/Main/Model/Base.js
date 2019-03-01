@@ -1,4 +1,4 @@
-define(['angular'], (angular) => {
+define(['angular'], function(angular) {
   /**
     * A model holds data about some kind of entity.
     * Our model class does nothing special except tries to make it easier

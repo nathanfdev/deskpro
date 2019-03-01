@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Base, Util, angular) => {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_Ctrl_Base, Util, angular) {
   class Admin_TicketSettings_Ctrl_TicketSettings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings';

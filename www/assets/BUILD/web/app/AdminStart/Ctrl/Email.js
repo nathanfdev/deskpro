@@ -1,4 +1,4 @@
-define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketAccountModel'], (StartBase, EditTicketAccountModel) => {
+define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketAccountModel'], function(StartBase, EditTicketAccountModel) {
   class AdminStart_Ctrl_Email extends StartBase {
     static initClass() {
       this.CTRL_ID = 'AdminStart_Ctrl_Email';

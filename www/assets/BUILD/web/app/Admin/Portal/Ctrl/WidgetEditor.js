@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], (Admin_Ctrl_Base, Functions) => {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], function(Admin_Ctrl_Base, Functions) {
   class AdminPortalCtrlWidgetEditor extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'AdminPortalCtrlWidgetEditor';

@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', '$timeout', ($state, DashboardWidgetService, $timeout) =>
     ({
       restrict: 'E',

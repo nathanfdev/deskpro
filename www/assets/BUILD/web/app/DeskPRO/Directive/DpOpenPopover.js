@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const DeskPRO_Directive_DpOpenPopover = [() =>
     ({
       restrict: 'A',

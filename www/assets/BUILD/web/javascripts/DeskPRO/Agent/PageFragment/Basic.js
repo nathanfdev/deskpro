@@ -31,17 +31,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
             sh.updateSize();
           }
         }
-        ;
       }
 
       this.fireEvent('updateUi');
     }).bind(this);
 
-    if (window.requestAnimationFrame) {
-      window.requestAnimationFrame(runner);
-    } else {
-      runner();
-    }
+    window.requestAnimationFrame(runner);
   },
 
   initialize: function(html) {
@@ -67,10 +62,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     };
 
     this._hasInitAppsSidebar = false;
-
-    this.resizerInterval = window.setInterval(function() {
-      if (self.IS_ACTIVE) self.updateUi();
-    }, 1100);
 
     this.initializeProperties();
 
@@ -105,16 +96,17 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       }
 
       this.initPage(wrapper);
-      if (window.requestAnimationFrame) {
-        window.requestAnimationFrame(function() {
-          self.initApps();
-        });
-      } else {
-        this.initApps();
-      }
 
       DeskPRO_Window.TabBar.rescanTitles();
+
+      self.initApps();
       DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
+
+      if (this.wrapper) {
+        this.resizeSensor = new ResizeSensor(this.wrapper, function() {
+          self.updateUi();
+        });
+      }
 
     }, this);
 
@@ -143,8 +135,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
     this.addEvent('destroy', function() {
       this.scrollHandlers = [];
-      if (self.resizerInterval) {
-        window.clearInterval(self.resizerInterval);
+      if (this.resizeSensor) {
+        this.resizeSensor.detach();
+        this.resizeSensor = null;
       }
 
       if (this.scrollerHandler) {
@@ -392,7 +385,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       id = this.meta.baseId + '_' + id;
     }
 
-    return $('#' + id);
+    return $(document.getElementById(id));
   },
 
 
@@ -498,8 +491,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     platform.onFragmentEnded(this);
   },
 
-  togglePinAppsColumn: function()
-  {
+  togglePinAppsColumn: function() {
+    if (!this._hasInitAppsSidebar) return;
     if (DeskPRO_Window.appsSidebar.pinned) {
       this.unpinAppsSidebar();
       this.collapseAppsSidebar();
@@ -515,8 +508,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       this._initAppsSidebar();
   },
 
-  expandAppsSidebar: function()
-  {
+  expandAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     this.wrapper.removeClass('with-apps-sidebar-collapsed');
     this.wrapper.addClass('with-apps-sidebar-expanded');
     DeskPRO_Window.appsSidebar.expanded = true;
@@ -525,8 +518,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     }
   },
 
-  collapseAppsSidebar: function()
-  {
+  collapseAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     this.wrapper.removeClass('with-apps-sidebar-expanded');
     this.wrapper.addClass('with-apps-sidebar-collapsed');
     DeskPRO_Window.appsSidebar.expanded = false;
@@ -535,8 +528,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     }
   },
 
-  pinAppsSidebar: function()
-  {
+  pinAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     DeskPRO_Window.appsSidebar.pinned = true;
     DeskPRO_Window.appsSidebar.expanded = true;
     if (Modernizr.localstorage) {
@@ -549,8 +542,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     sidebarEl.addClass('sidebar-pinned');
   },
 
-  unpinAppsSidebar: function()
-  {
+  unpinAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     DeskPRO_Window.appsSidebar.pinned = false;
     DeskPRO_Window.appsSidebar.expanded = false;
     if (Modernizr.localstorage) {
@@ -578,9 +571,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.togglePin', this.pageUid].join('.'), this.togglePinAppsColumn, this);
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.expand', this.pageUid].join('.'),  this.expandAppsSidebar, this);
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.collapse', this.pageUid].join('.'), this.collapseAppsSidebar, this);
-
     });
-
 
     var self = this;
 

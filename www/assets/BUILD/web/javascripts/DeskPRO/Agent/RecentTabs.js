@@ -174,6 +174,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
     var self = this;
     var rows = [];
     var removeIds = [];
+    var filterVal = $.trim($('#recent_tabs_list_filter').val());
 
     items.forEach(function(item) {
     	var type = item[0], id = item[1], title = item[2], url = item[3], ts = item[4] || nowTs;
@@ -201,12 +202,12 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
       var itm = [type, id, title, url, ts];
       self.recentPendingSync.unshift(itm);
-      rows.unshift(self.renderRow(itm, true));
+      rows.unshift(self.renderRowHtml(itm, filterVal));
 		});
 
     var updateList = function() {
       if (rows.length) {
-        self.list.prepend(rows);
+        self.list.prepend($(rows.join('')));
 			}
 			if (removeIds) {
         removeIds.forEach(function(id) {
@@ -235,40 +236,44 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 	 * @param {Array} item
 	 * @returns {jQuery}
 	 */
-	renderRow: function(item, dontAdd) {
-		var stringMatch = item[2].toLowerCase();
-
-    var d = new Date(item[4]*1000);
-
-    var timeAgo = Orb.Util.TimeAgo.get(d);
-
-		var rowHtml = '<li>\n' +
-      '<a data-route="page:'+item[3]+'" route-notabreload="1">\n' +
-      '  <time datetime="' + d.toISOString() + '">' + timeAgo + '</time>' +
-      '  <div class="title">\n' +
-      '    <i class="icon-envelope fa dp-icon-placeholder"></i>\n' +
-      '    <strong>'+item[1]+'</strong>\n' +
-      '    <span>'+Orb.escapeHtml(item[2]+'')+'</span>\n' +
-      '  </div>\n' +
-      '</a>\n' +
-      '</li>';
-
-		var row = $(rowHtml);
-    row.addClass(item[0] + '-' + item[1] + ' ' + item[0]);
-		row.data('string-match', stringMatch);
-
-		var filterVal = $.trim($('#recent_tabs_list_filter').val());
-		if (!filterVal || stringMatch.indexOf(filterVal.toLowerCase()) !== -1) {
-			row.addClass('dp-vis');
-		} else {
-			row.hide();
-		}
-
+	renderRow: function(item, dontAdd, filterMatch) {
+		var row = $(this.renderRowHtml(item, filterMatch));
 		if (!dontAdd) {
       this.list.prepend(row);
     }
 
 		return row;
+	},
+
+	renderRowHtml: function(item, filterVal) {
+		var stringMatch = item[2].toLowerCase();
+
+		var d = new Date(item[4]*1000);
+
+		var timeAgo = Orb.Util.TimeAgo.get(d);
+		var classNames = [item[0] + '-' + item[1] + ' ' + item[0]];
+		var doHide = false;
+		if (typeof filterVal === 'undefined') {
+			filterVal = $.trim($('#recent_tabs_list_filter').val());
+		}
+		if (!filterVal || stringMatch.indexOf(filterVal.toLowerCase()) !== -1) {
+			classNames.push('dp-vis');
+		} else {
+			doHide = true;
+		}
+
+		var stringMatchV = Orb.escapeHtml(stringMatch);
+
+		return '<li class="' + classNames.join(' ') + '" '+ (doHide ? 'style="display:none"' : '') +' data-string-match="'+stringMatchV+'">\n' +
+			'<a data-route="page:'+item[3]+'" route-notabreload="1">\n' +
+			'  <time datetime="' + d.toISOString() + '">' + timeAgo + '</time>' +
+			'  <div class="title">\n' +
+			'    <i class="icon-envelope fa dp-icon-placeholder"></i>\n' +
+			'    <strong>'+item[1]+'</strong>\n' +
+			'    <span>'+Orb.escapeHtml(item[2]+'')+'</span>\n' +
+			'  </div>\n' +
+			'</a>\n' +
+			'</li>';
 	},
 
 

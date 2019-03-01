@@ -1,4 +1,4 @@
-define(['DeskPRO/Data/TzData'], (TzData) => {
+define(['DeskPRO/Data/TzData'], function(TzData) {
   const Admin_Main_Directive_DpWorkingHours = [() =>
     ({
       restrict:    'E',

@@ -1,4 +1,4 @@
-define(['moment', 'DeskPRO/Util/Util'], (moment, Util) => {
+define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
   class FieldFormMapper {
     /*
      * Get a form model for an existing field

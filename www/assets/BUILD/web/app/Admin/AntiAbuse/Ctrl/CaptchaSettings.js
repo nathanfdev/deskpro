@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   const _url = '/settings/anti_abuse/captcha';
   class Admin_AntiAbuse_Ctrl_CaptchaSettings extends Admin_Ctrl_Base {
     static initClass() {

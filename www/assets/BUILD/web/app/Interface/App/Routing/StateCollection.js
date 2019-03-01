@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class StateCollection {
     constructor(factory) {
       this.factory = factory;

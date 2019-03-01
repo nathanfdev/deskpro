@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const Admin_Main_Directive_DpDevBar = [() =>
     ({
       restrict: 'E',

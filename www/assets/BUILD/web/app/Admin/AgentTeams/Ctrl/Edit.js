@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   class Admin_AgentTeams_Ctrl_Edit extends Admin_Ctrl_Base {
     constructor(...args) {
       {

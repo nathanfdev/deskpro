@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const _persons = [];
   const _maps = {
     ids:      {},
