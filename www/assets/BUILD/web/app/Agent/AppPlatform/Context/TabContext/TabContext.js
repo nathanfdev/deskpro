@@ -281,11 +281,6 @@ define(['angular', 'DeskPRO/Util/Strings'], (angular, Strings) => new Orb.Class(
 
         tabElement = angular.element(`<li data-for="#${containerId}" id="${containerId}_tab"><span ng-if="btnBadge !== null" class="badge">{{btnBadge}}</span><img ng-if="btnImg !== null" ng-src="{{btnImg}}" /><span ng-if="btnText !== null" ng-bind="btnText"></span></li>`);
 
-        tplScope.$watch('enabled', (n) => {
-          tplScope.btnClass['is-enabled'] = !!n;
-          $timeout(() => { self.getFragment().updateAppsSidebar(); });
-        });
-
           // Need to do this 'manually' because the scope is being applied to children, not the el itself
         updateClassFn = function (btnClass) {
           tabElement.removeClass();

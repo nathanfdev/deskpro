@@ -117,7 +117,15 @@ if (!window.requestAnimationFrame) {
 
 if (!window.requestIdleCallback) {
 	window.requestIdleCallback = function(fn, opt) {
-		return window.setTimeout(fn, opt && opt.timeout ? opt.timeout*0.5 : 250);
+		var timeout = opt.timeout || 1;
+		if (timeout < 1000) {
+			timeout = 100;
+		} else if (timeout > 10000) {
+			timeout = 5000;
+		} else {
+			timeout = timeout * 0.5;
+		}
+		return window.setTimeout(fn, timeout);
 	};
 	window.cancelIdleCallback = window.clearTimeout;
 }

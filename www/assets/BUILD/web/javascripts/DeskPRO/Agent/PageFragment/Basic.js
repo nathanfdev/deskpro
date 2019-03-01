@@ -96,15 +96,10 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       }
 
       this.initPage(wrapper);
-      if (window.requestAnimationFrame) {
-        window.requestAnimationFrame(function() {
-          self.initApps();
-        });
-      } else {
-        this.initApps();
-      }
 
       DeskPRO_Window.TabBar.rescanTitles();
+
+      self.initApps();
       DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
 
       if (this.wrapper) {
@@ -390,7 +385,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       id = this.meta.baseId + '_' + id;
     }
 
-    return $('#' + id);
+    return $(document.getElementById(id));
   },
 
 
@@ -496,8 +491,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     platform.onFragmentEnded(this);
   },
 
-  togglePinAppsColumn: function()
-  {
+  togglePinAppsColumn: function() {
+    if (!this._hasInitAppsSidebar) return;
     if (DeskPRO_Window.appsSidebar.pinned) {
       this.unpinAppsSidebar();
       this.collapseAppsSidebar();
@@ -513,8 +508,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       this._initAppsSidebar();
   },
 
-  expandAppsSidebar: function()
-  {
+  expandAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     this.wrapper.removeClass('with-apps-sidebar-collapsed');
     this.wrapper.addClass('with-apps-sidebar-expanded');
     DeskPRO_Window.appsSidebar.expanded = true;
@@ -523,8 +518,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     }
   },
 
-  collapseAppsSidebar: function()
-  {
+  collapseAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     this.wrapper.removeClass('with-apps-sidebar-expanded');
     this.wrapper.addClass('with-apps-sidebar-collapsed');
     DeskPRO_Window.appsSidebar.expanded = false;
@@ -533,29 +528,29 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     }
   },
 
-  pinAppsSidebar: function()
-  {
+  pinAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     DeskPRO_Window.appsSidebar.pinned = true;
     DeskPRO_Window.appsSidebar.expanded = true;
     if (Modernizr.localstorage) {
       localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
     }
 
-    self.wrapper.addClass('with-apps-sidebar-pinned');
+    this.wrapper.addClass('with-apps-sidebar-pinned');
 
     var sidebarEl   = this.getEl('layout_sidebar');
     sidebarEl.addClass('sidebar-pinned');
   },
 
-  unpinAppsSidebar: function()
-  {
+  unpinAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     DeskPRO_Window.appsSidebar.pinned = false;
     DeskPRO_Window.appsSidebar.expanded = false;
     if (Modernizr.localstorage) {
       localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
     }
 
-    self.wrapper.removeClass('with-apps-sidebar-pinned');
+    this.wrapper.removeClass('with-apps-sidebar-pinned');
 
     var sidebarEl   = this.getEl('layout_sidebar');
     sidebarEl.removeClass('sidebar-pinned');
@@ -573,9 +568,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.togglePin', this.pageUid].join('.'), this.togglePinAppsColumn, this);
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.expand', this.pageUid].join('.'),  this.expandAppsSidebar, this);
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.collapse', this.pageUid].join('.'), this.collapseAppsSidebar, this);
-
     });
-
 
     var self = this;
 

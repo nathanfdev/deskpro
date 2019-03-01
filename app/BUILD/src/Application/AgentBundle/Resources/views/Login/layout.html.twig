@@ -913,10 +913,6 @@
 <link rel="prefetch" type="text/css" as="style" href="{{ asset('DeskPRO_AgentLegacyBundle.css', 'app_assets') }}" />
 <link rel="prefetch" type="text/javascript" as="script" href="{{ asset('DeskPRO_AgentLegacyBundle.js', 'app_assets') }}" />
 
-<link rel="prefetch" type="text/javascript" as="script" href="{{ asset('bower_components/requirejs/require.js') }}" />
-<link rel="prefetch" type="text/javascript" as="script" href="{{ path('agent_requirejs_loader') }}?v={{ app.getBuildTime() }}" />
-<link rel="prefetch" type="text/javascript" as="script" href="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" />
-
 {{ dp_asset_html('agent', {'prefetch': true}) }}
 {{ dp_asset_html('agent_vendor_out_css', {'prefetch': true}) }}
 {{ dp_asset_html('agent_css1', {'prefetch': true}) }}
