@@ -107,3 +107,17 @@ if (!Array.isArray) {
 		return Object.prototype.toString.call(arg) === '[object Array]';
 	};
 }
+
+if (!window.requestAnimationFrame) {
+	window.requestAnimationFrame = function(fn) {
+		return window.setTimeout(fn, 1);
+	};
+	window.cancelAnimationFrame = window.clearTimeout;
+}
+
+if (!window.requestAnimationFrame) {
+	window.requestIdleCallback = function(fn, opt) {
+		return window.setTimeout(fn, opt && opt.timeout ? opt.timeout*0.5 : 250);
+	};
+	window.cancelIdleCallback = window.clearTimeout;
+}

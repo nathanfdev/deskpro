@@ -31,17 +31,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
             sh.updateSize();
           }
         }
-        ;
       }
 
       this.fireEvent('updateUi');
     }).bind(this);
 
-    if (window.requestAnimationFrame) {
-      window.requestAnimationFrame(runner);
-    } else {
-      runner();
-    }
+    window.requestAnimationFrame(runner);
   },
 
   initialize: function(html) {
@@ -67,10 +62,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     };
 
     this._hasInitAppsSidebar = false;
-
-    this.resizerInterval = window.setInterval(function() {
-      if (self.IS_ACTIVE) self.updateUi();
-    }, 1100);
 
     this.initializeProperties();
 
@@ -116,6 +107,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       DeskPRO_Window.TabBar.rescanTitles();
       DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
 
+      if (this.wrapper) {
+        this.resizeSensor = new ResizeSensor(this.wrapper, function() {
+          self.updateUi();
+        });
+      }
+
     }, this);
 
     // Standard hook methods
@@ -143,8 +140,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
     this.addEvent('destroy', function() {
       this.scrollHandlers = [];
-      if (self.resizerInterval) {
-        window.clearInterval(self.resizerInterval);
+      if (this.resizeSensor) {
+        this.resizeSensor.detach();
+        this.resizeSensor = null;
       }
 
       if (this.scrollerHandler) {
