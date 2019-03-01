@@ -13,13 +13,14 @@ class Build1550595923 extends AbstractBuild implements OnlineBuildInterface, Ski
         $this->truncateTable('default', 'tickets_search_active');
 
         $sql = <<<'EOS'
+ALTER TABLE tickets_search_active
 ADD ticket_status_id INT DEFAULT NULL AFTER status,
 ADD CONSTRAINT FK_9645F8AF1CDDAF7 FOREIGN KEY (ticket_status_id) REFERENCES ticket_statuses (id) ON DELETE SET NULL,
 ADD INDEX IDX_9645F8AF1CDDAF7  (ticket_status_id),
 DROP INDEX status_idx,
 ADD INDEX status_idx (status, ticket_status_id)
 EOS;
-        $this->execSlowAlterTable('tickets_search_active', $sql);
+        $this->execDbQuery('default', $sql);
 
         // via TicketSearchActive::getFieldNames
         $fields = [
