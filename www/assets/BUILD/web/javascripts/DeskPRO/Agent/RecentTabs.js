@@ -207,7 +207,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
     var updateList = function() {
       if (rows.length) {
-        self.list.prepend($(rows));
+        self.list.prepend($(rows.join('')));
 			}
 			if (removeIds) {
         removeIds.forEach(function(id) {

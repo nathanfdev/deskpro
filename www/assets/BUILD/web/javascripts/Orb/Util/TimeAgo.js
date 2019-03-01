@@ -74,11 +74,17 @@ Orb.Util.TimeAgo = {
 
 		var self = this;
 
-		$.each(els, function(el) {
+		var deferNodes = [];
+		$.each(els, function(idx, el) {
 
 			// Could be removed, just skip it
 			// might be reinserted later
 			if (!el || !el.parentNode) {
+				return;
+			}
+
+			if (idx > 50) {
+				deferNodes.push(el);
 				return;
 			}
 
@@ -123,6 +129,15 @@ Orb.Util.TimeAgo = {
 				el.removeClass('timeago-auto-update');
 			}
 		});
+
+		if (deferNodes.length) {
+			var runDefer = (function() {
+				this.refreshElements(deferNodes);
+			}).bind(this);
+			window.requestIdleCallback ?
+				window.requestIdleCallback(runDefer, {timeout: 2000}) :
+				window.setTimeout(runDefer, 350);
+		}
 	},
 
 
