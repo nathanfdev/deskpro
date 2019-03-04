@@ -101,8 +101,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 					notifyBox.find(".notification-progress-on").hide();
 					ul.html(rows.rendered_list);
 					ul.find('.dismiss').remove();
-					ul.find('li').addClass('is-dismissed');
-					ul.find('time').addClass('timeago');
+					ul.find('li').addClass('is-dismissed').addClass('timeago').data('no-browser-notif', true);
 					ul.show();
 				}
 			});
@@ -213,10 +212,11 @@ DeskPRO.Agent.Notifications = new Orb.Class({
         return;
       }
       html = html.replace(
-      	'<li ',
-				'route-notabreload="1" data-avatar="'+avatar+'"' +
-					(sendBrowserNotif ? ' no-browser-notif="1"' : '') +
-					(alert_id ? ' data-alert-id="'+alert_id+'"' : '')
+      	'<li',
+				'<li route-notabreload="1" data-avatar="'+avatar+'"' +
+					(!sendBrowserNotif ? ' data-no-browser-notif="1"' : '') +
+					(alert_id ? ' data-alert-id="'+alert_id+'"' : '') +
+					' '
 			);
 
       html = html.replace('<time></time>', '<time datetime="'+nowString+'"></time>');
@@ -233,7 +233,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
       list.prepend(appendRows);
 
       if (DeskPRO_Window.getMessageChanneler().hasDoneInitialLoad) {
-        appendRows.each(function() {
+        appendRows.filter('li').each(function() {
         	var row = $(this);
 
         	if (row.data('no-browser-notif')) {
