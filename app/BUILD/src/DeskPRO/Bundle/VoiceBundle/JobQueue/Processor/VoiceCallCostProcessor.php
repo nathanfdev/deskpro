@@ -13,7 +13,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class VoiceCallCostProcessor extends AbstractJobProcessor
 {
-    const JOB_TYPE = 'voice_call_cost_processor';
+    const JOB_TYPE = 'voice_call_cost';
 
     /**
      * @var EntityManager

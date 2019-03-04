@@ -81,6 +81,9 @@ class CallLogsList extends React.Component {
                 onOpenCallLog(call.get('id'));
               };
 
+              const recordings = call.get('recordings');
+              const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
+
               return (
                 <tr key={index}>
                   <td className="alt dp-id-col">
@@ -141,8 +144,8 @@ class CallLogsList extends React.Component {
                   </td>
                   <CallStatus call={call} />
                   <td>
-                    {call.get('recording') ? <BlobPlayButton iconOnly value={call.get('recording')} /> : '-'}
-                    {call.get('recording') ? <DeleteButton iconOnly onClick={() => this.onDeleteClick(call.get('id'))} /> : null}
+                    {recordingsEnabled.size > 0 ? recordingsEnabled.map(recording => <BlobPlayButton iconOnly value={recording.get('blob')} />) : '-'}
+                    {recordingsEnabled.size > 0 ? <DeleteButton iconOnly onClick={() => this.onDeleteClick(call.get('id'))} /> : null}
                   </td>
                 </tr>
               );

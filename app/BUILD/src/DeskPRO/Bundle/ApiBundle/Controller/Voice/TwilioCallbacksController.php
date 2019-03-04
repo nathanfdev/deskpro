@@ -471,19 +471,55 @@ class TwilioCallbacksController extends BaseController
 
         $source    = $request->request->get('RecordingSource');
         $phoneCall = null;
-        if ($source === 'RecordVerb') {
-            // voicemail record
-            $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
-                'callSid' => $request->request->get('CallSid'),
-            ]);
-        } elseif ($source === 'Conference') {
+        if ($source === 'Conference') {
             // phone call record
             $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
                 'conferenceSid' => $request->request->get('ConferenceSid'),
             ]);
         }
-        if ($phoneCall) {
+        if ($phoneCall instanceof VoicePhoneCall) {
             $this->get('dp.voice.recording_download_helper')->enqueueRecordingDownload(
+                $phoneCall,
+                $request->request->get('RecordingUrl'),
+                $request->request->get('RecordingDuration')
+            );
+        }
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Recording status callback",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     noOutput=true
+     * )
+     *
+     * @Rest\Post("/voicemail_recording_status_callback", name="twilio_voicemail_recording_status_callback")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param string             $accountAuth
+     * @param Request            $request
+     *
+     * @throws \Exception
+     */
+    public function voicemailRecordingStatusCallbackAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $source    = $request->request->get('RecordingSource');
+        $phoneCall = null;
+        if ($source === 'RecordVerb') {
+            // voicemail record
+            $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+                'callSid' => $request->request->get('CallSid'),
+            ]);
+        }
+        if ($phoneCall instanceof VoicePhoneCall) {
+            $this->get('dp.voice.recording_download_helper')->enqueueVoicemailRecordingDownload(
                 $phoneCall,
                 $request->request->get('RecordingUrl'),
                 $request->request->get('RecordingDuration')
@@ -540,7 +576,7 @@ class TwilioCallbacksController extends BaseController
         $twiml->record([
             'action'                        => $this->getVoicemailEndUrl($account),
             'method'                        => 'POST',
-            'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
+            'recordingStatusCallback'       => $this->getVoicemailRecordingStatusCallbackUrl($account),
             'recordingStatusCallbackMethod' => 'POST',
         ]);
 
@@ -1077,6 +1113,19 @@ class TwilioCallbacksController extends BaseController
     private function getRecordingStatusCallbackUrl(TwilioVoiceAccount $account)
     {
         return $this->get('router')->generate('twilio_recording_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param TwilioVoiceAccount $account
+     *
+     * @return string
+     */
+    private function getVoicemailRecordingStatusCallbackUrl(TwilioVoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_voicemail_recording_status_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Person;
-use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 
@@ -11,39 +10,12 @@ use JMS\Serializer\Annotation as JMS;
  * Class VoicemailRecord.
  *
  * @ORM\Entity()
- * @ORM\Table(name="voicemail_records")
+ * @ORM\Table(name="voicemail_agent_recordings")
  *
  * @JMS\ExclusionPolicy("all")
  */
-class VoicemailRecord implements EntityInterface, NotifyPropertyChanged
+class VoicemailAgentRecording extends AbstractVoiceRecording
 {
-    use NotifyPropertyChangedTrait;
-
-    /**
-     * The unique ID.
-     *
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
-     *
-     * @JMS\Expose()
-     * @JMS\Type("integer")
-     *
-     * @var int
-     */
-    private $id;
-
-    /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall", inversedBy="voicemailRecord")
-     * @ORM\JoinColumn(name="phone_call_id", referencedColumnName="id", onDelete="CASCADE")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall>")
-     *
-     * @var VoicePhoneCall
-     */
-    private $phoneCall;
-
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="CASCADE")
@@ -53,7 +25,18 @@ class VoicemailRecord implements EntityInterface, NotifyPropertyChanged
      *
      * @var Person
      */
-    private $agent;
+    protected $agent;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall", inversedBy="phoneCallLogs")
+     * @ORM\JoinColumn(name="phone_call_id", referencedColumnName="id", onDelete="CASCADE")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall>")
+     *
+     * @var VoicePhoneCall
+     */
+    protected $phoneCall;
 
     /**
      * @ORM\Column(name="data", type="json_array")
@@ -63,7 +46,7 @@ class VoicemailRecord implements EntityInterface, NotifyPropertyChanged
      *
      * @var array
      */
-    private $data = [];
+    protected $data = [];
 
     /**
      * @ORM\Column(name="date_created", type="datetime")
@@ -73,17 +56,7 @@ class VoicemailRecord implements EntityInterface, NotifyPropertyChanged
      *
      * @var \DateTime
      */
-    private $dateCreated;
-
-    /**
-     * @ORM\Column(name="is_deleted", type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    private $isDeleted = false;
+    protected $dateCreated;
 
     /**
      * @ORM\Column(name="is_listened", type="boolean")
@@ -93,7 +66,7 @@ class VoicemailRecord implements EntityInterface, NotifyPropertyChanged
      *
      * @var bool
      */
-    private $isListened = false;
+    protected $isListened = false;
 
     /**
      * Constructor.
@@ -101,34 +74,6 @@ class VoicemailRecord implements EntityInterface, NotifyPropertyChanged
     public function __construct()
     {
         $this->dateCreated = new \DateTime();
-    }
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return VoicePhoneCall
-     */
-    public function getPhoneCall()
-    {
-        return $this->phoneCall;
-    }
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     *
-     * @return $this
-     */
-    public function setPhoneCall(VoicePhoneCall $phoneCall = null)
-    {
-        $this->setModelField('phoneCall', $phoneCall);
-
-        return $this;
     }
 
     /**
@@ -187,26 +132,6 @@ class VoicemailRecord implements EntityInterface, NotifyPropertyChanged
     public function setDateCreated($dateCreated)
     {
         $this->setModelField('dateCreated', $dateCreated);
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isDeleted()
-    {
-        return $this->isDeleted;
-    }
-
-    /**
-     * @param bool $isDeleted
-     *
-     * @return $this
-     */
-    public function setIsDeleted($isDeleted)
-    {
-        $this->setModelField('isDeleted', $isDeleted);
 
         return $this;
     }

@@ -70,22 +70,32 @@ class VoicePhoneCallsController extends CrudController
 
         $this->denyAccessUnlessGranted(PermissionGroupVoter::DELETE, new PermissionGroupContext($ticket, $message));
 
-        $recording = $phoneCall->getRecording();
-        if ($recording) {
-            $phoneCall->setRecording(null);
-            $phoneCall->setRecordingDeleted(true);
-            $em->persist($phoneCall);
+        $recordings = $phoneCall->getRecordings();
+        if ($recordings->count() > 0) {
+            foreach ($recordings as $recording) {
+                $blob = $recording->getBlob();
+                if (!$blob) {
+                    continue;
+                }
 
-            $ticketLog = new TicketLog();
-            $ticketLog
-                ->setTicket($ticket)
-                ->setPerson($this->getUser())
-                ->setIdObject($phoneCall->getId())
-                ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED)
-                ->setDetailItem('filesize', sprintf('%.2f', $recording->getFilesize() / 1024))
-            ;
+                $recording->setBlob(null);
+                $recording->setIsDeleted(true);
 
-            $em->persist($ticketLog);
+                $this->get('blob.storage')->deleteBlobRecord($blob);
+
+                $em->flush();
+
+                $ticketLog = new TicketLog();
+                $ticketLog
+                    ->setTicket($ticket)
+                    ->setPerson($this->getUser())
+                    ->setIdObject($phoneCall->getId())
+                    ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DELETED)
+                    ->setDetailItem('filesize', sprintf('%.2f', $blob->getFilesize() / 1024))
+                ;
+
+                $em->persist($ticketLog);
+            }
 
             $callLog = new VoicePhoneCallLog();
             $callLog
@@ -95,9 +105,6 @@ class VoicePhoneCallsController extends CrudController
             ;
 
             $em->persist($callLog);
-
-            $this->get('blob.storage')->deleteBlobRecord($recording);
-            $em->flush();
         }
 
         $serializedData = $this->get('serializer')->toArray(

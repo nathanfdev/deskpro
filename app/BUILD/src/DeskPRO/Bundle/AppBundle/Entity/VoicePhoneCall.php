@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -207,32 +206,18 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $dateEnded;
 
     /**
-     * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\Blob", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceRecording", mappedBy="phoneCall", cascade={"persist", "remove"}, orphanRemoval=true)
      *
-     * @var Blob
+     * @var VoiceRecording[]|ArrayCollection
      */
-    private $recording;
+    private $recordings;
 
     /**
-     * @ORM\Column(name="recording_deleted", type="boolean")
+     * @ORM\OneToOne(targetEntity="VoicemailAgentRecording", mappedBy="phoneCall")
      *
-     * @var bool
-     */
-    private $recordingDeleted = false;
-
-    /**
-     * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord", mappedBy="phoneCall")
-     *
-     * @var VoicemailRecord
+     * @var VoicemailAgentRecording
      */
     private $voicemailRecord;
-
-    /**
-     * @ORM\Column(name="duration", type="integer", nullable=true)
-     *
-     * @var int
-     */
-    private $duration;
 
     /**
      * @ORM\Column(name="cost", type="string", nullable=true)
@@ -263,6 +248,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $this->participants            = new ArrayCollection();
         $this->phoneCallLogs           = new ArrayCollection();
         $this->ticketMessageAttributes = new ArrayCollection();
+        $this->recordings              = new ArrayCollection();
         $this->dateCreated             = new \DateTime();
     }
 
@@ -710,66 +696,6 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Blob
-     */
-    public function getRecording()
-    {
-        return $this->recording;
-    }
-
-    /**
-     * @param Blob $recording
-     *
-     * @return $this
-     */
-    public function setRecording(Blob $recording = null)
-    {
-        $this->setModelField('recording', $recording);
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRecordingDeleted()
-    {
-        return $this->recordingDeleted;
-    }
-
-    /**
-     * @param bool $recordingDeleted
-     *
-     * @return $this
-     */
-    public function setRecordingDeleted($recordingDeleted)
-    {
-        $this->setModelField('recordingDeleted', $recordingDeleted);
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * @param int $duration
-     *
-     * @return $this
-     */
-    public function setDuration($duration)
-    {
-        $this->setModelField('duration', $duration);
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getCost()
@@ -822,7 +748,41 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return VoicemailRecord
+     * @return VoiceRecording[]|ArrayCollection
+     */
+    public function getRecordings()
+    {
+        return $this->recordings;
+    }
+
+    /**
+     * @param VoiceRecording $recording
+     *
+     * @return $this
+     */
+    public function addRecording(VoiceRecording $recording)
+    {
+        $this->recordings->add($recording);
+        $recording->setPhoneCall($this);
+
+        return $this;
+    }
+
+    /**
+     * @param VoiceRecording $recording
+     *
+     * @return $this
+     */
+    public function removeRecording(VoiceRecording $recording)
+    {
+        $this->recordings->removeElement($recording);
+        $recording->setPhoneCall(null);
+
+        return $this;
+    }
+
+    /**
+     * @return VoicemailAgentRecording
      */
     public function getVoicemailRecord()
     {
@@ -830,11 +790,11 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param VoicemailRecord $voicemailRecord
+     * @param VoicemailAgentRecording $voicemailRecord
      *
      * @return $this
      */
-    public function setVoicemailRecord(VoicemailRecord $voicemailRecord = null)
+    public function setVoicemailRecord(VoicemailAgentRecording $voicemailRecord = null)
     {
         $this->setModelField('voicemailRecord', $voicemailRecord);
         if ($voicemailRecord) {

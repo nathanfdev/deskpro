@@ -829,6 +829,7 @@ class PlivoCallbacksController extends BaseController
         $asset   = null;
         $assetId = $request->query->get('asset');
         if ($assetId) {
+            /** @var AbstractVoiceAsset $asset */
             $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
         }
 
@@ -846,7 +847,7 @@ class PlivoCallbacksController extends BaseController
         $plivoXml->addRecord([
             'action'         => $this->getVoicemailEndUrl($account),
             'method'         => 'POST',
-            'callbackUrl'    => $this->getRecordingStatusCallbackUrl($account),
+            'callbackUrl'    => $this->getVoicemailRecordingStatusCallbackUrl($account),
             'callbackMethod' => 'POST',
         ]);
 
@@ -914,6 +915,7 @@ class PlivoCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
+        /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
             'callSid' => $request->request->get('CallUUID'),
         ]);
@@ -922,6 +924,44 @@ class PlivoCallbacksController extends BaseController
             $this->get('dp.voice.recording_download_helper')->enqueueRecordingDownload(
                 $phoneCall,
                 $request->request->get('RecordUrl'),
+                $request->request->get('RecordingDuration')
+            );
+        }
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Recording status callback for voicemail",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     noOutput=true
+     * )
+     *
+     * @Rest\Post("/voicemail_recording_status_callback", name="plivo_voicemail_recording_status_callback")
+     *
+     * @param PlivoVoiceAccount $account
+     * @param string            $accountAuth
+     * @param Request           $request
+     *
+     * @throws \Exception
+     */
+    public function voicemailRecordingStatusCallbackAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        /** @var VoicePhoneCall $phoneCall */
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'callSid' => $request->request->get('CallUUID'),
+        ]);
+
+        if ($phoneCall) {
+            $this->get('dp.voice.recording_download_helper')->enqueueVoicemailRecordingDownload(
+                $phoneCall,
+                $request->request->get('RecordFile'),
                 $request->request->get('RecordingDuration')
             );
         }
@@ -1239,6 +1279,19 @@ class PlivoCallbacksController extends BaseController
     private function getRecordingStatusCallbackUrl(PlivoVoiceAccount $account)
     {
         return $this->get('router')->generate('plivo_recording_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param PlivoVoiceAccount $account
+     *
+     * @return string
+     */
+    private function getVoicemailRecordingStatusCallbackUrl(PlivoVoiceAccount $account)
+    {
+        return $this->get('router')->generate('plivo_voicemail_recording_status_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);

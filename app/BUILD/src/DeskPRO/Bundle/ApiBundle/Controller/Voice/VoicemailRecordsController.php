@@ -10,7 +10,7 @@ use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord;
+use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -29,7 +29,7 @@ class VoicemailRecordsController extends CrudController
 {
     use TicketSaveTrait;
 
-    public static $entity     = VoicemailRecord::class;
+    public static $entity     = VoicemailAgentRecording::class;
     public static $exposeOnly = ['get', 'list', 'count', 'delete'];
 
     /**
@@ -43,13 +43,13 @@ class VoicemailRecordsController extends CrudController
      *
      * @Rest\Put("/{record}/mark_listened")
      *
-     * @param VoicemailRecord $record
+     * @param VoicemailAgentRecording $record
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function markListenedToAction(VoicemailRecord $record)
+    public function markListenedToAction(VoicemailAgentRecording $record)
     {
         if ($record->getAgent() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Unable to update voicemail record');
@@ -75,13 +75,13 @@ class VoicemailRecordsController extends CrudController
      *
      * @Rest\Put("/{record}/create_ticket")
      *
-     * @param VoicemailRecord $record
+     * @param VoicemailAgentRecording $record
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function createTicketAction(VoicemailRecord $record)
+    public function createTicketAction(VoicemailAgentRecording $record)
     {
         if ($record->getAgent() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Unable to create voicemail ticket');
@@ -143,11 +143,10 @@ class VoicemailRecordsController extends CrudController
 
         $noBlob = $request->get('no_blob', 0);
         if ($noBlob != -1) {
-            $qb->join("$alias.phoneCall", 'p');
             if ($noBlob) {
-                $qb->andWhere('p.recording IS NULL');
+                $qb->andWhere("$alias.blob IS NULL");
             } else {
-                $qb->andWhere('p.recording > 0');
+                $qb->andWhere("$alias.blob > 0");
             }
         }
 
@@ -161,7 +160,7 @@ class VoicemailRecordsController extends CrudController
     /**
      * {@inheritdoc}
      *
-     * @param VoicemailRecord $entity
+     * @param VoicemailAgentRecording $entity
      *
      * @throws \Exception
      */
