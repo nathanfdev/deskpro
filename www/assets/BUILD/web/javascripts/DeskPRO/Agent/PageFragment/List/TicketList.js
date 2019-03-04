@@ -1356,10 +1356,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
     $scope.getDisplayableFields = function() {
       var fields = [];
-      self.fixed_fields.each(function(v) {
+      self.fixed_fields.forEach(function(v) {
         fields.push(v);
       });
-      $scope.display_fields.each(function(v) {
+      $scope.display_fields.forEach(function(v) {
         if (fields.indexOf(v) > -1 || v === 'id') {
           return;
         }
