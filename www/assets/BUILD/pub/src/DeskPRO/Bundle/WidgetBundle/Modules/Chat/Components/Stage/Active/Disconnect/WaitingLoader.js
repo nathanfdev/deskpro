@@ -13,7 +13,7 @@ export class WaitingLoader extends React.Component {
 
     return (
       <div>
-        <h1>{portalPhrases.get('portal.chat.agent_disconnected', { '{agentName}': agentName })}</h1>
+        <h1>{portalPhrases.get('portal.chat.agent_disconnected', { agentName })}</h1>
         <h2>{portalPhrases.get('portal.chat.looking_for_another_agent')}</h2>
         <div className="search-dots">
           <div className="dot-1" />

@@ -22,7 +22,7 @@ export class TypingEvent extends React.Component {
         </AvatarResolver>
         <div className="dpdesignportal-message-content">
           <span className="dpdesignportal-user-typing">
-            {portalPhrases.get('portal.chat.agent_typing_message', { '{agentName}': agentName })}
+            {portalPhrases.get('portal.chat.agent_typing_message', { agentName })}
             <span className="dot1">.</span>
             <span className="dot2">.</span>
             <span className="dot3">.</span>

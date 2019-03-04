@@ -10,12 +10,12 @@ export class RateAgentDialog extends React.Component {
     onClickNotHelpful: PropTypes.func
   };
 
-  onClickHelpful = event => {
+  onClickHelpful = (event) => {
     event.preventDefault();
     this.props.onClickHelpful();
   };
 
-  onClickNotHelpful = event => {
+  onClickNotHelpful = (event) => {
     event.preventDefault();
     this.props.onClickNotHelpful();
   };
@@ -26,7 +26,7 @@ export class RateAgentDialog extends React.Component {
     return (
       <div className="dpdesignportal-agent-rating">
         <div />
-        <h1><span>{portalPhrases.get('portal.chat.rate_agent_title', { '{agentName}': agentName })}</span></h1>
+        <h1><span>{portalPhrases.get('portal.chat.rate_agent_title', { agentName })}</span></h1>
 
         <div className="dpdesignportal-agent-rating-buttons">
           <button className="dpdesignportal-button" onClick={this.onClickHelpful}>

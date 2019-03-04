@@ -111,7 +111,7 @@ export class ReplyForm extends React.Component {
             placeholder: {
               // replaced this.props.agentName to default 'Agent'
               // because the placeholder text is not updated on re-assign agent properly (e.g. on change this.props.agentName value)
-              text: portalPhrases.get('portal.chat.message_type', { '{agentName}': 'Agent' })
+              text: portalPhrases.get('portal.chat.message_type', { agentName: 'Agent' })
             },
             toolbar: {
               buttons:                ['bold', 'italic', 'underline'],

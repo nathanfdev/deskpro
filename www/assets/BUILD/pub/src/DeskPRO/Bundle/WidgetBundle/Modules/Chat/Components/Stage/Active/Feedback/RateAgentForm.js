@@ -16,12 +16,12 @@ export class RateAgentForm extends React.Component {
     };
   }
 
-  onSubmit = event => {
+  onSubmit = (event) => {
     event.preventDefault();
     this.props.onSubmit(this.state.comment);
   };
 
-  onChangeComment = event => {
+  onChangeComment = (event) => {
     this.setState({
       comment: event.target.value
     });
@@ -34,8 +34,8 @@ export class RateAgentForm extends React.Component {
       <div className="dpdesignportal-agent-rating">
         <h1
           dangerouslySetInnerHTML={portalPhrases.getHtml('portal.chat.feedback_not_helpful_title', {
-            '{agentName}':  agentName,
-            '{notHelpful}': portalPhrases.get('portal.chat.not_helpful')
+            agentName,
+            notHelpful: portalPhrases.get('portal.chat.not_helpful')
           })}
         />
         <div className="dpdesignportal-agent-rating-form">
