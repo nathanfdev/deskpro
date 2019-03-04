@@ -54,9 +54,9 @@
   pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
   pageMeta.person_name = {{ ticket.person.display_name|json_encode|raw }};
 
-  pageMeta.ticket = {{ ticket_api|json_encode|raw }};
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
+  pageMeta.ticket = pageMeta.api_data;
   pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
   pageMeta.billingCurrency = '{{ app.getSetting('core_tickets.billing_currency') }}';
   pageMeta.hasTimeLog = {{ app.getSetting('core_tickets.enable_timelog')? 'true' : 'false' }};
@@ -817,7 +817,7 @@
                         <ul>
                             <li data-list-type="messages" class="on"
                                 data-tab-for="#{{ baseId }}_messages_wrap">{{ phrase('agent.tickets.messages') }}</li>
-                            <li class="logs" data-list-type="log"
+                            <li class="logs dirty" data-list-type="log"
                                 data-tab-for="#{{ baseId }}_logs_wrap">{{ phrase('agent.tickets.full_log') }}</li>
                             {% if app.getSetting('core_tickets.enable_feedback') and app.getSetting('core_tickets.feedback_agents_read') and ticket.date_feedback_rating %}
                                 <li data-list-type="feedback" data-tab-for="#{{ baseId }}_messages_wrap">
@@ -861,7 +861,9 @@
                     </div>
                 </section>
                 <section id="{{ baseId }}_logs_wrap" style="margin: 0;padding: 0;">
-                    {{ logs_block|raw }}
+                    <div style="padding:25px;">
+                        <i class="spinner-circle-32"></i>
+                    </div>
                 </section>
                 <section id="{{ baseId }}_times" class="times-table-wrapper" style="display: none; padding: 0;">
                     <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">
