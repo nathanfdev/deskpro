@@ -13,65 +13,6 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		$('#recent_tabs_list').on('click', function(ev) {
 			Orb.shimClickCallbackPop();
 		});
-		$('#recent_tabs_list_filter').on('keydown', function(ev) {
-			if (ev.keyCode == 13 /* enter key */) {
-				var current = self.list.find('.dp-cursor');
-				eatNext = true;
-				if (current[0]) {
-					DeskPRO_Window.runPageRouteFromElement(current.find('a'));
-					Orb.shimClickCallbackPop();
-				}
-
-			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
-				eatNext = true;
-				var current = self.list.find('.dp-cursor');
-				current.removeClass('dp-cursor');
-				var dir = ev.keyCode == 40 ? 'down' : 'up';
-				var next;
-
-				if (!current.length) {
-					if (dir == 'down') {
-						self.list.find('.dp-vis').first().addClass('dp-cursor');
-					} else {
-						self.list.find('.dp-vis').last().addClass('dp-cursor');
-					}
-				} else {
-					if (dir == 'down') {
-						next = current.next('li.dp-vis');
-						if (!next.length) {
-							next = self.list.find('.dp-vis').first().addClass('dp-cursor');
-						}
-					} else {
-						next = current.prev('li.dp-vis');
-						if (!next.length) {
-							next = self.list.find('.dp-vis').last().addClass('dp-cursor');
-						}
-					}
-
-					next.addClass('dp-cursor');
-				}
-			}
-		}).on('keyup', function(ev) {
-			if (eatNext) {
-				return;
-			}
-			var val = $.trim($(this).val());
-
-			if (!val) {
-				self.list.find('li').show().addClass('dp-vis');
-				return;
-			}
-
-			val = val.toLowerCase();
-
-			self.list.find('li').each(function() {
-				if ($(this).data('string-match').indexOf(val) !== -1) {
-					$(this).show().addClass('dp-vis');
-				} else {
-					$(this).hide().removeClass('dp-vis');
-				}
-			});
-		});
 
 		this.reloadRecentTabs();
 	},
@@ -174,7 +115,6 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
     var self = this;
     var rows = [];
     var removeIds = [];
-    var filterVal = $.trim($('#recent_tabs_list_filter').val());
 
     items.forEach(function(item) {
     	var type = item[0], id = item[1], title = item[2], url = item[3], ts = item[4] || nowTs;
@@ -185,7 +125,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
       if (self.recentTabIds[idString]) {
         delete self.recentTabIds[idString];
         self.recent.forEach(function(item, i) {
-          if ((item[0] + '-' + item[1]) == idString) {
+          if ((item[0] + '-' + item[1]) === idString) {
             idx = i;
             return false;
           }
@@ -202,7 +142,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 
       var itm = [type, id, title, url, ts];
       self.recentPendingSync.unshift(itm);
-      rows.unshift(self.renderRowHtml(itm, filterVal));
+      rows.unshift(self.renderRowHtml(itm));
 		});
 
     var updateList = function() {
@@ -236,8 +176,8 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 	 * @param {Array} item
 	 * @returns {jQuery}
 	 */
-	renderRow: function(item, dontAdd, filterMatch) {
-		var row = $(this.renderRowHtml(item, filterMatch));
+	renderRow: function(item, dontAdd) {
+		var row = $(this.renderRowHtml(item));
 		if (!dontAdd) {
       this.list.prepend(row);
     }
@@ -245,26 +185,13 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		return row;
 	},
 
-	renderRowHtml: function(item, filterVal) {
-		var stringMatch = item[2].toLowerCase();
-
+	renderRowHtml: function(item) {
 		var d = new Date(item[4]*1000);
 
 		var timeAgo = Orb.Util.TimeAgo.get(d);
-		var classNames = [item[0] + '-' + item[1] + ' ' + item[0]];
-		var doHide = false;
-		if (typeof filterVal === 'undefined') {
-			filterVal = $.trim($('#recent_tabs_list_filter').val());
-		}
-		if (!filterVal || stringMatch.indexOf(filterVal.toLowerCase()) !== -1) {
-			classNames.push('dp-vis');
-		} else {
-			doHide = true;
-		}
+		var classNames = [item[0] + '-' + item[1] + ' ' + item[0], 'dp-vis'];
 
-		var stringMatchV = Orb.escapeHtml(stringMatch);
-
-		return '<li class="' + classNames.join(' ') + '" '+ (doHide ? 'style="display:none"' : '') +' data-string-match="'+stringMatchV+'">\n' +
+		return '<li class="' + classNames.join(' ') + '">\n' +
 			'<a data-route="page:'+item[3]+'" route-notabreload="1">\n' +
 			'  <time datetime="' + d.toISOString() + '">' + timeAgo + '</time>' +
 			'  <div class="title">\n' +

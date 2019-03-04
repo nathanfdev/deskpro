@@ -771,7 +771,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		this.refreshOpenCounts();
 
-		if (this.onlineAgentIds.indexOf(DESKPRO_PERSON_ID) !== -1) {
+		if (this.onlineAgentIds.indexOf(DESKPRO_PERSON_ID) === -1) {
 			return;
 		}
 
