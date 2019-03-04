@@ -407,15 +407,17 @@ Orb.typeOf = function(i) {
 		if (i.nodeType === 3) {
 			return (/\S/).test(i.nodeValue) ? "textnode" : "whitespace";
 		}
-	} else {
-		if (Array.isArray(i)) {
-			return "array";
+	}
+	if (Array.isArray(i)) {
+		return "array";
+	}
+	if (typeof i.length == "number") {
+		if (i.callee) {
+			return "arguments";
 		}
-		if (typeof i.length == "number") {
-			if (i.callee) {
-				return "arguments";
-			}
-		}
+	}
+	if (typeof i === 'string' || i instanceof String || Object.prototype.toString.call(i) === '[object String]') {
+		return 'string';
 	}
 	return typeof i;
 };
