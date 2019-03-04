@@ -1340,6 +1340,20 @@ class TicketController extends AbstractController
             }
         }
 
+        $ticketContext->getVars()->set('reply_as_action', $actionType);
+
+        $replyOptions = [];
+        if ($this->in->getInt('options.agent_id') != -1 && $this->in->getBool('options.do_assign_agent')) {
+            $replyOptions[] = 'agent_assign';
+        }
+        if ($this->in->getInt('options.agent_team_id') != -1 && $this->in->getBool('options.do_assign_team')) {
+            $replyOptions[] = 'agent_team_assign';
+        }
+        if (!$this->in->getBool('options.notify_user')) {
+            $replyOptions[] = 'mute_user_emails';
+        }
+        $ticketContext->getVars()->set('reply_options', $replyOptions);
+
         $macro = null;
         if ($macroId) {
             $macro = $this->em->find(TicketMacro::class, $macroId);
