@@ -922,10 +922,6 @@ define([
             });
           };
 
-          $timeout(() => {
-            $('#recent_tabs_list_filter').focus();
-          });
-
           $backdrop.show();
         };
 
