@@ -1169,7 +1169,7 @@ return [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1550595919.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1550595919',
         'skipPostBuild' => true,
-        'isOnlineBuild' => false,
+        'isOnlineBuild' => true,
     ],
     1550595920 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1550595920.php',
@@ -1181,19 +1181,19 @@ return [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1550595921.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1550595921',
         'skipPostBuild' => true,
-        'isOnlineBuild' => false,
+        'isOnlineBuild' => true,
     ],
     1550595922 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1550595922.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1550595922',
         'skipPostBuild' => true,
-        'isOnlineBuild' => false,
+        'isOnlineBuild' => true,
     ],
     1550595923 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1550595923.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1550595923',
         'skipPostBuild' => true,
-        'isOnlineBuild' => false,
+        'isOnlineBuild' => true,
     ],
     1550595924 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1550595924.php',
@@ -1223,6 +1223,12 @@ return [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1551368517.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1551368517',
         'skipPostBuild' => true,
+        'isOnlineBuild' => true,
+    ],
+    1551700388 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/03/Build1551700388.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1551700388',
+        'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
 ];
