@@ -219,7 +219,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this._initForward,
 			this.updateBillingTabTitle
 		].forEach(function(fn) {
-			window.requestIdleCallback(fn.bind(self), {timeout: 5000});
+			if (self.wrapper) {
+				window.requestIdleCallback(fn.bind(self), {timeout: 5000});
+			}
 		});
 
 		this.addEvent('deactivate', function() {

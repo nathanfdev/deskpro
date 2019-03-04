@@ -831,11 +831,11 @@ define([
         });
 
         $input.on('focus', () => {
-          if (scope.mode == 'search') {
+          if (scope.mode === 'search') {
             $timeout(() => {
-              if (scope.mode == 'search') {
+              if (scope.mode === 'search') {
                 scope.isActive = true;
-                if (scope.searchQuery != '') {
+                if (scope.searchQuery !== '') {
                   $results.show();
                   resetResultsPos();
                 }
@@ -845,7 +845,7 @@ define([
         });
 
         $input.on('keyup', (ev) => {
-          if (ev.keyCode == 27) {
+          if (ev.keyCode === 27) {
             $timeout(() => {
               scope.isActive = false;
               scope.mode = 'search';
@@ -869,7 +869,7 @@ define([
         scope.toggleMode = function (mode) {
           if (!mode) {
             scope.mode = 'search';
-          } else if (scope.mode == mode) {
+          } else if (scope.mode === mode) {
             scope.mode = 'search';
           } else {
             scope.mode = mode;
@@ -997,7 +997,6 @@ define([
         };
 
         var resetResultsPos = function () {
-          const pos = $listPane.offset();
           let width = $listPane.width();
           if (width < 560) {
             width = 560;
@@ -1014,6 +1013,10 @@ define([
             width:        width - 7,
             'max-height': maxHeight
           }).show();
+
+          if (scope.isActive) {
+            $results.show();
+          }
         };
 
         var resizeDebounced = Functions.debounce(() => {

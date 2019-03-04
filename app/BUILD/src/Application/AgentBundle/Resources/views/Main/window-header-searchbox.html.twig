@@ -2,7 +2,7 @@
 	<div class="input-area">
 		<i class="search-icon fa fa-search"></i>
 		<div class="input-wrap">
-			<input type="text" role="search" ng-show="mode == 'search'" ng-model="searchQuery" ng-change="touchSearch()" />
+			<input type="text" role="search" ng-show="mode == 'search'" ng-model="searchQuery" ng-change="touchSearch()" autocomplete="off" value="" />
 		</div>
 		<i class="x-icon fa fa-times-circle" ng-show="mode == 'search' && searchQuery.length" ng-click="clearSearch()" title="Clear search"></i>
 		<div class="icons-well">
