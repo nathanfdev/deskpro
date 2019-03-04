@@ -2,6 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\Elastica\IndexFactory;
 use Elastica\Request;
 
 class Build1551700388 extends AbstractBuild implements OnlineBuildInterface
@@ -19,8 +20,9 @@ class Build1551700388 extends AbstractBuild implements OnlineBuildInterface
         $enabled = $this->container->getDb()->fetchColumn("SELECT `value` FROM `settings` WHERE `name` = 'elastica.enabled'");
         if ($enabled) {
             $this->out('Elasticsearch is enabled. Updating schema');
-            $index = $this->container->get('fos_elastica.index.deskpro');
-            $paths = [
+            /** @var IndexFactory $indexFactory */
+            $indexFactory = $this->container->get('deskpro.elastica.default_index_factory');
+            $paths        = [
                 'ticket',
                 'person',
                 'organization',
@@ -28,9 +30,9 @@ class Build1551700388 extends AbstractBuild implements OnlineBuildInterface
                 'chat_conversation',
                 'article',
             ];
-
+            $index = $indexFactory->getIndex('deskpro');
             foreach ($paths as $path) {
-                $index->getClient()->request('deskpro/_mapping/'.$path, Request::PUT, [
+                $index->getClient()->request($index->getName().'/_mapping/'.$path, Request::PUT, [
                     'properties' => [
                     'custom_data2' => ['type' => 'nested', 'properties' => [
                         'id'    => ['type' => 'integer'],
