@@ -314,6 +314,8 @@ class LanguagesController extends CrudController
             'agent.tickets.status_awaiting_agent',
             'agent.tickets.status_awaiting_user',
             'agent.tickets.status_resolved',
+            'agent.tickets.status_pending',
+            'agent.tickets.status_hidden',
             'agent.tickets.unhold_btn',
             'agent.tickets.unhold_ticket',
             'agent.tickets.view_files',

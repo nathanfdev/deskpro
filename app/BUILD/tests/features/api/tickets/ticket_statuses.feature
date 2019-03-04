@@ -13,10 +13,10 @@ Feature: /ticket_statuses endpoint
   Scenario: I retrieve a list of statuses
     When I send a GET request to "/api/v2/ticket_statuses"
     Then the JSON node "data" should have 4 elements
-    And the JSON node "data[0].id" should be equal to "{s1}"
-    And the JSON node "data[1].id" should be equal to "{s2}"
-    And the JSON node "data[2].id" should be equal to "{s3}"
-    And the JSON node "data[3].id" should be equal to "{s4}"
+    And the JSON node "data[0].status_code" should be equal to "hidden.{s1}"
+    And the JSON node "data[1].status_code" should be equal to "hidden.{s2}"
+    And the JSON node "data[2].status_code" should be equal to "awaiting_agent.{s3}"
+    And the JSON node "data[3].status_code" should be equal to "awaiting_user.{s4}"
 
   Scenario: I get a status
     When I send a GET request to "/api/v2/ticket_statuses/{s1}"
@@ -41,11 +41,10 @@ Feature: /ticket_statuses endpoint
 }
     """
     Then the response status code should be 201
-    And the JSON node "data.id" should exist
+    And the JSON node "data.status_code" should exist
     And the JSON node "data.title" should be equal to "Agent 2"
     And the JSON node "data.sys_id" should be equal to "agent_2"
     And the JSON node "data.display_order" should be equal to 2
-    And the JSON node "data.parent" should be equal to "{s3}"
 
   Scenario: I should not be able to create hidden or archived sub status
     When I send a POST request to "/api/v2/ticket_statuses" with body:
@@ -98,12 +97,11 @@ Feature: /ticket_statuses endpoint
 
     When I send a GET request to "/api/v2/ticket_statuses/{s3}"
     Then the response status code should be 200
-    And the JSON node "data.id" should exist
+    And the JSON node "data.status_code" should exist
     And the JSON node "data.status_type" should be equal to "awaiting_agent"
     And the JSON node "data.title" should be equal to "Agent 2 1"
     And the JSON node "data.sys_id" should be equal to "agent_2_1"
     And the JSON node "data.display_order" should be equal to 3
-    And the JSON node "data.parent" should be equal to "{s2}"
 
   Scenario: I should not be able to delete status with sys_id set
     When I send a DELETE request to "/api/v2/ticket_statuses/{s3}"

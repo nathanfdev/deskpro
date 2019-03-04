@@ -310,48 +310,11 @@
 
                     <span class="dp-caret"></span>
                 </li>
-                <li title="{{ phrase('agent.general.status') }}" data-btn-id="status">
-                    <select name="status_code" class="status_code" id="{{ baseId }}_status_code"
-                            data-invisible-trigger="1" style="display: none" data-dropdown-css-class="ticket-header"
-                            data-dropdown-nosearch="1">
-                        {% if ticket.status == 'hidden' %}
-                            <option value="" selected="selected">{{ phrase('agent.general.hidden') }}</option>
-                        {% endif %}
-                        {% if ticket.status_code == 'awaiting_agent' or ticket_perms.modify_set_awaiting_agent %}
-                            <option value="awaiting_agent"
-                                    {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
-                        {% endif %}
-                        {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent'), ticket_perms.modify_set_awaiting_agent) }}
-
-                        {% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
-                            <option value="awaiting_user"
-                                    {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_user') }}</option>
-                        {% endif %}
-                        {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user'), ticket_perms.modify_set_awaiting_user) }}
-
-                        {% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
-                            <option value="resolved"
-                                    {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_resolved') }}</option>
-                        {% endif %}
-                        {{ self_macro.substatuses_options(ticket, ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved'), ticket_perms.modify_set_resolved) }}
-
-                        {% if ticket.status_code == 'archived' %}
-                            <option value="archived"
-                                    {% if ticket.status_code == 'archived' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_archived') }}</option>
-                        {% endif %}
-
-                        {% if ticket.status_code == 'pending' or (ticket.status in ['awaiting_agent', 'pending'] and ticket_perms.modify_set_hold) %}
-                            <option value="pending"
-                                    {% if ticket.status_code == 'pending' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_pending') }}</option>
-                        {% endif %}
-                        {{ self_macro.substatuses_options(ticket, ticket_statuses['pending'].getChildren(), phrase('agent.tickets.status_pending'), ticket.status in ['awaiting_agent', 'pending'] and ticket_perms.modify_set_hold) }}
-
-                    </select>
-
+                <li title="{{ phrase('agent.general.status') }}" data-btn-id="status" id="{{ baseId }}_status_menu_trigger">
+                    <div id="{{ baseId }}_status_txt_menu_container" style="display: none" class="ticket-status-menu-container dp-menu"></div>
                     <span id="{{ baseId }}_status_txt" class="urgency-text">
-                      {% if ticket.ticketStatus.id %}{{phrase('agent.tickets.status_' ~ ticket.ticketStatus.statusType)}}&nbsp;>&nbsp;{% endif %}{{ ticket.ticketStatus.title }}
+                      {% if ticket.ticketStatus.id %}{{phrase('agent.tickets.status_' ~ ticket.ticketStatus.statusType)}}&nbsp;&gt;&nbsp;{% endif %}{{ ticket.ticketStatus.title }}
                     </span>
-
                     <span class="dp-caret"></span>
                 </li>
                 <li title="{{ phrase('agent.general.urgency') }}" class="urgency-item" data-btn-id="urgency">

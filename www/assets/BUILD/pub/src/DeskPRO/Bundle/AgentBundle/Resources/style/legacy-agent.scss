@@ -1435,3 +1435,11 @@ i.icon.fitted {
 .fa, .fas {
   font-weight: 900 !important;
 }
+
+.ticket-status-menu-container {
+  position: absolute;
+  z-index: 9999999;
+  background: #fff;
+  min-width: 150px;
+  max-width: 300px;
+}

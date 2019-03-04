@@ -208,6 +208,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 
 		[
+			this._initStatusMenu,
 			this._initTicketActionsMenu,
 			this._initMessageActionsMenu,
 			this._initEditName,
@@ -218,10 +219,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this._initProblems,
 			this._initForward,
 			this.updateBillingTabTitle
-		].forEach(function(fn) {
-			if (self.wrapper) {
-				window.requestIdleCallback(fn.bind(self), {timeout: 5000});
-			}
+		].forEach(function(fn, idx) {
+			window.requestIdleCallback(function() {
+				if (self.wrapper) {
+					fn.call(self);
+				}
+			}, {timeout: 5000 + (idx*100)});
 		});
 
 		this.addEvent('deactivate', function() {
@@ -3831,6 +3834,80 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   	};
 
     window.AgentLegacyBundle.renderFollowUpTab(self.getEl('follow_ups_wrap')[0], data);
+	},
+
+	_initStatusMenu: function() {
+  	var $backdrop, $container, ctrl;
+
+		ctrl = {
+			listeners: [],
+			onChange: function(cb) {
+				this.listeners.push(cb);
+			},
+			setStatus(status, ticketStatusId) {
+				this.listeners.forEach(function(cb) {
+					cb(status, ticketStatusId);
+				});
+			}
+		};
+
+		var init = (function() {
+			if ($container) {
+				return;
+			}
+
+			$backdrop = $('<div/>').addClass('dp-popover-backdrop').hide().appendTo('body');
+			$backdrop.on('click', function() {
+				submitMenu();
+			});
+
+			this.addEvent('destroy', function() {
+				$backdrop.remove();
+			});
+
+			$container = this.getEl('status_txt_menu_container');
+			$container.detach().appendTo('body');
+
+			window.AgentLegacyBundle.renderReactComponent(
+				$container[0],
+				'AgentBundle/Modules/Tickets/Components/StatusMenu/StatusMenu',
+				{ ctrl: ctrl },
+				{ withProvider: true }
+			);
+
+			this.addEvent('destroy', function() {
+				window.AgentLegacyBundle.unmountEmbeddedReactNode($container[0]);
+				$container.remove();
+			});
+		}).bind(this);
+
+		var showMenu = function() {
+			init();
+			$container.css({top:0, left:0}).position({
+				of: $trigger,
+				my: 'right top',
+				at: 'right bottom',
+				collision: 'flipfit'
+			}).show();
+			$backdrop.show();
+		};
+
+		var hideMenu = function () {
+			init();
+			$container.hide();
+			$backdrop.hide();
+		};
+
+		var submitMenu = function() {
+			init();
+			$container.hide();
+			$backdrop.hide();
+		};
+
+		var $trigger = this.getEl('status_menu_trigger');
+		$trigger.on('click', function(ev) {
+			showMenu();
+		});
 	},
 
 	//#################################################################

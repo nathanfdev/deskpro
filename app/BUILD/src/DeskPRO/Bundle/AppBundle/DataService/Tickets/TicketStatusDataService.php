@@ -74,7 +74,7 @@ class TicketStatusDataService
             if (!TicketStatus::isValidStatusType($statusType)) {
                 throw new \InvalidArgumentException(sprintf('Not valid status type `%s`', $statusType));
             }
-            $statusEntity = new VirtualTicketStatus($statusType);
+            $statusEntity = VirtualTicketStatus::getById($statusType);
 
             if ($withSubstatuses) {
                 $children = $this->repository->findByStatusType($statusType);
