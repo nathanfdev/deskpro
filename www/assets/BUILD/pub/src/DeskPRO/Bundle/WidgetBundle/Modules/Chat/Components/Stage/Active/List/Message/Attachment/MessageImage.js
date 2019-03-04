@@ -11,7 +11,7 @@ export class MessageImage extends React.Component {
   };
 
   openFullImage = () => {
-    openFullImage(this.refs.image);
+    openFullImage(this.image);
   };
 
   render() {
@@ -23,7 +23,12 @@ export class MessageImage extends React.Component {
         <ul>
           <li className="dpdesignportal-message-asset">
             <div className="dpdesignportal-message-asset attachement-screen">
-              <img role="presentation" ref="image" src={downloadUrl} onClick={this.openFullImage} />
+              <img
+                role="presentation"
+                ref={(c) => { this.image = c; }}
+                src={downloadUrl}
+                onClick={this.openFullImage}
+              />
 
               <div className="dpdesignportal-message-asset-screen-controls">
                 <a href="#"><i className="fa fa-save" /></a>
@@ -32,7 +37,7 @@ export class MessageImage extends React.Component {
               </div>
 
               <p className="dpdesignportal-message-asset-info">
-                {portalPhrases.get('portal.chat.attached_photo', { '{authorName}': authorName })}
+                {portalPhrases.get('portal.chat.attached_photo', { authorName })}
               </p>
               <p className="dpdesignportal-message-asset-cta" onClick={this.openFullImage}>
                 {portalPhrases.get('portal.chat.see_full_image')}

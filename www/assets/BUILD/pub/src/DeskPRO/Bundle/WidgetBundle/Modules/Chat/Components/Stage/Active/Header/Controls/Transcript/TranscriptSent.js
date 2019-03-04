@@ -13,7 +13,7 @@ export class TranscriptSent extends React.Component {
 
     return (
       <div className="dpdesignportal-popover-request-transcript-sent-message">
-        {portalPhrases.get('portal.chat.transcript_already_sent', { '{email}': email })}
+        {portalPhrases.get('portal.chat.transcript_already_sent', { email })}
       </div>
     );
   }

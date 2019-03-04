@@ -68,7 +68,7 @@ export class MessageFactoryContainer extends React.Component {
 
     return (
       <InlineEvent {...this.props}>
-        {translatedText.replace('{{name}}', content.name).replace('{{department}}', content.department)}
+        {translatedText.replace('{name}', content.name).replace('{department}', content.department)}
       </InlineEvent>
     );
   }
