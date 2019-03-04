@@ -50,7 +50,7 @@ class Message extends React.Component {
     };
     let newMessage = message;
 
-    Object.each(idMap, (info, prefix) => {
+    $(idMap).each((prefix, info) => {
       const re = new RegExp(`\\{\\{\\s*${prefix}\\-([0-9]+)\\s*\\}\\}`, 'g');
       newMessage = newMessage.replace(re, `<a data-route="page:${window.BASE_URL}${info.url}$1">${info.title} #$1</a>`);
       return null;
