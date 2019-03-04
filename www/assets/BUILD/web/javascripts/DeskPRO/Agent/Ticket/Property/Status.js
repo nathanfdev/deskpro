@@ -10,7 +10,9 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
 		var status_classname = value;
 
 		if (value && value.constructor.toString().indexOf("Array") != -1) {
-			status_id = value[1].value;
+      if (value.length > 1) {
+        status_id = value[1].value;
+      }
 			value = value[0].value;
 			status_classname = value;
 		} else {
