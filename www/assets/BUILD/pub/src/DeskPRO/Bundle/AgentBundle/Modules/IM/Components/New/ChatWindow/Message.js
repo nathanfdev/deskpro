@@ -49,8 +49,9 @@ class Message extends React.Component {
       u: { title: 'Userchat', url: 'agent/chat/view/' }
     };
     let newMessage = message;
-
-    $(idMap).each((prefix, info) => {
+    const keys = Object.keys(idMap);
+    keys.forEach((prefix) => {
+      const info = idMap[prefix];
       const re = new RegExp(`\\{\\{\\s*${prefix}\\-([0-9]+)\\s*\\}\\}`, 'g');
       newMessage = newMessage.replace(re, `<a data-route="page:${window.BASE_URL}${info.url}$1">${info.title} #$1</a>`);
       return null;
