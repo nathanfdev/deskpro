@@ -17,7 +17,7 @@ class Build1551700388 extends AbstractBuild implements OnlineBuildInterface
 
     public function run()
     {
-        $enabled = $this->container->getDb()->fetchColumn("SELECT `value` FROM `settings` WHERE `name` = 'elastica.enabled'");
+        $enabled = $this->readSetting('elastica.enabled');
         if ($enabled) {
             $this->out('Elasticsearch is enabled. Updating schema');
             /** @var IndexFactory $indexFactory */
