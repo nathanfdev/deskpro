@@ -2,13 +2,13 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Serializer\Model;
 
-use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall as VoicePhoneCallEntity;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use JMS\Serializer\Annotation as JMS;
 
@@ -130,25 +130,11 @@ class VoicePhoneCall
     private $dateEnded;
 
     /**
-     * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     * @JMS\Type("collection<DeskPRO\Bundle\AppBundle\Entity\VoiceRecording>")
      *
-     * @var Blob
+     * @var VoiceRecording[]
      */
-    private $recording;
-
-    /**
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    private $recordingDeleted;
-
-    /**
-     * @JMS\Type("integer")
-     *
-     * @var int
-     */
-    private $duration;
+    private $recordings;
 
     /**
      * @JMS\Type("string")
@@ -194,9 +180,7 @@ class VoicePhoneCall
         $this->dateCreated        = $phoneCall->getDateCreated();
         $this->dateStarted        = $phoneCall->getDateStarted();
         $this->dateEnded          = $phoneCall->getDateEnded();
-        $this->recording          = $phoneCall->getRecording();
-        $this->recordingDeleted   = $phoneCall->isRecordingDeleted();
-        $this->duration           = $phoneCall->getDuration();
+        $this->recordings         = $phoneCall->getRecordings();
         $this->cost               = $phoneCall->getCost() ? number_format($phoneCall->getCost(), 3, '.', ',') : null;
         $this->costCurrency       = $phoneCall->getCostCurrency();
 

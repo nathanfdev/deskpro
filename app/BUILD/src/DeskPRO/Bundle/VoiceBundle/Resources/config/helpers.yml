@@ -30,6 +30,10 @@ services:
       - "@serializer"
       - "@event_dispatcher"
       - "@job.queue"
+      - "@voice_settings_resolver"
+      - "@ticket_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.voice_task_helper"
 
   dp.voice.provider_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceProviderHelper

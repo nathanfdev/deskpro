@@ -2,11 +2,9 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
-use DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -69,22 +67,6 @@ class VoicemailHelper
             ),
             'POST'
         );
-    }
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     * @param Person         $agent
-     */
-    public function voicemailForAgent(VoicePhoneCall $phoneCall, Person $agent)
-    {
-        $voicemailRecord = new VoicemailRecord();
-        $voicemailRecord
-            ->setPhoneCall($phoneCall)
-            ->setAgent($agent)
-        ;
-
-        $this->em->persist($voicemailRecord);
-        $this->em->flush();
     }
 
     /**

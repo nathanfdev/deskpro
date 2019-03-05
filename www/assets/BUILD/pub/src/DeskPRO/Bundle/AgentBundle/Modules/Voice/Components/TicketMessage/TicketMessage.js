@@ -67,7 +67,7 @@ class TicketMessage extends React.Component {
 
   deleteRecord = (phoneCallId) => {
     this.props.dispatch(deleteRecord(phoneCallId));
-  }
+  };
 
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
@@ -75,9 +75,9 @@ class TicketMessage extends React.Component {
     const { openDialpad, me, openTarget } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
-    const recording = phoneCall.get('recording');
-    const recordingProcessed = phoneCall.hasIn(['data', 'RecordingEnabled']);
-    const recordingEnabled = phoneCall.getIn(['data', 'RecordingEnabled']);
+    const recordings = phoneCall.get('recordings');
+    const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
+    const recordingsDeleted = recordings.filter(recording => recording.get('is_deleted'));
     const number = numbers.get(phoneCall.get('number')) || Immutable.fromJS({});
 
     return (
@@ -140,10 +140,10 @@ class TicketMessage extends React.Component {
               <Button className="basic call-button" onClick={openDialpad}>
                 <i className="icon call" /> Call {phoneCall.get('external_number')}
               </Button>}
-              {recording && <MediaControls recording={recording} />}
-              {!recording && recordingEnabled && !phoneCall.get('recording_deleted') ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
-              {phoneCall.get('recording_deleted') && 'This call recording has been deleted.'}
-              {recordingProcessed && !recording && !recordingEnabled ? 'This call was not recorded.' : ''}
+              {recordingsEnabled.size > 0 && recordingsEnabled.map(recording => <MediaControls recording={recording.get('blob')} />)}
+              {recordings.size > 0 && !recordingsDeleted.size && !recordingsEnabled.size ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
+              {recordingsDeleted.size > 0 && !recordingsEnabled.size && 'This call recording has been deleted.'}
+              {!recordings.size ? 'This call was not recorded.' : ''}
             </div>}
           {transcript &&
             <div className="voice-ticket-message-transcript">

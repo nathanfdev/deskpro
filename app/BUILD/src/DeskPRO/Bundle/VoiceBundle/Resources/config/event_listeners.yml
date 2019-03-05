@@ -13,17 +13,6 @@ services:
     tags:
       - { name: dp.voice.event_subscriber }
 
-  dp.voice.listener.voicemail:
-    class: DeskPRO\Bundle\VoiceBundle\EventListener\VoicemailListener
-    arguments:
-      - "@doctrine.orm.entity_manager"
-      - "@dp.voice.voice_task_helper"
-      - "@voice_settings_resolver"
-      - "@ticket_manager"
-      - "@dp.voice.voicemail_helper"
-    tags:
-      - { name: dp.voice.event_subscriber }
-
   dp.voice.listener.voice_queue_count:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\VoiceQueueCountListener
     arguments:
@@ -63,6 +52,7 @@ services:
   event_listener.doctrine.plivo_account:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\PlivoAccountListener
     arguments:
+      - "@settings_resolver"
       - "@plivo_adapter"
       - "@doctrine.orm.default_entity_manager"
       - "@router"

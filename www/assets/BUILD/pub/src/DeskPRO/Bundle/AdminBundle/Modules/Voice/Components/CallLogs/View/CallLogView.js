@@ -38,6 +38,9 @@ class CallLogView extends React.Component {
     const isInbound = call.get('type') === 'inbound';
     const rawData = call.get('data').toJS();
 
+    const recordings = call.get('recordings');
+    const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
+
     return (
       <div className="page">
         <BackButton onClick={onReturnBack} />
@@ -222,7 +225,11 @@ class CallLogView extends React.Component {
             </tr>
             <tr>
               <th>Recording</th>
-              <td>{call.get('recording') ? <MediaControls recording={call.get('recording')} /> : '-'}</td>
+              <td>
+                {recordingsEnabled.size > 0
+                ? recordingsEnabled.map(recording => <MediaControls recording={recording.get('blob')} />)
+                : '-'}
+              </td>
             </tr>
           </tbody>
         </table>

@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine;
 
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter;
 use Doctrine\ORM\EntityManager;
@@ -18,6 +19,11 @@ class PlivoAccountListener
     // we scan existing apps to see if they already exist.
     const AGENT_APP_NAME = 'Deskpro Agent App';
     const USER_APP_NAME  = 'Deskpro User App';
+
+    /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
 
     /**
      * @var PlivoAdapter
@@ -37,15 +43,17 @@ class PlivoAccountListener
     /**
      * Constructor.
      *
-     * @param PlivoAdapter    $plivoAdapter
-     * @param EntityManager   $em
-     * @param RouterInterface $router
+     * @param SettingsResolver $settingsResolver
+     * @param PlivoAdapter     $plivoAdapter
+     * @param EntityManager    $em
+     * @param RouterInterface  $router
      */
-    public function __construct(PlivoAdapter $plivoAdapter, EntityManager $em, RouterInterface $router)
+    public function __construct(SettingsResolver $settingsResolver, PlivoAdapter $plivoAdapter, EntityManager $em, RouterInterface $router)
     {
-        $this->plivoAdapter = $plivoAdapter;
-        $this->em           = $em;
-        $this->router       = $router;
+        $this->settingsResolver = $settingsResolver;
+        $this->plivoAdapter     = $plivoAdapter;
+        $this->em               = $em;
+        $this->router           = $router;
     }
 
     /**
@@ -77,9 +85,11 @@ class PlivoAccountListener
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
+        $deskproUrl = $this->settingsResolver->getGlobalSettings()->get('core.deskpro_url');
+
         $userAppId = $this->plivoAdapter->createApplication(
             $account,
-            self::USER_APP_NAME,
+            self::USER_APP_NAME.' ('.$deskproUrl.')',
             $answerUserUrl,
             'POST',
             $hangupUserUrl,
@@ -88,7 +98,7 @@ class PlivoAccountListener
 
         $agentAppId = $this->plivoAdapter->createApplication(
             $account,
-            self::AGENT_APP_NAME,
+            self::AGENT_APP_NAME.' ('.$deskproUrl.')',
             $answerAgentUrl,
             'POST',
             $hangupAgentUrl,

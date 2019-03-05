@@ -5,9 +5,11 @@ namespace DeskPRO\Bundle\VoiceBundle\JobQueue\Processor;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\JobQueue\Processor\AbstractJobProcessor;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoiceRecording;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -75,41 +77,24 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        $callId = $data['call_id'];
-
         try {
-            /** @var VoicePhoneCall $phoneCall */
-            $phoneCall = $this->em->getRepository(VoicePhoneCall::class)->find($callId);
-            if (!$phoneCall) {
-                return;
-            }
+            $recording = null;
 
-            $blob = $this->getBlob('call_record_'.$callId, $phoneCall->getData());
-            $phoneCall->setRecording($blob);
+            if (isset($data['recording_id'])) {
+                /** @var VoiceRecording $recording */
+                $recording = $this->em->getRepository(VoiceRecording::class)->find($data['recording_id']);
+                if (!$recording) {
+                    return;
+                }
 
-            $this->em->persist($phoneCall);
-            $this->em->flush();
+                $blob = $this->getBlob('call_record_'.$data['recording_id'], $recording);
+                $recording->setBlob($blob);
 
-            if ($phoneCall->getVoicemailRecord()) {
-                // send voicemail notification
+                $this->em->persist($recording);
+                $this->em->flush();
+
                 $serializedData = $this->serializer->toArray(
-                    new ApiWrapper($phoneCall->getVoicemailRecord()),
-                    new SideloadSerializationContext([
-                        'voice_phone_call',
-                        'person',
-                    ])
-                );
-
-                $this->eventDispatcher->dispatch(
-                    LegacySystemEvent::EVENT_NAME,
-                    new LegacySystemEvent('agent.voice.voicemail.new-message', [
-                        'data'   => $serializedData,
-                        'target' => $phoneCall->getVoicemailRecord()->getAgent()->getId(),
-                    ])
-                );
-            } else {
-                $serializedData = $this->serializer->toArray(
-                    new ApiWrapper($phoneCall),
+                    new ApiWrapper($recording->getPhoneCall()),
                     new SideloadSerializationContext()
                 );
 
@@ -120,31 +105,64 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                         ['data' => $serializedData]
                     )
                 );
+            } elseif (isset($data['voicemail_recording_id'])) {
+                /** @var VoicemailAgentRecording $recording */
+                $recording = $this->em->getRepository(VoicemailAgentRecording::class)->find($data['voicemail_recording_id']);
+                if (!$recording) {
+                    return;
+                }
+
+                $blob = $this->getBlob('call_record_'.$data['voicemail_recording_id'], $recording);
+                $recording->setBlob($blob);
+
+                $this->em->persist($recording);
+                $this->em->flush();
+
+                // send voicemail notification
+                $serializedData = $this->serializer->toArray(
+                    new ApiWrapper($recording),
+                    new SideloadSerializationContext([
+                        'voice_phone_call',
+                        'person',
+                    ])
+                );
+
+                $this->eventDispatcher->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.voice.voicemail.new-message', [
+                        'data'   => $serializedData,
+                        'target' => $recording->getAgent()->getId(),
+                    ])
+                );
             }
 
-            // log conference start event
-            $log = new VoicePhoneCallLog();
-            $log->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DOWNLOADED);
-            $log->setPhoneCall($phoneCall);
+            if ($recording instanceof AbstractVoiceRecording) {
+                $phoneCall = $recording->getPhoneCall();
 
-            $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-                'phoneCall' => $phoneCall,
-            ]);
+                // log conference start event
+                $log = new VoicePhoneCallLog();
+                $log->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DOWNLOADED);
+                $log->setPhoneCall($phoneCall);
 
-            if ($messageAttribute) {
-                $ticketLog = new TicketLog();
-                $ticketLog
-                    ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DOWNLOADED)
-                    ->setTicket($messageAttribute->getMessage()->getTicket())
-                    ->setIdObject($phoneCall->getId())
-                    ->setDetails(['duration' => $phoneCall->getDuration()])
-                ;
+                $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+                    'phoneCall' => $phoneCall,
+                ]);
 
-                $this->em->persist($ticketLog);
+                if ($messageAttribute) {
+                    $ticketLog = new TicketLog();
+                    $ticketLog
+                        ->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DOWNLOADED)
+                        ->setTicket($messageAttribute->getMessage()->getTicket())
+                        ->setIdObject($phoneCall->getId())
+                        ->setDetails(['duration' => $recording->getDuration()])
+                    ;
+
+                    $this->em->persist($ticketLog);
+                }
+
+                $this->em->persist($phoneCall);
+                $this->em->flush();
             }
-
-            $this->em->persist($phoneCall);
-            $this->em->flush();
 
             $this->runSuccessHandler($job);
         } catch (\Exception $e) {
@@ -157,19 +175,19 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired('call_id');
+        $resolver->setDefined(['recording_id', 'voicemail_recording_id']);
     }
 
     /**
-     * @param string $filename
-     * @param array  $callData
+     * @param string                 $filename
+     * @param AbstractVoiceRecording $recording
      *
      * @return \Application\DeskPRO\Entity\Blob
      */
-    private function getBlob($filename, array $callData)
+    private function getBlob($filename, AbstractVoiceRecording $recording)
     {
         $client = new Client();
-        $data   = $client->send(new Request('GET', $callData['RecordingUrl']))->getBody()->getContents();
+        $data   = $client->send(new Request('GET', $recording->getRecordingUrl()))->getBody()->getContents();
         $blob   = $this->blobStorage->createBlobRecordFromString($data, $filename.'.wav', 'wav');
 
         return $blob;
