@@ -52,12 +52,12 @@ class UserSearch implements UserSearchInterface
         $customBool  = new Query\BoolQuery();
         $customMatch = new Query\Match();
         $customMatch
-            ->setFieldQuery('custom_data.value', $query)
-            ->setFieldBoost('custom_data.value', 10);
+            ->setFieldQuery('custom_data2.value', $query)
+            ->setFieldBoost('custom_data2.value', 10);
 
         $customNested = new Query\Nested();
         $customNested
-            ->setPath('custom_data')
+            ->setPath('custom_data2')
             ->setQuery(
                 $customBool
                     ->addMust($customMatch)
@@ -81,7 +81,7 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Term(['status' => 'published']));
             $f->addMust(new Query\Terms('category_ids', $context->getArticleCategoryIds()));
             $filter->addShould($f);
-            $customTerms->setTerms('custom_data.id', $context->getAllowedFields()['article']);
+            $customTerms->setTerms('custom_data2.id', $context->getAllowedFields()['article']);
             $customBool->addMust($customTerms);
         }
         if ($context->getNewsCategoryIds() && ($limitTypes === null || in_array('news', $limitTypes))) {
@@ -107,7 +107,7 @@ class UserSearch implements UserSearchInterface
             $f->addMustNot(new Query\Term(['status' => 'hidden']));
             $f->addMust(new Query\Terms('category_id', $context->getFeedbackCategoryIds()));
             $filter->addShould($f);
-            $customTerms->setTerms('custom_data.id', $context->getAllowedFields()['feedback']);
+            $customTerms->setTerms('custom_data2.id', $context->getAllowedFields()['feedback']);
             $customBool->addMust($customTerms);
         }
         if ($context->getGuideIds() && ($limitTypes === null || in_array('topic', $limitTypes))) {
@@ -136,7 +136,7 @@ class UserSearch implements UserSearchInterface
 
             $f->addMust($f2);
             $filter->addShould($f);
-            $customTerms->setTerms('custom_data.id', $context->getAllowedFields()['ticket']);
+            $customTerms->setTerms('custom_data2.id', $context->getAllowedFields()['ticket']);
             $customBool->addMust($customTerms);
         }
         if ($context->getPerson() && ($limitTypes === null || in_array('chat_conversation', $limitTypes))) {
@@ -147,7 +147,7 @@ class UserSearch implements UserSearchInterface
             $f->addMust(new Query\Term(['person' => $context->getPerson()->getId()]));
 
             $filter->addShould($f);
-            $customTerms->setTerms('custom_data.id', $context->getAllowedFields()['chat']);
+            $customTerms->setTerms('custom_data2.id', $context->getAllowedFields()['chat']);
             $customBool->addMust($customTerms);
         }
 

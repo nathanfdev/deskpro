@@ -653,7 +653,7 @@ $container->loadFromExtension(
                             'status'       => [],
                             'category_ids' => ['type' => 'integer'],
                             'labels'       => ['analyzer' => 'title_content_analyzer'],
-                            'custom_data'  => ['type' => 'nested', 'properties' => [
+                            'custom_data2' => ['type' => 'nested', 'properties' => [
                                 'id'    => ['type' => 'integer'],
                                 'value' => ['type' => 'string', 'analyzer' => 'text_content_analyzer'],
                             ]],
@@ -715,9 +715,9 @@ $container->loadFromExtension(
                     ],
                     'feedback' => [
                         'mappings' => [
-                            'title'       => ['analyzer' => 'title_content_analyzer'],
-                            'labels'      => ['analyzer' => 'title_content_analyzer'],
-                            'custom_data' => ['type' => 'nested', 'properties' => [
+                            'title'        => ['analyzer' => 'title_content_analyzer'],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'custom_data2' => ['type' => 'nested', 'properties' => [
                                 'id'    => ['type' => 'integer'],
                                 'value' => ['type' => 'string', 'analyzer' => 'text_content_analyzer'],
                             ]],
@@ -764,7 +764,7 @@ $container->loadFromExtension(
                             'name'          => ['type' => 'string', 'analyzer' => 'name_analyzer'],
                             'email_domains' => ['type' => 'string', 'analyzer' => 'email_domain_analyzer'],
                             'labels'        => ['analyzer' => 'title_content_analyzer'],
-                            'custom_data'   => ['type' => 'nested', 'properties' => [
+                            'custom_data2'  => ['type' => 'nested', 'properties' => [
                                 'id'    => ['type' => 'integer'],
                                 'value' => ['type' => 'string', 'analyzer' => 'text_content_analyzer'],
                             ]],
@@ -783,9 +783,9 @@ $container->loadFromExtension(
                     ],
                     'chat_conversation' => [
                         'mappings' => [
-                            'subject'     => [],
-                            'labels'      => ['analyzer' => 'title_content_analyzer'],
-                            'custom_data' => ['type' => 'nested', 'properties' => [
+                            'subject'      => [],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'custom_data2' => ['type' => 'nested', 'properties' => [
                                 'id'    => ['type' => 'integer'],
                                 'value' => ['type' => 'string', 'analyzer' => 'text_content_analyzer'],
                             ]],
@@ -810,11 +810,11 @@ $container->loadFromExtension(
                     ],
                     'person' => [
                         'mappings' => [
-                            'name'        => ['type' => 'string', 'analyzer' => 'name_analyzer'],
-                            'first_name'  => ['type' => 'string', 'analyzer' => 'name_analyzer'],
-                            'last_name'   => ['type' => 'string', 'analyzer' => 'name_analyzer'],
-                            'labels'      => ['analyzer' => 'title_content_analyzer'],
-                            'custom_data' => ['type' => 'nested', 'properties' => [
+                            'name'         => ['type' => 'string', 'analyzer' => 'name_analyzer'],
+                            'first_name'   => ['type' => 'string', 'analyzer' => 'name_analyzer'],
+                            'last_name'    => ['type' => 'string', 'analyzer' => 'name_analyzer'],
+                            'labels'       => ['analyzer' => 'title_content_analyzer'],
+                            'custom_data2' => ['type' => 'nested', 'properties' => [
                                 'id'    => ['type' => 'integer'],
                                 'value' => ['type' => 'string', 'analyzer' => 'text_content_analyzer'],
                             ]],
@@ -845,7 +845,7 @@ $container->loadFromExtension(
                             'organization_id' => ['type' => 'integer'],
                             'person_id'       => ['type' => 'integer'],
                             'labels'          => ['analyzer' => 'title_content_analyzer'],
-                            'custom_data'     => ['type' => 'nested', 'properties' => [
+                            'custom_data2'    => ['type' => 'nested', 'properties' => [
                                 'id'    => ['type' => 'integer'],
                                 'value' => ['type' => 'string', 'analyzer' => 'text_content_analyzer'],
                             ]],
