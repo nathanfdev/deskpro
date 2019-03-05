@@ -32,19 +32,19 @@ export class FollowUpContainer extends React.Component {
     this.loadFollowUps();
   }
 
+  componentWillMount() {
+    window.document.addEventListener('dpFollowUpUpdate', this.dpFollowUpUpdate);
+  }
+
+  componentWillUnmount() {
+    window.document.removeEventListener('dpFollowUpUpdate', this.dpFollowUpUpdate);
+  }
+
   dpFollowUpUpdate = (e) => {
     if (e.detail.ticketId === this.props.ticketId) {
       this.loadFollowUps();
     }
   };
-
-  componentWillMount() {
-    window.document.addEventListener('dpFollowUpUpdate', this.dpFollowUpUpdate);
-  };
-
-  componentWillUnmount() {
-    window.document.removeEventListener('dpFollowUpUpdate', this.dpFollowUpUpdate);
-  }
 
   loadFollowUps() {
     this.props.dispatch(followUpActions.loadFollowUps(this.props.ticketId))
@@ -55,7 +55,7 @@ export class FollowUpContainer extends React.Component {
           followUps,
         });
       });
-  };
+  }
 
   saveFollowUp = data => this.props.dispatch(followUpActions.createFollowUp(this.props.ticketId, data))
       .then((followUp) => {

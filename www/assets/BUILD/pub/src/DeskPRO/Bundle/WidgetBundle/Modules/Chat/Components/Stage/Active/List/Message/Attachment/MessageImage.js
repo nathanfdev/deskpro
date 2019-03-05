@@ -31,9 +31,9 @@ export class MessageImage extends React.Component {
               />
 
               <div className="dpdesignportal-message-asset-screen-controls">
-                <a href="#"><i className="fa fa-save" /></a>
-                <a href="#"><i className="fa fa-expand" /></a>
-                <a href="#"><i className="fa fa-times" /></a>
+                <a><i className="fa fa-save" /></a>
+                <a><i className="fa fa-expand" /></a>
+                <a><i className="fa fa-times" /></a>
               </div>
 
               <p className="dpdesignportal-message-asset-info">

@@ -1219,6 +1219,30 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
+    1550828894 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1550828894.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1550828894',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
+    ],
+    1551188205 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1551188205.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1551188205',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
+    ],
+    1551219602 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1551219602.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1551219602',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
+    ],
+    1551355022 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1551355022.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1551355022',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
+    ],
     1551368517 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/02/Build1551368517.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1551368517',
@@ -1228,6 +1252,12 @@ return [
     1551700388 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/03/Build1551700388.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1551700388',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
+    ],
+    1551786313 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/03/Build1551786313.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1551786313',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
