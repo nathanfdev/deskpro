@@ -1,4 +1,4 @@
-define(['datatables', 'datatables.pageResize', 'datatables.rowsGroup'], () => {
+define(['datatables', 'datatables.pageResize', 'datatables.rowsGroup'], function() {
   const Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', '$timeout', ($sce, DashboardWidgetService, $timeout) =>
     ({
       restrict: 'E',

@@ -145,6 +145,39 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('User', $entity->getName());
     }
 
+    public function test_agent_rights_are_not_unset()
+    {
+        $model = $this->createBaseModel();
+        $model->setAsAgent(true);
+
+        $this->writer->writeModel($model);
+        $this->em()->clear();
+
+        $model = $this->createBaseModel();
+        $this->writer->writeModel($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertTrue($entity->isAgent());
+    }
+
+    public function test_admin_rights_are_not_unset()
+    {
+        $model = $this->createBaseModel();
+        $model->setAsAdmin(true);
+
+        $this->writer->writeModel($model);
+        $this->em()->clear();
+
+        $model = $this->createBaseModel();
+        $this->writer->writeModel($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertTrue($entity->isAdmin());
+        $this->assertTrue($entity->canAdmin());
+    }
+
     /**
      * @return Model\Person
      */

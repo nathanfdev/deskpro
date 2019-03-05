@@ -1,4 +1,4 @@
-define(['json3'], (JSON) => {
+define(['json3'], function(JSON) {
   /*
    * Thin wrapper around localStorage. Does nothing if localStorage is not supported.
    */

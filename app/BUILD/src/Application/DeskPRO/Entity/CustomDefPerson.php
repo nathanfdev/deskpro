@@ -8,6 +8,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AbstractAlias;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AliasesOwner;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomPeopleFieldDefinitionAlias;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -16,7 +18,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * A custom field definition.
  */
-class CustomDefPerson extends CustomDefAbstract
+class CustomDefPerson extends CustomDefAbstract implements AliasesOwner
 {
     /**
      * @var CustomDefPerson
@@ -33,7 +35,7 @@ class CustomDefPerson extends CustomDefAbstract
     /**
      * Aliases for this field.
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\ArrayCollection|CustomPeopleFieldDefinitionAlias[]
      */
     protected $aliases;
 
@@ -61,7 +63,7 @@ class CustomDefPerson extends CustomDefAbstract
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection|CustomPeopleFieldDefinitionAlias[]|null
+     * @return \Doctrine\Common\Collections\ArrayCollection|AbstractAlias[]|null
      */
     public function getAliases()
     {
@@ -69,11 +71,11 @@ class CustomDefPerson extends CustomDefAbstract
     }
 
     /**
-     * @param CustomPeopleFieldDefinitionAlias $alias
+     * @param AbstractAlias $alias
      *
      * @return $this
      */
-    public function addAlias(CustomPeopleFieldDefinitionAlias $alias)
+    public function addAlias(AbstractAlias $alias)
     {
         $alias->setObject($this);
         $this->aliases->add($alias);
@@ -82,13 +84,12 @@ class CustomDefPerson extends CustomDefAbstract
     }
 
     /**
-     * @param CustomPeopleFieldDefinitionAlias $alias
+     * @param AbstractAlias $alias
      *
      * @return $this
      */
-    public function removeAlias(CustomPeopleFieldDefinitionAlias $alias)
+    public function removeAlias(AbstractAlias $alias)
     {
-        $alias->setObject(null);
         $this->aliases->removeElement($alias);
 
         return $this;

@@ -145,7 +145,7 @@ DeskPRO.UI.Select.Widget = new Orb.Class({
 		}
 
 		if (this.options.menu) {
-			if (typeOf(this.options.menu) == 'function') {
+			if (Orb.typeOf(this.options.menu) == 'function') {
 				this.menu = this.options.menu();
 			}
 		}
@@ -193,7 +193,7 @@ DeskPRO.UI.Select.Widget = new Orb.Class({
 		var selectedOpts = [];
 		var options = this.$select.find('option');
 
-		Array.each(this.selections, function(uid) {
+		this.selections.forEach(function(uid) {
 			var opt = options.filter('.' + uid);
 			if (opt[0]) {
 				selectedOpts.push(opt.get(0));
@@ -332,8 +332,8 @@ DeskPRO.UI.Select.Widget = new Orb.Class({
 			var optVal = $(this).val();
 			var selected = false;
 
-			if (typeOf(values) == 'array') {
-				Array.each(values, function(val) {
+			if (Orb.typeOf(values) == 'array') {
+				values.forEach(function(val) {
 					if (optVal == val) {
 						selected = true;
 						return false;
@@ -379,7 +379,7 @@ DeskPRO.UI.Select.Widget = new Orb.Class({
 			opts.prop('selected', false);
 		}
 
-		Array.each(values, function(uid) {
+		values.forEach(function(uid) {
 			opts.filter('.' + uid).prop('selected', true);
 			self.selections.push(uid);
 		});

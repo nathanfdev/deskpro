@@ -64,7 +64,7 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 
 		if (!this.options.callback) {
 			this.options.callback = function() {};
-			DP.console.warn('No callback for state save');
+			console.warn('No callback for state save');
 		}
 
 		this.doRestartTimer = false;
@@ -128,8 +128,8 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 			name: 'prefs_expire[agent.ui.state.'+this.options.stateId+']',
 			value: this.options.expireTime
 		});
-		if (typeOf(setData) == 'array') {
-			Array.each(setData, function(x) {
+		if (Orb.typeOf(setData) == 'array') {
+			setData.forEach(function(x) {
 				data.push({
 					name: 'prefs[agent.ui.state.'+this.options.stateId+']' + namePart(x.name),
 					value: x.value

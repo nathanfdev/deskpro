@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const DeskPRO_Directive_DpDropdown = ['$rootScope', '$document', ($rootScope, $document) =>
     ({
       restrict: 'A',

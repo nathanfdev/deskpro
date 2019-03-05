@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 				var els = [];
 
 				var formData = [];
-				Array.each(ids, function(id) {
+				ids.forEach(function(id) {
 					formData.push({
 						name: 'ids[]',
 						value: id
@@ -133,7 +133,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 							if (data.ticket_id) {
 								var closeTicketId = data.ticket_id;
 								page.addEvent('destroy', function() {
-									Object.each(DeskPRO_Window.TabBar.getTabs(), function(tab, id) {
+									Object.entries(DeskPRO_Window.TabBar.getTabs()).forEach(function(_vk) { var id = _vk[0], tab = _vk[1];
 										if (tab.page && tab.page.meta.ticket_id == closeTicketId) {
 											DeskPRO_Window.removePage(tab.page);
 										}
@@ -149,7 +149,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Orb.Class({
 
 	saveNewPendingArticle: function() {
 		var formWrap = this.getEl('add_new_overlay');
-		var val = $('textarea', this.getEl('add_new_overlay')).val().trim();
+		var val = $.trim($('textarea', this.getEl('add_new_overlay')).val());
 
 		if (!val) {
 			formWrap.slideUp();

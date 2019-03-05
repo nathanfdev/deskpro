@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class StateConfig {
     static createFactory(module) {
       return function (id = null) {

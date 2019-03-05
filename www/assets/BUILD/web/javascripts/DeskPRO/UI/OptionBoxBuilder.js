@@ -53,7 +53,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			var is_sub = false;
 			selectoptions.each(function(index, el) {
 				el = $(el);
-				var label = el.text().trim();
+				var label = el.text();
 
 				if (el.parent().is('optgroup')) {
 					label = el.parent().attr('label') + ' > ' + label;
@@ -72,7 +72,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 					if (label.indexOf('--------------') !== -1) child_depth = 7;
 					label = label.replace(/^\-\-/, '').trim();
 				} else {
-					has_child = (el.next().text().trim().indexOf('--') !== -1);
+					has_child = ($.trim(el.next().text()).indexOf('--') !== -1);
 				}
 
 				if (!selected_text || el.is(':selected')) {
@@ -138,9 +138,9 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 
 				var opt = $('option:selected', this);
 				if (opt.data('full-title')) {
-					var text = opt.data('full-title').trim();
+					var text = opt.data('full-title');
 				} else {
-					var text = opt.text().trim();
+					var text = $.trim(opt.text());
 				}
 				if (!text.length) text = options.noValText || 'Choose...';
 				else {
@@ -156,7 +156,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 		if (selectEl && selectEl.attr('name')) {
 			name = selectEl.attr('name').replace(/[^a-zA-Z_]/, '_');
 		}
-		Array.each(options.values, function(opt) {
+		options.values.forEach(function(opt) {
 			if (options.selectType == 'radio') {
 				var li = $('<li><input type="radio" name="'+name+'" /><label></label></li>');
 			} else {
@@ -176,7 +176,7 @@ DeskPRO.UI.OptionBoxBuilder = new Orb.Class({
 			}
 
 			if (opt.extraData) {
-				Object.each(opt.extraData, function(v,k) {
+				Object.entries(opt.extraData).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 					li.data(k, v);
 				});
 			}

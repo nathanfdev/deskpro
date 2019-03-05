@@ -98,7 +98,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 			};
 
 			var editRow = $('div.edit-' + info.contentType + '-' + info.commentId, self.wrapper);
-			DP.console.log(editRow);
+			console.log(editRow);
 			info.editRow = editRow;
 
 			return info;
@@ -127,7 +127,7 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Orb.Class({
 		this.wrapper.on('click', '.comment-editsave-trigger', function(ev) {
 			var info = findRowInfo(this);
 
-			var commentText = $('textarea', info.editRow).val().trim();
+			var commentText = $.trim($('textarea', info.editRow).val());
 			if (!commentText.length) {
 				info.row.show();
 				info.editRow.hide();

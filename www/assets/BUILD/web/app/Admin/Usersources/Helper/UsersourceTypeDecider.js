@@ -1,4 +1,4 @@
-define([], () => {
+define([], function() {
   class Admin_Usersources_Helper_UsersourceTypeDecider {
     constructor() {
     }

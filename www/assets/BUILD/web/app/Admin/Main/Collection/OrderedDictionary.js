@@ -1,4 +1,4 @@
-define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], (EventsMixin, Numbers) => {
+define(['Admin/Main/Util/EventsMixin', 'DeskPRO/Util/Numbers'], function(EventsMixin, Numbers) {
   /**
   * Save an ordered k=>v
   */

@@ -95,7 +95,7 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 
 				if (snippet_data && snippet_data.snippets) {
 					if (mutator) {
-						Array.each(snippet_data.snippets, function(s) {
+						snippet_data.snippets.forEach(function(s) {
 							snippets.push(mutator(item));
 						});
 					} else {
@@ -106,7 +106,7 @@ DeskPRO.Agent.TextSnippetAjaxDriver = new Orb.Class({
 								// ensure local cache is empty
 								self.localCache = {};
 
-                Array.each(snippets, function(s) {
+                snippets.forEach(function(s) {
                   self.localCache[s.category_id] = self.localCache[s.category_id] || [];
                   self.localCache[s.category_id].push(s);
                 });

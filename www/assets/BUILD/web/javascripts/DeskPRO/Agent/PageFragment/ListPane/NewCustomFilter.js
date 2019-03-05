@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.ListPane.NewCustomFilter = new Orb.Class({
 			searchData = $.parseJSON(searchData);
 
 			if (searchData.terms) {
-				Array.each(searchData.terms, function(info, x) {
+				searchData.terms.forEach(function(info, x) {
 					var basename = 'terms[initial_' + x + ']';
 					editor.addNewRow($('.search-terms', criteriaList), basename, {
 						type: info.type,

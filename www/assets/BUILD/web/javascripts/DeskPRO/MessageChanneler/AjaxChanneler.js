@@ -33,7 +33,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 			DeskPRO_Window.dismissAlertQueue = [];
 
 			var send = [];
-			Array.each(q, function(item) {
+			q.forEach(function(item) {
 				send.push({
 					name: 'dismiss_alerts[]',
 					value: item
@@ -53,7 +53,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 			}
 
 			var recent = [];
-			Array.each(DeskPRO_Window.recentTabs.recentPendingSync, function(item, idx) {
+			DeskPRO_Window.recentTabs.recentPendingSync.forEach(function(item, idx) {
 				recent.push([
 					item[0],
 					item[1],
@@ -123,7 +123,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Orb.Class({
 				try {
 					this.sendMessage(d[1], d[2]);
 				} catch (err) {
-					DpErrorLog.logError('[AjaxChanneler] ' + err, err.stack || '', err.fileName || '', err.lineNumber || '');
+					console.error('[AjaxChanneler] ' + err, err.stack || '', err.fileName || '', err.lineNumber || '');
 				}
 			}
 		}

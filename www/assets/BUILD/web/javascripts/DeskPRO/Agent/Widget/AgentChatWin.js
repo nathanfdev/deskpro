@@ -5,7 +5,7 @@ DeskPRO.Agent.Widget.AgentChatWin_Registry = {};
 DeskPRO.Agent.Widget.AgentChatWin_Find = function(chatId) {
 	var found = null;
 
-	Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
+	Object.values(DeskPRO.Agent.Widget.AgentChatWin_Registry).forEach(function(chatWin) {
 		if (chatWin && !found && chatWin.getConvoId() == chatId) {
 			found = chatWin;
 		}
@@ -23,7 +23,7 @@ DeskPRO.Agent.Widget.AgentChatWin_FindAgents = function(agent_ids) {
 
 	agent_ids_str = agent_ids.join(',');
 
-	Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
+	Object.values(DeskPRO.Agent.Widget.AgentChatWin_Registry).forEach(function(chatWin) {
 		if (chatWin && !found && chatWin.agentIdsStr == agent_ids_str) {
 			found = chatWin;
 		}
@@ -58,7 +58,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid] = this;
 
 		this.agentIds = [];
-		Array.each(this.options.agentIds, function(i) {
+		this.options.agentIds.forEach(function(i) {
 			this.agentIds.push(parseInt(i));
 		}, this);
 
@@ -127,7 +127,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 		newContainer.find('> .window').find('> header, > div.messages-box, > .input-message-wrap').on('click', function(ev) {
 			var count = 0;
-			Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(win) {
+			Object.values(DeskPRO.Agent.Widget.AgentChatWin_Registry).forEach(function(win) {
 				if (win) {
 					win.wrapper.css('z-index', zIndexStart+(count++));
 				}
@@ -136,7 +136,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 		});
 		newContainer.find('> nav').on('click', function() {
 			var count = 0;
-			Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(win) {
+			Object.values(DeskPRO.Agent.Widget.AgentChatWin_Registry).forEach(function(win) {
 				if (win) {
 					win.wrapper.css('z-index', zIndexStart+(count++));
 				}
@@ -194,7 +194,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 	loadLastConvo: function() {
 		var data = [];
-		Array.each(this.agentIds, function(id) {
+		this.agentIds.forEach(function(id) {
 			data.push({
 				name: 'agent_ids[]',
 				value: id
@@ -212,7 +212,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 				}
 
 				if (data.messages) {
-					Array.each(data.messages, function(messageInfo) {
+					data.messages.forEach(function(messageInfo) {
 						if (messageInfo.agent_id == DESKPRO_PERSON_ID) {
 							this.showMyMessage({
 								id: messageInfo.id,
@@ -251,7 +251,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 
 	_fireSendMessage: function() {
 		var txt = $('textarea', this.wrapper);
-		var msg = txt.val().trim();
+		var msg = $.trim(txt.val());
 		txt.val('');
 
 		if (!msg.length) {
@@ -303,7 +303,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			value: this.uuid
 		});
 
-		Array.each(this.agentIds, function(id) {
+		this.agentIds.forEach(function(id) {
 			data.push({
 				name: 'agent_ids[]',
 				value: id
@@ -404,7 +404,7 @@ DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
 			'd': {title: 'Download', url: BASE_URL + 'agent/downloads/file/'},
 			'i': {title: 'Feedback', url: BASE_URL + 'agent/feedback/view/'}
 		};
-		Object.each(idMap, function(info, prefix) {
+		Object.entries(idMap).forEach(function(_vk) { var prefix = _vk[0], info = _vk[1];
 			var re = new RegExp('\\{\\{\\s*' + prefix + '\\-([0-9]+)\\s*\\}\\}', 'g');
 			message = message.replace(re, '<a data-route="page:'+info.url+'$1">'+info.title+' #$1</a>');
 		});

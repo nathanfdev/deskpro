@@ -74,7 +74,7 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket = new Orb.Class({
 
 						if (data.success) {
 							// remove old tabs, theyre outdated
-							Array.each(DeskPRO_Window.getTabWatcher().findTabType(self.options.tabType), function(tab) {
+							DeskPRO_Window.getTabWatcher().findTabType(self.options.tabType).forEach(function(tab) {
 								var id = tab.page.getMetaData(self.options.metaIdName);
 								if (id == data.old_id || id == data.id) {
 									DeskPRO_Window.TabBar.removeTabById(tab.id);

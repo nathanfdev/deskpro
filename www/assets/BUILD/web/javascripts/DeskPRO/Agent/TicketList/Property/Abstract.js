@@ -5,16 +5,9 @@ Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
  * Unlike the Ticket properties, these only care about changing
  * values.
  */
-DeskPRO.Agent.TicketList.Property.Abstract = new Class({
+DeskPRO.Agent.TicketList.Property.Abstract = new Orb.Class({
 
-	Implements: [Events, Options],
-
-	displayNameType: null,
-	displayCaption: null,
-
-	options: {},
-	ticketPage: null,
-	ticketId: null,
+	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	/**
 	 * @param {DeskPRO.Agent.PageFragment.Page.Ticket} ticketPage
@@ -25,8 +18,11 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 
 		if (options) this.setOptions(options);
 
+		this.displayNameType = null;
+		this.displayCaption = null;
 		this.ticketPage = ticketPage;
 		this.ticketId = ticketId;
+		this._interfaceEl = null;
 
 		this.init();
 	},
@@ -89,7 +85,6 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 		return this._interfaceEl;
 	},
 
-	_interfaceEl: null,
 	_getInterfaceElement: function() {
 		// override
 	},

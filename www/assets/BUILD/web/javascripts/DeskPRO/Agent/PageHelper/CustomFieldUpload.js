@@ -1,9 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.PageHelper');
 
 DeskPRO.Agent.PageHelper.CustomFieldUpload = new Orb.Class({
-  Implements: [Orb.Util.Events, Orb.Util.Options],
-
-  initialize: function (page, options) {
+  initialize: function (page) {
     this.page = page;
     this.updateVisibility();
   },
@@ -73,6 +71,19 @@ DeskPRO.Agent.PageHelper.CustomFieldUpload = new Orb.Class({
         $customFieldForm.find('.drop-file-zone').remove();
       } else {
         self.initUploadBtn($customFieldForm);
+      }
+    });
+  },
+
+  destroy: function () {
+    $(this.page).find('.File.form.customfield').each(function() {
+      var $customFieldForm = $(this);
+      var $collectionForm = $customFieldForm.find('[data-prototype]');
+
+      if (!$collectionForm.data('multiple') && $customFieldForm.find('input[type="hidden"]').length) {
+        $customFieldForm.find('.custom-field-attach').fileupload('destroy');
+      } else {
+        $customFieldForm.fileupload('destroy');
       }
     });
   }

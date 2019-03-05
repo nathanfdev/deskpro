@@ -456,6 +456,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var cc_user_rows = this.getElById('cc_user_rows');
 
         cc_row.autoCompleteElement = new DeskPRO.Agent.ElementHandler.SimpleAutoComplete(cc_row);
+        this.cc_row_autoCompleteElement = cc_row.autoCompleteElement;
         this.ccRowTpl = '';
         var ccRemoveFunction = function() {
 			var row = $(this).closest('.cc-user-row');
@@ -470,7 +471,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
         $('.cc-saverow-trigger', cc_row).on('click', function(ev) {
 			var user_row = $(self.ccRowTpl);
-			var email = $('input.user-part', cc_row).val().trim();
+			var email = $.trim($('input.user-part', cc_row).val());
 			var parts = email.split('@');
 
 			if(email == ''
@@ -547,7 +548,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.el.on('click', '.remove-attach-trigger', function() {
-      var blobId = $(this).prev('input').val();
+      var blobId = parseInt($(this).prev('input').val(), 10);
       var row = $(this).closest('li');
       self.removeBlob(blobId, row);
 		});
@@ -610,7 +611,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
 						var agentText, defaultText, wantText, useText;
 
-						Array.each(options, function(info) {
+						options.forEach(function(info) {
 							if (info[value_prop]) {
 								if (info[lang_id_prop] == ticketLangId) {
 									wantText = info[value_prop];
@@ -640,7 +641,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 
 					useText = selectText(snippetCode, 'value', 'language_id');
 
-					Array.each(['department', 'product', 'category', 'workflow', 'priority'], function(prop) {
+					['department', 'product', 'category', 'workflow', 'priority'].forEach(function(prop) {
 						if (vars[prop] && vars[prop]['title_translated']) {
 							vars[prop]['title'] = selectText(vars[prop]['title_translated'], 'title', 'language_id', vars[prop]['title']);
 						}
@@ -720,7 +721,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var ed = textarea.getEditor();
 			var api = textarea.data('redactor');
 
-			var te = new DeskPRO.TextExpander({
+			this.textExpander = new DeskPRO.TextExpander({
 				textarea: ed,
 				onCombo: function(combo, ev) {
 					combo = combo.replace(/%/g, '');
@@ -789,7 +790,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 									var useText;
 									var result;
 
-									Array.each(snippetCode, function (info) {
+									snippetCode.forEach(function (info) {
 										if (info.language_id == ticketLangId) {
 											wantText = info.value;
 										}
@@ -876,7 +877,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					self.getElById('ticket_do_status').val(0);
 					statusDetailEl.removeClass('changed');
 				} else {
-					$('.new-val-label', statusDetailEl).text(item.text().trim());
+					$('.new-val-label', statusDetailEl).text($.trim(item.text()));
 					self.getElById('ticket_do_status').val(1);
 					self.getElById('ticket_status').val(val);
 					statusDetailEl.addClass('changed');
@@ -1125,7 +1126,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		});
 
 		this.onMacrosUpdated = function(ev) {
-      Array.each(ev.macroItems, function (info) {
+      ev.macroItems.forEach(function (info) {
         var has = statusMacroList.find('.res-ticketmacro-' + info.id);
         if (has[0]) {
           return;
@@ -1289,7 +1290,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				dataType: 'json',
 				success: function(data) {
 					actionsRowList.empty();
-					Array.each(data.descriptions, function(desc) {
+					data.descriptions.forEach(function(desc) {
 						var li = $('<li />');
 						li.html(desc);
 
@@ -1338,7 +1339,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 								api.syncCode();
 							} else {
 								var text = $('<div>' + html + '</div>');
-								text = text.text().trim();
+								text = $.trim(text.text());
 								textarea.val($.trim(textarea.val() + "\n\n" + text));
 							}
 						}
@@ -1432,7 +1433,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			var val = textarea.val();
 		}
 
-		if (val.trim().length) {
+		if ($.trim(val).length) {
 
 			// Always put it before the signature
 			// (if have sig and val ends with sig)
@@ -1497,7 +1498,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     var selectText = function(options, value_prop, lang_id_prop, fallback_text) {
       var agentText, defaultText, wantText, useText;
 
-      Array.each(options, function(info) {
+      options.forEach(function(info) {
         if (info[value_prop]) {
           if (info[lang_id_prop] == parseInt(ticketLangId, 10)) {
             wantText = info[value_prop];
@@ -1525,7 +1526,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       return useText;
     };
 
-    Array.each(['department', 'product', 'category', 'workflow', 'priority'], function(prop) {
+    ['department', 'product', 'category', 'workflow', 'priority'].forEach(function(prop) {
       if (vars[prop] && vars[prop]['title_translated']) {
         vars[prop]['title'] = selectText(vars[prop]['title_translated'], 'title', 'language_id', vars[prop]['title']);
       }
@@ -1546,7 +1547,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
   attachBlobs: function(blobs, source) {
     var self = this;
     var $attachRow = this.getElById('attach_row');
-    Array.each(blobs, function (info) {
+    blobs.forEach(function (info) {
       var blob = source[info];
       if (blob) {
         var html = window.tmpl($('.template-download', self.page.wrapper).attr('id'))({files: [blob]});
@@ -1617,15 +1618,24 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			this.agentNotifyList.remove();
       this.agentNotifyList = null;
 		}
-		if (this.snippetsViewer) {
-			this.snippetsViewer.destroy();
-		}
 		if (window.DP_HAS_NEW_SNIPPETS) {
       if (self.isSnippetOpen) {
         var event = new CustomEvent('dpLeftDrawerClose');
         window.document.dispatchEvent(event);
       }
     }
+		if (this.snippetsViewer) {
+			this.snippetsViewer.destroy();
+			this.snippetsViewer = null;
+		}
+		if (this.cc_row_autoCompleteElement) {
+			this.cc_row_autoCompleteElement.destroy();
+			this.cc_row_autoCompleteElement = null;
+		}
+		if (this.textExpander) {
+			this.textExpander.destroy();
+			this.textExpander = null;
+		}
 		if (this.statusMenu) {
 			this.statusMenu.destroy();
 			this.statusMenu = null;
@@ -1716,8 +1726,8 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
     row.fadeOut('fast', function() {
 			row.remove();
 			var blobIndex = self.fwdAttachments.indexOf(blobId);
-			if(-1 !== blobIndex) {
-			  delete(self.fwdAttachments[index]);
+			if (blobIndex !== -1) {
+			  delete(self.fwdAttachments[blobIndex]);
       }
 			var rows = $('ul.files li', self.getElById('attach_row'));
       if (!rows.length) {

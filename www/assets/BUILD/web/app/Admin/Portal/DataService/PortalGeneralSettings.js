@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], (Util) => {
+define(['DeskPRO/Util/Util'], function(Util) {
   class Admin_Portal_Service_PortalGeneralSettings {
     static initClass() {
       this.$inject = ['Api2', '$q', 'Growl'];

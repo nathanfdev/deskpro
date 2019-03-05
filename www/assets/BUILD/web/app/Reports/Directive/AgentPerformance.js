@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings'], (Strings) => {
+define(['DeskPRO/Util/Strings'], function(Strings) {
   const Reports_Directive_AgentPerformance = ['$compile', '$sce', 'AgentActivityService', 'AgentHoursService', '$http', ($compile, $sce, AgentActivityService, AgentHoursService, $http) =>
     ({
       restrict: 'E',

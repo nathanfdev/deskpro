@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) => {
+define(['Admin/Main/Ctrl/Base', 'moment'], function(Admin_Ctrl_Base, moment) {
   class Admin_EmailStatus_Ctrl_ViewSend extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_EmailStatus_Ctrl_ViewSend';

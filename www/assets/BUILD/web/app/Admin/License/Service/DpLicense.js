@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class Admin_License_Service_DpLicense {
     constructor(Api, $modal, $http, $q) {
       this.Api = Api;

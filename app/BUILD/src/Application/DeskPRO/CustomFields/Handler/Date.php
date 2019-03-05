@@ -272,6 +272,16 @@ class Date extends HandlerAbstract
                 }
             }
 
+            // Days of week
+            // if you'll set person's timezone it could modify original date (i.e. +-1 day)
+            // so validate it first
+            $dow = intval($date->format('N')) - 1;
+            if ($validDow = $this->field_def->getOption('date_valid_dow')) {
+                if (!in_array($dow, $validDow)) {
+                    return $this->makeErrorArray(['date_invalid_dow']);
+                }
+            }
+
             if ($date) {
                 $adminTz = App::getCurrentPerson()->getDateTimezone();
                 $date->setTimezone($adminTz);
@@ -282,15 +292,6 @@ class Date extends HandlerAbstract
             //------------------------------
             // Validate ranges
             //------------------------------
-            $dow = intval($date->format('N')) - 1;
-
-            // Days of week
-            if ($validDow = $this->field_def->getOption('date_valid_dow')) {
-                if (!in_array($dow, $validDow)) {
-                    return $this->makeErrorArray(['date_invalid_dow']);
-                }
-            }
-
             // Specific date ranges
             if ($this->field_def->getOption('date_valid_type') == 'date') {
                 $d1 = $this->field_def->getOption('date_valid_date1');

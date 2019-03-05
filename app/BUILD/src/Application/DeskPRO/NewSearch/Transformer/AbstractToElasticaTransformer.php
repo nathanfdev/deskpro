@@ -30,7 +30,7 @@ abstract class AbstractToElasticaTransformer implements ModelToElasticaTransform
             }
         }
 
-        $document->set('custom_data', $customData);
+        $document->set('custom_data2', $customData);
     }
 
     /**

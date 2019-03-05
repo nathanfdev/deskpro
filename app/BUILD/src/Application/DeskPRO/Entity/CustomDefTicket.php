@@ -8,6 +8,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AbstractAlias;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AliasesOwner;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomTicketFieldDefinitionAlias;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -16,7 +18,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * A custom field definition.
  */
-class CustomDefTicket extends CustomDefAbstract
+class CustomDefTicket extends CustomDefAbstract implements AliasesOwner
 {
     /**
      * @var CustomDefTicket
@@ -33,7 +35,7 @@ class CustomDefTicket extends CustomDefAbstract
     /**
      * Aliases for this field.
      *
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\ArrayCollection|CustomTicketFieldDefinitionAlias[]
      */
     protected $aliases;
 
@@ -73,11 +75,11 @@ class CustomDefTicket extends CustomDefAbstract
     }
 
     /**
-     * @param CustomTicketFieldDefinitionAlias $alias
+     * @param AbstractAlias $alias
      *
      * @return $this
      */
-    public function addAlias(CustomTicketFieldDefinitionAlias $alias)
+    public function addAlias(AbstractAlias $alias)
     {
         $alias->setObject($this);
         $this->aliases->add($alias);
@@ -86,13 +88,12 @@ class CustomDefTicket extends CustomDefAbstract
     }
 
     /**
-     * @param CustomTicketFieldDefinitionAlias $alias
+     * @param AbstractAlias $alias
      *
      * @return $this
      */
-    public function removeAlias(CustomTicketFieldDefinitionAlias $alias)
+    public function removeAlias(AbstractAlias $alias)
     {
-        $alias->setObject(null);
         $this->aliases->removeElement($alias);
 
         return $this;

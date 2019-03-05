@@ -277,7 +277,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
     }
     $scope.listItems.length = 0;
 
-    $scope.tickets.each(function(ticket) {
+    $scope.tickets.forEach(function(ticket) {
       $scope.addListItem('ticket', 'ticket:' + ticket.id, ticket.subject, routeTemplate.replace('0000', ticket.id));
     });
   },
@@ -1089,7 +1089,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         var el = $(this), num;
         if (el.data('grouping-option') === ticketValue) {
           foundBubble = el;
-          num = parseInt(el.find('span').text().trim() || 0);
+          num = parseInt($.trim(el.find('span').text()) || 0);
           if (op === 'add') {
             num++;
           } else {
@@ -1356,10 +1356,10 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
     $scope.getDisplayableFields = function() {
       var fields = [];
-      self.fixed_fields.each(function(v) {
+      self.fixed_fields.forEach(function(v) {
         fields.push(v);
       });
-      $scope.display_fields.each(function(v) {
+      $scope.display_fields.forEach(function(v) {
         if (fields.indexOf(v) > -1 || v === 'id') {
           return;
         }
@@ -1405,7 +1405,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         var item = $(info.itemEl);
 
         var prop = item.data('order-by');
-        var label = item.find('.label').text().trim();
+        var label = $.trim(item.find('.label').text());
 
         // Change the displayed label for some visual feedback
         sortMenuBtn.find('.label label').text(label);
@@ -1442,7 +1442,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         var item = $(info.itemEl);
 
         var prop = item.data('group-by');
-        var label = item.text().trim();
+        var label = $.trim(item.text());
 
         // Change the displayed label for some visual feedback
         groupMenuBtn.find('.label').text(label);

@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   class Admin_Settings_Ctrl_Notifications extends Admin_Ctrl_Base {
     constructor(...args) {
       {

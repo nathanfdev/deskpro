@@ -130,6 +130,40 @@ class TicketTest extends PortalTestCase
         $this->assertEquals('some test', $ticket->getTicketStatus()->getSysId());
     }
 
+    public function testSetTicketStatus_PendingCase()
+    {
+        // GIVEN
+        $statusPending = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
+        $statusPending->setSysId('pending');
+
+        $statusPending2 = new TicketStatus(TicketStatus::STATUS_TYPE_PENDING);
+        $statusPending->setId(2);
+
+        $ticket = new Ticket();
+        $this->assertNull($ticket->getDateOnHold());
+
+        // WHEN set pending
+        $ticket->setTicketStatus($statusPending);
+
+        // THEN
+        $this->assertEquals(TicketStatus::STATUS_TYPE_PENDING, $ticket->getStatus());
+        $this->assertNotNull($ticket->getDateOnHold());
+        $dateOnHold = $ticket->getDateOnHold();
+
+        // WHEN set sub-pending
+        $ticket->setTicketStatus($statusPending2);
+
+        // THEN
+        $this->assertNotNull($ticket->getDateOnHold());
+        $this->assertEquals($dateOnHold, $ticket->getDateOnHold());
+
+        // WHEN unhold
+        $ticket->setTicketStatus(new TicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
+
+        // THEN
+        $this->assertNull($ticket->getDateOnHold());
+    }
+
     public function testSetTicketStatus_UndeleteCase()
     {
         // GIVEN

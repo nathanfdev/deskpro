@@ -5,21 +5,17 @@ Orb.createNamespace('DeskPRO.Agent.TicketList');
  * except we work with many tickets at a time, and we only care about updating the UI and not about
  * getting current values.
  */
-DeskPRO.Agent.TicketList.ChangeManager = new Class({
+DeskPRO.Agent.TicketList.ChangeManager = new Orb.Class({
 
-	Implements: [Events],
-
-	ticketPage: null,
-
-	hasChanges: false,
-	changes: {}, // changes are { ticketId: [ [property, newValue, hasApplied] ] }
-
-	ticketIdsBatch: null,
+	Implements: [Orb.Util.Events],
 
 	/**
 	 * @param {DeskPRO.Agent.PageFragment.Page.BasicTicketResults} ticketPage
 	 */
 	initialize: function(ticketPage) {
+		this.hasChanges = false;
+		this.changes = {};
+		this.ticketIdsBatch = null;
 		this.ticketPage = ticketPage;
 	},
 
@@ -88,8 +84,8 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 		$('tr.on').removeClass('faded');
 		$('table:first', this.ticketPage.contentWrapper).addClass('preview-mode');
 
-		Array.each(this.ticketIdsBatch, function (ticketId) {
-			Array.each(this.changes[ticketId], function (change) {
+		this.ticketIdsBatch.forEach(function (ticketId) {
+			this.changes[ticketId].forEach(function (change) {
 				this.applyChangeForEntry(change);
 			}, this);
 		}, this);
@@ -110,8 +106,8 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	 */
 	revertChanges: function() {
 
-		Object.each(this.changes, function (changes, ticketId) {
-			Array.each(changes, function (change) {
+		Object.entries(this.changes).forEach(function(_vk) { var ticketId = _vk[0], changes = _vk[1];
+			changes.forEach(function (change) {
 				this.revertChangeForEntry(change);
 			}, this);
 		}, this);
@@ -128,7 +124,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	revertChangesForTicketId: function(ticketId) {
 		if (!this.changes[ticketId]) return;
 
-		Array.each(this.changes[ticketId], function (change) {
+		this.changes[ticketId].forEach(function (change) {
 			this.revertChangeForEntry(change);
 		}, this);
 
@@ -138,7 +134,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 
 		delete this.changes[ticketId];
 
-		if (Object.getLength(this.changes) == 0) {
+		if (Object.keys(this.changes).length === 0) {
 			this.revertChanges();
 		}
 	},
@@ -148,8 +144,8 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	 * Just updates the UI to show we accepted the changes
 	 */
 	commitChanges: function() {
-		Array.each(Object.values(this.changes), function (changes) {
-			Object.each(changes, function(change) {
+		Object.values(this.changes).forEach(function (changes) {
+			Object.values(changes).forEach(function(change) {
 				var property = change.property;
 				property.unhighlightInterfaceElement();
 			}, this);
@@ -168,7 +164,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	 * Called when we detect if a value was updated automatically from somewhere.
 	 */
 	setPropertyUpdated: function(property, newValue) {
-		if (typeOf(property) == 'string') {
+		if (Orb.typeOf(property) == 'string') {
 			property = this.ticketPage.getPropertyManager(property);
 		}
 

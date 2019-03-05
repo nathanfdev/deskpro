@@ -37,7 +37,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.TicketNotifications = new Orb.Class({
 		});
 
 		var checks = this.el.find(':checkbox');
-		Array.each(['email', 'alert'], function(type) {
+		['email', 'alert'].forEach(function(type) {
 			checks.filter('[name^="filter_sub[5]['+type+'"]').each(function() {
 				$(this).on('click', function() {
 					if (this.checked) {

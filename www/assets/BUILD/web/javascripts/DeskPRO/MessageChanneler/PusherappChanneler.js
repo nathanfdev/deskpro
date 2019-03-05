@@ -47,13 +47,13 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 			var event_name = channel + '-' + event_name;
 		});
 
-		this._add_subs.include(channel);
+		Orb.arrPushUnique(this._add_subs, channel);
 
 		if (this._add_subs_timeout) {
 			window.clearTimout(this._add_subs_timeout);
 		}
 
-		this._add_subs_timeout = this._sendSubscribeChannels.delay(200, this);
+		this._add_subs_timeout = Orb.fnDelay(this._sendSubscribeChannels, 200, this);
 
 		if (callback) {
 			this.messageBroker.addMessageListener(channel, callback);
@@ -62,7 +62,7 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 
 	_sendSubscribeChannels: function() {
 		var data = [];
-		Array.each(this._add_subs, function(v){
+		this._add_subs.forEach(function(v){
 			data.push({ name: 'channels[]', value: v });
 		});
 		this._add_subs = [];
@@ -76,7 +76,7 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 			success: function(data) {
 				this._doneSubscribeChannels(data.subscribed_channels);
 
-				Array.each(data.subscribed_channels, function(channel_name) {
+				data.subscribed_channels.forEach(function(channel_name) {
 					channel_name = this.channelToPusherapp(channel_name);
 					var channel = this.socket.subscribe(channel_name);
 					var self = this;
@@ -90,18 +90,18 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 	},
 
 	unsubscribeChannel: function(channel) {
-		this._del_subs.include(channel);
+		Orb.arrPushUnique(this._del_subs, channel);
 
 		if (this._del_subs_timeout) {
 			window.clearTimout(this._del_subs_timeout);
 		}
 
-		this._del_subs_timeout = this._sendUnsubscribeChannels.delay(200, this);
+		this._del_subs_timeout = Orb.fnDelay(this._sendUnsubscribeChannels, 200, this);
 	},
 
 	_sendUnsubscribeChannels: function() {
 		var data = [];
-		Array.each(this._del_subs, function(v){
+		this._del_subs.forEach(function(v){
 			data.push({ name: 'channels[]', value: v });
 		});
 		this._del_subs = [];
@@ -115,7 +115,7 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 			success: function(data) {
 				this._doneUnsubscribeChannels(data.unsubscribed_channels);
 
-				Array.each(data.subscribed_channels, function(channel_name) {
+				data.subscribed_channels.forEach(function(channel_name) {
 					channel_name = this.channelToPusherapp(channel_name);
 					this.socket.unsubscribe(channel);
 				});

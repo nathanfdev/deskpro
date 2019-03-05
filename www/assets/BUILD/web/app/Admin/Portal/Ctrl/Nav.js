@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   class Admin_Portal_Ctrl_Nav extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_Portal_Ctrl_Nav';

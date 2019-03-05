@@ -1,4 +1,4 @@
-define(['AdminStart/Ctrl/StartBase'], (StartBase) => {
+define(['AdminStart/Ctrl/StartBase'], function(StartBase) {
   class AdminStart_Ctrl_Home extends StartBase {
     static initClass() {
       this.CTRL_ID = 'AdminStart_Ctrl_Home';

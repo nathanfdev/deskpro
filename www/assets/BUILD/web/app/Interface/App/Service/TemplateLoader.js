@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class TemplateLoader {
     constructor(loadUrl, $http, $q) {
       this.loadUrl = loadUrl;

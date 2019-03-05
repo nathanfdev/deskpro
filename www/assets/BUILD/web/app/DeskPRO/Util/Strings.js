@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class DeskPRO_Util_Strings {
     static initClass() {
       this.CHARS_ALPHANUM     = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';

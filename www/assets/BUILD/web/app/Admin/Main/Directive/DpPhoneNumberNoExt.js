@@ -1,4 +1,4 @@
-define(['jquery', 'intl-tel-input'], ($, intlTelInput) => {
+define(['jquery', 'intl-tel-input'], function($, intlTelInput) {
   /*
     * Description
     * -----------

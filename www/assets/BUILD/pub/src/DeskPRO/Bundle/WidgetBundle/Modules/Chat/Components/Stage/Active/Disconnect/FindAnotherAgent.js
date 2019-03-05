@@ -9,7 +9,7 @@ export class FindAnotherAgent extends React.Component {
     onClick:   PropTypes.func
   };
 
-  onClick = event => {
+  onClick = (event) => {
     event.preventDefault();
     this.props.onClick();
   };
@@ -19,7 +19,7 @@ export class FindAnotherAgent extends React.Component {
 
     return (
       <div>
-        <h1>{portalPhrases.get('portal.chat.agent_disconnected', { '{agentName}': agentName })}</h1>
+        <h1>{portalPhrases.get('portal.chat.agent_disconnected', { agentName })}</h1>
         <h2>{portalPhrases.get('portal.chat.find_another_agent')}</h2>
         <p>
           <a href="#" onClick={this.onClick}>

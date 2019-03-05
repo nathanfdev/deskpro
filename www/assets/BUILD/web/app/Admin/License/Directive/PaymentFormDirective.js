@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], (Util) => {
+define(['DeskPRO/Util/Util'], function(Util) {
   const Admin_License_Directive_PaymentFormDirective = [() =>
     ({
       restrict: 'A',

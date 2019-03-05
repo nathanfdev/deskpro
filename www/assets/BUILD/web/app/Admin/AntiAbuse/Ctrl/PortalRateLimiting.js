@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   const _url = '/settings/anti_abuse/portal';
   class Admin_AntiAbuse_Ctrl_PortalRateLimiting extends Admin_Ctrl_Base {
     static initClass() {

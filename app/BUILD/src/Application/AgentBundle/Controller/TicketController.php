@@ -1011,18 +1011,19 @@ class TicketController extends AbstractController
         }
 
         if ($this->in->checkIsset('status')) {
-            $status = $this->in->checkIsset('status');
-            if ($status == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
+            /** @var TicketStatus $setStatus */
+            $status = $this->getContainer()->getTicketStatuses()->findStatusOrException($this->in->checkIsset('status'));
+            if ($status->getStatusType() == 'resolved' && !$tcheck->canModify($ticket, 'set_resolved')) {
                 $status = null;
             }
-            if ($status == 'awaiting_agent' && !$tcheck->canModify($ticket, 'set_awaiting_agent')) {
+            if ($status && $status->getStatusType() == 'awaiting_agent' && !$tcheck->canModify($ticket, 'set_awaiting_agent')) {
                 $status = null;
             }
-            if ($status == 'awaiting_user' && !$tcheck->canModify($ticket, 'set_awaiting_user')) {
+            if ($status && $status->getStatusType() == 'awaiting_user' && !$tcheck->canModify($ticket, 'set_awaiting_user')) {
                 $status = null;
             }
             if ($status) {
-                $ticket['status'] = $this->in->getString('status');
+                $ticket->setTicketStatus($status);
             }
         }
 
@@ -1339,6 +1340,20 @@ class TicketController extends AbstractController
             }
         }
 
+        $ticketContext->getVars()->set('reply_as_action', $actionType);
+
+        $replyOptions = [];
+        if ($this->in->getInt('options.agent_id') != -1 && $this->in->getBool('options.do_assign_agent')) {
+            $replyOptions[] = 'agent_assign';
+        }
+        if ($this->in->getInt('options.agent_team_id') != -1 && $this->in->getBool('options.do_assign_team')) {
+            $replyOptions[] = 'agent_team_assign';
+        }
+        if (!$this->in->getBool('options.notify_user')) {
+            $replyOptions[] = 'mute_user_emails';
+        }
+        $ticketContext->getVars()->set('reply_options', $replyOptions);
+
         $macro = null;
         if ($macroId) {
             $macro = $this->em->find(TicketMacro::class, $macroId);
@@ -1449,7 +1464,7 @@ class TicketController extends AbstractController
             }
         }
 
-        $blobs = $this->get('attachment_helper')->processInlineBlobs($message, $this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
+        $blobs = $this->get('attachment_helper')->processInlineBlobs($message->getMessageHtml(), $this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard'));
         foreach ($blobs as $blob) {
             $attach            = new Entity\TicketAttachment();
             $attach['blob']    = $blob;
@@ -2370,10 +2385,14 @@ class TicketController extends AbstractController
                     $newticket->custom_org_fields = $_REQUEST['custom_org_fields'];
                 }
 
-                if ($this->in->getString('actions.status') == 'resolved') {
-                    $newticket->status = 'resolved';
-                } else {
-                    $newticket->status = '';
+                if ($this->in->getString('actions.status')) {
+                    $ticketStatus = $this->getContainer()->getTicketStatuses()
+                        ->findStatusOrException($this->in->getString('actions.status'));
+                    if ($ticketStatus->getStatusType() == 'resolved') {
+                        $newticket->status = 'resolved';
+                    } else {
+                        $newticket->status = '';
+                    }
                 }
 
                 $validator = new NewTicketValidator();

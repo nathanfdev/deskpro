@@ -467,7 +467,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}
 
 		// Go through other instances and make sure the others arent open on the same side
-		Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
+		Object.values(DeskPRO.Agent.PageHelper.Popover_Instances).forEach(function(inst) {
 			if (inst.isOpen() && inst.options.positionMode == this.options.positionMode) {
 				inst.close();
 			}

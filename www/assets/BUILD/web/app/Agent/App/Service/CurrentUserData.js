@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class Agent_App_Service_CurrentUserData {
     static initClass() {
       this.$inject = ['$http', '$q'];

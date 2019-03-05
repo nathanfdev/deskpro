@@ -1,4 +1,4 @@
-define(['toastr', 'underscore'], (toastr, _) => {
+define(['toastr', 'underscore'], function(toastr, _) {
   class DeskPRO_Main_Service_Growl {
     constructor(options) {
       toastr.options = _.defaults(options || {}, {

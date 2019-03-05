@@ -1,4 +1,4 @@
-define([], () => {
+define([], function() {
   const Admin_Portal_Directive_Editor_FloatForm = [() =>
     ({
       restrict:    'E',

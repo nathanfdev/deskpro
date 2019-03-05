@@ -105,7 +105,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 	 */
 	loadTemplate: function(callback) {
 
-		DP.console.debug('[BackgroundPopout] Loading: %s', this.options.loadUrl);
+		console.debug('[BackgroundPopout] Loading: %s', this.options.loadUrl);
 		if (this.xhr) {
 			return;
 		}
@@ -132,7 +132,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 
 				if (callback) {
 					if (typeof callback != 'function') {
-						DP.console.error("Not a valid callback: %o", callback);
+						console.error("Not a valid callback: %o", callback);
 						return;
 					}
 					callback(html);

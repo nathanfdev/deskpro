@@ -105,30 +105,30 @@ class DateTime extends Date
                     $date = null;
                 }
             }
-
-            if ($date) {
-                $adminTz = App::getCurrentPerson()->getDateTimezone();
-                $date->setTimezone($adminTz);
-            } else {
-                return $this->makeErrorArray(['date_invalid']);
-            }
         } else {
             return [];
         }
 
-        //------------------------------
-        // Validate ranges
-        //------------------------------
-
-        $dow = intval($date->format('N')) - 1;
-
         // Days of week
+        // if you'll set person's timezone it could modify original date (i.e. +-1 day)
+        // so validate it first
+        $dow = intval($date->format('N')) - 1;
         if ($validDow = $this->field_def->getOption('date_valid_dow')) {
             if (!in_array($dow, $validDow)) {
                 return $this->makeErrorArray(['date_invalid_dow']);
             }
         }
 
+        if ($date) {
+            $adminTz = App::getCurrentPerson()->getDateTimezone();
+            $date->setTimezone($adminTz);
+        } else {
+            return $this->makeErrorArray(['date_invalid']);
+        }
+
+        //------------------------------
+        // Validate ranges
+        //------------------------------
         // Specific date ranges
         if ($this->field_def->getOption('date_valid_type') == 'date') {
             $d1 = $this->field_def->getOption('date_valid_date1');

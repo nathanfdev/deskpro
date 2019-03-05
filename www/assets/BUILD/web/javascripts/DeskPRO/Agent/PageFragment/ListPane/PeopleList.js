@@ -55,7 +55,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 				var item = $(info.itemEl);
 
 				var prop = item.data('order-by');
-				var label = item.text().trim();
+				var label = $.trim(item.text());
 
 				// Change the displayed label for some visual feedback
 				$('.label', sortMenuBtn).text(label);
@@ -252,10 +252,10 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 
     $scope.getDisplayableFields = function () {
       var fields = [];
-      self.fixed_fields.each(function (v) {
+      self.fixed_fields.forEach(function (v) {
         fields.push(v);
       });
-      $scope.displayFields.each(function (v) {
+      $scope.displayFields.forEach(function (v) {
         if (fields.indexOf(v) > -1) return;
         fields.push(v);
       });
@@ -280,7 +280,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Orb.Class({
 		if (!self.IS_ACTIVE) return;
 		$scope.listItems.length = 0;
 
-		$scope.persons.each(function(person){
+		$scope.persons.forEach(function(person){
 			$scope.addListItem('person', 'person:'+person.id, person.name_with_title, routeTemplate.replace('0000', person.id));
 		});
 	},

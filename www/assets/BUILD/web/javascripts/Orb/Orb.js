@@ -1,14 +1,5 @@
 var Orb = {};
 
-if (!window.console) {
-	window.console = {};
-}
-['error', 'log', 'warn', 'info', 'debug', 'trace'].each(function(v) {
-	if (!window.console[v]) {
-		window.console[v] = function() { };
-	}
-});
-
 /**
  * Create a namespace.
  *
@@ -108,49 +99,13 @@ Orb.uuidRand = function() {
  * @retrun {HTMLElement}
  */
 Orb.getEl = function(el) {
-	if (typeOf(el) == 'element') {
+	if (Orb.typeOf(el) == 'element') {
 		return el;
 	}
 
 	return document.getElementById(el);
 };
 $el = function(el) { return Orb.getEl(el); };
-
-
-
-/**
- * Sleep the client for a time. Note this actually freezes the client so should be used
- * very seldomly.
- *
- * @param {Integer} ms How many milliseconds to sleep for
- */
-Orb.sleep = function(ms) {
-	var start = new Date().getTime();
-	for (var i = 0; i < 1e7; i++) {
-		if ((new Date().getTime() - start) > ms){
-			break;
-		}
-	}
-};
-
-// I dont think this works :)
-Orb.mouseInElement = function(mouseX, mouseY, el) {
-	var pos = el.offset();
-	var width = el.outerWidth();
-	var height = el.outerHeight();
-
-	if (mouseX < pos.left || mouseX > pos.left+width) {
-		return false;
-	}
-
-	if (mouseY < pos.top || mouseY > pos.top+height) {
-		return false;
-	}
-
-	return true;
-};
-
-
 
 /**
  * Find the highest z-index value.
@@ -179,23 +134,24 @@ Orb.findHighestZindex = function(els) {
 /**
  * Escape special HTML characters.
  *
- * @param string
+ * @param str
  */
-Orb.escapeHtml = function(string) {
-	string = string||'';
+Orb.escapeHtml = function(str) {
+	str = str || '';
 
-	if (typeOf(string) == 'element') {
-		string = $(string).text();
-	} else if (typeOf(string) != 'string') {
-		if (string.toString) {
-			string = string.toString();
-		}
-		console.error("Invalid type passed to Orb.escapeHtml: %o", string);
+	if (Orb.typeOf(str) === 'element') {
+		str = $(str).text();
+	} else if (Orb.typeOf(str) !== 'string') {
+		console.error("Invalid type passed to Orb.escapeHtml: %o", str);
 		console.trace();
-		return (typeof string) + '';
+		if (str.toString) {
+			str = str.toString();
+		} else {
+			str = (typeof str) + '';
+		}
 	}
 
-	return string.replace(/&/g, "&amp;")
+	return str.replace(/&/g, "&amp;")
 		.replace(/>/g, "&gt;")
 		.replace(/</g, "&lt;")
 		.replace(/"/g, "&quot;");
@@ -205,22 +161,22 @@ Orb.escapeHtml = function(string) {
 /**
  * Convert newlines into HTML breaks
  *
- * @param string
+ * @param str
  * @return string
  */
-Orb.nl2br = function(string) {
-	return string.replace(/\r\n|\n/g, "<br />\n");
+Orb.nl2br = function(str) {
+	return str.replace(/\r\n|\n/g, "<br />\n");
 };
 
 
 /**
  * Link URLs in texts
  *
- * @param string
+ * @param str
  */
-Orb.linkUrls = function(string) {
-	string = string||'';
-	return string.replace(/\b(https?:\/\/|www\.)([^\s]+)\b(.?)/gi, function(match, o1, o2, o3, offset, s) {
+Orb.linkUrls = function(str) {
+	str = str||'';
+	return str.replace(/\b(https?:\/\/|www\.)([^\s]+)\b(.?)/gi, function(match, o1, o2, o3, offset, s) {
 		if (o3 && o3 == '/') {
 			o2 += '/';
 		}
@@ -314,18 +270,6 @@ Orb.strRepeat = function(str, count) {
 };
 
 /**
- * Check if a string ends with a string
- *
- * @param {String} str
- * @param {String} suffix
- * @return {Boolean}
- */
-Orb.strEndsWith = function(str, suffix) {
-    return str.indexOf(suffix, str.length - suffix.length) !== -1;
-}
-
-
-/**
  * Takes a regular expression string and escapes special characters
  *
  * @param strRegex
@@ -334,43 +278,6 @@ Orb.strEndsWith = function(str, suffix) {
 Orb.regexQuote = function(strRegex) {
 	return strRegex.replace(/([.?*+^$[\]\\(){}-])/g, "\\$1");
 };
-
-
-/**
- * Check if a string is an email address
- *
- * @param email
- */
-Orb.strIsEmail = function(email) {
-	if (email.indexOf('@') === -1) {
-		return false;
-	}
-
-	var parts = email.split('@');
-	if (parts.length != 2) {
-		return false;
-	}
-
-	// Match the part before the @
-	var regexName = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*$/i;
-
-	// Match a regular domain name after the @
-	var regexDomain = /^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[A-Z]{2,15})$/i;
-
-	// Match a IP address after the @
-	var regexIp = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/i;
-
-	if (!regexName.test(parts[0])) {
-		return false;
-	}
-
-	if (!regexDomain.test(parts[1]) && !regexIp.test(parts[1])) {
-		return false;
-	}
-
-	return true;
-};
-
 
 /**
  * Enables a phrase element by phraseId.
@@ -419,35 +326,6 @@ Orb.phraseTextEl = function(el, vars) {
 	return el;
 };
 
-
-/**
- * Take elements of array and chunk them into subarrays of size
- *
- * @param {Array}   array
- * @param {Integer} size
- */
-Orb.arrayChunk = function(array, size) {
-	var newArray = [], chunk = [], i;
-
-	for (i = 0; i < array.length; i++) {
-		if (chunk.length == size) {
-			newArray.push(chunk);
-			chunk = [];
-		}
-
-		if (chunk.length < size) {
-			chunk.push(array[i]);
-		}
-	}
-
-	if (chunk.length) {
-		newArray.push(chunk);
-	}
-
-	return newArray;
-};
-
-
 /**
  * Get selection from a range object
  *
@@ -488,38 +366,61 @@ Orb.getSelectionCoords = function(sel) {
 	return null;
 };
 
-(function() {
-	var cleanupCallbacks = [];
-	var origRemove = jQuery.fn.remove;
-	var origEmpty = jQuery.fn.empty;
-
-	jQuery.addElementCleanupCallback = function(fn) {
-		cleanupCallbacks.push(fn);
+Orb.fnPass = function(fn, args, bind) {
+	if (args) {
+		args = Array.from(args);
+	}
+	return function() {
+		return fn.apply(bind, args || arguments);
 	};
+};
 
-	jQuery.fn.empty = function() {
-		var i;
-		if (this.length) {
-			for (i = 0; i < cleanupCallbacks.length; i++) {
-				cleanupCallbacks[i](this, 'empty');
-			}
+Orb.fnDelay = function(fn, delay, bind, args) {
+	return setTimeout(Orb.fnPass(fn, args, bind), delay);
+};
+
+Orb.arrPushUnique = function(arr, val) {
+	if (arr.indexOf(val) === -1) {
+		arr.push(val);
+	}
+};
+
+Orb.arrRemoveValue = function(arr, val) {
+	var what, a = arguments, L = a.length, ax;
+	while (L > 1 && arr.length) {
+		what = a[--L];
+		while ((ax= arr.indexOf(what)) !== -1) {
+			arr.splice(ax, 1);
 		}
+	}
+	return arr;
+};
 
-		return origEmpty.apply(this, arguments);
-	};
-
-	jQuery.fn.remove = function() {
-		var i;
-		if (this.length) {
-			for (i = 0; i < cleanupCallbacks.length; i++) {
-				cleanupCallbacks[i](this, 'remove');
-			}
+Orb.typeOf = function(i) {
+	if (i == null) {
+		return "null";
+	}
+	if (i.nodeName) {
+		if (i.nodeType === 1) {
+			return "element";
 		}
-
-		return origRemove.apply(this, arguments);
-	};
-})();
-
+		if (i.nodeType === 3) {
+			return (/\S/).test(i.nodeValue) ? "textnode" : "whitespace";
+		}
+	}
+	if (Array.isArray(i)) {
+		return "array";
+	}
+	if (typeof i.length == "number") {
+		if (i.callee) {
+			return "arguments";
+		}
+	}
+	if (typeof i === 'string' || i instanceof String || Object.prototype.toString.call(i) === '[object String]') {
+		return 'string';
+	}
+	return typeof i;
+};
 
 /**
  * Cancel an event. Stops bubbling and prevents default.
@@ -595,176 +496,6 @@ Orb.shimClickCallbackPop = function(no_callback, args) {
 		Orb.shimClickCallback_shim.hide();
 	}
 };
-
-/**
- * Simple way to load Javascript and CSS files on-demand.
- *
- * Usage:
- * <code>
- *  Orb.resourceLoader.loadScript('whatever.js');
- *  Orb.resourceLoader.loadBatch([{
- *  	type: 'script',
- *  	src: 'whatever.js'
- *  }, {
- *  	type: 'css',
- *  	src: 'whatever.css'
- *  }], function() { alert("All resources loaded"); });
- * </code>
- */
-Orb.resourceLoader = {
-	batches: {},
-	batchesCallback: {},
-
-	/**
-	 * Load a new Javascript source
-	 *
-	 * @param {String} src The path or full URL to the source file
-	 * @param {Function} callback The function to execute when the file has been loaded
-	 */
-	loadScript: function(src, callback) {
-		this.loadBatch([{
-			type: 'script',
-			url: src
-		}], callback);
-	},
-
-
-
-	/**
-	 * Load a new CSS stylesheet
-	 *
-	 * @param {String} url The path or full URL to the CSS file
-	 * @param {Function} callback The function to execute when the file has been loaded
-	 */
-	loadStylesheet: function(url, callback) {
-		this.loadBatch([{
-			type: 'css',
-			url: url
-		}], callback);
-	},
-
-
-
-	/**
-	 * Load a number of resources all at once, and be notified when they've all finished
-	 * loading.
-	 *
-	 * `resources` must be a hash of `type` being 'script' or 'stylesheet', and `url` being the
-	 * path or full URL to the file.
-	 *
-	 * @param {Object} resources Descriptions of each resource
-	 * @param {Function} callback The function to execute when all files have been loaded
-	 */
-	loadBatch: function(resources, callback) {
-
-		var batchId = Orb.uuid();
-		var head = $('head');
-
-		this.batches[batchId] = [];
-		this.batchesCallback[batchId] = callback;
-
-		var res = null;
-		while (res = resources.shift()) {
-			var resourceId = Orb.uuid();
-
-			var fn = function() {
-				Orb.resourceLoader._resourceDoneLoading(batchId, resourceId);
-			};
-
-			if (res.type == 'script') {
-				var tag = document.createElement('script');
-				tag.type = "text/javascript";
-				tag.src = res.url;
-			} else if (res.type == 'stylesheet') {
-				var tag = document.createElement('link');
-				tag.rel = "stylesheet";
-				tag.type = 'text/css';
-				tag.href = res.url;
-				tag.media = "screen";
-
-				if (res.media != undefined) {
-					tag.media = res.media;
-				}
-			}
-
-			tag.onreadystatechange= function () {
-				if (this.readyState == 'complete') fn();
-			}
-			tag.onload = fn;
-
-			this.batches[batchId].push(resourceId);
-		}
-
-	},
-
-	_resourceDoneLoading: function(batchId, resourceId) {
-		if (this.batches[batchId] == undefined) {
-			return false;
-		}
-
-		this.batches[batchId].erase(resourceId);
-
-		if (!this.batches[batchId].length) {
-			var callback = this.batchesCallback[batchId];
-
-			delete this.batches[batchId];
-			delete this.batchesCallback[batchId];
-
-			callback();
-		}
-	}
-};
-
-
-/**
- * There is no way to attach a single click handler and a double-click handler.
- * So to do it, we have to emulate double-click detection by setting a timeout.
- * If a second click happens before the timeout, then we can run the double-click callback.
- * If no second click happens and the timeout expires, then we can run the original.
- *
- * @param {Function} single_click_callback The single-click function
- * @param {Function} double_click_callback The double-click function
- * @param {Integer} timeout How long the user has to make a second-click (default 250)
- */
-$.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {
-	timeout = timeout || 250;
-	return this.each(function() {
-	    var clicks = 0;
-		var self = this;
-
-		// ie triggers dblclick instead of click if they are fast
-	    if ($.browser.msie) {
-	        $(this).bind("dblclick", function(event) {
-	            clicks = 2;
-	            double_click_callback.call(self, event);
-	        });
-	        $(this).bind("click", function(event) {
-	            setTimeout(function() {
-	                if (clicks != 2) {
-	                    single_click_callback.call(self, event);
-	                }
-	                clicks = 0;
-	            }, timeout);
-	        });
-
-	    } else {
-	        $(this).bind("click", function(event) {
-	            clicks++;
-	            if (clicks == 1) {
-	                setTimeout(function() {
-	                    if (clicks == 1) {
-	                        single_click_callback.call(self, event);
-	                    } else {
-	                        double_click_callback.call(self, event);
-	                    }
-	                    clicks = 0;
-	                }, timeout);
-	            }
-	        });
-	    }
-	});
-};
-
 
 jQuery.fn.extend({
 	insertAtCaret: function(myValue) {
@@ -1011,113 +742,4 @@ function strtotime(str, now) {
     }
 
     return (now.getTime() / 1000);
-}
-
-
-
-
-/*! Copyright (c) 2008 Brandon Aaron (http://brandonaaron.net)
- * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
- * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- */
-
-/**
- * Gets the width of the OS scrollbar
- */
-(function($) {
-	var scrollbarWidth = 0;
-	$.getScrollbarWidth = function() {
-		if ( !scrollbarWidth ) {
-			if ( $.browser.msie ) {
-				var $textarea1 = $('<textarea cols="10" rows="2"></textarea>')
-						.css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body'),
-					$textarea2 = $('<textarea cols="10" rows="2" style="overflow: hidden;"></textarea>')
-						.css({ position: 'absolute', top: -1000, left: -1000 }).appendTo('body');
-				scrollbarWidth = $textarea1.width() - $textarea2.width();
-				$textarea1.add($textarea2).remove();
-			} else {
-				var $div = $('<div />')
-					.css({ width: 100, height: 100, overflow: 'auto', position: 'absolute', top: -1000, left: -1000 })
-					.prependTo('body').append('<div />').find('div')
-						.css({ width: '100%', height: 200 });
-				scrollbarWidth = 100 - $div.width();
-				$div.parent().remove();
-			}
-		}
-		return scrollbarWidth;
-	};
-})(jQuery);
-
-
-(function($){
-
-    $.fn.autoGrowInput = function(o) {
-
-        o = $.extend({
-            maxWidth: 1000,
-            minWidth: 0,
-            comfortZone: 10
-        }, o);
-
-        this.filter('input:text').each(function(){
-
-            var minWidth = o.minWidth || $(this).width(),
-                val = '',
-                input = $(this),
-                testSubject = $('<tester/>').css({
-                    position: 'absolute',
-                    top: -9999,
-                    left: -9999,
-                    width: 'auto',
-                    fontSize: input.css('fontSize'),
-                    fontFamily: input.css('fontFamily'),
-                    fontWeight: input.css('fontWeight'),
-                    letterSpacing: input.css('letterSpacing'),
-                    whiteSpace: 'nowrap'
-                }),
-                check = function() {
-
-                    if (val === (val = input.val())) {return;}
-
-                    // Enter new content into testSubject
-                    var escaped = val.replace(/&/g, '&amp;').replace(/\s/g,'&nbsp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                    testSubject.html(escaped);
-
-                    // Calculate new width + whether to change
-                    var testerWidth = testSubject.width(),
-                        newWidth = (testerWidth + o.comfortZone) >= minWidth ? testerWidth + o.comfortZone : minWidth,
-                        currentWidth = input.width(),
-                        isValidWidthChange = (newWidth < currentWidth && newWidth >= minWidth)
-                                             || (newWidth > minWidth && newWidth < o.maxWidth);
-
-                    // Animate width
-                    if (isValidWidthChange) {
-                        input.width(newWidth);
-                    }
-
-                };
-
-            testSubject.insertAfter(input);
-
-            $(this).bind('keyup keydown blur update', check);
-			check();
-        });
-
-        return this;
-
-    };
-
-})(jQuery);
-
-// Implement toISOString for browsers that dont already
-if (!Date.prototype.toISOString) {
-    Date.prototype.toISOString = function() {
-        function pad(n) { return n < 10 ? '0' + n : n }
-        return this.getUTCFullYear() + '-'
-            + pad(this.getUTCMonth() + 1) + '-'
-            + pad(this.getUTCDate()) + 'T'
-            + pad(this.getUTCHours()) + ':'
-            + pad(this.getUTCMinutes()) + ':'
-            + pad(this.getUTCSeconds()) + 'Z';
-    };
 }

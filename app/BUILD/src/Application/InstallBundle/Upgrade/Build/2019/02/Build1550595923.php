@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1550595923 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1550595923 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
@@ -11,11 +11,16 @@ class Build1550595923 extends AbstractBuild implements BlockingBuildInterface, S
     public function runAlters()
     {
         $this->truncateTable('default', 'tickets_search_active');
-        $this->execDbQuery('default', 'DROP INDEX status_idx ON tickets_search_active');
-        $this->execDbQuery('default', 'ALTER TABLE tickets_search_active ADD ticket_status_id INT DEFAULT NULL AFTER STATUS');
-        $this->execDbQuery('default', 'ALTER TABLE tickets_search_active ADD CONSTRAINT FK_9645F8AF1CDDAF7 FOREIGN KEY (ticket_status_id) REFERENCES ticket_statuses (id) ON DELETE SET NULL');
-        $this->execDbQuery('default', 'CREATE INDEX IDX_9645F8AF1CDDAF7 ON tickets_search_active (ticket_status_id)');
-        $this->execDbQuery('default', 'CREATE INDEX status_idx ON tickets_search_active (status, ticket_status_id)');
+
+        $sql = <<<'EOS'
+ALTER TABLE tickets_search_active
+ADD ticket_status_id INT DEFAULT NULL AFTER status,
+ADD CONSTRAINT FK_9645F8AF1CDDAF7 FOREIGN KEY (ticket_status_id) REFERENCES ticket_statuses (id) ON DELETE SET NULL,
+ADD INDEX IDX_9645F8AF1CDDAF7  (ticket_status_id),
+DROP INDEX status_idx,
+ADD INDEX status_idx (status, ticket_status_id)
+EOS;
+        $this->execDbQuery('default', $sql);
 
         // via TicketSearchActive::getFieldNames
         $fields = [

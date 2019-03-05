@@ -1,4 +1,4 @@
-define(['moment'], (moment) => {
+define(['moment'], function(moment) {
   /*
     * Description
     * -----------

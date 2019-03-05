@@ -84,7 +84,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 			var ret = { my: '', myId: 0, show: '', showId: 0 };
 			var hasShow = false;
-			Array.each(lang_vals, function(l) {
+			lang_vals.forEach(function(l) {
 				if (l.value && l.language_id == myLangId) {
 					ret.my = l.value;
 					ret.myId = l.language_id;
@@ -156,7 +156,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 					snippets = applyClientFilter(snippets);
 
-					Array.each(snippets, function(s) {
+					snippets.forEach(function(s) {
 						s.title_use   = pickLangText(s.title, myLangId, showLangId);
 						s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
 					});
@@ -196,7 +196,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 				var tick = 0;
 
 				if (driver.driverName == 'client_db') {
-					Array.each(catIds, function(cid) {
+					catIds.forEach(function(cid) {
 						driver.loadSnippets({
 							categoryId: cid,
 							filterString: filterString || null,
@@ -208,7 +208,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 							snippets = applyClientFilter(snippets);
 
-							Array.each(snippets, function(s) {
+							snippets.forEach(function(s) {
 								s.title_use   = pickLangText(s.title, myLangId, showLangId);
 								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
 							});
@@ -243,7 +243,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 						var thisRequestTime = lastUpdateRequest;
 
-						Array.each(catIds, function(cid) {
+						catIds.forEach(function(cid) {
 
 							var catSnippets = snippets.filter(function(s) { return s.category_id == cid; });
 							if (!catSnippets.length) {
@@ -252,7 +252,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 							catSnippets = applyClientFilter(catSnippets);
 
-							Array.each(catSnippets, function(s) {
+							catSnippets.forEach(function(s) {
 								s.title_use   = pickLangText(s.title, myLangId, showLangId);
 								s.snippet_use = pickLangText(s.snippet, myLangId, showLangId);
 							});
@@ -995,10 +995,10 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 			editSnippetEl.find('.is-edit-snippet').hide();
 		}
 
-		Array.each(snippet.title, function(trans) {
+		snippet.title.forEach(function(trans) {
 			editSnippetEl.find('input.title.lang-' + trans.language_id).val(trans.value);
 		});
-		Array.each(snippet.snippet, function(trans) {
+		snippet.snippet.forEach(function(trans) {
 			editSnippetEl.find('input.snippet.lang-' + trans.language_id).val(trans.value);
 		});
 

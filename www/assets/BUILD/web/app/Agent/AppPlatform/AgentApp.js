@@ -831,11 +831,11 @@ define([
         });
 
         $input.on('focus', () => {
-          if (scope.mode == 'search') {
+          if (scope.mode === 'search') {
             $timeout(() => {
-              if (scope.mode == 'search') {
+              if (scope.mode === 'search') {
                 scope.isActive = true;
-                if (scope.searchQuery != '') {
+                if (scope.searchQuery !== '') {
                   $results.show();
                   resetResultsPos();
                 }
@@ -845,7 +845,7 @@ define([
         });
 
         $input.on('keyup', (ev) => {
-          if (ev.keyCode == 27) {
+          if (ev.keyCode === 27) {
             $timeout(() => {
               scope.isActive = false;
               scope.mode = 'search';
@@ -869,7 +869,7 @@ define([
         scope.toggleMode = function (mode) {
           if (!mode) {
             scope.mode = 'search';
-          } else if (scope.mode == mode) {
+          } else if (scope.mode === mode) {
             scope.mode = 'search';
           } else {
             scope.mode = mode;
@@ -899,11 +899,11 @@ define([
             $('#dp_header_notify_wrap').hide().removeClass('active');
           }
 
-          if (scope.mode == 'search') {
-          } else if (scope.mode == 'recent') {
+          if (scope.mode === 'search') {
+          } else if (scope.mode === 'recent') {
             $results.hide();
             showRecent();
-          } else if (scope.mode == 'notif') {
+          } else if (scope.mode === 'notif') {
             $results.hide();
             showNotifs();
           }
@@ -912,19 +912,15 @@ define([
         var showRecent = function () {
           scope.recentOpen = true;
           const wrap = $('#recent_tabs_menu');
+          Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
           wrap.addClass('active').show();
           wrap.width(Math.max($el.width() - 2, 560));
-          Orb.Util.TimeAgo.refreshElements(wrap.find('time').toArray());
 
           const closeFn = function () {
             scope.$apply(() => {
               scope.toggleMode('recent');
             });
           };
-
-          $timeout(() => {
-            $('#recent_tabs_list_filter').focus();
-          });
 
           $backdrop.show();
         };
@@ -1001,7 +997,6 @@ define([
         };
 
         var resetResultsPos = function () {
-          const pos = $listPane.offset();
           let width = $listPane.width();
           if (width < 560) {
             width = 560;
@@ -1018,6 +1013,10 @@ define([
             width:        width - 7,
             'max-height': maxHeight
           }).show();
+
+          if (scope.isActive) {
+            $results.show();
+          }
         };
 
         var resizeDebounced = Functions.debounce(() => {

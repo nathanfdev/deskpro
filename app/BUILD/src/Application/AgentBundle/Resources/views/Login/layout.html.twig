@@ -863,7 +863,6 @@
 
 	</style>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('vendor/mootools/mootools-core.min.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/Orb/Util/TimeAgo.js') }}"></script>
 
@@ -890,7 +889,6 @@
 
 <div id="dp_login">
 	<div id="wrapper">
-
 		{% if logo_blob %}
 			<div class="client-logo">
 				<div id="client_logo_img">
@@ -903,12 +901,31 @@
 			{% block content %}{% endblock %}
 		</div>
 
-		<div class="deskpro-logo">
+		<div class="deskpro-logo"></div>
 	</div>
 </div>
 {#{% if not app.user.id %}#}
 {{ dp_js_sso_loader('agent') }}
 {#{% endif %}#}
 <link rel="stylesheet" href="{{ asset('fontawesome.css', 'app_assets') }}" type="text/css" />
+
+<link rel="prefetch" type="text/css" as="style" href="{{ asset('DeskPRO_AgentLegacyBundle_style.css', 'app_assets') }}" />
+<link rel="prefetch" type="text/css" as="style" href="{{ asset('DeskPRO_AgentLegacyBundle.css', 'app_assets') }}" />
+<link rel="prefetch" type="text/javascript" as="script" href="{{ asset('DeskPRO_AgentLegacyBundle.js', 'app_assets') }}" />
+
+{{ dp_asset_html('agent', {'prefetch': true}) }}
+{{ dp_asset_html('agent_vendor_out_css', {'prefetch': true}) }}
+{{ dp_asset_html('agent_css1', {'prefetch': true}) }}
+{{ dp_asset_html('agent_css2', {'prefetch': true}) }}
+{{ dp_asset_html('agent_interface_print_css', {'prefetch': true}) }}
+
+{% if app.hasVoice() %}
+	<link rel="prefetch" type="text/javascript" as="script" href="//media.twiliocdn.com/sdk/js/client/v1.3/twilio.min.js" />
+	<link rel="prefetch" type="text/javascript" as="script" href="//media.twiliocdn.com/taskrouter/js/v1.7.1/taskrouter.min.js" />
+	<link rel="prefetch" type="text/javascript" as="script" href="https://cdn.plivo.com/sdk/browser/v2/plivo.min.js" />
+{% endif %}
+
+<link rel="prefetch" as="style" href="{{ asset('app-build/Admin/Resources/style/semantic.css') }}" type="text/css" />
+
 </body>
 </html>

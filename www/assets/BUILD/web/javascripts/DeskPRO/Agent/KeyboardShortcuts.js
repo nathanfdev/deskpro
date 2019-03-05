@@ -228,7 +228,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		if (this.isPaused) return;
 
 		var page = null;
-		Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
+		Object.values(DeskPRO.Agent.PageHelper.Popover_Instances).forEach(function(inst) {
 			if (inst.isOpen()) {
 				page = inst.page;
 			}

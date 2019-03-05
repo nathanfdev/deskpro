@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class AdminUpdateWatcher_Ctrl_Main {
     static initClass() {
       this.CTRL_AS   = 'Ctrl';

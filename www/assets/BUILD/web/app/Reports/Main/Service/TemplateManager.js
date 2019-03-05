@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class Reports_Main_Service_TemplateManager {
     constructor($templateCache, $http, $q) {
       this.$templateCache = $templateCache;

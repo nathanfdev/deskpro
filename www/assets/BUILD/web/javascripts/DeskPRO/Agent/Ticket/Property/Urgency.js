@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
-DeskPRO.Agent.Ticket.Property.Urgency = new Class({
+DeskPRO.Agent.Ticket.Property.Urgency = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
 	setValue: function(value) {

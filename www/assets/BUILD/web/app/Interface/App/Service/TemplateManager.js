@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class TemplateManager {
     constructor(TemplateLoader, $templateCache, $q) {
       this.TemplateLoader = TemplateLoader;

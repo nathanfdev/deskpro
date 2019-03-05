@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   class DeskPRO_Util_Numbers {
     /*
       * Get the value in <var>numbers</var> that is closest to <var>value</var>.

@@ -1,9 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
 
-DeskPRO.Agent.TicketList.Property.TicketField = new Class({
+DeskPRO.Agent.TicketList.Property.TicketField = new Orb.Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
-
-	optionName: null,
 
 	init: function() {
 		this.optionName = 'ticket_field.' + this.options.fieldId;

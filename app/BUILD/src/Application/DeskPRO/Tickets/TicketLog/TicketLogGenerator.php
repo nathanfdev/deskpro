@@ -106,6 +106,16 @@ class TicketLogGenerator
             $logs[]      = $log;
         }
 
+        if ($replyAction = $this->context->getVars()->get('reply_as_action')) {
+            $options = $this->context->getVars()->get('reply_options');
+            $log     = $this->getLogFromData([
+                'action_type' => 'free',
+                'message'     => 'Reply box action: '.$replyAction.($options ? ' (options: '.implode($options, ', ').')' : ''),
+            ]);
+            $log->parent = $group;
+            $logs[]      = $log;
+        }
+
         foreach ($this->state->getChanges() as $change) {
             $log_data = $this->getLogDataForChange($change);
             if (!$log_data) {

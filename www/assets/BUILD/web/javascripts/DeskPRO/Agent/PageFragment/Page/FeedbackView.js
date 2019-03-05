@@ -139,7 +139,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 
 		var stopEditable = function() {
 			var nametxt = editName.find('input').first();
-			var setName = nametxt.val().trim();
+			var setName = $.trim(nametxt.val());
 
 			if(!setName) {
 				return;
@@ -444,7 +444,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		}
 
 		this._labelsData = this.labelsInput.getFormData();
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		this._saveLabelsTimeout = Orb.fnDelay(this._doSaveLabels, 2000, this);
 	},
 
 	_doSaveLabels: function() {

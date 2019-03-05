@@ -622,7 +622,7 @@ var PortalAdmin_Placeholder = new Orb.Class({
 	},
 
 	setContent: function(content) {
-		DP.console.log("[Block %s] Set content", this.name);
+		console.log("[Block %s] Set content", this.name);
 		this.el.empty().html(content);
 
 		if (this.mode == 'placeholder') {

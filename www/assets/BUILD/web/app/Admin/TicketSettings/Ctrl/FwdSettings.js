@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Util, Arrays) => {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Util, Arrays) {
   class Admin_TicketSettings_Ctrl_FwdSettings extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_TicketSettings_Ctrl_FwdSettings';

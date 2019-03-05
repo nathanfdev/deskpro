@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays) => {
+define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], function(Admin_Ctrl_Base, Arrays) {
   class Admin_TicketFields_Ctrl_EditProducts extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketFields_Ctrl_EditProducts';

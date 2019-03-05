@@ -1,4 +1,4 @@
-define(['angular', 'underscore'], (angular, _) => {
+define(['angular', 'underscore'], function(angular, _) {
   /**
   * The base controller class is mainly to make it easier to define controllers with angular.
     *

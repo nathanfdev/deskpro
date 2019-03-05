@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   const Reports_Directive_Widget = ['DashboardWidgetService', DashboardWidgetService =>
     ({
       restrict: 'A',

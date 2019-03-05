@@ -123,7 +123,7 @@ Orb.Class = function(properties) {
 		var value = properties[name];
 
 		if (typeof value == 'function') {
-			if (name != 'destroy' && checkParentUse(value)) {
+			if (name !== 'destroy' && checkParentUse(value)) {
 				value = (function(func, name) {
 					return function() {
 						this.parent = parent_proto[name];
@@ -133,7 +133,7 @@ Orb.Class = function(properties) {
 			}
 			proto[name] = value;
 		} else {
-			console.error("[Orb.Class] Non-function property in class: %o extends %o", this, properties);
+			console.error("[Orb.Class] Non-function property `%s` in class: %o extends %o", name, this, properties);
 			throw "Error: Non-function property in class";
 			return;
 		}
@@ -154,10 +154,11 @@ Orb.Class = function(properties) {
 
 		if (this.initialize) {
 			this.initialize.apply(this, arguments);
+			this.initialize = null;
 		}
 
 		return this;
-	}
+	};
 
 	if (static_props) {
 		for (name in static_props) {

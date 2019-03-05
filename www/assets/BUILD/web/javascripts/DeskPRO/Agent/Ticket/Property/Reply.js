@@ -3,11 +3,12 @@ Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 /**
  * New reply area
  */
-DeskPRO.Agent.Ticket.Property.Reply = new Class({
+DeskPRO.Agent.Ticket.Property.Reply = new Orb.Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
-	optionName: null,
-	menuRepository: null,
+	init: function() {
+		this.optionName = null;
+	},
 
 	getName: function() {
 		return 'reply';

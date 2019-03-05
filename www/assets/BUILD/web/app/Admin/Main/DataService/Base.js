@@ -1,4 +1,4 @@
-define(() => {
+define(function() {
   /**
   * A DataService class handles fetching data from the datastore (API),
     * keeping it, and updating it.

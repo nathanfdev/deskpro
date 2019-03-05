@@ -31,17 +31,12 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
             sh.updateSize();
           }
         }
-        ;
       }
 
       this.fireEvent('updateUi');
     }).bind(this);
 
-    if (window.requestAnimationFrame) {
-      window.requestAnimationFrame(runner);
-    } else {
-      runner();
-    }
+    window.requestAnimationFrame(runner);
   },
 
   initialize: function(html) {
@@ -67,10 +62,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     };
 
     this._hasInitAppsSidebar = false;
-
-    this.resizerInterval = window.setInterval(function() {
-      if (self.IS_ACTIVE) self.updateUi();
-    }, 1100);
 
     this.initializeProperties();
 
@@ -105,16 +96,17 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       }
 
       this.initPage(wrapper);
-      if (window.requestAnimationFrame) {
-        window.requestAnimationFrame(function() {
-          self.initApps();
-        });
-      } else {
-        this.initApps();
-      }
 
       DeskPRO_Window.TabBar.rescanTitles();
+
+      self.initApps();
       DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
+
+      if (this.wrapper) {
+        this.resizeSensor = new ResizeSensor(this.wrapper, function() {
+          self.updateUi();
+        });
+      }
 
     }, this);
 
@@ -143,8 +135,9 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
     this.addEvent('destroy', function() {
       this.scrollHandlers = [];
-      if (self.resizerInterval) {
-        window.clearInterval(self.resizerInterval);
+      if (this.resizeSensor) {
+        this.resizeSensor.detach();
+        this.resizeSensor = null;
       }
 
       if (this.scrollerHandler) {
@@ -201,11 +194,16 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
           }
         });
       }
-      if (self.wrapper) {
-        self.wrapper.empty();
-        self.wrapper.removeData();
-        self.wrapper.off();
-        self.wrapper = null;
+      // TabBar removes wrapper when its rendered in a tab
+      if (!self.meta || !self.meta.tabId) {
+        window.setTimeout(function() {
+          if (self.wrapper) {
+            self.wrapper.empty();
+            self.wrapper.removeData();
+            self.wrapper.off();
+            self.wrapper = null;
+          }
+        }, 10000);
       }
     });
     this.addEvent('destroy', this.destroy);
@@ -254,8 +252,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
    */
   setMetaData: function(name, value) {
     // Assigning multiple values from a hash
-    if (value === undefined && typeOf(name) == 'object') {
-      this.meta = Object.merge(this.meta, name);
+    if (value === undefined && Orb.typeOf(name) == 'object') {
+      this.meta = $.extend(true, this.meta, name);
       this.initMetaData();
     } else {
       this.meta[name] = value;
@@ -302,18 +300,18 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
   getUrl: function(name, vars) {
 
     if (!this.meta.urls) {
-      DP.console.error('Unknown url name %s (no urls set)', name);
+      console.error('Unknown url name %s (no urls set)', name);
       return null;
     }
 
     if (!this.meta.urls[name]) {
-      DP.console.error('Unknown url name %s', name);
+      console.error('Unknown url name %s', name);
       return null;
     }
 
     var url = this.meta.urls[name];
     if (vars) {
-      Object.each(vars, function(v,k) {
+      Object.entries(vars).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
         url = url.replace('{'+k+'}', v);
       });
     }
@@ -387,7 +385,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       id = this.meta.baseId + '_' + id;
     }
 
-    return $('#' + id);
+    return $(document.getElementById(id));
   },
 
 
@@ -493,8 +491,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     platform.onFragmentEnded(this);
   },
 
-  togglePinAppsColumn: function()
-  {
+  togglePinAppsColumn: function() {
+    if (!this._hasInitAppsSidebar) return;
     if (DeskPRO_Window.appsSidebar.pinned) {
       this.unpinAppsSidebar();
       this.collapseAppsSidebar();
@@ -510,8 +508,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       this._initAppsSidebar();
   },
 
-  expandAppsSidebar: function()
-  {
+  expandAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     this.wrapper.removeClass('with-apps-sidebar-collapsed');
     this.wrapper.addClass('with-apps-sidebar-expanded');
     DeskPRO_Window.appsSidebar.expanded = true;
@@ -520,8 +518,8 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     }
   },
 
-  collapseAppsSidebar: function()
-  {
+  collapseAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     this.wrapper.removeClass('with-apps-sidebar-expanded');
     this.wrapper.addClass('with-apps-sidebar-collapsed');
     DeskPRO_Window.appsSidebar.expanded = false;
@@ -530,36 +528,39 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     }
   },
 
-  pinAppsSidebar: function()
-  {
+  pinAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     DeskPRO_Window.appsSidebar.pinned = true;
     DeskPRO_Window.appsSidebar.expanded = true;
     if (Modernizr.localstorage) {
       localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
     }
 
-    self.wrapper.addClass('with-apps-sidebar-pinned');
+    this.wrapper.addClass('with-apps-sidebar-pinned');
 
     var sidebarEl   = this.getEl('layout_sidebar');
     sidebarEl.addClass('sidebar-pinned');
   },
 
-  unpinAppsSidebar: function()
-  {
+  unpinAppsSidebar: function() {
+    if (!this._hasInitAppsSidebar) return;
     DeskPRO_Window.appsSidebar.pinned = false;
     DeskPRO_Window.appsSidebar.expanded = false;
     if (Modernizr.localstorage) {
       localStorage['apps_sidebar_state'] = JSON.stringify(DeskPRO_Window.appsSidebar);
     }
 
-    self.wrapper.removeClass('with-apps-sidebar-pinned');
+    this.wrapper.removeClass('with-apps-sidebar-pinned');
 
     var sidebarEl   = this.getEl('layout_sidebar');
     sidebarEl.removeClass('sidebar-pinned');
   },
 
   _initAppsSidebar: function() {
-    if (this._hasInitAppsSidebar) return;
+    if (this._hasInitAppsSidebar) {
+      return;
+    }
+
     this._hasInitAppsSidebar = true;
 
     DeskPRO_Window.getMessageBroker().addMessageListener(['apps-column.togglePin', this.pageUid].join('.'), this.togglePinAppsColumn, this);
@@ -570,9 +571,7 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.togglePin', this.pageUid].join('.'), this.togglePinAppsColumn, this);
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.expand', this.pageUid].join('.'),  this.expandAppsSidebar, this);
       DeskPRO_Window.getMessageBroker().removeMessageListener(['apps-column.collapse', this.pageUid].join('.'), this.collapseAppsSidebar, this);
-
     });
-
 
     var self = this;
 

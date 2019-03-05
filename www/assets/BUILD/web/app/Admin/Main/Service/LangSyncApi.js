@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Util'], (Util) => {
+define(['DeskPRO/Util/Util'], function(Util) {
   class LangSyncApi {
     constructor($http, api_url, Growl) {
       this.handleError = this.handleError.bind(this);

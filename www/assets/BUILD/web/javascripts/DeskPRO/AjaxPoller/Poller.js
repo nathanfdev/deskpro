@@ -39,7 +39,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
 		this.setOptions(options);
 
-		this.autoSendTimeout = this.send.delay(this.options.interval, this);
+		this.autoSendTimeout = setTimeout(this.send.bind(this), this.options.interval);
 	},
 
 
@@ -67,7 +67,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
     if (this.sendPending) {
     	this.sendNow();
 		} else {
-      this.autoSendTimeout = this.send.delay(this.options.interval, this);
+      this.autoSendTimeout = Orb.fnDelay(this.send, this.options.interval, this);
     }
 	},
 
@@ -80,7 +80,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
     if (this.currentAjax || this.isPaused) {
     	this.sendPending = true;
 		} else {
-      this.autoSendTimeout = this.send.delay(delay || 750, this);
+      this.autoSendTimeout = Orb.fnDelay(this.send, delay || 750, this);
 		}
 	},
 
@@ -105,7 +105,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		while (nameparts.pop()) {
 			cur_name = nameparts.join('.') + '.*';
 			if (this.dataTransformers[cur_name] !== undefined) {
-				this.dataTransformers[cur_name].each(function(callback) {
+				this.dataTransformers[cur_name].forEach(function(callback) {
 					data = callback(data, options, name);
 				});
 			}
@@ -137,9 +137,9 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		}
 
 		if (options.maxDelay) {
-			(function() {
+			Orb.fnDelay(function() {
 				this.send();
-			}).delay(options.maxDelay, this);
+			}, options.maxDelay, this);
 		}
 
 		this.filterdData.push([name, data, options]);
@@ -156,12 +156,12 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
 		if (this.isPaused) {
 			// Paused, reset timer and dont do anything
-			this.autoSendTimeout = this.send.delay(this.options.interval, this);
+			this.autoSendTimeout = Orb.fnDelay(this.send, this.options.interval, this);
 			return;
 		}
 
 		if (!this.options.alwaysRequest && !this.filterdData.length) {
-			this.autoSendTimeout = this.send.delay(this.options.interval, this);
+			this.autoSendTimeout = Orb.fnDelay(this.send, this.options.interval, this);
 			return;
 		}
 
@@ -192,7 +192,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 				}
 			}
 
-			if (typeOf(item_data) == 'function') {
+			if (Orb.typeOf(item_data) == 'function') {
 				item_data = item_data(item_name, {}, item_opts);
 			}
 
@@ -205,10 +205,12 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 				hasPostType = true;
 			}
 
-			if (typeOf(item_data) == 'array') {
-				send_data.append(item_data);
+			if (Orb.typeOf(item_data) === 'array') {
+				item_data.forEach(function(i) {
+					send_data.push(i);
+				});
 			} else {
-				Object.each(item_data, function(v, k) {
+				Object.entries(item_data).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 					send_data.push({ name: k, value: v });
 				});
 			}
@@ -273,7 +275,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
       this.sendPending = false;
 			this.sendNow(250);
 		} else {
-      this.autoSendTimeout = this.send.delay(this.options.interval, this);
+      this.autoSendTimeout = Orb.fnDelay(this.send, this.options.interval, this);
     }
 
 		this.resetSentItems(sent_info);
@@ -306,9 +308,9 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		this.resetSentItems(sent_info);
 
 		// Start auto timer
-		this.autoSendTimeout = this.send.delay(this.options.interval, this);
+		this.autoSendTimeout = Orb.fnDelay(this.send, this.options.interval, this);
 
-		DP.console.warn("Polling Error %s for %o", textStatus, xhr);
+		console.warn("Polling Error %s for %o", textStatus, xhr);
 
 		this.fireEvent('ajaxError', [xhr, textStatus, errorThrown]);
 	},

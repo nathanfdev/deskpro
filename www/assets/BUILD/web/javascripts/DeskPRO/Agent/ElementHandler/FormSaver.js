@@ -56,7 +56,7 @@ DeskPRO.Agent.ElementHandler.FormSaver = new Orb.Class({
 
 		var doSend = true;
 		formEls.filter('[data-not-blank]').each(function(){
-			if ($(this).val().trim() === '') {
+			if ($.trim($(this).val()) === '') {
 				doSend = false;
 				return false;
 			}

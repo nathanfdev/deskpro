@@ -135,18 +135,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		});
 
-		this._initTicketActionsMenu();
-		this._initMessageActionsMenu();
 		this._initLabels();
 		this._initTicketLocking();
-		this._initTasks();
-		this._initFollowUps();
-		this._initEditName();
-		this._initSlas();
-    this._initProblems();
 		this._initVoice();
-		this._initForward();
-		this._initSelectUser();
 
 		// Change email menu
 		var emailChangeTrig = this.getEl('user_email_menu_trigger');
@@ -182,7 +173,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						ev.preventDefault();;
 						var item = $(this);
 						var emailId = item.data('email-id');
-						var text = item.text().trim();
+						var text = item.text();
 
 						self.getEl('user_email_text').text(text);
 						closeEmailChangeMenu();
@@ -215,7 +206,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       onBeforeBillingChange: this.onBeforeBillingChange.bind(this),
       onAfterBillingChange: this.onAfterBillingChange.bind(this),
 		});
-		this.updateBillingTabTitle();
+
+		[
+			this._initTicketActionsMenu,
+			this._initMessageActionsMenu,
+			this._initEditName,
+			this._initSelectUser,
+			this._initTasks,
+			this._initFollowUps,
+			this._initSlas,
+			this._initProblems,
+			this._initForward,
+			this.updateBillingTabTitle
+		].forEach(function(fn) {
+			if (self.wrapper) {
+				window.requestIdleCallback(fn.bind(self), {timeout: 5000});
+			}
+		});
 
 		this.addEvent('deactivate', function() {
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).trigger('page_deactivate');
@@ -411,7 +418,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				var refreshOpenTickets = function() {
 					var append = [];
-					Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
+					DeskPRO_Window.getTabWatcher().findTabType('ticket').forEach(function(tab) {
 						var id = tab.page.getMetaData('ticket_id');
 						if (id && id != self.meta.ticket_id) {
 							var row = renderTicketOption({
@@ -441,7 +448,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             withActionAlerts: true,
 						success: function(data) {
 							var append = [];
-							Array.each(data, function(t) {
+							data.forEach(function(t) {
 								if (t.id && t.id != self.meta.ticket_id) {
 									var row = renderTicketOption(t);
 									append.push(row);
@@ -1392,7 +1399,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					self.changeManager.setInstantChange(prop, 'awaiting_agent');
 
 					var list = self.getEl('field_errors').find('ul').empty();
-					Array.each(result.error_messages, function(msg) {
+					result.error_messages.forEach(function(msg) {
 						var li = $('<li/>');
 						li.text(msg);
 						li.appendTo(list);
@@ -1424,9 +1431,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         }
 
 				if (result.notified_agents && DeskPRO.Agent.Widget.AgentChatWin_Registry) {
-					Array.each(result.notified_agents, function(aid) {
+					result.notified_agents.forEach(function(aid) {
 						aid = parseInt(aid);
-						Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(v,k) {
+						Object.entries(DeskPRO.Agent.Widget.AgentChatWin_Registry).forEach(function(_vk) { var k = _vk[0], v = _vk[1];
 							if (v.agentIds.length == 1 && v.agentIds.indexOf(aid) !== -1) {
 								v.loadLastConvo();
 							}
@@ -1454,7 +1461,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	destroyPage: function() {
     if (this.deletedTicketMessageListener) {
-      DeskPRO_Window.getMessageBroker().removeMessageListener('tickets.deleted', this.deletedTicketMessageListener, this.pageUid);
+      DeskPRO_Window.getMessageBroker().removeMessageListener('tickets.deleted', this.deletedTicketMessageListener);
       this.deletedTicketMessageListener = null;
     }
     if (this.lockedStatusListener) {
@@ -1470,7 +1477,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     	this.reloadListener = null;
 		}
 		if (this.slaUpdatedListener) {
-      DeskPRO_Window.getMessageBroker().removeMessageListener('agent.ticket-sla-updated', this.slaUpdatedListener, this.pageUid);
+      DeskPRO_Window.getMessageBroker().removeMessageListener('agent.ticket-sla-updated', this.slaUpdatedListener);
       this.slaUpdatedListener = null;
     }
 
@@ -1521,7 +1528,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.controls) {
       this.controls = null;
       var node = document.getElementById(this.meta.baseId + '_controls_react_container');
-      window.AgentLegacyBundle.unmountVoiceControls(node);
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(node);
 		}
 		if (this.closeTicketOnFail) {
     	window.clearTimeout(this.closeTicketOnFailTimeout);
@@ -1529,7 +1536,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
     if (window.DP_HAS_FOLLOW_UP) {
-      window.AgentLegacyBundle.unmountVoiceControls(self.getEl('follow_ups_wrap')[0]);
+      window.AgentLegacyBundle.unmountEmbeddedReactNode(self.getEl('follow_ups_wrap')[0]);
     }
 
     this.valueForm = null;
@@ -1696,7 +1703,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			props.push('agent_team_id');
 		}
 
-		Array.each(props, function(propId) {
+		props.forEach(function(propId) {
 			var val = '0';
 			if (data[propId]) {
 				val = data[propId];
@@ -2164,7 +2171,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	getPropertyManager: function(type, type_id) {
 
-		DP.console.error('Depreciated');
+		console.error('Depreciated');
 		return this.changeManager.getPropertyManager(type, type_id);
 	},
 
@@ -2200,7 +2207,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		this._labelsData = this.labelsInput.getFormData();
-		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+		this._saveLabelsTimeout = Orb.fnDelay(this._doSaveLabels, 2000, this);
 	},
 
 	_doSaveLabels: function() {
@@ -2990,7 +2997,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					textarea.data('redactor').restoreSelection();
 				}
 
-				this.insertTextInReply(quote.trim() + "\n");
+				this.insertTextInReply($.trim(quote) + "\n");
 
 				// Scroll down
 				if (!this.meta.ticket_reverse_order) {
@@ -3429,7 +3436,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					if (!self.messageEditOverlay.hasInitRte) {
 						self.messageEditOverlay.hasInitRte = true;
 						overlayEl.find('textarea.message_text').height(overlayEl.find('.overlay-content').height() - 50);
-						//DP.rteTextarea(overlayEl.find('textarea.message_text'), {});
 						DeskPRO_Window.initRteAgentReply(overlayEl.find('textarea.message_text'), {
 							autoresize: false
 						});
@@ -3608,7 +3614,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			$(this).on('change', function() {
 				var val = $(this).val();
-				var label = $(this).find(':selected').text().trim();
+				var label = $(this).find(':selected').text();
 
 				if (!val) {
 					val = '';
@@ -3822,7 +3828,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 						$(this).on('change', function() {
 							var val = $(this).val();
-							var label = $(this).find(':selected').text().trim();
+							var label = $(this).find(':selected').text();
 
 							if (!val) {
 								val = '';
@@ -3895,13 +3901,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       return;
     }
     var self = this;
-
-    var countEl = self.getEl('follow_up_count');
     var data = {
       ticketId:    self.meta.ticket_id,
       ticketPerms: self.meta.ticket_perms,
     	updateCount: function(op, count) {
-    		DeskPRO_Window.util.modCountEl(countEl, op, count);
+    		DeskPRO_Window.util.modCountEl(self.getEl('follow_up_count'), op, count);
 			}
   	};
 
@@ -4101,7 +4105,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		var stopEditable = function() {
 			var nametxt = editName.find('input').first();
 
-			var setName = nametxt.val().trim();
+			var setName = $.trim(nametxt.val());
 			if(!setName) {
 				return;
 			}

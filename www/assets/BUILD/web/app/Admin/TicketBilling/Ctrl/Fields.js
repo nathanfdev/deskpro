@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) => {
+define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
   class Admin_TicketBilling_Ctrl_Fields extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID = 'Admin_TicketBilling_Ctrl_Fields';

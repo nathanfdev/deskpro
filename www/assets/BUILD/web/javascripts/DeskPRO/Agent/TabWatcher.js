@@ -28,17 +28,16 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	_activateTab: function(tab, containerEl, tabManager) {
 		var id = tab.id;
 
-		this.selectionHistory.erase(id);
-		this.selectionHistory.push(id);
+		Orb.arrPushUnique(this.selectionHistory, id);
 
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
-			Array.each(this.watchedTypes[typename], function(watcher) {
+			this.watchedTypes[typename].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabActivated', [tab]);
 			});
 		}
 		if (this.watchedTypes['*']) {
-			Array.each(this.watchedTypes['*'], function(watcher) {
+			this.watchedTypes['*'].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabActivated', [tab]);
 			});
 		}
@@ -47,12 +46,12 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	_addTab: function(tab, containerEl, tabManager) {
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
-			Array.each(this.watchedTypes[typename], function(watcher) {
+			this.watchedTypes[typename].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabAdded', [tab]);
 			});
 		}
 		if (this.watchedTypes['*']) {
-			Array.each(this.watchedTypes['*'], function(watcher) {
+			this.watchedTypes['*'].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabAdded', [tab]);
 			});
 		}
@@ -66,28 +65,28 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		}
 
 		if (this.watchedTypes[typename]) {
-			Array.each(this.watchedTypes[typename], function(watcher) {
+			this.watchedTypes[typename].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabDeactivated', [tab, isLast]);
 			});
 		}
 		if (this.watchedTypes['*']) {
-			Array.each(this.watchedTypes['*'], function(watcher) {
+			this.watchedTypes['*'].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabDeactivated', [tab, isLast]);
 			});
 		}
 	},
 
 	_removeTab: function(tab, tabManager) {
-		this.selectionHistory.erase(tab.id);
+		Orb.arrRemoveValue(this.selectionHistory, tab.id);
 
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
-			Array.each(this.watchedTypes[typename], function(watcher) {
+			this.watchedTypes[typename].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabRemoved', [tab]);
 			});
 		}
 		if (this.watchedTypes['*']) {
-			Array.each(this.watchedTypes['*'], function(watcher) {
+			this.watchedTypes['*'].forEach(function(watcher) {
 				watcher.fireEvent('watchedTabRemoved', [tab]);
 			});
 		}
@@ -109,7 +108,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		this.watchedTypes[typename].push(watcher);
 
 		if (notifyOfExisting) {
-			Array.each(DeskPRO_Window.getTabWatcher().findTabType(typename), function(tab) {
+			DeskPRO_Window.getTabWatcher().findTabType(typename).forEach(function(tab) {
 				watcher.fireEvent('watchedTabAdded', tab);
 			});
 		}
@@ -127,7 +126,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 			return;
 		}
 
-		this.watchedTypes[typename].erase(watcher);
+		Orb.arrRemoveValue(this.watchedTypes[typename], watcher);
 	},
 
 
@@ -250,7 +249,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	getSelectionHistory: function() {
 		var tabs = [];
 
-		Array.each(this.selectionHistory, function(id) {
+		this.selectionHistory.forEach(function(id) {
 			tabs.push(this.getTab(id));
 		}, this);
 
@@ -268,7 +267,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	findTabType: function(typename) {
 		var tabs = [];
 
-		Object.each(this.tabManager.getTabs(), function(tab) {
+		Object.values(this.tabManager.getTabs()).forEach(function(tab) {
 			if (this.getTabType(tab) == typename) {
 				tabs.push(tab);
 			}
@@ -288,7 +287,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	findTab: function(typename, filter) {
 
 		var found = null;
-		Object.each(this.tabManager.getTabs(), function(tab) {
+		Object.values(this.tabManager.getTabs()).forEach(function(tab) {
 			if (!typename || this.getTabType(tab) == typename) {
 				if (!filter || filter(tab)) {
 					found = tab;
@@ -309,7 +308,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	 */
 	findTabs: function(typename, filter) {
 		var tabs = [];
-		Object.each(this.tabManager.getTabs(), function(tab) {
+		Object.values(this.tabManager.getTabs()).forEach(function(tab) {
 			if (!typename || this.getTabType(tab) == typename) {
 				if (!filter || filter(tab)) {
 					tabs.push(tab);

@@ -1,4 +1,4 @@
-define(['angular', 'moment'], (angular, moment) => {
+define(['angular', 'moment'], function(angular, moment) {
   angular.module('dp.datetimepicker', ['template/dp/datetime.html', 'ui.bootstrap'])
 
   .constant('dpDatetimeConfig', {

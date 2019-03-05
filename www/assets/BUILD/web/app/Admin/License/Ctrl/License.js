@@ -1,4 +1,4 @@
-define(['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) => {
+define(['Admin/Main/Ctrl/Base', 'angular'], function(Admin_Ctrl_Base, angular) {
   class Admin_License_Ctrl_License extends Admin_Ctrl_Base {
     static initClass() {
       this.CTRL_ID   = 'Admin_License_Ctrl_License';

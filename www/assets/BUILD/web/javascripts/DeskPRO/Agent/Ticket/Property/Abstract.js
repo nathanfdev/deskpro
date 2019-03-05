@@ -4,12 +4,9 @@ Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
  * Something that can be fetched or set on the ticket page. These are
  * managers that handle UI changes and getting and setting new values.
  */
-DeskPRO.Agent.Ticket.Property.Abstract = new Class({
+DeskPRO.Agent.Ticket.Property.Abstract = new Orb.Class({
 
-	Implements: [Events, Options],
-
-	options: {},
-	ticketPage: null,
+	Implements: [Orb.Util.Options],
 
 	/**
 	 * @param {DeskPRO.Agent.PageFragment.Page.Ticket} ticketPage
@@ -17,6 +14,7 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	 */
 	initialize: function(ticketPage, options) {
 
+		this._interfaceEl = null;
 		if (options) this.setOptions(options);
 
 		this.ticketPage = ticketPage;
@@ -92,7 +90,6 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 		return this._getInterfaceElement();
 	},
 
-	_interfaceEl: null,
 	_getInterfaceElement: function() {
 		// override
 	},

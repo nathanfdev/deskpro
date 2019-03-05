@@ -73,7 +73,7 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 					dial_code = '+' + dcode;
 					var shouldRemoveDialCode = phone_input_val.indexOf(dial_code) == 0 && phone_input_val.length > (dial_code.length + 1);
 					if (shouldRemoveDialCode) {
-						phone_input.val(phone_input_val.substr(dial_code.length).trim());
+						phone_input.val($.trim(phone_input_val.substr(dial_code.length)));
 						phone_input.intlTelInput('selectCountry', dialCodes[dcode]);
 					}
 				}

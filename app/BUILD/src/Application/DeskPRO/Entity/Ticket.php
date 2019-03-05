@@ -3196,6 +3196,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             }
         }
 
+        if ($status === TicketStatus::STATUS_TYPE_PENDING && $old_status !== $status) {
+            $this->setIsHold(true);
+        } elseif ($old_status === TicketStatus::STATUS_TYPE_PENDING && $old_status !== $status) {
+            $this->setIsHold(false);
+        }
+
         return $this;
     }
 
@@ -3388,12 +3394,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function setIsHold($is_hold)
     {
         if ($is_hold) {
-            $this->setStatus(TicketStatus::STATUS_TYPE_PENDING);
+            if ($this->status !== TicketStatus::STATUS_TYPE_PENDING) {
+                $this->setStatus(TicketStatus::STATUS_TYPE_PENDING);
+            }
             $this->setModelField('date_on_hold', new \DateTime());
         } else {
             if ($this->status === TicketStatus::STATUS_TYPE_PENDING) {
                 $this->setStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT);
             }
+            $this->setModelField('date_on_hold', null);
         }
 
         return $this;

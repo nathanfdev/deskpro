@@ -1,14 +1,16 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
 {% import 'AgentBundle:Common:agent-macros.html.twig' as agentui %}
 
-{% macro substatuses_options(ticket, substatuses, parent_title) %}
+{% macro substatuses_options(ticket, substatuses, parent_title, is_perm_allowed) %}
   {% for status in substatuses %}
+    {% if ticket.status_code == status.statusCode or is_perm_allowed %}
     <option 
       value="{{ status.statusCode }}"
       {% if ticket.status_code == status.statusCode %}selected="selected"{% endif %}
     >
       {{ parent_title }}&nbsp;>&nbsp;{{ status.title }}
     </option>
+    {% endif %}
   {% endfor %}
 {% endmacro %}
 {% macro ticket_status_to_class_name(ticketStatus) %}
@@ -85,7 +87,6 @@
   pageMeta.spamTicketStatusId = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}{{ s.id }}{% endfor %};
   pageMeta.deletedTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isDeleted() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
   pageMeta.spamTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
-  pageMeta.pendingTicketStatusTitle = "{{ phrase('agent.tickets.status_pending')}}";
   pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
   pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
   pageMeta.lang = {{ {
@@ -306,18 +307,6 @@
                     'departments': app.departments.getPersonDepartments(app.user, 'tickets', [ticket.department.id|default(0)], 'assign')
                     } %}
 
-
-
-
-
-
-
-
-
-
-
-
-
                     <span id="{{ baseId }}_department_icon" class="avatar"
                           {% if not ticket.department.hasAvatar() %}style="display: none;"{% endif %}><img
                               src="{{ ticket.department.getAvatarUrl(22) }}" /></span>
@@ -335,27 +324,31 @@
                         {% if ticket.status_code == 'awaiting_agent' or ticket_perms.modify_set_awaiting_agent %}
                             <option value="awaiting_agent"
                                     {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
-                            {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent')) }}
                         {% endif %}
+                        {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent'), ticket_perms.modify_set_awaiting_agent) }}
+
                         {% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
                             <option value="awaiting_user"
                                     {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_user') }}</option>
-                            {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user')) }}
                         {% endif %}
+                        {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user'), ticket_perms.modify_set_awaiting_user) }}
+
                         {% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
                             <option value="resolved"
                                     {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_resolved') }}</option>
-                            {{ self_macro.substatuses_options(ticket, ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved')) }}
                         {% endif %}
+                        {{ self_macro.substatuses_options(ticket, ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved'), ticket_perms.modify_set_resolved) }}
+
                         {% if ticket.status_code == 'archived' %}
                             <option value="archived"
                                     {% if ticket.status_code == 'archived' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_archived') }}</option>
                         {% endif %}
-                        {% if ticket.status_code == 'pending' or (ticket.status == 'awaiting_agent' and ticket_perms.modify_set_hold) %}
+
+                        {% if ticket.status_code == 'pending' or (ticket.status in ['awaiting_agent', 'pending'] and ticket_perms.modify_set_hold) %}
                             <option value="pending"
-                                    {% if ticket.status_code == 'pending' %}selected="selected"{% endif %}
-                            >{{ phrase('agent.tickets.status_pending') }}</option>
+                                    {% if ticket.status_code == 'pending' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_pending') }}</option>
                         {% endif %}
+                        {{ self_macro.substatuses_options(ticket, ticket_statuses['pending'].getChildren(), phrase('agent.tickets.status_pending'), ticket.status in ['awaiting_agent', 'pending'] and ticket_perms.modify_set_hold) }}
 
                     </select>
 
@@ -1401,6 +1394,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div id="{{ baseId }}_penging_statuses_options_template" style="display: none;">
+          <select>
+            <option value="pending">{{ phrase('agent.tickets.status_pending') }}</option>
+            {{ self_macro.substatuses_options(ticket, ticket_statuses['pending'].getChildren(), phrase('agent.tickets.status_pending'), true) }}
+          </select>
         </div>
 
         <div id="{{ baseId }}_editor_translations" style="display: none;"

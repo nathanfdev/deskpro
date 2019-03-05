@@ -1,4 +1,4 @@
-define(['redactor', 'jquery'], (redactor, $) => {
+define(['redactor', 'jquery'], function(redactor, $) {
   /*
    * Description
    * -----------

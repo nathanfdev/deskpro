@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings'], (Strings) => {
+define(['DeskPRO/Util/Strings'], function(Strings) {
   const Reports_Directive_ReportsOverview = ['$compile', 'ReportsOverviewService', '$http', ($compile, ReportsOverviewService, $http) =>
     ({
       restrict: 'E',

@@ -320,7 +320,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				var ul = overlayEl.find('ul.actions-list');
 				ul.empty();
 
-				Array.each(data.descriptions, function(desc) {
+				data.descriptions.forEach(function(desc) {
 					var li = $('<li />');
 					li.html(desc);
 
@@ -341,7 +341,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			return;
 		}
 
-		DP.console.log('Applying macro %d', this.macroId);
+		console.log('Applying macro %d', this.macroId);
 
 		var url = BASE_URL + 'agent/tickets/'+this.ticketId+'/'+this.macroId+'/apply-macro.json',
       self = this;
@@ -360,7 +360,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
             self.page.changeManager.setInstantChange(prop, 'awaiting_agent');
 
             var list = self.page.getEl('field_errors').find('ul').empty();
-            Array.each(data.error_messages, function(msg) {
+            data.error_messages.forEach(function(msg) {
               var li = $('<li/>');
               li.text(msg);
               li.appendTo(list);
@@ -412,5 +412,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}
 		this.page = null;
 		this.changeManager = null;
+		this.destroyEvents();
 	}
 });

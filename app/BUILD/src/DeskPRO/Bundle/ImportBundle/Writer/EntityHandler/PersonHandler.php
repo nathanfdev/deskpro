@@ -34,15 +34,20 @@ class PersonHandler extends AbstractEntityHandler
 
         $entity = $this->findOrCreatePerson($model);
         $entity
-            ->setIsAgent($model->isAgent())
-            ->setCanAgent($model->isAgent())
-            ->setCanAdmin($model->isAdmin())
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setIsDisabled($model->isDisabled())
             ->setIsDeleted($model->isDeleted())
             ->setTitlePrefix($model->getTitlePrefix())
             ->setTimezone($model->getTimezone())
         ;
+
+        if ($model->isAgent() && !$entity->isAgent()) {
+            $entity->setIsAgent(true);
+        }
+        if ($model->isAdmin() && (!$entity->isAdmin() || !$entity->canAdmin())) {
+            $entity->setCanAgent(true);
+            $entity->setCanAdmin(true);
+        }
 
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
