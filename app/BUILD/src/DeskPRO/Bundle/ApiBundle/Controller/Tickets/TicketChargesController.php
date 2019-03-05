@@ -46,4 +46,16 @@ class TicketChargesController extends CrudSubController
 
         return parent::handleForm($model, $request, $options);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function deleteEntity($entity)
+    {
+        $entity->resetCustomData();
+        $ticket = $entity->getTicket();
+        $ticket->removeCharge($entity);
+
+        return parent::deleteEntity($entity);
+    }
 }

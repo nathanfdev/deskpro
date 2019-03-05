@@ -1485,6 +1485,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param TicketCharge $charge
+     *
+     * @return $this
+     */
+    public function addChargeEntity(TicketCharge $charge)
+    {
+        $this->charges->add($charge);
+        $this->_onPropertyChanged('charges', null, $this->charges);
+
+        return $this;
+    }
+
+    /**
      * @param Person $agent
      * @param int    $time
      * @param int    $amount
@@ -1520,6 +1533,21 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->_onPropertyChanged('charges', null, $this->charges);
 
         return $charge;
+    }
+
+    /**
+     * @param TicketCharge $charge
+     *
+     * @return $this
+     */
+    public function removeCharge(TicketCharge $charge)
+    {
+        if ($this->charges->contains($charge)) {
+            $this->charges->removeElement($charge);
+            $this->_onPropertyChanged('charges', null, $this->charges);
+        }
+
+        return $this;
     }
 
     /**

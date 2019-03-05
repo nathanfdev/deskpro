@@ -213,6 +213,9 @@ class StateChangeRecorder
                 $old = [$old];
             }
         } elseif ($coll instanceof PersistentCollection) {
+            if (!$coll->isInitialized()) {
+                $coll->initialize();
+            }
             $old = $coll->getSnapshot();
         }
 

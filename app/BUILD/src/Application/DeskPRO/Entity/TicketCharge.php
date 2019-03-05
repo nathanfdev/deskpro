@@ -212,6 +212,22 @@ class TicketCharge extends DomainObject
         return;
     }
 
+    /**
+     * Reset custom data.
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        foreach ($this->custom_data as $data) {
+            /* @var $data Entity\CustomDataBilling */
+            $this->getStateChangeRecorder()->record('custom_data.'.$data['root_field']['id'], $data, null, true);
+        }
+        $this->custom_data->clear();
+
+        return $this;
+    }
+
     public function removeCustomDataForField($field)
     {
         $parent_id = null;

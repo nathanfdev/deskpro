@@ -92,7 +92,7 @@ class TicketChargeType extends AbstractType
             $data->setPerson($ticket->getPerson());
             $data->setOrganization($ticket->getOrganization());
 
-            $ticket->getCharges()->add($data);
+            $ticket->addChargeEntity($data);
 
             // set comment to a custom field
             $comment = $form->get('comment')->getData();
@@ -112,11 +112,10 @@ class TicketChargeType extends AbstractType
                         $customData->setField($customDef);
                         $customData->setRootField($customDef);
                         $customData->setValue(0);
+                        $data->addCustomData($customData);
                     }
 
                     $customData->setInput($comment);
-
-                    $data->getCustomData()->add($customData);
                     $customData->setTicketCharge($data);
                 }
             }
