@@ -4,7 +4,7 @@
 {% macro substatuses_options(ticket, substatuses, parent_title, is_perm_allowed) %}
   {% for status in substatuses %}
     {% if ticket.status_code == status.statusCode or is_perm_allowed %}
-    <option 
+    <option
       value="{{ status.statusCode }}"
       {% if ticket.status_code == status.statusCode %}selected="selected"{% endif %}
     >
@@ -83,6 +83,10 @@
   pageMeta.spamTicketStatusId = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}{{ s.id }}{% endfor %};
   pageMeta.deletedTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isDeleted() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
   pageMeta.spamTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
+  pageMeta.ticketStatusTitles = {};
+  {% for s in ticket_statuses %}
+  pageMeta.ticketStatusTitles.{{ s.statusType }} = '{{ s.title }}'
+  {% endfor %};
   pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
   pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
   pageMeta.lang = {{ {

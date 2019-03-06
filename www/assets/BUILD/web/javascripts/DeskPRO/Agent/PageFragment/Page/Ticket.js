@@ -1716,7 +1716,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			prop.setIncomingValue(val, data);
 		}, this);
 
-		console.log(data);
 		if (data.dupe_message) {
 			// If its a dupe then it'd already be added ot the message list,
 			// we can just clear out the message box
@@ -3840,14 +3839,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   	var $backdrop, $container, ctrl;
 
 		ctrl = {
-			listeners: [],
+			changeListeners: [],
+			submitListeners: [],
 			onChange: function(cb) {
-				this.listeners.push(cb);
+				this.changeListeners.push(cb);
 			},
 			setStatus(status, ticketStatusId) {
-				this.listeners.forEach(function(cb) {
+				this.changeListeners.forEach(function(cb) {
 					cb(status, ticketStatusId);
 				});
+				var prop = self.changeManager.getPropertyManager('status');
+				self.changeManager.setInstantChange(prop, status.status_code);
+			},
+			onSubmit: function(cb) {
+				this.submitListeners.push(cb);
+			},
+			submitMenu() {
+				this.submitListeners.forEach(function(cb) {
+					cb();
+				});
+			},
+			hideMenu: function() {
+				hideMenu();
 			}
 		};
 
@@ -3856,9 +3869,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				return;
 			}
 
+			var prop = self.changeManager.getPropertyManager('status');
+
 			$backdrop = $('<div/>').addClass('dp-popover-backdrop').hide().appendTo('body');
 			$backdrop.on('click', function() {
-				submitMenu();
+				ctrl.submitMenu();
+				hideMenu();
 			});
 
 			this.addEvent('destroy', function() {
@@ -3893,13 +3909,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		};
 
 		var hideMenu = function () {
-			init();
-			$container.hide();
-			$backdrop.hide();
-		};
-
-		var submitMenu = function() {
-			init();
 			$container.hide();
 			$backdrop.hide();
 		};

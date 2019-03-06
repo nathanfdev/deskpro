@@ -3589,6 +3589,7 @@ agent.general.status: Status
 agent.general.status_is: 'Status is {{status}}'
 agent.general.statuses: Statuses
 agent.general.stop_processing_other_triggers: 'Stop processing other triggers'
+agent.general.sub_status: Sub-Status
 agent.general.subject: Subject
 agent.general.subscribe: Subscribe
 agent.general.summary: Summary

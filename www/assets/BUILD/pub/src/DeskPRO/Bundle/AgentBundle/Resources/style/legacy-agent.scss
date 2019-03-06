@@ -1442,4 +1442,18 @@ i.icon.fitted {
   background: #fff;
   min-width: 150px;
   max-width: 300px;
+  &.dp-menu .dp-menu-area {
+    background-color: #fff;
+    ul > li.cursor {
+      background-color: #fff;
+      padding: 3px 4px;
+      .status {
+        padding: 4px;
+        &:hover {
+          background: #3875d7;
+          color: #fff;
+        }
+      }
+    }
+  }
 }
