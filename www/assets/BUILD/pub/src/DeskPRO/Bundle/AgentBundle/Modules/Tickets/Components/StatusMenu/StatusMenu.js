@@ -15,8 +15,12 @@ export class StatusMenuContainer extends React.Component {
 
   constructor(props) {
     super(props);
+    let status = null;
+    if (props.ctrl.statusCode) {
+      status = props.ticketStatuses.find(s => s.status_code === props.ctrl.statusCode);
+    }
     this.state = {
-      status:         null,
+      status,
       ticketStatusId: null
     };
     props.ctrl.onChange(this.handleStatusChange);
