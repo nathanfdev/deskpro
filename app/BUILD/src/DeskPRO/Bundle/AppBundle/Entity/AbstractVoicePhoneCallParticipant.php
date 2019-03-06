@@ -308,7 +308,11 @@ abstract class AbstractVoicePhoneCallParticipant implements EntityInterface, Not
      */
     public function addCost($price)
     {
-        $this->cost = bcadd($this->cost, $price, 8);
+        if (function_exists('bcadd')) {
+            $this->cost = bcadd($this->cost, $price, 8);
+        } else {
+            $this->cost += $price;
+        }
 
         return $this;
     }
