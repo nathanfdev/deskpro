@@ -168,10 +168,10 @@ export const voiceBootstrap = createAction(
 
           dispatch(updateConnectionState({
             call_id: parseInt(event.phone_call.id, 10),
-            state:   {
+            state:   Immutable.fromJS({
               participants: event.agent_participants,
               hold:         !!event.hold
-            }
+            })
           }));
         });
         messageBroker.addMessageListener('agent.voice.reached-voicemail', (data) => {

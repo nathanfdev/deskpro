@@ -107,13 +107,13 @@ class VoiceControlsContainer extends React.Component {
 
     // update participant list
     let update = false;
-    if (addTarget && participants.contains(addTarget.get('id'))) {
+    if (addTarget && participants.indexOf(addTarget.get('id')) !== -1) {
       newState.addTarget     = null;
       newState.addTargetType = null;
 
       update = true;
     }
-    if (transferTarget && participants.contains(transferTarget.get('id'))) {
+    if (transferTarget && participants.indexOf(transferTarget.get('id')) !== -1) {
       newState.transferTarget     = null;
       newState.transferTargetType = null;
 
