@@ -62,7 +62,7 @@ class RteTextarea {
       imageDefaultWidth: 0,
     };
 
-    localOptions = Object.merge(defaultOptions, localOptions || {});
+    localOptions = Object.assign(defaultOptions, localOptions || {});
 
     const rte = $(field);
     rte.froalaEditor(localOptions);
