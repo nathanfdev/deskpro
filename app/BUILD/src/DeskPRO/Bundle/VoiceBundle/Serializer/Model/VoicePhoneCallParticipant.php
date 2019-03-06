@@ -4,6 +4,8 @@ namespace DeskPRO\Bundle\VoiceBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -19,6 +21,13 @@ class VoicePhoneCallParticipant
      * @var int
      */
     private $id;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $type;
 
     /**
      * @JMS\Type("string")
@@ -84,5 +93,11 @@ class VoicePhoneCallParticipant
         $this->dateLeft     = $participant->getDateLeft();
         $this->cost         = $participant->getCost() ? number_format($participant->getCost(), 3, '.', ',') : null;
         $this->costCurrency = $participant->getCostCurrency();
+
+        if ($participant instanceof VoicePhoneCallParticipantUser) {
+            $this->type = 'user';
+        } elseif ($participant instanceof VoicePhoneCallParticipantAgent) {
+            $this->type = 'agent';
+        }
     }
 }
