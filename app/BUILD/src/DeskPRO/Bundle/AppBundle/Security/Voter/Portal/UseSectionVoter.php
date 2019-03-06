@@ -105,7 +105,7 @@ class UseSectionVoter extends AbstractVoter
                 return $permissionBag->get('tickets.use')
                     || (
                         $this->isLoggedOutAndRegisteredUsergroupAllows($user, 'tickets.use')
-                        && $this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()
+                        && $this->container->get('dp_authentication_manager.user')->isAuthVisible()
                     );
         }
 
