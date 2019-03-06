@@ -79,7 +79,7 @@ class NewExtensionList extends React.Component {
     agents.forEach((agent) => {
       const extensionNumber = this.getExtensionNumber(agent);
       if (extensionNumber) {
-        existingNumbers.push(extensionNumber);
+        existingNumbers.push(parseInt(extensionNumber, 10));
       } else {
         newAgents.push(agent);
       }
