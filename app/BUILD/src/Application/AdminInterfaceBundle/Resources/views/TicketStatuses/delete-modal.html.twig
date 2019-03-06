@@ -5,7 +5,20 @@
 	</div>
 	<div class="modal-body">
 		<p>
-			{{ phrase('adm.ticket_statuses.delete_confirm') }} {{ ng_var('status')}}
+			{{ phrase('adm.ticket_statuses.delete_confirm') }}
+		</p>
+		<p>
+			{{ phrase('adm.ticket_statuses.delete_tickets_moved') }}
+		</p>
+		<p style="margin-bottom: 0;">
+			<select
+				ui-select2
+				ng-model="selected.set_to_id"
+				style="width: 240px"
+			>
+				<option value="{{ ng_var('topStatus.status_code') }}" ng-repeat-start="topStatus in tree">{{ ng_var('statusTrans[topStatus.title]') }}</option>
+        <option value="{{ ng_var('status.status_code') }}" ng-repeat-end ng-repeat="status in topStatus.children">-- {{ ng_var('status.title') }}</option>
+			</select>
 		</p>
 	</div>
 	<div class="modal-footer">

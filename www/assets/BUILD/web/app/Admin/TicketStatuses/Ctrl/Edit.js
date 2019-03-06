@@ -10,8 +10,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.statusData = this.DataService.get('TicketStatuses');
       this.status = null;
       this.form   = {};
-      // Statuses translations
-      this.statusTrans = {};
     }
 
     initialLoad() {
@@ -85,15 +83,21 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       const inst = this.$modal.open({
         templateUrl: this.getTemplatePath('TicketStatuses/delete-modal.html'),
         controller:  ['$scope', '$modalInstance', ($scope, $modalInstance) => {
-          $scope.status = this.statusTrans[this.status.status_type];
-          $scope.confirm = () => $modalInstance.close();
+          $scope.tree = [];
+          this.statusData.loadList().then(data => $scope.tree = this.statusData.getTree([this.status.id]));
+
+          $scope.statusTrans = this.statusTrans;
+          $scope.selected = {
+            set_to_id: this.status.status_type
+          };
+          $scope.confirm = () => $modalInstance.close($scope.selected.set_to_id);
 
           $scope.dismiss = () => $modalInstance.dismiss();
         }
         ]
       });
 
-      return inst.result.then(() => this.statusData.deleteStatusById(this.status.id).then(() => {
+      return inst.result.then(set_to_id => this.statusData.deleteStatusById(this.status.id, set_to_id).then(() => {
         if ((this.$state.current.name === 'tickets.statuses.edit') && (parseInt(this.$state.params.id) === this.status.id)) {
           return this.$state.go('tickets.statuses');
         }

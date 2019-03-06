@@ -9,10 +9,12 @@ Feature: /ticket_statuses endpoint
       | s2 | hidden         | deleted      | Deleted  |
       | s3 | awaiting_agent | agent_1      | Agent 1  |
       | s4 | awaiting_user  |              | User 1   |
+      | s5 | awaiting_user  |              | User 2   |
+      | s6 | awaiting_agent |              | Agent 2   |
 
   Scenario: I retrieve a list of statuses
     When I send a GET request to "/api/v2/ticket_statuses"
-    Then the JSON node "data" should have 4 elements
+    Then the JSON node "data" should have 6 elements
     And the JSON node "data[0].status_code" should be equal to "hidden.{s1}"
     And the JSON node "data[1].status_code" should be equal to "hidden.{s2}"
     And the JSON node "data[2].status_code" should be equal to "awaiting_agent.{s3}"
@@ -109,3 +111,26 @@ Feature: /ticket_statuses endpoint
   Scenario: I should be able to delete status with empty sys_id
     When I send a DELETE request to "/api/v2/ticket_statuses/{s4}"
     Then the response status code should be 200
+
+  Scenario: Delete status and set new status for tickets
+    Given only the following Ticket records exist:
+      | #       | Subject            | Status         | TicketStatus  |
+      | ticket1 | First Demo Ticket  | awaiting_agent | {s6}          |
+
+    When I send a DELETE request to "/api/v2/ticket_statuses/{s6}?set_to={s5:status_code}"
+    Then the response status code should be 200
+    When I send a GET request to "/api/v2/tickets/{ticket1}"
+    Then the response status code should be 200
+    And the JSON node "data.status" should be equal to "awaiting_user.{s5}"
+
+    When I send a DELETE request to "/api/v2/ticket_statuses/{s5}?set_to={s4:status_code}"
+    Then the response status code should be 200
+    When I send a GET request to "/api/v2/tickets/{ticket1}"
+    Then the response status code should be 200
+    And the JSON node "data.status" should be equal to "awaiting_user.{s4}"
+
+    When I send a DELETE request to "/api/v2/ticket_statuses/{s4}?set_to=awaiting_agent"
+    Then the response status code should be 200
+    When I send a GET request to "/api/v2/tickets/{ticket1}"
+    Then the response status code should be 200
+    And the JSON node "data.status" should be equal to "awaiting_agent"

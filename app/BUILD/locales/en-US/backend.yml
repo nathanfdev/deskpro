@@ -679,7 +679,8 @@ adm.ticket_slas.delete_confirm: 'Are you sure you want to delete this SLA? All d
 adm.ticket_slas.no_slas: 'You have not created any SLAs yet.'
 adm.ticket_slas.slas: SLAs
 adm.ticket_slas.title_explain: 'This title will be displayed in the agent interface when listing SLAs.'
-adm.ticket_statuses.delete_confirm: 'Are you sure? Any tickets using this status will have their sub-status unset, but will remain'
+adm.ticket_statuses.delete_confirm: 'Are you sure you want to delete this status? Deleting a status cannot be undone.'
+adm.ticket_statuses.delete_tickets_moved: 'Any tickets that are currently in this status will be set to:'
 adm.ticket_triggers.copy_trigger: 'Copy another trigger'
 adm.ticket_triggers.copy_trigger_modal_title: 'Copy Trigger'
 adm.ticket_triggers.count_dep_triggers:

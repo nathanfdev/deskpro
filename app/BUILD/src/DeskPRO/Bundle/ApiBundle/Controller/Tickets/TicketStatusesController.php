@@ -35,6 +35,8 @@ class TicketStatusesController extends CrudController
     public static $listOrder    = 'asc';
     public static $listPaginate = false;
 
+    protected $setToStatusInsteadOfDeleted = null;
+
     /**
      * @ApiDoc(
      *      description="Get a resource",
@@ -76,6 +78,9 @@ class TicketStatusesController extends CrudController
      *              "dataType"="integer|string"
      *          }
      *      },
+     *      parameters={
+     *          {"name"="set_to", "description"="Set to new status instead of deleted", "dataType"="string", "required"=false}
+     *      },
      *      statusCodes={
      *          200="Returned if everything is ok and there is no such resource anymore",
      *          404="Well, looks like either resource already deleted either it doesn't exists at all"
@@ -90,6 +95,15 @@ class TicketStatusesController extends CrudController
      */
     public function deleteAction($id, Request $request)
     {
+        if ($request->get('set_to')) {
+            try {
+                $this->setToStatusInsteadOfDeleted = $this->get('tickets.statuses')
+                    ->findStatusOrException($request->get('set_to'));
+            } catch (\Exception $e) {
+                throw $this->createNotFoundException($this->createEntityNotFoundExceptionMessage(self::$entity, $request->get('set_to')));
+            }
+        }
+
         return parent::deleteAction($id, $request);
     }
 
@@ -118,7 +132,7 @@ class TicketStatusesController extends CrudController
             throw $this->createBadRequestException('Can\'t delete status with sys_id set');
         }
 
-        return parent::deleteEntity($entity);
+        $this->get('tickets.statuses')->deleteStatus($entity, $this->setToStatusInsteadOfDeleted);
     }
 
     /**

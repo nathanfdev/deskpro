@@ -23,11 +23,10 @@ define(['Admin/Main/DataService/BaseListEdit'
       * @param {Integer} id
       * @return {promise}
     */
-    deleteStatusById(id) {
-      const promise = this.Api2.sendDelete(`/ticket_statuses/${id}`).then(() => this.removeListModelById(id));
+    deleteStatusById(id, set_to) {
+      const promise = this.Api2.sendDelete(`/ticket_statuses/${id}`, {set_to}).then(() => this.removeListModelById(id));
       return promise;
     }
-
 
     /*
       * Get all data needed for the edit
@@ -46,6 +45,43 @@ define(['Admin/Main/DataService/BaseListEdit'
       , () => deferred.reject());
 
       return deferred.promise;
+    }
+
+    /**
+     * Return tree of statuses (excluding hidden statuses)
+     * Tree composed from the current list (this.listModels)
+     * this functions doesn't check if list was loaded
+     *
+     * @param {Array} excludeIds
+     * @returns {Array}
+     */
+    getTree(excludeIds) {
+      const tree = [];
+
+      if (typeof excludeIds == 'undefined') {
+        excludeIds = [];
+      }
+      
+      [
+        'awaiting_agent',
+        'awaiting_user',
+        'pending',
+        'resolved',
+        'archived'
+      ]
+      .filter(topStatus => excludeIds.indexOf(topStatus) === -1)
+      .forEach(topStatus => {
+        tree.push({
+          id: topStatus,
+          status_type: topStatus,
+          status_code: topStatus,
+          title: topStatus,
+          children: this.listModels.filter(status => (excludeIds.indexOf(status.id) === -1) && status.status_type == topStatus)
+        });
+
+      });
+
+      return tree;
     }
   }
   Admin_TicketStatuses_DataService_TicketStatuses.initClass();
