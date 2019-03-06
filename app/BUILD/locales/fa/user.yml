@@ -369,7 +369,7 @@ portal.error.400-desc: 'با عرض پوزش، درخواست شما ناقص ب
 portal.error.400-title: 'Bad Request'
 portal.error.403-desc: "با عرض پوزش، اما شما برای مشاهده این صفحه دسترسی ندارید\n"
 portal.error.403-title: 'عدم دسترسی'
-portal.error.404-desc: 'Sorry, but we couldn''t find this page.'
+portal.error.404-desc: 'متاسفانه صفحه مورد نظر یافت نشد.'
 portal.error.404-title: 'یافت نشد'
 portal.error.contact: "اگر احساس می کنید این یک خطا است، لطفا با ما تماس بگیرید.\n"
 portal.error.general-desc: "متاسفیم، ولی یک مشکل رخ داده است. لطفا بعدا دوباره امتحان کنید یا با ما تماس بگیرید\n"
