@@ -126,7 +126,7 @@ class TicketsDataService extends AbstractDataService
                 switch ($filter->getCategory()) {
 
                     case TicketFilter::CATEGORY_AWAITING_AGENT:
-                        $qb->andWhere('t.status = :status')->setParameter('status', TicketStatus::STATUS_TYPE_AWAITING_AGENT);
+                        $qb->andWhere('t.status IN (:status)')->setParameter('status', [TicketStatus::STATUS_TYPE_AWAITING_AGENT, TicketStatus::STATUS_TYPE_PENDING]);
                         break;
 
                     case TicketFilter::CATEGORY_RESOLVED:
@@ -226,6 +226,7 @@ class TicketsDataService extends AbstractDataService
                 if ('open' === $status) {
                     $statusList = [
                         TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                        TicketStatus::STATUS_TYPE_PENDING,
                         TicketStatus::STATUS_TYPE_AWAITING_USER,
                     ];
                 } elseif ('all' !== $status) {
@@ -233,6 +234,7 @@ class TicketsDataService extends AbstractDataService
                 } else {
                     $statusList = [
                         TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                        TicketStatus::STATUS_TYPE_PENDING,
                         TicketStatus::STATUS_TYPE_RESOLVED,
                         TicketStatus::STATUS_TYPE_ARCHIVED,
                         TicketStatus::STATUS_TYPE_AWAITING_USER,
@@ -329,6 +331,7 @@ class TicketsDataService extends AbstractDataService
                 if ('open' === $status) {
                     $statusList = [
                         TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                        TicketStatus::STATUS_TYPE_PENDING,
                         TicketStatus::STATUS_TYPE_AWAITING_USER,
                     ];
                 } elseif ('all' !== $status) {
@@ -336,6 +339,7 @@ class TicketsDataService extends AbstractDataService
                 } else {
                     $statusList = [
                         TicketStatus::STATUS_TYPE_AWAITING_AGENT,
+                        TicketStatus::STATUS_TYPE_PENDING,
                         TicketStatus::STATUS_TYPE_RESOLVED,
                         TicketStatus::STATUS_TYPE_AWAITING_USER,
                     ];
