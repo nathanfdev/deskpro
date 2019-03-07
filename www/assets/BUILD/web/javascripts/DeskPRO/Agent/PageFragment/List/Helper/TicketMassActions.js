@@ -386,11 +386,6 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
     if (enable) {
       selector.find('option').remove();
-      // add empty option
-      var opt = $('<option></option>');
-      opt.text('');
-      opt.appendTo(selector);
-
       substatuses.forEach(function(substatus) {
 				var opt = $('<option></option>');
 				opt.text(substatus.title);
