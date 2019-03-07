@@ -653,6 +653,7 @@ adm.ticket_slas.delete_confirm: このSLAを削除してもよろしいですか
 adm.ticket_slas.no_slas: まだSLAを作成していません。
 adm.ticket_slas.slas: SLA
 adm.ticket_slas.title_explain: このタイトルは、SLAを表示するときにエージェントインターフェイスに表示されます。
+adm.ticket_statuses.delete_confirm: 'Are you sure? Any tickets using this status will have their sub-status unset, but will remain'
 adm.ticket_triggers.copy_trigger: 'Copy another trigger'
 adm.ticket_triggers.copy_trigger_modal_title: 'Copy Trigger'
 adm.ticket_triggers.count_dep_triggers:
@@ -2955,6 +2956,7 @@ agent.general.create_deal: 'Create Deal'
 agent.general.create_download: 'Create Download'
 agent.general.create_feedback: 'Create Feedback'
 agent.general.create_news: 'Create News Post'
+agent.general.create_section: 'Create Section'
 agent.general.create_status: 'Create Status'
 agent.general.create_task: 'Create Task'
 agent.general.create_ticket: 'Create Ticket'
@@ -3455,6 +3457,7 @@ agent.general.search: Search
 agent.general.search_results: 'Search results'
 agent.general.search_terms: 'Search Terms'
 agent.general.seconds: seconds
+agent.general.section_title: 'Section Title'
 agent.general.select: Select
 agent.general.select_a_brand: 'Select a brand'
 agent.general.select_a_department: 'Select a department'
@@ -4988,6 +4991,7 @@ agent.tickets.status_resolved_deleted: 削除済み
 agent.tickets.status_resolved_spam: スパム
 agent.tickets.status_resolved_temp: 一時
 agent.tickets.status_resolved_validating: 妥当性チェック待ち
+agent.tickets.status_pending: Pending
 agent.tickets.stop_later_triggers_action: 後で処理を停止するトリガ
 agent.tickets.subject_changed: 件名変更
 agent.tickets.subject_changed_from: 'Subject changed from'
