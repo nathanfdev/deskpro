@@ -155,17 +155,25 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
       var clickFn = function() {
         var boundId = $(this).data('bound-id');
         var radio = $('#' + boundId);
+        var radioName = radio.attr('name');
+        var selected = false;
 
         // Toggle off already checked (ie none selected now)
         if (radio.is(':checked')) {
           radio.attr('checked', false);
           newEls.removeClass('radio-on');
+          selected = false;
 
           // Normal radio behavior
         } else {
           radio.attr('checked', true);
           newEls.removeClass('radio-on');
           $(this).addClass('radio-on');
+          selected = true;
+        }
+
+        if (radioName == 'actions[status]') {
+          self.enableSubStatusSelector(selected, radio.val());
         }
 
         self._formUpdatedDebounce();
@@ -368,6 +376,41 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
     return $('#' + this.baseId + '_' + id);
   },
 
+  enableSubStatusSelector: function(enable, status) {
+    var selector = $('select[name="actions[substatus]"]', this.wrapper);
+    var substatuses = this.getSubstatusesOptions(status);
+
+    if (!substatuses.length) {
+      enable = false;
+    }
+
+    if (enable) {
+      selector.find('option').remove();
+      // add empty option
+      var opt = $('<option></option>');
+      opt.text('');
+      opt.appendTo(selector);
+
+      substatuses.forEach(function(substatus) {
+				var opt = $('<option></option>');
+				opt.text(substatus.title);
+				opt.val(substatus.id);
+				opt.appendTo(selector);
+      });
+      selector.select2('val', null);
+      $('#mass_actions_substatus', this.wrapper).show();
+    } else {
+      selector.find('option').remove();
+      selector.select2('val', null);
+      $('#mass_actions_substatus', this.wrapper).hide();
+    }
+  },
+
+  getSubstatusesOptions: function (status) {
+    var substatuses = $('#mass_actions_substatus', this.wrapper).data('ticket-statuses');
+    return status in substatuses ? substatuses[status] : [];
+  },
+
   getActionFormValues: function(appendArray, isApply, info) {
     var self = this;
     appendArray = appendArray || [];
@@ -455,6 +498,18 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         });
 
         return;
+      }
+
+      if (name === 'actions[substatus]') {
+        return;
+      }
+
+      if (name === 'actions[status]') {
+        var selector = $('select[name="actions[substatus]"]', self.wrapper);
+        var substatus = selector.select2('val');
+        if (substatus && substatus.length) {
+          val = substatus;
+        }
       }
 
       appendArray.push({
