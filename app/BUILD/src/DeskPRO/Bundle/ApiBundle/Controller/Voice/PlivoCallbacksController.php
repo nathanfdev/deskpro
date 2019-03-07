@@ -893,44 +893,6 @@ class PlivoCallbacksController extends BaseController
 
     /**
      * @ApiDoc(
-     *     description="Recording status callback",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     noInput=true,
-     *     noOutput=true
-     * )
-     *
-     * @Rest\Post("/recording_status_callback", name="plivo_recording_status_callback")
-     *
-     * @param PlivoVoiceAccount $account
-     * @param string            $accountAuth
-     * @param Request           $request
-     *
-     * @throws \Exception
-     */
-    public function recordingStatusCallbackAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
-    {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
-        /** @var VoicePhoneCall $phoneCall */
-        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
-            'callSid' => $request->request->get('CallUUID'),
-        ]);
-
-        if ($phoneCall) {
-            $this->get('dp.voice.recording_download_helper')->enqueueRecordingDownload(
-                $phoneCall,
-                $request->request->get('RecordUrl'),
-                $request->request->get('RecordingDuration')
-            );
-        }
-    }
-
-    /**
-     * @ApiDoc(
      *     description="Recording status callback for voicemail",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -1266,19 +1228,6 @@ class PlivoCallbacksController extends BaseController
     private function getVoicemailEndUrl(PlivoVoiceAccount $account)
     {
         return $this->get('router')->generate('plivo_voicemail_end', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
-    }
-
-    /**
-     * @param PlivoVoiceAccount $account
-     *
-     * @return string
-     */
-    private function getRecordingStatusCallbackUrl(PlivoVoiceAccount $account)
-    {
-        return $this->get('router')->generate('plivo_recording_status_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
