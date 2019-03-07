@@ -44,9 +44,16 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
       status_classname += ' awaiting_agent';
     }
 
+    if (this.changeListeners) {
+      this.changeListeners.forEach(function(cb) {
+        cb(status_code);
+      });
+    }
+
 		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved archived hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
 
 		$('input.status:first', this.ticketPage.valueForm).val(status_code);
+    $('input.status_code:first', this.ticketPage.valueForm).val(status_code);
 
     if (hidden_status) {
       this.getInterfaceElement().text(
@@ -55,7 +62,7 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
           : this.ticketPage.meta.spamTicketStatusTitle
       );
     } else {
-      var txt = this.ticketPage.meta.ticketStatusTitles[value];
+      var txt = this.ticketPage.meta.ticketStatusTitles[status_code];
       this.getInterfaceElement().text(txt);
     }
 
@@ -92,6 +99,23 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
 
 		return data;
 	},
+
+	getFullValue: function() {
+		var data = [];
+		data.push({
+			full_name: 'actions[status]',
+			value: $('input.status_code:first', this.ticketPage.valueForm).val()
+		});
+
+		return data;
+	},
+
+  onChange: function(cb) {
+	  if (!this.changeListeners) {
+      this.changeListeners = [];
+    }
+	  this.changeListeners.push(cb)
+  },
 
 	getInterfaceElement: function() {
 		return this.ticketPage.getEl('status_txt');

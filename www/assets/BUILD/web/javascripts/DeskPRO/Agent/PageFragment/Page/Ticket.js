@@ -3839,16 +3839,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   	var $backdrop, $container, ctrl;
 
 		ctrl = {
-			changeListeners: [],
 			submitListeners: [],
 			statusCode: null,
 			onChange: function(cb) {
-				this.changeListeners.push(cb);
+				var prop = self.changeManager.getPropertyManager('status');
+				prop.onChange(cb);
 			},
-			setStatus(status, ticketStatusId) {
-				this.changeListeners.forEach(function(cb) {
-					cb(status, ticketStatusId);
-				});
+			setStatus(status) {
 				var prop = self.changeManager.getPropertyManager('status');
 				self.changeManager.setInstantChange(prop, status.status_code);
 			},
@@ -3872,7 +3869,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			var prop = self.changeManager.getPropertyManager('status');
 
-			ctrl.statusCode = prop.getValue()[0].value;
+			ctrl.statusCode = prop.getFullValue()[0].value;
 
 			$backdrop = $('<div/>').addClass('dp-popover-backdrop').hide().appendTo('body');
 			$backdrop.on('click', function() {

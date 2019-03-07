@@ -13,31 +13,47 @@ export class StatusMenuContainer extends React.Component {
     ticketStatuses: PropTypes.array.isRequired
   };
 
+  static findStatus(statusCode, ticketStatuses) {
+    let status = null;
+    if (statusCode.includes('.')) {
+      const parentStatusCode = statusCode.split('.')[0];
+
+      const parentStatus = ticketStatuses.find(s => s.status_code === parentStatusCode);
+      status = parentStatus.children.find(ss => ss.status_code === statusCode);
+    } else {
+      status = ticketStatuses.find(s => s.status_code === statusCode);
+    }
+    return status;
+  }
+
   constructor(props) {
     super(props);
     let status = null;
     if (props.ctrl.statusCode) {
-      status = props.ticketStatuses.find(s => s.status_code === props.ctrl.statusCode);
+      status = StatusMenuContainer.findStatus(props.ctrl.statusCode, props.ticketStatuses);
     }
     this.state = {
       status,
-      ticketStatusId: null
     };
     props.ctrl.onChange(this.handleStatusChange);
     props.ctrl.onSubmit(this.handleStatusSubmit);
   }
 
-  handleStatusChange = (status, ticketStatusId) => {
-    this.setState({
-      status,
-      ticketStatusId
-    });
+  handleStatusChange = (statusCode) => {
+    const { ticketStatuses } = this.props;
+
+    const status = StatusMenuContainer.findStatus(statusCode, ticketStatuses);
+    if (status) {
+      this.setState({
+        status,
+      });
+    }
   };
 
   handleStatusSubmit = () => {
-    const { status, ticketStatusId } = this.state;
+    const { status } = this.state;
     if (status) {
-      this.props.ctrl.setStatus(status, ticketStatusId);
+      this.props.ctrl.setStatus(status);
     }
   };
 
@@ -45,9 +61,8 @@ export class StatusMenuContainer extends React.Component {
     this.setState({
       status
     });
-    const ticketStatusId = 0;
     if (force || !status.children || status.children.length === 0) {
-      this.props.ctrl.setStatus(status, ticketStatusId);
+      this.props.ctrl.setStatus(status);
       this.props.ctrl.hideMenu();
     }
   };
@@ -72,7 +87,15 @@ export class StatusMenu extends React.Component {
     handleChange:   PropTypes.func
   };
 
-  isStatusSelected = status => this.props.status && this.props.status.status_code === status.status_code;
+  isStatusSelected = (status, strict = false) => {
+    if (!this.props.status || !this.props.status.status_code) {
+      return false;
+    }
+    if (strict) {
+      return this.props.status.status_code === status.status_code;
+    }
+    return this.props.status.status_code.startsWith(status.status_code);
+  };
 
   renderStatus = (status) => {
     const { handleChange } = this.props;
@@ -94,12 +117,15 @@ export class StatusMenu extends React.Component {
   renderSubStatuses = () => {
     const { status, handleChange, ticketStatuses } = this.props;
 
+    if (!status) {
+      return null;
+    }
     let parentStatusCode = status.status_code;
     if (parentStatusCode.includes('.')) {
       parentStatusCode = parentStatusCode.split('.')[0];
     }
     const parentStatus = ticketStatuses.find(s => s.status_code === parentStatusCode);
-    if (!status || parentStatus.children && parentStatus.children.length === 0) {
+    if (parentStatus.children && parentStatus.children.length === 0) {
       return null;
     }
     return (
@@ -112,7 +138,7 @@ export class StatusMenu extends React.Component {
             onClick={() => handleChange(parentStatus, true)}
           >
             <div className="status">
-              {this.isStatusSelected(parentStatus) && <div className="on-icon"><i className="fas fa-check" /></div>}
+              {this.isStatusSelected(parentStatus, true) && <div className="on-icon"><i className="fas fa-check" /></div>}
               <FormattedMessage id="agent.general.none" />
             </div>
           </li>
