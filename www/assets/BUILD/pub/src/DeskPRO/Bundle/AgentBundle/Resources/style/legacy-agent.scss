@@ -1444,6 +1444,12 @@ i.icon.fitted {
   max-width: 300px;
   &.dp-menu .dp-menu-area {
     background-color: #fff;
+    label {
+      background-color: $dp-greyscale-300;
+      color: $dp-greyscale-1000;
+      width: 100%;
+      display: block;
+    }
     ul > li.cursor {
       background-color: #fff;
       padding: 3px 4px;

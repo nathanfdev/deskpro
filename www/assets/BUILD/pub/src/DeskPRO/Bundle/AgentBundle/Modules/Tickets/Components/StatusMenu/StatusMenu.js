@@ -41,12 +41,12 @@ export class StatusMenuContainer extends React.Component {
     }
   };
 
-  handleChange = (status) => {
+  handleChange = (status, force = false) => {
     this.setState({
       status
     });
     const ticketStatusId = 0;
-    if (!status.children || status.children.length === 0) {
+    if (force || !status.children || status.children.length === 0) {
       this.props.ctrl.setStatus(status, ticketStatusId);
       this.props.ctrl.hideMenu();
     }
@@ -54,14 +54,11 @@ export class StatusMenuContainer extends React.Component {
 
   render() {
     const { status } = this.state;
-    let statusCode;
-    if (status) {
-      statusCode = status.status_code;
-    }
+
     return (
       <StatusMenu
         ticketStatuses={this.props.ticketStatuses}
-        statusCode={statusCode}
+        status={status}
         handleChange={this.handleChange}
       />
     );
@@ -71,17 +68,11 @@ export class StatusMenuContainer extends React.Component {
 export class StatusMenu extends React.Component {
   static propTypes = {
     ticketStatuses: PropTypes.array.isRequired,
-    statusCode:     PropTypes.string,
+    status:         PropTypes.object,
     handleChange:   PropTypes.func
   };
 
-  isStatusSelected(statusCode) {
-    return this.props.statusCode === statusCode;
-  }
-
-  isSubStatusSelected(statusCode) {
-    return this.props.statusCode && this.props.statusCode.startsWith(statusCode);
-  }
+  isStatusSelected = status => this.props.status && this.props.status.status_code === status.status_code;
 
   renderStatus = (status) => {
     const { handleChange } = this.props;
@@ -93,30 +84,54 @@ export class StatusMenu extends React.Component {
         onClick={() => handleChange(status)}
       >
         <div className="status">
-          {this.isStatusSelected(status.status_code) && <div className="on-icon"><i className="fas fa-check" /></div>}
+          {this.isStatusSelected(status) && <div className="on-icon"><i className="fas fa-check" /></div>}
           {status.title ? status.title : <FormattedMessage id={`agent.tickets.status_${status.status_type}`} />}
         </div>
-        {this.isSubStatusSelected(status.status_code) && status.children.length > 0 &&
-        <div className="sub-status">
-          <label><FormattedMessage id="agent.general.sub_status" /></label>
-          <ul>
-            {
-              status.children.map(subStatus => (
-                <li
-                  key={subStatus.status_code}
-                  className="on cursor has-no-submenu"
-                  onClick={() => handleChange(subStatus)}
-                >
-                  <div className="status">
-                    {this.isStatusSelected(subStatus.status_code) && <div className="on-icon"><i className="fas fa-check" /></div>}
-                    {subStatus.title ? subStatus.title : <FormattedMessage id={`agent.tickets.status_${subStatus.status_type}`} />}
-                  </div>
-                </li>
-              ))
-            }
-          </ul>
-        </div>}
       </li>
+    );
+  };
+
+  renderSubStatuses = () => {
+    const { status, handleChange, ticketStatuses } = this.props;
+
+    let parentStatusCode = status.status_code;
+    if (parentStatusCode.includes('.')) {
+      parentStatusCode = parentStatusCode.split('.')[0];
+    }
+    const parentStatus = ticketStatuses.find(s => s.status_code === parentStatusCode);
+    if (!status || parentStatus.children && parentStatus.children.length === 0) {
+      return null;
+    }
+    return (
+      <div className="sub-status">
+        <label><FormattedMessage id="agent.general.sub_status" /></label>
+        <ul>
+          <li
+            key="none"
+            className="on cursor has-no-submenu"
+            onClick={() => handleChange(parentStatus, true)}
+          >
+            <div className="status">
+              {this.isStatusSelected(parentStatus) && <div className="on-icon"><i className="fas fa-check" /></div>}
+              <FormattedMessage id="agent.general.none" />
+            </div>
+          </li>
+          {
+            parentStatus.children.map(subStatus => (
+              <li
+                key={subStatus.status_code}
+                className="on cursor has-no-submenu"
+                onClick={() => handleChange(subStatus)}
+              >
+                <div className="status">
+                  {this.isStatusSelected(subStatus) && <div className="on-icon"><i className="fas fa-check" /></div>}
+                  {subStatus.title ? subStatus.title : <FormattedMessage id={`agent.tickets.status_${subStatus.status_type}`} />}
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     );
   };
 
@@ -125,8 +140,13 @@ export class StatusMenu extends React.Component {
       <div className="dp-menu-area dp-menu-area-primary">
         <label><FormattedMessage id="agent.general.change_status" /></label>
         <ul>
-          {this.props.ticketStatuses.map(status => this.renderStatus(status))}
+          {
+            this.props.ticketStatuses
+            .filter(status => status.status_code !== 'hidden' && status.status_code !== 'archived')
+            .map(status => this.renderStatus(status))
+          }
         </ul>
+        {this.renderSubStatuses()}
       </div>
     );
   }
