@@ -2527,16 +2527,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
     if ($('.select-user-menu', this.wrapper).length) {
 			this.wrapper.addClass('select-user-error');
+			this.wrapper.removeClass('no-user-email-error');
 			this.wrapper.find('.submit-reply-trigger').attr('disabled', 'disabled');
 			this.wrapper.find('.status-reply-menu-trigger').attr('disabled', 'disabled');
 		} else if (!self.meta.person_email) {
 			this.wrapper.addClass('no-user-email-error');
+			this.wrapper.removeClass('select-user-error');
 			this.wrapper.find('.submit-reply-trigger').attr('disabled', 'disabled');
 			this.wrapper.find('.status-reply-menu-trigger').attr('disabled', 'disabled');
-		} else if (!this.getEl('field_errors').hasClass('on')) {
+		} else {
 			this.wrapper.removeClass('select-user-error');
-			this.wrapper.find('.submit-reply-trigger').removeAttr('disabled');
-			this.wrapper.find('.status-reply-menu-trigger').removeAttr('disabled');
+			this.wrapper.removeClass('no-user-email-error');
+			if (!this.getEl('field_errors').hasClass('on')) {
+				this.wrapper.find('.submit-reply-trigger').removeAttr('disabled');
+				this.wrapper.find('.status-reply-menu-trigger').removeAttr('disabled');
+			}
 		}
 
     $type.on('click', function () {
@@ -2554,6 +2559,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         context: this,
         success: function() {
           $('input.person-id', searchbox).val(personId);
+          $('input.person-email', searchbox).val(email);
           $('input.select-user', searchbox).val(name);
         }
       });
@@ -2573,7 +2579,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       });
 		};
 
-    var setPerson = function(personId) {
+    var setPerson = function(personId, personEmail) {
 			$.ajax({
 				url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
 				type: 'GET',
@@ -2589,6 +2595,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							success: function () {
 								reloadPersonView();
 								self.meta.person_id = personId;
+								self.meta.person_email = personEmail;
 							}
 						});
 					} else {
@@ -2600,6 +2607,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								if (response.success) {
 									reloadPersonView();
 									self.meta.person_id = personId;
+									self.meta.person_email = personEmail;
 								}
 							}
 						});
@@ -2612,8 +2620,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       var value = $('input[name=select_user]:checked', self.wrapper).val();
       if (value === 'find_person') {
         var personId = $('input[name=select_user_find_id]', self.wrapper).val();
+        var personEmail = $('input[name=select_user_find_email]', self.wrapper).val();
         if (personId) {
-					setPerson(personId);
+					setPerson(personId, personEmail);
 				}
 			} else if (value === 'new_person') {
       	var submitData = {
@@ -2647,7 +2656,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								type: 'POST',
 								data: submitData,
 								success: function(response) {
-									setPerson(response.data.id);
+									setPerson(response.data.id, response.data.primary_email);
 								},
 								error: errorHandler
 							});
@@ -2657,7 +2666,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
 								type: 'PUT',
 								data: submitData,
-								success: reloadPersonView,
+								success: function() {
+									setPerson(self.meta.person_id, submitData.primary_email);
+								},
 								error: errorHandler
 							});
 						}
@@ -2679,7 +2690,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 									]
 								},
 								success: function(response) {
-									setPerson(response.data.id);
+									setPerson(response.data.id, null);
 								}
 							});
 						} else {
@@ -2697,7 +2708,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}
 				});
 			} else if (value) {
-				setPerson(value);
+				setPerson(value, self.meta.person_email);
 			}
     });
 
