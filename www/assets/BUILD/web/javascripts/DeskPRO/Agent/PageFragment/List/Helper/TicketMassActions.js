@@ -386,6 +386,11 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
 
     if (enable) {
       selector.find('option').remove();
+      // Add empty option. Wethout it 'with-clear' select2 option works inproperly
+      var opt = $('<option></option>');
+      opt.text('');
+      opt.appendTo(selector);
+      // Add substatuses options
       substatuses.forEach(function(substatus) {
 				var opt = $('<option></option>');
 				opt.text(substatus.title);
