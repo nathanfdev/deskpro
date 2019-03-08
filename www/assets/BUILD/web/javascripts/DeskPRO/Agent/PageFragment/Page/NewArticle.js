@@ -11,6 +11,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	},
 
 	initPage: function(el) {
+		console.log('initPage');
 		var self = this;
 		this.wrapper = el;
 		this.parent(el);
@@ -139,6 +140,8 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 		this.stateSaver.resetState();
 		this.wrapper.addClass('loading');
 
+		var wrapper = this.wrapper;
+
 		$.ajax({
 			url: BASE_URL + 'agent/kb/article/new/save',
 			type: 'POST',
@@ -146,7 +149,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				self.wrapper.removeClass('loading');
+				wrapper.removeClass('loading');
 			},
 			success: function(data) {
 

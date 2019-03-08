@@ -94,6 +94,8 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 		this.stateSaver.stop();
 		this.wrapper.addClass('loading');
 
+		var wrapper = this.wrapper;
+
 		$.ajax({
 			url: BASE_URL + 'agent/feedback/new/save',
 			type: 'POST',
@@ -101,7 +103,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				self.wrapper.removeClass('loading');
+				wrapper.removeClass('loading');
 			},
 			success: function(data) {
 				if (data.error) {
