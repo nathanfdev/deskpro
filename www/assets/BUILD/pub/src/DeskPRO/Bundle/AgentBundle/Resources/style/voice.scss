@@ -349,10 +349,17 @@ $voice-green-border-color: #47BF61;
           width: 100%;
           border: 1px solid $dp-greyscale-250;
           box-shadow: 0 4px 8px 0 $dp-greyscale-250;
+          max-height: 200px;
+          overflow-x: hidden;
+          overflow-y: auto;
 
           .dialpad-search-result-item {
             padding: 5px;
             cursor: pointer;
+
+            &:hover {
+              text-decoration: underline $dp-sonic-primary;
+            }
           }
         }
       }
