@@ -3845,14 +3845,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				var prop = self.changeManager.getPropertyManager('status');
 				prop.onChange(cb);
 			},
-			setStatus(status) {
+			setStatus: function(status) {
 				var prop = self.changeManager.getPropertyManager('status');
 				self.changeManager.setInstantChange(prop, status.status_code);
 			},
 			onSubmit: function(cb) {
 				this.submitListeners.push(cb);
 			},
-			submitMenu() {
+			submitMenu: function() {
 				this.submitListeners.forEach(function(cb) {
 					cb();
 				});
