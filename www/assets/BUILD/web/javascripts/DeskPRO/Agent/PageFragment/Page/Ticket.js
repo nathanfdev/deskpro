@@ -2529,6 +2529,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.wrapper.addClass('select-user-error');
 			this.wrapper.find('.submit-reply-trigger').attr('disabled', 'disabled');
 			this.wrapper.find('.status-reply-menu-trigger').attr('disabled', 'disabled');
+		} else if (!self.meta.person_email) {
+			this.wrapper.addClass('no-user-email-error');
+			this.wrapper.find('.submit-reply-trigger').attr('disabled', 'disabled');
+			this.wrapper.find('.status-reply-menu-trigger').attr('disabled', 'disabled');
 		} else if (!this.getEl('field_errors').hasClass('on')) {
 			this.wrapper.removeClass('select-user-error');
 			this.wrapper.find('.submit-reply-trigger').removeAttr('disabled');

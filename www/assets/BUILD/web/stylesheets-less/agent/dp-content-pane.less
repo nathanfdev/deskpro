@@ -8205,7 +8205,7 @@ table.data-display-table tr th {
 		text-align: center;
 
 		strong {
-			display: block;
+			display: none;
 			margin-top: 45px;
 			font-size: 12pt;
 			padding-top: 40px;
@@ -8215,6 +8215,15 @@ table.data-display-table tr th {
 
 .select-user-error .dp-reply-on .ticket-select-user-overlay {
 	display: block;
+	.ticket-select-user-message {
+		display: block;
+	}
+}
+.no-user-email-error .dp-reply-on .ticket-select-user-overlay {
+	display: block;
+	.ticket-no-email-message {
+		display: block;
+	}
 }
 
 .page-ticket li.urgency-item {
