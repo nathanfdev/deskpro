@@ -21,13 +21,12 @@ Feature: /ticket_statuses endpoint
   Scenario: I get a status
     When I send a GET request to "/api/v2/ticket_statuses/{s1}"
     Then the response status code should be 200
-    And the JSON node "data.id" should be equal to "{s1}"
     And the JSON node "data.status_code" should be equal to "hidden.{s1}"
 
   Scenario: I get a status by status code
     When I send a GET request to "/api/v2/ticket_statuses/hidden.{s1}"
     Then the response status code should be 200
-    And the JSON node "data.id" should be equal to "{s1}"
+    And the JSON node "data.status_code" should be equal to "hidden.{s1}"
 
   Scenario: I create a status
     When I send a POST request to "/api/v2/ticket_statuses" with body:
