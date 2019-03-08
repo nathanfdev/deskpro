@@ -83,13 +83,13 @@ export class UploadPlayButton extends React.Component {
       return;
     }
 
-    if (!playing) {
+    if (!playing && this.audio.readyState > 0) {
       this.audio.src = downloadUrl;
       this.audio.play();
       this.setState({
         playing: true
       }, () => pageWidgetEmitter.emit('playAudio', this));
-    } else {
+    } else if (this.audio.readyState > 0) {
       this.audio.pause();
       this.audio.currentTime = 0;
       this.setState({
@@ -99,7 +99,7 @@ export class UploadPlayButton extends React.Component {
   };
 
   stopPlaying() {
-    if (this.audio) {
+    if (this.audio && this.audio.readyState > 0) {
       this.audio.pause();
       this.audio.currentTime = 0;
     }
