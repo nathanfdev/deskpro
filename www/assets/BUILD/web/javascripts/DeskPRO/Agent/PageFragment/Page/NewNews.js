@@ -110,7 +110,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				this.wrapper.removeClass('loading');
+				self.wrapper.removeClass('loading');
 			},
 			success: function(data) {
 				if (data.error) {

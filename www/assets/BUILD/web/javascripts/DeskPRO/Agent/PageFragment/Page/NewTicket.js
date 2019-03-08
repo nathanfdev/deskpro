@@ -880,9 +880,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				this.wrapper.removeClass('loading');
-				this.getEl('send_btn').show();
-				this.getEl('send_loading').hide();
+				self.wrapper.removeClass('loading');
+				self.getEl('send_btn').show();
+				self.getEl('send_loading').hide();
 			},
 			success: function(data) {
 				if (data.error) {
@@ -1747,13 +1747,13 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 			var event = new CustomEvent('dpLeftDrawer',
 				{
-					detail: 
-						{ 
+					detail:
+						{
 							module: 'SnippetsMenu',
 							width: 745,
 							langId: langId,
               department: parseInt(departmentId, 10),
-							insertSnippet: this.insertSnippet.bind(this), 
+							insertSnippet: this.insertSnippet.bind(this),
 							onClose: this.registerCloseSnippetViewer.bind(this)
 						}
 				}

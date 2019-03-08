@@ -124,7 +124,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				this.wrapper.removeClass('loading');
+				self.wrapper.removeClass('loading');
 			},
 			success: function(data) {
 
