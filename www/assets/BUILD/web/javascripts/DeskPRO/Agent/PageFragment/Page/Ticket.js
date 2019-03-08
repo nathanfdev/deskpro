@@ -2667,7 +2667,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								type: 'PUT',
 								data: submitData,
 								success: function() {
-									setPerson(self.meta.person_id, submitData.primary_email);
+									reloadPersonView();
+									self.meta.person_email = submitData.primary_email;
 								},
 								error: errorHandler
 							});
