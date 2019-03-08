@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets;
 
+use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\AbstractAppSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Fields\TicketGroupFieldSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\Fields\TicketOrderFieldSettings;
@@ -70,6 +71,13 @@ class TicketsSettings extends AbstractAppSettings
     private $permissions;
 
     /**
+     * @var TicketStatus[]
+     *
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Entity\TicketStatus>")
+     */
+    private $ticketStatuses = [];
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -98,6 +106,22 @@ class TicketsSettings extends AbstractAppSettings
         $this->refCode = $refCode;
 
         return $this;
+    }
+
+    /**
+     * @return TicketStatus
+     */
+    public function getTicketStatuses()
+    {
+        return $this->ticketStatuses;
+    }
+
+    /**
+     * @param TicketStatus[] $ticketStatuses
+     */
+    public function setTicketStatuses($ticketStatuses)
+    {
+        $this->ticketStatuses = $ticketStatuses;
     }
 
     /**

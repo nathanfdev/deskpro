@@ -26,6 +26,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
 		this.autoSendTimeout = null;
 		this.sendPending = false;
+		this.idleCallback = null;
 
 		this.options = {
 			ajaxUrl: null,
@@ -53,6 +54,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
     if (cancelCurrent && this.currentAjax && this.currentAjax.readystate != 4) {
       this.currentAjax.abort();
       this.currentAjax = null;
+      this._clearDelays();
     }
 
 		this.isPaused = true;
@@ -146,11 +148,20 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	},
 
 
+	send: function() {
+		if (window.requestIdleCallback) {
+			if (!this.idleCallback) {
+				this.idleCallback = window.requestIdleCallback(this.doSend.bind(this), {timeout:1500});
+			}
+		} else {
+			this.doSend();
+		}
+	},
 
 	/**
 	 * Send all filterd data items now.
 	 */
-	send: function() {
+	doSend: function() {
 
 		this._clearDelays();
 
@@ -192,7 +203,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 				}
 			}
 
-			if (Orb.typeOf(item_data) == 'function') {
+			if (Orb.typeOf(item_data) === 'function') {
 				item_data = item_data(item_name, {}, item_opts);
 			}
 
@@ -225,7 +236,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		// Send data
 		//------------------------------
 
-		type = this.options.ajaxType;
+		var type = this.options.ajaxType;
 		if (type == 'SMART') {
 			if (hasPostType) {
 				type = 'POST';
@@ -249,6 +260,9 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			error: function(xhr, textStatus, errorThrown) {
         this.currentAjax = null;
 				this._handleAjaxError(sent_info, xhr, textStatus, errorThrown);
+			},
+			complete: function() {
+				this.currentAjax = null;
 			}
 		});
 	},
@@ -322,8 +336,12 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	 */
 	_clearDelays: function() {
 		if (this.autoSendTimeout) {
-      this.autoSendTimeout = window.clearTimeout(this.autoSendTimeout);
+      window.clearTimeout(this.autoSendTimeout);
       this.autoSendTimeout = null;
     }
+		if (this.idleCallback) {
+			window.cancelIdleCallback(this.idleCallback);
+			this.idleCallback = null;
+		}
 	}
 });

@@ -3208,7 +3208,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getTicketStatus()
     {
-        return $this->ticket_status ?: new VirtualTicketStatus($this->status);
+        return $this->ticket_status ?: VirtualTicketStatus::getById($this->status ?: TicketStatus::STATUS_TYPE_AWAITING_AGENT);
     }
 
     /**

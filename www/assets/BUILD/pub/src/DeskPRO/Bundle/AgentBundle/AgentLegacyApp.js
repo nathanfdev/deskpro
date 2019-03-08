@@ -33,6 +33,7 @@ import LegacySnippetInserter from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/S
 import RteTextArea from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Services/RteTextarea';
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
 import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
+import { StatusMenuContainer as TicketStatusMenuContainer } from './Modules/Tickets/Components/StatusMenu/StatusMenu';
 import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersContainer';
 import { allNumbersSelector } from './Modules/Voice/Selectors/numbers';
 import { actionAlertsSelector } from './Modules/Application/Selectors/notifications';
@@ -111,7 +112,10 @@ class AgentLegacyApp {
       }
     }
 
-    if ((window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use']) || window.DP_HAS_VOICE) {
+    if (
+      (window.DESKPRO_APP_SETTINGS['core.apps_chat'] && window.DESKPRO_PERSON_PERMS['agent_chat.use'])
+      || window.DP_HAS_VOICE
+    ) {
       api.sendPost('DP_API/task_router/create_worker');
 
       // if pusher is enabled we need to use an another polling action
@@ -351,6 +355,36 @@ class AgentLegacyApp {
           </MessagePhoneNumber>
         </Provider>
       </AppContainer>,
+      node
+    );
+  }
+
+  /**
+   * Generic render react component to node. Modify the switch to add other elements
+   *
+   * @param node
+   * @param id
+   * @param props
+   * @param options
+   */
+  renderReactComponent(node, id, props = {}, options = {}) {
+    let TheComponent;
+    switch (id) {
+      case 'AgentBundle/Modules/Tickets/Components/StatusMenu/StatusMenu':
+        TheComponent = TicketStatusMenuContainer;
+        break;
+      default:
+        throw new Error(`Unknown component: ${id}`);
+    }
+
+    const r = (
+      <IntlProvider locale={this.locale} messages={agentPhrases.getPhrases()}>
+        <TheComponent {...props} />
+      </IntlProvider>
+    );
+
+    ReactDOM.render(
+      <AppContainer>{options.withProvider ? <Provider store={this.store}>{r}</Provider> : r}</AppContainer>,
       node
     );
   }
