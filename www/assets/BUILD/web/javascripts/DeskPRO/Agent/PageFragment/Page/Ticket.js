@@ -2629,6 +2629,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					name: $('input[name=select_user_name]', self.wrapper).val(),
 					primary_email: $('input[name=select_user_email]', self.wrapper).val(),
 					language: $('select[name=select_user_language]', self.wrapper).val(),
+					preferences: {
+						'voice.unknown_caller': 0
+					}
 				};
 
       	var errorHandler = function (response) {
