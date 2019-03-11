@@ -541,14 +541,12 @@ class VoiceCallbacksHelper
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
         }
 
-        $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
-
         // user ends call
         // create a ticket for missed calls
         if (!$phoneCall->hasAgentParticipants()
             // check the call is not answered and voicemail wasn't reached
             // otherwise we got a voicemail record and agent will see it in a separate interface
-            && !($phoneCall->isVoicemail() && $task && $task->getAttribute('agent'))
+            && !$phoneCall->isVoicemail()
             // create a ticket just it was assigned to any target
             && $phoneCall->getTaskSid()
             // don't create missed tickets for strange numbers
