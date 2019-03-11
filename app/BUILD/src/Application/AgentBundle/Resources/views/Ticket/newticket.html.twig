@@ -726,7 +726,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
                 data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': substatus.title}) }}"
             >
                 <div class="on-icon"><i class="fas fa-check"></i></div>
-                {{ phrase('agent.tickets.kbd_' ~ status) }}&nbsp;>&nbsp;{{ substatus.title }}
+                --&nbsp;{{ substatus.title }}
             </li>
           {% endfor %}
         {% endfor %}

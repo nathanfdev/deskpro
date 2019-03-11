@@ -2274,6 +2274,17 @@ class TicketSearchController extends AbstractController
         $ticket_options['people_organizations'] = $this->em->getRepository(Organization::class)->getOrganizationNames();
         $ticket_options['custom_people_fields'] = $customPersonFieldsHandler->getFieldsDisplayArray($person_field_defs);
 
+        $ticketStatuses = [];
+        foreach (App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true) as $status) {
+            $ticketStatuses[$status->getStatusCode()] = [];
+            foreach ($status->getChildren() as $substatus) {
+                $ticketStatuses[$status->getStatusCode()][] = [
+                    'id'    => $substatus->getStatusCode(),
+                    'title' => $substatus->getTitle(),
+                ];
+            }
+        }
+
         return $this->render('AgentBundle:TicketSearch:filter-massactions-overlay.html.twig', [
             'agents'                  => $agents,
             'agent_teams'             => $agent_teams,
@@ -2283,6 +2294,7 @@ class TicketSearchController extends AbstractController
             'agent_signature_html'    => $this->person->getSignatureHtml(),
             'ticket_options'          => $ticket_options,
             'ticket_statuses_service' => App::getContainer()->getTicketStatuses(),
+            'ticket_statuses'         => $ticketStatuses,
         ]);
     }
 

@@ -168,6 +168,7 @@ class TicketTimelineDataService extends AbstractDataService
         switch ($status) {
             case 'awaiting_agent':
             case 'awaiting_user':
+            case 'pending':
                 return 'open';
             case 'hidden':
                 return 'hidden';

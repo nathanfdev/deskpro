@@ -5,11 +5,20 @@
 			<h3>{{ phrase('admin.tickets.statuses') }}</h3>
 		</header>
 		<article>
-			<ul class="dp-item-list">
-				<li dp-state-mark="tickets.statuses.awaiting_agent">
-					<a href="{{ ng_href('tickets.statuses.awaiting_agent') }}">{{ phrase('agent.tickets.status_awaiting_agent') }}</a>
+      <ul class="dp-item-list"
+          ng-init="
+            TicketStatusesList.statusTrans.awaiting_agent='{{ phrase('agent.tickets.status_awaiting_agent') }}';
+            TicketStatusesList.statusTrans.awaiting_user='{{ phrase('agent.tickets.status_awaiting_user') }}';
+            TicketStatusesList.statusTrans.pending='{{ phrase('agent.tickets.status_pending') }}';
+            TicketStatusesList.statusTrans.resolved='{{ phrase('agent.tickets.status_resolved') }}';
+            TicketStatusesList.statusTrans.archived='{{ phrase('agent.tickets.status_archived') }}';
+          "
+      >
+        <li ng-repeat="topStatus in TicketStatusesList.tree"
+            dp-state-mark="tickets.statuses.{{ ng_var('topStatus.status_type') }}">
+          <a href="{{ ng_var('state_path(TicketStatusesList.getTopStatusRouteName(topStatus.status_type))') }}">{{ ng_var('TicketStatusesList.statusTrans[topStatus.status_type]') }}</a>
 					<ul class="dp-item-list sublist">
-						<li ng-repeat="status in TicketStatusesList.list | filter:{status_type:'awaiting_agent'}" dp-state-mark="tickets.statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
+						<li ng-repeat="status in topStatus.children" dp-state-mark="tickets.statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
 							<a href="{{ ng_href('tickets.statuses.edit', '{id: status.id}') }}">
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
@@ -20,56 +29,8 @@
 							</a>
 						</li>
 					</ul>
-				</li>
-				<li dp-state-mark="tickets.statuses.awaiting_user">
-					<a href="{{ ng_href('tickets.statuses.awaiting_user') }}">{{ phrase('agent.tickets.status_awaiting_user') }}</a>
-					<ul class="dp-item-list sublist">
-						<li ng-repeat="status in TicketStatusesList.list | filter:{status_type:'awaiting_user'}" dp-state-mark="tickets.statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
-							<a href="{{ ng_href('tickets.statuses.edit', '{id: status.id}') }}">
-								<h4>
-									<span class="tree-char middle" ng-if="!$last"></span>
-									<span class="tree-char last" ng-if="$last"></span>
-									<span class="title-id" title="ID">#{{ ng_var('status.id') }}</span>
-									<span class="title-text">{{ ng_var('status.title') }}</span>
-								</h4>
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li dp-state-mark="tickets.statuses.pending">
-					<a href="{{ ng_href('tickets.statuses.pending') }}">{{ phrase('agent.tickets.status_pending') }}</a>
-					<ul class="dp-item-list sublist">
-						<li ng-repeat="status in TicketStatusesList.list | filter:{status_type:'pending'}" dp-state-mark="tickets.statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
-							<a href="{{ ng_href('tickets.statuses.edit', '{id: status.id}') }}">
-								<h4>
-									<span class="tree-char middle" ng-if="!$last"></span>
-									<span class="tree-char last" ng-if="$last"></span>
-									<span class="title-id" title="ID">#{{ ng_var('status.id') }}</span>
-									<span class="title-text">{{ ng_var('status.title') }}</span>
-								</h4>
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li dp-state-mark="tickets.statuses.resolved">
-					<a href="{{ ng_href('tickets.statuses.resolved') }}">{{ phrase('agent.tickets.status_resolved') }}</a>
-					<ul class="dp-item-list sublist">
-						<li ng-repeat="status in TicketStatusesList.list | filter:{status_type:'resolved'}" dp-state-mark="tickets.statuses.edit.{{ ng_var('status.id') }}" data-id="{{ ng_var('status.id') }}">
-							<a href="{{ ng_href('tickets.statuses.edit', '{id: status.id}') }}">
-								<h4>
-									<span class="tree-char middle" ng-if="!$last"></span>
-									<span class="tree-char last" ng-if="$last"></span>
-									<span class="title-id" title="ID">#{{ ng_var('status.id') }}</span>
-									<span class="title-text">{{ ng_var('status.title') }}</span>
-								</h4>
-							</a>
-						</li>
-					</ul>
-				</li>
-				<li dp-state-mark="tickets.statuses.archived">
-					<a href="{{ ng_href('tickets.statuses.archived') }}">{{ phrase('agent.tickets.status_archived') }}</a>
-				</li>
-			</ul>
+        </li>
+      </ul>
 		</article>
 	</section>
 

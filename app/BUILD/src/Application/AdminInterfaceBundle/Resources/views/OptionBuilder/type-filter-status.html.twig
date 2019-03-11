@@ -19,13 +19,15 @@
                         <option value="not">is not</option>
                     </select>
 					<select ui-select2 ng-model="model.value" style="min-width: 140px" multiple="multiple">
-						<option value="awaiting_agent">Awaiting Agent</option>
+						<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
               {{ self_macro.substatuses_options('awaiting_agent', phrase('agent.tickets.status_awaiting_agent')) }}
-						<option value="awaiting_user">Awaiting User</option>
+						<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
               {{ self_macro.substatuses_options('awaiting_user', phrase('agent.tickets.status_awaiting_user')) }}
-						<option value="resolved">Resolved</option>
+						<option value="pending">{{ phrase('agent.tickets.status_pending') }}</option>
+              {{ _macro.substatuses_options('pending', phrase('agent.tickets.status_pending')) }}
+						<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
               {{ self_macro.substatuses_options('resolved', phrase('agent.tickets.status_resolved')) }}
-						<option value="archived" ng-if="!fieldOptions.noArchive">Archived</option>
+						<option value="archived" ng-if="!fieldOptions.noArchive">{{ phrase('agent.tickets.status_archived') }}</option>
               {{ self_macro.substatuses_options('archived', phrase('agent.tickets.status_archived'), '!fieldOptions.noArchive') }}
 						<optgroup label="Hidden">
               {{ self_macro.substatuses_options('hidden') }}

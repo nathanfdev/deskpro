@@ -145,4 +145,32 @@ class TicketStatusDataService
 
         return $status !== null;
     }
+
+    public function deleteStatus(TicketStatus $status, TicketStatus $setToStatus = null)
+    {
+        if ($status->getSysId()) {
+            throw new \LogicException(sprintf("Can't delete status #%s with sys_id set", $status->getStatusCode()));
+        }
+        if ($status instanceof VirtualTicketStatus || !$status->getId()) {
+            throw new \LogicException(sprintf("Can't delete virtual status #%s", $status->getStatusCode()));
+        }
+
+        if ($setToStatus) {
+            $db                = $this->em->getConnection();
+            $newTicketStatusId = $setToStatus instanceof VirtualTicketStatus ? null : $setToStatus->getId();
+            $db->executeUpdate('UPDATE tickets SET status = ?, ticket_status_id = ? WHERE ticket_status_id = ?', [
+                $setToStatus->getStatusType(),
+                $newTicketStatusId,
+                $status->getId(),
+            ]);
+            $db->executeUpdate('UPDATE tickets_search_active SET status = ?, ticket_status_id = ? WHERE ticket_status_id = ?', [
+                $setToStatus->getStatusType(),
+                $newTicketStatusId,
+                $status->getId(),
+            ]);
+        }
+
+        $this->em->remove($status);
+        $this->em->flush();
+    }
 }
