@@ -80,7 +80,7 @@ class PeopleOnboardingController extends CrudController
                 PersonOnboarding::STATUS_NEW,
                 PersonOnboarding::STATUS_IN_PROGRESS,
             ],
-        ]);
+        ], ['id' => 'DESC']);
 
         return new View($this->wrap($onboardings));
     }

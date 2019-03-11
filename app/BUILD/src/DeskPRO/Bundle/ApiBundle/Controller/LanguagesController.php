@@ -262,6 +262,8 @@ class LanguagesController extends CrudController
             'agent.onboarding.topbar_intro_button',
             'agent.onboarding.topbar_changes_intro_title',
             'agent.onboarding.topbar_changes_intro_text',
+            'agent.onboarding.new_pending_status_title',
+            'agent.onboarding.new_pending_status_html',
             'agent.onboarding.new_im_position_title',
             'agent.onboarding.new_im_position_text',
             'agent.onboarding.new_im_start_new_title',

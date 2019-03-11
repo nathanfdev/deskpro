@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import Joyride  from 'react-joyride';
 import moment from 'moment';
@@ -185,12 +185,12 @@ export class AgentOnboarding extends React.Component {
     const style = { left: (width / 2) - 280, top: (height / 2) - 320 };
     return (
       <div className="joyride">
-        <div className="joyride-overlay" style={{ height }}>
+        <div className="joyride-overlay" style={{ height }} onClick={this.closeIntro}>
           <div className="joyride-hole" />
           <div className="joyride-intro" style={style}>
             <img src={intro.img} role="presentation" />
             <h3><FormattedMessage id={intro.title} /></h3>
-            <p><FormattedMessage id={intro.text} /></p>
+            {intro.html ? <div className={"body " + (intro.bodyType||"")}><FormattedHTMLMessage id={intro.html} /></div> : <p><FormattedMessage id={intro.text} /></p>}
             <footer>
               <button className="ui button" onClick={this.closeIntro}><FormattedMessage id={intro.action} /></button>
             </footer>
@@ -202,10 +202,18 @@ export class AgentOnboarding extends React.Component {
 
   closeIntro = () => {
     this.setState({ intro: false });
-    this.resumeOnboarding();
+
+    if (!this.state.steps || this.state.steps.length === 0) {
+      this.finishOnboarding();
+    } else {
+      this.resumeOnboarding();
+    }
   };
 
   addSteps = (steps) => {
+    if (!steps) {
+      return;
+    }
     let stepsArray = steps;
     if (!Array.isArray(stepsArray)) {
       stepsArray = [steps];
