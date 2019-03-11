@@ -319,7 +319,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="status[]" multiple="multiple">
-        {% for status in ['awaiting_agent', 'awaiting_user', 'resolved'] %}
+        {% for status in ['awaiting_agent', 'awaiting_user', 'pending', 'resolved'] %}
           {{ status_macro.select_options(ticket_statuses[status]) }}
         {% endfor %}
 				{% if search_context != 'filter' %}

@@ -70,7 +70,7 @@
 <div class="builder-type" title="{{ phrase('agent.general.set_status') }}" data-rule-type="status" data-rule-group="Ticket">
 	<div class="builder-options">
 		<select name="status">
-      {% for status in ['awaiting_agent', 'awaiting_user', 'resolved'] %}
+      {% for status in ['awaiting_agent', 'awaiting_user', 'pending', 'resolved'] %}
         {{ status_macro.select_options(ticket_statuses[status]) }}
       {% endfor %}
 		</select>
