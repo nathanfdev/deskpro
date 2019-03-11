@@ -19,7 +19,7 @@
     {% elseif ticketStatus.isSpam() %}
       {{ 'hidden_spam' }}
     {% else %}
-      {{ ticketStatus.statusType }} {% if ticketStatus.statusType == 'pending' %} awaiting_agent {% endif %}
+      {{ ticketStatus.statusType }}
     {% endif%}
 {% endmacro %}
 {% import _self as self_macro %}
@@ -168,14 +168,6 @@
                         <div id="{{baseId}}_locked_message_other"{% if locked_self %} style="display:none;"{% endif %}>
                             {{ phrase('agent.tickets.agent_has_lock', {agent: '<span>' ~ ticket.locked_by_agent.display_name ~ '</span>'}, true) }}
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div id="{{baseId}}_hold_message" {% if not ticket.is_hold %}style="display: none"{% endif %}>
-                <div class="hold-message">
-                    <button class="dp-btn set-hold unhold" id="{{baseId}}_unhold_btn" style="float:right">{{ phrase('agent.tickets.unhold_ticket') }}</button>
-                    <div style="margin-right: 100px;">
-                        {{ phrase('agent.tickets.currently_on_hold') }}
                     </div>
                 </div>
             </div>

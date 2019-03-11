@@ -40,17 +40,13 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
       status_code += '.' + status_id;
     }
 
-    if (status_classname === 'pending') {
-      status_classname += ' awaiting_agent';
-    }
-
     if (this.changeListeners) {
       this.changeListeners.forEach(function(cb) {
         cb(status_code);
       });
     }
 
-		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved archived hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
+		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved archived pending hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
 
 		$('input.status:first', this.ticketPage.valueForm).val(status_code);
     $('input.status_code:first', this.ticketPage.valueForm).val(status_code);

@@ -713,6 +713,7 @@ header.page-header .meta-line .status.awaiting_agent span.urgency-10 { .ticket_u
 { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
 .layout-content.archived .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
 .layout-content.resolved .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style_pill(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
+.layout-content.pending .urgency-text { .rounded(4px); padding: 1px 4px; line-height: 18px; .ticket_urgency_style(@urgency1_color, @urgency1_borderColor, @urgency1_textColor); }
 
 header.page-header .meta-line .status.awaiting_user span             { .ticket_urgency_style(@urgency_user_color, @urgency_user_borderColor, @urgency_user_textColor); }
 header.page-header .meta-line .status.resolved span                  { .ticket_urgency_style(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
@@ -796,6 +797,7 @@ header.page-header .meta-line .status.archived span                  { .ticket_u
 .status-pill.awaiting_agent.urgency-10 { .ticket_urgency_style_pill(@urgency10_color, @urgency10_borderColor, @urgency10_textColor); }
 .status-pill.awaiting_user             { .ticket_urgency_style_pill(@urgency_user_color, @urgency_user_borderColor, @urgency_user_textColor); }
 .status-pill.resolved                  { .ticket_urgency_style_pill(@urgency_resolved_color, @urgency_resolved_borderColor, @urgency_resolved_textColor); }
+.status-pill.pending                   { .ticket_urgency_style_pill(@urgency1_color, @urgency1_borderColor, @urgency1_textColor); }
 .status-pill.hidden, .status-pill.hidden_deleted, .status-pill.hidden_spam, .status-pill.hidden_validating
 { .ticket_urgency_style_pill(@urgency_hidden_color, @urgency_hidden_borderColor, @urgency_hidden_textColor); }
 .status-pill.archived                  { .ticket_urgency_style_pill(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
