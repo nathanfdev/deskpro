@@ -68,18 +68,20 @@
 		<div class="dp-menu-area dp-menu-area-primary">
 			<label>{{ phrase('agent.tickets.reply_and_set_status') }}</label>
 			<ul>
-                {% for status in ['awaiting_user', 'awaiting_agent', 'resolved'] %}
-                    {% if status == ticket.status or ticket_perms['modify_set_' ~ status] %}
+                {% for status in ['awaiting_user', 'awaiting_agent', 'pending', 'resolved'] %}
+                    {% if status == ticket.status or ticket_perms['modify_set_' ~ status] or (status == 'pending' and ticket_perms['modify_set_hold']) %}
                         <li data-type="{{ status }}" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_' ~ status)}) }}">
                             <div class="on-icon"><i class="fas fa-check"></i></div>
-                            {{ phrase('agent.tickets.kbd_' ~ status) }}
+							{% if has_phrase('agent.tickets.kbd_' ~ status) %}{{ phrase('agent.tickets.kbd_' ~ status) }}{% else %}{{ phrase('agent.tickets.status_' ~ status) }}{% endif %}
                         </li>
+						{# dont list sub-statuses here, menu doesnt handle it well
                         {% for substatus in ticket_statuses[status].getChildren() %}
                           <li data-type="{{ substatus.statusCode }}" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: substatus.title}) }}">
                               <div class="on-icon"><i class="fas fa-check"></i></div>
                               --&nbsp;{{ substatus.title }}
                           </li>
                         {% endfor %}
+                        #}
                     {% endif %}
                 {% endfor %}
 			</ul>
