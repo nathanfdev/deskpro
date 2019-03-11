@@ -30,8 +30,12 @@
 	window.DP_HAS_FOLLOW_UP    = {% if app.hasBeta('follow_up') %}true{% else %}false{% endif %};
     window.DP_BUILD_ID         = '{{ app.getBuildId() }}';
 
-    // Temporary hack to fix images not served
-    window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') | replace({'http://localhost:9666/': '/' ~ path('user')|ltrim('/') ~ 'assets/BUILD/'}) }}';
+    {% if app.getSetting('DESKPRO_APP_ASSETS_URL') %}
+        window.DESKPRO_APP_ASSETS_URL = '{{ app.getSetting('DESKPRO_APP_ASSETS_URL') }}';
+    {% else %}
+        // Temporary hack to fix images not served
+        window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') | replace({'http://localhost:9666/': '/' ~ path('user')|ltrim('/') ~ 'assets/BUILD/'}) }}';
+    {% endif %}
     window.DESKPRO_AGENT_LOGOUT   = '{{ path('user_logout', {'auth': static_security_token('user_logout', 0)}) }}';
     window.DESKPRO_PORTAL_HOME    = '{{ path('portal_home') }}';
     window.DP_DISABLE_RELATIVE_TIMES = {% if app.isRelativeTimesDisabled() %}true{% else %}false{% endif %};

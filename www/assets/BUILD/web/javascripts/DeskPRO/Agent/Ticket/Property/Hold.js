@@ -23,12 +23,6 @@ DeskPRO.Agent.Ticket.Property.Hold = new Orb.Class({
 		}
 
 		this.getFormEl().val(value);
-
-		if (value) {
-			this.ticketPage.getEl('hold_message').show();
-		} else {
-			this.ticketPage.getEl('hold_message').hide();
-		}
 	},
 
 	getFormEl: function() {

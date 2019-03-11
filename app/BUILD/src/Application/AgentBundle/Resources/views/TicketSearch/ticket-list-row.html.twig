@@ -36,10 +36,9 @@
                 <i class="fas fa-lock" style="font-size: 150%;"></i>
             </span>
             <% } %>
-			<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
-			<div class="status-pill status urgency-<%= ticket_display.urgency %> <% if (ticket_display.status == 'pending') { %>awaiting_agent<% } %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
+			<div class="status-pill status urgency-<%= ticket_display.urgency %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
         <label><%= ticket_display.ticket_status.display_title %></label>
-				<% if (ticket_display.status == 'awaiting_agent' || ticket_display.status == 'pending') { %>
+				<% if (ticket_display.status == 'awaiting_agent') { %>
 					<i class="ticket-urgency"><%= ticket_display.urgency %></i>
 				<% } %>
 			</div>

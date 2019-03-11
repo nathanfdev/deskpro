@@ -2527,9 +2527,6 @@ class TicketController extends AbstractController
         if ($was_hidden && $ticket->status != 'hidden') {
             $data['data']['refresh'] = true;
         }
-        if ($was_pending && $ticket->status != 'pending') {
-            $data['data']['refresh'] = true;
-        }
 
         // If the department changed and we have new field options,
         // then we'll need to refresh the ticket so those new validation options
