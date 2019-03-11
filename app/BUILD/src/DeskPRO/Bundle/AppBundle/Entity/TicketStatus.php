@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  *
  * @JMS\ExclusionPolicy("ALL")
- * @JMS\AccessorOrder("custom", custom = {"statusType", "statusCode", "sysId", "title", "displayOrder"})
+ * @JMS\AccessorOrder("custom", custom = {"id", "statusType", "statusCode", "sysId", "title", "displayOrder"})
  *
  * @UniqueEntity("sysId")
  */
@@ -66,7 +66,8 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     * JMS excluded on purpose
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      *
      * @var int
      */
