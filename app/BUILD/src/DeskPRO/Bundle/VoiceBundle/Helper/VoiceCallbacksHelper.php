@@ -535,7 +535,9 @@ class VoiceCallbacksHelper
 
         // mark the phone call as finished
         $phoneCall->setDateEnded(new \DateTime());
-        $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+        if (!$phoneCall->isVoicemail()) {
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+        }
 
         // user ends call
         // create a ticket for missed calls

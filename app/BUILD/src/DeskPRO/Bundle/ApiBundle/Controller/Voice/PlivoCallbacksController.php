@@ -826,6 +826,18 @@ class PlivoCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
+        /** @var VoicePhoneCall $phoneCall */
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'callSid' => $request->request->get('CallUUID'),
+        ]);
+
+        $em = $this->getManager();
+
+        // mark the phone call as completed (redirected to voicemail)
+        $phoneCall->setStatus(VoicePhoneCall::STATUS_VOICEMAIL);
+        $em->persist($phoneCall);
+        $em->flush();
+
         $asset   = null;
         $assetId = $request->query->get('asset');
         if ($assetId) {

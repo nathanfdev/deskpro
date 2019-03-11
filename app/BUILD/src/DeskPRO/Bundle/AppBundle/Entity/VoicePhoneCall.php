@@ -444,6 +444,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return bool
+     */
+    public function isVoicemail()
+    {
+        return $this->status === self::STATUS_VOICEMAIL;
+    }
+
+    /**
      * @param string $status
      *
      * @return $this

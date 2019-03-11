@@ -336,6 +336,7 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
+        /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
             'callSid' => $request->request->get('CallSid'),
         ]);
@@ -555,6 +556,19 @@ class TwilioCallbacksController extends BaseController
         if ($account->getAccountAuth() !== $accountAuth) {
             throw $this->createAccessDeniedException();
         }
+
+        /** @var VoicePhoneCall $phoneCall */
+        $callId    = $request->get('CallSid');
+        $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
+            'callSid' => $callId,
+        ]);
+
+        $em = $this->getManager();
+
+        // mark the phone call as completed (redirected to voicemail)
+        $phoneCall->setStatus(VoicePhoneCall::STATUS_VOICEMAIL);
+        $em->persist($phoneCall);
+        $em->flush();
 
         $asset   = null;
         $assetId = $request->query->get('asset');

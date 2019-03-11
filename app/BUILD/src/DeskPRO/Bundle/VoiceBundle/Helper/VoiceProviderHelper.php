@@ -101,8 +101,10 @@ class VoiceProviderHelper implements VoiceProviderInterface
         if ($ended) {
             $this->cancelOutgoingCalls($phoneCall);
 
-            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
-            $this->em->flush($phoneCall);
+            if (!$phoneCall->isVoicemail()) {
+                $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+                $this->em->flush($phoneCall);
+            }
 
             $this->dispatcher->dispatch(
                 LegacySystemEvent::EVENT_NAME,

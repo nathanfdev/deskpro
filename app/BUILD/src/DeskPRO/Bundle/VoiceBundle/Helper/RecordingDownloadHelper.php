@@ -154,11 +154,6 @@ class RecordingDownloadHelper
             return;
         }
 
-        // mark the phone call as completed (redirected to voicemail)
-        $phoneCall->setStatus(VoicePhoneCall::STATUS_VOICEMAIL);
-        $this->em->persist($phoneCall);
-        $this->em->flush();
-
         // return redirect response
         $voicemailAsset = null;
         if ($task->getAttribute('queue')) {
