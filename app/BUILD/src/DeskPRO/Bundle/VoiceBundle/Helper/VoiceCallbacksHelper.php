@@ -473,7 +473,9 @@ class VoiceCallbacksHelper
         }
 
         $ticket->addMessage($ticketMessage);
-        $this->saveTicket($ticket);
+
+        $context = $this->ticketManager->createAgentExecutorContext($agent, ExecutorContext::EVENT_NEW, ExecutorContext::METHOD_API);
+        $this->ticketManager->saveTicket($ticket, $context);
 
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.outgoing-call-answered',
