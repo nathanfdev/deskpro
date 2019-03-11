@@ -18,7 +18,6 @@ use Application\DeskPRO\ORM\StateChange\ChangeData;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
-use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use Orb\Util\Util;
 
 /**
@@ -539,53 +538,22 @@ class TicketLogGenerator
 
                 break;
 
-            case 'status':
-                $logSet = [];
-
-                $logSet[] = [
-                    'action_type' => 'changed_status',
-                    'id_before'   => Ticket::getStatusInt($old) ?: null,
-                    'id_after'    => Ticket::getStatusInt($new) ?: null,
-
-                    'old_status' => $old,
-                    'new_status' => $new,
-                ];
-
-                if ($new == TicketStatus::STATUS_TYPE_PENDING) {
-                    $logSet[] = [
-                        'action_type' => 'changed_hold',
-                        'id_before'   => 0,
-                        'id_after'    => 1,
-
-                        'was_hold' => false,
-                        'is_hold'  => true,
-                    ];
-                }
-
-                if ($old == TicketStatus::STATUS_TYPE_PENDING) {
-                    $logSet[] = [
-                        'action_type' => 'changed_hold',
-                        'id_before'   => 1,
-                        'id_after'    => 0,
-
-                        'was_hold' => true,
-                        'is_hold'  => false,
-                    ];
-                }
-
-                return $logSet;
-                break;
-
-            case 'ticket_status':
+            case 'status_change_info':
                 return [
-                    'action_type' => 'changed_ticket_status',
-                    'id_before'   => $old ? $old->getId() : null,
-                    'id_after'    => $new ? $new->getId() : null,
+                    'action_type' => 'changed_status',
+                    'id_before'   => Ticket::getStatusInt($old['status']) ?: null,
+                    'id_after'    => Ticket::getStatusInt($new['status']) ?: null,
 
-                    'old_title'       => $old ? $old->getTitle() : null,
-                    'new_title'       => $new ? $new->getTitle() : null,
-                    'old_status_code' => $old ? $old->getStatusCode() : null,
-                    'new_status_code' => $new ? $new->getStatusCode() : null,
+                    'old_status' => $old['status'],
+                    'new_status' => $new['status'],
+
+                    'old_ticket_status'      => $old['ticket_status'] ? $old['ticket_status']->getTitle() : null,
+                    'old_ticket_status_id'   => $old['ticket_status'] ? $old['ticket_status']->getId() : null,
+                    'old_ticket_status_code' => $old['ticket_status'] ? $old['ticket_status']->getStatusCode() : null,
+
+                    'new_ticket_status'      => $new['ticket_status'] ? $new['ticket_status']->getTitle() : null,
+                    'new_ticket_status_id'   => $new['ticket_status'] ? $new['ticket_status']->getId() : null,
+                    'new_ticket_status_code' => $new['ticket_status'] ? $new['ticket_status']->getStatusCode() : null,
                 ];
                 break;
 

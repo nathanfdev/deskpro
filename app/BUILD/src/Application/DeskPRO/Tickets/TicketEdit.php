@@ -207,6 +207,7 @@ class TicketEdit implements PersonContextInterface
                     break;
 
                 case 'status':
+                    $ticketStatus = null;
                     if ($this->person_context) {
                         $status       = true;
                         $ticketStatus = App::getcontainer()->getTicketStatuses()->findStatusOrException($action);
@@ -238,7 +239,9 @@ class TicketEdit implements PersonContextInterface
                         $ticketStatus = App::getcontainer()->getTicketStatuses()->findStatusOrException($action);
                     }
 
-                    $this->ticket->setTicketStatus($ticketStatus);
+                    if ($ticketStatus && $ticketStatus->getStatusCode() !== $this->ticket->getStatusCode()) {
+                        $this->ticket->setTicketStatus($ticketStatus);
+                    }
                     break;
 
                 case 'is_hold':
