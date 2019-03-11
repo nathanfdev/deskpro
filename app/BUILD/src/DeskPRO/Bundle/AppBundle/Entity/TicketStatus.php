@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  *
  * @JMS\ExclusionPolicy("ALL")
- * @JMS\AccessorOrder("custom", custom = {"id", "statusType", "statusCode", "sysId", "title", "parent", "displayOrder"})
+ * @JMS\AccessorOrder("custom", custom = {"id", "statusType", "statusCode", "sysId", "title", "displayOrder"})
  *
  * @UniqueEntity("sysId")
  */
