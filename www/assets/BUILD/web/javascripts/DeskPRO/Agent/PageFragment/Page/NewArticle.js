@@ -11,7 +11,6 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	},
 
 	initPage: function(el) {
-		console.log('initPage');
 		var self = this;
 		this.wrapper = el;
 		this.parent(el);
