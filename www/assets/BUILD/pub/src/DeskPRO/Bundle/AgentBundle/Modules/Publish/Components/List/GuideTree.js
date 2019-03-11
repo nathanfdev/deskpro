@@ -123,13 +123,13 @@ export class GuideTree extends React.Component {
   }
 
   onClick = (node) => {
-    if (node.id.toInt() === this.state.active) {
+    if (parseInt(node.id, 10) === this.state.active) {
       this.setState({
         active: null
       });
     } else {
       this.setState({
-        active: node.id.toInt()
+        active: parseInt(node.id, 10)
       });
     }
     this.props.onClick(node);
