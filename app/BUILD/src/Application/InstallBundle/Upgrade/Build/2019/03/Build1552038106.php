@@ -5,7 +5,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use Orb\Types\JsonObjectSerializer;
 
-class Build1552038106 extends AbstractBuild implements OnlineBuildInterface
+class Build1552038106 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
