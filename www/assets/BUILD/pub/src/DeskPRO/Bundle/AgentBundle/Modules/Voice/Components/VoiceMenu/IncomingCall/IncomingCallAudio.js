@@ -33,7 +33,7 @@ class IncomingCallAudio extends React.Component {
   }
 
   stopSound() {
-    if (this.sound) {
+    if (this.sound && this.sound.readyState > 0) {
       this.sound.removeEventListener('ended', this.onSoundEnded);
       this.sound.pause();
       this.sound.currentTime = 0;

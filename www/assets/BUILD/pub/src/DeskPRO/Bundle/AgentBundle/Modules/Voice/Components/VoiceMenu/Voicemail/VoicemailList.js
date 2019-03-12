@@ -129,11 +129,7 @@ class VoicemailRecord extends React.Component {
 
       onMarkListened(record);
     } else {
-      this.audio.pause();
-      this.audio.currentTime = 0;
-      this.setState({
-        playing: false
-      });
+      this.stopPlaying();
     }
   };
 
@@ -150,8 +146,11 @@ class VoicemailRecord extends React.Component {
   };
 
   stopPlaying = () => {
-    this.audio.pause();
-    this.audio.currentTime = 0;
+    if (this.audio.readyState > 0) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    }
+
     this.setState({
       playing: false
     });
