@@ -364,6 +364,11 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('deskpro.app_env')->getVersionName();
     }
 
+    public function getBuildId()
+    {
+        return $this->container->get('deskpro.app_env')->getBuildId();
+    }
+
     public function getEffectiveMaxUploadSize()
     {
         return Env::getEffectiveMaxUploadSize();
