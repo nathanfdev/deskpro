@@ -15,7 +15,6 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketNotFound;
 use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -82,6 +81,7 @@ class TicketsController extends AbstractTicketsController
      *      },
      *      statusCodes={
      *          200="We will return such status in case we found your entity",
+     *          301="Redirect to the new entity if deleted entity has spesified ID",
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
@@ -106,7 +106,32 @@ class TicketsController extends AbstractTicketsController
                 throw $exception;
             }
 
-            return new View(new TicketNotFound($ticketDeleted), Response::HTTP_NOT_FOUND);
+            $newTicketId    = $ticketDeleted->getNewTicketId();
+            $hasNewTicketId = (bool) $newTicketId;
+            $statusCode     = $hasNewTicketId
+                ? Response::HTTP_MOVED_PERMANENTLY
+                : Response::HTTP_NOT_FOUND;
+            $headers = $hasNewTicketId
+                ? ['Location' => $request->getUriForPath("/api/v2/tickets/{$newTicketId}")]
+                : [];
+
+            return new View(
+                $this->wrap(
+                    [
+                        'status'  => $statusCode,
+                        'code'    => 'ticket_deleted',
+                        'message' => 'Ticket has been deleted',
+                        'detail'  => [
+                            'by_person'    => $ticketDeleted->getByPersonId(),
+                            'date_deleted' => $ticketDeleted->getDateCreated()->format('Y-m-d H:i:s'),
+                            'reason'       => $ticketDeleted->getReason(),
+                            'new_ticket'   => $newTicketId,
+                        ],
+                    ]
+                ),
+                $statusCode,
+                $headers
+            );
         }
     }
 
