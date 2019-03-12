@@ -13,7 +13,7 @@ services:
       - "@dp.voice.worker_helper"
       - "@dp.voice.task_router.storage"
       - "@event_dispatcher"
-      - "@router"
+      - "@dp.voice.logger"
 
   dp.voice.assets_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceAssetHelper

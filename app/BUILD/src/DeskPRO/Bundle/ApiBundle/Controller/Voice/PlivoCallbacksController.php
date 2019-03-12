@@ -116,6 +116,9 @@ class PlivoCallbacksController extends BaseController
      */
     public function answerAgentCallbackAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
     {
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf('[PlivoCallbacks] Running answer agent callback (%.3fs)', microtime(true)));
+
         if ($account->getAccountAuth() !== $accountAuth) {
             throw $this->createAccessDeniedException();
         }
@@ -181,6 +184,7 @@ class PlivoCallbacksController extends BaseController
             }
         } else {
             try {
+                $start     = microtime(true);
                 $phoneCall = $this->get('dp.voice.callbacks_helper')->joinIncomingPhoneCall(
                     $callId,
                     $callSid,
@@ -188,6 +192,8 @@ class PlivoCallbacksController extends BaseController
                     null,
                     $details
                 );
+
+                $logger->info(sprintf('[PlivoCallbacks] Joining an incoming phone call took %.3fs', microtime(true) - $start));
 
                 if ($phoneCall) {
                     // join conference
@@ -202,11 +208,14 @@ class PlivoCallbacksController extends BaseController
 
                     // join user to the conference
                     if ($phoneCall->getParticipants()->count() <= 2 || $phoneCall->isColdTransfer()) {
+                        $start = microtime(true);
                         $this->get('dp.voice.provider_helper')->transferCall(
                             $phoneCall,
                             $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
                             'POST'
                         );
+
+                        $logger->info(sprintf('[PlivoCallbacks] Transferring user to the conference took %.3fs', microtime(true) - $start));
                     }
                 } else {
                     $plivoXml->addHangup();

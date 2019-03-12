@@ -541,6 +541,11 @@ export const cancelInvite = createAction(
   (callId, agent) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`)
 );
 
+export const checkIsActive = createAction(
+  'VOICE_AGENT_CHECK_IS_ACTIVE',
+  callId => api.sendGet(`DP_API/voice_client/phone_call/${callId}/is_active`)
+);
+
 export const hangup = createAction(
   'VOICE_AGENT_HANGUP',
   connection => (dispatch) => {

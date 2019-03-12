@@ -60,14 +60,25 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Agent does not have voice permissions');
         }
 
+        $logger = $this->get('dp.voice.logger');
+        $start  = microtime(true);
+
         if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
             throw $this->createBadRequestException('Phone call is already accepted');
         }
 
-        $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
-        $ticket = $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+        $logger->info(sprintf('[VoiceClient] Accepting task took %.3fs', microtime(true) - $start));
 
-        return new View($this->wrap($ticket));
+        $start = microtime(true);
+        $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
+        $logger->info(sprintf('[VoiceClient] Canceling forwarding calls took %.3fs', microtime(true) - $start));
+
+        $start  = microtime(true);
+        $ticket = $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+        $logger->info(sprintf('[VoiceClient] Creating or joining a ticket for the incoming call took %.3fs', microtime(true) - $start));
+        $logger->info(sprintf('[VoiceClient] Finishing accepting call (%.3fs)', microtime(true)));
+
+        return new View($this->wrap(['id' => $ticket->getId()]));
     }
 
     /**
@@ -189,6 +200,32 @@ class VoiceClientPhoneCallController extends BaseController
         $ticket = $messageAttribute->getMessage()->getTicket();
 
         return new View($this->wrap($ticket));
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Verify if user is still connected",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket"
+     * )
+     *
+     * @Rest\Get("/is_active")
+     *
+     * @param VoicePhoneCall $phoneCall
+     *
+     * @return View
+     */
+    public function checkIsActiveAction(VoicePhoneCall $phoneCall)
+    {
+        $start        = microtime(true);
+        $isCallActive = $this->get('dp.voice.provider_helper')->isCallActive($phoneCall);
+        $this->get('dp.voice.logger')->info(sprintf('[PlivoCallbacks] Checking if call is active took %.3fs', microtime(true) - $start));
+
+        return new View($this->wrap([
+            'is_active' => $isCallActive,
+        ]));
     }
 
     /**

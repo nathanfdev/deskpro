@@ -27,6 +27,7 @@ use Plivo\Resources\Endpoint\Endpoint;
 use Plivo\Resources\Number\Number;
 use Plivo\Resources\PhoneNumber\PhoneNumber;
 use Plivo\RestClient;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class PlivoAdapter.
@@ -44,15 +45,22 @@ class PlivoAdapter implements VoiceProviderInterface
     private $settingsResolver;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
      * @param VoiceSettingsResolver $settingsResolver
+     * @param LoggerInterface       $logger
      */
-    public function __construct(EntityManager $em, VoiceSettingsResolver $settingsResolver)
+    public function __construct(EntityManager $em, VoiceSettingsResolver $settingsResolver, LoggerInterface $logger)
     {
         $this->em               = $em;
         $this->settingsResolver = $settingsResolver;
+        $this->logger           = $logger;
     }
 
     /**
@@ -525,6 +533,8 @@ class PlivoAdapter implements VoiceProviderInterface
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
+        $start = microtime(true);
+
         try {
             return $this->getClient($account)->calls->transfer(
                 $phoneCall->getCallSid(),
@@ -535,6 +545,8 @@ class PlivoAdapter implements VoiceProviderInterface
                 ]
             );
         } catch (\Exception $e) {
+        } finally {
+            $this->logger->info(sprintf('[PlivoAdapter] Call transfer took %.3fs', microtime(true) - $start));
         }
     }
 

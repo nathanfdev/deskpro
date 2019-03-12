@@ -30,6 +30,7 @@ use DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskBuilder;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskRouter;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -88,6 +89,11 @@ class VoiceCallbacksHelper
     private $dispatcher;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param EntityManager            $em
@@ -100,6 +106,7 @@ class VoiceCallbacksHelper
      * @param WorkerHelper             $workerHelper
      * @param StorageAdapterInterface  $storageAdapter
      * @param EventDispatcherInterface $dispatcher
+     * @param LoggerInterface          $logger
      */
     public function __construct(
         EntityManager            $em,
@@ -111,7 +118,8 @@ class VoiceCallbacksHelper
         VoiceProviderHelper      $voiceProviderHelper,
         WorkerHelper             $workerHelper,
         StorageAdapterInterface  $storageAdapter,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        LoggerInterface          $logger
     ) {
         $this->em                    = $em;
         $this->serializer            = $serializer;
@@ -123,6 +131,7 @@ class VoiceCallbacksHelper
         $this->workerHelper          = $workerHelper;
         $this->storageAdapter        = $storageAdapter;
         $this->dispatcher            = $dispatcher;
+        $this->logger                = $logger;
     }
 
     /**
@@ -218,10 +227,6 @@ class VoiceCallbacksHelper
 
         if (!$agent || !$phoneCall) {
             throw new OutOfServiceException();
-        }
-
-        if (!$this->voiceProviderHelper->isCallActive($phoneCall)) {
-            return;
         }
 
         // create the agent participant

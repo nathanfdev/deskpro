@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { voiceParticipantsSelector } from '../../Selectors/agents';
 import VoiceControls from './VoiceControls';
-import { hangup, toggleMute, toggleHold, warmAddAgent, warmTransferCall, coldTransferCall, cancelInvite } from '../../Actions/clientActions';
+import { hangup, toggleMute, toggleHold, warmAddAgent, warmTransferCall, coldTransferCall, cancelInvite, checkIsActive } from '../../Actions/clientActions';
 import { connectionsSelector, connectionStatesSelector } from '../../Selectors/client';
 import { onlineAgentsSelector } from '../../../Agent/Selectors/agents';
 
@@ -57,7 +57,7 @@ class VoiceControlsContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { tabRef, onEndCall } = this.props;
+    const { dispatch, tabRef, onEndCall } = this.props;
 
     tabRef({
       isCallActive: this.isCallActive,
@@ -84,6 +84,13 @@ class VoiceControlsContainer extends React.Component {
         if (status !== 'active' || connection.outbound) {
           this.setState({
             status: 'active'
+          });
+
+          const promise = dispatch(checkIsActive(connection.callId));
+          promise.success(({ data }) => {
+            if (!data.is_active) {
+              dispatch(hangup(connection));
+            }
           });
         } else if (status !== 'connected' && status !== 'active') {
           this.setState({
