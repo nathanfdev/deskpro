@@ -35,6 +35,7 @@ class Checkbox extends React.Component {
         onClick={this.onClick}
       >
         <input
+          onChange={() => {}}
           type="checkbox"
           value={choice}
           checked={value ? 'checked' : ''}

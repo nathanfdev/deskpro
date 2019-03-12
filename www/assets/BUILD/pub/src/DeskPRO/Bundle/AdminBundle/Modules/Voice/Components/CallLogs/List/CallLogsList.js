@@ -6,11 +6,14 @@ import Immutable from 'immutable';
 import { BlobPlayButton } from 'DeskPRO/Component/AudioWidget/PlayButton';
 import { DeleteButton } from 'DeskPRO/Component/AudioWidget/DeleteButton';
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
+import Modal from 'DeskPRO/Component/Semantic/Modal';
+import { Button } from '@deskpro/react-components';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import PersonName from '../../../../Common/Components/PersonName';
 import CallStatus from '../Common/CallStatus';
 import CallDuration from '../Common/CallDuration';
 import { openTicket, openPerson } from '../../../../../Services/history';
+
 
 class CallLogsList extends React.Component {
 
@@ -26,18 +29,54 @@ class CallLogsList extends React.Component {
     onDeleteRecordClick: PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      deleteConfirmation: false
+    };
+  }
+
+  onConfirmDeleteClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onDeleteRecordClick(this.state.deleteConfirmation);
+    this.setState({ deleteConfirmation: false });
+  };
+
+  onRejectDeleteClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.setState({ deleteConfirmation: false });
+  };
+
   onDeleteClick = (callId) => {
-    this.props.onDeleteRecordClick(callId);
+    this.setState({ deleteConfirmation: callId });
   };
 
   render() {
     const { calls, numbers, pageCount, liveUpdates } = this.props;
     const { onPageChange, onOpenCallLog, openDialpad, onToggleLiveUpdates } = this.props;
+    const { deleteConfirmation } = this.state;
 
-    return (
+    return ([
+      <Modal
+        isOpen={deleteConfirmation > 0}
+        title="Confirm record deletion"
+        contentStyles={{ top: '25%', left: '37%', bottom: 'auto', height: '150px', width: '30%' }}
+        className="voice-delete-callrecord-confirmation"
+      >
+        <h2>Do you really want to delete this record? This cannot be undone.</h2>
+        <div>
+          <span style={{ float: 'left' }}>
+            <Button size="large" type="secondary" onClick={this.onRejectDeleteClick}>Decline</Button>
+          </span>
+          <span style={{ float: 'right' }}>
+            <Button size="large" type="cta" onClick={this.onConfirmDeleteClick}>Confirm</Button>
+          </span>
+        </div>
+      </Modal>,
       <div className="page">
         <SectionHeader title="Call logs" dividing />
-
         <Checkbox label="Live updates" value={liveUpdates} onChange={onToggleLiveUpdates} />
         <table className="table">
           <colgroup>
@@ -85,7 +124,7 @@ class CallLogsList extends React.Component {
               const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
 
               return (
-                <tr key={index}>
+                <tr key={`call_log_${index}`}>
                   <td className="alt dp-id-col">
                     <a onClick={onOpen}>
                       <em className="dp-id">{call.get('id')}</em>
@@ -144,8 +183,8 @@ class CallLogsList extends React.Component {
                   </td>
                   <CallStatus call={call} />
                   <td>
-                    {recordingsEnabled.size > 0 ? recordingsEnabled.map(recording => <BlobPlayButton iconOnly value={recording.get('blob')} />) : '-'}
-                    {recordingsEnabled.size > 0 ? <DeleteButton iconOnly onClick={() => this.onDeleteClick(call.get('id'))} /> : null}
+                    {recordingsEnabled.size > 0 ? recordingsEnabled.map(recording => <BlobPlayButton key={`call_log_record_play_${index}`} iconOnly value={recording.get('blob')} />) : '-'}
+                    {recordingsEnabled.size > 0 ? <DeleteButton key={`call_log_record_delete_${index}`}  iconOnly onClick={() => this.onDeleteClick(call.get('id'))} /> : null}
                   </td>
                 </tr>
               );
@@ -166,8 +205,7 @@ class CallLogsList extends React.Component {
           subContainerClassName="pages pagination"
           activeClassName="active"
         />
-      </div>
-    );
+      </div>]);
   }
 }
 
