@@ -87,6 +87,7 @@ class TicketStatusDataService
 
     /**
      * Used in forms to get valid `status` options.
+     * Result has a flat structure, just a list of possible statuses.
      *
      * [
      *    ['title': ..., 'value': ...]

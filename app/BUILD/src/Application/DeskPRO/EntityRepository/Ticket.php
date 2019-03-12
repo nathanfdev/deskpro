@@ -297,6 +297,15 @@ class Ticket extends AbstractEntityRepository
             ORDER BY t.id ASC
         ')->setParameter(1, $ids)->execute();
 
+        // preload ticket statuses as separe query
+        // result is discarded (this is just re-hydrating the collections)
+        $this->getEntityManager()->createQuery('
+            SELECT PARTIAL t.{id}, ticket_status
+            FROM DeskPRO:Ticket t INDEX BY t.id
+            LEFT JOIN t.ticket_status ticket_status
+            WHERE t.id IN(?1)
+            ')->setParameter(1, $ids)->execute();
+
         return $tickets;
     }
 
