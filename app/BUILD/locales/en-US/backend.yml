@@ -3934,7 +3934,7 @@ agent.onboarding.topbar_search_title: Search
 agent.onboarding.topbar_views_text: 'Click the ''View'' icon when you want to change the layout of your agent screen.'
 agent.onboarding.topbar_views_title: 'Manage views'
 agent.onboarding.new_pending_status_title: 'New Pending Status'
-agent.onboarding.new_pending_status_html: 'The helpdesk was updated to include a new Pending status. Use this status when a ticket is neither awaiting agent nor awaiting user, but is instead waiting on something or someone else. The new Pending status replaces the old "On Hold" functionality and moves it directly to the status menu.<br/><br/><a href="https://support.deskpro.com/news/posts/747">Read more about the new Pending status and sub-statuses</a>.'
+agent.onboarding.new_pending_status_html: 'The helpdesk was updated to include a new Pending status. Use this status when a ticket is neither awaiting agent nor awaiting user, but is instead waiting on something or someone else. The new Pending status replaces the old "On Hold" functionality and moves it directly to the status menu.<br/><br/><a href="https://support.deskpro.com/news/posts/747" target="_blank">Read more about the new Pending status and sub-statuses</a>.'
 agent.organizations.add_person: 'Add a person to this organization'
 agent.organizations.already_child: 'This organization is already a child of {{name}}'
 agent.organizations.already_grandparent: 'This organization is a grandparent of {{name}}'

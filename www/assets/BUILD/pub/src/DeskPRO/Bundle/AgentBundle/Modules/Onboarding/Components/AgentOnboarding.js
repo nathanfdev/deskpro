@@ -173,6 +173,10 @@ export class AgentOnboarding extends React.Component {
     this.setState({ status });
   };
 
+  eventStopPropagation = (ev) => {
+    ev.stopPropagation();
+  };
+
   getIntro = () => {
     const { intro, status } = this.state;
     if (!intro || status) {
@@ -187,7 +191,7 @@ export class AgentOnboarding extends React.Component {
       <div className="joyride">
         <div className="joyride-overlay" style={{ height }} onClick={this.closeIntro}>
           <div className="joyride-hole" />
-          <div className="joyride-intro" style={style}>
+          <div className="joyride-intro" style={style} onClick={this.eventStopPropagation}>
             <img src={intro.img} role="presentation" />
             <h3><FormattedMessage id={intro.title} /></h3>
             {intro.html ? <div className={"body " + (intro.bodyType||"")}><FormattedHTMLMessage id={intro.html} /></div> : <p><FormattedMessage id={intro.text} /></p>}
