@@ -3387,13 +3387,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         if ($is_hold) {
             if ($this->status !== TicketStatus::STATUS_TYPE_PENDING) {
                 $this->setStatus(TicketStatus::STATUS_TYPE_PENDING);
-                $this->setModelField('date_on_hold', new \DateTime());
             }
+            $this->setModelField('date_on_hold', new \DateTime());
         } else {
             if ($this->status === TicketStatus::STATUS_TYPE_PENDING) {
                 $this->setStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT);
-                $this->setModelField('date_on_hold', null);
             }
+            $this->setModelField('date_on_hold', null);
         }
 
         return $this;

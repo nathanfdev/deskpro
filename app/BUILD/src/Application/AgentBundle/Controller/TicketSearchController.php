@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
+use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -1596,6 +1597,7 @@ class TicketSearchController extends AbstractController
             'creation_system',
             'ticket_hash',
             'status',
+            'sub_status',
             'hidden_status',
             'is_hold',
             'urgency',
@@ -1760,7 +1762,11 @@ class TicketSearchController extends AbstractController
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
                     case 'status':
-                        $row[] = $ticket->getStatusCode();
+                        $row[] = VirtualTicketStatus::getById($ticket->getStatus())->getTitle();
+                        break;
+                    case 'sub_status':
+                        $ticketStatus = $ticket->getTicketStatus();
+                        $row[]        = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
                         break;
                     default:
                         if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
