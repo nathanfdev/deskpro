@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\Traits\TicketSearchTrait;
@@ -14,12 +15,14 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketNotFound;
 use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -91,7 +94,20 @@ class TicketsController extends AbstractTicketsController
      */
     public function getAction(Request $request, $id)
     {
-        return parent::getAction($request, $id);
+        try {
+            return parent::getAction($request, $id);
+        } catch (NotFoundHttpException $exception) {
+            /** @var TicketDeleted $ticketDeleted */
+            $ticketDeleted = $this->getManager()
+                ->getRepository(TicketDeleted::class)
+                ->findOneBy(['ticket_id' => $id]);
+
+            if (null === $ticketDeleted) {
+                throw $exception;
+            }
+
+            return new View(new TicketNotFound($ticketDeleted), Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**
