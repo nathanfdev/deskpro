@@ -294,6 +294,7 @@ class SelectPart
         'tickets_logs'                => 'DeskPRO:TicketLog',
         'tickets_messages'            => 'DeskPRO:TicketMessage',
         'ticket_attachments'          => 'DeskPRO:TicketAttachment',
+        'ticket_statuses'             => 'DeskPRO:TicketStatus',
         'ticket_charges'              => 'DeskPRO:TicketCharge',
         'ticket_feedback'             => 'DeskPRO:TicketFeedback',
         'ticket_slas'                 => 'DeskPRO:TicketSla',
