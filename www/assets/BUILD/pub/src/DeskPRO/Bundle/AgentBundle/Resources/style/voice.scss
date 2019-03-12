@@ -11,6 +11,13 @@ $voice-green-border-color: #47BF61;
   }
 }
 
+.user_popup {
+  .ui.popup {
+    max-width: 360px;
+    width: 360px;
+  }
+}
+
 .voice-profile {
   width: 360px;
   font-family: 'Open Sans';
