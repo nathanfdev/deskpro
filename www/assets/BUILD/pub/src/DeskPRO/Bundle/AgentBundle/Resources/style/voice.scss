@@ -146,6 +146,11 @@ $voice-green-border-color: #47BF61;
 .voice-menu-popup {
   position: relative;
 
+  .ui.popup {
+    width: 360px;
+    max-width: 360px;
+  }
+
   .status {
     width: 60px;
     text-align: center;
