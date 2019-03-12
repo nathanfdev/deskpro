@@ -38,9 +38,7 @@ class SettingsController extends BaseSettingsController
     public function saveUrlSettingsAction()
     {
         $in_settings  = new OptionsArray($this->in->getArrayValue('settings'));
-        $set_settings = [
-            'core.deskpro_url_autocorrect' => false,
-        ];
+        $set_settings = [];
 
         if ($in_settings->get('domain_choice') == 'custom') {
             $domain = preg_replace('#^https?://#', '', strtolower($in_settings->get('cloud_custom_domain')));
