@@ -3838,6 +3838,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	_initStatusMenu: function() {
   	var $backdrop, $container, ctrl;
 
+  	var self = this;
+
 		ctrl = {
 			submitListeners: [],
 			statusCode: null,
