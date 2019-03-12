@@ -78,4 +78,3 @@ Feature: Ticket logs
     Then the "{demo_ticket}" ticket should have the following logs:
       | type                  |
       | changed_status        |
-      | changed_ticket_status |
