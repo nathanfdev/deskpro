@@ -92,7 +92,7 @@ adm.agents.perm_ticket_modify_own: 'Can modify owned and team tickets'
 adm.agents.perm_ticket_modify_set_archived: 'Can unarchive tickets'
 adm.agents.perm_ticket_modify_set_awaiting_agent: 'Can set status to awaiting agent'
 adm.agents.perm_ticket_modify_set_awaiting_user: 'Can set status to awaiting user'
-adm.agents.perm_ticket_modify_set_hold: 'Can set on-hold'
+adm.agents.perm_ticket_modify_set_hold: 'Can set pending'
 adm.agents.perm_ticket_modify_set_resolved: 'Can set status to resolved'
 adm.agents.perm_ticket_modify_set_unresolved: 'Can unresolve ticket'
 adm.agents.perm_ticket_modify_slas: 'Can modify SLAs'
@@ -731,6 +731,7 @@ adm.ticket_slas.delete_confirm: 'Are you sure you want to delete this SLA? All d
 adm.ticket_slas.no_slas: 'You have not created any SLAs yet.'
 adm.ticket_slas.slas: SLAs
 adm.ticket_slas.title_explain: 'This title will be displayed in the agent interface when listing SLAs.'
+adm.ticket_statuses.delete_confirm: 'Are you sure? Any tickets using this status will have their sub-status unset, but will remain'
 adm.ticket_triggers.copy_trigger: 'Copy another trigger'
 adm.ticket_triggers.copy_trigger_modal_title: 'Copy Trigger'
 adm.ticket_triggers.count_dep_triggers:
@@ -1471,6 +1472,7 @@ admin.general.error_ssl_feature_tip: 'This feature requires the OpenSSL PHP exte
 admin.general.error_ssl_tip: 'Secure connections require the OpenSSL PHP extension which is currently not installed. Click now for more information.'
 admin.general.error_type: 'Error Type'
 admin.general.event: Event
+admin.general.fail: Fail
 admin.general.fields: Fields
 admin.general.file_uploads: 'File Uploads'
 admin.general.first: First
@@ -3112,6 +3114,7 @@ agent.general.change: Change
 agent.general.change_password: 'Изменить пароль'
 agent.general.change_pic_for: 'Изменить изображение для {{name}}'
 agent.general.change_status: 'Изменить статус'
+agent.general.change_substatus: 'Change Sub Status'
 agent.general.change_user: 'Изменить пользователя'
 agent.general.changed: Изменено
 agent.general.changed_from: 'Изменено с'
@@ -3149,6 +3152,8 @@ agent.general.contact_address: 'Адрес для связи'
 agent.general.contact_instant_messaging: 'Контакт для мгновенных сообщений'
 agent.general.contact_phone: 'Телефон  для связи'
 agent.general.contains: содержит
+agent.general.content: Content
+agent.general.content_type: 'Content type'
 agent.general.content_matches_summary: 'Найденные совпадения: {{pattern}}'
 agent.general.continue: Продолжить
 agent.general.copy_permalink: 'Скопировать постоянную ссылку'
@@ -3180,6 +3185,7 @@ agent.general.create_deal: 'Создать сделку'
 agent.general.create_download: 'Создать загрузку'
 agent.general.create_feedback: 'Создать предложение'
 agent.general.create_news: 'Создать новость'
+agent.general.create_section: 'Create Section'
 agent.general.create_status: 'Создать статус'
 agent.general.create_task: 'Create Task'
 agent.general.create_ticket: 'Создать тикет'
@@ -3509,6 +3515,7 @@ agent.general.name: Имя
 agent.general.name_az: 'Имя (A-Z)'
 agent.general.name_is_summary: 'Имя {{name}}'
 agent.general.name_za: 'Имя (Z-A)'
+agent.general.next: Next
 agent.general.never: Никогда
 agent.general.new: Новый
 agent.general.new_article: 'Новая статья'
@@ -3561,6 +3568,7 @@ agent.general.number_of_tickets: 'Количество тикетов'
 agent.general.of: от
 agent.general.off: Выключить
 agent.general.okay: Ok
+agent.general.ok: OK
 agent.general.on: Включить
 agent.general.online_now: 'В сети'
 agent.general.open: Открыть
@@ -3604,6 +3612,7 @@ agent.general.popularity: Популярность
 agent.general.portal: Portal
 agent.general.position: Положение
 agent.general.prev: Предыдущее
+agent.general.previous: Previous
 agent.general.print: Печать
 agent.general.priorities: Приоритеты
 agent.general.priority: Приоритет
@@ -3677,6 +3686,7 @@ agent.general.search: Поиск
 agent.general.search_results: 'Search results'
 agent.general.search_terms: 'Поисковые запросы'
 agent.general.seconds: секунд
+agent.general.section_title: 'Section Title'
 agent.general.select: Select
 agent.general.select_a_brand: 'Select a brand'
 agent.general.select_a_department: 'Выбрать подразделение'
@@ -3734,6 +3744,7 @@ agent.general.status: Статус
 agent.general.status_is: 'Статус: {{status}}'
 agent.general.statuses: Статусы
 agent.general.stop_processing_other_triggers: 'Остановить работу других триггеров'
+agent.general.sub_status: Sub-Status
 agent.general.subject: Тема
 agent.general.subscribe: Subscribe
 agent.general.summary: 'Краткое описание'
@@ -4082,6 +4093,8 @@ agent.onboarding.topbar_search_text: 'You can search the helpdesk for tickets, p
 agent.onboarding.topbar_search_title: Search
 agent.onboarding.topbar_views_text: 'Click the ''View'' icon when you want to change the layout of your agent screen.'
 agent.onboarding.topbar_views_title: 'Manage views'
+agent.onboarding.new_pending_status_title: 'New Pending Status'
+agent.onboarding.new_pending_status_html: 'The helpdesk was updated to include a new Pending status. Use this status when a ticket is neither awaiting agent nor awaiting user, but is instead waiting on something or someone else. The new Pending status replaces the old "On Hold" functionality and moves it directly to the status menu.<br/><br/><a href="https://support.deskpro.com/news/posts/747">Read more about the new Pending status and sub-statuses</a>.'
 agent.organizations.add_person: 'Добавить пользователя к этой организации'
 agent.organizations.already_child: 'This organization is already a child of {{name}}'
 agent.organizations.already_grandparent: 'This organization is a grandparent of {{name}}'
@@ -5291,6 +5304,7 @@ agent.tickets.status_resolved_deleted: Удаленные
 agent.tickets.status_resolved_spam: Спам
 agent.tickets.status_resolved_temp: Временные
 agent.tickets.status_resolved_validating: 'Ожидание подтверждения'
+agent.tickets.status_pending: Pending
 agent.tickets.stop_later_triggers_action: 'Остановить обработку последующих триггеров'
 agent.tickets.subject_changed: 'Тема изменена'
 agent.tickets.subject_changed_from: 'Тема изменена с'
@@ -5757,6 +5771,7 @@ api.error_codes.missing_country_code: 'Country code is missing.'
 api.error_codes.missing_jwt_token: 'JWT token is required.'
 api.error_codes.no_default_dashboard_permission: 'can''t grant edit permission for agent to default dashboard'
 api.error_codes.no_permission: 'You have no permission to modify "{{value}}" object(s).'
+api.error_codes.no_delete_permission: 'You have no permission to delete "{{value}}" object(s).'
 api.error_codes.no_source_provided: 'Unable to fetch data, no report widget or js code provided.'
 api.error_codes.no_uploaded_file: 'Uploaded file was not found.'
 api.error_codes.not_an_image: 'Uploaded file is not an image'
