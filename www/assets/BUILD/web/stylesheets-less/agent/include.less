@@ -1250,10 +1250,6 @@ i.icon-dp-rss:before {
   width:      @width;
 
   background: @fallback; /* old browsers just dont have fading */
-  background: -moz-linear-gradient(left top, @rgba_start 0%, @rgba_end 100%); /* FF 3.6+ */
-  background: -webkit-gradient(linear, left top, right top, color-stop(0%, @rgba_start), color-stop(100%, @rgba_end)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(left, @rgba_start 0%, @rgba_end 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(left, @rgba_start 0%, @rgba_end 100%); /* Opera11.10+ */
   background: linear-gradient(left, @rgba_start 0%, @rgba_end 100%); /* W3C */
 }
 
@@ -1261,10 +1257,7 @@ i.icon-dp-rss:before {
  * Changes opacity
  */
 .opacity(@opacity: 100) {
-  -khtml-opacity: (@opacity / 100);
-  -moz-opacity:   (@opacity / 100);
   opacity:        (@opacity / 100);
-  -ms-filter:     e(%('"progid:DXImageTransform.Microsoft.Alpha(Opacity=%d)"', @opacity));
   filter:         e(%("progid:DXImageTransform.Microsoft.Alpha(Opacity=%d)", @opacity));
 }
 
@@ -1272,11 +1265,7 @@ i.icon-dp-rss:before {
  * Adds rounded corners
  */
 .rounded(@radius: 2px) {
-  -webkit-border-radius:   @radius;
-  -moz-border-radius:      @radius;
   border-radius:           @radius;
-  -moz-background-clip:    padding;
-  -webkit-background-clip: padding-box;
   background-clip:         padding-box;
 }
 
@@ -1284,20 +1273,10 @@ i.icon-dp-rss:before {
 * Set a radius on each corner
 */
 .border-radius(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-  -webkit-border-top-left-radius:     @topleft;
-  -webkit-border-top-right-radius:    @topright;
-  -webkit-border-bottom-right-radius: @bottomright;
-  -webkit-border-bottom-left-radius:  @bottomleft;
-  -moz-border-radius-topleft:         @topleft;
-  -moz-border-radius-topright:        @topright;
-  -moz-border-radius-bottomright:     @bottomright;
-  -moz-border-radius-bottomleft:      @bottomleft;
   border-top-left-radius:             @topleft;
   border-top-right-radius:            @topright;
   border-bottom-right-radius:         @bottomright;
   border-bottom-left-radius:          @bottomleft;
-  -moz-background-clip:               padding;
-  -webkit-background-clip:            padding-box;
   background-clip:                    padding-box;
 }
 
@@ -1305,11 +1284,7 @@ i.icon-dp-rss:before {
  * Sets border radius on top-left corner
  */
 .border-radius-tl(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-  -webkit-border-top-left-radius: @topleft;
-  -moz-border-radius-topleft:     @topleft;
   border-top-left-radius:         @topleft;
-  -moz-background-clip:           padding;
-  -webkit-background-clip:        padding-box;
   background-clip:                padding-box;
 }
 
@@ -1317,11 +1292,7 @@ i.icon-dp-rss:before {
  * Sets border radius on top-right corner
  */
 .border-radius-tr(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-  -webkit-border-top-right-radius: @topleft;
-  -moz-border-radius-topright:     @topleft;
   border-top-right-radius:         @topleft;
-  -moz-background-clip:            padding;
-  -webkit-background-clip:         padding-box;
   background-clip:                 padding-box;
 }
 
@@ -1329,11 +1300,7 @@ i.icon-dp-rss:before {
  * Sets border radius on bottom-right corner
  */
 .border-radius-br(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-  -webkit-border-bottom-right-radius: @topleft;
-  -moz-border-radius-bottomright:     @topleft;
   border-bottom-right-radius:         @topleft;
-  -moz-background-clip:               padding;
-  -webkit-background-clip:            padding-box;
   background-clip:                    padding-box;
 }
 
@@ -1341,17 +1308,11 @@ i.icon-dp-rss:before {
  * Sets border radius on bottom -left corner
  */
 .border-radius-bl(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-  -webkit-border-bottom-left-radius: @topleft;
-  -moz-border-radius-bottomleft:     @topleft;
   border-bottom-left-radius:         @topleft;
-  -moz-background-clip:              padding;
-  -webkit-background-clip:           padding-box;
   background-clip:                   padding-box;
 }
 
 .border-box {
-  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
-  -moz-box-sizing:    border-box; /* Firefox, other Gecko */
   box-sizing:         border-box;
 }
 

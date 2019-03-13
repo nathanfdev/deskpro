@@ -17,41 +17,18 @@
 					<a class="clean-white" ng-click="openMassActions()">{{ phrase('agent.general.perform_mass_actions') }}</a>
 				</span>
 
-				<div class="realtime-indicator half-realtime" ng-show="halfrealtime && massActionsOpen">
+				<div class="realtime-indicator half-realtime" ng-show="halfrealtime && massActionsOpen" title="{{ phrase('agent.tickets.real_time_updates_limited_desc_1') }} {{ phrase('agent.tickets.real_time_updates_limited_desc_2') }}">
 					<em>{{ phrase('agent.tickets.real_time_updates_limited') }}</em>
-					<div dp-sticky-tip offset-top="18" right-align>
-						<article>
-							<div class="content-text" style="max-width: 200px;">
-              {{ phrase('agent.tickets.real_time_updates_limited_desc_1') }}
-								<br/><br/>
-								{{ phrase('agent.tickets.real_time_updates_limited_desc_2') }}
-							</div>
-						</article>
-					</div>
 				</div>
 				<div class="realtime-indicator" ng-class="{'realtime-on': realtime}" ng-hide="halfrealtime || massActionsOpen">
 					<span class="status" ng-click="toggleRealtimeUpdates();">
-						<div ng-show="realtime">
+						<div ng-show="realtime" title="{{ phrase('agent.tickets.real_time_updates_description') }}">
 							<em>{{ phrase('agent.tickets.real_time_updates') }}</em>
 							<i class="fas fa-retweet"></i>
-							<div dp-sticky-tip offset-top="25" right-align>
-								<article>
-									<div class="content-text">
-										{{ phrase('agent.tickets.real_time_updates_description') }}
-									</div>
-								</article>
-							</div>
 						</div>
-						<div ng-show="!realtime">
+						<div ng-show="!realtime" title="{{ phrase('agent.tickets.real_time_updates_disabled_desc') }}">
 							<em>{{ phrase('agent.tickets.real_time_updates_disabled') }}</em>
 							<i class="fas fa-retweet"></i>
-							<div dp-sticky-tip offset-top="25" right-align>
-								<article>
-									<div class="content-text">
-                    {{ phrase('agent.tickets.real_time_updates_disabled_desc') }}
-									</div>
-								</article>
-							</div>
 						</div>
 					</span>
 				</div>

@@ -61,26 +61,18 @@
 }
 
 .box-shadow(@shadow: 0 1px 3px rgba(0,0,0,.25)) {
-  -webkit-box-shadow: @shadow;
-  -moz-box-shadow: @shadow;
-  box-shadow: @shadow;
+
 }
 
 .box-shadow-two(@shadow: 0 1px 3px rgba(0,0,0,.25), @shadow2: 0 1px 3px rgba(0,0,0,.25)) {
-	-webkit-box-shadow: @shadow, @shadow2;
-	-moz-box-shadow: @shadow, @shadow2;
-	box-shadow: @shadow, @shadow2;
+
 }
 
 .box-shadow-three(@shadow: 0 1px 3px rgba(0,0,0,.25), @shadow2: 0 1px 3px rgba(0,0,0,.25), @shadow3: 0 1px 3px rgba(0,0,0,.25)) {
-	-webkit-box-shadow: @shadow, @shadow2;
-	-moz-box-shadow: @shadow, @shadow2;
-	box-shadow: @shadow, @shadow2;
+
 }
 
 .transition(@transition) {
-	-webkit-transition: @transition;
-	-moz-transition: @transition;
 	transition: @transition;
 }
 
@@ -92,8 +84,6 @@
 
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#88bfe8+0,70b0e0+100;Blue+3D+%2317 */
   background: @startColor url("../../../../../../file.php/gradient?size=@{size}&start_color=@{startSend_esc}&end_color=@{endSend_esc}&direction=horizontal") repeat-y top right ~"/*gradient_h:@{size}:@{startSend}:@{endSend}*/"; /* Old browsers */
-  background: -moz-linear-gradient(left,  @startColor 0%, @endColor 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(left,  @startColor 0%, @endColor 100%); /* Chrome10-25,Safari5.1-6 */
   background: linear-gradient(to right,  @startColor 0%, @endColor 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 
 }
@@ -104,17 +94,11 @@
 	@endSend_esc: `encodeURI(@{endSend})`;
 
   background: @startColor url("../../../../../../file.php/gradient?size=@{size}&start_color=@{startSend_esc}&end_color=@{endSend_esc}") repeat-x bottom left ~"/*gradient_v:@{size}:@{startSend}:@{endSend}*/"; /* Old browsers */
-  background: -moz-linear-gradient(top, @startColor 0%, @endColor 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, @startColor 0%, @endColor 100%); /* Chrome10-25,Safari5.1-6 */
   background: linear-gradient(to bottom, @startColor 0%, @endColor 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 }
 
 .opacity(@opacity: 100) {
-	-khtml-opacity: (@opacity / 100);
-	-moz-opacity: (@opacity / 100);
 	opacity: (@opacity / 100);
-	-ms-filter: e(%('"progid:DXImageTransform.Microsoft.Alpha(Opacity=%d)"', @opacity));
-    filter: e(%("progid:DXImageTransform.Microsoft.Alpha(Opacity=%d)", @opacity));
 }
 
 .opacity-important(@opacity: 100) {
@@ -138,75 +122,44 @@
 * Set a black drop shadow
 */
 .drop-shadow(@x-axis: 0, @y-axis: 1px, @blur: 2px, @alpha: 0.1) {
-	-webkit-box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
-	-moz-box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
-	box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+
 }
 
 /**
 * Set rounded corners
 */
 .rounded(@radius: 2px) {
-	-webkit-border-radius: @radius;
-	-moz-border-radius: @radius;
 	border-radius: @radius;
-	-moz-background-clip: padding; -webkit-background-clip: padding-box; background-clip: padding-box;
 }
 
 /**
 * Set a radius on each corner
 */
 .border-radius(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-	-webkit-border-top-left-radius: @topleft;
-	-webkit-border-top-right-radius: @topright;
-	-webkit-border-bottom-right-radius: @bottomright;
-	-webkit-border-bottom-left-radius: @bottomleft;
-	-moz-border-radius-topleft: @topleft;
-	-moz-border-radius-topright: @topright;
-	-moz-border-radius-bottomright: @bottomright;
-	-moz-border-radius-bottomleft: @bottomleft;
 	border-top-left-radius: @topleft;
 	border-top-right-radius: @topright;
 	border-bottom-right-radius: @bottomright;
 	border-bottom-left-radius: @bottomleft;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
 	background-clip: padding-box;
 }
 
 .border-radius-tl(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-	-webkit-border-top-left-radius: @topleft;
-	-moz-border-radius-topleft: @topleft;
 	border-top-left-radius: @topleft;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
 	background-clip: padding-box;
 }
 
 .border-radius-tr(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-	-webkit-border-top-right-radius: @topleft;
-	-moz-border-radius-topright: @topleft;
 	border-top-right-radius: @topleft;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
 	background-clip: padding-box;
 }
 
 .border-radius-br(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-	-webkit-border-bottom-right-radius: @topleft;
-	-moz-border-radius-bottomright: @topleft;
 	border-bottom-right-radius: @topleft;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
 	background-clip: padding-box;
 }
 
 .border-radius-bl(@topleft: 0, @topright: 0, @bottomright: 0, @bottomleft: 0) {
-	-webkit-border-bottom-left-radius: @topleft;
-	-moz-border-radius-bottomleft: @topleft;
 	border-bottom-left-radius: @topleft;
-	-moz-background-clip: padding;
-	-webkit-background-clip: padding-box;
 	background-clip: padding-box;
 }
 
@@ -214,35 +167,27 @@
 * Set an inner black shadow
 */
 .inner-shadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
-	-webkit-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
-	-moz-box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
-	box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+
 }
 
 /**
 * Set an inner shadow with your own oclor
 */
 .inner-shadow-color(@horizontal:0, @vertical:1px, @blur:2px, @color: rgba(255, 255, 255, 0.5)) {
-	-webkit-box-shadow: inset @horizontal @vertical @blur @color;
-	-moz-box-shadow: inset @horizontal @vertical @blur @color;
-	box-shadow: inset @horizontal @vertical @blur @color;
+
 }
 
 /**
 * Full box shadow
 */
 .box-shadow(@arguments) {
-	-webkit-box-shadow: @arguments;
-	-moz-box-shadow: @arguments;
-	box-shadow: @arguments;
+
 }
 
 /**
 * Transition effect
 */
 .transition(@duration:0.2s, @ease:ease-out) {
-	-webkit-transition: all @duration @ease;
-	-moz-transition: all @duration @ease;
 	transition: all @duration @ease;
 }
 
@@ -375,18 +320,10 @@
 
 .status.urgency-10, .marker-urgency-data.urgency-10 {
 	.opacity(100);
-	-webkit-transition: opacity 0.5s linear;
-	-moz-transition: opacity 0.5s linear;
-	-o-transition: opacity 0.5s linear;
-	-ms-transition: opacity 0.5s linear;
 	transition: opacity 0.5s linear;
 }
 
 body.timer-mark .status.urgency-10, body.timer-mark .marker-urgency-data.urgency-10 {
 	.opacity(60);
-	-webkit-transition: opacity 0.5s linear;
-	-moz-transition: opacity 0.5s linear;
-	-o-transition: opacity 0.5s linear;
-	-ms-transition: opacity 0.5s linear;
 	transition: opacity 0.5s linear;
 }

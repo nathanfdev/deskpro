@@ -146,7 +146,8 @@ em.counter, em.list-counter {
 	overflow: hidden;
 	background: @agent_bigmenu_bg_color;
 	border: 1px solid #aaa;
-	box-shadow:  0px 1px 2px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
 	border-radius: 0 0 3px 3px;
 	overflow: hidden;
 
@@ -227,7 +228,7 @@ em.counter, em.list-counter {
 }
 
 .browser-ie .dp-recent-list-dropdown {
-	box-shadow: none;
+
 	border: 1px solid #CBCBCB;
 	border-top: none;
 }
@@ -245,8 +246,9 @@ em.counter, em.list-counter {
 	.zindex-chrome;
 	position: absolute;
 	background: @agent_bigmenu_bg_color;
-	border-radius: 0 3px 3px 3px;
-	box-shadow:  0px 1px 2px rgba(0, 0, 0, 0.3);
+	border-radius: 3px;
+	border: 1px solid #AAA;
+
 
 	.dp-popover-inner {
 		overflow: auto;
@@ -381,7 +383,8 @@ em.counter, em.list-counter {
 	width: 450px;
 	background: @agent_bigmenu_bg_color;
 	border: 1px solid #aaa;
-	box-shadow:  0px 1px 2px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
 	border-radius: 0 0 3px 3px;
 	cursor: default;
 	.zindex-chrome;
@@ -460,7 +463,7 @@ em.counter, em.list-counter {
 			.gradient-v(@agent_header_btn_bg_color, darken(@agent_header_btn_bg_color, 5%));
 			border-radius: 3px;
 			border: 1px solid darken(@agent_header_btn_bg_color, 25%);
-			box-shadow: inset 0px 1px 0px lighten(@agent_header_btn_bg_color, 10%), 0px 1px 2px fade(darken(@agent_header_btn_bg_color, 30%), 60%);
+
 
 			i {
 				margin-right: 5px;
@@ -826,12 +829,12 @@ em.counter, em.list-counter {
 				background-color: #1D2022;
 				border-top: 1px solid #080909;
 				border-bottom: 1px solid #080909;
-				box-shadow: 0 0px 2px #080909;
+
 
 				i.app-icon {
 					opacity: 1;
-					-webkit-box-shadow: 0 0 2px 1px rgba(105,154,188,0.8);
-					box-shadow: 0 0 2px 1px rgba(105,154,188,0.8);
+
+
 				}
 			}
 		}
@@ -1084,7 +1087,7 @@ ul.pane-tabs {
 			top: 1px;
 			right: 0;
 			font-size: 9px;
-			text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+
 			color: @agent_text_color;
 			text-transform: uppercase;
 			line-height: 27px;
@@ -1675,7 +1678,7 @@ ul.pane-tabs {
 			border: 1px solid #0a4066;
 			border-radius: 3px;
 			background: #2c84c5;
-			box-shadow: inset 0px 1px 0px 0px #6ab8e1;
+
 		}
 		.btn-group {
 			position: relative;
@@ -1718,7 +1721,7 @@ ul.pane-tabs {
 				content: "";
 			}
 			input {
-				box-shadow: none;
+
 				display: block;
 				padding: 3px 8px;
 				margin-bottom: 0;
@@ -1787,7 +1790,7 @@ ul.pane-tabs {
 			border: 1px solid #b0b2b6;
 			border-left: 0;
 			border-radius: 0 3px 3px 0;
-			box-shadow:  2px 2px 3px rgba(0, 0, 0, 0.15);
+
 			padding: 15px;
 			.row {
 			margin: 0 0 10px 0;
@@ -1795,7 +1798,7 @@ ul.pane-tabs {
 			position: relative;
 			}
 			input {
-				box-shadow: none;
+
 				display: inline-block;
 				padding: 3px 8px;
 				margin-bottom: 0;
@@ -1895,7 +1898,7 @@ ul.pane-tabs {
 		cursor: pointer;
 		font-size: 11px;
 		line-height: 16px;
-		box-shadow: none;
+
 
 		&:hover {
 			border: 1px solid darken(#B0B2B6, 20%);
@@ -1987,7 +1990,7 @@ ul.pane-tabs {
 	.zindex-chrome;
 	.border-radius(0, 4px, 4px, 0);
 	overflow: auto;
-	box-shadow: 2px 1px 3px 0px rgba(0, 0, 0, 0.3);
+
 
 	.sep-row {
 		position: relative;
@@ -2110,7 +2113,7 @@ ul.pane-tabs {
 		.term, .term:hover {
 			position: relative;
 			background: transparent;
-			box-shadow: none;
+
 			border: none;
 
 			.remove-row-btn {
@@ -2200,7 +2203,7 @@ ul.pane-tabs {
 	padding: 4px;
 	.rounded(2px);
 	.zindex-chrome5;
-	box-shadow: 1px 1px 3px 0px rgba(0, 0, 0, 0.2);
+
 	max-height: 350px;
 	overflow: auto;
 
@@ -2276,7 +2279,7 @@ ul.pane-tabs {
 	border-right: 1px;
 	border-right-style: solid;
 	border-right-color: #AFAFB4;
-	box-shadow: 2px 0 2px 0 rgba(0, 0, 0, 0.1);
+
 	z-index: 1;
 	line-height: 16px;
 }
@@ -2295,7 +2298,7 @@ ul.pane-tabs {
 }
 
 .ie #dp_list{
-	box-shadow: 2px 0 4px 0 #8c8f93;
+
 }
 
 #dp_list_loading {
@@ -2550,7 +2553,7 @@ ul.pane-tabs {
 	background: #e0e2e6;
 	border: 1px solid #99999D;
 	border-bottom: none;
-	box-shadow: none;
+
 	margin: 11px 6px 0 0;
 	padding: 0;
 	width: 125px;
@@ -2687,8 +2690,8 @@ ul.pane-tabs {
 
 	&.is-alerting.alert-highlight {
 		border-color: #1C5D9F;
-		-webkit-box-shadow:  0px -1px 3px 0px rgba(0, 0, 0, 0.2);
-		box-shadow:  0px -1px 3px 0px rgba(0, 0, 0, 0.2);
+
+
 	}
 }
 #tabContextMenu li {
@@ -2712,7 +2715,7 @@ ul.pane-tabs {
 }
 
 .deskproTabList li.activeTabList, .deskproTabList li.activeTabList:hover {
-	box-shadow: none;
+
 	background: @agent_panetabs_color;
 	border: 1px solid @agent_panetabs_color;
 	position: relative;
@@ -2799,7 +2802,7 @@ ul.pane-tabs {
 	z-index: 99999999;
 
 	//-webkit-box-shadow: 1px 1px 3px 0 rgba(0,0,0,0.6);
-	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.5);
+
 
 	ul {
 		padding: 0;
@@ -3010,7 +3013,7 @@ i.spinner-circle-32 {
 		.dp-btn {
 			line-height: 16px;
 			font-size: 12px;
-			text-shadow: none;
+
 			padding: 0px 5px;
 		}
 
@@ -3071,7 +3074,7 @@ i.spinner-circle-32 {
 		.dp-btn {
 			line-height: 16px;
 			font-size: 11px;
-			text-shadow: none;
+
 			padding: 0px 5px;
 		}
 
@@ -3151,7 +3154,7 @@ section.dp-overlay > header nav ul li {
 section.dp-overlay > header nav ul li.on,
 section.dp-overlay > header nav ul li.on:hover {
 	background: #fff;
-	box-shadow: none;
+
 	border-bottom-color: #fff;
 	color: #5b5d61;
 	cursor: default;
@@ -3159,7 +3162,7 @@ section.dp-overlay > header nav ul li.on:hover {
 
 section.dp-overlay > header nav ul li:hover {
 	background: darken(#eef0f0, 10%);
-	box-shadow: none;
+
 	color: #434549;
 }
 
@@ -3191,7 +3194,7 @@ section.dp-overlay > header nav h3 {
 	.dp-form textarea {
 		padding: 6px;
 		border-radius: 0;
-		box-shadow: none;
+
 	}
 
 	.dp-form .intl-tel-input input[type="text"] {
@@ -3269,7 +3272,7 @@ section.dp-overlay > header nav h3 {
 		border: 1px solid #0a4066;
 		border-radius: 3px;
 		background: #2c84c5 url('@{img_path}/header-btn-chat-blue.png') repeat-x top center;
-		box-shadow: inset 0px 1px 0px 0px #6ab8e1;
+
 	}
 
 	.more_emails_empty {
@@ -3295,7 +3298,7 @@ section.dp-overlay > header nav h3 {
 		border: none;
 		border-bottom: 1px solid #888;
 		width: 130px;
-		box-shadow: none;
+
 		font-size:11px;
 		float: none;
 	}
@@ -3366,7 +3369,7 @@ section.dp-overlay > header nav h3 {
 	top: 60px;
 	z-index: 30001;
 	background: #f3f4f5;
-	box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+
 	border-radius: 5px;
 	box-sizing: content-box;
 
@@ -3404,7 +3407,7 @@ section.dp-overlay > header nav h3 {
 			border: 1px solid #0a4066;
 			border-radius: 3px;
 			background: #2c84c5 url('@{img_path}/header-btn-chat-blue.png') repeat-x top center;
-			box-shadow: inset 0px 1px 0px 0px #6ab8e1;
+
 
 			&:hover {
 				text-decoration: none;
@@ -3414,7 +3417,7 @@ section.dp-overlay > header nav h3 {
 				border: 1px solid #bb3224;
 				border-radius: 3px;
 				background: #cf4436 url('@{img_path}/btn-red.png') repeat-x top center;
-				box-shadow: inset 0px 1px 0px 0px #ff9878;
+
 				min-width: 63px;
 			}
 
@@ -3464,7 +3467,7 @@ section.dp-overlay > header nav h3 {
 					top: 42px;
 					width: 460px;
 					z-index: 10;
-					box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+
 
 					li {
 						height: 28px;
@@ -3524,7 +3527,7 @@ section.dp-overlay > header nav h3 {
 
 				 input {
 					padding: 6px 8px;
-					box-shadow: none;
+
 				}
 			}
 		}
@@ -3600,8 +3603,7 @@ section.list-results {
 		border: 1px solid #b0b2b3;
 		border-radius: 3px;
 
-		-webkit-box-shadow:inset 0 0 3px 2px rgba(0,0,0,0.2);
-		box-shadow:inset 0 0 3px 2px rgba(0,0,0,0.2);
+
 
 		.inner-container {
 			position: absolute;
@@ -3693,7 +3695,7 @@ em.downarrow {
 
 		input {
 			width: 100%;
-			box-shadow: none;
+
 
 			border: none;
 			background: transparent;
@@ -3760,7 +3762,7 @@ em.downarrow {
 				background: #f00c18;
 				color: #fff;
 				font-size: 10px;
-				text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
 				font-weight: bold;
 				font-style: normal;
 			}
@@ -3774,7 +3776,7 @@ em.downarrow {
 	z-index: 1000000;
 	overflow: auto;
 	border: 1px solid #aaa;
-	box-shadow:  0px 1px 2px rgba(0, 0, 0, 0.3);
+
 	border-radius: 0 0 3px 3px;
 
 	section.result-group {
@@ -3899,7 +3901,7 @@ em.downarrow {
         }
         input.dp-cb-input  {
             width: 80%;
-            box-shadow: none;
+
         }
         .dp-cb-row-controls {
             top: 5px;
@@ -3907,7 +3909,7 @@ em.downarrow {
 
         button {
             background: #fafcfd;
-            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+
             border: 1px solid #b6babf;
             -webkit-border-radius: 3px;
             -moz-border-radius: 3px;
@@ -3925,9 +3927,9 @@ em.downarrow {
         }
         button:hover {
             border: 1px solid #999C9C;
-            -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
-            -moz-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
-            box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
+
+
+
         }
     }
 }

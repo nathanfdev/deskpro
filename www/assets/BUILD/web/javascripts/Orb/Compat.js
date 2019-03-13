@@ -121,7 +121,7 @@ if (!window.requestIdleCallback) {
 		if (timeout < 1000) {
 			timeout = 100;
 		} else if (timeout > 10000) {
-			timeout = 5000;
+			timeout = 1000;
 		} else {
 			timeout = timeout * 0.5;
 		}

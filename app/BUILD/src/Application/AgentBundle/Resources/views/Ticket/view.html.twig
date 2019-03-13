@@ -335,7 +335,7 @@
                 <li data-btn-id="flag">
                     <input type="hidden" id="{{ baseId }}_flag_old" value="{{ ticket_flagged }}" />
                     <select name="flag" class="flag" id="{{ baseId }}_flag" class="dpe_select" data-style-type="icons"
-                            data-invisible-trigger="1" data-dropdown-css-class="ticket-header"
+                            data-invisible-trigger="1" data-dropdown-css-class="ticket-header" data-lazy-init="1"
                             data-dropdown-nosearch="1">
                         <option
                               value=""
@@ -847,7 +847,7 @@
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.current_user_waiting_work_time|time_length('hours') }}
-                                            <span class="tipped small-light-icon"
+                                            <span class="small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.current_user_waiting_time|time_length }}"></span>
                                         {% else %}
                                             <time
@@ -871,7 +871,7 @@
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.total_user_waiting_work_time|time_length('hours') }}
-                                            <span class="tipped small-light-icon"
+                                            <span class="small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.real_total_user_waiting|time_length }}"></span>
                                         {% else %}
                                             <time class="timeago" data-timeago-no-ago="1"
@@ -894,7 +894,7 @@
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.work_time_to_first_reply|time_length('hours') }}
-                                            <span class="tipped small-light-icon"
+                                            <span class="small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.total_to_first_reply|time_length }}"></span>
                                         {% elseif not app.isRelativeTimesDisabled() %}
                                             <time class="timeago" data-timeago-no-ago="1"
@@ -936,7 +936,7 @@
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.work_time_until_resolution|time_length('hours') }}
-                                            <span class="tipped small-light-icon"
+                                            <span class="small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.time_until_resolution|time_length }}"></span>
                                         {% else %}
                                             <time class="timeago" data-timeago-no-ago="1"
