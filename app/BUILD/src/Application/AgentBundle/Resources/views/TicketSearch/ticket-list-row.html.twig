@@ -32,7 +32,7 @@
 			</span>
 
             <% if (ticket_display.locked_by_agent) { %>
-			<span class="tipped agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
+			<span class="agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
                 <i class="fas fa-lock" style="font-size: 150%;"></i>
             </span>
             <% } %>
@@ -44,7 +44,7 @@
 			</div>
 
 			<% if (ticket_display.agent) { %>
-				<span class="tipped agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>');"></span>
+				<span class="agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>');"></span>
 			<% } %>
 
 			<% if (ticket_display.flag) { %>
