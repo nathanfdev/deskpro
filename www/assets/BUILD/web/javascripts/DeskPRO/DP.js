@@ -22,7 +22,7 @@ var DP = {
 		return text;
 	},
 
-	select: function(el, options) {
+	select: function(el, options, noDefer) {
 		if (el.length && el.length > 1) {
 			el.each(function() {
 				DP.select($(this), options);
@@ -33,6 +33,32 @@ var DP = {
     if (el.data('select2') || el.data('no-select2')) {
       return;
     }
+
+    // Select2 boxes where the trigger is invisible (aka not the real select2 box),
+    // we can defer init until later or until first click
+    if (!noDefer && (el.attr('data-invisible-trigger') || el.attr('data-invisible-trigger-right'))) {
+    	var init = {
+    		hasInit: false,
+				run: function () {
+					if (!this.hasInit && document.body.contains(el[0])) {
+						DP.select(el, options, true);
+						el.parent().off('click', init.click);
+					}
+				},
+				click: function() {
+    			this.run();
+    			el.select2('open');
+				}
+			};
+    	init.run = init.run.bind(init);
+    	init.click = init.click.bind(init);
+
+    	if (!el.attr('data-lazy-init')) {
+				window.requestIdleCallback(init.run, {timeout: 15000});
+			}
+			el.parent().one('click', init.click);
+			return;
+		}
 
 		options = options || {};
 

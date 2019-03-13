@@ -15,7 +15,7 @@
 	color: #FFFFFF;
 	font-size: 11px;
 	padding: 0px 9px 0 6px;
-	text-shadow: 0 1px 0 #000000;
+
 }
 
 .list-control-bar ul li{
@@ -23,18 +23,18 @@
 	display: inline-block;
 	color: #828e99;
 	padding: 0 2px;
-	text-shadow: 0 1px 0 #fff;
+
 	line-height: 28px;
 }
 
 .list-control-bar ul li a.button, a.performActTrigger{
 	.gradient(#fafcfd, #f0f2f3);
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
 	padding: 2px 8px 2px 6px;
 	color: #626a73;
-	text-shadow: 0 1px 0 #fff;
+
 	cursor: pointer;
 	font-family: @toolbar-font;
 	line-height: 100%;
@@ -171,13 +171,12 @@
 .list-grouping-bar li a:hover, .list-grouping-bar li.on a{
 	background: #537ca6;
 	color: #fff;
-	text-shadow: 0 1px 0 rgba(0,0,0,0.5);
-	box-shadow: none;
+
 	border: 1px solid transparent;
 }
 .list-grouping-bar li a:hover span, .list-grouping-bar li.on a span{
 	color: #565E66;
-	text-shadow: none;
+
 }
 
 /*****************************************************************************
@@ -187,13 +186,13 @@
 .list-selection-bar,
 .new-tweet-list-indicator{
 	.gradient(#F0F1F3, #DADBDE);
-	box-shadow: 0 1px 0 #FFFFFF;
+
 	border-bottom: 1px solid #A2A7AC;
 	clear: both;
 	height: 28px;
 	line-height: 30px;
 	color: #959da6;
-	text-shadow: 0 1px 0 #fff;
+
 	font-size: 12px;
 	position: relative;
 	padding-left: 25px;
@@ -214,12 +213,12 @@
 }
 .list-selection-bar a.perform-action {
 	.gradient(#fafcfd, #f0f2f3);
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
 	padding: 2px 8px 3px 6px;
 	color: #626a73;
-	text-shadow: 0 1px 0 #fff;
+
 	cursor: pointer;
 	font-family: @toolbar-font;
 	line-height: 12px;
@@ -236,7 +235,7 @@
 
 .terms-bar {
 	background-color: #DFE5EB;
-	box-shadow: 0 1px 0 #FFFFFF;
+
 	border-bottom: 1px solid #B3B8BD;
 	padding: 3px;
 
@@ -324,7 +323,6 @@
 	padding: 1px 0 1px 0;
 	width: 100%;
 	box-sizing: border-box;
-	-moz-box-sizing: border-box;
 	position: relative;
 }
 
@@ -376,14 +374,15 @@
 .list-listing .row-item.open {
 	position:relative;
 	background-color: #D4E7FC !important;
-	-webkit-box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
-	-moz-box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
-	box-shadow: inset 1px 1px 2px 0px rgba(0, 0, 0, 0.3);
-
 	border-top: none;
 	border-bottom: none;
-	padding-bottom: 2px;
-	padding-top: 1px;
+	padding-top: 0px;
+	border-bottom: 1px solid #DDD;
+	border-top: 1px solid #AAA;
+}
+
+.list-listing .row-item.open .top-row {
+	top: -1px;
 }
 
 .list-listing .row-item.selection-on {
@@ -406,11 +405,13 @@
 }
 
 .list-listing .row-item.sla-status-warning {
-	background: url(../../images/agent/sla-warning-bg.png) repeat-y;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYV2P4dXrpfwAIlwNqfve+lwAAAABJRU5ErkJggg==") 10px 1px;
+	background: linear-gradient(90deg, rgba(250, 203, 165, 100) 0%, rgba(250, 203, 165, 0) 18px);
 }
 
 .list-listing .row-item.sla-status-fail {
-	background: url(../../images/agent/sla-fail-bg.png) repeat-y;
+	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQYV2O42tP6HwAHBgLmaTe9fwAAAABJRU5ErkJggg==") 10px 1px repeat-y;
+	background: linear-gradient(90deg, rgba(213, 140, 133, 100) 0%, rgba(213, 140, 133, 0) 18px);
 }
 
 .top-row-spacer {
@@ -638,7 +639,7 @@
 .list-listing .row-item .top-row .top-row-left h3 a{
 	font-size: 13px;
 	cursor: pointer;
-	text-shadow: 0 1px 0 #FFFFFF;
+
 	text-decoration: underline;
 	color: #356595;
 }
@@ -672,7 +673,7 @@
 	color: #3586A9;
 }
 .list-listing .row-item.open .top-row .top-row-left h3 a{
-	text-shadow: none;
+
 }
 .list-listing .row-item .userinfo {
 	color: lighten(@body-text-color-alt, 15%);
@@ -765,7 +766,7 @@
 	.border-radius(10px, 10px, 10px, 10px);
 	padding: 1px 4px;
 	color: #fff;
-	text-shadow: none;
+
 	position: relative;
 }
 table.tickets-simple td.status .status
@@ -773,7 +774,7 @@ table.tickets-simple td.status .status
 	position: relative;
 	top: -4px;
 	.gradient(#8bbe72, #71b058);
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+
 	.border-radius(3px, 3px, 3px, 3px);
 	border: 1px solid #719A5D;
 
@@ -782,7 +783,7 @@ table.tickets-simple td.status .status
 	padding: 2px 5px 2px 5px;
 	line-height: 100%;
 	color: #fff;
-	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+
 	font-family: @status-pill-font;
 }
 
@@ -837,7 +838,7 @@ table.tickets-simple td.status .status
 	font-size: 10px;
 
 	position: relative;
-	text-shadow: 0 1px 0 #FFFFFF;
+
 	position: relative;
 }
 .list-listing .row-item .metaleft{
@@ -962,15 +963,13 @@ table.tickets-simple td.status .status
 	padding: 4px 0 4px 5px;
 	font-size: 12px;
 	color: #595959;
-	text-shadow: 0 1px 0 #FFFFFF;
+
 	font-family: @heading-font;
 	text-align: left;
 	line-height: 100%;
 
 	white-space: nowrap;
-	text-overflow: clipped;
 	text-overflow: ellipsis;
-	-o-text-overflow: ellipsis;
 	overflow: hidden;
 }
 
@@ -1123,13 +1122,13 @@ table.tickets-simple td.status .status
 
 footer.results-nav {
 	.gradient(#F0F1F3, #DADBDE);
-	box-shadow: 0 1px 0 #FFFFFF;
+
 	border-top: 1px solid #B3B8BD;
 	border-bottom: 1px solid #B3B8BD;
 	clear: both;
 	height: 26px;
 	color: #959da6;
-	text-shadow: 0 1px 0 #fff;
+
 	font-size: 11px;
 	position: relative;
 	overflow: hidden;
@@ -1170,11 +1169,11 @@ footer.results-nav .more {
 
 footer.results-nav ul.pagenav {
 	.gradient(#fafcfd, #f0f2f3);
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
 	color: #626a73;
-	text-shadow: 0 1px 0 #fff;
+
 	cursor: pointer;
 	font-weight: bold;
 	font-family: @body-font-bold;
@@ -1209,11 +1208,11 @@ footer.results-nav ul.pagenav {
 
 footer.results-nav .more button {
 	.gradient(#fafcfd, #f0f2f3);
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
 	color: #626a73;
-	text-shadow: 0 1px 0 #fff;
+
 	cursor: pointer;
 	font-weight: bold;
 	font-family: @body-font-bold;
@@ -1238,11 +1237,11 @@ footer.results-nav .more button {
 
     ul.pagenav {
     	.gradient(#fafcfd, #f0f2f3);
-    	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+
     	border: 1px solid #b6babf;
     	.border-radius(3px, 3px, 3px, 3px);
     	color: #626a73;
-    	text-shadow: 0 1px 0 #fff;
+
     	cursor: pointer;
     	font-weight: bold;
     	font-family: @body-font-bold;
@@ -1307,9 +1306,8 @@ section.mass-actions-overlay {
 	.border-radius(6px, 6px, 6px, 6px);
 	overflow: hidden;
 
-	-webkit-box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.7);
-	-moz-box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.7);
-	box-shadow: 2px 1px 6px 0 rgba(100, 100, 100, 0.7);
+
+
 }
 
 section.mass-actions-overlay dd select {
@@ -1386,10 +1384,10 @@ section.mass-actions-overlay > footer {
 section.mass-actions-overlay > footer button {
 	.gradient(#598eb6, #3c6094);
 	border: 1px solid #3f5973;
-	box-shadow: inset 0 1px 0 #75b3da, inset 0 0 1px #4169a0, 0 1px 0 #cfd3d7;
+
 	.border-radius(4px, 4px, 4px, 4px);
 	color: #fafafa;
-	text-shadow: 0 1px 0 #000;
+
     font-size: 11px;
     font-weight: bold;
     margin: 10px auto 0;
@@ -1465,7 +1463,7 @@ section.mass-actions-overlay .reply-wrap textarea {
 
 	border: 1px solid #C8CACC;
 	.border-radius(3px, 3px, 3px, 3px);
-	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) inset;
+
 }
 
 section.mass-actions-overlay .reply-foot {
@@ -1477,7 +1475,7 @@ section.mass-actions-overlay .reply-foot {
 section.mass-actions-overlay .macro-load {
 	background: -moz-linear-gradient(center top , #EDEFF0 0%, #E9EBEC 100%) repeat scroll 0 0 transparent;
 	border-bottom: 1px solid #C2C7CC;
-	box-shadow: 0 1px 5px #C7C7C7;
+
 	height: 22px;
 	padding: 10px;
 	padding-top: 4px;
@@ -1639,10 +1637,10 @@ section.dp-overlay > footer {
 section.dp-overlay > footer button {
 	.gradient(#598eb6, #3c6094);
 	border: 1px solid #3f5973;
-	box-shadow: inset 0 1px 0 #75b3da, inset 0 0 1px #4169a0, 0 1px 0 #cfd3d7;
+
 	.border-radius(4px, 4px, 4px, 4px);
 	color: #fafafa;
-	text-shadow: 0 1px 0 #000;
+
     font-size: 11px;
     font-weight: bold;
     margin: 0 auto;
@@ -2077,9 +2075,9 @@ section.dp-overlay > article.no-footer {
 		}
 	}
 
-	.dm-notice, .long-notice, {
+	.dm-notice, .long-notice {
 		.gradient(#8bbe72, #71b058);
-		box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+
 		.border-radius(3px, 3px, 3px, 3px);
 		border: 1px solid #719A5D;
 
@@ -2087,7 +2085,7 @@ section.dp-overlay > article.no-footer {
 		padding: 0 2px;
 		line-height: 105%;
 		color: #fff;
-		text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
+
 		white-space:nowrap;
 	}
 
