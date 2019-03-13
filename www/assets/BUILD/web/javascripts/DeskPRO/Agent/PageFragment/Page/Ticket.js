@@ -227,6 +227,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}, {timeout: 5000 + (idx*100)});
 		});
 
+		this.getEl('status_menu_trigger').one('click', function() {
+			self._initStatusMenu();
+			$(this).click();
+		});
+
 		this.addEvent('deactivate', function() {
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).trigger('page_deactivate');
 		});
@@ -3836,6 +3841,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	_initStatusMenu: function() {
+  	if (this._initStatusMenuDone) {
+  		return;
+		}
+		this._initStatusMenuDone = true;
+
   	var $backdrop, $container, ctrl;
 
   	var self = this;
