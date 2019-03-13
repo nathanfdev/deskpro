@@ -48,7 +48,7 @@ define(['cutstring'], function (cutstring) {
 
             if (val instanceof Array) {
               var ret = [];
-              val.each(function (item) {
+              val.forEach(function (item) {
                 var sub = types[schema.items] ? types[schema.items](item) : types.string(item);
                 ret.push(sub);
               });
@@ -141,7 +141,7 @@ define(['cutstring'], function (cutstring) {
               return d.resolve(null);
             }
             if (!data.projects) return d.resolve(null);
-            data.projects.each(function(project){
+            data.projects.forEach(function(project){
               meta.create_meta[project.id] = project;
             });
             d.resolve(meta.create_meta[projectId]);
@@ -165,21 +165,21 @@ define(['cutstring'], function (cutstring) {
 
         // fields metadata
         if (data.fields) {
-          data.fields.each(function (field) {
+          data.fields.forEach(function (field) {
             field._list = data.default_fields_list.indexOf(field.id) > -1;
             field._summary = data.default_fields_summary.indexOf(field.id) > -1;
             meta.fields[field.id] = field;
           });
         }
 
-        data.projects.each(function (project) {
+        data.projects.forEach(function (project) {
           meta.projects.push(project);
         });
 
-        data.default_fields_list.each(function (id) {
+        data.default_fields_list.forEach(function (id) {
           meta.default_fields_list.push(id);
         });
-        data.default_fields_summary.each(function (id) {
+        data.default_fields_summary.forEach(function (id) {
           meta.default_fields_summary.push(id);
         });
         meta.default_issuetype = data.default_issuetype;
