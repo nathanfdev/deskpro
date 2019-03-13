@@ -106,6 +106,8 @@ class PlivoAdapter implements VoiceProviderInterface
                 return $result->appId;
             }
         } catch (PlivoRestException $e) {
+            SystemErrorHandler::logException($e);
+
             return;
         }
     }
@@ -500,6 +502,7 @@ class PlivoAdapter implements VoiceProviderInterface
                 return true;
             }
         } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
         }
 
         return false;
@@ -545,6 +548,7 @@ class PlivoAdapter implements VoiceProviderInterface
                 ]
             );
         } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
         } finally {
             $this->logger->info(sprintf('[PlivoAdapter] Call transfer took %.3fs', microtime(true) - $start));
         }
