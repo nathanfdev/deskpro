@@ -259,13 +259,11 @@ class Ticket extends AbstractEntityRepository
      */
     public function findDeletedTicket($ticket_id)
     {
-        return $this->_em->createQuery(
-            '
+        return $this->_em->createQuery('
             SELECT t
             FROM DeskPRO:TicketDeleted t
             WHERE t.ticket_id = ?0
-        '
-        )
+        ')
             ->setParameters([$ticket_id])
             ->setMaxResults(1)
             ->getOneOrNullResult();
