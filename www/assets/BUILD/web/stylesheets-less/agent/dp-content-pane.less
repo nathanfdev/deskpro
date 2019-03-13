@@ -668,7 +668,7 @@ header.page-header .meta-line .status label {
 }
 
 .ticket_urgency_style(@color, @borderColor, @textColor) {
-	.gradient(lighten(@color, 10%), @color);
+	background: lighten(@color, 4%);
 	border: 1px solid @borderColor;
 	label, i { color: @textColor; text-shadow: none; }
 }
@@ -721,7 +721,7 @@ header.page-header .meta-line .status.hidden span                    { .ticket_u
 header.page-header .meta-line .status.archived span                  { .ticket_urgency_style(@urgency_archived_color, @urgency_archived_borderColor, @urgency_archived_textColor); }
 
 .ticket_urgency_style_pill(@color, @borderColor, @textColor) {
-	.gradient(lighten(@color, 10%), @color);
+	background: lighten(@color, 4%);
 	border: 1px solid @borderColor;
 	color: @textColor;
 	label, i { color: @textColor; text-shadow: none; }
@@ -730,8 +730,7 @@ header.page-header .meta-line .status.archived span                  { .ticket_u
 .status-pill {
 	position: relative;
 	top: -5px;
-	.gradient(#8bbe72, #71b058);
-	box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1) inset, 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+	background: #71b058;
 	.border-radius(3px, 3px, 3px, 3px);
 	border: 1px solid #719A5D;
 
@@ -740,7 +739,6 @@ header.page-header .meta-line .status.archived span                  { .ticket_u
 	padding: 2px 5px 2px 5px;
 	line-height: 100%;
 	color: #fff;
-	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
 	font-family: @status-pill-font;
 	white-space:nowrap;
 
@@ -1233,9 +1231,8 @@ article.content-message .content {
 }
 
 article.content-message .content header {
-	.gradient(#e7eefc, #d7e3fa);
+	background-color: #d7e3fa;
 	.border-radius(3px, 3px, 0, 0);
-	box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
 	border-bottom: 1px solid #acb2bf;
 	position: relative;
 
@@ -1256,7 +1253,6 @@ article.content-message.note-message.agent-message {
 		header {
 			background: #EDEDED;
 			.border-radius(3px, 3px, 0, 0);
-			box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
 			border-bottom: 1px dotted #acb2bf;
 			position: relative;
 			color: #777;
@@ -1297,9 +1293,8 @@ article.content-message.agent-draft-message {
 }
 
 article.content-message.agent-message .content header {
-	.gradient(#fcf6e7, #faf0d8);
+	background-color: #faf0d8;
 	.border-radius(3px, 3px, 0, 0);
-	box-shadow: 0 1px 0 rgba(255,255,255,0.9) inset;
 	border-bottom: 1px solid #bfb9ac;
 	position: relative;
 }
@@ -2227,11 +2222,7 @@ header.page-header .edit-name-gear {
 
 .profile-box-container .headerbox .unhold .clean-white {
 	.gradient(rgba(234,237,237,1), rgba(211,211,211,1)); /* FF3.6+ */
-
-	-webkit-box-shadow: inset 0px 0px 3px 1px #C1CBDF;
-	-moz-box-shadow: inset 0px 0px 3px 1px #C1CBDF;
 	box-shadow: inset 0px 0px 3px 1px #C1CBDF;
-
 	border: 1px solid #9B9FA4;
 }
 
@@ -2255,7 +2246,7 @@ header.page-header .edit-name-gear {
 }
 
 .profile-box-container > header {
-	.gradient(#F0F1F3, #DADBDE);
+	background-color: #e2e3e6;
 	min-height: 24px;
 	border: 1px solid #ACB6BF;
 	position: relative;
@@ -2270,7 +2261,6 @@ header.page-header .edit-name-gear {
 	.border-radius(0, 0, 3px, 3px);
 	border: 1px solid #ACB6BF;
 	font-size: 11px;
-	-webkit-box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
 	box-shadow: inset 0px 2px 3px 0px rgba(0, 0, 0, 0.2);
 
 	.dp-btn {
@@ -2508,9 +2498,6 @@ nav.section-subnav ul li.on em {
 	.gradient(rgba(255,255,255,1), rgba(246,246,246,1));
 
 	border: 1px solid #DEDFDF;
-
-	-webkit-box-shadow: inset 0px 0px 1px 1px #fff;
-	-moz-box-shadow: inset 0px 0px 1px 1px #fff;
 	box-shadow: inset 0px 0px 1px 1px #fff;
 
 	text-shadow: none;
@@ -3432,9 +3419,6 @@ article.content-message .content .body-text .fade-bar {
 	.border-radius(3px, 3px, 3px, 3px);
 
 	.gradient(#63676d, #555a60);
-
-	-webkit-box-shadow: inset 0px 0px 1px 0px rgba(255,255,255, 0.5);
-	-moz-box-shadow: inset 0px 0px 1px 0px rgba(255,255,255, 0.5);
 	box-shadow: inset 0px 0px 1px 0px rgba(255,255,255, 0.5);
 
 	font-size: 11px;
@@ -4092,8 +4076,6 @@ article.content-message .content .body-text .fade-bar {
 }
 
 .ticketreply > nav ul.option-buttons li:hover {
-	-webkit-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
-	-moz-box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
 	box-shadow: inset 0px 0px 10px 0px rgba(255, 255, 255, 1);
 }
 
