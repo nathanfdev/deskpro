@@ -223,6 +223,7 @@ class TicketStatusDataService
     protected function getSubstatuses()
     {
         if ($this->substatuses === null) {
+            $this->substatuses = [];
             foreach ($this->repository->findAll() as $substatus) {
                 $this->substatuses[$substatus->getId()] = $substatus;
             }
