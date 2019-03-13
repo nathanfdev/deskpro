@@ -75,7 +75,7 @@ define([
             lastSearchTime = time;
             $scope.search_results.length = 0;
             if (!issues || !issues.length) return;
-            issues.each(function(el){$scope.search_results.push(el);});
+            issues.forEach(function(el){$scope.search_results.push(el);});
           },
           function() {
             $scope.active_searches--;
@@ -98,7 +98,7 @@ define([
           $scope.names = issues.names;
 
           $scope.already_linked = false;
-          issues.each(function(el){
+          issues.forEach(function(el){
             if (el.key == issue.key) $scope.already_linked = true;
           });
 
