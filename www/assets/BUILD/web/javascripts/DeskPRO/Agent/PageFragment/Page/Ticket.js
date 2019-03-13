@@ -2705,9 +2705,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$.ajax({
 					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
 					type: 'GET',
-					success: function (response) {
+					success: function (getResponse) {
 						// existing user, create a new person and change
-						if (response.data.primary_email) {
+						if (getResponse.data.primary_email) {
 							$.ajax({
 								url: BASE_URL + 'api/v2/people',
 								type: 'POST',
@@ -2718,6 +2718,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 								},
 								success: function(response) {
 									setPerson(response.data.id, null);
+									removeNumberFromPerson(self.meta.voicePhoneNumber, getResponse.data)
 								}
 							});
 						} else {
