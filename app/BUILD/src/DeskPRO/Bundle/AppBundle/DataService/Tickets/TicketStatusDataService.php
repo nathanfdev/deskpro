@@ -24,7 +24,7 @@ class TicketStatusDataService
      *
      * @var TicketStatus[]
      */
-    protected $substatuses;
+    protected $substatuses = null;
 
     public function __construct(EntityManager $em)
     {
@@ -222,7 +222,7 @@ class TicketStatusDataService
      */
     protected function getSubstatuses()
     {
-        if (!$this->substatuses) {
+        if ($this->substatuses === null) {
             foreach ($this->repository->findAll() as $substatus) {
                 $this->substatuses[$substatus->getId()] = $substatus;
             }
