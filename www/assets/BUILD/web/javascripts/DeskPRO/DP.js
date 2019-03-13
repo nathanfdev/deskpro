@@ -53,7 +53,9 @@ var DP = {
     	init.run = init.run.bind(init);
     	init.click = init.click.bind(init);
 
-			window.requestIdleCallback(init.run, {timeout: 15000});
+    	if (!el.attr('data-lazy-init')) {
+				window.requestIdleCallback(init.run, {timeout: 15000});
+			}
 			el.parent().one('click', init.click);
 			return;
 		}
