@@ -2579,6 +2579,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       });
 		};
 
+    var removeNumberFromPerson = function (phoneNumber, personData) {
+    	var newPhoneNumbers = [];
+    	if (personData.phone_numbers.length > 0) {
+				personData.phone_numbers.forEach(function(value) {
+					if (value.number != phoneNumber) {
+						newPhoneNumbers.push(value);
+					}
+				});
+			}
+			$.ajax({
+				url: BASE_URL + 'api/v2/people/' + personData.id,
+				type: 'PUT',
+				data: JSON.stringify({
+					phone_numbers: newPhoneNumbers.length > 0 ? newPhoneNumbers : {}
+				}),
+			});
+		};
+
     var setPerson = function(personId, personEmail) {
 			$.ajax({
 				url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
@@ -2627,12 +2645,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			} else if (value === 'new_person') {
       	var submitData = {
 					name: $('input[name=select_user_name]', self.wrapper).val(),
-					primary_email: $('input[name=select_user_email]', self.wrapper).val(),
 					language: $('select[name=select_user_language]', self.wrapper).val(),
 					preferences: {
 						'voice.unknown_caller': 0
 					}
 				};
+      	var email =  $('input[name=select_user_email]', self.wrapper).val();
+      	if (email) {
+      		submitData.primary_email = email;
+				}
 
       	var errorHandler = function (response) {
 					var data = response.responseJSON;
@@ -2651,15 +2672,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				$.ajax({
 					url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
 					type: 'GET',
-					success: function(response) {
+					success: function(getResponse) {
 						// existing user, create a new person and change
-						if (response.data.primary_email) {
+						if (getResponse.data.primary_email) {
+							submitData.phone_numbers = [{number: self.meta.voicePhoneNumber}];
 							$.ajax({
 								url: BASE_URL + 'api/v2/people',
 								type: 'POST',
 								data: submitData,
 								success: function(response) {
 									setPerson(response.data.id, response.data.primary_email);
+									removeNumberFromPerson(self.meta.voicePhoneNumber, getResponse.data)
 								},
 								error: errorHandler
 							});
