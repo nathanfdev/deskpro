@@ -1121,7 +1121,7 @@ define([
         $scope.isLoading = false;
         $scope.$parent[$scope.listName].length = 0;
         if (!data.data) data.data = [];
-        data.data.each((item) => { $scope.$parent[$scope.listName].push(item); });
+        data.data.forEach((item) => { $scope.$parent[$scope.listName].push(item); });
         $scope.page = page;
       }, () => {
         $scope.isLoading = false;
