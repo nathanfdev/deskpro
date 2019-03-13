@@ -99,8 +99,8 @@ class TicketsController extends AbstractTicketsController
         } catch (NotFoundHttpException $exception) {
             /** @var TicketDeleted $ticketDeleted */
             $ticketDeleted = $this->getManager()
-                ->getRepository(TicketDeleted::class)
-                ->findOneBy(['ticket_id' => $id]);
+                ->getRepository(Ticket::class)
+                ->resolveLastDeletedTicket($id);
 
             if (null === $ticketDeleted) {
                 throw $exception;
