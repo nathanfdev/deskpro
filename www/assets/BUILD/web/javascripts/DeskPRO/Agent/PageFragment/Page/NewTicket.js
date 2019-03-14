@@ -872,6 +872,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     formData = this.normalizeCustomFieldValues(formData);
 
+    var self = this;
 		return $.ajax({
 
 			url: BASE_URL + 'agent/tickets/new/save',
