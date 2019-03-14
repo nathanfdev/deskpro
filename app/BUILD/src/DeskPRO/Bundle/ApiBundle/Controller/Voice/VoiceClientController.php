@@ -13,6 +13,7 @@ use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles client actions.
@@ -86,5 +87,15 @@ class VoiceClientController extends BaseController
         $em->flush();
 
         return new View($this->wrap($phoneCall));
+    }
+
+    /**
+     * @Rest\Get("/performance_logs")
+     *
+     * @return View
+     */
+    public function performanceLogsAction()
+    {
+        return new Response(file_get_contents($this->get('deskpro.app_env')->getUserLogsDir().'/voice.log'));
     }
 }

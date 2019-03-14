@@ -71,12 +71,19 @@ class PlivoCallbacksController extends BaseController
         $plivoXml = new PlivoXML();
 
         try {
+            $callSid = $request->get('CallUUID');
+            $from    = $request->get('From');
+            $to      = $request->get('To');
+            $details = $request->request->all();
+
             $phoneCall = $this->get('dp.voice.callbacks_helper')->createIncomingPhoneCall(
-                $request->get('CallUUID'),
-                $request->get('From'),
-                $request->get('To'),
-                $request->request->all()
+                $callSid,
+                $from,
+                $to,
+                $details
             );
+
+            $this->get('dp.voice.logger')->info(sprintf('[PlivoCallbacks] Incoming phone call from %s, call_id = %s, uuid = %s', $phoneCall->getId(), $callSid, $from));
 
             $this->addTargetResponse($phoneCall, $phoneCall->getNumber()->getTarget(), $plivoXml);
         } catch (OutOfServiceException $e) {
@@ -116,9 +123,6 @@ class PlivoCallbacksController extends BaseController
      */
     public function answerAgentCallbackAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
     {
-        $logger = $this->get('dp.voice.logger');
-        $logger->info(sprintf('[PlivoCallbacks] Running answer agent callback (%.3fs)', microtime(true)));
-
         if ($account->getAccountAuth() !== $accountAuth) {
             throw $this->createAccessDeniedException();
         }
@@ -127,6 +131,9 @@ class PlivoCallbacksController extends BaseController
         $callSid = $request->get('CallUUID');
         $agentId = $request->get('X-PH-AgentId');
         $details = $request->request->all();
+
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf('[PlivoCallbacks] Running answer agent callback, call_id = %s, uuid = %s (%.3fs)', $callId, $callSid, microtime(true)));
 
         $plivoXml = new PlivoXML();
 
