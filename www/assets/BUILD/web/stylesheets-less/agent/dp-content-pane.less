@@ -1352,6 +1352,7 @@ article.content-message .content header time {
 	font-size: 10px;
 	color: #7E798F;
 	float:right;
+	padding-top: 1px;
 }
 
 article.content-message .content header .comment-validate-btn {
@@ -2345,36 +2346,40 @@ nav.section-subnav ul li.on em {
 	color: #000;
 }
 
-.profile-box-container > header > nav ul li {
+.profile-box-container > header > nav {
+	line-height: 8px;
+	height: auto;
+	margin: 0;
+	padding: 0;
+}
 
-	height: 24px;
+.profile-box-container > header > nav ul {
+	margin: 0;
+	padding: 0;
+}
+
+.profile-box-container > header > nav ul li {
 	overflow: hidden;
-	line-height: 26px;
+	line-height: 25px;
 
 	display: block;
 	float: left;
 
 	border-right: 1px solid #C2C6CC;
-	.gradient(#edeff2, #e6eaed);
+	background: #e9ecef;
 	position: relative;
 
 	font-size: 11px;
 	font-weight: bold;
 	color: #738699;
-	padding: 0px 8px;
+	padding: 0 8px;
 
 	font-family: @heading-font;
 
-	text-transform:uppercase;
+	text-transform: uppercase;
 	cursor: pointer;
-
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-o-user-select: none;
 	user-select: none;
-
-	margin-bottom: 1px;
+	margin: 0;
 }
 
 .profile-box-container > header > nav ul li .feedback-rating {
@@ -2387,12 +2392,11 @@ nav.section-subnav ul li.on em {
 }
 
 .profile-box-container > header > nav ul li.on {
-	.gradient-h(rgba(205,210,217,1), rgba(199,207,213,1));
+	background: #c8d0d6;
 	color: #404040;
 }
 
 .profile-box-container > header > nav ul li span.count {
-
 	font-size: 9px;
 	padding: 2px 3px 2px 3px;
 	background-color: rgba(50,50,50,0.2);
