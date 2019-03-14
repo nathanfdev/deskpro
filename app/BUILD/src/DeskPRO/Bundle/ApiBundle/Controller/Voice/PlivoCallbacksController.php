@@ -597,22 +597,30 @@ class PlivoCallbacksController extends BaseController
         $details       = $request->request->all();
         $eventName     = $request->request->get('ConferenceAction');
 
+        $logger = $this->get('dp.voice.logger');
+
         if ($eventName === 'enter') {
+            $start = microtime(true);
             $this->get('dp.voice.callbacks_helper')->joinConference($phoneCall, $callSid, $conferenceSid, $details, $memberId);
+            $logger->info(sprintf('[PlivoCallbacks] Joining conference took %.3fs', microtime(true) - $start));
         } elseif ($eventName === 'record') {
             $recordUrl      = $request->request->get('RecordUrl');
             $recordDuration = $request->request->get('RecordingDuration');
 
             // if no duration then it means the record is not downloaded yet
             if ($recordDuration) {
+                $start = microtime(true);
                 $this->get('dp.voice.recording_download_helper')->enqueueRecordingDownload($phoneCall, $recordUrl, $recordDuration);
+                $logger->info(sprintf('[PlivoCallbacks] Saving recording for download took %.3fs', microtime(true) - $start));
             }
         }
 
         // send client message for real time ui updates
         // call id could be empty, e.g. for record event
         if ($callSid) {
+            $start = microtime(true);
             $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+            $logger->info(sprintf('[PlivoCallbacks] Sending conference status took %.3fs', microtime(true) - $start));
         }
     }
 
