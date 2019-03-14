@@ -32,7 +32,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
 
     public function setStatus($status)
     {
-        if (!App::getContainer()->getTicketStatuses()->isValidStatusCode($status)) {
+        if (!App::getContainer()->getTicketStatuses()->isValidStatusCode($status, true)) {
             throw new \InvalidArgumentException("Invalid status `$status`");
         }
         $this->status = $status;
@@ -69,7 +69,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
      */
     public function apply(Ticket $ticket)
     {
-        $ticket->setTicketStatus(App::getContainer()->getTicketStatuses()->findStatusOrException($this->status));
+        $ticket->setTicketStatus(App::getContainer()->getTicketStatuses()->findStatusOrException($this->status, false, true));
 
         if ($this->getMetaData('is_preview')) {
             return;
@@ -141,7 +141,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     public function getDescription($as_html = true)
     {
         return App::getTranslator()->phrase('admin.tickets.set_status_to_x', [
-            'status' => App::getContainer()->getTicketStatuses()->findStatusOrException($this->status)->getTitle(),
+            'status' => App::getContainer()->getTicketStatuses()->findStatusOrException($this->status, false, true)->getTitle(),
         ]);
     }
 

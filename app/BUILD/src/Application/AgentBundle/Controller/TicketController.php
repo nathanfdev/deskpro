@@ -1323,10 +1323,9 @@ class TicketController extends AbstractController
             $setStatus = $actionType;
         }
 
-        // macro fallback status will fail here
         $ticketStatuses = $this->getContainer()->getTicketStatuses();
         /** @var TicketStatus $setStatus */
-        $setStatus = $ticketStatuses->findStatusOrException($setStatus);
+        $setStatus = $ticketStatuses->findStatusOrException($setStatus, false, true);
 
         if ($setStatus) {
             /** @var TicketChecker $tcheck */
