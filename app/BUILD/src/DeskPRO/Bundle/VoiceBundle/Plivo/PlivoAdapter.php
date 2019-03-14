@@ -20,6 +20,7 @@ use Orb\Util\Strings;
 use Plivo\Exceptions\PlivoNotFoundException;
 use Plivo\Exceptions\PlivoResponseException;
 use Plivo\Exceptions\PlivoRestException;
+use Plivo\Resources\Application\ApplicationList;
 use Plivo\Resources\Call\Call;
 use Plivo\Resources\Call\CallCreateResponse;
 use Plivo\Resources\Conference\ConferenceInterface;
@@ -81,12 +82,30 @@ class PlivoAdapter implements VoiceProviderInterface
             // check for existing app with the same name
             // to avoid duplicate app name errors
             $existApplication = null;
-            foreach ($client->applications->getList() as $application) {
-                if ($this->normalizeAppName($application->appName) === $this->normalizeAppName($appName)) {
-                    $existApplication = $application;
+
+            $limit  = 20;
+            $offset = 0;
+
+            do {
+                /** @var ApplicationList $result */
+                $result = $client->applications->getList([
+                    'limit'  => $limit,
+                    'offset' => $offset,
+                ]);
+
+                foreach ($result as $application) {
+                    if ($this->normalizeAppName($application->appName) === $this->normalizeAppName($appName)) {
+                        $existApplication = $application;
+                        break;
+                    }
+                }
+
+                if ($existApplication) {
                     break;
                 }
-            }
+
+                $offset += $limit;
+            } while (isset($result->meta()['next']));
 
             $options = [
                 'answer_url'    => $answerUrl,
