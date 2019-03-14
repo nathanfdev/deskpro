@@ -232,12 +232,21 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             $helpdeskUrl  = $urlCorrector->correctUrlScheme($helpdeskUrl, $request);
         }
 
+        $basePath = $request ? $request->getBasePath() : '';
+
         if ($useDynAssets) {
             $loaderUrl = rtrim($helpdeskUrl, '/').'/dyn-assets/pub/build/widget_loader.min.js';
         } else {
             $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
+            if (!preg_match('#^https?://#i', $loaderUrl)) {
+                $loaderUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$loaderUrl;
+            }
         }
+
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
+        if (!preg_match('#^https?://#i', $widgetUrl)) {
+            $widgetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$widgetUrl;
+        }
 
         $model = new WidgetUrlSettings();
         $model
