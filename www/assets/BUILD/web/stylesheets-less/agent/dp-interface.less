@@ -1390,15 +1390,15 @@ select.dpe_select, select.with-select2 {
     Change the following styles to modify the appearance of Colorbox.  They are
     ordered & tabbed in a way that represents the nesting of the generated HTML.
 */
-#cboxOverlay{background:#fff; .opacity(90);}
-#colorbox{outline:0;}
-#cboxContent{padding-top:32px; overflow:visible; background:#FFF;}
+#cboxOverlay{background:#000;}
+#colorbox{outline:0; border: 1px solid #AAA;border-radius: 3px;}
+#cboxContent{padding-top:32px; overflow:visible; background:#DDD; border-bottom: 1px solid #AAA;}
 .cboxIframe{background:#fff;}
 #cboxError{padding:50px; border:1px solid #ccc;}
 #cboxLoadedContent{background:#FFF; padding:1px;}
 #cboxLoadingGraphic{background:url(../../images/vendor/colorbox/loading.gif) no-repeat center center;}
 #cboxLoadingOverlay{background:#000;}
-#cboxTitle{position:absolute; top:5px; left:5px; color:#000;}
+#cboxTitle{position:absolute; top:7px; left:10px; color:#000;}
 #cboxCurrent{position:absolute; top:0; right:205px; text-indent:-9999px;}
 
 /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
