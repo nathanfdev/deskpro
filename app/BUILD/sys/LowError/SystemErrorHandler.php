@@ -668,6 +668,37 @@ class SystemErrorHandler
         $str       = [];
         $extraData = self::getDpEnv()->getConfig('settings.extra_errorlog_fields', []);
 
+        // Log to syslog instead
+        if (self::useSyslog()) {
+            if (@openlog('deskpro-error', 0, \LOG_USER)) {
+                $info = [
+                    'id'             => $errinfo ['session_name'],
+                    'type'           => $errinfo['type'],
+                    'level'          => $errinfo['pri'],
+                    'message'        => $errinfo['summary'],
+                    'errname'        => @$errinfo['exception_type'] ?: $errinfo['errname'],
+                    'errno'          => $errinfo['errname'],
+                    'errfile'        => $errinfo['errfile'],
+                    'errline'        => $errinfo['errline'],
+                    'build'          => $errinfo['build'],
+                    'url'            => $errinfo['url'],
+                    'request_id'     => $errinfo['request_id'],
+                    'request_method' => $errinfo['request_method'],
+                ];
+                $info = array_merge($info, $extraData);
+                @syslog(\LOG_ERR, json_encode($info));
+                @closelog();
+            }
+            if (!empty($errinfo['trace']) && @openlog('deskpro-errortrace', 0, \LOG_USER)) {
+                foreach (explode("\n", $errinfo['trace']) as $traceLine) {
+                    @syslog(\LOG_ERR, "<{$errinfo['session_name']}> ".$traceLine);
+                }
+                @closelog();
+            }
+
+            return;
+        }
+
         if ($errinfo['type'] == 'exception') {
             $e     = $errinfo['exception'];
             $line  = sprintf('DeskPRO Exception: %s:%s (%s line %s): %s', $errinfo['exception_type'], $e->getCode(), $errinfo['errfile'], $errinfo['errline'], $e->getMessage());
@@ -760,22 +791,18 @@ class SystemErrorHandler
         }
 
         if (self::getLogDir()) {
-            $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'error.log'];
+            $errorLogFile = self::getLogDir().DIRECTORY_SEPARATOR.'error.log';
         } else {
             // we dont have an env log, so lets try to re-use server error log
             $phpErrLog = ini_get('error_log');
             if ($phpErrLog) {
-                $logFiles = [$phpErrLog];
+                $errorLogFile = $phpErrLog;
             } else {
-                $logFiles = [];
+                $errorLogFile = null;
             }
         }
 
-        if ($secondaryLogFile = self::getDpEnv()->getConfig('settings.secondary_errorlog_file')) {
-            $logFiles[] = $secondaryLogFile;
-        }
-
-        foreach ($logFiles as $errorLogFile) {
+        if ($errorLogFile) {
             // create log file if not exists
             if (!is_file($errorLogFile) && !is_dir($errorLogFile)) {
                 @touch($errorLogFile);
@@ -936,6 +963,17 @@ class SystemErrorHandler
     private static function getLogDir()
     {
         return self::getDpEnv()->getUserLogsDir();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function useSyslog()
+    {
+        return self::getDpEnv()->getConfig('logs.enable_syslog')
+            || isset($_ENV['DESKPRO_LOG_TO_SYSLOG'])
+            || isset($_SERVER['DESKPRO_LOG_TO_SYSLOG'])
+            || getenv('DESKPRO_LOG_TO_SYSLOG');
     }
 
     /**
