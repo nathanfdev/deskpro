@@ -85,11 +85,13 @@ class PlivoAccountListener
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $deskproUrl = $this->settingsResolver->getGlobalSettings()->get('core.deskpro_url');
+        $deskproUrl    = $this->settingsResolver->getGlobalSettings()->get('core.deskpro_url');
+        $accountSuffix = ' ('.$account->getAccountId().')';
+        $urlSuffix     = ' ('.$deskproUrl.')';
 
         $userAppId = $this->plivoAdapter->createApplication(
             $account,
-            self::USER_APP_NAME.' ('.$deskproUrl.')',
+            self::USER_APP_NAME.$accountSuffix.$urlSuffix,
             $answerUserUrl,
             'POST',
             $hangupUserUrl,
@@ -98,7 +100,7 @@ class PlivoAccountListener
 
         $agentAppId = $this->plivoAdapter->createApplication(
             $account,
-            self::AGENT_APP_NAME.' ('.$deskproUrl.')',
+            self::AGENT_APP_NAME.$accountSuffix.$urlSuffix,
             $answerAgentUrl,
             'POST',
             $hangupAgentUrl,
