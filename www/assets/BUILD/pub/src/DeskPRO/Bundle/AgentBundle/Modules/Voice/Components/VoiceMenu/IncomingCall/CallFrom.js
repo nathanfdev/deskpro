@@ -16,6 +16,7 @@ class CallFrom extends React.Component {
   render() {
     const { incomingCall, people } = this.props;
     const possibleCallerPeople = [];
+    let unknownCaller;
 
     let person;
     let number;
@@ -27,14 +28,18 @@ class CallFrom extends React.Component {
       if (incomingCall.get('related_people_ids')) {
         incomingCall.get('related_people_ids').forEach((id) => {
           person = people.get(id);
-          if (person) {
+          if (person && (person.get('name') || person.get('primary_email'))) {
             possibleCallerPeople.push(person);
+          } else if (person && !person.get('name') && !person.get('primary_email')) {
+            unknownCaller = person;
           }
         });
       } else if (incomingCall.get('caller_person_id')) {
         person = people.get(incomingCall.get('caller_person_id'));
-        if (person) {
+        if (person && (person.get('name') || person.get('primary_email'))) {
           possibleCallerPeople.push(person);
+        } else if (person && !person.get('name') && !person.get('primary_email')) {
+          unknownCaller = person;
         }
       }
     } else {
@@ -43,10 +48,16 @@ class CallFrom extends React.Component {
 
       if (incomingCall.get('caller_person_id')) {
         person = people.get(incomingCall.get('caller_person_id'));
-        if (person) {
+        if (person && (person.get('name') || person.get('primary_email'))) {
           possibleCallerPeople.push(person);
+        } else if (person && !person.get('name') && !person.get('primary_email')) {
+          unknownCaller = person;
         }
       }
+    }
+    const finalPeople = unknownCaller ? possibleCallerPeople.slice(0, 4) : possibleCallerPeople.slice(0, 5);
+    if (unknownCaller) {
+      finalPeople.push(unknownCaller);
     }
 
     return (
@@ -55,13 +66,13 @@ class CallFrom extends React.Component {
           {number || 'Unknown number'}
         </div>
         <div className={classNames({ 'call-from-avatars': possibleCallerPeople.length > 1 })}>
-          {possibleCallerPeople.slice(0, 5).map((possiblePerson, key) =>
+          {finalPeople.map((possiblePerson, key) =>
             <div className="call-from-avatar">
               <Avatar key={key} person={possiblePerson} size={60} />
 
               <div className="call-from-details">
                 <div className="call-from-name">
-                  {possiblePerson.get('name')}
+                  {possiblePerson.get('name') || 'Unknown Caller'}
                 </div>
                 <div className="call-from-email">
                   {possiblePerson.get('primary_email')}
