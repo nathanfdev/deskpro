@@ -720,6 +720,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
               <div class="on-icon"><i class="fas fa-check"></i></div>
               {{ phrase('agent.tickets.kbd_' ~ status) }}
           </li>
+          {# dont list sub-statuses here, menu doesnt handle it well
           {% for substatus in ticket_statuses[status].getChildren() %}
             <li data-type="{{ substatus.statusCode }}" 
                 data-label="{{ phrase('agent.tickets.send_reply_as_x', {'status': substatus.title}) }}"
@@ -729,6 +730,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
                 --&nbsp;{{ substatus.title }}
             </li>
           {% endfor %}
+          #}
         {% endfor %}
 			</ul>
 		</div>
