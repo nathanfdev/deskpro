@@ -40,6 +40,7 @@ class StatusActionTest extends DeskProTestCase
 
         // WHEN / THEN
         new StatusAction('hidden.2');
+        new StatusAction('hidden.2222'); // check fallback
     }
 
     public function testIsValidStatus_NotValidCase()
@@ -52,7 +53,7 @@ class StatusActionTest extends DeskProTestCase
 
         // WHEN
         try {
-            new StatusAction('hidden.2');
+            new StatusAction('wrongstatus');
         } catch (\Exception $e) {
             $expectedException = $e;
         }
@@ -70,7 +71,7 @@ class StatusActionTest extends DeskProTestCase
 
         $statusesMock = m::mock(TicketStatusDataService::class);
         $statusesMock->shouldReceive('isValidStatusCode')->andReturn(true);
-        $statusesMock->shouldReceive('findStatusOrException')->with('hidden.2')->andReturn($deletedStatus);
+        $statusesMock->shouldReceive('findStatusOrException')->with('hidden.2', false, true)->andReturn($deletedStatus);
         App::$container = ContainerMock::create()
             ->withNullEm()
             ->withDb()
