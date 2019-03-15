@@ -203,10 +203,11 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @param Brand   $brand
      * @param Request $request
+     * @param bool    $useDynAssets
      *
      * @return WidgetUrlSettings
      */
-    public function getWidgetUrlSettings(Brand $brand, Request $request = null)
+    public function getWidgetUrlSettings(Brand $brand, Request $request = null, $useDynAssets = false)
     {
         if ($request && $request->attributes->has('_dp_brand_slug')) {
             if ($request && $request->attributes->has('original_request')) {
@@ -228,18 +229,21 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         if ($request) {
             $urlCorrector = $this->urlCorrectorFactory->createUrlCorrector($brand);
-
-            $baseUrl     = $urlCorrector->correctUrlScheme($baseUrl, $request);
-            $helpdeskUrl = $urlCorrector->correctUrlScheme($helpdeskUrl, $request);
+            $helpdeskUrl  = $urlCorrector->correctUrlScheme($helpdeskUrl, $request);
         }
 
-        $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
+        $basePath = $request ? $request->getBasePath() : '';
+
+        if ($useDynAssets) {
+            $loaderUrl = rtrim($helpdeskUrl, '/').'/dyn-assets/pub/build/widget_loader.min.js';
+        } else {
+            $loaderUrl = $this->assetPackages->getUrl('widget_loader.min.js', 'app_assets');
+            if (!preg_match('#^https?://#i', $loaderUrl)) {
+                $loaderUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$loaderUrl;
+            }
+        }
+
         $widgetUrl = $this->assetPackages->getUrl('DeskPRO_WidgetBundle.js', 'app_assets');
-        $basePath  = $request ? $request->getBasePath() : '';
-
-        if (!preg_match('#^https?://#i', $loaderUrl)) {
-            $loaderUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$loaderUrl;
-        }
         if (!preg_match('#^https?://#i', $widgetUrl)) {
             $widgetUrl = rtrim(str_replace($basePath, '', $baseUrl), '/').$widgetUrl;
         }
@@ -252,6 +256,14 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         ;
 
         return $model;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDevAssetsUrl()
+    {
+        return $this->assetPackages->getUrl('', 'assets_root');
     }
 
     /**

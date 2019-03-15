@@ -13,6 +13,7 @@ use Application\DeskPRO\BlobStorage\StorageAdapter\AmazonS3Storage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\DatabaseStorage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\FilesystemStorage;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Log\Logger;
 
 class BlobStorageService
@@ -31,8 +32,11 @@ class BlobStorageService
             $logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
         }
 
-        $wr = new \Orb\Log\Writer\Stream($env->getUserLogsDir().DIRECTORY_SEPARATOR.'blob_storage.log');
-        $logger->addWriter($wr);
+        if (SystemErrorHandler::useSyslog()) {
+            $logger->addWriter(new \Orb\Log\Writer\Syslog('deskpro-blobstorage'));
+        } else {
+            $logger->addWriter(new \Orb\Log\Writer\Stream($env->getUserLogsDir().DIRECTORY_SEPARATOR.'blob_storage.log'));
+        }
 
         //------------------------------
         // Filesystem adapter
