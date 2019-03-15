@@ -4,7 +4,7 @@
         {% for person in person_repo.findByPhoneNumber(ticket.person.phone_numbers[0].number, 1) %}
             {% if ticket.person.id != person.id %}
                 <li>
-                    <input type="radio" name="select_user" value="{{ person.id }}">
+                    <input type="radio" name="select_user" value="{{ person.id }}" data-email="{{ person.getPrimaryEmailAddress() }}">
                     <label>{{ person.getDisplayName() }}</label>
                 </li>
             {% endif %}

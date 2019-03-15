@@ -2736,7 +2736,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					}
 				});
 			} else if (value) {
-				setPerson(value, self.meta.person_email);
+				var email = $('input[name=select_user]:checked', self.wrapper).data('email');
+				setPerson(value, email);
 			}
     });
 
