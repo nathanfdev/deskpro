@@ -138,7 +138,7 @@ class CleanerExtension extends AbstractTypeExtension
      *
      * @return mixed
      */
-    public function cleanNonCompoundData($rawData, $cleanType)
+    public function cleanNonCompoundData($rawData, $cleanType = 'string')
     {
         if (is_string($rawData)) {
             $cleaned = $this->cleaner->clean($rawData, $cleanType);
