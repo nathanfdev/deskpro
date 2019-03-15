@@ -2632,9 +2632,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 											},
 										},
 										success: function () {
-											reloadPersonView();
-											self.meta.person_id = personId;
-											self.meta.person_email = personEmail;
+											$.ajax({
+												url: BASE_URL + 'api/v2/tickets/' + self.meta.ticket_id,
+												type: 'PUT',
+												data: {
+													person: personId,
+												},
+												success: function () {
+													reloadPersonView();
+													self.meta.person_id = personId;
+													self.meta.person_email = personEmail;
+												}
+											});
+
 										}
 									});
 								}
