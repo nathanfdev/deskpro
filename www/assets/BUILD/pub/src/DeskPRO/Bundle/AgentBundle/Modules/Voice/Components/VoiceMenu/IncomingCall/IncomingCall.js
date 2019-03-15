@@ -66,7 +66,13 @@ class IncomingCall extends React.Component {
       callType = 'Invite';
 
       if (incomingCall.get('call_type') === 'transfer') {
-        callType = 'Transfer';
+        let transferType = '';
+        if (incomingCall.get('invite_type') === 'cold') {
+          transferType = 'COLD ';
+        } else if (incomingCall.get('invite_type') === 'warm') {
+          transferType = 'WARM ';
+        }
+        callType = `${transferType}Transfer`;
       }
 
       if (incomingCall.get('from_agent_id')) {
