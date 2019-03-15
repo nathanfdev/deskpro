@@ -2623,9 +2623,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 							type: 'POST',
 							success: function (response) {
 								if (response.success) {
-									reloadPersonView();
-									self.meta.person_id = personId;
-									self.meta.person_email = personEmail;
+									$.ajax({
+										url: BASE_URL + 'api/v2/people/' + personId,
+										type: 'PUT',
+										data: {
+											preferences: {
+												'voice.unknown_caller': 0
+											},
+										},
+										success: function () {
+											reloadPersonView();
+											self.meta.person_id = personId;
+											self.meta.person_email = personEmail;
+										}
+									});
 								}
 							}
 						});
