@@ -1951,12 +1951,12 @@ class TicketSearch extends SearcherAbstract
                             }
 
                             if ($w) {
-                                $w .= ($op == self::OP_IS ? ' OR ' : ' AND ');
+                                $w .= (in_array($op, [self::OP_IS, self::OP_CONTAINS]) ? ' OR ' : ' AND ');
                             }
 
                             $w .= sprintf('(%s %s %s)',
                                 $this->_choiceMatch("$tickets_table.status", $op, $item[0]),
-                                $op == self::OP_IS ? 'AND' : 'OR',
+                                in_array($op, [self::OP_IS, self::OP_CONTAINS]) ? 'AND' : 'OR',
                                 $this->_choiceMatch("$tickets_table.ticket_status_id", $op, $item[1])
                             );
                         }

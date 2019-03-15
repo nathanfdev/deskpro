@@ -718,7 +718,7 @@ class TicketSearchController extends AbstractController
 
             $set_terms_map = [
                 'department'   => ['op' => 'contains', 'options' => []],
-                'status'       => ['op' => 'contains', 'options' => []],
+                'status'       => ['op' => 'is', 'options' => []],
                 'agent'        => ['op' => 'contains', 'options' => []],
                 'agent_team'   => ['op' => 'contains', 'options' => []],
                 'participant'  => ['op' => 'contains', 'options' => []],
@@ -818,11 +818,6 @@ class TicketSearchController extends AbstractController
 
             if ($search_person_id = $this->in->getUInt('search_person_id')) {
                 $terms[] = ['type' => 'person_id', 'op' => 'is', 'options' => ['person_id' => $search_person_id]];
-            }
-
-            // Search form: status
-            if ($search_term = $this->in->getCleanValueArray('search_status', 'string', 'discard')) {
-                $terms[] = ['type' => 'status', 'op' => 'contains', 'options' => ['status' => $search_term]];
             }
 
             // Search form: subject
