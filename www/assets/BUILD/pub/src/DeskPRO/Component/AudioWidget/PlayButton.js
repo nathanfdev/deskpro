@@ -89,12 +89,8 @@ export class UploadPlayButton extends React.Component {
       this.setState({
         playing: true
       }, () => pageWidgetEmitter.emit('playAudio', this));
-    } else if (this.audio.readyState > 0) {
-      this.audio.pause();
-      this.audio.currentTime = 0;
-      this.setState({
-        playing: false
-      });
+    } else  {
+      this.stopPlaying();
     }
   };
 
