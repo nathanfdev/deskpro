@@ -93,7 +93,7 @@ class CleanerExtension extends AbstractTypeExtension
      *
      * @return array
      */
-    protected function cleanCompoundData($rawData, FormInterface $form)
+    private function cleanCompoundData($rawData, FormInterface $form)
     {
         $cleanData = [];
 
@@ -138,7 +138,7 @@ class CleanerExtension extends AbstractTypeExtension
      *
      * @return mixed
      */
-    public function cleanNonCompoundData($rawData, $cleanType = 'string')
+    private function cleanNonCompoundData($rawData, $cleanType = 'string')
     {
         if (is_string($rawData)) {
             $cleaned = $this->cleaner->clean($rawData, $cleanType);
