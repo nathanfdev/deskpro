@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { allPeopleSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/people';
 import VoicemailList from './VoicemailList';
-import { loadVoicemailRecords, deleteVoicemailRecord, markVoicemalRecordAsListened, createVoicemailTicket } from '../../../Actions/voicemailRecordActions';
+import { deleteVoicemailRecord, markVoicemalRecordAsListened, createVoicemailTicket } from '../../../Actions/voicemailRecordActions';
 import { allVoicemailRecordsSelector, isVoicemailRecordsLoadedSelector } from '../../../Selectors/voicemailRecords';
 import { allPhoneCallsSelector } from '../../../Selectors/phoneCalls';
 import { openDialpad } from '../../../Actions/clientActions';
@@ -22,11 +22,6 @@ class VoicemailListContainer extends React.Component {
     dispatch:      PropTypes.func,
     recordsLoaded: PropTypes.bool
   };
-
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(loadVoicemailRecords());
-  }
 
   onCallback = (phoneCall) => {
     const { dispatch } = this.props;

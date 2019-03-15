@@ -27,7 +27,8 @@ class VoiceMenu extends React.Component {
     callsEnabled:          PropTypes.bool,
     voiceEnabled:          PropTypes.bool,
     micEnabled:            PropTypes.bool,
-    openUserMenu:          PropTypes.func
+    openUserMenu:          PropTypes.func,
+    recordsCount:          PropTypes.number
   };
 
   constructor(props) {
@@ -112,7 +113,7 @@ class VoiceMenu extends React.Component {
     const { tabName } = this.state;
     const hasPhoneTab = incomingCall || outboundCallsEnabled;
     const pendingCall = incomingCall || outgoingCall;
-
+    const voicemailTitle = this.props.recordsCount > 0 ? `Voicemail (${this.props.recordsCount})` : 'Voicemail';
     return (
       <div className="voice-menu">
         <div className="header">
@@ -125,7 +126,7 @@ class VoiceMenu extends React.Component {
           {!pendingCall &&
           <TabButton
             tabName="voicemail"
-            title="Voicemail"
+            title={voicemailTitle}
             iconClass="fa-play-circle"
             onClick={this.changeTab}
             active={tabName === 'voicemail'}

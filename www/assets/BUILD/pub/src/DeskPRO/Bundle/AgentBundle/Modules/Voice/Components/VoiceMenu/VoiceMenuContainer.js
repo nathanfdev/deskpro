@@ -8,6 +8,8 @@ import VoiceMenuDropdown from './VoiceMenuDropdown';
 import { acceptPhoneCall, declinePhoneCall } from '../../Actions/clientActions';
 import { incomingCallSelector, outboundNumberSelector, outgoingCallSelector, ringingVolumeSelector, agentVoicemailTimeoutSelector, isVoiceMicEnabled, isVoiceEnabledSelector, isSecure } from '../../Selectors/client';
 import { allQueuesSelector } from '../../Selectors/queue';
+import { loadVoicemailRecords } from '../../Actions/voicemailRecordActions';
+import { allVoicemailRecordsSelector } from '../../Selectors/voicemailRecords';
 
 @connect(state => ({
   me:                    meSelector(state),
@@ -23,15 +25,21 @@ import { allQueuesSelector } from '../../Selectors/queue';
   outgoingCall:          outgoingCallSelector(state),
   ringingVolume:         ringingVolumeSelector(state),
   agentVoicemailTimeout: agentVoicemailTimeoutSelector(state),
-  micEnabled:            isVoiceMicEnabled(state)
+  micEnabled:            isVoiceMicEnabled(state),
+  records:               allVoicemailRecordsSelector(state)
 }))
 class VoiceMenuContainer extends React.Component {
 
   static propTypes = {
     dispatch:     PropTypes.func,
     incomingCall: PropTypes.object,
-    outgoingCall: PropTypes.object
+    outgoingCall: PropTypes.object,
+    records:      PropTypes.object
   };
+
+  componentDidMount() {
+    this.props.dispatch(loadVoicemailRecords());
+  }
 
   componentWillReceiveProps(newProps) {
     const { incomingCall, outgoingCall } = this.props;
@@ -68,6 +76,7 @@ class VoiceMenuContainer extends React.Component {
         acceptCall={this.acceptCall}
         declineCall={this.declineCall}
         hideCall={this.hideCall}
+        recordsCount={this.props.records.filter(recording => !recording.get('is_listened')).size}
       />
     );
   }
