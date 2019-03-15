@@ -134,7 +134,8 @@ class TicketSearchController extends AbstractController
         $custom_fields                        = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
         $term_options['custom_ticket_fields'] = $custom_fields;
 
-        $brands = $this->em->getRepository(Brand::class)->findAll();
+        $brands         = $this->em->getRepository(Brand::class)->findAll();
+        $ticketStatuses = App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true);
 
         $data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', [
             'brands'                 => $brands,
@@ -160,7 +161,8 @@ class TicketSearchController extends AbstractController
             'sla_counts' => $sla_counts,
             'sla_filter' => $sla_filter,
 
-            'term_options' => $term_options,
+            'term_options'    => $term_options,
+            'ticket_statuses' => $ticketStatuses,
         ]);
 
         $data['filter_id_matches'] = $filter_id_matches;
