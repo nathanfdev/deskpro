@@ -122,6 +122,7 @@ class CallLogsList extends React.Component {
 
               const recordings = call.get('recordings');
               const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
+              const agentVoicemail = call.getIn(['agent_voicemail', 'blob']);
 
               return (
                 <tr key={`call_log_${index}`}>
@@ -183,7 +184,9 @@ class CallLogsList extends React.Component {
                   </td>
                   <CallStatus call={call} />
                   <td>
-                    {recordingsEnabled.size > 0 ? recordingsEnabled.map(recording => <BlobPlayButton key={`call_log_record_play_${index}`} iconOnly value={recording.get('blob')} />) : '-'}
+                    {!recordingsEnabled.size && !agentVoicemail && '-'}
+                    {recordingsEnabled.size > 0 && recordingsEnabled.map(recording => <BlobPlayButton key={`call_log_record_play_${index}`} iconOnly value={recording.get('blob')} />)}
+                    {agentVoicemail && <BlobPlayButton key={`call_log_record_play_${index}`} iconOnly value={agentVoicemail} />}
                     {recordingsEnabled.size > 0 ? <DeleteButton key={`call_log_record_delete_${index}`}  iconOnly onClick={() => this.onDeleteClick(call.get('id'))} /> : null}
                   </td>
                 </tr>

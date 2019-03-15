@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\VoiceBundle\Serializer\Model;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
+use DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall as VoicePhoneCallEntity;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
@@ -137,6 +138,13 @@ class VoicePhoneCall
     private $recordings;
 
     /**
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\VoicemailAgentRecording")
+     *
+     * @var VoicemailAgentRecording
+     */
+    private $agentVoicemail;
+
+    /**
      * @JMS\Type("string")
      *
      * @var float
@@ -181,6 +189,7 @@ class VoicePhoneCall
         $this->dateStarted        = $phoneCall->getDateStarted();
         $this->dateEnded          = $phoneCall->getDateEnded();
         $this->recordings         = $phoneCall->getRecordings();
+        $this->agentVoicemail     = $phoneCall->getAgentVoicemailRecord();
         $this->cost               = $phoneCall->getCost() ? number_format($phoneCall->getCost(), 3, '.', ',') : null;
         $this->costCurrency       = $phoneCall->getCostCurrency();
 

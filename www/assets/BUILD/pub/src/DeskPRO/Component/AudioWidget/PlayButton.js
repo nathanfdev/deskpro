@@ -83,7 +83,7 @@ export class UploadPlayButton extends React.Component {
       return;
     }
 
-    if (!playing && this.audio.readyState > 0) {
+    if (!playing) {
       this.audio.src = downloadUrl;
       this.audio.play();
       this.setState({

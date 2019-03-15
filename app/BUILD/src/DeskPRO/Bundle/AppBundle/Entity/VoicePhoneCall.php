@@ -217,7 +217,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      *
      * @var VoicemailAgentRecording
      */
-    private $voicemailRecord;
+    private $agentVoicemailRecord;
 
     /**
      * @ORM\Column(name="cost", type="string", nullable=true)
@@ -796,21 +796,21 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @return VoicemailAgentRecording
      */
-    public function getVoicemailRecord()
+    public function getAgentVoicemailRecord()
     {
-        return $this->voicemailRecord;
+        return $this->agentVoicemailRecord;
     }
 
     /**
-     * @param VoicemailAgentRecording $voicemailRecord
+     * @param VoicemailAgentRecording $agentVoicemailRecord
      *
      * @return $this
      */
-    public function setVoicemailRecord(VoicemailAgentRecording $voicemailRecord = null)
+    public function setAgentVoicemailRecord(VoicemailAgentRecording $agentVoicemailRecord = null)
     {
-        $this->setModelField('voicemailRecord', $voicemailRecord);
-        if ($voicemailRecord) {
-            $voicemailRecord->setPhoneCall($this);
+        $this->setModelField('voicemailRecord', $agentVoicemailRecord);
+        if ($agentVoicemailRecord) {
+            $agentVoicemailRecord->setPhoneCall($this);
         }
 
         return $this;

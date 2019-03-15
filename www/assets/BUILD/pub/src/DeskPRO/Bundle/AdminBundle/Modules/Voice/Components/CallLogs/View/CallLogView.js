@@ -40,6 +40,7 @@ class CallLogView extends React.Component {
 
     const recordings = call.get('recordings');
     const recordingsEnabled = recordings.filter(recording => recording.get('blob'));
+    const agentVoicemail = call.getIn(['agent_voicemail', 'blob']);
 
     return (
       <div className="page">
@@ -226,9 +227,9 @@ class CallLogView extends React.Component {
             <tr>
               <th>Recording</th>
               <td>
-                {recordingsEnabled.size > 0
-                ? recordingsEnabled.map(recording => <MediaControls recording={recording.get('blob')} />)
-                : '-'}
+                {recordingsEnabled.size > 0 && recordingsEnabled.map(recording => <MediaControls recording={recording.get('blob')} />)}
+                {agentVoicemail && <MediaControls recording={agentVoicemail} />}
+                {!recordingsEnabled.size && !agentVoicemail && '-'}
               </td>
             </tr>
           </tbody>
