@@ -10,6 +10,7 @@ services:
       - "@voice_settings_resolver"
       - "@ticket_manager"
       - "@dp.voice.provider_helper"
+      - "@dp.voice.voicemail_helper"
       - "@dp.voice.worker_helper"
       - "@dp.voice.task_router.storage"
       - "@event_dispatcher"

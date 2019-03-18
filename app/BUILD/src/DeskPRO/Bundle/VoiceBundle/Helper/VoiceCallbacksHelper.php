@@ -74,6 +74,11 @@ class VoiceCallbacksHelper
     private $voiceProviderHelper;
 
     /**
+     * @var VoicemailHelper
+     */
+    private $voicemailHelper;
+
+    /**
      * @var WorkerHelper
      */
     private $workerHelper;
@@ -103,6 +108,7 @@ class VoiceCallbacksHelper
      * @param VoiceSettingsResolver    $voiceSettingsResolver
      * @param TicketManager            $ticketManager
      * @param VoiceProviderHelper      $voiceProviderHelper
+     * @param VoicemailHelper          $voicemailHelper
      * @param WorkerHelper             $workerHelper
      * @param StorageAdapterInterface  $storageAdapter
      * @param EventDispatcherInterface $dispatcher
@@ -116,6 +122,7 @@ class VoiceCallbacksHelper
         VoiceSettingsResolver    $voiceSettingsResolver,
         TicketManager            $ticketManager,
         VoiceProviderHelper      $voiceProviderHelper,
+        VoicemailHelper          $voicemailHelper,
         WorkerHelper             $workerHelper,
         StorageAdapterInterface  $storageAdapter,
         EventDispatcherInterface $dispatcher,
@@ -128,6 +135,7 @@ class VoiceCallbacksHelper
         $this->voiceSettingsResolver = $voiceSettingsResolver;
         $this->ticketManager         = $ticketManager;
         $this->voiceProviderHelper   = $voiceProviderHelper;
+        $this->voicemailHelper       = $voicemailHelper;
         $this->workerHelper          = $workerHelper;
         $this->storageAdapter        = $storageAdapter;
         $this->dispatcher            = $dispatcher;
@@ -273,16 +281,22 @@ class VoiceCallbacksHelper
     public function rejectIncomingPhoneCall(VoicePhoneCall $phoneCall, Person $agent)
     {
         // reject task worker
-        $this->taskRouter->rejectTask($phoneCall->getTaskSid(), 'agent', $agent->getId());
+        if ($this->taskRouter->rejectTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            // if call target is an agent, redirect to voicemail immediately
+            $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
+            if ($task && $task->getAttribute('agent')) {
+                $this->voicemailHelper->transferToVoicemail($phoneCall);
+            }
 
-        // log that agent rejected the incoming call
-        $log = new VoicePhoneCallLog();
-        $log->setPerson($agent);
-        $log->setActionType(VoicePhoneCallLog::ACTION_REJECTED);
-        $log->setPhoneCall($phoneCall);
+            // log that agent rejected the incoming call
+            $log = new VoicePhoneCallLog();
+            $log->setPerson($agent);
+            $log->setActionType(VoicePhoneCallLog::ACTION_REJECTED);
+            $log->setPhoneCall($phoneCall);
 
-        $this->em->persist($log);
-        $this->em->flush();
+            $this->em->persist($log);
+            $this->em->flush();
+        }
     }
 
     /**
