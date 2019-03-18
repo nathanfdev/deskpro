@@ -282,7 +282,7 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 
 					DeskPRO_Window.runPageRoute(loadRoute.replace('{id}', data.id));
 				}
-        if (this.overlay) {
+        if (self.overlay) {
           self.overlay.close();
         }
 			},
