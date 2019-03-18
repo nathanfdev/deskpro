@@ -379,8 +379,6 @@ class VoiceCallbacksHelper
 
         // get the caller person
         $agent = $this->getAgent($agentId);
-
-        $phoneCall->setCallSid($callSid);
         $phoneCall->setData(array_merge($phoneCall->getData(), $details));
 
         // create agent participant
@@ -415,6 +413,8 @@ class VoiceCallbacksHelper
             throw new OutOfServiceException();
         }
 
+        $phoneCall->setCallSid($callSid);
+
         if (!$phoneCall->getParticipantByCallSid($callSid)) {
             // create user participant
             $participant = new VoicePhoneCallParticipantUser();
@@ -422,10 +422,10 @@ class VoiceCallbacksHelper
             $participant->setPerson($phoneCall->getPerson());
 
             $phoneCall->addParticipant($participant);
-
-            $this->em->persist($phoneCall);
-            $this->em->flush();
         }
+
+        $this->em->persist($phoneCall);
+        $this->em->flush();
     }
 
     /**
