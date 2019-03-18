@@ -555,21 +555,23 @@ class PlivoAdapter implements VoiceProviderInterface
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
-        $start = microtime(true);
+        foreach ($phoneCall->getUserParticipants() as $participant) {
+            $start = microtime(true);
 
-        try {
-            return $this->getClient($account)->calls->transfer(
-                $phoneCall->getCallSid(),
-                [
-                    'legs'        => 'aleg',
-                    'aleg_url'    => $callbackUrl,
-                    'aleg_method' => $callbackMethod,
-                ]
-            );
-        } catch (\Exception $e) {
-            SystemErrorHandler::logException($e);
-        } finally {
-            $this->logger->info(sprintf('[PlivoAdapter] Call transfer to %s took %.3fs', $callbackUrl, microtime(true) - $start));
+            try {
+                return $this->getClient($account)->calls->transfer(
+                    $participant->getCallSid(),
+                    [
+                        'legs'        => 'aleg',
+                        'aleg_url'    => $callbackUrl,
+                        'aleg_method' => $callbackMethod,
+                    ]
+                );
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
+            } finally {
+                $this->logger->info(sprintf('[PlivoAdapter] Call transfer to %s took %.3fs', $callbackUrl, microtime(true) - $start));
+            }
         }
     }
 
