@@ -173,8 +173,8 @@
 							</tr>
 							<tr class="always-keep">
 								<th nowrap="nowrap"><div>{{ phrase('agent.general.status') }}</div></th>
-								<td width="50%">{{ phrase('agent.tickets.status_' ~ ticket.status) }}</td>
-								{% if other_ticket %}<td width="50%">{{ phrase('agent.tickets.status_' ~ other_ticket.status) }}</td>{% endif %}
+								<td width="50%">{{ display_ticket_status(ticket) }}</td>
+								{% if other_ticket %}<td width="50%">{{ display_ticket_status(other_ticket) }}</td>{% endif %}
 							</tr>
 							{% if ticket.urgency and other_ticket.urgency and ticket.urgency != other_ticket.urgency %}
 								<tr class="always-keep">
