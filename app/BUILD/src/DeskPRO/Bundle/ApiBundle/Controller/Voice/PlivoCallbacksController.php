@@ -26,6 +26,7 @@ use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceCallCostProcessor;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Plivo\XML\Element;
 use Plivo\XML\Response as PlivoXML;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -1359,10 +1360,10 @@ class PlivoCallbacksController extends BaseController
     }
 
     /**
-     * @param PlivoXML                $plivoXml
+     * @param Element                 $plivoXml
      * @param AbstractVoiceAsset|null $asset
      */
-    private function playGreetAsset(PlivoXML $plivoXml, AbstractVoiceAsset $asset = null)
+    private function playGreetAsset(Element $plivoXml, AbstractVoiceAsset $asset = null)
     {
         if ($asset instanceof VoiceTextAsset) {
             $pattern = '#({{(?:\s+|)pause(?:\s+|)(?:\d+|)(?:\s+|)}})#';
