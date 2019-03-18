@@ -49,6 +49,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
 use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
+use Application\DeskPRO\Tickets\TicketActions\HoldAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
@@ -1313,6 +1314,8 @@ class TicketController extends AbstractController
 
                         if ($action instanceof StatusAction) {
                             $setStatus = $action->getFullStatus();
+                        } elseif ($action instanceof HoldAction) {
+                            $setStatus = TicketStatus::STATUS_TYPE_PENDING;
                         }
 
                         $collection->add($action);
