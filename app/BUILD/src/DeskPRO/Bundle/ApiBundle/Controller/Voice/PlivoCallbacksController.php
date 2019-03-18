@@ -83,7 +83,10 @@ class PlivoCallbacksController extends BaseController
                 $details
             );
 
-            $this->get('dp.voice.logger')->info(sprintf('[PlivoCallbacks] Incoming phone call from %s, call_id = %s, uuid = %s', $phoneCall->getId(), $callSid, $from));
+            $this->get('dp.voice.logger')->info(sprintf(
+                '[PlivoCallbacks] Incoming phone call from %s, call_id = %s, uuid = %s',
+                $from, $phoneCall->getId(), $callSid
+            ));
 
             $this->addTargetResponse($phoneCall, $phoneCall->getNumber()->getTarget(), $plivoXml);
         } catch (OutOfServiceException $e) {
@@ -127,13 +130,19 @@ class PlivoCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $callId  = $request->get('X-PH-CallId');
-        $callSid = $request->get('CallUUID');
-        $agentId = $request->get('X-PH-AgentId');
-        $details = $request->request->all();
+        $callId   = $request->get('X-PH-CallId');
+        $callSid  = $request->get('CallUUID');
+        $agentId  = $request->get('X-PH-AgentId');
+        $callTime = $request->get('X-PH-CallTime') / 1000;
+        $details  = $request->request->all();
+
+        $startCallbackTime = microtime(true);
 
         $logger = $this->get('dp.voice.logger');
-        $logger->info(sprintf('[PlivoCallbacks] Running answer agent callback, call_id = %s, uuid = %s (%.3fs)', $callId, $callSid, microtime(true)));
+        $logger->info(sprintf(
+            '[PlivoCallbacks] Begin answer agent callback, call_id = %s, uuid = %s, call_time = %.3fs, delay = %.3fs (%.3fs)',
+            $callId, $callSid, $callTime, $startCallbackTime - $callTime, $startCallbackTime
+        ));
 
         $plivoXml = new PlivoXML();
 
@@ -200,7 +209,7 @@ class PlivoCallbacksController extends BaseController
                     $details
                 );
 
-                $logger->info(sprintf('[PlivoCallbacks] Joining an incoming phone call took %.3fs', microtime(true) - $start));
+                $logger->info(sprintf('[PlivoCallbacks] Joined the incoming phone call, took %.3fs', microtime(true) - $start));
 
                 if ($phoneCall) {
                     // join conference
@@ -222,7 +231,7 @@ class PlivoCallbacksController extends BaseController
                             'POST'
                         );
 
-                        $logger->info(sprintf('[PlivoCallbacks] Transferring user to the conference took %.3fs', microtime(true) - $start));
+                        $logger->info(sprintf('[PlivoCallbacks] Transferred user into the conference, took %.3fs', microtime(true) - $start));
                     }
                 } else {
                     $plivoXml->addHangup();
@@ -233,6 +242,11 @@ class PlivoCallbacksController extends BaseController
                 ]);
             }
         }
+
+        $logger->info(sprintf(
+            '[PlivoCallbacks] End answer agent callback, call_id = %s, uuid = %s, took %.3fs (%.3fs)',
+            $callId, $callSid, microtime(true) - $startCallbackTime, microtime(true)
+        ));
 
         $response = new Response($plivoXml->toXML());
         $response->headers->set('Content-Type', 'text/xml');

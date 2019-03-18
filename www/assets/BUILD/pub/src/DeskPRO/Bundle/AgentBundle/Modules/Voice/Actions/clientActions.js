@@ -452,7 +452,8 @@ export const acceptPhoneCall = createAction(
         clients[accountId].client.call('accept', {
           'X-PH-CallId':   callId,
           'X-PH-AgentId':  agentId,
-          'X-PH-TicketId': data.id
+          'X-PH-TicketId': data.id,
+          'X-PH-CallTime': (new Date()).getTime()
         });
 
         clients[accountId].client.ticketId = data.id;
