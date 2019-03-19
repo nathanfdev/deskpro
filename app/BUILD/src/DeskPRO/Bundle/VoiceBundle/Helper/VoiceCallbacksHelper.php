@@ -560,6 +560,8 @@ class VoiceCallbacksHelper
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
         }
 
+        $task = $phoneCall->getTaskSid() ? $this->storageAdapter->getTask($phoneCall->getTaskSid()) : null;
+
         // user ends call
         // create a ticket for missed calls
         if (!$phoneCall->hasAgentParticipants()
@@ -568,6 +570,8 @@ class VoiceCallbacksHelper
             && !$phoneCall->isVoicemail()
             // create a ticket just it was assigned to any target
             && $phoneCall->getTaskSid()
+            // don't create missed tickets for direct agent calls
+            && !($task && $task->getAttribute('agent'))
             // don't create missed tickets for strange numbers
             && !$phoneCall->isStrangeNumber()
             // no ticket messages were created for this phone call yet
