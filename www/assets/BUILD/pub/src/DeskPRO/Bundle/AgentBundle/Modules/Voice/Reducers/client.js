@@ -10,11 +10,10 @@ if (storageAvailable('localStorage') && localStorage.getItem('dpAgent.voice.ring
 }
 
 const initialState = {
-  micEnabled:       false,
-  incomingCalls:    [],
-  outgoingCall:     null,
-  connections:      [],
-  connectionStates: [],
+  micEnabled:    false,
+  incomingCalls: [],
+  outgoingCall:  null,
+  connections:   [],
   ringingVolume
 };
 
@@ -50,21 +49,9 @@ export default createReducer(initialState, {
 
     return state.set('incomingCalls', incomingCalls);
   },
-  [actions.addConnection]:         pushPayloadToCollection('connections'),
-  [actions.removeConnection]:      deletePayloadFromCollection('connections'),
-  [actions.setOutgoingCall]:       setFullPayload('outgoingCall'),
-  [actions.resetOutgoingCall]:     setValue('outgoingCall', null),
-  [actions.setRingingVolume]:      setFullPayload('ringingVolume'),
-  [actions.updateConnectionState]: (state, payload) => {
-    const connectionStates = state.get('connectionStates');
-    const connection = connectionStates.get(payload.call_id, Immutable.fromJS({
-      hold:         false,
-      participants: []
-    }));
-
-    const newConnection = connection.merge(payload.state);
-    const newConnectionStates = connectionStates.set(payload.call_id, newConnection);
-
-    return state.set('connectionStates', newConnectionStates);
-  }
+  [actions.addConnection]:     pushPayloadToCollection('connections'),
+  [actions.removeConnection]:  deletePayloadFromCollection('connections'),
+  [actions.setOutgoingCall]:   setFullPayload('outgoingCall'),
+  [actions.resetOutgoingCall]: setValue('outgoingCall', null),
+  [actions.setRingingVolume]:  setFullPayload('ringingVolume')
 });

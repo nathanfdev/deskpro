@@ -175,16 +175,7 @@ class Active extends React.Component {
       addMenuOpened:      false,
       dialpadOpened:      false,
       updatingHold:       false,
-      hold:               props.hold
     };
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (newProps.hold !== this.state.hold) {
-      this.setState({
-        hold: newProps.hold
-      });
-    }
   }
 
   toggleHold = (event) => {
@@ -193,13 +184,11 @@ class Active extends React.Component {
       updatingHold: true
     });
 
-    const newHold = !this.state.hold;
     const promise = this.props.toggleHold();
     if (promise) {
       promise.success(() => {
         this.setState({
           updatingHold: false,
-          hold:         newHold
         });
       });
     }
@@ -255,8 +244,8 @@ class Active extends React.Component {
   };
 
   render() {
-    const { mute, ended, onlineAgents, sendDigits, divRef } = this.props;
-    const { hold, transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
+    const { hold, mute, ended, onlineAgents, sendDigits, divRef } = this.props;
+    const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
 
     return (

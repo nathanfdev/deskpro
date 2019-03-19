@@ -22,7 +22,6 @@ export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
 export const setOutgoingCall = createAction('VOICE_AGENT_deskpro_call_idSET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
-export const updateConnectionState = createAction('VOICE_AGENT_UPDATE_CONNECTION_STATE');
 
 const filterConnection = (connection, callSid) => {
   if (!connection) {
@@ -165,14 +164,6 @@ export const voiceBootstrap = createAction(
           if (eventName === 'conference-end') {
             dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
           }
-
-          dispatch(updateConnectionState({
-            call_id: parseInt(event.phone_call.id, 10),
-            state:   Immutable.fromJS({
-              participants: event.agent_participants,
-              hold:         !!event.hold
-            })
-          }));
         });
         messageBroker.addMessageListener('agent.voice.reached-voicemail', (data) => {
           dispatch(removeIncomingCall(Immutable.fromJS(data)));
@@ -240,14 +231,6 @@ export const voiceBootstrap = createAction(
           if (connection) {
             hangupConnection(connection);
           }
-        });
-        messageBroker.addMessageListener('agent.voice.conference.hold', (data) => {
-          dispatch(updateConnectionState({
-            call_id: parseInt(data.call_id, 10),
-            state:   {
-              hold: !!data.hold
-            }
-          }));
         });
         messageBroker.addMessageListener('agent.voice.outgoing-provider-error', (errors) => {
           const state = getState();
