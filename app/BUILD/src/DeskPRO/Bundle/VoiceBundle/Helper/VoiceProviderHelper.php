@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
@@ -156,6 +157,12 @@ class VoiceProviderHelper implements VoiceProviderInterface
         }
 
         $this->getAdapter($phoneCall)->holdConferenceEndUser($phoneCall, $isHold, $params);
+        $phoneCall->getUserParticipants()->map(function (AbstractVoicePhoneCallParticipant $participant) use ($isHold) {
+            $participant->setOnHold($isHold);
+        });
+
+        $this->em->flush();
+
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.hold',
             [

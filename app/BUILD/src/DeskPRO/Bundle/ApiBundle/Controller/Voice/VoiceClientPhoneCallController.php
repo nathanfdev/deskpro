@@ -9,7 +9,6 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
@@ -304,14 +303,6 @@ class VoiceClientPhoneCallController extends BaseController
 
         $this->get('dp.voice.provider_helper')->holdConferenceEndUser($phoneCall, $isHold);
 
-        $phoneCall->getUserParticipants()->map(function (AbstractVoicePhoneCallParticipant $participant) use ($isHold) {
-            $participant->setOnHold($isHold);
-        });
-
-        $em = $this->getManager();
-        $em->persist($phoneCall);
-        $em->flush();
-
         // log action
         $log = new VoicePhoneCallLog();
         $log->setPerson($this->getVoiceAgent());
@@ -324,6 +315,7 @@ class VoiceClientPhoneCallController extends BaseController
             $log->setActionType(VoicePhoneCallLog::ACTION_UNHOLD);
         }
 
+        $em = $this->getManager();
         $em->persist($log);
         $em->flush();
 

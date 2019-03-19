@@ -831,7 +831,6 @@ class VoiceCallbacksHelper
             : false;
 
         // all active participants
-
         $start                              = microtime(true);
         $statusParams['agent_participants'] = array_map(function (Person $person) {
             return $person->getId();
