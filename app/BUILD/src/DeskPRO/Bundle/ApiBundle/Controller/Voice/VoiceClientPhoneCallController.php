@@ -312,14 +312,6 @@ class VoiceClientPhoneCallController extends BaseController
         $em->persist($phoneCall);
         $em->flush();
 
-        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-            'agent.voice.conference.hold',
-            [
-                'call_id' => $phoneCall->getId(),
-                'hold'    => $isHold,
-            ]
-        ));
-
         // log action
         $log = new VoicePhoneCallLog();
         $log->setPerson($this->getVoiceAgent());
@@ -441,6 +433,9 @@ class VoiceClientPhoneCallController extends BaseController
         if (!$messageAttribute) {
             throw $this->createBadRequestException('Unable to get ticket message for the phone call');
         }
+
+        $phoneCall->setStatus(VoicePhoneCall::STATUS_WARM_TRANSFER);
+        $em->flush();
 
         /** @var Ticket $ticket */
         $ticket = $messageAttribute->getMessage()->getTicket();
@@ -601,6 +596,11 @@ class VoiceClientPhoneCallController extends BaseController
 
         $em = $this->getManager();
 
+        if ($phoneCall->isWarmTransfer()) {
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
+            $em->flush();
+        }
+
         // add action log
         $log = new VoicePhoneCallLog();
         $log->setPerson($this->getVoiceAgent());
@@ -650,6 +650,11 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         $em = $this->getManager();
+
+        if ($phoneCall->isWarmTransfer()) {
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
+            $em->flush();
+        }
 
         // add action log
         $log = new VoicePhoneCallLog();

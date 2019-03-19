@@ -30,6 +30,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const EXTERNAL_NUMBER_TYPE_SIP   = 'sip';
 
     const STATUS_PENDING       = 'pending';
+    const STATUS_WARM_TRANSFER = 'warm_transfer';
     const STATUS_COLD_TRANSFER = 'cold_transfer';
     const STATUS_ACTIVE        = 'active';
     const STATUS_ENDED         = 'ended';
@@ -441,6 +442,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function isColdTransfer()
     {
         return $this->status === self::STATUS_COLD_TRANSFER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWarmTransfer()
+    {
+        return $this->status === self::STATUS_WARM_TRANSFER;
     }
 
     /**

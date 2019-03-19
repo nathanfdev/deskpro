@@ -783,8 +783,16 @@ class VoiceCallbacksHelper
                 if ($phoneCall->isColdTransfer()) {
                     // mark the phone call as started
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
-
                     $this->em->flush();
+                }
+
+                if ($phoneCall->isWarmTransfer()) {
+                    // mark the phone call as started
+                    $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
+                    $this->em->flush();
+
+                    // unhold end-user
+                    $this->voiceProviderHelper->holdConferenceEndUser($phoneCall, false);
                 }
 
                 // log participant join event
