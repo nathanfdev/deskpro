@@ -516,7 +516,7 @@ class PlivoCallbacksController extends BaseController
             // task router ping timeout
             $queue = $this->container->get('dp.voice.voice_task_helper')->getVoiceQueue($task);
             if ($queue && $queue->getLoopAsset()) {
-                $plivoXml->addPlay($this->getHoldMusicUrl($account, $queue->getLoopAsset()));
+                $this->playAsset($plivoXml, $queue->getLoopAsset());
             } else {
                 $plivoXml->addPlay($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
             }
@@ -788,56 +788,6 @@ class PlivoCallbacksController extends BaseController
 
     /**
      * @ApiDoc(
-     *     description="Custom hold music",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     noInput=true,
-     *     output="string"
-     * )
-     *
-     * @Rest\Get("/hold_music", name="plivo_hold_music")
-     *
-     * @param PlivoVoiceAccount $account
-     * @param string            $accountAuth
-     * @param Request           $request
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function holdMusicAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
-    {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $asset   = null;
-        $assetId = $request->query->get('asset');
-        if ($assetId) {
-            $asset = $this->getRepository(AbstractVoiceAsset::class)->find($assetId);
-        }
-
-        $plivoXml = new PlivoXML();
-        if ($asset instanceof VoiceTextAsset) {
-            $plivoXml->addSpeak($asset->getText(), [
-                'loop'  => 0,
-                'voice' => 'WOMAN',
-            ]);
-        } elseif ($asset instanceof AbstractVoiceBlobAsset) {
-            $plivoXml->addPlay($asset->getBlob()->getDownloadUrl(true), [
-                'loop' => 0,
-            ]);
-        }
-
-        $response = new Response($plivoXml->toXML());
-        $response->headers->set('Content-Type', 'text/xml');
-
-        return $response;
-    }
-
-    /**
-     * @ApiDoc(
      *     description="Voicemail callback",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -888,7 +838,7 @@ class PlivoCallbacksController extends BaseController
         $plivoXml = new PlivoXML();
 
         if ($asset) {
-            $this->playGreetAsset($plivoXml, $asset);
+            $this->playAsset($plivoXml, $asset);
         } else {
             $plivoXml->addSpeak('You have reached voicemail. Please leave a message.', [
                 'voice' => 'WOMAN',
@@ -1141,7 +1091,7 @@ class PlivoCallbacksController extends BaseController
         }
 
         if ($target instanceof VoiceQueueTarget) {
-            $this->playGreetAsset($plivoXml, $target->getQueue()->getGreetAsset());
+            $this->playAsset($plivoXml, $target->getQueue()->getGreetAsset());
         } elseif ($target instanceof VoiceAutoAttendantTarget) {
             $autoAttendant = $target->getAutoAttendant();
             $dialNumbers   = $autoAttendant->getOrderedDialNumbers();
@@ -1187,7 +1137,7 @@ class PlivoCallbacksController extends BaseController
                     ]);
                 }
             } else {
-                $this->playGreetAsset($gather, $asset);
+                $this->playAsset($gather, $asset);
             }
         }
 
@@ -1238,21 +1188,6 @@ class PlivoCallbacksController extends BaseController
         return $this->get('router')->generate('plivo_agent_extension_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
-    }
-
-    /**
-     * @param PlivoVoiceAccount  $account
-     * @param AbstractVoiceAsset $asset
-     *
-     * @return string
-     */
-    private function getHoldMusicUrl(PlivoVoiceAccount $account, AbstractVoiceAsset $asset = null)
-    {
-        return $this->get('router')->generate('plivo_hold_music', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-            'asset'       => $asset ? $asset->getId() : null,
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -1363,7 +1298,7 @@ class PlivoCallbacksController extends BaseController
      * @param Element                 $plivoXml
      * @param AbstractVoiceAsset|null $asset
      */
-    private function playGreetAsset(Element $plivoXml, AbstractVoiceAsset $asset = null)
+    private function playAsset(Element $plivoXml, AbstractVoiceAsset $asset = null)
     {
         if ($asset instanceof VoiceTextAsset) {
             $pattern = '#({{(?:\s+|)pause(?:\s+|)(?:\d+|)(?:\s+|)}})#';
