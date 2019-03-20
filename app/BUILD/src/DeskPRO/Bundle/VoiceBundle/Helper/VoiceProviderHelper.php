@@ -146,18 +146,6 @@ class VoiceProviderHelper implements VoiceProviderInterface
     {
         $this->getAdapter($phoneCall)->endConference($phoneCall);
 
-        // force end all agent workers
-        // in case if agent hangup callback is not called for some reason
-        foreach ($phoneCall->getAgentParticipants() as $participant) {
-            foreach ($phoneCall->getTaskSids() as $taskSid) {
-                $this->taskRouter->completeTaskForWorker(
-                    $taskSid,
-                    'agent',
-                    $participant->getPerson()->getId()
-                );
-            }
-        }
-
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,
             new LegacySystemEvent('agent.voice.call-ended', [

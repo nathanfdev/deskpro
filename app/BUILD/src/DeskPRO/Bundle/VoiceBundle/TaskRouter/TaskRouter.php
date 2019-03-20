@@ -361,7 +361,7 @@ class TaskRouter
 
             $availableWorkers = $workflow->getAvailableWorkers($task, $ignoreRejected);
             foreach ($availableWorkers as $availableWorker) {
-                if ($availableWorker === $worker) {
+                if ($availableWorker->getId() === $worker->getId()) {
                     return true;
                 }
             }
@@ -398,7 +398,46 @@ class TaskRouter
             $worker->removeActiveTask($task);
             $worker->removePendingTask($task);
 
+            $task->removeWorker($worker);
+
             $this->storage->saveWorker($worker);
+            $this->storage->saveTask($task);
+
+            return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        } finally {
+            $this->lock->release();
+        }
+    }
+
+    /**
+     * @param int $taskId
+     *
+     * @return bool
+     */
+    public function resetWorkersForTask($taskId)
+    {
+        $this->lock->acquire(true);
+
+        try {
+            $task = $this->storage->getTask($taskId);
+            if (!$task) {
+                return false;
+            }
+
+            foreach ($task->getWorkerIds() as $workerId) {
+                $worker = $this->storage->getWorker($workerId);
+                if ($worker) {
+                    $worker->removeActiveTask($task);
+                    $worker->removePendingTask($task);
+
+                    $this->storage->saveWorker($worker);
+                }
+            }
+
+            $task->setWorkersIds([]);
+            $this->storage->saveTask($task);
 
             return true;
         } catch (\Exception $e) {
@@ -427,8 +466,11 @@ class TaskRouter
                 return false;
             }
 
+            $task->addWorker($worker);
             $worker->addPendingTask($task);
+
             $this->storage->saveWorker($worker);
+            $this->storage->saveTask($task);
 
             return true;
         } catch (\Exception $e) {
@@ -457,8 +499,13 @@ class TaskRouter
                 return false;
             }
 
+            $task->removeWorker($worker);
+
+            $worker->removeActiveTask($task);
             $worker->removePendingTask($task);
+
             $this->storage->saveWorker($worker);
+            $this->storage->saveTask($task);
 
             return true;
         } catch (\Exception $e) {
@@ -487,10 +534,13 @@ class TaskRouter
                 return false;
             }
 
+            $task->addWorker($worker);
+
             $worker->removePendingTask($task);
             $worker->addActiveTask($task);
 
             $this->storage->saveWorker($worker);
+            $this->storage->saveTask($task);
 
             return true;
         } catch (\Exception $e) {

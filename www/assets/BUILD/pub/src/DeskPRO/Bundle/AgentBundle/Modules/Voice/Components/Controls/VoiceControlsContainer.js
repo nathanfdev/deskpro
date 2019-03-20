@@ -68,14 +68,14 @@ class VoiceControlsContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { dispatch, tabRef, onEndCall, me } = this.props;
-
+    const { dispatch, tabRef, onEndCall } = this.props;
     tabRef({
       isCallActive: this.isCallActive,
       endCall:      this.endCall
     });
 
     this.interval = setInterval(() => {
+      const { me } = this.props;
       const { status } = this.state;
       const connection = this.getConnection();
 

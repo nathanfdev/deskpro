@@ -338,7 +338,7 @@ class VoiceClientPhoneCallController extends BaseController
      *     noInput=true
      * )
      *
-     * @Rest\Put("/warm_add/{person}")
+     * @Rest\Put("/warm_add/{agent}")
      *
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
@@ -602,7 +602,7 @@ class VoiceClientPhoneCallController extends BaseController
      *     noInput=true
      * )
      *
-     * @Rest\Put("/cancel_invite/{person}")
+     * @Rest\Put("/cancel_invite/{agent}")
      *
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
@@ -727,6 +727,9 @@ class VoiceClientPhoneCallController extends BaseController
      */
     public function endCallAction(VoicePhoneCall $phoneCall)
     {
+        $taskRouter = $this->get('dp.voice.task_router');
+        $taskRouter->rejectAnotherWorkerReservation($phoneCall->getTaskSid(), 'agent', $this->getVoiceAgent()->getId());
+
         if ($phoneCall->getType() === VoicePhoneCall::DIRECTION_OUTBOUND) {
             // if agent hangup pending call then decline user's call as well
             if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
