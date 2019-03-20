@@ -170,14 +170,18 @@ class PersonMerge implements PersonContextInterface
             }
         }
 
-        App::getDb()->executeQuery('DELETE FROM phone_numbers WHERE id IN (?)', [$toDelete],
-            [Connection::PARAM_INT_ARRAY]);
+        if ($toDelete) {
+            App::getDb()->executeQuery('DELETE FROM phone_numbers WHERE id IN (?)', [$toDelete],
+                [Connection::PARAM_INT_ARRAY]);
+        }
 
-        App::getDb()->executeUpdate('
+        if ($toUpdate) {
+            App::getDb()->executeUpdate('
             UPDATE IGNORE phone_numbers
             SET person_id = ?
             WHERE person_id = ? AND id IN (?)
         ', [$this->person['id'], $this->other_person['id'], $toUpdate], [\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
+        }
     }
 
     protected function _mergeCustomFields()
