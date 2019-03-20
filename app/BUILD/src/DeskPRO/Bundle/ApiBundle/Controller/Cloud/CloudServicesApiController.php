@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes({"master_key", "key"})
  * @ApiUserContext("open")
- * @Rest\Route("/cloud-services")
+ * @Rest\Route("/cloudsite-ma-services")
  */
 class CloudServicesApiController extends BaseController
 {
