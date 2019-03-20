@@ -6596,6 +6596,52 @@ ul.categories-article-list {
       flex-shrink: 0;
       width: 330px;
     }
+
+    table {
+      border: none;
+      border-collapse: collapse;
+      empty-cells: show;
+      max-width: 100%;
+
+      &.fr-dashed-borders td,
+      &.fr-dashed-borders th {
+        border-style: dashed;
+      }
+
+      &.fr-alternate-rows tbody tr:nth-child(2n) {
+        background: #f5f5f5;
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+      }
+
+      td:empty,
+      th:empty {
+        height: 20px;
+      }
+
+      td.fr-highlighted,
+      th.fr-highlighted {
+        border: 1px double red;
+      }
+
+      td.fr-thick,
+      th.fr-thick {
+        border-width: 2px;
+      }
+
+      th {
+        background: #e6e6e6;
+      }
+
+      tr td:first-child {
+        color: inherit;
+        text-align: center;
+      }
+
+    }
   }
 
 
