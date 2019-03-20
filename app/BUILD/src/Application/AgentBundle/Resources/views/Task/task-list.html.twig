@@ -14,6 +14,15 @@
 		pageMeta.baseId = '{{ tplvars.baseId }}';
         pageMeta.page = {{ page }};
 	</script>
+	<style>
+		.list-listing.page-task-list .row-item.task, .list-listing.page-task-list .row-item.task:last-child {
+			width: auto;
+			border: 1px solid #ACB6BF;
+		}
+		.list-listing.page-task-list .row-item.task .item-select {
+			margin: 2px;
+		}
+	</style>
 {% endblock top %}
 
 {######################################################################################################################}
@@ -28,12 +37,18 @@
 {# CONTENT #}
 {######################################################################################################################}
 
-{% block pane_content %}
-	<div class="page-task-list">
-		{% include 'AgentBundle:Task:task-list-bar.html.twig' %}
-		{% set has_any = false %}
+{% block pane_content_header %}
+	{% include 'AgentBundle:Task:task-list-bar.html.twig' %}
+{% endblock %}
 
-        <div style="position: absolute; top: 30px; right: 0; bottom: 0; left: 0; overflow: auto;">
+{% block pane_content_footer %}
+	&nbsp;
+{% endblock %}
+
+{% block pane_content %}
+	<div class="page-task-list list-listing">
+		{% set has_any = false %}
+        <div>
             <div id="{{ tplvars.baseId }}_task_list">
                 {% for group in tasks_grouped %}
                     {% if group.tasks|length %}
