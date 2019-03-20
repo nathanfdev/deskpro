@@ -334,15 +334,15 @@ class VoiceClientPhoneCallController extends BaseController
      * @Rest\Put("/warm_add/{person}")
      *
      * @param VoicePhoneCall $phoneCall
-     * @param Person         $person
+     * @param Person         $agent
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function warmAddAction(VoicePhoneCall $phoneCall, Person $person)
+    public function warmAddAction(VoicePhoneCall $phoneCall, Person $agent)
     {
-        if (!$person->getAgentData() || !$person->getAgentData()->isVoiceEnabled()) {
+        if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Voice is not enabled for this agent');
         }
 
@@ -354,6 +354,9 @@ class VoiceClientPhoneCallController extends BaseController
         ]);
         if (!$messageAttribute) {
             throw $this->createBadRequestException('Unable to get ticket message for the phone call');
+        }
+        if (!$this->get('dp.voice.task_router')->canWorkerAcceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Unable to add this agent to the call');
         }
 
         /** @var Ticket $ticket */
@@ -371,19 +374,19 @@ class VoiceClientPhoneCallController extends BaseController
                 'from_agent_id'    => $this->getVoiceAgent()->getId(),
                 'ticket_id'        => $ticket->getId(),
                 'invite_type'      => 'warm',
-                'target'           => $person->getId(),
+                'target'           => $agent->getId(),
             ]
         ));
 
         // add action log
         $log = new VoicePhoneCallLog();
-        $log->setPerson($person);
+        $log->setPerson($agent);
         $log->setPhoneCall($phoneCall);
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_INVITED);
         $log->setDetails([
             'call_type'   => 'add',
             'invite_type' => 'warm',
-            'to_person'   => $person->getId(),
+            'to_person'   => $agent->getId(),
         ]);
 
         $em->persist($log);
@@ -424,6 +427,9 @@ class VoiceClientPhoneCallController extends BaseController
         ]);
         if (!$messageAttribute) {
             throw $this->createBadRequestException('Unable to get ticket message for the phone call');
+        }
+        if (!$this->get('dp.voice.task_router')->canWorkerAcceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Unable to transfer the call to this agent');
         }
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_WARM_TRANSFER);
@@ -511,6 +517,9 @@ class VoiceClientPhoneCallController extends BaseController
         ]);
         if (!$messageAttribute) {
             throw $this->createBadRequestException('Unable to get ticket message for the phone call');
+        }
+        if (!$this->get('dp.voice.task_router')->canWorkerAcceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Unable to transfer the call to this agent');
         }
 
         /** @var Ticket $ticket */

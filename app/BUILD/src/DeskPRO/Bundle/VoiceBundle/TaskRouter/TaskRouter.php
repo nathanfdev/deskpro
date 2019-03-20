@@ -83,7 +83,7 @@ class TaskRouter
 
             foreach ($tasks as $task) {
                 // get task workflow
-                if (!isset($this->workflows[ $task->getChannel() ])) {
+                if (!isset($this->workflows[$task->getChannel()])) {
                     $task->setStatus(Task::STATUS_ERROR);
                     $task->setStatusReason('Unknown workflow');
 
@@ -97,7 +97,7 @@ class TaskRouter
                 }
 
                 /** @var WorkflowInterface $workflow */
-                $workflow = $this->container->get($this->workflows[ $task->getChannel() ]);
+                $workflow = $this->container->get($this->workflows[$task->getChannel()]);
 
                 // check if task is expired
                 if ($workflow->isTaskTimedOut($task)) {
@@ -326,6 +326,45 @@ class TaskRouter
             }
 
             return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        } finally {
+            $this->lock->release();
+        }
+    }
+
+    /**
+     * @param int    $taskId
+     * @param string $workerType
+     * @param int    $workerId
+     * @param bool   $ignoreRejected
+     *
+     * @return bool
+     */
+    public function canWorkerAcceptTask($taskId, $workerType, $workerId, $ignoreRejected = true)
+    {
+        $this->lock->acquire(true);
+
+        try {
+            $task   = $this->storage->getTask($taskId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+
+            if (!$task || !$worker) {
+                return false;
+            }
+
+            /** @var WorkflowInterface $workflow */
+            $workflow = $this->container->get($this->workflows[$task->getChannel()]);
+            if (!$workflow) {
+                return false;
+            }
+
+            $availableWorkers = $workflow->getAvailableWorkers($task, $ignoreRejected);
+            foreach ($availableWorkers as $availableWorker) {
+                if ($availableWorker === $worker) {
+                    return true;
+                }
+            }
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         } finally {

@@ -85,7 +85,7 @@ class VoiceWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function getAvailableWorkers(Task $task)
+    public function getAvailableWorkers(Task $task, $ignoreRejected = false)
     {
         /** @var Worker[] $availableAgentWorkers */
         $availableAgentWorkers = [];
@@ -100,9 +100,9 @@ class VoiceWorkflow implements WorkflowInterface
 
         $availableAgentWorkers = array_filter(
             $availableAgentWorkers,
-            function (Worker $worker) use ($task, $voiceAgentIds) {
+            function (Worker $worker) use ($task, $voiceAgentIds, $ignoreRejected) {
                 // ignore if agent has already rejected task
-                if ($task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
+                if (!$ignoreRejected && $task->getRejectedBy() && in_array($worker->getId(), $task->getRejectedBy())) {
                     return false;
                 }
 
