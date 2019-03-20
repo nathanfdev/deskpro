@@ -528,7 +528,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         // create a router task
         // and transfer to call router
-        $task = $this->get('dp.voice.task_builder')->createVoiceTransferTask($phoneCall, $agent);
+        $task = $this->get('dp.voice.task_builder')->createVoiceTransferTask($phoneCall, $agent, $this->getVoiceAgent());
         $phoneCall->setTaskSid($task->getId());
 
         $em->flush();

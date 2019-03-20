@@ -86,19 +86,25 @@ class TaskBuilder
     /**
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
+     * @param Person         $fromAgent
      *
      * @return Task
      */
-    public function createVoiceTransferTask(VoicePhoneCall $phoneCall, Person $agent)
+    public function createVoiceTransferTask(VoicePhoneCall $phoneCall, Person $agent, Person $fromAgent = null)
     {
         $task = new Task();
         $task->setChannel(VoiceWorkflow::getChannelName());
-        $task->setAttributes([
-            'agent'      => $agent->getId(),
-            'phone_call' => $phoneCall->getId(),
-            'person'     => $phoneCall->getPerson()->getId(),
-            'transfer'   => true,
-        ]);
+        $attributes = [
+            'agent'       => $agent->getId(),
+            'phone_call'  => $phoneCall->getId(),
+            'person'      => $phoneCall->getPerson()->getId(),
+            'transfer'    => true,
+            'invite_type' => 'cold',
+        ];
+        if ($fromAgent) {
+            $attributes['from_agent_id'] = $fromAgent->getId();
+        }
+        $task->setAttributes($attributes);
 
         $this->storage->saveTask($task);
 
