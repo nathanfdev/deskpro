@@ -19,6 +19,16 @@ use Symfony\Component\HttpFoundation\Request;
 class OutgoingEmailController extends BaseController
 {
     /**
+     * {@inheritdoc}
+     */
+    public function __construct()
+    {
+        if (!defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+    }
+    
+    /**
      * @Rest\Post("")
      * @param $request
      * @return DTOOutgoingJob
