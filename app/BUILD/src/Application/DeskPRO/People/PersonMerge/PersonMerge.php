@@ -7,6 +7,7 @@
 namespace Application\DeskPRO\People\PersonMerge;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\ActivityLogger;
 use Application\DeskPRO\People\PersonContextInterface;
@@ -142,12 +143,41 @@ class PersonMerge implements PersonContextInterface
             'people_contact_data',
             'people_emails',
             'people_twitter_users',
-            'phone_numbers',
         ];
 
         foreach ($simple_tables as $table) {
             $this->_updateTablePersonId($table, 'person_id');
         }
+
+        $newPersonNumbers = App::getDb()->fetchAllKeyValue('
+            SELECT id, number
+            FROM phone_numbers
+            WHERE person_id = ?
+        ', [$this->person['id']], [\PDO::PARAM_INT]);
+
+        $oldPersonNumber = App::getDb()->fetchAllKeyValue('
+            SELECT id, number
+            FROM phone_numbers
+            WHERE person_id = ?
+        ', [$this->other_person['id']], [\PDO::PARAM_INT]);
+
+        $toDelete = $toUpdate = [];
+        foreach ($oldPersonNumber as $id => $number) {
+            if (in_array($number, $newPersonNumbers)) {
+                $toDelete[] = $id;
+            } else {
+                $toUpdate[] = $id;
+            }
+        }
+
+        App::getDb()->executeQuery('DELETE FROM phone_numbers WHERE id IN (?)', [$toDelete],
+            [Connection::PARAM_INT_ARRAY]);
+
+        App::getDb()->executeUpdate('
+            UPDATE IGNORE phone_numbers
+            SET person_id = ?
+            WHERE person_id = ? AND id IN (?)
+        ', [$this->person['id'], $this->other_person['id'], $toUpdate], [\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY]);
     }
 
     protected function _mergeCustomFields()
