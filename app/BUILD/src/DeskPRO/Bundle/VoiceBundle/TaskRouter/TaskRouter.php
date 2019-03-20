@@ -396,6 +396,100 @@ class TaskRouter
             }
 
             $worker->removeActiveTask($task);
+            $worker->removePendingTask($task);
+
+            $this->storage->saveWorker($worker);
+
+            return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        } finally {
+            $this->lock->release();
+        }
+    }
+
+    /**
+     * @param int    $taskId
+     * @param string $workerType
+     * @param int    $workerId
+     *
+     * @return bool
+     */
+    public function reserveAnotherWorkerForTask($taskId, $workerType, $workerId)
+    {
+        $this->lock->acquire(true);
+
+        try {
+            $task   = $this->storage->getTask($taskId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+
+            if (!$task || !$worker) {
+                return false;
+            }
+
+            $worker->addPendingTask($task);
+            $this->storage->saveWorker($worker);
+
+            return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        } finally {
+            $this->lock->release();
+        }
+    }
+
+    /**
+     * @param int    $taskId
+     * @param string $workerType
+     * @param int    $workerId
+     *
+     * @return bool
+     */
+    public function rejectAnotherWorkerReservation($taskId, $workerType, $workerId)
+    {
+        $this->lock->acquire(true);
+
+        try {
+            $task   = $this->storage->getTask($taskId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+
+            if (!$task || !$worker) {
+                return false;
+            }
+
+            $worker->removePendingTask($task);
+            $this->storage->saveWorker($worker);
+
+            return true;
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        } finally {
+            $this->lock->release();
+        }
+    }
+
+    /**
+     * @param int    $taskId
+     * @param string $workerType
+     * @param int    $workerId
+     *
+     * @return bool
+     */
+    public function joinTask($taskId, $workerType, $workerId)
+    {
+        $this->lock->acquire(true);
+
+        try {
+            $task   = $this->storage->getTask($taskId);
+            $worker = $this->storage->getWorkerByType($workerType, $workerId);
+
+            if (!$task || !$worker) {
+                return false;
+            }
+
+            $worker->removePendingTask($task);
+            $worker->addActiveTask($task);
+
             $this->storage->saveWorker($worker);
 
             return true;
