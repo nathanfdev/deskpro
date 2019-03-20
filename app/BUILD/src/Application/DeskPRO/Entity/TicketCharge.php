@@ -88,7 +88,7 @@ class TicketCharge extends DomainObject
      */
     public function getId($returnRemoved = false)
     {
-        if (!$this->id && $this->id_removed) {
+        if (!$this->id && $this->id_removed && $returnRemoved) {
             return $this->id_removed;
         }
 

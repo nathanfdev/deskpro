@@ -5,7 +5,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\TicketCharge;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
-use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketChargeType;
@@ -33,7 +32,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketChargesController extends CrudSubController
 {
-    use TicketSaveTrait, TicketAwarePersistModelTrait;
+    use TicketSaveTrait;
 
     public static $entity         = TicketCharge::class;
     public static $type           = TicketChargeType::class;
