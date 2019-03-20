@@ -41,6 +41,7 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@router"
+      - "@dp.voice.task_router"
       - "@twilio_adapter"
       - "@plivo_adapter"
       - "@event_dispatcher"

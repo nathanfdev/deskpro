@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskRouter;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
@@ -32,6 +33,11 @@ class VoiceProviderHelper implements VoiceProviderInterface
     private $router;
 
     /**
+     * @var TaskRouter
+     */
+    private $taskRouter;
+
+    /**
      * @var TwilioAdapter
      */
     private $twilioAdapter;
@@ -51,6 +57,7 @@ class VoiceProviderHelper implements VoiceProviderInterface
      *
      * @param EntityManager            $em
      * @param UrlGeneratorInterface    $router
+     * @param TaskRouter               $taskRouter
      * @param TwilioAdapter            $twilioAdapter
      * @param PlivoAdapter             $plivoAdapter
      * @param EventDispatcherInterface $dispatcher
@@ -58,12 +65,14 @@ class VoiceProviderHelper implements VoiceProviderInterface
     public function __construct(
         EntityManager            $em,
         UrlGeneratorInterface    $router,
+        TaskRouter               $taskRouter,
         TwilioAdapter            $twilioAdapter,
         PlivoAdapter             $plivoAdapter,
         EventDispatcherInterface $dispatcher
     ) {
         $this->em            = $em;
         $this->router        = $router;
+        $this->taskRouter    = $taskRouter;
         $this->twilioAdapter = $twilioAdapter;
         $this->plivoAdapter  = $plivoAdapter;
         $this->dispatcher    = $dispatcher;
@@ -124,6 +133,19 @@ class VoiceProviderHelper implements VoiceProviderInterface
     public function endConference(VoicePhoneCall $phoneCall)
     {
         $this->getAdapter($phoneCall)->endConference($phoneCall);
+
+        // force end all agent workers
+        // in case if agent hangup callback is not called for some reason
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            foreach ($phoneCall->getTaskSids() as $taskSid) {
+                $this->taskRouter->completeTaskForWorker(
+                    $taskSid,
+                    'agent',
+                    $participant->getPerson()->getId()
+                );
+            }
+        }
+
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,
             new LegacySystemEvent('agent.voice.call-ended', [
