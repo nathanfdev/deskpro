@@ -312,6 +312,14 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param string $error_code
+     */
+    public function setErrorCode($error_code)
+    {
+        $this->error_code = $error_code;
+    }
+
+    /**
      * @return string
      */
     public function getErrorCodeTitle()
@@ -389,6 +397,22 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('status', $status);
         $this->setModelField('date_status', new \DateTime());
+    }
+
+    /**
+     * @return int
+     */
+    public function getExecCount()
+    {
+        return $this->exec_count;
+    }
+
+    /**
+     * @param int $exec_count
+     */
+    public function setExecCount($exec_count)
+    {
+        $this->exec_count = $exec_count;
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = [])
