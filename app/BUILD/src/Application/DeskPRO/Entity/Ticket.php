@@ -1491,8 +1491,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addChargeEntity(TicketCharge $charge)
     {
-        $this->charges->add($charge);
-        $this->_onPropertyChanged('charges', null, $this->charges);
+        if (!$this->charges->contains($charge)) {
+            $this->charges->add($charge);
+            $this->_onPropertyChanged('charges', null, $this->charges);
+        }
 
         return $this;
     }

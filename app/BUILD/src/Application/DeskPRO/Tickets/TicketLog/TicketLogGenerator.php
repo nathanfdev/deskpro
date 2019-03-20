@@ -362,8 +362,8 @@ class TicketLogGenerator
                 foreach ($removed as $ticketCharge) {
                     $logData = [
                         'action_type' => 'delete_billing',
-                        'id_object'   => $ticketCharge->getId(),
-                        'charge_id'   => $ticketCharge->getId(),
+                        'id_object'   => $ticketCharge->getId(true),
+                        'charge_id'   => $ticketCharge->getId(true),
                         'old_amount'  => $ticketCharge->getAmount(),
                         'old_time'    => $ticketCharge->getChargeTime(),
                         'old_created' => $ticketCharge->getDateCreated(),
@@ -385,6 +385,34 @@ class TicketLogGenerator
 
                 return $logSet;
                 break;
+
+            case 'charge_changed':
+                $chargeLogData = [
+                    'action_type' => 'modify_billing',
+                    'id_object'   => $new->getId(),
+                    'charge_id'   => $new->getId(),
+                ];
+
+                $chargeChanges = $new->getStateChangeRecorder()->getChanges();
+                foreach ($chargeChanges as $chargeChange) {
+                    if ($chargeChange->getField() == 'amount' && !$chargeChange->isSame()) {
+                        $chargeLogData['old_amount'] = $chargeChange->getOld();
+                        $chargeLogData['new_amount'] = $chargeChange->getNew();
+                    } elseif ($chargeChange->getField() == 'charge_time' && !$chargeChange->isSame()) {
+                        $chargeLogData['old_time'] = $chargeChange->getOld();
+                        $chargeLogData['new_time'] = $chargeChange->getNew();
+                    } elseif ($chargeChange->getField() == 'date_created' && !$chargeChange->isSame()) {
+                        $chargeLogData['old_created'] = $chargeChange->getOld();
+                        $chargeLogData['new_created'] = $chargeChange->getNew();
+                    } elseif (0 === strpos($chargeChange->getField(), 'custom_data.')) {
+                        if (!array_key_exists('custom_data', $chargeLogData)) {
+                            $chargeLogData['custom_data'] = [];
+                        }
+                        $chargeLogData['custom_data'][$chargeChange->getField()] = $this->getLogDataForChange($chargeChange);
+                    }
+                }
+
+                return $chargeLogData;
 
             case 'language':
                 return [
