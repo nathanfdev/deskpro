@@ -3899,7 +3899,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			window.AgentLegacyBundle.renderReactComponent(
 				$container[0],
 				'AgentBundle/Modules/Tickets/Components/StatusMenu/StatusMenu',
-				{ ctrl: ctrl },
+				{ ctrl: ctrl, disablePendingStatus: !!this.meta.disablePendingStatus },
 				{ withProvider: true }
 			);
 

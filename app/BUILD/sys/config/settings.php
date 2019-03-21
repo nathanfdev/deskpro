@@ -474,7 +474,7 @@ return [
 
     // True to force agent emails to have the marker line
     'core_tickets.gateway_agent_require_marker' => true,
-
+    'core_tickets.disable_pending'              => false,
     'core_tickets.reply_status'                 => 'awaiting_user',
     'core_tickets.reply_assign_unassigned'      => 'assign',
     'core_tickets.reply_assign_assigned'        => false,

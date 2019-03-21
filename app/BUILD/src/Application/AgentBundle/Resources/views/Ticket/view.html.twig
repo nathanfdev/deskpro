@@ -83,6 +83,7 @@
   pageMeta.spamTicketStatusId = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}{{ s.id }}{% endfor %};
   pageMeta.deletedTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isDeleted() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
   pageMeta.spamTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
+  pageMeta.disablePendingStatus = {% if app.getSetting('core_tickets.disable_pending') %}true{% else %}false{% endif %};
   pageMeta.ticketStatusTitles = {};
   {% for s in ticket_statuses %}
   pageMeta.ticketStatusTitles.{{ s.statusType }} = '{{ s.title | escape('js') }}';
@@ -90,7 +91,6 @@
   pageMeta.ticketStatusTitles['{{ s.statusType }}.{{ ss.id }}'] = '{{ s.title | escape('js') }} > {{ ss.title | escape('js') }}';
       {% endfor %}
   {% endfor %};
-  console.log(pageMeta.ticketStatusTitles);
   pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
   pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
   pageMeta.lang = {{ {
