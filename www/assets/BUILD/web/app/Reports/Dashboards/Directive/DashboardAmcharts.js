@@ -85,6 +85,7 @@ define(['handlebars'], function(Handlebars) {
             return $timeout(() => drawWidget(chartData)
             , 1);
           } else if (scope.jsCode) {
+            var promise = null;
             try {
               eval(scope.jsCode);
             } catch (e) {

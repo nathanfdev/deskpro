@@ -74,6 +74,7 @@ define(function() {
         };
 
         if (attrs.jsCode) {
+          var promise = null;
           try {
             eval(attrs.jsCode);
           } catch (error) {
