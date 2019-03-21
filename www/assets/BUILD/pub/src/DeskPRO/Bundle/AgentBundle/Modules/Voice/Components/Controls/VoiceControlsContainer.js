@@ -29,6 +29,7 @@ class VoiceControlsContainer extends React.Component {
 
   static propTypes = {
     dispatch:       PropTypes.func,
+    me:             PropTypes.object,
     agents:         PropTypes.object,
     onlineAgentIds: PropTypes.object,
     connections:    PropTypes.object,
@@ -67,7 +68,7 @@ class VoiceControlsContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { dispatch, tabRef, onEndCall } = this.props;
+    const { dispatch, tabRef, onEndCall, me } = this.props;
 
     tabRef({
       isCallActive: this.isCallActive,
@@ -91,7 +92,7 @@ class VoiceControlsContainer extends React.Component {
       }
 
       if (connectionStatus === 'open') {
-        if (status !== 'active' || connection.outbound) {
+        if (status !== 'active' && this.state.participants.indexOf(me.get('id') !== -1)) {
           this.setState({
             status: 'active'
           });
