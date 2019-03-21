@@ -34,6 +34,9 @@ DeskPRO.Agent.PageFragment.MediaManagerPage.Upload = new Orb.Class({
 						return;
 					}
 
+          // Restoring cursor position before inserting to get to the right place.
+          MEDIA_MANAGER_WINDOW.boundEditor.selection.restore();
+
           if (MEDIA_MANAGER_WINDOW.boundEditor.html) {
             if (btn.data('is-image') == '1') {
               MEDIA_MANAGER_WINDOW.boundEditor.html.insert('<img src="' + btn.data('download-url') + '" />');
