@@ -155,44 +155,48 @@ class PlivoCallbacksController extends BaseController
                     throw $this->createBadRequestException('Phone call not found');
                 }
 
-                $this->get('dp.voice.callbacks_helper')->setOutgoingAgentParticipant($callId, $callSid, $agentId, $details);
-
-                // make an outbound call
-                $callRequestId = $this->get('plivo_adapter')->callNumber(
-                    $phoneCall->getNumber(),
-                    $phoneCall->getExternalNumber(),
-                    $this->getOutboundCallbackUrl($account, $phoneCall),
-                    'POST',
-                    $exception
-                );
-
-                if ($callRequestId) {
-                    $phoneCall->addOutgoingRequestId($callRequestId);
-                    $this->getManager()->flush();
-
-                    // create and join a new conference
-                    $plivoXml->addConference($phoneCall->getConferenceName(), [
-                        'enterSound'     => false,
-                        'callbackUrl'    => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
-                        'callbackMethod' => 'POST',
-                        'record'         => true,
-                    ]);
+                if ($phoneCall->isCanceled()) {
+                    $plivoXml->addHangup();
                 } else {
-                    $errorCodeGen = $this->get('form_error.error_code_generator.api');
-                    if ($exception instanceof UnverifiedException) {
-                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::UNVERIFIED_NUMBER, [], ['call_to']);
-                    } elseif ($exception instanceof InsufficientBalanceException) {
-                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
-                    } else {
-                        $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
-                    }
+                    $this->get('dp.voice.callbacks_helper')->setOutgoingAgentParticipant($callId, $callSid, $agentId, $details);
 
-                    $this->get('event_dispatcher')->dispatch(
-                        LegacySystemEvent::EVENT_NAME,
-                        new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
+                    // make an outbound call
+                    $callRequestId = $this->get('plivo_adapter')->callNumber(
+                        $phoneCall->getNumber(),
+                        $phoneCall->getExternalNumber(),
+                        $this->getOutboundCallbackUrl($account, $phoneCall),
+                        'POST',
+                        $exception
                     );
 
-                    $plivoXml->addHangup();
+                    if ($callRequestId) {
+                        $phoneCall->addOutgoingRequestId($callRequestId);
+                        $this->getManager()->flush();
+
+                        // create and join a new conference
+                        $plivoXml->addConference($phoneCall->getConferenceName(), [
+                            'enterSound'     => false,
+                            'callbackUrl'    => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
+                            'callbackMethod' => 'POST',
+                            'record'         => true,
+                        ]);
+                    } else {
+                        $errorCodeGen = $this->get('form_error.error_code_generator.api');
+                        if ($exception instanceof UnverifiedException) {
+                            $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::UNVERIFIED_NUMBER, [], ['call_to']);
+                        } elseif ($exception instanceof InsufficientBalanceException) {
+                            $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::INSUFFICIENT_BALANCE, [], ['call_to']);
+                        } else {
+                            $errorMessage = $errorCodeGen->generateByErrorCode(ErrorsCodes::VOICE_PERMISSIONS, [], ['call_to']);
+                        }
+
+                        $this->get('event_dispatcher')->dispatch(
+                            LegacySystemEvent::EVENT_NAME,
+                            new LegacySystemEvent('agent.voice.outgoing-provider-error', $errorMessage)
+                        );
+
+                        $plivoXml->addHangup();
+                    }
                 }
             } catch (OutOfServiceException $e) {
                 $plivoXml->addSpeak('Unable to make a call.', [

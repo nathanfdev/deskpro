@@ -700,10 +700,12 @@ class VoiceClientPhoneCallController extends BaseController
         if ($phoneCall->getType() === VoicePhoneCall::DIRECTION_OUTBOUND) {
             // if agent hangup pending call then decline user's call as well
             if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
-                foreach ($phoneCall->getUserParticipants() as $participant) {
-                    $this->get('dp.voice.provider_helper')->cancelCall($phoneCall);
-                }
+                $this->get('dp.voice.provider_helper')->cancelCall($phoneCall);
+                $this->get('dp.voice.provider_helper')->cancelOutgoingCalls($phoneCall);
             }
+
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_CANCELED);
+            $this->getManager()->flush();
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);

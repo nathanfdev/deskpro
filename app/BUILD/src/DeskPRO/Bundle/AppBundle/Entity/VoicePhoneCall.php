@@ -34,6 +34,7 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     const STATUS_COLD_TRANSFER = 'cold_transfer';
     const STATUS_ACTIVE        = 'active';
     const STATUS_ENDED         = 'ended';
+    const STATUS_CANCELED      = 'canceled';
     const STATUS_VOICEMAIL     = 'voicemail';
 
     const DIRECTION_INBOUND  = 'inbound';
@@ -458,6 +459,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     public function isVoicemail()
     {
         return $this->status === self::STATUS_VOICEMAIL;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCanceled()
+    {
+        return $this->status === self::STATUS_CANCELED;
     }
 
     /**
