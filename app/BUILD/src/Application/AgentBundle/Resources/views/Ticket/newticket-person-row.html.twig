@@ -25,27 +25,31 @@
 				{% endif %}
 			</td>
 		</tr>
-	</tbody>
-	<tbody>
+		<tr>
+			<th width="100">{{ phrase('agent.general.phone_number') }}</th>
+			<td>
+				{% if not person.id or not person.phone_numbers.length < 1 %}
+					<input type="text" name="newticket[person][phone_number]" class="phone_number" value="" style="margin:0;" />
+				{% endif %}
+			</td>
+		</tr>
 		<tr>
 			<th>{{ phrase('agent.general.name') }}</th>
 			<td>
 				<input type="text" name="newticket[person][name]" class="name" value="{{ person.name }}" style="margin:0;" />
 			</td>
 		</tr>
+		{% if not person.id and app.getLanguages().isLangSystemEnabled() %}
+		<tr>
+			<th>{{ phrase('agent.general.language') }}</th>
+			<td>
+				<select name="newticket[person][language_id]">
+					{% for lang in app.getLanguages().getAll() %}
+						<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ phrase_object(lang, 'title') }}</option>
+					{% endfor %}
+				</select>
+			</td>
+		</tr>
+		{% endif %}
 	</tbody>
-	{% if not person.id and app.getLanguages().isLangSystemEnabled() %}
-		<tbody>
-			<tr>
-				<th>{{ phrase('agent.general.language') }}</th>
-				<td>
-					<select name="newticket[person][language_id]">
-						{% for lang in app.getLanguages().getAll() %}
-							<option value="{{ lang.id }}" {% if lang.id == app.user.language.id %}selected="selected"{% endif %}>{{ phrase_object(lang, 'title') }}</option>
-						{% endfor %}
-					</select>
-				</td>
-			</tr>
-		</tbody>
-	{% endif %}
 </table>

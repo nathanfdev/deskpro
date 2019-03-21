@@ -2297,6 +2297,9 @@ class Person extends DomainObject implements
         return $region;
     }
 
+    /**
+     * @param PersonPhoneNumber|null $number
+     */
     public function setPrimaryPhoneNumber(PersonPhoneNumber $number = null)
     {
         // note that while this is a 1-many relationship, we ensure in this method that we only have 1

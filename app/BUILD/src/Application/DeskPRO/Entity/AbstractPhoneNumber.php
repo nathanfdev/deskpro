@@ -108,7 +108,7 @@ abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObj
     /**
      * @param $phone_number
      *
-     * @return AbstractPhoneNumber
+     * @return static
      */
     public static function createEntity($phone_number)
     {

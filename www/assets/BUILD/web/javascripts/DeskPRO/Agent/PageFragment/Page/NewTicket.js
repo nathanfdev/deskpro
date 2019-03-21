@@ -941,6 +941,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			case 'person_id':
 			case 'person_no_user':
 			case 'person_email_address':
+			case 'person_phone_number_exists':
+			case 'person_phone_number_invalid':
 				$('div.user-section.section', this.wrapper).addClass('error');
 				break;
 
@@ -2053,7 +2055,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						map[el.name] = el.value;
 						(function(el){
 
-							if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]'].indexOf(el.name) !== -1) {
+							if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]', 'newticket[person][phone_number]'].indexOf(el.name) !== -1) {
 								return;
 							}
 
@@ -2085,6 +2087,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 						self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
 							$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
 							$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
+							$('input[name="newticket[person][phone_number]"]', $form).val(map['newticket[person][phone_number]']);
 						});
 					}
 

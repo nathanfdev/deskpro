@@ -23,6 +23,7 @@ class NewTicket extends AbstractType
         $user_builder->add('id', 'hidden');
         $user_builder->add('name', 'text', ['required' => false]);
         $user_builder->add('email_address', 'text', ['required' => false]);
+        $user_builder->add('phone_number', 'text', ['required' => false, 'property_path' => 'phoneNumber']);
         $user_builder->add('organization', 'text', ['required' => false]);
         $user_builder->add('organization_position', 'text', ['required' => false]);
         $user_builder->add('language_id', 'text', ['required' => false]);

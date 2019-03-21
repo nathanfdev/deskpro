@@ -50,6 +50,8 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 	<div style="display:none;" class="error-message subject">&bull; {{ phrase('agent.tickets.please_enter_subject') }}</div>
 	<div style="display:none;" class="error-message person_id person_no_user">&bull; {{ phrase('agent.tickets.please_choose_or_create_user') }}</div>
 	<div style="display:none;" class="error-message person_email_address">&bull; {{ phrase('agent.general.error_email_address') }}</div>
+	<div style="display:none;" class="error-message person_phone_number_exists">&bull; {{ phrase('agent.general.error_phone_number_exists') }}</div>
+	<div style="display:none;" class="error-message person_phone_number_invalid">&bull; {{ phrase('agent.general.error_invalid_phone_number') }}</div>
 	<div style="display:none;" class="error-message person_email_address_gateway">&bull; {{ phrase('agent.tickets.email_is_ticket_account') }}</div>
 	<div style="display:none;" class="error-message brand_id">&bull; {{ phrase('agent.general.select_a_brand') }}</div>
 	<div style="display:none;" class="error-message department_id">&bull; {{ phrase('agent.general.select_a_department') }}</div>

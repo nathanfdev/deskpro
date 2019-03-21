@@ -64,6 +64,7 @@ use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -4861,6 +4862,19 @@ class TicketController extends AbstractController
                 $check_person = $this->em->getRepository(Person::class)->findOneByEmail($new_email);
                 if ($check_person && $check_person->is_disabled) {
                     $errors['person_disabled'] = true;
+                }
+
+                $newPhone = $this->in->getString('newticket.person.phone_number');
+                if ($newPhone) {
+                    $phoneNumbers = $this->em->getRepository(Entity\PersonPhoneNumber::class)->findBy([
+                        'number' => $newPhone,
+                    ]);
+                    if ($phoneNumbers) {
+                        $errors['person_phone_number_exists'] = true;
+                    }
+                    if ($this->container->get('validator')->validate($newPhone, [new AppAssert\PhoneNumber()])->has(0)) {
+                        $errors['person_phone_number_invalid'] = true;
+                    }
                 }
             }
 

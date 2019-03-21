@@ -10,6 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonPhoneNumber;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -282,6 +283,10 @@ class NewTicket
                 $person                = new Person();
                 $email_obj             = $person->addEmailAddressString($this->person->email_address);
                 $person->primary_email = $email_obj;
+
+                if ($this->person->phoneNumber) {
+                    $person->setPrimaryPhoneNumber(PersonPhoneNumber::createEntity($this->person->phoneNumber));
+                }
             } else {
                 throw new \Exception('You do not have permission to create a new user. If you think this is a mistake, please contact your administrator.');
             }
