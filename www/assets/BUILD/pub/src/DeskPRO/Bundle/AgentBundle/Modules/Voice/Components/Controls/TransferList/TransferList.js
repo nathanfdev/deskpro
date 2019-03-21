@@ -18,13 +18,14 @@ class TransferList extends React.Component {
     connection:         PropTypes.object,
     transferCall:       PropTypes.func,
     cancelInvite:       PropTypes.func,
-    closeMenu:          PropTypes.func
+    closeMenu:          PropTypes.func,
+    warmTransferStart:  PropTypes.func
   };
 
   static defaultProps = {
     onTransferCall: () => {},
     onCancelInvite: () => {},
-    closeMenu:      () => {}
+    closeMenu:      () => {},
   };
 
   constructor(props) {
@@ -44,6 +45,7 @@ class TransferList extends React.Component {
   };
 
   onWarmTransfer = () => {
+    this.props.warmTransferStart();
     const { transferCall } = this.props;
     const { selectedTarget } = this.state;
     this.setState({

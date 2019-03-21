@@ -12,8 +12,10 @@ import DialGrid from '../Common/DialGrid';
 class VoiceControls extends React.Component {
 
   static propTypes = {
-    status: PropTypes.string,
-    baseId: PropTypes.string,
+    status:      PropTypes.string,
+    baseId:      PropTypes.string,
+    connections: PropTypes.object,
+    ticketId:    PropTypes.number
   };
 
   static defaultProps = {
@@ -24,11 +26,19 @@ class VoiceControls extends React.Component {
     sendDigits: () => {}
   };
 
+  constructor(props) {
+    super(props);
+    this.awaitingTransferState = 0;
+    this.state = {
+      transferPerformed: false
+    };
+  }
+
   componentDidMount = () => {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
+    window.DeskPRO_Window.getMessageBroker().addMessageListener('agent.voice.conference.status', this.trackWarmTransfer);
   };
-
   componentDidUpdate = () => {
     this.updateWindowDimensions();
   };
@@ -40,7 +50,34 @@ class VoiceControls extends React.Component {
       content.style.paddingTop = '10px';
     }
     window.removeEventListener('resize', this.updateWindowDimensions);
+    window.DeskPRO_Window.getMessageBroker().removeMessageListener('agent.voice.conference.status', this.trackWarmTransfer);
   };
+
+  getConnection() {
+    const { connections, ticketId } = this.props;
+    return connections
+      .filter(connection => parseInt(connection.ticketId, 10) === parseInt(ticketId, 10))
+      .first();
+  }
+
+  trackWarmTransfer = (event) => {
+    const connection = this.getConnection();
+    if (!connection || parseInt(connection.callId, 10) !== parseInt(event.phone_call.id, 10)) {
+      return;
+    }
+
+    if (event.phone_call.status === 'warm_transfer' && this.awaitingTransferState === 1) {
+      this.awaitingTransferState = 2;
+    }
+    if (event.phone_call.status === 'active' && this.awaitingTransferState === 2) {
+      this.setState({ transferPerformed: true }, () => { this.awaitingTransferState = 0; });
+    }
+  };
+
+  warmTransferStart = () => {
+    this.awaitingTransferState = 1;
+  };
+
 
   updateWindowDimensions = () => {
     if (!this.ticking) {
@@ -89,6 +126,8 @@ class VoiceControls extends React.Component {
       case 'closed':
         return (
           <Active
+            transferPerformed={this.state.transferPerformed}
+            warmTransferStart={this.warmTransferStart}
             divRef={(c) => { this.div = c; }}
             {...this.props}
             ended={status === 'closed'}
@@ -157,15 +196,17 @@ class Busy extends React.Component {
 class Active extends React.Component {
 
   static propTypes = {
-    mute:         PropTypes.bool,
-    hold:         PropTypes.bool,
-    ended:        PropTypes.bool,
-    onlineAgents: PropTypes.object,
-    toggleHold:   PropTypes.func,
-    toggleMute:   PropTypes.func,
-    endCall:      PropTypes.func,
-    sendDigits:   PropTypes.func,
-    divRef:       PropTypes.func
+    mute:              PropTypes.bool,
+    hold:              PropTypes.bool,
+    ended:             PropTypes.bool,
+    onlineAgents:      PropTypes.object,
+    toggleHold:        PropTypes.func,
+    toggleMute:        PropTypes.func,
+    endCall:           PropTypes.func,
+    sendDigits:        PropTypes.func,
+    divRef:            PropTypes.func,
+    warmTransferStart: PropTypes.func,
+    transferPerformed: PropTypes.bool
   };
 
   constructor(props) {
@@ -304,7 +345,7 @@ class Active extends React.Component {
           className={classNames('red', { disabled: ended })}
           onClick={this.endCall}
         >
-          End call
+          {this.props.transferPerformed ? 'Hang up' : 'End call'}
         </Button>
 
         <Detached
@@ -315,7 +356,7 @@ class Active extends React.Component {
           zIndex={1000}
         >
           <ClickOut onClickOut={this.closeTransferMenu}>
-            <TransferList {...this.props} closeMenu={this.closeTransferMenu} />
+            <TransferList {...this.props} closeMenu={this.closeTransferMenu} warmTransferStart={this.props.warmTransferStart} />
           </ClickOut>
         </Detached>
         <Detached
