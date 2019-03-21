@@ -100,6 +100,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         $this->person->loadHelper('PermissionsManager', ['force_load_usergroups' => true]);
         $this->person->loadHelper('HelpMessages');
         $this->person->loadHelper('AgentPrefs');
+        $this->container->getTranslator()->setPersonContext($this->person);
     }
 
     protected function _userHasPermissions()
