@@ -375,12 +375,11 @@ abstract class LowScriptAbstract
         list($sessionId) = explode('-', $agentSessionId, 2);
         $sessionId       = Util::baseDecode($sessionId, Util::BASE36_ALPHABET);
 
-        $agentSession = $this->getPdoRead()->query("
-                SELECT sessions.*, people.is_agent, people_prefs.value_str AS last_message_id
+        $agentSession = $this->getPdoRead()->query('
+                SELECT sessions.*, people.is_agent
                 FROM sessions
                 INNER JOIN people ON (sessions.person_id = people.id)
-                LEFT JOIN people_prefs ON (people_prefs.person_id = people.id AND people_prefs.name = 'agent.ui.last_message_id')
-                WHERE sessions.id = ".$this->getPdoRead()->quote($sessionId)
+                WHERE sessions.id = '.$this->getPdoRead()->quote($sessionId)
         )->fetch(\PDO::FETCH_ASSOC);
         if (!$agentSession || $agentSessionId !== (Util::baseEncode($agentSession['id'], Util::BASE36_ALPHABET).'-'.$agentSession['auth'])) {
             echo 'no/invalid session';

@@ -24,11 +24,6 @@ class GetMsgScript extends LowScriptAbstract
             $this->_person_id  = $agent_session['person_id'];
             $this->_session_id = $agent_session['id'];
 
-            $new_since = isset($_REQUEST['since']) ? intval($_REQUEST['since']) : 0;
-            if ($new_since < 0) {
-                $new_since = 0;
-            }
-            $last_since    = intval($agent_session['last_message_id']);
             $activity_time = isset($_REQUEST['at']) ? intval($_REQUEST['at']) : 0;
             if ($activity_time < 0) {
                 $activity_time = 0;
@@ -156,18 +151,6 @@ class GetMsgScript extends LowScriptAbstract
             }
 
             if ($performDbUpdates) {
-                // We save the last message we know a user got because we need to know
-                // to deliver offline messages (such as chats) the next time the user logs in
-                if ($new_since && $new_since > $last_since) {
-                    $q = $this->getPdo()->prepare('
-                        REPLACE INTO people_prefs
-                            (person_id, name, value_str, value_array, date_expire)
-                        VALUES
-                            (?, ?, ?, NULL, NULL);
-                    ');
-                    $q->execute([$agent_session['person_id'], 'agent.ui.last_message_id', $new_since]);
-                }
-
                 $q = $this->getPdo()->prepare('
                     UPDATE sessions
                     SET date_last = ?
@@ -635,7 +618,23 @@ class GetMsgScript extends LowScriptAbstract
         }
         $last = (int) $_REQUEST['last_alert'];
 
-        return $this->transformData($this->fetch($last, $this->_person_id));
+        if ($last <= 0) {
+            $lastId = $this->getPdoRead()
+                ->query('SELECT id FROM notify_action_alerts ORDER BY id DESC LIMIT 1')
+                ->fetchColumn() ?: 1;
+
+            return [[
+                'id'           => $lastId,
+                'data'         => '{}',
+                'date_created' => date('Y-m-d H:i:s'),
+                'target_id'    => -100,
+                'timestamp'    => time(),
+                'type'         => 'agent.init_last_id',
+                'uuid'         => uniqid('', true),
+            ]];
+        } else {
+            return $this->transformData($this->fetch($last, $this->_person_id));
+        }
     }
 
     protected function getNotifications()
@@ -644,6 +643,12 @@ class GetMsgScript extends LowScriptAbstract
             return [];
         }
         $last = (int) $_REQUEST['last_notify'];
+
+        if (!$last) {
+            $last = $this->getPdoRead()
+                ->query('SELECT id FROM notify_notifications ORDER BY id DESC LIMIT 1')
+                ->fetchColumn() ?: 1;
+        }
 
         return $this->transformData($this->fetch($last, $this->_person_id, 'notifications'));
     }
