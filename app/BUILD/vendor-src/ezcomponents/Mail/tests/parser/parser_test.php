@@ -76,4 +76,27 @@ class ezcMailParserTest extends \PHPUnit\Framework\TestCase
             "Wrong decoded file"
         );
     }
+
+    public function testDotInHeaderFieldName()
+    {
+        $parser = new \ezcMailParser();
+        // pay attention to header field 'X-ups.nes.encoded.data:'
+        $set = new SingleFileSet( 'various/mail_with_dot_in_header_field_name.mail');
+        $mail = $parser->parseMail( $set );
+        $this->assertEquals( 1, count( $mail ) );
+        $mail = $mail[0];
+        $this->assertEquals( new \ezcMailAddress( 'pkginfo@ups.com', 'UPS Freight Shipment Event Notification', 'utf-8' ), $mail->from );
+        $this->assertEquals( 'UPS Tracking Notification, Tracking Number 952077184', $mail->subject );
+        $this->assertEquals( true, $mail->body instanceof \ezcMailMultipartAlternative );
+        $this->assertEquals( '----NextPart_1553085460748.0011991680', $mail->body->boundary );
+        $parts = $mail->body->getParts();
+        $this->assertEquals(2, count($parts));
+        $this->assertEquals( true, $parts[0] instanceof \ezcMailText );
+        $this->assertEquals( true, $parts[1] instanceof \ezcMailText );
+        
+
+        // check the body
+        $this->assertEquals( "Some plain text\n", $parts[0]->text );
+        $this->assertEquals( "<html>Some html</html>\n", $parts[1]->text );
+    }
 }
