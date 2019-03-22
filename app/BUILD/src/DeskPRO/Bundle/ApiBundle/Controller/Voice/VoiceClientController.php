@@ -92,10 +92,15 @@ class VoiceClientController extends BaseController
     /**
      * @Rest\Get("/performance_logs")
      *
-     * @return View
+     * @return Response
      */
     public function performanceLogsAction()
     {
-        return new Response(file_get_contents($this->get('deskpro.app_env')->getUserLogsDir().'/voice.log'));
+        $content = file_get_contents($this->get('deskpro.app_env')->getUserLogsDir().'/voice.log');
+        if (!$content) {
+            $content = '';
+        }
+
+        return new Response($content);
     }
 }
