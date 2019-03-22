@@ -96,6 +96,8 @@
 			{{ phrase('agent.tickets.log_new_email_agent') }}
 		{% elseif log.details.event_method == 'api' %}
 			{{ phrase('agent.tickets.log_new_api_agent') }}
+		{% elseif log.details.event_method == 'phone' %}
+			{{ phrase('agent.tickets.log_new_phone_agent') }}
 		{% elseif log.details.event_method == 'web' %}
 			{{ phrase('agent.tickets.log_new_web_agent_portal') }}
 		{% elseif log.details.event_method %}
@@ -106,6 +108,8 @@
 			{{ phrase('agent.tickets.log_new_email_user') }}
 		{% elseif log.details.event_method == 'api' %}
 			{{ phrase('agent.tickets.log_new_api_user') }}
+		{% elseif log.details.event_method == 'phone' %}
+			{{ phrase('agent.tickets.log_new_phone_user') }}
 		{% elseif log.details.event_method == 'portal' %}
 			{{ phrase('agent.tickets.log_new_web_user_portal') }}
 		{% elseif log.details.event_method == 'form' %}

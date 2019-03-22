@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\VoiceBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
@@ -94,7 +95,7 @@ class VoiceOutboundCallType extends AbstractType
         $data->setData($options);
 
         if ($data->getExternalNumber()) {
-            $person = $this->personRepo->getOrCreateUserByPhoneNumber($data->getExternalNumber());
+            $person = $this->personRepo->getOrCreateUserByPhoneNumber($data->getExternalNumber(), Person::CREATED_PHONE_OUTBOUND);
             $data->setPerson($person);
         }
     }

@@ -249,6 +249,7 @@ class RecordingDownloadHelper
             $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
+            $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
 
             // set asset properties
             if ($queue->getVoicemailAgent()) {
@@ -273,9 +274,9 @@ class RecordingDownloadHelper
 
         $person = $phoneCall->getPerson();
         if ($person && $person->isAgent()) {
-            $context = $this->ticketManager->createAgentExecutorContext($person, $event, ExecutorContext::METHOD_API);
+            $context = $this->ticketManager->createAgentExecutorContext($person, $event, ExecutorContext::METHOD_PHONE);
         } else {
-            $context = $this->ticketManager->createUserExecutorContext($person, $event, ExecutorContext::METHOD_API);
+            $context = $this->ticketManager->createUserExecutorContext($person, $event, ExecutorContext::METHOD_PHONE);
         }
 
         $this->ticketManager->saveTicket($ticket, $context);

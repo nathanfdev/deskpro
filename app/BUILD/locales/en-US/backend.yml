@@ -4030,6 +4030,8 @@ agent.people.primary_email: primary
 agent.people.reg_agent: 'User created by an agent'
 agent.people.reg_gateway: 'User was created by submitting an email to the helpdesk'
 agent.people.reg_website: 'User registered using the website'
+agent.people.reg_phone_inbound: 'User created by an inbound call'
+agent.people.reg_phone_outbound: 'User created by an outbound call'
 agent.people.remove_picture: 'Remove Picture'
 agent.people.since: Since
 agent.people.title_dr: Dr.
@@ -4894,6 +4896,8 @@ agent.tickets.log_message_old_message: 'Old Message'
 agent.tickets.log_message_updated: 'Message #{{id}} updated'
 agent.tickets.log_new_api_agent: 'New ticket via API (agent context)'
 agent.tickets.log_new_api_user: 'New ticket via API (user context)'
+agent.tickets.log_new_phone_agent: 'New ticket via phone call (agent context)'
+agent.tickets.log_new_phone_user: 'New ticket via phone call (user context)'
 agent.tickets.log_new_email_agent: 'New ticket by agent via forward'
 agent.tickets.log_new_email_user: 'New ticket by user via email gateway'
 agent.tickets.log_new_reply_by: 'New {{name}} reply'

@@ -1090,8 +1090,9 @@ define([
         { title: 'Created by a user via email', value: 'gateway.person' },
         { title: 'Created by an agent via the agent interface', value: 'web.agent.portal' },
         { title: 'Created by an agent via email', value: 'gateway.agent' },
-        { title: 'Create by the API in a user context', value: 'web.api.person' },
-        { title: 'Create by the API in an agent context', value: 'web.api.agent' },
+        { title: 'Created by the API in a user context', value: 'web.api.person' },
+        { title: 'Created by an agent via an outbound call', value: 'phone.outbound' },
+        { title: 'Created by the user via an inbound call', value: 'phone.inbound' },
       ];
       const def = this.getStandardSelect(options);
       return def;

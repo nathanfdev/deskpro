@@ -134,6 +134,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     const CREATED_GATEWAY_PERSON       = 'gateway.person';
     const CREATED_GATEWAY_AGENT        = 'gateway.agent';
     const CREATED_MESSENGER_UNANSWERED = 'messenger.unanswered';
+    const CREATED_PHONE_INBOUND        = 'phone.inbound';
+    const CREATED_PHONE_OUTBOUND       = 'phone.outbound';
 
     /**#@+
      * These strings in $notify_email_name have special meanings.

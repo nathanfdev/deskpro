@@ -117,6 +117,8 @@ class Person extends DomainObject implements
     const CREATED_WEB_USERSOURCE = 'web.usersource';
     const CREATED_GATEWAT_PERSON = 'gateway.person';
     const CREATED_WEB_API        = 'web.api';
+    const CREATED_PHONE_INBOUND  = 'phone.inbound';
+    const CREATED_PHONE_OUTBOUND = 'phone.outbound';
 
     const EVENT_PRE_CREATE  = 'person.pre_create';
     const EVENT_POST_CREATE = 'person.post_create';

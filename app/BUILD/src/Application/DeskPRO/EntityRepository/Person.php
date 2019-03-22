@@ -741,10 +741,11 @@ class Person extends AbstractEntityRepository
 
     /**
      * @param string $number
+     * @param string $createdBy
      *
      * @return PersonEntity|null
      */
-    public function getOrCreateUserByPhoneNumber($number)
+    public function getOrCreateUserByPhoneNumber($number, $createdBy = null)
     {
         $person = null;
         if ($number) {
@@ -764,6 +765,10 @@ class Person extends AbstractEntityRepository
                 $person = new PersonEntity();
                 $person->setPrimaryPhoneNumber(PhoneNumberEntity::createEntity($number));
                 $person->setPreference('voice.unknown_caller', 1);
+
+                if ($createdBy) {
+                    $person->setCreationSystem($createdBy);
+                }
 
                 $this->_em->persist($person);
                 $this->_em->flush();

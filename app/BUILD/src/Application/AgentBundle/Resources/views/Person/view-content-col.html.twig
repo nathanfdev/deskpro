@@ -565,6 +565,10 @@
                             {{ phrase('agent.people.reg_agent') }}
                         {% elseif person.creation_system == 'gateway.person' %}
                             {{ phrase('agent.people.reg_gateway') }}
+                        {% elseif person.creation_system == 'phone.inbound' %}
+                            {{ phrase('agent.people.reg_phone_inbound') }}
+                        {% elseif person.creation_system == 'phone.outbound' %}
+                            {{ phrase('agent.people.reg_phone_outbound') }}
                         {% else %}
                             {{ person.creation_system }}
                         {% endif %}

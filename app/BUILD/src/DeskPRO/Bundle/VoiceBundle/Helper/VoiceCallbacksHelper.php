@@ -172,7 +172,7 @@ class VoiceCallbacksHelper
         // get the caller person
         /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
         $personRepo = $this->em->getRepository(Person::class);
-        $person     = $personRepo->getOrCreateUserByPhoneNumber($fromNumber);
+        $person     = $personRepo->getOrCreateUserByPhoneNumber($fromNumber, Person::CREATED_PHONE_INBOUND);
 
         // create phone call
         $phoneCall = new VoicePhoneCall();
@@ -329,6 +329,7 @@ class VoiceCallbacksHelper
             $ticket->setAgent($agent);
             $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
             $ticket->addMessage($ticketMessage);
+            $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
 
             // set ticket department
             $permissionsHelper          = $agent->getHelper('AgentPermissions');
@@ -489,11 +490,12 @@ class VoiceCallbacksHelper
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($agent);
             $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
+            $ticket->setCreationSystem(Ticket::CREATED_PHONE_OUTBOUND);
         }
 
         $ticket->addMessage($ticketMessage);
 
-        $context = $this->ticketManager->createAgentExecutorContext($agent, ExecutorContext::EVENT_NEW, ExecutorContext::METHOD_API);
+        $context = $this->ticketManager->createAgentExecutorContext($agent, ExecutorContext::EVENT_NEW, ExecutorContext::METHOD_PHONE);
         $this->ticketManager->saveTicket($ticket, $context);
 
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
@@ -612,6 +614,7 @@ class VoiceCallbacksHelper
                 $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
                 $ticket->setPerson($phoneCall->getPerson());
                 $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
+                $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
             }
 
             $ticket->addMessage($ticketMessage);
@@ -1029,9 +1032,9 @@ class VoiceCallbacksHelper
 
         $person = $ticket->getPerson();
         if ($person && $person->isAgent()) {
-            $context = $this->ticketManager->createAgentExecutorContext($person, $event, ExecutorContext::METHOD_API);
+            $context = $this->ticketManager->createAgentExecutorContext($person, $event, ExecutorContext::METHOD_PHONE);
         } else {
-            $context = $this->ticketManager->createUserExecutorContext($person, $event, ExecutorContext::METHOD_API);
+            $context = $this->ticketManager->createUserExecutorContext($person, $event, ExecutorContext::METHOD_PHONE);
         }
 
         $this->ticketManager->saveTicket($ticket, $context);
