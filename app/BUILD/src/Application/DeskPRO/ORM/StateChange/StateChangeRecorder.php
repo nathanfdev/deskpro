@@ -214,6 +214,8 @@ class StateChangeRecorder
             }
         } elseif ($coll instanceof PersistentCollection) {
             if (!$coll->isInitialized()) {
+                // collection might not be loaded by this point
+                // in any case we need to load it to get snaphost and generate changeset
                 $coll->initialize();
             }
             $old = $coll->getSnapshot();
