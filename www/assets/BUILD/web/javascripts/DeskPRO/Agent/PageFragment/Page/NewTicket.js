@@ -319,11 +319,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			el.val(newval);
 		};
 
+    var fieldsContainer = self.getEl('fields_container');
 		this.fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		this.oldFields = null;
 
 		self._updateFields = function() {
-			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
+			$('.ticket-field', fieldsContainer).removeClass('item-on').hide();
 			var fieldDisplay = self.fieldDisplayFetch.getFields(depSel.val());
 			var newFields = [];
 
@@ -343,7 +344,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					}
 
 					newFields.push(classname);
-					$('.ticket-field.' + classname, self.wrapper).not('.error-message').detach().appendTo(self.getEl('fields_container')).show().addClass('item-on');
 				});
 			});
 
@@ -391,14 +391,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			});
 
-			self.getEl('fields_container').find('tbody').removeClass('last').filter(':visible').last().addClass('last');
-      self.getEl('fields_container').find('select').dpMultiLevelSelect();
-
-			self.updateUi();
+			newFields.sort();
 
 			var changed = false;
 			if (!self.oldFields) {
-				changed = true;
+				changed = false; // means null aka first page laod
 			} else if (self.oldFields.length !== newFields.length) {
 				changed = true;
 			} else {
@@ -415,8 +412,19 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			// recursive update fields if they were changed
 			if (changed) {
 				self._updateFields();
+			} else {
+				newFields.forEach(function(classname) {
+					self.wrapper.find('.ticket-field.' + classname).not('.error-message').detach().appendTo(fieldsContainer).show().addClass('item-on');
+				});
+
+				fieldsContainer.find('tbody').removeClass('last').filter(':visible').last().addClass('last');
+				fieldsContainer.find('select').dpMultiLevelSelect();
+
+				self.updateUi();
 			}
 		};
+
+		self.getCustomFields();
 
 		depSel.on('change', function(ev) {
 			self.getCustomFields();
@@ -435,8 +443,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				self._updateFields();
 			}
 		});
-
-		self.getCustomFields();
 
 		//------------------------------
 		// Status menu
