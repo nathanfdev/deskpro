@@ -69,7 +69,7 @@ class VoiceControls extends React.Component {
     if (event.phone_call.status === 'warm_transfer' && this.awaitingTransferState === 1) {
       this.awaitingTransferState = 2;
     }
-    if (event.phone_call.status === 'active' && this.awaitingTransferState === 2) {
+    if ((event.phone_call.status === 'active' || event.phone_call.participants.length  >= 3) && this.awaitingTransferState === 2) {
       this.setState({ transferPerformed: true }, () => { this.awaitingTransferState = 0; });
     }
   };
