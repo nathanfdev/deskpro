@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\DataFixtures\InstallFixtures;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\Setting;
+use DeskPRO\Bundle\AppBundle\Entity\ActionAlert;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
@@ -54,6 +55,17 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
             $s->value = $value;
             $manager->persist($s);
         }
+
+        // Initial entry to prevent a warning being logged in GetMsgScript::getActionAlerts()
+        $bogusAlert = new ActionAlert();
+        $bogusAlert
+            ->setTargetId('bogus')
+            ->setUuid(uniqid('', true))
+            ->setDateCreated(new \DateTime())
+            ->setData([])
+            ->setType('bogus')
+        ;
+        $manager->persist($bogusAlert);
 
         $manager->flush();
     }
