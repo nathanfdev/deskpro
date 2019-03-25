@@ -269,7 +269,7 @@ class RecordingDownloadHelper
         if ($changes->isNewTicket()) {
             $event = ExecutorContext::EVENT_NEW;
         } else {
-            $event = ExecutorContext::EVENT_UPDATE;
+            $event = ExecutorContext::EVENT_REPLY;
         }
 
         $person = $phoneCall->getPerson();

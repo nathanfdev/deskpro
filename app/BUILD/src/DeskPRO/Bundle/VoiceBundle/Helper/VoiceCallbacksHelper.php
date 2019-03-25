@@ -495,7 +495,14 @@ class VoiceCallbacksHelper
 
         $ticket->addMessage($ticketMessage);
 
-        $context = $this->ticketManager->createAgentExecutorContext($agent, ExecutorContext::EVENT_NEW, ExecutorContext::METHOD_PHONE);
+        $changes = $ticket->getStateChangeRecorder();
+        if ($changes->isNewTicket()) {
+            $event = ExecutorContext::EVENT_NEW;
+        } else {
+            $event = ExecutorContext::EVENT_REPLY;
+        }
+
+        $context = $this->ticketManager->createAgentExecutorContext($agent, $event, ExecutorContext::METHOD_PHONE);
         $this->ticketManager->saveTicket($ticket, $context);
 
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
@@ -1027,7 +1034,7 @@ class VoiceCallbacksHelper
         if ($changes->isNewTicket()) {
             $event = ExecutorContext::EVENT_NEW;
         } else {
-            $event = ExecutorContext::EVENT_UPDATE;
+            $event = ExecutorContext::EVENT_REPLY;
         }
 
         $person = $ticket->getPerson();
