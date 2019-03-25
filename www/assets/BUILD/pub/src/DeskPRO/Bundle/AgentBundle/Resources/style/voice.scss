@@ -237,8 +237,15 @@ $voice-green-border-color: #47BF61;
           }
 
           .call-forward {
+            form {
+              > div {
+                display: flex;
+              }
+            }
+
             .field {
-              margin: 20px;
+              margin-top: 10px;
+              margin-left: 10px;
 
               label {
                 font-weight: 400;
@@ -258,6 +265,18 @@ $voice-green-border-color: #47BF61;
                   padding-left: 50px;
                   width: 100%;
                 }
+              }
+            }
+
+            .call-forward-save {
+              margin-left: 10px;
+              margin-top: 10px;
+              margin-right: 10px;
+              position: relative;
+
+              button {
+                position: absolute;
+                top: 82px;
               }
             }
           }
@@ -562,7 +581,7 @@ $voice-green-border-color: #47BF61;
       }
 
       .voice-forward-help {
-        margin: 20px;
+        margin: 10px;
         font-size: 14px;
       }
 

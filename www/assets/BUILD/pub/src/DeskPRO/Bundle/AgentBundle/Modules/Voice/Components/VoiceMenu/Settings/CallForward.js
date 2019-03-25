@@ -3,7 +3,6 @@ import React from 'react';
 import { Fieldset } from '@deskpro/react-forms';
 import { Form, Field, Toggle, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
-import $ from 'jquery';
 
 class CallForward extends BaseForm {
 
@@ -11,41 +10,6 @@ class CallForward extends BaseForm {
     me:       PropTypes.object,
     onSubmit: PropTypes.func
   };
-
-  componentDidMount() {
-    super.componentDidMount();
-
-    const $checkbox = $('.toggle', this.node);
-    $checkbox.on('click', () => setTimeout(this.onSubmit, 1));
-
-    const initPhoneCallbacks = () => {
-      setTimeout(() => {
-        const $phone = $('input[type=text]', this.node);
-        $phone.on('blur', () => setTimeout(() => {
-          const { formData } = this.state;
-          const oldVal = `${formData.value.agent_data.forwarding_number}`.replace(/^sip:/, '');
-          const newVal = `${$phone.val()}`.replace(/^sip:/, '');
-
-          if (newVal !== oldVal) {
-            this.onSubmit();
-          }
-        }, 1));
-        $phone.on('keydown', (event) => {
-          const code = event.keyCode || event.which;
-
-          if (code === 13) {
-            event.preventDefault();
-            setTimeout(this.onSubmit, 1);
-          }
-        });
-      }, 1);
-    };
-
-    const $sipCheckbox = $('.voice-sip-number-mode', this.node);
-    $sipCheckbox.on('click', initPhoneCallbacks);
-
-    initPhoneCallbacks();
-  }
 
   getDefaultState() {
     const { me } = this.props;
@@ -68,6 +32,9 @@ class CallForward extends BaseForm {
             <Field select="agent_data">
               <CallForwardField />
             </Field>
+            <div className="call-forward-save">
+              <button className="ui button" onClick={this.onSubmit}>Save</button>
+            </div>
           </Fieldset>
         </Form>
         <div className="voice-forward-help">
