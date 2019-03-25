@@ -1275,4 +1275,12 @@ BODY;
         return App::$container->get('doctrine.dbal.default_connection')
             ->executeUpdate($query, $params, $types);
     }
+
+    /**
+     * @return int
+     */
+    public function getMaxRetryAttempts()
+    {
+        return $this->maxRetryAttempts;
+    }
 }

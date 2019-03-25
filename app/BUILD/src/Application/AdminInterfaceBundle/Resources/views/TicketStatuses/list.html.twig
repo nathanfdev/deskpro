@@ -7,11 +7,11 @@
 		<article>
       <ul class="dp-item-list"
           ng-init="
-            TicketStatusesList.statusTrans.awaiting_agent='{{ phrase('agent.tickets.status_awaiting_agent') }}';
-            TicketStatusesList.statusTrans.awaiting_user='{{ phrase('agent.tickets.status_awaiting_user') }}';
-            TicketStatusesList.statusTrans.pending='{{ phrase('agent.tickets.status_pending') }}';
-            TicketStatusesList.statusTrans.resolved='{{ phrase('agent.tickets.status_resolved') }}';
-            TicketStatusesList.statusTrans.archived='{{ phrase('agent.tickets.status_archived') }}';
+            TicketStatusesList.statusTrans.awaiting_agent='{{ phrase('agent.tickets.status_awaiting_agent') | replace({'\'': '\\\''}) }}';
+            TicketStatusesList.statusTrans.awaiting_user='{{ phrase('agent.tickets.status_awaiting_user') | replace({'\'': '\\\''}) }}';
+            TicketStatusesList.statusTrans.pending='{{ phrase('agent.tickets.status_pending') | replace({'\'': '\\\''}) }}';
+            TicketStatusesList.statusTrans.resolved='{{ phrase('agent.tickets.status_resolved') | replace({'\'': '\\\''}) }}';
+            TicketStatusesList.statusTrans.archived='{{ phrase('agent.tickets.status_archived') | replace({'\'': '\\\''}) }}';
           "
       >
         <li ng-repeat="topStatus in TicketStatusesList.tree"

@@ -7,20 +7,17 @@ use Application\DeskPRO\Email\EmailSource\PropertyMapper;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\EmailSource;
-use Aws\Credentials\CredentialProvider;
-use Aws\Exception\AwsException;
-use Aws\Sqs\SqsClient;
+use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
-
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class IncomingEmailController
- * @package DeskPRO\Bundle\ApiBundle\Controller\CloudEmails
+ * Class IncomingEmailController.
+ *
  * @ApiModes({"master_key", "key"})
  * @ApiUserContext("open")
  * @Rest\Route("/cloud-emails/incoming-email")
@@ -28,17 +25,30 @@ use Symfony\Component\HttpFoundation\Response;
 class IncomingEmailController extends BaseController
 {
     /**
+     * {@inheritdoc}
+     */
+    public function __construct()
+    {
+        if (!defined('DPC_IS_CLOUD')) {
+            exit;
+        }
+    }
+
+    /**
      * @Rest\Post("")
+     *
      * @param $request
-     * @return DTOEmailMessage
+     *
      * @throws \Application\DeskPRO\BlobStorage\BlobStorageException
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      * @throws \Exception
+     *
+     * @return DTOEmailMessage
      */
-    public function createEmailSource( Request $request)
+    public function createEmailSource(Request $request)
     {
         /** @var \JMS\Serializer\SerializerInterface $serializer */
         $serializer = $this->get('serializer');
@@ -46,25 +56,27 @@ class IncomingEmailController extends BaseController
         $dto = $serializer->deserialize($request->getContent(), DTOEmailMessage::class, 'json');
 
         $blobStorage = $this->getContainer()->getBlobStorage();
-        $blob = $blobStorage->createBlobRecordFromString(
-            sprintf("CloudEmail message %s",$dto->getMessageId()),
+        $tmpMsg      = sprintf('Email message %s', $dto->getMessageId());
+        $blob        = $blobStorage->createBlobRecordFromString(
+            $tmpMsg,
             $dto->getMessageId(),
             'message/rfc822',
-            [ 'storage_loc_specific' => "s3" ]
+            ['storage_loc_specific' => 's3']
         );
-        // TODO receive the filesize from the client
-        $blob->setFilesize(10);
 
-        $source    = new EmailSource();
-        $source["blob"] = $blob;
+        // TODO receive the filesize from the client
+        $blob->setFilesize(strlen($tmpMsg));
+
+        $source         = new EmailSource();
+        $source['blob'] = $blob;
         $source->fromArray([
-            'headers'       => "",
-            'status'        => EmailSource::STATUS_INSERTING,
-            'from_email'    => "",
-            'header_to'    => "",
-            'header_cc'    => "",
-            'header_from'    => "",
-            'header_subject'    => "",
+            'headers'        => '',
+            'status'         => EmailSource::STATUS_INSERTING,
+            'from_email'     => '',
+            'header_to'      => '',
+            'header_cc'      => '',
+            'header_from'    => '',
+            'header_subject' => '',
             'object_type'    => EmailSource::OBJ_TYPE_TICKET,
         ]);
 
@@ -75,10 +87,10 @@ class IncomingEmailController extends BaseController
         $dto->setMessageId($source->getId());
 
         /** @var AmazonS3Storage $s3Adapter */
-        $s3Adapter = $blobStorage->getAdapter("s3");
-        $location = new DTOMessageLocationS3();
+        $s3Adapter = $blobStorage->getAdapter('s3');
+        $location  = new DTOMessageLocationS3();
         $location->setBucketName(
-            $s3Adapter->getOption("bucket")
+            $s3Adapter->getOption('bucket')
         );
         $location->setObjectKey(
             $s3Adapter->resolvePath($blob->getSavePath())
@@ -89,48 +101,83 @@ class IncomingEmailController extends BaseController
     }
 
     /**
+     * Process a particular email.
+     *
+     * Any response >299 will be interpreted  by the worker as "please retry it".
+     * So we return success responses in error cases such as rejection or too-many-retries
+     * to make the worker stop trying.
+     *
      * @Rest\Post("/{id}/process")
+     *
      * @param $request
      * @param $id
-     * @return array
+     *
      * @throws \Exception
+     *
+     * @return array|JsonResponse
      */
     public function processSource(Request $request, $id)
     {
         /** @var EmailSource $source */
         $source = $this->findOr404(EmailSource::class, $id);
+        $runner = new Runner();
+
+        // Previous attempt might've failed with a fatal, so we need to check
+        // if its still in processing state now and potentially cancel it as error'd now
+        if (
+            ($source->getStatus() === EmailSource::STATUS_INSERTED || $source->getStatus() === EmailSource::STATUS_PROCESSING)
+            && $runner->getMaxRetryAttempts() > $source->getExecCount()
+        ) {
+            $source->setStatus(EmailSource::STATUS_ERROR);
+            $source->setErrorCode(EmailSource::ERR_SERVER_ERROR);
+
+            return ['status' => $source->getStatus(), 'messageId' => $id];
+        }
+
+        // Already done, dont want to do it again
+        if (
+            $source->getStatus() === EmailSource::STATUS_COMPLETE
+            || $source->getStatus() === EmailSource::STATUS_REJECTED
+            || $source->getStatus() === EmailSource::STATUS_REJECTED_SOFT
+        ) {
+            return ['status' => $source->getStatus(), 'messageId' => $id];
+        }
 
         // read the raw source to refresh some fields on the email source and adjust the blob size
         $blob = $source->getBlob();
 
-        $rawSource = $this->getContainer()->getBlobStorage()->downloadBlobData($blob);
-        if (empty($rawSource)) {
-            throw new \Exception("Unexpected empty email source. Maybe downloading failed");
+        $source->_raw = $this->getContainer()->getBlobStorage()->downloadBlobData($blob);
+        if (empty($source->_raw)) {
+            throw new \Exception('Unexpected empty email source. Maybe downloading failed');
         }
-        $blob->setFilesize(strlen($rawSource));
+        $fs = strlen($source->_raw);
+        if ($fs !== $blob->getFilesize()) {
+            $blob->setFilesize($fs);
+            $this->getContainer()->getEm()->persist($source);
+            $this->getContainer()->getEm()->flush();
+        }
 
         $accountManager = $this->getContainer()->getEmailAccountManager();
-        $readerFactory = $this->getContainer()->getEmailEzcReaderFactory();
+        $readerFactory  = $this->getContainer()->getEmailEzcReaderFactory();
 
         $mapper = new PropertyMapper($accountManager, $readerFactory);
-        $reader = $mapper->createReader($rawSource);
+        $reader = $mapper->createReader($source->_raw);
         $mapper->read($reader, $source);
         $source->fromArray([
-            'status'         => EmailSource::STATUS_INSERTED,
-            'object_type'    => EmailSource::OBJ_TYPE_TICKET,
+            'status'      => EmailSource::STATUS_INSERTED,
+            'object_type' => EmailSource::OBJ_TYPE_TICKET,
         ]);
 
         $this->getContainer()->getEm()->persist($source);
         $this->getContainer()->getEm()->flush();
 
-        // TODO investigate if the commented lines below are are actually needed
-        // Set the copied raw source or else $source->getRawSource() will
-        // attempt to load it from the blob storage which is wasteful (eg could read back from s3 what we just wrote)
-        //$source->_raw = $rawSource;
+        $runner->executeSource($source, $reader);
+        $ret = ['status' => $source->getStatus(), 'messageId' => $id];
 
-        $runner = new Runner();
-        $result = $runner->executeSource($source, $reader);
-
-        return [ "status" => $source->getStatus(), "messageId" => $id ];
+        if ($source->getStatus() === EmailSource::STATUS_RETRY) {
+            return new JsonResponse($ret, Response::HTTP_SERVICE_UNAVAILABLE);
+        } else {
+            return $ret;
+        }
     }
 }

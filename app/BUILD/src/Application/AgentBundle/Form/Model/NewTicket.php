@@ -440,7 +440,7 @@ class NewTicket
             }
         }
 
-        $blobs = App::get('attachment_helper')->processInlineBlobs($message, $this->_blob_inline_ids);
+        $blobs = App::get('attachment_helper')->processInlineBlobs($message->getMessageHtml(), $this->_blob_inline_ids);
         foreach ($blobs as $blob) {
             $attach            = new TicketAttachment();
             $attach['blob']    = $blob;

@@ -60,7 +60,7 @@ class TicketsStatus extends AbstractTableOverviewStat
 
         $sql = "
             SELECT tickets.status, COUNT(*)
-            FROM tickets AS tickets WHERE status == 'pending' 
+            FROM tickets AS tickets WHERE status = 'pending' 
             GROUP BY tickets.status
         ";
 
