@@ -1,0 +1,9 @@
+{% macro select_options(status, parent_status) %}
+  <option value="{{ status.statusCode }}"
+          data-full-title="{% if parent_status %}{{ parent_status.title }} &gt; {% endif %}{{ status.title }}">
+    {% if parent_status %}-- {% endif %}{{ status.title }}
+  </option>
+  {% for sub_status in status.children %}
+    {{ _self.select_options(sub_status, status) }}
+  {% endfor %}
+{% endmacro %}

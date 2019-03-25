@@ -51,7 +51,7 @@ export default class IMOverlay extends React.Component {
 
   static filterList(list, filter, titleProp) {
     if (filter) {
-      return list.filter(item => item.get(titleProp).test(new RegExp(filter, 'gi')));
+      return list.filter(item => item.get(titleProp).match(new RegExp(filter, 'gi')));
     }
     return list;
   }
@@ -280,14 +280,14 @@ export default class IMOverlay extends React.Component {
               }
             });
             const agent = agents.get(agentId);
-            return agent ? (agent.get('name') || '').test(new RegExp(filter, 'gi')) : true;
+            return agent ? (agent.get('name') || '').match(new RegExp(filter, 'gi')) : true;
           }
           case 'department':
-            return (departments.getIn([chat.getIn(['departments', 0]), 'title']) || '').test(new RegExp(filter, 'gi'));
+            return (departments.getIn([chat.getIn(['departments', 0]), 'title']) || '').match(new RegExp(filter, 'gi'));
           case 'team':
-            return (teams.getIn([chat.getIn(['agent_teams', 0]), 'name']) || '').test(new RegExp(filter, 'gi'));
+            return (teams.getIn([chat.getIn(['agent_teams', 0]), 'name']) || '').match(new RegExp(filter, 'gi'));
           case 'group':
-            return (chat.get('name') || '').test(new RegExp(filter, 'gi'));
+            return (chat.get('name') || '').match(new RegExp(filter, 'gi'));
           case 'everyone':
             return 'everyone'.indexOf(filter) !== -1;
           default:

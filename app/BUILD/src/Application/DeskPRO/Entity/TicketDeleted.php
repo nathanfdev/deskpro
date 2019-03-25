@@ -99,6 +99,22 @@ class TicketDeleted extends DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getNewTicketId()
+    {
+        return $this->new_ticket_id;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
      * @param $id
      */
     public function setByPersonId($id)

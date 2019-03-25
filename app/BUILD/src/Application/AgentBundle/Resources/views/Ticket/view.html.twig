@@ -4,7 +4,7 @@
 {% macro substatuses_options(ticket, substatuses, parent_title, is_perm_allowed) %}
   {% for status in substatuses %}
     {% if ticket.status_code == status.statusCode or is_perm_allowed %}
-    <option 
+    <option
       value="{{ status.statusCode }}"
       {% if ticket.status_code == status.statusCode %}selected="selected"{% endif %}
     >
@@ -19,7 +19,7 @@
     {% elseif ticketStatus.isSpam() %}
       {{ 'hidden_spam' }}
     {% else %}
-      {{ ticketStatus.statusType }} {% if ticketStatus.statusType == 'pending' %} awaiting_agent {% endif %}
+      {{ ticketStatus.statusType }}
     {% endif%}
 {% endmacro %}
 {% import _self as self_macro %}
@@ -54,9 +54,9 @@
   pageMeta.person_email = {{ ticket.person.primary_email_address|json_encode|raw }};
   pageMeta.person_name = {{ ticket.person.display_name|json_encode|raw }};
 
-  pageMeta.ticket = {{ ticket_api|json_encode|raw }};
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
+  pageMeta.ticket = pageMeta.api_data;
   pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
   pageMeta.billingCurrency = '{{ app.getSetting('core_tickets.billing_currency') }}';
   pageMeta.hasTimeLog = {{ app.getSetting('core_tickets.enable_timelog')? 'true' : 'false' }};
@@ -87,6 +87,13 @@
   pageMeta.spamTicketStatusId = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}{{ s.id }}{% endfor %};
   pageMeta.deletedTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isDeleted() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
   pageMeta.spamTicketStatusTitle = {% for s in ticket_statuses['hidden'].getChildren() if s.isSpam() %}"{{phrase('agent.tickets.status_hidden')}} > {{ s.title }}"{% endfor %};
+  pageMeta.ticketStatusTitles = {};
+  {% for s in ticket_statuses %}
+  pageMeta.ticketStatusTitles.{{ s.statusType }} = '{{ s.title }}';
+      {% for ss in s.children %}
+  pageMeta.ticketStatusTitles['{{ s.statusType }}.{{ ss.id }}'] = '{{ s.title }} > {{ ss.title }}';
+      {% endfor %}
+  {% endfor %};
   pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') and app.getSetting('core_tickets.billing_auto_timer') %}true{% else %}false{% endif %};
   pageMeta.goNextOnReply = {{ app.user.getPref('agent.ticket_go_next_reply') ? 'true' : 'false' }};
   pageMeta.lang = {{ {
@@ -131,6 +138,7 @@
                    value="{{ ticket.language.id|default(app.languages.getDefaultId()) }}" />
             <input type="hidden" name="is_hold" class="is_hold" value="{{ ticket.is_hold|default(0) }}" />
             <input type="hidden" name="status" class="status" value="{{ ticket.status }}" />
+            <input type="hidden" class="status_code" value="{{ ticket.ticketStatus.statusCode() }}" />
             {#<input type="hidden" name="hidden_status" class="hidden_status" value="{{ ticket.hidden_status }}" />#}
         </form>
 
@@ -164,14 +172,6 @@
                         <div id="{{baseId}}_locked_message_other"{% if locked_self %} style="display:none;"{% endif %}>
                             {{ phrase('agent.tickets.agent_has_lock', {agent: '<span>' ~ ticket.locked_by_agent.display_name ~ '</span>'}, true) }}
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div id="{{baseId}}_hold_message" {% if not ticket.is_hold %}style="display: none"{% endif %}>
-                <div class="hold-message">
-                    <button class="dp-btn set-hold unhold" id="{{baseId}}_unhold_btn" style="float:right">{{ phrase('agent.tickets.unhold_ticket') }}</button>
-                    <div style="margin-right: 100px;">
-                        {{ phrase('agent.tickets.currently_on_hold') }}
                     </div>
                 </div>
             </div>
@@ -314,48 +314,11 @@
 
                     <span class="dp-caret"></span>
                 </li>
-                <li title="{{ phrase('agent.general.status') }}" data-btn-id="status">
-                    <select name="status_code" class="status_code" id="{{ baseId }}_status_code"
-                            data-invisible-trigger="1" style="display: none" data-dropdown-css-class="ticket-header"
-                            data-dropdown-nosearch="1">
-                        {% if ticket.status == 'hidden' %}
-                            <option value="" selected="selected">{{ phrase('agent.general.hidden') }}</option>
-                        {% endif %}
-                        {% if ticket.status_code == 'awaiting_agent' or ticket_perms.modify_set_awaiting_agent %}
-                            <option value="awaiting_agent"
-                                    {% if ticket.status_code == 'awaiting_agent' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
-                        {% endif %}
-                        {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent'), ticket_perms.modify_set_awaiting_agent) }}
-
-                        {% if ticket.status_code == 'awaiting_user' or ticket_perms.modify_set_awaiting_user %}
-                            <option value="awaiting_user"
-                                    {% if ticket.status_code == 'awaiting_user' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_awaiting_user') }}</option>
-                        {% endif %}
-                        {{ self_macro.substatuses_options(ticket, ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user'), ticket_perms.modify_set_awaiting_user) }}
-
-                        {% if ticket.status_code == 'resolved' or ticket_perms.modify_set_resolved %}
-                            <option value="resolved"
-                                    {% if ticket.status_code == 'resolved' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_resolved') }}</option>
-                        {% endif %}
-                        {{ self_macro.substatuses_options(ticket, ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved'), ticket_perms.modify_set_resolved) }}
-
-                        {% if ticket.status_code == 'archived' %}
-                            <option value="archived"
-                                    {% if ticket.status_code == 'archived' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_archived') }}</option>
-                        {% endif %}
-
-                        {% if ticket.status_code == 'pending' or (ticket.status in ['awaiting_agent', 'pending'] and ticket_perms.modify_set_hold) %}
-                            <option value="pending"
-                                    {% if ticket.status_code == 'pending' %}selected="selected"{% endif %}>{{ phrase('agent.tickets.status_pending') }}</option>
-                        {% endif %}
-                        {{ self_macro.substatuses_options(ticket, ticket_statuses['pending'].getChildren(), phrase('agent.tickets.status_pending'), ticket.status in ['awaiting_agent', 'pending'] and ticket_perms.modify_set_hold) }}
-
-                    </select>
-
+                <li title="{{ phrase('agent.general.status') }}" data-btn-id="status" id="{{ baseId }}_status_menu_trigger">
+                    <div id="{{ baseId }}_status_txt_menu_container" style="display: none" class="ticket-status-menu-container dp-menu"></div>
                     <span id="{{ baseId }}_status_txt" class="urgency-text">
-                      {% if ticket.ticketStatus.id %}{{phrase('agent.tickets.status_' ~ ticket.ticketStatus.statusType)}}&nbsp;>&nbsp;{% endif %}{{ ticket.ticketStatus.title }}
+                      {% if ticket.ticketStatus.id %}{{phrase('agent.tickets.status_' ~ ticket.ticketStatus.statusType)}}&nbsp;&gt;&nbsp;{% endif %}{{ ticket.ticketStatus.title }}
                     </span>
-
                     <span class="dp-caret"></span>
                 </li>
                 <li title="{{ phrase('agent.general.urgency') }}" class="urgency-item" data-btn-id="urgency">
@@ -376,7 +339,7 @@
                 <li data-btn-id="flag">
                     <input type="hidden" id="{{ baseId }}_flag_old" value="{{ ticket_flagged }}" />
                     <select name="flag" class="flag" id="{{ baseId }}_flag" class="dpe_select" data-style-type="icons"
-                            data-invisible-trigger="1" data-dropdown-css-class="ticket-header"
+                            data-invisible-trigger="1" data-dropdown-css-class="ticket-header" data-lazy-init="1"
                             data-dropdown-nosearch="1">
                         <option
                               value=""
@@ -821,7 +784,7 @@
                         <ul>
                             <li data-list-type="messages" class="on"
                                 data-tab-for="#{{ baseId }}_messages_wrap">{{ phrase('agent.tickets.messages') }}</li>
-                            <li class="logs" data-list-type="log"
+                            <li class="logs dirty" data-list-type="log"
                                 data-tab-for="#{{ baseId }}_logs_wrap">{{ phrase('agent.tickets.full_log') }}</li>
                             {% if app.getSetting('core_tickets.enable_feedback') and app.getSetting('core_tickets.feedback_agents_read') and ticket.date_feedback_rating %}
                                 <li data-list-type="feedback" data-tab-for="#{{ baseId }}_messages_wrap">
@@ -865,7 +828,9 @@
                     </div>
                 </section>
                 <section id="{{ baseId }}_logs_wrap" style="margin: 0;padding: 0;">
-                    {{ logs_block|raw }}
+                    <div style="padding:25px;">
+                        <i class="spinner-circle-32"></i>
+                    </div>
                 </section>
                 <section id="{{ baseId }}_times" class="times-table-wrapper" style="display: none; padding: 0;">
                     <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">
@@ -886,7 +851,7 @@
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.current_user_waiting_work_time|time_length('hours') }}
-                                            <span class="tipped small-light-icon"
+                                            <span class="small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.current_user_waiting_time|time_length }}"></span>
                                         {% else %}
                                             <time
@@ -910,7 +875,7 @@
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.total_user_waiting_work_time|time_length('hours') }}
-                                            <span class="tipped small-light-icon"
+                                            <span class="small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.real_total_user_waiting|time_length }}"></span>
                                         {% else %}
                                             <time class="timeago" data-timeago-no-ago="1"
@@ -933,7 +898,7 @@
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.work_time_to_first_reply|time_length('hours') }}
-                                            <span class="tipped small-light-icon"
+                                            <span class="small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.total_to_first_reply|time_length }}"></span>
                                         {% elseif not app.isRelativeTimesDisabled() %}
                                             <time class="timeago" data-timeago-no-ago="1"
@@ -975,7 +940,7 @@
                                     <td>
                                         {% if times_work_hours %}
                                             {{ ticket.work_time_until_resolution|time_length('hours') }}
-                                            <span class="tipped small-light-icon"
+                                            <span class="small-light-icon"
                                                   title="Work hours only, real time: {{ ticket.time_until_resolution|time_length }}"></span>
                                         {% else %}
                                             <time class="timeago" data-timeago-no-ago="1"

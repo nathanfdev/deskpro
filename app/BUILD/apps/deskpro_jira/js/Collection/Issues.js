@@ -19,9 +19,10 @@ define(function () {
           if (!issue) continue;
 
           if (issue instanceof Array) {
-            return issue.each(function (el) {
+            issue.forEach(function (el) {
               self.push(el);
             });
+            return
           }
 
           Array.prototype.push.call(self, issue);
@@ -152,7 +153,7 @@ define(function () {
                 issue.fields.comment.total++;
               }
             } else {
-              self.each(function (issue) {
+              self.forEach(function (issue) {
                 if (issue.fields.comment) {
                   issue.fields.comment.comments.push(data);
                   issue.fields.comment.total++;

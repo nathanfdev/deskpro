@@ -175,6 +175,7 @@ END)
 END)
 , `tickets_agent_team`.`name`, `tickets_organization`.`id`, `tickets_organization`.`name`, `tickets`.`locked_by_agent`
 FROM `tickets`
+LEFT JOIN `ticket_statuses` AS `tickets_ticket_status` ON (`tickets`.`ticket_status_id` = `tickets_ticket_status`.`id`)
 LEFT JOIN `tickets` AS `tickets_parent_ticket` ON (`tickets`.`parent_ticket_id` = `tickets_parent_ticket`.`id`)
 LEFT JOIN `languages` AS `tickets_language` ON (`tickets`.`language_id` = `tickets_language`.`id`)
 LEFT JOIN `brands` AS `tickets_brand` ON (`tickets`.`brand_id` = `tickets_brand`.`id`)

@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
+use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -1596,6 +1597,7 @@ class TicketSearchController extends AbstractController
             'creation_system',
             'ticket_hash',
             'status',
+            'sub_status',
             'hidden_status',
             'is_hold',
             'urgency',
@@ -1760,7 +1762,11 @@ class TicketSearchController extends AbstractController
                         $row[] = implode('|', $vars['ticket_display']->getTicketLabels($ticket));
                         break;
                     case 'status':
-                        $row[] = $ticket->getStatusCode();
+                        $row[] = VirtualTicketStatus::getById($ticket->getStatus())->getTitle();
+                        break;
+                    case 'sub_status':
+                        $ticketStatus = $ticket->getTicketStatus();
+                        $row[]        = $ticketStatus instanceof VirtualTicketStatus ? '' : $ticketStatus->getTitle();
                         break;
                     default:
                         if ($fieldId = Strings::extractRegexMatch('#^ticket_fields\[(\d+)\]$#', $displayField)) {
@@ -2274,6 +2280,17 @@ class TicketSearchController extends AbstractController
         $ticket_options['people_organizations'] = $this->em->getRepository(Organization::class)->getOrganizationNames();
         $ticket_options['custom_people_fields'] = $customPersonFieldsHandler->getFieldsDisplayArray($person_field_defs);
 
+        $ticketStatuses = [];
+        foreach (App::getContainer()->getTicketStatuses()->getTopLevelStatuses(true) as $status) {
+            $ticketStatuses[$status->getStatusCode()] = [];
+            foreach ($status->getChildren() as $substatus) {
+                $ticketStatuses[$status->getStatusCode()][] = [
+                    'id'    => $substatus->getStatusCode(),
+                    'title' => $substatus->getTitle(),
+                ];
+            }
+        }
+
         return $this->render('AgentBundle:TicketSearch:filter-massactions-overlay.html.twig', [
             'agents'                  => $agents,
             'agent_teams'             => $agent_teams,
@@ -2283,6 +2300,7 @@ class TicketSearchController extends AbstractController
             'agent_signature_html'    => $this->person->getSignatureHtml(),
             'ticket_options'          => $ticket_options,
             'ticket_statuses_service' => App::getContainer()->getTicketStatuses(),
+            'ticket_statuses'         => $ticketStatuses,
         ]);
     }
 

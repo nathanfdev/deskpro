@@ -68,18 +68,20 @@
 		<div class="dp-menu-area dp-menu-area-primary">
 			<label>{{ phrase('agent.tickets.reply_and_set_status') }}</label>
 			<ul>
-                {% for status in ['awaiting_user', 'awaiting_agent', 'resolved'] %}
-                    {% if status == ticket.status or ticket_perms['modify_set_' ~ status] %}
+                {% for status in ['awaiting_user', 'awaiting_agent', 'pending', 'resolved'] %}
+                    {% if status == ticket.status or ticket_perms['modify_set_' ~ status] or (status == 'pending' and ticket_perms['modify_set_hold']) %}
                         <li data-type="{{ status }}" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_' ~ status)}) }}">
                             <div class="on-icon"><i class="fas fa-check"></i></div>
-                            {{ phrase('agent.tickets.kbd_' ~ status) }}
+							{% if has_phrase('agent.tickets.kbd_' ~ status) %}{{ phrase('agent.tickets.kbd_' ~ status) }}{% else %}{{ phrase('agent.tickets.status_' ~ status) }}{% endif %}
                         </li>
+						{# dont list sub-statuses here, menu doesnt handle it well
                         {% for substatus in ticket_statuses[status].getChildren() %}
                           <li data-type="{{ substatus.statusCode }}" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: substatus.title}) }}">
                               <div class="on-icon"><i class="fas fa-check"></i></div>
-                              {{ phrase('agent.tickets.kbd_' ~ status) }}&nbsp;>&nbsp;{{ substatus.title }}
+                              --&nbsp;{{ substatus.title }}
                           </li>
                         {% endfor %}
+                        #}
                     {% endif %}
                 {% endfor %}
 			</ul>
@@ -404,7 +406,7 @@
 						</div>
 						<div class="inner-cell" style="position: relative;">
 							<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%;"></span> <i class="fas fa-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
-							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1">
+							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1" data-lazy-init="1">
 								{% if ticket_perms.modify_assign_self %}
 									<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" data-name-short="Me" selected>
 										{{ phrase('agent.general.me') }}
@@ -439,7 +441,7 @@
 								<label for="{{ replyBaseId }}_agent_team_sel_check">{{ phrase('agent.general.team') }}:&nbsp;</label>
 							</div><div class="inner-cell" style="position: relative;">
 								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text" ></span> <i class="fas fa-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
-								<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1" data-style-type="icons" data-select-icon-size="22">
+								<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1" data-style-type="icons" data-select-icon-size="22" data-lazy-init="1">
 									{% if app.user.getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 									<optgroup label="{% if app.user.getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
 										{% for team in app.user.getTeams() %}
@@ -462,14 +464,14 @@
 				<div class="cell">
 					<div class="inner-cell" style="padding-left: 11px;">
 						<input type="checkbox" id="{{ replyBaseId }}_close_tab_opt" name="options[close_tab]" {% if app.user.getPref('agent.ticket_close_reply', true) %}checked="checked"{% endif %} />
-						<label for="{{ replyBaseId }}_close_tab_opt">{{ phrase('agent.general.close_tab') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.close_tab_tip') }}"></span></label>
+						<label for="{{ replyBaseId }}_close_tab_opt">{{ phrase('agent.general.close_tab') }} <span class="small-light-icon" title="{{ phrase('agent.tickets.close_tab_tip') }}"></span></label>
 					</div>
 				</div>
 
 				<div class="cell show-reply">
 					<div class="inner-cell" style="padding-left: 11px;">
 						<input type="checkbox" id="{{ replyBaseId }}_email_user" name="options[notify_user]" {% if app.getSetting('core_tickets.default_send_user_notify') %}checked="checked"{% endif %} />
-						<label for="{{ replyBaseId }}_email_user">{{ phrase('agent.general.email_user') }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.tickets.email_user_tip') }}"></span></label>
+						<label for="{{ replyBaseId }}_email_user">{{ phrase('agent.general.email_user') }} <span class="small-light-icon" title="{{ phrase('agent.tickets.email_user_tip') }}"></span></label>
 					</div>
 				</div>
 

@@ -242,7 +242,7 @@
 	<span class="type">{{ phrase('agent.general.ticket_escalations') }}</span> {{ phrase('agent.tickets.applied') }}:
 	<span class="new-val">{{ log.details.trigger_titles }}</span>
 {% elseif log.action_type == 'message_created' %}
-	<span style="{{ layout.actiontext_style('type') }}">
+	<span class="type">
 		{% if log.details.is_agent_note %}
 			{{ phrase('agent.tickets.new_note') }}
 		{% else %}
@@ -326,14 +326,14 @@
 	{% if log.details.old_status %}
 		<span class="type">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.old_status|replace({'.': '_'}) %}
-		<span class="old-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.old_status }}{% endif %}</span>
+		<span class="old-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.old_status }}{% endif %}{% if log.details.old_ticket_status %} &gt; {{ log.details.old_ticket_status }}{% endif %}</span>
 
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
-		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
+		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}{% if log.details.new_ticket_status %} &gt; {{ log.details.new_ticket_status }}{% endif %}</span>
 	{% else %}
 		{{ phrase('agent.general.status') }} {{ phrase('agent.general.set')|lower }}
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
-		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
+		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}{% if log.details.new_ticket_status %} &gt; {{ log.details.new_ticket_status }}{% endif %}</span>
 	{% endif %}
 {% elseif log.action_type == 'changed_ticket_status' %}
 	{% if log.details.old_status_code %}

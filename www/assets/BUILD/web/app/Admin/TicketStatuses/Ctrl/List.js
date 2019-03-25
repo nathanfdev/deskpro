@@ -9,6 +9,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     init() {
       this.stats = {};
       this.list = [];
+      this.tree = [];
       this.statusData = this.DataService.get('TicketStatuses');
     }
 
@@ -16,6 +17,14 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.Api.sendGet('/ticket_statuses/stats').then(res => this.stats = res.data.status_stats);
       const promise = this.statusData.loadList();
       promise.then(list => this.list = list);
+
+      this.$scope.$watchCollection('TicketStatusesList.list', (list) => {
+        this.tree = this.statusData.getTree();
+      });
+    }
+
+    getTopStatusRouteName(status) {
+      return 'tickets.statuses.' + status;
     }
 
     getStatusCount(status) {

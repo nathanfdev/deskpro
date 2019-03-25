@@ -602,41 +602,37 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 			<td valign="middle" style="vertical-align: middle;">
 				<div id="{{ baseId }}_send_btn">
 					<div class="dp-btn-group dp-dropup" id="{{ baseId }}_reply_btn_group">
-						<span class="hide-note">
-							<a class="dp-btn dp-btn-primary submit-trigger">
-								<i class="fas fa-share"></i>&nbsp;
-								{% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
-									<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
+						<button class="dp-btn dp-btn-primary submit-trigger hide-note">
+							<i class="fas fa-share"></i>&nbsp;
+							{% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
+								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
+							{% elseif app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}
+								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.kbd_send_awaiting_agent') }}</span>
+							{% elseif app.getSetting('core_tickets.new_status') == 'resolved' %}
+								<span id="{{ baseId }}_reply_as_type" data-type="resolved">{{ phrase('agent.tickets.kbd_send_resolved') }}</span>
+							{% else %}
+								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
+							{% endif %}
+						</button>
+						<button class="dp-btn dp-btn-primary submit-trigger hide-reply" style="display: none; position: relative; z-index: 50;">
+							<i class="fas fa-share-square"></i>&nbsp;
+							{% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
+								<span id="{{ baseId }}_note_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_user')}) }}</span>
 								{% elseif app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}
-									<span id="{{ baseId }}_reply_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.kbd_send_awaiting_agent') }}</span>
+								<span id="{{ baseId }}_note_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_agent')}) }}</span>
 								{% elseif app.getSetting('core_tickets.new_status') == 'resolved' %}
-									<span id="{{ baseId }}_reply_as_type" data-type="resolved">{{ phrase('agent.tickets.kbd_send_resolved') }}</span>
+								<span id="{{ baseId }}_note_as_type" data-type="resolved">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_resolved')}) }}</span>
 								{% else %}
-									<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
-								{% endif %}
-							</a>
-						</span>
-						<span class="hide-reply" style="display: none">
-							<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
-								<i class="fas fa-share-square"></i>&nbsp;
-                                {% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
-									<span id="{{ baseId }}_note_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_user')}) }}</span>
-									{% elseif app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}
-									<span id="{{ baseId }}_note_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_agent')}) }}</span>
-									{% elseif app.getSetting('core_tickets.new_status') == 'resolved' %}
-									<span id="{{ baseId }}_note_as_type" data-type="resolved">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_resolved')}) }}</span>
-									{% else %}
-									<span id="{{ baseId }}_note_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_user')}) }}</span>
-                                {% endif %}
-							</a>
-						</span>
-						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
+								<span id="{{ baseId }}_note_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_user')}) }}</span>
+							{% endif %}
+						</button>
+						<button class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></button>
 					</div>
-					<a id="discard-draft-btn" class="dp-btn dp-btn-primary" type="button" style="display: none;">
+					<button id="discard-draft-btn" class="dp-btn dp-btn-primary" type="button" style="display: none;">
 						<span>
 							{{ phrase('agent.tickets.discard_draft') }}
 						</span>
-					</a>
+					</button>
 				</div>
 				<div id="{{ baseId }}_send_loading" style="display: none;">
 					<span class="flat-spinner"></span>
@@ -728,7 +724,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
                 data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': substatus.title}) }}"
             >
                 <div class="on-icon"><i class="fas fa-check"></i></div>
-                {{ phrase('agent.tickets.kbd_' ~ status) }}&nbsp;>&nbsp;{{ substatus.title }}
+                --&nbsp;{{ substatus.title }}
             </li>
           {% endfor %}
         {% endfor %}

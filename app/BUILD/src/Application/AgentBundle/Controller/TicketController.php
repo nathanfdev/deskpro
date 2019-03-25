@@ -49,6 +49,7 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\AgentAction;
 use Application\DeskPRO\Tickets\TicketActions\AgentTeamAction;
+use Application\DeskPRO\Tickets\TicketActions\HoldAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ReplySnippetAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
@@ -87,6 +88,13 @@ use Symfony\Component\Validator\Exception\ValidatorException;
  */
 class TicketController extends AbstractController
 {
+    /**
+     * See _getTicketPerms.
+     *
+     * @var array
+     */
+    private $ticketPermsCache = [];
+
     public function requireRequestToken($action, $arguments = null)
     {
         if ($action == 'viewRawMessageAction') {
@@ -267,77 +275,6 @@ class TicketController extends AbstractController
         );
 
         $addable_slas = $this->em->getRepository(Sla::class)->getAddableSlas($ticket);
-        $ticket_api   = [];
-        foreach ([
-                     'id',
-                     'subject',
-                     'ref',
-                     'status',
-                     'hidden_status',
-                     'creation_system',
-                     'is_hold',
-                     'urgency',
-                     'total_user_waiting',
-                     'total_to_first_reply',
-                 ] as $key) {
-            $ticket_api[$key] = $ticket->$key;
-        }
-
-        $dateProps = [
-            'date_created',
-            'date_resolved',
-            'date_archived',
-            'date_first_agent_assign',
-            'date_first_agent_reply',
-            'date_last_agent_reply',
-            'date_last_user_reply',
-            'date_agent_waiting',
-            'date_user_waiting',
-            'date_status',
-            'date_locked',
-        ];
-
-        foreach ($dateProps as $date_key) {
-            if ($ticket->$date_key instanceof \DateTime) {
-                $ticket_api[$date_key] = $ticket->$date_key->getTimestamp();
-            }
-        }
-
-        $ticket_api['person'] = $ticket->getPerson()->getDataForWidget();
-
-        if ($ticket->getAgent()) {
-            $ticket_api['agent'] = $ticket->getAgent()->getDataForWidget();
-        }
-
-        foreach ([
-                     'department' => 'title',
-                     'language' => 'title',
-                     'category' => 'title',
-                     'priority' => 'title',
-                     'workflow' => 'title',
-                     'organization' => 'name',
-                 ] as $key => $title_field) {
-            if ($ticket->$key) {
-                $ticket_api[$key] = ['id' => $ticket->$key->id, $title_field => $ticket->$key->$title_field];
-            }
-        }
-        if ($ticket->getProduct()) {
-            $ticket_api['product'] = $ticket->getProduct()->toApiData();
-        }
-        if (count($ticket->getLabels())) {
-            $ticket_api['labels'] = [];
-            foreach ($ticket->getLabels() as $label) {
-                $ticket_api['labels'][] = $label['label'];
-            }
-        }
-
-        foreach ($custom_fields as $field) {
-            $ticket_api['custom'][$field['id']] = [
-                'id'    => $field['id'],
-                'title' => $field['title'],
-                'value' => isset($field['value']['value']) ? $field['value']['value'] : false,
-            ];
-        }
 
         $draft = $this->em->getRepository(Draft::class)->getDraft('ticket', $ticket->getId());
         if ($draft && !empty($draft->extras['attach'])) {
@@ -435,8 +372,6 @@ class TicketController extends AbstractController
         // Pre-load person and org
         //------------------------------
 
-        $logs_block_info = $this->_getTicketLogsBlockInfo($ticket);
-
         $open_problems = [];
         $incidents     = 0;
         if ($this->person->hasPerm('agent_problems.view')) {
@@ -466,7 +401,6 @@ class TicketController extends AbstractController
 
             'ticket_perms'               => $this->_getTicketPerms($ticket),
             'ticket'                     => $ticket,
-            'ticket_api'                 => $ticket_api,
             'ticket_attachments'         => $ticket_attachments,
             'ticket_message_attachments' => $ticket_message_attachments,
             'linked_chat'                => $linkedChat,
@@ -505,7 +439,6 @@ class TicketController extends AbstractController
             'ticket_feedback_links' => $ticketFeedbackLinks,
 
             'ticket_messages_block' => $ticket_messages_block,
-            'logs_block'            => $logs_block_info['rendered'],
 
             'ticket_deleted'   => $hidden_data['ticket_deleted'],
             'hard_delete_time' => $hidden_data['hard_delete_time'],
@@ -614,6 +547,9 @@ class TicketController extends AbstractController
 
     protected function _getTicketPerms(Entity\Ticket $ticket)
     {
+        if (isset($this->ticketPermsCache[$ticket->getId()])) {
+            return $this->ticketPermsCache[$ticket->getId()];
+        }
         $ticket_perms                        = [];
         $ticket_perms['delete']              = $this->person->PermissionsManager->TicketChecker->canDelete($ticket);
         $ticket_perms['reply']               = $this->person->PermissionsManager->TicketChecker->canReply($ticket);
@@ -644,6 +580,8 @@ class TicketController extends AbstractController
         }
 
         $ticket_perms['modify_messages'] = $this->person->PermissionsManager->TicketChecker->canEditMessages($ticket);
+
+        $this->ticketPermsCache[$ticket->getId()] = $ticket_perms;
 
         return $ticket_perms;
     }
@@ -1377,6 +1315,8 @@ class TicketController extends AbstractController
 
                         if ($action instanceof StatusAction) {
                             $setStatus = $action->getFullStatus();
+                        } elseif ($action instanceof HoldAction) {
+                            $setStatus = TicketStatus::STATUS_TYPE_PENDING;
                         }
 
                         $collection->add($action);
@@ -1387,10 +1327,9 @@ class TicketController extends AbstractController
             $setStatus = $actionType;
         }
 
-        // macro fallback status will fail here
         $ticketStatuses = $this->getContainer()->getTicketStatuses();
         /** @var TicketStatus $setStatus */
-        $setStatus = $ticketStatuses->findStatusOrException($setStatus);
+        $setStatus = $ticketStatuses->findStatusOrException($setStatus, false, true);
 
         if ($setStatus) {
             /** @var TicketChecker $tcheck */
@@ -2589,9 +2528,6 @@ class TicketController extends AbstractController
         }
 
         if ($was_hidden && $ticket->status != 'hidden') {
-            $data['data']['refresh'] = true;
-        }
-        if ($was_pending && $ticket->status != 'pending') {
             $data['data']['refresh'] = true;
         }
 

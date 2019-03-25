@@ -14,12 +14,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketStatusRepository")
  * @ORM\Table(name="ticket_statuses")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  *
  * @JMS\ExclusionPolicy("ALL")
- * @JMS\AccessorOrder("custom", custom = {"id", "statusType", "statusCode", "sysId", "title", "parent", "displayOrder"})
+ * @JMS\AccessorOrder("custom", custom = {"id", "statusType", "statusCode", "sysId", "title", "displayOrder"})
  *
  * @UniqueEntity("sysId")
  */
@@ -66,7 +66,6 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
      * @ORM\Id()
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
-     *
      * @JMS\Expose()
      * @JMS\Type("integer")
      *
@@ -112,9 +111,7 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\ManyToOne(targetEntity="TicketStatus")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TicketStatus>")
+     * // JMS excluded on purpose
      *
      * @var TicketStatus
      */
@@ -134,6 +131,8 @@ class TicketStatus implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @var ArrayCollection
+     * @JMS\Expose()
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Entity\TicketStatus>")
      */
     protected $children;
 

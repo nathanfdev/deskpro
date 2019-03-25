@@ -5,6 +5,8 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type;
 use Symfony\Component\Form\Extension\Core\DataTransformer\MoneyToLocalizedStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType as BaseMoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -14,6 +16,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class MoneyType extends BaseMoneyType
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        parent::buildView($view, $form, $options);
+
+        $view->vars['currency_code'] = strtolower($options['currency']);
+    }
+
     /**
      * {@inheritdoc}
      */

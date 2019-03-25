@@ -1720,10 +1720,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $this->_onPropertyChanged('messages', null, $message, true);
         $this->getStateChangeRecorder()->record('message', null, $message);
-
-        if (!$message->is_agent_note) {
-            $this->setIsHold(false);
-        }
     }
 
     public function addSmsMessage(TicketSms $message)
@@ -3080,11 +3076,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @deprecated use setTicketStatus instead
      *
-     * @param string $status
+     * @param string       $status
+     * @param TicketStatus $ticket_status
      *
      * @return $this
      */
-    public function setStatus($status)
+    public function setStatus($status, TicketStatus $ticket_status = null)
     {
         // fallback to support these 2 statuses for cases which has not been updated
         if (in_array($status, ['hidden.deleted', 'hidden.spam'])) {
@@ -3093,12 +3090,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         $this['date_status'] = new \DateTime();
 
-        $old_status      = $this->status;
-        $old_status_code = $this->getStatusCode();
-
-        // This method deprecated
-        // unset ticket_status if this method called
-        $this->setModelField('ticket_status', null);
+        $old_status        = $this->status;
+        $old_status_code   = $this->getStatusCode();
+        $old_ticket_status = $this->ticket_status;
 
         $status_code = $status;
         $hstatus     = null;
@@ -3178,18 +3172,30 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             );
         }
 
-        $this->setModelField('status', $status);
-
-        if ($hstatus) {
-            $ticketStatus = $hstatus == TicketStatus::SYS_ID_DELETED
-                ? App::getContainer()->getTicketStatuses()->getDeletedStatus()
-                : App::getContainer()->getTicketStatuses()->getSpamStatus();
-            $this->setTicketStatus($ticketStatus);
+        if (!$ticket_status || $ticket_status instanceof VirtualTicketStatus || $ticket_status->getStatusType() !== $status) {
+            $ticket_status = null;
         }
 
-        $this->getStateChangeRecorder()->record('status_code', $old_status_code, $this->getStatusCode());
+        if ($hstatus && !$ticket_status) {
+            $ticket_status = $hstatus == TicketStatus::SYS_ID_DELETED
+                ? App::getContainer()->getTicketStatuses()->getDeletedStatus()
+                : App::getContainer()->getTicketStatuses()->getSpamStatus();
+        }
 
-        if ($old_status == TicketStatus::STATUS_TYPE_HIDDEN) {
+        $this->setModelField('status', $status);
+        $this->setModelField('ticket_status', $ticket_status);
+
+        if ($old_status_code !== $this->getStatusCode()) {
+            $this->getStateChangeRecorder()->record('status_code', $old_status_code, $this->getStatusCode());
+            $this->getStateChangeRecorder()->record(
+                'status_change_info',
+                ['status' => $old_status, 'ticket_status' => $old_ticket_status],
+                ['status' => $status, 'ticket_status' => $ticket_status],
+                false
+            );
+        }
+
+        if ($old_status === TicketStatus::STATUS_TYPE_HIDDEN) {
             $deletedTicketStatus = App::getContainer()->getTicketStatuses()->getDeletedStatus();
             if ($old_status_code == $deletedTicketStatus->getStatusCode()
                 && $status_code != $deletedTicketStatus->getStatusCode()
@@ -3212,7 +3218,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getTicketStatus()
     {
-        return $this->ticket_status ?: new VirtualTicketStatus($this->status);
+        return $this->ticket_status ?: VirtualTicketStatus::getById($this->status ?: TicketStatus::STATUS_TYPE_AWAITING_AGENT);
     }
 
     /**
@@ -3222,20 +3228,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setTicketStatus(TicketStatus $ticket_status = null)
     {
-        if (!$ticket_status) {
-            $this->setModelField('ticket_status', $ticket_status);
-
-            return $this;
-        }
-
-        // we need to call this first
-        $this->setStatus($ticket_status->getStatusType());
-
-        if ($ticket_status instanceof VirtualTicketStatus) {
-            $this->setModelField('ticket_status', null);
-        } else {
-            $this->setModelField('ticket_status', $ticket_status);
-        }
+        $this->setStatus($ticket_status->getStatusType(), $ticket_status);
 
         return $this;
     }

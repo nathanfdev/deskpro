@@ -136,11 +136,7 @@ class Ticket extends AbstractEntityRepository
             return $ticket;
         }
 
-        $del_ticket = $this->_em->createQuery('
-            SELECT t
-            FROM DeskPRO:TicketDeleted t
-            WHERE t.ticket_id = ?0
-        ')->setParameters([$ticket_id])->setMaxResults(1)->getOneOrNullResult();
+        $del_ticket = $this->findDeletedTicket($ticket_id);
 
         if (!$del_ticket) {
             return;
@@ -224,11 +220,7 @@ class Ticket extends AbstractEntityRepository
         $new_delticket = $del_ticket;
         while ($new_delticket) {
             $del_ticket    = $new_delticket;
-            $new_delticket = $this->getEntityManager()->createQuery('
-                SELECT t
-                FROM DeskPRO:TicketDeleted t
-                WHERE t.ticket_id = ?0
-            ')->setParameters([$del_ticket->new_ticket_id])->setMaxResults(1)->getOneOrNullResult();
+            $new_delticket = $this->findDeletedTicket($del_ticket->new_ticket_id);
         }
 
         if (!$del_ticket) {
@@ -237,6 +229,44 @@ class Ticket extends AbstractEntityRepository
         $ticket = $this->find($del_ticket->new_ticket_id);
 
         return $ticket;
+    }
+
+    /**
+     * @param int|string $ticket_id
+     *
+     * @return null|TicketDeletedEntity
+     */
+    public function resolveLastDeletedTicket($ticket_id)
+    {
+        $del_ticket = $this->findDeletedTicket($ticket_id);
+
+        if (!$del_ticket) {
+            return null;
+        }
+
+        do {
+            $next_del_ticket = $this->findDeletedTicket($del_ticket->new_ticket_id);
+            $del_ticket      = $next_del_ticket ?: $del_ticket;
+        } while ($next_del_ticket);
+
+        return $del_ticket;
+    }
+
+    /**
+     * @param int|string $ticket_id
+     *
+     * @return null|TicketDeletedEntity
+     */
+    public function findDeletedTicket($ticket_id)
+    {
+        return $this->_em->createQuery('
+            SELECT t
+            FROM DeskPRO:TicketDeleted t
+            WHERE t.ticket_id = ?0
+        ')
+            ->setParameters([$ticket_id])
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     /**
@@ -296,6 +326,15 @@ class Ticket extends AbstractEntityRepository
             WHERE t.id IN(?1)
             ORDER BY t.id ASC
         ')->setParameter(1, $ids)->execute();
+
+        // preload ticket statuses as separe query
+        // result is discarded (this is just re-hydrating the collections)
+        $this->getEntityManager()->createQuery('
+            SELECT PARTIAL t.{id}, ticket_status
+            FROM DeskPRO:Ticket t INDEX BY t.id
+            LEFT JOIN t.ticket_status ticket_status
+            WHERE t.id IN(?1)
+            ')->setParameter(1, $ids)->execute();
 
         return $tickets;
     }

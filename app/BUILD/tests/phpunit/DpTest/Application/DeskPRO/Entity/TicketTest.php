@@ -182,7 +182,7 @@ class TicketTest extends PortalTestCase
         App::$container = ContainerMock::create()->withTicketStatusesMock($statusesMock)->get();
 
         //WHEN/THEN
-        $ticketMock->setTicketStatus(new VirtualTicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
+        $ticketMock->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
     }
 
     public function getStatusCodeDataProvider()
@@ -196,7 +196,7 @@ class TicketTest extends PortalTestCase
         $data[] = [$ticket1, TicketStatus::STATUS_TYPE_HIDDEN.'.2'];
 
         $ticket2 = new Ticket();
-        $status2 = new VirtualTicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT);
+        $status2 = VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_AWAITING_AGENT);
         $ticket2->setTicketStatus($status2);
         $data[] = [$ticket2, TicketStatus::STATUS_TYPE_AWAITING_AGENT];
 
@@ -295,19 +295,19 @@ class TicketTest extends PortalTestCase
     {
         // GIVEN
         $ticket1 = new Ticket();
-        $ticket1->setTicketStatus(new VirtualTicketStatus(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
+        $ticket1->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
 
         $ticket2 = new Ticket();
-        $ticket2->setTicketStatus(new VirtualTicketStatus(TicketStatus::STATUS_TYPE_AWAITING_USER));
+        $ticket2->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_AWAITING_USER));
 
         $ticket3 = new Ticket();
-        $ticket3->setTicketStatus(new VirtualTicketStatus(TicketStatus::STATUS_TYPE_ARCHIVED));
+        $ticket3->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_ARCHIVED));
 
         $ticket4 = new Ticket();
-        $ticket4->setTicketStatus(new VirtualTicketStatus(TicketStatus::STATUS_TYPE_RESOLVED));
+        $ticket4->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_RESOLVED));
 
         $ticket5 = new Ticket();
-        $ticket5->setTicketStatus(new VirtualTicketStatus(TicketStatus::STATUS_TYPE_HIDDEN));
+        $ticket5->setTicketStatus(VirtualTicketStatus::getById(TicketStatus::STATUS_TYPE_HIDDEN));
 
         // WHEN/THEN
         $this->assertTrue($ticket1->isAwaitingAgent());

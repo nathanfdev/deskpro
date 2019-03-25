@@ -5,27 +5,27 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
 
 	setValue: function(value) {
 
-		var status_id = false;
+		var status_id = 0;
     var hidden_status = false;
 		var status_classname = value;
 
-		if (value && value.constructor.toString().indexOf("Array") != -1) {
+		if (value && value.constructor.toString().indexOf("Array") !== -1) {
       if (value.length > 1) {
         status_id = value[1].value;
       }
 			value = value[0].value;
 			status_classname = value;
 		} else {
-			if (value.indexOf('.') != -1) {
+			if (value.indexOf('.') !== -1) {
 				var parts = value.split('.');
 
-				var value = parts[0];
-				var status_id = parts[1];
+				value = parts[0];
+				status_id = parseInt(parts[1], 10);
 				status_classname = value;
-        
-        if (status_id == this.ticketPage.meta.deletedTicketStatusId) {
+
+        if (status_id === this.ticketPage.meta.deletedTicketStatusId) {
           hidden_status = 'deleted';
-        } else if (status_id == this.ticketPage.meta.spamTicketStatusId) {
+        } else if (status_id === this.ticketPage.meta.spamTicketStatusId) {
           hidden_status = 'spam';
         }
         if (hidden_status) {
@@ -40,30 +40,31 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
       status_code += '.' + status_id;
     }
 
-    if (status_classname == 'pending') {
-      status_classname += ' awaiting_agent';
+    if (this.changeListeners) {
+      this.changeListeners.forEach(function(cb) {
+        cb(status_code);
+      });
     }
 
-		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved archived hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
+		this.ticketPage.wrapper.find('div.layout-content').removeClass('awaiting_agent awaiting_user resolved archived pending hidden_deleted hidden_spam hidden_validating hidden_temp').addClass(status_classname);
 
 		$('input.status:first', this.ticketPage.valueForm).val(status_code);
+    $('input.status_code:first', this.ticketPage.valueForm).val(status_code);
 
     if (hidden_status) {
       this.getInterfaceElement().text(
-        status_id == this.ticketPage.meta.deletedTicketStatusId
+        status_id === this.ticketPage.meta.deletedTicketStatusId
           ? this.ticketPage.meta.deletedTicketStatusTitle
           : this.ticketPage.meta.spamTicketStatusTitle
       );
     } else {
-      this.ticketPage.getEl('status_code').select2('val', status_code);
-      this.ticketPage.getEl('status_code').val(status_code);
-      var txt = this.ticketPage.getEl('status_code').find('option:selected').text();
+      var txt = this.ticketPage.meta.ticketStatusTitles[status_code];
       this.getInterfaceElement().text(txt);
     }
 
-    if (value == 'awaiting_agent') {
+    if (value === 'awaiting_agent') {
       this.addPendingOptions();
-    } else if (value != 'pending') {
+    } else if (value !== 'pending') {
       this.removePendingOptions();
     }
 	},
@@ -94,6 +95,23 @@ DeskPRO.Agent.Ticket.Property.Status = new Orb.Class({
 
 		return data;
 	},
+
+	getFullValue: function() {
+		var data = [];
+		data.push({
+			full_name: 'actions[status]',
+			value: $('input.status_code:first', this.ticketPage.valueForm).val()
+		});
+
+		return data;
+	},
+
+  onChange: function(cb) {
+	  if (!this.changeListeners) {
+      this.changeListeners = [];
+    }
+	  this.changeListeners.push(cb)
+  },
 
 	getInterfaceElement: function() {
 		return this.ticketPage.getEl('status_txt');

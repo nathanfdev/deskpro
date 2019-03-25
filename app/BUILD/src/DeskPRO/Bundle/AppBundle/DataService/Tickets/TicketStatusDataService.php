@@ -19,6 +19,13 @@ class TicketStatusDataService
      */
     protected $repository;
 
+    /**
+     * Cached array with all TicketStatus entities.
+     *
+     * @var TicketStatus[]
+     */
+    protected $substatuses = null;
+
     public function __construct(EntityManager $em)
     {
         $this->em         = $em;
@@ -74,7 +81,7 @@ class TicketStatusDataService
             if (!TicketStatus::isValidStatusType($statusType)) {
                 throw new \InvalidArgumentException(sprintf('Not valid status type `%s`', $statusType));
             }
-            $statusEntity = new VirtualTicketStatus($statusType);
+            $statusEntity = VirtualTicketStatus::getById($statusType);
 
             if ($withSubstatuses) {
                 $children = $this->repository->findByStatusType($statusType);
@@ -87,6 +94,7 @@ class TicketStatusDataService
 
     /**
      * Used in forms to get valid `status` options.
+     * Result has a flat structure, just a list of possible statuses.
      *
      * [
      *    ['title': ..., 'value': ...]
@@ -98,9 +106,8 @@ class TicketStatusDataService
     {
         $res = [];
 
-        foreach (TicketStatus::getStatusTypes() as $statusType) {
-            $topLevelStatus = $this->findStatusOrException($statusType, true);
-            $res[]          = [
+        foreach ($this->getTopLevelStatuses(true) as $topLevelStatus) {
+            $res[] = [
                 'value' => $topLevelStatus->getStatusCode(),
                 'title' => $topLevelStatus->getTitle(),
             ];
@@ -122,8 +129,16 @@ class TicketStatusDataService
     {
         $res = [];
 
+        if ($withSubstatuses) {
+            $substatuses = $this->getSubstatusesGrouppedByType();
+        }
+
         foreach (TicketStatus::getStatusTypes() as $statusType) {
-            $res[$statusType] = $this->findStatusOrException($statusType, $withSubstatuses);
+            $status = VirtualTicketStatus::getById($statusType);
+            if ($withSubstatuses) {
+                $status->setChildren($substatuses[$statusType]);
+            }
+            $res[$statusType] = $status;
         }
 
         return $res;
@@ -144,5 +159,76 @@ class TicketStatusDataService
         }
 
         return $status !== null;
+    }
+
+    /**
+     * @param TicketStatus $status
+     * @param TicketStatus $setToStatus
+     *
+     * @throws \LogicException
+     */
+    public function deleteStatus(TicketStatus $status, TicketStatus $setToStatus = null)
+    {
+        if ($status->getSysId()) {
+            throw new \LogicException(sprintf("Can't delete status #%s with sys_id set", $status->getStatusCode()));
+        }
+        if ($status instanceof VirtualTicketStatus || !$status->getId()) {
+            throw new \LogicException(sprintf("Can't delete virtual status #%s", $status->getStatusCode()));
+        }
+
+        if ($setToStatus) {
+            $db                = $this->em->getConnection();
+            $newTicketStatusId = $setToStatus instanceof VirtualTicketStatus ? null : $setToStatus->getId();
+            $db->executeUpdate('UPDATE tickets SET status = ?, ticket_status_id = ? WHERE ticket_status_id = ?', [
+                $setToStatus->getStatusType(),
+                $newTicketStatusId,
+                $status->getId(),
+            ]);
+            $db->executeUpdate('UPDATE tickets_search_active SET status = ?, ticket_status_id = ? WHERE ticket_status_id = ?', [
+                $setToStatus->getStatusType(),
+                $newTicketStatusId,
+                $status->getId(),
+            ]);
+        }
+
+        $this->em->remove($status);
+        $this->em->flush();
+    }
+
+    /**
+     * [
+     *     'awaiting_agent' => [],
+     *     'awaiting_user'  => [],
+     *     . . .
+     * ].
+     *
+     * @return []
+     */
+    protected function getSubstatusesGrouppedByType()
+    {
+        $groupped = [];
+        foreach (TicketStatus::getStatusTypes() as $statusType) {
+            $groupped[$statusType] = [];
+        }
+        foreach ($this->getSubstatuses() as $substatus) {
+            $groupped[$substatus->getStatusType()][] = $substatus;
+        }
+
+        return $groupped;
+    }
+
+    /**
+     * @return TicketStatuses[]
+     */
+    protected function getSubstatuses()
+    {
+        if ($this->substatuses === null) {
+            $this->substatuses = [];
+            foreach ($this->repository->findAll() as $substatus) {
+                $this->substatuses[$substatus->getId()] = $substatus;
+            }
+        }
+
+        return $this->substatuses;
     }
 }

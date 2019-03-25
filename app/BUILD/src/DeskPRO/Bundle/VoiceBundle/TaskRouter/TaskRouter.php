@@ -342,6 +342,10 @@ class TaskRouter
      */
     public function completeTaskForWorker($taskId, $workerType, $workerId)
     {
+        if (!$taskId) {
+            return false;
+        }
+
         $this->lock->acquire(true);
 
         try {

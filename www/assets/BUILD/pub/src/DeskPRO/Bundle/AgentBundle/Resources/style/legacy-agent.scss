@@ -1435,3 +1435,41 @@ i.icon.fitted {
 .fa, .fas {
   font-weight: 900 !important;
 }
+
+.ticket-status-menu-container {
+  position: absolute;
+  z-index: 9999999;
+  background: #fff;
+  min-width: 150px;
+  max-width: 300px;
+  &.dp-menu .dp-menu-area {
+    background-color: #fff;
+    label {
+      background-color: $dp-greyscale-300;
+      color: $dp-greyscale-1000;
+      width: 100%;
+      display: block;
+    }
+    ul > li.cursor {
+      background-color: #fff;
+      padding: 3px 4px;
+      .status {
+        padding: 4px;
+        &:hover {
+          background: #3875d7;
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+.joyride .body.text {
+  font-size: 10pt;
+  text-align: left;
+  margin: 6px 0 40px 0;
+}
+
+.ui.popup {
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}

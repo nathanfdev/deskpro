@@ -69,19 +69,15 @@ class WidgetLoader
      * @param Brand   $brand
      * @param Request $request
      * @param bool    $withOptions
+     * @param bool    $useDynAssets
      *
      * @return string
      */
-    public function getWidgetCode(Brand $brand, Request $request, $withOptions = false)
+    public function getWidgetCode(Brand $brand, Request $request, $withOptions = false, $useDynAssets = false)
     {
-        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand, $request);
+        $urlSettings = $this->settingsResolver->getWidgetUrlSettings($brand, $request, $useDynAssets);
 
         $loaderSrc = $urlSettings->getWidgetLoader();
-        $loaderSrc = preg_replace('#/assets/.*?/pub/#', '/dyn-assets/pub/', $loaderSrc);
-        $loaderSrc = preg_replace('#\?.*?$#', '', $loaderSrc);
-
-        $assetsUrl = str_replace('/pub/build/widget_loader.min.js', '', $loaderSrc);
-        $assetsUrl = rtrim($assetsUrl, '/');
 
         if ($withOptions) {
             $options = $this->serializer->toArray($this->settingsResolver->getWidgetBrandOptions($brand));
@@ -118,7 +114,7 @@ class WidgetLoader
         $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_WIDGET_OPTIONS = $encodedOptions;\n</script>";
 
         if ($this->appEnv->getEnvId() === 'dev') {
-            $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_ASSETS_URL = '$assetsUrl';\n</script>";
+            $code[] = "<script type=\"text/javascript\">\nwindow.DESKPRO_ASSETS_URL = '{$this->settingsResolver->getDevAssetsUrl()}';\n</script>";
         }
 
         $code[] = '<script type="text/javascript" id="dp-widget-loader" src="'.$loaderSrc.'"></script>';

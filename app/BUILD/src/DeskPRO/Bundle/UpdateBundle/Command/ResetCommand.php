@@ -54,6 +54,7 @@ class ResetCommand extends ContainerAwareCommand
             $db = $this->getContainer()->get('database_connection');
             $db->beginTransaction();
             $db->delete('settings', ['name' => 'core.deskpro_build']);
+            $db->delete('settings', ['name' => 'core.croncheck.updater']);
             $db->insert('settings', ['name' => 'core.deskpro_build', 'value' => $schemaId]);
             $db->commit();
             $output->writeln('.. done');

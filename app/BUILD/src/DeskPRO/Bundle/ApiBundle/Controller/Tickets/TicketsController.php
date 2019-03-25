@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketDeleted;
 use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\Traits\TicketSearchTrait;
@@ -20,6 +21,7 @@ use FOS\RestBundle\View\View;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -79,6 +81,7 @@ class TicketsController extends AbstractTicketsController
      *      },
      *      statusCodes={
      *          200="We will return such status in case we found your entity",
+     *          301="Redirect to the new entity if deleted entity has spesified ID",
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
@@ -91,7 +94,45 @@ class TicketsController extends AbstractTicketsController
      */
     public function getAction(Request $request, $id)
     {
-        return parent::getAction($request, $id);
+        try {
+            return parent::getAction($request, $id);
+        } catch (NotFoundHttpException $exception) {
+            /** @var TicketDeleted $ticketDeleted */
+            $ticketDeleted = $this->getManager()
+                ->getRepository(Ticket::class)
+                ->resolveLastDeletedTicket($id);
+
+            if (null === $ticketDeleted) {
+                throw $exception;
+            }
+
+            $newTicketId    = $ticketDeleted->getNewTicketId();
+            $hasNewTicketId = (bool) $newTicketId;
+            $statusCode     = $hasNewTicketId
+                ? Response::HTTP_MOVED_PERMANENTLY
+                : Response::HTTP_NOT_FOUND;
+            $headers = $hasNewTicketId
+                ? ['Location' => $request->getUriForPath("/api/v2/tickets/{$newTicketId}")]
+                : [];
+
+            return new View(
+                $this->wrap(
+                    [
+                        'status'  => $statusCode,
+                        'code'    => 'ticket_deleted',
+                        'message' => 'Ticket has been deleted',
+                        'detail'  => [
+                            'by_person'    => $ticketDeleted->getByPersonId(),
+                            'date_deleted' => $ticketDeleted->getDateCreated()->format('Y-m-d H:i:s'),
+                            'reason'       => $ticketDeleted->getReason(),
+                            'new_ticket'   => $newTicketId,
+                        ],
+                    ]
+                ),
+                $statusCode,
+                $headers
+            );
+        }
     }
 
     /**

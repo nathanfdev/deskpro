@@ -1,5 +1,5 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
-{% import 'DeskPRO:Common:ticket-search-criteria.html.twig' as substatuses_macro %}
+{% import 'AgentBundle:Common:ticket-status-macros.html.twig' as status_macro %}
 
 <div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none">
 <div class="row">
@@ -70,21 +70,18 @@
 <div class="builder-type" title="{{ phrase('agent.general.set_status') }}" data-rule-type="status" data-rule-group="Ticket">
 	<div class="builder-options">
 		<select name="status">
-			<option value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
-      {{ substatuses_macro.substatuses_options(ticket_statuses['awaiting_agent'].getChildren(), phrase('agent.tickets.status_awaiting_agent')) }}
-			<option value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
-      {{ substatuses_macro.substatuses_options(ticket_statuses['awaiting_user'].getChildren(), phrase('agent.tickets.status_awaiting_user')) }}
-			<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
-      {{ substatuses_macro.substatuses_options(ticket_statuses['resolved'].getChildren(), phrase('agent.tickets.status_resolved')) }}
+      {% for status in ['awaiting_agent', 'awaiting_user', 'pending', 'resolved'] %}
+        {{ status_macro.select_options(ticket_statuses[status]) }}
+      {% endfor %}
 		</select>
 	</div>
 </div>
 
-<div class="builder-type" title="Ticket hold status" data-rule-type="hold" data-rule-group="Ticket">
+<div class="builder-type" title="Ticket pending status" data-rule-type="hold" data-rule-group="Ticket">
 	<div class="builder-options">
 		<select name="is_hold">
-			<option value="1">Put ticket on hold</option>
-			<option value="0">Remove ticket from hold</option>
+			<option value="1">Set ticket status to pending</option>
+			<option value="0">Restore ticket status to awaiting agent</option>
 		</select>
 	</div>
 </div>

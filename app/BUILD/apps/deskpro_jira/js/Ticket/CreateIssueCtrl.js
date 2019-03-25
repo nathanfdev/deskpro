@@ -25,7 +25,7 @@ define(['angular'], function (angular) {
       }
 
       var fields = [];
-      $scope.project.issuetypes.each(function (type) {
+      $scope.project.issuetypes.forEach(function (type) {
         if ($scope.issue.issuetype.id != type.id) return;
 
         $.each(type.fields, function (id, field) {

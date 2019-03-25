@@ -32,20 +32,19 @@
 			</span>
 
             <% if (ticket_display.locked_by_agent) { %>
-			<span class="tipped agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
+			<span class="agent-inline-icon pull-left" title="Locked by <%- ticket_display.locked_by_agent.display_name + ' (' + ticket_display.date_locked + ')' %>">
                 <i class="fas fa-lock" style="font-size: 150%;"></i>
             </span>
             <% } %>
-			<% if (ticket_display.is_hold) { %><div class="on-hold">{{ phrase('agent.tickets.on_hold') }}</div><% } %>
-			<div class="status-pill status urgency-<%= ticket_display.urgency %> <% if (ticket_display.status == 'pending') { %>awaiting_agent<% } %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
+			<div class="status-pill status urgency-<%= ticket_display.urgency %> <%= ticket_display.status %> <%= ticket_display.status %>_<%= ticket_display.hidden_status %>">
         <label><%= ticket_display.ticket_status.display_title %></label>
-				<% if (ticket_display.status == 'awaiting_agent' || ticket_display.status == 'pending') { %>
+				<% if (ticket_display.status == 'awaiting_agent') { %>
 					<i class="ticket-urgency"><%= ticket_display.urgency %></i>
 				<% } %>
 			</div>
 
 			<% if (ticket_display.agent) { %>
-				<span class="tipped agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>');"></span>
+				<span class="agent-inline-icon" title="<%- ticket_display.agent.display_name %>" style="background-image: url('<%- ticket_display.agent.picture_url_16 %>');"></span>
 			<% } %>
 
 			<% if (ticket_display.flag) { %>

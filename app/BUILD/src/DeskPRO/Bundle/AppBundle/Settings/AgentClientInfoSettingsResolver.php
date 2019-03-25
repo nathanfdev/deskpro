@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings;
@@ -45,21 +46,29 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $em;
 
     /**
-     * Constructor.
+     * @var TicketStatusDataService
+     */
+    private $ticketStatusDataService;
+
+    /**
+     * AgentClientInfoSettingsResolver constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param TokenStorageInterface      $tokenStorage
      * @param EntityManager              $em
+     * @param TicketStatusDataService    $ticketStatusDataService
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
         TokenStorageInterface      $tokenStorage,
-        EntityManager              $em
+        EntityManager              $em,
+        TicketStatusDataService    $ticketStatusDataService
     ) {
         parent::__construct($settingsResolver);
 
-        $this->tokenStorage = $tokenStorage;
-        $this->em           = $em;
+        $this->tokenStorage            = $tokenStorage;
+        $this->em                      = $em;
+        $this->ticketStatusDataService = $ticketStatusDataService;
     }
 
     /**
@@ -148,6 +157,8 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setRefCode($this->getSetting('core_tickets.use_ref'))
             ->setArchiving($this->getSetting('core_tickets.use_archive'))
         ;
+
+        $model->setTicketStatuses(array_values($this->ticketStatusDataService->getTopLevelStatuses(true)));
 
         // set fields info
         $fields = $model->getFieldInfo();
