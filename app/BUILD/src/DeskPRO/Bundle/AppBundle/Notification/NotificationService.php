@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification;
 
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -85,7 +86,7 @@ class NotificationService
         $alert           = $qb->orderBy('aa.id', 'DESC')->setMaxResults(1);
 
         if ($userId) {
-            $alert->andWhere('aa.target_id = :target')->setParameter('target', $userId);
+            $alert->andWhere('aa.target_id IN (:target)')->setParameter('target', [$userId, '-100'], Connection::PARAM_INT_ARRAY);
         } elseif ($visitorId) {
             $alert->andWhere('aa.target_id = :target')->setParameter('target', $visitorId);
         }
