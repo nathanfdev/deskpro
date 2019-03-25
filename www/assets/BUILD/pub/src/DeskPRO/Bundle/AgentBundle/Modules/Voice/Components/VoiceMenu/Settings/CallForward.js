@@ -74,6 +74,10 @@ class CallForward extends BaseForm {
           Forward incoming calls to this number. Any time a call rings you in Deskpro, it will also ring this phone.
           You will be able to answer the call either in Deskpro or on your phone.
         </div>
+        <div className="voice-forward-help">
+          When enabled, calls will only be forwarded when an Agents&apos; status is set as &apos;Online&apos; for calls.
+          This applies even if the Agent is &apos;Online&apos; but logged out of the helpdesk.
+        </div>
       </div>
     );
   }
