@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\NewSettings\SettingsResolver;
@@ -72,24 +71,15 @@ class NotificationService
     }
 
     /**
-     * @param int    $userId
-     * @param string $visitorId
-     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      *
      * @return int
      */
-    public function lastAlert($userId, $visitorId)
+    public function lastAlert()
     {
         $actionAlertRepo = $this->em->getRepository(ActionAlert::class);
         $qb              = $actionAlertRepo->createQueryBuilder('aa');
         $alert           = $qb->orderBy('aa.id', 'DESC')->setMaxResults(1);
-
-        if ($userId) {
-            $alert->andWhere('aa.target_id IN (:target)')->setParameter('target', [$userId, '-100'], Connection::PARAM_INT_ARRAY);
-        } elseif ($visitorId) {
-            $alert->andWhere('aa.target_id = :target')->setParameter('target', $visitorId);
-        }
 
         $alert = $alert->getQuery()->getOneOrNullResult();
 
@@ -97,24 +87,15 @@ class NotificationService
     }
 
     /**
-     * @param int    $userId
-     * @param string $visitorId
-     *
      * @throws \Doctrine\ORM\NonUniqueResultException
      *
      * @return int
      */
-    public function lastNotify($userId, $visitorId)
+    public function lastNotify()
     {
         $notificationRepo = $this->em->getRepository(Notification::class);
         $qb               = $notificationRepo->createQueryBuilder('n');
         $notification     = $qb->orderBy('n.id', 'DESC')->setMaxResults(1);
-
-        if ($userId) {
-            $notification->andWhere('n.target_id = :target')->setParameter('target', $userId);
-        } elseif ($visitorId) {
-            $notification->andWhere('n.target_id = :target')->setParameter('target', $visitorId);
-        }
 
         $notification = $notification->getQuery()->getOneOrNullResult();
 
@@ -216,8 +197,8 @@ class NotificationService
                 ]);
             case 'db':
                 return new NotificationClient('legacy', [
-                    'last_alert'  => $this->lastAlert($userId, $visitorId),
-                    'last_notify' => $this->lastNotify($userId, $visitorId),
+                    'last_alert'  => $this->lastAlert(),
+                    'last_notify' => $this->lastNotify(),
                 ]);
             case 'deskpro':
                 return new NotificationClient('deskpro', [
