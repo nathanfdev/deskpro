@@ -266,17 +266,25 @@ DeskPRO.Agent.Widget.Merge = new Orb.Class({
 			},
 			success: function(data) {
 				if (data.success) {
+
+          // save some properties from self.options into vars
+          // because when parent ticket page destroyed - then this class wil be destroyed too
+          var metaIdName = self.options.metaIdName;
+          var loadRoute = self.options.loadRoute;
+
 					// remove old tabs, theyre outdated
 					DeskPRO_Window.getTabWatcher().findTabType(self.options.tabType).forEach(function(tab) {
-						var id = tab.page.getMetaData(self.options.metaIdName);
+						var id = tab.page.getMetaData(metaIdName);
 						if (id == data.old_id || id == data.id) {
 							DeskPRO_Window.TabBar.removeTabById(tab.id);
 						}
 					});
 
-					DeskPRO_Window.runPageRoute(self.options.loadRoute.replace('{id}', data.id));
+					DeskPRO_Window.runPageRoute(loadRoute.replace('{id}', data.id));
 				}
-				self.overlay.close();
+        if (self.overlay) {
+          self.overlay.close();
+        }
 			},
 			error: function(xhr, textStatus, errorThrown) {
 
