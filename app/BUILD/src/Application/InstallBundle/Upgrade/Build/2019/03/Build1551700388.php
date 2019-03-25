@@ -39,12 +39,13 @@ class Build1551700388 extends AbstractBuild implements OnlineBuildInterface
                                 'id'    => ['type' => 'integer'],
                                 'value' => ['type' => 'string', 'analyzer' => 'text_content_analyzer'],
                             ]],
-                        ],]);
+                        ], ]);
                 } catch (\Exception $e) {
                     $this->recordException($e, "Failure while adding custom_data2 to $path");
                     if (!defined('DPC_IS_CLOUD')) {
                         $this->saveSetting('elastica.requires_reset', true);
                     }
+
                     return;
                 }
             }

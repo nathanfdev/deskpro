@@ -173,10 +173,6 @@ export class AgentOnboarding extends React.Component {
     this.setState({ status });
   };
 
-  eventStopPropagation = (ev) => {
-    ev.stopPropagation();
-  };
-
   getIntro = () => {
     const { intro, status } = this.state;
     if (!intro || status) {
@@ -194,7 +190,7 @@ export class AgentOnboarding extends React.Component {
           <div className="joyride-intro" style={style} onClick={this.eventStopPropagation}>
             <img src={intro.img} role="presentation" />
             <h3><FormattedMessage id={intro.title} /></h3>
-            {intro.html ? <div className={"body " + (intro.bodyType||"")}><FormattedHTMLMessage id={intro.html} /></div> : <p><FormattedMessage id={intro.text} /></p>}
+            {intro.html ? <div className={`body ${(intro.bodyType || '')}`}><FormattedHTMLMessage id={intro.html} /></div> : <p><FormattedMessage id={intro.text} /></p>}
             <footer>
               <button className="ui button" onClick={this.closeIntro}><FormattedMessage id={intro.action} /></button>
             </footer>
@@ -202,6 +198,10 @@ export class AgentOnboarding extends React.Component {
         </div>
       </div>
     );
+  };
+
+  eventStopPropagation = (ev) => {
+    ev.stopPropagation();
   };
 
   closeIntro = () => {
@@ -231,7 +231,7 @@ export class AgentOnboarding extends React.Component {
     });
 
     if (!stepsArray.length) {
-      return false;
+      return;
     }
 
     this.setState((currentState) => {
@@ -239,7 +239,6 @@ export class AgentOnboarding extends React.Component {
       result.steps = currentState.steps.concat(stepsArray);
       return result;
     });
-    return true;
   };
 
   loadConfig = (config) => {
