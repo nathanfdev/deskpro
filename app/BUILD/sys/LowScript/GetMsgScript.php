@@ -619,9 +619,12 @@ class GetMsgScript extends LowScriptAbstract
         $last = (int) $_REQUEST['last_alert'];
 
         if ($last <= 0) {
-            $lastId = $this->getPdoRead()
-                ->query('SELECT id FROM notify_action_alerts ORDER BY id DESC LIMIT 1')
-                ->fetchColumn() ?: 1;
+            $stmnt = $this->getPdoRead()
+                ->prepare(
+                    'SELECT id FROM notify_action_alerts WHERE target_id = ? OR target_id = -100 ORDER BY id DESC LIMIT 1'
+                );
+            $stmnt->execute([$this->_person_id]);
+            $lastId = $stmnt->fetchColumn() ?: 1;
 
             return [[
                 'id'           => $lastId,
@@ -645,9 +648,10 @@ class GetMsgScript extends LowScriptAbstract
         $last = (int) $_REQUEST['last_notify'];
 
         if (!$last) {
-            $last = $this->getPdoRead()
-                ->query('SELECT id FROM notify_notifications ORDER BY id DESC LIMIT 1')
-                ->fetchColumn() ?: 1;
+            $stmnt = $this->getPdoRead()
+                ->prepare('SELECT id FROM notify_notifications WHERE target_id = ? ORDER BY id DESC LIMIT 1');
+            $stmnt->execute([$this->_person_id]);
+            $last = $stmnt->fetchColumn() ?: 1;
         }
 
         return $this->transformData($this->fetch($last, $this->_person_id, 'notifications'));
