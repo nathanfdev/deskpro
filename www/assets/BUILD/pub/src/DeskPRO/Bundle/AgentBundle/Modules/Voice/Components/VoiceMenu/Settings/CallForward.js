@@ -3,6 +3,7 @@ import React from 'react';
 import { Fieldset } from '@deskpro/react-forms';
 import { Form, Field, Toggle, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
+import classNames from 'classnames';
 
 class CallForward extends BaseForm {
 
@@ -23,7 +24,7 @@ class CallForward extends BaseForm {
   }
 
   render() {
-    const { formData } = this.state;
+    const { formData, saving } = this.state;
 
     return (
       <div className="call-forward" ref={(c) => { this.node = c; }}>
@@ -33,7 +34,7 @@ class CallForward extends BaseForm {
               <CallForwardField />
             </Field>
             <div className="call-forward-save">
-              <button className="ui button" onClick={this.onSubmit}>Save</button>
+              <button className={classNames('ui button', { loading: saving })} onClick={this.onSubmit}>Save</button>
             </div>
           </Fieldset>
         </Form>
@@ -52,11 +53,17 @@ class CallForward extends BaseForm {
 
 class CallForwardField extends React.Component {
 
+  static propTypes = {
+    value: PropTypes.object
+  };
+
   render() {
+    const { value } = this.props;
+
     return (
       <div>
         <Field select="agent_can_use_forwarding">
-          <Toggle className="small">
+          <Toggle className="small" disabled={!value.forwarding_number}>
             Enable call forwarding
           </Toggle>
         </Field>
