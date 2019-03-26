@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\Plivo\Model\PlivoAvailableNumber;
@@ -382,8 +383,12 @@ class PlivoAdapter implements VoiceProviderInterface
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
+        $onHoldParticipants = $phoneCall->getUserParticipants()->filter(function (VoicePhoneCallParticipantUser $participant) {
+            return $participant->isOnHold();
+        })->count();
+
         $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        if ($conference && count($conference->members) < 2) {
+        if ($conference && (count($conference->members) + $onHoldParticipants) < 2) {
             $conference->delete();
 
             foreach ($phoneCall->getParticipants() as $participant) {
