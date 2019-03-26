@@ -1373,7 +1373,9 @@ agent.emails.whitelist_ip_validation_link: これが有効なログイン試行�
 agent.emails.your_initial_password: あなたの最初のパスワード
 agent.feedback.any_category: 任意のカテゴリ
 agent.feedback.any_status: 任意のステータス
-agent.feedback.count_votes: '{{display_count}}投票|{{display_count}}投票'
+agent.feedback.count_votes:
+  one: '{{display_count}}投票'
+  other: '{{display_count}}投票'
 agent.feedback.feedback_deleted: このフィードバックは削除されました
 agent.feedback.feedback_to_review: レビューフィードバック
 agent.feedback.least_voted_on_top: 少なくとも上に投票した

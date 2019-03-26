@@ -2795,7 +2795,9 @@ agent.emails.whitelist_ip_validation_link: 'If this is a valid login attempt by 
 agent.emails.your_initial_password: 'Your initial password'
 agent.feedback.any_category: 'Any Category'
 agent.feedback.any_status: 'Any Status'
-agent.feedback.count_votes: '{{display_count}} vote|{{display_count}} votes'
+agent.feedback.count_votes:
+  one: '{{display_count}} vote'
+  other: '{{display_count}} votes'
 agent.feedback.feedback_deleted: 'This feedback has been deleted'
 agent.feedback.feedback_to_review: 'Feedback to review'
 agent.feedback.least_voted_on_top: 'Least voted on top'

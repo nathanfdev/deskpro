@@ -248,7 +248,9 @@ agent.emails.view_your_tweets: 'Az Ön tweet-jeinek megtekintése'
 agent.emails.your_initial_password: 'Az Ön kezdeti jelszava'
 agent.feedback.any_category: 'Bármely kategória'
 agent.feedback.any_status: 'Bármely státusz'
-agent.feedback.count_votes: '{{display_count}} értékelés|{{display_count}} értékelés'
+agent.feedback.count_votes:
+  one: '{{display_count}} értékelés'
+  other: '{{display_count}} értékelés'
 agent.feedback.feedback_deleted: 'Ez a visszajelzés törölve lett'
 agent.feedback.least_voted_on_top: 'A legkevesebbet értékelt legfelül'
 agent.feedback.list_title:
