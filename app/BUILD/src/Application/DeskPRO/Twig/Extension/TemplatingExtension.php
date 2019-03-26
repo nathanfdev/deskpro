@@ -25,6 +25,7 @@ use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Ticket\VirtualTicketStatus;
 use DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\RegexUtils;
@@ -162,6 +163,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('js_error_tracking', [$this, 'js_error_tracking'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('isChatAvailable', [$this->container->get('brand_aware_settings_resolver'), 'isChatAvailable']),
             new \Twig_SimpleFunction('calcGroupedHierarchyCount', [$this, 'calcGroupedHierarchyCount']),
+            new \Twig_SimpleFunction('display_ticket_status', [$this, 'displayTicketStatus'], ['is_safe' => ['html']]),
 
             // override so we can suppress errors where templates are out of date
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
@@ -1989,6 +1991,28 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         return $count;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param bool   $full
+     *
+     * @return string
+     */
+    public function displayTicketStatus(Ticket $ticket, $full = true)
+    {
+        $ticketStatus = $ticket->getTicketStatus();
+        if ($ticketStatus instanceof VirtualTicketStatus) {
+            return $ticketStatus->getTitle();
+        } else {
+            return $full
+                ? sprintf(
+                    '%s&nbsp;>&nbsp;%s',
+                    VirtualTicketStatus::getById($ticketStatus->getStatusType())->getTitle(),
+                    $ticketStatus->getTitle()
+                )
+                : $ticketStatus->getTitle();
+        }
     }
 
     /**
