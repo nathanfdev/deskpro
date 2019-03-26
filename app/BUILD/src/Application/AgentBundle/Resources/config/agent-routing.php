@@ -1062,6 +1062,12 @@ $collection->create('agent_ticket_ajaxsavereply', [
     'requirements' => ['ticket_id' => '\\d+'],
 ]);
 
+$collection->create('agent_ticket_ajaxsavereply_prepare', [
+    'path'         => '/tickets/{ticket_id}/ajax-save-reply-prepare',
+    'controller'   => 'AgentBundle:Ticket:ajaxSaveReplyPrepare',
+    'requirements' => ['ticket_id' => '\\d+'],
+]);
+
 $collection->create('agent_ticket_ajaxsavesubject', [
     'path'         => '/tickets/{ticket_id}/ajax-save-subject.json',
     'controller'   => 'AgentBundle:Ticket:ajaxSaveSubject',
