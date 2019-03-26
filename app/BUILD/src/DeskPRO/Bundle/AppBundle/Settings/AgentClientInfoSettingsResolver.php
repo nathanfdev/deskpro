@@ -7,6 +7,8 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketStatusDataService;
+use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
+use DeskPRO\Bundle\AppBundle\Features\FeaturesCollection;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AccountInfo\AccountInfo;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\AgentClientInfoSettings;
@@ -21,6 +23,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\App\Tickets\TicketsS
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\Attachments\AttachmentsSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\CoreSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentClientInfo\Core\DateSettings;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -51,24 +54,32 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $ticketStatusDataService;
 
     /**
+     * @var FeaturesCollection
+     */
+    protected $featuresCollection;
+
+    /**
      * AgentClientInfoSettingsResolver constructor.
      *
      * @param BrandAwareSettingsResolver $settingsResolver
      * @param TokenStorageInterface      $tokenStorage
      * @param EntityManager              $em
      * @param TicketStatusDataService    $ticketStatusDataService
+     * @param FeaturesCollection         $featuresCollection
      */
     public function __construct(
         BrandAwareSettingsResolver $settingsResolver,
         TokenStorageInterface      $tokenStorage,
         EntityManager              $em,
-        TicketStatusDataService    $ticketStatusDataService
+        TicketStatusDataService    $ticketStatusDataService,
+        FeaturesCollection         $featuresCollection
     ) {
         parent::__construct($settingsResolver);
 
         $this->tokenStorage            = $tokenStorage;
         $this->em                      = $em;
         $this->ticketStatusDataService = $ticketStatusDataService;
+        $this->featuresCollection      = $featuresCollection;
     }
 
     /**
@@ -76,7 +87,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
      */
     public function getSettings()
     {
-        $model = new AgentClientInfoSettings($this->getUser());
+        $model = new AgentClientInfoSettings();
         $model
             ->setSettings($this->getCoreSettings())
             ->setAccountInfo($this->getAccountInfo())
@@ -103,6 +114,11 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setHelpdeskName($this->getSetting('core.deskpro_name'))
             ->setAttachments($this->getAttachmentsSettings())
             ->setDate($this->getDateSettings())
+            ->setFeatures(ListUtils::filterMap($this->featuresCollection, function (BetaFeatureInterface $f) {
+                if ($this->featuresCollection->isFeatureEnabled($f->getId())) {
+                    return $f->getId();
+                }
+            }))
         ;
 
         return $model;
