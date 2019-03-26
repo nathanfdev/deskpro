@@ -843,7 +843,7 @@ class VoiceCallbacksHelper
         $start                              = microtime(true);
         $statusParams['agent_participants'] = array_map(function (Person $person) {
             return $person->getId();
-        }, $this->voiceProviderHelper->getActivePhoneCallParticipants($phoneCall));
+        }, $this->voiceProviderHelper->getActiveAgentPhoneCallParticipants($phoneCall));
         $this->logger->info(sprintf('[VoiceCallbacksHelper] Loading active participants took %.3fs', microtime(true) - $start));
 
         $this->dispatcher->dispatch(

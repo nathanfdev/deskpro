@@ -217,9 +217,9 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
+    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall)
     {
-        return $this->getAdapter($phoneCall)->getActivePhoneCallParticipants($phoneCall);
+        return $this->getAdapter($phoneCall)->getActiveAgentPhoneCallParticipants($phoneCall);
     }
 
     /**

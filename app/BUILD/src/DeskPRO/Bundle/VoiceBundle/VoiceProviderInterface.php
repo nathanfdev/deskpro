@@ -60,7 +60,7 @@ interface VoiceProviderInterface
      *
      * @return Person[]
      */
-    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall);
+    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall);
 
     /**
      * @param VoicePhoneCall $phoneCall

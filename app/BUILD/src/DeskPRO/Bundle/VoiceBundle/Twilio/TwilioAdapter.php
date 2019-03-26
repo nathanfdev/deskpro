@@ -444,7 +444,7 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
+    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall)
     {
         $account = $phoneCall->getNumber()->getAccount();
         if (!$account || !$account instanceof TwilioVoiceAccount) {
@@ -454,11 +454,14 @@ class TwilioAdapter implements VoiceProviderInterface
         $agents = [];
 
         try {
+            $callSids     = [];
             $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
             foreach ($participants as $participant) {
-                $agent = $phoneCall->getPersonByCallSid($participant->callSid);
-                if ($agent) {
-                    $agents[] = $agent;
+                $callSids[] = $participant->callSid;
+            }
+            foreach ($phoneCall->getAgentParticipants() as $participant) {
+                if (in_array($participant->getCallSid(), $callSids) && $participant->getPerson()) {
+                    $agents[] = $participant->getPerson();
                 }
             }
         } catch (\Exception $e) {

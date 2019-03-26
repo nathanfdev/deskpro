@@ -472,7 +472,7 @@ class PlivoAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
+    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall)
     {
         $account = $phoneCall->getNumber()->getAccount();
         if (!$account || !$account instanceof PlivoVoiceAccount) {
@@ -484,10 +484,13 @@ class PlivoAdapter implements VoiceProviderInterface
         try {
             $conference = $this->getConference($account, $phoneCall->getConferenceName());
             if ($conference) {
+                $callSids = [];
                 foreach ($conference->members as $member) {
-                    $agent = $phoneCall->getPersonByCallSid($member['call_uuid']);
-                    if ($agent) {
-                        $agents[] = $agent;
+                    $callSids[] = $member['call_uuid'];
+                }
+                foreach ($phoneCall->getAgentParticipants() as $participant) {
+                    if (in_array($participant->getCallSid(), $callSids) && $participant->getPerson()) {
+                        $agents[] = $participant->getPerson();
                     }
                 }
             }

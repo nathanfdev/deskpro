@@ -129,7 +129,7 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function getActivePhoneCallParticipants(VoicePhoneCall $phoneCall)
+    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall)
     {
         return [];
     }

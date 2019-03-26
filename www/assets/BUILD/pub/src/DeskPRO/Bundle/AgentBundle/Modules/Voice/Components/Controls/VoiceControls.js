@@ -244,7 +244,7 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, sendDigits, divRef } = this.props;
+    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
 
@@ -304,7 +304,7 @@ class Active extends React.Component {
           className={classNames('red', { disabled: ended })}
           onClick={this.endCall}
         >
-          {this.props.participants.length >= 3 ? 'Hang up' : 'End call'}
+          {participants.length >= 2 ? 'Hang up' : 'End call'}
         </Button>
 
         <Detached
