@@ -1233,6 +1233,327 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(['success' => 1]);
     }
 
+    //###########################################################################
+    // ajax-save-reply-prepare Prepare and process reply to optimistic UI update
+    //###########################################################################
+    public function ajaxSaveReplyPrepareAction($ticket_id)
+    {
+        $saveReplyData = $this->saveReply($ticket_id, true);
+
+        // We don't really want to save message
+        $this->em->clear();
+
+        if (isset($saveReplyData['response'])) {
+            return $saveReplyData['response'];
+        }
+
+        $ticket  = $saveReplyData['ticket'];
+        $message = $saveReplyData['message'];
+//        $closeTab       = $saveReplyData['closeTab'];
+//        $refreshTab     = $saveReplyData['refreshTab'];
+        $charge        = $saveReplyData['charge'];
+        $macro         = $saveReplyData['macro'];
+        $errorMessages = $saveReplyData['errorMessages'];
+        $changedAgent  = $saveReplyData['changedTeam'];
+        $changedTeam   = $saveReplyData['changedAgent'];
+//        $ticketContext  = $saveReplyData['ticketContext'];
+
+        if (!$message['is_agent_note'] || $macro) {
+            // @TODO: preload participants
+            $participants           = $ticket->getAgentParticipants();
+            $updatedAgentPartsCount = count($participants);
+            $updatedAgentParts      = $this->renderView(
+                'AgentBundle:Ticket:view-participants-agents.html.twig',
+                [
+                    'ticket'       => $ticket,
+                    'participants' => $participants,
+                ]
+            );
+        }
+
+        // New reply box
+        // @TODO: preload participants
+        $participants   = $ticket->getParticipants();
+        $participantIds = [];
+        $agentParts     = [];
+        $userParts      = [];
+
+        foreach ($participants as $p) {
+            $participantIds[] = $p->person->id;
+            if ($p->person->is_agent) {
+                $agentParts[] = $p;
+            } else {
+                $userParts[] = $p;
+            }
+        }
+
+        $agents     = $this->em->getRepository(Person::class)->getAgents();
+        $agentTeams = $this->em->getRepository(AgentTeam::class)->findAll();
+
+        $replybox = $this->renderView(
+            'AgentBundle:Ticket:replybox.html.twig',
+            [
+                'agents'               => $agents,
+                'agent_teams'          => $agentTeams,
+                'ticket'               => $ticket,
+                'participants'         => $participants,
+                'participant_ids'      => $participantIds,
+                'agent_parts'          => $agentParts,
+                'user_parts'           => $userParts,
+                'agent_signature'      => $this->person->getSignature(),
+                'agent_signature_html' => $this->person->getSignatureHtml(),
+                'ticket_perms'         => $this->_getTicketPerms($ticket),
+                'system_account'       => $this->getAccount($ticket),
+            ]
+        );
+
+        $ccList = $this->renderView(
+            'AgentBundle:Ticket:view-user-cc-list.html.twig',
+            [
+                'user_parts'   => $userParts,
+                'ticket_perms' => $this->_getTicketPerms($ticket),
+            ]
+        );
+
+        $messageHtml = $this->renderView(
+            'AgentBundle:Ticket:ticket-message.html.twig',
+            [
+                'message'                    => $message,
+                'ticket_message_attachments' => $message->getAttachments(),
+                'ticket_attachments'         => $message->getAttachments(),
+                'ticket'                     => $ticket,
+            ]
+        );
+
+        if ($charge) {
+            $chargeHtml = $this->renderView(
+                'AgentBundle:Ticket:view-billing-row.html.twig',
+                [
+                    'ticket' => $ticket,
+                    'charge' => $charge,
+                ]
+            );
+        } else {
+            $chargeHtml = false;
+        }
+
+        $drafts = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->getId());
+
+        $canView = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+        if (!$canView) {
+            $refreshTab = false;
+        }
+
+        // check filter
+        $filterId    = $this->in->getInt('filter_id');
+        $matchFilter = false;
+        if ($filterId) {
+            $lefacyFilter = $this->em->getRepository(LegacyTicketFilter::class)->find($filterId);
+            if ($lefacyFilter) {
+                $matchFilter = $lefacyFilter->getSearcher()->doesTicketMatch($ticket);
+            }
+        }
+
+        $data = [
+            'message_block_html'             => $messageHtml,
+            'match_filter'                   => $matchFilter,
+            'active_drafts'                  => $this->_renderActiveDrafts($ticket, $drafts),
+            'via_reply'                      => true,
+            'updated_agent_parts_html'       => isset($updatedAgentParts) ? $updatedAgentParts : '',
+            'updated_agent_parts_html_count' => isset($updatedAgentPartsCount) ? $updatedAgentPartsCount : null,
+            'replybox_html'                  => $replybox,
+            'charge_html'                    => $chargeHtml,
+            'changed_agent'                  => $changedAgent,
+            'agent_id'                       => $ticket['agent_id'],
+            'changed_team'                   => $changedTeam,
+            'agent_team_id'                  => $ticket['agent_team_id'],
+            'status'                         => $ticket['status'],
+            'close_tab'                      => false, // important here
+            'refresh_tab'                    => false,
+            'client_messages'                => false,
+            'cc_list'                        => $ccList,
+            'error_messages'                 => $errorMessages ?: false,
+            'notified_agents'                => [], //$ticketContext->getVars()->get('notified_agents'),
+            'can_view'                       => true, // important here
+            'api_data'                       => $ticket->toApiData(),
+
+            'urgency'       => $ticket->getUrgency(),
+            'department_id' => $ticket->getDepartmentId(),
+            'is_hold'       => $ticket->isHold(),
+
+            'message' => $message['message'],
+        ];
+
+        $draftMessageHtml = Strings::prepareWysiwygHtml($message->getMessage());
+        $this->em->getRepository('DeskPRO:Draft')->insertDraft(
+            'ticket', $ticket->getId(), $draftMessageHtml, $draftMessageHtml, ['is_note' => $message->isAgentNote()]
+        );
+        $this->em->clear();
+
+        return $this->createJsonResponse($data);
+    }
+
+    //###########################################################################
+    // ajax-save-reply
+    //###########################################################################
+
+    public function ajaxSaveReplyAction($ticket_id)
+    {
+        //@TODO: remove this
+        sleep(5);
+        $saveReplyData = $this->saveReply($ticket_id, false);
+
+        if (isset($saveReplyData['response'])) {
+            return $saveReplyData['response'];
+        }
+
+        $ticket        = $saveReplyData['ticket'];
+        $message       = $saveReplyData['message'];
+        $closeTab      = $saveReplyData['closeTab'];
+        $refreshTab    = $saveReplyData['refreshTab'];
+        $charge        = $saveReplyData['charge'];
+        $macro         = $saveReplyData['macro'];
+        $errorMessages = $saveReplyData['errorMessages'];
+        $changedAgent  = $saveReplyData['changedTeam'];
+        $changedTeam   = $saveReplyData['changedAgent'];
+        $ticketContext = $saveReplyData['ticketContext'];
+
+        if (!$message['is_agent_note'] || $macro) {
+            $participants = $this->em->createQuery(
+                '
+                SELECT p
+                FROM DeskPRO:TicketParticipant p
+                LEFT JOIN p.person person
+                LEFT JOIN p.person_email person_email
+                WHERE p.ticket = ?1 AND person.is_agent = TRUE
+            '
+            )->setParameter(1, $ticket)->execute();
+
+            $updatedAgentPartsCount = count($participants);
+
+            $updatedAgentParts = $this->renderView(
+                'AgentBundle:Ticket:view-participants-agents.html.twig',
+                [
+                    'ticket'       => $ticket,
+                    'participants' => $participants,
+                ]
+            );
+        }
+
+        $data = $this->_getMessageBlockInfo(
+            $ticket,
+            $this->in->getUInt('message_page')
+        );
+
+        // New reply box
+        $participants = $this->em->createQuery(
+            '
+            SELECT p
+            FROM DeskPRO:TicketParticipant p
+            LEFT JOIN p.person person
+            LEFT JOIN p.person_email person_email
+            WHERE p.ticket = ?1
+        '
+        )->setParameter(1, $ticket)->execute();
+
+        $participantIds = [];
+        $agentParts     = [];
+        $userParts      = [];
+
+        foreach ($participants as $p) {
+            $participantIds[] = $p->person->id;
+            if ($p->person->is_agent) {
+                $agentParts[] = $p;
+            } else {
+                $userParts[] = $p;
+            }
+        }
+
+        $agents     = $this->em->getRepository(Person::class)->getAgents();
+        $agentTeams = $this->em->getRepository(AgentTeam::class)->findAll();
+
+        $replybox = $this->renderView(
+            'AgentBundle:Ticket:replybox.html.twig',
+            [
+                'agents'               => $agents,
+                'agent_teams'          => $agentTeams,
+                'ticket'               => $ticket,
+                'participants'         => $participants,
+                'participant_ids'      => $participantIds,
+                'agent_parts'          => $agentParts,
+                'user_parts'           => $userParts,
+                'agent_signature'      => $this->person->getSignature(),
+                'agent_signature_html' => $this->person->getSignatureHtml(),
+                'ticket_perms'         => $this->_getTicketPerms($ticket),
+                'system_account'       => $this->getAccount($ticket),
+            ]
+        );
+
+        $ccList = $this->renderView(
+            'AgentBundle:Ticket:view-user-cc-list.html.twig',
+            [
+                'user_parts'   => $userParts,
+                'ticket_perms' => $this->_getTicketPerms($ticket),
+            ]
+        );
+
+        if ($charge) {
+            $chargeHtml = $this->renderView(
+                'AgentBundle:Ticket:view-billing-row.html.twig',
+                [
+                    'ticket' => $ticket,
+                    'charge' => $charge,
+                ]
+            );
+        } else {
+            $chargeHtml = false;
+        }
+
+        $drafts                = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->getId());
+        $data['active_drafts'] = $this->_renderActiveDrafts($ticket, $drafts);
+
+        $canView = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+        if (!$canView) {
+            $refreshTab = false;
+        }
+
+        $data = array_merge(
+            $data,
+            [
+                'via_reply'                      => true,
+                'updated_agent_parts_html'       => isset($updatedAgentParts) ? $updatedAgentParts : '',
+                'updated_agent_parts_html_count' => isset($updatedAgentPartsCount) ? $updatedAgentPartsCount : null,
+                'replybox_html'                  => $replybox,
+                'charge_html'                    => $chargeHtml,
+                'changed_agent'                  => $changedAgent,
+                'agent_id'                       => $ticket['agent_id'],
+                'changed_team'                   => $changedTeam,
+                'agent_team_id'                  => $ticket['agent_team_id'],
+                'status'                         => $ticket['status'],
+                'close_tab'                      => $closeTab,
+                'refresh_tab'                    => $refreshTab,
+                'client_messages'                => false,
+                'cc_list'                        => $ccList,
+                'error_messages'                 => $errorMessages ?: false,
+                'notified_agents'                => $ticketContext->getVars()->get('notified_agents'),
+                'can_view'                       => $canView,
+                'api_data'                       => $ticket->toApiData(),
+
+                'message' => $message['message'],
+            ]
+        );
+
+        return $this->createJsonResponse($data);
+    }
+
+    /**
+     * @param int  $ticket_id
+     * @param bool $isOptimisticUIUpdate - true to not really save Reply
+     *
+     * @throws \Exception
+     *
+     * @return []
+     */
     protected function saveReply($ticket_id, $isOptimisticUIUpdate)
     {
         if ($this->in->getBool('reply_is_trans')) {
@@ -1679,308 +2000,6 @@ class TicketController extends AbstractController
             'changedTeam'   => $changedTeam,
             'ticketContext' => $ticketContext,
         ];
-    }
-
-    //###########################################################################
-    // ajax-save-reply-prepare Prepare and process reply to optimistic UI update
-    //###########################################################################
-    public function ajaxSaveReplyPrepareAction($ticket_id)
-    {
-        $saveReplyData = $this->saveReply($ticket_id, true);
-
-        if (isset($saveReplyData['response'])) {
-            return $saveReplyData['response'];
-        }
-
-        $ticket  = $saveReplyData['ticket'];
-        $message = $saveReplyData['message'];
-//        $closeTab       = $saveReplyData['closeTab'];
-//        $refreshTab     = $saveReplyData['refreshTab'];
-        $charge        = $saveReplyData['charge'];
-        $macro         = $saveReplyData['macro'];
-        $errorMessages = $saveReplyData['errorMessages'];
-        $changedAgent  = $saveReplyData['changedTeam'];
-        $changedTeam   = $saveReplyData['changedAgent'];
-//        $ticketContext  = $saveReplyData['ticketContext'];
-
-        if (!$message['is_agent_note'] || $macro) {
-            // @TODO: preload participants
-            $participants           = $ticket->getAgentParticipants();
-            $updatedAgentPartsCount = count($participants);
-            $updatedAgentParts      = $this->renderView(
-                'AgentBundle:Ticket:view-participants-agents.html.twig',
-                [
-                    'ticket'       => $ticket,
-                    'participants' => $participants,
-                ]
-            );
-        }
-
-        // New reply box
-        // @TODO: preload participants
-        $participants   = $ticket->getAgentParticipants();
-        $participantIds = [];
-        $agentParts     = [];
-        $userParts      = [];
-
-        foreach ($participants as $p) {
-            $participantIds[] = $p->person->id;
-            if ($p->person->is_agent) {
-                $agentParts[] = $p;
-            } else {
-                $userParts[] = $p;
-            }
-        }
-
-        $agents     = $this->em->getRepository(Person::class)->getAgents();
-        $agentTeams = $this->em->getRepository(AgentTeam::class)->findAll();
-
-        $replybox = $this->renderView(
-            'AgentBundle:Ticket:replybox.html.twig',
-            [
-                'agents'               => $agents,
-                'agent_teams'          => $agentTeams,
-                'ticket'               => $ticket,
-                'participants'         => $participants,
-                'participant_ids'      => $participantIds,
-                'agent_parts'          => $agentParts,
-                'user_parts'           => $userParts,
-                'agent_signature'      => $this->person->getSignature(),
-                'agent_signature_html' => $this->person->getSignatureHtml(),
-                'ticket_perms'         => $this->_getTicketPerms($ticket),
-                'system_account'       => $this->getAccount($ticket),
-            ]
-        );
-
-        $ccList = $this->renderView(
-            'AgentBundle:Ticket:view-user-cc-list.html.twig',
-            [
-                'user_parts'   => $userParts,
-                'ticket_perms' => $this->_getTicketPerms($ticket),
-            ]
-        );
-
-        $messageHtml = $this->renderView(
-            'AgentBundle:Ticket:ticket-message.html.twig',
-            [
-                'message'                    => $message,
-                'ticket_message_attachments' => $message->getAttachments(),
-                'ticket'                     => $ticket,
-            ]
-        );
-
-        if ($charge) {
-            $chargeHtml = $this->renderView(
-                'AgentBundle:Ticket:view-billing-row.html.twig',
-                [
-                    'ticket' => $ticket,
-                    'charge' => $charge,
-                ]
-            );
-        } else {
-            $chargeHtml = false;
-        }
-
-        $drafts = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->getId());
-
-        $canView = $this->person->PermissionsManager->TicketChecker->canView($ticket);
-        if (!$canView) {
-            $refreshTab = false;
-        }
-
-        // check filter
-        $filterId    = $this->in->getInt('filter_id');
-        $matchFilter = false;
-        if ($filterId) {
-            $lefacyFilter = $this->em->getRepository(LegacyTicketFilter::class)->find($filterId);
-            if ($lefacyFilter) {
-                $matchFilter = $lefacyFilter->getSearcher()->doesTicketMatch($ticket);
-            }
-        }
-
-        $data = [
-            'message_html'                   => $messageHtml,
-            'match_filter'                   => $matchFilter,
-            'active_drafts'                  => $this->_renderActiveDrafts($ticket, $drafts),
-            'via_reply'                      => true,
-            'updated_agent_parts_html'       => isset($updatedAgentParts) ? $updatedAgentParts : '',
-            'updated_agent_parts_html_count' => isset($updatedAgentPartsCount) ? $updatedAgentPartsCount : null,
-            'replybox_html'                  => $replybox,
-            'charge_html'                    => $chargeHtml,
-            'changed_agent'                  => $changedAgent,
-            'agent_id'                       => $ticket['agent_id'],
-            'changed_team'                   => $changedTeam,
-            'agent_team_id'                  => $ticket['agent_team_id'],
-            'status'                         => $ticket['status'],
-            'close_tab'                      => false,
-            'refresh_tab'                    => false,
-            'client_messages'                => false,
-            'cc_list'                        => $ccList,
-            'error_messages'                 => $errorMessages ?: false,
-            'notified_agents'                => [], //$ticketContext->getVars()->get('notified_agents'),
-            'can_view'                       => $canView,
-            'api_data'                       => $ticket->toApiData(),
-
-            'message' => $message['message'],
-        ];
-
-        $draftMessageHtml = Strings::prepareWysiwygHtml($message->getMessage());
-        $this->em->getRepository('DeskPRO:Draft')->insertDraft(
-            'ticket', $ticket->getId(), $draftMessageHtml, $draftMessageHtml, ['is_note' => $message->isAgentNote()]
-        );
-
-        return $this->createJsonResponse($data);
-    }
-
-    //###########################################################################
-    // ajax-save-reply
-    //###########################################################################
-
-    public function ajaxSaveReplyAction($ticket_id)
-    {
-        $saveReplyData = $this->saveReply($ticket_id, false);
-
-        if (isset($saveReplyData['response'])) {
-            return $saveReplyData['response'];
-        }
-
-        $ticket        = $saveReplyData['ticket'];
-        $message       = $saveReplyData['message'];
-        $closeTab      = $saveReplyData['closeTab'];
-        $refreshTab    = $saveReplyData['refreshTab'];
-        $charge        = $saveReplyData['charge'];
-        $macro         = $saveReplyData['macro'];
-        $errorMessages = $saveReplyData['errorMessages'];
-        $changedAgent  = $saveReplyData['changedTeam'];
-        $changedTeam   = $saveReplyData['changedAgent'];
-        $ticketContext = $saveReplyData['ticketContext'];
-
-        if (!$message['is_agent_note'] || $macro) {
-            $participants = $this->em->createQuery(
-                '
-                SELECT p
-                FROM DeskPRO:TicketParticipant p
-                LEFT JOIN p.person person
-                LEFT JOIN p.person_email person_email
-                WHERE p.ticket = ?1 AND person.is_agent = TRUE
-            '
-            )->setParameter(1, $ticket)->execute();
-
-            $updatedAgentPartsCount = count($participants);
-
-            $updatedAgentParts = $this->renderView(
-                'AgentBundle:Ticket:view-participants-agents.html.twig',
-                [
-                    'ticket'       => $ticket,
-                    'participants' => $participants,
-                ]
-            );
-        }
-
-        $data = $this->_getMessageBlockInfo(
-            $ticket,
-            $this->in->getUInt('message_page')
-        );
-
-        // New reply box
-        $participants = $this->em->createQuery(
-            '
-            SELECT p
-            FROM DeskPRO:TicketParticipant p
-            LEFT JOIN p.person person
-            LEFT JOIN p.person_email person_email
-            WHERE p.ticket = ?1
-        '
-        )->setParameter(1, $ticket)->execute();
-
-        $participantIds = [];
-        $agentParts     = [];
-        $userParts      = [];
-
-        foreach ($participants as $p) {
-            $participantIds[] = $p->person->id;
-            if ($p->person->is_agent) {
-                $agentParts[] = $p;
-            } else {
-                $userParts[] = $p;
-            }
-        }
-
-        $agents     = $this->em->getRepository(Person::class)->getAgents();
-        $agentTeams = $this->em->getRepository(AgentTeam::class)->findAll();
-
-        $replybox = $this->renderView(
-            'AgentBundle:Ticket:replybox.html.twig',
-            [
-                'agents'               => $agents,
-                'agent_teams'          => $agentTeams,
-                'ticket'               => $ticket,
-                'participants'         => $participants,
-                'participant_ids'      => $participantIds,
-                'agent_parts'          => $agentParts,
-                'user_parts'           => $userParts,
-                'agent_signature'      => $this->person->getSignature(),
-                'agent_signature_html' => $this->person->getSignatureHtml(),
-                'ticket_perms'         => $this->_getTicketPerms($ticket),
-                'system_account'       => $this->getAccount($ticket),
-            ]
-        );
-
-        $ccList = $this->renderView(
-            'AgentBundle:Ticket:view-user-cc-list.html.twig',
-            [
-                'user_parts'   => $userParts,
-                'ticket_perms' => $this->_getTicketPerms($ticket),
-            ]
-        );
-
-        if ($charge) {
-            $chargeHtml = $this->renderView(
-                'AgentBundle:Ticket:view-billing-row.html.twig',
-                [
-                    'ticket' => $ticket,
-                    'charge' => $charge,
-                ]
-            );
-        } else {
-            $chargeHtml = false;
-        }
-
-        $drafts                = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->getId());
-        $data['active_drafts'] = $this->_renderActiveDrafts($ticket, $drafts);
-
-        $canView = $this->person->PermissionsManager->TicketChecker->canView($ticket);
-        if (!$canView) {
-            $refreshTab = false;
-        }
-
-        $data = array_merge(
-            $data,
-            [
-                'via_reply'                      => true,
-                'updated_agent_parts_html'       => isset($updatedAgentParts) ? $updatedAgentParts : '',
-                'updated_agent_parts_html_count' => isset($updatedAgentPartsCount) ? $updatedAgentPartsCount : null,
-                'replybox_html'                  => $replybox,
-                'charge_html'                    => $chargeHtml,
-                'changed_agent'                  => $changedAgent,
-                'agent_id'                       => $ticket['agent_id'],
-                'changed_team'                   => $changedTeam,
-                'agent_team_id'                  => $ticket['agent_team_id'],
-                'status'                         => $ticket['status'],
-                'close_tab'                      => $closeTab,
-                'refresh_tab'                    => $refreshTab,
-                'client_messages'                => false,
-                'cc_list'                        => $ccList,
-                'error_messages'                 => $errorMessages ?: false,
-                'notified_agents'                => $ticketContext->getVars()->get('notified_agents'),
-                'can_view'                       => $canView,
-                'api_data'                       => $ticket->toApiData(),
-
-                'message' => $message['message'],
-            ]
-        );
-
-        return $this->createJsonResponse($data);
     }
 
     public function updateViewsAction($ticket_id)
