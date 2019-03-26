@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Timer from 'DeskPRO/Component/Timer';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
+import WarmTransferAudio from './WarmTransferAudio';
 import Avatar from '../Common/Avatar';
 
 class TransferStatus extends React.Component {
@@ -75,6 +76,7 @@ class TransferStatus extends React.Component {
         <div className="voice-transfer-status">
           <span className="voice-transfer-status-title">
             {type === 'warm' ? 'Calling ...' : title}
+            {type === 'warm' ? <WarmTransferAudio /> : null}
           </span>
           <span className="voice-transfer-status-timer">
             <Timer />
