@@ -879,6 +879,7 @@ class TwilioCallbacksController extends BaseController
      */
     private function phoneNumberAgentOutgoingCallback(TwilioVoiceAccount $account, Request $request)
     {
+        /** @var VoicePhoneCall $phoneCall */
         $callId    = $request->query->get('CallId');
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
         if (!$phoneCall) {
@@ -918,6 +919,12 @@ class TwilioCallbacksController extends BaseController
                 'recordingStatusCallback'       => $this->getRecordingStatusCallbackUrl($account),
                 'recordingStatusCallbackMethod' => 'POST',
             ]);
+
+            // outgoing request id is created, not we can cancel outgoing call to prevent race conditions
+            $this->get('event_dispatcher')->dispatch(
+                LegacySystemEvent::EVENT_NAME,
+                new LegacySystemEvent('agent.voice.outgoing-call-init')
+            );
         } catch (RestException $e) {
             if ($e->getStatusCode() === 400) {
                 $this->get('event_dispatcher')->dispatch(

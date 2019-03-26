@@ -9,25 +9,29 @@ class OutgoingCall extends React.Component {
     me:            PropTypes.object,
     people:        PropTypes.object,
     outgoingCall:  PropTypes.object,
-    onHangup:      PropTypes.func,
+    hangup:        PropTypes.func,
+    init:          PropTypes.bool,
     ringingVolume: PropTypes.number
   };
 
   static defaultProps = {
-    onHangup: () => {}
+    hangup: () => {}
   };
 
   componentDidMount() {
     this.audio.playSound();
   }
 
-  onHangup = (event) => {
+  hangup = (event) => {
     event.preventDefault();
-    this.props.onHangup();
+    const { hangup, init } = this.props;
+    if (init) {
+      hangup();
+    }
   };
 
   render() {
-    const { me, people, outgoingCall, ringingVolume } = this.props;
+    const { init, me, people, outgoingCall, ringingVolume } = this.props;
     const person = people.get(outgoingCall.getIn(['phoneCall', 'person']));
 
     return (
@@ -50,16 +54,17 @@ class OutgoingCall extends React.Component {
           number={outgoingCall.get('callTo')}
           person={person}
         />
-
         <div className="buttons">
-          <a
-            className="ignore-button"
-            href="#ignore"
-            onClick={this.onHangup}
-          >
-            <i className="icon remove" />
-            Cancel
-          </a>
+          {init ?
+            <a
+              className="ignore-button"
+              href="#ignore"
+              onClick={this.hangup}
+            >
+              <i className="icon remove" />
+              Cancel
+            </a>
+            : <div className="ui active inline loader" />}
         </div>
       </div>
     );

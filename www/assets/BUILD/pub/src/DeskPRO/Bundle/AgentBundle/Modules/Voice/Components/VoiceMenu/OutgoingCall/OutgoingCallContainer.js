@@ -18,7 +18,23 @@ class OutgoingCallContainer extends React.Component {
     dispatch:     PropTypes.func
   };
 
-  onHangup = () => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      init: false
+    };
+  }
+
+  componentDidMount() {
+    const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.voice.outgoing-call-init', () => {
+      this.setState({
+        init: true,
+      });
+    });
+  }
+
+  hangup = () => {
     const { connections, outgoingCall, dispatch } = this.props;
     const connection = connections
       .filter(c => c.callId === outgoingCall.getIn(['phoneCall', 'id']))
@@ -35,7 +51,8 @@ class OutgoingCallContainer extends React.Component {
     return (
       <OutgoingCall
         {...this.props}
-        onHangup={this.onHangup}
+        {...this.state}
+        hangup={this.hangup}
       />
     );
   }

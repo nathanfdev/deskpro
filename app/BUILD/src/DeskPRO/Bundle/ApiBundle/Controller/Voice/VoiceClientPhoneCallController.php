@@ -684,10 +684,27 @@ class VoiceClientPhoneCallController extends BaseController
      *
      * @param VoicePhoneCall $phoneCall
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function endCallAction(VoicePhoneCall $phoneCall)
     {
+        if ($phoneCall->getType() === VoicePhoneCall::DIRECTION_OUTBOUND) {
+            // if agent hangup pending call then decline user's call as well
+            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
+                if (!$phoneCall->getOutgoingRequestIds()) {
+                    throw $this->createBadRequestException('Unable to cancel the outgoing call, it was not init yet');
+                }
+
+                $this->get('dp.voice.provider_helper')->cancelCall($phoneCall);
+                $this->get('dp.voice.provider_helper')->cancelOutgoingCalls($phoneCall);
+            }
+
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_CANCELED);
+            $this->getManager()->flush();
+        }
+
         // add action log
         $log = new VoicePhoneCallLog();
         $log->setPerson($this->getVoiceAgent());
@@ -696,17 +713,6 @@ class VoiceClientPhoneCallController extends BaseController
 
         $this->getManager()->persist($log);
         $this->getManager()->flush();
-
-        if ($phoneCall->getType() === VoicePhoneCall::DIRECTION_OUTBOUND) {
-            // if agent hangup pending call then decline user's call as well
-            if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {
-                $this->get('dp.voice.provider_helper')->cancelCall($phoneCall);
-                $this->get('dp.voice.provider_helper')->cancelOutgoingCalls($phoneCall);
-            }
-
-            $phoneCall->setStatus(VoicePhoneCall::STATUS_CANCELED);
-            $this->getManager()->flush();
-        }
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }

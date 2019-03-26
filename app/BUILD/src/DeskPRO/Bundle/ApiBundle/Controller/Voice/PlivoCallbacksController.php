@@ -180,6 +180,12 @@ class PlivoCallbacksController extends BaseController
                             'callbackMethod' => 'POST',
                             'record'         => true,
                         ]);
+
+                        // outgoing request id is created, not we can cancel outgoing call to prevent race conditions
+                        $this->get('event_dispatcher')->dispatch(
+                            LegacySystemEvent::EVENT_NAME,
+                            new LegacySystemEvent('agent.voice.outgoing-call-init')
+                        );
                     } else {
                         $errorCodeGen = $this->get('form_error.error_code_generator.api');
                         if ($exception instanceof UnverifiedException) {
