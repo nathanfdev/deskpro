@@ -34,8 +34,8 @@ Feature: Discover settings
     And the JSON node "data.settings.attachments.agents.max_size" should be equal to 26214400
     And the JSON node "data.settings.attachments.agents.whitelist" should have 0 elements
     And the JSON node "data.settings.attachments.agents.blacklist" should have 0 elements
-    And the JSON node "data.settings.features" should have 1 elements
-    And the JSON node "data.settings.features[0]" should be equal to "new_snippets"
+    And the JSON node "data.settings.features" should exist
+    And the JSON node "data.settings.features" should have the value "new_snippets"
 
     And the JSON node "data.account_info.timezone" should be equal to "UTC"
     And the JSON node "data.account_info.language" should be equal to "{l1}"
