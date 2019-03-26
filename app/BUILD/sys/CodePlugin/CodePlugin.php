@@ -18,6 +18,9 @@ class CodePlugin
     const CUSTOM_HTML_REPORTS_RES     = 'reports_res';
     const CUSTOM_HTML_REPORTS_PRE_RES = 'reports_res_pre';
 
+    const INSTALL_SCRIPT_POST_INSTALL = 'install.post';
+    const INSTALL_SCRIPT_POST_UPGRADE = 'upgrade.post';
+
     /**
      * @return string
      */
@@ -164,5 +167,15 @@ class CodePlugin
     public function getOptionsArray($contextId, array $contextOptions = [])
     {
         return null;
+    }
+
+    /**
+     * Runs during install or upgrade.
+     *
+     * @param string    $id
+     * @param Container $container
+     */
+    public function runInstallScript($id, Container $container)
+    {
     }
 }

@@ -229,4 +229,15 @@ class CodePluginManager
 
         return $res;
     }
+
+    /**
+     * @param string    $id
+     * @param Container $container
+     */
+    public function runInstallScript($id, Container $container)
+    {
+        foreach ($this->plugins as $plugin) {
+            $plugin->runInstallScript($id, $container);
+        }
+    }
 }
