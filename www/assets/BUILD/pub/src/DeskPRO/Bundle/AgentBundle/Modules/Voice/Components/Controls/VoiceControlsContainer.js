@@ -53,7 +53,8 @@ class VoiceControlsContainer extends React.Component {
       transferTarget:     null,
       transferTargetType: null,
       hold:               false,
-      participants:       []
+      participants:       [],
+      inviteError:        null
     };
   }
 
@@ -180,14 +181,25 @@ class VoiceControlsContainer extends React.Component {
     const { dispatch } = this.props;
     const connection = this.getConnection();
     if (!connection) {
-      return;
+      return null;
     }
 
-    dispatch(warmAddAgent(connection, target));
+    const promise = dispatch(warmAddAgent(connection, target));
+    promise.error((error) => {
+      this.setState({
+        addTarget:     null,
+        addTargetType: null,
+        inviteError:   error.message
+      });
+    });
+
     this.setState({
       addTarget:     target,
-      addTargetType: type
+      addTargetType: type,
+      inviteError:   null
     });
+
+    return promise;
   };
 
   cancelInvite = (target, type) => {
@@ -200,7 +212,8 @@ class VoiceControlsContainer extends React.Component {
         addTarget:          null,
         addTargetType:      null,
         transferTarget:     null,
-        transferTargetType: null
+        transferTargetType: null,
+        inviteError:        null
       });
     });
   };
@@ -264,19 +277,31 @@ class VoiceControlsContainer extends React.Component {
     const { dispatch } = this.props;
     const connection = this.getConnection();
     if (!connection) {
-      return;
+      return null;
     }
 
+    let promise;
     if (type === 'cold') {
-      dispatch(coldTransferCall(connection, target, type));
+      promise = dispatch(coldTransferCall(connection, target, type));
     } else {
-      dispatch(warmTransferCall(connection, target, type));
+      promise = dispatch(warmTransferCall(connection, target, type));
     }
+
+    promise.error((error) => {
+      this.setState({
+        transferTarget:     null,
+        transferTargetType: null,
+        inviteError:        error.message
+      });
+    });
 
     this.setState({
       transferTarget:     target,
-      transferTargetType: type
+      transferTargetType: type,
+      inviteError:        null
     });
+
+    return promise;
   };
 
   isCallActive = () => {

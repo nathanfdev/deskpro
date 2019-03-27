@@ -18,7 +18,8 @@ class TransferList extends React.Component {
     connection:         PropTypes.object,
     transferCall:       PropTypes.func,
     cancelInvite:       PropTypes.func,
-    closeMenu:          PropTypes.func
+    closeMenu:          PropTypes.func,
+    inviteError:        PropTypes.string
   };
 
   static defaultProps = {
@@ -71,11 +72,12 @@ class TransferList extends React.Component {
   };
 
   renderList() {
-    const { onlineAgents, participants } = this.props;
+    const { inviteError, onlineAgents, participants } = this.props;
     const { tabName, selectedTarget } = this.state;
 
     return (
       <div>
+        {inviteError && <div className="error-message">{inviteError}</div>}
         {/* <TransferSearch />*/}
 
         <div className="online-agents-header">

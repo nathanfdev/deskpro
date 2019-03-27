@@ -13,7 +13,8 @@ class AddList extends React.Component {
     participants:   PropTypes.array,
     connection:     PropTypes.object,
     onAddAgent:     PropTypes.func,
-    onCancelInvite: PropTypes.func
+    onCancelInvite: PropTypes.func,
+    inviteError:    PropTypes.string
   };
 
   static defaultProps = {
@@ -50,11 +51,12 @@ class AddList extends React.Component {
   };
 
   renderList() {
-    const { onlineAgents, participants } = this.props;
+    const { inviteError, onlineAgents, participants } = this.props;
     const { selectedTarget } = this.state;
 
     return (
       <div>
+        {inviteError && <div className="error-message">{inviteError}</div>}
         {/* <TransferSearch /> */}
 
         <div className="online-agents-header">
