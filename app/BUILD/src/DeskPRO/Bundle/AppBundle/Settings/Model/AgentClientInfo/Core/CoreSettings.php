@@ -46,6 +46,12 @@ class CoreSettings
     private $date;
 
     /**
+     * @var array
+     * @JMS\Type("array<string>")
+     */
+    private $features = [];
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -152,5 +158,21 @@ class CoreSettings
         $this->date = $date;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFeatures()
+    {
+        return $this->features;
+    }
+
+    /**
+     * @param array $features
+     */
+    public function setFeatures($features)
+    {
+        $this->features = $features;
     }
 }
