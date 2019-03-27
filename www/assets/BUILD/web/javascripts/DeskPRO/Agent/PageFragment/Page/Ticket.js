@@ -1689,8 +1689,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	},
 
-	doHandleTicketUpdate: function(data, isOptimisticUIUpdate = false) {
+	doHandleTicketUpdate: function(data, isOptimisticUIUpdate) {
 		var self = this;
+
+    isOptimisticUIUpdate = (typeof isOptimisticUIUpdate !== "undefined");
+
 		if (data.client_messages) {
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 		}
