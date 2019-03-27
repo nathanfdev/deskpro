@@ -92,8 +92,6 @@ class TaskBuilder
      */
     public function createVoiceTransferTask(VoicePhoneCall $phoneCall, Person $agent, Person $fromAgent = null)
     {
-        $task = new Task();
-        $task->setChannel(VoiceWorkflow::getChannelName());
         $attributes = [
             'agent'       => $agent->getId(),
             'phone_call'  => $phoneCall->getId(),
@@ -104,7 +102,33 @@ class TaskBuilder
         if ($fromAgent) {
             $attributes['from_agent_id'] = $fromAgent->getId();
         }
+
+        $task = new Task();
+        $task->setChannel(VoiceWorkflow::getChannelName());
         $task->setAttributes($attributes);
+
+        $this->storage->saveTask($task);
+
+        return $task;
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param Person         $agent
+     *
+     * @return Task
+     */
+    public function createVoiceTaskForOutgoingCall(VoicePhoneCall $phoneCall, Person $agent)
+    {
+        // create already accepted so task router will ignore it
+        // don't need to process it
+        $task = new Task();
+        $task->setChannel(VoiceWorkflow::getChannelName());
+        $task->setStatus(Task::STATUS_ACCEPTED);
+        $task->setAttributes([
+            'agent'      => $agent->getId(),
+            'phone_call' => $phoneCall->getId(),
+        ]);
 
         $this->storage->saveTask($task);
 

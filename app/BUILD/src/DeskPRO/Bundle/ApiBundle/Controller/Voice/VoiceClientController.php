@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceOutboundCallType;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioClientTokens;
@@ -80,11 +81,22 @@ class VoiceClientController extends BaseController
             throw new InvalidFormException($form);
         }
 
+        /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $form->getData();
 
         $em = $this->getManager();
         $em->persist($phoneCall);
         $em->flush();
+
+        // create a task for the call
+        // so we can reserve the agent's worker
+        $task = $this->get('dp.voice.task_builder')->createVoiceTaskForOutgoingCall($phoneCall, $this->getUser());
+        $phoneCall->setTaskSid($task->getId());
+
+        $em->flush();
+
+        // todo check that agent can accept tasks, e.g. not on a call
+        $this->get('dp.voice.task_router')->joinTask($task->getId(), 'agent', $this->getUser()->getId());
 
         return new View($this->wrap($phoneCall));
     }

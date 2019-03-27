@@ -31,8 +31,8 @@ class IncomingCall extends React.Component {
       this.audio.playSound();
     }
 
-    const { hideCall, agentVoicemailTimeout } = this.props;
-    if (agentVoicemailTimeout) {
+    const { incomingCall, hideCall, agentVoicemailTimeout } = this.props;
+    if (!incomingCall.get('call_type') && agentVoicemailTimeout) {
       setTimeout(hideCall, agentVoicemailTimeout * 1000);
     }
   }

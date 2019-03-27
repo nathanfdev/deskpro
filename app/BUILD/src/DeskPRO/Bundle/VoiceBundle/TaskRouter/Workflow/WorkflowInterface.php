@@ -24,10 +24,11 @@ interface WorkflowInterface
 
     /**
      * @param Task $task
+     * @param bool $ignoreRejected
      *
      * @return Worker[]
      */
-    public function getAvailableWorkers(Task $task);
+    public function getAvailableWorkers(Task $task, $ignoreRejected = false);
 
     /**
      * @param Task     $task

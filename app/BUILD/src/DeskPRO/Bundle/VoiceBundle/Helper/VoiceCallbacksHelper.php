@@ -563,6 +563,12 @@ class VoiceCallbacksHelper
         // end conference
         $this->voiceProviderHelper->endConference($phoneCall);
 
+        // force end all agent workers
+        // in case if agent hangup callback is not called for some reason
+        foreach ($phoneCall->getTaskSids() as $taskSid) {
+            $this->taskRouter->resetWorkersForTask($taskSid);
+        }
+
         // mark the phone call as finished
         $phoneCall->setDateEnded(new \DateTime());
         if (!$phoneCall->isVoicemail()) {
@@ -720,6 +726,12 @@ class VoiceCallbacksHelper
 
         /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $participant->getPhoneCall();
+
+        // force end all agent workers
+        // in case if agent hangup callback is not called for some reason
+        foreach ($phoneCall->getTaskSids() as $taskSid) {
+            $this->taskRouter->resetWorkersForTask($taskSid);
+        }
 
         // set participant leave event time
         $participant->setDateLeft(new \DateTime());

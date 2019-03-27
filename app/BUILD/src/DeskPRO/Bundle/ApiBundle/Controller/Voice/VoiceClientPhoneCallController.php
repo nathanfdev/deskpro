@@ -164,6 +164,13 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Phone call is already ended');
         }
 
+        $taskRouter = $this->get('dp.voice.task_router');
+        if (!$taskRouter->joinTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            $taskRouter->rejectAnotherWorkerReservation($phoneCall->getTaskSid(), 'agent', $agent->getId());
+
+            throw $this->createBadRequestException('Unable to accept task reservation');
+        }
+
         $this->get('dp.voice.provider_helper')->cancelForwardingCall($phoneCall, $this->getUser());
         $ticket = $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
 
@@ -331,19 +338,28 @@ class VoiceClientPhoneCallController extends BaseController
      *     noInput=true
      * )
      *
-     * @Rest\Put("/warm_add/{person}")
+     * @Rest\Put("/warm_add/{agent}")
      *
      * @param VoicePhoneCall $phoneCall
-     * @param Person         $person
+     * @param Person         $agent
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function warmAddAction(VoicePhoneCall $phoneCall, Person $person)
+    public function warmAddAction(VoicePhoneCall $phoneCall, Person $agent)
     {
-        if (!$person->getAgentData() || !$person->getAgentData()->isVoiceEnabled()) {
+        if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Voice is not enabled for this agent');
+        }
+
+        // reserve task for the agent
+        $taskRouter = $this->get('dp.voice.task_router');
+        if (!$taskRouter->canWorkerAcceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Unable to add this agent to the call');
+        }
+        if (!$taskRouter->reserveAnotherWorkerForTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Unable to reserve task');
         }
 
         $em = $this->getManager();
@@ -371,19 +387,19 @@ class VoiceClientPhoneCallController extends BaseController
                 'from_agent_id'    => $this->getVoiceAgent()->getId(),
                 'ticket_id'        => $ticket->getId(),
                 'invite_type'      => 'warm',
-                'target'           => $person->getId(),
+                'target'           => $agent->getId(),
             ]
         ));
 
         // add action log
         $log = new VoicePhoneCallLog();
-        $log->setPerson($person);
+        $log->setPerson($agent);
         $log->setPhoneCall($phoneCall);
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_INVITED);
         $log->setDetails([
             'call_type'   => 'add',
             'invite_type' => 'warm',
-            'to_person'   => $person->getId(),
+            'to_person'   => $agent->getId(),
         ]);
 
         $em->persist($log);
@@ -414,6 +430,15 @@ class VoiceClientPhoneCallController extends BaseController
     {
         if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Voice is not enabled for this agent');
+        }
+
+        // reserve task for the agent
+        $taskRouter = $this->get('dp.voice.task_router');
+        if (!$taskRouter->canWorkerAcceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Unable to transfer the call to this agent');
+        }
+        if (!$taskRouter->reserveAnotherWorkerForTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Unable to reserve task');
         }
 
         $em = $this->getManager();
@@ -500,6 +525,12 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Voice is not enabled for this agent');
         }
 
+        // reserve task for the agent
+        $taskRouter = $this->get('dp.voice.task_router');
+        if (!$taskRouter->canWorkerAcceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+            throw $this->createBadRequestException('Unable to transfer the call to this agent');
+        }
+
         $em = $this->getManager();
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
@@ -571,20 +602,23 @@ class VoiceClientPhoneCallController extends BaseController
      *     noInput=true
      * )
      *
-     * @Rest\Put("/cancel_invite/{person}")
+     * @Rest\Put("/cancel_invite/{agent}")
      *
      * @param VoicePhoneCall $phoneCall
-     * @param Person         $person
+     * @param Person         $agent
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function cancelInviteAction(VoicePhoneCall $phoneCall, Person $person)
+    public function cancelInviteAction(VoicePhoneCall $phoneCall, Person $agent)
     {
-        if (!$person->getAgentData() || !$person->getAgentData()->isVoiceEnabled()) {
+        if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Voice is not enabled for this agent');
         }
+
+        $taskRouter = $this->get('dp.voice.task_router');
+        $taskRouter->rejectAnotherWorkerReservation($phoneCall->getTaskSid(), 'agent', $agent->getId());
 
         $em = $this->getManager();
 
@@ -599,7 +633,7 @@ class VoiceClientPhoneCallController extends BaseController
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_CANCEL_INVITE);
         $log->setPhoneCall($phoneCall);
         $log->setDetails([
-            'to_person' => $person->getId(),
+            'to_person' => $agent->getId(),
         ]);
 
         $em->persist($log);
@@ -609,8 +643,8 @@ class VoiceClientPhoneCallController extends BaseController
             'agent.voice.conference.participant-cancel',
             [
                 'call_id'  => $phoneCall->getId(),
-                'agent_id' => $person->getId(),
-                'target'   => $person->getId(),
+                'agent_id' => $agent->getId(),
+                'target'   => $agent->getId(),
             ]
         ));
 
@@ -629,17 +663,20 @@ class VoiceClientPhoneCallController extends BaseController
      * @Rest\Put("/ignore_invite/{person}")
      *
      * @param VoicePhoneCall $phoneCall
-     * @param Person         $person
+     * @param Person         $agent
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function ignoreInviteAction(VoicePhoneCall $phoneCall, Person $person)
+    public function ignoreInviteAction(VoicePhoneCall $phoneCall, Person $agent)
     {
-        if (!$person->getAgentData() || !$person->getAgentData()->isVoiceEnabled()) {
+        if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Voice is not enabled for this agent');
         }
+
+        $taskRouter = $this->get('dp.voice.task_router');
+        $taskRouter->rejectAnotherWorkerReservation($phoneCall->getTaskSid(), 'agent', $agent->getId());
 
         $em = $this->getManager();
 
@@ -654,7 +691,7 @@ class VoiceClientPhoneCallController extends BaseController
         $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_IGNORE_INVITE);
         $log->setPhoneCall($phoneCall);
         $log->setDetails([
-            'from_person' => $person->getId(),
+            'from_person' => $agent->getId(),
         ]);
 
         $em->persist($log);
@@ -664,7 +701,7 @@ class VoiceClientPhoneCallController extends BaseController
             'agent.voice.conference.participant-ignore',
             [
                 'call_id'  => $phoneCall->getId(),
-                'agent_id' => $person->getId(),
+                'agent_id' => $agent->getId(),
             ]
         ));
 
@@ -690,6 +727,9 @@ class VoiceClientPhoneCallController extends BaseController
      */
     public function endCallAction(VoicePhoneCall $phoneCall)
     {
+        $taskRouter = $this->get('dp.voice.task_router');
+        $taskRouter->rejectAnotherWorkerReservation($phoneCall->getTaskSid(), 'agent', $this->getVoiceAgent()->getId());
+
         if ($phoneCall->getType() === VoicePhoneCall::DIRECTION_OUTBOUND) {
             // if agent hangup pending call then decline user's call as well
             if ($phoneCall->getStatus() === VoicePhoneCall::STATUS_PENDING) {

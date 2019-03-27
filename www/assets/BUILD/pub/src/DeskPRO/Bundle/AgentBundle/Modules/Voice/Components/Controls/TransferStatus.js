@@ -13,7 +13,7 @@ class TransferStatus extends React.Component {
     cancelLabel: PropTypes.string,
     type:        PropTypes.string,
     target:      PropTypes.object,
-    onCancel:    PropTypes.func
+    onCancel:    PropTypes.func,
   };
 
   constructor(props) {

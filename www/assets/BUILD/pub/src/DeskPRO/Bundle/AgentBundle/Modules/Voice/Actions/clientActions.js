@@ -1,5 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import Immutable from 'immutable';
+import $ from 'jquery';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
@@ -334,6 +335,13 @@ export const voiceBootstrap = createAction(
         }
       });
     }
+
+    $(window).unload(() => {
+      const connections = connectionsSelector(getState());
+      connections.forEach((connection) => {
+        hangupConnection(connection);
+      });
+    });
   }
 );
 
@@ -559,4 +567,3 @@ export const deleteRecord = createAction(
   'VOICE_AGENT_DELETE_RECORD',
   phoneCallId => api.sendDelete(`DP_API/voice_phone_calls/${phoneCallId}/record`)
 );
-
