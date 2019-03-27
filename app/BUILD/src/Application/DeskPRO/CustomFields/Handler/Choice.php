@@ -234,9 +234,12 @@ class Choice extends HandlerAbstract
             $attr['class'] = @$attr['class'].' '.$class;
         }
 
-        if (!$this->multiple) {
-            // turns off legacy select2 handler
+        if (!$this->multiple && $maxDepth >= 3) {
+            // turns off normal select2 handlers which only work on normal selects (i.e. not multi-level)
             $attr['data-no-select2'] = 1;
+        } else {
+            // we dont need the data map part if its a normal select2
+            unset($attr['data-map']);
         }
 
         // - We need to always have a default blank
