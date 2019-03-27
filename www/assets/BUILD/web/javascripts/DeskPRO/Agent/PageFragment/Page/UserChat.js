@@ -139,11 +139,13 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', function(data) {
 		  if (this.meta.conversation_id == data.conversation_id) {
-			this.chatStatus = 'ended';
-		  self.getEl('create_ticket_btn2').show();
-			self.getEl('replybox').hide();
-			self.getEl('messages_box').css('bottom', 0);
-		  }
+        this.chatStatus = 'ended';
+        self.getEl('create_ticket_btn2').show();
+        self.getEl('replybox').hide();
+        self.getEl('messages_box').css('bottom', 0);
+
+        self.syncSizes();
+      }
 		} , this, [this.OBJ_ID]);
 
 		//------------------------------
@@ -647,6 +649,42 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       self.removeBlob(blobId, row);
     });
 	},
+  
+  syncSizes() {
+    var box1 = self.getEl('people_box_person_container');
+    var box2 = self.getEl('people_box_agent_container');
+    var box1_in = $('> article', box1);
+    var box2_in = $('> article', box2);
+
+    var chatView = this.getEl('chat_view'),
+        chatPositioner = this.getEl('chat_positioner'),
+        header = self.wrapper.find('.page-header');
+
+    var syncPeopleSizes = function() {
+      var h1 = box1_in.height();
+      var h2 = box2_in.height();
+
+      /*var h = (h1 > h2) ? h1 : h2;
+
+      box2.css('min-height', h);
+      box1.css('min-height', h);*/
+
+      box1_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h1) { h1 = thisH; } });
+      box2_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h2) { h2 = thisH; } });
+
+      var h = (h1 > h2) ? h1 : h2;
+
+      box2.css('min-height', h);
+      box1.css('min-height', h);
+    };
+
+    var syncChatSize = function() {
+      chatView.css('top', chatPositioner.outerHeight() + header.outerHeight());
+    };
+
+    syncPeopleSizes();
+    syncChatSize();  
+  },
 
 	insertSnippet: function(snippet, blobs, langId) {
     window.LegacySnippetInserter.insertSnippet(
@@ -1277,55 +1315,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			}
 		});
 
-		var box1 = self.getEl('people_box_person_container');
-		var box2 = self.getEl('people_box_agent_container');
-		var box1_in = $('> article', box1);
-		var box2_in = $('> article', box2);
-
-		var chatView = this.getEl('chat_view'),
-			chatPositioner = this.getEl('chat_positioner'),
-			header = self.wrapper.find('.page-header');
-
-		var syncSizes = function() {
-			var h1 = box1_in.height();
-			var h2 = box2_in.height();
-
-			/*var h = (h1 > h2) ? h1 : h2;
-
-			box2.css('min-height', h);
-			box1.css('min-height', h);*/
-
-			box1_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h1) { h1 = thisH; } });
-			box2_in.each(function() { var thisH = $(this).outerHeight(); if (thisH > h2) { h2 = thisH; } });
-
-			var h = (h1 > h2) ? h1 : h2;
-
-			box2.css('min-height', h);
-			box1.css('min-height', h);
-		};
-
-		var syncChatSize = function() {
-			chatView.css('top', chatPositioner.outerHeight() + header.outerHeight());
-		};
-
-		// TODO handle resize without element resize monitor
-		chatPositioner.on('resize', function (ev) {
-			ev.stopPropagation(); // needed to prevent resize loops
-			syncChatSize();
-    });
-		box1.on('resize', function(ev) {
-      ev.stopPropagation(); // needed to prevent resize loops
-      syncSizes();
-		});
-		box2.on('resize', function(ev) {
-      ev.stopPropagation(); // needed to prevent resize loops
-      syncSizes();
-		});
-
-		chatView.on('click', '.join-convo', $.proxy(self.joinConvo, this));
-
-		syncSizes();
-		syncChatSize();
+    self.syncSizes();
 	},
 
 	//#################################################################
