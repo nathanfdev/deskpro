@@ -36,10 +36,16 @@ class JsonStatRenderer extends AbstractJsonRenderer
             return;
         }
 
-        $return = [
+        $return = [];
+        foreach ($metadata->getSelectColumns() as $column) {
+            $return[$column['title']] = $this->renderCellValue($rows[0], $column, $metadata);
+        }
+
+        $return = array_merge($return, [
             'value'       => $this->renderValue($metadata, $rows),
             'description' => $this->renderDescription($metadata, $rows),
-        ];
+            'options'     => json_encode($options),
+        ]);
 
         if ($return['value'] === null) {
             return;

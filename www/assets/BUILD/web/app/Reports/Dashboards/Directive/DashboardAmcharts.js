@@ -247,24 +247,18 @@ define(['handlebars'], function(Handlebars) {
               dataItem = 'item';
             }
 
-            const vars = {};
-            const matches = options.click_url.match(/\$\{([a-zA-z0-9_]+)\}/);
-            for (let index = 0; index < matches.length; index++) {
-              const match = matches[index];
-              if ((index % 2) === 1) {
-                vars[match] = matches[index - 1];
-              }
-            }
-
             chart.addListener(eventType, (event) => {
               let url = options.click_url;
-              for (const key in vars) {
-                const variable = vars[key];
-                if (event[dataItem].dataContext[key]) {
-                  url = url.replace(variable, event[dataItem].dataContext[key]);
+              document.dispatchEvent(new CustomEvent('dpWidgetClick', {
+                detail: {
+                  type: scope.widgetType,
+                  options: options,
+                  url: url,
+                  widget: widget,
+                  data: event[dataItem].dataContext,
+                  event: event
                 }
-              }
-              return window.open(url);
+              }));
             });
           } else if (widget.multiplePies != null) {
             const defaultDataProvider = widget.dataProvider;

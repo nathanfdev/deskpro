@@ -6,6 +6,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
+use DeskPRO\Component\Util\TypeUtils;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -383,13 +384,14 @@ abstract class SearcherAbstract implements PersonContextInterface
      * @param $field
      * @param $op
      * @param $choice
+     * @param $asTs
      *
      * @return string
      *
      * @internal param \DateTime|null $date1
      * @internal param \DateTime|null $date2
      */
-    protected function _dateMatch($field, $op, $choice)
+    protected function _dateMatch($field, $op, $choice, $asTs = false)
     {
         if (!is_array($choice)) {
             $choice = [$choice];
@@ -419,12 +421,24 @@ abstract class SearcherAbstract implements PersonContextInterface
         }
 
         if ($date1 and !($date1 instanceof \DateTime)) {
-            $date1 = new \DateTime("@{$date1}");
-            $date1->setTimezone($timezone_context);
+            if (TypeUtils::isIntLike($date1)) {
+                $date1 = new \DateTime("@{$date1}");
+            } else {
+                $date1 = new \DateTime($date1);
+            }
+            if ($date1) {
+                $date1->setTimezone($timezone_context);
+            }
         }
         if ($date2 and !($date2 instanceof \DateTime)) {
-            $date2 = new \DateTime("@{$date2}");
-            $date2->setTimezone($timezone_context);
+            if (TypeUtils::isIntLike($date2)) {
+                $date2 = new \DateTime("@{$date2}");
+            } else {
+                $date2 = new \DateTime($date2);
+            }
+            if ($date2) {
+                $date2->setTimezone($timezone_context);
+            }
         }
 
         // There should always be at least one date
@@ -457,19 +471,21 @@ abstract class SearcherAbstract implements PersonContextInterface
             }
         }
 
+        $formatStr = $asTs ? 'U' : 'Y-m-d H:i:s';
+
         if ($op == self::OP_BETWEEN) {
             if ($date1 > $date2) {
                 $tmp   = $date2;
                 $date2 = $date1;
                 $date1 = $tmp;
             }
-            $where = "$field BETWEEN '".$date1->format('Y-m-d H:i:s')."' AND '".$date2->format('Y-m-d H:i:s')."'";
+            $where = "$field BETWEEN '".$date1->format($formatStr)."' AND '".$date2->format($formatStr)."'";
         } elseif ($op == self::OP_GTE) {
             $date  = Util::coalesce($date1, $date2);
-            $where = "$field >= '".$date->format('Y-m-d H:i:s')."'";
+            $where = "$field >= '".$date->format($formatStr)."'";
         } else {
             $date  = Util::coalesce($date1, $date2);
-            $where = "$field <= '".$date->format('Y-m-d H:i:s')."'";
+            $where = "$field <= '".$date->format($formatStr)."'";
         }
 
         return $where;

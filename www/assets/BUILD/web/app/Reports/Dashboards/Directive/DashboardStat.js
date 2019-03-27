@@ -41,28 +41,20 @@ define(function() {
             console.log(e);
           }
 
-          const data = result.data ? JSON.parse(result.data) : [];
+          const data = result;
 
           if (options.click_url != null) {
-            const vars = {};
-            const matches = options != null ? options.click_url.match(/\$\{([a-zA-z0-9_]+)\}/) : undefined;
             let url = options.click_url;
 
-            for (let index = 0; index < matches.length; index++) {
-              const match = matches[index];
-              if ((index % 2) === 1) {
-                vars[match] = matches[index - 1];
-              }
-              for (const key in vars) {
-                const variable = vars[key];
-                if (data[key] != null) {
-                  url = url.replace(variable, data[key]);
-                }
-              }
-            }
-
             box.css({ cursor: 'pointer' });
-            box.click(() => window.open(url));
+            box.click(() => document.dispatchEvent(new CustomEvent('dpWidgetClick', {
+              detail: {
+                type: 'stat',
+                options: options,
+                url: url,
+                data: result
+              }
+            })));
           }
 
           const valueElement = el.find('.stat-value');

@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\DBAL\Connection;
+use DeskPRO\Component\Util\TypeUtils;
 
 class CustomDefAbstract extends AbstractEntityRepository
 {
@@ -19,6 +20,38 @@ class CustomDefAbstract extends AbstractEntityRepository
         $str = 'customdef'.md5(get_called_class()).'_'.$id;
 
         return $str;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function find($id, $lockMode = null, $lockVersion = null)
+    {
+        if (TypeUtils::isIntLike($id)) {
+            return parent::find($id, $lockMode, $lockVersion);
+        } elseif ($this->_class->hasAssociation('aliases')) {
+            return $this->findOneByAlias($id);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param string $alias
+     *
+     * @return \Application\DeskPRO\Entity\CustomDefAbstract|null
+     */
+    public function findOneByAlias($alias)
+    {
+        return $this->_em->createQuery("
+            SELECT f, a
+            FROM {$this->_entityName} f
+            JOIN f.aliases a
+            WHERE a.alias = :alias
+        ")
+            ->setParameter('alias', $alias)
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     /**
