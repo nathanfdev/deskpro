@@ -1238,25 +1238,41 @@ class TicketController extends AbstractController
     //###########################################################################
     public function ajaxSaveReplyPrepareAction($ticket_id)
     {
+        // First save Draft
+        // This is a code duplication
+        // bu we want to do flush before other processing to be sure no flush will be called for PrepareReply action
+        if ($this->in->getBool('options.is_note')) {
+            $ticket = $this->getTicketOr404($ticket_id, 'modify_notes');
+        } else {
+            $ticket = $this->getTicketOr404($ticket_id, 'reply');
+        }
+        $messageHtml = trim($this->in->getHtml('message'));
+        if ($messageHtml) {
+            $messageHtml = Strings::prepareWysiwygHtml($messageHtml);
+            // we don't check here if message is empty or equals to person signature
+            // in such cases MiscController::redactorAutosaveAction will remove such dfaft later
+            $this->em->getRepository('DeskPRO:Draft')->insertDraft(
+                'ticket', $ticket->getId(), $messageHtml, $messageHtml, $this->in->getCleanValueArray('extras')
+            );
+        }
+
+        // Do Reply Prepare
         $saveReplyData = $this->saveReply($ticket_id, true);
 
-        // We don't really want to save message
+        // Don't really want to save anything
         $this->em->clear();
 
         if (isset($saveReplyData['response'])) {
             return $saveReplyData['response'];
         }
 
-        $ticket  = $saveReplyData['ticket'];
-        $message = $saveReplyData['message'];
-//        $closeTab       = $saveReplyData['closeTab'];
-//        $refreshTab     = $saveReplyData['refreshTab'];
+        $ticket        = $saveReplyData['ticket'];
+        $message       = $saveReplyData['message'];
         $charge        = $saveReplyData['charge'];
         $macro         = $saveReplyData['macro'];
         $errorMessages = $saveReplyData['errorMessages'];
         $changedAgent  = $saveReplyData['changedTeam'];
         $changedTeam   = $saveReplyData['changedAgent'];
-//        $ticketContext  = $saveReplyData['ticketContext'];
 
         if (!$message['is_agent_note'] || $macro) {
             // @TODO: preload participants
@@ -1339,12 +1355,7 @@ class TicketController extends AbstractController
 
         $drafts = $this->em->getRepository(Draft::class)->getActiveDrafts('ticket', $ticket->getId());
 
-        $canView = $this->person->PermissionsManager->TicketChecker->canView($ticket);
-        if (!$canView) {
-            $refreshTab = false;
-        }
-
-        // check filter
+        // Check filter
         $filterId    = $this->in->getInt('filter_id');
         $matchFilter = false;
         if ($filterId) {
@@ -1383,12 +1394,6 @@ class TicketController extends AbstractController
 
             'message' => $message['message'],
         ];
-
-        $draftMessageHtml = Strings::prepareWysiwygHtml($message->getMessage());
-        $this->em->getRepository('DeskPRO:Draft')->insertDraft(
-            'ticket', $ticket->getId(), $draftMessageHtml, $draftMessageHtml, ['is_note' => $message->isAgentNote()]
-        );
-        $this->em->clear();
 
         return $this->createJsonResponse($data);
     }

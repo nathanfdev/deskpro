@@ -18,6 +18,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		this.popoutPage = null;
 		this.lastActiveDate = null;
 		this.ticketReplyBox = null;
+    this.replySaveAjax = null;
     if (DeskPRO_Window.$q) {
       this.initDeferred = DeskPRO_Window.$q.defer();
       this.initPromise = this.initDeferred.promise;
@@ -943,6 +944,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     };
     this.closeTicketOnFailTimeout = window.setTimeout(this.closeTicketOnFail, 1500);
 
+    // Becase of optimistic save 
+    window.addEventListener('beforeunload', function (e) {
+      if (self.replySaveAjax) {
+        // Ask user confirmation
+        e.preventDefault();
+        // Chrome requires returnValue to be set
+        // In most cases browser will show predefined message and not provided by us
+        e.returnValue = 'You have a message still sending in the background. Are you sure you want to leave before it is sent?';
+
+        return;
+      }
+    });
+
     this.replaceLinks();
     this.initDeferred && this.initDeferred.resolve();
 	},
@@ -1297,6 +1311,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('replybox_wrap').find('textarea.touched').removeClass('touched');
 
+    function reloadTicketAndList() {
+      DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.meta.ticket_id, {ignoreExist:true});
+      self.closeSelf();
+
+      DeskPRO_Window.loadListPane(DeskPRO_Window.listPage.meta.refreshUrl);
+    }
+
 		function findNextTicketId() {
 			var listPage = DeskPRO_Window.getListPage();
 			if (!listPage || !listPage.listTicketIds || !listPage.listTicketIds.length) return null;
@@ -1406,6 +1427,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           var loadingEl = self.getEl('replybox_wrap').find('.ticket-sending-overlay');
           loadingEl.hide();
 
+          reloadTicketAndList();
+
           DeskPRO_Window._globalHandleAjaxError(event, xhr, ajaxOptions, errorThrown, force);
         },
         success: function(result) {
@@ -1514,45 +1537,39 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 //				// Always perform CM processing right now
 //				DeskPRO_Window.getMessageChanneler().poller.unpause();
 
-// @TODO can ingore this?
-//				if (result.client_messages) {
-//					DeskPRO_Window.getMessageChanneler().handleMessageAjax(result.client_messages);
-//
-//					// null out so handleTicketUpdate called in hitDone doesnt re-process them
-//					result.client_messages = null;
-//				}
+				if (result.client_messages) {
+					DeskPRO_Window.getMessageChanneler().handleMessageAjax(result.client_messages);
 
-// @TODO can ignore this?
-//				if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
-//          window.DeskPRO_APPSTORE.emitAsync('ticket.reply-success', this.getTabId(), result);
-//        }
-
-				if (result.error_messages) {
-
-					var prop = self.changeManager.getPropertyManager('status');
-					self.changeManager.setInstantChange(prop, 'awaiting_agent');
-
-					var list = self.getEl('field_errors').find('ul').empty();
-					result.error_messages.forEach(function(msg) {
-						var li = $('<li/>');
-						li.text(msg);
-						li.appendTo(list);
-					});
-
-					self.getEl('field_errors').show().addClass('on');
-
-					self.getEl('field_edit_start').click();
-					self.getEl('field_edit_cancel').show();
-					self.getEl('field_edit_save').show();
-					self.getEl('field_edit_controls').removeClass('loading');
-
-					DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
+					// null out so handleTicketUpdate called in hitDone doesnt re-process them
+					result.client_messages = null;
 				}
 
-// @TODO can ignore this?
-//        if (keepOpen) {
-//          self.changeManager.updateDataholders();
-//        }
+        if (result.error_messages) {
+
+          var prop = self.changeManager.getPropertyManager('status');
+          self.changeManager.setInstantChange(prop, 'awaiting_agent');
+
+          var list = self.getEl('field_errors').find('ul').empty();
+          result.error_messages.forEach(function(msg) {
+            var li = $('<li/>');
+            li.text(msg);
+            li.appendTo(list);
+          });
+
+          self.getEl('field_errors').show().addClass('on');
+
+          self.getEl('field_edit_start').click();
+          self.getEl('field_edit_cancel').show();
+          self.getEl('field_edit_save').show();
+          self.getEl('field_edit_controls').removeClass('loading');
+
+          DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
+        }
+
+        // @TODO can ignore this?
+        //        if (keepOpen) {
+        //          self.changeManager.updateDataholders();
+        //        }
         keepOpen = true;
         ajaxHit = result;
         hitDonePrepare();
