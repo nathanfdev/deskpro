@@ -262,7 +262,7 @@ class FeedbackController extends AbstractController
                 'ticket_feedback_links' => $ticketFeedbackLinks,
                 'subscribed_persons'    => $subscribedPersons,
                 'perms'                 => $perms,
-                'permalink'             => $this->get('object_router')->getPortalUrl($feedback),
+                'permalink'             => $this->get('object_router')->getAgentUrl($feedback),
             ]
         );
     }

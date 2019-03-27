@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
 use Application\DeskPRO\Entity\Feedback;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -55,10 +56,15 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
                 $route = 'portal_feedback_view';
         }
 
+        // Use feedback_id instead slug for 'agent' context
+        $slugParam = ObjectRouter::CONTEXT_AGENT === $context
+            ? $object->getId()
+            : $object->getSlug();
+
         return $this->urlGenerator->generate(
             $route,
             array_merge([
-                'slug'  => $object->getSlug(),
+                'slug'  => $slugParam,
                 'brand' => $object->getBrand(),
             ], $extra_params),
             $reference_type
