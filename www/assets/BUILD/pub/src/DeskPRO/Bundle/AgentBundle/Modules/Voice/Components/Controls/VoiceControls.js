@@ -156,16 +156,17 @@ class Busy extends React.Component {
 class Active extends React.Component {
 
   static propTypes = {
-    mute:         PropTypes.bool,
-    hold:         PropTypes.bool,
-    ended:        PropTypes.bool,
-    onlineAgents: PropTypes.object,
-    toggleHold:   PropTypes.func,
-    toggleMute:   PropTypes.func,
-    endCall:      PropTypes.func,
-    sendDigits:   PropTypes.func,
-    divRef:       PropTypes.func,
-    participants: PropTypes.array
+    mute:               PropTypes.bool,
+    transferTargetType: PropTypes.string,
+    hold:               PropTypes.bool,
+    ended:              PropTypes.bool,
+    onlineAgents:       PropTypes.object,
+    toggleHold:         PropTypes.func,
+    toggleMute:         PropTypes.func,
+    endCall:            PropTypes.func,
+    sendDigits:         PropTypes.func,
+    divRef:             PropTypes.func,
+    participants:       PropTypes.array
   };
 
   constructor(props) {
@@ -244,7 +245,7 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef } = this.props;
+    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef, transferTargetType } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
 
@@ -286,7 +287,7 @@ class Active extends React.Component {
         </Button>
         <Button
           ref={(c) => { this.transferButton = c; }}
-          className={classNames('basic caret-button', { active: transferMenuOpened, disabled: ended || noAgents })}
+          className={classNames('basic caret-button', { active: transferMenuOpened, disabled: ended || noAgents || transferTargetType === 'warm' })}
           onClick={this.openTransferMenu}
         >
           <i className="share icon" />
@@ -310,7 +311,7 @@ class Active extends React.Component {
         <Detached
           positionMy="right top"
           positionAt="right bottom"
-          isOpen={transferMenuOpened}
+          isOpen={transferMenuOpened || transferTargetType === 'warm'}
           positionTarget={this.transferButton}
           zIndex={1000}
         >

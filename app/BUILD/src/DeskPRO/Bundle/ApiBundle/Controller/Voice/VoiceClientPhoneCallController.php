@@ -459,12 +459,15 @@ class VoiceClientPhoneCallController extends BaseController
 
         // change ticket assigned agent to follower on cold transfer
         $ticketPerson = $ticket->getAgent();
-        $ticket->setAgent(null);
+        if ($ticketPerson) {
+            $ticket->setAgent(null);
 
-        $participant = new TicketParticipant();
-        $participant->setPerson($ticketPerson);
+            $participant = new TicketParticipant();
+            $participant->setPerson($ticketPerson);
 
-        $ticket->addParticipant($participant);
+            $ticket->addParticipant($participant);
+        }
+
         $this->get('dp.voice.callbacks_helper')->saveTicket($ticket);
 
         // send transfer notification
