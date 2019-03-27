@@ -1331,12 +1331,20 @@ class TicketController extends AbstractController
             ]
         );
 
+        // Render Message block
+        $ticket_attachments         = [];
+        $ticket_message_attachments = [];
+        foreach ($message->attachments as $message_attach) {
+            $ticket_attachments[$message_attach->getId()] = $message_attach;
+            $ticket_message_attachments[$message->id][]   = $message_attach->getId();
+        }
+
         $messageHtml = $this->renderView(
             'AgentBundle:Ticket:ticket-message.html.twig',
             [
                 'message'                    => $message,
-                'ticket_message_attachments' => $message->getAttachments(),
-                'ticket_attachments'         => $message->getAttachments(),
+                'ticket_message_attachments' => $ticket_message_attachments,
+                'ticket_attachments'         => $ticket_attachments,
                 'ticket'                     => $ticket,
             ]
         );
@@ -1404,8 +1412,17 @@ class TicketController extends AbstractController
 
     public function ajaxSaveReplyAction($ticket_id)
     {
+
         //@TODO: remove this
-        sleep(5);
+
+        if ($this->in->getInt('options.agent_id') == 2) {
+            sleep(10);
+        } elseif ($this->in->getInt('options.agent_id') == 3) {
+            sleep(30);
+        } elseif ($this->in->getInt('options.agent_id') == 4) {
+            throw new \Exception('Some test exception');
+        }
+
         $saveReplyData = $this->saveReply($ticket_id, false);
 
         if (isset($saveReplyData['response'])) {

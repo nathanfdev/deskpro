@@ -1288,10 +1288,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			name: 'last_log_id',
 			value: this.getEl('messages_wrap').find('.log-row').last().data('log-id')
 		});
-		formData.push({
-			name: 'filter_id',
-			value: DeskPRO_Window.listPage.filterId
-		});
+    if (DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
+      formData.push({
+        name: 'filter_id',
+        value: DeskPRO_Window.sections.tickets_section.listPage.filterId
+      });
+    }
 		if (this.getReplyTextArea()) {
 			this.getReplyTextArea().data('disable-autosave', true);
 			if (this.getReplyTextArea().data('autosave-running')) {
@@ -1315,7 +1317,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.meta.ticket_id, {ignoreExist:true});
       self.closeSelf();
 
-      DeskPRO_Window.loadListPane(DeskPRO_Window.listPage.meta.refreshUrl);
+      if (DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
+        DeskPRO_Window.loadListPane(DeskPRO_Window.listPage.meta.refreshUrl);
+      }
     }
 
 		function findNextTicketId() {
@@ -1392,6 +1396,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         DeskPRO_Window.showAlert("You have already sent that message.");
         self.loadMessagePage(0, true);
         self.getEl('replybox_wrap').find('.ticket-sending-overlay').hide();
+        self.replySaveAjax = null;
         return;
       }
 
@@ -1399,13 +1404,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			if (result.error && result.error == 'no_message') {
 				DeskPRO_Window.showAlert("Please enter a message");
+        self.replySaveAjax = null;
 				return;
 			}
 
 			self.doHandleTicketUpdate(result, true);
-      if (!result.match_filter) {
-        DeskPRO_Window.listPage.removeTicketResults([self.meta.ticket_id]);
+      if (!result.match_filter && DeskPRO_Window.sections.tickets_section && DeskPRO_Window.sections.tickets_section.listPage) {
+        DeskPRO_Window.sections.tickets_section.listPage.removeTicketResults([self.meta.ticket_id]);
       }
+
+      // disable autosave and pause poller before second reply save request
+      if (self.getReplyTextArea()) {
+        self.getReplyTextArea().data('disable-autosave', true);
+      }
+      DeskPRO_Window.getMessageChanneler().poller.pause();
 
       // call real Reply save
       self.replySaveAjax = $.ajax({
@@ -1447,6 +1459,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
           if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
             window.DeskPRO_APPSTORE.emitAsync('ticket.reply-success', self.getTabId(), result);
+          }
+
+          // Might be unloaded by the time this callback is called
+          if (!self.changeManager) {
+            return;
           }
 
           if (result.error_messages) {
@@ -1519,9 +1536,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       withActionAlerts: true,
 			complete: function() {
 //				this.replySaveAjax = null;
-//				DeskPRO_Window.getMessageChanneler().poller.unpause();
-//
-//				this.getReplyTextArea().data('disable-autosave', false);
+				DeskPRO_Window.getMessageChanneler().poller.unpause();
+				this.getReplyTextArea().data('disable-autosave', false);
 			},
 			error: function(event, xhr, ajaxOptions, errorThrown, force) {
         this.replySaveAjax = null;
@@ -1533,10 +1549,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window._globalHandleAjaxError(event, xhr, ajaxOptions, errorThrown, force);
 			},
 			success: function(result) {
-
-//				// Always perform CM processing right now
-//				DeskPRO_Window.getMessageChanneler().poller.unpause();
-
 				if (result.client_messages) {
 					DeskPRO_Window.getMessageChanneler().handleMessageAjax(result.client_messages);
 
@@ -1544,33 +1556,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					result.client_messages = null;
 				}
 
-        if (result.error_messages) {
-
-          var prop = self.changeManager.getPropertyManager('status');
-          self.changeManager.setInstantChange(prop, 'awaiting_agent');
-
-          var list = self.getEl('field_errors').find('ul').empty();
-          result.error_messages.forEach(function(msg) {
-            var li = $('<li/>');
-            li.text(msg);
-            li.appendTo(list);
-          });
-
-          self.getEl('field_errors').show().addClass('on');
-
-          self.getEl('field_edit_start').click();
-          self.getEl('field_edit_cancel').show();
-          self.getEl('field_edit_save').show();
-          self.getEl('field_edit_controls').removeClass('loading');
-
-          DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
-        }
-
-        // @TODO can ignore this?
-        //        if (keepOpen) {
-        //          self.changeManager.updateDataholders();
-        //        }
-        keepOpen = true;
         ajaxHit = result;
         hitDonePrepare();
 			}
