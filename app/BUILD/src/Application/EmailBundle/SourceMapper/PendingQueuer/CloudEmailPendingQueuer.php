@@ -2,74 +2,54 @@
 
 namespace Application\EmailBundle\SourceMapper\PendingQueuer;
 
-use Aws\Credentials\CredentialProvider;
-use Aws\Sqs\SqsClient;
+use Predis;
 
 class CloudEmailPendingQueuer implements PendingQueuerInterface
 {
-    /** @var SqsClient */
+    /** @var Predis\Client */
     private $client;
 
     /** @var string */
-    private $queueUrl;
-
-    /** @var string */
-    private $apiKey;
+    private $redisSet;
 
     /**
-     * @param string $region
-     * @return SqsClient
-     */
-    static public function createSqsClient($region)
-    {
-        $provider = CredentialProvider::defaultProvider();
-        return new SqsClient([
-            'version' => '2012-11-05',
-            'credentials' => $provider,
-            'region'  => $region // TO DO THIS NEEDS TO COME FROM CONFIGURATION
-        ]);
-    }
-
-    /**
-     * @param string $queueUrl the outgoing queue url, in this format https://sqs.<region>.amazonaws.com/<aws_account_id>/<queue_name>
-     * @param string $deskproAPIKey
+     * @param Predis\Client $client
+     * @param string $redisSet the key of the redis ordered set which acts as queue
      * @return CloudEmailPendingQueuer
      * @throws \Exception
      */
-    static public function create($queueUrl, $deskproAPIKey)
+    static public function createClient(Predis\Client $client, $redisSet)
     {
-        if (empty($deskproAPIKey)) {
-            throw new \Exception("the deskpro api key can not be empty");
+        if (empty($redisSet) || !is_string($redisSet)) {
+            throw new \Exception("a valid redis key is required to identify the redis set");
         }
 
-        $region = null;
-        $urlComponents = parse_url($queueUrl, PHP_URL_HOST);
-        if (!empty($urlComponents) && preg_match('/sqs\.([^.]+).+/',$urlComponents, $matches)) {
-            $region = $matches[1];
-        }
+        return new CloudEmailPendingQueuer($client, $redisSet);
+    }
 
-        if(empty($region)) {
-            throw new \Exception(
-            "could not resolve the region from the queue url. ".
-            'Make sure the url is in the format https://sqs.<region>.amazonaws.com/<aws_account_id>/<queue_name>'
-            );
-        }
-
-        $client = CloudEmailPendingQueuer::createSqsClient($region);
-        return new CloudEmailPendingQueuer($client, $queueUrl, $deskproAPIKey);
+    /**
+     * @param mixed $redisConnection @see https://github.com/nrk/predis/wiki/Connection-Parameters
+     * @param string $redisSet the key of the redis ordered set which acts as queue
+     * @return CloudEmailPendingQueuer
+     * @throws \Exception
+     */
+    static public function create($redisConnection, $redisSet)
+    {
+        return CloudEmailPendingQueuer::createClient(
+            new Predis\Client($redisConnection),
+            $redisSet
+        );
     }
 
     /**
      * CloudEmailPendingQueuer constructor.
-     * @param SqsClient $client
-     * @param string $queueUrl
-     * @param string $apiKey
+     * @param Predis\Client $client
+     * @param string $redisSet
      */
-    public function __construct(SqsClient $client, $queueUrl, $apiKey)
+    public function __construct( Predis\Client $client, $redisSet)
     {
         $this->client = $client;
-        $this->queueUrl = $queueUrl;
-        $this->apiKey = $apiKey;
+        $this->redisSet = $redisSet;
     }
 
     /**
@@ -77,28 +57,9 @@ class CloudEmailPendingQueuer implements PendingQueuerInterface
      *
      * @param array $source
      */
-    public function queueMessageSource( array $source )
+    public function queueMessageSource(array $source)
     {
-        //TODO find out where to get the build id
-
-        $this->client->sendMessage([
-            'DelaySeconds' => 0,
-//            'MessageAttributes' => [
-//                // ...
-//            ],
-            'MessageBody' => json_encode([
-                "id" => DPC_SITE_ID,
-                 "masterDomain" => DPC_SITE_DOMAIN,
-                 "buildId" => "0.0.0",
-                 "apiKey" => $this->apiKey,
-                 "secret" => $this->apiKey
-            ]),
-            'MessageDeduplicationId' => DPC_SITE_ID,
-            'MessageGroupId' => 'sites',
-            'QueueUrl' => $this->queueUrl, // REQUIRED
-        ]);
+        $millis = (int) (microtime(true) * 1000);
+        $this->client->zadd($this->redisSet, [DPC_SITE_ID => $millis]);
     }
-
-
-
 }
