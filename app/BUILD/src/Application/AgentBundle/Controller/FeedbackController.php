@@ -38,6 +38,7 @@ use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator\FeedbackLinkGenerator;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -262,7 +263,8 @@ class FeedbackController extends AbstractController
                 'ticket_feedback_links' => $ticketFeedbackLinks,
                 'subscribed_persons'    => $subscribedPersons,
                 'perms'                 => $perms,
-                'permalink'             => $this->get('object_router')->getAgentUrl($feedback),
+                'permalink'             => $this->get('object_router')
+                    ->getPortalUrl($feedback, FeedbackLinkGenerator::TYPE_PERMALINK),
             ]
         );
     }

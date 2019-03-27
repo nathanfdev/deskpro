@@ -12,6 +12,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class FeedbackLinkGenerator implements LinkGeneratorInterface
 {
+    const TYPE_PERMALINK = 'permalink';
+
     /**
      * @var UrlGeneratorInterface
      */
@@ -53,20 +55,27 @@ class FeedbackLinkGenerator implements LinkGeneratorInterface
                 $route = 'portal_feedback_toggle_subscription';
                 break;
             default:
-                $route = 'portal_feedback_view';
+                $route = "{$context}_feedback_view";
         }
 
         // Use feedback_id instead slug for 'agent' context
-        $slugParam = ObjectRouter::CONTEXT_AGENT === $context
+        $routeParam = static::TYPE_PERMALINK === $type || ObjectRouter::CONTEXT_AGENT === $context
             ? $object->getId()
             : $object->getSlug();
 
+        $routeKey = ObjectRouter::CONTEXT_AGENT === $context
+            ? 'feedback_id'
+            : 'slug';
+
         return $this->urlGenerator->generate(
             $route,
-            array_merge([
-                'slug'  => $slugParam,
-                'brand' => $object->getBrand(),
-            ], $extra_params),
+            array_merge(
+                [
+                    $routeKey => $routeParam,
+                    'brand'   => $object->getBrand(),
+                ],
+                $extra_params
+            ),
             $reference_type
         );
     }
