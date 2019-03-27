@@ -13,6 +13,7 @@ class MediaControls extends React.Component {
 
   constructor(props) {
     super(props);
+    this.blob = null;
     this.state = {
       duration:    null,
       playing:     false,
@@ -21,38 +22,35 @@ class MediaControls extends React.Component {
   }
 
   componentDidMount() {
-    this.audio.addEventListener('ended', () => {
-      this.setState({
-        playing: false
-      });
-    });
+    this.loadAudio();
+    this.audio.addEventListener('playing', this.setPlaying);
+    this.audio.addEventListener('play', this.setPlaying);
+    this.audio.addEventListener('pause', this.setPaused);
+    this.audio.addEventListener('ended', this.setPaused);
+    this.audio.addEventListener('loadedmetadata', this.setDuration);
+    this.audio.addEventListener('timeupdate', this.setCurrentTime);
+  }
 
-    this.audio.addEventListener('loadedmetadata', () => {
-      this.setState({
-        duration: this.audio.duration
-      });
-    });
+  componentWillUnmount() {
+    URL.revokeObjectURL(this.blob);
+    this.audio.removeEventListener('playing', this.setPlaying);
+    this.audio.removeEventListener('play', this.setPlaying);
+    this.audio.removeEventListener('pause', this.setPaused);
+    this.audio.removeEventListener('ended', this.setPaused);
+    this.audio.removeEventListener('loadedmetadata', this.setDuration);
+    this.audio.removeEventListener('timeupdate', this.setCurrentTime);
 
-    this.audio.addEventListener('timeupdate', () => {
-      this.setState({
-        currentTime: this.audio.currentTime
-      });
-    });
+    if (this.audio && this.audio.readyState > 2) {
+      this.audio.pause();
+    }
   }
 
   onPlay = () => {
     const { playing } = this.state;
-
     if (!playing) {
       this.audio.play();
-      this.setState({
-        playing: true
-      });
     } else {
       this.audio.pause();
-      this.setState({
-        playing: false
-      });
     }
   };
 
@@ -75,18 +73,60 @@ class MediaControls extends React.Component {
     this.audio.currentTime = 0;
   };
 
+  setPlaying = () => {
+    this.setState({ playing: true });
+  };
+
+  setPaused = () => {
+    this.setState({ playing: false });
+  };
+
+  setDuration = () => {
+    this.setState({ duration: this.audio.duration });
+  };
+
+  setCurrentTime = () => {
+    this.setState({ currentTime: this.audio.currentTime });
+  };
+
+  setLoaded = () => {
+    this.setState({ loaded: true });
+  };
+
+  loadAudio = () => {
+    const req = new XMLHttpRequest();
+    req.open('GET', this.props.recording.get('download_url'), true);
+    req.responseType = 'blob';
+
+    req.onload = () => {
+      if (req.status === 200) {
+        const blob = req.response;
+        this.blob = URL.createObjectURL(blob);
+        this.audio.src = this.blob;
+        this.setLoaded();
+      }
+    };
+    req.onerror = (e) => {
+      console.error('Can\'t load an audio file!', e);
+    };
+    req.send();
+  };
+
   render() {
     const { recording } = this.props;
-    const { playing, duration, currentTime } = this.state;
+    const { playing, duration, currentTime, loaded } = this.state;
+
+    if (this.audio) {
+      console.log(this.audio.currentTime, this.state.currentTime);
+    }
 
     return (
       <div className="media-controls">
-        <audio ref={(c) => { this.audio = c; }} src={recording.get('download_url')} />
-
-        <Button className={classNames('basic icon', { disabled: !duration })} onClick={this.onStepBackward}>
+        <audio ref={(c) => { this.audio = c; }} preload="none" />;
+        <Button className={classNames('basic icon', { disabled: !loaded })} onClick={this.onStepBackward}>
           <i className="icon step backward" />
         </Button>
-        <Button className={classNames('basic icon', { disabled: !duration })} onClick={this.onPlay}>
+        <Button className={classNames('basic icon', { disabled: !loaded })} onClick={this.onPlay}>
           <i className={classNames(playing ? 'pause' : 'play', 'icon')} />
         </Button>
         <div className="media-timeline">

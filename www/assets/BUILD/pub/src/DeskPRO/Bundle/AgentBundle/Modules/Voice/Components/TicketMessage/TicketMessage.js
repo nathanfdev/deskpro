@@ -140,7 +140,7 @@ class TicketMessage extends React.Component {
               <Button className="basic call-button" onClick={openDialpad}>
                 <i className="icon call" /> Call {phoneCall.get('external_number')}
               </Button>}
-              {recordingsEnabled.size > 0 && recordingsEnabled.map(recording => <MediaControls recording={recording.get('blob')} />)}
+              {recordingsEnabled.size > 0 && recordingsEnabled.map(recording => <MediaControls key={`recording_${recording.get('blob').get('blob_id')}`} recording={recording.get('blob')} />)}
               {recordings.size > 0 && !recordingsDeleted.size && !recordingsEnabled.size ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
               {recordingsDeleted.size > 0 && !recordingsEnabled.size && 'This call recording has been deleted.'}
               {!recordings.size ? 'This call was not recorded.' : ''}
