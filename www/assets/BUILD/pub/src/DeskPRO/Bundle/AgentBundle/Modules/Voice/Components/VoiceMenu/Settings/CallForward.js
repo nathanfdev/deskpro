@@ -4,6 +4,7 @@ import { Fieldset } from '@deskpro/react-forms';
 import { Form, Field, Toggle, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import classNames from 'classnames';
+import $ from 'jquery';
 
 class CallForward extends BaseForm {
 
@@ -11,6 +12,11 @@ class CallForward extends BaseForm {
     me:       PropTypes.object,
     onSubmit: PropTypes.func
   };
+
+  componentDidMount() {
+    super.componentDidMount();
+    $('.toggle', this.node).on('click', () => setTimeout(this.onSubmit, 1));
+  }
 
   getDefaultState() {
     const { me } = this.props;
