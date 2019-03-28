@@ -148,7 +148,11 @@ class PlivoCallbacksController extends BaseController
         $plivoXml = new PlivoXML();
 
         if ($request->request->get('X-PH-Outbound')) {
+            $phoneLock = $this->get('dp.voice.phone_lock_helper')->createPhoneLock($callId);
+
             try {
+                $phoneLock->acquire(true);
+
                 /** @var VoicePhoneCall $phoneCall */
                 $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
                 if (!$phoneCall) {
@@ -208,6 +212,8 @@ class PlivoCallbacksController extends BaseController
                 $plivoXml->addSpeak('Unable to make a call.', [
                     'voice' => 'WOMAN',
                 ]);
+            } finally {
+                $phoneLock->release();
             }
         } else {
             try {

@@ -53,3 +53,8 @@ services:
       - "@router"
       - "@dp.voice.assets_helper"
       - "@dp.voice.provider_helper"
+
+  dp.voice.phone_lock_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\PhoneCallLockHelper
+    arguments:
+      - "@doctrine.dbal.default_connection"

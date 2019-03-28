@@ -10,7 +10,6 @@ class OutgoingCall extends React.Component {
     people:        PropTypes.object,
     outgoingCall:  PropTypes.object,
     hangup:        PropTypes.func,
-    init:          PropTypes.bool,
     ringingVolume: PropTypes.number
   };
 
@@ -24,14 +23,11 @@ class OutgoingCall extends React.Component {
 
   hangup = (event) => {
     event.preventDefault();
-    const { hangup, init } = this.props;
-    if (init) {
-      hangup();
-    }
+    this.props.hangup();
   };
 
   render() {
-    const { init, me, people, outgoingCall, ringingVolume } = this.props;
+    const { me, people, outgoingCall, ringingVolume } = this.props;
     const person = people.get(outgoingCall.getIn(['phoneCall', 'person']));
 
     return (
@@ -55,16 +51,14 @@ class OutgoingCall extends React.Component {
           person={person}
         />
         <div className="buttons">
-          {init ?
-            <a
-              className="ignore-button"
-              href="#ignore"
-              onClick={this.hangup}
-            >
-              <i className="icon remove" />
-              Cancel
-            </a>
-            : <div className="ui active inline loader" />}
+          <a
+            className="ignore-button"
+            href="#ignore"
+            onClick={this.hangup}
+          >
+            <i className="icon remove" />
+            Cancel
+          </a>
         </div>
       </div>
     );
