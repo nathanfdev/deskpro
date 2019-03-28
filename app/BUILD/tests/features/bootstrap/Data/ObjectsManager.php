@@ -102,6 +102,7 @@ use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomTicketFieldDefinitionAlias;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -377,6 +378,7 @@ class ObjectsManager
             'PersonPref'                       => [Factory\SimpleFactory::class, 'create', PersonPref::class],
             'Blob'                             => [Factory\SimpleFactory::class, 'create', Blob::class],
             'Snippet'                          => [Factory\SimpleFactory::class, 'create', Snippet::class],
+            'SnippetLabel'                     => [Factory\SimpleFactory::class, 'create', SnippetLabel::class],
             'SnippetTranslation'               => [Factory\SimpleFactory::class, 'create', SnippetTranslation::class],
             'TextSnippet'                      => [Factory\SimpleFactory::class, 'create', TextSnippet::class],
             'TextSnippetCategory'              => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
@@ -516,6 +518,7 @@ class ObjectsManager
             'PersonPref'                       => [$this, 'find', PersonPref::class],
             'Sla'                              => [$this, 'find', Sla::class],
             'Snippet'                          => [$this, 'find', Snippet::class],
+            'SnippetLabel'                     => [$this, 'find', SnippetLabel::class],
             'SnippetTranslation'               => [$this, 'find', SnippetTranslation::class],
             'TextSnippet'                      => [$this, 'find', TextSnippet::class],
             'TextSnippetCategory'              => [$this, 'find', TextSnippetCategory::class],
