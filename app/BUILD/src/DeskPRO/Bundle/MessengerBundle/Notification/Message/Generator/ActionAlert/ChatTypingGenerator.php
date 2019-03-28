@@ -34,12 +34,19 @@ class ChatTypingGenerator extends ChatGenerator
         $data    = $event->getData();
         $isAgent = $data['origin'] === 'agent';
 
-        $avatar = $isAgent ? $this->avatarResolver->getAvatar($chat->getAgent()) : $chat->getPersonPictureUrl();
+        if ($isAgent) {
+            $agent  = $chat->getAgent();
+            $avatar = $this->avatarResolver->getAvatar($agent);
+            $name   = null !== $agent ? $agent->getDisplayNameUser() : 'agent';
+        } else {
+            $avatar = $chat->getPersonPictureUrl();
+            $name   = $chat->getPersonName() ?: $chat->getPersonEmail() ?: 'user';
+        }
 
         return [
             'chat'        => $chat->getId(),
             'origin'      => $data['origin'],
-            'name'        => $isAgent ? $chat->getAgent()->getDisplayNameUser() : $chat->getPersonName() ?: $chat->getPersonEmail() ?: 'user',
+            'name'        => $name,
             'avatar'      => $avatar,
             'date_typing' => isset($data['date_typing']) && $data['date_typing'] instanceof \DateTime
                 ? $data['date_typing']->format(\DateTime::ISO8601)
