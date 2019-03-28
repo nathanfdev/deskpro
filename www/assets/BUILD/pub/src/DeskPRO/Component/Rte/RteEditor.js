@@ -67,6 +67,7 @@ export default class RteEditor extends React.Component {
     // Override default paste listener to upload images
     node.addEventListener('paste', this.onPaste);
     const overrideOptions = {
+      // check below comments regarding `cleanPastedHTML` option
       paste: { cleanPastedHTML: false, forcePlainText: false, keyboardCommands: false }
     };
 
@@ -125,11 +126,10 @@ export default class RteEditor extends React.Component {
     if (clipboardData) {
       // Non-IE browsers
       if (!clipboardHasImages(clipboardData)) {
-        let pastedText = clipboardData.getData('text/plain');
+        const pastedText = clipboardData.getData('text/plain');
         if (pastedText) {
-          pastedText = pastedText.replace(/\n/g, '<br />');
-
-          this.medium.cleanPaste(pastedText);
+          // to make below line work - medium-editor option `cleanPastedHTML` should be set to false
+          this.medium.getExtensionByName('paste').doPaste(pastedText, pastedText, this.getNode());
         }
       }
 
@@ -144,13 +144,13 @@ export default class RteEditor extends React.Component {
     } else if (window.clipboardData) {
       // IE browser
       if (!clipboardIEHasImages(window.clipboardData)) {
-        let content = window.clipboardData.getData('Text');
+        const content = window.clipboardData.getData('Text');
         if (content) {
           try {
             getBlobFromUrl(content, onPasteImage);
           } catch (e) {
-            content = content.replace(/\n/g, '<br />');
-            this.medium.cleanPaste(content);
+            // to make below line work - medium-editor option `cleanPastedHTML` should be set to false
+            this.medium.getExtensionByName('paste').doPaste(content, content, this.getNode());
           }
         }
       } else {
