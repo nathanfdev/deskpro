@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import { Range } from 'DeskPRO/Component/Semantic/Form';
 import Duration from 'DeskPRO/Component/Duration';
+import Loader from '@deskpro/react-loader';
 
 class MediaControls extends React.Component {
 
@@ -116,18 +117,14 @@ class MediaControls extends React.Component {
     const { recording } = this.props;
     const { playing, duration, currentTime, loaded } = this.state;
 
-    if (this.audio) {
-      console.log(this.audio.currentTime, this.state.currentTime);
-    }
-
     return (
       <div className="media-controls">
-        <audio ref={(c) => { this.audio = c; }} preload="none" />;
+        <audio ref={(c) => { this.audio = c; }} preload="none" />
         <Button className={classNames('basic icon', { disabled: !loaded })} onClick={this.onStepBackward}>
-          <i className="icon step backward" />
+          {!loaded ? <Loader loaded={loaded} opacity={0} width={3} scale={0.5} color="#4696dc" /> : <i className="icon step backward" /> }
         </Button>
         <Button className={classNames('basic icon', { disabled: !loaded })} onClick={this.onPlay}>
-          <i className={classNames(playing ? 'pause' : 'play', 'icon')} />
+          {!loaded ? <Loader loaded={loaded} opacity={0} width={3} scale={0.5} color="#4696dc" /> : <i className={classNames(playing ? 'pause' : 'play', 'icon')} />}
         </Button>
         <div className="media-timeline">
           <Range value={currentTime} onChange={this.onMove} min={0} max={duration} />

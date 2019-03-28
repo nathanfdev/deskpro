@@ -1329,6 +1329,8 @@ $voice-green-border-color: #47BF61;
       }
 
       button {
+        position: relative;
+        min-width: 19px;
         height: 30px;
         padding-top: 3px;
         padding-bottom: 3px;
