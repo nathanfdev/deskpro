@@ -1269,27 +1269,20 @@ class TicketController extends AbstractController
         $ticket        = $saveReplyData['ticket'];
         $message       = $saveReplyData['message'];
         $charge        = $saveReplyData['charge'];
-        $macro         = $saveReplyData['macro'];
         $errorMessages = $saveReplyData['errorMessages'];
         $changedAgent  = $saveReplyData['changedTeam'];
         $changedTeam   = $saveReplyData['changedAgent'];
 
-        if (!$message['is_agent_note'] || $macro) {
-            // @TODO: preload participants
-            $participants           = $ticket->getAgentParticipants();
-            $updatedAgentPartsCount = count($participants);
-            $updatedAgentParts      = $this->renderView(
-                'AgentBundle:Ticket:view-participants-agents.html.twig',
-                [
-                    'ticket'       => $ticket,
-                    'participants' => $participants,
-                ]
-            );
-        }
-
         // New reply box
-        // @TODO: preload participants
-        $participants   = $ticket->getParticipants();
+        $participants = $this->em->createQuery(
+            '
+            SELECT p
+            FROM DeskPRO:TicketParticipant p
+            LEFT JOIN p.person person
+            LEFT JOIN p.person_email person_email
+            WHERE p.ticket = ?1
+        '
+        )->setParameter(1, $ticket)->execute();
         $participantIds = [];
         $agentParts     = [];
         $userParts      = [];
@@ -1323,18 +1316,17 @@ class TicketController extends AbstractController
             ]
         );
 
-        $ccList = $this->renderView(
-            'AgentBundle:Ticket:view-user-cc-list.html.twig',
-            [
-                'user_parts'   => $userParts,
-                'ticket_perms' => $this->_getTicketPerms($ticket),
-            ]
-        );
-
         // Render Message block
         $ticket_attachments         = [];
         $ticket_message_attachments = [];
+        // need to assigne some id to properly show in template
+        $message->id = 1000000;
         foreach ($message->attachments as $message_attach) {
+            if ($message_attach->isInline()) {
+                continue;
+            }
+            // need to assigne some id to attachment to properly show them
+            $message_attach->id                           = $message_attach->getBlob()->getId();
             $ticket_attachments[$message_attach->getId()] = $message_attach;
             $ticket_message_attachments[$message->id][]   = $message_attach->getId();
         }
@@ -1348,6 +1340,11 @@ class TicketController extends AbstractController
                 'ticket'                     => $ticket,
             ]
         );
+        // just in case rollback id's
+        $message->id = null;
+        foreach ($message->attachments as $message_attach) {
+            $message_attach->id = null;
+        }
 
         if ($charge) {
             $chargeHtml = $this->renderView(
@@ -1374,27 +1371,24 @@ class TicketController extends AbstractController
         }
 
         $data = [
-            'message_block_html'             => $messageHtml,
-            'match_filter'                   => $matchFilter,
-            'active_drafts'                  => $this->_renderActiveDrafts($ticket, $drafts),
-            'via_reply'                      => true,
-            'updated_agent_parts_html'       => isset($updatedAgentParts) ? $updatedAgentParts : '',
-            'updated_agent_parts_html_count' => isset($updatedAgentPartsCount) ? $updatedAgentPartsCount : null,
-            'replybox_html'                  => $replybox,
-            'charge_html'                    => $chargeHtml,
-            'changed_agent'                  => $changedAgent,
-            'agent_id'                       => $ticket['agent_id'],
-            'changed_team'                   => $changedTeam,
-            'agent_team_id'                  => $ticket['agent_team_id'],
-            'status'                         => $ticket['status'],
-            'close_tab'                      => false, // important here
-            'refresh_tab'                    => false,
-            'client_messages'                => false,
-            'cc_list'                        => $ccList,
-            'error_messages'                 => $errorMessages ?: false,
-            'notified_agents'                => [], //$ticketContext->getVars()->get('notified_agents'),
-            'can_view'                       => true, // important here
-            'api_data'                       => $ticket->toApiData(),
+            'message_block_html' => $messageHtml,
+            'match_filter'       => $matchFilter,
+            'active_drafts'      => $this->_renderActiveDrafts($ticket, $drafts),
+            'via_reply'          => true,
+            'replybox_html'      => $replybox,
+            'charge_html'        => $chargeHtml,
+            'changed_agent'      => $changedAgent,
+            'agent_id'           => $ticket['agent_id'],
+            'changed_team'       => $changedTeam,
+            'agent_team_id'      => $ticket['agent_team_id'],
+            'status'             => $ticket['status'],
+            'close_tab'          => false, // important here
+            'refresh_tab'        => false,
+            'client_messages'    => false,
+            'error_messages'     => $errorMessages ?: false,
+            'notified_agents'    => [],
+            'can_view'           => true, // important here
+            'api_data'           => $ticket->toApiData(),
 
             'urgency'       => $ticket->getUrgency(),
             'department_id' => $ticket->getDepartmentId(),
@@ -1790,7 +1784,9 @@ class TicketController extends AbstractController
         if (!$isOptimisticUIUpdate) {
             if ($macro) {
                 $macroLog = Entity\TicketObjectUseLog::createMacroLog($ticket, $this->getPerson(), $macro);
-                $this->em->persist($macroLog);
+                if (!$isOptimisticUIUpdate) {
+                    $this->em->persist($macroLog);
+                }
             }
         }
 
@@ -1834,7 +1830,9 @@ class TicketController extends AbstractController
             $messageTranslated->message        = $requestMessageTrans;
             $messageTranslated->from_lang_code = $this->person->getLanguage()->getLocale();
             $messageTranslated->lang_code      = $this->in->getString('reply_is_trans');
-            $this->em->persist($messageTranslated);
+            if (!$isOptimisticUIUpdate) {
+                $this->em->persist($messageTranslated);
+            }
 
             $message->primary_translation = $messageTranslated;
         }
