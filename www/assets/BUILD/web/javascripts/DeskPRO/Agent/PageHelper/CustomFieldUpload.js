@@ -15,6 +15,7 @@ DeskPRO.Agent.PageHelper.CustomFieldUpload = new Orb.Class({
     var $uploadBtn = $('<div class="custom-field-attach"><a href="javascript:void(null);" unselectable="on">Attach<input type="file" class="file" name="file-upload"></a></div>');
     var $dropzone = $('<div class="drop-file-zone"><h1>'+DeskPRO_Window.getTranslate().phrase('agent.general.drop_here_to_attach_file')+'</h1></div>');
 
+    $customFieldForm.addClass('has-init');
     $customFieldForm.append($uploadBtn);
     $customFieldForm.append($dropzone);
 
@@ -76,14 +77,16 @@ DeskPRO.Agent.PageHelper.CustomFieldUpload = new Orb.Class({
   },
 
   destroy: function () {
-    $(this.page).find('.File.form.customfield').each(function() {
+    $(this.page).find('.File.form.customfield.has-init').each(function() {
       var $customFieldForm = $(this);
       var $collectionForm = $customFieldForm.find('[data-prototype]');
 
       if (!$collectionForm.data('multiple') && $customFieldForm.find('input[type="hidden"]').length) {
         $customFieldForm.find('.custom-field-attach').fileupload('destroy');
       } else {
-        $customFieldForm.fileupload('destroy');
+        try {
+          $customFieldForm.fileupload('destroy');
+        } catch (e) {}
       }
     });
   }

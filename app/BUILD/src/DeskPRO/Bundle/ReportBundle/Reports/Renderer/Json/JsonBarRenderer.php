@@ -109,11 +109,11 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                     $chartData[$i]["value$i$j"] = $value;
 
                     foreach ($additionalData as $key => $resultId) {
-                        $value = $values[$resultId - 1];
-                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                        $tmpvalue = $values[$resultId - 1];
+                        if (!filter_var($tmpvalue, FILTER_VALIDATE_INT)) {
                             $integersOnly = false;
                         }
-                        $chartData[$i][$key] = $value;
+                        $chartData[$i][$key] = $tmpvalue;
                     }
 
                     $title = $this->renderCellValue($values, $selectColumns[0], $metadata);

@@ -172,7 +172,9 @@ define(['DeskPRO/Util/Arrays'], function(Arrays) {
               return (() => {
                 const result1 = [];
                 for (widget of Array.from(batchWidgets)) {
-                  result1.push(this.widgetsResults[widget.id].resolve(widget.rendered_result));
+                  if (this.widgetsResults[widget.id]) {
+                    result1.push(this.widgetsResults[widget.id].resolve(widget.rendered_result));
+                  }
                 }
                 return result1;
               })();

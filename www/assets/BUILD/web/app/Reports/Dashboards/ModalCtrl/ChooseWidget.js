@@ -48,6 +48,7 @@ define(() => [
       })();
 
       if ((widget.widget_id === 'advanced') && widget.js_code) {
+        var promise = null;
         try {
           eval(widget.js_code);
         } catch (e) {

@@ -2,6 +2,8 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use DpSys\CodePlugin\CodePlugin;
+use DpSys\CodePlugin\DpPlugins;
 use Symfony\Component\Routing\RouterInterface;
 
 class PostBuildAlways extends AbstractBuild
@@ -92,6 +94,12 @@ class PostBuildAlways extends AbstractBuild
                 @file_put_contents($l, '');
             }
         }
+
+        //------------------------------
+        // Plugin
+        //------------------------------
+
+        DpPlugins::getManager()->runInstallScript(CodePlugin::INSTALL_SCRIPT_POST_UPGRADE, $this->container);
 
         $this->out('Post upgrade-always done');
     }

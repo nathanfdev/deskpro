@@ -10,6 +10,8 @@ use Application\DeskPRO\Languages\LangPackInfo;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
 use DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler;
+use DpSys\CodePlugin\CodePlugin;
+use DpSys\CodePlugin\DpPlugins;
 use DpSys\LowError\SystemErrorHandler;
 use Leafo\ScssPhp\Exception\ParserException;
 use Symfony\Component\Process\Process;
@@ -194,6 +196,12 @@ class PostBuild extends AbstractBuild
         $this->out('Remove managed custom phrases');
 
         $this->container->getDb()->executeUpdate('DELETE FROM phrases WHERE is_managed = 1');
+
+        //------------------------------
+        // Plugin
+        //------------------------------
+
+        DpPlugins::getManager()->runInstallScript(CodePlugin::INSTALL_SCRIPT_POST_UPGRADE, $this->container);
 
         $this->out('Post upgrade done');
     }

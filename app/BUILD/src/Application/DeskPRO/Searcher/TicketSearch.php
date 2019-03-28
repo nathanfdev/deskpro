@@ -2209,6 +2209,7 @@ class TicketSearch extends SearcherAbstract
                         break;
 
                     case self::TERM_TICKET_FIELD:
+                        /** @var Entity\CustomDefTicket $fieldDef */
                         $fieldDef = App::getEntityRepository(Entity\CustomDefTicket::class)->find($term_id);
                         if (!$fieldDef) {
                             break;
@@ -2216,11 +2217,14 @@ class TicketSearch extends SearcherAbstract
 
                         $field = $fieldDef;
 
+                        // reset the id in case the input id was an alias
+                        $term_id = $fieldDef->getId();
+
                         $this->affected_fields[] = 'ticket.custom_data_ticket_'.$fieldDef['id'];
 
                         $search_type = $fieldDef->getHandler()->getSearchType();
 
-                        $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
+                        $isDate = isset($choice['date1']) || isset($choice['date1_relative']) || $fieldDef->isDateType();
                         if (is_array($choice) && isset($choice['value']) && !$isDate) {
                             $choice = $choice['value'];
                         }
@@ -2301,32 +2305,18 @@ class TicketSearch extends SearcherAbstract
                                         break;
                                     case self::OP_LTE:
                                     case self::OP_GTE:
-                                        $op = self::OP_LTE === $op ? '<=' : '>=';
+                                        $sqlop = self::OP_LTE === $op ? '<=' : '>=';
                                         if ($isDate) {
-                                            if (!empty($choice['date1'])) {
-                                                $wheres[] = "$field $op ".(int) $choice['date1'];
-                                            } elseif (!empty($choice['date1_relative'])) {
-                                                $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
-                                            }
+                                            $wheres[] = $this->_dateMatch($field, $op, $choice, true);
                                         } elseif ($fieldDef->isCurrencyType()) {
-                                            $wheres[] = "$field $op ".$this->quoteDbValue($choice);
+                                            $wheres[] = "$field $sqlop ".$this->quoteDbValue($choice);
                                         } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
-                                            $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
+                                            $wheres[] = "$field $sqlop ".$this->quoteDbValue('%'.$choice.'%');
                                         }
                                         break;
                                     case self::OP_BETWEEN:
                                         if ($isDate) {
-                                            if (!empty($choice['date1'])) {
-                                                $wheres[] = $field.' BETWEEN '.(int) $choice['date1'].' AND '.(int) @$choice['date2'];
-                                            } elseif (!empty($choice['date1_relative'])) {
-                                                $d1 = strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
-                                                $d2 = strtotime('-'.@$choice['date2_relative'].' '.@$choice['date2_relative_type']);
-                                                if ($d1 < $d2) {
-                                                    $wheres[] = "$field BETWEEN $d1 AND $d2";
-                                                } else {
-                                                    $wheres[] = "$field BETWEEN $d2 AND $d1";
-                                                }
-                                            }
+                                            $wheres[] = $this->_dateMatch($field, self::OP_BETWEEN, $choice, true);
                                         }
                                         break;
                                     case self::OP_NOT_ISSET:

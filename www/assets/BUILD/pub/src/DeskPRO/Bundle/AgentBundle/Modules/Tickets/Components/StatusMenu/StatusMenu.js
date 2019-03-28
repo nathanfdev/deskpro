@@ -9,8 +9,9 @@ import { connect } from 'react-redux';
 }))
 export class StatusMenuContainer extends React.Component {
   static propTypes = {
-    ctrl:           PropTypes.object.isRequired,
-    ticketStatuses: PropTypes.array.isRequired
+    ctrl:                 PropTypes.object.isRequired,
+    ticketStatuses:       PropTypes.array.isRequired,
+    disablePendingStatus: PropTypes.bool
   };
 
   static findStatus(statusCode, ticketStatuses) {
@@ -75,6 +76,7 @@ export class StatusMenuContainer extends React.Component {
         ticketStatuses={this.props.ticketStatuses}
         status={status}
         handleChange={this.handleChange}
+        disablePendingStatus={this.props.disablePendingStatus}
       />
     );
   }
@@ -82,9 +84,10 @@ export class StatusMenuContainer extends React.Component {
 
 export class StatusMenu extends React.Component {
   static propTypes = {
-    ticketStatuses: PropTypes.array.isRequired,
-    status:         PropTypes.object,
-    handleChange:   PropTypes.func
+    ticketStatuses:       PropTypes.array.isRequired,
+    status:               PropTypes.object,
+    handleChange:         PropTypes.func,
+    disablePendingStatus: PropTypes.bool
   };
 
   isStatusSelected = (status, strict = false) => {
@@ -98,8 +101,14 @@ export class StatusMenu extends React.Component {
   };
 
   renderStatus = (status) => {
-    const { handleChange } = this.props;
+    const { handleChange, disablePendingStatus } = this.props;
     const hasChildren = status.children.length > 0;
+    const isSelected = this.isStatusSelected(status);
+
+    if (!isSelected && disablePendingStatus && status.status_type === 'pending') {
+      return null;
+    }
+
     return (
       <li
         key={status.status_code}
@@ -107,7 +116,7 @@ export class StatusMenu extends React.Component {
         onClick={() => handleChange(status)}
       >
         <div className="status">
-          {this.isStatusSelected(status) && <div className="on-icon"><i className="fas fa-check" /></div>}
+          {isSelected && <div className="on-icon"><i className="fas fa-check" /></div>}
           {status.title ? status.title : <FormattedMessage id={`agent.tickets.status_${status.status_type}`} />}
         </div>
       </li>
