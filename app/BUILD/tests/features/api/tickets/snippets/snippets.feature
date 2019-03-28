@@ -120,3 +120,75 @@ Feature: /snippets endpoint
     And the JSON node "data[4].is_ownership_global" should be equal to 1
     And the JSON node "data[4].translations[0].language" should be equal to "{l1}"
     And the JSON node "data[4].translations[0].content" should be equal to "Example content"
+
+    Scenario: I retrieve a list of snippets by criteria
+      Given I'm authenticated as admin
+
+      And only the following Language records exist:
+        | #  | Locale | Sys Name |
+        | l1 | en-US  | english  |
+        | l2 | fr     | french   |
+        | l3 | ru     | russian  |
+
+      And only the following Snippet records exist:
+        | #  | Person  | Title           | Shortcut Code   | Is Draft | Types              | Is Ownership global |
+        | s1 | NULL    | Title           | ticket_snippet1 | 0        | ["ticket"]         | 1                   |
+        | s2 | {admin} | Example Foo     | ticket_snippet2 | 0        | ["ticket"]         | 1                   |
+        | s3 | {admin} | Example Bar     | ticket_snippet3 | 1        | ["ticket"]         | 0                   |
+        | s4 | {admin} | Example Foo Baz | ticket_snippet4 | 1        | ["ticket", "chat"] | 0                   |
+
+      And only the following SnippetLabel records exist:
+        | #   | Snippet | Label |
+        | sl1 | ~s1~    | foo   |
+        | sl2 | ~s2~    | bar   |
+        | sl3 | ~s3~    | baz   |
+        | sl4 | ~s4~    | baz   |
+
+      And only the following SnippetTranslation records exist:
+        | #   | Language | Snippet | Content            |
+        | st1 | ~l1~     | ~s1~    | Example content    |
+        | st2 | ~l1~     | ~s2~    | Example content    |
+        | st3 | ~l2~     | ~s3~    | Example content    |
+        | st4 | ~l3~     | ~s4~    | Example content    |
+
+      When I send a GET request to "/api/v2/snippets?label=foo"
+      Then the response status code should be 200
+      And the JSON node "data" should have 1 elements
+      And the JSON node "data[0].id" should be equal to "{s1}"
+
+      When I send a GET request to "/api/v2/snippets?label=baz"
+      Then the response status code should be 200
+      And the JSON node "data" should have 2 elements
+      And the JSON node "data[0].id" should be equal to "{s3}"
+      And the JSON node "data[1].id" should be equal to "{s4}"
+
+      When I send a GET request to "/api/v2/snippets?label=foo,baz"
+      Then the response status code should be 200
+      And the JSON node "data" should have 3 elements
+      And the JSON node "data[0].id" should be equal to "{s1}"
+      And the JSON node "data[1].id" should be equal to "{s3}"
+      And the JSON node "data[2].id" should be equal to "{s4}"
+
+      When I send a GET request to "/api/v2/snippets?language={l1}"
+      Then the response status code should be 200
+      And the JSON node "data" should have 2 elements
+      And the JSON node "data[0].id" should be equal to "{s1}"
+      And the JSON node "data[1].id" should be equal to "{s2}"
+
+      When I send a GET request to "/api/v2/snippets?language={l1},ru"
+      Then the response status code should be 200
+      And the JSON node "data" should have 3 elements
+      And the JSON node "data[0].id" should be equal to "{s1}"
+      And the JSON node "data[1].id" should be equal to "{s2}"
+      And the JSON node "data[2].id" should be equal to "{s4}"
+
+      When I send a GET request to "/api/v2/snippets?search=foo"
+      Then the response status code should be 200
+      And the JSON node "data" should have 2 elements
+      And the JSON node "data[0].id" should be equal to "{s2}"
+      And the JSON node "data[1].id" should be equal to "{s4}"
+
+      When I send a GET request to "/api/v2/snippets?search=foo baz"
+      Then the response status code should be 200
+      And the JSON node "data" should have 2 elements
+      And the JSON node "data[1].id" should be equal to "{s4}"

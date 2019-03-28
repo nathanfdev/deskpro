@@ -284,4 +284,43 @@ class StringUtils
             return $match == true;
         });
     }
+
+    /**
+     * @param string   $str       Takes a string like "foo, bar, baz" and returns a list ["foo", "bar", "baz"]
+     * @param callable $filterMap Optionally a filter that will be passed each segment. A true value will use the value
+     *                            as-is, a null or false value is stripped out, otherwise whatever return value is
+     *                            converted to a string
+     *
+     * @return string[]
+     */
+    public static function csvLineToList($str, $filterMap = null)
+    {
+        if (empty($str)) {
+            return [];
+        }
+
+        $ret = [];
+
+        foreach (explode(',', $str) as $idx => $v) {
+            $v = trim($v);
+            if ($v === '') {
+                continue;
+            }
+
+            if ($filterMap !== null) {
+                $filterVal = call_user_func($filterMap, $v, $idx);
+                if ($filterVal !== false && $filterVal !== false) {
+                    if ($filterVal === true) {
+                        $ret[] = $v;
+                    } else {
+                        $ret[] = (string) $filterVal;
+                    }
+                }
+            } else {
+                $ret[] = $v;
+            }
+        }
+
+        return $ret;
+    }
 }

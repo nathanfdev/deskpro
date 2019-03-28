@@ -19,6 +19,9 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetType;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\StringUtils;
+use Doctrine\ORM\Query\Expr\Orx;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -58,6 +61,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  *          {"name"="count", "pattern"="\d", "description"="Resource per page count", "dataType"="integer"},
  *          {"name"="limit", "pattern"="\d", "description"="Max number of resources to return", "dataType"="integer"},
  *          {"name"="ids", "pattern"="[\d,]+", "description"="Comma separated list of IDs", "dataType"="string"},
+ *          {"name"="label", "pattern"="[\w,]+", "description"="Comma separated list of labels", "dataType"="string"},
+ *          {"name"="language", "pattern"="[\w,]+", "description"="Comma separated list of locales or language IDs", "dataType"="string"},
+ *          {"name"="search", "pattern"="\w+", "description"="Words to find in the snippet title", "dataType"="string"}
  *     }
  * )
  */
@@ -92,6 +98,58 @@ class SnippetsController extends CrudController
         if ($type) {
             $qb->andWhere("$alias.types LIKE :type")
                 ->setParameter('type', '%'.$type.'%');
+        }
+
+        if ($labels = StringUtils::csvLineToList($request->get('label', ''))) {
+            $qb
+                ->leftJoin("$alias.labels", 'lbl')
+                ->andWhere('lbl.label IN (:labels)')
+                ->setParameter('labels', $labels);
+        }
+
+        $filterLangs = function ($id) {
+            $l = $this->getContainer()->getLanguageData();
+
+            if ($lang = $l->get($id)) {
+                return $lang->getId();
+            } elseif ($lang = $l->findLangCode($id)) {
+                return $lang->getId();
+            }
+
+            return false;
+        };
+
+        if ($langs = StringUtils::csvLineToList($request->get('language', ''), $filterLangs)) {
+            $qb
+                ->leftJoin("$alias.translations", 'tr')
+                ->andWhere('tr.language IN (:langIds)')
+                ->setParameter('langIds', $langs);
+        }
+
+        // poor mans search...
+        if ($search = $request->get('search', '')) {
+            $search = ListUtils::filterMap(explode(' ', $search), function ($w) {
+                $w = trim($w);
+                if (strlen($w) < 2) {
+                    return false;
+                }
+
+                return str_replace(['%', '_'], ['\\%', '\\_'], strtolower($w));
+            });
+
+            if (count($search) > 10) {
+                $search = array_slice($search, 0, 10);
+            }
+
+            $where = new Orx();
+            foreach ($search as $idx => $word) {
+                $where->add("$alias.title LIKE :word$idx");
+                $where->add("$alias.shortcutCode LIKE :wordsc$idx");
+                $qb->setParameter("word$idx", "%$word%");
+                $qb->setParameter("wordsc$idx", "%$word%");
+            }
+
+            $qb->andWhere($where);
         }
     }
 
