@@ -1272,6 +1272,8 @@ class TicketController extends AbstractController
         $errorMessages = $saveReplyData['errorMessages'];
         $changedAgent  = $saveReplyData['changedTeam'];
         $changedTeam   = $saveReplyData['changedAgent'];
+        $closeTab      = $saveReplyData['closeTab'];
+        $refreshTab    = $saveReplyData['refreshTab'];
 
         // New reply box
         $participants = $this->em->createQuery(
@@ -1370,6 +1372,11 @@ class TicketController extends AbstractController
             }
         }
 
+        $canView = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+        if (!$canView) {
+            $refreshTab = false;
+        }
+
         $data = [
             'message_block_html' => $messageHtml,
             'match_filter'       => $matchFilter,
@@ -1382,12 +1389,12 @@ class TicketController extends AbstractController
             'changed_team'       => $changedTeam,
             'agent_team_id'      => $ticket['agent_team_id'],
             'status'             => $ticket['status'],
-            'close_tab'          => false, // important here
-            'refresh_tab'        => false,
+            'close_tab'          => $closeTab,
+            'refresh_tab'        => $refreshTab,
             'client_messages'    => false,
             'error_messages'     => $errorMessages ?: false,
             'notified_agents'    => [],
-            'can_view'           => true, // important here
+            'can_view'           => $canView,
             'api_data'           => $ticket->toApiData(),
 
             'urgency'       => $ticket->getUrgency(),
@@ -1408,16 +1415,18 @@ class TicketController extends AbstractController
     {
 
         //@TODO: remove this
+        if ($this->in->getInt('options.agent_id') == 4) {
+            sleep(10);
+            throw new \Exception('Some test exception');
+        }
+
+        $saveReplyData = $this->saveReply($ticket_id, false);
 
         if ($this->in->getInt('options.agent_id') == 2) {
             sleep(10);
         } elseif ($this->in->getInt('options.agent_id') == 3) {
             sleep(30);
-        } elseif ($this->in->getInt('options.agent_id') == 4) {
-            throw new \Exception('Some test exception');
         }
-
-        $saveReplyData = $this->saveReply($ticket_id, false);
 
         if (isset($saveReplyData['response'])) {
             return $saveReplyData['response'];
