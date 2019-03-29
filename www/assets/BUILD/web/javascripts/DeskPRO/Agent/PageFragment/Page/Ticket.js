@@ -1270,7 +1270,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		var self = this;
 		var closetabTimeoutHit = false;
-		var ajaxHit = false;
 		var hitRun = false;
 		var reply_form = handler.el;
 		var nextTicketId = null;
@@ -1333,11 +1332,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		}
 
 		DeskPRO_Window.getMessageChanneler().poller.pause();
-		function hitDone() {
+		function hitDone(result) {
 			hitRun = true;
 			DeskPRO_Window.getMessageChanneler().poller.unpause();
-
-      var result = ajaxHit;
 
       if (result.dupe_message) {
         DeskPRO_Window.showAlert("You have already sent that message.");
@@ -1388,9 +1385,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.handleTicketUpdate(result);
 		}
 
-		function hitDonePrepare() {
+		function hitDonePrepare(result) {
 			hitRun = true;
-      var result = ajaxHit;
 
       if (result.dupe_message) {
         DeskPRO_Window.showAlert("You have already sent that message.");
@@ -1461,34 +1457,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             window.DeskPRO_APPSTORE.emitAsync('ticket.reply-success', self.getTabId(), result);
           }
 
-          // Might be unloaded by the time this callback is called
-          if (!self.changeManager) {
-            return;
-          }
-
-          if (result.error_messages) {
-
-            var prop = self.changeManager.getPropertyManager('status');
-            self.changeManager.setInstantChange(prop, 'awaiting_agent');
-
-            var list = self.getEl('field_errors').find('ul').empty();
-            result.error_messages.forEach(function(msg) {
-              var li = $('<li/>');
-              li.text(msg);
-              li.appendTo(list);
-            });
-
-            self.getEl('field_errors').show().addClass('on');
-
-            self.getEl('field_edit_start').click();
-            self.getEl('field_edit_cancel').show();
-            self.getEl('field_edit_save').show();
-            self.getEl('field_edit_controls').removeClass('loading');
-
-            DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
-            keepOpen = true;
-          } else if (DeskPRO_Window.$scope) {
-
+          if (!result.error_messages && DeskPRO_Window.$scope) {
             var trigger = false,
               action = null;
             for (var i = 0; i < formData.length; i++) {
@@ -1517,10 +1486,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           if (keepOpen) {
             self.changeManager.updateDataholders();
           }
-          ajaxHit = result;
-          hitDone();
+          hitDone(result);
         }
       });
+
+      // We made real reply save above, now we can close tab according to prepare save reply
+			if (!keepOpen) {
+				self.closeSelf();
+
+				if (self.getMetaData('goNextOnReply') && nextTicketId) {
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL+'agent/tickets/' + nextTicketId);
+				}
+
+				return;
+			}
+
+			// If the agent cant see the ticket anymore, they dont have permission to
+			// view it anymore.
+			if (!result.can_view) {
+				self.closeSelf();
+				return;
+			}
+
 		}
 
 		this.clearAlerts();
@@ -1556,8 +1543,30 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					result.client_messages = null;
 				}
 
-        ajaxHit = result;
-        hitDonePrepare();
+        if (result.error_messages) {
+
+          var prop = self.changeManager.getPropertyManager('status');
+          self.changeManager.setInstantChange(prop, 'awaiting_agent');
+
+          var list = self.getEl('field_errors').find('ul').empty();
+          result.error_messages.forEach(function(msg) {
+            var li = $('<li/>');
+            li.text(msg);
+            li.appendTo(list);
+          });
+
+          self.getEl('field_errors').show().addClass('on');
+
+          self.getEl('field_edit_start').click();
+          self.getEl('field_edit_cancel').show();
+          self.getEl('field_edit_save').show();
+          self.getEl('field_edit_controls').removeClass('loading');
+
+          DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
+          keepOpen = true;
+        }
+
+        hitDonePrepare(result);
 			}
 		});
 	},
@@ -1702,9 +1711,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
     if (data.message_block_html) {
       if (this.meta.ticket_reverse_order) {
-        var addedMessageEl = self.getEl('message_page_wrap').find('div').first().prepend(data.message_block_html);
+        var cnt = parseInt(self.getEl('message_page_wrap').find('article').first().find('.message-counter').text().replace('#', ''), 10);
+        var block = $(data.message_block_html);
+        block.find('.message-counter').text('#'+(cnt+1));
+        var addedMessageEl = self.getEl('message_page_wrap').find('div').first().prepend(block);
       } else {
-        var addedMessageEl = self.getEl('message_page_wrap').find('div').first().append(data.message_block_html);
+        var cnt = parseInt(self.getEl('message_page_wrap').find('article').last().find('.message-counter').text().replace('#', ''), 10);
+        var block = $(data.message_block_html);
+        block.find('.message-counter').text('#'+(cnt+1));
+        var addedMessageEl = self.getEl('message_page_wrap').find('div').first().append(block);
       }
       if (addedMessageEl) {
         self._initMessage(addedMessageEl);
