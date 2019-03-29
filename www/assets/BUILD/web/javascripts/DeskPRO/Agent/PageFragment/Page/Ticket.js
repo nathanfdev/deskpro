@@ -1271,8 +1271,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     }
 
     var self = this;
-    var closetabTimeoutHit = false;
-    var hitRun = false;
     var reply_form = handler.el;
     var nextTicketId = null;
 
@@ -1301,12 +1299,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         this.getReplyTextArea().data('autosave-running').abort();
         this.getReplyTextArea().data('autosave-running', null);
       }
-    }
-
-    var form = this.getEl('replybox_wrap').find('.ticket-reply-form');
-    var keepOpen = true;
-    if (this.getEl('replybox_wrap').find('[name="options[close_tab]"]').prop('checked')) {
-      keepOpen = false;
     }
 
     var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
