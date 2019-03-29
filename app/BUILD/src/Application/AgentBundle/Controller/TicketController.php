@@ -1340,6 +1340,7 @@ class TicketController extends AbstractController
                 'ticket_message_attachments' => $ticket_message_attachments,
                 'ticket_attachments'         => $ticket_attachments,
                 'ticket'                     => $ticket,
+                'is_optimistic_ui_update'    => true,
             ]
         );
         // just in case rollback id's
