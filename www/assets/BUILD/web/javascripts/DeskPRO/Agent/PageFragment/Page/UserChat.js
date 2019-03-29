@@ -650,7 +650,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     });
 	},
   
-  syncSizes() {
+  syncSizes: function() {
     var box1 = self.getEl('people_box_person_container');
     var box2 = self.getEl('people_box_agent_container');
     var box1_in = $('> article', box1);
