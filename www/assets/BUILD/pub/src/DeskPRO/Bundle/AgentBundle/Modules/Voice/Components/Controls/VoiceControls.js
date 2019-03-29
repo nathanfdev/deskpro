@@ -156,6 +156,7 @@ class Busy extends React.Component {
 class Active extends React.Component {
 
   static propTypes = {
+    status:             PropTypes.string,
     mute:               PropTypes.bool,
     transferTargetType: PropTypes.string,
     hold:               PropTypes.bool,
@@ -202,6 +203,9 @@ class Active extends React.Component {
 
   openTransferMenu = (event) => {
     event.preventDefault();
+    if (this.props.status === 'warm_transfer') {
+      return;
+    }
     this.setState({
       transferMenuOpened: true
     });
@@ -245,9 +249,10 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef, transferTargetType } = this.props;
+    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef, transferTargetType, status } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
+    const transferDisabled = ended || noAgents || status === 'warm_transfer';
 
     return (
       <div
@@ -287,7 +292,7 @@ class Active extends React.Component {
         </Button>
         <Button
           ref={(c) => { this.transferButton = c; }}
-          className={classNames('basic caret-button', { active: transferMenuOpened, disabled: ended || noAgents || transferTargetType === 'warm' })}
+          className={classNames('basic caret-button', { active: transferMenuOpened, disabled: transferDisabled })}
           onClick={this.openTransferMenu}
         >
           <i className="share icon" />
@@ -305,6 +310,7 @@ class Active extends React.Component {
           className={classNames('red', { disabled: ended })}
           onClick={this.endCall}
         >
+          {/* TODO: this is temp solution, that should be {status === 'warm_transfer'} */}
           {participants.length >= 2 ? 'Hang up' : 'End call'}
         </Button>
 
