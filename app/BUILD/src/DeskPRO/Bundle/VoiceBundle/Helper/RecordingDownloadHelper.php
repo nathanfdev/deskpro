@@ -109,8 +109,13 @@ class RecordingDownloadHelper
     public function enqueueRecordingDownload(VoicePhoneCall $phoneCall, $recordingUrl, $duration)
     {
         $recordingEnabled = true;
-        if ($phoneCall->getQueue()) {
-            $recordingEnabled = $phoneCall->getQueue()->isRecordingEnabled();
+
+        $task = $this->storage->getTask($phoneCall->getTaskSid());
+        if ($task && $queueId = $task->getAttribute('queue')) {
+            $voiceQueue = $this->em->getRepository(VoiceQueue::class)->find($queueId);
+            if ($voiceQueue) {
+                $recordingEnabled = $voiceQueue->isRecordingEnabled();
+            }
         }
 
         if ($recordingEnabled) {

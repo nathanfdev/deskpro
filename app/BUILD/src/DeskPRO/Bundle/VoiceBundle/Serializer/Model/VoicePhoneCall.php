@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall as VoicePhoneCallEntity;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -166,6 +167,13 @@ class VoicePhoneCall
     private $ticket;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $recordingEnabled;
+
+    /**
      * Constructor.
      *
      * @param VoicePhoneCallEntity $phoneCall
@@ -208,5 +216,13 @@ class VoicePhoneCall
         $this->ticket = $ticket;
 
         return $this;
+    }
+
+    /**
+     * @param InlineCustomSideload $recordingEnabled
+     */
+    public function setRecordingEnabled($recordingEnabled)
+    {
+        $this->recordingEnabled = $recordingEnabled;
     }
 }

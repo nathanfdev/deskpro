@@ -5,10 +5,12 @@ namespace DeskPRO\Bundle\VoiceBundle\Serializer\Handler\Entity;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\VoiceBundle\Serializer\Model\VoicePhoneCall as VoicePhoneCallModel;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -20,6 +22,11 @@ class VoicePhoneCallHandler extends AbstractEntityHandler
      * @var EntityManager
      */
     private $em;
+
+    /**
+     * @var StorageAdapterInterface
+     */
+    private $storage;
 
     /**
      * @var array
@@ -34,11 +41,13 @@ class VoicePhoneCallHandler extends AbstractEntityHandler
     /**
      * Constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager           $em
+     * @param StorageAdapterInterface $storage
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, StorageAdapterInterface $storage)
     {
-        $this->em = $em;
+        $this->em      = $em;
+        $this->storage = $storage;
     }
 
     /**
@@ -60,6 +69,14 @@ class VoicePhoneCallHandler extends AbstractEntityHandler
 
         $model = new VoicePhoneCallModel($entity);
         $model->setTicket(new CallbackDeferredProperty([$this, 'getTicket'], [$entity]));
+
+        $sideloads = $context->getSideloadStore();
+        $sideloads->addCustomSideload(
+            'recording_enabled',
+            $entity->getId(),
+            new CallbackDeferredProperty([$this, 'isRecordingEnabled'], [$entity]),
+            $model
+        );
 
         return $model;
     }
@@ -92,5 +109,29 @@ class VoicePhoneCallHandler extends AbstractEntityHandler
         }
 
         return isset($this->tickets[$entity->getId()]) ? $this->tickets[$entity->getId()] : null;
+    }
+
+    /**
+     * @internal
+     *
+     * @param VoicePhoneCall $entity
+     *
+     * @return bool
+     */
+    public function isRecordingEnabled(VoicePhoneCall $entity)
+    {
+        if (!$entity->getTaskSid()) {
+            return false;
+        }
+
+        $task = $this->storage->getTask($entity->getTaskSid());
+        if ($task && $queueId = $task->getAttribute('queue')) {
+            $voiceQueue = $this->em->getRepository(VoiceQueue::class)->find($queueId);
+            if ($voiceQueue) {
+                return $voiceQueue->isRecordingEnabled();
+            }
+        }
+
+        return true;
     }
 }

@@ -17,6 +17,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
@@ -335,13 +336,17 @@ class VoiceCallbacksHelper
             $permissionsHelper          = $agent->getHelper('AgentPermissions');
             $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
 
-            $voiceQueue = $phoneCall->getQueue();
-            if ($voiceQueue) {
-                // set ticket department from the queue
-                // make sure the agent has permissions to this department
-                $queueDepartment = $voiceQueue->getDepartment();
-                if ($queueDepartment && in_array($queueDepartment->getId(), $allowedTicketDepartmentIds)) {
-                    $ticket->setDepartment($queueDepartment);
+            $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
+            if ($task && $queueId = $task->getAttribute('queue')) {
+                /** @var VoiceQueue $voiceQueue */
+                $voiceQueue = $this->em->getRepository(VoiceQueue::class)->find($queueId);
+                if ($voiceQueue) {
+                    // set ticket department from the queue
+                    // make sure the agent has permissions to this department
+                    $queueDepartment = $voiceQueue->getDepartment();
+                    if ($queueDepartment && in_array($queueDepartment->getId(), $allowedTicketDepartmentIds)) {
+                        $ticket->setDepartment($queueDepartment);
+                    }
                 }
             }
 
