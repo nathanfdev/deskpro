@@ -166,13 +166,22 @@ class TwilioAccountsController extends AbstractVoiceCrudController
      */
     public function getExistingNumbersAction(TwilioVoiceAccount $account, Request $request)
     {
-        $page   = $request->query->getInt('page', 1);
-        $result = $this->get('twilio_adapter')->getExistingPhoneNumbers($account, $page);
+        if ($this->get('deskpro.app_env')->isQa() || in_array($this->get('deskpro.app_env')->getEnvId(), ['dev', 'test'])) {
+            $page   = $request->query->getInt('page', 1);
+            $result = $this->get('twilio_adapter')->getExistingPhoneNumbers($account, $page);
 
-        return new View($this->wrap($result->getRecords(), [
-            'page_num' => $result->getPageNum(),
-            'has_next' => $result->hasNext(),
-        ]));
+            $view = new View($this->wrap($result->getRecords(), [
+                'page_num' => $result->getPageNum(),
+                'has_next' => $result->hasNext(),
+            ]));
+        } else {
+            $view = new View($this->wrap([], [
+                'page_num' => 1,
+                'has_next' => false,
+            ]));
+        }
+
+        return $view;
     }
 
     /**
