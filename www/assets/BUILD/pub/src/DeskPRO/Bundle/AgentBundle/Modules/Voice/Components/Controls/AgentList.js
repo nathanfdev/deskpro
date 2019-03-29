@@ -7,10 +7,11 @@ import Avatar from '../Common/Avatar';
 class AgentList extends React.Component {
 
   static propTypes = {
-    target:       PropTypes.object,
-    agents:       PropTypes.object,
-    participants: PropTypes.array,
-    onClick:      PropTypes.func
+    target:           PropTypes.object,
+    agents:           PropTypes.object,
+    participants:     PropTypes.array,
+    onClick:          PropTypes.func,
+    transferDisabled: PropTypes.bool
   };
 
   static defaultProps = {
@@ -23,12 +24,13 @@ class AgentList extends React.Component {
   };
 
   render() {
-    const { agents, target, participants } = this.props;
+    const { agents, target, participants, transferDisabled } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
         {agents.toArray().map((agent, index) =>
           <Agent
+            transferDisabled={transferDisabled}
             key={index}
             agent={agent}
             active={agent === target}
@@ -44,19 +46,20 @@ class AgentList extends React.Component {
 class Agent extends React.Component {
 
   static propTypes = {
-    agent:       PropTypes.object,
-    active:      PropTypes.bool,
-    participant: PropTypes.bool,
-    onClick:     PropTypes.func
+    transferDisabled: PropTypes.bool,
+    agent:            PropTypes.object,
+    active:           PropTypes.bool,
+    participant:      PropTypes.bool,
+    onClick:          PropTypes.func
   };
 
   onClick = (event) => {
     event.preventDefault();
 
-    const { agent, participant, onClick } = this.props;
+    const { agent, participant, onClick, transferDisabled } = this.props;
 
     // already in conference, skipping
-    if (participant) {
+    if (participant || transferDisabled) {
       return;
     }
 

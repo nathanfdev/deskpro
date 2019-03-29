@@ -11,6 +11,7 @@ import TransferStatus from '../TransferStatus';
 class TransferList extends React.Component {
 
   static propTypes = {
+    transferDisabled:   PropTypes.bool,
     transferTarget:     PropTypes.object,
     transferTargetType: PropTypes.string,
     onlineAgents:       PropTypes.object,
@@ -72,7 +73,7 @@ class TransferList extends React.Component {
   };
 
   renderList() {
-    const { inviteError, onlineAgents, participants } = this.props;
+    const { inviteError, onlineAgents, participants, transferDisabled } = this.props;
     const { tabName, selectedTarget } = this.state;
 
     return (
@@ -114,6 +115,7 @@ class TransferList extends React.Component {
             agents={onlineAgents}
             participants={participants}
             target={selectedTarget}
+            transferDisabled={transferDisabled}
             onClick={this.onChangeTarget}
           />
         </Tab>
@@ -135,13 +137,13 @@ class TransferList extends React.Component {
             title="Warm transfer"
             icon="call"
             help="Places caller on hold"
-            disabled={!selectedTarget}
+            disabled={!selectedTarget || transferDisabled}
             onClick={this.onWarmTransfer}
           />
           <TransferListButton
             title="Cold transfer"
             icon="share"
-            disabled={!selectedTarget}
+            disabled={!selectedTarget || transferDisabled}
             onClick={this.onColdTransfer}
           />
         </div>
