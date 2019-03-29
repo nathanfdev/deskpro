@@ -2610,7 +2610,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'GET',
 				success: function(response) {
 					// existing user, change
-					if (response.data.primary_email) {
+					if (response.data.primary_email || !response.data.preferences['voice.unknown_caller'] || response.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
 						$.ajax({
 							url: BASE_URL + 'api/v2/tickets/' + self.meta.ticket_id,
 							type: 'PUT',
@@ -2702,7 +2702,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					type: 'GET',
 					success: function(getResponse) {
 						// existing user, create a new person and change
-						if (getResponse.data.primary_email) {
+						if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
 							submitData.phone_numbers = [{number: self.meta.voicePhoneNumber}];
 							$.ajax({
 								url: BASE_URL + 'api/v2/people',
@@ -2735,7 +2735,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					type: 'GET',
 					success: function (getResponse) {
 						// existing user, create a new person and change
-						if (getResponse.data.primary_email) {
+						if (getResponse.data.primary_email || !getResponse.data.preferences['voice.unknown_caller'] || getResponse.data.preferences['voice.unknown_caller'] != 1/* (sic!) */) {
 							$.ajax({
 								url: BASE_URL + 'api/v2/people',
 								type: 'POST',
