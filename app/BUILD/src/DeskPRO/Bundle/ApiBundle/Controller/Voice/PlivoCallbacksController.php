@@ -1107,9 +1107,11 @@ class PlivoCallbacksController extends BaseController
         }
 
         if ($target instanceof VoiceQueueTarget) {
-            $plivoXml->addPlay($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
-            $plivoXml->addPlay($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
-            $this->playAsset($plivoXml, $target->getQueue()->getGreetAsset());
+            if ($target->getQueue()->getGreetAsset()) {
+                $plivoXml->addPlay($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
+                $plivoXml->addPlay($this->get('dp.voice.assets_helper')->getDefaultRingAssetUrl());
+                $this->playAsset($plivoXml, $target->getQueue()->getGreetAsset());
+            }
         } elseif ($target instanceof VoiceAutoAttendantTarget) {
             $autoAttendant = $target->getAutoAttendant();
             $dialNumbers   = $autoAttendant->getOrderedDialNumbers();
