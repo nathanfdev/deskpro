@@ -36,7 +36,8 @@ class VoiceControlsContainer extends React.Component {
     ticketId:       PropTypes.number,
     baseId:         PropTypes.string,
     tabRef:         PropTypes.func,
-    onEndCall:      PropTypes.func
+    onEndCall:      PropTypes.func,
+    phoneCalls:     PropTypes.object
   };
 
   static defaultProps = {
@@ -314,7 +315,7 @@ class VoiceControlsContainer extends React.Component {
   };
 
   render() {
-    const { agents, onlineAgentIds, baseId } = this.props;
+    const { agents, onlineAgentIds, baseId, phoneCalls } = this.props;
     const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')));
     const connection = this.getConnection();
 
@@ -336,6 +337,7 @@ class VoiceControlsContainer extends React.Component {
         transferCall={this.transferCall}
         cancelInvite={this.cancelInvite}
         baseId={baseId}
+        phoneCall={phoneCalls.get(connection.callId)}
       />
     );
   }

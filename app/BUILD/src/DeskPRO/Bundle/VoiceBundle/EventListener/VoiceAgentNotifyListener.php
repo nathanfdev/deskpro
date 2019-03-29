@@ -3,11 +3,14 @@
 namespace DeskPRO\Bundle\VoiceBundle\EventListener;
 
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use Doctrine\ORM\EntityManager;
+use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -37,23 +40,31 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
     private $dispatcher;
 
     /**
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
      * Constructor.
      *
      * @param EntityManager            $em
      * @param VoiceTaskHelper          $taskHelper
      * @param StorageAdapterInterface  $storage
      * @param EventDispatcherInterface $dispatcher
+     * @param Serializer               $serializer
      */
     public function __construct(
         EntityManager            $em,
         VoiceTaskHelper          $taskHelper,
         StorageAdapterInterface  $storage,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        Serializer               $serializer
     ) {
         $this->em         = $em;
         $this->taskHelper = $taskHelper;
         $this->storage    = $storage;
         $this->dispatcher = $dispatcher;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -86,6 +97,14 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
             return;
         }
 
+        // phone call
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['recording_enabled']);
+        $context->setInlineSideloads(true);
+
+        $serializedPhoneCall = $this->serializer->toArray(new ApiWrapper($phoneCall), $context)['data'];
+        unset($serializedPhoneCall['ticket']);
+
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.incoming-call',
             [
@@ -100,6 +119,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
                 'call_type'          => $task->getAttribute('transfer') ? 'transfer' : null,
                 'invite_type'        => $task->getAttribute('invite_type') ?: null,
                 'from_agent_id'      => $task->getAttribute('from_agent_id') ?: null,
+                'phone_call'         => $serializedPhoneCall,
                 'target'             => array_map(function (Worker $worker) {
                     return $worker->getTypeId();
                 }, $this->storage->getWorkers($task->getWorkerIds())),

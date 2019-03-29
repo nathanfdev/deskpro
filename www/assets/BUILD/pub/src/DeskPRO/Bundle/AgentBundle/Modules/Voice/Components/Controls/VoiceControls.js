@@ -167,7 +167,8 @@ class Active extends React.Component {
     endCall:            PropTypes.func,
     sendDigits:         PropTypes.func,
     divRef:             PropTypes.func,
-    participants:       PropTypes.array
+    participants:       PropTypes.array,
+    phoneCall:          PropTypes.object
   };
 
   constructor(props) {
@@ -249,7 +250,7 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef, transferTargetType, status } = this.props;
+    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef, transferTargetType, status, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
     const transferDisabled = ended || noAgents || status === 'warm_transfer';
@@ -264,8 +265,11 @@ class Active extends React.Component {
         </Title>
 
         <span className="voice-controls-recording">
-          <i className="far fa-dot-circle" />
-          Recording
+          {phoneCall && phoneCall.get('recording_enabled') &&
+          <span>
+            <i className="far fa-dot-circle" />
+            Recording
+          </span>}
         </span>
 
         <Button

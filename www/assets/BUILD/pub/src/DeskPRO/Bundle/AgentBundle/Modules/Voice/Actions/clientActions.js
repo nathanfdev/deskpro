@@ -97,6 +97,16 @@ export const voiceBootstrap = createAction(
             dispatch(loadBatch('Person', relatedPeopleIds, 'all'));
           }
 
+          const state = getState();
+          const phoneCalls = allPhoneCallsSelector(state);
+
+          const phoneCall = Immutable.fromJS(data.phone_call);
+          if (phoneCalls.get(phoneCall.get('id'))) {
+            dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'replace'));
+          } else {
+            dispatch(addToCollection('VoicePhoneCall', 'all', Immutable.List([phoneCall])));
+          }
+
           dispatch(addIncomingCall(Immutable.fromJS(data)));
         });
         messageBroker.addMessageListener('agent.voice.conference.incoming-call-answered', (data) => {
