@@ -9,6 +9,9 @@ import IncomingCallAudio from './IncomingCallAudio';
 class IncomingCall extends React.Component {
 
   static propTypes = {
+    mp3:                   PropTypes.string,
+    wav:                   PropTypes.string,
+    ogg:                   PropTypes.string,
     me:                    PropTypes.object,
     agents:                PropTypes.object,
     people:                PropTypes.object,
@@ -60,6 +63,7 @@ class IncomingCall extends React.Component {
 
   renderAcceptCall() {
     const { me, agents, people, queues, incomingCall, ringingVolume } = this.props;
+    const { mp3, wav, ogg } = this.props;
 
     let callType = 'Direct';
     if (incomingCall.get('call_type')) {
@@ -91,6 +95,9 @@ class IncomingCall extends React.Component {
     return (
       <div className="incoming-call">
         <IncomingCallAudio
+          mp3={mp3}
+          wav={wav}
+          ogg={ogg}
           ref={(c) => { this.audio = c; }}
           ringingVolume={ringingVolume}
           onSoundEnded={this.onSoundEnded}
