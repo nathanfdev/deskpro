@@ -94,18 +94,10 @@ class TransferStatus extends React.Component {
             Agent rejected your request
           </div>
           : <div className="voice-transfer-status-buttons">
-            {type === 'warm' &&
-              <div>
-                <Button className="red" onClick={this.onCancel}>
-                  Cancel add
-                </Button>
-              </div>}
-            {type === 'cold' &&
-              <Button className="basic" onClick={this.onCancel}>
-                <i className="icon remove" />
-                {cancelLabel}
-              </Button>
-            }
+            <Button className="basic" onClick={this.onCancel}>
+              <i className="icon remove" />
+              {cancelLabel}
+            </Button>
           </div>
         }
       </div>

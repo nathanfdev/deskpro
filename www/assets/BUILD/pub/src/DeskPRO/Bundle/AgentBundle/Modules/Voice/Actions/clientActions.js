@@ -522,9 +522,20 @@ export const warmAddAgent = createAction(
 
 export const warmTransferCall = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
-  (connection, agent) => (dispatch) => {
-    dispatch(toggleHold(connection.callId, true));
-    return api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_transfer/${agent.get('id')}`);
+  (connection, agent) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_transfer/${agent.get('id')}`);
+    promise.success(() => {
+      const state = getState();
+      const phoneCalls = allPhoneCallsSelector(state);
+
+      let phoneCall = phoneCalls.get(connection.callId);
+      if (phoneCall) {
+        phoneCall = phoneCall.set('status', 'warm_transfer');
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'merge'));
+      }
+    });
+
+    return promise;
   }
 );
 
@@ -540,7 +551,21 @@ export const coldTransferCall = createAction(
 
 export const cancelInvite = createAction(
   'VOICE_AGENT_CANCEL_INVITE',
-  (callId, agent) => api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`)
+  (callId, agent) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`);
+    promise.success(() => {
+      const state = getState();
+      const phoneCalls = allPhoneCallsSelector(state);
+
+      let phoneCall = phoneCalls.get(callId);
+      if (phoneCall) {
+        phoneCall = phoneCall.set('status', 'active');
+        dispatch(updateCollection('VoicePhoneCall', Immutable.List([phoneCall]), 'merge'));
+      }
+    });
+
+    return promise;
+  }
 );
 
 export const checkIsActive = createAction(

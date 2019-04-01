@@ -327,6 +327,7 @@ class VoiceControlsContainer extends React.Component {
       <VoiceControls
         {...this.props}
         {...this.state}
+        phoneCall={phoneCalls.get(connection.callId)}
         onlineAgents={onlineAgents}
         connection={connection}
         endCall={this.endCall}
@@ -337,7 +338,6 @@ class VoiceControlsContainer extends React.Component {
         transferCall={this.transferCall}
         cancelInvite={this.cancelInvite}
         baseId={baseId}
-        phoneCall={phoneCalls.get(connection.callId)}
       />
     );
   }

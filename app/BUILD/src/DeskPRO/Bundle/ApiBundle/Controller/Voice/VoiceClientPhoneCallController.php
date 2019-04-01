@@ -469,6 +469,7 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         $this->get('dp.voice.callbacks_helper')->saveTicket($ticket);
+        $this->get('dp.voice.provider_helper')->holdConferenceEndUser($phoneCall, true);
 
         // send transfer notification
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(

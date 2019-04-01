@@ -250,10 +250,11 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef, transferTargetType, status, phoneCall } = this.props;
+    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef, transferTargetType, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
-    const transferDisabled = ended || noAgents || status === 'warm_transfer';
+    const isWarmTransfer = phoneCall && phoneCall.get('status') === 'warm_transfer';
+    const transferDisabled = ended || noAgents || isWarmTransfer;
 
     return (
       <div
@@ -274,21 +275,21 @@ class Active extends React.Component {
 
         <Button
           ref={(c) => { this.dialpadButton = c; }}
-          className={classNames('basic', { active: dialpadOpened, disabled: ended })}
+          className={classNames('basic', { active: dialpadOpened, disabled: ended || isWarmTransfer })}
           onClick={this.openDialpad}
         >
           <i className="grid layout icon" />
           Dialpad
         </Button>
         <Button
-          className={classNames('basic', { active: hold, disabled: ended, loading: updatingHold })}
+          className={classNames('basic', { active: hold, disabled: ended || isWarmTransfer, loading: updatingHold })}
           onClick={this.toggleHold}
         >
           <i className="pause icon" />
           Hold
         </Button>
         <Button
-          className={classNames('basic', { active: mute, disabled: hold || ended })}
+          className={classNames('basic', { active: mute, disabled: hold || ended || isWarmTransfer })}
           onClick={this.toggleMute}
         >
           <i className={classNames(mute ? 'mute' : 'unmute', 'icon')} />
@@ -304,7 +305,7 @@ class Active extends React.Component {
         </Button>
         <Button
           ref={(c) => { this.addButton = c; }}
-          className={classNames('basic', { active: addMenuOpened, disabled: ended || noAgents })}
+          className={classNames('basic', { active: addMenuOpened, disabled: transferDisabled })}
           onClick={this.openAddMenu}
         >
           <i className="add icon" />
