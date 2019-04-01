@@ -15,7 +15,35 @@ class CallForward extends BaseForm {
 
   componentDidMount() {
     super.componentDidMount();
-    $('.toggle', this.node).on('click', () => setTimeout(this.onSubmit, 1));
+
+    const $checkbox = $('.toggle', this.node);
+    $checkbox.on('click', () => {
+      const { formData } = this.state;
+      if (formData.value.agent_data.forwarding_number) {
+        setTimeout(this.onSubmit, 1);
+      }
+    });
+
+    const initPhoneCallbacks = () => {
+      setTimeout(() => {
+        const $phone = $('input[type=text]', this.node);
+        $phone.on('keydown blur change', () => setTimeout(() => {
+          const { formData } = this.state;
+          const newVal = `${$phone.val()}`.replace(/^sip:/, '');
+
+          if (!newVal) {
+            const value = formData.value;
+            value.agent_data.agent_can_use_forwarding = false;
+            this.onChange(formData, ['agent_data', 'agent_can_use_forwarding']);
+          }
+        }, 1));
+      }, 1);
+    };
+
+    const $sipCheckbox = $('.voice-sip-number-mode', this.node);
+    $sipCheckbox.on('click', initPhoneCallbacks);
+
+    initPhoneCallbacks();
   }
 
   getDefaultState() {
@@ -49,7 +77,7 @@ class CallForward extends BaseForm {
           You will be able to answer the call either in Deskpro or on your phone.
         </div>
         <div className="voice-forward-help">
-          When enabled, calls will only be forwarded when an Agents&apos; status is set as &apos;Online&apos; for calls.
+          When enabled, calls will only be forwarded when an Agent&apos;s status is set as &apos;Online&apos; for calls.
           This applies even if the Agent is &apos;Online&apos; but logged out of the helpdesk.
         </div>
       </div>
