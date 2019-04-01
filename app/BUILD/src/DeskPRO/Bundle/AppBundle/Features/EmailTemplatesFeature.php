@@ -104,7 +104,7 @@ HTML;
     /**
      * {@inheritdoc}
      */
-    public function beforeEnable(ContainerInterface $container)
+    public function beforeEnable(ContainerInterface $container, $newInstall = false)
     {
         /** @var EntityManager $em */
         $em = $container->get('doctrine.orm.default_entity_manager');

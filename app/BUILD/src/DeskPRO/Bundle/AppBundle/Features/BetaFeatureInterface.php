@@ -38,8 +38,9 @@ interface BetaFeatureInterface extends FeatureInterface
 
     /**
      * @param ContainerInterface $container
+     * @param bool               $newInstall
      */
-    public function beforeEnable(ContainerInterface $container);
+    public function beforeEnable(ContainerInterface $container, $newInstall = false);
 
     /**
      * @param ContainerInterface $container

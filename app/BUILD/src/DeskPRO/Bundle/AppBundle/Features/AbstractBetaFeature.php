@@ -28,7 +28,7 @@ abstract class AbstractBetaFeature implements BetaFeatureInterface
     /**
      * {@inheritdoc}
      */
-    public function beforeEnable(ContainerInterface $container)
+    public function beforeEnable(ContainerInterface $container, $newInstall = false)
     {
     }
 
