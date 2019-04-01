@@ -36,7 +36,7 @@ class CloudEmailPendingQueuer implements PendingQueuerInterface
     static public function create($redisConnection, $redisSet)
     {
         return CloudEmailPendingQueuer::createClient(
-            new Predis\Client($redisConnection),
+            new Predis\Client($redisConnection, ['cluster' => 'redis']),
             $redisSet
         );
     }
