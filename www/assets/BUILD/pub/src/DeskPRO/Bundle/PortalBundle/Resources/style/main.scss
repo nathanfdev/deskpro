@@ -129,7 +129,7 @@ strong {
 }
 
 // All the headers
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
   margin: 0;
   padding: 0;
   color: lighten($text-color, 5%);
@@ -6572,14 +6572,98 @@ ul.categories-article-list {
         width: 100%;
       }
 
+      h1 {
+        font-size: 2em;
+      }
       h2 {
+        font-size: 1.5em;
+      }
+      h3 {
+        font-size: 1.3em;
+      }
+      h4 {
         font-size: 1.15em;
+      }
+      h5 {
+        font-size: 1.1em;
+      }
+      h6 {
+        font-size: 1em;
       }
     }
     
     .ticket-view-sidebar {
       flex-shrink: 0;
       width: 330px;
+    }
+
+    table {
+      border: none;
+      border-collapse: collapse;
+      empty-cells: show;
+      max-width: 100%;
+
+      &.fr-dashed-borders td,
+      &.fr-dashed-borders th {
+        border-style: dashed;
+      }
+
+      &.fr-alternate-rows tbody tr:nth-child(2n) {
+        background: #f5f5f5;
+      }
+
+      td,
+      th {
+        border: 1px solid #dddddd;
+      }
+
+      td:empty,
+      th:empty {
+        height: 20px;
+      }
+
+      td.fr-highlighted,
+      th.fr-highlighted {
+        border: 1px double red;
+      }
+
+      td.fr-thick,
+      th.fr-thick {
+        border-width: 2px;
+      }
+
+      th {
+        background: #e6e6e6;
+      }
+
+      tr td:first-child {
+        color: inherit;
+        text-align: center;
+      }
+    }
+
+    ul {
+      list-style-type: disc;
+    }
+    ol {
+      list-style-type: decimal;
+    }
+
+    ul, ol {
+      padding: 0 0 0 40px;
+      margin: 13px 0;
+      list-style-position: inside;
+    }
+
+    ul ul, ol ul {
+      list-style-type: circle;
+      list-style-position: inside;
+      margin-left: 15px;
+    }
+    ol ol, ul ol {
+      list-style-type: lower-latin;
+      list-style-position: inside;
+      margin-left: 15px;
     }
   }
 
