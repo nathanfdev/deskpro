@@ -330,6 +330,7 @@
         window.DP_MAX_UPLOAD_SIZE   = '{{ app.getEffectiveMaxUploadSize }}'
         window.DP_IS_DEBUG          = {% if app.isDebug() %}true{% else %}false{% endif %};
         window.DP_IS_TESTING        = {% if app.isTesting() %}true{% else %}false{% endif %};
+        window.DP_IS_QA             = {% if app.isQa() %}true{% else %}false{% endif %};
         window.DP_IS_CLOUD          = {% if app.isCloud() %}true{% else %}false{% endif %};
         window.DP_IS_DEV_ENV        = {% if app.isDevEnv() %}true{% else %}false{% endif %};
         window.DP_HAS_VOICE         = {% if app.hasVoice() %}true{% else %}false{% endif %};

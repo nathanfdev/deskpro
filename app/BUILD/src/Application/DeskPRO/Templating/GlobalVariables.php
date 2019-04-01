@@ -89,16 +89,33 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
         return App::getLanguage();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isDebug()
     {
         return $this->container->isDebug();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isTesting()
     {
         return isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function isQa()
+    {
+        return App::$container->get('deskpro.app_env')->isQa();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function isDemo()
     {
         return License::getLicense()->isDemo();
