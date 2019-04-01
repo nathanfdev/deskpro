@@ -153,6 +153,11 @@ class PlivoCallbacksController extends BaseController
             try {
                 $phoneLock->acquire(true);
 
+                $logger->info(sprintf(
+                    '[PlivoCallbacks] Lock answer agent callback to create outgoing call, call_id = %s',
+                    $callId
+                ));
+
                 /** @var VoicePhoneCall $phoneCall */
                 $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
                 if (!$phoneCall) {
@@ -160,11 +165,21 @@ class PlivoCallbacksController extends BaseController
                 }
 
                 if ($phoneCall->isCanceled()) {
+                    $logger->info(sprintf(
+                        '[PlivoCallbacks] Outgoing call was canceled, hang up, call_id = %s',
+                        $callId
+                    ));
+
                     $plivoXml->addHangup();
                 } else {
                     $this->get('dp.voice.callbacks_helper')->setOutgoingAgentParticipant($callId, $callSid, $agentId, $details);
 
                     // make an outbound call
+                    $logger->info(sprintf(
+                        '[PlivoCallbacks] Make outgoing call, call_id = %s',
+                        $callId
+                    ));
+
                     $callRequestId = $this->get('plivo_adapter')->callNumber(
                         $phoneCall->getNumber(),
                         $phoneCall->getExternalNumber(),
@@ -176,6 +191,11 @@ class PlivoCallbacksController extends BaseController
                     if ($callRequestId) {
                         $phoneCall->addOutgoingRequestId($callRequestId);
                         $this->getManager()->flush();
+
+                        $logger->info(sprintf(
+                            '[PlivoCallbacks] Outgoing call was created, call_id = %s, request_id = %s',
+                            $callId, $callRequestId
+                        ));
 
                         // create and join a new conference
                         $plivoXml->addConference($phoneCall->getConferenceName(), [
@@ -215,6 +235,11 @@ class PlivoCallbacksController extends BaseController
             } finally {
                 $phoneLock->release();
             }
+
+            $logger->info(sprintf(
+                '[PlivoCallbacks] Unlock answer agent callback, call_id = %s',
+                $callId
+            ));
         } else {
             try {
                 $start     = microtime(true);
@@ -636,6 +661,10 @@ class PlivoCallbacksController extends BaseController
         $eventName     = $request->request->get('ConferenceAction');
 
         $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[PlivoCallbacks] Conference status callback, call_id = %s, uuid = %s, member_id = %s, event_name = %s',
+            $phoneCall->getId(), $callSid, $memberId, $eventName
+        ));
 
         if ($eventName === 'enter') {
             $start = microtime(true);
@@ -981,6 +1010,12 @@ class PlivoCallbacksController extends BaseController
 
         $plivoXml = new PlivoXML();
 
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[PlivoCallbacks] Begin outgoing user callback, call_id = %s, call_status = %s',
+            $callId, $callStatus
+        ));
+
         if (in_array($callStatus, ['busy', 'no-answer'])) {
             // in case the call was hanged up immediately
             // try to set user participant here as well before hanging up the phone call
@@ -989,6 +1024,8 @@ class PlivoCallbacksController extends BaseController
         } elseif ($callStatus === 'in-progress') {
             $this->get('dp.voice.callbacks_helper')->setOutgoingUserParticipant($callId, $callSid);
             $this->get('dp.voice.callbacks_helper')->createTicketForOutgoingPhoneCall($callId);
+
+            /** @var VoicePhoneCall $phoneCall */
             $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
 
             $plivoXml->addConference($phoneCall->getConferenceName(), [

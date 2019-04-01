@@ -731,6 +731,12 @@ class VoiceClientPhoneCallController extends BaseController
      */
     public function endCallAction(VoicePhoneCall $phoneCall)
     {
+        $logger = $this->get('dp.voice.logger');
+        $logger->info(sprintf(
+            '[VoiceClientPhoneCallController] Begin end call callback, call_id = %s',
+            $phoneCall->getId()
+        ));
+
         $taskRouter = $this->get('dp.voice.task_router');
         $taskRouter->rejectAnotherWorkerReservation($phoneCall->getTaskSid(), 'agent', $this->getVoiceAgent()->getId());
 
@@ -742,14 +748,31 @@ class VoiceClientPhoneCallController extends BaseController
                 try {
                     $phoneLock->acquire(true);
 
+                    $logger->info(sprintf(
+                        '[VoiceClientPhoneCallController] Lock end call callback to cancel outgoing calls, call_id = %s',
+                        $phoneCall->getId()
+                    ));
+
+                    $this->getManager()->refresh($phoneCall);
+
                     $this->get('dp.voice.provider_helper')->cancelCall($phoneCall);
                     $this->get('dp.voice.provider_helper')->cancelOutgoingCalls($phoneCall);
+
+                    $logger->info(sprintf(
+                        '[VoiceClientPhoneCallController] Calls are canceled, call_id = %s, request_ids = %s',
+                        $phoneCall->getId(), implode(', ', $phoneCall->getOutgoingRequestIds())
+                    ));
 
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_CANCELED);
                     $this->getManager()->flush();
                 } finally {
                     $phoneLock->release();
                 }
+
+                $logger->info(sprintf(
+                    '[VoiceClientPhoneCallController] End call callback is unlocked, call_id = %s',
+                    $phoneCall->getId()
+                ));
             }
         }
 

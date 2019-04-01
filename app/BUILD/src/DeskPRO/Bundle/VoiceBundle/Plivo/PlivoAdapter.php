@@ -369,6 +369,7 @@ class PlivoAdapter implements VoiceProviderInterface
             try {
                 $client->calls->cancel($requestId);
             } catch (\Exception $e) {
+                $this->logger->info($e->getMessage());
             }
         }
     }
