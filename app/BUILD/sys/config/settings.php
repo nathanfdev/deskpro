@@ -1049,34 +1049,6 @@ return [
     'rate_limit.submit_ticket.guest.response'     => 'captcha',
 
     //###################################################################################################################
-    // cloudemail configuration
-    //###################################################################################################################
-
-    /*
-     * The configuration for the redis queue strategy of delivering outgoing email
-     * Most likely you'll want to like the `key` parameter set to the default value below. If you change it, make sure the same value is changed/configured for
-     * cloud email consumers
-     * If this setting is enabled it WILL take precedence over settings.cloudemail_outgoing_sqs_queue
-     *
-     */
-//    'settings.cloudemail_outgoing_redis_queue' => [
-//        'connection' => [
-//            'scheme' => 'tcp',
-//            'host'   => '10.0.0.1',
-//            'port'   => 6379,
-//        ],
-//        'key' => 'outgoing-queue'
-//    ],
-
-    /*
-     * The url to an sqs queue which replaces the redis queue
-     * If this setting is enabled it WILL take precedence over settings.sendmail_redis_queue
-     *
-     */
-    // 'settings.cloudemail_outgoing_sqs_queue' => "https://sqs.<region>.amazonaws.com/<aws_account_id>/outgoing.fifo",
-
-
-    //###################################################################################################################
     // notification.settings
     //###################################################################################################################
 
@@ -1159,7 +1131,6 @@ return [
     'api_limits.key.day'     => -1,
     'api_limits.key.default' => -1,
 
-
     //###################################################################################################################
     // api_auth
     //###################################################################################################################
@@ -1168,7 +1139,6 @@ return [
      * The master token that can be used to authenticate any request
      */
     'api_auth.master_key' => '',
-
 
     //###################################################################################################################
     // audit_log
