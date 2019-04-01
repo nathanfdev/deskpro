@@ -31,7 +31,6 @@ class MediaControls extends React.Component {
     this.audio.addEventListener('loadedmetadata', this.setDuration);
     this.audio.addEventListener('timeupdate', this.setCurrentTime);
   }
-
   componentWillUnmount() {
     URL.revokeObjectURL(this.blob);
     this.audio.removeEventListener('playing', this.setPlaying);
@@ -96,7 +95,7 @@ class MediaControls extends React.Component {
 
   loadAudio = () => {
     const req = new XMLHttpRequest();
-    req.open('GET', this.props.recording.get('download_url'), true);
+    req.open('GET', this.props.recording.get('download_url').replace('https:', '').replace('http:', ''), true);
     req.responseType = 'blob';
 
     req.onload = () => {
