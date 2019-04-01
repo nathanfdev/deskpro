@@ -4,8 +4,10 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Snippets;
 
 use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -264,12 +266,33 @@ class SnippetsController extends CrudController
      * @param Request $request
      * @param int     $id
      * @param string  $type
+     * @param $objectId
      *
      * @return View
      */
-    public function renderSnippetAction(Request $request, $id, $type)
+    public function renderSnippetAction(Request $request, $id, $type, $objectId)
     {
+        /** @var Snippet $snippet */
         $snippet = $this->findEntity($id, $request, $type);
+
+        $data = [];
+
+        switch ($type) {
+            case 'ticket':
+                $data['entity'] = $this->getManager()->getRepository(Ticket::class)->find($objectId);
+                break;
+            case 'chat':
+                $data['entity'] = $this->getManager()->getRepository(ChatConversation::class)->find($objectId);
+                break;
+            default:
+                $this->createBadRequestException('Invalid type parameter');
+        }
+
+        $templateRenderer = $this->get('twig_template_renderer');
+
+        foreach ($snippet->getTranslations() as $translation) {
+            $translation->setContent($templateRenderer->renderStringTemplate($translation->getContent(), $data));
+        }
 
         return View::create($this->wrap($snippet));
     }
@@ -347,6 +370,7 @@ class SnippetsController extends CrudController
                             $processed[] = $snippet->getId();
                         }
                         foreach ($value['selectedDepartments'] as $departmentId => $departmentValue) {
+                            /** @var Department $department */
                             $department = $this->getManager()->getRepository(Department::class)->find($departmentId);
                             if (!$department) {
                                 throw $this->createNotFoundException(sprintf('Unkown department %s', $department));
@@ -380,6 +404,7 @@ class SnippetsController extends CrudController
                             $processed[] = $snippet->getId();
                         }
                         foreach ($value['selectedTeams'] as $teamId => $teamValue) {
+                            /** @var AgentTeam $team */
                             $team = $this->getManager()->getRepository(AgentTeam::class)->find($teamId);
                             if (!$team) {
                                 throw $this->createNotFoundException(sprintf('Unkown team %s', $teamId));
@@ -502,7 +527,7 @@ class SnippetsController extends CrudController
      *
      * @param Request $request
      *
-     * @return \FOS\RestBundle\View\View
+     * @throws \Exception
      */
     public function csvAction(Request $request)
     {
@@ -531,7 +556,7 @@ class SnippetsController extends CrudController
 
         $result = $qb->getQuery()->getResult();
 
-        $delimiter = ';';
+        $delimiter = ',';
 
         $headers = [
             'id',
@@ -572,7 +597,7 @@ class SnippetsController extends CrudController
         $response = new StreamedResponse();
         $response->setCallback(function () use ($delimiter, $headers, $result, $languageDataService) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, $headers);
+            fputcsv($out, $headers, $delimiter);
             flush();
             $i = 0;
             /** @var Snippet $snippet */
@@ -613,7 +638,7 @@ class SnippetsController extends CrudController
                     $language = $languageDataService->getDefault();
                     $this->fillTranslations($language, $translations, $snippet, $data);
                 }
-                fputcsv($out, $data);
+                fputcsv($out, $data, $delimiter);
                 ++$i;
                 if ($i > 50) {
                     flush();
