@@ -37,7 +37,7 @@ class DeskproSourceMapperFactory
 
         //TODO shouldn't we make sure only one setting is enabled at the same time
         if ($redis = $env->getConfig('settings.cloudemail_outgoing_redis_queue')) {
-            $queuer = CloudEmailPendingQueuer::create($redis['connection'], $redis['set']);
+            $queuer = CloudEmailPendingQueuer::create($redis['connection'], $redis['key']);
             $external = new ExternalPendingQueue($source_mapper, $queuer);
             return $external;
         }
