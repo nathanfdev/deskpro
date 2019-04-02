@@ -2,8 +2,8 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketFeedback;
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\TicketMessage;
 use JMS\Serializer\Annotation as JMS;
@@ -20,7 +20,7 @@ abstract class TicketEmailType extends EmailBaseType
     protected $ticket;
 
     /**
-     * The person who opened the ticket.
+     * The person for whom opened the ticket.
      *
      * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
      *
@@ -65,6 +65,15 @@ abstract class TicketEmailType extends EmailBaseType
     protected $ticketSatisfaction;
 
     /**
+     * The person who made the action with ticket.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
+     *
+     * @var Person
+     */
+    protected $actionPerformer;
+
+    /**
      * TicketEmailType constructor.
      *
      * @param Ticket           $ticket
@@ -87,5 +96,17 @@ abstract class TicketEmailType extends EmailBaseType
         $this->ticketMessages = $ticketMessages;
 
         $this->ticketSatisfaction = $ticketSatisfaction;
+    }
+
+    /**
+     * @param Person $performer
+     *
+     * @return $this
+     */
+    public function setActionPerformer(Person $performer)
+    {
+        $this->actionPerformer = $performer;
+
+        return $this;
     }
 }
