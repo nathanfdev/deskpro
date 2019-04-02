@@ -156,7 +156,6 @@ class Busy extends React.Component {
 class Active extends React.Component {
 
   static propTypes = {
-    status:             PropTypes.string,
     mute:               PropTypes.bool,
     transferTargetType: PropTypes.string,
     hold:               PropTypes.bool,
@@ -204,9 +203,12 @@ class Active extends React.Component {
 
   openTransferMenu = (event) => {
     event.preventDefault();
-    if (this.props.status === 'warm_transfer') {
+
+    const { phoneCall } = this.props;
+    if (phoneCall && phoneCall.get('status') === 'warm_transfer') {
       return;
     }
+
     this.setState({
       transferMenuOpened: true
     });
