@@ -20,7 +20,7 @@ class TransferList extends React.Component {
     transferCall:       PropTypes.func,
     cancelInvite:       PropTypes.func,
     closeMenu:          PropTypes.func,
-    inviteError:        PropTypes.string
+    inviteError:        PropTypes.string,
   };
 
   static defaultProps = {
@@ -66,7 +66,7 @@ class TransferList extends React.Component {
     closeMenu();
   };
 
-  onCancel = (target, type) => {
+  cancel = (target, type) => {
     const { cancelInvite } = this.props;
 
     setTimeout(() => cancelInvite(target, type), 1);
@@ -163,7 +163,7 @@ class TransferList extends React.Component {
             cancelLabel="Cancel transfer"
             type={transferTargetType}
             target={transferTarget}
-            onCancel={this.onCancel}
+            cancel={this.cancel}
           />
         </div>
       );

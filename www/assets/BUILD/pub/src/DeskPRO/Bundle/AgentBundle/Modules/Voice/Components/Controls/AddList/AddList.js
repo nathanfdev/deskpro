@@ -44,7 +44,7 @@ class AddList extends React.Component {
     setTimeout(() => onAddAgent(selectedTarget, 'warm'), 1);
   };
 
-  onCancel = (target, type) => {
+  cancel = (target, type) => {
     const { onCancelInvite } = this.props;
 
     setTimeout(() => onCancelInvite(target, type), 1);
@@ -96,7 +96,7 @@ class AddList extends React.Component {
             cancelLabel="Cancel add"
             type={addTargetType}
             target={addTarget}
-            onCancel={this.onCancel}
+            cancel={this.cancel}
           />
         </div>
       );

@@ -13,7 +13,7 @@ class TransferStatus extends React.Component {
     cancelLabel: PropTypes.string,
     type:        PropTypes.string,
     target:      PropTypes.object,
-    onCancel:    PropTypes.func,
+    cancel:      PropTypes.func,
   };
 
   constructor(props) {
@@ -53,11 +53,11 @@ class TransferStatus extends React.Component {
     });
   };
 
-  onCancel = (event) => {
+  cancel = (event) => {
     event.preventDefault();
 
-    const { target, type, onCancel } = this.props;
-    onCancel(target, type);
+    const { target, type, cancel } = this.props;
+    cancel(target, type);
   };
 
   render() {
@@ -87,7 +87,7 @@ class TransferStatus extends React.Component {
             Agent rejected your request
           </div>
           : <div className="voice-transfer-status-buttons">
-            <Button className="basic" onClick={this.onCancel}>
+            <Button className="basic" onClick={this.cancel}>
               <i className="icon remove" />
               {cancelLabel}
             </Button>

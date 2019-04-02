@@ -14,30 +14,32 @@ import {
   cancelInvite,
   checkIsActive
 } from '../../Actions/clientActions';
-import { connectionsSelector } from '../../Selectors/client';
+import { agentVoicemailTimeoutSelector, connectionsSelector } from '../../Selectors/client';
 import { onlineAgentsSelector } from '../../../Agent/Selectors/agents';
 import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
 
 @connect(state => ({
-  me:             meSelector(state),
-  agents:         voiceParticipantsSelector(state),
-  connections:    connectionsSelector(state),
-  onlineAgentIds: onlineAgentsSelector(state),
-  phoneCalls:     allPhoneCallsSelector(state)
+  me:                    meSelector(state),
+  agents:                voiceParticipantsSelector(state),
+  connections:           connectionsSelector(state),
+  onlineAgentIds:        onlineAgentsSelector(state),
+  phoneCalls:            allPhoneCallsSelector(state),
+  agentVoicemailTimeout: agentVoicemailTimeoutSelector(state),
 }))
 class VoiceControlsContainer extends React.Component {
 
   static propTypes = {
-    dispatch:       PropTypes.func,
-    me:             PropTypes.object,
-    agents:         PropTypes.object,
-    onlineAgentIds: PropTypes.object,
-    connections:    PropTypes.object,
-    ticketId:       PropTypes.number,
-    baseId:         PropTypes.string,
-    tabRef:         PropTypes.func,
-    onEndCall:      PropTypes.func,
-    phoneCalls:     PropTypes.object
+    dispatch:              PropTypes.func,
+    me:                    PropTypes.object,
+    agents:                PropTypes.object,
+    onlineAgentIds:        PropTypes.object,
+    connections:           PropTypes.object,
+    ticketId:              PropTypes.number,
+    baseId:                PropTypes.string,
+    tabRef:                PropTypes.func,
+    onEndCall:             PropTypes.func,
+    phoneCalls:            PropTypes.object,
+    agentVoicemailTimeout: PropTypes.number,
   };
 
   static defaultProps = {
@@ -179,13 +181,20 @@ class VoiceControlsContainer extends React.Component {
   }
 
   addAgent = (target, type) => {
-    const { dispatch } = this.props;
+    const { dispatch, agentVoicemailTimeout } = this.props;
     const connection = this.getConnection();
     if (!connection) {
       return null;
     }
 
     const promise = dispatch(warmAddAgent(connection, target));
+    promise.success(() => {
+      setTimeout(() => {
+        if (this.state.addTarget) {
+          this.cancelInvite(target, type, 'Invite was canceled by timeout');
+        }
+      }, agentVoicemailTimeout * 1000);
+    });
     promise.error((error) => {
       this.setState({
         addTarget:     null,
@@ -203,7 +212,7 @@ class VoiceControlsContainer extends React.Component {
     return promise;
   };
 
-  cancelInvite = (target, type) => {
+  cancelInvite = (target, type, inviteError = null) => {
     const { dispatch } = this.props;
     const connection = this.getConnection();
 
@@ -214,7 +223,7 @@ class VoiceControlsContainer extends React.Component {
         addTargetType:      null,
         transferTarget:     null,
         transferTargetType: null,
-        inviteError:        null
+        inviteError
       });
     });
   };
@@ -275,7 +284,7 @@ class VoiceControlsContainer extends React.Component {
   };
 
   transferCall = (target, type) => {
-    const { dispatch } = this.props;
+    const { dispatch, agentVoicemailTimeout } = this.props;
     const connection = this.getConnection();
     if (!connection) {
       return null;
@@ -288,6 +297,13 @@ class VoiceControlsContainer extends React.Component {
       promise = dispatch(warmTransferCall(connection, target, type));
     }
 
+    promise.success(() => {
+      setTimeout(() => {
+        if (this.state.transferTarget) {
+          this.cancelInvite(target, type, 'Transfer was canceled by timeout');
+        }
+      }, agentVoicemailTimeout * 1000);
+    });
     promise.error((error) => {
       this.setState({
         transferTarget:     null,
