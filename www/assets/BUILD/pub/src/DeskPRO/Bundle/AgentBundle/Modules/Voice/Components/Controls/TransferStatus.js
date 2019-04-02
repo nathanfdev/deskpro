@@ -30,13 +30,6 @@ class TransferStatus extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    if (window.DeskPRO_Window) {
-      const messageBroker = window.DeskPRO_Window.getMessageBroker();
-      messageBroker.removeMessageListener('agent.voice.conference.participant-ignore', this.onExternalSetHold);
-    }
-  }
-
   onIgnore = (event) => {
     const { target, connection } = this.props;
 
