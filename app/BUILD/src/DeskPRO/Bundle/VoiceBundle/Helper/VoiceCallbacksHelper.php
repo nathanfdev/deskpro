@@ -691,6 +691,12 @@ class VoiceCallbacksHelper
         $this->em->persist($log);
         $this->em->flush();
 
+        if (!$phoneCall->isColdTransfer()) {
+            $this->voiceProviderHelper->tryEndConference($phoneCall);
+        }
+
+        // unhold end-user after attempt to end the conference
+        // so there won't be race conditions
         if ($phoneCall->isWarmTransfer()) {
             // mark the phone call as started
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
@@ -698,9 +704,6 @@ class VoiceCallbacksHelper
 
             // unhold end-user
             $this->voiceProviderHelper->holdConferenceEndUser($phoneCall, false);
-        }
-        if (!$phoneCall->isColdTransfer()) {
-            $this->voiceProviderHelper->tryEndConference($phoneCall);
         }
 
         foreach ($phoneCall->getTaskSids() as $taskSid) {

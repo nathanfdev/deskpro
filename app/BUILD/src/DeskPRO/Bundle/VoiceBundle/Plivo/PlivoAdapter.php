@@ -384,13 +384,21 @@ class PlivoAdapter implements VoiceProviderInterface
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
-        $onHoldParticipants = $phoneCall->getUserParticipants()->filter(function (VoicePhoneCallParticipantUser $participant) {
+        $conference = $this->getConference($account, $phoneCall->getConferenceName());
+
+        $membersCount     = $conference ? count($conference->members) : 0;
+        $usersOnHoldCount = $phoneCall->getUserParticipants()->filter(function (VoicePhoneCallParticipantUser $participant) {
             return $participant->isOnHold();
         })->count();
 
-        $conference = $this->getConference($account, $phoneCall->getConferenceName());
-        if ($conference && (count($conference->members) + $onHoldParticipants) < 2) {
+        $this->logger->info(sprintf(
+            '[PlivoAdapter] Try end conference, call_id = %s, conference = %s members_count = %s, on_hold_users_count = %s',
+            $phoneCall->getId(), (bool) $conference, $membersCount, $usersOnHoldCount
+        ));
+
+        if ($conference && ($membersCount + $usersOnHoldCount) < 2) {
             $conference->delete();
+            $this->logger->info(sprintf('[PlivoAdapter] End conference, call_id = %s', $phoneCall->getId()));
 
             foreach ($phoneCall->getParticipants() as $participant) {
                 try {
