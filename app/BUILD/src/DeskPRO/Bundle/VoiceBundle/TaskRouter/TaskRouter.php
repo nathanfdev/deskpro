@@ -309,6 +309,12 @@ class TaskRouter
                 $worker->removePendingTask($task);
 
                 $this->storage->saveWorker($worker);
+
+                try {
+                    $this->dispatcher->dispatch(TaskRouterEvent::COMPLETE_WORKER, new TaskRouterEvent($task));
+                } catch (\Exception $e) {
+                    SystemErrorHandler::logException($e);
+                }
             }
 
             // if task is done then we can't reject it
@@ -317,7 +323,7 @@ class TaskRouter
                 $task->setWorkersIds([]);
 
                 try {
-                    $this->dispatcher->dispatch(TaskRouterEvent::CANCELED, new TaskRouterEvent($task));
+                    $this->dispatcher->dispatch(TaskRouterEvent::TASK_CANCELED, new TaskRouterEvent($task));
                 } catch (\Exception $e) {
                     SystemErrorHandler::logException($e);
                 }
@@ -403,6 +409,12 @@ class TaskRouter
             $this->storage->saveWorker($worker);
             $this->storage->saveTask($task);
 
+            try {
+                $this->dispatcher->dispatch(TaskRouterEvent::COMPLETE_WORKER, new TaskRouterEvent($task, $worker));
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
+            }
+
             return true;
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
@@ -433,11 +445,23 @@ class TaskRouter
                     $worker->removePendingTask($task);
 
                     $this->storage->saveWorker($worker);
+
+                    try {
+                        $this->dispatcher->dispatch(TaskRouterEvent::RESET_WORKER, new TaskRouterEvent($task, $worker));
+                    } catch (\Exception $e) {
+                        SystemErrorHandler::logException($e);
+                    }
                 }
             }
 
             $task->setWorkersIds([]);
             $this->storage->saveTask($task);
+
+            try {
+                $this->dispatcher->dispatch(TaskRouterEvent::RESET_TASK, new TaskRouterEvent($task));
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
+            }
 
             return true;
         } catch (\Exception $e) {
@@ -471,6 +495,12 @@ class TaskRouter
 
             $this->storage->saveWorker($worker);
             $this->storage->saveTask($task);
+
+            try {
+                $this->dispatcher->dispatch(TaskRouterEvent::ANOTHER_WORKER_RESERVED, new TaskRouterEvent($task, $worker));
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
+            }
 
             return true;
         } catch (\Exception $e) {
@@ -507,6 +537,12 @@ class TaskRouter
             $this->storage->saveWorker($worker);
             $this->storage->saveTask($task);
 
+            try {
+                $this->dispatcher->dispatch(TaskRouterEvent::REJECTED_RESERVATION, new TaskRouterEvent($task, $worker));
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
+            }
+
             return true;
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
@@ -541,6 +577,12 @@ class TaskRouter
 
             $this->storage->saveWorker($worker);
             $this->storage->saveTask($task);
+
+            try {
+                $this->dispatcher->dispatch(TaskRouterEvent::JOINED_TASK, new TaskRouterEvent($task, $worker));
+            } catch (\Exception $e) {
+                SystemErrorHandler::logException($e);
+            }
 
             return true;
         } catch (\Exception $e) {

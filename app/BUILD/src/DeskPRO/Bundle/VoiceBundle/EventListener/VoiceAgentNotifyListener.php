@@ -9,6 +9,7 @@ use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\Helper\VoiceTaskHelper;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Worker;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
+use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -73,10 +74,14 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            TaskRouterEvent::ASSIGNED => 'onAssigned',
-            TaskRouterEvent::ACCEPTED => 'onAccepted',
-            TaskRouterEvent::CANCELED => 'onCanceled',
-            TaskRouterEvent::REJECTED => 'onCanceled',
+            TaskRouterEvent::ASSIGNED                => ['onAssigned', 'workerBusy'],
+            TaskRouterEvent::ACCEPTED                => 'onAccepted',
+            TaskRouterEvent::TASK_CANCELED           => 'onCanceled',
+            TaskRouterEvent::REJECTED                => ['onCanceled', 'workerIdle'],
+            TaskRouterEvent::REJECTED_RESERVATION    => 'workerIdle',
+            TaskRouterEvent::ANOTHER_WORKER_RESERVED => 'workerBusy',
+            TaskRouterEvent::COMPLETE_WORKER         => 'workerIdle',
+            TaskRouterEvent::RESET_WORKER            => 'workerIdle',
         ];
     }
 
@@ -189,6 +194,56 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
                 'conference_sid'     => $phoneCall->getConferenceSid(),
                 'task'               => $task->getId(),
                 'related_people_ids' => $task->getAttribute('related_people'),
+            ]
+        ));
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function workerBusy(TaskRouterEvent $event)
+    {
+        $worker = $event->getWorker();
+        if (!$worker) {
+            return;
+        }
+
+        $task = $event->getTask();
+        if ($task->getChannel() !== VoiceWorkflow::getChannelName()) {
+            return;
+        }
+
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.worker-busy',
+            [
+                'worker_type'    => $worker->getType(),
+                'worker_type_id' => $worker->getTypeId(),
+            ]
+        ));
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function workerIdle(TaskRouterEvent $event)
+    {
+        $worker = $event->getWorker();
+        if (!$worker) {
+            return;
+        }
+        if ($worker->getActiveTaskIds() || $worker->getPendingTaskIds()) {
+            return;
+        }
+
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.worker-idle',
+            [
+                'worker_type'    => $worker->getType(),
+                'worker_type_id' => $worker->getTypeId(),
             ]
         ));
     }
