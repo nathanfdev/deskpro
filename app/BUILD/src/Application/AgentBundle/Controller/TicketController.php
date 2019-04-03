@@ -4205,27 +4205,27 @@ class TicketController extends AbstractController
                 throw $this->createNotFoundException();
         }
 
-        $all_raw_to   = $this->in->getCleanValueArray('to', 'str', 'str');
-        $all_to_types = $this->in->getCleanValueArray('to_type', 'str', 'str');
+        $allRawTo   = $this->in->getCleanValueArray('to', 'str', 'str');
+        $allToTypes = $this->in->getCleanValueArray('to_type', 'str', 'str');
 
         $tos  = [];
         $ccs  = [];
         $bccs = [];
 
-        $helpdesk_addresses = [];
+        $helpdeskAddresses = [];
 
-        foreach ($all_raw_to as $rowid => $to) {
+        foreach ($allRawTo as $rowId => $to) {
             $to = trim($to);
             if (!$to) {
                 continue;
             }
 
-            $raw_to = \ezcMailTools::parseEmailAddresses($to);
-            if (!$raw_to) {
+            $rawTo = \ezcMailTools::parseEmailAddresses($to);
+            if (!$rawTo) {
                 return $this->createJsonResponse(['error' => 'invalid_address', 'addresses' => [$to]]);
             }
 
-            $type = isset($all_to_types[$rowid]) ? $all_to_types[$rowid] : 'to';
+            $type = isset($allToTypes[$rowId]) ? $allToTypes[$rowId] : 'to';
             switch ($type) {
                 case 'to':
                     $var = &$tos;
@@ -4241,7 +4241,7 @@ class TicketController extends AbstractController
                     break;
             }
 
-            foreach ($raw_to as $addr) {
+            foreach ($rawTo as $addr) {
                 if (!$addr->email) {
                     continue;
                 }
@@ -4249,7 +4249,7 @@ class TicketController extends AbstractController
                     return $this->createJsonResponse(['error' => 'invalid_address', 'addresses' => [$addr->email]]);
                 }
                 if ($this->container->getEmailAccountManager()->findAccountForEmailAddress($addr->email)) {
-                    $helpdesk_addresses[] = $addr->email;
+                    $helpdeskAddresses[] = $addr->email;
                 } else {
                     $var[$addr->email] = $addr->name;
                 }
@@ -4257,11 +4257,11 @@ class TicketController extends AbstractController
             unset($var);
         }
 
-        if ($helpdesk_addresses) {
+        if ($helpdeskAddresses) {
             return $this->createJsonResponse(
                 [
                     'error'     => 'to_helpdesk_address',
-                    'addresses' => $helpdesk_addresses,
+                    'addresses' => $helpdeskAddresses,
                 ]
             );
         }
@@ -4297,7 +4297,7 @@ class TicketController extends AbstractController
 
         $message = $this->container->getMailer()->createMessage();
 
-        // There shouldnt be any access codes in the body usually,
+        // There shouldn't be any access codes in the body usually,
         // but it's possible they might be in there because of a badly
         // cut reply back to the helpdesk. So this filter removes them.
         $message->setBodyFilter(function ($body) use ($accessCodes) {
@@ -4432,6 +4432,22 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(['success' => true]);
     }
 
+    /**
+     * @deprecated please use forwardSendAction instead
+     *
+     * @param $ticket_id
+     * @param $message_id
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     *
+     * @return Response
+     */
     public function forwardSendLegacyAction($ticket_id, $message_id)
     {
         $ticket  = $this->getTicketOr404($ticket_id);
