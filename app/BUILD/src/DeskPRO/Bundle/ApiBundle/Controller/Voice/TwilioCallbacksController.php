@@ -377,6 +377,11 @@ class TwilioCallbacksController extends BaseController
             ;
 
             $this->get('dp.voice.callbacks_helper')->logPressedAutoAttendantExtensionKey($phoneCall, $details);
+        } else {
+            $target = new VoiceAutoAttendantTarget();
+            $target->setAutoAttendant($autoAttendant);
+
+            $this->addTargetResponse($phoneCall, $target, $twiml);
         }
 
         $response = new Response($twiml);

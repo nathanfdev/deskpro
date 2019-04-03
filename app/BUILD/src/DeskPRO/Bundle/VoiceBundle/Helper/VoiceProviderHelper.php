@@ -157,6 +157,14 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
+    {
+        $this->getAdapter($participant->getPhoneCall())->kickParticipant($participant);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = [])
     {
         $adapter = $this->getAdapter($phoneCall);

@@ -10,14 +10,15 @@ use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Handles active phone call controls panel.
@@ -119,7 +120,7 @@ class VoiceClientPhoneCallController extends BaseController
         // if call target is an agent, redirect to voicemail immediately
         $task = $this->container->get('dp.voice.task_router.storage')->getTask($phoneCall->getTaskSid());
         if ($task && $taskAgent = $this->get('dp.voice.voice_task_helper')->getWorkerAgent($task)) {
-            $this->get('dp.voice.voicemail_helper')->transferToVoicemail($phoneCall);
+            $this->get('dp.voice.transfer_helper')->transferToVoicemail($phoneCall);
         }
 
         // log that agent rejected the incoming call
@@ -514,7 +515,7 @@ class VoiceClientPhoneCallController extends BaseController
      *     noInput=true
      * )
      *
-     * @Rest\Put("/cold_transfer/{agent}")
+     * @Rest\Put("/cold_transfer/agent/{agent}")
      *
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
@@ -523,7 +524,7 @@ class VoiceClientPhoneCallController extends BaseController
      *
      * @return View
      */
-    public function coldTransferAction(VoicePhoneCall $phoneCall, Person $agent)
+    public function coldTransferToAgentAction(VoicePhoneCall $phoneCall, Person $agent)
     {
         if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Voice is not enabled for this agent');
@@ -539,6 +540,11 @@ class VoiceClientPhoneCallController extends BaseController
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
         $em->flush();
+
+        // disconnect existing agents from the call
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            $this->get('dp.voice.provider_helper')->kickParticipant($participant);
+        }
 
         // get phone call ticket
         $messageAttribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
@@ -563,22 +569,12 @@ class VoiceClientPhoneCallController extends BaseController
 
         // create a router task
         // and transfer to call router
-        $task = $this->get('dp.voice.task_builder')->createVoiceTransferTask($phoneCall, $agent, $this->getVoiceAgent());
+        $task = $this->get('dp.voice.task_builder')->createVoiceTransferToAgentTask($phoneCall, $agent, $this->getVoiceAgent());
         $phoneCall->setTaskSid($task->getId());
 
         $em->flush();
 
-        $account = $phoneCall->getNumber()->getAccount();
-
-        $this->get('dp.voice.provider_helper')->transferCall(
-            $phoneCall,
-            $this->get('router')->generate($account->getRouterPrefix().'_call_routing_callback', [
-                'account'     => $account->getId(),
-                'accountAuth' => $account->getAccountAuth(),
-                'task'        => $task->getId(),
-            ], UrlGeneratorInterface::ABSOLUTE_URL),
-            'POST'
-        );
+        $this->get('dp.voice.transfer_helper')->transferToTaskRouter($phoneCall, $task);
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -589,6 +585,106 @@ class VoiceClientPhoneCallController extends BaseController
             'call_type'   => 'transfer',
             'invite_type' => 'cold',
             'to_person'   => $agent->getId(),
+        ]);
+
+        $em->persist($log);
+        $em->flush();
+
+        return new View($this->wrap($phoneCall));
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Cold transfer call to a voice queue",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     noInput=true
+     * )
+     *
+     * @Rest\Put("/cold_transfer/queue/{queue}")
+     *
+     * @param VoicePhoneCall $phoneCall
+     * @param VoiceQueue     $queue
+     *
+     * @return View
+     */
+    public function coldTransferToQueueAction(VoicePhoneCall $phoneCall, VoiceQueue $queue)
+    {
+        $em = $this->getManager();
+
+        $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
+        $em->flush();
+
+        // disconnect existing agents from the call
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            $this->get('dp.voice.provider_helper')->kickParticipant($participant);
+        }
+
+        // create a router task
+        // and transfer to call router
+        $task = $this->get('dp.voice.task_builder')->createVoiceTransferToQueueTask($phoneCall, $queue);
+        $phoneCall->setTaskSid($task->getId());
+
+        $em->flush();
+
+        $this->get('dp.voice.transfer_helper')->transferToTaskRouter($phoneCall, $task);
+
+        // add action log
+        $log = new VoicePhoneCallLog();
+        $log->setPhoneCall($phoneCall);
+        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_TRANSFER);
+        $log->setDetails([
+            'call_type'   => 'transfer',
+            'invite_type' => 'cold',
+            'to_queue'    => $queue->getId(),
+        ]);
+
+        $em->persist($log);
+        $em->flush();
+
+        return new View($this->wrap($phoneCall));
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Cold transfer call to a voice auto attendant",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     noInput=true
+     * )
+     *
+     * @Rest\Put("/cold_transfer/auto_attendant/{autoAttendant}")
+     *
+     * @param VoicePhoneCall     $phoneCall
+     * @param VoiceAutoAttendant $autoAttendant
+     *
+     * @return View
+     */
+    public function coldTransferToAutoAttendantAction(VoicePhoneCall $phoneCall, VoiceAutoAttendant $autoAttendant)
+    {
+        $em = $this->getManager();
+
+        $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
+        $em->flush();
+
+        // disconnect existing agents from the call
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            $this->get('dp.voice.provider_helper')->kickParticipant($participant);
+        }
+
+        // transfer to auto attendant
+        $this->get('dp.voice.transfer_helper')->transferToAutoAttendant($phoneCall, $autoAttendant);
+
+        // add action log
+        $log = new VoicePhoneCallLog();
+        $log->setPhoneCall($phoneCall);
+        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_TRANSFER);
+        $log->setDetails([
+            'call_type'         => 'transfer',
+            'invite_type'       => 'cold',
+            'to_auto_attendant' => $autoAttendant->getId(),
         ]);
 
         $em->persist($log);
@@ -615,7 +711,7 @@ class VoiceClientPhoneCallController extends BaseController
      *
      * @return View
      */
-    public function cancelInviteAction(VoicePhoneCall $phoneCall, Person $agent)
+    public function cancelAgentInviteAction(VoicePhoneCall $phoneCall, Person $agent)
     {
         if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Voice is not enabled for this agent');

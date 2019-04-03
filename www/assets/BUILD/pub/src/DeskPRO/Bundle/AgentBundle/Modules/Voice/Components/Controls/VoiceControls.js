@@ -161,6 +161,8 @@ class Active extends React.Component {
     hold:               PropTypes.bool,
     ended:              PropTypes.bool,
     onlineAgents:       PropTypes.object,
+    queues:             PropTypes.object,
+    autoAttendants:     PropTypes.object,
     toggleHold:         PropTypes.func,
     toggleMute:         PropTypes.func,
     endCall:            PropTypes.func,
@@ -252,11 +254,13 @@ class Active extends React.Component {
   };
 
   render() {
-    const { hold, mute, ended, onlineAgents, participants, sendDigits, divRef, transferTargetType, phoneCall } = this.props;
+    const { hold, mute, ended, onlineAgents, queues, autoAttendants, participants, sendDigits, divRef, transferTargetType, phoneCall } = this.props;
     const { transferMenuOpened, addMenuOpened, dialpadOpened, updatingHold } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
+    const noQueues = !queues || !queues.size;
+    const noAutoAttendants = !autoAttendants || !autoAttendants.size;
     const isWarmTransfer = phoneCall && phoneCall.get('status') === 'warm_transfer';
-    const transferDisabled = ended || noAgents || isWarmTransfer;
+    const transferDisabled = ended || (noAgents && noQueues && noAutoAttendants) || isWarmTransfer;
 
     return (
       <div
@@ -299,7 +303,13 @@ class Active extends React.Component {
         </Button>
         <Button
           ref={(c) => { this.transferButton = c; }}
-          className={classNames('basic caret-button', { active: transferMenuOpened, disabled: transferDisabled })}
+          className={classNames(
+            'basic caret-button',
+            {
+              active:   transferMenuOpened,
+              disabled: ended || (transferDisabled && !queues.size && !autoAttendants.size)
+            }
+          )}
           onClick={this.openTransferMenu}
         >
           <i className="share icon" />

@@ -67,9 +67,11 @@ export const preloadData    = createAction(
       };
 
       if (window.DP_HAS_VOICE) {
-        batchComponents.voice_accounts = { endpoint: 'voice_accounts?include=client_credentials' };
-        batchComponents.voice_settings = { endpoint: 'voice_settings' };
-        batchComponents.voice_numbers  = { endpoint: 'voice_numbers' };
+        batchComponents.voice_accounts        = { endpoint: 'voice_accounts?include=client_credentials' };
+        batchComponents.voice_settings        = { endpoint: 'voice_settings' };
+        batchComponents.voice_numbers         = { endpoint: 'voice_numbers' };
+        batchComponents.voice_queues          = { endpoint: 'voice_queues' };
+        batchComponents.voice_auto_attendants = { endpoint: 'voice_auto_attendants' };
       }
 
       if (window.DP_HAS_NEW_IM) {
@@ -138,6 +140,8 @@ export const preloadData    = createAction(
           dispatch(setVoiceSettings(data.voice_settings));
           dispatch(setCollection('VoiceAccount', 'all', data.voice_accounts));
           dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
+          dispatch(setCollection('VoiceQueue', 'all', data.voice_queues));
+          dispatch(setCollection('VoiceAutoAttendant', 'all', data.voice_auto_attendants));
         }
 
         if (window.DP_HAS_FOLLOW_UP) {

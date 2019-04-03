@@ -9,18 +9,24 @@ import {
   toggleMute,
   toggleHold,
   warmAddAgent,
-  warmTransferCall,
-  coldTransferCall,
+  warmTransferToAgent,
+  coldTransferToAgent,
+  coldTransferToQueue,
+  coldTransferToAutoAttendant,
   cancelInvite,
   checkIsActive
 } from '../../Actions/clientActions';
 import { agentVoicemailTimeoutSelector, connectionsSelector } from '../../Selectors/client';
 import { onlineAgentsSelector } from '../../../Agent/Selectors/agents';
+import { allQueuesSelector } from '../../Selectors/queue';
+import { allAutoAttendantsSelector } from '../../Selectors/autoAttendants';
 import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
 
 @connect(state => ({
   me:                    meSelector(state),
   agents:                voiceParticipantsSelector(state),
+  queues:                allQueuesSelector(state),
+  autoAttendants:        allAutoAttendantsSelector(state),
   connections:           connectionsSelector(state),
   onlineAgentIds:        onlineAgentsSelector(state),
   phoneCalls:            allPhoneCallsSelector(state),
@@ -49,15 +55,11 @@ class VoiceControlsContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mute:               false,
-      status:             null,
-      addTarget:          null,
-      addTargetType:      null,
-      transferTarget:     null,
-      transferTargetType: null,
-      hold:               false,
-      participants:       [],
-      inviteError:        null
+      mute:         false,
+      status:       null,
+      hold:         false,
+      participants: [],
+      inviteError:  null
     };
   }
 
@@ -144,30 +146,6 @@ class VoiceControlsContainer extends React.Component {
     });
   }
 
-  componentWillUpdate() {
-    const { addTarget, transferTarget, participants } = this.state;
-    const newState = {};
-
-    // update participant list
-    let update = false;
-    if (addTarget && participants.indexOf(addTarget.get('id')) !== -1) {
-      newState.addTarget     = null;
-      newState.addTargetType = null;
-
-      update = true;
-    }
-    if (transferTarget && participants.indexOf(transferTarget.get('id')) !== -1) {
-      newState.transferTarget     = null;
-      newState.transferTargetType = null;
-
-      update = true;
-    }
-
-    if (update) {
-      this.setState(newState);
-    }
-  }
-
   componentWillUnmount() {
     this.props.tabRef(null);
     clearInterval(this.interval);
@@ -179,54 +157,6 @@ class VoiceControlsContainer extends React.Component {
       .filter(connection => parseInt(connection.ticketId, 10) === parseInt(ticketId, 10))
       .first();
   }
-
-  addAgent = (target, type) => {
-    const { dispatch, agentVoicemailTimeout } = this.props;
-    const connection = this.getConnection();
-    if (!connection) {
-      return null;
-    }
-
-    const promise = dispatch(warmAddAgent(connection, target));
-    promise.success(() => {
-      setTimeout(() => {
-        if (this.state.addTarget) {
-          this.cancelInvite(target, type, 'Invite was canceled by timeout');
-        }
-      }, agentVoicemailTimeout * 1000);
-    });
-    promise.error((error) => {
-      this.setState({
-        addTarget:     null,
-        addTargetType: null,
-        inviteError:   error.message
-      });
-    });
-
-    this.setState({
-      addTarget:     target,
-      addTargetType: type,
-      inviteError:   null
-    });
-
-    return promise;
-  };
-
-  cancelInvite = (target, type, inviteError = null) => {
-    const { dispatch } = this.props;
-    const connection = this.getConnection();
-
-    const promise = dispatch(cancelInvite(connection.callId, target, type));
-    promise.then(() => {
-      this.setState({
-        addTarget:          null,
-        addTargetType:      null,
-        transferTarget:     null,
-        transferTargetType: null,
-        inviteError
-      });
-    });
-  };
 
   endCall = () => {
     const { dispatch } = this.props;
@@ -283,42 +213,48 @@ class VoiceControlsContainer extends React.Component {
     return promise;
   };
 
-  transferCall = (target, type) => {
+  sendInvite = method => (target) => {
     const { dispatch, agentVoicemailTimeout } = this.props;
     const connection = this.getConnection();
     if (!connection) {
-      return null;
+      return;
     }
 
-    let promise;
-    if (type === 'cold') {
-      promise = dispatch(coldTransferCall(connection, target, type));
-    } else {
-      promise = dispatch(warmTransferCall(connection, target, type));
-    }
-
+    const promise = dispatch(method(connection, target));
     promise.success(() => {
       setTimeout(() => {
-        if (this.state.transferTarget) {
-          this.cancelInvite(target, type, 'Transfer was canceled by timeout');
+        if (this.state.target) {
+          this.cancelInvite('Call was canceled by timeout');
         }
       }, agentVoicemailTimeout * 1000);
     });
     promise.error((error) => {
       this.setState({
-        transferTarget:     null,
-        transferTargetType: null,
-        inviteError:        error.message
+        target:      null,
+        inviteError: error.message
       });
     });
 
     this.setState({
-      transferTarget:     target,
-      transferTargetType: type,
-      inviteError:        null
+      target,
+      inviteError: null
     });
+  };
 
-    return promise;
+  cancelInvite = (inviteError = null) => {
+    const { dispatch } = this.props;
+    const connection = this.getConnection();
+    if (!connection) {
+      return;
+    }
+
+    const promise = dispatch(cancelInvite(connection.callId, this.state.target));
+    promise.then(() => {
+      this.setState({
+        target: null,
+        inviteError
+      });
+    });
   };
 
   isCallActive = () => {
@@ -350,8 +286,11 @@ class VoiceControlsContainer extends React.Component {
         toggleMute={this.toggleMute}
         toggleHold={this.toggleHold}
         sendDigits={this.sendDigits}
-        onAddAgent={this.addAgent}
-        transferCall={this.transferCall}
+        warmAddAgent={this.sendInvite(warmAddAgent)}
+        warmTransferToAgent={this.sendInvite(warmTransferToAgent)}
+        coldTransferToAgent={this.sendInvite(coldTransferToAgent)}
+        coldTransferToQueue={this.sendInvite(coldTransferToQueue)}
+        coldTransferToAutoAttendant={this.sendInvite(coldTransferToAutoAttendant)}
         cancelInvite={this.cancelInvite}
         baseId={baseId}
       />

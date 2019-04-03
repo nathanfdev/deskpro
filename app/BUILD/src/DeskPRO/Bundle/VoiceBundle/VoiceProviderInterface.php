@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 
 /**
@@ -37,6 +38,11 @@ interface VoiceProviderInterface
      * @param VoicePhoneCall $phoneCall
      */
     public function endConference(VoicePhoneCall $phoneCall);
+
+    /**
+     * @param AbstractVoicePhoneCallParticipant $participant
+     */
+    public function kickParticipant(AbstractVoicePhoneCallParticipant $participant);
 
     /**
      * @param VoicePhoneCall $phoneCall

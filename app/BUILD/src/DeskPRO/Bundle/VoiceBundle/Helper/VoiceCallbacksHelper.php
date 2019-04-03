@@ -76,9 +76,9 @@ class VoiceCallbacksHelper
     private $voiceProviderHelper;
 
     /**
-     * @var VoicemailHelper
+     * @var TransferCallHelper
      */
-    private $voicemailHelper;
+    private $transferCallHelper;
 
     /**
      * @var WorkerHelper
@@ -110,7 +110,7 @@ class VoiceCallbacksHelper
      * @param VoiceSettingsResolver    $voiceSettingsResolver
      * @param TicketManager            $ticketManager
      * @param VoiceProviderHelper      $voiceProviderHelper
-     * @param VoicemailHelper          $voicemailHelper
+     * @param TransferCallHelper       $transferCallHelper
      * @param WorkerHelper             $workerHelper
      * @param StorageAdapterInterface  $storageAdapter
      * @param EventDispatcherInterface $dispatcher
@@ -124,7 +124,7 @@ class VoiceCallbacksHelper
         VoiceSettingsResolver    $voiceSettingsResolver,
         TicketManager            $ticketManager,
         VoiceProviderHelper      $voiceProviderHelper,
-        VoicemailHelper          $voicemailHelper,
+        TransferCallHelper       $transferCallHelper,
         WorkerHelper             $workerHelper,
         StorageAdapterInterface  $storageAdapter,
         EventDispatcherInterface $dispatcher,
@@ -137,7 +137,7 @@ class VoiceCallbacksHelper
         $this->voiceSettingsResolver = $voiceSettingsResolver;
         $this->ticketManager         = $ticketManager;
         $this->voiceProviderHelper   = $voiceProviderHelper;
-        $this->voicemailHelper       = $voicemailHelper;
+        $this->transferCallHelper    = $transferCallHelper;
         $this->workerHelper          = $workerHelper;
         $this->storageAdapter        = $storageAdapter;
         $this->dispatcher            = $dispatcher;
@@ -287,7 +287,7 @@ class VoiceCallbacksHelper
             // if call target is an agent, redirect to voicemail immediately
             $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
             if ($task && $task->getAttribute('agent')) {
-                $this->voicemailHelper->transferToVoicemail($phoneCall);
+                $this->transferCallHelper->transferToVoicemail($phoneCall);
             }
 
             // log that agent rejected the incoming call

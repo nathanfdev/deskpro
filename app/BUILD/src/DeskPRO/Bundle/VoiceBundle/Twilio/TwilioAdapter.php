@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Twilio;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
@@ -438,6 +439,29 @@ class TwilioAdapter implements VoiceProviderInterface
                 $participant->delete();
             } catch (\Exception $e) {
             }
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
+    {
+        $phoneCall = $participant->getPhoneCall();
+        $account   = $phoneCall->getNumber()->getAccount();
+
+        if (!$account instanceof TwilioVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            $conference  = $this->getConferenceContext($account, $phoneCall->getConferenceSid());
+            $participant = $conference->participants->getContext($participant->getCallSid());
+
+            if ($participant) {
+                $participant->delete();
+            }
+        } catch (\Exception $e) {
         }
     }
 

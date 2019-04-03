@@ -14,7 +14,7 @@ class Queues extends React.Component {
     onClick: PropTypes.func
   };
 
-  onSelect = (queue) => {
+  selectItem = (queue) => {
     this.props.onClick(queue);
   };
 
@@ -23,13 +23,13 @@ class Queues extends React.Component {
 
     return (
       <ScrollArea className="voice-queue-list">
-        {queues.map((queue, index) =>
+        {queues.toArray().map((queue, index) =>
           <QueueItem
             key={index}
             agents={agents}
             queue={queue}
-            active={queue === target}
-            onClick={this.onSelect}
+            active={target && queue === target.target}
+            onClick={this.selectItem}
           />
         )}
       </ScrollArea>
@@ -68,9 +68,9 @@ class QueueItem extends React.Component {
           {queueAgents.size} agents
           {queueAgents.map((agent, index) => <Avatar key={index} person={agent} size={20} />)}
         </div>
-        <div className="queue-users">
-          3 users in queue (average wait 2m)
-        </div>
+        {/* <div className="queue-users">*/}
+        {/* 3 users in queue (average wait 2m)*/}
+        {/* </div>*/}
       </div>
     );
   }

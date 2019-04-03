@@ -90,7 +90,7 @@ class TaskBuilder
      *
      * @return Task
      */
-    public function createVoiceTransferTask(VoicePhoneCall $phoneCall, Person $agent, Person $fromAgent = null)
+    public function createVoiceTransferToAgentTask(VoicePhoneCall $phoneCall, Person $agent, Person $fromAgent = null)
     {
         $attributes = [
             'agent'       => $agent->getId(),
@@ -129,6 +129,37 @@ class TaskBuilder
             'agent'      => $agent->getId(),
             'phone_call' => $phoneCall->getId(),
         ]);
+
+        $this->storage->saveTask($task);
+
+        return $task;
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param VoiceQueue     $queue
+     *
+     * @return Task
+     */
+    public function createVoiceTransferToQueueTask(VoicePhoneCall $phoneCall, VoiceQueue $queue)
+    {
+        $task = new Task();
+        $task->setChannel(VoiceWorkflow::getChannelName());
+        $task->setAttributes([
+            'queue'      => $queue->getId(),
+            'phone_call' => $phoneCall->getId(),
+            'person'     => $phoneCall->getPerson()->getId(),
+        ]);
+
+        // ignore the call for existing participants
+        // so they won't get this call again from the queue
+        // if they are a part of this queue
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            $worker = $this->storage->getWorkerByType('agent', $participant->getPerson()->getId());
+            if ($worker) {
+                $task->addRejectedBy($worker);
+            }
+        }
 
         $this->storage->saveTask($task);
 

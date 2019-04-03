@@ -1,26 +1,51 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { /* TabButton, */ Tab } from 'DeskPRO/Component/Tab/Tab';
+import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
 import TransferListButton from '../TransferListButton';
-// import Queues from './Queues';
-// import Dialpad from './Dialpad';
-// import QueuesContainer from '../../Common/QueuesContainer';
+import Queues from './Queues';
 import AgentList from '../AgentList';
 import TransferStatus from '../TransferStatus';
+import AutoAttendants from './AutoAttendants';
+
+const getDefaultTabName = (props, currentTab) => {
+  const { onlineAgents, queues, autoAttendants } = props;
+
+  const availableTabs = [];
+  if (onlineAgents.size > 0) {
+    availableTabs.push('agents');
+  }
+  if (queues.size > 0) {
+    availableTabs.push('queues');
+  }
+  if (autoAttendants.size > 0) {
+    availableTabs.push('auto_attendants');
+  }
+
+  if (availableTabs.indexOf(currentTab) === -1) {
+    return availableTabs[0];
+  }
+
+  return currentTab;
+};
 
 class TransferList extends React.Component {
 
   static propTypes = {
-    transferDisabled:   PropTypes.bool,
-    transferTarget:     PropTypes.object,
-    transferTargetType: PropTypes.string,
-    onlineAgents:       PropTypes.object,
-    participants:       PropTypes.array,
-    connection:         PropTypes.object,
-    transferCall:       PropTypes.func,
-    cancelInvite:       PropTypes.func,
-    closeMenu:          PropTypes.func,
-    inviteError:        PropTypes.string,
+    target:                      PropTypes.object,
+    transferDisabled:            PropTypes.bool,
+    onlineAgents:                PropTypes.object,
+    participants:                PropTypes.array,
+    agents:                      PropTypes.object,
+    queues:                      PropTypes.object,
+    autoAttendants:              PropTypes.object,
+    connection:                  PropTypes.object,
+    warmTransferToAgent:         PropTypes.func,
+    coldTransferToAgent:         PropTypes.func,
+    coldTransferToQueue:         PropTypes.func,
+    coldTransferToAutoAttendant: PropTypes.func,
+    cancelInvite:                PropTypes.func,
+    closeMenu:                   PropTypes.func,
+    inviteError:                 PropTypes.string
   };
 
   static defaultProps = {
@@ -32,119 +57,141 @@ class TransferList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabName:        'agents',
+      tabName:        getDefaultTabName(props, 'agents'),
       selectedTarget: null
     };
   }
 
-  onChangeTab = (tabName) => {
+  componentWillReceiveProps(nextProps) {
+    this.setState({ tabName: getDefaultTabName(nextProps, this.state.tabName) });
+  }
+
+  changeTab = (tabName) => {
     this.setState({ tabName });
   };
 
-  onChangeTarget = (selectedTarget) => {
-    this.setState({ selectedTarget });
+  selectAgentTarget = (target) => {
+    this.setState({ selectedTarget: { type: 'agent', target } });
   };
 
-  onWarmTransfer = () => {
-    const { transferCall } = this.props;
+  selectQueueTarget = (target) => {
+    this.setState({ selectedTarget: { type: 'queue', target } });
+  };
+
+  selectAutoAttendantTarget = (target) => {
+    this.setState({ selectedTarget: { type: 'auto_attendant', target } });
+  };
+
+  warmTransfer = () => {
+    const { warmTransferToAgent } = this.props;
     const { selectedTarget } = this.state;
     this.setState({
       selectedTarget: null
     });
 
-    setTimeout(() => transferCall(selectedTarget, 'warm'), 1);
+    if (selectedTarget && selectedTarget.type === 'agent') {
+      setTimeout(() => warmTransferToAgent(selectedTarget.target), 1);
+    }
   };
 
-  onColdTransfer = () => {
-    const { transferCall, closeMenu } = this.props;
+  coldTransfer = () => {
+    const { coldTransferToAgent, coldTransferToQueue, coldTransferToAutoAttendant, closeMenu } = this.props;
     const { selectedTarget } = this.state;
     this.setState({
       selectedTarget: null
     });
 
-    setTimeout(() => transferCall(selectedTarget, 'cold'), 1);
-    closeMenu();
+    if (selectedTarget) {
+      if (selectedTarget.type === 'agent') {
+        setTimeout(() => coldTransferToAgent(selectedTarget.target), 1);
+      } else if (selectedTarget.type === 'queue') {
+        setTimeout(() => coldTransferToQueue(selectedTarget.target), 1);
+      } else if (selectedTarget.type === 'auto_attendant') {
+        setTimeout(() => coldTransferToAutoAttendant(selectedTarget.target), 1);
+      }
+
+      closeMenu();
+    }
   };
 
-  cancel = (target, type) => {
-    const { cancelInvite } = this.props;
-
-    setTimeout(() => cancelInvite(target, type), 1);
+  cancel = () => {
+    setTimeout(() => this.props.cancelInvite(), 1);
   };
 
   renderList() {
-    const { inviteError, onlineAgents, participants, transferDisabled } = this.props;
+    const { inviteError, agents, queues, autoAttendants, onlineAgents, participants, transferDisabled } = this.props;
     const { tabName, selectedTarget } = this.state;
 
     return (
       <div>
         {inviteError && <div className="error-message">{inviteError}</div>}
-        {/* <TransferSearch />*/}
-
-        <div className="online-agents-header">
-          <i className="fa fa-user" />
-          Agents online
-        </div>
-
-        {/* <div className="tab-menu">
+        <div className="tab-menu">
+          {onlineAgents && onlineAgents.size > 0 &&
           <TabButton
             tabName="agents"
             title="Agents online"
             iconClass="fa-user"
-            onClick={this.onChangeTab}
+            onClick={this.changeTab}
             active={tabName === 'agents'}
-          />
+          />}
+          {queues && queues.size > 0 &&
           <TabButton
             tabName="queues"
             title="Queues"
             iconClass="fa-tasks"
-            onClick={this.onChangeTab}
+            onClick={this.changeTab}
             active={tabName === 'queues'}
-          />
+          />}
+          {autoAttendants && autoAttendants.size > 0 &&
           <TabButton
-            tabName="dialpad"
-            title="Dialpad"
-            iconClass="fa-th"
-            onClick={this.onChangeTab}
-            active={tabName === 'dialpad'}
-          />
-        </div> */}
+            tabName="auto_attendants"
+            title="Auto-attendants"
+            iconClass="fa-tasks"
+            onClick={this.changeTab}
+            active={tabName === 'auto_attendants'}
+          />}
+        </div>
 
         <Tab active={tabName === 'agents'}>
           <AgentList
             agents={onlineAgents}
             participants={participants}
             target={selectedTarget}
+            onClick={this.selectAgentTarget}
             transferDisabled={transferDisabled}
-            onClick={this.onChangeTarget}
           />
         </Tab>
-        {/*
+        {queues && queues.size > 0 &&
         <Tab active={tabName === 'queues'}>
-          <QueuesContainer>
-            <Queues
-              target={selectedTarget}
-              onClick={this.onChangeTarget}
-            />
-          </QueuesContainer>
-        </Tab>
-        <Tab active={tabName === 'dialpad'}>
-          <Dialpad />
-        </Tab> */}
+          <Queues
+            agents={agents}
+            queues={queues}
+            target={selectedTarget}
+            onClick={this.selectQueueTarget}
+          />
+        </Tab>}
+        {autoAttendants && autoAttendants.size > 0 &&
+        <Tab active={tabName === 'auto_attendants'}>
+          <AutoAttendants
+            autoAttendants={autoAttendants}
+            target={selectedTarget}
+            onClick={this.selectAutoAttendantTarget}
+          />
+        </Tab>}
 
         <div className="voice-ticket-list-buttons">
           <TransferListButton
             title="Warm transfer"
             icon="call"
             help="Places caller on hold"
-            disabled={!selectedTarget || transferDisabled}
-            onClick={this.onWarmTransfer}
+            disabled={!selectedTarget || tabName === 'queues' || tabName === 'auto_attendants' || transferDisabled}
+            onClick={this.warmTransfer}
           />
           <TransferListButton
             title="Cold transfer"
             icon="share"
             disabled={!selectedTarget || transferDisabled}
-            onClick={this.onColdTransfer}
+            onClick={this.coldTransfer}
           />
         </div>
       </div>
@@ -152,17 +199,16 @@ class TransferList extends React.Component {
   }
 
   render() {
-    const { connection, transferTarget, transferTargetType } = this.props;
+    const { connection, target } = this.props;
 
-    if (transferTarget) {
+    if (target) {
       return (
         <div className="voice-ticket-transfer-list">
           <TransferStatus
             connection={connection}
             title="Transferring..."
             cancelLabel="Cancel transfer"
-            type={transferTargetType}
-            target={transferTarget}
+            target={target}
             cancel={this.cancel}
           />
         </div>

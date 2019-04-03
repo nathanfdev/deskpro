@@ -10,7 +10,7 @@ services:
       - "@voice_settings_resolver"
       - "@ticket_manager"
       - "@dp.voice.provider_helper"
-      - "@dp.voice.voicemail_helper"
+      - "@dp.voice.transfer_helper"
       - "@dp.voice.worker_helper"
       - "@dp.voice.task_router.storage"
       - "@event_dispatcher"
@@ -46,8 +46,8 @@ services:
       - "@plivo_adapter"
       - "@event_dispatcher"
 
-  dp.voice.voicemail_helper:
-    class: DeskPRO\Bundle\VoiceBundle\Helper\VoicemailHelper
+  dp.voice.transfer_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\TransferCallHelper
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@router"

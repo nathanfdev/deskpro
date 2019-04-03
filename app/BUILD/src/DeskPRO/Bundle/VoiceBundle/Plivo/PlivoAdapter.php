@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Plivo;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\PlivoVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
@@ -401,19 +402,13 @@ class PlivoAdapter implements VoiceProviderInterface
             $this->logger->info(sprintf('[PlivoAdapter] End conference, call_id = %s', $phoneCall->getId()));
 
             foreach ($phoneCall->getParticipants() as $participant) {
-                try {
-                    $this->getClient($account)->calls->delete($participant->getCallSid());
-                } catch (\Exception $e) {
-                }
+                $this->kickParticipant($participant);
             }
 
             return true;
         } elseif (!$conference) {
             foreach ($phoneCall->getParticipants() as $participant) {
-                try {
-                    $this->getClient($account)->calls->delete($participant->getCallSid());
-                } catch (\Exception $e) {
-                }
+                $this->kickParticipant($participant);
             }
 
             return true;
@@ -441,10 +436,25 @@ class PlivoAdapter implements VoiceProviderInterface
         }
 
         foreach ($phoneCall->getParticipants() as $participant) {
-            try {
-                $this->getClient($account)->calls->delete($participant->getCallSid());
-            } catch (\Exception $e) {
-            }
+            $this->kickParticipant($participant);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
+    {
+        $phoneCall = $participant->getPhoneCall();
+        $account   = $phoneCall->getNumber()->getAccount();
+
+        if (!$account instanceof PlivoVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            $this->getClient($account)->calls->delete($participant->getCallSid());
+        } catch (\Exception $e) {
         }
     }
 

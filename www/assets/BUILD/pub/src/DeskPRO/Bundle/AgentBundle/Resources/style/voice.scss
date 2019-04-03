@@ -999,10 +999,10 @@ $voice-green-border-color: #47BF61;
 .voice-ticket-transfer-list {
   .tab-menu {
     width: 100%;
+    display: flex;
 
     .item {
-      display: inline-block;
-      width: 33.3%;
+      flex-grow: 1;
       height: 50px;
       text-align: center;
       border-top: 1px solid $dp-greyscale-250;
@@ -1043,6 +1043,17 @@ $voice-green-border-color: #47BF61;
 
   .voice-queue-list {
     .queue-item {
+      cursor: pointer;
+
+      &.active {
+        color: $dp-sonic-primary;
+        background-color: $dp-morning-sky;
+      }
+    }
+  }
+
+  .voice-auto-attendant-list {
+    .auto-attendant-item {
       cursor: pointer;
 
       &.active {
@@ -1167,6 +1178,22 @@ $voice-green-border-color: #47BF61;
   .empty-message {
     text-align: center;
     margin: 10px;
+  }
+}
+
+.voice-auto-attendant-list {
+  max-height: 250px;
+
+  .auto-attendant-item {
+    padding: 10px 20px 5px 20px;
+    border-bottom: 1px solid #E6E6E6;
+
+    .auto-attendant-name {
+      font-weight: 400;
+      font-size: 16px;
+      color:$dp-greyscale-850;
+      margin-bottom: 10px;
+    }
   }
 }
 

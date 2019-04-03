@@ -33,7 +33,7 @@ class AgentList extends React.Component {
             transferDisabled={transferDisabled}
             key={index}
             agent={agent}
-            active={agent === target}
+            active={target && agent === target.target}
             participant={participants.indexOf(agent.get('id')) !== -1}
             onClick={this.onSelect}
           />

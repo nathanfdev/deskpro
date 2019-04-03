@@ -520,7 +520,7 @@ export const warmAddAgent = createAction(
     api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_add/${agent.get('id')}`)
 );
 
-export const warmTransferCall = createAction(
+export const warmTransferToAgent = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
   (connection, agent) => (dispatch, getState) => {
     const promise = api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/warm_transfer/${agent.get('id')}`);
@@ -539,20 +539,28 @@ export const warmTransferCall = createAction(
   }
 );
 
-export const coldTransferCall = createAction(
+export const coldTransferToAgent = createAction(
   'VOICE_AGENT_TRANSFER_CALL',
   (connection, agent) =>
-     api
-      .sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/${agent.get('id')}`)
-      .success(() => {
-        hangupConnection(connection);
-      })
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/agent/${agent.get('id')}`)
+);
+
+export const coldTransferToQueue = createAction(
+  'VOICE_AGENT_TRANSFER_CALL',
+  (connection, queue) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/queue/${queue.get('id')}`)
+);
+
+export const coldTransferToAutoAttendant = createAction(
+  'VOICE_AGENT_TRANSFER_CALL',
+  (connection, autoAttendant) =>
+    api.sendPut(`DP_API/voice_client/phone_call/${connection.callId}/cold_transfer/auto_attendant/${autoAttendant.get('id')}`)
 );
 
 export const cancelInvite = createAction(
   'VOICE_AGENT_CANCEL_INVITE',
-  (callId, agent) => (dispatch, getState) => {
-    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`);
+  (callId, target) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${target.get('id')}`);
     promise.success(() => {
       const state = getState();
       const phoneCalls = allPhoneCallsSelector(state);

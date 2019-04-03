@@ -55,9 +55,7 @@ class TransferStatus extends React.Component {
 
   cancel = (event) => {
     event.preventDefault();
-
-    const { target, type, cancel } = this.props;
-    cancel(target, type);
+    this.props.cancel();
   };
 
   render() {
