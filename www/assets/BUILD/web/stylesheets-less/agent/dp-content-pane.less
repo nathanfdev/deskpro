@@ -8141,7 +8141,9 @@ table.data-display-table tr th {
 			margin-top: 5px;
 		}
 	}
+}
 
+.page-ticket, .page-new-ticket {
 	.ticket-select-user-overlay {
 		display: none;
 		position: absolute;
@@ -8168,13 +8170,13 @@ table.data-display-table tr th {
 	}
 }
 
-.select-user-error .dp-reply-on .ticket-select-user-overlay {
+.select-user-error .dp-reply-on .ticket-select-user-overlay, .page-new-ticket .select-user-error .ticket-select-user-overlay  {
 	display: block;
 	.ticket-select-user-message {
 		display: block;
 	}
 }
-.no-user-email-error .dp-reply-on .ticket-select-user-overlay {
+.no-user-email-error .dp-reply-on .ticket-select-user-overlay, .page-new-ticket .no-user-email-error .ticket-select-user-overlay {
 	display: block;
 	.ticket-no-email-message {
 		display: block;

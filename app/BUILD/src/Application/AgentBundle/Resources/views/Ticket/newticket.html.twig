@@ -94,6 +94,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 			>
 				<input type="text" name="newticket[person_input_choice]" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_person_for_ticket') }}" />
 				<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" class="person-id" id="{{baseId}}_person_id" />
+				<input type="hidden" class="person-email"  value="{{ person.primary_email.email }}" id="{{baseId}}_person_email" />
 
 				<script type="text/x-deskpro-tmpl" class="user-row-tpl">
 					<li>
@@ -487,6 +488,14 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 		<h4>{{ phrase('agent.tickets.billing') }}</h4>
 	</header>
 	<section class="ticketreply">
+		<div class="ticket-select-user-overlay">
+			<strong class="ticket-select-user-message">
+				{{ phrase('agent.tickets.error_reply_select_user') }}
+			</strong>
+			<strong class="ticket-no-email-message">
+				{{ phrase('agent.tickets.error_reply_no_email') }}
+			</strong>
+		</div>
 		<article id="{{baseId}}_headerbox_box_billing" class="headerbox">
 			<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table billing-form" id="{{ baseId }}_billing_form">
 				<tr>
@@ -556,6 +565,14 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
         </nav>
 	</header>
 	<section class="ticketreply">
+		<div class="ticket-select-user-overlay">
+			<strong class="ticket-select-user-message">
+				{{ phrase('agent.tickets.error_reply_select_user') }}
+			</strong>
+			<strong class="ticket-no-email-message">
+				{{ phrase('agent.tickets.error_reply_no_email') }}
+			</strong>
+		</div>
 		<article>
 			<section>
 				<div class="option-rows">

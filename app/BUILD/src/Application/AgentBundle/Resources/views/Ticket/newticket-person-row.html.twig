@@ -6,6 +6,7 @@
 				<input type="hidden" class="api_data" value="{{ api_data|json_encode }}" />
 				{% if person.id and person.primary_email and person.primary_email.email %}
 					<input type="hidden" class="set_person_id" value="{{ person.id }}" />
+					<input type="hidden" class="set_person_email" value="{{ person.primary_email.email }}" />
 					{% if person.emails|length > 1 %}
 						<select name="newticket[person][email_address]">
 							<optgroup label="Primary Email Address">

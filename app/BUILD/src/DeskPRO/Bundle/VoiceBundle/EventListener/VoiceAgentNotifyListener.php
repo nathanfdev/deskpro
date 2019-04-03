@@ -74,14 +74,14 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            TaskRouterEvent::ASSIGNED                => ['onAssigned', 'workerBusy'],
+            TaskRouterEvent::ASSIGNED                => ['onAssigned', 'workerBusyHandler'],
             TaskRouterEvent::ACCEPTED                => 'onAccepted',
             TaskRouterEvent::TASK_CANCELED           => 'onCanceled',
-            TaskRouterEvent::REJECTED                => ['onCanceled', 'workerIdle'],
-            TaskRouterEvent::REJECTED_RESERVATION    => 'workerIdle',
-            TaskRouterEvent::ANOTHER_WORKER_RESERVED => 'workerBusy',
-            TaskRouterEvent::COMPLETE_WORKER         => 'workerIdle',
-            TaskRouterEvent::RESET_WORKER            => 'workerIdle',
+            TaskRouterEvent::REJECTED                => ['onCanceled', 'workerIdleHandler'],
+            TaskRouterEvent::REJECTED_RESERVATION    => 'workerIdleHandler',
+            TaskRouterEvent::ANOTHER_WORKER_RESERVED => 'workerBusyHandler',
+            TaskRouterEvent::COMPLETE_WORKER         => 'workerIdleHandler',
+            TaskRouterEvent::RESET_WORKER            => 'workerIdleHandler',
         ];
     }
 
@@ -203,7 +203,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
      *
      * @param TaskRouterEvent $event
      */
-    public function workerBusy(TaskRouterEvent $event)
+    public function workerBusyHandler(TaskRouterEvent $event)
     {
         $worker = $event->getWorker();
         if (!$worker) {
@@ -229,7 +229,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
      *
      * @param TaskRouterEvent $event
      */
-    public function workerIdle(TaskRouterEvent $event)
+    public function workerIdleHandler(TaskRouterEvent $event)
     {
         $worker = $event->getWorker();
         if (!$worker) {

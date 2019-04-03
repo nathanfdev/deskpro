@@ -251,6 +251,8 @@ export const voiceBootstrap = createAction(
             window.AgentVoiceDropdown.showProviderError(outgoingCall.get('callTo'), errors);
           }
         });
+        messageBroker.addMessageListener('agent.voice.worker-idle', () => {});
+        messageBroker.addMessageListener('agent.voice.worker-busy', () => {});
       })
       .catch((e) => {
         console.log(e);
