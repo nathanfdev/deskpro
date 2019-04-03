@@ -208,7 +208,8 @@ class PortalPermissionsManager
         ]));
 
         if (!isset($this->permissionBagCache[$cacheKey])) {
-            $fieldsPermissions = $this->getFieldsPermissions();
+            $fieldsPermissions       = $this->getFieldsPermissions();
+            $reopenResolvedTimelimit = $this->getReopenResolvedTimelimit($permissions);
 
             $this->permissionBagCache[$cacheKey] = new PermissionsBag(
                 $permissions,
@@ -221,6 +222,7 @@ class PortalPermissionsManager
                 $this->permissionsLoader->getAllowedGuides($userGroups),
                 $fieldsPermissions
             );
+            $this->permissionBagCache[$cacheKey]->setReopenResolvedTimelimit($reopenResolvedTimelimit);
         }
 
         return $this->permissionBagCache[$cacheKey];
@@ -278,5 +280,34 @@ class PortalPermissionsManager
                 return in_array($def->getType(), ['text', 'textarea']);
             })
         );
+    }
+
+    /**
+     * Find the maximum limit from permissions.
+     * -1 = no limit.
+     *
+     * @param array $permissions
+     *
+     * @return int|null
+     */
+    private function getReopenResolvedTimelimit(array &$permissions)
+    {
+        $limits = [];
+        foreach ($permissions as $key => $p) {
+            if ($p->name == 'tickets.reopen_resolved_timelimit') {
+                $limits[] = (int) $p->value;
+                unset($permissions[$key]);
+            }
+        }
+
+        if (!$limits) {
+            return null;
+        }
+
+        if (in_array(-1, $limits)) {
+            return -1;
+        }
+
+        return max($limits);
     }
 }

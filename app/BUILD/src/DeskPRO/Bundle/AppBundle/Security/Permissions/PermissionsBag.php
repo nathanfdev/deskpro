@@ -74,6 +74,11 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     protected $guides;
 
     /**
+     * @var int
+     */
+    protected $reopenResolvedTimelimit = null;
+
+    /**
      * Constructor.
      *
      * @param Permission[] $permissions
@@ -379,6 +384,26 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
     public function getAllowedFields()
     {
         return $this->allowedFields;
+    }
+
+    /**
+     * @param int|null $timelimit
+     *
+     * @return $this
+     */
+    public function setReopenResolvedTimelimit($timelimit)
+    {
+        $this->reopenResolvedTimelimit = $timelimit;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getReopenResolvedTimelimit()
+    {
+        return $this->reopenResolvedTimelimit;
     }
 
     /**

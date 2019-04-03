@@ -16,6 +16,7 @@ class TicketsVoter extends AbstractVoter
     const TICKET_VIEW      = 'TICKET_VIEW';
     const TICKET_VIEW_AUTH = 'TICKET_VIEW_AUTH';
     const TICKET_EDIT      = 'TICKET_EDIT';
+    const TICKET_UNRESOLVE = 'TICKET_UNRESOLVE';
 
     /**
      * {@inheritdoc}
@@ -23,7 +24,7 @@ class TicketsVoter extends AbstractVoter
     protected function supports($attribute, $subject)
     {
         return $subject instanceof Ticket && in_array($attribute, [
-            self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH,
+            self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH, self::TICKET_UNRESOLVE,
         ]);
     }
 
@@ -66,8 +67,48 @@ class TicketsVoter extends AbstractVoter
                     && $ticket->hasVisibleStatus()
                 ;
                 break;
+            case static::TICKET_UNRESOLVE:
+                $decision = $this->canUnresolve($user, $ticket);
+                break;
         }
 
         return $decision;
+    }
+
+    /**
+     * @param Person $user
+     * @param Ticket $ticket
+     *
+     * @return bool
+     */
+    protected function canUnresolve($user, $ticket)
+    {
+        if (!$ticket->isResolved()) {
+            return false;
+        }
+
+        // Check CAN_VIEW
+        if (!$ticket->isInvolved($user, 'user')) {
+            return false;
+        }
+
+        $permissionsBag = $this->getPermissionsBag($user);
+        if (!$permissionsBag->hasPermission('tickets.reopen_resolved')) {
+            return false;
+        }
+
+        $unresolveTimelimit = $permissionsBag->get('tickets.reopen_resolved_timelimit');
+        if ($unresolveTimelimit) {
+            if (!$ticket->getDateResolved()) {
+                return false;
+            }
+            $now  = new \DateTime();
+            $diff = $now->diff($ticket->getDateResolved());
+            if ($diff->days > $unresolveTimelimit) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

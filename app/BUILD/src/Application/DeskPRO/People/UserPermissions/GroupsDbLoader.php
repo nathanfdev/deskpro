@@ -71,20 +71,23 @@ class GroupsDbLoader
         }
 
         $perm_recs = $this->db->fetchAll('
-            SELECT name, usergroup_id
+            SELECT name, usergroup_id, value
             FROM permissions
             WHERE usergroup_id IN (?)
-                AND value = 1
         ', [$this->group_ids], [Connection::PARAM_INT_ARRAY]);
 
         $this->group_perms = [];
 
         foreach ($perm_recs as $rec) {
+            // ignore false values (false - means no permissions)
+            if (!$rec['value']) {
+                continue;
+            }
             if (!isset($this->group_perms[$rec['usergroup_id']])) {
                 $this->group_perms[$rec['usergroup_id']] = [];
             }
 
-            $this->group_perms[$rec['usergroup_id']][$rec['name']] = true;
+            $this->group_perms[$rec['usergroup_id']][$rec['name']] = $rec['value'];
         }
 
         return isset($this->group_perms[$group_id]) ? $this->group_perms[$group_id] : [];
@@ -109,29 +112,21 @@ class GroupsDbLoader
      */
     private function createUserPermissions(array $perm_array)
     {
-        $user_perms = new UserPermissions();
-
-        foreach ($perm_array as $k => $v) {
-            if (!$v) {
+        $normalized = [];
+        foreach ($perm_array as $key => $value) {
+            list($type, $name) = explode('.', $key, 2);
+            if (!$value || !$type || !$name || !isset(UserPermissions::$prefix_map[$type])) {
                 continue;
-            } // disabled
-            if (strpos($k, '.') === false) {
-                continue;
-            } // invalid
-
-            list($type, $name) = explode('.', $k, 2);
-            if (!isset(UserPermissions::$prefix_map[$type])) {
-                continue;
-            } // unknown type
-
-            $obj_name = UserPermissions::$prefix_map[$type];
-            $obj      = $user_perms->$obj_name;
-            if (!isset($obj->$name)) {
-                continue;
-            } // invalid;
-
-            $obj->$name = true;
+            }
+            $type = UserPermissions::$prefix_map[$type];
+            if (!isset($normalized[$type])) {
+                $normalized[$type] = [];
+            }
+            $normalized[$type][$name] = $value;
         }
+
+        $user_perms = new UserPermissions();
+        $user_perms->fromArray($normalized);
 
         return $user_perms;
     }

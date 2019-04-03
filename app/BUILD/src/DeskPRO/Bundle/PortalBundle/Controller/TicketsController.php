@@ -586,9 +586,7 @@ class TicketsController extends AbstractController
             return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 
-        // user permission to re-open ticket
-        $permissions_bag = $this->getPermissionBag($person);
-        if (!$permissions_bag->hasPermission('tickets.reopen_resolved')) {
+        if (!$this->isGranted(TicketsVoter::TICKET_UNRESOLVE, $ticket)) {
             return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 
