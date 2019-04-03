@@ -97,8 +97,8 @@ class TicketsVoter extends AbstractVoter
             return false;
         }
 
-        $unresolveTimelimit = $permissionsBag->get('tickets.reopen_resolved_timelimit');
-        if ($unresolveTimelimit) {
+        $unresolveTimelimit = $permissionsBag->getReopenResolvedTimelimit();
+        if ($unresolveTimelimit && $unresolveTimelimit > 0) {
             if (!$ticket->getDateResolved()) {
                 return false;
             }
