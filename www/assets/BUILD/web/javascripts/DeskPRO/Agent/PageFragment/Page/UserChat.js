@@ -649,16 +649,16 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       self.removeBlob(blobId, row);
     });
 	},
-  
+
   syncSizes: function() {
-    var box1 = self.getEl('people_box_person_container');
-    var box2 = self.getEl('people_box_agent_container');
+    var box1 = this.getEl('people_box_person_container');
+    var box2 = this.getEl('people_box_agent_container');
     var box1_in = $('> article', box1);
     var box2_in = $('> article', box2);
 
     var chatView = this.getEl('chat_view'),
         chatPositioner = this.getEl('chat_positioner'),
-        header = self.wrapper.find('.page-header');
+        header = this.wrapper.find('.page-header');
 
     var syncPeopleSizes = function() {
       var h1 = box1_in.height();
@@ -683,7 +683,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
     };
 
     syncPeopleSizes();
-    syncChatSize();  
+    syncChatSize();
   },
 
 	insertSnippet: function(snippet, blobs, langId) {
