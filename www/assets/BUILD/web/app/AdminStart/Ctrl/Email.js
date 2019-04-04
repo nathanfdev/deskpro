@@ -58,7 +58,7 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
       });
       promise.error((info, code) => {
         this.$scope.is_loading = false;
-        return this.$scope.email_is_error = 'general';
+        this.$scope.email_is_error = 'general';
         if (__guard__(typeof info !== 'undefined' && info !== null ? info.errors : undefined, x => x.errors)) {
           const address_error = info.errors.errors.find(x => x.field_id === 'address');
           if (address_error) {
