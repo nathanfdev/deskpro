@@ -230,6 +230,11 @@ class EmailRendererTest extends SendmailTestCase
                 'type'        => 'boolean',
                 'attribute'   => 'can_reports',
             ],
+            'preferences' => [
+                'description' => 'Prefs.',
+                'type'        => 'array',
+                'attribute'   => 'preferences',
+            ],
         ];
 
         $ticketMessageProperties = [
@@ -541,7 +546,7 @@ we detect that the user has replied to a message inline rather than above the cu
                 ],
             ],
             'ticket_person' => [
-                'description' => 'The person who opened the ticket.',
+                'description' => 'The person for whom opened the ticket.',
                 'type'        => 'object (Person)',
                 'attribute'   => 'ticket_person',
                 'properties'  => $personProperties,
@@ -595,6 +600,12 @@ we detect that the user has replied to a message inline rather than above the cu
                         'attribute'   => 'date_created',
                     ],
                 ],
+            ],
+            'action_performer' => [
+                'description' => 'The person who made the action with ticket.',
+                'type'        => 'object (Person)',
+                'attribute'   => 'action_performer',
+                'properties'  => $personProperties,
             ],
         ];
     }
