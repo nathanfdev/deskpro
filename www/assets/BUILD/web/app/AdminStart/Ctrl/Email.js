@@ -1,4 +1,4 @@
-define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketAccountModel'], function(StartBase, EditTicketAccountModel) {
+define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketAccountModel'], (StartBase, EditTicketAccountModel) => {
   class AdminStart_Ctrl_Email extends StartBase {
     static initClass() {
       this.CTRL_ID = 'AdminStart_Ctrl_Email';
@@ -59,6 +59,12 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
       promise.error((info, code) => {
         this.$scope.is_loading = false;
         return this.$scope.email_is_error = 'general';
+        if (__guard__(typeof info !== 'undefined' && info !== null ? info.errors : undefined, x => x.errors)) {
+          const address_error = info.errors.errors.find(x => x.field_id === 'address');
+          if (address_error) {
+            this.$scope.email_is_error = address_error.code;
+          }
+        }
       });
 
       return promise;
@@ -183,3 +189,7 @@ define(['AdminStart/Ctrl/StartBase', 'Admin/TicketAccounts/FormModel/EditTicketA
 
   return AdminStart_Ctrl_Email.EXPORT_CTRL();
 });
+
+function __guard__(value, transform) {
+  return (typeof value !== 'undefined' && value !== null) ? transform(value) : undefined;
+}
