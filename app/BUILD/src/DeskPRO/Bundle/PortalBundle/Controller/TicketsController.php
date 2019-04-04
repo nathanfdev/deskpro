@@ -586,7 +586,7 @@ class TicketsController extends AbstractController
             return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 
-        if (!$this->isGranted(TicketsVoter::TICKET_UNRESOLVE, $ticket)) {
+        if (!$this->isGranted(TicketsVoter::TICKET_REOPEN_RESOLVED, $ticket)) {
             return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
         }
 

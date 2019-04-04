@@ -12,11 +12,11 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
  */
 class TicketsVoter extends AbstractVoter
 {
-    const TICKET_LIST      = 'TICKET_LIST';
-    const TICKET_VIEW      = 'TICKET_VIEW';
-    const TICKET_VIEW_AUTH = 'TICKET_VIEW_AUTH';
-    const TICKET_EDIT      = 'TICKET_EDIT';
-    const TICKET_UNRESOLVE = 'TICKET_UNRESOLVE';
+    const TICKET_LIST            = 'TICKET_LIST';
+    const TICKET_VIEW            = 'TICKET_VIEW';
+    const TICKET_VIEW_AUTH       = 'TICKET_VIEW_AUTH';
+    const TICKET_EDIT            = 'TICKET_EDIT';
+    const TICKET_REOPEN_RESOLVED = 'TICKET_REOPEN_RESOLVED';
 
     /**
      * {@inheritdoc}
@@ -24,7 +24,7 @@ class TicketsVoter extends AbstractVoter
     protected function supports($attribute, $subject)
     {
         return $subject instanceof Ticket && in_array($attribute, [
-            self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH, self::TICKET_UNRESOLVE,
+            self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT, self::TICKET_VIEW_AUTH, self::TICKET_REOPEN_RESOLVED,
         ]);
     }
 
@@ -67,8 +67,8 @@ class TicketsVoter extends AbstractVoter
                     && $ticket->hasVisibleStatus()
                 ;
                 break;
-            case static::TICKET_UNRESOLVE:
-                $decision = $this->canUnresolve($user, $ticket);
+            case static::TICKET_REOPEN_RESOLVED:
+                $decision = $this->canReopenResolved($user, $ticket);
                 break;
         }
 
@@ -81,7 +81,7 @@ class TicketsVoter extends AbstractVoter
      *
      * @return bool
      */
-    protected function canUnresolve($user, $ticket)
+    protected function canReopenResolved($user, $ticket)
     {
         if (!$ticket->isResolved()) {
             return false;
@@ -97,14 +97,14 @@ class TicketsVoter extends AbstractVoter
             return false;
         }
 
-        $unresolveTimelimit = $permissionsBag->getReopenResolvedTimelimit();
-        if ($unresolveTimelimit && $unresolveTimelimit > 0) {
+        $timelimit = $permissionsBag->getReopenResolvedTimelimit();
+        if ($timelimit && $timelimit > 0) {
             if (!$ticket->getDateResolved()) {
                 return false;
             }
             $now  = new \DateTime();
             $diff = $now->diff($ticket->getDateResolved());
-            if ($diff->days > $unresolveTimelimit) {
+            if ($diff->days > $timelimit) {
                 return false;
             }
         }

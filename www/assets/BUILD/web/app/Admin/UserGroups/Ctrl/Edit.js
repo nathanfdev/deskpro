@@ -58,10 +58,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
           this.perm_form.options.reopen_resolved_createnew = 'reject';
         }
 
-//        if (this.perm_form) {
-//          this.perm_form.ticket.reopen_resolved_timelimit = this.getEffectiveReopenResolvedTimelimit();
-//        }
-
         // deps need to be flattened to show in the table
         this.chatDeps = [];
         for (var dep of Array.from(res[2])) {
@@ -100,41 +96,6 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
         return this.updateAllPermsState();
       });
-    }
-
-    getEffectiveReopenResolvedTimelimit() {
-        if (this.perm_form && this.perm_form.ticket.reopen_resolved_timelimit) {
-        return this.perm_form.ticket.reopen_resolved_timelimit;
-      }
-
-      // get maximum from upper groups
-      // initially set as '0' - will not be saved in db
-      let reopen_timelimit = 0;
-
-      if (this.perm_form_everyone 
-          && this.perm_form_everyone.ticket.reopen_resolved
-          && this.perm_form_everyone.ticket.reopen_resolved_timelimit) {
-        reopen_timelimit = this.perm_form_everyone.ticket.reopen_resolved_timelimit;
-      }
-
-      if (reopen_timelimit == -1) {
-        return reopen_timelimit;
-      }
-
-      if (this.perm_form_reg 
-          && this.perm_form_reg.ticket.reopen_resolved
-          && this.perm_form_reg.ticket.reopen_resolved_timelimit > reopen_timelimit) {
-        reopen_timelimit = this.perm_form_reg.ticket.reopen_resolved_timelimit;
-      }
-
-      if (!reopen_timelimit
-          && this.perm_form
-          && this.perm_form.ticket.reopen_resolved
-      ) {
-        reopen_timelimit = -1;
-      }
-
-      return reopen_timelimit
     }
 
     saveForm() {

@@ -327,4 +327,77 @@ class PortalPermissionsLoader
 
         return $result;
     }
+
+    /**
+     * @param Permission[] $permissions
+     *
+     * @return null|int
+     */
+    public function getReopenResolvedTimelimit(array $userGroups, array $permissions)
+    {
+        // filter out needed permissions and group by groupId
+        $groupPermissions = [];
+        foreach ($userGroups as $group) {
+            $groupId                    = $group instanceof Usergroup ? $group->getId() : $group;
+            $groupPermissions[$groupId] = [
+                'tickets.reopen_resolved'           => false,
+                'tickets.reopen_resolved_timelimit' => 0, // forever by default
+            ];
+        }
+        foreach ($permissions as $p) {
+            if (!$p->usergroup || !in_array($p->name, ['tickets.reopen_resolved', 'tickets.reopen_resolved_timelimit'])) {
+                continue;
+            }
+            $groupPermissions[$p->usergroup->id][$p->name] = $p->value;
+        }
+
+        // Enabe reopen permission according to group inheritance
+        // Everyone => Registered => custom groups
+        // by this poin next 2 requests already cached in Doctrine, no problem to call again
+        $everyoneGroup = $this->em->getRepository(Usergroup::class)->findOneBy([
+            'sys_name' => Usergroup::EVERYONE,
+        ]);
+        $registeredGroup = $this->em->getRepository(Usergroup::class)->findOneBy([
+            'sys_name' => Usergroup::REGISTERED,
+        ]);
+        // if everyone 'reopen' enabled - enable for all other groups too
+        if ($everyoneGroup
+            && $everyoneGroup->isEnabled()
+            && isset($groupPermissions[$everyoneGroup->getId()])
+            && $groupPermissions[$everyoneGroup->getId()]['tickets.reopen_resolved']
+        ) {
+            array_walk($groupPermissions, function (&$perm) {
+                $perm['tickets.reopen_resolved'] = true;
+            });
+        // if registered 'reopen' enabled - enable for all custom groups too
+        } elseif (isset($groupPermissions[$registeredGroup->getId()])
+                   && $groupPermissions[$registeredGroup->getId()]['tickets.reopen_resolved']
+        ) {
+            array_walk($groupPermissions, function (&$perm, $groupId) use ($everyoneGroup) {
+                if ($groupId != $everyoneGroup->getId()) {
+                    $perm[$groupId]['tickets.reopen_resolved'] = true;
+                }
+            });
+        }
+
+        // now calculate maximum timelimit
+        $limits = [];
+        foreach ($groupPermissions as $perm) {
+            if ($perm['tickets.reopen_resolved']) {
+                $limits[] = (int) $perm['tickets.reopen_resolved_timelimit'];
+            }
+        }
+
+        if (!$limits) {
+            // no limits
+            return null;
+        }
+
+        if (in_array(0, $limits)) {
+            // no limits
+            return null;
+        }
+
+        return max($limits);
+    }
 }

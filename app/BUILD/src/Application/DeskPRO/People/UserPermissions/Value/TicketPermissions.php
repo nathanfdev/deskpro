@@ -18,9 +18,9 @@ class TicketPermissions implements PermissionValueInterface
     public $reopen_resolved_createnew = false;
     /**
      * @var int
-     *          -1 = no limit
+     *          0 - no limits
      */
-    public $reopen_resolved_timelimit = -1;
+    public $reopen_resolved_timelimit = 0;
 
     public function getNames()
     {
