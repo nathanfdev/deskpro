@@ -50,7 +50,7 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
         } else {
           this.perm_form_everyone = res[0].everyone_group.is_enabled ? res[0].everyone_group.perms : null;
           this.perm_form_reg      = res[0].reg_group.is_enabled     ? res[0].reg_group.perms       : null;
-          }
+        }
 
         if (__guard__(this.perm_form != null ? this.perm_form.ticket : undefined, x => x.reopen_resolved_createnew) || __guard__(this.perm_form_reg != null ? this.perm_form_reg.ticket : undefined, x1 => x1.reopen_resolved_createnew)) {
           this.perm_form.options.reopen_resolved_createnew = 'new_ticket';
