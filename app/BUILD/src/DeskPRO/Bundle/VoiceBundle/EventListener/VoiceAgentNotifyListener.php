@@ -82,6 +82,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
             TaskRouterEvent::ANOTHER_WORKER_RESERVED => 'workerBusyHandler',
             TaskRouterEvent::COMPLETE_WORKER         => 'workerIdleHandler',
             TaskRouterEvent::RESET_WORKER            => 'workerIdleHandler',
+            TaskRouterEvent::JOINED_TASK             => 'workerBusyHandler',
         ];
     }
 
@@ -235,7 +236,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
         if (!$worker) {
             return;
         }
-        if ($worker->getActiveTaskIds() || $worker->getPendingTaskIds()) {
+        if (VoiceWorkflow::workerIsBusy($worker)) {
             return;
         }
 

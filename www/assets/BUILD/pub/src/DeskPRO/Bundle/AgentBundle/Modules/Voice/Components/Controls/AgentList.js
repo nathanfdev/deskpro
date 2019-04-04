@@ -9,6 +9,7 @@ class AgentList extends React.Component {
   static propTypes = {
     target:           PropTypes.object,
     agents:           PropTypes.object,
+    busyAgents:       PropTypes.array,
     participants:     PropTypes.array,
     onClick:          PropTypes.func,
     transferDisabled: PropTypes.bool
@@ -24,7 +25,7 @@ class AgentList extends React.Component {
   };
 
   render() {
-    const { agents, target, participants, transferDisabled } = this.props;
+    const { agents, busyAgents, target, participants, transferDisabled } = this.props;
 
     return (
       <ScrollArea className="voice-agent-list">
@@ -33,7 +34,8 @@ class AgentList extends React.Component {
             transferDisabled={transferDisabled}
             key={index}
             agent={agent}
-            active={target && agent === target.target}
+            busy={busyAgents.indexOf(agent.get('id')) !== -1}
+            active={target && agent === target.target || busyAgents.indexOf(agent.get('id')) !== -1}
             participant={participants.indexOf(agent.get('id')) !== -1}
             onClick={this.onSelect}
           />
@@ -49,6 +51,7 @@ class Agent extends React.Component {
     transferDisabled: PropTypes.bool,
     agent:            PropTypes.object,
     active:           PropTypes.bool,
+    busy:             PropTypes.bool,
     participant:      PropTypes.bool,
     onClick:          PropTypes.func
   };
@@ -67,7 +70,7 @@ class Agent extends React.Component {
   };
 
   render() {
-    const { agent, active, participant } = this.props;
+    const { agent, active, busy, participant } = this.props;
 
     return (
       <div
@@ -78,6 +81,7 @@ class Agent extends React.Component {
         <span className="agent-name">
           {agent.get('name')}
           {participant && <span className="agent-participant">(participant)</span>}
+          {busy && <span className="agent-participant">(busy)</span>}
         </span>
       </div>
     );

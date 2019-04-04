@@ -23,6 +23,9 @@ export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
 export const setOutgoingCall = createAction('VOICE_AGENT_deskpro_call_idSET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
+export const setBusyAgents = createAction('VOICE_AGENT_SET_BUSY_AGENTS');
+export const setAgentAsIdle = createAction('VOICE_AGENT_SET_AS_IDLE');
+export const setAgentAsBusy = createAction('VOICE_AGENT_SET_AS_BUSY');
 
 const filterConnection = (connection, callSid) => {
   if (!connection) {
@@ -251,8 +254,20 @@ export const voiceBootstrap = createAction(
             window.AgentVoiceDropdown.showProviderError(outgoingCall.get('callTo'), errors);
           }
         });
-        messageBroker.addMessageListener('agent.voice.worker-idle', () => {});
-        messageBroker.addMessageListener('agent.voice.worker-busy', () => {});
+        messageBroker.addMessageListener('agent.voice.worker-idle', (data) => {
+          if (data.worker_type === 'agent') {
+            dispatch(setAgentAsIdle(data.worker_type_id));
+          }
+        });
+        messageBroker.addMessageListener('agent.voice.worker-busy', (data) => {
+          if (data.worker_type === 'agent') {
+            dispatch(setAgentAsBusy(data.worker_type_id));
+          }
+        });
+
+        api.sendGet('DP_API/voice_client/busy_voice_agents').success(({ data }) => {
+          dispatch(setBusyAgents(data));
+        });
       })
       .catch((e) => {
         console.log(e);

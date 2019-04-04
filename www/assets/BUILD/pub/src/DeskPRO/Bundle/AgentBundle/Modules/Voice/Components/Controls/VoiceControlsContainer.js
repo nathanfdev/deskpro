@@ -16,7 +16,7 @@ import {
   cancelInvite,
   checkIsActive
 } from '../../Actions/clientActions';
-import { agentVoicemailTimeoutSelector, connectionsSelector } from '../../Selectors/client';
+import { agentVoicemailTimeoutSelector, busyAgentsSelector, connectionsSelector } from '../../Selectors/client';
 import { onlineAgentsSelector } from '../../../Agent/Selectors/agents';
 import { allQueuesSelector } from '../../Selectors/queue';
 import { allAutoAttendantsSelector } from '../../Selectors/autoAttendants';
@@ -31,6 +31,7 @@ import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
   onlineAgentIds:        onlineAgentsSelector(state),
   phoneCalls:            allPhoneCallsSelector(state),
   agentVoicemailTimeout: agentVoicemailTimeoutSelector(state),
+  busyAgents:            busyAgentsSelector(state)
 }))
 class VoiceControlsContainer extends React.Component {
 

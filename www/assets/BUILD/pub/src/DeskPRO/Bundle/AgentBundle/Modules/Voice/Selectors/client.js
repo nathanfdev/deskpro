@@ -61,3 +61,8 @@ export const ringingVolumeSelector = createSelector(
   stateSelector,
   state => state.get('ringingVolume')
 );
+
+export const busyAgentsSelector = createSelector(
+  stateSelector,
+  state => state.get('busyAgents')
+);

@@ -83,6 +83,19 @@ class VoiceWorkflow implements WorkflowInterface
     }
 
     /**
+     * @param Worker $worker
+     *
+     * @return bool
+     */
+    public static function workerIsBusy(Worker $worker)
+    {
+        return $worker->hasPendingTasksForChannel(self::getChannelName())
+            || $worker->hasActiveTasksForChannel(self::getChannelName())
+            || $worker->hasPendingTasksForChannel(ChatWorkflow::getChannelName())
+            || $worker->hasActiveTasksForChannel(ChatWorkflow::getChannelName());
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getAvailableWorkers(Task $task, $ignoreRejected = false)
@@ -107,12 +120,7 @@ class VoiceWorkflow implements WorkflowInterface
                 }
 
                 // ignore if agent is already on a call or has incoming call popup
-                if ($worker->hasPendingTasksForChannel(self::getChannelName())
-                    || $worker->hasActiveTasksForChannel(self::getChannelName())
-                    || $worker->hasPendingTasksForChannel(ChatWorkflow::getChannelName())
-                    || $worker->hasActiveTasksForChannel(ChatWorkflow::getChannelName())
-                    || !in_array($worker->getTypeId(), $voiceAgentIds)
-                ) {
+                if (self::workerIsBusy($worker) || !in_array($worker->getTypeId(), $voiceAgentIds)) {
                     return false;
                 }
 

@@ -36,6 +36,7 @@ class TransferList extends React.Component {
     onlineAgents:                PropTypes.object,
     participants:                PropTypes.array,
     agents:                      PropTypes.object,
+    busyAgents:                  PropTypes.array,
     queues:                      PropTypes.object,
     autoAttendants:              PropTypes.object,
     connection:                  PropTypes.object,
@@ -119,7 +120,8 @@ class TransferList extends React.Component {
   };
 
   renderList() {
-    const { inviteError, agents, queues, autoAttendants, onlineAgents, participants, transferDisabled } = this.props;
+    const { agents, busyAgents, queues, autoAttendants, onlineAgents, participants } = this.props;
+    const { inviteError, transferDisabled } = this.props;
     const { tabName, selectedTarget } = this.state;
 
     return (
@@ -155,6 +157,7 @@ class TransferList extends React.Component {
         <Tab active={tabName === 'agents'}>
           <AgentList
             agents={onlineAgents}
+            busyAgents={busyAgents}
             participants={participants}
             target={selectedTarget}
             onClick={this.selectAgentTarget}

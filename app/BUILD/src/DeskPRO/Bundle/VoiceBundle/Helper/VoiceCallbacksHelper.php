@@ -765,8 +765,7 @@ class VoiceCallbacksHelper
         if ($phoneCall->getTaskSid()) {
             $task = $this->storageAdapter->getTask($phoneCall->getTaskSid());
             if ($task && $task->isPending()) {
-                $task->setStatus(Task::STATUS_CANCELED);
-                $this->storageAdapter->saveTask($task);
+                $this->taskRouter->endTask($task->getId());
             }
         }
 

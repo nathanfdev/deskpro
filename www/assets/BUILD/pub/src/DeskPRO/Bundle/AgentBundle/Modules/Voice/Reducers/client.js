@@ -14,7 +14,8 @@ const initialState = {
   incomingCalls: [],
   outgoingCall:  null,
   connections:   [],
-  ringingVolume
+  busyAgents:    [],
+  ringingVolume,
 };
 
 export default createReducer(initialState, {
@@ -53,5 +54,8 @@ export default createReducer(initialState, {
   [actions.removeConnection]:  deletePayloadFromCollection('connections'),
   [actions.setOutgoingCall]:   setFullPayload('outgoingCall'),
   [actions.resetOutgoingCall]: setValue('outgoingCall', null),
-  [actions.setRingingVolume]:  setFullPayload('ringingVolume')
+  [actions.setRingingVolume]:  setFullPayload('ringingVolume'),
+  [actions.setBusyAgents]:     setFullPayload('busyAgents'),
+  [actions.setAgentAsIdle]:    deletePayloadFromCollection('busyAgents'),
+  [actions.setAgentAsBusy]:    pushPayloadToCollection('busyAgents')
 });
