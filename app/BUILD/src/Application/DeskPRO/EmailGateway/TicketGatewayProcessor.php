@@ -315,18 +315,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     if (!$ticket->getDateResolved()) {
                         $this->logMessage('[TicketGatewayProcessor] Ticket date_resolved is not set');
                         $canReopenResolved = false;
-                    }
-                    $now  = new \DateTime();
-                    $diff = $now->diff($ticket->getDateResolved());
-                    if ($diff->days > $timelimit) {
-                        $this->logMessage(sprintf(
-                            '[TicketGatewayProcessor] Ticket was resolved (%s) earlier than timelimit (%s days)',
-                            $ticket->getDateResolved()->format('Y-m-d'),
-                            $timelimit
-                        ));
-                        $canReopenResolved = false;
                     } else {
-                        $this->logMessage("[TicketGatewayProcessor] Reopen resolved timelimit ({$timelimit} days) is OK");
+                        $now  = new \DateTime();
+                        $diff = $now->diff($ticket->getDateResolved());
+                        if ($diff->days > $timelimit) {
+                            $this->logMessage(sprintf(
+                                '[TicketGatewayProcessor] Ticket was resolved (%s) earlier than timelimit (%s days)',
+                                $ticket->getDateResolved()->format('Y-m-d'),
+                                $timelimit
+                            ));
+                            $canReopenResolved = false;
+                        } else {
+                            $this->logMessage("[TicketGatewayProcessor] Reopen resolved timelimit ({$timelimit} days) is OK");
+                        }
                     }
                 } else {
                     $this->logMessage('[TicketGatewayProcessor] Reopen resolved timelimit is not set');
