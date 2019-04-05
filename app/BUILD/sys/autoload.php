@@ -38,7 +38,6 @@ foreach ([
     'DpTestingMocks' => DP_APP_DIR.'/testing/src',
     'Metadata' => DP_APP_DIR.'/vendor-src/metadata/src',
     'Leth' => DP_APP_DIR.'/vendor-src/php-ipaddress/classes',
-    'libphonenumber' => DP_APP_DIR.'/vendor-src/libphonenumber/src',
     'Bdt\\Clickatell' => DP_APP_DIR.'/vendor-src/guzzle-clickatell/src',
 
     'mPDF_' => DP_APP_DIR.'/vendor-src/mpdf/lib',
