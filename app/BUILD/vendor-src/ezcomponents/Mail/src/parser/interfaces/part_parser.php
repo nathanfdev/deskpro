@@ -219,7 +219,24 @@ abstract class ezcMailPartParser
     protected function parseHeader( $line, ezcMailHeadersHolder $headers )
     {
         $matches = array();
-        preg_match_all( "/^([\w-_]*):\s?(.*)/", $line, $matches, PREG_SET_ORDER );
+        
+        // DESKPRO EDIT
+        // Fixed regex pattern to match header fields pairs: 'name: value'
+        //
+        // Old regex:    '/^([\w-_]*):\s?(.*)/'
+        // Failed on:    Content-Type: multipart/alternative; boundary=----NextPart_1553085460748.0011991680
+        //               X-ups.nes.encoded.data: ____2@@@@@2M8gU8ytdsoigNOeoOeKrdOL7OwO-dOMdgN____
+        // Second field contains '.' in name: 'X-ups.nes.encoded.data'
+        // regexp doesn't include '.' in allowed characters for header field name
+        // and parser thinks that this line is continuation of prev line
+        //
+        // https://www.ietf.org/rfc/rfc822.txt
+        // > The  field-name must be composed of printable ASCII characters
+        // > (i.e., characters that  have  values  between  33.  and  126., decimal, except colon).
+        // 
+        // Ascii values between 33.-126. except colon = '[\x21-\x39\x3b-\x7F]'
+        //
+        preg_match_all( "/^([\x21-\x39\x3b-\x7F]*):\s?(.*)/", $line, $matches, PREG_SET_ORDER );
         if ( count( $matches ) > 0 )
         {
             if ( !in_array( strtolower( $matches[0][1] ), self::$uniqueHeaders ) )

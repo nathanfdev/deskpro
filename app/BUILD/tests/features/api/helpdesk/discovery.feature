@@ -24,6 +24,7 @@ Feature: Discover settings
 
   Scenario: I get agent client info settings
     Given only setting for brand "{defaultBrand}" with name "core.apps_chat" and value "1" exists
+    And the setting "beta_features.new_snippets" is set to 1
     When I send a GET request to "/api/v2/helpdesk/agent-client/info"
     Then the response should be in JSON
     And the response status code should be 200
@@ -33,6 +34,8 @@ Feature: Discover settings
     And the JSON node "data.settings.attachments.agents.max_size" should be equal to 26214400
     And the JSON node "data.settings.attachments.agents.whitelist" should have 0 elements
     And the JSON node "data.settings.attachments.agents.blacklist" should have 0 elements
+    And the JSON node "data.settings.features" should exist
+    And the JSON node "data.settings.features" should have the value "new_snippets"
 
     And the JSON node "data.account_info.timezone" should be equal to "UTC"
     And the JSON node "data.account_info.language" should be equal to "{l1}"

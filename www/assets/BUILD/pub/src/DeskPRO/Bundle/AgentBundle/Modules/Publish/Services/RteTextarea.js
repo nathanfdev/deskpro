@@ -14,6 +14,8 @@ class RteTextarea {
       undo:                 true,
       refreshAfterCallback: true,
       callback() {
+        // Store cursor position before open modal.
+        this.selection.save();
         window.MEDIA_MANAGER_WINDOW.bindToEditor(this);
         window.MEDIA_MANAGER_WINDOW.open();
       }
@@ -39,7 +41,7 @@ class RteTextarea {
       htmlAllowedAttrs: [
         'class', 'frameborder', 'height', 'id', 'longdesc', 'marginheight', 'marginwidth',
         'name', 'scrolling', 'src', 'style', 'title', 'width', 'webkitallowfullscreen',
-        'mozallowfullscreen', 'allowfullscreen', 'href', 'colspan', 'rowspan'
+        'mozallowfullscreen', 'allowfullscreen', 'href', 'colspan', 'rowspan', 'target', 'rel'
       ],
       toolbarButtons: [
         'bold', 'italic', 'underline', '|', 'align', 'color', '|', 'paragraphFormat', 'fontFamily', 'fontSize',

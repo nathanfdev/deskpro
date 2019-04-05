@@ -271,20 +271,22 @@ class CsvImporter
         $people = $personRepo->findByEmails($personData['emails']);
         $person = reset($people);
 
-        if ($personModel && $personModel->getPassword()) {
-            $person->setPassword($personModel->getPassword());
-        }
+        if ($person) {
+            if ($personModel && $personModel->getPassword()) {
+                $person->setPassword($personModel->getPassword());
+            }
 
-        if ($sendWelcomeEmail && $isNew && $person) {
-            if ($this->featureFlags->hasBeta('email_templates')) {
-                $viewModel = $this->viewModelFactory
-                    ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
-                $this->mailerUtils->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
-            } else {
-                $message = $this->mailer->createMessage();
-                $message->setToPerson($person);
-                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
-                $this->mailerUtils->sendWithPersonContext($message, $person);
+            if ($sendWelcomeEmail && $isNew) {
+                if ($this->featureFlags->hasBeta('email_templates')) {
+                    $viewModel = $this->viewModelFactory
+                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                    $this->mailerUtils->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
+                } else {
+                    $message = $this->mailer->createMessage();
+                    $message->setToPerson($person);
+                    $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
+                    $this->mailerUtils->sendWithPersonContext($message, $person);
+                }
             }
         }
 

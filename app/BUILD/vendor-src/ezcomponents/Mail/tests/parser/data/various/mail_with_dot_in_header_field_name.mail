@@ -1,0 +1,23 @@
+From: "UPS Freight Shipment Event Notification" <pkginfo@ups.com>
+To: dev@deskprodev.com
+Subject: UPS Tracking Notification, Tracking Number 952077184
+Content-Type: multipart/alternative; boundary=----NextPart_1553085460748.0011991680
+X-ups.nes.encoded.data: ____2@@@@@2M8gU8ytdsoigNOeoOeKrdOL7OwO-dOMdgN____
+X-ups.nes.report.data: @@@@[B@2d91bfdf@[B@3baeff29@@@@
+Date: Wed, 20 Mar 2019 08:37:40 -0400 (EDT)
+Message-ID: <1978741547.25416593.1553085460753@drevil-vip.ups.com>
+MIME-Version: 1.0
+
+------NextPart_1553085460748.0011991680
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: Quoted-printable
+
+Some plain text
+
+------NextPart_1553085460748.0011991680
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: Quoted-printable
+
+<html>Some html</html>
+
+------NextPart_1553085460748.0011991680--

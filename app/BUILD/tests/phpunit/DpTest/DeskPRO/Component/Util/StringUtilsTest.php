@@ -138,4 +138,33 @@ class StringUtilsTest extends DeskProTestCase
             StringUtils::reformatLines("A\nB\nC", "\t{.}")
         );
     }
+
+    public function testCsvLineToString()
+    {
+        $this->assertEquals(
+            ['foo', 'bar', 'baz'],
+            StringUtils::csvLineToList('foo, bar, baz')
+        );
+
+        $this->assertEquals(
+            ['foo', 'bar', 'baz'],
+            StringUtils::csvLineToList('    foo,        bar,      baz')
+        );
+
+        $this->assertEquals(
+            ['foo', 'bar', 'baz'],
+            StringUtils::csvLineToList('    foo,   ,,,     bar,    , ,  baz')
+        );
+
+        $this->assertEquals(
+            ['bar1', 'baz2'],
+            StringUtils::csvLineToList('foo, bar, baz', function ($v, $idx) {
+                if ($idx === 0) {
+                    return false;
+                }
+
+                return "$v$idx";
+            })
+        );
+    }
 }

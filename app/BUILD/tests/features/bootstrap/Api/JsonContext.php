@@ -159,6 +159,22 @@ class JsonContext extends \Behatch\Context\JsonContext
     }
 
     /**
+     * @Then the JSON node :node should have the value :value
+     */
+    public function theJsonNodeShouldHaveValue($node, $value)
+    {
+        $json = $this->getJson();
+
+        $actual = $this->inspector->evaluate($json, $node);
+
+        if (!in_array($value, $actual)) {
+            throw new \Exception(
+                sprintf("The node '%s' does not have value '%s'", $node, json_encode($value))
+            );
+        }
+    }
+
+    /**
      * This method is used to compare value w/o placeholders processing.
      *
      * @Then the JSON node :node should be equal to :text raw value

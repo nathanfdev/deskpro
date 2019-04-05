@@ -93,12 +93,14 @@ HTML;
     /**
      * {@inheritdoc}
      */
-    public function beforeEnable(ContainerInterface $container)
+    public function beforeEnable(ContainerInterface $container, $newInstall = false)
     {
         /** @var EntityManager $em */
         $em = $container->get('doctrine.orm.default_entity_manager');
         $this->copyIM($em);
-        $this->createOnboardings($em);
+        if (!$newInstall) {
+            $this->createOnboardings($em);
+        }
     }
 
     /**

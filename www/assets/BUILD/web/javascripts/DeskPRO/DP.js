@@ -27,11 +27,11 @@ var DP = {
 			el.each(function() {
 				DP.select($(this), options);
 			});
-			return;
+			return el;
 		}
 
     if (el.data('select2') || el.data('no-select2')) {
-      return;
+      return el;
     }
 
     // Select2 boxes where the trigger is invisible (aka not the real select2 box),
@@ -57,7 +57,7 @@ var DP = {
 				window.requestIdleCallback(init.run, {timeout: 15000});
 			}
 			el.parent().one('click', init.click);
-			return;
+			return el;
 		}
 
 		options = options || {};
@@ -383,5 +383,6 @@ var DP = {
 
 		el.addClass('with-select2');
 		el.select2(options);
+		return el;
 	}
 };

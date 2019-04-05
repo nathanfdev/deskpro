@@ -75,6 +75,48 @@ window.initHandlebars = (Handlebars) => {
       '%': lval % rval
     }[operator];
   });
+
+  Handlebars.registerHelper('urlencode', value => encodeURIComponent(value));
+
+  document.addEventListener('dpWidgetClick', (e) => {
+    console.log(e);
+
+    const urlTpl = e.detail.url;
+    if (!urlTpl) {
+      return;
+    }
+
+    const urlFn = Handlebars.compile(
+      urlTpl
+        .replace('%7B%7B%23', '{{#')
+        .replace('%7B%7B%2F', '{{/')
+        .replace('%7B%7B', '{{')
+        .replace('%7D%7D', '}}')
+    );
+    const url = urlFn(e.detail);
+
+    const isAgentList = url.match(/^#goagent:list:/);
+    const listUrl = isAgentList ? url.substring(14) : null;
+    const win = window.parent || window;
+
+    if (win.DeskPRO_Window && isAgentList) {
+      console.log('list pane ', listUrl);
+      win.DeskPRO_Window.loadListPane(listUrl);
+      win.DeskPRO_Window.backToAgent();
+    } else if (url.charAt(0) === '#') {
+      if (isAgentList) {
+        const agentUrl = `${window.BASE_PATH}agent/#list:${listUrl}`;
+        console.log('open agent ', agentUrl);
+        window.open(agentUrl);
+      } else {
+        console.log('hash change ', url);
+        win.location.hash = url;
+      }
+    } else {
+      console.log('url change ', url);
+      win.location = url;
+    }
+  });
 };
 
 class ReportApp {

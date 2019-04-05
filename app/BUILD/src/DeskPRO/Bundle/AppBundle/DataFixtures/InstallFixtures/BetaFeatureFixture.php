@@ -25,13 +25,20 @@ class BetaFeatureFixture extends AbstractDpFixture implements OrderedFixtureInte
      */
     public function load(ObjectManager $manager)
     {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
+        if (isset($DP_ENV) && $DP_ENV->getEnvId() === 'test') {
+            return;
+        }
+
         /** @var BetaFeatureInterface[] $collection */
         $collection    = $this->container->get('deskpro.features_collection');
         $toggleManager = $this->container->get('deskpro.toggle_feature_manager');
 
         foreach ($collection as $feature) {
             if ($feature->isEnabledOnInstall()) {
-                $toggleManager->enableFeature($feature->getId());
+                $toggleManager->enableFeature($feature->getId(), true);
             }
         }
     }

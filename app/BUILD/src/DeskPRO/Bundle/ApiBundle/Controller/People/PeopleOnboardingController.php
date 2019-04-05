@@ -52,6 +52,9 @@ class PeopleOnboardingController extends CrudController
         $onboardings = $this->getRepository(PersonOnboarding::class)->findOneBy([
             'person' => $this->getUser(),
             'status' => PersonOnboarding::STATUS_NEW,
+        ],
+        [
+            'id' => 'ASC',
         ]);
 
         return new View($this->wrap($onboardings));
@@ -80,7 +83,7 @@ class PeopleOnboardingController extends CrudController
                 PersonOnboarding::STATUS_NEW,
                 PersonOnboarding::STATUS_IN_PROGRESS,
             ],
-        ], ['id' => 'DESC']);
+        ], ['id' => 'ASC']);
 
         return new View($this->wrap($onboardings));
     }

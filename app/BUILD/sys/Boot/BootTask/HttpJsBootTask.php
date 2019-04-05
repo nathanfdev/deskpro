@@ -262,8 +262,9 @@ CODE;
                     'assetUrl'    => rtrim($this->request->getUriForPath('/assets/'.$this->env->getAppName()), '/'),
                     'buildId'     => $this->env->getAppName(),
                 ];
-                if ($assetRoot = $this->env->getConfig('paths.assets_root')) {
-                    $info['assetUrl'] = $assetRoot;
+                if ($assetRoot = $this->env->getConfig('paths.asset_paths.assets_root.value')) {
+                   $assetRoot = str_replace('%DP_ACTIVE_BUILD%', DP_ACTIVE_BUILD, $assetRoot);
+                   $info['assetUrl'] = $assetRoot;
                 }
                 $cb   = preg_replace('#[^a-zA-Z0-9_\.\-]#', '', $cb);
                 $code = "$cb(".json_encode($info).')';

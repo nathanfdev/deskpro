@@ -20,7 +20,9 @@
             <tr class="line-2">
               <td>
                 {% if rating.person %}
-                  {{ rating.person.display_name }}
+					<a data-route="person:{{ path('agent_people_view', {'person_id': rating.person.id})|raw }}">
+						{{ rating.person.display_name }}
+					</a>
                   {% if rating.person.primary_email_address %}
                     &lt;{{ rating.person.primary_email_address }}&gt;
                   {% endif %}

@@ -155,7 +155,7 @@
           map = $el.data('map');
 
       // Already has old style two level select (department field)
-      if ($el.hasClass('dp-two-select')) {
+      if ($el.hasClass('dp-two-select') || $el.hasClass('with-select2')) {
         return $el;
       }
 
@@ -163,16 +163,20 @@
         return $el;
       }
 
-      if ('choice-collapsed' !== $el.data('custom-field') || !map) {
+      if (!map) {
+        return DP.select($el, {}, true);
+      }
+
+      if ('choice-collapsed' !== $el.data('custom-field')) {
         return $el;
       }
 
       var render = function () {
-        $el.parent().find('.multilevel-select').remove();
-
-        if (parseInt($el.data('max-depth')) <= 2) {
-          setupSimple($el, map);
+        if (parseInt($el.data('max-depth')) <= 2 && !$el.data('no-select2')) {
+          // if only two levels (optgroup, opt), then faster to use normal select2
+          return DP.select($el, {}, true);
         } else {
+          $el.parent().find('.multilevel-select').remove();
           setupMulti($el, map);
         }
       };

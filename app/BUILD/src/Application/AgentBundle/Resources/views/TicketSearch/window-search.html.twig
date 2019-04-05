@@ -1,3 +1,16 @@
+{% macro substatuses_options(status, selected) %}
+  {% for substatus in status.children %}
+    <option {% if selected %}selected="selected"{% endif %}
+      value="{{ substatus.statusCode }}"
+      >{{ substatus.title }}</option>
+  {% endfor %}
+{% endmacro %}
+{% macro substatuses_checkbox(status) %}
+  {% for substatus in status.children %}
+    <li><label><input class="widget-val" type="checkbox" value="{{ substatus.statusCode }}" /> - - {{ substatus.title }}</label></li>
+  {% endfor %}
+{% endmacro %}
+
 <section class="source-pane-search">
 
 	{##################################################################################################################}
@@ -12,9 +25,13 @@
 			{% set elid = el_uid() %}
 			<select class="dp-select-widget-simple" name="search_status[]" multiple="multiple" data-target-menu="#{{ elid }}_menu">
 				<option selected="selected" value="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</option>
+        {{ _self.substatuses_options(ticket_statuses['awaiting_agent'], true) }}
 				<option selected="selected" value="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</option>
+        {{ _self.substatuses_options(ticket_statuses['awaiting_user'], true) }}
 				<option value="pending">{{ phrase('agent.tickets.status_pending') }}</option>
+        {{ _self.substatuses_options(ticket_statuses['pending'], false) }}
 				<option value="resolved">{{ phrase('agent.tickets.status_resolved') }}</option>
+        {{ _self.substatuses_options(ticket_statuses['resolved'], false) }}
 				{% if app.getSetting('core_tickets.use_archive') %}<option value="archived">{{ phrase('agent.tickets.status_archived') }}</option>{% endif %}
 				<option value="hidden.spam">{{ phrase('agent.tickets.status_hidden_spam') }}</option>
 				<option value="hidden.deleted">{{ phrase('agent.tickets.status_hidden_deleted') }}</option>
@@ -23,9 +40,13 @@
 				<i class="fas fa-caret-up"></i>
 				<ul class="checkbox-list">
 					<li><label><input class="widget-val" type="checkbox" value="awaiting_agent" /> {{ phrase('agent.tickets.status_awaiting_agent') }}</label></li>
+          {{ _self.substatuses_checkbox(ticket_statuses['awaiting_agent']) }}
 					<li><label><input class="widget-val" type="checkbox" value="awaiting_user" /> {{ phrase('agent.tickets.status_awaiting_user') }}</label></li>
+          {{ _self.substatuses_checkbox(ticket_statuses['awaiting_user']) }}
 					<li><label><input class="widget-val" type="checkbox" value="pending" /> {{ phrase('agent.tickets.status_pending') }}</label></li>
+          {{ _self.substatuses_checkbox(ticket_statuses['pending']) }}
 					<li><label><input class="widget-val" type="checkbox" value="resolved" /> {{ phrase('agent.tickets.status_resolved') }}</label></li>
+          {{ _self.substatuses_checkbox(ticket_statuses['resolved']) }}
 					{% if app.getSetting('core_tickets.use_archive') %}<li><label><input class="widget-val" type="checkbox" value="archived" /> {{ phrase('agent.tickets.status_archived') }}</label></li>{% endif %}
 				</ul>
 
