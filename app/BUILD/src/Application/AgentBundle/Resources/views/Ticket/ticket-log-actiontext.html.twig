@@ -582,7 +582,7 @@
         {{ phrase('agent.tickets.charge') }}: <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br />
     {% endif %}
     {% if log.details.old_time or log.details.new_time %}
-        {{ phrase('agent.tickets.charge') }}: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
+        {{ phrase('agent.tickets.charge_time') }}: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
     {% endif %}
     {% for v in log.details.custom_data if v.value_before or v.value_after %}
         {{ v.field_name }}: <span class="new-val">{{ v.value_after }}</span><br />
@@ -594,7 +594,7 @@
         {{ phrase('agent.tickets.charge') }}: <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br />
     {% endif %}
     {% if log.details.old_time or log.details.new_time %}
-        {{ phrase('agent.tickets.charge') }}: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
+        {{ phrase('agent.tickets.charge_time') }}: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
     {% endif %}
     {% if log.details.old_created or log.details.new_created %}
         {{ phrase('agent.general.created') }}: <span class="new-val">{{ log.details.new_created | date('fulltime', app.user.timezone)}}</span><br />
@@ -609,7 +609,7 @@
                 {{ phrase('agent.tickets.charge') }}: <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span><br />
             {% endif %}
             {% if log.details.old_time or log.details.new_time %}
-                {{ phrase('agent.tickets.charge') }}: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
+                {{ phrase('agent.tickets.charge_time') }}: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
             {% endif %}
             {% for v in log.details.custom_data if v.value_before %}
                 {{ v.field_name }}: <span class="old-val">{{ v.value_before }}</span><br />
@@ -623,7 +623,7 @@
             {{ phrase('agent.tickets.charge') }}: <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span><br />
         {% endif %}
         {% if log.details.old_time or log.details.new_time %}
-            {{ phrase('agent.tickets.charge') }}: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
+            {{ phrase('agent.tickets.charge_time') }}: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
         {% endif %}
         {% if log.details.old_created or log.details.new_created %}
             {{ phrase('agent.general.created') }}: <span class="old-val">{{ log.details.old_created | date('fulltime', app.user.timezone)}}</span><br />
