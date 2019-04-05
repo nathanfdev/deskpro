@@ -18,6 +18,7 @@ use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\NotAgentEmail;
 use Orb\Util\Env;
 use Orb\Validator\StringEmail;
 use Symfony\Component\HttpFoundation\Response;
@@ -137,6 +138,14 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         $form->submit($data);
+
+        $emailErrors = $this->container->getValidator()->validate(
+            $edit_account->address,
+            new NotAgentEmail(['property' => 'address'])
+        );
+        if (count($emailErrors)) {
+            return $this->createApiValidationErrorResponse($emailErrors);
+        }
 
         if ($this->settings->get('internal.disable_email_editing.incoming_details')) {
             $edit_account->apply(false);

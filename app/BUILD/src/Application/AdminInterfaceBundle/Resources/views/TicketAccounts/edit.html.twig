@@ -60,6 +60,7 @@
 						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
 						<ul>
 							<li ng-show="form_props.address.$error.required">{{ phrase('adm.validation.email') }}</li>
+              <li ng-show="form_props.address.$error.email_is_agent_email">{{ phrase('adm.ticket_accounts.email_is_agent_email') }}</li>
 						</ul>
 					</div>
 

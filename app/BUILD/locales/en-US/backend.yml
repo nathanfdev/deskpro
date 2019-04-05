@@ -629,6 +629,7 @@ adm.ticket_accounts.download_hotlinked_images_help: 'Replace linked images by bl
 adm.ticket_accounts.download_hotlinked_images_image_maxsize: 'Max Image Size'
 adm.ticket_accounts.download_hotlinked_images_total_maxsize: 'Max Cumulative Size'
 adm.ticket_accounts.email_accounts: 'Email Accounts'
+adm.ticket_accounts.email_is_agent_email: 'Email is already being used as agent email'
 adm.ticket_accounts.incoming_log: 'Incoming Email Log'
 adm.ticket_accounts.max_file_size: 'Max file size a user can upload'
 adm.ticket_accounts.max_file_size_supported: 'The max file size supported by your server is'
