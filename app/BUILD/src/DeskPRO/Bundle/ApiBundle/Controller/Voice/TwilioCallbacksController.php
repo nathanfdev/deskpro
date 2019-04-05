@@ -377,6 +377,26 @@ class TwilioCallbacksController extends BaseController
             ;
 
             $this->get('dp.voice.callbacks_helper')->logPressedAutoAttendantExtensionKey($phoneCall, $details);
+        } elseif (preg_match('/^#.+/', $enteredCode)) {
+            $extension = preg_replace('/^#/', '', $enteredCode);
+            $target    = $this->get('dp.voice.callbacks_helper')->getTargetByExtensionNumber($extension);
+            if ($target) {
+                $this->addTargetResponse($phoneCall, $target, $twiml);
+            } else {
+                $twiml
+                    ->gather([
+                        'numDigits' => 4,
+                        'action'    => $this->getAgentExtensionCallbackUrl($account),
+                    ])
+                    ->say(sprintf('Requested agent with %s extension number does not exist. Please enter agent extension number again.', $enteredCode), [
+                        'voice' => 'alice',
+                    ])
+                ;
+            }
+
+            // log agent extension event
+            $this->get('dp.voice.callbacks_helper')->logPressedAutoAttendantExtensionKey($phoneCall, $details);
+            $this->get('dp.voice.callbacks_helper')->logEnteredAgentExtension($phoneCall, $extension, $details);
         } else {
             $target = new VoiceAutoAttendantTarget();
             $target->setAutoAttendant($autoAttendant);

@@ -756,10 +756,31 @@ class PlivoCallbacksController extends BaseController
                 ])
                 ->addSpeak('Please enter agent extension number', [
                     'voice' => 'WOMAN',
-                ])
-            ;
+                ]);
 
             $this->get('dp.voice.callbacks_helper')->logPressedAutoAttendantExtensionKey($phoneCall, $details);
+        } elseif (preg_match('/^#.+/', $enteredCode)) {
+            $extension = preg_replace('/^#/', '', $enteredCode);
+            $target    = $this->get('dp.voice.callbacks_helper')->getTargetByExtensionNumber($extension);
+            if ($target) {
+                $this->addTargetResponse($phoneCall, $target, $plivoXml);
+            } else {
+                $plivoXml
+                    ->addGetDigits([
+                        'numDigits'   => 4,
+                        'action'      => $this->getAgentExtensionCallbackUrl($account),
+                        'method'      => 'POST',
+                        'finishOnKey' => 'None',
+                    ])
+                    ->addSpeak(sprintf('Requested agent with %s extension number does not exist. Please enter agent extension number again.', $extension), [
+                        'voice' => 'WOMAN',
+                    ])
+                ;
+            }
+
+            // log agent extension event
+            $this->get('dp.voice.callbacks_helper')->logPressedAutoAttendantExtensionKey($phoneCall, $details);
+            $this->get('dp.voice.callbacks_helper')->logEnteredAgentExtension($phoneCall, $extension, $details);
         } else {
             $target = new VoiceAutoAttendantTarget();
             $target->setAutoAttendant($autoAttendant);
@@ -1159,7 +1180,7 @@ class PlivoCallbacksController extends BaseController
             $dialNumbers   = $autoAttendant->getOrderedDialNumbers();
 
             $gather = $plivoXml->addGetDigits([
-                'numDigits'   => 1,
+                'numDigits'   => 5,
                 'action'      => $this->getAutoAttendantCallbackUrl($account, $autoAttendant),
                 'method'      => 'POST',
                 'timeout'     => 30,
