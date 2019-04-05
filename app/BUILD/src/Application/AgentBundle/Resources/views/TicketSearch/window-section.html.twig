@@ -239,7 +239,7 @@
 
 					</div>
 					<div class="pane-content pane-content-search" style="display: none;">
-                        {% include 'AgentBundle:TicketSearch:window-search.html.twig' %}
+                        {% include 'AgentBundle:TicketSearch:window-search.html.twig' with {'ticket_statuses' : ticket_statuses}%}
 					</div>
 				</div>
 			</div>
