@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
 use DeskPRO\Bundle\BrandBundle\Brand\BrandStack;
 use DeskPRO\Bundle\BrandBundle\Brand\DefaultBrandFinder;
+use DeskPRO\Bundle\PortalBundle\Mode\PortalModeFactory;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -102,7 +103,19 @@ class BrandDetectionListener implements EventSubscriberInterface, SkipLowRequest
 
             if ($mode && $mode->isAdminPreview()) {
                 try {
-                    $brand = $this->brandRepository->find($mode->getData());
+                    $brandId = $mode->getData();
+
+                    if ($brandId === null) {
+                        preg_match(
+                            PortalModeFactory::REGEX_ADMIN_PREVIEW,
+                            $mode->getOriginalPath(),
+                            $matches
+                        );
+
+                        $brandId = $matches[1];
+                    }
+
+                    $brand = $this->brandRepository->find($brandId);
                 } catch (\Exception $e) {
                 }
             } elseif ($request->attributes->has('_dp_brand_slug')) {
