@@ -1414,20 +1414,7 @@ class TicketController extends AbstractController
 
     public function ajaxSaveReplyAction($ticket_id)
     {
-
-        //@TODO: remove this
-        if ($this->in->getInt('options.agent_id') == 4) {
-            sleep(10);
-            throw new \Exception('Some test exception');
-        }
-
         $saveReplyData = $this->saveReply($ticket_id, false);
-
-        if ($this->in->getInt('options.agent_id') == 2) {
-            sleep(10);
-        } elseif ($this->in->getInt('options.agent_id') == 3) {
-            sleep(30);
-        }
 
         if (isset($saveReplyData['response'])) {
             return $saveReplyData['response'];
