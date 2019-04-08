@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import { voiceParticipantsSelector } from '../../Selectors/agents';
+import { voiceAgentsSelector } from '../../Selectors/agents';
 import VoiceControls from './VoiceControls';
 import {
   hangup,
@@ -24,7 +24,7 @@ import { allPhoneCallsSelector } from '../../Selectors/phoneCalls';
 
 @connect(state => ({
   me:                    meSelector(state),
-  agents:                voiceParticipantsSelector(state),
+  agents:                voiceAgentsSelector(state),
   queues:                allQueuesSelector(state),
   autoAttendants:        allAutoAttendantsSelector(state),
   connections:           connectionsSelector(state),
@@ -268,8 +268,8 @@ class VoiceControlsContainer extends React.Component {
   };
 
   render() {
-    const { agents, onlineAgentIds, baseId, phoneCalls } = this.props;
-    const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')));
+    const { me, agents, onlineAgentIds, baseId, phoneCalls } = this.props;
+    const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')) && agent !== me);
     const connection = this.getConnection();
 
     if (!connection) {

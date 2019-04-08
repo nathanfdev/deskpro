@@ -31,6 +31,7 @@ const getDefaultTabName = (props, currentTab) => {
 class TransferList extends React.Component {
 
   static propTypes = {
+    me:                          PropTypes.object,
     target:                      PropTypes.object,
     transferDisabled:            PropTypes.bool,
     onlineAgents:                PropTypes.object,
@@ -120,7 +121,7 @@ class TransferList extends React.Component {
   };
 
   renderList() {
-    const { agents, busyAgents, queues, autoAttendants, onlineAgents, participants } = this.props;
+    const { me, agents, busyAgents, queues, autoAttendants, onlineAgents, participants } = this.props;
     const { inviteError, transferDisabled } = this.props;
     const { tabName, selectedTarget } = this.state;
 
@@ -167,7 +168,9 @@ class TransferList extends React.Component {
         {queues && queues.size > 0 &&
         <Tab active={tabName === 'queues'}>
           <Queues
+            me={me}
             agents={agents}
+            onlineAgents={onlineAgents}
             queues={queues}
             target={selectedTarget}
             onClick={this.selectQueueTarget}
