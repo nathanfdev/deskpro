@@ -1076,53 +1076,6 @@ class PlivoCallbacksController extends BaseController
 
     /**
      * @ApiDoc(
-     *     description="User joins conference callback",
-     *     statusCodes={
-     *         200="Returned if everything is ok"
-     *     },
-     *     noInput=true,
-     *     output="string"
-     * )
-     *
-     * @Rest\Post("/user_joins_conference_callback", name="plivo_user_joins_conference_callback")
-     *
-     * @param PlivoVoiceAccount $account
-     * @param string            $accountAuth
-     * @param Request           $request
-     *
-     * @throws \Exception
-     *
-     * @return Response
-     */
-    public function userJoinsConferenceCallbackAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
-    {
-        if ($account->getAccountAuth() !== $accountAuth) {
-            throw $this->createAccessDeniedException();
-        }
-
-        $plivoXml = new PlivoXML();
-        $callId   = $request->get('callId');
-        if ($callId) {
-            /** @var VoicePhoneCall $phoneCall */
-            $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId);
-            if ($phoneCall) {
-                $plivoXml->addConference($phoneCall->getConferenceName(), [
-                    'endConferenceOnExit' => false,
-                    'callbackUrl'         => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
-                    'callbackMethod'      => 'POST',
-                    'record'              => true,
-                ]);
-            }
-        }
-
-        $response = new Response($plivoXml->toXML());
-        $response->headers->set('Content-Type', 'text/xml');
-
-        return $response;
-    }
-
-    /**
-     * @ApiDoc(
      *     description="Put user on hold",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -1371,9 +1324,7 @@ class PlivoCallbacksController extends BaseController
     private function getUserJoinsConferenceCallbackUrl(PlivoVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
         return $this->get('router')->generate('plivo_user_joins_conference_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-            'callId'      => $phoneCall->getId(),
+            'callId' => $phoneCall->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
