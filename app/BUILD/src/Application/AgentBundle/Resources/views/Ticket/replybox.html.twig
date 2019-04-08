@@ -5,6 +5,7 @@
 	id="{{replyBaseId}}_reply_form"
 	method="post"
 	action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}"
+  data-action-prepare="{{ path('agent_ticket_ajaxsavereply_prepare', {'ticket_id': ticket.id}) }}"
 	data-upload-url="{{ path('agent_accept_upload') }}"
 	data-base-id="{{replyBaseId}}"
 	data-element-handler="DeskPRO.Agent.ElementHandler.TicketReplyBox"

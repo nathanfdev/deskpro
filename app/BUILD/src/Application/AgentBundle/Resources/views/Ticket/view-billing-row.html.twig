@@ -1,4 +1,4 @@
-<tr class="ticket-charge-row" id="ticket-charge-row-{{ charge.id }}" data-charge="{{ charge.toArray() | json_encode() }}">
+<tr class="ticket-charge-row" {% if charge.id %}id="ticket-charge-row-{{ charge.id }}"{% endif %} data-charge="{{ charge.toArray() | json_encode() }}">
 
 	<td>
 		{% if charge.charge_time %}
@@ -28,7 +28,7 @@
 		</td>
 	{% endfor %}
 
-  {% if ticket_perms.modify_billing %}
+  {% if charge.id and ticket_perms.modify_billing %}
         <td class="edit">
             <span>
                 <a class="billing-edit" data-charge-id="{{ charge.id }}">Edit</a>
@@ -41,6 +41,7 @@
         </td>
   {% endif %}
 </tr>
+{% if charge.id %}
 <tr style="display: none;" class="ticket-charge-edit-{{ charge.id }}">
     <td colspan="{{ 6 + billing_fields[charge.id]|length }}">
         <div style="display: none;" class="ticket-charge-edit-errors-{{ charge.id }}">
@@ -85,3 +86,4 @@
         </table>
     </td>
 </tr>
+{% endif %}
