@@ -6191,7 +6191,10 @@ CSS;
     public function ajaxGetDepartmentsAction($brandId)
     {
         /** @var Brand $brand */
-        $brand       = $this->em->getRepository(Brand::class)->find($brandId);
+        $brand = $brandId
+            ? $this->em->getRepository(Brand::class)->find($brandId)
+            : $this->container->getBrandStack()->getDefaultBrand();
+
         $departments = $this->container->getDataService('Department')
             ->getPersonDepartments($this->person, 'tickets', [], 'assign', $brand);
 
