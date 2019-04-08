@@ -31,6 +31,7 @@ use Plivo\Resources\Number\Number;
 use Plivo\Resources\PhoneNumber\PhoneNumber;
 use Plivo\RestClient;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class PlivoAdapter.
@@ -48,6 +49,11 @@ class PlivoAdapter implements VoiceProviderInterface
     private $settingsResolver;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private $router;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -57,12 +63,18 @@ class PlivoAdapter implements VoiceProviderInterface
      *
      * @param EntityManager         $em
      * @param VoiceSettingsResolver $settingsResolver
+     * @param UrlGeneratorInterface $router
      * @param LoggerInterface       $logger
      */
-    public function __construct(EntityManager $em, VoiceSettingsResolver $settingsResolver, LoggerInterface $logger)
-    {
+    public function __construct(
+        EntityManager         $em,
+        VoiceSettingsResolver $settingsResolver,
+        UrlGeneratorInterface $router,
+        LoggerInterface       $logger
+    ) {
         $this->em               = $em;
         $this->settingsResolver = $settingsResolver;
+        $this->router           = $router;
         $this->logger           = $logger;
     }
 
@@ -582,6 +594,8 @@ class PlivoAdapter implements VoiceProviderInterface
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
+        $asyncCallback = $this->router->generate('plivo_async_callback', [], UrlGeneratorInterface::ABSOLUTE_URL);
+
         foreach ($phoneCall->getUserParticipants() as $participant) {
             $start = microtime(true);
 
@@ -589,9 +603,11 @@ class PlivoAdapter implements VoiceProviderInterface
                 return $this->getClient($account)->calls->transfer(
                     $participant->getCallSid(),
                     [
-                        'legs'        => 'aleg',
-                        'aleg_url'    => $callbackUrl,
-                        'aleg_method' => $callbackMethod,
+                        'legs'            => 'aleg',
+                        'aleg_url'        => $callbackUrl,
+                        'aleg_method'     => $callbackMethod,
+                        'callback_url'    => $asyncCallback,
+                        'callback_methid' => 'POST',
                     ]
                 );
             } catch (\Exception $e) {

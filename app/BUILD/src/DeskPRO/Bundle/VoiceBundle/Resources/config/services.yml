@@ -27,6 +27,7 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@voice_settings_resolver"
+      - "@router"
       - "@dp.voice.logger"
 
   dp.voice.task_builder:
