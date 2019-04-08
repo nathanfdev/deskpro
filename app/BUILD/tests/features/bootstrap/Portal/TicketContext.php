@@ -141,6 +141,15 @@ class TicketContext extends BasePortalContext
     }
 
     /**
+     * @Then Ticket :ticketId should has a status :status
+     */
+    public function ticketShouldHaveStatus($ticketId, $status)
+    {
+        $ticket = $this->getTicket($ticketId);
+        expect($ticket->getStatus() == $status)->toBe(true);
+    }
+
+    /**
      * @Given :who am not involved with ticket ID :id
      */
     public function amNotInvolvedWithTicketId($who, $id)

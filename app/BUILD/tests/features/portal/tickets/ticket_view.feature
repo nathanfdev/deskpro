@@ -28,6 +28,7 @@ Feature: Ticket View
       | agent | An agent ticket 7                | resolved       | walmart      |
       | agent | An agent ticket 8                | resolved       | walmart      |
       | agent | An agent ticket 9                | resolved       |              |
+      | user  | User ticket 16                   | pending        | walbart      |
     And I go to "/tickets/1"
     Then I should be on "/login"
     And the response status code should be 200
@@ -81,3 +82,15 @@ Feature: Ticket View
     And the response status code should be 200
     And I should see a success flash message with the phrase "portal.flashes.ticket_replied"
     And "user" should be a participant on ticket ID "9"
+
+  Scenario: Reply pending ticket should set status to awaiting agent
+    And I login with user credentials
+    When I go to the ticket view page for ticket ID "16"
+    Then I should be on the ticket view page for ticket ID "16"
+    And I should see "User ticket 16"
+    And I should see the ticket reply form
+    When I fill in "ticket_reply_ticket_message_message" with "This is my reply"
+    And I press "Reply"
+    Then I should be on "/tickets/16"
+    And the response status code should be 200
+    And Ticket "16" should has a status "awaiting_agent"
