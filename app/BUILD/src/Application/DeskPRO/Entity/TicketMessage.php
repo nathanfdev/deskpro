@@ -1371,7 +1371,7 @@ class TicketMessage extends DomainObject
                 'fieldName'     => 'snippet_use_logs',
                 'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\SnippetUseLog',
                 'cascade'       => ['remove', 'persist', 'merge'],
-                'mappedBy'      => 'ticket_message',
+                'mappedBy'      => 'ticketMessage',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'orphanRemoval' => true,
             ]
