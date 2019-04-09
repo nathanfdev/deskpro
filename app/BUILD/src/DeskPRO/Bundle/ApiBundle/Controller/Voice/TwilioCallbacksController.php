@@ -1002,10 +1002,11 @@ class TwilioCallbacksController extends BaseController
             $dialNumbers   = $autoAttendant->getOrderedDialNumbers();
 
             $gather = $twiml->gather([
-                'numDigits'   => 1,
-                'action'      => $this->getAutoAttendantCallbackUrl($account, $autoAttendant),
-                'finishOnKey' => '',
-                'timeout'     => 30,
+                'numDigits'           => 1,
+                'action'              => $this->getAutoAttendantCallbackUrl($account, $autoAttendant),
+                'finishOnKey'         => '',
+                'timeout'             => 30,
+                'actionOnEmptyResult' => true,
             ]);
 
             $asset = $autoAttendant->getAudioAsset();

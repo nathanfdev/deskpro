@@ -1137,6 +1137,7 @@ class PlivoCallbacksController extends BaseController
                 'action'      => $this->getAutoAttendantCallbackUrl($account, $autoAttendant),
                 'method'      => 'POST',
                 'timeout'     => 30,
+                'retries'     => 10,
                 'finishOnKey' => 'None',
             ]);
 
