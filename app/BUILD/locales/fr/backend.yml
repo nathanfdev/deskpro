@@ -1,3 +1,4 @@
+adm.ticket_accounts.email_is_agent_email: 'Email is already being used as agent email'
 adm.agents.import_btn_more: 'Invite More Agents?'
 adm.agents.import_btn_next: 'Next step'
 adm.agents.import_file_dd: 'Drag & Drop completed spreadsheet here'
