@@ -304,7 +304,10 @@ class PlivoAdapter implements VoiceProviderInterface
                 $fromNumber->getNumber(),
                 [$toNumber],
                 $answerUrl,
-                $answerMethod
+                $answerMethod,
+                [
+                    'machine_detection' => 'hangup',
+                ]
             );
 
             return $call->getRequestUuid();
