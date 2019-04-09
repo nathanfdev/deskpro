@@ -244,6 +244,7 @@ class Container extends React.Component {
   handleChange = (text) => {
     this.setState({ message: text });
     this.props.onChange(text);
+    this.messageList && this.messageList.scroll();
   };
 
   handleSubmit = (event) => {
@@ -493,6 +494,7 @@ class Container extends React.Component {
           {this.searchHeader()}
           {this.groupHeader()}
           <MessageList
+            ref={(c) => { this.messageList = c; }}
             loadingMessages={loadingMessages}
             current={current}
             messages={messages}
