@@ -227,8 +227,8 @@ export const voiceBootstrap = createAction(
             closeIframes();
 
             dispatch(resetOutgoingCall());
-            connection.ticketId = data.ticket_id;
-            connection.callId   = data.call_id;
+            connection.ticketId = parseInt(data.ticket_id, 10);
+            connection.callId   = parseInt(data.call_id, 10);
 
             const routeUrl = `/agent/tickets/${data.ticket_id}`;
             if (!window.DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl)) {
@@ -296,8 +296,8 @@ export const voiceBootstrap = createAction(
               console.log(error);
             });
             clients[id].connect((connection) => {
-              connection.ticketId = connection.message.TicketId;
-              connection.callId   = connection.message.CallId;
+              connection.ticketId = parseInt(connection.message.TicketId, 10);
+              connection.callId   = parseInt(connection.message.CallId, 10);
               connection.outbound = connection.message.Outbound;
 
               dispatch(addConnection(connection));
@@ -398,7 +398,7 @@ export const makeOutboundCall = createAction(
       dispatch(setOutgoingCall({ callFrom: number, callTo, phoneCall: data }));
       if (accountType === 'twilio') {
         clients[accountId].connect({
-          CallId:   data.id,
+          CallId:   parseInt(data.id, 10),
           AgentId:  agentId,
           From:     number.get('number'),
           To:       callTo,
@@ -414,7 +414,7 @@ export const makeOutboundCall = createAction(
         });
 
         clients[accountId].client.agentId  = agentId;
-        clients[accountId].client.callId   = data.id;
+        clients[accountId].client.callId   = parseInt(data.id, 10);
         clients[accountId].client.outbound = true;
 
         dispatch(addConnection(clients[accountId].client));
