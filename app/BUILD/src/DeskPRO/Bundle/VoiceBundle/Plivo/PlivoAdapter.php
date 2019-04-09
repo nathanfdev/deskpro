@@ -381,8 +381,16 @@ class PlivoAdapter implements VoiceProviderInterface
         foreach ($phoneCall->getOutgoingRequestIds() as $requestId) {
             try {
                 $client->calls->cancel($requestId);
+            } catch (PlivoResponseException $e) {
+                $this->logger->info(sprintf(
+                    'Unable to cancel the call, request_id = %s, message = %s',
+                    $requestId, $e->getErrorMessage()
+                ));
             } catch (\Exception $e) {
-                $this->logger->info($e->getMessage());
+                $this->logger->info(sprintf(
+                    'Unable to cancel the call, request_id = %s, code = %s, message = %s',
+                    $requestId, $e->getCode(), $e->getMessage()
+                ));
             }
         }
     }
@@ -594,8 +602,6 @@ class PlivoAdapter implements VoiceProviderInterface
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
-        $asyncCallback = $this->router->generate('plivo_async_callback', [], UrlGeneratorInterface::ABSOLUTE_URL);
-
         foreach ($phoneCall->getUserParticipants() as $participant) {
             $start = microtime(true);
 
@@ -606,8 +612,8 @@ class PlivoAdapter implements VoiceProviderInterface
                         'legs'            => 'aleg',
                         'aleg_url'        => $callbackUrl,
                         'aleg_method'     => $callbackMethod,
-                        'callback_url'    => $asyncCallback,
-                        'callback_methid' => 'POST',
+                        'callback_url'    => $this->router->generate('plivo_async_callback', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                        'callback_method' => 'POST',
                     ]
                 );
             } catch (\Exception $e) {
