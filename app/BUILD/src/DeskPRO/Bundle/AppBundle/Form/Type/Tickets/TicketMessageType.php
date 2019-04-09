@@ -568,8 +568,9 @@ class TicketMessageType extends AbstractType
      */
     public function onSetSnippets(FormEvent $event)
     {
-        $form    = $event->getForm();
-        $config  = $form->getConfig();
+        $form   = $event->getForm();
+        $config = $form->getConfig();
+        /** @var TicketMessage $message */
         $message = $event->getData();
         $person  = $config->getOption('person');
 
@@ -578,7 +579,7 @@ class TicketMessageType extends AbstractType
             $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $person, $translation);
             $snippet    = $snippetLog->getSnippet();
             $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);
-            $this->em->persist($snippetLog);
+            $message->addSnippetUseLog($snippetLog);
         }
     }
 }
