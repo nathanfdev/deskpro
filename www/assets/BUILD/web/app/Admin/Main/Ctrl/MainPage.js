@@ -44,7 +44,8 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
       this.getBrands()
         .then(() => {
           if (!this.$scope.brandId) {
-            var brandIdFromUrl = this.$location ? this.$location.path().match(/^\/portal\/(\d)/)[1] : undefined;
+            var match = this.$location && this.$location.path().match(/^\/portal\/(\d)/);
+            var brandIdFromUrl = Array.isArray(match) ? match[1] : undefined;
             var brandIndex = this.$scope.brands.findIndex(brand => brand.id === parseInt(brandIdFromUrl));
 
             this.$scope.brandId = brandIndex > -1 ? brandIdFromUrl : 1;
