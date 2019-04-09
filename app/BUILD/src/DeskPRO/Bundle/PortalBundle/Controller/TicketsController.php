@@ -733,10 +733,11 @@ class TicketsController extends AbstractController
 
             // If status is pending, we'll switch it to open so agents will see it
             if (in_array(
-                $ticket->getStatusCode(),
+                $ticket->getStatus(),
                 [
                     TicketStatus::STATUS_TYPE_AWAITING_USER,
                     TicketStatus::STATUS_TYPE_RESOLVED,
+                    TicketStatus::STATUS_TYPE_PENDING,
                 ]
             )) {
                 $ticket->setTicketStatus($this->getContainer()->getTicketStatuses()->findStatusOrException(TicketStatus::STATUS_TYPE_AWAITING_AGENT));
