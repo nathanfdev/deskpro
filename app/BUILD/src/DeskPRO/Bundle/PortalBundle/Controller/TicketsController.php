@@ -156,6 +156,12 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
             // we don't process the reply if they simply clicked the "add more attachments" button (non-JS users)
             if (!$form->getClickedButton() || $form->getClickedButton()->getConfig()->getName() !== 'more_attachments') {
+                if ($ticket->isResolved() && !$this->isGranted(TicketsVoter::TICKET_REOPEN_RESOLVED, $ticket)) {
+                    $this->addFlash('error', $this->phrase('user.error.permission-denied'));
+
+                    return $this->redirect($this->getObjectRouter()->getPortalPath($ticket));
+                }
+
                 $this->addCurrentUserAsParticipantIfTheyAreNot($ticket);
 
                 $this->saveNewReply($ticket, $message);

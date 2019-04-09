@@ -16,7 +16,7 @@
     </div>
 {% endif %}
 
-{% if not ticket.archived and not (ticket.resolved and not has_permission('tickets.reopen_resolved'))%}
+{% if not ticket.archived and not ticket.resolved %}
 
     <div class="ticket-reply dpx-form" id="ticket-reply-form">
         <div class="ticket-reply-header">
