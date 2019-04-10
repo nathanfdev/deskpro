@@ -752,6 +752,7 @@ class PlivoCallbacksController extends BaseController
                 ->addGetDigits([
                     'numDigits'   => 4,
                     'action'      => $this->getAgentExtensionCallbackUrl($account),
+                    'retries'     => 10,
                     'finishOnKey' => 'None',
                 ])
                 ->addSpeak('Please enter agent extension number', [
@@ -770,6 +771,7 @@ class PlivoCallbacksController extends BaseController
                         'numDigits'   => 4,
                         'action'      => $this->getAgentExtensionCallbackUrl($account),
                         'method'      => 'POST',
+                        'retries'     => 10,
                         'finishOnKey' => 'None',
                     ])
                     ->addSpeak(sprintf('Requested agent with %s extension number does not exist. Please enter agent extension number again.', $extension), [
@@ -839,6 +841,7 @@ class PlivoCallbacksController extends BaseController
                         'numDigits'   => 4,
                         'action'      => $this->getAgentExtensionCallbackUrl($account),
                         'method'      => 'POST',
+                        'retries'     => 10,
                         'finishOnKey' => 'None',
                     ])
                     ->addSpeak(sprintf('Requested agent with %d extension number does not exist. Please enter agent extension number again.', $enteredCode), [

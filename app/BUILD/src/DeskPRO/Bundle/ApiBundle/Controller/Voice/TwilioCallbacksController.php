@@ -368,8 +368,9 @@ class TwilioCallbacksController extends BaseController
         } elseif ($enteredCode === '#') {
             $twiml
                 ->gather([
-                    'numDigits' => 4,
-                    'action'    => $this->getAgentExtensionCallbackUrl($account),
+                    'numDigits'           => 4,
+                    'action'              => $this->getAgentExtensionCallbackUrl($account),
+                    'actionOnEmptyResult' => true,
                 ])
                 ->say('Please enter agent extension number', [
                     'voice' => 'alice',
@@ -385,8 +386,9 @@ class TwilioCallbacksController extends BaseController
             } else {
                 $twiml
                     ->gather([
-                        'numDigits' => 4,
-                        'action'    => $this->getAgentExtensionCallbackUrl($account),
+                        'numDigits'           => 4,
+                        'action'              => $this->getAgentExtensionCallbackUrl($account),
+                        'actionOnEmptyResult' => true,
                     ])
                     ->say(sprintf('Requested agent with %s extension number does not exist. Please enter agent extension number again.', $enteredCode), [
                         'voice' => 'alice',
@@ -436,7 +438,9 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $twiml     = new Twiml();
+        $twiml = new Twiml();
+
+        /** @var VoicePhoneCall $phoneCall */
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->findOneBy([
             'callSid' => $request->request->get('CallSid'),
         ]);
@@ -446,23 +450,37 @@ class TwilioCallbacksController extends BaseController
             ]);
         } else {
             $enteredCode = $request->request->get('Digits');
-            $target      = $this->get('dp.voice.callbacks_helper')->getTargetByExtensionNumber($enteredCode);
-            if ($target) {
-                $this->addTargetResponse($phoneCall, $target, $twiml);
+            if ($enteredCode) {
+                $target = $this->get('dp.voice.callbacks_helper')->getTargetByExtensionNumber($enteredCode);
+                if ($target) {
+                    $this->addTargetResponse($phoneCall, $target, $twiml);
+                } else {
+                    $twiml
+                        ->gather([
+                            'numDigits'           => 4,
+                            'action'              => $this->getAgentExtensionCallbackUrl($account),
+                            'actionOnEmptyResult' => true,
+                        ])
+                        ->say(sprintf('Requested agent with %d extension number does not exist. Please enter agent extension number again.', $enteredCode), [
+                            'voice' => 'alice',
+                        ])
+                    ;
+                }
+
+                // log agent extension event
+                $this->get('dp.voice.callbacks_helper')->logEnteredAgentExtension($phoneCall, $enteredCode, $request->request->all());
             } else {
                 $twiml
                     ->gather([
-                        'numDigits' => 4,
-                        'action'    => $this->getAgentExtensionCallbackUrl($account),
+                        'numDigits'           => 4,
+                        'action'              => $this->getAgentExtensionCallbackUrl($account),
+                        'actionOnEmptyResult' => true,
                     ])
-                    ->say(sprintf('Requested agent with %d extension number does not exist. Please enter agent extension number again.', $enteredCode), [
+                    ->say('Please enter agent extension number', [
                         'voice' => 'alice',
                     ])
                 ;
             }
-
-            // log agent extension event
-            $this->get('dp.voice.callbacks_helper')->logEnteredAgentExtension($phoneCall, $enteredCode, $request->request->all());
         }
 
         $response = new Response($twiml);
