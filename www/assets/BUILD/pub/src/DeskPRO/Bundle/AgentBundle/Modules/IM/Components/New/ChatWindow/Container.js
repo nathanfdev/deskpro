@@ -244,7 +244,9 @@ class Container extends React.Component {
   handleChange = (text) => {
     this.setState({ message: text });
     this.props.onChange(text);
-    this.messageList && this.messageList.scroll();
+    if (this.messageList) {
+      this.messageList.scroll();
+    }
   };
 
   handleSubmit = (event) => {
