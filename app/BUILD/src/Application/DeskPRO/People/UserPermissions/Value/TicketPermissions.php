@@ -16,11 +16,32 @@ class TicketPermissions implements PermissionValueInterface
     public $reopen_resolved = false;
     /** @var bool */
     public $reopen_resolved_createnew = false;
+    /**
+     * @var int
+     *          0 - no limits
+     */
+    public $reopen_resolved_timelimit = 0;
 
     public function getNames()
     {
         return [
-            'use', 'reopen_resolved', 'reopen_resolved_createnew',
+            'use', 'reopen_resolved', 'reopen_resolved_createnew', 'reopen_resolved_timelimit',
         ];
+    }
+
+    /**
+     * @param int $value
+     */
+    public function setReopenResolvedTimelimit($value)
+    {
+        $this->reopen_resolved_timelimit = (int) $value;
+    }
+
+    /**
+     * @return int
+     */
+    public function getReopenResolvedTimelimit()
+    {
+        return (int) $this->reopen_resolved_timelimit;
     }
 }

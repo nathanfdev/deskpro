@@ -8,7 +8,6 @@
 	/>
 {% endmacro %}
 
-
 <div class="panel panel-innertable">
 	<nav class="dp-tabletabs">
 		<ul>
@@ -53,6 +52,29 @@
 							<label>
 								<input type="radio" value="new_ticket" ng-model="EditCtrl.perm_form.options.reopen_resolved_createnew" />
 								<strong>New Ticket</strong> &middot; The message is accepted as a new ticket
+							</label>
+						</div>
+					</div>
+
+					<div style="padding: 10px 0 0 25px;" ng-show="EditCtrl.perm_form.ticket.reopen_resolved 
+                                                        || EditCtrl.perm_form_reg.ticket.reopen_resolved
+                                                        || EditCtrl.perm_form_everyone.ticket.reopen_resolved">
+						<div>
+							<label>
+                {{ phrase('adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_1') }}
+                <select ng-model="EditCtrl.perm_form.ticket.reopen_resolved_timelimit" ui-select2 >
+                  <option value="1">{{ phrase('admin.general.time_x_day', {count: 1}) }}</option>
+                  <option value="3">{{ phrase('admin.general.time_x_day', {count: 3}) }}</option>
+                  <option value="7">{{ phrase('admin.general.time_x_day', {count: 7}) }}</option>
+                  <option value="14">{{ phrase('admin.general.time_x_day', {count: 14}) }}</option>
+                  <option value="30">{{ phrase('admin.general.time_x_day', {count: 30}) }}</option>
+                  <option value="90">{{ phrase('admin.general.time_x_month', {count: 3}) }}</option>
+                  <option value="180">{{ phrase('admin.general.time_x_month', {count: 6}) }}</option>
+                  <option value="360">{{ phrase('admin.general.time_x_year', {count: 1}) }}</option>
+                  <option value="1080">{{ phrase('admin.general.time_x_year', {count: 3}) }}</option>
+                  <option value="0">{{ phrase('admin.general.forever') }}</option>
+                </select>
+                {{ phrase('adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_2') }}
 							</label>
 						</div>
 					</div>

@@ -16,6 +16,7 @@ use Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\GuidesPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\NewsPermissions;
 use Application\DeskPRO\People\UserPermissions\Value\TicketPermissions;
+use Symfony\Component\DependencyInjection\Container;
 
 class UserPermissions implements PermissionsSetInterface
 {
@@ -79,6 +80,35 @@ class UserPermissions implements PermissionsSetInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getByName($name)
+    {
+        if (!$name) {
+            return false;
+        }
+
+        list($prop, $name) = explode('.', $name, 2);
+        if (!$prop || !$name) {
+            return false;
+        }
+
+        if (isset(self::$prefix_map[$prop])) {
+            $prop = self::$prefix_map[$prop];
+        } else {
+            if (!property_exists($this, $prop)) {
+                return false;
+            }
+        }
+
+        $getter = 'get'.Container::camelize($name);
+
+        return method_exists($this->$prop, $getter)
+            ? $this->$prop->$getter()
+            : (property_exists($this->$prop, $name) ? (bool) $this->$prop->$name : false);
+    }
+
+    /**
      * @return array
      */
     public function toArray()
@@ -87,7 +117,10 @@ class UserPermissions implements PermissionsSetInterface
         foreach ($this->getTypes() as $prop) {
             $arr[$prop] = [];
             foreach ($this->$prop->getNames() as $name) {
-                $arr[$prop][$name] = (bool) $this->$prop->$name;
+                $getter            = 'get'.Container::camelize($name);
+                $arr[$prop][$name] = method_exists($this->$prop, $getter)
+                    ? $this->$prop->$getter()
+                    : (bool) $this->$prop->$name;
             }
         }
 
@@ -107,7 +140,12 @@ class UserPermissions implements PermissionsSetInterface
             }
 
             foreach ($this->$prop->getNames() as $name) {
-                $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool) $perms[$prop][$name]) : false;
+                $setter = 'set'.Container::camelize($name);
+                if (method_exists($this->$prop, $setter)) {
+                    $this->$prop->$setter(isset($perms[$prop][$name]) ? $perms[$prop][$name] : false);
+                } else {
+                    $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool) $perms[$prop][$name]) : false;
+                }
             }
         }
     }
