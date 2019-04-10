@@ -302,65 +302,98 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         $replyAsNew = false;
 
-        if ($ticket and $person and !$person->is_agent and $ticket->status == 'resolved' and !$person->hasPerm('tickets.reopen_resolved')) {
+        if ($ticket and $person and !$person->is_agent and $ticket->status == 'resolved') {
             $this->logMessage('[TicketGatewayProcessor] Ticket is resolved');
 
-            if ($person->hasPerm('tickets.reopen_resolved_createnew')) {
-                $this->logMessage('[TicketGatewayProcessor] Has perm reopen_resolved_createnew so creating a new ticket');
-                $ticket     = null;
-                $replyAsNew = true;
-            } else {
-                $this->logMessage('[TicketGatewayProcessor] Message is being rejected because ticket is resolved');
-
-                if ($this->account_email_address) {
-                    $emailTo = $this->account_email_address;
-                } else {
-                    $emailTo = $this->account->getUseEmailAddress();
-                }
-
-                $fromAddress = $this->container->getEmailAccountManager()->getAccountForTicket($ticket)->getUseEmailAddress();
-
-                // user is disabled so can't create/reply to tickets
-                if (!$this->reader->isFromRobot() && !$isBounce) {
-                    if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-                        $self      = $this;
-                        $viewModel = $this->container->get('brand_stack')->pushTemporary(
-                            $person->getBrands()->first(),
-                            function () use ($self, $ticket) {
-                                return $self->container->get('email.user_viewmodel_factory')
-                                    ->createNewReplyRejectResolvedModel($ticket);
-                            }
-                        );
-                        $this->container->get('mailer.utils')->sendModelWithPersonContext(
-                            $person,
-                            $viewModel,
-                            ['to' => $this->reader->getFromAddress()->getEmail()]
-                        );
+            // Need PortalPermissionsManager because there is special logic to obtain 'tickets.reopen_resolved_timelimit'
+            $permissionsBag    = $this->container->get('portal_permissions_manager')->getPermissionsBagForPerson($person);
+            $canReopenResolved = $permissionsBag->hasPermission('tickets.reopen_resolved');
+            if ($canReopenResolved) {
+                $this->logMessage('[TicketGatewayProcessor] User has permission to reopen resolved tickets');
+                $timelimit = $permissionsBag->getReopenResolvedTimelimit();
+                if ($timelimit && $timelimit > 0) {
+                    if (!$ticket->getDateResolved()) {
+                        $this->logMessage('[TicketGatewayProcessor] Ticket date_resolved is not set');
+                        $canReopenResolved = false;
                     } else {
-                        $message = $this->container->getMailer()->createMessage();
-                        $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', [
-                            'subject'  => $this->reader->getSubject()->getSubjectUtf8(),
-                            'name'     => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                            'ticket'   => $ticket,
-                            'person'   => $person,
-                            'email_to' => $emailTo,
-                        ]);
-                        $message->setTo($this->reader->getFromAddress()->getEmail());
-                        $message->setFrom($fromAddress);
-                        $message->attach(\Swift_Attachment::newInstance(
-                            $this->reader->getRawSource(),
-                            'message.eml',
-                            'message/rfc822'
-                        ));
-
-                        $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
+                        $now  = new \DateTime();
+                        $diff = $now->diff($ticket->getDateResolved());
+                        if ($diff->days > $timelimit) {
+                            $this->logMessage(sprintf(
+                                '[TicketGatewayProcessor] Ticket was resolved (%s) earlier than timelimit (%s days)',
+                                $ticket->getDateResolved()->format('Y-m-d'),
+                                $timelimit
+                            ));
+                            $canReopenResolved = false;
+                        } else {
+                            $this->logMessage("[TicketGatewayProcessor] Reopen resolved timelimit ({$timelimit} days) is OK");
+                        }
                     }
+                } else {
+                    $this->logMessage('[TicketGatewayProcessor] Reopen resolved timelimit is not set');
                 }
+            } else {
+                $this->logMessage('[TicketGatewayProcessor] User does not have permission to reopen resolved tickets');
+            }
 
-                $this->error      = 'obj_closed';
-                $this->error_type = 'rejected';
+            if (!$canReopenResolved) {
+                if ($person->hasPerm('tickets.reopen_resolved_createnew')) {
+                    $this->logMessage('[TicketGatewayProcessor] Has perm reopen_resolved_createnew so creating a new ticket');
+                    $ticket     = null;
+                    $replyAsNew = true;
+                } else {
+                    $this->logMessage('[TicketGatewayProcessor] Message is being rejected because ticket is resolved');
 
-                return null;
+                    if ($this->account_email_address) {
+                        $emailTo = $this->account_email_address;
+                    } else {
+                        $emailTo = $this->account->getUseEmailAddress();
+                    }
+
+                    $fromAddress = $this->container->getEmailAccountManager()->getAccountForTicket($ticket)->getUseEmailAddress();
+
+                    // user is disabled so can't create/reply to tickets
+                    if (!$this->reader->isFromRobot() && !$isBounce) {
+                        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                            $self      = $this;
+                            $viewModel = $this->container->get('brand_stack')->pushTemporary(
+                                $person->getBrands()->first(),
+                                function () use ($self, $ticket) {
+                                    return $self->container->get('email.user_viewmodel_factory')
+                                        ->createNewReplyRejectResolvedModel($ticket);
+                                }
+                            );
+                            $this->container->get('mailer.utils')->sendModelWithPersonContext(
+                                $person,
+                                $viewModel,
+                                ['to' => $this->reader->getFromAddress()->getEmail()]
+                            );
+                        } else {
+                            $message = $this->container->getMailer()->createMessage();
+                            $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', [
+                                'subject'  => $this->reader->getSubject()->getSubjectUtf8(),
+                                'name'     => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                                'ticket'   => $ticket,
+                                'person'   => $person,
+                                'email_to' => $emailTo,
+                            ]);
+                            $message->setTo($this->reader->getFromAddress()->getEmail());
+                            $message->setFrom($fromAddress);
+                            $message->attach(\Swift_Attachment::newInstance(
+                                $this->reader->getRawSource(),
+                                'message.eml',
+                                'message/rfc822'
+                            ));
+
+                            $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
+                        }
+                    }
+
+                    $this->error      = 'obj_closed';
+                    $this->error_type = 'rejected';
+
+                    return null;
+                }
             }
         }
 

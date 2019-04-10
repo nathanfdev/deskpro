@@ -361,7 +361,7 @@ class ChatConversation extends AbstractEntityRepository
         $query = $this->getEntityManager()->createQuery("
             SELECT c
             FROM DeskPRO:ChatConversation c INDEX BY c.id
-            WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended' $where
+            WHERE (c.person = ?1 OR c.person_email = ?2) $where
             ORDER BY c.{$orderBy} {$orderDir}
         ")->setParameter(1, $person)
           ->setParameter(2, $person->getPrimaryEmailAddress())

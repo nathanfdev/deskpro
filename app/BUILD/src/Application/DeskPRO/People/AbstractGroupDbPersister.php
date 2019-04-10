@@ -76,9 +76,22 @@ abstract class AbstractGroupDbPersister
             $permission            = new Permission();
             $permission->usergroup = $group;
             $permission->name      = $p;
-            $permission->value     = true;
+            $permission->value     = $perms->getByName($p);
             $permission->is_active = true;
             $group->addPermission($permission);
+        }
+
+        // Some permissions might have changed value. Sync them (ex.: tickets.reopen_resolved_timelimit)
+        foreach ($group->permissions as $permissionEntity) {
+            // check once more permission exists saved values
+            if (!in_array($permissionEntity->name, $setPermissions)) {
+                continue;
+            }
+            $permValue = $perms->getByName($permissionEntity->name);
+            // update only not bool values
+            if (!is_bool($permValue)) {
+                $permissionEntity->setValue($permValue);
+            }
         }
 
         $this->em->persist($group);

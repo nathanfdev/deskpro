@@ -221,6 +221,12 @@ class PortalPermissionsManager
                 $this->permissionsLoader->getAllowedGuides($userGroups),
                 $fieldsPermissions
             );
+
+            if ($this->permissionBagCache[$cacheKey]->has('tickets.reopen_resolved')) {
+                $this->permissionBagCache[$cacheKey]->setReopenResolvedTimelimit(
+                    $this->permissionsLoader->getReopenResolvedTimelimit($userGroups, $permissions)
+                );
+            }
         }
 
         return $this->permissionBagCache[$cacheKey];

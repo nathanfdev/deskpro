@@ -8,7 +8,7 @@
         <hr>
         <p class="footer">{{ phrase('portal.tickets.view_closed_more', { kb_url: path('portal_kb'), new_ticket_url: path('portal_new_ticket') })|raw }}</p>
 
-        {% if ticket.resolved and has_permission('tickets.reopen_resolved') %}
+        {% if ticket.resolved and is_granted('TICKET_REOPEN_RESOLVED', ticket) %}
         <a href="{{ portal_path(ticket, 'unresolve') }}" class="button post-link">
             {{ phrase('portal.tickets.mark-unresolved') }}
         </a>
@@ -16,7 +16,7 @@
     </div>
 {% endif %}
 
-{% if not ticket.archived and not (ticket.resolved and not has_permission('tickets.reopen_resolved'))%}
+{% if not ticket.archived and not ticket.resolved %}
 
     <div class="ticket-reply dpx-form" id="ticket-reply-form">
         <div class="ticket-reply-header">

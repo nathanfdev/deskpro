@@ -696,7 +696,6 @@ class UserChatController extends AbstractController
             $searcher = new ChatConversationSearch();
             $searcher->setPersonContext($this->person);
             $searcher->setColumns('COUNT(*)');
-            $searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
             $this->updateSearcherFilter($searcher, $filterId);
 
             $filter       = [];

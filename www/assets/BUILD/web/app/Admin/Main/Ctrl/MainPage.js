@@ -41,17 +41,22 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
 
       this.$scope.brandId = this.$stateParams.brandId;
 
-      if (!this.$scope.brandId) {
-        this.$scope.brandId = 1;
-      }
+      this.getBrands()
+        .then(() => {
+          if (!this.$scope.brandId) {
+            var match = this.$location && this.$location.path().match(/^\/portal\/(\d)/);
+            var brandIdFromUrl = Array.isArray(match) ? match[1] : undefined;
+            var brandIndex = this.$scope.brands.findIndex(brand => brand.id === parseInt(brandIdFromUrl));
 
-      this.$scope.selectBrandId = this.$scope.brandId;
+            this.$scope.brandId = brandIndex > -1 ? brandIdFromUrl : 1;
+          }
 
-      this.portalSettings.setBrandId(this.$scope.brandId);
+          this.$scope.selectBrandId = this.$scope.brandId;
+
+          this.portalSettings.setBrandId(this.$scope.brandId);
+        });
 
       this.$scope.$watch('brand_id', () => this.portalSettings.getSettings().then(s => this.settings = s));
-
-      this.getBrands();
 
       this.$scope.$on('dp-update-brands', (e) => {
         this.getBrands();
@@ -62,8 +67,10 @@ define(['Admin/Main/Ctrl/Base'], function(Admin_Ctrl_Base) {
     }
 
     getBrands() {
-      this.Api2.sendGet('brands').then(res => this.$scope.brands = res.data.data);
-      return this.Api2.sendGet('brands/default').then(res => this.$scope.default_brand = res.data.data);
+      return Promise.all([
+        this.Api2.sendGet('brands').then(res => this.$scope.brands = res.data.data),
+        this.Api2.sendGet('brands/default').then(res => this.$scope.default_brand = res.data.data)
+      ]);
     }
 
     changeBrand() {

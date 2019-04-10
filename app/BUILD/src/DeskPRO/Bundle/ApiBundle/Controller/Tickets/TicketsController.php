@@ -194,7 +194,7 @@ class TicketsController extends AbstractTicketsController
 
         $offset      = $request->query->getInt('offset');
         $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
-        $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
+        $maxPerPage  = min($request->query->getInt('count', self::$listPerPage), self::$listMaxResults);
         $meta        = [];
 
         // if the "ids" param is provided, then just use it to select tickets

@@ -34,7 +34,8 @@ Feature: Ticket charges
     And the JSON node "data.date_created" should be equal to "2018-01-11T00:00:00+0000"
 
   Scenario: I create a new ticket charge
-    When I send a POST request to "/api/v2/tickets/{t1}/charges" with body:
+    When I reset ticket logs
+    And I send a POST request to "/api/v2/tickets/{t1}/charges" with body:
     """
 {
   "amount": 6.5,
@@ -48,9 +49,14 @@ Feature: Ticket charges
     And the JSON node "data.organization" should be equal to "{o1}"
     And the JSON node "data.amount" should be equal to "6.5"
     And the JSON node "data.charge_time" should be equal to "100"
+    And the "{t1}" ticket should have "action_starter" log with detail "event_method" = "api"
+    And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
+    And the "{t1}" ticket should have "new_billing" log with detail "new_amount" = "6.5"
+    And the "{t1}" ticket should have "new_billing" log with detail "new_time" = "100"
 
   Scenario: I update a ticket charge
-    When I send a PUT request to "/api/v2/tickets/{t1}/charges/{c1}" with body:
+    When I reset ticket logs
+    And I send a PUT request to "/api/v2/tickets/{t1}/charges/{c1}" with body:
     """
 {
   "amount": 6.5,
@@ -67,6 +73,10 @@ Feature: Ticket charges
     And the JSON node "data.amount" should be equal to "6.5"
     And the JSON node "data.charge_time" should be equal to "100"
     And the JSON node "data.date_created" should be equal to "2018-01-11T00:00:00+0000"
+    And the "{t1}" ticket should have "action_starter" log with detail "event_method" = "api"
+    And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
+    And the "{t1}" ticket should have "modify_billing" log with detail "new_amount" = "6.5"
+    And the "{t1}" ticket should have "modify_billing" log with detail "new_time" = "100"
 
   Scenario: I create comment of a ticket charge
     Given only the following CustomDefBilling records exist:
@@ -107,5 +117,11 @@ Feature: Ticket charges
     Then the response status code should be 404
 
   Scenario: I delete ticket charge
-    When I send a DELETE request to "/api/v2/tickets/{t1}/charges/{c1}"
+    When I reset ticket logs
+    And I send a DELETE request to "/api/v2/tickets/{t1}/charges/{c1}"
     Then the response status code should be 200
+    And the "{t1}" ticket should have "action_starter" log with detail "event_method" = "api"
+    And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
+    And the "{t1}" ticket should have "delete_billing" log with detail "old_amount" = "1"
+    And the "{t1}" ticket should have "delete_billing" log with detail "old_time" = "5"
+

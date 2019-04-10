@@ -104,7 +104,9 @@
 					</div>
 				{% endif %}
 			</div>
-			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="fas fa-cog"></i></span>
+      {% if is_optimistic_ui_update is not defined or not is_optimistic_ui_update%}
+        <span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="fas fa-cog"></i></span>
+      {% endif %}
 			<div class="dp-stickytip" id="{{ elid }}" style="width: 325px; display: none;">
 				<table cellspacing="0" cellpadding="0" width="100%">
 					<tr>

@@ -371,7 +371,7 @@ export default class TopBarRecentImList extends RecentList {
                   contentClassName="dpscrollarea overflow-content"
                   vertical
                 >
-                  {chats.map(chat => this.getItem(chat, false))}
+                  {this.scrollAreaContent(chats)}
                 </ScrollArea>
               </div>
             </ClickOut>
@@ -380,6 +380,17 @@ export default class TopBarRecentImList extends RecentList {
         {overallCount ? <div className="ui knuckles label message-counter">{overallCount}</div> : null}
       </span> : null
     );
+  }
+
+  scrollAreaContent(chats) {
+    return chats.reduce((acc, chat) => {
+      const item = this.getItem(chat, false);
+      if (item !== null) {
+        acc.push(item);
+      }
+
+      return acc;
+    }, []);
   }
 
   renderEveryone(chat, draggable = false) {

@@ -114,6 +114,35 @@ class AgentPermissions implements PermissionsSetInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getByName($name)
+    {
+        if (!$name) {
+            return false;
+        }
+
+        list($prop, $name) = explode('.', $name, 2);
+        if (!$prop || !$name) {
+            return false;
+        }
+
+        if (isset(self::$prefix_map[$prop])) {
+            $prop = self::$prefix_map[$prop];
+        } else {
+            if (!property_exists($this, $prop) || !$this->$prop instanceof PermissionValueInterface) {
+                return false;
+            }
+        }
+
+        $getter = 'get'.Container::camelize($name);
+
+        return method_exists($this->$prop, $getter)
+            ? $this->$prop->$getter()
+            : property_exists($this->$prop, $name) ? (bool) $this->$prop->$name : false;
+    }
+
+    /**
      * @return array
      */
     public function toArray()

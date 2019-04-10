@@ -629,6 +629,7 @@ adm.ticket_accounts.download_hotlinked_images_help: 'Replace linked images by bl
 adm.ticket_accounts.download_hotlinked_images_image_maxsize: 'Max Image Size'
 adm.ticket_accounts.download_hotlinked_images_total_maxsize: 'Max Cumulative Size'
 adm.ticket_accounts.email_accounts: 'Email Accounts'
+adm.ticket_accounts.email_is_agent_email: 'Email is already being used as agent email'
 adm.ticket_accounts.incoming_log: 'Incoming Email Log'
 adm.ticket_accounts.max_file_size: 'Max file size a user can upload'
 adm.ticket_accounts.max_file_size_supported: 'The max file size supported by your server is'
@@ -745,6 +746,8 @@ adm.twitter_setup.user_consumer_key: 'Consumer Key'
 adm.twitter_setup.user_consumer_key_error: 'You must enter Consumer Key for Twitter User Application'
 adm.twitter_setup.user_consumer_secret: 'Consumer Secret'
 adm.twitter_setup.user_consumer_secret_error: 'You must enter Consumer Secret for Twitter User Application'
+adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_1: 'A user can re-open resolved tickets for up to'
+adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_2: 'after resolution'
 adm.users_import.delete_users_link: 'Delete Imported Users'
 adm.users_import.delete_users_prompt: 'Deleting all imported users will result in permanent deletion of these users including any additional data added to user records and any objects (including tickets) linked to these users.'
 adm.users_import.delete_users_scheduled: 'Operation scheduled successfully'
@@ -1389,6 +1392,7 @@ admin.general.fail: Fail
 admin.general.fields: Fields
 admin.general.file_uploads: 'File Uploads'
 admin.general.first: First
+admin.general.forever: Forever
 admin.general.from_email_address: 'From email address'
 admin.general.full_email_address: 'Full Email Address'
 admin.general.gateway_error_logs: 'Gateway Rejections'
