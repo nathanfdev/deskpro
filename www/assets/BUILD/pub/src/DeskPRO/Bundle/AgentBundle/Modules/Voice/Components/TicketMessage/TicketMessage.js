@@ -18,6 +18,8 @@ class TicketMessage extends React.Component {
   static propTypes = {
     people:               PropTypes.object,
     numbers:              PropTypes.object,
+    queues:               PropTypes.object,
+    autoAttendants:       PropTypes.object,
     message:              PropTypes.object,
     phoneCall:            PropTypes.object,
     connection:           PropTypes.object,
@@ -70,7 +72,7 @@ class TicketMessage extends React.Component {
   };
 
   render() {
-    const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
+    const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, queues, autoAttendants, connection } = this.props;
     const { transcript, outboundCallsEnabled, dateCreatedFormatted, canEditMessage } = this.props;
     const { openDialpad, me, openTarget } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
@@ -216,6 +218,8 @@ class TicketMessage extends React.Component {
                                 {person.get('name')} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
                               </a>
                             ),
+                            queue:            queues.getIn([log.getIn(['details', 'to_queue']), 'name']),
+                            auto_attendant:   autoAttendants.getIn([log.getIn(['details', 'to_auto_attendant']), 'name']),
                             to_number:        number.get('nickname') || number.get('number'),
                             key:              log.getIn(['details', 'Digits']) || '',
                             target,

@@ -12,12 +12,16 @@ import { connectionsSelector } from '../../Selectors/client';
 import { outboundCallsEnabledSelector } from '../../Selectors/agents';
 import { allNumbersSelector } from '../../Selectors/numbers';
 import { closeIframes } from './../../../Application/Actions/bootstrapActions';
+import { allQueuesSelector } from '../../Selectors/queue';
+import { allAutoAttendantsSelector } from '../../Selectors/autoAttendants';
 
 @connect(state => ({
   people:               collectionSelectorFactory('Person', 'all')(state),
   phoneCalls:           allPhoneCallsSelector(state),
   connections:          connectionsSelector(state),
   numbers:              allNumbersSelector(state),
+  queues:               allQueuesSelector(state),
+  autoAttendants:       allAutoAttendantsSelector(state),
   outboundCallsEnabled: outboundCallsEnabledSelector(state),
   me:                   meSelector(state)
 }))

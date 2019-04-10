@@ -633,7 +633,7 @@ class VoiceClientPhoneCallController extends BaseController
         // add action log
         $log = new VoicePhoneCallLog();
         $log->setPhoneCall($phoneCall);
-        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_TRANSFER);
+        $log->setActionType(VoicePhoneCallLog::ACTION_QUEUE_TRANSFER);
         $log->setDetails([
             'call_type'   => 'transfer',
             'invite_type' => 'cold',
@@ -680,7 +680,7 @@ class VoiceClientPhoneCallController extends BaseController
         // add action log
         $log = new VoicePhoneCallLog();
         $log->setPhoneCall($phoneCall);
-        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_TRANSFER);
+        $log->setActionType(VoicePhoneCallLog::ACTION_AUTO_ATTENDANT_TRANSFER);
         $log->setDetails([
             'call_type'         => 'transfer',
             'invite_type'       => 'cold',

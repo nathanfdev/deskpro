@@ -10,12 +10,18 @@ import { allNumbersSelector, isNumbersLoadedSelector } from '../../../Selectors/
 import { allTicketsSelector } from '../../../../Application/Selectors/tickets';
 import { allPeopleSelector } from '../../../../Application/Selectors/people';
 import { replaceRoute } from '../../../../../Services/history';
+import { allQueuesSelector } from '../../../Selectors/queue';
+import { allAutoAttendantsSelector } from '../../../Selectors/autoAttendant';
+import { loadAutoAttendants } from '../../../Actions/autoAttendantActions';
+import { loadQueues } from '../../../Actions/queueActions';
 
 @connect(state => ({
-  numbers:       allNumbersSelector(state),
-  numbersLoaded: isNumbersLoadedSelector(state),
-  tickets:       allTicketsSelector(state),
-  people:        allPeopleSelector(state)
+  numbers:        allNumbersSelector(state),
+  numbersLoaded:  isNumbersLoadedSelector(state),
+  tickets:        allTicketsSelector(state),
+  people:         allPeopleSelector(state),
+  queues:         allQueuesSelector(state),
+  autoAttendants: allAutoAttendantsSelector(state)
 }))
 class CallLogViewContainer extends React.Component {
 
@@ -36,6 +42,8 @@ class CallLogViewContainer extends React.Component {
     const { dispatch, params } = this.props;
 
     dispatch(loadNumbers());
+    dispatch(loadQueues());
+    dispatch(loadAutoAttendants());
 
     const promise = dispatch(loadPhoneCall(params.callId));
     promise.success(({ data }) => {

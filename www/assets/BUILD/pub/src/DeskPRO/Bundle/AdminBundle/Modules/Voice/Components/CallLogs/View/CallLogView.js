@@ -17,11 +17,13 @@ import { openTicket, openPerson, openTarget } from '../../../../../Services/hist
 class CallLogView extends React.Component {
 
   static propTypes = {
-    call:         PropTypes.object,
-    numbers:      PropTypes.object,
-    people:       PropTypes.object,
-    onReturnBack: PropTypes.func,
-    openDialpad:  PropTypes.func
+    call:           PropTypes.object,
+    numbers:        PropTypes.object,
+    people:         PropTypes.object,
+    queues:         PropTypes.object,
+    autoAttendants: PropTypes.object,
+    onReturnBack:   PropTypes.func,
+    openDialpad:    PropTypes.func
   };
 
   openDialpad = (event, number) => {
@@ -32,7 +34,7 @@ class CallLogView extends React.Component {
   };
 
   render() {
-    const { onReturnBack, call, numbers, people } = this.props;
+    const { onReturnBack, call, numbers, people, queues, autoAttendants } = this.props;
     const number = numbers.get(call.get('number')) || Immutable.fromJS({});
     const externalNumber = call.get('external_number');
     const isInbound = call.get('type') === 'inbound';
@@ -210,6 +212,8 @@ class CallLogView extends React.Component {
                                     {person.get('name')} {person.get('primary_email') ? `( ${person.get('primary_email')} )` : ''}
                                   </a>
                                 ),
+                                queue:            queues.getIn([log.getIn(['details', 'to_queue']), 'name']),
+                                auto_attendant:   autoAttendants.getIn([log.getIn(['details', 'to_auto_attendant']), 'name']),
                                 to_number:        number.get('nickname') || number.get('number'),
                                 key:              log.getIn(['details', 'Digits']) || '',
                                 target,
