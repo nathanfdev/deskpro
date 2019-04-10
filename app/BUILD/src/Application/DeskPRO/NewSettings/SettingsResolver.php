@@ -78,11 +78,10 @@ class SettingsResolver
         return $this->cache->get(
             static::CACHE_KEY_GLOBAL,
             function () use ($force) {
-                $settings = [[]];
+                $settings = [];
                 foreach ($this->getLoaders() as $loader) {
-                    $settings[] = $loader->load($force);
+                    $settings = array_merge($settings, $loader->load($force));
                 }
-                $settings = array_merge(...$settings);
                 foreach ($this->virtual_settings as $key => $callable) {
                     $settings[$key] = call_user_func($callable, $settings);
                 }
