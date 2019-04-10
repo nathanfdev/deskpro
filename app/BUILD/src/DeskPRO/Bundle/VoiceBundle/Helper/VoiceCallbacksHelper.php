@@ -908,6 +908,36 @@ class VoiceCallbacksHelper
     }
 
     /**
+     * @param VoicePhoneCall $phoneCall
+     */
+    public function changeTicketAgentToFollower(VoicePhoneCall $phoneCall)
+    {
+        // get phone call ticket
+        $messageAttribute = $this->em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
+            'phoneCall' => $phoneCall,
+        ]);
+        if (!$messageAttribute instanceof TicketMessageVoicePhoneCall) {
+            return;
+        }
+
+        /** @var Ticket $ticket */
+        $ticket = $messageAttribute->getMessage()->getTicket();
+
+        // change ticket assigned agent to follower on cold transfer
+        $ticketAgent = $ticket->getAgent();
+        $ticket->setAgent(null);
+
+        if ($ticketAgent) {
+            $participant = new TicketParticipant();
+            $participant->setPerson($ticketAgent);
+
+            $ticket->addParticipant($participant);
+        }
+
+        $this->saveTicket($ticket);
+    }
+
+    /**
      * @param int $agentId
      *
      * @throws \Exception

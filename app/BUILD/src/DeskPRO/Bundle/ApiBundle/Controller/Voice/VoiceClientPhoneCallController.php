@@ -546,26 +546,7 @@ class VoiceClientPhoneCallController extends BaseController
             $this->get('dp.voice.provider_helper')->kickParticipant($participant);
         }
 
-        // get phone call ticket
-        $messageAttribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-            'phoneCall' => $phoneCall,
-        ]);
-        if (!$messageAttribute) {
-            throw $this->createBadRequestException('Unable to get ticket message for the phone call');
-        }
-
-        /** @var Ticket $ticket */
-        $ticket = $messageAttribute->getMessage()->getTicket();
-
-        // change ticket assigned agent to follower on cold transfer
-        $ticketPerson = $ticket->getAgent();
-        $ticket->setAgent(null);
-
-        $participant = new TicketParticipant();
-        $participant->setPerson($ticketPerson);
-
-        $ticket->addParticipant($participant);
-        $this->get('dp.voice.callbacks_helper')->saveTicket($ticket);
+        $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
 
         // create a router task
         // and transfer to call router
@@ -607,6 +588,8 @@ class VoiceClientPhoneCallController extends BaseController
      * @param VoicePhoneCall $phoneCall
      * @param VoiceQueue     $queue
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function coldTransferToQueueAction(VoicePhoneCall $phoneCall, VoiceQueue $queue)
@@ -615,6 +598,8 @@ class VoiceClientPhoneCallController extends BaseController
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
         $em->flush();
+
+        $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
 
         // disconnect existing agents from the call
         foreach ($phoneCall->getAgentParticipants() as $participant) {
@@ -668,6 +653,8 @@ class VoiceClientPhoneCallController extends BaseController
 
         $phoneCall->setStatus(VoicePhoneCall::STATUS_COLD_TRANSFER);
         $em->flush();
+
+        $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
 
         // disconnect existing agents from the call
         foreach ($phoneCall->getAgentParticipants() as $participant) {
