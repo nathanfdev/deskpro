@@ -383,7 +383,7 @@ class PlivoAdapter implements VoiceProviderInterface
         $client = $this->getClient($account);
         foreach ($phoneCall->getOutgoingRequestIds() as $requestId) {
             try {
-                $client->calls->cancel($requestId);
+                $client->calls->delete($requestId);
             } catch (PlivoResponseException $e) {
                 $this->logger->info(sprintf(
                     'Unable to cancel the call, request_id = %s, message = %s',
