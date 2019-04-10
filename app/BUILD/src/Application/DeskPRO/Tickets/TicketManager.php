@@ -26,12 +26,12 @@ use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
 use DpSys\LowError\SystemErrorHandler;
+use Exception;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Util\Util as OrbUtil;
-use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
 
 /**
  * Class TicketManager.
@@ -623,7 +623,7 @@ class TicketManager
                     if ($auth && $auth->getApiUser()) {
                         $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->getId() : null;
                     }
-                } catch (InactiveScopeException $e) {
+                } catch (Exception $e) {
                 }
             }
 
@@ -637,7 +637,7 @@ class TicketManager
                         $key       = (int) $key;
                     }
                 }
-            } catch (InactiveScopeException $e) {
+            } catch (Exception $e) {
             }
 
             if ($key) {
