@@ -21,11 +21,11 @@ class ContactDataViolationMapper
     /**
      * Constructor.
      *
-     * @param string $form_name
+     * @param string $formName
      */
-    public function __construct($form_name)
+    public function __construct($formName)
     {
-        $this->formName = $form_name;
+        $this->formName = $formName;
     }
 
     /**
@@ -52,7 +52,7 @@ class ContactDataViolationMapper
                 $typeForm = $form->get($type);
                 $index    = $this->correctIndex($entity, $typeForm);
 
-                if ($index !== false) {
+                if ($index !== false && $typeForm->has($index)) {
                     $entityForm = $typeForm->get($index);
                     foreach ($entityForm->all() as $childForm) {
                         $childPropertyPath = $childForm->getConfig()->getOption('property_path');
