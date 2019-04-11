@@ -135,7 +135,7 @@ abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObj
             throw new \Exception(sprintf('Invalid number %s', $number));
         }
 
-        $phone_number = (string) $number;
+        $phone_number = '+'.$number->getCountryCode().$number->getNationalNumber();
         $region       = $phone_util->getRegionCodeForNumber($number);
         $type         = PhoneNumbers::getType($phone_number);
 
