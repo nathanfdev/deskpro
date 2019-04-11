@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
@@ -107,6 +108,15 @@ class TicketMessage extends DomainObject
      * @Assert\Valid()
      */
     protected $attachments;
+
+    /**
+     * Snippets used in this message.
+     *
+     * @var SnippetUseLog[]
+     *
+     * @Assert\Valid()
+     */
+    protected $snippet_use_logs;
 
     /**
      * Date when message was created.
@@ -256,8 +266,9 @@ class TicketMessage extends DomainObject
     public function __construct($email_id = null)
     {
         $this->setModelField('date_created', new \DateTime());
-        $this->attributes  = new ArrayCollection();
-        $this->attachments = new ArrayCollection();
+        $this->attributes       = new ArrayCollection();
+        $this->attachments      = new ArrayCollection();
+        $this->snippet_use_logs = new ArrayCollection();
         if ($email_id) {
             $ref             = new TicketMessageEmailId();
             $ref['email_id'] = $email_id;
@@ -951,6 +962,19 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @param SnippetUseLog $useLog
+     *
+     * @return $this
+     */
+    public function addSnippetUseLog(SnippetUseLog $useLog)
+    {
+        $this->snippet_use_logs->add($useLog);
+        $useLog->setTicketMessage($this);
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getMessageHash()
@@ -1340,6 +1364,16 @@ class TicketMessage extends DomainObject
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageEmailId',
                 'mappedBy'     => 'message',
                 'cascade'      => ['persist'],
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'snippet_use_logs',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\SnippetUseLog',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticketMessage',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
             ]
         );
         $metadata->addEntityListener(Events::postPersist, AttachmentHelper::class, 'verifyBlobs');

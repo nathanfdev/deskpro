@@ -295,6 +295,7 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@attachment_helper"
       - "@tickets.statuses"
+      - "@deskpro.feature_flags"
       - "@?api_client_info"
     tags:
       - { name: form.type }

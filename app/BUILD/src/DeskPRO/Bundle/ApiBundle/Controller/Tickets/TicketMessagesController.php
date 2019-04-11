@@ -62,6 +62,7 @@ class TicketMessagesController extends AbstractTicketsCrudSubController
             'with_ticket_validation' => $request->get('with_ticket_validation'),
             'allow_set_status'       => true,
             'allow_apply_macros'     => true,
+            'allow_set_snippets'     => true,
             'admin_api_key_request'  => $this->isAdminApiKeyRequest(),
         ]);
 
