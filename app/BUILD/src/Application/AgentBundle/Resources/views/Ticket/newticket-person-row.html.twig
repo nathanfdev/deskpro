@@ -31,6 +31,10 @@
 			<td>
 				{% if not person.id or not person.phone_numbers.length < 1 %}
 					<input type="text" name="newticket[person][phone_number]" class="phone_number" value="" style="margin:0;" />
+				{% else %}
+					{% if person.phone_numbers|length >= 1 %}
+						{{ person.phone_numbers[0].number }}
+					{% endif %}
 				{% endif %}
 			</td>
 		</tr>
