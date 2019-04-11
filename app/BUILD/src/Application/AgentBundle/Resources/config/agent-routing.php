@@ -1964,6 +1964,12 @@ $collection->create('agent_downloads_list', [
     'options'    => ['fragment_name' => 'downloads', 'fragment_type' => 'list'],
 ]);
 
+$collection->create('agent_downloads_ajaxsavecustomfields', [
+    'path'         => '/downloads/{download_id}/ajax-save-custom-fields',
+    'controller'   => 'AgentBundle:Downloads:ajaxSaveCustomFields',
+    'requirements' => ['download_id' => '\\d+'],
+]);
+
 $collection->create('agent_downloads_view', [
     'path'         => '/downloads/file/{download_id}',
     'controller'   => 'AgentBundle:Downloads:view',

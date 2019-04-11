@@ -6,6 +6,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\CustomDefDownload;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
@@ -238,11 +239,35 @@ class DownloadsController extends AbstractController
         }
 
         // RENDER THEME
+        $customData = [];
+        foreach ($this->getEm()->getRepository(CustomDefDownload::class)->getEnabledUserFields() as $def) {
+            if ($def->getParent()) {
+                continue;
+            }
+            if ($data = $file->getCustomDataForField($def)) {
+                if (is_array($data)) {
+                    $val = [];
+                    foreach ($data as $datum) {
+                        $val[] = $this->get('data.custom_field_util')->getValueForCustomFormField($def, $datum);
+                    }
+                } else {
+                    $val = $this->get('data.custom_field_util')->getValueForCustomFormField($def, $data);
+                }
+            } else {
+                $val = '';
+            }
+            $customData[] = [
+                'type'  => $def->type,
+                'label' => $def->getTitle(),
+                'value' => $val,
+            ];
+        }
 
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             [
                 'file'               => $file,
+                'custom_data'        => $customData,
                 'content_type'       => Download::CONTENT_TYPE,
                 'content_id'         => $file->getId(),
                 'new_comment_form'   => $newCommentForm ? $newCommentForm->createView() : null,
