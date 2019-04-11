@@ -778,6 +778,12 @@ class TicketTerms
 
                 break;
 
+            case TicketSearch::TERM_RANGE_ID:
+                if (!$this->_testIntMatch($ticket['id'], $op, @$choice['id'])) {
+                    return false;
+                }
+                break;
+
             case TicketSearch::TERM_BRAND:
                 if (!$this->_testChoiceMatch($ticket['brand_id'], $op, $choice)) {
                     return false;
@@ -1532,6 +1538,36 @@ class TicketTerms
         }
 
         return true;
+    }
+
+    /**
+     * @param int    $value
+     * @param string $op
+     * @param int    $int
+     *
+     * @return bool
+     */
+    protected function _testIntMatch($value, $op, $int)
+    {
+        $value = (int) $value;
+        $int   = (int) $int;
+
+        switch ($op) {
+            case self::OP_IS:
+                return $value === $int;
+            case self::OP_NOT:
+                return $value !== $int;
+            case self::OP_LT:
+                return $value < $int;
+            case self::OP_LTE:
+                return $value <= $int;
+            case self::OP_GT:
+                return $value > $int;
+            case self::OP_GTE:
+                return $value >= $int;
+        }
+
+        return false;
     }
 
     /**
