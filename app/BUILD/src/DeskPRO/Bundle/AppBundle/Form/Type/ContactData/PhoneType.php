@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
@@ -75,8 +71,11 @@ class PhoneType extends AbstractContactDataItemType
     public function onPostSubmit(FormEvent $event)
     {
         // prepare phone code
-        /** @var ContactDataAbstract $data */
         $data = $event->getData();
+        if (!$data instanceof  ContactDataAbstract) {
+            return;
+        }
+
         $data->setField1(RegexUtils::safePregReplace('#[^0-9]#', '', $data->getField1()));
 
         // set searchable field

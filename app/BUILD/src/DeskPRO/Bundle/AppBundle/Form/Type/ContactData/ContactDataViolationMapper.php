@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
@@ -20,16 +16,16 @@ class ContactDataViolationMapper
     /**
      * @var string
      */
-    private $form_name;
+    private $formName;
 
     /**
      * Constructor.
      *
-     * @param string $form_name
+     * @param string $formName
      */
-    public function __construct($form_name)
+    public function __construct($formName)
     {
-        $this->form_name = $form_name;
+        $this->formName = $formName;
     }
 
     /**
@@ -37,40 +33,40 @@ class ContactDataViolationMapper
      */
     public function __invoke(FormEvent $event)
     {
-        $parent_form = $event->getForm();
+        $parentForm = $event->getForm();
 
-        $form = $parent_form->get($this->form_name);
-        $data = $parent_form->getData()->getContactData();
+        $form = $parentForm->get($this->formName);
+        $data = $parentForm->getData()->getContactData();
 
         // set children errors
         foreach ($form->getErrors() as $error) {
-            $property_path = $this->parsePropertyPath($error->getCause());
+            $propertyPath = $this->parsePropertyPath($error->getCause());
 
-            if (is_array($property_path)) {
-                list($index, $field) = $property_path;
+            if (is_array($propertyPath)) {
+                list($index, $field) = $propertyPath;
 
                 /** @var ContactDataAbstract $entity */
                 $entity = $data[$index];
                 $type   = $entity->getContactType();
 
-                $type_form = $form->get($type);
-                $index     = $this->correctIndex($entity, $type_form);
+                $typeForm = $form->get($type);
+                $index    = $this->correctIndex($entity, $typeForm);
 
-                if ($index !== false) {
-                    $entity_form = $type_form->get($index);
-                    foreach ($entity_form->all() as $child_form) {
-                        $child_property_path = $child_form->getConfig()->getOption('property_path');
-                        if ($child_property_path === $field) {
-                            $field = $child_form->getName();
+                if ($index !== false && $typeForm->has($index)) {
+                    $entityForm = $typeForm->get($index);
+                    foreach ($entityForm->all() as $childForm) {
+                        $childPropertyPath = $childForm->getConfig()->getOption('property_path');
+                        if ($childPropertyPath === $field) {
+                            $field = $childForm->getName();
                         }
                     }
 
-                    $error_mapping = $entity_form->getConfig()->getOption('error_mapping');
-                    if (isset($error_mapping[$field])) {
-                        $field = $error_mapping[$field];
+                    $errorMapping = $entityForm->getConfig()->getOption('error_mapping');
+                    if (isset($errorMapping[$field])) {
+                        $field = $errorMapping[$field];
                     }
 
-                    $entity_form->get($field)->addError($error);
+                    $entityForm->get($field)->addError($error);
                 }
             }
         }
@@ -89,8 +85,8 @@ class ContactDataViolationMapper
      */
     protected function parsePropertyPath(ConstraintViolation $violation)
     {
-        $property_path = $violation->getPropertyPath();
-        if (preg_match('#data\.'.$this->form_name.'\[(\d+)\]\.([\w\d_]+)#', $property_path, $matches)) {
+        $propertyPath = $violation->getPropertyPath();
+        if (preg_match('#data\.'.$this->formName.'\[(\d+)\]\.([\w\d_]+)#', $propertyPath, $matches)) {
             return [
                 $matches[1],
                 $matches[2],
@@ -102,13 +98,13 @@ class ContactDataViolationMapper
 
     /**
      * @param ContactDataAbstract $entity
-     * @param FormInterface       $type_form
+     * @param FormInterface       $typeForm
      *
      * @return int|false
      */
-    protected function correctIndex(ContactDataAbstract $entity, FormInterface $type_form)
+    protected function correctIndex(ContactDataAbstract $entity, FormInterface $typeForm)
     {
-        foreach ($type_form->all() as $child_form) {
+        foreach ($typeForm->all() as $child_form) {
             if ($entity === $child_form->getData()) {
                 return (int) $child_form->getName();
             }
