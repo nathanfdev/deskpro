@@ -15,7 +15,7 @@ $SETTINGS['enable_experimental'] = ['all' => true];
 # where you want to write logs + which modes would   #
 # be logged or matched agains dupes                  #
 ######################################################
-$SETTINGS['api_log.enabled'] = false;
+//$SETTINGS['api_log.enabled'] = false;
 $SETTINGS['api_log.modes'] = ['key'];
 $SETTINGS['api_log.writer.type'] = 'db';
 $SETTINGS['api_log.writer.file.serializer.type'] = 'human_readable';
