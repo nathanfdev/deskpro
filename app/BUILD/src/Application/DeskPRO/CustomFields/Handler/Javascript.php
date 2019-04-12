@@ -7,9 +7,50 @@ namespace Application\DeskPRO\CustomFields\Handler;
  */
 class Javascript extends HandlerAbstract
 {
+    /**
+     * @param array $formData
+     * @param null  $default
+     *
+     * @return mixed|null
+     */
+    private function findValue(array $formData, $default = null)
+    {
+        $names = $this->getAllFormFieldNames();
+        foreach ($names as $name) {
+            if (isset($formData[$name])) {
+                return $formData[$name];
+            }
+        }
+
+        return $default;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDataFromForm(array $formData)
     {
-        // TODO: Implement getDataFromForm() method.
+        $valueIfNotPresent = new \stdClass();
+        $value             = $this->findValue($formData, $valueIfNotPresent);
+
+        if ($value !== $valueIfNotPresent) {
+            $decodedValue = null;
+
+            try {
+                $decodedValue = is_string($value) ? json_decode($value) : null;
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $decodedValue = null;
+                }
+            } catch (\Exception $e) {
+                $decodedValue = null;
+            }
+
+            $data = is_null($decodedValue) ? $value : json_encode($decodedValue);
+
+            return [[$this->field_def->getId(), 'input', $data]];
+        }
+
+        return [];
     }
 
     /**
@@ -17,7 +58,7 @@ class Javascript extends HandlerAbstract
      */
     public function getSearchCapabilities()
     {
-        return [];
+        return ['is', 'not'];
     }
 
     /**
@@ -25,7 +66,7 @@ class Javascript extends HandlerAbstract
      */
     public function getFilterCapabilities()
     {
-        return [];
+        return ['is', 'not'];
     }
 
     /**
@@ -33,14 +74,6 @@ class Javascript extends HandlerAbstract
      */
     public function getSearchType()
     {
-        return 'none';
-    }
-
-    /**
-     * @return string
-     */
-    public function getWidgetName()
-    {
-        return 'javascript';
+        return 'input';
     }
 }

@@ -1214,6 +1214,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     /**
      * @return bool
      */
+    public function isJavascriptType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_JAVASCRIPT;
+    }
+
+    /**
+     * @return bool
+     */
     public function isDataListType()
     {
         return $this->handler_class === self::HANDLER_CLASS_DATALIST;

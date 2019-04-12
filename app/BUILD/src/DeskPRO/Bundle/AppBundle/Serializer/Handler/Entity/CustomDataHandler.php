@@ -108,6 +108,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
                     $result[$defId]['value'] = $this->serializeDateTimeValue($customData->getData(), $context);
                     break;
                 case CustomDefAbstract::TYPE_DATA_JSON:
+                case CustomDefAbstract::TYPE_JAVASCRIPT:
                     $result[$defId]['value'] = $this->serializeDataJsonValue($customData->getData());
                     break;
                 case CustomDefAbstract::TYPE_CURRENCY:
