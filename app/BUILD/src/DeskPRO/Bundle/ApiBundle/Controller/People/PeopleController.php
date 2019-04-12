@@ -13,6 +13,7 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\SearchHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\UsergroupsHelper;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
@@ -165,6 +166,17 @@ class PeopleController extends AbstractPeopleController
 
         $this->getManager()->persist($person);
         $this->getManager()->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @Rest\Delete("/{id}", requirements={"id"="\d+"})
+     * @AgentPermission("agent_people.delete")
+     */
+    public function deleteAction($id, Request $request)
+    {
+        parent::deleteAction($id, $request);
     }
 
     /**

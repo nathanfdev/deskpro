@@ -80,9 +80,13 @@ class PermissionGroupVoter extends Voter
             if ($usergroup->hasAllPermissions()) {
                 return true; // admin is allmighty, right?
             }
-            if ($usergroup->hasAllSafePermissions() && in_array($attribute, [self::VIEW_LIST, self::VIEW])) {
+            if ($usergroup->hasAllSafePermissions() && in_array($attribute, [self::VIEW_LIST, self::VIEW, self::CREATE, self::MODIFY])) {
                 return true;
             }
+        }
+
+        if ($user->isAdmin()) {
+            return true; // admin is allmighty, right?
         }
 
         $entityClass = $subject->getChildClass() ?: $subject->getParentClass();
