@@ -145,6 +145,16 @@ class VoiceControlsContainer extends React.Component {
         hold: !!event.hold
       });
     });
+    messageBroker.addMessageListener('agent.voice.agent-joined-call', (event) => {
+      const connection = this.getConnection();
+      if (!connection || parseInt(connection.callId, 10) !== parseInt(event.call_id, 10)) {
+        return;
+      }
+
+      this.setState({
+        target: null
+      });
+    });
   }
 
   componentWillUnmount() {

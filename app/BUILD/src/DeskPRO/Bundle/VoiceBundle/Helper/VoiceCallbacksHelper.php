@@ -270,6 +270,14 @@ class VoiceCallbacksHelper
             $log->setDetails($details);
         }
 
+        $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.agent-joined-call',
+            [
+                'call_id'  => $callId,
+                'agent_id' => $agentId,
+            ]
+        ));
+
         $this->em->persist($log);
         $this->em->flush();
 
