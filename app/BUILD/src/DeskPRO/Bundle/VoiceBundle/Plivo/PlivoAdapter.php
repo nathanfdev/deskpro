@@ -285,17 +285,23 @@ class PlivoAdapter implements VoiceProviderInterface
      * @param string      $toNumber
      * @param string      $answerUrl
      * @param string      $answerMethod
+     * @param bool        $hangupOnMachineDetection
      * @param mixed       $exception
      *
      * @throws \Exception
      *
      * @return string|bool
      */
-    public function callNumber(VoiceNumber $fromNumber, $toNumber, $answerUrl, $answerMethod, &$exception = false)
+    public function callNumber(VoiceNumber $fromNumber, $toNumber, $answerUrl, $answerMethod, $hangupOnMachineDetection, &$exception = false)
     {
         $account = $fromNumber->getAccount();
         if (!$account instanceof PlivoVoiceAccount) {
             throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        $params = [];
+        if ($hangupOnMachineDetection) {
+            $params['machine_detection'] = 'hangup';
         }
 
         try {
@@ -305,9 +311,7 @@ class PlivoAdapter implements VoiceProviderInterface
                 [$toNumber],
                 $answerUrl,
                 $answerMethod,
-                [
-                    'machine_detection' => 'hangup',
-                ]
+                $params
             );
 
             return $call->getRequestUuid();

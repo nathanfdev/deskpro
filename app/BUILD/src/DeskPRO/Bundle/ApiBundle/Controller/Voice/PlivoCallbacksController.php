@@ -185,6 +185,7 @@ class PlivoCallbacksController extends BaseController
                         $phoneCall->getExternalNumber(),
                         $this->getOutboundCallbackUrl($account, $phoneCall),
                         'POST',
+                        false,
                         $exception
                     );
 
@@ -602,7 +603,8 @@ class PlivoCallbacksController extends BaseController
                                     $phoneCall->getNumber(),
                                     $agent->getForwardingNumber(),
                                     $this->getAnswerForwardingUrl($account, $phoneCall, $agent),
-                                    'POST'
+                                    'POST',
+                                    true
                                 );
 
                                 if ($callRequestId) {
