@@ -5,19 +5,17 @@ namespace Application\DeskPRO\CustomFields\Form\Model;
 /**
  * Class CurrencyField.
  */
-class JavascriptField extends CustomFieldAbstract
+class JavascriptField extends TextareaField
 {
-    private $jsCode;
+    public $code;
 
     /**
      * {@inheritdoc}
      */
-    protected function init()
+    public function init()
     {
-        $this->required                 = (bool) $this->_field->getOption('required');
-        $this->agent_required           = (bool) $this->_field->getOption('agent_required');
-        $this->agent_validation_resolve = (bool) $this->_field->getOption('agent_validation_resolve');
-        $this->jsCode                   = (bool) $this->_field->getOption('js_code');
+        parent::init();
+        $this->code = $this->_field->getOption('code');
     }
 
     /**
@@ -25,9 +23,7 @@ class JavascriptField extends CustomFieldAbstract
      */
     protected function setFieldProperties()
     {
-        $this->_field->setOption('required', $this->required);
-        $this->_field->setOption('agent_required', $this->agent_required);
-        $this->_field->setOption('agent_validation_resolve', $this->agent_validation_resolve);
-        $this->_field->setOption('js_code', $this->jsCode);
+        parent::setFieldProperties();
+        $this->_field->setOption('code', $this->code);
     }
 }

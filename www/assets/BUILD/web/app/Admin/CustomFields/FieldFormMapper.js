@@ -29,7 +29,8 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           agent_regex:              '',
           agent_regex_required:     false,
           agent_validation_resolve: false,
-          clickable_links:          false
+          clickable_links:          false,
+          code:                     ''
         },
         toggle: {
           label_text:               '',
@@ -125,7 +126,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         form.alias = fieldModel.alias;
         form.description = fieldModel.description;
 
-        if (fieldModel.type_name === 'textarea') {
+        if (fieldModel.type_name === 'textarea' || fieldModel.type_name === 'javascript') {
           formTypeOpts = form.text;
         } else {
           formTypeOpts = form[fieldModel.type_name];
@@ -141,7 +142,7 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         }
 
         switch (fieldModel.type_name) {
-          case 'text': case 'textarea':
+          case 'text': case 'textarea': case 'javascript':
             if (fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex) {
               if (fieldModel.options.min_length) {
                 formTypeOpts.user_validation = 'required';
@@ -179,6 +180,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
             if (fieldModel.options.clickable_links) {
               formTypeOpts.clickable_links = !!fieldModel.options.clickable_links;
+            }
+            if (fieldModel.options.code) {
+              formTypeOpts.code = fieldModel.options.code;
             }
             break;
 
@@ -369,18 +373,20 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         is_enabled:     formModel.is_enabled
       };
 
-      if (fieldType === 'textarea') {
+      if (fieldType === 'textarea' || fieldType === 'javascript') {
         formTypeOpts = formModel.text;
       } else {
         formTypeOpts = formModel[fieldType];
       }
 
       switch (fieldType) {
-        case 'text': case 'textarea':
+        case 'text': case 'textarea': case 'javascript':
           if (fieldType === 'text') {
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
-          } else {
+          } else if (fieldType === 'textarea') {
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea';
+          } else {
+            postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Javascript';
           }
 
           postData.default_value = formTypeOpts.default_value;
@@ -404,6 +410,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             postData.agent_validation_type = 'regex';
             postData.agent_regex = formTypeOpts.agent_regex;
             postData.agent_regex_required = formTypeOpts.agent_regex_required;
+          }
+          if (fieldType === 'javascript') {
+            postData.code = formTypeOpts.code;
           }
           break;
 

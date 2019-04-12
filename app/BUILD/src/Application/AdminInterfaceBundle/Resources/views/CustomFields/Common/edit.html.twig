@@ -230,7 +230,10 @@
 								</div>
 								<div class="col-lg-9">
 									<div class="inner-group">
-										<textarea class="form-control custom-field-js-code" name="code" ng-model="EditCtrl.form.code"></textarea>
+										<div class="form-control custom-field-js-code"
+											 ui-ace="{theme: 'chrome', mode: 'javascript'}"
+											 ng-model="EditCtrl.form.text.code"
+										></div>
 									</div>
 								</div>
 							</div>
