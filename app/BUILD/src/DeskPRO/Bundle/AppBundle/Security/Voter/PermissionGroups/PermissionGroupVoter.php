@@ -76,6 +76,13 @@ class PermissionGroupVoter extends Voter
             return false;
         }
 
+        if ($user->isAdmin()) {
+            $request = $this->container->get('request_stack')->getCurrentRequest();
+            if (!$request || !$request->attributes->get('require_agent_permissions')) {
+                return true; // admin is allmighty, right?
+            }
+        }
+
         foreach ($user->getPublicAgentgroups() as $usergroup) {
             if ($usergroup->hasAllPermissions()) {
                 return true; // admin is allmighty, right?
@@ -83,10 +90,6 @@ class PermissionGroupVoter extends Voter
             if ($usergroup->hasAllSafePermissions() && in_array($attribute, [self::VIEW_LIST, self::VIEW, self::CREATE, self::MODIFY])) {
                 return true;
             }
-        }
-
-        if ($user->isAdmin()) {
-            return true; // admin is allmighty, right?
         }
 
         $entityClass = $subject->getChildClass() ?: $subject->getParentClass();

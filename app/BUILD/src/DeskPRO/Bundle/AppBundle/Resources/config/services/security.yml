@@ -11,7 +11,7 @@ services:
       - { name: kernel.event_subscriber }
 
   security.agent_permission_listener:
-    class: DeskPRO\Bundle\AppBundle\Security\EventListener\AgentPermissionListener
+    class: DeskPRO\Bundle\AppBundle\Security\EventListener\RequireAgentPermissionsListener
     arguments: ["@annotation_reader"]
     tags:
       - { name: kernel.event_subscriber }

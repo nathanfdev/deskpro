@@ -13,8 +13,8 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\SearchHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\UsergroupsHelper;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\AgentPermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -71,6 +71,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *      }
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class PeopleController extends AbstractPeopleController
 {
@@ -172,7 +173,6 @@ class PeopleController extends AbstractPeopleController
      * {@inheritdoc}
      *
      * @Rest\Delete("/{id}", requirements={"id"="\d+"})
-     * @AgentPermission("agent_people.delete")
      */
     public function deleteAction($id, Request $request)
     {
