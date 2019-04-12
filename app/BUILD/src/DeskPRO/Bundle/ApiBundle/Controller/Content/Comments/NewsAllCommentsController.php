@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Content\Comments;
 use Application\DeskPRO\Entity\NewsComment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
@@ -36,6 +37,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *          {"name"="group_by", "dataType"="string", "pattern"="news|status|period_created", "description"="how to groups comments"}
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class NewsAllCommentsController extends AbstractAllCommentsController
 {

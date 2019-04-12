@@ -11,6 +11,7 @@ use DeskPRO\Bundle\ApiBundle\Traits\ApiKeyAwareTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Entity\TicketStatus;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
@@ -41,6 +42,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *      }
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class TicketsController extends AbstractTicketsController
 {

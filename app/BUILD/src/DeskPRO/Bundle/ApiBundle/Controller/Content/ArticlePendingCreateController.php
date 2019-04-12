@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\ArticlePendingCreate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,6 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
  *         {"name"="order_dir", "pattern"="asc|desc", "description"="order direction", "dataType"="string"}
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class ArticlePendingCreateController extends CrudController
 {
