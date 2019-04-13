@@ -12,6 +12,8 @@
 			{% endif %}
         {% elseif field_handler_name == 'Choice' %}
 			{{ data.value|raw }}
+        {% elseif field_handler_name == 'Javascript' %}
+			{{ data.value.value|raw }}
         {% elseif field_handler_name == 'File' %}
 			{% for file in data.value %}
 				<div>
