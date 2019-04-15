@@ -85,7 +85,7 @@ class Dialpad extends React.Component {
       if (callTo && this.lastQuery !== callTo) {
         const promise = onSearchPerson(callTo);
         promise.success(({ data }) => {
-          if (callTo === this.state.formData.value.call_to) {
+          if (this.lastQuery === callTo) {
             this.setState({
               searchResults: Immutable.fromJS(data)
             });
