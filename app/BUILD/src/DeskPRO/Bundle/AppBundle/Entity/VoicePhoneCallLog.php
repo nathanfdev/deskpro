@@ -41,6 +41,7 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
     const ACTION_USER_JOINED                          = 'call.user_joined';
     const ACTION_AGENT_JOINED                         = 'call.agent_joined';
     const ACTION_AGENT_CANCEL_INVITE                  = 'call.agent_cancel_invite';
+    const ACTION_AGENT_INVITE_TIMEOUT                 = 'call.agent_invite_timeout';
     const ACTION_AGENT_IGNORE_INVITE                  = 'call.agent_ignore_invite';
     const ACTION_AGENT_LEFT                           = 'call.agent_left';
     const ACTION_USER_LEFT                            = 'call.user_left';

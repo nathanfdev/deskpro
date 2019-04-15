@@ -235,7 +235,7 @@ class VoiceControlsContainer extends React.Component {
     promise.success(() => {
       setTimeout(() => {
         if (this.state.target) {
-          this.cancelInvite('Call was canceled by timeout');
+          this.cancelInvite('timeout');
         }
       }, agentVoicemailTimeout * 1000);
     });
@@ -252,18 +252,18 @@ class VoiceControlsContainer extends React.Component {
     });
   };
 
-  cancelInvite = (inviteError = null) => {
+  cancelInvite = (reason = null) => {
     const { dispatch } = this.props;
     const connection = this.getConnection();
     if (!connection) {
       return;
     }
 
-    const promise = dispatch(cancelInvite(connection.callId, this.state.target));
+    const promise = dispatch(cancelInvite(connection.callId, this.state.target, reason));
     promise.then(() => {
       this.setState({
-        target: null,
-        inviteError
+        target:      null,
+        inviteError: reason === 'timeout' ? 'Call was canceled by timeout' : null
       });
     });
   };

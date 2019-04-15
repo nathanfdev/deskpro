@@ -576,8 +576,8 @@ export const coldTransferToAutoAttendant = createAction(
 
 export const cancelInvite = createAction(
   'VOICE_AGENT_CANCEL_INVITE',
-  (callId, target) => (dispatch, getState) => {
-    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${target.get('id')}`);
+  (callId, target, reason) => (dispatch, getState) => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${target.get('id')}`, { reason });
     promise.success(() => {
       const state = getState();
       const phoneCalls = allPhoneCallsSelector(state);

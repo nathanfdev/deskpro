@@ -693,12 +693,13 @@ class VoiceClientPhoneCallController extends BaseController
      *
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
+     * @param Request        $request
      *
      * @throws \Exception
      *
      * @return View
      */
-    public function cancelAgentInviteAction(VoicePhoneCall $phoneCall, Person $agent)
+    public function cancelAgentInviteAction(VoicePhoneCall $phoneCall, Person $agent, Request $request)
     {
         if (!$agent->getAgentData() || !$agent->getAgentData()->isVoiceEnabled()) {
             throw $this->createBadRequestException('Voice is not enabled for this agent');
@@ -717,11 +718,17 @@ class VoiceClientPhoneCallController extends BaseController
         // add action log
         $log = new VoicePhoneCallLog();
         $log->setPerson($this->getVoiceAgent());
-        $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_CANCEL_INVITE);
         $log->setPhoneCall($phoneCall);
         $log->setDetails([
             'to_person' => $agent->getId(),
         ]);
+
+        $reason = $request->request->get('reason');
+        if ($reason === 'timeout') {
+            $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_INVITE_TIMEOUT);
+        } else {
+            $log->setActionType(VoicePhoneCallLog::ACTION_AGENT_CANCEL_INVITE);
+        }
 
         $em->persist($log);
         $em->flush();
