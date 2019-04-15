@@ -21,6 +21,11 @@ class QuickSearchRequest
     /**
      * @var string
      */
+    private $originalQuery;
+
+    /**
+     * @var string
+     */
     private $query;
 
     /**
@@ -70,6 +75,10 @@ class QuickSearchRequest
      */
     public function __construct(Person $person, $query, $params, $sort = null)
     {
+        $this->originalQuery = $query;
+
+        $query = trim($query);
+
         $this->person = $person;
         $this->query  = $query;
         $this->params = $params;
