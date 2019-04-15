@@ -13,6 +13,7 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\AppBundle\UserChat\UserChatEvent;
@@ -64,6 +65,7 @@ use Symfony\Component\HttpFoundation\Response;
  *      }
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class UserChatsController extends CrudController
 {
@@ -83,6 +85,8 @@ class UserChatsController extends CrudController
      * })
      *
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return \FOS\RestBundle\View\View
      */
@@ -119,6 +123,8 @@ class UserChatsController extends CrudController
      * @param Request $request
      * @param int     $id
      * @param int     $agentId
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return View
      */
@@ -162,6 +168,8 @@ class UserChatsController extends CrudController
      *
      * @param Request $request
      * @param int     $id
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return View
      */

@@ -134,3 +134,21 @@ Feature: /ticket_statuses endpoint
     When I send a GET request to "/api/v2/tickets/{ticket1}"
     Then the response status code should be 200
     And the JSON node "data.status" should be equal to "awaiting_agent"
+
+  Scenario: I should be able to add ticket statuses as an admin
+    Given I'm authenticated as "admin"
+    And I remove "admin" usergroup relation "agent_all_perms"
+    And I remove "admin" usergroup relation "agent_all_safe_perms"
+
+    When I send a POST request to "/api/v2/ticket_statuses" with body:
+    """
+{
+  "status_type": "pending",
+  "title": "Test perms",
+  "sys_id": "test_perms"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.status_code" should exist
+    And the JSON node "data.title" should be equal to "Test perms"
+    And the JSON node "data.sys_id" should be equal to "test_perms"

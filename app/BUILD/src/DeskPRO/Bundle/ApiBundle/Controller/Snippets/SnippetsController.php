@@ -12,6 +12,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
@@ -68,6 +69,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  *          {"name"="search", "pattern"="\w+", "description"="Words to find in the snippet title", "dataType"="string"}
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class SnippetsController extends CrudController
 {

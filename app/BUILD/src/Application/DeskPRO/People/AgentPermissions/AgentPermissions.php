@@ -19,6 +19,7 @@ use Application\DeskPRO\People\AgentPermissions\Value\SnippetsPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TasksPermissions;
 use Application\DeskPRO\People\AgentPermissions\Value\TicketPermissions;
 use Application\DeskPRO\People\PermissionsSetInterface;
+use Symfony\Component\DependencyInjection\Container;
 
 class AgentPermissions implements PermissionsSetInterface
 {
