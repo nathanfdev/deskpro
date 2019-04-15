@@ -65,7 +65,7 @@ class TaskBuilder
         $this->storage->saveTask($task);
 
         try {
-            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+            $this->dispatcher->dispatch(TaskRouterEvent::TASK_CREATED, new TaskRouterEvent($task));
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
@@ -97,7 +97,7 @@ class TaskBuilder
         $this->storage->saveTask($task);
 
         try {
-            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+            $this->dispatcher->dispatch(TaskRouterEvent::TASK_CREATED, new TaskRouterEvent($task));
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
@@ -132,7 +132,7 @@ class TaskBuilder
         $this->storage->saveTask($task);
 
         try {
-            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+            $this->dispatcher->dispatch(TaskRouterEvent::TASK_CREATED, new TaskRouterEvent($task));
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
@@ -161,7 +161,7 @@ class TaskBuilder
         $this->storage->saveTask($task);
 
         try {
-            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+            $this->dispatcher->dispatch(TaskRouterEvent::TASK_CREATED, new TaskRouterEvent($task));
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
@@ -198,7 +198,7 @@ class TaskBuilder
         $this->storage->saveTask($task);
 
         try {
-            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+            $this->dispatcher->dispatch(TaskRouterEvent::TASK_CREATED, new TaskRouterEvent($task));
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }
@@ -222,7 +222,7 @@ class TaskBuilder
         $this->storage->saveTask($task);
 
         try {
-            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+            $this->dispatcher->dispatch(TaskRouterEvent::TASK_CREATED, new TaskRouterEvent($task));
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
         }

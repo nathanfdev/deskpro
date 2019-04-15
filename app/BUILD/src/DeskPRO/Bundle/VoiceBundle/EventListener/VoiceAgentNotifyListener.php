@@ -74,10 +74,10 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            TaskRouterEvent::ASSIGNED                => ['onAssigned', 'workerBusyHandler'],
+            TaskRouterEvent::ASSIGNED                => [['onAssigned'], ['workerBusyHandler']],
             TaskRouterEvent::ACCEPTED                => 'onAccepted',
             TaskRouterEvent::TASK_CANCELED           => 'onCanceled',
-            TaskRouterEvent::REJECTED                => ['onCanceled', 'workerIdleHandler'],
+            TaskRouterEvent::REJECTED                => [['onCanceled'], ['workerIdleHandler']],
             TaskRouterEvent::REJECTED_RESERVATION    => 'workerIdleHandler',
             TaskRouterEvent::ANOTHER_WORKER_RESERVED => 'workerBusyHandler',
             TaskRouterEvent::COMPLETE_WORKER         => 'workerIdleHandler',

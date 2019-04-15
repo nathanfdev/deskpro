@@ -19,6 +19,8 @@ services:
     arguments:
       - "@dp.voice.voice_task_helper"
       - "@dp.voice.task_router.storage"
+      - "@event_dispatcher"
+      - "@serializer"
     tags:
       - { name: dp.voice.event_subscriber }
 

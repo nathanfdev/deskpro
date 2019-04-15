@@ -11,13 +11,14 @@ class Queues extends React.Component {
     agents:       PropTypes.object,
     onlineAgents: PropTypes.object,
     queues:       PropTypes.object,
+    waitingUsers: PropTypes.object,
     me:           PropTypes.object,
     onChange:     PropTypes.func,
     saving:       PropTypes.bool
   };
 
   render() {
-    const { agents, onlineAgents, me, queues = Immutable.fromJS({}), saving, onChange } = this.props;
+    const { agents, onlineAgents, me, queues = Immutable.fromJS({}), waitingUsers, saving, onChange } = this.props;
     const myQueues = queues.filter(queue =>
       queue.get('agents').filter(agent => agent.get('agent') === me.get('id')).first()
     );
@@ -43,6 +44,7 @@ class Queues extends React.Component {
               agents={agents}
               onlineAgents={onlineAgents}
               queue={queue}
+              waitingUsers={waitingUsers[queue.get('id')]}
               active={voiceAgent ? voiceAgent.get('is_enabled') : false}
               onChange={onChange}
               saving={saving}
@@ -58,6 +60,7 @@ class QueueItem extends React.Component {
 
   static propTypes = {
     agents:       PropTypes.object,
+    waitingUsers: PropTypes.object,
     onlineAgents: PropTypes.object,
     active:       PropTypes.bool,
     queue:        PropTypes.object,
@@ -71,7 +74,7 @@ class QueueItem extends React.Component {
   };
 
   render() {
-    const { agents, onlineAgents, queue, active, saving } = this.props;
+    const { agents, onlineAgents, queue, waitingUsers, active, saving } = this.props;
     const queueAgentIds = queue.get('agents').map(voiceAgent => voiceAgent.get('agent')) || Immutable.fromJS([]);
     const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id'))).sort((a, b) => {
       if (onlineAgents.contains(a)) {
@@ -85,6 +88,8 @@ class QueueItem extends React.Component {
 
     const displayQueueAgents = queueAgents.slice(0, 15);
     const hiddenQueueAgents = queueAgents.slice(15);
+    const waitingCount = waitingUsers ? waitingUsers.users_count : 0;
+    const averageTime = waitingUsers ? waitingUsers.average_time : 0;
 
     return (
       <div className="queue-item">
@@ -118,9 +123,10 @@ class QueueItem extends React.Component {
             }
           </div>
         </div>
-        {/* <div className="queue-users">
-          3 users in queue (average wait 2m)
-        </div> */}
+        {waitingCount > 0 &&
+        <div className="queue-users">
+          {waitingCount} users in queue (average wait {averageTime === 1 ? '< 1m' : `${averageTime}m`})
+        </div>}
       </div>
     );
   }

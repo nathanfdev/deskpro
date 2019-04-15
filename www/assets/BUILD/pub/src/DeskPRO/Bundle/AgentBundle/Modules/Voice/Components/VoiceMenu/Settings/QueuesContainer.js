@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { voiceAgentsSelector, voiceOnlineAgentsSelector } from '../../../Selectors/agents';
-import { loadQueues, updateQueue } from '../../../Actions/queueActions';
+import { loadQueues, updateQueue, loadAverageWaitingTime } from '../../../Actions/queueActions';
 import { allQueuesSelector } from '../../../Selectors/queue';
 import Queues from './Queues';
 
@@ -13,7 +13,7 @@ import Queues from './Queues';
   agents:       voiceAgentsSelector(state),
   onlineAgents: voiceOnlineAgentsSelector(state)
 }))
-class QueuesToggleContainer extends React.Component {
+class QueuesContainer extends React.Component {
 
   static propTypes = {
     dispatch: PropTypes.func
@@ -22,13 +22,29 @@ class QueuesToggleContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving: false
+      saving:       false,
+      waitingUsers: {}
     };
   }
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch(loadQueues());
+
+    const promise = dispatch(loadAverageWaitingTime());
+    promise.success(({ data }) => {
+      this.setState({
+        waitingUsers: data
+      });
+    });
+
+    const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.voice.queue.average-waiting-time', (data) => {
+      const { waitingUsers } = this.state;
+      waitingUsers[data.queue] = data;
+
+      this.setState({ waitingUsers });
+    });
   }
 
   onChange = (queue, enabled) => {
@@ -65,4 +81,4 @@ class QueuesToggleContainer extends React.Component {
   }
 }
 
-export default QueuesToggleContainer;
+export default QueuesContainer;

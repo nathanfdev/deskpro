@@ -329,6 +329,12 @@ class TaskRouter
                 }
 
                 $this->storage->saveTask($task);
+            } else {
+                try {
+                    $this->dispatcher->dispatch(TaskRouterEvent::TASK_COMPLETED, new TaskRouterEvent($task));
+                } catch (\Exception $e) {
+                    SystemErrorHandler::logException($e);
+                }
             }
 
             return true;

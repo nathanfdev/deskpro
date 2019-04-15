@@ -11,7 +11,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class TaskRouterEvent extends Event
 {
-    const CREATED_TASK            = 'task_router.created_task';
+    const TASK_CREATED            = 'task_router.task_created';
     const ASSIGNED                = 'task_router.assigned';
     const ASSIGN_TIMEOUT          = 'task_router.assign_timeout';
     const TIMEOUT                 = 'task_router.timeout';
@@ -20,6 +20,7 @@ class TaskRouterEvent extends Event
     const REJECTED                = 'task_router.rejected';
     const REJECTED_RESERVATION    = 'task_router.rejected_reservation';
     const TASK_CANCELED           = 'task_router.canceled';
+    const TASK_COMPLETED          = 'task_router.completed';
     const ANOTHER_WORKER_RESERVED = 'task_router.reserved';
     const COMPLETE_WORKER         = 'task_router.completed_for_worker';
     const RESET_WORKER            = 'task_router.reset_worker';
