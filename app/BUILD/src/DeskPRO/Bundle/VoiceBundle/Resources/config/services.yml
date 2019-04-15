@@ -34,6 +34,7 @@ services:
     class: DeskPRO\Bundle\VoiceBundle\TaskRouter\TaskBuilder
     arguments:
       - "@dp.voice.task_router.storage"
+      - "@dp.voice.event_dispatcher"
 
   dp.voice.task_router_lock:
     class: Symfony\Component\Lock\Lock

@@ -6,10 +6,13 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\VoiceBundle\Event\TaskRouterEvent;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\StorageAdapter\StorageAdapterInterface;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\ChatWorkflow;
 use DeskPRO\Bundle\VoiceBundle\TaskRouter\Workflow\VoiceWorkflow;
+use DpSys\LowError\SystemErrorHandler;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class TaskBuilder.
@@ -22,13 +25,20 @@ class TaskBuilder
     private $storage;
 
     /**
+     * @var EventDispatcherInterface
+     */
+    private $dispatcher;
+
+    /**
      * Constructor.
      *
-     * @param StorageAdapterInterface $storage
+     * @param StorageAdapterInterface  $storage
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function __construct(StorageAdapterInterface $storage)
+    public function __construct(StorageAdapterInterface  $storage, EventDispatcherInterface $dispatcher)
     {
-        $this->storage = $storage;
+        $this->storage    = $storage;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -53,6 +63,12 @@ class TaskBuilder
         ]);
 
         $this->storage->saveTask($task);
+
+        try {
+            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        }
 
         return $task;
     }
@@ -79,6 +95,12 @@ class TaskBuilder
         ]);
 
         $this->storage->saveTask($task);
+
+        try {
+            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        }
 
         return $task;
     }
@@ -109,6 +131,12 @@ class TaskBuilder
 
         $this->storage->saveTask($task);
 
+        try {
+            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        }
+
         return $task;
     }
 
@@ -131,6 +159,12 @@ class TaskBuilder
         ]);
 
         $this->storage->saveTask($task);
+
+        try {
+            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        }
 
         return $task;
     }
@@ -163,6 +197,12 @@ class TaskBuilder
 
         $this->storage->saveTask($task);
 
+        try {
+            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        }
+
         return $task;
     }
 
@@ -180,6 +220,12 @@ class TaskBuilder
         ]);
 
         $this->storage->saveTask($task);
+
+        try {
+            $this->dispatcher->dispatch(TaskRouterEvent::CREATED_TASK, new TaskRouterEvent($task));
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+        }
 
         return $task;
     }

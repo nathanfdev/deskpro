@@ -11,6 +11,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class TaskRouterEvent extends Event
 {
+    const CREATED_TASK            = 'task_router.created_task';
     const ASSIGNED                = 'task_router.assigned';
     const ASSIGN_TIMEOUT          = 'task_router.assign_timeout';
     const TIMEOUT                 = 'task_router.timeout';
