@@ -1304,6 +1304,17 @@ img.emojione, svg.emojione {
   }
 }
 
+.emoji.box.arrow-bottom {
+  &:before {
+    top: 210px;
+    background-color: #FFF;
+
+    border: 1px solid $dp-greyscale-350;
+    border-left: none;
+    border-top: none;
+  }
+}
+
 .emoji.box {
   width: 278px;
   height: 222px;
