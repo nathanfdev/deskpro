@@ -1259,6 +1259,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			dataType: 'html',
 			success: function(html) {
 				self.placeUserRow(html);
+				self.newUser = false;
 				self.updateUi();
 				if (!person_id) {
 					self.getEl('person_id').val('');
