@@ -2,6 +2,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
+use Orb\Util\Util;
+
 /**
  * Handles the text field.
  */
@@ -51,6 +53,45 @@ class Javascript extends HandlerAbstract
         }
 
         return [];
+    }
+
+    /**
+     * Render the field to HTML for use in a web page.
+     */
+    public function renderHtml($data = null, array $template_vars = [])
+    {
+        if ($data === null) {
+            $data = [];
+        }
+
+        $templating = $this->getTemplateEngine();
+
+        $vars = array_merge($this->getRenderTemplateVars('html'), $template_vars, [
+            'data'               => $data,
+            'field_def'          => $this->field_def,
+            'field_handler'      => $this,
+            'field_handler_name' => Util::getBaseClassname($this),
+            'field_type'         => $this->field_def->getTableName(),
+        ]);
+
+        return $templating->render($this->getRenderTemplateName('html'), $vars);
+    }
+
+    public function getRenderTemplateName($context = 'html')
+    {
+        $tpl = 'DeskPRO:custom_fields:rendered-javascript-value';
+        if ($context == 'html') {
+            $tpl .= '.html.twig';
+        } else {
+            $tpl .= '.txt.twig';
+        }
+
+        return $tpl;
+    }
+
+    public function getFormTemplateName()
+    {
+        return 'DeskPRO:custom_fields:form-javascript-input.html.twig';
     }
 
     /**

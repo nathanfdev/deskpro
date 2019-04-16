@@ -1,0 +1,9 @@
+<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form {{ field_def.getOption('custom_css_classname', '') }} customfield" id="{{elId}}_form_wrap">
+    <div
+            data-code="{{ field_def.getOption('code') }}"
+            data-field-id="{{field_type}}_{{field_def.id}}"
+            class="js-custom-field"
+    >
+        <input type="hidden" value="{{ value.value|json_encode }}" />
+    </div>
+</div>

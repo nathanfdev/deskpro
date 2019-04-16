@@ -819,7 +819,7 @@ class FieldManager
                 $decVal = @json_decode($value, true);
                 $err    = json_last_error();
                 if ($err) {
-                    $decVal = ['value' => $value];
+                    $decVal = ['value' => $value, 'data' => []];
                 }
             } catch (\Exception $e) {
                 $decVal = ['value' => $value];

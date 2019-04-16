@@ -4,9 +4,13 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
  * Handles updating display based on department and rules
  */
 DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
+
+	Implements: [Orb.Util.Events],
+
 	initialize: function(page) {
 		var self = this;
 		this.page = page;
+		this.jsfields = {};
     this.page.addEvent('destroy', this.destroy, this);
 		this.display = this.page.getEl('field_holders').find('.field-holders-table');
 		this.fieldsWithDefaultSet = {};
@@ -95,6 +99,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
     this.initDateCustomFields();
     this.initFileCustomFields();
+    this.initJavascriptCustomFields();
 		this.initScope(this.page.getEl('field_holders'));
 		this.no_value_fields = [];
 
@@ -196,6 +201,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		$scope.editField = function($event, field) {
       var $row = self.display.find('tbody.item.' + field).first();
       self.initFieldWidgets($row);
+      self.fireEvent('edit_custom_field', [field]);
 
 			if (!$scope.editables[field]) return;
 			if ($scope.isEditMode(field)) return;
@@ -594,6 +600,60 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		});
   },
+
+	initJavascriptCustomFields: function() {
+		var self = this;
+		self.display.find('.js-custom-field').each(function() {
+			var $el = $(this);
+			var code = $el.data('code');
+			var fieldId = $el.data('field-id');
+			var fullCode = "self.jsfields['" + fieldId + "'] = " + code;
+			eval(fullCode);
+			var ctx = {
+        jQuery: $,
+        Handlebars: Handlebars,
+        interface: 'agent',
+        context: self.page.TYPENAME === 'newticket' ? 'newticket' : 'viewticket',
+        ticket: self.page.meta.ticket,
+				person: self.page.meta.ticket.person
+			};
+			self.jsfields[fieldId](ctx);
+			var $field = $('.' + fieldId + '.form.Javascript.customfield input');
+			var fieldData = JSON.parse($field.val());
+			self.jsfields[fieldId] = {
+				ctx:     ctx,
+				element: null,
+				field:   $field,
+				currentData: fieldData.data || {},
+				currentValue: fieldData.value,
+			};
+		});
+
+		self.addEvent('edit_custom_field', function(fieldId) {
+			var id  = 'custom_def_ticket_' + fieldId.replace('ticket_field_', '');
+			var field = self.jsfields[id];
+			if(field.element) {
+				field.ctx.onShow(field.currentValue, field.currentData, field.field);
+			} else {
+				var $renderedElement = field.ctx.renderField(function(value, data) {
+					var dataObject = {value: null, data: null};
+					if (
+						(value === null || typeof value === "undefined")
+						&& (data === null || typeof data === "undefined")
+					) {
+						dataObject.value = null;
+						dataObject.data = null;
+					} else {
+						dataObject = Object.assign({}, { value: value }, { data: data || {} });
+					}
+					field.field.val(JSON.stringify(dataObject));
+				}, field.currentValue, field.currentData);
+				$('.' + id + '.form.Javascript.customfield input').after($renderedElement);
+				field.element = $renderedElement;
+			}
+		}, self);
+		self.addEvent('cancel_edit', function() {self.jsfields.forEach(function(field){field.ctx.onHide(field.currentValue, field.currentData, field.field);})}, this);
+	},
   
   normalizeCustomFieldValues: function(customFieldsData) {
     var self = this;

@@ -1,0 +1,31 @@
+{% block content %}
+	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} customfield rendered dont-break-out" id="{{elId}}_rendered_wrap">
+		{% set field_rendered %}
+			{% block field_rendered %}
+					{{ data.value.value|raw }}
+			{% endblock %}
+		{% endset %}
+
+		{% if nl2br is defined and nl2br %}
+			{% set propValue = field_rendered|escape|nl2br %}
+		{% else %}
+			{% set propValue = field_rendered|escape %}
+		{% endif %}
+
+		{% if field_def.getOption('clickable_links') %}
+			{{ propValue|safe_link_urls_html }}
+		{% elseif field_handler_name == 'Url' %}
+			{% if propValue %}
+				<a href="{{ propValue }}" target="_blank">{{ propValue }}</a>
+			{% endif %}
+		{% elseif field_handler_name == 'Currency' %}
+			{% set currency = get_currency(field_def.getOption('currency_id')) %}
+			{% if currency %}
+				{{ currency.getSymbol() }} {{ (data.value / currency.getDelimiter()) | number_format(currency.getDecimalPlaces(), '.', ',') }}
+			{% endif %}
+		{% else %}
+			{{ propValue|raw }}
+		{% endif %}
+		{{ field_def.getHtmlOption()|raw }}
+	</div>
+{% endblock %}
