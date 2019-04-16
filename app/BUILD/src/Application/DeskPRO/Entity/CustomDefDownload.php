@@ -29,6 +29,23 @@ class CustomDefDownload extends CustomDefAbstract
     protected $children = null;
 
     /**
+     * @var string
+     */
+    protected $sys_name = null;
+
+    /**
+     * @param $string
+     *
+     * @return $this
+     */
+    public function setSysName($string)
+    {
+        $this->setModelField('sys_name', $string);
+
+        return $this;
+    }
+
+    /**
      * Set parent.
      *
      * @param CustomDefDownload $parent
@@ -40,6 +57,32 @@ class CustomDefDownload extends CustomDefAbstract
         $this->setModelField('parent', $parent);
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = [])
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+
+        if ($this->sys_name === 'eula' && isset($data['choices'])) {
+            $map = [];
+            foreach ($this->children as $c) {
+                $map[$c['id']] = $c;
+            }
+            foreach ($data['choices'] as &$dataChoice) {
+                $child = $map[$dataChoice['id']];
+                if ($child->getOption('eula')) {
+                    $dataChoice['eula'] = $child->getOption('eula');
+                }
+                if ($child->getOption('eula_format')) {
+                    $dataChoice['eula_format'] = $child->getOption('eula_format');
+                }
+            }
+        }
+
+        return $data;
     }
 
     //###########################################################################
@@ -61,6 +104,18 @@ class CustomDefDownload extends CustomDefAbstract
             'columnName' => 'id',
             'id'         => true,
         ]);
+        $metadata->mapField(
+            [
+                'fieldName'  => 'sys_name',
+                'type'       => 'string',
+                'length'     => 100,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'sys_name',
+                'unique'     => true,
+            ]
+        );
         $metadata->mapField([
             'fieldName'  => 'js_class',
             'type'       => 'string',

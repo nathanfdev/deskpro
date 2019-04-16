@@ -10,7 +10,17 @@ define([
       this.$inject = ['Api', '$q'];
     }
 
-    init() {}
+    init() {
+      this.eulaFieldExist = false;
+    }
+
+    isEulaFieldExist() {
+      return this.eulaFieldExist;
+    }
+
+    updateEulaFieldExist() {
+      this.eulaFieldExist = this.listModels.filter(f => f.sys_name === 'eula' || f.type_name === 'eula').length > 0;
+    }
 
     _doLoadList() {
       const deferred = this.$q.defer();
@@ -19,8 +29,12 @@ define([
         '/download_fields'
       ]).then((res) => {
         const custom_fields = [];
+        this.eulaFieldExist = false;
         for (const f of Array.from(res.data.api_download_fields.custom_fields)) {
           custom_fields.push(f);
+          if (f.sys_name === 'eula') {
+            this.eulaFieldExist = true;
+          }
         }
 
         return deferred.resolve(custom_fields);
@@ -48,7 +62,10 @@ define([
       * @return {promise}
     */
     deleteFieldById(id) {
-      const promise = this.Api.sendDelete(`/download_fields/${id}`).then(() => this.removeListModelById(id));
+      const promise = this.Api.sendDelete(`/download_fields/${id}`).then(() => {
+        this.removeListModelById(id);
+        this.updateEulaFieldExist();
+      });
       return promise;
     }
 
@@ -65,6 +82,9 @@ define([
       if (id) {
         this.Api.sendGet(`/download_fields/${id}`).then((result) => {
           const data = {};
+          if (result.data.field.sys_name === 'eula') {
+            result.data.field.type_name = 'eula'; // to properly show this field in UI
+          }
           data.field = result.data.field;
           data.field_type = result.data.field.type_name;
           data.form = this.getFormMapper().getFormFromModel(data.field);
@@ -116,7 +136,8 @@ define([
 
       promise.success(() => {
         mapper.applyFormToModel(fieldModel, formModel);
-        return this.mergeDataModel(fieldModel);
+        this.mergeDataModel(fieldModel);
+        this.updateEulaFieldExist();
       });
 
       return promise;

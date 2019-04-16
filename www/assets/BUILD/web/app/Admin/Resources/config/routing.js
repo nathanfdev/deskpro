@@ -1772,7 +1772,7 @@ define(function() {
   routes.push({
     id:           'portal.download_custom_fields.gocreate',
     url:          '/go-create',
-    templateName: 'CustomFields/Common/edit.html',
+    templateName: 'CustomFields/Download/edit.html',
     controller:   ['$state', function ($state) {
       $state.go('portal.download_custom_fields.create');
     }]
@@ -1781,14 +1781,14 @@ define(function() {
   routes.push({
     id:           'portal.download_custom_fields.create',
     url:          '/create',
-    templateName: 'CustomFields/Common/edit.html',
+    templateName: 'CustomFields/Download/edit.html',
     controller:   'Admin_CustomFields_Download_Ctrl_Edit'
   });
 
   routes.push({
     id:           'portal.download_custom_fields.edit',
     url:          '/{id:[0-9]+}',
-    templateName: 'CustomFields/Common/edit.html',
+    templateName: 'CustomFields/Download/edit.html',
     controller:   'Admin_CustomFields_Download_Ctrl_Edit',
   });
 

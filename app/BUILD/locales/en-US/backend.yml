@@ -1000,6 +1000,10 @@ admin.custom_fields.choice_require_user_input: 'Require user to input a value fo
 admin.custom_fields.custom_css_class: 'Custom CSS class'
 admin.custom_fields.custom_styling: 'Custom Styling'
 admin.custom_fields.display: Display
+admin.custom_fields.download.edit_eula: 'Edit EULA'
+admin.custom_fields.download.edit_eula_format: 'Format'
+admin.custom_fields.download.edit_eula_format_html: 'HTML'
+admin.custom_fields.download.edit_eula_format_text: 'Plain Text'
 admin.custom_fields.drag: drag
 admin.custom_fields.existing_values: 'Existing Values'
 admin.custom_fields.explain_date_field: 'This date field lets you select a date using a calendar widget.'

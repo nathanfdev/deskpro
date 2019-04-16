@@ -103,8 +103,12 @@ class DownloadFieldsController extends AbstractController implements ProtectedCo
 
         $post = $this->in->getAll('req');
 
+        if (isset($post['sys_name'])) {
+            $field->setSysName($post['sys_name']);
+        }
+
         $container = $this->getContainer();
-        $helper    = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+        $helper    = new Form\DownloadFormHelper($container->getEm(), $container->getFormFactory());
         try {
             $helper->saveFormToField($field, $post);
         } catch (\RuntimeException $e) {
@@ -196,12 +200,15 @@ class DownloadFieldsController extends AbstractController implements ProtectedCo
         $fields = $this->in->getCleanValueArray('custom_fields');
 
         $container = $this->getContainer();
-        $helper    = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+        $helper    = new Form\DownloadFormHelper($container->getEm(), $container->getFormFactory());
 
         foreach ($fields as $fieldData) {
             $field = $this->em->find(CustomDefDownload::class, $fieldData['id']);
             if (!$field || $field->parent) {
                 throw $this->createNotFoundException();
+            }
+            if (isset($fieldData['sys_name'])) {
+                $field->setSysName($fieldData['sys_name']);
             }
             try {
                 $helper->saveFormToField($field, $fieldData);

@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Model;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Orb\Util\Arrays;
 
 class ChoiceField extends CustomFieldAbstract
@@ -38,6 +39,8 @@ class ChoiceField extends CustomFieldAbstract
      * @var string
      */
     public $none_choice_title = '';
+
+    public $allowedChoiceOptions = [];
 
     protected function init()
     {
@@ -227,6 +230,9 @@ class ChoiceField extends CustomFieldAbstract
             $ch->setOption('cb', str_replace('cb_', '', $cinfo['id']));
 
             $choices[$cinfo['id']] = $ch;
+
+            $this->saveAllowedOptions($ch, $cinfo);
+
             $this->_em->persist($ch);
         }
 
@@ -254,6 +260,9 @@ class ChoiceField extends CustomFieldAbstract
             if ($ch->display_order != (int) $cinfo['display_order']) {
                 $ch->display_order = (int) $cinfo['display_order'];
             }
+
+            $this->saveAllowedOptions($ch, $cinfo);
+
             $this->_em->persist($ch);
         }
 
@@ -272,6 +281,21 @@ class ChoiceField extends CustomFieldAbstract
 
             $this->_em->persist($this->_field);
             $this->_em->flush();
+        }
+    }
+
+    /**
+     * Each choice can has options that we want to save to 'options' column.
+     *
+     * @param CustomDefAbstract $choice
+     * @param array             $choiceOptions
+     */
+    protected function saveAllowedOptions(CustomDefAbstract $choice, $choiceOptions)
+    {
+        foreach ($this->allowedChoiceOptions as $option) {
+            if (array_key_exists($option, $choiceOptions)) {
+                $choice->setOption($option, $choiceOptions[$option]);
+            }
         }
     }
 }

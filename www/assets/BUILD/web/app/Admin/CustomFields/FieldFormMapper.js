@@ -45,6 +45,13 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
           agent_validation:         '0',
           agent_validation_resolve: false
         },
+        eula: {
+          field_type:               'select',
+          options:                  [],
+          user_validation:          '0',
+          agent_validation:         '0',
+          agent_validation_resolve: false
+        },
         date: {
           default_mode:             (fieldModel != null ? fieldModel.default_value : undefined) ? 'date' : '0',
           default_value:            (fieldModel != null ? fieldModel.default_value : undefined) ? moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate() : new Date(),
@@ -216,6 +223,14 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
             }
 
             formTypeOpts.default_value = fieldModel.default_value;
+            break;
+
+          case 'eula':
+            formTypeOpts.field_type = 'select';
+
+            if (fieldModel.choices && fieldModel.choices.length) {
+              formTypeOpts.options = fieldModel.choices;
+            }
             break;
 
           case 'toggle':
@@ -428,6 +443,13 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
               postData.none_choice_title = formTypeOpts.none_choice_title;
             }
           }
+          break;
+
+        case 'eula':
+          postData.sys_name = 'eula';
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice';
+          postData.field_type = formTypeOpts.field_type;
+          postData.choices_structure = formTypeOpts.options;
           break;
 
         case 'toggle':

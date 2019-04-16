@@ -1,0 +1,34 @@
+{% extends 'AdminInterfaceBundle:CustomFields:Common/edit.html.twig' %}
+{% block extra_types_choose %}
+	<div class="form-group" ng-if="!EditCtrl.isEulaFieldExist()">
+		<div class="col-lg-12">
+			<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="eula" /> EULA</label></h3>
+			<p>
+				This is a special field that lets you add EULA.
+			</p>
+		</div>
+	</div>
+{% endblock %}
+{% block extra_types_titleswitch %}
+	<span ng-switch-when="eula">EULA</span>
+{% endblock %}
+{% block pre_bottomdefault_fields %}
+	<div ng-show="EditCtrl.field_type == 'eula'">
+    <div class="form-group">
+      <div class="col-lg-3">
+        <h3>Options</h3>
+      </div>
+      <div class="col-lg-9">
+        <dp-custom-field-download-eula-category-builder
+          ng-model="EditCtrl.form.eula.options"
+          field-type="EditCtrl.type()"
+          edit-click-callback="EditCtrl.editEulaClickCallback(event, category)"
+        >
+        </dp-custom-field-download-eula-category-builder>
+      </div>
+    </div>
+	</div>
+{% endblock %}
+
+{% block bottomdefault_fields %}
+{% endblock %}
