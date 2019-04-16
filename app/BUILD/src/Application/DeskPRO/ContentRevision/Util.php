@@ -133,10 +133,10 @@ class Util
                 }
             }
 
-            $diff = new \FineDiff(
+            $diff = new FineDiff(
                 $rev_old['title'],
                 $rev_new['title'],
-                \FineDiff::$characterGranularity
+                FineDiff::$characterGranularity
             );
             $rendered_title_diff = $diff->renderDiffToHTML();
         }
