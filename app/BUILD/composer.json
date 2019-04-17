@@ -2,10 +2,6 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://github.com/ImmRanneft/mpdf.git"
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/deskpro/oauth1-client.git"
     },
     {
