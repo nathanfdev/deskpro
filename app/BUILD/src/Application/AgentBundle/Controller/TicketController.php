@@ -4978,7 +4978,7 @@ class TicketController extends AbstractController
             if (!$newTicket->subject) {
                 $errors['subject'] = true;
             }
-            if (!$newTicket->message) {
+            if (empty(trim(Strings::stripTags($newTicket->message)))) {
                 $errors['message'] = true;
             }
             if (!$newTicket->brand_id) {
