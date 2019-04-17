@@ -24,7 +24,7 @@ class DownloadToElasticaTransformer extends AbstractToElasticaTransformer
         $document->set('title', $object->getRealTitle());
         $document->set('content', $object->getContentPlain());
         $document->set('status', $object->getStatus());
-        $document->set('filename', str_replace('.', ' ', $object->getFileName()));
+        $document->set('filename', str_replace(['.', '-', '_'], ' ', $object->getFileName()));
 
         if ($object->getCategory()) {
             $document->set('category_id', $object->getCategory()->getId());
