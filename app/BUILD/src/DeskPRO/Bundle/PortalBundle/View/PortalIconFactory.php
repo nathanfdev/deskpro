@@ -23,49 +23,49 @@ use Orb\Util\Strings;
 class PortalIconFactory
 {
     protected static $colors = [
-        'file-pdf-o'   => '#e74c3c', // red
-        'file-excel-o' => '#3bb870', // green
-        'file-word-o'  => '#4681b2', // blue
+        'file-pdf'   => '#e74c3c', // red
+        'file-excel' => '#3bb870', // green
+        'file-word'  => '#4681b2', // blue
     ];
 
     protected static $fa_icons = [
-        'zip'     => 'file-archive-o',
-        'gz'      => 'file-archive-o',
-        'tar'     => 'file-archive-o',
-        'bz2'     => 'file-archive-o',
-        's7z'     => 'file-archive-o',
-        '7z'      => 'file-archive-o',
-        'ace'     => 'file-archive-o',
-        'pdf'     => 'file-pdf-o',
-        'gif'     => 'file-image-o',
-        'bmp'     => 'file-image-o',
-        'jpg'     => 'file-image-o',
-        'jpeg'    => 'file-image-o',
-        'png'     => 'file-image-o',
-        'txt'     => 'file-text-o',
-        'xls'     => 'file-excel-o',
-        'xlsx'    => 'file-excel-o',
-        'xlt'     => 'file-excel-o',
-        'xltx'    => 'file-excel-o',
-        'xltm'    => 'file-excel-o',
-        'xlm'     => 'file-excel-o',
-        'xlsm'    => 'file-excel-o',
-        'numbers' => 'file-excel-o',
-        'pptx'    => 'file-powerpoint-o',
-        'ppt'     => 'file-powerpoint-o',
-        'keynote' => 'file-powerpoint-o',
-        'doc'     => 'file-word-o',
-        'docx'    => 'file-word-o',
-        'dot'     => 'file-word-o',
-        'dotx'    => 'file-word-o',
-        'pages'   => 'file-word-o',
-        'mp4'     => 'file-video-o',
-        'avi'     => 'file-video-o',
-        'wmv'     => 'file-video-o',
-        'mpg'     => 'file-video-o',
-        'mp3'     => 'file-audio-o',
-        'wav'     => 'file-audio-o',
-        'wma'     => 'file-audio-o',
+        'zip'     => 'file-archive',
+        'gz'      => 'file-archive',
+        'tar'     => 'file-archive',
+        'bz2'     => 'file-archive',
+        's7z'     => 'file-archive',
+        '7z'      => 'file-archive',
+        'ace'     => 'file-archive',
+        'pdf'     => 'file-pdf',
+        'gif'     => 'file-image',
+        'bmp'     => 'file-image',
+        'jpg'     => 'file-image',
+        'jpeg'    => 'file-image',
+        'png'     => 'file-image',
+        'txt'     => 'file-alt',
+        'xls'     => 'file-excel',
+        'xlsx'    => 'file-excel',
+        'xlt'     => 'file-excel',
+        'xltx'    => 'file-excel',
+        'xltm'    => 'file-excel',
+        'xlm'     => 'file-excel',
+        'xlsm'    => 'file-excel',
+        'numbers' => 'file-excel',
+        'pptx'    => 'file-powerpoint',
+        'ppt'     => 'file-powerpoint',
+        'keynote' => 'file-powerpoint',
+        'doc'     => 'file-word',
+        'docx'    => 'file-word',
+        'dot'     => 'file-word',
+        'dotx'    => 'file-word',
+        'pages'   => 'file-word',
+        'mp4'     => 'file-video',
+        'avi'     => 'file-video',
+        'wmv'     => 'file-video',
+        'mpg'     => 'file-video',
+        'mp3'     => 'file-audio',
+        'wav'     => 'file-audio',
+        'wma'     => 'file-audio',
     ];
 
     /**
@@ -140,7 +140,7 @@ class PortalIconFactory
                 $style_bit = ' style="color: '.$color.'"';
             }
 
-            return '<i class="fa fa-'.$fa.'"'.$style_bit.'></i>';
+            return '<i class="far fa-'.$fa.'"'.$style_bit.'></i>';
         }
 
         return '<i class="far fa-file"></i>';
