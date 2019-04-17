@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Search\ContentType\Mysql;
 
+use Application\DeskPRO\Entity\Download as DownloadEntity;
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\ContentType\AbstractContentType;
 use Application\DeskPRO\Search\Indexer\Document;
@@ -16,6 +17,11 @@ class Download extends AbstractContentType
 {
     const ENTITY_NAME = 'DeskPRO:Download';
 
+    /**
+     * @param DownloadEntity $download
+     *
+     * @return Document|\Application\DeskPRO\Search\Indexer\DocumentInterface
+     */
     public function objectToDocument($download)
     {
         if ($download->status != 'published') {
@@ -32,7 +38,7 @@ class Download extends AbstractContentType
         $data                 = [];
         $data['id']           = $download['id'];
         $data['content_type'] = 'download';
-        $data['content']      = $download['title']."\n".$download['content']."\n";
+        $data['content']      = $download['title']."\n".$download['content']."\n".$download->getFileName();
 
         foreach ($download->getLabelManager()->getLabelsArray() as $label) {
             $label = MysqlAdapter::encodeLabel($label);
