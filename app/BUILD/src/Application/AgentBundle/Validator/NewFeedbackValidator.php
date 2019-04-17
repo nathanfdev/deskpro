@@ -31,6 +31,10 @@ class NewFeedbackValidator extends AbstractValidator
             $this->addError('title.missing');
         }
 
+        if (!$feedback->content) {
+            $this->addError('content.missing');
+        }
+
         if (!$feedback->status_code) {
             $this->addError('status.invalid');
         }

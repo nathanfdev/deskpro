@@ -23,7 +23,10 @@ class NewFeedback extends AbstractType
         //------------------------------
 
         $builder->add('title', 'text');
-        $builder->add('content', 'textarea', ['filter_clean' => false]);
+        $builder->add('content', 'textarea', [
+            'filter_clean' => false,
+            'required'     => true,
+        ]);
 
         $builder->add('brand', EntityType::class, [
             'class' => Brand::class,

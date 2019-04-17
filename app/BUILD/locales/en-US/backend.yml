@@ -3150,6 +3150,7 @@ agent.general.empty: 'is empty'
 agent.general.enabled: Enabled
 agent.general.enter_a_message: 'Enter a message'
 agent.general.enter_a_title: 'Enter a title'
+agent.general.enter_a_content: 'Enter a content'
 agent.general.enter_organization_name: 'Enter an organization name...'
 agent.general.enter_search_terms: 'Enter search terms'
 agent.general.error: Error
