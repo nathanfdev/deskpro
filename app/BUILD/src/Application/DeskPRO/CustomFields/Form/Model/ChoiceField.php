@@ -40,6 +40,12 @@ class ChoiceField extends CustomFieldAbstract
      */
     public $none_choice_title = '';
 
+    /**
+     * Each choice can has options that we want to save to 'options' column.
+     * This is a whitelist for such options that we should save from request data.
+     *
+     * @var array
+     */
     public $allowedChoiceOptions = [];
 
     protected function init()
