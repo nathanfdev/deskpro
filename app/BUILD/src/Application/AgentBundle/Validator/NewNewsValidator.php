@@ -31,6 +31,10 @@ class NewNewsValidator extends AbstractValidator
             $this->addError('title.missing');
         }
 
+        if (!$news->content) {
+            $this->addError('content.missing');
+        }
+
         if (!$news->status) {
             $this->addError('status.invalid');
         }
