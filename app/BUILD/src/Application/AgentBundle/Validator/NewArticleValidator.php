@@ -7,6 +7,7 @@
 namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 use Orb\Validator\AbstractValidator;
 
 class NewArticleValidator extends AbstractValidator
@@ -34,7 +35,7 @@ class NewArticleValidator extends AbstractValidator
             $this->addError('title.missing');
         }
 
-        if (!$article->content) {
+        if (empty(trim(Strings::stripTags($article->content)))) {
             $this->addError('content.missing');
         }
 
