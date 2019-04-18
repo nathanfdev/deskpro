@@ -276,6 +276,14 @@ export const voiceBootstrap = createAction(
         // nothing to do
       });
 
+      const runTaskRouter = () => {
+        api.sendPut('DP_API/voice_client/task_router').success(() => {
+          setTimeout(runTaskRouter, 2000);
+        });
+      };
+
+      runTaskRouter();
+
       accounts.forEach((account) => {
         const id = account.get('id');
         const type = account.get('type');
@@ -462,9 +470,10 @@ export const acceptPhoneCall = createAction(
       dispatch(removeIncomingCall(incomingCall));
       if (accountType === 'twilio') {
         clients[accountId].connect({
-          CallId:   callId,
-          AgentId:  agentId,
-          TicketId: data.id
+          CallId:     callId,
+          AgentId:    agentId,
+          TicketId:   data.id,
+          Conference: !incomingCall.get('task')
         });
       } else if (accountType === 'plivo') {
         clients[accountId].client.call('accept', {

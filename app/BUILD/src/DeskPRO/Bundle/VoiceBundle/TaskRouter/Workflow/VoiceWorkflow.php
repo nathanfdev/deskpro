@@ -67,7 +67,7 @@ class VoiceWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function isTaskTimedOut(Task $task)
+    public function getTimeout(Task $task)
     {
         $now   = new \DateTime();
         $queue = $this->taskHelper->getVoiceQueue($task);
@@ -79,7 +79,7 @@ class VoiceWorkflow implements WorkflowInterface
 
         $offset = $now->getTimestamp() - $task->getDateCreated()->getTimestamp();
 
-        return $offset > $timeout;
+        return $timeout - $offset;
     }
 
     /**

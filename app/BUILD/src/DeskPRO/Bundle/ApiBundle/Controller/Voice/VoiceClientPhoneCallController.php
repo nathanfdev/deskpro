@@ -303,13 +303,16 @@ class VoiceClientPhoneCallController extends BaseController
      * @param VoicePhoneCall $phoneCall
      * @param Request        $request
      *
+     * @throws \Exception
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
      * @return View
      */
     public function holdCallAction(VoicePhoneCall $phoneCall, Request $request)
     {
         $isHold = $request->request->get('hold');
 
-        $this->get('dp.voice.provider_helper')->holdConferenceEndUser($phoneCall, $isHold);
+        $this->get('dp.voice.provider_helper')->holdEndUser($phoneCall, $isHold);
 
         // log action
         $log = new VoicePhoneCallLog();
@@ -365,6 +368,9 @@ class VoiceClientPhoneCallController extends BaseController
 
         $em = $this->getManager();
 
+        $phoneCall->setStatus(VoicePhoneCall::STATUS_WARM_ADD);
+        $em->flush();
+
         // get phone call ticket
         $messageAttribute = $em->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
             'phoneCall' => $phoneCall,
@@ -376,6 +382,7 @@ class VoiceClientPhoneCallController extends BaseController
         /** @var Ticket $ticket */
         $ticket = $messageAttribute->getMessage()->getTicket();
 
+        // send invite notification
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.participant-invite',
             [
@@ -391,6 +398,9 @@ class VoiceClientPhoneCallController extends BaseController
                 'target'           => $agent->getId(),
             ]
         ));
+
+        // call forwarding number
+        $this->get('dp.voice.provider_helper')->callForwardingNumber($phoneCall, $agent);
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -470,7 +480,7 @@ class VoiceClientPhoneCallController extends BaseController
         }
 
         $this->get('dp.voice.callbacks_helper')->saveTicket($ticket);
-        $this->get('dp.voice.provider_helper')->holdConferenceEndUser($phoneCall, true);
+        $this->get('dp.voice.provider_helper')->holdEndUser($phoneCall, true);
 
         // send transfer notification
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
@@ -488,6 +498,9 @@ class VoiceClientPhoneCallController extends BaseController
                 'target'           => $agent->getId(),
             ]
         ));
+
+        // call forwarding number
+        $this->get('dp.voice.provider_helper')->callForwardingNumber($phoneCall, $agent);
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -542,10 +555,7 @@ class VoiceClientPhoneCallController extends BaseController
         $em->flush();
 
         // disconnect existing agents from the call
-        foreach ($phoneCall->getAgentParticipants() as $participant) {
-            $this->get('dp.voice.provider_helper')->kickParticipant($participant);
-        }
-
+        $this->get('dp.voice.provider_helper')->prepareForColdTransfer($phoneCall);
         $this->get('dp.voice.callbacks_helper')->changeTicketAgentToFollower($phoneCall);
 
         // create a router task
@@ -555,7 +565,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         $em->flush();
 
-        $this->get('dp.voice.transfer_helper')->transferToTaskRouter($phoneCall, $task);
+        $this->get('dp.voice.transfer_helper')->transferToTaskRouter($phoneCall);
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -613,7 +623,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         $em->flush();
 
-        $this->get('dp.voice.transfer_helper')->transferToTaskRouter($phoneCall, $task);
+        $this->get('dp.voice.transfer_helper')->transferToTaskRouter($phoneCall);
 
         // add action log
         $log = new VoicePhoneCallLog();
@@ -644,6 +654,9 @@ class VoiceClientPhoneCallController extends BaseController
      *
      * @param VoicePhoneCall     $phoneCall
      * @param VoiceAutoAttendant $autoAttendant
+     *
+     * @throws \Exception
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return View
      */
@@ -710,7 +723,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         $em = $this->getManager();
 
-        if ($phoneCall->isWarmTransfer()) {
+        if ($phoneCall->isWarmTransfer() || $phoneCall->isWarmAdd()) {
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
             $em->flush();
         }
@@ -774,7 +787,7 @@ class VoiceClientPhoneCallController extends BaseController
 
         $em = $this->getManager();
 
-        if ($phoneCall->isWarmTransfer()) {
+        if ($phoneCall->isWarmTransfer() || $phoneCall->isWarmAdd()) {
             $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
             $em->flush();
         }
@@ -845,12 +858,11 @@ class VoiceClientPhoneCallController extends BaseController
 
                     $this->getManager()->refresh($phoneCall);
 
-                    $this->get('dp.voice.provider_helper')->cancelCall($phoneCall);
-                    $this->get('dp.voice.provider_helper')->cancelOutgoingCalls($phoneCall);
+                    $this->get('dp.voice.provider_helper')->endCall($phoneCall);
 
                     $logger->info(sprintf(
                         '[VoiceClientPhoneCallController] Calls are canceled, call_id = %s, request_ids = %s',
-                        $phoneCall->getId(), implode(', ', $phoneCall->getOutgoingRequestIds())
+                        $phoneCall->getId(), implode(', ', $phoneCall->getCallSids())
                     ));
 
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_CANCELED);

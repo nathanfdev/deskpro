@@ -70,14 +70,14 @@ class ChatWorkflow implements WorkflowInterface
     /**
      * {@inheritdoc}
      */
-    public function isTaskTimedOut(Task $task)
+    public function getTimeout(Task $task)
     {
         $now = new \DateTime();
 
         $timeout = $this->settingsResolver->getAgentChatTimeout();
         $offset  = $now->getTimestamp() - $task->getDateCreated()->getTimestamp();
 
-        return $offset > $timeout;
+        return $timeout - $offset;
     }
 
     /**

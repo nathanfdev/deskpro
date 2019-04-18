@@ -21,6 +21,8 @@ services:
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@voice_settings_resolver"
+      - "@router"
+      - "@dp.voice.logger"
 
   plivo_adapter:
     class: DeskPRO\Bundle\VoiceBundle\Plivo\PlivoAdapter

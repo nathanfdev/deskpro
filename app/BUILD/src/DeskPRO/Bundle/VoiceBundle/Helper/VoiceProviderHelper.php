@@ -81,6 +81,24 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function callNumber(VoicePhoneCall $phoneCall, $toNumber, array $options = [], &$exception = false)
+    {
+        return $this->getAdapter($phoneCall)->callNumber($phoneCall, $toNumber, $options, $exception);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function callForwardingNumber(VoicePhoneCall $phoneCall, Person $agent)
+    {
+        return $this->getAdapter($phoneCall)->callForwardingNumber($phoneCall, $agent);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Exception
+     */
     public function cancelForwardingCall(VoicePhoneCall $phoneCall, Person $agent)
     {
         $this->getAdapter($phoneCall)->cancelForwardingCall($phoneCall, $agent);
@@ -88,63 +106,29 @@ class VoiceProviderHelper implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
-    public function cancelForwardingCalls(VoicePhoneCall $phoneCall)
+    public function endCall(VoicePhoneCall $phoneCall)
     {
-        $this->getAdapter($phoneCall)->cancelForwardingCalls($phoneCall);
-    }
+        $this->getAdapter($phoneCall)->endCall($phoneCall);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function cancelOutgoingCalls(VoicePhoneCall $phoneCall)
-    {
-        $this->getAdapter($phoneCall)->cancelOutgoingCalls($phoneCall);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function tryEndConference(VoicePhoneCall $phoneCall)
-    {
-        $ended = $this->getAdapter($phoneCall)->tryEndConference($phoneCall);
-        if ($ended) {
-            // force end all agent workers
-            // in case if agent hangup callback is not called for some reason
-            foreach ($phoneCall->getAgentParticipants() as $participant) {
-                foreach ($phoneCall->getTaskSids() as $taskSid) {
-                    $this->taskRouter->completeTaskForWorker(
-                        $taskSid,
-                        'agent',
-                        $participant->getPerson()->getId()
-                    );
-                }
+        // force end all agent workers
+        // in case if agent hangup callback is not called for some reason
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            foreach ($phoneCall->getTaskSids() as $taskSid) {
+                $this->taskRouter->completeTaskForWorker(
+                    $taskSid,
+                    'agent',
+                    $participant->getPerson()->getId()
+                );
             }
-
-            $this->cancelOutgoingCalls($phoneCall);
-
-            if (!$phoneCall->isVoicemail()) {
-                $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
-                $this->em->flush($phoneCall);
-            }
-
-            $this->dispatcher->dispatch(
-                LegacySystemEvent::EVENT_NAME,
-                new LegacySystemEvent('agent.voice.call-ended', [
-                    'call_id' => $phoneCall->getId(),
-                ])
-            );
         }
 
-        return $ended;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function endConference(VoicePhoneCall $phoneCall)
-    {
-        $this->getAdapter($phoneCall)->endConference($phoneCall);
+        if (!$phoneCall->isVoicemail()) {
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+            $this->em->flush();
+        }
 
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,
@@ -156,6 +140,20 @@ class VoiceProviderHelper implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
+     */
+    public function tryEndCallByAgent(VoicePhoneCall $phoneCall)
+    {
+        if (count($phoneCall->getActiveParticipants()) < 2) {
+            $this->endCall($phoneCall);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Exception
      */
     public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
@@ -164,34 +162,17 @@ class VoiceProviderHelper implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Exception
      */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = [])
+    public function holdEndUser(VoicePhoneCall $phoneCall, $isHold)
     {
-        $adapter = $this->getAdapter($phoneCall);
-        if ($adapter instanceof PlivoAdapter) {
-            $account = $phoneCall->getNumber()->getAccount();
-            if (!$account || !$account instanceof PlivoVoiceAccount) {
-                throw new \RuntimeException('Voice number does not have an account reference.');
-            }
-
-            $params['holdUrl'] = $this->router->generate('plivo_user_put_on_hold_callback', [
-                'account'     => $account->getId(),
-                'accountAuth' => $account->getAccountAuth(),
-            ], UrlGeneratorInterface::ABSOLUTE_URL);
-
-            $params['joinUrl'] = $this->router->generate('plivo_user_joins_conference_callback', [
-                'account'     => $account->getId(),
-                'accountAuth' => $account->getAccountAuth(),
-                'callId'      => $phoneCall->getId(),
-            ], UrlGeneratorInterface::ABSOLUTE_URL);
-        }
-
-        $this->getAdapter($phoneCall)->holdConferenceEndUser($phoneCall, $isHold, $params);
         $phoneCall->getUserParticipants()->map(function (AbstractVoicePhoneCallParticipant $participant) use ($isHold) {
             $participant->setOnHold($isHold);
         });
 
         $this->em->flush();
+        $this->getAdapter($phoneCall)->holdEndUser($phoneCall, $isHold);
 
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.hold',
@@ -213,14 +194,6 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall)
-    {
-        return $this->getAdapter($phoneCall)->getActiveAgentPhoneCallParticipants($phoneCall);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function isCallActive(VoicePhoneCall $phoneCall)
     {
         return $this->getAdapter($phoneCall)->isCallActive($phoneCall);
@@ -229,17 +202,29 @@ class VoiceProviderHelper implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function cancelCall(VoicePhoneCall $phoneCall)
+    public function transferUser(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
     {
-        $this->getAdapter($phoneCall)->cancelCall($phoneCall);
+        foreach ($phoneCall->getUserParticipants() as $participant) {
+            $this->getAdapter($phoneCall)->transferParticipant($participant, $callbackUrl, $callbackMethod);
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function transferCall(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
+    public function transferParticipant(AbstractVoicePhoneCallParticipant $participant, $callbackUrl, $callbackMethod)
     {
-        return $this->getAdapter($phoneCall)->transferCall($phoneCall, $callbackUrl, $callbackMethod);
+        return $this->getAdapter($participant->getPhoneCall())->transferParticipant($participant, $callbackUrl, $callbackMethod);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \Exception
+     */
+    public function prepareForColdTransfer(VoicePhoneCall $phoneCall)
+    {
+        $this->getAdapter($phoneCall)->prepareForColdTransfer($phoneCall);
     }
 
     /**

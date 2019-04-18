@@ -49,10 +49,6 @@ class VoiceControlsContainer extends React.Component {
     agentVoicemailTimeout: PropTypes.number,
   };
 
-  static defaultProps = {
-    onEndCall: () => {}
-  };
-
   constructor(props) {
     super(props);
     this.state = {

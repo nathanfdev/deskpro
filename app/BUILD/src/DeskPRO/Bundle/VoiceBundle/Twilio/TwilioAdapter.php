@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AbstractVoicePhoneCallParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\TwilioVoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber;
@@ -15,6 +16,8 @@ use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioPaginate;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\ClientProxy;
 use DeskPRO\Bundle\VoiceBundle\VoiceProviderInterface;
 use Doctrine\ORM\EntityManager;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twilio\Jwt\ClientToken;
 use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberInstance;
 use Twilio\Rest\Client;
@@ -38,15 +41,33 @@ class TwilioAdapter implements VoiceProviderInterface
     private $settingsResolver;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    private $router;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Constructor.
      *
      * @param EntityManager         $em
      * @param VoiceSettingsResolver $settingsResolver
+     * @param UrlGeneratorInterface $router
+     * @param LoggerInterface       $logger
      */
-    public function __construct(EntityManager $em, VoiceSettingsResolver $settingsResolver)
-    {
+    public function __construct(
+        EntityManager         $em,
+        VoiceSettingsResolver $settingsResolver,
+        UrlGeneratorInterface $router,
+        LoggerInterface       $logger
+    ) {
         $this->em               = $em;
         $this->settingsResolver = $settingsResolver;
+        $this->router           = $router;
+        $this->logger           = $logger;
     }
 
     /**
@@ -142,6 +163,8 @@ class TwilioAdapter implements VoiceProviderInterface
      * @param TwilioVoiceAccount $account
      * @param array              $data
      *
+     * @throws \Twilio\Exceptions\ConfigurationException
+     *
      * @return bool|IncomingPhoneNumberInstance
      */
     public function buyNumber(TwilioVoiceAccount $account, array $data)
@@ -189,6 +212,8 @@ class TwilioAdapter implements VoiceProviderInterface
      * @param string             $voiceMethod
      * @param string             $statusUrl
      * @param string             $statusMethod
+     *
+     * @throws \Twilio\Exceptions\ConfigurationException
      *
      * @return \Twilio\Rest\Api\V2010\Account\ApplicationInstance
      */
@@ -254,6 +279,8 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Twilio\Exceptions\ConfigurationException
      */
     public function cancelForwardingCall(VoicePhoneCall $phoneCall, Person $person)
     {
@@ -268,14 +295,11 @@ class TwilioAdapter implements VoiceProviderInterface
         }
 
         $client = $this->getClient($account);
-        foreach ($phoneCall->getAgentForwardingSids($person->getId()) as $forwardingSid) {
+        foreach ($phoneCall->getParticipantForwardedCallSids($person->getId()) as $callSid) {
             try {
-                $forwardingCall = $client->calls($forwardingSid)->fetch();
-                if ($forwardingCall->status === 'ringing') {
-                    $forwardingCall->update([
-                        'status' => 'canceled',
-                    ]);
-                }
+                $client->calls($callSid)->update([
+                    'status' => 'completed',
+                ]);
             } catch (\Exception $e) {
             }
         }
@@ -283,8 +307,10 @@ class TwilioAdapter implements VoiceProviderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Twilio\Exceptions\ConfigurationException
      */
-    public function cancelForwardingCalls(VoicePhoneCall $phoneCall)
+    public function endCall(VoicePhoneCall $phoneCall)
     {
         $account = $phoneCall->getNumber()->getAccount();
         if (!$account || !$account instanceof TwilioVoiceAccount) {
@@ -292,41 +318,16 @@ class TwilioAdapter implements VoiceProviderInterface
         }
 
         $client = $this->getClient($account);
-        foreach ($phoneCall->getForwardingSids() as $agentId => $forwardingSids) {
-            foreach ($forwardingSids as $forwardingSid) {
-                try {
-                    $forwardingCall = $client->calls($forwardingSid)->fetch();
-                    if ($forwardingCall->status === 'ringing') {
-                        $forwardingCall->update([
-                            'status' => 'canceled',
-                        ]);
-                    }
-                } catch (\Exception $e) {
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function cancelOutgoingCalls(VoicePhoneCall $phoneCall)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $client = $this->getClient($account);
-        foreach ($phoneCall->getOutgoingRequestIds() as $requestId) {
+        foreach ($phoneCall->getFlattenCallSids() as $callSid) {
             try {
-                $forwardingCall = $client->calls($requestId)->fetch();
-                if ($forwardingCall->status === 'ringing') {
-                    $forwardingCall->update([
-                        'status' => 'canceled',
-                    ]);
-                }
+                $client->calls($callSid)->update([
+                    'status' => 'completed',
+                ]);
             } catch (\Exception $e) {
+                $this->logger->error(sprintf(
+                    '[TwilioAdapter] Unable to cancel call, call_sid = %s, reason = %s',
+                    $callSid, $e->getMessage()
+                ));
             }
         }
     }
@@ -334,6 +335,8 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * @param TwilioVoiceAccount $account
      * @param string             $conferenceSid
+     *
+     * @throws \Twilio\Exceptions\ConfigurationException
      *
      * @return \Twilio\Rest\Api\V2010\Account\ConferenceInstance
      */
@@ -366,14 +369,12 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = [])
+    public function holdEndUser(VoicePhoneCall $phoneCall, $isHold)
     {
         $account = $phoneCall->getNumber()->getAccount();
         if (!$account || !$account instanceof TwilioVoiceAccount) {
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
-
-        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
 
         if (!$phoneCall->getUserParticipants()->count()) {
             return;
@@ -381,69 +382,51 @@ class TwilioAdapter implements VoiceProviderInterface
 
         /** @var VoicePhoneCallParticipantUser $userParticipant */
         $userParticipant = $phoneCall->getUserParticipants()->first();
+        /** @var VoicePhoneCallParticipantAgent $userParticipant */
+        $agentParticipant = $phoneCall->getAgentParticipants()->first();
 
-        foreach ($participants as $participant) {
-            if ($participant->callSid === $userParticipant->getCallSid()) {
-                $participant->update([
-                    'hold' => $isHold ? 'true' : 'false',
-                ]);
-            }
-        }
-    }
+        $holdUrl = $this->router->generate('twilio_put_on_hold_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'phoneCall'   => $phoneCall->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function tryEndConference(VoicePhoneCall $phoneCall)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
+        $unholdUrl = $this->router->generate('twilio_unhold_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'phoneCall'   => $phoneCall->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
-
-        if (count($participants) < 2) {
-            $userParticipants = $phoneCall->getUserParticipants()->map(function (VoicePhoneCallParticipantUser $participant) {
-                return $participant->getCallSid();
-            });
-
-            foreach ($participants as $participant) {
-                if ($userParticipants->contains($participant->callSid)) {
-                    try {
-                        $participant->delete();
-                    } catch (\Exception $e) {
-                    }
+        if ($phoneCall->getConferenceSid()) {
+            $conferenceParticipants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
+            foreach ($conferenceParticipants as $participant) {
+                if ($participant->callSid === $userParticipant->getCallSid()) {
+                    $participant->update([
+                        'hold' => $isHold ? 'true' : 'false',
+                    ]);
                 }
             }
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function endConference(VoicePhoneCall $phoneCall)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
-        foreach ($participants as $participant) {
-            try {
-                $participant->delete();
-            } catch (\Exception $e) {
+        } else {
+            if ($phoneCall->isOutgoingCall()) {
+                if ($isHold) {
+                    $this->transferParticipant($agentParticipant, $holdUrl, 'POST');
+                } else {
+                    $this->transferParticipant($userParticipant, $unholdUrl, 'POST');
+                }
+            } else {
+                if ($isHold) {
+                    $this->transferParticipant($userParticipant, $holdUrl, 'POST');
+                } else {
+                    $this->transferParticipant($agentParticipant, $unholdUrl, 'POST');
+                }
             }
         }
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \Twilio\Exceptions\ConfigurationException
      */
     public function kickParticipant(AbstractVoicePhoneCallParticipant $participant)
     {
@@ -454,65 +437,69 @@ class TwilioAdapter implements VoiceProviderInterface
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
-        try {
-            $conference  = $this->getConferenceContext($account, $phoneCall->getConferenceSid());
-            $participant = $conference->participants->getContext($participant->getCallSid());
-
-            if ($participant) {
-                $participant->delete();
+        $client = $this->getClient($account);
+        foreach ($phoneCall->getParticipantCallSids($participant->getPerson()->getId()) as $callSid) {
+            try {
+                $client->calls($callSid)->update([
+                    'status' => 'completed',
+                ]);
+            } catch (\Exception $e) {
             }
-        } catch (\Exception $e) {
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall)
+    public function callNumber(VoicePhoneCall $phoneCall, $toNumber, array $options = [], &$exception = false)
     {
         $account = $phoneCall->getNumber()->getAccount();
         if (!$account || !$account instanceof TwilioVoiceAccount) {
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
-        $agents = [];
-
         try {
-            $callSids     = [];
-            $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
-            foreach ($participants as $participant) {
-                $callSids[] = $participant->callSid;
-            }
-            foreach ($phoneCall->getAgentParticipants() as $participant) {
-                if (in_array($participant->getCallSid(), $callSids) && $participant->getPerson()) {
-                    $agents[] = $participant->getPerson();
-                }
-            }
-        } catch (\Exception $e) {
-        }
+            $call = $this->getClient($account)->calls->create($toNumber, $phoneCall->getNumber()->getNumber(), $options);
 
-        return $agents;
+            return $call->sid;
+        } catch (\Exception $e) {
+            $exception = $e;
+
+            return false;
+        }
     }
 
     /**
-     * @param VoiceNumber $number
-     * @param string      $toNumber
-     * @param array       $options
-     *
-     * @throws \Exception
-     *
-     * @return \Twilio\Rest\Api\V2010\Account\CallInstance
+     * {@inheritdoc}
      */
-    public function callNumber(VoiceNumber $number, $toNumber, array $options = [])
+    public function callForwardingNumber(VoicePhoneCall $phoneCall, Person $agent)
     {
-        $account = $number->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
+        if (!$agent->getForwardingNumber()) {
+            return false;
         }
 
-        $client = $this->getClient($account);
+        $account       = $phoneCall->getNumber()->getAccount();
+        $forwardingUrl = $this->router->generate('twilio_answer_forwarding_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'CallId'      => $phoneCall->getId(),
+            'AgentId'     => $agent->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $client->calls->create($toNumber, $number->getNumber(), $options);
+        $statusCallback = $this->router->generate('twilio_phone_number_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+            'callId'      => $phoneCall->getId(),
+            'agentId'     => $agent->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
+        return $this->callNumber($phoneCall, $agent->getForwardingNumber(), [
+            'url'                  => $forwardingUrl,
+            'method'               => 'POST',
+            'statusCallback'       => $statusCallback,
+            'statusCallbackMethod' => 'POST',
+            'machineDetection'     => 'Enable',
+        ]);
     }
 
     /**
@@ -539,35 +526,15 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function cancelCall(VoicePhoneCall $phoneCall)
+    public function transferParticipant(AbstractVoicePhoneCallParticipant $participant, $callbackUrl, $callbackMethod)
     {
-        $account = $phoneCall->getNumber()->getAccount();
-        if (!$account || !$account instanceof TwilioVoiceAccount) {
-            throw new \RuntimeException('Voice number does not have an account reference.');
-        }
-
-        foreach ($phoneCall->getUserParticipants() as $participant) {
-            try {
-                $this->getClient($account)->calls($participant->getCallSid())->update([
-                    'status' => 'canceled',
-                ]);
-            } catch (\Exception $e) {
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function transferCall(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod)
-    {
-        $account = $phoneCall->getNumber()->getAccount();
+        $account = $participant->getPhoneCall()->getNumber()->getAccount();
         if (!$account || !$account instanceof TwilioVoiceAccount) {
             throw new \RuntimeException('Voice number does not have an account reference.');
         }
 
         try {
-            $this->getClient($account)->calls($phoneCall->getCallSid())->update([
+            $this->getClient($account)->calls($participant->getCallSid())->update([
                 'url'    => $callbackUrl,
                 'method' => $callbackMethod,
             ]);
@@ -576,7 +543,23 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * @throws \Twilio\Exceptions\ConfigurationException
+     */
+    public function prepareForColdTransfer(VoicePhoneCall $phoneCall)
+    {
+        $this->holdEndUser($phoneCall, true);
+
+        foreach ($phoneCall->getAgentParticipants() as $participant) {
+            $this->kickParticipant($participant);
+        }
+    }
+
+    /**
      * @param TwilioVoiceAccount $account
+     *
+     * @throws \Twilio\Exceptions\ConfigurationException
      *
      * @return Client
      */
@@ -621,6 +604,8 @@ class TwilioAdapter implements VoiceProviderInterface
     /**
      * @param TwilioVoiceAccount $account
      * @param string             $conferenceSid
+     *
+     * @throws \Twilio\Exceptions\ConfigurationException
      *
      * @return \Twilio\Rest\Api\V2010\Account\ConferenceContext
      */

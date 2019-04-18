@@ -18,9 +18,9 @@ interface WorkflowInterface
     /**
      * @param Task $task
      *
-     * @return bool
+     * @return int
      */
-    public function isTaskTimedOut(Task $task);
+    public function getTimeout(Task $task);
 
     /**
      * @param Task $task

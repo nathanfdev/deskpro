@@ -74,6 +74,8 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function process(array $data, array $job)
     {
@@ -93,10 +95,11 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                 $this->em->persist($recording);
                 $this->em->flush();
 
-                $serializedData = $this->serializer->toArray(
-                    new ApiWrapper($recording->getPhoneCall()),
-                    new SideloadSerializationContext()
-                );
+                $context = new SideloadSerializationContext();
+                $context->setIncludes(['recording_enabled']);
+                $context->setInlineSideloads(true);
+
+                $serializedData = $this->serializer->toArray(new ApiWrapper($recording->getPhoneCall()), $context);
 
                 $this->eventDispatcher->dispatch(
                     LegacySystemEvent::EVENT_NAME,
@@ -181,6 +184,13 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
     /**
      * @param string                 $filename
      * @param AbstractVoiceRecording $recording
+     *
+     * @throws \Application\DeskPRO\BlobStorage\BlobStorageException
+     * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      *
      * @return \Application\DeskPRO\Entity\Blob
      */

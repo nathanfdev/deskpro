@@ -62,7 +62,7 @@ class CallFrom extends React.Component {
 
     return (
       <div className="call-from">
-        <div className="call-from-number">
+        <div className="call-from-number" x-ms-format-detection="none">
           {number || 'Unknown number'}
         </div>
         <div className={classNames({ 'call-from-avatars': possibleCallerPeople.length > 1 })}>

@@ -109,7 +109,7 @@ class VoicePhoneCallsController extends CrudController
 
         $serializedData = $this->get('serializer')->toArray(
             new ApiWrapper($phoneCall),
-            new SideloadSerializationContext()
+            new SideloadSerializationContext(['recording_enabled'])
         );
 
         $this->get('event_dispatcher')->dispatch(
