@@ -478,6 +478,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		var self = this;
 
 		this.page.getEl('field_errors').hide();
+		this.page.getEl('field_errors').find('.js-custom-field-error').remove();
 		this.display.find('[data-prop-id]').each(function() {
 			var prop = changeManager.getPropertyManager($(this).data('prop-id'));
 			prop.setValue($(this).val());
@@ -493,37 +494,62 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     customFieldData = self.normalizeCustomFieldValues(customFieldData);
 
 		this.$scope.is_saving = true;
-
-		changeManager.saveChanges(
-			customFieldData,
-			(function(data) {
-        self.$scope.is_saving = false;
-				if (data.data && data.data.reload) {
-					this.page.closeSelf();
-					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
-				} else {
-          setTimeout(function() {
-          	self.initFileCustomFields();
-          }, 1);
-        }
-			}).bind(this),
-			(function(xhr, code, message) {
-        self.$scope.is_saving = false;
-        // this.closeEditMode();
-        var div = $('<div><strong>Server error: </strong>' + message + '</div>');
-        DeskPRO_Window.showAlert(div);
-				console.error(message);
-			}).bind(this),
-			function(data) {
-        self.$scope.is_saving = false;
-				if (!data.fields) return;
-				self.$scope.$apply(function(){
-					for (var i = 0; i < data.fields.length; i++) {
-						self.$scope.editField(data.fields[i]);
-					}
-				});
+    var customPromises = [];
+    var jsCustomFields = this.display.find('.js-custom-field');
+    jsCustomFields.each(function (index, field) {
+			var fieldId = $(field).data('field-id');
+			var $field = self.jsfields[fieldId];
+			var submitResult = $field.ctx.onSubmit();
+			if (submitResult instanceof Promise) {
+				customPromises.push(submitResult);
+			} else {
+				customPromises.push(new Promise(function (resolve, reject) {
+					submitResult === false ? reject('onSubmit function from custom field "' + fieldId + '" returned false result') : resolve();
+				}).then(
+					function () {},
+					function (reason) {
+						console.error(reason);
+						self.page.getEl('field_errors').show().find('ul').append("<li class='js-custom-field-error'>" + reason + "</li>");
+					}));
 			}
-		);
+		});
+		Promise.all(customPromises)
+			.then(function () {
+				changeManager.saveChanges(
+					customFieldData,
+					(function(data) {
+						self.$scope.is_saving = false;
+						if (data.data && data.data.reload) {
+							this.page.closeSelf();
+							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
+						} else {
+							setTimeout(function() {
+								self.initFileCustomFields();
+							}, 1);
+						}
+					}).bind(this),
+					(function(xhr, code, message) {
+						self.$scope.is_saving = false;
+						// this.closeEditMode();
+						var div = $('<div><strong>Server error: </strong>' + message + '</div>');
+						DeskPRO_Window.showAlert(div);
+						console.error(message);
+					}).bind(this),
+					function(data) {
+						self.$scope.is_saving = false;
+						if (!data.fields) return;
+						self.$scope.$apply(function(){
+							for (var i = 0; i < data.fields.length; i++) {
+								self.$scope.editField(data.fields[i]);
+							}
+						});
+					}
+				);
+			}, function () {
+        self.$scope.is_saving = false;
+			});
+
+
 	},
 
 	replaceHolders: function(html) {
@@ -618,7 +644,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				person: self.page.meta.ticket.person
 			};
 			self.jsfields[fieldId](ctx);
-			var $field = $('.' + fieldId + '.form.Javascript.customfield input');
+			var $field = $el.find('input[type="hidden"]');
 			var fieldData = JSON.parse($field.val());
 			self.jsfields[fieldId] = {
 				ctx:     ctx,
@@ -648,7 +674,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 					}
 					field.field.val(JSON.stringify(dataObject));
 				}, field.currentValue, field.currentData);
-				$('.' + id + '.form.Javascript.customfield input').after($renderedElement);
+				field.field.after($renderedElement);
 				field.element = $renderedElement;
 			}
 		}, self);
