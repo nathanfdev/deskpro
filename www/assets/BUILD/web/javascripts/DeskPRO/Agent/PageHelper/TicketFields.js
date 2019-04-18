@@ -501,6 +501,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			var $field = self.jsfields[fieldId];
 			var submitResult = $field.ctx.onSubmit();
 			if (submitResult instanceof Promise) {
+			  submitResult.then(
+          function () {},
+          function (reason) {
+            self.page.getEl('field_errors').show().find('ul').append("<li class='js-custom-field-error'>" + reason + "</li>");
+          });
 				customPromises.push(submitResult);
 			} else {
 				customPromises.push(new Promise(function (resolve, reject) {
