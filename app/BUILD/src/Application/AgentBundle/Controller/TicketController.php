@@ -1600,16 +1600,19 @@ class TicketController extends AbstractController
         if ($this->in->getBool('options.is_note')) {
             $macroId    = null;
             $actionType = null;
-        }
-        if ($macroId) {
-            $actionType = 'macro';
         } else {
-            if (!$actionType) {
-                $actionType = 'awaiting_user';
+            if ($macroId) {
+                $actionType = 'macro';
+            } else {
+                if (!$actionType) {
+                    $actionType = 'awaiting_user';
+                }
             }
         }
 
-        $ticketContext->getVars()->set('reply_as_action', $actionType);
+        if ($actionType) {
+            $ticketContext->getVars()->set('reply_as_action', $actionType);
+        }
 
         $replyOptions = [];
         if ($this->in->getInt('options.agent_id') != -1 && $this->in->getBool('options.do_assign_agent')) {
@@ -1658,10 +1661,11 @@ class TicketController extends AbstractController
         }
 
         $ticketStatuses = $this->getContainer()->getTicketStatuses();
-        /** @var TicketStatus $setStatus */
-        $setStatus = $ticketStatuses->findStatusOrException($setStatus, false, true);
 
         if ($setStatus) {
+            /** @var TicketStatus $setStatus */
+            $setStatus = $ticketStatuses->findStatusOrException($setStatus, false, true);
+
             /** @var TicketChecker $tcheck */
             $tcheck = $this->person->PermissionsManager->TicketChecker;
             switch ($setStatus->getStatusType()) {
@@ -1943,29 +1947,25 @@ class TicketController extends AbstractController
                 $ticket['agent_team_id'] = $this->in->getUInt('options.agent_team_id');
             }
 
-            if (!$isOptimisticUIUpdate) {
-                if (!$message['is_agent_note'] || $macro) {
-                    if ($actionType != 'macro') {
-                        $ticket->setTicketStatus($setStatus);
-                    }
-
-                    if ($this->in->getBool('options.do_kbpending')) {
-                        $kbPending = new ArticlePendingCreate();
-                        $kbPending->fromArray(
-                            [
-                                'person'  => $this->person,
-                                'ticket'  => $ticket,
-                                'message' => $message,
-                            ]
-                        );
-                        $this->em->persist($kbPending);
-                    }
+            if (!$message['is_agent_note'] || $macro) {
+                if ($actionType != 'macro' && $setStatus) {
+                    $ticket->setTicketStatus($setStatus);
                 }
-            } else {
-                $ticket->setTicketStatus($setStatus);
             }
 
             if (!$isOptimisticUIUpdate) {
+                if ($this->in->getBool('options.do_kbpending')) {
+                    $kbPending = new ArticlePendingCreate();
+                    $kbPending->fromArray(
+                       [
+                           'person'  => $this->person,
+                           'ticket'  => $ticket,
+                           'message' => $message,
+                       ]
+                   );
+                    $this->em->persist($kbPending);
+                }
+
                 $this->container->getTicketManager()->saveTicket($ticket, $ticketContext);
 
                 $this->em->getRepository(Draft::class)->deleteDraft('ticket', $ticket->id);
@@ -1981,7 +1981,7 @@ class TicketController extends AbstractController
         $closeTab = $this->in->getBool('options.close_tab');
 
         $errorMessages = [];
-        if ($setStatus->getStatusType() == 'resolved') {
+        if ($setStatus && $setStatus->getStatusType() == 'resolved') {
             $newticket = new NewTicket($this->em, $this->person);
             $newticket->setValuesFromTicket($ticket);
             $validator = new NewTicketValidator();
