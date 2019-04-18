@@ -3184,8 +3184,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         break;
 
       case 'fwd':
-				this.handleFwd({ mode: 'single', messageId: messageId });
-				break;
+        this.handleFwd({ mode: 'single', messageId: messageId });
+        break;
 
       case 'fwd-from-here':
         this.handleFwd({ mode: 'from', messageId: messageId });
@@ -3372,14 +3372,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
                 DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
               }
 
-							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
-						}
-					});
-				});
-			}
-		});
-		overlay.open();
-	},
+              DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+            }
+          });
+        });
+      }
+    });
+    overlay.open();
+  },
 
   showMessageEditor: function(message_id) {
     var self = this;
