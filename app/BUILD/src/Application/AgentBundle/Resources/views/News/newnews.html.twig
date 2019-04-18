@@ -72,6 +72,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>{{ phrase('agent.publish.post') }}</h4>
 		<textarea type="text" name="newnews[content]" id="{{baseId}}_content">{{ state.newnews.content }}</textarea>
+		<div class="error-message content">{{ phrase('agent.publish.please_enter_content') }}</div>
 	</div>
 </div>
 
