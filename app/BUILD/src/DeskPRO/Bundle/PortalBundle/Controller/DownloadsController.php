@@ -17,6 +17,7 @@ use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentSubscriptionsVoter;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\PageHttpCache;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -279,6 +280,7 @@ class DownloadsController extends AbstractController
                 'rating_counts'      => $ratingCounts,
                 'lockout'            => $check->isLockoutRecommended(),
                 'lockout_time'       => $check->getLockoutTime(true),
+                'start_download'     => $request->get('start_download'),
             ]
         );
     }
@@ -296,6 +298,23 @@ class DownloadsController extends AbstractController
      */
     public function downloadAction(Download $file)
     {
+        $fieldManager  = $this->container->getSystemService('download_fields_manager');
+        $eulaFieldData = $file->getCustomDataForField(
+            $fieldManager->getSystemField(CustomDefDownload::SYS_NAME_EULA)
+        );
+        if ($eulaFieldData) {
+            $acceptedEulas = $this->getSession()->get('accepted_eulas');
+            if (!$acceptedEulas
+                || !is_array($acceptedEulas)
+                || !isset($acceptedEulas[$eulaFieldData->getField()->getId()])
+            ) {
+                return $this->redirectToRoute('portal_downloads_eula', [
+                    'id'           => $eulaFieldData->getField()->getId(),
+                    'for_download' => $file->getSlug(),
+                ]);
+            }
+        }
+
         $file->incrementDownloadCount();
         $this->getEm()->flush();
 
@@ -308,6 +327,63 @@ class DownloadsController extends AbstractController
             'filename'     => $file->getFilenameSafe(),
             'dl'           => 1,
         ]);
+    }
+
+    /**
+     * @Route("/downloads/eula/{id}", requirements={"id"="\d+"}, name="portal_downloads_eula")
+     * @Method({"GET", "POST"})
+     * @Security("is_granted('USE_DOWNLOADS')")
+     *
+     * @param Request $request
+     * @param string  $id
+     *
+     * @return Response
+     */
+    public function eulaAction(Request $request, $id)
+    {
+        $fieldManager  = $this->container->getSystemService('download_fields_manager');
+        $eulaRootField = $fieldManager->getSystemField(CustomDefDownload::SYS_NAME_EULA);
+        if (!$eulaRootField) {
+            throw $this->createNotFoundException('EULA fields not defined');
+        }
+        $eulaField = $eulaRootField->getChildById($id);
+        if (!$eulaField) {
+            throw $this->createNotFoundException('Could not find EULA field');
+        }
+
+        if ($request->isMethod('post')) {
+            $acceptedEulas = $this->getSession()->get('accepted_eulas');
+            if (!$acceptedEulas) {
+                $acceptedEulas = [];
+            }
+            $acceptedEulas[$eulaField->getId()] = true;
+            $this->getSession()->set('accepted_eulas', $acceptedEulas);
+            $forDownload = $request->get('for_download');
+            if ($forDownload) {
+                return $this->redirectToRoute('portal_downloads_view', [
+                    'slug'           => $forDownload,
+                    'start_download' => true,
+                ]);
+            } else {
+                return $this->redirectToRoute('portal_downloads_eula', [
+                    'id' => $eulaField->getId(),
+                ]);
+            }
+        }
+
+        $eulaText   = $eulaField->getOption('eula', '');
+        $eulaFormat = $eulaField->getOption('eula_format', CustomDefDownload::EULA_FORMAT_HTML);
+
+        return $this->renderThemeView(
+            'Theme:Downloads:eula.html.twig',
+            [
+                'field'        => $eulaField,
+                'eula_text'    => $eulaText,
+                'eula_format'  => $eulaFormat,
+                'for_download' => $request->get('for_download'),
+                'breadcrumbs'  => $this->getBreadcrumbGenerator()->buildDownloads(),
+            ]
+        );
     }
 
     /**

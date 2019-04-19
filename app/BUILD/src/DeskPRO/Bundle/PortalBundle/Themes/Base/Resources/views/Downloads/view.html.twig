@@ -1,6 +1,12 @@
 {% extends 'Theme::layout.html.twig' %}
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
+{% block head_extra %}
+  {% if start_download %}
+    <meta http-equiv="refresh" content="0; URL={{ path('portal_downloads_download', {'slug': file.slug}) }}">
+  {% endif%}
+{% endblock %}
+
 {% block inner_content %}
     <div class="breadcrumbs">
         {% show breadcrumbs %}

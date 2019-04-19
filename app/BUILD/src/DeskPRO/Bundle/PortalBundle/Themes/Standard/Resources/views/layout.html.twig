@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width">
     {% include 'Theme:Internal:head-include.html.twig' %}
     <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
+    {% block head_extra %}{% endblock %}
 </head>
 <body class="{% if (is_agent() or is_admin() or is_impersonating()) and portal_mode() != 'preview' and portal_mode() != 'focus-window' %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}">
 {% include 'Theme:Internal:custom-header.html.twig' %}

@@ -16,6 +16,10 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class CustomDefDownload extends CustomDefAbstract
 {
+    const SYS_NAME_EULA    = 'eula';
+    const EULA_FORMAT_HTML = 'html';
+    const EULA_FORMAT_TEXT = 'text';
+
     /**
      * @var CustomDefDownload
      */
@@ -66,7 +70,7 @@ class CustomDefDownload extends CustomDefAbstract
     {
         $data = parent::toApiData($primary, $deep, $visited);
 
-        if ($this->sys_name === 'eula' && isset($data['choices'])) {
+        if ($this->sys_name === self::SYS_NAME_EULA && isset($data['choices'])) {
             $map = [];
             foreach ($this->children as $c) {
                 $map[$c['id']] = $c;
