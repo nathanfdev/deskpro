@@ -88,7 +88,7 @@ adm.agents.perm_ticket_modify_own: 'Can modify owned and team tickets'
 adm.agents.perm_ticket_modify_set_archived: 'Can unarchive tickets'
 adm.agents.perm_ticket_modify_set_awaiting_agent: 'Can set status to awaiting agent'
 adm.agents.perm_ticket_modify_set_awaiting_user: 'Can set status to awaiting user'
-adm.agents.perm_ticket_modify_set_hold: 'Can set on-hold'
+adm.agents.perm_ticket_modify_set_hold: 'Can set pending'
 adm.agents.perm_ticket_modify_set_resolved: 'Can set status to resolved'
 adm.agents.perm_ticket_modify_set_unresolved: 'Can unresolve ticket'
 adm.agents.perm_ticket_modify_slas: 'Can modify SLAs'
@@ -629,6 +629,7 @@ adm.ticket_accounts.download_hotlinked_images_help: 'Replace linked images by bl
 adm.ticket_accounts.download_hotlinked_images_image_maxsize: 'Max Image Size'
 adm.ticket_accounts.download_hotlinked_images_total_maxsize: 'Max Cumulative Size'
 adm.ticket_accounts.email_accounts: 'Email Accounts'
+adm.ticket_accounts.email_is_agent_email: 'Email is already being used as agent email'
 adm.ticket_accounts.incoming_log: 'Incoming Email Log'
 adm.ticket_accounts.max_file_size: 'Max file size a user can upload'
 adm.ticket_accounts.max_file_size_supported: 'The max file size supported by your server is'
@@ -679,6 +680,8 @@ adm.ticket_slas.delete_confirm: 'Are you sure you want to delete this SLA? All d
 adm.ticket_slas.no_slas: 'You have not created any SLAs yet.'
 adm.ticket_slas.slas: SLAs
 adm.ticket_slas.title_explain: 'This title will be displayed in the agent interface when listing SLAs.'
+adm.ticket_statuses.delete_confirm: 'Are you sure you want to delete this status? Deleting a status cannot be undone.'
+adm.ticket_statuses.delete_tickets_moved: 'Any tickets that are currently in this status will be set to:'
 adm.ticket_triggers.copy_trigger: 'Copy another trigger'
 adm.ticket_triggers.copy_trigger_modal_title: 'Copy Trigger'
 adm.ticket_triggers.count_dep_triggers:
@@ -743,6 +746,8 @@ adm.twitter_setup.user_consumer_key: 'Consumer Key'
 adm.twitter_setup.user_consumer_key_error: 'You must enter Consumer Key for Twitter User Application'
 adm.twitter_setup.user_consumer_secret: 'Consumer Secret'
 adm.twitter_setup.user_consumer_secret_error: 'You must enter Consumer Secret for Twitter User Application'
+adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_1: 'A user can re-open resolved tickets for up to'
+adm.usergroups.perm_ticket_reopen_resolved_timelimit_desc_2: 'after resolution'
 adm.users_import.delete_users_link: 'Delete Imported Users'
 adm.users_import.delete_users_prompt: 'Deleting all imported users will result in permanent deletion of these users including any additional data added to user records and any objects (including tickets) linked to these users.'
 adm.users_import.delete_users_scheduled: 'Operation scheduled successfully'
@@ -830,7 +835,7 @@ admin.agents.resolve_own_and_teams_tickets: 'Resolve own and teams tickets'
 admin.agents.resolve_unassigned_tickets: 'Resolve unassigned tickets'
 admin.agents.restore: Restore
 admin.agents.save_agent: 'Save Agent'
-admin.agents.set_onhold: 'Set on-hold'
+admin.agents.set_onhold: 'Set Pending'
 admin.agents.set_status_awaiting_agent: 'Set status to awaiting agent'
 admin.agents.set_status_awaiting_user: 'Set status to awaiting user'
 admin.agents.set_status_resolved: 'Set status to resolved'
@@ -1383,9 +1388,11 @@ admin.general.error_ssl_feature_tip: 'This feature requires the OpenSSL PHP exte
 admin.general.error_ssl_tip: 'Secure connections require the OpenSSL PHP extension which is currently not installed. Click now for more information.'
 admin.general.error_type: 'Error Type'
 admin.general.event: Event
+admin.general.fail: Fail
 admin.general.fields: Fields
 admin.general.file_uploads: 'File Uploads'
 admin.general.first: First
+admin.general.forever: Forever
 admin.general.from_email_address: 'From email address'
 admin.general.full_email_address: 'Full Email Address'
 admin.general.gateway_error_logs: 'Gateway Rejections'
@@ -2793,8 +2800,8 @@ agent.emails.your_initial_password: 'Ihr initiales Passwort'
 agent.feedback.any_category: 'Beliebige Kategorie'
 agent.feedback.any_status: 'Beliebiger Status'
 agent.feedback.count_votes:
-  one: '{{display_count}} Stimme'
-  other: '{{display_count}} Stimmen'
+  one: '{{display_count}} vote'
+  other: '{{display_count}} votes'
 agent.feedback.feedback_deleted: 'Das Feedback wurde gelöscht'
 agent.feedback.feedback_to_review: 'Zu überprüfendes Feedback'
 agent.feedback.least_voted_on_top: 'Wenigste Stimmen oben'
@@ -2831,11 +2838,11 @@ agent.follow_up.add_follow_up: 'Add Follow Up'
 agent.follow_up.cancel_if_reply: 'Cancel follow up if user replies'
 agent.follow_up.error_agent: 'You mush select the agent to assign'
 agent.follow_up.error_agent_team: 'You mush select the team to assign'
-agent.follow_up.error_hold: 'You mush select the hold action'
-agent.follow_up.error_macro: 'You mush select the macro to run'
-agent.follow_up.error_note: 'You mush enter the note content'
-agent.follow_up.error_reply: 'You mush enter the reply content'
-agent.follow_up.error_status: 'You mush select the new status'
+agent.follow_up.error_hold: 'You must select the pending action'
+agent.follow_up.error_macro: 'You must select the macro to run'
+agent.follow_up.error_note: 'You must enter the note content'
+agent.follow_up.error_reply: 'You must enter the reply content'
+agent.follow_up.error_status: 'You musth select the new status'
 agent.follow_up.follow_up_actions: 'Follow Up Actions'
 agent.follow_up.follow_up_time: 'Follow Up Time'
 agent.follow_up.new_follow_up: 'New Follow Up'
@@ -2966,6 +2973,7 @@ agent.general.change: Change
 agent.general.change_password: 'Passwort ändern'
 agent.general.change_pic_for: 'Bild von {{name}} ändern'
 agent.general.change_status: 'Status ändern'
+agent.general.change_substatus: 'Change Sub Status'
 agent.general.change_user: 'Benutzer wechseln'
 agent.general.changed: Geändert
 agent.general.changed_from: 'Geändert von'
@@ -3003,6 +3011,8 @@ agent.general.contact_address: Kontaktadresse
 agent.general.contact_instant_messaging: Kontakt-Instant-Messaging
 agent.general.contact_phone: Kontakt-Telefonnummer
 agent.general.contains: beinhaltet
+agent.general.content: Content
+agent.general.content_type: 'Content type'
 agent.general.content_matches_summary: 'Inhalt stimmt überein mit: {{pattern}}'
 agent.general.continue: Weiter
 agent.general.copy_permalink: 'Permalink kopieren'
@@ -3028,6 +3038,7 @@ agent.general.create_deal: 'Deal erstellen'
 agent.general.create_download: 'Download erstellen'
 agent.general.create_feedback: 'Feedback erstellen'
 agent.general.create_news: 'Neuigkeiten-Eintrag erstellen'
+agent.general.create_section: 'Create Section'
 agent.general.create_status: 'Status erstellen'
 agent.general.create_task: 'Create Task'
 agent.general.create_ticket: 'Ticket erstellen'
@@ -3139,6 +3150,7 @@ agent.general.empty: 'is empty'
 agent.general.enabled: Enabled
 agent.general.enter_a_message: 'Nachricht eingeben'
 agent.general.enter_a_title: 'Geben Sie einen Titel an'
+agent.general.enter_a_content: 'Enter a content'
 agent.general.enter_organization_name: 'Name der Organisation eingeben…'
 agent.general.enter_search_terms: 'Suchbegriffe eingeben'
 agent.general.error: Fehler
@@ -3357,6 +3369,7 @@ agent.general.name: Name
 agent.general.name_az: 'Name (A-Z)'
 agent.general.name_is_summary: 'Name ist {{name}}'
 agent.general.name_za: 'Name (Z-A)'
+agent.general.next: Next
 agent.general.never: Niemals
 agent.general.new: Neu
 agent.general.new_article: 'Neuer Artikel'
@@ -3409,6 +3422,7 @@ agent.general.number_of_tickets: 'Anzahl an Tickets'
 agent.general.of: von
 agent.general.off: Aus
 agent.general.okay: OK
+agent.general.ok: OK
 agent.general.on: Ein
 agent.general.online_now: 'Gerade online'
 agent.general.open: Öffnen
@@ -3452,6 +3466,7 @@ agent.general.popularity: Beliebtheit
 agent.general.portal: Portal
 agent.general.position: Stelle
 agent.general.prev: Vorh
+agent.general.previous: Previous
 agent.general.print: Drucken
 agent.general.priorities: Prioritäten
 agent.general.priority: Priorität
@@ -3525,11 +3540,13 @@ agent.general.search: Suche
 agent.general.search_results: 'Search results'
 agent.general.search_terms: Suchbegriffe
 agent.general.seconds: Sekunden
+agent.general.section_title: 'Section Title'
 agent.general.select: Select
 agent.general.select_a_brand: 'Select a brand'
 agent.general.select_a_department: 'Abteilung auswählen'
 agent.general.select_agent: 'Mitarbeiter auswählen'
 agent.general.select_all: 'Select all'
+agent.general.select_substatus: 'Select sub status'
 agent.general.select_your_region: 'Region auswählen'
 agent.general.send: Sende
 agent.general.send_welcome_email: 'Sende Willkommens-E-Mail'
@@ -3582,6 +3599,7 @@ agent.general.status: Status
 agent.general.status_is: 'Status ist {{status}}'
 agent.general.statuses: Status
 agent.general.stop_processing_other_triggers: 'Verarbeitung anderer Auslöser beenden'
+agent.general.sub_status: Sub-Status
 agent.general.subject: Betreff
 agent.general.subscribe: Subscribe
 agent.general.summary: Zusammenfassung
@@ -3604,7 +3622,7 @@ agent.general.ticket_escalations: Ticket-Eskalationen
 agent.general.ticket_gateway_account: Ticket-Gateway-Konto
 agent.general.ticket_gateway_address: Ticket-Gateway-Adresse
 agent.general.ticket_id: Ticket-ID
-agent.general.ticket_is_on_hold: 'Ticket is on hold'
+agent.general.ticket_is_on_hold: 'Ticket is pending'
 agent.general.ticket_ref: Ticket-Referenz
 agent.general.ticket_starter: Ticket-Erzeuger
 agent.general.ticket_triggers: Ticket-Auslöser
@@ -3922,6 +3940,8 @@ agent.onboarding.topbar_search_text: 'You can search the helpdesk for tickets, p
 agent.onboarding.topbar_search_title: Search
 agent.onboarding.topbar_views_text: 'Click the ''View'' icon when you want to change the layout of your agent screen.'
 agent.onboarding.topbar_views_title: 'Manage views'
+agent.onboarding.new_pending_status_title: 'New Pending Status'
+agent.onboarding.new_pending_status_html: 'The helpdesk was updated to include a new Pending status. Use this status when a ticket is neither awaiting agent nor awaiting user, but is instead waiting on something or someone else. The new Pending status replaces the old "On Hold" functionality and moves it directly to the status menu.<br/><br/><a href="https://support.deskpro.com/kb/articles/693" target="_blank">Read more about the new Pending status and sub-statuses</a>.'
 agent.organizations.add_person: 'Person zu dieser Organisation hinzufügen'
 agent.organizations.already_child: 'This organization is already a child of {{name}}'
 agent.organizations.already_grandparent: 'This organization is a grandparent of {{name}}'
@@ -4350,6 +4370,7 @@ agent.publish.pending_articles: 'Ausstehende Artikel'
 agent.publish.permalink_copy_prompt: 'Der Permalink zu diesem Download auf der Website ist:'
 agent.publish.please_choose_file: 'Bitte wählen Sie eine Datei'
 agent.publish.please_enter_title: 'Bitte geben Sie einen Titel ein'
+agent.publish.please_enter_content: 'Please enter a content'
 agent.publish.please_select_category: 'Bitte wählen Sie eine Kategorie'
 agent.publish.please_select_guide: 'Please select a guide'
 agent.publish.post: Eintrag
@@ -4980,7 +5001,7 @@ agent.tickets.preview_replied: replied
 agent.tickets.preview_wrote_note: 'wrote a note'
 agent.tickets.priority_highestlowest: 'Priorität (Höchste-Nierigste)'
 agent.tickets.priority_lowesthighest: 'Priorität (Niedrigste-Höchste)'
-agent.tickets.put_on_hold: 'Put ticket on hold'
+agent.tickets.put_on_hold: 'Set ticket to Pending'
 agent.tickets.raw_message: Originalnachricht
 agent.tickets.real_time_updates: 'Echtzeitaktualisierung ist aktiviert'
 agent.tickets.real_time_updates_description: 'Wenn die Echtzeitaktualisierung aktiviert ist, wird diese Liste laufend aktualisiert, während Tickets im Helpdesk aktualisiert werden.'
@@ -5040,6 +5061,7 @@ agent.tickets.set_delete: 'Zum Löschen markieren'
 agent.tickets.set_department_action: 'Bereich als {{department}} setzen'
 agent.tickets.set_flag_to_action: 'Markierung als {{flag}} setzen'
 agent.tickets.set_language_action: 'Ändere Sprache in {{language}}'
+agent.tickets.set_pending: 'Set pending'
 agent.tickets.set_priority_action: 'Priorität auf {{priority}}'
 agent.tickets.set_product_action: 'Produkt als {{product}} definieren'
 agent.tickets.set_resolved: Gelöst
@@ -5085,6 +5107,7 @@ agent.tickets.status_resolved_deleted: Gelöschte
 agent.tickets.status_resolved_spam: Spam
 agent.tickets.status_resolved_temp: Temporär
 agent.tickets.status_resolved_validating: 'Warte auf Freigabe'
+agent.tickets.status_pending: Pending
 agent.tickets.stop_later_triggers_action: 'Stoppe die Ausführung von nachfolgenden Auslösern'
 agent.tickets.subject_changed: 'Betreff geändert'
 agent.tickets.subject_changed_from: 'Betreff geändert durch'
@@ -5529,6 +5552,7 @@ api.error_codes.missing_country_code: 'Country code is missing.'
 api.error_codes.missing_jwt_token: 'JWT token is required.'
 api.error_codes.no_default_dashboard_permission: 'can''t grant edit permission for agent to default dashboard'
 api.error_codes.no_permission: 'You have no permission to modify "{{value}}" object(s).'
+api.error_codes.no_delete_permission: 'You have no permission to delete "{{value}}" object(s).'
 api.error_codes.no_source_provided: 'Unable to fetch data, no report widget or js code provided.'
 api.error_codes.no_uploaded_file: 'Uploaded file was not found.'
 api.error_codes.not_an_image: 'Uploaded file is not an image'
