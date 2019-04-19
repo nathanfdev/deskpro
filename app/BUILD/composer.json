@@ -2,6 +2,10 @@
   "repositories": [
     {
       "type": "vcs",
+      "url": "https://github.com/ImmRanneft/mpdf.git"
+    },
+    {
+      "type": "vcs",
       "url": "https://github.com/deskpro/oauth1-client.git"
     },
     {
@@ -82,6 +86,7 @@
     "doctrine/mongodb-odm-bundle": "~3.0",
     "doctrine/mongodb-odm": "1.0.x-dev",
     "mongofill/mongofill": "dev-master",
+    "mpdf/mpdf": "dev-master",
     "alchemy/zippy": "^0.4.6",
     "mikey179/vfsStream": "^1.6",
     "eloquent/pathogen": "^0.6.1",
@@ -108,8 +113,7 @@
     "html2text/html2text": "^4.1",
     "gorhill/php-fine-diff": "^0.1.0",
     "symfony/lock": "3.4",
-    "plivo/php-sdk": "^4.1",
-    "mpdf/mpdf": "^7.1"
+    "plivo/php-sdk": "^4.1"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

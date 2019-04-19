@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5bf3601bf1318d3fbf3846a94ad8c379",
+    "content-hash": "267fae5aa29d5030514537fa45d7e8cc",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -4705,16 +4705,16 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "v7.1.9",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "a0fc1215d2306aa3b4ba6e97bd6ebe4bab6a88fb"
+                "url": "https://github.com/ImmRanneft/mpdf.git",
+                "reference": "d7db673322afeb925a78ed9304c165dadae5f309"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/a0fc1215d2306aa3b4ba6e97bd6ebe4bab6a88fb",
-                "reference": "a0fc1215d2306aa3b4ba6e97bd6ebe4bab6a88fb",
+                "url": "https://api.github.com/repos/ImmRanneft/mpdf/zipball/d7db673322afeb925a78ed9304c165dadae5f309",
+                "reference": "d7db673322afeb925a78ed9304c165dadae5f309",
                 "shasum": ""
             },
             "require": {
@@ -4748,7 +4748,19 @@
                     "Mpdf\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Mpdf\\": "tests/Mpdf"
+                },
+                "files": [
+                    "src/functions-dev.php"
+                ]
+            },
+            "scripts": {
+                "post-install-cmd": [
+                    "php -r \"chmod('./tmp', 0777);\""
+                ]
+            },
             "license": [
                 "GPL-2.0-only"
             ],
@@ -4769,7 +4781,12 @@
                 "php",
                 "utf-8"
             ],
-            "time": "2019-02-06T13:32:19+00:00"
+            "support": {
+                "issues": "https://github.com/mpdf/mpdf/issues",
+                "source": "https://github.com/mpdf/mpdf",
+                "docs": "http://mpdf.github.io"
+            },
+            "time": "2019-04-19T05:22:34+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -13657,6 +13674,7 @@
         "mongofill/mongofill": 20,
         "league/oauth1-client": 20,
         "brick/math": 20,
+        "mpdf/mpdf": 20,
         "satooshi/php-coveralls": 20,
         "behatch/contexts": 20,
         "behat/mink-extension": 20,
