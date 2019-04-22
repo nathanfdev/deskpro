@@ -729,7 +729,7 @@ JS;
                 $set  = new \Application\DeskPRO\Attachments\RestrictionSet();
                 $exts = !$fileUpload
                     ? ['gif', 'png', 'jpg', 'jpeg']
-                    : ['gif', 'png', 'jpg', 'jpeg', 'bmp', 'tiff', // also allow images
+                    : ['gif', 'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff', // also allow images
                         'pdf', 'doc', 'docx', 'xls', 'csv', 'xlsx', 'txt', 'log',
                        'rar', 'zip', 'tar.gz', '7zip', 'gzip', 'bzip',
                        'mp4', 'avi', 'wmv', 'mpeg', 'mov', '3gp', 'flv', ];
