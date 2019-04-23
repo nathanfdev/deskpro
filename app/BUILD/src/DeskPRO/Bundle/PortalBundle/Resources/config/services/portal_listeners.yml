@@ -132,6 +132,12 @@ services:
     tags:
       - { name: request.param_converter, priority: -1, converter: deskpro_slug }
 
+  param_converter.deskpro_download_slug_or_blob_auth:
+    class: DeskPRO\Bundle\PortalBundle\Request\DownloadSlugOrBlobAuthConverter
+    arguments: ["@doctrine.orm.default_entity_manager", "@content_slug_manager"]
+    tags:
+      - { name: request.param_converter, priority: -1, converter: deskpro_download_slug_or_blob_auth }
+
   param_converter.tag_request:
     class: DeskPRO\Bundle\PortalBundle\Request\TagRequestConverter
     arguments: ["@brand_stack", "@portal_brand_theme_loader"]

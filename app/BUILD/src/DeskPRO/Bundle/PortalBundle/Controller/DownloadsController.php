@@ -245,6 +245,10 @@ class DownloadsController extends AbstractController
             if ($def->getParent()) {
                 continue;
             }
+            // Don't show EULA field on the Portal
+            if ($def->getSysName() === CustomDefDownload::SYS_NAME_EULA) {
+                continue;
+            }
             if ($data = $file->getCustomDataForField($def)) {
                 if (is_array($data)) {
                     $val = [];
@@ -256,6 +260,9 @@ class DownloadsController extends AbstractController
                 }
             } else {
                 $val = '';
+            }
+            if (!$val) {
+                continue;
             }
             $customData[] = [
                 'type'  => $def->type,
@@ -287,7 +294,7 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/files/{slug}/download", name="portal_downloads_download")
-     * @ParamConverter("file", options={"slug" = "slug"})
+     * @ParamConverter(name="file", converter="deskpro_download_slug_or_blob_auth")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('DOWNLOAD_DOWNLOAD', file)")
      *
      * @param Download $file
@@ -322,11 +329,15 @@ class DownloadsController extends AbstractController
             return $this->redirect($file->getFileurl());
         }
 
-        return $this->redirectToRoute('serve_blob', [
-            'blob_auth_id' => $file->getBlob()->getAuthId(),
-            'filename'     => $file->getFilenameSafe(),
-            'dl'           => 1,
-        ]);
+        $url = $file->getBlob()->getDownloadUrl();
+        // historically we add dl=1 here
+        if (strpos($url, '?') === false) {
+            $url .= '?dl=1';
+        } else {
+            $url .= '&dl=1';
+        }
+
+        return $this->redirect($url);
     }
 
     /**

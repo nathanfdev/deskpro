@@ -172,7 +172,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Orb.Class({
 
 		var list = $('.file-list', editArea);
 		if (list[0]) {
-			DeskPRO_Window.util.fileupload(editArea, { page: this });
+			DeskPRO_Window.util.fileupload(editArea, {
+        page: this,
+        uploadUrlParameters: {
+          tag: 'download_attachment'
+        }
+      });
 			this.wrapper.bind('fileuploadadd', function() {
 				$('ul.file-list', editArea).empty();
 			});

@@ -11,6 +11,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\DownloadAttachmentBlobCheckerListener;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
@@ -588,6 +589,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->addEntityListener(Events::prePersist, DownloadAttachmentBlobCheckerListener::class, 'prePersist');
         $metadata->mapField(
             [
                 'fieldName'  => 'num_downloads',

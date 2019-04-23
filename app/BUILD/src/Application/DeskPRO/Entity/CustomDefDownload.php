@@ -50,6 +50,14 @@ class CustomDefDownload extends CustomDefAbstract
     }
 
     /**
+     * @return string
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
+    }
+
+    /**
      * Set parent.
      *
      * @param CustomDefDownload $parent

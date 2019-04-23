@@ -247,7 +247,10 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 		});
 
 		DeskPRO_Window.util.fileupload(this.wrapper, {
-			page: this
+			page: this,
+      uploadUrlParameters: {
+        tag: 'download_attachment'
+      }
 		});
 
         this.wrapper.bind('fileuploaddone', function() {

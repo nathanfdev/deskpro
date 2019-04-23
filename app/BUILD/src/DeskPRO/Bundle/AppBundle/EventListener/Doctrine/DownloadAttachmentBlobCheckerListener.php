@@ -4,14 +4,14 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
 use Application\DeskPRO\BlobStorage\BlobStorageException;
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use Application\DeskPRO\Entity\TicketAttachment;
+use Application\DeskPRO\Entity\Download;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 
 /**
- * Class TicketAttachmentBlobCheckerListener.
+ * Class DownloadAttachmentBlobCheckerListener.
  */
-class TicketAttachmentBlobCheckerListener
+class DownloadAttachmentBlobCheckerListener
 {
     /**
      * @var EntityManager
@@ -43,24 +43,24 @@ class TicketAttachmentBlobCheckerListener
     }
 
     /**
-     * @param TicketAttachment $entity
+     * @param Download $entity
      *
      * @throws \Doctrine\DBAL\Exception\InvalidArgumentException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Doctrine\ORM\TransactionRequiredException
      */
-    public function prePersist(TicketAttachment $entity)
+    public function prePersist(Download $entity)
     {
         $blob = $entity->getBlob();
 
-        if ($entity->isInline() || !$blob || $blob->isTicketAttachment()) {
+        if (!$blob || $blob->isDownloadAttachment()) {
             return;
         }
 
         $this->logger->info(sprintf(
-            '[TicketAttachmentBlobCheckerListener] TicketAttachment for the Ticket (#%s) has Blob (#%s) that is not tagged as ticket attachment. Going to recreate tagged Blob.',
-            $entity->getTicket() ? $entity->getTicket()->getId().' '.$entity->getTicket()->getTitle() : 'unknown',
+            '[DownloadAttachmentBlobCheckerListener] Download (#%s) has Blob (#%s) that is not tagged as download attachment. Going to recreate tagged Blob.',
+            $entity->getId(),
             $blob->getId() ? $blob->getId() : $blob->getFilenameSafe()
         ));
 
@@ -72,11 +72,11 @@ class TicketAttachmentBlobCheckerListener
                 $raw_file,
                 $blob->getFilename(),
                 $blob->getContentType(),
-                ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
+                ['tag' => DeskproBlobStorage::TAG_DOWNLOAD_ATTACHMENT]
             );
         } catch (BlobStorageException $ex) {
             $this->logger->error(sprintf(
-                '[TicketAttachmentBlobCheckerListener] Catch the BlobStorageException: %s.',
+                '[DownloadAttachmentBlobCheckerListener] Catch the BlobStorageException: %s.',
                 $ex->getMessage()
             ));
         }
