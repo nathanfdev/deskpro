@@ -50,6 +50,11 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
     protected $person_id = null;
 
     /**
+     * @var array
+     */
+    protected $meta;
+
+    /**
      * @var \DateTime
      */
     protected $date_created;
@@ -77,6 +82,30 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('person_id', $id);
 
         return $this;
+    }
+
+    /**
+     * @param array $meta
+     *
+     * @return self
+     */
+    public function setMeta(array $meta = null)
+    {
+        if (!$meta) {
+            $this->setModelField('meta', null);
+        } else {
+            $this->setModelField('meta', $meta);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMeta()
+    {
+        return $this->meta ? $this->meta : [];
     }
 
     public function getObjectType()
@@ -210,6 +239,12 @@ class PageViewLog extends \Application\DeskPRO\Domain\DomainObject
             'scale'      => 0,
             'nullable'   => true,
             'columnName' => 'person_id',
+        ]);
+        $metadata->mapField([
+            'columnName' => 'meta',
+            'fieldName'  => 'meta',
+            'type'       => 'json_array',
+            'nullable'   => true,
         ]);
         $metadata->mapField([
             'fieldName'  => 'date_created',

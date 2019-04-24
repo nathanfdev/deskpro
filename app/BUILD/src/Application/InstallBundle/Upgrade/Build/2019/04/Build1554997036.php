@@ -13,7 +13,9 @@ class Build1554997036 extends AbstractBuild implements OnlineBuildInterface, Ski
         $this->execDbQuery('default', 'ALTER TABLE custom_data_download ADD CONSTRAINT FK_38DA0557C667AEAB FOREIGN KEY (download_id) REFERENCES downloads (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE custom_data_download ADD CONSTRAINT FK_38DA0557443707B0 FOREIGN KEY (field_id) REFERENCES custom_def_download (id) ON DELETE CASCADE');
         $this->execDbQuery('default', 'ALTER TABLE custom_data_download ADD CONSTRAINT FK_38DA05573F6A6D56 FOREIGN KEY (root_field_id) REFERENCES custom_def_download (id) ON DELETE CASCADE');
-        $this->execDbQuery('default', 'CREATE UNIQUE INDEX UNIQ_CUSTOM_DATA_DOWNLOAD_SYS_NAME ON custom_def_download (sys_name)');
+        $this->execDbQuery('default', 'CREATE UNIQUE INDEX UNIQ_66AF1BF0769F5A8D ON custom_def_download (sys_name)');
+
+        $this->execSlowAlterTable('page_view_log', 'ADD meta LONGTEXT DEFAULT NULL COMMENT  \'(DC2Type:json_array)\' AFTER person_id');
     }
 
     public function runAlters()

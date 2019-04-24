@@ -444,11 +444,7 @@ class PortalController extends AbstractController
 
         $props = [];
         if ($request->query->get('tag', '')) {
-            switch (trim($request->query->get('tag', ''))) {
-                case 'ticket_attachment':
-                    $props['tag'] = 'ticket_attachment';
-                    break;
-            }
+            $props['tag'] = trim($request->query->get('tag', ''));
         }
 
         /** @var Blob $blob */
