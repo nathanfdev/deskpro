@@ -15,6 +15,11 @@
 				<tbody>
 					<tr>
 						<th class="col-head">{{ phrase('agent.general.user') }}</th>
+            {% if show_meta %}
+              {% for column in meta_columns %}
+                <th class="col-head">{{ column }}</th>
+              {% endfor %}
+            {% endif %}
 						<th class="col-head">{{ phrase('agent.general.count') }}</th>
 						<th class="col-head" width="10">{{ phrase('agent.general.when') }}</th>
 					</tr>
@@ -28,6 +33,13 @@
 									</span>
 								</a>
 							</td>
+              {% if show_meta %}
+                {% for column in meta_columns|keys %}
+                  <td nowrap="nowrap" width="50" style="text-align: center;">
+                  	{{ id_to_info[person.id]['meta'][column] }}
+                  </td>
+                {% endfor %}
+              {% endif %}
 							<td nowrap="nowrap" width="10" style="text-align: center;">
 								{{ id_to_info[person.id].count|default(1) }}
 							</td>

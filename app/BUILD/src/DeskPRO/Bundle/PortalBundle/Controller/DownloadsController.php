@@ -325,23 +325,25 @@ class DownloadsController extends AbstractController
         $file->incrementDownloadCount();
 
         // Save PageView record
-        $meta = [];
-        if ($eulaFieldData) {
-            $meta = [
-                'eula' => [
-                    'id'     => $eulaFieldData->getField()->getId(),
-                    'title'  => $eulaFieldData->getField()->getTitle(),
-                    'agreed' => true,
-                ],
-            ];
+        if ($this->getUser()) {
+            $meta = [];
+            if ($eulaFieldData) {
+                $meta = [
+                    'eula' => [
+                        'id'     => $eulaFieldData->getField()->getId(),
+                        'title'  => $eulaFieldData->getField()->getTitle(),
+                        'agreed' => true,
+                    ],
+                ];
+            }
+            $this->get('content.page_view')->pageView(
+                $this->getCurrentPerson(),
+                PageViewLog::TYPE_DOWNLOAD,
+                $file->getId(),
+                PageViewLog::ACTION_DOWNLOAD,
+                $meta
+            );
         }
-        $this->get('content.page_view')->pageView(
-            $this->getCurrentPerson(),
-            PageViewLog::TYPE_DOWNLOAD,
-            $file->getId(),
-            PageViewLog::ACTION_DOWNLOAD,
-            $meta
-        );
 
         $this->getEm()->flush();
 
