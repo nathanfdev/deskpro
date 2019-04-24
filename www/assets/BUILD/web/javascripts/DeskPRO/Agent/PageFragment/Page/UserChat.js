@@ -1315,6 +1315,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			}
 		});
 
+		var chatView = this.getEl('chat_view');
+		chatView.on('click', '.join-convo', $.proxy(self.joinConvo, this));
+
     self.syncSizes();
 	},
 
