@@ -1,27 +1,79 @@
+adm.agents.import_btn_more: 'Convidar mais agentes?'
+adm.agents.import_btn_next: 'Próximo passo'
+adm.agents.import_file_dd: 'Arraste e solte a planilha preenchida aqui'
+adm.agents.import_file_description: 'Clique no link abaixo para fazer download de uma planilha CSV especial. Preencha a planilha com as informações de seus agentes e envie-a aqui.'
+adm.agents.import_file_title: 'Envie uma planilha'
+adm.agents.import_kb: 'Baixar modelo de planilha'
+adm.agents.import_results:
+  one: '{{count}} Agente foi convidado ao Deskpro'
+  other: '{{count}} Agentes foram convidados ao Deskpro'
+adm.agents.import_textarea_description: 'Cole uma lista de endereços abaixo separados por vírgula, ponto e vírgula, espaço ou um em cada linha'
+adm.agents.import_textarea_title: 'Copiar/Colar uma lista de endereços de email'
+adm.agents.perm_chat_delete: 'Pode apagar cópias de chats'
+adm.agents.perm_chat_use: 'Pode usar o chat'
+adm.agents.perm_chat_view_transcripts: 'Pode ver cópias de chats antigas'
+adm.agents.perm_chat_view_unassigned: 'Pode ver chats não designados'
+adm.agents.perm_general_picture: 'Pode configurar sua própria foto'
+adm.agents.perm_general_signature: 'Pode configurar sua própria assinatura'
+adm.agents.perm_org_create: 'Pode criar organizações'
+adm.agents.perm_org_delete: 'Pode apagar organizações'
+adm.agents.perm_org_edit: 'Pode editar organizações'
+adm.agents.perm_org_notes: 'Pode adicionar notas a organizações'
+adm.agents.perm_people_create: 'Pode criar novos perfis de usuário'
+adm.agents.perm_people_delete: 'Pode apagar usuários completamente'
+adm.agents.perm_people_disable: 'Pode desabilitar usuários'
+adm.agents.perm_people_edit: 'Pode editar perfis de usuários'
+adm.agents.perm_people_login_as: 'Pode logar como usuários'
+adm.agents.perm_people_manage_emails: 'Pode editar endereços de e-mail de usuários'
+adm.agents.perm_people_notes: 'Pode adicionar notas a perfis de usuários'
+adm.agents.perm_people_reset_password: 'Pode recuperar senhas de usuários'
+adm.agents.perm_people_use: 'Pode usar o sistema de CRM'
+adm.agents.perm_people_validate: 'Pode validar usuários e endereços de e-mail de usuários'
+adm.agents.perm_problems_close: 'Pode fechar problemas'
+adm.agents.perm_problems_create: 'Pode criar problemas'
+adm.agents.perm_problems_delete: 'Pode apagar problemas'
+adm.agents.perm_problems_reopen: 'Pode reabrir problemas'
+adm.agents.perm_problems_view: 'Pode ver problemas'
+adm.agents.perm_publish_can_insert_html: 'Pode inserir qualquer HTML (incluindo HTML potencialmente perigoso)'
+adm.agents.perm_publish_create: 'Pode criar conteúdo'
+adm.agents.perm_publish_delete: 'Pode apagar conteúdo'
+adm.agents.perm_publish_edit: 'Pode editar conteúdo'
+adm.agents.perm_publish_use: 'Pode usar o sistema de publicações'
+adm.agents.perm_publish_validate: 'Pode validar conteúdo e comentários (incluindo os próprios)'
+adm.agents.perm_ticket_modify_department: 'Modificar departamento'
+adm.agents.perm_ticket_modify_fields: 'Modificar campos'
+adm.agents.perm_ticket_modify_slas: 'Pode modificar SLAs'
+adm.agents.perm_title_others: Outros
+adm.agents.perm_title_people: Pessoas
+adm.agents.perm_title_problems: Problemas
+adm.agents.perm_title_profile: Perfil
+adm.agents.perm_title_publish: Publicar
+adm.departments.delete_department: 'Apagar departamento'
+adm.departments.linked_account: 'Conta de Email'
+adm.departments.no_delete_last: 'Pelo menos um departamento deve sempre existir. Você não pode apagar o último departamento.'
+adm.departments.rename_department_field: 'Renomear o campo do departamento'
+adm.departments.title_error: 'Você deve inserir um título válido'
+adm.departments.title_explain: 'Este é o título como aparecerá nas interfaces do agente e do usuário'
+adm.departments.user_title: 'Mostrar um título diferente para o usuário final'
+adm.email_templates.emails_user_chat-transcript_desc: 'E-mail enviado ao usuário após terminarem um chat.'
+adm.email_templates.emails_user_chat-transcript_title: 'Cópia do chat'
 adm.general.action_cannot_be_undone: 'Esta ação não pode ser desfeita'
 adm.general.agent_perms: 'Permissões de agentes'
 adm.general.api_keys: 'Chaves API'
 adm.general.apps: Aplicativos
 adm.general.apps_agents: Agentes
 adm.general.apps_brands: Marcas
-adm.general.apps_chat: Chat
-adm.general.apps_crm: CRM
-adm.general.apps_emails: Emails
-adm.general.apps_portal: Portal
 adm.general.apps_server: Servidor
 adm.general.apps_setup: Configurar
-adm.general.apps_tickets: Tickets
-adm.general.apps_twitter: Twitter
 adm.general.back_to_agent: 'Voltar para Interface do Agente'
 adm.general.delete_label: 'Apagar rótulo do Ticket'
 adm.general.delete_label_confirm: 'Tem certeza que deseja apagar este rótulo?'
 adm.general.deskpro_admin_interface: 'Interface Admin do Deskpro'
-adm.general.discard_changes_continue: 'Descartar mudanças não salvar e continuar'
+adm.general.discard_changes_continue: 'Descartar mudanças não salvas e continuar'
 adm.general.home: Casa
 adm.general.importer: Importador
 adm.general.label_edit_error: 'Você deve colocar um rótulo válido'
 adm.general.labels: Rótulos
-adm.general.layout: Layout
 adm.general.new_label: 'Novo rótulo'
 adm.general.no_labels_yet: 'Sem rótulo ainda'
 adm.general.perm_assign: Designar
@@ -43,13 +95,19 @@ adm.satisfaction.trigger_positive_help: 'Estas ações serão executadas quando 
 adm.satisfaction.trigger_positive_title: 'Ações executadas quando um usuário envia uma avaliação positiva. '
 adm.settings.reset_demo_descriptions_triggers: 'Restaurar triggers para estado padrão, e deletal todos os triggers padrão. '
 adm.settings.reset_demo_titles_triggers: 'Restaurar triggers'
+admin.agents.delete_chat_transcripts: 'Pode apagar cópias de chats'
+admin.agents.view_chat_transcripts: 'Pode ver cópias de chats'
+admin.departments.default_department_brand_label: 'Selecionar marca'
+admin.departments.default_department_for_users_label: 'Departamento padrão para usuários:'
+admin.departments.title_explain: 'Este é o título como aparecerá nas interfaces de agente e de usuário.'
 admin.designer.add_new_rule: 'Adicionar uma nova regra.'
-admin.designer.edit_footer_section: 'Click here to set custom footer HTML'
 admin.designer.edit_header_section: 'Clique aqui para configurar um cabeçalho em HTML'
 admin.designer.edit_page_head: 'Clique aqui para editar customizado &lt;head&gt; HTML'
 admin.designer.edit_welcome_section: 'Clique aqui para configurar um bloco de boas vindas customizados.'
 admin.designer.only_show_for_agents: 'Mostrar apenas para estes agentes'
 admin.designer.reenable_simple_header: 'Clique aqui para re-habilitar o cabeçalho simples'
+admin.emailtpl_desc.deskpro_emails_user_chat-transcript_html_twig_desc: 'Este e-mail é enviado ao usuário quando ele pede uma cópia do chat no fim da conversa.'
+admin.emailtpl_desc.deskpro_emails_user_chat-transcript_html_twig_title: 'Cópia de chats'
 admin.feedback.active_status: 'Status Ativo'
 admin.feedback.active_statuses: 'Statuses ativos'
 admin.feedback.cannot_delete_last_category: 'Você não pode apagar a última categoria'
@@ -80,19 +138,15 @@ admin.general.alphabetical: Alfabético
 admin.general.app_agents: Agentes
 admin.general.apps: Aplicativos
 admin.general.apps_agents: Agentes
-admin.general.apps_chat: Chat
-admin.general.apps_crm: CRM
 admin.general.apps_crm_explain: 'Gerenciamento de pessoas e organizações'
 admin.general.apps_feedback: Comntário
 admin.general.apps_guides: Guias
 admin.general.apps_kb: 'Base de conhecimento'
 admin.general.apps_news: Notícias
-admin.general.apps_portal: Portal
 admin.general.apps_server: Servidor
 admin.general.apps_setup: Configurar
 admin.general.apps_tasks: 'Tarefas do Agente'
 admin.general.apps_tasks_explain: 'A aplicação de tarefas é utilizado pelos agentes para gerenciar as tarefas pendentes. Tarefas podem ser criadas e com prazos definidos, e atribuído a agentes específicos ou times'
-admin.general.apps_tickets: Tickets
 admin.general.back_to_agent: 'Voltar para a Interface do Agente'
 admin.general.banning: Banindo
 admin.general.choose_field_type: 'Escolher Campo de Digitação'
@@ -143,7 +197,6 @@ admin.general.from_email_address: 'Endereço de email de'
 admin.general.full_email_address: 'Endereço de email completo'
 admin.general.general: Geral
 admin.general.google_apps: 'Aplicativos Gmail / Google'
-admin.general.helpdesk: Helpdesk
 admin.general.helpdesk_currently_disabled: 'Seu helpdesk está desabilitado tanto para agentes como para usuários.'
 admin.general.home: Casa
 admin.general.incident: Incidente
@@ -153,10 +206,8 @@ admin.general.labels: Rótulos
 admin.general.languages: Línguas
 admin.general.last: Último
 admin.general.latest_deskpro_build: 'A versão mais recente do Deskpro é: '
-admin.general.layout: Layout
 admin.general.locale: local
 admin.general.log_name: 'Nome do Log'
-admin.general.logs: Logs
 admin.general.mysql_info: 'Informação MySQL'
 admin.general.mysql_status: 'Status MySQL'
 admin.general.new_category: 'Nova Categoria'
@@ -176,7 +227,6 @@ admin.general.permission: Permissão
 admin.general.php_info: 'Informação PHP'
 admin.general.please_correct_errors: 'Por favor corrija o(s) seguinte(s) erro(s): '
 admin.general.port: Porta
-admin.general.portal: Portal
 admin.general.remove: Remover
 admin.general.remove_all: 'Remover tudo'
 admin.general.requires_auth: 'Requer Autorização'
@@ -202,7 +252,6 @@ admin.general.ticket_fields: 'Campos de Ticket'
 admin.general.ticket_priorities: 'Prioridades do Ticket'
 admin.general.ticket_workflows: 'Fluxo de trabalho do Ticket'
 admin.general.translate: Traduzir
-admin.general.triggers: Triggers
 admin.general.usergroup_perms: 'Permissões de grupo de usuários'
 admin.general.username: 'Nome de usuário'
 admin.general.variable_name: 'Nome variável'
@@ -339,13 +388,10 @@ agent.chrome.link_logout: Deslogar
 agent.chrome.link_preferences: Preferências
 agent.chrome.nav_admin_settings: 'Configurações do administrador'
 agent.chrome.nav_agentchat: 'IM (Instant Messenger) do Agente'
-agent.chrome.nav_feedback: Feedback
-agent.chrome.nav_people: CRM
 agent.chrome.nav_publish: Publicar
 agent.chrome.nav_reports: Relatórios
 agent.chrome.nav_search: Busca
 agent.chrome.nav_tasks: Tarefas
-agent.chrome.nav_tickets: Tickets
 agent.chrome.nav_userchat: 'Chat do usuário'
 agent.chrome.notification_tooltip: 'Ver as notificações do navegador sobre sua atividade no Helpdesk'
 agent.chrome.notify_list-dismiss-all: 'Desconsiderar Todas as Notificações'
@@ -448,7 +494,6 @@ agent.feedback.status_closed: Fechado
 agent.feedback.status_deleted: Apagado
 agent.feedback.status_hidden: Oculto
 agent.feedback.status_new: Novo
-agent.feedback.status_spam: Spam
 agent.feedback.subscribe_user: 'Usuário inscrito'
 agent.feedback.subscribed_users: 'Usuários inscritos'
 agent.feedback.top_voted_on_top: 'Mais votados em cima'
@@ -457,7 +502,6 @@ agent.feedback.user_submitted_new_feedback: '{{name}} enviou um novo comentário
 agent.feedback.vote_for_this_feedback: 'Votar neste comentário'
 agent.feedback.votes_least_most: 'Votos (do menor - para maior)'
 agent.feedback.votes_most_least: 'Votos (do maior - para menor)'
-agent.general.24x7: 24x7
 agent.general.aborted: Abortado
 agent.general.account: Conta
 agent.general.actions: Ações
@@ -483,7 +527,6 @@ agent.general.add_ticket_reply: 'Adicionar resposta ao Ticket'
 agent.general.added: Adicionado
 agent.general.added_by: 'Adicionado por {{name}}'
 agent.general.address: Endereço
-agent.general.admin: Admin
 agent.general.admin_interface: 'Interface do admin'
 agent.general.advanced: Avançado
 agent.general.after: depois
@@ -528,9 +571,9 @@ agent.general.assign_to_me: 'Atribuir para mim'
 agent.general.assign_to_my_team: 'Atribuir para Meu Time'
 agent.general.assign_to_primary_team: 'Atribuir ao Time Primário'
 agent.general.assigned: Atribuído
-agent.general.assigned_agent: 'Atribuído ao Agente'
+agent.general.assigned_agent: 'Agente atribuído'
 agent.general.assigned_agent_id: 'ID do Agente'
-agent.general.assigned_team: 'Atribuído ao time'
+agent.general.assigned_team: 'Time atribuído'
 agent.general.assigned_to: 'Atribuído para'
 agent.general.attach_error_failed_upload: 'Seu anexo falhou ao subir (você cancelou?). Tente novamente.'
 agent.general.attach_error_no_file: 'Por favor selecione um aquivo para subir.'
@@ -566,7 +609,6 @@ agent.general.cancelled: Cancelado
 agent.general.categories: Categorias
 agent.general.category: Categoria
 agent.general.cc_address: 'Endereços em CC''d'
-agent.general.ccs: 'CC''s'
 agent.general.change: Troca
 agent.general.change_password: 'Trocar Senha'
 agent.general.change_pic_for: 'Trocar imagem para {{name}}'
@@ -582,10 +624,8 @@ agent.general.changed_to_include: 'Trocou para incluir'
 agent.general.changed_to_lte: 'Trocou para <='
 agent.general.changed_to_remove: 'Trocou para remover'
 agent.general.changelog: 'Trocar Log'
-agent.general.chat: Chat
 agent.general.chat_departments: 'Departamentos de Chat'
 agent.general.chat_ended: 'Chat terminado'
-agent.general.chats: Chats
 agent.general.children: Crianças
 agent.general.choose_a_person: 'Escolha uma pessoa'
 agent.general.choose_a_type: 'Escolha um tipo'
@@ -629,7 +669,6 @@ agent.general.create_topic: 'Criar Tópico'
 agent.general.created: Criado
 agent.general.created_and_published: 'Criado e publicado'
 agent.general.criteria: Critério
-agent.general.crm: CRM
 agent.general.current_agent: 'Agente atual'
 agent.general.current_computer_tz: 'O tempo atual, de acordo com seu computador'
 agent.general.current_page: 'Página atual'
@@ -642,8 +681,6 @@ agent.general.date_created: 'Criado na data'
 agent.general.date_created_newestoldest: 'Criado na data (mais novo - mais velho)'
 agent.general.stop_processing_other_triggers: 'Pare de processar outros triggers'
 agent.general.ticket_triggers: 'Triggers de Ticket'
-agent.general.trigger: Trigger
-agent.general.trigger_x: 'Trigger {{id}}'
 agent.general.triggers_auto_close_warn_user: 'Alertar usuário sobre seu resolução automática do seu ticket. '
 agent.general.triggers_urgency_base: 'Urgência padrão para novos tickets. '
 agent.login.account_locked_message: 'Devido a inúmeras tentativas falhadas de login, a sua conta foi bloqueada por razões de segurança. Não será capaz de entrar durante {{timeago}}'
@@ -745,8 +782,7 @@ agent.tickets.agent_has_lock: '{{agent}} trancou este bilhete. Para editar este 
 agent.tickets.agents_action: 'Agentes: {{agents}}'
 agent.tickets.always_notify_people: 'Notificar sempre {{parts}}'
 agent.tickets.any_of_my_teams: 'Qualquer da minha equipa'
-agent.tickets.api: API
-agent.tickets.assignments: Taregas
+agent.tickets.assignments: Atribuições
 agent.tickets.attachment: Anexo
 agent.tickets.attachment_deleted: 'Anexo apagado'
 agent.tickets.attachments: Anexos
@@ -770,7 +806,6 @@ agent.tickets.charge_time: 'Preço Tempo'
 agent.tickets.discard_draft: 'Descartar Rascunho'
 agent.tickets.hidden_status: 'Estado Oculto'
 agent.tickets.hidden_status_deleted: Apagado
-agent.tickets.hidden_status_spam: Spam
 agent.tickets.hidden_tickets: 'Bilhetes Ocultos'
 agent.tickets.hold_btn: 'Pôr Bilhete em Espera'
 agent.tickets.html_body: 'Corpo HTML'
@@ -783,7 +818,6 @@ agent.tickets.status_archived_deleted: Apagado
 agent.tickets.status_archived_temp: Temporário
 agent.tickets.status_archived_validating: 'Aguardando Validação'
 agent.tickets.stop_later_triggers_action: 'Pare de processar triggers atrasados.'
-agent.tickets.triggers: Triggers
 agent.time.group_6_to_7_days: '6 - 7 dias'
 agent.time.group_gt_6_months: '> 6 meses'
 agent.time.group_lt_5_mins: '< 5 minutos'
@@ -855,7 +889,6 @@ agent.twitter.count_selected:
 agent.twitter.delete-search-confirm: 'Tem a certeza que pretende apagar esta busca?'
 agent.twitter.direct: Directo
 agent.twitter.direct_messages: 'Mensagens Directas'
-agent.twitter.dm: DM
 agent.twitter.edit_long_tweet: 'Editar Tweet Longo'
 agent.twitter.example: '#exemplo'
 agent.twitter.find_person: 'Encontrar @pessoa...'
@@ -863,12 +896,8 @@ agent.twitter.follow: Seguir
 agent.twitter.followers: Seguidores
 agent.twitter.following: Seguindo
 agent.twitter.from_account: 'De Conta'
-agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'Em resposta de'
 agent.twitter.interactions: Interacções
-agent.twitter.list_title:
-  one: '1 Tweet'
-  other: '{{count}} Tweets'
 agent.twitter.location: Localização
 agent.twitter.long: Longo
 agent.twitter.mentions: Menções
@@ -885,21 +914,17 @@ agent.twitter.perform_action: 'Realizar Acção'
 agent.twitter.previous_tweets: 'Tweets Anteriores'
 agent.twitter.protected: Protegido
 agent.twitter.replies: Respostas
-agent.twitter.retweet: Retweet
 agent.twitter.retweet_as_is: 'Retweetar como'
 agent.twitter.retweet_of: 'Retweet de'
 agent.twitter.retweet_with_edit: 'Retweetar com edição'
 agent.twitter.retweeted: Retweetado
 agent.twitter.retweeted_by: 'Retweetado por {{name}}'
-agent.twitter.retweets: ReTweets
 agent.twitter.searches: Buscas
 agent.twitter.selected: seleccionado
 agent.twitter.send_tweet: 'Enviar Tweet'
 agent.twitter.send_user_message_on_twitter: 'Enviar {{name}} uma mensagem no Twitter'
 agent.twitter.sent: Enviado
 agent.twitter.show_archived_tweets: 'Mostrar tweets arquivadoss'
-agent.twitter.tweet: Tweet
-agent.twitter.tweets: Tweets
 agent.twitter.unknown: desconhecido
 agent.userchat.agent_blocked_user_on: '{{name}} bloqueou em {{date}}'
 agent.userchat.assigned_to: 'Conversa atribuída a {{name}}'

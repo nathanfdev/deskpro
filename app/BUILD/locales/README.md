@@ -12,9 +12,9 @@ Every locale-named directory is a language that contains three files:
 * `backend.yml`    -- These are phrases used by agents, the API, admin, reports etc. Basically anything NOT user-facing.
 * `user.yml`       -- These are phrases used by users, the portal, email templates, etc. Everything that IS user-facing.
 
-### `localInfo.yml` format
+### `localeInfo.yml` format
 
-The `localInfo.yml` file should look like this:
+The `localeInfo.yml` file should look like this:
 
 ```yml
 id: default              # The internal system ID. This is the id in the database and is arbitrary.
@@ -51,7 +51,7 @@ So every language uses some set of _categories_. Then given any integer, there i
 category to use. English for example, we can say that the `one` category only applies when a number `n` is `1`, and
 in every other case, the cagegory is `other`.
 
-In `localInfo.yml` we express this:
+In `localeInfo.yml` we express this:
 
 * `pluralRules.categories` is an array of categories used by the langauge.
 * `pluralRules.formula` is a single expression using `n` to represent an integer. The expression must evaluate to

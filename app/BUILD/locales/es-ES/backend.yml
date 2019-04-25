@@ -49,7 +49,6 @@ agent.chat.snippets: Segmento
 agent.chat.take_chat: 'Tomar Chat'
 agent.chat.team_chats: 'Chats en Equipo'
 agent.chat.title_active_chats: 'Todos los Chats Abiertos'
-agent.chat.title_chat_id: 'Chat {{chat_id}}'
 agent.chat.title_ended: 'Chats finalizados'
 agent.chat.title_leave_chat_prompt: '¿Dejar Chat?'
 agent.chat.title_new_chats: 'Nuevos Chats'
@@ -94,7 +93,6 @@ agent.emails.ticket_action_assigned: ASIGNADA
 agent.emails.ticket_action_assigned_team: 'EQUIPO ASIGNADO'
 agent.emails.ticket_action_deleted: BORRADO
 agent.emails.ticket_action_followed: SEGUIDO
-agent.emails.ticket_action_spam: SPAM
 agent.emails.ticket_action_status_agent: 'ESPERANDO AL AGENTE'
 agent.emails.ticket_action_status_resolved: RESUELTO
 agent.emails.ticket_action_status_user: 'ESPERANDO AL USUARIO'
@@ -125,7 +123,6 @@ agent.general.notes: Notas
 agent.general.weeks: semanas
 agent.general.years: años
 agent.interface.app-billing: Facturación
-agent.interface.app-twitter: Twitter
 agent.interface.assign_to_self: 'Asignar a mí'
 agent.interface.chat-notification-vol: 'Volumen de la notificación del chat'
 agent.interface.click_icon_to_add_filter: 'Click {{link}} para crear un nuevo filtro'
@@ -134,7 +131,6 @@ agent.interface.close_current_tab: 'Cerrar pestaña actual'
 agent.interface.create_ticket_person: 'Crear ticket para la persona'
 agent.interface.creation: Creación
 agent.interface.deskpro_agent_interface: 'Interfaz de Agente de DeskPRO'
-agent.interface.deskpro_website_host: www.deskpro.com
 agent.interface.error_report_submitting: 'Informando de error...'
 agent.interface.go_to_next_tab: 'Ir a siguiente pestaña'
 agent.interface.go_to_previous_tab: 'Ir a anterior pestaña'
@@ -143,19 +139,13 @@ agent.interface.kbd_change_status_resolved: 'Cambiar estado a Resuelto'
 agent.interface.kbd_change_status_user: 'Cambiar estado a Esperando a Usuario'
 agent.interface.kbd_ctrl_left: ctrl+izquierda
 agent.interface.kbd_ctrl_right: ctrl+derecha
-agent.interface.kbd_ctrl_shift_c: ctrl+shift+c
 agent.interface.kbd_ctrl_shift_left: ctrl+shift+izquierda
 agent.interface.kbd_ctrl_shift_right: ctrl+shift+derecha
-agent.interface.kbd_enter: enter
 agent.interface.kbd_open_org_profile: 'Abrir perfil de organización'
 agent.interface.kbd_open_send_options: 'Abrir opciones de acción de envíos'
 agent.interface.kbd_open_snippets: 'Abrir snippets'
 agent.interface.kbd_open_user_profile: 'Abrir perfil de usuario'
 agent.interface.kbd_send_reply: 'Enviar respuesta'
-agent.interface.kbd_shift_a: shift+a
-agent.interface.kbd_shift_c: shift+c
-agent.interface.kbd_shift_r: shift+r
-agent.interface.kbd_shift_t: shift+t
 agent.interface.kbd_space: espacio
 agent.interface.kbd_up_or_down: 'arriba o abajo'
 agent.interface.key_close_tab: 'Cerrar pestaña'
@@ -225,7 +215,6 @@ agent.tickets.always_notify_people: 'Siempre notificar {{parts}}'
 agent.tickets.and_count_were_cced: '(y {{display_count}} was CC''ed)|(and {{display_count}} were CC''ed)'
 agent.tickets.announce_this_ticket_in_campfire: 'Anunciar este boleto en la hoguera'
 agent.tickets.any_of_my_teams: 'Cualquiera de mis equipos'
-agent.tickets.api: API
 agent.tickets.applied: aplicado
 agent.tickets.apply_a_macro: 'Aplicar una macro'
 agent.tickets.assign_current_action: 'Asignar agente a agente actualmente conectado'
@@ -245,9 +234,6 @@ agent.tickets.billing_charge: Cargo
 agent.tickets.billing_chargetime: Cargo/Tiempo
 agent.tickets.billing_delete_confirm: '¿Seguro que quieres borrar este cargo?'
 agent.tickets.billing_time: Tiempo
-agent.tickets.billing_timelog: 'Time Log'
-agent.tickets.call_webhook_action: 'Call web hook {{hook}}'
-agent.tickets.cc: CC
 agent.tickets.change_status: 'Cambiar estado de {{old}} a {{new}}'
 agent.tickets.change_status_to: 'Cambiar estado a'
 agent.tickets.change_user: 'Cambiar Usuario'
@@ -274,9 +260,6 @@ agent.tickets.count_users:
 agent.tickets.create_new_pending_article: 'Crear artículo pendiente'
 agent.tickets.creating_a_ticket_for: 'Creando ticket para'
 agent.tickets.creation_system: 'Sistema de creación'
-agent.tickets.creation_system_gateway: 'email gateway'
-agent.tickets.creation_system_gateway_agent: 'email gateway by agent'
-agent.tickets.creation_system_gateway_person: 'email gateway by user'
 agent.tickets.creation_system_via: 'Creado vía'
 agent.tickets.creation_system_web: 'interfaz web'
 agent.tickets.creation_system_web_agent: 'interfaz web por agente'
@@ -310,7 +293,6 @@ agent.tickets.discard_draft: 'Descartar Borrador'
 agent.tickets.draft: 'Mensaje Borrador'
 agent.tickets.draft_message: 'Mensaje Borrador'
 agent.tickets.draft_note: 'Nota Borrador'
-agent.tickets.edit_snippet_category: 'Edit Snippet Category'
 agent.tickets.email_is_agent_use_followers: 'El usuario que ha especificado es un agente. Para agregar un agente a este ticket, utilice el botón "Añadir un seguidor" en el cuadro de propiedades.'
 agent.tickets.email_is_dupe: 'El email ingresado ya está en este ticket.'
 agent.tickets.email_is_ticket_account: 'La dirección de email que ha introducido pertenece a una una cuenta en Admin> Tickets> Cuentas de email. No se puede crear un ticket para la cuenta de email.'
@@ -340,7 +322,6 @@ agent.tickets.from_email: '(email enviado desde {{address}})'
 agent.tickets.from_web: '(enviado desde interfaz web desde la IP {{address}})'
 agent.tickets.full_email_source: 'Origen Completo de Email'
 agent.tickets.full_log: 'Registro Completo'
-agent.tickets.gateway_source_id: 'Gateway Source ID'
 agent.tickets.group_by: 'Grupo de'
 agent.tickets.grouped_results_empty: 'Los resultados agrupados aparecerán cuando este filtro tenga tickets coincidentes'
 agent.tickets.helpful: Útil
@@ -348,7 +329,6 @@ agent.tickets.hidden_because: 'Este ticket está oculto porque:'
 agent.tickets.hidden_explain: 'Esto significa que no se mostrará en la mayoría de los resultados de búsqueda y no generará notificaciones de agente.'
 agent.tickets.hidden_status: 'Estado Ocultos'
 agent.tickets.hidden_status_deleted: Eliminado
-agent.tickets.hidden_status_spam: Spam
 agent.tickets.hidden_tickets: 'Tickets Ocultos'
 agent.tickets.hold_btn: 'Colocar ticket en espera'
 agent.tickets.html_body: 'Cuerpo HTML'
@@ -374,10 +354,6 @@ agent.tickets.link_existing_ticket_make_below: 'Convertir ticket seleccionado a 
 agent.tickets.linked_tickets: 'Tickets enlazados'
 agent.tickets.linking_with_chat: 'Vinculación con el chat:'
 agent.tickets.linking_with_ticket: 'Enlazando con ticket:'
-agent.tickets.list_title:
-  one: '{{count}} Ticket'
-  other: '{{count}} Tickets'
-agent.tickets.list_title_counter: '{{x}} Tickets'
 agent.tickets.load_more: 'Cargar Más'
 agent.tickets.lock: Bloquear
 agent.tickets.lock_auto_release: 'Su bloqueo se libera automáticamente al cerrar este billete.'
@@ -401,7 +377,6 @@ agent.tickets.log_sla_added: 'SLA agregado'
 agent.tickets.log_sla_removed: 'SLA removido'
 agent.tickets.log_sla_updated: 'SLA actualizado'
 agent.tickets.log_sub_on_filter: 'Suscripción en filtro'
-agent.tickets.log_trigger_forced_notif: 'Trigger forced notification'
 agent.tickets.log_update_agent: 'Actualizado por agente'
 agent.tickets.log_update_agent_reply: 'Respondido por agente'
 agent.tickets.log_update_escalation: 'Actualizado por escalamiento'
@@ -419,8 +394,6 @@ agent.tickets.message_id: 'ID de Mensaje'
 agent.tickets.message_number: 'Mensaje #{{number}}'
 agent.tickets.messages: Mensajes
 agent.tickets.my_team: 'Mi Equipo'
-agent.tickets.na: N/A
-agent.tickets.neutral: neutral
 agent.tickets.new_attachment: 'Nuevo adjunto'
 agent.tickets.new_message: 'Nuevo mensaje'
 agent.tickets.new_note: 'Nueva nota'
@@ -444,7 +417,6 @@ agent.tickets.original_message: 'Mensaje Original'
 agent.tickets.participant_added: 'CC''d Usuario'
 agent.tickets.participant_already_exists: 'El usuario que ha especificado ya está en este ticket.'
 agent.tickets.participant_removed: 'Usuario retirado de CC'
-agent.tickets.participants: 'CC''s'
 agent.tickets.pending_article_desc: 'Ingrese una nota o una descripción sobre el artículo que necesita ser escrita. También estará vinculado a este ticket.'
 agent.tickets.pending_article_info: 'Un artículo en espera de una nota en la sección de Publicación sobre un artículo que debe ser escrito.'
 agent.tickets.percent_of: '% de'
@@ -512,7 +484,6 @@ agent.tickets.tickets_on_hold: 'En espera'
 agent.tickets.time_til_resolve: 'Tiempo hasta la resolución'
 agent.tickets.total_user_waiting_time: 'Tiempo total de espera'
 agent.tickets.translate_into: 'Enviar mensaje como:'
-agent.tickets.triggers: Triggers
 agent.tickets.unassign_action: 'Desasignar agente'
 agent.tickets.unassign_team: 'Desasignar equipo'
 agent.tickets.unhelpful: 'no es útil'
@@ -609,15 +580,7 @@ agent.time.short-day_wednesday: Mie
 agent.time.short-month_april: Abr
 agent.time.short-month_august: Ago
 agent.time.short-month_december: Dic
-agent.time.short-month_february: Feb
 agent.time.short-month_january: Ene
-agent.time.short-month_july: Jul
-agent.time.short-month_june: Jun
-agent.time.short-month_march: Mar
-agent.time.short-month_may: May
-agent.time.short-month_november: Nov
-agent.time.short-month_october: Oct
-agent.time.short-month_september: Sep
 agent.time.time-ago_1_day: 'Hace 1 día'
 agent.time.time-ago_1_hour: 'Hace 1 hora'
 agent.time.time-ago_1_minute: 'Hace 1 minuto'
@@ -674,15 +637,10 @@ agent.twitter.follow: Seguir
 agent.twitter.followers: Seguidores
 agent.twitter.following: Siguiendo
 agent.twitter.from_account: 'De Cuenta'
-agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'En respuesta a'
 agent.twitter.interactions: Interacciones
-agent.twitter.list_title:
-  one: '1 Tweet'
-  other: '{{count}} Tweets'
 agent.twitter.location: Ubicación
 agent.twitter.long: Largo
-agent.twitter.long_private: 'Long Private'
 agent.twitter.long_tweet_read: 'Leer Tweet largo'
 agent.twitter.mentions: Menciones
 agent.twitter.message_sent: 'Mensaje enviado'
@@ -702,13 +660,11 @@ agent.twitter.perform_action: 'Realizar Acción'
 agent.twitter.previous_tweets: 'Tweets anteriores'
 agent.twitter.protected: Protegido
 agent.twitter.replies: Respuestas
-agent.twitter.retweet: Retweet
 agent.twitter.retweet_as_is: 'Retweet como-es'
 agent.twitter.retweet_of: 'Retweet de'
 agent.twitter.retweet_with_edit: 'Retweet con edición'
 agent.twitter.retweeted: Retweeteado
 agent.twitter.retweeted_by: 'Retweeteado por {{name}}'
-agent.twitter.retweets: ReTweets
 agent.twitter.searches: Búsquedas
 agent.twitter.select_group_var: 'Seleccione Campo de Grupo Tweets'
 agent.twitter.selected: seleccionado
@@ -718,14 +674,10 @@ agent.twitter.sent: Enviar
 agent.twitter.show_archived_tweets: 'Mostrar los tweets archivados'
 agent.twitter.show_read_tweets: 'Mostrar tweets leídos'
 agent.twitter.show_users_tweets: 'Mostrar tweets de {{name}}'
-agent.twitter.split_to_multiple: 'Split to multiple'
 agent.twitter.split_to_multiple_explain: 'Si se activa, este se enviará como múltiples tweets. Si no se activa, se enviará un solo tweet con un enlace para el mensaje completo.'
 agent.twitter.starred: Favoritos
 agent.twitter.starred_tweets: 'Tweets Favoritos'
 agent.twitter.team_assigned_by: 'Su equipo fue asignado a este tweet por {{name}}'
-agent.twitter.timeline: Timeline
-agent.twitter.tweet: Tweet
-agent.twitter.tweets: Tweets
 agent.twitter.unassigned_tweets: 'Tweets no Asignados'
 agent.twitter.unfollow: 'Dejar de seguir'
 agent.twitter.unknown: desconocido
@@ -745,9 +697,6 @@ agent.userchat.ended_by_reason: 'Chat terminado por {{name}}: {{reason}}'
 agent.userchat.ended_user: 'Chat terminado por el usuario'
 agent.userchat.full_message: 'Mensaje Completo'
 agent.userchat.ident_unconfirmed: 'Identidad no confirmada, el correo electrónico no ha sido validada'
-agent.userchat.list_title:
-  one: '1 Chat'
-  other: '{{count}} Chats'
 agent.userchat.message_agent-timeout: '{{name}} no responde. Por favor, espere mientras tratamos de encontrar otro agente.'
 agent.userchat.message_assigned: 'Chat asignado a {{name}}'
 agent.userchat.message_ended: 'Chat terminado'

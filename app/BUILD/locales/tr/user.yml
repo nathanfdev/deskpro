@@ -68,7 +68,6 @@ portal.email_subjects.validate-email: 'Eposta adresinizi doğrulayın'
 portal.emails.auto-close: 'Uzun süredir cevap vermediğiniz için {{ticket.subject}} konulu kaydınız kapanacaktır. Kaydınızın kapanmamasını istiyorsanız lütfen tarafımıza geri dönüş yapınız.'
 portal.emails.chat_transcript: 'Sohbet için teşekkürler. Sohbet dökümünü burada.'
 portal.emails.comment_approved: 'Yorumunuz yayınlandı.'
-portal.emails.comment_deleted: 'Yorumunuz sayfanın düzenlenmesinde kullanıldı.'
 portal.emails.comment_thank-you: '{{link}} bağlantısındaki yorumunuz için teşekkürler.'
 portal.emails.comment_validate-email: 'Çevrim içi olarak eposta adresinizi doğrulamak için bağlantıya tıklayın:'
 portal.emails.do-not-reply: 'Bu maile lütfen geri dönmeyiniz. Sistem tarafından otomatik olarak gönderilmiştir. Geri döndünüz zaman temsilcilerimiz görmeyeceklerdir.'
@@ -97,7 +96,6 @@ portal.emails.label_view-online: 'Çevrim içi Gör'
 portal.emails.message-clipped: '(Mesaj kısaltılmıştır)'
 portal.emails.password_agent-reset: 'Personelimiz hesabınızın parolasını sıfırladı. Bu bilgiler ile oturum açabilirsiniz'
 portal.emails.password_reset: 'Parola sıfırlama talebinde bulundunuz. Parolanızı sıfırlamak için aşağıdaki bağlantıya tıklayın:'
-portal.emails.profile_email-new-confirm: 'Hesabınıza ikinci eposta adresini eklemek için aşağıdaki bağlantıya tıklayın'
 portal.emails.profile_email_link-validate: 'Bağlantıya tıklayara eposta adresinizi doğrulayabilirsiniz'
 portal.emails.register-agent-validation: 'Dikkat: Hesabınız onay aşamasındadır. Hesabınız temsilciler tarafından onaylandıktan sonra direk kayıt açabilirsiniz. Hesabınız onaylanana kadar kayıtlarınız doğrulama aşamasından geçmektedir.'
 portal.emails.register-confirm: 'Kayıt olduğunuz için teşekküler<br /><br />'
@@ -198,7 +196,7 @@ portal.tickets.list_title: 'Çağrı Kayıtlarınız'
 portal.tickets.new-intro: 'Lütfen bu formu doldurun. Personelimiz mümkün olan en kısa sürede size eposta ile geri dönüş yapacaktır.'
 portal.tickets.new-section-title: İletişim
 portal.tickets.rate-negative: Kötü
-portal.tickets.rate-neutral: Bitmiştir
+portal.tickets.rate-neutral: Sorunsuzdu
 portal.tickets.rate-positive: Harika
 portal.tickets.rate-question: 'Almış olduğunuz destek hizmetini değerlendirebilir misiniz ?'
 portal.tickets.related_articles_title: 'İlişkili Makaleler'
@@ -285,7 +283,6 @@ user.email_subjects.comment-approved: 'Yorumunuz onaylandı'
 user.email_subjects.comment-deleted: 'Yorumunuz personelimiz tarafından okundu'
 user.email_subjects.email-too-big: '{{subject}} başlıklı email konunuz kabul edilmiştir.'
 user.email_subjects.email_new-confirm: 'Eposta adresinizi doğrulayın'
-user.email_subjects.email_primary-confirm: 'Eposta adresinizi doğrulayın'
 user.email_subjects.feedback_new: 'Geri bildirimde bulunduğunuz için teşekkürler'
 user.email_subjects.feedback_new-approved: 'Geri bildiriminiz onaylandı'
 user.email_subjects.feedback_new-comment: 'Yeni bir yorum mevcut "{{title}}"'
@@ -299,7 +296,6 @@ user.email_subjects.password_reset: 'Parola Sıfırla'
 user.email_subjects.re: 'YNT: {{subject}}'
 user.email_subjects.register-welcome: 'Kayıt olduğunuz için teşekkürler'
 user.email_subjects.ticket-rate: 'Kayıt ile ilgili sizlere vermiş olduğumuz hizmeti değerlendiriniz.{{ticket.subject}}'
-user.email_subjects.ticket_new-participant: 'Çağrı kaydınıza yeni bir kişi katıldı'
 user.emails.auto-close: 'Uzun süredir cevap vermediğiniz için {{ticket.subject}} konulu kaydınız kapanacaktır. Kaydınızın kapanmamasını istiyorsanız lütfen tarafımıza geri dönüş yapınız.'
 user.emails.chat_transcript: 'Sohbet için teşekkürler. Sohbet dökümünü burada.'
 user.emails.comment_approved: 'Yorumunuz yayınlandı.'
@@ -343,7 +339,7 @@ user.emails.ticket_flood: 'Yardım masamıza eposta gönderdiniz.<br /><br />Oto
 user.emails.ticket_message_title: '{{date}} - {{time}}, {{author}} yazdı:'
 user.emails.ticket_no-autoresponse: 'Uyarı: Onaylama epostası kapatıldı'
 user.emails.ticket_rate-negative: Hayır
-user.emails.ticket_rate-neutral: Bitmiştir
+user.emails.ticket_rate-neutral: Sorunsuzdu
 user.emails.ticket_rate-positive: Evet
 user.emails.ticket_rate-question: 'Bu mesaj yardımcı oldu mu?'
 user.emails.ticket_received: 'Çağrı kaydınız alındı. Personelimiz kısa sürede cevap verecektir.'

@@ -1,3 +1,4 @@
+adm.agents.perm_publish_validate: 'Kann Inhalte prüfen und kommentieren (inklusive eigener Inhalte)'
 agent.chat.added_as_participant: 'Als Teilnehmer hinzugefügt'
 agent.chat.agent_chats: Mitarbeiter-Chats
 agent.chat.between_members: 'Chat zwischen:'
@@ -11,7 +12,6 @@ agent.chat.count_seconds:
 agent.chat.filter_title_assigned: 'Zugeordnete Chats'
 agent.chat.filter_title_mine: 'Meine Chats'
 agent.chat.filter_title_missed: 'Versäumte Chats'
-agent.chat.in_department: 'in {{name}}'
 agent.chat.invite_agent: 'Mitarbeiter einladen'
 agent.chat.invite_another_agent: 'Weiteren Mitarbeiter einladen'
 agent.chat.invite_no_agents: 'Es gibt keine weiteren Mitarbeiter mehr, die Sie einladen können.'
@@ -40,8 +40,6 @@ agent.chat.no_email: 'Keine E-Mail'
 agent.chat.no_online_agents: 'Es sind keine weiteren Agenten online'
 agent.chat.no_open_chats: 'Es gibt derzeit keine offenen Chats.'
 agent.chat.no_others: 'Keine Anderen'
-agent.chat.offline: Offline
-agent.chat.online: Online
 agent.chat.open_chat: 'Chat öffnen'
 agent.chat.other_agents: 'Andere Mitarbeiter'
 agent.chat.show_offline: 'Zeige offline'
@@ -49,7 +47,6 @@ agent.chat.snippets: Textvorlagen
 agent.chat.take_chat: 'Chat annehmen'
 agent.chat.team_chats: Team-Chats
 agent.chat.title_active_chats: 'Alle offenen Chats'
-agent.chat.title_chat_id: 'Chat {{chat_id}}'
 agent.chat.title_ended: 'Beendete Chats'
 agent.chat.title_leave_chat_prompt: 'Chat verlassen?'
 agent.chat.title_new_chats: 'Neue Chats'
@@ -111,14 +108,10 @@ agent.chrome.link_logout: Abmelden
 agent.chrome.link_preferences: Einstellungen
 agent.chrome.nav_admin_settings: Admin-Einstellungen
 agent.chrome.nav_agentchat: Mitarbeiter-IM
-agent.chrome.nav_feedback: Feedback
-agent.chrome.nav_people: CRM
 agent.chrome.nav_publish: Veröffentlichen
 agent.chrome.nav_reports: Auswertungen
 agent.chrome.nav_search: Suche
 agent.chrome.nav_tasks: Aufgaben
-agent.chrome.nav_tickets: Tickets
-agent.chrome.nav_twitter: Twitter
 agent.chrome.nav_userchat: Benutzerchat
 agent.chrome.notify_list-dismiss-all: 'Alle Meldungen ausblenden'
 agent.chrome.notify_list-new-messages: '<span class="notify-count">0</span> Neue Meldungen'
@@ -128,15 +121,10 @@ agent.chrome.quicksearch_adv-explain: 'Für erweiterte Suchoptionen, wählen Sie
 agent.chrome.quicksearch_info: 'Mithilfe der Schnellsuche können Sie eine Reihe an Ressourcen auf einmal durchsuchen.'
 agent.chrome.quicksearch_title: Schnellsuche
 agent.chrome.quicksearch_title-articles: Artikel
-agent.chrome.quicksearch_title-chat: Chat
-agent.chrome.quicksearch_title-crm: CRM
-agent.chrome.quicksearch_title-downloads: Downloads
-agent.chrome.quicksearch_title-feedback: Feedback
 agent.chrome.quicksearch_title-news: Neuigkeiten
 agent.chrome.quicksearch_title-orgs: Organisationen
 agent.chrome.quicksearch_title-people: Personen
 agent.chrome.quicksearch_title-publish: Veröffentlichen
-agent.chrome.quicksearch_title-tickets: Tickets
 agent.chrome.recent_list-filter-info: 'Tippen, um kürzliche Ergebnisse zu filtern'
 agent.chrome.recent_list-none: 'Sie haben noch keine Registerkarten geöffnet'
 agent.chrome.search-show-more:
@@ -235,7 +223,6 @@ agent.emails.ticket_action_assigned: ZUGEWIESEN
 agent.emails.ticket_action_assigned_team: 'ZUGEWIESENES TEAM'
 agent.emails.ticket_action_deleted: GELÖSCHT
 agent.emails.ticket_action_followed: GEFOLGT
-agent.emails.ticket_action_spam: SPAM
 agent.emails.ticket_action_status_agent: 'WARTE AUF MITARBEITER'
 agent.emails.ticket_action_status_resolved: GELÖST
 agent.emails.ticket_action_status_user: 'WARTE AUF BENUTZER'
@@ -262,9 +249,6 @@ agent.emails.view_your_tweets: 'Meine Tweets anzeigen'
 agent.emails.your_initial_password: 'Ihr initiales Passwort'
 agent.feedback.any_category: 'Beliebige Kategorie'
 agent.feedback.any_status: 'Beliebiger Status'
-agent.feedback.count_votes:
-  one: '{{display_count}} Stimme'
-  other: '{{display_count}} Stimmen'
 agent.feedback.feedback_deleted: 'Das Feedback wurde gelöscht'
 agent.feedback.feedback_to_review: 'Zu überprüfendes Feedback'
 agent.feedback.least_voted_on_top: 'Wenigste Stimmen oben'
@@ -288,7 +272,6 @@ agent.feedback.status_closed: Geschlossen
 agent.feedback.status_deleted: Gelöscht
 agent.feedback.status_hidden: Versteckt
 agent.feedback.status_new: Neu
-agent.feedback.status_spam: Spam
 agent.feedback.top_voted_on_top: 'Bestbewertete oben'
 agent.feedback.update_filter: 'Filter aktualisieren'
 agent.feedback.user_submitted_new_feedback: '{{name}} hat ein neues Feedback eingebracht'
@@ -327,7 +310,6 @@ agent.general.agent_team: Mitarbeiter-Team
 agent.general.agent_waiting_x: 'Mitarbeiter wartet {{time}}'
 agent.general.agents: Mitarbeiter
 agent.general.ago: vor
-agent.general.aim: AIM
 agent.general.alert: Hinweis
 agent.general.all: Alle
 agent.general.all_words: 'Alle Wörter'
@@ -384,7 +366,6 @@ agent.general.before: vor
 agent.general.between: zwischen
 agent.general.billing_interface: Abrechnungs-Oberfläche
 agent.general.blank: Leer
-agent.general.browser_agent: 'Browser Agent'
 agent.general.by_agent: 'Von einem Mitarbeiter'
 agent.general.by_agent_for_user: 'Von einem Mitarbeiter stellvertretend für den Benutzer'
 agent.general.by_anyone: 'Von jedem'
@@ -396,7 +377,6 @@ agent.general.cancel: Abbrechen
 agent.general.categories: Kategorien
 agent.general.category: Kategorie
 agent.general.cc_address: 'Adressen im CC'
-agent.general.ccs: 'CC''s'
 agent.general.change_password: 'Passwort ändern'
 agent.general.change_pic_for: 'Bild von {{name}} ändern'
 agent.general.change_status: 'Status ändern'
@@ -411,9 +391,7 @@ agent.general.changed_to_include: 'Geändert mit Aufnahme von'
 agent.general.changed_to_lte: 'Geändert auf <='
 agent.general.changed_to_remove: 'Geändert mit Entfernung von'
 agent.general.changelog: Änderungsverlauf
-agent.general.chat: Chat
 agent.general.chat_ended: 'Chat wurde beendet'
-agent.general.chats: Chats
 agent.general.choose_a_person: 'Person wählen'
 agent.general.choose_a_type: 'Typ wählen'
 agent.general.choose_criteria: 'Kriterium wählen…'
@@ -437,12 +415,6 @@ agent.general.copy_permalink: 'Permalink kopieren'
 agent.general.copy_to_clipboard: 'In Zwischenablage speichern'
 agent.general.copy_url: 'URL kopieren'
 agent.general.count: Zählen
-agent.general.count_chat:
-  one: '1 Chat'
-  other: '{{count}} Chats'
-agent.general.count_tickets:
-  one: '1 Ticket'
-  other: '{{count}} Tickets'
 agent.general.count_votecount_votes:
   one: '1 Stimme'
   other: '{{count}} Stimmen'
@@ -462,7 +434,6 @@ agent.general.created: Erstellt
 agent.general.created_and_published: 'Erzeugt und veröffentlicht'
 agent.general.created_timeago_by_x_on_y: 'Erzeugt {{timeago}} von {{name}} am {{date}}'
 agent.general.criteria: Kriterien
-agent.general.crm: CRM
 agent.general.current_agent: 'Aktueller Mitarbeiter'
 agent.general.current_computer_tz: 'Die aktuelle Uhrzeit laut Ihrem Computer'
 agent.general.current_page: 'Aktuelle Seite'
@@ -500,8 +471,6 @@ agent.general.department: Abteilung
 agent.general.departments: Abteilungen
 agent.general.description: Beschreibung
 agent.general.deskpro: DeskPRO
-agent.general.detail: Detail
-agent.general.details: Details
 agent.general.dev_validating: 'DEV: Freigabeprüfung'
 agent.general.dimentions: Abmessungen
 agent.general.disable_agent_notifications: 'Mitarbeiter-Benachrichtigungen deaktivieren'
@@ -522,7 +491,6 @@ agent.general.done: Fertig
 agent.general.download_log: Download-Protokoll
 agent.general.download_pdf: 'PDF herunterladen'
 agent.general.download_url: Download-URL
-agent.general.downloads: Downloads
 agent.general.dp_updates: DeskPRO-Aktualisierungen
 agent.general.drop_here_to_attach: 'Dateien hierher ziehen, um sie an die Antwort anzuhängen'
 agent.general.drop_here_to_insert_image: 'Ziehen Sie Ihr <strong>Bild</strong> hierher, um es in Ihre Antwort einzufügen.'
@@ -565,11 +533,9 @@ agent.general.error_your_name: 'Bitte geben Sie ihren vollen Namen ein'
 agent.general.escalation: Eskalation
 agent.general.everyone: Jeder
 agent.general.existing_picture: 'Bestehendes Bild'
-agent.general.facebook: Facebook
 agent.general.failed: Überschritten
 agent.general.failure: Überschreitung
 agent.general.favorite: Favorit
-agent.general.feedback: Feedback
 agent.general.field_name: 'Feld: {{field}}'
 agent.general.field_name_title: Feldname
 agent.general.field_type_choice: 'Vordefinierte Auswahlmöglichkeiten'
@@ -601,7 +567,6 @@ agent.general.find_person_with_criteria: 'Finden Sie eine Person, indem Sie oben
 agent.general.flag: Markiert
 agent.general.flag_blue: Blau
 agent.general.flag_green: Grün
-agent.general.flag_orange: Orange
 agent.general.flag_pink: Rosa
 agent.general.flag_purple: Lila
 agent.general.flag_red: Rot
@@ -622,7 +587,6 @@ agent.general.generate_password: 'Passwort definieren'
 agent.general.greater_than: 'größer als'
 agent.general.group_by: 'Gruppieren nach'
 agent.general.grouped_by: 'Gruppiert nach'
-agent.general.gtalk: GTalk
 agent.general.height: Höhe
 agent.general.help: Hilfe
 agent.general.hidden: Versteckt
@@ -633,12 +597,8 @@ agent.general.hidden_unpublished: 'Versteckt: Nicht veröffentlicht'
 agent.general.hidden_validating: 'Versteckt: In Validierung'
 agent.general.hide: Ausblenden
 agent.general.hierarchy: Hierarchie
-agent.general.host: Host
-agent.general.hostname: Hostname
 agent.general.hour: Stunde
 agent.general.hours: Stunden
-agent.general.icq: ICQ
-agent.general.id: ID
 agent.general.inbox: Eingang
 agent.general.include: beinhalten
 agent.general.includes_label: 'beinhaltet Stichwort'
@@ -656,7 +616,6 @@ agent.general.inserts_file_link: 'Fügt einen Verweis zur Datei mit einem klickb
 agent.general.inserts_full_image: 'Dies fügt das Bild in Originalgröße ein.'
 agent.general.inserts_plaintext_url: 'Dies wird eine reine Text-URL in die Datei einfügen.'
 agent.general.inserts_thumbnail_with_link: 'Dies fügt ein Vorschaubild ein, welches auf das Bild in Originalgröße verlinkt.'
-agent.general.internet_explorer: 'Internet Explorer'
 agent.general.ip_address: IP-Adresse
 agent.general.ip_addresses: IP-Adressen
 agent.general.is: ist
@@ -673,7 +632,6 @@ agent.general.is_published: 'Ist veröffentlicht'
 agent.general.is_set: 'Ist definiert'
 agent.general.is_x: 'ist  {{field}}'
 agent.general.just_me: 'Nur mir'
-agent.general.kb: KB
 agent.general.knowledgebase: Wissensdatenbank
 agent.general.label: Stichwort
 agent.general.label_picture: Bild
@@ -683,7 +641,6 @@ agent.general.labels_added: 'Stichwörter wurden hinzugefügt'
 agent.general.labels_cloud: Wolke
 agent.general.labels_list: Liste
 agent.general.labels_removed: 'Stichwörter wurden entfernt'
-agent.general.landing_page: 'Landing Page'
 agent.general.language: Sprache
 agent.general.last_activity: 'Letzte Aktivität'
 agent.general.last_login: 'Letzte Anmeldung'
@@ -694,7 +651,6 @@ agent.general.license_interface: Lizensierungsoberfläche
 agent.general.link: Verknüpfung
 agent.general.linked_chat: 'Verknüpfter Chat'
 agent.general.linked_thumbnail: 'Verknüpfte Bildvorschau'
-agent.general.linkedin: LinkedIn
 agent.general.linkedin_url: LinkedIn-URL
 agent.general.list_as_article_attachment: 'Als Anhang zum Artikel auflisten'
 agent.general.loading: Lade
@@ -723,7 +679,6 @@ agent.general.merge_switch_btn: Wechseln
 agent.general.message: Nachricht
 agent.general.message_history: Nachrichtenverlauf
 agent.general.messages: Nachrichten
-agent.general.minute: Minute
 agent.general.minutes: Minuten
 agent.general.misc: Diverses
 agent.general.mobile: Mobil
@@ -732,14 +687,9 @@ agent.general.more: Mehr
 agent.general.move_to_tab: 'Springe zu Registerkarte'
 agent.general.msg_agent_timeout: 'Zeitüberschreitung (Agent)'
 agent.general.msg_user_timeout: 'Zeitüberschreitung (Benutzer)'
-agent.general.msn: MSN
 agent.general.my_account: 'Mein Konto'
 agent.general.my_team: 'Mein Team'
-agent.general.na: N/A
-agent.general.name: Name
-agent.general.name_az: 'Name (A-Z)'
 agent.general.name_is_summary: 'Name ist {{name}}'
-agent.general.name_za: 'Name (Z-A)'
 agent.general.never: Niemals
 agent.general.new: Neu
 agent.general.new_article: 'Neuer Artikel'
@@ -808,7 +758,6 @@ agent.general.page_x_of_y: 'Seite {{page}} von {{num_pages}}'
 agent.general.parent: Übergeordnet
 agent.general.parent_category: 'Übergeordnete Kategorie'
 agent.general.password: Passwort
-agent.general.pause: Pause
 agent.general.pending: Ausstehend
 agent.general.people: Personen
 agent.general.percent_helpful_subphrase: '{{percent}}% hilfreich ({{subphrase}})'
@@ -816,11 +765,9 @@ agent.general.perform_actions: 'Aktionen ausführen'
 agent.general.performer: Ausführender
 agent.general.performing_updates: 'Der Helpdesk wird gerade aktualisiert.'
 agent.general.permissions: Rechte
-agent.general.person: Person
 agent.general.person_id: Benutzer-ID
 agent.general.phone: Telefon
 agent.general.phone_number: Telefonnummer
-agent.general.phrase: Phrase
 agent.general.please_wait: 'Bitte warten'
 agent.general.popular_feedback_only: 'Nur beliebtes Feedback'
 agent.general.popularity: Beliebtheit
@@ -850,8 +797,6 @@ agent.general.redirect_page_makeup: '(beinhaltet {{num_images}} Bilder und {{num
 agent.general.redirect_page_title: Seitentitel
 agent.general.redirect_server_ip: Server-IP
 agent.general.redirect_title: 'Sie verlassen jetzt den Helpdesk'
-agent.general.ref: Ref
-agent.general.referrer: Referrer
 agent.general.refresh_device_token: 'Geräte-Token erneuern'
 agent.general.refresh_now: 'Jetzt aktualisieren'
 agent.general.refresh_required: 'Aktualisierung notwendig'
@@ -881,7 +826,6 @@ agent.general.requirements_complete: 'Anforderungen vollständig'
 agent.general.requires_validation: 'Prüfung erforderlich'
 agent.general.reset: Zurücksetzen
 agent.general.reset_password: 'Passwort zurücksetzen'
-agent.general.revision: Revision
 agent.general.save: Speichern
 agent.general.save_settings: 'Einstellungen speichern'
 agent.general.saved: Gespeichert
@@ -920,10 +864,7 @@ agent.general.show: Zeigen
 agent.general.showing: Zeige
 agent.general.showing_results_x_of_y: 'Zeige Ergebnisse {{display_count}} of {{size}}'
 agent.general.since_time: 'seit {{time}}'
-agent.general.skype: Skype
-agent.general.sla: SLA
 agent.general.sla_status: SLA-Status
-agent.general.slas: SLAs
 agent.general.snippet_text_placeholder: Textvorlagen-Text
 agent.general.snippets: Textvorlagen
 agent.general.snippets_description: 'Textvorlagen öffnen'
@@ -933,27 +874,19 @@ agent.general.sort_by: 'Sortieren nach'
 agent.general.sort_desc: Absteigend
 agent.general.sort_desc_highlow: Groß-Klein
 agent.general.source_code: Quelltext
-agent.general.spam: Spam
 agent.general.start: Beginnen
-agent.general.status: Status
 agent.general.status_is: 'Status ist {{status}}'
 agent.general.statuses: Status
 agent.general.stop_processing_other_triggers: 'Verarbeitung anderer Auslöser beenden'
 agent.general.subject: Betreff
 agent.general.summary: Zusammenfassung
-agent.general.supportdeskprocom: support@deskpro.com
-agent.general.system_user: System
 agent.general.tabs_close_all: 'Alle Registerkarten schließen'
 agent.general.tabs_close_current: 'Diese Registerkarte schließen'
 agent.general.tabs_close_others: 'Alle anderen Registerkarten schließen'
 agent.general.tabs_reopen: 'Erneut öffnen:'
 agent.general.tasks: Aufgaben
-agent.general.team: Team
-agent.general.teams: Teams
 agent.general.template: Vorlage
-agent.general.text: Text
 agent.general.there_are_no_results: 'Es gibt keine Treffer'
-agent.general.ticket: Ticket
 agent.general.ticket_escalations: Ticket-Eskalationen
 agent.general.ticket_gateway_account: Ticket-Gateway-Konto
 agent.general.ticket_gateway_address: Ticket-Gateway-Adresse
@@ -961,7 +894,6 @@ agent.general.ticket_id: Ticket-ID
 agent.general.ticket_ref: Ticket-Referenz
 agent.general.ticket_starter: Ticket-Erzeuger
 agent.general.ticket_triggers: Ticket-Auslöser
-agent.general.tickets: Tickets
 agent.general.time_created: Erzeugt
 agent.general.time_created_summary: 'Erzeugt {{op}} {{hour}}:{{minute}}:00'
 agent.general.time_of_last_user_reply: 'Zeit der letzten Benutzer-Antwort'
@@ -981,13 +913,11 @@ agent.general.total_user_waiting_x: 'Gesamte Benutzer-Wartezeit ist {{time}}'
 agent.general.translate_from_x_to_y: 'Von {{x}} auf {{y}} übersetzen'
 agent.general.translation: Übersetzung
 agent.general.translations: Übersetzungen
-agent.general.trend: Trend
 agent.general.trigger_x: 'Auslöser {{id}}'
 agent.general.triggers_auto_close_resolve_agent_reply: 'Automatisches Lösen von Tickets mit Status „Warte auf Benutzer“'
 agent.general.triggers_auto_close_resolve_user_reply: 'Automatisches Lösen von Tickets mit Status „Warte auf Benutzer“'
 agent.general.triggers_auto_close_warn_user: 'Benutzer warnen, dass seine Tickets automatisch gelöst werden'
 agent.general.triggers_urgency_base: 'Standard-Dringlichkeit für neue Tickets'
-agent.general.twitter: Twitter
 agent.general.twitter_username: Twitter-Benutzername
 agent.general.type: Typ
 agent.general.types: Typen
@@ -1013,7 +943,6 @@ agent.general.upload_explain: 'Klicken Sie auf die Hochladen-Schaltfläche oder 
 agent.general.upload_vcard_for: 'vCard für {{name}} hochladen'
 agent.general.urgency: Dringlichkeit
 agent.general.urgency_enter_negative_number: '(Negative Zahl eingeben, um Dringlichkeit zu reduzieren)'
-agent.general.url: URL
 agent.general.user: Benutzer
 agent.general.user_agent: Benutzer-Mitarbeiter
 agent.general.user_agents: Benutzer-Mitarbeiter
@@ -1033,7 +962,6 @@ agent.general.validate: Überprüfen
 agent.general.validate_comment: 'Kommentar überprüfen'
 agent.general.value: Wert
 agent.general.verified: Geprüft
-agent.general.via: Via
 agent.general.view: Ansehen
 agent.general.view_all_x_chats:
   one: '1 Chat ansehen'
@@ -1052,11 +980,8 @@ agent.general.website_embed: 'Eingebettete Webseite'
 agent.general.website_widget: 'Eingebettetes Widget'
 agent.general.weeks: Wochen
 agent.general.when: Wenn
-agent.general.widget_add: +
 agent.general.width: Breite
 agent.general.window_navigation: Fensternavigation
-agent.general.workflow: Workflow
-agent.general.workflows: Workflows
 agent.general.working_hours: Geschäftszeiten
 agent.general.x_after_y: '{{field}} nach {{value}}'
 agent.general.x_before_y: '{{field}} vor {{value}}'
@@ -1075,7 +1000,6 @@ agent.general.x_up_votes:
   one: '1 positive Stimme'
   other: '{{count}} positive Stimmen'
 agent.general.years: Jahre
-agent.general.yim: YIM
 agent.general.your_email_address: 'Ihre E-Mail-Adresse'
 agent.general.your_teams: 'Ihre Teams'
 agent.interface.app-billing: Rechnungsstellung
@@ -1088,7 +1012,6 @@ agent.interface.close_current_tab: 'Aktuelle Registerkarte schließen'
 agent.interface.create_ticket_person: 'Für diese Person ein Ticket erstellen'
 agent.interface.creation: Erstellung
 agent.interface.deskpro_agent_interface: DeskPRO-Mitarbeiter-Oberfläche
-agent.interface.deskpro_website_host: www.deskpro.com
 agent.interface.error_report_disclaimer: 'Bitte beachten Sie, dass wir nicht auf alle Fehlerberichte antworten. Wenn Sie eine Frage haben, oder eine Antwort zu diesem Fehler benötigen, kontaktieren Sie uns unter {{email}}'
 agent.interface.error_report_submitting: 'Übermittle Fehlerbericht…'
 agent.interface.error_report_thank_you: 'Danke für die Übermittlung des Fehlerberichts.'
@@ -1104,20 +1027,11 @@ agent.interface.kbd_ctrl_shift_c: Strg+Shift+c
 agent.interface.kbd_ctrl_shift_left: Strg+Shift+links
 agent.interface.kbd_ctrl_shift_right: Strg+Shift+rechts
 agent.interface.kbd_enter: Enter
-agent.interface.kbd_new_article: a
-agent.interface.kbd_new_download: d
-agent.interface.kbd_new_feedback: i
-agent.interface.kbd_new_news: 'n'
-agent.interface.kbd_new_organisation: o
-agent.interface.kbd_new_person: p
-agent.interface.kbd_new_task: k
-agent.interface.kbd_new_ticket: t
 agent.interface.kbd_open_org_profile: 'Organisationsprofil öffnen'
 agent.interface.kbd_open_send_options: 'Versandoptionen öffnen'
 agent.interface.kbd_open_snippets: 'Textvorlagen öffnen'
 agent.interface.kbd_open_user_profile: 'Benutzerprofil öffnen'
 agent.interface.kbd_send_reply: 'Antwort senden'
-agent.interface.kbd_shift_a: shift+a
 agent.interface.kbd_shift_c: Umschalt+C
 agent.interface.kbd_shift_r: Umschalt+R
 agent.interface.kbd_shift_t: Umschalt+T
@@ -1137,7 +1051,6 @@ agent.interface.open_new_organization_form: 'Formular für neue Organisation öf
 agent.interface.open_new_person_form: 'Formular für neue Person öffnen'
 agent.interface.open_new_task_form: 'Formular für neue Aufgabe öffnen'
 agent.interface.open_new_ticket_form: 'Formular für neues Ticket öffnen'
-agent.interface.powered_by: 'Powered by'
 agent.interface.quick-search-placeholder: Suche
 agent.interface.report_this_error_to_deskpro: 'Diesen Fehler an DeskPro übermitteln'
 agent.interface.search_for_text_or_a_phrase: 'Nach Text oder Phrase suchen'
@@ -1159,7 +1072,6 @@ agent.jira.labels.assignee: Bearbeiter
 agent.jira.labels.comment: Kommentar
 agent.jira.labels.description: Beschreibung
 agent.jira.labels.description.warning: 'Bitte vergewissern Sie sich vor dem Export, dass im Inhalt keine vertraulichen Informationen enthalten sind'
-agent.jira.labels.export: Export
 agent.jira.labels.labels: Stichwörter
 agent.jira.labels.labels.instrcution: 'Fügen Sie einige Stichwörter zur besseren Klassifizierung des Vorgangs hinzu'
 agent.jira.labels.priority: Priorität
@@ -1171,22 +1083,18 @@ agent.jira.labels.type: Typ
 agent.jira.labels.unlink: 'Verknüpfung aufheben'
 agent.jira.lastactivity: 'Letzte Aktivität'
 agent.jira.nobody: Niemand
-agent.jira.optional: optional
 agent.jira.post_comment: 'Ein Kommentar hinzufügen'
 agent.jira.select.project: 'Projekt auswählen'
-agent.jira.status: Status
 agent.jira.unlink: 'Verknüpfung zu JIRA-Vorgang aufheben'
 agent.login.account_locked_message: 'Aufgrund mehrerer fehlgeschlagener Anmeldeversuche wurde Ihr Konto aus Sicherheitsgründen gesperrt. Die Anmeldung ist für {{timeago}} nicht mehr möglich.'
 agent.login.alert_fields_must_match: 'Die beiden Passwortfelder stimmen nicht überein.'
 agent.login.alert_too_short: 'Bitte geben Sie ein Passwort mit mindestens 4 Zeichen ein.'
-agent.login.apple_safari: 'Apple Safari'
 agent.login.back_to_login: 'Zurück zur Login-Seite'
 agent.login.browser_requirements: Browser-Voraussetzungen
 agent.login.email_instructions: 'Anleitungen per E-Mail senden'
 agent.login.enter_new_password: 'Neues Passwort eingeben'
 agent.login.enter_password: 'Passwort eingeben'
 agent.login.forgot_password: 'Passwort vergessen?'
-agent.login.google_chrome: 'Google Chrome'
 agent.login.has_logged_out: 'Sie haben sich erfolgreich abgemeldet.'
 agent.login.ie_compat_mode_explain: 'Manche Versionen des Internet Explorers haben eine Funktion „Kompatibilitätsansicht“, die dazu dient ältere Websites in modernen Browsern anzuzeigen. In manchen Fällen, kann dies unerwünschten Nebeneffekten führen. Wenn Sie Internet Explorer 8 oder 9 verwenden, aber weiterhin die Hinweisseite zu den Browseranforderungen sehen, so ist die Ursache vermutlich eine aktivierte Kompatibilitätsansicht. Um DeskPRO verwenden zu können müssen Sie diese Funktion deaktivieren:'
 agent.login.ie_compat_mode_step1: 'Sofern das Extras-Menü nicht bereits angezeigt wird, drücken Sie die Alt-Taste auf Ihrer Tastatur, um es einzublenden.'
@@ -1196,9 +1104,7 @@ agent.login.ie_compat_mode_step4: 'Fenster schliessen und Seite aktualisieren'
 agent.login.ie_compat_mode_title: 'Verwenden Sie bereits Internet Explorer 8, oder neuer?  <a href="{{url}}">Vergewissern Sie sich, dass die Kompatibilitätsansicht deaktiviert ist</a>.'
 agent.login.ie_use_chrome_frame: 'Alternativ können Sie auch <a href="http://www.google.com/chromeframe">Google Chrome Frame</a> installieren'
 agent.login.login_failed: 'Fehlgeschlagener Anmeldeversuch. Bitte versuchen Sie es erneut.'
-agent.login.mozilla_firefox: 'Mozilla Firefox'
 agent.login.notice_outdated_browser: 'Die Admin-Oberfläche benötigt einen modernen Browser. Der von uns erkannte Browser ist zu alt für die Benutzung von DeskPRO. Aktualisieren Sie Ihren Browser auf die neueste Version, oder laden Sie alternativ einen Browser von einem anderen Hersteller herunter.'
-agent.login.opera: Opera
 agent.login.password_was_reset: 'Passwort wurde erfolgreich zurückgesetzt.'
 agent.login.remember_me: 'Angemeldet bleiben'
 agent.login.reset-password-info: 'Geben Sie ihre E-Mail-Adresse ein, um eine Anleitung zu erhalten, wie Sie Ihr Passwort zurücksetzen können:'
@@ -1288,7 +1194,6 @@ agent.people.email_awaiting_validation: 'E-Mail wartet auf Validierung'
 agent.people.enable_account: 'Konto aktivieren'
 agent.people.enter_name_here: 'Namen hier eintragen'
 agent.people.find_person: 'Person finden'
-agent.people.im: IM
 agent.people.im_account_placeholder: Konto-Benutzername
 agent.people.is_agent: 'ist Mitarbeiter'
 agent.people.list_title:
@@ -1296,7 +1201,6 @@ agent.people.list_title:
   other: '{{count}} Personen'
 agent.people.login_as_user: 'Als Benutzer anmelden'
 agent.people.make_primary_email: 'Als Primär definieren'
-agent.people.manager: Manager
 agent.people.member_of_teams: 'Sie sind Mitglieder der folgenden Teams:'
 agent.people.merge_people: 'Personen zusammenführen'
 agent.people.merge_people_info: 'Dieses Werkzeug erlaubt Ihnen das Zusammenführen von zwei Benutzern. Tickets, Chats, Notizen und eine Vielzahl anderer Objekte vom gelöschten Benutzer, werden dem beibehaltenen Benutzer hinzugefügt. Der andere Benutzer wird dauerhaft gelöscht.'
@@ -1320,14 +1224,10 @@ agent.people.reg_gateway: 'Benutzer wurde durch Senden einer E-Mail an den Helpd
 agent.people.reg_website: 'Benutzer hat sich über die Website registriert'
 agent.people.remove_picture: 'Bild entfernen'
 agent.people.since: Seit
-agent.people.title_dr: Dr.
-agent.people.title_hon: Hon.
 agent.people.title_miss: Fräulein
 agent.people.title_mr: Herr
 agent.people.title_mrs: Frau
 agent.people.title_ms: Frau
-agent.people.title_prof: Prof.
-agent.people.title_rev: Rev.
 agent.people.update_picture: 'Bild aktualisieren'
 agent.people.upload_new_picture: 'Neues Bild hochladen'
 agent.people.upload_vcard: 'vCard hochladen'
@@ -1345,7 +1245,6 @@ agent.people.user_will_be_perm_deleted: 'Der Benutzer wird dauerhaft gelöscht.'
 agent.people.user_will_be_perm_deleted_banned: 'Der Benutzer wird dauerhaft gelöscht und dessen E-Mail-Adresse blockiert.'
 agent.people.view_profile: 'Profil ansehen'
 agent.people.warn_email_address: 'Die E-Mail-Adresse {{email}} trifft auf dieses Profil zu. Aber weil der Benutzer sich nicht im Helpdesk angemeldet hat, kann dessen Identität nicht überprüft werden. Seien Sie vorsichtig und geben Sie keine sensiblen Informationen frei.'
-agent.people.website: Website
 agent.people.website_url_placeholder: Website-URL
 agent.prefs.apps_alert_title: Benachrichtigung
 agent.prefs.apps_chat_message: 'Ein Agent sendet mir eine IM-Nachricht, während ich offline bin'
@@ -1533,7 +1432,6 @@ agent.problems.create_problem: 'Problem anlegen'
 agent.problems.incidents: Vorfälle
 agent.problems.no_problems_boss: 'Es gibt keine offenen Probleme'
 agent.problems.open_problems: 'Offene Probleme'
-agent.problems.problem: Problem
 agent.problems.reopen_problem: 'Problem erneut öffnen'
 agent.problems.reopen_problem_prompt: 'Wollen Sie das Problem erneut öffnen?'
 agent.problems.title: 'Probleme & Vorfälle'
@@ -1574,9 +1472,6 @@ agent.publish.download_specify_filesize: 'Geben sie optional die Dateigröße f�
 agent.publish.download_specify_url: 'Geben Sie die vollständige URL für die Datei ein. Ein Benutzer, der auf die Herunterladen-Schaltfläche klickt, wird zu dieser URL weitergeleitet'
 agent.publish.download_upload_btn: 'Datei hochladen'
 agent.publish.downloads_highest_lowest: 'Anzahl an Downloads (Meiste-Wenigste)'
-agent.publish.downloads_list_title:
-  one: '1 Download'
-  other: '{{count}} Downloads'
 agent.publish.downloads_lowest_highest: 'Anzahl an Downloads (Wenigste-Meiste)'
 agent.publish.draft_content: 'Meine Entwürfe'
 agent.publish.draft_revision: Ändern
@@ -1649,7 +1544,6 @@ agent.publish.slug_edit_prompt: 'Geben Sie eine neue URL-Slug ein (nur Buchstabe
 agent.publish.status_archived: Archiviert
 agent.publish.status_hidden_deleted: Gelöscht
 agent.publish.status_hidden_draft: Entwurf
-agent.publish.status_hidden_spam: Spam
 agent.publish.status_hidden_unpublished: 'Nicht veröffentlicht'
 agent.publish.status_hidden_user_validating: 'Benutzer wird überprüft'
 agent.publish.status_hidden_validating: Überprüfe
@@ -1696,13 +1590,9 @@ agent.search.person_id: Personen-ID
 agent.search.select: Auswählen
 agent.search.simple: Einfach
 agent.search.type_article: Artikel
-agent.search.type_chat_conversation: Chats
-agent.search.type_download: Download
-agent.search.type_feedback: Feedback
 agent.search.type_news: Neuigkeiten
 agent.search.type_organization: Organisationen
 agent.search.type_person: Personen
-agent.search.type_ticket: Tickets
 agent.search.type_ticket_deleted: 'Gelöschte Tickets'
 agent.search.view_all_results: 'Alle Ergebnisse anzeigen'
 agent.settings.add_additional_emails: 'Weitere E-Mail-Adressen hinzufügen'
@@ -1810,7 +1700,6 @@ agent.snippets.insert_variable: 'Variable einfügen'
 agent.snippets.learn_more_about_vars: 'Erfahren Sie mehr über Variabeln'
 agent.snippets.must_create_cat: 'Sie müssen zuerst eine Kategorie erstellen,<br/> bevor Sie Textvorlagen anlegen können.'
 agent.snippets.shortcut_code: Kürzel
-agent.snippets.shortcut_code_info: 'Tippen Sie dieses Kürzel in das Antwort-Eingabefeld und die Textvorlage wird automatisch eingefügt. Zum Beispiel wird durch tippen von „%standardantwort%“ die Textvorlage mit dem Kürzel „standardantwort“ eingefügt, ohne den Textvorlagen-Manager aufrufen zu müssen.'
 agent.snippets.ticket_snippets: Textvorlagen
 agent.tasks.add_another_task: 'Weitere Aufgabe hinzufügen'
 agent.tasks.all_tasks: 'Alle Aufgaben'
@@ -1862,7 +1751,6 @@ agent.tickets.always_notify_people: 'Benachrichtige immer {{parts}}'
 agent.tickets.and_count_were_cced: '(und {{display_count}} wurde in CC hinzugefügt)(und {{display_count}} wurde in CC hinzugefügt)'
 agent.tickets.announce_this_ticket_in_campfire: 'Dieses Ticket in Campfire veröffentlichen'
 agent.tickets.any_of_my_teams: 'Eines meiner Teams'
-agent.tickets.api: API
 agent.tickets.applied: zugewiesen
 agent.tickets.apply_a_macro: 'Ein Makro anwenden'
 agent.tickets.assign_current_action: 'Weise "Mitarbeiter" dem gerade angemeldeten Mitarbeiter zu'
@@ -1884,7 +1772,6 @@ agent.tickets.billing_delete_confirm: 'Bist du sicher, dass du diesen Aufwand l�
 agent.tickets.billing_time: Zeit
 agent.tickets.billing_timelog: Zeiterfassung
 agent.tickets.call_webhook_action: 'Web hook {{hook}} aufrufen'
-agent.tickets.cc: CC
 agent.tickets.change_status: 'Status ändern von {{old}} auf {{new}}'
 agent.tickets.change_status_to: 'Status ändern auf'
 agent.tickets.change_user: 'Benutzer wechseln'
@@ -1986,10 +1873,8 @@ agent.tickets.hidden_because: 'Das Ticket ist im Moment versteckt weil:'
 agent.tickets.hidden_explain: 'Dies bedeutet, daß es in den meisten Suchergebnissen nicht angezeigt wird und keine Mitarbeiter-Nachrichten erzeugt werden.'
 agent.tickets.hidden_status: 'Versteckter Status'
 agent.tickets.hidden_status_deleted: Gelöschte
-agent.tickets.hidden_status_spam: Spam
 agent.tickets.hidden_tickets: 'Versteckte Tickets'
 agent.tickets.hold_btn: 'Ticket zurückstellen'
-agent.tickets.html_body: 'HTML Body'
 agent.tickets.increase_urgency_action: 'Erhöhen der Dringlichkeit um {{amount}}'
 agent.tickets.insert_text_snippets: 'Textvorlagen einfügen'
 agent.tickets.into_this_from_ticket: 'in dieses Ticket vom Ticket #{{id}}'
@@ -2012,10 +1897,6 @@ agent.tickets.link_existing_ticket_make_below: 'Verwende das Ticket unterhalb de
 agent.tickets.linked_tickets: 'Verknüpfte Tickets'
 agent.tickets.linking_with_chat: 'Verknüpfen mit Chat:'
 agent.tickets.linking_with_ticket: 'Verknüpfen mit Ticket:'
-agent.tickets.list_title:
-  one: '{{count}} Ticket'
-  other: '{{count}} Tickets'
-agent.tickets.list_title_counter: '{{x}} Tickets'
 agent.tickets.load_more: 'Mehr laden'
 agent.tickets.lock: Sperren
 agent.tickets.lock_auto_release: 'Die Sperre wird automatisch aufgehoben, wenn Sie dieses Ticket schließen.'
@@ -2061,8 +1942,6 @@ agent.tickets.message_id: Nachrichten-ID
 agent.tickets.message_number: 'Nachricht #{{number}}'
 agent.tickets.messages: Nachrichten
 agent.tickets.my_team: 'Mein Team'
-agent.tickets.na: N/A
-agent.tickets.neutral: neutral
 agent.tickets.new_attachment: 'Neuer Anhang'
 agent.tickets.new_message: 'Neue Nachricht'
 agent.tickets.new_note: 'Neue Notiz'
@@ -2086,7 +1965,6 @@ agent.tickets.original_message: Originalnachricht
 agent.tickets.participant_added: 'Benutzer im CC'
 agent.tickets.participant_already_exists: 'Der angegebene Benutzer ist bereits in diesem Ticket.'
 agent.tickets.participant_removed: 'Benutzer von CC entfernt'
-agent.tickets.participants: 'CC''s'
 agent.tickets.pending_article_desc: 'Geben Sie eine Notiz oder Beschreibung zu dem Artikel ein, der geschrieben werden soll. Sie wird auch mit diesem Ticket verknüpft.'
 agent.tickets.pending_article_info: 'Ein ausstehender Artikel ist eine Notiz im Publikationsbereich zu einem Artikel, der noch geschrieben werden muss.'
 agent.tickets.percent_of: '% von'
@@ -2158,46 +2036,38 @@ agent.tickets.sla_fail_date: Überschreitungsdatum
 agent.tickets.sla_remove_confirm: 'Bist du sicher, daß du die SLA entfernen möchtest?'
 agent.tickets.sla_severity: SLA-Schweregrad
 agent.tickets.sla_warn_date: Warnungsdatum
-agent.tickets.slas_title: SLAs
 agent.tickets.split_from_here: 'Ticket ab hier aufteilen'
 agent.tickets.split_message_btn: 'Nachricht aufteilen'
 agent.tickets.split_messages_into_ticket: 'Nachrichten in neues Ticket aufteilen'
 agent.tickets.split_selected_messages_btn: 'Ausgewählte Nachrichten aufteilen'
 agent.tickets.status_archived: Archiviert
 agent.tickets.status_archived_deleted: Gelöscht
-agent.tickets.status_archived_spam: Spam
 agent.tickets.status_archived_temp: Temporär
 agent.tickets.status_archived_validating: 'Warte auf Freigabe'
 agent.tickets.status_awaiting_agent: 'Warte auf Mitarbeiter'
 agent.tickets.status_awaiting_agent_deleted: Gelöschte
-agent.tickets.status_awaiting_agent_spam: Spam
 agent.tickets.status_awaiting_agent_temp: Temporär
 agent.tickets.status_awaiting_agent_validating: 'Warte auf Freigabe'
 agent.tickets.status_awaiting_user: 'Warte auf Benutzer'
 agent.tickets.status_awaiting_user_deleted: Gelöschte
-agent.tickets.status_awaiting_user_spam: Spam
 agent.tickets.status_awaiting_user_temp: Temporär
 agent.tickets.status_awaiting_user_validating: 'Warte auf Freigabe'
 agent.tickets.status_hidden: Versteckt
 agent.tickets.status_hidden_deleted: Gelöschte
-agent.tickets.status_hidden_spam: Spam
 agent.tickets.status_hidden_temp: Temporär
 agent.tickets.status_hidden_validating: 'Warte auf Freigabe'
 agent.tickets.status_resolved: Gelöst
 agent.tickets.status_resolved_deleted: Gelöschte
-agent.tickets.status_resolved_spam: Spam
 agent.tickets.status_resolved_temp: Temporär
 agent.tickets.status_resolved_validating: 'Warte auf Freigabe'
 agent.tickets.stop_later_triggers_action: 'Stoppe die Ausführung von nachfolgenden Auslösern'
 agent.tickets.subject_changed: 'Betreff geändert'
 agent.tickets.subject_changed_from: 'Betreff geändert durch'
 agent.tickets.subscribed_tickets: 'Abonnierte Tickets'
-agent.tickets.teams_action: 'Teams: {{teams}}'
 agent.tickets.text_body: Textfeld
 agent.tickets.ticket_changes: Ticket-Änderungen
 agent.tickets.ticket_feedback: Ticket-Feedback
 agent.tickets.ticket_field_name: 'Ticket-Feld: {{field}}'
-agent.tickets.ticket_is_delete7d: 'Ticket wurde gelöscht'
 agent.tickets.ticket_is_deleted: 'Ticket wurde gelöscht'
 agent.tickets.ticket_is_marked_as_spam: 'Diese Ticket wurde als Spam markiert.'
 agent.tickets.ticket_merged: 'Ticket zusammengefasst'
@@ -2280,8 +2150,6 @@ agent.time.long-day_sunday: Sonntag
 agent.time.long-day_thursday: Donnerstag
 agent.time.long-day_tuesday: Dienstag
 agent.time.long-day_wednesday: Mittwoch
-agent.time.long-month_april: April
-agent.time.long-month_august: August
 agent.time.long-month_december: Dezember
 agent.time.long-month_february: Februar
 agent.time.long-month_january: Januar
@@ -2289,9 +2157,7 @@ agent.time.long-month_july: Juli
 agent.time.long-month_june: Juni
 agent.time.long-month_march: März
 agent.time.long-month_may: Mai
-agent.time.long-month_november: November
 agent.time.long-month_october: Oktober
-agent.time.long-month_september: September
 agent.time.reltime_1_day: '1 Tag'
 agent.time.reltime_1_hour: '1 Stunde'
 agent.time.reltime_1_minute: '1 Minute'
@@ -2325,24 +2191,15 @@ agent.time.reltimeago_x_second: 'vor {0} Sekunden'
 agent.time.reltimeago_x_week: 'vor {0} Wochen'
 agent.time.reltimeago_x_year: 'vor {0} Jahren'
 agent.time.short-day_friday: Fre
-agent.time.short-day_monday: Mon
 agent.time.short-day_saturday: Sam
 agent.time.short-day_sunday: So
 agent.time.short-day_thursday: Do
 agent.time.short-day_tuesday: Di
 agent.time.short-day_wednesday: Mi
-agent.time.short-month_april: Apr
-agent.time.short-month_august: Aug
 agent.time.short-month_december: Dez
-agent.time.short-month_february: Feb
-agent.time.short-month_january: Jan
-agent.time.short-month_july: Jul
-agent.time.short-month_june: Jun
 agent.time.short-month_march: Mär
 agent.time.short-month_may: Mai
-agent.time.short-month_november: Nov
 agent.time.short-month_october: Okt
-agent.time.short-month_september: Sep
 agent.time.time-ago_1_day: 'vor 1 Tag'
 agent.time.time-ago_1_hour: 'vor 1 Stunde'
 agent.time.time-ago_1_minute: 'vor 1 Minute'
@@ -2396,15 +2253,10 @@ agent.twitter.edit_long_tweet: 'Langen Tweet editieren'
 agent.twitter.example: '#beispiel'
 agent.twitter.find_person: '@Person finden…'
 agent.twitter.follow: Folgen
-agent.twitter.followers: Followers
 agent.twitter.following: 'Folge ich'
 agent.twitter.from_account: 'Von Konto'
-agent.twitter.geo: GEO
 agent.twitter.in_reply_to: 'Als Antwort auf'
 agent.twitter.interactions: Interaktionen
-agent.twitter.list_title:
-  one: '1 Tweet'
-  other: '{{count}} Tweets'
 agent.twitter.location: Standort
 agent.twitter.long: Lang
 agent.twitter.long_private: 'Lang Privat'
@@ -2427,11 +2279,9 @@ agent.twitter.perform_action: 'Aktion ausführen'
 agent.twitter.previous_tweets: 'Vorherige Tweets'
 agent.twitter.protected: Geschützt
 agent.twitter.replies: Antworten
-agent.twitter.retweet: Retweet
 agent.twitter.retweet_as_is: 'Genauso retweeten'
 agent.twitter.retweet_of: 'Retweet von'
 agent.twitter.retweet_with_edit: 'Retweet mit Bearbeitung'
-agent.twitter.retweeted: Retweeted
 agent.twitter.retweeted_by: 'Retweeted durch {{name}}'
 agent.twitter.retweets: Retweets
 agent.twitter.searches: Suchen
@@ -2449,8 +2299,6 @@ agent.twitter.starred: 'Mit "Gefällt mir" markiert'
 agent.twitter.starred_tweets: 'Mit "Gefällt mir" markierte Tweets'
 agent.twitter.team_assigned_by: 'Dieser Tweet wurde deinem Team durch {{name}} zugewiesen'
 agent.twitter.timeline: Zeitachse
-agent.twitter.tweet: Tweet
-agent.twitter.tweets: Tweets
 agent.twitter.unassigned_tweets: 'Nicht zugewiesene Tweets'
 agent.twitter.unfollow: 'nicht mehr folgen'
 agent.twitter.unknown: unbekannt
@@ -2470,9 +2318,6 @@ agent.userchat.ended_by_reason: 'Chat beendet durch {{name}}: {{reason}}'
 agent.userchat.ended_user: 'Chat vom Benutzer beendet'
 agent.userchat.full_message: 'Vollständige Nachricht'
 agent.userchat.ident_unconfirmed: 'Die Identität wurde nicht bestätigt, der Benutzer ist nicht angemeldet'
-agent.userchat.list_title:
-  one: '1 Chat'
-  other: '{{count}} Chats'
 agent.userchat.message_agent-timeout: '{{name}} antwortet nicht. Bitte warten Sie, währen wir versuchen einen anderen Mitarbeiter zu finden.'
 agent.userchat.message_assigned: 'Chat zugewiesen an {{name}}'
 agent.userchat.message_ended: 'Chat beendet'
@@ -2505,10 +2350,8 @@ agent.userchat.you_have_been_invited: 'Sie wurden in einen Chat eingeladen'
 agent.usertrack.first_visit_date: 'Erstes Besuchdatum'
 agent.usertrack.initial_landing_page: 'Initiale Landing-Page'
 agent.usertrack.initial_visit_time: 'Initiale Besuchzeit'
-agent.usertrack.landing_pages: 'Landing Pages'
 agent.usertrack.number_of_pages: Seitenanzahl
 agent.usertrack.number_of_visits: 'Anzahl von Besuchen'
-agent.usertrack.session_landing_page: 'Session Landing Page'
 agent.usertrack.session_start_time: 'Session Startzeit'
 agent.usertrack.visited_pages: 'Besuchte Seiten'
 agent.usertrack.visitor_id: Besucher-ID

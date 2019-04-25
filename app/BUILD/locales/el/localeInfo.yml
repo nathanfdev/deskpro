@@ -1,0 +1,11 @@
+id: greek
+name: 'Greek'
+nameLocal: 'Ελληνικά'
+locale: el
+isRtl: false
+pluralRules:
+  plurals: 2
+  formula: 'n == 1'
+  categories:
+    - one
+    - other

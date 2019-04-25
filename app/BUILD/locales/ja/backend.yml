@@ -1,3 +1,7 @@
+adm.agents.import_results:
+  other: '{{count}} Agents have been invited to Deskpro'
+adm.agents.import_results_failed:
+  other: '{{count}} Agent Invitations Failed'
 adm.api_keys.content: コンテンツ
 adm.api_keys.keys_title: APIキー情報
 adm.api_keys.logs_title: APIキーログ（v1）
@@ -35,6 +39,42 @@ adm.feedback_types.title_error: 有効なタイトルを入力する必要があ
 adm.feedback_types.title_explain: これは、エージェントとユーザインターフェイス全体に表示されるタイトルです。
 adm.feedback_types.usergroups: ユーザグループ
 adm.feedback_types.usergroups_explain: これらは、このフィードバックタイプが属するユーザグループです。
+adm.general.count_custom_fields:
+  other: '{{count}} Custom Fields'
+adm.general.count_labels:
+  other: '{{count}} Labels'
+adm.general.x_api_keys:
+  other: '{{count}} API Keys'
+adm.general.x_departments:
+  other: '{{count}} Departments'
+adm.general.x_email_bans:
+  other: '{{count}} Email Bans'
+adm.general.x_feedback_active_statuses:
+  other: '{{count}} Feedback Active Statuses'
+adm.general.x_feedback_categories:
+  other: '{{count}} Feedback Categories'
+adm.general.x_feedback_closed_statuses:
+  other: '{{count}} Feedback Closed Statuses'
+adm.general.x_feedback_statuses:
+  other: '{{count}} Feedback Statuses'
+adm.general.x_feedback_types:
+  other: '{{count}} Feedback Types'
+adm.general.x_ip_bans:
+  other: '{{count}} IP Bans'
+adm.general.x_ticket_escalations:
+  other: '{{count}} Ticket Escalations'
+adm.general.x_ticket_filters:
+  other: '{{count}} Ticket Filters'
+adm.general.x_twitter_accounts:
+  other: '{{count}} Twitter Accounts'
+adm.general.x_user_rules:
+  other: '{{count}} User Rules'
+adm.round_robins.count:
+  other: '{{count}} Round Robins'
+adm.round_robins.delete_warn:
+  other: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.'
+adm.round_robins.disable_warn:
+  other: 'Disabling Round Robin will disable {{count}} triggers and remove the round robin actions. You should update or delete affected triggers'
 adm.satisfaction.agentread: エージェントに満足度評価とチケットに残されたコメントを表示する
 adm.satisfaction.agentread_help: 有効にすると、エージェントはエージェントインターフェイスからチケットの満足度結果を表示できます。
 adm.satisfaction.enabled: チケット満足度調査を有効にする
@@ -127,6 +167,8 @@ adm.ticket_escalations.new_escalation: 新しいエスカレーション
 adm.ticket_escalations.no_escalations: まだエスカレーションを作成していません。
 adm.ticket_escalations.title_explain: このタイトルは、このエスカレーションを参照するために管理インターフェイス全体で使用されます。
 adm.ticket_escalations.warning: 注：エスカレーションは、この時点以降に作成されたチケットにのみ反映されます。この新しいエスカレーションは、ヘルプデスクに既に存在する既存チケットでは実行されません。
+adm.ticket_filters.count_filters:
+  other: '{{count}} Filters'
 adm.ticket_macros.count_macros:
   other: '{{count}}マクロ'
 adm.ticket_macros.delete_confirm: このマクロを削除してもよろしいですか？
@@ -139,6 +181,14 @@ adm.ticket_slas.delete_confirm: このSLAを削除してもよろしいですか
 adm.ticket_slas.no_slas: まだSLAを作成していません。
 adm.ticket_slas.slas: SLA
 adm.ticket_slas.title_explain: このタイトルは、SLAを表示するときにエージェントインターフェイスに表示されます。
+adm.ticket_triggers.count_dep_triggers:
+  other: '{{count}} Department Triggers'
+adm.ticket_triggers.count_email_triggers:
+  other: '{{count}} Email Account Triggers'
+adm.ticket_triggers.count_satisfaction_triggers:
+  other: '{{count}} Satisfaction Triggers'
+adm.ticket_triggers.count_triggers:
+  other: '{{count}} Triggers'
 adm.ticket_webhooks.count_webhooks:
   other: '{{count}} Webhook'
 adm.ticket_webhooks.delete_confirm: このWebhookを削除してもよろしいですか？
@@ -153,17 +203,15 @@ adm.tickets.new_account: 新しいアカウント
 adm.tickets.no_email_accounts: あなたはまだメールアカウントを作成していません。
 adm.tickets.x_email_accounts:
   other: '{{count}} メールアカウント'
-adm.twitter_setup.agent_consumer_key: 'Consumer Key'
 adm.twitter_setup.agent_consumer_key_error: 'Twitter AgentアプリケーションのConsumer Keyを入力する必要があります。'
-adm.twitter_setup.agent_consumer_secret: 'Consumer Secret'
 adm.twitter_setup.agent_consumer_secret_error: 'Twitter AgentアプリケーションのConsumer Secretを入力する必要があります。'
 adm.twitter_setup.title: Twitter設定
-adm.twitter_setup.user_consumer_key: 'Consumer Key'
 adm.twitter_setup.user_consumer_key_error: 'Twitter UserアプリケーションのConsumer Keyを入力する必要があります。'
-adm.twitter_setup.user_consumer_secret: 'Consumer Secret'
 adm.twitter_setup.user_consumer_secret_error: 'Twitter UserアプリケーションのConsumer Secretを入力する必要があります。'
 adm.usersources.error_last_usersource: 最後のユーザソースを無効にすることはできません。
 adm.usersources.error_last_usersource_agent: 最後のエージェントユーザソースを無効にすることはできません。
+admin.agents.deleted_agents_exist:
+  other: 'There are {{count}} deleted agents'
 admin.api.are_you_sure: 本当によろしいですか？
 admin.api.create_api_key: APIキー作成
 admin.api.example_curl: cURLの例
@@ -191,6 +239,10 @@ admin.brands.name: ブランド名
 admin.brands.new_brand: 新しいブランドを作成
 admin.brands.x_brands:
   other: '{{count}}ブランド'
+admin.channels.facebook_x_pages:
+  other: '{{count}} Facebook Pages'
+admin.channels.sms_x_accounts:
+  other: '{{count}} SMS Accounts'
 admin.custom_fields.agent_validation: エージェント認証
 admin.custom_fields.article_fields: 記事フィールド
 admin.custom_fields.choice: 選択
@@ -224,6 +276,12 @@ admin.custom_fields.text: テキスト
 admin.custom_fields.textarea: テキストエリア
 admin.custom_fields.toggle: 単一チェックボックス（オン/オフ）
 admin.custom_fields.user_validation: ユーザ検証
+admin.departments.count_agents:
+  other: '{{count}} agents'
+admin.departments.count_chats:
+  other: '{1} 1 chat'
+admin.departments.count_tickets:
+  other: '{1} is 1 ticket'
 admin.designer.add_new_rule: 新しいルールを追加
 admin.designer.and_when_any_match: 'これらのルールの{{any}}が一致した場合：'
 admin.designer.edit_footer_section: カスタムフッターHTMLを設定するには、ここをクリック
@@ -429,6 +487,28 @@ admin.gateway.use_google_for_outgoing: '送信メールに上記で定義したG
 admin.gateway.using_the: '{{link}}を使用する'
 admin.gateway.when_no_rules_match: '上記のいずれかのルールも一致しない場合は、{{link}}にメールが送信されます。'
 admin.general.add_field: 項目追加
+admin.general.count_custom_fields:
+  other: '{{count}} Custom Fields'
+admin.general.count_labels:
+  other: '{{count}} Labels'
+admin.general.time_x_day:
+  other: '{{count}} days'
+admin.general.time_x_hour:
+  other: '{{count}} hours'
+admin.general.time_x_minute:
+  other: '{{count}} minutes'
+admin.general.time_x_month:
+  other: '{{count}} months'
+admin.general.time_x_second:
+  other: '{{count}} seconds'
+admin.general.time_x_week:
+  other: '{{count}} weeks'
+admin.general.time_x_year:
+  other: '{{count}} years'
+admin.general.x_departments:
+  other: '{{count}} Departments'
+admin.general.you_are_outdated_by_x_buils:
+  other: 'Your helpdesk is outdated by {{count}} versions'
 admin.license.ask_doesnt_have_license: ライセンスコードはありませんか？
 admin.license.ask_have_license_code: 既にライセンスコードがありますか？
 admin.license.change_license_code: ライセンスコード変更
@@ -447,7 +527,6 @@ admin.license.error_site_url: 組織のWebサイトを入力してください
 admin.license.error_you_timed_out: 当社のライセンスサーバーへ接続しライセンスコードを生成しようとした際、サーバーがタイムアウトしました。
 admin.license.explain_connection_problems: 接続の問題は一時的かもしれませんが、インターネット上のライセンスサーバーとの通信を妨げるファイアウォールの内側にWebサーバーがあることを示している可能性があります。
 admin.license.get_demo_license: 'でもライセンスを取得&rarr;'
-admin.license.installkey: deskpro-license-sign.key
 admin.license.license_id: ライセンスID
 admin.license.license_server_detected_error: 'ライセンスサーバーはエラーコード「{{error}}」で応答しました。問題が解決しない場合は、support@deskpro.comまでご連絡ください。'
 admin.license.license_will_expire_on: 'このデモは{{date}}に期限が切れます。さらに時間が必要な場合は{{link}}にお問い合わせください。'
@@ -461,8 +540,9 @@ admin.license.save_license_code: ライセンスコード保存
 admin.license.unlimited: 無制限
 admin.license.your_license: あなたのライセンス
 admin.license.your_license_code: あなたのライセンスコード
+admin.logs.error_logs_count:
+  other: 'Error Logs ({{count}})'
 admin.menu.admin_dashboard: 管理ダッシュボード
-admin.menu.api: API
 admin.menu.ban_items: IPレンジとメールアドレスを禁止
 admin.menu.change_homepage: あなたのヘルプデスクホームページの体裁を変更し、それをあなたのWebサイトに統合する
 admin.menu.change_registration: ヘルプデスクがユーザ登録を処理する方法を変更
@@ -477,7 +557,6 @@ admin.menu.create_custom_fields_people: ユーザポロフィールに追加で�
 admin.menu.create_filters: エージェントインターフェイスに表示されるフィルタを作成して、チームがチケットをより早く見つけられるようにします。
 admin.menu.create_groups: ワンクリックでチケットで実行できるアクションのグループを作成します。
 admin.menu.create_user_groups: 類似ユーザを簡単に管理し、そのユーザに対するアクセス許可を管理するためのユーザグループを作成します。
-admin.menu.crm: CRM
 admin.menu.define_escalations: 一定時間基準を満たした後にチケットを変更するエスカレーションを定義する
 admin.menu.define_organization_labels: 組織に適用できるラベルを定義します。
 admin.menu.define_ticket_labels: ヘルプデスクの整理に役立つチケットに適用できるラベルを定義します。
@@ -651,6 +730,8 @@ admin.portal.website_widgets_chat: チャットウィジェット
 admin.portal.website_widgets_chat_explain: チャットウィジェットは、あなたのWebサイトの右下に小さなボタンを配置します。ユーザがボタンをクリックすると、サイトの上部にチャットウィンドウが開き、訪問者はオンラインエージェントとチャットできます。チャットが有効な間も、ユーザはサイトをブラウズし続けることができます。
 admin.portal.website_widgets_overlay: ヘルプデスクウィジェット
 admin.portal.website_widgets_overlay_explain: タブウィジェットは、Webサイトの左側にタブボタンを配置します。ユーザがタブをクリックすると、サイトの上にオーバーレイが開き、ユーザがヘルプデスクと対話できるページが表示されます。
+admin.server.count_files_will_be_used:
+  other: '{1} {{count}} file with a total size of {{size}} will be moved.'
 admin.settings.add_label: ラベル追加
 admin.settings.advanced_settings: 詳細設定
 admin.settings.advanced_settings_view: 詳細設定ビュー
@@ -684,7 +765,6 @@ admin.settings.cron_setup_windows: Windowsでスケジュールタスクを作�
 admin.settings.default_email_from_address: デフォルトのメールFromアドレス
 admin.settings.default_timezone: デフォルトタイムゾーン
 admin.settings.deskpro_name: Deskpro名
-admin.settings.deskpro_url: 'Deskpro URL'
 admin.settings.disallow_file_types: これらのファイルタイプを許可しない
 admin.settings.email_rate_limiting: メールレート制限
 admin.settings.email_rate_limiting_after: 後に
@@ -703,7 +783,6 @@ admin.settings.enter_helpdesk_name: ヘルプデスクの名前を入力して�
 admin.settings.enter_valid_url: 有効なURLを入力してください
 admin.settings.filter: フィルタ
 admin.settings.label_types: ラベルタイプ
-admin.settings.linux: Linux
 admin.settings.max_filesize_server: 'サーバがサポートする最大ファイルサイズは{{filesize}}です'
 admin.settings.max_upload_size: 最大アップロードサイズ
 admin.settings.new_label: 新しいラベル
@@ -751,7 +830,6 @@ admin.settings.use_re_captcha_help: 'reCAPTCHAはGoogleが運営するサービ�
 admin.settings.use_re_captcha_register: 'reCAPTCHAを使用するには、無料のAPIキー<a href="{{url}}" target="_blank">ここ</a>に登録する必要があります。'
 admin.settings.warning_advanced_settings_undocumented: 警告：「詳細設定」に記載されている設定は文書化されておらず、予期しない結果になる可能性があります。
 admin.settings.welcome_to_deskpro: Deskproへようこそ
-admin.settings.windows: Windows
 admin.settings.your_helpdesk_name: あなたのヘルプデスク名
 admin.settings.your_helpdesk_url: あなたのヘルプデスクURL
 admin.settings.your_main_website_name: メインのWebサイト名
@@ -766,6 +844,8 @@ admin.templates.builtin_templates: 組み込みテンプレート
 admin.templates.character_range: （A-Zのみ、数字とアンダースコア）
 admin.templates.count_custom:
   other: '<i>{{count}}</i>カスタム'
+admin.templates.count_outdated:
+  other: '<i>{{count}}</i> outdated'
 admin.templates.count_template:
   other: '<i>{{count}}</i>テンプレート'
 admin.templates.create_custom_template: カスタムテンプレート作成
@@ -803,7 +883,6 @@ admin.tickets.back_to_ticket_priorities: チケットの優先度に戻る
 admin.tickets.back_to_ticket_properties: チケットプロパティに戻る
 admin.tickets.back_to_ticket_workflows: チケットワークフローに戻る
 admin.tickets.back_to_workflows: ワークフローに戻る
-admin.tickets.captcha: CAPTCHA
 admin.tickets.changed_to_effect: '{{desc}}に変更されました'
 admin.tickets.choice_direct_link_ticket_form: 新しいチケットフォームに直接リンクする
 admin.tickets.choice_specific_team_access: 特定のチームのみがこのフィルタを使用できるようにする
@@ -974,8 +1053,6 @@ admin.user_registration.application_secret: アプリケーションシークレ
 admin.user_registration.base_dn: ベースDN
 admin.user_registration.click_here_to_sign_up: ここをクリックして今すぐ申し込む
 admin.user_registration.confirm_delete_user_source: このユーザソースを削除してもよろしいですか？ユーザはこれらの資格情報でもうログインできなくなります。
-admin.user_registration.consumer_key: 'Consumer Key'
-admin.user_registration.consumer_secret: 'Consumer Secret'
 admin.user_registration.custom_database: カスタムデータベース
 admin.user_registration.custom_filter: カスタムフィルタ
 admin.user_registration.database_dsn: データベースDSN
@@ -1003,13 +1080,11 @@ admin.user_registration.explain_lost_password: ユーザがこのユーザソー
 admin.user_registration.explain_must_login_mode: このモードでは、ヘルプデスクを全ての人が閲覧できますが、チケット、フィードバック、コメントなどのコンテンツを新しく提出するには、ユーザ登録またはログインする必要があります。
 admin.user_registration.explain_open_helpdesk: オープンヘルプデスクでは、誰でもヘルプデスクを使用できます。ユーザが新しいコンテンツを提出すると、新しいプロファイルが自動的に作成されます。
 admin.user_registration.explain_user_source: ユーザソースは、Deskproがログインしたいときにユーザを認証するために使用する任意のデータベースです。
-admin.user_registration.ez_publish: 'eZ Publish'
 admin.user_registration.facebook_setup: Facebook設定
 admin.user_registration.first_name_field: 「名前」フィールド
 admin.user_registration.for_example: 例えば
 admin.user_registration.force_registered_login: 既存ユーザに強制的にログインさせる
 admin.user_registration.full_name_field: 「フルネーム」フィールド
-admin.user_registration.google: Google
 admin.user_registration.id_field: 「ID」フィールド
 admin.user_registration.last_name_field: 「名字」フィールド
 admin.user_registration.lbl_fqdn: 'このディレクトリ内のユーザのFQDN名。例えば、ユーザalice@acme.com のドメイン名はacme.comです。このオプションは必須ではありませんが、指定しない場合はプリンシパル名形式のユーザ名（alice@acme.comなど）はサポートされません。'
@@ -1020,8 +1095,6 @@ admin.user_registration.lbl_url_password_check: アップロードしたパス�
 admin.user_registration.lbl_user_id_field: ユーザ固有のIDを含むフィールド。
 admin.user_registration.lost_password_url: パスワードの紛失URL
 admin.user_registration.magento: マゼンタ
-admin.user_registration.ms_sql: 'MS SQL'
-admin.user_registration.mysql: MySQL
 admin.user_registration.new_usersource: 新しいユーザソース
 admin.user_registration.notice_closed_helpdesk: クローズヘルプデスクでは、登録は出来ないため、ユーザは外部ユーザソースに既に存在している必要があります。または、エージェントが主導でアカウントを作成する必要があります。
 admin.user_registration.notice_enable_twitter: Twitterの統合を有効にするには、Twitterに登録して、自分のキーとシークレットを取得する必要があります。
@@ -1033,8 +1106,6 @@ admin.user_registration.open_helpdesk: オープンヘルプデスク
 admin.user_registration.password_check_service_key: パスワードチェックサービスキー
 admin.user_registration.password_field: 「パスワード」フィールド
 admin.user_registration.php_password_code: 入力されたパスワードを確認するPHPコード
-admin.user_registration.phpbb2: phpBB2
-admin.user_registration.phpbb3: phpBB3
 admin.user_registration.registration_mode: 登録モード
 admin.user_registration.registration_options: 登録オプション
 admin.user_registration.registration_settings: 登録設定
@@ -1043,7 +1114,6 @@ admin.user_registration.require_registration_agent_validation: エージェン�
 admin.user_registration.save_registration_settings: 登録設定を保存
 admin.user_registration.service_account: サービスアカウント
 admin.user_registration.short_domain_name: ショートドメイン名（スラッシュ）
-admin.user_registration.sqlite: SQLite
 admin.user_registration.table: テーブル
 admin.user_registration.table_containing_user_info: 個人詳細
 admin.user_registration.table_prefix: テーブルプレフィックス
@@ -1052,7 +1122,6 @@ admin.user_registration.url_password_check: パスワードチェックサービ
 admin.user_registration.use_secure_connection: セキュアな接続を使用
 admin.user_registration.user_sources: ユーザソース
 admin.user_registration.username_field: 「ユーザ名」フィールド
-admin.user_registration.vbulletin_versions: 'vBulletin v3.x or v4.x'
 admin.usersources.sync_error_tooltip: 詳細については、「サーバーエラーログ」セクションを参照してください。
 admin.usersources.sync_starting: 同期ジョブを開始しています。まもなく始まります。
 admin.usersources.sync_stopping: 中止された同期ジョブ。
@@ -1209,7 +1278,6 @@ agent.chrome.link_preferences: 設定
 agent.chrome.nav_admin_settings: 管理者の設定
 agent.chrome.nav_agentchat: エージェントIM
 agent.chrome.nav_feedback: フィードバック
-agent.chrome.nav_people: CRM
 agent.chrome.nav_publish: 公開する
 agent.chrome.nav_reports: レポート
 agent.chrome.nav_search: 検索
@@ -1227,7 +1295,6 @@ agent.chrome.quicksearch_info: クイック検索バーでは、さまざまな�
 agent.chrome.quicksearch_title: クイック検索バー
 agent.chrome.quicksearch_title-articles: 記事
 agent.chrome.quicksearch_title-chat: チャット
-agent.chrome.quicksearch_title-crm: CRM
 agent.chrome.quicksearch_title-downloads: ダウンロード
 agent.chrome.quicksearch_title-feedback: フィードバック
 agent.chrome.quicksearch_title-news: ニュース
@@ -1374,8 +1441,7 @@ agent.emails.your_initial_password: あなたの最初のパスワード
 agent.feedback.any_category: 任意のカテゴリ
 agent.feedback.any_status: 任意のステータス
 agent.feedback.count_votes:
-  one: '{{display_count}}投票'
-  other: '{{display_count}}投票'
+  other: '{{display_count}} votes'
 agent.feedback.feedback_deleted: このフィードバックは削除されました
 agent.feedback.feedback_to_review: レビューフィードバック
 agent.feedback.least_voted_on_top: 少なくとも上に投票した
@@ -1434,9 +1500,23 @@ agent.general.add_labels: ラベル追加
 agent.general.add_manual: マニュアル追加
 agent.general.add_note: メモ追加
 agent.general.add_product: プロダクト追加
+agent.general.count_chat:
+  other: '{{count}} Chats'
+agent.general.count_tickets:
+  other: '{{count}} Tickets'
+agent.general.count_votecount_votes:
+  other: '{{count}} votes'
 agent.general.properties: プロパティ
 agent.general.sort_asc_highlow: 昇順
 agent.general.sort_desc_highlow: 降順
+agent.general.view_all_x_chats:
+  other: 'View all {{count}} chats'
+agent.general.view_all_x_tickets:
+  other: 'View all {{count}} tickets'
+agent.general.x_down_votes:
+  other: '{{count}} down votes'
+agent.general.x_up_votes:
+  other: '{{count}} up votes'
 agent.grouping_option.agent: エージェント
 agent.grouping_option.agent_team: エージェントチーム
 agent.grouping_option.date_created: 作成日
@@ -1454,7 +1534,6 @@ agent.interface.close_current_tab: 現在のタブを閉じる
 agent.interface.create_ticket_person: チケットを作成する
 agent.interface.creation: 作成
 agent.interface.deskpro_agent_interface: Deskproエージェントインタフェース
-agent.interface.deskpro_website_host: www.deskpro.com
 agent.interface.error_report_disclaimer: 'すべてのエラー報告には対応していませんのでご注意ください。 このエラーに関するご質問や回答が必要な場合は、{{email}}までご連絡ください。'
 agent.interface.error_report_submitting: エラーレポートの送信中...
 agent.interface.error_report_thank_you: エラーレポートを送信していただきありがとうございます。
@@ -1464,31 +1543,12 @@ agent.interface.go_to_previous_tab: 前のタブに移動
 agent.interface.kbd_change_status_agent: ステータスをエージェント待ちに変更する
 agent.interface.kbd_change_status_resolved: ステータスを解決済みに変更する
 agent.interface.kbd_change_status_user: ステータスをユーザ待ちに変更する
-agent.interface.kbd_ctrl_left: ctrl+left
-agent.interface.kbd_ctrl_right: ctrl+right
-agent.interface.kbd_ctrl_shift_c: ctrl+shift+c
-agent.interface.kbd_ctrl_shift_left: ctrl+shift+left
-agent.interface.kbd_ctrl_shift_right: ctrl+shift+right
-agent.interface.kbd_enter: enter
-agent.interface.kbd_new_article: a
-agent.interface.kbd_new_download: d
-agent.interface.kbd_new_feedback: i
-agent.interface.kbd_new_news: 'n'
-agent.interface.kbd_new_organisation: o
-agent.interface.kbd_new_person: p
-agent.interface.kbd_new_task: k
-agent.interface.kbd_new_ticket: t
 agent.interface.kbd_open_org_profile: 組織プロファイルを開く
 agent.interface.kbd_open_send_options: 送信アクションのオプションを開く
 agent.interface.kbd_open_snippets: スニペットを開く
 agent.interface.kbd_open_user_profile: ユーザプロファイルを開く
 agent.interface.kbd_send_reply: 返信を送信
-agent.interface.kbd_shift_a: shift+a
-agent.interface.kbd_shift_c: shift+c
-agent.interface.kbd_shift_r: shift+r
-agent.interface.kbd_shift_t: shift+t
 agent.interface.kbd_space: スペース
-agent.interface.kbd_up_or_down: 'up or down'
 agent.interface.key_close_tab: タブを閉じる
 agent.interface.key_left_tab: 左のタブを選択
 agent.interface.key_right_tab: 右のタブを選択
@@ -1503,7 +1563,6 @@ agent.interface.open_new_organization_form: 新しい組織フォームを開く
 agent.interface.open_new_person_form: 新しい個人フォームを開く
 agent.interface.open_new_task_form: 新しいタスクフォームを開く
 agent.interface.open_new_ticket_form: 新しいチケットフォームを開く
-agent.interface.powered_by: 'Powered by'
 agent.interface.quick-search-placeholder: 検索
 agent.interface.report_this_error_to_deskpro: Deskproにこのエラーを報告してください
 agent.interface.search_for_text_or_a_phrase: テキストやフレーズを検索する
@@ -1519,14 +1578,12 @@ agent.interface.viewbtn-table: 表形式の結果表示
 agent.login.account_locked_message: '複数回ログインに失敗したため、アカウントはセキュリティのためロックされています。あなたは{{timeago}}の間ログインすることはできません。'
 agent.login.alert_fields_must_match: 2つのパスワードフィールドが一致しません。
 agent.login.alert_too_short: 4文字以上のパスワードを入力してください。
-agent.login.apple_safari: 'Apple Safari'
 agent.login.back_to_login: ログインフォームに戻る
 agent.login.browser_requirements: ブラウザ要件
 agent.login.email_instructions: メール手順
 agent.login.enter_new_password: 新しいパスワードを入力してください
 agent.login.enter_password: パスワードを入力してください
 agent.login.forgot_password: パスワードをお忘れですか？
-agent.login.google_chrome: 'Google Chrome'
 agent.login.has_logged_out: あなたは正常にログアウトされました。
 agent.login.ie_compat_mode_explain: 'IEの一部のバージョンには、互換性モードと呼ばれる機能があり、古いWebサイトを最新のブラウザテクノロジで動作させることができます。 場合によっては、この機能を誤ってオンにすることがあります。 IE8またはIE9を使用していても依然としてブラウザの要件ページが表示されている場合は、互換性モードが有効になっている可能性があります。 Deskproを使用するには、この機能を無効にする必要があります：'
 agent.login.ie_compat_mode_step1: ツールメニューが表示されていない場合は、キーボードのAltキーを押してメインメニューを表示します
@@ -1536,9 +1593,7 @@ agent.login.ie_compat_mode_step4: このウィンドウを閉じてページを�
 agent.login.ie_compat_mode_title: 'あなたはすでにIE8以降を使用していますか？ <a href="{{url}}">互換モードが有効になっていないことを確認する</a>'
 agent.login.ie_use_chrome_frame: 'また、<a href="http://www.google.com/chromeframe"> Google Chrome Frame </a>をインストールすることもできます'
 agent.login.login_failed: 不正なログイン。もう一度お試しください。
-agent.login.mozilla_firefox: 'Mozilla Firefox'
 agent.login.notice_outdated_browser: '管理者インタフェースとエージェントインタフェースには最新のブラウザが必要です。 お使いのブラウザがDeskproを使用するには古すぎることが判明しました。 ブラウザを最新のバージョンにアップグレードするか、別のブラウザをダウンロードしてみてください。'
-agent.login.opera: Opera
 agent.login.password_was_reset: パスワードが正常にリセットされました。
 agent.login.remember_me: ログイン状態を保存する
 agent.login.reset-password-info: メールアドレスを入力して、パスワードをリセットする手順を確認してください：
@@ -1636,7 +1691,6 @@ agent.people.email_awaiting_validation: 確認待ちのメール
 agent.people.enable_account: アカウントを有効化
 agent.people.enter_name_here: ここに名前を入力
 agent.people.find_person: 個人を探す
-agent.people.im: IM
 agent.people.im_account_placeholder: アカウントのユーザ名
 agent.people.is_agent: エージェント
 agent.people.list_title:
@@ -1753,9 +1807,17 @@ agent.publish.guide_list_title:
 agent.publish.helpful: 役立つ
 agent.publish.kb_list_title:
   other: 1記事
+agent.publish.kb_list_unique_title:
+  other: '{{count}} Unique Articles'
 agent.publish.label_new_file: 新規ファイル
 agent.publish.label_old_file: 古いファイル
 agent.publish.missing_translation: 翻訳がありません
+agent.publish.news_list_title:
+  other: '{{count}} Posts'
+agent.publish.pending_approval_list_title:
+  other: '{{count}} articles pending approval'
+agent.publish.validating_list_title:
+  other: '{{count}} reviewing'
 agent.publish.view_count: ビュー数
 agent.publish.view_count_highest_lowest: ビューカウント（降順）
 agent.publish.view_count_lowest_highest: ビュー数（最小値と最大値）
@@ -1763,7 +1825,6 @@ agent.publish.when: いつ
 agent.scheduled_report.accost: 'こんにちは、{{person_title}}！'
 agent.scheduled_report.acknowledgment: '{{frequency}}レポートを表示する準備ができました：'
 agent.scheduled_report.scheduler: '{{scheduler_name}}はレポートをスケジュールし、メール受信者として設定します。'
-agent.search.by: By
 agent.search.chat_conversations: チャットの会話
 agent.search.find_by_above_criteria: 上記の条件で見つける
 agent.search.find_person: 個人を探す
@@ -1999,7 +2060,6 @@ agent.tickets.agent_has_lock: '{{agent}} はこのチケットをロックしま
 agent.tickets.agents_action: 'エージェント：{{agents}}'
 agent.tickets.always_notify_people: '常に{{parts}}に通知する'
 agent.tickets.any_of_my_teams: 自分のチームのどれか
-agent.tickets.api: API
 agent.tickets.applied: 適用された
 agent.tickets.apply_a_macro: マクロを適用
 agent.tickets.assign_agent: エージェント割り当て
@@ -2022,7 +2082,6 @@ agent.tickets.billing_chargetime: 金額
 agent.tickets.billing_delete_confirm: このチャージを削除してもよろしいですか？
 agent.tickets.billing_time: 時間
 agent.tickets.billing_timelog: タイムログ
-agent.tickets.cc: CC
 agent.tickets.change_status: 'ステータスを{{old}}から{{new}}に変更'
 agent.tickets.change_status_to: ステータス変更
 agent.tickets.change_user: ユーザ変更
@@ -2035,6 +2094,8 @@ agent.tickets.coment_after_ticket_created: チケットが作成された後の�
 agent.tickets.commented_on: コメントしました
 agent.tickets.count_agents:
   other: 1エージェント
+agent.tickets.count_charges:
+  other: '{{count}} charges'
 agent.tickets.count_users:
   other: 1ユーザ
 agent.tickets.create_linked_feedback: リンクされたフィードバックを作成
@@ -2131,7 +2192,7 @@ agent.tickets.into_this_from_ticket: 'チケット#{{id}}からこれに'
 agent.tickets.kbd_awaiting_agent: '<span class="show-key-shortcut">エ</span>ージェントを待っています'
 agent.tickets.kbd_awaiting_user: '<span class="show-key-shortcut">ユ</span>ーザを待っています'
 agent.tickets.kbd_send_awaiting_agent: '待っている返信を送信<span class="show-key-shortcut">エ</span>ージェント'
-agent.tickets.kbd_send_awaiting_user: '待っている返信を送信<span class="show-key-shortcut">ユ</span>ーザ'
+agent.tickets.kbd_send_awaiting_user: '<span class="show-key-shortcut">ユ</span>ーザ待ちとして返信する'
 agent.tickets.lables: ラベル
 agent.tickets.last_agent_reply: 最後のエージェントの返信
 agent.tickets.last_user_reply: 最後のユーザから返信
@@ -2142,6 +2203,8 @@ agent.tickets.lc_new_ticket_agent: エージェントによる新しいチケッ
 agent.tickets.lc_update: 更新
 agent.tickets.link_existing_feedback: 既存のフィードバックをリンク
 agent.tickets.link_existing_feedback_subscr_owner: 'チケット所有者（{{name}}/{{email}}）をフィードバックに登録'
+agent.tickets.link_existing_feedback_subscr_part:
+  other: 'Subscribed ({{count}}) Ticket Participants to Feedback'
 agent.tickets.link_existing_ticket: 既存チケットをリンク
 agent.tickets.link_existing_ticket_make_below: チケットを親チケットの下に配置する
 agent.tickets.linked_feedback: リンクされたフィードバック
@@ -2173,9 +2236,6 @@ agent.tickets.log_followup_removed: 'フォローアップ#{{id}}が削除され
 agent.tickets.log_from_message: メッセージから
 agent.tickets.log_has_been_reopened: 再開されました
 agent.tickets.log_is_now: 現在
-agent.tickets.log_mail_bcc_d: 'BCC''d'
-agent.tickets.log_mail_cc_d: 'CC''d'
-agent.tickets.log_mail_cc_ed: 'cc''ed'
 agent.tickets.log_message_converted_to_note: メモに変換された
 agent.tickets.log_message_converted_to_reply: 返信に変換された
 agent.tickets.log_message_deleted: メッセージの削除
@@ -2217,10 +2277,8 @@ agent.tickets.log_update_user_reply: ユーザからの返信
 agent.tickets.log_user_changed_email_pref: ユーザのメールアドレス設定が変更されました
 agent.tickets.log_user_set_feedback_rating_to: ユーザが設定したフィードバック評価
 agent.tickets.log_view_all_data: 古いデータを表示
-agent.tickets.log_webhook: WebHook
 agent.tickets.log_without_custom_message: カスタムメッセージを入力しませんでした。
 agent.tickets.log_written_by: '{{name}} （ID {{id}}）によって書かれています'
-agent.tickets.log_written_by_agent: 'エージェント{{agent}}によって書かれました'
 agent.tickets.log_x_emailed: '{{name}}がメールで送信しました'
 agent.tickets.log_x_set_to: '{{name}}に設定されています'
 agent.tickets.long_message_clipped: このメッセージは非常に長いためクリップされています。
@@ -2235,7 +2293,6 @@ agent.tickets.message_id: メッセージID
 agent.tickets.message_number: 'メッセージ#{{number}}'
 agent.tickets.messages: メッセージ
 agent.tickets.my_team: 自分のチーム
-agent.tickets.na: N/A
 agent.tickets.new_attachment: 新しい添付ファイル
 agent.tickets.new_message: 新しいメッセージ
 agent.tickets.new_note: 新しいメモ
@@ -2258,7 +2315,6 @@ agent.tickets.optionally_enter_message: オプションでメッセージを入�
 agent.tickets.original_message: オリジナルメッセージ
 agent.tickets.participant_already_exists: 指定したユーザは既にこのチケットに登録されています。
 agent.tickets.participant_removed: ユーザがCCから削除されました
-agent.tickets.participants: 'CC''s'
 agent.tickets.perm_del_user_and_content: ユーザとその他のコンテンツを永久に削除する
 agent.tickets.perm_del_user_and_other_tickets: 'ユーザとその{{ticket_count}}チケットを永久に削除する'
 agent.tickets.perm_del_user_and_ticket: ユーザとこのチケットを永久に削除する
@@ -2343,7 +2399,6 @@ agent.tickets.signature_valid: このメッセージは有効な署名で署名�
 agent.tickets.sla_fail_date: 失敗日
 agent.tickets.sla_remove_confirm: このSLAを削除してもよろしいですか？
 agent.tickets.sla_severity: SLAの重大度
-agent.tickets.slas_title: SLAs
 agent.tickets.split_from_here: ここからチケットを分割する
 agent.tickets.split_message_btn: 分割メッセージ
 agent.tickets.split_messages_into_ticket: メッセージを新しいチケットに分割する
@@ -2379,7 +2434,6 @@ agent.tickets.text_body: 本文
 agent.tickets.ticket_changes: チケット変更
 agent.tickets.ticket_feedback: チケットフィードバック
 agent.tickets.ticket_field_name: 'チケット項目：{{field}}'
-agent.tickets.ticket_is_delete7d: チケットが削除されました
 agent.tickets.ticket_is_deleted: チケットが削除されました
 agent.tickets.ticket_is_marked_as_spam: このチケットはスパムとしてマークされています。
 agent.tickets.ticket_merged: チケットが統合されました
@@ -2576,14 +2630,12 @@ agent.twitter.count_selected:
 agent.twitter.delete-search-confirm: この検索を削除してもよろしいですか？
 agent.twitter.direct: ダイレクト
 agent.twitter.direct_messages: ダイレクトメッセージ
-agent.twitter.dm: DM
 agent.twitter.edit_long_tweet: ロングツイート編集
 agent.twitter.example: '#例'
 agent.twitter.find_person: '@個人を探す…'
 agent.twitter.follow: フォロー
 agent.twitter.followers: フォロワー
 agent.twitter.from_account: アカウントから
-agent.twitter.geo: GEO
 agent.twitter.list_title:
   other: 1ツイート
 agent.twitter.message_sent: 送信メッセージ

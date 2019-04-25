@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Zaloguj z {{usersource}}'
 portal.account.login-captcha-failed: 'Podałeś niepoprawny kod CAPTCHA. Spróbuj ponownie.'
 portal.account.login-disabled: 'Twój adres e-mail został zbanowany.'
 portal.account.login-email: 'Twój email'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Zaloguj za pomocą usługi zewnętrznej'
 portal.account.login-form-disabled: 'Formularz logowania jest wyłączony'
 portal.account.login-invalid: 'Podałeś niepoprawny adres email lub hasło. Spróbuj ponownie.'
@@ -92,7 +91,6 @@ portal.account.welcome-back: 'Witamy ponownie'
 portal.account.your-emails: 'Twój adres email'
 portal.account.your-pending-email-addresses: 'Twoje oczekujące adresy email'
 portal.articles.by-line: 'Przez {{name}} dnia {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 'Brak artykułów'
 portal.articles.search-title: 'Baza Wiedzy'
 portal.articles.section-desc: 'Nasza baza wiedzy zawiera artykuły napisane przez naszych agentów, które mogą ci pomóc.'
@@ -102,10 +100,12 @@ portal.articles.view-as-agent: 'Masz dostęp do tej strony, bo jesteś agentem. 
 portal.articles.view-x-articles:
   one: 'Zobacz 1 artykuł'
   few: 'Zobacz {{count}} artykułów'
+  many: 'Zobacz {{count}} artykułów'
   other: 'Zobacz {{count}} artykułów'
 portal.articles.x-articles:
   one: '1 artykuł'
   few: '{{count}} artykułów'
+  many: '{{count}} artykułów'
   other: '{{count}} artykułów'
 portal.chat.agent_blocked_user_on: '{{name}} ustawił blokadę dnia {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} prawdopodobnie został rozłączony'
@@ -149,7 +149,6 @@ portal.chat.invalid_jwt_token: 'Twój token JWT jest nieprawidłowy.'
 portal.chat.label-department: 'Wybierz dział'
 portal.chat.label-email: 'Twój email'
 portal.chat.label-name: 'Twoje imię'
-portal.chat.list_agent: Agent
 portal.chat.list_chat: Czat
 portal.chat.list_date: Data
 portal.chat.list_switch_to_my_chats: 'Przełącz do moich czatów'
@@ -157,6 +156,7 @@ portal.chat.list_switch_to_organization: 'Przełącz do organizacji'
 portal.chat.list_title:
   one: '1 Czat'
   few: '{{count}} Czatów'
+  many: '{{count}} Czatów'
   other: '{{count}} Czatów'
 portal.chat.list_user: Użytkownik
 portal.chat.log_agents: Agenci
@@ -206,7 +206,6 @@ portal.chat.see_full_image: 'Kliknij tutaj aby zobaczyć pełne zdjęcie'
 portal.chat.send_another_validation_email: 'Wyślij mi następny email'
 portal.chat.sent_validation_code: 'Wysłaliśmy ci wiadomość email z kodem potwierdzającym.'
 portal.chat.start: 'Rozpocznij nowy czat'
-portal.chat.start_conversation: 'Rozpocznij nową konwersacje'
 portal.chat.support_powered_by: 'Wsparcie zapewnione dzięki {{DeskPRO}}'
 portal.chat.take_chat: 'Podejmij czat'
 portal.chat.taken_by: 'Czat przejęty przez'
@@ -235,6 +234,7 @@ portal.downloads.view-as-agent: 'Masz dostęp do tej strony, bo jesteś agentem.
 portal.downloads.view-x-files:
   one: 'Zobacz 1 pobranie'
   few: 'Zobacz {{count}} Pobrań'
+  many: 'Zobacz {{count}} Pobrań'
   other: 'Zobacz {{count}} Pobrań'
 portal.email_subjects.chat_transcript: 'Log czatu'
 portal.email_subjects.comment-approved: 'Twój komentarz został zaakceptowany'
@@ -286,10 +286,12 @@ portal.emails.do-not-reply: 'Nie odpowiadaj na tę wiadomość. Ta wiadomość z
 portal.emails.download-new-downloads:
   one: '1 nowe pobieranie'
   few: '{{count}} nowe pobierania'
+  many: '{{count}} nowe pobierania'
   other: '{{count}} nowe pobierania'
 portal.emails.download-updated-downloads:
   one: '1 zaktualizowane pobieranie'
   few: '{{count}} zaktualizowane pobierania'
+  many: '{{count}} zaktualizowane pobierania'
   other: '{{count}} zaktualizowane pobierania'
 portal.emails.downloads-explain: 'Otrzymałeś tego maila, ponieważ subskrybujesz informacje dotyczące nowych pobierań dostępnych na  <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Nie chcesz otrzymywać tych maili? <a href="{{unsubscribe_url}}">Kliknij tutaj aby usunąć subskrypcję dotyczącą nowych pobierań. </a>'
 portal.emails.email-too-big: 'Twoja wiadomość "{{subject}}" jest zbyt duża. Maksymalna wielkość wynosi {{max_size}}. Usuń jakikolwiek załącznik i spróbuj ponownie.'
@@ -298,6 +300,7 @@ portal.emails.feedback-explain: 'Otrzymałeś tą wiadomość, ponieważ subskry
 portal.emails.feedback-updated-items:
   one: '1 aktualizacja oceny'
   few: '{{count}} aktualizacji ocen'
+  many: '{{count}} aktualizacji ocen'
   other: '{{count}} aktualizacji ocen'
 portal.emails.feedback_agent-validation: 'Twoja ocena nie pojawi się publicznie na naszej stronie wsparcia, dopóki jeden z naszych agentów jej nie zatwierdzi.'
 portal.emails.feedback_approved: 'Chcemy Cię powiadomić, że Twoja opinia została zatwierdzona i teraz jest widoczna na naszej stronie.'
@@ -312,16 +315,19 @@ portal.emails.feedback_validate-email: 'Potwierdź swój adres email, klikając 
 portal.emails.feedback_votes:
   one: 'Twoja opinia obecnie ma <strong>1</strong> głos. Zobacz Twoją opinię online:'
   few: 'Twoja opinia obecnie ma głosów - <strong>{{count}}</strong>. Zobacz Twoją opinię online:'
+  many: 'Twoja opinia obecnie ma głosów - <strong>{{count}}</strong>. Zobacz Twoją opinię online:'
   other: 'Twoja opinia obecnie ma głosów - <strong>{{count}}</strong>. Zobacz Twoją opinię online:'
 portal.emails.greeting: 'Szanowny(a) {{to_name}},'
 portal.emails.kb-explain: 'Otrzymałeś tą wiadomość, ponieważ subskrybujesz naszą bazę wiedzy na <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Nie chcesz otrzymywać tych maili? <a href="{{unsubscribe_url}}">Kliknij tutaj, aby nie otrzymywać powiadomień dotyczących bazy wiedzy.</a>'
 portal.emails.kb-new-articles:
   one: '1 Nowy artykuł '
   few: ' {{count}} Nowych artykułów'
+  many: ' {{count}} Nowych artykułów'
   other: ' {{count}} Nowych artykułów'
 portal.emails.kb-updated-articles:
   one: '1 Zaktualizowany artykuł '
   few: ' {{count}} zaktualizowanych artykułów'
+  many: ' {{count}} zaktualizowanych artykułów'
   other: ' {{count}} zaktualizowanych artykułów'
 portal.emails.label_view-online: 'Zobacz online'
 portal.emails.message-clipped: '(Reszta wiadomości zostala ukryta)'
@@ -330,15 +336,16 @@ portal.emails.news-explain: 'Otrzymałeś tą wiadomość, ponieważ subskrybuje
 portal.emails.news-new-articles:
   one: '1 nowy post dotyczący wiadomości'
   few: '{{count}} nowych postów dotyczących wiadomości'
+  many: '{{count}} nowych postów dotyczących wiadomości'
   other: '{{count}} nowych postów dotyczących wiadomości'
 portal.emails.news-updated-articles:
   one: '1 zaktualizowany post dotyczący wiadomości'
   few: '{{count}} zaktualizowanych postów dotyczących wiadomości'
+  many: '{{count}} zaktualizowanych postów dotyczących wiadomości'
   other: '{{count}} zaktualizowanych postów dotyczących wiadomości'
 portal.emails.password_agent-reset: 'Nasz pracownik zmienił Twoje hasło. Możesz się zalogować z tymi szczegółami.'
 portal.emails.password_reset: 'Poprosiłeś(aś) o zmianę hasła. Żeby zmienić hasło, kliknij na link poniżej:'
 portal.emails.password_set: 'Aby zmienić hasło, kliknij link poniżej:'
-portal.emails.profile_email-new-confirm: 'Żeby zakończyć dodanie wtórnego adresu email, kliknij na następujący link potwierdzający'
 portal.emails.profile_email-primary-confirm: 'Aby potwierdzić swój główny adres email, po prostu kliknij następujący link'
 portal.emails.profile_email_link-validate: 'Kliknij na następujący link, żeby potwierdzić swój adres email'
 portal.emails.ratelimit_explain: 'Wysłano {{num_messagess}} wiadomości w czasie {{time_limit}}. Aby zapobiec nadużyciom tymczasowo zablokowaliśmy twój adres email na {{time_lock}}. Po {{date_lock_end}}, ta tymczasowa blokada będzie zdjęta i będziesz mógł ponownie wysyłać wiadomości.'
@@ -376,6 +383,7 @@ portal.emails.ticket_validate: 'Dziękujemy za Twoją wiadomość.<br /><br />Za
 portal.emails.tickets_ommitted:
   one: '1 wiadomość została pominięta'
   few: ' Pominiętych wiadomości - {{count}}'
+  many: ' Pominiętych wiadomości - {{count}}'
   other: ' Pominiętych wiadomości - {{count}}'
 portal.emails.validate-email: 'Proszę potwierdzić, że ten adres email należy do ciebie poprzez kliknięcie linku poniżej.'
 portal.emails.view_full_history_online: 'Zobacz całą treść petycji online'
@@ -426,6 +434,7 @@ portal.feedback.submit_feedback: 'Wyślij opinię'
 portal.feedback.view-x-feedback:
   one: 'Zobacz 1 opinie'
   few: 'Zobacz {{count}} opinii'
+  many: 'Zobacz {{count}} opinii'
   other: 'Zobacz {{count}} opinii'
 portal.flashes.article_cat_subscribe: 'Udało ci się uruchomić subskrypcję tą kategorię. Zostaniesz poinformowany, gdy pojawią się nowe artykuły.'
 portal.flashes.article_cat_unsubscribe: 'Udało cie się usunąć subskrypcję tej kategorii.'
@@ -499,7 +508,6 @@ portal.forms.error_dupe_ticket_message: 'Zduplikowana wiadomość biletowa.'
 portal.forms.error_email_required: 'Musisz podać swój adres email'
 portal.forms.error_extra_fields: 'Przepraszamy, ale podczas przetwarzania twojego żądania wystąpił błąd. Spróbuj ponownie.'
 portal.forms.error_invalid_data_type: 'Tego typu danych nie oczekiwano.'
-portal.forms.error_invalid_email: 'To nie jest poprawny adres email'
 portal.forms.error_invalid_url: 'Ta wartość nie jest prawidłowym adresem URL.'
 portal.forms.error_length_invalid: 'Ta wartość powinna zawierać dokładnie {{limit}} znaków.'
 portal.forms.error_length_too_long: 'Ta wartość jest za długa. Powinna zawierać {{limit}} znaków lub mniej'
@@ -518,22 +526,27 @@ portal.forms.error_password_forbid_reuse: 'Nie możesz użyć hasła które już
 portal.forms.error_password_min_length:
   one: 'Minimum {{count}} znak'
   few: 'Minimum {{count}} znaków'
+  many: 'Minimum {{count}} znaków'
   other: 'Minimum {{count}} znaków'
 portal.forms.error_password_require_num_lowercase:
   one: 'Przynajmniej {{count}} mały znak'
   few: 'Przynajmniej {{count}} małych znaków'
+  many: 'Przynajmniej {{count}} małych znaków'
   other: 'Przynajmniej {{count}} małych znaków'
 portal.forms.error_password_require_num_number:
   one: 'Przynajmniej {{count}} cyfra'
   few: 'Przynajmniej {{count}} cyfr'
+  many: 'Przynajmniej {{count}} cyfr'
   other: 'Przynajmniej {{count}} cyfr'
 portal.forms.error_password_require_num_symbol:
   one: 'Przynajmniej {{count}} symbol'
   few: 'Przynajmniej {{count}} symboli'
+  many: 'Przynajmniej {{count}} symboli'
   other: 'Przynajmniej {{count}} symboli'
 portal.forms.error_password_require_num_uppercase:
   one: 'Przynajmniej {{count}} duża litera'
   few: 'Przynajmniej {{count}} dużych liter'
+  many: 'Przynajmniej {{count}} dużych liter'
   other: 'Przynajmniej {{count}} dużych liter'
 portal.forms.error_person_not_agent: 'Osoba z oznaczeniem {{value}} nie jest agentem.'
 portal.forms.error_person_not_found: 'Osoby z oznaczeniem "{{value}}" nie odnaleziono.'
@@ -556,7 +569,6 @@ portal.forms.error_upload_file: 'Nie można wgrać pliku'
 portal.forms.error_upload_general: 'Wystąpił problem podczas wgrywania tego pliku. Spróbuj ponownie.'
 portal.forms.error_upload_html_size: 'Plik jest za duży.'
 portal.forms.error_upload_ini_size: 'Plik jest za duży. Maksymalny dozwolony rozmiar to {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Przepraszamy, ale podczas przetwarzania twojego żądania wystąpił błąd. Spróbuj ponownie.'
 portal.forms.label_add_attachment: 'Dodaj kolejny załącznik'
 portal.forms.label_captcha: 'Aby udowodnić, że jesteś człowiekiem, powiedz nam jaki tekst widzisz w obrazku CAPTCHA'
 portal.forms.label_category: Kategoria
@@ -568,7 +580,6 @@ portal.forms.label_current_password: 'Aktualne hasło'
 portal.forms.label_department: 'Dział zgłoszenia'
 portal.forms.label_drag: 'Upuść plik tutaj lub'
 portal.forms.label_drag_overlay: 'Upuść swój plik tutaj.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Imię
 portal.forms.label_full_name: 'Twoje imię'
 portal.forms.label_language: Język
@@ -592,7 +603,6 @@ portal.forms.label_workflow: 'Przepływ pracy'
 portal.general.add-comment: 'Dodaj komentarz'
 portal.general.admin: Administrator
 portal.general.admin_home: 'Dom Administratora'
-portal.general.agent: Agent
 portal.general.agent_bar_admin_desc: 'Zarządzaj swoim Helpdeskiem'
 portal.general.agent_bar_admin_dl: 'Ustawienia pobierania'
 portal.general.agent_bar_admin_feedback: 'Ustawienia informacji zwrotnej'
@@ -610,7 +620,6 @@ portal.general.agents-available: 'Dostępni Agenci'
 portal.general.attachments: Załączniki
 portal.general.btn-cancel: Anuluj
 portal.general.btn-download-pdf: 'Pobierz PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Przejdź
 portal.general.btn-print: Drukuj
 portal.general.btn-send-email: 'Wyślij email'
@@ -623,11 +632,13 @@ portal.general.comment_btn_save: 'Zapisz komentarz'
 portal.general.comments-count:
   one: '1 komentarz'
   few: '{{count}} komentarzy'
+  many: '{{count}} komentarzy'
   other: '{{count}} komentarzy'
 portal.general.comments-pending-validation: 'Ten komentarz jest oceniany. Będzie wyświetlony wkrótce'
 portal.general.comments-title:
   one: 'Komentarzy (1)'
   few: 'Komentarzy ({{count}})'
+  many: 'Komentarzy ({{count}})'
   other: 'Komentarzy ({{count}})'
 portal.general.delete: Usuń
 portal.general.everything: Wszystkie
@@ -656,7 +667,6 @@ portal.general.nav-news: Aktualności
 portal.general.nav-news-desc: 'Aktualności i wydarzenia'
 portal.general.nav-newticket: 'Napisz do nas'
 portal.general.nav-newticket-desc: 'Jesteśmy tu by ci pomóc'
-portal.general.nav-portal: Portal
 portal.general.nav-profile: Profil
 portal.general.nav-quick-jump: 'Skocz do...'
 portal.general.nav-register: 'Zarejestruj się'
@@ -725,12 +735,14 @@ portal.news.view-as-agent: 'Masz dostęp do tej strony, bo jesteś pracownikiem.
 portal.news.view-x-news:
   one: 'Zobacz 1 artykuł'
   few: 'Zobacz {{count}} artykułów'
+  many: 'Zobacz {{count}} artykułów'
   other: 'Zobacz {{count}} artykułów'
 portal.sidebar.agents_available: 'Dostępni Agenci'
 portal.sidebar.agents_none: 'Żaden z naszych agentów nie jest teraz online. Nadal możesz <a href="{{new_ticket_url}}">utworzyć zgłoszenie</a>.'
 portal.sidebar.agents_x_online:
   one: '{{count}} online'
   few: '{{count}} online'
+  many: '{{count}} online'
   other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Opublikowane przez {{name}}'
 portal.sidebar.news_title: Aktualności
@@ -760,6 +772,7 @@ portal.tickets.list_status_open: 'Otwarte zgłoszenia'
 portal.tickets.list_status_open_count:
   one: '{{count}} oczekująca odpwiedź'
   few: '{{count}} oczekująca odpwiedź'
+  many: '{{count}} oczekująca odpwiedź'
   other: '{{count}} oczekująca odpwiedź'
 portal.tickets.list_status_resolved: Rozwiązane
 portal.tickets.list_status_user: 'Musisz odpowiedzieć'
@@ -878,6 +891,7 @@ user.chat.log_message_author-you: Ty
 user.chat.log_nav-view-chats:
   one: 'Zobacz Twój najnowszy log czatu'
   few: 'Zobacz Twoje {{count}} logi czatu.'
+  many: 'Zobacz Twoje {{count}} logi czatu.'
   other: 'Zobacz Twoje {{count}} logi czatu.'
 user.chat.log_no_department: 'Brak działu'
 user.chat.log_unassigned: 'Nie przypisany agent'
@@ -932,7 +946,6 @@ user.email_subjects.download_sub_new_and_updated: 'Nowe i zaktualizowane pobiera
 user.email_subjects.download_sub_updated: 'Zaktualizowane pobierania'
 user.email_subjects.email-too-big: 'Twój "{{subject}}" nie jest zaakceptowany'
 user.email_subjects.email_new-confirm: 'Prosimy potwierdzić swój adres email'
-user.email_subjects.email_primary-confirm: 'Potwierdź swój adres email'
 user.email_subjects.feedback_created_for_user: 'Dziękujemy za twoją ocenę'
 user.email_subjects.feedback_new: 'Dziękujemy za wysłaną opinię'
 user.email_subjects.feedback_new-approved: 'Twoja opinia została zaakceptowana'
@@ -956,9 +969,7 @@ user.email_subjects.register-welcome-byagent: 'Twoje nowe konto wsparcia'
 user.email_subjects.remind_unresolved_final_subject: 'PRZYPOMNIENIE: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'PRZYPOMNIENIE: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Oceń naszą pomoc, dotyczącą petycji "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Nowa osoba została dodana do Twojej petycji'
 user.email_subjects.tickets_re: 'Odp: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'NOTKA: Wysłano za dużo wiadomości email'
 user.emails.auto-close: 'Twoje zgłoszenie "" zostanie zamknięte automatycznie, ponieważ długo nie odpowiadałeś. Jeżeli nadal potrzebujesz pomocy, po prostu odpowiedz i jeden z naszych agentów ci pomoże.'
 user.emails.chat_transcript: 'Dziękujemy za czatowanie z nami. Oto log Twojego czatu:'
 user.emails.chat_validate_email: 'Potwierdź swój adres email poprzez wpisanie tego kodu "{{validation_code}}" w formularzu lub klikając ten link:'
@@ -968,10 +979,12 @@ user.emails.comment_thank-you: 'Dziękujemy za Twój komentarz dotyczący {{link
 user.emails.download-new-downloads:
   one: '1 nowe pobieranie'
   few: '{{count}} nowych pobierań'
+  many: '{{count}} nowych pobierań'
   other: '{{count}} nowych pobierań'
 user.emails.download-updated-downloads:
   one: '1 Zaktualizowane Pobieranie'
   few: '{{count}} Zaktualizowane Pobierania'
+  many: '{{count}} Zaktualizowane Pobierania'
   other: '{{count}} Zaktualizowane Pobierania'
 user.emails.downloads-explain: 'Otrzymałeś tą wiadomość, ponieważ subskrybujesz nasze pobierania na <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Jeśli nie chcesz otrzymywać tych maili, <a href="{{unsubscribe_url}}">Kliknij tutaj, aby nie subskrybować informacji o pobieraniach. </a>'
 user.emails.email-too-big: 'Twoja wiadomość "{{subject}}" jest zbyt duża. Maksymalna wielkość wynosi {{max_size}}. Usuń załączniki i spróbuj ponownie.'
@@ -979,6 +992,7 @@ user.emails.feedback-explain: 'Otrzymałeś tą wiadomość, ponieważ subskrybu
 user.emails.feedback-updated-items:
   one: '1 aktualizacja oceny'
   few: '{{count}} aktualizacji ocen'
+  many: '{{count}} aktualizacji ocen'
   other: '{{count}} aktualizacji ocen'
 user.emails.feedback_agent-validation: 'Uwaga! Twoja opinia nie pojawi się publicznie na naszej stronie, dopóki jeden z naszych pracowników jej nie przejrzy.'
 user.emails.feedback_approved: 'Chcemy Cię powiadomić, że Twoja opinia została zatwierdzona i teraz jest widoczna na naszej stronie.'
@@ -993,16 +1007,19 @@ user.emails.feedback_updated: 'Wysłana przez Ciebie opinia "{{title}}" została
 user.emails.feedback_votes:
   one: 'Twoja opinia obecnie ma <strong>1</strong> głos. Zobacz Twoją opinię online:'
   few: 'Twoja opinia obecnie ma głosów - <strong>{{count}}</strong>. Zobacz Twoją opinię online:'
+  many: 'Twoja opinia obecnie ma głosów - <strong>{{count}}</strong>. Zobacz Twoją opinię online:'
   other: 'Twoja opinia obecnie ma głosów - <strong>{{count}}</strong>. Zobacz Twoją opinię online:'
 user.emails.greeting: 'Szanowny(a) {{to_name}},'
 user.emails.kb-explain: 'Otrzymałeś tą wiadomość, ponieważ subskrybujesz naszą bazę wiedzy na <a href="{{deskpro_url}}">{{deskpro_url}}</a>.<br />Nie chcesz otrzymywać tych maili? <a href="{{unsubscribe_url}}">Kliknij tutaj, aby zrezygnować z powiadomień dotyczących bazy wiedzy.</a>'
 user.emails.kb-new-articles:
   one: '1 Nowy artykuł '
   few: ' {{count}} Nowych artykułów'
+  many: ' {{count}} Nowych artykułów'
   other: ' {{count}} Nowych artykułów'
 user.emails.kb-updated-articles:
   one: '1 Zaktualizowany artykuł '
   few: ' {{count}} zaktualizowanych artykułów'
+  many: ' {{count}} zaktualizowanych artykułów'
   other: ' {{count}} zaktualizowanych artykułów'
 user.emails.label_view-online: 'Zobacz online'
 user.emails.message-clipped: '(Reszta wiadomości zostala ukryta)'
@@ -1011,18 +1028,22 @@ user.emails.news-explain: 'Otrzymałeś tą wiadomość, ponieważ subskrybujesz
 user.emails.news-new-articles:
   one: '1 Nowy artykuł w wiadomościach'
   few: ' {{count}} Nowych artykułów w wiadomościach'
+  many: ' {{count}} Nowych artykułów w wiadomościach'
   other: ' {{count}} Nowych artykułów w wiadomościach'
 user.emails.news-new-news:
   one: '1 Nowości Artykuł '
   few: ' {{count}} Artykuły z nowej wiadomości'
+  many: ' {{count}} Artykuły z nowej wiadomości'
   other: ' {{count}} Artykuły z nowej wiadomości'
 user.emails.news-updated-articles:
   one: '1 Zaktualizowany artykuł w wiadomościach'
   few: ' {{count}} zaktualizowanych artykułów w wiadomościach'
+  many: ' {{count}} zaktualizowanych artykułów w wiadomościach'
   other: ' {{count}} zaktualizowanych artykułów w wiadomościach'
 user.emails.news-updated-news:
   one: '1 Zaktualizowany news Artykuł '
   few: ' {{count}} Zaktualizowane artykuły informacyjne'
+  many: ' {{count}} Zaktualizowane artykuły informacyjne'
   other: ' {{count}} Zaktualizowane artykuły informacyjne'
 user.emails.password_agent-reset: 'Nasz pracownik zresetował twoje hasło. Możesz się zalogować z tymi szczegółami.'
 user.emails.password_reset: 'Poprosiłeś(aś) o zmianę hasła. Żeby zmienić hasło, kliknij na link poniżej:'
@@ -1068,10 +1089,12 @@ user.error.form_choice_invalid: 'Wybierz opcję z listy'
 user.error.form_choice_max:
   one: 'Wybierz najwyżej 1 opcję'
   few: 'Wybierz najwyżej opcji - {{count}}'
+  many: 'Wybierz najwyżej opcji - {{count}}'
   other: 'Wybierz najwyżej opcji - {{count}}'
 user.error.form_choice_min:
   one: 'Wybierz co najmniej 1 opcję'
   few: 'Wybierz co najmniej opcji - {{count}}'
+  many: 'Wybierz co najmniej opcji - {{count}}'
   other: 'Wybierz co najmniej opcji - {{count}}'
 user.error.form_date_invalid: 'Wpisz poprawną datę'
 user.error.form_date_invalid_dow: 'Dzień tygodnia, który wybrałeś jest niedozwolony'
@@ -1080,10 +1103,12 @@ user.error.form_required: 'To pole wymaga wypełnienia'
 user.error.form_text_max:
   one: 'Wpisz najwyżej 1 znak'
   few: 'Wpisz najwyżej znaków - {{count}}'
+  many: 'Wpisz najwyżej znaków - {{count}}'
   other: 'Wpisz najwyżej znaków - {{count}}'
 user.error.form_text_min:
   one: 'Wpisz co najmniej 1 znak'
   few: 'Wpisz co najmniej znaków - {{count}}'
+  many: 'Wpisz co najmniej znaków - {{count}}'
   other: 'Wpisz co najmniej znaków - {{count}}'
 user.error.form_text_regex: 'Wpisz poprawne znaczenie'
 user.error.invalid_email: 'Niepoprawny adres email'
@@ -1132,22 +1157,27 @@ user.profile.register: 'Zarejestruj się'
 user.profile.register_password_min_length:
   one: 'Minimum {{count}} znak'
   few: 'Minimum {{count}} znaków'
+  many: 'Minimum {{count}} znaków'
   other: 'Minimum {{count}} znaków'
 user.profile.register_password_require_num_lowercase:
   one: 'Przynajmniej {{count}} mały znak'
   few: 'Przynajmniej {{count}} małych znaków'
+  many: 'Przynajmniej {{count}} małych znaków'
   other: 'Przynajmniej {{count}} małych znaków'
 user.profile.register_password_require_num_number:
   one: 'Przynajmniej {{count}} cyfra'
   few: 'Przynajmniej {{count}} cyfr'
+  many: 'Przynajmniej {{count}} cyfr'
   other: 'Przynajmniej {{count}} cyfr'
 user.profile.register_password_require_num_symbol:
   one: 'Przynajmniej {{count}} symbol'
   few: 'Przynajmniej {{count}} symboli'
+  many: 'Przynajmniej {{count}} symboli'
   other: 'Przynajmniej {{count}} symboli'
 user.profile.register_password_require_num_uppercase:
   one: 'Przynajmniej {{count}} duża litera'
   few: 'Przynajmniej {{count}} dużych liter'
+  many: 'Przynajmniej {{count}} dużych liter'
   other: 'Przynajmniej {{count}} dużych liter'
 user.profile.register_password_unused: 'Nie możesz użyć hasła którego wcześniej wykorzystywaleś'
 user.tickets.feedback_message_leave_comment: 'Jeśli chcesz, zostaw komentarz'
@@ -1236,28 +1266,35 @@ user.time.time_x_year: 'lat - {0}'
 user.time.x_day:
   one: '1 dzień '
   few: ' {{count}} dni'
+  many: ' {{count}} dni'
   other: ' {{count}} dni'
 user.time.x_hour:
   one: '1 godzina '
   few: ' {{count}} godzin'
+  many: ' {{count}} godzin'
   other: ' {{count}} godzin'
 user.time.x_minute:
   one: '1 minuta '
   few: ' {{count}} minut'
+  many: ' {{count}} minut'
   other: ' {{count}} minut'
 user.time.x_month:
   one: '1 miesiąc '
   few: ' {{count}} miesiące'
+  many: ' {{count}} miesiące'
   other: ' {{count}} miesiące'
 user.time.x_second:
   one: '1 sekunda '
   few: ' {{count}} sekund'
+  many: ' {{count}} sekund'
   other: ' {{count}} sekund'
 user.time.x_week:
   one: '1 tydzień '
   few: ' {{count}} tygodni'
+  many: ' {{count}} tygodni'
   other: ' {{count}} tygodni'
 user.time.x_year:
   one: '1 rok '
   few: ' {{count}} lata'
+  many: ' {{count}} lata'
   other: ' {{count}} lata'

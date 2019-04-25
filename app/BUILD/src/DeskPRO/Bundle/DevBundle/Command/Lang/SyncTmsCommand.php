@@ -43,6 +43,11 @@ class SyncTmsCommand extends ContainerAwareCommand
     private $localeDir;
 
     /**
+     * @var array
+     */
+    private $defaultEnglishData = [];
+
+    /**
      * {@inheritdoc}
      */
     protected function configure()
@@ -79,6 +84,11 @@ class SyncTmsCommand extends ContainerAwareCommand
                 ];
             }
         );
+
+        foreach (['backend.yml', 'user.yml'] as $f) {
+            $data                     = Yaml::parse(file_get_contents($this->localeDir.DIRECTORY_SEPARATOR.'en-US'.DIRECTORY_SEPARATOR.$f));
+            $this->defaultEnglishData = array_merge($this->defaultEnglishData, $data);
+        }
 
         switch ($action) {
             case 'sync':
@@ -275,6 +285,13 @@ class SyncTmsCommand extends ContainerAwareCommand
                 } else {
                     $phraseData = [];
                 }
+
+                if ($locale['locale'] !== 'en-US') {
+                    $phraseData = MapUtils::filter($phraseData, function ($k, $v) {
+                        return !$this->sameAsEnglish($k, $v);
+                    });
+                }
+
                 $langFile = $this->localeDir.DIRECTORY_SEPARATOR.$locale['locale'].DIRECTORY_SEPARATOR.$f;
                 file_put_contents($langFile, Yaml::dump($phraseData, 3, 2));
 
@@ -282,6 +299,37 @@ class SyncTmsCommand extends ContainerAwareCommand
                 $output->writeln("[{$locale['locale']}] Done download in {$timer->formatTotalTime()}");
             }
         }
+    }
+
+    /**
+     * @param string          $id
+     * @param string|string[] $val
+     *
+     * @return bool
+     */
+    private function sameAsEnglish($id, $val)
+    {
+        $eng = @$this->defaultEnglishData[$id] ?: null;
+
+        if ($eng === null) {
+            return false;
+        }
+
+        if (is_array($eng) && !is_array($val)) {
+            return false;
+        }
+
+        if (is_array($eng) && is_array($val)) {
+            if (count($eng) !== count($val)) {
+                return false;
+            }
+
+            if (array_diff($val, $eng)) {
+                return false;
+            }
+        }
+
+        return $eng === $val;
     }
 
     /**
