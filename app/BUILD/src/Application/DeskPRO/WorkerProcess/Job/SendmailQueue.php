@@ -34,7 +34,7 @@ class SendmailQueue extends AbstractJob
         }
 
         if ($count_problems) {
-            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
+            $this->logStatus("Detected {$count_problems} problems in queue. Marked those as error:timeout.");
         }
         if ($count) {
             $this->logStatus("Processed {$count} emails in queue.");
