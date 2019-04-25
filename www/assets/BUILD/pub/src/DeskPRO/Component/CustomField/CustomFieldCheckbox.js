@@ -83,7 +83,7 @@ class MultipleCheckbox extends React.Component {
         onClick={this.onClick}
       >
         <span className={classNames('checkbox', { checked: value.indexOf(itemValue) !== -1 })}>
-          <i className="fa fa-check" />
+          <i className="fas fa-check" />
         </span>
 
         {itemLabel}

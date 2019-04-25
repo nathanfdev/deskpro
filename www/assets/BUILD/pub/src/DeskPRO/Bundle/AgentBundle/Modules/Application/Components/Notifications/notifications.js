@@ -188,7 +188,7 @@ class DelayedActionNotification extends BaseCountdownNotification {
   renderOther() {
     return (
       <div className="dpwd--notication--growl-undo-button">
-        <a href="#" onClick={this.onUndoClick}><i className="fa fa-undo" /> Undo</a>
+        <a href="#" onClick={this.onUndoClick}><i className="fas fa-undo-alt" /> Undo</a>
       </div>
     );
   }
@@ -221,7 +221,7 @@ class UndoableActionNotification extends BaseCountdownNotification {
   renderOther() {
     return (
       <div className="dpwd--notication--growl-undo-button">
-        <a href="#" onClick={(e) => { e.preventDefault(); this.props.undo(); }}><i className="fa fa-undo" /> Undo</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); this.props.undo(); }}><i className="fas fa-undo-alt" /> Undo</a>
       </div>
     );
   }
@@ -230,7 +230,7 @@ class UndoableActionNotification extends BaseCountdownNotification {
 class InfoNotification extends BaseNotification {
   renderIcon() {
     return (
-      <i className="fa fa-info" />
+      <i className="fas fa-info" />
     );
   }
 }
@@ -238,7 +238,7 @@ class InfoNotification extends BaseNotification {
 class ErrorNotification extends BaseNotification {
   renderIcon() {
     return (
-      <i className="fa fa-exclamation-triangle" />
+      <i className="fas fa-exclamation-triangle" />
     );
   }
 }

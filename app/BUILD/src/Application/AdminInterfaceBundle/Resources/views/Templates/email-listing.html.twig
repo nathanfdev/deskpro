@@ -9,7 +9,7 @@
 							<th>Template Name</th>
 							<th>
 								<div ng-if="ListCtrl.typeId == 'custom' && ListCtrl.groupId == 'custom'" style="text-align: right;">
-									<button type="button" class="btn btn-default btn-xs" ng-click="ListCtrl.createNewEmailTemplate()"><i class="fa fa-plus"></i> Create a new email template</button>
+									<button type="button" class="btn btn-default btn-xs" ng-click="ListCtrl.createNewEmailTemplate()"><i class="fas fa-plus"></i> Create a new email template</button>
 								</div>
 							</th>
 						</tr>
@@ -17,12 +17,12 @@
 					<tbody>
 						<tr ng-repeat="tpl in ListCtrl.templates">
 							<td>
-								<i class="fa fa-code icon-22x text-middle"></i>
+								<i class="fas fa-code icon-22x text-middle"></i>
 								&nbsp;
 									<span class="text-middle" ng-click="ListCtrl.openEditor(tpl)">
 										<span class="linked-text">
 											<em>{{ ng_var('tpl.title') }}</em>
-											<i class="hovershow fa fa-cog"></i>
+											<i class="hovershow fas fa-cog"></i>
 										</span>
 									</span>
 								<div style="font-size: 11px; color: #666;">

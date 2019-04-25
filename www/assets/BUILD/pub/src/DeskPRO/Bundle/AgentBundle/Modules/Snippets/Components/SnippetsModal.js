@@ -1019,7 +1019,7 @@ class SnippetAttachment extends React.Component {
     }
     return (
       <div className="snippet-attachment">
-        <i className="fa fa-paperclip" />&nbsp;
+        <i className="fas fa-paperclip" />&nbsp;
         <strong>Attachment:</strong>&nbsp;
         {blob.get('filename')} ({blob.get('filesize_readable')})
         <span onClick={this.removeAttachment}>

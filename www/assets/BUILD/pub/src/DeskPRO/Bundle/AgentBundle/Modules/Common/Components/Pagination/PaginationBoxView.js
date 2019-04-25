@@ -69,7 +69,7 @@ export class PaginationBoxView extends Component {
       dropdown: false
     });
 
-    if (typeof(clickCallback) !== 'undefined' && typeof(clickCallback) === 'function') {
+    if (typeof (clickCallback) !== 'undefined' && typeof (clickCallback) === 'function') {
       clickCallback(selected + 1);
     }
   }
@@ -98,12 +98,13 @@ export class PaginationBoxView extends Component {
       <div className="dpw--pagination">
         <ul className={containerClassName}>
           <li onClick={this.handlePreviousPage.bind(this)} className={previousClasses}>
-            <a href=""><i className="fa fa-caret-left"></i></a>
+            <a href=""><i className="fas fa-caret-left" /></a>
           </li>
           <li>
             <hr />
           </li>
-          <PaginationListView onPageSelected={this.handlePageSelected.bind(this)}
+          <PaginationListView
+            onPageSelected={this.handlePageSelected.bind(this)}
             currentPage={currentPage}
             pageNum={pageNum}
             pageRangeDisplayed={pageRangeDisplayed}
@@ -120,7 +121,7 @@ export class PaginationBoxView extends Component {
             <hr />
           </li>
           <li onClick={this.handleNextPage.bind(this)} className={nextClasses}>
-            <a href=""><i className="fa fa-caret-right"></i></a>
+            <a href=""><i className="fas fa-caret-right" /></a>
           </li>
         </ul>
       </div>

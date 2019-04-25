@@ -6,7 +6,7 @@
     <span class="feedback-status">
       {% if item.status_category %}
       <a href="{{ portal_path(item.status_category) }}" data-id="{{ item.status_category.id }}">
-        <i class="fa fa-eye"></i> {{ object_phrase(item.status_category) }}
+        <i class="far fa-eye"></i> {{ object_phrase(item.status_category) }}
       </a>
       {% else %}
         {{ item.status }}
@@ -32,18 +32,18 @@
 
       {% if item.calc_num_comments > 0 %}
         <hr>
-      <span><a href="{{ portal_path(item) }}#comments"><i class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>
+      <span><a href="{{ portal_path(item) }}#comments"><i class="fas fa-comment"></i> {{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>
       {% endif %}
 
       {% if item.getCustomDataSelection() %}
         <hr>
-      <span><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</span>
+      <span><i class="fas fa-inbox"></i> {{ item.getCustomDataSelection().title }}</span>
       {% endif %}
 
       {% if item.labels|length %}
         <hr>
       <span>
-        <i class="fa fa-tags"></i>
+        <i class="fas fa-tags"></i>
         {% for l in item.labels %}
         <a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
         {% endfor %}

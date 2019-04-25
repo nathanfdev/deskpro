@@ -277,9 +277,9 @@ define([
       const tpl = `\
 <li class="dp-cb-row" data-cat-id="{{cat.id}}">
 <div class="dp-cb-titlewrap" style="padding-left: {{ 33 + cat.depth * 15 }}px;">
-  <div class="dp-cb-row-move"><i class="fa fa-bars"></i></div>
+  <div class="dp-cb-row-move"><i class="fas fa-bars"></i></div>
   <div class="dp-cb-row-controls">
-    <i class="fa fa-times-circle remove-trigger"></i>
+    <i class="fas fa-times-circle remove-trigger"></i>
   </div>
   <div class="dp-cb-row-indent" style="padding-right: 0px; width: {{ cat.depth * 15 }}px;"></div>
   <span class="title-id" title="ID" ng-if="cat.id && !cat['@is_new']">#<span ng-bind="cat.id"></span></span>

@@ -163,14 +163,14 @@ export class ReplyForm extends React.Component {
           </div>
 
           <button className="send" style={sendButtonStyles}>
-            <i className="fa fa-angle-double-right" />
+            <i className="fas fa-angle-double-right" />
           </button>
         </form>
 
         <div className="dpdesignportal-chat-form-button-row">
           <div className="dpdesignportal-chat-form-button-row-main">
             <span className="dpdesignportal-chat-form-button">
-              <i className="fa fa-upload" /> {portalPhrases.get('portal.chat.upload_file')}
+              <i className="fas fa-upload" /> {portalPhrases.get('portal.chat.upload_file')}
               <DropZoneContainer>
                 <UploadButton
                   ref={(c) => { this.uploadButton = c; }}
@@ -184,7 +184,7 @@ export class ReplyForm extends React.Component {
 
             {false /* disabled for now */ &&
               <button className="dpdesignportal-chat-form-button" onClick={this.onScreenShare}>
-                <i className="fa fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
+                <i className="fas fa-camera" /> {portalPhrases.get('portal.chat.screen_share')}
               </button>
             }
 

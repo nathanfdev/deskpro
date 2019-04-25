@@ -15,7 +15,7 @@
           {% show kb_subscription_link %}
           {% if can_share %}
             <a href="{{ path('portal_articles_share', {slug: article.slug}) }}" class="share-button" rel="noindex, nofollow">
-              <span>{{ phrase('portal.general.btn-share') }}</span> <i class="fa fa-share"></i>
+              <span>{{ phrase('portal.general.btn-share') }}</span> <i class="fas fa-share"></i>
             </a>
           {%  endif %}
           <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}">
@@ -90,7 +90,7 @@
     {% if article.labels|length %}
       <div class="tag-list">
         <ul>
-          <li class="tag-list-header"><i class="fa fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
+          <li class="tag-list-header"><i class="fas fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
           {% for l in  article.labels %}
             <li class="tag-list-item"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></li>
           {% endfor %}

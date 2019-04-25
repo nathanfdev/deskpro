@@ -17,7 +17,7 @@
             <hr>
           {% endif %}
           {% if brand_setting('user.publish_comments') %}
-            <span class="comments"><i class="fa fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>
+            <span class="comments"><i class="fas fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>
             <hr>
           {% endif %}
           {{ phrase('portal.general.in') }} <a href="{{ portal_path(item.category) }}">{{ object_phrase(item.category) }}</a>
@@ -35,7 +35,7 @@
 {% if show_category_link %}
 <div class="list-meta">
   <a href="{{ category ? portal_path(category) : path('portal_news') }}">
-    {{ phrase('portal.news.view-x-news', {count: pager|length}) }}<i class="fa fa-caret-right"></i>
+    {{ phrase('portal.news.view-x-news', {count: pager|length}) }}<i class="fas fa-caret-right"></i>
   </a>
 </div>
 {% endif %}

@@ -20,7 +20,7 @@
                     {% if brand_setting('user.publish_comments') %}
                         -
 
-                        <span class="comments"><i class="fa fa-comments"></i>
+                        <span class="comments"><i class="fas fa-comments"></i>
                             <a href="#comments">{{ phrase('portal.general.comments-count', {count: post.calc_num_comments}) }}</a>
                         </span>
                     {% endif %}
@@ -44,7 +44,7 @@
         {% if post.labels|length %}
             <div class="tag-list">
                 <ul>
-                    <li class="tag-list-header"><i class="fa fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
+                    <li class="tag-list-header"><i class="fas fa-tags"></i> {{ phrase('portal.general.tags') }}</li>
                     {% for l in post.labels %}
                         <li class="tag-list-item"><a href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a></li>
                     {% endfor %}

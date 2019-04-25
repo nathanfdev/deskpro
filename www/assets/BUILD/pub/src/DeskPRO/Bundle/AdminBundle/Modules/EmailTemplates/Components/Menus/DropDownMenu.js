@@ -53,7 +53,7 @@ class DropDownMenu extends React.Component {
         >
           <i className={classNames('icon', this.props.icon)} />
           {this.props.label}
-          <i className="fa fa-caret-down" />
+          <i className="fas fa-caret-down" />
         </div>
       </PopUp>
     );

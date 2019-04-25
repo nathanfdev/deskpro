@@ -118,7 +118,7 @@ export class SelectedLabels extends Component {
     return (
       <li key={index} onClick={deselectLabel.bind(this, label)}>
         <a href="#" className="dpw-item-label">
-          <i className="fa fa-times" /> {label}
+          <i className="fas fa-times" /> {label}
         </a>
       </li>
     );
@@ -141,7 +141,7 @@ export class SelectedLabels extends Component {
     }
     return (
       <div className="dpw-navigation-dropdown-panel-content-full">
-        <div className="dpw-label-pile"></div>
+        <div className="dpw-label-pile" />
       </div>
     );
   }

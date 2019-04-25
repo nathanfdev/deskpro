@@ -13,7 +13,7 @@
     {% if app.hasBeta('guides') and can_use_guides() and show_tab_guides() and has_any_guides() %}
       <li class="item-guides">
         <a href="{{ path('portal_guides') }}">
-          <i class="fa fa-book"></i>
+          <i class="fas fa-book"></i>
           <span class="title">{{ phrase('portal.general.nav-guides') }}</span>
           <span class="subtitle">{{ phrase('portal.general.nav-guides-desc') }}</span>
         </a>
@@ -59,5 +59,5 @@
         </a>
       </li>
     {% endif %}
-    
+
 </ul>

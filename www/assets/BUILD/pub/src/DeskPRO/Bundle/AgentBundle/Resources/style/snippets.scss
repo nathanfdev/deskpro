@@ -398,7 +398,7 @@
       text-transform: uppercase;
       font-size: $font-size-m;
       margin-right: 5px;
-      .fa {
+      .far {
         margin-right: 3px;
       }
     }
@@ -524,7 +524,7 @@
   &:hover {
     .edit-snippet {
       display: inline;
-      &:hover .fa {
+      &:hover .fas {
         color: $dp-greyscale-850;
       }
     }

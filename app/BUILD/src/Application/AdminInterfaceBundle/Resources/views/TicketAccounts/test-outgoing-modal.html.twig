@@ -7,7 +7,7 @@
 		<div ng-show="testing_started">
 			<div ng-hide="is_testing">
 				<div ng-if="is_success">
-					<h3 style="margin-top: 0; margin-bottom: 10px;"><i class="fa fa-check-circle"></i> Your account details are correct</h3>
+					<h3 style="margin-top: 0; margin-bottom: 10px;"><i class="fas fa-check-circle"></i> Your account details are correct</h3>
 					<p>
 						The account details you entered appear to be correct and the message looks like it was sent. You should
 						verify that you received the test message in your inbox.
@@ -60,14 +60,14 @@
 	<div class="modal-footer">
 		<div ng-show="testing_started">
 			<div ng-hide="is_testing">
-				<button class="btn btn-info" ng-click="resetTest()"><i class="fa fa-bolt"></i> Test Again</button>
+				<button class="btn btn-info" ng-click="resetTest()"><i class="fas fa-bolt"></i> Test Again</button>
 			</div>
 			<div ng-show="is_testing">
 				<i class="spinner-flat"></i>
 			</div>
 		</div>
 		<div ng-hide="testing_started">
-			<button class="btn btn-info" ng-click="testNow()"><i class="fa fa-bolt"></i> Run Test</button>
+			<button class="btn btn-info" ng-click="testNow()"><i class="fas fa-bolt"></i> Run Test</button>
 		</div>
 	</div>
 </div>

@@ -22,7 +22,7 @@ export class ReplyForm extends React.Component {
       <form onClick={this.props.onClick}>
         <input type="text" placeholder={placeholder} />
         <button className="send-btn" style={{ backgroundColor, color: textColor }}>
-          <i className="fa fa-chevron-right" aria-hidden="true" />
+          <i className="fas fa-chevron-right" aria-hidden="true" />
         </button>
       </form>
     );

@@ -187,7 +187,7 @@ export class OmniSearchResultSection extends React.Component {
       t = (
         <span>
           <span className="feedback-mark">
-            <i className="fa fa-thumbs-up" /> {sign + item.rating}
+            <i className="fas fa-thumbs-up" /> {sign + item.rating}
           </span>
           <span className="item-name">{item.name}</span>
         </span>
@@ -226,7 +226,7 @@ export class OmniSearchResultSection extends React.Component {
 
         {this.getShowMoreNum() !== null && !this.state.doSpin &&
           <a onClick={this.showMore} className="search-results-show-more">
-            {this.getShowMoreNum()} More <i className="fa fa-angle-double-down" />
+            {this.getShowMoreNum()} More <i className="fas fa-angle-double-down" />
           </a>
         }
 

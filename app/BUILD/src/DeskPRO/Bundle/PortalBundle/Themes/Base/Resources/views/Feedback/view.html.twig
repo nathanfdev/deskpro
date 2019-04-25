@@ -38,15 +38,15 @@
 
                 <div class="feedback-item-meta">
                     <ul>
-                        <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
+                        <li><i class="fas fa-user"></i> {{ item.person.display_name }}</li>
                         <li><a href="#comments"><i
-                                        class="fa fa-comment"></i> {{ phrase('portal.general.comments-count', { count: item.calc_num_comments }) }}</a></li>
+                                        class="fas fa-comment"></i> {{ phrase('portal.general.comments-count', { count: item.calc_num_comments }) }}</a></li>
                         {% if item.getCustomDataSelection() %}
-                            <li><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</li>
+                            <li><i class="fas fa-inbox"></i> {{ item.getCustomDataSelection().title }}</li>
                         {% endif %}
                         {% if item.labels|length %}
                             <li>
-                                <i class="fa fa-tags"></i>
+                                <i class="fas fa-tags"></i>
                                 {% for l in item.labels %}
                                     <a
                                     href="{{ path('portal_search_labels', { label: l }) }}">{{ l }}</a>{% if not loop.last %}, {% endif %}
