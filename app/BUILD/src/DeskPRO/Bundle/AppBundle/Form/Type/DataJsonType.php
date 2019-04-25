@@ -27,9 +27,14 @@ class DataJsonType extends TextType
         $serializedData = null;
         $data           = $event->getData();
 
-        $encodedData = json_encode($data, JSON_NUMERIC_CHECK);
-        if (json_last_error() === JSON_ERROR_NONE && is_string($encodedData)) {
-            $serializedData = $encodedData;
+        $deoded = @json_decode($data, true);
+        if (json_last_error() === JSON_ERROR_NONE) {
+            $encodedData = json_encode($deoded, JSON_NUMERIC_CHECK);
+            if (json_last_error() === JSON_ERROR_NONE && is_string($encodedData)) {
+                $serializedData = $encodedData;
+            }
+        } else {
+            $serializedData = $data;
         }
 
         if (is_string($serializedData)) {

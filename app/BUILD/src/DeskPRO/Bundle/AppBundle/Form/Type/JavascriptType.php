@@ -3,11 +3,12 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class JavascriptType extends DataJsonType
+class JavascriptType extends TextType
 {
     /**
      * {@inheritdoc}
@@ -15,6 +16,11 @@ class JavascriptType extends DataJsonType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['custom_def'] = $options['custom_def'];
+    }
+
+    public function getParent()
+    {
+        return DataJsonType::class;
     }
 
     /**

@@ -21,7 +21,7 @@ export default class DpxJavascript extends PageWidget {
       element: null,
       field:   $input,
     };
-    console.log(ctx);
+
     const $renderedElement = ctx.renderField(
       (value, data) => {
         let dataObject = { value: null, data: null };

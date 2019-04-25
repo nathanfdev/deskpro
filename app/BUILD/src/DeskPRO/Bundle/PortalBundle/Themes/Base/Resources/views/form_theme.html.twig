@@ -310,8 +310,7 @@
                 class="dpx-javascript"
                 data-code="{{ form.vars.custom_def.getOption('code') }}"
         >
-            <input type="hidden" class="js-custom-field-hidden-input" value="" data-value="{{ value|json_encode }}" />
-            {{ block('form_widget') }}
+            <input id="{{ id }}" name="{{ full_name }}" type="hidden" class="js-custom-field-hidden-input" value="" data-value="{{ value|json_encode }}" />
         </div>
     </div>
 {% endblock %}
