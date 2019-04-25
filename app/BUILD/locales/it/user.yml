@@ -13,13 +13,11 @@ portal.account.email-management-from-form: 'Gestisci i tuoi Indirizzi Email'
 portal.account.email-primary-description: 'Questa è la tua mail principale. Sarà usata come predefinita a meno che non sia specificato diversamente.'
 portal.account.feedback-lockout: 'Hai inviato un feedback troppe volte, quindi sei stato bloccato. Per favore riprova più tardi.'
 portal.account.link-expired: 'Spiacenti, il link su cui hai fatto clic è scaduto o è già stato utilizzato in precedenza.'
-portal.account.lockout_time: 'You can try again in {{time}} minutes.'
 portal.account.login-btn: Accedi
 portal.account.login-btn-usersource: 'Accedi con {{usersource}}'
 portal.account.login-captcha-failed: 'Hai inserito un codice CAPTCHA invalido. Per favore riprova di nuovo.'
 portal.account.login-disabled: 'Il tuo indirizzo email è stato bannato.'
 portal.account.login-email: 'La tua email'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Esegui il Login tramite servizio esterno'
 portal.account.login-form-disabled: 'Il modulo di accesso è disabilitato'
 portal.account.login-invalid: 'Hai inserite Email o password scorretta. Per favore riprova di nuovo.'
@@ -92,11 +90,8 @@ portal.account.welcome-back: Bentornato
 portal.account.your-emails: 'Gestisci i tuoi indirizzi email'
 portal.account.your-pending-email-addresses: 'I tuoi Indirizzi Email in attesa'
 portal.articles.by-line: 'Da {{name}} il {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 'Ancora nessun articolo'
-portal.articles.search-title: Knowledgebase
 portal.articles.section-desc: 'La nostra knowledgebase contiene articoli scritti dagli agenti di supporto per aiutarti'
-portal.articles.section-title: Knowledgebase
 portal.articles.share-by-email: 'Condividi questo articolo tramite email:'
 portal.articles.view-as-agent: 'Puoi visualizzare questa pagina perchè sei un agente. Gli utenti normali non sono in grado di vedere questa pagina.'
 portal.articles.view-x-articles:
@@ -148,7 +143,6 @@ portal.chat.label-department: 'Seleziona il dipartimento'
 portal.chat.label-email: 'La tua Email'
 portal.chat.label-name: 'Il tuo Nome'
 portal.chat.list_agent: Agente
-portal.chat.list_chat: Chat
 portal.chat.list_date: Data
 portal.chat.list_switch_to_my_chats: 'Passa alle Mie Chat'
 portal.chat.list_switch_to_organization: 'Passa a Organizazzione'
@@ -164,7 +158,6 @@ portal.chat.log_title: 'Stai chattando con {{person}}'
 portal.chat.log_view_linked_ticket: 'Visualizza il Ticket'
 portal.chat.looking_for_another_agent: 'Stiamo cercando un nuovo agente.'
 portal.chat.lost_connection: 'Connessione persa. Cercando di riconnettersi.'
-portal.chat.message_agent-timeout: '{{name}} is not responding. Please wait while we try to find another agent.'
 portal.chat.message_assigned: 'Chat assegnata a {{name}}'
 portal.chat.message_ended: 'Chat terminata'
 portal.chat.message_ended-by: 'Chat terminata da {{name}}'
@@ -220,7 +213,6 @@ portal.chat.validation_email_was_sent: 'Un''altra email è stata inviata con suc
 portal.chat.visitor_info: 'Informazioni per visitatori'
 portal.chat.you: Tu
 portal.chat.you_have_been_invited: 'Se stato invitato a partecipare ad una chat'
-portal.downloads.download: Download
 portal.downloads.none: 'Non c''è alcun download'
 portal.downloads.recent-downloads: 'Download recenti'
 portal.downloads.search-title: Download
@@ -268,7 +260,6 @@ portal.email_subjects.share-article: '{{author_name}} vuole condividere questo a
 portal.email_subjects.ticket-rate: 'Per favore, valuta a tua esperienza di supporto per il ticket'
 portal.email_subjects.ticket_added_cc: 'Sei stato aggiunto al ticket "{{ticket.subject}}"'
 portal.email_subjects.ticket_new-participant: 'Una nuova persona è stata aggiunta al tuo ticket'
-portal.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 portal.email_subjects.too-many-emails: 'AVVISO: Hai inviato troppe email'
 portal.email_subjects.validate-email: 'Convalida il tuo indirizzo email'
 portal.emails.auto-close: 'Non abbiamo sentito niente per quanto riguarda il vostro ticket: "". Fateci sapere se avete bisogno di ulteriore assistenza, altrimenti il biglietto verrà risolto a breve.'
@@ -352,7 +343,6 @@ portal.emails.ticket_cc-new: 'Sei stato incluso in un ticket iniziato da {{name}
 portal.emails.ticket_flood: 'Hai di recente inviato un''email al nostro help desk.<br /><br />il nostro sistema ha riscontrato che hai inviato molti messaggi in rapida successione che, molto probabilmente, sono automatizzati <br /><br />. Per evitare un ciclo infinito di e-mail automatiche, il nostro help desk non vi invierà più alcuna e-mail di notifica automatica.'
 portal.emails.ticket_message_title: 'Il {{date}} alle {{time}}, {{author}} ha scritto:'
 portal.emails.ticket_no-autoresponse: 'Attenzione: Email di conferma disabilitate'
-portal.emails.ticket_rate-negative: 'No'
 portal.emails.ticket_rate-neutral: 'Era OK'
 portal.emails.ticket_rate-positive: Sì
 portal.emails.ticket_rate-question: 'Questo messaggio ti è stato utile?'
@@ -377,8 +367,6 @@ portal.error.general-title: 'C''è stato un errore'
 portal.feedback.attachments: Allegati
 portal.feedback.btn-closed: Chiuso
 portal.feedback.btn-vote: Concordo
-portal.feedback.dir_asc: ASC
-portal.feedback.dir_desc: DESC
 portal.feedback.error_hidden: 'Il feedback è nascosto'
 portal.feedback.error_login: 'Per favore effettua l''accesso'
 portal.feedback.filter_all_items: 'Tutti gli oggetti'
@@ -397,9 +385,7 @@ portal.feedback.no_matching: 'Non ci sono feedback corrispondenti'
 portal.feedback.none: 'Non c''è alcun feedback'
 portal.feedback.rate_forbidden: 'Non hai il permesso di votare'
 portal.feedback.recent-feedback: 'Feedback recente'
-portal.feedback.search-title: Feedback
 portal.feedback.section-desc: 'Questi suggerimenti sono stati inviati da clienti come voi; vi incoraggiamo a discutere e votare su quelli che preferite o ad inserire il vostro suggerimento se non è già presente.'
-portal.feedback.section-title: Feedback
 portal.feedback.sort_comments: Commenti
 portal.feedback.sort_date: Data
 portal.feedback.sort_popularity: Popolarità
@@ -452,7 +438,6 @@ portal.flashes.ticket_re_opened: 'Hai riaperto questo ticket.'
 portal.flashes.ticket_replied: 'La tua risposta è stata inviata. Grazie!'
 portal.flashes.ticket_resolved: 'Il tuo ticket è ora segnato come risolto. Grazie.'
 portal.flashes.ticket_updated: 'Il tuo ticket è stato aggiornato. Grazie!'
-portal.flashes.user_add_email_verified: 'Your email address has been added to your account.'
 portal.flashes.user_add_email_verify: 'Dobbiamo verificare la tua email prima di poterla aggiungere al tuo account. Per favore controlla la tua casella di posta per il link di convalida.'
 portal.flashes.user_changed_password: 'La tua password è stata aggiornata.'
 portal.flashes.user_changed_primary_email: 'L''indirizzo della tua email primaria è stato cambiato.'
@@ -470,7 +455,6 @@ portal.forms.error_accept_no_file: 'Non puoi caricare un file vuoto.'
 portal.forms.error_accept_not_allowed_exts: 'Non puoi caricare un file con le seguenti estensioni: {{detail}}'
 portal.forms.error_accept_not_in_allowed_exts: 'Puoi solo caricare file con una qualsiasi delle seguenti estensioni: {{detail}}'
 portal.forms.error_accept_server_error: 'C''è stato un problema nel caricare questo file. Per favore riprova di nuovo.'
-portal.forms.error_accept_size: 'Sorry but this file is too large. Maximum allowed size is {{detail}}.'
 portal.forms.error_bad_choice: 'Uno o più dei valori indicati non sono validi.'
 portal.forms.error_banned_email: 'L''email "{{email}}" è stata bannata.'
 portal.forms.error_captcha: 'Il valore CAPTCHA è scorretto'
@@ -484,7 +468,6 @@ portal.forms.error_dupe_ticket_message: 'Messaggio biglietto duplicato'
 portal.forms.error_email_required: 'Devi fornire il tuo indirizzo email'
 portal.forms.error_extra_fields: 'Siamo spiacenti ma si è verificato un errore durante l''elaborazione della richiesta. Per favore riprova.'
 portal.forms.error_invalid_data_type: 'Questo tipo di dati non era previsto.'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Questo valore non è un URL valido.'
 portal.forms.error_length_invalid: 'Questo valore deve avere esattamente {{limit}} caratteri.'
 portal.forms.error_length_too_long: 'Il valore è troppo lungo. Deve avere come limite {{limit}} caratteri.'
@@ -539,7 +522,6 @@ portal.forms.error_upload_ini_size: 'Il file è troppo grande. La misura massima
 portal.forms.label_add_attachment: 'Aggiungi un altro allegato'
 portal.forms.label_captcha: 'Per assicurarci che sei un umano, scrivi il testo che vedi in quest''immagine CAPTCHA'
 portal.forms.label_category: Categoria
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Scegli un file'
 portal.forms.label_comment: 'Hai dei commenti?'
 portal.forms.label_content: Contenuto
@@ -547,14 +529,12 @@ portal.forms.label_current_password: 'Password attuale'
 portal.forms.label_department: Reparto
 portal.forms.label_drag: 'Sposta un file qui oppure'
 portal.forms.label_drag_overlay: 'Sposta il tuo file qui.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Nome
 portal.forms.label_full_name: 'Il tuo nome'
 portal.forms.label_language: Lingua
 portal.forms.label_last_name: Cognome
 portal.forms.label_message: Messaggio
 portal.forms.label_name: Nome
-portal.forms.label_password: Password
 portal.forms.label_password_confirm: Conferma
 portal.forms.label_priority: Priorità
 portal.forms.label_product: Prodotto
@@ -569,8 +549,6 @@ portal.forms.label_title: Titolo
 portal.forms.label_upload_picture: 'Carica l''immagine'
 portal.forms.label_workflow: 'Flusso di lavoro'
 portal.general.add-comment: 'Aggiungi un commento'
-portal.general.admin: Admin
-portal.general.admin_home: 'Admin Home'
 portal.general.agent: Agente
 portal.general.agent_bar_admin_desc: 'Gestisci il tuo Helpdesk'
 portal.general.agent_bar_admin_dl: 'Impostazioni dei Download'
@@ -589,7 +567,6 @@ portal.general.agents-available: 'Agenti Disponibili'
 portal.general.attachments: Allegati
 portal.general.btn-cancel: Annulla
 portal.general.btn-download-pdf: 'Scarica PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Vai
 portal.general.btn-print: Stampa
 portal.general.btn-send-email: 'Manda e-mail'
@@ -611,7 +588,6 @@ portal.general.everything: Tutto
 portal.general.get-in-touch: 'Rimani in contatto'
 portal.general.get-in-touch-desc: 'Mandaci un''email'
 portal.general.impersonation_mode: 'Modalità di rappresentazione'
-portal.general.in: in
 portal.general.label-search-enter-label: 'Per favore fornisci un etichetta da ricercare'
 portal.general.lang-change-to-current: 'Imposta <span class="italics">{{lang}}</span> come lingua di base'
 portal.general.lang-diff: 'Questa pagina è in  <span class="italics">{{active_lang}}</span> ma il tuo account è in <span class="italics">{{person_lang}}</span>.'
@@ -622,11 +598,9 @@ portal.general.nav-chatlog: 'Registro della Chat'
 portal.general.nav-downloads: Download
 portal.general.nav-downloads-desc: 'Ricerca i nostri Download'
 portal.general.nav-emails: Email
-portal.general.nav-feedback: Feedback
 portal.general.nav-feedback-desc: 'Suggerimenti personalizzati'
 portal.general.nav-guides: 'il manuale'
 portal.general.nav-guides-desc: 'Documentazione del prodotto'
-portal.general.nav-kb: Knowledgebase
 portal.general.nav-kb-desc: 'Leggi gli articoli di aiuto'
 portal.general.nav-login: Accedi
 portal.general.nav-news: Novità
@@ -670,7 +644,6 @@ portal.general.related-feedback: 'Feedback Collegati'
 portal.general.related-news: 'Novità Correlate'
 portal.general.related-pages: 'Pagine Correlate'
 portal.general.rerender-form: 'Per favore controlla questo modulo prima di inviarlo.'
-portal.general.rss_subscribe: 'RSS Feed'
 portal.general.search-labels-section-title: 'Cerca Etichette'
 portal.general.search-section-title: Cerca
 portal.general.search_btn: Cerca
@@ -689,7 +662,6 @@ portal.general.tagged_with: 'taggato con'
 portal.general.tags: Tag
 portal.general.toggle_off: disattivo
 portal.general.toggle_on: attivo
-portal.general.top: Top
 portal.general.updated: Aggiornato
 portal.general.x-search-results: '{{num}} cerca risultati per "{{query}}"'
 portal.general.x-search-results-no-query: '{{num}} cerca risultati'
@@ -704,9 +676,6 @@ portal.news.view-x-news:
   other: ' Visualizza {{count}} articoli'
 portal.sidebar.agents_available: 'Agenti Disponibili'
 portal.sidebar.agents_none: 'Nessuno dei nostri agenti è al momento online. Puoi comunque <a href="{{new_ticket_url}}">aprire un ticket</a>. '
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Pubblicato da {{name}}'
 portal.sidebar.news_title: Novità
 portal.sidebar.satisfied_customers: 'Clienti Soddisfatti'
@@ -840,7 +809,6 @@ user.chat.form_feedback_comments: 'Commenti?'
 user.chat.form_feedback_rate-satisfaction: 'Sei soddisfatto della conversazione?'
 user.chat.form_feedback_rate-satisfied: Sì
 user.chat.form_feedback_rate-time: 'Il tempo di risposta ti ha soddisfatto?'
-user.chat.form_feedback_rate-unsatisfied: 'No'
 user.chat.form_feedback_title: 'Invia un feedback'
 user.chat.form_feedback_transcript-email: 'Invia la trascrizione della chat a'
 user.chat.log-title: 'Le tue chat'
@@ -928,7 +896,6 @@ user.email_subjects.register-welcome-byagent: 'Il tuo nuovo account helpdesk'
 user.email_subjects.remind_unresolved_final_subject: 'PROMEMORIA: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'PROMEMORIA: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Valuta il supporto che ti abbiamo dato per il ticket "{{ticket.subject}}"'
-user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 user.emails.auto-close: 'Il tuo biglietto "" sarà chiuso a breve, dal momento che ultimamente non abbiamo ricevuto nessuna vostra notizia. Se avete bisogno di ulteriore assistenza semplicemente rispondete e uno dei nostri agenti vi aiuterà.'
 user.emails.chat_transcript: 'Grazie per avere chattato con noi. Ecco la trascrittura della chat.'
 user.emails.chat_validate_email: 'Per favore convalida il tuo indirizzo email online inserendo il codice "{{validation_code}}" nel widget o facendo click sul seguente link:'
@@ -1007,7 +974,6 @@ user.emails.ticket_cc-new: 'Sei stato incluso in un ticket iniziato da {{name}}.
 user.emails.ticket_flood: 'Hai recentemente inviato una e-mail al nostro helpdesk. Possiamo vedere che hai inviato molti messaggi in rapida successione che sono stati molto probabilmente automatizzati. <br /> <br /> Per evitare un loop continuo di auto-risposta, il nostro helpdesk non vi invierà più alcuna e-mail di notifica automatica.'
 user.emails.ticket_message_title: 'Il {{date}} alle {{time}}, {{author}} ha scritto:'
 user.emails.ticket_no-autoresponse: 'Attenzione: Email di conferma disabilitate'
-user.emails.ticket_rate-negative: 'No'
 user.emails.ticket_rate-neutral: 'Era OK'
 user.emails.ticket_rate-positive: Sì
 user.emails.ticket_rate-question: 'Questo messaggio ti è stato utile?'
@@ -1061,7 +1027,6 @@ user.knowledgebase.auto_action_on_date: 'Automaticamente {{action}} il {{date}}'
 user.knowledgebase.creating_pending_article: 'Creazione di un articolo in attesa'
 user.lang.lang_title: Italiano
 user.lang.lang_title_arabic: Arabo
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Danese
 user.lang.lang_title_default: Inglese
 user.lang.lang_title_dutch: Olandese
@@ -1069,8 +1034,6 @@ user.lang.lang_title_english_gb: 'Inglese (UK)'
 user.lang.lang_title_french: Francese
 user.lang.lang_title_german: Tedesco
 user.lang.lang_title_hungarian: Ungherese
-user.lang.lang_title_indonesian: Indonesian
-user.lang.lang_title_italian: Italian
 user.lang.lang_title_japanese: Giapponese
 user.lang.lang_title_norwegian: Norvegese
 user.lang.lang_title_persian: Persiano
@@ -1144,16 +1107,12 @@ user.time.short-day_sunday: Dom
 user.time.short-day_thursday: Gio
 user.time.short-day_tuesday: Mar
 user.time.short-day_wednesday: Mer
-user.time.short-month_april: Apr
 user.time.short-month_august: Ago
 user.time.short-month_december: Dic
-user.time.short-month_february: Feb
 user.time.short-month_january: Gen
 user.time.short-month_july: Lug
 user.time.short-month_june: Giu
-user.time.short-month_march: Mar
 user.time.short-month_may: Mag
-user.time.short-month_november: Nov
 user.time.short-month_october: Ott
 user.time.short-month_september: Set
 user.time.time-ago_1_day: '1 giorno fa'

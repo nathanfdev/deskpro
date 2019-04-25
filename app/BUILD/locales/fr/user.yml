@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Connexion avec {{usersource}}'
 portal.account.login-captcha-failed: 'Le code CAPTCHA saisi est incorrect. Veuillez réessayer.'
 portal.account.login-disabled: 'Votre adresse email a été bannie.'
 portal.account.login-email: 'Votre email'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Connexion avec un service externe'
 portal.account.login-form-disabled: 'Le formulaire de connexion est désactivé'
 portal.account.login-invalid: 'Identifiants incorrects. Veuillez réessayer.'
@@ -59,7 +58,6 @@ portal.account.reset-password-success: 'Votre mot de passe a été mis à jour.'
 portal.account.section-desc-login: 'Déjà inscrit ? Connectez-vous ci-dessous.'
 portal.account.section-desc-login-external: 'Utilisez les liens ci-dessous si votre compte est lié à un autre fournisseur.'
 portal.account.section-desc-register: 'Créez un compte pour simplifier le suivi de vos échanges.'
-portal.account.section-title-emails: Emails
 portal.account.section-title-login: Connexion
 portal.account.section-title-profile: Profil
 portal.account.section-title-register: 'S''inscrire'
@@ -102,9 +100,6 @@ portal.articles.view-as-agent: 'Vous pouvez voir cette page car vous êtes un ag
 portal.articles.view-x-articles:
   one: 'Voir 1 article'
   other: 'Voir {{count}} articles'
-portal.articles.x-articles:
-  one: '1 article'
-  other: '{{count}} articles'
 portal.chat.agent_blocked_user_on: 'Bloqué par {{name}} le {{date}}'
 portal.chat.agent_disconnected: '{{agentName}} semble ne plus être connecté'
 portal.chat.agent_typing_message: '{{agentName}} écrit un message'
@@ -147,16 +142,12 @@ portal.chat.invalid_jwt_token: 'Votre jeton JWT n''est pas valide.'
 portal.chat.label-department: 'Sélectionnez un département'
 portal.chat.label-email: 'Votre email'
 portal.chat.label-name: 'Votre nom'
-portal.chat.list_agent: Agent
-portal.chat.list_chat: Chat
-portal.chat.list_date: Date
 portal.chat.list_switch_to_my_chats: 'Basculer sur Mes chats'
 portal.chat.list_switch_to_organization: 'Basculer vers Organisation'
 portal.chat.list_title:
   one: '1 chat'
   other: '{{count}} chats'
 portal.chat.list_user: Utilisateur
-portal.chat.log_agents: Agents
 portal.chat.log_chat_time: 'Durée totale du chat'
 portal.chat.log_department: Département
 portal.chat.log_linked_ticket: 'Lié au ticket'
@@ -274,7 +265,6 @@ portal.email_subjects.validate-email: 'Validez votre adresse email'
 portal.emails.auto-close: 'Faute d''avoir été mis à jour récemment, votre ticket "{{ticket.subject}}" sera automatiquement clôturé. Si vous souhaitez que votre ticket reste ouvert, ajoutez un nouveau message à votre ticket et nos agents pourront continuer à vous épauler dans la résolution de votre ticket.'
 portal.emails.chat_transcript: 'Nous vous remercions pour cet échange. Voici une transcription du Chat.'
 portal.emails.comment_approved: 'Votre commentaire a été publié.'
-portal.emails.comment_deleted: 'Your comment was used to improve this page: {{link}}.'
 portal.emails.comment_thank-you: 'Merci pour votre commentaire sur {{link}}.'
 portal.emails.comment_validate-email: 'Merci de valider votre adress email en ligne en cliquant sur le lien suivant:'
 portal.emails.do-not-reply: 'Merci de ne pas répondre à cet email. Ce message a été généré automatiquement par une machine et les réponses envoyées à cette adresse ne seront pas lues par notre équipe.'
@@ -325,7 +315,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'Un agent a généré un nouveau mot de passe pour votre compte. Vous pouvez vous connecter avec ces informations de connexion.'
 portal.emails.password_reset: 'Vous avez demandé à recevoir un nouveau mot de passe. Pour générer un nouveau mot de passe, cliquez sur le lien ci-dessous:'
 portal.emails.password_set: 'Pour définir un mot de passe, cliquez sur le lien ci-dessous :'
-portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'Pour valider votre adresse email principale, veuillez cliquer sur le lien suivant'
 portal.emails.profile_email_link-validate: 'Cliquez simplement sur le lien suivant pour valider votre adresse email.'
 portal.emails.ratelimit_explain: 'Vous avez envoyé {{num_messagess}} messages en {{time_limit}}. Pour éviter les abus, nous avons banni votre adresse email temporairement pour une durée de {{time_lock}}. Après le {{date_lock_end}}, ce blocage temporaire sera levé et vous pourrez à nouveau envoyer des emails.'
@@ -401,7 +390,6 @@ portal.feedback.search-title: Remarques
 portal.feedback.section-desc: 'Ces suggestions ont été proposées par des utilisateurs comme vous. Nous vous conseillons de discuter ces suggestions, voter pour celles que vous approuvez et soumettre les vôtres si votre idée n''est pas encore representée ici.'
 portal.feedback.section-title: Remarques
 portal.feedback.sort_comments: Commentaires
-portal.feedback.sort_date: Date
 portal.feedback.sort_popularity: Popularité
 portal.feedback.sort_rating: Évaluation
 portal.feedback.sort_views: 'Des vues'
@@ -484,7 +472,6 @@ portal.forms.error_dupe_ticket_message: 'Message de duplicata.'
 portal.forms.error_email_required: 'Veuillez indiquer votre adresse email'
 portal.forms.error_extra_fields: 'Désolé, une erreur s''est produite. Veuillez réessayer.'
 portal.forms.error_invalid_data_type: 'Ce type de données n''était pas attendu.'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Cette valeur n''est pas une URL valide.'
 portal.forms.error_length_invalid: 'Cette valeur devrait comporter exactement {{limit}} caractères.'
 portal.forms.error_length_too_long: 'Cette valeur est trop longue. Elle ne peut comporter plus de {{limit}} caractères.'
@@ -539,7 +526,6 @@ portal.forms.error_upload_ini_size: 'Ce fichier est trop lourd. Il ne peut pas d
 portal.forms.label_add_attachment: 'Ajouter une autre pièce jointe'
 portal.forms.label_captcha: 'Pour prouver que vous êtes un être humain, veuillez recopier le texte que vous voyez dans l''image CAPTCHA'
 portal.forms.label_category: Catégorie
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Sélectionner un fichier'
 portal.forms.label_comment: 'Des commentaires?'
 portal.forms.label_content: Contenu
@@ -547,12 +533,10 @@ portal.forms.label_current_password: 'Mot de passe actuel'
 portal.forms.label_department: Département
 portal.forms.label_drag: 'Glissez un fichier ici ou'
 portal.forms.label_drag_overlay: 'Glissez votre fichier ici.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Prénom
 portal.forms.label_full_name: 'Votre nom'
 portal.forms.label_language: Langue
 portal.forms.label_last_name: Nom
-portal.forms.label_message: Message
 portal.forms.label_name: Nom
 portal.forms.label_password: 'Mot de passe'
 portal.forms.label_password_confirm: Confirmer
@@ -567,11 +551,9 @@ portal.forms.label_submit: Soumettre
 portal.forms.label_timezone: 'Fuseau horaire'
 portal.forms.label_title: Titre
 portal.forms.label_upload_picture: 'Charger une photo'
-portal.forms.label_workflow: Workflow
 portal.general.add-comment: 'Ajouter un commentaire'
 portal.general.admin: Administration
 portal.general.admin_home: 'Interface d''administration'
-portal.general.agent: Agent
 portal.general.agent_bar_admin_desc: 'Gérer votre plateforme'
 portal.general.agent_bar_admin_dl: Téléchargements
 portal.general.agent_bar_admin_feedback: Remarques
@@ -589,7 +571,6 @@ portal.general.agents-available: 'Agents disponibles'
 portal.general.attachments: 'Pièce jointes'
 portal.general.btn-cancel: Annuler
 portal.general.btn-download-pdf: 'Télécharger le PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Valider
 portal.general.btn-print: Imprimer
 portal.general.btn-send-email: 'Envoyer un email'
@@ -621,7 +602,6 @@ portal.general.nav-chat: 'Historique de chat'
 portal.general.nav-chatlog: 'Historique de chat'
 portal.general.nav-downloads: Téléchargements
 portal.general.nav-downloads-desc: 'Consulter nos documents à télécharger'
-portal.general.nav-emails: Emails
 portal.general.nav-feedback: Remarques
 portal.general.nav-feedback-desc: 'Suggestions personnalisées'
 portal.general.nav-guides: 'Des guides'
@@ -639,7 +619,6 @@ portal.general.nav-quick-jump: 'Accès rapide'
 portal.general.nav-register: 'S''inscrire'
 portal.general.nav-reset-password: 'Générer un nouveau mot de passe'
 portal.general.nav-set-password: 'Définir un mot de passe'
-portal.general.nav-tickets: Tickets
 portal.general.nav-tickets-org: 'Tickets de l''organisation'
 portal.general.nav-your-account: 'Votre compte'
 portal.general.no-agents-available: 'Désolé, aucun agent n''est disponible'
@@ -766,8 +745,6 @@ portal.tickets.resolve_my_ticket_btn: 'Clôturer mon ticket'
 portal.tickets.resolve_ticket: 'Clôturer le ticket: {{subject}}'
 portal.tickets.resolve_ticket_explain: 'Êtes-vous sûr de vouloir clôturer ce ticket ? Une fois votre ticket clôturé nos agents ne vous répondront plus.'
 portal.tickets.search-last-activity: 'Dernière activité'
-portal.tickets.search-title: Tickets
-portal.tickets.section-title: Tickets
 portal.tickets.switched-department-rerender: 'La structure de cette forme peut avoir changé. S''il vous plaît examiner le formulaire et soumettre à nouveau.'
 portal.tickets.thank_you: 'Votre billet est en route'
 portal.tickets.thank_you_check_email: 'Veuillez vérifier votre adresse e-mail'
@@ -846,7 +823,6 @@ user.chat.form_feedback_transcript-email: 'Envoyer une transcription de ce Chat 
 user.chat.log-title: 'Vos Chats'
 user.chat.log_chat-id: 'ID du Chat'
 user.chat.log_created-date: 'Créé le {{date}}'
-user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Département
 user.chat.log_message_author-you: Vous
 user.chat.log_nav-view-chats:
@@ -891,7 +867,6 @@ user.defaults.article_example_content: 'Ceci est un exemple d''article de la bas
 user.defaults.article_example_title: 'Exemple d''article'
 user.defaults.department_sales: 'Service Commercial'
 user.defaults.department_support: 'Centre d''aide'
-user.defaults.downloads_category_general: Documents
 user.defaults.news_category_general: Général
 user.defaults.news_example_content: 'Ceci est un exemple d''actualité. N''hésitez pas à le modifier ou le supprimer depuis l''interface Agent.'
 user.defaults.news_example_title: 'Exemple d''actualité'
@@ -1055,13 +1030,11 @@ user.feedback.submit_feedback: 'Faire une remarque'
 user.general.deskpro: DeskPro
 user.general.helpdesk_by: 'Logiciel d''assistance par <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Code de confirmation'
-user.general.page: Page
 user.general.request_token_expired: 'Votre jeton de demande a expiré. Veuillez réessayer.'
 user.knowledgebase.auto_action_on_date: 'Automatiquement {{action}} le {{date}}'
 user.knowledgebase.creating_pending_article: 'Création d''un article provisoire'
 user.lang.lang_title: 'Anglais (US)'
 user.lang.lang_title_arabic: Arabe
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Danois
 user.lang.lang_title_default: 'Anglais (US)'
 user.lang.lang_title_dutch: Néerlandais
@@ -1069,7 +1042,6 @@ user.lang.lang_title_english_gb: 'Anglais (GB)'
 user.lang.lang_title_french: Français
 user.lang.lang_title_german: Allemand
 user.lang.lang_title_hungarian: Hongrois
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italien
 user.lang.lang_title_japanese: Japonais
 user.lang.lang_title_norwegian: Norvégien
@@ -1173,7 +1145,6 @@ user.time.time-ago_x_week: 'Il y a {0} semaines'
 user.time.time-ago_x_year: 'Il y a {0} ans'
 user.time.time_1_day: '1 jour'
 user.time.time_1_hour: '1 heure'
-user.time.time_1_minute: '1 minute'
 user.time.time_1_month: '1 mois'
 user.time.time_1_second: '1 seconde'
 user.time.time_1_week: '1 semaine'
@@ -1181,7 +1152,6 @@ user.time.time_1_year: '1 an'
 user.time.time_less_second: 'moins d''une seconde'
 user.time.time_x_day: '{0} jours'
 user.time.time_x_hour: '{0} heures'
-user.time.time_x_minute: '{0} minutes'
 user.time.time_x_month: '{0} mois'
 user.time.time_x_second: '{0} secondes'
 user.time.time_x_week: '{0} semaines'

@@ -59,7 +59,6 @@ portal.account.reset-password-success: 'Ваш пароль был измене�
 portal.account.section-desc-login: 'У Вас уже есть аккаунт? Пожалуйста, войдите в систему.'
 portal.account.section-desc-login-external: 'Пожалуйста, используйте ссылки, указанные ниже, если Вы заходите на аккаунт, используя другого интернет провайдера.'
 portal.account.section-desc-register: 'Зарегистрируйте аккаунт чтобы легче управлять своими диалогами.'
-portal.account.section-title-emails: Emails
 portal.account.section-title-login: Логин
 portal.account.section-title-profile: Профиль
 portal.account.section-title-register: Зарегистрироваться
@@ -276,7 +275,6 @@ portal.email_subjects.share-article: '{{author_name}} хочет поделит�
 portal.email_subjects.ticket-rate: 'Оцените наш опыт работы в поддержке клиентов на примере заявки "{{ticket.subject}}"'
 portal.email_subjects.ticket_added_cc: 'Вы были добавлены в обращение "{{ticket.subject}}"'
 portal.email_subjects.ticket_new-participant: 'Ваша заявка передана другому специалисту'
-portal.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 portal.email_subjects.too-many-emails: 'Внимание: Вы отправили слишком много сообщений'
 portal.email_subjects.validate-email: 'Подтвердите Ваш адрес электронной почты'
 portal.emails.auto-close: 'Ваше обращение "{{ticket.subject}}" будет автоматически закрыто, поскольку Вы давно его не обновляли. Если же Вы хотите оставить это обращение открытым, добавьте новое сообщение - и наши специалисты продолжат работу.'
@@ -349,7 +347,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'Ваш пароль восстановлен. Вы можете авторизоваться, используя эти данные.'
 portal.emails.password_reset: 'Вы подали запрос на восстановление пароля. Чтобы восстановить пароль, перейдите по следующей ссылке:'
 portal.emails.password_set: 'Чтобы установить Ваш пароль, нажмите на ссылку ниже'
-portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'Для того, чтобы уточнить Ваш основной email, пожалуйста, нажмите на данную ссылку'
 portal.emails.profile_email_link-validate: 'Перейдите по следующей ссылке, чтобы подтвердить адрес Вашей электронной почты'
 portal.emails.ratelimit_explain: 'Вы отправили {{num_messagess}} сообщений в течение {{time_limit}}. Сообщения с Вашего emailа будут заблокированы на {{time_lock}}. После {{date_lock_end}}, данная временная блокировка будет снята и Вы сможете снова отсылать обращения.'
@@ -512,7 +509,6 @@ portal.forms.error_dupe_ticket_message: 'Дублирование билета.'
 portal.forms.error_email_required: 'Вы должны предоставить email'
 portal.forms.error_extra_fields: 'Извините, но произошла ошибка обработки вашего запроса. Пожалуйста, попробуйте еще раз.'
 portal.forms.error_invalid_data_type: 'Этот тип данных не ожидался.'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Это значение не является допустимым URL.'
 portal.forms.error_length_invalid: 'Это значение должно составлять ровно {{limit}} символов.'
 portal.forms.error_length_too_long: 'Это значение слишком длинное. Оно должно составлять {{limit}} символов или меньше'
@@ -585,7 +581,6 @@ portal.forms.label_current_password: 'Текущий пароль'
 portal.forms.label_department: Отдел
 portal.forms.label_drag: 'Переместить файл сюда или'
 portal.forms.label_drag_overlay: 'Переместить файл сюда.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Имя
 portal.forms.label_full_name: 'Ваше имя'
 portal.forms.label_language: Язык
@@ -978,7 +973,6 @@ user.email_subjects.register-welcome-byagent: 'Ваш новый аккаунт 
 user.email_subjects.remind_unresolved_final_subject: 'Напоминание: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'Напоминание: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Оцените наш опыт работы в поддержке клиентов на примере заявки "{{ticket.subject}}"'
-user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 user.emails.auto-close: 'Ваше обращение "{{ticket.subject}}" будет автоматически закрыто, поскольку Вы давно его не обновляли. Если же Вы хотите оставить это обращение открытым, добавьте новое сообщение - и наши специалисты продолжат работу.'
 user.emails.chat_transcript: 'Благодарим Ваc за общение с нами. Предоставляем Вам копию диалога.'
 user.emails.chat_validate_email: 'Пожалуйста, подтвердите Ваш email, введя код "{{validation_code}}" в виджет по ссылке:'
@@ -1139,7 +1133,6 @@ user.knowledgebase.auto_action_on_date: 'Автоматически {{action}}  
 user.knowledgebase.creating_pending_article: 'Создание незавершенной статьи'
 user.lang.lang_title: Pусский
 user.lang.lang_title_arabic: Арабский
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Датский
 user.lang.lang_title_default: Английский
 user.lang.lang_title_dutch: Голландский
@@ -1147,7 +1140,6 @@ user.lang.lang_title_english_gb: 'Английский (UK)'
 user.lang.lang_title_french: Французский
 user.lang.lang_title_german: Немецкий
 user.lang.lang_title_hungarian: Венгерский
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Итальянский
 user.lang.lang_title_japanese: Японский
 user.lang.lang_title_norwegian: Норвежский

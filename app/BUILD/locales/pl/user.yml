@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Zaloguj z {{usersource}}'
 portal.account.login-captcha-failed: 'Podałeś niepoprawny kod CAPTCHA. Spróbuj ponownie.'
 portal.account.login-disabled: 'Twój adres e-mail został zbanowany.'
 portal.account.login-email: 'Twój email'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Zaloguj za pomocą usługi zewnętrznej'
 portal.account.login-form-disabled: 'Formularz logowania jest wyłączony'
 portal.account.login-invalid: 'Podałeś niepoprawny adres email lub hasło. Spróbuj ponownie.'
@@ -92,7 +91,6 @@ portal.account.welcome-back: 'Witamy ponownie'
 portal.account.your-emails: 'Twój adres email'
 portal.account.your-pending-email-addresses: 'Twoje oczekujące adresy email'
 portal.articles.by-line: 'Przez {{name}} dnia {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 'Brak artykułów'
 portal.articles.search-title: 'Baza Wiedzy'
 portal.articles.section-desc: 'Nasza baza wiedzy zawiera artykuły napisane przez naszych agentów, które mogą ci pomóc.'
@@ -151,7 +149,6 @@ portal.chat.invalid_jwt_token: 'Twój token JWT jest nieprawidłowy.'
 portal.chat.label-department: 'Wybierz dział'
 portal.chat.label-email: 'Twój email'
 portal.chat.label-name: 'Twoje imię'
-portal.chat.list_agent: Agent
 portal.chat.list_chat: Czat
 portal.chat.list_date: Data
 portal.chat.list_switch_to_my_chats: 'Przełącz do moich czatów'
@@ -349,7 +346,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'Nasz pracownik zmienił Twoje hasło. Możesz się zalogować z tymi szczegółami.'
 portal.emails.password_reset: 'Poprosiłeś(aś) o zmianę hasła. Żeby zmienić hasło, kliknij na link poniżej:'
 portal.emails.password_set: 'Aby zmienić hasło, kliknij link poniżej:'
-portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'Aby potwierdzić swój główny adres email, po prostu kliknij następujący link'
 portal.emails.profile_email_link-validate: 'Kliknij na następujący link, żeby potwierdzić swój adres email'
 portal.emails.ratelimit_explain: 'Wysłano {{num_messagess}} wiadomości w czasie {{time_limit}}. Aby zapobiec nadużyciom tymczasowo zablokowaliśmy twój adres email na {{time_lock}}. Po {{date_lock_end}}, ta tymczasowa blokada będzie zdjęta i będziesz mógł ponownie wysyłać wiadomości.'
@@ -512,7 +508,6 @@ portal.forms.error_dupe_ticket_message: 'Zduplikowana wiadomość biletowa.'
 portal.forms.error_email_required: 'Musisz podać swój adres email'
 portal.forms.error_extra_fields: 'Przepraszamy, ale podczas przetwarzania twojego żądania wystąpił błąd. Spróbuj ponownie.'
 portal.forms.error_invalid_data_type: 'Tego typu danych nie oczekiwano.'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Ta wartość nie jest prawidłowym adresem URL.'
 portal.forms.error_length_invalid: 'Ta wartość powinna zawierać dokładnie {{limit}} znaków.'
 portal.forms.error_length_too_long: 'Ta wartość jest za długa. Powinna zawierać {{limit}} znaków lub mniej'
@@ -585,7 +580,6 @@ portal.forms.label_current_password: 'Aktualne hasło'
 portal.forms.label_department: 'Dział zgłoszenia'
 portal.forms.label_drag: 'Upuść plik tutaj lub'
 portal.forms.label_drag_overlay: 'Upuść swój plik tutaj.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Imię
 portal.forms.label_full_name: 'Twoje imię'
 portal.forms.label_language: Język
@@ -609,7 +603,6 @@ portal.forms.label_workflow: 'Przepływ pracy'
 portal.general.add-comment: 'Dodaj komentarz'
 portal.general.admin: Administrator
 portal.general.admin_home: 'Dom Administratora'
-portal.general.agent: Agent
 portal.general.agent_bar_admin_desc: 'Zarządzaj swoim Helpdeskiem'
 portal.general.agent_bar_admin_dl: 'Ustawienia pobierania'
 portal.general.agent_bar_admin_feedback: 'Ustawienia informacji zwrotnej'
@@ -627,7 +620,6 @@ portal.general.agents-available: 'Dostępni Agenci'
 portal.general.attachments: Załączniki
 portal.general.btn-cancel: Anuluj
 portal.general.btn-download-pdf: 'Pobierz PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Przejdź
 portal.general.btn-print: Drukuj
 portal.general.btn-send-email: 'Wyślij email'
@@ -675,7 +667,6 @@ portal.general.nav-news: Aktualności
 portal.general.nav-news-desc: 'Aktualności i wydarzenia'
 portal.general.nav-newticket: 'Napisz do nas'
 portal.general.nav-newticket-desc: 'Jesteśmy tu by ci pomóc'
-portal.general.nav-portal: Portal
 portal.general.nav-profile: Profil
 portal.general.nav-quick-jump: 'Skocz do...'
 portal.general.nav-register: 'Zarejestruj się'
@@ -1139,7 +1130,6 @@ user.knowledgebase.auto_action_on_date: 'Automatycznie {{action}} dnia {{date}}'
 user.knowledgebase.creating_pending_article: 'Tworzenie artykułu oczekującego'
 user.lang.lang_title: Polski
 user.lang.lang_title_arabic: Arabski
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Duński
 user.lang.lang_title_default: Angielski
 user.lang.lang_title_dutch: Holenderski
@@ -1147,7 +1137,6 @@ user.lang.lang_title_english_gb: 'Angielski (UK)'
 user.lang.lang_title_french: Francuski
 user.lang.lang_title_german: Niemiecki
 user.lang.lang_title_hungarian: Węgierski
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Włoski
 user.lang.lang_title_japanese: Japoński
 user.lang.lang_title_norwegian: Norweski

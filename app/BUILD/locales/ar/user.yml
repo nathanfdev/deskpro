@@ -373,7 +373,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'قام أحد الموظفين بإعادة تعيين كلمة المرور الخاصه بك . يمكنك الأن الدخول بهذه البيانات'
 portal.emails.password_reset: 'لقد قمت بطلب إعادة تعيين كلمةالمرور . لإستكمال العملية  إضغط على الرابط التالي :'
 portal.emails.password_set: 'انقر على الرابط ادناه للتأكد من كلمة المرور'
-portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'قم بالضغط على رابط التالي لتاكيد بريدك الالكتروني'
 portal.emails.profile_email_link-validate: 'قم بالضغط على الرابط التالي لتأكيد بريدك الإلكتروني'
 portal.emails.ratelimit_explain: 'قمت بارسال عدد من ا لرسائل {{num_messagess}}{{time_limit}}. تجنبا لاشغالك قمنا بحضر بريدك مؤقتا {{time_lock}}. سيتم إزالة الحضر {{date_lock_end}}لتتمكن ن ارسال بريد الكترونيرة اخرى'
@@ -429,8 +428,6 @@ portal.error.general-title: 'ظهر خطأ ما'
 portal.feedback.attachments: مرفقات
 portal.feedback.btn-closed: مغلق
 portal.feedback.btn-vote: موافق
-portal.feedback.dir_asc: ASC
-portal.feedback.dir_desc: DESC
 portal.feedback.error_hidden: 'التغذية الراجعة مخفية'
 portal.feedback.error_login: 'فضلا ادخل'
 portal.feedback.filter_all_items: 'كل الفقرات'
@@ -523,12 +520,9 @@ portal.flashes.usersource_new_add_email_verify: 'يجب عليك التحقق م
 portal.forms.confirm_reset: 'هل انت متأكد من انك تريد اعادة تعيين هذا  الصيغة؟'
 portal.forms.error_accept_failed_upload: 'حدثت مشكلة عند تحميل الملف .فضلا حاول مرة اخرى'
 portal.forms.error_accept_no_file: 'لا يمكن تحميل ملف فارغ'
-portal.forms.error_accept_not_allowed_exts: 'You cannot upload a file with any of the following file extensions: {{detail}}'
-portal.forms.error_accept_not_in_allowed_exts: 'You can only upload a file with any of the following file extensions: {{detail}}'
 portal.forms.error_accept_server_error: 'حدث خطأ عند تحميل الملف .حاول مرة اخرى'
 portal.forms.error_accept_size: 'عفواً. هذا الملف كبير جدا. الحجم المسموح هو  {{detail}}.'
 portal.forms.error_bad_choice: 'واحد أو عدة قيم معطاة غير صحيحة'
-portal.forms.error_banned_email: 'Email "{{email}}" is banned.'
 portal.forms.error_captcha: 'القيمة  CAPTCHA غير صحيحة'
 portal.forms.error_csrf: 'النموذج الذي أرسلته أنتهى الرجاء إعادة الإرسال'
 portal.forms.error_date_day: 'هذا اليوم غير صالح'
@@ -540,10 +534,7 @@ portal.forms.error_dupe_ticket_message: 'رسالة تذكرة مكررة'
 portal.forms.error_email_required: 'يجب ان تزودنا ببريدك الاكتروني'
 portal.forms.error_extra_fields: 'عذرا هناك خطأ عند محاولة معالجة طلبك. الرجاء المحاولة مجددا'
 portal.forms.error_invalid_data_type: 'هذا النوع من البيانات غير متوقع'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'هذه القيمة ليست عنوان موقع صحيح'
-portal.forms.error_length_invalid: 'This value should have exactly {{limit}} characters.'
-portal.forms.error_length_too_long: 'This value is too long. It should have {{limit}} characters or less'
 portal.forms.error_length_too_short: 'هذه القيمة يجب ان تحوي عدد محدد{{limit}} من الرموز'
 portal.forms.error_mismatch_values: 'هذه القيمة لا تتطابق'
 portal.forms.error_no_uploaded_file: 'الملف المحمل لم يتم العثور علية حاول مرة اخرى'
@@ -591,19 +582,14 @@ portal.forms.error_password_require_num_uppercase:
   few: ' على الاقل عدد{{count}} من الحروف الكبيرة'
   many: ' على الاقل عدد{{count}} من الحروف الكبيرة'
   other: ' على الاقل عدد{{count}} من الحروف الكبيرة'
-portal.forms.error_person_not_agent: 'Person with identifier {{value}} is not an agent.'
-portal.forms.error_person_not_found: 'Person with identifier "{{value}}" not found.'
-portal.forms.error_person_not_user: 'Person with identifier {{value}} is not a user.'
 portal.forms.error_regex: 'القيمةلا تطابق الصيغة المتوقعة'
 portal.forms.error_required: 'القيمة مطلوبة'
 portal.forms.error_server_rejected_size: 'حدث خطأ في تحميل الملف بسبب كبر الحجم .  حاول تحميل حجم اصغر'
 portal.forms.error_system_email: 'البريد الإلكتروني "{{email}}" مستخدم حاليا كبريد حساب فعال.'
 portal.forms.error_ticket_department_invalid: 'لا تستطيع تحديد قسم رئيسي. حاول بتحديد قسم فرعي'
 portal.forms.error_ticket_department_required: 'القسم متطلب'
-portal.forms.error_ticket_msg_length: 'Your message must be at least {{limit}} characters in length'
 portal.forms.error_ticket_msg_required: 'يجب ان تزودنا برسالة'
 portal.forms.error_ticket_opened: 'التذكرة يجب ان لا تكون اما محلولة او مؤرشفة'
-portal.forms.error_ticket_subject_length: 'The subject must be at least {{limit}} characters in length'
 portal.forms.error_ticket_subject_required: 'موضوع الرسالة ضروري'
 portal.forms.error_too_few_elements: 'هذه المجموعة يجب ان تحتوي {{limit}} عنصر او اكثر.|هذه المجموعة يجب ان تحتوي {{limit}} عناصر او اكثر.'
 portal.forms.error_unique_entity: 'القيمة موجودة في النظام'
@@ -615,7 +601,6 @@ portal.forms.error_upload_ini_size: 'حجم الملف كبير جدا. الحد
 portal.forms.label_add_attachment: 'اضف مرفق اخر'
 portal.forms.label_captcha: 'لتثبت انسانيتك . خبرنا عن النص الذي تشاهده في CAPTCHA image'
 portal.forms.label_category: تصنيفات
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'اختر ملفاً'
 portal.forms.label_comment: 'هل من تعليقات؟'
 portal.forms.label_content: محتوى
@@ -697,9 +682,7 @@ portal.general.get-in-touch-desc: 'ارسل لنا بريد'
 portal.general.impersonation_mode: التقمص
 portal.general.in: في
 portal.general.label-search-enter-label: 'ادخل اسما للبحث عنه'
-portal.general.lang-change-to-current: 'Make <span class="italics">{{lang}}</span> my default language'
 portal.general.lang-diff: 'هذه الصفحة في <span class="italics"> {{active_lang}}</span>ولكن حسابك في  <span class="italics">{{person_lang}}</span>.'
-portal.general.lang-switch: 'Switch to <span class="italics">{{lang}}</span>'
 portal.general.nav-all: الكل
 portal.general.nav-chat: 'سجلات الدردشة'
 portal.general.nav-chatlog: 'سجل الددردشة'
@@ -1217,7 +1200,6 @@ user.knowledgebase.auto_action_on_date: 'تلقائياً{{action}} في {{date}
 user.knowledgebase.creating_pending_article: 'إعداد مقالة انتظار معلقة'
 user.lang.lang_title: الإنجليزية
 user.lang.lang_title_arabic: العربية
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: الدنماركية
 user.lang.lang_title_default: الإنجليزية
 user.lang.lang_title_dutch: الهولندية
@@ -1225,7 +1207,6 @@ user.lang.lang_title_english_gb: 'الإنجليزية (البريطانية)'
 user.lang.lang_title_french: الفرنسية
 user.lang.lang_title_german: الألمانية
 user.lang.lang_title_hungarian: الهنغارية
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: الإيطالية
 user.lang.lang_title_japanese: اليابانية
 user.lang.lang_title_norwegian: النرويجية
@@ -1287,7 +1268,6 @@ user.tickets.fields_product: منتج
 user.tickets.form_error_captcha: 'من فضلك أدخل الكود'
 user.tickets.form_error_captcha_invalid: 'الكود الذي أدخلته خاطئ.'
 user.tickets.from_x_at_y: 'من {{name}} في {{date}}'
-user.tickets.label_cced: CCed
 user.tickets.no_subject: بلاموضوع
 user.tickets.rate-negative: 'لم تكن مناسبة'
 user.tickets.rate-neutral: مقبول

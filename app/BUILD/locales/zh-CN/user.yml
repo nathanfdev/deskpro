@@ -13,13 +13,10 @@ portal.account.email-management-from-form: 管理您的电子邮件地址
 portal.account.email-primary-description: '这是您的主要电子邮件。 默认情况下将被使用，除非你另有规定。'
 portal.account.feedback-lockout: '您提交的反馈太多次，您已被锁定。 请稍后再试。'
 portal.account.link-expired: 抱歉，您点击的链接已过期或之前已被使用过。
-portal.account.lockout_time: 'You can try again in {{time}} minutes.'
 portal.account.login-btn: 登录
-portal.account.login-btn-usersource: 'Login with {{usersource}}'
 portal.account.login-captcha-failed: '您输入了一个无效的验证码。 请再试一遍。'
 portal.account.login-disabled: 您的电子邮件地址已被禁止。
 portal.account.login-email: 您的电子邮件
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 使用外部服务登录
 portal.account.login-form-disabled: 登录表单已禁用
 portal.account.login-invalid: '您输入了错误的电子邮件或密码。 请再试一次。'
@@ -91,8 +88,6 @@ portal.account.usersource-set-email-desc: 在您登录之前我们需要您的�
 portal.account.welcome-back: 欢迎回来
 portal.account.your-emails: 您的邮箱地址
 portal.account.your-pending-email-addresses: 您的待定邮箱地址
-portal.articles.by-line: 'By {{name}} on {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 还没有文章
 portal.articles.search-title: 知识库
 portal.articles.section-desc: 我们的知识库保存了我们的支持代理写的文章，以便帮助您。
@@ -134,7 +129,6 @@ portal.chat.expired_jwt_token: 您的JWT令牌已过期。
 portal.chat.feedback_action: 发送反馈
 portal.chat.feedback_enter_message: 在这里输入您的信息
 portal.chat.feedback_label: 评论
-portal.chat.feedback_not_helpful_title: 'You have rated <br /> {{agentName}} as <span class="negative">{{notHelpful}}</span>'
 portal.chat.feedback_title: 谢谢您的反馈
 portal.chat.find_agent_now: 立即找到另一个代理
 portal.chat.find_another_agent: 如果他们不会及时回来，我们会为您找到另一个代理。
@@ -157,17 +151,14 @@ portal.chat.log_agents: 代理们
 portal.chat.log_chat_time: 聊天总时间
 portal.chat.log_department: 部门
 portal.chat.log_linked_ticket: 已经指定的来单
-portal.chat.log_title: 'Your chat with {{person}}'
 portal.chat.log_view_linked_ticket: 查阅来单
 portal.chat.looking_for_another_agent: 我们正在寻找新的代理。
 portal.chat.lost_connection: 失去了连接。试图重新连接。
 portal.chat.message_agent-timeout: '{{name}}没有响应。 请稍候，我们正在尝试找到另一个代理。'
-portal.chat.message_assigned: 'Chat assigned to {{name}}'
 portal.chat.message_ended: 聊天结束
 portal.chat.message_ended-by: '聊天被{{name}}终止了'
 portal.chat.message_ended-by-user: 聊天被用户终止了
 portal.chat.message_set-department: '{{name}}设置部门到{{department}}'
-portal.chat.message_set_department: '{{name}} set department to {{department}}'
 portal.chat.message_started: 聊天开始
 portal.chat.message_type: '输入你的讯息到{{agentName}}'
 portal.chat.message_unassigned: 聊天已取消分配
@@ -204,11 +195,8 @@ portal.chat.support_powered_by: '支持由{{DeskPRO}}提供'
 portal.chat.take_chat: 开始聊天
 portal.chat.taken_by: '聊天被{{名字}}终止了'
 portal.chat.transcript_action: 请给我发一个副本
-portal.chat.transcript_already_sent: 'A transcript has already been sent to <b>{{email}}</b>'
 portal.chat.transcript_desc: 在下面输入您的姓名和电子邮件，我们会通过电子邮件发送给您
-portal.chat.transcript_sent: 'Transcript sent to {{email}}'
 portal.chat.transcript_title: 需要这段聊天的副本
-portal.chat.type_message_to: 'Type your message to {{firstName}}'
 portal.chat.unassigned: 聊天已取消分配
 portal.chat.unblock: 锁定解除
 portal.chat.upload_file: 上传文件
@@ -234,7 +222,6 @@ portal.email_subjects.comment-deleted: 我们的代理已经阅读过您的建�
 portal.email_subjects.download_sub_new: 新的下载
 portal.email_subjects.download_sub_new_and_updated: 新的已更新的下载
 portal.email_subjects.download_sub_updated: 已更新到下载
-portal.email_subjects.email-too-big: 'Your email "{{subject}}" was not accepted'
 portal.email_subjects.email_new-confirm: 验证您的邮箱
 portal.email_subjects.email_primary-confirm: 验证您的邮箱
 portal.email_subjects.email_ticket-reminder: 请采取必要的行动：您的任务还没有提交
@@ -375,7 +362,6 @@ portal.feedback.form_attach_files: 附加文件
 portal.feedback.form_btn_submit: 添加您的反馈
 portal.feedback.form_email_not_shown: 您的电子邮件（不会公开显示）
 portal.feedback.form_i_have_a: 我有一个
-portal.feedback.form_logged_in_as: 'Logged in as: <span>{{name}}</span>, from email <span>{{email}}</span>.'
 portal.feedback.form_logout: 不是你？
 portal.feedback.form_tell_us_more: 请告诉我们更多
 portal.feedback.form_title: 标题
@@ -470,7 +456,6 @@ portal.forms.error_dupe_ticket_message: 重复的故障单消息。
 portal.forms.error_email_required: 您必须提供您的电子邮件地址
 portal.forms.error_extra_fields: '很抱歉，处理您的要求时发生错误。 请再试一次。'
 portal.forms.error_invalid_data_type: 此数据类型不是预期的。
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 该值不是有效的URL。
 portal.forms.error_length_invalid: '此值应该有{{limit}}个字符。'
 portal.forms.error_length_too_long: '此值太长。 它应该有{{limit}}个字符或更少'
@@ -592,9 +577,6 @@ portal.general.get-in-touch-desc: 给我们发电子邮件
 portal.general.impersonation_mode: 模拟模式
 portal.general.in: 在
 portal.general.label-search-enter-label: 请提供要搜索的标签
-portal.general.lang-change-to-current: 'Make <span class="italics">{{lang}}</span> my default language'
-portal.general.lang-diff: 'This page is in <span class="italics">{{active_lang}}</span> but your account is in <span class="italics">{{person_lang}}</span>.'
-portal.general.lang-switch: 'Switch to <span class="italics">{{lang}}</span>'
 portal.general.nav-all: 全部
 portal.general.nav-chat: 聊天日志
 portal.general.nav-chatlog: 聊天日志
@@ -830,14 +812,12 @@ user.chat.log_nav-view-chats:
 user.chat.log_no_department: 没有部门
 user.chat.log_unassigned: "未分配任何代理\n"
 user.chat.message_agent-timeout: '我们很抱歉; {{name}}似乎连接失败。 请稍候，我们正在尝试找到另一个代理。'
-user.chat.message_assigned: 'Chat assigned to {{name}}'
 user.chat.message_chatting-with: '您正在与  聊天'
 user.chat.message_ended: 聊天结束
 user.chat.message_ended-by: '聊天被{{name}}终止'
 user.chat.message_ended-by-user: 聊天被用户终止
 user.chat.message_finding-agent: 查找代理
 user.chat.message_long-wait: '我们仍在试图找到一个在线的代理来进行聊天; 这通常需要不到一分钟。 <br /><br />着急？ <a class="cancel-and-newticket-trigger">是否给我们留言？</a>'
-user.chat.message_set-department: '{{name}} set department to {{department}}'
 user.chat.message_started: 聊天开始
 user.chat.message_unassigned: 未指派的聊天
 user.chat.message_uploading: 上传中·
@@ -850,7 +830,6 @@ user.chat.message_wait-timeout: '抱歉; 现在没有代理在线。'
 user.chat.name: 您的名子
 user.chat.submit-ticket-button: 发送电子邮件给我们
 user.chat.submit-ticket-title: 发送电子邮件给我们
-user.chat.transcript_sent: 'Transcript sent to {{email}}'
 user.chat.window_cancel: 取消
 user.chat.window_cancel-confirm: 您确定要结束聊天吗？
 user.chat.window_close: 不，谢谢，就把窗口关闭
@@ -1022,7 +1001,6 @@ user.knowledgebase.auto_action_on_date: '在{{date}}自动{{action}}'
 user.knowledgebase.creating_pending_article: 创建等待中的文章
 user.lang.lang_title: 英语（美国）
 user.lang.lang_title_arabic: 阿拉伯语
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: 丹麦语
 user.lang.lang_title_default: 英语（美）
 user.lang.lang_title_dutch: 荷兰语
@@ -1030,7 +1008,6 @@ user.lang.lang_title_english_gb: 英语（英）
 user.lang.lang_title_french: 法语
 user.lang.lang_title_german: 德语
 user.lang.lang_title_hungarian: 匈牙利语
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: 意大利语
 user.lang.lang_title_japanese: 日语
 user.lang.lang_title_norwegian: 挪威语

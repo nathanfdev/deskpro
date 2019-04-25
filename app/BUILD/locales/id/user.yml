@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'masuk dengan {{usersource}}'
 portal.account.login-captcha-failed: 'Anda telah memasukkan kode CAPTCHA yang tidak valid. Silahkan coba lagi'
 portal.account.login-disabled: 'Alamat email Anda telah dicekal.'
 portal.account.login-email: 'email/surat elektronik anda'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'masuk dengan layanan eksternal'
 portal.account.login-form-disabled: 'Formulir masuk dinonaktifkan'
 portal.account.login-invalid: 'Anda masuk dengan email/surat elektronik atau kata sandi yang salah. Silahkan coba lagi'
@@ -145,7 +144,6 @@ portal.chat.invalid_jwt_token: 'Token JWT Anda tidak valid.'
 portal.chat.label-department: 'Pilih departemen'
 portal.chat.label-email: 'Email Anda'
 portal.chat.label-name: 'Nama Anda'
-portal.chat.list_agent: Agent
 portal.chat.list_chat: Obrolan
 portal.chat.list_date: Tanggal
 portal.chat.list_switch_to_my_chats: 'Alihkan ke Obrolan Saya'
@@ -249,13 +247,11 @@ portal.email_subjects.kb_sub_new: 'Artikel Baru'
 portal.email_subjects.kb_sub_new_and_updated: 'Artikel Baru dan Diperbarui'
 portal.email_subjects.kb_sub_updated: 'Artikel yang diperbarui'
 portal.email_subjects.new-ticket-guest: 'Terima kasih telah menghubungi kami'
-portal.email_subjects.news_sub_new: 'Breaking News'
 portal.email_subjects.news_sub_new_and_updated: 'Berita baru dan diperbarui'
 portal.email_subjects.news_sub_updated: 'Berita yang diperbarui'
 portal.email_subjects.password_agent-reset: 'Agent telah mengatur ulang kata sandi Anda'
 portal.email_subjects.password_reset: 'Atur ulang kata sandi'
 portal.email_subjects.password_set: 'Atur kata sandi'
-portal.email_subjects.re: 'RE: {{subject}}'
 portal.email_subjects.register-welcome: 'Terima kasih telah mendaftar'
 portal.email_subjects.register-welcome-byagent: 'Akun layanan bantuan baru Anda'
 portal.email_subjects.remind_unresolved_final_subject: 'PENGINGAT: {{ticket.subject}}'
@@ -264,7 +260,6 @@ portal.email_subjects.share-article: '{{author_name}} ingin membagikan artikel i
 portal.email_subjects.ticket-rate: 'Silakan nilai atas dukungan yang Anda dapatkan pada tiket Anda "{{ticket.subject}}"'
 portal.email_subjects.ticket_added_cc: 'Anda telah ditambahkan ke tiket {{ticket.subject}}'
 portal.email_subjects.ticket_new-participant: 'Seseorang telah ditambahkan ke tiket Anda'
-portal.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 portal.email_subjects.too-many-emails: 'PEMBERITAHUAN: Anda telah mengirim terlalu banyak email'
 portal.email_subjects.validate-email: 'Validasi alamat surat elektronik/ email Anda'
 portal.emails.auto-close: 'Kami belum mendengar kabar dari Anda terkait tiket Anda: "{{ticket.subject}}". Mohon beri tahu kami jika Anda membutuhkan bantuan lebih lanjut, jika tidak tiket Anda akan segera diselesaikan.'
@@ -365,7 +360,6 @@ portal.feedback.attachments: Lampiran
 portal.feedback.btn-closed: Tutup
 portal.feedback.btn-vote: 'Saya setuju'
 portal.feedback.dir_asc: 'Urutan Awal'
-portal.feedback.dir_desc: DESC
 portal.feedback.error_hidden: 'Tanggapan ini disembunyikan'
 portal.feedback.error_login: 'Silahkan masuk'
 portal.feedback.filter_all_items: 'Semua barang'
@@ -470,7 +464,6 @@ portal.forms.error_dupe_ticket_message: 'Pesan tiket duplikat.'
 portal.forms.error_email_required: 'Anda harus memberikan alamat surat elektronik/ email Anda'
 portal.forms.error_extra_fields: 'Maaf terjadi kesalahan saat memproses permintaan Anda. Silahkan coba lagi'
 portal.forms.error_invalid_data_type: 'Tipe data ini tidak diharapkan.'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Nilai ini bukan URL yang valid.'
 portal.forms.error_length_invalid: 'Nilai ini harus memiliki tepat {{limit}} karakter.'
 portal.forms.error_length_too_long: 'Nilai ini terlalu panjang. Harus memiliki {{limit}} karakter atau kurang'
@@ -520,7 +513,6 @@ portal.forms.error_upload_ini_size: 'Ukuran berkas terlalu besar. Ukuran berkas 
 portal.forms.label_add_attachment: 'Tambah lampiran Lainnya'
 portal.forms.label_captcha: 'Untuk membuktikan Anda adalah manusia, beritahu kami teks yang Anda lihat dalam gambar CAPTCHA.'
 portal.forms.label_category: Kategori
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Pilih berkas'
 portal.forms.label_comment: 'Ada komentar?'
 portal.forms.label_content: Isi
@@ -550,7 +542,6 @@ portal.forms.label_title: Titel
 portal.forms.label_upload_picture: 'Mengunggah gambar'
 portal.forms.label_workflow: 'Alur Kerja'
 portal.general.add-comment: 'Tambah Komentar'
-portal.general.admin: Admin
 portal.general.admin_home: 'Beranda Admin'
 portal.general.agent: Agen
 portal.general.agent_bar_admin_desc: 'Kelola layanan bantuan Anda'
@@ -822,14 +813,12 @@ user.chat.form_feedback_transcript-email: 'Kirim transkrip Obrolan ini ke'
 user.chat.log-title: 'Obrolan Anda'
 user.chat.log_chat-id: 'Identitas Obrolan'
 user.chat.log_created-date: 'Dibuat {{date}}'
-user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Departemen
 user.chat.log_message_author-you: Anda
 user.chat.log_nav-view-chats:
   other: 'Lihat riwayat terakhir chat Anda '
 user.chat.log_no_department: 'Tidak ada departemen'
 user.chat.log_unassigned: 'Tidak ada agent yang ditugaskan'
-user.chat.message_agent-timeout: 'Our Apologies; {{name}} appears to have been disconnected. Please wait while we try to find another agent.'
 user.chat.message_assigned: 'Obrolan ditugaskan ke {{name}}'
 user.chat.message_chatting-with: 'Anda melakukan Obrolan dengan'
 user.chat.message_ended: 'Obrolan berakhir'
@@ -897,13 +886,11 @@ user.email_subjects.news_sub_updated: 'Berita yang Diperbarui'
 user.email_subjects.password_agent-reset: 'Agent telah mengatur ulang kata sandi Anda'
 user.email_subjects.password_reset: 'Atur ulang kata sandi'
 user.email_subjects.password_set: 'Atur kata sandi Anda'
-user.email_subjects.re: 'RE: {{subject}}'
 user.email_subjects.register-welcome: 'Terima kasih telah mendaftar'
 user.email_subjects.register-welcome-byagent: 'Akun layanan bantuan baru Anda'
 user.email_subjects.remind_unresolved_final_subject: 'PENGINGAT: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'PENGINGAT: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Nilai atas dukungan yang Anda dapatkan pada tiket Anda "{{ticket.subject}}"'
-user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 user.emails.auto-close: 'Tiket Anda "{{ticket.subject}}" akan segera ditutup karena kami belum mendengar kabar dari Anda akhir-akhir ini. Jika Anda membutuhkan bantuan lebih lanjut, cukup balas dan salah satu agen kami akan membantu Anda.'
 user.emails.chat_transcript: 'Terima kasih telah mengobrol dengan kami. Ini adalah transkrip obrolan Anda.'
 user.emails.chat_validate_email: 'Harap validasi alamat email Anda dengan memasukkan kode ini "{{validation_code}}" di formulir widget atau klik tautan ini:'
@@ -1022,7 +1009,6 @@ user.knowledgebase.auto_action_on_date: "Otomatis {{action}} pada {{date}}\n"
 user.knowledgebase.creating_pending_article: 'Membuat artikel yang tertunda'
 user.lang.lang_title: 'Bahasa Indonesia'
 user.lang.lang_title_arabic: Arab
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Denmark
 user.lang.lang_title_default: Inggris
 user.lang.lang_title_dutch: Belanda
@@ -1030,7 +1016,6 @@ user.lang.lang_title_english_gb: 'Inggris Britania'
 user.lang.lang_title_french: Prancis
 user.lang.lang_title_german: Jerman
 user.lang.lang_title_hungarian: Hongaria
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italia
 user.lang.lang_title_japanese: Jepang
 user.lang.lang_title_norwegian: Norwegia
@@ -1081,7 +1066,6 @@ user.time.long-day_sunday: Minggu
 user.time.long-day_thursday: Kamis
 user.time.long-day_tuesday: Selasa
 user.time.long-day_wednesday: Kamis
-user.time.long-month_april: April
 user.time.long-month_august: Agustus
 user.time.long-month_december: Desember
 user.time.long-month_february: Februari
@@ -1090,9 +1074,7 @@ user.time.long-month_july: Juli
 user.time.long-month_june: Juni
 user.time.long-month_march: Maret
 user.time.long-month_may: Mei
-user.time.long-month_november: November
 user.time.long-month_october: Oktober
-user.time.long-month_september: September
 user.time.short-day_friday: Jum
 user.time.short-day_monday: Sen
 user.time.short-day_saturday: Sab
@@ -1100,18 +1082,10 @@ user.time.short-day_sunday: Min
 user.time.short-day_thursday: Kam
 user.time.short-day_tuesday: Sel
 user.time.short-day_wednesday: Rbu
-user.time.short-month_april: Apr
 user.time.short-month_august: Agt
 user.time.short-month_december: Des
-user.time.short-month_february: Feb
-user.time.short-month_january: Jan
-user.time.short-month_july: Jul
-user.time.short-month_june: Jun
-user.time.short-month_march: Mar
 user.time.short-month_may: Mei
-user.time.short-month_november: Nov
 user.time.short-month_october: Okt
-user.time.short-month_september: Sep
 user.time.time-ago_1_day: '1 hari yang lalu'
 user.time.time-ago_1_hour: '1 jam yang lalu'
 user.time.time-ago_1_minute: '1 menit yang lalu'

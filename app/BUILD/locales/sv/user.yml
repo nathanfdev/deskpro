@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Logga in med {{usersource}}'
 portal.account.login-captcha-failed: 'Du har skrivit en felaktig CAPTCHA kod. Var vänlig och försök igen.'
 portal.account.login-disabled: 'Din e-postadress har blivit bannad.'
 portal.account.login-email: 'Din e-postadress'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Logga in med en extern tjänst'
 portal.account.login-form-disabled: 'Inloggningsformuläret är inaktiverat'
 portal.account.login-invalid: 'Du har skrivit en felaktig e-postadress eller fel lösenord. Var vänlig och försök igen.'
@@ -147,7 +146,6 @@ portal.chat.invalid_jwt_token: 'Din JWT-token är inte giltig.'
 portal.chat.label-department: 'Välj avdelning'
 portal.chat.label-email: 'Din e-postadress'
 portal.chat.label-name: 'Ditt namn'
-portal.chat.list_agent: Agent
 portal.chat.list_chat: Chatt
 portal.chat.list_date: Datum
 portal.chat.list_switch_to_my_chats: 'Växla till mina chattar'
@@ -203,7 +201,6 @@ portal.chat.see_full_image: 'Klicka här för att se hela bilden'
 portal.chat.send_another_validation_email: 'Skicka mig ett till mail'
 portal.chat.sent_validation_code: 'Vi har skickat dig ett mail med en valideringskod.'
 portal.chat.start: 'Starta en ny chatt'
-portal.chat.support_powered_by: 'Support powered by {{DeskPRO}}'
 portal.chat.take_chat: 'Ta chatt'
 portal.chat.taken_by: 'Chatt tagen av'
 portal.chat.transcript_action: 'Skicka mig ett transkript'
@@ -274,7 +271,6 @@ portal.email_subjects.validate-email: 'Bekräfta din e-postadress'
 portal.emails.auto-close: 'Vi har inte hört från dig angående ditt ärende: "{{ticket.subject}}". Vänligen återkom om du behöver mer assistans annars kommer ditt ärende att markeras som löst.'
 portal.emails.chat_transcript: 'Tack för att du chattade med oss. Här är en utskrift av chatten.'
 portal.emails.comment_approved: 'Din kommentar har blivit publicerad.'
-portal.emails.comment_deleted: 'Your comment was used to improve this page: {{link}}.'
 portal.emails.comment_thank-you: 'Tack för din kommentar på {{link}}.'
 portal.emails.comment_validate-email: 'Var vänlig och bekräfta din e-postadress genom att klicka på följande länk:'
 portal.emails.do-not-reply: 'Svara inte på detta mail. Detta mail har genererats automatiskt av en dator och eventuella svar kommer inte att läsas av någon agent.'
@@ -325,7 +321,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'En tekniker har återställt ditt lösenord. Du kan logga in med följande uppgifter:'
 portal.emails.password_reset: 'Du har begärt en återställning av ditt lösenord. För att återställa ditt lösenord klickar du på länken nedan:'
 portal.emails.password_set: 'Klicka på länken nedan för att välja ett lösenord:'
-portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'Klicka på följande länk för att bekräfta din primära e-postadress'
 portal.emails.profile_email_link-validate: 'Klicka på följande länk för att bekräfta din e-postadress'
 portal.emails.ratelimit_explain: 'Du har skickat {{num_messagess}} meddelanden inom {{time_limit}}. För att förhindra missbruk så har vi tillfälligt spärrat din e-postadress i {{time_lock}}. Efter {{date_lock_end}} kommer denna spärr att tas bort och du kan då skicka mail igen.'
@@ -397,9 +392,7 @@ portal.feedback.no_matching: 'Ingen matchande feedback'
 portal.feedback.none: 'Ingen feedback ännu'
 portal.feedback.rate_forbidden: 'Du har inte behörighet att rösta'
 portal.feedback.recent-feedback: 'Senaste feedbacken'
-portal.feedback.search-title: Feedback
 portal.feedback.section-desc: 'Dessa förslag har postats av användare precis som du; vi ser gärna att du diskuterar och röstar på de förslag som listas. Om du har ett nytt förslag så är du välkommen att posta det.'
-portal.feedback.section-title: Feedback
 portal.feedback.sort_comments: Kommentarer
 portal.feedback.sort_date: Datum
 portal.feedback.sort_popularity: Populäritet
@@ -484,7 +477,6 @@ portal.forms.error_dupe_ticket_message: 'Duplikat biljettmeddelande.'
 portal.forms.error_email_required: 'Du måste ange din e-postadress'
 portal.forms.error_extra_fields: 'Tyvärr, ett fel har inträffat. Försök igen.'
 portal.forms.error_invalid_data_type: 'Denna datatyp förväntades inte.'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Detta värde är inte en giltig URL.'
 portal.forms.error_length_invalid: 'Det här värdet måste ha exakt {{limit}} tecken.'
 portal.forms.error_length_too_long: 'Det här värdet är för långt. Det måste ha {{limit}} tecken eller färre'
@@ -500,9 +492,6 @@ portal.forms.error_not_unique_collection: 'Ett eller flera av de givna värdena 
 portal.forms.error_numeric: 'Ange ett nummer, utan några andra tecken.'
 portal.forms.error_password_current: 'Det här måste vara ditt nuvarande lösenord'
 portal.forms.error_password_forbid_reuse: 'Du kan inte använda ett lösenord som du har använt tidigare'
-portal.forms.error_password_min_length:
-  one: 'Minimum of {{count}} character'
-  other: 'Minimum of {{count}} characters'
 portal.forms.error_password_require_num_lowercase:
   one: 'Minst {{count}} liten bokstav'
   other: 'Minst {{count}} små bokstäver'
@@ -535,11 +524,9 @@ portal.forms.error_upload_empty: 'Du kan inte ladda upp en tom fil.'
 portal.forms.error_upload_file: 'Kunde inte ladda upp filen'
 portal.forms.error_upload_general: 'Ett problem uppstod när filen skulle laddas upp. Försök igen.'
 portal.forms.error_upload_html_size: 'Den här filen är för stor.'
-portal.forms.error_upload_ini_size: 'The file is too large. Maximum allowed size is {{limit}} {{suffix}}.'
 portal.forms.label_add_attachment: 'Lägg till en till bifogad fil'
 portal.forms.label_captcha: 'För att bevisa att du är en människa måste du ange texten som du ser i CAPTCHA bilden'
 portal.forms.label_category: Kategori
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Välj en fil'
 portal.forms.label_comment: 'Några kommentarer?'
 portal.forms.label_content: Innehåll
@@ -569,9 +556,7 @@ portal.forms.label_title: Titel
 portal.forms.label_upload_picture: 'Ladda upp bild'
 portal.forms.label_workflow: Arbetsflöde
 portal.general.add-comment: 'Posta en kommentar'
-portal.general.admin: Admin
 portal.general.admin_home: 'Admin hem'
-portal.general.agent: Agent
 portal.general.agent_bar_admin_desc: 'Hantera din Helpdesk'
 portal.general.agent_bar_admin_dl: Nedladdningsinställningar
 portal.general.agent_bar_admin_feedback: Feedbackinställningar
@@ -622,7 +607,6 @@ portal.general.nav-chatlog: Chatlogg
 portal.general.nav-downloads: Nedladdningar
 portal.general.nav-downloads-desc: 'Bläddra bland våra nedladdningar'
 portal.general.nav-emails: E-post
-portal.general.nav-feedback: Feedback
 portal.general.nav-feedback-desc: 'Anpassade förslag'
 portal.general.nav-guides: Guider
 portal.general.nav-guides-desc: Produktdokumentation
@@ -633,7 +617,6 @@ portal.general.nav-news: Nyheter
 portal.general.nav-news-desc: 'Nyheter & uppdateringar'
 portal.general.nav-newticket: 'Kontakta oss'
 portal.general.nav-newticket-desc: 'Vi finns här för att hjälpa'
-portal.general.nav-portal: Portal
 portal.general.nav-profile: Profil
 portal.general.nav-quick-jump: Snabbhopp
 portal.general.nav-register: Registrera
@@ -704,9 +687,6 @@ portal.news.view-x-news:
   other: 'Visa {{count}} artiklar'
 portal.sidebar.agents_available: 'Tillgängliga agenter'
 portal.sidebar.agents_none: 'Inga av våra agenter är online just nu. Du kan ändå <a href="{{new_ticket_url}}">öppna ett ärende</a>.'
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Postad av {{name}}'
 portal.sidebar.news_title: Nyheter
 portal.sidebar.satisfied_customers: 'nöjda kunder'
@@ -846,7 +826,6 @@ user.chat.form_feedback_transcript-email: 'Skicka en utskrift av den här chatte
 user.chat.log-title: 'Dina chattar'
 user.chat.log_chat-id: 'Chatt ID'
 user.chat.log_created-date: 'Skapad {{date}}'
-user.chat.log_fields_agent: Agent
 user.chat.log_fields_department: Avdelning
 user.chat.log_message_author-you: Du
 user.chat.log_nav-view-chats:
@@ -890,7 +869,6 @@ user.defaults.article_category_general: Allmänt
 user.defaults.article_example_content: 'Detta är ett exempel på en kunskapsbasartikel. Känn dig fri att redigera eller radera den från agentgränsittet'
 user.defaults.article_example_title: Exempelartikel
 user.defaults.department_sales: Försäljning
-user.defaults.department_support: Support
 user.defaults.downloads_category_general: Dokument
 user.defaults.news_category_general: Allmänt
 user.defaults.news_example_content: 'Detta är ett exempel på en nyhet. Känn dig fri att redigera eller radera den från agentgränsittet.'
@@ -1061,7 +1039,6 @@ user.knowledgebase.auto_action_on_date: 'Automatisk {{action}} den {{date}}'
 user.knowledgebase.creating_pending_article: 'Skapar avvaktande artikel'
 user.lang.lang_title: Svenska
 user.lang.lang_title_arabic: Arabiska
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Danska
 user.lang.lang_title_default: Engelska
 user.lang.lang_title_dutch: Holländska
@@ -1069,7 +1046,6 @@ user.lang.lang_title_english_gb: 'Engelska (UK)'
 user.lang.lang_title_french: Franska
 user.lang.lang_title_german: Tyska
 user.lang.lang_title_hungarian: Ungerska
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italienska
 user.lang.lang_title_japanese: Japanska
 user.lang.lang_title_norwegian: Norska
@@ -1125,18 +1101,14 @@ user.time.long-day_sunday: Söndag
 user.time.long-day_thursday: Torsdag
 user.time.long-day_tuesday: Tisdag
 user.time.long-day_wednesday: Onsdag
-user.time.long-month_april: April
 user.time.long-month_august: Augusti
-user.time.long-month_december: December
 user.time.long-month_february: Februari
 user.time.long-month_january: Januari
 user.time.long-month_july: Juli
 user.time.long-month_june: Juni
 user.time.long-month_march: Mars
 user.time.long-month_may: Maj
-user.time.long-month_november: November
 user.time.long-month_october: Oktober
-user.time.long-month_september: September
 user.time.short-day_friday: Fre
 user.time.short-day_monday: Mån
 user.time.short-day_saturday: Lör
@@ -1144,18 +1116,8 @@ user.time.short-day_sunday: Sön
 user.time.short-day_thursday: Tor
 user.time.short-day_tuesday: Tis
 user.time.short-day_wednesday: Ons
-user.time.short-month_april: Apr
-user.time.short-month_august: Aug
-user.time.short-month_december: Dec
-user.time.short-month_february: Feb
-user.time.short-month_january: Jan
-user.time.short-month_july: Jul
-user.time.short-month_june: Jun
-user.time.short-month_march: Mar
 user.time.short-month_may: Maj
-user.time.short-month_november: Nov
 user.time.short-month_october: Okt
-user.time.short-month_september: Sep
 user.time.time-ago_1_day: '1 dag sedan'
 user.time.time-ago_1_hour: '1 timme sedan'
 user.time.time-ago_1_minute: '1 minut sedan'

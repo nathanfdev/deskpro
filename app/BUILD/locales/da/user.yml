@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Log ind med {{usersource}}'
 portal.account.login-captcha-failed: 'Du har indtastet en forkert CAPTCHA kode fra billedet. Prøv venligst igen.'
 portal.account.login-disabled: 'Din email adresse er blevet forbudt.'
 portal.account.login-email: 'Din e-mailadresse'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Log ind med en ekstern service'
 portal.account.login-form-disabled: 'Login formular er deaktiveret'
 portal.account.login-invalid: 'Du har skrevet forkert e-mailadresse eller password. Prøv venligst igen.'
@@ -92,7 +91,6 @@ portal.account.welcome-back: 'Velkommen tilbage'
 portal.account.your-emails: 'Din e-mailadresse'
 portal.account.your-pending-email-addresses: 'Dine afventende og endnu ikke verificerede e-mailadresser'
 portal.articles.by-line: 'Af {{name}} den {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 'Ingen artikler'
 portal.articles.search-title: Videnbase
 portal.articles.section-desc: 'Vores videnbase indeholder artikler skrevet af vores sagsbehandlere for at hjælpe dig.'
@@ -148,13 +146,9 @@ portal.chat.label-department: 'Vælg afdelingen'
 portal.chat.label-email: 'Din e-mailadresse'
 portal.chat.label-name: 'Dit navn'
 portal.chat.list_agent: Sagsbehandler
-portal.chat.list_chat: Chat
 portal.chat.list_date: Dato
 portal.chat.list_switch_to_my_chats: 'Skift til mine chats'
 portal.chat.list_switch_to_organization: 'Skift til organisation'
-portal.chat.list_title:
-  one: '1 Chat'
-  other: '{{count}} Chats'
 portal.chat.list_user: Bruger
 portal.chat.log_agents: Sagsbehandler
 portal.chat.log_chat_time: 'Total chat tid'
@@ -220,13 +214,9 @@ portal.chat.validation_email_was_sent: 'En anden e-mail blev sendt.'
 portal.chat.visitor_info: 'Gæste information'
 portal.chat.you: Du
 portal.chat.you_have_been_invited: 'Du er blevet inviteret til at deltage i en chat'
-portal.downloads.download: Download
 portal.downloads.none: 'Ingen downloads endnu'
 portal.downloads.recent-downloads: 'Seneste download'
-portal.downloads.search-title: Downloads
 portal.downloads.section-desc: 'Gennemse vores samling af downloads.'
-portal.downloads.section-title: Downloads
-portal.downloads.uploaded-on: Uploaded
 portal.downloads.view-as-agent: 'Du kan se denne side, fordi du er en agent. Brugerne vil ikke være i stand til at se denne side.'
 portal.downloads.view-x-files:
   one: 'Vis 1 download '
@@ -253,7 +243,6 @@ portal.email_subjects.kb_sub_new: 'Nye artikler'
 portal.email_subjects.kb_sub_new_and_updated: 'Nye og opdaterede artikler'
 portal.email_subjects.kb_sub_updated: 'Opdateret artikler'
 portal.email_subjects.new-ticket-guest: 'Tak for din henvendelse'
-portal.email_subjects.news_sub_new: 'Breaking News'
 portal.email_subjects.news_sub_new_and_updated: 'Nye og opdaterede nyheder'
 portal.email_subjects.news_sub_updated: 'Opdaterede nyheder'
 portal.email_subjects.password_agent-reset: 'En medarbejder har nulstillet dit password'
@@ -325,7 +314,6 @@ portal.emails.news-updated-articles:
 portal.emails.password_agent-reset: 'En agent har nulstillet adgangskoden til din konto. Du kan logge ind med disse oplysninger'
 portal.emails.password_reset: 'Du har bedt om at få nustillet dit password. For at nulstille dit password, klik på følgende link:'
 portal.emails.password_set: 'For at indstille din adgangskode, skal du klikke på linket nedenfor:'
-portal.emails.profile_email-new-confirm: 'We have had a request from {{orig_email}} to add this email {{new_email}} to your account at {{site_name}}''s helpdesk.<br /><br />If you initiated this request, please click the link below. If you did not, please delete this email.'
 portal.emails.profile_email-primary-confirm: 'For at bekræfte din primære e-mail-adresse, skal du blot klikke på følgende link'
 portal.emails.profile_email_link-validate: 'Klik på følgende link for at validere din e-mailadresse'
 portal.emails.ratelimit_explain: 'Du har sendt {{num_messagess}} meddelelser inden {{time_limit}}. For at forhindre misbrug, har vi midlertidigt blokeret din e-mailadresse for {{time_lock}}. Efter {{date_lock_end}}, vil denne midlertidige blokering fjernes, og du vil være i stand til at sende e-mails igen.'
@@ -377,8 +365,6 @@ portal.error.general-title: 'En fejl opstod'
 portal.feedback.attachments: Vedhæftelser
 portal.feedback.btn-closed: Lukket
 portal.feedback.btn-vote: 'Jeg er enig'
-portal.feedback.dir_asc: ASC
-portal.feedback.dir_desc: DESC
 portal.feedback.error_hidden: 'Dette feedback element er skjult'
 portal.feedback.error_login: 'Venligst login'
 portal.feedback.filter_all_items: 'Alle elementer'
@@ -457,7 +443,6 @@ portal.flashes.user_add_email_verify: 'Vi er nødt til at bekræfte din e-mail, 
 portal.flashes.user_changed_password: 'Din adgangskode er blevet opdateret.'
 portal.flashes.user_changed_primary_email: 'Din primære e-mailadresse er ændret.'
 portal.flashes.user_registered_must_verify: 'Tak for din registrering. Tjek din e-mail, vi har sendt dig et bekræftelses link.'
-portal.flashes.user_registered_verified: 'Thank you. Your email address has been verified.'
 portal.flashes.user_registered_verified_authenticated: 'Tak. Din e-mailadresse er blevet bekræftet, og du er blevet logget ind.'
 portal.flashes.user_removed_an_email: 'Din e-mail-adresse {{email}} blev fjernet.'
 portal.flashes.user_resend_email_verify: 'Validerings e-mailen er blevet sendt til din e-mailadresse igen.'
@@ -484,7 +469,6 @@ portal.forms.error_dupe_ticket_message: 'Duplikat billetbesked.'
 portal.forms.error_email_required: 'Du skal oplyse din e-mailadresse'
 portal.forms.error_extra_fields: 'Beklager, men der opstod en fejl under behandlingen af ​​din anmodning. Prøv igen.'
 portal.forms.error_invalid_data_type: 'Denne datatype var ikke forventet.'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Denne værdi er ikke en gyldig webadresse.'
 portal.forms.error_length_invalid: 'Denne værdi skal have præcist {{limit}} tegn.'
 portal.forms.error_length_too_long: 'Denne værdi er for lang. Den burde have {{limit}} tegn eller mindre'
@@ -539,7 +523,6 @@ portal.forms.error_upload_ini_size: 'Filen er for stor. Den maksimalt tilladte s
 portal.forms.label_add_attachment: 'Tilføj endnu en vedhæftet fil'
 portal.forms.label_captcha: 'For at bevise du er et menneske, så angiv den tekst, du ser i CAPTCHA billedet'
 portal.forms.label_category: Kategori
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Vælg en fil'
 portal.forms.label_comment: 'Eventuelle kommentarer?'
 portal.forms.label_content: Indhold
@@ -547,7 +530,6 @@ portal.forms.label_current_password: 'Nuværende password'
 portal.forms.label_department: Afdeling
 portal.forms.label_drag: 'Træk en fil ind her eller'
 portal.forms.label_drag_overlay: 'Træk en fil ind her eller'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Fornavn
 portal.forms.label_full_name: 'Dit navn'
 portal.forms.label_language: Sprog
@@ -567,9 +549,7 @@ portal.forms.label_submit: Send
 portal.forms.label_timezone: Tidszone
 portal.forms.label_title: Titel
 portal.forms.label_upload_picture: 'Upload billede'
-portal.forms.label_workflow: Workflow
 portal.general.add-comment: 'Tilføj en kommentar'
-portal.general.admin: Admin
 portal.general.admin_home: 'Admin Hjem'
 portal.general.agent: Sagsbehandler
 portal.general.agent_bar_admin_desc: 'Administrer din Helpdesk'
@@ -588,11 +568,7 @@ portal.general.agent_bar_agent_news: 'Administrer nyheder'
 portal.general.agents-available: 'Agenter tilgængelige'
 portal.general.attachments: Vedhæftelser
 portal.general.btn-cancel: Fortryd
-portal.general.btn-download-pdf: 'Download PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Kør
-portal.general.btn-print: Print
-portal.general.btn-send-email: 'Send e-mail'
 portal.general.btn-share: Del
 portal.general.btn-subscribe: Tilmeld
 portal.general.btn-unsubscribe: Afmeld
@@ -619,9 +595,7 @@ portal.general.lang-switch: 'Skift til <span class="italics">{{lang}}</span>'
 portal.general.nav-all: Alle
 portal.general.nav-chat: 'Chat samtaleudskrifter'
 portal.general.nav-chatlog: 'Chat samtaleudskrift'
-portal.general.nav-downloads: Downloads
 portal.general.nav-downloads-desc: 'Se vores filer'
-portal.general.nav-emails: Emails
 portal.general.nav-feedback: Indlæg
 portal.general.nav-feedback-desc: 'Tilpassede forslag'
 portal.general.nav-guides: Omviser
@@ -633,7 +607,6 @@ portal.general.nav-news: Nyhed
 portal.general.nav-news-desc: 'Nyheder og opdateringer'
 portal.general.nav-newticket: 'Kontakt os'
 portal.general.nav-newticket-desc: 'Vi er her for at hjælpe'
-portal.general.nav-portal: Portal
 portal.general.nav-profile: Profil
 portal.general.nav-quick-jump: 'Hurtig hop'
 portal.general.nav-register: Registrer
@@ -644,7 +617,6 @@ portal.general.nav-tickets-org: 'Organisations sager'
 portal.general.nav-your-account: 'Din konto'
 portal.general.no-agents-available: 'Desværre men der er ingen agenter tilgængelige'
 portal.general.no-search-query: 'Indtast en søgestreng, ind i søgefeltet.'
-portal.general.no-search-results: 'We couldn''t find any results for "{{query}}"'
 portal.general.no-search-results-general: 'Vi kunne ikke finde nogen resultater'
 portal.general.on: til
 portal.general.or: eller
@@ -670,7 +642,6 @@ portal.general.related-feedback: 'Lignende indlæg'
 portal.general.related-news: 'Relaterede nyheder'
 portal.general.related-pages: 'Relaterede sider'
 portal.general.rerender-form: 'Læs venligst denne formular, inden du sender den.'
-portal.general.rss_subscribe: 'RSS Feed'
 portal.general.search-labels-section-title: 'Vælg mærke'
 portal.general.search-section-title: Søg
 portal.general.search_btn: Søg
@@ -689,7 +660,6 @@ portal.general.tagged_with: 'mærket med'
 portal.general.tags: Mærkater
 portal.general.toggle_off: fra
 portal.general.toggle_on: til
-portal.general.top: Top
 portal.general.updated: Opdateret
 portal.general.x-search-results: '{{num}} søgeresultater for "{{query}}"'
 portal.general.x-search-results-no-query: '{{num}} søgeresultater'
@@ -704,9 +674,6 @@ portal.news.view-x-news:
   other: ' Vis {{count}} artikler'
 portal.sidebar.agents_available: 'Ledige agenter'
 portal.sidebar.agents_none: 'Ingen af vores agenter er online lige nu. Du kan stadigvæk  <a href="{{new_ticket_url}}"> åbne en sag </a>.'
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Indsendt af {{name}}'
 portal.sidebar.news_title: Nyhed
 portal.sidebar.satisfied_customers: 'tilfredse kunder'
@@ -740,7 +707,6 @@ portal.tickets.list_status_user: 'Du er nødt til at reagere'
 portal.tickets.list_subject: Emne
 portal.tickets.list_switch_to_my_tickets: 'Skift til Mine sager'
 portal.tickets.list_switch_to_organization: 'Skift til Organisation'
-portal.tickets.list_ticket_ref: Reference
 portal.tickets.list_title: 'Dine sager'
 portal.tickets.list_title_org: 'Organisations sager'
 portal.tickets.list_user: Bruger
@@ -830,7 +796,6 @@ portal.widget.popup_title: 'Kunde support'
 user.chat.email: 'Din emailadresse'
 user.chat.ended-no-agent: 'Vi beklager, men vi har ingen ledige til at besvare din chat nu. Email os eller prøv igen senere'
 user.chat.error: 'Chat fejl'
-user.chat.form_chat_button-submit: Send
 user.chat.form_chat_send-file: 'Upload en fil'
 user.chat.form_create_button-submit: 'Start chat'
 user.chat.form_create_department: 'Vælg afdeling'
@@ -844,7 +809,6 @@ user.chat.form_feedback_rate-unsatisfied: Nej
 user.chat.form_feedback_title: 'Send os en tilbagemelding'
 user.chat.form_feedback_transcript-email: 'Send en udskrift af denne chat til'
 user.chat.log-title: 'Dine chatsamtaler'
-user.chat.log_chat-id: 'Chat ID'
 user.chat.log_created-date: 'Oprettet {{date}}'
 user.chat.log_fields_agent: Sagsbehandler
 user.chat.log_fields_department: Afdeling
@@ -890,7 +854,6 @@ user.defaults.article_category_general: Generelt
 user.defaults.article_example_content: 'Dette er et eksempel på en videnbaseartikel. Du kan bare redigere eller slette den fra agent brugergrænsefladen.'
 user.defaults.article_example_title: 'Eksempel artikel'
 user.defaults.department_sales: Salg
-user.defaults.department_support: Support
 user.defaults.downloads_category_general: Dokumenter
 user.defaults.news_category_general: Generelt
 user.defaults.news_example_content: 'Dette er et eksempel på en nyhed. Du kan bare redigere eller slette den fra agent brugergrænsefladen.'
@@ -1061,7 +1024,6 @@ user.knowledgebase.auto_action_on_date: 'Automatisk {{action}} på {{date}}'
 user.knowledgebase.creating_pending_article: 'Opretter afventende artikel'
 user.lang.lang_title: Dansk
 user.lang.lang_title_arabic: Arabisk
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Dansk
 user.lang.lang_title_default: Engelsk
 user.lang.lang_title_dutch: Hollandsk
@@ -1069,7 +1031,6 @@ user.lang.lang_title_english_gb: 'Engelsk (GB)'
 user.lang.lang_title_french: Fransk
 user.lang.lang_title_german: Tysk
 user.lang.lang_title_hungarian: Ungarnsk
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italiansk
 user.lang.lang_title_japanese: Japansk
 user.lang.lang_title_norwegian: Norsk
@@ -1087,9 +1048,6 @@ user.profile.choose_email: 'Vælg den email adresse du vil bruge'
 user.profile.connect_with: 'Forbind med'
 user.profile.or_connect_with: 'Eller tilslut med'
 user.profile.register: Registrer
-user.profile.register_password_min_length:
-  one: 'Minimum of {{count}} character'
-  other: 'Minimum of {{count}} characters'
 user.profile.register_password_require_num_lowercase:
   one: 'Mindst {{count}} små bogstaver '
   other: ' Mindst {{count}} små bogstaver'
@@ -1125,18 +1083,13 @@ user.time.long-day_sunday: Søndag
 user.time.long-day_thursday: Torsdag
 user.time.long-day_tuesday: Tirsdag
 user.time.long-day_wednesday: Onsdag
-user.time.long-month_april: April
-user.time.long-month_august: August
-user.time.long-month_december: December
 user.time.long-month_february: Februar
 user.time.long-month_january: Januar
 user.time.long-month_july: Juli
 user.time.long-month_june: Juni
 user.time.long-month_march: Marts
 user.time.long-month_may: Maj
-user.time.long-month_november: November
 user.time.long-month_october: Oktober
-user.time.long-month_september: September
 user.time.short-day_friday: Fre
 user.time.short-day_monday: Man
 user.time.short-day_saturday: Lør
@@ -1144,18 +1097,8 @@ user.time.short-day_sunday: Søn
 user.time.short-day_thursday: Tor
 user.time.short-day_tuesday: Tir
 user.time.short-day_wednesday: Ons
-user.time.short-month_april: Apr
-user.time.short-month_august: Aug
-user.time.short-month_december: Dec
-user.time.short-month_february: Feb
-user.time.short-month_january: Jan
-user.time.short-month_july: Jul
-user.time.short-month_june: Jun
-user.time.short-month_march: Mar
 user.time.short-month_may: Maj
-user.time.short-month_november: Nov
 user.time.short-month_october: Okt
-user.time.short-month_september: Sep
 user.time.time-ago_1_day: '1 dag siden'
 user.time.time-ago_1_hour: '1 time siden'
 user.time.time-ago_1_minute: '1 minute siden'

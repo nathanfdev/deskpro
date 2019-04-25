@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Σύνδεση με {{usersource}}'
 portal.account.login-captcha-failed: 'Έχετε εισάγει λανθασμένο κωδικό CAPTCHA. Παρακαλούμε δοκιμάστε ξανά.'
 portal.account.login-disabled: 'Το email σας έχει αποκλειστεί.'
 portal.account.login-email: Email
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Είσοδος με εξωτερική υπηρεσία'
 portal.account.login-form-disabled: 'Η φόρμα σύνδεσης είναι απενεργοποιημένη.'
 portal.account.login-invalid: 'Έχετε εισάγει λανθασμένο email ή κωδικό πρόσβασης. Παρακαλούμε δοκιμάστε ξανά.'
@@ -59,7 +58,6 @@ portal.account.reset-password-success: 'Ο κωδικός πρόσβασης έ�
 portal.account.section-desc-login: 'Έχετε ήδη λογαριασμό; Συνδεθείτε παρακάτω.'
 portal.account.section-desc-login-external: 'Χρησιμοποιήστε τα παρακάτω links αν έχετε λογαριασμό σε άλλον πάροχο.'
 portal.account.section-desc-register: 'Εγγραφείτε για να διαχειρίζεστε εύκολα τις επικοινωνίες σας.'
-portal.account.section-title-emails: Emails
 portal.account.section-title-login: Σύνδεση
 portal.account.section-title-profile: Προφίλ
 portal.account.section-title-register: Εγγραφή
@@ -92,7 +90,6 @@ portal.account.welcome-back: 'Καλως ήρθατε και πάλι'
 portal.account.your-emails: 'Τα email σας'
 portal.account.your-pending-email-addresses: 'Email διευθύνσεις σε αναμονή'
 portal.articles.by-line: 'Από τον/ την {{name}} στις {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 'Δεν υπάρχουν άρθρα'
 portal.articles.search-title: 'Γνωσιακή βάση'
 portal.articles.section-desc: 'Η γνωσιακή βάση μας περιέχει άρθρα που έχουν γραφτεί από τους εκπροσώπους του Support μας για να σας βοηθήσουν.'
@@ -148,13 +145,9 @@ portal.chat.label-department: 'Επιλέξτε τμήμα'
 portal.chat.label-email: 'Το email σας'
 portal.chat.label-name: 'Το όνομά σας'
 portal.chat.list_agent: 'Εκπρόσωπος Support'
-portal.chat.list_chat: Chat
 portal.chat.list_date: Ημερομηνία
 portal.chat.list_switch_to_my_chats: 'Μετάβαση στα Chat σας'
 portal.chat.list_switch_to_organization: 'Μετάβαση στον Οργανισμό'
-portal.chat.list_title:
-  one: '1 Chat'
-  other: '{{count}} Chats'
 portal.chat.list_user: Χρήστης
 portal.chat.log_agents: 'Εκπρόσωπος Support'
 portal.chat.log_chat_time: 'Συνολική διάρκεια chat'
@@ -174,7 +167,6 @@ portal.chat.message_set_department: 'Ο/Η {{name}} όρισε ως τμήμα �
 portal.chat.message_started: 'Το chat ξεκίνησε'
 portal.chat.message_type: 'Πληκτρολογήστε το μήνυμά σας στον/στην {{agentName}}'
 portal.chat.message_unassigned: 'Το chat δεν έχει ανατεθεί σε κάποιον'
-portal.chat.message_uploading: Uploading...
 portal.chat.message_user-joined: 'Ο/Η {{name}} συνδέθηκε στο chat'
 portal.chat.message_user-left: 'O/H {{name}} αποχώρησε από το chat'
 portal.chat.message_user-returned: 'Ο χρήστης επέστρεψε'
@@ -203,7 +195,6 @@ portal.chat.see_full_image: 'Κάντε click εδώ για να δείτε ολ
 portal.chat.send_another_validation_email: 'Στείλτε μου ένα άλλο email'
 portal.chat.sent_validation_code: 'Σας στείλαμε ένα email με έναν κωδικό επιβεβαίωσης.'
 portal.chat.start: 'Ξεκινήστε ένα νέο chat'
-portal.chat.support_powered_by: 'Support powered by {{DeskPRO}}'
 portal.chat.take_chat: 'Λήψη Chat'
 portal.chat.taken_by: 'Το chat έχει ληφθεί από τον/την'
 portal.chat.transcript_action: 'Στείλτε μου ένα αντίγραφο'
@@ -259,7 +250,6 @@ portal.email_subjects.news_sub_updated: 'Ενημερωμένα Νέα'
 portal.email_subjects.password_agent-reset: 'Ένας εκπρόσωπος του Support μας έχει επαναφέρει τον κωδικό πρόσβασής σας'
 portal.email_subjects.password_reset: 'Επαναφορά κωδικού πρόσβασης'
 portal.email_subjects.password_set: 'Ορισμός κωδικού πρόσβασης'
-portal.email_subjects.re: 'RE: {{subject}}'
 portal.email_subjects.register-welcome: 'Σας ευχαριστούμε για την εγγραφή'
 portal.email_subjects.register-welcome-byagent: 'Ο νέος σας λογαριασμός'
 portal.email_subjects.remind_unresolved_final_subject: 'ΥΠΕΝΘΥΜΙΣΗ: {{ticket.subject}}'
@@ -268,7 +258,6 @@ portal.email_subjects.share-article: 'Ο/Η {{author_name}} θέλει να μο
 portal.email_subjects.ticket-rate: 'Παρακαλούμε αξιολογήστε την εμπειρία σας για το αίτημα "{{ticket.subject}}"'
 portal.email_subjects.ticket_added_cc: 'Έχετε προστεθεί στο αίτημα "{{ticket.subject}}"'
 portal.email_subjects.ticket_new-participant: 'Ένα νέο άτομο προστέθηκε στο αίτημά σας'
-portal.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
 portal.email_subjects.too-many-emails: 'ΣΗΜΕΙΩΣΗ: Έχετε στείλει πάρα πολλά emails'
 portal.email_subjects.validate-email: 'Επιβεβαιώστε το email σας'
 portal.emails.auto-close: 'Δεν έχουμε λάβει απάντηση από εσάς σχετικά με το αίτημα  "{{ticket.subject}}". Παρακαλούμε ενημερώστε μας αν χρειάζεστε περαιτέρω βοήθεια, διαφορετικά το αίτημά σας θα κλείσει.'
@@ -366,7 +355,6 @@ portal.emails.tickets_ommitted:
 portal.emails.validate-email: 'Παρακαλούμε επιβεβαιώστε ότι σας ανήκει αυτό το email, κάνοντας click στο παρακάτω link.'
 portal.emails.view_full_history_online: 'Δείτε ολόκληρο το ticket online'
 portal.error.400-desc: 'Μας συγχωρείτε, αλλά το αίτημά σας ήταν αλλοιωμένο.'
-portal.error.400-title: 'Bad Request'
 portal.error.403-desc: 'Μας συγχωρείτε, αλλά δεν έχετε πρόσβαση για να δείτε αυτή τη σελίδα.'
 portal.error.403-title: 'Χωρίς Πρόσβαση'
 portal.error.404-desc: 'Μας συγχωρείτε, αλλά δεν μπορέσαμε να βρούμε αυτήν τη σελίδα.'
@@ -377,8 +365,6 @@ portal.error.general-title: 'Παρουσιάστηκε Σφάλμα'
 portal.feedback.attachments: Επισυνάψεις
 portal.feedback.btn-closed: Κλειστό
 portal.feedback.btn-vote: Συμφωνώ
-portal.feedback.dir_asc: ASC
-portal.feedback.dir_desc: DESC
 portal.feedback.error_hidden: 'Το στοιχείο feedback είναι κρυμμένο'
 portal.feedback.error_login: 'Παρακαλούμε συνδεθείτε'
 portal.feedback.filter_all_items: 'Όλα τα στοιχεία'
@@ -397,9 +383,7 @@ portal.feedback.no_matching: 'Δεν υπάρχει feedback που να ται�
 portal.feedback.none: 'Δεν υπάρχει feedback ακόμα'
 portal.feedback.rate_forbidden: 'Δεν έχετε δικαίωμα να ψηφίσετε'
 portal.feedback.recent-feedback: 'Πρόσφατο Feedback'
-portal.feedback.search-title: Feedback
 portal.feedback.section-desc: 'Αυτά τα στοιχεία feedback έχουν υποβληθεί από πελάτες όπως εσείς. Σας ενθαρρύνουμε να συζητήσετε και να ψηφίσετε εκείνους με τους οποίους συμφωνείτε και να υποβάλετε τα δικά σας σχόλια.'
-portal.feedback.section-title: Feedback
 portal.feedback.sort_comments: Σχόλια
 portal.feedback.sort_date: Ημερομηνία
 portal.feedback.sort_popularity: Δημοτικότητα
@@ -539,7 +523,6 @@ portal.forms.error_upload_ini_size: 'Το αρχείο είναι πολύ με�
 portal.forms.label_add_attachment: 'Προσθήκη επιπλέον συνημμένου'
 portal.forms.label_captcha: 'Για να αποδείξετε ότι είστε άνθρωπος, παρακαλούμε πείτε μας το κείμενο που βλέπετε στην εικόνα του CAPTCHA'
 portal.forms.label_category: Κατηγορία
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Επιλογή αρχείου'
 portal.forms.label_comment: 'Έχετε κάποιο σχόλιο;'
 portal.forms.label_content: Περιεχόμενο
@@ -547,7 +530,6 @@ portal.forms.label_current_password: 'Τρέχον κωδικός πρόσβασ
 portal.forms.label_department: Τμήμα
 portal.forms.label_drag: 'Σύρετε ένα αρχείο εδώ ή'
 portal.forms.label_drag_overlay: 'Σύρετε το αρχείο σας εδώ.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: Όνομα
 portal.forms.label_full_name: 'Το όνομά σας'
 portal.forms.label_language: Γλώσσα
@@ -578,7 +560,6 @@ portal.general.agent_bar_admin_feedback: 'Ρυθμίσεις feedback'
 portal.general.agent_bar_admin_kb: 'Ρυθμίσεις γνωσιακής βάσης'
 portal.general.agent_bar_admin_lang: 'Ρυθμίσεις γλώσσας'
 portal.general.agent_bar_admin_news: 'Ρθυμίσεις Ενημερώσεων'
-portal.general.agent_bar_admin_portal: 'Portal Design & Templates'
 portal.general.agent_bar_agent_desc: 'Προβολή Tickets / Διαχείριση περιεχομένου'
 portal.general.agent_bar_agent_dl: 'Διαχείριση Λήψεων'
 portal.general.agent_bar_agent_feedback: 'Διαχείριση feedback'
@@ -588,14 +569,11 @@ portal.general.agent_bar_agent_news: 'Διαχείριση Ενημερώσεω�
 portal.general.agents-available: 'Διαθέσιμοι εκπρόσωποι Support'
 portal.general.attachments: Επισυνάψεις
 portal.general.btn-cancel: Ακύρωση
-portal.general.btn-download-pdf: 'Download PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Εκκίνηση
 portal.general.btn-print: Εκτύπωση
 portal.general.btn-send-email: 'Αποστολή email'
 portal.general.btn-share: 'Κοινή χρήση'
 portal.general.btn-subscribe: Εγγραφή
-portal.general.btn-unsubscribe: Unsubscribe
 portal.general.by: από
 portal.general.by_2: Από
 portal.general.comment_btn_save: 'Αποθήκευση σχολίου'
@@ -617,12 +595,8 @@ portal.general.lang-change-to-current: 'Κάντε τα <span class="italics">{{
 portal.general.lang-diff: 'Αυτή η σελίδα είναι στα <span class="italics">{{active_lang}}</span> αλλά ο λογαριασμός σας είναι στα <span class="italics">{{person_lang}}</span>.'
 portal.general.lang-switch: 'Μετάβαση σε <span class="italics">{{lang}}</span>'
 portal.general.nav-all: Όλα
-portal.general.nav-chat: 'Chat Logs'
-portal.general.nav-chatlog: 'Chat Log'
 portal.general.nav-downloads: Λήψεις
 portal.general.nav-downloads-desc: 'Δείτε τις λήψεις μας'
-portal.general.nav-emails: Emails
-portal.general.nav-feedback: Feedback
 portal.general.nav-feedback-desc: 'Προσαρμοσμένες προτάσεις'
 portal.general.nav-guides: Οδηγίες
 portal.general.nav-guides-desc: 'Documentation προϊόντος'
@@ -633,13 +607,11 @@ portal.general.nav-news: Νέα
 portal.general.nav-news-desc: 'Νέα & ενημερώσεις'
 portal.general.nav-newticket: 'Επικοινωνήστε μαζί μας'
 portal.general.nav-newticket-desc: 'Είμαστε εδώ για να σας βοηθήσουμε'
-portal.general.nav-portal: Portal
 portal.general.nav-profile: Προφίλ
 portal.general.nav-quick-jump: 'Γρήγορη μετάβαση'
 portal.general.nav-register: Εγγραφή
 portal.general.nav-reset-password: 'Επαναφορά κωδικού πρόσβασης'
 portal.general.nav-set-password: 'Ορισμός κωδικού πρόσβασης'
-portal.general.nav-tickets: Tickets
 portal.general.nav-tickets-org: 'Ticket οργανισμού'
 portal.general.nav-your-account: 'Ο λογαριασμός σας'
 portal.general.no-agents-available: 'Μας συγχωρείτε αλλά όλοι οι εκπρόσωποι του Support μας είναι απασχολημένοι'
@@ -670,7 +642,6 @@ portal.general.related-feedback: 'Σχετικό feedback'
 portal.general.related-news: 'Σχετικά νέα'
 portal.general.related-pages: 'Σχετικές σελίδες'
 portal.general.rerender-form: 'Παρακαλούμε ελέγξτε τη φόρμα πριν την υποβάλετε.'
-portal.general.rss_subscribe: 'RSS Feed'
 portal.general.search-labels-section-title: 'Ετικέτες αναζήτησης'
 portal.general.search-section-title: Αναζήτηση
 portal.general.search_btn: Αναζήτηση
@@ -687,8 +658,6 @@ portal.general.submit-feedback: 'Υποβολή feedback'
 portal.general.submit-feedback-desc: 'Feedback και προτάσεις από άλλους πελάτες μας όπως εσείς'
 portal.general.tagged_with: 'με ετικέτα'
 portal.general.tags: Ετικέτες
-portal.general.toggle_off: 'off'
-portal.general.toggle_on: 'on'
 portal.general.top: Αρχή
 portal.general.updated: Επικαιροποιημένο
 portal.general.x-search-results: '{{num}} αποτελέσματα αναζήτησης για "{{query}}"'
@@ -704,9 +673,6 @@ portal.news.view-x-news:
   other: 'Προβολή {{count}} άρθρων'
 portal.sidebar.agents_available: 'Διαθέσιμοι εκπρόσωποι Support'
 portal.sidebar.agents_none: 'Κανένας εκπρόσωπος του Support μας δεν είναι οnline αυτή τη στιγμή. Μπορείτε πάντα <a href="{{new_ticket_url}}">να ανοίξετε ένα νέο ticket</a>.'
-portal.sidebar.agents_x_online:
-  one: '{{count}} online'
-  other: '{{count}} online'
 portal.sidebar.article_posted_by: 'Δημοσιεύθηκε από τον/την {{name}}'
 portal.sidebar.news_title: Νέα
 portal.sidebar.satisfied_customers: 'ικανοποιημένοι πελάτες'
@@ -766,8 +732,6 @@ portal.tickets.resolve_my_ticket_btn: 'Κλείσιμο του ticket μου'
 portal.tickets.resolve_ticket: 'Κλείσιμο του ticket: {{subject}}'
 portal.tickets.resolve_ticket_explain: 'Σίγουρα θέλετε να κλείσετε το ticket σας; Εάν κλείσετε το ticket σας, οι εκπρόσωποι του Support μας δεν θα μπορούν να σας απαντήσουν.'
 portal.tickets.search-last-activity: 'Τελευταία δραστηριότητα'
-portal.tickets.search-title: Tickets
-portal.tickets.section-title: Tickets
 portal.tickets.switched-department-rerender: 'Η δομή αυτής της φόρμας ίσως έχει αλλάξει. Παρακαλούμε ελέξτε τη φόρμα και υποβάλετε την ξανά.'
 portal.tickets.thank_you: 'Το ticket σας μόλις εστάλη'
 portal.tickets.thank_you_check_email: 'Παρακαλούμε επιβεβαιώστε το email σας'
@@ -844,7 +808,6 @@ user.chat.form_feedback_rate-unsatisfied: Όχι
 user.chat.form_feedback_title: 'Στείλτε μας το feedback σας'
 user.chat.form_feedback_transcript-email: 'Αποστολή αντίγραφου αυτού του chat στο'
 user.chat.log-title: 'Τα chat σας'
-user.chat.log_chat-id: 'Chat ID'
 user.chat.log_created-date: 'Δημιουργήθηκε {{date}}'
 user.chat.log_fields_agent: 'Εκπρόσωπος Support'
 user.chat.log_fields_department: Τμήμα
@@ -890,7 +853,6 @@ user.defaults.article_category_general: Γενικά
 user.defaults.article_example_content: 'Αυτό είναι ένα παράδειγμα άρθρου της γνωσιακής βάσης. Μπορείτε να το επεξεργαστείτε ή να το διαγράψετε από την διεπαφή εκπροσώπου Support.'
 user.defaults.article_example_title: 'Παράδειγμα  άρθρου'
 user.defaults.department_sales: Πωλήσεις
-user.defaults.department_support: Support
 user.defaults.downloads_category_general: Έγγραφα
 user.defaults.news_category_general: Γενικά
 user.defaults.news_example_content: 'Αυτό είναι ένα παράδειγμα άρθρου νέων. Μπορείτε να το επεξεργαστείτε ή να το διαγράψετε από την διεπαφή εκπροσώπου Support.'
@@ -922,7 +884,6 @@ user.email_subjects.news_sub_updated: 'Επικαιροποιημένα νέα'
 user.email_subjects.password_agent-reset: 'Ένας εκπρόσωπος του Support έκανε επαναφορά του κωδικού πρόσβασής σας'
 user.email_subjects.password_reset: 'Επαναφορά κωδικού πρόσβασης'
 user.email_subjects.password_set: 'Ορίστε κωδικό πρόσβασης'
-user.email_subjects.re: 'RE: {{subject}}'
 user.email_subjects.register-welcome: 'Σας ευχαριστούμε για την εγγραφή'
 user.email_subjects.register-welcome-byagent: 'Ο νέος σας λογαριασμός στο helpdesk'
 user.email_subjects.remind_unresolved_final_subject: 'ΥΠΕΝΘΥΜΙΣΗ: {{ticket.subject}}'
@@ -1052,7 +1013,6 @@ user.error.permission-denied-login: 'Έχετε αποσυνδεθεί. <a href=
 user.error.permission-denied-title: 'Δεν επιτρέπεται αυτή η ενέργεια'
 user.error.server-error: 'Υπήρξε κάποιο σφάλμα στον server που εμπόδισε τη φόρτωση της σελίδας. Παρακαλούμε προσπαθήστε ξανά.'
 user.feedback.submit_feedback: 'Υποβολή feedback'
-user.general.deskpro: Deskpro
 user.general.helpdesk_by: 'Helpdesk software από το <strong>{{deskpro}}</strong>'
 user.general.label_captcha: 'Κωδικός επιβεβαίωσης'
 user.general.page: Σελίδα
@@ -1111,7 +1071,6 @@ user.tickets.fields_product: Προϊόν
 user.tickets.form_error_captcha: 'Παρακαλούμε εισάγετε τον κωδικό'
 user.tickets.form_error_captcha_invalid: 'Λάθος κωδικός.'
 user.tickets.from_x_at_y: 'Από τον/την {{name}} στις {{date}}'
-user.tickets.label_cced: CCed
 user.tickets.no_subject: '(Χωρίς θέμα)'
 user.tickets.rate-negative: 'Δεν ήταν καλή'
 user.tickets.rate-neutral: 'Ήταν ΟΚ'

@@ -92,7 +92,6 @@ portal.account.welcome-back: 'Willkommen zurück'
 portal.account.your-emails: 'Ihre E-Mail-Adressen'
 portal.account.your-pending-email-addresses: 'Ihre unbestätigten E-Mail-Adressen'
 portal.articles.by-line: 'Von {{name}} am {{date}}'
-portal.articles.link: 'Link: <a href="{{link}}">{{link}}</a>'
 portal.articles.none: 'Noch keine Artikel vorhanden'
 portal.articles.search-title: Wissensdatenbank
 portal.articles.section-desc: 'Die Wissensdatenbank-Artikel unserer Mitarbeiter helfen Ihnen bei häufigen Fragen und Problemen.'
@@ -148,13 +147,9 @@ portal.chat.label-department: 'Wählen Sie die Abteilung aus'
 portal.chat.label-email: 'Ihre E-Mail-Adresse'
 portal.chat.label-name: 'Ihr Name'
 portal.chat.list_agent: Mitarbeiter
-portal.chat.list_chat: Chat
 portal.chat.list_date: Datum
 portal.chat.list_switch_to_my_chats: 'Zu meinen Chats wechseln'
 portal.chat.list_switch_to_organization: 'Zur Organisation wechseln'
-portal.chat.list_title:
-  one: '1 Chat'
-  other: '{{count}} Chats'
 portal.chat.list_user: Benutzer
 portal.chat.log_agents: Mitarbeiter
 portal.chat.log_chat_time: 'Gesamte Chat-Zeit'
@@ -223,9 +218,7 @@ portal.chat.you_have_been_invited: 'Sie wurden eingeladen, an diesen Chat teilzu
 portal.downloads.download: Herunterladen
 portal.downloads.none: 'Bisher keine Downloads'
 portal.downloads.recent-downloads: 'Letzte Downloads'
-portal.downloads.search-title: Downloads
 portal.downloads.section-desc: 'Durchsuchen Sie die verfügbaren Downloads'
-portal.downloads.section-title: Downloads
 portal.downloads.uploaded-on: Hochgeladen
 portal.downloads.view-as-agent: 'Sie können diese Seite nur sehen, weil Sie ein Mitarbeiter sind. Benutzer können diese Seite nicht sehen.'
 portal.downloads.view-x-files:
@@ -397,9 +390,7 @@ portal.feedback.no_matching: 'Kein passendes Feedback'
 portal.feedback.none: 'Bisher kein Feedback'
 portal.feedback.rate_forbidden: 'Sie dürfen nicht abstimmen'
 portal.feedback.recent-feedback: 'Letztes Feedback'
-portal.feedback.search-title: Feedback
 portal.feedback.section-desc: 'Diese Feedback-Einträge wurden von anderen Kunden übermittelt. Wir freuen uns sehr, wenn Sie diese diskutieren und für jene Stimmen, die Sie hilfreich finden. Unterbreiten Sie gerne eigene Vorschläge, falls eine Anregung oder Idee noch nicht vorhanden ist.'
-portal.feedback.section-title: Feedback
 portal.feedback.sort_comments: Kommentare
 portal.feedback.sort_date: Datum
 portal.feedback.sort_popularity: Beliebtheit
@@ -484,7 +475,6 @@ portal.forms.error_dupe_ticket_message: 'Doppelte Ticketnachricht'
 portal.forms.error_email_required: 'Sie müssen Ihre E-Mail-Adresse angeben'
 portal.forms.error_extra_fields: 'Es tut uns leid, aber bei der Bearbeitung Ihrer Anfrage ist ein Fehler aufgetreten. Bitte versuche es erneut.'
 portal.forms.error_invalid_data_type: 'Dieser Datentyp wurde nicht erwartet.'
-portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Dieser Wert ist keine gültige URL.'
 portal.forms.error_length_invalid: 'Diese Eingabe benötigt exakt {{limit}} Zeichen'
 portal.forms.error_length_too_long: 'Diese Eingabe ist zu lang. Es sollten {{limit}} Zeichen oder weniger sein.'
@@ -539,7 +529,6 @@ portal.forms.error_upload_ini_size: 'Die Datei ist zu groß. Maximum erlaubte Gr
 portal.forms.label_add_attachment: 'eine weitere Datei anfügen'
 portal.forms.label_captcha: 'Um zu beweisen dass Sie ein Mensch sind, teilen Sie uns bitte den Text mit, welchen Sie im CAPTCHA-Bild sehen'
 portal.forms.label_category: Kategorie
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Wählen Sie eine Datei'
 portal.forms.label_comment: 'Irgendwelche Kommentare?'
 portal.forms.label_content: Inhalt
@@ -553,7 +542,6 @@ portal.forms.label_full_name: 'Ihr Name'
 portal.forms.label_language: Sprache
 portal.forms.label_last_name: Nachname
 portal.forms.label_message: Nachricht
-portal.forms.label_name: Name
 portal.forms.label_password: Passwort
 portal.forms.label_password_confirm: Bestätigen
 portal.forms.label_priority: Priorität
@@ -569,7 +557,6 @@ portal.forms.label_title: Titel
 portal.forms.label_upload_picture: 'Bild hochladen'
 portal.forms.label_workflow: Arbeitsablauf
 portal.general.add-comment: 'Fügen Sie einen Kommentar hinzu'
-portal.general.admin: Admin
 portal.general.admin_home: 'Admin Startseite'
 portal.general.agent: Mitarbeiter
 portal.general.agent_bar_admin_desc: 'Helpdesk verwalten'
@@ -578,7 +565,6 @@ portal.general.agent_bar_admin_feedback: 'Feedback Einstellungen'
 portal.general.agent_bar_admin_kb: 'Wissensdatenbank Einstellungen'
 portal.general.agent_bar_admin_lang: 'Sprache Einstellungen'
 portal.general.agent_bar_admin_news: Neuigkeiten-Einstellungen
-portal.general.agent_bar_admin_portal: 'Portal Design & Templates'
 portal.general.agent_bar_agent_desc: 'Tickets anzeigen / Inhalte verwalten'
 portal.general.agent_bar_agent_dl: 'Downloads verwalten'
 portal.general.agent_bar_agent_feedback: 'Feedback verwalten'
@@ -611,7 +597,6 @@ portal.general.everything: Alles
 portal.general.get-in-touch: 'Kontaktieren Sie uns'
 portal.general.get-in-touch-desc: 'senden Sie uns eine E-Mail'
 portal.general.impersonation_mode: 'Identitätswechsel -Modus'
-portal.general.in: in
 portal.general.label-search-enter-label: 'Bitte geben Sie eine Bezeichnung für die Suche ein'
 portal.general.lang-change-to-current: '<span class="italics">{{lang}}</span> zur Standard-Sprache machen'
 portal.general.lang-diff: 'Diese Seite ist in  <span class="italics">{{active_lang}}</span> aber Ihr Account ist in <span class="italics">{{person_lang}}</span>.'
@@ -619,10 +604,8 @@ portal.general.lang-switch: 'Zu <span class="italics">{{lang}}</span> wechseln'
 portal.general.nav-all: Alle
 portal.general.nav-chat: Chat-Protokolle
 portal.general.nav-chatlog: Chat-Protokolle
-portal.general.nav-downloads: Downloads
 portal.general.nav-downloads-desc: 'Durchsuchen Sie unsere Downloads'
 portal.general.nav-emails: E-Mails
-portal.general.nav-feedback: Feedback
 portal.general.nav-feedback-desc: Kundenvorschläge
 portal.general.nav-guides: 'das Handbuch'
 portal.general.nav-guides-desc: Produktdokumentation
@@ -633,13 +616,11 @@ portal.general.nav-news: Neuigkeiten
 portal.general.nav-news-desc: 'Neuigkeiten & Aktualisierungen'
 portal.general.nav-newticket: 'Kontaktieren Sie uns'
 portal.general.nav-newticket-desc: 'Wir helfen Ihnen gerne'
-portal.general.nav-portal: Portal
 portal.general.nav-profile: Profil
 portal.general.nav-quick-jump: Schnell-Zugriff
 portal.general.nav-register: Registrieren
 portal.general.nav-reset-password: 'Passwort zurücksetzen'
 portal.general.nav-set-password: 'Passwort festlegen'
-portal.general.nav-tickets: Tickets
 portal.general.nav-tickets-org: Organisations-Tickets
 portal.general.nav-your-account: 'Ihr Account'
 portal.general.no-agents-available: 'Leider sind keine Mitarbeiter verfügbar'
@@ -686,7 +667,6 @@ portal.general.start-chat: 'Chat-Session starten'
 portal.general.submit-feedback: 'Feedback geben'
 portal.general.submit-feedback-desc: 'Feedback und Vorschläge von anderen Kunden'
 portal.general.tagged_with: 'getaggt mit'
-portal.general.tags: Tags
 portal.general.toggle_off: aus
 portal.general.toggle_on: an
 portal.general.top: 'Nach oben'
@@ -766,8 +746,6 @@ portal.tickets.resolve_my_ticket_btn: 'Mein Ticket schließen'
 portal.tickets.resolve_ticket: 'Ticket schließen:{{subject}}'
 portal.tickets.resolve_ticket_explain: 'Sind Sie sicher dass Sie Ihr Ticket schließen wollen? Sobald das Ticket geschlossen ist, werden unsere Mitarbeiter nicht mehr reagieren.'
 portal.tickets.search-last-activity: 'Letzte Aktivität'
-portal.tickets.search-title: Tickets
-portal.tickets.section-title: Tickets
 portal.tickets.switched-department-rerender: 'Die Eingaben dieses Formulares haben sich geändert. Bitte überprüfen Sie die Eingaben und übermitteln dies erneuert,'
 portal.tickets.thank_you: 'Ihr Ticket wurde erstellt'
 portal.tickets.thank_you_check_email: 'Bitte bestätigen Sie Ihre E-Mail-Adresse'
@@ -890,7 +868,6 @@ user.defaults.article_category_general: Allgemein
 user.defaults.article_example_content: 'Dies ist ein Beispiel für einen Wissendatenbank-Artikel. Sie können ihn beliebig editieren oder löschen.'
 user.defaults.article_example_title: Beispielartikel
 user.defaults.department_sales: Verkauf
-user.defaults.department_support: Support
 user.defaults.downloads_category_general: Dokumente
 user.defaults.news_category_general: Allgemein
 user.defaults.news_example_content: 'Dies ist ein Beispiel für einen Neuigkeiten-Eintrag. Sie können ihn in der Mitarbeiter-Oberfläche beliebig editieren oder löschen.'
@@ -1061,7 +1038,6 @@ user.knowledgebase.auto_action_on_date: 'Automatisch {{action}} am {{date}}'
 user.knowledgebase.creating_pending_article: 'Erstelle anstehenden Artikel'
 user.lang.lang_title: Deutsch
 user.lang.lang_title_arabic: Arabisch
-user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Dänisch
 user.lang.lang_title_default: 'Englisch (US)'
 user.lang.lang_title_dutch: Niederländisch
@@ -1069,7 +1045,6 @@ user.lang.lang_title_english_gb: 'Englisch (UK)'
 user.lang.lang_title_french: Französisch
 user.lang.lang_title_german: Deutsch
 user.lang.lang_title_hungarian: Ungarisch
-user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italienisch
 user.lang.lang_title_japanese: Japanisch
 user.lang.lang_title_norwegian: Norwegisch
@@ -1111,7 +1086,6 @@ user.tickets.fields_product: Produkt
 user.tickets.form_error_captcha: 'Geben Sie bitte den Code ein'
 user.tickets.form_error_captcha_invalid: 'Der eingegebene Code ist fehlerhaft.'
 user.tickets.from_x_at_y: 'Von {{name}} am {{date}}'
-user.tickets.label_cced: CCed
 user.tickets.no_subject: '(Kein Betreff)'
 user.tickets.rate-negative: 'Es war nicht besonders gut'
 user.tickets.rate-neutral: 'Es war OK'
@@ -1125,8 +1099,6 @@ user.time.long-day_sunday: Sonntag
 user.time.long-day_thursday: Donnerstag
 user.time.long-day_tuesday: Dienstag
 user.time.long-day_wednesday: Mittwoch
-user.time.long-month_april: April
-user.time.long-month_august: August
 user.time.long-month_december: Dezember
 user.time.long-month_february: Februar
 user.time.long-month_january: Januar
@@ -1134,9 +1106,7 @@ user.time.long-month_july: Juli
 user.time.long-month_june: Juni
 user.time.long-month_march: März
 user.time.long-month_may: Mai
-user.time.long-month_november: November
 user.time.long-month_october: Oktober
-user.time.long-month_september: September
 user.time.short-day_friday: Fr
 user.time.short-day_monday: Mo
 user.time.short-day_saturday: Sa
@@ -1144,18 +1114,10 @@ user.time.short-day_sunday: So
 user.time.short-day_thursday: Do
 user.time.short-day_tuesday: Di
 user.time.short-day_wednesday: Mi
-user.time.short-month_april: Apr
-user.time.short-month_august: Aug
 user.time.short-month_december: Dez
-user.time.short-month_february: Feb
-user.time.short-month_january: Jan
-user.time.short-month_july: Jul
-user.time.short-month_june: Jun
 user.time.short-month_march: Mär
 user.time.short-month_may: Mai
-user.time.short-month_november: Nov
 user.time.short-month_october: Okt
-user.time.short-month_september: Sep
 user.time.time-ago_1_day: 'vor 1 Tag'
 user.time.time-ago_1_hour: 'vor 1 Stunde'
 user.time.time-ago_1_minute: 'vor 1 Minute'
