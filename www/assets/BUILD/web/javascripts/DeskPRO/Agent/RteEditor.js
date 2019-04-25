@@ -563,6 +563,11 @@ DeskPRO.Agent.RteEditor = {
       var current = this.getCurrentNode();
       var selected = this.getSelectedNode();
 
+      // remove nbsp
+      html = html.replace(/(&nbsp;){2,}/gi, '&nbsp;');
+      html = html.replace(/__DP_INDENT_PLACE__/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+      html = html.replace(/__DP_SPACE_PLACE__/g, '&nbsp;');
+
       // clean up pre
       if ((parent || current || selected)
           && (
@@ -594,11 +599,6 @@ DeskPRO.Agent.RteEditor = {
 
       // remove comments and php tags
       html = html.replace(/<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi, '');
-
-      // remove nbsp
-      html = html.replace(/(&nbsp;){2,}/gi, '&nbsp;');
-      html = html.replace(/__DP_INDENT_PLACE__/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
-      html = html.replace(/__DP_SPACE_PLACE__/g, '&nbsp;');
 
       // remove google docs marker
       html = html.replace(/<b\sid="internal-source-marker(.*?)">([\w\W]*?)<\/b>/gi, "$2");
