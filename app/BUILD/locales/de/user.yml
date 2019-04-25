@@ -203,7 +203,6 @@ portal.chat.see_full_image: 'Hier klicken, um das Bild anzuzeigen'
 portal.chat.send_another_validation_email: 'Senden Sie mir eine weitere E-Mail'
 portal.chat.sent_validation_code: 'Wir senden Ihnen eine E-Mail mit einem Bestätigungscode.'
 portal.chat.start: 'Einen neuen Chat starten'
-portal.chat.start_conversation: 'Starte mit einer Konversation'
 portal.chat.support_powered_by: 'Helpdesk-Software von {{DeskPRO}}'
 portal.chat.take_chat: 'Chat übernehmen'
 portal.chat.taken_by: 'Chat übernommen von'
@@ -485,7 +484,7 @@ portal.forms.error_dupe_ticket_message: 'Doppelte Ticketnachricht'
 portal.forms.error_email_required: 'Sie müssen Ihre E-Mail-Adresse angeben'
 portal.forms.error_extra_fields: 'Es tut uns leid, aber bei der Bearbeitung Ihrer Anfrage ist ein Fehler aufgetreten. Bitte versuche es erneut.'
 portal.forms.error_invalid_data_type: 'Dieser Datentyp wurde nicht erwartet.'
-portal.forms.error_invalid_email: 'Diese E-Mail-Adresse ist nicht gültig'
+portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Dieser Wert ist keine gültige URL.'
 portal.forms.error_length_invalid: 'Diese Eingabe benötigt exakt {{limit}} Zeichen'
 portal.forms.error_length_too_long: 'Diese Eingabe ist zu lang. Es sollten {{limit}} Zeichen oder weniger sein.'
@@ -537,7 +536,6 @@ portal.forms.error_upload_file: 'Datei kann nicht hochgeladen werden'
 portal.forms.error_upload_general: 'Es gab ein Problem beim Hochladen der Datei. Bitte versuchen Sie es erneut.'
 portal.forms.error_upload_html_size: 'Die Datei ist zu groß'
 portal.forms.error_upload_ini_size: 'Die Datei ist zu groß. Maximum erlaubte Grösse ist {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Sorry, aber bei Ihrer Anfrage ist ein Fehler aufgetreten. Bitte versuchen Sie es noch einmal.'
 portal.forms.label_add_attachment: 'eine weitere Datei anfügen'
 portal.forms.label_captcha: 'Um zu beweisen dass Sie ein Mensch sind, teilen Sie uns bitte den Text mit, welchen Sie im CAPTCHA-Bild sehen'
 portal.forms.label_category: Kategorie
@@ -907,7 +905,6 @@ user.email_subjects.download_sub_new_and_updated: 'Neue und aktualisierte Downlo
 user.email_subjects.download_sub_updated: 'Aktualisierte Downloads'
 user.email_subjects.email-too-big: 'Ihre E-Mail "{{subject}}" wurde nicht angenommen'
 user.email_subjects.email_new-confirm: 'Bitte bestätigen Sie Ihre E-Mail-Adresse'
-user.email_subjects.email_primary-confirm: 'Bestätigen Sie Ihre E-Mail Adresse'
 user.email_subjects.feedback_created_for_user: 'Danke für Ihre Rückmeldung'
 user.email_subjects.feedback_new: 'Vielen Dank für Ihr Feedback'
 user.email_subjects.feedback_new-approved: 'Ihr Feedback wurde freigeschalten'
@@ -931,9 +928,7 @@ user.email_subjects.register-welcome-byagent: 'Ihr neues Helpdesk-Konto'
 user.email_subjects.remind_unresolved_final_subject: 'ERINNERUNG: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'ERINNERUNG: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Bewerten Sie die Erfahrungen mit unserem Support zu Ihrem Ticket  "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Ihrem Ticket wurde eine neue Person hinzugefügt'
 user.email_subjects.tickets_re: 'AW: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'HINWEIS: Sie haben zu viele E-Mails versendet'
 user.emails.auto-close: 'Ihr Ticket "{{ticket.subject}}" wird in Kürze automatisch geschlossen, da wir seit einiger Zeit nichts von Ihnen gehört haben. Lassen Sie uns bitte wissen, wenn Sie noch Unterstützung benötigen. Unsere Mitarbeiter werden Ihnen gerne helfen.'
 user.emails.chat_transcript: 'Vielen Dank für den Chat mit uns. Hier ist Ihre Chat-Abschrift.'
 user.emails.chat_validate_email: 'Bitte bestätigen Sie Ihre E-Mail-Adresse, indem den Bestätigungscode "{{validation_code}}" im Formular eingeben oder indem Sie auf den folgenden Link klicken:'
@@ -1066,6 +1061,7 @@ user.knowledgebase.auto_action_on_date: 'Automatisch {{action}} am {{date}}'
 user.knowledgebase.creating_pending_article: 'Erstelle anstehenden Artikel'
 user.lang.lang_title: Deutsch
 user.lang.lang_title_arabic: Arabisch
+user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Dänisch
 user.lang.lang_title_default: 'Englisch (US)'
 user.lang.lang_title_dutch: Niederländisch
@@ -1073,6 +1069,7 @@ user.lang.lang_title_english_gb: 'Englisch (UK)'
 user.lang.lang_title_french: Französisch
 user.lang.lang_title_german: Deutsch
 user.lang.lang_title_hungarian: Ungarisch
+user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italienisch
 user.lang.lang_title_japanese: Japanisch
 user.lang.lang_title_norwegian: Norwegisch

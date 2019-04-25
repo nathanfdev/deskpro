@@ -200,7 +200,6 @@ portal.chat.see_full_image: 'Klik disini untuk melihat gambar penuh'
 portal.chat.send_another_validation_email: 'Kirimkan kami email lain'
 portal.chat.sent_validation_code: 'Kami mengirimkan Anda email dengan kode validasi.'
 portal.chat.start: 'Mulai obrolan baru'
-portal.chat.start_conversation: 'Mulai percakapan'
 portal.chat.support_powered_by: 'Didukung oleh {{DeskPRO}}'
 portal.chat.take_chat: 'Ambil Obrolan'
 portal.chat.taken_by: 'Obrolan diambil oleh'
@@ -471,7 +470,7 @@ portal.forms.error_dupe_ticket_message: 'Pesan tiket duplikat.'
 portal.forms.error_email_required: 'Anda harus memberikan alamat surat elektronik/ email Anda'
 portal.forms.error_extra_fields: 'Maaf terjadi kesalahan saat memproses permintaan Anda. Silahkan coba lagi'
 portal.forms.error_invalid_data_type: 'Tipe data ini tidak diharapkan.'
-portal.forms.error_invalid_email: 'Alamat surat elektronik/ email ini tidak valid'
+portal.forms.error_invalid_email: 'This email address {{value}} is not valid'
 portal.forms.error_invalid_url: 'Nilai ini bukan URL yang valid.'
 portal.forms.error_length_invalid: 'Nilai ini harus memiliki tepat {{limit}} karakter.'
 portal.forms.error_length_too_long: 'Nilai ini terlalu panjang. Harus memiliki {{limit}} karakter atau kurang'
@@ -518,7 +517,6 @@ portal.forms.error_upload_file: 'Tidak dapat mengunggah berkas'
 portal.forms.error_upload_general: 'Terjadi masalah saat mengunggah berkas ini. Silakan coba lagi.'
 portal.forms.error_upload_html_size: 'Ukuran berkas terlalu besar'
 portal.forms.error_upload_ini_size: 'Ukuran berkas terlalu besar. Ukuran berkas yang diizinkan adalah {{limit}} {{suffix}}'
-portal.forms.extra_fields: 'Maaf terjadi kesalahan saat memproses permintaan Anda. Silahkan coba lagi'
 portal.forms.label_add_attachment: 'Tambah lampiran Lainnya'
 portal.forms.label_captcha: 'Untuk membuktikan Anda adalah manusia, beritahu kami teks yang Anda lihat dalam gambar CAPTCHA.'
 portal.forms.label_category: Kategori
@@ -831,7 +829,7 @@ user.chat.log_nav-view-chats:
   other: 'Lihat riwayat terakhir chat Anda '
 user.chat.log_no_department: 'Tidak ada departemen'
 user.chat.log_unassigned: 'Tidak ada agent yang ditugaskan'
-user.chat.message_agent-timeout: 'Mohon maaf; koneksi {{Name}} nampaknya telah terputus. Mohon menunggu, kami mencoba mencari agen lain.'
+user.chat.message_agent-timeout: 'Our Apologies; {{name}} appears to have been disconnected. Please wait while we try to find another agent.'
 user.chat.message_assigned: 'Obrolan ditugaskan ke {{name}}'
 user.chat.message_chatting-with: 'Anda melakukan Obrolan dengan'
 user.chat.message_ended: 'Obrolan berakhir'
@@ -882,7 +880,6 @@ user.email_subjects.download_sub_new_and_updated: 'Unduhan Baru dan Diperbarui'
 user.email_subjects.download_sub_updated: 'Unduhan yang Diperbarui'
 user.email_subjects.email-too-big: 'Surat elektronik/ email {{subject}} tidak diterima'
 user.email_subjects.email_new-confirm: 'Harap validasi alamat surat elektronik/ email Anda'
-user.email_subjects.email_primary-confirm: 'Validasi alamat surat elektronik/ email Anda'
 user.email_subjects.feedback_created_for_user: 'Terima kasih atas tanggapan Anda'
 user.email_subjects.feedback_new: 'Terima kasih telah mengirimkan tanggapan Anda'
 user.email_subjects.feedback_new-approved: 'Tanggapan Anda telah diterbitkan'
@@ -906,9 +903,7 @@ user.email_subjects.register-welcome-byagent: 'Akun layanan bantuan baru Anda'
 user.email_subjects.remind_unresolved_final_subject: 'PENGINGAT: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'PENGINGAT: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Nilai atas dukungan yang Anda dapatkan pada tiket Anda "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Seseorang telah ditambahkan ke tiket Anda'
 user.email_subjects.tickets_re: 'RE: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'PEMBERITAHUAN: Anda telah mengirim terlalu banyak email'
 user.emails.auto-close: 'Tiket Anda "{{ticket.subject}}" akan segera ditutup karena kami belum mendengar kabar dari Anda akhir-akhir ini. Jika Anda membutuhkan bantuan lebih lanjut, cukup balas dan salah satu agen kami akan membantu Anda.'
 user.emails.chat_transcript: 'Terima kasih telah mengobrol dengan kami. Ini adalah transkrip obrolan Anda.'
 user.emails.chat_validate_email: 'Harap validasi alamat email Anda dengan memasukkan kode ini "{{validation_code}}" di formulir widget atau klik tautan ini:'
@@ -1027,6 +1022,7 @@ user.knowledgebase.auto_action_on_date: "Otomatis {{action}} pada {{date}}\n"
 user.knowledgebase.creating_pending_article: 'Membuat artikel yang tertunda'
 user.lang.lang_title: 'Bahasa Indonesia'
 user.lang.lang_title_arabic: Arab
+user.lang.lang_title_czech: Czech
 user.lang.lang_title_danish: Denmark
 user.lang.lang_title_default: Inggris
 user.lang.lang_title_dutch: Belanda
@@ -1034,6 +1030,7 @@ user.lang.lang_title_english_gb: 'Inggris Britania'
 user.lang.lang_title_french: Prancis
 user.lang.lang_title_german: Jerman
 user.lang.lang_title_hungarian: Hongaria
+user.lang.lang_title_indonesian: Indonesian
 user.lang.lang_title_italian: Italia
 user.lang.lang_title_japanese: Jepang
 user.lang.lang_title_norwegian: Norwegia
