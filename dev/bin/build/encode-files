@@ -16,11 +16,6 @@ class EncodeFiles
     private $baseDir;
 
     /**
-     * @var string
-     */
-    private $targetDir = '/sys/enc';
-
-    /**
      * @var string[]
      */
     private $fileList = [
@@ -42,43 +37,38 @@ class EncodeFiles
             chmod($realTargetDir, 0755);
         }
 
+        $encString = function($s) {
+            return preg_replace_callback('/(.)/', function($m) {
+                return sprintf('\\x%x', ord($m[1]));
+            }, $s);
+        };
+
+        $fileSource = "<?php\n\n";
+        $datPath = implode("\n", [
+                '"'.$encString('compress.zlib://').'".',
+                'constant("'.$encString('DP_APP_DIR').'").',
+                'constant("'.$encString('DIRECTORY_SEPARATOR').'").',
+                '"'.$encString('sys/enc/dat.bin').'"'
+        ]);
+
         foreach ($this->fileList as $file) {
-            $this->encodeFile($file);
-        }
-    }
+            $srcPath        = $this->getAppFilePath($file);
 
-    private function encodeFile($file)
-    {
-        $targetName     = md5($file) . '.php';
-        $targetPath     = $this->targetDir . '/' . $targetName;
-        $realTargetPath = $this->getAppFilePath($targetPath);
-        $srcPath        = $this->getAppFilePath($file);
+            $srcCode = file_get_contents($srcPath);
+            $srcCode = str_replace('<?php', '', $srcCode);
+            $srcCode = preg_replace('/namespace\s*(.*?);/', 'namespace $1 {', $srcCode);
+            $srcCode = trim($srcCode);
+            $srcCode = preg_replace('/\?>$/', '', $srcCode);
+            $srcCode .= "\n}\n";
 
-        $enc = $this->getEncoder();
+            $fileSource .= $srcCode;
 
-        $result = $enc->encodeFile($srcPath);
-        file_put_contents($realTargetPath, $result);
-
-        $numUp = substr_count($file, '/') - 1;
-        if ($numUp) {
-            $navUp = trim(str_repeat('../', $numUp), '/');
-        } else {
-            $navUp = '';
+            $loader = "<?php require_once(\n$datPath\n);\n";
+            file_put_contents($srcPath, $loader);
         }
 
-        // Replace original file with alias to the encoded one
-        $aliasCode = "<?php require_once __DIR__.'/{$navUp}{$targetPath}';\n";
-        file_put_contents($srcPath, $aliasCode);
-    }
-
-    /**
-     * @return \DpDev\PhpEncoder\Encoder
-     */
-    private function getEncoder()
-    {
-        require_once __DIR__.'/lib/PhpEncoder/Encoder.php';
-        $enc = new \DpDev\PhpEncoder\Encoder();
-        return $enc;
+        $fileSource = gzencode($fileSource, 1);
+        file_put_contents($realTargetDir.DIRECTORY_SEPARATOR.'dat.bin', $fileSource);
     }
 
     /**
