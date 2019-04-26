@@ -1259,9 +1259,6 @@ class TicketController extends AbstractController
         // Do Reply Prepare
         $saveReplyData = $this->saveReply($ticket_id, true);
 
-        // Don't really want to save anything
-        $this->em->clear();
-
         if (isset($saveReplyData['response'])) {
             return $saveReplyData['response'];
         }
@@ -1719,7 +1716,7 @@ class TicketController extends AbstractController
         foreach ($this->in->getCleanValueArray('attach') as $blobId) {
             $blob = $this->em->getRepository(Blob::class)->find($blobId);
             if ($blob) {
-                if ($this->em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
+                if (!$isOptimisticUIUpdate && $this->em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
                     $raw_file = $this->get('blob.storage')->copyBlobRecordToString($blob);
                     $blob     = $this->get('blob.storage')->createBlobRecordFromString(
                         $raw_file,
@@ -1769,14 +1766,19 @@ class TicketController extends AbstractController
                         $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $this->getPerson(), $snippetTranslation);
                         $snippet    = $snippetLog->getSnippet();
                         $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);
-                        $this->em->persist($snippetLog);
+
+                        if (!$isOptimisticUIUpdate) {
+                            $this->em->persist($snippetLog);
+                        }
                     }
                 } else {
                     $snippet = $this->em->find(TextSnippet::class, $snippetId);
 
                     if ($snippet) {
                         $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
-                        $this->em->persist($snippetLog);
+                        if (!$isOptimisticUIUpdate) {
+                            $this->em->persist($snippetLog);
+                        }
                     }
                 }
             }
