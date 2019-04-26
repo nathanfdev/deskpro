@@ -649,12 +649,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       var fullCode = "self.jsfields['" + fieldId + "'] = " + code;
       eval(fullCode);
       var ctx = {
-        jQuery:     $,
-        Handlebars: Handlebars,
-        interface:  'agent',
-        context:    self.page.TYPENAME === 'newticket' ? 'newticket' : 'viewticket',
-        ticket:     self.page.meta.ticket,
-        person:     self.page.meta.ticket.person
+        jQuery:      $,
+        Handlebars:  Handlebars,
+        'interface': 'agent',
+        context:     self.page.TYPENAME === 'newticket' ? 'newticket' : 'viewticket',
+        ticket:      self.page.meta.ticket,
+        person:      self.page.meta.ticket.person
       };
       self.jsfields[fieldId](ctx);
 
