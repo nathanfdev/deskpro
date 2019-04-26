@@ -1259,9 +1259,6 @@ class TicketController extends AbstractController
         // Do Reply Prepare
         $saveReplyData = $this->saveReply($ticket_id, true);
 
-        // Don't really want to save anything
-        $this->em->clear();
-
         if (isset($saveReplyData['response'])) {
             return $saveReplyData['response'];
         }
