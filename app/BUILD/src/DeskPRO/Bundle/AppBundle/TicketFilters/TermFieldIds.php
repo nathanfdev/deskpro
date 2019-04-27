@@ -34,6 +34,8 @@ class TermFieldIds
     const TICKET_DATE_USER_WAITING     = 'ticket.date_user_waiting';
     const TICKET_CUSTOM                = 'ticket.data';
 
+    const BRAND_ID = 'ticket.brand';
+
     const PERSON_ID         = 'ticket.person'; // allows ids or email addresses which get resolved to ids
     const PERSON_LABELS     = 'ticket.person.labels';
     const PERSON_USERGROUPS = 'ticket.person.usergroups';

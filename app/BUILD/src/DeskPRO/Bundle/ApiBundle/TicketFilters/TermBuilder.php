@@ -98,6 +98,9 @@ class TermBuilder
                         $searchQueryParts[] = $query;
                     }
                     break;
+                case 'brand':
+                    $searchField = TermFieldIds::BRAND_ID;
+                    break;
                 case 'agent':
                     $searchField = TermFieldIds::TICKET_AGENT;
                     break;
