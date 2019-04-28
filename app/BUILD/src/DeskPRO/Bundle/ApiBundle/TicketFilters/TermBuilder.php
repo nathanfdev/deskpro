@@ -99,7 +99,7 @@ class TermBuilder
                     }
                     break;
                 case 'brand':
-                    $searchField = TermFieldIds::BRAND_ID;
+                    $searchField = TermFieldIds::TICKET_BRAND;
                     break;
                 case 'agent':
                     $searchField = TermFieldIds::TICKET_AGENT;

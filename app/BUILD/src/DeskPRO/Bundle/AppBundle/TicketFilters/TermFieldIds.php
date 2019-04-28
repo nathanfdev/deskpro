@@ -12,6 +12,7 @@ class TermFieldIds
     const TICKET_TICKET_STATUS_ID      = 'ticket.ticket_status';
     const TICKET_STARRED               = 'ticket.starred';
     const TICKET_DEPARTMENT            = 'ticket.department';
+    const TICKET_BRAND                 = 'ticket.brand';
     const TICKET_AGENT                 = 'ticket.agent';
     const TICKET_AGENT_TEAM            = 'ticket.agent_team';
     const TICKET_FOLLOWERS             = 'ticket.followers';
@@ -33,8 +34,6 @@ class TermFieldIds
     const TICKET_DATE_AGENT_WAITING    = 'ticket.date_agent_waiting';
     const TICKET_DATE_USER_WAITING     = 'ticket.date_user_waiting';
     const TICKET_CUSTOM                = 'ticket.data';
-
-    const BRAND_ID = 'ticket.brand';
 
     const PERSON_ID         = 'ticket.person'; // allows ids or email addresses which get resolved to ids
     const PERSON_LABELS     = 'ticket.person.labels';
