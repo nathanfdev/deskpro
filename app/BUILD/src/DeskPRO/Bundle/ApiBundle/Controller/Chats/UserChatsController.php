@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Response;
  *          {"name"="person", "dataType"="integer", "pattern"="\d+"},
  *          {"name"="agent", "dataType"="integer", "pattern"="\d+"},
  *          {"name"="department", "dataType"="integer", "pattern"="\d+"},
+ *          {"name"="brand", "dataType"="integer", "pattern"="\d+"},
  *          {"name"="label", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
  *          {
  *              "name"="chat_field.{id}",
@@ -197,6 +198,7 @@ class UserChatsController extends CrudController
         DateHelper::applyDateRangeFilter($context, 'date_created', 'created_from', 'created_to');
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_period');
         ListHelper::applyInListFilter($context, 'department');
+        ListHelper::applyInListFilter($context, 'brand');
         CustomDataHelper::applyCustomDataFilters($context, 'chat', CustomDefChat::class);
         LabelHelper::applyLabelFilters($context, static::$entity);
 
