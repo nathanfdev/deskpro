@@ -103,7 +103,8 @@ class BlobStorageService
         //------------------------------
 
         $bs = new DeskproBlobStorage($container->getEm(), $env->getUserTmpDir(), [
-            'disable_physical_delete' => $settingsBag->get('core.filestorage_disable_physical_delete'),
+            'disable_physical_delete'           => $settingsBag->get('core.filestorage_disable_physical_delete'),
+            'attachment_require_auth_downloads' => $settingsBag->get('user.attachment_require_auth_downloads'),
         ]);
         $bs->setLogger($logger);
 

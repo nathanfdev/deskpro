@@ -5784,6 +5784,15 @@ $collection->create(
     ]
 );
 
+$collection->create(
+    'api_server_file_uploads_method',
+    [
+        'path'       => '/server_file_uploads_method',
+        'controller' => 'LegacyApiBundle:Server:getFileUploadsMethod',
+        'methods'    => ['GET'],
+    ]
+);
+
 //#######################################################################################################################
 // Server File Integrity
 //#######################################################################################################################

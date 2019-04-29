@@ -9,6 +9,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
     init() {
       this.settings = null;
       this.$scope.escalation_days = 3;
+      this.fileUploadMethod = null;
 
       this.$scope.editSatisfactionTemplate = () => {
         console.log;
@@ -47,7 +48,8 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
 
 
     initialLoad() {
-      const data_promise = this.Api.sendDataGet({
+      const promises = [];
+      promises.push(this.Api.sendDataGet({
         settings: '/ticket_settings'
       }).then((res) => {
         const settings = res.data.settings.ticket_settings;
@@ -65,7 +67,11 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
 
         this.$scope.settings = settings;
         return this.settings = angular.copy(this.$scope.settings);
-      });
+      }));
+
+      promises.push(this.Api.sendGet('/server_file_uploads_method').then((res) => {
+        this.fileUploadMethod = res.data.filestorage_method;
+      }));
 
       this.headerSortList = {
         axis:   'y',
@@ -82,7 +88,7 @@ define(['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], function(Admin_
         }
       };
 
-      return this.$q.all([data_promise]);
+      return this.$q.all(promises);
     }
 
     isDirtyState() {
