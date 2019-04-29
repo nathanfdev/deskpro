@@ -330,6 +330,20 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
+     * @param CustomDataArticle[] $data
+     */
+    public function setCustomData($data)
+    {
+        $this->custom_data = $data;
+        foreach ($data as $datum) {
+            /* @var CustomDataArticle $datum */
+            $datum->setArticle($this);
+        }
+
+        $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+    }
+
+    /**
      * Reset custom data.
      *
      * @return $this

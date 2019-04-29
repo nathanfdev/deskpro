@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\CustomFieldManager;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
@@ -116,6 +117,14 @@ class CustomFieldManager
     public function getAvailableChatDefs()
     {
         return $this->getAvailableCustomDefs(CustomDefChat::class);
+    }
+
+    /**
+     * @return CustomDefArticle[]
+     */
+    public function getAvailableArticleDefs()
+    {
+        return $this->getAvailableCustomDefs(CustomDefArticle::class);
     }
 
     /**
