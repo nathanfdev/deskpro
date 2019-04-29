@@ -103,8 +103,7 @@ class BlobStorageService
         //------------------------------
 
         $bs = new DeskproBlobStorage($container->getEm(), $env->getUserTmpDir(), [
-            'disable_physical_delete'           => $settingsBag->get('core.filestorage_disable_physical_delete'),
-            'attachment_require_auth_downloads' => $settingsBag->get('user.attachment_require_auth_downloads'),
+            'disable_physical_delete' => $settingsBag->get('core.filestorage_disable_physical_delete'),
         ]);
         $bs->setLogger($logger);
 
@@ -135,6 +134,12 @@ class BlobStorageService
             $bs->setAdapterForTag('logs.email_source_log', $log_adapter_id);
             $bs->setAdapterForTag('logs.sendmail_source_log', $log_adapter_id);
             $bs->setAdapterForTag('logs.ticket_proc_log', $log_adapter_id);
+        }
+
+        // Force 'db' adapter for Download attachments if S3 and Download protection enabled
+        if ($settingsBag->get('user.attachment_require_auth_downloads')
+            && $settingsBag->get('core.filestorage_method') == 's3') {
+            $bs->setAdapterForTag(DeskproBlobStorage::TAG_DOWNLOAD_ATTACHMENT, 'db');
         }
 
         // Use local storage for CSS because we need to read it

@@ -79,12 +79,6 @@ class DeskproBlobStorage implements Loggable
      */
     protected $enable_physical_delete = true;
 
-    /*
-     * If Download attachment require additional authentication
-     * - EULA acceptense
-     */
-    protected $attachment_require_auth_downloads = false;
-
     /**
      * @var string
      */
@@ -110,10 +104,6 @@ class DeskproBlobStorage implements Loggable
 
         if (isset($options['disable_physical_delete']) && $options['disable_physical_delete']) {
             $this->enable_physical_delete = false;
-        }
-
-        if (isset($options['attachment_require_auth_downloads']) && $options['attachment_require_auth_downloads']) {
-            $this->attachment_require_auth_downloads = true;
         }
 
         register_shutdown_function([$this, 'clearCache']);
@@ -179,10 +169,6 @@ class DeskproBlobStorage implements Loggable
      */
     public function getAdapterIdForTag($tag)
     {
-        if ($tag === self::TAG_DOWNLOAD_ATTACHMENT && $this->attachment_require_auth_downloads) {
-            return 'db';
-        }
-
         return isset($this->tag_to_adapter[$tag]) ? $this->tag_to_adapter[$tag] : null;
     }
 
