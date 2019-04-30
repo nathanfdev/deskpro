@@ -19,8 +19,8 @@ class EncodeFiles
      * @var string[]
      */
     private $fileList = [
-        '/src/DeskPRO/Bundle/AppBundle/EventListener/LicenseCheckListener.php',
-        '/sys/License.php'
+        'DeskPRO\Bundle\AppBundle\EventListener\LicenseCheckListener' => '/src/DeskPRO/Bundle/AppBundle/EventListener/LicenseCheckListener.php',
+        'DpSys\License' => '/sys/License.php'
     ];
 
     public function __construct()
@@ -37,22 +37,20 @@ class EncodeFiles
             chmod($realTargetDir, 0755);
         }
 
+        // Encodes a string into hex escape sequences to obscure attempts to grep
         $encString = function($s) {
             return preg_replace_callback('/(.)/', function($m) {
                 return sprintf('\\x%x', ord($m[1]));
             }, $s);
         };
 
+        // New stream id per build
+        $streamId = 'dp'.md5(microtime(true));
         $fileSource = "<?php\n\n";
-        $datPath = implode("\n", [
-                '"'.$encString('compress.zlib://').'".',
-                'constant("'.$encString('DP_APP_DIR').'").',
-                'constant("'.$encString('DIRECTORY_SEPARATOR').'").',
-                '"'.$encString('sys/enc/dat.bin').'"'
-        ]);
 
-        foreach ($this->fileList as $file) {
-            $srcPath        = $this->getAppFilePath($file);
+        foreach ($this->fileList as $className => $file) {
+            $srcPath = $this->getAppFilePath($file);
+            file_put_contents($srcPath, php_strip_whitespace($srcPath));
 
             $srcCode = file_get_contents($srcPath);
             $srcCode = str_replace('<?php', '', $srcCode);
@@ -63,12 +61,54 @@ class EncodeFiles
 
             $fileSource .= $srcCode;
 
-            $loader = "<?php require_once(\n$datPath\n);\n";
-            file_put_contents($srcPath, $loader);
+            // remove original file from fs, they get combined below into dat.bin
+            unlink($srcPath);
         }
 
-        $fileSource = gzencode($fileSource, 1);
+        $fileSource = base64_encode(strrev(gzcompress($fileSource, 1)));
         file_put_contents($realTargetDir.DIRECTORY_SEPARATOR.'dat.bin', $fileSource);
+
+        $autoloaderPath = $this->getAppFilePath('/sys/autoload.php');
+        $autoloader = file_get_contents($autoloaderPath);
+
+        // Adds stream wrapper to autoloader file
+        $autoloader .= "\n\n\n" . trim(str_replace(
+            ['<?php', '__STREAM_ID__', '__STREAM_TIME__'],
+            ['', $streamId, time()],
+            file_get_contents(__DIR__.'/encode-tpl/stream-wrapper.php')
+        ));
+        $autoloader .= "\n\n\n";
+
+        // Adds specific autoload function for these classes to the dat file
+        $autoloader .= "spl_autoload_register(function(\$c) {\n";
+
+        // The path to the dat.bin file
+        $datFilePath = implode('', [
+            'constant("'.$encString('DP_APP_DIR').'").',
+            'constant("'.$encString('DIRECTORY_SEPARATOR').'").',
+            '"'.$encString('sys/enc/dat.bin').'"'
+        ]);
+
+        // The path to the dat.bin file with the stream wrapper protocol
+        $datPath = implode('', [
+            '"'.$encString("$streamId://").'".',
+            'constant("'.$encString('DP_APP_DIR').'").',
+            'constant("'.$encString('DIRECTORY_SEPARATOR').'").',
+            '"'.$encString('sys/enc/dat.bin').'"'
+        ]);
+
+        $autoloader .= "    switch (\$c) {\n";
+        foreach ($this->fileList as $className => $file) {
+            $autoloader .= "        case \"{$encString($className)}\":\n";
+        }
+        $autoloader .= "             if (file_exists($datFilePath))\n";
+        $autoloader .= "                 return require_once($datPath);\n";
+        $autoloader .= "    }\n";
+
+        $autoloader .= "    return false;\n}, false, true);\n";
+
+        file_put_contents($autoloaderPath, $autoloader);
+        file_put_contents($autoloaderPath, php_strip_whitespace($autoloaderPath));
     }
 
     /**
