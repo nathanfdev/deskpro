@@ -57,7 +57,7 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		this.triggerEls = this.options.triggerElements;
 
-		if (Orb.typeOf(this.triggerEls) == 'string') {
+		if (Orb.typeOf(this.triggerEls) === 'string') {
 			this.triggerEls = $(this.triggerEls, this.options.context);
 		}
 
@@ -76,13 +76,14 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		});
 
 		if (this.options.autoSelectFirst) {
-			var firstTab = this.triggerEls.filter('.' + this.options.activeClassname).filter(':visible').first();
+			var firstTab = this.triggerEls.filter('.' + this.options.activeClassname).first();
 			if (!firstTab.length) {
-				firstTab = this.triggerEls.filter(':visible').first();
-				if (!firstTab.length) {
-					firstTab = this.triggerEls.first();
-				}
+				firstTab = this.triggerEls.first();
 			}
+
+			if (firstTab.length && !firstTab.is(':visible')) {
+        firstTab = this.triggerEls.filter(':visible').first();
+      }
 
 			// Check again, there might not be any tabs
 			if (firstTab.length) {

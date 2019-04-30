@@ -4,7 +4,6 @@ namespace DpSys\LowScript;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
-use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -623,8 +622,6 @@ class GetMsgScript extends LowScriptAbstract
             $lastId = $this->getPdoRead()
                 ->query('SELECT id FROM notify_action_alerts ORDER BY id DESC LIMIT 1')
                 ->fetchColumn() ?: 1;
-            $e = new \Exception('Either wrong last ID was passed to GetMsgScript, or there are no action_alerts in Database');
-            SystemErrorHandler::logException($e);
 
             return [[
                 'id'           => $lastId,
