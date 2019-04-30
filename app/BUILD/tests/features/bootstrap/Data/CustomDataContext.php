@@ -135,6 +135,16 @@ class CustomDataContext extends BaseContext
     }
 
     /**
+     * @Given only the following custom download fields exist:
+     *
+     * @param TableNode $table
+     */
+    public function onlyTheFollowingCustomDownloadFieldsExist(TableNode $table)
+    {
+        $this->dataContext->onlyTheFollowingRecordsExist('CustomDefDownload', $table);
+    }
+
+    /**
      * @Given only the following custom person fields exist:
      *
      * @param TableNode $table
