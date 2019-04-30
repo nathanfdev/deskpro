@@ -46,6 +46,7 @@ class EncodeFiles
 
         // New stream id per build
         $streamId = 'dp'.md5(microtime(true));
+        $autoloadCases = '';
         $fileSource = "<?php\n\n";
 
         foreach ($this->fileList as $className => $file) {
@@ -63,24 +64,17 @@ class EncodeFiles
 
             // remove original file from fs, they get combined below into dat.bin
             unlink($srcPath);
+
+            // add to autoload case map
+            $autoloadCases .= "case \"{$encString($className)}\":\n";
         }
 
         $fileSource = base64_encode(strrev(gzcompress($fileSource, 1)));
         file_put_contents($realTargetDir.DIRECTORY_SEPARATOR.'dat.bin', $fileSource);
+        chmod($realTargetDir.DIRECTORY_SEPARATOR.'dat.bin', 0744);
 
         $autoloaderPath = $this->getAppFilePath('/sys/autoload.php');
         $autoloader = file_get_contents($autoloaderPath);
-
-        // Adds stream wrapper to autoloader file
-        $autoloader .= "\n\n\n" . trim(str_replace(
-            ['<?php', '__STREAM_ID__', '__STREAM_TIME__'],
-            ['', $streamId, time()],
-            file_get_contents(__DIR__.'/encode-tpl/stream-wrapper.php')
-        ));
-        $autoloader .= "\n\n\n";
-
-        // Adds specific autoload function for these classes to the dat file
-        $autoloader .= "spl_autoload_register(function(\$c) {\n";
 
         // The path to the dat.bin file
         $datFilePath = implode('', [
@@ -97,15 +91,13 @@ class EncodeFiles
             '"'.$encString('sys/enc/dat.bin').'"'
         ]);
 
-        $autoloader .= "    switch (\$c) {\n";
-        foreach ($this->fileList as $className => $file) {
-            $autoloader .= "        case \"{$encString($className)}\":\n";
-        }
-        $autoloader .= "             if (file_exists($datFilePath))\n";
-        $autoloader .= "                 return require_once($datPath);\n";
-        $autoloader .= "    }\n";
-
-        $autoloader .= "    return false;\n}, false, true);\n";
+        // Adds stream wrapper to autoloader file
+        $autoloader .= "\n\n\n" . trim(str_replace(
+            ['<?php', '__STREAM_ID__', '__STREAM_TIME__', '__DAT_BIN_PATH__', '__DAT_BIN_PATH_REAL__', 'case __STREAM_AUTOLOAD__:'],
+            ['', $streamId, time(), $datPath, $datFilePath, $autoloadCases],
+            file_get_contents(__DIR__.'/encode-tpl/stream-wrapper.php')
+        ));
+        $autoloader .= "\n";
 
         file_put_contents($autoloaderPath, $autoloader);
         file_put_contents($autoloaderPath, php_strip_whitespace($autoloaderPath));
