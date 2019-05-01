@@ -13,6 +13,7 @@ use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailFai
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Email\OutgoingEmailSuccessEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
 use Doctrine\Common\Util\Debug;
+use EWS_Exception;
 use Psr\Log\LoggerInterface;
 
 class QueueProc
@@ -112,31 +113,22 @@ class QueueProc
             $this->event_logger->log(new OutgoingEmailSuccessEvent($r['email_account_id'], $r['from_email']));
         } catch (RawTransportException $e) {
             $this->event_logger->log(new OutgoingEmailFailureEvent($r['email_account_id'], $r['from_email'], $e));
-
             $this->logger->notice('Send failed');
-            $next = $this->getNextRetry($r);
 
-            if ($next) {
-                $this->logger->info(sprintf('Scheduling retry for %s', $next->format('Y-m-d H:i:s')));
-                $this->source_mapper->markSourceRetry($r, null, $next);
-            } else {
-                $this->logger->notice('Marking as failed (retry count exceeded)');
-                $this->source_mapper->markSourceError($r, 'failed');
-            }
+            $this->handleRetry($r);
+        } catch (EWS_Exception $e) {
+            $this->event_logger->log(new OutgoingEmailFailureEvent($r['email_account_id'], $r['from_email'], $e));
+            $this->logger->notice('Send failed');
+
+            $this->handleRetry($r);
         } catch (BlobStorageException $e) {
             $this->logger->notice('Send failed due to blob storage problem: '.$e->getMessage());
+
             if ($e->getPrevious()) {
                 $this->logger->notice('Previous exception: '.$e->getPrevious()->getMessage());
             }
-            $next = $this->getNextRetry($r);
 
-            if ($next) {
-                $this->logger->info(sprintf('Scheduling retry for %s', $next->format('Y-m-d H:i:s')));
-                $this->source_mapper->markSourceRetry($r, null, $next);
-            } else {
-                $this->logger->notice('Marking as failed (retry count exceeded)');
-                $this->source_mapper->markSourceError($r, 'failed');
-            }
+            $this->handleRetry($r);
         } catch (\Exception $e) {
             $this->logger->error(sprintf('Unexpected exception raised: %s [%s]: %s', get_class($e), $e->getCode(), $e->getMessage()));
             $this->source_mapper->markSourceError($r, 'failed');
@@ -177,5 +169,21 @@ class QueueProc
         }
 
         return new \DateTime("+$time_offset seconds");
+    }
+
+    /**
+     * @param array $r
+     */
+    private function handleRetry(array $r)
+    {
+        $next = $this->getNextRetry($r);
+
+        if ($next) {
+            $this->logger->info(sprintf('Scheduling retry for %s', $next->format('Y-m-d H:i:s')));
+            $this->source_mapper->markSourceRetry($r, null, $next);
+        } else {
+            $this->logger->notice('Marking as failed (retry count exceeded)');
+            $this->source_mapper->markSourceError($r, 'failed');
+        }
     }
 }

@@ -65,6 +65,7 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
     {
         return [
             TaskRouterEvent::ASSIGNED      => 'onAssigned',
+            TaskRouterEvent::ACCEPTED      => 'onAccepted',
             TaskRouterEvent::TASK_CANCELED => 'onCanceled',
         ];
     }
@@ -96,8 +97,27 @@ class ChatAgentNotifyListener implements EventSubscriberInterface
             ]
         );
 
-        $this->dispatcher->dispatch(UserChatEvent::STARTED, new UserChatEvent($chat));
         $this->dispatcher->dispatch(ChatNotificationEvent::EVENT_NAME, new ChatNotificationEvent('chat.new', $data));
+    }
+
+    /**
+     * @internal
+     *
+     * @param TaskRouterEvent $event
+     */
+    public function onAccepted(TaskRouterEvent $event)
+    {
+        $task = $event->getTask();
+        if (!$task) {
+            return;
+        }
+
+        $chat = $this->taskHelper->getChat($task);
+        if (!$chat) {
+            return;
+        }
+
+        $this->dispatcher->dispatch(UserChatEvent::STARTED, new UserChatEvent($chat));
     }
 
     /**

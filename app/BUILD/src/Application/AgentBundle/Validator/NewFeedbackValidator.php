@@ -7,6 +7,7 @@
 namespace Application\AgentBundle\Validator;
 
 use Application\DeskPRO\App;
+use Orb\Util\Strings;
 use Orb\Validator\AbstractValidator;
 
 class NewFeedbackValidator extends AbstractValidator
@@ -29,6 +30,10 @@ class NewFeedbackValidator extends AbstractValidator
 
         if (!$feedback->title) {
             $this->addError('title.missing');
+        }
+
+        if (empty(trim(Strings::stripTags($feedback->content)))) {
+            $this->addError('content.missing');
         }
 
         if (!$feedback->status_code) {

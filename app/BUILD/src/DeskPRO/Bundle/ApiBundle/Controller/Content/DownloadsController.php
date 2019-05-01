@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\RequireAgentPermissions;
 use DeskPRO\Bundle\AppBundle\Form\Type\Content\DownloadType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -50,6 +51,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  *      }
  *     }
  * )
+ * @RequireAgentPermissions()
  */
 class DownloadsController extends AbstractSingleCategoryContentController
 {

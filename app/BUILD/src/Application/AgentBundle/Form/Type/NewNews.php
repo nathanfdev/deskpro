@@ -18,7 +18,10 @@ class NewNews extends AbstractType
         //------------------------------
 
         $builder->add('title', 'text');
-        $builder->add('content', 'textarea', ['filter_clean' => false]);
+        $builder->add('content', 'textarea', [
+            'filter_clean' => false,
+            'required'     => true,
+        ]);
 
         $builder->add('category_id', 'text');
         $builder->add('status', 'text');

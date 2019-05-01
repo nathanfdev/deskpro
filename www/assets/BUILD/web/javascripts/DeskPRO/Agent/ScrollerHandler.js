@@ -22,24 +22,12 @@ if (!window.DP_NO_JS_SCROLL) {
 
 			var scrollTrack = null;
 
-			var onScrollTimer = false;
-
 			function initScroll() {
 				if (!element) return;
 				if (hasInit) return;
 				hasInit = true;
 
 				element.tinyscrollbar();
-				element.on('dp_scroll', function() {
-					if (!onScrollTimer) {
-						onScrollTimer = setTimeout(function() {
-							onScrollTimer = false;
-							if (element) {
-								element.find('.select2-dropdown-open').select2("positionDropdown");
-							}
-						}, 25);
-					}
-				});
 			}
 
 			function updateSize() {

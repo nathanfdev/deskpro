@@ -179,7 +179,6 @@ portal.chat.see_full_image: 'Nhấp vào đây để xem hình ảnh đầy đ�
 portal.chat.send_another_validation_email: 'Gửi cho tôi một email khác'
 portal.chat.sent_validation_code: 'Chúng tôi đã gửi cho bạn một email có mã xác nhận.'
 portal.chat.start: 'Bắt đầu cuộc trò chuyện mới'
-portal.chat.start_conversation: 'Bắt đầu cuộc trò chuyện'
 portal.chat.support_powered_by: 'Hỗ trợ được hỗ trợ bởi {{DeskPRO}}'
 portal.chat.take_chat: 'Tham gia Trò chuyện'
 portal.chat.taken_by: 'Trò chuyện Được thực hiện bởi'
@@ -340,8 +339,6 @@ portal.error.general-title: 'Lỗi xuất hiện'
 portal.feedback.attachments: 'File đính kèm'
 portal.feedback.btn-closed: Đóng
 portal.feedback.btn-vote: 'Tôi đồng ý'
-portal.feedback.dir_asc: ASC
-portal.feedback.dir_desc: DESC
 portal.feedback.error_hidden: 'Mục phản hồi này bị ẩn'
 portal.feedback.error_login: 'Vui lòng hãy đăng nhập'
 portal.feedback.filter_all_items: 'Tất cả món đồ'
@@ -433,7 +430,6 @@ portal.forms.error_date_max: 'Ngày này quá xa trong tương lai. Vui lòng ch
 portal.forms.error_date_min: 'Ngày này quá xa so với quá khứ. Vui lòng chọn ngày sau {{date}}.'
 portal.forms.error_dupe_email: 'Email "{{email}}" này đã được người dùng khác sử dụng.'
 portal.forms.error_email_required: 'Bạn phải cung cấp địa chỉ email của bạn'
-portal.forms.error_invalid_email: 'Địa chỉ email này không hợp lệ'
 portal.forms.error_length_invalid: 'Giá trị này phải có chính xác {{limit}} ký tự.'
 portal.forms.error_length_too_long: 'Giá trị này quá dài. Nó nên có {{limit}} ký tự hoặc ít hơn'
 portal.forms.error_length_too_short: 'Giá trị này phải có {{limit}} ký tự trở lên'
@@ -469,18 +465,15 @@ portal.forms.error_upload_file: 'Không thể tải tệp lên'
 portal.forms.error_upload_general: 'Đã xảy ra sự cố khi tải lên tệp tin này. Vui lòng thử lại.'
 portal.forms.error_upload_html_size: 'Tệp quá lớn.'
 portal.forms.error_upload_ini_size: 'Tệp quá lớn. Kích thước cho phép tối đa là {{limit}} {{suffix}}.'
-portal.forms.extra_fields: 'Rất tiếc, đã xảy ra lỗi khi xử lý yêu cầu của bạn. Vui lòng thử lại.'
 portal.forms.label_add_attachment: 'Thêm một tệp đính kèm khác'
 portal.forms.label_captcha: 'Để chứng minh bạn là người, vui lòng cho chúng tôi biết nội dung bạn nhìn thấy trong hình ảnh CAPTCHA'
 portal.forms.label_category: 'Thể loại'
-portal.forms.label_cc: CCs
 portal.forms.label_choose: 'Chọn tệp tin'
 portal.forms.label_comment: 'Bất kỳ ý kiến?'
 portal.forms.label_content: 'Nội dung'
 portal.forms.label_department: 'Bộ phận'
 portal.forms.label_drag: 'Kéo tệp tại đây hoặc'
 portal.forms.label_drag_overlay: 'Kéo tệp của bạn vào đây.'
-portal.forms.label_email: Email
 portal.forms.label_first_name: 'Tên đầu tiên'
 portal.forms.label_full_name: 'Tên của bạn'
 portal.forms.label_language: 'Ngôn ngữ'
@@ -520,7 +513,6 @@ portal.general.agents-available: 'Các đại lý có sẵn'
 portal.general.attachments: 'File đính kèm'
 portal.general.btn-cancel: Hủy
 portal.general.btn-download-pdf: 'Tải về PDF'
-portal.general.btn-email: Email
 portal.general.btn-go: Đi
 portal.general.btn-print: In
 portal.general.btn-send-email: 'Gửi email'
@@ -596,7 +588,6 @@ portal.general.related-feedback: 'Phản hồi liên quan'
 portal.general.related-news: 'Tin tức liên quan'
 portal.general.related-pages: 'Các trang liên quan'
 portal.general.rerender-form: 'Vui lòng xem lại biểu mẫu này trước khi bạn nộp.'
-portal.general.rss_subscribe: 'RSS Feed'
 portal.general.search-labels-section-title: 'Nhãn tìm kiếm'
 portal.general.search-section-title: 'Tìm kiếm'
 portal.general.search_btn: 'Tìm kiếm'
@@ -806,7 +797,6 @@ user.email_subjects.download_sub_new_and_updated: 'Tải xuống mới và cập
 user.email_subjects.download_sub_updated: 'Tải xuống cập nhật'
 user.email_subjects.email-too-big: 'Email của bạn "{{subject}}" đã không được chấp nhận'
 user.email_subjects.email_new-confirm: 'Vui lòng xác nhận địa chỉ email của bạn'
-user.email_subjects.email_primary-confirm: 'Xác nhận địa chỉ email của bạn'
 user.email_subjects.feedback_new: 'Cảm ơn bạn đã gửi phản hồi của bạn'
 user.email_subjects.feedback_new-approved: 'Phản hồi của bạn đã được chấp thuận'
 user.email_subjects.feedback_new-comment: 'Có một nhận xét mới về "{{title}}"'
@@ -829,9 +819,7 @@ user.email_subjects.register-welcome-byagent: 'Tài khoản trợ giúp mới c�
 user.email_subjects.remind_unresolved_final_subject: 'Lời nhắc: {{ticket.subject}}'
 user.email_subjects.remind_unresolved_subject: 'Lời nhắc: {{ticket.subject}}'
 user.email_subjects.ticket-rate: 'Đánh giá trải nghiệm hỗ trợ của bạn trên vé "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Một người mới đã được thêm vào vé của bạn'
 user.email_subjects.tickets_re: 'Lại: {{ticket.subject}}'
-user.email_subjects.too-many-emails: 'THÔNG BÁO: Bạn đã gửi quá nhiều email'
 user.emails.auto-close: 'Vé của bạn "{{ticket.subject}}" sẽ đóng cửa ngay sau đó vì chúng tôi chưa nhận được phản hồi từ bạn gần đây. Nếu bạn cần giúp đỡ thêm chỉ cần trả lời và một trong những đại lý của chúng tôi sẽ giúp bạn.'
 user.emails.chat_transcript: 'Cảm ơn bạn đã trò chuyện với chúng tôi. Đây là bảng điểm trò chuyện của bạn.'
 user.emails.chat_validate_email: 'Vui lòng xác nhận địa chỉ email của bạn bằng cách nhập mã này "{{validation_code}}" trong mẫu tiện ích hoặc nhấp vào liên kết này:'
@@ -870,8 +858,12 @@ user.emails.new-ticket-guest-link: 'Cảm ơn bạn đã liên hệ với chúng
 user.emails.news-explain: 'Bạn nhận được email này vì bạn đã đăng ký tin tức của chúng tôi tại <a href="{{deskpro_url}}"> {{deskpro_url}} </a>. <br /> Bạn không muốn những email này nữa? <a href="{{unsubscribe_url}}"> Nhấp vào đây để hủy đăng ký nhận tất cả thông báo phản hồi. </a>'
 user.emails.news-new-articles:
   other: '1 Tin mới Bài báo '
+user.emails.news-new-news:
+  other: '{{count}} New News Articles'
 user.emails.news-updated-articles:
   other: '1 Cập nhật tin bài Điều {{count}} Đã cập nhật bài báo'
+user.emails.news-updated-news:
+  other: '{{count}} Updated News Articles'
 user.emails.password_agent-reset: 'Một đại lý đã đặt lại mật khẩu tài khoản của bạn. Bạn có thể đăng nhập với những chi tiết này'
 user.emails.password_reset: 'Bạn đã yêu cầu đặt lại mật khẩu. Để đặt lại mật khẩu, hãy nhấp vào liên kết dưới đây:'
 user.emails.password_set: 'Để đặt mật khẩu của bạn, hãy nhấp vào liên kết dưới đây:'
@@ -938,7 +930,7 @@ user.general.page: Trang
 user.general.request_token_expired: 'Mã thông báo yêu cầu của bạn đã hết hạn. Vui lòng thử lại.'
 user.knowledgebase.auto_action_on_date: 'Tự động {{action}} trên {{date}}'
 user.knowledgebase.creating_pending_article: 'Tạo bài báo đang chờ giải quyết'
-user.lang.lang_title: 'Tiếng Việt'
+user.lang.lang_title: 'tiếng Việt'
 user.lang.lang_title_arabic: 'tiếng Ả Rập'
 user.lang.lang_title_danish: 'người Đan Mạch'
 user.lang.lang_title_default: 'Tiếng Anh (US)'
@@ -983,7 +975,6 @@ user.tickets.fields_product: 'Sản phẩm'
 user.tickets.form_error_captcha: 'Vui lòng nhập mã'
 user.tickets.form_error_captcha_invalid: 'Mã bạn nhập không chính xác.'
 user.tickets.from_x_at_y: 'Từ {{name}} tại {{date}}'
-user.tickets.label_cced: CCed
 user.tickets.no_subject: '(Không chủ đề)'
 user.tickets.rate-negative: 'Nó không được tốt'
 user.tickets.rate-neutral: 'Nó đã được OK'
@@ -1058,3 +1049,17 @@ user.time.time_x_month: '{0} tháng'
 user.time.time_x_second: '{0} giây'
 user.time.time_x_week: '{0} vài tuần'
 user.time.time_x_year: '{0} năm'
+user.time.x_day:
+  other: '{{count}} days'
+user.time.x_hour:
+  other: '{{count}} hours'
+user.time.x_minute:
+  other: '{{count}} minutes'
+user.time.x_month:
+  other: '{{count}} months'
+user.time.x_second:
+  other: '{{count}} seconds'
+user.time.x_week:
+  other: '{{count}} weeks'
+user.time.x_year:
+  other: '{{count}} years'

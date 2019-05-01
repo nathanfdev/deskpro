@@ -10,9 +10,15 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  security.agent_permission_listener:
+    class: DeskPRO\Bundle\AppBundle\Security\EventListener\RequireAgentPermissionsListener
+    arguments: ["@annotation_reader"]
+    tags:
+      - { name: kernel.event_subscriber }
+
   # Each kernel bundle will have their own specific security services dedicated to it
   # these are some general security services that should be able to be used app-wide.
-  # For specific security implmentation details, see security.yml in the kernel bundles.
+  # For specific security implementation details, see security.yml in the kernel bundles.
   # PortalBundle/ApiBundle/etc.
 
   ###

@@ -26,13 +26,13 @@ class OutgoingEmailFailureEvent extends AbstractExceptionEvent
     protected $expirationStrategy = AbstractEvent::EXPIRES_WITH_TIME;
 
     /**
-     * @param int                   $emailAccountId
-     * @param string                $emailAccountAddress
-     * @param RawTransportException $exception
-     * @param \DateTime|null        $dateCreated
+     * @param int                                  $emailAccountId
+     * @param string                               $emailAccountAddress
+     * @param RawTransportException|\EWS_Exception $exception
+     * @param \DateTime|null                       $dateCreated
      */
     public function __construct(
-        $emailAccountId, $emailAccountAddress, RawTransportException $exception, \DateTime $dateCreated = null)
+        $emailAccountId, $emailAccountAddress, $exception, \DateTime $dateCreated = null)
     {
         $this->emailAccountId      = $emailAccountId;
         $this->emailAccountAddress = $emailAccountAddress;

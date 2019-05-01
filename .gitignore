@@ -267,6 +267,7 @@ www/assets/BUILD/pub/nightwatch.conf.js
 !/app/BUILD
 !/app/scripts/user/ExampleController.php
 !/app/scripts/agent/ExampleController.php
+!/app/scripts/command/ExampleCommand.php
 !/app/run
 /www/assets/*
 !/www/assets/index.html

@@ -48,6 +48,10 @@ class MessagePhoneNumber extends React.PureComponent {
   }
 
   static detectPhoneNumbers(element, country) {
+    // too big, will be too slow
+    if (element.innerHTML.length > 5000) {
+      return;
+    }
     let diff = 0;
     findPhoneNumbers(element.innerHTML, country).forEach((number) => {
       const initialNumber = element.innerHTML.substring(number.startsAt - diff, number.endsAt - diff);

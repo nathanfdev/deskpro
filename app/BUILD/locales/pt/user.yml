@@ -19,7 +19,6 @@ portal.account.login-btn-usersource: 'Faça login com {{usersource}}'
 portal.account.login-captcha-failed: 'Você inseriu um código CAPTCHA inválido. Por favor, tente novamente.'
 portal.account.login-disabled: 'Seu endereço de e-mail foi banido.'
 portal.account.login-email: 'Seu email'
-portal.account.login-email-placeholder: email@example.com
 portal.account.login-external: 'Faça o login com um serviço externo'
 portal.account.login-form-disabled: 'Formulário de login desativado'
 portal.account.login-invalid: 'Você digitou o e-mail ou a senha incorretos. Por favor, tente novamente.'
@@ -59,7 +58,6 @@ portal.account.reset-password-success: 'Sua senha foi atualizada.'
 portal.account.section-desc-login: 'já tem uma conta? Faça o login abaixo.'
 portal.account.section-desc-login-external: 'Use os links abaixo se você tiver uma conta com outro provedor.'
 portal.account.section-desc-register: 'Registre uma conta para poder gerenciar facilmente suas comunicações.'
-portal.account.section-title-emails: Emails
 portal.account.section-title-login: Entrar
 portal.account.section-title-profile: Perfil
 portal.account.section-title-register: Registar
@@ -118,7 +116,7 @@ portal.chat.block_reason: 'Razão: {{reason}}'
 portal.chat.block_title: 'Finalizar o Chat e bloquear esse usuário de iniciar novo Chat por pelo menos 24 horas.'
 portal.chat.block_user: 'Bloquear Utilizador'
 portal.chat.cancel_end_chat: 'Cancelar e voltar ao chat'
-portal.chat.chat_transcript: 'Transcrição da Conversa'
+portal.chat.chat_transcript: 'Cópia do chat'
 portal.chat.end_chat: 'Fim a conversa'
 portal.chat.ended_by: 'Conversa com {{name}} terminou'
 portal.chat.ended_user: 'Conversa terminada pelo utilizador'
@@ -143,14 +141,18 @@ portal.chat.message_user-timeout: 'Utilizador expirou'
 portal.chat.message_user_joined: '{{name}} entrou na conversa'
 portal.chat.message_user_left: '{{name}} saiu da conversa'
 portal.chat.not_helpful: Inútil
+portal.chat.transcript_action: 'Envie-me uma cópia'
+portal.chat.transcript_already_sent: 'Uma cópia já foi enviada para <b>{{email}}</b>'
+portal.chat.transcript_desc: 'Insira seu nome e e-mail e a enviaremos para você.'
 portal.chat.transcript_sent: 'Cópia enviada para {{email}}'
+portal.chat.transcript_title: 'Precisa de uma cópia deste chat?'
 portal.chat.unassigned: 'Conversa não attribuida'
 portal.chat.you: Você
 portal.downloads.download: Baixar
 portal.downloads.search-title: Transferências
 portal.downloads.section-title: Transferências
 portal.downloads.view-as-agent: 'Pode ver esta página, porque é um agente. Os usuários normais não serão capazes de ver esta página.'
-portal.email_subjects.chat_transcript: 'Transcrição da Conversa'
+portal.email_subjects.chat_transcript: 'Cópia do chat'
 portal.email_subjects.comment-approved: 'O seu comentário foi aprovado'
 portal.email_subjects.comment-confirmation: 'Obrigado pelo seu comentário'
 portal.email_subjects.comment-deleted: 'O seu comentário foi lido pelos nossos agentes'
@@ -170,9 +172,8 @@ portal.email_subjects.ticket-rate: 'Avalie a sua experiencia com a equipa de sup
 portal.email_subjects.ticket_new-participant: 'Uma nova pessoa foi adicionada ao seu bilhete'
 portal.email_subjects.validate-email: 'Valide o seu endereço de email'
 portal.emails.auto-close: 'O seu bilhete "{{ticket.subject}}" irá ser fechado automaticamente devido a não ter atualizado o mesmo recentemente. Se não deseja que o seu bilhete seja fechado, por enviar uma nova resposta para que os nossos agentes o possam ajudar.'
-portal.emails.chat_transcript: 'Obrigado por ter conversado connosco. Aqui está a cópia da nossa conversa.'
+portal.emails.chat_transcript: 'Obrigado por conversar conosco. Aqui está a cópia da nossa conversa.'
 portal.emails.comment_approved: 'O seu comentário foi publicado.'
-portal.emails.comment_deleted: 'O seu comentário foi usado para melhorar a página.'
 portal.emails.comment_thank-you: 'Obrigado pelo seu comentário sobre {{link}}.'
 portal.emails.comment_validate-email: 'Por favor valide o seu endereço de email clicando no link seguinte:'
 portal.emails.do-not-reply: 'Por favor não responda a este email. Esta mensagem é gerada automaticamente pelo servidor e respostas a esta mensagem não serão lidas pelo nosso pessoal.'
@@ -194,7 +195,6 @@ portal.emails.label_view-online: 'Ver Online'
 portal.emails.message-clipped: '(Mensagem foi cortada)'
 portal.emails.password_agent-reset: 'Um agente efetuar a reinicialização da palavra chave da sua conta. Pode entrar na sua conta com os seguintes detalhes.'
 portal.emails.password_reset: 'Solicitou a reinicialização da palavra chave. Para reinicializar a sua palavra chave, clique no link abaixo:'
-portal.emails.profile_email-new-confirm: 'Para terminar a adição deste email secundário à sua conta, simplesmente clique no link de validação abaixo'
 portal.emails.profile_email_link-validate: 'Para validar o seu endereço de email simplesmente clique no link abaixo'
 portal.emails.register-agent-validation: 'Nota: Antes da sua conta se tornar completamente ativa, os nossos agentes necessitam validar a sua conta. Bilhetes e outros conteúdos que já enviou serão mantidos numa fila de validação até que um agente valide as suas contas.'
 portal.emails.register-welcome: 'Obrigado por se ter registado. Pode agora entrar no nosso Helpdesk usando o seu endereço de email {{to_email}}'
@@ -227,7 +227,6 @@ portal.feedback.section-title: Comentário
 portal.feedback.sort_comments: 'Comentários?'
 portal.feedback.submit_feedback: 'Submeter Comentário'
 portal.flashes.comment_thank_you: 'Obrigado pelo seu comentário'
-portal.forms.error_password_min_length: 'Por favor insira uma palavra-chave de pelo menos 5 caracteres.'
 portal.forms.label_category: Categoria
 portal.forms.label_department: Departamento
 portal.forms.label_first_name: 'Primeiro Nome'
@@ -376,12 +375,11 @@ user.defaults.downloads_category_general: Documentos
 user.defaults.news_category_general: Geral
 user.defaults.news_example_content: 'Isto é um exemplo de postar notícia. Esteja à vontade de o editar ou apagar do interface do agente.'
 user.defaults.news_example_title: 'Exemplo de postar notícia'
-user.email_subjects.chat_transcript: 'Transcrição da Conversa'
+user.email_subjects.chat_transcript: 'Cópia do chat'
 user.email_subjects.comment-approved: 'O seu comentário foi aprovado'
 user.email_subjects.comment-deleted: 'O seu comentário foi lido pelos nossos agentes'
 user.email_subjects.email-too-big: 'O seu email "{{subject}}" não foi aceite'
 user.email_subjects.email_new-confirm: 'Valide o seu endereço de email'
-user.email_subjects.email_primary-confirm: 'Valide o seu endereço de email'
 user.email_subjects.feedback_new: 'Obrigado por ter enviado os seus comentários'
 user.email_subjects.feedback_new-approved: 'Os seus comentários foram aprovados'
 user.email_subjects.feedback_new-comment: 'Existe um novo comentário no "{{title}}"'
@@ -391,9 +389,8 @@ user.email_subjects.password_agent-reset: 'Um agente efectuou a reinicializaçã
 user.email_subjects.password_reset: 'Reinicializar a palavra cháve'
 user.email_subjects.register-welcome: 'Obrigado por se ter registado'
 user.email_subjects.ticket-rate: 'Avalie a sua experiencia com a equipa de suporte para o seu bilhete "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Uma nova pessoa foi adicionada ao seu bilhete'
 user.emails.auto-close: 'O seu bilhete "{{ticket.subject}}" irá ser fechado automaticamente devido a não ter atualizado o mesmo recentemente. Se não deseja que o seu bilhete seja fechado, por enviar uma nova resposta para que os nossos agentes o possam ajudar.'
-user.emails.chat_transcript: 'Obrigado por ter conversado connosco. Aqui está a cópia da nossa conversa.'
+user.emails.chat_transcript: 'Obrigado por conversar conosco. Aqui está a cópia da nossa conversa.'
 user.emails.comment_approved: 'O seu comentário foi publicado.'
 user.emails.comment_deleted: 'O seu comentário foi usado para melhorar a página.'
 user.emails.comment_thank-you: 'Obrigado pelo seu comentário sobre {{link}}.'
@@ -481,7 +478,9 @@ user.profile.account_disabled_message: 'Sua conta está desativada. Não pode ac
 user.profile.choose_email: 'Escolha o endereço de e-mail que deseja usar'
 user.profile.or_connect_with: 'Ou entre com'
 user.profile.register: Registar
-user.profile.register_password_min_length: 'Por favor insira uma palavra-chave de pelo menos 5 caracteres.'
+user.profile.register_password_require_num_uppercase:
+  one: 'Pelo menos {{count}} letra maiúscula'
+  other: 'Pelo menos {{count}} letras maiúsculas'
 user.tickets.feedback_message_leave_comment: 'Opcionalmente deixe um comentário'
 user.tickets.fields_category: Categoria
 user.tickets.fields_department: Departamento
@@ -553,8 +552,30 @@ user.time.time_1_week: '1 semana'
 user.time.time_1_year: '1 ano'
 user.time.time_less_second: 'menos de um segundo'
 user.time.time_x_day: '{0} dias'
+user.time.time_x_hour: '{0} horas'
 user.time.time_x_minute: '{0} minutos'
 user.time.time_x_month: '{0} meses'
 user.time.time_x_second: '{0} segundos'
 user.time.time_x_week: '{0} semanas'
 user.time.time_x_year: '{0} anos'
+user.time.x_day:
+  one: '1 dia'
+  other: '{{count}} dias'
+user.time.x_hour:
+  one: '1 hora'
+  other: '{{count}} horas'
+user.time.x_minute:
+  one: '1 minuto'
+  other: '{{count}} minutos'
+user.time.x_month:
+  one: '1 mês'
+  other: '{{count}} meses'
+user.time.x_second:
+  one: '1 segundo'
+  other: '{{count}} segundos'
+user.time.x_week:
+  one: '1 semana'
+  other: '{{count}} semanas'
+user.time.x_year:
+  one: '1 ano'
+  other: '{{count}} anos'

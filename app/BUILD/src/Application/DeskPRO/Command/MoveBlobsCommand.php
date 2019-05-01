@@ -62,6 +62,8 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     WHERE
                         id BETWEEN ? AND ?
                         AND storage_loc != ?
+                        AND storage_loc != \'\'
+                        AND storage_loc IS NOT NULL
                         AND storage_loc_specific IS NULL
                 ', [$set_aid, $batchStart, $batchEnd, $set_aid]);
                 $batchStart = $batchEnd;

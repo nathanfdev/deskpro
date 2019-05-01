@@ -1,3 +1,131 @@
+adm.agents.import_results:
+  other: '{{count}} Agents have been invited to Deskpro'
+adm.agents.import_results_failed:
+  other: '{{count}} Agent Invitations Failed'
+adm.custom_fields.count_specific_org_fields:
+  other: '{{count}} Per-Organization Custom Fields'
+adm.custom_fields.count_specific_user_fields:
+  other: '{{count}} Per-User Custom Fields'
+adm.general.count_custom_fields:
+  other: '{{count}} Custom Fields'
+adm.general.count_labels:
+  other: '{{count}} Labels'
+adm.general.x_api_keys:
+  other: '{{count}} API Keys'
+adm.general.x_departments:
+  other: '{{count}} Departments'
+adm.general.x_email_bans:
+  other: '{{count}} Email Bans'
+adm.general.x_feedback_active_statuses:
+  other: '{{count}} Feedback Active Statuses'
+adm.general.x_feedback_categories:
+  other: '{{count}} Feedback Categories'
+adm.general.x_feedback_closed_statuses:
+  other: '{{count}} Feedback Closed Statuses'
+adm.general.x_feedback_statuses:
+  other: '{{count}} Feedback Statuses'
+adm.general.x_feedback_types:
+  other: '{{count}} Feedback Types'
+adm.general.x_ip_bans:
+  other: '{{count}} IP Bans'
+adm.general.x_ticket_escalations:
+  other: '{{count}} Ticket Escalations'
+adm.general.x_ticket_filters:
+  other: '{{count}} Ticket Filters'
+adm.general.x_twitter_accounts:
+  other: '{{count}} Twitter Accounts'
+adm.general.x_user_rules:
+  other: '{{count}} User Rules'
+adm.round_robins.count:
+  other: '{{count}} Round Robins'
+adm.round_robins.delete_warn:
+  other: 'Are you sure you want to delete this Round Robin? This operation could not be undone. Deleting this Round Robin will disable {{count}} triggers and remove the round robin actions.'
+adm.round_robins.disable_warn:
+  other: 'Disabling Round Robin will disable {{count}} triggers and remove the round robin actions. You should update or delete affected triggers'
+adm.ticket_escalations.count_escalations:
+  other: '{{count}} Escalations'
+adm.ticket_filters.count_filters:
+  other: '{{count}} Filters'
+adm.ticket_macros.count_macros:
+  other: '{{count}} Macros'
+adm.ticket_slas.count_slas:
+  other: '{{count}} SLAs'
+adm.ticket_triggers.count_dep_triggers:
+  other: '{{count}} Department Triggers'
+adm.ticket_triggers.count_email_triggers:
+  other: '{{count}} Email Account Triggers'
+adm.ticket_triggers.count_satisfaction_triggers:
+  other: '{{count}} Satisfaction Triggers'
+adm.ticket_triggers.count_triggers:
+  other: '{{count}} Triggers'
+adm.ticket_webhooks.count_webhooks:
+  other: '{{count}} Webhooks'
+adm.tickets.x_email_accounts:
+  other: '{{count}} Email Accounts'
+admin.agents.deleted_agents_exist:
+  other: 'There are {{count}} deleted agents'
+admin.brands.x_brands:
+  other: '{{count}} Brands'
+admin.channels.facebook_x_pages:
+  other: '{{count}} Facebook Pages'
+admin.channels.sms_x_accounts:
+  other: '{{count}} SMS Accounts'
+admin.departments.count_agents:
+  other: '{{count}} agents'
+admin.departments.count_chats:
+  other: '{1} 1 chat'
+admin.departments.count_tickets:
+  other: '{1} is 1 ticket'
+admin.feedback.count_active_statuses:
+  other: '{{count}} active statuses'
+admin.feedback.count_closed_statuses:
+  other: '{{count}} closed statuses'
+admin.feedback.count_feedback:
+  other: '{{count}} feedback'
+admin.general.count_custom_fields:
+  other: '{{count}} Custom Fields'
+admin.general.count_labels:
+  other: '{{count}} Labels'
+admin.general.time_x_day:
+  other: '{{count}} days'
+admin.general.time_x_hour:
+  other: '{{count}} hours'
+admin.general.time_x_minute:
+  other: '{{count}} minutes'
+admin.general.time_x_month:
+  other: '{{count}} months'
+admin.general.time_x_second:
+  other: '{{count}} seconds'
+admin.general.time_x_week:
+  other: '{{count}} weeks'
+admin.general.time_x_year:
+  other: '{{count}} years'
+admin.general.x_departments:
+  other: '{{count}} Departments'
+admin.general.you_are_outdated_by_x_buils:
+  other: 'Your helpdesk is outdated by {{count}} versions'
+admin.logs.error_logs_count:
+  other: 'Error Logs ({{count}})'
+admin.server.count_files_will_be_used:
+  other: '{1} {{count}} file with a total size of {{size}} will be moved.'
+admin.templates.count_custom:
+  other: '<i>{{count}}</i> custom'
+admin.templates.count_outdated:
+  other: '<i>{{count}}</i> outdated'
+admin.templates.count_template:
+  other: '<i>{{count}}</i> templates'
+admin.tickets.have_count_categories:
+  other: 'You have {{count}} categories.'
+admin.tickets.have_count_departments:
+  other: 'You have {{count}} departments.'
+admin.tickets.have_count_priorities:
+  other: 'You have {{count}} priorities.'
+admin.tickets.have_count_products:
+  other: 'You have {{count}} products.'
+admin.tickets.have_count_workflows:
+  other: 'You have {{count}} workflows.'
+admin.tickets.x_email_accounts:
+  other: '{{count}} Email Accounts'
 agent.chat.added_as_participant: 已添加为参与者
 agent.chat.agent_chats: 代理聊天
 agent.chat.between_members: 聊天在之间
@@ -5,12 +133,13 @@ agent.chat.chat_history: 聊天记录
 agent.chat.chat_started_by: '聊天被   开始'
 agent.chat.chat_transcript: 聊天记录
 agent.chat.chat_with_x: '与谁聊天{{name}}'
+agent.chat.count_agents:
+  other: '{{count}} online agents'
 agent.chat.count_seconds:
   other: "秒 {{count}}秒钟\n"
 agent.chat.filter_title_assigned: 指定聊天
 agent.chat.filter_title_mine: 我的聊天
 agent.chat.filter_title_missed: 错过的聊天
-agent.chat.in_department: 在
 agent.chat.invite_agent: "邀请代理\n"
 agent.chat.invite_another_agent: 邀请另外的处理人
 agent.chat.invite_no_agents: 没有其他的处理人您可以邀请
@@ -20,18 +149,15 @@ agent.chat.label_assigned_others: "此聊天中的其他处理人\n"
 agent.chat.leave_chat_confirm: 您确定您要结束聊天吗？
 agent.chat.leave_end: 结束聊天并离开
 agent.chat.leave_unassign: "取消分配自己并离开\n"
-agent.chat.list_title: 对话
-agent.chat.msg_agent_timeout: 已超时
-agent.chat.msg_assigned_agent: '聊天发放到{{name}}'
+agent.chat.list_title:
+  other: '{{count}} Conversations'
 agent.chat.msg_part_joined: '{{person_name}}已加入'
 agent.chat.msg_part_left: '{{person_name}}已经离开'
-agent.chat.msg_unassigned_agent: 没有被指派
 agent.chat.my_open_chats: 我的开放聊天。
 agent.chat.new_agent_note_by: "{{name}}的新处理人说明\n"
 agent.chat.new_agent_reply_by: "来自{{name}}的新处理人回复\n"
 agent.chat.new_chat: 新对话
 agent.chat.new_ticket_by: '来单来自 {{name}} ({{email}})'
-agent.chat.new_user_reply_by: "来自{{name}}的新处理人回复\n"
 agent.chat.no_department: 新部门
 agent.chat.no_email: 无邮件
 agent.chat.no_online_agents: 没有其他的在线处理人
@@ -46,7 +172,6 @@ agent.chat.snippets: "代码段\n"
 agent.chat.take_chat: 开始聊天
 agent.chat.team_chats: 团队聊天
 agent.chat.title_active_chats: 所有开放的聊天
-agent.chat.title_chat_id: "聊天\n"
 agent.chat.title_ended: 已结束的聊天
 agent.chat.title_leave_chat_prompt: "要离开聊天吗？\n"
 agent.chat.title_new_chats: 新聊天
@@ -55,23 +180,24 @@ agent.chat.user_is_viewing: "用户正在检视\n"
 agent.chat.user_typing: 打字中
 agent.chat.warning: 警示
 agent.chat.warning_email_address_not_unique: "用户当前未登录，因此无法验证其身份。在用户是冒名顶替者的情况下，小心不要暴露敏感信息。\n"
-agent.chat.x_by_anonymous: "匿名聊天\n"
 agent.chat.x_by_anonymousymous: 匿名聊天
 agent.chat.you_have_been_invited: 您已经被邀请一个聊天
 agent.chrome.btn_add: 添加
 agent.chrome.btn_create: 创建
 agent.chrome.btn_recent: 最近
-agent.chrome.chat_list_agents-online: 在线代理
 agent.chrome.chat_list_by-department: "按部门\n"
 agent.chrome.chat_list_heading_current-page: 当前页面
 agent.chrome.chat_list_heading_time: 时间
 agent.chrome.chat_list_heading_user: "用户\n"
 agent.chrome.chat_list_no-online-users: 没有在线的用户
-agent.chrome.chat_list_online-users: 在线用户
+agent.chrome.chat_list_online-users:
+  other: '<span class="count-online-users">{{count}}</span> Online Users'
 agent.chrome.chat_logged-in: 登录到聊天
 agent.chrome.chat_logged-out: 登出聊天
-agent.chrome.chat_online-agents: 代理
-agent.chrome.chat_online-users: 用户
+agent.chrome.chat_online-agents:
+  other: '<span class="userchat-online-agents-count">{{count}}</span> Agents'
+agent.chrome.chat_online-users:
+  other: '<span class="userchat-online-users-count">{{count}}</span> Users'
 agent.chrome.chat_sign-in: 登入开始聊天
 agent.chrome.chat_sign-out: 登出聊天
 agent.chrome.create_new-article: 新文章
@@ -83,11 +209,8 @@ agent.chrome.create_new-person: 新人
 agent.chrome.create_new-task: 新任务
 agent.chrome.create_new-ticket: 新来单
 agent.chrome.create_new-tweet: 新推文
-agent.chrome.hello-user: 您好
 agent.chrome.help-contact-us: 联系我们
-agent.chrome.help-contact-us-explain: 在我们的帮助平台与我们联系
 agent.chrome.help-manuals: 目录
-agent.chrome.help-quickstart-guide-link: '如果您是第一次使用DeskPro,点击这里下载DeskPro快熟手册'
 agent.chrome.kbd-change-status-agent: "将状态更改为等待代理\n"
 agent.chrome.kbd-change-status-resolved: 更改状态为已解决
 agent.chrome.kbd-change-status-user: "将状态更改为等待代理\n"
@@ -112,7 +235,6 @@ agent.chrome.nav_tickets: 来单
 agent.chrome.nav_twitter: "推特\n"
 agent.chrome.nav_userchat: 用户聊天
 agent.chrome.notify_list-dismiss-all: 取消所有的通知
-agent.chrome.notify_list-new-messages: 新的通知
 agent.chrome.notify_list-no-notifications: 没有新的通知
 agent.chrome.notify_list-view-dismissed: 检视取消
 agent.chrome.quicksearch_adv-explain: "有关更高级的搜索选项，请选择一个应用程序：\n"
@@ -130,7 +252,8 @@ agent.chrome.quicksearch_title-publish: 发表
 agent.chrome.quicksearch_title-tickets: 来单
 agent.chrome.recent_list-filter-info: "键入以过滤最近的结果\n"
 agent.chrome.recent_list-none: "您尚未开启任何标签\n"
-agent.chrome.search-show-more: '显示更多{num}条'
+agent.chrome.search-show-more:
+  other: 'Show {{count}} more'
 agent.defaults.default_style: "默认样式\n"
 agent.defaults.team_lvl1_support: 初级帮助
 agent.defaults.team_lvl2_support: 中级帮助
@@ -186,8 +309,6 @@ agent.emails.newagent-about-pdf: '我们写了一本快速指南包括作为一�
 agent.emails.newagent-created-account: '您的同事{{admin_name}}{{admin_email}}已经为您在<a href="{{helpdesk_url}}">{{helpdesk_url}}</a>创建了DeskPRO账户。'
 agent.emails.newagent-help: '如果您需要任何帮助或有任何问题，请访问DeskPRO支持网站，网址为 <a href="https://support.deskpro.com/"> https://support.deskpro.com/ </a>或联系我们直接在<a href="mailto:support@deskpro.com"> support@deskpro.com </a> 。'
 agent.emails.newagent-login-initial-password: '您的初始密码：{{password}}'
-agent.emails.newagent-login-link: 您可以在这里登陆
-agent.emails.newagent-login-your-email: 您的电子邮件地址
 agent.emails.newagent-login-your-password: 注意：您已经在此帮助平台上有一个用户帐户。您可以使用之前设置的密码登录为代理。
 agent.emails.newagent-welcome-to-deskpro: 欢迎来到DeskPRO！
 agent.emails.notice.first_seen: 首先看到
@@ -213,11 +334,9 @@ agent.emails.subject_new_agent: 您的新DeskPRO帮助台帐户
 agent.emails.subject_new_ticket: 新来单
 agent.emails.subject_new_ticket_assigned: '[#{{ticket.id}} 新的来单 + 已指派] {{ticket.subject}}'
 agent.emails.subject_new_ticket_assignedteam: '[#{{ticket.id}} 新来单 + 已指派的团队] {{ticket.subject}}'
-agent.emails.task_assigned_due_today: 这个任务分配给你，今天是最后的期限
 agent.emails.task_assigned_team_due_today: "分配给您的小组的任务{{title}}今天到期。\n"
 agent.emails.task_assigned_to_you_by: "{{agent}}分配给您的任务{{title}}\n"
 agent.emails.task_assigned_to_your_team_by: "{{agent}}分配给您小组的任务{{title}}\n"
-agent.emails.task_completed: 任务完成
 agent.emails.task_due_today: '{{title}}任务今天到期'
 agent.emails.ticket_action_assigned: 已指派
 agent.emails.ticket_action_assigned_team: "指定团队\n"
@@ -236,7 +355,6 @@ agent.emails.updated_ticket_assigned: "并将其分配给您\n"
 agent.emails.updated_ticket_assigned_team: "并将其分配给您的团队{{team}}\n"
 agent.emails.updated_ticket_followed: "并将您添加为关注者\n"
 agent.emails.user_ip: "用户IP\n"
-agent.emails.user_replied_to_tweet: 回复了您的推文
 agent.emails.user_replied_to_tweet_you_wrote: "{{name}}回复了您为{{account}}撰写的推文。\n"
 agent.emails.user_updated_ticket: '{{name}}更新了来单"{{subject}}"'
 agent.emails.view_account_tweets: '查看{{account}}‘的推文'
@@ -250,11 +368,13 @@ agent.emails.view_your_tweets: 查看您的推文
 agent.emails.your_initial_password: 您的初始密码
 agent.feedback.any_category: 任何类别
 agent.feedback.any_status: 任何状态
-agent.feedback.count_votes: 投票
+agent.feedback.count_votes:
+  other: '{{display_count}} votes'
 agent.feedback.feedback_deleted: 反馈已被删除
 agent.feedback.feedback_to_review: "反馈以供审核\n"
 agent.feedback.least_voted_on_top: "最少投票在上面\n"
-agent.feedback.list_title: 提交
+agent.feedback.list_title:
+  other: '{{count}} Submissions'
 agent.feedback.merge_feedback: "合并反馈\n"
 agent.feedback.merge_feedback_note: "来自合并反馈的描述将被添加为评论以保持反馈\n"
 agent.feedback.merge_feedback_submit: 合并这两个反馈提交
@@ -298,7 +418,6 @@ agent.general.add_note: "添加注释\n"
 agent.general.add_product: 添加产品
 agent.general.add_search_term: "添加搜索字词\n"
 agent.general.add_ticket_reply: 添加来单回复
-agent.general.added_by: "添加者：\n"
 agent.general.address: 地址
 agent.general.admin_interface: "管理界面\n"
 agent.general.advanced: 高级的
@@ -308,14 +427,11 @@ agent.general.agent_email_address: "处理人的电邮地址\n"
 agent.general.agent_interface: 处理人界面
 agent.general.agent_is_not_me: 我不是代理
 agent.general.agent_team: 代理团队
-agent.general.agent_waiting_x: 代理等待中
 agent.general.agents: 处理人
 agent.general.ago: 之前
-agent.general.aim: AIM
 agent.general.alert: 警戒
 agent.general.all: 所有
 agent.general.all_words: 所有词
-agent.general.altc: (alt+c)
 agent.general.always_notify_agents: 总是提示处理人
 agent.general.always_set_this_urgency: 总是把这个设置紧急
 agent.general.and: 和
@@ -326,7 +442,6 @@ agent.general.any: 任何
 agent.general.any_language: 任何语言
 agent.general.any_sla: ' 任何SLA？'
 agent.general.any_words: 任何词汇
-agent.general.api_token: 'API Token'
 agent.general.apply: 申请
 agent.general.apply_sla: '申请 SLA'
 agent.general.apply_to_x_selections: "将操作应用于{{placeholder}}选择\n"
@@ -483,7 +598,6 @@ agent.general.description: 说明
 agent.general.deskpro: DeskPRO
 agent.general.detail: 细节
 agent.general.details: 细节
-agent.general.dev_validating: 'DEV: Validating'
 agent.general.dimentions: 维度
 agent.general.disable_agent_notifications: 取消处理人通知
 agent.general.disable_all_notifications: 取消所有通知
@@ -686,7 +800,6 @@ agent.general.log_in: 登录
 agent.general.log_out: 登出
 agent.general.logged_in_as: 作为（）登入
 agent.general.lost: 丢失
-agent.general.lost_field: 丢失
 agent.general.lost_password: 密码丢失
 agent.general.lost_qm: 丢失？
 agent.general.macros: 宏命令
@@ -792,7 +905,6 @@ agent.general.password: 密码
 agent.general.pause: 暂停
 agent.general.pending: "待定\n"
 agent.general.people: 人们
-agent.general.percent_helpful_subphrase: 有帮助的
 agent.general.perform_actions: "执行操作\n"
 agent.general.performer: 执行者
 agent.general.performing_updates: "帮助台目前正在执行更新。\n"
@@ -825,7 +937,6 @@ agent.general.record_deleted: 这条记录已被删除
 agent.general.record_marked_spam: 这条纪录已被记为垃圾记录
 agent.general.recycle_bin: 回收站
 agent.general.recycle_bin_none: 回收站是空的
-agent.general.redirect_continue: "继续前往\n"
 agent.general.redirect_explain: "The link you clicked is for an external site on {{host}}. Are you sure you want to continue?\n"
 agent.general.redirect_page_makeup: "（由{{num_images}}个图片和{{num_scripts}}个脚本组成）\n"
 agent.general.redirect_page_title: "页面标题\n"
@@ -883,7 +994,6 @@ agent.general.set_agent_team: "设置代理团队\n"
 agent.general.set_assignments: "设置分配\n"
 agent.general.set_category: "设置类别\n"
 agent.general.set_department: "设置部门\n"
-agent.general.set_field_name: 设置
 agent.general.set_flag: "设置标志\n"
 agent.general.set_new_pic: "设置为新图片\n"
 agent.general.set_password: 设置密码
@@ -893,7 +1003,6 @@ agent.general.set_product: "设置产品\n"
 agent.general.set_status: "设置状态\n"
 agent.general.set_type: "设置类型\n"
 agent.general.set_urgency: "设置紧急度\n"
-agent.general.set_user_field_name: "设置用户字段：\n"
 agent.general.set_workflow: "设置工作流程\n"
 agent.general.settings: "设置\n"
 agent.general.setup_device_token: 设置设备标记
@@ -922,7 +1031,6 @@ agent.general.statuses: 状态
 agent.general.stop_processing_other_triggers: "停止处理其他触发器\n"
 agent.general.subject: 主题
 agent.general.summary: 概要
-agent.general.supportdeskprocom: support@deskpro.com
 agent.general.system_user: 系统
 agent.general.tabs_close_all: "关闭所有标签页\n"
 agent.general.tabs_close_current: 关闭这个标签页
@@ -950,7 +1058,6 @@ agent.general.time_open: "开放时间\n"
 agent.general.time_since_creation: "创造以来的时间\n"
 agent.general.time_until_first_response: "第一次响应之前的时间\n"
 agent.general.time_until_resolution: 到来单解决之前的时间
-agent.general.time_user_reply_summary: "上次用户回复的时间\n"
 agent.general.time_waiting: "等待的时间\n"
 agent.general.timezone: "时区\n"
 agent.general.title: 标题
@@ -958,12 +1065,10 @@ agent.general.to: 至
 agent.general.to_address: 收件人地址
 agent.general.total: "总\n"
 agent.general.total_time_waiting: "所有等待时间\n"
-agent.general.total_user_waiting_x: "用户总等待时间为\n"
 agent.general.translate_from_x_to_y: "从{{x}}翻译为{{y}}\n"
 agent.general.translation: "翻译\n"
 agent.general.translations: "翻译\n"
 agent.general.trend: 趋势
-agent.general.trigger_x: 触发
 agent.general.triggers_auto_close_resolve_agent_reply: 自动解决等待用户的来单
 agent.general.triggers_auto_close_resolve_user_reply: 自动解决等待用户的来单
 agent.general.triggers_auto_close_warn_user: 警告用户关于他们的来单已被自动解决
@@ -1003,7 +1108,6 @@ agent.general.user_interface: 用户平台
 agent.general.user_time_until_resolution: 来单解决前用户等待时间
 agent.general.user_title: "用户标题\n"
 agent.general.user_waiting: "用户等待中\n"
-agent.general.user_waiting_x: 用户等待中
 agent.general.usergroup: 用户组
 agent.general.usergroup_everyone: 每个人
 agent.general.usergroups: 用户组
@@ -1037,17 +1141,8 @@ agent.general.window_navigation: "窗口导航\n"
 agent.general.workflow: 工作流程
 agent.general.workflows: 工作流程
 agent.general.working_hours: "工作时间\n"
-agent.general.x_after_y: 之后
-agent.general.x_before_y: 之前
-agent.general.x_down_votes: "投票\n"
-agent.general.x_include_y: 包括
-agent.general.x_is_between_y_and_z: '在  之间'
-agent.general.x_is_greater_than_y: "多于\n"
-agent.general.x_is_less_than_y: 少于
-agent.general.x_is_not_y: 不是
-agent.general.x_is_y: 是
-agent.general.x_not_include_y: 没有包括
-agent.general.x_selected: 已经选择的
+agent.general.x_down_votes:
+  other: '{{count}} down votes'
 agent.general.x_up_votes:
   other: 1个赞成
 agent.general.years: 年
@@ -1059,12 +1154,10 @@ agent.interface.app-twitter: 推特
 agent.interface.assign_to_self: 分配给我
 agent.interface.chat-notification-vol: "聊天通知音量\n"
 agent.interface.click_icon_to_add_filter: "点击{{link}}创建新的过滤器\n"
-agent.interface.click_icon_to_show_filters: "单击<span class =“gear-icon”> </ span>以显示我的分类\n"
 agent.interface.close_current_tab: "关闭当前选项卡\n"
 agent.interface.create_ticket_person: 为人创建来单
 agent.interface.creation: 创造
 agent.interface.deskpro_agent_interface: 'DeskPRO 代理界面'
-agent.interface.deskpro_website_host: www.deskpro.com
 agent.interface.error_report_disclaimer: "请注意，我们不会回复所有错误报告。如果您有关于此错误的问题或需要回复，请通过{{email}}与我们联系\n"
 agent.interface.error_report_submitting: "正在提交错误报告...\n"
 agent.interface.error_report_thank_you: "感谢您提交错误报告。\n"
@@ -1074,29 +1167,12 @@ agent.interface.go_to_previous_tab: "转到上一个选项卡\n"
 agent.interface.kbd_change_status_agent: 将状态更改为等待处理人
 agent.interface.kbd_change_status_resolved: 更改状态为已解决
 agent.interface.kbd_change_status_user: 将状态更改为等待处理人
-agent.interface.kbd_ctrl_left: ctrl+left
-agent.interface.kbd_ctrl_right: ctrl+right
-agent.interface.kbd_ctrl_shift_c: ctrl+shift+c
-agent.interface.kbd_ctrl_shift_left: ctrl+shift+left
-agent.interface.kbd_ctrl_shift_right: ctrl+shift+right
 agent.interface.kbd_enter: 键入
-agent.interface.kbd_new_article: a
-agent.interface.kbd_new_download: d
-agent.interface.kbd_new_feedback: i
-agent.interface.kbd_new_news: 'n'
-agent.interface.kbd_new_organisation: o
-agent.interface.kbd_new_person: p
-agent.interface.kbd_new_task: k
-agent.interface.kbd_new_ticket: t
 agent.interface.kbd_open_org_profile: 打开组织简档
 agent.interface.kbd_open_send_options: 打开发送操作选项
 agent.interface.kbd_open_snippets: 打开代码片段
 agent.interface.kbd_open_user_profile: 打开用户的档案
 agent.interface.kbd_send_reply: 发送回复
-agent.interface.kbd_shift_a: shift+a
-agent.interface.kbd_shift_c: shift+c
-agent.interface.kbd_shift_r: shift+r
-agent.interface.kbd_shift_t: shift+t
 agent.interface.kbd_space: 空间
 agent.interface.kbd_up_or_down: 上或下
 agent.interface.key_close_tab: 关闭标签
@@ -1152,7 +1228,6 @@ agent.jira.post_comment: 添加评论
 agent.jira.select.project: 选择项目
 agent.jira.status: 状态
 agent.jira.unlink: 未关联的问题跟踪及管理软件问题
-agent.login.account_locked_message: "由于多次登录尝试失败，您的帐户已被锁定以确保安全。您将无法登录\n"
 agent.login.alert_fields_must_match: "两个密码字段不匹配。\n"
 agent.login.alert_too_short: "请输入至少4个字符的密码。\n"
 agent.login.apple_safari: "苹果Safari浏览器\n"
@@ -1170,7 +1245,6 @@ agent.login.ie_compat_mode_step2: "从工具菜单中选择兼容性视图设置
 agent.login.ie_compat_mode_step3: "确保您的帮助台URL不在列表中。如果是，单击它，然后单击删除按钮。还要确保“在兼容性视图中显示所有网站”已禁用。如果您在内部网中使用DeskPRO，则还必须取消选中其他选项“在兼容性视图中显示内联网站点”。\n"
 agent.login.ie_compat_mode_step4: "关闭此窗口并刷新页面\n"
 agent.login.ie_compat_mode_title: "您是否已经在使用IE8或更高版本？ <a href=\"{{url}}\">确保未启用相容性模式</a>\n"
-agent.login.ie_use_chrome_frame: "或者，您也可以安装 Google Chrome浏览器内嵌框架\n"
 agent.login.login_failed: "登录无效。请再试一次。\n"
 agent.login.mozilla_firefox: "火狐浏览器\n"
 agent.login.notice_outdated_browser: "管理界面和代理界面需要一个新的浏览器。我们检测到您的浏览器太旧，无法使用DeskPRO。将浏览器升级到最新版本，或尝试下载其他浏览器。\n"
@@ -1278,7 +1352,6 @@ agent.people.title_mr: 先生
 agent.people.title_mrs: 夫人
 agent.people.title_ms: 女士
 agent.people.title_prof: 教授
-agent.people.title_rev: Rev.
 agent.people.update_picture: 更新图片
 agent.people.upload_new_picture: 上传新图片
 agent.people.upload_vcard: 上传vCard
@@ -1366,6 +1439,8 @@ agent.publish.event_time_ago_at_when: '{{date}}{{ago}}'
 agent.publish.event_time_ago_by_who_at_when: '{{name}}{{date}}{{ago}}'
 agent.publish.for_ticket: 为来单
 agent.publish.glossary: 术语
+agent.publish.guide_list_title:
+  other: '{{count}} Guides'
 agent.publish.helpful: 有帮助
 agent.publish.kb_list_title:
   other: 1文章
@@ -1390,6 +1465,8 @@ agent.publish.no_news_cats_error: "没有定义类别。在您可以向新闻部
 agent.publish.no_related_explain: "没有相关文章，下载或新闻稿已链接到此项目。要添加相关项目，请在列表窗格中查看它们，然后单击绿色箭头图标。\n"
 agent.publish.no_uploads_yet: "尚未有任何上传，\n"
 agent.publish.not_helpful: 无帮助
+agent.publish.pending_approval_list_title:
+  other: '{{count}} articles pending approval'
 agent.publish.pending_articles: "待处理文章\n"
 agent.publish.permalink_copy_prompt: "在网站上的这个下载的永久链接是：\n"
 agent.publish.please_choose_file: 请选择文件
@@ -1421,7 +1498,8 @@ agent.publish.status_published: 已发布的
 agent.publish.sticky_words_title: 搜索字段
 agent.publish.untranslated_articles: 未被翻译的文章
 agent.publish.validating_comment_manage_tip: 评论正在等待验证。点击进行管理
-agent.publish.validating_list_title: 检视中
+agent.publish.validating_list_title:
+  other: '{{count}} reviewing'
 agent.publish.view_count: 查看计数
 agent.publish.view_count_highest_lowest: '查看计数（最多 最少 ）'
 agent.publish.view_count_lowest_highest: '查看计数（最少 最多）'
@@ -1550,7 +1628,6 @@ agent.snippets.insert_variable: 插入变量
 agent.snippets.learn_more_about_vars: 详细了解变量
 agent.snippets.must_create_cat: 开始创建片段之前，您需要创建第一个类别。
 agent.snippets.shortcut_code: 快捷方式代码
-agent.snippets.shortcut_code_info: '将此代码输入请求帮助回复框中，并自动插入代码段。 例如，使用“standard-response”的快捷方式代码，只需输入“％standard-response％”即可插入代码段，而不用打开代码段管理器。'
 agent.tasks.add_another_task: 添加另一个任务
 agent.tasks.all_tasks: 所有任务
 agent.tasks.assigned_to_by: '由{{name}}分配给此任务'
@@ -1579,13 +1656,22 @@ agent.tasks.task_has_deal_x: '任务关联到：交易“{{label}}”'
 agent.tasks.task_has_ticket_x: '任务链接到：Ticket“{{label}}”'
 agent.tasks.tasks_i_delegated: 我委派的任务
 agent.tasks.team_assigned_by: '您的小组已由{{name}}指定为这项工作'
+agent.tickets.count_agents:
+  other: '{{count}} agents'
+agent.tickets.count_charges:
+  other: '{{count}} charges'
+agent.tickets.count_users:
+  other: '{{count}} users'
+agent.tickets.link_existing_feedback_subscr_part:
+  other: 'Subscribed ({{count}}) Ticket Participants to Feedback'
+agent.tickets.list_title:
+  other: '{{count}} Tickets'
 agent.tickets.send_flood_warning_action: "发送电子邮件警告用户正在充斥系统\n"
 agent.tickets.send_newticket_and_apply_x: '应用{{name}}提交帮助请求'
 agent.tickets.send_newticket_as_x: '应用{{status}}提交来单'
 agent.tickets.send_notifs_from_email_action: '通过{{email}}向用户发送通知'
 agent.tickets.send_notifs_from_name_action: '通过姓名{{name}}向用户发送通知'
 agent.tickets.send_reply: 发送回复
-agent.tickets.send_reply_and_apply_x: 发送回复和提交
 agent.tickets.send_reply_as_x: '发送回复为 {{status}}'
 agent.tickets.sending: 发送中
 agent.tickets.sending_your_message: 正在发送您的邮件
@@ -1653,7 +1739,6 @@ agent.tickets.text_body: 文本主体
 agent.tickets.ticket_changes: 来单改变
 agent.tickets.ticket_feedback: 来单反馈
 agent.tickets.ticket_field_name: '来单域：{{field}}'
-agent.tickets.ticket_is_delete7d: 来单已被删除
 agent.tickets.ticket_is_deleted: 来单已被删除
 agent.tickets.ticket_is_marked_as_spam: 标记这来单为垃圾邮件
 agent.tickets.ticket_merged: 合并来单
@@ -1690,13 +1775,13 @@ agent.tickets.view_full_quoted_message: "查看完整的引文信息\n"
 agent.tickets.view_message_in_window: "在新窗口中查看消息\n"
 agent.tickets.view_newer_messages: 查看新的消息
 agent.tickets.view_older_messages: 查看之前的信息
-agent.tickets.view_ticket_id: 查看任务
 agent.tickets.waiting_til_first_reply: "等待直到第一个回复\n"
 agent.tickets.written_after: 写下后
 agent.tickets.written_any_time: 在任何时间写下
 agent.tickets.written_before: 写下之前
 agent.tickets.written_between: "写在之间\n"
-agent.tickets.x_messages_moved: 消息已转移
+agent.tickets.x_messages_moved:
+  other: '{{count}} messages moved'
 agent.tickets.x_rated_this_message_as: "{{name}}将此邮件评分为：\n"
 agent.tickets.you_have_auto_lock: 您已经自动锁定了此帮助请求。其他代理将无法编辑此帮助请求直到它被解锁。
 agent.tickets.you_have_locked: 您已经锁定了这来单。只有您解锁它，其他的代理才能修改
@@ -1827,6 +1912,24 @@ agent.time.time_x_month: '{0}月'
 agent.time.time_x_second: '{0}秒'
 agent.time.time_x_week: '{0}星期'
 agent.time.time_x_year: '{0}年'
+agent.time.x_day:
+  other: '{{count}} days'
+agent.time.x_hour:
+  other: '{{count}} hours'
+agent.time.x_minute:
+  other: '{{count}} minutes'
+agent.time.x_month:
+  other: '{{count}} months'
+agent.time.x_second:
+  other: '{{count}} seconds'
+agent.time.x_week:
+  other: '{{count}} weeks'
+agent.time.x_year:
+  other: '{{count}} years'
+agent.twitter.count_selected:
+  other: '{{count}} selected'
+agent.twitter.list_title:
+  other: '{{count}} Tweets'
 agent.userchat.agent_blocked_user_on: '{{name}}在{{date}}设置了禁止访问'
 agent.userchat.assigned_to: '会话指定给{{name}}'
 agent.userchat.block_ip_address: 屏蔽IP地址

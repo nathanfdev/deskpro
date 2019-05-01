@@ -97,8 +97,8 @@ Feature: /people endpoint
 
     # Testing against non-agent person #3 because agents removing via /people
     # endpoint is always forbidden (agents need to be soft-deleted via /agents)
-    When I send a DELETE request to "/api/v2/people/{exampleuser@deskpro.dev}"
-    Then the response status code should be 200
+    When I send a DELETE request to "/api/v2/people/{gpa@deskpro.dev}"
+    Then the response status code should be 400
 
 
   Scenario: Admin is allmighty and they doesn't care about permission groups

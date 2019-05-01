@@ -10,6 +10,10 @@ portal.account.section-title-reset-password: '비밀번호 재설정'
 portal.articles.search-title: '지식 베이스'
 portal.articles.section-title: '지식 베이스'
 portal.articles.view-as-agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
+portal.articles.view-x-articles:
+  other: 'View {{count}} articles'
+portal.articles.x-articles:
+  other: '{{count}} articles'
 portal.chat.assigned_to: '{{name}} 과 대화가 연결되었습니다'
 portal.chat.chat_transcript: '대화 기록'
 portal.chat.end_chat: '대화를 종료합니다'
@@ -19,6 +23,8 @@ portal.chat.feedback_action: '피드백 보내기'
 portal.chat.helpful: '도움이 되었습니다'
 portal.chat.label-name: 이름
 portal.chat.list_agent: 에이전트
+portal.chat.list_title:
+  other: '{{count}} Chats'
 portal.chat.log_department: 부서
 portal.chat.message_assigned: '{{name}} 과 대화가 연결되었습니다'
 portal.chat.message_ended: '대화가 종료되었습니다'
@@ -42,6 +48,8 @@ portal.downloads.download: 다운로드
 portal.downloads.search-title: '다운로드 파일들'
 portal.downloads.section-title: '다운로드 파일들'
 portal.downloads.view-as-agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
+portal.downloads.view-x-files:
+  other: 'View {{count}} downloads'
 portal.email_subjects.chat_transcript: '대화 기록'
 portal.email_subjects.comment-approved: '코멘트가 승인 되었습니다'
 portal.email_subjects.comment-confirmation: '코멘트를 달아주셔서 감사합니다'
@@ -69,11 +77,16 @@ portal.email_subjects.validate-email: '이메일 주소를 확인해주십시오
 portal.emails.auto-close: '활동이 잦지 않아 고객님의 티켓 "{{ticket.subject}}"이 자동으로 닫혀집니다. 티켓을 닫고 싶지 않으시면 저희 상담원이 도와드릴 수 있도록 새 답변을 추가하시면 됩니다.'
 portal.emails.chat_transcript: '상담 감사합니다. 상담 기록입니다.'
 portal.emails.comment_approved: '코멘트가 발행되었습니다.'
-portal.emails.comment_deleted: '고객님의 코멘트가 페이지의 개선에 도움이 되었습니다'
 portal.emails.comment_thank-you: '{{link}} 에 코멘트를 남겨주셔서 감사합니다.'
 portal.emails.comment_validate-email: '옆의 링크를 클릭하셔서 이메일 주소를 확인해주십시오.'
 portal.emails.do-not-reply: '이 이메일에 답변하지 마십시오. 이 이메일은 기계 발생 메세지이니 스태프가 받지 못합니다.'
+portal.emails.download-new-downloads:
+  other: '{{count}} New Downloads'
+portal.emails.download-updated-downloads:
+  other: '{{count}} Updated Downloads'
 portal.emails.email-too-big: '이메일 "{{subject}}" 의 크기가 너무 커 발송되지 않았습니다. 이메일의 최대 크기는 {{max_size}} 입니다. 첨부 파일들을 제거하시고 다시 시도 해보십시오.'
+portal.emails.feedback-updated-items:
+  other: '{{count}} Updated Feedback Items'
 portal.emails.feedback_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
 portal.emails.feedback_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
 portal.emails.feedback_disapproved: '고객님의 피드백이 수락되지 않아 웹사이트에 공개되지 않을것임을 알려드립니다.'
@@ -93,9 +106,12 @@ portal.emails.kb-updated-articles:
   other: '하나의 업데이트 논문 {{count}} 개의 업데이트 논문'
 portal.emails.label_view-online: '온라인에서 확인하세요'
 portal.emails.message-clipped: '(메세지들이 클립되었습니다 )'
+portal.emails.news-new-articles:
+  other: '{{count}} New News Posts'
+portal.emails.news-updated-articles:
+  other: '{{count}} Updated News Posts'
 portal.emails.password_agent-reset: '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오'
 portal.emails.password_reset: '비밀번호 재설정을 요청하셨습니다. 재설정 하시려면 아래의 링크를 클릭하십시오:'
-portal.emails.profile_email-new-confirm: '두번째 이메일 주소를 추가하시려면 아래의 확인 링크를 클릭해주십시오'
 portal.emails.profile_email_link-validate: '이메일 주소를 인증시키시려면 아래 링크를 클릭해주십시오'
 portal.emails.register-agent-validation: '메모: 계정이 활성화 되려면 에이전트가 계정을 인증해야합니다. 티켓과 다른 콘텐츠는 에이전트가 계정을 승인하기까지 승인 목록에 대기 될것입니다.'
 portal.emails.register-confirm: '가입해주셔서 감사합니다. <br /><br />아래 링크를 클릭해 이메일 주소를 확인해주셔야 계정을 사용하실 수 있습니다.'
@@ -126,7 +142,18 @@ portal.feedback.form_title: 제목
 portal.feedback.search-title: 피드백
 portal.feedback.section-title: 피드백
 portal.feedback.submit_feedback: '피드백 작성하기'
-portal.forms.error_password_min_length: '5자 이상의 비밀번호를 입력해 주세요.'
+portal.feedback.view-x-feedback:
+  other: 'View {{count}} feedback'
+portal.forms.error_password_min_length:
+  other: 'Minimum of {{count}} characters'
+portal.forms.error_password_require_num_lowercase:
+  other: 'At least {{count}} lowercase characters'
+portal.forms.error_password_require_num_number:
+  other: 'At least {{count}} numbers'
+portal.forms.error_password_require_num_symbol:
+  other: 'At least {{count}} symbols'
+portal.forms.error_password_require_num_uppercase:
+  other: 'At least {{count}} uppercase characters'
 portal.forms.label_category: 카테고리
 portal.forms.label_department: 부서
 portal.forms.label_first_name: 이름
@@ -148,6 +175,10 @@ portal.general.attachments: 첨부파일
 portal.general.btn-cancel: 취소
 portal.general.btn-download-pdf: 'PDF 다운로드'
 portal.general.btn-go: 등록
+portal.general.comments-count:
+  other: '{{count}} Comments'
+portal.general.comments-title:
+  other: 'Comments ({{count}})'
 portal.general.delete: 삭제
 portal.general.everything: 전체
 portal.general.nav-downloads: '다운로드 파일들'
@@ -177,6 +208,10 @@ portal.general.show: 보기
 portal.general.submit-feedback: '피드백 남기기'
 portal.news.section-title: 뉴스
 portal.news.view-as-agent: '직원들만 이 페이지를 열람 할 수 있습니다. 일반 사용자는 열람 할 수 없습니다.'
+portal.news.view-x-news:
+  other: 'View {{count}} articles'
+portal.sidebar.agents_x_online:
+  other: '{{count}} online'
 portal.sidebar.news_title: 뉴스
 portal.tickets.feedback_message_leave_comment: '댓글 남기기'
 portal.tickets.guest-thanks-section-title: 감사합니다.
@@ -185,6 +220,8 @@ portal.tickets.list_agent: '배정된 에이전트'
 portal.tickets.list_date_created: '생성 날짜'
 portal.tickets.list_department: 부서
 portal.tickets.list_status_open: '티켓 열기'
+portal.tickets.list_status_open_count:
+  other: '{{count}} awaiting response'
 portal.tickets.list_status_resolved: 해결된
 portal.tickets.list_subject: 제목
 portal.tickets.list_title: '당신의 티켓들'
@@ -278,7 +315,6 @@ user.email_subjects.comment-approved: '코멘트가 승인 되었습니다'
 user.email_subjects.comment-deleted: '저희 상담원들이 고객님의 코멘트를 읽었습니다'
 user.email_subjects.email-too-big: '이메일 "{{subject}}" 이 수락되지않았습니다'
 user.email_subjects.email_new-confirm: '이메일 주소를 확인해주십시오'
-user.email_subjects.email_primary-confirm: '이메일 주소를 확인해주십시오'
 user.email_subjects.feedback_new: '피드백을 남겨주셔서 감사합니다'
 user.email_subjects.feedback_new-approved: '피드백이 승인되었습니다'
 user.email_subjects.feedback_new-comment: '"{{title}}" 에 새 댓글이 달렸습니다'
@@ -292,14 +328,19 @@ user.email_subjects.password_reset: '비밀번호 재설정'
 user.email_subjects.re: '답변: {{subject}}'
 user.email_subjects.register-welcome: '가입해주셔서 감사합니다'
 user.email_subjects.ticket-rate: 'Support 경험을 고객님의 티켓 "{{ticket.subject}}" 에서 점수를 매겨주세요'
-user.email_subjects.ticket_new-participant: '새로운 사용자가 고객님의 티켓에 추가되었습니다'
 user.email_subjects.tickets_re: '답변: {{ticket.subject}}'
 user.emails.auto-close: '활동이 잦지 않아 고객님의 티켓 "{{ticket.subject}}"이 자동으로 닫혀집니다. 티켓을 닫고 싶지 않으시면 저희 상담원이 도와드릴 수 있도록 새 답변을 추가하시면 됩니다.'
 user.emails.chat_transcript: '상담 감사합니다. 상담 기록입니다.'
 user.emails.comment_approved: '코멘트가 발행되었습니다.'
 user.emails.comment_deleted: '고객님의 코멘트가 페이지의 개선에 도움이 되었습니다'
 user.emails.comment_thank-you: '{{link}} 에 코멘트를 남겨주셔서 감사합니다.'
+user.emails.download-new-downloads:
+  other: '{{count}} New Downloads'
+user.emails.download-updated-downloads:
+  other: '{{count}} Updated Downloads'
 user.emails.email-too-big: '이메일 "{{subject}}" 의 크기가 너무 커 발송되지 않았습니다. 이메일의 최대 크기는 {{max_size}} 입니다. 첨부 파일들을 제거하시고 다시 시도 해보십시오.'
+user.emails.feedback-updated-items:
+  other: '{{count}} Updated Feedback Items'
 user.emails.feedback_agent-validation: '에이전트가 확인하기 전까지는 고객님의 피드백이 웹사이트에 공개되지 않습니다.'
 user.emails.feedback_approved: '고객님의 피드백이 수락되었고 웹사이트에 공개적으로 올려진걸 알려드립니다.'
 user.emails.feedback_closed: '고객님이 남기신 피드백 "{{title}}"이 닫혔습니다: {{status}}  '
@@ -319,6 +360,14 @@ user.emails.kb-updated-articles:
   other: '하나의 업데이트 논문 {{count}} 개의 업데이트 논문'
 user.emails.label_view-online: '온라인에서 확인하세요'
 user.emails.message-clipped: '(메세지들이 클립되었습니다 )'
+user.emails.news-new-articles:
+  other: '{{count}} New News Articles'
+user.emails.news-new-news:
+  other: '{{count}} New News Articles'
+user.emails.news-updated-articles:
+  other: '{{count}} Updated News Articles'
+user.emails.news-updated-news:
+  other: '{{count}} Updated News Articles'
 user.emails.password_agent-reset: '에이전트가 비밀번호를 재설정 하였습니다. 이 인증번호들로 로그인 하십시오'
 user.emails.password_reset: '비밀번호 재설정을 요청하셨습니다. 재설정 하시려면 아래의 링크를 클릭하십시오:'
 user.emails.profile_email-new-confirm: '두번째 이메일 주소를 추가하시려면 아래의 확인 링크를 클릭해주십시오'
@@ -402,7 +451,16 @@ user.profile.account_disabled_message: '계정에 현재 문제가 있습니다.
 user.profile.choose_email: '사용하실 이메일 주소를 선택해 주세요'
 user.profile.or_connect_with: '또는 다음으로 연결합니다'
 user.profile.register: 가입
-user.profile.register_password_min_length: '5자 이상의 비밀번호를 입력해 주세요.'
+user.profile.register_password_min_length:
+  other: 'Minimum of {{count}} characters'
+user.profile.register_password_require_num_lowercase:
+  other: 'At least {{count}} lowercase characters'
+user.profile.register_password_require_num_number:
+  other: 'At least {{count}} numbers'
+user.profile.register_password_require_num_symbol:
+  other: 'At least {{count}} symbols'
+user.profile.register_password_require_num_uppercase:
+  other: 'At least {{count}} uppercase characters'
 user.tickets.feedback_message_leave_comment: '댓글 남기기'
 user.tickets.fields_category: 카테고리
 user.tickets.fields_department: 부서
@@ -484,3 +542,17 @@ user.time.time_x_month: '{0} 달'
 user.time.time_x_second: '{0} 초'
 user.time.time_x_week: '{0} 주'
 user.time.time_x_year: '{0} 년'
+user.time.x_day:
+  other: '{{count}} days'
+user.time.x_hour:
+  other: '{{count}} hours'
+user.time.x_minute:
+  other: '{{count}} minutes'
+user.time.x_month:
+  other: '{{count}} months'
+user.time.x_second:
+  other: '{{count}} seconds'
+user.time.x_week:
+  other: '{{count}} weeks'
+user.time.x_year:
+  other: '{{count}} years'

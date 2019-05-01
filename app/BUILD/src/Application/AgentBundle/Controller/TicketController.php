@@ -1260,9 +1260,6 @@ class TicketController extends AbstractController
         // Do Reply Prepare
         $saveReplyData = $this->saveReply($ticket_id, true);
 
-        // Don't really want to save anything
-        $this->em->clear();
-
         if (isset($saveReplyData['response'])) {
             return $saveReplyData['response'];
         }
@@ -1601,16 +1598,19 @@ class TicketController extends AbstractController
         if ($this->in->getBool('options.is_note')) {
             $macroId    = null;
             $actionType = null;
-        }
-        if ($macroId) {
-            $actionType = 'macro';
         } else {
-            if (!$actionType) {
-                $actionType = 'awaiting_user';
+            if ($macroId) {
+                $actionType = 'macro';
+            } else {
+                if (!$actionType) {
+                    $actionType = 'awaiting_user';
+                }
             }
         }
 
-        $ticketContext->getVars()->set('reply_as_action', $actionType);
+        if ($actionType) {
+            $ticketContext->getVars()->set('reply_as_action', $actionType);
+        }
 
         $replyOptions = [];
         if ($this->in->getInt('options.agent_id') != -1 && $this->in->getBool('options.do_assign_agent')) {
@@ -1659,10 +1659,11 @@ class TicketController extends AbstractController
         }
 
         $ticketStatuses = $this->getContainer()->getTicketStatuses();
-        /** @var TicketStatus $setStatus */
-        $setStatus = $ticketStatuses->findStatusOrException($setStatus, false, true);
 
         if ($setStatus) {
+            /** @var TicketStatus $setStatus */
+            $setStatus = $ticketStatuses->findStatusOrException($setStatus, false, true);
+
             /** @var TicketChecker $tcheck */
             $tcheck = $this->person->PermissionsManager->TicketChecker;
             switch ($setStatus->getStatusType()) {
@@ -1716,7 +1717,7 @@ class TicketController extends AbstractController
         foreach ($this->in->getCleanValueArray('attach') as $blobId) {
             $blob = $this->em->getRepository(Blob::class)->find($blobId);
             if ($blob) {
-                if ($this->em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
+                if (!$isOptimisticUIUpdate && $this->em->getRepository(SnippetTranslation::class)->findSnippetBlob($blob)) {
                     $raw_file = $this->get('blob.storage')->copyBlobRecordToString($blob);
                     $blob     = $this->get('blob.storage')->createBlobRecordFromString(
                         $raw_file,
@@ -1766,14 +1767,19 @@ class TicketController extends AbstractController
                         $snippetLog = SnippetUseLog::createSnippetTicketLog($message, $this->getPerson(), $snippetTranslation);
                         $snippet    = $snippetLog->getSnippet();
                         $snippet->setUsageCount((int) $snippet->getUsageCount() + 1);
-                        $this->em->persist($snippetLog);
+
+                        if (!$isOptimisticUIUpdate) {
+                            $this->em->persist($snippetLog);
+                        }
                     }
                 } else {
                     $snippet = $this->em->find(TextSnippet::class, $snippetId);
 
                     if ($snippet) {
                         $snippetLog = Entity\TicketObjectUseLog::createSnippetLog($ticket, $this->getPerson(), $snippet);
-                        $this->em->persist($snippetLog);
+                        if (!$isOptimisticUIUpdate) {
+                            $this->em->persist($snippetLog);
+                        }
                     }
                 }
             }
@@ -1944,29 +1950,25 @@ class TicketController extends AbstractController
                 $ticket['agent_team_id'] = $this->in->getUInt('options.agent_team_id');
             }
 
-            if (!$isOptimisticUIUpdate) {
-                if (!$message['is_agent_note'] || $macro) {
-                    if ($actionType != 'macro') {
-                        $ticket->setTicketStatus($setStatus);
-                    }
-
-                    if ($this->in->getBool('options.do_kbpending')) {
-                        $kbPending = new ArticlePendingCreate();
-                        $kbPending->fromArray(
-                            [
-                                'person'  => $this->person,
-                                'ticket'  => $ticket,
-                                'message' => $message,
-                            ]
-                        );
-                        $this->em->persist($kbPending);
-                    }
+            if (!$message['is_agent_note'] || $macro) {
+                if ($actionType != 'macro' && $setStatus) {
+                    $ticket->setTicketStatus($setStatus);
                 }
-            } else {
-                $ticket->setTicketStatus($setStatus);
             }
 
             if (!$isOptimisticUIUpdate) {
+                if ($this->in->getBool('options.do_kbpending')) {
+                    $kbPending = new ArticlePendingCreate();
+                    $kbPending->fromArray(
+                       [
+                           'person'  => $this->person,
+                           'ticket'  => $ticket,
+                           'message' => $message,
+                       ]
+                   );
+                    $this->em->persist($kbPending);
+                }
+
                 $this->container->getTicketManager()->saveTicket($ticket, $ticketContext);
 
                 $this->em->getRepository(Draft::class)->deleteDraft('ticket', $ticket->id);
@@ -1982,7 +1984,7 @@ class TicketController extends AbstractController
         $closeTab = $this->in->getBool('options.close_tab');
 
         $errorMessages = [];
-        if ($setStatus->getStatusType() == 'resolved') {
+        if ($setStatus && $setStatus->getStatusType() == 'resolved') {
             $newticket = new NewTicket($this->em, $this->person);
             $newticket->setValuesFromTicket($ticket);
             $validator = new NewTicketValidator();
@@ -4992,7 +4994,7 @@ class TicketController extends AbstractController
             if (!$newTicket->subject) {
                 $errors['subject'] = true;
             }
-            if (!$newTicket->message) {
+            if (empty(trim(Strings::stripTags($newTicket->message)))) {
                 $errors['message'] = true;
             }
             if (!$newTicket->brand_id) {

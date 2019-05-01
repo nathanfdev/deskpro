@@ -66,7 +66,6 @@ portal.email_subjects.validate-email: 'Erősítse meg e-mail címét'
 portal.emails.auto-close: '"{{ticket.subject}}" tárgyú ügye hamarosan lezárásra kerül. Amennyiben ezt nem szeretné, mert további kérdése van az üggyel kapcsolatban, vagy újabb információra lenne szüksége, válaszoljon erre az üzenetre. Örömmel állunk rendelkezésére.'
 portal.emails.chat_transcript: 'Reméljük, hogy elégedett munkatársunk munkájával. Mellékeljük legutóbbi beszélgetésük kivonatát.'
 portal.emails.comment_approved: 'Hozzászólása publikálásra került.'
-portal.emails.comment_deleted: 'Hozzászólását felhasználtuk tartalmunk fejlesztéséhez.'
 portal.emails.comment_thank-you: 'Köszönjük hozzászólását. ({{link}})'
 portal.emails.comment_validate-email: 'Kérjük erősítse meg e-mail címét a következő linkre kattintással:'
 portal.emails.do-not-reply: 'Ez egy automata üzenet. kérjük ne válaszoljon rá, mert a válaszként küldött üzeneteket rendszerünk olvasás és ellenőrzés nélkül törli!'
@@ -87,7 +86,6 @@ portal.emails.label_view-online: 'Online megtekintés'
 portal.emails.message-clipped: '(Kivágott üzenet)'
 portal.emails.password_agent-reset: 'Munkatársunk alaphelyzetbe állította az Ön jelszavát. Ezután a következő adatokkal tud bejelentkezni weboldalunkon:'
 portal.emails.password_reset: 'Ön jelszócserét kért weboldalunkon. Amennyiben meg kívánja erősíteni szándékát, a jelszócseréhez kattintson a következő linkre:'
-portal.emails.profile_email-new-confirm: 'Másodlagos e-mail címének megerősítéséhez kérjük kattintson a következő linkre:'
 portal.emails.profile_email_link-validate: 'E-mail címének megerősítéséhez kérjük kattintson a következő linkre:'
 portal.emails.register-confirm: 'Köszönjük regisztrációját.<br /><br />Mielőtt használatba vehetné ügyfélfiókját, kattintson a következő linkre e-mail címének megerősítéséhez:'
 portal.emails.registration_closed: 'Tisztelt {{name}}!<br /><br /><br /><br />Ügyfélszolgálati rendszerünk csak regisztrált felhasználóktól fogad el üzenetet. Amennyiben Ön regisztrált felhasználónk, kérjük használja rendszerünkben nyilvántartott e-mail címét az üzenetküldéshez.'
@@ -118,7 +116,6 @@ portal.feedback.section-title: Ötlettár
 portal.feedback.sort_comments: 'Hozzászólás?'
 portal.feedback.submit_feedback: 'Visszajelzés küldése'
 portal.flashes.comment_thank_you: 'Köszönjük hozzászólását'
-portal.forms.error_password_min_length: 'Kérjük adja meg legalább 5 karakterből álló jelszavát!'
 portal.forms.label_category: Típus
 portal.forms.label_department: Részleg
 portal.forms.label_first_name: Utónév
@@ -259,7 +256,6 @@ user.email_subjects.chat_transcript: 'Beszélgetés összefoglaló'
 user.email_subjects.comment-approved: 'A hozzászólása jóváhagyásra került'
 user.email_subjects.comment-deleted: 'Munkatársunk ellenőrizte hozzászólását'
 user.email_subjects.email_new-confirm: 'Erősítse meg e-mail címét'
-user.email_subjects.email_primary-confirm: 'Erősítse meg e-mail címét'
 user.email_subjects.feedback_new: 'Köszönjük visszajelzését'
 user.email_subjects.feedback_new-approved: 'A visszajelzése jóváhagyásra került'
 user.email_subjects.feedback_new-comment: 'Új hozzászólás érkezett: {{title}}'
@@ -269,7 +265,6 @@ user.email_subjects.password_agent-reset: 'Jelszavát alaphelyzetbe állítottuk
 user.email_subjects.password_reset: Jelszócsere
 user.email_subjects.re: 'Válasz: {{subject}}'
 user.email_subjects.ticket-rate: 'Értékelje munkánkat: "{{ticket.subject}}"'
-user.email_subjects.ticket_new-participant: 'Ügyéhez új személy került hozzárendelésre'
 user.email_subjects.tickets_re: 'Válasz: {{ticket.subject}}'
 user.emails.auto-close: '"{{ticket.subject}}" tárgyú ügye hamarosan lezárásra kerül. Amennyiben ezt nem szeretné, mert további kérdése van az üggyel kapcsolatban, vagy újabb információra lenne szüksége, válaszoljon erre az üzenetre. Örömmel állunk rendelkezésére.'
 user.emails.chat_transcript: 'Reméljük, hogy elégedett munkatársunk munkájával. Mellékeljük legutóbbi beszélgetésük kivonatát.'
@@ -353,7 +348,6 @@ user.profile.account_disabled_message: 'Ügyfélfiókja jelenleg ki van kapcsolv
 user.profile.choose_email: 'Válassza ki a használni kívánt e-mail címet'
 user.profile.or_connect_with: 'Bejelentkezés ezzel:'
 user.profile.register: Regisztráljon
-user.profile.register_password_min_length: 'Kérjük adja meg legalább 5 karakterből álló jelszavát!'
 user.tickets.feedback_message_leave_comment: 'Itt hagyhat megjegyzést számunkra'
 user.tickets.fields_category: Kategória
 user.tickets.fields_department: Részleg

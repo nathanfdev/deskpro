@@ -216,7 +216,7 @@ class LogsController extends BaseController
         $options   = new OptionsModel();
         $logHelper = $this->container->get('api_log.helper');
         $options
-            ->setEnabled((bool) $logHelper->isLoggingEnabled())
+            ->setEnabled($logHelper->getEnabled())
             ->setRequestLength((int) $logHelper->getMaxRequestBodyLength())
             ->setResponseLength((int) $logHelper->getMaxResponseBodyLength())
             ->setModes($logHelper->getModes())

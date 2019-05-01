@@ -70,6 +70,11 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
     }
 
     this.addEvent('activate', function() {
+      if (this.wrapper && !this.resizeSensor) {
+        this.resizeSensor = new ResizeSensor(this.wrapper, function() {
+          self.updateUi();
+        });
+      }
       this.IS_ACTIVE = true;
       DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.activated', { page: this });
       this.updateUi();
@@ -101,13 +106,6 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 
       self.initApps();
       DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.tabinit.' + this.TYPENAME, this);
-
-      if (this.wrapper) {
-        this.resizeSensor = new ResizeSensor(this.wrapper, function() {
-          self.updateUi();
-        });
-      }
-
     }, this);
 
     // Standard hook methods

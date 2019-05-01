@@ -601,6 +601,10 @@ $container->loadFromExtension(
                                     '([^\\._\\s]+)',
                                 ],
                             ],
+                            'preserved_asciifolding' => [
+                                'type'              => 'asciifolding',
+                                'preserve_original' => true,
+                            ],
                         ],
                         'analyzer' => [
                             'title_content_analyzer' => [
@@ -609,18 +613,18 @@ $container->loadFromExtension(
                                 'filter'    => [
                                     'standard',
                                     'lowercase',
-                                    'asciifolding',
+                                    'preserved_asciifolding',
                                 ],
                             ],
                             'text_content_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
-                                'filter'    => ['standard', 'lowercase', 'asciifolding'],
+                                'filter'    => ['standard', 'lowercase', 'preserved_asciifolding'],
                             ],
                             'name_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'whitespace',
-                                'filter'    => ['lowercase', 'asciifolding', 'edge_ngram_filter_3'],
+                                'filter'    => ['lowercase', 'preserved_asciifolding', 'edge_ngram_filter_3'],
                             ],
                             'email_analyzer' => [
                                 'type'      => 'custom',
@@ -640,7 +644,7 @@ $container->loadFromExtension(
                             'filename_analyzer' => [
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
-                                'filter'    => ['lowercase', 'asciifolding', 'filename_filter'],
+                                'filter'    => ['lowercase', 'preserved_asciifolding', 'filename_filter'],
                             ],
                         ],
                     ],

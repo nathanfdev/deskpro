@@ -593,14 +593,14 @@ define([
           options_data.usergroups        = data.usergroups.groups;
           options_data.langs             = data.langs != null ? data.langs.languages : undefined;
           options_data.custom_email_tpls = data.email_tpls.list.custom.groups.custom.templates;
-          options_data.api_keys          = data.api_keys.api_keys;
+          options_data.api_keys          = data.api_keys;
           options_data.ticket_settings   = data.ticket_settings != null ? data.ticket_settings.ticket_settings : undefined;
           options_data.contextual_fields = data.contextual_fields;
           options_data.jira_settings     = data.jira_settings;
           options_data.ticket_labels     = data.ticket_labels;
 
           // ApiV2 results
-          options_data['ticket_statuses'] =result[1].data.data;
+          options_data['ticket_statuses'] = result[1].data.data;
 
           this.options_data = options_data;
 
@@ -1680,7 +1680,7 @@ define([
       options.dataName = 'api_keys';
       options.operators = ['is', 'not'];
       options.single = true;
-      options.optionsFormatter = function (options) {
+      options.optionsFormatter = options => {
         const opts = [];
 
         for (const key of Array.from(options)) {

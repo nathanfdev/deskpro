@@ -415,7 +415,7 @@ button, .button, input[type="submit"] {
   &.disabled {
     @include generate-background-and-border($btn-link-disabled-color);
   }
-  
+
   &.right {
     float: $float-right;
   }
@@ -6591,7 +6591,7 @@ ul.categories-article-list {
         font-size: 1em;
       }
     }
-    
+
     .ticket-view-sidebar {
       flex-shrink: 0;
       width: 330px;
@@ -10010,9 +10010,8 @@ form {
     position: relative;
 
     .form-label-link {
-      position: absolute;
-      @include right(0);
-      font-size: 0.85em;;
+      float: right;
+      font-size: 0.85em;
       i {
         @include margin-left(4px);
       }
