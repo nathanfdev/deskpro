@@ -6,6 +6,7 @@ require_once __DIR__.'/BootTask/BootTaskInterface.php';
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\Request;
 
 class Boot
@@ -303,6 +304,21 @@ class Boot
             }
             $app->add($command);
         }
+
+        /** @var \SplFileInfo[] $customScripts */
+        $customScripts = Finder::create()
+            ->in(implode(DIRECTORY_SEPARATOR, [$env->getDpRoot(), 'app', 'scripts', 'command']))
+            ->name('*Command.php')
+            ->files();
+
+        foreach ($customScripts as $f) {
+            $className = 'DpScripts\Command\\'.$f->getBasename('.php');
+            if (class_exists($className, true)) {
+                $command = new $className();
+                $app->add($command);
+            }
+        }
+
         $app->run($input);
     }
 
