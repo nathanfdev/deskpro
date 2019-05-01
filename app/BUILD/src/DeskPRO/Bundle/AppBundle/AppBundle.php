@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
 use DeskPRO\Bundle\AppBundle\Command\Configure\ToggleFeatureCommand;
+use DeskPRO\Bundle\AppBundle\Command\Debug\QuerySlaCommand;
 use DeskPRO\Bundle\AppBundle\Command\ServerInfo\StatusSummaryCommand;
 use DeskPRO\Bundle\AppBundle\Command\ServerInfo\WebServerInfoCommand;
 use DeskPRO\Bundle\AppBundle\Command\Utility\DanglingBlobsCommand;
@@ -82,6 +83,7 @@ class AppBundle extends Bundle
         $application->add(new StatusSummaryCommand());
         $application->add(new ConfigElasticCommand());
         $application->add(new ToggleFeatureCommand());
+        $application->add(new QuerySlaCommand());
         $application->add(new RecompileTemplatesCommand());
         $application->add(new RefreshAgentInterfaceCommand());
         $application->add(new ExportBlobCommand());
