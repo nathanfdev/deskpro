@@ -300,7 +300,7 @@ class Run extends React.Component {
 
   renderUsedMap() {
     const { dashboards, report } = this.props;
-    const map = report.get('reports').map(item => (
+    const map = !report.has('reports') ?  Immutable.fromJS({}) : report.get('reports').map(item => (
       <li>
         <a href={`#/dashboards/${dashboards.get(item.dashboard).get('id')}`}>{dashboards.get(item.dashboard).get('title')}</a>
         {' -> '}
