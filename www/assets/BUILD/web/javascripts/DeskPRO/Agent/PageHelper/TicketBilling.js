@@ -25,8 +25,11 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			return;
 		}
 
-    var initDateTimePicker = function(){
-      $('input.DateTime:not(.datetimepickerinit), .DateTime input:not(.datetimepickerinit)', wrap).each(function () {
+    var initDateTimePicker = function(inEl) {
+      if (!inEl) {
+        return;
+      }
+      $('input.DateTime, .DateTime input', inEl).not('.datetimepickerinit').each(function () {
         $(this).addClass('datetimepickerinit');
         $(this).datetimepicker({
           format: 'YYYY-MM-DD HH:mm',
@@ -45,7 +48,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				});
       });
 
-      $('.Date input:not(.datetimepickerinit)', wrap).each(function () {
+      $('.Date input', inEl).not('.datetimepickerinit').each(function () {
         $(this).addClass('datetimepickerinit');
         $(this).datetimepicker({
           format: 'YYYY-MM-DD',
@@ -139,7 +142,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 				});
 			});
 
-      initDateTimePicker();
+      initDateTimePicker(form);
 		}).bind(this);
 
 		this.initForm();
@@ -175,6 +178,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
       var id = $(this).data('charge-id')
         , charge = wrap.find('tr#ticket-charge-row-' + id).hide().data('charge')
         ;
+      initDateTimePicker(wrap.find('.ticket-charge-edit-' + id));
       self.populateForm(wrap.find('.ticket-charge-edit-' + id).show(), charge);
 			return false;
 		});
@@ -207,7 +211,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
           self.fireEvent('onAfterBillingChange', ['success', 'update', {id: id}], formData);
 					wrap.find('tr.ticket-charge-edit-' + id + ', tr.ticket-charge-edit-errors-' + id).remove();
 					wrap.find('tr#ticket-charge-row-' + id).replaceWith(json.html);
-          initDateTimePicker();
+          initDateTimePicker(wrap.find('.ticket-charge-edit-' + id));
 				}else if(json.invalid_custom_fields) {
           self.fireEvent('onAfterBillingChange', ['failure', 'update', {id: id}], formData);
 					var $err = wrap.find('.ticket-charge-edit-errors-' + id).show().find('.form-errors');
