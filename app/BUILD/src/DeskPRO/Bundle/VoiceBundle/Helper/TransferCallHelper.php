@@ -4,7 +4,6 @@ namespace DeskPRO\Bundle\VoiceBundle\Helper;
 
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
-use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -67,23 +66,22 @@ class TransferCallHelper
             'asset'       => $asset ? $asset->getId() : null,
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->voiceProviderHelper->transferCall($phoneCall, $voicemailUrl, 'POST');
+        $this->voiceProviderHelper->transferUser($phoneCall, $voicemailUrl, 'POST');
     }
 
     /**
      * @param VoicePhoneCall $phoneCall
-     * @param Task           $task
      */
-    public function transferToTaskRouter(VoicePhoneCall $phoneCall, Task $task)
+    public function transferToTaskRouter(VoicePhoneCall $phoneCall)
     {
         $account   = $phoneCall->getNumber()->getAccount();
         $routerUrl = $this->router->generate($account->getRouterPrefix().'_call_routing_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
-            'task'        => $task->getId(),
+            'phoneCall'   => $phoneCall->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->voiceProviderHelper->transferCall($phoneCall, $routerUrl, 'POST');
+        $this->voiceProviderHelper->transferUser($phoneCall, $routerUrl, 'POST');
     }
 
     /**
@@ -99,6 +97,6 @@ class TransferCallHelper
             'autoAttendant' => $autoAttendant->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->voiceProviderHelper->transferCall($phoneCall, $routerUrl, 'POST');
+        $this->voiceProviderHelper->transferUser($phoneCall, $routerUrl, 'POST');
     }
 }

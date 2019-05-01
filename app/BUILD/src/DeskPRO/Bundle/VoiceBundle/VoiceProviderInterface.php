@@ -13,6 +13,24 @@ interface VoiceProviderInterface
 {
     /**
      * @param VoicePhoneCall $phoneCall
+     * @param string         $toNumber
+     * @param array          $options
+     * @param mixed          $exception
+     *
+     * @return string|false Returns call uuid on success
+     */
+    public function callNumber(VoicePhoneCall $phoneCall, $toNumber, array $options = [], &$exception = false);
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param Person         $agent
+     *
+     * @return string|false Returns call uuid on success
+     */
+    public function callForwardingNumber(VoicePhoneCall $phoneCall, Person $agent);
+
+    /**
+     * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
      */
     public function cancelForwardingCall(VoicePhoneCall $phoneCall, Person $agent);
@@ -20,24 +38,7 @@ interface VoiceProviderInterface
     /**
      * @param VoicePhoneCall $phoneCall
      */
-    public function cancelForwardingCalls(VoicePhoneCall $phoneCall);
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     */
-    public function cancelOutgoingCalls(VoicePhoneCall $phoneCall);
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     *
-     * @return bool
-     */
-    public function tryEndConference(VoicePhoneCall $phoneCall);
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     */
-    public function endConference(VoicePhoneCall $phoneCall);
+    public function endCall(VoicePhoneCall $phoneCall);
 
     /**
      * @param AbstractVoicePhoneCallParticipant $participant
@@ -47,9 +48,8 @@ interface VoiceProviderInterface
     /**
      * @param VoicePhoneCall $phoneCall
      * @param bool           $isHold
-     * @param array          $params
      */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = []);
+    public function holdEndUser(VoicePhoneCall $phoneCall, $isHold);
 
     /**
      * @param VoicePhoneCall $phoneCall
@@ -59,21 +59,6 @@ interface VoiceProviderInterface
      * @throws \Exception
      */
     public function muteParticipant(VoicePhoneCall $phoneCall, $callSid, $mute);
-    /**
-     * @param VoicePhoneCall $phoneCall
-     *
-     * @throws \Exception
-     *
-     * @return Person[]
-     */
-    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall);
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     *
-     * @throws \Exception
-     */
-    public function cancelCall(VoicePhoneCall $phoneCall);
 
     /**
      * @param VoicePhoneCall $phoneCall
@@ -83,11 +68,16 @@ interface VoiceProviderInterface
     public function isCallActive(VoicePhoneCall $phoneCall);
 
     /**
-     * @param VoicePhoneCall $phoneCall
-     * @param string         $callbackUrl
-     * @param string         $callbackMethod
+     * @param AbstractVoicePhoneCallParticipant $participant
+     * @param string                            $callbackUrl
+     * @param string                            $callbackMethod
      *
      * @return bool
      */
-    public function transferCall(VoicePhoneCall $phoneCall, $callbackUrl, $callbackMethod);
+    public function transferParticipant(AbstractVoicePhoneCallParticipant $participant, $callbackUrl, $callbackMethod);
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     */
+    public function prepareForColdTransfer(VoicePhoneCall $phoneCall);
 }

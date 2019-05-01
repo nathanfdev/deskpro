@@ -17,9 +17,6 @@ class VoiceControls extends React.Component {
   };
 
   static defaultProps = {
-    redial:     () => {},
-    toggleHold: () => {},
-    toggleMute: () => {},
     endCall:    () => {},
     sendDigits: () => {}
   };

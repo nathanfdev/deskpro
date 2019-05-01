@@ -105,6 +105,8 @@ class RecordingDownloadHelper
      * @param VoicePhoneCall $phoneCall
      * @param string         $recordingUrl
      * @param string         $duration
+     *
+     * @throws \Exception
      */
     public function enqueueRecordingDownload(VoicePhoneCall $phoneCall, $recordingUrl, $duration)
     {
@@ -133,10 +135,11 @@ class RecordingDownloadHelper
             ]));
         }
 
-        $serializedData = $this->serializer->toArray(
-            new ApiWrapper($phoneCall),
-            new SideloadSerializationContext()
-        );
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['recording_enabled']);
+        $context->setInlineSideloads(true);
+
+        $serializedData = $this->serializer->toArray(new ApiWrapper($phoneCall), $context);
 
         $this->dispatcher->dispatch(
             LegacySystemEvent::EVENT_NAME,
@@ -151,6 +154,8 @@ class RecordingDownloadHelper
      * @param VoicePhoneCall $phoneCall
      * @param string         $recordingUrl
      * @param string         $duration
+     *
+     * @throws \Exception
      */
     public function enqueueVoicemailRecordingDownload(VoicePhoneCall $phoneCall, $recordingUrl, $duration)
     {
@@ -179,6 +184,8 @@ class RecordingDownloadHelper
      * @param Person         $agent
      * @param string         $recordingUrl
      * @param int            $duration
+     *
+     * @throws \Exception
      */
     private function voicemailForAgent(VoicePhoneCall $phoneCall, Person $agent, $recordingUrl, $duration)
     {
@@ -203,6 +210,8 @@ class RecordingDownloadHelper
      * @param VoiceQueue     $queue
      * @param string         $recordingUrl
      * @param int            $duration
+     *
+     * @throws \Exception
      */
     private function voicemailForQueue(VoicePhoneCall $phoneCall, VoiceQueue $queue, $recordingUrl, $duration)
     {

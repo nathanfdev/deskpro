@@ -15,6 +15,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceBlobAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceTextAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAutoAttendant;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\AbstractVoiceTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
@@ -24,7 +25,6 @@ use DeskPRO\Bundle\VoiceBundle\Exception\InsufficientBalanceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
 use DeskPRO\Bundle\VoiceBundle\Exception\UnverifiedException;
 use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\VoiceCallCostProcessor;
-use DeskPRO\Bundle\VoiceBundle\TaskRouter\Model\Task;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Plivo\XML\Element;
 use Plivo\XML\Response as PlivoXML;
@@ -180,22 +180,20 @@ class PlivoCallbacksController extends BaseController
                         $callId
                     ));
 
-                    $callRequestId = $this->get('plivo_adapter')->callNumber(
-                        $phoneCall->getNumber(),
+                    $callUuid = $this->get('plivo_adapter')->callNumber(
+                        $phoneCall,
                         $phoneCall->getExternalNumber(),
-                        $this->getOutboundCallbackUrl($account, $phoneCall),
-                        'POST',
-                        false,
+                        ['answer_url' => $this->getOutboundCallbackUrl($account, $phoneCall)],
                         $exception
                     );
 
-                    if ($callRequestId) {
-                        $phoneCall->addOutgoingRequestId($callRequestId);
+                    if ($callUuid) {
+                        $phoneCall->addCallSid($agentId, VoicePhoneCall::TYPE_OUTGOING, $callUuid);
                         $this->getManager()->flush();
 
                         $logger->info(sprintf(
                             '[PlivoCallbacks] Outgoing call was created, call_id = %s, request_id = %s',
-                            $callId, $callRequestId
+                            $callId, $callUuid
                         ));
 
                         // create and join a new conference
@@ -268,7 +266,7 @@ class PlivoCallbacksController extends BaseController
                     // join user to the conference
                     if ($phoneCall->getParticipants()->count() <= 2 || $phoneCall->isColdTransfer()) {
                         $start = microtime(true);
-                        $this->get('dp.voice.provider_helper')->transferCall(
+                        $this->get('dp.voice.provider_helper')->transferUser(
                             $phoneCall,
                             $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
                             'POST'
@@ -380,7 +378,7 @@ class PlivoCallbacksController extends BaseController
 
                     // join user to the conference
                     if ($phoneCall->getParticipants()->count() <= 2) {
-                        $this->get('dp.voice.provider_helper')->transferCall(
+                        $this->get('dp.voice.provider_helper')->transferUser(
                             $phoneCall,
                             $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
                             'POST'
@@ -454,7 +452,7 @@ class PlivoCallbacksController extends BaseController
             'callSid' => $callSid,
         ]);
         if ($phoneCall) {
-            $this->get('dp.voice.provider_helper')->endConference($phoneCall);
+            $this->get('dp.voice.provider_helper')->endCall($phoneCall);
 
             // store call price
             $this->get('job.queue')->addJob(new Job(VoiceCallCostProcessor::JOB_TYPE, [
@@ -534,17 +532,17 @@ class PlivoCallbacksController extends BaseController
      *     noOutput=true
      * )
      *
-     * @Rest\Post("/call_routing", name="plivo_call_routing_callback")
+     * @Rest\Post("/{phoneCall}/call_routing", name="plivo_call_routing_callback")
      *
      * @param PlivoVoiceAccount $account
      * @param string            $accountAuth
-     * @param Request           $request
+     * @param VoicePhoneCall    $phoneCall
      *
      * @throws \Exception
      *
      * @return Response
      */
-    public function callRoutingAction(PlivoVoiceAccount $account, $accountAuth, Request $request)
+    public function callRoutingAction(PlivoVoiceAccount $account, $accountAuth, VoicePhoneCall $phoneCall)
     {
         if ($account->getAccountAuth() !== $accountAuth) {
             throw $this->createAccessDeniedException();
@@ -552,7 +550,7 @@ class PlivoCallbacksController extends BaseController
 
         $plivoXml = new PlivoXML();
 
-        $taskId = $request->query->getInt('task');
+        $taskId = $phoneCall->getTaskSid();
         $task   = $this->container->get('dp.voice.task_router.storage')->getTask($taskId);
         if ($task) {
             // task router ping timeout
@@ -596,19 +594,13 @@ class PlivoCallbacksController extends BaseController
                         $workers = $this->container->get('dp.voice.task_router.storage')->getWorkers($task->getWorkerIds());
 
                         foreach ($workers as $worker) {
+                            /** @var Person $agent */
                             $agent = $this->getRepository(Person::class)->find($worker->getTypeId());
                             if ($agent && $agent->canForwardCall()) {
                                 // make an outbound call
-                                $callRequestId = $this->get('plivo_adapter')->callNumber(
-                                    $phoneCall->getNumber(),
-                                    $agent->getForwardingNumber(),
-                                    $this->getAnswerForwardingUrl($account, $phoneCall, $agent),
-                                    'POST',
-                                    true
-                                );
-
-                                if ($callRequestId) {
-                                    $phoneCall->addForwardingRequestId($agent->getId(), $callRequestId);
+                                $callUuid = $this->get('plivo_adapter')->callForwardingNumber($phoneCall, $agent);
+                                if ($callUuid) {
+                                    $phoneCall->addCallSid($agent->getId(), VoicePhoneCall::TYPE_FORWARDED, $callUuid);
                                 }
                             }
 
@@ -618,7 +610,7 @@ class PlivoCallbacksController extends BaseController
                         }
                     }
 
-                    $plivoXml->addRedirect($this->getCallRoutingCallbackUrl($account, $task));
+                    $plivoXml->addRedirect($this->getCallRoutingCallbackUrl($account, $phoneCall));
                 }
             }
         } else {
@@ -668,9 +660,23 @@ class PlivoCallbacksController extends BaseController
             $phoneCall->getId(), $callSid, $memberId, $eventName
         ));
 
+        $callbacksHelper = $this->get('dp.voice.callbacks_helper');
+
         if ($eventName === 'enter') {
             $start = microtime(true);
-            $this->get('dp.voice.callbacks_helper')->joinConference($phoneCall, $callSid, $conferenceSid, $details, $memberId);
+
+            $callbacksHelper->joinConference($phoneCall, $callSid, $conferenceSid, $memberId);
+            $participant = $phoneCall->getParticipantByCallSid($callSid);
+            if ($participant instanceof VoicePhoneCallParticipantAgent) {
+                if ($phoneCall->isColdTransfer() || $phoneCall->isWarmAdd()) {
+                    // mark the phone call as started
+                    $phoneCall->setStatus(VoicePhoneCall::STATUS_ACTIVE);
+                    $this->getManager()->flush();
+                }
+            } else {
+                $callbacksHelper->logConferenceStart($phoneCall, $details);
+            }
+
             $logger->info(sprintf('[PlivoCallbacks] Joining conference took %.3fs', microtime(true) - $start));
         } elseif ($eventName === 'record') {
             $recordUrl      = $request->request->get('RecordUrl');
@@ -688,7 +694,7 @@ class PlivoCallbacksController extends BaseController
         // call id could be empty, e.g. for record event
         if ($callSid) {
             $start = microtime(true);
-            $this->get('dp.voice.callbacks_helper')->sendConferenceStatus($phoneCall);
+            $callbacksHelper->sendConferenceStatus($phoneCall);
             $logger->info(sprintf('[PlivoCallbacks] Sending conference status took %.3fs', microtime(true) - $start));
         }
     }
@@ -1117,6 +1123,8 @@ class PlivoCallbacksController extends BaseController
      * @param VoicePhoneCall      $phoneCall
      * @param AbstractVoiceTarget $target
      * @param PlivoXML            $plivoXml
+     *
+     * @throws \Exception
      */
     private function addTargetResponse(VoicePhoneCall $phoneCall, AbstractVoiceTarget $target, PlivoXML $plivoXml)
     {
@@ -1186,22 +1194,22 @@ class PlivoCallbacksController extends BaseController
         // enqueue task for task router
         $task = $this->get('dp.voice.callbacks_helper')->createTaskForTarget($phoneCall, $target);
         if ($task) {
-            $plivoXml->addRedirect($this->getCallRoutingCallbackUrl($account, $task));
+            $plivoXml->addRedirect($this->getCallRoutingCallbackUrl($account, $phoneCall));
         }
     }
 
     /**
      * @param PlivoVoiceAccount $account
-     * @param Task              $task
+     * @param VoicePhoneCall    $phoneCall
      *
      * @return string
      */
-    private function getCallRoutingCallbackUrl(PlivoVoiceAccount $account, Task $task)
+    private function getCallRoutingCallbackUrl(PlivoVoiceAccount $account, VoicePhoneCall $phoneCall)
     {
         return $this->get('router')->generate('plivo_call_routing_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
-            'task'        => $task->getId(),
+            'phoneCall'   => $phoneCall->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
@@ -1271,23 +1279,6 @@ class PlivoCallbacksController extends BaseController
         return $this->get('router')->generate('plivo_voicemail_recording_status_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
-        ], UrlGeneratorInterface::ABSOLUTE_URL);
-    }
-
-    /**
-     * @param PlivoVoiceAccount $account
-     * @param VoicePhoneCall    $phoneCall
-     * @param Person            $agent
-     *
-     * @return string
-     */
-    private function getAnswerForwardingUrl(PlivoVoiceAccount $account, VoicePhoneCall $phoneCall, Person $agent)
-    {
-        return $this->get('router')->generate('plivo_answer_forwarding_callback', [
-            'account'     => $account->getId(),
-            'accountAuth' => $account->getAccountAuth(),
-            'CallId'      => $phoneCall->getId(),
-            'AgentId'     => $agent->getId(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 

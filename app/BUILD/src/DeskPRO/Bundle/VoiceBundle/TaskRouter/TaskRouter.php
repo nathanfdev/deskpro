@@ -69,6 +69,22 @@ class TaskRouter
         $this->workflows = $workflows;
     }
 
+    /**
+     * @param Task $task
+     *
+     * @return int
+     */
+    public function getTimeout(Task $task)
+    {
+        /** @var WorkflowInterface $workflow */
+        $workflow = $this->container->get($this->workflows[$task->getChannel()]);
+        if ($workflow) {
+            $workflow->getTimeout($task);
+        }
+
+        return 0;
+    }
+
     public function evaluate()
     {
         $this->lock->acquire(true);
@@ -100,7 +116,7 @@ class TaskRouter
                 $workflow = $this->container->get($this->workflows[$task->getChannel()]);
 
                 // check if task is expired
-                if ($workflow->isTaskTimedOut($task)) {
+                if ($workflow->getTimeout($task) <= 0) {
                     $task->setStatus(Task::STATUS_TIMEOUT);
 
                     // task is timed out, reset workers

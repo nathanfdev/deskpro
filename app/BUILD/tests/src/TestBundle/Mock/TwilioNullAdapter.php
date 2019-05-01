@@ -115,23 +115,8 @@ class TwilioNullAdapter extends TwilioAdapter
     /**
      * {@inheritdoc}
      */
-    public function holdConferenceEndUser(VoicePhoneCall $phoneCall, $isHold, array $params = [])
+    public function holdEndUser(VoicePhoneCall $phoneCall, $isHold)
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function tryEndConference(VoicePhoneCall $phoneCall)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getActiveAgentPhoneCallParticipants(VoicePhoneCall $phoneCall)
-    {
-        return [];
     }
 
     /**

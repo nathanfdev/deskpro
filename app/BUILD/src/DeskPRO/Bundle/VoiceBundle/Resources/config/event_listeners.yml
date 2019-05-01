@@ -43,6 +43,18 @@ services:
     tags:
       - { name: dp.voice.event_subscriber }
 
+  dp.voice.listener.incoming_call_listener:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\TwilioIncomingCallListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@dp.voice.task_router.storage"
+      - "@dp.voice.voice_task_helper"
+      - "@dp.voice.assets_helper"
+      - "@twilio_adapter"
+      - "@router"
+    tags:
+      - { name: dp.voice.event_subscriber }
+
   event_listener.doctrine.twilio_account:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\TwilioAccountListener
     arguments:

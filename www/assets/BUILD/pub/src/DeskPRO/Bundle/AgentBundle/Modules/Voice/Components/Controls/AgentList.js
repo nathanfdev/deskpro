@@ -81,7 +81,7 @@ class Agent extends React.Component {
         <span className="agent-name">
           {agent.get('name')}
           {participant && <span className="agent-participant">(participant)</span>}
-          {busy && <span className="agent-participant">(busy)</span>}
+          {!participant && busy && <span className="agent-participant">(busy)</span>}
         </span>
       </div>
     );

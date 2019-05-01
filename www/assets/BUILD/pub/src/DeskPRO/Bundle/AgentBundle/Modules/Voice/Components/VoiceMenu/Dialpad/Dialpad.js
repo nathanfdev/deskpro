@@ -16,12 +16,12 @@ import DialGrid from '../../Common/DialGrid';
 class Dialpad extends React.Component {
 
   static propTypes = {
-    numbers:        PropTypes.object,
-    lastCallFrom:   PropTypes.number,
-    ticketId:       PropTypes.number,
-    ticketTitle:    PropTypes.string,
-    onMakeCall:     PropTypes.func,
-    onSearchPerson: PropTypes.func
+    numbers:      PropTypes.object,
+    lastCallFrom: PropTypes.number,
+    ticketId:     PropTypes.number,
+    ticketTitle:  PropTypes.string,
+    makeCall:     PropTypes.func,
+    searchPerson: PropTypes.func
   };
 
   constructor(props) {
@@ -79,21 +79,21 @@ class Dialpad extends React.Component {
     this.setState({ formData });
 
     const $input = $(this.phoneInput.input);
-    const { onSearchPerson } = this.props;
+    const { searchPerson } = this.props;
     const searchPeople = debounce(() => {
       const callTo = this.state.formData.value.call_to;
       if (callTo && this.lastQuery !== callTo) {
-        const promise = onSearchPerson(callTo);
+        this.setState({
+          searchResults: Immutable.fromJS([])
+        });
+
+        const promise = searchPerson(callTo);
         promise.success(({ data }) => {
           if (this.lastQuery === callTo) {
             this.setState({
               searchResults: Immutable.fromJS(data)
             });
           }
-        });
-      } else {
-        this.setState({
-          searchResults: Immutable.fromJS([])
         });
       }
 
@@ -182,7 +182,7 @@ class Dialpad extends React.Component {
   onSubmit = (event) => {
     event.preventDefault();
 
-    const { onMakeCall } = this.props;
+    const { makeCall } = this.props;
     const { submit } = this.state;
     const { value } = this.state.formData;
 
@@ -190,7 +190,7 @@ class Dialpad extends React.Component {
       return;
     }
 
-    const promise = onMakeCall(value.call_from, value.call_to, value.ticket);
+    const promise = makeCall(value.call_from, value.call_to, value.ticket);
     if (!promise) {
       return;
     }

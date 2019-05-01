@@ -51,9 +51,7 @@ class TransferList extends React.Component {
   };
 
   static defaultProps = {
-    onTransferCall: () => {},
-    onCancelInvite: () => {},
-    closeMenu:      () => {},
+    closeMenu: () => {},
   };
 
   constructor(props) {
