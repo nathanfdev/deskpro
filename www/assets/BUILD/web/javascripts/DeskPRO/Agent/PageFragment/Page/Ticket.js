@@ -1344,6 +1344,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         window.DeskPRO_APPSTORE.emitAsync('ticket.reply-success', self.getTabId(), result);
       }
 
+      if (result.error_messages) {
+
+        var prop = self.changeManager.getPropertyManager('status');
+        self.changeManager.setInstantChange(prop, 'awaiting_agent');
+
+        var list = self.getEl('field_errors').find('ul').empty();
+        result.error_messages.forEach(function(msg) {
+          var li = $('<li/>');
+          li.text(msg);
+          li.appendTo(list);
+        });
+
+        self.getEl('field_errors').show().addClass('on');
+
+        self.getEl('field_edit_start').click();
+        self.getEl('field_edit_cancel').show();
+        self.getEl('field_edit_save').show();
+        self.getEl('field_edit_controls').removeClass('loading');
+
+        DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
+      }
+
       if (!result.error_messages && DeskPRO_Window.$scope) {
         var trigger = false,
           action = null;
@@ -1478,6 +1500,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         DeskPRO_Window.getMessageChanneler().poller.pause();
 
         // STEP 2: Call real Reaply Save
+        sendSaveReplyRequest();
+
+        // We made a call to  real reply save above, now we can close tab if needed
+        if (result.close_tab) {
+          self.closeSelf();
+
+          if (self.getMetaData('goNextOnReply') && nextTicketId) {
+            DeskPRO_Window.runPageRoute('page:' + BASE_URL+'agent/tickets/' + nextTicketId);
+          }
+
+          return;
+        }
+
+        // If the agent cant see the ticket anymore, they dont have permission to
+        // view it anymore.
+        if (!result.can_view) {
+          self.closeSelf();
+          return;
+        }
+    }
+
+    function sendSaveReplyRequest()
+    {
         self.saveReplyAjaxCnt ++;
         $.ajax({
           url: reply_form.attr('action'),
@@ -1503,24 +1548,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
             saveReplySuccessCallback(result);
           }
         });
-
-        // We made a call to  real reply save above, now we can close tab if needed
-        if (result.close_tab) {
-          self.closeSelf();
-
-          if (self.getMetaData('goNextOnReply') && nextTicketId) {
-            DeskPRO_Window.runPageRoute('page:' + BASE_URL+'agent/tickets/' + nextTicketId);
-          }
-
-          return;
-        }
-
-        // If the agent cant see the ticket anymore, they dont have permission to
-        // view it anymore.
-        if (!result.can_view) {
-          self.closeSelf();
-          return;
-        }
     }
 
     DeskPRO_Window.getMessageChanneler().poller.pause();
@@ -1529,6 +1556,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     // STEP 1: Call Reply Pre-save
     this.saveReplyPrepareAjax = $.ajax({
       url: reply_form.data('action-prepare'),
+      global: false, // we want to suppress error popup in case of error
+                     // don't call global success/errors handlers for this request
       type: 'POST',
       dataType: 'json',
       data: formData,
@@ -1541,10 +1570,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         this.getReplyTextArea().data('disable-autosave', false);
       },
       error: function(event, xhr, ajaxOptions, errorThrown, force) {
-        var loadingEl = this.getEl('replybox_wrap').find('.ticket-sending-overlay');
-        loadingEl.hide();
-
-        DeskPRO_Window._globalHandleAjaxError(event, xhr, ajaxOptions, errorThrown, force);
+        // If savePrepare fails - then just try to save message with regular saveReply request
+        sendSaveReplyRequest();
       },
       success: function(result) {
         saveReplyPrepareSuccessCallback(result);
