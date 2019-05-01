@@ -22,7 +22,7 @@
 				<option value="php_mail">Send mail using PHP mail()</option>
 				<option value="smtp">SMTP</option>
 				<option value="gmail">GMail or Google Apps</option>
-        <option value="office365_exchange">Office365 (Exchange) - Recommended</option>
+        <option value="office365_exchange">Office365 (Exchange)</option>
 				<option value="office365">Office365 (POP3/SMTP)</option>
 				<option value="exchange">MS Exchange</option>
 			</select>
@@ -187,6 +187,12 @@
 
 		<div class="ng-hide" ng-show="form.outgoing_type == 'office365_exchange'">
 			<div class="inner-group">
+        <br/><br/>
+        <div class="alert alert-info">
+          <p>
+            This is the recommended option for connecting to Office365 accounts
+          </p>
+        </div>
 				<table width="100%" class="inner-form-table">
           <tr>
             <th width="75">Exchange Server</th>
@@ -194,8 +200,7 @@
               https://<input type="text" class="form-control" name="host" ng-model="form.out_office365_exchange_account.host" style="display: inline-block; width: 50%;" />
               <br/>
               <span class="help-block">
-                  If you’re connecting to your Office 365 email, use partner.outlook.cn
-                  If you’re not using Office 365 or not latest version, please check <a href="https://support.office.com/en-us/article/Set-up-your-Office-365-or-Microsoft-Exchange-based-email-on-an-Amazon-Kindle-Fire-d47ac3cb-e01b-46ff-ba69-9826b28fa313#__find_your_exchange">how to find your exchange server</a>.
+                  Please check <a href="https://docs.microsoft.com/en-us/office365/enterprise/urls-and-ip-address-ranges#exchange-online">how to find your exchange server</a>.
 									Make sure your firewall is not blocking connections.
               </span>
             </td>
