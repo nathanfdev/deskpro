@@ -229,10 +229,15 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.person_usersource_assoc:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\PersonUsersourceAssocVoter
+    tags:
+      - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.snippet:
-      class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\SnippetVoter
-      tags:
-        - { name: security.voter.permission_groups }
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\SnippetVoter
+    tags:
+      - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.tasks:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TasksVoter
@@ -245,9 +250,9 @@ services:
       - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.ticket_follow_up:
-      class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketFollowUpVoter
-      tags:
-        - { name: security.voter.permission_groups }
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketFollowUpVoter
+    tags:
+      - { name: security.voter.permission_groups }
 
   security.voter.permission_groups.ticket_messages:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter

@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * This tracks associations between a user and a usersource.
@@ -21,6 +22,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property mixed  $data
  * @property \DateTime $date_updated
  * @property \DateTime $date_created
+ *
+ * @JMS\ExclusionPolicy("all")
  */
 class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -28,6 +31,9 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      * The unique ID.
      *
      * @var int
+     *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id;
 
@@ -40,6 +46,9 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      * The usersource that this scraper is attached to.
      *
      * @var Usersource
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Usersource>")
      */
     protected $usersource;
 
@@ -48,6 +57,9 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      * ID such as a UserID.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $identity;
 
@@ -57,6 +69,9 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      * if this changes.
      *
      * @var string
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $identity_friendly;
 
@@ -72,6 +87,9 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      * When the associated person was last "synced" from the remote usersource.
      *
      * @var \DateTime
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      */
     protected $date_updated;
 
@@ -79,6 +97,9 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
      * When the record was first created in the system.
      *
      * @var \DateTime
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      */
     protected $date_created;
 
