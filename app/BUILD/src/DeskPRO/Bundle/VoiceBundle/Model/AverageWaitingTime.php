@@ -47,6 +47,6 @@ class AverageWaitingTime
 
         $this->queue       = $queue;
         $this->usersCount  = count($waitingUsers);
-        $this->averageTime = ceil($totalWaitingTime / $this->usersCount / 60);
+        $this->averageTime = $this->usersCount ? ceil($totalWaitingTime / $this->usersCount / 60) : 0;
     }
 }

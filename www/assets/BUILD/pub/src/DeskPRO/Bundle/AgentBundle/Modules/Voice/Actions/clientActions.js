@@ -116,6 +116,12 @@ export const voiceBootstrap = createAction(
           // another agent have already accepted the call
           // fetch the ticket info to get assigned agent
           const state = getState();
+          const me = meSelector(state);
+
+          if (parseInt(me.get('id'), 10) !== parseInt(data.accepted_agent_id, 10)) {
+            return;
+          }
+
           let incomingCall = incomingCallSelector(state);
           if (incomingCall && data.call_id === incomingCall.get('call_id')) {
             incomingCall = incomingCall.set('assigned_agent', data.accepted_agent_id);
@@ -129,10 +135,16 @@ export const voiceBootstrap = createAction(
           // user canceled the call, remove notification
           const state = getState();
           const incomingCall = incomingCallSelector(state);
+          const me = meSelector(state);
 
-          if (incomingCall && data.call_id === incomingCall.get('call_id')) {
-            dispatch(removeIncomingCall(incomingCall));
+          if (parseInt(me.get('id'), 10) !== parseInt(data.rejected_agent_id, 10)) {
+            return;
           }
+          if (!incomingCall || data.call_id !== incomingCall.get('call_id')) {
+            return;
+          }
+
+          dispatch(removeIncomingCall(incomingCall));
         });
         messageBroker.addMessageListener('agent.voice.calls_enabled', (data) => {
           const state = getState();

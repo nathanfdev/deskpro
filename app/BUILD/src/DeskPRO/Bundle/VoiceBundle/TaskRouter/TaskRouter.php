@@ -235,7 +235,7 @@ class TaskRouter
             $task->setAcceptedWorkerId($acceptedWorker->getId());
 
             try {
-                $this->dispatcher->dispatch(TaskRouterEvent::ACCEPTED, new TaskRouterEvent($task));
+                $this->dispatcher->dispatch(TaskRouterEvent::ACCEPTED, new TaskRouterEvent($task, $acceptedWorker));
             } catch (\Exception $e) {
                 SystemErrorHandler::logException($e);
             }
@@ -287,7 +287,7 @@ class TaskRouter
             $task->removeWorker($worker);
 
             try {
-                $this->dispatcher->dispatch(TaskRouterEvent::REJECTED, new TaskRouterEvent($task));
+                $this->dispatcher->dispatch(TaskRouterEvent::REJECTED, new TaskRouterEvent($task, $worker));
             } catch (\Exception $e) {
                 SystemErrorHandler::logException($e);
             }

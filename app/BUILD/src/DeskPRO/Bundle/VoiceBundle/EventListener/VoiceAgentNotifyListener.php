@@ -186,6 +186,11 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
             return;
         }
 
+        $rejectedWorker = $event->getWorker();
+        if (!$rejectedWorker) {
+            return;
+        }
+
         $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
             'agent.voice.conference.incoming-call-rejected',
             [
@@ -195,6 +200,7 @@ class VoiceAgentNotifyListener implements EventSubscriberInterface
                 'conference_sid'     => $phoneCall->getConferenceSid(),
                 'task'               => $task->getId(),
                 'related_people_ids' => $task->getAttribute('related_people'),
+                'rejected_agent_id'  => $rejectedWorker->getTypeId(),
             ]
         ));
     }
