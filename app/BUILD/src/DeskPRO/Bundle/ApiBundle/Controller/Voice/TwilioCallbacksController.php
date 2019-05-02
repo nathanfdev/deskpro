@@ -936,7 +936,11 @@ class TwilioCallbacksController extends BaseController
                     'endConferenceOnExit'           => false,
                 ]);
             } elseif ($phoneCall->isOnHold()) {
-                $twiml->redirect($this->getHoldMusicCallbackUrl($account));
+                if ($phoneCall->isOutgoingCall()) {
+                    $twiml->redirect($this->getHoldMusicCallbackUrl($account));
+                } else {
+                    $twiml->redirect($this->getHoldSilentCallbackUrl($account));
+                }
             } else {
                 $logger->info(sprintf(
                     '[TwilioCallbacks] End call, call_id = %s, uuid = %s',
@@ -981,9 +985,15 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
+        if ($phoneCall->isOutgoingCall()) {
+            $waitUrl = $this->getHoldSilentCallbackUrl($account);
+        } else {
+            $waitUrl = $this->getHoldMusicCallbackUrl($account);
+        }
+
         $twiml = new Twiml();
         $twiml->enqueue($phoneCall->getQueueName(), [
-            'waitUrl'       => $this->getHoldMusicCallbackUrl($account),
+            'waitUrl'       => $waitUrl,
             'waitUrlMethod' => 'POST',
         ]);
 
@@ -1068,6 +1078,43 @@ class TwilioCallbacksController extends BaseController
         $twiml->play('http://com.twilio.music.classical.s3.amazonaws.com/ClockworkWaltz.mp3', [
             'loop' => 0,
         ]);
+
+        $response = new Response($twiml);
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
+    }
+
+    /**
+     * @ApiDoc(
+     *     description="Put user on hold",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/hold_silent_callback", name="twilio_hold_silent_callback")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param string             $accountAuth
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function holdSilentCallbackAction(TwilioVoiceAccount $account, $accountAuth)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $twiml = new Twiml();
+        $twiml->pause([
+            'length' => 3600,
+        ]);
+        $twiml->redirect($this->getHoldSilentCallbackUrl($account));
 
         $response = new Response($twiml);
         $response->headers->set('Content-Type', 'text/xml');
@@ -1550,6 +1597,19 @@ class TwilioCallbacksController extends BaseController
     private function getHoldMusicCallbackUrl(TwilioVoiceAccount $account)
     {
         return $this->get('router')->generate('twilio_hold_music_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param TwilioVoiceAccount $account
+     *
+     * @return string
+     */
+    private function getHoldSilentCallbackUrl(TwilioVoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_hold_silent_callback', [
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
