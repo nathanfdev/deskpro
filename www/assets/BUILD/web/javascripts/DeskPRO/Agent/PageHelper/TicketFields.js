@@ -126,6 +126,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         if (self.mode == 'view') {
           self.replaceHolders(data.holders);
           self.initFileCustomFields();
+          self.initJavascriptCustomFields();
         }
       }
     });
@@ -504,7 +505,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
     jsCustomFields.each(function (index, field) {
       var fieldId      = $(field).data('field-id');
       var $field       = self.jsfields[fieldId];
-      var submitResult = $field.ctx.onSubmit();
+      var submitResult = $field.ctx.onSubmit.call(field.ctx, $field.currentValue, $field.currentData, $field.field);
       if (submitResult instanceof Promise) {
         submitResult.then(
           function () {
@@ -537,6 +538,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
             } else {
               setTimeout(function () {
                 self.initFileCustomFields();
+                self.initJavascriptCustomFields();
               }, 1);
               self.fireEvent('cancel_edit');
             }
@@ -644,9 +646,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       var $el       = $(this);
       var code      = $el.data('code');
       var $field    = $el.find('input.js-custom-field-hidden-input');
-      var fieldData = JSON.parse($field.val());
+      var fieldData = JSON.parse($field.val()) || {"value": null, "data": {}};
       var fieldId   = $field.data('field-id');
-      var fullCode = "self.jsfields['" + fieldId + "'] = " + code;
+      var evCode = function(){};
+      var fullCode = "evCode = " + code;
       eval(fullCode);
       var ctx = {
         jQuery:      $,
@@ -656,7 +659,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         ticket:      self.page.meta.ticket,
         person:      self.page.meta.ticket.person
       };
-      self.jsfields[fieldId](ctx);
+      evCode(ctx);
 
       self.jsfields[fieldId] = {
         ctx:          ctx,
@@ -665,7 +668,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         currentData:  fieldData.data || {},
         currentValue: fieldData.value,
       };
-      var fieldValue = ctx.renderValue(fieldData.value, fieldData.data);
+      var fieldValue = ctx.renderValue.call(ctx, fieldData.value, fieldData.data);
       self.display.find('.Javascript.customfield.rendered.' + fieldId).html(fieldValue);
     });
 
@@ -673,9 +676,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       var id    = 'custom_def_ticket_' + fieldId.replace('ticket_field_', '');
       var field = self.jsfields[id];
       if (field.element) {
-        field.ctx.onShow(field.currentValue, field.currentData, field.field);
+        field.ctx.onShow.call(field.ctx, field.currentValue, field.currentData, field.field, field.element);
       } else {
-        var $renderedElement = field.ctx.renderField(function (value, data) {
+        var $renderedElement = field.ctx.renderField.call(field.ctx, function (value, data) {
           var dataObject = { value: null, data: null };
           if (
             (value === null || typeof value === "undefined")
@@ -687,6 +690,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
             dataObject = Object.assign({}, { value: value }, { data: data || {} });
           }
           field.field.val(JSON.stringify(dataObject));
+          field.currentData = dataObject.data;
+          field.currentValue = dataObject.value;
         }, field.currentValue, field.currentData);
         field.field.after($renderedElement);
         field.element = $renderedElement;
@@ -696,9 +701,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       Object.keys(self.jsfields).forEach(
         function (index) {
           var field = self.jsfields[index];
-          var fieldValue = field.ctx.renderValue(field.currentValue, field.currentData);
+          var fieldValue = field.ctx.renderValue.call(field.ctx, field.currentValue, field.currentData);
           self.display.find('.Javascript.customfield.rendered.' + field.field.data('field-id')).html(fieldValue);
-          field.ctx.onHide(field.currentValue, field.currentData, field.field);
+          field.ctx.onHide.call(field.ctx, field.currentValue, field.currentData, field.field, field.element);
         }
       );
     }, this);

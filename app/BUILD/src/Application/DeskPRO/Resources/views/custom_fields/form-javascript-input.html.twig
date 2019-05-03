@@ -1,9 +1,9 @@
-<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form {{ field_def.getOption('custom_css_classname', '') }} customfield" id="{{elId}}_form_wrap">
+<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form {{ field_def.getOption('custom_css_classname', '') }} customfield custom-field" id="{{elId}}_form_wrap">
     <div
             data-code="{{ field_def.getOption('code') }}"
             data-field-id="{{field_type}}_{{field_def.id}}"
             class="js-custom-field"
     >
-        <input data-field-id="{{field_type}}_{{field_def.id}}" type="hidden" class='js-custom-field-hidden-input' value="{{ value.value|json_encode }}" />
+        <input name="{{ formView.vars.full_name }}" data-field-id="{{field_type}}_{{field_def.id}}" type="hidden" class='js-custom-field-hidden-input' value="{{ value.value|json_encode }}" />
     </div>
 </div>
