@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0253e22e81163f72283ec29187010da3",
+    "content-hash": "6b373e749c10651ade9e079d0acac521",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -4570,12 +4570,12 @@
             "version": "v1.6.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/mikey179/vfsStream.git",
+                "url": "https://github.com/bovigo/vfsStream.git",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikey179/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
+                "url": "https://api.github.com/repos/bovigo/vfsStream/zipball/0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "reference": "0247f57b2245e8ad2e689d7cee754b45fbabd592",
                 "shasum": ""
             },
@@ -8688,20 +8688,20 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "5.16.3",
+            "version": "5.31.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "4d4d146365f584f2204e0de28e620fd717889834"
+                "reference": "58a8322c5a8ce2ff7d68cd16ff56dc8ab44c168f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/4d4d146365f584f2204e0de28e620fd717889834",
-                "reference": "4d4d146365f584f2204e0de28e620fd717889834",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/58a8322c5a8ce2ff7d68cd16ff56dc8ab44c168f",
+                "reference": "58a8322c5a8ce2ff7d68cd16ff56dc8ab44c168f",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=5.5.0"
             },
             "require-dev": {
                 "apigen/apigen": "^4.1",
@@ -8730,7 +8730,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2018-01-20T02:33:56+00:00"
+            "time": "2019-05-01T17:36:14+00:00"
         },
         {
             "name": "vaites/php-apache-tika",

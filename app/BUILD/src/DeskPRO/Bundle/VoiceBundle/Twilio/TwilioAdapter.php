@@ -494,11 +494,15 @@ class TwilioAdapter implements VoiceProviderInterface
         ], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $this->callNumber($phoneCall, $agent->getForwardingNumber(), [
-            'url'                  => $forwardingUrl,
-            'method'               => 'POST',
-            'statusCallback'       => $statusCallback,
-            'statusCallbackMethod' => 'POST',
-            'machineDetection'     => 'Enable',
+            'url'                                => $forwardingUrl,
+            'method'                             => 'POST',
+            'statusCallback'                     => $statusCallback,
+            'statusCallbackMethod'               => 'POST',
+            'machineDetection'                   => 'Enable',
+            'machineDetectionSilenceTimeout'     => 2000,
+            'machineDetectionSpeechThreshold'    => 1000,
+            'machineDetectionSpeechEndThreshold' => 500,
+            'machineDetectionTimeout'            => 3,
         ]);
     }
 
