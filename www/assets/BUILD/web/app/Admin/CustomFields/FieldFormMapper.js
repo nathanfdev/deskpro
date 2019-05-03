@@ -142,7 +142,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
         }
 
         switch (fieldModel.type_name) {
-          case 'text': case 'textarea': case 'javascript':
+          case 'text':
+          case 'textarea':
+          case 'javascript':
             if (fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex) {
               if (fieldModel.options.min_length) {
                 formTypeOpts.user_validation = 'required';
@@ -380,7 +382,9 @@ define(['moment', 'DeskPRO/Util/Util'], function(moment, Util) {
       }
 
       switch (fieldType) {
-        case 'text': case 'textarea': case 'javascript':
+        case 'text':
+        case 'textarea':
+        case 'javascript':
           if (fieldType === 'text') {
             postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text';
           } else if (fieldType === 'textarea') {
