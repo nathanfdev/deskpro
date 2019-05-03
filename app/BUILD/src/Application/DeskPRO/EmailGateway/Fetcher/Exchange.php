@@ -100,6 +100,7 @@ class Exchange extends AbstractFetcher
 
         switch ($incomingAccount->getType()) {
             case 'exchange':
+            case 'office365_exchange':
                 /** @var ExchangeConfig $protocolConfig */
                 $protocolConfig = $incomingAccount;
 
@@ -114,6 +115,7 @@ class Exchange extends AbstractFetcher
                 }
 
                 break;
+
             default:
                 throw new \InvalidArgumentException(
                     "Unknown account type: {$incomingAccount->getType()}"

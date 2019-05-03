@@ -137,6 +137,11 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             $data['out_office365_account'] = $data['in_office365_account'];
         }
 
+        if ($data['incoming_type'] == 'office365_exchange') {
+            $data['outgoing_type']                  = 'office365_exchange';
+            $data['out_office365_exchange_account'] = $data['in_office365_exchange_account'];
+        }
+
         $form->submit($data);
 
         $emailErrors = $this->container->getValidator()->validate(

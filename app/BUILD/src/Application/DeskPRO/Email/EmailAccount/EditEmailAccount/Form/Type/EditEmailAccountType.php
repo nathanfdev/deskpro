@@ -33,12 +33,13 @@ class EditEmailAccountType extends AbstractType
 
         $builder->add('incoming_type', 'choice', [
             'choices' => [
-                'gmail'     => 'gmail',
-                'pop3'      => 'pop3',
-                'imap'      => 'imap',
-                'exchange'  => 'exchange',
-                'office365' => 'office365',
-                'noop'      => 'noop',
+                'gmail'              => 'gmail',
+                'pop3'               => 'pop3',
+                'imap'               => 'imap',
+                'exchange'           => 'exchange',
+                'office365_exchange' => 'office365_exchange',
+                'office365'          => 'office365',
+                'noop'               => 'noop',
             ],
             'required' => true,
         ]);
@@ -47,14 +48,16 @@ class EditEmailAccountType extends AbstractType
         $builder->add('in_imap_account', IncomingAccount\ImapAccountType::class, ['allow_extra_fields' => true]);
         $builder->add('in_exchange_account', IncomingAccount\ExchangeAccountType::class, ['allow_extra_fields' => true]);
         $builder->add('in_office365_account', IncomingAccount\Office365AccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('in_office365_exchange_account', new IncomingAccount\Office365ExchangeAccountType());
 
         $builder->add('outgoing_type', 'choice', [
             'choices' => [
-                'gmail'     => 'gmail',
-                'smtp'      => 'smtp',
-                'php_mail'  => 'php_mail',
-                'exchange'  => 'exchange',
-                'office365' => 'office365',
+                'gmail'              => 'gmail',
+                'smtp'               => 'smtp',
+                'php_mail'           => 'php_mail',
+                'exchange'           => 'exchange',
+                'office365_exchange' => 'office365_exchange',
+                'office365'          => 'office365',
             ],
             'required' => true,
         ]);
@@ -62,6 +65,7 @@ class EditEmailAccountType extends AbstractType
         $builder->add('out_smtp_account', OutgoingAccount\SmtpAccountType::class, ['allow_extra_fields' => true]);
         $builder->add('out_exchange_account', OutgoingAccount\ExchangeAccountType::class, ['allow_extra_fields' => true]);
         $builder->add('out_office365_account', OutgoingAccount\Office365AccountType::class, ['allow_extra_fields' => true]);
+        $builder->add('out_office365_exchange_account', new OutgoingAccount\Office365ExchangeAccountType());
     }
 
     public function configureOptions(OptionsResolver $resolver)
