@@ -16,7 +16,7 @@ export default class DpxJavascript extends PageWidget {
       context:   'newticket',
     };
     evCode(ctx);
-    evCode = {
+    const jsWidget = {
       ctx,
       element: null,
       field:   $input,
@@ -34,11 +34,11 @@ export default class DpxJavascript extends PageWidget {
         } else {
           dataObject = Object.assign({}, { value }, { data: data || {} });
         }
-        evCode.field.val(JSON.stringify(dataObject));
+        jsWidget.field.val(JSON.stringify(dataObject));
       },
       '', {}
     );
-    evCode.field.after($renderedElement);
-    evCode.element = $renderedElement;
+    jsWidget.field.after($renderedElement);
+    jsWidget.element = $renderedElement;
   }
 }
