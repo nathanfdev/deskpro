@@ -926,6 +926,14 @@ class LoginController extends AbstractController
 
             $this->_setupUsersourceSession($usersource, $person, $result);
 
+            if ($person->isAgent()) {
+                // Announce if its an agent
+                $this->setAgentIsAvailable($person);
+                $this->sendLoginAlert($person, $this->request);
+                $this->loginLog($this->request, $person);
+                $this->broadcastAgentIsOnline($person);
+            }
+
             if ($this->session->get('auth_return')) {
                 $return = $this->session->get('auth_return');
                 $this->session->remove('auth_return');
