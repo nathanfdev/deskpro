@@ -56,7 +56,7 @@ $CONFIG['agent'] = [
 $CONFIG['agent_vendors'] = [
     'out'   => 'js/agent-vendors.js',
     'files' => [
-        'vendor/handlebars.runtime-v4.1.2.js',
+        'node_modules/handlebars/dist/handlebars.runtime.js',
         'vendor/modernizr.min.js',
         'javascripts/Orb/modernizr-ext.js',
         'node_modules/custom-event-polyfill/custom-event-polyfill.js',
