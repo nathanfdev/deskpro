@@ -99,7 +99,8 @@ class JobRouterService
                 $container->getEm(),
                 $container->getBlobStorage(),
                 $container->get('serializer'),
-                $container->get('event_dispatcher')
+                $container->get('event_dispatcher'),
+                $container->get('dp.voice.provider_helper')
             )
         );
 

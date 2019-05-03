@@ -685,7 +685,7 @@ class PlivoCallbacksController extends BaseController
             // if no duration then it means the record is not downloaded yet
             if ($recordDuration) {
                 $start = microtime(true);
-                $this->get('dp.voice.recording_download_helper')->enqueueRecordingDownload($phoneCall, $recordUrl, $recordDuration);
+                $this->get('dp.voice.recording_download_helper')->enqueueRecordingDownload($phoneCall, null, $recordUrl, $recordDuration);
                 $logger->info(sprintf('[PlivoCallbacks] Saving recording for download took %.3fs', microtime(true) - $start));
             }
         }
@@ -1006,6 +1006,7 @@ class PlivoCallbacksController extends BaseController
         if ($phoneCall) {
             $this->get('dp.voice.recording_download_helper')->enqueueVoicemailRecordingDownload(
                 $phoneCall,
+                null,
                 $request->request->get('RecordFile'),
                 $request->request->get('RecordingDuration')
             );

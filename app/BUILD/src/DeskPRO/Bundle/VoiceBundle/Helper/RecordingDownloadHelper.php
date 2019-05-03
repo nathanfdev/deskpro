@@ -103,12 +103,13 @@ class RecordingDownloadHelper
 
     /**
      * @param VoicePhoneCall $phoneCall
+     * @param string         $recordingSid
      * @param string         $recordingUrl
      * @param string         $duration
      *
      * @throws \Exception
      */
-    public function enqueueRecordingDownload(VoicePhoneCall $phoneCall, $recordingUrl, $duration)
+    public function enqueueRecordingDownload(VoicePhoneCall $phoneCall, $recordingSid, $recordingUrl, $duration)
     {
         $recordingEnabled = true;
 
@@ -131,7 +132,8 @@ class RecordingDownloadHelper
             $this->em->flush();
 
             $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
-                'recording_id' => $recording->getId(),
+                'recording_sid' => $recordingSid,
+                'recording_id'  => $recording->getId(),
             ]));
         }
 
@@ -152,12 +154,13 @@ class RecordingDownloadHelper
 
     /**
      * @param VoicePhoneCall $phoneCall
+     * @param string         $recordingSid
      * @param string         $recordingUrl
      * @param string         $duration
      *
      * @throws \Exception
      */
-    public function enqueueVoicemailRecordingDownload(VoicePhoneCall $phoneCall, $recordingUrl, $duration)
+    public function enqueueVoicemailRecordingDownload(VoicePhoneCall $phoneCall, $recordingSid, $recordingUrl, $duration)
     {
         $task = $this->storage->getTask($phoneCall->getTaskSid());
         if (!$task) {
@@ -169,12 +172,12 @@ class RecordingDownloadHelper
         if ($task->getAttribute('queue')) {
             $queue = $this->taskHelper->getVoiceQueue($task);
             if ($queue) {
-                $this->voicemailForQueue($phoneCall, $queue, $recordingUrl, $duration);
+                $this->voicemailForQueue($phoneCall, $queue, $recordingSid, $recordingUrl, $duration);
             }
         } elseif ($task->getAttribute('agent')) {
             $agent = $this->taskHelper->getWorkerAgent($task);
             if ($agent) {
-                $this->voicemailForAgent($phoneCall, $agent, $recordingUrl, $duration);
+                $this->voicemailForAgent($phoneCall, $agent, $recordingSid, $recordingUrl, $duration);
             }
         }
     }
@@ -182,12 +185,13 @@ class RecordingDownloadHelper
     /**
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
+     * @param string         $recordingSid
      * @param string         $recordingUrl
      * @param int            $duration
      *
      * @throws \Exception
      */
-    private function voicemailForAgent(VoicePhoneCall $phoneCall, Person $agent, $recordingUrl, $duration)
+    private function voicemailForAgent(VoicePhoneCall $phoneCall, Person $agent, $recordingSid, $recordingUrl, $duration)
     {
         $recording = new VoicemailAgentRecording();
         $recording
@@ -201,6 +205,7 @@ class RecordingDownloadHelper
         $this->em->flush();
 
         $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+            'recording_sid'          => $recordingSid,
             'voicemail_recording_id' => $recording->getId(),
         ]));
     }
@@ -208,12 +213,13 @@ class RecordingDownloadHelper
     /**
      * @param VoicePhoneCall $phoneCall
      * @param VoiceQueue     $queue
+     * @param string         $recordingSid
      * @param string         $recordingUrl
      * @param int            $duration
      *
      * @throws \Exception
      */
-    private function voicemailForQueue(VoicePhoneCall $phoneCall, VoiceQueue $queue, $recordingUrl, $duration)
+    private function voicemailForQueue(VoicePhoneCall $phoneCall, VoiceQueue $queue, $recordingSid, $recordingUrl, $duration)
     {
         $recording = new VoiceRecording();
         $recording->setDuration($duration);
@@ -225,7 +231,8 @@ class RecordingDownloadHelper
         $this->em->flush();
 
         $this->jobQueue->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
-            'recording_id' => $recording->getId(),
+            'recording_sid' => $recordingSid,
+            'recording_id'  => $recording->getId(),
         ]));
 
         // create voicemail queue ticket

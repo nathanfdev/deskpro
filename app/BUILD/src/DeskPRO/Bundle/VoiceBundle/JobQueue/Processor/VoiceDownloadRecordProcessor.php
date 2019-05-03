@@ -13,6 +13,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceRecording;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\VoiceBundle\Helper\VoiceProviderHelper;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use GuzzleHttp\Client;
@@ -46,7 +47,12 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
     /**
      * @var EventDispatcherInterface
      */
-    private $eventDispatcher;
+    private $dispatcher;
+
+    /**
+     * @var VoiceProviderHelper
+     */
+    private $providerHelper;
 
     /**
      * Constructor.
@@ -55,21 +61,24 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
      * @param EntityManager            $em
      * @param DeskproBlobStorage       $blobStorage
      * @param Serializer               $serializer
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param EventDispatcherInterface $dispatcher
+     * @param VoiceProviderHelper      $providerHelper
      */
     public function __construct(
         Connection               $connection,
         EntityManager            $em,
         DeskproBlobStorage       $blobStorage,
         Serializer               $serializer,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $dispatcher,
+        VoiceProviderHelper      $providerHelper
     ) {
         parent::__construct($connection);
 
-        $this->em              = $em;
-        $this->blobStorage     = $blobStorage;
-        $this->serializer      = $serializer;
-        $this->eventDispatcher = $eventDispatcher;
+        $this->em             = $em;
+        $this->blobStorage    = $blobStorage;
+        $this->serializer     = $serializer;
+        $this->dispatcher     = $dispatcher;
+        $this->providerHelper = $providerHelper;
     }
 
     /**
@@ -101,7 +110,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
 
                 $serializedData = $this->serializer->toArray(new ApiWrapper($recording->getPhoneCall()), $context);
 
-                $this->eventDispatcher->dispatch(
+                $this->dispatcher->dispatch(
                     LegacySystemEvent::EVENT_NAME,
                     new LegacySystemEvent(
                         'agent.voice.recording_status',
@@ -130,7 +139,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                     ])
                 );
 
-                $this->eventDispatcher->dispatch(
+                $this->dispatcher->dispatch(
                     LegacySystemEvent::EVENT_NAME,
                     new LegacySystemEvent('agent.voice.voicemail.new-message', [
                         'data'   => $serializedData,
@@ -165,6 +174,10 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
 
                 $this->em->persist($phoneCall);
                 $this->em->flush();
+
+                if (!empty($data['recording_sid'])) {
+                    $this->providerHelper->deleteRecording($phoneCall, $data['recording_sid']);
+                }
             }
 
             $this->runSuccessHandler($job);
@@ -178,7 +191,7 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefined(['recording_id', 'voicemail_recording_id']);
+        $resolver->setDefined(['recording_sid', 'recording_id', 'voicemail_recording_id']);
     }
 
     /**

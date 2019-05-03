@@ -543,6 +543,14 @@ class PlivoAdapter implements VoiceProviderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function deleteRecording(VoicePhoneCall $phoneCall, $recordingSid)
+    {
+        // disabled for now
+    }
+
+    /**
      * @param PlivoVoiceAccount $account
      * @param string            $countryCode
      * @param string            $type

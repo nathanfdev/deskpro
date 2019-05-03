@@ -228,6 +228,14 @@ class VoiceProviderHelper implements VoiceProviderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function deleteRecording(VoicePhoneCall $phoneCall, $recordingSid)
+    {
+        $this->getAdapter($phoneCall)->deleteRecording($phoneCall, $recordingSid);
+    }
+
+    /**
      * @param VoicePhoneCall $phoneCall
      *
      * @throws OutOfServiceException

@@ -80,4 +80,10 @@ interface VoiceProviderInterface
      * @param VoicePhoneCall $phoneCall
      */
     public function prepareForColdTransfer(VoicePhoneCall $phoneCall);
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param string         $recordingSid
+     */
+    public function deleteRecording(VoicePhoneCall $phoneCall, $recordingSid);
 }

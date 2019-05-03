@@ -564,6 +564,7 @@ class TwilioCallbacksController extends BaseController
 
         $this->get('dp.voice.recording_download_helper')->enqueueRecordingDownload(
             $phoneCall,
+            $request->request->get('RecordingSid'),
             $request->request->get('RecordingUrl'),
             $request->request->get('RecordingDuration')
         );
@@ -604,6 +605,7 @@ class TwilioCallbacksController extends BaseController
         if ($phoneCall instanceof VoicePhoneCall) {
             $this->get('dp.voice.recording_download_helper')->enqueueVoicemailRecordingDownload(
                 $phoneCall,
+                $request->request->get('RecordingSid'),
                 $request->request->get('RecordingUrl'),
                 $request->request->get('RecordingDuration')
             );

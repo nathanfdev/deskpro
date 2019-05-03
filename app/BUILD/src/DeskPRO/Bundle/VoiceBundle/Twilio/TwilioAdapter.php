@@ -557,6 +557,22 @@ class TwilioAdapter implements VoiceProviderInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function deleteRecording(VoicePhoneCall $phoneCall, $recordingSid)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof TwilioVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            $this->getClient($account)->recordings($recordingSid)->delete();
+        } catch (\Exception $e) {
+        }
+    }
+
+    /**
      * @param TwilioVoiceAccount $account
      *
      * @throws \Twilio\Exceptions\ConfigurationException
