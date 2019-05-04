@@ -310,3 +310,35 @@ Feature: /tickets endpoint
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{t1}"
     And the JSON node "data[1].id" should be equal to "{t2}"
+
+  Scenario: I filter by 'brand'
+    Given the following Brand records exist:
+      | #  | Slug    |
+      | b1 | brand_1 |
+      | b2 | brand_2 |
+      | b3 | brand_3 |
+    And only the following Ticket records exist:
+      | #  | Brand |
+      | t1 | {b1}  |
+      | t2 | {b2}  |
+      | t3 | {b2}  |
+      | t7 | null  |
+
+    When I send a GET request to "/api/v2/tickets?brand={b1}"
+    Then the JSON node "data" should have 1 element
+    And the JSON node "data[0].brand" should be equal to "{b1}"
+
+    When I send a GET request to "/api/v2/tickets?brand={b2}"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].brand" should be equal to "{b2}"
+    And the JSON node "data[1].brand" should be equal to "{b2}"
+
+    When I send a GET request to "/api/v2/tickets?brand={b3}"
+    Then the JSON node "data" should have 0 elements
+
+    When I send a GET request to "/api/v2/tickets"
+    Then the JSON node "data" should have 4 elements
+    And the JSON node "data[0].brand" should be equal to "{b1}"
+    And the JSON node "data[1].brand" should be equal to "{b2}"
+    And the JSON node "data[2].brand" should be equal to "{b2}"
+    And the JSON node "data[3].brand" should be equal to "null"

@@ -902,16 +902,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
               function() {
               }, 'View Existing Ticket', 'hidden');
           } else {
-						data.error_codes.forEach(function(code) {
-							this.showErrorCode(code);
-						}, this);
+            if (Array.isArray(data.error_codes)) {
+              data.error_codes.forEach(function(code) {
+                this.showErrorCode(code);
+              }, this);
+            }
 
 						if (data.error_messages) {
 							this.showErrorCode('free');
 							var free = $('<div/>');
 							data.error_messages.forEach(function(msg) {
 								var x = $('<div/>');
-								x.text('- ' + msg);
+								x.text('• ' + msg);
 								free.append(x);
 							});
 							this.getEl('freemessage').html(free.html());
