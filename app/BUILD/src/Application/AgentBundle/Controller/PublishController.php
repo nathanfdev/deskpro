@@ -1299,10 +1299,10 @@ class PublishController extends AbstractController
     public function whoViewedAction($objectType, $objectId, $viewAction = 1)
     {
         $idToInfo = $this->db->fetchAllKeyed('
-            SELECT l.id, l.person_id, l.meta, lg.cnt, l.date_created
+            SELECT l.id, l.person_id, l.meta, lg.count, l.date_created
             FROM page_view_log l
             INNER JOIN (
-              SELECT MAX(date_created) as maxDateCreated, person_id, count(*) as cnt
+              SELECT MAX(date_created) as maxDateCreated, person_id, count(*) as count
               FROM page_view_log
               WHERE object_type = ? AND object_id = ? AND view_action = ? AND person_id IS NOT NULL
               GROUP BY person_id
