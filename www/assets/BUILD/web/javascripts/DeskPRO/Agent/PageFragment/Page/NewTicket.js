@@ -11,6 +11,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
 		this.uploading = false;
+		this.jsfields = {};
 	},
 
 	_initLabels: function () {
@@ -48,6 +49,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initLabels();
 		this._initDraft();
     this._initDateCustomFields();
+    this._initJavascriptCustomFields();
 
     this.addEvent('destroy', function() {
       this.draft && this.draft.reset();
@@ -607,6 +609,56 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.draft.init();
 		this.draft.save(true);
     this.draft.load();
+	},
+
+	_initJavascriptCustomFields: function () {
+		var self = this;
+		self.wrapper.find('.js-custom-field').each(function () {
+			var $el       = $(this);
+			var code      = $el.data('code');
+			var $field    = $el.find('input.js-custom-field-hidden-input');
+			var fieldData = JSON.parse($field.val() ? $field.val() : "{}") || {"value": null, "data": {}};
+			var fieldId   = $field.data('field-id');
+			var evCode = function(){};
+			var fullCode = "evCode = " + code;
+			eval(fullCode);
+			var ctx = {
+				jQuery:      $,
+				Handlebars:  Handlebars,
+				'interface': 'agent',
+				context:     'newticket',
+				ticket:      {},
+				person:      {},
+			};
+			evCode(ctx);
+
+			self.jsfields[fieldId] = {
+				ctx:          ctx,
+				element:      null,
+				field:        $field,
+				currentData:  fieldData.data || {},
+				currentValue: fieldData.value,
+			};
+
+			var field = self.jsfields[fieldId];
+
+			var $renderedElement = field.ctx.renderField.call(field.ctx, function (value, data) {
+				var dataObject = { value: null, data: null };
+				if (
+					(value === null || typeof value === "undefined")
+					&& (data === null || typeof data === "undefined")
+				) {
+					dataObject.value = null;
+					dataObject.data  = null;
+				} else {
+					dataObject = Object.assign({}, { value: value }, { data: data || {} });
+				}
+				field.field.val(JSON.stringify(dataObject));
+				field.currentData = dataObject.data;
+				field.currentValue = dataObject.value;
+			}, field.currentValue, field.currentData);
+			field.field.after($renderedElement);
+		});
 	},
 
   addSignature: function() {
