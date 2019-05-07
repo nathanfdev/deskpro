@@ -3,20 +3,20 @@
 namespace DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Task;
+use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 
 /**
- * Class TasksVoter.
+ * Class PersonUsersourceAssocVoter.
  */
-class TasksVoter implements PermissionGroupEntityVoterInterface
+class PersonUsersourceAssocVoter implements PermissionGroupEntityVoterInterface
 {
     /**
      * {@inheritdoc}
      */
     public static function getEntityClass()
     {
-        return Task::class;
+        return PersonUsersourceAssoc::class;
     }
 
     /**
@@ -24,7 +24,7 @@ class TasksVoter implements PermissionGroupEntityVoterInterface
      */
     public function voteOnAttributeForAgent($attribute, PermissionGroupContext $context, Person $user)
     {
-        return $user->hasPerm('agent_tasks.use');
+        return $user->hasPerm('agent_people.use') && $user->hasPerm('agent_people.edit');
     }
 
     /**
@@ -32,7 +32,6 @@ class TasksVoter implements PermissionGroupEntityVoterInterface
      */
     public function voteOnAttributeForUser($attribute, PermissionGroupContext $context, Person $user)
     {
-        // no access for now
         return false;
     }
 }

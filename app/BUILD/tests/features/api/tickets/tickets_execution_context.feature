@@ -22,6 +22,7 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 201
     And the "{lastCreatedId}" ticket should have "ticket_created" log with detail "event_performer" = "user"
+    And the "{lastCreatedId}" ticket should have "action_starter" log with detail "person_id" = "{user}"
 
   Scenario: I create a ticket as Agent
     When I send a POST request to "/api/v2/tickets" with body:
@@ -34,6 +35,7 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 201
     And the "{lastCreatedId}" ticket should have "ticket_created" log with detail "event_performer" = "agent"
+    And the "{lastCreatedId}" ticket should have "action_starter" log with detail "person_id" = "{admin}"
 
   Scenario: I modify ticket as Agent
     Given only the following Ticket records exist:
@@ -49,6 +51,7 @@ Feature: /tickets endpoint
     And the response status code should be 204
     And the "{t1}" ticket should have "action_starter" log with detail "event" = "update"
     And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
+    And the "{t1}" ticket should have "action_starter" log with detail "person_id" = "{admin}"
 
   Scenario: I modify ticket as User
     Given only the following Ticket records exist:
@@ -81,6 +84,7 @@ Feature: /tickets endpoint
     And the JSON node "data.person" should be equal to "{admin}"
     And the "{t1}" ticket should have "action_starter" log with detail "event" = "newreply"
     And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
+    And the "{t1}" ticket should have "action_starter" log with detail "person_id" = "{admin}"
 
   Scenario: I add ticket message as User
     Given only the following Ticket records exist:
@@ -98,3 +102,18 @@ Feature: /tickets endpoint
     And the JSON node "data.person" should be equal to "{user}"
     And the "{t1}" ticket should have "action_starter" log with detail "event" = "newreply"
     And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "user"
+    And the "{t1}" ticket should have "action_starter" log with detail "person_id" = "{user}"
+
+  Scenario: I create a ticket for a user in agent context
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Test Ticket",
+  "person":  ~user~,
+  "agent": ~agent~,
+  "context": "agent"
+}
+    """
+    Then the response status code should be 201
+    And the "{lastCreatedId}" ticket should have "ticket_created" log with detail "event_performer" = "agent"
+    And the "{lastCreatedId}" ticket should have "action_starter" log with detail "person_id" = "{admin}"

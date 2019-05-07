@@ -113,13 +113,21 @@ abstract class AbstractValueRenderer
                     if ($value instanceof \DateTime) {
                         $date = clone $value;
                         $date->setTimezone(new \DateTimeZone($tz));
-                    } else {
+                    } elseif ($value) {
                         $date = new \DateTime($value, new \DateTimeZone($tz));
+                    } else {
+                        $date = null;
                     }
 
-                    $date->modify(($offset >= 0 ? '+'.$offset : $offset).' seconds');
+                    if ($date) {
+                        $date->modify(($offset >= 0 ? '+'.$offset : $offset).' seconds');
+                    }
 
-                    return $this->escapeValue($date->format($this->settingsResolver->getGlobalSettings()->get($settingMap[$format])));
+                    return $this->escapeValue(
+                        $date
+                            ? $date->format($this->settingsResolver->getGlobalSettings()->get($settingMap[$format]))
+                            : 'None'
+                    );
                 } catch (\Exception $e) {
                     return $this->escapeValue($value);
                 }

@@ -21,6 +21,8 @@ trait TicketSaveTrait
      *
      * @param Ticket $ticket
      * @param array  $options
+     *
+     * @throws \Exception
      */
     protected function saveTicket(Ticket $ticket, array $options = [])
     {
@@ -43,12 +45,13 @@ trait TicketSaveTrait
         }
 
         $person = $this->getPersonForExecutorContext($ticket, $options);
-        if (($person && $person->isAgent())
-            || $eventMethod === ExecutorContext::METHOD_MOBILE
+        if ($eventMethod === ExecutorContext::METHOD_MOBILE
             || in_array($event, [ExecutorContext::EVENT_UPDATE, ExecutorContext::EVENT_DELETE])
             || (isset($options['context']) && $options['context'] === 'agent')
         ) {
             $context = $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod, ['api_v2' => true]);
+        } elseif ($person && $person->isAgent()) {
+            $context = $manager->createAgentExecutorContext($person, $event, $eventMethod, ['api_v2' => true]);
         } else {
             $context = $manager->createUserExecutorContext($person, $event, $eventMethod, ['api_v2' => true]);
         }
