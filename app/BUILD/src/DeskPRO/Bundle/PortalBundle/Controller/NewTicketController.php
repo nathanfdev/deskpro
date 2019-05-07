@@ -187,12 +187,6 @@ class NewTicketController extends AbstractController
                             }
 
                             if ($person = $e->getPerson()) {
-                                $email = $person->getEmailByAddress($e->getEmail());
-
-                                if ($email) {
-                                    $person->setPrimaryEmail($email);
-                                }
-
                                 // this user is created but can't log in 'person.is_user' is false
                                 $ticket = $this->getNewTicketService()->createNewTicket(
                                     $request,
@@ -201,9 +195,15 @@ class NewTicketController extends AbstractController
                                     $this->getBrandContainer()->getBrand(),
                                     Ticket::CREATED_WEB_PERSON_PORTAL
                                 );
+                                $email = $person->getEmailByAddress($e->getEmail());
+
+                                if ($email) {
+                                    $ticket->setTicketPersonEmail($email);
+                                }
 
                                 $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, array_merge($formOptions, [
                                     'ignore_user_fields' => true,
+                                    'person'             => $person,
                                 ]));
                                 $form->handleRequest($request);
 
