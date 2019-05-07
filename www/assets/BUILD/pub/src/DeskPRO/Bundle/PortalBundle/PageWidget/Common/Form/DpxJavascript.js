@@ -13,7 +13,7 @@ export default class DpxJavascript extends PageWidget {
       Handlebars,
       jQuery:    $,
       interface: 'portal',
-      context:   'newticket',
+      context:   $input.parents('form').data('visibility') === 'new' ? 'newticket' : 'viewticket'
     };
     evCode(ctx);
     const fieldData = JSON.parse($input.val() ? $input.val() : '{}') || { value: null, data: {} };
