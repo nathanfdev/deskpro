@@ -102,6 +102,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $routingModel;
 
     /**
+     * @ORM\JoinColumn(name="greet_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
@@ -113,6 +114,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $greetAsset;
 
     /**
+     * @ORM\JoinColumn(name="loop_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()
@@ -124,6 +126,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $loopAsset;
 
     /**
+     * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER", orphanRemoval=true)
      *
      * @JMS\Expose()

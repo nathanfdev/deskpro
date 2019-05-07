@@ -67,7 +67,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, orphanRemoval=true)
-     * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(name="voicemail_asset_id", referencedColumnName="id", onDelete="SET NULL")
      *
      * @JMS\Expose()
      *

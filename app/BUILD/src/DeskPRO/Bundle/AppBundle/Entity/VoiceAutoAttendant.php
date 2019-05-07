@@ -49,6 +49,7 @@ class VoiceAutoAttendant implements EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
+     * @ORM\JoinColumn(name="audio_asset_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\OneToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset", cascade={"persist", "remove"}, fetch="EAGER")
      *
      * @JMS\Expose()
