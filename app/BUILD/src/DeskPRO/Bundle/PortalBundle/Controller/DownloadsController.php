@@ -175,7 +175,6 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}", name="user_downloads_file")
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD', file)")
-     * @PageHttpCache(content="file")
      *
      * @param Request  $request
      * @param Download $file
