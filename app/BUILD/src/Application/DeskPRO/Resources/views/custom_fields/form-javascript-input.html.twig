@@ -4,6 +4,6 @@
             data-field-id="{{field_type}}_{{field_def.id}}"
             class="js-custom-field"
     >
-        <input name="{{ formView.vars.full_name }}" data-field-id="{{field_type}}_{{field_def.id}}" type="hidden" class='js-custom-field-hidden-input' value="{{ value.value }}" />
+        <input name="{{ formView.vars.full_name }}" data-field-id="{{field_type}}_{{field_def.id}}" type="hidden" class='js-custom-field-hidden-input' value="{{ value.value|json_encode }}" />
     </div>
 </div>
