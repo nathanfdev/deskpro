@@ -842,8 +842,25 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $answeredBy = $request->request->get('AnsweredBy');
-        if (in_array($answeredBy, ['machine_start', 'fax'])) {
+        try {
+            $answeredBy = $request->request->get('AnsweredBy');
+            if (in_array($answeredBy, ['machine_start', 'fax'])) {
+                throw new \RuntimeException('Answered by machine');
+            }
+
+            $callId  = $request->query->get('CallId');
+            $agentId = $request->query->get('AgentId');
+
+            if (!$callId || !$phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId)) {
+                throw new \RuntimeException('Phone call not found');
+            }
+            if (!$agentId || !$agent = $this->get('dp.voice.callbacks_helper')->getAgent($agentId)) {
+                throw new \RuntimeException('Agent not found');
+            }
+            if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+                throw new \RuntimeException('Phone call is already accepted');
+            }
+        } catch (\Exception $e) {
             $twiml = new Twiml();
             $twiml->hangup();
 
@@ -851,16 +868,6 @@ class TwilioCallbacksController extends BaseController
             $response->headers->set('Content-Type', 'text/xml');
 
             return $response;
-        }
-
-        $callId  = $request->query->get('CallId');
-        $agentId = $request->query->get('AgentId');
-
-        if (!$callId || !$phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId)) {
-            throw $this->createBadRequestException('Phone call not found');
-        }
-        if (!$agentId || !$agent = $this->get('dp.voice.callbacks_helper')->getAgent($agentId)) {
-            throw $this->createBadRequestException('Agent not found');
         }
 
         /* @var VoicePhoneCall $phoneCall */

@@ -341,63 +341,70 @@ class PlivoCallbacksController extends BaseController
                 }
             }
         } elseif ($callStatus === 'in-progress') {
-            if (!$callId || !$phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId)) {
-                throw $this->createBadRequestException('Phone call not found');
-            }
-            if (!$agentId || !$agent = $this->get('dp.voice.callbacks_helper')->getAgent($agentId)) {
-                throw $this->createBadRequestException('Agent not found');
-            }
-
-            $phoneCall->addForwardingSid($agentId, $callSid);
-
-            $em = $this->getManager();
-            $em->persist($phoneCall);
-            $em->flush();
-
-            $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
-
             try {
-                $phoneCall = $this->get('dp.voice.callbacks_helper')->joinIncomingPhoneCall(
-                    $callId,
-                    $callSid,
-                    $agentId,
-                    $agent->getAgentData()->getForwardingNumber(),
-                    $details
-                );
-
-                if ($phoneCall) {
-                    // join conference
-                    /** @var PlivoVoiceAccount $account */
-                    $account = $phoneCall->getNumber()->getAccount();
-                    $plivoXml->addConference($phoneCall->getConferenceName(), [
-                        'enterSound'     => false,
-                        'callbackUrl'    => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
-                        'callbackMethod' => 'POST',
-                        'record'         => true,
-                    ]);
-
-                    // join user to the conference
-                    if ($phoneCall->getParticipants()->count() <= 2) {
-                        $this->get('dp.voice.provider_helper')->transferUser(
-                            $phoneCall,
-                            $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
-                            'POST'
-                        );
-                    }
-
-                    $this->get('event_dispatcher')->dispatch(
-                        LegacySystemEvent::EVENT_NAME,
-                        new LegacySystemEvent('agent.voice.call-answered', [
-                            'call_id' => $phoneCall->getId(),
-                        ])
-                    );
-                } else {
-                    $plivoXml->addHangup();
+                if (!$callId || !$phoneCall = $this->getRepository(VoicePhoneCall::class)->find($callId)) {
+                    throw new \RuntimeException('Phone call not found');
                 }
-            } catch (OutOfServiceException $e) {
-                $plivoXml->addSpeak('Unable to answer the call.', [
-                    'voice' => 'WOMAN',
-                ]);
+                if (!$agentId || !$agent = $this->get('dp.voice.callbacks_helper')->getAgent($agentId)) {
+                    throw new \RuntimeException('Agent not found');
+                }
+                if (!$this->get('dp.voice.task_router')->acceptTask($phoneCall->getTaskSid(), 'agent', $agent->getId())) {
+                    throw new \RuntimeException('Phone call is already accepted');
+                }
+
+                $phoneCall->addForwardingSid($agentId, $callSid);
+
+                $em = $this->getManager();
+                $em->persist($phoneCall);
+                $em->flush();
+
+                $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+
+                try {
+                    $phoneCall = $this->get('dp.voice.callbacks_helper')->joinIncomingPhoneCall(
+                        $callId,
+                        $callSid,
+                        $agentId,
+                        $agent->getAgentData()->getForwardingNumber(),
+                        $details
+                    );
+
+                    if ($phoneCall) {
+                        // join conference
+                        /** @var PlivoVoiceAccount $account */
+                        $account = $phoneCall->getNumber()->getAccount();
+                        $plivoXml->addConference($phoneCall->getConferenceName(), [
+                            'enterSound'     => false,
+                            'callbackUrl'    => $this->getConferenceStatusCallbackUrl($account, $phoneCall),
+                            'callbackMethod' => 'POST',
+                            'record'         => true,
+                        ]);
+
+                        // join user to the conference
+                        if ($phoneCall->getParticipants()->count() <= 2) {
+                            $this->get('dp.voice.provider_helper')->transferUser(
+                                $phoneCall,
+                                $this->getUserJoinsConferenceCallbackUrl($account, $phoneCall),
+                                'POST'
+                            );
+                        }
+
+                        $this->get('event_dispatcher')->dispatch(
+                            LegacySystemEvent::EVENT_NAME,
+                            new LegacySystemEvent('agent.voice.call-answered', [
+                                'call_id' => $phoneCall->getId(),
+                            ])
+                        );
+                    } else {
+                        $plivoXml->addHangup();
+                    }
+                } catch (OutOfServiceException $e) {
+                    $plivoXml->addSpeak('Unable to answer the call.', [
+                        'voice' => 'WOMAN',
+                    ]);
+                }
+            } catch (\Exception $e) {
+                $plivoXml->addHangup();
             }
         } elseif ($callStatus === 'completed') {
             $this->get('dp.voice.callbacks_helper')->callHangupByAgent($callSid, $details);
