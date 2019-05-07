@@ -67,22 +67,26 @@ class OIDC extends AbstractCallbackAdatper
             $this->options->get(self::OPTION_SECRET)
         );
         $oidc->addScope(['openid', 'profile', 'email', 'phone', 'address']);
-        $oidc->authenticate();
-        $oidcUserinfo = $oidc->requestUserInfo();
-        $userinfo     = [
-            'first_name' => isset($oidcUserinfo['given_name']) ? $oidcUserinfo['given_name'] : null,
-            'email'      => isset($oidcUserinfo['email']) ? $oidcUserinfo['email'] : null,
-            'name'       => isset($oidcUserinfo['name']) ? $oidcUserinfo['name'] : null,
-            'birthday'   => isset($oidcUserinfo['birthday']) ? $oidcUserinfo['birthday'] : null,
-            'gender'     => isset($oidcUserinfo['gender']) ? $oidcUserinfo['gender'] : null,
-            'country'    => isset($oidcUserinfo['given_name']) ? $oidcUserinfo['given_name'] : null,
-            'language'   => isset($oidcUserinfo['locale']) ? $oidcUserinfo['locale'] : null,
-            'timezone'   => isset($oidcUserinfo['zoneinfo']) ? $oidcUserinfo['zoneinfo'] : null,
-        ];
+        try {
+            $oidc->authenticate();
+            $oidcUserinfo = $oidc->requestUserInfo();
+            $userinfo                            = [
+                'first_name' => property_exists($oidcUserinfo, 'given_name') ? $oidcUserinfo->given_name : null,
+                'email'      => property_exists($oidcUserinfo, 'email') ? $oidcUserinfo->email : null,
+                'name'       => property_exists($oidcUserinfo, 'name') ? $oidcUserinfo->name : null,
+                'birthday'   => property_exists($oidcUserinfo, 'birthday') ? $oidcUserinfo->birthday : null,
+                'gender'     => property_exists($oidcUserinfo, 'gender') ? $oidcUserinfo->gender : null,
+                'country'    => property_exists($oidcUserinfo, 'given_name') ? $oidcUserinfo->given_name : null,
+                'language'   => property_exists($oidcUserinfo, 'locale') ? $oidcUserinfo->locale : null,
+                'timezone'   => property_exists($oidcUserinfo, 'zoneinfo') ? $oidcUserinfo->zoneinfo : null,
+            ];
 
-        $identity = new \Orb\Auth\Identity($this->options->get(self::OPTION_IDENTITY), $userinfo);
+            $identity = new \Orb\Auth\Identity($this->options->get(self::OPTION_IDENTITY), $userinfo);
 
-        $result = new Result(Result::SUCCESS, $identity);
+            $result = new Result(Result::SUCCESS, $identity);
+        } catch (\Exception $e) {
+            $result = new Result(Result::FAILURE_EXCEPTION, null, [$e->getMessage()]);
+        }
 
         return $result;
     }
