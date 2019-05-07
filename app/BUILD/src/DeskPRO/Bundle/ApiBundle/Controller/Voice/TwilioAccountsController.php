@@ -88,6 +88,28 @@ class TwilioAccountsController extends AbstractVoiceCrudController
 
     /**
      * @ApiDoc(
+     *     description="Returns a list of available countries with voice service",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="array<DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber>"
+     * )
+     *
+     * @Rest\Get("/{account}/available_countries")
+     *
+     * @param TwilioVoiceAccount $account
+     *
+     * @return View
+     */
+    public function getAvailableCountriesAction(TwilioVoiceAccount $account)
+    {
+        $countries = $this->get('twilio_adapter')->getAvailableCountries($account);
+
+        return new View($this->wrap($countries));
+    }
+
+    /**
+     * @ApiDoc(
      *     description="Returns a list of available numbers to buy",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -107,7 +129,9 @@ class TwilioAccountsController extends AbstractVoiceCrudController
         $adapter     = $this->get('twilio_adapter');
         $query       = $request->query;
         $countryCode = strtoupper($query->get('country_code'));
-        $options     = [];
+        $options     = [
+            'VoiceEnabled' => true,
+        ];
 
         $region = $query->get('region');
         if ($region) {

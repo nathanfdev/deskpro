@@ -123,6 +123,7 @@ class AvailableListForm extends React.Component {
   render() {
     const { accounts = Immutable.fromJS([]) } = this.props;
     const { formData } = this.state;
+    const account = accounts.get(formData.value.account);
 
     return (
       <div className="twilio-number-search-form">
@@ -138,12 +139,12 @@ class AvailableListForm extends React.Component {
               </div>}
             <div className="inline-field">
               <Field select="country_code" label="Choose a country *">
-                <CountryCodeSelect allowedCountryCodes={allowedCountryCodes} />
+                <CountryCodeSelect allowedCountryCodes={allowedCountryCodes} account={account} />
               </Field>
             </div>
             <div className="inline-field">
               <Field select="types" label="Types of number *">
-                <TypesOfNumber account={accounts.get(formData.value.account)} />
+                <TypesOfNumber account={account} />
               </Field>
             </div>
             <div className="inline-field">

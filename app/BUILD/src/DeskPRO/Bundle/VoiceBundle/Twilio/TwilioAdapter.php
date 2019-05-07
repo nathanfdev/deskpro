@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantAgent;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallParticipantUser;
 use DeskPRO\Bundle\VoiceBundle\Settings\VoiceSettingsResolver;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioAvailableNumber;
+use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioCountry;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioExistingNumber;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Model\TwilioPaginate;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Rest\Proxy\ClientProxy;
@@ -84,6 +85,26 @@ class TwilioAdapter implements VoiceProviderInterface
         }
 
         return $value;
+    }
+
+    /**
+     * @param TwilioVoiceAccount $account
+     *
+     * @return array
+     */
+    public function getAvailableCountries(TwilioVoiceAccount $account)
+    {
+        $counties = [];
+
+        try {
+            $client = $this->getClient($account);
+            foreach ($client->pricing->voice->countries->read() as $apiCountry) {
+                $counties[] = new TwilioCountry($apiCountry);
+            }
+        } catch (\Exception $e) {
+        }
+
+        return $counties;
     }
 
     /**
