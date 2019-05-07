@@ -1215,6 +1215,40 @@ class TwilioCallbacksController extends BaseController
     }
 
     /**
+     * @ApiDoc(
+     *     description="Transcribe action, accepts phone call transcription",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     output="string"
+     * )
+     *
+     * @Rest\Post("/transcribe_callback", name="twilio_transcribe_callback")
+     *
+     * @param TwilioVoiceAccount $account
+     * @param string             $accountAuth
+     * @param Request            $request
+     *
+     * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function transcribeAction(TwilioVoiceAccount $account, $accountAuth, Request $request)
+    {
+        if ($account->getAccountAuth() !== $accountAuth) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $addOns     = json_decode($request->request->get('AddOns'), true);
+        $payloadUrL = $addOns['results']['voicebase_transcription']['payload'][0]['url'];
+
+        $client   = new \GuzzleHttp\Client();
+        $response = $client->request('GET', $payloadUrL, ['auth' => [$account->getAccountId(), $account->getAuthToken()]]);
+
+        $results = json_decode((string) $response->getBody(), true);
+    }
+
+    /**
      * @param Request $request
      *
      * @throws \Exception
