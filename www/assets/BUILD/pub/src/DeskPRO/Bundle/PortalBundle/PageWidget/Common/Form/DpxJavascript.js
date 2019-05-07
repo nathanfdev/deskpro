@@ -16,10 +16,13 @@ export default class DpxJavascript extends PageWidget {
       context:   'newticket',
     };
     evCode(ctx);
+    const fieldData = JSON.parse($input.val() ? $input.val() : '{}') || { value: null, data: {} };
     const jsWidget = {
       ctx,
-      element: null,
-      field:   $input,
+      element:      null,
+      field:        $input,
+      currentData:  fieldData.data,
+      currentValue: fieldData.value
     };
 
     const $renderedElement = ctx.renderField(
@@ -35,8 +38,10 @@ export default class DpxJavascript extends PageWidget {
           dataObject = Object.assign({}, { value }, { data: data || {} });
         }
         jsWidget.field.val(JSON.stringify(dataObject));
+        jsWidget.currentData = dataObject.data;
+        jsWidget.currentValue = dataObject.value;
       },
-      '', {}
+      jsWidget.currentValue, jsWidget.currentData
     );
     jsWidget.field.after($renderedElement);
     jsWidget.element = $renderedElement;
