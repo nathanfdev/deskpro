@@ -11,6 +11,9 @@
 		display: none;
 	}
 </style>
+
+{% include 'AgentBundle:Ticket:view-billing-form.html.twig' %}
+
 <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la billing-table" {% if ticket.charges is empty %}style="display:none"{% endif %}>
 <thead>
 	<th>{{ phrase('agent.tickets.billing_chargetime') }}</th>
@@ -29,11 +32,18 @@
   {% endif %}
 </thead>
 <tbody id="{{ baseId }}_billing_rows" data-delete-confirm="{{ phrase('agent.tickets.billing_delete_confirm') }}">
-{% for charge in ticket.charges %}
+{% for charge in ticket.getCharges()| slice(0, 10) %}
 	{% include 'AgentBundle:Ticket:view-billing-row.html.twig' %}
 {% endfor %}
 </tbody>
+{%  if ticket.getCharges() | length > 10 %}
+<tfoot id="{{ baseId }}_billing_more">
+	<tr>
+		<td colspan="100">
+			<div class="more-box"><button data-load-url="{{ path('agent_ticket_loadmorecharges', {'ticket_id': ticket.id, 'page': 2}) }}" id="{{ baseId }}_more_billing_rows" class="clean-white more-button">{{ phrase('agent.general.show_more') }} <span class="flat-spinner" style="display: none"></span></button></div>
+		</td>
+	</tr>
+</tfoot>
+{%  endif %}
 </table>
 
-
-{% include 'AgentBundle:Ticket:view-billing-form.html.twig' %}

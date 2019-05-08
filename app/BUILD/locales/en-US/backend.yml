@@ -3576,6 +3576,7 @@ agent.general.settings: Settings
 agent.general.setup_device_token: 'Setup device token'
 agent.general.show: Show
 agent.general.show_x_more: 'Show {{count}} more'
+agent.general.show_more: 'Show more'
 agent.general.showing: Showing
 agent.general.showing_results_x_of_y: 'Showing results {{display_count}} of {{size}}'
 agent.general.since_time: 'since {{time}}'

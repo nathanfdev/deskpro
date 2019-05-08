@@ -83,4 +83,40 @@ class TicketChargesController extends CrudSubController
 
         $this->saveTicket($ticket);
     }
+
+    /**
+     * @ApiDoc(
+     *      description="Get ticket charges total amounts",
+     *      tags={"CRUD"="#ffa500"},
+     *      statusCodes={
+     *          400="We will return this in case your request was malformed",
+     *      },
+     *     output="array"
+     * )
+     *
+     * @Rest\Get("/total")
+     *
+     * @return array
+     */
+    public function getTotalAction()
+    {
+        $ticket      = $this->findParentOr404();
+        $charges     = $ticket->getCharges();
+        $timeAmount  = 0;
+        $moneyAmount = 0;
+        /** @var TicketCharge $charge */
+        foreach ($charges as $charge) {
+            if ($charge->getChargeTime()) {
+                $timeAmount += $charge->getChargeTime();
+            }
+            if ($charge->getAmount()) {
+                $moneyAmount += $charge->getAmount();
+            }
+        }
+
+        return [
+            'timeAmount'  => $timeAmount,
+            'moneyAmount' => $moneyAmount,
+        ];
+    }
 }

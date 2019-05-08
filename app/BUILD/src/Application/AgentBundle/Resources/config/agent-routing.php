@@ -1189,6 +1189,12 @@ $collection->create('agent_ticket_chargedelete', [
     'requirements' => ['ticket_id' => '\\d+', 'charge_id' => '\\d+'],
 ]);
 
+$collection->create('agent_ticket_loadmorecharges', [
+    'path'         => '/ticket/{ticket_id}/charge/load/{page}',
+    'controller'   => 'AgentBundle:Ticket:loadMoreCharges',
+    'requirements' => ['ticket_id' => '\\d+', 'page' => '\\d+'],
+]);
+
 $collection->create(
     'agent_ticket_chargeform',
     [
