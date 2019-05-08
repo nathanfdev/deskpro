@@ -175,6 +175,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}", name="user_downloads_file")
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD', file)")
+     * @PageHttpCache(content="file")
      *
      * @param Request  $request
      * @param Download $file
@@ -286,7 +287,7 @@ class DownloadsController extends AbstractController
                 'rating_counts'      => $ratingCounts,
                 'lockout'            => $check->isLockoutRecommended(),
                 'lockout_time'       => $check->getLockoutTime(true),
-                'start_download'     => $request->get('start_download'),
+                'sd'                 => $request->get('sd'),
             ]
         );
     }
@@ -393,8 +394,8 @@ class DownloadsController extends AbstractController
             $forDownload = $request->get('for_download');
             if ($forDownload) {
                 return $this->redirectToRoute('portal_downloads_view', [
-                    'slug'           => $forDownload,
-                    'start_download' => true,
+                    'slug' => $forDownload,
+                    'sd'   => true,
                 ]);
             } else {
                 return $this->redirectToRoute('portal_downloads_eula', [

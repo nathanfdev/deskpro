@@ -1,12 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 {% import 'Theme:Portal:User/macros.html.twig' as macros %}
 
-{% block head_extra %}
-  {% if start_download %}
-    <meta http-equiv="refresh" content="0; URL={{ path('portal_downloads_download', {'slug': file.slug}) }}">
-  {% endif%}
-{% endblock %}
-
 {% block inner_content %}
     <div class="breadcrumbs">
         {% show breadcrumbs %}
@@ -112,5 +106,15 @@
         {% show comment_form %}
     </div>
     {% endif %}
+
+  {% if sd %}
+    <script type="text/javascript">
+      console.log('[KOKO ]SET TIMEOUT');
+      window.setTimeout(function() {
+        console.log('[KOKO ] EXECUTE TIMEOUT');
+        window.location = '{{ path('portal_downloads_download', {'slug': file.slug}) }}';
+      }, 500);
+    </script>
+  {% endif%}
 
 {% endblock inner_content %}
