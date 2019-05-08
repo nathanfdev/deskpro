@@ -9,6 +9,7 @@ import DpxCustomFieldAttach from './Common/Form/DpxCustomFieldAttach';
 import { DpxRadio } from './Common/Form/DpxRadio';
 import { DpxDoubleSubmitPrevention } from './Common/Form/DpxDoubleSubmitPrevention';
 import DpxFormDraft from './Common/Form/Draft/DpxFormDraft';
+import DpxJavascript from './Common/Form/DpxJavascript';
 
 export default class PortalFormWidget extends PageWidget {
 
@@ -24,6 +25,8 @@ export default class PortalFormWidget extends PageWidget {
     this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
     this.addWidgetDef(DpxCustomFieldAttach, '.dpx-custom-field-attach');
     this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
+    this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
+    this.addWidgetDef(DpxJavascript, '.dpx-javascript');
 
     if (this.$element.is('form')) {
       PortalFormWidget.initForms(this.$element);

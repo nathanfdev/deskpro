@@ -53,16 +53,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
 
     /**
      * @return JsonResponse;
-     *
-     * SWG\Api(
-     * 	path="/ticket_fields",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get list of ticket fields, including custom fields",
-     * 		notes="",
-     *		type="array",
-     *  )
-     * )
      */
     public function listAction()
     {
@@ -94,26 +84,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Doctrine\ORM\TransactionRequiredException
      *
      * @return JsonResponse
-     *
-     *
-     * SWG\Api(
-     * 	path="/ticket_fields/{id}",
-     * 	SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get custom ticket field by Id",
-     * 		notes="",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="Custom field id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
      */
     public function getCustomFieldAction($id)
     {
@@ -159,36 +129,6 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
      * @throws \Exception
      *
      * @return JsonResponse
-     *
-     *
-     * SWG\Api(
-     * 	path="/ticket_fields/{id}",
-     * 	SWG\Operation(
-     * 		method="POST",
-     * 		summary="Save custom ticket field by ID",
-     * 		notes="All you will pass in this query will be saved",
-     *		type="array",
-     *      SWG\Parameters (
-     *          SWG\Parameter(
-     *				name="id",
-     *				description="Custom field id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer",
-     *			),
-     *      )
-     *  )
-     * )
-
-     * SWG\Api(
-     * 	path="/ticket_fields",
-     * 	SWG\Operation(
-     * 		method="PUT",
-     * 		summary="Create custom ticket field",
-     * 		notes="All you will pass in this query will be saved",
-     *		type="array",
-     *  )
-     * )
      */
     public function saveCustomFieldAction($id)
     {

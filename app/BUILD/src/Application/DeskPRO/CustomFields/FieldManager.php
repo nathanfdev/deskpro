@@ -554,6 +554,8 @@ class FieldManager
                             }
                         }
                     }
+                } elseif ($def->isDataJsonType() || $def->isJavascriptType()) {
+                    $item['value'] = json_decode($field_datas[$data_keys[$def['id']]]->getData(), true);
                 } else {
                     $item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
                 }
@@ -806,6 +808,36 @@ class FieldManager
             }
 
             return $customData;
+        } elseif ($fieldDef->isDataJsonType() || $fieldDef->isJavascriptType()) {
+            $old_custom_data = $object->getCustomDataForField($set_field);
+
+            $customDatum             = $old_custom_data ?: $this->createDataClass();
+            $customDatum->field      = $set_field;
+            $customDatum->root_field = $fieldDef;
+            // let's check it for json_string, if not - fake json object with value prop
+            try {
+                $decVal = @json_decode($value, true);
+                $err    = json_last_error();
+                if ($err) {
+                    $decVal = ['value' => $value, 'data' => []];
+                }
+            } catch (\Exception $e) {
+                $decVal = ['value' => $value];
+            }
+            $customDatum['input'] = json_encode($decVal);
+
+            if (!$old_custom_data) {
+                $object->addCustomData($customDatum);
+            }
+
+            // remove dupes
+            foreach ($object->getCustomData() as $existCustomData) {
+                if ($existCustomData->getField() === $set_field && $existCustomData !== $customDatum) {
+                    $object->getCustomData()->removeElement($existCustomData);
+                }
+            }
+
+            return $customDatum;
         } else {
             $old_custom_data = $object->getCustomDataForField($set_field);
 

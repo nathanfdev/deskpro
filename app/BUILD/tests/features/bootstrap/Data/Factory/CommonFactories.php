@@ -153,6 +153,7 @@ class CommonFactories
             'data'           => CustomDefAbstract::HANDLER_CLASS_DATA,
             'data_list'      => CustomDefAbstract::HANDLER_CLASS_DATALIST,
             'data_json'      => CustomDefAbstract::HANDLER_CLASS_DATAJSON,
+            'javascript'     => CustomDefAbstract::HANDLER_CLASS_JAVASCRIPT,
             'url'            => CustomDefAbstract::HANDLER_CLASS_URL,
             'currency'       => CustomDefAbstract::HANDLER_CLASS_CURRENCY,
             'file'           => CustomDefAbstract::HANDLER_CLASS_FILE,

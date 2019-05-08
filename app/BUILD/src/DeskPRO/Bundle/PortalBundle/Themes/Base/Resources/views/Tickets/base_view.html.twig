@@ -188,6 +188,8 @@
                                                                     </a>
                                                                 </div>
                                                             {% endfor %}
+                                                        {% elseif property.type == 'javascript' %}
+                                                            <p>{{ propValue }}</p>
                                                         {% elseif property.isLinkify %}
                                                             <p>{{ propValue|safe_link_urls }}</p>
                                                         {% else %}

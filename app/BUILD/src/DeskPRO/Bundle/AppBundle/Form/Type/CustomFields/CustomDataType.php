@@ -16,6 +16,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpUrlType;
+use DeskPRO\Bundle\AppBundle\Form\Type\JavascriptType;
 use DeskPRO\Bundle\AppBundle\Form\Type\MoneyType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
@@ -530,6 +531,13 @@ class CustomDataType extends AbstractType
                 return new FormField(DataJsonType::class, [
                     'help' => $def->getRealDescription(),
                 ]);
+            case CustomDefAbstract::TYPE_JAVASCRIPT:
+                $options = [
+                    'custom_def' => $def,
+                    'help'       => $def->getRealDescription(),
+                ];
+
+                return new FormField(JavascriptType::class, $options);
             case CustomDefAbstract::TYPE_DATA:
             case CustomDefAbstract::TYPE_TEXT:
                 return new FormField(TextType::class, [

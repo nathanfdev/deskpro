@@ -18,7 +18,7 @@
                 {{- field_input }}{{ field_def.getHtmlOption()|raw -}}
             </div>
         </div>
-    {% else %}
+	{% else %}
 		<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form {{ field_def.getOption('custom_css_classname', '') }} customfield" id="{{elId}}_form_wrap">
 			{{- field_input }}{{ field_def.getHtmlOption()|raw -}}
 		</div>
