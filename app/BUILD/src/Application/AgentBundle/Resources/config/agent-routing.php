@@ -2627,6 +2627,20 @@ $collection->create('go_to_dashboard_short_url', [
     'requirements' => ['authCode' => '[a-zA-Z0-9]+'],
 ]);
 
+$collection->create('go_to_voice_recording', [
+    'path'         => '/go/voice_recording/{id}',
+    'controller'   => 'AgentBundle:GoTo:voiceRecording',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
+$collection->create('go_to_voicemail_recording', [
+    'path'         => '/go/voicemail_recording/{id}',
+    'controller'   => 'AgentBundle:GoTo:voicemailRecording',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+'],
+]);
+
 $collection->create('reports-interface', [
     'path'       => '/reports-interface',
     'controller' => 'AgentBundle:Interface:interface',
