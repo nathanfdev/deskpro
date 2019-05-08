@@ -109,9 +109,7 @@
 
   {% if sd %}
     <script type="text/javascript">
-      console.log('[KOKO ]SET TIMEOUT');
       window.setTimeout(function() {
-        console.log('[KOKO ] EXECUTE TIMEOUT');
         window.location = '{{ path('portal_downloads_download', {'slug': file.slug}) }}';
       }, 500);
     </script>
