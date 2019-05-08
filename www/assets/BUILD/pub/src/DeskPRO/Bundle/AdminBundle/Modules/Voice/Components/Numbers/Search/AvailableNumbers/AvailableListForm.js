@@ -51,7 +51,7 @@ const defaultCountryCodes = [
 const twilioCountryCodes = {
   AE: ['tollfree'],
   AR: ['local', 'tollfree'],
-  AT: ['national', 'tollfree'],
+  AT: ['local', 'national', 'tollfree'],
   AU: ['local', 'mobile', 'tollfree'],
   BA: ['local', 'national'],
   BB: ['local'],
@@ -66,9 +66,9 @@ const twilioCountryCodes = {
   CH: ['local', 'tollfree'],
   CL: ['local'],
   CO: ['local', 'tollfree'],
-  CY: ['national'],
+  CY: ['local', 'national'],
   CZ: ['local', 'national', 'tollfree'],
-  DE: ['local', 'mobile', 'national'],
+  DE: ['local', 'national', 'mobile'],
   DK: ['local', 'mobile', 'tollfree'],
   DO: ['local'],
   DZ: ['local', 'national'],
@@ -76,19 +76,19 @@ const twilioCountryCodes = {
   EE: ['local', 'national'],
   ES: ['local', 'national', 'tollfree'],
   FI: ['local', 'national', 'tollfree'],
-  FR: ['local', 'mobile', 'national'],
-  GB: ['local', 'mobile', 'national', 'tollfree'],
+  FR: ['local', 'national', 'mobile'],
+  GB: ['local', 'national', 'mobile', 'tollfree'],
   GD: ['local'],
   GH: ['mobile'],
   GN: ['mobile'],
   GR: ['local', 'tollfree'],
   GT: ['local'],
-  HK: ['national', 'tollfree'],
+  HK: ['local', 'national', 'tollfree'],
   HR: ['local'],
   HU: ['local'],
   ID: ['local', 'tollfree'],
   IE: ['local', 'national'],
-  IL: ['local', 'mobile', 'national', 'tollfree'],
+  IL: ['local', 'national', 'mobile', 'tollfree'],
   IN: ['tollfree'],
   IS: ['local'],
   IT: ['local', 'national'],
@@ -102,7 +102,7 @@ const twilioCountryCodes = {
   LV: ['local'],
   ML: ['local'],
   MO: ['mobile'],
-  MT: ['national'],
+  MT: ['local', 'national'],
   MU: ['mobile'],
   MX: ['local', 'tollfree'],
   MY: ['mobile', 'tollfree'],
@@ -117,7 +117,7 @@ const twilioCountryCodes = {
   PH: ['local', 'tollfree'],
   PL: ['local', 'tollfree'],
   PR: ['local'],
-  PT: ['national', 'tollfree'],
+  PT: ['local', 'national', 'tollfree'],
   RO: ['local', 'tollfree'],
   RS: ['tollfree'],
   SD: ['local'],
@@ -139,46 +139,15 @@ const twilioCountryCodes = {
 
 const countryCodesWithRegions = ['US', 'CA', 'TW'];
 const numberTypes = {
-  twilio: [
-    {
-      value: 'local',
-      title: 'Local'
-    },
-    {
-      value: 'tollfree',
-      title: 'Toll free'
-    },
-    {
-      value: 'mobile',
-      title: 'Mobile'
-    },
-    {
-      value: 'national',
-      title: 'National'
-    }
-  ],
-  plivo: [
-    {
-      value: 'local',
-      title: 'Local'
-    },
-    {
-      value: 'tollfree',
-      title: 'Toll free'
-    },
-    {
-      value: 'mobile',
-      title: 'Mobile'
-    },
-    {
-      value: 'national',
-      title: 'National'
-    },
-    {
-      value: 'fixed',
-      title: 'Fixed'
-    }
-  ]
+  local:    'Local',
+  tollfree: 'Toll free',
+  mobile:   'Mobile',
+  national: 'National',
+  fixed:    'Fixed'
+};
+const defaultNumberTypes = {
+  twilio: ['local', 'tollfree', 'mobile', 'national'],
+  plivo:  ['local', 'tollfree', 'mobile', 'national', 'fixed']
 };
 
 class AvailableListForm extends React.Component {
@@ -208,7 +177,20 @@ class AvailableListForm extends React.Component {
     });
   }
 
-  onChange = (formData) => {
+  onChange = (formData, fields) => {
+    if (fields.indexOf('country_code') !== -1) {
+      const { accounts } = this.props;
+      const account = accounts.get(formData.value.account);
+
+      formData.value.types = [];
+      if (account) {
+        formData.value.types = defaultNumberTypes[account.get('type')];
+        if (account.get('type') === 'twilio' && formData.value.country_code && twilioCountryCodes[formData.value.country_code]) {
+          formData.value.types = [...twilioCountryCodes[formData.value.country_code]];
+        }
+      }
+    }
+
     this.setState({ formData });
     this.props.onChange(formData.value);
   };
@@ -217,10 +199,27 @@ class AvailableListForm extends React.Component {
     const { accounts = Immutable.fromJS([]) } = this.props;
     const { formData } = this.state;
     const account = accounts.get(formData.value.account);
+    const countryCode = formData.value.country_code;
 
     let accountCountryCodes = defaultCountryCodes;
     if (account && account.get('type') === 'twilio') {
       accountCountryCodes = Object.keys(twilioCountryCodes);
+    }
+
+    let availableTypes = [];
+    if (account) {
+      availableTypes = [...defaultNumberTypes[account.get('type')]];
+      if (account.get('type') === 'twilio') {
+        if (countryCode && twilioCountryCodes[countryCode]) {
+          availableTypes = [...twilioCountryCodes[countryCode]];
+        }
+
+        // no numbers with national type, so just don't display this option at all
+        const nationalIndex = availableTypes.indexOf('national');
+        if (nationalIndex !== -1) {
+          availableTypes.splice(nationalIndex, 1);
+        }
+      }
     }
 
     return (
@@ -237,12 +236,12 @@ class AvailableListForm extends React.Component {
               </div>}
             <div className="inline-field">
               <Field select="country_code" label="Choose a country *">
-                <CountryCodeSelect allowedCountryCodes={accountCountryCodes} account={account} />
+                <CountryCodeSelect allowedCountryCodes={accountCountryCodes} />
               </Field>
             </div>
             <div className="inline-field">
               <Field select="types" label="Types of number *">
-                <TypesOfNumber account={account} />
+                <TypesOfNumber availableTypes={availableTypes} />
               </Field>
             </div>
             <div className="inline-field">
@@ -250,7 +249,7 @@ class AvailableListForm extends React.Component {
                 <BlurInput type="text" placeholder="e.g. '01243'" />
               </Field>
             </div>
-            {countryCodesWithRegions.indexOf(formData.value.country_code) !== -1 &&
+            {countryCodesWithRegions.indexOf(countryCode) !== -1 &&
               <div className="inline-field">
                 <Field select="region" label="Location">
                   <BlurInput type="text" />
@@ -266,9 +265,9 @@ class AvailableListForm extends React.Component {
 class TypesOfNumber extends React.Component {
 
   static propTypes = {
-    account:  PropTypes.object,
-    value:    PropTypes.array,
-    onChange: PropTypes.func
+    availableTypes: PropTypes.array,
+    value:          PropTypes.array,
+    onChange:       PropTypes.func
   };
 
   onChange = (item) => {
@@ -285,23 +284,19 @@ class TypesOfNumber extends React.Component {
   };
 
   render() {
-    const { account, value = [] } = this.props;
-    let types = [];
-    if (account) {
-      types = numberTypes[account.get('type')];
-    }
+    const { availableTypes, value = [] } = this.props;
 
     return (
       <div className="number-types">
-        {types.map((type, index) => {
-          const checked = value.indexOf(type.value) !== -1;
+        {availableTypes.map((type, index) => {
+          const checked = value.indexOf(type) !== -1;
 
           return (
             <Checkbox
               key={index}
               value={checked}
-              label={type.title}
-              onChange={() => this.onChange(type.value)}
+              label={numberTypes[type]}
+              onChange={() => this.onChange(type)}
             />
           );
         })}
