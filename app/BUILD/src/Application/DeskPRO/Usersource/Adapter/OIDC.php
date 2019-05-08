@@ -11,7 +11,7 @@ use Orb\Auth\Identity;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class OpenID extends AbstractAdapter implements ContainerAwareInterface
+class OIDC extends AbstractAdapter implements ContainerAwareInterface
 {
     /**
      * @var ContainerInterface
@@ -32,15 +32,13 @@ class OpenID extends AbstractAdapter implements ContainerAwareInterface
     }
 
     /**
-     * @return \Orb\Auth\Adapter\OpenId
+     * @return \Orb\Auth\Adapter\OIDC
      */
     protected function _createAuthAdapterObject()
     {
-        $options                                         = $this->usersource->options;
-        $realm                                           = $this->container->get('brand_stack')->getActive()->getSetting('core.deskpro_url');
-        $options[\Orb\Auth\Adapter\OpenId::OPTION_REALM] = $realm;
+        $options = $this->usersource->options;
 
-        return new \Orb\Auth\Adapter\OpenId($options);
+        return new \Orb\Auth\Adapter\OIDC($options);
     }
 
     public function getAgentLogoutRedirectUrl()
