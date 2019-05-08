@@ -5,7 +5,7 @@ import { Fieldset, createValue } from '@deskpro/react-forms';
 import { Form, Field, BlurInput, Select, CountryCodeSelect, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import AccountChoiceWrapper from '../../../Common/AccountChoiceWrapper';
 
-const allowedCountryCodes = [
+const defaultCountryCodes = [
   'US',
   'AU',
   'AT',
@@ -48,6 +48,95 @@ const allowedCountryCodes = [
   'GB'
 ];
 
+const twilioCountryCodes = {
+  AE: ['tollfree'],
+  AR: ['local', 'tollfree'],
+  AT: ['national', 'tollfree'],
+  AU: ['local', 'mobile', 'tollfree'],
+  BA: ['local', 'national'],
+  BB: ['local'],
+  BE: ['local', 'national', 'tollfree'],
+  BG: ['local', 'tollfree'],
+  BJ: ['mobile'],
+  BO: ['tollfree'],
+  BR: ['local', 'mobile', 'tollfree'],
+  BW: ['tollfree'],
+  BY: ['tollfree'],
+  CA: ['local', 'tollfree'],
+  CH: ['local', 'tollfree'],
+  CL: ['local'],
+  CO: ['local', 'tollfree'],
+  CY: ['national'],
+  CZ: ['local', 'national', 'tollfree'],
+  DE: ['local', 'mobile', 'national'],
+  DK: ['local', 'mobile', 'tollfree'],
+  DO: ['local'],
+  DZ: ['local', 'national'],
+  EC: ['local'],
+  EE: ['local', 'national'],
+  ES: ['local', 'national', 'tollfree'],
+  FI: ['local', 'national', 'tollfree'],
+  FR: ['local', 'mobile', 'national'],
+  GB: ['local', 'mobile', 'national', 'tollfree'],
+  GD: ['local'],
+  GH: ['mobile'],
+  GN: ['mobile'],
+  GR: ['local', 'tollfree'],
+  GT: ['local'],
+  HK: ['national', 'tollfree'],
+  HR: ['local'],
+  HU: ['local'],
+  ID: ['local', 'tollfree'],
+  IE: ['local', 'national'],
+  IL: ['local', 'mobile', 'national', 'tollfree'],
+  IN: ['tollfree'],
+  IS: ['local'],
+  IT: ['local', 'national'],
+  JM: ['local'],
+  JP: ['local', 'national', 'tollfree'],
+  KE: ['local'],
+  KR: ['tollfree'],
+  KY: ['local'],
+  LT: ['local'],
+  LU: ['local'],
+  LV: ['local'],
+  ML: ['local'],
+  MO: ['mobile'],
+  MT: ['national'],
+  MU: ['mobile'],
+  MX: ['local', 'tollfree'],
+  MY: ['mobile', 'tollfree'],
+  NA: ['local', 'national'],
+  NG: ['local'],
+  NI: ['local'],
+  NL: ['local', 'national', 'tollfree'],
+  NO: ['local', 'tollfree'],
+  NZ: ['local', 'tollfree'],
+  PA: ['local', 'tollfree'],
+  PE: ['local', 'tollfree'],
+  PH: ['local', 'tollfree'],
+  PL: ['local', 'tollfree'],
+  PR: ['local'],
+  PT: ['national', 'tollfree'],
+  RO: ['local', 'tollfree'],
+  RS: ['tollfree'],
+  SD: ['local'],
+  SE: ['local', 'national', 'tollfree'],
+  SI: ['local'],
+  SK: ['local', 'tollfree'],
+  SV: ['local'],
+  TH: ['local', 'tollfree'],
+  TN: ['local', 'national'],
+  TT: ['local'],
+  TW: ['local', 'tollfree'],
+  TZ: ['local', 'national'],
+  UG: ['local', 'national', 'tollfree'],
+  US: ['local', 'tollfree'],
+  VE: ['tollfree'],
+  VN: ['local', 'tollfree'],
+  ZA: ['local', 'national', 'tollfree']
+};
+
 const countryCodesWithRegions = ['US', 'CA', 'TW'];
 const numberTypes = {
   twilio: [
@@ -62,6 +151,10 @@ const numberTypes = {
     {
       value: 'mobile',
       title: 'Mobile'
+    },
+    {
+      value: 'national',
+      title: 'National'
     }
   ],
   plivo: [
@@ -125,6 +218,11 @@ class AvailableListForm extends React.Component {
     const { formData } = this.state;
     const account = accounts.get(formData.value.account);
 
+    let accountCountryCodes = defaultCountryCodes;
+    if (account && account.get('type') === 'twilio') {
+      accountCountryCodes = Object.keys(twilioCountryCodes);
+    }
+
     return (
       <div className="twilio-number-search-form">
         <Form formValue={formData}>
@@ -139,7 +237,7 @@ class AvailableListForm extends React.Component {
               </div>}
             <div className="inline-field">
               <Field select="country_code" label="Choose a country *">
-                <CountryCodeSelect allowedCountryCodes={allowedCountryCodes} account={account} />
+                <CountryCodeSelect allowedCountryCodes={accountCountryCodes} account={account} />
               </Field>
             </div>
             <div className="inline-field">
