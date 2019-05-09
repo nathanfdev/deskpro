@@ -36,6 +36,11 @@ export const connectionsSelector = createSelector(
   state => state.get('connections')
 );
 
+export const waitingConnectionSelector = createSelector(
+  stateSelector,
+  state => state.get('waitingConnection')
+);
+
 export const outboundNumberSelector = createSelector(
   stateSelector,
   state => state.get('outboundNumber')

@@ -26,6 +26,7 @@ export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL')
 export const setBusyAgents = createAction('VOICE_AGENT_SET_BUSY_AGENTS');
 export const setAgentAsIdle = createAction('VOICE_AGENT_SET_AS_IDLE');
 export const setAgentAsBusy = createAction('VOICE_AGENT_SET_AS_BUSY');
+export const waitingConnection = createAction('VOICE_WAITING_CONNECTION');
 
 const filterConnection = (connection, callSid) => {
   if (!connection) {
@@ -404,6 +405,8 @@ export const makeOutboundCall = createAction(
       call_to:   callTo,
       ticket:    ticketId
     });
+
+    dispatch(waitingConnection());
     promise.success(({ data, linked }) => {
       if (linked.person) {
         dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(linked.person)));
@@ -476,6 +479,7 @@ export const acceptPhoneCall = createAction(
       promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/assign_agent`);
     }
 
+    dispatch(waitingConnection());
     promise.success(({ data }) => {
       closeIframes();
 
