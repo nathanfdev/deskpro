@@ -111,6 +111,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 		if (this.labelsInput) {
 			formData.append(this.labelsInput.getFormData());
 		}
+		var self = this;
 
 		$('div.error.section', this.wrapper).removeClass('error');
 		$('.error-message-on', this.wrapper).removeClass('error-message-on');
@@ -126,7 +127,9 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 			dataType: 'json',
 			context: this,
 			complete: function() {
-				self.wrapper.removeClass('loading');
+				if (self.wrapper) {
+					self.wrapper.removeClass('loading');
+				}
 			},
 			success: function(data) {
 				if (data.error) {
@@ -318,10 +321,6 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 			} else {
 				li.addClass('unchecked');
 			}
-		});
-
-		DeskPRO_Window.util.fileupload(this.wrapper, {
-			page: this
 		});
 	}
 });
