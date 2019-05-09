@@ -33,6 +33,15 @@
 
 		{{ phrase('agent.emails.ticket_was_created', {name: action_performer ? action_performer.display_contact : ticket_person.display_contact}) }}
 
+		{% set lastReply = ticket.getLastReply(true) %}
+		{% if lastReply and lastReply.isVoiceMessage() %}
+			{% set phoneCall = lastReply.getPhoneCallAttribute().getPhoneCall() %}
+			{% if phoneCall.getAgentVoicemailRecord() %}
+				Click here to listen to the voicemail message:<br />
+				{{ url('go_to_voicemail_recording', { id: phoneCall.getAgentVoicemailRecord().getId() }) }}
+			{% endif %}
+		{% endif %}
+
 		<br /><br />
 
 		{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}

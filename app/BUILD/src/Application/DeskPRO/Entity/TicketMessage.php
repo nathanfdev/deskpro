@@ -875,6 +875,22 @@ class TicketMessage extends DomainObject
     }
 
     /**
+     * @return TicketMessageVoicePhoneCall
+     */
+    public function getPhoneCallAttribute()
+    {
+        return $this->getPhoneCallAttributes()->first();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVoiceMessage()
+    {
+        return count($this->getPhoneCallAttributes()) > 0;
+    }
+
+    /**
      * @return TicketAttachment[]|PersistentCollection
      */
     public function getAttachments()
