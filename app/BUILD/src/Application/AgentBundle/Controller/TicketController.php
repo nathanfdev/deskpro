@@ -1381,7 +1381,6 @@ class TicketController extends AbstractController
             'active_drafts'      => $this->_renderActiveDrafts($ticket, $drafts),
             'via_reply'          => true,
             'replybox_html'      => $replybox,
-            'charge_html'        => $chargeHtml,
             'changed_agent'      => $changedAgent,
             'agent_id'           => $ticket['agent_id'],
             'changed_team'       => $changedTeam,
