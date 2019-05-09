@@ -1629,6 +1629,10 @@ DeskPRO.Agent.Window = new Orb.Class({
       allowIgnore = true;
 		}
 
+		if (allowIgnore && window.AgentLegacyBundle.hasActiveVoiceCall()) {
+			return;
+		}
+
 		var self = this;
 
 		if (this._refreshAlertTimeout) {
