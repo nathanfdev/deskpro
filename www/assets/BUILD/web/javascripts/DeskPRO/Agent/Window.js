@@ -1708,7 +1708,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			}, 1000);
 		} else {
 			var time = 30;
-			('#refresh_alert_overlay').find('.countdown').text(time);
+			$('#refresh_alert_overlay').find('.countdown').text(time);
 
 			this._refreshAlertTimeout = window.setInterval(function() {
 				time--;
