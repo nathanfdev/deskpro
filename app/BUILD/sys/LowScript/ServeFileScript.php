@@ -553,6 +553,12 @@ class ServeFileScript extends LowScriptAbstract
      */
     protected function handleFilesystemBlobRequest($batch, $authcode, $blob_id, $namehash, $attachmentTagSuffix, $filename)
     {
+        if (defined('DPC_IS_CLOUD')) {
+            $this->showBlob($blob_id, null, $authcode);
+
+            return;
+        }
+
         //------------------------------
         // If its a simple file request we
         // can serve it without a db connection
