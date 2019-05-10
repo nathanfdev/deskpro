@@ -384,6 +384,25 @@ class DownloadsController extends AbstractController
             throw $this->createNotFoundException('Could not find EULA field');
         }
 
+        $forDownload = $request->get('for_download');
+        if ($forDownload) {
+            $file = $this->getEm()->getRepository(Download::class)->findOneBySlug($forDownload);
+            if ($file) {
+                $eulaFieldData = $file->getCustomDataForField($eulaRootField);
+                if ($eulaFieldData) {
+                    $acceptedEulas = $this->getSession()->get('accepted_eulas');
+                    if ($acceptedEulas
+                        && is_array($acceptedEulas)
+                        && isset($acceptedEulas[$eulaFieldData->getField()->getId()])
+                    ) {
+                        return $this->redirectToRoute('portal_downloads_download', [
+                            'slug' => $forDownload,
+                        ]);
+                    }
+                }
+            }
+        }
+
         if ($request->isMethod('post')) {
             $acceptedEulas = $this->getSession()->get('accepted_eulas');
             if (!$acceptedEulas) {
@@ -391,7 +410,6 @@ class DownloadsController extends AbstractController
             }
             $acceptedEulas[$eulaField->getId()] = true;
             $this->getSession()->set('accepted_eulas', $acceptedEulas);
-            $forDownload = $request->get('for_download');
             if ($forDownload) {
                 return $this->redirectToRoute('portal_downloads_view', [
                     'slug' => $forDownload,
