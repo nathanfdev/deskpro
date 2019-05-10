@@ -208,31 +208,34 @@ class GoToController extends AbstractController
     }
 
     /**
+     * @param string         $authCode
      * @param VoiceRecording $recording
      *
      * @return string
      */
-    public function voiceRecordingAction(VoiceRecording $recording)
+    public function voiceRecordingAction($authCode, VoiceRecording $recording)
     {
-        return $this->redirectToVoiceRecordingBlobUrl($recording);
+        return $this->redirectToVoiceRecordingBlobUrl($authCode, $recording);
     }
 
     /**
+     * @param string                  $authCode
      * @param VoicemailAgentRecording $recording
      *
      * @return string
      */
-    public function voicemailRecordingAction(VoicemailAgentRecording $recording)
+    public function agentVoicemailRecordingAction($authCode, VoicemailAgentRecording $recording)
     {
-        return $this->redirectToVoiceRecordingBlobUrl($recording);
+        return $this->redirectToVoiceRecordingBlobUrl($authCode, $recording);
     }
 
     /**
+     * @param string                 $authCode
      * @param AbstractVoiceRecording $recording
      *
      * @return RedirectResponse
      */
-    private function redirectToVoiceRecordingBlobUrl(AbstractVoiceRecording $recording)
+    private function redirectToVoiceRecordingBlobUrl($authCode, AbstractVoiceRecording $recording)
     {
         if (!$blob = $recording->getBlob()) {
             throw $this->createNotFoundException();
@@ -249,9 +252,7 @@ class GoToController extends AbstractController
         }
 
         $ticket = $messageAttribute->getMessage()->getTicket();
-
-        $this->person->loadHelper('PermissionsManager');
-        if (!$this->person->PermissionsManager->TicketChecker->canView($ticket)) {
+        if ($ticket->getAuth() !== $authCode) {
             throw $this->createAccessDeniedException();
         }
 

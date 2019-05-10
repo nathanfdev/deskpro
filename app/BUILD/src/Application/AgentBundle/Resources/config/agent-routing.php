@@ -2628,15 +2628,15 @@ $collection->create('go_to_dashboard_short_url', [
 ]);
 
 $collection->create('go_to_voice_recording', [
-    'path'         => '/go/voice_recording/{id}',
+    'path'         => '/go/ticket/{authCode}/voice_recording/{id}',
     'controller'   => 'AgentBundle:GoTo:voiceRecording',
     'methods'      => ['GET'],
     'requirements' => ['id' => '\\d+'],
 ]);
 
-$collection->create('go_to_voicemail_recording', [
-    'path'         => '/go/voicemail_recording/{id}',
-    'controller'   => 'AgentBundle:GoTo:voicemailRecording',
+$collection->create('go_to_agent_voicemail_recording', [
+    'path'         => '/go/ticket/{authCode}/agent_voicemail_recording/{id}',
+    'controller'   => 'AgentBundle:GoTo:agentVoicemailRecording',
     'methods'      => ['GET'],
     'requirements' => ['id' => '\\d+'],
 ]);
