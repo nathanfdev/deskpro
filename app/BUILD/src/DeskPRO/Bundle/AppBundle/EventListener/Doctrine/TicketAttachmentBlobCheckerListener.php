@@ -72,7 +72,7 @@ class TicketAttachmentBlobCheckerListener
                 $raw_file,
                 $blob->getFilename(),
                 $blob->getContentType(),
-                ['tag' => 'ticket_attachment']
+                ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
             );
         } catch (BlobStorageException $ex) {
             $this->logger->error(sprintf(

@@ -332,6 +332,8 @@ class GenericContext extends BasePortalContext
             $em->refresh($cat);
         }
         $em->refresh($content);
+
+        DataContext::setReference('created_content', $content);
     }
 
     /**

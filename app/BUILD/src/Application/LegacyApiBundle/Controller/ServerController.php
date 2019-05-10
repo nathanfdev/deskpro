@@ -323,6 +323,18 @@ class ServerController extends AbstractController implements ProtectedController
         return $this->createApiResponse($serverFileUploads->switchStorageStatus());
     }
 
+    public function getFileUploadsMethodAction()
+    {
+        /** @var ServerFileUploads $serverFileUploads */
+        $serverFileUploads = $this->container->getSystemService('server_file_uploads');
+
+        return $this->createApiResponse(
+            [
+                'filestorage_method' => $serverFileUploads->getStorageMethod(),
+            ]
+        );
+    }
+
     //###################################################################################################################
     // list File Check
     //###################################################################################################################

@@ -40,6 +40,7 @@ define([
 
   'DeskPRO/OptionBuilder/Module',
   'DeskPRO/CategoryBuilder/Module',
+  'Admin/CustomFields/Download/CategoryBuilder/Module',
   'DeskPRO/Directive/DpDateTimePicker'
 ], (angular
 ) => {
@@ -67,6 +68,7 @@ define([
     'ngGrid',
     'deskpro.option_builder',
     'deskpro.category_builder',
+    'deskpro.custom_filed_download_eula_category_builder',
     'dp.datetimepicker',
     'luegg.directives',
     'angularSpectrumColorpicker'

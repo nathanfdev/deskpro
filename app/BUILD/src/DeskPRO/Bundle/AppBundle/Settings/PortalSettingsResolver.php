@@ -50,6 +50,8 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const SUBSCRIPTION_DOWNLOADS = 'user.downloads_subscriptions';
     const SUBSCRIPTION_GUIDES    = 'user.downloads_guides';
 
+    const ATTACHMENT_REQUIRE_AUTH_DOWNLOADS = 'user.attachment_require_auth_downloads';
+
     const KB_WITH_TREE = 'user.kb_categories_with_tree';
 
     /**
@@ -229,6 +231,8 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setEnabled($this->getSetting(self::APPS_DOWNLOADS, $brand))
             ->setTabEnabled($this->getSetting(self::TAB_DOWNLOADS, $brand))
             ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_DOWNLOADS, $brand))
+            // below setting is global
+            ->setAttachmentRequireAuth($this->getSetting(self::ATTACHMENT_REQUIRE_AUTH_DOWNLOADS, null))
             ->setBrand($brand)
         ;
 

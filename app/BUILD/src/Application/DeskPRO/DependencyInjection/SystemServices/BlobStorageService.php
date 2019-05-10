@@ -136,6 +136,12 @@ class BlobStorageService
             $bs->setAdapterForTag('logs.ticket_proc_log', $log_adapter_id);
         }
 
+        // Force 'db' adapter for Download attachments if S3 and Download protection enabled
+        if ($settingsBag->get('user.attachment_require_auth_downloads')
+            && $settingsBag->get('core.filestorage_method') == 's3') {
+            $bs->setAdapterForTag(DeskproBlobStorage::TAG_DOWNLOAD_ATTACHMENT, 'db');
+        }
+
         // Use local storage for CSS because we need to read it
         // from local domain for paths to resolve properly
         $bs->setAdapterForTag('brand_asset.custom_style', 'db');

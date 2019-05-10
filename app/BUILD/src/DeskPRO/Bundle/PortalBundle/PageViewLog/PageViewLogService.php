@@ -22,14 +22,15 @@ class PageViewLogService
         $this->em = $em;
     }
 
-    public function pageView(Person $person, $type, $id, $action = PageViewLog::ACTION_VIEW)
+    public function pageView(Person $person, $type, $id, $action = PageViewLog::ACTION_VIEW, $meta = [])
     {
         $pageView = new PageViewLog();
         $pageView
             ->setObjectType($type)
             ->setPerson($person)
             ->setObjectId($id)
-            ->setActionView($action);
+            ->setActionView($action)
+            ->setMeta($meta);
 
         $this->em->persist($pageView);
         $this->em->flush();

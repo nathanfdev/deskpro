@@ -5,6 +5,7 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Debug\Data\TicketContextData;
 use Application\DeskPRO\Debug\Data\TicketData;
@@ -1722,7 +1723,7 @@ class TicketController extends AbstractController
                         $raw_file,
                         $blob->getFilename(),
                         $blob->getContentType(),
-                        ['tag' => 'ticket_attachment']
+                        ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
                     );
                 }
 

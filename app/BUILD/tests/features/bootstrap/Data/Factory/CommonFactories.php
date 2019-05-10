@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefDownload;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -134,6 +135,7 @@ class CommonFactories
             'person'       => CustomDefPerson::class,
             'conversation' => CustomDefChat::class,
             'feedback'     => CustomDefFeedback::class,
+            'download'     => CustomDefDownload::class,
             'billing'      => CustomDefBilling::class,
         ];
 

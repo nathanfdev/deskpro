@@ -11,11 +11,13 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\DownloadAttachmentBlobCheckerListener;
 use DeskPRO\Bundle\AppBundle\Helper\AttachmentHelper;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\RegexUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -78,6 +80,11 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
     protected $num_downloads = 0;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection|CustomDataDownload[]
+     */
+    protected $custom_data;
+
+    /**
      * String array of labels associated with this download.
      *
      * @Assert\Valid()
@@ -98,6 +105,16 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
      * @var array
      */
     protected $_search_highlights;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->custom_data = new ArrayCollection();
+    }
 
     public function incrementDownloadCount()
     {
@@ -320,6 +337,116 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
     }
 
     /**
+     * Find an existing data record for a field id.
+     *
+     * @param CustomDefDownload|int $fieldId
+     *
+     * @return CustomDataDownload
+     */
+    public function getCustomDataForField($fieldId)
+    {
+        if ($fieldId instanceof CustomDefDownload) {
+            $fieldId = $fieldId['id'];
+        }
+
+        $return = [];
+
+        foreach ($this->custom_data as $data) {
+            if ($data->getField()->getId() == $fieldId || $data->getRootField()->getId() == $fieldId) {
+                $return[] = $data;
+            }
+        }
+
+        if (count($return) === 1 && $return[0]->getField()->getType() != 'file') {
+            $return = array_pop($return);
+        } elseif (empty($data)) {
+            $return = null;
+        }
+
+        return $return;
+    }
+
+    /**
+     * @param CustomDefDownload $field
+     */
+    public function removeCustomDataForField(CustomDefDownload $field)
+    {
+        $parentId = null;
+        $fieldId  = $field->getId();
+        if ($field->getParent()) {
+            $parentId = $field->getParent()->getId();
+        }
+
+        $change = false;
+        foreach ($this->custom_data as $data) {
+            if ($data['field_id'] == $fieldId or $data['field_id'] == $parentId) {
+                $change = true;
+                $this->custom_data->removeElement($data);
+            }
+        }
+
+        if ($change) {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
+        }
+    }
+
+    /**
+     * Check if this download has a specific custom field.
+     *
+     * @param int $fieldId
+     *
+     * @return bool
+     */
+    public function hasCustomField($fieldId)
+    {
+        foreach ($this->custom_data as $data) {
+            if ($data->getField()->getId() == $fieldId) {
+                return true;
+            }
+        }
+
+        foreach ($this->custom_data as $data) {
+            if ($data->getField()->getParent() and $data->getField()->getParent()->getId() == $fieldId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return ArrayCollection|CustomDataDownload[]
+     */
+    public function getCustomData()
+    {
+        return $this->custom_data;
+    }
+
+    /**
+     * Add custom data.
+     *
+     * @param CustomDataDownload $data
+     */
+    public function addCustomData(CustomDataDownload $data)
+    {
+        $this->custom_data->add($data);
+        $data['download'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+    }
+
+    /**
+     * Reset custom data.
+     *
+     * @return $this
+     */
+    public function resetCustomData()
+    {
+        $this->custom_data->clear();
+
+        return $this;
+    }
+
+    /**
      * Set downloads count.
      *
      * @param int $num_downloads
@@ -462,6 +589,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->addEntityListener(Events::prePersist, DownloadAttachmentBlobCheckerListener::class, 'prePersist');
         $metadata->mapField(
             [
                 'fieldName'  => 'num_downloads',
@@ -706,6 +834,16 @@ class Download extends ContentAbstract implements HighlightableModelInterface, L
                         'columnDefinition'     => null,
                     ],
                 ],
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'custom_data',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataDownload',
+                'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'      => 'download',
+                'orphanRemoval' => true,
+                'dpApi'         => true,
             ]
         );
         $metadata->mapOneToMany(

@@ -40,6 +40,9 @@ class NewDownload
     /** @var int|null */
     public $attach = null;
 
+    /** @var array */
+    public $customFields = [];
+
     /** @var int[] */
     public $blob_inline_ids = [];
 
@@ -130,6 +133,11 @@ class NewDownload
         $this->_em->persist($download);
         $this->_em->flush();
 
+        if ($this->customFields) {
+            $fieldManager = App::getSystemService('download_fields_manager');
+            $fieldManager->saveFormToObject($this->customFields, $download);
+        }
+
         if ($this->labels) {
             $download->getLabelManager()->setLabelsArray($this->labels, $this->_em);
         }
@@ -138,6 +146,11 @@ class NewDownload
         $this->_em->commit();
 
         $this->_download = $download;
+    }
+
+    public function setCustomFieldForm(array $form)
+    {
+        $this->customFields = isset($form['custom_fields']) ? $form['custom_fields'] : [];
     }
 
     public function getDownload()

@@ -72,11 +72,30 @@ class ServeFileScriptTest extends \PHPUnit_Framework_TestCase
                 ['1196', 'DYWABSMCWMAAAKN0T', 'index.jpeg'],
             ],
 
+            // DB download attachment
+            [
+                '/1196DYWABSMCWMAAAKN0PD/index.jpeg',
+                'handleDbBlobRequest',
+                ['1196', 'DYWABSMCWMAAAKN0PD', 'index.jpeg'],
+            ],
+            // DB download attachment with brand // we don't really have download attachments with brand?
+            [
+                '/brand-322/1196DYWABSMCWMAAAKN0PD/index.jpeg',
+                'handleDbBlobRequest',
+                ['1196', 'DYWABSMCWMAAAKN0PD', 'index.jpeg'],
+            ],
+
             // FS ticket attachment
             [
                 '/11DYWABSMCWM1196DAAACBT/index.jpeg',
                 'handleFilesystemBlobRequest',
                 ['11', 'DYWABSMCWM', '1196', 'DAAACB', 'T', 'index.jpeg'],
+            ],
+            // FS download attachment
+            [
+                '/11DYWABSMCWM1196DAAACBPD/index.jpeg',
+                'handleFilesystemBlobRequest',
+                ['11', 'DYWABSMCWM', '1196', 'DAAACB', 'PD', 'index.jpeg'],
             ],
             // -- trycky case (name hash starts with numbers)
             [
@@ -84,11 +103,21 @@ class ServeFileScriptTest extends \PHPUnit_Framework_TestCase
                 'handleFilesystemBlobRequest',
                 ['2', 'CGTYMWBPJX', '1248', '526AD7', 'T', 'index.jpeg'],
             ],
+            [
+                '/2CGTYMWBPJX1248526AD7PD/index.jpeg',
+                'handleFilesystemBlobRequest',
+                ['2', 'CGTYMWBPJX', '1248', '526AD7', 'PD', 'index.jpeg'],
+            ],
             // -- lower case
             [
                 '/2CGTYMWBPJX1248526ad7T/index.jpeg',
                 'handleFilesystemBlobRequest',
                 ['2', 'CGTYMWBPJX', '1248', '526ad7', 'T', 'index.jpeg'],
+            ],
+            [
+                '/2CGTYMWBPJX1248526ad7PD/index.jpeg',
+                'handleFilesystemBlobRequest',
+                ['2', 'CGTYMWBPJX', '1248', '526ad7', 'PD', 'index.jpeg'],
             ],
             // -- short id
             [
@@ -96,11 +125,21 @@ class ServeFileScriptTest extends \PHPUnit_Framework_TestCase
                 'handleFilesystemBlobRequest',
                 ['2', 'CGTYMWBPJX', '1', '526AD7', 'T', 'index.jpeg'],
             ],
+            [
+                '/2CGTYMWBPJX1526AD7PD/index.jpeg',
+                'handleFilesystemBlobRequest',
+                ['2', 'CGTYMWBPJX', '1', '526AD7', 'PD', 'index.jpeg'],
+            ],
             // -- short long ID
             [
                 '/2CGTYMWBPJX123456789526AD7T/index.jpeg',
                 'handleFilesystemBlobRequest',
                 ['2', 'CGTYMWBPJX', '123456789', '526AD7', 'T', 'index.jpeg'],
+            ],
+            [
+                '/2CGTYMWBPJX123456789526AD7PD/index.jpeg',
+                'handleFilesystemBlobRequest',
+                ['2', 'CGTYMWBPJX', '123456789', '526AD7', 'PD', 'index.jpeg'],
             ],
         ];
     }
