@@ -44,7 +44,7 @@ class Queues extends React.Component {
               agents={agents}
               onlineAgents={onlineAgents}
               queue={queue}
-              waitingUsers={waitingUsers[queue.get('id')]}
+              waitingUsers={waitingUsers ? waitingUsers[queue.get('id')] : null}
               active={voiceAgent ? voiceAgent.get('is_enabled') : false}
               onChange={onChange}
               saving={saving}
