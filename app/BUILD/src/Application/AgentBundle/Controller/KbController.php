@@ -12,7 +12,6 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleRevision;
-use Application\DeskPRO\Entity\ArticleSlugHistory;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\Product;
@@ -378,7 +377,7 @@ class KbController extends AbstractController
             case 'delete':
                 $article->status_code = 'hidden.deleted';
                 $article->setDeletedSlug();
-                $this->em->getRepository(ArticleSlugHistory::class)->deleteByArticleId($article_id);
+                $article->clearSlugHistory();
                 $data['slug'] = $article['slug'];
 
                 break;

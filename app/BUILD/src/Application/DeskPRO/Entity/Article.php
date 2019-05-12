@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Labels\LabelsOwner;
@@ -390,12 +391,22 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
         return $this;
     }
 
-    /**
-     * @return void
-     */
     public function setDeletedSlug()
     {
-        $this->slug = static::DELETED_SLUG_PREFIX.$this->getId();
+        $this->setSlug(static::DELETED_SLUG_PREFIX.$this->getId());
+    }
+
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \PDOException
+     */
+    public function clearSlugHistory()
+    {
+        App::getDb()->executeUpdate('
+            DELETE 
+            FROM articles_slug_history
+            WHERE article_id = ?
+        ', [$this->getId()]);
     }
 
     /**
