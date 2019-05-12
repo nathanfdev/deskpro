@@ -36,6 +36,8 @@ abstract class ContentAbstract extends DomainObject
     const CONTENT_TYPE_RTE      = 'rte';
     const CONTENT_TYPE_MARKDOWN = 'markdown';
 
+    const DELETED_SLUG_PREFIX = '__DELETED__';
+
     /**
      * The unqique ID.
      *
@@ -602,7 +604,11 @@ abstract class ContentAbstract extends DomainObject
     public function setSlug($newSlug)
     {
         $history = null;
-        if ($newSlug !== $this->slug && $this->slug) {
+        if ($newSlug !== $this->slug &&
+            $this->slug &&
+            !Strings::startsWith(static::DELETED_SLUG_PREFIX, $newSlug) &&
+            !Strings::startsWith(static::DELETED_SLUG_PREFIX, $this->slug)
+        ) {
             // if the slug exists in history already, we don't want to add it again
             $objectSlug = $this->slug;
             if (!$this->slug_history->exists(

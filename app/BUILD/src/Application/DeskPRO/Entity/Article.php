@@ -391,6 +391,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
     }
 
     /**
+     * @return void
+     */
+    public function setDeletedSlug()
+    {
+        $this->slug = static::DELETED_SLUG_PREFIX.$this->getId();
+    }
+
+    /**
      * @param string $sep
      * @param bool   $full
      *
