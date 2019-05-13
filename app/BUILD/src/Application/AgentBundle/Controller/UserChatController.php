@@ -96,6 +96,9 @@ class UserChatController extends AbstractController
         }
 
         $block = null;
+        if ($convo->getVisitorId()) {
+            $block = $this->em->getRepository(ChatBlock::class)->getBlockForVisitor($convo->getVisitorId());
+        }
 
         $fieldManager = $this->container->getSystemService('chat_fields_manager');
         $customFields = $fieldManager->getDisplayArrayForObject($convo);
