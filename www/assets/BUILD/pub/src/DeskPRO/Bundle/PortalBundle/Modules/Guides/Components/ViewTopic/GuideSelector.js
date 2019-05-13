@@ -14,6 +14,9 @@ class GuideSelector extends React.Component {
     if (window.guides) {
       guides = JSON.parse(window.guides);
     }
+    if (!Array.isArray(guides)) {
+      guides = Object.values(guides);
+    }
     this.state = {
       guides
     };
