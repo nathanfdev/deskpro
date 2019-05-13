@@ -53,6 +53,7 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
                 ->addField(TermFieldIds::TICKET_STATUS, Query::commonStringValueOperators())
                 ->addField(TermFieldIds::TICKET_TICKET_STATUS_ID, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_DEPARTMENT, Query::commonIdOperators())
+                ->addField(TermFieldIds::TICKET_BRAND, Query::commonIdOperators())
                 ->addField(TermFieldIds::TICKET_AGENT, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_AGENT_TEAM, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_FOLLOWERS, Query::commonIdReferenceOperators())
@@ -94,6 +95,9 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
                 break;
             case TermFieldIds::TICKET_DEPARTMENT:
                 $fieldValue = $ticketModel->department;
+                break;
+            case TermFieldIds::TICKET_BRAND:
+                $fieldValue = $ticketModel->brand;
                 break;
             case TermFieldIds::TICKET_AGENT:
                 $fieldValue = $ticketModel->agent;
@@ -168,6 +172,9 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
                 break;
             case TermFieldIds::TICKET_DEPARTMENT:
                 $column = '{tickets}.department_id';
+                break;
+            case TermFieldIds::TICKET_BRAND:
+                $column = '{tickets}.brand_id';
                 break;
             case TermFieldIds::TICKET_AGENT:
                 $column = '{tickets}.agent_id';
@@ -248,6 +255,7 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
                 ->addField(TermFieldIds::TICKET_ID, Query::commonIdOperators())
                 ->addField(TermFieldIds::ORG_ID, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_DEPARTMENT, Query::commonIdOperators())
+                ->addField(TermFieldIds::TICKET_BRAND, Query::commonIdOperators())
                 ->addField(TermFieldIds::TICKET_AGENT, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_AGENT_TEAM, Query::commonIdReferenceOperators())
                 ->addField(TermFieldIds::TICKET_FOLLOWERS, Query::commonIdReferenceOperators())
@@ -277,6 +285,9 @@ class TicketBasicTermsHandler implements ValueTermHandlerInterface, SqlTermHandl
                 break;
             case TermFieldIds::TICKET_DEPARTMENT:
                 $column = 'department';
+                break;
+            case TermFieldIds::TICKET_BRAND:
+                $column = 'brand';
                 break;
             case TermFieldIds::TICKET_AGENT:
                 $column = 'agent';

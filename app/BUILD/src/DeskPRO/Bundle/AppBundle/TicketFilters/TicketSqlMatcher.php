@@ -256,6 +256,11 @@ class TicketSqlMatcher extends AbstractMatcher
                     $qb->addGroupBy('tickets.department_id');
                     break;
 
+                case TicketSearchParams::GROUP_BRAND:
+                    $qb->addSelect("tickets.brand_id AS $selectId");
+                    $qb->addGroupBy('tickets.brand_id');
+                    break;
+
                 case TicketSearchParams::GROUP_WORKFLOW:
                     $qb->addSelect("tickets.workflow_id AS $selectId");
                     $qb->addGroupBy('tickets.workflow_id');

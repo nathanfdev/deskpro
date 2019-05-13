@@ -406,6 +406,7 @@ class ObjectsManager
             'AppInstance'                      => [Factory\SimpleFactory::class, 'create', AppInstance::class],
             'UserChatQueue'                    => [Factory\SimpleFactory::class, 'create', UserChatQueue::class],
             'UserChatQueueAgent'               => [Factory\SimpleFactory::class, 'create', UserChatQueueAgent::class],
+            'ChatConversation'                 => [Factory\SimpleFactory::class, 'create', ChatConversation::class],
         ];
     }
 
@@ -546,6 +547,7 @@ class ObjectsManager
             'AppInstance'                      => [$this, 'find', AppInstance::class],
             'UserChatQueue'                    => [$this, 'find', UserChatQueue::class],
             'UserChatQueueAgent'               => [$this, 'find', UserChatQueueAgent::class],
+            'ChatConversation'                 => [$this, 'find', ChatConversation::class],
         ];
     }
 }

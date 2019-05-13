@@ -12,6 +12,7 @@ class TermFieldIds
     const TICKET_TICKET_STATUS_ID      = 'ticket.ticket_status';
     const TICKET_STARRED               = 'ticket.starred';
     const TICKET_DEPARTMENT            = 'ticket.department';
+    const TICKET_BRAND                 = 'ticket.brand';
     const TICKET_AGENT                 = 'ticket.agent';
     const TICKET_AGENT_TEAM            = 'ticket.agent_team';
     const TICKET_FOLLOWERS             = 'ticket.followers';
