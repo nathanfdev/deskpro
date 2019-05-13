@@ -973,48 +973,57 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
   },
 
   updateBillingTabTitle: function() {
-    var timeAmount  = 0;
-    var moneyAmount = 0;
+    $.ajax({
+      url: BASE_URL + 'api/v2/tickets/' + self.meta.ticket_id + '/charges/total',
+      type: 'GET',
+      success: function (data) {
+        var timeAmount  = data.timeAmount;
+        var moneyAmount = data.moneyAmount;
 
-    this.wrapper.find('.ticket-charge-row').each(function() {
-      var data = $(this).data('charge');
-      if (data.charge_time) {
-        timeAmount += data.charge_time;
-      }
-      if (data.amount) {
-        moneyAmount += parseFloat(data.amount);
+        var phraseParts = [];
+        if (timeAmount > 0) {
+          var parts = [];
+          if (timeAmount > 3600) {
+            var hours = Math.floor(timeAmount / 3600);
+            parts.push(hours + 'h');
+            timeAmount -= hours * 3600;
+          }
+          if (timeAmount > 60) {
+            var mins = Math.floor(timeAmount / 60);
+            parts.push(mins + 'm');
+            timeAmount -= mins * 60;
+          }
+          if (timeAmount > 0) {
+            parts.push(timeAmount + 's');
+          }
+
+          phraseParts.push(parts.join(' '));
+        }
+
+        if (moneyAmount > 0.00) {
+          phraseParts.push(moneyAmount.toFixed(2) + ' ' + self.meta.billingCurrency);
+        }
+
+        if (phraseParts.length) {
+          self.getEl('billing_tab_counter').text('(' + phraseParts.join(', ') + ')');
+        } else {
+          self.getEl('billing_tab_counter').text('');
+        }
+      },
+      error: function (response) {
+        var data = response.responseJSON;
+        var errors = data.errors;
+        var error;
+
+        if (errors && errors.fields && errors.fields.primary_email) {
+          error = errors.fields.primary_email.errors[0].message;
+        }
+
+        if (error) {
+          $('.error-message', self.wrapper).html(error);
+        }
       }
     });
-
-    var phraseParts = [];
-    if (timeAmount > 0) {
-      var parts = [];
-      if (timeAmount > 3600) {
-        var hours = Math.floor(timeAmount / 3600);
-        parts.push(hours + 'h');
-        timeAmount -= hours * 3600;
-      }
-      if (timeAmount > 60) {
-        var mins = Math.floor(timeAmount / 60);
-        parts.push(mins + 'm');
-        timeAmount -= mins * 60;
-      }
-      if (timeAmount > 0) {
-        parts.push(timeAmount + 's');
-      }
-
-      phraseParts.push(parts.join(' '));
-    }
-
-    if (moneyAmount > 0.00) {
-      phraseParts.push(moneyAmount.toFixed(2) + ' ' + this.meta.billingCurrency);
-    }
-
-    if (phraseParts.length) {
-      this.getEl('billing_tab_counter').text('(' + phraseParts.join(', ') + ')');
-    } else {
-      this.getEl('billing_tab_counter').text('');
-    }
   },
 
   /**
@@ -1060,6 +1069,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
       if (chargeFormData.billing_type === 'time') {
         setChargeTime(chargeFormData, newCharge);
+      }
+      if (!Array.isArray(charges)) {
+        charges = Object.values(charges);
       }
       newCharges = charges ? charges.concat([newCharge]) : [newCharge];
       this.billingRollbackCharges = charges ? charges : [];
