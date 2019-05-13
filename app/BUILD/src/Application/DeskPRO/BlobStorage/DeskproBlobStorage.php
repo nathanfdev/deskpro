@@ -539,6 +539,11 @@ class DeskproBlobStorage implements Loggable
         }
 
         $blob_array = $blob_entity_tmp->toDbArray();
+
+        // no storage_loc yet -- this blob is not done inserting yet
+        // this insert is just to get the id so we can generate authcode on it / determine paths
+        $blob_array['storage_loc'] = '';
+
         $this->db->insert('blobs', $blob_array);
         $blob_array['id']    = $this->db->lastInsertId();
         $blob_entity_tmp->id = $blob_array['id'];

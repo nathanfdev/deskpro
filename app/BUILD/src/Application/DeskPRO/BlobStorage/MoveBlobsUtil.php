@@ -121,6 +121,8 @@ class MoveBlobsUtil implements Loggable
             WHERE
                 storage_loc_pref IS NOT NULL
                 AND storage_loc_pref IN ({$this->aids_where})
+                AND storage_loc != ''
+                AND storage_loc IS NOT NULL
         ");
     }
 
