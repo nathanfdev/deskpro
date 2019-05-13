@@ -165,7 +165,7 @@ class CallLogsList extends React.Component {
                   <td className="overflow-ellipsis">
                     {ticketId
                       ? <span>
-                        <i className="fa fa-envelope" />
+                        <i className="fas fa-envelope" />
                         &nbsp;
                         <a onClick={() => openTicket(ticketId)}>
                           {ticketId}

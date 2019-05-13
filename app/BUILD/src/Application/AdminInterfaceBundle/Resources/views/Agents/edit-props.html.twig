@@ -105,7 +105,7 @@
 								  ng-if="team.value"
 								  ng-style="EditCtrl.form.primary_team.id == team.id && {color:'#000'} || {cursor: 'pointer', color:'#ccc'}"
 								  ng-click="EditCtrl.form.primary_team = team">
-								<i ng-show="EditCtrl.form.primary_team.id == team.id" class="fa fa-check"></i>
+								<i ng-show="EditCtrl.form.primary_team.id == team.id" class="fas fa-check"></i>
 								{{ phrase('adm.agents.primary_team') }}
                             </span>
                             <label>
@@ -147,7 +147,7 @@
 						Switch to the <span class="soft-link" dp-tab-btn="main.perms">Permissions</span> or <span class="soft-link" dp-tab-btn="main.deps">Departments</span> tab to manage permission overrides.
 					</div>
 					<div ng-show="EditCtrl.hasPermOverrides || EditCtrl.hasDepOverrides">
-						<span class="fa fa-exclamation-triangle"></span>
+						<span class="fas fa-exclamation-triangle"></span>
 						<span ng-show="EditCtrl.hasPermOverrides && EditCtrl.hasDepOverrides">
 							Note: This agent has permission overrides on both the
 							<span class="soft-link" dp-tab-btn="main.perms">Permissions</span>

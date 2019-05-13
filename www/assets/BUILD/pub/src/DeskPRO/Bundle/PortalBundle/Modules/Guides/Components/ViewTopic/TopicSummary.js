@@ -46,7 +46,7 @@ class TopicSummary extends React.Component {
       <div className={classNames('topic-summary', { fixed })}>
         {this.state.h1s.length > 1 ?
           (<div>
-            <h2><i className="fa fa-list" /> Contents</h2>
+            <h2><i className="fas fa-list" /> Contents</h2>
             <ul>
               {this.state.h1s.map((h1, index) => <li key={index}>
                 <Link

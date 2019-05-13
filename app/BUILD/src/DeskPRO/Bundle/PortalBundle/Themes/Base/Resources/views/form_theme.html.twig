@@ -234,7 +234,7 @@
         {%- endif -%}
         <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if required %} *{% endif %}{% if dp_include_link is defined and dp_include_link == 'manage_email' %}
             <span class="form-label-link manage-emails-link">
-                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('portal.account.email-management-from-form') }}<i class="fa fa-angle-double-right"></i></a>
+                <a href="{{ path('portal_user_profile_emails') }}">{{ phrase('portal.account.email-management-from-form') }}<i class="fas fa-angle-double-right"></i></a>
             </span>
     {% endif %}</label>
     {%- endif -%}
@@ -301,6 +301,17 @@
         >
         {% set no_dp_title = true %}
         {{ block('form_widget') }}
+    </div>
+{% endblock %}
+
+{% block custom_javascript_widget %}
+    <div class="with-dpx">
+        <div
+                class="dpx-javascript"
+                data-code="{{ form.vars.custom_def.getOption('code') }}"
+        >
+            <input id="{{ id }}" name="{{ full_name }}" type="hidden" class="js-custom-field-hidden-input" value="{{ value }}" />
+        </div>
     </div>
 {% endblock %}
 

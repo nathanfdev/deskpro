@@ -7,6 +7,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -430,7 +431,7 @@ class NewTicket
                         $raw_file,
                         $blob->getFilename(),
                         $blob->getContentType(),
-                        ['tag' => 'ticket_attachment']
+                        ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
                     );
                 }
 

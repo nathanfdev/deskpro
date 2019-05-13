@@ -143,7 +143,7 @@ class CallLogView extends React.Component {
             <tr>
               <th>Ticket</th>
               <td>
-                <i className="fa fa-envelope" />
+                <i className="fas fa-envelope" />
                 &nbsp;
                 <a onClick={() => openTicket(call.get('ticket'))}>
                   {call.get('ticket')}

@@ -28,7 +28,7 @@ class CallToQueue extends React.Component {
     return (
       <div className="call-to">
         <div className="call-to-name">
-          <i className="fa fa-tasks" />
+          <i className="fas fa-tasks" />
           IT Support
         </div>
         <div className="agents-available">

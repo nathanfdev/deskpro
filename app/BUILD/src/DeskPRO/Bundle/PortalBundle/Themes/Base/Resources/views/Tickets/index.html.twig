@@ -60,7 +60,7 @@
                                     <input title="{{ phrase('portal.tickets.list_search') }}" name="q" value="{{ search_query }}" type="text" />
                                     {% if search_query %}
                                         <a href="{{ path('portal_tickets', { type: type }) }}" class="clear-input">
-                                            <i class="fa fa-times"></i>
+                                            <i class="fas fa-times"></i>
                                         </a>
                                     {% endif %}
                                 </div>
@@ -231,7 +231,7 @@
                                     <div class="popup-tiny" style="display:none;">
                                     </div>
                                     {# below was an old idea of expanding the table over the sdiebar, if present #}
-                                    {#<a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>#}
+                                    {#<a href="#" class="expand-control"><i class="fas fa-caret-right"></i></a>#}
                                 </div>
                             </div>
 
@@ -254,7 +254,7 @@
                                     <tr class="first-in-line">
                                         <td class="span-total-cols" colspan="{{ ticket_table.columns|length }}">
                                             <div class="filter-warning">
-                                                <i class="fa fa-eye"></i> {{ phrase('portal.tickets.list_filter') }} <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">{{ phrase('portal.tickets.list_filter_clear') }}</a>
+                                                <i class="far fa-eye"></i> {{ phrase('portal.tickets.list_filter') }} <a class="dpx-active-filter-link" href="{{ path('portal_tickets', { type: ticket_table.ticketFilter.type }) }}">{{ phrase('portal.tickets.list_filter_clear') }}</a>
                                             </div>
                                         </td>
                                     </tr>

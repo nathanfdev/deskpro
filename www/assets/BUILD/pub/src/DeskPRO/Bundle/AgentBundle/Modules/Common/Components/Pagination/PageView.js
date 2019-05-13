@@ -14,7 +14,7 @@ export class PageView extends Component {
 
   renderCaret(active) {
     if (active) {
-      return (<i className="fa fa-caret-down" />);
+      return (<i className="fas fa-caret-down" />);
     }
   }
 
@@ -44,7 +44,7 @@ export class PageView extends Component {
         <div className="pagination-dropdown">
           <ul>
             {
-              pages.map((page) => this.renderDropdownOption(page))
+              pages.map(page => this.renderDropdownOption(page))
             }
           </ul>
         </div>

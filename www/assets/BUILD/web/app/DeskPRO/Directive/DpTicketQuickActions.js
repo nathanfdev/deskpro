@@ -24,7 +24,7 @@ define(['angular'], function(angular) {
   <footer>
     <ul class="actions">
       <li ng-repeat="action in actions" style="position: relative;">
-        <a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action, $event) || handleAction(action)">{{ action.title }}<i ng-if="action.select2" class="fa fa-caret-down"></i></a>
+        <a href="#" ng-click="$event.preventDefault(); action.select2 && showDropdown(action, $event) || handleAction(action)">{{ action.title }}<i ng-if="action.select2" class="fas fa-caret-down"></i></a>
         <div ng-if="action.select2" ng-show="action === visible" style="position: absolute; width: 250px; bottom: -28px; left: -1px;">
           <input type="hidden" ui-select2="action.select2" ng-model="action.model" style="width: 100%;" ng-change="handleAction(action)" />
         </div>

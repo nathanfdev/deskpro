@@ -175,7 +175,8 @@ class TicketsController extends AbstractTicketsController
      *                  ?ticket_field.1=value to the query string",
      *              "dataType"="string",
      *              "pattern"="\d+|\w+"
-     *          }
+     *          },
+     *          {"name"="brand", "description"="brand filter", "dataType"="integer", "pattern"="\d+"},
      *      },
      *      statusCodes={
      *          200="Returned if everything is OK",

@@ -5,6 +5,7 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Form\Model\NewTicket;
 use Application\AgentBundle\Validator\NewTicketValidator;
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Debug\Data\TicketContextData;
 use Application\DeskPRO\Debug\Data\TicketData;
@@ -1382,7 +1383,6 @@ class TicketController extends AbstractController
             'active_drafts'      => $this->_renderActiveDrafts($ticket, $drafts),
             'via_reply'          => true,
             'replybox_html'      => $replybox,
-            'charge_html'        => $chargeHtml,
             'changed_agent'      => $changedAgent,
             'agent_id'           => $ticket['agent_id'],
             'changed_team'       => $changedTeam,
@@ -1723,7 +1723,7 @@ class TicketController extends AbstractController
                         $raw_file,
                         $blob->getFilename(),
                         $blob->getContentType(),
-                        ['tag' => 'ticket_attachment']
+                        ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
                     );
                 }
 
@@ -3506,6 +3506,53 @@ class TicketController extends AbstractController
         return $this->createJsonResponse(
             [
                 'success' => true,
+            ]
+        );
+    }
+
+    public function loadMoreChargesAction($ticket_id, $page)
+    {
+        $ticket = $this->getTicketOr404($ticket_id);
+
+        $dql = 'SELECT tc
+            FROM DeskPRO:TicketCharge tc
+            WHERE tc.ticket = ?1
+            ORDER BY tc.date_created DESC';
+
+        $perPage = 10;
+
+        $charges = [];
+
+        $result = $this->em->createQuery($dql)
+            ->setMaxResults($perPage + 1)
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setParameter(1, $ticket->getId())
+            ->execute();
+
+        $ticketPerms = $this->_getTicketPerms($ticket);
+
+        $fieldManager = $this->container->getBillingFieldManager();
+
+        foreach ($result as $charge) {
+            if (count($charges) >= $perPage) {
+                continue;
+            }
+            $billingFields[$charge['id']] = $fieldManager->getDisplayArrayForObject($charge);
+            $charges[]                    = $this->renderView(
+                'AgentBundle:Ticket:view-billing-row.html.twig',
+                [
+                    'ticket'         => $ticket,
+                    'charge'         => $charge,
+                    'billing_fields' => $billingFields,
+                    'ticket_perms'   => $ticketPerms,
+                ]
+            );
+        }
+
+        return $this->createJsonResponse(
+            [
+                'charges' => $charges,
+                'more'    => count($result) > $perPage,
             ]
         );
     }

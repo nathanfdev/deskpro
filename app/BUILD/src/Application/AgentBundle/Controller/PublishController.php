@@ -23,6 +23,7 @@ use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
+use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\EntityRepository\AbstractCategoryRepository;
@@ -1298,24 +1299,85 @@ class PublishController extends AbstractController
     public function whoViewedAction($objectType, $objectId, $viewAction = 1)
     {
         $idToInfo = $this->db->fetchAllKeyed('
-            SELECT person_id, date_created, COUNT(*) AS count
-            FROM page_view_log
-            WHERE object_type = ? AND object_id = ? AND view_action = ? AND person_id IS NOT NULL
-            GROUP BY person_id
-            ORDER BY id DESC
+            SELECT l.id, l.person_id, l.meta, lg.count, l.date_created
+            FROM page_view_log l
+            INNER JOIN (
+              SELECT MAX(date_created) as maxDateCreated, person_id, count(*) as count
+              FROM page_view_log
+              WHERE object_type = ? AND object_id = ? AND view_action = ? AND person_id IS NOT NULL
+              GROUP BY person_id
+            ) lg ON l.date_created = lg.maxDateCreated AND l.person_id  = lg.person_id;
+
         ', [$objectType, $objectId, $viewAction], 'person_id');
 
         /** @var PersonRepository $personRepository */
         $personRepository = $this->em->getRepository(Person::class);
         $people           = $personRepository->getByIds(array_keys($idToInfo));
 
+        $showMeta = false;
+        foreach ($idToInfo as &$info) {
+            $info['meta'] = $this->getMetaDisplayValues($objectType, $viewAction, $info);
+            if ($info['meta']) {
+                $showMeta = true;
+            }
+        }
+        $metaColumns = $this->getMetaDisplayColumns($objectType, $viewAction);
+        if (!$metaColumns) {
+            $showMeta = false;
+        }
+
         return $this->render('AgentBundle:Publish:who-viewed.html.twig', [
-            'id_to_info'  => $idToInfo,
-            'people'      => $people,
-            'object_type' => $objectId,
-            'object_id'   => $objectId,
-            'view_action' => $viewAction,
+            'id_to_info'   => $idToInfo,
+            'people'       => $people,
+            'object_type'  => $objectId,
+            'object_id'    => $objectId,
+            'view_action'  => $viewAction,
+            'show_meta'    => $showMeta,
+            'meta_columns' => $metaColumns,
         ]);
+    }
+
+    /**
+     * @param int $objectType
+     * @param int $viewAction
+     *
+     * @return array
+     */
+    protected function getMetaDisplayColumns($objectType, $viewAction)
+    {
+        if ($objectType == PageViewLog::TYPE_DOWNLOAD && $viewAction == PageViewLog::ACTION_DOWNLOAD) {
+            return [
+                'eula' => $this->container->getTranslator()->phrase('agent.general.eula'),
+            ];
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * @param int   $objectType
+     * @param int   $viewAction
+     * @param array $log
+     *
+     * @return type
+     */
+    protected function getMetaDisplayValues($objectType, $viewAction, $log)
+    {
+        if (!$log['meta']) {
+            return [];
+        }
+
+        if ($objectType == PageViewLog::TYPE_DOWNLOAD && $viewAction == PageViewLog::ACTION_DOWNLOAD) {
+            $values = ['eula' => ''];
+            $meta   = json_decode($log['meta'], true);
+            if (isset($meta['eula']) && isset($meta['eula']['title'])) {
+                $values['eula'] = $meta['eula']['title'];
+            }
+
+            return $values;
+        }
+
+        return [];
     }
 
     /**

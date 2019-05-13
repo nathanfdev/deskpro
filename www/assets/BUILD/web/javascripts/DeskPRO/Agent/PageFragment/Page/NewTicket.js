@@ -11,6 +11,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this.TYPENAME = 'newticket';
 		this.allowDupe = true;
 		this.uploading = false;
+		this.jsfields = {};
 	},
 
 	_initLabels: function () {
@@ -50,6 +51,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initLabels();
 		this._initDraft();
     this._initDateCustomFields();
+    this._initJavascriptCustomFields();
 
     this.addEvent('destroy', function() {
       this.draft && this.draft.reset();
@@ -170,10 +172,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
       $(this).on('dp.change', function(){
@@ -611,6 +613,56 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     this.draft.load();
 	},
 
+	_initJavascriptCustomFields: function () {
+		var self = this;
+		self.wrapper.find('.js-custom-field').each(function () {
+			var $el       = $(this);
+			var code      = $el.data('code');
+			var $field    = $el.find('input.js-custom-field-hidden-input');
+			var fieldData = JSON.parse($field.val() ? $field.val() : "{}") || {"value": null, "data": {}};
+			var fieldId   = $field.data('field-id');
+			var evCode = function(){};
+			var fullCode = "evCode = " + code;
+			eval(fullCode);
+			var ctx = {
+				jQuery:      $,
+				Handlebars:  Handlebars,
+				'interface': 'agent',
+				context:     'newticket',
+				ticket:      {},
+				person:      {},
+			};
+			evCode(ctx);
+
+			self.jsfields[fieldId] = {
+				ctx:          ctx,
+				element:      null,
+				field:        $field,
+				currentData:  fieldData.data || {},
+				currentValue: fieldData.value,
+			};
+
+			var field = self.jsfields[fieldId];
+
+			var $renderedElement = field.ctx.renderField.call(field.ctx, function (value, data) {
+				var dataObject = { value: null, data: null };
+				if (
+					(value === null || typeof value === "undefined")
+					&& (data === null || typeof data === "undefined")
+				) {
+					dataObject.value = null;
+					dataObject.data  = null;
+				} else {
+					dataObject = Object.assign({}, { value: value }, { data: data || {} });
+				}
+				field.field.val(JSON.stringify(dataObject));
+				field.currentData = dataObject.data;
+				field.currentValue = dataObject.value;
+			}, field.currentValue, field.currentData);
+			field.field.after($renderedElement);
+		});
+	},
+
   addSignature: function() {
     if (this.isNote) {
 			return;
@@ -904,16 +956,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
               function() {
               }, 'View Existing Ticket', 'hidden');
           } else {
-						data.error_codes.forEach(function(code) {
-							this.showErrorCode(code);
-						}, this);
+            if (Array.isArray(data.error_codes)) {
+              data.error_codes.forEach(function(code) {
+                this.showErrorCode(code);
+              }, this);
+            }
 
 						if (data.error_messages) {
 							this.showErrorCode('free');
 							var free = $('<div/>');
 							data.error_messages.forEach(function(msg) {
 								var x = $('<div/>');
-								x.text('- ' + msg);
+								x.text('• ' + msg);
 								free.append(x);
 							});
 							this.getEl('freemessage').html(free.html());

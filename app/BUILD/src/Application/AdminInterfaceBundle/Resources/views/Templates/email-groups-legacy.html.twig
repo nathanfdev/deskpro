@@ -81,7 +81,7 @@
 				<li dp-state-mark="groupName!:emails.email_templates.list.{{ ng_var("'layout:top'|murmurhash") }}">
 					<a href="{{ ng_href('emails.email_templates.list', "{groupName: 'layout:top'}") }}">
 						<h4>
-							<i class="fa fa-folder"></i>
+							<i class="fas fa-folder"></i>
 							<span class="title-text">Layout (Header, footer, CSS)</span>
 						</h4>
 					</a>
@@ -99,7 +99,7 @@
 				<li dp-state-mark="groupName:emails.email_templates.list.custom">
 					<a href="{{ ng_href('emails.email_templates.list', "{groupName: 'custom'}") }}">
 						<h4>
-							<i class="fa fa-folder"></i>
+							<i class="fas fa-folder"></i>
 							<span class="title-text">Custom Email Templates</span>
 						</h4>
 					</a>
@@ -117,7 +117,7 @@
 				<li ng-repeat="info in ListCtrl.templateInfo.user.groups" dp-state-mark="groupName!:emails.email_templates.list.{{ ng_var("'user:' + info.groupId|murmurhash") }}">
 					<a href="{{ ng_href('emails.email_templates.list', "{groupName: 'user:' + info.groupId}") }}">
 						<h4>
-							<i class="fa fa-folder"></i>
+							<i class="fas fa-folder"></i>
 							<span class="title-text">{{ ng_var('info.title') }}</span>
 						</h4>
 					</a>
@@ -135,7 +135,7 @@
 				<li ng-repeat="info in ListCtrl.templateInfo.agent.groups" dp-state-mark="groupName!:emails.email_templates.list.{{ ng_var("'agent:' + info.groupId|murmurhash") }}">
 					<a href="{{ ng_href('emails.email_templates.list', "{groupName: 'agent:' + info.groupId}") }}">
 						<h4>
-							<i class="fa fa-folder"></i>
+							<i class="fas fa-folder"></i>
 							<span class="title-text">{{ ng_var('info.title') }}</span>
 						</h4>
 					</a>
@@ -193,10 +193,10 @@
 			<h2><span>Related Content</span></h2>
 
 			<ul>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/396" target="_blank">Introducing templates</a></li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/397" target="_blank">Twig syntax basics</a></li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/398#templates-example-custom-email-auto-response-by-department" target="_blank">Templates example: custom email auto-response by department</a></li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/400" target="_blank">Useful template variables</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/396" target="_blank">Introducing templates</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/397" target="_blank">Twig syntax basics</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/398#templates-example-custom-email-auto-response-by-department" target="_blank">Templates example: custom email auto-response by department</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/400" target="_blank">Useful template variables</a></li>
 				<li><i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/162-removing-links-to-the-deskpro-portal-from-email-notifications" target="_blank">Removing links to the Deskpro Portal from email notifications</a></li>
 
 				<li><i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/193" target="_blank">Sending different auto-responses based on email address</a></li>

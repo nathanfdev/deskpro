@@ -2,7 +2,7 @@
 {% block fullpane_content %}
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('emails.ticket_accounts') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>{{ phrase('adm.ticket_accounts.email_accounts') }}</h3>
 		</a>
 	</section>
@@ -153,7 +153,7 @@
                             <div>
 								<span class="help-block">
 									When enabled, Deskpro will reject exact duplicate email messages from the same user that were submitted in a short period of time.
-                                    <i class="fa fa-question-circle qmark-icon" tooltip="Example: If a user sends an email with two of your accounts in the To or CC lines (e.g., To: sales@example.com and support@example.com), then two separate email messages will arrive into Deskpro. Without duplicate detection, this would cause two separate tickets to be created."></i>
+                                    <i class="fas fa-question-circle qmark-icon" tooltip="Example: If a user sends an email with two of your accounts in the To or CC lines (e.g., To: sales@example.com and support@example.com), then two separate email messages will arrive into Deskpro. Without duplicate detection, this would cause two separate tickets to be created."></i>
 								</span>
                                 <span class="help-block">
                                     Rejected email is always logged in full to the <a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">Incoming Email Log</a>.
@@ -228,7 +228,7 @@
                               <span class="help-block">
                                 Enable this option if you want subject matching to run on ALL email messages, even those that do not
                                 have the "RE:" prefix.
-                                <i class="fa fa-question-circle qmark-icon" tooltip="Example: If the user sends in a new email, and then a day later sends in another new email with the same subject, then it would be added as a ticket reply. The only way for a new ticket to be created is if it has a different subject, or the existing ticket in Deskpro is marked as resolved."></i>
+                                <i class="fas fa-question-circle qmark-icon" tooltip="Example: If the user sends in a new email, and then a day later sends in another new email with the same subject, then it would be added as a ticket reply. The only way for a new ticket to be created is if it has a different subject, or the existing ticket in Deskpro is marked as resolved."></i>
                               </span>
                           </div>
                         </div>

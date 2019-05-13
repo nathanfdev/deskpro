@@ -382,7 +382,7 @@ class Title extends React.Component {
 
     return (
       <span className="voice-controls-title">
-        <i className="fa fa-phone" /> {children}
+        <i className="fas fa-phone" /> {children}
       </span>
     );
   }

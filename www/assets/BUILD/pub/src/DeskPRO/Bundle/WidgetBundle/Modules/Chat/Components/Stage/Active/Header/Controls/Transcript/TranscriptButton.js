@@ -15,11 +15,11 @@ export class TranscriptButton extends React.Component {
 
     return (
       <ControlItem {...this.props}>
-          <span className="dpdesignportal-checkbox-container">
+        <span className="dpdesignportal-checkbox-container">
           <span className={classNames('dpdesignportal-checkbox', { active })}>
-            <i className="fa fa-check" />
+            <i className="fas fa-check" />
           </span>
-          {portalPhrases.get('portal.chat.chat_transcript')} <i className="fa fa-exclamation-circle" />
+          {portalPhrases.get('portal.chat.chat_transcript')} <i className="fas fa-exclamation-circle" />
         </span>
       </ControlItem>
     );

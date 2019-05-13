@@ -5784,6 +5784,15 @@ $collection->create(
     ]
 );
 
+$collection->create(
+    'api_server_file_uploads_method',
+    [
+        'path'       => '/server_file_uploads_method',
+        'controller' => 'LegacyApiBundle:Server:getFileUploadsMethod',
+        'methods'    => ['GET'],
+    ]
+);
+
 //#######################################################################################################################
 // Server File Integrity
 //#######################################################################################################################
@@ -5984,6 +5993,86 @@ $collection->create(
     [
         'path'       => '/kb_fields/display-order',
         'controller' => 'LegacyApiBundle:ArticleFields:saveDisplayOrder',
+        'methods'    => ['POST'],
+    ]
+);
+
+//#######################################################################################################################
+// Download Fields
+//#######################################################################################################################
+
+$collection->create(
+    'api_download_fields_get',
+    [
+        'path'         => '/download_fields/{id}',
+        'controller'   => 'LegacyApiBundle:DownloadFields:getCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_create',
+    [
+        'path'       => '/download_fields',
+        'controller' => 'LegacyApiBundle:DownloadFields:saveCustomField',
+        'defaults'   => ['id' => '0'],
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_delete',
+    [
+        'path'         => '/download_fields/{id}',
+        'controller'   => 'LegacyApiBundle:DownloadFields:deleteCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['DELETE'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_save',
+    [
+        'path'         => '/download_fields/{id}',
+        'controller'   => 'LegacyApiBundle:DownloadFields:saveCustomField',
+        'requirements' => ['id' => '\\d+'],
+        'methods'      => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_save_batch',
+    [
+        'path'       => '/download_fields/batch',
+        'controller' => 'LegacyApiBundle:DownloadFields:saveBatchCustomField',
+        'methods'    => ['PUT'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields',
+    [
+        'path'       => '/download_fields',
+        'controller' => 'LegacyApiBundle:DownloadFields:list',
+        'methods'    => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_setenabled',
+    [
+        'path'       => '/download_fields/set-enabled/{field_id}/{is_enabled}',
+        'controller' => 'LegacyApiBundle:DownloadFields:toggleField',
+        'methods'    => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_download_fields_update_order',
+    [
+        'path'       => '/download_fields/display-order',
+        'controller' => 'LegacyApiBundle:DownloadFields:saveDisplayOrder',
         'methods'    => ['POST'],
     ]
 );

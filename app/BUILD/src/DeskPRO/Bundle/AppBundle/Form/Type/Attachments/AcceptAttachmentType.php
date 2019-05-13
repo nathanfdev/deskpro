@@ -79,7 +79,11 @@ class AcceptAttachmentType extends AbstractType
                 'required'          => false,
                 'label'             => false,
                 'choices_as_values' => true,
-                'choices'           => ['', 'ticket_attachment'],
+                'choices'           => [
+                    '',
+                    DeskproBlobStorage::TAG_TICKET_ATTACHMENT,
+                    DeskproBlobStorage::TAG_DOWNLOAD_ATTACHMENT,
+                ],
             ]);
         }
 
@@ -168,8 +172,8 @@ class AcceptAttachmentType extends AbstractType
      */
     protected function fillTagProps(&$props, $tagFormData)
     {
-        if ($tagFormData === 'ticket_attachment') {
-            $props['tag'] = 'ticket_attachment';
+        if ($tagFormData) {
+            $props['tag'] = $tagFormData;
         }
     }
 }

@@ -46,7 +46,7 @@ define(['angular', 'moment'], (angular, moment) =>
           <th class="left"
               ng-click="changeView(data.currentView, data.leftDate, $event)"
               ng-show="data.leftDate.selectable">
-            <i class="fa fa-arrow-left"/>
+            <i class="fas fa-arrow-left"/>
           </th>
           <th class="switch" colspan="5"
               ng-show="data.previousViewDate.selectable"
@@ -56,7 +56,7 @@ define(['angular', 'moment'], (angular, moment) =>
           <th class="right"
               ng-click="changeView(data.currentView, data.rightDate, $event)"
               ng-show="data.rightDate.selectable">
-            <i class="fa fa-arrow-right"/>
+            <i class="fas fa-arrow-right"/>
           </th>
         </tr>
         <tr>

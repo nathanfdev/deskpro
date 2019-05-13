@@ -2,10 +2,17 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.downloads_settings') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Downloads Settings</h3>
 		</a>
 	</section>
 
     {% include 'AdminInterfaceBundle:Labels:Common/list-section.html.twig' with {prefix: 'portal.downloads_labels', name: 'Downloads Labels'} %}
+
+	<section class="dp-paneblock dp-panelink">
+		<a href="{{ ng_href('portal.download_custom_fields') }}">
+			<em><i class="fa fa-chevron-down"></i></em>
+			<h3>Downloads Custom Fields</h3>
+		</a>
+	</section>
 {% endblock %}

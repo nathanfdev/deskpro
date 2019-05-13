@@ -19,7 +19,7 @@
 					dp-state-mark="chat.chat_deps.edit.{{ ng_var('dep.id') }}" data-id="{{ ng_var('dep.id') }}">
 
 					<a href="{{ ng_href('chat.chat_deps.edit', '{id: dep.id}') }}">
-						<i class="fa fa-bars drag-handle"></i>
+						<i class="fas fa-bars drag-handle"></i>
 						<h4><span class="title-id" title="ID">#{{ ng_var('dep.id') }}</span> <span class="title-text">{{ ng_var('dep.title') }}</span></h4>
 					</a>
 
@@ -29,7 +29,7 @@
 							dp-state-mark="chat.chat_deps.edit.{{ ng_var('subdep.id') }}"
 							data-id="{{ ng_var('subdep.id') }}">
 							<a href="{{ ng_href('chat.chat_deps.edit', '{id: subdep.id}') }}">
-								<i class="fa fa-bars drag-handle"></i>
+								<i class="fas fa-bars drag-handle"></i>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
 									<span class="tree-char last" ng-if="$last"></span>
@@ -45,7 +45,7 @@
 			<div class="dp-add-control">
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create') }"
 				   href="{{ ng_href('chat.chat_deps.gocreate') }}" dp-list-autoload autoload-priority="2">
-					<i class="fa fa-plus"></i> New Department
+					<i class="fas fa-plus"></i> New Department
 				</a>
 			</div>
 
@@ -114,7 +114,7 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/446" target="_blank">Chat</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/446" target="_blank">Chat</a></li>
 			</ul>
 	</section>
 	</article>

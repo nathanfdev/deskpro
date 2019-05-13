@@ -11,7 +11,7 @@ use Orb\Auth\Identity;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class OpenID extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter implements ContainerAwareInterface
+class OpenID extends AbstractAdapter implements ContainerAwareInterface
 {
     /**
      * @var ContainerInterface

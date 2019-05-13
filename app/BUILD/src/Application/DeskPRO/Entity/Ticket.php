@@ -1465,7 +1465,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function getCharges()
     {
-        return $this->charges;
+        $iterator = $this->charges->getIterator();
+        $iterator->uasort(function ($a, $b) {
+            return ($a->getDateCreated() > $b->getDateCreated()) ? -1 : 1;
+        });
+
+        return new ArrayCollection(iterator_to_array($iterator));
     }
 
     public function getChargesTotalAmount()

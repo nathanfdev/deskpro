@@ -17,8 +17,8 @@
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('theme')">
                         Theme
-                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('theme')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('theme')"></i>
+                        <i class="fas fa-caret-right" ng-show="!Portal.isOpen('theme')"></i>
+                        <i class="fas fa-caret-down" ng-show="Portal.isOpen('theme')"></i>
                     </a>
                 </div>
 
@@ -34,8 +34,8 @@
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('site_copy')">
                         Welcome Message
-                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('site_copy')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('site_copy')"></i>
+                        <i class="fas fa-caret-right" ng-show="!Portal.isOpen('site_copy')"></i>
+                        <i class="fas fa-caret-down" ng-show="Portal.isOpen('site_copy')"></i>
                     </a>
                 </div>
 
@@ -56,8 +56,8 @@
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('logo')">
                         Logo
-                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('logo')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('logo')"></i>
+                        <i class="fas fa-caret-right" ng-show="!Portal.isOpen('logo')"></i>
+                        <i class="fas fa-caret-down" ng-show="Portal.isOpen('logo')"></i>
                     </a>
                 </div>
                 <div class="alert alert-danger inner-group" ng-show="errors.logo">
@@ -82,8 +82,8 @@
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('favicon')">
                         Favicon
-                        <i class="fa fa-caret-right" ng-show="!Portal.isOpen('favicon')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('favicon')"></i>
+                        <i class="fas fa-caret-right" ng-show="!Portal.isOpen('favicon')"></i>
+                        <i class="fas fa-caret-down" ng-show="Portal.isOpen('favicon')"></i>
                     </a>
                 </div>
                 <div class="alert alert-danger inner-group" ng-show="errors.favicon">
@@ -109,8 +109,8 @@
                     <div class="panel-title">
                         <a ng-click="Portal.togglePanel(group)">
                             <span ng-bind="Portal.label(group)"></span>
-                            <i class="fa fa-caret-right" ng-show="!Portal.isOpen(group)"></i>
-                            <i class="fa fa-caret-down" ng-show="Portal.isOpen(group)"></i>
+                            <i class="fas fa-caret-right" ng-show="!Portal.isOpen(group)"></i>
+                            <i class="fas fa-caret-down" ng-show="Portal.isOpen(group)"></i>
                         </a>
                     </div>
                     <div>
@@ -132,8 +132,8 @@
                 <div class="panel-title">
                     <a ng-click="Portal.togglePanel('advanced')">
                         Page Layout &amp; Design
-                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('advanced')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('advanced')"></i>
+                        <i class="fas fa-caret-down" ng-show="!Portal.isOpen('advanced')"></i>
+                        <i class="fas fa-caret-down" ng-show="Portal.isOpen('advanced')"></i>
                     </a>
                 </div>
 
@@ -218,7 +218,7 @@
                         <a href="javascript:void(null)" class="drag-and-drop-area" ng-file-drop="Portal.upload($files)">
                             <span ng-show="!Portal.uploading_files_count">
                                 <span class="hint">
-                                    <i class="fa fa-upload"></i> Drag &amp; Drop here or select files to upload:
+                                    <i class="fas fa-upload"></i> Drag &amp; Drop here or select files to upload:
                                 </span>
                                 <input type="file" ng-file-select="Portal.upload($files)" multiple />
                             </span>
@@ -230,7 +230,7 @@
                             <ul>
                                 <li ng-repeat="file in Portal.asset_files">
                                     <a ng-href="{{ '{{ file.url }}' }}" target="_blank" class="file">
-                                        <i class="fa fa-file"></i> {{ '{{ file.name }}' }}
+                                        <i class="fas fa-file"></i> {{ '{{ file.name }}' }}
                                     </a>
                                     <a href dp-clipboard data-clipboard-text="{{ ng_var('file.url') }}" ngclipboard-success="Portal.notifyUrlCopied()" class="file-url-copy">Copy file URL</a>
                                     <a href ng-click="Portal.delete(file)" class="file-url-copy">Delete</a>
@@ -245,14 +245,14 @@
                 <div class="panel-title" style="z-index: 10;">
                     <a ng-click="Portal.togglePanel('expert')" style="z-index: 99;">
                         Template Editor
-                        <i class="fa fa-caret-down" ng-show="!Portal.isOpen('expert')"></i>
-                        <i class="fa fa-caret-down" ng-show="Portal.isOpen('expert')"></i>
+                        <i class="fas fa-caret-down" ng-show="!Portal.isOpen('expert')"></i>
+                        <i class="fas fa-caret-down" ng-show="Portal.isOpen('expert')"></i>
                     </a>
                 </div>
 
                 <div class="template-picker" ng-show="Portal.isOpen('expert') && !(Portal.selected_template && Portal.selected_template_info_loaded) && !(Portal.css_template_selected && Portal.css_template_info.loaded)">
                     <select ui-select2='{ containerCssClass : "select2-container-template-picker", dropdownCssClass : "select2-dropdown-template-picker" }'
-                            clas="template-picker"
+                            class="template-picker"
                             style="width: 300px;"
                             data-placeholder="Choose a template"
                             ng-model="Portal.selected_template"
@@ -297,14 +297,14 @@
                             Preview as
                             <span ng-bind="Portal.preview_as"></span>
                             <span ng-show="Portal.preview_as == 'user' || Portal.preview_as == 'agent'" ng-bind="Portal.preview_as_email"></span>
-                            <i class="fa fa-user"></i> <i class="fa fa-caret-down"></i>
+                            <i class="fas fa-user"></i> <i class="fas fa-caret-down"></i>
                         </a>
 
                         <ul ng-show="Portal.preview_as_expanded">
-                            <li><a href ng-click="Portal.previewAs('myself')" ng-class="{active: Portal.preview_as == 'myself'}"> <i class="fa fa-check"></i> myself</a></li>
-                            <li><a href ng-click="Portal.previewAs('guest')"  ng-class="{active: Portal.preview_as == 'guest'}">  <i class="fa fa-users"></i> guest</a></li>
-                            <li><a href ng-click="Portal.previewAs('agent')"  ng-class="{active: Portal.preview_as == 'agent'}">  <i class="fa fa-user"></i>  agent</a></li>
-                            <li><a href ng-click="Portal.previewAs('user')"   ng-class="{active: Portal.preview_as == 'user'}">   <i class="fa fa-user"></i>  user</a></li>
+                            <li><a href ng-click="Portal.previewAs('myself')" ng-class="{active: Portal.preview_as == 'myself'}"> <i class="fas fa-check"></i> myself</a></li>
+                            <li><a href ng-click="Portal.previewAs('guest')"  ng-class="{active: Portal.preview_as == 'guest'}">  <i class="fas fa-users"></i> guest</a></li>
+                            <li><a href ng-click="Portal.previewAs('agent')"  ng-class="{active: Portal.preview_as == 'agent'}">  <i class="fas fa-user"></i>  agent</a></li>
+                            <li><a href ng-click="Portal.previewAs('user')"   ng-class="{active: Portal.preview_as == 'user'}">   <i class="fas fa-user"></i>  user</a></li>
                         </ul>
                     </li>
                 </ul>

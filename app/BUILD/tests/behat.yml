@@ -19,6 +19,7 @@ api:
                 - DpBehat\Api\JsonContext
                 - DpBehat\HooksContext
                 - DpBehat\TicketMessageContext
+                - DpBehat\DownloadContext
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\Api\BrandContext

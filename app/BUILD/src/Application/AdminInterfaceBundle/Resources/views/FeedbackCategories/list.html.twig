@@ -2,21 +2,21 @@
 {% block listpane_content %}
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.feedback_settings') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Feedback Settings</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.feedback_statuses') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Feedback Statuses</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.feedback_types') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Feedback Types</h3>
 		</a>
 	</section>
@@ -34,13 +34,13 @@
 			<ul class="dp-item-list" ui-sortable="FeedbackCategoriesList.sortedListOptions">
 				<li class="with-drag-handle" ng-repeat="category in FeedbackCategoriesList.parent_data" dp-state-mark="portal.feedback_categories.edit.{{ ng_var('category.id') }}" data-id="{{ ng_var('category.id') }}" ng-if="category.brand == brand_id">
 					<a href="{{ ng_href('portal.feedback_categories.edit', '{id: category.id}') }}">
-						<i class="fa fa-bars drag-handle"></i>
+						<i class="fas fa-bars drag-handle"></i>
 						<h4><span class="title-id" title="ID">#{{ ng_var('category.id') }}</span> <span class="title-text">{{ ng_var('category.title') }}</span></h4>
 					</a>
 					<ul class="dp-item-list sublist" ng-if="FeedbackCategoriesList.child_data[category.id]" ui-sortable="FeedbackCategoriesList.sortedListOptions">
 						<li class="with-drag-handle" ng-repeat="sub_category in FeedbackCategoriesList.child_data[category.id]" dp-state-mark="portal.feedback_categories.edit.{{ ng_var('sub_category.id') }}" data-id="{{ ng_var('sub_category.id') }}">
 							<a href="{{ ng_href('portal.feedback_categories.edit', '{id: sub_category.id}') }}">
-								<i class="fa fa-bars drag-handle"></i>
+								<i class="fas fa-bars drag-handle"></i>
 								<h4>
 									<span class="tree-char middle" ng-if="!$last"></span>
 									<span class="tree-char last" ng-if="$last"></span>
@@ -53,13 +53,13 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('portal.feedback_categories.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{phrase('agent.general.add')}}</a>
+				<a class="btn btn-default" href="{{ ng_href('portal.feedback_categories.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> {{phrase('agent.general.add')}}</a>
 			</div>
 		</article>
 	</section>
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('portal.feedback_labels') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Feedback Labels</h3>
 		</a>
 	</section>
@@ -82,7 +82,7 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-			<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Feedback categories</a></li>
+			<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/277" target="_blank">Feedback categories</a></li>
 			</ul>
 	</section>
 	</article>

@@ -57,7 +57,7 @@ class AddList extends React.Component {
         {inviteError && <div className="error-message">{inviteError}</div>}
 
         <div className="online-agents-header">
-          <i className="fa fa-user" />
+          <i className="fas fa-user" />
           Agents online
         </div>
 

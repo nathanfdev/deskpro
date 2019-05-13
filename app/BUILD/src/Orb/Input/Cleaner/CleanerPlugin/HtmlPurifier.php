@@ -27,6 +27,7 @@ class HtmlPurifier implements CleanerPlugin
         return [
             'html',
             'extended_html',
+            'html_javascript',
             'simple_html',
             'html_core',
             'html_email',
@@ -39,6 +40,9 @@ class HtmlPurifier implements CleanerPlugin
 
     public function cleanValue($value, $type, array $options, Cleaner $cleaner)
     {
+        if ($type === 'html_javascript') {
+            return $value;
+        }
         // A lot of tags are not allowed in <pre> (eg <font>)
         // which means html purifier will strip them out.
         // So lets just replace pre tags

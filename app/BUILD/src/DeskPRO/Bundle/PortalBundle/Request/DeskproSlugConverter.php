@@ -28,7 +28,7 @@ class DeskproSlugConverter implements ParamConverterInterface
     /**
      * @var \Doctrine\ORM\EntityManager
      */
-    private $em;
+    protected $em;
 
     /**
      * @var ContentSlugManager

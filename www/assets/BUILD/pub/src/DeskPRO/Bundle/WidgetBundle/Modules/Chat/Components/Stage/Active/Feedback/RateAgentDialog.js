@@ -30,10 +30,10 @@ export class RateAgentDialog extends React.Component {
 
         <div className="dpdesignportal-agent-rating-buttons">
           <button className="dpdesignportal-button" onClick={this.onClickHelpful}>
-            <i className="fa fa-thumbs-up" /> {portalPhrases.get('portal.chat.helpful')}
+            <i className="fas fa-thumbs-up" /> {portalPhrases.get('portal.chat.helpful')}
           </button>
           <button className="dpdesignportal-button negative" onClick={this.onClickNotHelpful}>
-            <i className="fa fa-thumbs-down" /> {portalPhrases.get('portal.chat.not_helpful')}
+            <i className="fas fa-thumbs-down" /> {portalPhrases.get('portal.chat.not_helpful')}
           </button>
         </div>
       </div>

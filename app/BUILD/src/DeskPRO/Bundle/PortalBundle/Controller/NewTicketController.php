@@ -184,30 +184,36 @@ class NewTicketController extends AbstractController
                                 $this->addFlash('success', $this->phrase('portal.flashes.guest_new_ticket_must_verify'));
 
                                 return $this->redirectToRoute('portal_thanks_verify');
-                            } else {
-                                if ($e->getPerson()) {
-                                    // this user is created but can't log in 'person.is_user' is false
-                                    $ticket = $this->getNewTicketService()->createNewTicket(
-                                        $request,
-                                        $visitor_id,
-                                        $e->getPerson(),
-                                        $this->getBrandContainer()->getBrand(),
-                                        Ticket::CREATED_WEB_PERSON_PORTAL
-                                    );
+                            }
 
-                                    $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, array_merge($formOptions, [
-                                        'ignore_user_fields' => true,
-                                    ]));
-                                    $form->handleRequest($request);
+                            if ($person = $e->getPerson()) {
+                                // this user is created but can't log in 'person.is_user' is false
+                                $ticket = $this->getNewTicketService()->createNewTicket(
+                                    $request,
+                                    $visitor_id,
+                                    $person,
+                                    $this->getBrandContainer()->getBrand(),
+                                    Ticket::CREATED_WEB_PERSON_PORTAL
+                                );
+                                $email = $person->getEmailByAddress($e->getEmail());
 
-                                    $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request, 'portal');
-                                } else {
-                                    // this is a guest that we are accepting
-                                    $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm, 'portal');
+                                if ($email) {
+                                    $ticket->setTicketPersonEmail($email);
                                 }
 
-                                return $this->onSavedTicket($newTicket, $request);
+                                $form = $this->createForm(TicketWithLayoutsWebType::class, $ticket, array_merge($formOptions, [
+                                    'ignore_user_fields' => true,
+                                    'person'             => $person,
+                                ]));
+                                $form->handleRequest($request);
+
+                                $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request, 'portal');
+                            } else {
+                                // this is a guest that we are accepting
+                                $newTicket = $this->getNewTicketService()->acceptNewTicketForGuest($ticket, $request, $guestForm, 'portal');
                             }
+
+                            return $this->onSavedTicket($newTicket, $request);
                         }
                     } else {
                         $newTicket = $this->getNewTicketService()->acceptNewTicket($ticket, $request, 'portal');

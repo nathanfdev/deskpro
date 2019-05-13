@@ -20,7 +20,7 @@ define(function() {
 <span>
   <span class="on-off-inlet">
     <span class="on-off-status"><span class="on-text">on</span><span class="off-text">off</span></span>
-    <span class="on-off-cover"><i class="fa fa-check on-icon"></i><i class="fa fa-times off-icon"></i></span>
+    <span class="on-off-cover"><i class="fas fa-check on-icon"></i><i class="fas fa-times off-icon"></i></span>
   </span>
 </span>\
 `,

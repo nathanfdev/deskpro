@@ -21,7 +21,7 @@ export class MessageAvatar extends React.Component {
 
     return (
       <div className="dpdesignportal-message-avatar" style={style}>
-        {!imageUrl && <i className="fa fa-user" />}
+        {!imageUrl && <i className="fas fa-user" />}
       </div>
     );
   }

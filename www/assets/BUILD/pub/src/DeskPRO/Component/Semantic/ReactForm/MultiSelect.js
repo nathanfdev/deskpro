@@ -89,7 +89,7 @@ class SemanticMultiSelect extends React.Component {
           className={classNames({ sortable: choice.sortable })}
         >
           <span className={classNames({ 'multi-sortable-icon': hasSortable })}>
-            {choice.sortable && <i className="fa fa-bars drag-handle" />}
+            {choice.sortable && <i className="fas fa-bars drag-handle" />}
           </span>
           <div className={classNames('ui', { checked, disabled: choice.disabled }, 'checkbox')}>
             <input type="checkbox" checked={checked ? 'checked' : ''} className="hidden" />

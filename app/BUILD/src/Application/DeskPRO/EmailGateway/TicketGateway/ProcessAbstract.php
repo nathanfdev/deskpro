@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Orb\Log\Logger;
@@ -278,7 +279,7 @@ abstract class ProcessAbstract
                 $attach->getFileContents(),
                 $filename,
                 $attach->getMimeType(),
-                ['tag' => $attach->is_inline ? null : 'ticket_attachment']
+                ['tag' => $attach->is_inline ? null : DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
             );
 
             $this->logMessage(sprintf('Processed blob %s (%d)', $blob->filename, $blob->id));

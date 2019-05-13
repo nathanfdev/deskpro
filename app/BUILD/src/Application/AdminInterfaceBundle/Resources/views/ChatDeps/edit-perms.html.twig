@@ -29,7 +29,7 @@
 		<tbody>
 			<tr ng-repeat="usergroup in EditCtrl.usergroups">
 				<td>
-					<i class="fa fa-users icon-22x text-middle icon-light"></i>
+					<i class="fas fa-users icon-22x text-middle icon-light"></i>
 					&nbsp;
 					<span class="text-middle"><a href="{{ ng_href('crm.groups.edit', '{id: usergroup.id}') }}">{{ ng_var('usergroup.title') }}</a></span>
 				</td>
@@ -71,7 +71,7 @@
 		<tbody>
 			<tr ng-repeat="groupObj in EditCtrl.form.agent_perms.groups">
 				<td>
-					<i class="fa fa-users icon-22x text-middle icon-light"></i>
+					<i class="fas fa-users icon-22x text-middle icon-light"></i>
 					&nbsp;
 					<span class="text-middle"><a href="{{ ng_href('agents.groups.edit', '{id: groupObj.model.id}') }}">{{ ng_var('groupObj.model.title') }}</a></span>
 				</td>

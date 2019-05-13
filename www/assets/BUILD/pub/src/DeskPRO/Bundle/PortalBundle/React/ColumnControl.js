@@ -22,8 +22,8 @@ class SimpleCheckbox extends React.Component {
 
     return (
       <div onClick={this.onClick} className="checkbox-container">
-        <span className={classNames('checkbox', { 'checked': active })}>
-          <i className="fa fa-check"></i>
+        <span className={classNames('checkbox', { checked: active })}>
+          <i className="fas fa-check" />
         </span>
         {label}
       </div>
@@ -51,7 +51,7 @@ export class ColumnControl extends React.Component {
     let newActiveIds = [];
 
     if ($.inArray(toggleColId, this.state.active_ids) >= 0) {
-      newActiveIds = this.state.active_ids.filter((col) => col !== toggleColId);
+      newActiveIds = this.state.active_ids.filter(col => col !== toggleColId);
     } else {
       newActiveIds = this.state.active_ids;
       newActiveIds.push(toggleColId);
@@ -72,7 +72,8 @@ export class ColumnControl extends React.Component {
         <ul>
           {this.state.columns.map(col =>
             <li key={col.id}>
-              <SimpleCheckbox data={col.id}
+              <SimpleCheckbox
+                data={col.id}
                 label={col.label}
                 active={$.inArray(col.id, this.state.active_ids) >= 0}
                 toggleColumnId={this.toggleColumnId.bind(this)}

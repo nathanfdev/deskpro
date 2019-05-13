@@ -191,7 +191,7 @@ class PortalIconFactory
      */
     public function makeTopicIcon(Topic $topic)
     {
-        return '<i class="fa fa-book"></i>';
+        return '<i class="fas fa-book"></i>';
     }
 
     /**

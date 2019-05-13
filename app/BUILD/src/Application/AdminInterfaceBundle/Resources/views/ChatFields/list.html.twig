@@ -18,7 +18,7 @@
 					dp-state-mark="chat.fields.edit.{{ ng_var('field.id') }}"
 					data-id="{{ ng_var('field.id') }}">
 					<a href="{{ ng_href('chat.fields.edit', '{id: field.id}') }}">
-						<i class="fa fa-bars drag-handle"></i>
+						<i class="fas fa-bars drag-handle"></i>
 						<div class="pull-right">
 							<em class="tag tag-warn" ng-show="!field.is_enabled">Disabled</em>
 						</div>
@@ -29,7 +29,7 @@
 			<div class="dp-add-control">
 				<a class="btn btn-default" href="{{ ng_href('chat.fields.gocreate') }}"
 				   ng-class="{'active': isStateActive('.create') }">
-					<i class="fa fa-plus"></i>
+					<i class="fas fa-plus"></i>
 					{{ phrase('agent.general.add') }}
 				</a>
 			</div>
@@ -63,8 +63,8 @@
 		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 			<ul>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/369" target="_blank">Custom fields</a></li>
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/370" target="_blank">Field validation and display</a>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/369" target="_blank">Custom fields</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/370" target="_blank">Field validation and display</a>
 			</ul>
 	</section>
 </article>

@@ -5,6 +5,7 @@ namespace Application\AgentBundle\Controller;
 use Application\AgentBundle\Controller\Helper\DownloadResults;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Download;
@@ -35,6 +36,14 @@ class DownloadsController extends AbstractController
         if (!$download) {
             throw $this->createNotFoundException();
         }
+
+        //------------------------------
+        // Custom fields
+        //------------------------------
+
+        /** @var FieldManager $field_manager */
+        $field_manager = $this->container->getSystemService('download_fields_manager');
+        $custom_fields = $field_manager->getDisplayArrayForObject($download);
 
         $downloadComments = $this->em->getRepository(DownloadComment::class)->getComments($download);
 
@@ -75,6 +84,7 @@ class DownloadsController extends AbstractController
             'download'            => $download,
             'download_comments'   => $downloadComments,
             'download_categories' => $downloadCategories,
+            'custom_fields'       => $custom_fields,
             'related_content'     => $relatedContent,
             'state'               => $state,
             'sticky_search_words' => $stickySearchWords,
@@ -320,6 +330,43 @@ class DownloadsController extends AbstractController
         return $this->createJsonResponse($data);
     }
 
+    public function ajaxSaveCustomFieldsAction($download_id)
+    {
+        $download = $this->em->find(Download::class, $download_id);
+
+        if (!$download) {
+            throw $this->createNotFoundException();
+        }
+
+        if (!$this->person->PermissionsManager->PublishChecker->canEdit($download)) {
+            throw $this->createNotFoundException();
+        }
+
+        $this->em->beginTransaction();
+
+        try {
+            $field_manager      = $this->container->getSystemService('download_fields_manager');
+            $post_custom_fields = $this->request->request->get('custom_fields', []);
+            if (!empty($post_custom_fields)) {
+                $field_manager->saveFormToObject($post_custom_fields, $download);
+            }
+
+            $this->em->flush();
+            $this->em->commit();
+        } catch (\Exception $e) {
+            $this->em->rollback();
+            throw $e;
+        }
+
+        $field_manager = $this->container->getSystemService('download_fields_manager');
+        $custom_fields = $field_manager->getDisplayArrayForObject($download);
+
+        return $this->render('AgentBundle:Downloads:view-customfields-rendered-rows.html.twig', [
+            'download'      => $download,
+            'custom_fields' => $custom_fields,
+        ]);
+    }
+
     public function ajaxGetCategoriesByBrandAction($brand_id)
     {
         $categories = $this->getFilteredCategory($brand_id);
@@ -476,12 +523,16 @@ class DownloadsController extends AbstractController
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
+        /** @var FieldManager $fieldManager */
+        $fieldManager = $this->container->getSystemService('download_fields_manager');
+        $customfields = $fieldManager->getDisplayArrayForObject(new Download());
 
         return $this->render('AgentBundle:Downloads:newdownload.html.twig', [
             'download_categories' => $rootCategories,
             'state'               => $state,
             'brands'              => $brands,
             'selected_brand_id'   => $brandId,
+            'custom_fields'       => $customfields,
         ]);
     }
 
@@ -510,6 +561,7 @@ class DownloadsController extends AbstractController
                     'error_codes' => $validator->getErrorGroups(),
                 ]);
             }
+            $newdownload->setCustomFieldForm($request->request->all());
             $newdownload->save();
 
             $download = $newdownload->getDownload();

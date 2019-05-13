@@ -1,0 +1,33 @@
+{% extends 'Theme::layout.html.twig' %}
+{% import 'Theme:Portal:User/macros.html.twig' as macros %}
+
+{% block inner_content %}
+    <div class="breadcrumbs">
+        {% show breadcrumbs %}
+    </div>
+    <article class="news kb-article">
+        <header>
+           <h1>{{ phrase('portal.general.eula') }}</h1>
+        </header>
+        <div class="article-content-wrapper">
+          <div class="article-content padded">
+            {% if eula_format == 'html' %}
+              {{ eula_text|raw }}
+            {% else %}
+              <pre>{{ eula_text|escape }}</pre>
+            {% endif %}
+          </div>
+        </div>
+    </article>
+    {% if for_download %}
+      <article class="news kb-article">
+        <div class="article-content-wrapper">
+          <div class="article-content padded">
+              <form method="POST" action="{{ path('portal_downloads_eula', {'id': field.id, 'for_download': for_download}) }}">
+                <button class="button" type="submit">{{ phrase('portal.general.agree') }}</button>
+              </form>
+          </div>
+        </div>
+      </article>
+    {% endif %}
+{% endblock inner_content %}

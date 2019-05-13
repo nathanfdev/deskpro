@@ -13,6 +13,7 @@
     "custom-event-polyfill": "^0.3.0",
     "fbjs": "^0.8.3",
     "gulp-smartsprites": "^1.0.9",
+    "handlebars": "^4.1.2",
     "jquery": "^3.1.0",
     "jquery-colorbox": "^1.6.4",
     "jquery-ui": "^1.12.0",

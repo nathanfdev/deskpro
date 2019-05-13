@@ -31,9 +31,9 @@ export class WidgetHeader extends React.Component {
 
     let minimizeButton;
     if (chatEnded) {
-      minimizeButton = <i className="fa fa-times" />;
+      minimizeButton = <i className="fas fa-times" />;
     } else {
-      minimizeButton = <i className="fa fa-minus" />;
+      minimizeButton = <i className="fas fa-minus" />;
     }
 
     return (

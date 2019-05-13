@@ -15,7 +15,7 @@
       <li>
         <div class="dropdown-group">
           <a href="{{ path('portal_login') }}" id="top-login-btn" class="button-small button-marked clickaway-dropdown" data-clickaway-target="top-login-dropdown">{{ phrase('portal.account.login-btn') }} <i
-                    class="fa fa-caret-down"></i></a>
+                    class="fas fa-caret-down"></i></a>
           <div class="dp-react-widget">
             <div class="active-button-dropdown language-dropdown" id="top-login-dropdown" style="min-width: 300px">
               <div class="small-form">
@@ -82,7 +82,7 @@
       <span class="agent-greeting">
         <span class="agent-avatar agent-avatar-mini" style="background: url({{ avatar_url(user, 36) }}) no-repeat; background-size: cover; filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='{{ avatar_url(user, 36) }}',sizingMethod='scale'); -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='{{ avatar_url(user, 36) }}', sizingMethod='scale')";"></span>
         {{ phrase('portal.account.welcome-back') }} {{ app.user.first_name }}
-        <span class="mobile-expand"><i class="fa fa-angle-double-down"></i></span>
+        <span class="mobile-expand"><i class="fas fa-angle-double-down"></i></span>
       </span>
       <span class="disc"></span>
       <a class="profile-link hideable" href="{{ path('portal_user_profile') }}">{{ phrase('portal.account.section-title-your-account') }}</a>

@@ -50,6 +50,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     const STORAGE_LOC_FILESYSTEM = 'fs';
     const STORAGE_LOC_S3         = 's3';
 
+    const SUFFIX_TICKET_ATTACHMENT   = 'T';
+    const SUFFIX_DOWNLOAD_ATTACHMENT = 'PD';
+
     /**
      * Timeout for valid access_token for ticket attachments.
      */
@@ -1120,7 +1123,17 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function isTicketAttachment()
     {
-        return $this->getAuthcode() && substr($this->getAuthcode(), -1) === 'T';
+        return $this->getAuthcode() && substr($this->getAuthcode(), -1) === self::SUFFIX_TICKET_ATTACHMENT;
+    }
+
+    /**
+     * Check if blob is Download attachment.
+     *
+     * @return bool
+     */
+    public function isDownloadAttachment()
+    {
+        return $this->getAuthcode() && substr($this->getAuthcode(), -2) === self::SUFFIX_DOWNLOAD_ATTACHMENT;
     }
 
     /**
@@ -1130,14 +1143,19 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     protected function isRequireAuth()
     {
-        if (!$this->isTicketAttachment()) {
-            return false;
+        if ($this->isTicketAttachment()) {
+            return (bool) App::getContainer()
+                ->getSettingsResolver()
+                ->getGlobalSettings()
+                ->get('core_tickets.attachment_require_auth');
+        } elseif ($this->isDownloadAttachment()) {
+            return (bool) App::getContainer()
+                ->getSettingsResolver()
+                ->getGlobalSettings()
+                ->get('user.attachment_require_auth_downloads');
         }
 
-        return (bool) App::getContainer()
-            ->getSettingsResolver()
-            ->getGlobalSettings()
-            ->get('core_tickets.attachment_require_auth');
+        return false;
     }
 
     public function __getPropValue__($k)

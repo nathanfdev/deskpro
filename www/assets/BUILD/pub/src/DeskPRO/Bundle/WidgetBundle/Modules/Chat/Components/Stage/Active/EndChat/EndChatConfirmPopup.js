@@ -21,10 +21,10 @@ export class EndChatConfirmPopup extends React.Component {
 
         <div className="popover-buttons">
           <button className={classNames('dpdesignportal-button', { locked })} onClick={onConfirm}>
-            <i className="fa fa-power-off" /> {portalPhrases.get('portal.chat.end_chat')}
+            <i className="fas fa-power-off" /> {portalPhrases.get('portal.chat.end_chat')}
           </button>
           <button className="dpdesignportal-button grey" onClick={onCancel}>
-            <i className="fa fa-reply" /> {portalPhrases.get('portal.chat.cancel_end_chat')}
+            <i className="fas fa-reply" /> {portalPhrases.get('portal.chat.cancel_end_chat')}
           </button>
         </div>
       </div>

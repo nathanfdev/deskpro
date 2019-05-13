@@ -290,6 +290,10 @@ class WebFieldResolver extends AbstractFieldResolver
                 $options['disabled'] = true;
             }
 
+            if ($context->getTicket()->getPersonEmailAddress() !== $person->getPrimaryEmailAddress()) {
+                $options['property_path'] = 'ticket_person_email';
+            }
+
             return [
                 'name'    => FormFields::USER_EMAIL,
                 'type'    => PersonEmailType::class,

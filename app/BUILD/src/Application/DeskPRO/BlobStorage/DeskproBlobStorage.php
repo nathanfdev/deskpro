@@ -24,6 +24,9 @@ use Orb\Util\Strings;
 
 class DeskproBlobStorage implements Loggable
 {
+    const TAG_TICKET_ATTACHMENT   = 'ticket_attachment';
+    const TAG_DOWNLOAD_ATTACHMENT = 'download_attachment';
+
     /**
      * @var string
      */
@@ -536,6 +539,11 @@ class DeskproBlobStorage implements Loggable
         }
 
         $blob_array = $blob_entity_tmp->toDbArray();
+
+        // no storage_loc yet -- this blob is not done inserting yet
+        // this insert is just to get the id so we can generate authcode on it / determine paths
+        $blob_array['storage_loc'] = '';
+
         $this->db->insert('blobs', $blob_array);
         $blob_array['id']    = $this->db->lastInsertId();
         $blob_entity_tmp->id = $blob_array['id'];
@@ -788,15 +796,16 @@ class DeskproBlobStorage implements Loggable
     }
 
     /**
-     *
-     * Used mainly from cloud emails services and endpoints to bypass regular blob to string copying
+     * Used mainly from cloud emails services and endpoints to bypass regular blob to string copying.
      *
      * @param BlobEntity $blob
-     * @param bool $useCache
-     * @return null|string
+     * @param bool       $useCache
+     *
      * @throws \Exception
+     *
+     * @return null|string
      */
-    public function downloadBlobData( BlobEntity $blob, $useCache = true)
+    public function downloadBlobData(BlobEntity $blob, $useCache = true)
     {
         $data = $useCache ? $this->pickFromCache($blob) : null;
         if (!empty($data)) {
@@ -807,7 +816,7 @@ class DeskproBlobStorage implements Loggable
             return $this->downloadFileUrl($blob['file_url']);
         }
 
-        throw new \Exception("the blob does not have a file_url");
+        throw new \Exception('the blob does not have a file_url');
     }
 
     /**
@@ -1094,7 +1103,7 @@ class DeskproBlobStorage implements Loggable
         $authcode = $this->generateAuthCode(
             $adapter_id,
             $blob_entity,
-            $blob_entity->isTicketAttachment() ? ['tag' => 'ticket_attachment'] : null
+            $blob_entity->isTicketAttachment() ? ['tag' => self::TAG_TICKET_ATTACHMENT] : null
         );
 
         $blobauth_moved = [
@@ -1141,8 +1150,15 @@ class DeskproBlobStorage implements Loggable
         }
 
         $props = $props ?: [];
-        if (isset($props['tag']) && $props['tag'] === 'ticket_attachment') {
-            $authCode .= 'T';
+        if (isset($props['tag'])) {
+            switch ($props['tag']) {
+                case self::TAG_TICKET_ATTACHMENT:
+                    $authCode .= BlobEntity::SUFFIX_TICKET_ATTACHMENT;
+                    break;
+                case self::TAG_DOWNLOAD_ATTACHMENT:
+                    $authCode .= BlobEntity::SUFFIX_DOWNLOAD_ATTACHMENT;
+                    break;
+            }
         }
 
         return $authCode;

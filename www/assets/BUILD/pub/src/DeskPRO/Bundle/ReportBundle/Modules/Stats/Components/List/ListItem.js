@@ -69,11 +69,11 @@ class ListItem extends React.Component {
                   key={label}
                   className={classNames('stat-label', { active: this.isLabelActive(label) })}
                 >
-                  <i className="fa fa-tag" /> { label }
+                  <i className="fas fa-tag" /> { label }
                 </span>
             )}
             { !report.get('is_custom')
-              ? <span className="stat-label active"><i className="fa fa-tag" /> Built-in report</span>
+              ? <span className="stat-label active"><i className="fas fa-tag" /> Built-in report</span>
               : null
             }
           </p>

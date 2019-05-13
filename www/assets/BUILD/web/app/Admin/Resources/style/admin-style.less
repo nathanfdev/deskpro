@@ -123,7 +123,7 @@ p:last-of-type {
 
 .dropdown-menu a {
 	cursor: pointer;
-	i.fa {
+	i.fa, i.fas, i.far {
 		position: relative;
 		left: -6px;
 	}
@@ -242,7 +242,7 @@ div.info-message {
 		text-decoration: underline;
 	}
 
-	i.fa {
+	i.fa, i.fas, i.far {
 		color: #888;
 	}
 	.hovershow {
@@ -1119,7 +1119,7 @@ nav.dp-blocktabs {
 			padding-right: 11px;
 
 			a {
-				i.fa {
+				i.fa, i.fas, i.far {
 					font-size: 11pt;
 					color: #777;
 				}
@@ -1210,7 +1210,7 @@ nav.dp-tabletabs {
 			margin-right: 6px;
 
 			a {
-				i.fa {
+				i.fa, i.far, i.fas {
 					font-size: 11pt;
 					color: #777;
 				}
@@ -1897,7 +1897,7 @@ section.dp-help-content-wrapper.open {
 		color: #aaa;
 		text-decoration: none;
 
-		i.fa {
+		i.fa, i.fas, i.far {
 			font-size: 13px;
 			position: relative;
 			top: 1px;
@@ -1930,7 +1930,7 @@ section.dp-help-content-wrapper.open {
 		color: #aaa;
 		text-decoration: none;
 
-		i.fa {
+		i.fa, i.fas, i.far {
 			font-size: 13px;
 			position: relative;
 			top: 1px;
@@ -2409,6 +2409,12 @@ section.dp-help-content-wrapper.open {
 	&:hover, &:focus {
 		border: 1px solid #cccccc;
 	}
+}
+
+.form-control.custom-field-js-code {
+	width: 100%;
+	height: 600px;
+	font-family: "Anonymous Pro", "Menlo", "Consolas", "Bitstream Vera Sans Mono", "Courier New", monospace;
 }
 
 .labels-group {

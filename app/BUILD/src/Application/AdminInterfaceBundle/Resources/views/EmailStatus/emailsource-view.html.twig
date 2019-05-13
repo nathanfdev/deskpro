@@ -2,7 +2,7 @@
 {% block fullpane_content %}
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Incoming Email</h3>
 		</a>
 	</section>
@@ -11,7 +11,7 @@
 		<header>
 			<nav class="dp-blocktabs">
 				<menu dropdown>
-					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+					<button class="btn btn-default dropdown-toggle"><span><i class="fas fa-cog"></i></span> <i class="fas fa-caret-down"></i></button>
 					<ul class="dropdown-menu pull-right">
 						<li><a ng-click="ViewSource.startDelete()"><i class="far fa-trash-alt"></i> Delete Email</a></li>
 						<li><a ng-click="ViewSource.startReprocess()"><i class="fas fa-redo"></i> Reprocess Email</a></li>
@@ -27,7 +27,7 @@
 					<td dp-date="ViewSource.source.date_created" format="fulltime"></td>
 				</tr>
 				<tr>
-					<th>Status <i class="fa fa-question-circle qmark-icon" ng-click="showStatusHelp(ViewSource.source.status)" tooltip="Click for more details" tooltip-placement="right" style="cursor: pointer;"></i></th>
+					<th>Status <i class="fas fa-question-circle qmark-icon" ng-click="showStatusHelp(ViewSource.source.status)" tooltip="Click for more details" tooltip-placement="right" style="cursor: pointer;"></i></th>
 					<td ng-class="{'danger': ViewSource.source.status == 'error', 'warning': ViewSource.source.status == 'rejected', 'success': ViewSource.source.status == 'complete'}">
 						{{ ng_var('ViewSource.source.status | uppercase') }} (<span dp-date="ViewSource.source.date_status" format="fulltime"></span>)
 						<div ng-if="ViewSource.source.status == 'error'">
@@ -109,7 +109,7 @@
 						<div ng-show="render_type == 'raw'">
 							<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.source_raw') }}</textarea>
 							<div style="margin-top: 2px;">
-								<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.blob.download_url') }}" target="_blank" style="font-weight: normal;"><i class="fa fa-download" style="margin: 0;"></i> Download Email</a>
+								<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.blob.download_url') }}" target="_blank" style="font-weight: normal;"><i class="fas fa-download" style="margin: 0;"></i> Download Email</a>
 							</div>
 						</div>
 						<div ng-show="render_type == 'summary'">
@@ -137,7 +137,7 @@
 					<td>
 						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.source_log') }}</textarea>
 						<div style="margin-top: 2px;">
-							<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.log_blob.download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log File</a>
+							<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.log_blob.download_url') }}" target="_blank"><i class="fas fa-download" style="margin: 0;"></i> Download Log File</a>
 						</div>
 					</td>
 				</tr>
@@ -148,7 +148,7 @@
 					<td>
 						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.account_log') }}</textarea>
 						<div style="margin-top: 2px;">
-							<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.email_account_log.blob.download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log File</a>
+							<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.email_account_log.blob.download_url') }}" target="_blank"><i class="fas fa-download" style="margin: 0;"></i> Download Log File</a>
 						</div>
 					</td>
 				</tr>

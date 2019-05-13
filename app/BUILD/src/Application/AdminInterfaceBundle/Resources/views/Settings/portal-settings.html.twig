@@ -2,7 +2,7 @@
 {% block fullpane_content %}
 <div class="content-wrapper">
 	<div class="content setup">
-		<h1><i class="fa fa-cog"></i> Portal Setup</h1>
+		<h1><i class="fas fa-cog"></i> Portal Setup</h1>
 
 		<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Settings.save()">
 
@@ -18,7 +18,7 @@
 							<div class="widget-header">
 								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_kb" />
 								<span class="title">Knowledgebase</span>
-								<a class="control" href="{{ ng_href('portal.kb_settings') }}">Manage <i class="fa fa-cog"></i></a>
+								<a class="control" href="{{ ng_href('portal.kb_settings') }}">Manage <i class="fas fa-cog"></i></a>
 							</div>
 							<div class="widget-image">
 								<img src="{{ asset('app/Admin/Resources/img/widget-preview-kb.png') }}" alt="Widget Preview: Knowledgebase">
@@ -36,7 +36,7 @@
 							<div class="widget-header">
 								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_downloads" />
 								<span class="title">Downloads</span>
-								<a class="control" href="{{ ng_href('portal.downloads_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+								<a class="control" href="{{ ng_href('portal.downloads_settings') }}">Manage  <i class="fas fa-cog"></i></a>
 							</div>
 							<div class="widget-image">
 								<img src="{{ asset('app/Admin/Resources/img/widget-preview-downloads.png') }}" alt="Widget Preview: Knowledgebase">
@@ -55,7 +55,7 @@
 							<div class="widget-header">
 								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_news" />
 								<span class="title">News</span>
-								<a class="control" href="{{ ng_href('portal.news_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+								<a class="control" href="{{ ng_href('portal.news_settings') }}">Manage  <i class="fas fa-cog"></i></a>
 							</div>
 							<div class="widget-image">
 								<img src="{{ asset('app/Admin/Resources/img/widget-preview-news.png') }}" alt="Widget Preview: Knowledgebase">
@@ -73,7 +73,7 @@
 							<div class="widget-header">
 								<button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_feedback" />
 								<span class="title">Feedback</span>
-								<a class="control" href="{{ ng_href('portal.feedback_settings') }}">Manage  <i class="fa fa-cog"></i></a>
+								<a class="control" href="{{ ng_href('portal.feedback_settings') }}">Manage  <i class="fas fa-cog"></i></a>
 							</div>
 							<div class="widget-image">
 								<img src="{{ asset('app/Admin/Resources/img/widget-preview-feedback.png') }}" alt="Widget Preview: Knowledgebase">

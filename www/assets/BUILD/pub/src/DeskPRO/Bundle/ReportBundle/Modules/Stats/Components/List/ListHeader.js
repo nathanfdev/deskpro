@@ -66,13 +66,13 @@ class ListHeader extends React.Component {
                 onClick={() => this.onLabelClick(label.get('label'))}
                 className={classNames('link-pointer stat-label', { active: label.get('active') })}
               >
-                <i className="fa fa-tag" />{label.get('label')}
+                <i className="fas fa-tag" />{label.get('label')}
               </a>)
             )}
           </div> : null }
         </div>
         <div className="filter-addbtn">
-          <button className="ui button green" onClick={this.props.onAddClick}><i className="fa fa-plus" /> ADD</button>
+          <button className="ui button green" onClick={this.props.onAddClick}><i className="fas fa-plus" /> ADD</button>
         </div>
       </div>
     );

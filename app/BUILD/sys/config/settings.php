@@ -886,6 +886,12 @@ return [
      */
     'user.password_reset_code_time_limit' => 18000,
 
+    /*
+     * When enabled, download attachments will only be visible by people who can view the download.
+     * Even if the user has the full coded URL to a file, the system will check permissions and ask the user to accept EULA if necessary
+     */
+    'user.attachment_require_auth_downloads' => false,
+
     'user.show_ratings'             => true,
     'user.show_ratings_min_votes'   => 1,
     'user.publish_comments'         => true,

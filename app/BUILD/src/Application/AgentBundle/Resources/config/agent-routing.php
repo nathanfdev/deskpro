@@ -1189,6 +1189,12 @@ $collection->create('agent_ticket_chargedelete', [
     'requirements' => ['ticket_id' => '\\d+', 'charge_id' => '\\d+'],
 ]);
 
+$collection->create('agent_ticket_loadmorecharges', [
+    'path'         => '/ticket/{ticket_id}/charge/load/{page}',
+    'controller'   => 'AgentBundle:Ticket:loadMoreCharges',
+    'requirements' => ['ticket_id' => '\\d+', 'page' => '\\d+'],
+]);
+
 $collection->create(
     'agent_ticket_chargeform',
     [
@@ -1962,6 +1968,12 @@ $collection->create('agent_downloads_list', [
     'controller' => 'AgentBundle:Downloads:list',
     'defaults'   => ['category_id' => '0'],
     'options'    => ['fragment_name' => 'downloads', 'fragment_type' => 'list'],
+]);
+
+$collection->create('agent_downloads_ajaxsavecustomfields', [
+    'path'         => '/downloads/{download_id}/ajax-save-custom-fields',
+    'controller'   => 'AgentBundle:Downloads:ajaxSaveCustomFields',
+    'requirements' => ['download_id' => '\\d+'],
 ]);
 
 $collection->create('agent_downloads_view', [

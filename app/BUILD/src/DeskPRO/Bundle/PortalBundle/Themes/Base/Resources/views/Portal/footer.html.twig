@@ -5,19 +5,19 @@
       <i class="fas fa-bars"></i> {{ phrase('portal.general.nav-quick-jump') }}
       <div class="dropdown-content">
         <ul>
-          <li class="item-home"><a href="{{ path('portal_home') }}"><i class="fa fa-home"></i> {{ brand_setting('core.deskpro_name')|e }}</a></li>
-          {% if can_use_articles() %}<li class="item-kb"><a href="{{ path('portal_kb') }}"><i class="fa fa-columns"></i> {{ phrase('portal.general.nav-kb') }}</a></li>{% endif %}
-          {% if app.hasBeta('guides') and can_use_guides() %}<li class="item-guides"><a href="{{ path('portal_guides') }}"><i class="fa fa-book"></i> {{ phrase('portal.general.nav-guides') }}</a></li>{% endif %}
+          <li class="item-home"><a href="{{ path('portal_home') }}"><i class="fas fa-home"></i> {{ brand_setting('core.deskpro_name')|e }}</a></li>
+          {% if can_use_articles() %}<li class="item-kb"><a href="{{ path('portal_kb') }}"><i class="fas fa-columns"></i> {{ phrase('portal.general.nav-kb') }}</a></li>{% endif %}
+          {% if app.hasBeta('guides') and can_use_guides() %}<li class="item-guides"><a href="{{ path('portal_guides') }}"><i class="fas fa-book"></i> {{ phrase('portal.general.nav-guides') }}</a></li>{% endif %}
           {% if can_use_news() %}<li class="item-news"><a href="{{ path('portal_news') }}"><i class="far fa-file-alt"></i> {{ phrase('portal.general.nav-news') }}</a></li>{% endif %}
-          {% if can_use_downloads() %}<li class="item-downloads"><a href="{{ path('portal_downloads') }}"><i class="fa fa-cloud-download-alt"></i> {{ phrase('portal.general.nav-downloads') }}</a></li>{% endif %}
+          {% if can_use_downloads() %}<li class="item-downloads"><a href="{{ path('portal_downloads') }}"><i class="fas fa-cloud-download-alt"></i> {{ phrase('portal.general.nav-downloads') }}</a></li>{% endif %}
           {% if can_use_feedback() %}<li class="item-feedback"><a href="{{ path('portal_feedback') }}"><i class="far fa-list-alt"></i> {{ phrase('portal.general.nav-feedback') }}</a></li>{% endif %}
-          {% if can_view_tickets_link() %}<li class="item-newticket"><a href="{{ path('portal_new_ticket') }}"><i class="fa fa-comments"></i> {{ phrase('portal.general.nav-newticket') }}</a></li>{% endif %}
+          {% if can_view_tickets_link() %}<li class="item-newticket"><a href="{{ path('portal_new_ticket') }}"><i class="fas fa-comments"></i> {{ phrase('portal.general.nav-newticket') }}</a></li>{% endif %}
         </ul>
       </div>
     </div>
 
     <div class="back-to-top">
-      <a onclick="window.scrollTo(0,0); return false;">{{ phrase('portal.general.top') }} <i class="fa fa-angle-double-up"></i></a>
+      <a onclick="window.scrollTo(0,0); return false;">{{ phrase('portal.general.top') }} <i class="fas fa-angle-double-up"></i></a>
     </div>
   {% endif %}
 

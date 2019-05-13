@@ -1,14 +1,14 @@
 <div class="dp-omnibox" ng-class="{'is-active': isActive}" dp-omnibox id="dp_omnibox" ng-init="search_url = '{{ path('agent_ticketsearch_runcustomfilter') }}';">
 	<div class="input-area">
-		<i class="search-icon fa fa-search"></i>
+		<i class="search-icon fas fa-search"></i>
 		<div class="input-wrap">
 			<input type="text" role="search" ng-show="mode == 'search'" ng-model="searchQuery" ng-change="touchSearch()" autocomplete="off" value="" />
 		</div>
-		<i class="x-icon fa fa-times-circle" ng-show="mode == 'search' && searchQuery.length" ng-click="clearSearch()" title="Clear search"></i>
+		<i class="x-icon fas fa-times-circle" ng-show="mode == 'search' && searchQuery.length" ng-click="clearSearch()" title="Clear search"></i>
 		<div class="icons-well">
 			<ul>
 				<li class="recent" title="Recent Tabs" id="recent_tabs_btn" ng-click="toggleMode('recent')"><i class="far fa-clock"></i></li>
-				<li class="notif" title="Notifications" id="notifs_btn" ng-click="toggleMode('notif')"><i class="fa fa-bell"></i><em id="notifs_counts" data-count="0">0</em></li>
+				<li class="notif" title="Notifications" id="notifs_btn" ng-click="toggleMode('notif')"><i class="fas fa-bell"></i><em id="notifs_counts" data-count="0">0</em></li>
 			</ul>
 		</div>
 	</div>
@@ -18,7 +18,7 @@
 		</div>
 		<div ng-show="isMainLoading === false">
 			<div ng-if="index_running" class="result-is-indexing">
-				<i class="fa fa-exclamation-circle"></i>
+				<i class="fas fa-exclamation-circle"></i>
 				Search results may be incomplete because items are still being indexed.
 			</div>
 			<div ng-if="is_elastic && resultGroups && resultGroups.length" class="search-order">

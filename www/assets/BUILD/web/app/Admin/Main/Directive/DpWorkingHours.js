@@ -144,7 +144,7 @@ define(['DeskPRO/Data/TzData'], function(TzData) {
         var drawHoliday = function (hol) {
           let rowContainer,
             y_str;
-          row = $('<div class="hol-row"><div class="remove-btn"><i class="fa fa-times-circle"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
+          row = $('<div class="hol-row"><div class="remove-btn"><i class="fas fa-times-circle"></i></div> <span class="date-txt"></span> <span class="title-txt"></span></div></div>');
 
           ({ year }   = hol);
           const { month }  = hol;

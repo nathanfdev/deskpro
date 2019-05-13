@@ -4,10 +4,10 @@
     </header>
     <header class="sub-header centered" ng-show="!link_search_mode" ng-if="!meta.error" style="z-index: auto">
         <button class="dp-btn" ng-click="createIssueModal()" type="button" style="margin-right: 8px; padding: 4px">
-            <i class="fa fa-plus"></i> Create Issue
+            <i class="fas fa-plus"></i> Create Issue
         </button>
         <button class="dp-btn" ng-click="enableSearchMode()" type="button" style="padding: 4px">
-            <i class="fa fa-search-plus"></i> Link Existing Issue
+            <i class="fas fa-search-plus"></i> Link Existing Issue
         </button>
     </header>
     <header class="sub-header" ng-show="link_search_mode" style="height: auto; z-index: 5">
@@ -43,8 +43,8 @@
             <ul class="jira-issues-list" ng-if="issues.length > 0">
                 <li ng-repeat="issue in issues">
                     <div class="issue-header">
-                        <span ng-click="issueModal(issue);" class="details-btn"><i class="fa fa-external-link"></i> View Details</span>
-                        <span ng-click="unlink(issue);" class="unlink-btn"><i class="fa fa-unlink"></i> Unlink</span>
+                        <span ng-click="issueModal(issue);" class="details-btn"><i class="fas fa-external-link-alt"></i> View Details</span>
+                        <span ng-click="unlink(issue);" class="unlink-btn"><i class="fas fa-unlink"></i> Unlink</span>
                         <a href="{{ issue.url }}" target="_blank">{{ issue.key }}</a>
                     </div>
                     <ul class="jira-fields">

@@ -700,7 +700,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 						</li>
 					{% else %}
 						<li class="coll">
-							<span class="macro-title"><i class="fa fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
+							<span class="macro-title"><i class="fas fa-caret-right" style="float:right; position:relative;top:4px;"></i>{{ item.title }}</span>
 							<div class="dp-menu replybox sub-menu" style="min-width: 225px;">
 								<section>
 									<div class="dp-menu-area small">
@@ -728,7 +728,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 			<label class="hide-reply" style="display: none">{{ phrase('agent.tickets.save_note_and_set_status') }}</label>
 			<ul>
         {% for status in ['awaiting_user', 'awaiting_agent', 'resolved'] %}
-          <li data-type="{{ status }}" 
+          <li data-type="{{ status }}"
               data-label="{{ phrase('agent.tickets.send_reply_as_x', {'status': phrase('agent.tickets.status_' ~ status)}) }}"
               data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_' ~ status)}) }}"
           >
@@ -737,7 +737,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
           </li>
           {# dont list sub-statuses here, menu doesnt handle it well
           {% for substatus in ticket_statuses[status].getChildren() %}
-            <li data-type="{{ substatus.statusCode }}" 
+            <li data-type="{{ substatus.statusCode }}"
                 data-label="{{ phrase('agent.tickets.send_reply_as_x', {'status': substatus.title}) }}"
                 data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': substatus.title}) }}"
             >

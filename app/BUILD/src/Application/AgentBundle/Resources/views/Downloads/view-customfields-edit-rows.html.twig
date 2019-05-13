@@ -1,0 +1,37 @@
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table{% if errors|length %} error{% endif %}" id="{{ baseId }}_custom_fields_editable">
+	{# Custom fields#}
+	<tbody class="download_field_{{f.id}} custom-field item" data-field-type="download_field" data-item-id="{{f.id}}" data-custom-field-handler="{{f.field_handler}}">
+	{% for f in custom_fields %}
+		<tr class="mode-edit">
+			{% if f.field_def.isFormField() %}
+				<th width="120">{{ f.title }}:</th>
+				<td>
+					<div class="custom-field field-input download_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
+						{{ render_custom_field_form(f) }}
+					</div>
+				</td>
+			{% else %}
+				<td>
+					<span class="custom-field edit-trigger download_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}:</span>
+				</td>
+				<td>
+					<div class="custom-field content download_field_{{f.id}}" data-item-id="{{f.id}}" ng-non-bindable>
+						{% if not download.hasCustomField(f.id) %}
+							{{ phrase('agent.general.none') }}
+						{% else %}
+							{{ render_custom_field(f) }}
+						{% endif %}
+					</div>
+				</td>
+			{% endif %}
+		</tr>
+	{% endfor %}
+		</tbody>
+	{% if download %}
+	<tfoot>
+		<tr colspan="2">
+			<td><button class="clean-white save-fields-trigger"><span>{{ phrase('agent.general.save') }}</span></button></td>
+		</tr>
+	</tfoot>
+	{% endif %}
+</table>

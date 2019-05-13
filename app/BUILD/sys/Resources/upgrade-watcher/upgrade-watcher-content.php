@@ -40,8 +40,8 @@
         <section class="card-section" ng-repeat="step in info.steps" ng-hide="info.status == 'finished' && step.status == 'waiting'">
             <h3>
                 <i ng-show="step.status == 'waiting'" class="far fa-circle icon-incomplete"></i>
-                <i ng-show="step.status == 'running'" class="fa fa-circle icon-complete"></i>
-                <i ng-show="step.status == 'finished'" class="fa fa-arrow-circle-right icon-on"></i>
+                <i ng-show="step.status == 'running'" class="fas fa-circle icon-complete"></i>
+                <i ng-show="step.status == 'finished'" class="fas fa-arrow-circle-right icon-on"></i>
                 {{step.title}}
             </h3>
             <p ng-show="step.status == 'finished' && step.summary">

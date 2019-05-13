@@ -16,6 +16,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		this.billingStart = false;
 		this.billingExtraTime = 0;
 		this.billingTimer = null;
+		this.billingPage = 1;
 
 		var self = this;
 
@@ -229,6 +230,32 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 			return false;
 		});
 
+		this.getEl('more_billing_rows').on('click', function() {
+			var button = $(this);
+			var spinner = button.find('.flat-spinner');
+			spinner.show();
+			var url = button.data('load-url');
+			var page = url.match(/\d+$/)[0];
+			var billingRows = self.getEl('billing_rows');
+			$.ajax({
+				url: button.data('load-url'),
+				type: 'GET',
+				dataType: 'json'
+			}).done(function (json) {
+				json.charges.forEach(function (html) {
+					var charge = $(html);
+					billingRows.append(charge);
+					charge.find('.timeago').timeago();
+				});
+				if (json.more) {
+					button.data('load-url', url.replace(/\d+$/, parseInt(page) + 1));
+				} else {
+					self.getEl('billing_more').hide();
+				}
+				spinner.hide();
+			});
+		});
+
 		if (this.options.auto_start_bill) {
 			this.getEl('billing_start').hide();
 			this.getEl('billing_stop').show();
@@ -271,7 +298,7 @@ DeskPRO.Agent.PageHelper.TicketBilling = new Orb.Class({
 		var add = $(html);
 		var billingRows = this.getEl('billing_rows');
 
-		billingRows.append(add);
+		billingRows.prepend(add);
 		add.find('.timeago').timeago();
 		billingRows.closest('table').show();
 	},

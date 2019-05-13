@@ -937,10 +937,6 @@ i.icon.fitted {
   h1 {
     font-size: 20px;
   }
-  .fa {
-    font-family: 'FontAwesome';
-    margin-right: 5px;
-  }
   .count {
     color: $dp-sonic-primary;
     &:before {
@@ -1198,10 +1194,6 @@ i.icon.fitted {
         cursor: pointer;
         text-align: center;
         min-width: 20px;
-        .fa {
-          color: $dp-sonic-primary;
-          margin: 0;
-        }
       }
       tr {
         border: none;
@@ -1240,9 +1232,6 @@ i.icon.fitted {
       padding: 5px 10px;
       margin-bottom: 0;
       cursor: pointer;
-      .fa {
-        color: $dp-greyscale-400;
-      }
       .caret {
         position: absolute;
         top: 5px;

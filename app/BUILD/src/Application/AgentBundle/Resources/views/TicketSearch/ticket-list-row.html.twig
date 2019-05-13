@@ -28,7 +28,7 @@
 			<div class="bound-fade"></div>
 
 			<span class="new-tab-icon" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '<%- ticket_display.id %>'})|raw }}" data-route-newtab="true" title="Open in a new tab instead of replacing the currently open tab">
-				<i class="fa fa-external-link"></i>
+				<i class="fas fa-external-link-alt"></i>
 			</span>
 
             <% if (ticket_display.locked_by_agent) { %>

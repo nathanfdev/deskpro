@@ -16,7 +16,8 @@ Feature: Downloads brand settings Setup
 {
   "enabled":true,
   "tab_enabled":false,
-  "subscriptions":true
+  "subscriptions":true,
+  "attachment_require_auth": true
 }
     """
     Then the response status code should be 204
@@ -27,6 +28,7 @@ Feature: Downloads brand settings Setup
     And the JSON node "data.enabled" should be true
     And the JSON node "data.tab_enabled" should be false
     And the JSON node "data.subscriptions" should be true
+    And the JSON node "data.attachment_require_auth" should be true
 
     When I send a POST request to "/api/v2/brands" with body:
     """
@@ -42,7 +44,8 @@ Feature: Downloads brand settings Setup
 {
   "enabled":false,
   "tab_enabled":true,
-  "subscriptions":false
+  "subscriptions":false,
+  "attachment_require_auth": false
 }
     """
     Then the response status code should be 204
@@ -53,6 +56,7 @@ Feature: Downloads brand settings Setup
     And the JSON node "data.enabled" should be false
     And the JSON node "data.tab_enabled" should be true
     And the JSON node "data.subscriptions" should be false
+    And the JSON node "data.attachment_require_auth" should be false
 
     When I send a GET request to "/api/v2/settings/brands/{defaultBrandId}/portal/downloads"
     Then the response should be in JSON
@@ -60,3 +64,4 @@ Feature: Downloads brand settings Setup
     And the JSON node "data.enabled" should be true
     And the JSON node "data.tab_enabled" should be false
     And the JSON node "data.subscriptions" should be true
+    And the JSON node "data.attachment_require_auth" should be false

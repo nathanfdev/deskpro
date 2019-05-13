@@ -63,3 +63,33 @@ Feature: /user_chats endpoint search (GET)
     Then the response should be in JSON
     And the response status code should be 200
     And the JSON node "meta.pagination.count" should be equal to 0
+
+  Scenario: I search for chats filtering by brand
+    Given only the following Brand records exist:
+      | #  | Slug    |
+      | b1 | brand_1 |
+      | b2 | brand_2 |
+      | b3 | brand_3 |
+    And only the following ChatConversation records exist:
+      | #  | Brand |
+      | c1 | {b1}  |
+      | c2 | {b2}  |
+      | c3 | {b2}  |
+      | c7 | NULL  |
+
+    When I send a GET request to "/api/v2/user_chats?brand={b1}"
+    Then the response should be in JSON
+    And the response status code should be 200
+    And the JSON node "data" should have 1 element
+    And the JSON node "data[0].brand" should be equal to "{b1}"
+
+    When I send a GET request to "/api/v2/user_chats?brand={b2}"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].brand" should be equal to "{b2}"
+    And the JSON node "data[1].brand" should be equal to "{b2}"
+
+    When I send a GET request to "/api/v2/user_chats?brand={b3}"
+    Then the JSON node "data" should have 0 elements
+
+    When I send a GET request to "/api/v2/user_chats"
+    Then the JSON node "data" should have 4 elements
