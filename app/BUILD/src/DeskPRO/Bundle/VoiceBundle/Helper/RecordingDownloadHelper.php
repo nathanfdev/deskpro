@@ -70,6 +70,16 @@ class RecordingDownloadHelper
     private $taskHelper;
 
     /**
+     * @var VoiceTicketHelper
+     */
+    private $voiceTicketHelper;
+
+    /**
+     * @var PhoneCallLockHelper
+     */
+    private $callLockHelper;
+
+    /**
      * Constructor.
      *
      * @param EntityManager            $em
@@ -80,6 +90,8 @@ class RecordingDownloadHelper
      * @param TicketManager            $ticketManager
      * @param StorageAdapterInterface  $storage
      * @param VoiceTaskHelper          $taskHelper
+     * @param VoiceTicketHelper        $voiceTicketHelper
+     * @param PhoneCallLockHelper      $callLockHelper
      */
     public function __construct(
         EntityManager            $em,
@@ -89,16 +101,20 @@ class RecordingDownloadHelper
         VoiceSettingsResolver    $settingsResolver,
         TicketManager            $ticketManager,
         StorageAdapterInterface  $storage,
-        VoiceTaskHelper          $taskHelper
+        VoiceTaskHelper          $taskHelper,
+        VoiceTicketHelper        $voiceTicketHelper,
+        PhoneCallLockHelper      $callLockHelper
     ) {
-        $this->em               = $em;
-        $this->serializer       = $serializer;
-        $this->dispatcher       = $dispatcher;
-        $this->jobQueue         = $jobQueue;
-        $this->settingsResolver = $settingsResolver;
-        $this->ticketManager    = $ticketManager;
-        $this->storage          = $storage;
-        $this->taskHelper       = $taskHelper;
+        $this->em                = $em;
+        $this->serializer        = $serializer;
+        $this->dispatcher        = $dispatcher;
+        $this->jobQueue          = $jobQueue;
+        $this->settingsResolver  = $settingsResolver;
+        $this->ticketManager     = $ticketManager;
+        $this->storage           = $storage;
+        $this->taskHelper        = $taskHelper;
+        $this->voiceTicketHelper = $voiceTicketHelper;
+        $this->callLockHelper    = $callLockHelper;
     }
 
     /**
@@ -164,6 +180,25 @@ class RecordingDownloadHelper
     {
         $task = $this->storage->getTask($phoneCall->getTaskSid());
         if (!$task) {
+            return;
+        }
+
+        // ignore short voicemails
+        if ($duration < 5) {
+            $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+            $this->em->flush();
+
+            // we can call this method it in several voice callbacks
+            // so need to lock it to prevent ticket dupes
+            $phoneLock = $this->callLockHelper->createPhoneLock($phoneCall->getId());
+
+            try {
+                $phoneLock->acquire(true);
+                $this->voiceTicketHelper->createMissedTicketMessageIfNotExist($phoneCall);
+            } finally {
+                $phoneLock->release();
+            }
+
             return;
         }
 

@@ -76,6 +76,11 @@ class VoiceCallbacksHelper
     private $voiceProviderHelper;
 
     /**
+     * @var VoiceTicketHelper
+     */
+    private $voiceTicketHelper;
+
+    /**
      * @var TransferCallHelper
      */
     private $transferCallHelper;
@@ -110,6 +115,7 @@ class VoiceCallbacksHelper
      * @param VoiceSettingsResolver    $voiceSettingsResolver
      * @param TicketManager            $ticketManager
      * @param VoiceProviderHelper      $voiceProviderHelper
+     * @param VoiceTicketHelper        $voiceTicketHelper
      * @param TransferCallHelper       $transferCallHelper
      * @param WorkerHelper             $workerHelper
      * @param StorageAdapterInterface  $storageAdapter
@@ -124,6 +130,7 @@ class VoiceCallbacksHelper
         VoiceSettingsResolver    $voiceSettingsResolver,
         TicketManager            $ticketManager,
         VoiceProviderHelper      $voiceProviderHelper,
+        VoiceTicketHelper        $voiceTicketHelper,
         TransferCallHelper       $transferCallHelper,
         WorkerHelper             $workerHelper,
         StorageAdapterInterface  $storageAdapter,
@@ -137,6 +144,7 @@ class VoiceCallbacksHelper
         $this->voiceSettingsResolver = $voiceSettingsResolver;
         $this->ticketManager         = $ticketManager;
         $this->voiceProviderHelper   = $voiceProviderHelper;
+        $this->voiceTicketHelper     = $voiceTicketHelper;
         $this->transferCallHelper    = $transferCallHelper;
         $this->workerHelper          = $workerHelper;
         $this->storageAdapter        = $storageAdapter;
@@ -380,7 +388,7 @@ class VoiceCallbacksHelper
                 }
             }
 
-            $this->saveTicket($ticket);
+            $this->voiceTicketHelper->saveTicket($ticket);
         } else {
             // ticket is already created, that means we are joining the existing conference
             $ticket = $messageAttribute->getMessage()->getTicket();
@@ -395,7 +403,7 @@ class VoiceCallbacksHelper
                 $ticket->setAgent($agent);
             }
 
-            $this->saveTicket($ticket);
+            $this->voiceTicketHelper->saveTicket($ticket);
         }
 
         return $ticket;
@@ -605,60 +613,7 @@ class VoiceCallbacksHelper
 
         // user ends call
         // create a ticket for missed calls
-        if (!$phoneCall->hasAgentParticipants()
-            // check the call is not answered and voicemail wasn't reached
-            // otherwise we got a voicemail record and agent will see it in a separate interface
-            && !$phoneCall->isVoicemail()
-            // create a ticket just it was assigned to any target
-            && $phoneCall->getTaskSid()
-            // don't create missed tickets for direct agent calls
-            && !($task && $task->getAttribute('agent'))
-            // don't create missed tickets for strange numbers
-            && !$phoneCall->isStrangeNumber()
-            // no ticket messages were created for this phone call yet
-            && !$phoneCall->getTicketMessageAttributes()->count()
-        ) {
-            $ticketMessageCall = new TicketMessageVoicePhoneCall();
-            $ticketMessageCall->setPhoneCall($phoneCall);
-
-            $ticketMessage = new TicketMessage();
-            $ticketMessage->setPerson($phoneCall->getPerson());
-            $ticketMessage->addAttribute($ticketMessageCall);
-            $ticketMessage->setMessage('Missed call from '.$phoneCall->getExternalNumber());
-            $ticketMessage->setAsAgentNote(true);
-
-            // try to get last ticket
-            $ticket = null;
-            if ($this->voiceSettingsResolver->isGroupMissedCallTickets()) {
-                /** @var Ticket $lastTicket */
-                $lastTicket = $this->em->getRepository(Ticket::class)->getLastTicketForNumber($phoneCall->getExternalNumber());
-                if ($lastTicket) {
-                    $lastTicket->disableAutoTicketProcess();
-
-                    $now    = new \DateTime();
-                    $hours  = $this->voiceSettingsResolver->getGroupMissedCallTicketsTimeout();
-                    $offset = clone $lastTicket->getDateCreated();
-                    $offset->modify("+{$hours} hours");
-
-                    if ($offset > $now) {
-                        $ticket = $lastTicket;
-                    }
-                }
-            }
-
-            // if no last ticket, create a new one
-            if (!$ticket) {
-                $ticket = new Ticket();
-                $ticket->disableAutoTicketProcess();
-                $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
-                $ticket->setPerson($phoneCall->getPerson());
-                $ticket->setProperty('voice_phone_number', $phoneCall->getExternalNumber());
-                $ticket->setCreationSystem(Ticket::CREATED_PHONE_INBOUND);
-            }
-
-            $ticket->addMessage($ticketMessage);
-            $this->saveTicket($ticket);
-        }
+        $this->voiceTicketHelper->createMissedTicketMessageIfNotExist($phoneCall);
 
         // log call end event
         // for now if a end-user finishes the call then it means the conference is ended
@@ -937,7 +892,7 @@ class VoiceCallbacksHelper
             $ticket->addParticipant($participant);
         }
 
-        $this->saveTicket($ticket);
+        $this->voiceTicketHelper->saveTicket($ticket);
     }
 
     /**
@@ -1092,29 +1047,5 @@ class VoiceCallbacksHelper
         $this->em->persist($log);
         $this->em->persist($phoneCall);
         $this->em->flush();
-    }
-
-    /**
-     * @param Ticket $ticket
-     *
-     * @throws \Exception
-     */
-    public function saveTicket(Ticket $ticket)
-    {
-        $changes = $ticket->getStateChangeRecorder();
-        if ($changes->isNewTicket()) {
-            $event = ExecutorContext::EVENT_NEW;
-        } else {
-            $event = ExecutorContext::EVENT_REPLY;
-        }
-
-        $person = $ticket->getPerson();
-        if ($person && $person->isAgent()) {
-            $context = $this->ticketManager->createAgentExecutorContext($person, $event, ExecutorContext::METHOD_PHONE);
-        } else {
-            $context = $this->ticketManager->createUserExecutorContext($person, $event, ExecutorContext::METHOD_PHONE);
-        }
-
-        $this->ticketManager->saveTicket($ticket, $context);
     }
 }

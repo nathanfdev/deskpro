@@ -479,7 +479,7 @@ class VoiceClientPhoneCallController extends BaseController
             $ticket->addParticipant($participant);
         }
 
-        $this->get('dp.voice.callbacks_helper')->saveTicket($ticket);
+        $this->get('dp.voice.ticket_helper')->saveTicket($ticket);
         $this->get('dp.voice.provider_helper')->holdEndUser($phoneCall, true);
 
         // send transfer notification

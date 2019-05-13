@@ -10,6 +10,7 @@ services:
       - "@voice_settings_resolver"
       - "@ticket_manager"
       - "@dp.voice.provider_helper"
+      - "@dp.voice.ticket_helper"
       - "@dp.voice.transfer_helper"
       - "@dp.voice.worker_helper"
       - "@dp.voice.task_router.storage"
@@ -35,6 +36,8 @@ services:
       - "@ticket_manager"
       - "@dp.voice.task_router.storage"
       - "@dp.voice.voice_task_helper"
+      - "@dp.voice.ticket_helper"
+      - "@dp.voice.phone_lock_helper"
 
   dp.voice.provider_helper:
     class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceProviderHelper
@@ -58,3 +61,11 @@ services:
     class: DeskPRO\Bundle\VoiceBundle\Helper\PhoneCallLockHelper
     arguments:
       - "@doctrine.dbal.default_connection"
+
+  dp.voice.ticket_helper:
+    class: DeskPRO\Bundle\VoiceBundle\Helper\VoiceTicketHelper
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@voice_settings_resolver"
+      - "@ticket_manager"
+      - "@dp.voice.task_router.storage"
