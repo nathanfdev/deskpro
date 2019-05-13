@@ -25,7 +25,7 @@
 					  action="{{ ng_var('fileUploadOptions.url') }}">
 
 					<div class="fileinput-button btn btn-success btn-lg {{ ng_var('fileUploadOptions.disabled && "disabled"') }}" ng-show="!active() && !fileSelected">
-						<span><i class="fa fa-upload"></i> Select CSV File</span>
+						<span><i class="fas fa-upload"></i> Select CSV File</span>
 						<input type="file" name="file">
 					</div>
 
@@ -376,13 +376,13 @@
                                 {{ phrase('adm.users_import.delete_users_link') }}
                             </a>
                             &nbsp;
-                            <i class="fa fa-check text-success"
+                            <i class="fas fa-check text-success"
                                ng-if="'complete' == log.deletion_status"
                                     ></i>
-                            <i class="fa fa-spinner fa-spin"
+                            <i class="fas fa-spinner fa-spin"
                                ng-if="'waiting' == log.deletion_status"
                                     ></i>
-                            <i class="fa fa-times-circle text-danger"
+                            <i class="fas fa-times-circle text-danger"
                                ng-if="'error' == log.deletion_status"
                                     ></i>
                         </td>

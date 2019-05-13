@@ -20,7 +20,7 @@ class Avatar extends React.Component {
 
     return (
       <div className={classNames('avatar', { active })} style={styles}>
-        <i className="fa fa-user" />
+        <i className="fas fa-user" />
         {person && <PersonAvatar person={person} size={size} />}
       </div>
     );

@@ -175,7 +175,7 @@ export class OmniSearch extends React.Component {
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-downloads')}
             nameApi="download"
-            nameIcon="fa fa-download"
+            nameIcon="fas fa-download"
             initialResult={'download' in data ? data.download : {}}
             q={this.state.searchQuery}
           />
@@ -189,21 +189,21 @@ export class OmniSearch extends React.Component {
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-feedback')}
             nameApi="feedback"
-            nameIcon="fa fa-comments"
+            nameIcon="fas fa-comments"
             initialResult={'feedback' in data ? data.feedback : {}}
             q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-guides')}
             nameApi="topic"
-            nameIcon="fa fa-book"
+            nameIcon="fas fa-book"
             initialResult={'topic' in data ? data.topic : {}}
             q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-chat')}
             nameApi="chat_conversation"
-            nameIcon="fa fa-comments"
+            nameIcon="fas fa-comments"
             initialResult={'chat_conversation' in data ? data.chat_conversation : {}}
             q={this.state.searchQuery}
           />
@@ -246,18 +246,18 @@ export class OmniSearch extends React.Component {
           <div className="search-results-footer">
             {window.DESKPRO_CAN_USE_TICKETS &&
               <a href={portalUrlGenerator.path('/new-ticket')}>
-                <i className="fa fa-comment" />
+                <i className="fas fa-comment" />
                 <span>{portalPhrases.get('portal.general.nav-newticket')}</span>
               </a>}
 
             {window.DESKPRO_CAN_USE_FEEDBACK &&
               <a href={portalUrlGenerator.path('/feedback')}>
-                <i className="fa fa-list" />
+                <i className="fas fa-list" />
                 <span>{portalPhrases.get('portal.general.submit-feedback')}</span>
               </a>}
             {window.DESKPRO_CAN_USE_CHAT &&
               <a href={portalUrlGenerator.path('/chat-logs')}>
-                <i className="fa fa-comments" />
+                <i className="fas fa-comments" />
                 <span>{portalPhrases.get('portal.general.start-chat')}</span>
               </a>}
           </div>

@@ -70,7 +70,7 @@ class OIDC extends AbstractCallbackAdatper
         try {
             $oidc->authenticate();
             $oidcUserinfo = $oidc->requestUserInfo();
-            $userinfo                            = [
+            $userinfo     = [
                 'first_name' => property_exists($oidcUserinfo, 'given_name') ? $oidcUserinfo->given_name : null,
                 'email'      => property_exists($oidcUserinfo, 'email') ? $oidcUserinfo->email : null,
                 'name'       => property_exists($oidcUserinfo, 'name') ? $oidcUserinfo->name : null,

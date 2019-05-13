@@ -76,7 +76,7 @@ class TransferList extends React.Component {
         {/* <TransferSearch />*/}
 
         <div className="online-agents-header">
-          <i className="fa fa-user" />
+          <i className="fas fa-user" />
           Agents online
         </div>
 

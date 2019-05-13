@@ -2,7 +2,7 @@
 {% block fullpane_content %}
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('emails.ticket_accounts.sendmailqueue') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Outgoing Email Log</h3>
 		</a>
 	</section>
@@ -11,7 +11,7 @@
 		<header>
 			<nav class="dp-blocktabs">
 				<menu dropdown>
-					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+					<button class="btn btn-default dropdown-toggle"><span><i class="fas fa-cog"></i></span> <i class="fas fa-caret-down"></i></button>
 					<ul class="dropdown-menu pull-right">
 						<li><a ng-click="ViewSource.startDelete()"><i class="far fa-trash-alt"></i> Delete Email</a></li>
 						<li><a ng-click="ViewSource.startResend()"><i class="fas fa-redo"></i> Resend email</a></li>
@@ -98,7 +98,7 @@
                         <div ng-show="render_type == 'raw'">
                             <textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.sendmail_raw') }}</textarea>
                             <div style="margin-top: 2px;">
-                                <a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.sendmail.raw_download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Email</a>
+                                <a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.sendmail.raw_download_url') }}" target="_blank"><i class="fas fa-download" style="margin: 0;"></i> Download Email</a>
                             </div>
                         </div>
                         <div ng-show="render_type == 'summary'">
@@ -126,7 +126,7 @@
                     <td>
                         <textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.log') }}</textarea>
                         <div style="margin-top: 2px;">
-                            <a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.sendmail.log_download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log</a>
+                            <a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.sendmail.log_download_url') }}" target="_blank"><i class="fas fa-download" style="margin: 0;"></i> Download Log</a>
                         </div>
                     </td>
                 </tr>

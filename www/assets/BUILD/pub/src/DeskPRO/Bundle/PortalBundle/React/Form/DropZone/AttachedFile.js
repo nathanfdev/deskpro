@@ -11,14 +11,14 @@ export class AttachedFile extends React.Component {
     onDelete:  PropTypes.func.isRequired
   };
 
-  onDelete = event => {
+  onDelete = (event) => {
     event.preventDefault();
 
     const { onDelete, file } = this.props;
     onDelete(file);
   };
 
-  onViewFile = event => {
+  onViewFile = (event) => {
     event.preventDefault();
 
     const { file } = this.props;
@@ -38,7 +38,7 @@ export class AttachedFile extends React.Component {
     const formName = `${inputName}[${blob.id}][blob_auth]`;
 
     if (errors) {
-      return <div dangerouslySetInnerHTML={{ __html: errors }}></div>;
+      return <div dangerouslySetInnerHTML={{ __html: errors }} />;
     }
 
     return (
@@ -48,7 +48,7 @@ export class AttachedFile extends React.Component {
         <input type="hidden" name={formName} value={blob.authcode} />
         <span className="file-size">({blob.size})</span>
         <a href="#" className="remove-attachement" onClick={this.onDelete}>
-          <i className="fa fa-times" />{portalPhrases.get('portal.general.delete')}
+          <i className="fas fa-times" />{portalPhrases.get('portal.general.delete')}
         </a>
 
         {blob.is_image && <img role="presentation" src={blob.url} ref="image" style={{ display: 'none' }} />}

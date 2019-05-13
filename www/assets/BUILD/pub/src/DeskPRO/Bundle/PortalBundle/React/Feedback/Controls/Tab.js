@@ -51,7 +51,7 @@ export class Tab extends React.Component {
         <span className={this.props.active ? 'link active' : 'link'}>
           {this.props.label}
           {this.renderActiveCats()}
-          {canRenderDropdown ? <span><i className="fa fa-caret-down" /></span> : null}
+          {canRenderDropdown ? <span><i className="fas fa-caret-down" /></span> : null}
         </span>
         {canRenderDropdown ? this.renderDropdown(dropdownCats) : null}
       </div>

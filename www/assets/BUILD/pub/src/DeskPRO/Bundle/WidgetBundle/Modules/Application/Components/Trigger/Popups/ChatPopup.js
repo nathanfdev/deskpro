@@ -61,7 +61,7 @@ export default class ChatPopup extends React.Component {
           className={classNames('preemtive-chat', { small, 'position-left': leftPosition }, popupStyle)}
         >
           <a href="#close-panel" className="close-panel" onClick={this.onClose}>
-            <i className="fa fa-times" />
+            <i className="fas fa-times" />
           </a>
           {children}
         </div>

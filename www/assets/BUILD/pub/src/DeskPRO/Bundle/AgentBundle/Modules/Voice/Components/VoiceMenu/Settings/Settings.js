@@ -22,17 +22,17 @@ class Settings extends React.Component {
 
     props.panels.push({
       title:   'Queues',
-      icon:    'fa fa-tasks',
+      icon:    'fas fa-tasks',
       content: <QueuesToggleContainer />
     });
     props.panels.push({
       title:   'Ringing volume',
-      icon:    'fa fa-volume-up',
+      icon:    'fas fa-volume-up',
       content: <VolumeContainer />
     });
     props.panels.push({
       title:   'Voicemail',
-      icon:    'fa fa-play-circle',
+      icon:    'fas fa-play-circle',
       content: <Voicemail />
     });
 

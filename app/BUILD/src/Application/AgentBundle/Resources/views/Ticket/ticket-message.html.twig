@@ -171,7 +171,7 @@
 						<tr>
 							<th>{{ phrase('agent.general.ip_address') }}:</th>
 							<td>
-								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="fa fa-search" title="{{ phrase('agent.tickets.find_other_ip_addy') }}"></i></a>
+								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="fas fa-search" title="{{ phrase('agent.tickets.find_other_ip_addy') }}"></i></a>
 								{{ message.ip_address }}
 								{% if message.getGeoCountry() %}
 									<span class="dp-flag-{{ message.getGeoCountry()|lower }}"></span>

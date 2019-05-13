@@ -145,7 +145,7 @@ export default class IMOverlay extends React.Component {
 
     return  {
       id:        'agents',
-      title:     <span><i className="fa fa-user dp-im-tab-menu-icon" />{this.getHeader(<FormattedMessage id="agent.general.agents" />, filteredAgents)}</span>,
+      title:     <span><i className="fas fa-user dp-im-tab-menu-icon" />{this.getHeader(<FormattedMessage id="agent.general.agents" />, filteredAgents)}</span>,
       className: 'native-bars',
       content
     };
@@ -217,7 +217,7 @@ export default class IMOverlay extends React.Component {
     return  {
       content,
       id:        'groups',
-      title:     <span><i className="fa fa-users dp-im-tab-menu-icon" />{header}</span>,
+      title:     <span><i className="fas fa-users dp-im-tab-menu-icon" />{header}</span>,
       className: 'native-bars'
     };
   }

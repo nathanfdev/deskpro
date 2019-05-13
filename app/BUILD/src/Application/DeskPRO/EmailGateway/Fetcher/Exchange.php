@@ -80,7 +80,6 @@ class Exchange extends AbstractFetcher
     /**
      * Initiates the connection.
      *
-     * @return \Application\DeskPRO\EmailGateway\Storage\Exchange
      * @throws \CannotPerformOperationException
      * @throws \EWS_Exception
      * @throws \InvalidArgumentException
@@ -88,12 +87,14 @@ class Exchange extends AbstractFetcher
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws Exception
+     *
+     * @return \Application\DeskPRO\EmailGateway\Storage\Exchange
      */
     protected function _initConnection()
     {
         // stubs
         $properties = ['host', 'port', 'user', 'password', 'mode', 'read_mailbox'];
-        $options = [];
+        $options    = [];
 
         // decrypt account config
         $incomingAccount = $this->decryptIncomingAccount();
@@ -128,13 +129,13 @@ class Exchange extends AbstractFetcher
 
         // set archive mailbox
         $this->archiveMailbox =
-            (isset($options['archive_mailbox']) && ! is_null($options['archive_mailbox']))
+            (isset($options['archive_mailbox']) && !is_null($options['archive_mailbox']))
                 ? $options['archive_mailbox']
                 : 'DP_Archive';
 
         // set read mailbox
         $this->readMailbox =
-            (isset($options['read_mailbox']) && ! is_null($options['read_mailbox']))
+            (isset($options['read_mailbox']) && !is_null($options['read_mailbox']))
                 ? $options['read_mailbox']
                 : null;
 
@@ -234,8 +235,9 @@ class Exchange extends AbstractFetcher
     /**
      * {@inheritdoc}
      *
-     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      * @throws Exception
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
      */
     public function _readNext()
     {
@@ -257,7 +259,6 @@ class Exchange extends AbstractFetcher
     /**
      * {@inheritdoc}
      *
-     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage|bool
      * @throws \CannotPerformOperationException
      * @throws \EWS_Exception
      * @throws \InvalidArgumentException
@@ -265,6 +266,8 @@ class Exchange extends AbstractFetcher
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \UnexpectedValueException
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage|bool
      */
     private function _doReadNext()
     {

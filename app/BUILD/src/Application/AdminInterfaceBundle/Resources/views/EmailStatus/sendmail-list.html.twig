@@ -2,14 +2,14 @@
 {% block fullpane_content %}
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('emails.ticket_accounts') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Email Accounts</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
 		<a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">
-			<em><i class="fa fa-chevron-down"></i></em>
+			<em><i class="fas fa-chevron-down"></i></em>
 			<h3>Incoming Email</h3>
 		</a>
 	</section>
@@ -24,7 +24,7 @@
 					<div style="float:right; position: relative; top: 3px;" dp-hide-spinning="loading_page">
 						<button type="button" class="btn btn-default btn-xs" ng-click="ListCtrl.updateFilter()"><i class="fas fa-sync" style="margin:0;"></i></button>
 					</div>
-					Showing all outgoing emails. <button class="btn" ng-click="filter_open = true"><i class="fa fa-filter"></i> Filter</button>
+					Showing all outgoing emails. <button class="btn" ng-click="filter_open = true"><i class="fas fa-filter"></i> Filter</button>
 				</div>
 				<div ng-show="filter_open">
 					<table>
@@ -155,16 +155,16 @@
 
 				<div ng-switch="ListCtrl.massActionsOp" style="width: 400px;" class="help-block">
 					<div ng-switch-when="resend">
-						<i class="fa fa-question-circle"></i> Resend Messages: The system sends emails in the background.
+						<i class="fas fa-question-circle"></i> Resend Messages: The system sends emails in the background.
 						By selecting this option, you will reschedule the selected emails which will mark them as pending.
 						The system will attempt to deliver the messages the next time the message queue is processed.
 					</div>
 					<div ng-switch-when="abort">
-						<i class="fa fa-question-circle"></i> Abort Messages: Cancel the selected messages so they are NOT sent. Note that if a message
+						<i class="fas fa-question-circle"></i> Abort Messages: Cancel the selected messages so they are NOT sent. Note that if a message
 						has already been sent, you cannot "recall" it. Cancelling messages that are already sent has no affect.
 					</div>
 					<div ng-switch-when="delete">
-						<i class="fa fa-question-circle"></i> Delete: By deleting the messages, all records of email
+						<i class="fas fa-question-circle"></i> Delete: By deleting the messages, all records of email
 						deliveries will be removed from the system. If the messages have not been delivered yet, they never
 						will be.
 					</div>

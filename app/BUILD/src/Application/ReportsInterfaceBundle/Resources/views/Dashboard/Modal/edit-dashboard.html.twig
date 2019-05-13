@@ -3,7 +3,7 @@
     <header>
         <h1 ng-if="!is_new">Edit dashboard</h1>
         <h1 ng-if="is_new">Create dashboard</h1>
-        <div class="controls"><a ng-click="cancel()"><i class="fa fa-times"></i></a></div>
+        <div class="controls"><a ng-click="cancel()"><i class="fas fa-times"></i></a></div>
     </header>
 
     <!-- Popup Sidebar -->
@@ -67,15 +67,15 @@
                         </p>
                         <div style="margin: 15px 0;" ui-sortable="sortableOptions" ng-model="reports">
                             <div class="report-row" ng-if="!report.deleted" ng-repeat="report in reports track by report.id">
-                                <label class="drag-handle"><i class="fa fa-bars"></i></label>
+                                <label class="drag-handle"><i class="fas fa-bars"></i></label>
                                 <span class="meta"><a ng-click="removeReport(report)">Remove</a></span>
                                 <div class="row-input">
                                     <input type="text" ng-model="report.title" placeholder="Report title" ng-change="did_edit_reports = true">
                                     <div ng-if="report.isNew" class="new-report-info">
-                                        <i class="fa fa-asterisk"></i> New report
+                                        <i class="fas fa-asterisk"></i> New report
                                     </div>
                                     <div ng-if="report.fromDashboardTitle" class="new-report-info">
-                                        <i class="fa fa-copy"></i> Cloned from dashboard "{{ ng_var('report.fromDashboardTitle') }}"
+                                        <i class="fas fa-copy"></i> Cloned from dashboard "{{ ng_var('report.fromDashboardTitle') }}"
                                     </div>
                                 </div>
                             </div>

@@ -27,12 +27,12 @@ export class CheckboxListItem extends React.Component {
 
   render() {
     const { checked } = this.state;
-    const className = 'checkbox-button checkbox-with-label' + (checked ? ' checked' : '');
+    const className = `checkbox-button checkbox-with-label${checked ? ' checked' : ''}`;
 
     return (
       <a className={className}>
         <span className="checkbox">
-          {checked ? <i className="fa fa-check"></i> : null}
+          {checked ? <i className="fas fa-check" /> : null}
         </span>
         {this.props.value}
       </a>

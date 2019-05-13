@@ -87,7 +87,7 @@ export class PortalCheckbox extends React.Component {
         onBlur={this.onBlur}
       >
         <span className={classNames('checkbox', { checked: this.state.checked })}>
-          <i className="fa fa-check" />
+          <i className="fas fa-check" />
         </span>
 
         {$label.text()}

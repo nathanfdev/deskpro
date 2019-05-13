@@ -27,11 +27,11 @@ class UserProfile extends React.Component {
               <FormattedMessage id="agent.chrome.link_preferences" />
             </div>
             <div className="voice-profile-menu-item help" onClick={onClickHelp}>
-              <i className="fa fa-question-circle" />
+              <i className="fas fa-question-circle" />
               <FormattedMessage id="agent.chrome.link_help" />
             </div>
             <div className="voice-profile-menu-item logout" onClick={onClickLogout}>
-              <i className="fa fa-reply" />
+              <i className="fas fa-reply" />
               <FormattedMessage id="agent.chrome.link_logout" />
             </div>
           </div>

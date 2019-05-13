@@ -12,7 +12,7 @@ export class EndChatButton extends React.Component {
     return (
       <div className="dpdesignportal-chat-form-button-row-end-chat">
         <a href="#" className="dpdesignportal-chat-form-button" onClick={this.props.onOpenPopup}>
-          <i className="fa fa-upload" />{portalPhrases.get('portal.chat.end_chat')}
+          <i className="fas fa-upload" />{portalPhrases.get('portal.chat.end_chat')}
         </a>
       </div>
     );

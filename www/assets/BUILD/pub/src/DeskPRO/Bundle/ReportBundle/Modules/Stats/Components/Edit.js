@@ -201,9 +201,9 @@ class EditContainer extends React.Component {
             <div className="title">{this.props.report.get('title')}</div>
             <div className="ctrl">
               <Button type="secondary" size="medium" onClick={this.onRunClick}>
-                <i className="fa fa-undo" /> Cancel
+                <i className="fas fa-undo-alt" /> Cancel
               </Button>
-              <Button size="medium" onClick={this.onCloneClick}><i className="fa fa-clone" /> Clone</Button>
+              <Button size="medium" onClick={this.onCloneClick}><i className="fas fa-clone" /> Clone</Button>
             </div>
           </div>
           : <div className="title-bar"><div className="title">New Stat</div></div> }

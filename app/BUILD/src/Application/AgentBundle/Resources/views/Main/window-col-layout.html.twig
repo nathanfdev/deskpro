@@ -1,8 +1,8 @@
 <div id="dp_center">
 	<div id="dp_source">
 		<div id="dp_source_btn" ng-click="toggleSourcePane()" ng-class="paneVis.source && 'active'">
-			<span class="collapse-btn"><i class="fa fa-chevron-left"></i></span>
-			<span class="pin-btn" style="display: none;"><i class="fa fa-lock"></i></span>
+			<span class="collapse-btn"><i class="fas fa-chevron-left"></i></span>
+			<span class="pin-btn" style="display: none;"><i class="fas fa-lock"></i></span>
 		</div>
 		<div id="dp_source_loading"></div>
 		{% if not app.hasBeta('agent_chat') %}
@@ -31,7 +31,7 @@
 		{% endif %}
 	</div>
 	<div id="dp_source_place" style="display: none;">
-		<span><i class="fa fa-chevron-right"></i></span>
+		<span><i class="fas fa-chevron-right"></i></span>
 	</div>
 	<div id="dp_list">
 		<div id="dp_list_loading"></div>
@@ -58,14 +58,14 @@
 			<ul class="dp-tab-list">
 
 				<li class="list-btn with-list" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
-					<span><i class="fa fa-bars"></i></span>
+					<span><i class="fas fa-bars"></i></span>
 					<div class="down-btn" id="dp_tab_list_btn">
-						<i class="fa fa-caret-down"></i>
+						<i class="fas fa-caret-down"></i>
 					</div>
 				</li>
 
 				{% if app.user.hasPerm('agent_tickets.create') %}
-					<li class="add-btn" id="create_ticket_btn"><i class="fa fa-plus"></i><span>{{ phrase('agent.chrome.btn_add') }}</span></li>
+					<li class="add-btn" id="create_ticket_btn"><i class="fas fa-plus"></i><span>{{ phrase('agent.chrome.btn_add') }}</span></li>
 				{% endif %}
 
 				<li ng-repeat="tab in tabs track by tab.id" id="{{ ng_var('tab.tabBtnId') }}"
@@ -77,15 +77,15 @@
 					<div class="item-hover-over-indicator"></div>
 					<a>
 						<i class="" ng-class="{
-							'fa fa-envelope':  tab.tabType == 'ticket',
-							'fa fa-user':      tab.tabType == 'person',
-							'fa fa-users':     tab.tabType == 'organization',
+							'fas fa-envelope':  tab.tabType == 'ticket',
+							'fas fa-user':      tab.tabType == 'person',
+							'fas fa-users':     tab.tabType == 'organization',
 							'fas fa-file-alt': tab.tabType == 'article',
-							'fa fa-download':  tab.tabType == 'download',
+							'fas fa-download':  tab.tabType == 'download',
 							'far fa-list-alt':  tab.tabType == 'news',
-							'fa fa-th-list':   tab.tabType == 'feedback',
-							'fa fa-comment':   tab.tabType == 'userchat',
-							'fa fa-book':      tab.tabType == 'topics'
+							'fas fa-th-list':   tab.tabType == 'feedback',
+							'fas fa-comment':   tab.tabType == 'userchat',
+							'fas fa-book':      tab.tabType == 'topics'
 						}"></i>{{ ng_var('tab.title') }}
 					</a>
 					<span class="bound-fade"></span>
@@ -98,17 +98,17 @@
 			<ul>
 				<li ng-repeat="item in listItems" ng-class="{'is-open': item.open}">
 					<a href="#" data-route="{{ ng_var('item.route') }}" data-route-replacetab="true" style="overflow: hidden;">
-						<div class="right-icon new-tab" ng-show="!item.open" data-route="{{ ng_var('item.route') }}" data-route-notabreload="true"><i class="fa fa-external-link" title="Open in a new tab"></i></div>
+						<div class="right-icon new-tab" ng-show="!item.open" data-route="{{ ng_var('item.route') }}" data-route-notabreload="true"><i class="fas fa-external-link-alt" title="Open in a new tab"></i></div>
 						<i class="" ng-class="{
-							'fa fa-envelope':  item.type == 'ticket',
-							'fa fa-user':      item.type == 'person',
-							'fa fa-users':     item.type == 'organization',
+							'fas fa-envelope':  item.type == 'ticket',
+							'fas fa-user':      item.type == 'person',
+							'fas fa-users':     item.type == 'organization',
 							'fas fa-file-alt': item.type == 'article',
-							'fa fa-download':  item.type == 'download',
+							'fas fa-download':  item.type == 'download',
 							'far fa-list-alt':  item.type == 'news',
-							'fa fa-th-list':   item.type == 'feedback',
-							'fa fa-comment':   item.type == 'userchat',
-							'fa fa-book':      item.type == 'topics'
+							'fas fa-th-list':   item.type == 'feedback',
+							'fas fa-comment':   item.type == 'userchat',
+							'fas fa-book':      item.type == 'topics'
 						}"></i>
 						<span class="title">{{ ng_var('item.title') }}</span>
 					</a>

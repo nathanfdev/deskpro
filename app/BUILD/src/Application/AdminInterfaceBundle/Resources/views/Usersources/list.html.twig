@@ -17,7 +17,7 @@
 					data-id="{{ ng_var('source.usersource.id') }}">
 					<a ng-href="{{ ng_href_var('ListCtrl.show_url', '{id: source.app ? source.app.id : "deskpro-"+source.usersource.id }') }}">
 						<aside style="display: inline-block">
-							<i class="fa fa-bars drag-handle"></i>
+							<i class="fas fa-bars drag-handle"></i>
 							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>
 							<img ng-if="source.app" ng-src="{{ ng_var('source.app.package.icon_16') }}"
 								alt="{{ ng_var('source.usersource.title') }}" style="vertical-align: inherit;" />
@@ -38,7 +38,7 @@
 				</li>
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" ng-href="{{ ng_href_var('ListCtrl.new_url') }}"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+				<a class="btn btn-default" ng-href="{{ ng_href_var('ListCtrl.new_url') }}"><i class="fas fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
 		</article>
 	</section>
@@ -138,7 +138,7 @@
 
 				<ul>
 
-				<li><i class="fa fa-globe"></i> <a href="https://support.deskpro.com/guides/topic/426" target="_blank">Authentication and SSO</a></li>
+				<li><i class="fas fa-globe"></i> <a href="https://support.deskpro.com/guides/topic/426" target="_blank">Authentication and SSO</a></li>
 
 				<li><i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/344" target="_blank">How do I debug setting up an authentication app?</a> 		</li>
 				</ul>

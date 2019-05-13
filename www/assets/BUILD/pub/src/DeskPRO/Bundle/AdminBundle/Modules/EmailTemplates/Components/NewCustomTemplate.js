@@ -124,7 +124,7 @@ class NewCustomTemplate extends React.Component {
     return (
       <div className="new-custom-template">
         <h2>Create custom template</h2>
-        <span onClick={this.handleClose} className="close"><i className="fa fa-times" /></span>
+        <span onClick={this.handleClose} className="close"><i className="fas fa-times" /></span>
         <Field field="name" errors={this.state.errors}>
           <label htmlFor="template_name">Template name: </label><br />
           <Input id="template_name" className="ui input" onChange={this.handleName} />.html<br />

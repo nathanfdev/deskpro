@@ -104,7 +104,7 @@ class GroupAddDrawer extends React.Component {
   getHeaderContent() {
     return (
       <span>
-        <i className="fa fa-users" />
+        <i className="fas fa-users" />
         &nbsp;{this.props.editChat.get('id') ? 'Edit group' : 'Create group'}
       </span>
     );

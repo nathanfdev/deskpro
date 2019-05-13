@@ -9,13 +9,13 @@
 						<span ng-show="display_filter.type == 'all'">All Macros</span>
 						<span ng-show="display_filter.type == 'global'">Global Macros</span>
 						<span ng-show="display_filter.type == 'agent'">Agent Macros</span>
-						<i class="fa fa-caret-down"></i>
+						<i class="fas fa-caret-down"></i>
 					</a>
 					<ul class="dropdown-menu" style="width: 200px">
 						<li class="dropdown-header">Show</li>
-						<li><a ng-click="$event.preventDefault(); display_filter.type = 'all';">All Macros <i class="fa fa-check" ng-show="display_filter.type == 'all'"></i></a></li>
-						<li><a ng-click="$event.preventDefault(); display_filter.type = 'global';">Global Macros <i class="fa fa-check" ng-show="display_filter.type == 'global'"></i></a></li>
-						<li><a ng-click="$event.preventDefault(); display_filter.type = 'agent';">Agent Macros <i class="fa fa-check" ng-show="display_filter.type == 'agent'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'all';">All Macros <i class="fas fa-check" ng-show="display_filter.type == 'all'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'global';">Global Macros <i class="fas fa-check" ng-show="display_filter.type == 'global'"></i></a></li>
+						<li><a ng-click="$event.preventDefault(); display_filter.type = 'agent';">Agent Macros <i class="fas fa-check" ng-show="display_filter.type == 'agent'"></i></a></li>
 
 						<li class="divider" ng-show="display_filter.type == 'agent'"></li>
 						<li class="dropdown-header" ng-show="display_filter.type == 'agent'">Filter</li>
@@ -59,7 +59,7 @@
 			</ul>
 			{#
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('tickets.macros.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+				<a class="btn btn-default" href="{{ ng_href('tickets.macros.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fas fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
 			#}
 		</article>
@@ -113,7 +113,7 @@
 			<h2><span>Related Content</span></h2>
 			<ul>
 
-				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/377" target="_blank">Macros</a></li>
+				<li><i class="fas fa-book"></i> <a href="https://support.deskpro.com/guides/topic/377" target="_blank">Macros</a></li>
 				<li><i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
 
 			</ul>

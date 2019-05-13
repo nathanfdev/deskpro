@@ -105,10 +105,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				format: 'YYYY-MM-DD',
 				widgetParent: $(this).parent().css('position', 'relative'),
 				icons: {
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
 			$(this).on('dp.change', function(){
@@ -620,10 +620,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				widgetParent: $(this).prev('div'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
 			$(this).on('dp.change', function(){
@@ -714,10 +714,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				widgetParent: $(this).prev('div'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
 			$(this).on('dp.change', function(){

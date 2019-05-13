@@ -40,13 +40,13 @@
                     {% if type.id in types or types is empty %}
                         <a href="{{ path('portal_feedback_browse', { filter_uri: status ~ '/type-' ~ type.id }) }}" class="slider">
                             <span class="slider-status">{{ phrase('portal.general.toggle_on') }}</span>
-                            <span class="slider-icon"><i class="fa fa-check"></i></span>
+                            <span class="slider-icon"><i class="fas fa-check"></i></span>
                         </a>
                         <span class="slider-label">{{ object_phrase(type) }}</span>
                     {% else %}
                         <a href="{{ path('portal_feedback_browse', { filter_uri: status ~ '/type-' ~ type.id }) }}"
                            class="slider off">
-                            <span class="slider-icon"><i class="fa fa-times"></i></span>
+                            <span class="slider-icon"><i class="fas fa-times"></i></span>
                             <span class="slider-status">{{ phrase('portal.general.toggle_off') }}</span>
                         </a>
                         <span class="slider-label">{{ object_phrase(type) }}</span>

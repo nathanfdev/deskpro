@@ -157,7 +157,7 @@ export default class PortalAttach extends React.Component {
   renderButton() {
     return (
       <span className="attach-file button">
-        <i className="fa fa-upload" />
+        <i className="fas fa-upload" />
         <span className="text">{portalPhrases.get('portal.forms.label_drag')}</span>
         <span className="fake-button">{portalPhrases.get('portal.forms.label_choose')}</span>
         <input type="file" ref={(node) => { this.refFileUpload = node; }} name="file[blob]" />

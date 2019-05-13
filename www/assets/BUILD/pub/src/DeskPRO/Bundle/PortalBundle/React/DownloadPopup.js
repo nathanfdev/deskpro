@@ -83,16 +83,16 @@ export class DownloadPopup extends React.Component {
         <ClickOut onClickOut={this.onClose} additionalNodes={$button}>
           <div className="popup popup-file-download">
             <a className="cancel" onClick={this.onClose}>
-              Cancel download <i className="fa fa-times" />
+              Cancel download <i className="fas fa-times" />
             </a>
 
             <div className="file-icon">
-              <i className="fa fa-file" />
+              <i className="fas fa-file" />
               <hr />
 
               <div className="cudos-wrapper">
                 <a className={classNames('cudos', { 'with-voted': voted })} onClick={this.vote}>
-                  <i className="fa fa-thumbs-up" /> {voteCount}
+                  <i className="fas fa-thumbs-up" /> {voteCount}
                 </a>
               </div>
             </div>

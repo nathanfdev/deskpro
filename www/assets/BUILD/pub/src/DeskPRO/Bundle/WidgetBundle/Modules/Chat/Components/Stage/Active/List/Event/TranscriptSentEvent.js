@@ -6,13 +6,13 @@ export class TranscriptSentEvent extends React.Component {
     return (
       <div className="dpdesignportal-transcript-sent">
         <div className="left">
-          <i className="fa fa-check" />
+          <i className="fas fa-check" />
           <span>We have emailed you a transcript</span>
         </div>
 
         <div className="right">
           <a href="#">
-            <i className="fa fa-print" /><span>Print</span>
+            <i className="fas fa-print" /><span>Print</span>
           </a>
         </div>
       </div>

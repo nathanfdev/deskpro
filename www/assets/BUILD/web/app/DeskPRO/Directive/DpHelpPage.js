@@ -10,7 +10,7 @@ define(function() {
   <div class="dp-help-content-outer">
     <div class="dp-help-content-outer2">
       <div class="dp-help-content" ng-transclude></div>
-      <div class="dp-arrow-wrap"><em><i class="fa fa-chevron-down down"></i><i class="fa fa-chevron-up up"></i></em></div>
+      <div class="dp-arrow-wrap"><em><i class="fas fa-chevron-down down"></i><i class="fas fa-chevron-up up"></i></em></div>
     </div>
   </div>
 </section>\
@@ -18,7 +18,7 @@ define(function() {
       link(scope, element, attrs) {
         let isOpen = false;
         let backdrop = null;
-        element.find('header').first().prepend('<aside><i class="fa fa-question-circle"></i></aside>');
+        element.find('header').first().prepend('<aside><i class="fas fa-question-circle"></i></aside>');
 
         const open = function () {
           if (isOpen) { return; }

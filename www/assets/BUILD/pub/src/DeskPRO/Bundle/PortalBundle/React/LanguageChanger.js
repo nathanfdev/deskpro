@@ -99,7 +99,7 @@ export class LanguageChanger extends React.Component {
       <div className="language-changer-widget" onMouseOver={this.updateTopPos}>
         <a href="#" className="button-small button-language">
           <img src={portalUrlGenerator.getFlagPath(this.getLangFlag(activeLangCode))} alt="" />
-          {this.getLangTitle(activeLangCode)} <i className="fa fa-caret-down" />
+          {this.getLangTitle(activeLangCode)} <i className="fas fa-caret-down" />
         </a>
 
         <div className="language-dropdown" ref={(c) => { this.langDropdown = c; }}>

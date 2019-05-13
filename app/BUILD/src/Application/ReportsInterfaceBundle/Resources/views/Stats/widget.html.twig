@@ -79,7 +79,7 @@
             <h3>Variables</h3>
             <div ng-repeat="var in widget.variables track by $index">
                 <div class="inline-input">
-                    <label style="padding: 3px 10px;"><i class="fa fa-times" ng-click="deleteVariable($index)"></i></label>
+                    <label style="padding: 3px 10px;"><i class="fas fa-times" ng-click="deleteVariable($index)"></i></label>
 
                     <input ng-model="var.name" />
 
@@ -117,13 +117,13 @@
 
                 </div>
             </div>
-            <i class="fa fa-plus-circle" ng-click="addVariable()"></i> Add new var
+            <i class="fas fa-plus-circle" ng-click="addVariable()"></i> Add new var
         </div>
 
 
         <div class="editor-controls">
-            <a ng-if="widget.is_custom || !widget.id" href="#" ng-click="saveWidget($event)" class="button">Save Query <i class="fa fa-save"></i></a>
-            <a href="#" class="button button-edit">Test <i class="fa fa-fast-forward"></i></a>
+            <a ng-if="widget.is_custom || !widget.id" href="#" ng-click="saveWidget($event)" class="button">Save Query <i class="fas fa-save"></i></a>
+            <a href="#" class="button button-edit">Test <i class="fas fa-fast-forward"></i></a>
         </div>
     </div>
 </div>

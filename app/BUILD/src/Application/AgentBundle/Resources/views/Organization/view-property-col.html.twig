@@ -184,13 +184,13 @@
                 {{ phrase('agent.general.children') }}:
                 <ul id="{{ baseId }}_children-list" style="margin-left:10px;">
                     <li ng-repeat="child in children">
-                        <i class="fa fa-caret-right" style="font-size: 90%;"></i>
+                        <i class="fas fa-caret-right" style="font-size: 90%;"></i>
                         <a href="#"
                            data-route="page:{{ path('agent_org_view', {'organization_id': '0000'})|replace({'0000': ng_var('child.id')}) }}">
                             {{ ng_var('child.name') }}
                         </a>
                         <a class="remove-child" ng-click="removeChild(child)" style="color:#999; font-size: 80%"
-                           title="{{ phrase('agent.general.remove_association') }}"><i class="fa fa-times"></i></a>
+                           title="{{ phrase('agent.general.remove_association') }}"><i class="fas fa-times"></i></a>
                     </li>
                 </ul>
             </li>

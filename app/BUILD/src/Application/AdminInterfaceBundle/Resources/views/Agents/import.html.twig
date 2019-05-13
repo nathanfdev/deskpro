@@ -23,7 +23,7 @@
             <textarea rows="4" class="form-control" name="emails" ng-model="Ctrl.emails" ng-list="/[\,\;\n\s]/" required></textarea>
         </div>
         <button class="btn btn-default" dp-submit-form>
-            <i class="fa fa-arrow-circle-right"></i>
+            <i class="fas fa-arrow-circle-right"></i>
             {{ phrase('adm.agents.import_btn_next') }}
         </button>
 
@@ -66,11 +66,11 @@
             <ul class="dp-item-list">
                 <li ng-repeat="agent in Ctrl.results">
                     <h4 ng-if="agent.id">
-                        <i class="fa fa-check text-success"></i>
+                        <i class="fas fa-check text-success"></i>
                         {% include 'AdminInterfaceBundle:Agents:agent.html.twig' %}
                     </h4>
                     <h4 ng-if="agent.error">
-                        <i class="fa fa-times text-danger"></i>
+                        <i class="fas fa-times text-danger"></i>
                         {{ ng_var('agent._email') }}
                         <br />
                         <small class="muted">{{ ng_var('agent.error') }}</small>

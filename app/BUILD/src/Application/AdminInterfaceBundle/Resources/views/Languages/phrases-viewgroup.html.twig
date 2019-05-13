@@ -12,7 +12,7 @@
 						<th>Translation</th>
 						<th>
 							<div ng-if="EditCtrl.groupId == 'custom'" style="float:right">
-								<button class="btn btn-default btn-xs" type="button" ng-click="EditCtrl.openNewPhrase()"><i class="fa fa-plus"></i> Add Custom Phrase</button>
+								<button class="btn btn-default btn-xs" type="button" ng-click="EditCtrl.openNewPhrase()"><i class="fas fa-plus"></i> Add Custom Phrase</button>
 							</div>
 							Custom
 						</th>
@@ -27,7 +27,7 @@
 							<span>{{ ng_var('phrase.id') }}</span>
 							<button type="button" class="btn btn-default btn-xs ng-hide" ng-show="phrase.set && phrase.set != phrase.lang_default" ng-click="phrase.set = phrase.lang_default">
 								<span ng-if="phrase.id.indexOf('custom.') == 0" style="padding-top:0"><i class="far fa-trash-alt" /> Delete</span>
-								<span ng-if="phrase.id.indexOf('custom.') != 0" style="padding-top:0"><i class="fa fa-undo" /> Reset</span>
+								<span ng-if="phrase.id.indexOf('custom.') != 0" style="padding-top:0"><i class="fas fa-undo-alt" /> Reset</span>
 							</button>
 						</td>
 						<td class="phrase-default"><textarea ng-model="phrase.default" disabled spellcheck="false"></textarea></td>

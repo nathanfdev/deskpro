@@ -33,7 +33,7 @@ export class UploadingFile extends React.Component {
             ?
               <div>
                 <a className="dpdesignportal-chat-form-attached-file-remove" onClick={this.onRemove}>
-                  <i className="fa fa-times-circle" />
+                  <i className="fas fa-times-circle" />
                 </a>
               </div>
             : <div className="spinner dpdesignportal-chat-form-attached-file-spinner"><i /></div>

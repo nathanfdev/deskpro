@@ -38,7 +38,7 @@ class SelectOption extends React.Component {
         >
           {multiple && !disabled
             ? <span className={classNames('checkbox', { checked: active })}>
-              <i className="fa fa-check" />
+              <i className="fas fa-check" />
             </span>
             : null
           }

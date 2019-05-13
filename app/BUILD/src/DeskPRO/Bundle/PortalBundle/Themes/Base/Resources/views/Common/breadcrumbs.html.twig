@@ -3,7 +3,7 @@
     {% for item in breadcrumbs %}
       <li>
         <a href="{{ item.url }}"{% if loop.last %} class="active-page"{% endif %}>
-          {%- if loop.first -%}<i class="fa fa-home"></i>{%- endif -%}
+          {%- if loop.first -%}<i class="fas fa-home"></i>{%- endif -%}
           {%- if item.phrase -%}
             {{ phrase(item.phrase) }}
           {%- elseif item.var['translated_title'] is defined -%}
@@ -16,7 +16,7 @@
             {{ item.url }}
           {%- endif -%}
         </a>
-        {% if not loop.last %}<i class="fa fa-angle-right"></i>{% endif %}
+        {% if not loop.last %}<i class="fas fa-angle-right"></i>{% endif %}
       </li>
     {% endfor %}
   {% endif %}

@@ -50,7 +50,7 @@
 			<div class="dp-add-control">
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create_ip') }"
 				   href="{{ ng_href('crm.banning.gocreate_ip') }}">
-					<i class="fa fa-plus"></i> New IP Ban
+					<i class="fas fa-plus"></i> New IP Ban
 				</a>
 
                 <button class="btn btn-danger" ng-click="$event.preventDefault();ListCtrl.deleteList(ListCtrl.list.ip_bans);" ng-if="ListCtrl.list.ip_bans.length">
@@ -69,7 +69,7 @@
                 <div tooltip="Export" style="display: inline-block">
                     <button class="btn btn-default">
                         <a ng-href="{{ ng_var('exportUrl') }}" style="color: black;">
-                            <i class="fa fa-download"></i>
+                            <i class="fas fa-download"></i>
                         </a>
                     </button>
                 </div>
@@ -77,7 +77,7 @@
                 <button class="fileinput-button btn btn-default" tooltip="Import">
                     <form method="POST" enctype="multipart/form-data" file-upload="fileUploadOptions"
                           action="{{ ng_var('fileUploadOptions.url') }}">
-                        <i class="fa fa-upload"></i>
+                        <i class="fas fa-upload"></i>
                         <input type="file" name="file" dp-change="submit();queue=[];">
                     </form>
                 </button>
@@ -133,7 +133,7 @@
 			<div class="dp-add-control">
 				<a class="btn btn-default" ng-class="{'active': isStateActive('.create_email') }"
 				   href="{{ ng_href('crm.banning.gocreate_email') }}">
-					<i class="fa fa-plus"></i> New Email Ban
+					<i class="fas fa-plus"></i> New Email Ban
 				</a>
 
                 <button class="btn btn-danger" ng-click="$event.preventDefault();ListCtrl.deleteList(ListCtrl.list.email_bans);" ng-if="ListCtrl.list.email_bans.length">
