@@ -33,16 +33,23 @@ class PhoneInput extends React.Component {
   }
 
   setNumber(number) {
-    const $input = $(this.input);
     const { onChange } = this.props;
-    const { isSip } = this.state;
+    const isSip = /^sip:/.test(number);
+    const doSetNumber = () => {
+      const $input = $(this.input);
+      if (isSip) {
+        $input.val(`${number}`.replace(/^sip:/, ''));
+        onChange(`sip:${$input.val()}`);
+      } else {
+        $input.intlTelInput('setNumber', `${number}`);
+        onChange($input.intlTelInput('getNumber') || `${number}`);
+      }
+    };
 
-    if (isSip) {
-      $input.val(`${number}`.replace(/^sip:/, ''));
-      onChange(`sip:${$input.val()}`);
+    if (isSip !== this.state.isSip) {
+      this.setState({ isSip }, doSetNumber);
     } else {
-      $input.intlTelInput('setNumber', `${number}`);
-      onChange($input.intlTelInput('getNumber') || `${number}`);
+      doSetNumber();
     }
   }
 
