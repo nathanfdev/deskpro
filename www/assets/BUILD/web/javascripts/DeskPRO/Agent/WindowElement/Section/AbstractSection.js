@@ -282,19 +282,39 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		this.listEl = null;
 		this.listContentEl = null;
 
-		var contentEl = $('section.content:first', this.getListElement());
-		contentEl.empty();
-		contentEl.html(page.html);
+    var contentEl = $('section.content:first', this.getListElement());
+    var hasInit = false;
 
-		page.fireEvent('render', [contentEl]);
+    var runInit = (function() {
+      if (hasInit) {
+        return;
+      }
+      hasInit = true;
 
-		var scrollEl = $('.with-scrollbar', this.getListElement());
-		if (scrollEl.length && !scrollEl.is('.scroll-setup')) {
-			page.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(page, scrollEl, {
-				showEvent: 'show',
-				hideEvent: 'hide'
-			});
-		}
+      contentEl.empty();
+      contentEl.html(page.html);
+
+      page.fireEvent('render', [contentEl]);
+
+      var scrollEl = $('.with-scrollbar', this.getListElement());
+      if (scrollEl.length && !scrollEl.is('.scroll-setup')) {
+        page.scrollerHandler = new DeskPRO.Agent.ScrollerHandler(page, scrollEl, {
+          showEvent: 'show',
+          hideEvent: 'hide'
+        });
+      }
+    }).bind(this);
+
+		if (noswitch) {
+		  var runInitOnActivate = function() {
+        runInit();
+        page.removeEvent('activate', runInitOnActivate);
+      };
+
+      page.addEvent('activate', runInitOnActivate, null, null, true);
+    } else {
+      runInit();
+    }
 
 		page.addEvent('activate', function() {
       DeskPRO.Agent.ScrollerHandler.updateListPane();

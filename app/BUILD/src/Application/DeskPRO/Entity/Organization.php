@@ -593,7 +593,7 @@ class Organization extends DomainObject implements HighlightableModelInterface, 
         }
 
         $url = false;
-        if ($this->picture_blob) {
+        if ($this->picture_blob && $this->picture_blob->getAuthId()) {
             $url = App::get('router')->generate(
                 'serve_blob_sizefit',
                 [

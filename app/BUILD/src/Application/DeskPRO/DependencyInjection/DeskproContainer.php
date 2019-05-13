@@ -548,8 +548,9 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @return \Application\DeskPRO\BlobStorage\DeskproBlobStorage
      * @throws \Exception
+     *
+     * @return \Application\DeskPRO\BlobStorage\DeskproBlobStorage
      */
     public function getBlobStorage()
     {
@@ -850,6 +851,8 @@ class DeskproContainer extends Container
 
     /**
      * Generate static security token.
+     *
+     * If changing something here check also consequences in LowScript/ServeFile.php near Util::checkStaticSecurityToken
      *
      * @param string $name
      * @param int    $timeout

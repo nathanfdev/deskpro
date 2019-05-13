@@ -17,6 +17,7 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDataFeedback;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefDownload;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -298,6 +299,7 @@ class ObjectsManager
             'CustomDefPerson'                  => [Factory\CommonFactories::class, 'customDef', 'person'],
             'CustomDefChat'                    => [Factory\CommonFactories::class, 'customDef', 'conversation'],
             'CustomDefFeedback'                => [Factory\CommonFactories::class, 'customDef', 'feedback'],
+            'CustomDefDownload'                => [Factory\CommonFactories::class, 'customDef', 'download'],
             'CustomDefBilling'                 => [Factory\CommonFactories::class, 'customDef', 'billing'],
             'CustomDataFeedback'               => [Factory\SimpleFactory::class, 'create', CustomDataFeedback::class],
             'CustomFieldDefinition'            => [Factory\SimpleFactory::class, 'create', CustomFieldDefinition::class],
@@ -458,6 +460,7 @@ class ObjectsManager
             'CustomDefPerson'                  => [$this, 'find', CustomDefPerson::class],
             'CustomDefChat'                    => [$this, 'find', CustomDefChat::class],
             'CustomDefFeedback'                => [$this, 'find', CustomDefFeedback::class],
+            'CustomDefDownload'                => [$this, 'find', CustomDefDownload::class],
             'CustomDefBilling'                 => [$this, 'find', CustomDefBilling::class],
             'CustomDataFeedback'               => [$this, 'find', CustomDataFeedback::class],
             'CustomFieldDefinition'            => [$this, 'find', CustomFieldDefinition::class],

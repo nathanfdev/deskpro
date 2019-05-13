@@ -7,6 +7,9 @@ Feature: Set entity id explicitly
 
   Scenario: I create a ticket with specific id
     Given no Ticket records exist
+    And no CustomDefTicket records exist
+    And no CustomDefPerson records exist
+    And no CustomDefOrganization records exist
     When I send a POST request to "/api/v2/tickets" with body:
     """
 {

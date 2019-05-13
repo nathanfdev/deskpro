@@ -195,6 +195,8 @@ adm.departments.usergroup_perm_toggle_chat: 'When enabled, users are able to sel
 adm.departments.usergroup_perms_explain: 'Usergroup permissions control which of your users can select a department when submitting or editing their tickets from the web portal.'
 adm.departments.usergroup_perms_explain2: 'Note that it is still possible for agents to change the department to one that a user would not normally have access to. Triggers can also be used to assign any department regardless of user permissions. Usergroup permissions are therefore very much about what the user can select themselves.'
 adm.departments.usergroup_perms_explain_chat: 'Usergroup permissions control which of your users can select a department when starting a new chat from the web portal.'
+adm.download_settings.attachment_auth: 'Perform permission check on download attachment views'
+adm.download_settings.attachment_auth_desc: 'When enabled, download attachments will only be visible by people who can view the download. Even if the user has the full coded URL to a file, the system will check permissions and ask the user to accept EULA if necessary. Doesn''t work with `Amazon S3` storage yet.'
 adm.email_status.error_agent_bounce: 'The email was rejected because it was detected as a bounced message.'
 adm.email_status.error_auth_invalid: 'The email was rejected because it did not include valid auth codes. (These are hidden codes included in all email notifications.)'
 adm.email_status.error_auth_missing: 'The email was rejected because it was missing auth codes. (These are hidden codes included in all email notifications.)'
@@ -1000,6 +1002,10 @@ admin.custom_fields.choice_require_user_input: 'Require user to input a value fo
 admin.custom_fields.custom_css_class: 'Custom CSS class'
 admin.custom_fields.custom_styling: 'Custom Styling'
 admin.custom_fields.display: Display
+admin.custom_fields.download.edit_eula: 'Edit EULA'
+admin.custom_fields.download.edit_eula_format: 'Format'
+admin.custom_fields.download.edit_eula_format_html: 'HTML'
+admin.custom_fields.download.edit_eula_format_text: 'Plain Text'
 admin.custom_fields.drag: drag
 admin.custom_fields.existing_values: 'Existing Values'
 admin.custom_fields.explain_date_field: 'This date field lets you select a date using a calendar widget.'
@@ -2836,8 +2842,8 @@ agent.feedback.votes_least_most: 'Votes (Least-Most)'
 agent.feedback.votes_most_least: 'Votes (Most-Least)'
 agent.follow_up.add_follow_up: 'Add Follow Up'
 agent.follow_up.cancel_if_reply: 'Cancel follow up if user replies'
-agent.follow_up.error_agent: 'You mush select the agent to assign'
-agent.follow_up.error_agent_team: 'You mush select the team to assign'
+agent.follow_up.error_agent: 'You must select the agent to assign'
+agent.follow_up.error_agent_team: 'You must select the team to assign'
 agent.follow_up.error_hold: 'You must select the pending action'
 agent.follow_up.error_macro: 'You must select the macro to run'
 agent.follow_up.error_note: 'You must enter the note content'
@@ -3163,6 +3169,7 @@ agent.general.error_password_mismatch: 'The two password fields do not match'
 agent.general.error_password_short: 'Please enter a password of at least {{len}} characters'
 agent.general.error_your_name: 'Please enter your full name'
 agent.general.escalation: Escalation
+agent.general.eula: EULA
 agent.general.everyone: Everyone
 agent.general.existing_picture: 'Existing Picture'
 agent.general.exists: exists

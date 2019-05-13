@@ -201,6 +201,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<nav id="{{baseId}}_bodytabs">
 			<ul>
 				<li class="on" data-tab-for="#{{baseId}}_tab_contents .dl-content"><span>{{ phrase('agent.general.page') }}</span></li>
+        {% if custom_fields|length %}<li data-tab-for="#{{baseId}}_tab_contents .download-fields" class="is-fields-tab"><span>{{ phrase('agent.general.fields') }}</span></li>{% endif %}
 				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{download_comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{download.revisions|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
@@ -231,6 +232,17 @@ pageMeta.baseId = '{{ baseId }}';
 				<br class="clear" />
 			</div>
 			{# /Content #}
+
+			{# Tab: Fields #}
+			<div class="deskpro-tab-item download-fields" style="display: none;">
+				<div id="{{baseId}}_field_holders">
+					{% include 'AgentBundle:Downloads:view-customfields-rendered-rows.html.twig' %}
+					<form id="{{baseId}}_custom_fields_form">
+						{% include 'AgentBundle:Downloads:view-customfields-edit-rows.html.twig' %}
+					</form>
+				</div>
+			</div>
+			{# /Tab: Fields #}
 
 			{# Tab: Comments #}
 			<div class="deskpro-tab-item content-tab-item comments-tab">

@@ -1,3 +1,4 @@
+import Immutable from 'immutable';
 import { AppsConfig } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 
 export const filterAppConfig =  ({ DeskproApps: { Main:state } }) => state.get('apps').toJS();
@@ -27,7 +28,7 @@ function createContextsStateSelector(initialContexts) {
 
     // no change detected
     if (oldContexts === contexts) {
-      return { deleted: [], available: contexts.toArray() };
+      return { deleted: Immutable.fromJS([]), available: contexts };
     }
 
     const oldKeys = oldContexts ? oldContexts.keySeq().toArray() : [];
@@ -37,10 +38,10 @@ function createContextsStateSelector(initialContexts) {
     const deletedKeys = oldKeys.filter(key => newKeys.indexOf(key) < 0);
 
     // const added = contexts && addedKeys.length ? contexts.filter((v, k) => addedKeys.indexOf(k) !== -1).toArray() : [];
-    const deleted = oldContexts && deletedKeys.length ? oldContexts.filter((v, k) => deletedKeys.indexOf(k) !== -1).toArray() : [];
+    const deleted = oldContexts && deletedKeys.length ? oldContexts.filter((v, k) => deletedKeys.indexOf(k) !== -1) : Immutable.fromJS([]);
 
     oldContexts = contexts;
-    return { deleted, available: contexts.toArray() };
+    return { deleted, available: contexts };
   };
 }
 export const changedContextsSelector = createContextsStateSelector(null);

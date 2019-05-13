@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Settings\Portal;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Settings\AbstractBrandAwareSettingsController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -107,5 +108,9 @@ class DownloadsSettingsController extends AbstractBrandAwareSettingsController
             ->updateSetting(PortalSettingsResolver::TAB_DOWNLOADS, $model->isTabEnabled(), $brand)
             ->updateSetting(PortalSettingsResolver::SUBSCRIPTION_DOWNLOADS, $model->isSubscriptions(), $brand)
         ;
+        $this->getRepository(Setting::class)->updateSetting(
+            PortalSettingsResolver::ATTACHMENT_REQUIRE_AUTH_DOWNLOADS,
+            $model->isAttachmentRequireAuth()
+        );
     }
 }

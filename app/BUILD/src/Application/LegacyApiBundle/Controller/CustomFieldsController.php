@@ -36,11 +36,12 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
     ];
 
     public static $allowed_common = [
-        'person'  => 'Person',
-        'org'     => 'Organization',
-        'ticket'  => 'Ticket',
-        'billing' => 'TicketCharge',
-        'kb'      => 'Article',
+        'person'   => 'Person',
+        'org'      => 'Organization',
+        'ticket'   => 'Ticket',
+        'billing'  => 'TicketCharge',
+        'kb'       => 'Article',
+        'download' => 'Download',
     ];
 
     /**
@@ -283,6 +284,7 @@ class CustomFieldsController extends AbstractController implements ProtectedCont
             'people'        => 'CustomDefPerson',
             'chats'         => 'CustomDefChat',
             'kb'            => 'CustomDefArticle',
+            'download'      => 'CustomDefDownload',
         ];
 
         if (!$repClass = @$types[$this->in->getString('type')]) {

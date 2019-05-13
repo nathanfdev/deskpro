@@ -35,6 +35,7 @@ class BlobTest extends \PHPUnit_Framework_TestCase
      * @testWith    ["1307DHDCQBHHWNCHKBD0T", true]
      *              ["1307DHDCQBHHWNCHKBD0",  false]
      *              ["1307DHDCQBHHWNCHKBDT0",  false]
+     *              ["1307DHDCQBHHWNCHKBDT0PD",  false]
      *              ["",  false]
      *              [null,  false]
      *
@@ -52,10 +53,33 @@ class BlobTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @testWith    ["1307DHDCQBHHWNCHKBD0T", false]
+     *              ["1307DHDCQBHHWNCHKBD0",  false]
+     *              ["1307DHDCQBHHWNCHKBDT0",  false]
+     *              ["1307DHDCQBHHWNCHKBDT0PD",  true]
+     *              ["",  false]
+     *              [null,  false]
+     *
+     * @param string $authcode
+     * @param bool   $expectedResult
+     */
+    public function testIsDownloadAttachment($authcode, $expectedResult)
+    {
+        // GIVEN
+        $blob = new Blob();
+        $blob->setAuthCode($authcode);
+
+        // WHEN/THEN
+        $this->assertEquals($expectedResult, $blob->isDownloadAttachment());
+    }
+
+    /**
      * @testWith    ["1307DHDCQBHHWNCHKBD0T", true, true]
      *              ["1307DHDCQBHHWNCHKBD0T", false, false]
      *              ["1307DHDCQBHHWNCHKBD0",  true, false]
      *              ["1307DHDCQBHHWNCHKBD0",  false, false]
+     *              ["1307DHDCQBHHWNCHKBD0PD", true, true]
+     *              ["1307DHDCQBHHWNCHKBD0PD", false, false]
      *
      * @param string $authcode
      * @param bool   $shouldHaveAccessToken
@@ -64,7 +88,10 @@ class BlobTest extends \PHPUnit_Framework_TestCase
     {
         // GIVEN
         App::$container = ContainerMock::create()
-            ->withSettings(['core_tickets.attachment_require_auth' => $isAttachmentAuthEnabled])
+            ->withSettings([
+                'core_tickets.attachment_require_auth'   => $isAttachmentAuthEnabled,
+                'user.attachment_require_auth_downloads' => $isAttachmentAuthEnabled,
+            ])
             ->get();
 
         $mockRouter = m::mock('Symfony\\Component\\Routing\\Router');
@@ -99,11 +126,13 @@ class BlobTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @testWith [true,  "1307DHDCQBHHWNCHKBD0T", "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1&access_token=abc"]
-     *           [true,  "1307DHDCQBHHWNCHKBD0T", "/file.php/somecode/index.jpg",                 "/file.php/somecode/index.jpg?access_token=abc"]
-     *           [false, "1307DHDCQBHHWNCHKBD0T", "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
-     *           [true,  "1307DHDCQBHHWNCHKBD0",  "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
-     *           [false, "1307DHDCQBHHWNCHKBD0",  "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
+     * @testWith [true,  "1307DHDCQBHHWNCHKBD0T",  "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1&access_token=abc"]
+     *           [true,  "1307DHDCQBHHWNCHKBD0T",  "/file.php/somecode/index.jpg",                 "/file.php/somecode/index.jpg?access_token=abc"]
+     *           [false, "1307DHDCQBHHWNCHKBD0T",  "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
+     *           [true,  "1307DHDCQBHHWNCHKBD0PD", "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1&access_token=abc"]
+     *           [false, "1307DHDCQBHHWNCHKBD0PD", "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
+     *           [true,  "1307DHDCQBHHWNCHKBD0",   "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
+     *           [false, "1307DHDCQBHHWNCHKBD0",   "/file.php/somecode/index.jpg?s=50&size-fit=1", "/file.php/somecode/index.jpg?s=50&size-fit=1"]
      *
      * @param string $authcode
      * @param bool   $shouldHaveAccessToken
@@ -112,7 +141,10 @@ class BlobTest extends \PHPUnit_Framework_TestCase
     {
         // GIVEN
         App::$container = ContainerMock::create()
-            ->withSettings(['core_tickets.attachment_require_auth' => $isAttachmentAuthEnabled])
+            ->withSettings([
+                'core_tickets.attachment_require_auth'   => $isAttachmentAuthEnabled,
+                'user.attachment_require_auth_downloads' => $isAttachmentAuthEnabled,
+            ])
             ->get();
 
         $mockRouter = m::mock('Symfony\\Component\\Routing\\Router');

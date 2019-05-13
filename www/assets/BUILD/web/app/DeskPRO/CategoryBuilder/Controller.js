@@ -12,7 +12,7 @@ define([
   class DeskPRO_CategoryBuilder_Controller {
     static initClass() {
       this.FACTORY = ['$scope', '$element', '$attrs', '$compile', '$q', '$injector',
-        ($scope, $element, $attrs, $compile, $q, $injector) => new DeskPRO_CategoryBuilder_Controller($scope, $element, $attrs, $compile, $q, $injector)
+        ($scope, $element, $attrs, $compile, $q, $injector) => new this($scope, $element, $attrs, $compile, $q, $injector)
       ];
     }
     constructor($scope, $element, $attrs, $compile, $q, $injector) {

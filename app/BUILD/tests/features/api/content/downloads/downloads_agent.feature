@@ -20,7 +20,7 @@ Feature: /downloads endpoint
     And the following DownloadCategory records exist:
       | #   | parent | title                    | Brand          | Usergroups |
       | dc1 |        | First Downloads Category | {defaultBrand} | [{ug1}]    |
-    And I create blob with auth code "AAA"
+    And I create blob with auth code "AAAPD"
     When I send a POST request to "/api/v2/downloads" with body:
     """
 {
@@ -31,7 +31,7 @@ Feature: /downloads endpoint
   "status": "hidden.draft",
   "content_input_type": "rte",
   "category": ~dc1~,
-  "blob": "AAA"
+  "blob": "AAAPD"
 }
     """
     Then the response status code should be 201
@@ -43,6 +43,36 @@ Feature: /downloads endpoint
     And the JSON node "data.status" should be equal to "hidden"
     And the JSON node "data.hidden_status" should be equal to "draft"
     And the JSON node "data.category" should be equal to "{dc1}"
+
+  Scenario: I create a download with attachment not tagged as download attachment
+    Given the following Language records exist:
+      | #  | locale | sys_name |
+      | l1 | so_ME  | some     |
+    And the following Usergroup records exist:
+      | #   | sys_name   | Title      |
+      | ug1 | registered | Registered |
+    And I have only default brand
+    And the following DownloadCategory records exist:
+      | #   | parent | title                    | Brand          | Usergroups |
+      | dc1 |        | First Downloads Category | {defaultBrand} | [{ug1}]    |
+    And I create blob with auth code "AAA"
+    When I send a POST request to "/api/v2/downloads" with body:
+    """
+{
+  "title": "Test Download 2",
+  "content": "<p>Some fake download description</p>",
+  "person":  ~agent~,
+  "language": ~l1~,
+  "status": "hidden.draft",
+  "content_input_type": "rte",
+  "category": ~dc1~,
+  "blob": "AAA"
+}
+    """
+    Then the response status code should be 201
+    And the header "Location" should be equal to "/api/v2/downloads/{lastCreatedId}"
+    And the JSON node "data.title" should be equal to "Test Download 2"
+    And the "{lastCreatedId}" download should have properly tagged attachment
 
   Scenario: I view the existing download as agent
     Given the following Language records exist:

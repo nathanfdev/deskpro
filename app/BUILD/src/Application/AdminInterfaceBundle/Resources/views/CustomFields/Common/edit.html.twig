@@ -106,6 +106,16 @@
 							</div>
 						</div>
 
+						<div class="form-group">
+							<div class="col-lg-12">
+								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="javascript" /> Smart Field</label></h3>
+								<p>
+									This is a smart field lets you to create custom javascript fields
+								</p>
+							</div>
+						</div>
+
+
 						{% block extra_types_choose %}{% endblock %}
 					</div>
 					<div class="panel-body" ng-show="EditCtrl.field_type != 0">
@@ -130,6 +140,7 @@
 										<span ng-switch-when="url">Url</span>
 										<span ng-switch-when="currency">Currency</span>
 										<span ng-switch-when="file">File</span>
+										<span ng-switch-when="javascript">Smart Field</span>
 										{% block extra_types_titleswitch %}{% endblock %}
 									</p>
 								</div>
@@ -188,7 +199,7 @@
 						{###############################################################################################}
 						{# Text Field #}
 
-						<div ng-show="EditCtrl.field_type == 'text' || EditCtrl.field_type == 'textarea'">
+						<div ng-show="EditCtrl.field_type == 'text' || EditCtrl.field_type == 'textarea' || EditCtrl.field_type == 'javascript' ">
 							<div class="form-group">
 								<div class="col-lg-3">
 									<h3>Default value</h3>
@@ -209,6 +220,20 @@
 											<input type="checkbox" ng-model="EditCtrl.form.text.clickable_links" />
 											Make links clickable
 										</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group with-border" ng-show="EditCtrl.field_type == 'javascript'">
+								<div class="col-lg-3">
+									<h3>Javascript Code</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<div class="form-control custom-field-js-code"
+											 ui-ace="{theme: 'chrome', mode: 'javascript'}"
+											 ng-model="EditCtrl.form.text.code"
+										></div>
 									</div>
 								</div>
 							</div>

@@ -1,0 +1,27 @@
+{% extends 'AdminInterfaceBundle:Layout:widget-modal.html.twig' %}
+{% block modal_controls %}<button type="button" class="close" ng-click="$dismiss()">&times;</button>{% endblock %}
+
+{% block modal_title %}
+    <h4 class="modal-title">{{ phrase('admin.custom_fields.download.edit_eula') }}</h4>
+{% endblock %}
+
+{% block modal_body %}
+	<form class="dp-form">
+		<div class="form-group">
+			<textarea ng-model="category.eula" class="form-control" style="height: 200px;"></textarea>
+		</div>
+		<div class="form-group">
+			<h3>{{ phrase('admin.custom_fields.download.edit_eula_format') }}</h3>
+			<select ng-model="category.eula_format" ui-select2="{dropdownAutoWidth: true}">
+        <option value="html">{{ phrase('admin.custom_fields.download.edit_eula_format_html') }}</option>
+        <option value="text">{{ phrase('admin.custom_fields.download.edit_eula_format_text') }}</option>
+			</select>
+		</div>
+	</form>
+{% endblock %}
+
+{% block modal_footer %}
+	<div>
+		<button class="btn btn-primary" ng-click="doSave()">Save</button>
+	</div>
+{% endblock %}

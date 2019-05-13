@@ -90,6 +90,8 @@ class DeskproAppStore {
     appServices.onAppStateChanged(state);
     registerIncomingRequestListeners(bindIncomingMessageHandlers(appServices));
 
+    let prevAvailableContexts = null;
+
     // subscribe to redux store changes
     // TODO -- this is awful. needs to be changed to reducers so it doesnt run on every single action!
     reduxStore.subscribe(() => {
@@ -105,23 +107,27 @@ class DeskproAppStore {
       // mount new contexts if any
       const changedContexts = changedContextsSelector(newState);
 
-      const manifests = filterAppManifestsConfig(newState);
-      const widgetsProvider = apps.createWidgetProvider(manifests, appsConfig);
+      if (changedContexts.deleted.size || (changedContexts.available !== prevAvailableContexts)) {
+        prevAvailableContexts = changedContexts.available;
 
-      /** @var {Context} context **/
-      for (const context of changedContexts.deleted) {
-        contexts.unmountContextInWindow(context, windowObject);
-      }
+        const manifests = filterAppManifestsConfig(newState);
+        const widgetsProvider = apps.createWidgetProvider(manifests, appsConfig);
 
-      /** @var {Context} context **/
-      for (const context of changedContexts.available) {
-        const configuration = contexts.readContextConfiguration(context, windowObject);
+        /** @var {Context} context **/
+        changedContexts.deleted.forEach((context) => {
+          contexts.unmountContextInWindow(context, windowObject);
+        });
 
-        contexts.mountContextStrategy(context, windowObject)({
-          store:             reduxStore,
-          widgetsConfigList: widgetsProvider(configuration.targetType),
-          context,
-          config:            appsConfig
+        /** @var {Context} context **/
+        changedContexts.available.forEach((context) => {
+          const configuration = contexts.readContextConfiguration(context, windowObject);
+
+          contexts.mountContextStrategy(context, windowObject)({
+            store:             reduxStore,
+            widgetsConfigList: widgetsProvider(configuration.targetType),
+            context,
+            config:            appsConfig
+          });
         });
       }
     });

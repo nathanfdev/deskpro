@@ -341,11 +341,7 @@ class MiscController extends AbstractController
 
         $props = [];
         if ($this->in->getString('tag')) {
-            switch (trim($this->in->getString('tag'))) {
-                case 'ticket_attachment':
-                    $props['tag'] = 'ticket_attachment';
-                    break;
-            }
+            $props['tag'] = trim($this->in->getString('tag'));
         }
 
         $path = $this->in->getString('path');

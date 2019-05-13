@@ -7,6 +7,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\CustomDataBilling;
 use Application\DeskPRO\Entity\Ticket as Ticket;
@@ -824,7 +825,7 @@ class TicketController extends AbstractController implements ProtectedController
         foreach ($attachments as $file) {
             $error = $accept->getError($file, 'agent');
             if (!$error) {
-                $blob = $accept->accept($file, false, ['tag' => 'ticket_attachment']);
+                $blob = $accept->accept($file, false, ['tag' => DeskproBlobStorage::TAG_TICKET_ATTACHMENT]);
                 if ($blob) {
                     $blobs[] = $blob;
                 }

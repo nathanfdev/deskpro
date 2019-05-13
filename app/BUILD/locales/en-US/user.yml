@@ -586,6 +586,7 @@ portal.general.agent_bar_agent_home: 'Agent Home'
 portal.general.agent_bar_agent_kb: 'Manage Knowledgebase'
 portal.general.agent_bar_agent_news: 'Manage News'
 portal.general.agents-available: 'Agents Available'
+portal.general.agree: 'Agree'
 portal.general.attachments: Attachments
 portal.general.btn-cancel: Cancel
 portal.general.btn-download-pdf: 'Download PDF'
@@ -608,6 +609,7 @@ portal.general.comments-title:
   other: 'Comments ({{count}})'
 portal.general.delete: Delete
 portal.general.everything: Everything
+portal.general.eula: EULA
 portal.general.get-in-touch: 'Get in touch'
 portal.general.get-in-touch-desc: 'Send us an email'
 portal.general.impersonation_mode: 'Impersonation mode'

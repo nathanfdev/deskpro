@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
 use Application\DeskPRO\EmailGateway\LinkedImages;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
@@ -609,7 +610,7 @@ class ProcessAgentFwd extends ProcessAbstract
                 $attach->getFileContents(),
                 $attach->getFileName(),
                 $attach->getMimeType(),
-                ['tag' => $attach->is_inline ? null : 'ticket_attachment']
+                ['tag' => $attach->is_inline ? null : DeskproBlobStorage::TAG_TICKET_ATTACHMENT]
             );
 
             $processedBlobs[$blob->id] = $blob;

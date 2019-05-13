@@ -304,6 +304,17 @@
     </div>
 {% endblock %}
 
+{% block custom_javascript_widget %}
+    <div class="with-dpx">
+        <div
+                class="dpx-javascript"
+                data-code="{{ form.vars.custom_def.getOption('code') }}"
+        >
+            <input id="{{ id }}" name="{{ full_name }}" type="hidden" class="js-custom-field-hidden-input" value="{{ value }}" />
+        </div>
+    </div>
+{% endblock %}
+
 {%- block choice_widget_collapsed -%}
     {%- if required and placeholder is none and not placeholder_in_choices and not multiple -%}
         {% set required = false %}

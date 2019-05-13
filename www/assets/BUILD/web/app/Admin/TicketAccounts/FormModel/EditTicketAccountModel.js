@@ -18,6 +18,9 @@ define([
       this.form.in_imap_account     = {};
       this.form.in_exchange_account = {};
       this.form.in_office365_account  = {};
+      this.form.in_office365_exchange_account  = {
+        host: 'outlook.office365.com'
+      };
 
       this.form.outgoing_type     = 'php_mail';
       this.form.out_gmail_account =
@@ -25,6 +28,9 @@ define([
       this.form.out_smtp_account  = {};
       this.form.out_exchange_account  = {};
       this.form.out_office365_account  = {};
+      this.form.out_office365_exchange_account  = {
+        host: 'outlook.office365.com'
+      };
 
       this.form.in_pop3_account.secure_mode = 'ssl';
       this.form.in_imap_account.secure_mode = 'ssl';
@@ -178,6 +184,12 @@ define([
         if (this.form.incoming_type === 'office365') {
           this.form.in_office365_account.password = this.account.incoming_account.password;
         }
+
+        if (this.form.incoming_type === 'office365_exchange') {
+          this.form.in_office365_exchange_account.host     = this.account.incoming_account.host;
+          this.form.in_office365_exchange_account.user     = this.account.incoming_account.user;
+          this.form.in_office365_exchange_account.password = this.account.incoming_account.password;
+        }
       }
 
       //--------------------
@@ -214,6 +226,12 @@ define([
           this.form.out_exchange_account.host        = this.account.outgoing_account.host;
           this.form.out_exchange_account.user        = this.account.outgoing_account.user;
           this.form.out_exchange_account.password    = this.account.outgoing_account.password;
+        }
+
+        if (this.form.outgoing_type === 'office365_exchange') {
+          this.form.out_office365_exchange_account.host     = this.account.outgoing_account.host;
+          this.form.out_office365_exchange_account.user     = this.account.outgoing_account.user;
+          this.form.out_office365_exchange_account.password = this.account.outgoing_account.password;
         }
       }
     }

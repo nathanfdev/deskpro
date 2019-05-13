@@ -1202,6 +1202,7 @@ BODY;
                 $fetcher = new Fetcher\Imap($account, 20971520);
                 break;
             case 'exchange':
+            case 'office365_exchange':
                 $fetcher = new Fetcher\Exchange($account, 20971520);
                 break;
             case 'noop':
