@@ -61,6 +61,7 @@ class MessagePhoneNumber extends React.PureComponent {
         + replacement + element.innerHTML.substring(number.endsAt - diff);
       diff = diff + initialNumber.length - replacement.length;
     });
+    element.innerHTML = element.innerHTML.replace(/(sip:\S+@\S+)/, '<span data-tel="$1" class="dp-click-to-call">$1</span>');
     const clickToCall = element.getElementsByClassName('dp-click-to-call');
     for (let i = 0; i < clickToCall.length; i++) {
       const item = clickToCall.item(i);
