@@ -93,7 +93,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedFeedbackCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(FeedbackCategory::class, $userGroups);
+        return $this->getAllowedCategories(FeedbackCategory::class, $userGroups, 'portal');
     }
 
     /**
@@ -103,7 +103,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedNewsCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(NewsCategory::class, $userGroups);
+        return $this->getAllowedCategories(NewsCategory::class, $userGroups, 'portal');
     }
 
     /**
@@ -113,7 +113,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedArticleCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(ArticleCategory::class, $userGroups);
+        return $this->getAllowedCategories(ArticleCategory::class, $userGroups, 'portal');
     }
 
     /**
@@ -123,7 +123,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedDownloadCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(DownloadCategory::class, $userGroups);
+        return $this->getAllowedCategories(DownloadCategory::class, $userGroups, 'portal');
     }
 
     /**
@@ -147,7 +147,8 @@ class PortalPermissionsLoader
     }
 
     /**
-     * @param array $userGroups
+     * @param array  $userGroups
+     * @param string $context
      *
      * @return array
      */
@@ -156,21 +157,22 @@ class PortalPermissionsLoader
         /** @var GuideRepository $repository */
         $repository = $this->em->getRepository(Guide::class);
 
-        return $repository->getGuidesForUsergroups($userGroups);
+        return $repository->getGuidesForUsergroups($userGroups, 'portal');
     }
 
     /**
      * @param string $entityClass
      * @param array  $userGroups
+     * @param string $context
      *
      * @return array
      */
-    public function getAllowedCategories($entityClass, array $userGroups)
+    public function getAllowedCategories($entityClass, array $userGroups, $context = 'agent')
     {
         /** @var CategoryHierarchy $repository */
         $repository = $this->em->getRepository($entityClass);
 
-        return $repository->getCategoriesForUsergroups($userGroups);
+        return $repository->getCategoriesForUsergroups($userGroups, $context);
     }
 
     /**
