@@ -83,7 +83,7 @@ class RecordTab extends BaseUploadTab {
           onClick={this.onToggleRecording}
         >
           <i className={classNames(recording ? 'mute' : 'unmute', 'icon')} />
-          Start recording
+          {recording ? 'Stop recording' : 'Start recording'}
         </button>
         <UploadPlayButton
           ref={(c) => { this.playButton = c; }}
