@@ -9,6 +9,7 @@
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
+use DeskPRO\Bundle\VoiceBundle\WorkerProcess\Job\CheckVoiceWorkers;
 
 /**
  * Class WorkerJobsData.
@@ -345,6 +346,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Process scheduled reports, then save results and send email with permalink',
             'job_class'    => Job\ProcessScheduledReports::class,
             'run_interval' => Job\ProcessScheduledReports::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'check_voice_workers',
+            'worker_group' => 'voice',
+            'title'        => 'Check voice workers',
+            'description'  => 'Check if voice workers are stuck',
+            'job_class'    => CheckVoiceWorkers::class,
+            'run_interval' => CheckVoiceWorkers::DEFAULT_INTERVAL,
         ];
 
         //------------------------------
