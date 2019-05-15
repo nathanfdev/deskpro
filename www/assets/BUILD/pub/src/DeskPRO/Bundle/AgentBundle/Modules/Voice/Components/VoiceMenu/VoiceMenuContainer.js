@@ -70,7 +70,6 @@ class VoiceMenuContainer extends React.Component {
     const req = new XMLHttpRequest();
     req.open('GET', sound, true);
     req.responseType = 'blob';
-
     req.onload = () => {
       if (req.status === 200) {
         const blob = req.response;
@@ -105,14 +104,11 @@ class VoiceMenuContainer extends React.Component {
   };
 
   render() {
-    const { mp3, wav, ogg } = this.state;
     return (
       <VoiceMenuDropdown
         ref={(c) => { this.popup = c; }}
-        mp3={mp3}
-        wav={wav}
-        ogg={ogg}
         {...this.props}
+        {...this.state}
         isSecure={isSecure}
         acceptCall={this.acceptCall}
         declineCall={this.declineCall}
