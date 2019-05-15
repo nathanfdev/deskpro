@@ -382,6 +382,7 @@ user.defaults.article_example_title: 'Príkladný článok'
 user.defaults.department_sales: Odbyt
 user.defaults.department_support: Podpora
 user.defaults.downloads_category_general: Dokumenty
+user.defaults.navigate: Navigovať
 user.defaults.news_category_general: Hlavné
 user.defaults.news_example_content: 'Toto je príklad noviniek. Ľubovoľne ho upravujte alebo ho odstráňte z operátorského rozhrania.'
 user.defaults.news_example_title: 'Príklad noviniek'

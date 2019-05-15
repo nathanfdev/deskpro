@@ -456,6 +456,7 @@ portal.general.top: Nej
 portal.general.updated: Aktualizováno
 portal.general.x-search-results: '{{num}} výsledků pro "{{query}}"'
 portal.general.x-search-results-no-query: '{{num}} výsledků'
+user.defaults.navigate: Navigovat
 portal.news.view-x-news:
   one: 'View 1 article'
   few: 'View {{count}} articles'

@@ -277,3 +277,4 @@ user.time.x_year:
   two: '{{count}} years'
   few: '{{count}} years'
   other: '{{count}} years'
+user.defaults.navigate: Navigate

@@ -274,6 +274,7 @@ user.defaults.article_example_title: 'Örnek Makale'
 user.defaults.department_sales: Satış
 user.defaults.department_support: Destek
 user.defaults.downloads_category_general: Belgeler
+user.defaults.navigate: Gezinin
 user.defaults.news_category_general: Genel
 user.defaults.news_example_content: 'Bu örnek bir haberi gönderisidir. Düzenleyebilir ya da silebilirsiniz.'
 user.defaults.news_example_title: 'Örnek Haber Gönderisi'

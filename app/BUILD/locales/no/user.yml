@@ -183,6 +183,7 @@ user.defaults.article_example_content: 'Dette er et eksempel av en kunnskapsbase
 user.defaults.article_example_title: 'Artikkel Eksempel'
 user.defaults.department_sales: Salg
 user.defaults.downloads_category_general: Dokumenter
+user.defaults.navigate: Navigere
 user.defaults.news_category_general: Nytt
 user.defaults.news_example_content: 'Dette er en eksempel nyhet. Gjør gjerne endringer eller fjern den fra agent grensesnittet.'
 user.defaults.news_example_title: 'Eksempel nyhet'

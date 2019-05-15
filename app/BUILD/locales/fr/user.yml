@@ -867,6 +867,7 @@ user.defaults.article_example_content: 'Ceci est un exemple d''article de la bas
 user.defaults.article_example_title: 'Exemple d''article'
 user.defaults.department_sales: 'Service Commercial'
 user.defaults.department_support: 'Centre d''aide'
+user.defaults.navigate: Naviguer
 user.defaults.news_category_general: Général
 user.defaults.news_example_content: 'Ceci est un exemple d''actualité. N''hésitez pas à le modifier ou le supprimer depuis l''interface Agent.'
 user.defaults.news_example_title: 'Exemple d''actualité'
