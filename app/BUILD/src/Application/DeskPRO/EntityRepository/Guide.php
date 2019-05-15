@@ -46,11 +46,13 @@ class Guide extends AbstractEntityRepository
         return 'guide_id';
     }
 
-    public function getGuidesForUsergroups(array $usergroupIds)
+    public function getGuidesForUsergroups(array $usergroupIds, $context = 'agent')
     {
         // For guides, everyone is always on, even if its disabled,
         // because everyone still means everyone from agent ui perspective
-        $usergroupIds[] = App::$container->getUserGroups()->getEveryoneGroup()->id;
+        if ($context === 'agent') {
+            $usergroupIds[] = App::$container->getUserGroups()->getEveryoneGroup()->id;
+        }
 
         if (!$usergroupIds) {
             return [];

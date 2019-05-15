@@ -56,6 +56,22 @@ class DbAdapter implements StorageAdapterInterface
     /**
      * {@inheritdoc}
      */
+    public function getTasks(array $ids)
+    {
+        $models   = [];
+        $entities = $this->em->getRepository(TaskEntity::class)->findBy([
+            'id' => $ids,
+        ]);
+        foreach ($entities as $entity) {
+            $models[] = $this->transformToTaskModel($entity);
+        }
+
+        return $models;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTask($id)
     {
         $entity = $this->em->getRepository(TaskEntity::class)->find($id);
@@ -181,6 +197,20 @@ class DbAdapter implements StorageAdapterInterface
     public function getWorkers(array $ids)
     {
         $entities = $this->em->getRepository(WorkerEntity::class)->findBy(['id' => $ids]);
+        $workers  = [];
+        foreach ($entities as $entity) {
+            $workers[] = $this->transformToWorkerModel($entity);
+        }
+
+        return $workers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAllWorkers()
+    {
+        $entities = $this->em->getRepository(WorkerEntity::class)->findAll();
         $workers  = [];
         foreach ($entities as $entity) {
             $workers[] = $this->transformToWorkerModel($entity);

@@ -111,9 +111,7 @@ class PortalPermissionLoaderTest extends PortalTestCase
         // everyone group should be added automatically to usergroup ids list
         $this->assertEquals(
             [
-                $category1->getId(),
                 $category2->getId(),
-                $category3->getId(),
             ],
             $this->permissionLoader->$method([$registered->getId()])
         );
