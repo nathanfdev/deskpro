@@ -51,7 +51,7 @@ class VoiceMenuContainer extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(loadVoicemailRecords());
-    const soundsPath = `${window.DESKPRO_APP_ASSETS_URL.replace('https://deskpro.ranneft.ru', 'http://localhost')}/DeskPRO/Bundle/AgentBundle/Resources/sounds`;
+    const soundsPath = `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/sounds`;
 
     this.preloadIncomingCalls(`${soundsPath}/incoming-call.mp3`, 'mp3');
     this.preloadIncomingCalls(`${soundsPath}/incoming-call.ogg`, 'ogg');
