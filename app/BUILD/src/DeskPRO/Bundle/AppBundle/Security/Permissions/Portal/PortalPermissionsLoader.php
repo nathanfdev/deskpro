@@ -93,7 +93,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedFeedbackCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(FeedbackCategory::class, $userGroups, 'portal');
+        return $this->getAllowedCategories(FeedbackCategory::class, $userGroups);
     }
 
     /**
@@ -103,7 +103,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedNewsCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(NewsCategory::class, $userGroups, 'portal');
+        return $this->getAllowedCategories(NewsCategory::class, $userGroups);
     }
 
     /**
@@ -113,7 +113,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedArticleCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(ArticleCategory::class, $userGroups, 'portal');
+        return $this->getAllowedCategories(ArticleCategory::class, $userGroups);
     }
 
     /**
@@ -123,7 +123,7 @@ class PortalPermissionsLoader
      */
     public function getAllowedDownloadCategories(array $userGroups)
     {
-        return $this->getAllowedCategories(DownloadCategory::class, $userGroups, 'portal');
+        return $this->getAllowedCategories(DownloadCategory::class, $userGroups);
     }
 
     /**
@@ -163,16 +163,15 @@ class PortalPermissionsLoader
     /**
      * @param string $entityClass
      * @param array  $userGroups
-     * @param string $context
      *
      * @return array
      */
-    public function getAllowedCategories($entityClass, array $userGroups, $context = 'agent')
+    public function getAllowedCategories($entityClass, array $userGroups)
     {
         /** @var CategoryHierarchy $repository */
         $repository = $this->em->getRepository($entityClass);
 
-        return $repository->getCategoriesForUsergroups($userGroups, $context);
+        return $repository->getCategoriesForUsergroups($userGroups, 'portal');
     }
 
     /**
