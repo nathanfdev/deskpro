@@ -147,7 +147,8 @@ class PortalPermissionsLoader
     }
 
     /**
-     * @param array $userGroups
+     * @param array  $userGroups
+     * @param string $context
      *
      * @return array
      */
@@ -156,7 +157,7 @@ class PortalPermissionsLoader
         /** @var GuideRepository $repository */
         $repository = $this->em->getRepository(Guide::class);
 
-        return $repository->getGuidesForUsergroups($userGroups);
+        return $repository->getGuidesForUsergroups($userGroups, 'portal');
     }
 
     /**
@@ -170,7 +171,7 @@ class PortalPermissionsLoader
         /** @var CategoryHierarchy $repository */
         $repository = $this->em->getRepository($entityClass);
 
-        return $repository->getCategoriesForUsergroups($userGroups);
+        return $repository->getCategoriesForUsergroups($userGroups, 'portal');
     }
 
     /**
