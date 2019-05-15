@@ -3837,6 +3837,10 @@ class TicketController extends AbstractController
                 throw $this->createNotFoundException();
             }
         } else {
+            if (!$this->person->hasPerm('agent_people.create')) {
+                throw new AccessDeniedHttpException('Sorry, you do not have permission to perform this action');
+            }
+
             $name  = $this->in->getString('name');
             $email = $this->in->getString('email');
 
