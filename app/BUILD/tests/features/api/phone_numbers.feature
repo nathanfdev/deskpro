@@ -94,3 +94,25 @@ Feature: I check adding phone numbers to people and orgs
       | endpoint      | ref  |
       | people        | {p1} |
       | organizations | {o1} |
+
+  Scenario Outline: I check sip numbers support
+    When I send a PUT request to "/api/v2/<endpoint>/<ref>" with body:
+    """
+{
+  "phone_numbers": [
+    {
+      "number": "sip:my-sip-number@example.com"
+    }
+  ]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/<endpoint>/<ref>"
+    Then the JSON node "data.phone_numbers" should have 1 element
+    And the JSON node "data.phone_numbers[0].number" should be equal to "sip:my-sip-number@example.com"
+
+    Examples:
+      | endpoint      | ref  |
+      | people        | {p1} |
+      | organizations | {o1} |
