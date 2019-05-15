@@ -18,6 +18,10 @@ class Phone extends AbstractContactData
      */
     public function applyFormData(array $input, ContactDataAbstract $contact_record)
     {
+        if (isset($input['type']) && $input['type'] === 'sip') {
+            $input['country_calling_code'] = '';
+        }
+
         $contact_record
             ->setComment(isset($input['comment']) ? $input['comment'] : '')
             ->setField1(isset($input['country_calling_code']) ? $input['country_calling_code'] : '')
