@@ -83,7 +83,7 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 
 				ext_input.val(phone_input.intlTelInput('getExtension'));
 				input.val(phone_input.intlTelInput('getNumber').split(" ext. ")[0] || phone_input.intlTelInput('getNumber'));
-				if (!phone_input.intlTelInput('isValidNumber')) {
+				if (!phone_input.intlTelInput('isValidNumber') && !/^sip:.+/.test(phone_input.val())) {
 					var str = phone_input.val();
 					if (str.indexOf('398', str.length - 3) !== -1) {
 						phone_input.intlTelInput('setNumber', str.substring(0, str.length - 3));
@@ -95,7 +95,7 @@ DeskPRO.UI.PhoneNumberInputs = new Orb.Class({
 				if (!phone_input.val()) {
 					return;
 				}
-				if (phone_input.intlTelInput("isValidNumber")) {
+				if (phone_input.intlTelInput("isValidNumber") || /^sip:.+/.test(phone_input.val())) {
 					that.markValid(phone_input);
 				} else {
 					that.markInvalid(phone_input);

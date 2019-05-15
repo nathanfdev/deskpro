@@ -77,12 +77,12 @@ abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObj
      *
      * @var string
      */
-    protected $region;
+    protected $region = '';
 
     /**
      * @var int see Orb\Util\PhoneNumbers constants for the meanings of the ints stored here
      */
-    protected $guessed_type;
+    protected $guessed_type = '';
 
     /**
      * @var \DateTime
