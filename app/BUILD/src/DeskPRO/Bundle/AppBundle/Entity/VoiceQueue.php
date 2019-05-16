@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -64,7 +65,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $name;
 
     /**
-     * @ORM\JoinColumn(name="department_id")
+     * @ORM\JoinColumn(name="department_id", referencedColumnName="id", onDelete="SET NULL")
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
      *
      * @JMS\Expose()
@@ -76,6 +77,17 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @var Department
      */
     private $department;
+
+    /**
+     * @ORM\JoinColumn(name="brand_id", referencedColumnName="id", onDelete="SET NULL")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Brand")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    private $brand;
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent", mappedBy="queue", cascade={"persist", "remove"}, fetch="EXTRA_LAZY", orphanRemoval=true)
@@ -259,6 +271,26 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function setDepartment(Department $department = null)
     {
         $this->setModelField('department', $department);
+
+        return $this;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return $this
+     */
+    public function setBrand(Brand $brand = null)
+    {
+        $this->setModelField('brand', $brand);
 
         return $this;
     }
