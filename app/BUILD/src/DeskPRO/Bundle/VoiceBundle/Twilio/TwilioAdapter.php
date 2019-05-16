@@ -123,7 +123,12 @@ class TwilioAdapter implements VoiceProviderInterface
             $client  = $this->getClient($account);
             $result  = $client->availablePhoneNumbers($countryCode)->$type->page($options);
             $exclude = $this->getAccountNumbersList($account);
-            $prices  = $client->pricing->phoneNumbers->countries($countryCode)->fetch();
+
+            try {
+                $prices = $client->pricing->phoneNumbers->countries($countryCode)->fetch();
+            } catch (\Exception $e) {
+                $prices = null;
+            }
 
             $priceTypeMap = [
                 'local'     => 'local',
@@ -133,8 +138,10 @@ class TwilioAdapter implements VoiceProviderInterface
             ];
 
             $pricesMap = [];
-            foreach ($prices->phoneNumberPrices as $price) {
-                $pricesMap[$priceTypeMap[$price['number_type']]] = $price['current_price'];
+            if ($prices) {
+                foreach ($prices->phoneNumberPrices as $price) {
+                    $pricesMap[$priceTypeMap[$price['number_type']]] = $price['current_price'];
+                }
             }
 
             foreach ($result as $apiNumber) {
@@ -143,8 +150,8 @@ class TwilioAdapter implements VoiceProviderInterface
                     $account,
                     isset($exclude[$apiNumber->phoneNumber]),
                     $type,
-                    $pricesMap[$type],
-                    $prices->priceUnit
+                    isset($pricesMap[$type]) ? $pricesMap[$type] : '-',
+                    $prices ? $prices->priceUnit : ''
                 );
             }
         } catch (\Exception $e) {
