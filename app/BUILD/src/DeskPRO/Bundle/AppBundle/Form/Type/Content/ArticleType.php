@@ -75,6 +75,11 @@ class ArticleType extends AbstractType
                     'person'     => $options['person'],
                 ],
             ])
+            ->add('date_created', DateTimeType::class, [
+                'property_path' => 'date_created',
+                'widget'        => 'single_text',
+                'required'      => false,
+            ])
             ->add('fields', CombinedType::class, [
                 'required'       => false,
                 'forms'          => $this->getCustomDataFields($options),
