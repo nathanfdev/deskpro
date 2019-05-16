@@ -26,3 +26,10 @@ services:
     arguments: ["@person_repository"]
     tags:
       - { name: form.type }
+
+  form.voice_queue_type:
+    class: DeskPRO\Bundle\VoiceBundle\Form\Type\VoiceQueueType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }

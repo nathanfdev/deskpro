@@ -74,6 +74,13 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.doctrine.voice_queue:
+    class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceQueueListener
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: doctrine.entity_listener }
+
   event_listener.doctrine.voice_worker:
     class: DeskPRO\Bundle\VoiceBundle\EventListener\Doctrine\VoiceWorkerListener
     arguments:

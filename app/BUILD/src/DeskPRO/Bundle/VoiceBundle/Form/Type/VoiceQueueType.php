@@ -3,11 +3,13 @@
 namespace DeskPRO\Bundle\VoiceBundle\Form\Type;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -24,6 +26,21 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class VoiceQueueType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -99,6 +116,14 @@ class VoiceQueueType extends AbstractType
                 'property_path' => 'recordingEnabled',
             ])
         ;
+
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        if (count($brands) > 1) {
+            $builder->add('brand', EntityType::class, [
+                'class'    => Brand::class,
+                'required' => false,
+            ]);
+        }
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
