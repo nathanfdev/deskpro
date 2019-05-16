@@ -29,7 +29,7 @@ use Twilio\Values;
  */
 class TwilioAdapter implements VoiceProviderInterface
 {
-    const VOICEMAIL_WAITING_TIMEOUT = 30;
+    const VOICEMAIL_WAITING_TIMEOUT = 15;
 
     /**
      * @var EntityManager

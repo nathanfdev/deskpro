@@ -15,7 +15,7 @@ class AgentSettingsForm extends BaseForm {
     const { settings } = this.props;
 
     return {
-      agent_voicemail_timeout: settings.get('agent_voicemail_timeout') || 30
+      agent_voicemail_timeout: settings.get('agent_voicemail_timeout') || 15
     };
   }
 

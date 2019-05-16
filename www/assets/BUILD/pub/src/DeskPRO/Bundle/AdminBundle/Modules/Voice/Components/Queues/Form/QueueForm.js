@@ -57,7 +57,7 @@ class QueueForm extends BaseForm {
       voicemail_department: queue ? queue.get('voicemail_department') : null,
       voicemail_agent:      queue ? queue.get('voicemail_agent') : null,
       voicemail_agent_team: queue ? queue.get('voicemail_agent_team') : null,
-      voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 30,
+      voicemail_timeout:    queue ? queue.get('voicemail_timeout') : 15,
       recording_enabled:    queue ? queue.get('recording_enabled') : true,
     };
   }
