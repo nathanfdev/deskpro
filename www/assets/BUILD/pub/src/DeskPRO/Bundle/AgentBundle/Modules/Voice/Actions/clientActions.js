@@ -277,6 +277,9 @@ export const voiceBootstrap = createAction(
             dispatch(setAgentAsBusy(data.worker_type_id));
           }
         });
+        messageBroker.addMessageListener('agent.voice.open-forwarded-ticket', (data) => {
+          window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket_id}`, { noToggle: true });
+        });
 
         api.sendGet('DP_API/voice_client/busy_voice_agents').success(({ data }) => {
           dispatch(setBusyAgents(data));

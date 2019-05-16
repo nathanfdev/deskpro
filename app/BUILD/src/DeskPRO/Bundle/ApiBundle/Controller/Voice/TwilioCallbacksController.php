@@ -871,7 +871,14 @@ class TwilioCallbacksController extends BaseController
         }
 
         /* @var VoicePhoneCall $phoneCall */
-        $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+        $ticket = $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+        $this->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent('agent.voice.open-forwarded-ticket', [
+                'call_id'   => $phoneCall->getId(),
+                'ticket_id' => $ticket->getId(),
+            ])
+        );
 
         if (count($phoneCall->getActiveParticipants()) >= 2) {
             return $this->phoneNumberAgentConferenceCallback($account, $request);

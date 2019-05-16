@@ -358,7 +358,14 @@ class PlivoCallbacksController extends BaseController
                 $em->persist($phoneCall);
                 $em->flush();
 
-                $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+                $ticket = $this->get('dp.voice.callbacks_helper')->createOrJoinTicketForIncomingCall($phoneCall, $agent);
+                $this->get('event_dispatcher')->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent('agent.voice.open-forwarded-ticket', [
+                        'call_id'   => $phoneCall->getId(),
+                        'ticket_id' => $ticket->getId(),
+                    ])
+                );
 
                 try {
                     $phoneCall = $this->get('dp.voice.callbacks_helper')->joinIncomingPhoneCall(
