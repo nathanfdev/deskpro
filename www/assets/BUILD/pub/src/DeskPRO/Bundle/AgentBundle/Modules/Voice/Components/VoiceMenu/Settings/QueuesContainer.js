@@ -34,7 +34,7 @@ class QueuesContainer extends React.Component {
     const promise = dispatch(loadAverageWaitingTime());
     promise.success(({ data }) => {
       this.setState({
-        waitingUsers: data
+        waitingUsers: data || {}
       });
     });
 
