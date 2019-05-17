@@ -1696,10 +1696,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (window.AgentLegacyBundle.hasActiveVoiceCall()) {
-			$('#refresh_alert_overlay').find('.refresh_message').text('You are currently on a call. The interface will reload once your call ends.');
+			$('#refresh_alert_overlay').find('.refresh_message').text('You are currently on a call. The interface will reload once your call ends.').show();
 			$('#refresh_alert_overlay').find('.okay-trigger').text('End call');
-			$('#refresh_alert_overlay').find('.refresh_message').text(message).show();
-			$('#refresh_alert_overlay').find('.refresh_timeout').text(message).hide();
+			$('#refresh_alert_overlay').find('.refresh_timeout').hide();
 
 			window.setInterval(function() {
 				if (!window.AgentLegacyBundle.hasActiveVoiceCall()) {
