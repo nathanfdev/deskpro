@@ -98,8 +98,10 @@ class TwilioAdapter implements VoiceProviderInterface
 
         try {
             $client = $this->getClient($account);
-            foreach ($client->pricing->voice->countries->read() as $apiCountry) {
-                $counties[] = new TwilioCountry($apiCountry);
+            foreach ($client->availablePhoneNumbers->read() as $apiCountry) {
+                if (!$apiCountry->beta) {
+                    $counties[] = new TwilioCountry($apiCountry);
+                }
             }
         } catch (\Exception $e) {
         }
@@ -123,12 +125,7 @@ class TwilioAdapter implements VoiceProviderInterface
             $client  = $this->getClient($account);
             $result  = $client->availablePhoneNumbers($countryCode)->$type->page($options);
             $exclude = $this->getAccountNumbersList($account);
-
-            try {
-                $prices = $client->pricing->phoneNumbers->countries($countryCode)->fetch();
-            } catch (\Exception $e) {
-                $prices = null;
-            }
+            $prices  = $client->pricing->phoneNumbers->countries($countryCode)->fetch();
 
             $priceTypeMap = [
                 'local'     => 'local',
@@ -138,10 +135,8 @@ class TwilioAdapter implements VoiceProviderInterface
             ];
 
             $pricesMap = [];
-            if ($prices) {
-                foreach ($prices->phoneNumberPrices as $price) {
-                    $pricesMap[$priceTypeMap[$price['number_type']]] = $price['current_price'];
-                }
+            foreach ($prices->phoneNumberPrices as $price) {
+                $pricesMap[$priceTypeMap[$price['number_type']]] = $price['current_price'];
             }
 
             foreach ($result as $apiNumber) {
@@ -151,7 +146,7 @@ class TwilioAdapter implements VoiceProviderInterface
                     isset($exclude[$apiNumber->phoneNumber]),
                     $type,
                     isset($pricesMap[$type]) ? $pricesMap[$type] : '-',
-                    $prices ? $prices->priceUnit : ''
+                    $prices->priceUnit
                 );
             }
         } catch (\Exception $e) {

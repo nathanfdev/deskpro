@@ -153,9 +153,10 @@ const defaultNumberTypes = {
 class AvailableListForm extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.number,
-    accounts: PropTypes.object,
-    onChange: PropTypes.func
+    value:              PropTypes.number,
+    accounts:           PropTypes.object,
+    availableCountries: PropTypes.object,
+    onChange:           PropTypes.func
   };
 
   constructor(props) {
@@ -196,7 +197,7 @@ class AvailableListForm extends React.Component {
   };
 
   render() {
-    const { accounts = Immutable.fromJS([]) } = this.props;
+    const { accounts = Immutable.fromJS([]), availableCountries } = this.props;
     const { formData } = this.state;
     const account = accounts.get(formData.value.account);
     const countryCode = formData.value.country_code;
@@ -204,6 +205,10 @@ class AvailableListForm extends React.Component {
     let accountCountryCodes = defaultCountryCodes;
     if (account && account.get('type') === 'twilio') {
       accountCountryCodes = Object.keys(twilioCountryCodes);
+    }
+    if (availableCountries && availableCountries[account.get('id')]) {
+      const availableCountryCodes = availableCountries[account.get('id')].map(availableCountry => availableCountry.country_code);
+      accountCountryCodes = accountCountryCodes.filter(accountCountryCode => availableCountryCodes.indexOf(accountCountryCode) !== -1);
     }
 
     let availableTypes = [];

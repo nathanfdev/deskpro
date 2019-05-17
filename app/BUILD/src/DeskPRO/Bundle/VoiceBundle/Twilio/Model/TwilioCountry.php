@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\VoiceBundle\Twilio\Model;
 
 use JMS\Serializer\Annotation as JMS;
-use Twilio\Rest\Pricing\V2\Voice\CountryInstance;
+use Twilio\Rest\Api\V2010\Account\AvailablePhoneNumberCountryInstance;
 
 /**
  * Class TwilioCountry.
@@ -27,11 +27,11 @@ class TwilioCountry
     /**
      * Constructor.
      *
-     * @param CountryInstance $apiCountry
+     * @param AvailablePhoneNumberCountryInstance $apiCountry
      */
-    public function __construct(CountryInstance $apiCountry)
+    public function __construct(AvailablePhoneNumberCountryInstance $apiCountry)
     {
-        $this->countryCode = $apiCountry->isoCountry;
+        $this->countryCode = $apiCountry->countryCode;
         $this->countryName = $apiCountry->country;
     }
 }
