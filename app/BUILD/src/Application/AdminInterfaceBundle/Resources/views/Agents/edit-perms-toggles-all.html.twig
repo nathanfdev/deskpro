@@ -70,7 +70,7 @@
     {% endif %}
     </tbody>
     <tbody>
-    {{ macro.perm_row('ticket', 'modify_messages_own',                            {showToggler: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_own',                            {showToggler: true, permPrefix: 'modify_messages'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_own',                       {toggleName: 'ticket.modify_messages_own'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_delete_own',                     {toggleName: 'ticket.modify_messages_own'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_timelimited_notes_own',     {toggleName: 'ticket.modify_messages_own'}) }}
@@ -114,7 +114,7 @@
     {% endif %}
     </tbody>
     <tbody>
-    {{ macro.perm_row('ticket', 'modify_messages_followed',                           {showToggler: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_followed',                           {showToggler: true, permPrefix: 'modify_messages'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_followed',                      {toggleName: 'ticket.modify_messages_followed'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_delete_followed',                    {toggleName: 'ticket.modify_messages_followed'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_timelimited_notes_followed',    {toggleName: 'ticket.modify_messages_followed'}) }}
@@ -158,7 +158,7 @@
         {{ macro.perm_row('ticket', 'modify_billing_unassigned', {toggleName: 'ticket.modify_unassigned'}) }}
     {% endif %}
     <tbody>
-    {{ macro.perm_row('ticket', 'modify_messages_unassigned',                           {showToggler: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_unassigned',                           {showToggler: true, permPrefix: 'modify_messages'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_unassigned',                      {toggleName: 'ticket.modify_messages_unassigned'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_delete_unassigned',                    {toggleName: 'ticket.modify_messages_unassigned'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_timelimited_notes_unassigned',    {toggleName: 'ticket.modify_messages_unassigned'}) }}
@@ -203,7 +203,7 @@
     {% endif %}
     </tbody>
     <tbody>
-    {{ macro.perm_row('ticket', 'modify_messages_others',                           {showToggler: true}) }}
+    {{ macro.perm_row('ticket', 'modify_messages_others',                           {showToggler: true, permPrefix: 'modify_messages'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_others',                      {toggleName: 'ticket.modify_messages_others'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_delete_others',                    {toggleName: 'ticket.modify_messages_others'}) }}
     {{ macro.perm_row('ticket', 'modify_messages_edit_timelimited_notes_others',    {toggleName: 'ticket.modify_messages_others'}) }}

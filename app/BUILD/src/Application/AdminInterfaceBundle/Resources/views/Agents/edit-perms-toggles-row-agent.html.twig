@@ -37,7 +37,7 @@
                         locked-tip="This permission is locked because this agent is part of a usergroup with this permission"
 
                         {% if opts.showToggler %}
-                            is-some="EditCtrl.hasSomePerms('{{ typename }}', '{{ permname }}')"
+                            is-some="EditCtrl.hasSomePerms('{{ typename }}', '{{ permname }}', '{{opts.permPrefix}}')"
                         {% endif %}
                     {% endif %}
                     />
