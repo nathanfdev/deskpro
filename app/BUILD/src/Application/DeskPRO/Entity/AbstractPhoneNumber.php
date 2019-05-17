@@ -335,7 +335,7 @@ abstract class AbstractPhoneNumber extends \Application\DeskPRO\Domain\DomainObj
             [
                 'fieldName'  => 'number',
                 'type'       => 'string',
-                'length'     => 30,
+                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
