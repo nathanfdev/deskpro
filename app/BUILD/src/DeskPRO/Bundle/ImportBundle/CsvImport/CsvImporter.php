@@ -251,14 +251,14 @@ class CsvImporter
 
         $collection  = new ArrayCollection();
         $personOid   = reset($personData['emails']);
-        $personModel = $this->parser->exportRawData($personOid, $personData, PersonModel::class);
+        $personModel = $this->parser->parseRawData($personOid, $personData, PersonModel::class);
         if ($personModel) {
             $collection->add($personModel);
         }
 
         foreach ($customDefs as $customDefData) {
             $defOid   = $customDefData['name'];
-            $defModel = $this->parser->exportRawData($defOid, $customDefData, PersonCustomDefModel::class);
+            $defModel = $this->parser->parseRawData($defOid, $customDefData, PersonCustomDefModel::class);
 
             if ($defModel) {
                 $collection->add($defModel);
