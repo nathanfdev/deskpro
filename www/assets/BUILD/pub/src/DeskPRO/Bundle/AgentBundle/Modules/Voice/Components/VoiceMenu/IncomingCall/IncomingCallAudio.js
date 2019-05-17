@@ -22,11 +22,12 @@ class IncomingCallAudio extends React.Component {
   };
 
   playSound() {
+    this.stopSound();
+
     if (this.sound) {
       this.sound.addEventListener('ended', this.onSoundEnded);
       this.sound.volume = this.props.ringingVolume / 100;
     }
-    this.stopSound();
     const playPromise = this.sound.play();
     if (playPromise) {
       playPromise.catch(() => setTimeout(this.playSound, 100));
