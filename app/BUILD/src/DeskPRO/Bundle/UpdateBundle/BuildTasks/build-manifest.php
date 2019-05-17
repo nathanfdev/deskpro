@@ -1313,6 +1313,12 @@ return [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/05/Build1558017674.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1558017674',
         'skipPostBuild' => false,
-        'isOnlineBuild' => false,
+        'isOnlineBuild' => true,
+    ],
+    1558077448 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2019/05/Build1558077448.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1558077448',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
     ],
 ];

@@ -254,7 +254,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $worker3->getTypeId()->willReturn(3);
 
         $queue->getId()->willReturn(1);
-        $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_AUTOMATIC);
+        $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_ROUND_ROBIN);
         $queue->getActiveAgentsPeopleIds()->willReturn([1, 2, 3]);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);
@@ -283,7 +283,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         $worker1->getTypeId()->willReturn(1);
 
         $queue->getId()->willReturn(1);
-        $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_AUTOMATIC);
+        $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_ROUND_ROBIN);
         $queue->getActiveAgentsPeopleIds()->willReturn([1, 3, 5]);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);
@@ -308,7 +308,7 @@ class VoiceWorkflowSpec extends ObjectBehavior
         StorageAdapterInterface $storage
     ) {
         $queue->getId()->willReturn(1);
-        $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_AUTOMATIC);
+        $queue->getRoutingModel()->willReturn(VoiceQueue::ROUTING_MODEL_ROUND_ROBIN);
         $queue->getActiveAgentsPeopleIds()->willReturn([1, 3, 5]);
 
         $taskHelper->getVoiceQueue($task)->willReturn($queue);

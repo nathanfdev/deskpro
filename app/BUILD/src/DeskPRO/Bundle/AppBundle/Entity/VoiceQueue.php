@@ -34,7 +34,7 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const ROUTING_MODEL_AUTOMATIC      = 'automatic';
+    const ROUTING_MODEL_ROUND_ROBIN    = 'round_robin';
     const ROUTING_MODEL_LEAST_UTILIZED = 'least_utilized';
     const ROUTING_MODEL_SIMULRING      = 'simulring';
 

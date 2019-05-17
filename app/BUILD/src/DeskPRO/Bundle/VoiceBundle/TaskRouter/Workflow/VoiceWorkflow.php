@@ -160,7 +160,7 @@ class VoiceWorkflow implements WorkflowInterface
             }
 
             switch ($voiceQueue->getRoutingModel()) {
-                case VoiceQueue::ROUTING_MODEL_AUTOMATIC:
+                case VoiceQueue::ROUTING_MODEL_ROUND_ROBIN:
                     // round robin order list is not yet, set default one
                     if (!is_array($taskQueue->getAttribute('round_robin_order'))) {
                         $taskQueue->setAttribute('round_robin_order', $queueAgentIds);

@@ -102,7 +102,7 @@ class VoiceQueueType extends AbstractType
                 'property_path'     => 'routingModel',
                 'choices_as_values' => true,
                 'choices'           => [
-                    VoiceQueue::ROUTING_MODEL_AUTOMATIC,
+                    VoiceQueue::ROUTING_MODEL_ROUND_ROBIN,
                     VoiceQueue::ROUTING_MODEL_LEAST_UTILIZED,
                     VoiceQueue::ROUTING_MODEL_SIMULRING,
                 ],
@@ -150,7 +150,7 @@ class VoiceQueueType extends AbstractType
 
         // set task queue max size
         if (isset($data['routing_model'])) {
-            if ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_AUTOMATIC) {
+            if ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_ROUND_ROBIN) {
                 $data['max_queue_size'] = 1;
             } elseif ($data['routing_model'] === VoiceQueue::ROUTING_MODEL_SIMULRING) {
                 $data['max_queue_size'] = 50;
