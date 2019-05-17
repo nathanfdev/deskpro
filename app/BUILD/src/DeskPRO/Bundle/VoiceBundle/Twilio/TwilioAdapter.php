@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twilio\Jwt\ClientToken;
+use Twilio\Rest\Api\V2010\Account\CallInstance;
 use Twilio\Rest\Api\V2010\Account\IncomingPhoneNumberInstance;
 use Twilio\Rest\Client;
 use Twilio\Values;
@@ -597,6 +598,27 @@ class TwilioAdapter implements VoiceProviderInterface
             $this->getClient($account)->recordings($recordingSid)->delete();
         } catch (\Exception $e) {
         }
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     * @param string         $callSid
+     *
+     * @return CallInstance
+     */
+    public function getCallInfo(VoicePhoneCall $phoneCall, $callSid)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        if (!$account || !$account instanceof TwilioVoiceAccount) {
+            throw new \RuntimeException('Voice number does not have an account reference.');
+        }
+
+        try {
+            return  $this->getClient($account)->calls($phoneCall->getCallSid())->fetch();
+        } catch (\Exception $e) {
+        }
+
+        return;
     }
 
     /**

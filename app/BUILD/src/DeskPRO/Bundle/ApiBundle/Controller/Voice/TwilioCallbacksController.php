@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
@@ -22,6 +23,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\VoiceBundle\Exception\OutOfServiceException;
+use DeskPRO\Bundle\VoiceBundle\JobQueue\Processor\LoadTwilioPriceProcessor;
 use DeskPRO\Bundle\VoiceBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\VoiceBundle\Twilio\Twiml;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -137,6 +139,13 @@ class TwilioCallbacksController extends BaseController
 
                 try {
                     $phoneCall = $participant->getPhoneCall();
+
+                    // get call price
+                    // store call price
+                    $this->get('job.queue')->addJob(new Job(LoadTwilioPriceProcessor::JOB_TYPE, [
+                        'call_id'  => $phoneCall->getId(),
+                        'call_sid' => $callSid,
+                    ]));
 
                     if ($participant instanceof VoicePhoneCallParticipantUser) {
                         $this->get('dp.voice.callbacks_helper')->callHangupByUser($callSid, $details);
